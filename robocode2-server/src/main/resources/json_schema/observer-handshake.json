@@ -1,0 +1,30 @@
+{
+	"id": "#observer-handshake.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Observer handshake",
+	"type": "object",
+	"properties": {
+		"message-type": {
+			"enum": [
+				"observer-handshake"
+			]
+		},
+		"name": {
+			"description": "Name of observer, e.g. Fancy Robocode View",
+			"type": "string"
+		},
+		"version": {
+			"description": "Observer version, e.g. 1.0",
+			"type": "string"
+		},
+		"author": {
+			"description": "Author name, e.g. John Doe (john_doe@somewhere.net)",
+			"type": "string"
+		}
+	},
+	"required": [
+		"message-type",
+		"name",
+		"version"
+	]
+}

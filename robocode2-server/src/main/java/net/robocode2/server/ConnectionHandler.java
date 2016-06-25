@@ -1,7 +1,9 @@
 package net.robocode2.server;
 
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.java_websocket.WebSocket;
@@ -9,18 +11,26 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
-import net.robocode2.json_schema.Game;
+import net.robocode2.json_schema.BotHandshake;
+import net.robocode2.json_schema.ObserverHandshake;
 import net.robocode2.json_schema.ServerHandshake;
-import net.robocode2.server.config.DefaultGame;
 
 public class ConnectionHandler extends WebSocketServer {
 
-	Set<WebSocket> openConnections = new HashSet<>();
+	final ServerSetup setup;
 
-	public ConnectionHandler(InetSocketAddress address) {
-		super(address);
+	Set<WebSocket> openConnections = new HashSet<>();
+	Map<WebSocket, BotHandshake> openBotConnections = new HashMap<>();
+	Map<WebSocket, ObserverHandshake> openObserverConnections = new HashMap<>();
+
+	static final String MESSAGE_TYPE_FIELD = "message-type";
+
+	public ConnectionHandler(ServerSetup setup) {
+		super(new InetSocketAddress(setup.getHostName(), setup.getPort()));
+		this.setup = setup;
 	}
 
 	@Override
@@ -30,27 +40,10 @@ public class ConnectionHandler extends WebSocketServer {
 		openConnections.add(conn);
 
 		ServerHandshake hs = new ServerHandshake();
+		hs.setMessageType(ServerHandshake.MessageType.SERVER_HANDSHAKE);
+		hs.setGames(setup.getGames());
 
-		Set<Game> games = new HashSet<>();
-
-		Game game1 = new DefaultGame();
-		game1.setGameType("melee");
-		games.add(game1);
-
-		Game game2 = new DefaultGame();
-		game2.setGameType("1v1");
-		game2.setMinNumberOfParticipants(2);
-		game2.setMinNumberOfParticipants(2);
-
-		games.add(game2);
-
-		hs.setGames(games);
-
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		Gson gson = gsonBuilder.create();
-
-		String msg = gson.toJson(hs);
-
+		String msg = new Gson().toJson(hs);
 		conn.send(msg);
 	}
 
@@ -60,16 +53,42 @@ public class ConnectionHandler extends WebSocketServer {
 				+ ", remote: " + remote);
 
 		openConnections.remove(conn);
+		openBotConnections.remove(conn);
+		openObserverConnections.remove(conn);
 	}
 
 	@Override
 	public void onMessage(WebSocket conn, String message) {
 		System.out.println("onMessage(): " + conn.getRemoteSocketAddress() + ", message: " + message);
+
+		Gson gson = new Gson();
+		JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
+
+		JsonElement jsonElement = jsonObject.get(MESSAGE_TYPE_FIELD);
+		if (jsonElement != null) {
+			String messageType = jsonElement.getAsString();
+
+			if (BotHandshake.MessageType.BOT_HANDSHAKE.toString().equalsIgnoreCase(messageType)) {
+				System.out.println("Handling BotHandshake");
+
+				BotHandshake botHandshake = gson.fromJson(message, BotHandshake.class);
+				openBotConnections.put(conn, botHandshake);
+
+			} else if (ObserverHandshake.MessageType.OBSERVER_HANDSHAKE.toString().equalsIgnoreCase(messageType)) {
+				System.out.println("Handling ObserverHandshake");
+
+				ObserverHandshake observerHandshake = gson.fromJson(message, ObserverHandshake.class);
+				openObserverConnections.put(conn, observerHandshake);
+
+			} else {
+				throw new IllegalStateException("Unhandled message type: " + messageType);
+			}
+		}
 	}
 
 	@Override
 	public void onError(WebSocket conn, Exception ex) {
-		if (conn == null) {			
+		if (conn == null) {
 			System.err.println("onError(): exeption: " + ex);
 		} else {
 			System.err.println("onError(): " + conn.getRemoteSocketAddress() + ", exeption: " + ex);
@@ -77,10 +96,8 @@ public class ConnectionHandler extends WebSocketServer {
 	}
 
 	public static void main(String[] args) {
-		 String host = "localhost";
-		 int port = 50000;
-		 InetSocketAddress address = new InetSocketAddress(host, port);
-		 ConnectionHandler server = new ConnectionHandler(address);
-		 server.run();
+		ServerSetup setup = new ServerSetup();
+		ConnectionHandler server = new ConnectionHandler(setup);
+		server.run();
 	}
 }

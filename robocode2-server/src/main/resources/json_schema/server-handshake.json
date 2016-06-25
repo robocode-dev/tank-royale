@@ -1,74 +1,78 @@
 {
-    "id": "#server-handshake.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Server handshake", 
-    "type": "object", 
-    "properties": {
-        "message-type": {
-            "enum": [ "server-handshake" ]
-        },
-        "protocol-version": {
-            "type": "string",
-            "description": "Protocol version - expected to change",
-            "pattern": "^\\d+(\\.\\d+)*$"
-        },
-        "games": {
-            "type": "array",
-            "items": {
-                "$ref": "#/definitions/game-definition"
-            },
-            "minItems": 1,
-            "uniqueItems": true
-        }
-    },
-    "required": [ "message-type", "protocol-version" ],
-    "definitions": {
-        "game-definition": {
-            "description": "Game definition",
-            "type": "object",
-            "properties": {
-                "game-type": {
-                    "description": "Type of game",
-                    "type": "string"
-                },
-                "obstacles": {
-                    "description": "Set to true if there are obstacles on the arena",
-                    "type": "boolean"
-                },
-                "arena-width": {
-                    "description": "Width of arena in units",
-                    "type": "integer"
-                },
-                "arena-height": {
-                    "description": "Height of arena in units",
-                    "type": "integer"
-                },
-                "min-number-of-participants": {
-                    "description": "Minimum number of bots participating in battle",
-                    "type": "integer"
-                },
-                "max-number-of-participants": {
-                    "description": "Maximum number of bots participating in battle",
-                    "type": "integer"
-                },
-                "number-of-rounds": {
-                    "description": "Number of rounds in battle",
-                    "type": "integer"
-                },
-                "time-limit": {
-                     "description": "Time limit in milliseconds for sending intent",
-                     "type": "integer"
-                }
-            },
-            "required":
-            [
-                "game-type",
-                "obstacles",
-                "arena-width",
-                "arena-height",
-                "min-number-of-participants",
-                "time-limit"
-            ]
-        }
-    }
+	"id": "#server-handshake.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Server handshake",
+	"type": "object",
+	"properties": {
+		"message-type": {
+			"enum": [
+				"server-handshake"
+			]
+		},
+		"protocol-version": {
+			"type": "string",
+			"description": "Protocol version - expected to change",
+			"pattern": "^\\d+(\\.\\d+)*$"
+		},
+		"games": {
+			"type": "array",
+			"items": {
+				"$ref": "#/definitions/game-definition"
+			},
+			"minItems": 1,
+			"uniqueItems": true
+		}
+	},
+	"required": [
+		"message-type",
+		"protocol-version"
+	],
+	"definitions": {
+		"game-definition": {
+			"description": "Game definition",
+			"type": "object",
+			"properties": {
+				"game-type": {
+					"description": "Type of game",
+					"type": "string"
+				},
+				"obstacles": {
+					"description": "Set to true if there are obstacles on the arena",
+					"type": "boolean"
+				},
+				"arena-width": {
+					"description": "Width of arena in units",
+					"type": "integer"
+				},
+				"arena-height": {
+					"description": "Height of arena in units",
+					"type": "integer"
+				},
+				"min-number-of-participants": {
+					"description": "Minimum number of bots participating in battle",
+					"type": "integer"
+				},
+				"max-number-of-participants": {
+					"description": "Maximum number of bots participating in battle",
+					"type": "integer"
+				},
+				"number-of-rounds": {
+					"description": "Number of rounds in battle",
+					"type": "integer"
+				},
+				"time-limit": {
+					"description": "Time limit in milliseconds for sending intent",
+					"type": "integer"
+				}
+			},
+			"required": [
+				"game-type",
+				"obstacles",
+				"arena-width",
+				"arena-height",
+				"min-number-of-participants",
+				"time-limit"
+			]
+		}
+	}
 }
