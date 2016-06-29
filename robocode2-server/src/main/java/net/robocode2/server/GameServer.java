@@ -31,11 +31,11 @@ public class GameServer {
 		}
 
 		@Override
-		public void onBotLeft(BotHandshake botHandshake) {
+		public void onObserverJoined(ObserverHandshake observerHandshake) {
 		}
 
 		@Override
-		public void onObserverJoined(ObserverHandshake observerHandshake) {
+		public void onBotLeft(BotHandshake botHandshake) {
 		}
 
 		@Override

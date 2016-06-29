@@ -5,11 +5,11 @@ import net.robocode2.json_schema.ObserverHandshake;
 
 public interface ConnectionListener {
 
-	public void onBotJoined(BotHandshake botHandshake);
+	void onBotJoined(BotHandshake botHandshake);
 
-	public void onBotLeft(BotHandshake botHandshake);
+	void onObserverJoined(ObserverHandshake observerHandshake);
 
-	public void onObserverJoined(ObserverHandshake observerHandshake);
+	void onBotLeft(BotHandshake botHandshake);
 
-	public void onObserverLeft(ObserverHandshake observerHandshake);
+	void onObserverLeft(ObserverHandshake observerHandshake);
 }
