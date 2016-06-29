@@ -68,8 +68,17 @@ public class ConnectionHandler {
 					+ ", remote: " + remote);
 
 			openConnections.remove(conn);
-			openBotConnections.remove(conn);
-			openObserverConnections.remove(conn);
+
+			if (openBotConnections.containsKey(conn)) {
+				BotHandshake botHandshake = openBotConnections.remove(conn);
+				listener.onBotLeft(botHandshake);
+
+			} else if (openObserverConnections.containsKey(conn)) {
+				ObserverHandshake observerHandshake = openObserverConnections.remove(conn);
+				listener.onObserverLeft(observerHandshake);
+
+				openObserverConnections.remove(conn);
+			}
 		}
 
 		@Override
@@ -89,11 +98,15 @@ public class ConnectionHandler {
 					BotHandshake botHandshake = gson.fromJson(message, BotHandshake.class);
 					openBotConnections.put(conn, botHandshake);
 
+					listener.onBotJoined(botHandshake);
+
 				} else if (ObserverHandshake.MessageType.OBSERVER_HANDSHAKE.toString().equalsIgnoreCase(messageType)) {
 					System.out.println("Handling ObserverHandshake");
 
 					ObserverHandshake observerHandshake = gson.fromJson(message, ObserverHandshake.class);
 					openObserverConnections.put(conn, observerHandshake);
+
+					listener.onObserverJoined(observerHandshake);
 
 				} else {
 					throw new IllegalStateException("Unhandled message type: " + messageType);
