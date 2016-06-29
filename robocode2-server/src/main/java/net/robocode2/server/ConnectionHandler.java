@@ -21,6 +21,7 @@ import net.robocode2.json_schema.ServerHandshake;
 public class ConnectionHandler {
 
 	final ServerSetup setup;
+	final ConnectionListener listener;
 	final WebSocketObserver webSocketObserver;
 
 	Set<WebSocket> openConnections = new HashSet<>();
@@ -29,8 +30,9 @@ public class ConnectionHandler {
 
 	static final String MESSAGE_TYPE_FIELD = "message-type";
 
-	public ConnectionHandler(ServerSetup setup) {
+	public ConnectionHandler(ServerSetup setup, ConnectionListener listener) {
 		this.setup = setup;
+		this.listener = listener;
 
 		InetSocketAddress address = new InetSocketAddress(setup.getHostName(), setup.getPort());
 		this.webSocketObserver = new WebSocketObserver(address);
@@ -38,12 +40,6 @@ public class ConnectionHandler {
 
 	public void run() {
 		webSocketObserver.run();
-	}
-
-	public static void main(String[] args) {
-		ServerSetup setup = new ServerSetup();
-		ConnectionHandler connHandler = new ConnectionHandler(setup);
-		connHandler.run();
 	}
 
 	private class WebSocketObserver extends WebSocketServer {
