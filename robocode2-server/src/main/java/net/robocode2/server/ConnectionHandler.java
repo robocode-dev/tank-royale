@@ -1,10 +1,14 @@
 package net.robocode2.server;
 
 import java.net.InetSocketAddress;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -24,11 +28,13 @@ public class ConnectionHandler {
 	final ConnectionListener listener;
 	final WebSocketObserver webSocketObserver;
 
-	Set<WebSocket> openConnections = new HashSet<>();
-	Map<WebSocket, BotHandshake> openBotConnections = new HashMap<>();
-	Map<WebSocket, ObserverHandshake> openObserverConnections = new HashMap<>();
+	final Set<WebSocket> openConnections = Collections.synchronizedSet(new HashSet<>());
+	final Map<WebSocket, BotHandshake> openBotConnections = Collections.synchronizedMap(new HashMap<>());
+	final Map<WebSocket, ObserverHandshake> openObserverConnections = Collections.synchronizedMap(new HashMap<>());
 
 	static final String MESSAGE_TYPE_FIELD = "message-type";
+
+	final ExecutorService executorService;
 
 	public ConnectionHandler(ServerSetup setup, ConnectionListener listener) {
 		this.setup = setup;
@@ -36,10 +42,44 @@ public class ConnectionHandler {
 
 		InetSocketAddress address = new InetSocketAddress(setup.getHostName(), setup.getPort());
 		this.webSocketObserver = new WebSocketObserver(address);
+		
+		this.executorService = Executors.newCachedThreadPool();
 	}
 
-	public void run() {
+	public void start() {
 		webSocketObserver.run();
+	}
+
+	public void stop() {
+		shutdownAndAwaitTermination(executorService);
+	}
+
+	public Map<WebSocket, BotHandshake> getBotConnections() {
+		return Collections.unmodifiableMap(openBotConnections);
+	}
+
+	public Map<WebSocket, ObserverHandshake> getObserverConnections() {
+		return Collections.unmodifiableMap(openObserverConnections);
+	}
+
+	private void shutdownAndAwaitTermination(ExecutorService pool) {
+		pool.shutdown(); // Disable new tasks from being submitted
+		try {
+			// Wait a while for existing tasks to terminate
+			if (!pool.awaitTermination(5, TimeUnit.SECONDS)) {
+				// Cancel currently executing tasks
+				pool.shutdownNow();
+				// Wait a while for tasks to respond to being cancelled
+				if (!pool.awaitTermination(5, TimeUnit.SECONDS)) {
+					System.err.println("Pool did not terminate");
+				}
+			}
+		} catch (InterruptedException ie) {
+			// (Re-)Cancel if current thread also interrupted
+			pool.shutdownNow();
+			// Preserve interrupt status
+			Thread.currentThread().interrupt();
+		}
 	}
 
 	private class WebSocketObserver extends WebSocketServer {
@@ -71,13 +111,13 @@ public class ConnectionHandler {
 
 			if (openBotConnections.containsKey(conn)) {
 				BotHandshake botHandshake = openBotConnections.remove(conn);
-				listener.onBotLeft(botHandshake);
+				executorService.submit(() -> listener.onBotLeft(botHandshake));
 
 			} else if (openObserverConnections.containsKey(conn)) {
 				ObserverHandshake observerHandshake = openObserverConnections.remove(conn);
 				listener.onObserverLeft(observerHandshake);
 
-				openObserverConnections.remove(conn);
+				executorService.submit(() -> openObserverConnections.remove(conn));
 			}
 		}
 
@@ -98,7 +138,7 @@ public class ConnectionHandler {
 					BotHandshake botHandshake = gson.fromJson(message, BotHandshake.class);
 					openBotConnections.put(conn, botHandshake);
 
-					listener.onBotJoined(botHandshake);
+					executorService.submit(() -> listener.onBotJoined(botHandshake));
 
 				} else if (ObserverHandshake.MessageType.OBSERVER_HANDSHAKE.toString().equalsIgnoreCase(messageType)) {
 					System.out.println("Handling ObserverHandshake");
@@ -106,7 +146,7 @@ public class ConnectionHandler {
 					ObserverHandshake observerHandshake = gson.fromJson(message, ObserverHandshake.class);
 					openObserverConnections.put(conn, observerHandshake);
 
-					listener.onObserverJoined(observerHandshake);
+					executorService.submit(() -> listener.onObserverJoined(observerHandshake));
 
 				} else {
 					throw new IllegalStateException("Unhandled message type: " + messageType);
