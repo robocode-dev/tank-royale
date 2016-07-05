@@ -24,7 +24,10 @@ public class GameServer {
 	ServerSetup setup;
 	ConnectionListener connectionObserver;
 	ConnectionHandler connectionHandler;
+
 	GameState gameState;
+	GameAndParticipants gameAndParticipants;
+	Participant[] participantOrder; // participant id = index (starting at index 1)
 
 	public GameServer() {
 		this.setup = new ServerSetup();
@@ -43,25 +46,27 @@ public class GameServer {
 	}
 
 	public void sendStartSignalIfEnoughParticipants() {
-		GameAndParticipants gameAndParticipants = selectGameAndParticipants(connectionHandler.getBotConnections());
+		gameAndParticipants = selectGameAndParticipants(connectionHandler.getBotConnections());
 		if (gameAndParticipants == null) {
 			return;
 		}
 		if (gameAndParticipants.participants.size() > 0) {
 			gameState = GameState.READY;
-			onReadyState(gameAndParticipants);
+			onReadyState();
 		}
 	}
 
-	private void onReadyState(GameAndParticipants gameAndParticipants) {
+	private void onReadyState() {
 		System.out.println("#### READY #####");
-
-		Gson gson = new Gson();
+		
 		Game game = gameAndParticipants.game;
+		Gson gson = new Gson();
+		
+		Set<Participant> participants = gameAndParticipants.participants;
+
+		participantOrder = new Participant[1 + participants.size()];
 
 		// Send NewBattle to all participant bots to get them started
-
-		Map<WebSocket, BotHandshake> participants = gameAndParticipants.participants;
 
 		NewBattleForBot ngb = new NewBattleForBot();
 		ngb.setMessageType(NewBattleForBot.MessageType.NEW_BATTLE_FOR_BOT);
@@ -74,11 +79,16 @@ public class GameServer {
 		ngb.setMaxNumberOfParticipants(game.getMaxNumberOfParticipants());
 		ngb.setTimeLimit(game.getTimeLimit());
 
-		String msg = gson.toJson(ngb);
-
-		for (Entry<WebSocket, BotHandshake> entry : participants.entrySet()) {
-			WebSocket bot = entry.getKey();
-			bot.send(msg);
+		int botId = 1;
+		for (Participant participant : participants) {
+			// The array manifests the bot ids from the index
+			participantOrder[botId] = participant;
+			ngb.setMyId(botId);
+			
+			String msg = gson.toJson(ngb);
+			participant.webSocket.send(msg);
+			
+			botId++;
 		}
 
 		// Send NewBattle to all participant observers to get them started
@@ -94,7 +104,7 @@ public class GameServer {
 		ngo.setMaxNumberOfParticipants(game.getMaxNumberOfParticipants());
 		ngo.setTimeLimit(game.getTimeLimit());
 		
-		msg = gson.toJson(ngo);
+		String msg = gson.toJson(ngo);
 
 		for (Entry<WebSocket, ObserverHandshake> entry : connectionHandler.getObserverConnections().entrySet()) {
 			WebSocket observer = entry.getKey();
@@ -105,7 +115,7 @@ public class GameServer {
 	// Should be moved to a "strategy" class
 	private GameAndParticipants selectGameAndParticipants(Map<WebSocket, BotHandshake> candidateBots) {
 
-		Map<String, Map<WebSocket, BotHandshake>> candidateBotsPerGameType = new HashMap<>();
+		Map<String, Set<Participant>> candidateBotsPerGameType = new HashMap<>();
 
 		Set<String> gameTypes = getGameTypes();
 
@@ -118,29 +128,29 @@ public class GameServer {
 			availGameTypes.retainAll(gameTypes);
 
 			for (String gameType : availGameTypes) {
-				Map<WebSocket, BotHandshake> map = candidateBotsPerGameType.get(gameType);
-				if (map == null) {
-					map = new HashMap<>();
-					candidateBotsPerGameType.put(gameType, map);
+				Set<Participant> candidates = candidateBotsPerGameType.get(gameType);
+				if (candidates == null) {
+					candidates = new HashSet<>();
+					candidateBotsPerGameType.put(gameType, candidates);
 				}
-				map.put(entry.getKey(), entry.getValue());
+				candidates.add(new Participant(entry.getKey(), entry.getValue()));
 			}
 		}
 
 		// Run through the list of games and see if anyone has enough
 		// participants to start the game
 		Set<Game> games = setup.getGames();
-		for (Entry<String, Map<WebSocket, BotHandshake>> entry : candidateBotsPerGameType.entrySet()) {
+		for (Entry<String, Set<Participant>> entry : candidateBotsPerGameType.entrySet()) {
 			Game game = games.stream().filter(g -> g.getGameType().equalsIgnoreCase(entry.getKey())).findAny()
 					.orElse(null);
 
-			Map<WebSocket, BotHandshake> map = entry.getValue();
-			int count = map.size();
+			Set<Participant> participants = entry.getValue();
+			int count = participants.size();
 			if (count >= game.getMinNumberOfParticipants() && count <= game.getMaxNumberOfParticipants()) {
 				// enough participants
 				GameAndParticipants gameAndParticipants = new GameAndParticipants();
 				gameAndParticipants.game = game;
-				gameAndParticipants.participants = map;
+				gameAndParticipants.participants = participants;
 				return gameAndParticipants;
 			}
 		}
@@ -184,6 +194,17 @@ public class GameServer {
 
 	private class GameAndParticipants {
 		Game game;
-		Map<WebSocket, BotHandshake> participants;
+		Set<Participant> participants;
+	}
+
+	private class Participant {
+		
+		Participant(WebSocket webSocket, BotHandshake botHandskake) {
+			this.webSocket = webSocket;
+			this.botHandskake = botHandskake;			
+		}
+		
+		WebSocket webSocket;
+		BotHandshake botHandskake;
 	}
 }

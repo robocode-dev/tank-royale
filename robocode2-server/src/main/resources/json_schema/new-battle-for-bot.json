@@ -7,6 +7,10 @@
         "message-type": {
             "enum": [ "new-battle-for-bot" ]
         },
+        "my-id": {
+            "description": "My ID, is an unique identifier for this bot",
+            "type": "integer"
+        },
         "game-type": {
             "description": "Type of game",
             "type": "string"
@@ -43,6 +47,7 @@
     "required":
     [
         "message-type",
+        "my-id",
         "game-type",
         "obstacles",
         "arena-width",
