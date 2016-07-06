@@ -12,6 +12,7 @@ public class DefaultGame extends Game {
         setMinNumberOfParticipants(2);
         setMaxNumberOfParticipants(10);
         setNumberOfRounds(10);
-        setTimeLimit(100);
+        setTurnTimeout(100);
+        setReadyTimeout(200);
 	}
 }

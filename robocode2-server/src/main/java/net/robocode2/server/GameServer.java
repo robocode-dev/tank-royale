@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.java_websocket.WebSocket;
 
@@ -29,11 +31,13 @@ public class GameServer {
 	GameAndParticipants gameAndParticipants;
 	Participant[] participantOrder; // participant id = index (starting at index 1)
 
+	final Timer readyTimer = new Timer();
+
 	public GameServer() {
 		this.setup = new ServerSetup();
 		this.connectionObserver = new ConnectionObserver();
 		this.connectionHandler = new ConnectionHandler(setup, connectionObserver);
-		this.gameState = GameState.PENDING;
+		this.gameState = GameState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
 	}
 
 	public void start() {
@@ -45,20 +49,26 @@ public class GameServer {
 		server.start();
 	}
 
-	public void sendStartSignalIfEnoughParticipants() {
+	private void prepareGameIfEnoughParticipants() {
 		gameAndParticipants = selectGameAndParticipants(connectionHandler.getBotConnections());
 		if (gameAndParticipants == null) {
 			return;
 		}
 		if (gameAndParticipants.participants.size() > 0) {
-			gameState = GameState.READY;
-			onReadyState();
+			prepareGame();
 		}
 	}
 
-	private void onReadyState() {
-		System.out.println("#### READY #####");
+	private void startGameIfParticipantsReady() {
 		
+	}
+	
+
+	private void prepareGame() {
+		System.out.println("#### PREPARE GAME #####");
+		
+		gameState = GameState.WAIT_FOR_READY_PARTICIPANTS;
+
 		Game game = gameAndParticipants.game;
 		Gson gson = new Gson();
 		
@@ -77,7 +87,8 @@ public class GameServer {
 		ngb.setNumberOfRounds(game.getNumberOfRounds());
 		ngb.setMinNumberOfParticipants(game.getMinNumberOfParticipants());
 		ngb.setMaxNumberOfParticipants(game.getMaxNumberOfParticipants());
-		ngb.setTimeLimit(game.getTimeLimit());
+		ngb.setTurnTimeout(game.getTurnTimeout());
+		ngb.setReadyTimeout(game.getReadyTimeout());
 
 		int botId = 1;
 		for (Participant participant : participants) {
@@ -91,6 +102,17 @@ public class GameServer {
 			botId++;
 		}
 
+		// Start 'ready' timer
+		
+		int readyTimeout = gameAndParticipants.game.getReadyTimeout();
+		readyTimer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				onReadyTimeout();
+			}
+			
+		}, readyTimeout);
+		
 		// Send NewBattle to all participant observers to get them started
 
 		NewBattleForObserver ngo = new NewBattleForObserver();
@@ -102,7 +124,8 @@ public class GameServer {
 		ngo.setNumberOfRounds(game.getNumberOfRounds());
 		ngo.setMinNumberOfParticipants(game.getMinNumberOfParticipants());
 		ngo.setMaxNumberOfParticipants(game.getMaxNumberOfParticipants());
-		ngo.setTimeLimit(game.getTimeLimit());
+		ngb.setTurnTimeout(game.getTurnTimeout());
+		ngb.setReadyTimeout(game.getReadyTimeout());
 		
 		String msg = gson.toJson(ngo);
 
@@ -166,29 +189,39 @@ public class GameServer {
 		return gameTypes;
 	}
 
+	private void onReadyTimeout() {
+		
+	}
+
 	private class ConnectionObserver implements ConnectionListener {
 
 		@Override
 		public void onBotJoined(BotHandshake botHandshake) {
-			switch (gameState) {
-			case PENDING:
-				sendStartSignalIfEnoughParticipants();
-				break;
-			default:
-				throw new IllegalStateException("Unhandled game state");
+			if (gameState == GameState.WAIT_FOR_PARTICIPANTS_TO_JOIN) {
+				prepareGameIfEnoughParticipants();
 			}
 		}
 
 		@Override
 		public void onObserverJoined(ObserverHandshake observerHandshake) {
+			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public void onBotLeft(BotHandshake botHandshake) {
+			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public void onObserverLeft(ObserverHandshake observerHandshake) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void onBotReady(BotHandshake botHandshake) {
+			if (gameState == GameState.WAIT_FOR_READY_PARTICIPANTS) {
+				startGameIfParticipantsReady();
+			}
 		}
 	}
 

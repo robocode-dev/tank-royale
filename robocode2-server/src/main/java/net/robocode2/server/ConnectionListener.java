@@ -12,4 +12,6 @@ public interface ConnectionListener {
 	void onBotLeft(BotHandshake botHandshake);
 
 	void onObserverLeft(ObserverHandshake observerHandshake);
+
+	void onBotReady(BotHandshake botHandshake);
 }

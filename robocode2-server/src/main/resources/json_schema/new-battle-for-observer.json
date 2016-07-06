@@ -35,8 +35,12 @@
             "description": "Number of rounds in battle",
             "type": "integer"
         },
-        "time-limit": {
-             "description": "Time limit in milliseconds for sending intent",
+        "turn-timeout": {
+             "description": "Turn timeout in milliseconds for sending intent after having received 'tick' message",
+             "type": "integer"
+        },
+        "ready-timeout": {
+             "description": "Time limit in milliseconds for sending ready message after having received 'new battle' message",
              "type": "integer"
         },
         "participants": {
@@ -53,7 +57,8 @@
         "arena-width",
         "arena-height",
         "number-of-rounds",
-        "time-limit",
+        "turn-timeout",
+        "ready-timeout",
         "participants"
     ],
     "definitions": {
@@ -73,13 +78,13 @@
                     "description": "Bot version, e.g. 1.0",
                     "type": "string"
                 },
-		        "game-types": {
-		            "description": "Game types supported by this bot",
-		            "type": "array",
-		            "items": {
-		                "type": "string"
-		            }
-		        },
+                "game-types": {
+                    "description": "Game types supported by this bot",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "author": {
                     "description": "Author name, e.g. John Doe (john_doe@somewhere.net)",
                     "type": "string"
