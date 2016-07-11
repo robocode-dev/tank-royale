@@ -28,9 +28,10 @@ public class GameServer {
 	ConnectionHandler connectionHandler;
 
 	GameState gameState;
-	GameAndParticipants gameAndParticipants;
-	Participant[] participantOrder; // participant id = index (starting at index 1)
-
+	Game game;
+	Set<Participant> participants;
+	Set<Participant> readyParticipants;
+	
 	final Timer readyTimer = new Timer();
 
 	public GameServer() {
@@ -49,18 +50,25 @@ public class GameServer {
 		server.start();
 	}
 
-	private void prepareGameIfEnoughParticipants() {
-		gameAndParticipants = selectGameAndParticipants(connectionHandler.getBotConnections());
+	private void prepareGameIfEnoughCandidates() {
+		GameAndParticipants gameAndParticipants = selectGameAndParticipants(connectionHandler.getBotConnections());
 		if (gameAndParticipants == null) {
 			return;
 		}
-		if (gameAndParticipants.participants.size() > 0) {
+
+		game = gameAndParticipants.game;
+		participants = gameAndParticipants.participants;
+
+		if (participants.size() > 0) {
 			prepareGame();
 		}
 	}
 
 	private void startGameIfParticipantsReady() {
-		
+		if (readyParticipants.size() == participants.size()) {
+			readyParticipants.clear();
+			startGame();
+		}
 	}
 	
 
@@ -69,12 +77,7 @@ public class GameServer {
 		
 		gameState = GameState.WAIT_FOR_READY_PARTICIPANTS;
 
-		Game game = gameAndParticipants.game;
 		Gson gson = new Gson();
-		
-		Set<Participant> participants = gameAndParticipants.participants;
-
-		participantOrder = new Participant[1 + participants.size()];
 
 		// Send NewBattle to all participant bots to get them started
 
@@ -90,21 +93,23 @@ public class GameServer {
 		ngb.setTurnTimeout(game.getTurnTimeout());
 		ngb.setReadyTimeout(game.getReadyTimeout());
 
-		int botId = 1;
+		int participantId = 1;
 		for (Participant participant : participants) {
-			// The array manifests the bot ids from the index
-			participantOrder[botId] = participant;
-			ngb.setMyId(botId);
+			participant.id = participantId;
+			ngb.setMyId(participantId);
 			
 			String msg = gson.toJson(ngb);
-			participant.webSocket.send(msg);
+			send(participant.webSocket, msg);
 			
-			botId++;
+			participantId++;
 		}
+		
+
+		readyParticipants = new HashSet<Participant>();
 
 		// Start 'ready' timer
-		
-		int readyTimeout = gameAndParticipants.game.getReadyTimeout();
+
+		int readyTimeout = game.getReadyTimeout();
 		readyTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
@@ -131,7 +136,7 @@ public class GameServer {
 
 		for (Entry<WebSocket, ObserverHandshake> entry : connectionHandler.getObserverConnections().entrySet()) {
 			WebSocket observer = entry.getKey();
-			observer.send(msg);
+			send(observer, msg);
 		}
 	}
 
@@ -181,6 +186,12 @@ public class GameServer {
 		return null; // not enough participants
 	}
 
+	private void startGame() {
+		System.out.println("#### START GAME #####");
+		
+		gameState = GameState.RUNNING;
+	}
+	
 	private Set<String> getGameTypes() {
 		Set<String> gameTypes = new HashSet<>();
 		for (Game game : setup.getGames()) {
@@ -190,15 +201,45 @@ public class GameServer {
 	}
 
 	private void onReadyTimeout() {
-		
+		System.out.println("#### READY TIMEOUT #####");
+
+		if (readyParticipants.size() >= game.getMinNumberOfParticipants()) {
+			// Start the game with the participants that are ready
+			participants = readyParticipants;
+			startGame();
+
+		} else {
+			// Not enough participants -> prepare another game
+			gameState = GameState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
+			prepareGameIfEnoughCandidates();
+		}
 	}
 
+	private Participant getParticipant(BotHandshake botHandshake) {
+		return participants.stream().filter(p -> p.botHandskake.equals(botHandshake)).findFirst().orElse(null);
+	}
+
+	private Participant getParticipant(WebSocket webSocket) {
+		return participants.stream().filter(p -> p.webSocket.equals(webSocket)).findFirst().orElse(null);
+	}
+
+	private static void send(WebSocket conn, String message) {
+		System.out.println("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
+		
+		conn.send(message);
+	}
+	
 	private class ConnectionObserver implements ConnectionListener {
 
 		@Override
+		public void onException(Exception exception) {
+			exception.printStackTrace();
+		}
+		
+		@Override
 		public void onBotJoined(BotHandshake botHandshake) {
 			if (gameState == GameState.WAIT_FOR_PARTICIPANTS_TO_JOIN) {
-				prepareGameIfEnoughParticipants();
+				prepareGameIfEnoughCandidates();
 			}
 		}
 
@@ -218,9 +259,13 @@ public class GameServer {
 		}
 
 		@Override
-		public void onBotReady(BotHandshake botHandshake) {
+		public void onBotReady(WebSocket conn) {			
 			if (gameState == GameState.WAIT_FOR_READY_PARTICIPANTS) {
-				startGameIfParticipantsReady();
+				Participant participant = getParticipant(conn);
+				if (participant != null) {
+					readyParticipants.add(participant);
+					startGameIfParticipantsReady();
+				}
 			}
 		}
 	}
@@ -239,5 +284,6 @@ public class GameServer {
 		
 		WebSocket webSocket;
 		BotHandshake botHandskake;
+		int id;
 	}
 }

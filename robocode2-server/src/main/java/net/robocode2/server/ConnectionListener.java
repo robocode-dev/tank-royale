@@ -1,9 +1,13 @@
 package net.robocode2.server;
 
+import org.java_websocket.WebSocket;
+
 import net.robocode2.json_schema.BotHandshake;
 import net.robocode2.json_schema.ObserverHandshake;
 
 public interface ConnectionListener {
+
+	void onException(Exception exception);
 
 	void onBotJoined(BotHandshake botHandshake);
 
@@ -13,5 +17,5 @@ public interface ConnectionListener {
 
 	void onObserverLeft(ObserverHandshake observerHandshake);
 
-	void onBotReady(BotHandshake botHandshake);
+	void onBotReady(WebSocket conn);
 }

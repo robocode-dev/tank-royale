@@ -19,6 +19,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.robocode2.json_schema.BotHandshake;
+import net.robocode2.json_schema.BotReady;
 import net.robocode2.json_schema.ObserverHandshake;
 import net.robocode2.json_schema.ServerHandshake;
 
@@ -82,6 +83,14 @@ public class ConnectionHandler {
 		}
 	}
 
+	private static void send(WebSocket conn, String message) {
+		System.out.println("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
+	}
+
+	private void notifyException(Exception exception) {
+		executorService.submit(() -> listener.onException(exception));
+	}
+
 	private class WebSocketObserver extends WebSocketServer {
 
 		private WebSocketObserver(InetSocketAddress address) {
@@ -99,7 +108,7 @@ public class ConnectionHandler {
 			hs.setGames(setup.getGames());
 
 			String msg = new Gson().toJson(hs);
-			conn.send(msg);
+			send(conn, msg);
 		}
 
 		@Override
@@ -148,19 +157,21 @@ public class ConnectionHandler {
 
 					executorService.submit(() -> listener.onObserverJoined(observerHandshake));
 
+				} else if (BotReady.MessageType.BOT_READY.toString().equalsIgnoreCase(messageType)) {
+					System.out.println("Handling BotReady");
+					
+					BotHandshake botHandshake = openBotConnections.get(conn);
+					executorService.submit(() -> listener.onBotReady(conn));
+					
 				} else {
-					throw new IllegalStateException("Unhandled message type: " + messageType);
+					notifyException(new IllegalStateException("Unhandled message type: " + messageType));
 				}
 			}
 		}
 
 		@Override
 		public void onError(WebSocket conn, Exception ex) {
-			if (conn == null) {
-				System.err.println("onError(): exeption: " + ex);
-			} else {
-				System.err.println("onError(): " + conn.getRemoteSocketAddress() + ", exeption: " + ex);
-			}
+			notifyException(ex);
 		}
 	}
 }

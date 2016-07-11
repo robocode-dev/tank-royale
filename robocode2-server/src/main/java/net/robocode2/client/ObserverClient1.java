@@ -14,7 +14,11 @@ import net.robocode2.json_schema.ObserverHandshake;
 
 public class ObserverClient1 extends WebSocketClient {
 
-    public ObserverClient1(URI serverUri, Draft draft) {
+	final Gson gson = new Gson();
+
+	static final String MESSAGE_TYPE_FIELD = "message-type";
+
+	public ObserverClient1(URI serverUri, Draft draft) {
         super(serverUri, draft);
     }
 
@@ -25,16 +29,14 @@ public class ObserverClient1 extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         System.out.println("onOpen()");
-        
-        System.out.println("Sending ClientHandshake");
-        ObserverHandshake oh = new ObserverHandshake();
-        oh.setMessageType(ObserverHandshake.MessageType.OBSERVER_HANDSHAKE);
-        oh.setName("Observer name");
-        oh.setVersion("0.1");
-        oh.setAuthor("Author name");
-        
-		String msg = new Gson().toJson(oh);
 
+        ObserverHandshake handshake = new ObserverHandshake();
+        handshake.setMessageType(ObserverHandshake.MessageType.OBSERVER_HANDSHAKE);
+        handshake.setName("Observer name");
+        handshake.setVersion("0.1");
+        handshake.setAuthor("Author name");
+        
+		String msg = gson.toJson(handshake);
 		send(msg);
     }
 
@@ -56,5 +58,12 @@ public class ObserverClient1 extends WebSocketClient {
     public static void main(String[] args) throws URISyntaxException {      
         WebSocketClient client = new ObserverClient1(new URI("ws://localhost:50000"), new Draft_10());
         client.connect();
+    }
+
+    @Override
+    public void send(String message) {
+		System.out.println("Sending: " + message);
+
+    	super.send(message);
     }
 }
