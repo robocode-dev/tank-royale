@@ -29,8 +29,8 @@ public class GameServer {
 
 	GameState gameState;
 	Game game;
-	Set<Participant> participants;
-	Set<Participant> readyParticipants;
+	Set<Bot> participants;
+	Set<Bot> readyParticipants;
 	
 	final Timer readyTimer = new Timer();
 
@@ -94,18 +94,18 @@ public class GameServer {
 		ngb.setReadyTimeout(game.getReadyTimeout());
 
 		int participantId = 1;
-		for (Participant participant : participants) {
-			participant.id = participantId;
+		for (Bot participant : participants) {
+			participant.setId(participantId);
 			ngb.setMyId(participantId);
 			
 			String msg = gson.toJson(ngb);
-			send(participant.webSocket, msg);
+			send(participant.getConnection(), msg);
 			
 			participantId++;
 		}
 		
 
-		readyParticipants = new HashSet<Participant>();
+		readyParticipants = new HashSet<Bot>();
 
 		// Start 'ready' timer
 
@@ -143,7 +143,7 @@ public class GameServer {
 	// Should be moved to a "strategy" class
 	private GameAndParticipants selectGameAndParticipants(Map<WebSocket, BotHandshake> candidateBots) {
 
-		Map<String, Set<Participant>> candidateBotsPerGameType = new HashMap<>();
+		Map<String, Set<Bot>> candidateBotsPerGameType = new HashMap<>();
 
 		Set<String> gameTypes = getGameTypes();
 
@@ -156,23 +156,23 @@ public class GameServer {
 			availGameTypes.retainAll(gameTypes);
 
 			for (String gameType : availGameTypes) {
-				Set<Participant> candidates = candidateBotsPerGameType.get(gameType);
+				Set<Bot> candidates = candidateBotsPerGameType.get(gameType);
 				if (candidates == null) {
 					candidates = new HashSet<>();
 					candidateBotsPerGameType.put(gameType, candidates);
 				}
-				candidates.add(new Participant(entry.getKey(), entry.getValue()));
+				candidates.add(new Bot(entry.getKey(), entry.getValue()));
 			}
 		}
 
 		// Run through the list of games and see if anyone has enough
 		// participants to start the game
 		Set<Game> games = setup.getGames();
-		for (Entry<String, Set<Participant>> entry : candidateBotsPerGameType.entrySet()) {
+		for (Entry<String, Set<Bot>> entry : candidateBotsPerGameType.entrySet()) {
 			Game game = games.stream().filter(g -> g.getGameType().equalsIgnoreCase(entry.getKey())).findAny()
 					.orElse(null);
 
-			Set<Participant> participants = entry.getValue();
+			Set<Bot> participants = entry.getValue();
 			int count = participants.size();
 			if (count >= game.getMinNumberOfParticipants() && count <= game.getMaxNumberOfParticipants()) {
 				// enough participants
@@ -215,14 +215,6 @@ public class GameServer {
 		}
 	}
 
-	private Participant getParticipant(BotHandshake botHandshake) {
-		return participants.stream().filter(p -> p.botHandskake.equals(botHandshake)).findFirst().orElse(null);
-	}
-
-	private Participant getParticipant(WebSocket webSocket) {
-		return participants.stream().filter(p -> p.webSocket.equals(webSocket)).findFirst().orElse(null);
-	}
-
 	private static void send(WebSocket conn, String message) {
 		System.out.println("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
 		
@@ -237,53 +229,38 @@ public class GameServer {
 		}
 		
 		@Override
-		public void onBotJoined(BotHandshake botHandshake) {
+		public void onBotJoined(Bot bot) {
 			if (gameState == GameState.WAIT_FOR_PARTICIPANTS_TO_JOIN) {
 				prepareGameIfEnoughCandidates();
 			}
 		}
 
 		@Override
-		public void onObserverJoined(ObserverHandshake observerHandshake) {
+		public void onBotLeft(Bot bot) {
 			// TODO Auto-generated method stub
 		}
 
 		@Override
-		public void onBotLeft(BotHandshake botHandshake) {
+		public void onObserverJoined(Observer observer) {
 			// TODO Auto-generated method stub
 		}
 
 		@Override
-		public void onObserverLeft(ObserverHandshake observerHandshake) {
+		public void onObserverLeft(Observer observer) {
 			// TODO Auto-generated method stub
 		}
 
 		@Override
-		public void onBotReady(WebSocket conn) {			
+		public void onBotReady(Bot bot) {			
 			if (gameState == GameState.WAIT_FOR_READY_PARTICIPANTS) {
-				Participant participant = getParticipant(conn);
-				if (participant != null) {
-					readyParticipants.add(participant);
-					startGameIfParticipantsReady();
-				}
+				readyParticipants.add(bot);
+				startGameIfParticipantsReady();
 			}
 		}
 	}
 
 	private class GameAndParticipants {
 		Game game;
-		Set<Participant> participants;
-	}
-
-	private class Participant {
-		
-		Participant(WebSocket webSocket, BotHandshake botHandskake) {
-			this.webSocket = webSocket;
-			this.botHandskake = botHandskake;			
-		}
-		
-		WebSocket webSocket;
-		BotHandshake botHandskake;
-		int id;
+		Set<Bot> participants;
 	}
 }

@@ -1,21 +1,16 @@
 package net.robocode2.server;
 
-import org.java_websocket.WebSocket;
-
-import net.robocode2.json_schema.BotHandshake;
-import net.robocode2.json_schema.ObserverHandshake;
-
 public interface ConnectionListener {
 
 	void onException(Exception exception);
 
-	void onBotJoined(BotHandshake botHandshake);
+	void onBotJoined(Bot bot);
 
-	void onObserverJoined(ObserverHandshake observerHandshake);
+	void onBotLeft(Bot bot);
 
-	void onBotLeft(BotHandshake botHandshake);
+	void onObserverJoined(Observer observer);
 
-	void onObserverLeft(ObserverHandshake observerHandshake);
+	void onObserverLeft(Observer observer);
 
-	void onBotReady(WebSocket conn);
+	void onBotReady(Bot bot);
 }

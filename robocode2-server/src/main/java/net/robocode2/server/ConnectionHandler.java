@@ -29,9 +29,9 @@ public class ConnectionHandler {
 	final ConnectionListener listener;
 	final WebSocketObserver webSocketObserver;
 
-	final Set<WebSocket> openConnections = Collections.synchronizedSet(new HashSet<>());
-	final Map<WebSocket, BotHandshake> openBotConnections = Collections.synchronizedMap(new HashMap<>());
-	final Map<WebSocket, ObserverHandshake> openObserverConnections = Collections.synchronizedMap(new HashMap<>());
+	final Set<WebSocket> connections = Collections.synchronizedSet(new HashSet<>());
+	final Map<WebSocket, BotHandshake> bots = Collections.synchronizedMap(new HashMap<>());
+	final Map<WebSocket, ObserverHandshake> observers = Collections.synchronizedMap(new HashMap<>());
 
 	static final String MESSAGE_TYPE_FIELD = "message-type";
 
@@ -56,11 +56,11 @@ public class ConnectionHandler {
 	}
 
 	public Map<WebSocket, BotHandshake> getBotConnections() {
-		return Collections.unmodifiableMap(openBotConnections);
+		return Collections.unmodifiableMap(bots);
 	}
 
 	public Map<WebSocket, ObserverHandshake> getObserverConnections() {
-		return Collections.unmodifiableMap(openObserverConnections);
+		return Collections.unmodifiableMap(observers);
 	}
 
 	private void shutdownAndAwaitTermination(ExecutorService pool) {
@@ -101,7 +101,7 @@ public class ConnectionHandler {
 		public void onOpen(WebSocket conn, ClientHandshake handshake) {
 			System.out.println("onOpen(): " + conn.getRemoteSocketAddress());
 
-			openConnections.add(conn);
+			connections.add(conn);
 
 			ServerHandshake hs = new ServerHandshake();
 			hs.setMessageType(ServerHandshake.MessageType.SERVER_HANDSHAKE);
@@ -116,17 +116,15 @@ public class ConnectionHandler {
 			System.out.println("onClose(): " + conn.getRemoteSocketAddress() + ", code: " + code + ", reason: " + reason
 					+ ", remote: " + remote);
 
-			openConnections.remove(conn);
+			connections.remove(conn);
 
-			if (openBotConnections.containsKey(conn)) {
-				BotHandshake botHandshake = openBotConnections.remove(conn);
-				executorService.submit(() -> listener.onBotLeft(botHandshake));
+			if (bots.containsKey(conn)) {				
+				BotHandshake handshake = bots.remove(conn);
+				executorService.submit(() -> listener.onBotLeft(new Bot(conn, handshake)));
 
-			} else if (openObserverConnections.containsKey(conn)) {
-				ObserverHandshake observerHandshake = openObserverConnections.remove(conn);
-				listener.onObserverLeft(observerHandshake);
-
-				executorService.submit(() -> openObserverConnections.remove(conn));
+			} else if (observers.containsKey(conn)) {
+				ObserverHandshake handshake = observers.remove(conn);
+				executorService.submit(() -> listener.onObserverLeft(new Observer(conn, handshake)));
 			}
 		}
 
@@ -144,24 +142,24 @@ public class ConnectionHandler {
 				if (BotHandshake.MessageType.BOT_HANDSHAKE.toString().equalsIgnoreCase(messageType)) {
 					System.out.println("Handling BotHandshake");
 
-					BotHandshake botHandshake = gson.fromJson(message, BotHandshake.class);
-					openBotConnections.put(conn, botHandshake);
+					BotHandshake handshake = gson.fromJson(message, BotHandshake.class);
+					bots.put(conn, handshake);
 
-					executorService.submit(() -> listener.onBotJoined(botHandshake));
+					executorService.submit(() -> listener.onBotJoined(new Bot(conn, handshake)));
 
 				} else if (ObserverHandshake.MessageType.OBSERVER_HANDSHAKE.toString().equalsIgnoreCase(messageType)) {
 					System.out.println("Handling ObserverHandshake");
 
-					ObserverHandshake observerHandshake = gson.fromJson(message, ObserverHandshake.class);
-					openObserverConnections.put(conn, observerHandshake);
+					ObserverHandshake handshake = gson.fromJson(message, ObserverHandshake.class);
+					observers.put(conn, handshake);
 
-					executorService.submit(() -> listener.onObserverJoined(observerHandshake));
+					executorService.submit(() -> listener.onObserverJoined(new Observer(conn, handshake)));
 
 				} else if (BotReady.MessageType.BOT_READY.toString().equalsIgnoreCase(messageType)) {
 					System.out.println("Handling BotReady");
 					
-					BotHandshake botHandshake = openBotConnections.get(conn);
-					executorService.submit(() -> listener.onBotReady(conn));
+					BotHandshake handshake = bots.get(conn);
+					executorService.submit(() -> listener.onBotReady(new Bot(conn, handshake)));
 					
 				} else {
 					notifyException(new IllegalStateException("Unhandled message type: " + messageType));
