@@ -1,6 +1,7 @@
 package net.robocode2.server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,6 +21,7 @@ import net.robocode2.json_schema.Game;
 import net.robocode2.json_schema.NewBattleForBot;
 import net.robocode2.json_schema.NewBattleForObserver;
 import net.robocode2.json_schema.ObserverHandshake;
+import net.robocode2.json_schema.Participant;
 
 public class GameServer {
 
@@ -34,6 +36,8 @@ public class GameServer {
 	
 	final Timer readyTimer = new Timer();
 
+	final Gson gson = new Gson();
+	
 	public GameServer() {
 		this.setup = new ServerSetup();
 		this.connectionObserver = new ConnectionObserver();
@@ -66,7 +70,10 @@ public class GameServer {
 
 	private void startGameIfParticipantsReady() {
 		if (readyParticipants.size() == participants.size()) {
+
+			readyTimer.cancel();
 			readyParticipants.clear();
+
 			startGame();
 		}
 	}
@@ -76,8 +83,6 @@ public class GameServer {
 		System.out.println("#### PREPARE GAME #####");
 		
 		gameState = GameState.WAIT_FOR_READY_PARTICIPANTS;
-
-		Gson gson = new Gson();
 
 		// Send NewBattle to all participant bots to get them started
 
@@ -117,27 +122,6 @@ public class GameServer {
 			}
 			
 		}, readyTimeout);
-		
-		// Send NewBattle to all participant observers to get them started
-
-		NewBattleForObserver ngo = new NewBattleForObserver();
-		ngo.setMessageType(NewBattleForObserver.MessageType.NEW_BATTLE_FOR_OBSERVER);
-		ngo.setGameType(game.getGameType());
-		ngo.setArenaWidth(game.getArenaWidth());
-		ngo.setArenaHeight(game.getArenaHeight());
-		ngo.setObstacles(game.getObstacles());
-		ngo.setNumberOfRounds(game.getNumberOfRounds());
-		ngo.setMinNumberOfParticipants(game.getMinNumberOfParticipants());
-		ngo.setMaxNumberOfParticipants(game.getMaxNumberOfParticipants());
-		ngb.setTurnTimeout(game.getTurnTimeout());
-		ngb.setReadyTimeout(game.getReadyTimeout());
-		
-		String msg = gson.toJson(ngo);
-
-		for (Entry<WebSocket, ObserverHandshake> entry : connectionHandler.getObserverConnections().entrySet()) {
-			WebSocket observer = entry.getKey();
-			send(observer, msg);
-		}
 	}
 
 	// Should be moved to a "strategy" class
@@ -190,6 +174,43 @@ public class GameServer {
 		System.out.println("#### START GAME #####");
 		
 		gameState = GameState.RUNNING;
+		
+		// Send NewBattle to all participant observers to get them started
+
+		NewBattleForObserver ngo = new NewBattleForObserver();
+		ngo.setMessageType(NewBattleForObserver.MessageType.NEW_BATTLE_FOR_OBSERVER);
+		ngo.setGameType(game.getGameType());
+		ngo.setArenaWidth(game.getArenaWidth());
+		ngo.setArenaHeight(game.getArenaHeight());
+		ngo.setObstacles(game.getObstacles());
+		ngo.setNumberOfRounds(game.getNumberOfRounds());
+		ngo.setMinNumberOfParticipants(game.getMinNumberOfParticipants());
+		ngo.setMaxNumberOfParticipants(game.getMaxNumberOfParticipants());
+		ngo.setTurnTimeout(game.getTurnTimeout());
+		ngo.setReadyTimeout(game.getReadyTimeout());
+
+		List<Participant> list = new ArrayList<>();
+		
+		for (Bot bot : participants) {
+			Participant p = new Participant();
+			BotHandshake h = bot.getHandshake();			
+			p.setAuthor(h.getAuthor());
+			p.setCountryCode(h.getCountryCode());
+			p.setGameTypes(h.getGameTypes());
+			p.setId(bot.getId());
+			p.setName(h.getName());
+			p.setProgrammingLanguage(h.getProgrammingLanguage());
+			p.setVersion(h.getVersion());
+			list.add(p);
+		}
+		ngo.setParticipants(list);
+		
+		String msg = gson.toJson(ngo);
+
+		for (Entry<WebSocket, ObserverHandshake> entry : connectionHandler.getObserverConnections().entrySet()) {
+			WebSocket observer = entry.getKey();
+			send(observer, msg);
+		}
 	}
 	
 	private Set<String> getGameTypes() {
