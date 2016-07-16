@@ -28,7 +28,7 @@ public class GameServer {
 	ConnectionListener connectionObserver;
 	ConnectionHandler connectionHandler;
 
-	GameState gameState;
+	ServerState gameState;
 	Game game;
 	Set<Bot> participants;
 	Set<Bot> readyParticipants;
@@ -41,7 +41,7 @@ public class GameServer {
 		this.setup = new ServerSetup();
 		this.connectionObserver = new ConnectionObserver();
 		this.connectionHandler = new ConnectionHandler(setup, connectionObserver);
-		this.gameState = GameState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
+		this.gameState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
 	}
 
 	public void start() {
@@ -80,7 +80,7 @@ public class GameServer {
 	private void prepareGame() {
 		System.out.println("#### PREPARE GAME #####");
 
-		gameState = GameState.WAIT_FOR_READY_PARTICIPANTS;
+		gameState = ServerState.WAIT_FOR_READY_PARTICIPANTS;
 
 		// Send NewBattle to all participant bots to get them started
 
@@ -170,7 +170,7 @@ public class GameServer {
 	private void startGame() {
 		System.out.println("#### START GAME #####");
 
-		gameState = GameState.RUNNING;
+		gameState = ServerState.GAME_RUNNING;
 
 		// Send NewBattle to all participant observers to get them started
 
@@ -228,7 +228,7 @@ public class GameServer {
 
 		} else {
 			// Not enough participants -> prepare another game
-			gameState = GameState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
+			gameState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
 			prepareGameIfEnoughCandidates();
 		}
 	}
@@ -248,7 +248,7 @@ public class GameServer {
 
 		@Override
 		public void onBotJoined(Bot bot) {
-			if (gameState == GameState.WAIT_FOR_PARTICIPANTS_TO_JOIN) {
+			if (gameState == ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN) {
 				prepareGameIfEnoughCandidates();
 			}
 		}
@@ -270,7 +270,7 @@ public class GameServer {
 
 		@Override
 		public void onBotReady(Bot bot) {
-			if (gameState == GameState.WAIT_FOR_READY_PARTICIPANTS) {
+			if (gameState == ServerState.WAIT_FOR_READY_PARTICIPANTS) {
 				readyParticipants.add(bot);
 				startGameIfParticipantsReady();
 			}
