@@ -12,7 +12,7 @@ public class Bot {
 
 	public Bot(WebSocket connection, BotHandshake handshake) {
 		this.connection = connection;
-		this.handshake = handshake;			
+		this.handshake = handshake;
 	}
 
 	public WebSocket getConnection() {
@@ -22,7 +22,7 @@ public class Bot {
 	public BotHandshake getHandshake() {
 		return handshake;
 	}
-	
+
 	public void setId(int id) {
 		this.id = id;
 	}

@@ -11,7 +11,7 @@ public class Observer {
 
 	public Observer(WebSocket connection, ObserverHandshake handshake) {
 		this.connection = connection;
-		this.handshake = handshake;			
+		this.handshake = handshake;
 	}
 
 	public WebSocket getConnection() {

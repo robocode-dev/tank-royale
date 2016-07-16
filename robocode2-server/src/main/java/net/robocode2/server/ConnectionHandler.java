@@ -43,7 +43,7 @@ public class ConnectionHandler {
 
 		InetSocketAddress address = new InetSocketAddress(setup.getHostName(), setup.getPort());
 		this.webSocketObserver = new WebSocketObserver(address);
-		
+
 		this.executorService = Executors.newCachedThreadPool();
 	}
 
@@ -118,7 +118,7 @@ public class ConnectionHandler {
 
 			connections.remove(conn);
 
-			if (bots.containsKey(conn)) {				
+			if (bots.containsKey(conn)) {
 				BotHandshake handshake = bots.remove(conn);
 				executorService.submit(() -> listener.onBotLeft(new Bot(conn, handshake)));
 
@@ -157,10 +157,10 @@ public class ConnectionHandler {
 
 				} else if (BotReady.MessageType.BOT_READY.toString().equalsIgnoreCase(messageType)) {
 					System.out.println("Handling BotReady");
-					
+
 					BotHandshake handshake = bots.get(conn);
 					executorService.submit(() -> listener.onBotReady(new Bot(conn, handshake)));
-					
+
 				} else {
 					notifyException(new IllegalStateException("Unhandled message type: " + messageType));
 				}

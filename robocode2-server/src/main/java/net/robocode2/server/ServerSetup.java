@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.robocode2.json_schema.Game;
-import net.robocode2.server.config.DefaultGame;
 
 public class ServerSetup {
 

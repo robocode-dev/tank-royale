@@ -1,7 +1,6 @@
 package net.robocode2.server;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,11 +32,11 @@ public class GameServer {
 	Game game;
 	Set<Bot> participants;
 	Set<Bot> readyParticipants;
-	
+
 	final Timer readyTimer = new Timer();
 
 	final Gson gson = new Gson();
-	
+
 	public GameServer() {
 		this.setup = new ServerSetup();
 		this.connectionObserver = new ConnectionObserver();
@@ -77,11 +76,10 @@ public class GameServer {
 			startGame();
 		}
 	}
-	
 
 	private void prepareGame() {
 		System.out.println("#### PREPARE GAME #####");
-		
+
 		gameState = GameState.WAIT_FOR_READY_PARTICIPANTS;
 
 		// Send NewBattle to all participant bots to get them started
@@ -102,13 +100,12 @@ public class GameServer {
 		for (Bot participant : participants) {
 			participant.setId(participantId);
 			ngb.setMyId(participantId);
-			
+
 			String msg = gson.toJson(ngb);
 			send(participant.getConnection(), msg);
-			
+
 			participantId++;
 		}
-		
 
 		readyParticipants = new HashSet<Bot>();
 
@@ -120,7 +117,7 @@ public class GameServer {
 			public void run() {
 				onReadyTimeout();
 			}
-			
+
 		}, readyTimeout);
 	}
 
@@ -172,9 +169,9 @@ public class GameServer {
 
 	private void startGame() {
 		System.out.println("#### START GAME #####");
-		
+
 		gameState = GameState.RUNNING;
-		
+
 		// Send NewBattle to all participant observers to get them started
 
 		NewBattleForObserver ngo = new NewBattleForObserver();
@@ -190,10 +187,10 @@ public class GameServer {
 		ngo.setReadyTimeout(game.getReadyTimeout());
 
 		List<Participant> list = new ArrayList<>();
-		
+
 		for (Bot bot : participants) {
 			Participant p = new Participant();
-			BotHandshake h = bot.getHandshake();			
+			BotHandshake h = bot.getHandshake();
 			p.setAuthor(h.getAuthor());
 			p.setCountryCode(h.getCountryCode());
 			p.setGameTypes(h.getGameTypes());
@@ -204,7 +201,7 @@ public class GameServer {
 			list.add(p);
 		}
 		ngo.setParticipants(list);
-		
+
 		String msg = gson.toJson(ngo);
 
 		for (Entry<WebSocket, ObserverHandshake> entry : connectionHandler.getObserverConnections().entrySet()) {
@@ -212,7 +209,7 @@ public class GameServer {
 			send(observer, msg);
 		}
 	}
-	
+
 	private Set<String> getGameTypes() {
 		Set<String> gameTypes = new HashSet<>();
 		for (Game game : setup.getGames()) {
@@ -238,17 +235,17 @@ public class GameServer {
 
 	private static void send(WebSocket conn, String message) {
 		System.out.println("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
-		
+
 		conn.send(message);
 	}
-	
+
 	private class ConnectionObserver implements ConnectionListener {
 
 		@Override
 		public void onException(Exception exception) {
 			exception.printStackTrace();
 		}
-		
+
 		@Override
 		public void onBotJoined(Bot bot) {
 			if (gameState == GameState.WAIT_FOR_PARTICIPANTS_TO_JOIN) {
@@ -272,7 +269,7 @@ public class GameServer {
 		}
 
 		@Override
-		public void onBotReady(Bot bot) {			
+		public void onBotReady(Bot bot) {
 			if (gameState == GameState.WAIT_FOR_READY_PARTICIPANTS) {
 				readyParticipants.add(bot);
 				startGameIfParticipantsReady();

@@ -23,39 +23,39 @@ public class BotClient1 extends WebSocketClient {
 
 	static final String MESSAGE_TYPE_FIELD = "message-type";
 
-    public BotClient1(URI serverUri, Draft draft) {
-        super(serverUri, draft);
-    }
+	public BotClient1(URI serverUri, Draft draft) {
+		super(serverUri, draft);
+	}
 
-    public BotClient1(URI serverURI) {
-        super(serverURI);
-    }
+	public BotClient1(URI serverURI) {
+		super(serverURI);
+	}
 
-    @Override
-    public void onOpen(ServerHandshake handshakedata) {
-        System.out.println("onOpen()");
+	@Override
+	public void onOpen(ServerHandshake handshakedata) {
+		System.out.println("onOpen()");
 
-        BotHandshake handshake = new BotHandshake();
-        handshake.setMessageType(BotHandshake.MessageType.BOT_HANDSHAKE);
-        handshake.setName("Bot name");
-        handshake.setVersion("0.1");
-        handshake.setAuthor("Author name");
-        handshake.setCountryCode("DK");
-        handshake.setGameTypes(Arrays.asList("melee", "1v1"));
-        handshake.setProgrammingLanguage("Java");
-        
+		BotHandshake handshake = new BotHandshake();
+		handshake.setMessageType(BotHandshake.MessageType.BOT_HANDSHAKE);
+		handshake.setName("Bot name");
+		handshake.setVersion("0.1");
+		handshake.setAuthor("Author name");
+		handshake.setCountryCode("DK");
+		handshake.setGameTypes(Arrays.asList("melee", "1v1"));
+		handshake.setProgrammingLanguage("Java");
+
 		String msg = gson.toJson(handshake);
 		send(msg);
-    }
+	}
 
-    @Override
-    public void onClose(int code, String reason, boolean remote) {
-        System.out.println("onClose(), code: " + code + ", reason: " + reason);
-    }
+	@Override
+	public void onClose(int code, String reason, boolean remote) {
+		System.out.println("onClose(), code: " + code + ", reason: " + reason);
+	}
 
-    @Override
-    public void onMessage(String message) {
-        System.out.println("onMessage(): " + message);
+	@Override
+	public void onMessage(String message) {
+		System.out.println("onMessage(): " + message);
 
 		JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
 
@@ -64,30 +64,30 @@ public class BotClient1 extends WebSocketClient {
 			String messageType = jsonElement.getAsString();
 
 			if (NewBattleForBot.MessageType.NEW_BATTLE_FOR_BOT.toString().equalsIgnoreCase(messageType)) {
-	        	// Send ready signal
-	        	BotReady ready = new BotReady();
-	        	ready.setMessageType(BotReady.MessageType.BOT_READY);
-	
-	        	String msg = gson.toJson(ready);
-	        	send(msg);
+				// Send ready signal
+				BotReady ready = new BotReady();
+				ready.setMessageType(BotReady.MessageType.BOT_READY);
+
+				String msg = gson.toJson(ready);
+				send(msg);
 			}
 		}
-    }
+	}
 
-    @Override
-    public void onError(Exception ex) {
-        System.err.println("onError():" + ex);
-    }
+	@Override
+	public void onError(Exception ex) {
+		System.err.println("onError():" + ex);
+	}
 
-    public static void main(String[] args) throws URISyntaxException {      
-        WebSocketClient client = new BotClient1(new URI("ws://localhost:50000"), new Draft_10());
-        client.connect();
-    }
+	public static void main(String[] args) throws URISyntaxException {
+		WebSocketClient client = new BotClient1(new URI("ws://localhost:50000"), new Draft_10());
+		client.connect();
+	}
 
-    @Override
-    public void send(String message) {
+	@Override
+	public void send(String message) {
 		System.out.println("Sending: " + message);
 
-    	super.send(message);
-    }
+		super.send(message);
+	}
 }

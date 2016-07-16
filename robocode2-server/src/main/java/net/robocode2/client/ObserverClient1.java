@@ -19,51 +19,51 @@ public class ObserverClient1 extends WebSocketClient {
 	static final String MESSAGE_TYPE_FIELD = "message-type";
 
 	public ObserverClient1(URI serverUri, Draft draft) {
-        super(serverUri, draft);
-    }
+		super(serverUri, draft);
+	}
 
-    public ObserverClient1(URI serverURI) {
-        super(serverURI);
-    }
+	public ObserverClient1(URI serverURI) {
+		super(serverURI);
+	}
 
-    @Override
-    public void onOpen(ServerHandshake handshakedata) {
-        System.out.println("onOpen()");
+	@Override
+	public void onOpen(ServerHandshake handshakedata) {
+		System.out.println("onOpen()");
 
-        ObserverHandshake handshake = new ObserverHandshake();
-        handshake.setMessageType(ObserverHandshake.MessageType.OBSERVER_HANDSHAKE);
-        handshake.setName("Observer name");
-        handshake.setVersion("0.1");
-        handshake.setAuthor("Author name");
-        
+		ObserverHandshake handshake = new ObserverHandshake();
+		handshake.setMessageType(ObserverHandshake.MessageType.OBSERVER_HANDSHAKE);
+		handshake.setName("Observer name");
+		handshake.setVersion("0.1");
+		handshake.setAuthor("Author name");
+
 		String msg = gson.toJson(handshake);
 		send(msg);
-    }
+	}
 
-    @Override
-    public void onClose(int code, String reason, boolean remote) {
-        System.out.println("onClose(), code: " + code + ", reason: " + reason);
-    }
+	@Override
+	public void onClose(int code, String reason, boolean remote) {
+		System.out.println("onClose(), code: " + code + ", reason: " + reason);
+	}
 
-    @Override
-    public void onMessage(String message) {
-        System.out.println("onMessage(): " + message);
-    }
+	@Override
+	public void onMessage(String message) {
+		System.out.println("onMessage(): " + message);
+	}
 
-    @Override
-    public void onError(Exception ex) {
-        System.err.println("onError():" + ex);
-    }
+	@Override
+	public void onError(Exception ex) {
+		System.err.println("onError():" + ex);
+	}
 
-    public static void main(String[] args) throws URISyntaxException {      
-        WebSocketClient client = new ObserverClient1(new URI("ws://localhost:50000"), new Draft_10());
-        client.connect();
-    }
+	public static void main(String[] args) throws URISyntaxException {
+		WebSocketClient client = new ObserverClient1(new URI("ws://localhost:50000"), new Draft_10());
+		client.connect();
+	}
 
-    @Override
-    public void send(String message) {
+	@Override
+	public void send(String message) {
 		System.out.println("Sending: " + message);
 
-    	super.send(message);
-    }
+		super.send(message);
+	}
 }
