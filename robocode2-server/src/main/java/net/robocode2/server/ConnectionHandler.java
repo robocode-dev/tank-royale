@@ -23,7 +23,7 @@ import net.robocode2.json_schema.BotReady;
 import net.robocode2.json_schema.ObserverHandshake;
 import net.robocode2.json_schema.ServerHandshake;
 
-public class ConnectionHandler {
+public final class ConnectionHandler {
 
 	final ServerSetup setup;
 	final ConnectionListener listener;

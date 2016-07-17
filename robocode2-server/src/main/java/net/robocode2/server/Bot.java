@@ -4,7 +4,7 @@ import org.java_websocket.WebSocket;
 
 import net.robocode2.json_schema.BotHandshake;
 
-public class Bot {
+public final class Bot {
 
 	private final WebSocket connection;
 	private final BotHandshake handshake;

@@ -4,7 +4,7 @@ import org.java_websocket.WebSocket;
 
 import net.robocode2.json_schema.ObserverHandshake;
 
-public class Observer {
+public final class Observer {
 
 	private final WebSocket connection;
 	private final ObserverHandshake handshake;

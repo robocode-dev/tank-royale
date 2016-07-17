@@ -5,7 +5,7 @@ import java.util.Set;
 
 import net.robocode2.json_schema.Game;
 
-public class ServerSetup {
+public final class ServerSetup {
 
 	public String getHostName() {
 		return "localhost";

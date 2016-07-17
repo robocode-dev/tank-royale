@@ -22,7 +22,7 @@ import net.robocode2.json_schema.NewBattleForObserver;
 import net.robocode2.json_schema.ObserverHandshake;
 import net.robocode2.json_schema.Participant;
 
-public class GameServer {
+public final class GameServer {
 
 	ServerSetup setup;
 	ConnectionListener connectionObserver;

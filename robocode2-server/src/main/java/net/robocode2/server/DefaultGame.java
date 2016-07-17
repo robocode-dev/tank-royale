@@ -2,7 +2,7 @@ package net.robocode2.server;
 
 import net.robocode2.json_schema.Game;
 
-public class DefaultGame extends Game {
+public final class DefaultGame extends Game {
 
 	public DefaultGame() {
 		setGameType("melee");
