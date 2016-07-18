@@ -1,26 +1,30 @@
 package net.robocode2.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public final class GameState {
 
-	private final int roundNumber;
-	private final int turnNumber;
 	private final Arena arena;
+	private final List<Round> rounds;
+	private final boolean gameEnded;
 
-	public GameState(int roundNumber, int turnNumber, Arena arena) {
-		this.roundNumber = roundNumber;
-		this.turnNumber = turnNumber;
+	public GameState(Arena arena, List<Round> rounds, boolean gameEnded) {
 		this.arena = arena;
-	}
-
-	public int getRoundNumber() {
-		return roundNumber;
-	}
-
-	public int getTurnNumber() {
-		return turnNumber;
+		this.rounds = new ArrayList<Round>(rounds);
+		this.gameEnded = gameEnded;
 	}
 
 	public Arena getArena() {
 		return arena;
+	}
+
+	public List<Round> getRounds() {
+		return Collections.unmodifiableList(rounds);
+	}
+
+	public boolean isGameEnded() {
+		return gameEnded;
 	}
 }

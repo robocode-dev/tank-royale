@@ -11,8 +11,10 @@ public final class Bot {
 	private final double speed;
 	private final ScanArc scanArc;
 
+	private final Score score;
+
 	public Bot(int id, double energy, Position position, double direction, double turretDiretion, double radarDirection,
-			double speed, ScanArc scanArc) {
+			double speed, ScanArc scanArc, Score score) {
 		this.id = id;
 		this.energy = energy;
 		this.position = position;
@@ -21,6 +23,7 @@ public final class Bot {
 		this.radarDirection = radarDirection;
 		this.speed = speed;
 		this.scanArc = scanArc;
+		this.score = score;
 	}
 
 	public int getId() {
@@ -53,5 +56,9 @@ public final class Bot {
 
 	public ScanArc getScanArc() {
 		return scanArc;
+	}
+
+	public Score getScore() {
+		return score;
 	}
 }
