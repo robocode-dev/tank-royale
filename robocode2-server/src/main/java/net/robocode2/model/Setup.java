@@ -1,28 +1,32 @@
 package net.robocode2.model;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 public final class Setup {
 
 	private final String gameType;
 	private final boolean obstacles;
 	private final int arenaWidth;
 	private final int arenaHeight;
-	private final int minNumberOfParticipants;
-	private final Integer maxNumberOfParticipants;
 	private final int numberOfRounds;
 	private final int turnTimeout;
 	private final int readyTimeout;
 
-	public Setup(String gameType, boolean obstacles, int arenaWidth, int arenaHeight, int minNumberOfParticipants,
-			Integer maxNumberOfParticipants, int numberOfRounds, int turnTimeout, int readyTimeout) {
+	private final Set<Integer> participantIds;
+
+	public Setup(String gameType, boolean obstacles, int arenaWidth, int arenaHeight, int numberOfRounds,
+			int turnTimeout, int readyTimeout, Set<Integer> participantIds) {
+
 		this.gameType = gameType;
 		this.obstacles = obstacles;
 		this.arenaWidth = arenaWidth;
 		this.arenaHeight = arenaHeight;
-		this.minNumberOfParticipants = minNumberOfParticipants;
-		this.maxNumberOfParticipants = maxNumberOfParticipants;
 		this.numberOfRounds = numberOfRounds;
 		this.turnTimeout = turnTimeout;
 		this.readyTimeout = readyTimeout;
+		this.participantIds = new HashSet<Integer>(participantIds);
 	}
 
 	public String getGameType() {
@@ -41,14 +45,6 @@ public final class Setup {
 		return arenaHeight;
 	}
 
-	public int getMinNumberOfParticipants() {
-		return minNumberOfParticipants;
-	}
-
-	public Integer getMaxNumberOfParticipants() {
-		return maxNumberOfParticipants;
-	}
-
 	public int getNumberOfRounds() {
 		return numberOfRounds;
 	}
@@ -59,5 +55,9 @@ public final class Setup {
 
 	public int getReadyTimeout() {
 		return readyTimeout;
+	}
+
+	public Set<Integer> getParticipantIds() {
+		return Collections.unmodifiableSet(participantIds);
 	}
 }

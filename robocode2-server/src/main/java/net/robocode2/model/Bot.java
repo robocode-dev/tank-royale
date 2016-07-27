@@ -2,6 +2,9 @@ package net.robocode2.model;
 
 public final class Bot {
 
+	public static final int WIDTH = 40;
+	public static final int HEIGHT = 40;
+
 	private final int id;
 	private final double energy;
 	private final Position position;
@@ -9,12 +12,12 @@ public final class Bot {
 	private final double turretDirection;
 	private final double radarDirection;
 	private final double speed;
-	private final ScanArc scanArc;
+	private final Arc scanArc;
 
 	private final Score score;
 
 	public Bot(int id, double energy, Position position, double direction, double turretDiretion, double radarDirection,
-			double speed, ScanArc scanArc, Score score) {
+			double speed, Arc scanArc, Score score) {
 		this.id = id;
 		this.energy = energy;
 		this.position = position;
@@ -54,7 +57,7 @@ public final class Bot {
 		return speed;
 	}
 
-	public ScanArc getScanArc() {
+	public Arc getScanArc() {
 		return scanArc;
 	}
 
