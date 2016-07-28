@@ -6,14 +6,16 @@ import java.util.Set;
 
 import net.robocode2.model.Arc;
 import net.robocode2.model.Bot;
+import net.robocode2.model.Bot.BotBuilder;
 import net.robocode2.model.GameState;
 import net.robocode2.model.Position;
-import net.robocode2.model.Score;
+import net.robocode2.model.Score.ScoreBuilder;
 import net.robocode2.model.Setup;
 
 public class ModelUpdater {
 
 	private final Setup setup;
+	private GameState gameState;
 
 	public ModelUpdater(Setup setup) {
 		this.setup = setup;
@@ -34,20 +36,20 @@ public class ModelUpdater {
 
 		Set<Integer> occupiedCells = new HashSet<Integer>();
 
-		for (int botId : setup.getParticipantIds()) {
+		for (int id : setup.getParticipantIds()) {
 
-			double energy = 100;
-			double speed = 0;
-			Position position = randomBotPosition(occupiedCells);
-			double direction = randomDirection();
-			double turretDirection = randomDirection();
-			double radarDirection = randomDirection();
-			Arc scanArc = new Arc(0, 1200);
-			Score score = new Score(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+			BotBuilder builder = new BotBuilder();
+			builder.setId(id);
+			builder.setEnergy(100);
+			builder.setSpeed(0);
+			builder.setPosition(randomBotPosition(occupiedCells));
+			builder.setDirection(randomDirection());
+			builder.setTurretDirection(randomDirection());
+			builder.setRadarDirection(randomDirection());
+			builder.setScanArc(new Arc(0, 1200));
+			builder.setScore(new ScoreBuilder().build());
 
-			Bot bot = new Bot(botId, energy, position, direction, turretDirection, radarDirection, speed, scanArc,
-					score);
-
+			Bot bot = builder.build();
 			bots.add(bot);
 		}
 

@@ -13,7 +13,6 @@ public final class Bot {
 	private final double radarDirection;
 	private final double speed;
 	private final Arc scanArc;
-
 	private final Score score;
 
 	public Bot(int id, double energy, Position position, double direction, double turretDiretion, double radarDirection,
@@ -63,5 +62,78 @@ public final class Bot {
 
 	public Score getScore() {
 		return score;
+	}
+
+	private Bot(BotBuilder builder) {
+		this.id = builder.id;
+		this.energy = builder.energy;
+		this.position = builder.position;
+		this.direction = builder.direction;
+		this.turretDirection = builder.turretDirection;
+		this.radarDirection = builder.radarDirection;
+		this.speed = builder.speed;
+		this.scanArc = builder.scanArc;
+		this.score = builder.score;
+	}
+
+	public static final class BotBuilder {
+		private int id;
+		private double energy;
+		private Position position;
+		private double direction;
+		private double turretDirection;
+		private double radarDirection;
+		private double speed;
+		private Arc scanArc;
+		private Score score;
+
+		public Bot build() {
+			return new Bot(this);
+		}
+
+		public BotBuilder setId(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public BotBuilder setEnergy(double energy) {
+			this.energy = energy;
+			return this;
+		}
+
+		public BotBuilder setPosition(Position position) {
+			this.position = position;
+			return this;
+		}
+
+		public BotBuilder setDirection(double direction) {
+			this.direction = direction;
+			return this;
+		}
+
+		public BotBuilder setTurretDirection(double turretDirection) {
+			this.turretDirection = turretDirection;
+			return this;
+		}
+
+		public BotBuilder setRadarDirection(double radarDirection) {
+			this.radarDirection = radarDirection;
+			return this;
+		}
+
+		public BotBuilder setSpeed(double speed) {
+			this.speed = speed;
+			return this;
+		}
+
+		public BotBuilder setScanArc(Arc scanArc) {
+			this.scanArc = scanArc;
+			return this;
+		}
+
+		public BotBuilder setScore(Score score) {
+			this.score = score;
+			return this;
+		}
 	}
 }
