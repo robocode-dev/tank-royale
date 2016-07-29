@@ -51,5 +51,10 @@ public final class Round {
 			this.roundEnded = roundEnded;
 			return this;
 		}
+
+		public RoundBuilder appendTurn(Turn turn) {
+			turns.add(turn);
+			return this;
+		}
 	}
 }
