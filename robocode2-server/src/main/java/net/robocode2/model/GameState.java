@@ -12,7 +12,7 @@ public final class GameState {
 
 	public GameState(Arena arena, List<Round> rounds, boolean gameEnded) {
 		this.arena = arena;
-		this.rounds = new ArrayList<Round>(rounds);
+		this.rounds = new ArrayList<>(rounds);
 		this.gameEnded = gameEnded;
 	}
 

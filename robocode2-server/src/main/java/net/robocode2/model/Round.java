@@ -12,7 +12,7 @@ public final class Round {
 
 	public Round(int roundNumber, List<Turn> turns, boolean roundEnded) {
 		this.roundNumber = roundNumber;
-		this.turns = new ArrayList<Turn>(turns);
+		this.turns = new ArrayList<>(turns);
 		this.roundEnded = roundEnded;
 	}
 
@@ -26,5 +26,30 @@ public final class Round {
 
 	public boolean isRoundEnded() {
 		return roundEnded;
+	}
+
+	public static final class RoundBuilder {
+		private int roundNumber;
+		private List<Turn> turns = new ArrayList<>();
+		private boolean roundEnded;
+
+		public Round build() {
+			return new Round(roundNumber, turns, roundEnded);
+		}
+
+		public RoundBuilder setRoundNumber(int roundNumber) {
+			this.roundNumber = roundNumber;
+			return this;
+		}
+
+		public RoundBuilder setTurns(List<Turn> turns) {
+			this.turns = new ArrayList<>(turns);
+			return this;
+		}
+
+		public RoundBuilder setRoundEnded(boolean roundEnded) {
+			this.roundEnded = roundEnded;
+			return this;
+		}
 	}
 }

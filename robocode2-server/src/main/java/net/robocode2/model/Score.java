@@ -48,16 +48,7 @@ public final class Score {
 		return ramKillBonus;
 	}
 
-	private Score(ScoreBuilder builder) {
-		this.survival = builder.survival;
-		this.lastSurvivorBonus = builder.lastSurvivorBonus;
-		this.bulletDamage = builder.bulletDamage;
-		this.bulletKillBonus = builder.bulletKillBonus;
-		this.ramDamage = builder.ramDamage;
-		this.ramKillBonus = builder.ramKillBonus;
-	}
-
-	public final static class ScoreBuilder {
+	public static final class ScoreBuilder {
 		private double survival;
 		private double lastSurvivorBonus;
 		private double bulletDamage;
@@ -66,7 +57,7 @@ public final class Score {
 		private double ramKillBonus;
 
 		public Score build() {
-			return new Score(this);
+			return new Score(survival, lastSurvivorBonus, bulletDamage, bulletKillBonus, ramDamage, ramKillBonus);
 		}
 
 		public ScoreBuilder setSurvival(double survival) {

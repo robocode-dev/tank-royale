@@ -64,18 +64,6 @@ public final class Bot {
 		return score;
 	}
 
-	private Bot(BotBuilder builder) {
-		this.id = builder.id;
-		this.energy = builder.energy;
-		this.position = builder.position;
-		this.direction = builder.direction;
-		this.turretDirection = builder.turretDirection;
-		this.radarDirection = builder.radarDirection;
-		this.speed = builder.speed;
-		this.scanArc = builder.scanArc;
-		this.score = builder.score;
-	}
-
 	public static final class BotBuilder {
 		private int id;
 		private double energy;
@@ -88,7 +76,7 @@ public final class Bot {
 		private Score score;
 
 		public Bot build() {
-			return new Bot(this);
+			return new Bot(id, energy, position, direction, turretDirection, radarDirection, speed, scanArc, score);
 		}
 
 		public BotBuilder setId(int id) {

@@ -12,8 +12,8 @@ public final class Turn {
 
 	public Turn(int turnNumber, Set<Bot> bots, Set<Bullet> bullets) {
 		this.turnNumber = turnNumber;
-		this.bots = new HashSet<Bot>(bots);
-		this.bullets = new HashSet<Bullet>(bullets);
+		this.bots = new HashSet<>(bots);
+		this.bullets = new HashSet<>(bullets);
 	}
 
 	public int getTurnNumber() {
@@ -26,5 +26,40 @@ public final class Turn {
 
 	public Set<Bullet> getBullet() {
 		return Collections.unmodifiableSet(bullets);
+	}
+
+	public static final class TurnBuilder {
+		private int turnNumber;
+		private Set<Bot> bots = new HashSet<>();
+		private Set<Bullet> bullets = new HashSet<>();
+
+		public Turn build() {
+			return new Turn(turnNumber, bots, bullets);
+		}
+
+		public TurnBuilder setTurnNumber(int turnNumber) {
+			this.turnNumber = turnNumber;
+			return this;
+		}
+
+		public TurnBuilder setBots(Set<Bot> bots) {
+			this.bots = new HashSet<>(bots);
+			return this;
+		}
+
+		public TurnBuilder setBullets(Set<Bullet> bullets) {
+			this.bullets = new HashSet<>(bullets);
+			return this;
+		}
+
+		public TurnBuilder addBot(Bot bot) {
+			bots.add(bot);
+			return this;
+		}
+
+		public TurnBuilder addBullet(Bullet bullet) {
+			bullets.add(bullet);
+			return this;
+		}
 	}
 }
