@@ -14,9 +14,10 @@ public final class Bot {
 	private final double speed;
 	private final Arc scanArc;
 	private final Score score;
+	private final boolean alive;
 
 	public Bot(int id, double energy, Position position, double direction, double turretDiretion, double radarDirection,
-			double speed, Arc scanArc, Score score) {
+			double speed, Arc scanArc, Score score, boolean alive) {
 		this.id = id;
 		this.energy = energy;
 		this.position = position;
@@ -26,6 +27,7 @@ public final class Bot {
 		this.speed = speed;
 		this.scanArc = scanArc;
 		this.score = score;
+		this.alive = alive;
 	}
 
 	public int getId() {
@@ -64,6 +66,18 @@ public final class Bot {
 		return score;
 	}
 
+	public boolean isDisabled() {
+		return new Double(energy).equals(0.0d);
+	}
+
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public boolean isDead() {
+		return !alive;
+	}
+
 	public static final class BotBuilder {
 		private int id;
 		private double energy;
@@ -74,9 +88,11 @@ public final class Bot {
 		private double speed;
 		private Arc scanArc;
 		private Score score;
+		private boolean alive;
 
 		public Bot build() {
-			return new Bot(id, energy, position, direction, turretDirection, radarDirection, speed, scanArc, score);
+			return new Bot(id, energy, position, direction, turretDirection, radarDirection, speed, scanArc, score,
+					alive);
 		}
 
 		public BotBuilder setId(int id) {
@@ -121,6 +137,11 @@ public final class Bot {
 
 		public BotBuilder setScore(Score score) {
 			this.score = score;
+			return this;
+		}
+
+		public BotBuilder setAlive(boolean alive) {
+			this.alive = alive;
 			return this;
 		}
 	}
