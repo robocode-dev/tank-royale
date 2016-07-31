@@ -52,6 +52,11 @@ public final class Round {
 			return this;
 		}
 
+		public RoundBuilder incrementRoundNumber() {
+			roundNumber++;
+			return this;
+		}
+
 		public RoundBuilder appendTurn(Turn turn) {
 			turns.add(turn);
 			return this;

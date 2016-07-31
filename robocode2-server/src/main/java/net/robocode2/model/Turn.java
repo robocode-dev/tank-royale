@@ -52,8 +52,8 @@ public final class Turn {
 			return this;
 		}
 
-		public TurnBuilder addBot(Bot bot) {
-			bots.add(bot);
+		public TurnBuilder incrementTurnNumber() {
+			turnNumber++;
 			return this;
 		}
 
