@@ -3,6 +3,8 @@ package net.robocode2.game;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import net.robocode2.model.Arc;
 import net.robocode2.model.Arena;
@@ -21,14 +23,20 @@ import net.robocode2.model.Turn.TurnBuilder;
 
 public class ModelUpdater {
 
-	private static final double INITIAL_BOT_ENERGY = 100.0;
-	private static final double RADAR_RADIUS = 1200.0;
+	static final double INITIAL_BOT_ENERGY = 100.0;
+	static final double RADAR_RADIUS = 1200.0;
 
-	private final Setup setup;
+	final Setup setup;
 
-	private GameStateBuilder gameStateBuilder;
-	private RoundBuilder roundBuilder;
-	private TurnBuilder turnBuilder;
+	GameStateBuilder gameStateBuilder;
+	RoundBuilder roundBuilder;
+	TurnBuilder turnBuilder;
+
+	final Timer turnTimer = new Timer();
+
+	int roundNumber;
+	int turnNumber;
+	boolean roundEnded;
 
 	public ModelUpdater(Setup setup) {
 		this.setup = setup;
@@ -45,21 +53,44 @@ public class ModelUpdater {
 		// Prepare game state builder
 		Arena arena = new Arena(new Size(setup.getArenaWidth(), setup.getArenaHeight()));
 		gameStateBuilder.setArena(arena);
+
+		roundNumber = 0;
+		turnNumber = 0;
 	}
 
-	public GameState newRound() {
-		roundBuilder.incrementRoundNumber();
+	public GameState update() {
+		turnTimer.cancel();
+
+		if (roundEnded || roundNumber == 0) {
+			nextRound();
+		}
+
+		nextTurn();
+
+		return buildGameState();
+	}
+
+	private void nextRound() {
+		roundEnded = false;
+
+		roundNumber++;
+		roundBuilder.setRoundNumber(roundNumber);
 
 		Set<Bot> bots = initialBotStates();
 		turnBuilder.setBots(bots);
-
-		return buildGameState();
 	}
 
-	public GameState nextTurn() {
-		turnBuilder.incrementTurnNumber();
+	private void nextTurn() {
+		turnNumber++;
+		turnBuilder.setTurnNumber(turnNumber);
 
-		return buildGameState();
+		turnTimer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				onTurnTimeout();
+			}
+
+		}, setup.getTurnTimeout());
 	}
 
 	private GameState buildGameState() {
@@ -71,6 +102,16 @@ public class ModelUpdater {
 
 		GameState gameState = gameStateBuilder.build();
 		return gameState;
+	}
+
+	private void onTurnTimeout() {
+		// TODO
+	}
+
+	private void gameOver() {
+		turnTimer.cancel();
+
+		// TODO
 	}
 
 	private Set<Bot> initialBotStates() {

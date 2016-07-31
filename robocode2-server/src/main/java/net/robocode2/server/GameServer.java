@@ -15,12 +15,15 @@ import org.java_websocket.WebSocket;
 
 import com.google.gson.Gson;
 
+import net.robocode2.game.ModelUpdater;
 import net.robocode2.json_schema.BotHandshake;
 import net.robocode2.json_schema.Game;
 import net.robocode2.json_schema.NewBattleForBot;
 import net.robocode2.json_schema.NewBattleForObserver;
 import net.robocode2.json_schema.ObserverHandshake;
 import net.robocode2.json_schema.Participant;
+import net.robocode2.model.GameState;
+import net.robocode2.model.Setup;
 
 public final class GameServer {
 
@@ -36,6 +39,8 @@ public final class GameServer {
 	final Timer readyTimer = new Timer();
 
 	final Gson gson = new Gson();
+
+	ModelUpdater modelUpdater;
 
 	public GameServer() {
 		this.setup = new ServerSetup();
@@ -111,14 +116,13 @@ public final class GameServer {
 
 		// Start 'ready' timer
 
-		int readyTimeout = game.getReadyTimeout();
 		readyTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				onReadyTimeout();
 			}
 
-		}, readyTimeout);
+		}, game.getReadyTimeout());
 	}
 
 	// Should be moved to a "strategy" class
@@ -172,6 +176,11 @@ public final class GameServer {
 
 		gameState = ServerState.GAME_RUNNING;
 
+		Set<Integer> participantIds = new HashSet<>();
+		for (Bot bot : participants) {
+			participantIds.add(bot.getId());
+		}
+
 		// Send NewBattle to all participant observers to get them started
 
 		NewBattleForObserver ngo = new NewBattleForObserver();
@@ -208,6 +217,21 @@ public final class GameServer {
 			WebSocket observer = entry.getKey();
 			send(observer, msg);
 		}
+
+		Setup setup = new Setup(game.getGameType(), game.getObstacles(), game.getArenaWidth(), game.getArenaHeight(),
+				game.getNumberOfRounds(), game.getTurnTimeout(), game.getReadyTimeout(), participantIds);
+
+		modelUpdater = new ModelUpdater(setup);
+
+		sendGameState();
+	}
+
+	private void sendGameState() {
+		GameState gameState = modelUpdater.update();
+
+		// TODO: Send game state as 'tick' to participants
+
+		// TODO: Game state must be delayed for observers
 	}
 
 	private Set<String> getGameTypes() {

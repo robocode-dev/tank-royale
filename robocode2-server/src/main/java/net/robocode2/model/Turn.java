@@ -52,11 +52,6 @@ public final class Turn {
 			return this;
 		}
 
-		public TurnBuilder incrementTurnNumber() {
-			turnNumber++;
-			return this;
-		}
-
 		public TurnBuilder addBullet(Bullet bullet) {
 			bullets.add(bullet);
 			return this;
