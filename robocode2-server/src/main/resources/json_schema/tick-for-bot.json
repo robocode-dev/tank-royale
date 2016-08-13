@@ -1,6 +1,5 @@
 {
     "id": "#tick-for-bot.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Tick for bot. Next turn has started.",
     "type": "object",
     "properties": {
@@ -9,18 +8,7 @@
         },
         "round-state": {
             "description": "Current state of the round",
-            "type": "object",
-            "properties": {
-                "round-number": {
-                    "description": "Round number in this battle",
-                    "type": "integer"
-                },
-                "turn-number": {
-                     "description": "Turn number in this round of the battle",
-                     "type": "integer"
-                }
-            },
-            "required": [ "round-number", "turn-number" ]
+            "$ref": "round-state.json"
         },
         "bot-state": {
             "description": "Current state of this bot",
@@ -32,19 +20,19 @@
                 },
                 "position": {
                     "description": "Position (x, y)",
-                    "$ref": "#/definitions/position"
+                    "$ref": "types/position.json"
                 },
                 "direction": {
                     "description": "Direction of the hull in degrees",
-                    "$ref": "#/definitions/angle"
+                    "$ref": "types/angle.json"
                 },
                 "turret-direction": {
                     "description": "Direction of the turret in degrees",
-                    "$ref": "#/definitions/angle"
+                    "$ref": "types/angle.json"
                 },
                 "radar-direction": {
                     "description": "Direction of the radar in degrees",
-                    "$ref": "#/definitions/angle"
+                    "$ref": "types/angle.json"
                 },
                 "speed": {
                     "description": "Speed measured in units per turn",
@@ -52,7 +40,7 @@
                 },
                 "scan-arc": {
                     "description": "Scan arc, where a positive angle means that scan is moving left and negative angle means that the scan is moving right",
-                    "$ref": "#/definitions/arc"
+                    "$ref": "types/arc.json"
                 }
             },
             "required":
@@ -85,44 +73,6 @@
         "bullet-states"
     ],
     "definitions": {
-        "position": {
-            "description": "Position as a 2D coordinate (x, y)",
-            "type": "object",
-            "properties": {
-                "x": {
-                    "description": "X coordinate",
-                    "type": "number"
-                },
-                "y": {
-                    "description": "Y coordinate",
-                    "type": "number"
-                }
-            },
-            "required": [ "x", "y" ]
-        },
-        "angle": {
-            "description": "Absolute angle in degrees",
-            "type": "number",
-            "minimum": 0,
-            "maximum": 360,
-            "exclusiveMaximum": true
-        },
-        "arc": {
-            "description": "A minimum arc defined of a radius and center angle, which can be positive, negative, or zero",
-            "type": "object",
-            "properties": {
-                "angle": {
-                    "description": "Center angle",
-                    "$ref": "#/definitions/angle"
-                },
-                "radius": {
-                    "description": "Circular radius of the arc in units",
-                    "type": "number",
-                    "minimum": 0
-                }
-            },
-            "required": [ "angle", "radius" ]
-        },
         "bullet-state": {
             "description": "Bullet state",
             "type": "object",
@@ -137,11 +87,11 @@
                 },
                 "position": {
                     "description": "Position (x, y)",
-                    "$ref": "#/definitions/position"
+                    "$ref": "types/position.json"
                 },
                 "direction": {
                     "description": "Direction in degrees",
-                    "$ref": "#/definitions/angle"
+                    "$ref": "types/angle.json"
                 },
                 "speed": {
                     "description": "Speed measured in units per turn",
@@ -171,11 +121,11 @@
                 },
                 "position": {
                     "description": "Position (x, y)",
-                    "$ref": "#/definitions/position"
+                    "$ref": "types/position.json"
                 },
                 "direction": {
                     "description": "Direction in degrees",
-                    "$ref": "#/definitions/angle"
+                    "$ref": "types/angle.json"
                 },
                 "speed": {
                     "description": "Speed measured in units per turn",

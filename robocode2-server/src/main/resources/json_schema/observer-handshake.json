@@ -1,6 +1,5 @@
 {
 	"id": "#observer-handshake.json",
-	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Observer handshake",
 	"type": "object",
 	"properties": {

@@ -1,0 +1,16 @@
+{
+	"id": "#position.json",
+    "description": "Position as a 2D coordinate (x, y)",
+    "type": "object",
+    "properties": {
+        "x": {
+            "description": "X coordinate",
+            "type": "number"
+        },
+        "y": {
+            "description": "Y coordinate",
+            "type": "number"
+        }
+    },
+    "required": [ "x", "y" ]
+}

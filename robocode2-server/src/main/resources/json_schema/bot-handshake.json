@@ -1,6 +1,5 @@
 {
 	"id": "#bot-handshake.json",
-	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Bot handshake",
 	"type": "object",
 	"properties": {
