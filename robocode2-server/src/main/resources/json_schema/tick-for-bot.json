@@ -12,52 +12,12 @@
         },
         "bot-state": {
             "description": "Current state of this bot",
-            "type": "object",
-            "properties": {
-                "energy": {
-                    "description": "Energy level",
-                    "type": "number"
-                },
-                "position": {
-                    "description": "Position (x, y)",
-                    "$ref": "types/position.json"
-                },
-                "direction": {
-                    "description": "Direction of the hull in degrees",
-                    "$ref": "types/angle.json"
-                },
-                "turret-direction": {
-                    "description": "Direction of the turret in degrees",
-                    "$ref": "types/angle.json"
-                },
-                "radar-direction": {
-                    "description": "Direction of the radar in degrees",
-                    "$ref": "types/angle.json"
-                },
-                "speed": {
-                    "description": "Speed measured in units per turn",
-                    "type": "number"
-                },
-                "scan-arc": {
-                    "description": "Scan arc, where a positive angle means that scan is moving left and negative angle means that the scan is moving right",
-                    "$ref": "types/arc.json"
-                }
-            },
-            "required":
-            [
-                "energy",
-                "position",
-                "direction",
-                "turret-direction",
-                "radar-direction",
-                "speed",
-                "scan-arc"
-            ]
+            "$ref": "bot-state-without-id.json"
         },
         "bullet-states": {
             "description": "Current state of the bullets fired by this bot",
             "type": "array",
-            "items": { "$ref": "#/definitions/bullet-state" }
+            "items": { "$ref": "bullet-state.json" }
         },
         "scanned-bots": {
             "description": "Bots scanned in this turn by this bot",
@@ -73,40 +33,6 @@
         "bullet-states"
     ],
     "definitions": {
-        "bullet-state": {
-            "description": "Bullet state",
-            "type": "object",
-            "properties": {
-                "id": {
-                    "description": "Unique identifier, but only for this bot",
-                    "type": "integer"
-                },
-                "power": {
-                    "description": "Bullet power level",
-                    "type": "number"
-                },
-                "position": {
-                    "description": "Position (x, y)",
-                    "$ref": "types/position.json"
-                },
-                "direction": {
-                    "description": "Direction in degrees",
-                    "$ref": "types/angle.json"
-                },
-                "speed": {
-                    "description": "Speed measured in units per turn",
-                    "type": "number"
-                }
-            },
-            "required":
-            [
-                "id",
-                "power",
-                "position",
-                "direction",
-                "speed"
-            ]
-        },
         "scanned-bot": {
             "description": "Scanned bot",
             "type": "object",

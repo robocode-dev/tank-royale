@@ -13,12 +13,12 @@
         "bot-states": {
             "description": "Current state of all bots",
             "type": "array",
-            "items": { "$ref": "#/definitions/bot-state" }
+            "items": { "$ref": "bot-state.json" }
         },
         "bullet-states": {
             "description": "Current state of all bullets",
             "type": "array",
-            "items": { "$ref": "#/definitions/bullet-state" }
+            "items": { "$ref": "bullet-state.json" }
         }
     },
     "required":
@@ -27,90 +27,5 @@
         "round-state",
         "bot-states",
         "bullet-states"
-    ],
-    "definitions": {
-        "bot-state": {
-            "description": "Bot state",
-            "type": "object",
-            "properties": {
-                "id": {
-                    "description": "Unique identifier, but only for this observer",
-                    "type": "integer"
-                },
-                "energy": {
-                    "description": "Energy level",
-                    "type": "number"
-                },
-                "position": {
-                    "description": "Position (x, y)",
-                    "$ref": "types/position.json"
-                },
-                "direction": {
-                    "description": "Direction of the hull in degrees",
-                    "$ref": "types/angle.json"
-                },
-                "turret-direction": {
-                    "description": "Direction of the turret in degrees",
-                    "$ref": "types/angle.json"
-                },
-                "radar-direction": {
-                    "description": "Direction of the radar in degrees",
-                    "$ref": "types/angle.json"
-                },
-                "speed": {
-                    "description": "Speed measured in units per turn",
-                    "type": "number"
-                },
-                "scan-arc": {
-                    "description": "Scan arc, where a positive angle means that scan is moving left and negative angle means that the scan is moving right",
-                    "$ref": "types/arc.json"
-                }
-            },
-            "required":
-            [
-                "id",
-                "energy",
-                "position",
-                "direction",
-                "turret-direction",
-                "radar-direction",
-                "speed",
-                "scan-arc"
-            ]
-        },
-        "bullet-state": {
-            "description": "Bullet state",
-            "type": "object",
-            "properties": {
-                "id": {
-                    "description": "Unique identifier, but only for this observer",
-                    "type": "integer"
-                },
-                "power": {
-                    "description": "Bullet power level",
-                    "type": "number"
-                },
-                "position": {
-                    "description": "Position (x, y)",
-                    "$ref": "types/position.json"
-                },
-                "direction": {
-                    "description": "Direction in degrees",
-                    "$ref": "types/angle.json"
-                },
-                "speed": {
-                    "description": "Speed measured in units per turn",
-                    "type": "number"
-                }
-            },
-            "required":
-            [
-                "id",
-                "power",
-                "position",
-                "direction",
-                "speed"
-            ]
-        }
-    }
+    ]
 }

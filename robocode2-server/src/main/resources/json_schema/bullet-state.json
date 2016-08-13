@@ -1,0 +1,35 @@
+{
+	"id": "#bullet-state.json",
+    "description": "Bullet state",
+    "type": "object",
+    "properties": {
+        "id": {
+            "description": "Unique identifier for the observer/bot, not shared between bots",
+            "type": "integer"
+        },
+        "power": {
+            "description": "Bullet power level",
+            "type": "number"
+        },
+        "position": {
+            "description": "Position (x, y)",
+            "$ref": "types/position.json"
+        },
+        "direction": {
+            "description": "Direction in degrees",
+            "$ref": "types/angle.json"
+        },
+        "speed": {
+            "description": "Speed measured in units per turn",
+            "type": "number"
+        }
+    },
+    "required":
+    [
+        "id",
+        "power",
+        "position",
+        "direction",
+        "speed"
+    ]
+}

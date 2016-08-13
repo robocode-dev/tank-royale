@@ -1,0 +1,13 @@
+{
+	"id": "bot-state.json",
+	"type": "object",
+	"extends": {
+		"$ref": "bot-state-without-id.json"
+	},
+    "properties": {
+        "id": {
+            "description": "Unique identifier of bot for the observer",
+            "type": "integer"
+        }
+	}
+}
