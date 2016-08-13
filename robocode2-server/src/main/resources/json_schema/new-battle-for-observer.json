@@ -10,10 +10,6 @@
             "description": "Type of game",
             "type": "string"
         },
-        "obstacles": {
-            "description": "Set to true if there are obstacles on the arena",
-            "type": "boolean"
-        },
         "arena-width": {
             "description": "Width of arena in units",
             "type": "integer"
@@ -52,7 +48,6 @@
     [
         "message-type",
         "game-type",
-        "obstacles",
         "arena-width",
         "arena-height",
         "number-of-rounds",

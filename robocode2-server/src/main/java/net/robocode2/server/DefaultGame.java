@@ -8,7 +8,6 @@ public final class DefaultGame extends Game {
 		setGameType("melee");
 		setArenaWidth(1000);
 		setArenaHeight(1000);
-		setObstacles(false);
 		setMinNumberOfParticipants(2);
 		setMaxNumberOfParticipants(10);
 		setNumberOfRounds(10);

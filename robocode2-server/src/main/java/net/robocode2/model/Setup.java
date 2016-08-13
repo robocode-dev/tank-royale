@@ -7,7 +7,6 @@ import java.util.Set;
 public final class Setup {
 
 	private final String gameType;
-	private final boolean obstacles;
 	private final int arenaWidth;
 	private final int arenaHeight;
 	private final int numberOfRounds;
@@ -16,11 +15,10 @@ public final class Setup {
 
 	private final Set<Integer> participantIds;
 
-	public Setup(String gameType, boolean obstacles, int arenaWidth, int arenaHeight, int numberOfRounds,
-			int turnTimeout, int readyTimeout, Set<Integer> participantIds) {
+	public Setup(String gameType, int arenaWidth, int arenaHeight, int numberOfRounds, int turnTimeout,
+			int readyTimeout, Set<Integer> participantIds) {
 
 		this.gameType = gameType;
-		this.obstacles = obstacles;
 		this.arenaWidth = arenaWidth;
 		this.arenaHeight = arenaHeight;
 		this.numberOfRounds = numberOfRounds;
@@ -31,10 +29,6 @@ public final class Setup {
 
 	public String getGameType() {
 		return gameType;
-	}
-
-	public boolean hasObstacles() {
-		return obstacles;
 	}
 
 	public int getArenaWidth() {

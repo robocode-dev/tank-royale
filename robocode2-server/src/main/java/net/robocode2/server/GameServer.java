@@ -94,7 +94,6 @@ public final class GameServer {
 		ngb.setGameType(game.getGameType());
 		ngb.setArenaWidth(game.getArenaWidth());
 		ngb.setArenaHeight(game.getArenaHeight());
-		ngb.setObstacles(game.getObstacles());
 		ngb.setNumberOfRounds(game.getNumberOfRounds());
 		ngb.setMinNumberOfParticipants(game.getMinNumberOfParticipants());
 		ngb.setMaxNumberOfParticipants(game.getMaxNumberOfParticipants());
@@ -188,7 +187,6 @@ public final class GameServer {
 		ngo.setGameType(game.getGameType());
 		ngo.setArenaWidth(game.getArenaWidth());
 		ngo.setArenaHeight(game.getArenaHeight());
-		ngo.setObstacles(game.getObstacles());
 		ngo.setNumberOfRounds(game.getNumberOfRounds());
 		ngo.setMinNumberOfParticipants(game.getMinNumberOfParticipants());
 		ngo.setMaxNumberOfParticipants(game.getMaxNumberOfParticipants());
@@ -218,15 +216,15 @@ public final class GameServer {
 			send(observer, msg);
 		}
 
-		Setup setup = new Setup(game.getGameType(), game.getObstacles(), game.getArenaWidth(), game.getArenaHeight(),
+		Setup setup = new Setup(game.getGameType(), game.getArenaWidth(), game.getArenaHeight(),
 				game.getNumberOfRounds(), game.getTurnTimeout(), game.getReadyTimeout(), participantIds);
 
 		modelUpdater = new ModelUpdater(setup);
 
-		sendGameState();
+		updateGameState();
 	}
 
-	private void sendGameState() {
+	private void updateGameState() {
 		GameState gameState = modelUpdater.update();
 
 		// TODO: Send game state as 'tick' to participants

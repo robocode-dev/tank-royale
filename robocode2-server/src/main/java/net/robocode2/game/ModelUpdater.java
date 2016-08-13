@@ -3,8 +3,6 @@ package net.robocode2.game;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import net.robocode2.model.Arc;
 import net.robocode2.model.Arena;
@@ -32,8 +30,6 @@ public class ModelUpdater {
 	RoundBuilder roundBuilder;
 	TurnBuilder turnBuilder;
 
-	final Timer turnTimer = new Timer();
-
 	int roundNumber;
 	int turnNumber;
 	boolean roundEnded;
@@ -59,8 +55,6 @@ public class ModelUpdater {
 	}
 
 	public GameState update() {
-		turnTimer.cancel();
-
 		if (roundEnded || roundNumber == 0) {
 			nextRound();
 		}
@@ -83,14 +77,6 @@ public class ModelUpdater {
 	private void nextTurn() {
 		turnNumber++;
 		turnBuilder.setTurnNumber(turnNumber);
-
-		turnTimer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				onTurnTimeout();
-			}
-
-		}, setup.getTurnTimeout());
 	}
 
 	private GameState buildGameState() {
@@ -102,16 +88,6 @@ public class ModelUpdater {
 
 		GameState gameState = gameStateBuilder.build();
 		return gameState;
-	}
-
-	private void onTurnTimeout() {
-		// TODO
-	}
-
-	private void gameOver() {
-		turnTimer.cancel();
-
-		// TODO
 	}
 
 	private Set<Bot> initialBotStates() {
@@ -186,7 +162,7 @@ public class ModelUpdater {
 
 	public static void main(String[] args) {
 
-		Setup setup = new Setup("gameType", false, 200, 100, 0, 0, 0, new HashSet<Integer>(Arrays.asList(1, 2)));
+		Setup setup = new Setup("gameType", 200, 100, 0, 0, 0, new HashSet<Integer>(Arrays.asList(1, 2)));
 
 		ModelUpdater updater = new ModelUpdater(setup);
 		updater.initialBotStates();
