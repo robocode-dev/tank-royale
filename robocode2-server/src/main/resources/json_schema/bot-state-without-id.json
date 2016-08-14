@@ -1,45 +1,46 @@
 {
-	"id": "bot-state-without-id.json",
-    "description": "Current state of this bot",
-    "type": "object",
-    "properties": {
-        "energy": {
-            "description": "Energy level",
-            "type": "number"
-        },
-        "position": {
-            "description": "Position (x, y)",
-            "$ref": "types/position.json"
-        },
-        "direction": {
-            "description": "Direction of the hull in degrees",
-            "$ref": "types/angle.json"
-        },
-        "turret-direction": {
-            "description": "Direction of the turret in degrees",
-            "$ref": "types/angle.json"
-        },
-        "radar-direction": {
-            "description": "Direction of the radar in degrees",
-            "$ref": "types/angle.json"
-        },
-        "speed": {
-            "description": "Speed measured in units per turn",
-            "type": "number"
-        },
-        "scan-arc": {
-            "description": "Scan arc, where a positive angle means that scan is moving left and negative angle means that the scan is moving right",
-            "$ref": "types/arc.json"
-        }
-    },
-    "required":
-    [
-        "energy",
-        "position",
-        "direction",
-        "turret-direction",
-        "radar-direction",
-        "speed",
-        "scan-arc"
-    ]
+	"id": "#bot-state-without-id.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Current state of a bot, but where the bot ID is hidden for enemy bots",
+
+	"type": "object",
+	"properties": {
+		"energy": {
+			"description": "Energy level",
+			"type": "number"
+		},
+		"position": {
+			"description": "Position (x, y)",
+			"$ref": "types/position.json"
+		},
+		"direction": {
+			"description": "Direction of the hull in degrees",
+			"$ref": "types/angle.json"
+		},
+		"turret-direction": {
+			"description": "Direction of the turret in degrees",
+			"$ref": "types/angle.json"
+		},
+		"radar-direction": {
+			"description": "Direction of the radar in degrees",
+			"$ref": "types/angle.json"
+		},
+		"speed": {
+			"description": "Speed measured in units per turn",
+			"type": "number"
+		},
+		"scan-arc": {
+			"description": "Scan arc, where a positive angle means that scan is moving left and negative angle means that the scan is moving right",
+			"$ref": "types/arc.json"
+		}
+	},
+	"required": [
+		"energy",
+		"position",
+		"direction",
+		"turret-direction",
+		"radar-direction",
+		"speed",
+		"scan-arc"
+	]
 }

@@ -1,5 +1,8 @@
 {
-	"id": "bot-state.json",
+	"id": "#bot-state.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Current state of a bot",
+
 	"type": "object",
 	"extends": {
 		"$ref": "bot-state-without-id.json"
@@ -9,5 +12,8 @@
             "description": "Unique identifier of bot for the observer",
             "type": "integer"
         }
-	}
+	},
+	"required": [
+		"id"
+	]
 }

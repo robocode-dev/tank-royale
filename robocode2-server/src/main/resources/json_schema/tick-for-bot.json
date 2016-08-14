@@ -1,71 +1,71 @@
 {
-    "id": "#tick-for-bot.json",
-    "description": "Tick for bot. Next turn has started.",
-    "type": "object",
-    "properties": {
-        "message-type": {
-            "enum": [ "tick-for-bot" ]
-        },
-        "round-state": {
-            "description": "Current state of the round",
-            "$ref": "round-state.json"
-        },
-        "bot-state": {
-            "description": "Current state of this bot",
-            "$ref": "bot-state-without-id.json"
-        },
-        "bullet-states": {
-            "description": "Current state of the bullets fired by this bot",
-            "type": "array",
-            "items": { "$ref": "bullet-state.json" }
-        },
-        "scanned-bots": {
-            "description": "Bots scanned in this turn by this bot",
-            "type": "array",
-            "items": { "$ref": "#/definitions/scanned-bot" }
-        }
-    },
-    "required":
-    [
-        "message-type",
-        "round-state",
-        "bot-state",
-        "bullet-states"
-    ],
-    "definitions": {
-        "scanned-bot": {
-            "description": "Scanned bot",
-            "type": "object",
-            "properties": {
-                "id": {
-                    "description": "Unique identifier, but only for this bot",
-                    "type": "integer"
-                },
-                "energy": {
-                    "description": "Energy level",
-                    "type": "number"
-                },
-                "position": {
-                    "description": "Position (x, y)",
-                    "$ref": "types/position.json"
-                },
-                "direction": {
-                    "description": "Direction in degrees",
-                    "$ref": "types/angle.json"
-                },
-                "speed": {
-                    "description": "Speed measured in units per turn",
-                    "type": "number"
-                }
-            },
-            "required":
-            [
-                "id",
-                "energy",
-                "position",
-                "direction",
-                "speed"
-            ]
-        }
-    }
+	"id": "#tick-for-bot.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Tick for bot. Next turn has started.",
+
+	"type": "object",
+	"extends": {
+		"$ref": "message.json",
+		"default": "tick-for-bot"
+	},
+	"properties": {
+		"round-state": {
+			"description": "Current state of the round",
+			"$ref": "round-state.json"
+		},
+		"bot-state": {
+			"description": "Current state of this bot",
+			"$ref": "bot-state-without-id.json"
+		},
+		"bullet-states": {
+			"description": "Current state of the bullets fired by this bot",
+			"type": "array",
+			"items": { "$ref": "bullet-state.json" }
+		},
+		"scanned-bots": {
+			"description": "Bots scanned in this turn by this bot",
+			"type": "array",
+			"items": { "$ref": "#/definitions/scanned-bot" }
+		}
+	},
+	"required": [
+		"round-state",
+		"bot-state",
+		"bullet-states"
+	],
+	"definitions": {
+		"scanned-bot": {
+			"description": "Scanned bot",
+			"type": "object",
+			"properties": {
+				"id": {
+					"description": "Unique identifier, but only for this bot",
+					"type": "integer"
+				},
+				"energy": {
+					"description": "Energy level",
+					"type": "number"
+				},
+				"position": {
+					"description": "Position (x, y)",
+					"$ref": "types/position.json"
+				},
+				"direction": {
+					"description": "Direction in degrees",
+					"$ref": "types/angle.json"
+				},
+				"speed": {
+					"description": "Speed measured in units per turn",
+					"type": "number"
+				}
+			},
+			"required": [
+				"id",
+				"energy",
+				"position",
+				"direction",
+				"speed"
+			]
+		}
+	}
 }

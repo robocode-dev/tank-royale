@@ -1,16 +1,21 @@
 {
 	"id": "#round-state.json",
-    "description": "Current state of a round",
-    "type": "object",
-    "properties": {
-        "round-number": {
-            "description": "Round number in a battle",
-            "type": "integer"
-        },
-        "turn-number": {
-             "description": "Turn number in the current round of the battle",
-             "type": "integer"
-        }
-    },
-    "required": [ "round-number", "turn-number" ]
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Current state of a round",
+
+	"type": "object",
+	"properties": {
+		"round-number": {
+			"description": "Round number in a battle",
+			"type": "integer"
+		},
+		"turn-number": {
+			 "description": "Turn number in the current round of the battle",
+			 "type": "integer"
+		}
+	},
+	"required": [
+		"round-number",
+		"turn-number"
+	]
 }

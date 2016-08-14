@@ -1,13 +1,14 @@
 {
 	"id": "#bot-handshake.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Bot handshake",
+
 	"type": "object",
+	"extends": {
+		"$ref": "message.json",
+		"default": "bot-handshake"
+	},
 	"properties": {
-		"message-type": {
-			"enum": [
-				"bot-handshake"
-			]
-		},
 		"name": {
 			"description": "Name of bot, e.g. Killer Bee",
 			"type": "string"
@@ -38,7 +39,6 @@
 		}
 	},
 	"required": [
-		"message-type",
 		"name",
 		"version",
 		"game-types"

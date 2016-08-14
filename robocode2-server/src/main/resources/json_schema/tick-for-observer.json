@@ -1,31 +1,32 @@
 {
-    "id": "#tick-for-observer.json",
-    "description": "Tick for observer. Next turn has started.",
-    "type": "object",
-    "properties": {
-        "message-type": {
-            "enum": [ "tick-for-observer" ]
-        },
-        "round-state": {
-            "description": "Current state of the round",
-            "$ref": "round-state.json"
-        },
-        "bot-states": {
-            "description": "Current state of all bots",
-            "type": "array",
-            "items": { "$ref": "bot-state.json" }
-        },
-        "bullet-states": {
-            "description": "Current state of all bullets",
-            "type": "array",
-            "items": { "$ref": "bullet-state.json" }
-        }
-    },
-    "required":
-    [
-        "message-type",
-        "round-state",
-        "bot-states",
-        "bullet-states"
-    ]
+	"id": "#tick-for-observer.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Tick for observer. Next turn has started.",
+
+	"type": "object",
+	"extends": {
+		"$ref": "message.json",
+		"default": "tick-for-observer"
+	},
+	"properties": {
+		"round-state": {
+			"description": "Current state of the round",
+			"$ref": "round-state.json"
+		},
+		"bot-states": {
+			"description": "Current state of all bots",
+			"type": "array",
+			"items": { "$ref": "bot-state.json" }
+		},
+		"bullet-states": {
+			"description": "Current state of all bullets",
+			"type": "array",
+			"items": { "$ref": "bullet-state.json" }
+		}
+	},
+	"required": [
+		"round-state",
+		"bot-states",
+		"bullet-states"
+	]
 }

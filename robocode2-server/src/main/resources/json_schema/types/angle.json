@@ -1,8 +1,10 @@
 {
-    "id": "#angle.json",
-    "description": "Absolute angle in degrees",
-    "type": "number",
-    "minimum": 0,
-    "maximum": 360,
-    "exclusiveMaximum": true
+	"id": "#angle.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Absolute angle in degrees",
+
+	"type": "number",
+	"minimum": 0,
+	"maximum": 360,
+	"exclusiveMaximum": true
 }

@@ -1,13 +1,14 @@
 {
 	"id": "#observer-handshake.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Observer handshake",
+
 	"type": "object",
+	"extends": {
+		"$ref": "message.json",
+		"default": "observer-handshake"
+	},
 	"properties": {
-		"message-type": {
-			"enum": [
-				"observer-handshake"
-			]
-		},
 		"name": {
 			"description": "Name of observer, e.g. Fancy Robocode View",
 			"type": "string"
@@ -22,7 +23,6 @@
 		}
 	},
 	"required": [
-		"message-type",
 		"name",
 		"version"
 	]
