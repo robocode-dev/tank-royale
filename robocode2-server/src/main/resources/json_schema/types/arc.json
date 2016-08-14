@@ -15,5 +15,8 @@
 			"minimum": 0
 		}
 	},
-	"required": [ "angle", "radius" ]
+	"required": [
+		"angle",
+		"radius"
+	]
 }

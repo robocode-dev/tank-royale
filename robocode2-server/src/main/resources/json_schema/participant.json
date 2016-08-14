@@ -1,0 +1,46 @@
+{
+	"id": "#participant.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Bot participating in a battle",
+
+	"type": "object",
+	"properties": {
+		"id": {
+			"description": "Unique identifier for the participant in a battle",
+			"type": "integer"
+		},
+		"name": {
+			"description": "Name of bot, e.g. Killer Bee",
+			"type": "string"
+		},
+		"version": {
+			"description": "Bot version, e.g. 1.0",
+			"type": "string"
+		},
+		"game-types": {
+			"description": "Game types supported by this bot",
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"author": {
+			"description": "Author name, e.g. John Doe (john_doe@somewhere.net)",
+			"type": "string"
+		},
+		"country-code": {
+			"description": "2-letter country code defined by ISO 3166-1",
+			"type": "string",
+			"pattern": "(^[a-z]{2}$)|(^[A-Z]{2}$)"
+		},
+		"programming-language": {
+			"description": "Language used for programming the bot, e.g. Java 7",
+			"type": "string"
+		}
+	},
+	"required": [
+		"id",
+		"name",
+		"version"
+	]
+}

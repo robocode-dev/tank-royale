@@ -3,7 +3,7 @@ package net.robocode2.server;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.robocode2.json_schema.Game;
+import net.robocode2.json_schema.GameDefinition;
 
 public final class ServerSetup {
 
@@ -15,14 +15,14 @@ public final class ServerSetup {
 		return 50000;
 	}
 
-	public Set<Game> getGames() {
-		Set<Game> games = new HashSet<>();
+	public Set<GameDefinition> getGames() {
+		Set<GameDefinition> games = new HashSet<>();
 
-		Game game1 = new DefaultGame();
+		GameDefinition game1 = new DefaultGameDefinition();
 		game1.setGameType("melee");
 		games.add(game1);
 
-		Game game2 = new DefaultGame();
+		GameDefinition game2 = new DefaultGameDefinition();
 		game2.setGameType("1v1");
 		game2.setMinNumberOfParticipants(2);
 		game2.setMinNumberOfParticipants(2);

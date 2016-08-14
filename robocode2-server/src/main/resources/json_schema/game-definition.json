@@ -1,13 +1,9 @@
 {
-	"id": "#new-battle-for-observer.json",
+	"id": "#game-definition.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"description": "New battle info for an observer. New game has started.",
+	"description": "Game definition",
 
 	"type": "object",
-	"extends": {
-		"$ref": "message.json",
-		"default": "new-battle-for-observer"
-	},
 	"properties": {
 		"game-type": {
 			"description": "Type of game",
@@ -40,20 +36,14 @@
 		"ready-timeout": {
 			 "description": "Time limit in milliseconds for sending ready message after having received 'new battle' message",
 			 "type": "integer"
-		},
-		"participants": {
-			"description": "List of bots participating in battle",
-			"type": "array",
-			"items": { "$ref": "participant.json" }
 		}
 	},
 	"required": [
 		"game-type",
 		"arena-width",
 		"arena-height",
-		"number-of-rounds",
+		"min-number-of-participants",
 		"turn-timeout",
-		"ready-timeout",
-		"participants"
+		"ready-timeout"
 	]
 }

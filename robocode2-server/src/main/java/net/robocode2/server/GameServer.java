@@ -17,7 +17,7 @@ import com.google.gson.Gson;
 
 import net.robocode2.game.ModelUpdater;
 import net.robocode2.json_schema.BotHandshake;
-import net.robocode2.json_schema.Game;
+import net.robocode2.json_schema.GameDefinition;
 import net.robocode2.json_schema.NewBattleForBot;
 import net.robocode2.json_schema.NewBattleForObserver;
 import net.robocode2.json_schema.ObserverHandshake;
@@ -32,7 +32,7 @@ public final class GameServer {
 	ConnectionHandler connectionHandler;
 
 	ServerState gameState;
-	Game game;
+	GameDefinition gameDefinition;
 	Set<Bot> participants;
 	Set<Bot> readyParticipants;
 
@@ -64,7 +64,7 @@ public final class GameServer {
 			return;
 		}
 
-		game = gameAndParticipants.game;
+		gameDefinition = gameAndParticipants.gameDefinition;
 		participants = gameAndParticipants.participants;
 
 		if (participants.size() > 0) {
@@ -91,14 +91,14 @@ public final class GameServer {
 
 		NewBattleForBot ngb = new NewBattleForBot();
 		ngb.setMessageType(NewBattleForBot.MessageType.NEW_BATTLE_FOR_BOT);
-		ngb.setGameType(game.getGameType());
-		ngb.setArenaWidth(game.getArenaWidth());
-		ngb.setArenaHeight(game.getArenaHeight());
-		ngb.setNumberOfRounds(game.getNumberOfRounds());
-		ngb.setMinNumberOfParticipants(game.getMinNumberOfParticipants());
-		ngb.setMaxNumberOfParticipants(game.getMaxNumberOfParticipants());
-		ngb.setTurnTimeout(game.getTurnTimeout());
-		ngb.setReadyTimeout(game.getReadyTimeout());
+		ngb.setGameType(gameDefinition.getGameType());
+		ngb.setArenaWidth(gameDefinition.getArenaWidth());
+		ngb.setArenaHeight(gameDefinition.getArenaHeight());
+		ngb.setNumberOfRounds(gameDefinition.getNumberOfRounds());
+		ngb.setMinNumberOfParticipants(gameDefinition.getMinNumberOfParticipants());
+		ngb.setMaxNumberOfParticipants(gameDefinition.getMaxNumberOfParticipants());
+		ngb.setTurnTimeout(gameDefinition.getTurnTimeout());
+		ngb.setReadyTimeout(gameDefinition.getReadyTimeout());
 
 		int participantId = 1;
 		for (Bot participant : participants) {
@@ -121,7 +121,7 @@ public final class GameServer {
 				onReadyTimeout();
 			}
 
-		}, game.getReadyTimeout());
+		}, gameDefinition.getReadyTimeout());
 	}
 
 	// Should be moved to a "strategy" class
@@ -151,9 +151,9 @@ public final class GameServer {
 
 		// Run through the list of games and see if anyone has enough
 		// participants to start the game
-		Set<Game> games = setup.getGames();
+		Set<GameDefinition> games = setup.getGames();
 		for (Entry<String, Set<Bot>> entry : candidateBotsPerGameType.entrySet()) {
-			Game game = games.stream().filter(g -> g.getGameType().equalsIgnoreCase(entry.getKey())).findAny()
+			GameDefinition game = games.stream().filter(g -> g.getGameType().equalsIgnoreCase(entry.getKey())).findAny()
 					.orElse(null);
 
 			Set<Bot> participants = entry.getValue();
@@ -161,7 +161,7 @@ public final class GameServer {
 			if (count >= game.getMinNumberOfParticipants() && count <= game.getMaxNumberOfParticipants()) {
 				// enough participants
 				GameAndParticipants gameAndParticipants = new GameAndParticipants();
-				gameAndParticipants.game = game;
+				gameAndParticipants.gameDefinition = game;
 				gameAndParticipants.participants = participants;
 				return gameAndParticipants;
 			}
@@ -184,14 +184,14 @@ public final class GameServer {
 
 		NewBattleForObserver ngo = new NewBattleForObserver();
 		ngo.setMessageType(NewBattleForObserver.MessageType.NEW_BATTLE_FOR_OBSERVER);
-		ngo.setGameType(game.getGameType());
-		ngo.setArenaWidth(game.getArenaWidth());
-		ngo.setArenaHeight(game.getArenaHeight());
-		ngo.setNumberOfRounds(game.getNumberOfRounds());
-		ngo.setMinNumberOfParticipants(game.getMinNumberOfParticipants());
-		ngo.setMaxNumberOfParticipants(game.getMaxNumberOfParticipants());
-		ngo.setTurnTimeout(game.getTurnTimeout());
-		ngo.setReadyTimeout(game.getReadyTimeout());
+		ngo.setGameType(gameDefinition.getGameType());
+		ngo.setArenaWidth(gameDefinition.getArenaWidth());
+		ngo.setArenaHeight(gameDefinition.getArenaHeight());
+		ngo.setNumberOfRounds(gameDefinition.getNumberOfRounds());
+		ngo.setMinNumberOfParticipants(gameDefinition.getMinNumberOfParticipants());
+		ngo.setMaxNumberOfParticipants(gameDefinition.getMaxNumberOfParticipants());
+		ngo.setTurnTimeout(gameDefinition.getTurnTimeout());
+		ngo.setReadyTimeout(gameDefinition.getReadyTimeout());
 
 		List<Participant> list = new ArrayList<>();
 
@@ -216,8 +216,8 @@ public final class GameServer {
 			send(observer, msg);
 		}
 
-		Setup setup = new Setup(game.getGameType(), game.getArenaWidth(), game.getArenaHeight(),
-				game.getNumberOfRounds(), game.getTurnTimeout(), game.getReadyTimeout(), participantIds);
+		Setup setup = new Setup(gameDefinition.getGameType(), gameDefinition.getArenaWidth(), gameDefinition.getArenaHeight(),
+				gameDefinition.getNumberOfRounds(), gameDefinition.getTurnTimeout(), gameDefinition.getReadyTimeout(), participantIds);
 
 		modelUpdater = new ModelUpdater(setup);
 
@@ -234,8 +234,8 @@ public final class GameServer {
 
 	private Set<String> getGameTypes() {
 		Set<String> gameTypes = new HashSet<>();
-		for (Game game : setup.getGames()) {
-			gameTypes.add(game.getGameType());
+		for (GameDefinition gameDef : setup.getGames()) {
+			gameTypes.add(gameDef.getGameType());
 		}
 		return gameTypes;
 	}
@@ -243,7 +243,7 @@ public final class GameServer {
 	private void onReadyTimeout() {
 		System.out.println("#### READY TIMEOUT #####");
 
-		if (readyParticipants.size() >= game.getMinNumberOfParticipants()) {
+		if (readyParticipants.size() >= gameDefinition.getMinNumberOfParticipants()) {
 			// Start the game with the participants that are ready
 			participants = readyParticipants;
 			startGame();
@@ -300,7 +300,7 @@ public final class GameServer {
 	}
 
 	private class GameAndParticipants {
-		Game game;
+		GameDefinition gameDefinition;
 		Set<Bot> participants;
 	}
 }

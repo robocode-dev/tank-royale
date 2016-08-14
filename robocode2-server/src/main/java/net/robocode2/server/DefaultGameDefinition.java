@@ -1,10 +1,10 @@
 package net.robocode2.server;
 
-import net.robocode2.json_schema.Game;
+import net.robocode2.json_schema.GameDefinition;
 
-public final class DefaultGame extends Game {
+public final class DefaultGameDefinition extends GameDefinition {
 
-	public DefaultGame() {
+	public DefaultGameDefinition() {
 		setGameType("melee");
 		setArenaWidth(1000);
 		setArenaHeight(1000);

@@ -25,47 +25,12 @@
 		"scanned-bots": {
 			"description": "Bots scanned in this turn by this bot",
 			"type": "array",
-			"items": { "$ref": "#/definitions/scanned-bot" }
+			"items": { "$ref": "scanned-bot.json" }
 		}
 	},
 	"required": [
 		"round-state",
 		"bot-state",
 		"bullet-states"
-	],
-	"definitions": {
-		"scanned-bot": {
-			"description": "Scanned bot",
-			"type": "object",
-			"properties": {
-				"id": {
-					"description": "Unique identifier, but only for this bot",
-					"type": "integer"
-				},
-				"energy": {
-					"description": "Energy level",
-					"type": "number"
-				},
-				"position": {
-					"description": "Position (x, y)",
-					"$ref": "types/position.json"
-				},
-				"direction": {
-					"description": "Direction in degrees",
-					"$ref": "types/angle.json"
-				},
-				"speed": {
-					"description": "Speed measured in units per turn",
-					"type": "number"
-				}
-			},
-			"required": [
-				"id",
-				"energy",
-				"position",
-				"direction",
-				"speed"
-			]
-		}
-	}
+	]
 }
