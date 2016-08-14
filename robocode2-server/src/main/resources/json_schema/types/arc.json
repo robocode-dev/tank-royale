@@ -4,6 +4,7 @@
 	"description": "A minimum arc defined of a radius and center angle, which can be positive, negative, or zero",
  
 	"type": "object",
+	"javaName": "Arc",
 	"properties": {
 		"angle": {
 			"description": "Center angle",

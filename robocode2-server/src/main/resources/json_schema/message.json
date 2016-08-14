@@ -4,6 +4,7 @@
 	"description": "Message exchanged between server and client",
 
 	"type": "object",
+	"javaName": "Message",
 	"properties": {
 		"message-type": {
 			"enum": [
