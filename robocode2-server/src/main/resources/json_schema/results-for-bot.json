@@ -1,0 +1,22 @@
+{
+	"id": "#results-for-bot.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "All game results visible for a bot. Game has ended.",
+
+	"type": "object",
+	"extends": {
+		"$ref": "message.json",
+		"default": "results-for-bot"
+	},
+	"properties": {
+		"results": {
+			"description": "Results of the battle",
+			"type": "array",
+			"items": { "$ref": "bot-results-for-bot.json" }
+		}
+	},
+	"required": [
+		"message-type",
+		"results"
+	]
+}

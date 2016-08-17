@@ -1,0 +1,56 @@
+{
+	"id": "#results-for-observer.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "All game results visible for an observer. Game has ended.",
+
+	"type": "object",
+	"extends": {
+		"$ref": "message.json",
+		"default": "results-for-observer"
+	},
+	"properties": {
+		"results": {
+			"description": "Results of the battle",
+			"type": "array",
+			"items": { "$ref": "bot-results-for-observer.json" }
+		}
+	},
+	"required": [ "message-type", "results" ],
+	"definitions": {
+		"botResults": {
+			"description": "Results for a bot",
+			"type": "object",
+			"properties": {
+				"id": {
+					"description": "Unique identifier of the bot used in this battle, but only for this observer",
+					"type": "integer"
+				},
+				"name": {
+					"description": "Name of bot, e.g. Killer Bee",
+					"type": "string"
+				},
+				"version": {
+					"description": "Bot version, e.g. 1.0",
+					"type": "string"
+				},
+				"rank": {
+					"description": "The rank bot, where 1 is 1st place, 4 is 4th place etc.",
+					"type": "integer",
+					"minimum": 1
+				},
+				"total-score": {
+					"description": "Total score",
+					"type": "number"
+				}
+			},
+			"required":
+			[
+				"id",
+				"name",
+				"version",
+				"rank",
+				"total-score"
+			]
+		}
+	}
+}
