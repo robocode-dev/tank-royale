@@ -15,7 +15,10 @@
 				"new-battle-for-observer",
 				"bot-ready",
 				"tick-for-bot",
-				"tick-for-observer"
+				"tick-for-observer",
+				"intent-from-bot",
+				"results-for-bot",
+				"results-for-observer"
 			]
 		}
 	},

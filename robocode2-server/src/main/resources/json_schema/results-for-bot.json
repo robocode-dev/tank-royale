@@ -16,7 +16,6 @@
 		}
 	},
 	"required": [
-		"message-type",
 		"results"
 	]
 }
