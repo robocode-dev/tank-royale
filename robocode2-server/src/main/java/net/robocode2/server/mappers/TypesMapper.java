@@ -3,7 +3,7 @@ package net.robocode2.server.mappers;
 import net.robocode2.model.Arc;
 import net.robocode2.model.Position;
 
-public class TypesMapper {
+public final class TypesMapper {
 
 	public static net.robocode2.json_schema.Arc map(Arc arc) {
 		net.robocode2.json_schema.Arc schemaArc = new net.robocode2.json_schema.Arc();

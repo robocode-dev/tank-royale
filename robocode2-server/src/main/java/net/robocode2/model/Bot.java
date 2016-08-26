@@ -1,11 +1,16 @@
 package net.robocode2.model;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 public final class Bot {
 
 	public static final int WIDTH = 40;
 	public static final int HEIGHT = 40;
 
 	private final int id;
+	private final boolean alive;
 	private final double energy;
 	private final Position position;
 	private final double direction;
@@ -14,11 +19,12 @@ public final class Bot {
 	private final double speed;
 	private final Arc scanArc;
 	private final Score score;
-	private final boolean alive;
+	private final Set<ScannedBot> scannedBots;
 
-	public Bot(int id, double energy, Position position, double direction, double turretDiretion, double radarDirection,
-			double speed, Arc scanArc, Score score, boolean alive) {
+	public Bot(int id, boolean alive, double energy, Position position, double direction, double turretDiretion,
+			double radarDirection, double speed, Arc scanArc, Score score, Set<ScannedBot> scannedBots) {
 		this.id = id;
+		this.alive = alive;
 		this.energy = energy;
 		this.position = position;
 		this.direction = direction;
@@ -27,15 +33,27 @@ public final class Bot {
 		this.speed = speed;
 		this.scanArc = scanArc;
 		this.score = score;
-		this.alive = alive;
+		this.scannedBots = new HashSet<>(scannedBots);
 	}
 
 	public int getId() {
 		return id;
 	}
 
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public boolean isDead() {
+		return !alive;
+	}
+
 	public double getEnergy() {
 		return energy;
+	}
+
+	public boolean isDisabled() {
+		return new Double(energy).equals(0.0d);
 	}
 
 	public Position getPosition() {
@@ -66,20 +84,13 @@ public final class Bot {
 		return score;
 	}
 
-	public boolean isDisabled() {
-		return new Double(energy).equals(0.0d);
-	}
-
-	public boolean isAlive() {
-		return alive;
-	}
-
-	public boolean isDead() {
-		return !alive;
+	public Set<ScannedBot> getScannedBots() {
+		return Collections.unmodifiableSet(scannedBots);
 	}
 
 	public static final class BotBuilder {
 		private int id;
+		private boolean alive;
 		private double energy;
 		private Position position;
 		private double direction;
@@ -88,15 +99,20 @@ public final class Bot {
 		private double speed;
 		private Arc scanArc;
 		private Score score;
-		private boolean alive;
+		private Set<ScannedBot> scannedBots;
 
 		public Bot build() {
-			return new Bot(id, energy, position, direction, turretDirection, radarDirection, speed, scanArc, score,
-					alive);
+			return new Bot(id, alive, energy, position, direction, turretDirection, radarDirection, speed, scanArc,
+					score, scannedBots);
 		}
 
 		public BotBuilder setId(int id) {
 			this.id = id;
+			return this;
+		}
+
+		public BotBuilder setAlive(boolean alive) {
+			this.alive = alive;
 			return this;
 		}
 
@@ -140,8 +156,8 @@ public final class Bot {
 			return this;
 		}
 
-		public BotBuilder setAlive(boolean alive) {
-			this.alive = alive;
+		public BotBuilder setScannedBots(Set<ScannedBot> scannedBots) {
+			this.scannedBots = new HashSet<>(scannedBots);
 			return this;
 		}
 	}

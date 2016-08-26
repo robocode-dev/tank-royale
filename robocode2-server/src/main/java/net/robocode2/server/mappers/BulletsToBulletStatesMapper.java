@@ -9,7 +9,7 @@ import net.robocode2.model.Bullet;
 import net.robocode2.model.Position;
 import net.robocode2.model.Turn;
 
-public class BulletsToBulletStatesMapper {
+public final class BulletsToBulletStatesMapper {
 
 	public static List<BulletState> map(Turn turn, int botId) {
 		Set<Bullet> bullets = turn.getBullets(botId);

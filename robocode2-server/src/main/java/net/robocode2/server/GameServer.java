@@ -24,6 +24,7 @@ import net.robocode2.json_schema.ObserverHandshake;
 import net.robocode2.json_schema.Participant;
 import net.robocode2.json_schema.TickForBot;
 import net.robocode2.model.GameState;
+import net.robocode2.model.Round;
 import net.robocode2.model.Setup;
 import net.robocode2.model.Turn;
 import net.robocode2.server.mappers.TurnToTickForBotMapper;
@@ -231,11 +232,12 @@ public final class GameServer {
 	private void updateGameState() {
 		GameState gameState = modelUpdater.update();
 
-		Turn lastTurn = gameState.getLastRound().getLastTurn();
+		Round lastRound = gameState.getLastRound();
+		Turn lastTurn = lastRound.getLastTurn();
 
 		// Send game state as 'tick' to participants
 		for (Bot participant : participants) {
-			TickForBot tickForBot = TurnToTickForBotMapper.map(lastTurn, participant.getId());
+			TickForBot tickForBot = TurnToTickForBotMapper.map(lastRound, lastTurn, participant.getId());
 
 			String msg = gson.toJson(tickForBot);
 			send(participant.getConnection(), msg);

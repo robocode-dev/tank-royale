@@ -3,7 +3,7 @@ package net.robocode2.server.mappers;
 import net.robocode2.json_schema.BotStateWithoutId;
 import net.robocode2.model.Bot;
 
-public class BotToBotStateWithoutIdMapper {
+public final class BotToBotStateWithoutIdMapper {
 
 	public static BotStateWithoutId map(Bot bot) {
 		BotStateWithoutId botState = new BotStateWithoutId();
