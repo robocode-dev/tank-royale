@@ -22,8 +22,11 @@ import net.robocode2.json_schema.NewBattleForBot;
 import net.robocode2.json_schema.NewBattleForObserver;
 import net.robocode2.json_schema.ObserverHandshake;
 import net.robocode2.json_schema.Participant;
+import net.robocode2.json_schema.TickForBot;
 import net.robocode2.model.GameState;
 import net.robocode2.model.Setup;
+import net.robocode2.model.Turn;
+import net.robocode2.server.mappers.TurnToTickForBotMapper;
 
 public final class GameServer {
 
@@ -216,8 +219,9 @@ public final class GameServer {
 			send(observer, msg);
 		}
 
-		Setup setup = new Setup(gameDefinition.getGameType(), gameDefinition.getArenaWidth(), gameDefinition.getArenaHeight(),
-				gameDefinition.getNumberOfRounds(), gameDefinition.getTurnTimeout(), gameDefinition.getReadyTimeout(), participantIds);
+		Setup setup = new Setup(gameDefinition.getGameType(), gameDefinition.getArenaWidth(),
+				gameDefinition.getArenaHeight(), gameDefinition.getNumberOfRounds(), gameDefinition.getTurnTimeout(),
+				gameDefinition.getReadyTimeout(), participantIds);
 
 		modelUpdater = new ModelUpdater(setup);
 
@@ -227,7 +231,15 @@ public final class GameServer {
 	private void updateGameState() {
 		GameState gameState = modelUpdater.update();
 
-		// TODO: Send game state as 'tick' to participants
+		Turn lastTurn = gameState.getLastRound().getLastTurn();
+
+		// Send game state as 'tick' to participants
+		for (Bot participant : participants) {
+			TickForBot tickForBot = TurnToTickForBotMapper.map(lastTurn, participant.getId());
+
+			String msg = gson.toJson(tickForBot);
+			send(participant.getConnection(), msg);
+		}
 
 		// TODO: Game state must be delayed for observers
 	}
