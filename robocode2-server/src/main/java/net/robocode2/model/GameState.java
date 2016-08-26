@@ -24,6 +24,14 @@ public final class GameState {
 		return Collections.unmodifiableList(rounds);
 	}
 
+	public Round getLastRound() {
+		int numRounds = rounds.size();
+		if (numRounds > 0) {
+			return rounds.get(numRounds - 1);
+		}
+		return null;
+	}
+
 	public boolean isGameEnded() {
 		return gameEnded;
 	}

@@ -24,6 +24,14 @@ public final class Round {
 		return Collections.unmodifiableList(turns);
 	}
 
+	public Turn getLastTurn() {
+		int numTurns = turns.size();
+		if (numTurns > 0) {
+			return turns.get(numTurns - 1);
+		}
+		return null;
+	}
+
 	public boolean isRoundEnded() {
 		return roundEnded;
 	}

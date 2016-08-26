@@ -3,7 +3,9 @@ package net.robocode2.model;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+// FIXME: Missing events: Bullet hit bot, bullet hit bullet, bot hit bot + ramming, bot hit wall
 public final class Turn {
 
 	private final int turnNumber;
@@ -24,8 +26,16 @@ public final class Turn {
 		return Collections.unmodifiableSet(bots);
 	}
 
-	public Set<Bullet> getBullet() {
+	public Bot getBot(int botId) {
+		return bots.stream().filter(b -> b.getId() == botId).findAny().get();
+	}
+
+	public Set<Bullet> getBullets() {
 		return Collections.unmodifiableSet(bullets);
+	}
+
+	public Set<Bullet> getBullets(int botId) {
+		return bullets.stream().filter(b -> b.getBotId() == botId).collect(Collectors.toSet());
 	}
 
 	public static final class TurnBuilder {
