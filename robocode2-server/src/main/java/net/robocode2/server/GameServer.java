@@ -93,23 +93,23 @@ public final class GameServer {
 
 		// Send NewBattle to all participant bots to get them started
 
-		NewBattleForBot ngb = new NewBattleForBot();
-		ngb.setMessageType(NewBattleForBot.MessageType.NEW_BATTLE_FOR_BOT);
-		ngb.setGameType(gameDefinition.getGameType());
-		ngb.setArenaWidth(gameDefinition.getArenaWidth());
-		ngb.setArenaHeight(gameDefinition.getArenaHeight());
-		ngb.setNumberOfRounds(gameDefinition.getNumberOfRounds());
-		ngb.setMinNumberOfParticipants(gameDefinition.getMinNumberOfParticipants());
-		ngb.setMaxNumberOfParticipants(gameDefinition.getMaxNumberOfParticipants());
-		ngb.setTurnTimeout(gameDefinition.getTurnTimeout());
-		ngb.setReadyTimeout(gameDefinition.getReadyTimeout());
+		NewBattleForBot newBattleForBot = new NewBattleForBot();
+		newBattleForBot.setMessageType(NewBattleForBot.MessageType.NEW_BATTLE_FOR_BOT);
+		newBattleForBot.setGameType(gameDefinition.getGameType());
+		newBattleForBot.setArenaWidth(gameDefinition.getArenaWidth());
+		newBattleForBot.setArenaHeight(gameDefinition.getArenaHeight());
+		newBattleForBot.setNumberOfRounds(gameDefinition.getNumberOfRounds());
+		newBattleForBot.setMinNumberOfParticipants(gameDefinition.getMinNumberOfParticipants());
+		newBattleForBot.setMaxNumberOfParticipants(gameDefinition.getMaxNumberOfParticipants());
+		newBattleForBot.setTurnTimeout(gameDefinition.getTurnTimeout());
+		newBattleForBot.setReadyTimeout(gameDefinition.getReadyTimeout());
 
 		int participantId = 1;
 		for (Bot participant : participants) {
 			participant.setId(participantId);
-			ngb.setMyId(participantId);
+			newBattleForBot.setMyId(participantId);
 
-			String msg = gson.toJson(ngb);
+			String msg = gson.toJson(newBattleForBot);
 			send(participant.getConnection(), msg);
 
 			participantId++;
@@ -179,45 +179,46 @@ public final class GameServer {
 
 		gameState = ServerState.GAME_RUNNING;
 
+		// Send NewBattle to all participant observers to get them started
+		if (connectionHandler.getObserverConnections().size() > 0) {
+			NewBattleForObserver newBattleForObserver = new NewBattleForObserver();
+			newBattleForObserver.setMessageType(NewBattleForObserver.MessageType.NEW_BATTLE_FOR_OBSERVER);
+			newBattleForObserver.setGameType(gameDefinition.getGameType());
+			newBattleForObserver.setArenaWidth(gameDefinition.getArenaWidth());
+			newBattleForObserver.setArenaHeight(gameDefinition.getArenaHeight());
+			newBattleForObserver.setNumberOfRounds(gameDefinition.getNumberOfRounds());
+			newBattleForObserver.setMinNumberOfParticipants(gameDefinition.getMinNumberOfParticipants());
+			newBattleForObserver.setMaxNumberOfParticipants(gameDefinition.getMaxNumberOfParticipants());
+			newBattleForObserver.setTurnTimeout(gameDefinition.getTurnTimeout());
+			newBattleForObserver.setReadyTimeout(gameDefinition.getReadyTimeout());
+
+			List<Participant> list = new ArrayList<>();
+			for (Bot bot : participants) {
+				Participant p = new Participant();
+				BotHandshake h = bot.getHandshake();
+				p.setAuthor(h.getAuthor());
+				p.setCountryCode(h.getCountryCode());
+				p.setGameTypes(h.getGameTypes());
+				p.setId(bot.getId());
+				p.setName(h.getName());
+				p.setProgrammingLanguage(h.getProgrammingLanguage());
+				p.setVersion(h.getVersion());
+				list.add(p);
+			}
+			newBattleForObserver.setParticipants(list);
+
+			String msg = gson.toJson(newBattleForObserver);
+
+			for (Entry<WebSocket, ObserverHandshake> entry : connectionHandler.getObserverConnections().entrySet()) {
+				WebSocket observer = entry.getKey();
+				send(observer, msg);
+			}
+		}
+
+		// Update game state
 		Set<Integer> participantIds = new HashSet<>();
 		for (Bot bot : participants) {
 			participantIds.add(bot.getId());
-		}
-
-		// Send NewBattle to all participant observers to get them started
-
-		NewBattleForObserver ngo = new NewBattleForObserver();
-		ngo.setMessageType(NewBattleForObserver.MessageType.NEW_BATTLE_FOR_OBSERVER);
-		ngo.setGameType(gameDefinition.getGameType());
-		ngo.setArenaWidth(gameDefinition.getArenaWidth());
-		ngo.setArenaHeight(gameDefinition.getArenaHeight());
-		ngo.setNumberOfRounds(gameDefinition.getNumberOfRounds());
-		ngo.setMinNumberOfParticipants(gameDefinition.getMinNumberOfParticipants());
-		ngo.setMaxNumberOfParticipants(gameDefinition.getMaxNumberOfParticipants());
-		ngo.setTurnTimeout(gameDefinition.getTurnTimeout());
-		ngo.setReadyTimeout(gameDefinition.getReadyTimeout());
-
-		List<Participant> list = new ArrayList<>();
-
-		for (Bot bot : participants) {
-			Participant p = new Participant();
-			BotHandshake h = bot.getHandshake();
-			p.setAuthor(h.getAuthor());
-			p.setCountryCode(h.getCountryCode());
-			p.setGameTypes(h.getGameTypes());
-			p.setId(bot.getId());
-			p.setName(h.getName());
-			p.setProgrammingLanguage(h.getProgrammingLanguage());
-			p.setVersion(h.getVersion());
-			list.add(p);
-		}
-		ngo.setParticipants(list);
-
-		String msg = gson.toJson(ngo);
-
-		for (Entry<WebSocket, ObserverHandshake> entry : connectionHandler.getObserverConnections().entrySet()) {
-			WebSocket observer = entry.getKey();
-			send(observer, msg);
 		}
 
 		Setup setup = new Setup(gameDefinition.getGameType(), gameDefinition.getArenaWidth(),
@@ -226,6 +227,7 @@ public final class GameServer {
 
 		modelUpdater = new ModelUpdater(setup);
 
+		// TODO: Invoke after X time by some timer?
 		updateGameState();
 	}
 

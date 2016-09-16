@@ -33,7 +33,11 @@ public final class Bot {
 		this.speed = speed;
 		this.scanArc = scanArc;
 		this.score = score;
-		this.scannedBots = new HashSet<>(scannedBots);
+		if (scannedBots == null) {
+			this.scannedBots = new HashSet<>();
+		} else {
+			this.scannedBots = new HashSet<>(scannedBots);
+		}
 	}
 
 	public int getId() {
@@ -99,7 +103,7 @@ public final class Bot {
 		private double speed;
 		private Arc scanArc;
 		private Score score;
-		private Set<ScannedBot> scannedBots;
+		private Set<ScannedBot> scannedBots = new HashSet<>();
 
 		public Bot build() {
 			return new Bot(id, alive, energy, position, direction, turretDirection, radarDirection, speed, scanArc,
@@ -157,7 +161,11 @@ public final class Bot {
 		}
 
 		public BotBuilder setScannedBots(Set<ScannedBot> scannedBots) {
-			this.scannedBots = new HashSet<>(scannedBots);
+			if (scannedBots == null) {
+				this.scannedBots = new HashSet<>();
+			} else {
+				this.scannedBots = new HashSet<>(scannedBots);
+			}
 			return this;
 		}
 	}

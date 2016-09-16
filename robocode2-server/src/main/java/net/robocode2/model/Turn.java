@@ -14,8 +14,16 @@ public final class Turn {
 
 	public Turn(int turnNumber, Set<Bot> bots, Set<Bullet> bullets) {
 		this.turnNumber = turnNumber;
-		this.bots = new HashSet<>(bots);
-		this.bullets = new HashSet<>(bullets);
+		if (bots == null) {
+			this.bots = new HashSet<>();
+		} else {
+			this.bots = new HashSet<>(bots);
+		}
+		if (bullets == null) {
+			this.bullets = new HashSet<>();
+		} else {
+			this.bullets = new HashSet<>(bullets);
+		}
 	}
 
 	public int getTurnNumber() {
@@ -53,12 +61,20 @@ public final class Turn {
 		}
 
 		public TurnBuilder setBots(Set<Bot> bots) {
-			this.bots = new HashSet<>(bots);
+			if (bots == null) {
+				this.bots = new HashSet<>();
+			} else {
+				this.bots = new HashSet<>(bots);
+			}
 			return this;
 		}
 
 		public TurnBuilder setBullets(Set<Bullet> bullets) {
-			this.bullets = new HashSet<>(bullets);
+			if (bullets == null) {
+				this.bullets = new HashSet<>();
+			} else {
+				this.bullets = new HashSet<>(bullets);
+			}
 			return this;
 		}
 

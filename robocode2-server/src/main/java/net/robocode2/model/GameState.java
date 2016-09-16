@@ -12,7 +12,11 @@ public final class GameState {
 
 	public GameState(Arena arena, List<Round> rounds, boolean gameEnded) {
 		this.arena = arena;
-		this.rounds = new ArrayList<>(rounds);
+		if (rounds == null) {
+			this.rounds = new ArrayList<>();
+		} else {
+			this.rounds = new ArrayList<>(rounds);
+		}
 		this.gameEnded = gameEnded;
 	}
 
@@ -38,7 +42,7 @@ public final class GameState {
 
 	public static final class GameStateBuilder {
 		private Arena arena;
-		private List<Round> rounds;
+		private List<Round> rounds = new ArrayList<>();
 		private boolean gameEnded;
 
 		public GameState build() {

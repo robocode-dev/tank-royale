@@ -24,7 +24,11 @@ public final class Setup {
 		this.numberOfRounds = numberOfRounds;
 		this.turnTimeout = turnTimeout;
 		this.readyTimeout = readyTimeout;
-		this.participantIds = new HashSet<>(participantIds);
+		if (participantIds == null) {
+			this.participantIds = new HashSet<>();
+		} else {
+			this.participantIds = new HashSet<>(participantIds);
+		}
 	}
 
 	public String getGameType() {

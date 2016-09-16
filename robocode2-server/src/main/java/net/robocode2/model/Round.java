@@ -12,7 +12,11 @@ public final class Round {
 
 	public Round(int roundNumber, List<Turn> turns, boolean roundEnded) {
 		this.roundNumber = roundNumber;
-		this.turns = new ArrayList<>(turns);
+		if (turns == null) {
+			this.turns = new ArrayList<>();
+		} else {
+			this.turns = new ArrayList<>(turns);
+		}
 		this.roundEnded = roundEnded;
 	}
 
