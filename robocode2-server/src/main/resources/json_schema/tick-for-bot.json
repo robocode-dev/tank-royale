@@ -22,15 +22,16 @@
 			"type": "array",
 			"items": { "$ref": "bullet-state.json" }
 		},
-		"scanned-bots": {
-			"description": "Bots scanned in this turn by this bot",
+		"events": {
+			"description": "Events occurring relevant for this bot",
 			"type": "array",
-			"items": { "$ref": "scanned-bot.json" }
+			"items": { "$ref": "events/event.json" }
 		}
 	},
 	"required": [
 		"round-state",
 		"bot-state",
-		"bullet-states"
+		"bullet-states",
+		"events"
 	]
 }

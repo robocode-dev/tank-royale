@@ -22,11 +22,17 @@
 			"description": "Current state of all bullets",
 			"type": "array",
 			"items": { "$ref": "bullet-state.json" }
+		},
+		"events": {
+			"description": "Events occuring at this tick",
+			"type": "array",
+			"items": { "$ref": "events/event.json" }
 		}
 	},
 	"required": [
 		"round-state",
 		"bot-states",
-		"bullet-states"
+		"bullet-states",
+		"events"
 	]
 }

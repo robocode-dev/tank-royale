@@ -5,8 +5,12 @@
 
 	"type": "object",
 	"properties": {
-		"id": {
-			"description": "Unique identifier for the observer/bot, not shared between bots",
+		"bullet-id": {
+			"description": "Unique identifier of the bullet",
+			"type": "integer"
+		},
+		"bot-id": {
+			"description": "Unique identifier of the bot that fired the bullet",
 			"type": "integer"
 		},
 		"power": {

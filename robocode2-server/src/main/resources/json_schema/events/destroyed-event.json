@@ -1,36 +1,11 @@
 {
-	"id": "#scanned-bot.json",
+	"id": "#destroyed-event.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"description": "Scanned bot",
+	"description": "Bot event occurring, when the bot itself is destroyed",
 	
 	"type": "object",
-	"properties": {
-		"id": {
-			"description": "Unique identifier, but only for this bot",
-			"type": "integer"
-		},
-		"energy": {
-			"description": "Energy level",
-			"type": "number"
-		},
-		"position": {
-			"description": "Position (x, y)",
-			"$ref": "types/position.json"
-		},
-		"direction": {
-			"description": "Direction in degrees",
-			"$ref": "types/angle.json"
-		},
-		"speed": {
-			"description": "Speed measured in units per turn",
-			"type": "number"
-		}
-	},
-	"required": [
-		"id",
-		"energy",
-		"position",
-		"direction",
-		"speed"
-	]
+	"extends": {
+		"$ref": "event.json",
+		"default": "death-event"
+	}
 }	

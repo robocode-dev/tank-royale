@@ -1,24 +1,20 @@
 {
-	"id": "#message.json",
+	"id": "#event.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"description": "Message exchanged between server and client",
+	"description": "Event occurring in the battle arena",
 
 	"type": "object",
-	"javaName": "Message",
+	"javaName": "Event",
 	"properties": {
 		"message-type": {
 			"enum": [
-				"server-handshake",
-				"bot-handshake",
-				"observer-handshake",
-				"new-battle-for-bot",
-				"new-battle-for-observer",
-				"bot-ready",
-				"tick-for-bot",
-				"tick-for-observer",
-				"intent-from-bot",
-				"results-for-bot",
-				"results-for-observer"
+				"scanned-bot-event",
+				"bullet-hit-bot-event",
+				"bullet-hit-bullet-event",
+				"bullet-missed",
+				"hit-by-bullet-event",
+				"destroyed-event",
+				"collision-event"
 			]
 		}
 	},

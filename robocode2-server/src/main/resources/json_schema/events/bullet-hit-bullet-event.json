@@ -1,40 +1,25 @@
 {
-	"id": "#scanned-bot-event.json",
+	"id": "#bullet-hit-bullet-event.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"description": "Scanned bot",
+	"description": "Bot event occuring, when the bullet from a bot hits another bullet",
 	
 	"type": "object",
 	"extends": {
 		"$ref": "event.json",
-		"default": "scanned-bot-event"
+		"default": "bullet-hit-bullet-event"
 	},
 	"properties": {
-		"id": {
-			"description": "Unique identifier, but only for the scanned bot",
-			"type": "integer"
+		"bullet": {
+			"description": "Bullet that hit another bullet",
+			"$ref": "../bullet-state.json"
 		},
-		"energy": {
-			"description": "Energy level of the scanned bot",
-			"type": "number"
-		},
-		"position": {
-			"description": "Position (x, y) of the scanned bot",
-			"$ref": "types/position.json"
-		},
-		"direction": {
-			"description": "Direction in degrees of the scanned bot",
-			"$ref": "types/angle.json"
-		},
-		"speed": {
-			"description": "Speed measured in units per turn of the scanned bot",
-			"type": "number"
+		"hitBullet": {
+			"description": "The other bullet that was hit by the bullet",
+			"$ref": "../bullet-state.json"
 		}
 	},
 	"required": [
-		"id",
-		"energy",
-		"position",
-		"direction",
-		"speed"
+		"bullet",
+		"hitBullet"
 	]
 }	
