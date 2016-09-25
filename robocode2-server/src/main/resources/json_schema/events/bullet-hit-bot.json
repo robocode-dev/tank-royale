@@ -1,0 +1,25 @@
+{
+	"id": "#bullet-hit-bullet-event.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Bot event occuring, when one of its bullets hits the bullet from another bot",
+	
+	"type": "object",
+	"extends": {
+		"$ref": "event.json",
+		"default": "bullet-hit-bullet-event"
+	},
+	"properties": {
+		"bullet": {
+			"description": "Bullet that hit another bullet",
+			"$ref": "../bullet-state.json"
+		},
+		"hitBullet": {
+			"description": "The other bullet that was hit by the bullet",
+			"$ref": "../bullet-state.json"
+		}
+	},
+	"required": [
+		"bullet",
+		"hitBullet"
+	]
+}	

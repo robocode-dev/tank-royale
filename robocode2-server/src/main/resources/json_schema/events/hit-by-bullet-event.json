@@ -1,0 +1,25 @@
+{
+	"id": "#hit-by-bullet-event.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Bot event occuring, your bot has been hit by a bullet",
+	
+	"type": "object",
+	"extends": {
+		"$ref": "event.json",
+		"default": "hit-by-bullet-event"
+	},
+	"properties": {
+		"bullet": {
+			"description": "Bullet that has hit your bot",
+			"$ref": "../bullet-state.json"
+		},
+		"damage": {
+			"description": "Damage inflicted by the bullet",
+			"type": "number"
+		}
+	},
+	"required": [
+		"bullet",
+		"damage"
+	]
+}	

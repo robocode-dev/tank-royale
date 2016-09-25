@@ -1,0 +1,30 @@
+{
+	"id": "#bullet-hit-bot-event.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Bot event occuring, when one of its bullets hits another bot",
+	
+	"type": "object",
+	"extends": {
+		"$ref": "event.json",
+		"default": "bullet-hit-bot-event"
+	},
+	"properties": {
+		"bullet": {
+			"description": "Bullet that hit another bot",
+			"$ref": "../bullet-state.json"
+		},
+		"bot-id": {
+			"description": "Unique id of the bot that got hit",
+			"type": "integer"
+		},
+		"energy": {
+			"description": "Energy level of the bot that got hit",
+			"type": "number"
+		}
+	},
+	"required": [
+		"bullet",
+		"bot-id",
+		"energy"
+	]
+}	

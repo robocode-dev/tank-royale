@@ -1,0 +1,40 @@
+{
+	"id": "#scanned-bot-event.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Scanned bot",
+	
+	"type": "object",
+	"extends": {
+		"$ref": "event.json",
+		"default": "scanned-bot-event"
+	},
+	"properties": {
+		"id": {
+			"description": "Unique identifier, but only for the scanned bot",
+			"type": "integer"
+		},
+		"energy": {
+			"description": "Energy level of the scanned bot",
+			"type": "number"
+		},
+		"position": {
+			"description": "Position (x, y) of the scanned bot",
+			"$ref": "types/position.json"
+		},
+		"direction": {
+			"description": "Direction in degrees of the scanned bot",
+			"$ref": "types/angle.json"
+		},
+		"speed": {
+			"description": "Speed measured in units per turn of the scanned bot",
+			"type": "number"
+		}
+	},
+	"required": [
+		"id",
+		"energy",
+		"position",
+		"direction",
+		"speed"
+	]
+}	
