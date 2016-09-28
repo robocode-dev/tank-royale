@@ -1,0 +1,11 @@
+{
+	"id": "#won-round-event.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Bot event occurring, when the bot has won the round",
+	
+	"type": "object",
+	"extends": {
+		"$ref": "event.json",
+		"default": "won-round-event"
+	}
+}

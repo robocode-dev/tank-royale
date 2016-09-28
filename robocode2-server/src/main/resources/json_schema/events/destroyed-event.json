@@ -6,6 +6,6 @@
 	"type": "object",
 	"extends": {
 		"$ref": "event.json",
-		"default": "death-event"
+		"default": "destroyed-event"
 	}
 }	

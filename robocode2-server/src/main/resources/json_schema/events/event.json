@@ -14,7 +14,10 @@
 				"bullet-missed",
 				"hit-by-bullet-event",
 				"destroyed-event",
-				"collision-event"
+				"bot-destroyed-event",
+				"collision-event",
+				"skipped-turn-event",
+				"won-round-event"
 			]
 		}
 	},

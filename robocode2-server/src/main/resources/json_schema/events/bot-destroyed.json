@@ -1,0 +1,20 @@
+{
+	"id": "#bot-destroyed-event.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Bot event occurring, when another bot is destroyed",
+	
+	"type": "object",
+	"extends": {
+		"$ref": "event.json",
+		"default": "bot-destroyed-event"
+	},
+	"properties": {
+		"bot-id": {
+			"description": "Unique id of the bot that got hit",
+			"type": "integer"
+		}
+	},
+	"required": [
+		"bot-id"
+	]
+}	

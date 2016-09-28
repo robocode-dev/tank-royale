@@ -1,0 +1,20 @@
+{
+	"id": "#skipped-turn-event.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Bot event occurring, when a bot has skipped a turn, meaning that no intent has been recieved from the bot",
+	
+	"type": "object",
+	"extends": {
+		"$ref": "event.json",
+		"default": "skipped-turn-event"
+	},
+	"properties": {
+		"skipped-turn": {
+			"description": "Skipped turn number",
+			"type": "integer"
+		}
+	},
+	"required": [
+		"skipped-turn"
+	]
+}	
