@@ -11,7 +11,7 @@
 				"scanned-bot-event",
 				"bullet-hit-bot-event",
 				"bullet-hit-bullet-event",
-				"bullet-missed",
+				"bullet-missed-event",
 				"hit-by-bullet-event",
 				"destroyed-event",
 				"bot-destroyed-event",

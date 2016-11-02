@@ -1,6 +1,6 @@
 package net.robocode2.model;
 
-public class ScannedBot {
+public final class ScannedBot {
 
 	private final int id;
 	private final double energy;
