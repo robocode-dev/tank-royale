@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "All game results visible for a bot. Game has ended.",
 
-	"type": "object",
+	"javaType": "net.robocode2.json_schema.messages.ResultsForBot",
 	"extends": {
 		"$ref": "message.json",
 		"default": "results-for-bot"
@@ -12,7 +12,7 @@
 		"results": {
 			"description": "Results of the battle",
 			"type": "array",
-			"items": { "$ref": "bot-results-for-bot.json" }
+			"items": { "$ref": "../bot-results-for-bot.json" }
 		}
 	},
 	"required": [

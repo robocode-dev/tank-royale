@@ -16,13 +16,13 @@ import org.java_websocket.WebSocket;
 import com.google.gson.Gson;
 
 import net.robocode2.game.ModelUpdater;
-import net.robocode2.json_schema.BotHandshake;
 import net.robocode2.json_schema.GameDefinition;
-import net.robocode2.json_schema.NewBattleForBot;
-import net.robocode2.json_schema.NewBattleForObserver;
-import net.robocode2.json_schema.ObserverHandshake;
 import net.robocode2.json_schema.Participant;
-import net.robocode2.json_schema.TickForBot;
+import net.robocode2.json_schema.events.NewBattleForObserver;
+import net.robocode2.json_schema.messages.BotHandshake;
+import net.robocode2.json_schema.messages.NewBattleForBot;
+import net.robocode2.json_schema.messages.ObserverHandshake;
+import net.robocode2.json_schema.messages.TickForBot;
 import net.robocode2.model.GameState;
 import net.robocode2.model.Round;
 import net.robocode2.model.Setup;

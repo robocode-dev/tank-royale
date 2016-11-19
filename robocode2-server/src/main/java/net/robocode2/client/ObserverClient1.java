@@ -10,7 +10,7 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import com.google.gson.Gson;
 
-import net.robocode2.json_schema.ObserverHandshake;
+import net.robocode2.json_schema.messages.ObserverHandshake;
 
 public class ObserverClient1 extends WebSocketClient {
 

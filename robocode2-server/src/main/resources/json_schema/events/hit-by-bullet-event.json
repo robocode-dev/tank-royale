@@ -11,7 +11,7 @@
 	"properties": {
 		"bullet": {
 			"description": "Bullet that has hit the bot",
-			"$ref": "../bullet-state.json"
+			"$ref": "../states/bullet-state.json"
 		},
 		"damage": {
 			"description": "Damage inflicted by the bullet",

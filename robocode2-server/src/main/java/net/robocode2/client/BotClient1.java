@@ -13,9 +13,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.robocode2.json_schema.BotHandshake;
-import net.robocode2.json_schema.BotReady;
-import net.robocode2.json_schema.NewBattleForBot;
+import net.robocode2.json_schema.messages.BotHandshake;
+import net.robocode2.json_schema.messages.BotReady;
+import net.robocode2.json_schema.messages.NewBattleForBot;
 
 public class BotClient1 extends WebSocketClient {
 

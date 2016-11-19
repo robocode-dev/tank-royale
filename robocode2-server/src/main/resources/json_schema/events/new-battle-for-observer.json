@@ -5,7 +5,7 @@
 
 	"type": "object",
 	"extends": {
-		"$ref": "message.json",
+		"$ref": "../messages/message.json",
 		"default": "new-battle-for-observer"
 	},
 	"properties": {
@@ -44,7 +44,7 @@
 		"participants": {
 			"description": "List of bots participating in battle",
 			"type": "array",
-			"items": { "$ref": "participant.json" }
+			"items": { "$ref": "../participant.json" }
 		}
 	},
 	"required": [

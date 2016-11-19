@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Server handshake", 
 
-	"type": "object", 
+	"javaType": "net.robocode2.json_schema.messages.ServerHandshake",
 	"extends": {
 		"$ref": "message.json",
 		"default": "server-handshake"
@@ -17,7 +17,7 @@
 		"games": {
 			"type": "array",
 			"items": {
-				"$ref": "game-definition.json"
+				"$ref": "../game-definition.json"
 			},
 			"minItems": 1,
 			"uniqueItems": true

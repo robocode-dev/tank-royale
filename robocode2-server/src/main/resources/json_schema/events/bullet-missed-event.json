@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Bot event occuring, when one of its bullets missed, i.e. leaves the arena",
 	
-	"type": "object",
+	"javaType": "net.robocode2.json_schema.events.BulletMissedEvent",
 	"extends": {
 		"$ref": "event.json",
 		"default": "bullet-missed-event"
@@ -11,7 +11,7 @@
 	"properties": {
 		"bullet": {
 			"description": "Bullet that missed",
-			"$ref": "../bullet-state.json"
+			"$ref": "../states/bullet-state.json"
 		}
 	},
 	"required": [

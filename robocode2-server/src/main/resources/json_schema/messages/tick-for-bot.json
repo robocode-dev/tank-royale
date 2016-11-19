@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Tick for bot. Next turn has started.",
 
-	"type": "object",
+	"javaType": "net.robocode2.json_schema.messages.TickForBot",
 	"extends": {
 		"$ref": "message.json",
 		"default": "tick-for-bot"
@@ -11,21 +11,21 @@
 	"properties": {
 		"round-state": {
 			"description": "Current state of the round",
-			"$ref": "round-state.json"
+			"$ref": "../states/round-state.json"
 		},
 		"bot-state": {
 			"description": "Current state of this bot",
-			"$ref": "bot-state-without-id.json"
+			"$ref": "../states/bot-state-without-id.json"
 		},
 		"bullet-states": {
 			"description": "Current state of the bullets fired by this bot",
 			"type": "array",
-			"items": { "$ref": "bullet-state.json" }
+			"items": { "$ref": "../states/bullet-state.json" }
 		},
 		"events": {
 			"description": "Events occurring relevant for this bot",
 			"type": "array",
-			"items": { "$ref": "events/event.json" }
+			"items": { "$ref": "../events/event.json" }
 		}
 	},
 	"required": [

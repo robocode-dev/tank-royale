@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Bullet state",
 
-	"type": "object",
+	"javaType": "net.robocode2.json_schema.states.BulletState",
 	"properties": {
 		"bullet-id": {
 			"description": "Unique identifier of the bullet",
@@ -19,11 +19,11 @@
 		},
 		"position": {
 			"description": "Position (x, y)",
-			"$ref": "types/position.json"
+			"$ref": "../types/position.json"
 		},
 		"direction": {
 			"description": "Direction in degrees",
-			"$ref": "types/angle.json"
+			"$ref": "../types/angle.json"
 		},
 		"speed": {
 			"description": "Speed measured in units per turn",

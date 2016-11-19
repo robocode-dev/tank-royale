@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Message exchanged between server and client",
 
-	"type": "object",
+	"javaType": "net.robocode2.json_schema.messages.Message",
 	"javaName": "Message",
 	"properties": {
 		"message-type": {

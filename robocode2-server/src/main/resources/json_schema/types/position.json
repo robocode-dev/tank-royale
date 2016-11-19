@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Position as a 2D coordinate (x, y)",
 
-	"type": "object",
+	"javaType": "net.robocode2.json_schema.types.Position",
 	"properties": {
 		"x": {
 			"description": "X coordinate",

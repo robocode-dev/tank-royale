@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Bot event occurring, when a bot scans another bot",
 	
-	"type": "object",
+	"javaType": "net.robocode2.json_schema.events.ScannedBotEvent",
 	"extends": {
 		"$ref": "event.json",
 		"default": "scanned-bot-event"

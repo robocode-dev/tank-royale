@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Individual bot results visible for a bot. Name and version is hidden.",
 	
-	"type": "object",
+	"javaType": "net.robocode2.json_schema.BotResultsForBot",
 	"properties": {
 		"id": {
 			"description": "Unique identifier of the bot used in this battle, but only for this bot",

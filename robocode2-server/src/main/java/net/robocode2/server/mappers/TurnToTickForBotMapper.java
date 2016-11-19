@@ -1,6 +1,6 @@
 package net.robocode2.server.mappers;
 
-import net.robocode2.json_schema.TickForBot;
+import net.robocode2.json_schema.messages.TickForBot;
 import net.robocode2.model.Bot;
 import net.robocode2.model.Round;
 import net.robocode2.model.Turn;

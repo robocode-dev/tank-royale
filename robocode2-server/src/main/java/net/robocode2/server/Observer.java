@@ -2,7 +2,7 @@ package net.robocode2.server;
 
 import org.java_websocket.WebSocket;
 
-import net.robocode2.json_schema.ObserverHandshake;
+import net.robocode2.json_schema.messages.ObserverHandshake;
 
 public final class Observer {
 

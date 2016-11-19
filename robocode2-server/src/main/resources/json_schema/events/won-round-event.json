@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Bot event occurring, when the bot has won the round",
 	
-	"type": "object",
+	"javaType": "net.robocode2.json_schema.events.WonRoundEvent",
 	"extends": {
 		"$ref": "event.json",
 		"default": "won-round-event"

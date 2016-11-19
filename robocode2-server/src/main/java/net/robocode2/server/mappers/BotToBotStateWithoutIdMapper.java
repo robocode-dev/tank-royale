@@ -1,6 +1,6 @@
 package net.robocode2.server.mappers;
 
-import net.robocode2.json_schema.BotStateWithoutId;
+import net.robocode2.json_schema.states.BotStateWithoutId;
 import net.robocode2.model.Bot;
 
 public final class BotToBotStateWithoutIdMapper {
@@ -14,7 +14,7 @@ public final class BotToBotStateWithoutIdMapper {
 		botState.setDirection(bot.getDirection());
 		botState.setRadarDirection(bot.getRadarDirection());
 		botState.setTurretDirection(bot.getTurretDirection());
-		botState.setArc(TypesMapper.map(bot.getScanArc()));
+		botState.setScanArc(TypesMapper.map(bot.getScanArc()));
 
 		return botState;
 	}

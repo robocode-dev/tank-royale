@@ -3,8 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Event occurring in the battle arena",
 
-	"type": "object",
-	"javaName": "Event",
+	"javaType": "net.robocode2.json_schema.events.Event",
 	"properties": {
 		"message-type": {
 			"enum": [

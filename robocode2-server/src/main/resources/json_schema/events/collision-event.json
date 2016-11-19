@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Bot event occuring, when a bot collides with another bot",
 	
-	"type": "object",
+	"javaType": "net.robocode2.json_schema.events.CollisionEvent",
 	"extends": {
 		"$ref": "event.json",
 		"default": "collision-event"

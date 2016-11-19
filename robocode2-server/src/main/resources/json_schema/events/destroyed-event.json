@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Bot event occurring, when the bot itself is destroyed",
 	
-	"type": "object",
+	"javaType": "net.robocode2.json_schema.events.DestroyedEvent",
 	"extends": {
 		"$ref": "event.json",
 		"default": "destroyed-event"

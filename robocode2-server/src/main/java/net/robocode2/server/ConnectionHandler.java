@@ -18,10 +18,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.robocode2.json_schema.BotHandshake;
-import net.robocode2.json_schema.BotReady;
-import net.robocode2.json_schema.ObserverHandshake;
-import net.robocode2.json_schema.ServerHandshake;
+import net.robocode2.json_schema.messages.BotHandshake;
+import net.robocode2.json_schema.messages.BotReady;
+import net.robocode2.json_schema.messages.ObserverHandshake;
+import net.robocode2.json_schema.messages.ServerHandshake;
 
 public final class ConnectionHandler {
 

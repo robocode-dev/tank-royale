@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import net.robocode2.json_schema.BulletState;
+import net.robocode2.json_schema.states.BulletState;
 import net.robocode2.model.Bullet;
 import net.robocode2.model.Position;
 import net.robocode2.model.Turn;
@@ -37,7 +37,7 @@ public final class BulletsToBulletStatesMapper {
 		double x = startPosition.getX() + Math.cos(direction) * speed * tick;
 		double y = startPosition.getY() + Math.sin(direction) * speed * tick;
 
-		net.robocode2.json_schema.Position position = new net.robocode2.json_schema.Position();
+		net.robocode2.json_schema.types.Position position = new net.robocode2.json_schema.types.Position();
 		position.setX(x);
 		position.setY(y);
 
