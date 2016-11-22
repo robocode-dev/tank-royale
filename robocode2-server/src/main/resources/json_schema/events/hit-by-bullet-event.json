@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Bot event occuring, when a bot has been hit by a bullet",
 	
-	"type": "object",
+	"javaType": "net.robocode2.json_schema.events.HitByBulletEvent",
 	"extends": {
 		"$ref": "event.json",
 		"default": "hit-by-bullet-event"

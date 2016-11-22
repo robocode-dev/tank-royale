@@ -4,7 +4,6 @@
 	"description": "Message exchanged between server and client",
 
 	"javaType": "net.robocode2.json_schema.messages.Message",
-	"javaName": "Message",
 	"properties": {
 		"message-type": {
 			"enum": [

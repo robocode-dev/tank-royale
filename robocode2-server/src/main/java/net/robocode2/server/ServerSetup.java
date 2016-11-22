@@ -25,7 +25,7 @@ public final class ServerSetup {
 		GameDefinition game2 = new DefaultGameDefinition();
 		game2.setGameType("1v1");
 		game2.setMinNumberOfParticipants(2);
-		game2.setMinNumberOfParticipants(2);
+		game2.setMaxNumberOfParticipants(2);
 
 		games.add(game2);
 

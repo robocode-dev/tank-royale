@@ -3,9 +3,9 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "New battle info for an observer. New game has started.",
 
-	"type": "object",
+	"javaType": "net.robocode2.json_schema.messages.NewBattleForObserver",
 	"extends": {
-		"$ref": "../messages/message.json",
+		"$ref": "message.json",
 		"default": "new-battle-for-observer"
 	},
 	"properties": {
