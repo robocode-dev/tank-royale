@@ -12,9 +12,9 @@
 				"bullet-hit-bullet-event",
 				"bullet-missed-event",
 				"hit-by-bullet-event",
-				"destroyed-event",
-				"bot-destroyed-event",
-				"collision-event",
+				"hit-bot-event",
+				"death-event",
+				"bot-death-event",
 				"skipped-turn-event",
 				"won-round-event"
 			]

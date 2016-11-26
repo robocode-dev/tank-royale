@@ -9,7 +9,7 @@
 		"default": "scanned-bot-event"
 	},
 	"properties": {
-		"id": {
+		"botId": {
 			"description": "Unique identifier, but only for the scanned bot",
 			"type": "integer"
 		},
@@ -31,7 +31,7 @@
 		}
 	},
 	"required": [
-		"id",
+		"botId",
 		"energy",
 		"position",
 		"direction",

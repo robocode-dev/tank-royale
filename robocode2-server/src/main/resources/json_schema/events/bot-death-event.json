@@ -1,12 +1,12 @@
 {
-	"id": "#bot-destroyed-event.json",
+	"id": "#bot-death-event.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Bot event occurring, when another bot is destroyed",
 	
-	"javaType": "net.robocode2.json_schema.events.BotDestroyedEvent",
+	"javaType": "net.robocode2.json_schema.events.BotDeathEvent",
 	"extends": {
 		"$ref": "event.json",
-		"default": "bot-destroyed-event"
+		"default": "bot-death-event"
 	},
 	"properties": {
 		"bot-id": {
