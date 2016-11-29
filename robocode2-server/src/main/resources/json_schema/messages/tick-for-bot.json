@@ -15,7 +15,7 @@
 		},
 		"bot-state": {
 			"description": "Current state of this bot",
-			"$ref": "../states/bot-state-without-id.json"
+			"$ref": "../states/bot-state.json"
 		},
 		"bullet-states": {
 			"description": "Current state of the bullets fired by this bot",

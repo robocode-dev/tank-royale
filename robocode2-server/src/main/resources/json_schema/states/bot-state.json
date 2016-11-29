@@ -1,19 +1,46 @@
 {
 	"id": "#bot-state.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Current state of a bot",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Current state of a bot without an id. The id must be hidden for enemy bots",
 
 	"javaType": "net.robocode2.json_schema.states.BotState",
-	"extends": {
-		"$ref": "bot-state-without-id.json"
-	},
-    "properties": {
-        "id": {
-            "description": "Unique identifier of bot for the observer",
-            "type": "integer"
-        }
+	"properties": {
+		"energy": {
+			"description": "Energy level",
+			"type": "number"
+		},
+		"position": {
+			"description": "Position (x, y)",
+			"$ref": "../types/position.json"
+		},
+		"direction": {
+			"description": "Direction of the hull in degrees",
+			"$ref": "../types/angle.json"
+		},
+		"turret-direction": {
+			"description": "Direction of the turret in degrees",
+			"$ref": "../types/angle.json"
+		},
+		"radar-direction": {
+			"description": "Direction of the radar in degrees",
+			"$ref": "../types/angle.json"
+		},
+		"speed": {
+			"description": "Speed measured in units per turn",
+			"type": "number"
+		},
+		"scan-arc": {
+			"description": "Scan arc, where a positive angle means that scan is moving left and negative angle means that the scan is moving right",
+			"$ref": "../types/arc.json"
+		}
 	},
 	"required": [
-		"id"
+		"energy",
+		"position",
+		"direction",
+		"turret-direction",
+		"radar-direction",
+		"speed",
+		"scan-arc"
 	]
 }
