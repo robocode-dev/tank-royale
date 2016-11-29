@@ -7,14 +7,12 @@
 	"properties": {
 		"message-type": {
 			"enum": [
-				"scanned-bot-event",
-				"bullet-hit-bot-event",
-				"bullet-hit-bullet-event",
-				"bullet-missed-event",
-				"hit-by-bullet-event",
-				"hit-bot-event",
-				"death-event",
 				"bot-death-event",
+				"bot-hit-bot-event",
+				"bullet-hit-bot-event",
+				"bullet-missed-event",
+				"bullet-hit-bullet-event",
+				"scanned-bot-event",
 				"skipped-turn-event",
 				"won-round-event"
 			]

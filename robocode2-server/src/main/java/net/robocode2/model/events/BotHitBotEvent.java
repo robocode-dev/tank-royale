@@ -1,24 +1,29 @@
 package net.robocode2.model.events;
 
-import net.robocode2.model.Bullet;
 import net.robocode2.model.Position;
 
-public final class HitBotEvent implements Event {
+public final class BotHitBotEvent implements Event {
 
-	private final Bullet bullet;
+	private final int botId;
+	private final int victimId;
 	private final double energy;
 	private final Position position;
 	private final boolean rammed;
 
-	public HitBotEvent(Bullet bullet, double energy, Position position, boolean rammed) {
-		this.bullet = bullet;
+	public BotHitBotEvent(int botId, int victimId, double energy, Position position, boolean rammed) {
+		this.botId = botId;
+		this.victimId = victimId;
 		this.energy = energy;
 		this.position = position;
 		this.rammed = rammed;
 	}
 
-	public Bullet getBullet() {
-		return bullet;
+	public int getBotId() {
+		return botId;
+	}
+
+	public int getVictimId() {
+		return victimId;
 	}
 
 	public double getEnergy() {

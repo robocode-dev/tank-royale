@@ -8,7 +8,7 @@ public final class BotDeathEvent implements Event {
 		this.botId = botId;
 	}
 
-	public double getBotId() {
+	public int getBotId() {
 		return botId;
 	}
 }

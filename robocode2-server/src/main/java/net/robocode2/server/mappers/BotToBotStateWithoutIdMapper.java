@@ -9,12 +9,12 @@ public final class BotToBotStateWithoutIdMapper {
 		BotStateWithoutId botState = new BotStateWithoutId();
 
 		botState.setEnergy(bot.getEnergy());
-		botState.setPosition(TypesMapper.map(bot.getPosition()));
+		botState.setPosition(PositionMapper.map(bot.getPosition()));
 		botState.setSpeed(bot.getSpeed());
 		botState.setDirection(bot.getDirection());
 		botState.setRadarDirection(bot.getRadarDirection());
 		botState.setTurretDirection(bot.getTurretDirection());
-		botState.setScanArc(TypesMapper.map(bot.getScanArc()));
+		botState.setScanArc(ArcMapper.map(bot.getScanArc()));
 
 		return botState;
 	}

@@ -3,31 +3,36 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Bot event occuring, when a bot collides with another bot",
 	
-	"javaType": "net.robocode2.json_schema.events.HitBotEvent",
+	"javaType": "net.robocode2.json_schema.events.BotHitBotEvent",
 	"extends": {
 		"$ref": "event.json",
-		"default": "hit-bot-event"
+		"default": "bot-hit-bot-event"
 	},
 	"properties": {
 		"bot-id": {
-			"description": "Unique id of the bot that got hit",
+			"description": "Unique id of the bot that hit another bot",
+			"type": "integer"
+		},
+		"victim-id": {
+			"description": "Unique id of the victim bot that got hit",
 			"type": "integer"
 		},
 		"energy": {
-			"description": "Remaining energy level of the bot that got hit",
+			"description": "Remaining energy level of the victim bot",
 			"type": "number"
 		},
 		"position": {
-			"description": "Position (x, y) of the bot that got hit",
+			"description": "Position (x, y) of the victim bot",
 			"$ref": "../types/position.json"
 		},
 		"rammed": {
-			"description": "Flag specifying, if the another bot was rammed by this bot",
+			"description": "Flag specifying, if the victim bot got rammed",
 			"type": "boolean"			
 		}
 	},
 	"required": [
 		"bot-id",
+		"victim-id",
 		"damage",
 		"energy",
 		"position",

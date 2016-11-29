@@ -13,7 +13,7 @@
 			"description": "Bullet that hit another bot",
 			"$ref": "../states/bullet-state.json"
 		},
-		"bot-id": {
+		"victim-id": {
 			"description": "Unique id of the bot that got hit",
 			"type": "integer"
 		},
@@ -28,7 +28,7 @@
 	},
 	"required": [
 		"bullet",
-		"bot-id",
+		"victim-id",
 		"damage",
 		"energy"
 	]

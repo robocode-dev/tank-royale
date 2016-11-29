@@ -1,9 +1,5 @@
 package net.robocode2.model;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 public final class Bot {
 
 	public static final int WIDTH = 40;
@@ -19,10 +15,9 @@ public final class Bot {
 	private final double speed;
 	private final Arc scanArc;
 	private final Score score;
-	private final Set<ScannedBot> scannedBots;
 
 	public Bot(int id, boolean alive, double energy, Position position, double direction, double turretDiretion,
-			double radarDirection, double speed, Arc scanArc, Score score, Set<ScannedBot> scannedBots) {
+			double radarDirection, double speed, Arc scanArc, Score score) {
 		this.id = id;
 		this.alive = alive;
 		this.energy = energy;
@@ -33,11 +28,6 @@ public final class Bot {
 		this.speed = speed;
 		this.scanArc = scanArc;
 		this.score = score;
-		if (scannedBots == null) {
-			this.scannedBots = new HashSet<>();
-		} else {
-			this.scannedBots = new HashSet<>(scannedBots);
-		}
 	}
 
 	public int getId() {
@@ -88,10 +78,6 @@ public final class Bot {
 		return score;
 	}
 
-	public Set<ScannedBot> getScannedBots() {
-		return Collections.unmodifiableSet(scannedBots);
-	}
-
 	public static final class BotBuilder {
 		private int id;
 		private boolean alive;
@@ -103,11 +89,10 @@ public final class Bot {
 		private double speed;
 		private Arc scanArc;
 		private Score score;
-		private Set<ScannedBot> scannedBots = new HashSet<>();
 
 		public Bot build() {
 			return new Bot(id, alive, energy, position, direction, turretDirection, radarDirection, speed, scanArc,
-					score, scannedBots);
+					score);
 		}
 
 		public BotBuilder setId(int id) {
@@ -157,15 +142,6 @@ public final class Bot {
 
 		public BotBuilder setScore(Score score) {
 			this.score = score;
-			return this;
-		}
-
-		public BotBuilder setScannedBots(Set<ScannedBot> scannedBots) {
-			if (scannedBots == null) {
-				this.scannedBots = new HashSet<>();
-			} else {
-				this.scannedBots = new HashSet<>(scannedBots);
-			}
 			return this;
 		}
 	}

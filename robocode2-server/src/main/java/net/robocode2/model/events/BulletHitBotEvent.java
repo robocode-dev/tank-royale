@@ -5,13 +5,13 @@ import net.robocode2.model.Bullet;
 public final class BulletHitBotEvent implements Event {
 
 	private final Bullet bullet;
-	private final int botId;
+	private final int victimId;
 	private final double damage;
 	private final double energy;
 
-	public BulletHitBotEvent(Bullet bullet, int botId, double damage, double energy) {
+	public BulletHitBotEvent(Bullet bullet, int victimId, double damage, double energy) {
 		this.bullet = bullet;
-		this.botId = botId;
+		this.victimId = victimId;
 		this.damage = damage;
 		this.energy = energy;
 	}
@@ -20,8 +20,8 @@ public final class BulletHitBotEvent implements Event {
 		return bullet;
 	}
 
-	public int getBotId() {
-		return botId;
+	public int getVictimId() {
+		return victimId;
 	}
 
 	public double getDamage() {
