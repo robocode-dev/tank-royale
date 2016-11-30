@@ -9,12 +9,12 @@
 		"default": "bot-death-event"
 	},
 	"properties": {
-		"bot-id": {
+		"victim-id": {
 			"description": "Unique id of the bot that got hit",
 			"type": "integer"
 		}
 	},
 	"required": [
-		"bot-id"
+		"victim-id"
 	]
 }	

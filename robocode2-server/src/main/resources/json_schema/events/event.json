@@ -9,6 +9,7 @@
 			"enum": [
 				"bot-death-event",
 				"bot-hit-bot-event",
+				"bot-hit-wall-event",
 				"bullet-hit-bot-event",
 				"bullet-missed-event",
 				"bullet-hit-bullet-event",

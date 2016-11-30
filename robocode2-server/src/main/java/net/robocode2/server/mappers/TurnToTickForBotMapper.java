@@ -16,7 +16,7 @@ public final class TurnToTickForBotMapper {
 		tickForBot.setBotState(BotToBotStateMapper.map(bot));
 		tickForBot.setBulletStates(BulletsToBulletStatesMapper.map(turn, botId));
 		tickForBot.setRoundState(RoundToRoundStateMapper.map(round, turn));
-		// TODO: Map bot events
+		tickForBot.setEvents(EventsToEventsMapper.map(turn.getEvents()));
 
 		return tickForBot;
 	}

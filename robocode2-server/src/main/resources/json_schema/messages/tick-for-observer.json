@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Tick for observer. Next turn has started.",
 
-	"javaType": "net.robocode2.json_schema.TickForObserver",
+	"javaType": "net.robocode2.json_schema.messages.TickForObserver",
 	"extends": {
 		"$ref": "message.json",
 		"default": "tick-for-observer"

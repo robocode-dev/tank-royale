@@ -1,0 +1,20 @@
+{
+	"id": "#bot-hit-wall-event.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Bot event occurring, when the bot is hitting a wall",
+	
+	"javaType": "net.robocode2.json_schema.events.BotHitWallEvent",
+	"extends": {
+		"$ref": "event.json",
+		"default": "bot-hit-wall-event"
+	},
+	"properties": {
+		"victim-id": {
+			"description": "Unique id of the bot that hit the wall",
+			"type": "integer"
+		}
+	},
+	"required": [
+		"victim-id"
+	]
+}	

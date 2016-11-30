@@ -2,9 +2,11 @@ package net.robocode2.server.mappers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import net.robocode2.json_schema.events.BotDeathEvent;
 import net.robocode2.json_schema.events.BotHitBotEvent;
+import net.robocode2.json_schema.events.BotHitWallEvent;
 import net.robocode2.json_schema.events.BulletHitBotEvent;
 import net.robocode2.json_schema.events.BulletHitBulletEvent;
 import net.robocode2.json_schema.events.BulletMissedEvent;
@@ -15,7 +17,7 @@ import net.robocode2.json_schema.events.SkippedTurnEvent;
 
 public final class EventsToEventsMapper {
 
-	public static List<Event> map(List<net.robocode2.model.events.Event> events) {
+	public static List<Event> map(Set<net.robocode2.model.events.Event> events) {
 		List<net.robocode2.json_schema.events.Event> mappedEvents = new ArrayList<net.robocode2.json_schema.events.Event>();
 		for (net.robocode2.model.events.Event event : events) {
 			mappedEvents.add(map(event));
@@ -27,6 +29,12 @@ public final class EventsToEventsMapper {
 		if (event instanceof net.robocode2.model.events.BotDeathEvent) {
 			return map((net.robocode2.model.events.BotDeathEvent) event);
 		}
+		if (event instanceof net.robocode2.model.events.BotHitBotEvent) {
+			return map((net.robocode2.model.events.BotHitBotEvent) event);
+		}
+		if (event instanceof net.robocode2.model.events.BotHitWallEvent) {
+			return map((net.robocode2.model.events.BotHitWallEvent) event);
+		}
 		if (event instanceof net.robocode2.model.events.BulletHitBotEvent) {
 			return map((net.robocode2.model.events.BulletHitBotEvent) event);
 		}
@@ -35,9 +43,6 @@ public final class EventsToEventsMapper {
 		}
 		if (event instanceof net.robocode2.model.events.BulletMissedEvent) {
 			return map((net.robocode2.model.events.BulletMissedEvent) event);
-		}
-		if (event instanceof net.robocode2.model.events.BotHitBotEvent) {
-			return map((net.robocode2.model.events.BotHitBotEvent) event);
 		}
 		if (event instanceof net.robocode2.model.events.ScannedBotEvent) {
 			return map((net.robocode2.model.events.ScannedBotEvent) event);
@@ -51,7 +56,25 @@ public final class EventsToEventsMapper {
 	private static BotDeathEvent map(net.robocode2.model.events.BotDeathEvent botDeathEvent) {
 		BotDeathEvent event = new BotDeathEvent();
 		event.setMessageType(MessageType.BOT_DEATH_EVENT);
-		event.setBotId(botDeathEvent.getBotId());
+		event.setVictimId(botDeathEvent.getVictimId());
+		return event;
+	}
+
+	private static BotHitBotEvent map(net.robocode2.model.events.BotHitBotEvent botHitBotEvent) {
+		BotHitBotEvent event = new BotHitBotEvent();
+		event.setMessageType(MessageType.BOT_HIT_BOT_EVENT);
+		event.setBotId(botHitBotEvent.getBotId());
+		event.setVictimId(botHitBotEvent.getVictimId());
+		event.setEnergy(botHitBotEvent.getEnergy());
+		event.setPosition(PositionMapper.map(botHitBotEvent.getPosition()));
+		event.setRammed(botHitBotEvent.getRammed());
+		return event;
+	}
+
+	private static BotHitWallEvent map(net.robocode2.model.events.BotHitWallEvent botHitWallEvent) {
+		BotHitWallEvent event = new BotHitWallEvent();
+		event.setMessageType(MessageType.BOT_HIT_WALL_EVENT);
+		event.setVictimId(botHitWallEvent.getVictimId());
 		return event;
 	}
 
@@ -77,17 +100,6 @@ public final class EventsToEventsMapper {
 		BulletMissedEvent event = new BulletMissedEvent();
 		event.setMessageType(MessageType.BULLET_MISSED_EVENT);
 		event.setBullet(BulletToBulletStateMapper.map(bulletMissedEvent.getBullet()));
-		return event;
-	}
-
-	private static BotHitBotEvent map(net.robocode2.model.events.BotHitBotEvent botHitBotEvent) {
-		BotHitBotEvent event = new BotHitBotEvent();
-		event.setMessageType(MessageType.BOT_HIT_BOT_EVENT);
-		event.setBotId(botHitBotEvent.getBotId());
-		event.setVictimId(botHitBotEvent.getVictimId());
-		event.setEnergy(botHitBotEvent.getEnergy());
-		event.setPosition(PositionMapper.map(botHitBotEvent.getPosition()));
-		event.setRammed(botHitBotEvent.getRammed());
 		return event;
 	}
 

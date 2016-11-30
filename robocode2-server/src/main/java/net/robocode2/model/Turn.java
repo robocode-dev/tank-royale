@@ -5,14 +5,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// FIXME: Missing events: Bullet hit bot, bullet hit bullet, bot hit bot + ramming, bot hit wall
+import net.robocode2.model.events.Event;
+
 public final class Turn {
 
 	private final int turnNumber;
 	private final Set<Bot> bots;
 	private final Set<Bullet> bullets;
+	private final Set<Event> events;
 
-	public Turn(int turnNumber, Set<Bot> bots, Set<Bullet> bullets) {
+	public Turn(int turnNumber, Set<Bot> bots, Set<Bullet> bullets, Set<Event> events) {
 		this.turnNumber = turnNumber;
 		if (bots == null) {
 			this.bots = new HashSet<>();
@@ -23,6 +25,11 @@ public final class Turn {
 			this.bullets = new HashSet<>();
 		} else {
 			this.bullets = new HashSet<>(bullets);
+		}
+		if (events == null) {
+			this.events = new HashSet<>();
+		} else {
+			this.events = new HashSet<>(events);
 		}
 	}
 
@@ -46,13 +53,18 @@ public final class Turn {
 		return bullets.stream().filter(b -> b.getBotId() == botId).collect(Collectors.toSet());
 	}
 
+	public Set<Event> getEvents() {
+		return Collections.unmodifiableSet(events);
+	}
+
 	public static final class TurnBuilder {
 		private int turnNumber;
 		private Set<Bot> bots = new HashSet<>();
 		private Set<Bullet> bullets = new HashSet<>();
+		private Set<Event> events = new HashSet<>();
 
 		public Turn build() {
-			return new Turn(turnNumber, bots, bullets);
+			return new Turn(turnNumber, bots, bullets, events);
 		}
 
 		public TurnBuilder setTurnNumber(int turnNumber) {
@@ -80,6 +92,11 @@ public final class Turn {
 
 		public TurnBuilder addBullet(Bullet bullet) {
 			bullets.add(bullet);
+			return this;
+		}
+
+		public TurnBuilder addEvent(Event event) {
+			events.add(event);
 			return this;
 		}
 	}
