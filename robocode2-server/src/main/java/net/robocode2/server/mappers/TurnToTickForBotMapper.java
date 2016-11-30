@@ -1,23 +1,18 @@
 package net.robocode2.server.mappers;
 
 import net.robocode2.json_schema.messages.TickForBot;
-import net.robocode2.model.Bot;
 import net.robocode2.model.Round;
 import net.robocode2.model.Turn;
 
 public final class TurnToTickForBotMapper {
 
 	public static TickForBot map(Round round, Turn turn, int botId) {
-		Bot bot = turn.getBot(botId);
-
-		TickForBot tickForBot = new TickForBot();
-		tickForBot.setMessageType(TickForBot.MessageType.TICK_FOR_BOT);
-
-		tickForBot.setBotState(BotToBotStateMapper.map(bot));
-		tickForBot.setBulletStates(BulletsToBulletStatesMapper.map(turn, botId));
-		tickForBot.setRoundState(RoundToRoundStateMapper.map(round, turn));
-		tickForBot.setEvents(EventsToEventsMapper.map(turn.getEvents()));
-
-		return tickForBot;
+		TickForBot tick = new TickForBot();
+		tick.setMessageType(TickForBot.MessageType.TICK_FOR_BOT);
+		tick.setBotState(BotToBotStateMapper.map(turn.getBot(botId)));
+		tick.setBulletStates(BulletsToBulletStatesMapper.map(turn.getBullets(botId)));
+		tick.setRoundState(RoundToRoundStateMapper.map(round, turn));
+		tick.setEvents(EventsToEventsMapper.map(turn.getBotEvents(botId)));
+		return tick;
 	}
 }

@@ -1,7 +1,9 @@
 package net.robocode2.model;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,9 +14,12 @@ public final class Turn {
 	private final int turnNumber;
 	private final Set<Bot> bots;
 	private final Set<Bullet> bullets;
-	private final Set<Event> events;
+	private final Set<Event> observerEvents;
+	private final Map<Integer, Set<Event>> botEventsMap;
 
-	public Turn(int turnNumber, Set<Bot> bots, Set<Bullet> bullets, Set<Event> events) {
+	public Turn(int turnNumber, Set<Bot> bots, Set<Bullet> bullets, Set<Event> observerEvents,
+			Map<Integer, Set<Event>> botEventsMap) {
+
 		this.turnNumber = turnNumber;
 		if (bots == null) {
 			this.bots = new HashSet<>();
@@ -26,10 +31,15 @@ public final class Turn {
 		} else {
 			this.bullets = new HashSet<>(bullets);
 		}
-		if (events == null) {
-			this.events = new HashSet<>();
+		if (observerEvents == null) {
+			this.observerEvents = new HashSet<>();
 		} else {
-			this.events = new HashSet<>(events);
+			this.observerEvents = new HashSet<>(observerEvents);
+		}
+		if (botEventsMap == null) {
+			this.botEventsMap = new HashMap<>();
+		} else {
+			this.botEventsMap = new HashMap<>(botEventsMap);
 		}
 	}
 
@@ -53,18 +63,23 @@ public final class Turn {
 		return bullets.stream().filter(b -> b.getBotId() == botId).collect(Collectors.toSet());
 	}
 
-	public Set<Event> getEvents() {
-		return Collections.unmodifiableSet(events);
+	public Set<Event> getObserverEvents() {
+		return Collections.unmodifiableSet(observerEvents);
+	}
+
+	public Set<Event> getBotEvents(int botId) {
+		return Collections.unmodifiableSet(botEventsMap.get(botId));
 	}
 
 	public static final class TurnBuilder {
 		private int turnNumber;
 		private Set<Bot> bots = new HashSet<>();
 		private Set<Bullet> bullets = new HashSet<>();
-		private Set<Event> events = new HashSet<>();
+		private Set<Event> observerEvents = new HashSet<>();
+		private Map<Integer, Set<Event>> botEventsMap = new HashMap<>();
 
 		public Turn build() {
-			return new Turn(turnNumber, bots, bullets, events);
+			return new Turn(turnNumber, bots, bullets, observerEvents, botEventsMap);
 		}
 
 		public TurnBuilder setTurnNumber(int turnNumber) {
@@ -95,8 +110,18 @@ public final class Turn {
 			return this;
 		}
 
-		public TurnBuilder addEvent(Event event) {
-			events.add(event);
+		public TurnBuilder addObserverEvent(Event event) {
+			observerEvents.add(event);
+			return this;
+		}
+
+		public TurnBuilder addBotEvent(int botId, Event event) {
+			Set<Event> botEvents = botEventsMap.get(botId);
+			if (botEvents == null) {
+				botEvents = new HashSet<>();
+				botEventsMap.put(botId, botEvents);
+			}
+			botEvents.add(event);
 			return this;
 		}
 	}

@@ -6,12 +6,10 @@ import java.util.Set;
 
 import net.robocode2.json_schema.states.BulletState;
 import net.robocode2.model.Bullet;
-import net.robocode2.model.Turn;
 
 public final class BulletsToBulletStatesMapper {
 
-	public static List<BulletState> map(Turn turn, int botId) {
-		Set<Bullet> bullets = turn.getBullets(botId);
+	public static List<BulletState> map(Set<Bullet> bullets) {
 		List<BulletState> bulletStates = new ArrayList<BulletState>();
 		for (Bullet bullet : bullets) {
 			bulletStates.add(BulletToBulletStateMapper.map(bullet));

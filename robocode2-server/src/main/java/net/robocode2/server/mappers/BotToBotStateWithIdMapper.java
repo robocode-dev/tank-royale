@@ -1,12 +1,13 @@
 package net.robocode2.server.mappers;
 
-import net.robocode2.json_schema.states.BotState;
+import net.robocode2.json_schema.states.BotStateWithId;
 import net.robocode2.model.Bot;
 
-public final class BotToBotStateMapper {
+public final class BotToBotStateWithIdMapper {
 
-	public static BotState map(Bot bot) {
-		BotState botState = new BotState();
+	public static BotStateWithId map(Bot bot) {
+		BotStateWithId botState = new BotStateWithId();
+		botState.setId(bot.getId());
 		botState.setEnergy(bot.getEnergy());
 		botState.setPosition(PositionMapper.map(bot.getPosition()));
 		botState.setSpeed(bot.getSpeed());

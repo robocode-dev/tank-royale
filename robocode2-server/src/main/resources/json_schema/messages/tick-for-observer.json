@@ -16,7 +16,7 @@
 		"bot-states": {
 			"description": "Current state of all bots",
 			"type": "array",
-			"items": { "$ref": "../states/bot-state.json" }
+			"items": { "$ref": "../states/bot-state-with-id.json" }
 		},
 		"bullet-states": {
 			"description": "Current state of all bullets",
