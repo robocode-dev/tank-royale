@@ -25,17 +25,17 @@ import net.robocode2.json_schema.messages.ServerHandshake;
 
 public final class ConnectionHandler {
 
-	final ServerSetup setup;
-	final ConnectionListener listener;
-	final WebSocketObserver webSocketObserver;
+	private final ServerSetup setup;
+	private final ConnectionListener listener;
+	private final WebSocketObserver webSocketObserver;
 
-	final Set<WebSocket> connections = Collections.synchronizedSet(new HashSet<>());
-	final Map<WebSocket, BotHandshake> bots = Collections.synchronizedMap(new HashMap<>());
-	final Map<WebSocket, ObserverHandshake> observers = Collections.synchronizedMap(new HashMap<>());
+	private final Set<WebSocket> connections = Collections.synchronizedSet(new HashSet<>());
+	private final Map<WebSocket, BotHandshake> bots = Collections.synchronizedMap(new HashMap<>());
+	private final Map<WebSocket, ObserverHandshake> observers = Collections.synchronizedMap(new HashMap<>());
 
-	static final String MESSAGE_TYPE_FIELD = "message-type";
+	private static final String MESSAGE_TYPE_FIELD = "message-type";
 
-	final ExecutorService executorService;
+	private final ExecutorService executorService;
 
 	public ConnectionHandler(ServerSetup setup, ConnectionListener listener) {
 		this.setup = setup;

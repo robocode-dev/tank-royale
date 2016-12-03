@@ -31,20 +31,20 @@ import net.robocode2.server.mappers.TurnToTickForBotMapper;
 
 public final class GameServer {
 
-	ServerSetup setup;
-	ConnectionListener connectionObserver;
-	ConnectionHandler connectionHandler;
+	private ServerSetup setup;
+	private ConnectionListener connectionObserver;
+	private ConnectionHandler connectionHandler;
 
-	ServerState gameState;
-	GameDefinition gameDefinition;
-	Set<Bot> participants;
-	Set<Bot> readyParticipants;
+	private ServerState gameState;
+	private GameDefinition gameDefinition;
+	private Set<Bot> participants;
+	private Set<Bot> readyParticipants;
 
-	final Timer readyTimer = new Timer();
+	private final Timer readyTimer = new Timer();
 
-	final Gson gson = new Gson();
+	private final Gson gson = new Gson();
 
-	ModelUpdater modelUpdater;
+	private ModelUpdater modelUpdater;
 
 	public GameServer() {
 		this.setup = new ServerSetup();

@@ -21,18 +21,18 @@ import net.robocode2.model.Turn.TurnBuilder;
 
 public class ModelUpdater {
 
-	static final double INITIAL_BOT_ENERGY = 100.0;
-	static final double RADAR_RADIUS = 1200.0;
+	private static final double INITIAL_BOT_ENERGY = 100.0;
+	private static final double RADAR_RADIUS = 1200.0;
 
-	final Setup setup;
+	private final Setup setup;
 
-	GameStateBuilder gameStateBuilder;
-	RoundBuilder roundBuilder;
-	TurnBuilder turnBuilder;
+	private GameStateBuilder gameStateBuilder;
+	private RoundBuilder roundBuilder;
+	private TurnBuilder turnBuilder;
 
-	int roundNumber;
-	int turnNumber;
-	boolean roundEnded;
+	private int roundNumber;
+	private int turnNumber;
+	private boolean roundEnded;
 
 	public ModelUpdater(Setup setup) {
 		this.setup = setup;
@@ -77,6 +77,14 @@ public class ModelUpdater {
 	private void nextTurn() {
 		turnNumber++;
 		turnBuilder.setTurnNumber(turnNumber);
+
+		// Update bot future positions
+		// Update bullet future positions
+		// Check bot wall collisions
+		// Check bullet wall collisions
+		// Check bullet to bullet collisions
+		// Check bot to bot collisions
+		// Check bullet to bot collisions
 	}
 
 	private GameState buildGameState() {
