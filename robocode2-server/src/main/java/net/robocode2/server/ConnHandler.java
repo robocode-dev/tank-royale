@@ -23,10 +23,10 @@ import net.robocode2.json_schema.messages.BotReady;
 import net.robocode2.json_schema.messages.ObserverHandshake;
 import net.robocode2.json_schema.messages.ServerHandshake;
 
-public final class ConnectionHandler {
+public final class ConnHandler {
 
 	private final ServerSetup setup;
-	private final ConnectionListener listener;
+	private final ConnListener listener;
 	private final WebSocketObserver webSocketObserver;
 
 	private final Set<WebSocket> connections = Collections.synchronizedSet(new HashSet<>());
@@ -37,7 +37,7 @@ public final class ConnectionHandler {
 
 	private final ExecutorService executorService;
 
-	public ConnectionHandler(ServerSetup setup, ConnectionListener listener) {
+	public ConnHandler(ServerSetup setup, ConnListener listener) {
 		this.setup = setup;
 		this.listener = listener;
 
@@ -120,11 +120,11 @@ public final class ConnectionHandler {
 
 			if (bots.containsKey(conn)) {
 				BotHandshake handshake = bots.remove(conn);
-				executorService.submit(() -> listener.onBotLeft(new Bot(conn, handshake)));
+				executorService.submit(() -> listener.onBotLeft(new BotConn(conn, handshake)));
 
 			} else if (observers.containsKey(conn)) {
 				ObserverHandshake handshake = observers.remove(conn);
-				executorService.submit(() -> listener.onObserverLeft(new Observer(conn, handshake)));
+				executorService.submit(() -> listener.onObserverLeft(new ObserverConn(conn, handshake)));
 			}
 		}
 
@@ -145,7 +145,7 @@ public final class ConnectionHandler {
 					BotHandshake handshake = gson.fromJson(message, BotHandshake.class);
 					bots.put(conn, handshake);
 
-					executorService.submit(() -> listener.onBotJoined(new Bot(conn, handshake)));
+					executorService.submit(() -> listener.onBotJoined(new BotConn(conn, handshake)));
 
 				} else if (ObserverHandshake.MessageType.OBSERVER_HANDSHAKE.toString().equalsIgnoreCase(messageType)) {
 					System.out.println("Handling ObserverHandshake");
@@ -153,13 +153,13 @@ public final class ConnectionHandler {
 					ObserverHandshake handshake = gson.fromJson(message, ObserverHandshake.class);
 					observers.put(conn, handshake);
 
-					executorService.submit(() -> listener.onObserverJoined(new Observer(conn, handshake)));
+					executorService.submit(() -> listener.onObserverJoined(new ObserverConn(conn, handshake)));
 
 				} else if (BotReady.MessageType.BOT_READY.toString().equalsIgnoreCase(messageType)) {
 					System.out.println("Handling BotReady");
 
 					BotHandshake handshake = bots.get(conn);
-					executorService.submit(() -> listener.onBotReady(new Bot(conn, handshake)));
+					executorService.submit(() -> listener.onBotReady(new BotConn(conn, handshake)));
 
 				} else {
 					notifyException(new IllegalStateException("Unhandled message type: " + messageType));

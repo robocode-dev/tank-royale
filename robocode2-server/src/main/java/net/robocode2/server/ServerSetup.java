@@ -18,11 +18,11 @@ public final class ServerSetup {
 	public Set<GameDefinition> getGames() {
 		Set<GameDefinition> games = new HashSet<>();
 
-		GameDefinition game1 = new DefaultGameDefinition();
+		GameDefinition game1 = new DefaultGameDef();
 		game1.setGameType("melee");
 		games.add(game1);
 
-		GameDefinition game2 = new DefaultGameDefinition();
+		GameDefinition game2 = new DefaultGameDef();
 		game2.setGameType("1v1");
 		game2.setMinNumberOfParticipants(2);
 		game2.setMaxNumberOfParticipants(2);

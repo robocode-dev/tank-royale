@@ -32,13 +32,13 @@ import net.robocode2.server.mappers.TurnToTickForBotMapper;
 public final class GameServer {
 
 	private ServerSetup setup;
-	private ConnectionListener connectionObserver;
-	private ConnectionHandler connectionHandler;
+	private ConnListener connectionObserver;
+	private ConnHandler connectionHandler;
 
 	private ServerState gameState;
 	private GameDefinition gameDefinition;
-	private Set<Bot> participants;
-	private Set<Bot> readyParticipants;
+	private Set<BotConn> participants;
+	private Set<BotConn> readyParticipants;
 
 	private final Timer readyTimer = new Timer();
 
@@ -49,7 +49,7 @@ public final class GameServer {
 	public GameServer() {
 		this.setup = new ServerSetup();
 		this.connectionObserver = new ConnectionObserver();
-		this.connectionHandler = new ConnectionHandler(setup, connectionObserver);
+		this.connectionHandler = new ConnHandler(setup, connectionObserver);
 		this.gameState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
 	}
 
@@ -105,7 +105,7 @@ public final class GameServer {
 		newBattleForBot.setReadyTimeout(gameDefinition.getReadyTimeout());
 
 		int participantId = 1;
-		for (Bot participant : participants) {
+		for (BotConn participant : participants) {
 			participant.setId(participantId);
 			newBattleForBot.setMyId(participantId);
 
@@ -115,7 +115,7 @@ public final class GameServer {
 			participantId++;
 		}
 
-		readyParticipants = new HashSet<Bot>();
+		readyParticipants = new HashSet<BotConn>();
 
 		// Start 'ready' timer
 
@@ -131,7 +131,7 @@ public final class GameServer {
 	// Should be moved to a "strategy" class
 	private GameAndParticipants selectGameAndParticipants(Map<WebSocket, BotHandshake> candidateBots) {
 
-		Map<String, Set<Bot>> candidateBotsPerGameType = new HashMap<>();
+		Map<String, Set<BotConn>> candidateBotsPerGameType = new HashMap<>();
 
 		Set<String> gameTypes = getGameTypes();
 
@@ -144,23 +144,23 @@ public final class GameServer {
 			availGameTypes.retainAll(gameTypes);
 
 			for (String gameType : availGameTypes) {
-				Set<Bot> candidates = candidateBotsPerGameType.get(gameType);
+				Set<BotConn> candidates = candidateBotsPerGameType.get(gameType);
 				if (candidates == null) {
 					candidates = new HashSet<>();
 					candidateBotsPerGameType.put(gameType, candidates);
 				}
-				candidates.add(new Bot(entry.getKey(), entry.getValue()));
+				candidates.add(new BotConn(entry.getKey(), entry.getValue()));
 			}
 		}
 
 		// Run through the list of games and see if anyone has enough
 		// participants to start the game
 		Set<GameDefinition> games = setup.getGames();
-		for (Entry<String, Set<Bot>> entry : candidateBotsPerGameType.entrySet()) {
+		for (Entry<String, Set<BotConn>> entry : candidateBotsPerGameType.entrySet()) {
 			GameDefinition game = games.stream().filter(g -> g.getGameType().equalsIgnoreCase(entry.getKey())).findAny()
 					.orElse(null);
 
-			Set<Bot> participants = entry.getValue();
+			Set<BotConn> participants = entry.getValue();
 			int count = participants.size();
 			if (count >= game.getMinNumberOfParticipants() && count <= game.getMaxNumberOfParticipants()) {
 				// enough participants
@@ -193,7 +193,7 @@ public final class GameServer {
 			newBattleForObserver.setReadyTimeout(gameDefinition.getReadyTimeout());
 
 			List<Participant> list = new ArrayList<>();
-			for (Bot bot : participants) {
+			for (BotConn bot : participants) {
 				Participant p = new Participant();
 				BotHandshake h = bot.getHandshake();
 				p.setAuthor(h.getAuthor());
@@ -217,7 +217,7 @@ public final class GameServer {
 
 		// Update game state
 		Set<Integer> participantIds = new HashSet<>();
-		for (Bot bot : participants) {
+		for (BotConn bot : participants) {
 			participantIds.add(bot.getId());
 		}
 
@@ -238,7 +238,7 @@ public final class GameServer {
 		Turn lastTurn = lastRound.getLastTurn();
 
 		// Send game state as 'tick' to participants
-		for (Bot participant : participants) {
+		for (BotConn participant : participants) {
 			TickForBot tickForBot = TurnToTickForBotMapper.map(lastRound, lastTurn, participant.getId());
 
 			String msg = gson.toJson(tickForBot);
@@ -277,7 +277,7 @@ public final class GameServer {
 		conn.send(message);
 	}
 
-	private class ConnectionObserver implements ConnectionListener {
+	private class ConnectionObserver implements ConnListener {
 
 		@Override
 		public void onException(Exception exception) {
@@ -285,29 +285,29 @@ public final class GameServer {
 		}
 
 		@Override
-		public void onBotJoined(Bot bot) {
+		public void onBotJoined(BotConn bot) {
 			if (gameState == ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN) {
 				prepareGameIfEnoughCandidates();
 			}
 		}
 
 		@Override
-		public void onBotLeft(Bot bot) {
+		public void onBotLeft(BotConn bot) {
 			// TODO Auto-generated method stub
 		}
 
 		@Override
-		public void onObserverJoined(Observer observer) {
+		public void onObserverJoined(ObserverConn observer) {
 			// TODO Auto-generated method stub
 		}
 
 		@Override
-		public void onObserverLeft(Observer observer) {
+		public void onObserverLeft(ObserverConn observer) {
 			// TODO Auto-generated method stub
 		}
 
 		@Override
-		public void onBotReady(Bot bot) {
+		public void onBotReady(BotConn bot) {
 			if (gameState == ServerState.WAIT_FOR_READY_PARTICIPANTS) {
 				readyParticipants.add(bot);
 				startGameIfParticipantsReady();
@@ -317,6 +317,6 @@ public final class GameServer {
 
 	private class GameAndParticipants {
 		GameDefinition gameDefinition;
-		Set<Bot> participants;
+		Set<BotConn> participants;
 	}
 }

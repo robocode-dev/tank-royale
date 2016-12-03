@@ -4,12 +4,12 @@ import org.java_websocket.WebSocket;
 
 import net.robocode2.json_schema.messages.ObserverHandshake;
 
-public final class Observer {
+public final class ObserverConn {
 
 	private final WebSocket connection;
 	private final ObserverHandshake handshake;
 
-	public Observer(WebSocket connection, ObserverHandshake handshake) {
+	public ObserverConn(WebSocket connection, ObserverHandshake handshake) {
 		this.connection = connection;
 		this.handshake = handshake;
 	}

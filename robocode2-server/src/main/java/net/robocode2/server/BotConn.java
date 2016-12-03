@@ -4,13 +4,13 @@ import org.java_websocket.WebSocket;
 
 import net.robocode2.json_schema.messages.BotHandshake;
 
-public final class Bot {
+public final class BotConn {
 
 	private final WebSocket connection;
 	private final BotHandshake handshake;
 	private int id;
 
-	public Bot(WebSocket connection, BotHandshake handshake) {
+	public BotConn(WebSocket connection, BotHandshake handshake) {
 		this.connection = connection;
 		this.handshake = handshake;
 	}
