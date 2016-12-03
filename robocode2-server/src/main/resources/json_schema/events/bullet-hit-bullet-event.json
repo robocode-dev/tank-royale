@@ -1,7 +1,7 @@
 {
 	"id": "#bullet-hit-bullet-event.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"description": "Bot event occuring, when the bullet from a bot hits another bullet",
+	"description": "Bot event occurring, when the bullet from a bot hits another bullet",
 	
 	"javaType": "net.robocode2.json_schema.events.BulletHitBulletEvent",
 	"extends": {

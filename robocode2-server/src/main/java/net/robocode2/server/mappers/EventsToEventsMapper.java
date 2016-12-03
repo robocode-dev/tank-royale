@@ -7,6 +7,7 @@ import java.util.Set;
 import net.robocode2.json_schema.events.BotDeathEvent;
 import net.robocode2.json_schema.events.BotHitBotEvent;
 import net.robocode2.json_schema.events.BotHitWallEvent;
+import net.robocode2.json_schema.events.BulletFiredEvent;
 import net.robocode2.json_schema.events.BulletHitBotEvent;
 import net.robocode2.json_schema.events.BulletHitBulletEvent;
 import net.robocode2.json_schema.events.BulletMissedEvent;
@@ -26,6 +27,7 @@ public final class EventsToEventsMapper {
 	}
 
 	private static Event map(net.robocode2.model.events.Event event) {
+
 		if (event instanceof net.robocode2.model.events.BotDeathEvent) {
 			return map((net.robocode2.model.events.BotDeathEvent) event);
 		}
@@ -34,6 +36,9 @@ public final class EventsToEventsMapper {
 		}
 		if (event instanceof net.robocode2.model.events.BotHitWallEvent) {
 			return map((net.robocode2.model.events.BotHitWallEvent) event);
+		}
+		if (event instanceof net.robocode2.model.events.BulletFiredEvent) {
+			return map((net.robocode2.model.events.BulletFiredEvent) event);
 		}
 		if (event instanceof net.robocode2.model.events.BulletHitBotEvent) {
 			return map((net.robocode2.model.events.BulletHitBotEvent) event);
@@ -75,6 +80,13 @@ public final class EventsToEventsMapper {
 		BotHitWallEvent event = new BotHitWallEvent();
 		event.setMessageType(MessageType.BOT_HIT_WALL_EVENT);
 		event.setVictimId(botHitWallEvent.getVictimId());
+		return event;
+	}
+
+	private static BulletFiredEvent map(net.robocode2.model.events.BulletFiredEvent bulletFiredEvent) {
+		BulletFiredEvent event = new BulletFiredEvent();
+		event.setMessageType(MessageType.BULLET_FIRED_EVENT);
+		event.setBullet(BulletToBulletStateMapper.map(bulletFiredEvent.getBullet()));
 		return event;
 	}
 

@@ -10,6 +10,7 @@
 				"bot-death-event",
 				"bot-hit-bot-event",
 				"bot-hit-wall-event",
+				"bullet-fired-event",
 				"bullet-hit-bot-event",
 				"bullet-missed-event",
 				"bullet-hit-bullet-event",
