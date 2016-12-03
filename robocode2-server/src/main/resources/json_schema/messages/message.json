@@ -8,6 +8,7 @@
 		"message-type": {
 			"enum": [
 				"server-handshake",
+				"bot-intent",
 				"bot-handshake",
 				"observer-handshake",
 				"new-battle-for-bot",
@@ -15,7 +16,6 @@
 				"bot-ready",
 				"tick-for-bot",
 				"tick-for-observer",
-				"intent-from-bot",
 				"results-for-bot",
 				"results-for-observer"
 			]

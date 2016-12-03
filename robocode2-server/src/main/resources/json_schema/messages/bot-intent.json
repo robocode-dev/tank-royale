@@ -1,12 +1,12 @@
 {
-    "id": "#intent-from-bot.json",
+    "id": "#bot-intent.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Intent from a bot",
 
-	"javaType": "net.robocode2.json_schema.messages.IntentFromBot",
+	"javaType": "net.robocode2.json_schema.messages.BotIntent",
 	"extends": {
 		"$ref": "message.json",
-		"default": "intent-from-bot"
+		"default": "bot-intent"
 	},
     "properties": {
          "turn-rate": {
