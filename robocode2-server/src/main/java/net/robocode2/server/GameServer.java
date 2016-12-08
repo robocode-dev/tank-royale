@@ -1,6 +1,7 @@
 package net.robocode2.server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,6 +24,8 @@ import net.robocode2.json_schema.messages.NewBattleForBot;
 import net.robocode2.json_schema.messages.NewBattleForObserver;
 import net.robocode2.json_schema.messages.ObserverHandshake;
 import net.robocode2.json_schema.messages.TickForBot;
+import net.robocode2.model.BotIntent;
+import net.robocode2.model.BotIntent.Builder;
 import net.robocode2.model.GameState;
 import net.robocode2.model.Round;
 import net.robocode2.model.Setup;
@@ -37,8 +40,10 @@ public final class GameServer {
 
 	private ServerState gameState;
 	private GameDefinition gameDefinition;
+
 	private Set<BotConn> participants;
 	private Set<BotConn> readyParticipants;
+	private Map<BotConn, Builder> botIntents;
 
 	private final Timer readyTimer = new Timer();
 
@@ -81,6 +86,7 @@ public final class GameServer {
 
 			readyTimer.cancel();
 			readyParticipants.clear();
+			botIntents.clear();
 
 			startGame();
 		}
@@ -232,7 +238,16 @@ public final class GameServer {
 	}
 
 	private void updateGameState() {
-		GameState gameState = modelUpdater.update();
+
+		Map<Integer /* BotId */, BotIntent> mappedIntents = new HashMap<>();
+
+		for (Entry<BotConn, BotIntent.Builder> entry : botIntents.entrySet()) {
+			int botId = entry.getKey().getId();
+			BotIntent intent = entry.getValue().build();
+			mappedIntents.put(botId, intent);
+		}
+
+		GameState gameState = modelUpdater.update(Collections.unmodifiableMap(mappedIntents));
 
 		Round lastRound = gameState.getLastRound();
 		Turn lastTurn = lastRound.getLastTurn();
@@ -312,6 +327,35 @@ public final class GameServer {
 				readyParticipants.add(bot);
 				startGameIfParticipantsReady();
 			}
+		}
+
+		@Override
+		public void onBotIntent(BotConn bot, net.robocode2.json_schema.messages.BotIntent intent) {
+			updateBotIntent(bot, intent);
+		}
+	}
+
+	private void updateBotIntent(BotConn bot, net.robocode2.json_schema.messages.BotIntent intent) {
+
+		BotIntent.Builder builder = botIntents.get(bot);
+		if (builder == null) {
+			builder = new BotIntent.Builder();
+			botIntents.put(bot, builder);
+		}
+		if (intent.getTurnRate() != null) {
+			builder.setBodyTurnRate(intent.getTurnRate());
+		}
+		if (intent.getTurretTurnRate() != null) {
+			builder.setTurretTurnRate(intent.getTurretTurnRate());
+		}
+		if (intent.getRadarTurnRate() != null) {
+			builder.setRadarTurnRate(intent.getRadarTurnRate());
+		}
+		if (intent.getTargetSpeed() != null) {
+			builder.setTargetSpeed(intent.getTargetSpeed());
+		}
+		if (intent.getBulletPower() != null) {
+			builder.setBulletPower(intent.getBulletPower());
 		}
 	}
 

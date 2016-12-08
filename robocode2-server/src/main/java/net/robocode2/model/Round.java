@@ -40,7 +40,7 @@ public final class Round {
 		return roundEnded;
 	}
 
-	public static final class RoundBuilder {
+	public static final class Builder {
 		private int roundNumber;
 		private List<Turn> turns = new ArrayList<>();
 		private boolean roundEnded;
@@ -49,22 +49,22 @@ public final class Round {
 			return new Round(roundNumber, turns, roundEnded);
 		}
 
-		public RoundBuilder setRoundNumber(int roundNumber) {
+		public Builder setRoundNumber(int roundNumber) {
 			this.roundNumber = roundNumber;
 			return this;
 		}
 
-		public RoundBuilder setTurns(List<Turn> turns) {
+		public Builder setTurns(List<Turn> turns) {
 			this.turns = new ArrayList<>(turns);
 			return this;
 		}
 
-		public RoundBuilder setRoundEnded(boolean roundEnded) {
+		public Builder setRoundEnded(boolean roundEnded) {
 			this.roundEnded = roundEnded;
 			return this;
 		}
 
-		public RoundBuilder appendTurn(Turn turn) {
+		public Builder appendTurn(Turn turn) {
 			turns.add(turn);
 			return this;
 		}

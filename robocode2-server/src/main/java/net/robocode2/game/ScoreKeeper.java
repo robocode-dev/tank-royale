@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.robocode2.model.Score;
-import net.robocode2.model.Score.ScoreBuilder;
+import net.robocode2.model.Score.Builder;
 
 public class ScoreKeeper {
 
@@ -37,7 +37,7 @@ public class ScoreKeeper {
 	public Score getScore(int botId) {
 		DamageAndSurvival damageRecord = damageAndSurvivals.get(botId);
 
-		ScoreBuilder scoreBuilder = new ScoreBuilder();
+		Builder scoreBuilder = new Builder();
 		scoreBuilder.setSurvival(SCORE_PER_SURVIVAL * damageRecord.getSurvivalCount());
 		scoreBuilder.setLastSurvivorBonus(BONUS_PER_LAST_SURVIVOR * damageRecord.getLastSurvivorCount());
 

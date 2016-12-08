@@ -48,7 +48,7 @@ public final class Score {
 		return ramKillBonus;
 	}
 
-	public static final class ScoreBuilder {
+	public static final class Builder {
 		private double survival;
 		private double lastSurvivorBonus;
 		private double bulletDamage;
@@ -60,32 +60,32 @@ public final class Score {
 			return new Score(survival, lastSurvivorBonus, bulletDamage, bulletKillBonus, ramDamage, ramKillBonus);
 		}
 
-		public ScoreBuilder setSurvival(double survival) {
+		public Builder setSurvival(double survival) {
 			this.survival = survival;
 			return this;
 		}
 
-		public ScoreBuilder setLastSurvivorBonus(double lastSurvivorBonus) {
+		public Builder setLastSurvivorBonus(double lastSurvivorBonus) {
 			this.lastSurvivorBonus = lastSurvivorBonus;
 			return this;
 		}
 
-		public ScoreBuilder setBulletDamage(double bulletDamage) {
+		public Builder setBulletDamage(double bulletDamage) {
 			this.bulletDamage = bulletDamage;
 			return this;
 		}
 
-		public ScoreBuilder setBulletKillBonus(double bulletKillBonus) {
+		public Builder setBulletKillBonus(double bulletKillBonus) {
 			this.bulletKillBonus = bulletKillBonus;
 			return this;
 		}
 
-		public ScoreBuilder setRamDamage(double ramDamage) {
+		public Builder setRamDamage(double ramDamage) {
 			this.ramDamage = ramDamage;
 			return this;
 		}
 
-		public ScoreBuilder setRamKillBonus(double ramKillBonus) {
+		public Builder setRamKillBonus(double ramKillBonus) {
 			this.ramKillBonus = ramKillBonus;
 			return this;
 		}

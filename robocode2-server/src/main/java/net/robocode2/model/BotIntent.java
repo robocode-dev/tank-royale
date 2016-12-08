@@ -37,7 +37,7 @@ public final class BotIntent {
 		return bulletPower;
 	}
 
-	public static final class BotIntentBuilder {
+	public static final class Builder {
 		private double bodyTurnRate;
 		private double turretTurnRate;
 		private double radarTurnRate;
@@ -48,27 +48,27 @@ public final class BotIntent {
 			return new BotIntent(bodyTurnRate, turretTurnRate, radarTurnRate, targetSpeed, bulletPower);
 		}
 
-		public BotIntentBuilder setBodyTurnRate(double bodyTurnRate) {
+		public Builder setBodyTurnRate(double bodyTurnRate) {
 			this.bodyTurnRate = bodyTurnRate;
 			return this;
 		}
 
-		public BotIntentBuilder setTurretTurnRate(double turretTurnRate) {
+		public Builder setTurretTurnRate(double turretTurnRate) {
 			this.turretTurnRate = turretTurnRate;
 			return this;
 		}
 
-		public BotIntentBuilder setRadarTurnRate(double radarTurnRate) {
+		public Builder setRadarTurnRate(double radarTurnRate) {
 			this.radarTurnRate = radarTurnRate;
 			return this;
 		}
 
-		public BotIntentBuilder setTargetSpeed(double targetSpeed) {
+		public Builder setTargetSpeed(double targetSpeed) {
 			this.targetSpeed = targetSpeed;
 			return this;
 		}
 
-		public BotIntentBuilder setBulletPower(double bulletPower) {
+		public Builder setBulletPower(double bulletPower) {
 			this.bulletPower = bulletPower;
 			return this;
 		}

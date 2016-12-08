@@ -71,7 +71,7 @@ public final class Turn {
 		return Collections.unmodifiableSet(botEventsMap.get(botId));
 	}
 
-	public static final class TurnBuilder {
+	public static final class Builder {
 		private int turnNumber;
 		private Set<Bot> bots = new HashSet<>();
 		private Set<Bullet> bullets = new HashSet<>();
@@ -82,12 +82,12 @@ public final class Turn {
 			return new Turn(turnNumber, bots, bullets, observerEvents, botEventsMap);
 		}
 
-		public TurnBuilder setTurnNumber(int turnNumber) {
+		public Builder setTurnNumber(int turnNumber) {
 			this.turnNumber = turnNumber;
 			return this;
 		}
 
-		public TurnBuilder setBots(Set<Bot> bots) {
+		public Builder setBots(Set<Bot> bots) {
 			if (bots == null) {
 				this.bots = new HashSet<>();
 			} else {
@@ -96,7 +96,7 @@ public final class Turn {
 			return this;
 		}
 
-		public TurnBuilder setBullets(Set<Bullet> bullets) {
+		public Builder setBullets(Set<Bullet> bullets) {
 			if (bullets == null) {
 				this.bullets = new HashSet<>();
 			} else {
@@ -105,17 +105,17 @@ public final class Turn {
 			return this;
 		}
 
-		public TurnBuilder addBullet(Bullet bullet) {
+		public Builder addBullet(Bullet bullet) {
 			bullets.add(bullet);
 			return this;
 		}
 
-		public TurnBuilder addObserverEvent(Event event) {
+		public Builder addObserverEvent(Event event) {
 			observerEvents.add(event);
 			return this;
 		}
 
-		public TurnBuilder addBotEvent(int botId, Event event) {
+		public Builder addBotEvent(int botId, Event event) {
 			Set<Event> botEvents = botEventsMap.get(botId);
 			if (botEvents == null) {
 				botEvents = new HashSet<>();

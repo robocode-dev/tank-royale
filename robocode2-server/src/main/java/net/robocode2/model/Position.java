@@ -17,4 +17,10 @@ public final class Position {
 	public double getY() {
 		return y;
 	}
+
+	// Direction in degrees
+	public Position calcNewPosition(double direction, double speed) {
+		double angle = Math.toRadians(direction);
+		return new Position(x + Math.cos(angle) * speed, y + Math.sin(angle) * speed);
+	}
 }

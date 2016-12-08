@@ -78,7 +78,7 @@ public final class Bot {
 		return score;
 	}
 
-	public static final class BotBuilder {
+	public static final class Builder {
 		private int id;
 		private boolean alive;
 		private double energy;
@@ -90,59 +90,115 @@ public final class Bot {
 		private Arc scanArc;
 		private Score score;
 
+		public Builder() {
+		}
+
+		public Builder(Bot bot) {
+			id = bot.id;
+			alive = bot.alive;
+			energy = bot.energy;
+			position = bot.position;
+			direction = bot.direction;
+			turretDirection = bot.turretDirection;
+			radarDirection = bot.radarDirection;
+			speed = bot.speed;
+			scanArc = bot.scanArc;
+			score = bot.score;
+		}
+
 		public Bot build() {
 			return new Bot(id, alive, energy, position, direction, turretDirection, radarDirection, speed, scanArc,
 					score);
 		}
 
-		public BotBuilder setId(int id) {
+		public Builder setId(int id) {
 			this.id = id;
 			return this;
 		}
 
-		public BotBuilder setAlive(boolean alive) {
+		public Builder setAlive(boolean alive) {
 			this.alive = alive;
 			return this;
 		}
 
-		public BotBuilder setEnergy(double energy) {
+		public Builder setEnergy(double energy) {
 			this.energy = energy;
 			return this;
 		}
 
-		public BotBuilder setPosition(Position position) {
+		public Builder setPosition(Position position) {
 			this.position = position;
 			return this;
 		}
 
-		public BotBuilder setDirection(double direction) {
+		public Builder setDirection(double direction) {
 			this.direction = direction;
 			return this;
 		}
 
-		public BotBuilder setTurretDirection(double turretDirection) {
+		public Builder setTurretDirection(double turretDirection) {
 			this.turretDirection = turretDirection;
 			return this;
 		}
 
-		public BotBuilder setRadarDirection(double radarDirection) {
+		public Builder setRadarDirection(double radarDirection) {
 			this.radarDirection = radarDirection;
 			return this;
 		}
 
-		public BotBuilder setSpeed(double speed) {
+		public Builder setSpeed(double speed) {
 			this.speed = speed;
 			return this;
 		}
 
-		public BotBuilder setScanArc(Arc scanArc) {
+		public Builder setScanArc(Arc scanArc) {
 			this.scanArc = scanArc;
 			return this;
 		}
 
-		public BotBuilder setScore(Score score) {
+		public Builder setScore(Score score) {
 			this.score = score;
 			return this;
+		}
+
+		public int getId() {
+			return id;
+		}
+
+		public boolean isAlive() {
+			return alive;
+		}
+
+		public double getEnergy() {
+			return energy;
+		}
+
+		public Position getPosition() {
+			return position;
+		}
+
+		public double getDirection() {
+			return direction;
+		}
+
+		public double getTurretDirection() {
+			return turretDirection;
+		}
+
+		public double getRadarDirection() {
+			return radarDirection;
+		}
+
+		public double getSpeed() {
+			return speed;
+		}
+
+		public Arc getScanArc() {
+			return scanArc;
+		}
+
+		public Score getScore() {
+			return score;
 		}
 	}
 }

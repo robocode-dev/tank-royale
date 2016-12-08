@@ -1,38 +1,40 @@
 package net.robocode2.game;
 
-import java.util.Arrays;
+import static net.robocode2.model.Physics.INITIAL_BOT_ENERGY;
+import static net.robocode2.model.Physics.RADAR_RADIUS;
+import static net.robocode2.model.Physics.calcNewSpeed;
+
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import net.robocode2.model.Arc;
 import net.robocode2.model.Arena;
 import net.robocode2.model.Bot;
-import net.robocode2.model.Bot.BotBuilder;
+import net.robocode2.model.BotIntent;
 import net.robocode2.model.GameState;
-import net.robocode2.model.GameState.GameStateBuilder;
 import net.robocode2.model.Position;
 import net.robocode2.model.Round;
-import net.robocode2.model.Round.RoundBuilder;
-import net.robocode2.model.Score.ScoreBuilder;
+import net.robocode2.model.Score;
 import net.robocode2.model.Setup;
 import net.robocode2.model.Size;
 import net.robocode2.model.Turn;
-import net.robocode2.model.Turn.TurnBuilder;
 
 public class ModelUpdater {
 
-	private static final double INITIAL_BOT_ENERGY = 100.0;
-	private static final double RADAR_RADIUS = 1200.0;
-
 	private final Setup setup;
 
-	private GameStateBuilder gameStateBuilder;
-	private RoundBuilder roundBuilder;
-	private TurnBuilder turnBuilder;
+	private GameState.Builder gameStateBuilder;
+	private Round.Builder roundBuilder;
+	private Turn.Builder turnBuilder;
 
 	private int roundNumber;
 	private int turnNumber;
 	private boolean roundEnded;
+
+	private Turn previousTurn;
+	private Map<Integer /* BotId */, Bot.Builder> botStateMap = new HashMap<>();
 
 	public ModelUpdater(Setup setup) {
 		this.setup = setup;
@@ -42,9 +44,9 @@ public class ModelUpdater {
 
 	private void initialize() {
 		// Prepare game state builders
-		gameStateBuilder = new GameStateBuilder();
-		roundBuilder = new RoundBuilder();
-		turnBuilder = new TurnBuilder();
+		gameStateBuilder = new GameState.Builder();
+		roundBuilder = new Round.Builder();
+		turnBuilder = new Turn.Builder();
 
 		// Prepare game state builder
 		Arena arena = new Arena(new Size(setup.getArenaWidth(), setup.getArenaHeight()));
@@ -54,31 +56,42 @@ public class ModelUpdater {
 		turnNumber = 0;
 	}
 
-	public GameState update() {
+	public GameState update(Map<Integer /* BotId */, BotIntent> botIntents) {
 		if (roundEnded || roundNumber == 0) {
 			nextRound();
 		}
 
-		nextTurn();
+		nextTurn(botIntents);
 
 		return buildGameState();
 	}
 
 	private void nextRound() {
-		roundEnded = false;
-
 		roundNumber++;
 		roundBuilder.setRoundNumber(roundNumber);
+
+		roundEnded = false;
 
 		Set<Bot> bots = initialBotStates();
 		turnBuilder.setBots(bots);
 	}
 
-	private void nextTurn() {
+	private void nextTurn(Map<Integer /* BotId */, BotIntent> botIntents) {
+
+		previousTurn = turnBuilder.build();
+
 		turnNumber++;
 		turnBuilder.setTurnNumber(turnNumber);
 
-		// Update bot future positions
+		// Prepare map over new bot states
+		botStateMap.clear();
+		for (Bot bot : previousTurn.getBots()) {
+			botStateMap.put(bot.getId(), new Bot.Builder(bot));
+		}
+
+		// Move each bot to a new position, and turn body, turret and radar
+		moveBots(botIntents);
+
 		// Update bullet future positions
 		// Check bot wall collisions
 		// Check bullet wall collisions
@@ -105,7 +118,7 @@ public class ModelUpdater {
 
 		for (int id : setup.getParticipantIds()) {
 
-			BotBuilder builder = new BotBuilder();
+			Bot.Builder builder = new Bot.Builder();
 			builder.setId(id);
 			builder.setEnergy(INITIAL_BOT_ENERGY);
 			builder.setSpeed(0);
@@ -114,7 +127,7 @@ public class ModelUpdater {
 			builder.setTurretDirection(randomDirection());
 			builder.setRadarDirection(randomDirection());
 			builder.setScanArc(new Arc(0, RADAR_RADIUS));
-			builder.setScore(new ScoreBuilder().build());
+			builder.setScore(new Score.Builder().build());
 
 			Bot bot = builder.build();
 			bots.add(bot);
@@ -164,15 +177,54 @@ public class ModelUpdater {
 		return new Position(x, y);
 	}
 
+	private void moveBots(Map<Integer /* BotId */, BotIntent> botIntents) {
+
+		for (Bot bot : previousTurn.getBots()) {
+			BotIntent intent = botIntents.get(bot.getId());
+
+			double speed = calcNewSpeed(bot.getSpeed(), intent.getTargetSpeed());
+			double direction = bot.getDirection() + intent.getBodyTurnRate();
+
+			Bot.Builder botBuilder = new Bot.Builder();
+			botBuilder.setSpeed(speed);
+			botBuilder.setDirection(direction);
+			botBuilder.setPosition(bot.getPosition().calcNewPosition(direction, speed));
+		}
+	}
+
 	private static double randomDirection() {
 		return Math.random() * 360;
 	}
 
 	public static void main(String[] args) {
 
-		Setup setup = new Setup("gameType", 200, 100, 0, 0, 0, new HashSet<Integer>(Arrays.asList(1, 2)));
+		// Setup setup = new Setup("gameType", 200, 100, 0, 0, 0, new HashSet<Integer>(Arrays.asList(1, 2)));
+		//
+		// ModelUpdater updater = new ModelUpdater(setup);
+		// updater.initialBotStates();
 
-		ModelUpdater updater = new ModelUpdater(setup);
-		updater.initialBotStates();
+		// System.out.println("#0: " + computeNewSpeed(0, 0));
+		//
+		// System.out.println("#1: " + computeNewSpeed(1, 10));
+		// System.out.println("#2: " + computeNewSpeed(8, 10));
+		//
+		// System.out.println("#3: " + computeNewSpeed(1, 1.5));
+		// System.out.println("#4: " + computeNewSpeed(0, 0.3));
+		//
+		// System.out.println("#5: " + computeNewSpeed(8, 0));
+		// System.out.println("#6: " + computeNewSpeed(7.5, -3));
+		//
+		// System.out.println("#7: " + computeNewSpeed(8, -8));
+		//
+		// System.out.println("#-1: " + computeNewSpeed(-1, -10));
+		// System.out.println("#-2: " + computeNewSpeed(-8, -10));
+		//
+		// System.out.println("#-3: " + computeNewSpeed(-1, -1.5));
+		// System.out.println("#-4: " + computeNewSpeed(0, -0.3));
+		//
+		// System.out.println("#-5: " + computeNewSpeed(-8, 0));
+		// System.out.println("#-6: " + computeNewSpeed(-7.5, 3));
+		//
+		// System.out.println("#-7: " + computeNewSpeed(-8, 8));
 	}
 }

@@ -40,7 +40,7 @@ public final class GameState {
 		return gameEnded;
 	}
 
-	public static final class GameStateBuilder {
+	public static final class Builder {
 		private Arena arena;
 		private List<Round> rounds = new ArrayList<>();
 		private boolean gameEnded;
@@ -49,22 +49,22 @@ public final class GameState {
 			return new GameState(arena, rounds, gameEnded);
 		}
 
-		public GameStateBuilder setArena(Arena arena) {
+		public Builder setArena(Arena arena) {
 			this.arena = arena;
 			return this;
 		}
 
-		public GameStateBuilder setRounds(List<Round> rounds) {
+		public Builder setRounds(List<Round> rounds) {
 			this.rounds = new ArrayList<>(rounds);
 			return this;
 		}
 
-		public GameStateBuilder setGameEnded(boolean gameEnded) {
+		public Builder setGameEnded(boolean gameEnded) {
 			this.gameEnded = gameEnded;
 			return this;
 		}
 
-		public GameStateBuilder appendRound(Round round) {
+		public Builder appendRound(Round round) {
 			rounds.add(round);
 			return this;
 		}
