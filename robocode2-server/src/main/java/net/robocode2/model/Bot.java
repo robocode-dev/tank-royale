@@ -13,11 +13,12 @@ public final class Bot {
 	private final double turretDirection;
 	private final double radarDirection;
 	private final double speed;
+	private final double gunHeat;
 	private final Arc scanArc;
 	private final Score score;
 
 	public Bot(int id, boolean alive, double energy, Position position, double direction, double turretDiretion,
-			double radarDirection, double speed, Arc scanArc, Score score) {
+			double radarDirection, double speed, double gunHeat, Arc scanArc, Score score) {
 		this.id = id;
 		this.alive = alive;
 		this.energy = energy;
@@ -26,6 +27,7 @@ public final class Bot {
 		this.turretDirection = turretDiretion;
 		this.radarDirection = radarDirection;
 		this.speed = speed;
+		this.gunHeat = gunHeat;
 		this.scanArc = scanArc;
 		this.score = score;
 	}
@@ -70,6 +72,10 @@ public final class Bot {
 		return speed;
 	}
 
+	public double getGunHeat() {
+		return gunHeat;
+	}
+
 	public Arc getScanArc() {
 		return scanArc;
 	}
@@ -87,6 +93,7 @@ public final class Bot {
 		private double turretDirection;
 		private double radarDirection;
 		private double speed;
+		private double gunHeat;
 		private Arc scanArc;
 		private Score score;
 
@@ -102,13 +109,14 @@ public final class Bot {
 			turretDirection = bot.turretDirection;
 			radarDirection = bot.radarDirection;
 			speed = bot.speed;
+			gunHeat = bot.gunHeat;
 			scanArc = bot.scanArc;
 			score = bot.score;
 		}
 
 		public Bot build() {
-			return new Bot(id, alive, energy, position, direction, turretDirection, radarDirection, speed, scanArc,
-					score);
+			return new Bot(id, alive, energy, position, direction, turretDirection, radarDirection, speed, gunHeat,
+					scanArc, score);
 		}
 
 		public Builder setId(int id) {
@@ -148,6 +156,11 @@ public final class Bot {
 
 		public Builder setSpeed(double speed) {
 			this.speed = speed;
+			return this;
+		}
+
+		public Builder setGunHeat(double gunHeat) {
+			this.gunHeat = gunHeat;
 			return this;
 		}
 
@@ -191,6 +204,10 @@ public final class Bot {
 
 		public double getSpeed() {
 			return speed;
+		}
+
+		public double getGunHeat() {
+			return gunHeat;
 		}
 
 		public Arc getScanArc() {

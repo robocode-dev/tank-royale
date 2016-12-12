@@ -9,52 +9,17 @@
 		"default": "new-battle-for-bot"
 	},
 	"properties": {
+		"game-setup": {
+			"description": "Game setup",
+			"$ref": "../game-setup.json"
+		},
 		"my-id": {
 			"description": "My ID, is an unique identifier for this bot",
 			"type": "integer"
-		},
-		"game-type": {
-			"description": "Type of game",
-			"type": "string"
-		},
-		"arena-width": {
-			"description": "Width of arena in units",
-			"type": "integer"
-		},
-		"arena-height": {
-			"description": "Height of arena in units",
-			"type": "integer"
-		},
-		"min-number-of-participants": {
-			"description": "Minimum number of bots participating in battle",
-			"type": "integer"
-		},
-		"max-number-of-participants": {
-			"description": "Maximum number of bots participating in battle",
-			"type": "integer"
-		},
-		"number-of-rounds": {
-			"description": "Number of rounds in battle",
-			"type": "integer"
-		},
-		"turn-timeout": {
-			 "description": "Turn timeout in milliseconds for sending intent after having received 'tick' message",
-			 "type": "integer"
-		},
-		"ready-timeout": {
-			 "description": "Time limit in milliseconds for sending ready message after having received 'new battle' message",
-			 "type": "integer"
 		}
 	},
 	"required": [
-		"my-id",
-		"game-type",
-		"arena-width",
-		"arena-height",
-		"min-number-of-participants",
-		"max-number-of-participants",
-		"number-of-rounds",
-		"turn-timeout",
-		"ready-timeout"
+		"game-setup",
+		"my-id"
 	]
 }

@@ -17,7 +17,7 @@
 		"games": {
 			"type": "array",
 			"items": {
-				"$ref": "../game-definition.json"
+				"$ref": "../game-setup.json"
 			},
 			"minItems": 1,
 			"uniqueItems": true

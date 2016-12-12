@@ -17,7 +17,6 @@ import org.java_websocket.WebSocket;
 import com.google.gson.Gson;
 
 import net.robocode2.game.ModelUpdater;
-import net.robocode2.json_schema.GameDefinition;
 import net.robocode2.json_schema.Participant;
 import net.robocode2.json_schema.messages.BotHandshake;
 import net.robocode2.json_schema.messages.NewBattleForBot;
@@ -26,24 +25,25 @@ import net.robocode2.json_schema.messages.ObserverHandshake;
 import net.robocode2.json_schema.messages.TickForBot;
 import net.robocode2.model.BotIntent;
 import net.robocode2.model.BotIntent.Builder;
+import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.Round;
-import net.robocode2.model.Setup;
 import net.robocode2.model.Turn;
+import net.robocode2.server.mappers.GameSetupToGameSetupMapper;
 import net.robocode2.server.mappers.TurnToTickForBotMapper;
 
 public final class GameServer {
 
-	private ServerSetup setup;
+	private ServerSetup serverSetup;
 	private ConnListener connectionObserver;
 	private ConnHandler connectionHandler;
 
 	private ServerState gameState;
-	private GameDefinition gameDefinition;
+	private GameSetup gameSetup;
 
 	private Set<BotConn> participants;
 	private Set<BotConn> readyParticipants;
-	private Map<BotConn, Builder> botIntents;
+	private Map<BotConn, Builder> botIntents = new HashMap<>();
 
 	private final Timer readyTimer = new Timer();
 
@@ -52,9 +52,9 @@ public final class GameServer {
 	private ModelUpdater modelUpdater;
 
 	public GameServer() {
-		this.setup = new ServerSetup();
+		this.serverSetup = new ServerSetup();
 		this.connectionObserver = new ConnectionObserver();
-		this.connectionHandler = new ConnHandler(setup, connectionObserver);
+		this.connectionHandler = new ConnHandler(serverSetup, connectionObserver);
 		this.gameState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
 	}
 
@@ -68,13 +68,13 @@ public final class GameServer {
 	}
 
 	private void prepareGameIfEnoughCandidates() {
-		GameAndParticipants gameAndParticipants = selectGameAndParticipants(connectionHandler.getBotConnections());
-		if (gameAndParticipants == null) {
+		GameAndParticipants gap = selectGameAndParticipants(connectionHandler.getBotConnections());
+		if (gap == null) {
 			return;
 		}
 
-		gameDefinition = gameAndParticipants.gameDefinition;
-		participants = gameAndParticipants.participants;
+		gameSetup = gap.gameSetup;
+		participants = gap.participants;
 
 		if (participants.size() > 0) {
 			prepareGame();
@@ -101,14 +101,7 @@ public final class GameServer {
 
 		NewBattleForBot newBattleForBot = new NewBattleForBot();
 		newBattleForBot.setMessageType(NewBattleForBot.MessageType.NEW_BATTLE_FOR_BOT);
-		newBattleForBot.setGameType(gameDefinition.getGameType());
-		newBattleForBot.setArenaWidth(gameDefinition.getArenaWidth());
-		newBattleForBot.setArenaHeight(gameDefinition.getArenaHeight());
-		newBattleForBot.setNumberOfRounds(gameDefinition.getNumberOfRounds());
-		newBattleForBot.setMinNumberOfParticipants(gameDefinition.getMinNumberOfParticipants());
-		newBattleForBot.setMaxNumberOfParticipants(gameDefinition.getMaxNumberOfParticipants());
-		newBattleForBot.setTurnTimeout(gameDefinition.getTurnTimeout());
-		newBattleForBot.setReadyTimeout(gameDefinition.getReadyTimeout());
+		newBattleForBot.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
 
 		int participantId = 1;
 		for (BotConn participant : participants) {
@@ -131,7 +124,7 @@ public final class GameServer {
 				onReadyTimeout();
 			}
 
-		}, gameDefinition.getReadyTimeout());
+		}, gameSetup.getReadyTimeout());
 	}
 
 	// Should be moved to a "strategy" class
@@ -161,17 +154,19 @@ public final class GameServer {
 
 		// Run through the list of games and see if anyone has enough
 		// participants to start the game
-		Set<GameDefinition> games = setup.getGames();
+		Set<GameSetup> games = serverSetup.getGames();
 		for (Entry<String, Set<BotConn>> entry : candidateBotsPerGameType.entrySet()) {
-			GameDefinition game = games.stream().filter(g -> g.getGameType().equalsIgnoreCase(entry.getKey())).findAny()
+			GameSetup game = games.stream().filter(g -> g.getGameType().equalsIgnoreCase(entry.getKey())).findAny()
 					.orElse(null);
 
 			Set<BotConn> participants = entry.getValue();
 			int count = participants.size();
-			if (count >= game.getMinNumberOfParticipants() && count <= game.getMaxNumberOfParticipants()) {
+			if (count >= game.getMinNumberOfParticipants()
+					&& (game.getMaxNumberOfParticipants() != null && count <= game.getMaxNumberOfParticipants())) {
+
 				// enough participants
 				GameAndParticipants gameAndParticipants = new GameAndParticipants();
-				gameAndParticipants.gameDefinition = game;
+				gameAndParticipants.gameSetup = game;
 				gameAndParticipants.participants = participants;
 				return gameAndParticipants;
 			}
@@ -189,14 +184,7 @@ public final class GameServer {
 		if (connectionHandler.getObserverConnections().size() > 0) {
 			NewBattleForObserver newBattleForObserver = new NewBattleForObserver();
 			newBattleForObserver.setMessageType(NewBattleForObserver.MessageType.NEW_BATTLE_FOR_OBSERVER);
-			newBattleForObserver.setGameType(gameDefinition.getGameType());
-			newBattleForObserver.setArenaWidth(gameDefinition.getArenaWidth());
-			newBattleForObserver.setArenaHeight(gameDefinition.getArenaHeight());
-			newBattleForObserver.setNumberOfRounds(gameDefinition.getNumberOfRounds());
-			newBattleForObserver.setMinNumberOfParticipants(gameDefinition.getMinNumberOfParticipants());
-			newBattleForObserver.setMaxNumberOfParticipants(gameDefinition.getMaxNumberOfParticipants());
-			newBattleForObserver.setTurnTimeout(gameDefinition.getTurnTimeout());
-			newBattleForObserver.setReadyTimeout(gameDefinition.getReadyTimeout());
+			newBattleForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
 
 			List<Participant> list = new ArrayList<>();
 			for (BotConn bot : participants) {
@@ -227,11 +215,7 @@ public final class GameServer {
 			participantIds.add(bot.getId());
 		}
 
-		Setup setup = new Setup(gameDefinition.getGameType(), gameDefinition.getArenaWidth(),
-				gameDefinition.getArenaHeight(), gameDefinition.getNumberOfRounds(), gameDefinition.getTurnTimeout(),
-				gameDefinition.getReadyTimeout(), participantIds);
-
-		modelUpdater = new ModelUpdater(setup);
+		modelUpdater = new ModelUpdater(gameSetup);
 
 		// TODO: Invoke after X time by some timer?
 		updateGameState();
@@ -265,8 +249,8 @@ public final class GameServer {
 
 	private Set<String> getGameTypes() {
 		Set<String> gameTypes = new HashSet<>();
-		for (GameDefinition gameDef : setup.getGames()) {
-			gameTypes.add(gameDef.getGameType());
+		for (GameSetup gameSetup : serverSetup.getGames()) {
+			gameTypes.add(gameSetup.getGameType());
 		}
 		return gameTypes;
 	}
@@ -274,7 +258,7 @@ public final class GameServer {
 	private void onReadyTimeout() {
 		System.out.println("#### READY TIMEOUT #####");
 
-		if (readyParticipants.size() >= gameDefinition.getMinNumberOfParticipants()) {
+		if (readyParticipants.size() >= gameSetup.getMinNumberOfParticipants()) {
 			// Start the game with the participants that are ready
 			participants = readyParticipants;
 			startGame();
@@ -360,7 +344,7 @@ public final class GameServer {
 	}
 
 	private class GameAndParticipants {
-		GameDefinition gameDefinition;
+		GameSetup gameSetup;
 		Set<BotConn> participants;
 	}
 }

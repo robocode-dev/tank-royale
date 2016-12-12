@@ -1,9 +1,9 @@
 {
-	"id": "#game-definition.json",
+	"id": "#game-setup.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"description": "Game definition",
+	"description": "Game setup",
 
-	"javaType": "net.robocode2.json_schema.GameDefinition",
+	"javaType": "net.robocode2.json_schema.GameSetup",
 	"properties": {
 		"game-type": {
 			"description": "Type of game",
@@ -29,6 +29,14 @@
 			"description": "Number of rounds in battle",
 			"type": "integer"
 		},
+		"gun-cooling-rate": {
+			"description": "Gun cooling rate. The gun needs to cool down to a gun heat of zero before the gun is able to fire",
+			"type": "number"
+		},
+		"inactivity-turns": {
+			"description": "Maximum number of inactive turns allowed, where a bot does not take any action, before it is zapped by the game",
+			"type": "integer"
+		},		
 		"turn-timeout": {
 			 "description": "Turn timeout in milliseconds for sending intent after having received 'tick' message",
 			 "type": "integer"
@@ -43,6 +51,9 @@
 		"arena-width",
 		"arena-height",
 		"min-number-of-participants",
+		"number-of-rounds",
+		"gun-cooling-rate",
+		"inactivity-turns",
 		"turn-timeout",
 		"ready-timeout"
 	]

@@ -3,6 +3,7 @@ package net.robocode2.model;
 public final class Physics {
 
 	public static final double INITIAL_BOT_ENERGY = 100.0;
+	public static final double INITIAL_GUN_HEAT = 3.0;
 	public static final double RADAR_RADIUS = 1200.0;
 	public static final double ACCELLERATION = 1.0;
 	public static final double DECELERATION = -2.0;
@@ -28,5 +29,9 @@ public final class Physics {
 				return Math.min(currentSpeed - step, -MAX_REVERSE_SPEED);
 			}
 		}
+	}
+
+	public static double calcGunHeat(double firePower) {
+		return 1 + (firePower / 5);
 	}
 }

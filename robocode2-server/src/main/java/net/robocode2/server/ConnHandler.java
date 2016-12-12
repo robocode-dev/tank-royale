@@ -22,6 +22,7 @@ import net.robocode2.json_schema.messages.BotHandshake;
 import net.robocode2.json_schema.messages.BotReady;
 import net.robocode2.json_schema.messages.ObserverHandshake;
 import net.robocode2.json_schema.messages.ServerHandshake;
+import net.robocode2.server.mappers.GameSetupToGameSetupMapper;
 
 public final class ConnHandler {
 
@@ -105,7 +106,7 @@ public final class ConnHandler {
 
 			ServerHandshake hs = new ServerHandshake();
 			hs.setMessageType(ServerHandshake.MessageType.SERVER_HANDSHAKE);
-			hs.setGames(setup.getGames());
+			hs.setGames(GameSetupToGameSetupMapper.map(setup.getGames()));
 
 			String msg = new Gson().toJson(hs);
 			send(conn, msg);

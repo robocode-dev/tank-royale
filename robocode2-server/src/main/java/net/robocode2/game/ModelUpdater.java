@@ -1,6 +1,7 @@
 package net.robocode2.game;
 
 import static net.robocode2.model.Physics.INITIAL_BOT_ENERGY;
+import static net.robocode2.model.Physics.INITIAL_GUN_HEAT;
 import static net.robocode2.model.Physics.RADAR_RADIUS;
 import static net.robocode2.model.Physics.calcNewSpeed;
 
@@ -13,17 +14,17 @@ import net.robocode2.model.Arc;
 import net.robocode2.model.Arena;
 import net.robocode2.model.Bot;
 import net.robocode2.model.BotIntent;
+import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.Position;
 import net.robocode2.model.Round;
 import net.robocode2.model.Score;
-import net.robocode2.model.Setup;
 import net.robocode2.model.Size;
 import net.robocode2.model.Turn;
 
 public class ModelUpdater {
 
-	private final Setup setup;
+	private final GameSetup setup;
 
 	private GameState.Builder gameStateBuilder;
 	private Round.Builder roundBuilder;
@@ -34,9 +35,11 @@ public class ModelUpdater {
 	private boolean roundEnded;
 
 	private Turn previousTurn;
+
+	private Map<Integer /* BotId */, BotIntent> botIntentMap = new HashMap<>();
 	private Map<Integer /* BotId */, Bot.Builder> botStateMap = new HashMap<>();
 
-	public ModelUpdater(Setup setup) {
+	public ModelUpdater(GameSetup setup) {
 		this.setup = setup;
 
 		initialize();
@@ -57,11 +60,13 @@ public class ModelUpdater {
 	}
 
 	public GameState update(Map<Integer /* BotId */, BotIntent> botIntents) {
+		botIntentMap = botIntents;
+
 		if (roundEnded || roundNumber == 0) {
 			nextRound();
 		}
 
-		nextTurn(botIntents);
+		nextTurn();
 
 		return buildGameState();
 	}
@@ -76,7 +81,7 @@ public class ModelUpdater {
 		turnBuilder.setBots(bots);
 	}
 
-	private void nextTurn(Map<Integer /* BotId */, BotIntent> botIntents) {
+	private void nextTurn() {
 
 		previousTurn = turnBuilder.build();
 
@@ -89,8 +94,8 @@ public class ModelUpdater {
 			botStateMap.put(bot.getId(), new Bot.Builder(bot));
 		}
 
-		// Move each bot to a new position, and turn body, turret and radar
-		moveBots(botIntents);
+		// Execute bot intents
+		executeBotIntents();
 
 		// Update bullet future positions
 		// Check bot wall collisions
@@ -127,6 +132,7 @@ public class ModelUpdater {
 			builder.setTurretDirection(randomDirection());
 			builder.setRadarDirection(randomDirection());
 			builder.setScanArc(new Arc(0, RADAR_RADIUS));
+			builder.setGunHeat(INITIAL_GUN_HEAT);
 			builder.setScore(new Score.Builder().build());
 
 			Bot bot = builder.build();
@@ -177,18 +183,26 @@ public class ModelUpdater {
 		return new Position(x, y);
 	}
 
-	private void moveBots(Map<Integer /* BotId */, BotIntent> botIntents) {
+	private void executeBotIntents() {
 
-		for (Bot bot : previousTurn.getBots()) {
-			BotIntent intent = botIntents.get(bot.getId());
+		for (Integer botId : botStateMap.keySet()) {
+			BotIntent intent = botIntentMap.get(botId);
+			Bot.Builder state = botStateMap.get(botId);
 
-			double speed = calcNewSpeed(bot.getSpeed(), intent.getTargetSpeed());
-			double direction = bot.getDirection() + intent.getBodyTurnRate();
+			// Turn body, turret, radar, and move bot to new position
+			double direction = state.getDirection() + intent.getBodyTurnRate();
+			double turretDirection = state.getTurretDirection() + intent.getTurretTurnRate();
+			double radarDirection = state.getRadarDirection() + intent.getRadarTurnRate();
+			double speed = calcNewSpeed(state.getSpeed(), intent.getTargetSpeed());
 
-			Bot.Builder botBuilder = new Bot.Builder();
-			botBuilder.setSpeed(speed);
-			botBuilder.setDirection(direction);
-			botBuilder.setPosition(bot.getPosition().calcNewPosition(direction, speed));
+			state.setDirection(direction);
+			state.setTurretDirection(turretDirection);
+			state.setRadarDirection(radarDirection);
+			state.setSpeed(speed);
+			state.setPosition(state.getPosition().calcNewPosition(direction, speed));
+
+			// Fire gun, if the gun heat is zero
+
 		}
 	}
 
