@@ -2,8 +2,12 @@ package net.robocode2.game;
 
 import static net.robocode2.model.Physics.INITIAL_BOT_ENERGY;
 import static net.robocode2.model.Physics.INITIAL_GUN_HEAT;
+import static net.robocode2.model.Physics.MAX_BULLET_POWER;
+import static net.robocode2.model.Physics.MIN_BULLET_POWER;
 import static net.robocode2.model.Physics.RADAR_RADIUS;
-import static net.robocode2.model.Physics.calcNewSpeed;
+import static net.robocode2.model.Physics.calcBotSpeed;
+import static net.robocode2.model.Physics.calcBulletSpeed;
+import static net.robocode2.model.Physics.calcGunHeat;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +18,7 @@ import net.robocode2.model.Arc;
 import net.robocode2.model.Arena;
 import net.robocode2.model.Bot;
 import net.robocode2.model.BotIntent;
+import net.robocode2.model.Bullet;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.Position;
@@ -21,6 +26,7 @@ import net.robocode2.model.Round;
 import net.robocode2.model.Score;
 import net.robocode2.model.Size;
 import net.robocode2.model.Turn;
+import net.robocode2.model.events.BulletFiredEvent;
 
 public class ModelUpdater {
 
@@ -33,6 +39,8 @@ public class ModelUpdater {
 	private int roundNumber;
 	private int turnNumber;
 	private boolean roundEnded;
+
+	private int nextBulletId;
 
 	private Turn previousTurn;
 
@@ -103,6 +111,9 @@ public class ModelUpdater {
 		// Check bullet to bullet collisions
 		// Check bot to bot collisions
 		// Check bullet to bot collisions
+
+		// Fire guns
+		fireGuns();
 	}
 
 	private GameState buildGameState() {
@@ -193,17 +204,55 @@ public class ModelUpdater {
 			double direction = state.getDirection() + intent.getBodyTurnRate();
 			double turretDirection = state.getTurretDirection() + intent.getTurretTurnRate();
 			double radarDirection = state.getRadarDirection() + intent.getRadarTurnRate();
-			double speed = calcNewSpeed(state.getSpeed(), intent.getTargetSpeed());
+			double speed = calcBotSpeed(state.getSpeed(), intent.getTargetSpeed());
 
 			state.setDirection(direction);
 			state.setTurretDirection(turretDirection);
 			state.setRadarDirection(radarDirection);
 			state.setSpeed(speed);
 			state.setPosition(state.getPosition().calcNewPosition(direction, speed));
+		}
+	}
+
+	private void fireGuns() {
+		for (Integer botId : botStateMap.keySet()) {
+			BotIntent intent = botIntentMap.get(botId);
+			Bot.Builder state = botStateMap.get(botId);
 
 			// Fire gun, if the gun heat is zero
+			double gunHeat = state.getGunHeat();
+			gunHeat = Math.max(gunHeat - setup.getGunCoolingRate(), 0);
 
+			if (gunHeat == 0) {
+				// Gun can fire. Check if gun must be fired by intent
+				double firepower = intent.getBulletPower();
+				if (firepower >= MIN_BULLET_POWER) {
+					// Gun is fired
+					firepower = Math.min(firepower, MAX_BULLET_POWER);
+					gunHeat = calcGunHeat(firepower);
+
+					handleFiredBullet(state, firepower);
+				}
+			}
+			state.setGunHeat(gunHeat);
 		}
+	}
+
+	private void handleFiredBullet(Bot.Builder state, double firepower) {
+		Position position = state.getPosition();
+
+		int botId = state.getId();
+		int bulletId = ++nextBulletId;
+		double direction = state.getTurretDirection();
+		double speed = calcBulletSpeed(firepower);
+
+		Bullet bullet = new Bullet(botId, bulletId, firepower, position, direction, speed, 0);
+
+		turnBuilder.addBullet(bullet);
+
+		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(bullet);
+		turnBuilder.addBotEvent(botId, bulletFiredEvent);
+		turnBuilder.addObserverEvent(bulletFiredEvent);
 	}
 
 	private static double randomDirection() {

@@ -14,7 +14,7 @@
 			"type": "integer"
 		},
 		"power": {
-			"description": "Bullet power level",
+			"description": "Bullet firepower level",
 			"type": "number"
 		},
 		"position": {

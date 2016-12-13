@@ -4,13 +4,15 @@ public final class Physics {
 
 	public static final double INITIAL_BOT_ENERGY = 100.0;
 	public static final double INITIAL_GUN_HEAT = 3.0;
-	public static final double RADAR_RADIUS = 1200.0;
 	public static final double ACCELLERATION = 1.0;
 	public static final double DECELERATION = -2.0;
 	public static final double MAX_FORWARD_SPEED = 8.0;
 	public static final double MAX_REVERSE_SPEED = -8.0;
+	public static final double RADAR_RADIUS = 1200.0;
+	public static final double MIN_BULLET_POWER = 0.1;
+	public static final double MAX_BULLET_POWER = 3.0;
 
-	public static double calcNewSpeed(double currentSpeed, double targetSpeed) {
+	public static double calcBotSpeed(double currentSpeed, double targetSpeed) {
 		double delta = targetSpeed - currentSpeed;
 		if (currentSpeed >= 0) {
 			if (delta >= 0) {
@@ -31,7 +33,19 @@ public final class Physics {
 		}
 	}
 
-	public static double calcGunHeat(double firePower) {
-		return 1 + (firePower / 5);
+	public static double calcBulletSpeed(double firepower) {
+		return 20 - 3 * firepower;
+	}
+
+	public static double calcBulletDamage(double firepower) {
+		double damage = 4 * firepower;
+		if (firepower > 1) {
+			damage += 2 * (firepower - 1);
+		}
+		return damage;
+	}
+
+	public static double calcGunHeat(double firepower) {
+		return 1 + (firepower / 5);
 	}
 }

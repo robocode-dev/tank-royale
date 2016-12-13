@@ -8,7 +8,7 @@ public final class Bullet {
 	private final Position firePosition;
 	private final double direction;
 	private final double speed;
-	private final int tick;
+	private final int tick; // Used for calculating position with precision
 
 	public Bullet(int botId, int bulletId, double power, Position firePosition, double direction, double speed,
 			int tick) {
