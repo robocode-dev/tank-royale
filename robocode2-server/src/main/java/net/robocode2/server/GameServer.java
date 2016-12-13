@@ -329,8 +329,8 @@ public final class GameServer {
 		if (intent.getTurnRate() != null) {
 			builder.setBodyTurnRate(intent.getTurnRate());
 		}
-		if (intent.getTurretTurnRate() != null) {
-			builder.setTurretTurnRate(intent.getTurretTurnRate());
+		if (intent.getGunTurnRate() != null) {
+			builder.setGunTurnRate(intent.getGunTurnRate());
 		}
 		if (intent.getRadarTurnRate() != null) {
 			builder.setRadarTurnRate(intent.getRadarTurnRate());

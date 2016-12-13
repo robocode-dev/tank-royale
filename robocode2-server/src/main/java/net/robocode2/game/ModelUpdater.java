@@ -140,7 +140,7 @@ public class ModelUpdater {
 			builder.setSpeed(0);
 			builder.setPosition(randomBotPosition(occupiedCells));
 			builder.setDirection(randomDirection());
-			builder.setTurretDirection(randomDirection());
+			builder.setGunDirection(randomDirection());
 			builder.setRadarDirection(randomDirection());
 			builder.setScanArc(new Arc(0, RADAR_RADIUS));
 			builder.setGunHeat(INITIAL_GUN_HEAT);
@@ -200,14 +200,14 @@ public class ModelUpdater {
 			BotIntent intent = botIntentMap.get(botId);
 			Bot.Builder state = botStateMap.get(botId);
 
-			// Turn body, turret, radar, and move bot to new position
+			// Turn body, gun, radar, and move bot to new position
 			double direction = state.getDirection() + intent.getBodyTurnRate();
-			double turretDirection = state.getTurretDirection() + intent.getTurretTurnRate();
+			double gunDirection = state.getGunDirection() + intent.getGunTurnRate();
 			double radarDirection = state.getRadarDirection() + intent.getRadarTurnRate();
 			double speed = calcBotSpeed(state.getSpeed(), intent.getTargetSpeed());
 
 			state.setDirection(direction);
-			state.setTurretDirection(turretDirection);
+			state.setGunDirection(gunDirection);
 			state.setRadarDirection(radarDirection);
 			state.setSpeed(speed);
 			state.setPosition(state.getPosition().calcNewPosition(direction, speed));
@@ -243,7 +243,7 @@ public class ModelUpdater {
 
 		int botId = state.getId();
 		int bulletId = ++nextBulletId;
-		double direction = state.getTurretDirection();
+		double direction = state.getGunDirection();
 		double speed = calcBulletSpeed(firepower);
 
 		Bullet bullet = new Bullet(botId, bulletId, firepower, position, direction, speed, 0);

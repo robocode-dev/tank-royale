@@ -17,8 +17,8 @@
 			"description": "Direction of the hull in degrees",
 			"$ref": "../types/angle.json"
 		},
-		"turret-direction": {
-			"description": "Direction of the turret in degrees",
+		"gun-direction": {
+			"description": "Direction of the gun in degrees",
 			"$ref": "../types/angle.json"
 		},
 		"radar-direction": {
@@ -38,7 +38,7 @@
 		"energy",
 		"position",
 		"direction",
-		"turret-direction",
+		"gun-direction",
 		"radar-direction",
 		"speed",
 		"scan-arc"

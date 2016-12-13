@@ -3,17 +3,17 @@ package net.robocode2.model;
 public final class BotIntent {
 
 	private final double bodyTurnRate;
-	private final double turretTurnRate;
+	private final double gunTurnRate;
 	private final double radarTurnRate;
 	private final double targetSpeed;
 	private final double bulletPower;
 
-	public BotIntent(double bodyTurnRate, double turretTurnRate, double radarTurnRate, double targetSpeed,
+	public BotIntent(double bodyTurnRate, double gunTurnRate, double radarTurnRate, double targetSpeed,
 			double bulletPower) {
 		this.bodyTurnRate = bodyTurnRate;
-		this.turretTurnRate = turretTurnRate;
+		this.gunTurnRate = gunTurnRate;
 		this.radarTurnRate = radarTurnRate;
-		this.targetSpeed = turretTurnRate;
+		this.targetSpeed = gunTurnRate;
 		this.bulletPower = bulletPower;
 	}
 
@@ -21,8 +21,8 @@ public final class BotIntent {
 		return bodyTurnRate;
 	}
 
-	public double getTurretTurnRate() {
-		return turretTurnRate;
+	public double getGunTurnRate() {
+		return gunTurnRate;
 	}
 
 	public double getRadarTurnRate() {
@@ -39,13 +39,13 @@ public final class BotIntent {
 
 	public static final class Builder {
 		private double bodyTurnRate;
-		private double turretTurnRate;
+		private double gunTurnRate;
 		private double radarTurnRate;
 		private double targetSpeed;
 		private double bulletPower;
 
 		public BotIntent build() {
-			return new BotIntent(bodyTurnRate, turretTurnRate, radarTurnRate, targetSpeed, bulletPower);
+			return new BotIntent(bodyTurnRate, gunTurnRate, radarTurnRate, targetSpeed, bulletPower);
 		}
 
 		public Builder setBodyTurnRate(double bodyTurnRate) {
@@ -53,8 +53,8 @@ public final class BotIntent {
 			return this;
 		}
 
-		public Builder setTurretTurnRate(double turretTurnRate) {
-			this.turretTurnRate = turretTurnRate;
+		public Builder setGunTurnRate(double gunTurnRate) {
+			this.gunTurnRate = gunTurnRate;
 			return this;
 		}
 

@@ -10,21 +10,21 @@ public final class Bot {
 	private final double energy;
 	private final Position position;
 	private final double direction;
-	private final double turretDirection;
+	private final double gunDirection;
 	private final double radarDirection;
 	private final double speed;
 	private final double gunHeat;
 	private final Arc scanArc;
 	private final Score score;
 
-	public Bot(int id, boolean alive, double energy, Position position, double direction, double turretDiretion,
+	public Bot(int id, boolean alive, double energy, Position position, double direction, double gunDirection,
 			double radarDirection, double speed, double gunHeat, Arc scanArc, Score score) {
 		this.id = id;
 		this.alive = alive;
 		this.energy = energy;
 		this.position = position;
 		this.direction = direction;
-		this.turretDirection = turretDiretion;
+		this.gunDirection = gunDirection;
 		this.radarDirection = radarDirection;
 		this.speed = speed;
 		this.gunHeat = gunHeat;
@@ -60,8 +60,8 @@ public final class Bot {
 		return direction;
 	}
 
-	public double getTurretDirection() {
-		return turretDirection;
+	public double getGunDirection() {
+		return gunDirection;
 	}
 
 	public double getRadarDirection() {
@@ -90,7 +90,7 @@ public final class Bot {
 		private double energy;
 		private Position position;
 		private double direction;
-		private double turretDirection;
+		private double gunDirection;
 		private double radarDirection;
 		private double speed;
 		private double gunHeat;
@@ -106,7 +106,7 @@ public final class Bot {
 			energy = bot.energy;
 			position = bot.position;
 			direction = bot.direction;
-			turretDirection = bot.turretDirection;
+			gunDirection = bot.gunDirection;
 			radarDirection = bot.radarDirection;
 			speed = bot.speed;
 			gunHeat = bot.gunHeat;
@@ -115,7 +115,7 @@ public final class Bot {
 		}
 
 		public Bot build() {
-			return new Bot(id, alive, energy, position, direction, turretDirection, radarDirection, speed, gunHeat,
+			return new Bot(id, alive, energy, position, direction, gunDirection, radarDirection, speed, gunHeat,
 					scanArc, score);
 		}
 
@@ -144,8 +144,8 @@ public final class Bot {
 			return this;
 		}
 
-		public Builder setTurretDirection(double turretDirection) {
-			this.turretDirection = turretDirection;
+		public Builder setGunDirection(double gunDirection) {
+			this.gunDirection = gunDirection;
 			return this;
 		}
 
@@ -194,8 +194,8 @@ public final class Bot {
 			return direction;
 		}
 
-		public double getTurretDirection() {
-			return turretDirection;
+		public double getGunDirection() {
+			return gunDirection;
 		}
 
 		public double getRadarDirection() {

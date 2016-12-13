@@ -13,7 +13,7 @@ public final class BotToBotStateWithIdMapper {
 		botState.setSpeed(bot.getSpeed());
 		botState.setDirection(bot.getDirection());
 		botState.setRadarDirection(bot.getRadarDirection());
-		botState.setTurretDirection(bot.getTurretDirection());
+		botState.setGunDirection(bot.getGunDirection());
 		botState.setScanArc(ArcMapper.map(bot.getScanArc()));
 		return botState;
 	}

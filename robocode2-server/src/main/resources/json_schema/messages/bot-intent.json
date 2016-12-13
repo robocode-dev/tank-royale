@@ -13,8 +13,8 @@
             "description": "Turn rate of the hull in degrees per turn (can be positive and negative)",
             "type": "number"
         },
-        "turret-turn-rate": {
-            "description": "Turn rate of the turret in degrees per turn (can be positive and negative)",
+        "gun-turn-rate": {
+            "description": "Turn rate of the gun in degrees per turn (can be positive and negative)",
             "type": "number"
         },
         "radar-turn-rate": {
