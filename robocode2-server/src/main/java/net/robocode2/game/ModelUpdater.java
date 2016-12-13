@@ -42,10 +42,9 @@ public class ModelUpdater {
 
 	private int nextBulletId;
 
-	private Turn previousTurn;
-
 	private Map<Integer /* BotId */, BotIntent> botIntentMap = new HashMap<>();
 	private Map<Integer /* BotId */, Bot.Builder> botStateMap = new HashMap<>();
+	private Set<Bullet.Builder> bulletStatSet = new HashSet<>();
 
 	public ModelUpdater(GameSetup setup) {
 		this.setup = setup;
@@ -85,13 +84,15 @@ public class ModelUpdater {
 
 		roundEnded = false;
 
+		nextBulletId = 0;
+
 		Set<Bot> bots = initialBotStates();
 		turnBuilder.setBots(bots);
 	}
 
 	private void nextTurn() {
 
-		previousTurn = turnBuilder.build();
+		Turn previousTurn = turnBuilder.build();
 
 		turnNumber++;
 		turnBuilder.setTurnNumber(turnNumber);
@@ -102,10 +103,18 @@ public class ModelUpdater {
 			botStateMap.put(bot.getId(), new Bot.Builder(bot));
 		}
 
+		// Prepare new bullet states
+		bulletStatSet.clear();
+		for (Bullet bullet : previousTurn.getBullets()) {
+			bulletStatSet.add(new Bullet.Builder(bullet));
+		}
+
 		// Execute bot intents
 		executeBotIntents();
 
-		// Update bullet future positions
+		// Update bullet positions
+		updateBulletPositions();
+
 		// Check bot wall collisions
 		// Check bullet wall collisions
 		// Check bullet to bullet collisions
@@ -146,8 +155,7 @@ public class ModelUpdater {
 			builder.setGunHeat(INITIAL_GUN_HEAT);
 			builder.setScore(new Score.Builder().build());
 
-			Bot bot = builder.build();
-			bots.add(bot);
+			bots.add(builder.build());
 		}
 
 		return bots;
@@ -214,6 +222,12 @@ public class ModelUpdater {
 		}
 	}
 
+	private void updateBulletPositions() {
+		for (Bullet.Builder state : bulletStatSet) {
+			state.incrementTick(); // The tick is used to calculate new position by calling getPosition()
+		}
+	}
+
 	private void fireGuns() {
 		for (Integer botId : botStateMap.keySet()) {
 			BotIntent intent = botIntentMap.get(botId);
@@ -239,14 +253,17 @@ public class ModelUpdater {
 	}
 
 	private void handleFiredBullet(Bot.Builder state, double firepower) {
-		Position position = state.getPosition();
-
 		int botId = state.getId();
-		int bulletId = ++nextBulletId;
-		double direction = state.getGunDirection();
-		double speed = calcBulletSpeed(firepower);
 
-		Bullet bullet = new Bullet(botId, bulletId, firepower, position, direction, speed, 0);
+		Bullet.Builder builder = new Bullet.Builder();
+		builder.setBotId(botId);
+		builder.setBulletId(++nextBulletId);
+		builder.setPower(firepower);
+		builder.setFirePosition(state.getPosition());
+		builder.setDirection(state.getGunDirection());
+		builder.setSpeed(calcBulletSpeed(firepower));
+
+		Bullet bullet = builder.build();
 
 		turnBuilder.addBullet(bullet);
 
