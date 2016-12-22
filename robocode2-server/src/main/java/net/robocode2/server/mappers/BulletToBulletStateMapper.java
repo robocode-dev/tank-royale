@@ -16,7 +16,7 @@ public final class BulletToBulletStateMapper {
 		bulletState.setDirection(direction);
 		bulletState.setPower(bullet.getPower());
 		bulletState.setSpeed(speed);
-		bulletState.setPosition(PositionMapper.map(bullet.getPosition()));
+		bulletState.setPosition(PositionMapper.map(bullet.calcPosition()));
 
 		return bulletState;
 	}

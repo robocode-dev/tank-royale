@@ -2,6 +2,8 @@ package net.robocode2.model;
 
 public final class Physics {
 
+	public static final int BOT_BOUNDING_CIRCLE_DIAMETER = 36;
+	public static final int BOT_BOUNDING_CIRCLE_RADIUS = 36 / 2;
 	public static final double INITIAL_BOT_ENERGY = 100.0;
 	public static final double INITIAL_GUN_HEAT = 3.0;
 	public static final double ACCELLERATION = 1.0;

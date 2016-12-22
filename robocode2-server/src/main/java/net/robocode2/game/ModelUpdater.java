@@ -1,5 +1,7 @@
 package net.robocode2.game;
 
+import static net.robocode2.model.Physics.BOT_BOUNDING_CIRCLE_DIAMETER;
+import static net.robocode2.model.Physics.BOT_BOUNDING_CIRCLE_RADIUS;
 import static net.robocode2.model.Physics.INITIAL_BOT_ENERGY;
 import static net.robocode2.model.Physics.INITIAL_GUN_HEAT;
 import static net.robocode2.model.Physics.MAX_BULLET_POWER;
@@ -11,6 +13,7 @@ import static net.robocode2.model.Physics.calcGunHeat;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +22,7 @@ import net.robocode2.model.Arena;
 import net.robocode2.model.Bot;
 import net.robocode2.model.BotIntent;
 import net.robocode2.model.Bullet;
+import net.robocode2.model.Bullet.Builder;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.Position;
@@ -26,7 +30,9 @@ import net.robocode2.model.Round;
 import net.robocode2.model.Score;
 import net.robocode2.model.Size;
 import net.robocode2.model.Turn;
+import net.robocode2.model.events.BotHitWallEvent;
 import net.robocode2.model.events.BulletFiredEvent;
+import net.robocode2.model.events.BulletMissedEvent;
 
 public class ModelUpdater {
 
@@ -116,7 +122,11 @@ public class ModelUpdater {
 		updateBulletPositions();
 
 		// Check bot wall collisions
+		checkBotWallCollisions();
+
 		// Check bullet wall collisions
+		checkBulletWallCollisions();
+
 		// Check bullet to bullet collisions
 		// Check bot to bot collisions
 		// Check bullet to bot collisions
@@ -163,9 +173,6 @@ public class ModelUpdater {
 
 	private Position randomBotPosition(Set<Integer> occupiedCells) {
 
-		// The max width and height on the axes of the tank, e.g. when turning 45 degrees
-		final int botHypot = (int) Math.sqrt(Bot.WIDTH * Bot.WIDTH + Bot.HEIGHT * Bot.HEIGHT) + 1;
-
 		final int gridWidth = setup.getArenaWidth() / 100;
 		final int gridHeight = setup.getArenaHeight() / 100;
 
@@ -193,8 +200,8 @@ public class ModelUpdater {
 				x *= cellWidth;
 				y *= cellHeight;
 
-				x += Math.random() * (cellWidth - botHypot);
-				y += Math.random() * (cellHeight - botHypot);
+				x += Math.random() * (cellWidth - BOT_BOUNDING_CIRCLE_DIAMETER);
+				y += Math.random() * (cellHeight - BOT_BOUNDING_CIRCLE_DIAMETER);
 
 				break;
 			}
@@ -225,6 +232,56 @@ public class ModelUpdater {
 	private void updateBulletPositions() {
 		for (Bullet.Builder state : bulletStatSet) {
 			state.incrementTick(); // The tick is used to calculate new position by calling getPosition()
+		}
+	}
+
+	private void checkBotWallCollisions() {
+		for (Bot.Builder bot : botStateMap.values()) {
+			Position position = bot.getPosition();
+			double x = position.getX();
+			double y = position.getY();
+
+			boolean hitWall = false;
+
+			if (x - BOT_BOUNDING_CIRCLE_RADIUS <= 0) {
+				x = 0;
+				hitWall = true;
+			} else if (x + BOT_BOUNDING_CIRCLE_RADIUS >= setup.getArenaWidth()) {
+				x = setup.getArenaWidth();
+				hitWall = true;
+			} else if (y - BOT_BOUNDING_CIRCLE_RADIUS <= 0) {
+				y = 0;
+				hitWall = true;
+			} else if (y + BOT_BOUNDING_CIRCLE_RADIUS >= setup.getArenaHeight()) {
+				y = setup.getArenaHeight();
+				hitWall = true;
+			}
+
+			if (hitWall) {
+				bot.setPosition(new Position(x, y));
+
+				BotHitWallEvent botHitWallEvent = new BotHitWallEvent(bot.getId());
+				turnBuilder.addBotEvent(bot.getId(), botHitWallEvent);
+				turnBuilder.addObserverEvent(botHitWallEvent);
+			}
+		}
+	}
+
+	private void checkBulletWallCollisions() {
+		Iterator<Builder> iterator = bulletStatSet.iterator(); // due to removal
+		while (iterator.hasNext()) {
+			Bullet.Builder bullet = iterator.next();
+			Position position = bullet.calcPosition();
+
+			if ((position.getX() <= 0) || (position.getX() >= setup.getArenaWidth()) || (position.getY() <= 0)
+					|| (position.getY() >= setup.getArenaHeight())) {
+
+				iterator.remove(); // remove bullet from arena,
+
+				BulletMissedEvent bulletMissedEvent = new BulletMissedEvent(bullet.build());
+				turnBuilder.addBotEvent(bullet.getBotId(), bulletMissedEvent);
+				turnBuilder.addObserverEvent(bulletMissedEvent);
+			}
 		}
 	}
 

@@ -52,7 +52,11 @@ public final class Bullet {
 	/**
 	 * Calculates the current bullet position based on the fire position and current tick.
 	 */
-	public Position getPosition() {
+	public Position calcPosition() {
+		return calcPosition(firePosition, direction, speed, tick);
+	}
+
+	private static Position calcPosition(Position firePosition, double direction, double speed, int tick) {
 		double angle = Math.toRadians(direction);
 		double distance = speed * tick;
 		double x = firePosition.getX() + Math.cos(angle) * distance;
@@ -145,6 +149,10 @@ public final class Bullet {
 
 		public int getTick() {
 			return tick;
+		}
+
+		public Position calcPosition() {
+			return Bullet.calcPosition(firePosition, direction, speed, tick);
 		}
 	}
 }

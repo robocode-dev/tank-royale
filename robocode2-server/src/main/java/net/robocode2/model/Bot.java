@@ -2,9 +2,6 @@ package net.robocode2.model;
 
 public final class Bot {
 
-	public static final int WIDTH = 40;
-	public static final int HEIGHT = 40;
-
 	private final int id;
 	private final boolean alive;
 	private final double energy;
