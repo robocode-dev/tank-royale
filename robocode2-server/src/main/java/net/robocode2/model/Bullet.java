@@ -56,7 +56,7 @@ public final class Bullet {
 		return calcPosition(firePosition, direction, speed, tick);
 	}
 
-	private static Position calcPosition(Position firePosition, double direction, double speed, int tick) {
+	public static Position calcPosition(Position firePosition, double direction, double speed, int tick) {
 		double angle = Math.toRadians(direction);
 		double distance = speed * tick;
 		double x = firePosition.getX() + Math.cos(angle) * distance;
@@ -153,6 +153,10 @@ public final class Bullet {
 
 		public Position calcPosition() {
 			return Bullet.calcPosition(firePosition, direction, speed, tick);
+		}
+
+		public Position calcNextPosition() {
+			return Bullet.calcPosition(firePosition, direction, speed, tick + 1);
 		}
 	}
 }
