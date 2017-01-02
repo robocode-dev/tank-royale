@@ -61,25 +61,25 @@ public class ScoreKeeper {
 		return scoreBuilder.build();
 	}
 
-	public void addBulletHit(int botId, int hitBotId, double damage, boolean kill) {
+	public void addBulletHit(int botId, int victimBotId, double damage, boolean kill) {
 		DamageAndSurvival damageRecord = damageAndSurvivals.get(botId);
 
-		damageRecord.addBulletDamage(hitBotId, damage);
+		damageRecord.addBulletDamage(victimBotId, damage);
 		if (kill) {
-			handleKill(hitBotId);
+			handleKill(victimBotId);
 
-			damageRecord.addBulletKillEnemyId(hitBotId);
+			damageRecord.addBulletKillEnemyId(victimBotId);
 		}
 	}
 
-	public void addRamHit(int botId, int hitBotId, double damage, boolean kill) {
+	public void addRamHit(int botId, int victimBotId, double damage, boolean kill) {
 		DamageAndSurvival damageRecord = damageAndSurvivals.get(botId);
 
-		damageRecord.addRamDamage(hitBotId, damage);
+		damageRecord.addRamDamage(victimBotId, damage);
 		if (kill) {
-			handleKill(hitBotId);
+			handleKill(victimBotId);
 
-			damageRecord.addRamKillEnemyId(hitBotId);
+			damageRecord.addRamKillEnemyId(victimBotId);
 		}
 	}
 

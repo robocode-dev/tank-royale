@@ -5,6 +5,7 @@ import static net.robocode2.model.Physics.BOT_BOUNDING_CIRCLE_RADIUS;
 import static net.robocode2.model.Physics.INITIAL_BOT_ENERGY;
 import static net.robocode2.model.Physics.INITIAL_GUN_HEAT;
 import static net.robocode2.model.Physics.MAX_BULLET_POWER;
+import static net.robocode2.model.Physics.MAX_BULLET_SPEED;
 import static net.robocode2.model.Physics.MIN_BULLET_POWER;
 import static net.robocode2.model.Physics.RADAR_RADIUS;
 import static net.robocode2.model.Physics.calcBotSpeed;
@@ -24,11 +25,14 @@ import net.robocode2.model.BotIntent;
 import net.robocode2.model.Bullet;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
+import net.robocode2.model.ImmutableBot;
+import net.robocode2.model.Physics;
 import net.robocode2.model.Position;
 import net.robocode2.model.Round;
 import net.robocode2.model.Score;
 import net.robocode2.model.Size;
 import net.robocode2.model.Turn;
+import net.robocode2.model.events.BotHitBotEvent;
 import net.robocode2.model.events.BotHitWallEvent;
 import net.robocode2.model.events.BulletFiredEvent;
 import net.robocode2.model.events.BulletHitBulletEvent;
@@ -36,7 +40,11 @@ import net.robocode2.model.events.BulletMissedEvent;
 
 public class ModelUpdater {
 
+	private final static double RAM_DAMAGE = 0.6;
+
 	private final GameSetup setup;
+
+	private final ScoreKeeper scoreKeeper;
 
 	private GameState.Builder gameStateBuilder;
 	private Round.Builder roundBuilder;
@@ -52,11 +60,9 @@ public class ModelUpdater {
 	private Map<Integer /* BotId */, Bot.Builder> botStateMap = new HashMap<>();
 	private Set<Bullet.Builder> bulletStateSet = new HashSet<>();
 
-	private static final int BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED = BOT_BOUNDING_CIRCLE_DIAMETER
-			* BOT_BOUNDING_CIRCLE_DIAMETER;
-
 	public ModelUpdater(GameSetup setup) {
 		this.setup = setup;
+		this.scoreKeeper = new ScoreKeeper(setup.getParticipantIds());
 
 		initialize();
 	}
@@ -97,6 +103,8 @@ public class ModelUpdater {
 
 		Set<Bot> bots = initialBotStates();
 		turnBuilder.setBots(bots);
+
+		scoreKeeper.reset(setup.getParticipantIds());
 	}
 
 	private void nextTurn() {
@@ -134,10 +142,14 @@ public class ModelUpdater {
 		checkBulletWallCollisions();
 
 		// Check bot to bot collisions
-		// Check bullet to bot collisions
+		checkBotToBotCollisions();
+
+		// Check bullet to bot collisions (bullet hits)
 
 		// Fire guns
 		fireGuns();
+
+		// Cleanup dead robots (remove from arena + events)
 	}
 
 	private GameState buildGameState() {
@@ -217,19 +229,19 @@ public class ModelUpdater {
 	private void executeBotIntents() {
 		for (Integer botId : botStateMap.keySet()) {
 			BotIntent intent = botIntentMap.get(botId);
-			Bot.Builder state = botStateMap.get(botId);
+			Bot.Builder bot = botStateMap.get(botId);
 
 			// Turn body, gun, radar, and move bot to new position
-			double direction = state.getDirection() + intent.getBodyTurnRate();
-			double gunDirection = state.getGunDirection() + intent.getGunTurnRate();
-			double radarDirection = state.getRadarDirection() + intent.getRadarTurnRate();
-			double speed = calcBotSpeed(state.getSpeed(), intent.getTargetSpeed());
+			double direction = bot.getDirection() + intent.getBodyTurnRate();
+			double gunDirection = bot.getGunDirection() + intent.getGunTurnRate();
+			double radarDirection = bot.getRadarDirection() + intent.getRadarTurnRate();
+			double speed = calcBotSpeed(bot.getSpeed(), intent.getTargetSpeed());
 
-			state.setDirection(direction);
-			state.setGunDirection(gunDirection);
-			state.setRadarDirection(radarDirection);
-			state.setSpeed(speed);
-			state.setPosition(state.getPosition().calcNewPosition(direction, speed));
+			bot.setDirection(direction);
+			bot.setGunDirection(gunDirection);
+			bot.setRadarDirection(radarDirection);
+			bot.setSpeed(speed);
+			bot.setPosition(bot.getPosition().calcNewPosition(direction, speed));
 		}
 	}
 
@@ -240,32 +252,27 @@ public class ModelUpdater {
 		bulletBuilders = bulletStateSet.toArray(bulletBuilders);
 
 		for (int i = boundingLines.length - 1; i >= 0; i--) {
-			Bullet.Builder bulletBuilder1 = bulletBuilders[i];
+			Bullet.Builder bulletBuilder = bulletBuilders[i];
 
 			Line line = new Line();
-			line.start = bulletBuilder1.calcPosition();
-			line.end = bulletBuilder1.calcNextPosition();
+			line.start = bulletBuilder.calcPosition();
+			line.end = bulletBuilder.calcNextPosition();
 
-			boundingLines[i++] = line;
+			boundingLines[i] = line;
+		}
 
+		for (int i = boundingLines.length - 1; i >= 0; i--) {
 			Position endPos1 = boundingLines[i].end;
 
 			for (int j = i - 1; j >= 0; j--) {
 				Position endPos2 = boundingLines[j].end;
 
-				// First calculate distance between bullets
-				double dx = endPos2.getX() - endPos1.getX();
-				if (Math.abs(dx) > BOT_BOUNDING_CIRCLE_DIAMETER) {
-					continue;
-				}
-				double dy = endPos2.getY() - endPos1.getY();
-				if (Math.abs(dy) > BOT_BOUNDING_CIRCLE_DIAMETER) {
-					continue;
-				}
-				if ((dx * dx) + (dy * dy) > BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED) {
-					continue;
-				}
-				if (linesIntersects(boundingLines[i], boundingLines[j])) {
+				// Check if the bullets bounding circles intersects (is fast) before checking if the bullets bounding
+				// lines intersect (is slower)
+				if (isBulletsBoundingCirclesColliding(endPos1, endPos2)
+						&& isLinesIntersecting(boundingLines[i], boundingLines[j])) {
+
+					Bullet.Builder bulletBuilder1 = bulletBuilders[i];
 					Bullet.Builder bulletBuilder2 = bulletBuilders[j];
 
 					Bullet bullet1 = bulletBuilder1.build();
@@ -288,6 +295,139 @@ public class ModelUpdater {
 		}
 	}
 
+	private static final double BULLET_BOUNDING_CIRCLE_DIAMETER = 2 * MAX_BULLET_SPEED;
+	private static final double BULLET_BOUNDING_CIRCLE_DIAMETER_SQUARED = BULLET_BOUNDING_CIRCLE_DIAMETER
+			* BULLET_BOUNDING_CIRCLE_DIAMETER;
+
+	private static boolean isBulletsBoundingCirclesColliding(Position bullet1Position, Position bullet2Position) {
+		// First calculate distance between bullets
+		double dx = bullet2Position.getX() - bullet1Position.getX();
+		if (Math.abs(dx) > BULLET_BOUNDING_CIRCLE_DIAMETER) {
+			return false;
+		}
+		double dy = bullet2Position.getY() - bullet1Position.getY();
+		if (Math.abs(dy) > BULLET_BOUNDING_CIRCLE_DIAMETER) {
+			return false;
+		}
+		return ((dx * dx) + (dy * dy) <= BULLET_BOUNDING_CIRCLE_DIAMETER_SQUARED);
+	}
+
+	private static boolean isLinesIntersecting(Line line1, Line line2) {
+		double x1 = line1.start.getX();
+		double y1 = line1.start.getY();
+		double x2 = line1.end.getX();
+		double y2 = line1.end.getY();
+		double x3 = line2.start.getX();
+		double y3 = line2.start.getY();
+		double x4 = line2.end.getX();
+		double y4 = line2.end.getY();
+
+		double dx13 = (x1 - x3), dx21 = (x2 - x1), dx43 = (x4 - x3);
+		double dy13 = (y1 - y3), dy21 = (y2 - y1), dy43 = (y4 - y3);
+
+		double dn = dy43 * dx21 - dx43 * dy21;
+
+		double ua = (dx43 * dy13 - dy43 * dx13) / dn;
+		double ub = (dx21 * dy13 - dy21 * dx13) / dn;
+
+		return (ua >= 0 && ua <= 1) && (ub >= 0 && ub <= 1);
+	}
+
+	private void checkBotToBotCollisions() {
+
+		Position[] positions = new Position[botStateMap.size()];
+
+		Bot.Builder[] botBuilders = new Bot.Builder[botStateMap.size()];
+		botBuilders = botStateMap.values().toArray(botBuilders);
+
+		for (int i = positions.length - 1; i >= 0; i--) {
+			positions[i] = botBuilders[i].getPosition();
+		}
+
+		for (int i = positions.length - 1; i >= 0; i--) {
+			Position pos1 = botBuilders[i].getPosition();
+
+			for (int j = i - 1; j >= 0; j--) {
+				Position pos2 = botBuilders[i].getPosition();
+
+				if (isBotsBoundingCirclesColliding(pos1, pos2)) {
+					Bot.Builder botBuilder1 = botBuilders[i];
+					Bot.Builder botBuilder2 = botBuilders[j];
+
+					int botId1 = botBuilder1.getId();
+					int botId2 = botBuilder2.getId();
+
+					boolean bot1Killed = botBuilder1.addDamage(RAM_DAMAGE);
+					boolean bot2Killed = botBuilder2.addDamage(RAM_DAMAGE);
+
+					boolean bot1Rammed = isRamming(botBuilder2, botBuilder1);
+					boolean bot2Rammed = isRamming(botBuilder1, botBuilder2);
+
+					double bot1BounceDist = 0;
+					double bot2BounceDist = 0;
+
+					if (bot1Rammed) {
+						bot2BounceDist = MathUtil.distance(pos1, pos2);
+						scoreKeeper.addRamHit(botId2, botId1, RAM_DAMAGE, bot1Killed);
+					}
+					if (bot2Rammed) {
+						bot1BounceDist = MathUtil.distance(pos2, pos1);
+						scoreKeeper.addRamHit(botId1, botId2, RAM_DAMAGE, bot2Killed);
+					}
+					if (bot1Rammed && bot2Rammed) {
+						bot1BounceDist /= 2;
+						bot2BounceDist /= 2;
+					}
+					botBuilder1.bounceBackPosition(bot1BounceDist);
+					botBuilder2.bounceBackPosition(bot2BounceDist);
+
+					pos1 = botBuilder1.getPosition();
+					pos2 = botBuilder2.getPosition();
+
+					BotHitBotEvent BotHitBotEvent1 = new BotHitBotEvent(botId1, botId2, botBuilder2.getEnergy(),
+							botBuilder2.getPosition(), bot2Rammed);
+					BotHitBotEvent BotHitBotEvent2 = new BotHitBotEvent(botId2, botId1, botBuilder1.getEnergy(),
+							botBuilder1.getPosition(), bot1Rammed);
+
+					turnBuilder.addBotEvent(botId1, BotHitBotEvent1);
+					turnBuilder.addBotEvent(botId2, BotHitBotEvent2);
+
+					turnBuilder.addObserverEvent(BotHitBotEvent1);
+					turnBuilder.addObserverEvent(BotHitBotEvent2);
+				}
+			}
+		}
+	}
+
+	private static final double BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED = BOT_BOUNDING_CIRCLE_DIAMETER
+			* BOT_BOUNDING_CIRCLE_DIAMETER;
+
+	private static boolean isBotsBoundingCirclesColliding(Position bot1Position, Position bot2Position) {
+		// First calculate distance between bullets
+		double dx = bot2Position.getX() - bot1Position.getX();
+		if (Math.abs(dx) > BOT_BOUNDING_CIRCLE_DIAMETER) {
+			return false;
+		}
+		double dy = bot2Position.getY() - bot1Position.getY();
+		if (Math.abs(dy) > BOT_BOUNDING_CIRCLE_DIAMETER) {
+			return false;
+		}
+		return ((dx * dx) + (dy * dy) <= BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED);
+	}
+
+	private static boolean isRamming(ImmutableBot bot, ImmutableBot victim) {
+
+		double dx = victim.getPosition().getX() - bot.getPosition().getX();
+		double dy = victim.getPosition().getY() - bot.getPosition().getY();
+
+		double angle = Math.atan2(dx, dy);
+
+		double bearing = MathUtil.normalRelativeAngleDegrees(Math.toDegrees(angle) - bot.getDirection());
+
+		return ((bot.getSpeed() > 0 && (bearing > -90 && bearing < 90))
+				|| (bot.getSpeed() < 0 && (bearing < -90 || bearing > 90)));
+	}
+
 	private void updateBulletPositions() {
 		for (Bullet.Builder state : bulletStateSet) {
 			state.incrementTick(); // The tick is used to calculate new position by calling getPosition()
@@ -303,16 +443,16 @@ public class ModelUpdater {
 			boolean hitWall = false;
 
 			if (x - BOT_BOUNDING_CIRCLE_RADIUS <= 0) {
-				x = 0;
+				x = BOT_BOUNDING_CIRCLE_RADIUS;
 				hitWall = true;
 			} else if (x + BOT_BOUNDING_CIRCLE_RADIUS >= setup.getArenaWidth()) {
-				x = setup.getArenaWidth();
+				x = setup.getArenaWidth() - BOT_BOUNDING_CIRCLE_RADIUS;
 				hitWall = true;
 			} else if (y - BOT_BOUNDING_CIRCLE_RADIUS <= 0) {
-				y = 0;
+				y = BOT_BOUNDING_CIRCLE_RADIUS;
 				hitWall = true;
 			} else if (y + BOT_BOUNDING_CIRCLE_RADIUS >= setup.getArenaHeight()) {
-				y = setup.getArenaHeight();
+				y = setup.getArenaHeight() - BOT_BOUNDING_CIRCLE_RADIUS;
 				hitWall = true;
 			}
 
@@ -322,6 +462,9 @@ public class ModelUpdater {
 				BotHitWallEvent botHitWallEvent = new BotHitWallEvent(bot.getId());
 				turnBuilder.addBotEvent(bot.getId(), botHitWallEvent);
 				turnBuilder.addObserverEvent(botHitWallEvent);
+
+				double damage = Physics.calcWallDamage(bot.getSpeed());
+				bot.addDamage(damage);
 			}
 		}
 	}
@@ -347,10 +490,10 @@ public class ModelUpdater {
 	private void fireGuns() {
 		for (Integer botId : botStateMap.keySet()) {
 			BotIntent intent = botIntentMap.get(botId);
-			Bot.Builder state = botStateMap.get(botId);
+			Bot.Builder bot = botStateMap.get(botId);
 
 			// Fire gun, if the gun heat is zero
-			double gunHeat = state.getGunHeat();
+			double gunHeat = bot.getGunHeat();
 			gunHeat = Math.max(gunHeat - setup.getGunCoolingRate(), 0);
 
 			if (gunHeat == 0) {
@@ -359,24 +502,24 @@ public class ModelUpdater {
 				if (firepower >= MIN_BULLET_POWER) {
 					// Gun is fired
 					firepower = Math.min(firepower, MAX_BULLET_POWER);
-					gunHeat = calcGunHeat(firepower);
-
-					handleFiredBullet(state, firepower);
+					handleFiredBullet(bot, firepower);
 				}
 			}
-			state.setGunHeat(gunHeat);
 		}
 	}
 
-	private void handleFiredBullet(Bot.Builder state, double firepower) {
-		int botId = state.getId();
+	private void handleFiredBullet(Bot.Builder botBuilder, double firepower) {
+		int botId = botBuilder.getId();
+
+		double gunHeat = calcGunHeat(firepower);
+		botBuilder.setGunHeat(gunHeat);
 
 		Bullet.Builder builder = new Bullet.Builder();
 		builder.setBotId(botId);
 		builder.setBulletId(++nextBulletId);
 		builder.setPower(firepower);
-		builder.setFirePosition(state.getPosition());
-		builder.setDirection(state.getGunDirection());
+		builder.setFirePosition(botBuilder.getPosition());
+		builder.setDirection(botBuilder.getGunDirection());
 		builder.setSpeed(calcBulletSpeed(firepower));
 
 		Bullet bullet = builder.build();
@@ -395,27 +538,6 @@ public class ModelUpdater {
 	private class Line {
 		Position start;
 		Position end;
-	}
-
-	private static boolean linesIntersects(Line line1, Line line2) {
-		double x1 = line1.start.getX();
-		double y1 = line1.start.getY();
-		double x2 = line1.end.getX();
-		double y2 = line1.end.getY();
-		double x3 = line2.start.getX();
-		double y3 = line2.start.getY();
-		double x4 = line2.end.getX();
-		double y4 = line2.end.getY();
-
-		double dx13 = (x1 - x3), dx21 = (x2 - x1), dx43 = (x4 - x3);
-		double dy13 = (y1 - y3), dy21 = (y2 - y1), dy43 = (y4 - y3);
-
-		double dn = dy43 * dx21 - dx43 * dy21;
-
-		double ua = (dx43 * dy13 - dy43 * dx13) / dn;
-		double ub = (dx21 * dy13 - dy21 * dx13) / dn;
-
-		return (ua >= 0 && ua <= 1) && (ub >= 0 && ub <= 1);
 	}
 
 	public static void main(String[] args) {

@@ -72,7 +72,7 @@ public final class EventsToEventsMapper {
 		event.setVictimId(botHitBotEvent.getVictimId());
 		event.setEnergy(botHitBotEvent.getEnergy());
 		event.setPosition(PositionMapper.map(botHitBotEvent.getPosition()));
-		event.setRammed(botHitBotEvent.getRammed());
+		event.setRammed(botHitBotEvent.isRammed());
 		return event;
 	}
 

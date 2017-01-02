@@ -14,6 +14,10 @@ public final class Physics {
 	public static final double MIN_BULLET_POWER = 0.1;
 	public static final double MAX_BULLET_POWER = 3.0;
 
+	public static final double BOT_HIT_DAMAGE = 0.6;
+
+	public static final double MAX_BULLET_SPEED = calcBulletSpeed(MIN_BULLET_POWER);
+
 	public static double calcBotSpeed(double currentSpeed, double targetSpeed) {
 		double delta = targetSpeed - currentSpeed;
 		if (currentSpeed >= 0) {
@@ -33,6 +37,10 @@ public final class Physics {
 				return Math.min(currentSpeed - step, -MAX_REVERSE_SPEED);
 			}
 		}
+	}
+
+	public static double calcWallDamage(double speed) {
+		return Math.max(Math.abs(speed) / 2 - 1, 0);
 	}
 
 	public static double calcBulletSpeed(double firepower) {

@@ -34,7 +34,7 @@ public final class BotHitBotEvent implements Event {
 		return position;
 	}
 
-	public boolean getRammed() {
+	public boolean isRammed() {
 		return rammed;
 	}
 }
