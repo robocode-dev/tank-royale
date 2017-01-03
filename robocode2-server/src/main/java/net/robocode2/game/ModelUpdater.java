@@ -269,8 +269,8 @@ public class ModelUpdater {
 
 				// Check if the bullets bounding circles intersects (is fast) before checking if the bullets bounding
 				// lines intersect (is slower)
-				if (isBulletsBoundingCirclesColliding(endPos1, endPos2)
-						&& isLinesIntersecting(boundingLines[i], boundingLines[j])) {
+				if (isBulletsBoundingCirclesColliding(endPos1, endPos2) && MathUtil.doLinesIntersect(
+						boundingLines[i].start, boundingLines[i].end, boundingLines[j].start, boundingLines[j].end)) {
 
 					Bullet.Builder bulletBuilder1 = bulletBuilders[i];
 					Bullet.Builder bulletBuilder2 = bulletBuilders[j];
@@ -300,37 +300,15 @@ public class ModelUpdater {
 			* BULLET_BOUNDING_CIRCLE_DIAMETER;
 
 	private static boolean isBulletsBoundingCirclesColliding(Position bullet1Position, Position bullet2Position) {
-		// First calculate distance between bullets
-		double dx = bullet2Position.getX() - bullet1Position.getX();
+		double dx = bullet2Position.x - bullet1Position.x;
 		if (Math.abs(dx) > BULLET_BOUNDING_CIRCLE_DIAMETER) {
 			return false;
 		}
-		double dy = bullet2Position.getY() - bullet1Position.getY();
+		double dy = bullet2Position.y - bullet1Position.y;
 		if (Math.abs(dy) > BULLET_BOUNDING_CIRCLE_DIAMETER) {
 			return false;
 		}
 		return ((dx * dx) + (dy * dy) <= BULLET_BOUNDING_CIRCLE_DIAMETER_SQUARED);
-	}
-
-	private static boolean isLinesIntersecting(Line line1, Line line2) {
-		double x1 = line1.start.getX();
-		double y1 = line1.start.getY();
-		double x2 = line1.end.getX();
-		double y2 = line1.end.getY();
-		double x3 = line2.start.getX();
-		double y3 = line2.start.getY();
-		double x4 = line2.end.getX();
-		double y4 = line2.end.getY();
-
-		double dx13 = (x1 - x3), dx21 = (x2 - x1), dx43 = (x4 - x3);
-		double dy13 = (y1 - y3), dy21 = (y2 - y1), dy43 = (y4 - y3);
-
-		double dn = dy43 * dx21 - dx43 * dy21;
-
-		double ua = (dx43 * dy13 - dy43 * dx13) / dn;
-		double ub = (dx21 * dy13 - dy21 * dx13) / dn;
-
-		return (ua >= 0 && ua <= 1) && (ub >= 0 && ub <= 1);
 	}
 
 	private void checkBotToBotCollisions() {
@@ -403,12 +381,11 @@ public class ModelUpdater {
 			* BOT_BOUNDING_CIRCLE_DIAMETER;
 
 	private static boolean isBotsBoundingCirclesColliding(Position bot1Position, Position bot2Position) {
-		// First calculate distance between bullets
-		double dx = bot2Position.getX() - bot1Position.getX();
+		double dx = bot2Position.x - bot1Position.x;
 		if (Math.abs(dx) > BOT_BOUNDING_CIRCLE_DIAMETER) {
 			return false;
 		}
-		double dy = bot2Position.getY() - bot1Position.getY();
+		double dy = bot2Position.y - bot1Position.y;
 		if (Math.abs(dy) > BOT_BOUNDING_CIRCLE_DIAMETER) {
 			return false;
 		}
@@ -417,8 +394,8 @@ public class ModelUpdater {
 
 	private static boolean isRamming(ImmutableBot bot, ImmutableBot victim) {
 
-		double dx = victim.getPosition().getX() - bot.getPosition().getX();
-		double dy = victim.getPosition().getY() - bot.getPosition().getY();
+		double dx = victim.getPosition().x - bot.getPosition().x;
+		double dy = victim.getPosition().y - bot.getPosition().y;
 
 		double angle = Math.atan2(dx, dy);
 
@@ -437,8 +414,8 @@ public class ModelUpdater {
 	private void checkBotWallCollisions() {
 		for (Bot.Builder bot : botStateMap.values()) {
 			Position position = bot.getPosition();
-			double x = position.getX();
-			double y = position.getY();
+			double x = position.x;
+			double y = position.x;
 
 			boolean hitWall = false;
 
@@ -475,8 +452,8 @@ public class ModelUpdater {
 			Bullet.Builder bullet = iterator.next();
 			Position position = bullet.calcPosition();
 
-			if ((position.getX() <= 0) || (position.getX() >= setup.getArenaWidth()) || (position.getY() <= 0)
-					|| (position.getY() >= setup.getArenaHeight())) {
+			if ((position.x <= 0) || (position.x >= setup.getArenaWidth()) || (position.y <= 0)
+					|| (position.y >= setup.getArenaHeight())) {
 
 				iterator.remove(); // remove bullet from arena,
 

@@ -37,8 +37,60 @@ public final class MathUtil {
 	}
 
 	public static double distance(Position p1, Position p2) {
-		double dx = p2.getX() - p1.getX();
-		double dy = p2.getY() - p1.getY();
-		return Math.hypot(dx, dy);
+		return Math.hypot((p2.x - p1.x), (p2.y - p1.y));
+	}
+
+	// http://gigglingcorpse.com/2015/06/25/line-segment-intersection/
+	public static boolean doLinesIntersect(Position a1, Position a2, Position b1, Position b2) {
+
+		// Fastest method, based on Franklin Antonio's "Faster Line Segment Intersection" topic "in Graphics Gems III"
+		// book (http://www.graphicsgems.org/)
+		double ax = a2.x - a1.x;
+		double ay = a2.y - a1.y;
+		double bx = b1.x - b2.x;
+		double by = b1.y - b2.y;
+		double cx = a1.x - b1.x;
+		double cy = a1.y - b1.y;
+
+		double alphaNumerator = by * cx - bx * cy;
+		double commonDenominator = ay * bx - ax * by;
+		if (commonDenominator > 0) {
+			if (alphaNumerator < 0 || alphaNumerator > commonDenominator)
+				return false;
+		} else if (commonDenominator < 0) {
+			if (alphaNumerator > 0 || alphaNumerator < commonDenominator)
+				return false;
+		}
+		double betaNumerator = ax * cy - ay * cx;
+		if (commonDenominator > 0) {
+			if (betaNumerator < 0 || betaNumerator > commonDenominator)
+				return false;
+		} else if (commonDenominator < 0) {
+			if (betaNumerator > 0 || betaNumerator < commonDenominator)
+				return false;
+		}
+		if (commonDenominator == 0) {
+			// This code wasn't in Franklin Antonio's method. It was added by Keith Woodward.
+			// The lines are parallel.
+			// Check if they're collinear.
+			double y3LessY1 = b1.y - a1.y;
+			// see http://mathworld.wolfram.com/Collinear.html
+			double collinearityTestForP3 = a1.x * (a2.y - b1.y) + a2.x * (y3LessY1) + b1.x * (a1.y - a2.y);
+			// If p3 is collinear with p1 and p2 then p4 will also be collinear, since p1-p2 is parallel with p3-p4
+			if (collinearityTestForP3 == 0) {
+				// The lines are collinear. Now check if they overlap.
+				if (a1.x >= b1.x && a1.x <= b2.x || a1.x <= b1.x && a1.x >= b2.x || a2.x >= b1.x && a2.x <= b2.x
+						|| a2.x <= b1.x && a2.x >= b2.x || b1.x >= a1.x && b1.x <= a2.x
+						|| b1.x <= a1.x && b1.x >= a2.x) {
+					if (a1.y >= b1.y && a1.y <= b2.y || a1.y <= b1.y && a1.y >= b2.y || a2.y >= b1.y && a2.y <= b2.y
+							|| a2.y <= b1.y && a2.y >= b2.y || b1.y >= a1.y && b1.y <= a2.y
+							|| b1.y <= a1.y && b1.y >= a2.y) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		return true;
 	}
 }

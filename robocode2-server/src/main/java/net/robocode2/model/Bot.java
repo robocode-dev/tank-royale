@@ -252,8 +252,8 @@ public final class Bot implements ImmutableBot {
 
 		public void bounceBackPosition(double distance) {
 			double angle = Math.toRadians(direction - 180);
-			double x = position.getX() + Math.cos(angle) * distance;
-			double y = position.getY() + Math.sin(angle) * distance;
+			double x = position.x + Math.cos(angle) * distance;
+			double y = position.y + Math.sin(angle) * distance;
 			position = new Position(x, y);
 		}
 	}
