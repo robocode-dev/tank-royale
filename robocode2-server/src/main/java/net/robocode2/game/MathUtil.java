@@ -40,6 +40,66 @@ public final class MathUtil {
 		return Math.hypot((p2.x - p1.x), (p2.y - p1.y));
 	}
 
+	// LINE/CIRCLE
+	// http://www.jeffreythompson.org/collision-detection/line-circle.php
+	public static boolean isLineIntersectingCircle(double x1, double y1, double x2, double y2, double cx, double cy,
+			double r) {
+
+		// Check if one of the line ends is within the circle
+		if (isPointInsideCircle(x1, y1, cx, cy, r) || isPointInsideCircle(x2, y2, cx, cy, r)) {
+			return true;
+		}
+
+		// Get the squared length of the line
+		double dx = x2 - x1;
+		double dy = y2 - y1;
+		double len2 = (dx * dx) + (dy * dy);
+
+		// Get dot product of the line and circle
+		double dot = (((cx - x1) * dx) + ((cy - y1) * dy)) / len2;
+
+		// Find the closest point on the line from the circle
+		double closestX = x1 + (dot * dx);
+		double closestY = y1 + (dot * dy);
+
+		// Check if the closest point is on the line segment and the point is inside the circle
+		return isPointOnLine(x1, y1, x2, y2, closestX, closestY) && isPointInsideCircle(closestX, closestY, cx, cy, r);
+	}
+
+	// POINT/CIRCLE
+	public static boolean isPointInsideCircle(double px, double py, double cx, double cy, double r) {
+		double dx = px - cx;
+		double dy = py - cy;
+
+		// If the distance is less than the circle's radius the point is inside!
+		return ((dx * dx) + (dy * dy)) <= (r * r);
+	}
+
+	// LINE/POINT
+	public static boolean isPointOnLine(double x1, double y1, double x2, double y2, double px, double py) {
+		// Calculate cross product of vectors
+		double dxp = px - x1;
+		double dyp = py - y1;
+
+		double dxl = x2 - x1;
+		double dyl = y2 - y1;
+
+		double cross = dxp * dyl - dyp * dxl;
+
+		// point lies on the line if and only if cross is equal to zero.
+		if (!isNear(cross, 0)) {
+			return false;
+		}
+
+		// Check whether it lies between the original points
+		if (Math.abs(dxl) >= Math.abs(dyl)) {
+			return dxl > 0 ? (x1 <= px && px <= x2) : (x2 <= px && px <= x1);
+		} else {
+			return dyl > 0 ? (y1 <= py && py <= y2) : (y2 <= py && py <= y1);
+		}
+	}
+
+	// LINE/LINE
 	// http://gigglingcorpse.com/2015/06/25/line-segment-intersection/
 	public static boolean doLinesIntersect(Position a1, Position a2, Position b1, Position b2) {
 
