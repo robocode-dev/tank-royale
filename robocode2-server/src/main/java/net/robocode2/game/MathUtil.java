@@ -115,19 +115,23 @@ public final class MathUtil {
 		double alphaNumerator = by * cx - bx * cy;
 		double commonDenominator = ay * bx - ax * by;
 		if (commonDenominator > 0) {
-			if (alphaNumerator < 0 || alphaNumerator > commonDenominator)
+			if (alphaNumerator < 0 || alphaNumerator > commonDenominator) {
 				return false;
+			}
 		} else if (commonDenominator < 0) {
-			if (alphaNumerator > 0 || alphaNumerator < commonDenominator)
+			if (alphaNumerator > 0 || alphaNumerator < commonDenominator) {
 				return false;
+			}
 		}
 		double betaNumerator = ax * cy - ay * cx;
 		if (commonDenominator > 0) {
-			if (betaNumerator < 0 || betaNumerator > commonDenominator)
+			if (betaNumerator < 0 || betaNumerator > commonDenominator) {
 				return false;
+			}
 		} else if (commonDenominator < 0) {
-			if (betaNumerator > 0 || betaNumerator < commonDenominator)
+			if (betaNumerator > 0 || betaNumerator < commonDenominator) {
 				return false;
+			}
 		}
 		if (commonDenominator == 0) {
 			// This code wasn't in Franklin Antonio's method. It was added by Keith Woodward.

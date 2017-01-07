@@ -35,12 +35,15 @@ import net.robocode2.model.Turn;
 import net.robocode2.model.events.BotHitBotEvent;
 import net.robocode2.model.events.BotHitWallEvent;
 import net.robocode2.model.events.BulletFiredEvent;
+import net.robocode2.model.events.BulletHitBotEvent;
 import net.robocode2.model.events.BulletHitBulletEvent;
 import net.robocode2.model.events.BulletMissedEvent;
 
 public class ModelUpdater {
 
 	private final static double RAM_DAMAGE = 0.6;
+
+	private final static int BULLET_HIT_ENERGY_GAIN_FACTOR = 3;
 
 	private final GameSetup setup;
 
@@ -129,22 +132,20 @@ public class ModelUpdater {
 		// Execute bot intents
 		executeBotIntents();
 
-		// Check bullet to bullet collisions
-		checkBulletToBulletCollisions();
+		// Check bot wall collisions
+		checkBotWallCollisions();
+
+		// Check bot to bot collisions
+		checkBotCollisions();
 
 		// Update bullet positions
 		updateBulletPositions();
 
-		// Check bot wall collisions
-		checkBotWallCollisions();
-
 		// Check bullet wall collisions
 		checkBulletWallCollisions();
 
-		// Check bot to bot collisions
-		checkBotToBotCollisions();
-
-		// Check bullet to bot collisions (bullet hits)
+		// Check bullet hits (bullet-bullet and bullet-bot)
+		checkBulletHits();
 
 		// Fire guns
 		fireGuns();
@@ -228,8 +229,14 @@ public class ModelUpdater {
 
 	private void executeBotIntents() {
 		for (Integer botId : botStateMap.keySet()) {
-			BotIntent intent = botIntentMap.get(botId);
 			Bot.Builder bot = botStateMap.get(botId);
+
+			// Bot cannot move, if it is disabled
+			if (bot.isDisabled()) {
+				continue;
+			}
+
+			BotIntent intent = botIntentMap.get(botId);
 
 			// Turn body, gun, radar, and move bot to new position
 			double direction = bot.getDirection() + intent.getBodyTurnRate();
@@ -245,7 +252,7 @@ public class ModelUpdater {
 		}
 	}
 
-	private void checkBulletToBulletCollisions() {
+	private void checkBulletHits() {
 		Line[] boundingLines = new Line[bulletStateSet.size()];
 
 		Bullet.Builder[] bulletBuilders = new Bullet.Builder[bulletStateSet.size()];
@@ -262,8 +269,9 @@ public class ModelUpdater {
 		}
 
 		for (int i = boundingLines.length - 1; i >= 0; i--) {
-			Position endPos1 = boundingLines[i].end;
 
+			// Check bullet-bullet collision
+			Position endPos1 = boundingLines[i].end;
 			for (int j = i - 1; j >= 0; j--) {
 				Position endPos2 = boundingLines[j].end;
 
@@ -292,6 +300,47 @@ public class ModelUpdater {
 					bulletStateSet.remove(bulletBuilder2);
 				}
 			}
+
+			// Check bullet-bot collition (hit)
+
+			Position startPos1 = boundingLines[i].start;
+
+			for (Bot.Builder bot : botStateMap.values()) {
+				Position botPos = bot.getPosition();
+
+				if (MathUtil.isLineIntersectingCircle(startPos1.x, startPos1.y, endPos1.x, endPos1.y, botPos.x,
+						botPos.y, BOT_BOUNDING_CIRCLE_RADIUS)) {
+
+					Bullet.Builder bulletBuilder = bulletBuilders[i];
+					Bullet bullet = bulletBuilder.build();
+
+					int botId = bullet.getBotId();
+					int victimId = bot.getId();
+
+					double damage = Physics.calcBulletDamage(bullet.getPower());
+					bot.addDamage(damage);
+
+					double energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
+					botStateMap.get(botId).increaseEnergy(energyBonus);
+
+					boolean killed = bot.isDead();
+					scoreKeeper.addBulletHit(botId, victimId, damage, killed);
+
+					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet, victimId, damage,
+							bot.getEnergy());
+
+					turnBuilder.addBotEvent(botId, bulletHitBotEvent);
+					turnBuilder.addObserverEvent(bulletHitBotEvent);
+
+					// Remove bullet from the arena
+					bulletStateSet.remove(bulletBuilder);
+
+					// Remove bot from the arena if it was killed
+					if (killed) {
+						botStateMap.remove(victimId); // FIXME: Remove all dead robots in the end
+					}
+				}
+			}
 		}
 	}
 
@@ -311,7 +360,7 @@ public class ModelUpdater {
 		return ((dx * dx) + (dy * dy) <= BULLET_BOUNDING_CIRCLE_DIAMETER_SQUARED);
 	}
 
-	private void checkBotToBotCollisions() {
+	private void checkBotCollisions() {
 
 		Position[] positions = new Position[botStateMap.size()];
 
@@ -466,8 +515,14 @@ public class ModelUpdater {
 
 	private void fireGuns() {
 		for (Integer botId : botStateMap.keySet()) {
-			BotIntent intent = botIntentMap.get(botId);
 			Bot.Builder bot = botStateMap.get(botId);
+
+			// Bot cannot fire if it is disabled
+			if (bot.isDisabled()) {
+				continue;
+			}
+
+			BotIntent intent = botIntentMap.get(botId);
 
 			// Fire gun, if the gun heat is zero
 			double gunHeat = bot.getGunHeat();
