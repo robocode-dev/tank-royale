@@ -60,9 +60,9 @@ public class ModelUpdater {
 
 	private int nextBulletId;
 
-	private Map<Integer /* BotId */, BotIntent> botIntentMap = new HashMap<>();
-	private Map<Integer /* BotId */, Bot.Builder> botStateMap = new HashMap<>();
-	private Set<Bullet.Builder> bulletStateSet = new HashSet<>();
+	private Map<Integer /* BotId */, BotIntent> botIntentsMap = new HashMap<>();
+	private Map<Integer /* BotId */, Bot.Builder> botBuildersMap = new HashMap<>();
+	private Set<Bullet.Builder> bulletBuildersSet = new HashSet<>();
 
 	public ModelUpdater(GameSetup setup) {
 		this.setup = setup;
@@ -86,7 +86,7 @@ public class ModelUpdater {
 	}
 
 	public GameState update(Map<Integer /* BotId */, BotIntent> botIntents) {
-		botIntentMap = botIntents;
+		botIntentsMap = botIntents;
 
 		if (roundEnded || roundNumber == 0) {
 			nextRound();
@@ -119,15 +119,15 @@ public class ModelUpdater {
 		turnBuilder.setTurnNumber(turnNumber);
 
 		// Prepare map over new bot states
-		botStateMap.clear();
+		botBuildersMap.clear();
 		for (Bot bot : previousTurn.getBots()) {
-			botStateMap.put(bot.getId(), new Bot.Builder(bot));
+			botBuildersMap.put(bot.getId(), new Bot.Builder(bot));
 		}
 
 		// Prepare new bullet states
-		bulletStateSet.clear();
+		bulletBuildersSet.clear();
 		for (Bullet bullet : previousTurn.getBullets()) {
-			bulletStateSet.add(new Bullet.Builder(bullet));
+			bulletBuildersSet.add(new Bullet.Builder(bullet));
 		}
 
 		// Execute bot intents
@@ -173,19 +173,19 @@ public class ModelUpdater {
 
 		for (int id : setup.getParticipantIds()) {
 
-			Bot.Builder builder = new Bot.Builder();
-			builder.setId(id);
-			builder.setEnergy(INITIAL_BOT_ENERGY);
-			builder.setSpeed(0);
-			builder.setPosition(randomBotPosition(occupiedCells));
-			builder.setDirection(randomDirection());
-			builder.setGunDirection(randomDirection());
-			builder.setRadarDirection(randomDirection());
-			builder.setScanArc(new Arc(0, RADAR_RADIUS));
-			builder.setGunHeat(INITIAL_GUN_HEAT);
-			builder.setScore(new Score.Builder().build());
+			Bot.Builder botBuilder = new Bot.Builder();
+			botBuilder.setId(id);
+			botBuilder.setEnergy(INITIAL_BOT_ENERGY);
+			botBuilder.setSpeed(0);
+			botBuilder.setPosition(randomBotPosition(occupiedCells));
+			botBuilder.setDirection(randomDirection());
+			botBuilder.setGunDirection(randomDirection());
+			botBuilder.setRadarDirection(randomDirection());
+			botBuilder.setScanArc(new Arc(0, RADAR_RADIUS));
+			botBuilder.setGunHeat(INITIAL_GUN_HEAT);
+			botBuilder.setScore(new Score.Builder().build());
 
-			bots.add(builder.build());
+			bots.add(botBuilder.build());
 		}
 
 		return bots;
@@ -230,35 +230,35 @@ public class ModelUpdater {
 	}
 
 	private void executeBotIntents() {
-		for (Integer botId : botStateMap.keySet()) {
-			Bot.Builder bot = botStateMap.get(botId);
+		for (Integer botId : botBuildersMap.keySet()) {
+			Bot.Builder botBuilder = botBuildersMap.get(botId);
 
 			// Bot cannot move, if it is disabled
-			if (bot.isDead() || bot.isDisabled()) {
+			if (botBuilder.isDead() || botBuilder.isDisabled()) {
 				continue;
 			}
 
-			BotIntent intent = botIntentMap.get(botId);
+			BotIntent intent = botIntentsMap.get(botId);
 
 			// Turn body, gun, radar, and move bot to new position
-			double direction = bot.getDirection() + intent.getBodyTurnRate();
-			double gunDirection = bot.getGunDirection() + intent.getGunTurnRate();
-			double radarDirection = bot.getRadarDirection() + intent.getRadarTurnRate();
-			double speed = calcBotSpeed(bot.getSpeed(), intent.getTargetSpeed());
+			double direction = botBuilder.getDirection() + intent.getBodyTurnRate();
+			double gunDirection = botBuilder.getGunDirection() + intent.getGunTurnRate();
+			double radarDirection = botBuilder.getRadarDirection() + intent.getRadarTurnRate();
+			double speed = calcBotSpeed(botBuilder.getSpeed(), intent.getTargetSpeed());
 
-			bot.setDirection(direction);
-			bot.setGunDirection(gunDirection);
-			bot.setRadarDirection(radarDirection);
-			bot.setSpeed(speed);
-			bot.setPosition(bot.getPosition().calcNewPosition(direction, speed));
+			botBuilder.setDirection(direction);
+			botBuilder.setGunDirection(gunDirection);
+			botBuilder.setRadarDirection(radarDirection);
+			botBuilder.setSpeed(speed);
+			botBuilder.setPosition(botBuilder.getPosition().calcNewPosition(direction, speed));
 		}
 	}
 
 	private void checkBulletHits() {
-		Line[] boundingLines = new Line[bulletStateSet.size()];
+		Line[] boundingLines = new Line[bulletBuildersSet.size()];
 
-		Bullet.Builder[] bulletBuilders = new Bullet.Builder[bulletStateSet.size()];
-		bulletBuilders = bulletStateSet.toArray(bulletBuilders);
+		Bullet.Builder[] bulletBuilders = new Bullet.Builder[bulletBuildersSet.size()];
+		bulletBuilders = bulletBuildersSet.toArray(bulletBuilders);
 
 		for (int i = boundingLines.length - 1; i >= 0; i--) {
 			Bullet.Builder bulletBuilder = bulletBuilders[i];
@@ -298,8 +298,8 @@ public class ModelUpdater {
 					turnBuilder.addObserverEvent(bulletHitBulletEvent1);
 
 					// Remove bullets from the arena
-					bulletStateSet.remove(bulletBuilder1);
-					bulletStateSet.remove(bulletBuilder2);
+					bulletBuildersSet.remove(bulletBuilder1);
+					bulletBuildersSet.remove(bulletBuilder2);
 				}
 			}
 
@@ -307,8 +307,8 @@ public class ModelUpdater {
 
 			Position startPos1 = boundingLines[i].start;
 
-			for (Bot.Builder bot : botStateMap.values()) {
-				Position botPos = bot.getPosition();
+			for (Bot.Builder botBuilder : botBuildersMap.values()) {
+				Position botPos = botBuilder.getPosition();
 
 				if (MathUtil.isLineIntersectingCircle(startPos1.x, startPos1.y, endPos1.x, endPos1.y, botPos.x,
 						botPos.y, BOT_BOUNDING_CIRCLE_RADIUS)) {
@@ -317,24 +317,24 @@ public class ModelUpdater {
 					Bullet bullet = bulletBuilder.build();
 
 					int botId = bullet.getBotId();
-					int victimId = bot.getId();
+					int victimId = botBuilder.getId();
 
 					double damage = Physics.calcBulletDamage(bullet.getPower());
-					boolean killed = bot.addDamage(damage);
+					boolean killed = botBuilder.addDamage(damage);
 
 					double energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
-					botStateMap.get(botId).increaseEnergy(energyBonus);
+					botBuildersMap.get(botId).increaseEnergy(energyBonus);
 
 					scoreKeeper.addBulletHit(botId, victimId, damage, killed);
 
 					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet, victimId, damage,
-							bot.getEnergy());
+							botBuilder.getEnergy());
 
 					turnBuilder.addPrivateBotEvent(botId, bulletHitBotEvent);
 					turnBuilder.addObserverEvent(bulletHitBotEvent);
 
 					// Remove bullet from the arena
-					bulletStateSet.remove(bulletBuilder);
+					bulletBuildersSet.remove(bulletBuilder);
 				}
 			}
 		}
@@ -358,10 +358,10 @@ public class ModelUpdater {
 
 	private void checkBotCollisions() {
 
-		Position[] positions = new Position[botStateMap.size()];
+		Position[] positions = new Position[botBuildersMap.size()];
 
-		Bot.Builder[] botBuilders = new Bot.Builder[botStateMap.size()];
-		botBuilders = botStateMap.values().toArray(botBuilders);
+		Bot.Builder[] botBuilders = new Bot.Builder[botBuildersMap.size()];
+		botBuilders = botBuildersMap.values().toArray(botBuilders);
 
 		for (int i = positions.length - 1; i >= 0; i--) {
 			positions[i] = botBuilders[i].getPosition();
@@ -451,14 +451,14 @@ public class ModelUpdater {
 	}
 
 	private void updateBulletPositions() {
-		for (Bullet.Builder state : bulletStateSet) {
-			state.incrementTick(); // The tick is used to calculate new position by calling getPosition()
+		for (Bullet.Builder bulletBuilder : bulletBuildersSet) {
+			bulletBuilder.incrementTick(); // The tick is used to calculate new position by calling getPosition()
 		}
 	}
 
 	private void checkBotWallCollisions() {
-		for (Bot.Builder bot : botStateMap.values()) {
-			Position position = bot.getPosition();
+		for (Bot.Builder botBuilder : botBuildersMap.values()) {
+			Position position = botBuilder.getPosition();
 			double x = position.x;
 			double y = position.x;
 
@@ -479,63 +479,63 @@ public class ModelUpdater {
 			}
 
 			if (hitWall) {
-				bot.setPosition(new Position(x, y));
+				botBuilder.setPosition(new Position(x, y));
 
-				BotHitWallEvent botHitWallEvent = new BotHitWallEvent(bot.getId());
-				turnBuilder.addPrivateBotEvent(bot.getId(), botHitWallEvent);
+				BotHitWallEvent botHitWallEvent = new BotHitWallEvent(botBuilder.getId());
+				turnBuilder.addPrivateBotEvent(botBuilder.getId(), botHitWallEvent);
 				turnBuilder.addObserverEvent(botHitWallEvent);
 
-				double damage = Physics.calcWallDamage(bot.getSpeed());
-				bot.addDamage(damage);
+				double damage = Physics.calcWallDamage(botBuilder.getSpeed());
+				botBuilder.addDamage(damage);
 			}
 		}
 	}
 
 	private void checkBulletWallCollisions() {
-		Iterator<Bullet.Builder> iterator = bulletStateSet.iterator(); // due to removal
+		Iterator<Bullet.Builder> iterator = bulletBuildersSet.iterator(); // due to removal
 		while (iterator.hasNext()) {
-			Bullet.Builder bullet = iterator.next();
-			Position position = bullet.calcNextPosition();
+			Bullet.Builder bulletBuilder = iterator.next();
+			Position position = bulletBuilder.calcNextPosition();
 
 			if ((position.x <= 0) || (position.x >= setup.getArenaWidth()) || (position.y <= 0)
 					|| (position.y >= setup.getArenaHeight())) {
 
 				iterator.remove(); // remove bullet from arena,
 
-				BulletMissedEvent bulletMissedEvent = new BulletMissedEvent(bullet.build());
-				turnBuilder.addPrivateBotEvent(bullet.getBotId(), bulletMissedEvent);
+				BulletMissedEvent bulletMissedEvent = new BulletMissedEvent(bulletBuilder.build());
+				turnBuilder.addPrivateBotEvent(bulletBuilder.getBotId(), bulletMissedEvent);
 				turnBuilder.addObserverEvent(bulletMissedEvent);
 			}
 		}
 	}
 
 	private void checkForKilledBots() {
-		for (Bot.Builder bot : botStateMap.values()) {
-			if (bot.isDead()) {
-				int victimId = bot.getId();
+		for (Bot.Builder botBuilder : botBuildersMap.values()) {
+			if (botBuilder.isDead()) {
+				int victimId = botBuilder.getId();
 
 				BotDeathEvent botDeathEvent = new BotDeathEvent(victimId);
 				turnBuilder.addPublicBotEvent(botDeathEvent);
 				turnBuilder.addObserverEvent(botDeathEvent);
 
-				botStateMap.remove(victimId);
+				botBuildersMap.remove(victimId);
 			}
 		}
 	}
 
 	private void fireGuns() {
-		for (Integer botId : botStateMap.keySet()) {
-			Bot.Builder bot = botStateMap.get(botId);
+		for (Integer botId : botBuildersMap.keySet()) {
+			Bot.Builder botBuilder = botBuildersMap.get(botId);
 
 			// Bot cannot fire if it is disabled
-			if (bot.isDead() || bot.isDisabled()) {
+			if (botBuilder.isDead() || botBuilder.isDisabled()) {
 				continue;
 			}
 
-			BotIntent intent = botIntentMap.get(botId);
+			BotIntent intent = botIntentsMap.get(botId);
 
 			// Fire gun, if the gun heat is zero
-			double gunHeat = bot.getGunHeat();
+			double gunHeat = botBuilder.getGunHeat();
 			gunHeat = Math.max(gunHeat - setup.getGunCoolingRate(), 0);
 
 			if (gunHeat == 0) {
@@ -544,7 +544,7 @@ public class ModelUpdater {
 				if (firepower >= MIN_BULLET_POWER) {
 					// Gun is fired
 					firepower = Math.min(firepower, MAX_BULLET_POWER);
-					handleFiredBullet(bot, firepower);
+					handleFiredBullet(botBuilder, firepower);
 				}
 			}
 		}
@@ -556,15 +556,15 @@ public class ModelUpdater {
 		double gunHeat = calcGunHeat(firepower);
 		botBuilder.setGunHeat(gunHeat);
 
-		Bullet.Builder builder = new Bullet.Builder();
-		builder.setBotId(botId);
-		builder.setBulletId(++nextBulletId);
-		builder.setPower(firepower);
-		builder.setFirePosition(botBuilder.getPosition());
-		builder.setDirection(botBuilder.getGunDirection());
-		builder.setSpeed(calcBulletSpeed(firepower));
+		Bullet.Builder bulletBuilder = new Bullet.Builder();
+		bulletBuilder.setBotId(botId);
+		bulletBuilder.setBulletId(++nextBulletId);
+		bulletBuilder.setPower(firepower);
+		bulletBuilder.setFirePosition(botBuilder.getPosition());
+		bulletBuilder.setDirection(botBuilder.getGunDirection());
+		bulletBuilder.setSpeed(calcBulletSpeed(firepower));
 
-		Bullet bullet = builder.build();
+		Bullet bullet = bulletBuilder.build();
 
 		turnBuilder.addBullet(bullet);
 
