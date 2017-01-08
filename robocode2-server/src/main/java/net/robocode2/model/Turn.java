@@ -115,13 +115,18 @@ public final class Turn {
 			return this;
 		}
 
-		public Builder addBotEvent(int botId, Event event) {
+		public Builder addPrivateBotEvent(int botId, Event event) {
 			Set<Event> botEvents = botEventsMap.get(botId);
 			if (botEvents == null) {
 				botEvents = new HashSet<>();
 				botEventsMap.put(botId, botEvents);
 			}
 			botEvents.add(event);
+			return this;
+		}
+
+		public Builder addPublicBotEvent(Event event) {
+			bots.forEach(bot -> addPrivateBotEvent(bot.getId(), event));
 			return this;
 		}
 	}

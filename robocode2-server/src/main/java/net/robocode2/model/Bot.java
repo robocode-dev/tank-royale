@@ -40,11 +40,6 @@ public final class Bot implements ImmutableBot {
 	}
 
 	@Override
-	public boolean isDisabled() {
-		return new Double(energy).equals(0.0d);
-	}
-
-	@Override
 	public Position getPosition() {
 		return position;
 	}
@@ -190,7 +185,6 @@ public final class Bot implements ImmutableBot {
 			return energy < 0;
 		}
 
-		@Override
 		public boolean isDisabled() {
 			return isAlive() && MathUtil.isNear(energy, 0);
 		}
@@ -242,8 +236,9 @@ public final class Bot implements ImmutableBot {
 		 * @return true if the robot got killed due to the damage, false otherwise.
 		 */
 		public boolean addDamage(double damage) {
+			boolean aliveBefore = isAlive();
 			energy -= damage;
-			return energy < 0;
+			return isDead() && aliveBefore;
 		}
 
 		public void increaseEnergy(double gain) {

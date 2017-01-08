@@ -6,8 +6,6 @@ public interface ImmutableBot {
 
 	double getEnergy();
 
-	boolean isDisabled();
-
 	Position getPosition();
 
 	double getDirection();

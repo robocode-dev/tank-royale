@@ -32,6 +32,7 @@ import net.robocode2.model.Round;
 import net.robocode2.model.Score;
 import net.robocode2.model.Size;
 import net.robocode2.model.Turn;
+import net.robocode2.model.events.BotDeathEvent;
 import net.robocode2.model.events.BotHitBotEvent;
 import net.robocode2.model.events.BotHitWallEvent;
 import net.robocode2.model.events.BulletFiredEvent;
@@ -138,19 +139,20 @@ public class ModelUpdater {
 		// Check bot to bot collisions
 		checkBotCollisions();
 
-		// Update bullet positions
-		updateBulletPositions();
-
-		// Check bullet wall collisions
+		// Check bullet wall collisions (current -> next position)
 		checkBulletWallCollisions();
 
-		// Check bullet hits (bullet-bullet and bullet-bot)
+		// Check bullet hits (bullet-bullet and bullet-bot) (current -> next position)
 		checkBulletHits();
 
 		// Fire guns
 		fireGuns();
 
 		// Cleanup dead robots (remove from arena + events)
+		checkForKilledBots();
+
+		// Update bullet positions to new position
+		updateBulletPositions();
 	}
 
 	private GameState buildGameState() {
@@ -232,7 +234,7 @@ public class ModelUpdater {
 			Bot.Builder bot = botStateMap.get(botId);
 
 			// Bot cannot move, if it is disabled
-			if (bot.isDisabled()) {
+			if (bot.isDead() || bot.isDisabled()) {
 				continue;
 			}
 
@@ -287,10 +289,10 @@ public class ModelUpdater {
 					Bullet bullet2 = bulletBuilder2.build();
 
 					BulletHitBulletEvent bulletHitBulletEvent1 = new BulletHitBulletEvent(bullet1, bullet2);
-					turnBuilder.addBotEvent(bullet1.getBotId(), bulletHitBulletEvent1);
+					turnBuilder.addPrivateBotEvent(bullet1.getBotId(), bulletHitBulletEvent1);
 
 					BulletHitBulletEvent bulletHitBulletEvent2 = new BulletHitBulletEvent(bullet2, bullet1);
-					turnBuilder.addBotEvent(bullet2.getBotId(), bulletHitBulletEvent2);
+					turnBuilder.addPrivateBotEvent(bullet2.getBotId(), bulletHitBulletEvent2);
 
 					// Observers only need a single event
 					turnBuilder.addObserverEvent(bulletHitBulletEvent1);
@@ -318,27 +320,21 @@ public class ModelUpdater {
 					int victimId = bot.getId();
 
 					double damage = Physics.calcBulletDamage(bullet.getPower());
-					bot.addDamage(damage);
+					boolean killed = bot.addDamage(damage);
 
 					double energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
 					botStateMap.get(botId).increaseEnergy(energyBonus);
 
-					boolean killed = bot.isDead();
 					scoreKeeper.addBulletHit(botId, victimId, damage, killed);
 
 					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet, victimId, damage,
 							bot.getEnergy());
 
-					turnBuilder.addBotEvent(botId, bulletHitBotEvent);
+					turnBuilder.addPrivateBotEvent(botId, bulletHitBotEvent);
 					turnBuilder.addObserverEvent(bulletHitBotEvent);
 
 					// Remove bullet from the arena
 					bulletStateSet.remove(bulletBuilder);
-
-					// Remove bot from the arena if it was killed
-					if (killed) {
-						botStateMap.remove(victimId); // FIXME: Remove all dead robots in the end
-					}
 				}
 			}
 		}
@@ -416,8 +412,8 @@ public class ModelUpdater {
 					BotHitBotEvent BotHitBotEvent2 = new BotHitBotEvent(botId2, botId1, botBuilder1.getEnergy(),
 							botBuilder1.getPosition(), bot1Rammed);
 
-					turnBuilder.addBotEvent(botId1, BotHitBotEvent1);
-					turnBuilder.addBotEvent(botId2, BotHitBotEvent2);
+					turnBuilder.addPrivateBotEvent(botId1, BotHitBotEvent1);
+					turnBuilder.addPrivateBotEvent(botId2, BotHitBotEvent2);
 
 					turnBuilder.addObserverEvent(BotHitBotEvent1);
 					turnBuilder.addObserverEvent(BotHitBotEvent2);
@@ -486,7 +482,7 @@ public class ModelUpdater {
 				bot.setPosition(new Position(x, y));
 
 				BotHitWallEvent botHitWallEvent = new BotHitWallEvent(bot.getId());
-				turnBuilder.addBotEvent(bot.getId(), botHitWallEvent);
+				turnBuilder.addPrivateBotEvent(bot.getId(), botHitWallEvent);
 				turnBuilder.addObserverEvent(botHitWallEvent);
 
 				double damage = Physics.calcWallDamage(bot.getSpeed());
@@ -499,7 +495,7 @@ public class ModelUpdater {
 		Iterator<Bullet.Builder> iterator = bulletStateSet.iterator(); // due to removal
 		while (iterator.hasNext()) {
 			Bullet.Builder bullet = iterator.next();
-			Position position = bullet.calcPosition();
+			Position position = bullet.calcNextPosition();
 
 			if ((position.x <= 0) || (position.x >= setup.getArenaWidth()) || (position.y <= 0)
 					|| (position.y >= setup.getArenaHeight())) {
@@ -507,8 +503,22 @@ public class ModelUpdater {
 				iterator.remove(); // remove bullet from arena,
 
 				BulletMissedEvent bulletMissedEvent = new BulletMissedEvent(bullet.build());
-				turnBuilder.addBotEvent(bullet.getBotId(), bulletMissedEvent);
+				turnBuilder.addPrivateBotEvent(bullet.getBotId(), bulletMissedEvent);
 				turnBuilder.addObserverEvent(bulletMissedEvent);
+			}
+		}
+	}
+
+	private void checkForKilledBots() {
+		for (Bot.Builder bot : botStateMap.values()) {
+			if (bot.isDead()) {
+				int victimId = bot.getId();
+
+				BotDeathEvent botDeathEvent = new BotDeathEvent(victimId);
+				turnBuilder.addPublicBotEvent(botDeathEvent);
+				turnBuilder.addObserverEvent(botDeathEvent);
+
+				botStateMap.remove(victimId);
 			}
 		}
 	}
@@ -518,7 +528,7 @@ public class ModelUpdater {
 			Bot.Builder bot = botStateMap.get(botId);
 
 			// Bot cannot fire if it is disabled
-			if (bot.isDisabled()) {
+			if (bot.isDead() || bot.isDisabled()) {
 				continue;
 			}
 
@@ -559,7 +569,7 @@ public class ModelUpdater {
 		turnBuilder.addBullet(bullet);
 
 		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(bullet);
-		turnBuilder.addBotEvent(botId, bulletFiredEvent);
+		turnBuilder.addPrivateBotEvent(botId, bulletFiredEvent);
 		turnBuilder.addObserverEvent(bulletFiredEvent);
 	}
 
