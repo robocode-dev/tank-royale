@@ -126,7 +126,9 @@ public final class Turn {
 		}
 
 		public Builder addPublicBotEvent(Event event) {
-			bots.forEach(bot -> addPrivateBotEvent(bot.getId(), event));
+			for (Bot bot : bots) {
+				addPrivateBotEvent(bot.getId(), event);
+			}
 			return this;
 		}
 	}
