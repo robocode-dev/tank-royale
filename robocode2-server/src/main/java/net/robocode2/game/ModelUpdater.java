@@ -89,15 +89,27 @@ public class ModelUpdater {
 	}
 
 	public GameState update(Map<Integer /* BotId */, BotIntent> botIntents) {
-		if (!gameStateBuilder.isGameEnded()) {
+		GameState gameState;
+
+		if (roundNumber == 0 && turnNumber == 0) {
+			nextRound();
+
+			gameState = buildUpdatedGameState();
+
+			turnNumber++;
+
+		} else {
 			botIntentsMap = botIntents;
 
-			if (roundEnded || roundNumber == 0) {
+			if (roundEnded) {
 				nextRound();
 			}
 			nextTurn();
+
+			gameState = buildUpdatedGameState();
 		}
-		return buildGameState();
+
+		return gameState;
 	}
 
 	private void nextRound() {
@@ -158,15 +170,14 @@ public class ModelUpdater {
 		updateBulletPositions();
 	}
 
-	private GameState buildGameState() {
+	private GameState buildUpdatedGameState() {
 		Turn turn = turnBuilder.build();
 		roundBuilder.appendTurn(turn);
 
 		Round round = roundBuilder.build();
 		gameStateBuilder.appendRound(round);
 
-		GameState gameState = gameStateBuilder.build();
-		return gameState;
+		return gameStateBuilder.build();
 	}
 
 	private Set<Bot> initialBotStates() {
@@ -242,6 +253,9 @@ public class ModelUpdater {
 			}
 
 			BotIntent intent = botIntentsMap.get(botId);
+			if (intent == null) {
+				continue;
+			}
 
 			// Turn body, gun, radar, and move bot to new position
 			double direction = botBuilder.getDirection() + intent.getBodyTurnRate();

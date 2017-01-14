@@ -233,7 +233,7 @@ public final class GameServer {
 			public void run() {
 				onUpdateGameState();
 			}
-		}, gameSetup.getTurnTimeout());
+		}, gameSetup.getTurnTimeout(), gameSetup.getTurnTimeout());
 	}
 
 	private GameState updateGameState() {
@@ -312,14 +312,17 @@ public final class GameServer {
 				}
 			}
 		}
-		observerTurn = observerRound.getTurns().get(delayedObserverTurnNumber);
+		if (delayedObserverTurnNumber >= 0) {
+			observerTurn = observerRound.getTurns().get(delayedObserverTurnNumber);
 
-		// Send game state as 'tick' to observers
-		for (Map.Entry<WebSocket, ObserverHandshake> entry : connectionHandler.getObserverConnections().entrySet()) {
-			TickForObserver tickForObserver = TurnToTickForObserverMapper.map(observerRound, observerTurn);
+			// Send game state as 'tick' to observers
+			for (Map.Entry<WebSocket, ObserverHandshake> entry : connectionHandler.getObserverConnections()
+					.entrySet()) {
+				TickForObserver tickForObserver = TurnToTickForObserverMapper.map(observerRound, observerTurn);
 
-			String msg = gson.toJson(tickForObserver);
-			send(entry.getKey(), msg);
+				String msg = gson.toJson(tickForObserver);
+				send(entry.getKey(), msg);
+			}
 		}
 	}
 

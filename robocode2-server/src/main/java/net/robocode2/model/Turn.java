@@ -68,7 +68,11 @@ public final class Turn {
 	}
 
 	public Set<Event> getBotEvents(int botId) {
-		return Collections.unmodifiableSet(botEventsMap.get(botId));
+		Set<Event> botEvents = botEventsMap.get(botId);
+		if (botEvents == null) {
+			botEvents = new HashSet<>();
+		}
+		return Collections.unmodifiableSet(botEvents);
 	}
 
 	public static final class Builder {
