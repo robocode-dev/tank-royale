@@ -68,5 +68,9 @@ public final class GameState {
 			rounds.add(round);
 			return this;
 		}
+
+		public boolean isGameEnded() {
+			return gameEnded;
+		}
 	}
 }

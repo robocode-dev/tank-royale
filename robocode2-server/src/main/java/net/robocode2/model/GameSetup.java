@@ -1,9 +1,5 @@
 package net.robocode2.model;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 public final class GameSetup {
 
 	private final String gameType;
@@ -13,14 +9,15 @@ public final class GameSetup {
 	private final Integer maxNumberOfParticipants;
 	private final int numberOfRounds;
 	private final double gunCoolingRate;
+
 	private final int inactiveTurns;
 	private final int turnTimeout;
 	private final int readyTimeout;
-	private final Set<Integer> participantIds;
+	private final int numberOfDelayedTurnsForObservers;
 
 	public GameSetup(String gameType, int arenaWidth, int arenaHeight, int minNumberOfParticipants,
 			Integer maxNumberOfParticipants, int numberOfRounds, double gunCoolingRate, int inactiveTurns,
-			int turnTimeout, int readyTimeout, Set<Integer> participantIds) {
+			int turnTimeout, int readyTimeout, int numberOfDelayedTurnsForObservers) {
 
 		this.gameType = gameType;
 		this.arenaWidth = arenaWidth;
@@ -32,11 +29,7 @@ public final class GameSetup {
 		this.inactiveTurns = inactiveTurns;
 		this.turnTimeout = turnTimeout;
 		this.readyTimeout = readyTimeout;
-		if (participantIds == null) {
-			this.participantIds = new HashSet<>();
-		} else {
-			this.participantIds = new HashSet<>(participantIds);
-		}
+		this.numberOfDelayedTurnsForObservers = numberOfDelayedTurnsForObservers;
 	}
 
 	public String getGameType() {
@@ -79,8 +72,8 @@ public final class GameSetup {
 		return readyTimeout;
 	}
 
-	public Set<Integer> getParticipantIds() {
-		return Collections.unmodifiableSet(participantIds);
+	public int getNumberOfDelayedTurnsForObservers() {
+		return numberOfDelayedTurnsForObservers;
 	}
 
 	public static final class Builder {
@@ -94,11 +87,12 @@ public final class GameSetup {
 		private int inactiveTurns = 450;
 		private int turnTimeout = 100;
 		private int readyTimeout = 10_000;
-		private Set<Integer> participantIds = new HashSet<>();
+		private int numberOfDelayedTurnsForObservers = 10;
 
 		public GameSetup build() {
 			return new GameSetup(gameType, arenaWidth, arenaHeight, minNumberOfParticipants, maxNumberOfParticipants,
-					numberOfRounds, gunCoolingRate, inactiveTurns, turnTimeout, readyTimeout, participantIds);
+					numberOfRounds, gunCoolingRate, inactiveTurns, turnTimeout, readyTimeout,
+					numberOfDelayedTurnsForObservers);
 		}
 
 		public Builder setGameType(String gameType) {
@@ -151,8 +145,8 @@ public final class GameSetup {
 			return this;
 		}
 
-		public Builder addParticipantId(int botId) {
-			participantIds.add(botId);
+		public Builder setNumberOfDelayedTurnsForObservers(int numberOfDelayedTurnsForObservers) {
+			this.numberOfDelayedTurnsForObservers = numberOfDelayedTurnsForObservers;
 			return this;
 		}
 	}

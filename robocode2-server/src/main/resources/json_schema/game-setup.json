@@ -44,6 +44,10 @@
 		"ready-timeout": {
 			 "description": "Time limit in milliseconds for sending ready message after having received 'new battle' message",
 			 "type": "integer"
+		},
+		"number-of-turns-delayed-for-observers": {
+			 "description": "Number of turns that are delayed for observers relative to the current turn enforced by the game",
+			 "type": "integer"
 		}
 	},
 	"required": [
@@ -55,6 +59,7 @@
 		"gun-cooling-rate",
 		"inactivity-turns",
 		"turn-timeout",
-		"ready-timeout"
+		"ready-timeout",
+		"number-of-turns-delayed-for-observers"
 	]
 }

@@ -47,6 +47,7 @@ public class ModelUpdater {
 	private final static int BULLET_HIT_ENERGY_GAIN_FACTOR = 3;
 
 	private final GameSetup setup;
+	private final Set<Integer> participantIds;
 
 	private final ScoreKeeper scoreKeeper;
 
@@ -64,9 +65,11 @@ public class ModelUpdater {
 	private Map<Integer /* BotId */, Bot.Builder> botBuildersMap = new HashMap<>();
 	private Set<Bullet.Builder> bulletBuildersSet = new HashSet<>();
 
-	public ModelUpdater(GameSetup setup) {
+	public ModelUpdater(GameSetup setup, Set<Integer> participantIds) {
 		this.setup = setup;
-		this.scoreKeeper = new ScoreKeeper(setup.getParticipantIds());
+		this.participantIds = new HashSet<>(participantIds);
+
+		this.scoreKeeper = new ScoreKeeper(participantIds);
 
 		initialize();
 	}
@@ -86,14 +89,14 @@ public class ModelUpdater {
 	}
 
 	public GameState update(Map<Integer /* BotId */, BotIntent> botIntents) {
-		botIntentsMap = botIntents;
+		if (!gameStateBuilder.isGameEnded()) {
+			botIntentsMap = botIntents;
 
-		if (roundEnded || roundNumber == 0) {
-			nextRound();
+			if (roundEnded || roundNumber == 0) {
+				nextRound();
+			}
+			nextTurn();
 		}
-
-		nextTurn();
-
 		return buildGameState();
 	}
 
@@ -108,7 +111,7 @@ public class ModelUpdater {
 		Set<Bot> bots = initialBotStates();
 		turnBuilder.setBots(bots);
 
-		scoreKeeper.reset(setup.getParticipantIds());
+		scoreKeeper.reset();
 	}
 
 	private void nextTurn() {
@@ -171,7 +174,7 @@ public class ModelUpdater {
 
 		Set<Integer> occupiedCells = new HashSet<Integer>();
 
-		for (int id : setup.getParticipantIds()) {
+		for (int id : participantIds) {
 
 			Bot.Builder botBuilder = new Bot.Builder();
 			botBuilder.setId(id);
@@ -198,7 +201,7 @@ public class ModelUpdater {
 
 		final int cellCount = gridWidth * gridHeight;
 
-		final int numBots = setup.getParticipantIds().size();
+		final int numBots = participantIds.size();
 		if (cellCount < numBots) {
 			throw new IllegalArgumentException("Area size (" + setup.getArenaWidth() + ',' + setup.getArenaHeight()
 					+ ") is to small to contain " + numBots + " bots");

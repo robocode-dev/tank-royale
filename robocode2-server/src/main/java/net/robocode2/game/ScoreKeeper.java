@@ -18,15 +18,18 @@ public class ScoreKeeper {
 	private static final double SCORE_PER_RAM_DAMAGE = 2;
 	private static final double BONUS_PER_RAM_KILL = 0.30;
 
-	private Map<Integer, DamageAndSurvival> damageAndSurvivals;
+	private final Set<Integer> botIds;
 
-	private Set<Integer> botsAlive;
+	private final Map<Integer, DamageAndSurvival> damageAndSurvivals = new HashMap<>();
+
+	private final Set<Integer> botsAlive = new HashSet<>();
 
 	public ScoreKeeper(Set<Integer> botIds) {
-		reset(botIds);
+		this.botIds = new HashSet<>(botIds);
+		reset();
 	}
 
-	public void reset(Set<Integer> botIds) {
+	public void reset() {
 		damageAndSurvivals.clear();
 		for (int botId : botIds) {
 			damageAndSurvivals.put(botId, new DamageAndSurvival());

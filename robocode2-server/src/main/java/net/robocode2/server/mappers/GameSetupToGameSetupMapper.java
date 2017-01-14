@@ -19,6 +19,7 @@ public final class GameSetupToGameSetupMapper {
 		setup.setInactivityTurns(gameSetup.getInactiveTurns());
 		setup.setTurnTimeout(gameSetup.getTurnTimeout());
 		setup.setReadyTimeout(gameSetup.getReadyTimeout());
+		setup.setNumberOfTurnsDelayedForObservers(gameSetup.getNumberOfDelayedTurnsForObservers());
 		return setup;
 	}
 

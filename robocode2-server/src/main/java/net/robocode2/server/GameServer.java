@@ -23,6 +23,7 @@ import net.robocode2.json_schema.messages.NewBattleForBot;
 import net.robocode2.json_schema.messages.NewBattleForObserver;
 import net.robocode2.json_schema.messages.ObserverHandshake;
 import net.robocode2.json_schema.messages.TickForBot;
+import net.robocode2.json_schema.messages.TickForObserver;
 import net.robocode2.model.BotIntent;
 import net.robocode2.model.BotIntent.Builder;
 import net.robocode2.model.GameSetup;
@@ -31,6 +32,7 @@ import net.robocode2.model.Round;
 import net.robocode2.model.Turn;
 import net.robocode2.server.mappers.GameSetupToGameSetupMapper;
 import net.robocode2.server.mappers.TurnToTickForBotMapper;
+import net.robocode2.server.mappers.TurnToTickForObserverMapper;
 
 public final class GameServer {
 
@@ -45,11 +47,14 @@ public final class GameServer {
 	private Set<BotConn> readyParticipants;
 	private Map<BotConn, Builder> botIntents = new HashMap<>();
 
-	private final Timer readyTimer = new Timer();
+	private final Timer readyTimer = new Timer("Bot-ready-timer");
+	private final Timer updateGameStateTimer = new Timer("Update-game-state-timer");
 
 	private final Gson gson = new Gson();
 
 	private ModelUpdater modelUpdater;
+
+	private int delayedObserverTurnNumber;
 
 	public GameServer() {
 		this.serverSetup = new ServerSetup();
@@ -68,13 +73,13 @@ public final class GameServer {
 	}
 
 	private void prepareGameIfEnoughCandidates() {
-		GameAndParticipants gap = selectGameAndParticipants(connectionHandler.getBotConnections());
-		if (gap == null) {
+		GameAndParticipants gameAndParticipants = selectGameAndParticipants(connectionHandler.getBotConnections());
+		if (gameAndParticipants == null) {
 			return;
 		}
 
-		gameSetup = gap.gameSetup;
-		participants = gap.participants;
+		gameSetup = gameAndParticipants.gameSetup;
+		participants = gameAndParticipants.participants;
 
 		if (participants.size() > 0) {
 			prepareGame();
@@ -96,6 +101,11 @@ public final class GameServer {
 		System.out.println("#### PREPARE GAME #####");
 
 		gameState = ServerState.WAIT_FOR_READY_PARTICIPANTS;
+
+		List<Integer> participantIds = new ArrayList<>();
+		for (int i = 1; i <= participants.size(); i++) {
+			participantIds.add(i);
+		}
 
 		// Send NewBattle to all participant bots to get them started
 
@@ -123,7 +133,6 @@ public final class GameServer {
 			public void run() {
 				onReadyTimeout();
 			}
-
 		}, gameSetup.getReadyTimeout());
 	}
 
@@ -156,17 +165,17 @@ public final class GameServer {
 		// participants to start the game
 		Set<GameSetup> games = serverSetup.getGames();
 		for (Entry<String, Set<BotConn>> entry : candidateBotsPerGameType.entrySet()) {
-			GameSetup game = games.stream().filter(g -> g.getGameType().equalsIgnoreCase(entry.getKey())).findAny()
+			GameSetup gameSetup = games.stream().filter(g -> g.getGameType().equalsIgnoreCase(entry.getKey())).findAny()
 					.orElse(null);
 
 			Set<BotConn> participants = entry.getValue();
 			int count = participants.size();
-			if (count >= game.getMinNumberOfParticipants()
-					&& (game.getMaxNumberOfParticipants() != null && count <= game.getMaxNumberOfParticipants())) {
+			if (count >= gameSetup.getMinNumberOfParticipants() && (gameSetup.getMaxNumberOfParticipants() != null
+					&& count <= gameSetup.getMaxNumberOfParticipants())) {
 
 				// enough participants
 				GameAndParticipants gameAndParticipants = new GameAndParticipants();
-				gameAndParticipants.gameSetup = game;
+				gameAndParticipants.gameSetup = gameSetup;
 				gameAndParticipants.participants = participants;
 				return gameAndParticipants;
 			}
@@ -209,19 +218,25 @@ public final class GameServer {
 			}
 		}
 
-		// Update game state
+		// Prepare model update
+
 		Set<Integer> participantIds = new HashSet<>();
 		for (BotConn bot : participants) {
 			participantIds.add(bot.getId());
 		}
+		modelUpdater = new ModelUpdater(gameSetup, participantIds);
 
-		modelUpdater = new ModelUpdater(gameSetup);
+		// Create timer to updating game state
 
-		// TODO: Invoke after X time by some timer?
-		updateGameState();
+		updateGameStateTimer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				onUpdateGameState();
+			}
+		}, gameSetup.getTurnTimeout());
 	}
 
-	private void updateGameState() {
+	private GameState updateGameState() {
 
 		Map<Integer /* BotId */, BotIntent> mappedIntents = new HashMap<>();
 
@@ -231,20 +246,7 @@ public final class GameServer {
 			mappedIntents.put(botId, intent);
 		}
 
-		GameState gameState = modelUpdater.update(Collections.unmodifiableMap(mappedIntents));
-
-		Round lastRound = gameState.getLastRound();
-		Turn lastTurn = lastRound.getLastTurn();
-
-		// Send game state as 'tick' to participants
-		for (BotConn participant : participants) {
-			TickForBot tickForBot = TurnToTickForBotMapper.map(lastRound, lastTurn, participant.getId());
-
-			String msg = gson.toJson(tickForBot);
-			send(participant.getConnection(), msg);
-		}
-
-		// TODO: Game state must be delayed for observers
+		return modelUpdater.update(Collections.unmodifiableMap(mappedIntents));
 	}
 
 	private Set<String> getGameTypes() {
@@ -267,6 +269,57 @@ public final class GameServer {
 			// Not enough participants -> prepare another game
 			gameState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
 			prepareGameIfEnoughCandidates();
+		}
+	}
+
+	private void onUpdateGameState() {
+		System.out.println("#### UPDATE GAME STATE #####");
+
+		// Update game state
+		GameState gameState = updateGameState();
+
+		// Send tick to bots
+
+		Round currentRound = gameState.getLastRound();
+		Turn currentTurn = currentRound.getLastTurn();
+
+		// Send game state as 'tick' to participants
+		for (BotConn participant : participants) {
+			TickForBot tickForBot = TurnToTickForBotMapper.map(currentRound, currentTurn, participant.getId());
+
+			String msg = gson.toJson(tickForBot);
+			send(participant.getConnection(), msg);
+		}
+
+		// Send delayed tick to observers
+
+		Round observerRound = gameState.getLastRound();
+		Turn observerTurn = observerRound.getLastTurn();
+
+		if (gameState.isGameEnded()) {
+			delayedObserverTurnNumber++;
+			if (delayedObserverTurnNumber == observerTurn.getTurnNumber()) {
+				// Stop timer for updating game state
+				updateGameStateTimer.cancel();
+			}
+		} else {
+			delayedObserverTurnNumber = observerTurn.getTurnNumber() - gameSetup.getNumberOfDelayedTurnsForObservers();
+			if (delayedObserverTurnNumber < 0) {
+				int delayedRoundNumber = observerRound.getRoundNumber() - 1;
+				if (delayedRoundNumber >= 0) {
+					observerRound = gameState.getRounds().get(delayedRoundNumber);
+					delayedObserverTurnNumber += observerRound.getTurns().size();
+				}
+			}
+		}
+		observerTurn = observerRound.getTurns().get(delayedObserverTurnNumber);
+
+		// Send game state as 'tick' to observers
+		for (Map.Entry<WebSocket, ObserverHandshake> entry : connectionHandler.getObserverConnections().entrySet()) {
+			TickForObserver tickForObserver = TurnToTickForObserverMapper.map(observerRound, observerTurn);
+
+			String msg = gson.toJson(tickForObserver);
+			send(entry.getKey(), msg);
 		}
 	}
 
