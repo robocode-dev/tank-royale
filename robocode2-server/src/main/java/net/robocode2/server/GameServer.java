@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,7 +26,6 @@ import net.robocode2.json_schema.messages.ObserverHandshake;
 import net.robocode2.json_schema.messages.TickForBot;
 import net.robocode2.json_schema.messages.TickForObserver;
 import net.robocode2.model.BotIntent;
-import net.robocode2.model.BotIntent.Builder;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.Round;
@@ -45,7 +45,8 @@ public final class GameServer {
 
 	private Set<BotConn> participants;
 	private Set<BotConn> readyParticipants;
-	private Map<BotConn, Builder> botIntents = new HashMap<>();
+
+	private Map<BotConn, BotIntent.Builder> botIntents = new HashMap<>();
 
 	private final Timer readyTimer = new Timer("Bot-ready-timer");
 	private final Timer updateGameStateTimer = new Timer("Update-game-state-timer");
@@ -102,26 +103,23 @@ public final class GameServer {
 
 		gameState = ServerState.WAIT_FOR_READY_PARTICIPANTS;
 
-		List<Integer> participantIds = new ArrayList<>();
-		for (int i = 1; i <= participants.size(); i++) {
-			participantIds.add(i);
-		}
-
 		// Send NewBattle to all participant bots to get them started
 
 		NewBattleForBot newBattleForBot = new NewBattleForBot();
 		newBattleForBot.setMessageType(NewBattleForBot.MessageType.NEW_BATTLE_FOR_BOT);
 		newBattleForBot.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
 
-		int participantId = 1;
+		int id = 1;
+		List<Integer> participantIds = new ArrayList<>();
 		for (BotConn participant : participants) {
-			participant.setId(participantId);
-			newBattleForBot.setMyId(participantId);
+			participantIds.add(id);
+			participant.setId(id);
+			newBattleForBot.setMyId(id);
 
 			String msg = gson.toJson(newBattleForBot);
 			send(participant.getConnection(), msg);
 
-			participantId++;
+			id++;
 		}
 
 		readyParticipants = new HashSet<BotConn>();
@@ -237,7 +235,6 @@ public final class GameServer {
 	}
 
 	private GameState updateGameState() {
-
 		Map<Integer /* BotId */, BotIntent> mappedIntents = new HashMap<>();
 
 		for (Entry<BotConn, BotIntent.Builder> entry : botIntents.entrySet()) {
@@ -258,7 +255,7 @@ public final class GameServer {
 	}
 
 	private void onReadyTimeout() {
-		System.out.println("#### READY TIMEOUT #####");
+		System.out.println("#### READY TIMEOUT EVENT #####");
 
 		if (readyParticipants.size() >= gameSetup.getMinNumberOfParticipants()) {
 			// Start the game with the participants that are ready
@@ -273,10 +270,13 @@ public final class GameServer {
 	}
 
 	private void onUpdateGameState() {
-		System.out.println("#### UPDATE GAME STATE #####");
+		System.out.println("#### UPDATE GAME STATE EVENT #####");
 
 		// Update game state
 		GameState gameState = updateGameState();
+
+		// Clear bot intents
+		botIntents.clear();
 
 		// Send tick to bots
 
@@ -324,12 +324,55 @@ public final class GameServer {
 				send(entry.getKey(), msg);
 			}
 		}
+
+		if (currentTurn.getTurnNumber() > 50) { // FIXME
+			updateGameStateTimer.cancel();
+		}
 	}
 
 	private static void send(WebSocket conn, String message) {
 		System.out.println("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
 
 		conn.send(message);
+	}
+
+	private void updateBotIntent(BotConn bot, net.robocode2.json_schema.messages.BotIntent intent) {
+		Integer botId = getBotId(bot);
+		if (botId == null) {
+			return;
+		}
+
+		bot.setId(botId);
+
+		BotIntent.Builder builder = botIntents.get(bot);
+		if (builder == null) {
+			builder = new BotIntent.Builder();
+			botIntents.put(bot, builder);
+		}
+		if (intent.getTurnRate() != null) {
+			builder.setBodyTurnRate(intent.getTurnRate());
+		}
+		if (intent.getGunTurnRate() != null) {
+			builder.setGunTurnRate(intent.getGunTurnRate());
+		}
+		if (intent.getRadarTurnRate() != null) {
+			builder.setRadarTurnRate(intent.getRadarTurnRate());
+		}
+		if (intent.getTargetSpeed() != null) {
+			builder.setTargetSpeed(intent.getTargetSpeed());
+		}
+		if (intent.getBulletPower() != null) {
+			builder.setBulletPower(intent.getBulletPower());
+		}
+	}
+
+	private Integer getBotId(BotConn botConn) {
+		Optional<BotConn> bot = participants.stream().filter(b -> b.getConnection() == botConn.getConnection())
+				.findFirst();
+		if (bot.isPresent()) {
+			return bot.get().getId();
+		}
+		return null;
 	}
 
 	private class ConnectionObserver implements ConnListener {
@@ -372,30 +415,6 @@ public final class GameServer {
 		@Override
 		public void onBotIntent(BotConn bot, net.robocode2.json_schema.messages.BotIntent intent) {
 			updateBotIntent(bot, intent);
-		}
-	}
-
-	private void updateBotIntent(BotConn bot, net.robocode2.json_schema.messages.BotIntent intent) {
-
-		BotIntent.Builder builder = botIntents.get(bot);
-		if (builder == null) {
-			builder = new BotIntent.Builder();
-			botIntents.put(bot, builder);
-		}
-		if (intent.getTurnRate() != null) {
-			builder.setBodyTurnRate(intent.getTurnRate());
-		}
-		if (intent.getGunTurnRate() != null) {
-			builder.setGunTurnRate(intent.getGunTurnRate());
-		}
-		if (intent.getRadarTurnRate() != null) {
-			builder.setRadarTurnRate(intent.getRadarTurnRate());
-		}
-		if (intent.getTargetSpeed() != null) {
-			builder.setTargetSpeed(intent.getTargetSpeed());
-		}
-		if (intent.getBulletPower() != null) {
-			builder.setBulletPower(intent.getBulletPower());
 		}
 	}
 

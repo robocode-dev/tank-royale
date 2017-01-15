@@ -13,7 +13,7 @@ public final class BotIntent {
 		this.bodyTurnRate = bodyTurnRate;
 		this.gunTurnRate = gunTurnRate;
 		this.radarTurnRate = radarTurnRate;
-		this.targetSpeed = gunTurnRate;
+		this.targetSpeed = targetSpeed;
 		this.bulletPower = bulletPower;
 	}
 

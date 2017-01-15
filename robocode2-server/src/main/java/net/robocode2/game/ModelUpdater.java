@@ -89,27 +89,19 @@ public class ModelUpdater {
 	}
 
 	public GameState update(Map<Integer /* BotId */, BotIntent> botIntents) {
-		GameState gameState;
+		botIntentsMap = new HashMap<>(botIntents);
 
 		if (roundNumber == 0 && turnNumber == 0) {
 			nextRound();
 
-			gameState = buildUpdatedGameState();
-
-			turnNumber++;
-
 		} else {
-			botIntentsMap = botIntents;
-
 			if (roundEnded) {
 				nextRound();
 			}
 			nextTurn();
-
-			gameState = buildUpdatedGameState();
 		}
 
-		return gameState;
+		return buildUpdatedGameState();
 	}
 
 	private void nextRound() {
@@ -148,26 +140,42 @@ public class ModelUpdater {
 		// Execute bot intents
 		executeBotIntents();
 
-		// Check bot wall collisions
-		checkBotWallCollisions();
+		// FIXME: Temporarily uncommented
 
-		// Check bot to bot collisions
-		checkBotCollisions();
+		// // Check bot wall collisions
+		// checkBotWallCollisions();
+		//
+		// // Check bot to bot collisions
+		// checkBotCollisions();
+		//
+		// // Check bullet wall collisions (current -> next position)
+		// checkBulletWallCollisions();
+		//
+		// // Check bullet hits (bullet-bullet and bullet-bot) (current -> next position)
+		// checkBulletHits();
+		//
+		// // Fire guns
+		// fireGuns();
+		//
+		// // Cleanup dead robots (remove from arena + events)
+		// checkForKilledBots();
+		//
+		// // Update bullet positions to new position
+		// updateBulletPositions();
 
-		// Check bullet wall collisions (current -> next position)
-		checkBulletWallCollisions();
+		// Store bot snapshots
+		Set<Bot> bots = new HashSet<>();
+		for (Bot.Builder botBuilder : botBuildersMap.values()) {
+			bots.add(botBuilder.build());
+		}
+		turnBuilder.setBots(bots);
 
-		// Check bullet hits (bullet-bullet and bullet-bot) (current -> next position)
-		checkBulletHits();
-
-		// Fire guns
-		fireGuns();
-
-		// Cleanup dead robots (remove from arena + events)
-		checkForKilledBots();
-
-		// Update bullet positions to new position
-		updateBulletPositions();
+		// Store bullet snapshots
+		Set<Bullet> bullets = new HashSet<>();
+		for (Bullet.Builder bulletBuilder : bulletBuildersSet) {
+			bullets.add(bulletBuilder.build());
+		}
+		turnBuilder.setBullets(bullets);
 	}
 
 	private GameState buildUpdatedGameState() {
@@ -244,6 +252,8 @@ public class ModelUpdater {
 	}
 
 	private void executeBotIntents() {
+		// TODO: Limit turn rates + speed and bullet power
+
 		for (Integer botId : botBuildersMap.keySet()) {
 			Bot.Builder botBuilder = botBuildersMap.get(botId);
 
@@ -267,7 +277,7 @@ public class ModelUpdater {
 			botBuilder.setGunDirection(gunDirection);
 			botBuilder.setRadarDirection(radarDirection);
 			botBuilder.setSpeed(speed);
-			botBuilder.setPosition(botBuilder.getPosition().calcNewPosition(direction, speed));
+			botBuilder.moveToNewPosition();
 		}
 	}
 

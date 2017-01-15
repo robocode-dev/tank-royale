@@ -9,10 +9,4 @@ public final class Position {
 		this.x = x;
 		this.y = y;
 	}
-
-	// Direction in degrees
-	public Position calcNewPosition(double direction, double speed) {
-		double angle = Math.toRadians(direction);
-		return new Position(x + Math.cos(angle) * speed, y + Math.sin(angle) * speed);
-	}
 }

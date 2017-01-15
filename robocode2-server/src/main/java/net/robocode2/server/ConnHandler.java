@@ -19,6 +19,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.robocode2.json_schema.messages.BotHandshake;
+import net.robocode2.json_schema.messages.BotIntent;
 import net.robocode2.json_schema.messages.BotReady;
 import net.robocode2.json_schema.messages.ObserverHandshake;
 import net.robocode2.json_schema.messages.ServerHandshake;
@@ -161,6 +162,13 @@ public final class ConnHandler {
 
 					BotHandshake handshake = bots.get(conn);
 					executorService.submit(() -> listener.onBotReady(new BotConn(conn, handshake)));
+
+				} else if (BotIntent.MessageType.BOT_INTENT.toString().equalsIgnoreCase(messageType)) {
+					System.out.println("Handling BotIntent");
+
+					BotHandshake handshake = bots.get(conn);
+					BotIntent intent = gson.fromJson(message, BotIntent.class);
+					executorService.submit(() -> listener.onBotIntent(new BotConn(conn, handshake), intent));
 
 				} else {
 					notifyException(new IllegalStateException("Unhandled message type: " + messageType));

@@ -14,8 +14,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.robocode2.json_schema.messages.BotHandshake;
+import net.robocode2.json_schema.messages.BotIntent;
 import net.robocode2.json_schema.messages.BotReady;
 import net.robocode2.json_schema.messages.NewBattleForBot;
+import net.robocode2.json_schema.messages.TickForBot;
 
 public class BotClient1 extends WebSocketClient {
 
@@ -69,6 +71,27 @@ public class BotClient1 extends WebSocketClient {
 				ready.setMessageType(BotReady.MessageType.BOT_READY);
 
 				String msg = gson.toJson(ready);
+				send(msg);
+
+			} else if (TickForBot.MessageType.TICK_FOR_BOT.toString().equalsIgnoreCase(messageType)) {
+				// Send intent
+				BotIntent intent = new BotIntent();
+				intent.setMessageType(BotIntent.MessageType.BOT_INTENT);
+
+				int rnd = (int) (Math.random() * 5);
+				if (rnd == 0) {
+					intent.setTurnRate(Math.random() * 2 * 10 - 10);
+				} else if (rnd == 1) {
+					intent.setGunTurnRate(Math.random() * 2 * 20 - 20);
+				} else if (rnd == 2) {
+					intent.setRadarTurnRate(Math.random() * 2 * 45 - 45);
+				} else if (rnd == 3) {
+					intent.setTargetSpeed(Math.random() * 2 * 8 - 8);
+				} else if (rnd == 4) {
+					intent.setBulletPower(Math.random() * 2.9 + 0.1);
+				}
+
+				String msg = gson.toJson(intent);
 				send(msg);
 			}
 		}
