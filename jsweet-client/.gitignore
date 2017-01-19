@@ -1,1 +1,6 @@
-/target/
+/target
+.classpath
+.jsweet
+.project
+.settings
+/webapp/j4ts-0.2.0-SNAPSHOT
