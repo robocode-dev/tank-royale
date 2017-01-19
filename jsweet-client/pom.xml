@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>net.robocode2</groupId>
+	<artifactId>jsweet-client</artifactId>
+	<version>0.1-SNAPSHOT</version>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<!-- repositories -->
+	<pluginRepositories>
+		<pluginRepository>
+			<id>jsweet-plugins-release</id>
+			<name>plugins-release</name>
+			<url>http://repository.jsweet.org/artifactory/plugins-release-local</url>
+		</pluginRepository>
+		<pluginRepository>
+			<snapshots />
+			<id>jsweet-plugins-snapshots</id>
+			<name>plugins-snapshot</name>
+			<url>http://repository.jsweet.org/artifactory/plugins-snapshot-local</url>
+		</pluginRepository>
+	</pluginRepositories>
+	<repositories>
+		<repository>
+			<id>jsweet-central</id>
+			<name>libs-release</name>
+			<url>http://repository.jsweet.org/artifactory/libs-release-local</url>
+		</repository>
+		<repository>
+			<snapshots />
+			<id>jsweet-snapshots</id>
+			<name>libs-snapshot</name>
+			<url>http://repository.jsweet.org/artifactory/libs-snapshot-local</url>
+		</repository>
+	</repositories>
+	<!-- end repositories -->
+
+	<!-- dependencies -->
+	<dependencies>
+		<dependency>
+			<groupId>org.jsweet.candies</groupId>
+			<artifactId>jsweet-core</artifactId>
+			<version>1.2.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jsweet.candies</groupId>
+			<artifactId>j4ts</artifactId>
+			<version>0.2.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+	<!-- end dependencies -->
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jsweet</groupId>
+				<artifactId>jsweet-maven-plugin</artifactId>
+				<version>1.2.0</version>
+				<configuration>
+					<verbose>true</verbose>
+					<tsOut>target/ts</tsOut>
+					<outDir>target/js</outDir>
+					<candiesJsOut>webapp</candiesJsOut>
+					<targetVersion>ES3</targetVersion>
+					<bundle>true</bundle>
+				</configuration>
+				<executions>
+					<execution>
+						<id>generate-js</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>jsweet</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+	</build>
+</project>
