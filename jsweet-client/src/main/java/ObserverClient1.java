@@ -1,6 +1,7 @@
-import static def.jquery.Globals.$;
 import static jsweet.dom.Globals.console;
 import static jsweet.dom.Globals.window;
+
+import java.util.Set;
 
 import json_schema.GameSetup;
 import json_schema.Message;
@@ -11,7 +12,6 @@ import jsweet.dom.CloseEvent;
 import jsweet.dom.Event;
 import jsweet.dom.MessageEvent;
 import jsweet.dom.WebSocket;
-import jsweet.lang.Array;
 import jsweet.lang.JSON;
 
 public class ObserverClient1 {
@@ -59,7 +59,6 @@ public class ObserverClient1 {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Void onMessage(MessageEvent e) {
 		console.info("onMessage: " + e.toString());
 
@@ -67,24 +66,20 @@ public class ObserverClient1 {
 		if (data instanceof String) {
 			java.lang.Object obj = JSON.parse((String) data);
 
-			Message msg = (Message) $.extend(new NewBattleForObserver(), obj);
-
+			Message msg = Message.map(obj);
 			if (NewBattleForObserver.MESSAGE_TYPE.equals(msg.getMessageType())) {
-				NewBattleForObserver nbfo = (NewBattleForObserver) $.extend(new NewBattleForObserver(), obj);
+				NewBattleForObserver nbfo = NewBattleForObserver.map(obj);
+				GameSetup gameSetup = nbfo.getGameSetup();
 
-				GameSetup gameSetup = (GameSetup) $.extend(new GameSetup(), nbfo.getGameSetup());
-
-				Array<Participant> participants = (Array<Participant>) $.extend(new Array<Participant>(),
-						nbfo.getParticipants());
+				Set<Participant> participants = nbfo.getParticipants();
 
 				console.info("game type: " + gameSetup.getGameType());
-				console.info("num participants: " + participants.length);
+				console.info("num participants: " + participants.size());
 
-				Participant Participant1 = (Participant) $.extend(new Participant(), participants.$get(0));
-				Participant Participant2 = (Participant) $.extend(new Participant(), participants.$get(1));
-
-				console.info("name #1: " + Participant1.getName());
-				console.info("name #2: " + Participant2.getName());
+				int i = 1;
+				for (Participant participant : participants) {
+					console.info("name #" + i++ + ": " + participant.getName());
+				}
 			}
 		}
 
