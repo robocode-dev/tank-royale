@@ -1,12 +1,16 @@
+import static def.jquery.Globals.$;
 import static jsweet.dom.Globals.console;
 import static jsweet.dom.Globals.window;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
+import json_schema.GameSetup;
+import json_schema.Message;
+import json_schema.NewBattleForObserver;
 import json_schema.ObserverHandshake;
+import jsweet.dom.CloseEvent;
 import jsweet.dom.Event;
+import jsweet.dom.MessageEvent;
 import jsweet.dom.WebSocket;
+import jsweet.lang.JSON;
 
 public class ObserverClient1 {
 
@@ -43,33 +47,39 @@ public class ObserverClient1 {
 		handshake.setVersion("0.1");
 		handshake.setAuthor("Author name");
 
-		ws.send(handshake.toJsonString());
+		ws.send(JSON.stringify(handshake));
 
 		return null;
 	}
 
-	private Void onClose(Event e) {
+	private Void onClose(CloseEvent e) {
 		console.info("onClose: " + e.toString());
 		return null;
 	}
 
-	private Void onMessage(Event e) {
+	private Void onMessage(MessageEvent e) {
 		console.info("onMessage: " + e.toString());
+
+		java.lang.Object data = e.$get("data");
+		if (data instanceof String) {
+			java.lang.Object obj = JSON.parse((String) data);
+
+			Message msg = (Message) $.extend(new NewBattleForObserver(), obj);
+
+			if (NewBattleForObserver.MESSAGE_TYPE.equals(msg.getMessageType())) {
+				NewBattleForObserver nbfo = (NewBattleForObserver) $.extend(new NewBattleForObserver(), obj);
+
+				GameSetup gameSetup = (GameSetup) $.extend(new GameSetup(), nbfo.getGameSetup());
+
+				console.info("game type: " + gameSetup.getGameType());
+			}
+		}
+
 		return null;
 	}
 
 	private Void onError(Event e) {
 		console.error("onError: " + e.toString());
 		return null;
-	}
-
-	private static jsweet.lang.Object toJsObject(Map<String, String> map) {
-		jsweet.lang.Object jsObject = new jsweet.lang.Object();
-
-		// Put the keys and values from the map into the object
-		for (Entry<String, String> keyVal : map.entrySet()) {
-			jsObject.$set(keyVal.getKey(), keyVal.getValue());
-		}
-		return jsObject;
 	}
 }

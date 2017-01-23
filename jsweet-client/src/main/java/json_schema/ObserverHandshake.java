@@ -7,14 +7,14 @@ public class ObserverHandshake extends Message {
 	}
 
 	public void setName(String name) {
-		setField("name", name);
+		$set("name", name);
 	}
 
 	public void setVersion(String version) {
-		setField("version", version);
+		$set("version", version);
 	}
 
 	public void setAuthor(String author) {
-		setField("author", author);
+		$set("author", author);
 	}
 }
