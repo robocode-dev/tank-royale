@@ -1,18 +1,23 @@
 import static jsweet.dom.Globals.console;
+import static jsweet.dom.Globals.document;
 import static jsweet.dom.Globals.window;
+import static jsweet.util.Globals.union;
 
 import java.util.Set;
 
 import json_schema.GameSetup;
-import json_schema.Message;
-import json_schema.NewBattleForObserver;
-import json_schema.ObserverHandshake;
 import json_schema.Participant;
+import json_schema.messages.Message;
+import json_schema.messages.NewBattleForObserver;
+import json_schema.messages.ObserverHandshake;
+import jsweet.dom.CanvasRenderingContext2D;
 import jsweet.dom.CloseEvent;
 import jsweet.dom.Event;
+import jsweet.dom.HTMLCanvasElement;
 import jsweet.dom.MessageEvent;
 import jsweet.dom.WebSocket;
 import jsweet.lang.JSON;
+import jsweet.util.StringTypes;
 
 public class ObserverClient1 {
 
@@ -23,6 +28,11 @@ public class ObserverClient1 {
 	}
 
 	private WebSocket ws;
+	private HTMLCanvasElement canvas;
+	private CanvasRenderingContext2D ctx;
+
+	private GameSetup gameSetup;
+	private Set<Participant> participants;
 
 	public ObserverClient1() {
 		ws = new jsweet.dom.WebSocket("ws://localhost:50000");
@@ -39,6 +49,9 @@ public class ObserverClient1 {
 		ws.onerror = e -> {
 			return onError(e);
 		};
+
+		canvas = (HTMLCanvasElement) document.getElementById("canvas");
+		ctx = canvas.getContext(StringTypes._2d);
 	}
 
 	private Void onOpen(Event e) {
@@ -68,18 +81,7 @@ public class ObserverClient1 {
 
 			Message msg = Message.map(obj);
 			if (NewBattleForObserver.MESSAGE_TYPE.equals(msg.getMessageType())) {
-				NewBattleForObserver nbfo = NewBattleForObserver.map(obj);
-				GameSetup gameSetup = nbfo.getGameSetup();
-
-				Set<Participant> participants = nbfo.getParticipants();
-
-				console.info("game type: " + gameSetup.getGameType());
-				console.info("num participants: " + participants.size());
-
-				int i = 1;
-				for (Participant participant : participants) {
-					console.info("name #" + i++ + ": " + participant.getName());
-				}
+				handle(NewBattleForObserver.map(obj));
 			}
 		}
 
@@ -89,5 +91,32 @@ public class ObserverClient1 {
 	private Void onError(Event e) {
 		console.error("onError: " + e.toString());
 		return null;
+	}
+
+	private void handle(NewBattleForObserver nbfo) {
+		gameSetup = nbfo.getGameSetup();
+		participants = nbfo.getParticipants();
+
+		canvas.width = gameSetup.getArenaWidth();
+		canvas.height = gameSetup.getArenaHeight();
+
+		draw();
+
+		// Set<Participant> participants = nbfo.getParticipants();
+		//
+		// console.info("game type: " + gameSetup.getGameType());
+		// console.info("num participants: " + participants.size());
+		//
+		// int i = 1;
+		// for (Participant participant : participants) {
+		// console.info("name #" + i++ + ": " + participant.getName());
+		// }
+	}
+
+	private void draw() {
+		// Clear canvas
+		ctx.fillStyle = union("#000000");
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+
 	}
 }

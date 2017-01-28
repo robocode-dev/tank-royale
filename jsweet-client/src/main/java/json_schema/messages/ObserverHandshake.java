@@ -1,4 +1,4 @@
-package json_schema;
+package json_schema.messages;
 
 public class ObserverHandshake extends Message {
 

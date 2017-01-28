@@ -1,10 +1,12 @@
-package json_schema;
+package json_schema.messages;
 
 import static def.jquery.Globals.$;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import json_schema.GameSetup;
+import json_schema.Participant;
 import jsweet.lang.Array;
 
 public class NewBattleForObserver extends Message {
