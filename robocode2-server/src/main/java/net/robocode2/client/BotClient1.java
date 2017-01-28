@@ -25,6 +25,9 @@ public class BotClient1 extends WebSocketClient {
 
 	static final String MESSAGE_TYPE_FIELD = "message-type";
 
+	int turn;
+	double targetSpeed = 10;
+
 	public BotClient1(URI serverUri, Draft draft) {
 		super(serverUri, draft);
 	}
@@ -78,18 +81,12 @@ public class BotClient1 extends WebSocketClient {
 				BotIntent intent = new BotIntent();
 				intent.setMessageType(BotIntent.MessageType.BOT_INTENT);
 
-				int rnd = (int) (Math.random() * 5);
-				if (rnd == 0) {
-					intent.setTurnRate(Math.random() * 2 * 10 - 10);
-				} else if (rnd == 1) {
-					intent.setGunTurnRate(Math.random() * 2 * 20 - 20);
-				} else if (rnd == 2) {
-					intent.setRadarTurnRate(Math.random() * 2 * 45 - 45);
-				} else if (rnd == 3) {
-					intent.setTargetSpeed(Math.random() * 2 * 8 - 8);
-				} else if (rnd == 4) {
-					intent.setBulletPower(Math.random() * 2.9 + 0.1);
+				if (turn % 100 == 0) {
+					targetSpeed *= -1;
 				}
+				intent.setTargetSpeed(targetSpeed);
+
+				turn++;
 
 				String msg = gson.toJson(intent);
 				send(msg);

@@ -325,7 +325,7 @@ public final class GameServer {
 			}
 		}
 
-		if (currentTurn.getTurnNumber() > 50) { // FIXME
+		if (currentTurn.getTurnNumber() > 1000) { // FIXME
 			updateGameStateTimer.cancel();
 		}
 	}
@@ -349,6 +349,9 @@ public final class GameServer {
 			builder = new BotIntent.Builder();
 			botIntents.put(bot, builder);
 		}
+		if (intent.getTargetSpeed() != null) {
+			builder.setTargetSpeed(intent.getTargetSpeed());
+		}
 		if (intent.getTurnRate() != null) {
 			builder.setBodyTurnRate(intent.getTurnRate());
 		}
@@ -357,9 +360,6 @@ public final class GameServer {
 		}
 		if (intent.getRadarTurnRate() != null) {
 			builder.setRadarTurnRate(intent.getRadarTurnRate());
-		}
-		if (intent.getTargetSpeed() != null) {
-			builder.setTargetSpeed(intent.getTargetSpeed());
 		}
 		if (intent.getBulletPower() != null) {
 			builder.setBulletPower(intent.getBulletPower());

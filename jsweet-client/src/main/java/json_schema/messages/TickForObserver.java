@@ -14,8 +14,8 @@ public class TickForObserver extends Message {
 
 	public static final String MESSAGE_TYPE = "tick-for-observer";
 
-	public TickForObserver(String messageType) {
-		super(messageType);
+	public TickForObserver() {
+		super(MESSAGE_TYPE);
 	}
 
 	public RoundState getRoundState() {
@@ -23,6 +23,7 @@ public class TickForObserver extends Message {
 	}
 
 	public Set<BotStateWithId> getBotStates() {
+
 		@SuppressWarnings("unchecked")
 		Array<BotStateWithId> array = (Array<BotStateWithId>) $.extend(true, new Array<BotStateWithId>(),
 				$get("bot-states"));
@@ -36,8 +37,9 @@ public class TickForObserver extends Message {
 	}
 
 	public Set<BulletState> getBulletStates() {
+
 		@SuppressWarnings("unchecked")
-		Array<BulletState> array = (Array<BulletState>) $.extend(true, new Array<BulletState>(), $get("bot-states"));
+		Array<BulletState> array = (Array<BulletState>) $.extend(true, new Array<BulletState>(), $get("bullet-states"));
 
 		Set<BulletState> set = new HashSet<>();
 		for (BulletState obj : array) {
@@ -48,4 +50,8 @@ public class TickForObserver extends Message {
 	}
 
 	// TODO: Implement events
+
+	public static TickForObserver map(Object obj) {
+		return (TickForObserver) $.extend(false, new TickForObserver(), obj);
+	}
 }

@@ -10,6 +10,11 @@ import json_schema.Participant;
 import json_schema.messages.Message;
 import json_schema.messages.NewBattleForObserver;
 import json_schema.messages.ObserverHandshake;
+import json_schema.messages.TickForObserver;
+import json_schema.states.BotState;
+import json_schema.states.BotStateWithId;
+import json_schema.states.BulletState;
+import json_schema.types.Position;
 import jsweet.dom.CanvasRenderingContext2D;
 import jsweet.dom.CloseEvent;
 import jsweet.dom.Event;
@@ -33,6 +38,8 @@ public class ObserverClient1 {
 
 	private GameSetup gameSetup;
 	private Set<Participant> participants;
+	private Set<BotStateWithId> botStates;
+	private Set<BulletState> bulletStates;
 
 	public ObserverClient1() {
 		ws = new jsweet.dom.WebSocket("ws://localhost:50000");
@@ -80,11 +87,15 @@ public class ObserverClient1 {
 			java.lang.Object obj = JSON.parse((String) data);
 
 			Message msg = Message.map(obj);
-			if (NewBattleForObserver.MESSAGE_TYPE.equals(msg.getMessageType())) {
-				handle(NewBattleForObserver.map(obj));
+			String messageType = msg.getMessageType();
+
+			if (NewBattleForObserver.MESSAGE_TYPE.equals(messageType)) {
+				handleNewBattleForObserver(NewBattleForObserver.map(obj));
+
+			} else if (TickForObserver.MESSAGE_TYPE.equals(messageType)) {
+				handleTickForObserver(TickForObserver.map(obj));
 			}
 		}
-
 		return null;
 	}
 
@@ -93,7 +104,9 @@ public class ObserverClient1 {
 		return null;
 	}
 
-	private void handle(NewBattleForObserver nbfo) {
+	private void handleNewBattleForObserver(NewBattleForObserver nbfo) {
+		console.info("handle(NewBattleForObserver)");
+
 		gameSetup = nbfo.getGameSetup();
 		participants = nbfo.getParticipants();
 
@@ -113,10 +126,33 @@ public class ObserverClient1 {
 		// }
 	}
 
+	private void handleTickForObserver(TickForObserver tfo) {
+		console.info("handle(TickForObserver)");
+
+		botStates = tfo.getBotStates();
+		bulletStates = tfo.getBulletStates();
+
+		draw();
+	}
+
 	private void draw() {
 		// Clear canvas
 		ctx.fillStyle = union("#000000");
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+		for (BotState bot : botStates) {
+			Position pos = bot.getPosition();
+			drawCircle(pos.getX(), pos.getY(), 18, "red");
+		}
+	}
+
+	private void drawCircle(double x, double y, double r, String color) {
+		ctx.beginPath();
+		ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+		ctx.fillStyle = union(color);
+		ctx.fill();
+		// ctx.lineWidth = 0;
+		// ctx.strokeStyle = union(color);
+		// ctx.stroke();
 	}
 }
