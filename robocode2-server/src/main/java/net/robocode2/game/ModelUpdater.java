@@ -61,7 +61,7 @@ public class ModelUpdater {
 
 	private int nextBulletId;
 
-	private Map<Integer /* BotId */, BotIntent> botIntentsMap = new HashMap<>();
+	private Map<Integer /* BotId */, BotIntent.Builder> botIntentsMap = new HashMap<>();
 	private Map<Integer /* BotId */, Bot.Builder> botBuildersMap = new HashMap<>();
 	private Set<Bullet.Builder> bulletBuildersSet = new HashSet<>();
 
@@ -89,7 +89,8 @@ public class ModelUpdater {
 	}
 
 	public GameState update(Map<Integer /* BotId */, BotIntent> botIntents) {
-		botIntentsMap = new HashMap<>(botIntents);
+
+		updateBotIntents(botIntents);
 
 		if (roundNumber == 0 && turnNumber == 0) {
 			nextRound();
@@ -102,6 +103,17 @@ public class ModelUpdater {
 		}
 
 		return buildUpdatedGameState();
+	}
+
+	private void updateBotIntents(Map<Integer /* BotId */, BotIntent> botIntents) {
+		for (Map.Entry<Integer, BotIntent> entry : botIntents.entrySet()) {
+			BotIntent.Builder builder = botIntentsMap.get(entry.getKey());
+			if (builder == null) {
+				builder = new BotIntent.Builder();
+				botIntentsMap.put(entry.getKey(), builder);
+			}
+			builder.update(entry.getValue());
+		}
 	}
 
 	private void nextRound() {
@@ -262,7 +274,12 @@ public class ModelUpdater {
 				continue;
 			}
 
-			BotIntent intent = botIntentsMap.get(botId);
+			BotIntent.Builder intentBuilder = botIntentsMap.get(botId);
+			if (intentBuilder == null) {
+				continue;
+			}
+
+			BotIntent intent = intentBuilder.build();
 			if (intent == null) {
 				continue;
 			}
@@ -559,7 +576,11 @@ public class ModelUpdater {
 				continue;
 			}
 
-			BotIntent intent = botIntentsMap.get(botId);
+			BotIntent.Builder intentBuilder = botIntentsMap.get(botId);
+			if (intentBuilder == null) {
+				continue;
+			}
+			BotIntent intent = intentBuilder.build();
 
 			// Fire gun, if the gun heat is zero
 			double gunHeat = botBuilder.getGunHeat();

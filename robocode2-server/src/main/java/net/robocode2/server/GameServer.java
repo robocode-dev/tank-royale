@@ -30,6 +30,7 @@ import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.Round;
 import net.robocode2.model.Turn;
+import net.robocode2.server.mappers.BotIntentToBotIntentMapper;
 import net.robocode2.server.mappers.GameSetupToGameSetupMapper;
 import net.robocode2.server.mappers.TurnToTickForBotMapper;
 import net.robocode2.server.mappers.TurnToTickForObserverMapper;
@@ -235,15 +236,15 @@ public final class GameServer {
 	}
 
 	private GameState updateGameState() {
-		Map<Integer /* BotId */, BotIntent> mappedIntents = new HashMap<>();
+		Map<Integer /* BotId */, BotIntent> mappedBotIntents = new HashMap<>();
 
 		for (Entry<BotConn, BotIntent.Builder> entry : botIntents.entrySet()) {
 			int botId = entry.getKey().getId();
 			BotIntent intent = entry.getValue().build();
-			mappedIntents.put(botId, intent);
+			mappedBotIntents.put(botId, intent);
 		}
 
-		return modelUpdater.update(Collections.unmodifiableMap(mappedIntents));
+		return modelUpdater.update(Collections.unmodifiableMap(mappedBotIntents));
 	}
 
 	private Set<String> getGameTypes() {
@@ -349,21 +350,7 @@ public final class GameServer {
 			builder = new BotIntent.Builder();
 			botIntents.put(bot, builder);
 		}
-		if (intent.getTargetSpeed() != null) {
-			builder.setTargetSpeed(intent.getTargetSpeed());
-		}
-		if (intent.getTurnRate() != null) {
-			builder.setBodyTurnRate(intent.getTurnRate());
-		}
-		if (intent.getGunTurnRate() != null) {
-			builder.setGunTurnRate(intent.getGunTurnRate());
-		}
-		if (intent.getRadarTurnRate() != null) {
-			builder.setRadarTurnRate(intent.getRadarTurnRate());
-		}
-		if (intent.getBulletPower() != null) {
-			builder.setBulletPower(intent.getBulletPower());
-		}
+		builder.update(BotIntentToBotIntentMapper.map(intent));
 	}
 
 	private Integer getBotId(BotConn botConn) {

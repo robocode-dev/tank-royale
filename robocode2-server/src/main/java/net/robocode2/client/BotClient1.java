@@ -83,9 +83,8 @@ public class BotClient1 extends WebSocketClient {
 
 				if (turn % 100 == 0) {
 					targetSpeed *= -1;
+					intent.setTargetSpeed(targetSpeed);
 				}
-				intent.setTargetSpeed(targetSpeed);
-
 				turn++;
 
 				String msg = gson.toJson(intent);
