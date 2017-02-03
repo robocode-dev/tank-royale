@@ -61,6 +61,8 @@ public class ModelUpdater {
 
 	private int nextBulletId;
 
+	private Turn previousTurn;
+
 	private Map<Integer /* BotId */, BotIntent.Builder> botIntentsMap = new HashMap<>();
 	private Map<Integer /* BotId */, Bot.Builder> botBuildersMap = new HashMap<>();
 	private Set<Bullet.Builder> bulletBuildersSet = new HashSet<>();
@@ -132,7 +134,7 @@ public class ModelUpdater {
 
 	private void nextTurn() {
 
-		Turn previousTurn = turnBuilder.build();
+		previousTurn = turnBuilder.build();
 
 		turnNumber++;
 		turnBuilder.setTurnNumber(turnNumber);
@@ -152,11 +154,11 @@ public class ModelUpdater {
 		// Execute bot intents
 		executeBotIntents();
 
+		// Check bot wall collisions
+		checkBotWallCollisions();
+
 		// FIXME: Temporarily uncommented
 
-		// // Check bot wall collisions
-		// checkBotWallCollisions();
-		//
 		// // Check bot to bot collisions
 		// checkBotCollisions();
 		//
@@ -501,25 +503,55 @@ public class ModelUpdater {
 	}
 
 	private void checkBotWallCollisions() {
+
 		for (Bot.Builder botBuilder : botBuildersMap.values()) {
+
 			Position position = botBuilder.getPosition();
 			double x = position.x;
-			double y = position.x;
+			double y = position.y;
+
+			Position oldPosition = previousTurn.getBot(botBuilder.getId()).getPosition();
+			double dx = x - oldPosition.x;
+			double dy = y - oldPosition.y;
 
 			boolean hitWall = false;
 
 			if (x - BOT_BOUNDING_CIRCLE_RADIUS <= 0) {
+				hitWall = true;
+
 				x = BOT_BOUNDING_CIRCLE_RADIUS;
-				hitWall = true;
+
+				if (dx != 0) {
+					double dx_cut = x - oldPosition.x;
+					y = oldPosition.y + (dx_cut * dy / dx);
+				}
 			} else if (x + BOT_BOUNDING_CIRCLE_RADIUS >= setup.getArenaWidth()) {
+				hitWall = true;
+
 				x = setup.getArenaWidth() - BOT_BOUNDING_CIRCLE_RADIUS;
-				hitWall = true;
+
+				if (dx != 0) {
+					double dx_cut = x - oldPosition.x;
+					y = oldPosition.y + (dx_cut * dy / dx);
+				}
 			} else if (y - BOT_BOUNDING_CIRCLE_RADIUS <= 0) {
+				hitWall = true;
+
 				y = BOT_BOUNDING_CIRCLE_RADIUS;
-				hitWall = true;
+
+				if (dy != 0) {
+					double dy_cut = y - oldPosition.y;
+					x = oldPosition.x + (dy_cut * dx / dy);
+				}
 			} else if (y + BOT_BOUNDING_CIRCLE_RADIUS >= setup.getArenaHeight()) {
-				y = setup.getArenaHeight() - BOT_BOUNDING_CIRCLE_RADIUS;
 				hitWall = true;
+
+				y = setup.getArenaHeight() - BOT_BOUNDING_CIRCLE_RADIUS;
+
+				if (dy != 0) {
+					double dy_cut = y - oldPosition.y;
+					x = oldPosition.x + (dy_cut * dx / dy);
+				}
 			}
 
 			if (hitWall) {

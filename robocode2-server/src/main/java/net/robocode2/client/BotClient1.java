@@ -81,7 +81,7 @@ public class BotClient1 extends WebSocketClient {
 				BotIntent intent = new BotIntent();
 				intent.setMessageType(BotIntent.MessageType.BOT_INTENT);
 
-				if (turn % 100 == 0) {
+				if (turn % 50 == 1) {
 					targetSpeed *= -1;
 					intent.setTargetSpeed(targetSpeed);
 				}
