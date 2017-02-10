@@ -213,7 +213,7 @@ public class ModelUpdater {
 		 * bots.add(botBuilder.build()); }
 		 */
 
-		bots.add(new Bot.Builder().setId(1).setPosition(new Position(50, 25)).setDirection(360 - 45).build());
+		bots.add(new Bot.Builder().setId(1).setPosition(new Position(40, 25)).setDirection(360 - 45).build());
 		bots.add(new Bot.Builder().setId(2).setPosition(new Position(50, 75)).setDirection(45).build());
 
 		return bots;
@@ -412,34 +412,47 @@ public class ModelUpdater {
 				Position pos2 = botBuilders[j].getPosition();
 
 				if (isBotsBoundingCirclesColliding(pos1, pos2)) {
-					Bot.Builder botBuilder1 = botBuilders[i];
-					Bot.Builder botBuilder2 = botBuilders[j];
+					final double overlapDist = BOT_BOUNDING_CIRCLE_DIAMETER - MathUtil.distance(pos1, pos2);
 
-					int botId1 = botBuilder1.getId();
-					int botId2 = botBuilder2.getId();
+					final Bot.Builder botBuilder1 = botBuilders[i];
+					final Bot.Builder botBuilder2 = botBuilders[j];
 
-					boolean bot1Killed = botBuilder1.addDamage(RAM_DAMAGE);
-					boolean bot2Killed = botBuilder2.addDamage(RAM_DAMAGE);
+					final int botId1 = botBuilder1.getId();
+					final int botId2 = botBuilder2.getId();
 
-					boolean bot1RammedBot2 = isRamming(botBuilder1, botBuilder2);
-					boolean bot2rammedBot1 = isRamming(botBuilder2, botBuilder1);
+					final boolean bot1Killed = botBuilder1.addDamage(RAM_DAMAGE);
+					final boolean bot2Killed = botBuilder2.addDamage(RAM_DAMAGE);
+
+					final boolean bot1RammedBot2 = isRamming(botBuilder1, botBuilder2);
+					final boolean bot2rammedBot1 = isRamming(botBuilder2, botBuilder1);
 
 					double bot1BounceDist = 0;
 					double bot2BounceDist = 0;
 
 					if (bot1RammedBot2) {
 						botBuilder1.setSpeed(0);
-						bot1BounceDist = BOT_BOUNDING_CIRCLE_DIAMETER - MathUtil.distance(pos1, pos2);
+						bot1BounceDist = overlapDist;
 						scoreKeeper.addRamHit(botId2, botId1, RAM_DAMAGE, bot1Killed);
 					}
 					if (bot2rammedBot1) {
 						botBuilder2.setSpeed(0);
-						bot2BounceDist = BOT_BOUNDING_CIRCLE_DIAMETER - MathUtil.distance(pos2, pos1);
+						bot2BounceDist = overlapDist;
 						scoreKeeper.addRamHit(botId1, botId2, RAM_DAMAGE, bot2Killed);
 					}
 					if (bot1RammedBot2 && bot2rammedBot1) {
-						bot1BounceDist /= 2;
-						bot2BounceDist /= 2;
+						double totalSpeed = botBuilder1.getSpeed() + botBuilder1.getSpeed();
+
+						if (totalSpeed == 0.0) {
+							bot1BounceDist /= 2;
+							bot2BounceDist /= 2;
+
+						} else {
+							double t = overlapDist / totalSpeed;
+
+							// The faster speed, the less bounce distance. Hence the speeds for the bots are swapped
+							bot1BounceDist = botBuilder2.getSpeed() * t;
+							bot2BounceDist = botBuilder1.getSpeed() * t;
+						}
 					}
 					if (bot1BounceDist != 0) {
 						botBuilder1.bounceBack(bot1BounceDist);
