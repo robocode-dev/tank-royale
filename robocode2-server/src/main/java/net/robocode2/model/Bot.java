@@ -1,6 +1,6 @@
 package net.robocode2.model;
 
-import net.robocode2.game.MathUtil;
+import static net.robocode2.game.MathUtil.isNear;
 
 public final class Bot implements ImmutableBot {
 
@@ -81,7 +81,7 @@ public final class Bot implements ImmutableBot {
 
 	public static final class Builder implements ImmutableBot {
 		private int id;
-		private double energy;
+		private double energy = 100;
 		private Position position;
 		private double direction;
 		private double gunDirection;
@@ -186,7 +186,7 @@ public final class Bot implements ImmutableBot {
 		}
 
 		public boolean isDisabled() {
-			return isAlive() && MathUtil.isNear(energy, 0);
+			return isAlive() && isNear(energy, 0);
 		}
 
 		@Override
@@ -246,17 +246,18 @@ public final class Bot implements ImmutableBot {
 		}
 
 		public void moveToNewPosition() {
-			double angle = Math.toRadians(direction);
-			double x = position.x + Math.cos(angle) * speed;
-			double y = position.y + Math.sin(angle) * speed;
-			position = new Position(x, y);
+			position = move(direction, speed);
 		}
 
-		public void bounceBackPosition(double distance) {
-			double angle = Math.toRadians(direction - 180);
+		public void bounceBack(double distance) {
+			position = move(direction, (speed > 0 ? -distance : distance));
+		}
+
+		private Position move(double direction, double distance) {
+			double angle = Math.toRadians(direction);
 			double x = position.x + Math.cos(angle) * distance;
 			double y = position.y + Math.sin(angle) * distance;
-			position = new Position(x, y);
+			return new Position(x, y);
 		}
 	}
 }

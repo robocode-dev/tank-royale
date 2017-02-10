@@ -2,12 +2,9 @@ package net.robocode2.game;
 
 import static net.robocode2.model.Physics.BOT_BOUNDING_CIRCLE_DIAMETER;
 import static net.robocode2.model.Physics.BOT_BOUNDING_CIRCLE_RADIUS;
-import static net.robocode2.model.Physics.INITIAL_BOT_ENERGY;
-import static net.robocode2.model.Physics.INITIAL_GUN_HEAT;
 import static net.robocode2.model.Physics.MAX_BULLET_POWER;
 import static net.robocode2.model.Physics.MAX_BULLET_SPEED;
 import static net.robocode2.model.Physics.MIN_BULLET_POWER;
-import static net.robocode2.model.Physics.RADAR_RADIUS;
 import static net.robocode2.model.Physics.calcBotSpeed;
 import static net.robocode2.model.Physics.calcBulletSpeed;
 import static net.robocode2.model.Physics.calcGunHeat;
@@ -18,7 +15,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import net.robocode2.model.Arc;
 import net.robocode2.model.Arena;
 import net.robocode2.model.Bot;
 import net.robocode2.model.BotIntent;
@@ -29,7 +25,6 @@ import net.robocode2.model.ImmutableBot;
 import net.robocode2.model.Physics;
 import net.robocode2.model.Position;
 import net.robocode2.model.Round;
-import net.robocode2.model.Score;
 import net.robocode2.model.Size;
 import net.robocode2.model.Turn;
 import net.robocode2.model.events.BotDeathEvent;
@@ -157,11 +152,11 @@ public class ModelUpdater {
 		// Check bot wall collisions
 		checkBotWallCollisions();
 
+		// Check bot to bot collisions
+		checkBotCollisions();
+
 		// FIXME: Temporarily uncommented
 
-		// // Check bot to bot collisions
-		// checkBotCollisions();
-		//
 		// // Check bullet wall collisions (current -> next position)
 		// checkBulletWallCollisions();
 		//
@@ -204,33 +199,30 @@ public class ModelUpdater {
 
 	private Set<Bot> initialBotStates() {
 		Set<Bot> bots = new HashSet<Bot>();
+		/*
+		 * Set<Integer> occupiedCells = new HashSet<Integer>();
+		 * 
+		 * for (int id : participantIds) {
+		 * 
+		 * Bot.Builder botBuilder = new Bot.Builder(); botBuilder.setId(id); botBuilder.setEnergy(INITIAL_BOT_ENERGY);
+		 * botBuilder.setSpeed(0); botBuilder.setPosition(randomBotPosition(occupiedCells));
+		 * botBuilder.setDirection(randomDirection()); botBuilder.setGunDirection(randomDirection());
+		 * botBuilder.setRadarDirection(randomDirection()); botBuilder.setScanArc(new Arc(0, RADAR_RADIUS));
+		 * botBuilder.setGunHeat(INITIAL_GUN_HEAT); botBuilder.setScore(new Score.Builder().build());
+		 * 
+		 * bots.add(botBuilder.build()); }
+		 */
 
-		Set<Integer> occupiedCells = new HashSet<Integer>();
-
-		for (int id : participantIds) {
-
-			Bot.Builder botBuilder = new Bot.Builder();
-			botBuilder.setId(id);
-			botBuilder.setEnergy(INITIAL_BOT_ENERGY);
-			botBuilder.setSpeed(0);
-			botBuilder.setPosition(randomBotPosition(occupiedCells));
-			botBuilder.setDirection(randomDirection());
-			botBuilder.setGunDirection(randomDirection());
-			botBuilder.setRadarDirection(randomDirection());
-			botBuilder.setScanArc(new Arc(0, RADAR_RADIUS));
-			botBuilder.setGunHeat(INITIAL_GUN_HEAT);
-			botBuilder.setScore(new Score.Builder().build());
-
-			bots.add(botBuilder.build());
-		}
+		bots.add(new Bot.Builder().setId(1).setPosition(new Position(50, 25)).setDirection(360 - 45).build());
+		bots.add(new Bot.Builder().setId(2).setPosition(new Position(50, 75)).setDirection(45).build());
 
 		return bots;
 	}
 
 	private Position randomBotPosition(Set<Integer> occupiedCells) {
 
-		final int gridWidth = setup.getArenaWidth() / 100;
-		final int gridHeight = setup.getArenaHeight() / 100;
+		final int gridWidth = setup.getArenaWidth() / 50;
+		final int gridHeight = setup.getArenaHeight() / 50;
 
 		final int cellCount = gridWidth * gridHeight;
 
@@ -417,7 +409,7 @@ public class ModelUpdater {
 			Position pos1 = botBuilders[i].getPosition();
 
 			for (int j = i - 1; j >= 0; j--) {
-				Position pos2 = botBuilders[i].getPosition();
+				Position pos2 = botBuilders[j].getPosition();
 
 				if (isBotsBoundingCirclesColliding(pos1, pos2)) {
 					Bot.Builder botBuilder1 = botBuilders[i];
@@ -429,40 +421,48 @@ public class ModelUpdater {
 					boolean bot1Killed = botBuilder1.addDamage(RAM_DAMAGE);
 					boolean bot2Killed = botBuilder2.addDamage(RAM_DAMAGE);
 
-					boolean bot1Rammed = isRamming(botBuilder2, botBuilder1);
-					boolean bot2Rammed = isRamming(botBuilder1, botBuilder2);
+					boolean bot1RammedBot2 = isRamming(botBuilder1, botBuilder2);
+					boolean bot2rammedBot1 = isRamming(botBuilder2, botBuilder1);
 
 					double bot1BounceDist = 0;
 					double bot2BounceDist = 0;
 
-					if (bot1Rammed) {
-						bot2BounceDist = MathUtil.distance(pos1, pos2);
+					if (bot1RammedBot2) {
+						botBuilder1.setSpeed(0);
+						bot1BounceDist = BOT_BOUNDING_CIRCLE_DIAMETER - MathUtil.distance(pos1, pos2);
 						scoreKeeper.addRamHit(botId2, botId1, RAM_DAMAGE, bot1Killed);
 					}
-					if (bot2Rammed) {
-						bot1BounceDist = MathUtil.distance(pos2, pos1);
+					if (bot2rammedBot1) {
+						botBuilder2.setSpeed(0);
+						bot2BounceDist = BOT_BOUNDING_CIRCLE_DIAMETER - MathUtil.distance(pos2, pos1);
 						scoreKeeper.addRamHit(botId1, botId2, RAM_DAMAGE, bot2Killed);
 					}
-					if (bot1Rammed && bot2Rammed) {
+					if (bot1RammedBot2 && bot2rammedBot1) {
 						bot1BounceDist /= 2;
 						bot2BounceDist /= 2;
 					}
-					botBuilder1.bounceBackPosition(bot1BounceDist);
-					botBuilder2.bounceBackPosition(bot2BounceDist);
+					if (bot1BounceDist != 0) {
+						botBuilder1.bounceBack(bot1BounceDist);
+					}
+					if (bot2BounceDist != 0) {
+						botBuilder2.bounceBack(bot2BounceDist);
+					}
 
 					pos1 = botBuilder1.getPosition();
 					pos2 = botBuilder2.getPosition();
 
 					BotHitBotEvent BotHitBotEvent1 = new BotHitBotEvent(botId1, botId2, botBuilder2.getEnergy(),
-							botBuilder2.getPosition(), bot2Rammed);
+							botBuilder2.getPosition(), bot1RammedBot2);
 					BotHitBotEvent BotHitBotEvent2 = new BotHitBotEvent(botId2, botId1, botBuilder1.getEnergy(),
-							botBuilder1.getPosition(), bot1Rammed);
+							botBuilder1.getPosition(), bot2rammedBot1);
 
 					turnBuilder.addPrivateBotEvent(botId1, BotHitBotEvent1);
 					turnBuilder.addPrivateBotEvent(botId2, BotHitBotEvent2);
 
 					turnBuilder.addObserverEvent(BotHitBotEvent1);
 					turnBuilder.addObserverEvent(BotHitBotEvent2);
+
+					checkBotWallCollisions(); // FIXME: Only run this for the two robots
 				}
 			}
 		}
@@ -473,11 +473,11 @@ public class ModelUpdater {
 
 	private static boolean isBotsBoundingCirclesColliding(Position bot1Position, Position bot2Position) {
 		double dx = bot2Position.x - bot1Position.x;
-		if (Math.abs(dx) > BOT_BOUNDING_CIRCLE_DIAMETER) {
+		if (Math.abs(dx) > BOT_BOUNDING_CIRCLE_DIAMETER) { // 2 x radius
 			return false;
 		}
 		double dy = bot2Position.y - bot1Position.y;
-		if (Math.abs(dy) > BOT_BOUNDING_CIRCLE_DIAMETER) {
+		if (Math.abs(dy) > BOT_BOUNDING_CIRCLE_DIAMETER) { // 2 x radius
 			return false;
 		}
 		return ((dx * dx) + (dy * dy) <= BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED);
@@ -488,7 +488,7 @@ public class ModelUpdater {
 		double dx = victim.getPosition().x - bot.getPosition().x;
 		double dy = victim.getPosition().y - bot.getPosition().y;
 
-		double angle = Math.atan2(dx, dy);
+		double angle = Math.atan2(dy, dx);
 
 		double bearing = MathUtil.normalRelativeAngleDegrees(Math.toDegrees(angle) - bot.getDirection());
 
