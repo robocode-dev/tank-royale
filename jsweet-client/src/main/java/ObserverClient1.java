@@ -114,16 +114,6 @@ public class ObserverClient1 {
 		canvas.height = gameSetup.getArenaHeight();
 
 		draw();
-
-		// Set<Participant> participants = nbfo.getParticipants();
-		//
-		// console.info("game type: " + gameSetup.getGameType());
-		// console.info("num participants: " + participants.size());
-		//
-		// int i = 1;
-		// for (Participant participant : participants) {
-		// console.info("name #" + i++ + ": " + participant.getName());
-		// }
 	}
 
 	private void handleTickForObserver(TickForObserver tfo) {
@@ -142,17 +132,32 @@ public class ObserverClient1 {
 
 		for (BotState bot : botStates) {
 			Position pos = bot.getPosition();
-			drawCircle(pos.getX(), pos.getY(), 18, "red");
+			drawBotBody(pos.getX(), pos.getY(), bot.getDirection());
+			fillCircle(pos.getX(), pos.getY(), 18, "red");
 		}
 	}
 
-	private void drawCircle(double x, double y, double r, String color) {
+	private void drawBotBody(double x, double y, double angle) {
+		ctx.save();
+
+		ctx.beginPath();
+		ctx.translate(x, y);
+		ctx.rotate(angle * Math.PI / 180);
+
+		ctx.fillStyle = union("blue");
+		ctx.fillRect(-18, -18 + 6, 36, 36 - 2 * 6);
+
+		ctx.fillStyle = union("gray");
+		ctx.fillRect(-18, -18, 36, 6);
+		ctx.fillRect(-18, 18 - 6, 36, 6);
+
+		ctx.restore();
+	}
+
+	private void fillCircle(double x, double y, double r, String color) {
 		ctx.beginPath();
 		ctx.arc(x, y, r, 0, 2 * Math.PI, false);
 		ctx.fillStyle = union(color);
 		ctx.fill();
-		// ctx.lineWidth = 0;
-		// ctx.strokeStyle = union(color);
-		// ctx.stroke();
 	}
 }
