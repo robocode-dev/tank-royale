@@ -152,9 +152,8 @@ public class ObserverClient1 {
 	}
 
 	private void drawBullet(double x, double y, double power) {
-		fillCircle(x, y, 1, "white");
-
-		// double scale = max(2 * sqrt(2.5 * bulletSnapshot.getPower()), 2 / this.scale)
+		double size = Math.max(Math.sqrt(5 * power), 1);
+		fillCircle(x, y, size, "white");
 	}
 
 	private void drawBotBody(double x, double y, double angle) {
@@ -184,7 +183,7 @@ public class ObserverClient1 {
 		ctx.rotate(angle * Math.PI / 180);
 
 		ctx.fillStyle = union("cyan");
-		ctx.fillRect(-2, 10, 4, 14);
+		ctx.fillRect(10, -2, 14, 4);
 
 		ctx.restore();
 	}
