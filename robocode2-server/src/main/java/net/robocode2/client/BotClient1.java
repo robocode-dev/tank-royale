@@ -86,6 +86,9 @@ public class BotClient1 extends WebSocketClient {
 					intent.setTargetSpeed(targetSpeed);
 				}
 
+				intent.setGunTurnRate(45.0);
+				intent.setBulletPower(Math.random() * 2.9 + 0.1);
+
 				String msg = gson.toJson(intent);
 				send(msg);
 			}

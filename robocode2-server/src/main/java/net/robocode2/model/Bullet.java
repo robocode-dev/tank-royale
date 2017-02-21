@@ -77,6 +77,13 @@ public final class Bullet {
 		}
 
 		public Builder(Bullet bullet) {
+			botId = bullet.getBotId();
+			bulletId = bullet.getBulletId();
+			power = bullet.getPower();
+			firePosition = bullet.getFirePosition();
+			direction = bullet.getDirection();
+			speed = bullet.getSpeed();
+			tick = bullet.getTick();
 		}
 
 		public Bullet build() {

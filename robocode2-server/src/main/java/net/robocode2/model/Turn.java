@@ -109,11 +109,6 @@ public final class Turn {
 			return this;
 		}
 
-		public Builder addBullet(Bullet bullet) {
-			bullets.add(bullet);
-			return this;
-		}
-
 		public Builder addObserverEvent(Event event) {
 			observerEvents.add(event);
 			return this;
@@ -133,6 +128,12 @@ public final class Turn {
 			for (Bot bot : bots) {
 				addPrivateBotEvent(bot.getId(), event);
 			}
+			return this;
+		}
+
+		public Builder resetEvents() {
+			botEventsMap.clear();
+			observerEvents.clear();
 			return this;
 		}
 	}

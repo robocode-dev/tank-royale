@@ -127,14 +127,34 @@ public class ObserverClient1 {
 
 	private void draw() {
 		// Clear canvas
-		ctx.fillStyle = union("#000000");
+		ctx.fillStyle = union("black");
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+		for (BulletState bullet : bulletStates) {
+			Position pos = bullet.getPosition();
+
+			console.info("(" + pos.getX() + "," + pos.getY() + ")");
+
+			drawBullet(pos.getX(), pos.getY(), bullet.getPower());
+		}
 
 		for (BotState bot : botStates) {
 			Position pos = bot.getPosition();
-			drawBotBody(pos.getX(), pos.getY(), bot.getDirection());
-			fillCircle(pos.getX(), pos.getY(), 18, "red");
+
+			double x = pos.getX();
+			double y = pos.getY();
+
+			drawBotBody(x, y, bot.getDirection());
+			drawGun(x, y, bot.getGunDirection());
+
+			// fillCircle(pos.getX(), pos.getY(), 18, "red"); // bounding circle
 		}
+	}
+
+	private void drawBullet(double x, double y, double power) {
+		fillCircle(x, y, 1, "white");
+
+		// double scale = max(2 * sqrt(2.5 * bulletSnapshot.getPower()), 2 / this.scale)
 	}
 
 	private void drawBotBody(double x, double y, double angle) {
@@ -145,7 +165,7 @@ public class ObserverClient1 {
 		ctx.rotate(angle * Math.PI / 180);
 
 		ctx.fillStyle = union("blue");
-		ctx.fillRect(-18, -18 + 6, 36, 36 - 2 * 6);
+		ctx.fillRect(-18, -18 + 1 + 6, 36, 36 - 2 * 7);
 
 		ctx.fillStyle = union("gray");
 		ctx.fillRect(-18, -18, 36, 6);
@@ -154,10 +174,25 @@ public class ObserverClient1 {
 		ctx.restore();
 	}
 
+	private void drawGun(double x, double y, double angle) {
+		ctx.save();
+
+		fillCircle(x, y, 10, "cyan");
+
+		ctx.beginPath();
+		ctx.translate(x, y);
+		ctx.rotate(angle * Math.PI / 180);
+
+		ctx.fillStyle = union("cyan");
+		ctx.fillRect(-2, 10, 4, 14);
+
+		ctx.restore();
+	}
+
 	private void fillCircle(double x, double y, double r, String color) {
 		ctx.beginPath();
-		ctx.arc(x, y, r, 0, 2 * Math.PI, false);
 		ctx.fillStyle = union(color);
+		ctx.arc(x, y, r, 0, 2 * Math.PI, false);
 		ctx.fill();
 	}
 }

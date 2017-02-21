@@ -182,7 +182,7 @@ public final class Bot implements ImmutableBot {
 		}
 
 		public boolean isDead() {
-			return energy < 0;
+			return !isAlive();
 		}
 
 		public boolean isDisabled() {

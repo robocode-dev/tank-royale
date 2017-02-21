@@ -1,10 +1,14 @@
 package net.robocode2.game;
 
+import static net.robocode2.game.MathUtil.normalAbsoluteAngleDegrees;
 import static net.robocode2.model.Physics.BOT_BOUNDING_CIRCLE_DIAMETER;
 import static net.robocode2.model.Physics.BOT_BOUNDING_CIRCLE_RADIUS;
+import static net.robocode2.model.Physics.INITIAL_BOT_ENERGY;
+import static net.robocode2.model.Physics.INITIAL_GUN_HEAT;
 import static net.robocode2.model.Physics.MAX_BULLET_POWER;
 import static net.robocode2.model.Physics.MAX_BULLET_SPEED;
 import static net.robocode2.model.Physics.MIN_BULLET_POWER;
+import static net.robocode2.model.Physics.RADAR_RADIUS;
 import static net.robocode2.model.Physics.calcBotSpeed;
 import static net.robocode2.model.Physics.calcBulletSpeed;
 import static net.robocode2.model.Physics.calcGunHeat;
@@ -15,6 +19,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import net.robocode2.model.Arc;
 import net.robocode2.model.Arena;
 import net.robocode2.model.Bot;
 import net.robocode2.model.BotIntent;
@@ -25,6 +30,7 @@ import net.robocode2.model.ImmutableBot;
 import net.robocode2.model.Physics;
 import net.robocode2.model.Position;
 import net.robocode2.model.Round;
+import net.robocode2.model.Score;
 import net.robocode2.model.Size;
 import net.robocode2.model.Turn;
 import net.robocode2.model.events.BotDeathEvent;
@@ -121,8 +127,7 @@ public class ModelUpdater {
 
 		nextBulletId = 0;
 
-		Set<Bot> bots = initialBotStates();
-		turnBuilder.setBots(bots);
+		initializeBotStates();
 
 		scoreKeeper.reset();
 	}
@@ -131,20 +136,11 @@ public class ModelUpdater {
 
 		previousTurn = turnBuilder.build();
 
+		// Reset events
+		turnBuilder.resetEvents();
+
 		turnNumber++;
 		turnBuilder.setTurnNumber(turnNumber);
-
-		// Prepare map over new bot states
-		botBuildersMap.clear();
-		for (Bot bot : previousTurn.getBots()) {
-			botBuildersMap.put(bot.getId(), new Bot.Builder(bot));
-		}
-
-		// Prepare new bullet states
-		bulletBuildersSet.clear();
-		for (Bullet bullet : previousTurn.getBullets()) {
-			bulletBuildersSet.add(new Bullet.Builder(bullet));
-		}
 
 		// Execute bot intents
 		executeBotIntents();
@@ -162,15 +158,15 @@ public class ModelUpdater {
 		//
 		// // Check bullet hits (bullet-bullet and bullet-bot) (current -> next position)
 		// checkBulletHits();
-		//
-		// // Fire guns
-		// fireGuns();
-		//
+
+		// Fire guns
+		cooldownAndFireGuns();
+
 		// // Cleanup dead robots (remove from arena + events)
 		// checkForKilledBots();
-		//
-		// // Update bullet positions to new position
-		// updateBulletPositions();
+
+		// Update bullet positions to new position
+		updateBulletPositions();
 
 		// Store bot snapshots
 		Set<Bot> bots = new HashSet<>();
@@ -197,26 +193,31 @@ public class ModelUpdater {
 		return gameStateBuilder.build();
 	}
 
-	private Set<Bot> initialBotStates() {
-		Set<Bot> bots = new HashSet<Bot>();
-		/*
-		 * Set<Integer> occupiedCells = new HashSet<Integer>();
-		 * 
-		 * for (int id : participantIds) {
-		 * 
-		 * Bot.Builder botBuilder = new Bot.Builder(); botBuilder.setId(id); botBuilder.setEnergy(INITIAL_BOT_ENERGY);
-		 * botBuilder.setSpeed(0); botBuilder.setPosition(randomBotPosition(occupiedCells));
-		 * botBuilder.setDirection(randomDirection()); botBuilder.setGunDirection(randomDirection());
-		 * botBuilder.setRadarDirection(randomDirection()); botBuilder.setScanArc(new Arc(0, RADAR_RADIUS));
-		 * botBuilder.setGunHeat(INITIAL_GUN_HEAT); botBuilder.setScore(new Score.Builder().build());
-		 * 
-		 * bots.add(botBuilder.build()); }
-		 */
+	private void initializeBotStates() {
+		Set<Integer> occupiedCells = new HashSet<Integer>();
 
-		bots.add(new Bot.Builder().setId(1).setPosition(new Position(40, 25)).setDirection(360 - 45).build());
-		bots.add(new Bot.Builder().setId(2).setPosition(new Position(50, 75)).setDirection(45).build());
+		for (int id : participantIds) {
+			Bot.Builder botBuilder = new Bot.Builder();
+			botBuilder.setId(id);
+			botBuilder.setEnergy(INITIAL_BOT_ENERGY);
+			botBuilder.setSpeed(0);
+			botBuilder.setPosition(randomBotPosition(occupiedCells));
+			botBuilder.setDirection(randomDirection());
+			botBuilder.setGunDirection(randomDirection());
+			botBuilder.setRadarDirection(randomDirection());
+			botBuilder.setScanArc(new Arc(0, RADAR_RADIUS));
+			botBuilder.setGunHeat(INITIAL_GUN_HEAT);
+			botBuilder.setScore(new Score.Builder().build());
 
-		return bots;
+			botBuildersMap.put(id, botBuilder);
+		}
+
+		// Store bot snapshots into current turn
+		Set<Bot> bots = new HashSet<>();
+		for (Bot.Builder botBuilder : botBuildersMap.values()) {
+			bots.add(botBuilder.build());
+		}
+		turnBuilder.setBots(bots);
 	}
 
 	private Position randomBotPosition(Set<Integer> occupiedCells) {
@@ -279,9 +280,10 @@ public class ModelUpdater {
 			}
 
 			// Turn body, gun, radar, and move bot to new position
-			double direction = botBuilder.getDirection() + intent.getBodyTurnRate();
-			double gunDirection = botBuilder.getGunDirection() + intent.getGunTurnRate();
-			double radarDirection = botBuilder.getRadarDirection() + intent.getRadarTurnRate();
+			double direction = normalAbsoluteAngleDegrees(botBuilder.getDirection() + intent.getBodyTurnRate());
+			double gunDirection = normalAbsoluteAngleDegrees(botBuilder.getGunDirection() + intent.getGunTurnRate());
+			double radarDirection = normalAbsoluteAngleDegrees(
+					botBuilder.getRadarDirection() + intent.getRadarTurnRate());
 			double speed = calcBotSpeed(botBuilder.getSpeed(), intent.getTargetSpeed());
 
 			botBuilder.setDirection(direction);
@@ -474,8 +476,6 @@ public class ModelUpdater {
 
 					turnBuilder.addObserverEvent(BotHitBotEvent1);
 					turnBuilder.addObserverEvent(BotHitBotEvent2);
-
-					checkBotWallCollisions(); // FIXME: Only run this for the two robots
 				}
 			}
 		}
@@ -612,33 +612,34 @@ public class ModelUpdater {
 		}
 	}
 
-	private void fireGuns() {
-		for (Integer botId : botBuildersMap.keySet()) {
-			Bot.Builder botBuilder = botBuildersMap.get(botId);
+	private void cooldownAndFireGuns() {
+		for (Bot.Builder botBuilder : botBuildersMap.values()) {
 
 			// Bot cannot fire if it is disabled
 			if (botBuilder.isDead() || botBuilder.isDisabled()) {
 				continue;
 			}
 
-			BotIntent.Builder intentBuilder = botIntentsMap.get(botId);
-			if (intentBuilder == null) {
-				continue;
-			}
-			BotIntent intent = intentBuilder.build();
-
 			// Fire gun, if the gun heat is zero
 			double gunHeat = botBuilder.getGunHeat();
-			gunHeat = Math.max(gunHeat - setup.getGunCoolingRate(), 0);
-
 			if (gunHeat == 0) {
-				// Gun can fire. Check if gun must be fired by intent
+				// Gun can fire => Check if intent is to fire gun
+				BotIntent.Builder intentBuilder = botIntentsMap.get(botBuilder.getId());
+				if (intentBuilder == null) {
+					continue;
+				}
+				BotIntent intent = intentBuilder.build();
+
 				double firepower = intent.getBulletPower();
 				if (firepower >= MIN_BULLET_POWER) {
 					// Gun is fired
 					firepower = Math.min(firepower, MAX_BULLET_POWER);
 					handleFiredBullet(botBuilder, firepower);
 				}
+			} else {
+				// Gun is too hot => Cool down gun
+				gunHeat = Math.max(gunHeat - setup.getGunCoolingRate(), 0);
+				botBuilder.setGunHeat(gunHeat);
 			}
 		}
 	}
@@ -657,10 +658,9 @@ public class ModelUpdater {
 		bulletBuilder.setDirection(botBuilder.getGunDirection());
 		bulletBuilder.setSpeed(calcBulletSpeed(firepower));
 
+		bulletBuildersSet.add(bulletBuilder);
+
 		Bullet bullet = bulletBuilder.build();
-
-		turnBuilder.addBullet(bullet);
-
 		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(bullet);
 		turnBuilder.addPrivateBotEvent(botId, bulletFiredEvent);
 		turnBuilder.addObserverEvent(bulletFiredEvent);

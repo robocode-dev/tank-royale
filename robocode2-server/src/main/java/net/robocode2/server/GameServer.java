@@ -281,12 +281,12 @@ public final class GameServer {
 
 		// Send tick to bots
 
-		Round currentRound = gameState.getLastRound();
-		Turn currentTurn = currentRound.getLastTurn();
+		Round round = gameState.getLastRound();
+		Turn turn = round.getLastTurn();
 
 		// Send game state as 'tick' to participants
 		for (BotConn participant : participants) {
-			TickForBot tickForBot = TurnToTickForBotMapper.map(currentRound, currentTurn, participant.getId());
+			TickForBot tickForBot = TurnToTickForBotMapper.map(round, turn, participant.getId());
 
 			String msg = gson.toJson(tickForBot);
 			send(participant.getConnection(), msg);
@@ -326,7 +326,7 @@ public final class GameServer {
 			}
 		}
 
-		if (currentTurn.getTurnNumber() > 1000) { // FIXME
+		if (turn.getTurnNumber() > 1000) { // FIXME
 			updateGameStateTimer.cancel();
 		}
 	}
