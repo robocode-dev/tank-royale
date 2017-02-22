@@ -16,7 +16,7 @@ public class ObserverClient1 extends WebSocketClient {
 
 	final Gson gson = new Gson();
 
-	static final String MESSAGE_TYPE_FIELD = "message-type";
+	static final String TYPE = "type";
 
 	public ObserverClient1(URI serverUri, Draft draft) {
 		super(serverUri, draft);
@@ -31,7 +31,7 @@ public class ObserverClient1 extends WebSocketClient {
 		System.out.println("onOpen()");
 
 		ObserverHandshake handshake = new ObserverHandshake();
-		handshake.setMessageType(ObserverHandshake.MessageType.OBSERVER_HANDSHAKE);
+		handshake.setType(ObserverHandshake.Type.OBSERVER_HANDSHAKE);
 		handshake.setName("Observer name");
 		handshake.setVersion("0.1");
 		handshake.setAuthor("Author name");

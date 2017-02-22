@@ -88,12 +88,12 @@ public class ObserverClient1 {
 			java.lang.Object obj = JSON.parse((String) data);
 
 			Message msg = Message.map(obj);
-			String messageType = msg.getMessageType();
+			String type = msg.getType();
 
-			if (NewBattleForObserver.MESSAGE_TYPE.equals(messageType)) {
+			if (NewBattleForObserver.TYPE.equals(type)) {
 				handleNewBattleForObserver(NewBattleForObserver.map(obj));
 
-			} else if (TickForObserver.MESSAGE_TYPE.equals(messageType)) {
+			} else if (TickForObserver.TYPE.equals(type)) {
 				handleTickForObserver(TickForObserver.map(obj));
 			}
 		}
@@ -153,7 +153,7 @@ public class ObserverClient1 {
 		}
 
 		for (json_schema.events.Event event : events) {
-			console.info("Event: " + event.getMessageType());
+			console.info("Event: " + event.getType());
 		}
 	}
 

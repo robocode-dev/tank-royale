@@ -13,10 +13,10 @@ import jsweet.lang.Array;
 
 public class TickForObserver extends Message {
 
-	public static final String MESSAGE_TYPE = "tick-for-observer";
+	public static final String TYPE = "tick-for-observer";
 
 	public TickForObserver() {
-		super(MESSAGE_TYPE);
+		super(TYPE);
 	}
 
 	public RoundState getRoundState() {

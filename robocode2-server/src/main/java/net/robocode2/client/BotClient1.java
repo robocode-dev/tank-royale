@@ -23,7 +23,7 @@ public class BotClient1 extends WebSocketClient {
 
 	final Gson gson = new Gson();
 
-	static final String MESSAGE_TYPE_FIELD = "message-type";
+	static final String TYPE = "type";
 
 	int turn;
 	double targetSpeed = 10;
@@ -41,7 +41,7 @@ public class BotClient1 extends WebSocketClient {
 		System.out.println("onOpen()");
 
 		BotHandshake handshake = new BotHandshake();
-		handshake.setMessageType(BotHandshake.MessageType.BOT_HANDSHAKE);
+		handshake.setType(BotHandshake.Type.BOT_HANDSHAKE);
 		handshake.setName("Bot name");
 		handshake.setVersion("0.1");
 		handshake.setAuthor("Author name");
@@ -64,22 +64,22 @@ public class BotClient1 extends WebSocketClient {
 
 		JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
 
-		JsonElement jsonElement = jsonObject.get(MESSAGE_TYPE_FIELD);
+		JsonElement jsonElement = jsonObject.get(TYPE);
 		if (jsonElement != null) {
-			String messageType = jsonElement.getAsString();
+			String type = jsonElement.getAsString();
 
-			if (NewBattleForBot.MessageType.NEW_BATTLE_FOR_BOT.toString().equalsIgnoreCase(messageType)) {
+			if (NewBattleForBot.Type.NEW_BATTLE_FOR_BOT.toString().equalsIgnoreCase(type)) {
 				// Send ready signal
 				BotReady ready = new BotReady();
-				ready.setMessageType(BotReady.MessageType.BOT_READY);
+				ready.setType(BotReady.Type.BOT_READY);
 
 				String msg = gson.toJson(ready);
 				send(msg);
 
-			} else if (TickForBot.MessageType.TICK_FOR_BOT.toString().equalsIgnoreCase(messageType)) {
+			} else if (TickForBot.Type.TICK_FOR_BOT.toString().equalsIgnoreCase(type)) {
 				// Send intent
 				BotIntent intent = new BotIntent();
-				intent.setMessageType(BotIntent.MessageType.BOT_INTENT);
+				intent.setType(BotIntent.Type.BOT_INTENT);
 
 				if (++turn % 25 == 0) {
 					targetSpeed *= -1;

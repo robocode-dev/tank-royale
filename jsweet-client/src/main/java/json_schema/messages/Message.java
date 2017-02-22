@@ -4,12 +4,12 @@ import static def.jquery.Globals.$;
 
 public class Message extends jsweet.lang.Object {
 
-	protected Message(String messageType) {
-		$set("message-type", messageType);
+	protected Message(String type) {
+		$set("type", type);
 	}
 
-	public String getMessageType() {
-		return (String) $get("message-type");
+	public String getType() {
+		return (String) $get("type");
 	}
 
 	public static Message map(Object obj) {

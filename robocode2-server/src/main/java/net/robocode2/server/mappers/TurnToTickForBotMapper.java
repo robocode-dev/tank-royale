@@ -15,7 +15,7 @@ public final class TurnToTickForBotMapper {
 			return null;
 		}
 		TickForBot tick = new TickForBot();
-		tick.setMessageType(TickForBot.MessageType.TICK_FOR_BOT);
+		tick.setType(TickForBot.Type.TICK_FOR_BOT);
 		tick.setBotState(BotToBotStateMapper.map(optionalBot.get()));
 		tick.setBulletStates(BulletsToBulletStatesMapper.map(turn.getBullets(botId)));
 		tick.setRoundState(RoundToRoundStateMapper.map(round, turn));

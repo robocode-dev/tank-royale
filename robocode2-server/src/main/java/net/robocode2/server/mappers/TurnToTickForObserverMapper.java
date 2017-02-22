@@ -8,7 +8,7 @@ public final class TurnToTickForObserverMapper {
 
 	public static TickForObserver map(Round round, Turn turn) {
 		TickForObserver tick = new TickForObserver();
-		tick.setMessageType(TickForObserver.MessageType.TICK_FOR_OBSERVER);
+		tick.setType(TickForObserver.Type.TICK_FOR_OBSERVER);
 		tick.setBotStates(BotsToBotsWithIdMapper.map(turn.getBots()));
 		tick.setBulletStates(BulletsToBulletStatesMapper.map(turn.getBullets()));
 		tick.setRoundState(RoundToRoundStateMapper.map(round, turn));

@@ -11,10 +11,10 @@ import jsweet.lang.Array;
 
 public class NewBattleForObserver extends Message {
 
-	public static final String MESSAGE_TYPE = "new-battle-for-observer";
+	public static final String TYPE = "new-battle-for-observer";
 
 	public NewBattleForObserver() {
-		super(MESSAGE_TYPE);
+		super(TYPE);
 	}
 
 	public GameSetup getGameSetup() {

@@ -35,7 +35,7 @@ public final class ConnHandler {
 	private final Map<WebSocket, BotHandshake> bots = Collections.synchronizedMap(new HashMap<>());
 	private final Map<WebSocket, ObserverHandshake> observers = Collections.synchronizedMap(new HashMap<>());
 
-	private static final String MESSAGE_TYPE_FIELD = "message-type";
+	private static final String TYPE = "type";
 
 	private final ExecutorService executorService;
 
@@ -106,7 +106,7 @@ public final class ConnHandler {
 			connections.add(conn);
 
 			ServerHandshake hs = new ServerHandshake();
-			hs.setMessageType(ServerHandshake.MessageType.SERVER_HANDSHAKE);
+			hs.setType(ServerHandshake.Type.SERVER_HANDSHAKE);
 			hs.setGames(GameSetupToGameSetupMapper.map(setup.getGames()));
 
 			String msg = new Gson().toJson(hs);
@@ -137,11 +137,11 @@ public final class ConnHandler {
 			Gson gson = new Gson();
 			JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
 
-			JsonElement jsonElement = jsonObject.get(MESSAGE_TYPE_FIELD);
+			JsonElement jsonElement = jsonObject.get(TYPE);
 			if (jsonElement != null) {
-				String messageType = jsonElement.getAsString();
+				String type = jsonElement.getAsString();
 
-				if (BotHandshake.MessageType.BOT_HANDSHAKE.toString().equalsIgnoreCase(messageType)) {
+				if (BotHandshake.Type.BOT_HANDSHAKE.toString().equalsIgnoreCase(type)) {
 					System.out.println("Handling BotHandshake");
 
 					BotHandshake handshake = gson.fromJson(message, BotHandshake.class);
@@ -149,7 +149,7 @@ public final class ConnHandler {
 
 					executorService.submit(() -> listener.onBotJoined(new BotConn(conn, handshake)));
 
-				} else if (ObserverHandshake.MessageType.OBSERVER_HANDSHAKE.toString().equalsIgnoreCase(messageType)) {
+				} else if (ObserverHandshake.Type.OBSERVER_HANDSHAKE.toString().equalsIgnoreCase(type)) {
 					System.out.println("Handling ObserverHandshake");
 
 					ObserverHandshake handshake = gson.fromJson(message, ObserverHandshake.class);
@@ -157,13 +157,13 @@ public final class ConnHandler {
 
 					executorService.submit(() -> listener.onObserverJoined(new ObserverConn(conn, handshake)));
 
-				} else if (BotReady.MessageType.BOT_READY.toString().equalsIgnoreCase(messageType)) {
+				} else if (BotReady.Type.BOT_READY.toString().equalsIgnoreCase(type)) {
 					System.out.println("Handling BotReady");
 
 					BotHandshake handshake = bots.get(conn);
 					executorService.submit(() -> listener.onBotReady(new BotConn(conn, handshake)));
 
-				} else if (BotIntent.MessageType.BOT_INTENT.toString().equalsIgnoreCase(messageType)) {
+				} else if (BotIntent.Type.BOT_INTENT.toString().equalsIgnoreCase(type)) {
 					System.out.println("Handling BotIntent");
 
 					BotHandshake handshake = bots.get(conn);
@@ -171,7 +171,7 @@ public final class ConnHandler {
 					executorService.submit(() -> listener.onBotIntent(new BotConn(conn, handshake), intent));
 
 				} else {
-					notifyException(new IllegalStateException("Unhandled message type: " + messageType));
+					notifyException(new IllegalStateException("Unhandled message type: " + type));
 				}
 			}
 		}

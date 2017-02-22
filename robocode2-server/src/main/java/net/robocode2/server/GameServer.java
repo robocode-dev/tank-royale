@@ -107,7 +107,7 @@ public final class GameServer {
 		// Send NewBattle to all participant bots to get them started
 
 		NewBattleForBot newBattleForBot = new NewBattleForBot();
-		newBattleForBot.setMessageType(NewBattleForBot.MessageType.NEW_BATTLE_FOR_BOT);
+		newBattleForBot.setType(NewBattleForBot.Type.NEW_BATTLE_FOR_BOT);
 		newBattleForBot.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
 
 		int id = 1;
@@ -191,7 +191,7 @@ public final class GameServer {
 		// Send NewBattle to all participant observers to get them started
 		if (connectionHandler.getObserverConnections().size() > 0) {
 			NewBattleForObserver newBattleForObserver = new NewBattleForObserver();
-			newBattleForObserver.setMessageType(NewBattleForObserver.MessageType.NEW_BATTLE_FOR_OBSERVER);
+			newBattleForObserver.setType(NewBattleForObserver.Type.NEW_BATTLE_FOR_OBSERVER);
 			newBattleForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
 
 			List<Participant> list = new ArrayList<>();
