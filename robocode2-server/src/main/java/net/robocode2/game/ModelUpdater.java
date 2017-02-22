@@ -153,9 +153,6 @@ public class ModelUpdater {
 
 		// FIXME: Temporarily uncommented
 
-		// // Check bullet wall collisions (current -> next position)
-		// checkBulletWallCollisions();
-		//
 		// // Check bullet hits (bullet-bullet and bullet-bot) (current -> next position)
 		// checkBulletHits();
 
@@ -167,6 +164,9 @@ public class ModelUpdater {
 
 		// Update bullet positions to new position
 		updateBulletPositions();
+
+		// Check bullet wall collisions
+		checkBulletWallCollisions();
 
 		// Store bot snapshots
 		Set<Bot> bots = new HashSet<>();
@@ -584,7 +584,7 @@ public class ModelUpdater {
 		Iterator<Bullet.Builder> iterator = bulletBuildersSet.iterator(); // due to removal
 		while (iterator.hasNext()) {
 			Bullet.Builder bulletBuilder = iterator.next();
-			Position position = bulletBuilder.calcNextPosition();
+			Position position = bulletBuilder.calcPosition();
 
 			if ((position.x <= 0) || (position.x >= setup.getArenaWidth()) || (position.y <= 0)
 					|| (position.y >= setup.getArenaHeight())) {
