@@ -4,7 +4,7 @@ import static def.jquery.Globals.$;
 
 public class Message extends jsweet.lang.Object {
 
-	public Message(String messageType) {
+	protected Message(String messageType) {
 		$set("message-type", messageType);
 	}
 

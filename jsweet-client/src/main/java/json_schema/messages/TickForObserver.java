@@ -5,6 +5,7 @@ import static def.jquery.Globals.$;
 import java.util.HashSet;
 import java.util.Set;
 
+import json_schema.events.Event;
 import json_schema.states.BotStateWithId;
 import json_schema.states.BulletState;
 import json_schema.states.RoundState;
@@ -43,13 +44,23 @@ public class TickForObserver extends Message {
 
 		Set<BulletState> set = new HashSet<>();
 		for (BulletState obj : array) {
-			BulletState botState = (BulletState) $.extend(false, new BulletState(), obj);
-			set.add(botState);
+			BulletState bulletState = (BulletState) $.extend(false, new BulletState(), obj);
+			set.add(bulletState);
 		}
 		return set;
 	}
 
-	// TODO: Implement events
+	public Set<Event> getEvents() {
+		@SuppressWarnings("unchecked")
+		Array<Event> array = (Array<Event>) $.extend(true, new Array<Event>(), $get("events"));
+
+		Set<Event> set = new HashSet<>();
+		for (Event obj : array) {
+			Event event = (Event) $.extend(false, new Event(null), obj);
+			set.add(event);
+		}
+		return set;
+	}
 
 	public static TickForObserver map(Object obj) {
 		return (TickForObserver) $.extend(false, new TickForObserver(), obj);

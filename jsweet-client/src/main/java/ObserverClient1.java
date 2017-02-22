@@ -40,6 +40,7 @@ public class ObserverClient1 {
 	private Set<Participant> participants;
 	private Set<BotStateWithId> botStates;
 	private Set<BulletState> bulletStates;
+	private Set<json_schema.events.Event> events;
 
 	public ObserverClient1() {
 		ws = new jsweet.dom.WebSocket("ws://localhost:50000");
@@ -121,6 +122,7 @@ public class ObserverClient1 {
 
 		botStates = tfo.getBotStates();
 		bulletStates = tfo.getBulletStates();
+		events = tfo.getEvents();
 
 		draw();
 	}
@@ -148,6 +150,10 @@ public class ObserverClient1 {
 			drawGun(x, y, bot.getGunDirection());
 
 			// fillCircle(pos.getX(), pos.getY(), 18, "red"); // bounding circle
+		}
+
+		for (json_schema.events.Event event : events) {
+			console.info("Event: " + event.getMessageType());
 		}
 	}
 
