@@ -1,17 +1,20 @@
+import static def.jquery.Globals.$;
 import static jsweet.dom.Globals.console;
 import static jsweet.dom.Globals.document;
 import static jsweet.dom.Globals.window;
 import static jsweet.util.Globals.union;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import json_schema.GameSetup;
 import json_schema.Participant;
+import json_schema.events.BotDeathEvent;
 import json_schema.messages.Message;
 import json_schema.messages.NewBattleForObserver;
 import json_schema.messages.ObserverHandshake;
 import json_schema.messages.TickForObserver;
-import json_schema.states.BotState;
 import json_schema.states.BotStateWithId;
 import json_schema.states.BulletState;
 import json_schema.types.Position;
@@ -42,6 +45,9 @@ public class ObserverClient1 {
 	private Set<BulletState> bulletStates;
 	private Set<json_schema.events.Event> events;
 
+	private Map<Integer /* botId */, Position> lastBotPositions = new HashMap<>();
+	private Map<Integer /* botId */, Integer /* explosion size */> explosions = new HashMap<>();
+
 	public ObserverClient1() {
 		ws = new jsweet.dom.WebSocket("ws://localhost:50000");
 
@@ -63,8 +69,6 @@ public class ObserverClient1 {
 	}
 
 	private Void onOpen(Event e) {
-		console.info("onOpen: " + e.toString());
-
 		ObserverHandshake handshake = new ObserverHandshake();
 		handshake.setName("Observer name");
 		handshake.setVersion("0.1");
@@ -76,13 +80,10 @@ public class ObserverClient1 {
 	}
 
 	private Void onClose(CloseEvent e) {
-		console.info("onClose: " + e.toString());
 		return null;
 	}
 
 	private Void onMessage(MessageEvent e) {
-		console.info("onMessage: " + e.toString());
-
 		java.lang.Object data = e.$get("data");
 		if (data instanceof String) {
 			java.lang.Object obj = JSON.parse((String) data);
@@ -106,8 +107,6 @@ public class ObserverClient1 {
 	}
 
 	private void handleNewBattleForObserver(NewBattleForObserver nbfo) {
-		console.info("handle(NewBattleForObserver)");
-
 		gameSetup = nbfo.getGameSetup();
 		participants = nbfo.getParticipants();
 
@@ -118,13 +117,31 @@ public class ObserverClient1 {
 	}
 
 	private void handleTickForObserver(TickForObserver tfo) {
-		console.info("handle(TickForObserver)");
-
 		botStates = tfo.getBotStates();
 		bulletStates = tfo.getBulletStates();
 		events = tfo.getEvents();
 
+		for (BotStateWithId bot : botStates) {
+			lastBotPositions.put(bot.getId(), bot.getPosition());
+		}
+
+		for (json_schema.events.Event event : events) {
+			if (BotDeathEvent.TYPE.equals(event.getType())) {
+				BotDeathEvent botDeathEvent = (BotDeathEvent) $.extend(false, new BotDeathEvent(), event);
+				explosions.put(botDeathEvent.getVictimId(), 40);
+			}
+		}
+
 		draw();
+
+		for (Map.Entry<Integer, Integer> entry : explosions.entrySet()) {
+			int size = entry.getValue() - 5;
+			if (size > 0) {
+				explosions.put(entry.getKey(), size);
+			} else {
+				explosions.remove(entry.getKey());
+			}
+		}
 	}
 
 	private void draw() {
@@ -135,12 +152,10 @@ public class ObserverClient1 {
 		for (BulletState bullet : bulletStates) {
 			Position pos = bullet.getPosition();
 
-			console.info("(" + pos.getX() + "," + pos.getY() + ")");
-
 			drawBullet(pos.getX(), pos.getY(), bullet.getPower());
 		}
 
-		for (BotState bot : botStates) {
+		for (BotStateWithId bot : botStates) {
 			Position pos = bot.getPosition();
 
 			double x = pos.getX();
@@ -148,12 +163,14 @@ public class ObserverClient1 {
 
 			drawBotBody(x, y, bot.getDirection());
 			drawGun(x, y, bot.getGunDirection());
-
-			// fillCircle(pos.getX(), pos.getY(), 18, "red"); // bounding circle
 		}
 
-		for (json_schema.events.Event event : events) {
-			console.info("Event: " + event.getType());
+		for (Map.Entry<Integer, Integer> entry : explosions.entrySet()) {
+			Integer botId = entry.getKey();
+			int size = entry.getValue();
+
+			Position pos = lastBotPositions.get(botId);
+			fillCircle(pos.getX(), pos.getY(), size, "red");
 		}
 	}
 
