@@ -287,9 +287,10 @@ public final class GameServer {
 		// Send game state as 'tick' to participants
 		for (BotConn participant : participants) {
 			TickForBot tickForBot = TurnToTickForBotMapper.map(round, turn, participant.getId());
-
-			String msg = gson.toJson(tickForBot);
-			send(participant.getConnection(), msg);
+			if (tickForBot != null) { // Bot alive?
+				String msg = gson.toJson(tickForBot);
+				send(participant.getConnection(), msg);
+			}
 		}
 
 		// Send delayed tick to observers

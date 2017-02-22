@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,8 +52,8 @@ public final class Turn {
 		return Collections.unmodifiableSet(bots);
 	}
 
-	public Bot getBot(int botId) {
-		return bots.stream().filter(b -> b.getId() == botId).findAny().get();
+	public Optional<Bot> getBot(int botId) {
+		return bots.stream().filter(b -> b.getId() == botId).findAny();
 	}
 
 	public Set<Bullet> getBullets() {

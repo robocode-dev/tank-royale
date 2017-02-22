@@ -142,6 +142,9 @@ public class ModelUpdater {
 		turnNumber++;
 		turnBuilder.setTurnNumber(turnNumber);
 
+		// Remove dead bots (cannot participate in new round)
+		removeDeadBots();
+
 		// Execute bot intents
 		executeBotIntents();
 
@@ -151,16 +154,14 @@ public class ModelUpdater {
 		// Check bot to bot collisions
 		checkBotCollisions();
 
-		// FIXME: Temporarily uncommented
-
-		// // Check bullet hits (bullet-bullet and bullet-bot) (current -> next position)
-		// checkBulletHits();
+		// Check bullet hits (bullet-bullet and bullet-bot)
+		checkBulletHits();
 
 		// Fire guns
 		cooldownAndFireGuns();
 
-		// // Cleanup dead robots (remove from arena + events)
-		// checkForKilledBots();
+		// Cleanup killed robots (events)
+		checkForKilledBots();
 
 		// Update bullet positions to new position
 		updateBulletPositions();
@@ -343,7 +344,7 @@ public class ModelUpdater {
 				}
 			}
 
-			// Check bullet-bot collition (hit)
+			// Check bullet-bot collision (hit)
 
 			Position startPos1 = boundingLines[i].start;
 
@@ -523,7 +524,7 @@ public class ModelUpdater {
 			double x = position.x;
 			double y = position.y;
 
-			Position oldPosition = previousTurn.getBot(botBuilder.getId()).getPosition();
+			Position oldPosition = previousTurn.getBot(botBuilder.getId()).get().getPosition();
 			double dx = x - oldPosition.x;
 			double dy = y - oldPosition.y;
 
@@ -606,8 +607,16 @@ public class ModelUpdater {
 				BotDeathEvent botDeathEvent = new BotDeathEvent(victimId);
 				turnBuilder.addPublicBotEvent(botDeathEvent);
 				turnBuilder.addObserverEvent(botDeathEvent);
+			}
+		}
+	}
 
-				botBuildersMap.remove(victimId);
+	private void removeDeadBots() {
+		Iterator<Bot.Builder> iterator = botBuildersMap.values().iterator(); // due to removal
+		while (iterator.hasNext()) {
+			Bot.Builder botBuilder = iterator.next();
+			if (botBuilder.isDead()) {
+				iterator.remove();
 			}
 		}
 	}
