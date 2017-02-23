@@ -5,12 +5,14 @@ import static jsweet.dom.Globals.window;
 import static jsweet.util.Globals.union;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import json_schema.GameSetup;
 import json_schema.Participant;
 import json_schema.events.BotDeathEvent;
+import json_schema.events.BulletHitBotEvent;
 import json_schema.messages.Message;
 import json_schema.messages.NewBattleForObserver;
 import json_schema.messages.ObserverHandshake;
@@ -46,7 +48,7 @@ public class ObserverClient1 {
 	private Set<json_schema.events.Event> events;
 
 	private Map<Integer /* botId */, Position> lastBotPositions = new HashMap<>();
-	private Map<Integer /* botId */, Integer /* explosion size */> explosions = new HashMap<>();
+	private Set<Explosion> explosions = new HashSet<>();
 
 	public ObserverClient1() {
 		ws = new jsweet.dom.WebSocket("ws://localhost:50000");
@@ -128,18 +130,24 @@ public class ObserverClient1 {
 		for (json_schema.events.Event event : events) {
 			if (BotDeathEvent.TYPE.equals(event.getType())) {
 				BotDeathEvent botDeathEvent = (BotDeathEvent) $.extend(false, new BotDeathEvent(), event);
-				explosions.put(botDeathEvent.getVictimId(), 40);
+
+				Position pos = lastBotPositions.get(botDeathEvent.getVictimId());
+				explosions.add(new Explosion(pos, 40));
+
+			} else if (BulletHitBotEvent.TYPE.equals(event.getType())) {
+				BulletHitBotEvent bulletHitBotEvent = (BulletHitBotEvent) $.extend(false, new BulletHitBotEvent(),
+						event);
+
+				explosions.add(new Explosion(bulletHitBotEvent.getBullet().getPosition(), 15));
 			}
 		}
 
 		draw();
 
-		for (Map.Entry<Integer, Integer> entry : explosions.entrySet()) {
-			int size = entry.getValue() - 5;
-			if (size > 0) {
-				explosions.put(entry.getKey(), size);
-			} else {
-				explosions.remove(entry.getKey());
+		for (Explosion explosion : explosions) {
+			explosion.size -= 5;
+			if (explosion.size <= 0) {
+				explosions.remove(explosion);
 			}
 		}
 	}
@@ -165,12 +173,9 @@ public class ObserverClient1 {
 			drawGun(x, y, bot.getGunDirection());
 		}
 
-		for (Map.Entry<Integer, Integer> entry : explosions.entrySet()) {
-			Integer botId = entry.getKey();
-			int size = entry.getValue();
-
-			Position pos = lastBotPositions.get(botId);
-			fillCircle(pos.getX(), pos.getY(), size, "red");
+		for (Explosion explosion : explosions) {
+			Position pos = explosion.pos;
+			fillCircle(pos.getX(), pos.getY(), explosion.size, "red");
 		}
 	}
 
@@ -216,5 +221,15 @@ public class ObserverClient1 {
 		ctx.fillStyle = union(color);
 		ctx.arc(x, y, r, 0, 2 * Math.PI, false);
 		ctx.fill();
+	}
+
+	class Explosion {
+		Position pos;
+		int size;
+
+		Explosion(Position pos, int size) {
+			this.pos = pos;
+			this.size = size;
+		}
 	}
 }

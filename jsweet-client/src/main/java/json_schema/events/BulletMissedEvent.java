@@ -13,6 +13,6 @@ public class BulletMissedEvent extends Event {
 	}
 
 	public BulletState getBullet() {
-		return (BulletState) $.extend(false, new BulletState(), $get("bullet-state"));
+		return (BulletState) $.extend(false, new BulletState(), $get("bullet"));
 	}
 }
