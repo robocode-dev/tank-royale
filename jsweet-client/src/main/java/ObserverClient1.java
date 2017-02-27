@@ -169,8 +169,7 @@ public class ObserverClient1 {
 			double x = pos.getX();
 			double y = pos.getY();
 
-			drawBotBody(x, y, bot.getDirection());
-			drawGun(x, y, bot.getGunDirection());
+			drawBot(x, y, bot);
 		}
 
 		for (Explosion explosion : explosions) {
@@ -182,6 +181,12 @@ public class ObserverClient1 {
 	private void drawBullet(double x, double y, double power) {
 		double size = Math.max(Math.sqrt(5 * power), 1);
 		fillCircle(x, y, size, "white");
+	}
+
+	private void drawBot(double x, double y, BotStateWithId bot) {
+		drawBotBody(x, y, bot.getDirection());
+		drawGun(x, y, bot.getGunDirection());
+		drawLabels(x, y, bot.getId(), bot.getEnergyLevel());
 	}
 
 	private void drawBotBody(double x, double y, double angle) {
@@ -212,6 +217,27 @@ public class ObserverClient1 {
 
 		ctx.fillStyle = union("cyan");
 		ctx.fillRect(10, -2, 14, 4);
+
+		ctx.restore();
+	}
+
+	private void drawLabels(double x, double y, int botId, double energy) {
+		ctx.save();
+
+		ctx.fillStyle = union("white");
+		ctx.font = "10px Arial";
+
+		int energyTimes10 = (int) (10 * energy);
+		int energyDec = energyTimes10 % 10;
+		int energyInt = energyTimes10 / 10;
+
+		String idStr = "" + botId;
+		String energyStr = energyInt + "." + energyDec;
+		double idWidth = ctx.measureText(idStr).width;
+		double energyWidth = ctx.measureText(energyStr).width;
+
+		ctx.fillText(idStr, x - idWidth / 2, y + 30 + 10);
+		ctx.fillText(energyStr, x - energyWidth / 2, y - 30);
 
 		ctx.restore();
 	}

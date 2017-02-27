@@ -8,7 +8,7 @@ import json_schema.types.Position;
 public class BotState extends jsweet.lang.Object {
 
 	public Double getEnergyLevel() {
-		return (Double) $get("energy-level");
+		return (Double) $get("energy");
 	}
 
 	public Position getPosition() {
