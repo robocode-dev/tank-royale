@@ -59,8 +59,8 @@ public final class GameState {
 			return this;
 		}
 
-		public Builder setGameEnded(boolean gameEnded) {
-			this.gameEnded = gameEnded;
+		public Builder setGameEnded() {
+			this.gameEnded = true;
 			return this;
 		}
 

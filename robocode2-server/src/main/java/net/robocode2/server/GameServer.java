@@ -299,6 +299,8 @@ public final class GameServer {
 		Turn observerTurn = observerRound.getLastTurn();
 
 		if (gameState.isGameEnded()) {
+			System.out.println("#### GAME OVER #####");
+
 			delayedObserverTurnNumber++;
 			if (delayedObserverTurnNumber == observerTurn.getTurnNumber()) {
 				// Stop timer for updating game state
@@ -325,10 +327,6 @@ public final class GameServer {
 				String msg = gson.toJson(tickForObserver);
 				send(entry.getKey(), msg);
 			}
-		}
-
-		if (turn.getTurnNumber() > 1000) { // FIXME
-			updateGameStateTimer.cancel();
 		}
 	}
 

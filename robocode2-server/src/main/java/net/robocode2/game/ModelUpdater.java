@@ -169,6 +169,9 @@ public class ModelUpdater {
 		// Check bullet wall collisions
 		checkBulletWallCollisions();
 
+		// Check if the round is over
+		checkIfRoundOrGameOver();
+
 		// Store bot snapshots
 		Set<Bot> bots = new HashSet<>();
 		for (Bot.Builder botBuilder : botBuildersMap.values()) {
@@ -260,7 +263,6 @@ public class ModelUpdater {
 	}
 
 	private void executeBotIntents() {
-		// TODO: Limit turn rates + speed and bullet power
 
 		for (Integer botId : botBuildersMap.keySet()) {
 			Bot.Builder botBuilder = botBuildersMap.get(botId);
@@ -594,7 +596,7 @@ public class ModelUpdater {
 			if ((position.x <= 0) || (position.x >= setup.getArenaWidth()) || (position.y <= 0)
 					|| (position.y >= setup.getArenaHeight())) {
 
-				iterator.remove(); // remove bullet from arena,
+				iterator.remove(); // remove bullet from arena
 
 				BulletMissedEvent bulletMissedEvent = new BulletMissedEvent(bulletBuilder.build());
 				turnBuilder.addPrivateBotEvent(bulletBuilder.getBotId(), bulletMissedEvent);
@@ -620,7 +622,7 @@ public class ModelUpdater {
 		while (iterator.hasNext()) {
 			Bot.Builder botBuilder = iterator.next();
 			if (botBuilder.isDead()) {
-				iterator.remove();
+				iterator.remove(); // remove bot from arena
 			}
 		}
 	}
@@ -677,6 +679,18 @@ public class ModelUpdater {
 		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(bullet);
 		turnBuilder.addPrivateBotEvent(botId, bulletFiredEvent);
 		turnBuilder.addObserverEvent(bulletFiredEvent);
+	}
+
+	private void checkIfRoundOrGameOver() {
+		if (botBuildersMap.size() <= 1) {
+			// Round ended
+			roundEnded = true;
+
+			if (roundNumber == setup.getNumberOfRounds()) {
+				// Game over
+				gameStateBuilder.setGameEnded();
+			}
+		}
 	}
 
 	private static double randomDirection() {
