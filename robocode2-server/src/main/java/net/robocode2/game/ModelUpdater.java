@@ -253,8 +253,8 @@ public class ModelUpdater {
 				x *= cellWidth;
 				y *= cellHeight;
 
-				x += Math.random() * (cellWidth - BOT_BOUNDING_CIRCLE_DIAMETER);
-				y += Math.random() * (cellHeight - BOT_BOUNDING_CIRCLE_DIAMETER);
+				x += BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (cellWidth - BOT_BOUNDING_CIRCLE_DIAMETER);
+				y += BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (cellHeight - BOT_BOUNDING_CIRCLE_DIAMETER);
 
 				break;
 			}
@@ -576,6 +576,12 @@ public class ModelUpdater {
 
 			if (hitWall) {
 				botBuilder.setPosition(new Position(x, y));
+
+				// Skip this check, if the bot hit the wall in the previous turn
+				if (previousTurn.getBotEvents(botBuilder.getId()).stream()
+						.anyMatch(e -> e instanceof BotHitWallEvent)) {
+					continue;
+				}
 
 				BotHitWallEvent botHitWallEvent = new BotHitWallEvent(botBuilder.getId());
 				turnBuilder.addPrivateBotEvent(botBuilder.getId(), botHitWallEvent);
