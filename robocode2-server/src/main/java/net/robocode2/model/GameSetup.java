@@ -78,8 +78,8 @@ public final class GameSetup {
 
 	public static final class Builder {
 		private String gameType = "melee";
-		private int arenaWidth = 500; // 1000
-		private int arenaHeight = 500; // 1000
+		private int arenaWidth = 300; // FIXME: 1000
+		private int arenaHeight = 300; // FIXME: 1000
 		private int minNumberOfParticipants = 2;
 		private Integer maxNumberOfParticipants;
 		private int numberOfRounds = 10;

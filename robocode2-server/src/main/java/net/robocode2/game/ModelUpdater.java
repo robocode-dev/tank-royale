@@ -351,24 +351,28 @@ public class ModelUpdater {
 			for (Bot.Builder botBuilder : botBuildersMap.values()) {
 				Position botPos = botBuilder.getPosition();
 
+				Bullet.Builder bulletBuilder = bulletBuilders[i];
+
+				int botId = bulletBuilder.getBotId();
+				int victimId = botBuilder.getId();
+
+				if (botId == victimId) {
+					// A bot cannot shot itself. The bullet must leave the cannon before it counts
+					continue;
+				}
+
 				if (MathUtil.isLineIntersectingCircle(startPos1.x, startPos1.y, endPos1.x, endPos1.y, botPos.x,
 						botPos.y, BOT_BOUNDING_CIRCLE_RADIUS)) {
 
-					Bullet.Builder bulletBuilder = bulletBuilders[i];
-					Bullet bullet = bulletBuilder.build();
-
-					int botId = bullet.getBotId();
-					int victimId = botBuilder.getId();
-
-					double damage = Physics.calcBulletDamage(bullet.getPower());
+					double damage = Physics.calcBulletDamage(bulletBuilder.getPower());
 					boolean killed = botBuilder.addDamage(damage);
 
-					double energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
+					double energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bulletBuilder.getPower();
 					botBuildersMap.get(botId).increaseEnergy(energyBonus);
 
 					scoreKeeper.addBulletHit(botId, victimId, damage, killed);
 
-					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet, victimId, damage,
+					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bulletBuilder.build(), victimId, damage,
 							botBuilder.getEnergy());
 
 					turnBuilder.addPrivateBotEvent(botId, bulletHitBotEvent);
