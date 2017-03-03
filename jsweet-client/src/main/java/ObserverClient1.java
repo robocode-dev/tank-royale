@@ -19,6 +19,7 @@ import json_schema.messages.ObserverHandshake;
 import json_schema.messages.TickForObserver;
 import json_schema.states.BotStateWithId;
 import json_schema.states.BulletState;
+import json_schema.types.Arc;
 import json_schema.types.Position;
 import jsweet.dom.CanvasRenderingContext2D;
 import jsweet.dom.CloseEvent;
@@ -68,6 +69,8 @@ public class ObserverClient1 {
 
 		canvas = (HTMLCanvasElement) document.getElementById("canvas");
 		ctx = canvas.getContext(StringTypes._2d);
+
+		drawSingleBot(); // FIXME
 	}
 
 	private Void onOpen(Event e) {
@@ -152,6 +155,35 @@ public class ObserverClient1 {
 		}
 	}
 
+	private void drawSingleBot() {
+		// Clear canvas
+		ctx.fillStyle = union("black");
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+		double x = 50;
+		double y = 50;
+
+		Position pos = new Position();
+		pos.$set("x", x);
+		pos.$set("y", y);
+
+		Arc scanArc = new Arc();
+		scanArc.$set("angle", -45);
+		scanArc.$set("radius", 1200);
+
+		BotStateWithId bot = new BotStateWithId();
+		bot.$set("id", "Bot");
+		bot.$set("energy", 100);
+		bot.$set("position", pos);
+		bot.$set("direction", 0);
+		bot.$set("gun-direction", 30);
+		bot.$set("radar-direction", 20);
+		bot.$set("speed", 0);
+		bot.$set("scan-arc", scanArc);
+
+		drawBot(x, y, bot);
+	}
+
 	private void draw() {
 		// Clear canvas
 		ctx.fillStyle = union("black");
@@ -186,38 +218,87 @@ public class ObserverClient1 {
 	private void drawBot(double x, double y, BotStateWithId bot) {
 		drawBotBody(x, y, bot.getDirection());
 		drawGun(x, y, bot.getGunDirection());
+		drawRadar(x, y, bot.getRadarDirection());
+		drawScanArc(x, y, bot.getRadarDirection(), bot.getScanArc());
 		drawLabels(x, y, bot.getId(), bot.getEnergyLevel());
 	}
 
-	private void drawBotBody(double x, double y, double angle) {
+	private void drawBotBody(double x, double y, double direction) {
 		ctx.save();
 
-		ctx.beginPath();
 		ctx.translate(x, y);
-		ctx.rotate(angle * Math.PI / 180);
+		ctx.rotate(toRad(direction));
 
 		ctx.fillStyle = union("blue");
+		ctx.beginPath();
 		ctx.fillRect(-18, -18 + 1 + 6, 36, 36 - 2 * 7);
 
 		ctx.fillStyle = union("gray");
+		ctx.beginPath();
 		ctx.fillRect(-18, -18, 36, 6);
 		ctx.fillRect(-18, 18 - 6, 36, 6);
 
 		ctx.restore();
 	}
 
-	private void drawGun(double x, double y, double angle) {
+	private void drawGun(double x, double y, double direction) {
 		ctx.save();
 
-		fillCircle(x, y, 10, "cyan");
+		ctx.translate(x, y);
+
+		ctx.fillStyle = union("lightgray");
+		ctx.beginPath();
+		ctx.arc(0, 0, 10, 0, toRad(360));
+		ctx.fill();
 
 		ctx.beginPath();
+		ctx.rotate(toRad(direction));
+		ctx.rect(10, -2, 14, 4);
+		ctx.fill();
+
+		ctx.restore();
+	}
+
+	private void drawRadar(double x, double y, double direction) {
+		ctx.save();
+
 		ctx.translate(x, y);
-		ctx.rotate(angle * Math.PI / 180);
+		ctx.rotate(toRad(direction));
 
-		ctx.fillStyle = union("cyan");
-		ctx.fillRect(10, -2, 14, 4);
+		ctx.fillStyle = union("red");
+		ctx.beginPath();
+		ctx.arc(10, 0, 15, 7 * Math.PI / 10, Math.PI * 2 - 7 * Math.PI / 10, false);
+		ctx.arc(12, 0, 13, Math.PI * 2 - 7 * Math.PI / 10, 7 * Math.PI / 10, true);
+		ctx.fill();
 
+		ctx.beginPath();
+		ctx.arc(0, 0, 4, 0, 2 * Math.PI);
+		ctx.fill();
+
+		ctx.restore();
+	}
+
+	private void drawScanArc(double x, double y, double direction, Arc scanArc) {
+
+		double angle = toRad(scanArc.getAngle());
+
+		String color = "rgba(0, 255, 255, 0.5)";
+
+		ctx.save();
+		ctx.translate(x, y);
+		ctx.rotate(toRad(direction));
+		if (Math.abs(angle) < 0.0001) {
+			ctx.strokeStyle = union(color);
+			ctx.lineTo(scanArc.getRadius(), 0);
+			ctx.stroke();
+		} else {
+			ctx.fillStyle = union(color);
+			ctx.beginPath();
+			ctx.moveTo(0, 0);
+			ctx.arc(0, 0, scanArc.getRadius(), 0, angle, (angle < 0));
+			ctx.lineTo(0, 0);
+			ctx.fill();
+		}
 		ctx.restore();
 	}
 
@@ -243,10 +324,14 @@ public class ObserverClient1 {
 	}
 
 	private void fillCircle(double x, double y, double r, String color) {
-		ctx.beginPath();
 		ctx.fillStyle = union(color);
-		ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+		ctx.beginPath();
+		ctx.arc(x, y, r, 0, 2 * Math.PI);
 		ctx.fill();
+	}
+
+	private double toRad(double deg) {
+		return deg * Math.PI / 180;
 	}
 
 	class Explosion {
