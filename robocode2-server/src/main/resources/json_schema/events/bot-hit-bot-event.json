@@ -10,11 +10,11 @@
 	},
 	"properties": {
 		"bot-id": {
-			"description": "Unique id of the bot that hit another bot",
+			"description": "ID of the bot that hit another bot",
 			"type": "integer"
 		},
 		"victim-id": {
-			"description": "Unique id of the victim bot that got hit",
+			"description": "ID of the victim bot that got hit",
 			"type": "integer"
 		},
 		"energy": {

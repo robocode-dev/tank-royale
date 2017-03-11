@@ -40,6 +40,7 @@ import net.robocode2.model.events.BulletFiredEvent;
 import net.robocode2.model.events.BulletHitBotEvent;
 import net.robocode2.model.events.BulletHitBulletEvent;
 import net.robocode2.model.events.BulletMissedEvent;
+import net.robocode2.model.events.ScannedBotEvent;
 
 public class ModelUpdater {
 
@@ -154,20 +155,23 @@ public class ModelUpdater {
 		// Check bot to bot collisions
 		checkBotCollisions();
 
-		// Check bullet hits (bullet-bullet and bullet-bot)
-		checkBulletHits();
-
-		// Fire guns
-		cooldownAndFireGuns();
-
-		// Cleanup killed robots (events)
-		checkForKilledBots();
-
 		// Update bullet positions to new position
 		updateBulletPositions();
 
 		// Check bullet wall collisions
 		checkBulletWallCollisions();
+
+		// Check bullet hits
+		checkBulletHits();
+
+		// Cleanup killed robots (events)
+		checkForKilledBots();
+
+		// Fire guns
+		cooldownAndFireGuns();
+
+		// Generate scan events
+		checkScanArcs();
 
 		// Check if the round is over
 		checkIfRoundOrGameOver();
@@ -405,16 +409,10 @@ public class ModelUpdater {
 
 	private void checkBotCollisions() {
 
-		Position[] positions = new Position[botBuildersMap.size()];
-
 		Bot.Builder[] botBuilders = new Bot.Builder[botBuildersMap.size()];
 		botBuilders = botBuildersMap.values().toArray(botBuilders);
 
-		for (int i = positions.length - 1; i >= 0; i--) {
-			positions[i] = botBuilders[i].getPosition();
-		}
-
-		for (int i = positions.length - 1; i >= 0; i--) {
+		for (int i = botBuilders.length - 1; i >= 0; i--) {
 			Position pos1 = botBuilders[i].getPosition();
 
 			for (int j = i - 1; j >= 0; j--) {
@@ -501,6 +499,33 @@ public class ModelUpdater {
 			return false;
 		}
 		return ((dx * dx) + (dy * dy) <= BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED);
+	}
+
+	private static final double RADAR_RADIUS_SQUARED = RADAR_RADIUS * RADAR_RADIUS;
+
+	private static boolean isBotInScanArc(Bot.Builder scanningBot, Position scannedBotPosition) {
+		Position scanningPosition = scanningBot.getPosition();
+
+		double dx = scannedBotPosition.x - scanningPosition.x;
+		if (Math.abs(dx) > RADAR_RADIUS) {
+			return false;
+		}
+		double dy = scannedBotPosition.y - scannedBotPosition.y;
+		if (Math.abs(dy) > RADAR_RADIUS) {
+			return false;
+		}
+		if ((dx * dx) + (dy * dy) > RADAR_RADIUS_SQUARED) {
+			return false;
+		}
+
+		Arc scanArc = scanningBot.getScanArc();
+
+		double botAngle = Math.atan2(dy, dx);
+		double spanAngle = scanArc.getAngle();
+		double startAngle = scanningBot.getRadarDirection();
+		double endAngle = startAngle + spanAngle;
+		return (((spanAngle >= 0) && (botAngle >= startAngle && botAngle <= endAngle))
+				|| (botAngle >= endAngle && botAngle >= startAngle));
 	}
 
 	private static boolean isRamming(ImmutableBot bot, ImmutableBot victim) {
@@ -685,6 +710,42 @@ public class ModelUpdater {
 		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(bullet);
 		turnBuilder.addPrivateBotEvent(botId, bulletFiredEvent);
 		turnBuilder.addObserverEvent(bulletFiredEvent);
+	}
+
+	private void checkScanArcs() {
+
+		Bot.Builder[] botBuilders = new Bot.Builder[botBuildersMap.size()];
+		botBuilders = botBuildersMap.values().toArray(botBuilders);
+
+		for (int i = botBuilders.length - 1; i >= 0; i--) {
+			Bot.Builder scanningBot = botBuilders[i];
+
+			for (int j = i - 1; j >= 0; j--) {
+				Bot.Builder scannedBot = botBuilders[j];
+
+				Position scannedPos = null;
+
+				Position currentPos = botBuilders[j].getPosition();
+				if (isBotInScanArc(scanningBot, currentPos)) {
+					scannedPos = currentPos;
+				} else {
+					Position prevPos = previousTurn.getBot(scannedBot.getId()).get().getPosition();
+
+					if (isBotInScanArc(scanningBot, prevPos)) {
+						scannedPos = prevPos;
+					}
+				}
+
+				if (scannedPos != null) {
+					ScannedBotEvent scannedBotEvent = new ScannedBotEvent(scanningBot.getId(), scannedBot.getId(),
+							scannedBot.getEnergy(), scannedBot.getPosition(), scannedBot.getDirection(),
+							scannedBot.getSpeed());
+
+					turnBuilder.addPrivateBotEvent(scanningBot.getId(), scannedBotEvent);
+					turnBuilder.addObserverEvent(scannedBotEvent);
+				}
+			}
+		}
 	}
 
 	private void checkIfRoundOrGameOver() {

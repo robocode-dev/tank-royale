@@ -9,7 +9,7 @@
 	},
     "properties": {
         "id": {
-            "description": "Unique identifier of bot for the observer",
+            "description": "ID of bot for the observer",
             "type": "integer"
         }
 	},

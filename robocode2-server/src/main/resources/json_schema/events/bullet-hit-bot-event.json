@@ -14,7 +14,7 @@
 			"$ref": "../states/bullet-state.json"
 		},
 		"victim-id": {
-			"description": "Unique id of the bot that got hit",
+			"description": "ID of the bot that got hit",
 			"type": "integer"
 		},
 		"damage": {

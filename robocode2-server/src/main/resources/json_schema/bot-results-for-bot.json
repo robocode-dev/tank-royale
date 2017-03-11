@@ -6,7 +6,7 @@
 	"javaType": "net.robocode2.json_schema.BotResultsForBot",
 	"properties": {
 		"id": {
-			"description": "Unique identifier of the bot used in this battle, but only for this bot",
+			"description": "ID of the bot used in this battle, but only for this bot",
 			"type": "integer"
 		},
 		"rank": {

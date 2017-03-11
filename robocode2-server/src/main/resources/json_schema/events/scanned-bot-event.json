@@ -9,8 +9,12 @@
 		"default": "scanned-bot-event"
 	},
 	"properties": {
-		"botId": {
-			"description": "Unique identifier, but only for the scanned bot",
+		"scannedByBotId": {
+			"description": "ID of the bot that performed the scanning",
+			"type": "integer"
+		},
+		"scannedBotId": {
+			"description": "ID of the bot that was scanned",
 			"type": "integer"
 		},
 		"energy": {
@@ -31,7 +35,8 @@
 		}
 	},
 	"required": [
-		"botId",
+		"scannedByBotId",
+		"scannedBotId",
 		"energy",
 		"position",
 		"direction",

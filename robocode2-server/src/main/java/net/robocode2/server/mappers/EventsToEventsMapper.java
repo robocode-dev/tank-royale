@@ -118,7 +118,8 @@ public final class EventsToEventsMapper {
 	private static ScannedBotEvent map(net.robocode2.model.events.ScannedBotEvent scannedBotEvent) {
 		ScannedBotEvent event = new ScannedBotEvent();
 		event.setType(Type.SCANNED_BOT_EVENT);
-		event.setBotId(scannedBotEvent.getBotId());
+		event.setScannedByBotId(scannedBotEvent.getScannedByBotId());
+		event.setScannedBotId(scannedBotEvent.getScannedBotId());
 		event.setEnergy(scannedBotEvent.getEnergy());
 		event.setPosition(PositionMapper.map(scannedBotEvent.getPosition()));
 		event.setDirection(scannedBotEvent.getDirection());

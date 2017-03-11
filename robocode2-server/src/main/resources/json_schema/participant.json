@@ -6,7 +6,7 @@
 	"javaType": "net.robocode2.json_schema.Participant",
 	"properties": {
 		"id": {
-			"description": "Unique identifier for the participant in a battle",
+			"description": "IDentifier for the participant in a battle",
 			"type": "integer"
 		},
 		"name": {

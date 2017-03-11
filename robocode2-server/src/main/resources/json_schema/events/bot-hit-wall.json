@@ -10,7 +10,7 @@
 	},
 	"properties": {
 		"victim-id": {
-			"description": "Unique id of the bot that hit the wall",
+			"description": "ID of the bot that hit the wall",
 			"type": "integer"
 		}
 	},

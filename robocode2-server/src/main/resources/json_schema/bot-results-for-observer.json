@@ -6,7 +6,7 @@
 	"javaType": "net.robocode2.json_schema.BotResultsForObserver",
 	"properties": {
 		"id": {
-			"description": "Unique identifier of the bot used in this battle, but only for this observer",
+			"description": "IDentifier of the bot used in this battle, but only for this observer",
 			"type": "integer"
 		},
 		"name": {
