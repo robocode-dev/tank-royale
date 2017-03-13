@@ -1,5 +1,6 @@
 package net.robocode2.server.mappers;
 
+import net.robocode2.game.MathUtil;
 import net.robocode2.json_schema.states.BulletState;
 import net.robocode2.model.Bullet;
 
@@ -13,7 +14,7 @@ public final class BulletToBulletStateMapper {
 
 		bulletState.setBotId(bullet.getBotId());
 		bulletState.setBulletId(bullet.getBulletId());
-		bulletState.setDirection(direction);
+		bulletState.setDirection(MathUtil.normalAbsoluteAngleDegrees(direction));
 		bulletState.setPower(bullet.getPower());
 		bulletState.setSpeed(speed);
 		bulletState.setPosition(PositionMapper.map(bullet.calcPosition()));

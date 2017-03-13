@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.Set;
 
 import json_schema.GameSetup;
-import json_schema.Participant;
 import json_schema.events.BotDeathEvent;
 import json_schema.events.BulletHitBotEvent;
+import json_schema.events.ScannedBotEvent;
 import json_schema.messages.Message;
 import json_schema.messages.NewBattleForObserver;
 import json_schema.messages.ObserverHandshake;
@@ -43,10 +43,12 @@ public class ObserverClient1 {
 	private CanvasRenderingContext2D ctx;
 
 	private GameSetup gameSetup;
-	private Set<Participant> participants;
+	// private Set<Participant> participants;
 	private Set<BotStateWithId> botStates;
 	private Set<BulletState> bulletStates;
 	private Set<json_schema.events.Event> events;
+
+	private Set<json_schema.events.ScannedBotEvent> scanEvents;
 
 	private Map<Integer /* botId */, Position> lastBotPositions = new HashMap<>();
 	private Set<Explosion> explosions = new HashSet<>();
@@ -70,7 +72,7 @@ public class ObserverClient1 {
 		canvas = (HTMLCanvasElement) document.getElementById("canvas");
 		ctx = canvas.getContext(StringTypes._2d);
 
-		drawSingleBot(); // FIXME
+		// drawSingleBot(); // FIXME
 	}
 
 	private Void onOpen(Event e) {
@@ -113,7 +115,7 @@ public class ObserverClient1 {
 
 	private void handleNewBattleForObserver(NewBattleForObserver nbfo) {
 		gameSetup = nbfo.getGameSetup();
-		participants = nbfo.getParticipants();
+		// participants = nbfo.getParticipants();
 
 		canvas.width = gameSetup.getArenaWidth();
 		canvas.height = gameSetup.getArenaHeight();
@@ -125,6 +127,8 @@ public class ObserverClient1 {
 		botStates = tfo.getBotStates();
 		bulletStates = tfo.getBulletStates();
 		events = tfo.getEvents();
+
+		scanEvents = new HashSet<>();
 
 		for (BotStateWithId bot : botStates) {
 			lastBotPositions.put(bot.getId(), bot.getPosition());
@@ -142,6 +146,11 @@ public class ObserverClient1 {
 						event);
 
 				explosions.add(new Explosion(bulletHitBotEvent.getBullet().getPosition(), 15));
+
+			} else if (ScannedBotEvent.TYPE.equals(event.getType())) {
+				ScannedBotEvent scannedBotEvent = (ScannedBotEvent) $.extend(false, new ScannedBotEvent(), event);
+
+				scanEvents.add(scannedBotEvent);
 			}
 		}
 
@@ -168,7 +177,7 @@ public class ObserverClient1 {
 		pos.$set("y", y);
 
 		Arc scanArc = new Arc();
-		scanArc.$set("angle", -45);
+		scanArc.$set("angle", 0);
 		scanArc.$set("radius", 1200);
 
 		BotStateWithId bot = new BotStateWithId();
@@ -189,24 +198,39 @@ public class ObserverClient1 {
 		ctx.fillStyle = union("black");
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-		for (BulletState bullet : bulletStates) {
-			Position pos = bullet.getPosition();
+		if (bulletStates != null) {
+			for (BulletState bullet : bulletStates) {
+				Position pos = bullet.getPosition();
 
-			drawBullet(pos.getX(), pos.getY(), bullet.getPower());
+				drawBullet(pos.getX(), pos.getY(), bullet.getPower());
+			}
 		}
 
-		for (BotStateWithId bot : botStates) {
-			Position pos = bot.getPosition();
+		if (botStates != null) {
+			for (BotStateWithId bot : botStates) {
+				Position pos = bot.getPosition();
 
-			double x = pos.getX();
-			double y = pos.getY();
+				double x = pos.getX();
+				double y = pos.getY();
 
-			drawBot(x, y, bot);
+				drawBot(x, y, bot);
+			}
 		}
 
-		for (Explosion explosion : explosions) {
-			Position pos = explosion.pos;
-			fillCircle(pos.getX(), pos.getY(), explosion.size, "red");
+		if (scanEvents != null) {
+			for (ScannedBotEvent scanEvent : scanEvents) {
+
+				Position pos = scanEvent.getPosition();
+
+				fillCircle(pos.getX(), pos.getY(), 18, "rgba(255, 0, 0, 0.5");
+			}
+		}
+
+		if (explosions != null) {
+			for (Explosion explosion : explosions) {
+				Position pos = explosion.pos;
+				fillCircle(pos.getX(), pos.getY(), explosion.size, "red");
+			}
 		}
 	}
 
@@ -279,6 +303,7 @@ public class ObserverClient1 {
 	}
 
 	private void drawScanArc(double x, double y, double direction, Arc scanArc) {
+		console.info("drawScanArc: direction=" + direction + ",scanArc.angle=" + scanArc.getAngle());
 
 		double angle = toRad(scanArc.getAngle());
 
@@ -287,10 +312,12 @@ public class ObserverClient1 {
 		ctx.save();
 		ctx.translate(x, y);
 		ctx.rotate(toRad(direction));
+
 		if (Math.abs(angle) < 0.0001) {
 			ctx.strokeStyle = union(color);
 			ctx.lineTo(scanArc.getRadius(), 0);
 			ctx.stroke();
+
 		} else {
 			ctx.fillStyle = union(color);
 			ctx.beginPath();
@@ -299,6 +326,7 @@ public class ObserverClient1 {
 			ctx.lineTo(0, 0);
 			ctx.fill();
 		}
+
 		ctx.restore();
 	}
 

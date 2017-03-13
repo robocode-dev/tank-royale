@@ -12,6 +12,8 @@ import static net.robocode2.model.Physics.RADAR_RADIUS;
 import static net.robocode2.model.Physics.calcBotSpeed;
 import static net.robocode2.model.Physics.calcBulletSpeed;
 import static net.robocode2.model.Physics.calcGunHeat;
+import static net.robocode2.model.Physics.calcScanAngle;
+import static net.robocode2.model.Physics.calcTurnRate;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -287,15 +289,19 @@ public class ModelUpdater {
 			}
 
 			// Turn body, gun, radar, and move bot to new position
-			double direction = normalAbsoluteAngleDegrees(botBuilder.getDirection() + intent.getBodyTurnRate());
+
+			double speed = calcBotSpeed(botBuilder.getSpeed(), intent.getTargetSpeed());
+			double turnRate = calcTurnRate(intent.getBodyTurnRate(), speed);
+			double direction = normalAbsoluteAngleDegrees(botBuilder.getDirection() + turnRate);
 			double gunDirection = normalAbsoluteAngleDegrees(botBuilder.getGunDirection() + intent.getGunTurnRate());
 			double radarDirection = normalAbsoluteAngleDegrees(
 					botBuilder.getRadarDirection() + intent.getRadarTurnRate());
-			double speed = calcBotSpeed(botBuilder.getSpeed(), intent.getTargetSpeed());
+			Arc scanArc = new Arc(calcScanAngle(intent.getRadarTurnRate()), RADAR_RADIUS);
 
 			botBuilder.setDirection(direction);
 			botBuilder.setGunDirection(gunDirection);
 			botBuilder.setRadarDirection(radarDirection);
+			botBuilder.setScanArc(scanArc);
 			botBuilder.setSpeed(speed);
 			botBuilder.moveToNewPosition();
 		}

@@ -9,11 +9,11 @@
 		"default": "scanned-bot-event"
 	},
 	"properties": {
-		"scannedByBotId": {
+		"scanned-by-bot-id": {
 			"description": "ID of the bot that performed the scanning",
 			"type": "integer"
 		},
-		"scannedBotId": {
+		"scanned-bot-id": {
 			"description": "ID of the bot that was scanned",
 			"type": "integer"
 		},
