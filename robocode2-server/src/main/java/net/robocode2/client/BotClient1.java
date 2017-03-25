@@ -22,7 +22,7 @@ import net.robocode2.json_schema.messages.BotIntent;
 import net.robocode2.json_schema.messages.BotReady;
 import net.robocode2.json_schema.messages.NewBattleForBot;
 import net.robocode2.json_schema.messages.TickForBot;
-import net.robocode2.json_schema.types.Position;
+import net.robocode2.json_schema.types.Point;
 
 public class BotClient1 extends WebSocketClient {
 
@@ -99,7 +99,7 @@ public class BotClient1 extends WebSocketClient {
 			} else if (TickForBot.Type.TICK_FOR_BOT.toString().equalsIgnoreCase(type)) {
 				TickForBot tick = gson.fromJson(message, TickForBot.class);
 
-				Position botPos = tick.getBotState().getPosition();
+				Point botPos = tick.getBotState().getPosition();
 
 				// Prepare intent
 				BotIntent intent = new BotIntent();
@@ -110,7 +110,7 @@ public class BotClient1 extends WebSocketClient {
 
 						ScannedBotEvent scanEvent = (ScannedBotEvent) event;
 
-						Position scanPos = scanEvent.getPosition();
+						Point scanPos = scanEvent.getPosition();
 
 						double dx = scanPos.getX() - botPos.getX();
 						double dy = scanPos.getY() - botPos.getY();

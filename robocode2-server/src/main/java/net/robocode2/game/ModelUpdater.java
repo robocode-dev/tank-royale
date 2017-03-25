@@ -30,7 +30,7 @@ import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.ImmutableBot;
 import net.robocode2.model.Physics;
-import net.robocode2.model.Position;
+import net.robocode2.model.Point;
 import net.robocode2.model.Round;
 import net.robocode2.model.Score;
 import net.robocode2.model.Size;
@@ -230,7 +230,7 @@ public class ModelUpdater {
 		turnBuilder.setBots(bots);
 	}
 
-	private Position randomBotPosition(Set<Integer> occupiedCells) {
+	private Point randomBotPosition(Set<Integer> occupiedCells) {
 
 		final int gridWidth = setup.getArenaWidth() / 50;
 		final int gridHeight = setup.getArenaHeight() / 50;
@@ -265,7 +265,7 @@ public class ModelUpdater {
 				break;
 			}
 		}
-		return new Position(x, y);
+		return new Point(x, y);
 	}
 
 	private void executeBotIntents() {
@@ -326,9 +326,9 @@ public class ModelUpdater {
 		for (int i = boundingLines.length - 1; i >= 0; i--) {
 
 			// Check bullet-bullet collision
-			Position endPos1 = boundingLines[i].end;
+			Point endPos1 = boundingLines[i].end;
 			for (int j = i - 1; j >= 0; j--) {
-				Position endPos2 = boundingLines[j].end;
+				Point endPos2 = boundingLines[j].end;
 
 				// Check if the bullets bounding circles intersects (is fast) before checking if the bullets bounding
 				// lines intersect (is slower)
@@ -358,10 +358,10 @@ public class ModelUpdater {
 
 			// Check bullet-bot collision (hit)
 
-			Position startPos1 = boundingLines[i].start;
+			Point startPos1 = boundingLines[i].start;
 
 			for (Bot.Builder botBuilder : botBuildersMap.values()) {
-				Position botPos = botBuilder.getPosition();
+				Point botPos = botBuilder.getPosition();
 
 				Bullet.Builder bulletBuilder = bulletBuilders[i];
 
@@ -401,7 +401,7 @@ public class ModelUpdater {
 	private static final double BULLET_BOUNDING_CIRCLE_DIAMETER_SQUARED = BULLET_BOUNDING_CIRCLE_DIAMETER
 			* BULLET_BOUNDING_CIRCLE_DIAMETER;
 
-	private static boolean isBulletsBoundingCirclesColliding(Position bullet1Position, Position bullet2Position) {
+	private static boolean isBulletsBoundingCirclesColliding(Point bullet1Position, Point bullet2Position) {
 		double dx = bullet2Position.x - bullet1Position.x;
 		if (Math.abs(dx) > BULLET_BOUNDING_CIRCLE_DIAMETER) {
 			return false;
@@ -419,10 +419,10 @@ public class ModelUpdater {
 		botBuilders = botBuildersMap.values().toArray(botBuilders);
 
 		for (int i = botBuilders.length - 1; i >= 0; i--) {
-			Position pos1 = botBuilders[i].getPosition();
+			Point pos1 = botBuilders[i].getPosition();
 
 			for (int j = i - 1; j >= 0; j--) {
-				Position pos2 = botBuilders[j].getPosition();
+				Point pos2 = botBuilders[j].getPosition();
 
 				if (isBotsBoundingCirclesColliding(pos1, pos2)) {
 					final double overlapDist = BOT_BOUNDING_CIRCLE_DIAMETER - MathUtil.distance(pos1, pos2);
@@ -495,7 +495,7 @@ public class ModelUpdater {
 	private static final double BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED = BOT_BOUNDING_CIRCLE_DIAMETER
 			* BOT_BOUNDING_CIRCLE_DIAMETER;
 
-	private static boolean isBotsBoundingCirclesColliding(Position bot1Position, Position bot2Position) {
+	private static boolean isBotsBoundingCirclesColliding(Point bot1Position, Point bot2Position) {
 		double dx = bot2Position.x - bot1Position.x;
 		if (Math.abs(dx) > BOT_BOUNDING_CIRCLE_DIAMETER) { // 2 x radius
 			return false;
@@ -530,11 +530,11 @@ public class ModelUpdater {
 
 		for (Bot.Builder botBuilder : botBuildersMap.values()) {
 
-			Position position = botBuilder.getPosition();
+			Point position = botBuilder.getPosition();
 			double x = position.x;
 			double y = position.y;
 
-			Position oldPosition = previousTurn.getBot(botBuilder.getId()).get().getPosition();
+			Point oldPosition = previousTurn.getBot(botBuilder.getId()).get().getPosition();
 			double dx = x - oldPosition.x;
 			double dy = y - oldPosition.y;
 
@@ -579,7 +579,7 @@ public class ModelUpdater {
 			}
 
 			if (hitWall) {
-				botBuilder.setPosition(new Position(x, y));
+				botBuilder.setPosition(new Point(x, y));
 
 				// Skip this check, if the bot hit the wall in the previous turn
 				if (previousTurn.getBotEvents(botBuilder.getId()).stream()
@@ -601,7 +601,7 @@ public class ModelUpdater {
 		Iterator<Bullet.Builder> iterator = bulletBuildersSet.iterator(); // due to removal
 		while (iterator.hasNext()) {
 			Bullet.Builder bulletBuilder = iterator.next();
-			Position position = bulletBuilder.calcPosition();
+			Point position = bulletBuilder.calcPosition();
 
 			if ((position.x <= 0) || (position.x >= setup.getArenaWidth()) || (position.y <= 0)
 					|| (position.y >= setup.getArenaHeight())) {
@@ -700,7 +700,7 @@ public class ModelUpdater {
 			Bot.Builder scanningBot = botBuilders[i];
 
 			Arc scanArc = scanningBot.getScanArc();
-			Position center = scanningBot.getPosition();
+			Point center = scanningBot.getPosition();
 
 			double angle1, angle2;
 			if (scanArc.getAngle() > 0) {
@@ -716,11 +716,11 @@ public class ModelUpdater {
 
 			double dx = Math.cos(angle1) * scanArc.getRadius();
 			double dy = Math.sin(angle1) * scanArc.getRadius();
-			Position arcStart = new Position(dx, dy);
+			Point arcStart = new Point(dx, dy);
 
 			dx = Math.cos(angle2) * scanArc.getRadius();
 			dy = Math.sin(angle2) * scanArc.getRadius();
-			Position arcEnd = new Position(dx, dy);
+			Point arcEnd = new Point(dx, dy);
 
 			for (int j = i - 1; j >= 0; j--) {
 				Bot.Builder scannedBot = botBuilders[j];
@@ -756,8 +756,8 @@ public class ModelUpdater {
 	}
 
 	private class Line {
-		Position start;
-		Position end;
+		Point start;
+		Point end;
 	}
 
 	public static void main(String[] args) {

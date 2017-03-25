@@ -5,12 +5,12 @@ public final class Bullet {
 	private final int botId;
 	private final int bulletId;
 	private final double power;
-	private final Position firePosition;
+	private final Point firePosition;
 	private final double direction;
 	private final double speed;
 	private final int tick; // Used for calculating position with precision
 
-	public Bullet(int botId, int bulletId, double power, Position firePosition, double direction, double speed,
+	public Bullet(int botId, int bulletId, double power, Point firePosition, double direction, double speed,
 			int tick) {
 		this.botId = botId;
 		this.bulletId = bulletId;
@@ -33,7 +33,7 @@ public final class Bullet {
 		return power;
 	}
 
-	public Position getFirePosition() {
+	public Point getFirePosition() {
 		return firePosition;
 	}
 
@@ -52,23 +52,23 @@ public final class Bullet {
 	/**
 	 * Calculates the current bullet position based on the fire position and current tick.
 	 */
-	public Position calcPosition() {
+	public Point calcPosition() {
 		return calcPosition(firePosition, direction, speed, tick);
 	}
 
-	public static Position calcPosition(Position firePosition, double direction, double speed, int tick) {
+	public static Point calcPosition(Point firePosition, double direction, double speed, int tick) {
 		double angle = Math.toRadians(direction);
 		double distance = speed * tick;
 		double x = firePosition.x + Math.cos(angle) * distance;
 		double y = firePosition.y + Math.sin(angle) * distance;
-		return new Position(x, y);
+		return new Point(x, y);
 	}
 
 	public static final class Builder {
 		private int botId;
 		private int bulletId;
 		private double power;
-		private Position firePosition;
+		private Point firePosition;
 		private double direction;
 		private double speed;
 		private int tick;
@@ -105,7 +105,7 @@ public final class Bullet {
 			return this;
 		}
 
-		public Builder setFirePosition(Position firePosition) {
+		public Builder setFirePosition(Point firePosition) {
 			this.firePosition = firePosition;
 			return this;
 		}
@@ -142,7 +142,7 @@ public final class Bullet {
 			return power;
 		}
 
-		public Position getFirePosition() {
+		public Point getFirePosition() {
 			return firePosition;
 		}
 
@@ -158,11 +158,11 @@ public final class Bullet {
 			return tick;
 		}
 
-		public Position calcPosition() {
+		public Point calcPosition() {
 			return Bullet.calcPosition(firePosition, direction, speed, tick);
 		}
 
-		public Position calcNextPosition() {
+		public Point calcNextPosition() {
 			return Bullet.calcPosition(firePosition, direction, speed, tick + 1);
 		}
 	}

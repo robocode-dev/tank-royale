@@ -10,7 +10,7 @@ public final class BotToBotStateWithIdMapper {
 		BotStateWithId botState = new BotStateWithId();
 		botState.setId(bot.getId());
 		botState.setEnergy(bot.getEnergy());
-		botState.setPosition(PositionMapper.map(bot.getPosition()));
+		botState.setPosition(PointMapper.map(bot.getPosition()));
 		botState.setSpeed(bot.getSpeed());
 		botState.setDirection(MathUtil.normalAbsoluteAngleDegrees(bot.getDirection()));
 		botState.setRadarDirection(MathUtil.normalAbsoluteAngleDegrees(bot.getRadarDirection()));

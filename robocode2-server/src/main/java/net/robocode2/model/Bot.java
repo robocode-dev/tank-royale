@@ -6,7 +6,7 @@ public final class Bot implements ImmutableBot {
 
 	private final int id;
 	private final double energy;
-	private final Position position;
+	private final Point position;
 	private final double direction;
 	private final double gunDirection;
 	private final double radarDirection;
@@ -15,7 +15,7 @@ public final class Bot implements ImmutableBot {
 	private final Arc scanArc;
 	private final Score score;
 
-	public Bot(int id, double energy, Position position, double direction, double gunDirection, double radarDirection,
+	public Bot(int id, double energy, Point position, double direction, double gunDirection, double radarDirection,
 			double speed, double gunHeat, Arc scanArc, Score score) {
 		this.id = id;
 		this.energy = energy;
@@ -40,7 +40,7 @@ public final class Bot implements ImmutableBot {
 	}
 
 	@Override
-	public Position getPosition() {
+	public Point getPosition() {
 		return position;
 	}
 
@@ -82,7 +82,7 @@ public final class Bot implements ImmutableBot {
 	public static final class Builder implements ImmutableBot {
 		private int id;
 		private double energy = 100;
-		private Position position;
+		private Point position;
 		private double direction;
 		private double gunDirection;
 		private double radarDirection;
@@ -127,7 +127,7 @@ public final class Bot implements ImmutableBot {
 			return this;
 		}
 
-		public Builder setPosition(Position position) {
+		public Builder setPosition(Point position) {
 			this.position = position;
 			return this;
 		}
@@ -190,7 +190,7 @@ public final class Bot implements ImmutableBot {
 		}
 
 		@Override
-		public Position getPosition() {
+		public Point getPosition() {
 			return position;
 		}
 
@@ -253,11 +253,11 @@ public final class Bot implements ImmutableBot {
 			position = move(direction, (speed > 0 ? -distance : distance));
 		}
 
-		private Position move(double direction, double distance) {
+		private Point move(double direction, double distance) {
 			double angle = Math.toRadians(direction);
 			double x = position.x + Math.cos(angle) * distance;
 			double y = position.y + Math.sin(angle) * distance;
-			return new Position(x, y);
+			return new Point(x, y);
 		}
 	}
 }

@@ -71,7 +71,7 @@ public final class EventsToEventsMapper {
 		event.setBotId(botHitBotEvent.getBotId());
 		event.setVictimId(botHitBotEvent.getVictimId());
 		event.setEnergy(botHitBotEvent.getEnergy());
-		event.setPosition(PositionMapper.map(botHitBotEvent.getPosition()));
+		event.setPosition(PointMapper.map(botHitBotEvent.getPosition()));
 		event.setRammed(botHitBotEvent.isRammed());
 		return event;
 	}
@@ -121,7 +121,7 @@ public final class EventsToEventsMapper {
 		event.setScannedByBotId(scannedBotEvent.getScannedByBotId());
 		event.setScannedBotId(scannedBotEvent.getScannedBotId());
 		event.setEnergy(scannedBotEvent.getEnergy());
-		event.setPosition(PositionMapper.map(scannedBotEvent.getPosition()));
+		event.setPosition(PointMapper.map(scannedBotEvent.getPosition()));
 		event.setDirection(scannedBotEvent.getDirection());
 		event.setSpeed(scannedBotEvent.getSpeed());
 		return event;

@@ -1,17 +1,17 @@
 package net.robocode2.model.events;
 
-import net.robocode2.model.Position;
+import net.robocode2.model.Point;
 
 public final class ScannedBotEvent implements Event {
 
 	private final int scannedByBotId;
 	private final int scannedBotId;
 	private final double energy;
-	private final Position position;
+	private final Point position;
 	private final double direction;
 	private final double speed;
 
-	public ScannedBotEvent(int scannedByBotId, int scannedBotId, double energy, Position position, double direction,
+	public ScannedBotEvent(int scannedByBotId, int scannedBotId, double energy, Point position, double direction,
 			double speed) {
 		this.scannedByBotId = scannedByBotId;
 		this.scannedBotId = scannedBotId;
@@ -33,7 +33,7 @@ public final class ScannedBotEvent implements Event {
 		return energy;
 	}
 
-	public Position getPosition() {
+	public Point getPosition() {
 		return position;
 	}
 

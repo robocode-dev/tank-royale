@@ -1,16 +1,16 @@
 package net.robocode2.model.events;
 
-import net.robocode2.model.Position;
+import net.robocode2.model.Point;
 
 public final class BotHitBotEvent implements Event {
 
 	private final int botId;
 	private final int victimId;
 	private final double energy;
-	private final Position position;
+	private final Point position;
 	private final boolean rammed;
 
-	public BotHitBotEvent(int botId, int victimId, double energy, Position position, boolean rammed) {
+	public BotHitBotEvent(int botId, int victimId, double energy, Point position, boolean rammed) {
 		this.botId = botId;
 		this.victimId = victimId;
 		this.energy = energy;
@@ -30,7 +30,7 @@ public final class BotHitBotEvent implements Event {
 		return energy;
 	}
 
-	public Position getPosition() {
+	public Point getPosition() {
 		return position;
 	}
 

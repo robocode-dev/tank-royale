@@ -23,7 +23,7 @@
 		},
 		"position": {
 			"description": "Position (x, y) of the scanned bot",
-			"$ref": "../types/position.json"
+			"$ref": "../types/point.json"
 		},
 		"direction": {
 			"description": "Direction in degrees of the scanned bot",

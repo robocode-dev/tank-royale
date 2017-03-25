@@ -1,6 +1,6 @@
 package net.robocode2.game;
 
-import net.robocode2.model.Position;
+import net.robocode2.model.Point;
 
 public final class MathUtil {
 
@@ -48,7 +48,7 @@ public final class MathUtil {
 		return (Math.abs(value1 - value2) < NEAR_DELTA);
 	}
 
-	public static double distance(Position p1, Position p2) {
+	public static double distance(Point p1, Point p2) {
 		return Math.hypot((p2.x - p1.x), (p2.y - p1.y));
 	}
 
@@ -113,7 +113,7 @@ public final class MathUtil {
 
 	// LINE/LINE
 	// http://gigglingcorpse.com/2015/06/25/line-segment-intersection/
-	public static boolean doLinesIntersect(Position a1, Position a2, Position b1, Position b2) {
+	public static boolean doLinesIntersect(Point a1, Point a2, Point b1, Point b2) {
 
 		// Fastest method, based on Franklin Antonio's "Faster Line Segment Intersection" topic "in Graphics Gems III"
 		// book (http://www.graphicsgems.org/)
@@ -172,8 +172,8 @@ public final class MathUtil {
 
 	// http://stackoverflow.com/questions/13652518/efficiently-find-points-inside-a-circle-sector
 	// Angle of the arcStart point must be lesser than angle for the arcEnd point
-	public static boolean isCircleIntersectingCone(Position center, Position arcStart, Position arcEnd,
-			double coneRadius, Position point, double circleRadius) {
+	public static boolean isCircleIntersectingCone(Point center, Point arcStart, Point arcEnd,
+			double coneRadius, Point point, double circleRadius) {
 
 		double radiusToPoint = coneRadius + circleRadius;
 
@@ -230,7 +230,7 @@ public final class MathUtil {
 		return Math.sqrt(closestX * closestX + closestY * closestY);
 	}
 
-	public static Position nearestPointToLine(double line_x1, double line_y1, double line_x2, double line_y2,
+	public static Point nearestPointToLine(double line_x1, double line_y1, double line_x2, double line_y2,
 			double point_x, double point_y) {
 
 		// Get the squared length of the line
@@ -246,6 +246,6 @@ public final class MathUtil {
 		double closestY = line_y1 + (dot * dy);
 
 		// Return closest point
-		return new Position(closestX, closestY);
+		return new Point(closestX, closestY);
 	}
 }

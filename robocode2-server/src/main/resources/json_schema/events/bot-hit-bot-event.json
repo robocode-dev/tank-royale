@@ -23,7 +23,7 @@
 		},
 		"position": {
 			"description": "Position (x, y) of the victim bot",
-			"$ref": "../types/position.json"
+			"$ref": "../types/point.json"
 		},
 		"rammed": {
 			"description": "Flag specifying, if the victim bot got rammed",

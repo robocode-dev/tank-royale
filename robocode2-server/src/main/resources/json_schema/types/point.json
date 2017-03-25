@@ -1,9 +1,9 @@
 {
-	"id": "#position.json",
+	"id": "#point.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"description": "Position as a 2D coordinate (x, y)",
+	"description": "Point as a 2D coordinate (x, y)",
 
-	"javaType": "net.robocode2.json_schema.types.Position",
+	"javaType": "net.robocode2.json_schema.types.Point",
 	"properties": {
 		"x": {
 			"description": "X coordinate",

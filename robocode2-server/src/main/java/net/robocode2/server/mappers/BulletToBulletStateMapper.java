@@ -17,7 +17,7 @@ public final class BulletToBulletStateMapper {
 		bulletState.setDirection(MathUtil.normalAbsoluteAngleDegrees(direction));
 		bulletState.setPower(bullet.getPower());
 		bulletState.setSpeed(speed);
-		bulletState.setPosition(PositionMapper.map(bullet.calcPosition()));
+		bulletState.setPosition(PointMapper.map(bullet.calcPosition()));
 
 		return bulletState;
 	}

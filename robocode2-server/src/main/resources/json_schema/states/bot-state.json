@@ -11,7 +11,7 @@
 		},
 		"position": {
 			"description": "Position (x, y)",
-			"$ref": "../types/position.json"
+			"$ref": "../types/point.json"
 		},
 		"direction": {
 			"description": "Direction of the hull in degrees",

@@ -6,7 +6,7 @@ public interface ImmutableBot {
 
 	double getEnergy();
 
-	Position getPosition();
+	Point getPosition();
 
 	double getDirection();
 
