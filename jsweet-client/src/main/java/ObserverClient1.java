@@ -222,7 +222,7 @@ public class ObserverClient1 {
 
 				Position pos = scanEvent.getPosition();
 
-				fillCircle(pos.getX(), pos.getY(), 18, "rgba(255, 0, 0, 0.5");
+				fillCircle(pos.getX(), pos.getY(), 18, "rgba(255, 255, 0, 1.0");
 			}
 		}
 
