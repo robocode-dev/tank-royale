@@ -10,18 +10,38 @@ import org.java_websocket.drafts.Draft_10;
 import org.java_websocket.handshake.ServerHandshake;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 
+import net.robocode2.json_schema.events.Event;
+import net.robocode2.json_schema.events.ScannedBotEvent;
 import net.robocode2.json_schema.messages.BotHandshake;
 import net.robocode2.json_schema.messages.BotIntent;
 import net.robocode2.json_schema.messages.BotReady;
 import net.robocode2.json_schema.messages.NewBattleForBot;
 import net.robocode2.json_schema.messages.TickForBot;
+import net.robocode2.json_schema.types.Position;
 
 public class BotClient1 extends WebSocketClient {
 
-	final Gson gson = new Gson();
+	final Gson gson;
+	{
+		RuntimeTypeAdapterFactory<Event> typeFactory = RuntimeTypeAdapterFactory.of(Event.class)
+				// .registerSubtype(BotDeathEvent.class, "bot-death-event")
+				// .registerSubtype(BotHitBotEvent.class, "bot-hit-bot-event")
+				// .registerSubtype(BotHitWallEvent.class, "bot-hit-wall-event")
+				// .registerSubtype(BulletFiredEvent.class, "bullet-fired-event")
+				// .registerSubtype(BulletHitBotEvent.class, "bullet-hit-bot-event")
+				// .registerSubtype(BulletHitBulletEvent.class, "bullet-hit-bullet-event")
+				// .registerSubtype(BulletMissedEvent.class, "bullet-missed-event")
+				.registerSubtype(ScannedBotEvent.class, "scanned-bot-event")
+		// .registerSubtype(SkippedTurnEvent.class, "skipped-turn-event")
+		;
+
+		gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
+	}
 
 	static final String TYPE = "type";
 
@@ -77,23 +97,49 @@ public class BotClient1 extends WebSocketClient {
 				send(msg);
 
 			} else if (TickForBot.Type.TICK_FOR_BOT.toString().equalsIgnoreCase(type)) {
-				// Send intent
+				TickForBot tick = gson.fromJson(message, TickForBot.class);
+
+				Position botPos = tick.getBotState().getPosition();
+
+				// Prepare intent
 				BotIntent intent = new BotIntent();
 				intent.setType(BotIntent.Type.BOT_INTENT);
+
+				for (Event event : tick.getEvents()) {
+					if (event instanceof ScannedBotEvent) {
+
+						ScannedBotEvent scanEvent = (ScannedBotEvent) event;
+
+						Position scanPos = scanEvent.getPosition();
+
+						double dx = scanPos.getX() - botPos.getX();
+						double dy = scanPos.getY() - botPos.getY();
+
+						double angle = Math.toDegrees(Math.atan2(dy, dx));
+
+						double gunTurnRate = angle - tick.getBotState().getGunDirection();
+
+						intent.setGunTurnRate(gunTurnRate);
+
+						break;
+					}
+
+				}
 
 				if (++turn % 25 == 0) {
 					targetSpeed *= -1;
 					intent.setTargetSpeed(targetSpeed);
 				}
 
-				intent.setGunTurnRate(10.0);
 				intent.setBulletPower(Math.random() * 2.9 + 0.1);
 				intent.setRadarTurnRate(45.0);
 
+				// Send intent
 				String msg = gson.toJson(intent);
 				send(msg);
 			}
 		}
+
 	}
 
 	@Override

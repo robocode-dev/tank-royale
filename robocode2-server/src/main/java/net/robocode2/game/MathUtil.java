@@ -169,4 +169,83 @@ public final class MathUtil {
 		}
 		return true;
 	}
+
+	// http://stackoverflow.com/questions/13652518/efficiently-find-points-inside-a-circle-sector
+	// Angle of the arcStart point must be lesser than angle for the arcEnd point
+	public static boolean isCircleIntersectingCone(Position center, Position arcStart, Position arcEnd,
+			double coneRadius, Position point, double circleRadius) {
+
+		double radiusToPoint = coneRadius + circleRadius;
+
+		double vx = point.x - center.x;
+		double vy = point.y - center.y;
+
+		// Check if point is outside radius to point
+		if (((vx * vx) + (vy * vy)) > (radiusToPoint * radiusToPoint)) {
+			return false; // outside radius
+		}
+
+		// Check if point is inside cone sides
+		if (!isClockwise(arcStart.x, arcStart.y, vx, vy) && isClockwise(arcEnd.x, arcEnd.y, vx, vy)) {
+			return true; // point is inside cone
+		}
+
+		// Check distance to cone start arm from point
+		if (shortestDistance(center.x, center.y, center.x + arcStart.x, center.y + arcStart.y, point.x,
+				point.y) < circleRadius) {
+			return true;
+		}
+
+		// Check distance to cone end arm from point
+		if (shortestDistance(center.x, center.y, center.x + arcEnd.x, center.y + arcEnd.y, point.x,
+				point.y) < circleRadius) {
+			return true;
+		}
+
+		// The circle is outside the cone
+		return false;
+	}
+
+	// Returns true, if vector v2 is clockwise to vector v1 compared to a shared starting point
+	private static boolean isClockwise(double v1_x, double v1_y, double v2_x, double v2_y) {
+		return -v1_x * v2_y + v1_y * v2_x > 0;
+	}
+
+	public static double shortestDistance(double line_x1, double line_y1, double line_x2, double line_y2,
+			double point_x, double point_y) {
+
+		// Get the squared length of the line
+		double dx = line_x2 - line_x1;
+		double dy = line_y2 - line_y1;
+		double len2 = (dx * dx) + (dy * dy);
+
+		// Get dot product of the line and circle
+		double dot = (((point_x - line_x1) * dx) + ((point_y - line_y1) * dy)) / len2;
+
+		// Find the closest point on the line from the circle
+		double closestX = line_x1 + (dot * dx);
+		double closestY = line_y1 + (dot * dy);
+
+		// Return distance
+		return Math.sqrt(closestX * closestX + closestY * closestY);
+	}
+
+	public static Position nearestPointToLine(double line_x1, double line_y1, double line_x2, double line_y2,
+			double point_x, double point_y) {
+
+		// Get the squared length of the line
+		double dx = line_x2 - line_x1;
+		double dy = line_y2 - line_y1;
+		double len2 = (dx * dx) + (dy * dy);
+
+		// Get dot product of the line and circle
+		double dot = (((point_x - line_x1) * dx) + ((point_y - line_y1) * dy)) / len2;
+
+		// Find the closest point on the line from the circle
+		double closestX = line_x1 + (dot * dx);
+		double closestY = line_y1 + (dot * dy);
+
+		// Return closest point
+		return new Position(closestX, closestY);
+	}
 }

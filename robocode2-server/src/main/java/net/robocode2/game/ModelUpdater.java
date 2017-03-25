@@ -507,33 +507,6 @@ public class ModelUpdater {
 		return ((dx * dx) + (dy * dy) <= BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED);
 	}
 
-	private static final double RADAR_RADIUS_SQUARED = RADAR_RADIUS * RADAR_RADIUS;
-
-	private static boolean isBotInScanArc(Bot.Builder scanningBot, Position scannedBotPosition) {
-		Position scanningPosition = scanningBot.getPosition();
-
-		double dx = scannedBotPosition.x - scanningPosition.x;
-		if (Math.abs(dx) > RADAR_RADIUS) {
-			return false;
-		}
-		double dy = scannedBotPosition.y - scannedBotPosition.y;
-		if (Math.abs(dy) > RADAR_RADIUS) {
-			return false;
-		}
-		if ((dx * dx) + (dy * dy) > RADAR_RADIUS_SQUARED) {
-			return false;
-		}
-
-		Arc scanArc = scanningBot.getScanArc();
-
-		double botAngle = Math.atan2(dy, dx);
-		double spanAngle = scanArc.getAngle();
-		double startAngle = scanningBot.getRadarDirection();
-		double endAngle = startAngle + spanAngle;
-		return (((spanAngle >= 0) && (botAngle >= startAngle && botAngle <= endAngle))
-				|| (botAngle >= endAngle && botAngle >= startAngle));
-	}
-
 	private static boolean isRamming(ImmutableBot bot, ImmutableBot victim) {
 
 		double dx = victim.getPosition().x - bot.getPosition().x;
@@ -726,23 +699,35 @@ public class ModelUpdater {
 		for (int i = botBuilders.length - 1; i >= 0; i--) {
 			Bot.Builder scanningBot = botBuilders[i];
 
+			Arc scanArc = scanningBot.getScanArc();
+			Position center = scanningBot.getPosition();
+
+			double angle1, angle2;
+			if (scanArc.getAngle() > 0) {
+				angle1 = scanningBot.getRadarDirection();
+				angle2 = angle1 + scanArc.getAngle();
+			} else {
+				angle2 = scanningBot.getRadarDirection();
+				angle1 = angle2 - scanArc.getAngle();
+			}
+
+			angle1 = Math.toRadians(angle1);
+			angle2 = Math.toRadians(angle2);
+
+			double dx = Math.cos(angle1) * scanArc.getRadius();
+			double dy = Math.sin(angle1) * scanArc.getRadius();
+			Position arcStart = new Position(dx, dy);
+
+			dx = Math.cos(angle2) * scanArc.getRadius();
+			dy = Math.sin(angle2) * scanArc.getRadius();
+			Position arcEnd = new Position(dx, dy);
+
 			for (int j = i - 1; j >= 0; j--) {
 				Bot.Builder scannedBot = botBuilders[j];
 
-				Position scannedPos = null;
+				if (MathUtil.isCircleIntersectingCone(center, arcStart, arcEnd, scanArc.getRadius(),
+						scannedBot.getPosition(), Physics.BOT_BOUNDING_CIRCLE_RADIUS)) {
 
-				Position currentPos = botBuilders[j].getPosition();
-				if (isBotInScanArc(scanningBot, currentPos)) {
-					scannedPos = currentPos;
-				} else {
-					Position prevPos = previousTurn.getBot(scannedBot.getId()).get().getPosition();
-
-					if (isBotInScanArc(scanningBot, prevPos)) {
-						scannedPos = prevPos;
-					}
-				}
-
-				if (scannedPos != null) {
 					ScannedBotEvent scannedBotEvent = new ScannedBotEvent(scanningBot.getId(), scannedBot.getId(),
 							scannedBot.getEnergy(), scannedBot.getPosition(), scannedBot.getDirection(),
 							scannedBot.getSpeed());
