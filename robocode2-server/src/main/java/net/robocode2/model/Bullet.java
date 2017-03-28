@@ -1,169 +1,97 @@
 package net.robocode2.model;
 
-public final class Bullet {
+import net.robocode2.model.ImmutableBullet;
 
-	private final int botId;
-	private final int bulletId;
-	private final double power;
-	private final Point firePosition;
-	private final double direction;
-	private final double speed;
-	private final int tick; // Used for calculating position with precision
+public class Bullet implements IBullet {
+	private int botId;
+	private int bulletId;
+	private double power;
+	private Point firePosition;
+	private double direction;
+	private double speed;
+	private int tick;
 
-	public Bullet(int botId, int bulletId, double power, Point firePosition, double direction, double speed,
-			int tick) {
-		this.botId = botId;
-		this.bulletId = bulletId;
-		this.power = power;
-		this.firePosition = firePosition;
-		this.direction = direction;
-		this.speed = speed;
-		this.tick = tick;
+	public Bullet() {
 	}
 
+	public Bullet(IBullet bullet) {
+		botId = bullet.getBotId();
+		bulletId = bullet.getBulletId();
+		power = bullet.getPower();
+		firePosition = bullet.getFirePosition();
+		direction = bullet.getDirection();
+		speed = bullet.getSpeed();
+		tick = bullet.getTick();
+	}
+
+	public ImmutableBullet toImmutableBullet() {
+		return new ImmutableBullet(botId, bulletId, power, firePosition, direction, speed, tick);
+	}
+
+	@Override
 	public int getBotId() {
 		return botId;
 	}
 
+	@Override
 	public int getBulletId() {
 		return bulletId;
 	}
 
+	@Override
 	public double getPower() {
 		return power;
 	}
 
+	@Override
 	public Point getFirePosition() {
 		return firePosition;
 	}
 
+	@Override
 	public double getDirection() {
 		return direction;
 	}
 
+	@Override
 	public double getSpeed() {
 		return speed;
 	}
 
+	@Override
 	public int getTick() {
 		return tick;
 	}
 
-	/**
-	 * Calculates the current bullet position based on the fire position and current tick.
-	 */
-	public Point calcPosition() {
-		return calcPosition(firePosition, direction, speed, tick);
+	public void setBotId(int botId) {
+		this.botId = botId;
 	}
 
-	public static Point calcPosition(Point firePosition, double direction, double speed, int tick) {
-		double angle = Math.toRadians(direction);
-		double distance = speed * tick;
-		double x = firePosition.x + Math.cos(angle) * distance;
-		double y = firePosition.y + Math.sin(angle) * distance;
-		return new Point(x, y);
+	public void setBulletId(int bulletId) {
+		this.bulletId = bulletId;
 	}
 
-	public static final class Builder {
-		private int botId;
-		private int bulletId;
-		private double power;
-		private Point firePosition;
-		private double direction;
-		private double speed;
-		private int tick;
+	public void setPower(double power) {
+		this.power = power;
+	}
 
-		public Builder() {
-		}
+	public void setFirePosition(Point firePosition) {
+		this.firePosition = firePosition;
+	}
 
-		public Builder(Bullet bullet) {
-			botId = bullet.getBotId();
-			bulletId = bullet.getBulletId();
-			power = bullet.getPower();
-			firePosition = bullet.getFirePosition();
-			direction = bullet.getDirection();
-			speed = bullet.getSpeed();
-			tick = bullet.getTick();
-		}
+	public void setDirection(double direction) {
+		this.direction = direction;
+	}
 
-		public Bullet build() {
-			return new Bullet(botId, bulletId, power, firePosition, direction, speed, tick);
-		}
+	public void setSpeed(double speed) {
+		this.speed = speed;
+	}
 
-		public Builder setBotId(int botId) {
-			this.botId = botId;
-			return this;
-		}
+	public void setTick(int tick) {
+		this.tick = tick;
+	}
 
-		public Builder setBulletId(int bulletId) {
-			this.bulletId = bulletId;
-			return this;
-		}
-
-		public Builder setPower(double power) {
-			this.power = power;
-			return this;
-		}
-
-		public Builder setFirePosition(Point firePosition) {
-			this.firePosition = firePosition;
-			return this;
-		}
-
-		public Builder setDirection(double direction) {
-			this.direction = direction;
-			return this;
-		}
-
-		public Builder setSpeed(double speed) {
-			this.speed = speed;
-			return this;
-		}
-
-		public Builder setTick(int tick) {
-			this.tick = tick;
-			return this;
-		}
-
-		public Builder incrementTick() {
-			this.tick++;
-			return this;
-		}
-
-		public int getBotId() {
-			return botId;
-		}
-
-		public int getBulletId() {
-			return bulletId;
-		}
-
-		public double getPower() {
-			return power;
-		}
-
-		public Point getFirePosition() {
-			return firePosition;
-		}
-
-		public double getDirection() {
-			return direction;
-		}
-
-		public double getSpeed() {
-			return speed;
-		}
-
-		public int getTick() {
-			return tick;
-		}
-
-		public Point calcPosition() {
-			return Bullet.calcPosition(firePosition, direction, speed, tick);
-		}
-
-		public Point calcNextPosition() {
-			return Bullet.calcPosition(firePosition, direction, speed, tick + 1);
-		}
+	public void incrementTick() {
+		this.tick++;
 	}
 }

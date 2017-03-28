@@ -1,22 +1,22 @@
 package net.robocode2.model.events;
 
-import net.robocode2.model.Bullet;
+import net.robocode2.model.ImmutableBullet;
 
 public final class BulletHitBulletEvent implements Event {
 
-	private final Bullet bullet;
-	private final Bullet hitBullet;
+	private final ImmutableBullet bullet;
+	private final ImmutableBullet hitBullet;
 
-	public BulletHitBulletEvent(Bullet bullet, Bullet hitBullet) {
+	public BulletHitBulletEvent(ImmutableBullet bullet, ImmutableBullet hitBullet) {
 		this.bullet = bullet;
 		this.hitBullet = hitBullet;
 	}
 
-	public Bullet getBullet() {
+	public ImmutableBullet getBullet() {
 		return bullet;
 	}
 
-	public Bullet getHitBullet() {
+	public ImmutableBullet getHitBullet() {
 		return hitBullet;
 	}
 }

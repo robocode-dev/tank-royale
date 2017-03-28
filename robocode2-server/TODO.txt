@@ -1,2 +1,2 @@
-Refactor "Position" to "Point" everywhere
 Refactor arc to cone? (arc is just the outer curve of the cone)
+- Perhaps only previous scan angle?

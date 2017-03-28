@@ -29,6 +29,7 @@ import net.robocode2.model.Bullet;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.ImmutableBot;
+import net.robocode2.model.ImmutableBullet;
 import net.robocode2.model.Physics;
 import net.robocode2.model.Point;
 import net.robocode2.model.Round;
@@ -69,7 +70,7 @@ public class ModelUpdater {
 
 	private Map<Integer /* BotId */, BotIntent.Builder> botIntentsMap = new HashMap<>();
 	private Map<Integer /* BotId */, Bot.Builder> botBuildersMap = new HashMap<>();
-	private Set<Bullet.Builder> bulletBuildersSet = new HashSet<>();
+	private Set<Bullet> bullets = new HashSet<>();
 
 	public ModelUpdater(GameSetup setup, Set<Integer> participantIds) {
 		this.setup = setup;
@@ -186,11 +187,11 @@ public class ModelUpdater {
 		turnBuilder.setBots(bots);
 
 		// Store bullet snapshots
-		Set<Bullet> bullets = new HashSet<>();
-		for (Bullet.Builder bulletBuilder : bulletBuildersSet) {
-			bullets.add(bulletBuilder.build());
+		Set<ImmutableBullet> immutableBullets = new HashSet<>();
+		for (Bullet bullet : bullets) {
+			immutableBullets.add(bullet.toImmutableBullet());
 		}
-		turnBuilder.setBullets(bullets);
+		turnBuilder.setBullets(immutableBullets);
 	}
 
 	private GameState buildUpdatedGameState() {
@@ -308,17 +309,17 @@ public class ModelUpdater {
 	}
 
 	private void checkBulletHits() {
-		Line[] boundingLines = new Line[bulletBuildersSet.size()];
+		Line[] boundingLines = new Line[bullets.size()];
 
-		Bullet.Builder[] bulletBuilders = new Bullet.Builder[bulletBuildersSet.size()];
-		bulletBuilders = bulletBuildersSet.toArray(bulletBuilders);
+		Bullet[] bulletArray = new Bullet[bullets.size()];
+		bulletArray = bullets.toArray(bulletArray);
 
 		for (int i = boundingLines.length - 1; i >= 0; i--) {
-			Bullet.Builder bulletBuilder = bulletBuilders[i];
+			Bullet bullet = bulletArray[i];
 
 			Line line = new Line();
-			line.start = bulletBuilder.calcPosition();
-			line.end = bulletBuilder.calcNextPosition();
+			line.start = bullet.calcPosition();
+			line.end = bullet.calcNextPosition();
 
 			boundingLines[i] = line;
 		}
@@ -335,11 +336,8 @@ public class ModelUpdater {
 				if (isBulletsBoundingCirclesColliding(endPos1, endPos2) && MathUtil.doLinesIntersect(
 						boundingLines[i].start, boundingLines[i].end, boundingLines[j].start, boundingLines[j].end)) {
 
-					Bullet.Builder bulletBuilder1 = bulletBuilders[i];
-					Bullet.Builder bulletBuilder2 = bulletBuilders[j];
-
-					Bullet bullet1 = bulletBuilder1.build();
-					Bullet bullet2 = bulletBuilder2.build();
+					ImmutableBullet bullet1 = bulletArray[i].toImmutableBullet();
+					ImmutableBullet bullet2 = bulletArray[j].toImmutableBullet();
 
 					BulletHitBulletEvent bulletHitBulletEvent1 = new BulletHitBulletEvent(bullet1, bullet2);
 					turnBuilder.addPrivateBotEvent(bullet1.getBotId(), bulletHitBulletEvent1);
@@ -351,8 +349,8 @@ public class ModelUpdater {
 					turnBuilder.addObserverEvent(bulletHitBulletEvent1);
 
 					// Remove bullets from the arena
-					bulletBuildersSet.remove(bulletBuilder1);
-					bulletBuildersSet.remove(bulletBuilder2);
+					bullets.remove(bullet1);
+					bullets.remove(bullet2);
 				}
 			}
 
@@ -363,9 +361,9 @@ public class ModelUpdater {
 			for (Bot.Builder botBuilder : botBuildersMap.values()) {
 				Point botPos = botBuilder.getPosition();
 
-				Bullet.Builder bulletBuilder = bulletBuilders[i];
+				Bullet bullet = bulletArray[i];
 
-				int botId = bulletBuilder.getBotId();
+				int botId = bullet.getBotId();
 				int victimId = botBuilder.getId();
 
 				if (botId == victimId) {
@@ -376,22 +374,22 @@ public class ModelUpdater {
 				if (MathUtil.isLineIntersectingCircle(startPos1.x, startPos1.y, endPos1.x, endPos1.y, botPos.x,
 						botPos.y, BOT_BOUNDING_CIRCLE_RADIUS)) {
 
-					double damage = Physics.calcBulletDamage(bulletBuilder.getPower());
+					double damage = Physics.calcBulletDamage(bullet.getPower());
 					boolean killed = botBuilder.addDamage(damage);
 
-					double energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bulletBuilder.getPower();
+					double energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
 					botBuildersMap.get(botId).increaseEnergy(energyBonus);
 
 					scoreKeeper.addBulletHit(botId, victimId, damage, killed);
 
-					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bulletBuilder.build(), victimId, damage,
-							botBuilder.getEnergy());
+					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet.toImmutableBullet(), victimId,
+							damage, botBuilder.getEnergy());
 
 					turnBuilder.addPrivateBotEvent(botId, bulletHitBotEvent);
 					turnBuilder.addObserverEvent(bulletHitBotEvent);
 
 					// Remove bullet from the arena
-					bulletBuildersSet.remove(bulletBuilder);
+					bullets.remove(bullet);
 				}
 			}
 		}
@@ -521,8 +519,8 @@ public class ModelUpdater {
 	}
 
 	private void updateBulletPositions() {
-		for (Bullet.Builder bulletBuilder : bulletBuildersSet) {
-			bulletBuilder.incrementTick(); // The tick is used to calculate new position by calling getPosition()
+		for (Bullet bullet : bullets) {
+			bullet.incrementTick(); // The tick is used to calculate new position by calling getPosition()
 		}
 	}
 
@@ -598,18 +596,18 @@ public class ModelUpdater {
 	}
 
 	private void checkBulletWallCollisions() {
-		Iterator<Bullet.Builder> iterator = bulletBuildersSet.iterator(); // due to removal
+		Iterator<Bullet> iterator = bullets.iterator(); // due to removal
 		while (iterator.hasNext()) {
-			Bullet.Builder bulletBuilder = iterator.next();
-			Point position = bulletBuilder.calcPosition();
+			Bullet bullet = iterator.next();
+			Point position = bullet.calcPosition();
 
 			if ((position.x <= 0) || (position.x >= setup.getArenaWidth()) || (position.y <= 0)
 					|| (position.y >= setup.getArenaHeight())) {
 
 				iterator.remove(); // remove bullet from arena
 
-				BulletMissedEvent bulletMissedEvent = new BulletMissedEvent(bulletBuilder.build());
-				turnBuilder.addPrivateBotEvent(bulletBuilder.getBotId(), bulletMissedEvent);
+				BulletMissedEvent bulletMissedEvent = new BulletMissedEvent(bullet.toImmutableBullet());
+				turnBuilder.addPrivateBotEvent(bullet.getBotId(), bulletMissedEvent);
 				turnBuilder.addObserverEvent(bulletMissedEvent);
 			}
 		}
@@ -675,18 +673,17 @@ public class ModelUpdater {
 		double gunHeat = calcGunHeat(firepower);
 		botBuilder.setGunHeat(gunHeat);
 
-		Bullet.Builder bulletBuilder = new Bullet.Builder();
-		bulletBuilder.setBotId(botId);
-		bulletBuilder.setBulletId(++nextBulletId);
-		bulletBuilder.setPower(firepower);
-		bulletBuilder.setFirePosition(botBuilder.getPosition());
-		bulletBuilder.setDirection(botBuilder.getGunDirection());
-		bulletBuilder.setSpeed(calcBulletSpeed(firepower));
+		Bullet bullet = new Bullet();
+		bullet.setBotId(botId);
+		bullet.setBulletId(++nextBulletId);
+		bullet.setPower(firepower);
+		bullet.setFirePosition(botBuilder.getPosition());
+		bullet.setDirection(botBuilder.getGunDirection());
+		bullet.setSpeed(calcBulletSpeed(firepower));
 
-		bulletBuildersSet.add(bulletBuilder);
+		bullets.add(bullet);
 
-		Bullet bullet = bulletBuilder.build();
-		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(bullet);
+		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(bullet.toImmutableBullet());
 		turnBuilder.addPrivateBotEvent(botId, bulletFiredEvent);
 		turnBuilder.addObserverEvent(bulletFiredEvent);
 	}
