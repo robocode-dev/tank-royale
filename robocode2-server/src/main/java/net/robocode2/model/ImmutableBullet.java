@@ -1,24 +1,31 @@
 package net.robocode2.model;
 
-public final class ImmutableBullet implements IBullet {
+import net.robocode2.model.ImmutableBullet;
 
-	private final int botId;
-	private final int bulletId;
-	private final double power;
-	private final Point firePosition;
-	private final double direction;
-	private final double speed;
-	private final int tick; // Used for calculating position with precision
+public class Bullet implements IBullet {
+	private int botId;
+	private int bulletId;
+	private double power;
+	private Point firePosition;
+	private double direction;
+	private double speed;
+	private int tick;
 
-	public ImmutableBullet(int botId, int bulletId, double power, Point firePosition, double direction, double speed,
-			int tick) {
-		this.botId = botId;
-		this.bulletId = bulletId;
-		this.power = power;
-		this.firePosition = firePosition;
-		this.direction = direction;
-		this.speed = speed;
-		this.tick = tick;
+	public Bullet() {
+	}
+
+	public Bullet(IBullet bullet) {
+		botId = bullet.getBotId();
+		bulletId = bullet.getBulletId();
+		power = bullet.getPower();
+		firePosition = bullet.getFirePosition();
+		direction = bullet.getDirection();
+		speed = bullet.getSpeed();
+		tick = bullet.getTick();
+	}
+
+	public ImmutableBullet toImmutableBullet() {
+		return new ImmutableBullet(botId, bulletId, power, firePosition, direction, speed, tick);
 	}
 
 	@Override
@@ -54,5 +61,37 @@ public final class ImmutableBullet implements IBullet {
 	@Override
 	public int getTick() {
 		return tick;
+	}
+
+	public void setBotId(int botId) {
+		this.botId = botId;
+	}
+
+	public void setBulletId(int bulletId) {
+		this.bulletId = bulletId;
+	}
+
+	public void setPower(double power) {
+		this.power = power;
+	}
+
+	public void setFirePosition(Point firePosition) {
+		this.firePosition = firePosition;
+	}
+
+	public void setDirection(double direction) {
+		this.direction = direction;
+	}
+
+	public void setSpeed(double speed) {
+		this.speed = speed;
+	}
+
+	public void setTick(int tick) {
+		this.tick = tick;
+	}
+
+	public void incrementTick() {
+		this.tick++;
 	}
 }
