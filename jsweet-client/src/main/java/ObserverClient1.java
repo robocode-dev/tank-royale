@@ -20,7 +20,7 @@ import json_schema.messages.TickForObserver;
 import json_schema.states.BotStateWithId;
 import json_schema.states.BulletState;
 import json_schema.types.Arc;
-import json_schema.types.Position;
+import json_schema.types.Point;
 import jsweet.dom.CanvasRenderingContext2D;
 import jsweet.dom.CloseEvent;
 import jsweet.dom.Event;
@@ -50,7 +50,7 @@ public class ObserverClient1 {
 
 	private Set<json_schema.events.ScannedBotEvent> scanEvents;
 
-	private Map<Integer /* botId */, Position> lastBotPositions = new HashMap<>();
+	private Map<Integer /* botId */, Point> lastBotPositions = new HashMap<>();
 	private Set<Explosion> explosions = new HashSet<>();
 
 	public ObserverClient1() {
@@ -138,7 +138,7 @@ public class ObserverClient1 {
 			if (BotDeathEvent.TYPE.equals(event.getType())) {
 				BotDeathEvent botDeathEvent = (BotDeathEvent) $.extend(false, new BotDeathEvent(), event);
 
-				Position pos = lastBotPositions.get(botDeathEvent.getVictimId());
+				Point pos = lastBotPositions.get(botDeathEvent.getVictimId());
 				explosions.add(new Explosion(pos, 40));
 
 			} else if (BulletHitBotEvent.TYPE.equals(event.getType())) {
@@ -172,7 +172,7 @@ public class ObserverClient1 {
 		double x = 50;
 		double y = 50;
 
-		Position pos = new Position();
+		Point pos = new Point();
 		pos.$set("x", x);
 		pos.$set("y", y);
 
@@ -200,7 +200,7 @@ public class ObserverClient1 {
 
 		if (bulletStates != null) {
 			for (BulletState bullet : bulletStates) {
-				Position pos = bullet.getPosition();
+				Point pos = bullet.getPosition();
 
 				drawBullet(pos.getX(), pos.getY(), bullet.getPower());
 			}
@@ -208,7 +208,7 @@ public class ObserverClient1 {
 
 		if (botStates != null) {
 			for (BotStateWithId bot : botStates) {
-				Position pos = bot.getPosition();
+				Point pos = bot.getPosition();
 
 				double x = pos.getX();
 				double y = pos.getY();
@@ -220,7 +220,7 @@ public class ObserverClient1 {
 		if (scanEvents != null) {
 			for (ScannedBotEvent scanEvent : scanEvents) {
 
-				Position pos = scanEvent.getPosition();
+				Point pos = scanEvent.getPosition();
 
 				fillCircle(pos.getX(), pos.getY(), 18, "rgba(255, 255, 0, 1.0");
 			}
@@ -228,7 +228,7 @@ public class ObserverClient1 {
 
 		if (explosions != null) {
 			for (Explosion explosion : explosions) {
-				Position pos = explosion.pos;
+				Point pos = explosion.pos;
 				fillCircle(pos.getX(), pos.getY(), explosion.size, "red");
 			}
 		}
@@ -363,10 +363,10 @@ public class ObserverClient1 {
 	}
 
 	class Explosion {
-		Position pos;
+		Point pos;
 		int size;
 
-		Explosion(Position pos, int size) {
+		Explosion(Point pos, int size) {
 			this.pos = pos;
 			this.size = size;
 		}

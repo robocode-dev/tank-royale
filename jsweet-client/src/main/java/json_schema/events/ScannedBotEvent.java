@@ -2,7 +2,7 @@ package json_schema.events;
 
 import static def.jquery.Globals.$;
 
-import json_schema.types.Position;
+import json_schema.types.Point;
 
 public final class ScannedBotEvent extends Event {
 
@@ -24,8 +24,8 @@ public final class ScannedBotEvent extends Event {
 		return (Double) $get("energy");
 	}
 
-	public Position getPosition() {
-		return (Position) $.extend(false, new Position(), $get("position"));
+	public Point getPosition() {
+		return (Point) $.extend(false, new Point(), $get("position"));
 	}
 
 	public Double getDirection() {

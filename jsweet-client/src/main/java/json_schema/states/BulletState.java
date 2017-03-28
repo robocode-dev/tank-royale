@@ -2,7 +2,7 @@ package json_schema.states;
 
 import static def.jquery.Globals.$;
 
-import json_schema.types.Position;
+import json_schema.types.Point;
 
 public class BulletState extends jsweet.lang.Object {
 
@@ -18,8 +18,8 @@ public class BulletState extends jsweet.lang.Object {
 		return (Double) $get("power");
 	}
 
-	public Position getPosition() {
-		return (Position) $.extend(false, new Position(), $get("position"));
+	public Point getPosition() {
+		return (Point) $.extend(false, new Point(), $get("position"));
 	}
 
 	public Double getDirection() {
