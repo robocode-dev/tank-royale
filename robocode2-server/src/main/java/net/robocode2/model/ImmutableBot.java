@@ -1,24 +1,80 @@
 package net.robocode2.model;
 
-public interface ImmutableBot {
+public final class ImmutableBot implements IBot {
 
-	int getId();
+	private final int id;
+	private final double energy;
+	private final Point position;
+	private final double direction;
+	private final double gunDirection;
+	private final double radarDirection;
+	private final double speed;
+	private final double gunHeat;
+	private final Arc scanArc;
+	private final Score score;
 
-	double getEnergy();
+	public ImmutableBot(int id, double energy, Point position, double direction, double gunDirection,
+			double radarDirection, double speed, double gunHeat, Arc scanArc, Score score) {
 
-	Point getPosition();
+		this.id = id;
+		this.energy = energy;
+		this.position = position;
+		this.direction = direction;
+		this.gunDirection = gunDirection;
+		this.radarDirection = radarDirection;
+		this.speed = speed;
+		this.gunHeat = gunHeat;
+		this.scanArc = scanArc;
+		this.score = score;
+	}
 
-	double getDirection();
+	@Override
+	public int getId() {
+		return id;
+	}
 
-	double getGunDirection();
+	@Override
+	public double getEnergy() {
+		return energy;
+	}
 
-	double getRadarDirection();
+	@Override
+	public Point getPosition() {
+		return position;
+	}
 
-	double getSpeed();
+	@Override
+	public double getDirection() {
+		return direction;
+	}
 
-	double getGunHeat();
+	@Override
+	public double getGunDirection() {
+		return gunDirection;
+	}
 
-	Arc getScanArc();
+	@Override
+	public double getRadarDirection() {
+		return radarDirection;
+	}
 
-	Score getScore();
+	@Override
+	public double getSpeed() {
+		return speed;
+	}
+
+	@Override
+	public double getGunHeat() {
+		return gunHeat;
+	}
+
+	@Override
+	public Arc getScanArc() {
+		return scanArc;
+	}
+
+	@Override
+	public Score getScore() {
+		return score;
+	}
 }

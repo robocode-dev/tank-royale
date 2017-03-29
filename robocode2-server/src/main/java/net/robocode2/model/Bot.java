@@ -2,31 +2,38 @@ package net.robocode2.model;
 
 import static net.robocode2.game.MathUtil.isNear;
 
-public final class Bot implements ImmutableBot {
+public final class Bot implements IBot {
 
-	private final int id;
-	private final double energy;
-	private final Point position;
-	private final double direction;
-	private final double gunDirection;
-	private final double radarDirection;
-	private final double speed;
-	private final double gunHeat;
-	private final Arc scanArc;
-	private final Score score;
+	private int id;
+	private double energy = 100;
+	private Point position;
+	private double direction;
+	private double gunDirection;
+	private double radarDirection;
+	private double speed;
+	private double gunHeat;
+	private Arc scanArc;
+	private Score score;
 
-	public Bot(int id, double energy, Point position, double direction, double gunDirection, double radarDirection,
-			double speed, double gunHeat, Arc scanArc, Score score) {
-		this.id = id;
-		this.energy = energy;
-		this.position = position;
-		this.direction = direction;
-		this.gunDirection = gunDirection;
-		this.radarDirection = radarDirection;
-		this.speed = speed;
-		this.gunHeat = gunHeat;
-		this.scanArc = scanArc;
-		this.score = score;
+	public Bot() {
+	}
+
+	public Bot(IBot bot) {
+		id = bot.getId();
+		energy = bot.getEnergy();
+		position = bot.getPosition();
+		direction = bot.getDirection();
+		gunDirection = bot.getGunDirection();
+		radarDirection = bot.getRadarDirection();
+		speed = bot.getSpeed();
+		gunHeat = bot.getGunHeat();
+		scanArc = bot.getScanArc();
+		score = bot.getScore();
+	}
+
+	public ImmutableBot toImmutableBot() {
+		return new ImmutableBot(id, energy, position, direction, gunDirection, radarDirection, speed, gunHeat, scanArc,
+				score);
 	}
 
 	@Override
@@ -79,185 +86,90 @@ public final class Bot implements ImmutableBot {
 		return score;
 	}
 
-	public static final class Builder implements ImmutableBot {
-		private int id;
-		private double energy = 100;
-		private Point position;
-		private double direction;
-		private double gunDirection;
-		private double radarDirection;
-		private double speed;
-		private double gunHeat;
-		private Arc scanArc;
-		private Score score;
+	public void setId(int id) {
+		this.id = id;
+	}
 
-		public Builder() {
-		}
+	public void setEnergy(double energy) {
+		this.energy = energy;
+	}
 
-		public Builder(Bot bot) {
-			id = bot.id;
-			energy = bot.energy;
-			position = bot.position;
-			direction = bot.direction;
-			gunDirection = bot.gunDirection;
-			radarDirection = bot.radarDirection;
-			speed = bot.speed;
-			gunHeat = bot.gunHeat;
-			scanArc = bot.scanArc;
-			score = bot.score;
-		}
+	public void setDisabled() {
+		this.energy = 0.0;
+	}
 
-		public Bot build() {
-			return new Bot(id, energy, position, direction, gunDirection, radarDirection, speed, gunHeat, scanArc,
-					score);
-		}
+	public void setPosition(Point position) {
+		this.position = position;
+	}
 
-		public Builder setId(int id) {
-			this.id = id;
-			return this;
-		}
+	public void setDirection(double direction) {
+		this.direction = direction;
+	}
 
-		public Builder setEnergy(double energy) {
-			this.energy = energy;
-			return this;
-		}
+	public void setGunDirection(double gunDirection) {
+		this.gunDirection = gunDirection;
+	}
 
-		public Builder setDisabled() {
-			this.energy = 0.0;
-			return this;
-		}
+	public void setRadarDirection(double radarDirection) {
+		this.radarDirection = radarDirection;
+	}
 
-		public Builder setPosition(Point position) {
-			this.position = position;
-			return this;
-		}
+	public void setSpeed(double speed) {
+		this.speed = speed;
+	}
 
-		public Builder setDirection(double direction) {
-			this.direction = direction;
-			return this;
-		}
+	public void setGunHeat(double gunHeat) {
+		this.gunHeat = gunHeat;
+	}
 
-		public Builder setGunDirection(double gunDirection) {
-			this.gunDirection = gunDirection;
-			return this;
-		}
+	public void setScanArc(Arc scanArc) {
+		this.scanArc = scanArc;
+	}
 
-		public Builder setRadarDirection(double radarDirection) {
-			this.radarDirection = radarDirection;
-			return this;
-		}
+	public void setScore(Score score) {
+		this.score = score;
+	}
 
-		public Builder setSpeed(double speed) {
-			this.speed = speed;
-			return this;
-		}
+	public boolean isAlive() {
+		return energy >= 0;
+	}
 
-		public Builder setGunHeat(double gunHeat) {
-			this.gunHeat = gunHeat;
-			return this;
-		}
+	public boolean isDead() {
+		return !isAlive();
+	}
 
-		public Builder setScanArc(Arc scanArc) {
-			this.scanArc = scanArc;
-			return this;
-		}
+	public boolean isDisabled() {
+		return isAlive() && isNear(energy, 0);
+	}
 
-		public Builder setScore(Score score) {
-			this.score = score;
-			return this;
-		}
+	/**
+	 * Adds damage to the bot.
+	 * 
+	 * @param damage
+	 * @return true if the robot got killed due to the damage, false otherwise.
+	 */
+	public boolean addDamage(double damage) {
+		boolean aliveBefore = isAlive();
+		energy -= damage;
+		return isDead() && aliveBefore;
+	}
 
-		@Override
-		public int getId() {
-			return id;
-		}
+	public void increaseEnergy(double gain) {
+		energy += gain;
+	}
 
-		@Override
-		public double getEnergy() {
-			return energy;
-		}
+	public void moveToNewPosition() {
+		position = move(direction, speed);
+	}
 
-		public boolean isAlive() {
-			return energy >= 0;
-		}
+	public void bounceBack(double distance) {
+		position = move(direction, (speed > 0 ? -distance : distance));
+	}
 
-		public boolean isDead() {
-			return !isAlive();
-		}
-
-		public boolean isDisabled() {
-			return isAlive() && isNear(energy, 0);
-		}
-
-		@Override
-		public Point getPosition() {
-			return position;
-		}
-
-		@Override
-		public double getDirection() {
-			return direction;
-		}
-
-		@Override
-		public double getGunDirection() {
-			return gunDirection;
-		}
-
-		@Override
-		public double getRadarDirection() {
-			return radarDirection;
-		}
-
-		@Override
-		public double getSpeed() {
-			return speed;
-		}
-
-		@Override
-		public double getGunHeat() {
-			return gunHeat;
-		}
-
-		@Override
-		public Arc getScanArc() {
-			return scanArc;
-		}
-
-		@Override
-		public Score getScore() {
-			return score;
-		}
-
-		/**
-		 * Adds damage to the bot.
-		 * 
-		 * @param damage
-		 * @return true if the robot got killed due to the damage, false otherwise.
-		 */
-		public boolean addDamage(double damage) {
-			boolean aliveBefore = isAlive();
-			energy -= damage;
-			return isDead() && aliveBefore;
-		}
-
-		public void increaseEnergy(double gain) {
-			energy += gain;
-		}
-
-		public void moveToNewPosition() {
-			position = move(direction, speed);
-		}
-
-		public void bounceBack(double distance) {
-			position = move(direction, (speed > 0 ? -distance : distance));
-		}
-
-		private Point move(double direction, double distance) {
-			double angle = Math.toRadians(direction);
-			double x = position.x + Math.cos(angle) * distance;
-			double y = position.y + Math.sin(angle) * distance;
-			return new Point(x, y);
-		}
+	private Point move(double direction, double distance) {
+		double angle = Math.toRadians(direction);
+		double x = position.x + Math.cos(angle) * distance;
+		double y = position.y + Math.sin(angle) * distance;
+		return new Point(x, y);
 	}
 }

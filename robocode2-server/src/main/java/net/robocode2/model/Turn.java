@@ -13,12 +13,12 @@ import net.robocode2.model.events.Event;
 public final class Turn {
 
 	private final int turnNumber;
-	private final Set<Bot> bots;
+	private final Set<ImmutableBot> bots;
 	private final Set<ImmutableBullet> bullets;
 	private final Set<Event> observerEvents;
 	private final Map<Integer, Set<Event>> botEventsMap;
 
-	public Turn(int turnNumber, Set<Bot> bots, Set<ImmutableBullet> bullets, Set<Event> observerEvents,
+	public Turn(int turnNumber, Set<ImmutableBot> bots, Set<ImmutableBullet> bullets, Set<Event> observerEvents,
 			Map<Integer, Set<Event>> botEventsMap) {
 
 		this.turnNumber = turnNumber;
@@ -48,11 +48,11 @@ public final class Turn {
 		return turnNumber;
 	}
 
-	public Set<Bot> getBots() {
+	public Set<ImmutableBot> getBots() {
 		return Collections.unmodifiableSet(bots);
 	}
 
-	public Optional<Bot> getBot(int botId) {
+	public Optional<ImmutableBot> getBot(int botId) {
 		return bots.stream().filter(b -> b.getId() == botId).findAny();
 	}
 
@@ -78,7 +78,7 @@ public final class Turn {
 
 	public static final class Builder {
 		private int turnNumber;
-		private Set<Bot> bots = new HashSet<>();
+		private Set<ImmutableBot> bots = new HashSet<>();
 		private Set<ImmutableBullet> bullets = new HashSet<>();
 		private Set<Event> observerEvents = new HashSet<>();
 		private Map<Integer, Set<Event>> botEventsMap = new HashMap<>();
@@ -92,7 +92,7 @@ public final class Turn {
 			return this;
 		}
 
-		public Builder setBots(Set<Bot> bots) {
+		public Builder setBots(Set<ImmutableBot> bots) {
 			if (bots == null) {
 				this.bots = new HashSet<>();
 			} else {
@@ -126,7 +126,7 @@ public final class Turn {
 		}
 
 		public Builder addPublicBotEvent(Event event) {
-			for (Bot bot : bots) {
+			for (ImmutableBot bot : bots) {
 				addPrivateBotEvent(bot.getId(), event);
 			}
 			return this;

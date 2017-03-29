@@ -2,11 +2,11 @@ package net.robocode2.server.mappers;
 
 import net.robocode2.game.MathUtil;
 import net.robocode2.json_schema.states.BotState;
-import net.robocode2.model.Bot;
+import net.robocode2.model.ImmutableBot;
 
 public final class BotToBotStateMapper {
 
-	public static BotState map(Bot bot) {
+	public static BotState map(ImmutableBot bot) {
 		BotState botState = new BotState();
 		botState.setEnergy(bot.getEnergy());
 		botState.setPosition(PointMapper.map(bot.getPosition()));

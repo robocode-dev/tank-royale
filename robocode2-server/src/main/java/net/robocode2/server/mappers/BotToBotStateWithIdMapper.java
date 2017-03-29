@@ -2,11 +2,11 @@ package net.robocode2.server.mappers;
 
 import net.robocode2.game.MathUtil;
 import net.robocode2.json_schema.states.BotStateWithId;
-import net.robocode2.model.Bot;
+import net.robocode2.model.ImmutableBot;
 
 public final class BotToBotStateWithIdMapper {
 
-	public static BotStateWithId map(Bot bot) {
+	public static BotStateWithId map(ImmutableBot bot) {
 		BotStateWithId botState = new BotStateWithId();
 		botState.setId(bot.getId());
 		botState.setEnergy(bot.getEnergy());
