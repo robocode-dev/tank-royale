@@ -28,6 +28,11 @@ public final class ImmutableBot implements IBot {
 		this.score = score;
 	}
 
+	public ImmutableBot(IBot bot) {
+		this(bot.getId(), bot.getEnergy(), bot.getPosition(), bot.getDirection(), bot.getGunDirection(),
+				bot.getRadarDirection(), bot.getSpeed(), bot.getGunHeat(), bot.getScanArc(), bot.getScore());
+	}
+
 	@Override
 	public int getId() {
 		return id;

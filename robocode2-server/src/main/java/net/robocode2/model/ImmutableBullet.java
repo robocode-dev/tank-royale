@@ -12,6 +12,7 @@ public final class ImmutableBullet implements IBullet {
 
 	public ImmutableBullet(int botId, int bulletId, double power, Point firePosition, double direction, double speed,
 			int tick) {
+
 		this.botId = botId;
 		this.bulletId = bulletId;
 		this.power = power;
@@ -19,6 +20,11 @@ public final class ImmutableBullet implements IBullet {
 		this.direction = direction;
 		this.speed = speed;
 		this.tick = tick;
+	}
+
+	public ImmutableBullet(IBullet bullet) {
+		this(bullet.getBotId(), bullet.getBulletId(), bullet.getPower(), bullet.getFirePosition(),
+				bullet.getDirection(), bullet.getSpeed(), bullet.getTick());
 	}
 
 	@Override

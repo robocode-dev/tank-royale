@@ -10,64 +10,49 @@ import java.util.stream.Collectors;
 
 import net.robocode2.model.events.Event;
 
-public final class Turn {
+public final class Turn implements ITurn {
 
-	private final int turnNumber;
-	private final Set<ImmutableBot> bots;
-	private final Set<ImmutableBullet> bullets;
-	private final Set<Event> observerEvents;
-	private final Map<Integer, Set<Event>> botEventsMap;
+	private int turnNumber;
+	private Set<IBot> bots = new HashSet<>();
+	private Set<IBullet> bullets = new HashSet<>();
+	private Set<Event> observerEvents = new HashSet<>();
+	private Map<Integer, Set<Event>> botEventsMap = new HashMap<>();
 
-	public Turn(int turnNumber, Set<ImmutableBot> bots, Set<ImmutableBullet> bullets, Set<Event> observerEvents,
-			Map<Integer, Set<Event>> botEventsMap) {
-
-		this.turnNumber = turnNumber;
-		if (bots == null) {
-			this.bots = new HashSet<>();
-		} else {
-			this.bots = new HashSet<>(bots);
-		}
-		if (bullets == null) {
-			this.bullets = new HashSet<>();
-		} else {
-			this.bullets = new HashSet<>(bullets);
-		}
-		if (observerEvents == null) {
-			this.observerEvents = new HashSet<>();
-		} else {
-			this.observerEvents = new HashSet<>(observerEvents);
-		}
-		if (botEventsMap == null) {
-			this.botEventsMap = new HashMap<>();
-		} else {
-			this.botEventsMap = new HashMap<>(botEventsMap);
-		}
+	public ImmutableTurn toImmutableTurn() {
+		return new ImmutableTurn(turnNumber, bots, bullets, observerEvents, botEventsMap);
 	}
 
+	@Override
 	public int getTurnNumber() {
 		return turnNumber;
 	}
 
-	public Set<ImmutableBot> getBots() {
-		return Collections.unmodifiableSet(bots);
+	@Override
+	public Set<IBot> getBots() {
+		return bots;
 	}
 
-	public Optional<ImmutableBot> getBot(int botId) {
+	@Override
+	public Optional<IBot> getBot(int botId) {
 		return bots.stream().filter(b -> b.getId() == botId).findAny();
 	}
 
-	public Set<ImmutableBullet> getBullets() {
-		return Collections.unmodifiableSet(bullets);
+	@Override
+	public Set<IBullet> getBullets() {
+		return bullets;
 	}
 
-	public Set<ImmutableBullet> getBullets(int botId) {
+	@Override
+	public Set<IBullet> getBullets(int botId) {
 		return bullets.stream().filter(b -> b.getBotId() == botId).collect(Collectors.toSet());
 	}
 
+	@Override
 	public Set<Event> getObserverEvents() {
-		return Collections.unmodifiableSet(observerEvents);
+		return observerEvents;
 	}
 
+	@Override
 	public Set<Event> getBotEvents(int botId) {
 		Set<Event> botEvents = botEventsMap.get(botId);
 		if (botEvents == null) {
@@ -76,66 +61,47 @@ public final class Turn {
 		return Collections.unmodifiableSet(botEvents);
 	}
 
-	public static final class Builder {
-		private int turnNumber;
-		private Set<ImmutableBot> bots = new HashSet<>();
-		private Set<ImmutableBullet> bullets = new HashSet<>();
-		private Set<Event> observerEvents = new HashSet<>();
-		private Map<Integer, Set<Event>> botEventsMap = new HashMap<>();
+	public void setTurnNumber(int turnNumber) {
+		this.turnNumber = turnNumber;
+	}
 
-		public Turn build() {
-			return new Turn(turnNumber, bots, bullets, observerEvents, botEventsMap);
+	public void setBots(Set<ImmutableBot> bots) {
+		if (bots == null) {
+			this.bots = new HashSet<>();
+		} else {
+			this.bots = new HashSet<>(bots);
 		}
+	}
 
-		public Builder setTurnNumber(int turnNumber) {
-			this.turnNumber = turnNumber;
-			return this;
+	public void setBullets(Set<ImmutableBullet> bullets) {
+		if (bullets == null) {
+			this.bullets = new HashSet<>();
+		} else {
+			this.bullets = new HashSet<>(bullets);
 		}
+	}
 
-		public Builder setBots(Set<ImmutableBot> bots) {
-			if (bots == null) {
-				this.bots = new HashSet<>();
-			} else {
-				this.bots = new HashSet<>(bots);
-			}
-			return this;
-		}
+	public void addObserverEvent(Event event) {
+		observerEvents.add(event);
+	}
 
-		public Builder setBullets(Set<ImmutableBullet> bullets) {
-			if (bullets == null) {
-				this.bullets = new HashSet<>();
-			} else {
-				this.bullets = new HashSet<>(bullets);
-			}
-			return this;
+	public void addPrivateBotEvent(int botId, Event event) {
+		Set<Event> botEvents = botEventsMap.get(botId);
+		if (botEvents == null) {
+			botEvents = new HashSet<>();
+			botEventsMap.put(botId, botEvents);
 		}
+		botEvents.add(event);
+	}
 
-		public Builder addObserverEvent(Event event) {
-			observerEvents.add(event);
-			return this;
+	public void addPublicBotEvent(Event event) {
+		for (IBot bot : bots) {
+			addPrivateBotEvent(bot.getId(), event);
 		}
+	}
 
-		public Builder addPrivateBotEvent(int botId, Event event) {
-			Set<Event> botEvents = botEventsMap.get(botId);
-			if (botEvents == null) {
-				botEvents = new HashSet<>();
-				botEventsMap.put(botId, botEvents);
-			}
-			botEvents.add(event);
-			return this;
-		}
-
-		public Builder addPublicBotEvent(Event event) {
-			for (ImmutableBot bot : bots) {
-				addPrivateBotEvent(bot.getId(), event);
-			}
-			return this;
-		}
-
-		public Builder resetEvents() {
-			botEventsMap.clear();
-			observerEvents.clear();
-			return this;
-		}
+	public void resetEvents() {
+		botEventsMap.clear();
+		observerEvents.clear();
 	}
 }

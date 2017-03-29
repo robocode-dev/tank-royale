@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.robocode2.model.GameSetup;
-import net.robocode2.model.ImmutableGameSetup;
+import net.robocode2.model.IGameSetup;
 
 public final class ServerSetup {
 
@@ -16,8 +16,8 @@ public final class ServerSetup {
 		return 50000;
 	}
 
-	public Set<ImmutableGameSetup> getGames() {
-		Set<ImmutableGameSetup> games = new HashSet<>();
+	public Set<IGameSetup> getGames() {
+		Set<IGameSetup> games = new HashSet<>();
 
 		GameSetup setup = new GameSetup();
 		setup.setGameType("melee");

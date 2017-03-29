@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Set;
 
 import net.robocode2.json_schema.states.BotStateWithId;
-import net.robocode2.model.ImmutableBot;
+import net.robocode2.model.IBot;
 
 public final class BotsToBotsWithIdMapper {
 
-	public static List<BotStateWithId> map(Set<ImmutableBot> bots) {
+	public static List<BotStateWithId> map(Set<IBot> bots) {
 		List<BotStateWithId> botStates = new ArrayList<BotStateWithId>();
-		for (ImmutableBot bot : bots) {
+		for (IBot bot : bots) {
 			botStates.add(BotToBotStateWithIdMapper.map(bot));
 		}
 		return botStates;
