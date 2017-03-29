@@ -4,10 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.robocode2.json_schema.GameSetup;
+import net.robocode2.model.ImmutableGameSetup;
 
 public final class GameSetupToGameSetupMapper {
 
-	public static GameSetup map(net.robocode2.model.GameSetup gameSetup) {
+	public static GameSetup map(ImmutableGameSetup gameSetup) {
 		GameSetup setup = new GameSetup();
 		setup.setGameType(gameSetup.getGameType());
 		setup.setArenaWidth(gameSetup.getArenaWidth());
@@ -23,9 +24,9 @@ public final class GameSetupToGameSetupMapper {
 		return setup;
 	}
 
-	public static Set<GameSetup> map(Set<net.robocode2.model.GameSetup> games) {
+	public static Set<GameSetup> map(Set<ImmutableGameSetup> games) {
 		Set<GameSetup> mappedGames = new HashSet<>();
-		for (net.robocode2.model.GameSetup gameSetup : games) {
+		for (ImmutableGameSetup gameSetup : games) {
 			mappedGames.add(map(gameSetup));
 		}
 		return mappedGames;

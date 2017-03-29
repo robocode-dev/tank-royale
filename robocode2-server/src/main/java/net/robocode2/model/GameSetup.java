@@ -1,153 +1,138 @@
 package net.robocode2.model;
 
-public final class GameSetup {
+public class GameSetup implements IGameSetup {
 
-	private final String gameType;
-	private final int arenaWidth;
-	private final int arenaHeight;
-	private final int minNumberOfParticipants;
-	private final Integer maxNumberOfParticipants;
-	private final int numberOfRounds;
-	private final double gunCoolingRate;
+	private String gameType = "melee";
+	private int arenaWidth = 400; // FIXME: 1000
+	private int arenaHeight = 400; // FIXME: 1000
+	private int minNumberOfParticipants = 2;
+	private Integer maxNumberOfParticipants;
+	private int numberOfRounds = 10;
+	private double gunCoolingRate = 0.1;
+	private int inactiveTurns = 450;
+	private int turnTimeout = 100;
+	private int readyTimeout = 10_000;
+	private int numberOfDelayedTurnsForObservers = 10;
 
-	private final int inactiveTurns;
-	private final int turnTimeout;
-	private final int readyTimeout;
-	private final int numberOfDelayedTurnsForObservers;
-
-	public GameSetup(String gameType, int arenaWidth, int arenaHeight, int minNumberOfParticipants,
-			Integer maxNumberOfParticipants, int numberOfRounds, double gunCoolingRate, int inactiveTurns,
-			int turnTimeout, int readyTimeout, int numberOfDelayedTurnsForObservers) {
-
-		this.gameType = gameType;
-		this.arenaWidth = arenaWidth;
-		this.arenaHeight = arenaHeight;
-		this.minNumberOfParticipants = minNumberOfParticipants;
-		this.maxNumberOfParticipants = maxNumberOfParticipants;
-		this.numberOfRounds = numberOfRounds;
-		this.gunCoolingRate = gunCoolingRate;
-		this.inactiveTurns = inactiveTurns;
-		this.turnTimeout = turnTimeout;
-		this.readyTimeout = readyTimeout;
-		this.numberOfDelayedTurnsForObservers = numberOfDelayedTurnsForObservers;
+	public GameSetup() {
 	}
 
+	public GameSetup(IGameSetup gameSetup) {
+		gameType = gameSetup.getGameType();
+		arenaWidth = gameSetup.getArenaWidth();
+		arenaHeight = gameSetup.getArenaWidth();
+		minNumberOfParticipants = gameSetup.getMinNumberOfParticipants();
+		maxNumberOfParticipants = gameSetup.getMaxNumberOfParticipants();
+		numberOfRounds = gameSetup.getNumberOfRounds();
+		gunCoolingRate = gameSetup.getGunCoolingRate();
+		inactiveTurns = gameSetup.getInactiveTurns();
+		turnTimeout = gameSetup.getTurnTimeout();
+		readyTimeout = gameSetup.getReadyTimeout();
+		numberOfDelayedTurnsForObservers = gameSetup.getNumberOfDelayedTurnsForObservers();
+	}
+
+	public ImmutableGameSetup toImmutableGameSetup() {
+		return new ImmutableGameSetup(gameType, arenaWidth, arenaHeight, minNumberOfParticipants,
+				maxNumberOfParticipants, numberOfRounds, gunCoolingRate, inactiveTurns, turnTimeout, readyTimeout,
+				numberOfDelayedTurnsForObservers);
+	}
+
+	@Override
 	public String getGameType() {
 		return gameType;
 	}
 
+	@Override
 	public int getArenaWidth() {
 		return arenaWidth;
 	}
 
+	@Override
 	public int getArenaHeight() {
 		return arenaHeight;
 	}
 
+	@Override
 	public int getMinNumberOfParticipants() {
 		return minNumberOfParticipants;
 	}
 
+	@Override
 	public Integer getMaxNumberOfParticipants() {
 		return maxNumberOfParticipants;
 	}
 
+	@Override
 	public int getNumberOfRounds() {
 		return numberOfRounds;
 	}
 
+	@Override
 	public double getGunCoolingRate() {
 		return gunCoolingRate;
 	}
 
+	@Override
 	public int getInactiveTurns() {
 		return inactiveTurns;
 	}
 
+	@Override
 	public int getTurnTimeout() {
 		return turnTimeout;
 	}
 
+	@Override
 	public int getReadyTimeout() {
 		return readyTimeout;
 	}
 
+	@Override
 	public int getNumberOfDelayedTurnsForObservers() {
 		return numberOfDelayedTurnsForObservers;
 	}
 
-	public static final class Builder {
-		private String gameType = "melee";
-		private int arenaWidth = 400; // FIXME: 1000
-		private int arenaHeight = 400; // FIXME: 1000
-		private int minNumberOfParticipants = 2;
-		private Integer maxNumberOfParticipants;
-		private int numberOfRounds = 10;
-		private double gunCoolingRate = 0.1;
-		private int inactiveTurns = 450;
-		private int turnTimeout = 100;
-		private int readyTimeout = 10_000;
-		private int numberOfDelayedTurnsForObservers = 10;
+	public void setGameType(String gameType) {
+		this.gameType = gameType;
+	}
 
-		public GameSetup build() {
-			return new GameSetup(gameType, arenaWidth, arenaHeight, minNumberOfParticipants, maxNumberOfParticipants,
-					numberOfRounds, gunCoolingRate, inactiveTurns, turnTimeout, readyTimeout,
-					numberOfDelayedTurnsForObservers);
-		}
+	public void setArenaWidth(int arenaWidth) {
+		this.arenaWidth = arenaWidth;
+	}
 
-		public Builder setGameType(String gameType) {
-			this.gameType = gameType;
-			return this;
-		}
+	public void setArenaHeight(int arenaHeight) {
+		this.arenaHeight = arenaHeight;
+	}
 
-		public Builder setArenaWidth(int arenaWidth) {
-			this.arenaWidth = arenaWidth;
-			return this;
-		}
+	public void setMinNumberOfParticipants(int minNumberOfParticipants) {
+		this.minNumberOfParticipants = minNumberOfParticipants;
+	}
 
-		public Builder setArenaHeight(int arenaHeight) {
-			this.arenaHeight = arenaHeight;
-			return this;
-		}
+	public void setMaxNumberOfParticipants(Integer maxNumberOfParticipants) {
+		this.maxNumberOfParticipants = maxNumberOfParticipants;
+	}
 
-		public Builder setMinNumberOfParticipants(int minNumberOfParticipants) {
-			this.minNumberOfParticipants = minNumberOfParticipants;
-			return this;
-		}
+	public void setNumberOfRounds(int numberOfRounds) {
+		this.numberOfRounds = numberOfRounds;
+	}
 
-		public Builder setMaxNumberOfParticipants(Integer maxNumberOfParticipants) {
-			this.maxNumberOfParticipants = maxNumberOfParticipants;
-			return this;
-		}
+	public void setGunCoolingRate(int gunCoolingRate) {
+		this.gunCoolingRate = gunCoolingRate;
+	}
 
-		public Builder setNumberOfRounds(int numberOfRounds) {
-			this.numberOfRounds = numberOfRounds;
-			return this;
-		}
+	public void setInactiveTurns(int inactiveTurns) {
+		this.inactiveTurns = inactiveTurns;
+	}
 
-		public Builder setGunCoolingRate(int gunCoolingRate) {
-			this.gunCoolingRate = gunCoolingRate;
-			return this;
-		}
+	public void setTurnTimeout(int turnTimeout) {
+		this.turnTimeout = turnTimeout;
+	}
 
-		public Builder setInactiveTurns(int inactiveTurns) {
-			this.inactiveTurns = inactiveTurns;
-			return this;
-		}
+	public void setReadyTimeout(int readyTimeout) {
+		this.readyTimeout = readyTimeout;
+	}
 
-		public Builder setTurnTimeout(int turnTimeout) {
-			this.turnTimeout = turnTimeout;
-			return this;
-		}
-
-		public Builder setReadyTimeout(int readyTimeout) {
-			this.readyTimeout = readyTimeout;
-			return this;
-		}
-
-		public Builder setNumberOfDelayedTurnsForObservers(int numberOfDelayedTurnsForObservers) {
-			this.numberOfDelayedTurnsForObservers = numberOfDelayedTurnsForObservers;
-			return this;
-		}
+	public void setNumberOfDelayedTurnsForObservers(int numberOfDelayedTurnsForObservers) {
+		this.numberOfDelayedTurnsForObservers = numberOfDelayedTurnsForObservers;
 	}
 }

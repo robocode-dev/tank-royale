@@ -2,7 +2,7 @@ package net.robocode2.model;
 
 import static net.robocode2.game.MathUtil.isNear;
 
-public final class Bot implements IBot {
+public class Bot implements IBot {
 
 	private int id;
 	private double energy = 100;

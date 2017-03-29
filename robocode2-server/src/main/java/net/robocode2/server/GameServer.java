@@ -28,6 +28,7 @@ import net.robocode2.json_schema.messages.TickForObserver;
 import net.robocode2.model.BotIntent;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
+import net.robocode2.model.IGameSetup;
 import net.robocode2.model.Round;
 import net.robocode2.model.Turn;
 import net.robocode2.server.mappers.BotIntentToBotIntentMapper;
@@ -80,7 +81,7 @@ public final class GameServer {
 			return;
 		}
 
-		gameSetup = gameAndParticipants.gameSetup;
+		gameSetup = new GameSetup(gameAndParticipants.gameSetup);
 		participants = gameAndParticipants.participants;
 
 		if (participants.size() > 0) {
@@ -108,7 +109,7 @@ public final class GameServer {
 
 		NewBattleForBot newBattleForBot = new NewBattleForBot();
 		newBattleForBot.setType(NewBattleForBot.Type.NEW_BATTLE_FOR_BOT);
-		newBattleForBot.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
+		newBattleForBot.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup.toImmutableGameSetup()));
 
 		int id = 1;
 		List<Integer> participantIds = new ArrayList<>();
@@ -162,10 +163,10 @@ public final class GameServer {
 
 		// Run through the list of games and see if anyone has enough
 		// participants to start the game
-		Set<GameSetup> games = serverSetup.getGames();
+		Set<? extends IGameSetup> games = serverSetup.getGames();
 		for (Entry<String, Set<BotConn>> entry : candidateBotsPerGameType.entrySet()) {
-			GameSetup gameSetup = games.stream().filter(g -> g.getGameType().equalsIgnoreCase(entry.getKey())).findAny()
-					.orElse(null);
+			IGameSetup gameSetup = games.stream().filter(g -> g.getGameType().equalsIgnoreCase(entry.getKey()))
+					.findAny().orElse(null);
 
 			Set<BotConn> participants = entry.getValue();
 			int count = participants.size();
@@ -192,7 +193,7 @@ public final class GameServer {
 		if (connectionHandler.getObserverConnections().size() > 0) {
 			NewBattleForObserver newBattleForObserver = new NewBattleForObserver();
 			newBattleForObserver.setType(NewBattleForObserver.Type.NEW_BATTLE_FOR_OBSERVER);
-			newBattleForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
+			newBattleForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup.toImmutableGameSetup()));
 
 			List<Participant> list = new ArrayList<>();
 			for (BotConn bot : participants) {
@@ -249,7 +250,7 @@ public final class GameServer {
 
 	private Set<String> getGameTypes() {
 		Set<String> gameTypes = new HashSet<>();
-		for (GameSetup gameSetup : serverSetup.getGames()) {
+		for (IGameSetup gameSetup : serverSetup.getGames()) {
 			gameTypes.add(gameSetup.getGameType());
 		}
 		return gameTypes;
@@ -405,7 +406,7 @@ public final class GameServer {
 	}
 
 	private class GameAndParticipants {
-		GameSetup gameSetup;
+		IGameSetup gameSetup;
 		Set<BotConn> participants;
 	}
 }
