@@ -29,7 +29,6 @@ import net.robocode2.model.Bullet;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.IBot;
-import net.robocode2.model.ImmutableBot;
 import net.robocode2.model.ImmutableBullet;
 import net.robocode2.model.ImmutableTurn;
 import net.robocode2.model.Physics;
@@ -59,7 +58,7 @@ public class ModelUpdater {
 	private final ScoreKeeper scoreKeeper;
 
 	private GameState.Builder gameStateBuilder;
-	private Round.Builder roundBuilder;
+	private Round round;
 	private Turn turn;
 
 	private int roundNumber;
@@ -86,7 +85,7 @@ public class ModelUpdater {
 	private void initialize() {
 		// Prepare game state builders
 		gameStateBuilder = new GameState.Builder();
-		roundBuilder = new Round.Builder();
+		round = new Round();
 		turn = new Turn();
 
 		// Prepare game state builder
@@ -127,7 +126,7 @@ public class ModelUpdater {
 
 	private void nextRound() {
 		roundNumber++;
-		roundBuilder.setRoundNumber(roundNumber);
+		round.setRoundNumber(roundNumber);
 
 		roundEnded = false;
 
@@ -182,25 +181,16 @@ public class ModelUpdater {
 		checkIfRoundOrGameOver();
 
 		// Store bot snapshots
-		Set<ImmutableBot> bots = new HashSet<>();
-		for (Bot bot : botMap.values()) {
-			bots.add(bot.toImmutableBot());
-		}
-		turn.setBots(bots);
+		turn.setBots(botMap.values());
 
 		// Store bullet snapshots
-		Set<ImmutableBullet> immutableBullets = new HashSet<>();
-		for (Bullet bullet : bullets) {
-			immutableBullets.add(bullet.toImmutableBullet());
-		}
-		turn.setBullets(immutableBullets);
+		turn.setBullets(bullets);
 	}
 
 	private GameState buildUpdatedGameState() {
-		roundBuilder.appendTurn(turn);
+		round.appendTurn(turn);
 
-		Round round = roundBuilder.build();
-		gameStateBuilder.appendRound(round);
+		gameStateBuilder.appendRound(round.toImmutableRound());
 
 		return gameStateBuilder.build();
 	}
@@ -225,11 +215,7 @@ public class ModelUpdater {
 		}
 
 		// Store bot snapshots into current turn
-		Set<ImmutableBot> bots = new HashSet<>();
-		for (Bot bot : botMap.values()) {
-			bots.add(bot.toImmutableBot());
-		}
-		turn.setBots(bots);
+		turn.setBots(botMap.values());
 	}
 
 	private Point randomBotPosition(Set<Integer> occupiedCells) {

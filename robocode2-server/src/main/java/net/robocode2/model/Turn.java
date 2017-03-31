@@ -1,12 +1,10 @@
 package net.robocode2.model;
 
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import net.robocode2.model.events.Event;
 
@@ -33,18 +31,8 @@ public final class Turn implements ITurn {
 	}
 
 	@Override
-	public Optional<IBot> getBot(int botId) {
-		return bots.stream().filter(b -> b.getId() == botId).findAny();
-	}
-
-	@Override
 	public Set<IBullet> getBullets() {
 		return bullets;
-	}
-
-	@Override
-	public Set<IBullet> getBullets(int botId) {
-		return bullets.stream().filter(b -> b.getBotId() == botId).collect(Collectors.toSet());
 	}
 
 	@Override
@@ -53,31 +41,25 @@ public final class Turn implements ITurn {
 	}
 
 	@Override
-	public Set<Event> getBotEvents(int botId) {
-		Set<Event> botEvents = botEventsMap.get(botId);
-		if (botEvents == null) {
-			botEvents = new HashSet<>();
-		}
-		return Collections.unmodifiableSet(botEvents);
+	public Map<Integer, Set<Event>> getBotEventsMap() {
+		return botEventsMap;
 	}
 
 	public void setTurnNumber(int turnNumber) {
 		this.turnNumber = turnNumber;
 	}
 
-	public void setBots(Set<ImmutableBot> bots) {
-		if (bots == null) {
-			this.bots = new HashSet<>();
-		} else {
-			this.bots = new HashSet<>(bots);
+	public void setBots(Collection<Bot> bots) {
+		this.bots = new HashSet<>();
+		if (bots != null) {
+			this.bots.addAll(bots);
 		}
 	}
 
-	public void setBullets(Set<ImmutableBullet> bullets) {
-		if (bullets == null) {
-			this.bullets = new HashSet<>();
-		} else {
-			this.bullets = new HashSet<>(bullets);
+	public void setBullets(Collection<Bullet> bullets) {
+		this.bullets = new HashSet<>();
+		if (bullets != null) {
+			this.bullets.addAll(bullets);
 		}
 	}
 

@@ -4,12 +4,12 @@ import java.util.Optional;
 
 import net.robocode2.json_schema.messages.TickForBot;
 import net.robocode2.model.IBot;
-import net.robocode2.model.Round;
-import net.robocode2.model.Turn;
+import net.robocode2.model.IRound;
+import net.robocode2.model.ITurn;
 
 public final class TurnToTickForBotMapper {
 
-	public static TickForBot map(Round round, Turn turn, int botId) {
+	public static TickForBot map(IRound round, ITurn turn, int botId) {
 		Optional<IBot> optionalBot = turn.getBot(botId);
 		if (!optionalBot.isPresent()) {
 			return null;

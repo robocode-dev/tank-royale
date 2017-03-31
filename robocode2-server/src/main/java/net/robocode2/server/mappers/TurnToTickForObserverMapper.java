@@ -1,12 +1,12 @@
 package net.robocode2.server.mappers;
 
 import net.robocode2.json_schema.messages.TickForObserver;
-import net.robocode2.model.Round;
-import net.robocode2.model.Turn;
+import net.robocode2.model.IRound;
+import net.robocode2.model.ITurn;
 
 public final class TurnToTickForObserverMapper {
 
-	public static TickForObserver map(Round round, Turn turn) {
+	public static TickForObserver map(IRound round, ITurn turn) {
 		TickForObserver tick = new TickForObserver();
 		tick.setType(TickForObserver.Type.TICK_FOR_OBSERVER);
 		tick.setBotStates(BotsToBotsWithIdMapper.map(turn.getBots()));
