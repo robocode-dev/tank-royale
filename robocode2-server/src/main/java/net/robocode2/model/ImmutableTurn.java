@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import net.robocode2.model.events.Event;
 
@@ -52,6 +51,10 @@ public final class ImmutableTurn implements ITurn {
 		this.botEventsMap = Collections.unmodifiableMap(immuBotEventsMap);
 	}
 
+	public ImmutableTurn(ITurn turn) {
+		this(turn.getTurnNumber(), turn.getBots(), turn.getBullets(), turn.getObserverEvents(), turn.getBotEventsMap());
+	}
+
 	@Override
 	public int getTurnNumber() {
 		return turnNumber;
@@ -73,21 +76,12 @@ public final class ImmutableTurn implements ITurn {
 	}
 
 	@Override
-	public Set<IBullet> getBullets(int botId) {
-		return bullets.stream().filter(b -> b.getBotId() == botId).collect(Collectors.toSet());
-	}
-
-	@Override
 	public Set<Event> getObserverEvents() {
 		return observerEvents;
 	}
 
 	@Override
-	public Set<Event> getBotEvents(int botId) {
-		Set<Event> botEvents = botEventsMap.get(botId);
-		if (botEvents == null) {
-			botEvents = new HashSet<>();
-		}
-		return Collections.unmodifiableSet(botEvents);
+	public Map<Integer, Set<Event>> getBotEventsMap() {
+		return botEventsMap;
 	}
 }

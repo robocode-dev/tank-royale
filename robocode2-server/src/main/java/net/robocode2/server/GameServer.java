@@ -29,8 +29,8 @@ import net.robocode2.model.BotIntent;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.IGameSetup;
-import net.robocode2.model.Round;
-import net.robocode2.model.Turn;
+import net.robocode2.model.IRound;
+import net.robocode2.model.ITurn;
 import net.robocode2.server.mappers.BotIntentToBotIntentMapper;
 import net.robocode2.server.mappers.GameSetupToGameSetupMapper;
 import net.robocode2.server.mappers.TurnToTickForBotMapper;
@@ -282,8 +282,8 @@ public final class GameServer {
 
 		// Send tick to bots
 
-		Round round = gameState.getLastRound();
-		Turn turn = round.getLastTurn();
+		IRound round = gameState.getLastRound();
+		ITurn turn = round.getLastTurn();
 
 		// Send game state as 'tick' to participants
 		for (BotConn participant : participants) {
@@ -296,8 +296,8 @@ public final class GameServer {
 
 		// Send delayed tick to observers
 
-		Round observerRound = gameState.getLastRound();
-		Turn observerTurn = observerRound.getLastTurn();
+		IRound observerRound = gameState.getLastRound();
+		ITurn observerTurn = observerRound.getLastTurn();
 
 		if (gameState.isGameEnded()) {
 			System.out.println("#### GAME OVER #####");

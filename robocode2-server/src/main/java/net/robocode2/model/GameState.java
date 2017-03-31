@@ -7,10 +7,10 @@ import java.util.List;
 public final class GameState {
 
 	private final Arena arena;
-	private final List<Round> rounds;
+	private final List<IRound> rounds;
 	private final boolean gameEnded;
 
-	public GameState(Arena arena, List<Round> rounds, boolean gameEnded) {
+	public GameState(Arena arena, List<IRound> rounds, boolean gameEnded) {
 		this.arena = arena;
 		if (rounds == null) {
 			this.rounds = new ArrayList<>();
@@ -24,11 +24,11 @@ public final class GameState {
 		return arena;
 	}
 
-	public List<Round> getRounds() {
+	public List<IRound> getRounds() {
 		return Collections.unmodifiableList(rounds);
 	}
 
-	public Round getLastRound() {
+	public IRound getLastRound() {
 		int numRounds = rounds.size();
 		if (numRounds > 0) {
 			return rounds.get(numRounds - 1);
@@ -42,7 +42,7 @@ public final class GameState {
 
 	public static final class Builder {
 		private Arena arena;
-		private List<Round> rounds = new ArrayList<>();
+		private List<IRound> rounds = new ArrayList<>();
 		private boolean gameEnded;
 
 		public GameState build() {
@@ -54,7 +54,7 @@ public final class GameState {
 			return this;
 		}
 
-		public Builder setRounds(List<Round> rounds) {
+		public Builder setRounds(List<IRound> rounds) {
 			this.rounds = new ArrayList<>(rounds);
 			return this;
 		}
@@ -64,7 +64,7 @@ public final class GameState {
 			return this;
 		}
 
-		public Builder appendRound(Round round) {
+		public Builder appendRound(IRound round) {
 			rounds.add(round);
 			return this;
 		}

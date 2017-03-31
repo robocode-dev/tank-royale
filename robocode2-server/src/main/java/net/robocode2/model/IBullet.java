@@ -16,7 +16,7 @@ public interface IBullet {
 
 	int getTick();
 
-	public static Point calcPosition(Point firePosition, double direction, double speed, int tick) {
+	static Point calcPosition(Point firePosition, double direction, double speed, int tick) {
 		double angle = Math.toRadians(direction);
 		double distance = speed * tick;
 		double x = firePosition.x + Math.cos(angle) * distance;
@@ -27,11 +27,11 @@ public interface IBullet {
 	/**
 	 * Calculates the current bullet position based on the fire position and current tick.
 	 */
-	public default Point calcPosition() {
+	default Point calcPosition() {
 		return calcPosition(getFirePosition(), getDirection(), getSpeed(), getTick());
 	}
 
-	public default Point calcNextPosition() {
+	default Point calcNextPosition() {
 		return calcPosition(getFirePosition(), getDirection(), getSpeed(), getTick() + 1);
 	}
 }

@@ -1,7 +1,5 @@
 package net.robocode2.model;
 
-import static net.robocode2.game.MathUtil.isNear;
-
 public class Bot implements IBot {
 
 	private int id;
@@ -128,18 +126,6 @@ public class Bot implements IBot {
 
 	public void setScore(Score score) {
 		this.score = score;
-	}
-
-	public boolean isAlive() {
-		return energy >= 0;
-	}
-
-	public boolean isDead() {
-		return !isAlive();
-	}
-
-	public boolean isDisabled() {
-		return isAlive() && isNear(energy, 0);
 	}
 
 	/**
