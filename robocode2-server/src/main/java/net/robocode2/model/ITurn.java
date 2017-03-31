@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.robocode2.model.events.Event;
+import net.robocode2.model.events.IEvent;
 
 public interface ITurn {
 
@@ -17,9 +17,9 @@ public interface ITurn {
 
 	Set<IBullet> getBullets();
 
-	Set<Event> getObserverEvents();
+	Set<IEvent> getObserverEvents();
 
-	Map<Integer, Set<Event>> getBotEventsMap();
+	Map<Integer, Set<IEvent>> getBotEventsMap();
 
 	default Optional<IBot> getBot(int botId) {
 		return getBots().stream().filter(b -> b.getId() == botId).findAny();
@@ -29,8 +29,8 @@ public interface ITurn {
 		return getBullets().stream().filter(b -> b.getBotId() == botId).collect(Collectors.toSet());
 	}
 
-	default Set<Event> getBotEvents(int botId) {
-		Set<Event> botEvents = getBotEventsMap().get(botId);
+	default Set<IEvent> getBotEvents(int botId) {
+		Set<IEvent> botEvents = getBotEventsMap().get(botId);
 		if (botEvents == null) {
 			botEvents = new HashSet<>();
 		}

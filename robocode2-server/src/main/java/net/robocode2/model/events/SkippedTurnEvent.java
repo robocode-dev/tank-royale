@@ -1,6 +1,6 @@
 package net.robocode2.model.events;
 
-public final class SkippedTurnEvent implements Event {
+public final class SkippedTurnEvent implements IEvent {
 
 	private final int skippedTurn;
 

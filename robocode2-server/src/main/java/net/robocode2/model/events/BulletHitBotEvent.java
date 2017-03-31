@@ -2,7 +2,7 @@ package net.robocode2.model.events;
 
 import net.robocode2.model.ImmutableBullet;
 
-public final class BulletHitBotEvent implements Event {
+public final class BulletHitBotEvent implements IEvent {
 
 	private final ImmutableBullet bullet;
 	private final int victimId;

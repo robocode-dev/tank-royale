@@ -6,15 +6,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.robocode2.model.events.Event;
+import net.robocode2.model.events.IEvent;
 
 public final class Turn implements ITurn {
 
 	private int turnNumber;
 	private Set<IBot> bots = new HashSet<>();
 	private Set<IBullet> bullets = new HashSet<>();
-	private Set<Event> observerEvents = new HashSet<>();
-	private Map<Integer, Set<Event>> botEventsMap = new HashMap<>();
+	private Set<IEvent> observerEvents = new HashSet<>();
+	private Map<Integer, Set<IEvent>> botEventsMap = new HashMap<>();
 
 	public ImmutableTurn toImmutableTurn() {
 		return new ImmutableTurn(turnNumber, bots, bullets, observerEvents, botEventsMap);
@@ -36,12 +36,12 @@ public final class Turn implements ITurn {
 	}
 
 	@Override
-	public Set<Event> getObserverEvents() {
+	public Set<IEvent> getObserverEvents() {
 		return observerEvents;
 	}
 
 	@Override
-	public Map<Integer, Set<Event>> getBotEventsMap() {
+	public Map<Integer, Set<IEvent>> getBotEventsMap() {
 		return botEventsMap;
 	}
 
@@ -63,12 +63,12 @@ public final class Turn implements ITurn {
 		}
 	}
 
-	public void addObserverEvent(Event event) {
+	public void addObserverEvent(IEvent event) {
 		observerEvents.add(event);
 	}
 
-	public void addPrivateBotEvent(int botId, Event event) {
-		Set<Event> botEvents = botEventsMap.get(botId);
+	public void addPrivateBotEvent(int botId, IEvent event) {
+		Set<IEvent> botEvents = botEventsMap.get(botId);
 		if (botEvents == null) {
 			botEvents = new HashSet<>();
 			botEventsMap.put(botId, botEvents);
@@ -76,7 +76,7 @@ public final class Turn implements ITurn {
 		botEvents.add(event);
 	}
 
-	public void addPublicBotEvent(Event event) {
+	public void addPublicBotEvent(IEvent event) {
 		for (IBot bot : bots) {
 			addPrivateBotEvent(bot.getId(), event);
 		}

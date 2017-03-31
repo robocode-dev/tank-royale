@@ -1,6 +1,6 @@
 package net.robocode2.model.events;
 
-public final class BotHitWallEvent implements Event {
+public final class BotHitWallEvent implements IEvent {
 
 	private final int victimId;
 

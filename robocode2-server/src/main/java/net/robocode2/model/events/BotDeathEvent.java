@@ -1,6 +1,6 @@
 package net.robocode2.model.events;
 
-public final class BotDeathEvent implements Event {
+public final class BotDeathEvent implements IEvent {
 
 	private final int victimId;
 

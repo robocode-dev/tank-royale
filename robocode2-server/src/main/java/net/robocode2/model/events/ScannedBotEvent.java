@@ -2,7 +2,7 @@ package net.robocode2.model.events;
 
 import net.robocode2.model.Point;
 
-public final class ScannedBotEvent implements Event {
+public final class ScannedBotEvent implements IEvent {
 
 	private final int scannedByBotId;
 	private final int scannedBotId;

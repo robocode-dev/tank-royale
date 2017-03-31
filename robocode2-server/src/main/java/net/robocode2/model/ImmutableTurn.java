@@ -4,21 +4,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
-import net.robocode2.model.events.Event;
+import net.robocode2.model.events.IEvent;
 
 public final class ImmutableTurn implements ITurn {
 
 	private final int turnNumber;
 	private final Set<IBot> bots;
 	private final Set<IBullet> bullets;
-	private final Set<Event> observerEvents;
-	private final Map<Integer, Set<Event>> botEventsMap;
+	private final Set<IEvent> observerEvents;
+	private final Map<Integer, Set<IEvent>> botEventsMap;
 
-	public ImmutableTurn(int turnNumber, Set<IBot> bots, Set<IBullet> bullets, Set<Event> observerEvents,
-			Map<Integer, Set<Event>> botEventsMap) {
+	public ImmutableTurn(int turnNumber, Set<IBot> bots, Set<IBullet> bullets, Set<IEvent> observerEvents,
+			Map<Integer, Set<IEvent>> botEventsMap) {
 
 		this.turnNumber = turnNumber;
 
@@ -38,13 +37,13 @@ public final class ImmutableTurn implements ITurn {
 		}
 		this.bullets = Collections.unmodifiableSet(immuBullets);
 
-		Set<Event> immuObserverEvents = new HashSet<>();
+		Set<IEvent> immuObserverEvents = new HashSet<>();
 		if (observerEvents != null) {
 			immuObserverEvents.addAll(observerEvents);
 		}
 		this.observerEvents = Collections.unmodifiableSet(immuObserverEvents);
 
-		Map<Integer, Set<Event>> immuBotEventsMap = new HashMap<>();
+		Map<Integer, Set<IEvent>> immuBotEventsMap = new HashMap<>();
 		if (botEventsMap != null) {
 			immuBotEventsMap.putAll(botEventsMap);
 		}
@@ -66,22 +65,17 @@ public final class ImmutableTurn implements ITurn {
 	}
 
 	@Override
-	public Optional<IBot> getBot(int botId) {
-		return bots.stream().filter(b -> b.getId() == botId).findAny();
-	}
-
-	@Override
 	public Set<IBullet> getBullets() {
 		return bullets;
 	}
 
 	@Override
-	public Set<Event> getObserverEvents() {
+	public Set<IEvent> getObserverEvents() {
 		return observerEvents;
 	}
 
 	@Override
-	public Map<Integer, Set<Event>> getBotEventsMap() {
+	public Map<Integer, Set<IEvent>> getBotEventsMap() {
 		return botEventsMap;
 	}
 }

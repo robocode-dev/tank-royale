@@ -2,7 +2,7 @@ package net.robocode2.model.events;
 
 import net.robocode2.model.ImmutableBullet;
 
-public final class BulletMissedEvent implements Event {
+public final class BulletMissedEvent implements IEvent {
 
 	private final ImmutableBullet bullet;
 
