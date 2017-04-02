@@ -1,93 +1,69 @@
 package net.robocode2.model;
 
-public final class Score {
+public class Score implements IScore {
 
-	private final double survival;
-	private final double lastSurvivorBonus;
-	private final double bulletDamage;
-	private final double bulletKillBonus;
-	private final double ramDamage;
-	private final double ramKillBonus;
+	private double survival;
+	private double lastSurvivorBonus;
+	private double bulletDamage;
+	private double bulletKillBonus;
+	private double ramDamage;
+	private double ramKillBonus;
 
-	public Score(double survival, double lastSurvivorBonus, double bulletDamage, double bulletKillBonus,
-			double ramDamage, double ramKillBonus) {
-
-		this.survival = survival;
-		this.lastSurvivorBonus = lastSurvivorBonus;
-		this.bulletDamage = bulletDamage;
-		this.bulletKillBonus = bulletKillBonus;
-		this.ramDamage = ramDamage;
-		this.ramKillBonus = ramKillBonus;
+	public ImmutableScore toImmutableScore() {
+		return new ImmutableScore(this);
 	}
 
-	public double getTotalScore() {
-		return survival + lastSurvivorBonus + bulletDamage + bulletKillBonus + ramDamage + ramKillBonus;
-	}
-
+	@Override
 	public double getSurvival() {
 		return survival;
 	}
 
+	@Override
 	public double getLastSurvivorBonus() {
 		return lastSurvivorBonus;
 	}
 
+	@Override
 	public double getBulletDamage() {
 		return bulletDamage;
 	}
 
+	@Override
 	public double getBulletKillBonus() {
 		return bulletKillBonus;
 	}
 
+	@Override
 	public double getRamDamage() {
 		return ramDamage;
 	}
 
+	@Override
 	public double getRamKillBonus() {
 		return ramKillBonus;
 	}
 
-	public static final class Builder {
-		private double survival;
-		private double lastSurvivorBonus;
-		private double bulletDamage;
-		private double bulletKillBonus;
-		private double ramDamage;
-		private double ramKillBonus;
+	public void setSurvival(double survival) {
+		this.survival = survival;
+	}
 
-		public Score build() {
-			return new Score(survival, lastSurvivorBonus, bulletDamage, bulletKillBonus, ramDamage, ramKillBonus);
-		}
+	public void setLastSurvivorBonus(double lastSurvivorBonus) {
+		this.lastSurvivorBonus = lastSurvivorBonus;
+	}
 
-		public Builder setSurvival(double survival) {
-			this.survival = survival;
-			return this;
-		}
+	public void setBulletDamage(double bulletDamage) {
+		this.bulletDamage = bulletDamage;
+	}
 
-		public Builder setLastSurvivorBonus(double lastSurvivorBonus) {
-			this.lastSurvivorBonus = lastSurvivorBonus;
-			return this;
-		}
+	public void setBulletKillBonus(double bulletKillBonus) {
+		this.bulletKillBonus = bulletKillBonus;
+	}
 
-		public Builder setBulletDamage(double bulletDamage) {
-			this.bulletDamage = bulletDamage;
-			return this;
-		}
+	public void setRamDamage(double ramDamage) {
+		this.ramDamage = ramDamage;
+	}
 
-		public Builder setBulletKillBonus(double bulletKillBonus) {
-			this.bulletKillBonus = bulletKillBonus;
-			return this;
-		}
-
-		public Builder setRamDamage(double ramDamage) {
-			this.ramDamage = ramDamage;
-			return this;
-		}
-
-		public Builder setRamKillBonus(double ramKillBonus) {
-			this.ramKillBonus = ramKillBonus;
-			return this;
-		}
+	public void setRamKillBonus(double ramKillBonus) {
+		this.ramKillBonus = ramKillBonus;
 	}
 }

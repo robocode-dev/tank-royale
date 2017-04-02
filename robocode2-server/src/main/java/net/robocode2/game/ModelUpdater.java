@@ -210,7 +210,7 @@ public class ModelUpdater {
 			bot.setRadarDirection(randomDirection());
 			bot.setScanArc(new Arc(0, RADAR_RADIUS));
 			bot.setGunHeat(INITIAL_GUN_HEAT);
-			bot.setScore(new Score.Builder().build());
+			bot.setScore(new Score());
 
 			botMap.put(id, bot);
 		}

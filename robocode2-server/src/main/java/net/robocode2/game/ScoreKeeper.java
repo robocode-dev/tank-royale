@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.robocode2.model.ImmutableScore;
 import net.robocode2.model.Score;
-import net.robocode2.model.Score.Builder;
 
 public class ScoreKeeper {
 
@@ -37,31 +37,31 @@ public class ScoreKeeper {
 		botsAlive.clear();
 	}
 
-	public Score getScore(int botId) {
+	public ImmutableScore getScore(int botId) {
 		DamageAndSurvival damageRecord = damageAndSurvivals.get(botId);
 
-		Builder scoreBuilder = new Builder();
-		scoreBuilder.setSurvival(SCORE_PER_SURVIVAL * damageRecord.getSurvivalCount());
-		scoreBuilder.setLastSurvivorBonus(BONUS_PER_LAST_SURVIVOR * damageRecord.getLastSurvivorCount());
+		Score score = new Score();
+		score.setSurvival(SCORE_PER_SURVIVAL * damageRecord.getSurvivalCount());
+		score.setLastSurvivorBonus(BONUS_PER_LAST_SURVIVOR * damageRecord.getLastSurvivorCount());
 
-		scoreBuilder.setBulletDamage(SCORE_PER_BULLET_DAMAGE * damageRecord.getTotalBulletDamage());
-		scoreBuilder.setRamDamage(SCORE_PER_RAM_DAMAGE * damageRecord.getTotalRamDamage());
+		score.setBulletDamage(SCORE_PER_BULLET_DAMAGE * damageRecord.getTotalBulletDamage());
+		score.setRamDamage(SCORE_PER_RAM_DAMAGE * damageRecord.getTotalRamDamage());
 
 		double bulletKillBonus = 0;
 		for (int enemyId : damageRecord.getBulletKillEnemyIds()) {
 			double totalDamage = damageRecord.getBulletDamage(enemyId) + damageRecord.getRamDamage(enemyId);
 			bulletKillBonus += BONUS_PER_BULLET_KILL * totalDamage;
 		}
-		scoreBuilder.setBulletKillBonus(bulletKillBonus);
+		score.setBulletKillBonus(bulletKillBonus);
 
 		double ramKillBonus = 0;
 		for (int enemyId : damageRecord.getRamKillEnemyIds()) {
 			double totalDamage = damageRecord.getBulletDamage(enemyId) + damageRecord.getRamDamage(enemyId);
 			ramKillBonus += BONUS_PER_RAM_KILL * totalDamage;
 		}
-		scoreBuilder.setRamKillBonus(ramKillBonus);
+		score.setRamKillBonus(ramKillBonus);
 
-		return scoreBuilder.build();
+		return score.toImmutableScore();
 	}
 
 	public void addBulletHit(int botId, int victimBotId, double damage, boolean kill) {
