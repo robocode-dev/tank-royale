@@ -1,76 +1,42 @@
 package net.robocode2.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public final class GameState {
+public class GameState implements IGameState {
 
-	private final Arena arena;
-	private final List<IRound> rounds;
-	private final boolean gameEnded;
+	private Arena arena;
+	private final List<IRound> rounds = new ArrayList<>();
+	private boolean gameEnded;
 
-	public GameState(Arena arena, List<IRound> rounds, boolean gameEnded) {
-		this.arena = arena;
-		if (rounds == null) {
-			this.rounds = new ArrayList<>();
-		} else {
-			this.rounds = new ArrayList<>(rounds);
-		}
-		this.gameEnded = gameEnded;
+	public ImmutableGameState toImmutableGameState() {
+		return new ImmutableGameState(this);
 	}
 
+	@Override
 	public Arena getArena() {
 		return arena;
 	}
 
+	@Override
 	public List<IRound> getRounds() {
-		return Collections.unmodifiableList(rounds);
+		return rounds;
 	}
 
-	public IRound getLastRound() {
-		int numRounds = rounds.size();
-		if (numRounds > 0) {
-			return rounds.get(numRounds - 1);
-		}
-		return null;
-	}
-
+	@Override
 	public boolean isGameEnded() {
 		return gameEnded;
 	}
 
-	public static final class Builder {
-		private Arena arena;
-		private List<IRound> rounds = new ArrayList<>();
-		private boolean gameEnded;
+	public void setArena(Arena arena) {
+		this.arena = arena;
+	}
 
-		public GameState build() {
-			return new GameState(arena, rounds, gameEnded);
-		}
+	public void appendRound(IRound round) {
+		this.rounds.add(round);
+	}
 
-		public Builder setArena(Arena arena) {
-			this.arena = arena;
-			return this;
-		}
-
-		public Builder setRounds(List<IRound> rounds) {
-			this.rounds = new ArrayList<>(rounds);
-			return this;
-		}
-
-		public Builder setGameEnded() {
-			this.gameEnded = true;
-			return this;
-		}
-
-		public Builder appendRound(IRound round) {
-			rounds.add(round);
-			return this;
-		}
-
-		public boolean isGameEnded() {
-			return gameEnded;
-		}
+	public void setGameEnded() {
+		gameEnded = true;
 	}
 }

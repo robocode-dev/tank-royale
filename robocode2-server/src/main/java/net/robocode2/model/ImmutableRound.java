@@ -22,6 +22,10 @@ public final class ImmutableRound implements IRound {
 		this.roundEnded = roundEnded;
 	}
 
+	public ImmutableRound(IRound round) {
+		this(round.getRoundNumber(), round.getTurns(), round.isRoundEnded());
+	}
+
 	@Override
 	public int getRoundNumber() {
 		return roundNumber;

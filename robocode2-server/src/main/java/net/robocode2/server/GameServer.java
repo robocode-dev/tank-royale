@@ -27,7 +27,7 @@ import net.robocode2.json_schema.messages.TickForBot;
 import net.robocode2.json_schema.messages.TickForObserver;
 import net.robocode2.model.BotIntent;
 import net.robocode2.model.GameSetup;
-import net.robocode2.model.GameState;
+import net.robocode2.model.ImmutableGameState;
 import net.robocode2.model.IGameSetup;
 import net.robocode2.model.IRound;
 import net.robocode2.model.ITurn;
@@ -236,7 +236,7 @@ public final class GameServer {
 		}, gameSetup.getTurnTimeout(), gameSetup.getTurnTimeout());
 	}
 
-	private GameState updateGameState() {
+	private ImmutableGameState updateGameState() {
 		Map<Integer /* BotId */, BotIntent> mappedBotIntents = new HashMap<>();
 
 		for (Entry<BotConn, BotIntent.Builder> entry : botIntents.entrySet()) {
@@ -275,7 +275,7 @@ public final class GameServer {
 		System.out.println("#### UPDATE GAME STATE EVENT #####");
 
 		// Update game state
-		GameState gameState = updateGameState();
+		ImmutableGameState gameState = updateGameState();
 
 		// Clear bot intents
 		botIntents.clear();

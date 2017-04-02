@@ -31,6 +31,14 @@ public final class ImmutableGameSetup implements IGameSetup {
 		this.numberOfDelayedTurnsForObservers = numberOfDelayedTurnsForObservers;
 	}
 
+	public ImmutableGameSetup(IGameSetup gameSetup) {
+		this(gameSetup.getGameType(), gameSetup.getArenaWidth(), gameSetup.getArenaHeight(),
+				gameSetup.getMinNumberOfParticipants(), gameSetup.getMaxNumberOfParticipants(),
+				gameSetup.getNumberOfRounds(), gameSetup.getGunCoolingRate(), gameSetup.getInactiveTurns(),
+				gameSetup.getTurnTimeout(), gameSetup.getReadyTimeout(),
+				gameSetup.getNumberOfDelayedTurnsForObservers());
+	}
+
 	@Override
 	public String getGameType() {
 		return gameType;

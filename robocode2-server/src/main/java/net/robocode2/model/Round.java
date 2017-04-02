@@ -9,11 +9,8 @@ public final class Round implements IRound {
 	private final List<ITurn> turns = new ArrayList<>();
 	private boolean roundEnded;
 
-	public Round() {
-	}
-
 	public ImmutableRound toImmutableRound() {
-		return new ImmutableRound(roundNumber, turns, roundEnded);
+		return new ImmutableRound(this);
 	}
 
 	@Override

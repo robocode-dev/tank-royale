@@ -30,6 +30,7 @@ import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.IBot;
 import net.robocode2.model.ImmutableBullet;
+import net.robocode2.model.ImmutableGameState;
 import net.robocode2.model.ImmutableTurn;
 import net.robocode2.model.Physics;
 import net.robocode2.model.Point;
@@ -57,7 +58,7 @@ public class ModelUpdater {
 
 	private final ScoreKeeper scoreKeeper;
 
-	private GameState.Builder gameStateBuilder;
+	private GameState gameState;
 	private Round round;
 	private Turn turn;
 
@@ -84,19 +85,19 @@ public class ModelUpdater {
 
 	private void initialize() {
 		// Prepare game state builders
-		gameStateBuilder = new GameState.Builder();
+		gameState = new GameState();
 		round = new Round();
 		turn = new Turn();
 
 		// Prepare game state builder
 		Arena arena = new Arena(new Size(setup.getArenaWidth(), setup.getArenaHeight()));
-		gameStateBuilder.setArena(arena);
+		gameState.setArena(arena);
 
 		roundNumber = 0;
 		turnNumber = 0;
 	}
 
-	public GameState update(Map<Integer /* BotId */, BotIntent> botIntents) {
+	public ImmutableGameState update(Map<Integer /* BotId */, BotIntent> botIntents) {
 
 		updateBotIntents(botIntents);
 
@@ -187,12 +188,12 @@ public class ModelUpdater {
 		turn.setBullets(bullets);
 	}
 
-	private GameState buildUpdatedGameState() {
+	private ImmutableGameState buildUpdatedGameState() {
 		round.appendTurn(turn);
 
-		gameStateBuilder.appendRound(round.toImmutableRound());
+		gameState.appendRound(round.toImmutableRound());
 
-		return gameStateBuilder.build();
+		return gameState.toImmutableGameState();
 	}
 
 	private void initializeBotStates() {
@@ -728,7 +729,7 @@ public class ModelUpdater {
 
 			if (roundNumber == setup.getNumberOfRounds()) {
 				// Game over
-				gameStateBuilder.setGameEnded();
+				gameState.setGameEnded();
 			}
 		}
 	}

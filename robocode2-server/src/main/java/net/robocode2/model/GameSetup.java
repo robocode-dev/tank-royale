@@ -32,9 +32,7 @@ public class GameSetup implements IGameSetup {
 	}
 
 	public ImmutableGameSetup toImmutableGameSetup() {
-		return new ImmutableGameSetup(gameType, arenaWidth, arenaHeight, minNumberOfParticipants,
-				maxNumberOfParticipants, numberOfRounds, gunCoolingRate, inactiveTurns, turnTimeout, readyTimeout,
-				numberOfDelayedTurnsForObservers);
+		return new ImmutableGameSetup(this);
 	}
 
 	@Override
