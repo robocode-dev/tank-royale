@@ -27,10 +27,10 @@ import net.robocode2.json_schema.messages.TickForBot;
 import net.robocode2.json_schema.messages.TickForObserver;
 import net.robocode2.model.BotIntent;
 import net.robocode2.model.GameSetup;
-import net.robocode2.model.ImmutableGameState;
 import net.robocode2.model.IGameSetup;
 import net.robocode2.model.IRound;
 import net.robocode2.model.ITurn;
+import net.robocode2.model.ImmutableGameState;
 import net.robocode2.server.mappers.BotIntentToBotIntentMapper;
 import net.robocode2.server.mappers.GameSetupToGameSetupMapper;
 import net.robocode2.server.mappers.TurnToTickForBotMapper;
@@ -48,7 +48,7 @@ public final class GameServer {
 	private Set<BotConn> participants;
 	private Set<BotConn> readyParticipants;
 
-	private Map<BotConn, BotIntent.Builder> botIntents = new HashMap<>();
+	private Map<BotConn, BotIntent> botIntents = new HashMap<>();
 
 	private final Timer readyTimer = new Timer("Bot-ready-timer");
 	private final Timer updateGameStateTimer = new Timer("Update-game-state-timer");
@@ -239,9 +239,9 @@ public final class GameServer {
 	private ImmutableGameState updateGameState() {
 		Map<Integer /* BotId */, BotIntent> mappedBotIntents = new HashMap<>();
 
-		for (Entry<BotConn, BotIntent.Builder> entry : botIntents.entrySet()) {
+		for (Entry<BotConn, BotIntent> entry : botIntents.entrySet()) {
 			int botId = entry.getKey().getId();
-			BotIntent intent = entry.getValue().build();
+			BotIntent intent = entry.getValue();
 			mappedBotIntents.put(botId, intent);
 		}
 
@@ -345,12 +345,12 @@ public final class GameServer {
 
 		bot.setId(botId);
 
-		BotIntent.Builder builder = botIntents.get(bot);
-		if (builder == null) {
-			builder = new BotIntent.Builder();
-			botIntents.put(bot, builder);
+		BotIntent botIntent = botIntents.get(bot);
+		if (botIntent == null) {
+			botIntent = new BotIntent();
+			botIntents.put(bot, botIntent);
 		}
-		builder.update(BotIntentToBotIntentMapper.map(intent));
+		botIntent.update(BotIntentToBotIntentMapper.map(intent));
 	}
 
 	private Integer getBotId(BotConn botConn) {

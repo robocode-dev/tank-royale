@@ -29,6 +29,8 @@ import net.robocode2.model.Bullet;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.IBot;
+import net.robocode2.model.IBotIntent;
+import net.robocode2.model.ImmutableBotIntent;
 import net.robocode2.model.ImmutableBullet;
 import net.robocode2.model.ImmutableGameState;
 import net.robocode2.model.ImmutableTurn;
@@ -70,7 +72,7 @@ public class ModelUpdater {
 
 	private ImmutableTurn previousTurn;
 
-	private Map<Integer /* BotId */, BotIntent.Builder> botIntentsMap = new HashMap<>();
+	private Map<Integer /* BotId */, BotIntent> botIntentsMap = new HashMap<>();
 	private Map<Integer /* BotId */, Bot> botMap = new HashMap<>();
 	private Set<Bullet> bullets = new HashSet<>();
 
@@ -116,12 +118,12 @@ public class ModelUpdater {
 
 	private void updateBotIntents(Map<Integer /* BotId */, BotIntent> botIntents) {
 		for (Map.Entry<Integer, BotIntent> entry : botIntents.entrySet()) {
-			BotIntent.Builder builder = botIntentsMap.get(entry.getKey());
-			if (builder == null) {
-				builder = new BotIntent.Builder();
-				botIntentsMap.put(entry.getKey(), builder);
+			BotIntent botIntent = botIntentsMap.get(entry.getKey());
+			if (botIntent == null) {
+				botIntent = new BotIntent();
+				botIntentsMap.put(entry.getKey(), botIntent);
 			}
-			builder.update(entry.getValue());
+			botIntent.update(entry.getValue());
 		}
 	}
 
@@ -267,24 +269,22 @@ public class ModelUpdater {
 				continue;
 			}
 
-			BotIntent.Builder intentBuilder = botIntentsMap.get(botId);
-			if (intentBuilder == null) {
+			BotIntent botIntent = botIntentsMap.get(botId);
+			if (botIntent == null) {
 				continue;
 			}
 
-			BotIntent intent = intentBuilder.build();
-			if (intent == null) {
-				continue;
-			}
+			IBotIntent botIntentWrapper = new BotIntentNullified(botIntent.toImmutableBotIntent());
 
 			// Turn body, gun, radar, and move bot to new position
 
-			double speed = calcBotSpeed(bot.getSpeed(), intent.getTargetSpeed());
-			double turnRate = calcTurnRate(intent.getBodyTurnRate(), speed);
+			double speed = calcBotSpeed(bot.getSpeed(), botIntentWrapper.getTargetSpeed());
+			double turnRate = calcTurnRate(botIntentWrapper.getBodyTurnRate(), speed);
 			double direction = normalAbsoluteAngleDegrees(bot.getDirection() + turnRate);
-			double gunDirection = normalAbsoluteAngleDegrees(bot.getGunDirection() + intent.getGunTurnRate());
-			double radarDirection = normalAbsoluteAngleDegrees(bot.getRadarDirection() + intent.getRadarTurnRate());
-			Arc scanArc = new Arc(calcScanAngle(intent.getRadarTurnRate()), RADAR_RADIUS);
+			double gunDirection = normalAbsoluteAngleDegrees(bot.getGunDirection() + botIntentWrapper.getGunTurnRate());
+			double radarDirection = normalAbsoluteAngleDegrees(
+					bot.getRadarDirection() + botIntentWrapper.getRadarTurnRate());
+			Arc scanArc = new Arc(calcScanAngle(botIntentWrapper.getRadarTurnRate()), RADAR_RADIUS);
 
 			bot.setDirection(direction);
 			bot.setGunDirection(gunDirection);
@@ -633,13 +633,13 @@ public class ModelUpdater {
 			double gunHeat = bot.getGunHeat();
 			if (gunHeat == 0) {
 				// Gun can fire => Check if intent is to fire gun
-				BotIntent.Builder intentBuilder = botIntentsMap.get(bot.getId());
-				if (intentBuilder == null) {
+				BotIntent botIntent = botIntentsMap.get(bot.getId());
+				if (botIntent == null) {
 					continue;
 				}
-				BotIntent intent = intentBuilder.build();
+				ImmutableBotIntent immuBotIntent = botIntent.toImmutableBotIntent();
 
-				double firepower = intent.getBulletPower();
+				double firepower = immuBotIntent.getBulletPower();
 				if (firepower >= MIN_BULLET_POWER) {
 					// Gun is fired
 					firepower = Math.min(firepower, MAX_BULLET_POWER);
