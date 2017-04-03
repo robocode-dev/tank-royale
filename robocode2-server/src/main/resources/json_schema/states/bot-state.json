@@ -29,9 +29,9 @@
 			"description": "Speed measured in units per turn",
 			"type": "number"
 		},
-		"scan-arc": {
-			"description": "Scan arc, where a positive angle means that scan is moving left and negative angle means that the scan is moving right",
-			"$ref": "../types/arc.json"
+		"scan-field": {
+			"description": "Scan field, where a positive arc angle means that scan is moving left and negative arc angle means that the scan is moving right",
+			"$ref": "../types/scan-field.json"
 		}
 	},
 	"required": [
@@ -41,6 +41,6 @@
 		"gun-direction",
 		"radar-direction",
 		"speed",
-		"scan-arc"
+		"scan-field"
 	]
 }

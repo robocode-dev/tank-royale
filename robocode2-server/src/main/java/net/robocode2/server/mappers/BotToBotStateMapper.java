@@ -14,7 +14,7 @@ public final class BotToBotStateMapper {
 		botState.setDirection(MathUtil.normalAbsoluteAngleDegrees(bot.getDirection()));
 		botState.setRadarDirection(MathUtil.normalAbsoluteAngleDegrees(bot.getRadarDirection()));
 		botState.setGunDirection(MathUtil.normalAbsoluteAngleDegrees(bot.getGunDirection()));
-		botState.setScanArc(ArcMapper.map(bot.getScanArc()));
+		botState.setScanField(ScanFieldMapper.map(bot.getScanField()));
 		return botState;
 	}
 }

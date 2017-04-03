@@ -20,7 +20,7 @@ public interface IBot {
 
 	double getGunHeat();
 
-	Arc getScanArc();
+	ScanField getScanField();
 
 	Score getScore();
 

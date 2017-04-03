@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import net.robocode2.model.Arc;
 import net.robocode2.model.Arena;
 import net.robocode2.model.Bot;
 import net.robocode2.model.BotIntent;
@@ -38,6 +37,7 @@ import net.robocode2.model.ImmutableTurn;
 import net.robocode2.model.Physics;
 import net.robocode2.model.Point;
 import net.robocode2.model.Round;
+import net.robocode2.model.ScanField;
 import net.robocode2.model.Score;
 import net.robocode2.model.Size;
 import net.robocode2.model.Turn;
@@ -207,7 +207,7 @@ public class ModelUpdater {
 			bot.setDirection(randomDirection());
 			bot.setGunDirection(randomDirection());
 			bot.setRadarDirection(randomDirection());
-			bot.setScanArc(new Arc(0, RADAR_RADIUS));
+			bot.setScanArc(new ScanField(0, RADAR_RADIUS));
 			bot.setGunHeat(INITIAL_GUN_HEAT);
 			bot.setScore(new Score());
 
@@ -281,7 +281,7 @@ public class ModelUpdater {
 			double gunDirection = normalAbsoluteAngleDegrees(bot.getGunDirection() + botIntentWrapper.getGunTurnRate());
 			double radarDirection = normalAbsoluteAngleDegrees(
 					bot.getRadarDirection() + botIntentWrapper.getRadarTurnRate());
-			Arc scanArc = new Arc(calcScanAngle(botIntentWrapper.getRadarTurnRate()), RADAR_RADIUS);
+			ScanField scanArc = new ScanField(calcScanAngle(botIntentWrapper.getRadarTurnRate()), RADAR_RADIUS);
 
 			bot.setDirection(direction);
 			bot.setGunDirection(gunDirection);
@@ -679,33 +679,33 @@ public class ModelUpdater {
 		for (int i = botArray.length - 1; i >= 0; i--) {
 			Bot scanningBot = botArray[i];
 
-			Arc scanArc = scanningBot.getScanArc();
+			ScanField scanField = scanningBot.getScanField();
 			Point center = scanningBot.getPosition();
 
 			double angle1, angle2;
-			if (scanArc.getAngle() > 0) {
+			if (scanField.getAngle() > 0) {
 				angle1 = scanningBot.getRadarDirection();
-				angle2 = angle1 + scanArc.getAngle();
+				angle2 = angle1 + scanField.getAngle();
 			} else {
 				angle2 = scanningBot.getRadarDirection();
-				angle1 = angle2 - scanArc.getAngle();
+				angle1 = angle2 - scanField.getAngle();
 			}
 
 			angle1 = Math.toRadians(angle1);
 			angle2 = Math.toRadians(angle2);
 
-			double dx = Math.cos(angle1) * scanArc.getRadius();
-			double dy = Math.sin(angle1) * scanArc.getRadius();
+			double dx = Math.cos(angle1) * scanField.getRadius();
+			double dy = Math.sin(angle1) * scanField.getRadius();
 			Point arcStart = new Point(dx, dy);
 
-			dx = Math.cos(angle2) * scanArc.getRadius();
-			dy = Math.sin(angle2) * scanArc.getRadius();
+			dx = Math.cos(angle2) * scanField.getRadius();
+			dy = Math.sin(angle2) * scanField.getRadius();
 			Point arcEnd = new Point(dx, dy);
 
 			for (int j = i - 1; j >= 0; j--) {
 				Bot scannedBot = botArray[j];
 
-				if (MathUtil.isCircleIntersectingCone(center, arcStart, arcEnd, scanArc.getRadius(),
+				if (MathUtil.isCircleIntersectingCone(center, arcStart, arcEnd, scanField.getRadius(),
 						scannedBot.getPosition(), Physics.BOT_BOUNDING_CIRCLE_RADIUS)) {
 
 					ScannedBotEvent scannedBotEvent = new ScannedBotEvent(scanningBot.getId(), scannedBot.getId(),

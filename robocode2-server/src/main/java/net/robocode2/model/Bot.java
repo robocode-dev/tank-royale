@@ -10,7 +10,7 @@ public class Bot implements IBot {
 	private double radarDirection;
 	private double speed;
 	private double gunHeat;
-	private Arc scanArc;
+	private ScanField scanField;
 	private Score score;
 
 	public Bot() {
@@ -25,12 +25,12 @@ public class Bot implements IBot {
 		radarDirection = bot.getRadarDirection();
 		speed = bot.getSpeed();
 		gunHeat = bot.getGunHeat();
-		scanArc = bot.getScanArc();
+		scanField = bot.getScanField();
 		score = bot.getScore();
 	}
 
 	public ImmutableBot toImmutableBot() {
-		return new ImmutableBot(id, energy, position, direction, gunDirection, radarDirection, speed, gunHeat, scanArc,
+		return new ImmutableBot(id, energy, position, direction, gunDirection, radarDirection, speed, gunHeat, scanField,
 				score);
 	}
 
@@ -75,8 +75,8 @@ public class Bot implements IBot {
 	}
 
 	@Override
-	public Arc getScanArc() {
-		return scanArc;
+	public ScanField getScanField() {
+		return scanField;
 	}
 
 	@Override
@@ -120,8 +120,8 @@ public class Bot implements IBot {
 		this.gunHeat = gunHeat;
 	}
 
-	public void setScanArc(Arc scanArc) {
-		this.scanArc = scanArc;
+	public void setScanArc(ScanField scanArc) {
+		this.scanField = scanArc;
 	}
 
 	public void setScore(Score score) {
