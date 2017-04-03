@@ -14,11 +14,13 @@ public final class Physics {
 	public static final double INITIAL_GUN_HEAT = 3.0;
 	public static final double ACCELLERATION = 1.0;
 	public static final double DECELERATION = -2.0;
+	public static final double RAM_DAMAGE = 0.6;
 	public static final double MAX_FORWARD_SPEED = 8.0;
 	public static final double MAX_REVERSE_SPEED = -8.0;
 	public static final double RADAR_RADIUS = 1200.0;
 	public static final double MIN_BULLET_POWER = 0.1;
 	public static final double MAX_BULLET_POWER = 3.0;
+	public static final int BULLET_HIT_ENERGY_GAIN_FACTOR = 3;
 	public static final int BOT_BOUNDING_CIRCLE_DIAMETER = 36;
 	public static final int BOT_BOUNDING_CIRCLE_RADIUS = 36 / 2;
 

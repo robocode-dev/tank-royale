@@ -9,6 +9,7 @@ import static net.robocode2.model.Physics.MAX_BULLET_POWER;
 import static net.robocode2.model.Physics.MAX_BULLET_SPEED;
 import static net.robocode2.model.Physics.MIN_BULLET_POWER;
 import static net.robocode2.model.Physics.RADAR_RADIUS;
+import static net.robocode2.model.Physics.RAM_DAMAGE;
 import static net.robocode2.model.Physics.calcBotSpeed;
 import static net.robocode2.model.Physics.calcBulletSpeed;
 import static net.robocode2.model.Physics.calcGunHeat;
@@ -50,10 +51,6 @@ import net.robocode2.model.events.BulletMissedEvent;
 import net.robocode2.model.events.ScannedBotEvent;
 
 public class ModelUpdater {
-
-	private final static double RAM_DAMAGE = 0.6;
-
-	private final static int BULLET_HIT_ENERGY_GAIN_FACTOR = 3;
 
 	private final GameSetup setup;
 	private final Set<Integer> participantIds;
@@ -364,7 +361,7 @@ public class ModelUpdater {
 					double damage = Physics.calcBulletDamage(bullet.getPower());
 					boolean killed = bot.addDamage(damage);
 
-					double energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
+					double energyBonus = Physics.BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
 					botMap.get(botId).increaseEnergy(energyBonus);
 
 					scoreKeeper.addBulletHit(botId, victimId, damage, killed);
