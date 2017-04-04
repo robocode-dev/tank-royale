@@ -19,8 +19,8 @@ import json_schema.messages.ObserverHandshake;
 import json_schema.messages.TickForObserver;
 import json_schema.states.BotStateWithId;
 import json_schema.states.BulletState;
-import json_schema.types.Arc;
 import json_schema.types.Point;
+import json_schema.types.ScanField;
 import jsweet.dom.CanvasRenderingContext2D;
 import jsweet.dom.CloseEvent;
 import jsweet.dom.Event;
@@ -176,9 +176,9 @@ public class ObserverClient1 {
 		pos.$set("x", x);
 		pos.$set("y", y);
 
-		Arc scanArc = new Arc();
-		scanArc.$set("angle", 0);
-		scanArc.$set("radius", 1200);
+		ScanField scanField = new ScanField();
+		scanField.$set("angle", 0);
+		scanField.$set("radius", 1200);
 
 		BotStateWithId bot = new BotStateWithId();
 		bot.$set("id", "Bot");
@@ -188,7 +188,7 @@ public class ObserverClient1 {
 		bot.$set("gun-direction", 30);
 		bot.$set("radar-direction", 20);
 		bot.$set("speed", 0);
-		bot.$set("scan-arc", scanArc);
+		bot.$set("scan-arc", scanField);
 
 		drawBot(x, y, bot);
 	}
@@ -243,7 +243,7 @@ public class ObserverClient1 {
 		drawBotBody(x, y, bot.getDirection());
 		drawGun(x, y, bot.getGunDirection());
 		drawRadar(x, y, bot.getRadarDirection());
-		drawScanArc(x, y, bot.getRadarDirection(), bot.getScanArc());
+		drawScanField(x, y, bot.getRadarDirection(), bot.getScanField());
 		drawLabels(x, y, bot.getId(), bot.getEnergyLevel());
 	}
 
@@ -302,10 +302,10 @@ public class ObserverClient1 {
 		ctx.restore();
 	}
 
-	private void drawScanArc(double x, double y, double direction, Arc scanArc) {
-		console.info("drawScanArc: direction=" + direction + ",scanArc.angle=" + scanArc.getAngle());
+	private void drawScanField(double x, double y, double direction, ScanField scanField) {
+		console.info("drawScanField: direction=" + direction + ",scanField.angle=" + scanField.getAngle());
 
-		double angle = toRad(scanArc.getAngle());
+		double angle = toRad(scanField.getAngle());
 
 		String color = "rgba(0, 255, 255, 0.5)";
 
@@ -315,14 +315,14 @@ public class ObserverClient1 {
 
 		if (Math.abs(angle) < 0.0001) {
 			ctx.strokeStyle = union(color);
-			ctx.lineTo(scanArc.getRadius(), 0);
+			ctx.lineTo(scanField.getRadius(), 0);
 			ctx.stroke();
 
 		} else {
 			ctx.fillStyle = union(color);
 			ctx.beginPath();
 			ctx.moveTo(0, 0);
-			ctx.arc(0, 0, scanArc.getRadius(), 0, angle, (angle < 0));
+			ctx.arc(0, 0, scanField.getRadius(), 0, angle, (angle < 0));
 			ctx.lineTo(0, 0);
 			ctx.fill();
 		}
