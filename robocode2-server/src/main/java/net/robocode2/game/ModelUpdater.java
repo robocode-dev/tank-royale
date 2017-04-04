@@ -177,7 +177,7 @@ public class ModelUpdater {
 		cooldownAndFireGuns();
 
 		// Generate scan events
-		checkScanArcs();
+		checkScanFields();
 
 		// Check if the round is over
 		checkIfRoundOrGameOver();
@@ -674,7 +674,7 @@ public class ModelUpdater {
 		turn.addObserverEvent(bulletFiredEvent);
 	}
 
-	private void checkScanArcs() {
+	private void checkScanFields() {
 
 		Bot[] botArray = new Bot[botMap.size()];
 		botArray = botMap.values().toArray(botArray);
@@ -705,7 +705,11 @@ public class ModelUpdater {
 			dy = Math.sin(angle2) * scanField.getRadius();
 			Point arcEnd = new Point(dx, dy);
 
-			for (int j = i - 1; j >= 0; j--) {
+			for (int j = botArray.length - 1; j >= 0; j--) {
+				if (i == j) {
+					continue;
+				}
+
 				Bot scannedBot = botArray[j];
 
 				if (MathUtil.isCircleIntersectingCone(center, arcStart, arcEnd, scanField.getRadius(),
