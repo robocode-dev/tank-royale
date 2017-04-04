@@ -47,8 +47,16 @@ public final class Physics {
 		}
 	}
 
-	public static double calcTurnRate(double turnRate, double speed) {
+	public static double limitTurnRate(double turnRate, double speed) {
 		return signum(turnRate) * min(abs(turnRate), calcMaxTurnRate(speed));
+	}
+
+	public static double limitGunTurnRate(double gunTurnRate) {
+		return signum(gunTurnRate) * min(abs(gunTurnRate), MAX_GUN_TURN_RATE);
+	}
+
+	public static double limitRadarTurnRate(double radarTurnRate) {
+		return signum(radarTurnRate) * min(abs(radarTurnRate), MAX_RADAR_TURN_RATE);
 	}
 
 	public static double calcMaxTurnRate(double speed) {

@@ -14,7 +14,9 @@ import static net.robocode2.model.Physics.calcBotSpeed;
 import static net.robocode2.model.Physics.calcBulletSpeed;
 import static net.robocode2.model.Physics.calcGunHeat;
 import static net.robocode2.model.Physics.calcScanAngle;
-import static net.robocode2.model.Physics.calcTurnRate;
+import static net.robocode2.model.Physics.limitGunTurnRate;
+import static net.robocode2.model.Physics.limitRadarTurnRate;
+import static net.robocode2.model.Physics.limitTurnRate;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -271,17 +273,18 @@ public class ModelUpdater {
 				continue;
 			}
 
-			IBotIntent botIntentWrapper = new BotIntentNullified(botIntent.toImmutableBotIntent());
+			IBotIntent immuBotIntent = new BotIntentNullified(botIntent.toImmutableBotIntent());
 
 			// Turn body, gun, radar, and move bot to new position
 
-			double speed = calcBotSpeed(bot.getSpeed(), botIntentWrapper.getTargetSpeed());
-			double turnRate = calcTurnRate(botIntentWrapper.getBodyTurnRate(), speed);
-			double direction = normalAbsoluteAngleDegrees(bot.getDirection() + turnRate);
-			double gunDirection = normalAbsoluteAngleDegrees(bot.getGunDirection() + botIntentWrapper.getGunTurnRate());
-			double radarDirection = normalAbsoluteAngleDegrees(
-					bot.getRadarDirection() + botIntentWrapper.getRadarTurnRate());
-			ScanField scanArc = new ScanField(calcScanAngle(botIntentWrapper.getRadarTurnRate()), RADAR_RADIUS);
+			double speed = calcBotSpeed(bot.getSpeed(), immuBotIntent.getTargetSpeed());
+			double limitedTurnRate = limitTurnRate(immuBotIntent.getBodyTurnRate(), speed);
+			double limitedGunTurnRate = limitGunTurnRate(immuBotIntent.getGunTurnRate());
+			double limitedRadarTurnRate = limitRadarTurnRate(immuBotIntent.getRadarTurnRate());
+			double direction = normalAbsoluteAngleDegrees(bot.getDirection() + limitedTurnRate);
+			double gunDirection = normalAbsoluteAngleDegrees(bot.getGunDirection() + limitedGunTurnRate);
+			double radarDirection = normalAbsoluteAngleDegrees(bot.getRadarDirection() + limitedRadarTurnRate);
+			ScanField scanArc = new ScanField(calcScanAngle(immuBotIntent.getRadarTurnRate()), RADAR_RADIUS);
 
 			bot.setDirection(direction);
 			bot.setGunDirection(gunDirection);
