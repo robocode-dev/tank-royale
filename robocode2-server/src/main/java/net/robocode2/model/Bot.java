@@ -120,7 +120,7 @@ public class Bot implements IBot {
 		this.gunHeat = gunHeat;
 	}
 
-	public void setScanArc(ScanField scanArc) {
+	public void setScanField(ScanField scanArc) {
 		this.scanField = scanArc;
 	}
 

@@ -72,7 +72,7 @@ public class ModelUpdater {
 	private ImmutableTurn previousTurn;
 
 	private Map<Integer /* BotId */, BotIntent> botIntentsMap = new HashMap<>();
-	private Map<Integer /* BotId */, Bot> botMap = new HashMap<>();
+	private Map<Integer /* BotId */, Bot> botsMap = new HashMap<>();
 	private Set<Bullet> bullets = new HashSet<>();
 
 	public ModelUpdater(GameSetup setup, Set<Integer> participantIds) {
@@ -117,10 +117,11 @@ public class ModelUpdater {
 
 	private void updateBotIntents(Map<Integer /* BotId */, BotIntent> botIntents) {
 		for (Map.Entry<Integer, BotIntent> entry : botIntents.entrySet()) {
-			BotIntent botIntent = botIntentsMap.get(entry.getKey());
+			Integer botId = entry.getKey();
+			BotIntent botIntent = botIntentsMap.get(botId);
 			if (botIntent == null) {
 				botIntent = new BotIntent();
-				botIntentsMap.put(entry.getKey(), botIntent);
+				botIntentsMap.put(botId, botIntent);
 			}
 			botIntent.update(entry.getValue());
 		}
@@ -183,7 +184,7 @@ public class ModelUpdater {
 		checkIfRoundOrGameOver();
 
 		// Store bot snapshots
-		turn.setBots(botMap.values());
+		turn.setBots(botsMap.values());
 
 		// Store bullet snapshots
 		turn.setBullets(bullets);
@@ -209,15 +210,15 @@ public class ModelUpdater {
 			bot.setDirection(randomDirection());
 			bot.setGunDirection(randomDirection());
 			bot.setRadarDirection(randomDirection());
-			bot.setScanArc(new ScanField(0, RADAR_RADIUS));
+			bot.setScanField(new ScanField(0, RADAR_RADIUS));
 			bot.setGunHeat(INITIAL_GUN_HEAT);
 			bot.setScore(new Score());
 
-			botMap.put(id, bot);
+			botsMap.put(id, bot);
 		}
 
 		// Store bot snapshots into current turn
-		turn.setBots(botMap.values());
+		turn.setBots(botsMap.values());
 	}
 
 	private Point randomBotPosition(Set<Integer> occupiedCells) {
@@ -260,8 +261,8 @@ public class ModelUpdater {
 
 	private void executeBotIntents() {
 
-		for (Integer botId : botMap.keySet()) {
-			Bot bot = botMap.get(botId);
+		for (Integer botId : botsMap.keySet()) {
+			Bot bot = botsMap.get(botId);
 
 			// Bot cannot move, if it is disabled
 			if (bot.isDead() || bot.isDisabled()) {
@@ -278,20 +279,26 @@ public class ModelUpdater {
 			// Turn body, gun, radar, and move bot to new position
 
 			double speed = calcBotSpeed(bot.getSpeed(), immuBotIntent.getTargetSpeed());
+
 			double limitedTurnRate = limitTurnRate(immuBotIntent.getBodyTurnRate(), speed);
 			double limitedGunTurnRate = limitGunTurnRate(immuBotIntent.getGunTurnRate());
 			double limitedRadarTurnRate = limitRadarTurnRate(immuBotIntent.getRadarTurnRate());
+
 			double direction = normalAbsoluteAngleDegrees(bot.getDirection() + limitedTurnRate);
 			double gunDirection = normalAbsoluteAngleDegrees(bot.getGunDirection() + limitedGunTurnRate);
 			double radarDirection = normalAbsoluteAngleDegrees(bot.getRadarDirection() + limitedRadarTurnRate);
-			ScanField scanArc = new ScanField(calcScanAngle(immuBotIntent.getRadarTurnRate()), RADAR_RADIUS);
+
+			ScanField scanField = new ScanField(calcScanAngle(immuBotIntent.getRadarTurnRate()), RADAR_RADIUS);
 
 			bot.setDirection(direction);
 			bot.setGunDirection(gunDirection);
 			bot.setRadarDirection(radarDirection);
-			bot.setScanArc(scanArc);
+			bot.setScanField(scanField);
 			bot.setSpeed(speed);
+
 			bot.moveToNewPosition();
+
+			System.out.println("### bot id: " + bot.getId() + ", gunDir: " + bot.getGunDirection());
 		}
 	}
 
@@ -345,7 +352,7 @@ public class ModelUpdater {
 
 			Point startPos1 = boundingLines[i].start;
 
-			for (Bot bot : botMap.values()) {
+			for (Bot bot : botsMap.values()) {
 				Point botPos = bot.getPosition();
 
 				Bullet bullet = bulletArray[i];
@@ -365,7 +372,7 @@ public class ModelUpdater {
 					boolean killed = bot.addDamage(damage);
 
 					double energyBonus = Physics.BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
-					botMap.get(botId).increaseEnergy(energyBonus);
+					botsMap.get(botId).increaseEnergy(energyBonus);
 
 					scoreKeeper.addBulletHit(botId, victimId, damage, killed);
 
@@ -400,8 +407,8 @@ public class ModelUpdater {
 
 	private void checkBotCollisions() {
 
-		Bot[] botArray = new Bot[botMap.size()];
-		botArray = botMap.values().toArray(botArray);
+		Bot[] botArray = new Bot[botsMap.size()];
+		botArray = botsMap.values().toArray(botArray);
 
 		for (int i = botArray.length - 1; i >= 0; i--) {
 			Point pos1 = botArray[i].getPosition();
@@ -513,7 +520,7 @@ public class ModelUpdater {
 
 	private void checkBotWallCollisions() {
 
-		for (Bot bot : botMap.values()) {
+		for (Bot bot : botsMap.values()) {
 
 			Point position = bot.getPosition();
 			double x = position.x;
@@ -600,7 +607,7 @@ public class ModelUpdater {
 	}
 
 	private void checkForKilledBots() {
-		for (Bot bot : botMap.values()) {
+		for (Bot bot : botsMap.values()) {
 			if (bot.isDead()) {
 				int victimId = bot.getId();
 
@@ -612,7 +619,7 @@ public class ModelUpdater {
 	}
 
 	private void removeDeadBots() {
-		Iterator<Bot> iterator = botMap.values().iterator(); // due to removal
+		Iterator<Bot> iterator = botsMap.values().iterator(); // due to removal
 		while (iterator.hasNext()) {
 			Bot bot = iterator.next();
 			if (bot.isDead()) {
@@ -622,7 +629,7 @@ public class ModelUpdater {
 	}
 
 	private void cooldownAndFireGuns() {
-		for (Bot bot : botMap.values()) {
+		for (Bot bot : botsMap.values()) {
 
 			// Bot cannot fire if it is disabled
 			if (bot.isDead() || bot.isDisabled()) {
@@ -676,8 +683,8 @@ public class ModelUpdater {
 
 	private void checkScanFields() {
 
-		Bot[] botArray = new Bot[botMap.size()];
-		botArray = botMap.values().toArray(botArray);
+		Bot[] botArray = new Bot[botsMap.size()];
+		botArray = botsMap.values().toArray(botArray);
 
 		for (int i = botArray.length - 1; i >= 0; i--) {
 			Bot scanningBot = botArray[i];
@@ -727,7 +734,7 @@ public class ModelUpdater {
 	}
 
 	private void checkIfRoundOrGameOver() {
-		if (botMap.size() <= 1) {
+		if (botsMap.size() <= 1) {
 			// Round ended
 			roundEnded = true;
 
