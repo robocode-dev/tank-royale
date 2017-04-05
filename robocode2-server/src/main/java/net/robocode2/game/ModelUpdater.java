@@ -297,8 +297,6 @@ public class ModelUpdater {
 			bot.setSpeed(speed);
 
 			bot.moveToNewPosition();
-
-			System.out.println("### bot id: " + bot.getId() + ", gunDir: " + bot.getGunDirection());
 		}
 	}
 
@@ -752,37 +750,5 @@ public class ModelUpdater {
 	private class Line {
 		Point start;
 		Point end;
-	}
-
-	public static void main(String[] args) {
-
-		// Setup setup = new Setup("gameType", 200, 100, 0, 0, 0, new HashSet<Integer>(Arrays.asList(1, 2)));
-		//
-		// ModelUpdater updater = new ModelUpdater(setup);
-		// updater.initialBotStates();
-
-		// System.out.println("#0: " + computeNewSpeed(0, 0));
-		//
-		// System.out.println("#1: " + computeNewSpeed(1, 10));
-		// System.out.println("#2: " + computeNewSpeed(8, 10));
-		//
-		// System.out.println("#3: " + computeNewSpeed(1, 1.5));
-		// System.out.println("#4: " + computeNewSpeed(0, 0.3));
-		//
-		// System.out.println("#5: " + computeNewSpeed(8, 0));
-		// System.out.println("#6: " + computeNewSpeed(7.5, -3));
-		//
-		// System.out.println("#7: " + computeNewSpeed(8, -8));
-		//
-		// System.out.println("#-1: " + computeNewSpeed(-1, -10));
-		// System.out.println("#-2: " + computeNewSpeed(-8, -10));
-		//
-		// System.out.println("#-3: " + computeNewSpeed(-1, -1.5));
-		// System.out.println("#-4: " + computeNewSpeed(0, -0.3));
-		//
-		// System.out.println("#-5: " + computeNewSpeed(-8, 0));
-		// System.out.println("#-6: " + computeNewSpeed(-7.5, 3));
-		//
-		// System.out.println("#-7: " + computeNewSpeed(-8, 8));
 	}
 }

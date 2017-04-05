@@ -15,6 +15,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 
+import net.robocode2.game.MathUtil;
 import net.robocode2.json_schema.events.Event;
 import net.robocode2.json_schema.events.ScannedBotEvent;
 import net.robocode2.json_schema.messages.BotHandshake;
@@ -47,6 +48,8 @@ public class BotClient1 extends WebSocketClient {
 
 	int turn;
 	double targetSpeed = 10;
+
+	Point targetPos;
 
 	public BotClient1(URI serverUri, Draft draft) {
 		super(serverUri, draft);
@@ -107,23 +110,9 @@ public class BotClient1 extends WebSocketClient {
 
 				for (Event event : tick.getEvents()) {
 					if (event instanceof ScannedBotEvent) {
-
 						ScannedBotEvent scanEvent = (ScannedBotEvent) event;
-
-						Point scanPos = scanEvent.getPosition();
-
-						double dx = scanPos.getX() - botPos.getX();
-						double dy = scanPos.getY() - botPos.getY();
-
-						double angle = Math.toDegrees(Math.atan2(dy, dx));
-
-						double gunTurnRate = angle - tick.getBotState().getGunDirection();
-
-						intent.setGunTurnRate(gunTurnRate);
-
-						break;
+						targetPos = scanEvent.getPosition();
 					}
-
 				}
 
 				if (++turn % 25 == 0) {
@@ -133,6 +122,18 @@ public class BotClient1 extends WebSocketClient {
 
 				intent.setBulletPower(Math.random() * 2.9 + 0.1);
 				intent.setRadarTurnRate(45.0);
+
+				if (targetPos != null) {
+					double dx = targetPos.getX() - botPos.getX();
+					double dy = targetPos.getY() - botPos.getY();
+
+					double angle = Math.toDegrees(Math.atan2(dy, dx));
+
+					double gunTurnRate = MathUtil
+							.normalRelativeAngleDegrees(angle - tick.getBotState().getGunDirection());
+
+					intent.setGunTurnRate(gunTurnRate);
+				}
 
 				// Send intent
 				String msg = gson.toJson(intent);

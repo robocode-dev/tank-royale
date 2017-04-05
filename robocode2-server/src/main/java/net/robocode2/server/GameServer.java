@@ -241,8 +241,7 @@ public final class GameServer {
 
 		for (Entry<BotConn, BotIntent> entry : botIntents.entrySet()) {
 			int botId = entry.getKey().getId();
-			BotIntent intent = entry.getValue();
-			mappedBotIntents.put(botId, intent);
+			mappedBotIntents.put(botId, entry.getValue());
 		}
 
 		return modelUpdater.update(Collections.unmodifiableMap(mappedBotIntents));
