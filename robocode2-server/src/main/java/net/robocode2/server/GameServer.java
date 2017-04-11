@@ -39,8 +39,8 @@ import net.robocode2.server.mappers.TurnToTickForObserverMapper;
 public final class GameServer {
 
 	private ServerSetup serverSetup;
-	private ConnListener connectionObserver;
-	private ConnHandler connectionHandler;
+	private ConnListener connListener;
+	private ConnHandler connHandler;
 
 	private ServerState gameState;
 	private GameSetup gameSetup;
@@ -61,13 +61,13 @@ public final class GameServer {
 
 	public GameServer() {
 		this.serverSetup = new ServerSetup();
-		this.connectionObserver = new ConnectionObserver();
-		this.connectionHandler = new ConnHandler(serverSetup, connectionObserver);
+		this.connListener = new GameServerConnListener();
+		this.connHandler = new ConnHandler(serverSetup, connListener);
 		this.gameState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
 	}
 
 	public void start() {
-		connectionHandler.start();
+		connHandler.start();
 	}
 
 	public static void main(String[] args) {
@@ -76,7 +76,7 @@ public final class GameServer {
 	}
 
 	private void prepareGameIfEnoughCandidates() {
-		GameAndParticipants gameAndParticipants = selectGameAndParticipants(connectionHandler.getBotConnections());
+		GameAndParticipants gameAndParticipants = selectGameAndParticipants(connHandler.getBotConnections());
 		if (gameAndParticipants == null) {
 			return;
 		}
@@ -190,7 +190,7 @@ public final class GameServer {
 		gameState = ServerState.GAME_RUNNING;
 
 		// Send NewBattle to all participant observers to get them started
-		if (connectionHandler.getObserverConnections().size() > 0) {
+		if (connHandler.getObserverConnections().size() > 0) {
 			NewBattleForObserver newBattleForObserver = new NewBattleForObserver();
 			newBattleForObserver.setType(NewBattleForObserver.Type.NEW_BATTLE_FOR_OBSERVER);
 			newBattleForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup.toImmutableGameSetup()));
@@ -212,7 +212,7 @@ public final class GameServer {
 
 			String msg = gson.toJson(newBattleForObserver);
 
-			for (Entry<WebSocket, ObserverHandshake> entry : connectionHandler.getObserverConnections().entrySet()) {
+			for (Entry<WebSocket, ObserverHandshake> entry : connHandler.getObserverConnections().entrySet()) {
 				WebSocket observer = entry.getKey();
 				send(observer, msg);
 			}
@@ -320,7 +320,7 @@ public final class GameServer {
 			observerTurn = observerRound.getTurns().get(delayedObserverTurnNumber);
 
 			// Send game state as 'tick' to observers
-			for (Map.Entry<WebSocket, ObserverHandshake> entry : connectionHandler.getObserverConnections()
+			for (Map.Entry<WebSocket, ObserverHandshake> entry : connHandler.getObserverConnections()
 					.entrySet()) {
 				TickForObserver tickForObserver = TurnToTickForObserverMapper.map(observerRound, observerTurn);
 
@@ -361,7 +361,7 @@ public final class GameServer {
 		return null;
 	}
 
-	private class ConnectionObserver implements ConnListener {
+	private class GameServerConnListener implements ConnListener {
 
 		@Override
 		public void onException(Exception exception) {
