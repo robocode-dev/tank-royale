@@ -1,0 +1,17 @@
+{
+	"id": "#command.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Controller command",
+
+	"javaType": "net.robocode2.json_schema.controller.commands.Command",
+	"properties": {
+		"type": {
+			"enum": [
+				"list-bots-available-command"
+			]
+		}
+	},
+	"required": [
+		"type"
+	]
+}

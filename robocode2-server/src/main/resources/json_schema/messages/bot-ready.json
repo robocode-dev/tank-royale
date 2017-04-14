@@ -3,7 +3,7 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Ready message from a bot to the game server",
 
-	"javaType": "net.robocode2.json_schema.messages.BotReady",
+    "type": "object",
 	"extends": {
 		"$ref": "message.json",
 		"default": "bot-ready"

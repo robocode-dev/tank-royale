@@ -8,9 +8,10 @@
 		"type": {
 			"enum": [
 				"server-handshake",
-				"bot-intent",
 				"bot-handshake",
+				"controller-handshake",
 				"observer-handshake",
+				"bot-intent",
 				"new-battle-for-bot",
 				"new-battle-for-observer",
 				"bot-ready",

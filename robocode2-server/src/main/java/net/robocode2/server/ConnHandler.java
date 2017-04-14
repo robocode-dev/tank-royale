@@ -18,8 +18,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.robocode2.json_schema.controller.commands.Command;
 import net.robocode2.json_schema.messages.BotHandshake;
 import net.robocode2.json_schema.messages.BotIntent;
+import net.robocode2.json_schema.messages.ControllerHandshake;
 import net.robocode2.json_schema.messages.Message;
 import net.robocode2.json_schema.messages.ObserverHandshake;
 import net.robocode2.json_schema.messages.ServerHandshake;
@@ -32,8 +34,10 @@ public final class ConnHandler {
 	private final WebSocketObserver webSocketObserver;
 
 	private final Set<WebSocket> connections = Collections.synchronizedSet(new HashSet<>());
-	private final Map<WebSocket, BotHandshake> bots = Collections.synchronizedMap(new HashMap<>());
-	private final Map<WebSocket, ObserverHandshake> observers = Collections.synchronizedMap(new HashMap<>());
+	private final Map<WebSocket, BotHandshake> botConnections = Collections.synchronizedMap(new HashMap<>());
+	private final Map<WebSocket, ObserverHandshake> observerConnections = Collections.synchronizedMap(new HashMap<>());
+	private final Map<WebSocket, ControllerHandshake> controllerConnections = Collections
+			.synchronizedMap(new HashMap<>());
 
 	private static final String TYPE = "type";
 
@@ -59,11 +63,11 @@ public final class ConnHandler {
 	}
 
 	public Map<WebSocket, BotHandshake> getBotConnections() {
-		return Collections.unmodifiableMap(bots);
+		return Collections.unmodifiableMap(botConnections);
 	}
 
 	public Map<WebSocket, ObserverHandshake> getObserverConnections() {
-		return Collections.unmodifiableMap(observers);
+		return Collections.unmodifiableMap(observerConnections);
 	}
 
 	private void shutdownAndAwaitTermination(ExecutorService pool) {
@@ -121,13 +125,17 @@ public final class ConnHandler {
 
 			connections.remove(conn);
 
-			if (bots.containsKey(conn)) {
-				BotHandshake handshake = bots.remove(conn);
+			if (botConnections.containsKey(conn)) {
+				BotHandshake handshake = botConnections.remove(conn);
 				executorService.submit(() -> listener.onBotLeft(new BotConn(conn, handshake)));
 
-			} else if (observers.containsKey(conn)) {
-				ObserverHandshake handshake = observers.remove(conn);
+			} else if (observerConnections.containsKey(conn)) {
+				ObserverHandshake handshake = observerConnections.remove(conn);
 				executorService.submit(() -> listener.onObserverLeft(new ObserverConn(conn, handshake)));
+
+			} else if (controllerConnections.containsKey(conn)) {
+				ControllerHandshake handshake = controllerConnections.remove(conn);
+				executorService.submit(() -> listener.onControllerLeft(new ControllerConn(conn, handshake)));
 			}
 		}
 
@@ -140,42 +148,62 @@ public final class ConnHandler {
 
 			JsonElement jsonElement = jsonObject.get(TYPE);
 			if (jsonElement != null) {
-				final Message.Type type = Message.Type.fromValue(jsonElement.getAsString());
+				try {
+					final Message.Type type = Message.Type.fromValue(jsonElement.getAsString());
 
-				System.out.println("Handling " + type);
+					System.out.println("Handling message: " + type);
 
-				switch (type) {
-				case BOT_HANDSHAKE: {
-					BotHandshake handshake = gson.fromJson(message, BotHandshake.class);
-					bots.put(conn, handshake);
+					switch (type) {
+					case BOT_HANDSHAKE: {
+						BotHandshake handshake = gson.fromJson(message, BotHandshake.class);
+						botConnections.put(conn, handshake);
 
-					executorService.submit(() -> listener.onBotJoined(new BotConn(conn, handshake)));
-					break;
-				}
-				case OBSERVER_HANDSHAKE: {
-					ObserverHandshake handshake = gson.fromJson(message, ObserverHandshake.class);
-					observers.put(conn, handshake);
-
-					executorService.submit(() -> listener.onObserverJoined(new ObserverConn(conn, handshake)));
-					break;
-				}
-				case BOT_READY: {
-					BotHandshake handshake = bots.get(conn);
-					if (handshake != null) {
-						executorService.submit(() -> listener.onBotReady(new BotConn(conn, handshake)));
+						executorService.submit(() -> listener.onBotJoined(new BotConn(conn, handshake)));
+						break;
 					}
-					break;
-				}
-				case BOT_INTENT: {
-					BotHandshake handshake = bots.get(conn);
-					if (handshake != null) {
-						BotIntent intent = gson.fromJson(message, BotIntent.class);
-						executorService.submit(() -> listener.onBotIntent(new BotConn(conn, handshake), intent));
+					case OBSERVER_HANDSHAKE: {
+						ObserverHandshake handshake = gson.fromJson(message, ObserverHandshake.class);
+						observerConnections.put(conn, handshake);
+
+						executorService.submit(() -> listener.onObserverJoined(new ObserverConn(conn, handshake)));
+						break;
 					}
-					break;
-				}
-				default:
-					notifyException(new IllegalStateException("Unhandled message type: " + type));
+					case CONTROLLER_HANDSHAKE: {
+						ControllerHandshake handshake = gson.fromJson(message, ControllerHandshake.class);
+						controllerConnections.put(conn, handshake);
+
+						executorService.submit(() -> listener.onControllerJoined(new ControllerConn(conn, handshake)));
+						break;
+					}
+					case BOT_READY: {
+						BotHandshake handshake = botConnections.get(conn);
+						if (handshake != null) {
+							executorService.submit(() -> listener.onBotReady(new BotConn(conn, handshake)));
+						}
+						break;
+					}
+					case BOT_INTENT: {
+						BotHandshake handshake = botConnections.get(conn);
+						if (handshake != null) {
+							BotIntent intent = gson.fromJson(message, BotIntent.class);
+							executorService.submit(() -> listener.onBotIntent(new BotConn(conn, handshake), intent));
+						}
+						break;
+					}
+					default:
+						notifyException(new IllegalStateException("Unhandled message type: " + type));
+					}
+				} catch (IllegalArgumentException e) {
+					final Command.Type type = Command.Type.fromValue(jsonElement.getAsString());
+
+					System.out.println("Handling command: " + type);
+
+					switch (type) {
+					case LIST_BOTS_AVAILABLE_COMMAND: {
+					}
+					default:
+						notifyException(new IllegalStateException("Unhandled command type: " + type));
+					}
 				}
 			}
 		}

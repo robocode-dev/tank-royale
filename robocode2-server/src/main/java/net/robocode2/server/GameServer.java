@@ -320,8 +320,7 @@ public final class GameServer {
 			observerTurn = observerRound.getTurns().get(delayedObserverTurnNumber);
 
 			// Send game state as 'tick' to observers
-			for (Map.Entry<WebSocket, ObserverHandshake> entry : connHandler.getObserverConnections()
-					.entrySet()) {
+			for (Map.Entry<WebSocket, ObserverHandshake> entry : connHandler.getObserverConnections().entrySet()) {
 				TickForObserver tickForObserver = TurnToTickForObserverMapper.map(observerRound, observerTurn);
 
 				String msg = gson.toJson(tickForObserver);
@@ -387,6 +386,16 @@ public final class GameServer {
 
 		@Override
 		public void onObserverLeft(ObserverConn observer) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void onControllerJoined(ControllerConn observer) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void onControllerLeft(ControllerConn observer) {
 			// TODO Auto-generated method stub
 		}
 

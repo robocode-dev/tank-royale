@@ -14,6 +14,10 @@ public interface ConnListener {
 
 	void onObserverLeft(ObserverConn observer);
 
+	void onControllerJoined(ControllerConn observer);
+
+	void onControllerLeft(ControllerConn observer);
+
 	void onBotReady(BotConn bot);
 
 	void onBotIntent(BotConn bot, BotIntent intent);
