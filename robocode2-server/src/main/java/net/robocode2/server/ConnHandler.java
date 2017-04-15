@@ -34,6 +34,7 @@ public final class ConnHandler {
 	private final WebSocketObserver webSocketObserver;
 
 	private final Set<WebSocket> connections = Collections.synchronizedSet(new HashSet<>());
+
 	private final Map<WebSocket, BotHandshake> botConnections = Collections.synchronizedMap(new HashMap<>());
 	private final Map<WebSocket, ObserverHandshake> observerConnections = Collections.synchronizedMap(new HashMap<>());
 	private final Map<WebSocket, ControllerHandshake> controllerConnections = Collections
@@ -126,16 +127,16 @@ public final class ConnHandler {
 			connections.remove(conn);
 
 			if (botConnections.containsKey(conn)) {
-				BotHandshake handshake = botConnections.remove(conn);
-				executorService.submit(() -> listener.onBotLeft(new BotConn(conn, handshake)));
+				botConnections.remove(conn);
+				executorService.submit(() -> listener.onBotLeft(conn));
 
 			} else if (observerConnections.containsKey(conn)) {
-				ObserverHandshake handshake = observerConnections.remove(conn);
-				executorService.submit(() -> listener.onObserverLeft(new ObserverConn(conn, handshake)));
+				observerConnections.remove(conn);
+				executorService.submit(() -> listener.onObserverLeft(conn));
 
 			} else if (controllerConnections.containsKey(conn)) {
-				ControllerHandshake handshake = controllerConnections.remove(conn);
-				executorService.submit(() -> listener.onControllerLeft(new ControllerConn(conn, handshake)));
+				controllerConnections.remove(conn);
+				executorService.submit(() -> listener.onControllerLeft(conn));
 			}
 		}
 
@@ -158,27 +159,27 @@ public final class ConnHandler {
 						BotHandshake handshake = gson.fromJson(message, BotHandshake.class);
 						botConnections.put(conn, handshake);
 
-						executorService.submit(() -> listener.onBotJoined(new BotConn(conn, handshake)));
+						executorService.submit(() -> listener.onBotJoined(conn, handshake));
 						break;
 					}
 					case OBSERVER_HANDSHAKE: {
 						ObserverHandshake handshake = gson.fromJson(message, ObserverHandshake.class);
 						observerConnections.put(conn, handshake);
 
-						executorService.submit(() -> listener.onObserverJoined(new ObserverConn(conn, handshake)));
+						executorService.submit(() -> listener.onObserverJoined(conn, handshake));
 						break;
 					}
 					case CONTROLLER_HANDSHAKE: {
 						ControllerHandshake handshake = gson.fromJson(message, ControllerHandshake.class);
 						controllerConnections.put(conn, handshake);
 
-						executorService.submit(() -> listener.onControllerJoined(new ControllerConn(conn, handshake)));
+						executorService.submit(() -> listener.onControllerJoined(conn, handshake));
 						break;
 					}
 					case BOT_READY: {
 						BotHandshake handshake = botConnections.get(conn);
 						if (handshake != null) {
-							executorService.submit(() -> listener.onBotReady(new BotConn(conn, handshake)));
+							executorService.submit(() -> listener.onBotReady(conn));
 						}
 						break;
 					}
@@ -186,7 +187,7 @@ public final class ConnHandler {
 						BotHandshake handshake = botConnections.get(conn);
 						if (handshake != null) {
 							BotIntent intent = gson.fromJson(message, BotIntent.class);
-							executorService.submit(() -> listener.onBotIntent(new BotConn(conn, handshake), intent));
+							executorService.submit(() -> listener.onBotIntent(conn, intent));
 						}
 						break;
 					}
@@ -200,6 +201,11 @@ public final class ConnHandler {
 
 					switch (type) {
 					case LIST_BOTS_AVAILABLE_COMMAND: {
+						ControllerHandshake handshake = controllerConnections.get(conn);
+						if (handshake != null) {
+							executorService.submit(() -> listener.onListBotAvailableCommand(conn));
+						}
+						break;
 					}
 					default:
 						notifyException(new IllegalStateException("Unhandled command type: " + type));

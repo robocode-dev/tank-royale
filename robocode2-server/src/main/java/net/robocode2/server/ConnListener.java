@@ -1,24 +1,31 @@
 package net.robocode2.server;
 
+import org.java_websocket.WebSocket;
+
+import net.robocode2.json_schema.messages.BotHandshake;
 import net.robocode2.json_schema.messages.BotIntent;
+import net.robocode2.json_schema.messages.ControllerHandshake;
+import net.robocode2.json_schema.messages.ObserverHandshake;
 
 public interface ConnListener {
 
 	void onException(Exception exception);
 
-	void onBotJoined(BotConn bot);
+	void onBotJoined(WebSocket socket, BotHandshake handshake);
 
-	void onBotLeft(BotConn bot);
+	void onBotLeft(WebSocket socket);
 
-	void onObserverJoined(ObserverConn observer);
+	void onObserverJoined(WebSocket socket, ObserverHandshake handshake);
 
-	void onObserverLeft(ObserverConn observer);
+	void onObserverLeft(WebSocket socket);
 
-	void onControllerJoined(ControllerConn observer);
+	void onControllerJoined(WebSocket socket, ControllerHandshake handshake);
 
-	void onControllerLeft(ControllerConn observer);
+	void onControllerLeft(WebSocket socket);
 
-	void onBotReady(BotConn bot);
+	void onListBotAvailableCommand(WebSocket socket);
 
-	void onBotIntent(BotConn bot, BotIntent intent);
+	void onBotReady(WebSocket socket);
+
+	void onBotIntent(WebSocket socket, BotIntent intent);
 }

@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -20,6 +18,8 @@ import com.google.gson.Gson;
 import net.robocode2.game.ModelUpdater;
 import net.robocode2.json_schema.Participant;
 import net.robocode2.json_schema.messages.BotHandshake;
+import net.robocode2.json_schema.messages.BotList;
+import net.robocode2.json_schema.messages.ControllerHandshake;
 import net.robocode2.json_schema.messages.NewBattleForBot;
 import net.robocode2.json_schema.messages.NewBattleForObserver;
 import net.robocode2.json_schema.messages.ObserverHandshake;
@@ -45,10 +45,12 @@ public final class GameServer {
 	private ServerState gameState;
 	private GameSetup gameSetup;
 
-	private Set<BotConn> participants;
-	private Set<BotConn> readyParticipants;
+	private Set<WebSocket> participants;
+	private Set<WebSocket> readyParticipants;
 
-	private Map<BotConn, BotIntent> botIntents = new HashMap<>();
+	private Map<WebSocket, Integer> participantIds = new HashMap<>();
+
+	private Map<WebSocket, BotIntent> botIntents = new HashMap<>();
 
 	private final Timer readyTimer = new Timer("Bot-ready-timer");
 	private final Timer updateGameStateTimer = new Timer("Update-game-state-timer");
@@ -105,6 +107,8 @@ public final class GameServer {
 
 		gameState = ServerState.WAIT_FOR_READY_PARTICIPANTS;
 
+		participantIds.clear();
+
 		// Send NewBattle to all participant bots to get them started
 
 		NewBattleForBot newBattleForBot = new NewBattleForBot();
@@ -112,19 +116,17 @@ public final class GameServer {
 		newBattleForBot.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup.toImmutableGameSetup()));
 
 		int id = 1;
-		List<Integer> participantIds = new ArrayList<>();
-		for (BotConn participant : participants) {
-			participantIds.add(id);
-			participant.setId(id);
+		for (WebSocket participant : participants) {
+			participantIds.put(participant, id);
 			newBattleForBot.setMyId(id);
 
 			String msg = gson.toJson(newBattleForBot);
-			send(participant.getConnection(), msg);
+			send(participant, msg);
 
 			id++;
 		}
 
-		readyParticipants = new HashSet<BotConn>();
+		readyParticipants = new HashSet<WebSocket>();
 
 		// Start 'ready' timer
 
@@ -139,36 +141,34 @@ public final class GameServer {
 	// Should be moved to a "strategy" class
 	private GameAndParticipants selectGameAndParticipants(Map<WebSocket, BotHandshake> candidateBots) {
 
-		Map<String, Set<BotConn>> candidateBotsPerGameType = new HashMap<>();
+		Map<String, Set<WebSocket>> candidateBotsPerGameType = new HashMap<>();
 
 		Set<String> gameTypes = getGameTypes();
 
 		// Generate a map over potential participants per game type
-		Iterator<Entry<WebSocket, BotHandshake>> iterator = candidateBots.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Entry<WebSocket, BotHandshake> entry = iterator.next();
+		for (Entry<WebSocket, BotHandshake> entry : candidateBots.entrySet()) {
 			BotHandshake botHandshake = entry.getValue();
 			List<String> availGameTypes = new ArrayList<>(botHandshake.getGameTypes());
 			availGameTypes.retainAll(gameTypes);
 
 			for (String gameType : availGameTypes) {
-				Set<BotConn> candidates = candidateBotsPerGameType.get(gameType);
+				Set<WebSocket> candidates = candidateBotsPerGameType.get(gameType);
 				if (candidates == null) {
 					candidates = new HashSet<>();
 					candidateBotsPerGameType.put(gameType, candidates);
 				}
-				candidates.add(new BotConn(entry.getKey(), entry.getValue()));
+				candidates.add(entry.getKey());
 			}
 		}
 
 		// Run through the list of games and see if anyone has enough
 		// participants to start the game
 		Set<? extends IGameSetup> games = serverSetup.getGames();
-		for (Entry<String, Set<BotConn>> entry : candidateBotsPerGameType.entrySet()) {
+		for (Entry<String, Set<WebSocket>> entry : candidateBotsPerGameType.entrySet()) {
 			IGameSetup gameSetup = games.stream().filter(g -> g.getGameType().equalsIgnoreCase(entry.getKey()))
 					.findAny().orElse(null);
 
-			Set<BotConn> participants = entry.getValue();
+			Set<WebSocket> participants = entry.getValue();
 			int count = participants.size();
 			if (count >= gameSetup.getMinNumberOfParticipants() && (gameSetup.getMaxNumberOfParticipants() != null
 					&& count <= gameSetup.getMaxNumberOfParticipants())) {
@@ -196,13 +196,13 @@ public final class GameServer {
 			newBattleForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup.toImmutableGameSetup()));
 
 			List<Participant> list = new ArrayList<>();
-			for (BotConn bot : participants) {
+			for (WebSocket bot : participants) {
+				BotHandshake h = connHandler.getBotConnections().get(bot);
 				Participant p = new Participant();
-				BotHandshake h = bot.getHandshake();
+				p.setId(participantIds.get(bot));
 				p.setAuthor(h.getAuthor());
 				p.setCountryCode(h.getCountryCode());
 				p.setGameTypes(h.getGameTypes());
-				p.setId(bot.getId());
 				p.setName(h.getName());
 				p.setProgrammingLanguage(h.getProgrammingLanguage());
 				p.setVersion(h.getVersion());
@@ -220,11 +220,7 @@ public final class GameServer {
 
 		// Prepare model update
 
-		Set<Integer> participantIds = new HashSet<>();
-		for (BotConn bot : participants) {
-			participantIds.add(bot.getId());
-		}
-		modelUpdater = new ModelUpdater(gameSetup, participantIds);
+		modelUpdater = new ModelUpdater(gameSetup, participantIds.values());
 
 		// Create timer to updating game state
 
@@ -239,8 +235,8 @@ public final class GameServer {
 	private ImmutableGameState updateGameState() {
 		Map<Integer /* BotId */, BotIntent> mappedBotIntents = new HashMap<>();
 
-		for (Entry<BotConn, BotIntent> entry : botIntents.entrySet()) {
-			int botId = entry.getKey().getId();
+		for (Entry<WebSocket, BotIntent> entry : botIntents.entrySet()) {
+			int botId = participantIds.get(entry.getKey());
 			mappedBotIntents.put(botId, entry.getValue());
 		}
 
@@ -285,11 +281,11 @@ public final class GameServer {
 		ITurn turn = round.getLastTurn();
 
 		// Send game state as 'tick' to participants
-		for (BotConn participant : participants) {
-			TickForBot tickForBot = TurnToTickForBotMapper.map(round, turn, participant.getId());
+		for (WebSocket participant : participants) {
+			TickForBot tickForBot = TurnToTickForBotMapper.map(round, turn, participantIds.get(participant));
 			if (tickForBot != null) { // Bot alive?
 				String msg = gson.toJson(tickForBot);
-				send(participant.getConnection(), msg);
+				send(participant, msg);
 			}
 		}
 
@@ -335,29 +331,16 @@ public final class GameServer {
 		conn.send(message);
 	}
 
-	private void updateBotIntent(BotConn bot, net.robocode2.json_schema.messages.BotIntent intent) {
-		Integer botId = getBotId(bot);
-		if (botId == null) {
+	private void updateBotIntent(WebSocket bot, net.robocode2.json_schema.messages.BotIntent intent) {
+		if (!participants.contains(bot)) {
 			return;
 		}
-
-		bot.setId(botId);
-
 		BotIntent botIntent = botIntents.get(bot);
 		if (botIntent == null) {
 			botIntent = new BotIntent();
 			botIntents.put(bot, botIntent);
 		}
 		botIntent.update(BotIntentToBotIntentMapper.map(intent));
-	}
-
-	private Integer getBotId(BotConn botConn) {
-		Optional<BotConn> bot = participants.stream().filter(b -> b.getConnection() == botConn.getConnection())
-				.findFirst();
-		if (bot.isPresent()) {
-			return bot.get().getId();
-		}
-		return null;
 	}
 
 	private class GameServerConnListener implements ConnListener {
@@ -368,53 +351,70 @@ public final class GameServer {
 		}
 
 		@Override
-		public void onBotJoined(BotConn bot) {
+		public void onBotJoined(WebSocket socket, BotHandshake bot) {
 			if (gameState == ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN) {
 				prepareGameIfEnoughCandidates();
 			}
 		}
 
 		@Override
-		public void onBotLeft(BotConn bot) {
+		public void onBotLeft(WebSocket socket) {
 			// TODO Auto-generated method stub
 		}
 
 		@Override
-		public void onObserverJoined(ObserverConn observer) {
+		public void onObserverJoined(WebSocket socket, ObserverHandshake bot) {
 			// TODO Auto-generated method stub
 		}
 
 		@Override
-		public void onObserverLeft(ObserverConn observer) {
+		public void onObserverLeft(WebSocket socket) {
 			// TODO Auto-generated method stub
 		}
 
 		@Override
-		public void onControllerJoined(ControllerConn observer) {
+		public void onControllerJoined(WebSocket socket, ControllerHandshake bot) {
 			// TODO Auto-generated method stub
 		}
 
 		@Override
-		public void onControllerLeft(ControllerConn observer) {
+		public void onControllerLeft(WebSocket socket) {
 			// TODO Auto-generated method stub
 		}
 
 		@Override
-		public void onBotReady(BotConn bot) {
+		public void onListBotAvailableCommand(WebSocket socket) {
+			BotList botList = new BotList();
+			List<Integer> ports = new ArrayList<Integer>();
+			botList.setPorts(ports);
+
+			if (participants != null) {
+				for (WebSocket bot : participants) {
+					int port = bot.getLocalSocketAddress().getPort();
+					ports.add(port);
+				}
+			}
+
+			String msg = gson.toJson(botList);
+			send(socket, msg);
+		}
+
+		@Override
+		public void onBotReady(WebSocket socket) {
 			if (gameState == ServerState.WAIT_FOR_READY_PARTICIPANTS) {
-				readyParticipants.add(bot);
+				readyParticipants.add(socket);
 				startGameIfParticipantsReady();
 			}
 		}
 
 		@Override
-		public void onBotIntent(BotConn bot, net.robocode2.json_schema.messages.BotIntent intent) {
-			updateBotIntent(bot, intent);
+		public void onBotIntent(WebSocket socket, net.robocode2.json_schema.messages.BotIntent intent) {
+			updateBotIntent(socket, intent);
 		}
 	}
 
 	private class GameAndParticipants {
 		IGameSetup gameSetup;
-		Set<BotConn> participants;
+		Set<WebSocket> participants;
 	}
 }

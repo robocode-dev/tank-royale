@@ -10,6 +10,7 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import com.google.gson.Gson;
 
+import net.robocode2.json_schema.controller.commands.Command;
 import net.robocode2.json_schema.controller.commands.ListBotsAvailableCommand;
 import net.robocode2.json_schema.messages.ControllerHandshake;
 
@@ -40,8 +41,11 @@ public class ControllerClient1 extends WebSocketClient {
 		String msg = gson.toJson(handshake);
 		send(msg);
 
-		String cmd = gson.toJson(new ListBotsAvailableCommand());
-		send(cmd);
+		ListBotsAvailableCommand command = new ListBotsAvailableCommand();
+		command.setType(Command.Type.LIST_BOTS_AVAILABLE_COMMAND);
+
+		msg = gson.toJson(command);
+		send(msg);
 	}
 
 	@Override
@@ -60,7 +64,7 @@ public class ControllerClient1 extends WebSocketClient {
 	}
 
 	public static void main(String[] args) throws URISyntaxException {
-		WebSocketClient client = new ObserverClient1(new URI("ws://localhost:50000"), new Draft_10());
+		WebSocketClient client = new ControllerClient1(new URI("ws://localhost:50000"), new Draft_10());
 		client.connect();
 	}
 

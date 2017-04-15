@@ -18,6 +18,7 @@ import static net.robocode2.model.Physics.limitGunTurnRate;
 import static net.robocode2.model.Physics.limitRadarTurnRate;
 import static net.robocode2.model.Physics.limitTurnRate;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -75,7 +76,7 @@ public class ModelUpdater {
 	private Map<Integer /* BotId */, Bot> botsMap = new HashMap<>();
 	private Set<Bullet> bullets = new HashSet<>();
 
-	public ModelUpdater(GameSetup setup, Set<Integer> participantIds) {
+	public ModelUpdater(GameSetup setup, Collection<Integer> participantIds) {
 		this.setup = setup;
 		this.participantIds = new HashSet<>(participantIds);
 

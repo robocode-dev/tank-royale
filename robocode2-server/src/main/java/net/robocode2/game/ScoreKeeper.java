@@ -1,5 +1,6 @@
 package net.robocode2.game;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,7 +25,7 @@ public class ScoreKeeper {
 
 	private final Set<Integer> botsAlive = new HashSet<>();
 
-	public ScoreKeeper(Set<Integer> botIds) {
+	public ScoreKeeper(Collection<Integer> botIds) {
 		this.botIds = new HashSet<>(botIds);
 		reset();
 	}
