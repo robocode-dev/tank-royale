@@ -1,5 +1,6 @@
 package net.robocode2.server;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import com.google.gson.Gson;
 import net.robocode2.game.ModelUpdater;
 import net.robocode2.json_schema.Participant;
 import net.robocode2.json_schema.messages.BotHandshake;
+import net.robocode2.json_schema.messages.BotInfo;
 import net.robocode2.json_schema.messages.BotList;
 import net.robocode2.json_schema.messages.ControllerHandshake;
 import net.robocode2.json_schema.messages.NewBattleForBot;
@@ -31,6 +33,7 @@ import net.robocode2.model.IGameSetup;
 import net.robocode2.model.IRound;
 import net.robocode2.model.ITurn;
 import net.robocode2.model.ImmutableGameState;
+import net.robocode2.server.mappers.BotHandshakeToBotInfoMapper;
 import net.robocode2.server.mappers.BotIntentToBotIntentMapper;
 import net.robocode2.server.mappers.GameSetupToGameSetupMapper;
 import net.robocode2.server.mappers.TurnToTickForBotMapper;
@@ -385,13 +388,19 @@ public final class GameServer {
 		@Override
 		public void onListBotAvailableCommand(WebSocket socket) {
 			BotList botList = new BotList();
-			List<Integer> ports = new ArrayList<Integer>();
-			botList.setPorts(ports);
+			List<BotInfo> bots = new ArrayList<BotInfo>();
+			botList.setBots(bots);
 
-			if (participants != null) {
-				for (WebSocket bot : participants) {
-					int port = bot.getLocalSocketAddress().getPort();
-					ports.add(port);
+			Map<WebSocket, BotHandshake> botConnections = connHandler.getBotConnections();
+			if (botConnections != null) {
+				for (Entry<WebSocket, BotHandshake> entry : botConnections.entrySet()) {
+					BotInfo botInfo = BotHandshakeToBotInfoMapper.map(entry.getValue());
+					InetSocketAddress remoteSocketAddress = entry.getKey().getRemoteSocketAddress();
+
+					botInfo.setHostName(remoteSocketAddress.getHostName());
+					botInfo.setPort(remoteSocketAddress.getPort());
+
+					bots.add(botInfo);
 				}
 			}
 

@@ -1,0 +1,24 @@
+{
+	"id": "#bot-list.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "List of bots",
+
+	"javaType": "net.robocode2.json_schema.messages.BotList",
+	"extends": {
+		"$ref": "message.json",
+		"default": "bot-list"
+	},
+	"properties": {
+		"bots": {
+			"description": "List of bots",
+			"type": "array",
+			"items": {
+				"decription": "Bot info",
+				"$ref": "bot-info.json"
+			}
+		}
+	},
+	"required": [
+		"bots"
+	]
+}

@@ -1,0 +1,25 @@
+{
+	"id": "#bot-info.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Bot info",
+
+	"javaType": "net.robocode2.json_schema.messages.BotInfo",
+	"extends": {
+		"$ref": "bot-handshake.json",
+		"default": "bot-info"
+	},
+	"properties": {
+		"host-name": {
+			"description": "Host name",
+			"type": "string"
+		},
+		"port": {
+			"description": "Port number",
+			"type": "integer"
+		}
+	},
+	"required": [
+		"host-name",
+		"port"
+	]
+}
