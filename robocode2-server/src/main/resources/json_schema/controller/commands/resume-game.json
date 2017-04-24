@@ -1,0 +1,11 @@
+{
+	"id": "#resume-game.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Command to resume a game",
+
+    "type": "object",
+	"extends": {
+		"$ref": "command.json",
+		"default": "resume-game"
+	}
+}

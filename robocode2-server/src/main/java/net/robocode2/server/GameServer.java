@@ -386,7 +386,7 @@ public final class GameServer {
 		}
 
 		@Override
-		public void onListBotAvailableCommand(WebSocket socket) {
+		public void onListBots(WebSocket socket) {
 			BotList botList = new BotList();
 			List<BotInfo> bots = new ArrayList<BotInfo>();
 			botList.setBots(bots);

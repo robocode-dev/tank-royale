@@ -11,7 +11,7 @@ import org.java_websocket.handshake.ServerHandshake;
 import com.google.gson.Gson;
 
 import net.robocode2.json_schema.controller.commands.Command;
-import net.robocode2.json_schema.controller.commands.ListBotsAvailableCommand;
+import net.robocode2.json_schema.controller.commands.ListBots;
 import net.robocode2.json_schema.messages.ControllerHandshake;
 
 public class ControllerClient1 extends WebSocketClient {
@@ -41,8 +41,8 @@ public class ControllerClient1 extends WebSocketClient {
 		String msg = gson.toJson(handshake);
 		send(msg);
 
-		ListBotsAvailableCommand command = new ListBotsAvailableCommand();
-		command.setType(Command.Type.LIST_BOTS_AVAILABLE_COMMAND);
+		ListBots command = new ListBots();
+		command.setType(Command.Type.LIST_BOTS);
 
 		msg = gson.toJson(command);
 		send(msg);

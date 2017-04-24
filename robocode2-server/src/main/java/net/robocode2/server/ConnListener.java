@@ -23,7 +23,7 @@ public interface ConnListener {
 
 	void onControllerLeft(WebSocket socket);
 
-	void onListBotAvailableCommand(WebSocket socket);
+	void onListBots(WebSocket socket);
 
 	void onBotReady(WebSocket socket);
 

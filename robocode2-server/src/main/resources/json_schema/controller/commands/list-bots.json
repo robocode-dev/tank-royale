@@ -1,11 +1,11 @@
 {
-	"id": "#list-bots-available.json",
+	"id": "#list-bots.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "Command to list bots available",
 
     "type": "object",
 	"extends": {
 		"$ref": "command.json",
-		"default": "list-bots-available-command"
+		"default": "list-bots"
 	}
 }

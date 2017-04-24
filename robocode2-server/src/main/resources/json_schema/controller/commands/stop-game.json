@@ -1,0 +1,11 @@
+{
+	"id": "#stop-game.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Command to stop a game",
+
+    "type": "object",
+	"extends": {
+		"$ref": "command.json",
+		"default": "stop-game"
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"id": "#start-game.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Command to start a new game",
+
+	"javaType": "net.robocode2.json_schema.controller.commands.StartGame",
+	"extends": {
+		"$ref": "command.json",
+		"default": "start-game"
+	},
+	"properties": {
+		"bot-addresses": {
+			"description": "List of bots",
+			"type": "array",
+			"items": {
+				"decription": "Bot address",
+				"$ref": "../../bot-address.json"
+			}
+		}
+	},
+	"required": [
+		"bot-addresses"
+	]
+}

@@ -1,11 +1,9 @@
 {
-	"id": "#bot-info.json",
+	"id": "#bot-address.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"description": "Bot info",
-	"type": "object",
-	"extends": {
-		"$ref": "bot-handshake.json"
-	},
+	"description": "Bot address",
+
+	"javaType": "net.robocode2.json_schema.BotAddress",
 	"properties": {
 		"host-name": {
 			"description": "Host name",

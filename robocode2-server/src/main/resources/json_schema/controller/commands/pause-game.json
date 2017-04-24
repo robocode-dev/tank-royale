@@ -1,0 +1,11 @@
+{
+	"id": "#pause-game.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Command to pause a game",
+
+    "type": "object",
+	"extends": {
+		"$ref": "command.json",
+		"default": "pause-game"
+	}
+}

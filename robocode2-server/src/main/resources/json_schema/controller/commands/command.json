@@ -7,7 +7,11 @@
 	"properties": {
 		"type": {
 			"enum": [
-				"list-bots-available-command"
+				"list-bots",
+				"start-game",
+				"stop-game",
+				"pause-game",
+				"resume-game"
 			]
 		}
 	},

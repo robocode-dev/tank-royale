@@ -200,10 +200,10 @@ public final class ConnHandler {
 					System.out.println("Handling command: " + type);
 
 					switch (type) {
-					case LIST_BOTS_AVAILABLE_COMMAND: {
+					case LIST_BOTS: {
 						ControllerHandshake handshake = controllerConnections.get(conn);
 						if (handshake != null) {
-							executorService.submit(() -> listener.onListBotAvailableCommand(conn));
+							executorService.submit(() -> listener.onListBots(conn));
 						}
 						break;
 					}
