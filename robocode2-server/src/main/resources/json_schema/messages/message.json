@@ -7,18 +7,20 @@
 	"properties": {
 		"type": {
 			"enum": [
-				"server-handshake",
 				"bot-handshake",
-				"controller-handshake",
-				"observer-handshake",
+				"bot-info",
 				"bot-intent",
+				"bot-list",
+				"bot-ready",
+				"controller-handshake",
 				"new-battle-for-bot",
 				"new-battle-for-observer",
-				"bot-ready",
-				"tick-for-bot",
-				"tick-for-observer",
+				"observer-handshake",
 				"results-for-bot",
-				"results-for-observer"
+				"results-for-observer",
+				"server-handshake",
+				"tick-for-bot",
+				"tick-for-observer"
 			]
 		}
 	},

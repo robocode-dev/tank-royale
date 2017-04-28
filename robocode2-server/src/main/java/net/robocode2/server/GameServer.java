@@ -22,6 +22,7 @@ import net.robocode2.json_schema.messages.BotHandshake;
 import net.robocode2.json_schema.messages.BotInfo;
 import net.robocode2.json_schema.messages.BotList;
 import net.robocode2.json_schema.messages.ControllerHandshake;
+import net.robocode2.json_schema.messages.Message;
 import net.robocode2.json_schema.messages.NewBattleForBot;
 import net.robocode2.json_schema.messages.NewBattleForObserver;
 import net.robocode2.json_schema.messages.ObserverHandshake;
@@ -388,6 +389,7 @@ public final class GameServer {
 		@Override
 		public void onListBots(WebSocket socket) {
 			BotList botList = new BotList();
+			botList.setType(Message.Type.BOT_LIST);
 			List<BotInfo> bots = new ArrayList<BotInfo>();
 			botList.setBots(bots);
 
