@@ -81,7 +81,7 @@
 					<outDir>target/js</outDir>
 					<candiesJsOut>webapp</candiesJsOut>
 					<targetVersion>ES3</targetVersion>
-					<bundle>true</bundle>
+					<bundle>false</bundle>
 				</configuration>
 				<executions>
 					<execution>

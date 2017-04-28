@@ -1,9 +1,15 @@
 package json_schema.messages;
 
-public class ObserverHandshake extends Message {
+public class ControllerHandshake extends Message2 {
 
-	public ObserverHandshake() {
-		super("observer-handshake");
+	public static final String TYPE = "controller-handshake";
+
+	public ControllerHandshake() {
+		super(TYPE);
+	}
+
+	public ControllerHandshake(String type) {
+		super(type);
 	}
 
 	public void setName(String name) {

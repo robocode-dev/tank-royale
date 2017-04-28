@@ -17,6 +17,10 @@ public class NewBattleForObserver extends Message {
 		super(TYPE);
 	}
 
+	public NewBattleForObserver(String type) {
+		super(type);
+	}
+
 	public GameSetup getGameSetup() {
 		return (GameSetup) $.extend(false, new GameSetup(), $get("game-setup"));
 	}

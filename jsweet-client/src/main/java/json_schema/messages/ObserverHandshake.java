@@ -2,8 +2,14 @@ package json_schema.messages;
 
 public class ObserverHandshake extends Message {
 
+	public static final String TYPE = "observer-handshake";
+
 	public ObserverHandshake() {
-		super("observer-handshake");
+		super(TYPE);
+	}
+
+	public ObserverHandshake(String type) {
+		super(type);
 	}
 
 	public void setName(String name) {

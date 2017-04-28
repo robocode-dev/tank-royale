@@ -1,20 +1,38 @@
 package json_schema.messages;
 
-public class ControllerHandshake extends Message {
+import static def.jquery.Globals.$;
 
-	public ControllerHandshake() {
-		super("controller-handshake");
+import java.util.HashSet;
+import java.util.Set;
+
+import jsweet.lang.Array;
+
+public class BotList extends Message2 {
+
+	public static final String TYPE = "bot-list";
+
+	public BotList() {
+		super(TYPE);
 	}
 
-	public void setName(String name) {
-		$set("name", name);
+	public BotList(String type) {
+		super(type);
 	}
 
-	public void setVersion(String version) {
-		$set("version", version);
+	public Set<BotInfo> getBots() {
+
+		@SuppressWarnings("unchecked")
+		Array<BotInfo> array = (Array<BotInfo>) $.extend(true, new Array<BotInfo>(), $get("bots"));
+
+		Set<BotInfo> set = new HashSet<>();
+		for (BotInfo obj : array) {
+			BotInfo botInfo = (BotInfo) $.extend(false, new BotInfo(), obj);
+			set.add(botInfo);
+		}
+		return set;
 	}
 
-	public void setAuthor(String author) {
-		$set("author", author);
+	public static BotList map(Object obj) {
+		return (BotList) $.extend(false, new BotList(), obj);
 	}
 }

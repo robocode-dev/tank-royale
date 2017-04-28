@@ -1,14 +1,22 @@
 package json_schema.messages;
 
-import jsweet.lang.Array;
+public class BotInfo extends BotHandshake {
 
-public class BotList extends Message {
+	public static final String TYPE = "bot-info";
 
-	public BotList() {
-		super("bot-list");
+	public BotInfo() {
+		super(TYPE);
 	}
 
-	public Array<BotInfo> getBots() {
-		return (Array<BotInfo>) $get("bot");
+	public BotInfo(String type) {
+		super(type);
+	}
+
+	public String getHostName() {
+		return (String) $get("host-name");
+	}
+
+	public Integer getPort() {
+		return (Integer) $get("port");
 	}
 }

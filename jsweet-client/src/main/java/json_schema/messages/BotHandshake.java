@@ -1,20 +1,41 @@
 package json_schema.messages;
 
-public class ControllerHandshake extends Message {
+import jsweet.lang.Array;
 
-	public ControllerHandshake() {
-		super("controller-handshake");
+public class BotHandshake extends Message2 {
+
+	public static final String TYPE = "bot-handshake";
+
+	public BotHandshake() {
+		super(TYPE);
 	}
 
-	public void setName(String name) {
-		$set("name", name);
+	public BotHandshake(String type) {
+		super(type);
 	}
 
-	public void setVersion(String version) {
-		$set("version", version);
+	public String getName() {
+		return (String) $get("name");
 	}
 
-	public void setAuthor(String author) {
-		$set("author", author);
+	public String getVersion() {
+		return (String) $get("version");
+	}
+
+	public String getAuthor() {
+		return (String) $get("author");
+	}
+
+	public String getContryCode() {
+		return (String) $get("country-code");
+	}
+
+	@SuppressWarnings("unchecked")
+	public Array<String> getGameTypes() {
+		return (Array<String>) $get("game-types");
+	}
+
+	public String getProgrammingLanguage() {
+		return (String) $get("programming-language");
 	}
 }

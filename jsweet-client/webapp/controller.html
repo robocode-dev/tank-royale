@@ -1,10 +1,33 @@
 <html>
 <head>
+<script src="../webapp/j4ts-0.3.0-SNAPSHOT/bundle.js"></script>
+<script src="../webapp/jquery-1.10.0-SNAPSHOT/jquery.js"></script>
+
+
+<script src="../target/js/json_schema/messages/Message2.js"></script>
+<script src="../target/js/json_schema/messages/BotHandshake.js"></script>
+<script src="../target/js/json_schema/messages/BotInfo.js"></script>
+<script src="../target/js/json_schema/messages/BotList.js"></script>
+<script src="../target/js/json_schema/messages/ControllerHandshake.js"></script>
+<script src="../target/js/json_schema/controller/commands/Command.js"></script>
+<script src="../target/js/json_schema/controller/commands/ListBots.js"></script>
+
+<script src="../target/js/ControllerClient1.js"></script>
 </head>
 
 <body>
-  <form>
-  Server url: <input type="text" id="server-url" value="ws://localhost:50000"><br>
-  </form>
+	<form>
+		Server url: <input type="text" id="server-url"
+			value="ws://localhost:50000"><br>
+	</form>
+
+	<button id="list-bots-button">List bots</button>
+	<p></p>
+
+	<form>
+	<select multiple id="bot-list">
+		<option value="test">test</option>
+	</select>
+	</form>
 </body>
 </html>

@@ -19,6 +19,10 @@ public class TickForObserver extends Message {
 		super(TYPE);
 	}
 
+	public TickForObserver(String type) {
+		super(type);
+	}
+
 	public RoundState getRoundState() {
 		return (RoundState) $.extend(false, new RoundState(), $get("round-state"));
 	}
