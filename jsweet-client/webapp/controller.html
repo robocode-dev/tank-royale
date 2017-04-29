@@ -16,18 +16,83 @@
 </head>
 
 <body>
-	<form>
-		Server url: <input type="text" id="server-url"
-			value="ws://localhost:50000"><br>
-	</form>
-
-	<button id="list-bots-button">List bots</button>
+	<fieldset>
+		<legend>Server</legend>
+		Server url: <input type="text" id="server-url" value="ws://localhost:50000">&nbsp;
+		<button id="connect">Connect</button>
+	</fieldset>
 	<p></p>
+	<fieldset>
+		<legend>Game types</legend>
+		<button id="list-game-types-button">List game types</button>
+		<p></p>
 
-	<form>
-	<select multiple id="bot-list">
-		<option value="test">test</option>
-	</select>
-	</form>
+		<select id="game-types-list">
+			<option value="1">game type #1</option>
+			<option value="2">game type #2</option>
+			<option value="3">game type #3</option>
+		</select>
+	</fieldset>
+	<p></p>
+	<fieldset>
+		<legend>Available bots</legend>
+		<button id="list-bots-button">List bots</button>
+		<p></p>
+
+		<select multiple id="bot-list">
+			<option value="1">bot #1</option>
+			<option value="2">bot #2</option>
+			<option value="3">bot #3</option>
+		</select>
+	</fieldset>
+	<p></p>
+	<fieldset>
+		<legend>Game setup</legend>
+		<fieldset>
+			<legend>Arena size</legend>
+			<input type="text" id="arena-width" value="800">&nbsp;x&nbsp;<input type="text" id="arena-height" value="600">
+		</fieldset>
+		<br>
+		<div style="height: 50px">
+			<div style="width:25%; float:left">
+				Min. number of participants:<br><input id="min-number-of-participants" type="number" min="1" step="1" value="2">
+			</div>
+			<div style="width:25%; float:left">
+				Max. number of participants:<br><input id="max-number-of-participants" type="number" min="1" step="1" value="">
+			</div>
+			<div style="width:25%; float:left">
+				Number of rounds:<br><input id="number-of-rounds" type="number" min="1" step="1" value="10">
+			</div>
+			<div style="width:25%; float:left">
+				Gun cooling rate:<br><input id="gun-cooling-rate" type="number" min="0.1" max="0.7" step="0.1" value="0.1">
+			</div>
+		</div>
+		<div style="height: 50px">
+			<div style="width:25%; float:left">
+				Inactivity turns:<br><input id="inactivity-turns" type="number" min="1" step="1" value="450">
+			</div>
+			<div style="width:25%; float:left">
+				Turn timeout (ms):<br><input id="turn-timeout" type="number" min="1" step="1" value="100">
+			</div>
+			<div style="width:25%; float:left">
+				Ready timeout (ms):<br><input id="ready-timeout" type="number" min="100" step="100" value="1000">
+			</div>
+			<div style="width:25%; float:left">
+				Delayed observers turns:<br><input id="number-of-turns-delayed-for-observers" type="number" min="1" step="1" value="10">
+			</div>
+		</div>
+	</fieldset>
+	<p></p>
+	<fieldset>
+		<legend>Control game</legend>
+		<button id="start-game">&gt; Start game</button>
+		&nbsp;
+		<button id="pause-game">|&nbsp;| Pause game</button>
+		&nbsp;
+		<button id="resume-game">&lt; Resume game</button>
+		&nbsp;
+		<button id="stop-game">[_] Stop game</button>
+		&nbsp;
+	</fieldset>
 </body>
 </html>

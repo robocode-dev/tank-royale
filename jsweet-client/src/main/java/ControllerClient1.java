@@ -103,7 +103,9 @@ public class ControllerClient1 {
 
 		for (BotInfo botInfo : botList.getBots()) {
 			HTMLOptionElement option = (HTMLOptionElement) document.createElement("option");
-			option.text = botInfo.getHostName() + ":" + botInfo.getPort();
+
+			option.text = botInfo.getHostName() + ":" + botInfo.getPort() + " | " + botInfo.getName() + " "
+					+ botInfo.getVersion() + " | " + botInfo.getAuthor() + " | " + botInfo.getProgrammingLanguage();
 			select.appendChild(option);
 		}
 	}
