@@ -2,6 +2,7 @@ package net.robocode2.server;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +23,7 @@ import net.robocode2.json_schema.messages.BotHandshake;
 import net.robocode2.json_schema.messages.BotInfo;
 import net.robocode2.json_schema.messages.BotList;
 import net.robocode2.json_schema.messages.ControllerHandshake;
+import net.robocode2.json_schema.messages.GameTypeList;
 import net.robocode2.json_schema.messages.Message;
 import net.robocode2.json_schema.messages.NewBattleForBot;
 import net.robocode2.json_schema.messages.NewBattleForObserver;
@@ -387,30 +389,6 @@ public final class GameServer {
 		}
 
 		@Override
-		public void onListBots(WebSocket socket) {
-			BotList botList = new BotList();
-			botList.setType(Message.Type.BOT_LIST);
-			List<BotInfo> bots = new ArrayList<BotInfo>();
-			botList.setBots(bots);
-
-			Map<WebSocket, BotHandshake> botConnections = connHandler.getBotConnections();
-			if (botConnections != null) {
-				for (Entry<WebSocket, BotHandshake> entry : botConnections.entrySet()) {
-					BotInfo botInfo = BotHandshakeToBotInfoMapper.map(entry.getValue());
-					InetSocketAddress remoteSocketAddress = entry.getKey().getRemoteSocketAddress();
-
-					botInfo.setHostName(remoteSocketAddress.getHostName());
-					botInfo.setPort(remoteSocketAddress.getPort());
-
-					bots.add(botInfo);
-				}
-			}
-
-			String msg = gson.toJson(botList);
-			send(socket, msg);
-		}
-
-		@Override
 		public void onBotReady(WebSocket socket) {
 			if (gameState == ServerState.WAIT_FOR_READY_PARTICIPANTS) {
 				readyParticipants.add(socket);
@@ -421,6 +399,56 @@ public final class GameServer {
 		@Override
 		public void onBotIntent(WebSocket socket, net.robocode2.json_schema.messages.BotIntent intent) {
 			updateBotIntent(socket, intent);
+		}
+
+		@Override
+		public void onListBots(WebSocket socket, Collection<String> gameTypes) {
+			BotList botList = new BotList();
+			botList.setType(Message.Type.BOT_LIST);
+			List<BotInfo> bots = new ArrayList<BotInfo>();
+			botList.setBots(bots);
+
+			Map<WebSocket, BotHandshake> botConnections = connHandler.getBotConnections();
+			if (botConnections != null) {
+				for (Entry<WebSocket, BotHandshake> entry : botConnections.entrySet()) {
+					BotInfo botInfo = BotHandshakeToBotInfoMapper.map(entry.getValue());
+
+					// Find game type matches
+					List<String> matches = new ArrayList<String>(botInfo.getGameTypes());
+					if (gameTypes != null) {
+						matches.removeAll(gameTypes);
+					}
+					// Add bot if it matches the game types
+					if (matches.size() > 0) {
+						InetSocketAddress remoteSocketAddress = entry.getKey().getRemoteSocketAddress();
+
+						botInfo.setHostName(remoteSocketAddress.getHostName());
+						botInfo.setPort(remoteSocketAddress.getPort());
+
+						bots.add(botInfo);
+					}
+				}
+			}
+
+			String msg = gson.toJson(botList);
+			send(socket, msg);
+		}
+
+		@Override
+		public void onListGameTypes(WebSocket socket) {
+			GameTypeList gameTypeList = new GameTypeList();
+			gameTypeList.setType(Message.Type.GAME_TYPE_LIST);
+
+			List<String> gameTypes = new ArrayList<String>();
+			gameTypeList.setGameTypes(gameTypes);
+
+			Set<IGameSetup> games = serverSetup.getGames();
+			for (IGameSetup gameSetup : games) {
+				gameTypes.add(gameSetup.getGameType());
+			}
+
+			String msg = gson.toJson(gameTypeList);
+			send(socket, msg);
 		}
 	}
 

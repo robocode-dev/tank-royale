@@ -1,5 +1,7 @@
 package net.robocode2.server;
 
+import java.util.Collection;
+
 import org.java_websocket.WebSocket;
 
 import net.robocode2.json_schema.messages.BotHandshake;
@@ -23,9 +25,11 @@ public interface ConnListener {
 
 	void onControllerLeft(WebSocket socket);
 
-	void onListBots(WebSocket socket);
-
 	void onBotReady(WebSocket socket);
 
 	void onBotIntent(WebSocket socket, BotIntent intent);
+
+	void onListBots(WebSocket socket, Collection<String> gameTypes);
+
+	void onListGameTypes(WebSocket socket);
 }

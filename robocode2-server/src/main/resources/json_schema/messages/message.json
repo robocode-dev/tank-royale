@@ -13,6 +13,7 @@
 				"bot-list",
 				"bot-ready",
 				"controller-handshake",
+				"game-type-list",
 				"new-battle-for-bot",
 				"new-battle-for-observer",
 				"observer-handshake",

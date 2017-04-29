@@ -7,5 +7,17 @@
 	"extends": {
 		"$ref": "command.json",
 		"default": "list-bots"
-	}
+	},
+	"properties": {
+		"game-types": {
+			"description": "Game type filter",
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"required": [
+		"game-types"
+	]
 }

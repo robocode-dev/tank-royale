@@ -7,4 +7,8 @@ public class ListBots extends Command {
 	public ListBots() {
 		super(TYPE);
 	}
+
+	public ListBots(String type) {
+		super(type);
+	}
 }

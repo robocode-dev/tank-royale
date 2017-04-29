@@ -1,0 +1,23 @@
+{
+	"id": "#game-type-list.json",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "List of game types",
+
+	"javaType": "net.robocode2.json_schema.messages.GameTypeList",
+	"extends": {
+		"$ref": "message.json",
+		"default": "game-type-list"
+	},
+	"properties": {
+		"game-types": {
+			"description": "List of game types",
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"required": [
+		"game-types"
+	]
+}

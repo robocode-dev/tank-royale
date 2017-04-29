@@ -3,13 +3,14 @@
 <script src="../webapp/j4ts-0.3.0-SNAPSHOT/bundle.js"></script>
 <script src="../webapp/jquery-1.10.0-SNAPSHOT/jquery.js"></script>
 
-
 <script src="../target/js/json_schema/messages/Message2.js"></script>
+<script src="../target/js/json_schema/messages/GameTypeList.js"></script>
 <script src="../target/js/json_schema/messages/BotHandshake.js"></script>
 <script src="../target/js/json_schema/messages/BotInfo.js"></script>
 <script src="../target/js/json_schema/messages/BotList.js"></script>
 <script src="../target/js/json_schema/messages/ControllerHandshake.js"></script>
 <script src="../target/js/json_schema/controller/commands/Command.js"></script>
+<script src="../target/js/json_schema/controller/commands/ListGameTypes.js"></script>
 <script src="../target/js/json_schema/controller/commands/ListBots.js"></script>
 
 <script src="../target/js/ControllerClient1.js"></script>
@@ -24,10 +25,10 @@
 	<p></p>
 	<fieldset>
 		<legend>Game types</legend>
-		<button id="list-game-types-button">List game types</button>
+		<button id="list-game-types">List game types</button>
 		<p></p>
 
-		<select id="game-types-list">
+		<select id="game-type-list">
 			<option value="1">game type #1</option>
 			<option value="2">game type #2</option>
 			<option value="3">game type #3</option>
@@ -36,7 +37,7 @@
 	<p></p>
 	<fieldset>
 		<legend>Available bots</legend>
-		<button id="list-bots-button">List bots</button>
+		<button id="list-bots">List bots</button>
 		<p></p>
 
 		<select multiple id="bot-list">
