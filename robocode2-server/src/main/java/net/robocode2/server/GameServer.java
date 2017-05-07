@@ -309,7 +309,7 @@ public final class GameServer {
 				updateGameStateTimer.cancel();
 			}
 		} else {
-			delayedObserverTurnNumber = observerTurn.getTurnNumber() - gameSetup.getNumberOfDelayedTurnsForObservers();
+			delayedObserverTurnNumber = observerTurn.getTurnNumber() - gameSetup.getDelayedObserverTurns();
 			if (delayedObserverTurnNumber < 0) {
 				int delayedRoundNumber = observerRound.getRoundNumber() - 1;
 				if (delayedRoundNumber >= 0) {
@@ -416,7 +416,7 @@ public final class GameServer {
 					// Find game type matches
 					List<String> matches = new ArrayList<String>(botInfo.getGameTypes());
 					if (gameTypes != null) {
-						matches.removeAll(gameTypes);
+						matches.retainAll(gameTypes);
 					}
 					// Add bot if it matches the game types
 					if (matches.size() > 0) {

@@ -3,40 +3,53 @@ package net.robocode2.model;
 public final class ImmutableGameSetup implements IGameSetup {
 
 	private final String gameType;
-	private final int arenaWidth;
-	private final int arenaHeight;
-	private final int minNumberOfParticipants;
+	private final Integer arenaWidth;
+	private final Integer arenaHeight;
+	private final Integer minNumberOfParticipants;
 	private final Integer maxNumberOfParticipants;
-	private final int numberOfRounds;
-	private final double gunCoolingRate;
-	private final int inactiveTurns;
-	private final int turnTimeout;
-	private final int readyTimeout;
-	private final int numberOfDelayedTurnsForObservers;
+	private final Integer numberOfRounds;
+	private final Double gunCoolingRate;
+	private final Integer inactiveTurns;
+	private final Integer turnTimeout;
+	private final Integer readyTimeout;
+	private final Integer delayedObserverTurns;
 
-	public ImmutableGameSetup(String gameType, int arenaWidth, int arenaHeight, int minNumberOfParticipants,
-			Integer maxNumberOfParticipants, int numberOfRounds, double gunCoolingRate, int inactiveTurns,
-			int turnTimeout, int readyTimeout, int numberOfDelayedTurnsForObservers) {
-
-		this.gameType = gameType;
-		this.arenaWidth = arenaWidth;
-		this.arenaHeight = arenaHeight;
-		this.minNumberOfParticipants = minNumberOfParticipants;
-		this.maxNumberOfParticipants = maxNumberOfParticipants;
-		this.numberOfRounds = numberOfRounds;
-		this.gunCoolingRate = gunCoolingRate;
-		this.inactiveTurns = inactiveTurns;
-		this.turnTimeout = turnTimeout;
-		this.readyTimeout = readyTimeout;
-		this.numberOfDelayedTurnsForObservers = numberOfDelayedTurnsForObservers;
-	}
+	private final boolean gameTypeFixed;
+	private final boolean arenaWidthFixed;
+	private final boolean arenaHeightFixed;
+	private final boolean minNumberOfParticipantsFixed;
+	private final boolean maxNumberOfParticipantsFixed;
+	private final boolean numberOfRoundsFixed;
+	private final boolean gunCoolingRateFixed;
+	private final boolean inactiveTurnsFixed;
+	private final boolean turnTimeoutFixed;
+	private final boolean readyTimeoutFixed;
+	private final boolean delayedObserverTurnsFixed;
 
 	public ImmutableGameSetup(IGameSetup gameSetup) {
-		this(gameSetup.getGameType(), gameSetup.getArenaWidth(), gameSetup.getArenaHeight(),
-				gameSetup.getMinNumberOfParticipants(), gameSetup.getMaxNumberOfParticipants(),
-				gameSetup.getNumberOfRounds(), gameSetup.getGunCoolingRate(), gameSetup.getInactiveTurns(),
-				gameSetup.getTurnTimeout(), gameSetup.getReadyTimeout(),
-				gameSetup.getNumberOfDelayedTurnsForObservers());
+		gameType = gameSetup.getGameType();
+		arenaWidth = gameSetup.getArenaWidth();
+		arenaHeight = gameSetup.getArenaHeight();
+		minNumberOfParticipants = gameSetup.getMinNumberOfParticipants();
+		maxNumberOfParticipants = gameSetup.getMaxNumberOfParticipants();
+		numberOfRounds = gameSetup.getNumberOfRounds();
+		gunCoolingRate = gameSetup.getGunCoolingRate();
+		inactiveTurns = gameSetup.getInactiveTurns();
+		turnTimeout = gameSetup.getTurnTimeout();
+		readyTimeout = gameSetup.getReadyTimeout();
+		delayedObserverTurns = gameSetup.getDelayedObserverTurns();
+
+		gameTypeFixed = gameSetup.isGameTypeFixed();
+		arenaWidthFixed = gameSetup.isArenaWidthFixed();
+		arenaHeightFixed = gameSetup.isArenaHeightFixed();
+		minNumberOfParticipantsFixed = gameSetup.isMinNumberOfParticipantsFixed();
+		maxNumberOfParticipantsFixed = gameSetup.isMaxNumberOfParticipantsFixed();
+		numberOfRoundsFixed = gameSetup.isNumberOfRoundsFixed();
+		gunCoolingRateFixed = gameSetup.isGunCoolingRateFixed();
+		inactiveTurnsFixed = gameSetup.isInactiveTurnsFixed();
+		turnTimeoutFixed = gameSetup.isTurnTimeoutFixed();
+		readyTimeoutFixed = gameSetup.isReadyTimeoutFixed();
+		delayedObserverTurnsFixed = gameSetup.isDelayedObserverTurnsFixed();
 	}
 
 	@Override
@@ -45,17 +58,17 @@ public final class ImmutableGameSetup implements IGameSetup {
 	}
 
 	@Override
-	public int getArenaWidth() {
+	public Integer getArenaWidth() {
 		return arenaWidth;
 	}
 
 	@Override
-	public int getArenaHeight() {
+	public Integer getArenaHeight() {
 		return arenaHeight;
 	}
 
 	@Override
-	public int getMinNumberOfParticipants() {
+	public Integer getMinNumberOfParticipants() {
 		return minNumberOfParticipants;
 	}
 
@@ -65,32 +78,87 @@ public final class ImmutableGameSetup implements IGameSetup {
 	}
 
 	@Override
-	public int getNumberOfRounds() {
+	public Integer getNumberOfRounds() {
 		return numberOfRounds;
 	}
 
 	@Override
-	public double getGunCoolingRate() {
+	public Double getGunCoolingRate() {
 		return gunCoolingRate;
 	}
 
 	@Override
-	public int getInactiveTurns() {
+	public Integer getInactiveTurns() {
 		return inactiveTurns;
 	}
 
 	@Override
-	public int getTurnTimeout() {
+	public Integer getTurnTimeout() {
 		return turnTimeout;
 	}
 
 	@Override
-	public int getReadyTimeout() {
+	public Integer getReadyTimeout() {
 		return readyTimeout;
 	}
 
 	@Override
-	public int getNumberOfDelayedTurnsForObservers() {
-		return numberOfDelayedTurnsForObservers;
+	public Integer getDelayedObserverTurns() {
+		return delayedObserverTurns;
+	}
+
+	@Override
+	public boolean isGameTypeFixed() {
+		return gameTypeFixed;
+	}
+
+	@Override
+	public boolean isArenaWidthFixed() {
+		return arenaWidthFixed;
+	}
+
+	@Override
+	public boolean isArenaHeightFixed() {
+		return arenaHeightFixed;
+	}
+
+	@Override
+	public boolean isMinNumberOfParticipantsFixed() {
+		return minNumberOfParticipantsFixed;
+	}
+
+	@Override
+	public boolean isMaxNumberOfParticipantsFixed() {
+		return maxNumberOfParticipantsFixed;
+	}
+
+	@Override
+	public boolean isNumberOfRoundsFixed() {
+		return numberOfRoundsFixed;
+	}
+
+	@Override
+	public boolean isGunCoolingRateFixed() {
+		return gunCoolingRateFixed;
+	}
+
+	@Override
+	public boolean isInactiveTurnsFixed() {
+		return inactiveTurnsFixed;
+	}
+
+	@Override
+	public boolean isTurnTimeoutFixed() {
+		return turnTimeoutFixed;
+	}
+
+	@Override
+	public boolean isReadyTimeoutFixed() {
+		return readyTimeoutFixed;
+	}
+
+	@Override
+	public boolean isDelayedObserverTurnsFixed() {
+		return delayedObserverTurnsFixed;
 	}
 }

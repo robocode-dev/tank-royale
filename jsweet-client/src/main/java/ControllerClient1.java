@@ -13,13 +13,17 @@ import jsweet.dom.CloseEvent;
 import jsweet.dom.Event;
 import jsweet.dom.EventListener;
 import jsweet.dom.HTMLButtonElement;
+import jsweet.dom.HTMLCollection;
 import jsweet.dom.HTMLOptionElement;
 import jsweet.dom.HTMLSelectElement;
 import jsweet.dom.MessageEvent;
 import jsweet.dom.WebSocket;
+import jsweet.lang.Array;
 import jsweet.lang.JSON;
 
 public class ControllerClient1 {
+
+	private final static String NONE_TEXT = "[none]";
 
 	public static void main(String[] args) {
 		window.onload = e -> {
@@ -118,7 +122,24 @@ public class ControllerClient1 {
 	}
 
 	private void listBots() {
-		ws.send(JSON.stringify(new ListBots()));
+		ListBots listBots = new ListBots();
+
+		HTMLSelectElement select = (HTMLSelectElement) document.getElementById("game-type-list");
+
+		Array<String> gameTypes;
+		if (select.selectedOptions.length == 1 && select.selectedOptions.$get(0).textContent.equals(NONE_TEXT)) {
+			gameTypes = null;
+		} else {
+			gameTypes = new Array<String>();
+			HTMLCollection collection = select.selectedOptions;
+			for (int i = 0; i < collection.length; i++) {
+				HTMLOptionElement option = (HTMLOptionElement) collection.item(i);
+				gameTypes.push(option.text);
+			}
+		}
+		listBots.setGameTypes(gameTypes);
+
+		ws.send(JSON.stringify(listBots));
 	}
 
 	private void handleBotList(BotList botList) {
@@ -138,8 +159,12 @@ public class ControllerClient1 {
 		HTMLSelectElement select = (HTMLSelectElement) document.getElementById("game-type-list");
 		select.options.length = 0;
 
+		HTMLOptionElement option = (HTMLOptionElement) document.createElement("option");
+		option.text = NONE_TEXT;
+		select.appendChild(option);
+
 		for (String gameType : gameTypeList.getGameTypes()) {
-			HTMLOptionElement option = (HTMLOptionElement) document.createElement("option");
+			option = (HTMLOptionElement) document.createElement("option");
 			option.text = gameType;
 			select.appendChild(option);
 		}

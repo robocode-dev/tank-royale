@@ -1,2 +1,4 @@
 Refactor arc to cone? (arc is just the outer curve of the cone)
 - Perhaps only previous scan angle?
+
+- Fjerne model objekter med mange input parametre i constructor, f.eks. på Immutable klasser.

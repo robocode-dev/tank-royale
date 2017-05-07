@@ -33,6 +33,7 @@ import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.IBot;
 import net.robocode2.model.IBotIntent;
+import net.robocode2.model.IGameSetup;
 import net.robocode2.model.ImmutableBotIntent;
 import net.robocode2.model.ImmutableBullet;
 import net.robocode2.model.ImmutableGameState;
@@ -55,7 +56,7 @@ import net.robocode2.model.events.ScannedBotEvent;
 
 public class ModelUpdater {
 
-	private final GameSetup setup;
+	private final IGameSetup setup;
 	private final Set<Integer> participantIds;
 
 	private final ScoreKeeper scoreKeeper;
