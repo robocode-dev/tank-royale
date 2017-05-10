@@ -2,17 +2,17 @@ package net.robocode2.model;
 
 public class GameSetup implements IGameSetup {
 
-	private String gameType;
-	private int arenaWidth;
-	private int arenaHeight;
-	private int minNumberOfParticipants;
-	private Integer maxNumberOfParticipants;
-	private int numberOfRounds;
-	private double gunCoolingRate;
-	private int inactiveTurns;
-	private int turnTimeout;
-	private int readyTimeout;
-	private int delayedObserverTurns;
+	private String gameType = DEFAULT_GAME_TYPE;
+	private int arenaWidth = DEFAULT_ARENA_WIDTH;
+	private int arenaHeight = DEFAULT_ARENA_HEIGHT;
+	private int minNumberOfParticipants = DEFAULT_MIN_NUMBER_OF_PARTICIPANTS;
+	private Integer maxNumberOfParticipants = DEFAULT_MAX_NUMBER_OF_PARTICIPANTS;
+	private int numberOfRounds = DEFAULT_NUMBER_OF_ROUNDS;
+	private double gunCoolingRate = DEFAULT_GUN_COOLING_RATE;
+	private int inactiveTurns = DEFAULT_INACTIVITY_TURNS;
+	private int turnTimeout = DEFAULT_TURN_TIMEOUT;
+	private int readyTimeout = DEFAULT_READY_TIMEOUT;
+	private int delayedObserverTurns = DEFAULT_DELAYED_OBSERVER_TURNS;
 
 	private boolean gameTypeFixed;
 	private boolean arenaWidthFixed;

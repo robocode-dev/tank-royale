@@ -16,12 +16,11 @@ public final class ImmutableTurn implements ITurn {
 	private final Set<IEvent> observerEvents;
 	private final Map<Integer, Set<IEvent>> botEventsMap;
 
-	public ImmutableTurn(int turnNumber, Set<IBot> bots, Set<IBullet> bullets, Set<IEvent> observerEvents,
-			Map<Integer, Set<IEvent>> botEventsMap) {
-
-		this.turnNumber = turnNumber;
+	public ImmutableTurn(ITurn turn) {
+		turnNumber = turn.getTurnNumber();
 
 		Set<ImmutableBot> immuBots = new HashSet<>();
+		Set<IBot> bots = turn.getBots();
 		if (bots != null) {
 			for (IBot bot : bots) {
 				immuBots.add(new ImmutableBot(bot));
@@ -30,6 +29,7 @@ public final class ImmutableTurn implements ITurn {
 		this.bots = Collections.unmodifiableSet(immuBots);
 
 		Set<ImmutableBullet> immuBullets = new HashSet<>();
+		Set<IBullet> bullets = turn.getBullets();
 		if (bullets != null) {
 			for (IBullet bullet : bullets) {
 				immuBullets.add(new ImmutableBullet(bullet));
@@ -38,20 +38,18 @@ public final class ImmutableTurn implements ITurn {
 		this.bullets = Collections.unmodifiableSet(immuBullets);
 
 		Set<IEvent> immuObserverEvents = new HashSet<>();
+		Set<IEvent> observerEvents = turn.getObserverEvents();
 		if (observerEvents != null) {
 			immuObserverEvents.addAll(observerEvents);
 		}
 		this.observerEvents = Collections.unmodifiableSet(immuObserverEvents);
 
 		Map<Integer, Set<IEvent>> immuBotEventsMap = new HashMap<>();
+		Map<Integer, Set<IEvent>> botEventsMap = turn.getBotEventsMap();
 		if (botEventsMap != null) {
 			immuBotEventsMap.putAll(botEventsMap);
 		}
 		this.botEventsMap = Collections.unmodifiableMap(immuBotEventsMap);
-	}
-
-	public ImmutableTurn(ITurn turn) {
-		this(turn.getTurnNumber(), turn.getBots(), turn.getBullets(), turn.getObserverEvents(), turn.getBotEventsMap());
 	}
 
 	@Override

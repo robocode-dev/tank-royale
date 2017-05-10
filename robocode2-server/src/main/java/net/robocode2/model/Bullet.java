@@ -1,7 +1,5 @@
 package net.robocode2.model;
 
-import net.robocode2.model.ImmutableBullet;
-
 public class Bullet implements IBullet {
 	private int botId;
 	private int bulletId;
@@ -25,7 +23,7 @@ public class Bullet implements IBullet {
 	}
 
 	public ImmutableBullet toImmutableBullet() {
-		return new ImmutableBullet(botId, bulletId, power, firePosition, direction, speed, tick);
+		return new ImmutableBullet(this);
 	}
 
 	@Override

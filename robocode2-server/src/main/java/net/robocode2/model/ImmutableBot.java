@@ -29,8 +29,16 @@ public final class ImmutableBot implements IBot {
 	}
 
 	public ImmutableBot(IBot bot) {
-		this(bot.getId(), bot.getEnergy(), bot.getPosition(), bot.getDirection(), bot.getGunDirection(),
-				bot.getRadarDirection(), bot.getSpeed(), bot.getGunHeat(), bot.getScanField(), bot.getScore());
+		id = bot.getId();
+		energy = bot.getEnergy();
+		position = bot.getPosition();
+		direction = bot.getDirection();
+		gunDirection = bot.getGunDirection();
+		radarDirection = bot.getRadarDirection();
+		speed = bot.getSpeed();
+		gunHeat = bot.getGunHeat();
+		scanField = bot.getScanField();
+		score = bot.getScore();
 	}
 
 	@Override

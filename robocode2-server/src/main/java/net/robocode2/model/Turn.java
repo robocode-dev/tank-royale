@@ -17,7 +17,7 @@ public final class Turn implements ITurn {
 	private Map<Integer, Set<IEvent>> botEventsMap = new HashMap<>();
 
 	public ImmutableTurn toImmutableTurn() {
-		return new ImmutableTurn(turnNumber, bots, bullets, observerEvents, botEventsMap);
+		return new ImmutableTurn(this);
 	}
 
 	@Override

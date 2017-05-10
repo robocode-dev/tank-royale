@@ -30,8 +30,7 @@ public class Bot implements IBot {
 	}
 
 	public ImmutableBot toImmutableBot() {
-		return new ImmutableBot(id, energy, position, direction, gunDirection, radarDirection, speed, gunHeat, scanField,
-				score);
+		return new ImmutableBot(this);
 	}
 
 	@Override

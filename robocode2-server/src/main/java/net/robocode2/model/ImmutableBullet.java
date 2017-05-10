@@ -10,21 +10,14 @@ public final class ImmutableBullet implements IBullet {
 	private final double speed;
 	private final int tick; // Used for calculating position with precision
 
-	public ImmutableBullet(int botId, int bulletId, double power, Point firePosition, double direction, double speed,
-			int tick) {
-
-		this.botId = botId;
-		this.bulletId = bulletId;
-		this.power = power;
-		this.firePosition = firePosition;
-		this.direction = direction;
-		this.speed = speed;
-		this.tick = tick;
-	}
-
 	public ImmutableBullet(IBullet bullet) {
-		this(bullet.getBotId(), bullet.getBulletId(), bullet.getPower(), bullet.getFirePosition(),
-				bullet.getDirection(), bullet.getSpeed(), bullet.getTick());
+		botId = bullet.getBotId();
+		bulletId = bullet.getBulletId();
+		power = bullet.getPower();
+		firePosition = bullet.getFirePosition();
+		direction = bullet.getDirection();
+		speed = bullet.getSpeed();
+		tick = bullet.getTick();
 	}
 
 	@Override

@@ -14,49 +14,27 @@ public interface IGameSetup {
 	static int DEFAULT_READY_TIMEOUT = 10_000;
 	static int DEFAULT_DELAYED_OBSERVER_TURNS = 10;
 
-	default String getGameType() {
-		return DEFAULT_GAME_TYPE;
-	}
+	String getGameType();
 
-	default Integer getArenaWidth() {
-		return DEFAULT_ARENA_WIDTH;
-	}
+	Integer getArenaWidth();
 
-	default Integer getArenaHeight() {
-		return DEFAULT_ARENA_HEIGHT;
-	}
+	Integer getArenaHeight();
 
-	default Integer getMinNumberOfParticipants() {
-		return DEFAULT_MIN_NUMBER_OF_PARTICIPANTS;
-	}
+	Integer getMinNumberOfParticipants();
 
-	default Integer getMaxNumberOfParticipants() {
-		return DEFAULT_MAX_NUMBER_OF_PARTICIPANTS;
-	}
+	Integer getMaxNumberOfParticipants();
 
-	default Integer getNumberOfRounds() {
-		return DEFAULT_NUMBER_OF_ROUNDS;
-	}
+	Integer getNumberOfRounds();
 
-	default Double getGunCoolingRate() {
-		return DEFAULT_GUN_COOLING_RATE;
-	}
+	Double getGunCoolingRate();
 
-	default Integer getInactiveTurns() {
-		return DEFAULT_INACTIVITY_TURNS;
-	}
+	Integer getInactiveTurns();
 
-	default Integer getTurnTimeout() {
-		return DEFAULT_TURN_TIMEOUT;
-	}
+	Integer getTurnTimeout();
 
-	default Integer getReadyTimeout() {
-		return DEFAULT_READY_TIMEOUT;
-	}
+	Integer getReadyTimeout();
 
-	default Integer getDelayedObserverTurns() {
-		return DEFAULT_DELAYED_OBSERVER_TURNS;
-	}
+	Integer getDelayedObserverTurns();
 
 	boolean isGameTypeFixed();
 

@@ -9,20 +9,13 @@ public class ImmutableScore implements IScore {
 	private final double ramDamage;
 	private final double ramKillBonus;
 
-	public ImmutableScore(double survival, double lastSurvivorBonus, double bulletDamage, double bulletKillBonus,
-			double ramDamage, double ramKillBonus) {
-
-		this.survival = survival;
-		this.lastSurvivorBonus = lastSurvivorBonus;
-		this.bulletDamage = bulletDamage;
-		this.bulletKillBonus = bulletKillBonus;
-		this.ramDamage = ramDamage;
-		this.ramKillBonus = ramKillBonus;
-	}
-
 	public ImmutableScore(IScore score) {
-		this(score.getSurvival(), score.getLastSurvivorBonus(), score.getBulletDamage(), score.getBulletKillBonus(),
-				score.getRamDamage(), score.getRamKillBonus());
+		survival = score.getSurvival();
+		lastSurvivorBonus = score.getLastSurvivorBonus();
+		bulletDamage = score.getBulletDamage();
+		bulletKillBonus = score.getBulletKillBonus();
+		ramDamage = score.getRamDamage();
+		ramKillBonus = score.getRamKillBonus();
 	}
 
 	@Override
