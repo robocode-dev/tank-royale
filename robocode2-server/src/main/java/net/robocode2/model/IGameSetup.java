@@ -36,23 +36,23 @@ public interface IGameSetup {
 
 	Integer getDelayedObserverTurns();
 
-	boolean isArenaWidthFixed();
+	Boolean isArenaWidthFixed();
 
-	boolean isArenaHeightFixed();
+	Boolean isArenaHeightFixed();
 
-	boolean isMinNumberOfParticipantsFixed();
+	Boolean isMinNumberOfParticipantsFixed();
 
-	boolean isMaxNumberOfParticipantsFixed();
+	Boolean isMaxNumberOfParticipantsFixed();
 
-	boolean isNumberOfRoundsFixed();
+	Boolean isNumberOfRoundsFixed();
 
-	boolean isGunCoolingRateFixed();
+	Boolean isGunCoolingRateFixed();
 
-	boolean isInactiveTurnsFixed();
+	Boolean isInactiveTurnsFixed();
 
-	boolean isTurnTimeoutFixed();
+	Boolean isTurnTimeoutFixed();
 
-	boolean isReadyTimeoutFixed();
+	Boolean isReadyTimeoutFixed();
 
-	boolean isDelayedObserverTurnsFixed();
+	Boolean isDelayedObserverTurnsFixed();
 }

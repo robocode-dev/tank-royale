@@ -14,16 +14,16 @@ public final class ImmutableGameSetup implements IGameSetup {
 	private final Integer readyTimeout;
 	private final Integer delayedObserverTurns;
 
-	private final boolean arenaWidthFixed;
-	private final boolean arenaHeightFixed;
-	private final boolean minNumberOfParticipantsFixed;
-	private final boolean maxNumberOfParticipantsFixed;
-	private final boolean numberOfRoundsFixed;
-	private final boolean gunCoolingRateFixed;
-	private final boolean inactiveTurnsFixed;
-	private final boolean turnTimeoutFixed;
-	private final boolean readyTimeoutFixed;
-	private final boolean delayedObserverTurnsFixed;
+	private final Boolean arenaWidthFixed;
+	private final Boolean arenaHeightFixed;
+	private final Boolean minNumberOfParticipantsFixed;
+	private final Boolean maxNumberOfParticipantsFixed;
+	private final Boolean numberOfRoundsFixed;
+	private final Boolean gunCoolingRateFixed;
+	private final Boolean inactiveTurnsFixed;
+	private final Boolean turnTimeoutFixed;
+	private final Boolean readyTimeoutFixed;
+	private final Boolean delayedObserverTurnsFixed;
 
 	public ImmutableGameSetup(IGameSetup gameSetup) {
 		gameType = gameSetup.getGameType();
@@ -106,52 +106,52 @@ public final class ImmutableGameSetup implements IGameSetup {
 	}
 
 	@Override
-	public boolean isArenaWidthFixed() {
+	public Boolean isArenaWidthFixed() {
 		return arenaWidthFixed;
 	}
 
 	@Override
-	public boolean isArenaHeightFixed() {
+	public Boolean isArenaHeightFixed() {
 		return arenaHeightFixed;
 	}
 
 	@Override
-	public boolean isMinNumberOfParticipantsFixed() {
+	public Boolean isMinNumberOfParticipantsFixed() {
 		return minNumberOfParticipantsFixed;
 	}
 
 	@Override
-	public boolean isMaxNumberOfParticipantsFixed() {
+	public Boolean isMaxNumberOfParticipantsFixed() {
 		return maxNumberOfParticipantsFixed;
 	}
 
 	@Override
-	public boolean isNumberOfRoundsFixed() {
+	public Boolean isNumberOfRoundsFixed() {
 		return numberOfRoundsFixed;
 	}
 
 	@Override
-	public boolean isGunCoolingRateFixed() {
+	public Boolean isGunCoolingRateFixed() {
 		return gunCoolingRateFixed;
 	}
 
 	@Override
-	public boolean isInactiveTurnsFixed() {
+	public Boolean isInactiveTurnsFixed() {
 		return inactiveTurnsFixed;
 	}
 
 	@Override
-	public boolean isTurnTimeoutFixed() {
+	public Boolean isTurnTimeoutFixed() {
 		return turnTimeoutFixed;
 	}
 
 	@Override
-	public boolean isReadyTimeoutFixed() {
+	public Boolean isReadyTimeoutFixed() {
 		return readyTimeoutFixed;
 	}
 
 	@Override
-	public boolean isDelayedObserverTurnsFixed() {
+	public Boolean isDelayedObserverTurnsFixed() {
 		return delayedObserverTurnsFixed;
 	}
 }

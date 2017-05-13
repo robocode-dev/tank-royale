@@ -14,16 +14,16 @@ public class GameSetup implements IGameSetup {
 	private int readyTimeout = DEFAULT_READY_TIMEOUT;
 	private int delayedObserverTurns = DEFAULT_DELAYED_OBSERVER_TURNS;
 
-	private boolean arenaWidthFixed;
-	private boolean arenaHeightFixed;
-	private boolean minNumberOfParticipantsFixed;
-	private boolean maxNumberOfParticipantsFixed;
-	private boolean numberOfRoundsFixed;
-	private boolean gunCoolingRateFixed;
-	private boolean inactiveTurnsFixed;
-	private boolean turnTimeoutFixed;
-	private boolean readyTimeoutFixed;
-	private boolean delayedObserverTurnsFixed;
+	private Boolean arenaWidthFixed;
+	private Boolean arenaHeightFixed;
+	private Boolean minNumberOfParticipantsFixed;
+	private Boolean maxNumberOfParticipantsFixed;
+	private Boolean numberOfRoundsFixed;
+	private Boolean gunCoolingRateFixed;
+	private Boolean inactiveTurnsFixed;
+	private Boolean turnTimeoutFixed;
+	private Boolean readyTimeoutFixed;
+	private Boolean delayedObserverTurnsFixed;
 
 	public GameSetup() {
 	}
@@ -209,92 +209,92 @@ public class GameSetup implements IGameSetup {
 	}
 
 	@Override
-	public boolean isArenaWidthFixed() {
+	public Boolean isArenaWidthFixed() {
 		return arenaWidthFixed;
 	}
 
 	@Override
-	public boolean isArenaHeightFixed() {
+	public Boolean isArenaHeightFixed() {
 		return arenaHeightFixed;
 	}
 
 	@Override
-	public boolean isMinNumberOfParticipantsFixed() {
+	public Boolean isMinNumberOfParticipantsFixed() {
 		return minNumberOfParticipantsFixed;
 	}
 
 	@Override
-	public boolean isMaxNumberOfParticipantsFixed() {
+	public Boolean isMaxNumberOfParticipantsFixed() {
 		return maxNumberOfParticipantsFixed;
 	}
 
 	@Override
-	public boolean isNumberOfRoundsFixed() {
+	public Boolean isNumberOfRoundsFixed() {
 		return numberOfRoundsFixed;
 	}
 
 	@Override
-	public boolean isGunCoolingRateFixed() {
+	public Boolean isGunCoolingRateFixed() {
 		return gunCoolingRateFixed;
 	}
 
 	@Override
-	public boolean isInactiveTurnsFixed() {
+	public Boolean isInactiveTurnsFixed() {
 		return inactiveTurnsFixed;
 	}
 
 	@Override
-	public boolean isTurnTimeoutFixed() {
+	public Boolean isTurnTimeoutFixed() {
 		return turnTimeoutFixed;
 	}
 
 	@Override
-	public boolean isReadyTimeoutFixed() {
+	public Boolean isReadyTimeoutFixed() {
 		return readyTimeoutFixed;
 	}
 
 	@Override
-	public boolean isDelayedObserverTurnsFixed() {
+	public Boolean isDelayedObserverTurnsFixed() {
 		return delayedObserverTurnsFixed;
 	}
 
-	public void setArenaWidthFixed(boolean arenaWidthFixed) {
+	public void setArenaWidthFixed(Boolean arenaWidthFixed) {
 		this.arenaWidthFixed = arenaWidthFixed;
 	}
 
-	public void setArenaHeightFixed(boolean arenaHeightFixed) {
+	public void setArenaHeightFixed(Boolean arenaHeightFixed) {
 		this.arenaHeightFixed = arenaHeightFixed;
 	}
 
-	public void setMinNumberOfParticipantsFixed(boolean minNumberOfParticipantsFixed) {
+	public void setMinNumberOfParticipantsFixed(Boolean minNumberOfParticipantsFixed) {
 		this.minNumberOfParticipantsFixed = minNumberOfParticipantsFixed;
 	}
 
-	public void setMaxNumberOfParticipantsFixed(boolean maxNumberOfParticipantsFixed) {
+	public void setMaxNumberOfParticipantsFixed(Boolean maxNumberOfParticipantsFixed) {
 		this.maxNumberOfParticipantsFixed = maxNumberOfParticipantsFixed;
 	}
 
-	public void setNumberOfRoundsFixed(boolean numberOfRoundsFixed) {
+	public void setNumberOfRoundsFixed(Boolean numberOfRoundsFixed) {
 		this.numberOfRoundsFixed = numberOfRoundsFixed;
 	}
 
-	public void setGunCoolingRateFixed(boolean gunCoolingRateFixed) {
+	public void setGunCoolingRateFixed(Boolean gunCoolingRateFixed) {
 		this.gunCoolingRateFixed = gunCoolingRateFixed;
 	}
 
-	public void setInactiveTurnsFixed(boolean inactiveTurnsFixed) {
+	public void setInactiveTurnsFixed(Boolean inactiveTurnsFixed) {
 		this.inactiveTurnsFixed = inactiveTurnsFixed;
 	}
 
-	public void setTurnTimeoutFixed(boolean turnTimeoutFixed) {
+	public void setTurnTimeoutFixed(Boolean turnTimeoutFixed) {
 		this.turnTimeoutFixed = turnTimeoutFixed;
 	}
 
-	public void setReadyTimeoutFixed(boolean readyTimeoutFixed) {
+	public void setReadyTimeoutFixed(Boolean readyTimeoutFixed) {
 		this.readyTimeoutFixed = readyTimeoutFixed;
 	}
 
-	public void setDelayedObserverTurnsFixed(boolean delayedObserverTurnsFixed) {
+	public void setDelayedObserverTurnsFixed(Boolean delayedObserverTurnsFixed) {
 		this.delayedObserverTurnsFixed = delayedObserverTurnsFixed;
 	}
 }
