@@ -36,8 +36,6 @@ public interface IGameSetup {
 
 	Integer getDelayedObserverTurns();
 
-	boolean isGameTypeFixed();
-
 	boolean isArenaWidthFixed();
 
 	boolean isArenaHeightFixed();

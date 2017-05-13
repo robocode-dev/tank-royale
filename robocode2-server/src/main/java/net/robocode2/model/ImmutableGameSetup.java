@@ -14,7 +14,6 @@ public final class ImmutableGameSetup implements IGameSetup {
 	private final Integer readyTimeout;
 	private final Integer delayedObserverTurns;
 
-	private final boolean gameTypeFixed;
 	private final boolean arenaWidthFixed;
 	private final boolean arenaHeightFixed;
 	private final boolean minNumberOfParticipantsFixed;
@@ -39,7 +38,6 @@ public final class ImmutableGameSetup implements IGameSetup {
 		readyTimeout = gameSetup.getReadyTimeout();
 		delayedObserverTurns = gameSetup.getDelayedObserverTurns();
 
-		gameTypeFixed = gameSetup.isGameTypeFixed();
 		arenaWidthFixed = gameSetup.isArenaWidthFixed();
 		arenaHeightFixed = gameSetup.isArenaHeightFixed();
 		minNumberOfParticipantsFixed = gameSetup.isMinNumberOfParticipantsFixed();
@@ -105,11 +103,6 @@ public final class ImmutableGameSetup implements IGameSetup {
 	@Override
 	public Integer getDelayedObserverTurns() {
 		return delayedObserverTurns;
-	}
-
-	@Override
-	public boolean isGameTypeFixed() {
-		return gameTypeFixed;
 	}
 
 	@Override

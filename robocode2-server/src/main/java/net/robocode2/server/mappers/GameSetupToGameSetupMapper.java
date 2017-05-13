@@ -10,6 +10,7 @@ public final class GameSetupToGameSetupMapper {
 
 	public static GameSetup map(IGameSetup gameSetup) {
 		GameSetup setup = new GameSetup();
+
 		setup.setGameType(gameSetup.getGameType());
 		setup.setArenaWidth(gameSetup.getArenaWidth());
 		setup.setArenaHeight(gameSetup.getArenaHeight());
@@ -21,6 +22,17 @@ public final class GameSetupToGameSetupMapper {
 		setup.setTurnTimeout(gameSetup.getTurnTimeout());
 		setup.setReadyTimeout(gameSetup.getReadyTimeout());
 		setup.setDelayedObserverTurns(gameSetup.getDelayedObserverTurns());
+
+		setup.setIsArenaWidthFixed(gameSetup.isArenaWidthFixed());
+		setup.setIsArenaHeightFixed(gameSetup.isArenaHeightFixed());
+		setup.setIsMinNumberOfParticipantsFixed(gameSetup.isMinNumberOfParticipantsFixed());
+		setup.setIsMaxNumberOfParticipantsFixed(gameSetup.isMaxNumberOfParticipantsFixed());
+		setup.setIsNumberOfRoundsFixed(gameSetup.isNumberOfRoundsFixed());
+		setup.setIsGunCoolingRateFixed(gameSetup.isGunCoolingRateFixed());
+		setup.setIsInactivityTurnsFixed(gameSetup.isInactiveTurnsFixed());
+		setup.setIsTurnTimeoutFixed(gameSetup.isTurnTimeoutFixed());
+		setup.setIsReadyTimeoutFixed(gameSetup.isReadyTimeoutFixed());
+		setup.setIsDelayedObserverTurnsFixed(gameSetup.isDelayedObserverTurnsFixed());
 		return setup;
 	}
 

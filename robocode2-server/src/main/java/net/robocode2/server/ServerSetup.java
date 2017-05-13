@@ -21,13 +21,17 @@ public final class ServerSetup {
 
 		GameSetup setup = new GameSetup();
 		setup.setGameType("melee");
+		setup.setMinNumberOfParticipants(2);
+		setup.setMinNumberOfParticipantsFixed(true);
 
 		games.add(setup.toImmutableGameSetup());
 
 		setup = new GameSetup();
 		setup.setGameType("1v1");
 		setup.setMinNumberOfParticipants(2);
+		setup.setMinNumberOfParticipantsFixed(true);
 		setup.setMaxNumberOfParticipants(2);
+		setup.setMaxNumberOfParticipantsFixed(true);
 
 		games.add(setup.toImmutableGameSetup());
 

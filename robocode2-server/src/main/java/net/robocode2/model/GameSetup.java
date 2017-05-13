@@ -14,7 +14,6 @@ public class GameSetup implements IGameSetup {
 	private int readyTimeout = DEFAULT_READY_TIMEOUT;
 	private int delayedObserverTurns = DEFAULT_DELAYED_OBSERVER_TURNS;
 
-	private boolean gameTypeFixed;
 	private boolean arenaWidthFixed;
 	private boolean arenaHeightFixed;
 	private boolean minNumberOfParticipantsFixed;
@@ -30,7 +29,6 @@ public class GameSetup implements IGameSetup {
 	}
 
 	public GameSetup(IGameSetup gameSetup) {
-		gameType = gameSetup.getGameType();
 		arenaWidth = gameSetup.getArenaWidth();
 		arenaHeight = gameSetup.getArenaWidth();
 		minNumberOfParticipants = gameSetup.getMinNumberOfParticipants();
@@ -42,7 +40,6 @@ public class GameSetup implements IGameSetup {
 		readyTimeout = gameSetup.getReadyTimeout();
 		delayedObserverTurns = gameSetup.getDelayedObserverTurns();
 
-		gameTypeFixed = gameSetup.isGameTypeFixed();
 		arenaWidthFixed = gameSetup.isArenaWidthFixed();
 		arenaHeightFixed = gameSetup.isArenaHeightFixed();
 		minNumberOfParticipantsFixed = gameSetup.isMinNumberOfParticipantsFixed();
@@ -212,11 +209,6 @@ public class GameSetup implements IGameSetup {
 	}
 
 	@Override
-	public boolean isGameTypeFixed() {
-		return gameTypeFixed;
-	}
-
-	@Override
 	public boolean isArenaWidthFixed() {
 		return arenaWidthFixed;
 	}
@@ -264,10 +256,6 @@ public class GameSetup implements IGameSetup {
 	@Override
 	public boolean isDelayedObserverTurnsFixed() {
 		return delayedObserverTurnsFixed;
-	}
-
-	public void setGameTypeFixed(boolean gameTypeFixed) {
-		this.gameTypeFixed = gameTypeFixed;
 	}
 
 	public void setArenaWidthFixed(boolean arenaWidthFixed) {
