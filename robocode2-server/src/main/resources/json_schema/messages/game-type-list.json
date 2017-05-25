@@ -13,7 +13,7 @@
 			"description": "List of game types",
 			"type": "array",
 			"items": {
-				"type": "string"
+				"$ref": "../game-setup.json"
 			}
 		}
 	},

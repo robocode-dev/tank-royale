@@ -2,6 +2,7 @@ import static jsweet.dom.Globals.alert;
 import static jsweet.dom.Globals.document;
 import static jsweet.dom.Globals.window;
 
+import json_schema.GameSetup2;
 import json_schema.controller.commands.ListBots;
 import json_schema.controller.commands.ListGameTypes;
 import json_schema.messages.BotInfo;
@@ -13,7 +14,7 @@ import jsweet.dom.CloseEvent;
 import jsweet.dom.Event;
 import jsweet.dom.EventListener;
 import jsweet.dom.HTMLButtonElement;
-import jsweet.dom.HTMLCollection;
+import jsweet.dom.HTMLInputElement;
 import jsweet.dom.HTMLOptionElement;
 import jsweet.dom.HTMLSelectElement;
 import jsweet.dom.MessageEvent;
@@ -33,6 +34,9 @@ public class ControllerClient1 {
 
 	private WebSocket ws;
 
+	private GameTypeList gameTypeList;
+	private GameSetup2 selectedGameType;
+
 	public ControllerClient1() {
 
 		onClick((HTMLButtonElement) document.getElementById("connect"), evt -> {
@@ -45,6 +49,7 @@ public class ControllerClient1 {
 
 		onClick((HTMLButtonElement) document.getElementById("list-bots"), evt -> {
 			listBots();
+			updateGameSetup();
 		});
 	}
 
@@ -102,7 +107,8 @@ public class ControllerClient1 {
 			if (BotList.TYPE.equals(type)) {
 				handleBotList(BotList.map(obj));
 			} else if (GameTypeList.TYPE.equals(type)) {
-				handleGameTypeList(GameTypeList.map(obj));
+				gameTypeList = GameTypeList.map(obj);
+				handleGameTypeList(gameTypeList);
 			}
 		}
 		return null;
@@ -127,15 +133,11 @@ public class ControllerClient1 {
 		HTMLSelectElement select = (HTMLSelectElement) document.getElementById("game-type-list");
 
 		Array<String> gameTypes;
-		if (select.selectedOptions.length == 1 && select.selectedOptions.$get(0).textContent.equals(NONE_TEXT)) {
-			gameTypes = null;
-		} else {
-			gameTypes = new Array<String>();
-			HTMLCollection collection = select.selectedOptions;
-			for (int i = 0; i < collection.length; i++) {
-				HTMLOptionElement option = (HTMLOptionElement) collection.item(i);
-				gameTypes.push(option.text);
-			}
+		gameTypes = null;
+		selectedGameType = null;
+
+		if (select.selectedOptions.length > 0) {
+			selectedGameType = gameTypeList.getGameTypes().get((int) select.selectedIndex);
 		}
 		listBots.setGameTypes(gameTypes);
 
@@ -163,10 +165,42 @@ public class ControllerClient1 {
 		option.text = NONE_TEXT;
 		select.appendChild(option);
 
-		for (String gameType : gameTypeList.getGameTypes()) {
+		for (GameSetup2 gameSetup : gameTypeList.getGameTypes()) {
 			option = (HTMLOptionElement) document.createElement("option");
-			option.text = gameType;
+			option.text = gameSetup.getGameType();
 			select.appendChild(option);
 		}
+	}
+
+	private void updateGameSetup() {
+		HTMLInputElement input = (HTMLInputElement) document.getElementById("arena-width");
+		input.style.backgroundColor = "red";
+
+		input = (HTMLInputElement) document.getElementById("arena-height");
+		input.style.backgroundColor = "orange";
+
+		input = (HTMLInputElement) document.getElementById("min-number-of-participants");
+		input.style.backgroundColor = "yellow";
+
+		input = (HTMLInputElement) document.getElementById("max-number-of-participants");
+		input.style.backgroundColor = "green";
+
+		input = (HTMLInputElement) document.getElementById("number-of-rounds");
+		input.style.backgroundColor = "blue";
+
+		input = (HTMLInputElement) document.getElementById("gun-cooling-rate");
+		input.style.backgroundColor = "purple";
+
+		input = (HTMLInputElement) document.getElementById("inactivity-turns");
+		input.style.backgroundColor = "red";
+
+		input = (HTMLInputElement) document.getElementById("turn-timeout");
+		input.style.backgroundColor = "orange";
+
+		input = (HTMLInputElement) document.getElementById("ready-timeout");
+		input.style.backgroundColor = "yellow";
+
+		input = (HTMLInputElement) document.getElementById("delayed-observer-turns");
+		input.style.backgroundColor = "green";
 	}
 }

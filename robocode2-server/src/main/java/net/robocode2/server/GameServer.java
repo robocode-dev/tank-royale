@@ -439,12 +439,12 @@ public final class GameServer {
 			GameTypeList gameTypeList = new GameTypeList();
 			gameTypeList.setType(Message.Type.GAME_TYPE_LIST);
 
-			List<String> gameTypes = new ArrayList<String>();
+			List<net.robocode2.json_schema.GameSetup> gameTypes = new ArrayList<>();
 			gameTypeList.setGameTypes(gameTypes);
 
 			Set<IGameSetup> games = serverSetup.getGames();
 			for (IGameSetup gameSetup : games) {
-				gameTypes.add(gameSetup.getGameType());
+				gameTypes.add(GameSetupToGameSetupMapper.map(gameSetup));
 			}
 
 			String msg = gson.toJson(gameTypeList);
