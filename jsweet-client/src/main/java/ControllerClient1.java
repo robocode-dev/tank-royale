@@ -174,33 +174,42 @@ public class ControllerClient1 {
 
 	private void updateGameSetup() {
 		HTMLInputElement input = (HTMLInputElement) document.getElementById("arena-width");
-		input.style.backgroundColor = "red";
+		input.disabled = selectedGameType.isArenaWidthFixed();
+		input.value = "" + selectedGameType.getArenaWidth();
 
 		input = (HTMLInputElement) document.getElementById("arena-height");
-		input.style.backgroundColor = "orange";
+		input.disabled = selectedGameType.isArenaHeightFixed();
+		input.value = "" + selectedGameType.getArenaHeight();
 
 		input = (HTMLInputElement) document.getElementById("min-number-of-participants");
-		input.style.backgroundColor = "yellow";
+		input.disabled = selectedGameType.isMinNumberOfParticipantsFixed();
+		input.value = "" + selectedGameType.getMinNumberOfParticipants();
 
 		input = (HTMLInputElement) document.getElementById("max-number-of-participants");
-		input.style.backgroundColor = "green";
+		input.disabled = selectedGameType.isMaxNumberOfParticipantsFixed();
+		input.value = "" + selectedGameType.getMaxNumberOfParticipants();
 
 		input = (HTMLInputElement) document.getElementById("number-of-rounds");
-		input.style.backgroundColor = "blue";
+		input.disabled = selectedGameType.isNumberOfRoundsFixed();
+		input.value = "" + selectedGameType.getNumberOfRounds();
 
 		input = (HTMLInputElement) document.getElementById("gun-cooling-rate");
-		input.style.backgroundColor = "purple";
+		input.disabled = selectedGameType.isGunCoolingRateFixed();
+		input.value = "" + selectedGameType.getGunCoolingRate();
 
 		input = (HTMLInputElement) document.getElementById("inactivity-turns");
-		input.style.backgroundColor = "red";
+		input.disabled = selectedGameType.isInactivityTurnsFixed();
+		input.value = "" + selectedGameType.getInactivityTurns();
 
 		input = (HTMLInputElement) document.getElementById("turn-timeout");
-		input.style.backgroundColor = "orange";
+		input.disabled = selectedGameType.isTurnTimeoutFixed();
+		input.value = "" + selectedGameType.getTurnTimeout();
 
 		input = (HTMLInputElement) document.getElementById("ready-timeout");
-		input.style.backgroundColor = "yellow";
+		input.value = "" + selectedGameType.getReadyTimeout();
 
 		input = (HTMLInputElement) document.getElementById("delayed-observer-turns");
-		input.style.backgroundColor = "green";
+		input.disabled = selectedGameType.isDelayedObserverTurnsFixed();
+		input.value = "" + selectedGameType.getDelayedObserverTurns();
 	}
 }
