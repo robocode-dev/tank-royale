@@ -18,6 +18,7 @@ import org.java_websocket.WebSocket;
 import com.google.gson.Gson;
 
 import net.robocode2.game.ModelUpdater;
+import net.robocode2.json_schema.BotAddress;
 import net.robocode2.json_schema.Participant;
 import net.robocode2.json_schema.messages.BotHandshake;
 import net.robocode2.json_schema.messages.BotInfo;
@@ -449,6 +450,15 @@ public final class GameServer {
 
 			String msg = gson.toJson(gameTypeList);
 			send(socket, msg);
+		}
+
+		@Override
+		public void onStartGame(WebSocket socket, net.robocode2.json_schema.GameSetup gameSetup,
+				Collection<BotAddress> botAddresses) {
+
+			// TODO Auto-generated method stub
+			System.out.println("gameType: " + gameSetup.getGameType());
+			System.out.println("arenaWidth: " + gameSetup.getArenaWidth());
 		}
 	}
 

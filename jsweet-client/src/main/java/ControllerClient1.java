@@ -1,10 +1,13 @@
 import static jsweet.dom.Globals.alert;
+import static jsweet.dom.Globals.console;
 import static jsweet.dom.Globals.document;
 import static jsweet.dom.Globals.window;
 
+import json_schema.BotAddress;
 import json_schema.GameSetup2;
 import json_schema.controller.commands.ListBots;
 import json_schema.controller.commands.ListGameTypes;
+import json_schema.controller.commands.StartGame;
 import json_schema.messages.BotInfo;
 import json_schema.messages.BotList;
 import json_schema.messages.ControllerHandshake;
@@ -14,6 +17,7 @@ import jsweet.dom.CloseEvent;
 import jsweet.dom.Event;
 import jsweet.dom.EventListener;
 import jsweet.dom.HTMLButtonElement;
+import jsweet.dom.HTMLCollection;
 import jsweet.dom.HTMLInputElement;
 import jsweet.dom.HTMLOptionElement;
 import jsweet.dom.HTMLSelectElement;
@@ -26,6 +30,19 @@ public class ControllerClient1 {
 
 	private final static String NONE_TEXT = "[none]";
 
+	HTMLInputElement arenaWidthInput = (HTMLInputElement) document.getElementById("arena-width");
+	HTMLInputElement arenaHeightInput = (HTMLInputElement) document.getElementById("arena-height");
+	HTMLInputElement minNumberOfParticipantsInput = (HTMLInputElement) document
+			.getElementById("min-number-of-participants");
+	HTMLInputElement maxNumberOfParticipantsInput = (HTMLInputElement) document
+			.getElementById("max-number-of-participants");
+	HTMLInputElement numberOfRoundsInput = (HTMLInputElement) document.getElementById("number-of-rounds");
+	HTMLInputElement gunCoolingRateInput = (HTMLInputElement) document.getElementById("gun-cooling-rate");
+	HTMLInputElement inactivityTurnsInput = (HTMLInputElement) document.getElementById("inactivity-turns");
+	HTMLInputElement turnsTimeoutInput = (HTMLInputElement) document.getElementById("turn-timeout");
+	HTMLInputElement readyTimeoutInput = (HTMLInputElement) document.getElementById("ready-timeout");
+	HTMLInputElement delayedObserverTurnsInput = (HTMLInputElement) document.getElementById("delayed-observer-turns");
+
 	public static void main(String[] args) {
 		window.onload = e -> {
 			return new ControllerClient1();
@@ -35,7 +52,7 @@ public class ControllerClient1 {
 	private WebSocket ws;
 
 	private GameTypeList gameTypeList;
-	private GameSetup2 selectedGameType;
+	// private GameSetup2 selectedGameType;
 
 	public ControllerClient1() {
 
@@ -50,6 +67,10 @@ public class ControllerClient1 {
 		onClick((HTMLButtonElement) document.getElementById("list-bots"), evt -> {
 			listBots();
 			updateGameSetup();
+		});
+
+		onClick((HTMLButtonElement) document.getElementById("start-game"), evt -> {
+			startGame();
 		});
 	}
 
@@ -106,6 +127,7 @@ public class ControllerClient1 {
 
 			if (BotList.TYPE.equals(type)) {
 				handleBotList(BotList.map(obj));
+
 			} else if (GameTypeList.TYPE.equals(type)) {
 				gameTypeList = GameTypeList.map(obj);
 				handleGameTypeList(gameTypeList);
@@ -130,18 +152,25 @@ public class ControllerClient1 {
 	private void listBots() {
 		ListBots listBots = new ListBots();
 
-		HTMLSelectElement select = (HTMLSelectElement) document.getElementById("game-type-list");
+		Array<String> gameTypes = null;
 
-		Array<String> gameTypes;
-		gameTypes = null;
-		selectedGameType = null;
-
-		if (select.selectedOptions.length > 0) {
-			selectedGameType = gameTypeList.getGameTypes().get((int) select.selectedIndex);
-		}
+		// HTMLSelectElement select = (HTMLSelectElement) document.getElementById("game-type-list");
+		// selectedGameType = null;
+		// if (select.selectedOptions.length > 0) {
+		// selectedGameType = gameTypeList.getGameTypes().get((int) select.selectedIndex);
+		// }
 		listBots.setGameTypes(gameTypes);
 
 		ws.send(JSON.stringify(listBots));
+	}
+
+	private GameSetup2 getSelectedGameType() {
+		HTMLSelectElement select = (HTMLSelectElement) document.getElementById("game-type-list");
+		GameSetup2 selectedGameType = null;
+		if (select.selectedOptions.length > 0) {
+			selectedGameType = gameTypeList.getGameTypes().get((int) select.selectedIndex);
+		}
+		return selectedGameType;
 	}
 
 	private void handleBotList(BotList botList) {
@@ -150,6 +179,8 @@ public class ControllerClient1 {
 
 		for (BotInfo botInfo : botList.getBots()) {
 			HTMLOptionElement option = (HTMLOptionElement) document.createElement("option");
+
+			option.value = botInfo.getHostName() + ':' + botInfo.getPort();
 
 			option.text = botInfo.getHostName() + ":" + botInfo.getPort() + " | " + botInfo.getName() + " "
 					+ botInfo.getVersion() + " | " + botInfo.getAuthor() + " | " + botInfo.getProgrammingLanguage();
@@ -173,43 +204,81 @@ public class ControllerClient1 {
 	}
 
 	private void updateGameSetup() {
-		HTMLInputElement input = (HTMLInputElement) document.getElementById("arena-width");
-		input.disabled = selectedGameType.isArenaWidthFixed();
-		input.value = "" + selectedGameType.getArenaWidth();
+		GameSetup2 selectedGameType = getSelectedGameType();
 
-		input = (HTMLInputElement) document.getElementById("arena-height");
-		input.disabled = selectedGameType.isArenaHeightFixed();
-		input.value = "" + selectedGameType.getArenaHeight();
+		arenaWidthInput.disabled = selectedGameType.isArenaWidthFixed();
+		arenaWidthInput.value = "" + selectedGameType.getArenaWidth();
 
-		input = (HTMLInputElement) document.getElementById("min-number-of-participants");
-		input.disabled = selectedGameType.isMinNumberOfParticipantsFixed();
-		input.value = "" + selectedGameType.getMinNumberOfParticipants();
+		arenaHeightInput.disabled = selectedGameType.isArenaHeightFixed();
+		arenaHeightInput.value = "" + selectedGameType.getArenaHeight();
 
-		input = (HTMLInputElement) document.getElementById("max-number-of-participants");
-		input.disabled = selectedGameType.isMaxNumberOfParticipantsFixed();
-		input.value = "" + selectedGameType.getMaxNumberOfParticipants();
+		minNumberOfParticipantsInput.disabled = selectedGameType.isMinNumberOfParticipantsFixed();
+		minNumberOfParticipantsInput.value = "" + selectedGameType.getMinNumberOfParticipants();
 
-		input = (HTMLInputElement) document.getElementById("number-of-rounds");
-		input.disabled = selectedGameType.isNumberOfRoundsFixed();
-		input.value = "" + selectedGameType.getNumberOfRounds();
+		maxNumberOfParticipantsInput.disabled = selectedGameType.isMaxNumberOfParticipantsFixed();
+		Integer maxNumberOfParticipants = selectedGameType.getMaxNumberOfParticipants();
+		maxNumberOfParticipantsInput.value = (maxNumberOfParticipants == null) ? null : "" + maxNumberOfParticipants;
 
-		input = (HTMLInputElement) document.getElementById("gun-cooling-rate");
-		input.disabled = selectedGameType.isGunCoolingRateFixed();
-		input.value = "" + selectedGameType.getGunCoolingRate();
+		numberOfRoundsInput.disabled = selectedGameType.isNumberOfRoundsFixed();
+		numberOfRoundsInput.value = "" + selectedGameType.getNumberOfRounds();
 
-		input = (HTMLInputElement) document.getElementById("inactivity-turns");
-		input.disabled = selectedGameType.isInactivityTurnsFixed();
-		input.value = "" + selectedGameType.getInactivityTurns();
+		gunCoolingRateInput.disabled = selectedGameType.isGunCoolingRateFixed();
+		gunCoolingRateInput.value = "" + selectedGameType.getGunCoolingRate();
 
-		input = (HTMLInputElement) document.getElementById("turn-timeout");
-		input.disabled = selectedGameType.isTurnTimeoutFixed();
-		input.value = "" + selectedGameType.getTurnTimeout();
+		inactivityTurnsInput.disabled = selectedGameType.isInactivityTurnsFixed();
+		inactivityTurnsInput.value = "" + selectedGameType.getInactivityTurns();
 
-		input = (HTMLInputElement) document.getElementById("ready-timeout");
-		input.value = "" + selectedGameType.getReadyTimeout();
+		turnsTimeoutInput.disabled = selectedGameType.isTurnTimeoutFixed();
+		turnsTimeoutInput.value = "" + selectedGameType.getTurnTimeout();
 
-		input = (HTMLInputElement) document.getElementById("delayed-observer-turns");
-		input.disabled = selectedGameType.isDelayedObserverTurnsFixed();
-		input.value = "" + selectedGameType.getDelayedObserverTurns();
+		readyTimeoutInput.value = "" + selectedGameType.getReadyTimeout();
+
+		delayedObserverTurnsInput.disabled = selectedGameType.isDelayedObserverTurnsFixed();
+		delayedObserverTurnsInput.value = "" + selectedGameType.getDelayedObserverTurns();
+	}
+
+	private void startGame() {
+		console.info("startGame");
+
+		HTMLSelectElement select = (HTMLSelectElement) document.getElementById("bot-list");
+
+		HTMLCollection selectedOptions = select.selectedOptions;
+
+		Array<BotAddress> botAddresses = new Array<>();
+
+		for (int i = 0; i < selectedOptions.length; i++) {
+			BotAddress botAddr = new BotAddress();
+
+			HTMLOptionElement option = (HTMLOptionElement) selectedOptions.$get(i).valueOf();
+			String value = option.value;
+
+			String split[] = value.split(":");
+			if (split.length >= 2) {
+				botAddr.setHostName(split[0]);
+				botAddr.setPort(split[1]);
+
+				botAddresses.push(botAddr);
+			}
+		}
+
+		StartGame startGame = new StartGame();
+		startGame.setBotAddresses(botAddresses);
+
+		GameSetup2 gameSetup = new GameSetup2();
+		startGame.setGameSetup(gameSetup);
+
+		gameSetup.setGameType(getSelectedGameType().getGameType());
+		gameSetup.setArenaWidth(Integer.valueOf(arenaWidthInput.value));
+		gameSetup.setArenaHeight(Integer.valueOf(arenaHeightInput.value));
+		gameSetup.setMinNumberOfParticipants(Integer.valueOf(minNumberOfParticipantsInput.value));
+		gameSetup.setMaxNumberOfParticipants(Integer.valueOf(maxNumberOfParticipantsInput.value));
+		gameSetup.setNumberOfRounds(Integer.valueOf(numberOfRoundsInput.value));
+		// gameSetup.setGunCoolingRate(Double.valueOf(gunCoolingRateInput.value.replace(',', '.'))); // FIXME: is "0.1"
+		gameSetup.setGunCoolingRate(0.1);
+		gameSetup.setTurnTimeout(Integer.valueOf(turnsTimeoutInput.value));
+		gameSetup.setReadyTimeout(Integer.valueOf(readyTimeoutInput.value));
+		gameSetup.setDelayedObserverTurns(Integer.valueOf(delayedObserverTurnsInput.value));
+
+		ws.send(JSON.stringify(startGame));
 	}
 }

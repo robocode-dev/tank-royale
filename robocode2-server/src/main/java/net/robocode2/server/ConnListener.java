@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import org.java_websocket.WebSocket;
 
+import net.robocode2.json_schema.BotAddress;
+import net.robocode2.json_schema.GameSetup;
 import net.robocode2.json_schema.messages.BotHandshake;
 import net.robocode2.json_schema.messages.BotIntent;
 import net.robocode2.json_schema.messages.ControllerHandshake;
@@ -32,4 +34,6 @@ public interface ConnListener {
 	void onListBots(WebSocket socket, Collection<String> gameTypes);
 
 	void onListGameTypes(WebSocket socket);
+
+	void onStartGame(WebSocket socket, GameSetup gameSetup, Collection<BotAddress> botAddresses);
 }

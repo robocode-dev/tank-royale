@@ -9,6 +9,10 @@
 		"default": "start-game"
 	},
 	"properties": {
+		"game-setup": {
+			"description": "Game setup",
+			"$ref": "../../game-setup.json"
+		},
 		"bot-addresses": {
 			"description": "List of bots",
 			"type": "array",

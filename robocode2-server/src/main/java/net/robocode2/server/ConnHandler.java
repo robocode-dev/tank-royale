@@ -19,8 +19,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.robocode2.json_schema.BotAddress;
+import net.robocode2.json_schema.GameSetup;
 import net.robocode2.json_schema.controller.commands.Command;
 import net.robocode2.json_schema.controller.commands.ListBots;
+import net.robocode2.json_schema.controller.commands.StartGame;
 import net.robocode2.json_schema.messages.BotHandshake;
 import net.robocode2.json_schema.messages.BotIntent;
 import net.robocode2.json_schema.messages.ControllerHandshake;
@@ -218,6 +221,17 @@ public final class ConnHandler {
 						}
 						break;
 					}
+					case START_GAME: {
+						ControllerHandshake handshake = controllerConnections.get(conn);
+						StartGame startGame = gson.fromJson(message, StartGame.class);
+						GameSetup gameSetup = startGame.getGameSetup();
+						Collection<BotAddress> botAddresses = startGame.getBotAddresses();
+						if (handshake != null) {
+							executorService.submit(() -> listener.onStartGame(conn, gameSetup, botAddresses));
+						}
+						break;
+					}
+
 					default:
 						notifyException(new IllegalStateException("Unhandled command type: " + type));
 					}
