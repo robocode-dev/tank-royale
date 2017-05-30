@@ -18,7 +18,7 @@ public final class GameSetupToGameSetupMapper {
 		setup.setMaxNumberOfParticipants(gameSetup.getMaxNumberOfParticipants());
 		setup.setNumberOfRounds(gameSetup.getNumberOfRounds());
 		setup.setGunCoolingRate(gameSetup.getGunCoolingRate());
-		setup.setInactivityTurns(gameSetup.getInactiveTurns());
+		setup.setInactivityTurns(gameSetup.getInactivityTurns());
 		setup.setTurnTimeout(gameSetup.getTurnTimeout());
 		setup.setReadyTimeout(gameSetup.getReadyTimeout());
 		setup.setDelayedObserverTurns(gameSetup.getDelayedObserverTurns());
@@ -33,6 +33,25 @@ public final class GameSetupToGameSetupMapper {
 		setup.setIsTurnTimeoutFixed(gameSetup.isTurnTimeoutFixed());
 		setup.setIsReadyTimeoutFixed(gameSetup.isReadyTimeoutFixed());
 		setup.setIsDelayedObserverTurnsFixed(gameSetup.isDelayedObserverTurnsFixed());
+
+		return setup;
+	}
+
+	public static net.robocode2.model.GameSetup map(GameSetup gameSetup) {
+		net.robocode2.model.GameSetup setup = new net.robocode2.model.GameSetup();
+
+		setup.setGameType(gameSetup.getGameType());
+		setup.setArenaWidth(gameSetup.getArenaWidth());
+		setup.setArenaHeight(gameSetup.getArenaHeight());
+		setup.setMinNumberOfParticipants(gameSetup.getMinNumberOfParticipants());
+		setup.setMaxNumberOfParticipants(gameSetup.getMaxNumberOfParticipants());
+		setup.setNumberOfRounds(gameSetup.getNumberOfRounds());
+		setup.setGunCoolingRate(gameSetup.getGunCoolingRate());
+		setup.setInactivityTurns(gameSetup.getInactivityTurns());
+		setup.setTurnTimeout(gameSetup.getTurnTimeout());
+		setup.setReadyTimeout(gameSetup.getReadyTimeout());
+		setup.setDelayedObserverTurns(gameSetup.getDelayedObserverTurns());
+
 		return setup;
 	}
 

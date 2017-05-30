@@ -33,7 +33,7 @@ public final class ImmutableGameSetup implements IGameSetup {
 		maxNumberOfParticipants = gameSetup.getMaxNumberOfParticipants();
 		numberOfRounds = gameSetup.getNumberOfRounds();
 		gunCoolingRate = gameSetup.getGunCoolingRate();
-		inactiveTurns = gameSetup.getInactiveTurns();
+		inactiveTurns = gameSetup.getInactivityTurns();
 		turnTimeout = gameSetup.getTurnTimeout();
 		readyTimeout = gameSetup.getReadyTimeout();
 		delayedObserverTurns = gameSetup.getDelayedObserverTurns();
@@ -86,7 +86,7 @@ public final class ImmutableGameSetup implements IGameSetup {
 	}
 
 	@Override
-	public Integer getInactiveTurns() {
+	public Integer getInactivityTurns() {
 		return inactiveTurns;
 	}
 

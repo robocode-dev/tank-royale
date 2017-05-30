@@ -84,20 +84,6 @@ public final class GameServer {
 		server.start();
 	}
 
-	private void prepareGameIfEnoughCandidates() {
-		GameAndParticipants gameAndParticipants = selectGameAndParticipants(connHandler.getBotConnections());
-		if (gameAndParticipants == null) {
-			return;
-		}
-
-		gameSetup = new GameSetup(gameAndParticipants.gameSetup);
-		participants = gameAndParticipants.participants;
-
-		if (participants.size() > 0) {
-			prepareGame();
-		}
-	}
-
 	private void startGameIfParticipantsReady() {
 		if (readyParticipants.size() == participants.size()) {
 
@@ -143,52 +129,6 @@ public final class GameServer {
 				onReadyTimeout();
 			}
 		}, gameSetup.getReadyTimeout());
-	}
-
-	// Should be moved to a "strategy" class
-	private GameAndParticipants selectGameAndParticipants(Map<WebSocket, BotHandshake> candidateBots) {
-
-		Map<String, Set<WebSocket>> candidateBotsPerGameType = new HashMap<>();
-
-		Set<String> gameTypes = getGameTypes();
-
-		// Generate a map over potential participants per game type
-		for (Entry<WebSocket, BotHandshake> entry : candidateBots.entrySet()) {
-			BotHandshake botHandshake = entry.getValue();
-			List<String> availGameTypes = new ArrayList<>(botHandshake.getGameTypes());
-			availGameTypes.retainAll(gameTypes);
-
-			for (String gameType : availGameTypes) {
-				Set<WebSocket> candidates = candidateBotsPerGameType.get(gameType);
-				if (candidates == null) {
-					candidates = new HashSet<>();
-					candidateBotsPerGameType.put(gameType, candidates);
-				}
-				candidates.add(entry.getKey());
-			}
-		}
-
-		// Run through the list of games and see if anyone has enough
-		// participants to start the game
-		Set<? extends IGameSetup> games = serverSetup.getGames();
-		for (Entry<String, Set<WebSocket>> entry : candidateBotsPerGameType.entrySet()) {
-			IGameSetup gameSetup = games.stream().filter(g -> g.getGameType().equalsIgnoreCase(entry.getKey()))
-					.findAny().orElse(null);
-
-			Set<WebSocket> participants = entry.getValue();
-			int count = participants.size();
-			if (count >= gameSetup.getMinNumberOfParticipants() && (gameSetup.getMaxNumberOfParticipants() != null
-					&& count <= gameSetup.getMaxNumberOfParticipants())) {
-
-				// enough participants
-				GameAndParticipants gameAndParticipants = new GameAndParticipants();
-				gameAndParticipants.gameSetup = gameSetup;
-				gameAndParticipants.participants = participants;
-				return gameAndParticipants;
-			}
-		}
-
-		return null; // not enough participants
 	}
 
 	private void startGame() {
@@ -250,14 +190,6 @@ public final class GameServer {
 		return modelUpdater.update(Collections.unmodifiableMap(mappedBotIntents));
 	}
 
-	private Set<String> getGameTypes() {
-		Set<String> gameTypes = new HashSet<>();
-		for (IGameSetup gameSetup : serverSetup.getGames()) {
-			gameTypes.add(gameSetup.getGameType());
-		}
-		return gameTypes;
-	}
-
 	private void onReadyTimeout() {
 		System.out.println("#### READY TIMEOUT EVENT #####");
 
@@ -269,7 +201,6 @@ public final class GameServer {
 		} else {
 			// Not enough participants -> prepare another game
 			gameState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
-			prepareGameIfEnoughCandidates();
 		}
 	}
 
@@ -359,9 +290,7 @@ public final class GameServer {
 
 		@Override
 		public void onBotJoined(WebSocket socket, BotHandshake bot) {
-			if (gameState == ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN) {
-				prepareGameIfEnoughCandidates();
-			}
+			// TODO Auto-generated method stub
 		}
 
 		@Override
@@ -456,14 +385,12 @@ public final class GameServer {
 		public void onStartGame(WebSocket socket, net.robocode2.json_schema.GameSetup gameSetup,
 				Collection<BotAddress> botAddresses) {
 
-			// TODO Auto-generated method stub
-			System.out.println("gameType: " + gameSetup.getGameType());
-			System.out.println("arenaWidth: " + gameSetup.getArenaWidth());
-		}
-	}
+			GameServer.this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup);
+			participants = connHandler.getBotConnections(botAddresses);
 
-	private class GameAndParticipants {
-		IGameSetup gameSetup;
-		Set<WebSocket> participants;
+			if (participants.size() > 0) {
+				prepareGame();
+			}
+		}
 	}
 }

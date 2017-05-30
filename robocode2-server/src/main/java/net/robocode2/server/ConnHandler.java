@@ -76,6 +76,29 @@ public final class ConnHandler {
 		return Collections.unmodifiableMap(observerConnections);
 	}
 
+	public Set<WebSocket> getBotConnections(Collection<BotAddress> botAddresses) {
+		Set<WebSocket> foundConnections = new HashSet<>();
+
+		if (botConnections != null) {
+			for (WebSocket conn : botConnections.keySet()) {
+				InetSocketAddress addr = conn.getRemoteSocketAddress();
+				if (addr != null) {
+					int port = addr.getPort();
+					String hostname = addr.getHostName();
+
+					for (BotAddress botAddr : botAddresses) {
+						if (botAddr.getHostName().equals(hostname) && botAddr.getPort() == port) {
+							foundConnections.add(conn);
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		return foundConnections;
+	}
+
 	private void shutdownAndAwaitTermination(ExecutorService pool) {
 		pool.shutdown(); // Disable new tasks from being submitted
 		try {

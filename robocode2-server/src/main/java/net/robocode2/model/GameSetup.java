@@ -9,7 +9,7 @@ public class GameSetup implements IGameSetup {
 	private Integer maxNumberOfParticipants = DEFAULT_MAX_NUMBER_OF_PARTICIPANTS;
 	private int numberOfRounds = DEFAULT_NUMBER_OF_ROUNDS;
 	private double gunCoolingRate = DEFAULT_GUN_COOLING_RATE;
-	private int inactiveTurns = DEFAULT_INACTIVITY_TURNS;
+	private int inactivityTurns = DEFAULT_INACTIVITY_TURNS;
 	private int turnTimeout = DEFAULT_TURN_TIMEOUT;
 	private int readyTimeout = DEFAULT_READY_TIMEOUT;
 	private int delayedObserverTurns = DEFAULT_DELAYED_OBSERVER_TURNS;
@@ -20,7 +20,7 @@ public class GameSetup implements IGameSetup {
 	private Boolean maxNumberOfParticipantsFixed;
 	private Boolean numberOfRoundsFixed;
 	private Boolean gunCoolingRateFixed;
-	private Boolean inactiveTurnsFixed;
+	private Boolean inactivityTurnsFixed;
 	private Boolean turnTimeoutFixed;
 	private Boolean readyTimeoutFixed;
 	private Boolean delayedObserverTurnsFixed;
@@ -35,7 +35,7 @@ public class GameSetup implements IGameSetup {
 		maxNumberOfParticipants = gameSetup.getMaxNumberOfParticipants();
 		numberOfRounds = gameSetup.getNumberOfRounds();
 		gunCoolingRate = gameSetup.getGunCoolingRate();
-		inactiveTurns = gameSetup.getInactiveTurns();
+		inactivityTurns = gameSetup.getInactivityTurns();
 		turnTimeout = gameSetup.getTurnTimeout();
 		readyTimeout = gameSetup.getReadyTimeout();
 		delayedObserverTurns = gameSetup.getDelayedObserverTurns();
@@ -46,7 +46,7 @@ public class GameSetup implements IGameSetup {
 		maxNumberOfParticipantsFixed = gameSetup.isMaxNumberOfParticipantsFixed();
 		numberOfRoundsFixed = gameSetup.isNumberOfRoundsFixed();
 		gunCoolingRateFixed = gameSetup.isGunCoolingRateFixed();
-		inactiveTurnsFixed = gameSetup.isInactiveTurnsFixed();
+		inactivityTurnsFixed = gameSetup.isInactiveTurnsFixed();
 		turnTimeoutFixed = gameSetup.isTurnTimeoutFixed();
 		readyTimeoutFixed = gameSetup.isReadyTimeoutFixed();
 		delayedObserverTurnsFixed = gameSetup.isDelayedObserverTurnsFixed();
@@ -92,8 +92,8 @@ public class GameSetup implements IGameSetup {
 	}
 
 	@Override
-	public Integer getInactiveTurns() {
-		return inactiveTurns;
+	public Integer getInactivityTurns() {
+		return inactivityTurns;
 	}
 
 	@Override
@@ -178,13 +178,13 @@ public class GameSetup implements IGameSetup {
 		this.gunCoolingRate = gunCoolingRate;
 	}
 
-	public void setInactiveTurns(Integer inactiveTurns) {
-		if (inactiveTurns == null) {
-			inactiveTurns = DEFAULT_INACTIVITY_TURNS;
-		} else if (inactiveTurns < 100) {
-			throw new IllegalArgumentException("inactiveTurns cannot be less than 100");
+	public void setInactivityTurns(Integer inactivityTurns) {
+		if (inactivityTurns == null) {
+			inactivityTurns = DEFAULT_INACTIVITY_TURNS;
+		} else if (inactivityTurns < 100) {
+			throw new IllegalArgumentException("inactivityTurns cannot be less than 100");
 		}
-		this.inactiveTurns = inactiveTurns;
+		this.inactivityTurns = inactivityTurns;
 	}
 
 	public void setTurnTimeout(Integer turnTimeout) {
@@ -240,7 +240,7 @@ public class GameSetup implements IGameSetup {
 
 	@Override
 	public Boolean isInactiveTurnsFixed() {
-		return inactiveTurnsFixed;
+		return inactivityTurnsFixed;
 	}
 
 	@Override
@@ -283,7 +283,7 @@ public class GameSetup implements IGameSetup {
 	}
 
 	public void setInactiveTurnsFixed(Boolean inactiveTurnsFixed) {
-		this.inactiveTurnsFixed = inactiveTurnsFixed;
+		this.inactivityTurnsFixed = inactiveTurnsFixed;
 	}
 
 	public void setTurnTimeoutFixed(Boolean turnTimeoutFixed) {

@@ -28,7 +28,7 @@ public interface IGameSetup {
 
 	Double getGunCoolingRate();
 
-	Integer getInactiveTurns();
+	Integer getInactivityTurns();
 
 	Integer getTurnTimeout();
 
