@@ -2,6 +2,5 @@
 .classpath
 .jsweet
 .project
-.settings
 /webapp/j4ts-*
 /webapp/jquery-*

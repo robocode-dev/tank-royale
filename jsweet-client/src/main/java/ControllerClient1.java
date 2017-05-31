@@ -18,6 +18,7 @@ import jsweet.dom.Event;
 import jsweet.dom.EventListener;
 import jsweet.dom.HTMLButtonElement;
 import jsweet.dom.HTMLCollection;
+import jsweet.dom.HTMLElement;
 import jsweet.dom.HTMLInputElement;
 import jsweet.dom.HTMLOptionElement;
 import jsweet.dom.HTMLSelectElement;
@@ -29,6 +30,10 @@ import jsweet.lang.JSON;
 public class ControllerClient1 {
 
 	private final static String NONE_TEXT = "[none]";
+
+	HTMLButtonElement connectButton = (HTMLButtonElement) document.getElementById("connect");
+
+	HTMLSelectElement gameTypeSelect = (HTMLSelectElement) document.getElementById("game-type-list");
 
 	HTMLInputElement arenaWidthInput = (HTMLInputElement) document.getElementById("arena-width");
 	HTMLInputElement arenaHeightInput = (HTMLInputElement) document.getElementById("arena-height");
@@ -52,26 +57,23 @@ public class ControllerClient1 {
 	private WebSocket ws;
 
 	private GameTypeList gameTypeList;
-	// private GameSetup2 selectedGameType;
+	private GameSetup2 selectedGameType;
 
 	public ControllerClient1() {
 
-		onClick((HTMLButtonElement) document.getElementById("connect"), evt -> {
-			connect();
-		});
+		onClick(connectButton, e -> connect());
 
-		onClick((HTMLButtonElement) document.getElementById("list-game-types"), evt -> {
-			listGameTypes();
-		});
+		onChange(gameTypeSelect, e -> handleSelectGameType());
 
-		onClick((HTMLButtonElement) document.getElementById("list-bots"), evt -> {
-			listBots();
-			updateGameSetup();
-		});
+		// onClick((HTMLButtonElement) document.getElementById("list-bots"), evt -> {
+		// listBots();
+		// updateGameSetup();
+		// });
+		//
+		// onClick((HTMLButtonElement) document.getElementById("start-game"), evt -> {
+		// startGame();
+		// });
 
-		onClick((HTMLButtonElement) document.getElementById("start-game"), evt -> {
-			startGame();
-		});
 	}
 
 	private void connect() {
@@ -102,12 +104,9 @@ public class ControllerClient1 {
 	private Void onOpen(Event e) {
 		alert("Connection successful");
 
-		ControllerHandshake handshake = new ControllerHandshake();
-		handshake.setName("Controller name");
-		handshake.setVersion("0.1");
-		handshake.setAuthor("Author name");
+		sendHandshake();
 
-		ws.send(JSON.stringify(handshake));
+		listGameTypes();
 
 		return null;
 	}
@@ -141,12 +140,39 @@ public class ControllerClient1 {
 		return null;
 	}
 
-	private void onClick(HTMLButtonElement button, EventListener onClick) {
-		button.addEventListener("click", onClick);
+	private void onClick(HTMLElement element, EventListener listener) {
+		element.addEventListener("click", listener);
+	}
+
+	private void onChange(HTMLElement element, EventListener listener) {
+		element.addEventListener("change", listener);
+	}
+
+	private void sendHandshake() {
+		ControllerHandshake handshake = new ControllerHandshake();
+		handshake.setName("Controller name");
+		handshake.setVersion("0.1");
+		handshake.setAuthor("Author name");
+
+		ws.send(JSON.stringify(handshake));
 	}
 
 	private void listGameTypes() {
 		ws.send(JSON.stringify(new ListGameTypes()));
+	}
+
+	private void handleSelectGameType() {
+		System.out.println("handleSelectGameType");
+
+		selectedGameType = null;
+		if (gameTypeSelect.selectedOptions.length > 0) {
+			int selectedIndex = (int) gameTypeSelect.selectedIndex - 1; // Due to [none] item
+			if (selectedIndex >= 0) {
+				selectedGameType = gameTypeList.getGameTypes().get(selectedIndex);
+			}
+		}
+
+		updateGameSetup();
 	}
 
 	private void listBots() {
@@ -162,15 +188,6 @@ public class ControllerClient1 {
 		listBots.setGameTypes(gameTypes);
 
 		ws.send(JSON.stringify(listBots));
-	}
-
-	private GameSetup2 getSelectedGameType() {
-		HTMLSelectElement select = (HTMLSelectElement) document.getElementById("game-type-list");
-		GameSetup2 selectedGameType = null;
-		if (select.selectedOptions.length > 0) {
-			selectedGameType = gameTypeList.getGameTypes().get((int) select.selectedIndex);
-		}
-		return selectedGameType;
 	}
 
 	private void handleBotList(BotList botList) {
@@ -204,8 +221,6 @@ public class ControllerClient1 {
 	}
 
 	private void updateGameSetup() {
-		GameSetup2 selectedGameType = getSelectedGameType();
-
 		arenaWidthInput.disabled = selectedGameType.isArenaWidthFixed();
 		arenaWidthInput.value = "" + selectedGameType.getArenaWidth();
 
@@ -267,7 +282,7 @@ public class ControllerClient1 {
 		GameSetup2 gameSetup = new GameSetup2();
 		startGame.setGameSetup(gameSetup);
 
-		gameSetup.setGameType(getSelectedGameType().getGameType());
+		gameSetup.setGameType(selectedGameType.getGameType());
 		gameSetup.setArenaWidth(Integer.valueOf(arenaWidthInput.value));
 		gameSetup.setArenaHeight(Integer.valueOf(arenaHeightInput.value));
 		gameSetup.setMinNumberOfParticipants(Integer.valueOf(minNumberOfParticipantsInput.value));
