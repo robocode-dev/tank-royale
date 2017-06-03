@@ -1,7 +1,12 @@
 import static jsweet.dom.Globals.alert;
 import static jsweet.dom.Globals.console;
 import static jsweet.dom.Globals.document;
+import static jsweet.dom.Globals.setInterval;
 import static jsweet.dom.Globals.window;
+import static jsweet.util.Globals.function;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import json_schema.BotAddress;
 import json_schema.GameSetup2;
@@ -29,11 +34,10 @@ import jsweet.lang.JSON;
 
 public class ControllerClient1 {
 
-	private final static String NONE_TEXT = "[none]";
-
 	HTMLButtonElement connectButton = (HTMLButtonElement) document.getElementById("connect");
 
 	HTMLSelectElement gameTypeSelect = (HTMLSelectElement) document.getElementById("game-type-list");
+	HTMLSelectElement botSelect = (HTMLSelectElement) document.getElementById("bot-list");
 
 	HTMLInputElement arenaWidthInput = (HTMLInputElement) document.getElementById("arena-width");
 	HTMLInputElement arenaHeightInput = (HTMLInputElement) document.getElementById("arena-height");
@@ -65,11 +69,11 @@ public class ControllerClient1 {
 
 		onChange(gameTypeSelect, e -> handleSelectGameType());
 
-		// onClick((HTMLButtonElement) document.getElementById("list-bots"), evt -> {
-		// listBots();
-		// updateGameSetup();
-		// });
-		//
+		onClick(document.getElementById("list-bots"), evt -> {
+			sendListBots();
+			updateGameSetupInputFields();
+		});
+
 		// onClick((HTMLButtonElement) document.getElementById("start-game"), evt -> {
 		// startGame();
 		// });
@@ -106,7 +110,7 @@ public class ControllerClient1 {
 
 		sendHandshake();
 
-		listGameTypes();
+		sendListGameTypes();
 
 		return null;
 	}
@@ -124,12 +128,12 @@ public class ControllerClient1 {
 			Message2 msg = Message2.map(obj);
 			String type = msg.getType();
 
-			if (BotList.TYPE.equals(type)) {
-				handleBotList(BotList.map(obj));
-
-			} else if (GameTypeList.TYPE.equals(type)) {
+			if (GameTypeList.TYPE.equals(type)) {
 				gameTypeList = GameTypeList.map(obj);
 				handleGameTypeList(gameTypeList);
+
+			} else if (BotList.TYPE.equals(type)) {
+				handleBotList(BotList.map(obj));
 			}
 		}
 		return null;
@@ -157,42 +161,61 @@ public class ControllerClient1 {
 		ws.send(JSON.stringify(handshake));
 	}
 
-	private void listGameTypes() {
+	private void sendListGameTypes() {
 		ws.send(JSON.stringify(new ListGameTypes()));
 	}
 
 	private void handleSelectGameType() {
 		System.out.println("handleSelectGameType");
 
+		setSelectedGameType();
+		updateGameSetupInputFields();
+
+		setInterval(function(this::onRefreshBotList), 1000);
+	}
+
+	private void setSelectedGameType() {
 		selectedGameType = null;
 		if (gameTypeSelect.selectedOptions.length > 0) {
-			int selectedIndex = (int) gameTypeSelect.selectedIndex - 1; // Due to [none] item
+			int selectedIndex = (int) gameTypeSelect.selectedIndex;
 			if (selectedIndex >= 0) {
 				selectedGameType = gameTypeList.getGameTypes().get(selectedIndex);
 			}
 		}
-
-		updateGameSetup();
 	}
 
-	private void listBots() {
+	private void onRefreshBotList() {
+		sendListBots();
+	}
+
+	private void sendListBots() {
+		if (selectedGameType == null) {
+			return;
+		}
+
 		ListBots listBots = new ListBots();
 
-		Array<String> gameTypes = null;
+		Array<String> gameTypes = new Array<>();
+		gameTypes.push(selectedGameType.getGameType());
 
-		// HTMLSelectElement select = (HTMLSelectElement) document.getElementById("game-type-list");
-		// selectedGameType = null;
-		// if (select.selectedOptions.length > 0) {
-		// selectedGameType = gameTypeList.getGameTypes().get((int) select.selectedIndex);
-		// }
 		listBots.setGameTypes(gameTypes);
 
 		ws.send(JSON.stringify(listBots));
 	}
 
 	private void handleBotList(BotList botList) {
-		HTMLSelectElement select = (HTMLSelectElement) document.getElementById("bot-list");
-		select.options.length = 0;
+		List<String> selectedValues = new ArrayList<>();
+
+		HTMLCollection selectedOptions = botSelect.selectedOptions;
+
+		for (int i = 0; i < selectedOptions.length; i++) {
+			HTMLOptionElement option = (HTMLOptionElement) selectedOptions.$get(i);
+			if (option.selected) {
+				selectedValues.add(option.value);
+			}
+		}
+
+		botSelect.options.length = 0;
 
 		for (BotInfo botInfo : botList.getBots()) {
 			HTMLOptionElement option = (HTMLOptionElement) document.createElement("option");
@@ -201,26 +224,32 @@ public class ControllerClient1 {
 
 			option.text = botInfo.getHostName() + ":" + botInfo.getPort() + " | " + botInfo.getName() + " "
 					+ botInfo.getVersion() + " | " + botInfo.getAuthor() + " | " + botInfo.getProgrammingLanguage();
-			select.appendChild(option);
+
+			if (selectedValues.contains(option.value)) {
+				option.selected = true;
+			}
+
+			botSelect.appendChild(option);
 		}
 	}
 
 	private void handleGameTypeList(GameTypeList gameTypeList) {
-		HTMLSelectElement select = (HTMLSelectElement) document.getElementById("game-type-list");
-		select.options.length = 0;
-
-		HTMLOptionElement option = (HTMLOptionElement) document.createElement("option");
-		option.text = NONE_TEXT;
-		select.appendChild(option);
+		gameTypeSelect.options.length = 0;
 
 		for (GameSetup2 gameSetup : gameTypeList.getGameTypes()) {
-			option = (HTMLOptionElement) document.createElement("option");
+			HTMLOptionElement option = (HTMLOptionElement) document.createElement("option");
 			option.text = gameSetup.getGameType();
-			select.appendChild(option);
+			gameTypeSelect.appendChild(option);
 		}
+
+		if (gameTypeSelect.options.length > 0) {
+			HTMLOptionElement option = (HTMLOptionElement) gameTypeSelect.options.$get(0);
+			option.selected = true;
+		}
+		handleSelectGameType();
 	}
 
-	private void updateGameSetup() {
+	private void updateGameSetupInputFields() {
 		arenaWidthInput.disabled = selectedGameType.isArenaWidthFixed();
 		arenaWidthInput.value = "" + selectedGameType.getArenaWidth();
 
