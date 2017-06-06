@@ -62,11 +62,11 @@ public final class GameServer {
 	private final Timer readyTimer = new Timer("Bot-ready-timer");
 	private final Timer updateGameStateTimer = new Timer("Update-game-state-timer");
 
-	private final Gson gson = new Gson();
-
 	private ModelUpdater modelUpdater;
 
 	private int delayedObserverTurnNumber;
+
+	private final Gson gson = new Gson();
 
 	public GameServer() {
 		this.serverSetup = new ServerSetup();
@@ -177,6 +177,16 @@ public final class GameServer {
 				onUpdateGameState();
 			}
 		}, gameSetup.getTurnTimeout(), gameSetup.getTurnTimeout());
+	}
+
+	private void stopGame() {
+		System.out.println("#### STOP GAME #####");
+
+		updateGameStateTimer.cancel();
+
+		gameState = ServerState.GAME_STOPPED;
+
+		// TODO: Present score for bots and observers. Af that, set game state to the initial state
 	}
 
 	private ImmutableGameState updateGameState() {
@@ -391,6 +401,11 @@ public final class GameServer {
 			if (participants.size() > 0) {
 				prepareGame();
 			}
+		}
+
+		@Override
+		public void onStopGame(WebSocket socket) {
+			stopGame();
 		}
 	}
 }

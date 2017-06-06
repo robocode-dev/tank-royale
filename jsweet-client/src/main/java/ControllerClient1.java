@@ -12,7 +12,10 @@ import json_schema.BotAddress;
 import json_schema.GameSetup2;
 import json_schema.controller.commands.ListBots;
 import json_schema.controller.commands.ListGameTypes;
+import json_schema.controller.commands.PauseGame;
+import json_schema.controller.commands.ResumeGame;
 import json_schema.controller.commands.StartGame;
+import json_schema.controller.commands.StopGame;
 import json_schema.messages.BotInfo;
 import json_schema.messages.BotList;
 import json_schema.messages.ControllerHandshake;
@@ -35,6 +38,10 @@ import jsweet.lang.JSON;
 public class ControllerClient1 {
 
 	HTMLButtonElement connectButton = (HTMLButtonElement) document.getElementById("connect");
+	HTMLButtonElement startGameButton = (HTMLButtonElement) document.getElementById("start-game");
+	HTMLButtonElement stopGameButton = (HTMLButtonElement) document.getElementById("stop-game");
+	HTMLButtonElement pauseGameButton = (HTMLButtonElement) document.getElementById("pause-game");
+	HTMLButtonElement resumeGameButton = (HTMLButtonElement) document.getElementById("resume-game");
 
 	HTMLSelectElement gameTypeSelect = (HTMLSelectElement) document.getElementById("game-type-list");
 	HTMLSelectElement botSelect = (HTMLSelectElement) document.getElementById("bot-list");
@@ -69,15 +76,10 @@ public class ControllerClient1 {
 
 		onChange(gameTypeSelect, e -> handleSelectGameType());
 
-		onClick(document.getElementById("list-bots"), evt -> {
-			sendListBots();
-			updateGameSetupInputFields();
-		});
-
-		// onClick((HTMLButtonElement) document.getElementById("start-game"), evt -> {
-		// startGame();
-		// });
-
+		onClick(startGameButton, evt -> startGame());
+		onClick(stopGameButton, evt -> stopGame());
+		onClick(pauseGameButton, evt -> pauseGame());
+		onClick(resumeGameButton, evt -> resumeGame());
 	}
 
 	private void connect() {
@@ -284,9 +286,7 @@ public class ControllerClient1 {
 	private void startGame() {
 		console.info("startGame");
 
-		HTMLSelectElement select = (HTMLSelectElement) document.getElementById("bot-list");
-
-		HTMLCollection selectedOptions = select.selectedOptions;
+		HTMLCollection selectedOptions = botSelect.selectedOptions;
 
 		Array<BotAddress> botAddresses = new Array<>();
 
@@ -324,5 +324,20 @@ public class ControllerClient1 {
 		gameSetup.setDelayedObserverTurns(Integer.valueOf(delayedObserverTurnsInput.value));
 
 		ws.send(JSON.stringify(startGame));
+	}
+
+	private void stopGame() {
+		console.info("stopGame");
+		ws.send(JSON.stringify(new StopGame()));
+	}
+
+	private void pauseGame() {
+		console.info("pauseGame");
+		ws.send(JSON.stringify(new PauseGame()));
+	}
+
+	private void resumeGame() {
+		console.info("resumeGame");
+		ws.send(JSON.stringify(new ResumeGame()));
 	}
 }

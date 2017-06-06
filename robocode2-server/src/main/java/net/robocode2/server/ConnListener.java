@@ -36,4 +36,6 @@ public interface ConnListener {
 	void onListGameTypes(WebSocket socket);
 
 	void onStartGame(WebSocket socket, GameSetup gameSetup, Collection<BotAddress> botAddresses);
+
+	void onStopGame(WebSocket socket);
 }
