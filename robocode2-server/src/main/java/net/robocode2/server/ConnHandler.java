@@ -24,7 +24,6 @@ import net.robocode2.json_schema.GameSetup;
 import net.robocode2.json_schema.controller.commands.Command;
 import net.robocode2.json_schema.controller.commands.ListBots;
 import net.robocode2.json_schema.controller.commands.StartGame;
-import net.robocode2.json_schema.controller.commands.StopGame;
 import net.robocode2.json_schema.messages.BotHandshake;
 import net.robocode2.json_schema.messages.BotIntent;
 import net.robocode2.json_schema.messages.ControllerHandshake;
@@ -257,9 +256,22 @@ public final class ConnHandler {
 					}
 					case STOP_GAME: {
 						ControllerHandshake handshake = controllerConnections.get(conn);
-						StopGame stopGame = gson.fromJson(message, StopGame.class);
 						if (handshake != null) {
 							executorService.submit(() -> listener.onStopGame(conn));
+						}
+						break;
+					}
+					case PAUSE_GAME: {
+						ControllerHandshake handshake = controllerConnections.get(conn);
+						if (handshake != null) {
+							executorService.submit(() -> listener.onPauseGame(conn));
+						}
+						break;
+					}
+					case RESUME_GAME: {
+						ControllerHandshake handshake = controllerConnections.get(conn);
+						if (handshake != null) {
+							executorService.submit(() -> listener.onResumeGame(conn));
 						}
 						break;
 					}

@@ -38,4 +38,8 @@ public interface ConnListener {
 	void onStartGame(WebSocket socket, GameSetup gameSetup, Collection<BotAddress> botAddresses);
 
 	void onStopGame(WebSocket socket);
+
+	void onPauseGame(WebSocket socket);
+
+	void onResumeGame(WebSocket socket);
 }

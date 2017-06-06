@@ -189,6 +189,20 @@ public final class GameServer {
 		// TODO: Present score for bots and observers. Af that, set game state to the initial state
 	}
 
+	private void pauseGame() {
+		System.out.println("#### PAUSE GAME #####");
+
+		gameState = ServerState.GAME_PAUSED;
+	}
+
+	private void resumeGame() {
+		System.out.println("#### RESUME GAME #####");
+
+		if (gameState == ServerState.GAME_PAUSED) {
+			gameState = ServerState.GAME_RUNNING;
+		}
+	}
+
 	private ImmutableGameState updateGameState() {
 		Map<Integer /* BotId */, BotIntent> mappedBotIntents = new HashMap<>();
 
@@ -216,6 +230,10 @@ public final class GameServer {
 
 	private void onUpdateGameState() {
 		System.out.println("#### UPDATE GAME STATE EVENT #####");
+
+		if (gameState == ServerState.GAME_PAUSED) {
+			return;
+		}
 
 		// Update game state
 		ImmutableGameState gameState = updateGameState();
@@ -406,6 +424,16 @@ public final class GameServer {
 		@Override
 		public void onStopGame(WebSocket socket) {
 			stopGame();
+		}
+
+		@Override
+		public void onPauseGame(WebSocket socket) {
+			pauseGame();
+		}
+
+		@Override
+		public void onResumeGame(WebSocket socket) {
+			resumeGame();
 		}
 	}
 }

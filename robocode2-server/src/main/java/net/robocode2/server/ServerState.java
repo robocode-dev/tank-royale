@@ -8,6 +8,8 @@ public enum ServerState {
 	WAIT_FOR_READY_PARTICIPANTS,
 	// Game has been started and is running
 	GAME_RUNNING,
+	// Game is paused
+	GAME_PAUSED,
 	// Game has been stopped
 	GAME_STOPPED,
 }
