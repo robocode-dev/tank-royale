@@ -1,14 +1,14 @@
 package net.robocode2.server.mappers;
 
-import net.robocode2.json_schema.messages.TickForObserver;
+import net.robocode2.json_schema.messages.GameTickForObserver;
 import net.robocode2.model.IRound;
 import net.robocode2.model.ITurn;
 
-public final class TurnToTickForObserverMapper {
+public final class TurnToGameTickForObserverMapper {
 
-	public static TickForObserver map(IRound round, ITurn turn) {
-		TickForObserver tick = new TickForObserver();
-		tick.setType(TickForObserver.Type.TICK_FOR_OBSERVER);
+	public static GameTickForObserver map(IRound round, ITurn turn) {
+		GameTickForObserver tick = new GameTickForObserver();
+		tick.setType(GameTickForObserver.Type.GAME_TICK_FOR_OBSERVER);
 		tick.setBotStates(BotsToBotsWithIdMapper.map(turn.getBots()));
 		tick.setBulletStates(BulletsToBulletStatesMapper.map(turn.getBullets()));
 		tick.setRoundState(RoundToRoundStateMapper.map(round, turn));

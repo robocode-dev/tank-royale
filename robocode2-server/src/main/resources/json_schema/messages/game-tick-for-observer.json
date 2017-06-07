@@ -1,12 +1,12 @@
 {
-	"id": "#tick-for-observer.json",
+	"id": "#game-tick-for-observer.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"description": "Tick for observer. Next turn has started.",
+	"description": "Game tick for observer. Next turn has started.",
 
-	"javaType": "net.robocode2.json_schema.messages.TickForObserver",
+	"javaType": "net.robocode2.json_schema.messages.GameTickForObserver",
 	"extends": {
 		"$ref": "message.json",
-		"default": "tick-for-observer"
+		"default": "game-tick-for-observer"
 	},
 	"properties": {
 		"round-state": {

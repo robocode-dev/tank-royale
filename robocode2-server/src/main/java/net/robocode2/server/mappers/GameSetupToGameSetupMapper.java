@@ -15,7 +15,7 @@ public final class GameSetupToGameSetupMapper {
 		setup.setArenaWidth(gameSetup.getArenaWidth());
 		setup.setArenaHeight(gameSetup.getArenaHeight());
 		setup.setMinNumberOfParticipants(gameSetup.getMinNumberOfParticipants());
-		setup.setMaxNumberOfParticipants(gameSetup.getMaxNumberOfParticipants());
+		setup.setMaxNumberOfParticipants(gameSetup.getMaxNumberOfParticipants()); // XXX
 		setup.setNumberOfRounds(gameSetup.getNumberOfRounds());
 		setup.setGunCoolingRate(gameSetup.getGunCoolingRate());
 		setup.setInactivityTurns(gameSetup.getInactivityTurns());

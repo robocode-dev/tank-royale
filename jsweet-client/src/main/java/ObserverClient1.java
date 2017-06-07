@@ -13,10 +13,10 @@ import json_schema.GameSetup;
 import json_schema.events.BotDeathEvent;
 import json_schema.events.BulletHitBotEvent;
 import json_schema.events.ScannedBotEvent;
+import json_schema.messages.GameStartedForObserver;
+import json_schema.messages.GameTickForObserver;
 import json_schema.messages.Message;
-import json_schema.messages.NewBattleForObserver;
 import json_schema.messages.ObserverHandshake;
-import json_schema.messages.TickForObserver;
 import json_schema.states.BotStateWithId;
 import json_schema.states.BulletState;
 import json_schema.types.Point;
@@ -43,7 +43,6 @@ public class ObserverClient1 {
 	private CanvasRenderingContext2D ctx;
 
 	private GameSetup gameSetup;
-	// private Set<Participant> participants;
 	private Set<BotStateWithId> botStates;
 	private Set<BulletState> bulletStates;
 	private Set<json_schema.events.Event> events;
@@ -98,11 +97,11 @@ public class ObserverClient1 {
 			Message msg = Message.map(obj);
 			String type = msg.getType();
 
-			if (NewBattleForObserver.TYPE.equals(type)) {
-				handleNewBattleForObserver(NewBattleForObserver.map(obj));
+			if (GameStartedForObserver.TYPE.equals(type)) {
+				handleStartGame(GameStartedForObserver.map(obj));
 
-			} else if (TickForObserver.TYPE.equals(type)) {
-				handleTickForObserver(TickForObserver.map(obj));
+			} else if (GameTickForObserver.TYPE.equals(type)) {
+				handleTickForObserver(GameTickForObserver.map(obj));
 			}
 		}
 		return null;
@@ -113,7 +112,7 @@ public class ObserverClient1 {
 		return null;
 	}
 
-	private void handleNewBattleForObserver(NewBattleForObserver nbfo) {
+	private void handleStartGame(GameStartedForObserver nbfo) {
 		gameSetup = nbfo.getGameSetup();
 		// participants = nbfo.getParticipants();
 
@@ -123,7 +122,7 @@ public class ObserverClient1 {
 		draw();
 	}
 
-	private void handleTickForObserver(TickForObserver tfo) {
+	private void handleTickForObserver(GameTickForObserver tfo) {
 		botStates = tfo.getBotStates();
 		bulletStates = tfo.getBulletStates();
 		events = tfo.getEvents();
@@ -303,8 +302,6 @@ public class ObserverClient1 {
 	}
 
 	private void drawScanField(double x, double y, double direction, ScanField scanField) {
-		console.info("drawScanField: direction=" + direction + ",scanField.angle=" + scanField.getAngle());
-
 		double angle = toRad(scanField.getAngle());
 
 		String color = "rgba(0, 255, 255, 0.5)";

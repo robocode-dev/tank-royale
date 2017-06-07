@@ -1,12 +1,12 @@
 {
-	"id": "#new-battle-for-observer.json",
+	"id": "#game-started-for-observer.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"description": "New battle info for an observer. New game has started.",
+	"description": "New game info for an observer. New game has started.",
 
-	"javaType": "net.robocode2.json_schema.messages.NewBattleForObserver",
+	"javaType": "net.robocode2.json_schema.messages.GameStartedForObserver",
 	"extends": {
 		"$ref": "message.json",
-		"default": "new-battle-for-observer"
+		"default": "game-started-for-observer"
 	},
 	"properties": {
 		"game-setup": {
@@ -14,7 +14,7 @@
 			"$ref": "../game-setup.json"
 		},
 		"participants": {
-			"description": "List of bots participating in battle",
+			"description": "List of bots participating in this battle",
 			"type": "array",
 			"items": { "$ref": "../participant.json" }
 		}

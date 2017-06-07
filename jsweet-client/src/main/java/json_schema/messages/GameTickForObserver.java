@@ -11,15 +11,15 @@ import json_schema.states.BulletState;
 import json_schema.states.RoundState;
 import jsweet.lang.Array;
 
-public class TickForObserver extends Message {
+public class GameTickForObserver extends Message {
 
-	public static final String TYPE = "tick-for-observer";
+	public static final String TYPE = "game-tick-for-observer";
 
-	public TickForObserver() {
+	public GameTickForObserver() {
 		super(TYPE);
 	}
 
-	public TickForObserver(String type) {
+	public GameTickForObserver(String type) {
 		super(type);
 	}
 
@@ -66,7 +66,7 @@ public class TickForObserver extends Message {
 		return set;
 	}
 
-	public static TickForObserver map(Object obj) {
-		return (TickForObserver) $.extend(false, new TickForObserver(), obj);
+	public static GameTickForObserver map(Object obj) {
+		return (GameTickForObserver) $.extend(false, new GameTickForObserver(), obj);
 	}
 }

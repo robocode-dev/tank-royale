@@ -24,13 +24,13 @@ import net.robocode2.json_schema.messages.BotHandshake;
 import net.robocode2.json_schema.messages.BotInfo;
 import net.robocode2.json_schema.messages.BotList;
 import net.robocode2.json_schema.messages.ControllerHandshake;
+import net.robocode2.json_schema.messages.GameStartedForBot;
+import net.robocode2.json_schema.messages.GameStartedForObserver;
+import net.robocode2.json_schema.messages.GameTickForBot;
+import net.robocode2.json_schema.messages.GameTickForObserver;
 import net.robocode2.json_schema.messages.GameTypeList;
 import net.robocode2.json_schema.messages.Message;
-import net.robocode2.json_schema.messages.NewBattleForBot;
-import net.robocode2.json_schema.messages.NewBattleForObserver;
 import net.robocode2.json_schema.messages.ObserverHandshake;
-import net.robocode2.json_schema.messages.TickForBot;
-import net.robocode2.json_schema.messages.TickForObserver;
 import net.robocode2.model.BotIntent;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.IGameSetup;
@@ -40,8 +40,8 @@ import net.robocode2.model.ImmutableGameState;
 import net.robocode2.server.mappers.BotHandshakeToBotInfoMapper;
 import net.robocode2.server.mappers.BotIntentToBotIntentMapper;
 import net.robocode2.server.mappers.GameSetupToGameSetupMapper;
-import net.robocode2.server.mappers.TurnToTickForBotMapper;
-import net.robocode2.server.mappers.TurnToTickForObserverMapper;
+import net.robocode2.server.mappers.TurnToGameTickForBotMapper;
+import net.robocode2.server.mappers.TurnToGameTickForObserverMapper;
 
 public final class GameServer {
 
@@ -104,16 +104,16 @@ public final class GameServer {
 
 		// Send NewBattle to all participant bots to get them started
 
-		NewBattleForBot newBattleForBot = new NewBattleForBot();
-		newBattleForBot.setType(NewBattleForBot.Type.NEW_BATTLE_FOR_BOT);
-		newBattleForBot.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup.toImmutableGameSetup()));
+		GameStartedForBot gameStartedForBot = new GameStartedForBot();
+		gameStartedForBot.setType(GameStartedForBot.Type.GAME_STARTED_FOR_BOT);
+		gameStartedForBot.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup.toImmutableGameSetup()));
 
 		int id = 1;
 		for (WebSocket participant : participants) {
 			participantIds.put(participant, id);
-			newBattleForBot.setMyId(id);
+			gameStartedForBot.setMyId(id);
 
-			String msg = gson.toJson(newBattleForBot);
+			String msg = gson.toJson(gameStartedForBot);
 			send(participant, msg);
 
 			id++;
@@ -138,9 +138,9 @@ public final class GameServer {
 
 		// Send NewBattle to all participant observers to get them started
 		if (connHandler.getObserverConnections().size() > 0) {
-			NewBattleForObserver newBattleForObserver = new NewBattleForObserver();
-			newBattleForObserver.setType(NewBattleForObserver.Type.NEW_BATTLE_FOR_OBSERVER);
-			newBattleForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup.toImmutableGameSetup()));
+			GameStartedForObserver gameStartedForObserver = new GameStartedForObserver();
+			gameStartedForObserver.setType(GameStartedForObserver.Type.GAME_STARTED_FOR_OBSERVER);
+			gameStartedForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup.toImmutableGameSetup()));
 
 			List<Participant> list = new ArrayList<>();
 			for (WebSocket bot : participants) {
@@ -155,9 +155,9 @@ public final class GameServer {
 				p.setVersion(h.getVersion());
 				list.add(p);
 			}
-			newBattleForObserver.setParticipants(list);
+			gameStartedForObserver.setParticipants(list);
 
-			String msg = gson.toJson(newBattleForObserver);
+			String msg = gson.toJson(gameStartedForObserver);
 
 			for (Entry<WebSocket, ObserverHandshake> entry : connHandler.getObserverConnections().entrySet()) {
 				WebSocket observer = entry.getKey();
@@ -187,6 +187,8 @@ public final class GameServer {
 		gameState = ServerState.GAME_STOPPED;
 
 		// TODO: Present score for bots and observers. Af that, set game state to the initial state
+
+		gameState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
 	}
 
 	private void pauseGame() {
@@ -248,9 +250,10 @@ public final class GameServer {
 
 		// Send game state as 'tick' to participants
 		for (WebSocket participant : participants) {
-			TickForBot tickForBot = TurnToTickForBotMapper.map(round, turn, participantIds.get(participant));
-			if (tickForBot != null) { // Bot alive?
-				String msg = gson.toJson(tickForBot);
+			GameTickForBot gameTickForBot = TurnToGameTickForBotMapper.map(round, turn,
+					participantIds.get(participant));
+			if (gameTickForBot != null) { // Bot alive?
+				String msg = gson.toJson(gameTickForBot);
 				send(participant, msg);
 			}
 		}
@@ -283,9 +286,10 @@ public final class GameServer {
 
 			// Send game state as 'tick' to observers
 			for (Map.Entry<WebSocket, ObserverHandshake> entry : connHandler.getObserverConnections().entrySet()) {
-				TickForObserver tickForObserver = TurnToTickForObserverMapper.map(observerRound, observerTurn);
+				GameTickForObserver gameTickForObserver = TurnToGameTickForObserverMapper.map(observerRound,
+						observerTurn);
 
-				String msg = gson.toJson(tickForObserver);
+				String msg = gson.toJson(gameTickForObserver);
 				send(entry.getKey(), msg);
 			}
 		}
@@ -412,6 +416,8 @@ public final class GameServer {
 		@Override
 		public void onStartGame(WebSocket socket, net.robocode2.json_schema.GameSetup gameSetup,
 				Collection<BotAddress> botAddresses) {
+
+			System.out.println("--- onStartGame ---");
 
 			GameServer.this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup);
 			participants = connHandler.getBotConnections(botAddresses);

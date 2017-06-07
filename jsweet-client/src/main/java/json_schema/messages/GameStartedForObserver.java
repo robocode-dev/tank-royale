@@ -9,15 +9,15 @@ import json_schema.GameSetup;
 import json_schema.Participant;
 import jsweet.lang.Array;
 
-public class NewBattleForObserver extends Message {
+public class GameStartedForObserver extends Message {
 
-	public static final String TYPE = "new-battle-for-observer";
+	public static final String TYPE = "game-started-for-observer";
 
-	public NewBattleForObserver() {
+	public GameStartedForObserver() {
 		super(TYPE);
 	}
 
-	public NewBattleForObserver(String type) {
+	public GameStartedForObserver(String type) {
 		super(type);
 	}
 
@@ -37,7 +37,7 @@ public class NewBattleForObserver extends Message {
 		return set;
 	}
 
-	public static NewBattleForObserver map(Object obj) {
-		return (NewBattleForObserver) $.extend(false, new NewBattleForObserver(), obj);
+	public static GameStartedForObserver map(Object obj) {
+		return (GameStartedForObserver) $.extend(false, new GameStartedForObserver(), obj);
 	}
 }

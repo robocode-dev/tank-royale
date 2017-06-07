@@ -315,7 +315,11 @@ public class ControllerClient1 {
 		gameSetup.setArenaWidth(Integer.valueOf(arenaWidthInput.value));
 		gameSetup.setArenaHeight(Integer.valueOf(arenaHeightInput.value));
 		gameSetup.setMinNumberOfParticipants(Integer.valueOf(minNumberOfParticipantsInput.value));
-		gameSetup.setMaxNumberOfParticipants(Integer.valueOf(maxNumberOfParticipantsInput.value));
+		Integer maxNumberOfParticipant = null;
+		if (maxNumberOfParticipantsInput.value != null && maxNumberOfParticipantsInput.value.length() > 0) {
+			maxNumberOfParticipant = Integer.valueOf(maxNumberOfParticipantsInput.value);
+		}
+		gameSetup.setMaxNumberOfParticipants(maxNumberOfParticipant);
 		gameSetup.setNumberOfRounds(Integer.valueOf(numberOfRoundsInput.value));
 		// gameSetup.setGunCoolingRate(Double.valueOf(gunCoolingRateInput.value.replace(',', '.'))); // FIXME: is "0.1"
 		gameSetup.setGunCoolingRate(0.1);

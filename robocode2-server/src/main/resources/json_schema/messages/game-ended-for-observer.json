@@ -1,12 +1,12 @@
 {
-	"id": "#results-for-observer.json",
+	"id": "#game-ended-for-observer.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "All game results visible for an observer. Game has ended.",
 
-	"javaType": "net.robocode2.json_schema.messages.ResultsForObserver",
+	"javaType": "net.robocode2.json_schema.messages.GameEndedForObserver",
 	"extends": {
 		"$ref": "message.json",
-		"default": "results-for-observer"
+		"default": "game-ended-for-observer"
 	},
 	"properties": {
 		"results": {

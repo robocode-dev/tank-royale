@@ -1,12 +1,12 @@
 {
-	"id": "#new-battle-for-bot.json",
+	"id": "#game-started-for-bot.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"description": "New battle info for a bot. New game has started.",
+	"description": "New game info for a bot. New game has started.",
 
-	"javaType": "net.robocode2.json_schema.messages.NewBattleForBot",
+	"javaType": "net.robocode2.json_schema.messages.GameStartedForBot",
 	"extends": {
 		"$ref": "message.json",
-		"default": "new-battle-for-bot"
+		"default": "game-started-for-bot"
 	},
 	"properties": {
 		"game-setup": {

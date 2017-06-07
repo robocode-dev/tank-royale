@@ -1,12 +1,12 @@
 {
-	"id": "#results-for-bot.json",
+	"id": "#game-ended-for-bot.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"description": "All game results visible for a bot. Game has ended.",
 
-	"javaType": "net.robocode2.json_schema.messages.ResultsForBot",
+	"javaType": "net.robocode2.json_schema.messages.GameEndedForBot",
 	"extends": {
 		"$ref": "message.json",
-		"default": "results-for-bot"
+		"default": "game-ended-for-bot"
 	},
 	"properties": {
 		"results": {
