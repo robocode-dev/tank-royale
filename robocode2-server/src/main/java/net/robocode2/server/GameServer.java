@@ -59,8 +59,8 @@ public final class GameServer {
 
 	private Map<WebSocket, BotIntent> botIntents = new HashMap<>();
 
-	private final Timer readyTimer = new Timer("Bot-ready-timer");
-	private final Timer updateGameStateTimer = new Timer("Update-game-state-timer");
+	private Timer readyTimer;
+	private Timer updateGameStateTimer;
 
 	private ModelUpdater modelUpdater;
 
@@ -87,7 +87,9 @@ public final class GameServer {
 	private void startGameIfParticipantsReady() {
 		if (readyParticipants.size() == participants.size()) {
 
-			readyTimer.cancel();
+			if (readyTimer != null) {
+				readyTimer.cancel();
+			}
 			readyParticipants.clear();
 			botIntents.clear();
 
@@ -123,6 +125,7 @@ public final class GameServer {
 
 		// Start 'ready' timer
 
+		readyTimer = new Timer("Bot-ready-timer");
 		readyTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
@@ -171,6 +174,7 @@ public final class GameServer {
 
 		// Create timer to updating game state
 
+		updateGameStateTimer = new Timer("Update-game-state-timer");
 		updateGameStateTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
@@ -182,7 +186,9 @@ public final class GameServer {
 	private void stopGame() {
 		System.out.println("#### STOP GAME #####");
 
-		updateGameStateTimer.cancel();
+		if (updateGameStateTimer != null) {
+			updateGameStateTimer.cancel();
+		}
 
 		gameState = ServerState.GAME_STOPPED;
 
@@ -248,7 +254,7 @@ public final class GameServer {
 		IRound round = gameState.getLastRound();
 		ITurn turn = round.getLastTurn();
 
-		// Send game state as 'tick' to participants
+		// Send game state as 'game tick' to participants
 		for (WebSocket participant : participants) {
 			GameTickForBot gameTickForBot = TurnToGameTickForBotMapper.map(round, turn,
 					participantIds.get(participant));
@@ -416,8 +422,6 @@ public final class GameServer {
 		@Override
 		public void onStartGame(WebSocket socket, net.robocode2.json_schema.GameSetup gameSetup,
 				Collection<BotAddress> botAddresses) {
-
-			System.out.println("--- onStartGame ---");
 
 			GameServer.this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup);
 			participants = connHandler.getBotConnections(botAddresses);
