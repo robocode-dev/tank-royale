@@ -1,6 +1,6 @@
 package net.robocode2.server;
 
-public enum ServerState {
+public enum RunningState {
 
 	// Waiting for enough participant bots to join
 	WAIT_FOR_PARTICIPANTS_TO_JOIN,

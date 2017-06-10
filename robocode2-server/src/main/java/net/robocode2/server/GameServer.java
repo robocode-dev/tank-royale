@@ -49,8 +49,9 @@ public final class GameServer {
 	private ConnListener connListener;
 	private ConnHandler connHandler;
 
-	private ServerState gameState;
+	private RunningState runningState;
 	private GameSetup gameSetup;
+	private ImmutableGameState gameState;
 
 	private Set<WebSocket> participants;
 	private Set<WebSocket> readyParticipants;
@@ -72,7 +73,7 @@ public final class GameServer {
 		this.serverSetup = new ServerSetup();
 		this.connListener = new GameServerConnListener();
 		this.connHandler = new ConnHandler(serverSetup, connListener);
-		this.gameState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
+		this.runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
 	}
 
 	public void start() {
@@ -100,7 +101,7 @@ public final class GameServer {
 	private void prepareGame() {
 		System.out.println("#### PREPARE GAME #####");
 
-		gameState = ServerState.WAIT_FOR_READY_PARTICIPANTS;
+		runningState = RunningState.WAIT_FOR_READY_PARTICIPANTS;
 
 		participantIds.clear();
 
@@ -137,7 +138,7 @@ public final class GameServer {
 	private void startGame() {
 		System.out.println("#### START GAME #####");
 
-		gameState = ServerState.GAME_RUNNING;
+		runningState = RunningState.GAME_RUNNING;
 
 		// Send NewBattle to all participant observers to get them started
 		if (connHandler.getObserverConnections().size() > 0) {
@@ -186,28 +187,22 @@ public final class GameServer {
 	private void stopGame() {
 		System.out.println("#### STOP GAME #####");
 
-		if (updateGameStateTimer != null) {
-			updateGameStateTimer.cancel();
-		}
-
-		gameState = ServerState.GAME_STOPPED;
+		runningState = RunningState.GAME_STOPPED;
 
 		// TODO: Present score for bots and observers. Af that, set game state to the initial state
-
-		gameState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
 	}
 
 	private void pauseGame() {
 		System.out.println("#### PAUSE GAME #####");
 
-		gameState = ServerState.GAME_PAUSED;
+		runningState = RunningState.GAME_PAUSED;
 	}
 
 	private void resumeGame() {
 		System.out.println("#### RESUME GAME #####");
 
-		if (gameState == ServerState.GAME_PAUSED) {
-			gameState = ServerState.GAME_RUNNING;
+		if (runningState == RunningState.GAME_PAUSED) {
+			runningState = RunningState.GAME_RUNNING;
 		}
 	}
 
@@ -232,35 +227,37 @@ public final class GameServer {
 
 		} else {
 			// Not enough participants -> prepare another game
-			gameState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
+			runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
 		}
 	}
 
 	private void onUpdateGameState() {
 		System.out.println("#### UPDATE GAME STATE EVENT #####");
 
-		if (gameState == ServerState.GAME_PAUSED) {
+		if (runningState == RunningState.GAME_PAUSED) {
 			return;
 		}
 
 		// Update game state
-		ImmutableGameState gameState = updateGameState();
+		if (runningState != RunningState.GAME_STOPPED) {
+			gameState = updateGameState();
 
-		// Clear bot intents
-		botIntents.clear();
+			// Clear bot intents
+			botIntents.clear();
 
-		// Send tick to bots
+			// Send tick to bots
 
-		IRound round = gameState.getLastRound();
-		ITurn turn = round.getLastTurn();
+			IRound round = gameState.getLastRound();
+			ITurn turn = round.getLastTurn();
 
-		// Send game state as 'game tick' to participants
-		for (WebSocket participant : participants) {
-			GameTickForBot gameTickForBot = TurnToGameTickForBotMapper.map(round, turn,
-					participantIds.get(participant));
-			if (gameTickForBot != null) { // Bot alive?
-				String msg = gson.toJson(gameTickForBot);
-				send(participant, msg);
+			// Send game state as 'game tick' to participants
+			for (WebSocket participant : participants) {
+				GameTickForBot gameTickForBot = TurnToGameTickForBotMapper.map(round, turn,
+						participantIds.get(participant));
+				if (gameTickForBot != null) { // Bot alive?
+					String msg = gson.toJson(gameTickForBot);
+					send(participant, msg);
+				}
 			}
 		}
 
@@ -269,13 +266,17 @@ public final class GameServer {
 		IRound observerRound = gameState.getLastRound();
 		ITurn observerTurn = observerRound.getLastTurn();
 
-		if (gameState.isGameEnded()) {
-			System.out.println("#### GAME OVER #####");
-
+		if (gameState.isGameEnded() || runningState == RunningState.GAME_STOPPED) {
 			delayedObserverTurnNumber++;
 			if (delayedObserverTurnNumber == observerTurn.getTurnNumber()) {
+
+				System.out.println("#### GAME ENDED #####");
+
 				// Stop timer for updating game state
 				updateGameStateTimer.cancel();
+
+				// Game has stopped
+				runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
 			}
 		} else {
 			delayedObserverTurnNumber = observerTurn.getTurnNumber() - gameSetup.getDelayedObserverTurns();
@@ -358,7 +359,7 @@ public final class GameServer {
 
 		@Override
 		public void onBotReady(WebSocket socket) {
-			if (gameState == ServerState.WAIT_FOR_READY_PARTICIPANTS) {
+			if (runningState == RunningState.WAIT_FOR_READY_PARTICIPANTS) {
 				readyParticipants.add(socket);
 				startGameIfParticipantsReady();
 			}
