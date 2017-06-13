@@ -7,17 +7,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.robocode2.model.IRuleConstants;
 import net.robocode2.model.ImmutableScore;
 import net.robocode2.model.Score;
 
-public class ScoreKeeper {
-
-	private static final double SCORE_PER_SURVIVAL = 50;
-	private static final double BONUS_PER_LAST_SURVIVOR = 10;
-	private static final double SCORE_PER_BULLET_DAMAGE = 1;
-	private static final double BONUS_PER_BULLET_KILL = 0.20;
-	private static final double SCORE_PER_RAM_DAMAGE = 2;
-	private static final double BONUS_PER_RAM_KILL = 0.30;
+public class ScoreKeeper implements IRuleConstants {
 
 	private final Set<Integer> botIds;
 

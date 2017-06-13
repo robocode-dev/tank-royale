@@ -4,27 +4,15 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.signum;
+import static net.robocode2.model.IRuleConstants.ACCELLERATION;
+import static net.robocode2.model.IRuleConstants.DECELERATION;
+import static net.robocode2.model.IRuleConstants.MAX_FORWARD_SPEED;
+import static net.robocode2.model.IRuleConstants.MAX_GUN_TURN_RATE;
+import static net.robocode2.model.IRuleConstants.MAX_RADAR_TURN_RATE;
+import static net.robocode2.model.IRuleConstants.MAX_REVERSE_SPEED;
+import static net.robocode2.model.IRuleConstants.MAX_TURN_RATE;
 
-public final class Physics {
-
-	public static final double MAX_TURN_RATE = 10.0;
-	public static final double MAX_GUN_TURN_RATE = 20.0;
-	public static final double MAX_RADAR_TURN_RATE = 45.0;
-	public static final double INITIAL_BOT_ENERGY = 100.0;
-	public static final double INITIAL_GUN_HEAT = 3.0;
-	public static final double ACCELLERATION = 1.0;
-	public static final double DECELERATION = -2.0;
-	public static final double RAM_DAMAGE = 0.6;
-	public static final double MAX_FORWARD_SPEED = 8.0;
-	public static final double MAX_REVERSE_SPEED = -8.0;
-	public static final double RADAR_RADIUS = 1200.0;
-	public static final double MIN_BULLET_POWER = 0.1;
-	public static final double MAX_BULLET_POWER = 3.0;
-	public static final int BULLET_HIT_ENERGY_GAIN_FACTOR = 3;
-	public static final int BOT_BOUNDING_CIRCLE_DIAMETER = 36;
-	public static final int BOT_BOUNDING_CIRCLE_RADIUS = 36 / 2;
-
-	public static final double MAX_BULLET_SPEED = calcBulletSpeed(MIN_BULLET_POWER);
+public final class RuleMath {
 
 	public static double calcBotSpeed(double currentSpeed, double targetSpeed) {
 		double delta = targetSpeed - currentSpeed;

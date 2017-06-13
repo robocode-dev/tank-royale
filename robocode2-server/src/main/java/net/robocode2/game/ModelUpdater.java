@@ -1,22 +1,15 @@
 package net.robocode2.game;
 
 import static net.robocode2.game.MathUtil.normalAbsoluteAngleDegrees;
-import static net.robocode2.model.Physics.BOT_BOUNDING_CIRCLE_DIAMETER;
-import static net.robocode2.model.Physics.BOT_BOUNDING_CIRCLE_RADIUS;
-import static net.robocode2.model.Physics.INITIAL_BOT_ENERGY;
-import static net.robocode2.model.Physics.INITIAL_GUN_HEAT;
-import static net.robocode2.model.Physics.MAX_BULLET_POWER;
-import static net.robocode2.model.Physics.MAX_BULLET_SPEED;
-import static net.robocode2.model.Physics.MIN_BULLET_POWER;
-import static net.robocode2.model.Physics.RADAR_RADIUS;
-import static net.robocode2.model.Physics.RAM_DAMAGE;
-import static net.robocode2.model.Physics.calcBotSpeed;
-import static net.robocode2.model.Physics.calcBulletSpeed;
-import static net.robocode2.model.Physics.calcGunHeat;
-import static net.robocode2.model.Physics.calcScanAngle;
-import static net.robocode2.model.Physics.limitGunTurnRate;
-import static net.robocode2.model.Physics.limitRadarTurnRate;
-import static net.robocode2.model.Physics.limitTurnRate;
+import static net.robocode2.model.IRuleConstants.BOT_BOUNDING_CIRCLE_DIAMETER;
+import static net.robocode2.model.IRuleConstants.BOT_BOUNDING_CIRCLE_RADIUS;
+import static net.robocode2.model.IRuleConstants.INITIAL_BOT_ENERGY;
+import static net.robocode2.model.IRuleConstants.INITIAL_GUN_HEAT;
+import static net.robocode2.model.IRuleConstants.MAX_BULLET_POWER;
+import static net.robocode2.model.IRuleConstants.MAX_BULLET_SPEED;
+import static net.robocode2.model.IRuleConstants.MIN_BULLET_POWER;
+import static net.robocode2.model.IRuleConstants.RADAR_RADIUS;
+import static net.robocode2.model.IRuleConstants.RAM_DAMAGE;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,13 +27,14 @@ import net.robocode2.model.GameState;
 import net.robocode2.model.IBot;
 import net.robocode2.model.IBotIntent;
 import net.robocode2.model.IGameSetup;
+import net.robocode2.model.IRuleConstants;
 import net.robocode2.model.ImmutableBotIntent;
 import net.robocode2.model.ImmutableBullet;
 import net.robocode2.model.ImmutableGameState;
 import net.robocode2.model.ImmutableTurn;
-import net.robocode2.model.Physics;
 import net.robocode2.model.Point;
 import net.robocode2.model.Round;
+import net.robocode2.model.RuleMath;
 import net.robocode2.model.ScanField;
 import net.robocode2.model.Score;
 import net.robocode2.model.Size;
@@ -280,17 +274,17 @@ public class ModelUpdater {
 
 			// Turn body, gun, radar, and move bot to new position
 
-			double speed = calcBotSpeed(bot.getSpeed(), immuBotIntent.getTargetSpeed());
+			double speed = RuleMath.calcBotSpeed(bot.getSpeed(), immuBotIntent.getTargetSpeed());
 
-			double limitedTurnRate = limitTurnRate(immuBotIntent.getBodyTurnRate(), speed);
-			double limitedGunTurnRate = limitGunTurnRate(immuBotIntent.getGunTurnRate());
-			double limitedRadarTurnRate = limitRadarTurnRate(immuBotIntent.getRadarTurnRate());
+			double limitedTurnRate = RuleMath.limitTurnRate(immuBotIntent.getBodyTurnRate(), speed);
+			double limitedGunTurnRate = RuleMath.limitGunTurnRate(immuBotIntent.getGunTurnRate());
+			double limitedRadarTurnRate = RuleMath.limitRadarTurnRate(immuBotIntent.getRadarTurnRate());
 
 			double direction = normalAbsoluteAngleDegrees(bot.getDirection() + limitedTurnRate);
 			double gunDirection = normalAbsoluteAngleDegrees(bot.getGunDirection() + limitedGunTurnRate);
 			double radarDirection = normalAbsoluteAngleDegrees(bot.getRadarDirection() + limitedRadarTurnRate);
 
-			ScanField scanField = new ScanField(calcScanAngle(immuBotIntent.getRadarTurnRate()), RADAR_RADIUS);
+			ScanField scanField = new ScanField(RuleMath.calcScanAngle(immuBotIntent.getRadarTurnRate()), RADAR_RADIUS);
 
 			bot.setDirection(direction);
 			bot.setGunDirection(gunDirection);
@@ -368,10 +362,10 @@ public class ModelUpdater {
 				if (MathUtil.isLineIntersectingCircle(startPos1.x, startPos1.y, endPos1.x, endPos1.y, botPos.x,
 						botPos.y, BOT_BOUNDING_CIRCLE_RADIUS)) {
 
-					double damage = Physics.calcBulletDamage(bullet.getPower());
+					double damage = RuleMath.calcBulletDamage(bullet.getPower());
 					boolean killed = bot.addDamage(damage);
 
-					double energyBonus = Physics.BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
+					double energyBonus = IRuleConstants.BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
 					botsMap.get(botId).increaseEnergy(energyBonus);
 
 					scoreKeeper.addBulletHit(botId, victimId, damage, killed);
@@ -582,7 +576,7 @@ public class ModelUpdater {
 				turn.addPrivateBotEvent(bot.getId(), botHitWallEvent);
 				turn.addObserverEvent(botHitWallEvent);
 
-				double damage = Physics.calcWallDamage(bot.getSpeed());
+				double damage = RuleMath.calcWallDamage(bot.getSpeed());
 				bot.addDamage(damage);
 			}
 		}
@@ -663,7 +657,7 @@ public class ModelUpdater {
 	private void handleFiredBullet(Bot bot, double firepower) {
 		int botId = bot.getId();
 
-		double gunHeat = calcGunHeat(firepower);
+		double gunHeat = RuleMath.calcGunHeat(firepower);
 		bot.setGunHeat(gunHeat);
 
 		Bullet bullet = new Bullet();
@@ -672,7 +666,7 @@ public class ModelUpdater {
 		bullet.setPower(firepower);
 		bullet.setFirePosition(bot.getPosition());
 		bullet.setDirection(bot.getGunDirection());
-		bullet.setSpeed(calcBulletSpeed(firepower));
+		bullet.setSpeed(RuleMath.calcBulletSpeed(firepower));
 
 		bullets.add(bullet);
 
@@ -720,7 +714,7 @@ public class ModelUpdater {
 				Bot scannedBot = botArray[j];
 
 				if (MathUtil.isCircleIntersectingCone(center, arcStart, arcEnd, scanField.getRadius(),
-						scannedBot.getPosition(), Physics.BOT_BOUNDING_CIRCLE_RADIUS)) {
+						scannedBot.getPosition(), BOT_BOUNDING_CIRCLE_RADIUS)) {
 
 					ScannedBotEvent scannedBotEvent = new ScannedBotEvent(scanningBot.getId(), scannedBot.getId(),
 							scannedBot.getEnergy(), scannedBot.getPosition(), scannedBot.getDirection(),
