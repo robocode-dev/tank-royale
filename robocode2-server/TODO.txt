@@ -1,0 +1,5 @@
+Missing skipped-turns.
+
+Missing presenting results. End-of-game results and point status during the battle per turn.
+
+Test units
