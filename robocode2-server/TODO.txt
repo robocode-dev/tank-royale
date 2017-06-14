@@ -1,3 +1,7 @@
+The game is not running with the observer (JSweet client).
+
+isCircleIntersectingCircleSector must be fixed, so arcStart and arcEnd are not point (input parameters)
+
 Missing skipped-turns.
 
 Missing presenting results. End-of-game results and point status during the battle per turn.

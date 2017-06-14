@@ -321,7 +321,7 @@ public class ModelUpdater {
 
 				// Check if the bullets bounding circles intersects (is fast) before checking if the bullets bounding
 				// lines intersect (is slower)
-				if (isBulletsBoundingCirclesColliding(endPos1, endPos2) && MathUtil.doLinesIntersect(
+				if (isBulletsBoundingCirclesColliding(endPos1, endPos2) && MathUtil.isLineIntersectingLine(
 						boundingLines[i].start, boundingLines[i].end, boundingLines[j].start, boundingLines[j].end)) {
 
 					ImmutableBullet bullet1 = bulletArray[i].toImmutableBullet();
@@ -713,8 +713,8 @@ public class ModelUpdater {
 
 				Bot scannedBot = botArray[j];
 
-				if (MathUtil.isCircleIntersectingCone(center, arcStart, arcEnd, scanField.getRadius(),
-						scannedBot.getPosition(), BOT_BOUNDING_CIRCLE_RADIUS)) {
+				if (MathUtil.isCircleIntersectingCircleSector(scannedBot.getPosition(), BOT_BOUNDING_CIRCLE_RADIUS,
+						center, scanField.getRadius(), arcStart, arcEnd)) {
 
 					ScannedBotEvent scannedBotEvent = new ScannedBotEvent(scanningBot.getId(), scannedBot.getId(),
 							scannedBot.getEnergy(), scannedBot.getPosition(), scannedBot.getDirection(),

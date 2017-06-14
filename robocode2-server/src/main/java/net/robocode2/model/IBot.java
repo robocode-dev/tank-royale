@@ -33,6 +33,6 @@ public interface IBot {
 	}
 
 	default boolean isDisabled() {
-		return isAlive() && MathUtil.isNear(getEnergy(), 0);
+		return isAlive() && MathUtil.nearlyEqual(getEnergy(), 0);
 	}
 }

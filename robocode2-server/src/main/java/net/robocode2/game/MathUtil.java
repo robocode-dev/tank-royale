@@ -4,27 +4,26 @@ import net.robocode2.model.Point;
 
 public final class MathUtil {
 
-	public static final double NEAR_DELTA = 0.00001;
+	/** Epsilon defines the maximum delta between two doubles, before they are considered unequal */
+	private static final double EPSILON = 0.00001;
 
 	/**
-	 * Normalizes an angle to an absolute angle. The normalized angle will be in the range from 0 to 360, where 360
-	 * itself is not included.
+	 * Normalizes an angle to an absolute angle into the range [0,360[
 	 *
 	 * @param angle
 	 *            the angle to normalize
-	 * @return the normalized angle that will be in the range of [0,360[
+	 * @return the normalized absolute angle
 	 */
 	public static double normalAbsoluteAngleDegrees(double angle) {
 		return (angle %= 360) >= 0 ? angle : (angle + 360);
 	}
 
 	/**
-	 * Normalizes an angle to a relative angle. The normalized angle will be in the range from -180 to 180, where 180
-	 * itself is not included.
+	 * Normalizes an angle to an relative angle into the range [-180,180[
 	 *
 	 * @param angle
 	 *            the angle to normalize
-	 * @return the normalized angle that will be in the range of [-180,180[
+	 * @return the normalized relative angle.
 	 */
 	public static double normalRelativeAngleDegrees(double angle) {
 		return (angle %= 360) >= 0 ? ((angle < 180) ? angle : (angle - 360))
@@ -32,11 +31,11 @@ public final class MathUtil {
 	}
 
 	/**
-	 * Tests if the two {@code double} values are near to each other. It is recommended to use this method instead of
-	 * testing if the two doubles are equal using an this expression: {@code value1 == value2}. The reason being, that
-	 * this expression might never become {@code true} due to the precision of double values. Whether or not the
-	 * specified doubles are near to each other is defined by the following expression:
-	 * {@code (Math.abs(value1 - value2) < .00001)}
+	 * Tests if the two {@code double} values are nearly equal. It is recommended to use this method instead of testing
+	 * if the two doubles are equal using an expression like this: {@code value1 == value2}. The reason being, that this
+	 * expression might never become {@code true} due to the precision of double values. Whether or not, the specified
+	 * doubles are close enough to be considered as equal, is defined by the following expression:
+	 * {@code abs(value1 - value2) < epsilon}, where epsilon is defined to be 0.00001.
 	 *
 	 * @param value1
 	 *            the first double value
@@ -44,16 +43,46 @@ public final class MathUtil {
 	 *            the second double value
 	 * @return {@code true} if the two doubles are near to each other; {@code false} otherwise.
 	 */
-	public static boolean isNear(double value1, double value2) {
-		return (Math.abs(value1 - value2) < NEAR_DELTA);
+	public static boolean nearlyEqual(double value1, double value2) {
+		return (Math.abs(value1 - value2) < EPSILON);
 	}
 
+	/**
+	 * Returns the shortest distance between two points: sqrt(dx*dx + dy*dy).
+	 * 
+	 * @param p1
+	 *            is one point
+	 * @param p2
+	 *            is another point
+	 * @return the distance between the two points
+	 */
 	public static double distance(Point p1, Point p2) {
 		return Math.hypot((p2.x - p1.x), (p2.y - p1.y));
 	}
 
-	// LINE/CIRCLE
-	// http://www.jeffreythompson.org/collision-detection/line-circle.php
+	/**
+	 * Checks if a line segment defined by the two points (x1,y1) and (x2,y2) is intersecting the circle defined by the
+	 * center point (cx,cy) and radius, r.
+	 * <p>
+	 * The algorithm used in this method is based on Jeff Thompson's collision detection method for line/circle:<br>
+	 * http://www.jeffreythompson.org/collision-detection/line-circle.php
+	 * 
+	 * @param x1
+	 *            is the x coordinate of 1st point of the line segment
+	 * @param y1
+	 *            is the y coordinate of 1st point of the line segment
+	 * @param x2
+	 *            is the x coordinate of 2nd point of the line segment
+	 * @param y2
+	 *            is the y coordinate of 2nd point of the line segment
+	 * @param cx
+	 *            is the x coordinate of the center point of the circle
+	 * @param cy
+	 *            is the y coordinate of the center point of the circle
+	 * @param r
+	 *            is the radius of the circle
+	 * @return {@code true} if the line is intersecting the circle; {@code false} otherwise.
+	 */
 	public static boolean isLineIntersectingCircle(double x1, double y1, double x2, double y2, double cx, double cy,
 			double r) {
 
@@ -75,20 +104,61 @@ public final class MathUtil {
 		double closestY = y1 + (dot * dy);
 
 		// Check if the closest point is on the line segment and the point is inside the circle
-		return isPointOnLine(x1, y1, x2, y2, closestX, closestY) && isPointInsideCircle(closestX, closestY, cx, cy, r);
+		return isPointOnLine(closestX, closestY, x1, y1, x2, y2) && isPointInsideCircle(closestX, closestY, cx, cy, r);
 	}
 
-	// POINT/CIRCLE
+	/**
+	 * Checks if a point defined by (x1,y1) is inside or on the circle defined by the center point (cx,cy) and radius,
+	 * r.
+	 * <p>
+	 * The algorithm used in this method is based on the Pythagorean Theorem:<br>
+	 * http://www.jeffreythompson.org/collision-detection/point-circle.php
+	 *
+	 * @param px
+	 *            is the x coordinate of the point
+	 * @param py
+	 *            is the y coordinate of the point
+	 * @param cx
+	 *            is the x coordinate of the center point of the circle
+	 * @param cy
+	 *            is the y coordinate of the center point of the circle
+	 * @param r
+	 *            is the radius of the circle
+	 * @return {@code true} if the point is inside or on the circle; {@code false} otherwise.
+	 */
 	public static boolean isPointInsideCircle(double px, double py, double cx, double cy, double r) {
 		double dx = px - cx;
 		double dy = py - cy;
 
-		// If the distance is less than the circle's radius the point is inside!
+		// If the distance is less or equal than the circle's radius the point is considered to be inside the circle
 		return ((dx * dx) + (dy * dy)) <= (r * r);
 	}
 
-	// LINE/POINT
-	public static boolean isPointOnLine(double x1, double y1, double x2, double y2, double px, double py) {
+	/**
+	 * Checks if the point defined by (px,py) is on the line segment defined by the two points (x1,y1) and (x2,y2).
+	 * <p>
+	 * The algorithm first checks if the "cross-product" between the vectors (x1,y1) -> (px,py) and (x1,y1) -> (x2,y2)
+	 * is equal to 0. If true, the point lies on the line. Secondly, the algorithm makes sure that the point is points
+	 * of the line segment.
+	 * <p>
+	 * The algorithm is described by AnT here:<br>
+	 * https://stackoverflow.com/questions/11907947/how-to-check-if-a-point-lies-on-a-line-between-2-other-points/11908158#11908158
+	 * 
+	 * @param px
+	 *            is the x coordinate of the point
+	 * @param py
+	 *            is the y coordinate of the point
+	 * @param x1
+	 *            is the x coordinate of 1st point of the line segment
+	 * @param y1
+	 *            is the y coordinate of 1st point of the line segment
+	 * @param x2
+	 *            is the x coordinate of 2nd point of the line segment
+	 * @param y2
+	 *            is the y coordinate of 2nd point of the line segment
+	 * @return {@code true} if the point is on the line segment; {@code false} otherwise.
+	 */
+	public static boolean isPointOnLine(double px, double py, double x1, double y1, double x2, double y2) {
 		// Calculate cross product of vectors
 		double dxp = px - x1;
 		double dyp = py - y1;
@@ -98,8 +168,8 @@ public final class MathUtil {
 
 		double cross = dxp * dyl - dyp * dxl;
 
-		// point lies on the line if and only if cross is equal to zero.
-		if (!isNear(cross, 0)) {
+		// Point lies on the line, if and only if, cross-product is equal to zero.
+		if (!nearlyEqual(cross, 0)) {
 			return false;
 		}
 
@@ -111,9 +181,28 @@ public final class MathUtil {
 		}
 	}
 
-	// LINE/LINE
-	// http://gigglingcorpse.com/2015/06/25/line-segment-intersection/
-	public static boolean doLinesIntersect(Point a1, Point a2, Point b1, Point b2) {
+	/**
+	 * Checks if two line segments (a and b) are intersecting. Line segment a is defined by the two points a1 and a2,
+	 * and line segment b is defined by the two points b1 and b2.
+	 * <p>
+	 * The algorithm used in this method is based on CommanderKeith's algorithm:<br>
+	 * http://www.java-gaming.org/index.php?topic=22590.0 <br>
+	 * http://gigglingcorpse.com/2015/06/25/line-segment-intersection/
+	 * <p>
+	 * His algorithm is based on based on Franklin Antonio's "Faster Line Segment Intersection" topic "in Graphics Gems
+	 * III". Keith Woodward added new code to optimize Franklin's original code.
+	 * 
+	 * @param a1
+	 *            is point a1, 1st point of line segment a
+	 * @param a2
+	 *            is point a2, 2nd point of line segment a
+	 * @param b1
+	 *            is point b1, 1st point of line segment b
+	 * @param b2
+	 *            is point b2, 2nd point of line segment b
+	 * @return {@code true} if the two lines are intersecting; {@code false} otherwise.
+	 */
+	public static boolean isLineIntersectingLine(Point a1, Point a2, Point b1, Point b2) {
 
 		// Fastest method, based on Franklin Antonio's "Faster Line Segment Intersection" topic "in Graphics Gems III"
 		// book (http://www.graphicsgems.org/)
@@ -170,35 +259,52 @@ public final class MathUtil {
 		return true;
 	}
 
+	/**
+	 * Checks if a circle is intersecting/inside a circle sector.
+	 * 
+	 * @param circleCenter
+	 *            is the center point of the circle
+	 * @param circleRadius
+	 *            is the radius of the circle
+	 * @param sectorCenter
+	 *            is the center point of the circle sector
+	 * @param sectorRadius
+	 *            is the radius of the circle sector
+	 * @param arcStart
+	 *            FIXME
+	 * @param arcEnd
+	 *            FIXME
+	 * @return
+	 */
 	// http://stackoverflow.com/questions/13652518/efficiently-find-points-inside-a-circle-sector
-	// Angle of the arcStart point must be lesser than angle for the arcEnd point
-	public static boolean isCircleIntersectingCone(Point center, Point arcStart, Point arcEnd,
-			double coneRadius, Point point, double circleRadius) {
+	// Angle of arcEnd must be greater than the angle of the arcStart (clock-wise)
+	public static boolean isCircleIntersectingCircleSector(Point circleCenter, double circleRadius, Point sectorCenter,
+			double sectorRadius, Point arcStart, Point arcEnd) { // FIXME: arcStart and arcEnd are points
 
-		double radiusToPoint = coneRadius + circleRadius;
+		double maxRadiusToPoint = sectorRadius + circleRadius;
 
-		double vx = point.x - center.x;
-		double vy = point.y - center.y;
+		double vx = circleCenter.x - sectorCenter.x;
+		double vy = circleCenter.y - sectorCenter.y;
 
-		// Check if point is outside radius to point
-		if (((vx * vx) + (vy * vy)) > (radiusToPoint * radiusToPoint)) {
+		// Check if point is outside max radius to point
+		if (((vx * vx) + (vy * vy)) > (maxRadiusToPoint * maxRadiusToPoint)) {
 			return false; // outside radius
 		}
 
-		// Check if point is inside cone sides
+		// Check if point is inside the circle sector arms
 		if (!isClockwise(arcStart.x, arcStart.y, vx, vy) && isClockwise(arcEnd.x, arcEnd.y, vx, vy)) {
 			return true; // point is inside cone
 		}
 
-		// Check distance to cone start arm from point
-		if (shortestDistance(center.x, center.y, center.x + arcStart.x, center.y + arcStart.y, point.x,
-				point.y) < circleRadius) {
+		// Check distance to the arc start point
+		if (shortestDistance(sectorCenter.x, sectorCenter.y, sectorCenter.x + arcStart.x, sectorCenter.y + arcStart.y,
+				circleCenter.x, circleCenter.y) < circleRadius) {
 			return true;
 		}
 
-		// Check distance to cone end arm from point
-		if (shortestDistance(center.x, center.y, center.x + arcEnd.x, center.y + arcEnd.y, point.x,
-				point.y) < circleRadius) {
+		// Check distance to the arc end point
+		if (shortestDistance(sectorCenter.x, sectorCenter.y, sectorCenter.x + arcEnd.x, sectorCenter.y + arcEnd.y,
+				circleCenter.x, circleCenter.y) < circleRadius) {
 			return true;
 		}
 
