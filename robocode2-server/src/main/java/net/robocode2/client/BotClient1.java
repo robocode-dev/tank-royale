@@ -99,7 +99,7 @@ public class BotClient1 extends WebSocketClient {
 				String msg = gson.toJson(ready);
 				send(msg);
 
-			} else if (GameTickForBot.Type.GAME_STARTED_FOR_BOT.toString().equalsIgnoreCase(type)) {
+			} else if (GameTickForBot.Type.GAME_TICK_FOR_BOT.toString().equalsIgnoreCase(type)) {
 				GameTickForBot tick = gson.fromJson(message, GameTickForBot.class);
 
 				Point botPos = tick.getBotState().getPosition();
