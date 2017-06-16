@@ -260,7 +260,12 @@ public final class MathUtil {
 	}
 
 	/**
-	 * Checks if a circle is intersecting/inside a circle sector.
+	 * Checks if a circle is intersecting/inside a circle sector. The circle sector is defined by a sector center,
+	 * sector radius, a arc start angle, and arc end angle. The arc end angle must be greater that the arc start angle
+	 * (clockwise).
+	 * <p>
+	 * The algorithm used in this method is based on Oren Trutner algorithm:
+	 * http://stackoverflow.com/questions/13652518/efficiently-find-points-inside-a-circle-sector
 	 * 
 	 * @param circleCenter
 	 *            is the center point of the circle
@@ -270,16 +275,25 @@ public final class MathUtil {
 	 *            is the center point of the circle sector
 	 * @param sectorRadius
 	 *            is the radius of the circle sector
-	 * @param arcStart
-	 *            FIXME
-	 * @param arcEnd
-	 *            FIXME
-	 * @return
+	 * @param arcStartAngle
+	 *            is the arc start angle in degrees
+	 * @param arcEndAngle
+	 *            is the arc end angle in degrees
+	 * @return {@code true} if the circle lines is intersecting/inside the circle segment; {@code false} otherwise.
 	 */
-	// http://stackoverflow.com/questions/13652518/efficiently-find-points-inside-a-circle-sector
-	// Angle of arcEnd must be greater than the angle of the arcStart (clock-wise)
 	public static boolean isCircleIntersectingCircleSector(Point circleCenter, double circleRadius, Point sectorCenter,
-			double sectorRadius, Point arcStart, Point arcEnd) { // FIXME: arcStart and arcEnd are points
+			double sectorRadius, double arcStartAngle, double arcEndAngle) {
+
+		double arcStartRad = Math.toRadians(arcStartAngle);
+		double arcEndRad = Math.toRadians(arcEndAngle);
+
+		double dx = Math.cos(arcStartRad) * sectorRadius;
+		double dy = Math.sin(arcStartRad) * sectorRadius;
+		Point arcStart = new Point(dx, dy);
+
+		dx = Math.cos(arcEndRad) * sectorRadius;
+		dy = Math.sin(arcEndRad) * sectorRadius;
+		Point arcEnd = new Point(dx, dy);
 
 		double maxRadiusToPoint = sectorRadius + circleRadius;
 
@@ -297,14 +311,14 @@ public final class MathUtil {
 		}
 
 		// Check distance to the arc start point
-		if (shortestDistance(sectorCenter.x, sectorCenter.y, sectorCenter.x + arcStart.x, sectorCenter.y + arcStart.y,
-				circleCenter.x, circleCenter.y) < circleRadius) {
+		if (distanceToLine(circleCenter.x, circleCenter.y, sectorCenter.x, sectorCenter.y, sectorCenter.x + arcStart.x,
+				sectorCenter.y + arcStart.y) < circleRadius) {
 			return true;
 		}
 
 		// Check distance to the arc end point
-		if (shortestDistance(sectorCenter.x, sectorCenter.y, sectorCenter.x + arcEnd.x, sectorCenter.y + arcEnd.y,
-				circleCenter.x, circleCenter.y) < circleRadius) {
+		if (distanceToLine(circleCenter.x, circleCenter.y, sectorCenter.x, sectorCenter.y, sectorCenter.x + arcEnd.x,
+				sectorCenter.y + arcEnd.y) < circleRadius) {
 			return true;
 		}
 
@@ -312,46 +326,95 @@ public final class MathUtil {
 		return false;
 	}
 
-	// Returns true, if vector v2 is clockwise to vector v1 compared to a shared starting point
+	/**
+	 * Checks if vector v2 is clockwise to vector v1 compared to a shared starting point.
+	 *
+	 * @param v1_x
+	 *            is the x coordinate of vector v1
+	 * @param v1_y
+	 *            is the y coordinate of vector v1
+	 * @param v2_x
+	 *            is the x coordinate of vector v2
+	 * @param v2_y
+	 *            is the y coordinate of vector v2
+	 * @return {@code true} if v2 is clockwise to v1; {@code false} otherwise.
+	 * 
+	 */
 	private static boolean isClockwise(double v1_x, double v1_y, double v2_x, double v2_y) {
 		return -v1_x * v2_y + v1_y * v2_x > 0;
 	}
 
-	public static double shortestDistance(double line_x1, double line_y1, double line_x2, double line_y2,
-			double point_x, double point_y) {
+	/**
+	 * Returns the shortest distance from a point (px,py) to the line segment defined by the two points (x1,y1) and
+	 * (x2,y2).
+	 * 
+	 * @param px
+	 *            is the x coordinate of the point
+	 * @param py
+	 *            is the y corrdinate of the point
+	 * @param x1
+	 *            is the x coordinate of the 1st point of the line segment
+	 * @param y1
+	 *            is the y coordinate of the 1st point of the line segment
+	 * @param x2
+	 *            is the x coordinate of the 2nd point of the line segment
+	 * @param y2
+	 *            is the y coordinate of the 2nd point of the line segment
+	 * @return the shortest distance from the point to the line segment
+	 */
+	public static double distanceToLine(double px, double py, double x1, double y1, double x2, double y2) {
 
 		// Get the squared length of the line
-		double dx = line_x2 - line_x1;
-		double dy = line_y2 - line_y1;
+		double dx = x2 - x1;
+		double dy = y2 - y1;
 		double len2 = (dx * dx) + (dy * dy);
 
 		// Get dot product of the line and circle
-		double dot = (((point_x - line_x1) * dx) + ((point_y - line_y1) * dy)) / len2;
+		double dot = (((px - x1) * dx) + ((py - y1) * dy)) / len2;
 
-		// Find the closest point on the line from the circle
-		double closestX = line_x1 + (dot * dx);
-		double closestY = line_y1 + (dot * dy);
+		// Find the closest point on the line from the point
+		double closestX = x1 + (dot * dx);
+		double closestY = y1 + (dot * dy);
 
 		// Return distance
 		return Math.sqrt(closestX * closestX + closestY * closestY);
 	}
 
-	public static Point nearestPointToLine(double line_x1, double line_y1, double line_x2, double line_y2,
-			double point_x, double point_y) {
+	/**
+	 * Returns nearest point to a line segment, defined by the two points (x1,y1) and (x2,y2), from a point (px,py). The
+	 * nearest point might be located on the line segment itself, or outside the line segment, but still on the line
+	 * defined by the line segment. The distance between the specified point (px,py) and the nearest point on the line
+	 * will be the shortest distance between the point (px,py) and the line segment.
+	 * 
+	 * @param px
+	 *            is the x coordinate of the point
+	 * @param py
+	 *            is the y coordinate of the point
+	 * @param x1
+	 *            is the x coordinate of the 1st point of the line segment
+	 * @param y1
+	 *            is the y coordinate of the 1st point of the line segment
+	 * @param x2
+	 *            is the x coordinate of the 2nd point of the line segment
+	 * @param y2
+	 *            is the y coordinate of the 2nd point of the line segment
+	 * @return the nearest point to a line segment from the specified point
+	 */
+	public static Point nearestPointToLine(double px, double py, double x1, double y1, double x2, double y2) {
 
 		// Get the squared length of the line
-		double dx = line_x2 - line_x1;
-		double dy = line_y2 - line_y1;
+		double dx = x2 - x1;
+		double dy = y2 - y1;
 		double len2 = (dx * dx) + (dy * dy);
 
 		// Get dot product of the line and circle
-		double dot = (((point_x - line_x1) * dx) + ((point_y - line_y1) * dy)) / len2;
+		double dot = (((px - x1) * dx) + ((py - y1) * dy)) / len2;
 
-		// Find the closest point on the line from the circle
-		double closestX = line_x1 + (dot * dx);
-		double closestY = line_y1 + (dot * dy);
+		// Find the closest point on the line from the point
+		double closestX = x1 + (dot * dx);
+		double closestY = y1 + (dot * dy);
 
-		// Return closest point
+		// Return closest point on the line
 		return new Point(closestX, closestY);
 	}
 }

@@ -684,27 +684,16 @@ public class ModelUpdater {
 			Bot scanningBot = botArray[i];
 
 			ScanField scanField = scanningBot.getScanField();
-			Point center = scanningBot.getPosition();
+			Point scanCenter = scanningBot.getPosition();
 
-			double angle1, angle2;
+			double arcStartAngle, arcEndAngle;
 			if (scanField.getAngle() > 0) {
-				angle1 = scanningBot.getRadarDirection();
-				angle2 = angle1 + scanField.getAngle();
+				arcStartAngle = scanningBot.getRadarDirection();
+				arcEndAngle = arcStartAngle + scanField.getAngle();
 			} else {
-				angle2 = scanningBot.getRadarDirection();
-				angle1 = angle2 - scanField.getAngle();
+				arcEndAngle = scanningBot.getRadarDirection();
+				arcStartAngle = arcEndAngle - scanField.getAngle();
 			}
-
-			angle1 = Math.toRadians(angle1);
-			angle2 = Math.toRadians(angle2);
-
-			double dx = Math.cos(angle1) * scanField.getRadius();
-			double dy = Math.sin(angle1) * scanField.getRadius();
-			Point arcStart = new Point(dx, dy);
-
-			dx = Math.cos(angle2) * scanField.getRadius();
-			dy = Math.sin(angle2) * scanField.getRadius();
-			Point arcEnd = new Point(dx, dy);
 
 			for (int j = botArray.length - 1; j >= 0; j--) {
 				if (i == j) {
@@ -714,7 +703,7 @@ public class ModelUpdater {
 				Bot scannedBot = botArray[j];
 
 				if (MathUtil.isCircleIntersectingCircleSector(scannedBot.getPosition(), BOT_BOUNDING_CIRCLE_RADIUS,
-						center, scanField.getRadius(), arcStart, arcEnd)) {
+						scanCenter, scanField.getRadius(), arcStartAngle, arcEndAngle)) {
 
 					ScannedBotEvent scannedBotEvent = new ScannedBotEvent(scanningBot.getId(), scannedBot.getId(),
 							scannedBot.getEnergy(), scannedBot.getPosition(), scannedBot.getDirection(),
