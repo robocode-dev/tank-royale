@@ -4,9 +4,6 @@ import net.robocode2.model.Point;
 
 public final class MathUtil {
 
-	/** Epsilon defines the maximum delta between two doubles, before they are considered unequal */
-	private static final double EPSILON = 1E-6;
-
 	/**
 	 * Normalizes an angle to an absolute angle into the range [0,360[
 	 *
@@ -35,7 +32,7 @@ public final class MathUtil {
 	 * if the two doubles are equal using an expression like this: {@code value1 == value2}. The reason being, that this
 	 * expression might never become {@code true} due to the precision of double values. Whether or not, the specified
 	 * doubles are close enough to be considered as equal, is defined by the following expression:
-	 * {@code abs(value1 - value2) < epsilon}, where epsilon is defined to be 0.00001.
+	 * {@code abs(value1 - value2) < epsilon}, where epsilon is defined to be 1E-6.
 	 *
 	 * @param value1
 	 *            the first double value
@@ -44,7 +41,7 @@ public final class MathUtil {
 	 * @return {@code true} if the two doubles are near to each other; {@code false} otherwise.
 	 */
 	public static boolean nearlyEqual(double value1, double value2) {
-		return (Math.abs(value1 - value2) < EPSILON);
+		return (Math.abs(value1 - value2) < 1E-6);
 	}
 
 	/**
