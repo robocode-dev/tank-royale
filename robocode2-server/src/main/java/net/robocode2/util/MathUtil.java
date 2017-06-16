@@ -1,11 +1,11 @@
-package net.robocode2.game;
+package net.robocode2.util;
 
 import net.robocode2.model.Point;
 
 public final class MathUtil {
 
 	/** Epsilon defines the maximum delta between two doubles, before they are considered unequal */
-	private static final double EPSILON = 0.00001;
+	private static final double EPSILON = 1E-6;
 
 	/**
 	 * Normalizes an angle to an absolute angle into the range [0,360[

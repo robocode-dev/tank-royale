@@ -1,4 +1,4 @@
-package net.robocode2.game;
+package net.robocode2.util;
 
 import net.robocode2.model.IBotIntent;
 

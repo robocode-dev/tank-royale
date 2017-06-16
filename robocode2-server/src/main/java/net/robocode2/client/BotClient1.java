@@ -15,7 +15,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 
-import net.robocode2.game.MathUtil;
 import net.robocode2.json_schema.events.Event;
 import net.robocode2.json_schema.events.ScannedBotEvent;
 import net.robocode2.json_schema.messages.BotHandshake;
@@ -24,6 +23,7 @@ import net.robocode2.json_schema.messages.BotReady;
 import net.robocode2.json_schema.messages.GameStartedForBot;
 import net.robocode2.json_schema.messages.GameTickForBot;
 import net.robocode2.json_schema.types.Point;
+import net.robocode2.util.MathUtil;
 
 public class BotClient1 extends WebSocketClient {
 

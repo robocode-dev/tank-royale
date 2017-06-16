@@ -1,6 +1,5 @@
 package net.robocode2.game;
 
-import static net.robocode2.game.MathUtil.normalAbsoluteAngleDegrees;
 import static net.robocode2.model.IRuleConstants.BOT_BOUNDING_CIRCLE_DIAMETER;
 import static net.robocode2.model.IRuleConstants.BOT_BOUNDING_CIRCLE_RADIUS;
 import static net.robocode2.model.IRuleConstants.INITIAL_BOT_ENERGY;
@@ -10,6 +9,7 @@ import static net.robocode2.model.IRuleConstants.MAX_BULLET_SPEED;
 import static net.robocode2.model.IRuleConstants.MIN_BULLET_POWER;
 import static net.robocode2.model.IRuleConstants.RADAR_RADIUS;
 import static net.robocode2.model.IRuleConstants.RAM_DAMAGE;
+import static net.robocode2.util.MathUtil.normalAbsoluteAngleDegrees;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,6 +47,8 @@ import net.robocode2.model.events.BulletHitBotEvent;
 import net.robocode2.model.events.BulletHitBulletEvent;
 import net.robocode2.model.events.BulletMissedEvent;
 import net.robocode2.model.events.ScannedBotEvent;
+import net.robocode2.util.BotIntentNullified;
+import net.robocode2.util.MathUtil;
 
 public class ModelUpdater {
 

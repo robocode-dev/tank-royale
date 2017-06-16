@@ -1,6 +1,6 @@
 package net.robocode2.model;
 
-import net.robocode2.game.MathUtil;
+import net.robocode2.util.MathUtil;
 
 public interface IBot {
 

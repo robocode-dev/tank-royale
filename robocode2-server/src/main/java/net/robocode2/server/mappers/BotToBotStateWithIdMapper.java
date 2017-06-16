@@ -1,8 +1,8 @@
 package net.robocode2.server.mappers;
 
-import net.robocode2.game.MathUtil;
 import net.robocode2.json_schema.states.BotStateWithId;
 import net.robocode2.model.IBot;
+import net.robocode2.util.MathUtil;
 
 public final class BotToBotStateWithIdMapper {
 
