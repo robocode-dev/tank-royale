@@ -14,7 +14,7 @@ public final class MathUtil {
 	 *            the angle to normalize
 	 * @return the normalized absolute angle
 	 */
-	public static double normalAbsoluteAngleDegrees(double angle) {
+	public static double normalAbsoluteDegrees(double angle) {
 		return (angle %= 360) >= 0 ? angle : (angle + 360);
 	}
 
@@ -25,7 +25,7 @@ public final class MathUtil {
 	 *            the angle to normalize
 	 * @return the normalized relative angle.
 	 */
-	public static double normalRelativeAngleDegrees(double angle) {
+	public static double normalRelativeDegrees(double angle) {
 		return (angle %= 360) >= 0 ? ((angle < 180) ? angle : (angle - 360))
 				: ((angle >= -180) ? angle : (angle + 360));
 	}

@@ -12,9 +12,9 @@ public final class BotToBotStateWithIdMapper {
 		botState.setEnergy(bot.getEnergy());
 		botState.setPosition(PointMapper.map(bot.getPosition()));
 		botState.setSpeed(bot.getSpeed());
-		botState.setDirection(MathUtil.normalAbsoluteAngleDegrees(bot.getDirection()));
-		botState.setRadarDirection(MathUtil.normalAbsoluteAngleDegrees(bot.getRadarDirection()));
-		botState.setGunDirection(MathUtil.normalAbsoluteAngleDegrees(bot.getGunDirection()));
+		botState.setDirection(MathUtil.normalAbsoluteDegrees(bot.getDirection()));
+		botState.setRadarDirection(MathUtil.normalAbsoluteDegrees(bot.getRadarDirection()));
+		botState.setGunDirection(MathUtil.normalAbsoluteDegrees(bot.getGunDirection()));
 		botState.setScanField(ScanFieldMapper.map(bot.getScanField()));
 		return botState;
 	}

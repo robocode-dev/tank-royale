@@ -129,8 +129,7 @@ public class BotClient1 extends WebSocketClient {
 
 					double angle = Math.toDegrees(Math.atan2(dy, dx));
 
-					double gunTurnRate = MathUtil
-							.normalRelativeAngleDegrees(angle - tick.getBotState().getGunDirection());
+					double gunTurnRate = MathUtil.normalRelativeDegrees(angle - tick.getBotState().getGunDirection());
 
 					intent.setGunTurnRate(gunTurnRate);
 				}

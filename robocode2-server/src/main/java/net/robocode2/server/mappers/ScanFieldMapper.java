@@ -10,7 +10,7 @@ public final class ScanFieldMapper {
 			return null;
 		}
 		ScanField mappedScanField = new ScanField();
-		mappedScanField.setAngle(MathUtil.normalAbsoluteAngleDegrees(scanField.getAngle()));
+		mappedScanField.setAngle(MathUtil.normalAbsoluteDegrees(scanField.getAngle()));
 		mappedScanField.setRadius(scanField.getRadius());
 		return mappedScanField;
 	}

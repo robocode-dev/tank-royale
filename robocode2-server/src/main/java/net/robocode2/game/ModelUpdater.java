@@ -9,7 +9,7 @@ import static net.robocode2.model.IRuleConstants.MAX_BULLET_SPEED;
 import static net.robocode2.model.IRuleConstants.MIN_BULLET_POWER;
 import static net.robocode2.model.IRuleConstants.RADAR_RADIUS;
 import static net.robocode2.model.IRuleConstants.RAM_DAMAGE;
-import static net.robocode2.util.MathUtil.normalAbsoluteAngleDegrees;
+import static net.robocode2.util.MathUtil.normalAbsoluteDegrees;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -282,9 +282,9 @@ public class ModelUpdater {
 			double limitedGunTurnRate = RuleMath.limitGunTurnRate(immuBotIntent.getGunTurnRate());
 			double limitedRadarTurnRate = RuleMath.limitRadarTurnRate(immuBotIntent.getRadarTurnRate());
 
-			double direction = normalAbsoluteAngleDegrees(bot.getDirection() + limitedTurnRate);
-			double gunDirection = normalAbsoluteAngleDegrees(bot.getGunDirection() + limitedGunTurnRate);
-			double radarDirection = normalAbsoluteAngleDegrees(bot.getRadarDirection() + limitedRadarTurnRate);
+			double direction = normalAbsoluteDegrees(bot.getDirection() + limitedTurnRate);
+			double gunDirection = normalAbsoluteDegrees(bot.getGunDirection() + limitedGunTurnRate);
+			double radarDirection = normalAbsoluteDegrees(bot.getRadarDirection() + limitedRadarTurnRate);
 
 			ScanField scanField = new ScanField(RuleMath.calcScanAngle(immuBotIntent.getRadarTurnRate()), RADAR_RADIUS);
 
@@ -502,7 +502,7 @@ public class ModelUpdater {
 
 		double angle = Math.atan2(dy, dx);
 
-		double bearing = MathUtil.normalRelativeAngleDegrees(Math.toDegrees(angle) - bot.getDirection());
+		double bearing = MathUtil.normalRelativeDegrees(Math.toDegrees(angle) - bot.getDirection());
 
 		return ((bot.getSpeed() > 0 && (bearing > -90 && bearing < 90))
 				|| (bot.getSpeed() < 0 && (bearing < -90 || bearing > 90)));
