@@ -100,7 +100,7 @@ public final class MathUtil {
 		double closestX = x1 + (dot * dx);
 		double closestY = y1 + (dot * dy);
 
-		// Check if the closest point is on the line segment and the point is inside the circle
+		// Check that the closest point is on the line segment and inside the circle
 		return isPointOnLine(closestX, closestY, x1, y1, x2, y2) && isPointInsideCircle(closestX, closestY, cx, cy, r);
 	}
 
@@ -258,8 +258,7 @@ public final class MathUtil {
 
 	/**
 	 * Checks if a circle is intersecting/inside a circle sector. The circle sector is defined by a sector center,
-	 * sector radius, a arc start angle, and arc end angle. The arc end angle must be greater that the arc start angle
-	 * (clockwise).
+	 * sector radius, a arc start angle, and arc end angle. The arc end angle must be greater that the arc start angle.
 	 * <p>
 	 * The algorithm used in this method is based on Oren Trutner algorithm:
 	 * http://stackoverflow.com/questions/13652518/efficiently-find-points-inside-a-circle-sector
@@ -281,6 +280,16 @@ public final class MathUtil {
 	public static boolean isCircleIntersectingCircleSector(Point circleCenter, double circleRadius, Point sectorCenter,
 			double sectorRadius, double arcStartAngle, double arcEndAngle) {
 
+		double maxRadiusToPoint = sectorRadius + circleRadius;
+
+		double vx = circleCenter.x - sectorCenter.x;
+		double vy = circleCenter.y - sectorCenter.y;
+
+		// Check if point is outside max radius to point
+		if (((vx * vx) + (vy * vy)) > (maxRadiusToPoint * maxRadiusToPoint)) {
+			return false; // outside radius
+		}
+
 		double arcStartRad = Math.toRadians(arcStartAngle);
 		double arcEndRad = Math.toRadians(arcEndAngle);
 
@@ -292,39 +301,20 @@ public final class MathUtil {
 		dy = Math.sin(arcEndRad) * sectorRadius;
 		Point arcEnd = new Point(dx, dy);
 
-		double maxRadiusToPoint = sectorRadius + circleRadius;
-
-		double vx = circleCenter.x - sectorCenter.x;
-		double vy = circleCenter.y - sectorCenter.y;
-
-		// Check if point is outside max radius to point
-		if (((vx * vx) + (vy * vy)) > (maxRadiusToPoint * maxRadiusToPoint)) {
-			return false; // outside radius
-		}
-
-		// Check if point is inside the circle sector arms
-		if (!isClockwise(arcStart.x, arcStart.y, vx, vy) && isClockwise(arcEnd.x, arcEnd.y, vx, vy)) {
-			return true; // point is inside cone
-		}
-
-		// Check distance to the arc start point
-		if (distanceToLine(circleCenter.x, circleCenter.y, sectorCenter.x, sectorCenter.y, sectorCenter.x + arcStart.x,
-				sectorCenter.y + arcStart.y) < circleRadius) {
+		// Check if circle center is within the circle sector arms
+		if (isClockwise(arcStart.x, arcStart.y, vx, vy) && !isClockwise(arcEnd.x, arcEnd.y, vx, vy)) {
 			return true;
 		}
 
-		// Check distance to the arc end point
-		if (distanceToLine(circleCenter.x, circleCenter.y, sectorCenter.x, sectorCenter.y, sectorCenter.x + arcEnd.x,
-				sectorCenter.y + arcEnd.y) < circleRadius) {
-			return true;
-		}
-
-		// The circle is outside the cone
-		return false;
+		// Check if circle is intersecting one of the arms
+		return isLineIntersectingCircle(sectorCenter.x, sectorCenter.y, sectorCenter.x + arcStart.x,
+				sectorCenter.y + arcStart.y, circleCenter.x, circleCenter.y, circleRadius)
+				|| isLineIntersectingCircle(sectorCenter.x, sectorCenter.y, sectorCenter.x + arcEnd.x,
+						sectorCenter.y + arcEnd.y, circleCenter.x, circleCenter.y, circleRadius);
 	}
 
 	/**
-	 * Checks if vector v2 is clockwise to vector v1 compared to a shared starting point.
+	 * Checks if vector v1 is clockwise to vector v2 compared to a shared starting point.
 	 *
 	 * @param v1_x
 	 *            is the x coordinate of vector v1
@@ -334,10 +324,10 @@ public final class MathUtil {
 	 *            is the x coordinate of vector v2
 	 * @param v2_y
 	 *            is the y coordinate of vector v2
-	 * @return {@code true} if v2 is clockwise to v1; {@code false} otherwise.
+	 * @return {@code true} if v1 is clockwise to v2; {@code false} otherwise.
 	 * 
 	 */
-	private static boolean isClockwise(double v1_x, double v1_y, double v2_x, double v2_y) {
+	public static boolean isClockwise(double v1_x, double v1_y, double v2_x, double v2_y) {
 		return -v1_x * v2_y + v1_y * v2_x > 0;
 	}
 
