@@ -358,7 +358,8 @@ public class MathUtilTest {
 	public void isCircleIntersectingCircleSector() {
 		// circle center(cx,cy),cr=x, sector center(sx,sy),sr=x, arcStart=x, arcEnd=x
 
-		// Circle outside, circle sector
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(0, 0), 10, 90, 0));
+
 		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(10, 10), 10, 90, 0));
 		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(10, 10), 10, 90, 360));
 		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(10, 10), 10, 0, 90));
@@ -391,6 +392,11 @@ public class MathUtilTest {
 		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(-5, -5), 7.0711, new Point(0, 0), 10, 90, 0));
 		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(5, -5), 5, new Point(0, 0), 10, 90, 0));
 		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(-5, 5), 5, new Point(0, 0), 10, 90, 0));
+
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(-5, 15), 7.0711, new Point(0, 0), 10, 90, 0));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(-5, 15), 7.071, new Point(0, 0), 10, 90, 0));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(15, -5), 7.0711, new Point(0, 0), 10, 90, 0));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(15, -5), 7.071, new Point(0, 0), 10, 90, 0));
 	}
 
 	@Test
