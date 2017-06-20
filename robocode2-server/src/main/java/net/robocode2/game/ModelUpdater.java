@@ -689,12 +689,12 @@ public class ModelUpdater {
 			Point scanCenter = scanningBot.getPosition();
 
 			double arcStartAngle, arcEndAngle;
-			if (scanField.getAngle() > 0) {
+			if (scanField.getAngle() < 0) {
 				arcStartAngle = scanningBot.getRadarDirection();
-				arcEndAngle = arcStartAngle + scanField.getAngle();
+				arcEndAngle = arcStartAngle - scanField.getAngle();
 			} else {
 				arcEndAngle = scanningBot.getRadarDirection();
-				arcStartAngle = arcEndAngle - scanField.getAngle();
+				arcStartAngle = arcEndAngle + scanField.getAngle();
 			}
 
 			for (int j = botArray.length - 1; j >= 0; j--) {
