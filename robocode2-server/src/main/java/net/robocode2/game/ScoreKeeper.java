@@ -1,6 +1,5 @@
 package net.robocode2.game;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,25 +10,45 @@ import net.robocode2.model.IRuleConstants;
 import net.robocode2.model.ImmutableScore;
 import net.robocode2.model.Score;
 
+/**
+ * Score utility class used for keeping track of the score for an individual bot in a game.
+ * 
+ * @author Flemming N. Larsen
+ */
 public class ScoreKeeper implements IRuleConstants {
 
+	/** Set of bot identifiers */
 	private final Set<Integer> botIds;
 
-	private final Map<Integer, DamageAndSurvival> damageAndSurvivals = new HashMap<>();
+	/** Map from bot identifier to a DamageAndSurvival record */
+	private final Map<Integer, DamageAndSurvival> damageAndSurvivals;
 
-	private final Set<Integer> botsAlive = new HashSet<>();
+	/** Set of identifiers of bots alive */
+	private final Set<Integer> botsAliveIds;
 
-	public ScoreKeeper(Collection<Integer> botIds) {
+	/**
+	 * Creates a new ScoreKeeper instance.
+	 *
+	 * @param botIds
+	 *            is a set of bot identifiers, which cannot be null.
+	 */
+	public ScoreKeeper(Set<Integer> botIds) {
 		this.botIds = new HashSet<>(botIds);
-		reset();
+		this.botsAliveIds = new HashSet<>(botIds);
+		this.damageAndSurvivals = new HashMap<>();
+		populateDamageAndSurvivals();
 	}
 
 	public void reset() {
 		damageAndSurvivals.clear();
+		populateDamageAndSurvivals();
+		botsAliveIds.clear();
+	}
+
+	private void populateDamageAndSurvivals() {
 		for (int botId : botIds) {
 			damageAndSurvivals.put(botId, new DamageAndSurvival());
 		}
-		botsAlive.clear();
 	}
 
 	public ImmutableScore getScore(int botId) {
@@ -82,15 +101,15 @@ public class ScoreKeeper implements IRuleConstants {
 	}
 
 	private void handleKill(int killedBotId) {
-		botsAlive.remove(killedBotId);
+		botsAliveIds.remove(killedBotId);
 
-		for (int botId : botsAlive) {
+		for (int botId : botsAliveIds) {
 			damageAndSurvivals.get(botId).incrementSurvivalCount();
 		}
 
-		if (botsAlive.size() == 1) {
-			int survivorId = botsAlive.iterator().next();
-			int deadCount = damageAndSurvivals.size() - botsAlive.size();
+		if (botsAliveIds.size() == 1) {
+			int survivorId = botsAliveIds.iterator().next();
+			int deadCount = damageAndSurvivals.size() - botsAliveIds.size();
 
 			damageAndSurvivals.get(survivorId).addLastSurvivorCount(deadCount);
 		}

@@ -11,7 +11,6 @@ import static net.robocode2.model.IRuleConstants.RADAR_RADIUS;
 import static net.robocode2.model.IRuleConstants.RAM_DAMAGE;
 import static net.robocode2.util.MathUtil.normalAbsoluteDegrees;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -73,7 +72,7 @@ public class ModelUpdater {
 	private Map<Integer /* BotId */, Bot> botsMap = new HashMap<>();
 	private Set<Bullet> bullets = new HashSet<>();
 
-	public ModelUpdater(GameSetup setup, Collection<Integer> participantIds) {
+	public ModelUpdater(GameSetup setup, Set<Integer> participantIds) {
 		this.setup = setup;
 		this.participantIds = new HashSet<>(participantIds);
 

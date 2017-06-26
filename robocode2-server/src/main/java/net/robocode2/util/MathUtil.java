@@ -2,6 +2,11 @@ package net.robocode2.util;
 
 import net.robocode2.model.Point;
 
+/**
+ * Math utility class used for geometric methods.
+ * 
+ * @author Flemming N. Larsen
+ */
 public final class MathUtil {
 
 	/**
