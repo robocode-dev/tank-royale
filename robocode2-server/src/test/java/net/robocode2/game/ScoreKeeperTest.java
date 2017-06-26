@@ -61,28 +61,31 @@ public class ScoreKeeperTest {
 	}
 
 	@Test
-	public void reset() {
+	public void clear() {
 		ScoreKeeper sk = new ScoreKeeper(new HashSet<>(Arrays.asList(1, 2, 3)));
 
-		sk.addBulletHit(1, 2, 10, false);
-		sk.addRamHit(1, 2, 20, false);
-		sk.addBulletHit(2, 3, 10, false);
-		sk.addRamHit(2, 3, 20, false);
-		sk.addBulletHit(3, 1, 10, false);
-		sk.addRamHit(3, 1, 20, false);
+		sk.registerBulletHit(1, 2, 10, false);
+		sk.registerRamHit(1, 2, 20, false);
 
-		sk.reset();
+		sk.registerBulletHit(2, 3, 10, false);
+		sk.registerRamHit(2, 3, 20, false);
 
+		sk.registerBulletHit(3, 1, 10, false);
+		sk.registerRamHit(3, 1, 20, false);
+
+		sk.clear();
+
+		testZeroScore(sk.getScore(1));
 		testZeroScore(sk.getScore(2));
 		testZeroScore(sk.getScore(3));
 	}
 
 	@Test
-	public void bulletHit() {
+	public void registerBulletHit() {
 		ScoreKeeper sk = new ScoreKeeper(new HashSet<>(Arrays.asList(1, 2, 3, 4)));
 
 		// --- Bot 1 hits bot 2, no kill
-		sk.addBulletHit(1, 2, 7, false);
+		sk.registerBulletHit(1, 2, 7, false);
 
 		IScore s = sk.getScore(1);
 		assertEquals(7 * SCORE_PER_BULLET_DAMAGE, s.getBulletDamage(), 0.00001);
@@ -99,7 +102,7 @@ public class ScoreKeeperTest {
 
 		// --- Bot 2 hits and kills bot 1
 
-		sk.addBulletHit(2, 1, 9, true);
+		sk.registerBulletHit(2, 1, 9, true);
 
 		s = sk.getScore(1);
 		assertEquals(7 * SCORE_PER_BULLET_DAMAGE, s.getBulletDamage(), 0.00001);
@@ -140,7 +143,7 @@ public class ScoreKeeperTest {
 
 		// --- Bot 3 hits and kills bot 2
 
-		sk.addBulletHit(3, 2, 13, true);
+		sk.registerBulletHit(3, 2, 13, true);
 
 		s = sk.getScore(1);
 		assertEquals(7 * SCORE_PER_BULLET_DAMAGE, s.getBulletDamage(), 0.00001);
@@ -182,7 +185,7 @@ public class ScoreKeeperTest {
 
 		// --- Bot 4 hits and kills bot 3
 
-		sk.addBulletHit(4, 3, 5, true);
+		sk.registerBulletHit(4, 3, 5, true);
 
 		s = sk.getScore(1);
 		assertEquals(7 * SCORE_PER_BULLET_DAMAGE, s.getBulletDamage(), 0.00001);
@@ -225,11 +228,11 @@ public class ScoreKeeperTest {
 	}
 
 	@Test
-	public void ramHit() {
+	public void registerRamHit() {
 		ScoreKeeper sk = new ScoreKeeper(new HashSet<>(Arrays.asList(1, 2, 3, 4)));
 
 		// --- Bot 1 hits bot 2, no kill
-		sk.addRamHit(1, 2, 7, false);
+		sk.registerRamHit(1, 2, 7, false);
 
 		IScore s = sk.getScore(1);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -246,7 +249,7 @@ public class ScoreKeeperTest {
 
 		// --- Bot 2 hits and kills bot 1
 
-		sk.addRamHit(2, 1, 9, true);
+		sk.registerRamHit(2, 1, 9, true);
 
 		s = sk.getScore(1);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -287,7 +290,7 @@ public class ScoreKeeperTest {
 
 		// --- Bot 3 hits and kills bot 2
 
-		sk.addRamHit(3, 2, 13, true);
+		sk.registerRamHit(3, 2, 13, true);
 
 		s = sk.getScore(1);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -329,7 +332,7 @@ public class ScoreKeeperTest {
 
 		// --- Bot 4 hits and kills bot 3
 
-		sk.addRamHit(4, 3, 5, true);
+		sk.registerRamHit(4, 3, 5, true);
 
 		s = sk.getScore(1);
 		assertEquals(0, s.getBulletDamage(), 0.00001);

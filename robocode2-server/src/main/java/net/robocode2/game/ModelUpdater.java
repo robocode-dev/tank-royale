@@ -134,7 +134,7 @@ public class ModelUpdater {
 
 		initializeBotStates();
 
-		scoreKeeper.reset();
+		scoreKeeper.clear();
 	}
 
 	private void nextTurn() {
@@ -369,7 +369,7 @@ public class ModelUpdater {
 					double energyBonus = IRuleConstants.BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
 					botsMap.get(botId).increaseEnergy(energyBonus);
 
-					scoreKeeper.addBulletHit(botId, victimId, damage, killed);
+					scoreKeeper.registerBulletHit(botId, victimId, damage, killed);
 
 					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet.toImmutableBullet(), victimId,
 							damage, bot.getEnergy());
@@ -432,12 +432,12 @@ public class ModelUpdater {
 					if (bot1RammedBot2) {
 						bot1.setSpeed(0);
 						bot1BounceDist = overlapDist;
-						scoreKeeper.addRamHit(botId2, botId1, RAM_DAMAGE, bot1Killed);
+						scoreKeeper.registerRamHit(botId2, botId1, RAM_DAMAGE, bot1Killed);
 					}
 					if (bot2rammedBot1) {
 						bot2.setSpeed(0);
 						bot2BounceDist = overlapDist;
-						scoreKeeper.addRamHit(botId1, botId2, RAM_DAMAGE, bot2Killed);
+						scoreKeeper.registerRamHit(botId1, botId2, RAM_DAMAGE, bot2Killed);
 					}
 					if (bot1RammedBot2 && bot2rammedBot1) {
 						double totalSpeed = bot1.getSpeed() + bot1.getSpeed();
