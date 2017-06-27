@@ -347,7 +347,7 @@ public class ModelUpdater {
 					boolean killed = bot.addDamage(damage);
 
 					double energyBonus = IRuleConstants.BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
-					botsMap.get(botId).increaseEnergy(energyBonus);
+					botsMap.get(botId).changeEnergy(energyBonus);
 
 					scoreKeeper.registerBulletHit(botId, victimId, damage, killed);
 

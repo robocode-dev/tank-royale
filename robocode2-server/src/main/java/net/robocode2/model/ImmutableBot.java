@@ -11,10 +11,10 @@ public final class ImmutableBot implements IBot {
 	private final double speed;
 	private final double gunHeat;
 	private final ScanField scanField;
-	private final Score score;
+	private final IScore score;
 
 	public ImmutableBot(int id, double energy, Point position, double direction, double gunDirection,
-			double radarDirection, double speed, double gunHeat, ScanField scanArc, Score score) {
+			double radarDirection, double speed, double gunHeat, ScanField scanField, IScore score) {
 
 		this.id = id;
 		this.energy = energy;
@@ -24,7 +24,7 @@ public final class ImmutableBot implements IBot {
 		this.radarDirection = radarDirection;
 		this.speed = speed;
 		this.gunHeat = gunHeat;
-		this.scanField = scanArc;
+		this.scanField = scanField;
 		this.score = score;
 	}
 
@@ -87,7 +87,7 @@ public final class ImmutableBot implements IBot {
 	}
 
 	@Override
-	public Score getScore() {
+	public IScore getScore() {
 		return score;
 	}
 }

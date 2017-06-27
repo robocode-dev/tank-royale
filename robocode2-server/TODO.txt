@@ -1,6 +1,6 @@
 The game is not running with the observer (JSweet client).
 
-isCircleIntersectingCircleSector must be fixed, so arcStart and arcEnd are not point (input parameters)
+Missing inactive turns => diable bots
 
 Missing skipped-turns.
 
