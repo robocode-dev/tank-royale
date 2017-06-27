@@ -1,4 +1,4 @@
-package net.robocode2.server.mappers;
+package net.robocode2.model.mappers;
 
 import net.robocode2.json_schema.states.BulletState;
 import net.robocode2.model.IBullet;

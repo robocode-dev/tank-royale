@@ -17,7 +17,6 @@ import org.java_websocket.WebSocket;
 
 import com.google.gson.Gson;
 
-import net.robocode2.game.ModelUpdater;
 import net.robocode2.json_schema.BotAddress;
 import net.robocode2.json_schema.Participant;
 import net.robocode2.json_schema.messages.BotHandshake;
@@ -37,11 +36,12 @@ import net.robocode2.model.IGameSetup;
 import net.robocode2.model.IRound;
 import net.robocode2.model.ITurn;
 import net.robocode2.model.ImmutableGameState;
-import net.robocode2.server.mappers.BotHandshakeToBotInfoMapper;
-import net.robocode2.server.mappers.BotIntentToBotIntentMapper;
-import net.robocode2.server.mappers.GameSetupToGameSetupMapper;
-import net.robocode2.server.mappers.TurnToGameTickForBotMapper;
-import net.robocode2.server.mappers.TurnToGameTickForObserverMapper;
+import net.robocode2.model.ModelUpdater;
+import net.robocode2.model.mappers.BotHandshakeToBotInfoMapper;
+import net.robocode2.model.mappers.BotIntentToBotIntentMapper;
+import net.robocode2.model.mappers.GameSetupToGameSetupMapper;
+import net.robocode2.model.mappers.TurnToGameTickForBotMapper;
+import net.robocode2.model.mappers.TurnToGameTickForObserverMapper;
 
 public final class GameServer {
 

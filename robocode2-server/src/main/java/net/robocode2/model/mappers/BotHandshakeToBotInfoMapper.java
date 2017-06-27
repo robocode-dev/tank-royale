@@ -1,4 +1,4 @@
-package net.robocode2.server.mappers;
+package net.robocode2.model.mappers;
 
 import java.util.Collections;
 

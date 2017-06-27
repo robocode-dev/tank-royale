@@ -30,7 +30,7 @@ import net.robocode2.json_schema.messages.ControllerHandshake;
 import net.robocode2.json_schema.messages.Message;
 import net.robocode2.json_schema.messages.ObserverHandshake;
 import net.robocode2.json_schema.messages.ServerHandshake;
-import net.robocode2.server.mappers.GameSetupToGameSetupMapper;
+import net.robocode2.model.mappers.GameSetupToGameSetupMapper;
 
 public final class ConnHandler {
 
