@@ -257,7 +257,7 @@ public class ModelUpdater {
 
 			double speed = RuleMath.calcBotSpeed(bot.getSpeed(), immuBotIntent.getTargetSpeed());
 
-			double limitedTurnRate = RuleMath.limitTurnRate(immuBotIntent.getBodyTurnRate(), speed);
+			double limitedTurnRate = RuleMath.limitTurnRate(immuBotIntent.getDrivingTurnRate(), speed);
 			double limitedGunTurnRate = RuleMath.limitGunTurnRate(immuBotIntent.getGunTurnRate());
 			double limitedRadarTurnRate = RuleMath.limitRadarTurnRate(immuBotIntent.getRadarTurnRate());
 

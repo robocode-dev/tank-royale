@@ -21,7 +21,7 @@ public final class Arena {
 	}
 
 	/**
-	 * Return the size of the arena.
+	 * Returns the size of the arena.
 	 * 
 	 * @return the size
 	 */

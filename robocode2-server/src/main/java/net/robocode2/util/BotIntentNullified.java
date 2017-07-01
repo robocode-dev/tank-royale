@@ -16,8 +16,8 @@ public final class BotIntentNullified implements IBotIntent {
 	}
 
 	@Override
-	public Double getBodyTurnRate() {
-		return botIntent.getBodyTurnRate() == null ? 0d : botIntent.getBodyTurnRate();
+	public Double getDrivingTurnRate() {
+		return botIntent.getDrivingTurnRate() == null ? 0d : botIntent.getDrivingTurnRate();
 	}
 
 	@Override

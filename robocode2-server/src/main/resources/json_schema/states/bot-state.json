@@ -14,15 +14,15 @@
 			"$ref": "../types/point.json"
 		},
 		"direction": {
-			"description": "Direction of the hull in degrees",
+			"description": "Driving direction in degrees",
 			"$ref": "../types/angle.json"
 		},
 		"gun-direction": {
-			"description": "Direction of the gun in degrees",
+			"description": "Gun direction in degrees",
 			"$ref": "../types/angle.json"
 		},
 		"radar-direction": {
-			"description": "Direction of the radar in degrees",
+			"description": "Radar direction in degrees",
 			"$ref": "../types/angle.json"
 		},
 		"speed": {

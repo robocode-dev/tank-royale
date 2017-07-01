@@ -1,7 +1,7 @@
 package net.robocode2.model;
 
 /**
- * Defines a mutable bot instance.
+ * A mutable bot instance.
  * 
  * @author Flemming N. Larsen
  */
@@ -54,7 +54,7 @@ public class Bot implements IBot {
 	}
 
 	/**
-	 * Creates an immutable bot instance that is a copy of this bot.
+	 * Creates an immutable bot instance that is a deep copy of this bot.
 	 * 
 	 * @return an immutable bot instance
 	 */

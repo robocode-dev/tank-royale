@@ -3,23 +3,23 @@ package net.robocode2.model;
 public final class ImmutableBotIntent implements IBotIntent {
 
 	private final Double targetSpeed;
-	private final Double bodyTurnRate;
+	private final Double drivingTurnRate;
 	private final Double gunTurnRate;
 	private final Double radarTurnRate;
 	private final Double bulletPower;
 
-	public ImmutableBotIntent(Double targetSpeed, Double bodyTurnRate, Double gunTurnRate, Double radarTurnRate,
+	public ImmutableBotIntent(Double targetSpeed, Double drivingTurnRate, Double gunTurnRate, Double radarTurnRate,
 			Double bulletPower) {
 
 		this.targetSpeed = targetSpeed;
-		this.bodyTurnRate = bodyTurnRate;
+		this.drivingTurnRate = drivingTurnRate;
 		this.gunTurnRate = gunTurnRate;
 		this.radarTurnRate = radarTurnRate;
 		this.bulletPower = bulletPower;
 	}
 
 	public ImmutableBotIntent(IBotIntent botIntent) {
-		this(botIntent.getTargetSpeed(), botIntent.getBodyTurnRate(), botIntent.getGunTurnRate(),
+		this(botIntent.getTargetSpeed(), botIntent.getDrivingTurnRate(), botIntent.getGunTurnRate(),
 				botIntent.getRadarTurnRate(), botIntent.getBulletPower());
 	}
 
@@ -29,8 +29,8 @@ public final class ImmutableBotIntent implements IBotIntent {
 	}
 
 	@Override
-	public Double getBodyTurnRate() {
-		return bodyTurnRate;
+	public Double getDrivingTurnRate() {
+		return drivingTurnRate;
 	}
 
 	@Override

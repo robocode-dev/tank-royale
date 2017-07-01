@@ -1,33 +1,68 @@
 package net.robocode2.model;
 
+/**
+ * A mutable game setup.
+ * 
+ * @author Flemming N. Larsen
+ */
 public class GameSetup implements IGameSetup {
 
+	/** Game type */
 	private String gameType = DEFAULT_GAME_TYPE;
+	/** Arena width */
 	private int arenaWidth = DEFAULT_ARENA_WIDTH;
+	/** Arena hieght */
 	private int arenaHeight = DEFAULT_ARENA_HEIGHT;
+	/** Minimum number of bot participants */
 	private int minNumberOfParticipants = DEFAULT_MIN_NUMBER_OF_PARTICIPANTS;
+	/** Maximum number of bot participants */
 	private Integer maxNumberOfParticipants = DEFAULT_MAX_NUMBER_OF_PARTICIPANTS;
+	/** Number of rounds */
 	private int numberOfRounds = DEFAULT_NUMBER_OF_ROUNDS;
+	/** Gun cooling rate */
 	private double gunCoolingRate = DEFAULT_GUN_COOLING_RATE;
+	/** Number of allowed inactivity turns */
 	private int inactivityTurns = DEFAULT_INACTIVITY_TURNS;
+	/** Turn timeout in milliseconds */
 	private int turnTimeout = DEFAULT_TURN_TIMEOUT;
+	/** Ready timeout in milliseconds */
 	private int readyTimeout = DEFAULT_READY_TIMEOUT;
+	/** Number of delayed turns for observers */
 	private int delayedObserverTurns = DEFAULT_DELAYED_OBSERVER_TURNS;
 
+	/** Flag specifying if the arena width is fixed */
 	private Boolean arenaWidthFixed;
+	/** Flag specifying if the arena height is fixed */
 	private Boolean arenaHeightFixed;
+	/** Flag specifying if the minimum number of bot participants is fixed */
 	private Boolean minNumberOfParticipantsFixed;
+	/** Flag specifying if the maximum number of bot participants is fixed */
 	private Boolean maxNumberOfParticipantsFixed;
+	/** Flag specifying if the number of rounds is fixed */
 	private Boolean numberOfRoundsFixed;
+	/** Flag specifying if the gun cooling rate is fixed */
 	private Boolean gunCoolingRateFixed;
+	/** Flag specifying if the number of allowed inactivity turns is fixed */
 	private Boolean inactivityTurnsFixed;
+	/** Flag specifying if the turn timeout is fixed */
 	private Boolean turnTimeoutFixed;
+	/** Flag specifying if the ready timeout is fixed */
 	private Boolean readyTimeoutFixed;
+	/** Flag specifying if the number of delayed turns for observers is fixed */
 	private Boolean delayedObserverTurnsFixed;
 
+	/**
+	 * Creates a mutable game setup that needs to be initialized
+	 */
 	public GameSetup() {
 	}
 
+	/**
+	 * Creates a mutable game setup that is initialized by another game setup.
+	 * 
+	 * @param gameSetup
+	 *            is the other game setup, which is deep copied into this game setup.
+	 */
 	public GameSetup(IGameSetup gameSetup) {
 		arenaWidth = gameSetup.getArenaWidth();
 		arenaHeight = gameSetup.getArenaWidth();
@@ -52,6 +87,11 @@ public class GameSetup implements IGameSetup {
 		delayedObserverTurnsFixed = gameSetup.isDelayedObserverTurnsFixed();
 	}
 
+	/**
+	 * Creates an immutable game setup that is a copy of this bot.
+	 * 
+	 * @return an immutable game setup
+	 */
 	public ImmutableGameSetup toImmutableGameSetup() {
 		return new ImmutableGameSetup(this);
 	}
@@ -111,6 +151,12 @@ public class GameSetup implements IGameSetup {
 		return delayedObserverTurns;
 	}
 
+	/**
+	 * Sets the game type.
+	 * 
+	 * @param gameType
+	 *            is the game type
+	 */
 	public void setGameType(String gameType) {
 		if (gameType == null) {
 			gameType = DEFAULT_GAME_TYPE;
@@ -120,6 +166,12 @@ public class GameSetup implements IGameSetup {
 		this.gameType = gameType;
 	}
 
+	/**
+	 * Sets the arena width
+	 * 
+	 * @param arenaWidth
+	 *            is the arena width
+	 */
 	public void setArenaWidth(Integer arenaWidth) {
 		if (arenaWidth == null) {
 			arenaWidth = DEFAULT_ARENA_WIDTH;
@@ -129,6 +181,12 @@ public class GameSetup implements IGameSetup {
 		this.arenaWidth = arenaWidth;
 	}
 
+	/**
+	 * Sets the arena height
+	 * 
+	 * @param arenaHeight
+	 *            is the arena height
+	 */
 	public void setArenaHeight(Integer arenaHeight) {
 		if (arenaHeight == null) {
 			arenaHeight = DEFAULT_ARENA_HEIGHT;
@@ -138,6 +196,12 @@ public class GameSetup implements IGameSetup {
 		this.arenaHeight = arenaHeight;
 	}
 
+	/**
+	 * Sets the minimum number of participant bots.
+	 * 
+	 * @param minNumberOfParticipants
+	 *            is the minimum number of participant bots.
+	 */
 	public void setMinNumberOfParticipants(Integer minNumberOfParticipants) {
 		if (minNumberOfParticipants == null) {
 			minNumberOfParticipants = DEFAULT_MIN_NUMBER_OF_PARTICIPANTS;
@@ -147,6 +211,12 @@ public class GameSetup implements IGameSetup {
 		this.minNumberOfParticipants = minNumberOfParticipants;
 	}
 
+	/**
+	 * Sets the maximum number of participant bots.
+	 * 
+	 * @param maxNumberOfParticipants
+	 *            is the maximum number of participant bots.
+	 */
 	public void setMaxNumberOfParticipants(Integer maxNumberOfParticipants) {
 		if (maxNumberOfParticipants == null) {
 			maxNumberOfParticipants = DEFAULT_MAX_NUMBER_OF_PARTICIPANTS;
@@ -158,6 +228,12 @@ public class GameSetup implements IGameSetup {
 		this.maxNumberOfParticipants = maxNumberOfParticipants;
 	}
 
+	/**
+	 * Sets the number of rounds.
+	 * 
+	 * @param numberOfRounds
+	 *            is the number of rounds
+	 */
 	public void setNumberOfRounds(Integer numberOfRounds) {
 		if (numberOfRounds == null) {
 			numberOfRounds = DEFAULT_NUMBER_OF_ROUNDS;
@@ -167,6 +243,12 @@ public class GameSetup implements IGameSetup {
 		this.numberOfRounds = numberOfRounds;
 	}
 
+	/**
+	 * Sets the gun cooling rate.
+	 * 
+	 * @param gunCoolingRate
+	 *            is the gun cooling rate.
+	 */
 	public void setGunCoolingRate(Double gunCoolingRate) {
 		if (gunCoolingRate == null) {
 			gunCoolingRate = DEFAULT_GUN_COOLING_RATE;
@@ -178,6 +260,12 @@ public class GameSetup implements IGameSetup {
 		this.gunCoolingRate = gunCoolingRate;
 	}
 
+	/**
+	 * Sets the number of allowed inactivity turns.
+	 * 
+	 * @param inactivityTurns
+	 *            is the number of allowed inactivity turns.
+	 */
 	public void setInactivityTurns(Integer inactivityTurns) {
 		if (inactivityTurns == null) {
 			inactivityTurns = DEFAULT_INACTIVITY_TURNS;
@@ -187,6 +275,12 @@ public class GameSetup implements IGameSetup {
 		this.inactivityTurns = inactivityTurns;
 	}
 
+	/**
+	 * Sets the turn timeout.
+	 * 
+	 * @param turnTimeout
+	 *            is the turn timeout in milliseconds.
+	 */
 	public void setTurnTimeout(Integer turnTimeout) {
 		if (turnTimeout == null) {
 			turnTimeout = DEFAULT_TURN_TIMEOUT;
@@ -194,6 +288,12 @@ public class GameSetup implements IGameSetup {
 		this.turnTimeout = turnTimeout;
 	}
 
+	/**
+	 * Sets the ready timeout.
+	 * 
+	 * @param readyTimeout
+	 *            is the ready timeout in milliseconds.
+	 */
 	public void setReadyTimeout(Integer readyTimeout) {
 		if (readyTimeout == null) {
 			readyTimeout = DEFAULT_READY_TIMEOUT;
@@ -201,6 +301,12 @@ public class GameSetup implements IGameSetup {
 		this.readyTimeout = readyTimeout;
 	}
 
+	/**
+	 * Sets the number of delayed turns for observers
+	 * 
+	 * @param delayedObserverTurns
+	 *            is the number of delayed turns for observers
+	 */
 	public void setDelayedObserverTurns(Integer delayedObserverTurns) {
 		if (delayedObserverTurns == null) {
 			delayedObserverTurns = DEFAULT_DELAYED_OBSERVER_TURNS;
@@ -258,43 +364,103 @@ public class GameSetup implements IGameSetup {
 		return delayedObserverTurnsFixed;
 	}
 
-	public void setArenaWidthFixed(Boolean arenaWidthFixed) {
-		this.arenaWidthFixed = arenaWidthFixed;
+	/**
+	 * Sets the flag that the arena width is fixed.
+	 * 
+	 * @param fixed
+	 *            is a flag specifying if the arena width is fixed
+	 */
+	public void setArenaWidthFixed(Boolean fixed) {
+		this.arenaWidthFixed = fixed;
 	}
 
-	public void setArenaHeightFixed(Boolean arenaHeightFixed) {
-		this.arenaHeightFixed = arenaHeightFixed;
+	/**
+	 * Sets the flag that the arena height is fixed.
+	 * 
+	 * @param fixed
+	 *            is a flag specifying if the arena height is fixed
+	 */
+	public void setArenaHeightFixed(Boolean fixed) {
+		this.arenaHeightFixed = fixed;
 	}
 
-	public void setMinNumberOfParticipantsFixed(Boolean minNumberOfParticipantsFixed) {
-		this.minNumberOfParticipantsFixed = minNumberOfParticipantsFixed;
+	/**
+	 * Sets the flag that the minimum number of participant bots is fixed.
+	 * 
+	 * @param fixed
+	 *            is a flag specifying if the minimum number of participant bots is fixed.
+	 */
+	public void setMinNumberOfParticipantsFixed(Boolean fixed) {
+		this.minNumberOfParticipantsFixed = fixed;
 	}
 
-	public void setMaxNumberOfParticipantsFixed(Boolean maxNumberOfParticipantsFixed) {
-		this.maxNumberOfParticipantsFixed = maxNumberOfParticipantsFixed;
+	/**
+	 * Sets the flag that the maximum number of participant bots is fixed.
+	 * 
+	 * @param fixed
+	 *            is a flag specifying if the maximum number of participant bots is fixed.
+	 */
+	public void setMaxNumberOfParticipantsFixed(Boolean fixed) {
+		this.maxNumberOfParticipantsFixed = fixed;
 	}
 
-	public void setNumberOfRoundsFixed(Boolean numberOfRoundsFixed) {
-		this.numberOfRoundsFixed = numberOfRoundsFixed;
+	/**
+	 * Sets the flag that the number of rounds is fixed.
+	 * 
+	 * @param fixed
+	 *            is a flag specifying if the number of rounds is fixed.
+	 */
+	public void setNumberOfRoundsFixed(Boolean fixed) {
+		this.numberOfRoundsFixed = fixed;
 	}
 
-	public void setGunCoolingRateFixed(Boolean gunCoolingRateFixed) {
-		this.gunCoolingRateFixed = gunCoolingRateFixed;
+	/**
+	 * Sets the flag that the gun cooling rate is fixed.
+	 * 
+	 * @param fixed
+	 *            is a flag specifying if the gun cooling rate is fixed.
+	 */
+	public void setGunCoolingRateFixed(Boolean fixed) {
+		this.gunCoolingRateFixed = fixed;
 	}
 
-	public void setInactiveTurnsFixed(Boolean inactiveTurnsFixed) {
-		this.inactivityTurnsFixed = inactiveTurnsFixed;
+	/**
+	 * Sets the flag that the number of allowed inactivity turns is fixed.
+	 * 
+	 * @param fixed
+	 *            is a flag specifying if the number of allowed inactivity turns is fixed.
+	 */
+	public void setInactiveTurnsFixed(Boolean fixed) {
+		this.inactivityTurnsFixed = fixed;
 	}
 
-	public void setTurnTimeoutFixed(Boolean turnTimeoutFixed) {
-		this.turnTimeoutFixed = turnTimeoutFixed;
+	/**
+	 * Sets the flag that the turn timeout is fixed.
+	 * 
+	 * @param fixed
+	 *            is a flag specifying if the turn timeout is fixed.
+	 */
+	public void setTurnTimeoutFixed(Boolean fixed) {
+		this.turnTimeoutFixed = fixed;
 	}
 
-	public void setReadyTimeoutFixed(Boolean readyTimeoutFixed) {
-		this.readyTimeoutFixed = readyTimeoutFixed;
+	/**
+	 * Sets the flag that the ready timeout is fixed.
+	 * 
+	 * @param fixed
+	 *            is a flag specifying if the ready timeout is fixed.
+	 */
+	public void setReadyTimeoutFixed(Boolean fixed) {
+		this.readyTimeoutFixed = fixed;
 	}
 
-	public void setDelayedObserverTurnsFixed(Boolean delayedObserverTurnsFixed) {
-		this.delayedObserverTurnsFixed = delayedObserverTurnsFixed;
+	/**
+	 * Sets the flag that the number of allowed inactivity turns is fixed.
+	 * 
+	 * @param fixed
+	 *            is a flag specifying if the number of allowed inactivity turns is fixed.
+	 */
+	public void setDelayedObserverTurnsFixed(Boolean fixed) {
+		this.delayedObserverTurnsFixed = fixed;
 	}
 }
