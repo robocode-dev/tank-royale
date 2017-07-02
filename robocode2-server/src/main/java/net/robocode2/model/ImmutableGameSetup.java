@@ -1,30 +1,62 @@
 package net.robocode2.model;
 
+/**
+ * Immutable game setup.
+ * 
+ * @author Flemming N. Larsen
+ */
 public final class ImmutableGameSetup implements IGameSetup {
 
+	/** Game type */
 	private final String gameType;
-	private final Integer arenaWidth;
-	private final Integer arenaHeight;
-	private final Integer minNumberOfParticipants;
+	/** Arena width */
+	private final int arenaWidth;
+	/** Arena hieght */
+	private final int arenaHeight;
+	/** Minimum number of bot participants */
+	private final int minNumberOfParticipants;
+	/** Maximum number of bot participants */
 	private final Integer maxNumberOfParticipants;
-	private final Integer numberOfRounds;
-	private final Double gunCoolingRate;
-	private final Integer inactiveTurns;
-	private final Integer turnTimeout;
-	private final Integer readyTimeout;
-	private final Integer delayedObserverTurns;
+	/** Number of rounds */
+	private final int numberOfRounds;
+	/** Gun cooling rate */
+	private final double gunCoolingRate;
+	/** Number of allowed inactivity turns */
+	private final int inactivityTurns;
+	/** Turn timeout in milliseconds */
+	private final int turnTimeout;
+	/** Ready timeout in milliseconds */
+	private final int readyTimeout;
+	/** Number of delayed turns for observers */
+	private final int delayedObserverTurns;
 
+	/** Flag specifying if the arena width is fixed */
 	private final Boolean arenaWidthFixed;
+	/** Flag specifying if the arena height is fixed */
 	private final Boolean arenaHeightFixed;
+	/** Flag specifying if the minimum number of bot participants is fixed */
 	private final Boolean minNumberOfParticipantsFixed;
+	/** Flag specifying if the maximum number of bot participants is fixed */
 	private final Boolean maxNumberOfParticipantsFixed;
+	/** Flag specifying if the number of rounds is fixed */
 	private final Boolean numberOfRoundsFixed;
+	/** Flag specifying if the gun cooling rate is fixed */
 	private final Boolean gunCoolingRateFixed;
-	private final Boolean inactiveTurnsFixed;
+	/** Flag specifying if the number of allowed inactivity turns is fixed */
+	private final Boolean inactivityTurnsFixed;
+	/** Flag specifying if the turn timeout is fixed */
 	private final Boolean turnTimeoutFixed;
+	/** Flag specifying if the ready timeout is fixed */
 	private final Boolean readyTimeoutFixed;
+	/** Flag specifying if the number of delayed turns for observers is fixed */
 	private final Boolean delayedObserverTurnsFixed;
 
+	/**
+	 * Creates a immutable game setup based on another game setup.
+	 * 
+	 * @param bot
+	 *            is the game setup that is deep copied into this game setup.
+	 */
 	public ImmutableGameSetup(IGameSetup gameSetup) {
 		gameType = gameSetup.getGameType();
 		arenaWidth = gameSetup.getArenaWidth();
@@ -33,7 +65,7 @@ public final class ImmutableGameSetup implements IGameSetup {
 		maxNumberOfParticipants = gameSetup.getMaxNumberOfParticipants();
 		numberOfRounds = gameSetup.getNumberOfRounds();
 		gunCoolingRate = gameSetup.getGunCoolingRate();
-		inactiveTurns = gameSetup.getInactivityTurns();
+		inactivityTurns = gameSetup.getInactivityTurns();
 		turnTimeout = gameSetup.getTurnTimeout();
 		readyTimeout = gameSetup.getReadyTimeout();
 		delayedObserverTurns = gameSetup.getDelayedObserverTurns();
@@ -44,7 +76,7 @@ public final class ImmutableGameSetup implements IGameSetup {
 		maxNumberOfParticipantsFixed = gameSetup.isMaxNumberOfParticipantsFixed();
 		numberOfRoundsFixed = gameSetup.isNumberOfRoundsFixed();
 		gunCoolingRateFixed = gameSetup.isGunCoolingRateFixed();
-		inactiveTurnsFixed = gameSetup.isInactiveTurnsFixed();
+		inactivityTurnsFixed = gameSetup.isInactiveTurnsFixed();
 		turnTimeoutFixed = gameSetup.isTurnTimeoutFixed();
 		readyTimeoutFixed = gameSetup.isReadyTimeoutFixed();
 		delayedObserverTurnsFixed = gameSetup.isDelayedObserverTurnsFixed();
@@ -87,7 +119,7 @@ public final class ImmutableGameSetup implements IGameSetup {
 
 	@Override
 	public Integer getInactivityTurns() {
-		return inactiveTurns;
+		return inactivityTurns;
 	}
 
 	@Override
@@ -137,7 +169,7 @@ public final class ImmutableGameSetup implements IGameSetup {
 
 	@Override
 	public Boolean isInactiveTurnsFixed() {
-		return inactiveTurnsFixed;
+		return inactivityTurnsFixed;
 	}
 
 	@Override

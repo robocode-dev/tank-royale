@@ -29,7 +29,7 @@ public final class ImmutableBot implements IBot {
 	private final IScore score;
 
 	/**
-	 * Create a immutable bot instance.
+	 * Creates a immutable bot instance.
 	 * 
 	 * @param id
 	 *            is the bot id
@@ -68,7 +68,7 @@ public final class ImmutableBot implements IBot {
 	}
 
 	/**
-	 * Create a immutable bot instance.
+	 * Creates a immutable bot instance based on another bot instance.
 	 * 
 	 * @param bot
 	 *            is the bot instance that is deep copied into this bot instance.

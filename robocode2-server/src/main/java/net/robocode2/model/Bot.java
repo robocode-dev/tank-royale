@@ -1,7 +1,7 @@
 package net.robocode2.model;
 
 /**
- * A mutable bot instance.
+ * Mutable bot instance.
  * 
  * @author Flemming N. Larsen
  */

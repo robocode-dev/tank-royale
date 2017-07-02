@@ -1,7 +1,7 @@
 package net.robocode2.model;
 
 /**
- * A mutable game setup.
+ * Mutable game setup.
  * 
  * @author Flemming N. Larsen
  */
@@ -88,7 +88,7 @@ public class GameSetup implements IGameSetup {
 	}
 
 	/**
-	 * Creates an immutable game setup that is a copy of this bot.
+	 * Creates an immutable game setup that is a copy of this game setup.
 	 * 
 	 * @return an immutable game setup
 	 */

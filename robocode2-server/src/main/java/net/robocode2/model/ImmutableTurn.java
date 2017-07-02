@@ -8,14 +8,30 @@ import java.util.Set;
 
 import net.robocode2.model.events.IEvent;
 
+/**
+ * Immutable turn instance
+ * 
+ * @author Flemming N. Larsen
+ */
 public final class ImmutableTurn implements ITurn {
 
+	/** Turn number */
 	private final int turnNumber;
+	/** Bots */
 	private final Set<IBot> bots;
+	/** Bullets */
 	private final Set<IBullet> bullets;
+	/** Observer events */
 	private final Set<IEvent> observerEvents;
+	/** Map over bot events */
 	private final Map<Integer, Set<IEvent>> botEventsMap;
 
+	/**
+	 * Creates a immutable turn based on another turn.
+	 * 
+	 * @param bot
+	 *            is the turn that is deep copied into this turn.
+	 */
 	public ImmutableTurn(ITurn turn) {
 		turnNumber = turn.getTurnNumber();
 

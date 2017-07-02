@@ -1,24 +1,24 @@
 package net.robocode2.model;
 
 /**
- * A mutable bullet instance.
+ * Mutable bullet instance.
  * 
  * @author Flemming N. Larsen
  */
 public class Bullet implements IBullet {
-	/** id of the bot that fired this bullet */
+	/** Id of the bot that fired this bullet */
 	private int botId;
-	/** id of the bullet */
+	/** Id of the bullet */
 	private int bulletId;
-	/** power of the bullet */
+	/** Power of the bullet */
 	private double power;
-	/** position, the bullet was fired from */
+	/** Position, the bullet was fired from */
 	private Point firePosition;
-	/** direction of the bullet in degrees */
+	/** Direction of the bullet in degrees */
 	private double direction;
-	/** bullet speed */
+	/** Bullet speed */
 	private double speed;
-	/** tick, which is the number of turns since the bullet was fired */
+	/** Tick, which is the number of turns since the bullet was fired */
 	private int tick;
 
 	/**
