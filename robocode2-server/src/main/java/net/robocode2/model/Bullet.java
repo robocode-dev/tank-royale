@@ -44,9 +44,9 @@ public class Bullet implements IBullet {
 	}
 
 	/**
-	 * Creates an immutable bullet instance that is a copy of this bullet.
+	 * Creates a immutable bullet instance that is a deep copy of this bullet.
 	 * 
-	 * @return an immutable bullet instance
+	 * @return a immutable bullet instance
 	 */
 	public ImmutableBullet toImmutableBullet() {
 		return new ImmutableBullet(this);

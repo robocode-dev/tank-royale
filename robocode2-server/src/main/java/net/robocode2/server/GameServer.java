@@ -171,7 +171,7 @@ public final class GameServer {
 
 		// Prepare model update
 
-		modelUpdater = new ModelUpdater(gameSetup, new HashSet<Integer>(participantIds.values()));
+		modelUpdater = ModelUpdater.create(gameSetup, new HashSet<Integer>(participantIds.values()));
 
 		// Create timer to updating game state
 

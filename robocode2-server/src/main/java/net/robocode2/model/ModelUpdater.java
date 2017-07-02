@@ -29,39 +29,76 @@ import net.robocode2.model.events.ScannedBotEvent;
 import net.robocode2.util.BotIntentNullified;
 import net.robocode2.util.MathUtil;
 
+/**
+ * Model updater, which keep track of the model state for each turn of a game.
+ * 
+ * @author Flemming N. Larsen
+ */
 public class ModelUpdater {
 
+	/** Game setup */
 	private final IGameSetup setup;
+	/** Participant ids */
 	private final Set<Integer> participantIds;
 
+	/** Score keeper */
 	private final ScoreKeeper scoreKeeper;
 
-	private GameState gameState;
-	private Round round;
-	private Turn turn;
+	/** Map over bot intents identified by bot ids */
+	private final Map<Integer /* BotId */, BotIntent> botIntentsMap = new HashMap<>();
+	/** Map over bots identified by bot ids */
+	private final Map<Integer /* BotId */, Bot> botsMap = new HashMap<>();
+	/** Bullets */
+	private final Set<Bullet> bullets = new HashSet<>();
 
+	/** Game state */
+	private final GameState gameState;
+	/** Round record */
+	private final Round round;
+	/** Turn record */
+	private final Turn turn;
+
+	/** Current round number */
 	private int roundNumber;
+	/** Current turn number */
 	private int turnNumber;
+	/** Flag specifying if the round has ended */
 	private boolean roundEnded;
 
+	/** Id for the next bullet that comes into existence */
 	private int nextBulletId;
 
+	/** Previous turn */
 	private ImmutableTurn previousTurn;
 
-	private Map<Integer /* BotId */, BotIntent> botIntentsMap = new HashMap<>();
-	private Map<Integer /* BotId */, Bot> botsMap = new HashMap<>();
-	private Set<Bullet> bullets = new HashSet<>();
+	/**
+	 * Creates a new model updater
+	 * 
+	 * @param setup
+	 *            is the game setup
+	 * @param participantIds
+	 *            is the ids of the participating bots
+	 * @return model updater
+	 */
+	public static ModelUpdater create(GameSetup setup, Set<Integer> participantIds) {
+		return new ModelUpdater(setup, participantIds);
+	}
 
-	public ModelUpdater(GameSetup setup, Set<Integer> participantIds) {
+	/**
+	 * Creates a new model updater
+	 * 
+	 * @param setup
+	 *            is the game setup
+	 * @param participantIds
+	 *            is the ids of the participating bots
+	 * @return model updater
+	 */
+	private ModelUpdater(GameSetup setup, Set<Integer> participantIds) {
 		this.setup = setup;
 		this.participantIds = new HashSet<>(participantIds);
 
 		this.scoreKeeper = new ScoreKeeper(participantIds);
 
-		initialize();
-	}
-
-	private void initialize() {
 		// Prepare game state builders
 		gameState = new GameState();
 		round = new Round();
@@ -75,6 +112,13 @@ public class ModelUpdater {
 		turnNumber = 0;
 	}
 
+	/**
+	 * Updates game state
+	 * 
+	 * @param botIntents
+	 *            is the bot intents, which gives instructions to the game from the individual bot
+	 * @return new game state
+	 */
 	public ImmutableGameState update(Map<Integer /* BotId */, BotIntent> botIntents) {
 
 		updateBotIntents(botIntents);
@@ -92,6 +136,12 @@ public class ModelUpdater {
 		return buildUpdatedGameState();
 	}
 
+	/**
+	 * Updates the current bot intents with the new bot intents
+	 * 
+	 * @param botIntents
+	 *            is the new bot intents
+	 */
 	private void updateBotIntents(Map<Integer /* BotId */, BotIntent> botIntents) {
 		for (Map.Entry<Integer, BotIntent> entry : botIntents.entrySet()) {
 			Integer botId = entry.getKey();
@@ -104,6 +154,9 @@ public class ModelUpdater {
 		}
 	}
 
+	/**
+	 * Proceed to next round
+	 */
 	private void nextRound() {
 		roundNumber++;
 		round.setRoundNumber(roundNumber);
@@ -117,6 +170,9 @@ public class ModelUpdater {
 		scoreKeeper.clear();
 	}
 
+	/**
+	 * Proceed to next turn
+	 */
 	private void nextTurn() {
 
 		previousTurn = turn.toImmutableTurn();
@@ -128,7 +184,7 @@ public class ModelUpdater {
 		turn.setTurnNumber(turnNumber);
 
 		// Remove dead bots (cannot participate in new round)
-		removeDeadBots();
+		removeDefeatedBots();
 
 		// Execute bot intents
 		executeBotIntents();
@@ -149,7 +205,7 @@ public class ModelUpdater {
 		checkBulletHits();
 
 		// Cleanup killed robots (events)
-		checkForKilledBots();
+		checkForDefeatedBots();
 
 		// Fire guns
 		cooldownAndFireGuns();
@@ -161,12 +217,25 @@ public class ModelUpdater {
 		checkIfRoundOrGameOver();
 
 		// Store bot snapshots
-		turn.setBots(botsMap.values());
+		Set<IBot> botSet = new HashSet<>();
+		for (Bot bot : botsMap.values()) {
+			botSet.add(bot.toImmutableBot());
+		}
+		turn.setBots(botSet);
 
 		// Store bullet snapshots
-		turn.setBullets(bullets);
+		Set<IBullet> bulletSet = new HashSet<>();
+		for (Bullet bullet : bullets) {
+			bulletSet.add(bullet.toImmutableBullet());
+		}
+		turn.setBullets(bulletSet);
 	}
 
+	/**
+	 * Build updated game state
+	 * 
+	 * @return new game state
+	 */
 	private ImmutableGameState buildUpdatedGameState() {
 		round.appendTurn(turn);
 
@@ -175,6 +244,9 @@ public class ModelUpdater {
 		return gameState.toImmutableGameState();
 	}
 
+	/**
+	 * Initializes bot states
+	 */
 	private void initializeBotStates() {
 		Set<Integer> occupiedCells = new HashSet<Integer>();
 
@@ -195,9 +267,20 @@ public class ModelUpdater {
 		}
 
 		// Store bot snapshots into current turn
-		turn.setBots(botsMap.values());
+		Set<IBot> botSet = new HashSet<>();
+		for (Bot bot : botsMap.values()) {
+			botSet.add(bot.toImmutableBot());
+		}
+		turn.setBots(botSet);
 	}
 
+	/**
+	 * Calculates a random bot position
+	 * 
+	 * @param occupiedCells
+	 *            is the occupied cells, where other bots are positioned
+	 * @return a random bot position
+	 */
 	private Point randomBotPosition(Set<Integer> occupiedCells) {
 
 		final int gridWidth = setup.getArenaWidth() / 50;
@@ -236,6 +319,9 @@ public class ModelUpdater {
 		return new Point(x, y);
 	}
 
+	/**
+	 * Execute bot intents
+	 */
 	private void executeBotIntents() {
 
 		for (Integer botId : botsMap.keySet()) {
@@ -255,7 +341,7 @@ public class ModelUpdater {
 
 			// Turn body, gun, radar, and move bot to new position
 
-			double speed = RuleMath.calcBotSpeed(bot.getSpeed(), immuBotIntent.getTargetSpeed());
+			double speed = RuleMath.calcNewBotSpeed(bot.getSpeed(), immuBotIntent.getTargetSpeed());
 
 			double limitedTurnRate = RuleMath.limitTurnRate(immuBotIntent.getDrivingTurnRate(), speed);
 			double limitedGunTurnRate = RuleMath.limitGunTurnRate(immuBotIntent.getGunTurnRate());
@@ -265,7 +351,7 @@ public class ModelUpdater {
 			double gunDirection = normalAbsoluteDegrees(bot.getGunDirection() + limitedGunTurnRate);
 			double radarDirection = normalAbsoluteDegrees(bot.getRadarDirection() + limitedRadarTurnRate);
 
-			ScanField scanField = new ScanField(RuleMath.calcScanAngle(immuBotIntent.getRadarTurnRate()), RADAR_RADIUS);
+			ScanField scanField = new ScanField(limitedRadarTurnRate, RADAR_RADIUS);
 
 			bot.setDirection(direction);
 			bot.setGunDirection(gunDirection);
@@ -277,6 +363,9 @@ public class ModelUpdater {
 		}
 	}
 
+	/**
+	 * Check bullet hits
+	 */
 	private void checkBulletHits() {
 		Line[] boundingLines = new Line[bullets.size()];
 
@@ -302,7 +391,7 @@ public class ModelUpdater {
 
 				// Check if the bullets bounding circles intersects (is fast) before checking if the bullets bounding
 				// lines intersect (is slower)
-				if (isBulletsBoundingCirclesColliding(endPos1, endPos2) && MathUtil.isLineIntersectingLine(
+				if (isBulletsMaxBoundingCirclesColliding(endPos1, endPos2) && MathUtil.isLineIntersectingLine(
 						boundingLines[i].start, boundingLines[i].end, boundingLines[j].start, boundingLines[j].end)) {
 
 					ImmutableBullet bullet1 = bulletArray[i].toImmutableBullet();
@@ -318,8 +407,8 @@ public class ModelUpdater {
 					turn.addObserverEvent(bulletHitBulletEvent1);
 
 					// Remove bullets from the arena
-					bullets.remove(bullet1);
-					bullets.remove(bullet2);
+					bullets.remove(bulletArray[i]);
+					bullets.remove(bulletArray[j]);
 				}
 			}
 
@@ -364,22 +453,37 @@ public class ModelUpdater {
 		}
 	}
 
-	private static final double BULLET_BOUNDING_CIRCLE_DIAMETER = 2 * MAX_BULLET_SPEED;
-	private static final double BULLET_BOUNDING_CIRCLE_DIAMETER_SQUARED = BULLET_BOUNDING_CIRCLE_DIAMETER
-			* BULLET_BOUNDING_CIRCLE_DIAMETER;
+	/** Maximum bounding circle diameter of a bullet moving with max speed */
+	private static final double BULLET_MAX_BOUNDING_CIRCLE_DIAMETER = 2 * MAX_BULLET_SPEED;
+	/** Square of maximum bounding circle diameter of a bullet moving with max speed */
+	private static final double BULLET_MAX_BOUNDING_CIRCLE_DIAMETER_SQUARED = BULLET_MAX_BOUNDING_CIRCLE_DIAMETER
+			* BULLET_MAX_BOUNDING_CIRCLE_DIAMETER;
 
-	private static boolean isBulletsBoundingCirclesColliding(Point bullet1Position, Point bullet2Position) {
+	/**
+	 * Checks if the maximum bounding circles of two bullets are colliding. This is a pre-check if two bullets might be
+	 * colliding.
+	 * 
+	 * @param bullet1Position
+	 *            is the position of the 1st bullet
+	 * @param bullet2Position
+	 *            is the position of the 2nd bullet
+	 * @return true if the bounding circles are colliding; false otherwise
+	 */
+	private static boolean isBulletsMaxBoundingCirclesColliding(Point bullet1Position, Point bullet2Position) {
 		double dx = bullet2Position.x - bullet1Position.x;
-		if (Math.abs(dx) > BULLET_BOUNDING_CIRCLE_DIAMETER) {
+		if (Math.abs(dx) > BULLET_MAX_BOUNDING_CIRCLE_DIAMETER) {
 			return false;
 		}
 		double dy = bullet2Position.y - bullet1Position.y;
-		if (Math.abs(dy) > BULLET_BOUNDING_CIRCLE_DIAMETER) {
+		if (Math.abs(dy) > BULLET_MAX_BOUNDING_CIRCLE_DIAMETER) {
 			return false;
 		}
-		return ((dx * dx) + (dy * dy) <= BULLET_BOUNDING_CIRCLE_DIAMETER_SQUARED);
+		return ((dx * dx) + (dy * dy) <= BULLET_MAX_BOUNDING_CIRCLE_DIAMETER_SQUARED);
 	}
 
+	/**
+	 * Check collisions between bots
+	 */
 	private void checkBotCollisions() {
 
 		Bot[] botArray = new Bot[botsMap.size()];
@@ -459,9 +563,19 @@ public class ModelUpdater {
 		}
 	}
 
+	/** Square of the bounding circle diameter of a bot */
 	private static final double BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED = BOT_BOUNDING_CIRCLE_DIAMETER
 			* BOT_BOUNDING_CIRCLE_DIAMETER;
 
+	/**
+	 * Checks if the bounding circles of two bots are colliding.
+	 * 
+	 * @param bot1Position
+	 *            is the position of the 1st bot
+	 * @param bot2Position
+	 *            is the position of the 2nd bot
+	 * @return true if the bounding circles are colliding; false otherwise
+	 */
 	private static boolean isBotsBoundingCirclesColliding(Point bot1Position, Point bot2Position) {
 		double dx = bot2Position.x - bot1Position.x;
 		if (Math.abs(dx) > BOT_BOUNDING_CIRCLE_DIAMETER) { // 2 x radius
@@ -474,6 +588,15 @@ public class ModelUpdater {
 		return ((dx * dx) + (dy * dy) <= BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED);
 	}
 
+	/**
+	 * Checks if a bot is ramming another bot
+	 * 
+	 * @param bot
+	 *            is the bot the attempts ramming
+	 * @param victim
+	 *            is the victim bot
+	 * @return true if the bot is ramming; false otherwise
+	 */
 	private static boolean isRamming(IBot bot, IBot victim) {
 
 		double dx = victim.getPosition().x - bot.getPosition().x;
@@ -487,12 +610,18 @@ public class ModelUpdater {
 				|| (bot.getSpeed() < 0 && (bearing < -90 || bearing > 90)));
 	}
 
+	/**
+	 * Updates bullet positions
+	 */
 	private void updateBulletPositions() {
 		for (Bullet bullet : bullets) {
 			bullet.incrementTick(); // The tick is used to calculate new position by calling getPosition()
 		}
 	}
 
+	/**
+	 * Chekcs collisions between bots and the walls
+	 */
 	private void checkBotWallCollisions() {
 
 		for (Bot bot : botsMap.values()) {
@@ -563,6 +692,9 @@ public class ModelUpdater {
 		}
 	}
 
+	/**
+	 * Checks collisions between the bullets and the walls
+	 */
 	private void checkBulletWallCollisions() {
 		Iterator<Bullet> iterator = bullets.iterator(); // due to removal
 		while (iterator.hasNext()) {
@@ -581,7 +713,10 @@ public class ModelUpdater {
 		}
 	}
 
-	private void checkForKilledBots() {
+	/**
+	 * Checks if any bots have been defeated
+	 */
+	private void checkForDefeatedBots() {
 		for (Bot bot : botsMap.values()) {
 			if (bot.isDead()) {
 				int victimId = bot.getId();
@@ -593,7 +728,10 @@ public class ModelUpdater {
 		}
 	}
 
-	private void removeDeadBots() {
+	/**
+	 * Removes defeated bots
+	 */
+	private void removeDefeatedBots() {
 		Iterator<Bot> iterator = botsMap.values().iterator(); // due to removal
 		while (iterator.hasNext()) {
 			Bot bot = iterator.next();
@@ -603,6 +741,9 @@ public class ModelUpdater {
 		}
 	}
 
+	/**
+	 * Cool down and fire guns
+	 */
 	private void cooldownAndFireGuns() {
 		for (Bot bot : botsMap.values()) {
 
@@ -635,6 +776,14 @@ public class ModelUpdater {
 		}
 	}
 
+	/**
+	 * Handle fired bullet
+	 * 
+	 * @param bot
+	 *            is the bot firing the bullet
+	 * @param firepower
+	 *            is the firepower of the bullet
+	 */
 	private void handleFiredBullet(Bot bot, double firepower) {
 		int botId = bot.getId();
 
@@ -656,6 +805,9 @@ public class ModelUpdater {
 		turn.addObserverEvent(bulletFiredEvent);
 	}
 
+	/**
+	 * Checks the scan field for scanned bots
+	 */
 	private void checkScanFields() {
 
 		Bot[] botArray = new Bot[botsMap.size()];
@@ -697,6 +849,9 @@ public class ModelUpdater {
 		}
 	}
 
+	/**
+	 * Checks if the round is ended or game is over
+	 */
 	private void checkIfRoundOrGameOver() {
 		if (botsMap.size() <= 1) {
 			// Round ended
@@ -709,10 +864,16 @@ public class ModelUpdater {
 		}
 	}
 
+	/**
+	 * Returns a random direction
+	 * 
+	 * @return direction in degrees
+	 */
 	private static double randomDirection() {
 		return Math.random() * 360;
 	}
 
+	/** Simple line class */
 	private class Line {
 		Point start;
 		Point end;
