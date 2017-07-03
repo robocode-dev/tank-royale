@@ -64,8 +64,9 @@ public class GameSetup implements IGameSetup {
 	 *            is the other game setup, which is deep copied into this game setup.
 	 */
 	public GameSetup(IGameSetup gameSetup) {
+		gameType = gameSetup.getGameType();
 		arenaWidth = gameSetup.getArenaWidth();
-		arenaHeight = gameSetup.getArenaWidth();
+		arenaHeight = gameSetup.getArenaHeight();
 		minNumberOfParticipants = gameSetup.getMinNumberOfParticipants();
 		maxNumberOfParticipants = gameSetup.getMaxNumberOfParticipants();
 		numberOfRounds = gameSetup.getNumberOfRounds();
@@ -175,8 +176,14 @@ public class GameSetup implements IGameSetup {
 	public void setArenaWidth(Integer arenaWidth) {
 		if (arenaWidth == null) {
 			arenaWidth = DEFAULT_ARENA_WIDTH;
-		} else if (arenaWidth < 400) {
-			throw new IllegalArgumentException("arenaWidth cannot be less than 400");
+		} else {
+			if (arenaWidth < IRuleConstants.ARENA_MIN_WIDTH) {
+				throw new IllegalArgumentException("arenaWidth cannot be less than " + IRuleConstants.ARENA_MIN_WIDTH);
+			}
+			if (arenaWidth > IRuleConstants.ARENA_MAX_WIDTH) {
+				throw new IllegalArgumentException(
+						"arenaWidth cannot be greater than " + IRuleConstants.ARENA_MAX_WIDTH);
+			}
 		}
 		this.arenaWidth = arenaWidth;
 	}
@@ -190,8 +197,15 @@ public class GameSetup implements IGameSetup {
 	public void setArenaHeight(Integer arenaHeight) {
 		if (arenaHeight == null) {
 			arenaHeight = DEFAULT_ARENA_HEIGHT;
-		} else if (arenaHeight < 400) {
-			throw new IllegalArgumentException("arenaHeight cannot be less than 400");
+		} else {
+			if (arenaHeight < IRuleConstants.ARENA_MIN_HEIGHT) {
+				throw new IllegalArgumentException(
+						"arenaHeight cannot be less than " + IRuleConstants.ARENA_MIN_HEIGHT);
+			}
+			if (arenaHeight > IRuleConstants.ARENA_MAX_HEIGHT) {
+				throw new IllegalArgumentException(
+						"arenaHeight cannot be greater than " + IRuleConstants.ARENA_MAX_HEIGHT);
+			}
 		}
 		this.arenaHeight = arenaHeight;
 	}
@@ -252,10 +266,15 @@ public class GameSetup implements IGameSetup {
 	public void setGunCoolingRate(Double gunCoolingRate) {
 		if (gunCoolingRate == null) {
 			gunCoolingRate = DEFAULT_GUN_COOLING_RATE;
-		} else if (gunCoolingRate < 0.1) {
-			throw new IllegalArgumentException("gunCoolingRate cannot be less than 0.1");
-		} else if (gunCoolingRate > 0.7) {
-			throw new IllegalArgumentException("gunCoolingRate cannot be greater than 0.7");
+		} else {
+			if (gunCoolingRate < IRuleConstants.MIN_GUN_COOLING_RATE) {
+				throw new IllegalArgumentException(
+						"gunCoolingRate cannot be less than " + IRuleConstants.MIN_GUN_COOLING_RATE);
+			}
+			if (gunCoolingRate > IRuleConstants.MAX_GUN_COOLING_RATE) {
+				throw new IllegalArgumentException(
+						"gunCoolingRate cannot be greater than " + IRuleConstants.MAX_GUN_COOLING_RATE);
+			}
 		}
 		this.gunCoolingRate = gunCoolingRate;
 	}
@@ -269,8 +288,8 @@ public class GameSetup implements IGameSetup {
 	public void setInactivityTurns(Integer inactivityTurns) {
 		if (inactivityTurns == null) {
 			inactivityTurns = DEFAULT_INACTIVITY_TURNS;
-		} else if (inactivityTurns < 100) {
-			throw new IllegalArgumentException("inactivityTurns cannot be less than 100");
+		} else if (inactivityTurns < 0) {
+			throw new IllegalArgumentException("inactivityTurns cannot be less than 0");
 		}
 		this.inactivityTurns = inactivityTurns;
 	}
@@ -284,6 +303,8 @@ public class GameSetup implements IGameSetup {
 	public void setTurnTimeout(Integer turnTimeout) {
 		if (turnTimeout == null) {
 			turnTimeout = DEFAULT_TURN_TIMEOUT;
+		} else if (turnTimeout < 0) {
+			throw new IllegalArgumentException("turnTimeout cannot be less than 0");
 		}
 		this.turnTimeout = turnTimeout;
 	}
@@ -297,6 +318,8 @@ public class GameSetup implements IGameSetup {
 	public void setReadyTimeout(Integer readyTimeout) {
 		if (readyTimeout == null) {
 			readyTimeout = DEFAULT_READY_TIMEOUT;
+		} else if (readyTimeout < 0) {
+			throw new IllegalArgumentException("readyTimeout cannot be less than 0");
 		}
 		this.readyTimeout = readyTimeout;
 	}
@@ -310,6 +333,8 @@ public class GameSetup implements IGameSetup {
 	public void setDelayedObserverTurns(Integer delayedObserverTurns) {
 		if (delayedObserverTurns == null) {
 			delayedObserverTurns = DEFAULT_DELAYED_OBSERVER_TURNS;
+		} else if (delayedObserverTurns < 0) {
+			throw new IllegalArgumentException("delayedObserverTurns cannot be less than 0");
 		}
 		this.delayedObserverTurns = delayedObserverTurns;
 	}

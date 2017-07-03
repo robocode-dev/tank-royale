@@ -60,10 +60,11 @@ public class BotTest {
 
 	@Test
 	public void toImmutableBot() {
-		Bot bot = new Bot(initializedBot());
+		IBot ibot = initializedBot();
+		Bot bot = new Bot(ibot);
 		ImmutableBot immutableBot = bot.toImmutableBot();
 
-		assertReflectionEquals(initializedBot(), immutableBot);
+		assertReflectionEquals(ibot, immutableBot);
 	}
 
 	@Test
