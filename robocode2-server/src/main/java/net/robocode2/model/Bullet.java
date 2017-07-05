@@ -6,6 +6,7 @@ package net.robocode2.model;
  * @author Flemming N. Larsen
  */
 public class Bullet implements IBullet {
+
 	/** Id of the bot that fired this bullet */
 	private int botId;
 	/** Id of the bullet */

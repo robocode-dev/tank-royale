@@ -16,11 +16,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class GameSetupTest {
 
-	private IGameSetup initializedGameSetup() {
+	static GameSetup initializedGameSetup;
+
+	@BeforeClass
+	public static void initialize() {
 		GameSetup setup = new GameSetup();
 
 		setup.setGameType("game type");
@@ -45,7 +49,7 @@ public class GameSetupTest {
 		setup.setDelayedObserverTurns(56);
 		setup.setDelayedObserverTurnsFixed(true);
 
-		return setup.toImmutableGameSetup();
+		initializedGameSetup = setup;
 	}
 
 	@Test
@@ -78,17 +82,13 @@ public class GameSetupTest {
 
 	@Test
 	public void constructorIGameSetup() {
-		IGameSetup isetup = initializedGameSetup();
-		assertReflectionEquals(isetup, new GameSetup(isetup).toImmutableGameSetup());
+		assertReflectionEquals(initializedGameSetup, new GameSetup(initializedGameSetup));
 	}
 
 	@Test
 	public void toImmutableGameSetup() {
-		IGameSetup isetup = initializedGameSetup();
-		GameSetup setup = new GameSetup(isetup);
-		ImmutableGameSetup immutableSetup = setup.toImmutableGameSetup();
-
-		assertReflectionEquals(isetup, immutableSetup);
+		assertReflectionEquals(initializedGameSetup.toImmutableGameSetup(),
+				new GameSetup(initializedGameSetup).toImmutableGameSetup());
 	}
 
 	@Test

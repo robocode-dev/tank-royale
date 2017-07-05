@@ -8,7 +8,7 @@ import org.junit.Test;
 public class BotIntentTest {
 
 	@Test
-	public void newInstance() {
+	public void constructorEmpty() {
 		BotIntent intent = new BotIntent();
 
 		assertNull(intent.getTargetSpeed());

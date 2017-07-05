@@ -4,27 +4,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class BotTest {
 
-	private IBot initializedBot() {
-		int id = 7913;
-		double energy = 89.27;
-		Point position = new Point(123.75, 567.125);
-		double direction = 47.3;
-		double gunDirection = 158.9;
-		double radarDirection = 235.11;
-		double speed = 7.5;
-		double gunHeat = 2.71;
-		ScanField scanField = new ScanField(123.45, 1200);
-		IScore score = initializedScore();
+	static Bot initializedBot;
+	static Score initializedScore;
 
-		return new ImmutableBot(id, energy, position, direction, gunDirection, radarDirection, speed, gunHeat,
-				scanField, score);
-	}
-
-	private IScore initializedScore() {
+	@BeforeClass
+	public static void initialize() {
 		Score score = new Score();
 		score.setBulletDamage(3.48);
 		score.setBulletKillBonus(0.3);
@@ -32,7 +21,21 @@ public class BotTest {
 		score.setRamKillBonus(0.56);
 		score.setSurvival(17.09);
 		score.setLastSurvivorBonus(4.3);
-		return score;
+
+		Bot bot = new Bot();
+		bot.setId(7913);
+		bot.setEnergy(89.27);
+		bot.setPosition(new Point(123.75, 567.125));
+		bot.setDirection(47.3);
+		bot.setGunDirection(158.9);
+		bot.setRadarDirection(235.11);
+		bot.setSpeed(7.5);
+		bot.setGunHeat(2.71);
+		bot.setScanField(new ScanField(123.45, 1200));
+		bot.setScore(score);
+
+		initializedBot = bot;
+		initializedScore = score;
 	}
 
 	@Test
@@ -53,18 +56,12 @@ public class BotTest {
 
 	@Test
 	public void constructorIBot() {
-		IBot ibot = initializedBot();
-
-		assertReflectionEquals(ibot, new Bot(ibot).toImmutableBot());
+		assertReflectionEquals(initializedBot, new Bot(initializedBot));
 	}
 
 	@Test
 	public void toImmutableBot() {
-		IBot ibot = initializedBot();
-		Bot bot = new Bot(ibot);
-		ImmutableBot immutableBot = bot.toImmutableBot();
-
-		assertReflectionEquals(ibot, immutableBot);
+		assertReflectionEquals(initializedBot.toImmutableBot(), new Bot(initializedBot).toImmutableBot());
 	}
 
 	@Test
@@ -144,8 +141,8 @@ public class BotTest {
 	@Test
 	public void setScore() {
 		Bot bot = new Bot();
-		IScore score = initializedScore();
-		bot.setScore(score);
+		IScore score = initializedScore;
+		bot.setScore(initializedBot.getScore());
 
 		assertReflectionEquals(score, bot.getScore());
 	}
