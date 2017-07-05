@@ -62,7 +62,7 @@ public class GameState implements IGameState {
 	}
 
 	/**
-	 * Flag the game has ended
+	 * Flag that game has ended
 	 */
 	public void setGameEnded() {
 		gameEnded = true;

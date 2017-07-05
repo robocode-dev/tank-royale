@@ -60,4 +60,11 @@ public final class Round implements IRound {
 	public void appendTurn(ITurn turn) {
 		turns.add(turn);
 	}
+
+	/**
+	 * Flag that round has ended
+	 */
+	public void setRoundEnded() {
+		roundEnded = true;
+	}
 }
