@@ -38,7 +38,7 @@ public class ImmutableRoundTest {
 				initializedRound.isRoundEnded());
 
 		assertEquals(initializedRound.getRoundNumber(), round.getRoundNumber());
-		assertEquals(initializedRound.getRoundNumber(), round.getRoundNumber());
+		assertEquals(initializedRound.getTurns(), round.getTurns());
 		assertEquals(initializedRound.isRoundEnded(), round.isRoundEnded());
 	}
 
