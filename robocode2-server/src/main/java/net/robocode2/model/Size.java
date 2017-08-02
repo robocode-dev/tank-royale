@@ -8,9 +8,9 @@ package net.robocode2.model;
 public final class Size {
 
 	/** Width */
-	private final double width;
+	public final double width;
 	/** Height */
-	private final double height;
+	public final double height;
 
 	/**
 	 * Creates a new size
@@ -23,15 +23,5 @@ public final class Size {
 	public Size(double width, double height) {
 		this.width = width;
 		this.height = height;
-	}
-
-	/** Returns the width */
-	public double getWidth() {
-		return width;
-	}
-
-	/** Returns the height */
-	public double getHeight() {
-		return height;
 	}
 }

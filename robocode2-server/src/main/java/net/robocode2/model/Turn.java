@@ -115,6 +115,7 @@ public final class Turn implements ITurn {
 	 *            is the bot event, only given to the specified bot
 	 */
 	public void addPrivateBotEvent(int botId, IEvent event) {
+		// Only a specific bot retrieves the event, not any other bot
 		Set<IEvent> botEvents = botEventsMap.get(botId);
 		if (botEvents == null) {
 			botEvents = new HashSet<>();
@@ -132,6 +133,7 @@ public final class Turn implements ITurn {
 	 *            is the bot event
 	 */
 	public void addPublicBotEvent(IEvent event) {
+		// Every bots get notified about the bot event
 		for (IBot bot : bots) {
 			addPrivateBotEvent(bot.getId(), event);
 		}
