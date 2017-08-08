@@ -170,7 +170,7 @@ public class RuleMathTest {
 		assertEquals(4 * 3 + 2 * (3 - 1), RuleMath.calcBulletDamage(3), 0);
 	}
 
-	@Test // TODO
+	@Test
 	public void calcGunHeat() {
 		assertEquals(1 + (0 / 5), RuleMath.calcGunHeat(0), 0);
 		assertEquals(1 + (0.1 / 5), RuleMath.calcGunHeat(0.1), 0);

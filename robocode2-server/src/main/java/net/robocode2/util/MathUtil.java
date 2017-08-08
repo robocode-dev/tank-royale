@@ -409,4 +409,13 @@ public final class MathUtil {
 		// Return closest point on the line
 		return new Point(closestX, closestY);
 	}
+
+	/**
+	 * Returns a random direction in the range 0 up to 360 degrees.
+	 * 
+	 * @return direction in degrees in the range [0;360[ degrees.
+	 */
+	public static double randomDirection() {
+		return Math.random() * 360;
+	}
 }

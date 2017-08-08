@@ -415,4 +415,12 @@ public class MathUtilTest {
 		assertTrue(MathUtil.isClockwise(10, 0.0000001, 10, 0));
 		assertTrue(MathUtil.isClockwise(10, 0, 10, -0.0000001));
 	}
+
+	@Test
+	public void randomDirection() {
+		for (int i = 0; i < 10_000; i++) {
+			double dir = MathUtil.randomDirection();
+			assertTrue(0 <= dir && dir < 360);
+		}
+	}
 }

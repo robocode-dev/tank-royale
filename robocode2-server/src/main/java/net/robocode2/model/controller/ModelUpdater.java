@@ -1,4 +1,4 @@
-package net.robocode2.model;
+package net.robocode2.model.controller;
 
 import static net.robocode2.model.IRuleConstants.BOT_BOUNDING_CIRCLE_DIAMETER;
 import static net.robocode2.model.IRuleConstants.BOT_BOUNDING_CIRCLE_RADIUS;
@@ -18,6 +18,28 @@ import java.util.Map;
 import java.util.Set;
 
 import net.robocode2.game.ScoreKeeper;
+import net.robocode2.model.Arena;
+import net.robocode2.model.Bot;
+import net.robocode2.model.BotIntent;
+import net.robocode2.model.Bullet;
+import net.robocode2.model.GameSetup;
+import net.robocode2.model.GameState;
+import net.robocode2.model.IBot;
+import net.robocode2.model.IBotIntent;
+import net.robocode2.model.IBullet;
+import net.robocode2.model.IGameSetup;
+import net.robocode2.model.IRuleConstants;
+import net.robocode2.model.ImmutableBotIntent;
+import net.robocode2.model.ImmutableBullet;
+import net.robocode2.model.ImmutableGameState;
+import net.robocode2.model.ImmutableTurn;
+import net.robocode2.model.Point;
+import net.robocode2.model.Round;
+import net.robocode2.model.RuleMath;
+import net.robocode2.model.ScanField;
+import net.robocode2.model.Score;
+import net.robocode2.model.Size;
+import net.robocode2.model.Turn;
 import net.robocode2.model.events.BotDeathEvent;
 import net.robocode2.model.events.BotHitBotEvent;
 import net.robocode2.model.events.BotHitWallEvent;
@@ -256,9 +278,9 @@ public class ModelUpdater {
 			bot.setEnergy(INITIAL_BOT_ENERGY);
 			bot.setSpeed(0);
 			bot.setPosition(randomBotPosition(occupiedCells));
-			bot.setDirection(randomDirection());
-			bot.setGunDirection(randomDirection());
-			bot.setRadarDirection(randomDirection());
+			bot.setDirection(MathUtil.randomDirection());
+			bot.setGunDirection(MathUtil.randomDirection());
+			bot.setRadarDirection(MathUtil.randomDirection());
 			bot.setScanField(new ScanField(0, RADAR_RADIUS));
 			bot.setGunHeat(INITIAL_GUN_HEAT);
 			bot.setScore(new Score());
@@ -862,15 +884,6 @@ public class ModelUpdater {
 				gameState.setGameEnded();
 			}
 		}
-	}
-
-	/**
-	 * Returns a random direction
-	 * 
-	 * @return direction in degrees
-	 */
-	private static double randomDirection() {
-		return Math.random() * 360;
 	}
 
 	/** Simple line class */
