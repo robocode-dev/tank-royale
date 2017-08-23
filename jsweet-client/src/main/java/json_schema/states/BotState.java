@@ -3,7 +3,6 @@ package json_schema.states;
 import static def.jquery.Globals.$;
 
 import json_schema.types.Point;
-import json_schema.types.ScanField;
 
 public class BotState extends jsweet.lang.Object {
 
@@ -27,11 +26,11 @@ public class BotState extends jsweet.lang.Object {
 		return (Double) $get("radar-direction");
 	}
 
-	public Double getSpeed() {
-		return (Double) $get("speed");
+	public Double getRadarSpreadAngle() {
+		return (Double) $get("radar-spread-angle");
 	}
 
-	public ScanField getScanField() {
-		return (ScanField) $.extend(false, new ScanField(), $get("scan-field"));
+	public Double getSpeed() {
+		return (Double) $get("speed");
 	}
 }

@@ -27,9 +27,9 @@ public class ImmutableBotTest {
 		bot.setDirection(47.3);
 		bot.setGunDirection(158.9);
 		bot.setRadarDirection(235.11);
+		bot.setRadarSpreadAngle(123.45);
 		bot.setSpeed(7.5);
 		bot.setGunHeat(2.71);
-		bot.setScanField(new ScanField(123.45, 1200));
 		bot.setScore(score);
 
 		initializedBot = bot;
@@ -40,8 +40,8 @@ public class ImmutableBotTest {
 	public void constructorParams() {
 		ImmutableBot bot = new ImmutableBot(initializedBot.getId(), initializedBot.getEnergy(),
 				initializedBot.getPosition(), initializedBot.getDirection(), initializedBot.getGunDirection(),
-				initializedBot.getRadarDirection(), initializedBot.getSpeed(), initializedBot.getGunHeat(),
-				initializedBot.getScanField(), initializedBot.getScore());
+				initializedBot.getRadarDirection(), initializedBot.getRadarSpreadAngle(), initializedBot.getSpeed(),
+				initializedBot.getGunHeat(), initializedBot.getScore());
 
 		assertEquals(initializedBot.getId(), bot.getId());
 		assertEquals(initializedBot.getEnergy(), bot.getEnergy(), 0.0001);
@@ -49,9 +49,9 @@ public class ImmutableBotTest {
 		assertEquals(initializedBot.getDirection(), bot.getDirection(), 0.0001);
 		assertEquals(initializedBot.getGunDirection(), bot.getGunDirection(), 0.0001);
 		assertEquals(initializedBot.getRadarDirection(), bot.getRadarDirection(), 0.0001);
+		assertEquals(initializedBot.getRadarSpreadAngle(), bot.getRadarSpreadAngle(), 0.0001);
 		assertEquals(initializedBot.getSpeed(), bot.getSpeed(), 0.0001);
 		assertEquals(initializedBot.getGunHeat(), bot.getGunHeat(), 0.0001);
-		assertEquals(initializedBot.getScanField(), bot.getScanField());
 		assertEquals(initializedBot.getScore(), bot.getScore());
 	}
 
@@ -65,9 +65,9 @@ public class ImmutableBotTest {
 		assertEquals(initializedBot.getDirection(), bot.getDirection(), 0.0001);
 		assertEquals(initializedBot.getGunDirection(), bot.getGunDirection(), 0.0001);
 		assertEquals(initializedBot.getRadarDirection(), bot.getRadarDirection(), 0.0001);
+		assertEquals(initializedBot.getRadarSpreadAngle(), bot.getRadarSpreadAngle(), 0.0001);
 		assertEquals(initializedBot.getSpeed(), bot.getSpeed(), 0.0001);
 		assertEquals(initializedBot.getGunHeat(), bot.getGunHeat(), 0.0001);
-		assertEquals(initializedBot.getScanField(), bot.getScanField());
 		assertEquals(initializedBot.getScore(), bot.getScore());
 	}
 }

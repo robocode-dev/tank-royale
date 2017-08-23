@@ -25,6 +25,10 @@
 			"description": "Radar direction in degrees",
 			"$ref": "../types/angle.json"
 		},
+		"radar-spread-angle": {
+			"description": "Radar spread angle in degrees",
+			"$ref": "../types/angle.json"
+		},
 		"speed": {
 			"description": "Speed measured in units per turn",
 			"type": "number"

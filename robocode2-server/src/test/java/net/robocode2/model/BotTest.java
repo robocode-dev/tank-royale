@@ -29,9 +29,9 @@ public class BotTest {
 		bot.setDirection(47.3);
 		bot.setGunDirection(158.9);
 		bot.setRadarDirection(235.11);
+		bot.setRadarSpreadAngle(123.45);
 		bot.setSpeed(7.5);
 		bot.setGunHeat(2.71);
-		bot.setScanField(new ScanField(123.45, 1200));
 		bot.setScore(score);
 
 		initializedBot = bot;
@@ -48,9 +48,9 @@ public class BotTest {
 		assertEquals(0, bot.getDirection(), 0.0001);
 		assertEquals(0, bot.getGunDirection(), 0.0001);
 		assertEquals(0, bot.getRadarDirection(), 0.0001);
+		assertEquals(0, bot.getRadarSpreadAngle(), 0.0001);
 		assertEquals(0, bot.getSpeed(), 0.0001);
 		assertEquals(0, bot.getGunHeat(), 0.0001);
-		assertNull(bot.getScanField());
 		assertNull(bot.getScore());
 	}
 
@@ -114,6 +114,14 @@ public class BotTest {
 	}
 
 	@Test
+	public void setRadarSpreadAngle() {
+		Bot bot = new Bot();
+		bot.setRadarSpreadAngle(7913.7913);
+
+		assertEquals(7913.7913, bot.getRadarSpreadAngle(), 0.00001);
+	}
+
+	@Test
 	public void setSpeed() {
 		Bot bot = new Bot();
 		bot.setSpeed(7913.7913);
@@ -127,15 +135,6 @@ public class BotTest {
 		bot.setGunHeat(7913.7913);
 
 		assertEquals(7913.7913, bot.getGunHeat(), 0.00001);
-	}
-
-	@Test
-	public void setScanField() {
-		Bot bot = new Bot();
-		ScanField scanField = new ScanField(12.34, 56.78);
-		bot.setScanField(scanField);
-
-		assertReflectionEquals(scanField, bot.getScanField());
 	}
 
 	@Test

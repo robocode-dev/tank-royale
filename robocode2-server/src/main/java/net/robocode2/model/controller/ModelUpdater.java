@@ -7,7 +7,6 @@ import static net.robocode2.model.IRuleConstants.INITIAL_GUN_HEAT;
 import static net.robocode2.model.IRuleConstants.MAX_BULLET_POWER;
 import static net.robocode2.model.IRuleConstants.MAX_BULLET_SPEED;
 import static net.robocode2.model.IRuleConstants.MIN_BULLET_POWER;
-import static net.robocode2.model.IRuleConstants.RADAR_RADIUS;
 import static net.robocode2.model.IRuleConstants.RAM_DAMAGE;
 import static net.robocode2.util.MathUtil.normalAbsoluteDegrees;
 
@@ -36,7 +35,6 @@ import net.robocode2.model.ImmutableTurn;
 import net.robocode2.model.Point;
 import net.robocode2.model.Round;
 import net.robocode2.model.RuleMath;
-import net.robocode2.model.ScanField;
 import net.robocode2.model.Score;
 import net.robocode2.model.Size;
 import net.robocode2.model.Turn;
@@ -281,7 +279,6 @@ public class ModelUpdater {
 			bot.setDirection(MathUtil.randomDirection());
 			bot.setGunDirection(MathUtil.randomDirection());
 			bot.setRadarDirection(MathUtil.randomDirection());
-			bot.setScanField(new ScanField(0, RADAR_RADIUS));
 			bot.setGunHeat(INITIAL_GUN_HEAT);
 			bot.setScore(new Score());
 
@@ -373,12 +370,10 @@ public class ModelUpdater {
 			double gunDirection = normalAbsoluteDegrees(bot.getGunDirection() + limitedGunTurnRate);
 			double radarDirection = normalAbsoluteDegrees(bot.getRadarDirection() + limitedRadarTurnRate);
 
-			ScanField scanField = new ScanField(limitedRadarTurnRate, RADAR_RADIUS);
-
 			bot.setDirection(direction);
 			bot.setGunDirection(gunDirection);
 			bot.setRadarDirection(radarDirection);
-			bot.setScanField(scanField);
+			bot.setRadarSpreadAngle(limitedRadarTurnRate);
 			bot.setSpeed(speed);
 
 			bot.moveToNewPosition();
@@ -838,16 +833,16 @@ public class ModelUpdater {
 		for (int i = botArray.length - 1; i >= 0; i--) {
 			Bot scanningBot = botArray[i];
 
-			ScanField scanField = scanningBot.getScanField();
+			double spreadAngle = scanningBot.getRadarSpreadAngle();
 			Point scanCenter = scanningBot.getPosition();
 
 			double arcStartAngle, arcEndAngle;
-			if (scanField.getAngle() < 0) {
+			if (spreadAngle < 0) {
 				arcStartAngle = scanningBot.getRadarDirection();
-				arcEndAngle = arcStartAngle - scanField.getAngle();
+				arcEndAngle = arcStartAngle - spreadAngle;
 			} else {
 				arcEndAngle = scanningBot.getRadarDirection();
-				arcStartAngle = arcEndAngle + scanField.getAngle();
+				arcStartAngle = arcEndAngle + spreadAngle;
 			}
 
 			for (int j = botArray.length - 1; j >= 0; j--) {
@@ -858,7 +853,7 @@ public class ModelUpdater {
 				Bot scannedBot = botArray[j];
 
 				if (MathUtil.isCircleIntersectingCircleSector(scannedBot.getPosition(), BOT_BOUNDING_CIRCLE_RADIUS,
-						scanCenter, scanField.getRadius(), arcStartAngle, arcEndAngle)) {
+						scanCenter, IRuleConstants.RADAR_RADIUS, arcStartAngle, arcEndAngle)) {
 
 					ScannedBotEvent scannedBotEvent = new ScannedBotEvent(scanningBot.getId(), scannedBot.getId(),
 							scannedBot.getEnergy(), scannedBot.getPosition(), scannedBot.getDirection(),

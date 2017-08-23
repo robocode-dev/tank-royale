@@ -19,12 +19,12 @@ public class Bot implements IBot {
 	private double gunDirection;
 	/** Radar direction in degrees */
 	private double radarDirection;
+	/** Radar spread angle in degrees */
+	private double radarSpreadAngle;
 	/** Speed */
 	private double speed;
 	/** Gun heat */
 	private double gunHeat;
-	/** Scan field */
-	private ScanField scanField;
 	/** Score record */
 	private IScore score;
 
@@ -47,9 +47,9 @@ public class Bot implements IBot {
 		direction = bot.getDirection();
 		gunDirection = bot.getGunDirection();
 		radarDirection = bot.getRadarDirection();
+		radarSpreadAngle = bot.getRadarSpreadAngle();
 		speed = bot.getSpeed();
 		gunHeat = bot.getGunHeat();
-		scanField = bot.getScanField();
 		score = bot.getScore();
 	}
 
@@ -93,6 +93,11 @@ public class Bot implements IBot {
 	}
 
 	@Override
+	public double getRadarSpreadAngle() {
+		return radarSpreadAngle;
+	}
+
+	@Override
 	public double getSpeed() {
 		return speed;
 	}
@@ -100,11 +105,6 @@ public class Bot implements IBot {
 	@Override
 	public double getGunHeat() {
 		return gunHeat;
-	}
-
-	@Override
-	public ScanField getScanField() {
-		return scanField;
 	}
 
 	@Override
@@ -173,6 +173,16 @@ public class Bot implements IBot {
 	}
 
 	/**
+	 * Sets the radar spread angle.
+	 * 
+	 * @param radarSpreadAngle
+	 *            is the radar spread angle in degrees.
+	 */
+	public void setRadarSpreadAngle(double radarSpreadAngle) {
+		this.radarSpreadAngle = radarSpreadAngle;
+	}
+
+	/**
 	 * Sets the speed.
 	 * 
 	 * @param speed
@@ -192,16 +202,6 @@ public class Bot implements IBot {
 	 */
 	public void setGunHeat(double gunHeat) {
 		this.gunHeat = gunHeat;
-	}
-
-	/**
-	 * Sets the scan field.
-	 * 
-	 * @param scanArc
-	 *            is the scan field.
-	 */
-	public void setScanField(ScanField scanArc) {
-		this.scanField = scanArc;
 	}
 
 	/**

@@ -19,12 +19,12 @@ public final class ImmutableBot implements IBot {
 	private final double gunDirection;
 	/** Radar direction in degrees */
 	private final double radarDirection;
+	/** Radar spread angle in degrees */
+	private double radarSpreadAngle;
 	/** Speed */
 	private final double speed;
 	/** Gun heat */
 	private final double gunHeat;
-	/** Scan field */
-	private final ScanField scanField;
 	/** Score record */
 	private final IScore score;
 
@@ -43,17 +43,17 @@ public final class ImmutableBot implements IBot {
 	 *            is the gun direction in degrees
 	 * @param radarDirection
 	 *            is the radar direction in degrees
+	 * @param radarSpreadAngle
+	 *            is the radar spread angle in degrees
 	 * @param speed
 	 *            is the speed
 	 * @param gunHeat
 	 *            is the gun heat
-	 * @param scanField
-	 *            is the scan field
 	 * @param score
 	 *            is the score record
 	 */
 	public ImmutableBot(int id, double energy, Point position, double direction, double gunDirection,
-			double radarDirection, double speed, double gunHeat, ScanField scanField, IScore score) {
+			double radarDirection, double radarSpreadAngle, double speed, double gunHeat, IScore score) {
 
 		this.id = id;
 		this.energy = energy;
@@ -61,9 +61,9 @@ public final class ImmutableBot implements IBot {
 		this.direction = direction;
 		this.gunDirection = gunDirection;
 		this.radarDirection = radarDirection;
+		this.radarSpreadAngle = radarSpreadAngle;
 		this.speed = speed;
 		this.gunHeat = gunHeat;
-		this.scanField = scanField;
 		this.score = score;
 	}
 
@@ -80,9 +80,9 @@ public final class ImmutableBot implements IBot {
 		direction = bot.getDirection();
 		gunDirection = bot.getGunDirection();
 		radarDirection = bot.getRadarDirection();
+		radarSpreadAngle = bot.getRadarSpreadAngle();
 		speed = bot.getSpeed();
 		gunHeat = bot.getGunHeat();
-		scanField = bot.getScanField();
 		score = bot.getScore();
 	}
 
@@ -117,6 +117,11 @@ public final class ImmutableBot implements IBot {
 	}
 
 	@Override
+	public double getRadarSpreadAngle() {
+		return radarSpreadAngle;
+	}
+
+	@Override
 	public double getSpeed() {
 		return speed;
 	}
@@ -124,11 +129,6 @@ public final class ImmutableBot implements IBot {
 	@Override
 	public double getGunHeat() {
 		return gunHeat;
-	}
-
-	@Override
-	public ScanField getScanField() {
-		return scanField;
 	}
 
 	@Override

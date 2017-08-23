@@ -27,14 +27,14 @@ public interface IBot {
 	/** Returns the radar direction in degrees */
 	double getRadarDirection();
 
+	/** Returns the radar spread angle in degrees */
+	double getRadarSpreadAngle();
+
 	/** Returns the speed */
 	double getSpeed();
 
 	/** Returns the gun heat */
 	double getGunHeat();
-
-	/** Returns the scan field */
-	ScanField getScanField();
 
 	/** Returns the score record */
 	IScore getScore();

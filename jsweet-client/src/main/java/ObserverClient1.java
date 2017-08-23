@@ -163,6 +163,7 @@ public class ObserverClient1 {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void drawSingleBot() {
 		// Clear canvas
 		ctx.fillStyle = union("black");
@@ -242,7 +243,7 @@ public class ObserverClient1 {
 		drawBotBody(x, y, bot.getDirection());
 		drawGun(x, y, bot.getGunDirection());
 		drawRadar(x, y, bot.getRadarDirection());
-		drawScanField(x, y, bot.getRadarDirection(), bot.getScanField());
+		drawScanField(x, y, bot.getRadarDirection(), bot.getRadarSpreadAngle());
 		drawLabels(x, y, bot.getId(), bot.getEnergyLevel());
 	}
 
@@ -301,8 +302,8 @@ public class ObserverClient1 {
 		ctx.restore();
 	}
 
-	private void drawScanField(double x, double y, double direction, ScanField scanField) {
-		double angle = toRad(scanField.getAngle());
+	private void drawScanField(double x, double y, double direction, double spreadAngle) {
+		double angle = toRad(spreadAngle);
 
 		String color = "rgba(0, 255, 255, 0.5)";
 
@@ -312,14 +313,14 @@ public class ObserverClient1 {
 
 		if (Math.abs(angle) < 0.0001) {
 			ctx.strokeStyle = union(color);
-			ctx.lineTo(scanField.getRadius(), 0);
+			ctx.lineTo(1200, 0);
 			ctx.stroke();
 
 		} else {
 			ctx.fillStyle = union(color);
 			ctx.beginPath();
 			ctx.moveTo(0, 0);
-			ctx.arc(0, 0, scanField.getRadius(), 0, angle, (angle < 0));
+			ctx.arc(0, 0, 1200, 0, angle, (angle < 0));
 			ctx.lineTo(0, 0);
 			ctx.fill();
 		}
