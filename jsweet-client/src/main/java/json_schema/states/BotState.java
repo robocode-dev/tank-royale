@@ -4,7 +4,7 @@ import static def.jquery.Globals.$;
 
 import json_schema.types.Point;
 
-public class BotState extends jsweet.lang.Object {
+public class BotState extends def.js.Object {
 
 	public Double getEnergyLevel() {
 		return (Double) $get("energy");

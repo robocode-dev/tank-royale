@@ -1,6 +1,6 @@
 package json_schema;
 
-public class GameSetup extends jsweet.lang.Object {
+public class GameSetup extends def.js.Object {
 
 	public String getGameType() {
 		return (String) $get("game-type");

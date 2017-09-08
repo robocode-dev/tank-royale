@@ -1,8 +1,8 @@
 package json_schema;
 
-import jsweet.lang.Array;
+import def.js.Array;
 
-public class Participant extends jsweet.lang.Object {
+public class Participant extends def.js.Object {
 
 	public Integer getId() {
 		return (Integer) $get("id");

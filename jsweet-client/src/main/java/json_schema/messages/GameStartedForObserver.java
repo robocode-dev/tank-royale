@@ -5,9 +5,9 @@ import static def.jquery.Globals.$;
 import java.util.HashSet;
 import java.util.Set;
 
+import def.js.Array;
 import json_schema.GameSetup;
 import json_schema.Participant;
-import jsweet.lang.Array;
 
 public class GameStartedForObserver extends Message {
 
@@ -27,7 +27,7 @@ public class GameStartedForObserver extends Message {
 
 	public Set<Participant> getParticipants() {
 		@SuppressWarnings("unchecked")
-		Array<Participant> array = (Array<Participant>) $.extend(true, new Array<Participant>(), $get("participants"));
+		Array<Participant> array = (Array<Participant>) $get("participants");
 
 		Set<Participant> set = new HashSet<>();
 		for (Participant obj : array) {

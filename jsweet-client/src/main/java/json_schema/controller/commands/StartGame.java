@@ -2,7 +2,7 @@ package json_schema.controller.commands;
 
 import json_schema.BotAddress;
 import json_schema.GameSetup2;
-import jsweet.lang.Array;
+import def.js.Array;
 
 public class StartGame extends Command {
 

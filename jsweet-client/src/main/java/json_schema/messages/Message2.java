@@ -2,7 +2,7 @@ package json_schema.messages;
 
 import static def.jquery.Globals.$;
 
-public class Message2 extends jsweet.lang.Object {
+public class Message2 extends def.js.Object {
 
 	protected Message2(String type) {
 		$set("type", type);

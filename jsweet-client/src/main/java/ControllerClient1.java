@@ -1,13 +1,26 @@
-import static jsweet.dom.Globals.alert;
-import static jsweet.dom.Globals.console;
-import static jsweet.dom.Globals.document;
-import static jsweet.dom.Globals.setInterval;
-import static jsweet.dom.Globals.window;
-import static jsweet.util.Globals.function;
+import static def.dom.Globals.alert;
+import static def.dom.Globals.console;
+import static def.dom.Globals.document;
+import static def.dom.Globals.setInterval;
+import static def.dom.Globals.window;
+import static jsweet.util.Lang.function;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import def.dom.CloseEvent;
+import def.dom.Event;
+import def.dom.EventListener;
+import def.dom.HTMLButtonElement;
+import def.dom.HTMLCollection;
+import def.dom.HTMLElement;
+import def.dom.HTMLInputElement;
+import def.dom.HTMLOptionElement;
+import def.dom.HTMLSelectElement;
+import def.dom.MessageEvent;
+import def.dom.WebSocket;
+import def.js.Array;
+import def.js.JSON;
 import json_schema.BotAddress;
 import json_schema.GameSetup2;
 import json_schema.controller.commands.ListBots;
@@ -21,19 +34,6 @@ import json_schema.messages.BotList;
 import json_schema.messages.ControllerHandshake;
 import json_schema.messages.GameTypeList;
 import json_schema.messages.Message2;
-import jsweet.dom.CloseEvent;
-import jsweet.dom.Event;
-import jsweet.dom.EventListener;
-import jsweet.dom.HTMLButtonElement;
-import jsweet.dom.HTMLCollection;
-import jsweet.dom.HTMLElement;
-import jsweet.dom.HTMLInputElement;
-import jsweet.dom.HTMLOptionElement;
-import jsweet.dom.HTMLSelectElement;
-import jsweet.dom.MessageEvent;
-import jsweet.dom.WebSocket;
-import jsweet.lang.Array;
-import jsweet.lang.JSON;
 
 public class ControllerClient1 {
 
@@ -85,7 +85,7 @@ public class ControllerClient1 {
 	private void connect() {
 		disconnect();
 
-		ws = new jsweet.dom.WebSocket("ws://localhost:50000");
+		ws = new def.dom.WebSocket("ws://localhost:50000");
 
 		ws.onopen = e -> {
 			return onOpen(e);
@@ -123,11 +123,11 @@ public class ControllerClient1 {
 	}
 
 	private Void onMessage(MessageEvent e) {
-		java.lang.Object data = e.$get("data");
+		Object data = e.$get("data");
 		if (data instanceof String) {
-			java.lang.Object obj = JSON.parse((String) data);
+			Object obj = JSON.parse((String) data);
 
-			Message2 msg = Message2.map(obj);
+			Message2 msg = Message2.map(obj); // Fails here
 			String type = msg.getType();
 
 			if (GameTypeList.TYPE.equals(type)) {
@@ -206,11 +206,15 @@ public class ControllerClient1 {
 	}
 
 	private void handleBotList(BotList botList) {
+		console.info("handleBotList #1");
+
 		List<String> selectedValues = new ArrayList<>();
 
 		HTMLCollection selectedOptions = botSelect.selectedOptions;
 
 		for (int i = 0; i < selectedOptions.length; i++) {
+			console.info("handleBotList #2: " + i);
+
 			HTMLOptionElement option = (HTMLOptionElement) selectedOptions.$get(i);
 			if (option.selected) {
 				selectedValues.add(option.value);

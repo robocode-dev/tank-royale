@@ -5,11 +5,11 @@ import static def.jquery.Globals.$;
 import java.util.HashSet;
 import java.util.Set;
 
+import def.js.Array;
 import json_schema.events.Event;
 import json_schema.states.BotStateWithId;
 import json_schema.states.BulletState;
 import json_schema.states.RoundState;
-import jsweet.lang.Array;
 
 public class GameTickForObserver extends Message {
 
@@ -30,8 +30,7 @@ public class GameTickForObserver extends Message {
 	public Set<BotStateWithId> getBotStates() {
 
 		@SuppressWarnings("unchecked")
-		Array<BotStateWithId> array = (Array<BotStateWithId>) $.extend(true, new Array<BotStateWithId>(),
-				$get("bot-states"));
+		Array<BotStateWithId> array = (Array<BotStateWithId>) $get("bot-states");
 
 		Set<BotStateWithId> set = new HashSet<>();
 		for (BotStateWithId obj : array) {
@@ -44,7 +43,7 @@ public class GameTickForObserver extends Message {
 	public Set<BulletState> getBulletStates() {
 
 		@SuppressWarnings("unchecked")
-		Array<BulletState> array = (Array<BulletState>) $.extend(true, new Array<BulletState>(), $get("bullet-states"));
+		Array<BulletState> array = (Array<BulletState>) $get("bullet-states");
 
 		Set<BulletState> set = new HashSet<>();
 		for (BulletState obj : array) {
@@ -56,7 +55,7 @@ public class GameTickForObserver extends Message {
 
 	public Set<Event> getEvents() {
 		@SuppressWarnings("unchecked")
-		Array<Event> array = (Array<Event>) $.extend(true, new Array<Event>(), $get("events"));
+		Array<Event> array = (Array<Event>) $get("events");
 
 		Set<Event> set = new HashSet<>();
 		for (Event obj : array) {

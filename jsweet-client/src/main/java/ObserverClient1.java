@@ -1,14 +1,21 @@
+import static def.dom.Globals.console;
+import static def.dom.Globals.document;
+import static def.dom.Globals.window;
+import static jsweet.util.Lang.union;
 import static def.jquery.Globals.$;
-import static jsweet.dom.Globals.console;
-import static jsweet.dom.Globals.document;
-import static jsweet.dom.Globals.window;
-import static jsweet.util.Globals.union;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import def.dom.CanvasRenderingContext2D;
+import def.dom.CloseEvent;
+import def.dom.Event;
+import def.dom.HTMLCanvasElement;
+import def.dom.MessageEvent;
+import def.dom.WebSocket;
+import def.js.JSON;
 import json_schema.GameSetup;
 import json_schema.events.BotDeathEvent;
 import json_schema.events.BulletHitBotEvent;
@@ -21,13 +28,6 @@ import json_schema.states.BotStateWithId;
 import json_schema.states.BulletState;
 import json_schema.types.Point;
 import json_schema.types.ScanField;
-import jsweet.dom.CanvasRenderingContext2D;
-import jsweet.dom.CloseEvent;
-import jsweet.dom.Event;
-import jsweet.dom.HTMLCanvasElement;
-import jsweet.dom.MessageEvent;
-import jsweet.dom.WebSocket;
-import jsweet.lang.JSON;
 import jsweet.util.StringTypes;
 
 public class ObserverClient1 {
@@ -53,7 +53,7 @@ public class ObserverClient1 {
 	private Set<Explosion> explosions = new HashSet<>();
 
 	public ObserverClient1() {
-		ws = new jsweet.dom.WebSocket("ws://localhost:50000");
+		ws = new def.dom.WebSocket("ws://localhost:50000");
 
 		ws.onopen = e -> {
 			return onOpen(e);

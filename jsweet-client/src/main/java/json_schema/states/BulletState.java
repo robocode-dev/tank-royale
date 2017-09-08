@@ -4,7 +4,7 @@ import static def.jquery.Globals.$;
 
 import json_schema.types.Point;
 
-public class BulletState extends jsweet.lang.Object {
+public class BulletState extends def.js.Object {
 
 	public Integer getBulletId() {
 		return (Integer) $get("bullet-id");

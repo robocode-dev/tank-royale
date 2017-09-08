@@ -1,6 +1,6 @@
 package json_schema.messages;
 
-import jsweet.lang.Array;
+import def.js.Array;
 
 public class BotHandshake extends Message2 {
 

@@ -1,6 +1,6 @@
 package json_schema.types;
 
-public class ScanField extends jsweet.lang.Object {
+public class ScanField extends def.js.Object {
 
 	public Double getAngle() {
 		return (Double) $get("angle");

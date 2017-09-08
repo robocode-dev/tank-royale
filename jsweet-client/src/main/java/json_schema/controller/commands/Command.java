@@ -1,6 +1,6 @@
 package json_schema.controller.commands;
 
-public class Command extends jsweet.lang.Object {
+public class Command extends def.js.Object {
 
 	public Command(String type) {
 		$set("type", type);

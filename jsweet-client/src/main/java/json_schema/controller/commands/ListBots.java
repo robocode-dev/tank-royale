@@ -1,6 +1,6 @@
 package json_schema.controller.commands;
 
-import jsweet.lang.Array;
+import def.js.Array;
 
 public class ListBots extends Command {
 

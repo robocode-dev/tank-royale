@@ -5,7 +5,7 @@ import static def.jquery.Globals.$;
 import java.util.HashSet;
 import java.util.Set;
 
-import jsweet.lang.Array;
+import def.js.Array;
 
 public class BotList extends Message2 {
 
@@ -22,7 +22,7 @@ public class BotList extends Message2 {
 	public Set<BotInfo> getBots() {
 
 		@SuppressWarnings("unchecked")
-		Array<BotInfo> array = (Array<BotInfo>) $.extend(true, new Array<BotInfo>(), $get("bots"));
+		Array<BotInfo> array = (Array<BotInfo>) $get("bots");
 
 		Set<BotInfo> set = new HashSet<>();
 		for (BotInfo obj : array) {
