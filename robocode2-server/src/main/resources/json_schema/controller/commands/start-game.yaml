@@ -1,0 +1,19 @@
+$id: #start-game.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: Command to start a new game
+javaType: net.robocode2.json_schema.controller.commands.StartGame
+extends:
+  $ref: command.yaml
+  default: start-game
+properties:
+  game-setup:
+    description: Game setup
+    $ref: ../../game-setup.yaml
+  bot-addresses:
+    description: List of bots
+    type: array
+    items:
+      decription: Bot address
+      $ref: ../../bot-address.yaml
+required:
+- bot-addresses

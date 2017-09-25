@@ -5,7 +5,7 @@
 
 	<groupId>net.robocode2</groupId>
 	<artifactId>robocode2-server</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<description>Robocode 2 Server</description>
@@ -53,10 +53,10 @@
 
 		<!-- Unitils for testing using reflection for assertion -->
 		<dependency>
-		    <groupId>org.unitils</groupId>
-		    <artifactId>unitils-core</artifactId>
-		    <version>3.4.6</version>
-		    <scope>test</scope>
+			<groupId>org.unitils</groupId>
+			<artifactId>unitils-core</artifactId>
+			<version>3.4.6</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -90,8 +90,9 @@
 			<plugin>
 				<groupId>org.jsonschema2pojo</groupId>
 				<artifactId>jsonschema2pojo-maven-plugin</artifactId>
-				<version>0.4.33</version>
+				<version>0.5.1</version>
 				<configuration>
+					<sourceType>yamlschema</sourceType>
 					<sourceDirectory>${basedir}/src/main/resources/json_schema</sourceDirectory>
 					<targetPackage>net.robocode2.json_schema</targetPackage>
 					<annotationStyle>gson</annotationStyle>
@@ -106,4 +107,11 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>maven-central</id>
+			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+	</repositories>
 </project>

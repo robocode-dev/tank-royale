@@ -1,0 +1,15 @@
+$id: #game-ended-for-observer.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: All game results visible for an observer. Game has ended.
+javaType: net.robocode2.json_schema.messages.GameEndedForObserver
+extends:
+  $ref: message.yaml
+  default: game-ended-for-observer
+properties:
+  results:
+    description: Results of the battle
+    type: array
+    items:
+      $ref: ../bot-results-for-observer.yaml
+required:
+- results

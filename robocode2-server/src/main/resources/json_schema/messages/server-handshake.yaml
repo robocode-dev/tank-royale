@@ -1,0 +1,20 @@
+$id: #server-handshake.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: Server handshake
+javaType: net.robocode2.json_schema.messages.ServerHandshake
+extends:
+  $ref: message.yaml
+  default: server-handshake
+properties:
+  protocol-version:
+    type: string
+    description: Protocol version - expected to change
+    pattern: ^\\d+(\\.\\d+)*$
+  games:
+    type: array
+    items:
+      $ref: ../game-setup.yaml
+    minItems: 1
+    uniqueItems: true
+required:
+- protocol-version

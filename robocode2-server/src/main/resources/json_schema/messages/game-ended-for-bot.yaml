@@ -1,0 +1,15 @@
+$id: #game-ended-for-bot.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: All game results visible for a bot. Game has ended.
+javaType: net.robocode2.json_schema.messages.GameEndedForBot
+extends:
+  $ref: message.yaml
+  default: game-ended-for-bot
+properties:
+  results:
+    description: Results of the battle
+    type: array
+    items:
+      $ref: ../bot-results-for-bot.yaml
+required:
+- results

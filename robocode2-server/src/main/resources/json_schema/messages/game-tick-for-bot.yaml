@@ -1,0 +1,29 @@
+$id: #game-tick-for-bot.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: Game tick for bot. Next turn has started.
+javaType: net.robocode2.json_schema.messages.GameTickForBot
+extends:
+  $ref: message.yaml
+  default: game-tick-for-bot
+properties:
+  round-state:
+    description: Current state of the round
+    $ref: ../states/round-state.yaml
+  bot-state:
+    description: Current state of this bot
+    $ref: ../states/bot-state.yaml
+  bullet-states:
+    description: Current state of the bullets fired by this bot
+    type: array
+    items:
+      $ref: ../states/bullet-state.yaml
+  events:
+    description: Events occurring relevant for this bot
+    type: array
+    items:
+      $ref: ../events/event.yaml
+required:
+- round-state
+- bot-state
+- bullet-states
+- events

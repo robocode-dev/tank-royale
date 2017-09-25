@@ -1,0 +1,33 @@
+$id: #bot-handshake.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: Bot handshake
+javaType: net.robocode2.json_schema.messages.BotHandshake
+extends:
+  $ref: message.yaml
+  default: bot-handshake
+properties:
+  name:
+    description: Name of bot, e.g. Killer Bee
+    type: string
+  version:
+    description: Bot version, e.g. 1.0
+    type: string
+  author:
+    description: Author name, e.g. John Doe (john_doe@somewhere.net)
+    type: string
+  country-code:
+    description: 2-letter country code defined by ISO 3166-1
+    type: string
+    pattern: (^[a-z]{2}$)|(^[A-Z]{2}$)
+  game-types:
+    description: Game types supported by this bot
+    type: array
+    items:
+      type: string
+  programming-language:
+    description: Language used for programming the bot, e.g. Java 9
+    type: string
+required:
+- name
+- version
+- game-types
