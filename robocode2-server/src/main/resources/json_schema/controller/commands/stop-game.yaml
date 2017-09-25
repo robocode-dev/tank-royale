@@ -1,0 +1,7 @@
+$id: #stop-game.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: Command to stop a game
+type: object
+extends:
+  $ref: command.yaml
+  default: stop-game

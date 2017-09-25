@@ -1,0 +1,14 @@
+$id: #point.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: Point as a 2D coordinate (x, y)
+javaType: net.robocode2.json_schema.types.Point
+properties:
+  x:
+    description: X coordinate
+    type: number
+  y:
+    description: Y coordinate
+    type: number
+required:
+- x
+- y

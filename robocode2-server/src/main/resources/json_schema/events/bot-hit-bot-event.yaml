@@ -1,0 +1,31 @@
+$id: #hit-bot-event.yaml
+$schema": http://json-schema.org/draft-06/schema#
+description: Bot event occurring, when a bot collides with another bot
+javaType: net.robocode2.json_schema.events.BotHitBotEvent
+extends:
+  $ref: event.yaml
+  default: bot-hit-bot-event
+properties:
+  bot-id:
+    description: ID of the bot that hit another bot
+    type: integer
+  victim-id:
+    description: ID of the victim bot that got hit
+    type: integer
+  energy:
+    description: Remaining energy level of the victim bot
+    type: number
+  position:
+    description: Position (x, y) of the victim bot
+    $ref: ../types/point.yaml
+  rammed:
+    description: Flag specifying, if the victim bot got rammed
+    type: boolean
+required:
+- bot-id
+- victim-id
+- damage
+- energy
+- position
+- self-damage
+- rammed

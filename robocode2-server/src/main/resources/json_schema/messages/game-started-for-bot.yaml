@@ -1,0 +1,17 @@
+$id: #game-started-for-bot.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: New game info for a bot. New game has started.
+javaType: net.robocode2.json_schema.messages.GameStartedForBot
+extends:
+  $ref: message.yaml
+  default: game-started-for-bot
+properties:
+  game-setup:
+    description: Game setup
+    $ref: ../game-setup.yaml
+  my-id:
+    description: My ID, is an unique identifier for this bot
+    type: integer
+required:
+- game-setup
+- my-id

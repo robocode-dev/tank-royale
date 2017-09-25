@@ -1,0 +1,27 @@
+$id: #bot-results-for-observer.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: Individual bot results visible for an observer. Name and version is available.
+javaType: net.robocode2.json_schema.BotResultsForObserver
+properties:
+  id:
+    description: IDentifier of the bot used in this battle, but only for this observer
+    type: integer
+  name:
+    description: Name of bot, e.g. Killer Bee
+    type: string
+  version:
+    description: Bot version, e.g. 1.0
+    type: string
+  rank:
+    description: The rank bot, where 1 is 1st place, 4 is 4th place etc.
+    type: integer
+    minimum: 1
+  total-score:
+    description: Total score
+    type: number
+required:
+- id
+- name
+- version
+- rank
+- total-score

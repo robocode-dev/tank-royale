@@ -1,0 +1,20 @@
+$id: #controller-handshake.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: Controller handshake
+javaType: net.robocode2.json_schema.messages.ControllerHandshake
+extends:
+  $ref: message.yaml
+  default: controller-handshake
+properties:
+  name:
+    description: Name of controller, e.g. Fancy Robocode Controller
+    type: string
+  version:
+    description: Controller version, e.g. 1.0
+    type: string
+  author:
+    description: Author name, e.g. John Doe (john_doe@somewhere.net)
+    type: string
+required:
+- name
+- version

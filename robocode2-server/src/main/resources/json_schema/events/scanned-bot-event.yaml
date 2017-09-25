@@ -1,0 +1,33 @@
+$id: #scanned-bot-event.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: Bot event occurring, when a bot scans another bot
+javaType: net.robocode2.json_schema.events.ScannedBotEvent
+extends:
+  $ref: event.yaml
+  default: scanned-bot-event
+properties:
+  scanned-by-bot-id:
+    description: ID of the bot that performed the scanning
+    type: integer
+  scanned-bot-id:
+    description: ID of the bot that was scanned
+    type: integer
+  energy:
+    description: Energy level of the scanned bot
+    type: number
+  position:
+    description: Position (x, y) of the scanned bot
+    $ref: ../types/point.yaml
+  direction:
+    description: Direction in degrees of the scanned bot
+    $ref: ../types/angle.yaml
+  speed:
+    description: Speed measured in units per turn of the scanned bot
+    type: number
+required:
+- scannedByBotId
+- scannedBotId
+- energy
+- position
+- direction
+- speed

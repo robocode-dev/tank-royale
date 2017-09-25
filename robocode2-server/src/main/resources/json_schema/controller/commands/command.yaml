@@ -1,0 +1,15 @@
+$id: #command.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: Controller command
+javaType: net.robocode2.json_schema.controller.commands.Command
+properties:
+  type:
+    enum:
+    - list-game-types
+    - list-bots
+    - start-game
+    - stop-game
+    - pause-game
+    - resume-game
+required:
+- type

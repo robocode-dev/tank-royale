@@ -1,0 +1,7 @@
+$id: #won-round-event.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: Bot event occurring, when the bot has won the round
+javaType: net.robocode2.json_schema.events.WonRoundEvent
+extends:
+  $ref: event.yaml
+  default: won-round-event

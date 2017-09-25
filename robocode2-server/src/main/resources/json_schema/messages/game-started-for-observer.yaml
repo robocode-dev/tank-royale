@@ -1,0 +1,19 @@
+id: #game-started-for-observer.yaml
+$schema: http://json-schema.org/draft-06/schema#
+description: New game info for an observer. New game has started.
+javaType: net.robocode2.json_schema.messages.GameStartedForObserver
+extends:
+  $ref: message.yaml
+  default: game-started-for-observer
+properties:
+  game-setup:
+    description: Game setup
+    $ref: ../game-setup.yaml
+  participants:
+    description: List of bots participating in this battle
+    type: array
+    items:
+      $ref: ../participant.yaml
+required:
+- game-setup
+- participants
