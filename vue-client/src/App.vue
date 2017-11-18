@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <controller/>
+    <game-controller/>
   </div>
 </template>
 
 <script>
 
-import Controller from './components/Controller'
+import GameController from './components/GameController'
 
 export default {
   name: 'app',
   components: {
-    Controller
+    GameController
   }
 }
 </script>
