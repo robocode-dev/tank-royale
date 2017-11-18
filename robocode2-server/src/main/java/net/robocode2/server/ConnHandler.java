@@ -121,6 +121,8 @@ public final class ConnHandler {
 
 	private static void send(WebSocket conn, String message) {
 		System.out.println("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
+
+		conn.send(message);
 	}
 
 	private void notifyException(Exception exception) {
