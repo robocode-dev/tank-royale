@@ -7,14 +7,10 @@ package net.robocode2.model;
  */
 public interface IRuleConstants {
 
-	/** Arena minimum width */
-	int ARENA_MIN_WIDTH = 400;
-	/** Arena minimum height */
-	int ARENA_MIN_HEIGHT = 400;
-	/** Arena maximum width */
-	int ARENA_MAX_WIDTH = 5000;
-	/** Arena maximum height */
-	int ARENA_MAX_HEIGHT = 5000;
+	/** Arena minimum size (width / height) */
+	int ARENA_MIN_SIZE = 400;
+	/** Arena maximum size (width / height) */
+	int ARENA_MAX_SIZE = 5000;
 
 	/** Minimum gun cooling rate */
 	double MIN_GUN_COOLING_RATE = 0.1;

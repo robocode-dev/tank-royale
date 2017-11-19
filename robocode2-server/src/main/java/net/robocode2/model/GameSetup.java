@@ -177,12 +177,12 @@ public class GameSetup implements IGameSetup {
 		if (arenaWidth == null) {
 			arenaWidth = DEFAULT_ARENA_WIDTH;
 		} else {
-			if (arenaWidth < IRuleConstants.ARENA_MIN_WIDTH) {
-				throw new IllegalArgumentException("arenaWidth cannot be less than " + IRuleConstants.ARENA_MIN_WIDTH);
+			if (arenaWidth < IRuleConstants.ARENA_MIN_SIZE) {
+				throw new IllegalArgumentException("arenaWidth cannot be less than " + IRuleConstants.ARENA_MIN_SIZE);
 			}
-			if (arenaWidth > IRuleConstants.ARENA_MAX_WIDTH) {
+			if (arenaWidth > IRuleConstants.ARENA_MAX_SIZE) {
 				throw new IllegalArgumentException(
-						"arenaWidth cannot be greater than " + IRuleConstants.ARENA_MAX_WIDTH);
+						"arenaWidth cannot be greater than " + IRuleConstants.ARENA_MAX_SIZE);
 			}
 		}
 		this.arenaWidth = arenaWidth;
@@ -198,13 +198,12 @@ public class GameSetup implements IGameSetup {
 		if (arenaHeight == null) {
 			arenaHeight = DEFAULT_ARENA_HEIGHT;
 		} else {
-			if (arenaHeight < IRuleConstants.ARENA_MIN_HEIGHT) {
-				throw new IllegalArgumentException(
-						"arenaHeight cannot be less than " + IRuleConstants.ARENA_MIN_HEIGHT);
+			if (arenaHeight < IRuleConstants.ARENA_MIN_SIZE) {
+				throw new IllegalArgumentException("arenaHeight cannot be less than " + IRuleConstants.ARENA_MIN_SIZE);
 			}
-			if (arenaHeight > IRuleConstants.ARENA_MAX_HEIGHT) {
+			if (arenaHeight > IRuleConstants.ARENA_MAX_SIZE) {
 				throw new IllegalArgumentException(
-						"arenaHeight cannot be greater than " + IRuleConstants.ARENA_MAX_HEIGHT);
+						"arenaHeight cannot be greater than " + IRuleConstants.ARENA_MAX_SIZE);
 			}
 		}
 		this.arenaHeight = arenaHeight;

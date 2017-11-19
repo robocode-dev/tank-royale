@@ -121,11 +121,11 @@ public class GameSetupTest {
 		setup.setArenaWidth(null);
 		assertEquals(DEFAULT_ARENA_WIDTH, (int) setup.getArenaWidth());
 
-		setup.setArenaWidth(IRuleConstants.ARENA_MIN_WIDTH);
-		assertEquals(IRuleConstants.ARENA_MIN_WIDTH, (int) setup.getArenaWidth());
+		setup.setArenaWidth(IRuleConstants.ARENA_MIN_SIZE);
+		assertEquals(IRuleConstants.ARENA_MIN_SIZE, (int) setup.getArenaWidth());
 
-		setup.setArenaWidth(IRuleConstants.ARENA_MAX_WIDTH);
-		assertEquals(IRuleConstants.ARENA_MAX_WIDTH, (int) setup.getArenaWidth());
+		setup.setArenaWidth(IRuleConstants.ARENA_MAX_SIZE);
+		assertEquals(IRuleConstants.ARENA_MAX_SIZE, (int) setup.getArenaWidth());
 
 		try {
 			setup.setArenaWidth(-400);
@@ -140,13 +140,13 @@ public class GameSetupTest {
 		}
 
 		try {
-			setup.setArenaWidth(IRuleConstants.ARENA_MIN_WIDTH - 1);
+			setup.setArenaWidth(IRuleConstants.ARENA_MIN_SIZE - 1);
 			fail();
 		} catch (IllegalArgumentException e) {
 		}
 
 		try {
-			setup.setArenaWidth(IRuleConstants.ARENA_MAX_WIDTH + 1);
+			setup.setArenaWidth(IRuleConstants.ARENA_MAX_SIZE + 1);
 			fail();
 		} catch (IllegalArgumentException e) {
 		}
@@ -159,11 +159,11 @@ public class GameSetupTest {
 		setup.setArenaHeight(null);
 		assertEquals(DEFAULT_ARENA_HEIGHT, (int) setup.getArenaHeight());
 
-		setup.setArenaHeight(IRuleConstants.ARENA_MIN_HEIGHT);
-		assertEquals(IRuleConstants.ARENA_MIN_HEIGHT, (int) setup.getArenaHeight());
+		setup.setArenaHeight(IRuleConstants.ARENA_MIN_SIZE);
+		assertEquals(IRuleConstants.ARENA_MIN_SIZE, (int) setup.getArenaHeight());
 
-		setup.setArenaHeight(IRuleConstants.ARENA_MAX_HEIGHT);
-		assertEquals(IRuleConstants.ARENA_MAX_HEIGHT, (int) setup.getArenaHeight());
+		setup.setArenaHeight(IRuleConstants.ARENA_MAX_SIZE);
+		assertEquals(IRuleConstants.ARENA_MAX_SIZE, (int) setup.getArenaHeight());
 
 		try {
 			setup.setArenaHeight(-400);
@@ -178,13 +178,13 @@ public class GameSetupTest {
 		}
 
 		try {
-			setup.setArenaHeight(IRuleConstants.ARENA_MIN_HEIGHT - 1);
+			setup.setArenaHeight(IRuleConstants.ARENA_MIN_SIZE - 1);
 			fail();
 		} catch (IllegalArgumentException e) {
 		}
 
 		try {
-			setup.setArenaHeight(IRuleConstants.ARENA_MAX_HEIGHT + 1);
+			setup.setArenaHeight(IRuleConstants.ARENA_MAX_SIZE + 1);
 			fail();
 		} catch (IllegalArgumentException e) {
 		}
