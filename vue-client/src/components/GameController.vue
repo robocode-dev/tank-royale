@@ -1,23 +1,64 @@
 <template>
   <div class="controller">
-    <div width="100%">
+    <div style="width: 100%">
       Server URL: <input type="url" v-model="serverUrl">
       <span style="padding-left: 10px"/>
       <button @click="connect" v-show="!isConnected()">Connect</button>
       <button @click="disconnect" v-show="isConnected()">Disconnect</button>
       <span style="padding-left: 10px;"/>Status: {{ connectionStatus }}
     </div>
-    <div width="100%" style="margin-top: 20px;">
-      Game Types:
-      <select v-model="selectedGameType" @change="onGameTypeChanged">
-        <option v-for="gameType in gameTypes" :key="gameType">{{ gameType }}</option>
-      </select>
-    </div>
-    <div width="100%" style="margin-top: 20px;">
-      Arena size:
-      <input type="number" v-model="arenaWidth" style="width: 60px">
-      &nbsp;x&nbsp;
-      <input type="number" v-model="arenaHeight" style="width: 60px">
+
+    <div v-show="isConnected()">
+      <div style="width: 100%; margin-top: 20px;" >
+        Game Types:
+        <select v-model="selectedGameType" @change="onGameTypeChanged" :disabled="!isConnected">
+          <option v-for="gameType in gameTypes" :key="gameType">{{ gameType }}</option>
+        </select>
+      </div>
+
+      <div style="width: 100%; margin-top: 20px;">
+        Arena size:
+        <input type="number" style="width: 60px" v-model="game['arena-width']" :disabled="game['is-arena-width-fixed']" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100">
+        &nbsp;x&nbsp;
+        <input type="number" style="width: 60px" v-model="game['arena-height']" :readonly="game['is-arena-height-fixed']" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100">
+      </div>
+
+      <div style="width: 100%; margin-top: 20px; overflow: hidden">
+        <div style="width: 25%; float: left;">
+          <div style="width: 100%">Min. number of participants</div>
+          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['min-number-of-participants']" :disabled="game['is-min-number-of-participants-fixed']" :min="1"></div>
+        </div>
+        <div style="width: 25%; float: left;">
+          <div style="width: 100%">Number of rounds</div>
+          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['number-of-rounds']" :disabled="game['is-number-of-rounds-fixed']" :min="1"></div>
+        </div>
+        <div style="width: 25%; float: left;">
+          <div style="width: 100%">Inactivity turns</div>
+          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['inactivity-turns']" :disabled="game['is-inactivity-turns-fixed']" :min="1" step="50"></div>
+        </div>
+        <div style="width: 25%; float: left;">
+          <div style="width: 100%">Delayed observer turns</div>
+          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['delayed-observer-turns']" :disabled="game['is-delayed-observer-turns-fixed']" :min="1"></div>
+        </div>
+      </div>
+      <div style="width: 100%; margin-top: 20px; overflow: hidden">
+        <div style="width: 25%; float: left;">
+          <div style="width: 100%">Max. number of participants</div>
+          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['max-number-of-participants']" :disabled="game['is-max-number-of-participants-fixed']" :min="1"></div>
+        </div>
+        <div style="width: 25%; float: left;">
+          <div style="width: 100%">Ready timeout (ms)</div>
+          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['ready-timeout']" :disabled="game['is-ready-timeout-fixed']" :min="1"></div>
+        </div>
+        <div style="width: 25%; float: left;">
+          <div style="width: 100%">Turn timeout (ms)</div>
+          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['turn-timeout']" :disabled="game['is-turn-timeout-fixed']" :min="1"></div>
+        </div>
+        <div style="width: 25%; float: left;">
+          <div style="width: 100%">Gun cooling rate</div>
+          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['gun-cooling-rate']" :disabled="game['is-gun-cooling-rate-fixed']" :min="0.1" step="0.1"></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -32,13 +73,18 @@ export default {
       serverUrl: null,
       connection: null,
       connectionStatus: "not connected",
+
+      serverHandshake: null, // from server
       gameTypes: null,
       selectedGameType: null,
-      arenaWidth: null,
-      arenaHeight: null,
+
+      game: {}, // selected game
+
+      rules: {
+        arenaMinSize: 400,
+        arenaMaxSize: 5000
+      }
     };
-  },
-  computed: {
   },
   mounted() {
     const server = this.$route.query.server;
@@ -70,19 +116,16 @@ export default {
 
         vm.sendControllerHandshake(connection);
       };
-
       connection.onerror = function(event) {
         console.log("ws error: " + event.data);
 
         vm.connectionStatus = "error: " + event.data;
       };
-
       connection.onclose = function(event) {
         console.log("ws closed: " + event.target.url);
 
         vm.connectionStatus = "not connected";
       };
-
       connection.onmessage = function(event) {
         console.log("ws message: " + event.data);
 
@@ -102,6 +145,8 @@ export default {
       this.gameTypes = null;
     },
     sendControllerHandshake(connection) {
+      console.log("<-controller-handshake");
+
       connection.send(
         JSON.stringify({
           type: "controller-handshake",
@@ -113,6 +158,8 @@ export default {
     },
     handleServerHandshake(serverHandshake) {
       console.log("->server-handshake");
+
+      this.serverHandshake = serverHandshake;
 
       var gameTypes = new Array();
 
@@ -127,7 +174,9 @@ export default {
       this.gameTypes = gameTypes;
     },
     onGameTypeChanged() {
-      console.log("selected game type: " + this.selectedGameType);
+      this.game = this.serverHandshake.games.find(
+        game => game["game-type"] == this.selectedGameType
+      );
     }
   }
 };
