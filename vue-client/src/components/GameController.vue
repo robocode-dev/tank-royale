@@ -56,7 +56,7 @@
         </div>
         <div style="width: 25%; float: left;">
           <div style="width: 100%">Gun cooling rate</div>
-          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['gun-cooling-rate']" :disabled="game['is-gun-cooling-rate-fixed']" :min="0.1" step="0.1"></div>
+          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['gun-cooling-rate']" :disabled="game['is-gun-cooling-rate-fixed']" :min="rules.minGunCoolingRate" :max="rules.maxGunCoolingRate" step="0.1"></div>
         </div>
       </div>
     </div>
@@ -82,7 +82,9 @@ export default {
 
       rules: {
         arenaMinSize: 400,
-        arenaMaxSize: 5000
+        arenaMaxSize: 5000,
+        minGunCoolingRate: 0.1,
+        maxGunCoolingRate: 3.0,
       }
     };
   },
@@ -181,3 +183,10 @@ export default {
   }
 };
 </script>
+
+<style>
+* {
+  font-family: Arial;
+}
+
+</style>
