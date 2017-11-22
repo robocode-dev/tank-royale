@@ -1,12 +1,25 @@
 <template>
   <div class="controller">
-    <div style="width: 100%">
-      Server URL: <input type="url" v-model="serverUrl">
-      <span style="padding-left: 10px"/>
-      <button @click="connect" v-show="!isConnected()">Connect</button>
-      <button @click="disconnect" v-show="isConnected()">Disconnect</button>
-      <span style="padding-left: 10px;"/>Status: {{ connectionStatus }}
-    </div>
+    <b-container>
+      <b-row>
+        <b-input-group>
+          <b-input-group-addon>Server URL</b-input-group-addon>
+          <b-form-input placeholder="ws://server:port" v-model="serverUrl"/>
+          <b-input-group-button slot="right">
+            <b-btn @click="connect" v-show="!isConnected()">Connect</b-btn>
+            <b-btn variant="danger" @click="disconnect" v-show="isConnected()">Disconnect</b-btn>
+          </b-input-group-button>
+        </b-input-group>
+        <b-form-text>Status: {{ connectionStatus }}</b-form-text>
+      </b-row>
+
+      <b-row v-show="isConnected()">
+        <b-dropdown text="Game Types" v-model="selectedGameType" @change="onGameTypeChanged" :disabled="!isConnected">
+          <b-dropdown-item v-for="gameType in gameTypes" :key="gameType">{{ gameType }}</b-dropdown-item>
+        </b-dropdown>
+      </b-row>
+
+    </b-container>
 
     <div v-show="isConnected()">
       <div style="width: 100%; margin-top: 20px;" >
@@ -84,7 +97,7 @@ export default {
         arenaMinSize: 400,
         arenaMaxSize: 5000,
         minGunCoolingRate: 0.1,
-        maxGunCoolingRate: 3.0,
+        maxGunCoolingRate: 3.0
       }
     };
   },
@@ -185,8 +198,5 @@ export default {
 </script>
 
 <style>
-* {
-  font-family: Arial;
-}
 
 </style>
