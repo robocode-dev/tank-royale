@@ -78,14 +78,14 @@
 
 <script>
 export default {
-  name: "game-controller",
-  data() {
+  name: 'game-controller',
+  data () {
     return {
-      server: "localhost",
+      server: 'localhost',
       port: 50000,
       serverUrl: null,
       connection: null,
-      connectionStatus: "not connected",
+      connectionStatus: 'not connected',
 
       serverHandshake: null, // from server
       gameTypes: null,
@@ -99,102 +99,102 @@ export default {
         minGunCoolingRate: 0.1,
         maxGunCoolingRate: 3.0
       }
-    };
+    }
   },
-  mounted() {
-    const server = this.$route.query.server;
+  mounted () {
+    const server = this.$route.query.server
     if (server) {
-      this.server = server;
+      this.server = server
     }
-    const port = this.$route.query.port;
+    const port = this.$route.query.port
     if (port) {
-      this.port = port;
+      this.port = port
     }
-    this.serverUrl = "ws://" + this.server + ":" + this.port;
+    this.serverUrl = 'ws://' + this.server + ':' + this.port
   },
   methods: {
-    isConnected() {
-      var c = this.connection;
-      return c != null && c.readyState == WebSocket.OPEN;
+    isConnected () {
+      var c = this.connection
+      return c != null && c.readyState === WebSocket.OPEN
     },
-    connect() {
-      const vm = this;
+    connect () {
+      const vm = this
 
-      const connection = new WebSocket(vm.serverUrl);
+      const connection = new WebSocket(vm.serverUrl)
 
-      vm.connection = connection;
+      vm.connection = connection
 
-      connection.onopen = function(event) {
-        console.log("ws connected to: " + event.target.url);
+      connection.onopen = function (event) {
+        console.log('ws connected to: ' + event.target.url)
 
-        vm.connectionStatus = "connected";
+        vm.connectionStatus = 'connected'
 
-        vm.sendControllerHandshake(connection);
-      };
-      connection.onerror = function(event) {
-        console.log("ws error: " + event.data);
-
-        vm.connectionStatus = "error: " + event.data;
-      };
-      connection.onclose = function(event) {
-        console.log("ws closed: " + event.target.url);
-
-        vm.connectionStatus = "not connected";
-      };
-      connection.onmessage = function(event) {
-        console.log("ws message: " + event.data);
-
-        const message = JSON.parse(event.data);
-        switch (message.type) {
-          case "server-handshake":
-            vm.handleServerHandshake(message);
-            break;
-        }
-      };
-    },
-    disconnect() {
-      if (this.isConnected) {
-        this.connection.close();
+        vm.sendControllerHandshake(connection)
       }
-      this.connection = null;
-      this.gameTypes = null;
+      connection.onerror = function (event) {
+        console.log('ws error: ' + event.data)
+
+        vm.connectionStatus = 'error: ' + event.data
+      }
+      connection.onclose = function (event) {
+        console.log('ws closed: ' + event.target.url)
+
+        vm.connectionStatus = 'not connected'
+      }
+      connection.onmessage = function (event) {
+        console.log('ws message: ' + event.data)
+
+        const message = JSON.parse(event.data)
+        switch (message.type) {
+          case 'server-handshake':
+            vm.handleServerHandshake(message)
+            break
+        }
+      }
     },
-    sendControllerHandshake(connection) {
-      console.log("<-controller-handshake");
+    disconnect () {
+      if (this.isConnected) {
+        this.connection.close()
+      }
+      this.connection = null
+      this.gameTypes = null
+    },
+    sendControllerHandshake (connection) {
+      console.log('<-controller-handshake')
 
       connection.send(
         JSON.stringify({
-          type: "controller-handshake",
-          name: "Robocode 2 Game Controller",
-          version: "0.1.0",
-          author: "Flemming N. Larsen <fnl@users.sourceforge.net>"
+          type: 'controller-handshake',
+          name: 'Robocode 2 Game Controller',
+          version: '0.1.0',
+          author: 'Flemming N. Larsen <fnl@users.sourceforge.net>'
         })
-      );
+      )
     },
-    handleServerHandshake(serverHandshake) {
-      console.log("->server-handshake");
+    handleServerHandshake (serverHandshake) {
+      console.log('->server-handshake')
 
-      this.serverHandshake = serverHandshake;
+      this.serverHandshake = serverHandshake
 
-      var gameTypes = new Array();
+      var gameTypes = []
 
       if (serverHandshake) {
-        const games = serverHandshake.games;
+        const games = serverHandshake.games
         if (games) {
           games.forEach(element => {
-            gameTypes.push(element["game-type"]);
-          });
+            gameTypes.push(element['game-type'])
+          })
         }
       }
-      this.gameTypes = gameTypes;
+      this.gameTypes = gameTypes
     },
-    onGameTypeChanged() {
+    onGameTypeChanged () {
       this.game = this.serverHandshake.games.find(
-        game => game["game-type"] == this.selectedGameType
-      );
+        game => game['game-type'] === this.selectedGameType
+      )
     }
   }
-};
+}
 </script>
 
 <style>
