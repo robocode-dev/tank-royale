@@ -43,6 +43,10 @@ module.exports = {
         options: {
           name: '[name].[ext]?[hash]'
         }
+      },
+      {
+        test: /\.scss$/,
+        use: [{ loader: "css-loader" }, { loader: "sass-loader" }]
       }
     ]
   },

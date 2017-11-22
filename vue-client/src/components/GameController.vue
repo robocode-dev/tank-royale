@@ -197,6 +197,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss">
+@import "../styles/_variables.scss";
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+@import "../styles/_bootswatch.scss";
 </style>
