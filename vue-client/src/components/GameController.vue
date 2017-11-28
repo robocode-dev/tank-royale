@@ -1,7 +1,7 @@
 <template>
   <div class="controller">
     <b-container>
-      <b-row>
+      <b-row class="mt-3">
         <b-input-group>
           <b-input-group-addon>Server URL</b-input-group-addon>
           <b-form-input placeholder="ws://server:port" v-model="serverUrl"/>
@@ -10,31 +10,45 @@
             <b-btn variant="danger" @click="disconnect" v-show="isConnected()">Disconnect</b-btn>
           </b-input-group-button>
         </b-input-group>
-        <b-form-text>Status: {{ connectionStatus }}</b-form-text>
+        <label>Status: {{ connectionStatus }}</label>
       </b-row>
 
-      <b-row v-show="isConnected()">
+      <b-row class="mt-2" v-show2="isConnected()">
         <b-dropdown text="Game Types" v-model="selectedGameType" @change="onGameTypeChanged" :disabled="!isConnected">
           <b-dropdown-item v-for="gameType in gameTypes" :key="gameType">{{ gameType }}</b-dropdown-item>
         </b-dropdown>
+
+        <label class="ml-5 col-1.5 col-form-label">Arena size:</label>
+        <b-input-group class="col-2">
+          <b-input-group-addon>width</b-input-group-addon>
+          <b-form-input type="number" placeholder="800" v-model="game['arena-width']" :disabled="game['is-arena-width-fixed']" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
+        </b-input-group>
+        <b-input-group class="col-2">
+          <b-input-group-addon>height</b-input-group-addon>
+          <b-form-input type="number" placeholder="600" v-model="game['arena-height']" :disabled="game['is-arena-height-fixed']" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
+        </b-input-group>
+      </b-row>
+
+      <b-row class="mt-2" v-show2="isConnected()">
+        <b-col>
+          <b-form-group label="Min. number of participants"/>
+            <b-input type="number" v-model="game['min-number-of-participants']" :disabled="game['is-min-number-of-participants-fixed']" :min="1"/>
+          </b-form-group>
+          <b-form-group label="Max. number of participants"/>
+            <b-input class="col-4" type="number" v-model="game['max-number-of-participants']" :disabled="game['is-max-number-of-participants-fixed']" :min="1"/>
+          </b-form-group>
+        </b-col>
+        <b-col>
+        </b-col>
+        <b-col>
+        </b-col>
+        <b-col>
+        </b-col>
       </b-row>
 
     </b-container>
 
-    <div v-show="isConnected()">
-      <div style="width: 100%; margin-top: 20px;" >
-        Game Types:
-        <select v-model="selectedGameType" @change="onGameTypeChanged" :disabled="!isConnected">
-          <option v-for="gameType in gameTypes" :key="gameType">{{ gameType }}</option>
-        </select>
-      </div>
-
-      <div style="width: 100%; margin-top: 20px;">
-        Arena size:
-        <input type="number" style="width: 60px" v-model="game['arena-width']" :disabled="game['is-arena-width-fixed']" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100">
-        &nbsp;x&nbsp;
-        <input type="number" style="width: 60px" v-model="game['arena-height']" :readonly="game['is-arena-height-fixed']" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100">
-      </div>
+    <div v-show2="isConnected()">
 
       <div style="width: 100%; margin-top: 20px; overflow: hidden">
         <div style="width: 25%; float: left;">
