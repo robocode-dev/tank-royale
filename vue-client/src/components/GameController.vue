@@ -2,91 +2,106 @@
   <div class="controller">
     <b-container>
       <b-row class="mt-3">
-        <b-input-group>
-          <b-input-group-addon>Server URL</b-input-group-addon>
-          <b-form-input placeholder="ws://server:port" v-model="serverUrl"/>
-          <b-input-group-button slot="right">
-            <b-btn @click="connect" v-show="!isConnected()">Connect</b-btn>
-            <b-btn variant="danger" @click="disconnect" v-show="isConnected()">Disconnect</b-btn>
-          </b-input-group-button>
-        </b-input-group>
-        <label>Status: {{ connectionStatus }}</label>
+        <b-col>
+          <b-input-group>
+            <b-input-group-addon>Server URL</b-input-group-addon>
+            <b-input placeholder="ws://server:port" v-model="serverUrl"/>
+            <b-input-group-button slot="right">
+              <b-btn @click="connect" v-show="!isConnected()">Connect</b-btn>
+              <b-btn variant="warning" @click="disconnect" v-show="isConnected()">Disconnect</b-btn>
+            </b-input-group-button>
+          </b-input-group>
+          <label>Status: {{ connectionStatus }}</label>
+        </b-col>
+      </b-row>
+
+      <b-row class="mt-3" v-show2="isConnected()">
+        <b-col>
+          <b-dropdown text="Game Types" v-model="selectedGameType" @change="onGameTypeChanged" :disabled="!isConnected">
+            <b-dropdown-item v-for="gameType in gameTypes" :key="gameType">{{ gameType }}</b-dropdown-item>
+          </b-dropdown>
+        </b-col>
+      </b-row>
+
+      <b-row class="mt-3" v-show2="isConnected()">
+        <b-col sm="2">
+          <label>Arena size</label>
+        </b-col>
+        <b-col sm="4">
+          <b-input-group>
+            <b-input-group-addon>width</b-input-group-addon>
+            <b-input type="number" placeholder="800" v-model="game['arena-width']" :disabled="game['is-arena-width-fixed']" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
+          </b-input-group>
+        </b-col>
+        <b-col sm="4">
+          <b-input-group>
+            <b-input-group-addon>height</b-input-group-addon>
+            <b-input type="number" placeholder="600" v-model="game['arena-height']" :disabled="game['is-arena-height-fixed']" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
+          </b-input-group>
+        </b-col>
+      </b-row>
+
+      <b-row class="mt-4" v-show2="isConnected()">
+        <b-col sm="3">
+          <label>Min. number of participants</label>
+        </b-col>
+        <b-col sm="2">
+          <b-form-input type="number" v-model="game['min-number-of-participants']" :disabled="game['is-min-number-of-participants-fixed']" :min="1"/>
+        </b-col>
+        <b-col sm="3">
+          <label>Max. number of participants</label>
+        </b-col>
+        <b-col sm="2">
+          <b-form-input type="number" v-model="game['max-number-of-participants']" :disabled="game['is-max-number-of-participants-fixed']" :min="1"/>
+        </b-col>
       </b-row>
 
       <b-row class="mt-2" v-show2="isConnected()">
-        <b-dropdown text="Game Types" v-model="selectedGameType" @change="onGameTypeChanged" :disabled="!isConnected">
-          <b-dropdown-item v-for="gameType in gameTypes" :key="gameType">{{ gameType }}</b-dropdown-item>
-        </b-dropdown>
-
-        <label class="ml-5 col-1.5 col-form-label">Arena size:</label>
-        <b-input-group class="col-2">
-          <b-input-group-addon>width</b-input-group-addon>
-          <b-form-input type="number" placeholder="800" v-model="game['arena-width']" :disabled="game['is-arena-width-fixed']" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
-        </b-input-group>
-        <b-input-group class="col-2">
-          <b-input-group-addon>height</b-input-group-addon>
-          <b-form-input type="number" placeholder="600" v-model="game['arena-height']" :disabled="game['is-arena-height-fixed']" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
-        </b-input-group>
+       <b-col sm="3">
+          <label>Number of rounds</label>
+        </b-col>
+        <b-col sm="2">
+          <b-form-input type="number" v-model="game['number-of-rounds']" :disabled="game['is-number-of-rounds-fixed']" :min="1"/>
+        </b-col>
+       <b-col sm="3">
+          <label>Inactivity turns</label>
+        </b-col>
+        <b-col sm="2">
+          <b-form-input type="number" v-model="game['inactivity-turns']" :disabled="game['is-inactivity-turns-fixed']" :min="1" step="50"/>
+        </b-col>
       </b-row>
 
       <b-row class="mt-2" v-show2="isConnected()">
-        <b-col>
-          <b-form-group label="Min. number of participants"/>
-            <b-input type="number" v-model="game['min-number-of-participants']" :disabled="game['is-min-number-of-participants-fixed']" :min="1"/>
-          </b-form-group>
-          <b-form-group label="Max. number of participants"/>
-            <b-input class="col-4" type="number" v-model="game['max-number-of-participants']" :disabled="game['is-max-number-of-participants-fixed']" :min="1"/>
-          </b-form-group>
+       <b-col sm="3">
+          <label>Ready timeout (ms)</label>
         </b-col>
-        <b-col>
+        <b-col sm="2">
+          <b-form-input type="number" v-model="game['delayed-observer-turns']" :disabled="game['is-delayed-observer-turns-fixed']" :min="1"/>
         </b-col>
-        <b-col>
+       <b-col sm="3">
+          <label>Turn timeout (ms)</label>
         </b-col>
-        <b-col>
+        <b-col sm="2">
+          <b-form-input type="number" v-model="game['turn-timeout']" :disabled="game['is-turn-timeout-fixed']" :min="1"/>
         </b-col>
       </b-row>
 
+      <b-row class="mt-2" v-show2="isConnected()">
+       <b-col sm="3">
+          <label>Gun cooling rate</label>
+        </b-col>
+        <b-col sm="2">
+          <b-form-input type="number" v-model="game['gun-cooling-rate']" :disabled="game['is-gun-cooling-rate-fixed']" :min="rules.minGunCoolingRate" :max="rules.maxGunCoolingRate" step="0.1"/>
+        </b-col>
+       <b-col sm="3">
+          <label>Delayed observer turns</label>
+        </b-col>
+        <b-col sm="2">
+          <b-form-input type="number" v-model="game['delayed-observer-turns']" :disabled="game['is-delayed-observer-turns-fixed']" :min="1"/>
+        </b-col>
+      </b-row>
     </b-container>
 
-    <div v-show2="isConnected()">
-
-      <div style="width: 100%; margin-top: 20px; overflow: hidden">
-        <div style="width: 25%; float: left;">
-          <div style="width: 100%">Min. number of participants</div>
-          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['min-number-of-participants']" :disabled="game['is-min-number-of-participants-fixed']" :min="1"></div>
-        </div>
-        <div style="width: 25%; float: left;">
-          <div style="width: 100%">Number of rounds</div>
-          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['number-of-rounds']" :disabled="game['is-number-of-rounds-fixed']" :min="1"></div>
-        </div>
-        <div style="width: 25%; float: left;">
-          <div style="width: 100%">Inactivity turns</div>
-          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['inactivity-turns']" :disabled="game['is-inactivity-turns-fixed']" :min="1" step="50"></div>
-        </div>
-        <div style="width: 25%; float: left;">
-          <div style="width: 100%">Delayed observer turns</div>
-          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['delayed-observer-turns']" :disabled="game['is-delayed-observer-turns-fixed']" :min="1"></div>
-        </div>
-      </div>
-      <div style="width: 100%; margin-top: 20px; overflow: hidden">
-        <div style="width: 25%; float: left;">
-          <div style="width: 100%">Max. number of participants</div>
-          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['max-number-of-participants']" :disabled="game['is-max-number-of-participants-fixed']" :min="1"></div>
-        </div>
-        <div style="width: 25%; float: left;">
-          <div style="width: 100%">Ready timeout (ms)</div>
-          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['ready-timeout']" :disabled="game['is-ready-timeout-fixed']" :min="1"></div>
-        </div>
-        <div style="width: 25%; float: left;">
-          <div style="width: 100%">Turn timeout (ms)</div>
-          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['turn-timeout']" :disabled="game['is-turn-timeout-fixed']" :min="1"></div>
-        </div>
-        <div style="width: 25%; float: left;">
-          <div style="width: 100%">Gun cooling rate</div>
-          <div style="width: 100%"><input type="number" style="width: 60px" v-model="game['gun-cooling-rate']" :disabled="game['is-gun-cooling-rate-fixed']" :min="rules.minGunCoolingRate" :max="rules.maxGunCoolingRate" step="0.1"></div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
