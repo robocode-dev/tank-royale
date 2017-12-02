@@ -13,19 +13,19 @@ properties:
   direction:
     description: Driving direction in degrees
     $ref: ../types/angle.yaml
-  gun-direction:
+  gunDirection:
     description: Gun direction in degrees
     $ref: ../types/angle.yaml
-  radar-direction:
+  radarDirection:
     description: Radar direction in degrees
     $ref: ../types/angle.yaml
-  radar-spread-angle:
+  radarSpreadAngle:
     description: Radar spread angle in degrees
     $ref: ../types/angle.yaml
   speed:
     description: Speed measured in units per turn
     type: number
-  scan-field:
+  scanField:
     description: Scan field, where a positive arc angle means that scan is moving
       left and negative arc angle means that the scan is moving right
     $ref: ../types/scan-field.yaml
@@ -33,7 +33,7 @@ required:
 - energy
 - position
 - direction
-- gun-direction
-- radar-direction
+- gunDirection
+- radarDirection
 - speed
-- scan-field
+- scanField

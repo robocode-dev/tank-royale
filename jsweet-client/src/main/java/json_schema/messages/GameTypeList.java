@@ -10,7 +10,7 @@ import json_schema.GameSetup2;
 
 public class GameTypeList extends Message2 {
 
-	public static final String TYPE = "game-type-list";
+	public static final String TYPE = "gameTypeList";
 
 	public GameTypeList() {
 		super(TYPE);
@@ -22,7 +22,7 @@ public class GameTypeList extends Message2 {
 
 	public List<GameSetup2> getGameTypes() {
 		@SuppressWarnings("unchecked")
-		Array<GameSetup2> array = (Array<GameSetup2>) $get("game-types");
+		Array<GameSetup2> array = (Array<GameSetup2>) $get("gameTypes");
 
 		List<GameSetup2> set = new ArrayList<>();
 		for (GameSetup2 obj : array) {

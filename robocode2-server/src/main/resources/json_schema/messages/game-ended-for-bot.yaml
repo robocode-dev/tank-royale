@@ -4,7 +4,7 @@ description: All game results visible for a bot. Game has ended.
 javaType: net.robocode2.json_schema.messages.GameEndedForBot
 extends:
   $ref: message.yaml
-  default: game-ended-for-bot
+  default: gameEndedForBot
 properties:
   results:
     description: Results of the battle

@@ -4,14 +4,14 @@ description: New game info for a bot. New game has started.
 javaType: net.robocode2.json_schema.messages.GameStartedForBot
 extends:
   $ref: message.yaml
-  default: game-started-for-bot
+  default: gameStartedForBot
 properties:
   game-setup:
     description: Game setup
     $ref: ../game-setup.yaml
-  my-id:
+  myId:
     description: My ID, is an unique identifier for this bot
     type: integer
 required:
-- game-setup
-- my-id
+- gameSetup
+- myId

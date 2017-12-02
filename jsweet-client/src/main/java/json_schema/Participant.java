@@ -18,7 +18,7 @@ public class Participant extends def.js.Object {
 
 	@SuppressWarnings("unchecked")
 	public Array<String> getGameTypes() {
-		return (Array<String>) $get("game-types");
+		return (Array<String>) $get("gameTypes");
 	}
 
 	public String getAuthor() {
@@ -26,10 +26,10 @@ public class Participant extends def.js.Object {
 	}
 
 	public String getCountryCode() {
-		return (String) $get("country-code");
+		return (String) $get("countryCode");
 	}
 
 	public String getProgrammingLanguage() {
-		return (String) $get("programming-language");
+		return (String) $get("programmingLanguage");
 	}
 }

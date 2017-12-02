@@ -4,12 +4,12 @@ description: Bot event occurring, when a bot collides with another bot
 javaType: net.robocode2.json_schema.events.BotHitBotEvent
 extends:
   $ref: event.yaml
-  default: bot-hit-bot-event
+  default: botHitBotEvent
 properties:
-  bot-id:
+  botId:
     description: ID of the bot that hit another bot
     type: integer
-  victim-id:
+  victimId:
     description: ID of the victim bot that got hit
     type: integer
   energy:
@@ -22,10 +22,10 @@ properties:
     description: Flag specifying, if the victim bot got rammed
     type: boolean
 required:
-- bot-id
-- victim-id
+- botId
+- victimId
 - damage
 - energy
 - position
-- self-damage
+- selfDamage
 - rammed

@@ -391,7 +391,7 @@ public final class GameServer {
 					if (matches.size() > 0) {
 						InetSocketAddress remoteSocketAddress = entry.getKey().getRemoteSocketAddress();
 
-						botInfo.setHostName(remoteSocketAddress.getHostName());
+						botInfo.setHost(remoteSocketAddress.getHostName());
 						botInfo.setPort(remoteSocketAddress.getPort());
 
 						bots.add(botInfo);

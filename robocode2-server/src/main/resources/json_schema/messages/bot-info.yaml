@@ -5,12 +5,12 @@ type: object
 extends:
   $ref: bot-handshake.yaml
 properties:
-  host-name:
-    description: Host name
+  host:
+    description: Host name or IP address
     type: string
   port:
     description: Port number
     type: integer
 required:
-- host-name
+- host
 - port

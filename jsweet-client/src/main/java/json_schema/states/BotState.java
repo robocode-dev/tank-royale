@@ -19,15 +19,15 @@ public class BotState extends def.js.Object {
 	}
 
 	public Double getGunDirection() {
-		return (Double) $get("gun-direction");
+		return (Double) $get("gunDirection");
 	}
 
 	public Double getRadarDirection() {
-		return (Double) $get("radar-direction");
+		return (Double) $get("radarDirection");
 	}
 
 	public Double getRadarSpreadAngle() {
-		return (Double) $get("radar-spread-angle");
+		return (Double) $get("radarSpreadAngle");
 	}
 
 	public Double getSpeed() {

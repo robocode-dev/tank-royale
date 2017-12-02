@@ -4,4 +4,4 @@ description: Command to stop a game
 type: object
 extends:
   $ref: command.yaml
-  default: stop-game
+  default: stopGame

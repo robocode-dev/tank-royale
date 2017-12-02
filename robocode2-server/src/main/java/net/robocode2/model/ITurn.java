@@ -50,7 +50,7 @@ public interface ITurn {
 	 * @return a set of bullets
 	 */
 	default Set<IBullet> getBullets(int botId) {
-		return getBullets().stream().filter(b -> b.getBotId() == botId).collect(Collectors.toSet());
+		return getBullets().stream().filter(b -> b.getOwnerId() == botId).collect(Collectors.toSet());
 	}
 
 	/**

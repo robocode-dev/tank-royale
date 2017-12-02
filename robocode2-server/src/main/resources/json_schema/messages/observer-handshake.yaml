@@ -4,7 +4,7 @@ description: Observer handshake
 javaType: net.robocode2.json_schema.messages.ObserverHandshake
 extends:
   $ref: message.yaml
-  default: observer-handshake
+  default: observerHandshake
 properties:
   name:
     description: Name of observer, e.g. Fancy Robocode View

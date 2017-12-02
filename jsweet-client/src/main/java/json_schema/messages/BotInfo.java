@@ -2,7 +2,7 @@ package json_schema.messages;
 
 public class BotInfo extends BotHandshake {
 
-	public static final String TYPE = "bot-info";
+	public static final String TYPE = "botInfo";
 
 	public BotInfo() {
 		super(TYPE);
@@ -13,7 +13,7 @@ public class BotInfo extends BotHandshake {
 	}
 
 	public String getHostName() {
-		return (String) $get("host-name");
+		return (String) $get("host");
 	}
 
 	public Integer getPort() {

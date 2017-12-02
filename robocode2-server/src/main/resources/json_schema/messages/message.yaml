@@ -5,20 +5,20 @@ javaType: net.robocode2.json_schema.messages.Message
 properties:
   type:
     enum:
-    - bot-handshake
-    - bot-info
-    - bot-intent
-    - bot-list
-    - bot-ready
-    - controller-handshake
-    - game-type-list
-    - game-ended-for-bot
-    - game-ended-for-observer
-    - game-started-for-bot
-    - game-started-for-observer
-    - game-tick-for-bot
-    - game-tick-for-observer
-    - observer-handshake
-    - server-handshake
+    - botHandshake
+    - botInfo
+    - botIntent
+    - botList
+    - botReady
+    - controllerHandshake
+    - gameTypeList
+    - gameEndedForBot
+    - gameEndedForObserver
+    - gameStartedForBot
+    - gameStartedForObserver
+    - gameTickForBot
+    - gameTickForObserver
+    - observerHandshake
+    - serverHandshake
 required:
 - type

@@ -30,26 +30,26 @@ public class GameSetup implements IGameSetup {
 	/** Number of delayed turns for observers */
 	private int delayedObserverTurns = DEFAULT_DELAYED_OBSERVER_TURNS;
 
-	/** Flag specifying if the arena width is fixed */
-	private Boolean arenaWidthFixed;
-	/** Flag specifying if the arena height is fixed */
-	private Boolean arenaHeightFixed;
-	/** Flag specifying if the minimum number of bot participants is fixed */
-	private Boolean minNumberOfParticipantsFixed;
-	/** Flag specifying if the maximum number of bot participants is fixed */
-	private Boolean maxNumberOfParticipantsFixed;
-	/** Flag specifying if the number of rounds is fixed */
-	private Boolean numberOfRoundsFixed;
-	/** Flag specifying if the gun cooling rate is fixed */
-	private Boolean gunCoolingRateFixed;
-	/** Flag specifying if the number of allowed inactivity turns is fixed */
-	private Boolean inactivityTurnsFixed;
-	/** Flag specifying if the turn timeout is fixed */
-	private Boolean turnTimeoutFixed;
-	/** Flag specifying if the ready timeout is fixed */
-	private Boolean readyTimeoutFixed;
-	/** Flag specifying if the number of delayed turns for observers is fixed */
-	private Boolean delayedObserverTurnsFixed;
+	/** Flag specifying if the arena width is locked */
+	private Boolean arenaWidthLocked;
+	/** Flag specifying if the arena height is locked */
+	private Boolean arenaHeightLocked;
+	/** Flag specifying if the minimum number of bot participants is locked */
+	private Boolean minNumberOfParticipantsLocked;
+	/** Flag specifying if the maximum number of bot participants is locked */
+	private Boolean maxNumberOfParticipantsLocked;
+	/** Flag specifying if the number of rounds is locked */
+	private Boolean numberOfRoundsLocked;
+	/** Flag specifying if the gun cooling rate is locked */
+	private Boolean gunCoolingRateLocked;
+	/** Flag specifying if the number of allowed inactivity turns is locked */
+	private Boolean inactivityTurnsLocked;
+	/** Flag specifying if the turn timeout is locked */
+	private Boolean turnTimeoutLocked;
+	/** Flag specifying if the ready timeout is locked */
+	private Boolean readyTimeoutLocked;
+	/** Flag specifying if the number of delayed turns for observers is locked */
+	private Boolean delayedObserverTurnsLocked;
 
 	/**
 	 * Creates a mutable game setup that needs to be initialized
@@ -76,16 +76,16 @@ public class GameSetup implements IGameSetup {
 		readyTimeout = gameSetup.getReadyTimeout();
 		delayedObserverTurns = gameSetup.getDelayedObserverTurns();
 
-		arenaWidthFixed = gameSetup.isArenaWidthFixed();
-		arenaHeightFixed = gameSetup.isArenaHeightFixed();
-		minNumberOfParticipantsFixed = gameSetup.isMinNumberOfParticipantsFixed();
-		maxNumberOfParticipantsFixed = gameSetup.isMaxNumberOfParticipantsFixed();
-		numberOfRoundsFixed = gameSetup.isNumberOfRoundsFixed();
-		gunCoolingRateFixed = gameSetup.isGunCoolingRateFixed();
-		inactivityTurnsFixed = gameSetup.isInactiveTurnsFixed();
-		turnTimeoutFixed = gameSetup.isTurnTimeoutFixed();
-		readyTimeoutFixed = gameSetup.isReadyTimeoutFixed();
-		delayedObserverTurnsFixed = gameSetup.isDelayedObserverTurnsFixed();
+		arenaWidthLocked = gameSetup.isArenaWidthLocked();
+		arenaHeightLocked = gameSetup.isArenaHeightLocked();
+		minNumberOfParticipantsLocked = gameSetup.isMinNumberOfParticipantsLocked();
+		maxNumberOfParticipantsLocked = gameSetup.isMaxNumberOfParticipantsLocked();
+		numberOfRoundsLocked = gameSetup.isNumberOfRoundsLocked();
+		gunCoolingRateLocked = gameSetup.isGunCoolingRateLocked();
+		inactivityTurnsLocked = gameSetup.isInactiveTurnsLocked();
+		turnTimeoutLocked = gameSetup.isTurnTimeoutLocked();
+		readyTimeoutLocked = gameSetup.isReadyTimeoutLocked();
+		delayedObserverTurnsLocked = gameSetup.isDelayedObserverTurnsLocked();
 	}
 
 	/**
@@ -339,152 +339,152 @@ public class GameSetup implements IGameSetup {
 	}
 
 	@Override
-	public Boolean isArenaWidthFixed() {
-		return arenaWidthFixed;
+	public Boolean isArenaWidthLocked() {
+		return arenaWidthLocked;
 	}
 
 	@Override
-	public Boolean isArenaHeightFixed() {
-		return arenaHeightFixed;
+	public Boolean isArenaHeightLocked() {
+		return arenaHeightLocked;
 	}
 
 	@Override
-	public Boolean isMinNumberOfParticipantsFixed() {
-		return minNumberOfParticipantsFixed;
+	public Boolean isMinNumberOfParticipantsLocked() {
+		return minNumberOfParticipantsLocked;
 	}
 
 	@Override
-	public Boolean isMaxNumberOfParticipantsFixed() {
-		return maxNumberOfParticipantsFixed;
+	public Boolean isMaxNumberOfParticipantsLocked() {
+		return maxNumberOfParticipantsLocked;
 	}
 
 	@Override
-	public Boolean isNumberOfRoundsFixed() {
-		return numberOfRoundsFixed;
+	public Boolean isNumberOfRoundsLocked() {
+		return numberOfRoundsLocked;
 	}
 
 	@Override
-	public Boolean isGunCoolingRateFixed() {
-		return gunCoolingRateFixed;
+	public Boolean isGunCoolingRateLocked() {
+		return gunCoolingRateLocked;
 	}
 
 	@Override
-	public Boolean isInactiveTurnsFixed() {
-		return inactivityTurnsFixed;
+	public Boolean isInactiveTurnsLocked() {
+		return inactivityTurnsLocked;
 	}
 
 	@Override
-	public Boolean isTurnTimeoutFixed() {
-		return turnTimeoutFixed;
+	public Boolean isTurnTimeoutLocked() {
+		return turnTimeoutLocked;
 	}
 
 	@Override
-	public Boolean isReadyTimeoutFixed() {
-		return readyTimeoutFixed;
+	public Boolean isReadyTimeoutLocked() {
+		return readyTimeoutLocked;
 	}
 
 	@Override
-	public Boolean isDelayedObserverTurnsFixed() {
-		return delayedObserverTurnsFixed;
+	public Boolean isDelayedObserverTurnsLocked() {
+		return delayedObserverTurnsLocked;
 	}
 
 	/**
-	 * Sets the flag that the arena width is fixed.
+	 * Sets the flag that the arena width is locked.
 	 * 
-	 * @param fixed
-	 *            is a flag specifying if the arena width is fixed
+	 * @param locked
+	 *            is a flag specifying if the arena width is locked
 	 */
-	public void setArenaWidthFixed(Boolean fixed) {
-		this.arenaWidthFixed = fixed;
+	public void setArenaWidthLocked(Boolean locked) {
+		this.arenaWidthLocked = locked;
 	}
 
 	/**
-	 * Sets the flag that the arena height is fixed.
+	 * Sets the flag that the arena height is locked.
 	 * 
-	 * @param fixed
-	 *            is a flag specifying if the arena height is fixed
+	 * @param locked
+	 *            is a flag specifying if the arena height is locked
 	 */
-	public void setArenaHeightFixed(Boolean fixed) {
-		this.arenaHeightFixed = fixed;
+	public void setArenaHeightLocked(Boolean locked) {
+		this.arenaHeightLocked = locked;
 	}
 
 	/**
-	 * Sets the flag that the minimum number of participant bots is fixed.
+	 * Sets the flag that the minimum number of participant bots is locked.
 	 * 
-	 * @param fixed
-	 *            is a flag specifying if the minimum number of participant bots is fixed.
+	 * @param locked
+	 *            is a flag specifying if the minimum number of participant bots is locked.
 	 */
-	public void setMinNumberOfParticipantsFixed(Boolean fixed) {
-		this.minNumberOfParticipantsFixed = fixed;
+	public void setMinNumberOfParticipantsLocked(Boolean locked) {
+		this.minNumberOfParticipantsLocked = locked;
 	}
 
 	/**
-	 * Sets the flag that the maximum number of participant bots is fixed.
+	 * Sets the flag that the maximum number of participant bots is locked.
 	 * 
-	 * @param fixed
-	 *            is a flag specifying if the maximum number of participant bots is fixed.
+	 * @param locked
+	 *            is a flag specifying if the maximum number of participant bots is locked.
 	 */
-	public void setMaxNumberOfParticipantsFixed(Boolean fixed) {
-		this.maxNumberOfParticipantsFixed = fixed;
+	public void setMaxNumberOfParticipantsLocked(Boolean locked) {
+		this.maxNumberOfParticipantsLocked = locked;
 	}
 
 	/**
-	 * Sets the flag that the number of rounds is fixed.
+	 * Sets the flag that the number of rounds is locked.
 	 * 
-	 * @param fixed
-	 *            is a flag specifying if the number of rounds is fixed.
+	 * @param locked
+	 *            is a flag specifying if the number of rounds is locked.
 	 */
-	public void setNumberOfRoundsFixed(Boolean fixed) {
-		this.numberOfRoundsFixed = fixed;
+	public void setNumberOfRoundsLocked(Boolean locked) {
+		this.numberOfRoundsLocked = locked;
 	}
 
 	/**
-	 * Sets the flag that the gun cooling rate is fixed.
+	 * Sets the flag that the gun cooling rate is locked.
 	 * 
-	 * @param fixed
-	 *            is a flag specifying if the gun cooling rate is fixed.
+	 * @param locked
+	 *            is a flag specifying if the gun cooling rate is locked.
 	 */
-	public void setGunCoolingRateFixed(Boolean fixed) {
-		this.gunCoolingRateFixed = fixed;
+	public void setGunCoolingRateLocked(Boolean locked) {
+		this.gunCoolingRateLocked = locked;
 	}
 
 	/**
-	 * Sets the flag that the number of allowed inactivity turns is fixed.
+	 * Sets the flag that the number of allowed inactivity turns is locked.
 	 * 
-	 * @param fixed
-	 *            is a flag specifying if the number of allowed inactivity turns is fixed.
+	 * @param locked
+	 *            is a flag specifying if the number of allowed inactivity turns is locked.
 	 */
-	public void setInactiveTurnsFixed(Boolean fixed) {
-		this.inactivityTurnsFixed = fixed;
+	public void setInactiveTurnsLocked(Boolean locked) {
+		this.inactivityTurnsLocked = locked;
 	}
 
 	/**
-	 * Sets the flag that the turn timeout is fixed.
+	 * Sets the flag that the turn timeout is locked.
 	 * 
-	 * @param fixed
-	 *            is a flag specifying if the turn timeout is fixed.
+	 * @param locked
+	 *            is a flag specifying if the turn timeout is locked.
 	 */
-	public void setTurnTimeoutFixed(Boolean fixed) {
-		this.turnTimeoutFixed = fixed;
+	public void setTurnTimeoutLocked(Boolean locked) {
+		this.turnTimeoutLocked = locked;
 	}
 
 	/**
-	 * Sets the flag that the ready timeout is fixed.
+	 * Sets the flag that the ready timeout is locked.
 	 * 
-	 * @param fixed
-	 *            is a flag specifying if the ready timeout is fixed.
+	 * @param locked
+	 *            is a flag specifying if the ready timeout is locked.
 	 */
-	public void setReadyTimeoutFixed(Boolean fixed) {
-		this.readyTimeoutFixed = fixed;
+	public void setReadyTimeoutLocked(Boolean locked) {
+		this.readyTimeoutLocked = locked;
 	}
 
 	/**
-	 * Sets the flag that the number of allowed inactivity turns is fixed.
+	 * Sets the flag that the number of allowed inactivity turns is locked.
 	 * 
-	 * @param fixed
-	 *            is a flag specifying if the number of allowed inactivity turns is fixed.
+	 * @param locked
+	 *            is a flag specifying if the number of allowed inactivity turns is locked.
 	 */
-	public void setDelayedObserverTurnsFixed(Boolean fixed) {
-		this.delayedObserverTurnsFixed = fixed;
+	public void setDelayedObserverTurnsLocked(Boolean locked) {
+		this.delayedObserverTurnsLocked = locked;
 	}
 }

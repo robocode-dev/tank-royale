@@ -2,7 +2,7 @@ package json_schema.controller.commands;
 
 public class ResumeGame extends Command {
 
-	public static final String TYPE = "resume-game";
+	public static final String TYPE = "resumeGame";
 
 	public ResumeGame() {
 		super(TYPE);

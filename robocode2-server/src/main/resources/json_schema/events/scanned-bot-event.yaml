@@ -4,12 +4,12 @@ description: Bot event occurring, when a bot scans another bot
 javaType: net.robocode2.json_schema.events.ScannedBotEvent
 extends:
   $ref: event.yaml
-  default: scanned-bot-event
+  default: scannedBotEvent
 properties:
-  scanned-by-bot-id:
+  scannedByBotId:
     description: ID of the bot that performed the scanning
     type: integer
-  scanned-bot-id:
+  scannedBotId:
     description: ID of the bot that was scanned
     type: integer
   energy:

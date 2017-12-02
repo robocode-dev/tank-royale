@@ -28,7 +28,7 @@ public class BulletTest {
 	@Test
 	public void constructorEmpty() {
 		Bullet bullet = new Bullet();
-		assertEquals(0, bullet.getBotId());
+		assertEquals(0, bullet.getOwnerId());
 		assertEquals(0, bullet.getBulletId());
 		assertEquals(0, bullet.getPower(), 0.00001);
 		assertNull(bullet.getFirePosition());
@@ -52,7 +52,7 @@ public class BulletTest {
 	public void setBotId() {
 		Bullet bullet = new Bullet();
 		bullet.setBotId(7913);
-		assertEquals(7913, bullet.getBotId());
+		assertEquals(7913, bullet.getOwnerId());
 	}
 
 	@Test

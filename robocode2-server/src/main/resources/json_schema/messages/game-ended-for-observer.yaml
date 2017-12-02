@@ -4,7 +4,7 @@ description: All game results visible for an observer. Game has ended.
 javaType: net.robocode2.json_schema.messages.GameEndedForObserver
 extends:
   $ref: message.yaml
-  default: game-ended-for-observer
+  default: gameEndedForObserver
 properties:
   results:
     description: Results of the battle

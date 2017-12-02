@@ -4,4 +4,4 @@ description: Command to list game types
 type: object
 extends:
   $ref: command.yaml
-  default: list-game-types
+  default: listGameTypes

@@ -4,12 +4,12 @@ description: Command to list bots available
 type: object
 extends:
   $ref: command.yaml
-  default: list-bots
+  default: listBots
 properties:
-  game-types:
+  gameTypes:
     description: Game type filter
     type: array
     items:
       type: string
 required:
-- game-types
+- gameTypes

@@ -15,25 +15,25 @@ public class ImmutableGameSetupTest {
 
 		setup.setGameType("game type");
 		setup.setArenaWidth(1234);
-		setup.setArenaHeightFixed(true);
+		setup.setArenaHeightLocked(true);
 		setup.setArenaHeight(3456);
-		setup.setArenaHeightFixed(true);
+		setup.setArenaHeightLocked(true);
 		setup.setMinNumberOfParticipants(7);
-		setup.setMinNumberOfParticipantsFixed(true);
+		setup.setMinNumberOfParticipantsLocked(true);
 		setup.setMaxNumberOfParticipants(53);
-		setup.setMaxNumberOfParticipantsFixed(true);
+		setup.setMaxNumberOfParticipantsLocked(true);
 		setup.setNumberOfRounds(78);
-		setup.setNumberOfRoundsFixed(true);
+		setup.setNumberOfRoundsLocked(true);
 		setup.setGunCoolingRate(0.465);
-		setup.setGunCoolingRateFixed(true);
+		setup.setGunCoolingRateLocked(true);
 		setup.setInactivityTurns(451);
-		setup.setInactiveTurnsFixed(true);
+		setup.setInactiveTurnsLocked(true);
 		setup.setTurnTimeout(3517);
-		setup.setTurnTimeoutFixed(true);
+		setup.setTurnTimeoutLocked(true);
 		setup.setReadyTimeout(8462);
-		setup.setReadyTimeoutFixed(true);
+		setup.setReadyTimeoutLocked(true);
 		setup.setDelayedObserverTurns(56);
-		setup.setDelayedObserverTurnsFixed(true);
+		setup.setDelayedObserverTurnsLocked(true);
 
 		initializedGameSetup = setup;
 	}
@@ -44,24 +44,24 @@ public class ImmutableGameSetupTest {
 
 		assertEquals(initializedGameSetup.getGameType(), setup.getGameType());
 		assertEquals(initializedGameSetup.getArenaWidth(), setup.getArenaWidth());
-		assertEquals(initializedGameSetup.isArenaWidthFixed(), setup.isArenaWidthFixed());
+		assertEquals(initializedGameSetup.isArenaWidthLocked(), setup.isArenaWidthLocked());
 		assertEquals(initializedGameSetup.getArenaHeight(), setup.getArenaHeight());
-		assertEquals(initializedGameSetup.isArenaHeightFixed(), setup.isArenaHeightFixed());
+		assertEquals(initializedGameSetup.isArenaHeightLocked(), setup.isArenaHeightLocked());
 		assertEquals(initializedGameSetup.getMinNumberOfParticipants(), setup.getMinNumberOfParticipants());
-		assertEquals(initializedGameSetup.isMinNumberOfParticipantsFixed(), setup.isMinNumberOfParticipantsFixed());
+		assertEquals(initializedGameSetup.isMinNumberOfParticipantsLocked(), setup.isMinNumberOfParticipantsLocked());
 		assertEquals(initializedGameSetup.getMaxNumberOfParticipants(), setup.getMaxNumberOfParticipants());
-		assertEquals(initializedGameSetup.isMaxNumberOfParticipantsFixed(), setup.isMaxNumberOfParticipantsFixed());
+		assertEquals(initializedGameSetup.isMaxNumberOfParticipantsLocked(), setup.isMaxNumberOfParticipantsLocked());
 		assertEquals(initializedGameSetup.getNumberOfRounds(), setup.getNumberOfRounds());
-		assertEquals(initializedGameSetup.isNumberOfRoundsFixed(), setup.isNumberOfRoundsFixed());
+		assertEquals(initializedGameSetup.isNumberOfRoundsLocked(), setup.isNumberOfRoundsLocked());
 		assertEquals(initializedGameSetup.getGunCoolingRate(), setup.getGunCoolingRate());
-		assertEquals(initializedGameSetup.isGunCoolingRateFixed(), setup.isGunCoolingRateFixed());
+		assertEquals(initializedGameSetup.isGunCoolingRateLocked(), setup.isGunCoolingRateLocked());
 		assertEquals(initializedGameSetup.getInactivityTurns(), setup.getInactivityTurns());
-		assertEquals(initializedGameSetup.isInactiveTurnsFixed(), setup.isInactiveTurnsFixed());
+		assertEquals(initializedGameSetup.isInactiveTurnsLocked(), setup.isInactiveTurnsLocked());
 		assertEquals(initializedGameSetup.getTurnTimeout(), setup.getTurnTimeout());
-		assertEquals(initializedGameSetup.isTurnTimeoutFixed(), setup.isTurnTimeoutFixed());
+		assertEquals(initializedGameSetup.isTurnTimeoutLocked(), setup.isTurnTimeoutLocked());
 		assertEquals(initializedGameSetup.getReadyTimeout(), setup.getReadyTimeout());
-		assertEquals(initializedGameSetup.isReadyTimeoutFixed(), setup.isReadyTimeoutFixed());
+		assertEquals(initializedGameSetup.isReadyTimeoutLocked(), setup.isReadyTimeoutLocked());
 		assertEquals(initializedGameSetup.getDelayedObserverTurns(), setup.getDelayedObserverTurns());
-		assertEquals(initializedGameSetup.isDelayedObserverTurnsFixed(), setup.isDelayedObserverTurnsFixed());
+		assertEquals(initializedGameSetup.isDelayedObserverTurnsLocked(), setup.isDelayedObserverTurnsLocked());
 	}
 }

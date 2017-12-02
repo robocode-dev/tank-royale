@@ -415,10 +415,10 @@ public class ModelUpdater {
 					ImmutableBullet bullet2 = bulletArray[j].toImmutableBullet();
 
 					BulletHitBulletEvent bulletHitBulletEvent1 = new BulletHitBulletEvent(bullet1, bullet2);
-					turn.addPrivateBotEvent(bullet1.getBotId(), bulletHitBulletEvent1);
+					turn.addPrivateBotEvent(bullet1.getOwnerId(), bulletHitBulletEvent1);
 
 					BulletHitBulletEvent bulletHitBulletEvent2 = new BulletHitBulletEvent(bullet2, bullet1);
-					turn.addPrivateBotEvent(bullet2.getBotId(), bulletHitBulletEvent2);
+					turn.addPrivateBotEvent(bullet2.getOwnerId(), bulletHitBulletEvent2);
 
 					// Observers only need a single event
 					turn.addObserverEvent(bulletHitBulletEvent1);
@@ -438,7 +438,7 @@ public class ModelUpdater {
 
 				Bullet bullet = bulletArray[i];
 
-				int botId = bullet.getBotId();
+				int botId = bullet.getOwnerId();
 				int victimId = bot.getId();
 
 				if (botId == victimId) {
@@ -724,7 +724,7 @@ public class ModelUpdater {
 				iterator.remove(); // remove bullet from arena
 
 				BulletMissedEvent bulletMissedEvent = new BulletMissedEvent(bullet.toImmutableBullet());
-				turn.addPrivateBotEvent(bullet.getBotId(), bulletMissedEvent);
+				turn.addPrivateBotEvent(bullet.getOwnerId(), bulletMissedEvent);
 				turn.addObserverEvent(bulletMissedEvent);
 			}
 		}

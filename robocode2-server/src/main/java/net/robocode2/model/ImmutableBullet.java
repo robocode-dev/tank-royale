@@ -8,7 +8,7 @@ package net.robocode2.model;
 public final class ImmutableBullet implements IBullet {
 
 	/** Id of the bot that fired this bullet */
-	private final int botId;
+	private final int ownerId;
 	/** Id of the bullet */
 	private final int bulletId;
 	/** Power of the bullet */
@@ -29,7 +29,7 @@ public final class ImmutableBullet implements IBullet {
 	 *            is the bullet instance that is deep copied into this bullet instance.
 	 */
 	public ImmutableBullet(IBullet bullet) {
-		botId = bullet.getBotId();
+		ownerId = bullet.getOwnerId();
 		bulletId = bullet.getBulletId();
 		power = bullet.getPower();
 		firePosition = bullet.getFirePosition();
@@ -39,8 +39,8 @@ public final class ImmutableBullet implements IBullet {
 	}
 
 	@Override
-	public int getBotId() {
-		return botId;
+	public int getOwnerId() {
+		return ownerId;
 	}
 
 	@Override

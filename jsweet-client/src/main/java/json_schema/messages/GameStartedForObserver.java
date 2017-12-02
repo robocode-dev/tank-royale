@@ -11,7 +11,7 @@ import json_schema.Participant;
 
 public class GameStartedForObserver extends Message {
 
-	public static final String TYPE = "game-started-for-observer";
+	public static final String TYPE = "gameStartedForObserver";
 
 	public GameStartedForObserver() {
 		super(TYPE);
@@ -22,7 +22,7 @@ public class GameStartedForObserver extends Message {
 	}
 
 	public GameSetup getGameSetup() {
-		return (GameSetup) $.extend(false, new GameSetup(), $get("game-setup"));
+		return (GameSetup) $.extend(false, new GameSetup(), $get("gameSetup"));
 	}
 
 	public Set<Participant> getParticipants() {

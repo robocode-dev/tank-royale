@@ -6,7 +6,7 @@ import json_schema.states.BulletState;
 
 public class BulletMissedEvent extends Event {
 
-	public static final String TYPE = "bullet-missed-event";
+	public static final String TYPE = "bulletMissedEvent";
 
 	public BulletMissedEvent() {
 		super(TYPE);

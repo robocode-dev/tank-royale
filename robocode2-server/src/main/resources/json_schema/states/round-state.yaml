@@ -3,12 +3,12 @@ $schema: http://json-schema.org/draft-06/schema#
 description: Current state of a round
 javaType: net.robocode2.json_schema.states.RoundState
 properties:
-  round-number:
+  roundNumber:
     description: Round number in a battle
     type: integer
-  turn-number:
+  turnNumber:
     description: Turn number in the current round of the battle
     type: integer
 required:
-- round-number
-- turn-number
+- roundNumber
+- turnNumber

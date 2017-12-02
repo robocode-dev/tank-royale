@@ -6,18 +6,18 @@ import json_schema.types.Point;
 
 public final class ScannedBotEvent extends Event {
 
-	public static final String TYPE = "scanned-bot-event";
+	public static final String TYPE = "scannedBotEvent";
 
 	public ScannedBotEvent() {
 		super(TYPE);
 	}
 
 	public Integer getScannedByBotId() {
-		return (Integer) $get("scanned-by-bot-id");
+		return (Integer) $get("scannedByBotId");
 	}
 
 	public Integer getScannedBotId() {
-		return (Integer) $get("scanned-bot-id");
+		return (Integer) $get("scannedBotId");
 	}
 
 	public Double getEnergy() {

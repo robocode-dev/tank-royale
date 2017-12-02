@@ -9,7 +9,7 @@ import def.js.Array;
 
 public class BotList extends Message2 {
 
-	public static final String TYPE = "bot-list";
+	public static final String TYPE = "botList";
 
 	public BotList() {
 		super(TYPE);

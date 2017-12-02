@@ -48,10 +48,8 @@ public class ControllerClient1 {
 
 	HTMLInputElement arenaWidthInput = (HTMLInputElement) document.getElementById("arena-width");
 	HTMLInputElement arenaHeightInput = (HTMLInputElement) document.getElementById("arena-height");
-	HTMLInputElement minNumberOfParticipantsInput = (HTMLInputElement) document
-			.getElementById("min-number-of-participants");
-	HTMLInputElement maxNumberOfParticipantsInput = (HTMLInputElement) document
-			.getElementById("max-number-of-participants");
+	HTMLInputElement minNumberOfParticipantsInput = (HTMLInputElement) document.getElementById("min-number-of-participants");
+	HTMLInputElement maxNumberOfParticipantsInput = (HTMLInputElement) document.getElementById("max-number-of-participants");
 	HTMLInputElement numberOfRoundsInput = (HTMLInputElement) document.getElementById("number-of-rounds");
 	HTMLInputElement gunCoolingRateInput = (HTMLInputElement) document.getElementById("gun-cooling-rate");
 	HTMLInputElement inactivityTurnsInput = (HTMLInputElement) document.getElementById("inactivity-turns");

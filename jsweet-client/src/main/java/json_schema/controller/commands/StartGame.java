@@ -6,7 +6,7 @@ import def.js.Array;
 
 public class StartGame extends Command {
 
-	public static final String TYPE = "start-game";
+	public static final String TYPE = "startGame";
 
 	public StartGame() {
 		super(TYPE);
@@ -17,10 +17,10 @@ public class StartGame extends Command {
 	}
 
 	public void setGameSetup(GameSetup2 gameSetup) {
-		$set("game-setup", gameSetup);
+		$set("gameSetup", gameSetup);
 	}
 
 	public void setBotAddresses(Array<BotAddress> botAddresses) {
-		$set("bot-addresses", botAddresses);
+		$set("botAddresses", botAddresses);
 	}
 }

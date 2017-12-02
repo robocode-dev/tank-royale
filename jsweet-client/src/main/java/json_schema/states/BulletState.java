@@ -7,11 +7,11 @@ import json_schema.types.Point;
 public class BulletState extends def.js.Object {
 
 	public Integer getBulletId() {
-		return (Integer) $get("bullet-id");
+		return (Integer) $get("bulletId");
 	}
 
 	public Integer getBotId() {
-		return (Integer) $get("bot-id");
+		return (Integer) $get("ownerid");
 	}
 
 	public Double getPower() {

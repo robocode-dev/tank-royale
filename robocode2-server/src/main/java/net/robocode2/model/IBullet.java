@@ -8,7 +8,7 @@ package net.robocode2.model;
 public interface IBullet {
 
 	/** Returns the id of the bot that fired this bullet */
-	int getBotId();
+	int getOwnerId();
 
 	/** Returns the id of the bullet */
 	int getBulletId();

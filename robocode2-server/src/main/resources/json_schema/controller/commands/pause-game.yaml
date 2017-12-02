@@ -4,4 +4,4 @@ description: Command to pause a game
 type: object
 extends:
   $ref: command.yaml
-  default: pause-game
+  default: pauseGame

@@ -87,7 +87,7 @@ public final class ConnHandler {
 					String hostname = addr.getHostName();
 
 					for (BotAddress botAddr : botAddresses) {
-						if (botAddr.getHostName().equals(hostname) && botAddr.getPort() == port) {
+						if (botAddr.getHost().equals(hostname) && botAddr.getPort() == port) {
 							foundConnections.add(conn);
 							break;
 						}

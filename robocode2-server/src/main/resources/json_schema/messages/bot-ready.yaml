@@ -4,4 +4,4 @@ description: Ready message from a bot to the game server
 type: object
 extends:
   $ref: message.yaml
-  default: bot-ready
+  default: botReady

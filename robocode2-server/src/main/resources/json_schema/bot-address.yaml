@@ -3,12 +3,12 @@ $schema: http://json-schema.org/draft-06/schema#
 description: Bot address
 javaType: net.robocode2.json_schema.BotAddress
 properties:
-  host-name:
-    description: Host name
+  host:
+    description: Host name or IP address
     type: string
   port:
     description: Port number
     type: integer
 required:
-- host-name
+- host
 - port

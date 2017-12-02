@@ -5,11 +5,11 @@ javaType: net.robocode2.json_schema.controller.commands.Command
 properties:
   type:
     enum:
-    - list-game-types
-    - list-bots
-    - start-game
-    - stop-game
-    - pause-game
-    - resume-game
+    - listGameTypes
+    - listBots
+    - startGame
+    - stopGame
+    - pauseGame
+    - resumeGame
 required:
 - type

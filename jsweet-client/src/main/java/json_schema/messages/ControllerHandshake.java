@@ -2,7 +2,7 @@ package json_schema.messages;
 
 public class ControllerHandshake extends Message2 {
 
-	public static final String TYPE = "controller-handshake";
+	public static final String TYPE = "controllerHandshake";
 
 	public ControllerHandshake() {
 		super(TYPE);

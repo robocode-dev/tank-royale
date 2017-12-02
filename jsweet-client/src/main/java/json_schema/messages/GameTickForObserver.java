@@ -13,7 +13,7 @@ import json_schema.states.RoundState;
 
 public class GameTickForObserver extends Message {
 
-	public static final String TYPE = "game-tick-for-observer";
+	public static final String TYPE = "gameTickForObserver";
 
 	public GameTickForObserver() {
 		super(TYPE);
@@ -24,13 +24,13 @@ public class GameTickForObserver extends Message {
 	}
 
 	public RoundState getRoundState() {
-		return (RoundState) $.extend(false, new RoundState(), $get("round-state"));
+		return (RoundState) $.extend(false, new RoundState(), $get("roundState"));
 	}
 
 	public Set<BotStateWithId> getBotStates() {
 
 		@SuppressWarnings("unchecked")
-		Array<BotStateWithId> array = (Array<BotStateWithId>) $get("bot-states");
+		Array<BotStateWithId> array = (Array<BotStateWithId>) $get("botStates");
 
 		Set<BotStateWithId> set = new HashSet<>();
 		for (BotStateWithId obj : array) {
@@ -43,7 +43,7 @@ public class GameTickForObserver extends Message {
 	public Set<BulletState> getBulletStates() {
 
 		@SuppressWarnings("unchecked")
-		Array<BulletState> array = (Array<BulletState>) $get("bullet-states");
+		Array<BulletState> array = (Array<BulletState>) $get("bulletStates");
 
 		Set<BulletState> set = new HashSet<>();
 		for (BulletState obj : array) {

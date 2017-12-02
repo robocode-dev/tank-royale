@@ -4,7 +4,7 @@ description: Bot event occuring, when one of its bullets missed, i.e. leaves the
 javaType: net.robocode2.json_schema.events.BulletMissedEvent
 extends:
   $ref: event.yaml
-  default: bullet-missed-event
+  default: bulletMissedEvent
 properties:
   bullet:
     description: Bullet that missed

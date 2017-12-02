@@ -3,130 +3,130 @@ package json_schema;
 public class GameSetup extends def.js.Object {
 
 	public String getGameType() {
-		return (String) $get("game-type");
+		return (String) $get("gameType");
 	}
 
 	public void setGameType(String gameType) {
-		$set("game-type", gameType);
+		$set("gameType", gameType);
 	}
 
 	public Integer getArenaWidth() {
-		return (Integer) $get("arena-width");
+		return (Integer) $get("arenaWidth");
 	}
 
 	public void setArenaWidth(Integer arenaWidth) {
-		$set("arena-width", arenaWidth);
+		$set("arenaWidth", arenaWidth);
 	}
 
 	public Boolean isArenaWidthFixed() {
-		return (Boolean) $get("is-arena-width-fixed");
+		return (Boolean) $get("isArenaWidthLocked");
 	}
 
 	public Integer getArenaHeight() {
-		return (Integer) $get("arena-height");
+		return (Integer) $get("arenaHeight");
 	}
 
 	public void setArenaHeight(Integer arenaHeight) {
-		$set("arena-height", arenaHeight);
+		$set("arenaHeight", arenaHeight);
 	}
 
 	public Boolean isArenaHeightFixed() {
-		return (Boolean) $get("is-arena-height-fixed");
+		return (Boolean) $get("isArenaHeightLocked");
 	}
 
 	public Integer getMinNumberOfParticipants() {
-		return (Integer) $get("min-number-of-participants");
+		return (Integer) $get("minNumberOfParticipants");
 	}
 
 	public void setMinNumberOfParticipants(Integer minNumberOfParticipants) {
-		$set("min-number-of-participants", minNumberOfParticipants);
+		$set("minNumberOfParticipants", minNumberOfParticipants);
 	}
 
 	public Boolean isMinNumberOfParticipantsFixed() {
-		return (Boolean) $get("is-min-number-of-participants-fixed");
+		return (Boolean) $get("isMinNumberOfParticipantsLocked");
 	}
 
 	public Integer getMaxNumberOfParticipants() {
-		return (Integer) $get("max-number-of-participants");
+		return (Integer) $get("maxNumberOfParticipants");
 	}
 
 	public void setMaxNumberOfParticipants(Integer maxNumberOfParticipants) {
-		$set("max-number-of-participants", maxNumberOfParticipants);
+		$set("maxNumberOfParticipants", maxNumberOfParticipants);
 	}
 
 	public Boolean isMaxNumberOfParticipantsFixed() {
-		return (Boolean) $get("is-max-number-of-participants-fixed");
+		return (Boolean) $get("isMaxNumberOfParticipantsLocked");
 	}
 
 	public Integer getNumberOfRounds() {
-		return (Integer) $get("number-of-rounds");
+		return (Integer) $get("numberOfRounds");
 	}
 
 	public void setNumberOfRounds(Integer numberOfRounds) {
-		$set("number-of-rounds", numberOfRounds);
+		$set("numberOfRounds", numberOfRounds);
 	}
 
 	public Boolean isNumberOfRoundsFixed() {
-		return (Boolean) $get("is-number-of-rounds-fixed");
+		return (Boolean) $get("isNumberOfRoundsLocked");
 	}
 
 	public Double getGunCoolingRate() {
-		return (Double) $get("gun-cooling-rate");
+		return (Double) $get("gunCoolingRate");
 	}
 
 	public void setGunCoolingRate(Double gunCoolingRate) {
-		$set("gun-cooling-rate", gunCoolingRate);
+		$set("gunCoolingRate", gunCoolingRate);
 	}
 
 	public Boolean isGunCoolingRateFixed() {
-		return (Boolean) $get("is-gun-cooling-rate-fixed");
+		return (Boolean) $get("isGunCoolingRateLocked");
 	}
 
 	public Integer getInactivityTurns() {
-		return (Integer) $get("inactivity-turns");
+		return (Integer) $get("inactivityTurns");
 	}
 
 	public void setInactivityTurns(Integer inactivityTurns) {
-		$set("inactivity-turns", inactivityTurns);
+		$set("inactivityTurns", inactivityTurns);
 	}
 
 	public Boolean isInactivityTurnsFixed() {
-		return (Boolean) $get("is-inactivity-turns-fixed");
+		return (Boolean) $get("isInactivityTurnsLocked");
 	}
 
 	public Integer getTurnTimeout() {
-		return (Integer) $get("turn-timeout");
+		return (Integer) $get("turnTimeout");
 	}
 
 	public void setTurnTimeout(Integer turnTimeout) {
-		$set("turn-timeout", turnTimeout);
+		$set("turnTimeout", turnTimeout);
 	}
 
 	public Boolean isTurnTimeoutFixed() {
-		return (Boolean) $get("is-turn-timeout-fixed");
+		return (Boolean) $get("isTurnTimeoutLocked");
 	}
 
 	public Integer getReadyTimeout() {
-		return (Integer) $get("ready-timeout");
+		return (Integer) $get("readyTimeout");
 	}
 
 	public void setReadyTimeout(Integer readyTimeout) {
-		$set("ready-timeout", readyTimeout);
+		$set("readyTimeout", readyTimeout);
 	}
 
 	public Boolean isReadyTimeout() {
-		return (Boolean) $get("is-ready-timeout-fixed");
+		return (Boolean) $get("isReadyTimeoutLocked");
 	}
 
 	public Integer getDelayedObserverTurns() {
-		return (Integer) $get("delayed-observer-turns");
+		return (Integer) $get("delayedObserverTurns");
 	}
 
 	public void setDelayedObserverTurns(Integer delayedObserverTurns) {
-		$set("delayed-observer-turns", delayedObserverTurns);
+		$set("delayedObserverTurns", delayedObserverTurns);
 	}
 
 	public Boolean isDelayedObserverTurnsFixed() {
-		return (Boolean) $get("is-delayed-observer-turns-fixed");
+		return (Boolean) $get("isDelayedObserverTurnsLocked");
 	}
 }

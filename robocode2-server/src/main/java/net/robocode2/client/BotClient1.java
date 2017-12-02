@@ -30,15 +30,15 @@ public class BotClient1 extends WebSocketClient {
 	final Gson gson;
 	{
 		RuntimeTypeAdapterFactory<Event> typeFactory = RuntimeTypeAdapterFactory.of(Event.class)
-				// .registerSubtype(BotDeathEvent.class, "bot-death-event")
-				// .registerSubtype(BotHitBotEvent.class, "bot-hit-bot-event")
-				// .registerSubtype(BotHitWallEvent.class, "bot-hit-wall-event")
-				// .registerSubtype(BulletFiredEvent.class, "bullet-fired-event")
-				// .registerSubtype(BulletHitBotEvent.class, "bullet-hit-bot-event")
-				// .registerSubtype(BulletHitBulletEvent.class, "bullet-hit-bullet-event")
-				// .registerSubtype(BulletMissedEvent.class, "bullet-missed-event")
-				.registerSubtype(ScannedBotEvent.class, "scanned-bot-event")
-		// .registerSubtype(SkippedTurnEvent.class, "skipped-turn-event")
+				// .registerSubtype(BotDeathEvent.class, "botDeathEvent")
+				// .registerSubtype(BotHitBotEvent.class, "botHitBotEvent")
+				// .registerSubtype(BotHitWallEvent.class, "botHitWallEvent")
+				// .registerSubtype(BulletFiredEvent.class, "bulletFiredEvent")
+				// .registerSubtype(BulletHitBotEvent.class, "bulletHitBotEvent")
+				// .registerSubtype(BulletHitBulletEvent.class, "bulletHitBulletEvent")
+				// .registerSubtype(BulletMissedEvent.class, "bulletMissedEvent")
+				.registerSubtype(ScannedBotEvent.class, "scannedBotEvent")
+		// .registerSubtype(SkippedTurnEvent.class, "skippedTurnEvent")
 		;
 
 		gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();

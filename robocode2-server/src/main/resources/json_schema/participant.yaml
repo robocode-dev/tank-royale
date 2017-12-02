@@ -12,7 +12,7 @@ properties:
   version:
     description: Bot version, e.g. 1.0
     type: string
-  game-types:
+  gameTypes:
     description: Game types supported by this bot
     type: array
     items:
@@ -20,11 +20,11 @@ properties:
   author:
     description: Author name, e.g. John Doe (john_doe@somewhere.net)
     type: string
-  country-code:
+  countryCode:
     description: 2-letter country code defined by ISO 3166-1
     type: string
     pattern: (^[a-z]{2}$)|(^[A-Z]{2}$)
-  programming-language:
+  programmingLanguage:
     description: Language used for programming the bot, e.g. Java 9
     type: string
 required:

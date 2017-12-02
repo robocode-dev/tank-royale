@@ -4,7 +4,7 @@ import def.js.Array;
 
 public class BotHandshake extends Message2 {
 
-	public static final String TYPE = "bot-handshake";
+	public static final String TYPE = "botHandshake";
 
 	public BotHandshake() {
 		super(TYPE);
@@ -27,15 +27,15 @@ public class BotHandshake extends Message2 {
 	}
 
 	public String getContryCode() {
-		return (String) $get("country-code");
+		return (String) $get("countryCode");
 	}
 
 	@SuppressWarnings("unchecked")
 	public Array<String> getGameTypes() {
-		return (Array<String>) $get("game-types");
+		return (Array<String>) $get("gameTypes");
 	}
 
 	public String getProgrammingLanguage() {
-		return (String) $get("programming-language");
+		return (String) $get("programmingLanguage");
 	}
 }

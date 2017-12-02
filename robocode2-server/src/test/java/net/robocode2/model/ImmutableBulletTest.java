@@ -27,7 +27,7 @@ public class ImmutableBulletTest {
 	public void constructorIBullet() {
 		ImmutableBullet bullet = new ImmutableBullet(initializedBullet);
 
-		assertEquals(initializedBullet.getBotId(), bullet.getBotId());
+		assertEquals(initializedBullet.getOwnerId(), bullet.getOwnerId());
 		assertEquals(initializedBullet.getBulletId(), bullet.getBulletId());
 		assertEquals(initializedBullet.getPower(), bullet.getPower(), 0.00001);
 		assertEquals(initializedBullet.getFirePosition(), bullet.getFirePosition());

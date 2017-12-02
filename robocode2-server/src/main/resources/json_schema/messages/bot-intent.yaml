@@ -4,21 +4,21 @@ description: Intent from a bot
 javaType: net.robocode2.json_schema.messages.BotIntent
 extends:
   $ref: message.yaml
-  default: bot-intent
+  default: botIntent
 properties:
-  turn-rate:
+  turnRate:
     description: Turn rate of the hull in degrees per turn (can be positive and negative)
     type: number
-  gun-turn-rate:
+  gunTurnRate:
     description: Turn rate of the gun in degrees per turn (can be positive and negative)
     type: number
-  radar-turn-rate:
+  radarTurnRate:
     description: Turn rate of the radar in degrees per turn (can be positive and negative)
     type: number
-  target-speed:
+  targetSpeed:
     description: New target speed in units per turn (can be positive and negative)
     type: number
-  bullet-power:
+  bulletPower:
     description: Attempt to fire bullet with a specific amount of power
     type: number
     minimum: 0

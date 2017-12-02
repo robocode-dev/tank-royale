@@ -10,10 +10,10 @@ properties:
     description: The rank bot, where 1 is 1st place, 4 is 4th place etc.
     type: integer
     minimum: 1
-  total-score:
+  totalScore:
     description: Total score
     type: number
 required:
 - id
 - rank
-- total-score
+- totalScore

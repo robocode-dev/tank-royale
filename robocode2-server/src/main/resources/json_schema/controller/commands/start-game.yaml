@@ -4,16 +4,16 @@ description: Command to start a new game
 javaType: net.robocode2.json_schema.controller.commands.StartGame
 extends:
   $ref: command.yaml
-  default: start-game
+  default: startGame
 properties:
-  game-setup:
+  gameSetup:
     description: Game setup
     $ref: ../../game-setup.yaml
-  bot-addresses:
+  botAddresses:
     description: List of bots
     type: array
     items:
       decription: Bot address
       $ref: ../../bot-address.yaml
 required:
-- bot-addresses
+- botAddresses

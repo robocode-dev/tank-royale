@@ -29,25 +29,25 @@ public class GameSetupTest {
 
 		setup.setGameType("game type");
 		setup.setArenaWidth(1234);
-		setup.setArenaHeightFixed(true);
+		setup.setArenaHeightLocked(true);
 		setup.setArenaHeight(3456);
-		setup.setArenaHeightFixed(true);
+		setup.setArenaHeightLocked(true);
 		setup.setMinNumberOfParticipants(7);
-		setup.setMinNumberOfParticipantsFixed(true);
+		setup.setMinNumberOfParticipantsLocked(true);
 		setup.setMaxNumberOfParticipants(53);
-		setup.setMaxNumberOfParticipantsFixed(true);
+		setup.setMaxNumberOfParticipantsLocked(true);
 		setup.setNumberOfRounds(78);
-		setup.setNumberOfRoundsFixed(true);
+		setup.setNumberOfRoundsLocked(true);
 		setup.setGunCoolingRate(0.465);
-		setup.setGunCoolingRateFixed(true);
+		setup.setGunCoolingRateLocked(true);
 		setup.setInactivityTurns(451);
-		setup.setInactiveTurnsFixed(true);
+		setup.setInactiveTurnsLocked(true);
 		setup.setTurnTimeout(3517);
-		setup.setTurnTimeoutFixed(true);
+		setup.setTurnTimeoutLocked(true);
 		setup.setReadyTimeout(8462);
-		setup.setReadyTimeoutFixed(true);
+		setup.setReadyTimeoutLocked(true);
 		setup.setDelayedObserverTurns(56);
-		setup.setDelayedObserverTurnsFixed(true);
+		setup.setDelayedObserverTurnsLocked(true);
 
 		initializedGameSetup = setup;
 	}
@@ -68,16 +68,16 @@ public class GameSetupTest {
 		assertEquals(DEFAULT_READY_TIMEOUT, setup.getReadyTimeout(), 0.00001);
 		assertEquals(DEFAULT_DELAYED_OBSERVER_TURNS, setup.getDelayedObserverTurns(), 0.00001);
 
-		assertNull(setup.isArenaWidthFixed());
-		assertNull(setup.isArenaHeightFixed());
-		assertNull(setup.isMinNumberOfParticipantsFixed());
-		assertNull(setup.isMaxNumberOfParticipantsFixed());
-		assertNull(setup.isNumberOfRoundsFixed());
-		assertNull(setup.isGunCoolingRateFixed());
-		assertNull(setup.isInactiveTurnsFixed());
-		assertNull(setup.isTurnTimeoutFixed());
-		assertNull(setup.isReadyTimeoutFixed());
-		assertNull(setup.isDelayedObserverTurnsFixed());
+		assertNull(setup.isArenaWidthLocked());
+		assertNull(setup.isArenaHeightLocked());
+		assertNull(setup.isMinNumberOfParticipantsLocked());
+		assertNull(setup.isMaxNumberOfParticipantsLocked());
+		assertNull(setup.isNumberOfRoundsLocked());
+		assertNull(setup.isGunCoolingRateLocked());
+		assertNull(setup.isInactiveTurnsLocked());
+		assertNull(setup.isTurnTimeoutLocked());
+		assertNull(setup.isReadyTimeoutLocked());
+		assertNull(setup.isDelayedObserverTurnsLocked());
 	}
 
 	@Test
@@ -377,142 +377,142 @@ public class GameSetupTest {
 	}
 
 	@Test
-	public void setArenaWidthFixed() {
+	public void setArenaWidthLocked() {
 		GameSetup setup = new GameSetup();
 
-		setup.setArenaWidthFixed(null);
-		assertNull(setup.isArenaWidthFixed());
+		setup.setArenaWidthLocked(null);
+		assertNull(setup.isArenaWidthLocked());
 
-		setup.setArenaWidthFixed(true);
-		assertEquals(true, setup.isArenaWidthFixed());
+		setup.setArenaWidthLocked(true);
+		assertEquals(true, setup.isArenaWidthLocked());
 
-		setup.setArenaWidthFixed(false);
-		assertEquals(false, setup.isArenaWidthFixed());
+		setup.setArenaWidthLocked(false);
+		assertEquals(false, setup.isArenaWidthLocked());
 	}
 
 	@Test
-	public void setArenaHeightFixed() {
+	public void setArenaHeightLocked() {
 		GameSetup setup = new GameSetup();
 
-		setup.setArenaHeightFixed(null);
-		assertNull(setup.isArenaHeightFixed());
+		setup.setArenaHeightLocked(null);
+		assertNull(setup.isArenaHeightLocked());
 
-		setup.setArenaHeightFixed(true);
-		assertEquals(true, setup.isArenaHeightFixed());
+		setup.setArenaHeightLocked(true);
+		assertEquals(true, setup.isArenaHeightLocked());
 
-		setup.setArenaHeightFixed(false);
-		assertEquals(false, setup.isArenaHeightFixed());
+		setup.setArenaHeightLocked(false);
+		assertEquals(false, setup.isArenaHeightLocked());
 	}
 
 	@Test
-	public void setMinNumberOfParticipantsFixed() {
+	public void setMinNumberOfParticipantsLocked() {
 		GameSetup setup = new GameSetup();
 
-		setup.setMinNumberOfParticipantsFixed(null);
-		assertNull(setup.isMinNumberOfParticipantsFixed());
+		setup.setMinNumberOfParticipantsLocked(null);
+		assertNull(setup.isMinNumberOfParticipantsLocked());
 
-		setup.setMinNumberOfParticipantsFixed(true);
-		assertEquals(true, setup.isMinNumberOfParticipantsFixed());
+		setup.setMinNumberOfParticipantsLocked(true);
+		assertEquals(true, setup.isMinNumberOfParticipantsLocked());
 
-		setup.setMinNumberOfParticipantsFixed(false);
-		assertEquals(false, setup.isMinNumberOfParticipantsFixed());
+		setup.setMinNumberOfParticipantsLocked(false);
+		assertEquals(false, setup.isMinNumberOfParticipantsLocked());
 	}
 
 	@Test
-	public void setMaxNumberOfParticipantsFixed() {
+	public void setMaxNumberOfParticipantsLocked() {
 		GameSetup setup = new GameSetup();
 
-		setup.setMaxNumberOfParticipantsFixed(null);
-		assertNull(setup.isMaxNumberOfParticipantsFixed());
+		setup.setMaxNumberOfParticipantsLocked(null);
+		assertNull(setup.isMaxNumberOfParticipantsLocked());
 
-		setup.setMaxNumberOfParticipantsFixed(true);
-		assertEquals(true, setup.isMaxNumberOfParticipantsFixed());
+		setup.setMaxNumberOfParticipantsLocked(true);
+		assertEquals(true, setup.isMaxNumberOfParticipantsLocked());
 
-		setup.setMaxNumberOfParticipantsFixed(false);
-		assertEquals(false, setup.isMaxNumberOfParticipantsFixed());
+		setup.setMaxNumberOfParticipantsLocked(false);
+		assertEquals(false, setup.isMaxNumberOfParticipantsLocked());
 	}
 
 	@Test
-	public void setNumberOfRoundsFixed() {
+	public void setNumberOfRoundsLocked() {
 		GameSetup setup = new GameSetup();
 
-		setup.setNumberOfRoundsFixed(null);
-		assertNull(setup.isNumberOfRoundsFixed());
+		setup.setNumberOfRoundsLocked(null);
+		assertNull(setup.isNumberOfRoundsLocked());
 
-		setup.setNumberOfRoundsFixed(true);
-		assertEquals(true, setup.isNumberOfRoundsFixed());
+		setup.setNumberOfRoundsLocked(true);
+		assertEquals(true, setup.isNumberOfRoundsLocked());
 
-		setup.setNumberOfRoundsFixed(false);
-		assertEquals(false, setup.isNumberOfRoundsFixed());
+		setup.setNumberOfRoundsLocked(false);
+		assertEquals(false, setup.isNumberOfRoundsLocked());
 	}
 
 	@Test
-	public void setGunCoolingRateFixed() {
+	public void setGunCoolingRateLocked() {
 		GameSetup setup = new GameSetup();
 
-		setup.setGunCoolingRateFixed(null);
-		assertNull(setup.isGunCoolingRateFixed());
+		setup.setGunCoolingRateLocked(null);
+		assertNull(setup.isGunCoolingRateLocked());
 
-		setup.setGunCoolingRateFixed(true);
-		assertEquals(true, setup.isGunCoolingRateFixed());
+		setup.setGunCoolingRateLocked(true);
+		assertEquals(true, setup.isGunCoolingRateLocked());
 
-		setup.setGunCoolingRateFixed(false);
-		assertEquals(false, setup.isGunCoolingRateFixed());
+		setup.setGunCoolingRateLocked(false);
+		assertEquals(false, setup.isGunCoolingRateLocked());
 	}
 
 	@Test
-	public void setInactiveTurnsFixed() {
+	public void setInactiveTurnsLocked() {
 		GameSetup setup = new GameSetup();
 
-		setup.setInactiveTurnsFixed(null);
-		assertNull(setup.isInactiveTurnsFixed());
+		setup.setInactiveTurnsLocked(null);
+		assertNull(setup.isInactiveTurnsLocked());
 
-		setup.setInactiveTurnsFixed(true);
-		assertEquals(true, setup.isInactiveTurnsFixed());
+		setup.setInactiveTurnsLocked(true);
+		assertEquals(true, setup.isInactiveTurnsLocked());
 
-		setup.setInactiveTurnsFixed(false);
-		assertEquals(false, setup.isInactiveTurnsFixed());
+		setup.setInactiveTurnsLocked(false);
+		assertEquals(false, setup.isInactiveTurnsLocked());
 	}
 
 	@Test
-	public void setTurnTimeoutFixed() {
+	public void setTurnTimeoutLocked() {
 		GameSetup setup = new GameSetup();
 
-		setup.setTurnTimeoutFixed(null);
-		assertNull(setup.isTurnTimeoutFixed());
+		setup.setTurnTimeoutLocked(null);
+		assertNull(setup.isTurnTimeoutLocked());
 
-		setup.setTurnTimeoutFixed(true);
-		assertEquals(true, setup.isTurnTimeoutFixed());
+		setup.setTurnTimeoutLocked(true);
+		assertEquals(true, setup.isTurnTimeoutLocked());
 
-		setup.setTurnTimeoutFixed(false);
-		assertEquals(false, setup.isTurnTimeoutFixed());
+		setup.setTurnTimeoutLocked(false);
+		assertEquals(false, setup.isTurnTimeoutLocked());
 	}
 
 	@Test
-	public void setReadyTimeoutFixed() {
+	public void setReadyTimeoutLocked() {
 		GameSetup setup = new GameSetup();
 
-		setup.setReadyTimeoutFixed(null);
-		assertNull(setup.isReadyTimeoutFixed());
+		setup.setReadyTimeoutLocked(null);
+		assertNull(setup.isReadyTimeoutLocked());
 
-		setup.setReadyTimeoutFixed(true);
-		assertEquals(true, setup.isReadyTimeoutFixed());
+		setup.setReadyTimeoutLocked(true);
+		assertEquals(true, setup.isReadyTimeoutLocked());
 
-		setup.setReadyTimeoutFixed(false);
-		assertEquals(false, setup.isReadyTimeoutFixed());
+		setup.setReadyTimeoutLocked(false);
+		assertEquals(false, setup.isReadyTimeoutLocked());
 	}
 
 	@Test
-	public void setDelayedObserverTurnsFixed() {
+	public void setDelayedObserverTurnsLocked() {
 		GameSetup setup = new GameSetup();
 
-		setup.setDelayedObserverTurnsFixed(null);
-		assertNull(setup.isDelayedObserverTurnsFixed());
+		setup.setDelayedObserverTurnsLocked(null);
+		assertNull(setup.isDelayedObserverTurnsLocked());
 
-		setup.setDelayedObserverTurnsFixed(true);
-		assertEquals(true, setup.isDelayedObserverTurnsFixed());
+		setup.setDelayedObserverTurnsLocked(true);
+		assertEquals(true, setup.isDelayedObserverTurnsLocked());
 
-		setup.setDelayedObserverTurnsFixed(false);
-		assertEquals(false, setup.isDelayedObserverTurnsFixed());
+		setup.setDelayedObserverTurnsLocked(false);
+		assertEquals(false, setup.isDelayedObserverTurnsLocked());
 	}
 }

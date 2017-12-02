@@ -2,7 +2,7 @@ package json_schema.messages;
 
 public class ObserverHandshake extends Message {
 
-	public static final String TYPE = "observer-handshake";
+	public static final String TYPE = "observerHandshake";
 
 	public ObserverHandshake() {
 		super(TYPE);

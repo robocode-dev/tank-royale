@@ -4,15 +4,15 @@ description: Game tick for bot. Next turn has started.
 javaType: net.robocode2.json_schema.messages.GameTickForBot
 extends:
   $ref: message.yaml
-  default: game-tick-for-bot
+  default: gameTickForBot
 properties:
-  round-state:
+  roundState:
     description: Current state of the round
     $ref: ../states/round-state.yaml
-  bot-state:
+  botState:
     description: Current state of this bot
     $ref: ../states/bot-state.yaml
-  bullet-states:
+  bulletStates:
     description: Current state of the bullets fired by this bot
     type: array
     items:
@@ -23,7 +23,7 @@ properties:
     items:
       $ref: ../events/event.yaml
 required:
-- round-state
-- bot-state
-- bullet-states
+- roundState
+- botState
+- bulletStates
 - events

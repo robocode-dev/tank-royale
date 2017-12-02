@@ -3,96 +3,96 @@ $schema: http://json-schema.org/draft-06/schema#
 description: Game setup
 javaType: net.robocode2.json_schema.GameSetup
 properties:
-  game-type:
+  gameType:
     description: Type of game
     type: string
-  arena-width:
+  arenaWidth:
     description: Width of arena in units
     type: integer
-  is-arena-width-fixed:
+  isArenaWidthLocked:
     description: Flag specifying if the width of arena is fixed for this game type
     type: boolean
-  arena-height:
+  arenaHeight:
     description: Height of arena in units
     type: integer
-  is-arena-height-fixed:
+  isArenaHeightLocked:
     description: Flag specifying if the height of arena is fixed for this game type
     type: boolean
-  min-number-of-participants:
+  minNumberOfParticipants:
     description: Minimum number of bots participating in battle
     type: integer
-  is-min-number-of-participants-fixed:
+  isMinNumberOfParticipantsLocked:
     description: Flag specifying if the minimum number of bots participating in battle
       is fixed for this game type
     type: boolean
-  max-number-of-participants:
+  maxNumberOfParticipants:
     description: Maximum number of bots participating in battle
     type: integer
-  is-max-number-of-participants-fixed:
+  isMaxNumberOfParticipantsLocked:
     description: Flag specifying if the maximum number of bots participating in battle
       is fixed for this game type
     type: boolean
-  number-of-rounds:
+  numberOfRounds:
     description: Number of rounds in battle
     type: integer
-  is-number-of-rounds-fixed:
+  isNumberOfRoundsLocked:
     description: Flag specifying if the number-of-rounds is fixed for this game type
     type: boolean
-  gun-cooling-rate:
+  gunCoolingRate:
     description: Gun cooling rate. The gun needs to cool down to a gun heat of zero
       before the gun is able to fire
     type: number
-  is-gun-cooling-rate-fixed:
+  isGunCoolingRateLocked:
     description: Flag specifying if the gun cooling rate is fixed for this game type
     type: boolean
-  inactivity-turns:
+  inactivityTurns:
     description: Maximum number of inactive turns allowed, where a bot does not take
       any action, before it is zapped by the game
     type: integer
-  is-inactivity-turns-fixed:
+  isInactivityTurnsLocked:
     description: Flag specifying if the inactive turns is fixed for this game type
     type: boolean
-  turn-timeout:
+  turnTimeout:
     description: Turn timeout in milliseconds for sending intent after having received
       'tick' message
     type: integer
-  is-turn-timeout-fixed:
+  isTurnTimeoutLocked:
     description: Flag specifying if the turn timeout is fixed for this game type
     type: boolean
-  ready-timeout:
+  readyTimeout:
     description: Time limit in milliseconds for sending ready message after having
       received 'new battle' message
     type: integer
-  is-ready-timeout-fixed:
+  isReadyTimeoutLocked:
     description: Flag specifying if the ready timeout is fixed for this game type
     type: boolean
-  delayed-observer-turns:
+  delayedObserverTurns:
     description: Number of turns that are delayed for observers relative to the current
       turn enforced by the game
     type: integer
-  is-delayed-observer-turns-fixed:
+  isDelayedObserverTurnsLocked:
     description: Flag specifying if the delayed observer turns is fixed for this game
       type
     type: boolean
 required:
-- game-type
-- arena-width
-- is-arena-width-fixed
-- arena-height
-- is-arena-height-fixed
-- min-number-of-participants
-- is-min-number-of-participants-fixed
-- max-number-of-participants
-- is-max-number-of-participants-fixed
-- number-of-rounds
-- is-number-of-rounds-fixed
-- gun-cooling-rate
-- is-gun-cooling-rate-fixed
-- inactivity-turns
-- is-inactivity-turns-turns
-- turn-timeout
-- is-turn-timeout-fixed
-- ready-timeout
-- is-ready-timeout-fixed
-- delayed-observer-turns
-- is-delayed-observer-turns-fixed
+- gameType
+- arenaWidth
+- isArenaWidthLocked
+- arenaHeight
+- isArenaHeightLocked
+- minNumberOfParticipants
+- isMinNumberOfParticipantsLocked
+- maxNumberOfParticipants
+- isMaxNumberOfParticipantsLocked
+- numberOfRounds
+- isNumberOfRoundsLocked
+- gunCoolingRate
+- isGunCoolingRateLocked
+- inactivityTurns
+- isInactivityTurnsLocked
+- turnTimeout
+- isTurnTimeoutLocked
+- readyTimeout
+- isReadyTimeoutLocked
+- delayedObserverTurns
+- isDelayedObserverTurnsLocked

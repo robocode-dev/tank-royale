@@ -4,4 +4,4 @@ description: Command to resume a game
 type: object
 extends:
   $ref: command.yaml
-  default: resume-game
+  default: resumeGame

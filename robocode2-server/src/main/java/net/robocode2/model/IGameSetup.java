@@ -64,72 +64,72 @@ public interface IGameSetup {
 	Integer getDelayedObserverTurns();
 
 	/**
-	 * Checks if the arena width is fixed.
+	 * Checks if the arena width is locked.
 	 * 
-	 * @return true if the arena width is fixed; false otherwise
+	 * @return true if the arena width is locked; false otherwise
 	 */
-	Boolean isArenaWidthFixed();
+	Boolean isArenaWidthLocked();
 
 	/**
-	 * Checks if the arena height is fixed.
+	 * Checks if the arena height is locked.
 	 * 
-	 * @return true if the arena height is fixed; false otherwise
+	 * @return true if the arena height is locked; false otherwise
 	 */
-	Boolean isArenaHeightFixed();
+	Boolean isArenaHeightLocked();
 
 	/**
-	 * Checks if the minimum number of bot participant is fixed.
+	 * Checks if the minimum number of bot participant is locked.
 	 * 
-	 * @return true if the minimum number of bot participant is fixed.; false otherwise
+	 * @return true if the minimum number of bot participant is locked.; false otherwise
 	 */
-	Boolean isMinNumberOfParticipantsFixed();
+	Boolean isMinNumberOfParticipantsLocked();
 
 	/**
-	 * Checks if the maximum number of bot participant is fixed.
+	 * Checks if the maximum number of bot participant is locked.
 	 * 
-	 * @return true if the maximum number of bot participant is fixed.; false otherwise
+	 * @return true if the maximum number of bot participant is locked.; false otherwise
 	 */
-	Boolean isMaxNumberOfParticipantsFixed();
+	Boolean isMaxNumberOfParticipantsLocked();
 
 	/**
-	 * Checks if the number of rounds is fixed.
+	 * Checks if the number of rounds is locked.
 	 * 
-	 * @return true if the number of rounds is fixed; false otherwise
+	 * @return true if the number of rounds is locked; false otherwise
 	 */
-	Boolean isNumberOfRoundsFixed();
+	Boolean isNumberOfRoundsLocked();
 
 	/**
-	 * Checks if the gun cooling rate is fixed.
+	 * Checks if the gun cooling rate is locked.
 	 * 
-	 * @return true if the the gun cooling rate is fixed; false otherwise
+	 * @return true if the the gun cooling rate is locked; false otherwise
 	 */
-	Boolean isGunCoolingRateFixed();
+	Boolean isGunCoolingRateLocked();
 
 	/**
-	 * Check if the number of allowed inactivity turns is fixed.
+	 * Check if the number of allowed inactivity turns is locked.
 	 * 
-	 * @return true if the number of allowed inactivity turns is fixed; false otherwise
+	 * @return true if the number of allowed inactivity turns is locked; false otherwise
 	 */
-	Boolean isInactiveTurnsFixed();
+	Boolean isInactiveTurnsLocked();
 
 	/**
-	 * Checks if the turn timeout is fixed.
+	 * Checks if the turn timeout is locked.
 	 * 
-	 * @return true if the the turn timeout is fixed; false otherwise
+	 * @return true if the the turn timeout is locked; false otherwise
 	 */
-	Boolean isTurnTimeoutFixed();
+	Boolean isTurnTimeoutLocked();
 
 	/**
-	 * Checks if the ready timeout is fixed.
+	 * Checks if the ready timeout is locked.
 	 * 
-	 * @return true if the the ready timeout is fixed; false otherwise
+	 * @return true if the the ready timeout is locked; false otherwise
 	 */
-	Boolean isReadyTimeoutFixed();
+	Boolean isReadyTimeoutLocked();
 
 	/**
-	 * Checks if the number of delayed turns for observers is fixed.
+	 * Checks if the number of delayed turns for observers is locked.
 	 * 
-	 * @return true if the number of delayed turns for observers is fixed; false otherwise
+	 * @return true if the number of delayed turns for observers is locked; false otherwise
 	 */
-	Boolean isDelayedObserverTurnsFixed();
+	Boolean isDelayedObserverTurnsLocked();
 }

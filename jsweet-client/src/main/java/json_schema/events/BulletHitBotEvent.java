@@ -6,7 +6,7 @@ import json_schema.states.BulletState;
 
 public class BulletHitBotEvent extends Event {
 
-	public static final String TYPE = "bullet-hit-bot-event";
+	public static final String TYPE = "bulletHitBotEvent";
 
 	public BulletHitBotEvent() {
 		super(TYPE);
@@ -17,7 +17,7 @@ public class BulletHitBotEvent extends Event {
 	}
 
 	public Integer getVictimId() {
-		return (Integer) $get("victim-id");
+		return (Integer) $get("victimId");
 	}
 
 	public Double getDamage() {

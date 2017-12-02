@@ -35,7 +35,7 @@ public class Bullet implements IBullet {
 	 *            is the other bullet instance, which is deep copied into this bullet.
 	 */
 	public Bullet(IBullet bullet) {
-		botId = bullet.getBotId();
+		botId = bullet.getOwnerId();
 		bulletId = bullet.getBulletId();
 		power = bullet.getPower();
 		firePosition = bullet.getFirePosition();
@@ -54,7 +54,7 @@ public class Bullet implements IBullet {
 	}
 
 	@Override
-	public int getBotId() {
+	public int getOwnerId() {
 		return botId;
 	}
 

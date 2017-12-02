@@ -12,7 +12,7 @@ public final class BulletToBulletStateMapper {
 		double direction = bullet.getDirection();
 		double speed = bullet.getSpeed();
 
-		bulletState.setBotId(bullet.getBotId());
+		bulletState.setOwnerId(bullet.getOwnerId());
 		bulletState.setBulletId(bullet.getBulletId());
 		bulletState.setDirection(MathUtil.normalAbsoluteDegrees(direction));
 		bulletState.setPower(bullet.getPower());

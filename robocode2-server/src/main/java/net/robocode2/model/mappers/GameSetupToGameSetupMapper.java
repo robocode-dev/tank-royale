@@ -23,16 +23,16 @@ public final class GameSetupToGameSetupMapper {
 		setup.setReadyTimeout(gameSetup.getReadyTimeout());
 		setup.setDelayedObserverTurns(gameSetup.getDelayedObserverTurns());
 
-		setup.setIsArenaWidthFixed(gameSetup.isArenaWidthFixed());
-		setup.setIsArenaHeightFixed(gameSetup.isArenaHeightFixed());
-		setup.setIsMinNumberOfParticipantsFixed(gameSetup.isMinNumberOfParticipantsFixed());
-		setup.setIsMaxNumberOfParticipantsFixed(gameSetup.isMaxNumberOfParticipantsFixed());
-		setup.setIsNumberOfRoundsFixed(gameSetup.isNumberOfRoundsFixed());
-		setup.setIsGunCoolingRateFixed(gameSetup.isGunCoolingRateFixed());
-		setup.setIsInactivityTurnsFixed(gameSetup.isInactiveTurnsFixed());
-		setup.setIsTurnTimeoutFixed(gameSetup.isTurnTimeoutFixed());
-		setup.setIsReadyTimeoutFixed(gameSetup.isReadyTimeoutFixed());
-		setup.setIsDelayedObserverTurnsFixed(gameSetup.isDelayedObserverTurnsFixed());
+		setup.setIsArenaWidthLocked(gameSetup.isArenaWidthLocked());
+		setup.setIsArenaHeightLocked(gameSetup.isArenaHeightLocked());
+		setup.setIsMinNumberOfParticipantsLocked(gameSetup.isMinNumberOfParticipantsLocked());
+		setup.setIsMaxNumberOfParticipantsLocked(gameSetup.isMaxNumberOfParticipantsLocked());
+		setup.setIsNumberOfRoundsLocked(gameSetup.isNumberOfRoundsLocked());
+		setup.setIsGunCoolingRateLocked(gameSetup.isGunCoolingRateLocked());
+		setup.setIsInactivityTurnsLocked(gameSetup.isInactiveTurnsLocked());
+		setup.setIsTurnTimeoutLocked(gameSetup.isTurnTimeoutLocked());
+		setup.setIsReadyTimeoutLocked(gameSetup.isReadyTimeoutLocked());
+		setup.setIsDelayedObserverTurnsLocked(gameSetup.isDelayedObserverTurnsLocked());
 
 		return setup;
 	}

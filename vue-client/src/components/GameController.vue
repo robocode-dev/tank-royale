@@ -15,7 +15,7 @@
         </b-col>
       </b-row>
 
-      <b-row class="mt-3" v-show2="isConnected()">
+      <b-row class="mt-3" v-show="isConnected()">
         <b-col>
           <b-dropdown text="Game Types" v-model="selectedGameType" @change="onGameTypeChanged" :disabled="!isConnected">
             <b-dropdown-item v-for="gameType in gameTypes" :key="gameType">{{ gameType }}</b-dropdown-item>
@@ -23,7 +23,7 @@
         </b-col>
       </b-row>
 
-      <b-row class="mt-3" v-show2="isConnected()">
+      <b-row class="mt-3" v-show="isConnected()">
         <b-col sm="2">
           <label>Arena size</label>
         </b-col>
@@ -41,7 +41,7 @@
         </b-col>
       </b-row>
 
-      <b-row class="mt-4" v-show2="isConnected()">
+      <b-row class="mt-4" v-show="isConnected()">
         <b-col sm="3">
           <label>Min. number of participants</label>
         </b-col>
@@ -56,7 +56,7 @@
         </b-col>
       </b-row>
 
-      <b-row class="mt-2" v-show2="isConnected()">
+      <b-row class="mt-2" v-show="isConnected()">
        <b-col sm="3">
           <label>Number of rounds</label>
         </b-col>
@@ -71,7 +71,7 @@
         </b-col>
       </b-row>
 
-      <b-row class="mt-2" v-show2="isConnected()">
+      <b-row class="mt-2" v-show="isConnected()">
        <b-col sm="3">
           <label>Ready timeout (ms)</label>
         </b-col>
@@ -86,7 +86,7 @@
         </b-col>
       </b-row>
 
-      <b-row class="mt-2" v-show2="isConnected()">
+      <b-row class="mt-2" v-show="isConnected()">
        <b-col sm="3">
           <label>Gun cooling rate</label>
         </b-col>

@@ -4,9 +4,9 @@ description: Server handshake
 javaType: net.robocode2.json_schema.messages.ServerHandshake
 extends:
   $ref: message.yaml
-  default: server-handshake
+  default: serverHandshake
 properties:
-  protocol-version:
+  protocolVersion:
     type: string
     description: Protocol version - expected to change
     pattern: ^\\d+(\\.\\d+)*$
@@ -17,4 +17,4 @@ properties:
     minItems: 1
     uniqueItems: true
 required:
-- protocol-version
+- protocolVersion
