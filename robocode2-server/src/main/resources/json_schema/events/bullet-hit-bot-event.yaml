@@ -4,7 +4,6 @@ description: Bot event occurring, when a bot is hit by a bullet from another bot
 javaType: net.robocode2.json_schema.events.BulletHitBotEvent
 extends:
   $ref: event.yaml
-  default: bulletHitBotEvent
 properties:
   bullet:
     description: Bullet that hit another bot

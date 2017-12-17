@@ -5,7 +5,6 @@ description: Bot event occurring, when a bot has skipped a turn, meaning that no
 javaType: net.robocode2.json_schema.events.SkippedTurnEvent
 extends:
   $ref: event.yaml
-  default: skippedTurnEvent
 properties:
   skippedTurn:
     description: Skipped turn number

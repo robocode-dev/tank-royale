@@ -4,7 +4,6 @@ description: Command to list bots available
 type: object
 extends:
   $ref: command.yaml
-  default: listBots
 properties:
   gameTypes:
     description: Game type filter

@@ -4,7 +4,6 @@ description: Controller handshake
 javaType: net.robocode2.json_schema.messages.ControllerHandshake
 extends:
   $ref: message.yaml
-  default: controllerHandshake
 properties:
   name:
     description: Name of controller, e.g. Fancy Robocode Controller

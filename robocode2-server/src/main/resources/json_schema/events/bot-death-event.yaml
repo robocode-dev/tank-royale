@@ -4,7 +4,6 @@ description: Bot event occurring, when any bot is destroyed
 javaType: net.robocode2.json_schema.events.BotDeathEvent
 extends:
   $ref: event.yaml
-  default: botDeathEvent
 properties:
   victimId:
     description: ID of the bot that got hit

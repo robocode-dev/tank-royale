@@ -4,7 +4,6 @@ description: List of bots
 javaType: net.robocode2.json_schema.messages.BotList
 extends:
   $ref: message.yaml
-  default: botList
 properties:
   bots:
     description: List of bots

@@ -4,7 +4,6 @@ description: Intent from a bot
 javaType: net.robocode2.json_schema.messages.BotIntent
 extends:
   $ref: message.yaml
-  default: botIntent
 properties:
   turnRate:
     description: Turn rate of the hull in degrees per turn (can be positive and negative)

@@ -4,7 +4,6 @@ description: Bot handshake
 javaType: net.robocode2.json_schema.messages.BotHandshake
 extends:
   $ref: message.yaml
-  default: botHandshake
 properties:
   name:
     description: Name of bot, e.g. Killer Bee

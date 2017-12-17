@@ -4,7 +4,6 @@ description: List of game types
 javaType: net.robocode2.json_schema.messages.GameTypeList
 extends:
   $ref: message.yaml
-  default: gameTypeList
 properties:
   gameTypes:
     description: List of game types

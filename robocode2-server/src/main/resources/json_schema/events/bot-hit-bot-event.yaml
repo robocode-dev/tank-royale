@@ -4,7 +4,6 @@ description: Bot event occurring, when a bot collides with another bot
 javaType: net.robocode2.json_schema.events.BotHitBotEvent
 extends:
   $ref: event.yaml
-  default: botHitBotEvent
 properties:
   botId:
     description: ID of the bot that hit another bot

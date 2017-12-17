@@ -4,7 +4,6 @@ description: Command to start a new game
 javaType: net.robocode2.json_schema.controller.commands.StartGame
 extends:
   $ref: command.yaml
-  default: startGame
 properties:
   gameSetup:
     description: Game setup

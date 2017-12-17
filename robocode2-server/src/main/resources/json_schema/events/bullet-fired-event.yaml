@@ -4,7 +4,6 @@ description: Bot event occurring, when a bullet is fired
 javaType: net.robocode2.json_schema.events.BulletFiredEvent
 extends:
   $ref: event.yaml
-  default: bulletFiredEvent
 properties:
   bullet:
     description: Bullet that was fired

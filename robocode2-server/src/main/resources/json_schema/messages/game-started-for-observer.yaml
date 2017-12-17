@@ -4,7 +4,6 @@ description: New game info for an observer. New game has started.
 javaType: net.robocode2.json_schema.messages.GameStartedForObserver
 extends:
   $ref: message.yaml
-  default: gameStartedForObserver
 properties:
   gameSetup:
     description: Game setup
