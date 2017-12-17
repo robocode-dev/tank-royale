@@ -24,7 +24,6 @@ import def.js.JSON;
 import json_schema.BotAddress;
 import json_schema.GameSetup2;
 import json_schema.controller.commands.ListBots;
-import json_schema.controller.commands.ListGameTypes;
 import json_schema.controller.commands.PauseGame;
 import json_schema.controller.commands.ResumeGame;
 import json_schema.controller.commands.StartGame;
@@ -110,8 +109,6 @@ public class ControllerClient1 {
 
 		sendHandshake();
 
-		sendListGameTypes();
-
 		return null;
 	}
 
@@ -159,10 +156,6 @@ public class ControllerClient1 {
 		handshake.setAuthor("Author name");
 
 		ws.send(JSON.stringify(handshake));
-	}
-
-	private void sendListGameTypes() {
-		ws.send(JSON.stringify(new ListGameTypes()));
 	}
 
 	private void handleSelectGameType() {

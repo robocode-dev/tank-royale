@@ -13,6 +13,7 @@ import net.robocode2.json_schema.events.BulletHitBulletEvent;
 import net.robocode2.json_schema.events.BulletMissedEvent;
 import net.robocode2.json_schema.events.Event;
 import net.robocode2.json_schema.events.Event.Type;
+import net.robocode2.json_schema.events.HitByBulletEvent;
 import net.robocode2.json_schema.events.ScannedBotEvent;
 import net.robocode2.json_schema.events.SkippedTurnEvent;
 
@@ -48,6 +49,9 @@ public final class EventsToEventsMapper {
 		}
 		if (event instanceof net.robocode2.model.events.BulletMissedEvent) {
 			return map((net.robocode2.model.events.BulletMissedEvent) event);
+		}
+		if (event instanceof net.robocode2.model.events.HitByBulletEvent) {
+			return map((net.robocode2.model.events.HitByBulletEvent) event);
 		}
 		if (event instanceof net.robocode2.model.events.ScannedBotEvent) {
 			return map((net.robocode2.model.events.ScannedBotEvent) event);
@@ -112,6 +116,15 @@ public final class EventsToEventsMapper {
 		BulletMissedEvent event = new BulletMissedEvent();
 		event.setType(Type.BULLET_MISSED_EVENT);
 		event.setBullet(BulletToBulletStateMapper.map(bulletMissedEvent.getBullet()));
+		return event;
+	}
+
+	private static HitByBulletEvent map(net.robocode2.model.events.HitByBulletEvent hitByBulletEvent) {
+		HitByBulletEvent event = new HitByBulletEvent();
+		event.setType(Type.HIT_BY_BULLET_EVENT);
+		event.setBullet(BulletToBulletStateMapper.map(hitByBulletEvent.getBullet()));
+		event.setDamage(hitByBulletEvent.getDamage());
+		event.setEnergy(hitByBulletEvent.getEnergy());
 		return event;
 	}
 

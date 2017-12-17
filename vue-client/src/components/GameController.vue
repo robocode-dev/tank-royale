@@ -17,9 +17,9 @@
 
       <b-row class="mt-3" v-show="isConnected()">
         <b-col>
-          <b-dropdown text="Game Types" v-model="selectedGameType" @change="onGameTypeChanged" :disabled="!isConnected">
-            <b-dropdown-item v-for="gameType in gameTypes" :key="gameType">{{ gameType }}</b-dropdown-item>
-          </b-dropdown>
+          <b-dd text="Game Types">
+            <b-dd-item @click="onGameTypeSelected(gameType)" v-for="gameType in gameTypes" :key="gameType">{{ gameType }}</b-dd-item>
+          </b-dd>
         </b-col>
       </b-row>
 
@@ -30,13 +30,13 @@
         <b-col sm="4">
           <b-input-group>
             <b-input-group-addon>width</b-input-group-addon>
-            <b-input type="number" placeholder="800" v-model="game['arena-width']" :disabled="game['is-arena-width-fixed']" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
+            <b-input type="number" v-model="game.arenaWidth" :disabled="game.isArenaWidthLocked" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
           </b-input-group>
         </b-col>
         <b-col sm="4">
           <b-input-group>
             <b-input-group-addon>height</b-input-group-addon>
-            <b-input type="number" placeholder="600" v-model="game['arena-height']" :disabled="game['is-arena-height-fixed']" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
+            <b-input type="number" v-model="game.arenaHeight" :disabled="game.isArenaHeightLocked" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
           </b-input-group>
         </b-col>
       </b-row>
@@ -46,13 +46,13 @@
           <label>Min. number of participants</label>
         </b-col>
         <b-col sm="2">
-          <b-form-input type="number" v-model="game['min-number-of-participants']" :disabled="game['is-min-number-of-participants-fixed']" :min="1"/>
+          <b-input type="number" v-model="game.minNumberOfParticipants" :disabled="game.isMinNumberOfParticipantsLocked" :min="1"/>
         </b-col>
         <b-col sm="3">
           <label>Max. number of participants</label>
         </b-col>
         <b-col sm="2">
-          <b-form-input type="number" v-model="game['max-number-of-participants']" :disabled="game['is-max-number-of-participants-fixed']" :min="1"/>
+          <b-input type="number" v-model="game.maxNumberOfParticipants" :disabled="game.isMaxNumberOfParticipantsLocked" :min="1"/>
         </b-col>
       </b-row>
 
@@ -61,13 +61,13 @@
           <label>Number of rounds</label>
         </b-col>
         <b-col sm="2">
-          <b-form-input type="number" v-model="game['number-of-rounds']" :disabled="game['is-number-of-rounds-fixed']" :min="1"/>
+          <b-input type="number" v-model="game.numberOfRounds" :disabled="game.isNumberOfRoundsLocked" :min="1"/>
         </b-col>
        <b-col sm="3">
           <label>Inactivity turns</label>
         </b-col>
         <b-col sm="2">
-          <b-form-input type="number" v-model="game['inactivity-turns']" :disabled="game['is-inactivity-turns-fixed']" :min="1" step="50"/>
+          <b-input type="number" v-model="game.inactivityTurns" :disabled="game.isInactivityTurnsLocked" :min="1" step="50"/>
         </b-col>
       </b-row>
 
@@ -76,13 +76,13 @@
           <label>Ready timeout (ms)</label>
         </b-col>
         <b-col sm="2">
-          <b-form-input type="number" v-model="game['delayed-observer-turns']" :disabled="game['is-delayed-observer-turns-fixed']" :min="1"/>
+          <b-input type="number" v-model="game.delayedObserverTurns" :disabled="game.delayedObserverTurnsLocked" :min="1"/>
         </b-col>
        <b-col sm="3">
           <label>Turn timeout (ms)</label>
         </b-col>
         <b-col sm="2">
-          <b-form-input type="number" v-model="game['turn-timeout']" :disabled="game['is-turn-timeout-fixed']" :min="1"/>
+          <b-input type="number" v-model="game.turnTimeout" :disabled="game.turnTimeoutLocked" :min="1"/>
         </b-col>
       </b-row>
 
@@ -91,13 +91,13 @@
           <label>Gun cooling rate</label>
         </b-col>
         <b-col sm="2">
-          <b-form-input type="number" v-model="game['gun-cooling-rate']" :disabled="game['is-gun-cooling-rate-fixed']" :min="rules.minGunCoolingRate" :max="rules.maxGunCoolingRate" step="0.1"/>
+          <b-input type="number" v-model="game.gunCoolingRate" :disabled="game.isGunCoolingRateLocked" :min="rules.minGunCoolingRate" :max="rules.maxGunCoolingRate" step="0.1"/>
         </b-col>
        <b-col sm="3">
           <label>Delayed observer turns</label>
         </b-col>
         <b-col sm="2">
-          <b-form-input type="number" v-model="game['delayed-observer-turns']" :disabled="game['is-delayed-observer-turns-fixed']" :min="1"/>
+          <b-input type="number" v-model="game.delayedObserverTurns" :disabled="game.delayedObserverTurnsLocked" :min="1"/>
         </b-col>
       </b-row>
     </b-container>
@@ -118,7 +118,6 @@ export default {
 
       serverHandshake: null, // from server
       gameTypes: null,
-      selectedGameType: null,
 
       game: {}, // selected game
 
@@ -175,7 +174,7 @@ export default {
 
         const message = JSON.parse(event.data)
         switch (message.type) {
-          case 'server-handshake':
+          case 'serverHandshake':
             vm.handleServerHandshake(message)
             break
         }
@@ -189,11 +188,11 @@ export default {
       this.gameTypes = null
     },
     sendControllerHandshake (connection) {
-      console.log('<-controller-handshake')
+      console.log('<-controllerHandshake')
 
       connection.send(
         JSON.stringify({
-          type: 'controller-handshake',
+          type: 'controllerHandshake',
           name: 'Robocode 2 Game Controller',
           version: '0.1.0',
           author: 'Flemming N. Larsen <fnl@users.sourceforge.net>'
@@ -201,7 +200,7 @@ export default {
       )
     },
     handleServerHandshake (serverHandshake) {
-      console.log('->server-handshake')
+      console.log('->serverHandshake')
 
       this.serverHandshake = serverHandshake
 
@@ -211,16 +210,18 @@ export default {
         const games = serverHandshake.games
         if (games) {
           games.forEach(element => {
-            gameTypes.push(element['game-type'])
+            gameTypes.push(element['gameType'])
           })
         }
       }
       this.gameTypes = gameTypes
     },
-    onGameTypeChanged () {
-      this.game = this.serverHandshake.games.find(
-        game => game['game-type'] === this.selectedGameType
-      )
+    onGameTypeSelected (gameType) {
+      var game = this.serverHandshake.games.find(game => game.gameType === gameType)
+      if (!game) {
+        game = {}
+      }
+      this.game = game
     }
   }
 }

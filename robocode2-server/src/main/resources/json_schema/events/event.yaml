@@ -12,6 +12,7 @@ properties:
     - bulletHitBotEvent
     - bulletMissedEvent
     - bulletHitBulletEvent
+    - hitByBulletEvent
     - scannedBotEvent
     - skippedTurnEvent
     - wonRoundEvent

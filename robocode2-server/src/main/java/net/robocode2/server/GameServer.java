@@ -27,12 +27,10 @@ import net.robocode2.json_schema.messages.GameStartedForBot;
 import net.robocode2.json_schema.messages.GameStartedForObserver;
 import net.robocode2.json_schema.messages.GameTickForBot;
 import net.robocode2.json_schema.messages.GameTickForObserver;
-import net.robocode2.json_schema.messages.GameTypeList;
 import net.robocode2.json_schema.messages.Message;
 import net.robocode2.json_schema.messages.ObserverHandshake;
 import net.robocode2.model.BotIntent;
 import net.robocode2.model.GameSetup;
-import net.robocode2.model.IGameSetup;
 import net.robocode2.model.IRound;
 import net.robocode2.model.ITurn;
 import net.robocode2.model.ImmutableGameState;
@@ -61,7 +59,7 @@ public final class GameServer {
 	private Map<WebSocket, BotIntent> botIntents = new HashMap<>();
 
 	private Timer readyTimer;
-	private Timer updateGameStateTimer;
+	private Timer turnTimer;
 
 	private ModelUpdater modelUpdater;
 
@@ -175,8 +173,8 @@ public final class GameServer {
 
 		// Create timer to updating game state
 
-		updateGameStateTimer = new Timer("Update-game-state-timer");
-		updateGameStateTimer.schedule(new TimerTask() {
+		turnTimer = new Timer("turn-timer");
+		turnTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				onUpdateGameState();
@@ -273,7 +271,7 @@ public final class GameServer {
 				System.out.println("#### GAME ENDED #####");
 
 				// Stop timer for updating game state
-				updateGameStateTimer.cancel();
+				turnTimer.cancel();
 
 				// Game has stopped
 				runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
@@ -400,23 +398,6 @@ public final class GameServer {
 			}
 
 			String msg = gson.toJson(botList);
-			send(socket, msg);
-		}
-
-		@Override
-		public void onListGameTypes(WebSocket socket) {
-			GameTypeList gameTypeList = new GameTypeList();
-			gameTypeList.setType(Message.Type.GAME_TYPE_LIST);
-
-			List<net.robocode2.json_schema.GameSetup> gameTypes = new ArrayList<>();
-			gameTypeList.setGameTypes(gameTypes);
-
-			Set<IGameSetup> games = serverSetup.getGames();
-			for (IGameSetup gameSetup : games) {
-				gameTypes.add(GameSetupToGameSetupMapper.map(gameSetup));
-			}
-
-			String msg = gson.toJson(gameTypeList);
 			send(socket, msg);
 		}
 

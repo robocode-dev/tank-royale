@@ -230,13 +230,6 @@ public final class ConnHandler {
 					System.out.println("Handling command: " + type);
 
 					switch (type) {
-					case LIST_GAME_TYPES: {
-						ControllerHandshake handshake = controllerConnections.get(conn);
-						if (handshake != null) {
-							executorService.submit(() -> listener.onListGameTypes(conn));
-						}
-						break;
-					}
 					case LIST_BOTS: {
 						ControllerHandshake handshake = controllerConnections.get(conn);
 						ListBots listBots = gson.fromJson(message, ListBots.class);
