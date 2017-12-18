@@ -33,6 +33,7 @@ import json_schema.messages.BotList;
 import json_schema.messages.ControllerHandshake;
 import json_schema.messages.GameTypeList;
 import json_schema.messages.Message2;
+import json_schema.messages.ServerHandshake;
 
 public class ControllerClient1 {
 
@@ -64,7 +65,7 @@ public class ControllerClient1 {
 
 	private WebSocket ws;
 
-	private GameTypeList gameTypeList;
+	private List<GameSetup2> gameTypeList;
 	private GameSetup2 selectedGameType;
 
 	public ControllerClient1() {
@@ -125,9 +126,8 @@ public class ControllerClient1 {
 			Message2 msg = Message2.map(obj); // Fails here
 			String type = msg.getType();
 
-			if (GameTypeList.TYPE.equals(type)) {
-				gameTypeList = GameTypeList.map(obj);
-				handleGameTypeList(gameTypeList);
+			if (ServerHandshake.TYPE.equals(type)) {
+				handleServerHandshake(ServerHandshake.map(obj));
 
 			} else if (BotList.TYPE.equals(type)) {
 				handleBotList(BotList.map(obj));
@@ -172,7 +172,7 @@ public class ControllerClient1 {
 		if (gameTypeSelect.selectedOptions.length > 0) {
 			int selectedIndex = (int) gameTypeSelect.selectedIndex;
 			if (selectedIndex >= 0) {
-				selectedGameType = gameTypeList.getGameTypes().get(selectedIndex);
+				selectedGameType = gameTypeList.get(selectedIndex);
 			}
 		}
 	}
@@ -196,16 +196,31 @@ public class ControllerClient1 {
 		ws.send(JSON.stringify(listBots));
 	}
 
-	private void handleBotList(BotList botList) {
-		console.info("handleBotList #1");
+	private void handleServerHandshake(ServerHandshake handshake) {
+		gameTypeList = handshake.getGames();
+		
+		gameTypeSelect.options.length = 0;
 
+		for (GameSetup2 gameSetup : gameTypeList) {
+			HTMLOptionElement option = (HTMLOptionElement) document.createElement("option");
+			option.text = gameSetup.getGameType();
+			gameTypeSelect.appendChild(option);
+		}
+
+		if (gameTypeSelect.options.length > 0) {
+			HTMLOptionElement option = (HTMLOptionElement) gameTypeSelect.options.$get(0);
+			option.selected = true;
+		}
+
+		handleSelectGameType();
+	}
+	
+	private void handleBotList(BotList botList) {
 		List<String> selectedValues = new ArrayList<>();
 
 		HTMLCollection selectedOptions = botSelect.selectedOptions;
 
 		for (int i = 0; i < selectedOptions.length; i++) {
-			console.info("handleBotList #2: " + i);
-
 			HTMLOptionElement option = (HTMLOptionElement) selectedOptions.$get(i);
 			if (option.selected) {
 				selectedValues.add(option.value);
@@ -228,22 +243,6 @@ public class ControllerClient1 {
 
 			botSelect.appendChild(option);
 		}
-	}
-
-	private void handleGameTypeList(GameTypeList gameTypeList) {
-		gameTypeSelect.options.length = 0;
-
-		for (GameSetup2 gameSetup : gameTypeList.getGameTypes()) {
-			HTMLOptionElement option = (HTMLOptionElement) document.createElement("option");
-			option.text = gameSetup.getGameType();
-			gameTypeSelect.appendChild(option);
-		}
-
-		if (gameTypeSelect.options.length > 0) {
-			HTMLOptionElement option = (HTMLOptionElement) gameTypeSelect.options.$get(0);
-			option.selected = true;
-		}
-		handleSelectGameType();
 	}
 
 	private void updateGameSetupInputFields() {
