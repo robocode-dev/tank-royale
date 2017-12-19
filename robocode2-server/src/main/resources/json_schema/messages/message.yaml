@@ -8,7 +8,7 @@ properties:
     - botHandshake
     - botInfo
     - botIntent
-    - botList
+    - botListUpdate
     - botReady
     - controllerHandshake
     - gameTypeList

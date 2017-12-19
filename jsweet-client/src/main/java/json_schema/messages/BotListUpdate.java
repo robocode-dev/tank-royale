@@ -7,15 +7,15 @@ import java.util.Set;
 
 import def.js.Array;
 
-public class BotList extends Message2 {
+public class BotListUpdate extends Message2 {
 
-	public static final String TYPE = "botList";
+	public static final String TYPE = "botListUpdate";
 
-	public BotList() {
+	public BotListUpdate() {
 		super(TYPE);
 	}
 
-	public BotList(String type) {
+	public BotListUpdate(String type) {
 		super(type);
 	}
 
@@ -32,7 +32,7 @@ public class BotList extends Message2 {
 		return set;
 	}
 
-	public static BotList map(Object obj) {
-		return (BotList) $.extend(false, new BotList(), obj);
+	public static BotListUpdate map(Object obj) {
+		return (BotListUpdate) $.extend(false, new BotListUpdate(), obj);
 	}
 }

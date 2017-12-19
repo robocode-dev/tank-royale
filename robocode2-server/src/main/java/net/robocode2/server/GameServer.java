@@ -1,6 +1,5 @@
 package net.robocode2.server;
 
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,7 +20,7 @@ import net.robocode2.json_schema.BotAddress;
 import net.robocode2.json_schema.Participant;
 import net.robocode2.json_schema.messages.BotHandshake;
 import net.robocode2.json_schema.messages.BotInfo;
-import net.robocode2.json_schema.messages.BotList;
+import net.robocode2.json_schema.messages.BotListUpdate;
 import net.robocode2.json_schema.messages.ControllerHandshake;
 import net.robocode2.json_schema.messages.GameStartedForBot;
 import net.robocode2.json_schema.messages.GameStartedForObserver;
@@ -250,8 +249,7 @@ public final class GameServer {
 
 			// Send game state as 'game tick' to participants
 			for (WebSocket participant : participants) {
-				GameTickForBot gameTickForBot = TurnToGameTickForBotMapper.map(round, turn,
-						participantIds.get(participant));
+				GameTickForBot gameTickForBot = TurnToGameTickForBotMapper.map(round, turn, participantIds.get(participant));
 				if (gameTickForBot != null) { // Bot alive?
 					String msg = gson.toJson(gameTickForBot);
 					send(participant, msg);
@@ -318,6 +316,37 @@ public final class GameServer {
 		botIntent.update(BotIntentToBotIntentMapper.map(intent));
 	}
 
+	private String createBotListUpdateMessage() {
+		BotListUpdate botListUpdate = new BotListUpdate();
+		botListUpdate.setType(Message.Type.BOT_LIST_UPDATE);
+		List<BotInfo> bots = new ArrayList<BotInfo>();
+		botListUpdate.setBots(bots);
+
+		Map<WebSocket, BotHandshake> botConnections = connHandler.getBotConnections();
+		if (botConnections != null) {
+			for (Entry<WebSocket, BotHandshake> entry : botConnections.entrySet()) {
+				BotInfo botInfo = BotHandshakeToBotInfoMapper.map(entry.getValue());
+				bots.add(botInfo);
+			}
+		}
+
+		String msg = gson.toJson(botListUpdate);
+
+		return msg;
+	}
+	
+	private void sendBotListUpdateToObservers() {
+		String msg = createBotListUpdateMessage();
+		for (Entry<WebSocket, ObserverHandshake> entry : connHandler.getObserverConnections().entrySet()) {
+			WebSocket observer = entry.getKey();
+			send(observer, msg);
+		}
+		for (Entry<WebSocket, ControllerHandshake> entry : connHandler.getControllerConnections().entrySet()) {
+			WebSocket controller = entry.getKey();
+			send(controller, msg);
+		}
+	}
+
 	private class GameServerConnListener implements ConnListener {
 
 		@Override
@@ -327,32 +356,34 @@ public final class GameServer {
 
 		@Override
 		public void onBotJoined(WebSocket socket, BotHandshake bot) {
-			// TODO Auto-generated method stub
+			sendBotListUpdateToObservers();
 		}
 
 		@Override
 		public void onBotLeft(WebSocket socket) {
-			// TODO Auto-generated method stub
+			sendBotListUpdateToObservers();
 		}
 
 		@Override
 		public void onObserverJoined(WebSocket socket, ObserverHandshake bot) {
-			// TODO Auto-generated method stub
+			String msg = createBotListUpdateMessage();
+			send(socket, msg);
 		}
 
 		@Override
 		public void onObserverLeft(WebSocket socket) {
-			// TODO Auto-generated method stub
+			// Do nothing
 		}
 
 		@Override
 		public void onControllerJoined(WebSocket socket, ControllerHandshake bot) {
-			// TODO Auto-generated method stub
+			String msg = createBotListUpdateMessage();
+			send(socket, msg);
 		}
 
 		@Override
 		public void onControllerLeft(WebSocket socket) {
-			// TODO Auto-generated method stub
+			// Do nothing
 		}
 
 		@Override
@@ -368,38 +399,6 @@ public final class GameServer {
 			updateBotIntent(socket, intent);
 		}
 
-		@Override
-		public void onListBots(WebSocket socket, Collection<String> gameTypes) {
-			BotList botList = new BotList();
-			botList.setType(Message.Type.BOT_LIST);
-			List<BotInfo> bots = new ArrayList<BotInfo>();
-			botList.setBots(bots);
-
-			Map<WebSocket, BotHandshake> botConnections = connHandler.getBotConnections();
-			if (botConnections != null) {
-				for (Entry<WebSocket, BotHandshake> entry : botConnections.entrySet()) {
-					BotInfo botInfo = BotHandshakeToBotInfoMapper.map(entry.getValue());
-
-					// Find game type matches
-					List<String> matches = new ArrayList<String>(botInfo.getGameTypes());
-					if (gameTypes != null) {
-						matches.retainAll(gameTypes);
-					}
-					// Add bot if it matches the game types
-					if (matches.size() > 0) {
-						InetSocketAddress remoteSocketAddress = entry.getKey().getRemoteSocketAddress();
-
-						botInfo.setHost(remoteSocketAddress.getHostName());
-						botInfo.setPort(remoteSocketAddress.getPort());
-
-						bots.add(botInfo);
-					}
-				}
-			}
-
-			String msg = gson.toJson(botList);
-			send(socket, msg);
-		}
 
 		@Override
 		public void onStartGame(WebSocket socket, net.robocode2.json_schema.GameSetup gameSetup,

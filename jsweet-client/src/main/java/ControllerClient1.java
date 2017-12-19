@@ -1,9 +1,7 @@
 import static def.dom.Globals.alert;
 import static def.dom.Globals.console;
 import static def.dom.Globals.document;
-import static def.dom.Globals.setInterval;
 import static def.dom.Globals.window;
-import static jsweet.util.Lang.function;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +21,13 @@ import def.js.Array;
 import def.js.JSON;
 import json_schema.BotAddress;
 import json_schema.GameSetup2;
-import json_schema.controller.commands.ListBots;
 import json_schema.controller.commands.PauseGame;
 import json_schema.controller.commands.ResumeGame;
 import json_schema.controller.commands.StartGame;
 import json_schema.controller.commands.StopGame;
 import json_schema.messages.BotInfo;
-import json_schema.messages.BotList;
+import json_schema.messages.BotListUpdate;
 import json_schema.messages.ControllerHandshake;
-import json_schema.messages.GameTypeList;
 import json_schema.messages.Message2;
 import json_schema.messages.ServerHandshake;
 
@@ -129,8 +125,8 @@ public class ControllerClient1 {
 			if (ServerHandshake.TYPE.equals(type)) {
 				handleServerHandshake(ServerHandshake.map(obj));
 
-			} else if (BotList.TYPE.equals(type)) {
-				handleBotList(BotList.map(obj));
+			} else if (BotListUpdate.TYPE.equals(type)) {
+				handleBotListUpdate(BotListUpdate.map(obj));
 			}
 		}
 		return null;
@@ -163,8 +159,6 @@ public class ControllerClient1 {
 
 		setSelectedGameType();
 		updateGameSetupInputFields();
-
-		setInterval(function(this::onRefreshBotList), 1000);
 	}
 
 	private void setSelectedGameType() {
@@ -175,25 +169,6 @@ public class ControllerClient1 {
 				selectedGameType = gameTypeList.get(selectedIndex);
 			}
 		}
-	}
-
-	private void onRefreshBotList() {
-		sendListBots();
-	}
-
-	private void sendListBots() {
-		if (selectedGameType == null) {
-			return;
-		}
-
-		ListBots listBots = new ListBots();
-
-		Array<String> gameTypes = new Array<>();
-		gameTypes.push(selectedGameType.getGameType());
-
-		listBots.setGameTypes(gameTypes);
-
-		ws.send(JSON.stringify(listBots));
 	}
 
 	private void handleServerHandshake(ServerHandshake handshake) {
@@ -215,7 +190,7 @@ public class ControllerClient1 {
 		handleSelectGameType();
 	}
 	
-	private void handleBotList(BotList botList) {
+	private void handleBotListUpdate(BotListUpdate botListUpdate) {
 		List<String> selectedValues = new ArrayList<>();
 
 		HTMLCollection selectedOptions = botSelect.selectedOptions;
@@ -229,7 +204,7 @@ public class ControllerClient1 {
 
 		botSelect.options.length = 0;
 
-		for (BotInfo botInfo : botList.getBots()) {
+		for (BotInfo botInfo : botListUpdate.getBots()) {
 			HTMLOptionElement option = (HTMLOptionElement) document.createElement("option");
 
 			option.value = botInfo.getHostName() + ':' + botInfo.getPort();

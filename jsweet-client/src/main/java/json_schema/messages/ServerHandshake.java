@@ -3,13 +3,10 @@ package json_schema.messages;
 import static def.jquery.Globals.$;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import def.js.Array;
 import json_schema.GameSetup2;
-import json_schema.Participant;
 
 public class ServerHandshake extends Message2 {
 

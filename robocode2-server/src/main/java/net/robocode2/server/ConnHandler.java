@@ -21,9 +21,8 @@ import com.google.gson.JsonObject;
 
 import net.robocode2.json_schema.BotAddress;
 import net.robocode2.json_schema.GameSetup;
-import net.robocode2.json_schema.controller.commands.Command;
-import net.robocode2.json_schema.controller.commands.ListBots;
-import net.robocode2.json_schema.controller.commands.StartGame;
+import net.robocode2.json_schema.controller.Command;
+import net.robocode2.json_schema.controller.StartGame;
 import net.robocode2.json_schema.messages.BotHandshake;
 import net.robocode2.json_schema.messages.BotIntent;
 import net.robocode2.json_schema.messages.ControllerHandshake;
@@ -42,8 +41,7 @@ public final class ConnHandler {
 
 	private final Map<WebSocket, BotHandshake> botConnections = Collections.synchronizedMap(new HashMap<>());
 	private final Map<WebSocket, ObserverHandshake> observerConnections = Collections.synchronizedMap(new HashMap<>());
-	private final Map<WebSocket, ControllerHandshake> controllerConnections = Collections
-			.synchronizedMap(new HashMap<>());
+	private final Map<WebSocket, ControllerHandshake> controllerConnections = Collections.synchronizedMap(new HashMap<>());
 
 	private static final String TYPE = "type";
 
@@ -74,6 +72,10 @@ public final class ConnHandler {
 
 	public Map<WebSocket, ObserverHandshake> getObserverConnections() {
 		return Collections.unmodifiableMap(observerConnections);
+	}
+
+	public Map<WebSocket, ControllerHandshake> getControllerConnections() {
+		return Collections.unmodifiableMap(controllerConnections);
 	}
 
 	public Set<WebSocket> getBotConnections(Collection<BotAddress> botAddresses) {
@@ -230,15 +232,6 @@ public final class ConnHandler {
 					System.out.println("Handling command: " + type);
 
 					switch (type) {
-					case LIST_BOTS: {
-						ControllerHandshake handshake = controllerConnections.get(conn);
-						ListBots listBots = gson.fromJson(message, ListBots.class);
-						Collection<String> gameTypes = listBots.getGameTypes();
-						if (handshake != null) {
-							executorService.submit(() -> listener.onListBots(conn, gameTypes));
-						}
-						break;
-					}
 					case START_GAME: {
 						ControllerHandshake handshake = controllerConnections.get(conn);
 						StartGame startGame = gson.fromJson(message, StartGame.class);

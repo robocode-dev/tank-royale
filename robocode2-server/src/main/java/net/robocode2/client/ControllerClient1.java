@@ -10,8 +10,6 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import com.google.gson.Gson;
 
-import net.robocode2.json_schema.controller.commands.Command;
-import net.robocode2.json_schema.controller.commands.ListBots;
 import net.robocode2.json_schema.messages.ControllerHandshake;
 
 public class ControllerClient1 extends WebSocketClient {
@@ -39,12 +37,6 @@ public class ControllerClient1 extends WebSocketClient {
 		handshake.setAuthor("Author name");
 
 		String msg = gson.toJson(handshake);
-		send(msg);
-
-		ListBots command = new ListBots();
-		command.setType(Command.Type.LIST_BOTS);
-
-		msg = gson.toJson(command);
 		send(msg);
 	}
 
