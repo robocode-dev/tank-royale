@@ -1,5 +1,5 @@
 $id: #scan-field.yaml
-$schema: http://json-schema.org/draft-06/schema#
+$schema: http://json-schema.org/draft-07/schema#
 description: A minimum scan field (pie) defined of a arc radius and arc angle, which
   can be positive, negative, or zero
 properties:

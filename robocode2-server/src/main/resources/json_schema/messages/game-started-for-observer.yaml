@@ -1,5 +1,5 @@
 id: #game-started-for-observer.yaml
-$schema: http://json-schema.org/draft-06/schema#
+$schema: http://json-schema.org/draft-07/schema#
 description: New game info for an observer. New game has started.
 extends:
   $ref: message.yaml

@@ -1,5 +1,5 @@
 $id: #event.yaml
-$schema: http://json-schema.org/draft-06/schema#
+$schema: http://json-schema.org/draft-07/schema#
 description: Event occurring in the battle arena
 javaType: net.robocode2.json_schema.events.Event
 properties:

@@ -1,5 +1,5 @@
 $id: #bullet-missed-event.yaml
-$schema: http://json-schema.org/draft-06/schema#
+$schema: http://json-schema.org/draft-07/schema#
 description: Bot event occuring, when one of its bullets missed, i.e. leaves the arena
 extends:
   $ref: event.yaml

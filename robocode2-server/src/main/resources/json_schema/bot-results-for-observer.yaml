@@ -1,5 +1,5 @@
 $id: #bot-results-for-observer.yaml
-$schema: http://json-schema.org/draft-06/schema#
+$schema: http://json-schema.org/draft-07/schema#
 description: Individual bot results visible for an observer. Name and version is available.
 properties:
   id:

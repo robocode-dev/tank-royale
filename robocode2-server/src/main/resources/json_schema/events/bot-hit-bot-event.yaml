@@ -1,5 +1,5 @@
 $id: #hit-bot-event.yaml
-$schema": http://json-schema.org/draft-06/schema#
+$schema": http://json-schema.org/draft-07/schema#
 description: Bot event occurring, when a bot collides with another bot
 extends:
   $ref: event.yaml

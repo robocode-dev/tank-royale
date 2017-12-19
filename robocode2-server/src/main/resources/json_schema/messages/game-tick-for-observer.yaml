@@ -1,5 +1,5 @@
 $id: #game-tick-for-observer.yaml
-$schema: http://json-schema.org/draft-06/schema#
+$schema: http://json-schema.org/draft-07/schema#
 description: Game tick for observer. Next turn has started.
 extends:
   $ref: message.yaml

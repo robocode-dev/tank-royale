@@ -1,5 +1,5 @@
 $id: #round-state.yaml
-$schema: http://json-schema.org/draft-06/schema#
+$schema: http://json-schema.org/draft-07/schema#
 description: Current state of a round
 javaType: net.robocode2.json_schema.states.RoundState
 properties:

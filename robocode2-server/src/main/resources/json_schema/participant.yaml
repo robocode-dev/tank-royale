@@ -1,5 +1,5 @@
 $id: #participant.yaml
-$schema: http://json-schema.org/draft-06/schema#
+$schema: http://json-schema.org/draft-07/schema#
 description: Bot participating in a battle
 javaType: net.robocode2.json_schema.Participant
 properties:

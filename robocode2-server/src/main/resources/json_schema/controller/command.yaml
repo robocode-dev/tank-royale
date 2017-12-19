@@ -1,5 +1,5 @@
 $id: #command.yaml
-$schema: http://json-schema.org/draft-06/schema#
+$schema: http://json-schema.org/draft-07/schema#
 description: Controller command
 properties:
   type:
