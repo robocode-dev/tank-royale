@@ -1,7 +1,6 @@
 id: #game-started-for-observer.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: New game info for an observer. New game has started.
-javaType: net.robocode2.json_schema.messages.GameStartedForObserver
 extends:
   $ref: message.yaml
 properties:

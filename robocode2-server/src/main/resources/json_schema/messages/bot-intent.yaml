@@ -1,7 +1,6 @@
 $id: #bot-intent.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: Intent from a bot
-javaType: net.robocode2.json_schema.messages.BotIntent
 extends:
   $ref: message.yaml
 properties:

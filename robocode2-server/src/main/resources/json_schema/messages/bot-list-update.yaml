@@ -1,7 +1,6 @@
 $id: #bot-list-update.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: List of bots
-javaType: net.robocode2.json_schema.messages.BotListUpdate
 extends:
   $ref: message.yaml
 properties:

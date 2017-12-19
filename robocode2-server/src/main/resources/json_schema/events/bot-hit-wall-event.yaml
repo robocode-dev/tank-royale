@@ -1,7 +1,6 @@
 $id: #bot-hit-wall-event.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: Bot event occurring, when the bot is hitting a wall
-javaType: net.robocode2.json_schema.events.BotHitWallEvent
 extends:
   $ref: event.yaml
 properties:

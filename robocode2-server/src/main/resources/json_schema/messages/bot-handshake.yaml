@@ -1,7 +1,6 @@
 $id: #bot-handshake.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: Bot handshake
-javaType: net.robocode2.json_schema.messages.BotHandshake
 extends:
   $ref: message.yaml
 properties:

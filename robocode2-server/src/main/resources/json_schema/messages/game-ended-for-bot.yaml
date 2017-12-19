@@ -1,7 +1,6 @@
 $id: #game-ended-for-bot.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: All game results visible for a bot. Game has ended.
-javaType: net.robocode2.json_schema.messages.GameEndedForBot
 extends:
   $ref: message.yaml
 properties:

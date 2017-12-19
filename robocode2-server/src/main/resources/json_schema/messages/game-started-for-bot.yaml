@@ -1,7 +1,6 @@
 $id: #game-started-for-bot.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: New game info for a bot. New game has started.
-javaType: net.robocode2.json_schema.messages.GameStartedForBot
 extends:
   $ref: message.yaml
 properties:

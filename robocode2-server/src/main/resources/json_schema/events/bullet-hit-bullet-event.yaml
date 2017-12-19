@@ -1,7 +1,6 @@
 $id: #bullet-hit-bullet-event.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: Bot event occurring, when the bullet from a bot hits another bullet
-javaType: net.robocode2.json_schema.events.BulletHitBulletEvent
 extends:
   $ref: event.yaml
 properties:

@@ -1,7 +1,6 @@
 $id: #observer-handshake.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: Observer handshake
-javaType: net.robocode2.json_schema.messages.ObserverHandshake
 extends:
   $ref: message.yaml
 properties:

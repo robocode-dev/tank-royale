@@ -1,7 +1,6 @@
 $id: #start-game.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: Command to start a new game
-javaType: net.robocode2.json_schema.controller.StartGame
 extends:
   $ref: command.yaml
 properties:

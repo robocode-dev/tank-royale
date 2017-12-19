@@ -1,7 +1,6 @@
 $id: #game-tick-for-bot.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: Game tick for bot. Next turn has started.
-javaType: net.robocode2.json_schema.messages.GameTickForBot
 extends:
   $ref: message.yaml
 properties:

@@ -1,7 +1,6 @@
 $id: #bot-results-for-observer.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: Individual bot results visible for an observer. Name and version is available.
-javaType: net.robocode2.json_schema.BotResultsForObserver
 properties:
   id:
     description: IDentifier of the bot used in this battle, but only for this observer

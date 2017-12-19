@@ -1,7 +1,6 @@
 $id: #game-tick-for-observer.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: Game tick for observer. Next turn has started.
-javaType: net.robocode2.json_schema.messages.GameTickForObserver
 extends:
   $ref: message.yaml
 properties:

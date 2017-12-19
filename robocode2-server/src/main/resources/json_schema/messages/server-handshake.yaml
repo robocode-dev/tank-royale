@@ -1,7 +1,6 @@
 $id: #server-handshake.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: Server handshake
-javaType: net.robocode2.json_schema.messages.ServerHandshake
 extends:
   $ref: message.yaml
 properties:

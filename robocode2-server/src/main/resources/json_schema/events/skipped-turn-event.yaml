@@ -2,7 +2,6 @@ $id: #skipped-turn-event.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: Bot event occurring, when a bot has skipped a turn, meaning that no intent
   has been recieved from the bot
-javaType: net.robocode2.json_schema.events.SkippedTurnEvent
 extends:
   $ref: event.yaml
 properties:

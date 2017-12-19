@@ -1,7 +1,6 @@
 $id: #game-type-list.yaml
 $schema: http://json-schema.org/draft-06/schema#
 description: List of game types
-javaType: net.robocode2.json_schema.messages.GameTypeList
 extends:
   $ref: message.yaml
 properties:
