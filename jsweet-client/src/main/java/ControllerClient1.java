@@ -19,17 +19,17 @@ import def.dom.MessageEvent;
 import def.dom.WebSocket;
 import def.js.Array;
 import def.js.JSON;
-import json_schema.BotAddress;
 import json_schema.GameSetup2;
-import json_schema.controller.commands.PauseGame;
-import json_schema.controller.commands.ResumeGame;
-import json_schema.controller.commands.StartGame;
-import json_schema.controller.commands.StopGame;
-import json_schema.messages.BotInfo;
-import json_schema.messages.BotListUpdate;
-import json_schema.messages.ControllerHandshake;
-import json_schema.messages.Message2;
-import json_schema.messages.ServerHandshake;
+import json_schema.comm.BotAddress;
+import json_schema.comm.BotInfo;
+import json_schema.comm.BotListUpdate;
+import json_schema.comm.ControllerHandshake;
+import json_schema.comm.Message2;
+import json_schema.comm.ServerHandshake;
+import json_schema.control.PauseGame;
+import json_schema.control.ResumeGame;
+import json_schema.control.StartGame;
+import json_schema.control.StopGame;
 
 public class ControllerClient1 {
 

@@ -12,9 +12,15 @@ properties:
     - bulletHitBotEvent
     - bulletMissedEvent
     - bulletHitBulletEvent
+    - gameEndedEventForBot
+    - gameEndedEventForObserver
+    - gameStartedEventForBot
+    - gameStartedEventForObserver
     - hitByBulletEvent
     - scannedBotEvent
     - skippedTurnEvent
+    - tickEventForBot
+    - tickEventForObserver
     - wonRoundEvent
 required:
 - type

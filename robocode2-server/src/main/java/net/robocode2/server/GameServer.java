@@ -1,5 +1,6 @@
 package net.robocode2.server;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,18 +17,18 @@ import org.java_websocket.WebSocket;
 
 import com.google.gson.Gson;
 
-import net.robocode2.json_schema.BotAddress;
 import net.robocode2.json_schema.Participant;
-import net.robocode2.json_schema.messages.BotHandshake;
-import net.robocode2.json_schema.messages.BotInfo;
-import net.robocode2.json_schema.messages.BotListUpdate;
-import net.robocode2.json_schema.messages.ControllerHandshake;
-import net.robocode2.json_schema.messages.GameStartedForBot;
-import net.robocode2.json_schema.messages.GameStartedForObserver;
-import net.robocode2.json_schema.messages.GameTickForBot;
-import net.robocode2.json_schema.messages.GameTickForObserver;
-import net.robocode2.json_schema.messages.Message;
-import net.robocode2.json_schema.messages.ObserverHandshake;
+import net.robocode2.json_schema.comm.BotAddress;
+import net.robocode2.json_schema.comm.BotHandshake;
+import net.robocode2.json_schema.comm.BotInfo;
+import net.robocode2.json_schema.comm.BotListUpdate;
+import net.robocode2.json_schema.comm.ControllerHandshake;
+import net.robocode2.json_schema.comm.Message;
+import net.robocode2.json_schema.comm.ObserverHandshake;
+import net.robocode2.json_schema.events.GameStartedEventForBot;
+import net.robocode2.json_schema.events.GameStartedEventForObserver;
+import net.robocode2.json_schema.events.TickEventForBot;
+import net.robocode2.json_schema.events.TickEventForObserver;
 import net.robocode2.model.BotIntent;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.IRound;
@@ -104,8 +105,8 @@ public final class GameServer {
 
 		// Send NewBattle to all participant bots to get them started
 
-		GameStartedForBot gameStartedForBot = new GameStartedForBot();
-		gameStartedForBot.setType(GameStartedForBot.Type.GAME_STARTED_FOR_BOT);
+		GameStartedEventForBot gameStartedForBot = new GameStartedEventForBot();
+		gameStartedForBot.setType(GameStartedEventForBot.Type.GAME_STARTED_EVENT_FOR_BOT);
 		gameStartedForBot.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup.toImmutableGameSetup()));
 
 		int id = 1;
@@ -139,8 +140,8 @@ public final class GameServer {
 
 		// Send NewBattle to all participant observers to get them started
 		if (connHandler.getObserverConnections().size() > 0) {
-			GameStartedForObserver gameStartedForObserver = new GameStartedForObserver();
-			gameStartedForObserver.setType(GameStartedForObserver.Type.GAME_STARTED_FOR_OBSERVER);
+			GameStartedEventForObserver gameStartedForObserver = new GameStartedEventForObserver();
+			gameStartedForObserver.setType(GameStartedEventForObserver.Type.GAME_STARTED_EVENT_FOR_OBSERVER);
 			gameStartedForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup.toImmutableGameSetup()));
 
 			List<Participant> list = new ArrayList<>();
@@ -249,7 +250,7 @@ public final class GameServer {
 
 			// Send game state as 'game tick' to participants
 			for (WebSocket participant : participants) {
-				GameTickForBot gameTickForBot = TurnToGameTickForBotMapper.map(round, turn, participantIds.get(participant));
+				TickEventForBot gameTickForBot = TurnToGameTickForBotMapper.map(round, turn, participantIds.get(participant));
 				if (gameTickForBot != null) { // Bot alive?
 					String msg = gson.toJson(gameTickForBot);
 					send(participant, msg);
@@ -289,7 +290,7 @@ public final class GameServer {
 
 			// Send game state as 'tick' to observers
 			for (Map.Entry<WebSocket, ObserverHandshake> entry : connHandler.getObserverConnections().entrySet()) {
-				GameTickForObserver gameTickForObserver = TurnToGameTickForObserverMapper.map(observerRound,
+				TickEventForObserver gameTickForObserver = TurnToGameTickForObserverMapper.map(observerRound,
 						observerTurn);
 
 				String msg = gson.toJson(gameTickForObserver);
@@ -304,7 +305,7 @@ public final class GameServer {
 		conn.send(message);
 	}
 
-	private void updateBotIntent(WebSocket bot, net.robocode2.json_schema.messages.BotIntent intent) {
+	private void updateBotIntent(WebSocket bot, net.robocode2.json_schema.comm.BotIntent intent) {
 		if (!participants.contains(bot)) {
 			return;
 		}
@@ -325,7 +326,8 @@ public final class GameServer {
 		Map<WebSocket, BotHandshake> botConnections = connHandler.getBotConnections();
 		if (botConnections != null) {
 			for (Entry<WebSocket, BotHandshake> entry : botConnections.entrySet()) {
-				BotInfo botInfo = BotHandshakeToBotInfoMapper.map(entry.getValue());
+				InetSocketAddress address = entry.getKey().getRemoteSocketAddress();
+				BotInfo botInfo = BotHandshakeToBotInfoMapper.map(entry.getValue(), address.getHostString(), address.getPort());
 				bots.add(botInfo);
 			}
 		}
@@ -395,7 +397,7 @@ public final class GameServer {
 		}
 
 		@Override
-		public void onBotIntent(WebSocket socket, net.robocode2.json_schema.messages.BotIntent intent) {
+		public void onBotIntent(WebSocket socket, net.robocode2.json_schema.comm.BotIntent intent) {
 			updateBotIntent(socket, intent);
 		}
 

@@ -17,11 +17,11 @@ import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 
 import net.robocode2.json_schema.events.Event;
 import net.robocode2.json_schema.events.ScannedBotEvent;
-import net.robocode2.json_schema.messages.BotHandshake;
-import net.robocode2.json_schema.messages.BotIntent;
-import net.robocode2.json_schema.messages.BotReady;
-import net.robocode2.json_schema.messages.GameStartedForBot;
-import net.robocode2.json_schema.messages.GameTickForBot;
+import net.robocode2.json_schema.comm.BotHandshake;
+import net.robocode2.json_schema.comm.BotIntent;
+import net.robocode2.json_schema.comm.BotReady;
+import net.robocode2.json_schema.events.GameStartedEventForBot;
+import net.robocode2.json_schema.events.TickEventForBot;
 import net.robocode2.json_schema.types.Point;
 import net.robocode2.util.MathUtil;
 
@@ -91,7 +91,7 @@ public class BotClient1 extends WebSocketClient {
 		if (jsonElement != null) {
 			String type = jsonElement.getAsString();
 
-			if (GameStartedForBot.Type.GAME_STARTED_FOR_BOT.toString().equalsIgnoreCase(type)) {
+			if (GameStartedEventForBot.Type.GAME_STARTED_EVENT_FOR_BOT.toString().equalsIgnoreCase(type)) {
 				// Send ready signal
 				BotReady ready = new BotReady();
 				ready.setType(BotReady.Type.BOT_READY);
@@ -99,8 +99,8 @@ public class BotClient1 extends WebSocketClient {
 				String msg = gson.toJson(ready);
 				send(msg);
 
-			} else if (GameTickForBot.Type.GAME_TICK_FOR_BOT.toString().equalsIgnoreCase(type)) {
-				GameTickForBot tick = gson.fromJson(message, GameTickForBot.class);
+			} else if (TickEventForBot.Type.TICK_EVENT_FOR_BOT.toString().equalsIgnoreCase(type)) {
+				TickEventForBot tick = gson.fromJson(message, TickEventForBot.class);
 
 				Point botPos = tick.getBotState().getPosition();
 

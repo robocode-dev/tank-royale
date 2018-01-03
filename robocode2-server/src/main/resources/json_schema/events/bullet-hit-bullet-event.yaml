@@ -6,10 +6,10 @@ extends:
 properties:
   bullet:
     description: Bullet that hit another bullet
-    $ref: ../states/bullet-state.yaml
+    $ref: bullet-state.yaml
   hitBullet:
     description: The other bullet that was hit by the bullet
-    $ref: ../states/bullet-state.yaml
+    $ref: bullet-state.yaml
 required:
 - bullet
 - hitBullet

@@ -4,18 +4,18 @@ import java.util.Collection;
 
 import org.java_websocket.WebSocket;
 
-import net.robocode2.json_schema.BotAddress;
 import net.robocode2.json_schema.GameSetup;
-import net.robocode2.json_schema.messages.BotHandshake;
-import net.robocode2.json_schema.messages.BotIntent;
-import net.robocode2.json_schema.messages.ControllerHandshake;
-import net.robocode2.json_schema.messages.ObserverHandshake;
+import net.robocode2.json_schema.comm.BotAddress;
+import net.robocode2.json_schema.comm.BotIntent;
+import net.robocode2.json_schema.comm.ControllerHandshake;
+import net.robocode2.json_schema.comm.ObserverHandshake;
+
 
 public interface ConnListener {
 
 	void onException(Exception exception);
 
-	void onBotJoined(WebSocket socket, BotHandshake handshake);
+	void onBotJoined(WebSocket socket, net.robocode2.json_schema.comm.BotHandshake handshake);
 
 	void onBotLeft(WebSocket socket);
 

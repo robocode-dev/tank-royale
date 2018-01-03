@@ -6,6 +6,6 @@ extends:
 properties:
   bullet:
     description: Bullet that was fired
-    $ref: ../states/bullet-state.yaml
+    $ref: bullet-state.yaml
 required:
 - bullet

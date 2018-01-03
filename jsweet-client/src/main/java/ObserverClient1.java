@@ -17,15 +17,15 @@ import def.dom.MessageEvent;
 import def.dom.WebSocket;
 import def.js.JSON;
 import json_schema.GameSetup;
+import json_schema.comm.GameStartedEventForObserver;
+import json_schema.comm.TickEventForObserver;
+import json_schema.comm.Message;
+import json_schema.comm.ObserverHandshake;
 import json_schema.events.BotDeathEvent;
+import json_schema.events.BotStateWithId;
 import json_schema.events.BulletHitBotEvent;
+import json_schema.events.BulletState;
 import json_schema.events.ScannedBotEvent;
-import json_schema.messages.GameStartedForObserver;
-import json_schema.messages.GameTickForObserver;
-import json_schema.messages.Message;
-import json_schema.messages.ObserverHandshake;
-import json_schema.states.BotStateWithId;
-import json_schema.states.BulletState;
 import json_schema.types.Point;
 import json_schema.types.ScanField;
 import jsweet.util.StringTypes;
@@ -97,11 +97,11 @@ public class ObserverClient1 {
 			Message msg = Message.map(obj);
 			String type = msg.getType();
 
-			if (GameStartedForObserver.TYPE.equals(type)) {
-				handleStartGame(GameStartedForObserver.map(obj));
+			if (GameStartedEventForObserver.TYPE.equals(type)) {
+				handleStartGame(GameStartedEventForObserver.map(obj));
 
-			} else if (GameTickForObserver.TYPE.equals(type)) {
-				handleTickForObserver(GameTickForObserver.map(obj));
+			} else if (TickEventForObserver.TYPE.equals(type)) {
+				handleTickForObserver(TickEventForObserver.map(obj));
 			}
 		}
 		return null;
@@ -112,7 +112,7 @@ public class ObserverClient1 {
 		return null;
 	}
 
-	private void handleStartGame(GameStartedForObserver nbfo) {
+	private void handleStartGame(GameStartedEventForObserver nbfo) {
 		gameSetup = nbfo.getGameSetup();
 		// participants = nbfo.getParticipants();
 
@@ -122,7 +122,7 @@ public class ObserverClient1 {
 		draw();
 	}
 
-	private void handleTickForObserver(GameTickForObserver tfo) {
+	private void handleTickForObserver(TickEventForObserver tfo) {
 		botStates = tfo.getBotStates();
 		bulletStates = tfo.getBulletStates();
 		events = tfo.getEvents();
@@ -243,7 +243,7 @@ public class ObserverClient1 {
 		drawBotBody(x, y, bot.getDirection());
 		drawGun(x, y, bot.getGunDirection());
 		drawRadar(x, y, bot.getRadarDirection());
-		drawScanField(x, y, bot.getRadarDirection(), bot.getRadarSpreadAngle());
+		drawScanField(x, y, bot.getRadarDirection(), bot.getRadarSweep());
 		drawLabels(x, y, bot.getId(), bot.getEnergyLevel());
 	}
 

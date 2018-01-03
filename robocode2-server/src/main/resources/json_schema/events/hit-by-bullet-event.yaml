@@ -6,7 +6,7 @@ extends:
 properties:
   bullet:
     description: Bullet that has hit the bot
-    $ref: ../states/bullet-state.yaml
+    $ref: bullet-state.yaml
   damage:
     description: Damage inflicted by the bullet
     type: number
