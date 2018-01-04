@@ -15,6 +15,14 @@
 	</properties>
 
 	<dependencies>
+		<!-- Project Lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.18</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- Used by jsonschema2pojo-maven-plugin -->
 		<dependency>
 			<groupId>commons-lang</groupId>

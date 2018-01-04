@@ -26,7 +26,7 @@ public final class ImmutableBot implements IBot {
 	/** Gun heat */
 	private final double gunHeat;
 	/** Score record */
-	private final IScore score;
+	private final Score score;
 
 	/**
 	 * Creates a immutable bot instance.
@@ -53,7 +53,7 @@ public final class ImmutableBot implements IBot {
 	 *            is the score record
 	 */
 	public ImmutableBot(int id, double energy, Point position, double direction, double gunDirection,
-			double radarDirection, double radarSpreadAngle, double speed, double gunHeat, IScore score) {
+			double radarDirection, double radarSpreadAngle, double speed, double gunHeat, Score score) {
 
 		this.id = id;
 		this.energy = energy;
@@ -132,7 +132,7 @@ public final class ImmutableBot implements IBot {
 	}
 
 	@Override
-	public IScore getScore() {
+	public Score getScore() {
 		return score;
 	}
 }

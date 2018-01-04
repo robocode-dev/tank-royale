@@ -12,13 +12,15 @@ public class ImmutableBotTest {
 
 	@BeforeClass
 	public static void initialize() {
-		Score score = new Score();
-		score.setBulletDamage(3.48);
-		score.setBulletKillBonus(0.3);
-		score.setRamDamage(7.7);
-		score.setRamKillBonus(0.56);
-		score.setSurvival(17.09);
-		score.setLastSurvivorBonus(4.3);
+		Score score = Score
+			.builder()
+			.bulletDamage(3.48)
+			.bulletKillBonus(0.3)
+			.ramDamage(7.7)
+			.ramKillBonus(0.56)
+			.survival(17.09)
+			.lastSurvivorBonus(4.3)
+			.build();
 
 		Bot bot = new Bot();
 		bot.setId(7913);

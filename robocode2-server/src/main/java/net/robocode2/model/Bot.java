@@ -26,7 +26,7 @@ public class Bot implements IBot {
 	/** Gun heat */
 	private double gunHeat;
 	/** Score record */
-	private IScore score;
+	private Score score;
 
 	/**
 	 * Creates a mutable bot that needs to be initialized
@@ -108,7 +108,7 @@ public class Bot implements IBot {
 	}
 
 	@Override
-	public IScore getScore() {
+	public Score getScore() {
 		return score;
 	}
 
@@ -210,7 +210,7 @@ public class Bot implements IBot {
 	 * @param score
 	 *            is the score record.
 	 */
-	public void setScore(IScore score) {
+	public void setScore(Score score) {
 		this.score = score;
 	}
 

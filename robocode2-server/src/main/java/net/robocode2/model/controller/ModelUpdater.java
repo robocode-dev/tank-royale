@@ -280,7 +280,7 @@ public class ModelUpdater {
 			bot.setGunDirection(MathUtil.randomDirection());
 			bot.setRadarDirection(MathUtil.randomDirection());
 			bot.setGunHeat(INITIAL_GUN_HEAT);
-			bot.setScore(new Score());
+			bot.setScore(Score.builder().build());
 
 			botsMap.put(id, bot);
 		}

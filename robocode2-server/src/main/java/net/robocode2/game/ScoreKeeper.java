@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 import net.robocode2.model.IRuleConstants;
-import net.robocode2.model.ImmutableScore;
 import net.robocode2.model.Score;
+import net.robocode2.model.Score.ScoreBuilder;
 
 /**
  * Score utility class used for keeping track of the score for an individual bot in a game.
@@ -64,31 +64,32 @@ public class ScoreKeeper implements IRuleConstants {
 	 *            is the identifier of the bot.
 	 * @return a score record.
 	 */
-	public ImmutableScore getScore(int botId) {
+	public Score getScore(int botId) {
+		ScoreBuilder builder = Score.builder();
+
 		DamageAndSurvival damageRecord = damageAndSurvivals.get(botId);
+		
+		builder.survival(SCORE_PER_SURVIVAL * damageRecord.getSurvivalCount());
+		builder.lastSurvivorBonus(BONUS_PER_LAST_SURVIVOR * damageRecord.getLastSurvivorCount());
 
-		Score score = new Score();
-		score.setSurvival(SCORE_PER_SURVIVAL * damageRecord.getSurvivalCount());
-		score.setLastSurvivorBonus(BONUS_PER_LAST_SURVIVOR * damageRecord.getLastSurvivorCount());
-
-		score.setBulletDamage(SCORE_PER_BULLET_DAMAGE * damageRecord.getTotalBulletDamage());
-		score.setRamDamage(SCORE_PER_RAM_DAMAGE * damageRecord.getTotalRamDamage());
+		builder.bulletDamage(SCORE_PER_BULLET_DAMAGE * damageRecord.getTotalBulletDamage());
+		builder.ramDamage(SCORE_PER_RAM_DAMAGE * damageRecord.getTotalRamDamage());
 
 		double bulletKillBonus = 0;
 		for (int enemyId : damageRecord.getBulletKillEnemyIds()) {
 			double totalDamage = damageRecord.getBulletDamage(enemyId) + damageRecord.getRamDamage(enemyId);
 			bulletKillBonus += BONUS_PER_BULLET_KILL * totalDamage;
 		}
-		score.setBulletKillBonus(bulletKillBonus);
+		builder.bulletKillBonus(bulletKillBonus);
 
 		double ramKillBonus = 0;
 		for (int enemyId : damageRecord.getRamKillEnemyIds()) {
 			double totalDamage = damageRecord.getBulletDamage(enemyId) + damageRecord.getRamDamage(enemyId);
 			ramKillBonus += BONUS_PER_RAM_KILL * totalDamage;
 		}
-		score.setRamKillBonus(ramKillBonus);
+		builder.ramKillBonus(ramKillBonus);
 
-		return score.toImmutableScore();
+		return builder.build();
 	}
 
 	/**

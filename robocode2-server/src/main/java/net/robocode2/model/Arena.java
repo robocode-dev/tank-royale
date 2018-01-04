@@ -1,31 +1,15 @@
 package net.robocode2.model;
 
+import lombok.Value;
+
 /**
  * Defines the arena, where bots battle each other.
  * 
  * @author Flemming N. Larsen
  */
+@Value
 public final class Arena {
 
 	/** The size of the arena */
-	private final Size size;
-
-	/**
-	 * Creates a new arena.
-	 * 
-	 * @param size
-	 *            is the size of the arena.
-	 */
-	public Arena(Size size) {
-		this.size = size;
-	}
-
-	/**
-	 * Returns the size of the arena.
-	 * 
-	 * @return the size
-	 */
-	public Size getSize() {
-		return size;
-	}
+	Size size;
 }

@@ -37,7 +37,7 @@ public interface IBot {
 	double getGunHeat();
 
 	/** Returns the score record */
-	IScore getScore();
+	Score getScore();
 
 	/**
 	 * Checks if the bot is alive.

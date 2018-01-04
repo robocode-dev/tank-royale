@@ -17,7 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import net.robocode2.model.IScore;
+import net.robocode2.model.Score;
 
 public class ScoreKeeperTest {
 
@@ -87,7 +87,7 @@ public class ScoreKeeperTest {
 		// --- Bot 1 hits bot 2, no kill
 		sk.registerBulletHit(1, 2, 7, false);
 
-		IScore s = sk.getScore(1);
+		Score s = sk.getScore(1);
 		assertEquals(7 * SCORE_PER_BULLET_DAMAGE, s.getBulletDamage(), 0.00001);
 		assertEquals(0, s.getBulletKillBonus(), 0.00001);
 		assertEquals(0, s.getRamDamage(), 0.00001);
@@ -234,7 +234,7 @@ public class ScoreKeeperTest {
 		// --- Bot 1 hits bot 2, no kill
 		sk.registerRamHit(1, 2, 7, false);
 
-		IScore s = sk.getScore(1);
+		Score s = sk.getScore(1);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
 		assertEquals(0, s.getBulletKillBonus(), 0.00001);
 		assertEquals(7 * SCORE_PER_RAM_DAMAGE, s.getRamDamage(), 0.00001);
@@ -375,7 +375,7 @@ public class ScoreKeeperTest {
 				s.getTotalScore(), 00001);
 	}
 
-	private void testZeroScore(IScore score) {
+	private void testZeroScore(Score score) {
 		assertEquals(0, score.getBulletDamage(), 0.00001);
 		assertEquals(0, score.getBulletKillBonus(), 0.00001);
 		assertEquals(0, score.getLastSurvivorBonus(), 0.00001);
