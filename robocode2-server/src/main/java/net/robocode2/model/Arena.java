@@ -8,7 +8,7 @@ import lombok.Value;
  * @author Flemming N. Larsen
  */
 @Value
-public final class Arena {
+public class Arena {
 
 	/** The size of the arena */
 	Size size;

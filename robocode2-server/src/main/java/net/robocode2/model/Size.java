@@ -1,27 +1,18 @@
 package net.robocode2.model;
 
+import lombok.Value;
+
 /**
  * Defines a 2D size
  * 
  * @author Flemming N. Larsen
  */
-public final class Size {
+@Value
+public class Size {
 
 	/** Width */
-	public final double width;
-	/** Height */
-	public final double height;
+	double width;
 
-	/**
-	 * Creates a new size
-	 * 
-	 * @param width
-	 *            is the width
-	 * @param height
-	 *            is the height
-	 */
-	public Size(double width, double height) {
-		this.width = width;
-		this.height = height;
-	}
+	/** Height */
+	double height;
 }
