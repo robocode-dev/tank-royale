@@ -44,8 +44,8 @@ public interface IBullet {
 	static Point calcPosition(Point firePosition, double direction, double speed, int tick) {
 		double angle = Math.toRadians(direction);
 		double distance = speed * tick;
-		double x = firePosition.getX() + Math.cos(angle) * distance;
-		double y = firePosition.getY() + Math.sin(angle) * distance;
+		double x = firePosition.x + Math.cos(angle) * distance;
+		double y = firePosition.y + Math.sin(angle) * distance;
 		return new Point(x, y);
 	}
 

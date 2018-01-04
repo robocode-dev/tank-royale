@@ -265,8 +265,8 @@ public class Bot implements IBot {
 	 */
 	private Point calcNewPosition(double direction, double distance) {
 		double angle = Math.toRadians(direction);
-		double x = position.getX() + Math.cos(angle) * distance;
-		double y = position.getY() + Math.sin(angle) * distance;
+		double x = position.x + Math.cos(angle) * distance;
+		double y = position.y + Math.sin(angle) * distance;
 		return new Point(x, y);
 	}
 }

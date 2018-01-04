@@ -1,18 +1,30 @@
 package net.robocode2.model;
 
-import lombok.Value;
+import lombok.ToString;
 
 /**
  * Defines a 2D point
  * 
  * @author Flemming N. Larsen
  */
-@Value
-public class Point {
+@ToString
+public final class Point {
 
 	/** X coordinate */
-	double x;
-
+	public final double x;
 	/** Y coordinate */
-	double y;
+	public final double y;
+
+	/**
+	 * Creates a new point (x,y)
+	 * 
+	 * @param x
+	 *            is the x coordinate
+	 * @param y
+	 *            is the y coordinate
+	 */
+	public Point(double x, double y) {
+		this.x = x;
+		this.y = y;
+	}
 }

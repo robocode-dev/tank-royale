@@ -446,8 +446,7 @@ public class ModelUpdater {
 					continue;
 				}
 
-				if (MathUtil.isLineIntersectingCircle(startPos1.x, startPos1.y, endPos1.x, endPos1.y, botPos.x,
-						botPos.y, BOT_BOUNDING_CIRCLE_RADIUS)) {
+				if (MathUtil.isLineIntersectingCircle(startPos1.x, startPos1.y, endPos1.x, endPos1.y, botPos.x, botPos.y, BOT_BOUNDING_CIRCLE_RADIUS)) {
 
 					double damage = RuleMath.calcBulletDamage(bullet.getPower());
 					boolean killed = bot.addDamage(damage);
