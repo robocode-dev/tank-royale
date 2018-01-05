@@ -1,11 +1,16 @@
 package net.robocode2.model.mappers;
 
-import net.robocode2.model.ImmutableBotIntent;
+import net.robocode2.model.BotIntent;
 
 public final class BotIntentToBotIntentMapper {
 
-	public static ImmutableBotIntent map(net.robocode2.json_schema.comm.BotIntent intent) {
-		return new ImmutableBotIntent(intent.getTargetSpeed(), intent.getTurnRate(), intent.getGunTurnRate(),
-				intent.getRadarTurnRate(), intent.getBulletPower());
+	public static BotIntent map(net.robocode2.json_schema.comm.BotIntent intent) {
+		return BotIntent.builder()
+			.targetSpeed(intent.getTargetSpeed())
+			.turnRate(intent.getTurnRate())
+			.gunTurnRate(intent.getGunTurnRate())
+			.radarTurnRate(intent.getRadarTurnRate())
+			.bulletPower(intent.getBulletPower())
+			.build();
 	}
 }

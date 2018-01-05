@@ -311,7 +311,7 @@ public final class GameServer {
 		}
 		BotIntent botIntent = botIntents.get(bot);
 		if (botIntent == null) {
-			botIntent = new BotIntent();
+			botIntent = BotIntent.builder().build();
 			botIntents.put(bot, botIntent);
 		}
 		botIntent.update(BotIntentToBotIntentMapper.map(intent));
