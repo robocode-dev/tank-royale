@@ -1,74 +1,80 @@
 package net.robocode2.model;
 
-import lombok.Builder;
-import lombok.Value;
-
 /**
- * Mutable bot intent. A bot intent is updated by a bot between turns. The bot
- * intent reflects the bot's wiches/orders for new target speed, turn rates,
- * bullet power etc.
+ * Mutable bot intent. A bot intent is updated by a bot between turns. The bot intent reflects the bot's wiches/orders
+ * for new target speed, turn rates, bullet power etc.
  * 
  * @author Flemming N. Larsen
  */
-@Value
-@Builder
-public class BotIntent {
+public class BotIntent implements IBotIntent {
 
 	/** Desired speed */
-	Double targetSpeed;
-
+	private Double targetSpeed;
 	/** Desired driving turn rate */
-	Double turnRate;
-
+	private Double drivingTurnRate;
 	/** Desired gun turn rate */
-	Double gunTurnRate;
-
+	private Double gunTurnRate;
 	/** Desired radar turn rate */
-	Double radarTurnRate;
-
+	private Double radarTurnRate;
 	/** Desired bullet power */
-	Double bulletPower;
+	private Double bulletPower;
 
 	/**
-	 * Returns a bot intent that is updated by another bot intent. The bot intent is
-	 * updates with new orders for target speed, turn rates and bullet power.
+	 * Updates this intent with new orders for target speed, turn rates and bullet power.
 	 * 
 	 * @param botIntent
-	 *            is the adjustments for this intent. Fields that are null are
-	 *            ignored, meaning that the corresponding fields on this intent are
-	 *            left unchanged.
-	 * @return An updated bot intent
+	 *            is the adjustments for this intent. Fields that are null are ignored, meaning that the corresponding
+	 *            fields on this intent are left unchanged.
 	 */
-	public BotIntent update(BotIntent botIntent) {
-		BotIntentBuilder builder = builder();
-
-		if (botIntent.targetSpeed != null) {
-			builder.targetSpeed(botIntent.targetSpeed);
+	public void update(IBotIntent botIntent) {
+		if (botIntent.getTargetSpeed() != null) {
+			targetSpeed = botIntent.getTargetSpeed();
 		}
-		if (botIntent.turnRate != null) {
-			builder.turnRate(botIntent.turnRate);
+		if (botIntent.getDrivingTurnRate() != null) {
+			drivingTurnRate = botIntent.getDrivingTurnRate();
 		}
-		if (botIntent.gunTurnRate != null) {
-			builder.gunTurnRate(botIntent.gunTurnRate);
+		if (botIntent.getGunTurnRate() != null) {
+			gunTurnRate = botIntent.getGunTurnRate();
 		}
-		if (botIntent.radarTurnRate != null) {
-			builder.radarTurnRate(botIntent.radarTurnRate);
+		if (botIntent.getRadarTurnRate() != null) {
+			radarTurnRate = botIntent.getRadarTurnRate();
 		}
-		if (botIntent.bulletPower != null) {
-			builder.bulletPower(botIntent.bulletPower);
+		if (botIntent.getBulletPower() != null) {
+			bulletPower = botIntent.getBulletPower();
 		}
-		return builder.build();
 	}
 
 	/**
-	 * Returns a nullified version of this bot intent, where all {@code null} values have been replaced with a 0.
+	 * Returns an immutable bot intent that is a deep copy of this object.
+	 * 
+	 * @return an immutable bot intent
 	 */
-	public BotIntent nullify() {
-		return builder()
-			.targetSpeed(targetSpeed == null ? 0 : targetSpeed)
-			.turnRate(turnRate == null ? 0 : turnRate)
-			.gunTurnRate(gunTurnRate == null ? 0 : gunTurnRate)
-			.radarTurnRate(radarTurnRate == null ? 0 : radarTurnRate)
-			.bulletPower(bulletPower == null ? 0 : bulletPower).build();
+	public ImmutableBotIntent toImmutableBotIntent() {
+		return new ImmutableBotIntent(this);
+	}
+
+	@Override
+	public Double getTargetSpeed() {
+		return targetSpeed;
+	}
+
+	@Override
+	public Double getDrivingTurnRate() {
+		return drivingTurnRate;
+	}
+
+	@Override
+	public Double getGunTurnRate() {
+		return gunTurnRate;
+	}
+
+	@Override
+	public Double getRadarTurnRate() {
+		return radarTurnRate;
+	}
+
+	@Override
+	public Double getBulletPower() {
+		return bulletPower;
 	}
 }

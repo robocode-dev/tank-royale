@@ -24,9 +24,11 @@ import net.robocode2.model.Bullet;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.IBot;
+import net.robocode2.model.IBotIntent;
 import net.robocode2.model.IBullet;
 import net.robocode2.model.IGameSetup;
 import net.robocode2.model.IRuleConstants;
+import net.robocode2.model.ImmutableBotIntent;
 import net.robocode2.model.ImmutableBullet;
 import net.robocode2.model.ImmutableGameState;
 import net.robocode2.model.ImmutableTurn;
@@ -44,6 +46,7 @@ import net.robocode2.model.events.BulletHitBotEvent;
 import net.robocode2.model.events.BulletHitBulletEvent;
 import net.robocode2.model.events.BulletMissedEvent;
 import net.robocode2.model.events.ScannedBotEvent;
+import net.robocode2.util.BotIntentNullified;
 import net.robocode2.util.MathUtil;
 
 /**
@@ -163,11 +166,11 @@ public class ModelUpdater {
 		for (Map.Entry<Integer, BotIntent> entry : botIntents.entrySet()) {
 			Integer botId = entry.getKey();
 			BotIntent botIntent = botIntentsMap.get(botId);
-			BotIntent updatedBotIntent = 
-					(botIntent == null) ?
-							BotIntent.builder().build() :
-							botIntent.update(botIntent);
-			botIntentsMap.put(botId, updatedBotIntent);
+			if (botIntent == null) {
+				botIntent = new BotIntent();
+				botIntentsMap.put(botId, botIntent);
+			}
+			botIntent.update(entry.getValue());
 		}
 	}
 
@@ -353,15 +356,15 @@ public class ModelUpdater {
 				continue;
 			}
 
-			BotIntent botOrders = botIntent.nullify();
+			IBotIntent immuBotIntent = new BotIntentNullified(botIntent.toImmutableBotIntent());
 
 			// Turn body, gun, radar, and move bot to new position
 
-			double speed = RuleMath.calcNewBotSpeed(bot.getSpeed(), botOrders.getTargetSpeed());
+			double speed = RuleMath.calcNewBotSpeed(bot.getSpeed(), immuBotIntent.getTargetSpeed());
 
-			double limitedTurnRate = RuleMath.limitTurnRate(botOrders.getTurnRate(), speed);
-			double limitedGunTurnRate = RuleMath.limitGunTurnRate(botOrders.getGunTurnRate());
-			double limitedRadarTurnRate = RuleMath.limitRadarTurnRate(botOrders.getRadarTurnRate());
+			double limitedTurnRate = RuleMath.limitTurnRate(immuBotIntent.getDrivingTurnRate(), speed);
+			double limitedGunTurnRate = RuleMath.limitGunTurnRate(immuBotIntent.getGunTurnRate());
+			double limitedRadarTurnRate = RuleMath.limitRadarTurnRate(immuBotIntent.getRadarTurnRate());
 
 			double direction = normalAbsoluteDegrees(bot.getDirection() + limitedTurnRate);
 			double gunDirection = normalAbsoluteDegrees(bot.getGunDirection() + limitedGunTurnRate);
@@ -773,8 +776,9 @@ public class ModelUpdater {
 				if (botIntent == null) {
 					continue;
 				}
+				ImmutableBotIntent immuBotIntent = botIntent.toImmutableBotIntent();
 
-				double firepower = botIntent.getBulletPower();
+				double firepower = immuBotIntent.getBulletPower();
 				if (firepower >= MIN_BULLET_POWER) {
 					// Gun is fired
 					firepower = Math.min(firepower, MAX_BULLET_POWER);
