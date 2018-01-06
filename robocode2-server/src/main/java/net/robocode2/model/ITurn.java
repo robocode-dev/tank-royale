@@ -23,7 +23,7 @@ public interface ITurn {
 	Set<IBot> getBots();
 
 	/** Returns the bullets */
-	Set<IBullet> getBullets();
+	Set<Bullet> getBullets();
 
 	/** Returns the observer events */
 	Set<IEvent> getObserverEvents();
@@ -49,8 +49,8 @@ public interface ITurn {
 	 *            is the id of the bot that fired the bullets
 	 * @return a set of bullets
 	 */
-	default Set<IBullet> getBullets(int botId) {
-		return getBullets().stream().filter(b -> b.getOwnerId() == botId).collect(Collectors.toSet());
+	default Set<Bullet> getBullets(int botId) {
+		return getBullets().stream().filter(b -> b.getBotId() == botId).collect(Collectors.toSet());
 	}
 
 	/**

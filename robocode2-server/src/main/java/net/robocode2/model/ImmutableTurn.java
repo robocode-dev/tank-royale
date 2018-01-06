@@ -20,7 +20,7 @@ public final class ImmutableTurn implements ITurn {
 	/** Bots */
 	private final Set<IBot> bots;
 	/** Bullets */
-	private final Set<IBullet> bullets;
+	private final Set<Bullet> bullets;
 	/** Observer events */
 	private final Set<IEvent> observerEvents;
 	/** Map over bot events */
@@ -44,14 +44,7 @@ public final class ImmutableTurn implements ITurn {
 		}
 		this.bots = Collections.unmodifiableSet(immuBots);
 
-		Set<ImmutableBullet> immuBullets = new HashSet<>();
-		Set<IBullet> bullets = turn.getBullets();
-		if (bullets != null) {
-			for (IBullet bullet : bullets) {
-				immuBullets.add(new ImmutableBullet(bullet));
-			}
-		}
-		this.bullets = Collections.unmodifiableSet(immuBullets);
+		this.bullets = turn.getBullets();
 
 		Set<IEvent> immuObserverEvents = new HashSet<>();
 		Set<IEvent> observerEvents = turn.getObserverEvents();
@@ -79,7 +72,7 @@ public final class ImmutableTurn implements ITurn {
 	}
 
 	@Override
-	public Set<IBullet> getBullets() {
+	public Set<Bullet> getBullets() {
 		return bullets;
 	}
 

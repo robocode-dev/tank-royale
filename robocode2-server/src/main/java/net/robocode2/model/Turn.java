@@ -20,7 +20,7 @@ public final class Turn implements ITurn {
 	/** Bots */
 	private Set<IBot> bots = new HashSet<>();
 	/** Bullets */
-	private Set<IBullet> bullets = new HashSet<>();
+	private Set<Bullet> bullets = new HashSet<>();
 	/** Observer events */
 	private Set<IEvent> observerEvents = new HashSet<>();
 	/** Map over bot events */
@@ -46,7 +46,7 @@ public final class Turn implements ITurn {
 	}
 
 	@Override
-	public Set<IBullet> getBullets() {
+	public Set<Bullet> getBullets() {
 		return bullets;
 	}
 
@@ -89,7 +89,7 @@ public final class Turn implements ITurn {
 	 * @param bullets
 	 *            is the bullets
 	 */
-	public void setBullets(Collection<IBullet> bullets) {
+	public void setBullets(Collection<Bullet> bullets) {
 		this.bullets = new HashSet<>();
 		if (bullets != null) {
 			this.bullets.addAll(bullets);

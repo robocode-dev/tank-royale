@@ -1,167 +1,75 @@
 package net.robocode2.model;
 
+import lombok.Builder;
+import lombok.Value;
+import lombok.experimental.Wither;
+
 /**
  * Mutable bullet instance.
  * 
  * @author Flemming N. Larsen
  */
-public class Bullet implements IBullet {
+@Value
+@Builder
+public class Bullet {
 
 	/** Id of the bot that fired this bullet */
-	private int botId;
+	int botId;
+
 	/** Id of the bullet */
-	private int bulletId;
+	int bulletId;
+
 	/** Power of the bullet */
-	private double power;
+	double power;
+
 	/** Position, the bullet was fired from */
-	private Point firePosition;
+	Point firePosition;
+
 	/** Direction of the bullet in degrees */
-	private double direction;
+	double direction;
+
 	/** Bullet speed */
-	private double speed;
+	double speed;
+
 	/** Tick, which is the number of turns since the bullet was fired */
-	private int tick;
+	@Wither int tick;
 
 	/**
-	 * Creates a mutable bullet that needs to be initialized
-	 */
-	public Bullet() {
-	}
-
-	/**
-	 * Creates a mutable bullet that is initialized by another bullet instance
-	 * 
-	 * @param bullet
-	 *            is the other bullet instance, which is deep copied into this bullet.
-	 */
-	public Bullet(IBullet bullet) {
-		botId = bullet.getOwnerId();
-		bulletId = bullet.getBulletId();
-		power = bullet.getPower();
-		firePosition = bullet.getFirePosition();
-		direction = bullet.getDirection();
-		speed = bullet.getSpeed();
-		tick = bullet.getTick();
-	}
-
-	/**
-	 * Creates a immutable bullet instance that is a deep copy of this bullet.
-	 * 
-	 * @return a immutable bullet instance
-	 */
-	public ImmutableBullet toImmutableBullet() {
-		return new ImmutableBullet(this);
-	}
-
-	@Override
-	public int getOwnerId() {
-		return botId;
-	}
-
-	@Override
-	public int getBulletId() {
-		return bulletId;
-	}
-
-	@Override
-	public double getPower() {
-		return power;
-	}
-
-	@Override
-	public Point getFirePosition() {
-		return firePosition;
-	}
-
-	@Override
-	public double getDirection() {
-		return direction;
-	}
-
-	@Override
-	public double getSpeed() {
-		return speed;
-	}
-
-	@Override
-	public int getTick() {
-		return tick;
-	}
-
-	/**
-	 * Sets the id of the bot that fired this bullet
-	 *
-	 * @param botId
-	 *            is the bot id
-	 */
-	public void setBotId(int botId) {
-		this.botId = botId;
-	}
-
-	/**
-	 * Sets the id of the bullet
-	 * 
-	 * @param bulletId
-	 *            is the bullet id
-	 */
-	public void setBulletId(int bulletId) {
-		this.bulletId = bulletId;
-	}
-
-	/**
-	 * Sets the power of the bullet
-	 * 
-	 * @param power
-	 *            is the power of the bullet
-	 */
-	public void setPower(double power) {
-		this.power = power;
-	}
-
-	/**
-	 * Sets the position, the bullet was fired from
+	 * Calculates the position of a bullet.
 	 * 
 	 * @param firePosition
-	 *            is the fire position
-	 */
-	public void setFirePosition(Point firePosition) {
-		this.firePosition = firePosition;
-	}
-
-	/**
-	 * Sets the direction of the bullet
-	 * 
+	 *            is the position, from which the bullet was fired
 	 * @param direction
 	 *            is the direction of the bullet
-	 */
-	public void setDirection(double direction) {
-		this.direction = direction;
-	}
-
-	/**
-	 * Sets the speed of the bullet
-	 * 
 	 * @param speed
 	 *            is the speed of the bullet
-	 */
-	public void setSpeed(double speed) {
-		this.speed = speed;
-	}
-
-	/**
-	 * Sets the tick, which is the number of turns since the bullet was fired
-	 * 
 	 * @param tick
 	 *            is the number of turns since the bullet was fired
+	 * @return the calculated bullet position
 	 */
-	public void setTick(int tick) {
-		this.tick = tick;
+	private static Point calcPosition(Point firePosition, double direction, double speed, int tick) {
+		double angle = Math.toRadians(direction);
+		double distance = speed * tick;
+		double x = firePosition.x + Math.cos(angle) * distance;
+		double y = firePosition.y + Math.sin(angle) * distance;
+		return new Point(x, y);
 	}
 
 	/**
-	 * Increments the tick to "move" the bullet to the next turn in the battle
+	 * Calculates the current bullet position based on the fire position and current tick.
+	 * 
+	 * @return the calculated bullet position
 	 */
-	public void incrementTick() {
-		this.tick++;
+	public Point calcPosition() {
+		return calcPosition(getFirePosition(), getDirection(), getSpeed(), getTick());
+	}
+
+	/**
+	 * Calculates the next bullet position based on the fire position and current tick.
+	 * 
+	 * @return the calculated bullet position
+	 */
+	public Point calcNextPosition() {
+		return calcPosition(getFirePosition(), getDirection(), getSpeed(), getTick() + 1);
 	}
 }

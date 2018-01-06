@@ -1,6 +1,6 @@
 package net.robocode2.model.events;
 
-import net.robocode2.model.ImmutableBullet;
+import net.robocode2.model.Bullet;
 
 /**
  * Event sent when a bullet has fired a bullet
@@ -10,7 +10,7 @@ import net.robocode2.model.ImmutableBullet;
 public final class BulletFiredEvent implements IEvent {
 
 	/** Fired bullet */
-	private final ImmutableBullet bullet;
+	private final Bullet bullet;
 
 	/**
 	 * Creates a new bullet fired event
@@ -18,12 +18,12 @@ public final class BulletFiredEvent implements IEvent {
 	 * @param bullet
 	 *            is the bullet that got fired
 	 */
-	public BulletFiredEvent(ImmutableBullet bullet) {
+	public BulletFiredEvent(Bullet bullet) {
 		this.bullet = bullet;
 	}
 
 	/** Returns the bullet that got fired */
-	public ImmutableBullet getBullet() {
+	public Bullet getBullet() {
 		return bullet;
 	}
 }

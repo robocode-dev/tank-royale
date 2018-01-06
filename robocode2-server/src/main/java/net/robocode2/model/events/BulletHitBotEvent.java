@@ -1,6 +1,6 @@
 package net.robocode2.model.events;
 
-import net.robocode2.model.ImmutableBullet;
+import net.robocode2.model.Bullet;
 
 /**
  * Event sent when a bullet hits a bot
@@ -10,7 +10,7 @@ import net.robocode2.model.ImmutableBullet;
 public final class BulletHitBotEvent implements IEvent {
 
 	/** Bullet that hit the bot */
-	private final ImmutableBullet bullet;
+	private final Bullet bullet;
 	/** Bot id of the victim that was hit by the bullet */
 	private final int victimId;
 	/** Damage dealt to the victim */
@@ -30,7 +30,7 @@ public final class BulletHitBotEvent implements IEvent {
 	 * @param energy
 	 *            is the new energy level of the victim after damage
 	 */
-	public BulletHitBotEvent(ImmutableBullet bullet, int victimId, double damage, double energy) {
+	public BulletHitBotEvent(Bullet bullet, int victimId, double damage, double energy) {
 		this.bullet = bullet;
 		this.victimId = victimId;
 		this.damage = damage;
@@ -38,7 +38,7 @@ public final class BulletHitBotEvent implements IEvent {
 	}
 
 	/** Returns the bullet that hit the bot */
-	public ImmutableBullet getBullet() {
+	public Bullet getBullet() {
 		return bullet;
 	}
 

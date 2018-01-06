@@ -25,11 +25,9 @@ import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.IBot;
 import net.robocode2.model.IBotIntent;
-import net.robocode2.model.IBullet;
 import net.robocode2.model.IGameSetup;
 import net.robocode2.model.IRuleConstants;
 import net.robocode2.model.ImmutableBotIntent;
-import net.robocode2.model.ImmutableBullet;
 import net.robocode2.model.ImmutableGameState;
 import net.robocode2.model.ImmutableTurn;
 import net.robocode2.model.Point;
@@ -244,9 +242,9 @@ public class ModelUpdater {
 		turn.setBots(botSet);
 
 		// Store bullet snapshots
-		Set<IBullet> bulletSet = new HashSet<>();
+		Set<Bullet> bulletSet = new HashSet<>();
 		for (Bullet bullet : bullets) {
-			bulletSet.add(bullet.toImmutableBullet());
+			bulletSet.add(bullet);
 		}
 		turn.setBullets(bulletSet);
 	}
@@ -411,14 +409,14 @@ public class ModelUpdater {
 				if (isBulletsMaxBoundingCirclesColliding(endPos1, endPos2) && MathUtil.isLineIntersectingLine(
 						boundingLines[i].start, boundingLines[i].end, boundingLines[j].start, boundingLines[j].end)) {
 
-					ImmutableBullet bullet1 = bulletArray[i].toImmutableBullet();
-					ImmutableBullet bullet2 = bulletArray[j].toImmutableBullet();
+					Bullet bullet1 = bulletArray[i];
+					Bullet bullet2 = bulletArray[j];
 
 					BulletHitBulletEvent bulletHitBulletEvent1 = new BulletHitBulletEvent(bullet1, bullet2);
-					turn.addPrivateBotEvent(bullet1.getOwnerId(), bulletHitBulletEvent1);
+					turn.addPrivateBotEvent(bullet1.getBotId(), bulletHitBulletEvent1);
 
 					BulletHitBulletEvent bulletHitBulletEvent2 = new BulletHitBulletEvent(bullet2, bullet1);
-					turn.addPrivateBotEvent(bullet2.getOwnerId(), bulletHitBulletEvent2);
+					turn.addPrivateBotEvent(bullet2.getBotId(), bulletHitBulletEvent2);
 
 					// Observers only need a single event
 					turn.addObserverEvent(bulletHitBulletEvent1);
@@ -438,7 +436,7 @@ public class ModelUpdater {
 
 				Bullet bullet = bulletArray[i];
 
-				int botId = bullet.getOwnerId();
+				int botId = bullet.getBotId();
 				int victimId = bot.getId();
 
 				if (botId == victimId) {
@@ -456,8 +454,7 @@ public class ModelUpdater {
 
 					scoreKeeper.registerBulletHit(botId, victimId, damage, killed);
 
-					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet.toImmutableBullet(), victimId,
-							damage, bot.getEnergy());
+					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet, victimId, damage, bot.getEnergy());
 
 					turn.addPrivateBotEvent(botId, bulletHitBotEvent);
 					turn.addObserverEvent(bulletHitBotEvent);
@@ -630,9 +627,16 @@ public class ModelUpdater {
 	 * Updates bullet positions
 	 */
 	private void updateBulletPositions() {
+
+		Set<Bullet> newBulletSet = new HashSet<>();
+	
 		for (Bullet bullet : bullets) {
-			bullet.incrementTick(); // The tick is used to calculate new position by calling getPosition()
+			// The tick is used to calculate new position by calling getPosition()
+			newBulletSet.add(bullet.withTick(bullet.getTick() + 1));
 		}
+		
+		bullets.clear();
+		bullets.addAll(newBulletSet);
 	}
 
 	/**
@@ -722,8 +726,8 @@ public class ModelUpdater {
 
 				iterator.remove(); // remove bullet from arena
 
-				BulletMissedEvent bulletMissedEvent = new BulletMissedEvent(bullet.toImmutableBullet());
-				turn.addPrivateBotEvent(bullet.getOwnerId(), bulletMissedEvent);
+				BulletMissedEvent bulletMissedEvent = new BulletMissedEvent(bullet);
+				turn.addPrivateBotEvent(bullet.getBotId(), bulletMissedEvent);
 				turn.addObserverEvent(bulletMissedEvent);
 			}
 		}
@@ -806,17 +810,18 @@ public class ModelUpdater {
 		double gunHeat = RuleMath.calcGunHeat(firepower);
 		bot.setGunHeat(gunHeat);
 
-		Bullet bullet = new Bullet();
-		bullet.setBotId(botId);
-		bullet.setBulletId(++nextBulletId);
-		bullet.setPower(firepower);
-		bullet.setFirePosition(bot.getPosition());
-		bullet.setDirection(bot.getGunDirection());
-		bullet.setSpeed(RuleMath.calcBulletSpeed(firepower));
+		Bullet bullet = Bullet.builder()
+			.botId(botId)
+			.bulletId(++nextBulletId)
+			.power(firepower)
+			.firePosition(bot.getPosition())
+			.direction(bot.getGunDirection())
+			.speed(RuleMath.calcBulletSpeed(firepower))
+			.build();
 
 		bullets.add(bullet);
 
-		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(bullet.toImmutableBullet());
+		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(bullet);
 		turn.addPrivateBotEvent(botId, bulletFiredEvent);
 		turn.addObserverEvent(bulletFiredEvent);
 	}

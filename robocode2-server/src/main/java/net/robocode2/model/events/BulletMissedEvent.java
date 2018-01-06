@@ -1,6 +1,6 @@
 package net.robocode2.model.events;
 
-import net.robocode2.model.ImmutableBullet;
+import net.robocode2.model.Bullet;
 
 /**
  * Event sent when a bullet has missed (reached the walls)
@@ -10,7 +10,7 @@ import net.robocode2.model.ImmutableBullet;
 public final class BulletMissedEvent implements IEvent {
 
 	/** Bullet that missed */
-	private final ImmutableBullet bullet;
+	private final Bullet bullet;
 
 	/**
 	 * Creates a bullet missed event
@@ -18,12 +18,12 @@ public final class BulletMissedEvent implements IEvent {
 	 * @param bullet
 	 *            is the bullet that has missed
 	 */
-	public BulletMissedEvent(ImmutableBullet bullet) {
+	public BulletMissedEvent(Bullet bullet) {
 		this.bullet = bullet;
 	}
 
 	/** Returns the bullet that has missed */
-	public ImmutableBullet getBullet() {
+	public Bullet getBullet() {
 		return bullet;
 	}
 }
