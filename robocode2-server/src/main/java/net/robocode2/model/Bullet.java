@@ -1,6 +1,5 @@
 package net.robocode2.model;
 
-import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.Wither;
 
@@ -10,7 +9,6 @@ import lombok.experimental.Wither;
  * @author Flemming N. Larsen
  */
 @Value
-@Builder
 public class Bullet {
 
 	/** Id of the bot that fired this bullet */

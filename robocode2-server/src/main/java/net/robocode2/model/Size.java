@@ -12,6 +12,7 @@ public final class Size {
 
 	/** Width */
 	public final double width;
+
 	/** Height */
 	public final double height;
 

@@ -12,6 +12,7 @@ public final class Point {
 
 	/** X coordinate */
 	public final double x;
+
 	/** Y coordinate */
 	public final double y;
 

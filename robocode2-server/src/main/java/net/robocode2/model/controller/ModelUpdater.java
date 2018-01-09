@@ -561,10 +561,8 @@ public class ModelUpdater {
 					pos1 = bot1.getPosition();
 					pos2 = bot2.getPosition();
 
-					BotHitBotEvent BotHitBotEvent1 = new BotHitBotEvent(botId1, botId2, bot2.getEnergy(),
-							bot2.getPosition(), bot1RammedBot2);
-					BotHitBotEvent BotHitBotEvent2 = new BotHitBotEvent(botId2, botId1, bot1.getEnergy(),
-							bot1.getPosition(), bot2rammedBot1);
+					BotHitBotEvent BotHitBotEvent1 = new BotHitBotEvent(botId1, botId2, bot2.getEnergy(), bot2.getPosition(), bot1RammedBot2);
+					BotHitBotEvent BotHitBotEvent2 = new BotHitBotEvent(botId2, botId1, bot1.getEnergy(), bot1.getPosition(), bot2rammedBot1);
 
 					turn.addPrivateBotEvent(botId1, BotHitBotEvent1);
 					turn.addPrivateBotEvent(botId2, BotHitBotEvent2);
@@ -810,14 +808,7 @@ public class ModelUpdater {
 		double gunHeat = RuleMath.calcGunHeat(firepower);
 		bot.setGunHeat(gunHeat);
 
-		Bullet bullet = Bullet.builder()
-			.botId(botId)
-			.bulletId(++nextBulletId)
-			.power(firepower)
-			.firePosition(bot.getPosition())
-			.direction(bot.getGunDirection())
-			.speed(RuleMath.calcBulletSpeed(firepower))
-			.build();
+		Bullet bullet = new Bullet(botId, ++nextBulletId, firepower, bot.getPosition(), bot.getGunDirection(), RuleMath.calcBulletSpeed(firepower), 0);
 
 		bullets.add(bullet);
 

@@ -30,7 +30,7 @@ public class Score {
 	/** Ram kill bonus */
 	double ramKillBonus;
 
-	/** Returns the total score */
+	/** Total score */
 	public double getTotalScore() {
 		return survival + lastSurvivorBonus + bulletDamage + bulletKillBonus + ramDamage + ramKillBonus;
 	}

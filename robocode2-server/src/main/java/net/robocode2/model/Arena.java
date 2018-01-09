@@ -10,6 +10,6 @@ import lombok.Value;
 @Value
 public class Arena {
 
-	/** The size of the arena */
+	/** Size of the arena */
 	Size size;
 }
