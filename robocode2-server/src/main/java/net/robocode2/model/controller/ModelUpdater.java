@@ -25,7 +25,6 @@ import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.IBot;
 import net.robocode2.model.IBotIntent;
-import net.robocode2.model.IGameSetup;
 import net.robocode2.model.IRuleConstants;
 import net.robocode2.model.ImmutableBotIntent;
 import net.robocode2.model.ImmutableGameState;
@@ -55,7 +54,7 @@ import net.robocode2.util.MathUtil;
 public class ModelUpdater {
 
 	/** Game setup */
-	private final IGameSetup setup;
+	private final GameSetup setup;
 	/** Participant ids */
 	private final Set<Integer> participantIds;
 

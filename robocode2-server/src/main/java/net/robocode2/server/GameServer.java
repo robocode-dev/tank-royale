@@ -107,7 +107,7 @@ public final class GameServer {
 
 		GameStartedEventForBot gameStartedForBot = new GameStartedEventForBot();
 		gameStartedForBot.setType(GameStartedEventForBot.Type.GAME_STARTED_EVENT_FOR_BOT);
-		gameStartedForBot.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup.toImmutableGameSetup()));
+		gameStartedForBot.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
 
 		int id = 1;
 		for (WebSocket participant : participants) {
@@ -142,7 +142,7 @@ public final class GameServer {
 		if (connHandler.getObserverConnections().size() > 0) {
 			GameStartedEventForObserver gameStartedForObserver = new GameStartedEventForObserver();
 			gameStartedForObserver.setType(GameStartedEventForObserver.Type.GAME_STARTED_EVENT_FOR_OBSERVER);
-			gameStartedForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup.toImmutableGameSetup()));
+			gameStartedForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
 
 			List<Participant> list = new ArrayList<>();
 			for (WebSocket bot : participants) {

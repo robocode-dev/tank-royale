@@ -4,7 +4,7 @@ import lombok.Value;
 import lombok.experimental.Wither;
 
 /**
- * Mutable bullet instance.
+ * Bullet instance.
  * 
  * @author Flemming N. Larsen
  */

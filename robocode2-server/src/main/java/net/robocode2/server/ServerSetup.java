@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.robocode2.model.GameSetup;
-import net.robocode2.model.IGameSetup;
 
 public final class ServerSetup {
 
@@ -16,24 +15,24 @@ public final class ServerSetup {
 		return 50000;
 	}
 
-	public Set<IGameSetup> getGames() {
-		Set<IGameSetup> games = new HashSet<>();
+	public Set<GameSetup> getGames() {
+		Set<GameSetup> games = new HashSet<>();
 
-		GameSetup setup = new GameSetup();
-		setup.setGameType("melee");
-		setup.setMinNumberOfParticipants(2);
-		setup.setMinNumberOfParticipantsLocked(true);
+		GameSetup setup1 = GameSetup.builder()
+			.gameType("melee")
+			.minNumberOfParticipants(2)
+			.minNumberOfParticipantsLocked(true)
+			.build();
+		games.add(setup1);
 
-		games.add(setup.toImmutableGameSetup());
-
-		setup = new GameSetup();
-		setup.setGameType("1v1");
-		setup.setMinNumberOfParticipants(2);
-		setup.setMinNumberOfParticipantsLocked(true);
-		setup.setMaxNumberOfParticipants(2);
-		setup.setMaxNumberOfParticipantsLocked(true);
-
-		games.add(setup.toImmutableGameSetup());
+		GameSetup setup2 = GameSetup.builder()	
+			.gameType("1v1")
+			.minNumberOfParticipants(2)
+			.minNumberOfParticipantsLocked(true)
+			.maxNumberOfParticipants(2)
+			.maxNumberOfParticipantsLocked(true)
+			.build();
+		games.add(setup2);
 
 		return games;
 	}
