@@ -1,70 +1,33 @@
 package net.robocode2.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Builder;
+import lombok.Singular;
+import lombok.Value;
+
 /**
- * Mutable game state.
+ * Game state.
  * 
  * @author Flemming N. Larsen
  */
-public class GameState implements IGameState {
+@Value
+@Builder(toBuilder=true)
+public class GameState {
 
 	/** Arena */
-	private Arena arena;
+	Arena arena;
+
 	/** List of rounds */
-	private final List<IRound> rounds = new ArrayList<>();
+	@Singular List<IRound> rounds;
+
 	/** Flag specifying if game has ended */
-	private boolean gameEnded;
-
+	boolean gameEnded;
+	
 	/**
-	 * Creates an immutable game state that is a copy of this state.
-	 * 
-	 * @return an immutable game state
+	 * Returns the last round.
 	 */
-	public ImmutableGameState toImmutableGameState() {
-		return new ImmutableGameState(this);
-	}
-
-	@Override
-	public Arena getArena() {
-		return arena;
-	}
-
-	@Override
-	public List<IRound> getRounds() {
-		return rounds;
-	}
-
-	@Override
-	public boolean isGameEnded() {
-		return gameEnded;
-	}
-
-	/**
-	 * Sets the arena
-	 * 
-	 * @param arena
-	 *            is the arena
-	 */
-	public void setArena(Arena arena) {
-		this.arena = arena;
-	}
-
-	/**
-	 * Appends a round to the game state
-	 * 
-	 * @param round
-	 *            is the round to append
-	 */
-	public void appendRound(IRound round) {
-		this.rounds.add(round);
-	}
-
-	/**
-	 * Flag that game has ended
-	 */
-	public void setGameEnded() {
-		gameEnded = true;
+	public IRound getLastRound() {
+		return (rounds == null || rounds.isEmpty()) ? null : rounds.get(rounds.size() - 1);
 	}
 }

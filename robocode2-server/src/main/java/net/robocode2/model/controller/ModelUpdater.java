@@ -27,7 +27,6 @@ import net.robocode2.model.IBot;
 import net.robocode2.model.IBotIntent;
 import net.robocode2.model.IRuleConstants;
 import net.robocode2.model.ImmutableBotIntent;
-import net.robocode2.model.ImmutableGameState;
 import net.robocode2.model.ImmutableTurn;
 import net.robocode2.model.Point;
 import net.robocode2.model.Round;
@@ -69,7 +68,7 @@ public class ModelUpdater {
 	private final Set<Bullet> bullets = new HashSet<>();
 
 	/** Game state */
-	private final GameState gameState;
+	private GameState gameState;
 	/** Round record */
 	private final Round round;
 	/** Turn record */
@@ -116,14 +115,13 @@ public class ModelUpdater {
 
 		this.scoreKeeper = new ScoreKeeper(participantIds);
 
-		// Prepare game state builders
-		gameState = new GameState();
 		round = new Round();
 		turn = new Turn();
 
 		// Prepare game state builder
 		Arena arena = new Arena(new Size(setup.getArenaWidth(), setup.getArenaHeight()));
-		gameState.setArena(arena);
+
+		gameState = GameState.builder().arena(arena).build();
 
 		roundNumber = 0;
 		turnNumber = 0;
@@ -136,7 +134,7 @@ public class ModelUpdater {
 	 *            is the bot intents, which gives instructions to the game from the individual bot
 	 * @return new game state
 	 */
-	public ImmutableGameState update(Map<Integer /* BotId */, BotIntent> botIntents) {
+	public GameState update(Map<Integer /* BotId */, BotIntent> botIntents) {
 
 		updateBotIntents(botIntents);
 
@@ -253,12 +251,10 @@ public class ModelUpdater {
 	 * 
 	 * @return new game state
 	 */
-	private ImmutableGameState buildUpdatedGameState() {
+	private GameState buildUpdatedGameState() {
 		round.appendTurn(turn);
 
-		gameState.appendRound(round.toImmutableRound());
-
-		return gameState.toImmutableGameState();
+		return gameState.toBuilder().round(round.toImmutableRound()).build();
 	}
 
 	/**
@@ -629,7 +625,9 @@ public class ModelUpdater {
 	
 		for (Bullet bullet : bullets) {
 			// The tick is used to calculate new position by calling getPosition()
-			newBulletSet.add(bullet.withTick(bullet.getTick() + 1));
+			Bullet updatedBullet = bullet.toBuilder().tick(bullet.getTick() + 1).build();
+			
+			newBulletSet.add(updatedBullet);
 		}
 		
 		bullets.clear();
@@ -807,8 +805,14 @@ public class ModelUpdater {
 		double gunHeat = RuleMath.calcGunHeat(firepower);
 		bot.setGunHeat(gunHeat);
 
-		Bullet bullet = new Bullet(botId, ++nextBulletId, firepower, bot.getPosition(), bot.getGunDirection(), RuleMath.calcBulletSpeed(firepower), 0);
-
+		Bullet bullet = Bullet.builder()
+			.botId(botId)
+			.bulletId(++nextBulletId)
+			.power(firepower)
+			.firePosition(bot.getPosition())
+			.direction(bot.getGunDirection())
+			.build();
+		
 		bullets.add(bullet);
 
 		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(bullet);
@@ -870,7 +874,7 @@ public class ModelUpdater {
 
 			if (roundNumber == setup.getNumberOfRounds()) {
 				// Game over
-				gameState.setGameEnded();
+				gameState = gameState.toBuilder().gameEnded(true).build();
 			}
 		}
 	}

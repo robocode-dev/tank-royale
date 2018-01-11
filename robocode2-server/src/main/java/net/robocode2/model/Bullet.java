@@ -1,7 +1,7 @@
 package net.robocode2.model;
 
+import lombok.Builder;
 import lombok.Value;
-import lombok.experimental.Wither;
 
 /**
  * Bullet instance.
@@ -9,6 +9,7 @@ import lombok.experimental.Wither;
  * @author Flemming N. Larsen
  */
 @Value
+@Builder(toBuilder=true)
 public class Bullet {
 
 	/** Id of the bot that fired this bullet */
@@ -26,11 +27,30 @@ public class Bullet {
 	/** Direction of the bullet in degrees */
 	double direction;
 
-	/** Bullet speed */
-	double speed;
-
 	/** Tick, which is the number of turns since the bullet was fired */
-	@Wither int tick;
+	int tick;
+
+	public double getSpeed() {
+		return RuleMath.calcBulletSpeed(power);
+	}
+	
+	/**
+	 * Calculates the current bullet position based on the fire position and current tick.
+	 * 
+	 * @return the calculated bullet position
+	 */
+	public Point calcPosition() {
+		return calcPosition(getFirePosition(), getDirection(), getSpeed(), getTick());
+	}
+
+	/**
+	 * Calculates the next bullet position based on the fire position and current tick.
+	 * 
+	 * @return the calculated bullet position
+	 */
+	public Point calcNextPosition() {
+		return calcPosition(getFirePosition(), getDirection(), getSpeed(), getTick() + 1);
+	}
 
 	/**
 	 * Calculates the position of a bullet.
@@ -51,23 +71,5 @@ public class Bullet {
 		double x = firePosition.x + Math.cos(angle) * distance;
 		double y = firePosition.y + Math.sin(angle) * distance;
 		return new Point(x, y);
-	}
-
-	/**
-	 * Calculates the current bullet position based on the fire position and current tick.
-	 * 
-	 * @return the calculated bullet position
-	 */
-	public Point calcPosition() {
-		return calcPosition(getFirePosition(), getDirection(), getSpeed(), getTick());
-	}
-
-	/**
-	 * Calculates the next bullet position based on the fire position and current tick.
-	 * 
-	 * @return the calculated bullet position
-	 */
-	public Point calcNextPosition() {
-		return calcPosition(getFirePosition(), getDirection(), getSpeed(), getTick() + 1);
 	}
 }

@@ -31,9 +31,9 @@ import net.robocode2.json_schema.events.TickEventForBot;
 import net.robocode2.json_schema.events.TickEventForObserver;
 import net.robocode2.model.BotIntent;
 import net.robocode2.model.GameSetup;
+import net.robocode2.model.GameState;
 import net.robocode2.model.IRound;
 import net.robocode2.model.ITurn;
-import net.robocode2.model.ImmutableGameState;
 import net.robocode2.model.controller.ModelUpdater;
 import net.robocode2.model.mappers.BotHandshakeToBotInfoMapper;
 import net.robocode2.model.mappers.BotIntentToBotIntentMapper;
@@ -49,7 +49,7 @@ public final class GameServer {
 
 	private RunningState runningState;
 	private GameSetup gameSetup;
-	private ImmutableGameState gameState;
+	private GameState gameState;
 
 	private Set<WebSocket> participants;
 	private Set<WebSocket> readyParticipants;
@@ -204,7 +204,7 @@ public final class GameServer {
 		}
 	}
 
-	private ImmutableGameState updateGameState() {
+	private GameState updateGameState() {
 		Map<Integer /* BotId */, BotIntent> mappedBotIntents = new HashMap<>();
 
 		for (Entry<WebSocket, BotIntent> entry : botIntents.entrySet()) {
