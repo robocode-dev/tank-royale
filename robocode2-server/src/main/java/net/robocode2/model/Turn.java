@@ -9,7 +9,7 @@ import java.util.Set;
 import net.robocode2.model.events.IEvent;
 
 /**
- * Mutable turn instance
+ * State of a game turn in a round.
  * 
  * @author Flemming N. Larsen
  */

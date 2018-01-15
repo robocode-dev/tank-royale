@@ -19,7 +19,7 @@ public class GameState {
 	Arena arena;
 
 	/** List of rounds */
-	@Singular List<IRound> rounds;
+	@Singular List<Round> rounds;
 
 	/** Flag specifying if game has ended */
 	boolean gameEnded;
@@ -27,7 +27,7 @@ public class GameState {
 	/**
 	 * Returns the last round.
 	 */
-	public IRound getLastRound() {
+	public Round getLastRound() {
 		return (rounds == null || rounds.isEmpty()) ? null : rounds.get(rounds.size() - 1);
 	}
 }

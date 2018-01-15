@@ -1,70 +1,38 @@
 package net.robocode2.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Builder;
+import lombok.Singular;
+import lombok.Value;
+
 /**
- * Mutable round
+ * State of a game round.
  * 
  * @author Flemming N. Larsen
  */
-public final class Round implements IRound {
+@Value
+@Builder(toBuilder=true)
+public final class Round {
 
 	/** Round number */
-	private int roundNumber;
+	int roundNumber;
+
 	/** List of turns */
-	private final List<ITurn> turns = new ArrayList<>();
+	@Singular List<ITurn> turns;
+
 	/** Flag specifying if round has ended */
-	private boolean roundEnded;
-
+	boolean roundEnded;
+	
 	/**
-	 * Creates a immutable round instance that is a copy of this round.
-	 * 
-	 * @return a immutable round instance
+	 * Returns the last turn of this round
 	 */
-	public ImmutableRound toImmutableRound() {
-		return new ImmutableRound(this);
-	}
-
-	@Override
-	public int getRoundNumber() {
-		return roundNumber;
-	}
-
-	@Override
-	public List<ITurn> getTurns() {
-		return turns;
-	}
-
-	@Override
-	public boolean isRoundEnded() {
-		return roundEnded;
-	}
-
-	/**
-	 * Sets the round number
-	 * 
-	 * @param roundNumber
-	 *            is the round number
-	 */
-	public void setRoundNumber(int roundNumber) {
-		this.roundNumber = roundNumber;
-	}
-
-	/**
-	 * Appends a turn to this round
-	 * 
-	 * @param turn
-	 *            is the turn to append
-	 */
-	public void appendTurn(ITurn turn) {
-		turns.add(turn);
-	}
-
-	/**
-	 * Flag that round has ended
-	 */
-	public void setRoundEnded() {
-		roundEnded = true;
+	public ITurn getLastTurn() {
+		List<ITurn> turns = getTurns();
+		int numTurns = turns.size();
+		if (numTurns > 0) {
+			return turns.get(numTurns - 1);
+		}
+		return null;
 	}
 }

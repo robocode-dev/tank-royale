@@ -67,7 +67,7 @@ public class ModelUpdater {
 	/** Game state */
 	private GameState gameState;
 	/** Round record */
-	private final Round round;
+	private Round round;
 	/** Turn record */
 	private final Turn turn;
 
@@ -112,7 +112,7 @@ public class ModelUpdater {
 
 		this.scoreKeeper = new ScoreKeeper(participantIds);
 
-		round = new Round();
+		round = Round.builder().build();
 		turn = new Turn();
 
 		// Prepare game state builder
@@ -171,7 +171,8 @@ public class ModelUpdater {
 	 */
 	private void nextRound() {
 		roundNumber++;
-		round.setRoundNumber(roundNumber);
+		
+		round = round.toBuilder().roundNumber(roundNumber).build();
 
 		roundEnded = false;
 
@@ -249,9 +250,9 @@ public class ModelUpdater {
 	 * @return new game state
 	 */
 	private GameState buildUpdatedGameState() {
-		round.appendTurn(turn);
-
-		return gameState.toBuilder().round(round.toImmutableRound()).build();
+		round = round.toBuilder().turn(turn).build();
+		
+		return gameState.toBuilder().round(round).build();
 	}
 
 	/**
