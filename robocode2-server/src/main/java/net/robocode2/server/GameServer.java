@@ -311,10 +311,10 @@ public final class GameServer {
 		}
 		BotIntent botIntent = botIntents.get(bot);
 		if (botIntent == null) {
-			botIntent = new BotIntent();
-			botIntents.put(bot, botIntent);
+			botIntent = BotIntent.builder().build();
 		}
-		botIntent.update(BotIntentToBotIntentMapper.map(intent));
+		botIntent = botIntent.update(BotIntentToBotIntentMapper.map(intent));
+		botIntents.put(bot, botIntent);
 	}
 
 	private String createBotListUpdateMessage() {

@@ -24,9 +24,7 @@ import net.robocode2.model.Bullet;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.IBot;
-import net.robocode2.model.IBotIntent;
 import net.robocode2.model.IRuleConstants;
-import net.robocode2.model.ImmutableBotIntent;
 import net.robocode2.model.ImmutableTurn;
 import net.robocode2.model.Point;
 import net.robocode2.model.Round;
@@ -42,7 +40,6 @@ import net.robocode2.model.events.BulletHitBotEvent;
 import net.robocode2.model.events.BulletHitBulletEvent;
 import net.robocode2.model.events.BulletMissedEvent;
 import net.robocode2.model.events.ScannedBotEvent;
-import net.robocode2.util.BotIntentNullified;
 import net.robocode2.util.MathUtil;
 
 /**
@@ -162,10 +159,10 @@ public class ModelUpdater {
 			Integer botId = entry.getKey();
 			BotIntent botIntent = botIntentsMap.get(botId);
 			if (botIntent == null) {
-				botIntent = new BotIntent();
-				botIntentsMap.put(botId, botIntent);
+				botIntent = BotIntent.builder().build();
 			}
-			botIntent.update(entry.getValue());
+			botIntent = botIntent.update(entry.getValue());
+			botIntentsMap.put(botId, botIntent);
 		}
 	}
 
@@ -349,13 +346,12 @@ public class ModelUpdater {
 				continue;
 			}
 
-			IBotIntent immuBotIntent = new BotIntentNullified(botIntent.toImmutableBotIntent());
-
+			BotIntent immuBotIntent = botIntent.zerofied();
 			// Turn body, gun, radar, and move bot to new position
 
 			double speed = RuleMath.calcNewBotSpeed(bot.getSpeed(), immuBotIntent.getTargetSpeed());
 
-			double limitedTurnRate = RuleMath.limitTurnRate(immuBotIntent.getDrivingTurnRate(), speed);
+			double limitedTurnRate = RuleMath.limitTurnRate(immuBotIntent.getTurnRate(), speed);
 			double limitedGunTurnRate = RuleMath.limitGunTurnRate(immuBotIntent.getGunTurnRate());
 			double limitedRadarTurnRate = RuleMath.limitRadarTurnRate(immuBotIntent.getRadarTurnRate());
 
@@ -775,9 +771,7 @@ public class ModelUpdater {
 				if (botIntent == null) {
 					continue;
 				}
-				ImmutableBotIntent immuBotIntent = botIntent.toImmutableBotIntent();
-
-				double firepower = immuBotIntent.getBulletPower();
+				double firepower = botIntent.zerofied().getBulletPower();
 				if (firepower >= MIN_BULLET_POWER) {
 					// Gun is fired
 					firepower = Math.min(firepower, MAX_BULLET_POWER);
