@@ -25,7 +25,6 @@ import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
 import net.robocode2.model.IBot;
 import net.robocode2.model.IRuleConstants;
-import net.robocode2.model.ImmutableTurn;
 import net.robocode2.model.Point;
 import net.robocode2.model.Round;
 import net.robocode2.model.RuleMath;
@@ -69,7 +68,7 @@ public class ModelUpdater {
 	/** Round record */
 	private Round round;
 	/** Turn record */
-	private final Turn turn;
+	private Turn turn;
 
 	/** Current round number */
 	private int roundNumber;
@@ -82,7 +81,7 @@ public class ModelUpdater {
 	private int nextBulletId;
 
 	/** Previous turn */
-	private ImmutableTurn previousTurn;
+	private Turn previousTurn;
 
 	/**
 	 * Creates a new model updater
@@ -113,7 +112,7 @@ public class ModelUpdater {
 		this.scoreKeeper = new ScoreKeeper(participantIds);
 
 		round = Round.builder().build();
-		turn = new Turn();
+		turn = Turn.builder().build();
 
 		// Prepare game state builder
 		Arena arena = new Arena(new Size(setup.getArenaWidth(), setup.getArenaHeight()));
@@ -188,14 +187,16 @@ public class ModelUpdater {
 	 */
 	private void nextTurn() {
 
-		previousTurn = turn.toImmutableTurn();
-
-		// Reset events
-		turn.resetEvents();
+		previousTurn = turn;
 
 		turnNumber++;
-		turn.setTurnNumber(turnNumber);
 
+		turn = turn.toBuilder()
+			.clearBotEventsMap()
+			.clearObserverEvents()
+			.turnNumber(turnNumber)
+			.build();
+		
 		// Remove dead bots (cannot participate in new round)
 		removeDefeatedBots();
 
@@ -234,14 +235,17 @@ public class ModelUpdater {
 		for (Bot bot : botsMap.values()) {
 			botSet.add(bot.toImmutableBot());
 		}
-		turn.setBots(botSet);
 
 		// Store bullet snapshots
 		Set<Bullet> bulletSet = new HashSet<>();
 		for (Bullet bullet : bullets) {
 			bulletSet.add(bullet);
 		}
-		turn.setBullets(bulletSet);
+
+		turn = turn.toBuilder()
+			.bots(botSet)
+			.bullets(bulletSet)
+			.build();
 	}
 
 	/**
@@ -281,7 +285,8 @@ public class ModelUpdater {
 		for (Bot bot : botsMap.values()) {
 			botSet.add(bot.toImmutableBot());
 		}
-		turn.setBots(botSet);
+
+		turn = turn.toBuilder().bots(botSet).build();
 	}
 
 	/**
@@ -405,13 +410,15 @@ public class ModelUpdater {
 					Bullet bullet2 = bulletArray[j];
 
 					BulletHitBulletEvent bulletHitBulletEvent1 = new BulletHitBulletEvent(bullet1, bullet2);
-					turn.addPrivateBotEvent(bullet1.getBotId(), bulletHitBulletEvent1);
-
 					BulletHitBulletEvent bulletHitBulletEvent2 = new BulletHitBulletEvent(bullet2, bullet1);
-					turn.addPrivateBotEvent(bullet2.getBotId(), bulletHitBulletEvent2);
 
-					// Observers only need a single event
-					turn.addObserverEvent(bulletHitBulletEvent1);
+					turn = turn.toBuilder()
+						.botEvent(bullet1.getBotId(), turn.addPrivateBotEvent(bullet1.getBotId(), bulletHitBulletEvent1))
+						.botEvent(bullet2.getBotId(), turn.addPrivateBotEvent(bullet2.getBotId(), bulletHitBulletEvent2))
+
+						// Observers only need a single event
+						.observerEvent(bulletHitBulletEvent1)
+						.build();
 
 					// Remove bullets from the arena
 					bullets.remove(bulletArray[i]);
@@ -448,8 +455,10 @@ public class ModelUpdater {
 
 					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet, victimId, damage, bot.getEnergy());
 
-					turn.addPrivateBotEvent(botId, bulletHitBotEvent);
-					turn.addObserverEvent(bulletHitBotEvent);
+					turn = turn.toBuilder()
+						.botEvent(botId, turn.addPrivateBotEvent(botId, bulletHitBotEvent))
+						.observerEvent(bulletHitBotEvent)
+						.build();
 
 					// Remove bullet from the arena
 					bullets.remove(bullet);
@@ -550,17 +559,15 @@ public class ModelUpdater {
 						bot2.bounceBack(bot2BounceDist);
 					}
 
-					pos1 = bot1.getPosition();
-					pos2 = bot2.getPosition();
+					BotHitBotEvent botHitBotEvent1 = new BotHitBotEvent(botId1, botId2, bot2.getEnergy(), bot2.getPosition(), bot1RammedBot2);
+					BotHitBotEvent botHitBotEvent2 = new BotHitBotEvent(botId2, botId1, bot1.getEnergy(), bot1.getPosition(), bot2rammedBot1);
 
-					BotHitBotEvent BotHitBotEvent1 = new BotHitBotEvent(botId1, botId2, bot2.getEnergy(), bot2.getPosition(), bot1RammedBot2);
-					BotHitBotEvent BotHitBotEvent2 = new BotHitBotEvent(botId2, botId1, bot1.getEnergy(), bot1.getPosition(), bot2rammedBot1);
-
-					turn.addPrivateBotEvent(botId1, BotHitBotEvent1);
-					turn.addPrivateBotEvent(botId2, BotHitBotEvent2);
-
-					turn.addObserverEvent(BotHitBotEvent1);
-					turn.addObserverEvent(BotHitBotEvent2);
+					turn = turn.toBuilder()
+						.botEvent(botId1, turn.addPrivateBotEvent(botId1, botHitBotEvent1))
+						.botEvent(botId2, turn.addPrivateBotEvent(botId2, botHitBotEvent2))
+						.observerEvent(botHitBotEvent1)
+						.observerEvent(botHitBotEvent2)
+						.build();
 				}
 			}
 		}
@@ -642,7 +649,7 @@ public class ModelUpdater {
 			double x = position.x;
 			double y = position.y;
 
-			Point oldPosition = previousTurn.getBot(bot.getId()).get().getPosition();
+			Point oldPosition = previousTurn.getBot(bot.getId()).getPosition();
 			double dx = x - oldPosition.x;
 			double dy = y - oldPosition.y;
 
@@ -695,9 +702,12 @@ public class ModelUpdater {
 				}
 
 				BotHitWallEvent botHitWallEvent = new BotHitWallEvent(bot.getId());
-				turn.addPrivateBotEvent(bot.getId(), botHitWallEvent);
-				turn.addObserverEvent(botHitWallEvent);
-
+				
+				turn = turn.toBuilder()
+					.botEvent(bot.getId(), turn.addPrivateBotEvent(bot.getId(), botHitWallEvent))
+					.observerEvent(botHitWallEvent)
+					.build();
+				
 				double damage = RuleMath.calcWallDamage(bot.getSpeed());
 				bot.addDamage(damage);
 			}
@@ -719,8 +729,11 @@ public class ModelUpdater {
 				iterator.remove(); // remove bullet from arena
 
 				BulletMissedEvent bulletMissedEvent = new BulletMissedEvent(bullet);
-				turn.addPrivateBotEvent(bullet.getBotId(), bulletMissedEvent);
-				turn.addObserverEvent(bulletMissedEvent);
+				
+				turn = turn.toBuilder()
+					.botEvent(bullet.getBotId(), turn.addPrivateBotEvent(bullet.getBotId(), bulletMissedEvent))
+					.observerEvent(bulletMissedEvent)
+					.build();
 			}
 		}
 	}
@@ -734,8 +747,11 @@ public class ModelUpdater {
 				int victimId = bot.getId();
 
 				BotDeathEvent botDeathEvent = new BotDeathEvent(victimId);
-				turn.addPublicBotEvent(botDeathEvent);
-				turn.addObserverEvent(botDeathEvent);
+				
+				turn = turn.toBuilder()
+					.botEventsMap(turn.addPublicBotEvent(botDeathEvent))
+					.observerEvent(botDeathEvent)
+					.build();
 			}
 		}
 	}
@@ -811,8 +827,11 @@ public class ModelUpdater {
 		bullets.add(bullet);
 
 		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(bullet);
-		turn.addPrivateBotEvent(botId, bulletFiredEvent);
-		turn.addObserverEvent(bulletFiredEvent);
+		
+		turn = turn.toBuilder()
+			.botEvent(botId, turn.addPrivateBotEvent(botId, bulletFiredEvent))
+			.observerEvent(bulletFiredEvent)
+			.build();
 	}
 
 	/**
@@ -852,8 +871,10 @@ public class ModelUpdater {
 							scannedBot.getEnergy(), scannedBot.getPosition(), scannedBot.getDirection(),
 							scannedBot.getSpeed());
 
-					turn.addPrivateBotEvent(scanningBot.getId(), scannedBotEvent);
-					turn.addObserverEvent(scannedBotEvent);
+					turn = turn.toBuilder()
+						.botEvent(scanningBot.getId(), turn.addPrivateBotEvent(scanningBot.getId(), scannedBotEvent))
+						.observerEvent(scannedBotEvent)
+						.build();
 				}
 			}
 		}

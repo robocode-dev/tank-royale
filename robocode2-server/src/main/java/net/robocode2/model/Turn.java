@@ -1,11 +1,16 @@
 package net.robocode2.model;
 
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import lombok.Builder;
+import lombok.Singular;
+import lombok.Value;
 import net.robocode2.model.events.IEvent;
 
 /**
@@ -13,87 +18,61 @@ import net.robocode2.model.events.IEvent;
  * 
  * @author Flemming N. Larsen
  */
-public final class Turn implements ITurn {
+@Value
+@Builder(toBuilder=true)
+public final class Turn {
 
 	/** Turn number */
-	private int turnNumber;
+	int turnNumber;
+
 	/** Bots */
-	private Set<IBot> bots = new HashSet<>();
+	@Singular Set<IBot> bots;
+
 	/** Bullets */
-	private Set<Bullet> bullets = new HashSet<>();
+	@Singular Set<Bullet> bullets;
+
 	/** Observer events */
-	private Set<IEvent> observerEvents = new HashSet<>();
+	@Singular Set<IEvent> observerEvents;
+
 	/** Map over bot events */
-	private Map<Integer, Set<IEvent>> botEventsMap = new HashMap<>();
+	@Singular("botEvent") Map<Integer, Set<IEvent>> botEventsMap;
 
 	/**
-	 * Creates an immutable turn instance that is a deep copy of this turn.
+	 * Returns a bot instance.
 	 * 
-	 * @return an immutable turn instance
+	 * @param botId
+	 *            is the id of the bot
+	 * @return a bot instance
 	 */
-	public ImmutableTurn toImmutableTurn() {
-		return new ImmutableTurn(this);
-	}
-
-	@Override
-	public int getTurnNumber() {
-		return turnNumber;
-	}
-
-	@Override
-	public Set<IBot> getBots() {
-		return bots;
-	}
-
-	@Override
-	public Set<Bullet> getBullets() {
-		return bullets;
-	}
-
-	@Override
-	public Set<IEvent> getObserverEvents() {
-		return observerEvents;
-	}
-
-	@Override
-	public Map<Integer, Set<IEvent>> getBotEventsMap() {
-		return botEventsMap;
+	public IBot getBot(int botId) {
+		Optional<IBot> opt = bots.stream().filter(b -> b.getId() == botId).findAny();
+		return opt.isPresent() ? opt.get() : null;
 	}
 
 	/**
-	 * Sets the turn number
+	 * Returns the bullets fired by a specific bot
 	 * 
-	 * @param turnNumber
-	 *            is the turn number
+	 * @param botId
+	 *            is the id of the bot that fired the bullets
+	 * @return a set of bullets
 	 */
-	public void setTurnNumber(int turnNumber) {
-		this.turnNumber = turnNumber;
+	public Set<Bullet> getBullets(int botId) {
+		return bullets.stream().filter(b -> b.getBotId() == botId).collect(Collectors.toSet());
 	}
 
 	/**
-	 * Sets the bots
+	 * Returns the event for a specific bot
 	 * 
-	 * @param botsis
-	 *            the bots
+	 * @param botId
+	 *            is the id of the bot
+	 * @return a set of bot events
 	 */
-	public void setBots(Collection<IBot> bots) {
-		this.bots = new HashSet<>();
-		if (bots != null) {
-			this.bots.addAll(bots);
+	public Set<IEvent> getBotEvents(int botId) {
+		Set<IEvent> botEvents = getBotEventsMap().get(botId);
+		if (botEvents == null) {
+			botEvents = new HashSet<>();
 		}
-	}
-
-	/**
-	 * Sets the bullets
-	 * 
-	 * @param bullets
-	 *            is the bullets
-	 */
-	public void setBullets(Collection<Bullet> bullets) {
-		this.bullets = new HashSet<>();
-		if (bullets != null) {
-			this.bullets.addAll(bullets);
-		}
+		return Collections.unmodifiableSet(botEvents);
 	}
 
 	/**
@@ -107,43 +86,33 @@ public final class Turn implements ITurn {
 	}
 
 	/**
-	 * Adds a private bot event
+	 * Adds a private bot event and returns the new set of bot events.
 	 * 
 	 * @param botId
 	 *            is the bot id
 	 * @param event
-	 *            is the bot event, only given to the specified bot
+	 *            is the bot event to add, only given to the specified bot
 	 */
-	public void addPrivateBotEvent(int botId, IEvent event) {
+	public Set<IEvent> addPrivateBotEvent(int botId, IEvent event) {
 		// Only a specific bot retrieves the event, not any other bot
-		Set<IEvent> botEvents = botEventsMap.get(botId);
-		if (botEvents == null) {
-			botEvents = new HashSet<>();
-			botEventsMap.put(botId, botEvents);
-		}
-		botEvents.add(event);
+		Set<IEvent> currentBotEvents = botEventsMap.get(botId);
+		Set<IEvent> newBotEvents = (currentBotEvents == null) ? new HashSet<>() : new HashSet<>(currentBotEvents);
+		newBotEvents.add(event);
+		return newBotEvents;
 	}
 
 	/**
-	 * Adds a public bot event
+	 * Adds a public bot event and returns the new bot events map.
 	 * 
-	 * @param botId
-	 *            is the bot id
 	 * @param event
-	 *            is the bot event
+	 *            is the bot event to add for every bot
 	 */
-	public void addPublicBotEvent(IEvent event) {
+	public Map<Integer, Set<IEvent>> addPublicBotEvent(IEvent event) {
 		// Every bots get notified about the bot event
+		Map<Integer, Set<IEvent>> newBotEventsMap = new HashMap<>(botEventsMap);
 		for (IBot bot : bots) {
-			addPrivateBotEvent(bot.getId(), event);
+			newBotEventsMap.put(bot.getId(), addPrivateBotEvent(bot.getId(), event));
 		}
-	}
-
-	/**
-	 * Reset all events
-	 */
-	public void resetEvents() {
-		botEventsMap.clear();
-		observerEvents.clear();
+		return newBotEventsMap;
 	}
 }
