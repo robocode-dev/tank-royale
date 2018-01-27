@@ -1,11 +1,12 @@
 package net.robocode2.model;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.Data;
+import lombok.Singular;
 import net.robocode2.model.events.IEvent;
 
 /**
@@ -13,6 +14,7 @@ import net.robocode2.model.events.IEvent;
  * 
  * @author Flemming N. Larsen
  */
+@Data
 public final class Turn implements ITurn {
 
 	/** Turn number */
@@ -20,7 +22,7 @@ public final class Turn implements ITurn {
 	/** Bots */
 	private Set<IBot> bots = new HashSet<>();
 	/** Bullets */
-	private Set<Bullet> bullets = new HashSet<>();
+	@Singular private Set<Bullet> bullets = new HashSet<>();
 	/** Observer events */
 	private Set<IEvent> observerEvents = new HashSet<>();
 	/** Map over bot events */
@@ -33,77 +35,6 @@ public final class Turn implements ITurn {
 	 */
 	public ImmutableTurn toImmutableTurn() {
 		return new ImmutableTurn(this);
-	}
-
-	@Override
-	public int getTurnNumber() {
-		return turnNumber;
-	}
-
-	@Override
-	public Set<IBot> getBots() {
-		return bots;
-	}
-
-	@Override
-	public Set<Bullet> getBullets() {
-		return bullets;
-	}
-
-	@Override
-	public Set<IEvent> getObserverEvents() {
-		return observerEvents;
-	}
-
-	@Override
-	public Map<Integer, Set<IEvent>> getBotEventsMap() {
-		return botEventsMap;
-	}
-
-	/**
-	 * Sets the turn number
-	 * 
-	 * @param turnNumber
-	 *            is the turn number
-	 */
-	public void setTurnNumber(int turnNumber) {
-		this.turnNumber = turnNumber;
-	}
-
-	/**
-	 * Sets the bots
-	 * 
-	 * @param botsis
-	 *            the bots
-	 */
-	public void setBots(Collection<IBot> bots) {
-		this.bots = new HashSet<>();
-		if (bots != null) {
-			this.bots.addAll(bots);
-		}
-	}
-
-	/**
-	 * Sets the bullets
-	 * 
-	 * @param bullets
-	 *            is the bullets
-	 */
-	public void setBullets(Collection<Bullet> bullets) {
-		this.bullets = new HashSet<>();
-		if (bullets != null) {
-			this.bullets.addAll(bullets);
-		}
-	}
-
-	/**
-	 * Adds an observer event
-	 * 
-	 * @param event
-	 *            is the observer event
-	 */
-	public void addObserverEvent(IEvent event) {
-		observerEvents.add(event);
 	}
 
 	/**

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.Value;
 import net.robocode2.model.events.IEvent;
 
 /**
@@ -13,18 +14,23 @@ import net.robocode2.model.events.IEvent;
  * 
  * @author Flemming N. Larsen
  */
+@Value
 public final class ImmutableTurn implements ITurn {
 
 	/** Turn number */
-	private final int turnNumber;
+	int turnNumber;
+
 	/** Bots */
-	private final Set<IBot> bots;
+	Set<IBot> bots;
+
 	/** Bullets */
-	private final Set<Bullet> bullets;
+	Set<Bullet> bullets;
+
 	/** Observer events */
-	private final Set<IEvent> observerEvents;
+	Set<IEvent> observerEvents;
+
 	/** Map over bot events */
-	private final Map<Integer, Set<IEvent>> botEventsMap;
+	Map<Integer, Set<IEvent>> botEventsMap;
 
 	/**
 	 * Creates a immutable turn based on another turn.
@@ -59,30 +65,5 @@ public final class ImmutableTurn implements ITurn {
 			immuBotEventsMap.putAll(botEventsMap);
 		}
 		this.botEventsMap = Collections.unmodifiableMap(immuBotEventsMap);
-	}
-
-	@Override
-	public int getTurnNumber() {
-		return turnNumber;
-	}
-
-	@Override
-	public Set<IBot> getBots() {
-		return bots;
-	}
-
-	@Override
-	public Set<Bullet> getBullets() {
-		return bullets;
-	}
-
-	@Override
-	public Set<IEvent> getObserverEvents() {
-		return observerEvents;
-	}
-
-	@Override
-	public Map<Integer, Set<IEvent>> getBotEventsMap() {
-		return botEventsMap;
 	}
 }

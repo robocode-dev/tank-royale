@@ -411,7 +411,7 @@ public class ModelUpdater {
 					turn.addPrivateBotEvent(bullet2.getBotId(), bulletHitBulletEvent2);
 
 					// Observers only need a single event
-					turn.addObserverEvent(bulletHitBulletEvent1);
+					turn.getObserverEvents().add(bulletHitBulletEvent1);
 
 					// Remove bullets from the arena
 					bullets.remove(bulletArray[i]);
@@ -449,7 +449,7 @@ public class ModelUpdater {
 					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet, victimId, damage, bot.getEnergy());
 
 					turn.addPrivateBotEvent(botId, bulletHitBotEvent);
-					turn.addObserverEvent(bulletHitBotEvent);
+					turn.getObserverEvents().add(bulletHitBotEvent);
 
 					// Remove bullet from the arena
 					bullets.remove(bullet);
@@ -559,8 +559,8 @@ public class ModelUpdater {
 					turn.addPrivateBotEvent(botId1, BotHitBotEvent1);
 					turn.addPrivateBotEvent(botId2, BotHitBotEvent2);
 
-					turn.addObserverEvent(BotHitBotEvent1);
-					turn.addObserverEvent(BotHitBotEvent2);
+					turn.getObserverEvents().add(BotHitBotEvent1);
+					turn.getObserverEvents().add(BotHitBotEvent2);
 				}
 			}
 		}
@@ -696,7 +696,7 @@ public class ModelUpdater {
 
 				BotHitWallEvent botHitWallEvent = new BotHitWallEvent(bot.getId());
 				turn.addPrivateBotEvent(bot.getId(), botHitWallEvent);
-				turn.addObserverEvent(botHitWallEvent);
+				turn.getObserverEvents().add(botHitWallEvent);
 
 				double damage = RuleMath.calcWallDamage(bot.getSpeed());
 				bot.addDamage(damage);
@@ -720,7 +720,7 @@ public class ModelUpdater {
 
 				BulletMissedEvent bulletMissedEvent = new BulletMissedEvent(bullet);
 				turn.addPrivateBotEvent(bullet.getBotId(), bulletMissedEvent);
-				turn.addObserverEvent(bulletMissedEvent);
+				turn.getObserverEvents().add(bulletMissedEvent);
 			}
 		}
 	}
@@ -735,7 +735,7 @@ public class ModelUpdater {
 
 				BotDeathEvent botDeathEvent = new BotDeathEvent(victimId);
 				turn.addPublicBotEvent(botDeathEvent);
-				turn.addObserverEvent(botDeathEvent);
+				turn.getObserverEvents().add(botDeathEvent);
 			}
 		}
 	}
@@ -812,7 +812,7 @@ public class ModelUpdater {
 
 		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(bullet);
 		turn.addPrivateBotEvent(botId, bulletFiredEvent);
-		turn.addObserverEvent(bulletFiredEvent);
+		turn.getObserverEvents().add(bulletFiredEvent);
 	}
 
 	/**
@@ -853,7 +853,7 @@ public class ModelUpdater {
 							scannedBot.getSpeed());
 
 					turn.addPrivateBotEvent(scanningBot.getId(), scannedBotEvent);
-					turn.addObserverEvent(scannedBotEvent);
+					turn.getObserverEvents().add(scannedBotEvent);
 				}
 			}
 		}
