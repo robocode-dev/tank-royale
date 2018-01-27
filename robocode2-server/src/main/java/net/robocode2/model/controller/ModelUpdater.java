@@ -381,6 +381,9 @@ public class ModelUpdater {
 
 		for (int i = boundingLines.length - 1; i >= 0; i--) {
 			Bullet bullet = bulletArray[i];
+			if (bullet == null) {
+				continue;
+			}
 
 			Line line = new Line();
 			line.start = bullet.calcPosition();
@@ -642,7 +645,7 @@ public class ModelUpdater {
 			double x = position.x;
 			double y = position.y;
 
-			Point oldPosition = previousTurn.getBot(bot.getId()).get().getPosition();
+			Point oldPosition = previousTurn.getBot(bot.getId()).getPosition();
 			double dx = x - oldPosition.x;
 			double dy = y - oldPosition.y;
 

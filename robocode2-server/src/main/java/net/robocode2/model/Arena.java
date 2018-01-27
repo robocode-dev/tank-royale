@@ -1,5 +1,6 @@
 package net.robocode2.model;
 
+import lombok.NonNull;
 import lombok.Value;
 
 /**
@@ -11,5 +12,5 @@ import lombok.Value;
 public class Arena {
 
 	/** Size of the arena */
-	Size size;
+	@NonNull Size size;
 }

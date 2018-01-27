@@ -3,7 +3,6 @@ package net.robocode2.model;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,8 +37,8 @@ public interface ITurn {
 	 *            is the id of the bot
 	 * @return a bot instance
 	 */
-	default Optional<IBot> getBot(int botId) {
-		return getBots().stream().filter(b -> b.getId() == botId).findAny();
+	default IBot getBot(int botId) {
+		return getBots().stream().filter(b -> b.getId() == botId).findAny().orElse(null);
 	}
 
 	/**

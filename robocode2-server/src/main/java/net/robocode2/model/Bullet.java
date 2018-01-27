@@ -1,6 +1,7 @@
 package net.robocode2.model;
 
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.Value;
 
 /**
@@ -22,7 +23,7 @@ public class Bullet {
 	double power;
 
 	/** Position, the bullet was fired from */
-	Point firePosition;
+	@NonNull Point firePosition;
 
 	/** Direction of the bullet in degrees */
 	double direction;

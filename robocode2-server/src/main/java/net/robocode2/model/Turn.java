@@ -34,7 +34,13 @@ public final class Turn implements ITurn {
 	 * @return an immutable turn instance
 	 */
 	public ImmutableTurn toImmutableTurn() {
-		return new ImmutableTurn(this);
+		return ImmutableTurn.builder()
+			.turnNumber(turnNumber)
+			.bots(bots)
+			.bullets(bullets)
+			.observerEvents(observerEvents)
+			.botEventsMap(botEventsMap)
+			.build();
 	}
 
 	/**

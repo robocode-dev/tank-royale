@@ -3,6 +3,7 @@ package net.robocode2.model;
 import java.util.List;
 
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.Singular;
 import lombok.Value;
 
@@ -16,7 +17,7 @@ import lombok.Value;
 public class GameState {
 
 	/** Arena */
-	Arena arena;
+	@NonNull Arena arena;
 
 	/** List of rounds */
 	@Singular List<Round> rounds;
