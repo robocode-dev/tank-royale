@@ -408,9 +408,9 @@ public class ModelUpdater {
 					Bullet bullet2 = bulletArray[j];
 
 					BulletHitBulletEvent bulletHitBulletEvent1 = new BulletHitBulletEvent(bullet1, bullet2);
-					turn.addPrivateBotEvent(bullet1.getBotId(), bulletHitBulletEvent1);
-
 					BulletHitBulletEvent bulletHitBulletEvent2 = new BulletHitBulletEvent(bullet2, bullet1);
+
+					turn.addPrivateBotEvent(bullet1.getBotId(), bulletHitBulletEvent1);
 					turn.addPrivateBotEvent(bullet2.getBotId(), bulletHitBulletEvent2);
 
 					// Observers only need a single event

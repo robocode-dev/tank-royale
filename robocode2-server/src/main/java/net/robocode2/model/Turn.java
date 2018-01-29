@@ -22,7 +22,7 @@ public final class Turn implements ITurn {
 	/** Bots */
 	private Set<IBot> bots = new HashSet<>();
 	/** Bullets */
-	@Singular private Set<Bullet> bullets = new HashSet<>();
+	private Set<Bullet> bullets = new HashSet<>();
 	/** Observer events */
 	private Set<IEvent> observerEvents = new HashSet<>();
 	/** Map over bot events */
