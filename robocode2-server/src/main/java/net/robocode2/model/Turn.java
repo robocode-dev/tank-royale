@@ -43,6 +43,10 @@ public final class Turn implements ITurn {
 			.build();
 	}
 
+	public void addObserverEvent(IEvent event) {
+		observerEvents.add(event);
+	}
+	
 	/**
 	 * Adds a private bot event
 	 * 
