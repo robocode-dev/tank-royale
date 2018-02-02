@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.Data;
-import lombok.Singular;
 import net.robocode2.model.events.IEvent;
 
 /**
@@ -36,10 +35,10 @@ public final class Turn implements ITurn {
 	public ImmutableTurn toImmutableTurn() {
 		return ImmutableTurn.builder()
 			.turnNumber(turnNumber)
-			.bots(bots)
-			.bullets(bullets)
-			.observerEvents(observerEvents)
-			.botEventsMap(botEventsMap)
+			.bots(new HashSet<>(bots))
+			.bullets(new HashSet<>(bullets))
+			.observerEvents(new HashSet<>(observerEvents))
+			.botEventsMap(new HashMap<>(botEventsMap))
 			.build();
 	}
 

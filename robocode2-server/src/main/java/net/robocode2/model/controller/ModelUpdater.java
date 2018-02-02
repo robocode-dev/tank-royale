@@ -236,11 +236,7 @@ public class ModelUpdater {
 		turn.setBots(botSet);
 
 		// Store bullet snapshots
-		Set<Bullet> bulletSet = new HashSet<>();
-		for (Bullet bullet : bullets) {
-			bulletSet.add(bullet);
-		}
-		turn.setBullets(bulletSet);
+		turn.setBullets(bullets);
 	}
 
 	/**
