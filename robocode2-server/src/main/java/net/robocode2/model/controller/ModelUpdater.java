@@ -244,8 +244,8 @@ public class ModelUpdater {
 	 * 
 	 * @return new game state
 	 */
-	private GameState buildUpdatedGameState() {
-		round = round.toBuilder().turn(turn).build();
+	private GameState buildUpdatedGameState() {	
+		round = round.toBuilder().turn(turn.toImmutableTurn()).build();
 		
 		return gameState.toBuilder().round(round).build();
 	}

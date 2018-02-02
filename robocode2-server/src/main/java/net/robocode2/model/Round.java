@@ -19,7 +19,7 @@ public final class Round {
 	int roundNumber;
 
 	/** List of turns */
-	@Singular List<Turn> turns;
+	@Singular List<ITurn> turns;
 
 	/** Flag specifying if round has ended */
 	boolean roundEnded;
@@ -27,7 +27,7 @@ public final class Round {
 	/**
 	 * Returns the last turn of this round
 	 */
-	public Turn getLastTurn() {
+	public ITurn getLastTurn() {
 		int numTurns = turns.size();
 		if (numTurns > 0) {
 			return turns.get(numTurns - 1);

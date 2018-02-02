@@ -2,12 +2,12 @@ package net.robocode2.model.mappers;
 
 import net.robocode2.json_schema.events.TickEventForBot;
 import net.robocode2.model.IBot;
+import net.robocode2.model.ITurn;
 import net.robocode2.model.Round;
-import net.robocode2.model.Turn;
 
 public final class TurnToGameTickForBotMapper {
 
-	public static TickEventForBot map(Round round, Turn turn, int botId) {
+	public static TickEventForBot map(Round round, ITurn turn, int botId) {
 		IBot bot = turn.getBot(botId);
 		if (bot == null) {
 			return null;
