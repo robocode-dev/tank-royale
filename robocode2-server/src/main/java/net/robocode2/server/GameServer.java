@@ -32,8 +32,8 @@ import net.robocode2.json_schema.events.TickEventForObserver;
 import net.robocode2.model.BotIntent;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
-import net.robocode2.model.ITurn;
 import net.robocode2.model.Round;
+import net.robocode2.model.Turn;
 import net.robocode2.model.controller.ModelUpdater;
 import net.robocode2.model.mappers.BotHandshakeToBotInfoMapper;
 import net.robocode2.model.mappers.BotIntentToBotIntentMapper;
@@ -246,7 +246,7 @@ public final class GameServer {
 			// Send tick to bots
 
 			Round round = gameState.getLastRound();
-			ITurn turn = round.getLastTurn();
+			Turn turn = round.getLastTurn();
 
 			// Send game state as 'game tick' to participants
 			for (WebSocket participant : participants) {
@@ -261,7 +261,7 @@ public final class GameServer {
 		// Send delayed tick to observers
 
 		Round observerRound = gameState.getLastRound();
-		ITurn observerTurn = observerRound.getLastTurn();
+		Turn observerTurn = observerRound.getLastTurn();
 
 		if (gameState.isGameEnded() || runningState == RunningState.GAME_STOPPED) {
 			delayedObserverTurnNumber++;
