@@ -135,15 +135,10 @@ public class ModelUpdater {
 
 		updateBotIntents(botIntents);
 
-		if (roundNumber == 0 && turnNumber == 0) {
+		if ((roundNumber == 0 && turnNumber == 0) || roundEnded) {
 			nextRound();
-
-		} else {
-			if (roundEnded) {
-				nextRound();
-			}
-			nextTurn();
 		}
+		nextTurn();
 
 		return buildUpdatedGameState();
 	}
@@ -169,15 +164,19 @@ public class ModelUpdater {
 	/**
 	 * Proceed to next round
 	 */
-	private void nextRound() {
+	private void nextRound() {	
 		roundNumber++;
 		
-		round = round.toBuilder().roundNumber(roundNumber).build();
+		round = round.toBuilder()
+			.roundNumber(roundNumber)
+			.build();
 
 		roundEnded = false;
 
 		nextBulletId = 0;
 
+		bullets.clear();
+		
 		initializeBotStates();
 
 		scoreKeeper.clear();
