@@ -71,6 +71,9 @@ public class ObserverClient1 {
 		canvas = (HTMLCanvasElement) document.getElementById("canvas");
 		ctx = canvas.getContext(StringTypes._2d);
 
+		canvas.width = 800;
+		canvas.height = 600;
+		
 		// drawSingleBot(); // FIXME
 	}
 
