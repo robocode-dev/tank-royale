@@ -1,32 +1,44 @@
 package net.robocode2.model;
 
+import lombok.Data;
+
 /**
  * Mutable bot instance.
  * 
  * @author Flemming N. Larsen
  */
+@Data
 public class Bot implements IBot {
 
 	/** Bot id */
-	private int id;
+	int id;
+
 	/** Energy level */
-	private double energy = 100;
+	double energy = 100;
+
 	/** Position on the arena */
-	private Point position;
+	Point position;
+
 	/** Driving direction in degrees */
-	private double direction;
+	double direction;
+
 	/** Gun direction in degrees */
-	private double gunDirection;
+	double gunDirection;
+
 	/** Radar direction in degrees */
-	private double radarDirection;
+	double radarDirection;
+
 	/** Radar spread angle in degrees */
-	private double radarSpreadAngle;
+	double radarSpreadAngle;
+
 	/** Speed */
-	private double speed;
+	double speed;
+
 	/** Gun heat */
-	private double gunHeat;
+	double gunHeat;
+
 	/** Score record */
-	private Score score;
+	Score score;
 
 	/**
 	 * Creates a mutable bot that needs to be initialized
@@ -60,158 +72,6 @@ public class Bot implements IBot {
 	 */
 	public ImmutableBot toImmutableBot() {
 		return new ImmutableBot(this);
-	}
-
-	@Override
-	public int getId() {
-		return id;
-	}
-
-	@Override
-	public double getEnergy() {
-		return energy;
-	}
-
-	@Override
-	public Point getPosition() {
-		return position;
-	}
-
-	@Override
-	public double getDirection() {
-		return direction;
-	}
-
-	@Override
-	public double getGunDirection() {
-		return gunDirection;
-	}
-
-	@Override
-	public double getRadarDirection() {
-		return radarDirection;
-	}
-
-	@Override
-	public double getRadarSpreadAngle() {
-		return radarSpreadAngle;
-	}
-
-	@Override
-	public double getSpeed() {
-		return speed;
-	}
-
-	@Override
-	public double getGunHeat() {
-		return gunHeat;
-	}
-
-	@Override
-	public Score getScore() {
-		return score;
-	}
-
-	/**
-	 * Sets the bot is.
-	 * 
-	 * @param id
-	 *            is the bot id.
-	 */
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	/**
-	 * Sets the energy level.
-	 * 
-	 * @param energy
-	 *            is the energy level.
-	 */
-	public void setEnergy(double energy) {
-		this.energy = energy;
-	}
-
-	/**
-	 * Sets the position.
-	 * 
-	 * @param positionis
-	 *            the position.
-	 */
-	public void setPosition(Point position) {
-		this.position = position;
-	}
-
-	/**
-	 * Sets the driving direction.
-	 * 
-	 * @param direction
-	 *            is the driving direction in degrees.
-	 */
-	public void setDirection(double direction) {
-		this.direction = direction;
-	}
-
-	/**
-	 * Sets the gun direction.
-	 * 
-	 * @param gunDirection
-	 *            is the gun direction in degrees.
-	 */
-	public void setGunDirection(double gunDirection) {
-		this.gunDirection = gunDirection;
-	}
-
-	/**
-	 * Sets the radar direction.
-	 * 
-	 * @param radarDirection
-	 *            is the radar direction in degrees.
-	 */
-	public void setRadarDirection(double radarDirection) {
-		this.radarDirection = radarDirection;
-	}
-
-	/**
-	 * Sets the radar spread angle.
-	 * 
-	 * @param radarSpreadAngle
-	 *            is the radar spread angle in degrees.
-	 */
-	public void setRadarSpreadAngle(double radarSpreadAngle) {
-		this.radarSpreadAngle = radarSpreadAngle;
-	}
-
-	/**
-	 * Sets the speed.
-	 * 
-	 * @param speed
-	 *            is the speed, which can be positive and negative. With a positive speed, the bot is moving forward.
-	 *            With a negative speed, the bot is moving backwards. A speed of 0 means that the bot must stand still.
-	 */
-	public void setSpeed(double speed) {
-		this.speed = speed;
-	}
-
-	/**
-	 * Sets the gun heat.
-	 * 
-	 * @param gunHeat
-	 *            is the gun heat. When the gun heat is greater that 0, the gun is not able to fire. Hence, the gun must
-	 *            be cooled down first. The gun will automatically cool down after some turns.
-	 */
-	public void setGunHeat(double gunHeat) {
-		this.gunHeat = gunHeat;
-	}
-
-	/**
-	 * Sets the score record.
-	 * 
-	 * @param score
-	 *            is the score record.
-	 */
-	public void setScore(Score score) {
-		this.score = score;
 	}
 
 	/**
