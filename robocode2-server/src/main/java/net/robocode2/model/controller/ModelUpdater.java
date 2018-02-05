@@ -19,6 +19,7 @@ import java.util.Set;
 import net.robocode2.game.ScoreKeeper;
 import net.robocode2.model.Arena;
 import net.robocode2.model.Bot;
+import net.robocode2.model.Bot.BotBuilder;
 import net.robocode2.model.BotIntent;
 import net.robocode2.model.Bullet;
 import net.robocode2.model.GameSetup;
@@ -60,7 +61,7 @@ public class ModelUpdater {
 	/** Map over bot intents identified by bot ids */
 	private final Map<Integer /* BotId */, BotIntent> botIntentsMap = new HashMap<>();
 	/** Map over bots identified by bot ids */
-	private final Map<Integer /* BotId */, Bot> botsMap = new HashMap<>();
+	private final Map<Integer /* BotId */, BotBuilder> botBuilderMap = new HashMap<>();
 	/** Bullets */
 	private final Set<Bullet> bullets = new HashSet<>();
 
@@ -228,8 +229,8 @@ public class ModelUpdater {
 
 		// Store bot snapshots
 		Set<IBot> botSet = new HashSet<>();
-		for (Bot bot : botsMap.values()) {
-			botSet.add(bot.toImmutableBot());
+		for (BotBuilder botBuilder : botBuilderMap.values()) {
+			botSet.add(botBuilder.build());
 		}
 		turnBuilder.bots(botSet);
 
@@ -255,24 +256,24 @@ public class ModelUpdater {
 		Set<Integer> occupiedCells = new HashSet<Integer>();
 
 		for (int id : participantIds) {
-			Bot bot = new Bot();
-			bot.setId(id);
-			bot.setEnergy(INITIAL_BOT_ENERGY);
-			bot.setSpeed(0);
-			bot.setPosition(randomBotPosition(occupiedCells));
-			bot.setDirection(MathUtil.randomDirection());
-			bot.setGunDirection(MathUtil.randomDirection());
-			bot.setRadarDirection(MathUtil.randomDirection());
-			bot.setGunHeat(INITIAL_GUN_HEAT);
-			bot.setScore(Score.builder().build());
+			BotBuilder botBuilder = Bot.builder()
+				.id(id)
+				.energy(INITIAL_BOT_ENERGY)
+				.speed(0)
+				.position(randomBotPosition(occupiedCells))
+				.direction(MathUtil.randomDirection())
+				.gunDirection(MathUtil.randomDirection())
+				.radarDirection(MathUtil.randomDirection())
+				.gunHeat(INITIAL_GUN_HEAT)
+				.score(Score.builder().build());
 
-			botsMap.put(id, bot);
+			botBuilderMap.put(id, botBuilder);
 		}
 
 		// Store bot snapshots into current turn
 		Set<IBot> botSet = new HashSet<>();
-		for (Bot bot : botsMap.values()) {
-			botSet.add(bot.toImmutableBot());
+		for (BotBuilder botBuilder : botBuilderMap.values()) {
+			botSet.add(botBuilder.build());
 		}
 		turnBuilder.bots(botSet);
 	}
@@ -327,11 +328,11 @@ public class ModelUpdater {
 	 */
 	private void executeBotIntents() {
 
-		for (Integer botId : botsMap.keySet()) {
-			Bot bot = botsMap.get(botId);
+		for (Integer botId : botBuilderMap.keySet()) {
+			BotBuilder botBuilder = botBuilderMap.get(botId);
 
 			// Bot cannot move, if it is disabled
-			if (bot.isDead() || bot.isDisabled()) {
+			if (botBuilder.isDead() || botBuilder.isDisabled()) {
 				continue;
 			}
 
@@ -343,23 +344,23 @@ public class ModelUpdater {
 			BotIntent immuBotIntent = botIntent.zerofied();
 			// Turn body, gun, radar, and move bot to new position
 
-			double speed = RuleMath.calcNewBotSpeed(bot.getSpeed(), immuBotIntent.getTargetSpeed());
+			double speed = RuleMath.calcNewBotSpeed(botBuilder.getSpeed(), immuBotIntent.getTargetSpeed());
 
 			double limitedTurnRate = RuleMath.limitTurnRate(immuBotIntent.getTurnRate(), speed);
 			double limitedGunTurnRate = RuleMath.limitGunTurnRate(immuBotIntent.getGunTurnRate());
 			double limitedRadarTurnRate = RuleMath.limitRadarTurnRate(immuBotIntent.getRadarTurnRate());
 
-			double direction = normalAbsoluteDegrees(bot.getDirection() + limitedTurnRate);
-			double gunDirection = normalAbsoluteDegrees(bot.getGunDirection() + limitedGunTurnRate);
-			double radarDirection = normalAbsoluteDegrees(bot.getRadarDirection() + limitedRadarTurnRate);
+			double direction = normalAbsoluteDegrees(botBuilder.getDirection() + limitedTurnRate);
+			double gunDirection = normalAbsoluteDegrees(botBuilder.getGunDirection() + limitedGunTurnRate);
+			double radarDirection = normalAbsoluteDegrees(botBuilder.getRadarDirection() + limitedRadarTurnRate);
 
-			bot.setDirection(direction);
-			bot.setGunDirection(gunDirection);
-			bot.setRadarDirection(radarDirection);
-			bot.setRadarSpreadAngle(limitedRadarTurnRate);
-			bot.setSpeed(speed);
+			botBuilder.direction(direction);
+			botBuilder.gunDirection(gunDirection);
+			botBuilder.radarDirection(radarDirection);
+			botBuilder.radarSpreadAngle(limitedRadarTurnRate);
+			botBuilder.speed(speed);
 
-			bot.moveToNewPosition();
+			botBuilder.moveToNewPosition();
 		}
 	}
 
@@ -419,13 +420,13 @@ public class ModelUpdater {
 
 			Point startPos1 = boundingLines[i].start;
 
-			for (Bot bot : botsMap.values()) {
-				Point botPos = bot.getPosition();
+			for (BotBuilder botBuilder : botBuilderMap.values()) {
+				Point botPos = botBuilder.getPosition();
 
 				Bullet bullet = bulletArray[i];
 
 				int botId = bullet.getBotId();
-				int victimId = bot.getId();
+				int victimId = botBuilder.getId();
 
 				if (botId == victimId) {
 					// A bot cannot shot itself. The bullet must leave the cannon before it counts
@@ -435,14 +436,14 @@ public class ModelUpdater {
 				if (MathUtil.isLineIntersectingCircle(startPos1.x, startPos1.y, endPos1.x, endPos1.y, botPos.x, botPos.y, BOT_BOUNDING_CIRCLE_RADIUS)) {
 
 					double damage = RuleMath.calcBulletDamage(bullet.getPower());
-					boolean killed = bot.addDamage(damage);
+					boolean killed = botBuilder.addDamage(damage);
 
 					double energyBonus = IRuleConstants.BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
-					botsMap.get(botId).changeEnergy(energyBonus);
+					botBuilderMap.get(botId).changeEnergy(energyBonus);
 
 					scoreKeeper.registerBulletHit(botId, victimId, damage, killed);
 
-					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet, victimId, damage, bot.getEnergy());
+					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet, victimId, damage, botBuilder.getEnergy());
 
 					turnBuilder.addPrivateBotEvent(botId, bulletHitBotEvent);
 					turnBuilder.addObserverEvent(bulletHitBotEvent);
@@ -487,45 +488,45 @@ public class ModelUpdater {
 	 */
 	private void checkBotCollisions() {
 
-		Bot[] botArray = new Bot[botsMap.size()];
-		botArray = botsMap.values().toArray(botArray);
+		BotBuilder[] botBuilderArray = new BotBuilder[botBuilderMap.size()];
+		botBuilderArray = botBuilderMap.values().toArray(botBuilderArray);
 
-		for (int i = botArray.length - 1; i >= 0; i--) {
-			Point pos1 = botArray[i].getPosition();
+		for (int i = botBuilderArray.length - 1; i >= 0; i--) {
+			Point pos1 = botBuilderArray[i].getPosition();
 
 			for (int j = i - 1; j >= 0; j--) {
-				Point pos2 = botArray[j].getPosition();
+				Point pos2 = botBuilderArray[j].getPosition();
 
 				if (isBotsBoundingCirclesColliding(pos1, pos2)) {
 					final double overlapDist = BOT_BOUNDING_CIRCLE_DIAMETER - MathUtil.distance(pos1, pos2);
 
-					final Bot bot1 = botArray[i];
-					final Bot bot2 = botArray[j];
+					final BotBuilder botBuilder1 = botBuilderArray[i];
+					final BotBuilder botBuilder2 = botBuilderArray[j];
 
-					final int botId1 = bot1.getId();
-					final int botId2 = bot2.getId();
+					final int botId1 = botBuilder1.getId();
+					final int botId2 = botBuilder2.getId();
 
-					final boolean bot1Killed = bot1.addDamage(RAM_DAMAGE);
-					final boolean bot2Killed = bot2.addDamage(RAM_DAMAGE);
+					final boolean bot1Killed = botBuilder1.addDamage(RAM_DAMAGE);
+					final boolean bot2Killed = botBuilder2.addDamage(RAM_DAMAGE);
 
-					final boolean bot1RammedBot2 = isRamming(bot1, bot2);
-					final boolean bot2rammedBot1 = isRamming(bot2, bot1);
+					final boolean bot1RammedBot2 = isRamming(botBuilder1, botBuilder2);
+					final boolean bot2rammedBot1 = isRamming(botBuilder2, botBuilder1);
 
 					double bot1BounceDist = 0;
 					double bot2BounceDist = 0;
 
 					if (bot1RammedBot2) {
-						bot1.setSpeed(0);
+						botBuilder1.speed(0);
 						bot1BounceDist = overlapDist;
 						scoreKeeper.registerRamHit(botId2, botId1, RAM_DAMAGE, bot1Killed);
 					}
 					if (bot2rammedBot1) {
-						bot2.setSpeed(0);
+						botBuilder2.speed(0);
 						bot2BounceDist = overlapDist;
 						scoreKeeper.registerRamHit(botId1, botId2, RAM_DAMAGE, bot2Killed);
 					}
 					if (bot1RammedBot2 && bot2rammedBot1) {
-						double totalSpeed = bot1.getSpeed() + bot1.getSpeed();
+						double totalSpeed = botBuilder1.getSpeed() + botBuilder1.getSpeed();
 
 						if (totalSpeed == 0.0) {
 							bot1BounceDist /= 2;
@@ -535,22 +536,22 @@ public class ModelUpdater {
 							double t = overlapDist / totalSpeed;
 
 							// The faster speed, the less bounce distance. Hence the speeds for the bots are swapped
-							bot1BounceDist = bot2.getSpeed() * t;
-							bot2BounceDist = bot1.getSpeed() * t;
+							bot1BounceDist = botBuilder2.getSpeed() * t;
+							bot2BounceDist = botBuilder1.getSpeed() * t;
 						}
 					}
 					if (bot1BounceDist != 0) {
-						bot1.bounceBack(bot1BounceDist);
+						botBuilder1.bounceBack(bot1BounceDist);
 					}
 					if (bot2BounceDist != 0) {
-						bot2.bounceBack(bot2BounceDist);
+						botBuilder2.bounceBack(bot2BounceDist);
 					}
 
-					pos1 = bot1.getPosition();
-					pos2 = bot2.getPosition();
+					pos1 = botBuilder1.getPosition();
+					pos2 = botBuilder2.getPosition();
 
-					BotHitBotEvent BotHitBotEvent1 = new BotHitBotEvent(botId1, botId2, bot2.getEnergy(), bot2.getPosition(), bot1RammedBot2);
-					BotHitBotEvent BotHitBotEvent2 = new BotHitBotEvent(botId2, botId1, bot1.getEnergy(), bot1.getPosition(), bot2rammedBot1);
+					BotHitBotEvent BotHitBotEvent1 = new BotHitBotEvent(botId1, botId2, botBuilder2.getEnergy(), botBuilder2.getPosition(), bot1RammedBot2);
+					BotHitBotEvent BotHitBotEvent2 = new BotHitBotEvent(botId2, botId1, botBuilder1.getEnergy(), botBuilder1.getPosition(), bot2rammedBot1);
 
 					turnBuilder.addPrivateBotEvent(botId1, BotHitBotEvent1);
 					turnBuilder.addPrivateBotEvent(botId2, BotHitBotEvent2);
@@ -596,7 +597,7 @@ public class ModelUpdater {
 	 *            is the victim bot
 	 * @return true if the bot is ramming; false otherwise
 	 */
-	private static boolean isRamming(IBot bot, IBot victim) {
+	private static boolean isRamming(BotBuilder bot, BotBuilder victim) {
 
 		double dx = victim.getPosition().x - bot.getPosition().x;
 		double dy = victim.getPosition().y - bot.getPosition().y;
@@ -632,16 +633,16 @@ public class ModelUpdater {
 	 */
 	private void checkBotWallCollisions() {
 
-		for (Bot bot : botsMap.values()) {
+		for (BotBuilder botBuilder : botBuilderMap.values()) {
 
-			Point position = bot.getPosition();
+			Point position = botBuilder.getPosition();
 			double x = position.x;
 			double y = position.y;
 
 			if (previousTurn == null) {
 				continue;
 			}
-			IBot prevBotState = previousTurn.getBot(bot.getId());
+			IBot prevBotState = previousTurn.getBot(botBuilder.getId());
 			if (prevBotState == null) {
 				continue;
 			}
@@ -690,19 +691,19 @@ public class ModelUpdater {
 			}
 
 			if (hitWall) {
-				bot.setPosition(new Point(x, y));
+				botBuilder.position(new Point(x, y));
 
 				// Skip this check, if the bot hit the wall in the previous turn
-				if (previousTurn.getBotEvents(bot.getId()).stream().anyMatch(e -> e instanceof BotHitWallEvent)) {
+				if (previousTurn.getBotEvents(botBuilder.getId()).stream().anyMatch(e -> e instanceof BotHitWallEvent)) {
 					continue;
 				}
 
-				BotHitWallEvent botHitWallEvent = new BotHitWallEvent(bot.getId());
-				turnBuilder.addPrivateBotEvent(bot.getId(), botHitWallEvent);
+				BotHitWallEvent botHitWallEvent = new BotHitWallEvent(botBuilder.getId());
+				turnBuilder.addPrivateBotEvent(botBuilder.getId(), botHitWallEvent);
 				turnBuilder.addObserverEvent(botHitWallEvent);
 
-				double damage = RuleMath.calcWallDamage(bot.getSpeed());
-				bot.addDamage(damage);
+				double damage = RuleMath.calcWallDamage(botBuilder.getSpeed());
+				botBuilder.addDamage(damage);
 			}
 		}
 	}
@@ -732,9 +733,9 @@ public class ModelUpdater {
 	 * Checks if any bots have been defeated
 	 */
 	private void checkForDefeatedBots() {
-		for (Bot bot : botsMap.values()) {
-			if (bot.isDead()) {
-				int victimId = bot.getId();
+		for (BotBuilder botBuilder : botBuilderMap.values()) {
+			if (botBuilder.isDead()) {
+				int victimId = botBuilder.getId();
 
 				BotDeathEvent botDeathEvent = new BotDeathEvent(victimId);
 				turnBuilder.addPublicBotEvent(botDeathEvent);
@@ -747,10 +748,10 @@ public class ModelUpdater {
 	 * Removes defeated bots
 	 */
 	private void removeDefeatedBots() {
-		Iterator<Bot> iterator = botsMap.values().iterator(); // due to removal
+		Iterator<BotBuilder> iterator = botBuilderMap.values().iterator(); // due to removal
 		while (iterator.hasNext()) {
-			Bot bot = iterator.next();
-			if (bot.isDead()) {
+			BotBuilder botBuilder = iterator.next();
+			if (botBuilder.isDead()) {
 				iterator.remove(); // remove bot from arena
 			}
 		}
@@ -760,18 +761,18 @@ public class ModelUpdater {
 	 * Cool down and fire guns
 	 */
 	private void cooldownAndFireGuns() {
-		for (Bot bot : botsMap.values()) {
+		for (BotBuilder botBuilder : botBuilderMap.values()) {
 
 			// Bot cannot fire if it is disabled
-			if (bot.isDead() || bot.isDisabled()) {
+			if (botBuilder.isDead() || botBuilder.isDisabled()) {
 				continue;
 			}
 
 			// Fire gun, if the gun heat is zero
-			double gunHeat = bot.getGunHeat();
+			double gunHeat = botBuilder.getGunHeat();
 			if (gunHeat == 0) {
 				// Gun can fire => Check if intent is to fire gun
-				BotIntent botIntent = botIntentsMap.get(bot.getId());
+				BotIntent botIntent = botIntentsMap.get(botBuilder.getId());
 				if (botIntent == null) {
 					continue;
 				}
@@ -779,12 +780,12 @@ public class ModelUpdater {
 				if (firepower >= MIN_BULLET_POWER) {
 					// Gun is fired
 					firepower = Math.min(firepower, MAX_BULLET_POWER);
-					handleFiredBullet(bot, firepower);
+					handleFiredBullet(botBuilder, firepower);
 				}
 			} else {
 				// Gun is too hot => Cool down gun
 				gunHeat = Math.max(gunHeat - setup.getGunCoolingRate(), 0);
-				bot.setGunHeat(gunHeat);
+				botBuilder.gunHeat(gunHeat);
 			}
 		}
 	}
@@ -792,23 +793,23 @@ public class ModelUpdater {
 	/**
 	 * Handle fired bullet
 	 * 
-	 * @param bot
+	 * @param botBuilder
 	 *            is the bot firing the bullet
 	 * @param firepower
 	 *            is the firepower of the bullet
 	 */
-	private void handleFiredBullet(Bot bot, double firepower) {
-		int botId = bot.getId();
+	private void handleFiredBullet(BotBuilder botBuilder, double firepower) {
+		int botId = botBuilder.getId();
 
 		double gunHeat = RuleMath.calcGunHeat(firepower);
-		bot.setGunHeat(gunHeat);
+		botBuilder.gunHeat(gunHeat);
 
 		Bullet bullet = Bullet.builder()
 			.botId(botId)
 			.bulletId(++nextBulletId)
 			.power(firepower)
-			.firePosition(bot.getPosition())
-			.direction(bot.getGunDirection())
+			.firePosition(botBuilder.getPosition())
+			.direction(botBuilder.getGunDirection())
 			.build();
 		
 		bullets.add(bullet);
@@ -823,11 +824,11 @@ public class ModelUpdater {
 	 */
 	private void checkScanFields() {
 
-		Bot[] botArray = new Bot[botsMap.size()];
-		botArray = botsMap.values().toArray(botArray);
+		BotBuilder[] botArray = new BotBuilder[botBuilderMap.size()];
+		botArray = botBuilderMap.values().toArray(botArray);
 
 		for (int i = botArray.length - 1; i >= 0; i--) {
-			Bot scanningBot = botArray[i];
+			BotBuilder scanningBot = botArray[i];
 
 			double spreadAngle = scanningBot.getRadarSpreadAngle();
 			Point scanCenter = scanningBot.getPosition();
@@ -846,7 +847,7 @@ public class ModelUpdater {
 					continue;
 				}
 
-				Bot scannedBot = botArray[j];
+				BotBuilder scannedBot = botArray[j];
 
 				if (MathUtil.isCircleIntersectingCircleSector(scannedBot.getPosition(), BOT_BOUNDING_CIRCLE_RADIUS,
 						scanCenter, IRuleConstants.RADAR_RADIUS, arcStartAngle, arcEndAngle)) {
@@ -866,7 +867,7 @@ public class ModelUpdater {
 	 * Checks if the round is ended or game is over
 	 */
 	private void checkIfRoundOrGameOver() {
-		if (botsMap.size() <= 1) {
+		if (botBuilderMap.size() <= 1) {
 			// Round ended
 			roundEnded = true;
 
