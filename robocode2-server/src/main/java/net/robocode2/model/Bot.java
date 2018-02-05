@@ -12,7 +12,7 @@ import lombok.Value;
  */
 @Value
 @Builder(toBuilder=true)
-public class Bot implements IBot {
+public class Bot {
 
 	/** Bot id */
 	int id;

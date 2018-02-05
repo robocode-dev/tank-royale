@@ -24,7 +24,7 @@ public class Turn {
 	int turnNumber;
 
 	/** Bots */
-	Set<IBot> bots;
+	Set<Bot> bots;
 
 	/** Bullets */
 	Set<Bullet> bullets;
@@ -43,7 +43,7 @@ public class Turn {
 	 *            is the id of the bot
 	 * @return a bot instance
 	 */
-	public IBot getBot(int botId) {
+	public Bot getBot(int botId) {
 		return bots.stream().filter(b -> b.getId() == botId).findAny().orElse(null);
 	}
 
@@ -120,7 +120,7 @@ public class Turn {
 		 */
 		public void addPublicBotEvent(IEvent event) {
 			// Every bots get notified about the bot event
-			for (IBot bot : bots) {
+			for (Bot bot : bots) {
 				addPrivateBotEvent(bot.getId(), event);
 			}
 		}

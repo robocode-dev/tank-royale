@@ -24,7 +24,6 @@ import net.robocode2.model.BotIntent;
 import net.robocode2.model.Bullet;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
-import net.robocode2.model.IBot;
 import net.robocode2.model.IRuleConstants;
 import net.robocode2.model.Point;
 import net.robocode2.model.Round;
@@ -228,7 +227,7 @@ public class ModelUpdater {
 		checkIfRoundOrGameOver();
 
 		// Store bot snapshots
-		Set<IBot> botSet = new HashSet<>();
+		Set<Bot> botSet = new HashSet<>();
 		for (BotBuilder botBuilder : botBuilderMap.values()) {
 			botSet.add(botBuilder.build());
 		}
@@ -271,7 +270,7 @@ public class ModelUpdater {
 		}
 
 		// Store bot snapshots into current turn
-		Set<IBot> botSet = new HashSet<>();
+		Set<Bot> botSet = new HashSet<>();
 		for (BotBuilder botBuilder : botBuilderMap.values()) {
 			botSet.add(botBuilder.build());
 		}
@@ -642,7 +641,7 @@ public class ModelUpdater {
 			if (previousTurn == null) {
 				continue;
 			}
-			IBot prevBotState = previousTurn.getBot(botBuilder.getId());
+			Bot prevBotState = previousTurn.getBot(botBuilder.getId());
 			if (prevBotState == null) {
 				continue;
 			}
