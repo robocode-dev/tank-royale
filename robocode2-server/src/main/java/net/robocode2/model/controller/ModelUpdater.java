@@ -31,6 +31,7 @@ import net.robocode2.model.RuleMath;
 import net.robocode2.model.Score;
 import net.robocode2.model.Size;
 import net.robocode2.model.Turn;
+import net.robocode2.model.Turn.TurnBuilder;
 import net.robocode2.model.events.BotDeathEvent;
 import net.robocode2.model.events.BotHitBotEvent;
 import net.robocode2.model.events.BotHitWallEvent;
@@ -68,7 +69,7 @@ public class ModelUpdater {
 	/** Round record */
 	private Round round;
 	/** Turn record */
-	private Turn.CustomizedTurnBuilder turnBuilder;
+	private TurnBuilder turnBuilder;
 
 	/** Current round number */
 	private int roundNumber;

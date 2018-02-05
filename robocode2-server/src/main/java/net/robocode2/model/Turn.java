@@ -35,9 +35,6 @@ public class Turn {
 	/** Map over bot events */
 	Map<Integer, Set<IEvent>> botEventsMap;
 
-	public static CustomizedTurnBuilder builder() {
-		return new CustomizedTurnBuilder();
-	}
 
 	/**
 	 * Returns a bot instance.
@@ -76,13 +73,13 @@ public class Turn {
 		return Collections.unmodifiableSet(botEvents);
 	}
 
-	public static final class CustomizedTurnBuilder extends TurnBuilder {
+	public static final class TurnBuilder {
 
-		public CustomizedTurnBuilder() {
-			super.bots = new HashSet<>();
-			super.bullets = new HashSet<>();
-			super.observerEvents = new HashSet<>();
-			super.botEventsMap = new HashMap<>();
+		public TurnBuilder() {
+			bots = new HashSet<>();
+			bullets = new HashSet<>();
+			observerEvents = new HashSet<>();
+			botEventsMap = new HashMap<>();
 		}
 		
 		/**
@@ -92,7 +89,7 @@ public class Turn {
 		 *            is the observer event
 		 */
 		public void addObserverEvent(IEvent event) {
-			super.observerEvents.add(event);
+			observerEvents.add(event);
 		}
 
 		/**
@@ -105,12 +102,12 @@ public class Turn {
 		 */
 		public void addPrivateBotEvent(int botId, IEvent event) {
 			// Only a specific bot retrieves the event, not any other bot
-			Set<IEvent> botEvents = super.botEventsMap.get(botId);
+			Set<IEvent> botEvents = botEventsMap.get(botId);
 			if (botEvents == null) {
 				botEvents = new HashSet<>();
 			}
 			botEvents.add(event);
-			super.botEventsMap.put(botId, botEvents);
+			botEventsMap.put(botId, botEvents);
 		}
 
 		/**
@@ -123,7 +120,7 @@ public class Turn {
 		 */
 		public void addPublicBotEvent(IEvent event) {
 			// Every bots get notified about the bot event
-			for (IBot bot : super.bots) {
+			for (IBot bot : bots) {
 				addPrivateBotEvent(bot.getId(), event);
 			}
 		}
@@ -132,18 +129,17 @@ public class Turn {
 		 * Reset all events
 		 */
 		public void resetEvents() {
-			super.botEventsMap.clear();
-			super.observerEvents.clear();
+			botEventsMap.clear();
+			observerEvents.clear();
 		}
 		
-		@Override
 		public Turn build() {
 			return new Turn(
-				super.turnNumber,
-				new HashSet<>(super.bots),
-				new HashSet<>(super.bullets),
-				new HashSet<>(super.observerEvents),
-				new HashMap<>(super.botEventsMap));
+				turnNumber,
+				new HashSet<>(bots),
+				new HashSet<>(bullets),
+				new HashSet<>(observerEvents),
+				new HashMap<>(botEventsMap));
 		}
 	}
 }
