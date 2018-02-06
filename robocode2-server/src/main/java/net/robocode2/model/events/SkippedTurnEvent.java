@@ -8,7 +8,7 @@ import lombok.Value;
  * @author Flemming N. Larsen
  */
 @Value
-public class SkippedTurnEvent implements IEvent {
+public class SkippedTurnEvent implements Event {
 
 	/** Turn the got skipped */
 	int skippedTurn;

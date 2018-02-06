@@ -8,7 +8,7 @@ import lombok.Value;
  * @author Flemming N. Larsen
  */
 @Value
-public class BotDeathEvent implements IEvent {
+public class BotDeathEvent implements Event {
 
 	/** Bot id of the victim that got killed */
 	int victimId;

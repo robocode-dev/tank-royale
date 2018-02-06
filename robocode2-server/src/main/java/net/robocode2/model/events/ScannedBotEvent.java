@@ -9,7 +9,7 @@ import net.robocode2.model.Point;
  * @author Flemming N. Larsen
  */
 @Value
-public class ScannedBotEvent implements IEvent {
+public class ScannedBotEvent implements Event {
 
 	/** Bot id of the bot that scanned the bot */
 	int scannedByBotId;

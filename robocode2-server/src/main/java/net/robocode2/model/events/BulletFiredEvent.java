@@ -9,7 +9,7 @@ import net.robocode2.model.Bullet;
  * @author Flemming N. Larsen
  */
 @Value
-public class BulletFiredEvent implements IEvent {
+public class BulletFiredEvent implements Event {
 
 	/** Fired bullet */
 	Bullet bullet;

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import lombok.Builder;
 import lombok.Value;
-import net.robocode2.model.events.IEvent;
+import net.robocode2.model.events.Event;
 
 /**
  * State of a game turn in a round.
@@ -31,10 +31,10 @@ public class Turn {
 	Set<Bullet> bullets;
 
 	/** Observer events */
-	Set<IEvent> observerEvents;
+	Set<Event> observerEvents;
 
 	/** Map over bot events */
-	Map<Integer, Set<IEvent>> botEventsMap;
+	Map<Integer, Set<Event>> botEventsMap;
 
 
 	/**
@@ -66,8 +66,8 @@ public class Turn {
 	 *            is the id of the bot
 	 * @return a set of bot events
 	 */
-	public Set<IEvent> getBotEvents(int botId) {
-		Set<IEvent> botEvents = botEventsMap.get(botId);
+	public Set<Event> getBotEvents(int botId) {
+		Set<Event> botEvents = botEventsMap.get(botId);
 		if (botEvents == null) {
 			botEvents = new HashSet<>();
 		}
@@ -89,7 +89,7 @@ public class Turn {
 		 * @param event
 		 *            is the observer event
 		 */
-		public void addObserverEvent(IEvent event) {
+		public void addObserverEvent(Event event) {
 			observerEvents.add(event);
 		}
 
@@ -101,9 +101,9 @@ public class Turn {
 		 * @param event
 		 *            is the bot event, only given to the specified bot
 		 */
-		public void addPrivateBotEvent(int botId, IEvent event) {
+		public void addPrivateBotEvent(int botId, Event event) {
 			// Only a specific bot retrieves the event, not any other bot
-			Set<IEvent> botEvents = botEventsMap.get(botId);
+			Set<Event> botEvents = botEventsMap.get(botId);
 			if (botEvents == null) {
 				botEvents = new HashSet<>();
 			}
@@ -119,7 +119,7 @@ public class Turn {
 		 * @param event
 		 *            is the bot event
 		 */
-		public void addPublicBotEvent(IEvent event) {
+		public void addPublicBotEvent(Event event) {
 			// Every bots get notified about the bot event
 			for (Bot bot : bots) {
 				addPrivateBotEvent(bot.getId(), event);

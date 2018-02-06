@@ -19,15 +19,15 @@ import net.robocode2.json_schema.events.SkippedTurnEvent;
 
 public final class EventsToEventsMapper {
 
-	public static List<Event> map(Set<net.robocode2.model.events.IEvent> events) {
+	public static List<Event> map(Set<net.robocode2.model.events.Event> events) {
 		List<net.robocode2.json_schema.events.Event> mappedEvents = new ArrayList<net.robocode2.json_schema.events.Event>();
-		for (net.robocode2.model.events.IEvent event : events) {
+		for (net.robocode2.model.events.Event event : events) {
 			mappedEvents.add(map(event));
 		}
 		return mappedEvents;
 	}
 
-	private static Event map(net.robocode2.model.events.IEvent event) {
+	private static Event map(net.robocode2.model.events.Event event) {
 
 		if (event instanceof net.robocode2.model.events.BotDeathEvent) {
 			return map((net.robocode2.model.events.BotDeathEvent) event);

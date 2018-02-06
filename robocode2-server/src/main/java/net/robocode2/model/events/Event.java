@@ -5,5 +5,5 @@ package net.robocode2.model.events;
  * 
  * @author Flemming N. Larsen
  */
-public interface IEvent {
+public interface Event {
 }
