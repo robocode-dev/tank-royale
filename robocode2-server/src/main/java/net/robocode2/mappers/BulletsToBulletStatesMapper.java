@@ -9,8 +9,10 @@ import net.robocode2.model.Bullet;
 
 public final class BulletsToBulletStatesMapper {
 
+	private BulletsToBulletStatesMapper() {}
+
 	public static List<BulletState> map(Set<Bullet> bullets) {
-		List<BulletState> bulletStates = new ArrayList<BulletState>();
+		List<BulletState> bulletStates = new ArrayList<>();
 		for (Bullet bullet : bullets) {
 			bulletStates.add(BulletToBulletStateMapper.map(bullet));
 		}

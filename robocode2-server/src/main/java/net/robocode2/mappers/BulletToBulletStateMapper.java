@@ -6,6 +6,8 @@ import net.robocode2.util.MathUtil;
 
 public final class BulletToBulletStateMapper {
 
+	private BulletToBulletStateMapper() {}
+
 	public static BulletState map(Bullet bullet) {
 		BulletState bulletState = new BulletState();
 

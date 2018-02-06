@@ -8,6 +8,8 @@ import net.robocode2.model.GameSetup.GameSetupBuilder;
 
 public final class GameSetupToGameSetupMapper {
 
+	private GameSetupToGameSetupMapper() {}
+
 	public static GameSetup map(net.robocode2.model.GameSetup gameSetup) {
 		GameSetup setup = new GameSetup();
 

@@ -6,6 +6,8 @@ import net.robocode2.util.MathUtil;
 
 public final class BotToBotStateMapper {
 
+	private BotToBotStateMapper() {}
+
 	public static BotState map(Bot bot) {
 		BotState botState = new BotState();
 		botState.setEnergy(bot.getEnergy());

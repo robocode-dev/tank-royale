@@ -4,6 +4,8 @@ import net.robocode2.model.BotIntent;
 
 public final class BotIntentToBotIntentMapper {
 
+	private BotIntentToBotIntentMapper() {}
+
 	public static BotIntent map(net.robocode2.json_schema.comm.BotIntent intent) {
 
 		return BotIntent.builder()

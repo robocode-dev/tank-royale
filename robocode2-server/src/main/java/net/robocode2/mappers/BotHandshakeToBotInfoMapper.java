@@ -5,7 +5,9 @@ import java.util.Collections;
 import net.robocode2.json_schema.comm.BotHandshake;
 import net.robocode2.json_schema.comm.BotInfo;
 
-public class BotHandshakeToBotInfoMapper {
+public final class BotHandshakeToBotInfoMapper {
+
+	private BotHandshakeToBotInfoMapper() {}
 
 	public static BotInfo map(BotHandshake botHandshake, String hostName, Integer port) {
 		BotInfo botInfo = new BotInfo();

@@ -6,6 +6,8 @@ import net.robocode2.model.Round;
 
 public final class RoundToRoundStateMapper {
 
+	private RoundToRoundStateMapper() {}
+
 	public static RoundState map(Round round, Turn turn) {
 		RoundState roundState = new RoundState();
 		roundState.setRoundNumber(round.getRoundNumber());

@@ -7,6 +7,8 @@ import net.robocode2.model.Round;
 
 public final class TurnToGameTickForBotMapper {
 
+	private TurnToGameTickForBotMapper() {}
+
 	public static TickEventForBot map(Round round, Turn turn, int botId) {
 		Bot bot = turn.getBot(botId);
 		if (bot == null) {

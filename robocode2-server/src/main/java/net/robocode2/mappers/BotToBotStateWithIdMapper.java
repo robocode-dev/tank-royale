@@ -6,6 +6,8 @@ import net.robocode2.util.MathUtil;
 
 public final class BotToBotStateWithIdMapper {
 
+	private BotToBotStateWithIdMapper() {}
+
 	public static BotStateWithId map(Bot bot) {
 		BotStateWithId botState = new BotStateWithId();
 		botState.setId(bot.getId());

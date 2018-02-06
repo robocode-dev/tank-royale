@@ -4,6 +4,8 @@ import net.robocode2.json_schema.types.Point;
 
 public final class PointMapper {
 
+	private PointMapper() {}
+
 	public static Point map(net.robocode2.model.Point position) {
 		Point schemaPos = new Point();
 		schemaPos.setX(position.x);
