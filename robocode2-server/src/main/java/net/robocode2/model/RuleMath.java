@@ -4,13 +4,13 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.signum;
-import static net.robocode2.model.IRuleConstants.ACCELERATION;
-import static net.robocode2.model.IRuleConstants.DECELERATION;
-import static net.robocode2.model.IRuleConstants.MAX_FORWARD_SPEED;
-import static net.robocode2.model.IRuleConstants.MAX_GUN_TURN_RATE;
-import static net.robocode2.model.IRuleConstants.MAX_RADAR_TURN_RATE;
-import static net.robocode2.model.IRuleConstants.MAX_REVERSE_SPEED;
-import static net.robocode2.model.IRuleConstants.MAX_TURN_RATE;
+import static net.robocode2.model.RuleConstants.ACCELERATION;
+import static net.robocode2.model.RuleConstants.DECELERATION;
+import static net.robocode2.model.RuleConstants.MAX_FORWARD_SPEED;
+import static net.robocode2.model.RuleConstants.MAX_GUN_TURN_RATE;
+import static net.robocode2.model.RuleConstants.MAX_RADAR_TURN_RATE;
+import static net.robocode2.model.RuleConstants.MAX_REVERSE_SPEED;
+import static net.robocode2.model.RuleConstants.MAX_TURN_RATE;
 
 /**
  * Defines the rule math
@@ -18,6 +18,8 @@ import static net.robocode2.model.IRuleConstants.MAX_TURN_RATE;
  * @author Flemming N. Larsen
  */
 public final class RuleMath {
+	
+	private RuleMath() {}
 
 	/**
 	 * Calculates new bot speed

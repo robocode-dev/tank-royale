@@ -1,13 +1,13 @@
 package net.robocode2.model.controller;
 
-import static net.robocode2.model.IRuleConstants.BOT_BOUNDING_CIRCLE_DIAMETER;
-import static net.robocode2.model.IRuleConstants.BOT_BOUNDING_CIRCLE_RADIUS;
-import static net.robocode2.model.IRuleConstants.INITIAL_BOT_ENERGY;
-import static net.robocode2.model.IRuleConstants.INITIAL_GUN_HEAT;
-import static net.robocode2.model.IRuleConstants.MAX_BULLET_POWER;
-import static net.robocode2.model.IRuleConstants.MAX_BULLET_SPEED;
-import static net.robocode2.model.IRuleConstants.MIN_BULLET_POWER;
-import static net.robocode2.model.IRuleConstants.RAM_DAMAGE;
+import static net.robocode2.model.RuleConstants.BOT_BOUNDING_CIRCLE_DIAMETER;
+import static net.robocode2.model.RuleConstants.BOT_BOUNDING_CIRCLE_RADIUS;
+import static net.robocode2.model.RuleConstants.INITIAL_BOT_ENERGY;
+import static net.robocode2.model.RuleConstants.INITIAL_GUN_HEAT;
+import static net.robocode2.model.RuleConstants.MAX_BULLET_POWER;
+import static net.robocode2.model.RuleConstants.MAX_BULLET_SPEED;
+import static net.robocode2.model.RuleConstants.MIN_BULLET_POWER;
+import static net.robocode2.model.RuleConstants.RAM_DAMAGE;
 import static net.robocode2.util.MathUtil.normalAbsoluteDegrees;
 
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import net.robocode2.model.BotIntent;
 import net.robocode2.model.Bullet;
 import net.robocode2.model.GameSetup;
 import net.robocode2.model.GameState;
-import net.robocode2.model.IRuleConstants;
+import net.robocode2.model.RuleConstants;
 import net.robocode2.model.Point;
 import net.robocode2.model.Round;
 import net.robocode2.model.RuleMath;
@@ -437,7 +437,7 @@ public class ModelUpdater {
 					double damage = RuleMath.calcBulletDamage(bullet.getPower());
 					boolean killed = botBuilder.addDamage(damage);
 
-					double energyBonus = IRuleConstants.BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
+					double energyBonus = RuleConstants.BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
 					botBuilderMap.get(botId).changeEnergy(energyBonus);
 
 					scoreKeeper.registerBulletHit(botId, victimId, damage, killed);
@@ -849,7 +849,7 @@ public class ModelUpdater {
 				BotBuilder scannedBot = botArray[j];
 
 				if (MathUtil.isCircleIntersectingCircleSector(scannedBot.getPosition(), BOT_BOUNDING_CIRCLE_RADIUS,
-						scanCenter, IRuleConstants.RADAR_RADIUS, arcStartAngle, arcEndAngle)) {
+						scanCenter, RuleConstants.RADAR_RADIUS, arcStartAngle, arcEndAngle)) {
 
 					ScannedBotEvent scannedBotEvent = new ScannedBotEvent(scanningBot.getId(), scannedBot.getId(),
 							scannedBot.getEnergy(), scannedBot.getPosition(), scannedBot.getDirection(),

@@ -1,3 +1,4 @@
+
 package net.robocode2.model;
 
 import java.util.Collections;

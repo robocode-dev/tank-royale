@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.robocode2.model.IRuleConstants;
+import net.robocode2.model.RuleConstants;
 import net.robocode2.model.Score;
 import net.robocode2.model.Score.ScoreBuilder;
 
@@ -15,7 +15,7 @@ import net.robocode2.model.Score.ScoreBuilder;
  * 
  * @author Flemming N. Larsen
  */
-public class ScoreKeeper implements IRuleConstants {
+public class ScoreKeeper {
 
 	/** Set of bot identifiers */
 	private final Set<Integer> botIds;
@@ -69,23 +69,23 @@ public class ScoreKeeper implements IRuleConstants {
 
 		DamageAndSurvival damageRecord = damageAndSurvivals.get(botId);
 		
-		builder.survival(SCORE_PER_SURVIVAL * damageRecord.getSurvivalCount());
-		builder.lastSurvivorBonus(BONUS_PER_LAST_SURVIVOR * damageRecord.getLastSurvivorCount());
+		builder.survival(RuleConstants.SCORE_PER_SURVIVAL * damageRecord.getSurvivalCount());
+		builder.lastSurvivorBonus(RuleConstants.BONUS_PER_LAST_SURVIVOR * damageRecord.getLastSurvivorCount());
 
-		builder.bulletDamage(SCORE_PER_BULLET_DAMAGE * damageRecord.getTotalBulletDamage());
-		builder.ramDamage(SCORE_PER_RAM_DAMAGE * damageRecord.getTotalRamDamage());
+		builder.bulletDamage(RuleConstants.SCORE_PER_BULLET_DAMAGE * damageRecord.getTotalBulletDamage());
+		builder.ramDamage(RuleConstants.SCORE_PER_RAM_DAMAGE * damageRecord.getTotalRamDamage());
 
 		double bulletKillBonus = 0;
 		for (int enemyId : damageRecord.getBulletKillEnemyIds()) {
 			double totalDamage = damageRecord.getBulletDamage(enemyId) + damageRecord.getRamDamage(enemyId);
-			bulletKillBonus += BONUS_PER_BULLET_KILL * totalDamage;
+			bulletKillBonus += RuleConstants.BONUS_PER_BULLET_KILL * totalDamage;
 		}
 		builder.bulletKillBonus(bulletKillBonus);
 
 		double ramKillBonus = 0;
 		for (int enemyId : damageRecord.getRamKillEnemyIds()) {
 			double totalDamage = damageRecord.getBulletDamage(enemyId) + damageRecord.getRamDamage(enemyId);
-			ramKillBonus += BONUS_PER_RAM_KILL * totalDamage;
+			ramKillBonus += RuleConstants.BONUS_PER_RAM_KILL * totalDamage;
 		}
 		builder.ramKillBonus(ramKillBonus);
 

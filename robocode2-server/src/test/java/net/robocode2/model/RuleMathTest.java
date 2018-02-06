@@ -1,11 +1,11 @@
 package net.robocode2.model;
 
-import static net.robocode2.model.IRuleConstants.ACCELERATION;
-import static net.robocode2.model.IRuleConstants.DECELERATION;
-import static net.robocode2.model.IRuleConstants.MAX_FORWARD_SPEED;
-import static net.robocode2.model.IRuleConstants.MAX_GUN_TURN_RATE;
-import static net.robocode2.model.IRuleConstants.MAX_RADAR_TURN_RATE;
-import static net.robocode2.model.IRuleConstants.MAX_TURN_RATE;
+import static net.robocode2.model.RuleConstants.ACCELERATION;
+import static net.robocode2.model.RuleConstants.DECELERATION;
+import static net.robocode2.model.RuleConstants.MAX_FORWARD_SPEED;
+import static net.robocode2.model.RuleConstants.MAX_GUN_TURN_RATE;
+import static net.robocode2.model.RuleConstants.MAX_RADAR_TURN_RATE;
+import static net.robocode2.model.RuleConstants.MAX_TURN_RATE;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;

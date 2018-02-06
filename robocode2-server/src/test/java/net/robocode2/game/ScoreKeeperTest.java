@@ -1,11 +1,11 @@
 package net.robocode2.game;
 
-import static net.robocode2.model.IRuleConstants.BONUS_PER_BULLET_KILL;
-import static net.robocode2.model.IRuleConstants.BONUS_PER_LAST_SURVIVOR;
-import static net.robocode2.model.IRuleConstants.BONUS_PER_RAM_KILL;
-import static net.robocode2.model.IRuleConstants.SCORE_PER_BULLET_DAMAGE;
-import static net.robocode2.model.IRuleConstants.SCORE_PER_RAM_DAMAGE;
-import static net.robocode2.model.IRuleConstants.SCORE_PER_SURVIVAL;
+import static net.robocode2.model.RuleConstants.BONUS_PER_BULLET_KILL;
+import static net.robocode2.model.RuleConstants.BONUS_PER_LAST_SURVIVOR;
+import static net.robocode2.model.RuleConstants.BONUS_PER_RAM_KILL;
+import static net.robocode2.model.RuleConstants.SCORE_PER_BULLET_DAMAGE;
+import static net.robocode2.model.RuleConstants.SCORE_PER_RAM_DAMAGE;
+import static net.robocode2.model.RuleConstants.SCORE_PER_SURVIVAL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
