@@ -1,4 +1,4 @@
-package net.robocode2.game;
+package net.robocode2.engine;
 
 import java.util.Collections;
 import java.util.HashMap;

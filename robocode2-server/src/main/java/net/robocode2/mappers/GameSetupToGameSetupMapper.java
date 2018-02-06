@@ -1,4 +1,4 @@
-package net.robocode2.model.mappers;
+package net.robocode2.mappers;
 
 import java.util.HashSet;
 import java.util.Set;

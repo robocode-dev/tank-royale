@@ -1,4 +1,4 @@
-package net.robocode2.model.events;
+package net.robocode2.events;
 
 import lombok.Value;
 import net.robocode2.model.Point;

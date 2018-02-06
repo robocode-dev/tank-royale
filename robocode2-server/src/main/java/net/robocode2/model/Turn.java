@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import lombok.Builder;
 import lombok.Value;
-import net.robocode2.model.events.Event;
+import net.robocode2.events.Event;
 
 /**
  * State of a game turn in a round.

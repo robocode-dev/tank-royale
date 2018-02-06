@@ -1,4 +1,4 @@
-package net.robocode2.model.controller;
+package net.robocode2.engine;
 
 import static net.robocode2.model.RuleConstants.BOT_BOUNDING_CIRCLE_DIAMETER;
 import static net.robocode2.model.RuleConstants.BOT_BOUNDING_CIRCLE_RADIUS;
@@ -16,7 +16,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import net.robocode2.game.ScoreKeeper;
+import net.robocode2.events.BotDeathEvent;
+import net.robocode2.events.BotHitBotEvent;
+import net.robocode2.events.BotHitWallEvent;
+import net.robocode2.events.BulletFiredEvent;
+import net.robocode2.events.BulletHitBotEvent;
+import net.robocode2.events.BulletHitBulletEvent;
+import net.robocode2.events.BulletMissedEvent;
+import net.robocode2.events.ScannedBotEvent;
 import net.robocode2.model.Arena;
 import net.robocode2.model.Bot;
 import net.robocode2.model.Bot.BotBuilder;
@@ -32,14 +39,6 @@ import net.robocode2.model.Score;
 import net.robocode2.model.Size;
 import net.robocode2.model.Turn;
 import net.robocode2.model.Turn.TurnBuilder;
-import net.robocode2.model.events.BotDeathEvent;
-import net.robocode2.model.events.BotHitBotEvent;
-import net.robocode2.model.events.BotHitWallEvent;
-import net.robocode2.model.events.BulletFiredEvent;
-import net.robocode2.model.events.BulletHitBotEvent;
-import net.robocode2.model.events.BulletHitBulletEvent;
-import net.robocode2.model.events.BulletMissedEvent;
-import net.robocode2.model.events.ScannedBotEvent;
 import net.robocode2.util.MathUtil;
 
 /**

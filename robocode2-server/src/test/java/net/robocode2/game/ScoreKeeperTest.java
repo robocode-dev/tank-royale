@@ -17,6 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import net.robocode2.engine.ScoreKeeper;
 import net.robocode2.model.Score;
 
 public class ScoreKeeperTest {

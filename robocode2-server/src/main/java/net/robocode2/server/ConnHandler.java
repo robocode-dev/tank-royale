@@ -29,7 +29,7 @@ import net.robocode2.json_schema.comm.ObserverHandshake;
 import net.robocode2.json_schema.comm.ServerHandshake;
 import net.robocode2.json_schema.control.Command;
 import net.robocode2.json_schema.control.StartGame;
-import net.robocode2.model.mappers.GameSetupToGameSetupMapper;
+import net.robocode2.mappers.GameSetupToGameSetupMapper;
 
 public final class ConnHandler {
 

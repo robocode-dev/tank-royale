@@ -1,4 +1,4 @@
-package net.robocode2.model.mappers;
+package net.robocode2.mappers;
 
 import java.util.ArrayList;
 import java.util.List;
