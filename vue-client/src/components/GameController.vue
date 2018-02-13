@@ -16,10 +16,9 @@
       </b-row>
 
       <b-row class="mt-3" v-show="isConnected()">
-        <b-col>
-          <b-dd text="Game Types">
-            <b-dd-item @click="onGameTypeSelected(gameType)" v-for="gameType in gameTypes" :key="gameType">{{ gameType }}</b-dd-item>
-          </b-dd>
+        <b-col sm="3">
+          <label>Game Type:</label>
+          <b-form-select :options="gameTypes" @change.native="onGameTypeSelected"/>
         </b-col>
       </b-row>
 
@@ -119,7 +118,7 @@ export default {
       serverHandshake: null, // from server
       gameTypes: null,
 
-      game: {}, // selected game
+      game: {}, // selected game type
 
       rules: {
         arenaMinSize: 400,
@@ -216,12 +215,12 @@ export default {
       }
       this.gameTypes = gameTypes
     },
-    onGameTypeSelected (gameType) {
-      var game = this.serverHandshake.games.find(game => game.gameType === gameType)
-      if (!game) {
-        game = {}
+    onGameTypeSelected (event) {
+      var foundGame = this.serverHandshake.games.find(game => game.gameType === event.target.value)
+      if (!foundGame) {
+        foundGame = {}
       }
-      this.game = game
+      this.game = foundGame
     }
   }
 }
