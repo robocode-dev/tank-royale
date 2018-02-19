@@ -11,14 +11,16 @@
               <b-btn variant="warning" @click="disconnect" v-show="isConnected()">Disconnect</b-btn>
             </b-input-group-button>
           </b-input-group>
-          <label>Status: {{ connectionStatus }}</label>
+          <label style="width: 100%; text-align: right">Status: {{ connectionStatus }}</label>
         </b-col>
       </b-row>
 
       <b-row class="mt-3" v-show="isConnected()">
+        <b-col sm="2">
+          <label>Game Type</label>
+        </b-col>
         <b-col sm="3">
-          <label>Game Type:</label>
-          <b-form-select :options="gameTypes" @change.native="onGameTypeSelected"/>
+          <b-form-select :options="gameTypeOptions" @change.native="onGameTypeSelected"/>
         </b-col>
       </b-row>
 
@@ -29,13 +31,13 @@
         <b-col sm="4">
           <b-input-group>
             <b-input-group-addon>width</b-input-group-addon>
-            <b-input type="number" v-model="game.arenaWidth" :disabled="game.isArenaWidthLocked" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
+            <b-input type="number" v-model="selectedGameType.arenaWidth" :disabled="selectedGameType.isArenaWidthLocked" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
           </b-input-group>
         </b-col>
         <b-col sm="4">
           <b-input-group>
             <b-input-group-addon>height</b-input-group-addon>
-            <b-input type="number" v-model="game.arenaHeight" :disabled="game.isArenaHeightLocked" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
+            <b-input type="number" v-model="selectedGameType.arenaHeight" :disabled="selectedGameType.isArenaHeightLocked" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
           </b-input-group>
         </b-col>
       </b-row>
@@ -45,13 +47,13 @@
           <label>Min. number of participants</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="game.minNumberOfParticipants" :disabled="game.isMinNumberOfParticipantsLocked" :min="1"/>
+          <b-input type="number" v-model="selectedGameType.minNumberOfParticipants" :disabled="selectedGameType.isMinNumberOfParticipantsLocked" :min="1"/>
         </b-col>
         <b-col sm="3">
           <label>Max. number of participants</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="game.maxNumberOfParticipants" :disabled="game.isMaxNumberOfParticipantsLocked" :min="1"/>
+          <b-input type="number" v-model="selectedGameType.maxNumberOfParticipants" :disabled="selectedGameType.isMaxNumberOfParticipantsLocked" :min="1"/>
         </b-col>
       </b-row>
 
@@ -60,13 +62,13 @@
           <label>Number of rounds</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="game.numberOfRounds" :disabled="game.isNumberOfRoundsLocked" :min="1"/>
+          <b-input type="number" v-model="selectedGameType.numberOfRounds" :disabled="selectedGameType.isNumberOfRoundsLocked" :min="1"/>
         </b-col>
        <b-col sm="3">
           <label>Inactivity turns</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="game.inactivityTurns" :disabled="game.isInactivityTurnsLocked" :min="1" step="50"/>
+          <b-input type="number" v-model="selectedGameType.inactivityTurns" :disabled="selectedGameType.isInactivityTurnsLocked" :min="1" step="50"/>
         </b-col>
       </b-row>
 
@@ -75,13 +77,13 @@
           <label>Ready timeout (ms)</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="game.delayedObserverTurns" :disabled="game.delayedObserverTurnsLocked" :min="1"/>
+          <b-input type="number" v-model="selectedGameType.delayedObserverTurns" :disabled="selectedGameType.delayedObserverTurnsLocked" :min="1"/>
         </b-col>
        <b-col sm="3">
           <label>Turn timeout (ms)</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="game.turnTimeout" :disabled="game.turnTimeoutLocked" :min="1"/>
+          <b-input type="number" v-model="selectedGameType.turnTimeout" :disabled="selectedGameType.turnTimeoutLocked" :min="1"/>
         </b-col>
       </b-row>
 
@@ -90,23 +92,39 @@
           <label>Gun cooling rate</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="game.gunCoolingRate" :disabled="game.isGunCoolingRateLocked" :min="rules.minGunCoolingRate" :max="rules.maxGunCoolingRate" step="0.1"/>
+          <b-input type="number" v-model="selectedGameType.gunCoolingRate" :disabled="selectedGameType.isGunCoolingRateLocked" :min="rules.minGunCoolingRate" :max="rules.maxGunCoolingRate" step="0.1"/>
         </b-col>
        <b-col sm="3">
           <label>Delayed observer turns</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="game.delayedObserverTurns" :disabled="game.delayedObserverTurnsLocked" :min="1"/>
+          <b-input type="number" v-model="selectedGameType.delayedObserverTurns" :disabled="selectedGameType.delayedObserverTurnsLocked" :min="1"/>
         </b-col>
       </b-row>
-    </b-container>
+
+      <b-card-group deck class="mt-4">
+        <b-card header="Available bots">
+          <b-button style="width: 100%">&gt;&gt;</b-button>
+          <b-list-group class="bot-list">
+            <b-list-group-item v-for="bot in availableBots" :key="bot.key">{{bot.host}}:{{bot.port}}</b-list-group-item>
+          </b-list-group>
+        </b-card>
+
+        <b-card header="Selected bots">
+          <b-button style="width: 100%">&lt;&lt;</b-button>
+          <b-list-group class="bot-list">
+            <b-list-group-item v-for="bot in selectedBots" :key="bot.key">{{bot.host}}:{{bot.port}}</b-list-group-item>
+          </b-list-group>
+        </b-card>
+      </b-card-group>
+  </b-container>
 
   </div>
 </template>
 
 <script>
 export default {
-  name: 'game-controller',
+  name: 'selectedGameType-controller',
   data () {
     return {
       server: 'localhost',
@@ -116,16 +134,33 @@ export default {
       connectionStatus: 'not connected',
 
       serverHandshake: null, // from server
-      gameTypes: null,
 
-      game: {}, // selected game type
+      gameTypeOptions: null,
+      selectedGameType: {},
 
       rules: {
         arenaMinSize: 400,
         arenaMaxSize: 5000,
         minGunCoolingRate: 0.1,
         maxGunCoolingRate: 3.0
-      }
+      },
+
+      availableBots: [
+        {key: 'test1:1000', host: 'test1', port: 1000},
+        {key: 'test2:2000', host: 'test2', port: 2000},
+        {key: 'test3:3000', host: 'test3', port: 3000},
+        {key: 'test4:4000', host: 'test4', port: 4000},
+        {key: 'test5:5000', host: 'test5', port: 5000},
+        {key: 'test6:6000', host: 'test6', port: 6000},
+        {key: 'test7:7000', host: 'test7', port: 7000},
+        {key: 'test8:8000', host: 'test8', port: 8000},
+        {key: 'test9:9000', host: 'test9', port: 9000},
+        {key: 'test10:10000', host: 'test10', port: 10000},
+        {key: 'test11:11000', host: 'test11', port: 11000},
+        {key: 'test12:12000', host: 'test12', port: 12000}
+      ],
+
+      selectedBots: []
     }
   },
   mounted () {
@@ -141,8 +176,9 @@ export default {
   },
   methods: {
     isConnected () {
-      var c = this.connection
-      return c != null && c.readyState === WebSocket.OPEN
+      // var c = this.connection
+      // return c != null && c.readyState === WebSocket.OPEN
+      return true
     },
     connect () {
       const vm = this
@@ -176,6 +212,9 @@ export default {
           case 'serverHandshake':
             vm.handleServerHandshake(message)
             break
+          case 'botListUpdate':
+            vm.handleBotListUpdate(message)
+            break
         }
       }
     },
@@ -184,7 +223,7 @@ export default {
         this.connection.close()
       }
       this.connection = null
-      this.gameTypes = null
+      this.gameTypeOptions = null
     },
     sendControllerHandshake (connection) {
       console.log('<-controllerHandshake')
@@ -203,24 +242,33 @@ export default {
 
       this.serverHandshake = serverHandshake
 
-      var gameTypes = []
+      var gameTypeOptions = []
 
       if (serverHandshake) {
         const games = serverHandshake.games
         if (games) {
+          gameTypeOptions.push({'value': null, 'text': '-- select --'})
           games.forEach(element => {
-            gameTypes.push(element['gameType'])
+            var gameType = element['gameType']
+            gameTypeOptions.push({'value': gameType, 'text': gameType})
           })
         }
       }
-      this.gameTypes = gameTypes
+      this.gameTypeOptions = gameTypeOptions
+    },
+    handleBotListUpdate (botListUpdate) {
+      console.log('->botListUpdate')
+
+      var bots = botListUpdate.bots
+      for (var bot in bots) bot.key = bot.host + ':' + bot.port
+      this.availableBots = bots
     },
     onGameTypeSelected (event) {
-      var foundGame = this.serverHandshake.games.find(game => game.gameType === event.target.value)
+      var foundGame = this.serverHandshake.games.find(selectedGameType => selectedGameType.gameType === event.target.value)
       if (!foundGame) {
-        foundGame = {}
+        foundGame = null
       }
-      this.game = foundGame
+      this.selectedGameType = foundGame
     }
   }
 }

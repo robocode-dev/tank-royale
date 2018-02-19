@@ -1,0 +1,4 @@
+.bot-list {
+    max-height: 15rem;
+    overflow-y: auto
+}
