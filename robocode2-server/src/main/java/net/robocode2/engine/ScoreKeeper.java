@@ -180,7 +180,7 @@ public class ScoreKeeper {
 		 * 
 		 * @return the survival count.
 		 */
-		public int getSurvivalCount() {
+		int getSurvivalCount() {
 			return survivalCount;
 		}
 
@@ -190,7 +190,7 @@ public class ScoreKeeper {
 		 * 
 		 * @return the last survivor count.
 		 */
-		public int getLastSurvivorCount() {
+		int getLastSurvivorCount() {
 			return lastSurvivorCount;
 		}
 
@@ -199,7 +199,7 @@ public class ScoreKeeper {
 		 * 
 		 * @return the total bullet damage.
 		 */
-		public double getTotalBulletDamage() {
+		double getTotalBulletDamage() {
 			double sum = 0;
 			for (int enemyId : bulletDamage.keySet()) {
 				sum += getBulletDamage(enemyId);
@@ -212,7 +212,7 @@ public class ScoreKeeper {
 		 * 
 		 * @return the total ram damage.
 		 */
-		public double getTotalRamDamage() {
+		double getTotalRamDamage() {
 			double sum = 0;
 			for (int enemyId : ramDamage.keySet()) {
 				sum += getRamDamage(enemyId);
@@ -227,7 +227,7 @@ public class ScoreKeeper {
 		 *            is the enemy bot to retrieve the damage for.
 		 * @return the bullet damage dealth to a specific bot.
 		 */
-		public double getBulletDamage(int enemyId) {
+		double getBulletDamage(int enemyId) {
 			Double sum = bulletDamage.get(enemyId);
 			if (sum == null) {
 				sum = 0.0;
@@ -242,7 +242,7 @@ public class ScoreKeeper {
 		 *            is the enemy bot to retrieve the damage for.
 		 * @return the ram damage dealth to a specific bot.
 		 */
-		public double getRamDamage(int enemyId) {
+		double getRamDamage(int enemyId) {
 			Double sum = ramDamage.get(enemyId);
 			if (sum == null) {
 				sum = 0.0;
@@ -255,7 +255,7 @@ public class ScoreKeeper {
 		 * 
 		 * @return a set of enemy bot identifiers.
 		 */
-		public Set<Integer> getBulletKillEnemyIds() {
+		Set<Integer> getBulletKillEnemyIds() {
 			return Collections.unmodifiableSet(bulletKillEnemyIds);
 		}
 
@@ -264,7 +264,7 @@ public class ScoreKeeper {
 		 * 
 		 * @return a set of enemy bot identifiers.
 		 */
-		public Set<Integer> getRamKillEnemyIds() {
+		Set<Integer> getRamKillEnemyIds() {
 			return Collections.unmodifiableSet(ramKillEnemyIds);
 		}
 
@@ -276,7 +276,7 @@ public class ScoreKeeper {
 		 * @param damage
 		 *            is the amount of damage that the enemy bot has received
 		 */
-		public void addBulletDamage(int enemyId, double damage) {
+		void addBulletDamage(int enemyId, double damage) {
 			double sum = getBulletDamage(enemyId) + damage;
 			bulletDamage.put(enemyId, sum);
 		}
@@ -289,7 +289,7 @@ public class ScoreKeeper {
 		 * @param damage
 		 *            is the amount of damage that the enemy bot has received
 		 */
-		public void addRamDamage(int enemyId, double damage) {
+		void addRamDamage(int enemyId, double damage) {
 			double sum = getRamDamage(enemyId) + damage;
 			ramDamage.put(enemyId, sum);
 		}
@@ -297,7 +297,7 @@ public class ScoreKeeper {
 		/**
 		 * Increment the survival count, meaning that this bot has survived an additional round.
 		 */
-		public void incrementSurvivalCount() {
+		void incrementSurvivalCount() {
 			survivalCount++;
 		}
 
@@ -308,7 +308,7 @@ public class ScoreKeeper {
 		 * @param numberOfDeadEnemies
 		 *            is the number of dead bots that must be added to the last survivor count.
 		 */
-		public void addLastSurvivorCount(int numberOfDeadEnemies) {
+		void addLastSurvivorCount(int numberOfDeadEnemies) {
 			lastSurvivorCount += numberOfDeadEnemies;
 		}
 
@@ -318,7 +318,7 @@ public class ScoreKeeper {
 		 * @param enemyId
 		 *            is the identifier of the enemy bot that was killed by this bot
 		 */
-		public void addBulletKillEnemyId(int enemyId) {
+		void addBulletKillEnemyId(int enemyId) {
 			bulletKillEnemyIds.add(enemyId);
 		}
 
@@ -328,7 +328,7 @@ public class ScoreKeeper {
 		 * @param enemyId
 		 *            is the identifier of the enemy bot that was killed by this bot
 		 */
-		public void addRamKillEnemyId(int enemyId) {
+		void addRamKillEnemyId(int enemyId) {
 			ramKillEnemyIds.add(enemyId);
 		}
 	}

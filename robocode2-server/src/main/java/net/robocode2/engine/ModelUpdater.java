@@ -104,7 +104,6 @@ public class ModelUpdater {
 	 *            is the game setup
 	 * @param participantIds
 	 *            is the ids of the participating bots
-	 * @return model updater
 	 */
 	private ModelUpdater(GameSetup setup, Set<Integer> participantIds) {
 		this.setup = setup;
@@ -194,7 +193,7 @@ public class ModelUpdater {
 		turnBuilder.turnNumber(turnNumber);
 
 		// Remove dead bots (cannot participate in new round)
-		removeDefeatedBots();
+		botBuilderMap.values().removeIf(BotBuilder::isDead);
 
 		// Execute bot intents
 		executeBotIntents();
@@ -477,10 +476,7 @@ public class ModelUpdater {
 			return false;
 		}
 		double dy = bullet2Position.y - bullet1Position.y;
-		if (Math.abs(dy) > BULLET_MAX_BOUNDING_CIRCLE_DIAMETER) {
-			return false;
-		}
-		return ((dx * dx) + (dy * dy) <= BULLET_MAX_BOUNDING_CIRCLE_DIAMETER_SQUARED);
+		return !(Math.abs(dy) > BULLET_MAX_BOUNDING_CIRCLE_DIAMETER) && ((dx * dx) + (dy * dy) <= BULLET_MAX_BOUNDING_CIRCLE_DIAMETER_SQUARED);
 	}
 
 	/**
@@ -581,10 +577,8 @@ public class ModelUpdater {
 			return false;
 		}
 		double dy = bot2Position.y - bot1Position.y;
-		if (Math.abs(dy) > BOT_BOUNDING_CIRCLE_DIAMETER) { // 2 x radius
-			return false;
-		}
-		return ((dx * dx) + (dy * dy) <= BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED);
+		// 2 x radius
+		return !(Math.abs(dy) > BOT_BOUNDING_CIRCLE_DIAMETER) && ((dx * dx) + (dy * dy) <= BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED);
 	}
 
 	/**
@@ -691,7 +685,7 @@ public class ModelUpdater {
 					botBuilder.position(new Point(x, y));
 	
 					// Skip this check, if the bot hit the wall in the previous turn
-					if (!previousTurn.getBotEvents(botBuilder.getId()).stream().anyMatch(e -> e instanceof BotHitWallEvent)) {
+					if (previousTurn.getBotEvents(botBuilder.getId()).stream().noneMatch(e -> e instanceof BotHitWallEvent)) {
 		
 						BotHitWallEvent botHitWallEvent = new BotHitWallEvent(botBuilder.getId());
 						turnBuilder.addPrivateBotEvent(botBuilder.getId(), botHitWallEvent);
@@ -737,19 +731,6 @@ public class ModelUpdater {
 				BotDeathEvent botDeathEvent = new BotDeathEvent(victimId);
 				turnBuilder.addPublicBotEvent(botDeathEvent);
 				turnBuilder.addObserverEvent(botDeathEvent);
-			}
-		}
-	}
-
-	/**
-	 * Removes defeated bots
-	 */
-	private void removeDefeatedBots() {
-		Iterator<BotBuilder> iterator = botBuilderMap.values().iterator(); // due to removal
-		while (iterator.hasNext()) {
-			BotBuilder botBuilder = iterator.next();
-			if (botBuilder.isDead()) {
-				iterator.remove(); // remove bot from arena
 			}
 		}
 	}

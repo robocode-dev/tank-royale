@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import lombok.val;
 import org.java_websocket.WebSocket;
 
 import com.google.gson.Gson;
@@ -43,8 +44,6 @@ import net.robocode2.model.Turn;
 
 public final class GameServer {
 
-	private ServerSetup serverSetup;
-	private ConnListener connListener;
 	private ConnHandler connHandler;
 
 	private RunningState runningState;
@@ -67,14 +66,14 @@ public final class GameServer {
 
 	private final Gson gson = new Gson();
 
-	public GameServer() {
-		this.serverSetup = new ServerSetup();
-		this.connListener = new GameServerConnListener();
+	private GameServer() {
+		val serverSetup = new ServerSetup();
+		val connListener = new GameServerConnListener();
 		this.connHandler = new ConnHandler(serverSetup, connListener);
 		this.runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
 	}
 
-	public void start() {
+	private void start() {
 		connHandler.start();
 	}
 
@@ -120,7 +119,7 @@ public final class GameServer {
 			id++;
 		}
 
-		readyParticipants = new HashSet<WebSocket>();
+		readyParticipants = new HashSet<>();
 
 		// Start 'ready' timer
 
@@ -169,7 +168,7 @@ public final class GameServer {
 
 		// Prepare model update
 
-		modelUpdater = ModelUpdater.create(gameSetup, new HashSet<Integer>(participantIds.values()));
+		modelUpdater = ModelUpdater.create(gameSetup, new HashSet<>(participantIds.values()));
 
 		// Create timer to updating game state
 
@@ -246,55 +245,60 @@ public final class GameServer {
 			// Send tick to bots
 
 			Round round = gameState.getLastRound();
-			Turn turn = round.getLastTurn();
-
-			// Send game state as 'game tick' to participants
-			for (WebSocket participant : participants) {
-				TickEventForBot gameTickForBot = TurnToGameTickForBotMapper.map(round, turn, participantIds.get(participant));
-				if (gameTickForBot != null) { // Bot alive?
-					String msg = gson.toJson(gameTickForBot);
-					send(participant, msg);
-				}
+			if (round != null) {
+				Turn turn = round.getLastTurn();
+				if (turn != null) {
+                    // Send game state as 'game tick' to participants
+                    for (WebSocket participant : participants) {
+                        TickEventForBot gameTickForBot = TurnToGameTickForBotMapper.map(round, turn, participantIds.get(participant));
+                        if (gameTickForBot != null) { // Bot alive?
+                            String msg = gson.toJson(gameTickForBot);
+                            send(participant, msg);
+                        }
+                    }
+                }
 			}
 		}
 
 		// Send delayed tick to observers
 
 		Round observerRound = gameState.getLastRound();
-		Turn observerTurn = observerRound.getLastTurn();
+		if (observerRound != null) {
+			Turn observerTurn = observerRound.getLastTurn();
 
-		if (gameState.isGameEnded() || runningState == RunningState.GAME_STOPPED) {
-			delayedObserverTurnNumber++;
-			if (delayedObserverTurnNumber == observerTurn.getTurnNumber()) {
+			if (gameState.isGameEnded() || runningState == RunningState.GAME_STOPPED) {
+				delayedObserverTurnNumber++;
+				if (observerTurn != null && delayedObserverTurnNumber == observerTurn.getTurnNumber()) {
 
-				System.out.println("#### GAME ENDED #####");
+					System.out.println("#### GAME ENDED #####");
 
-				// Stop timer for updating game state
-				turnTimer.cancel();
+					// Stop timer for updating game state
+					turnTimer.cancel();
 
-				// Game has stopped
-				runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
-			}
-		} else {
-			delayedObserverTurnNumber = observerTurn.getTurnNumber() - gameSetup.getDelayedObserverTurns();
-			if (delayedObserverTurnNumber < 0) {
-				int delayedRoundNumber = observerRound.getRoundNumber() - 1;
-				if (delayedRoundNumber >= 0) {
-					observerRound = gameState.getRounds().get(delayedRoundNumber);
-					delayedObserverTurnNumber += observerRound.getTurns().size();
+					// Game has stopped
+					runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
+				}
+			} else if (observerTurn != null) {
+				delayedObserverTurnNumber = observerTurn.getTurnNumber() - gameSetup.getDelayedObserverTurns();
+				if (delayedObserverTurnNumber < 0) {
+					int delayedRoundNumber = observerRound.getRoundNumber() - 1;
+					if (delayedRoundNumber >= 0) {
+						observerRound = gameState.getRounds().get(delayedRoundNumber);
+						delayedObserverTurnNumber += observerRound.getTurns().size();
+					}
 				}
 			}
-		}
-		if (delayedObserverTurnNumber >= 0) {
-			observerTurn = observerRound.getTurns().get(delayedObserverTurnNumber);
+			if (delayedObserverTurnNumber >= 0) {
+				observerTurn = observerRound.getTurns().get(delayedObserverTurnNumber);
 
-			// Send game state as 'tick' to observers
-			for (Map.Entry<WebSocket, ObserverHandshake> entry : connHandler.getObserverConnections().entrySet()) {
-				TickEventForObserver gameTickForObserver = TurnToGameTickForObserverMapper.map(observerRound,
-						observerTurn);
+				// Send game state as 'tick' to observers
+				for (Map.Entry<WebSocket, ObserverHandshake> entry : connHandler.getObserverConnections().entrySet()) {
+					TickEventForObserver gameTickForObserver = TurnToGameTickForObserverMapper.map(observerRound,
+							observerTurn);
 
-				String msg = gson.toJson(gameTickForObserver);
-				send(entry.getKey(), msg);
+					String msg = gson.toJson(gameTickForObserver);
+					send(entry.getKey(), msg);
+				}
 			}
 		}
 	}
@@ -320,21 +324,16 @@ public final class GameServer {
 	private String createBotListUpdateMessage() {
 		BotListUpdate botListUpdate = new BotListUpdate();
 		botListUpdate.setType(Message.Type.BOT_LIST_UPDATE);
-		List<BotInfo> bots = new ArrayList<BotInfo>();
+		List<BotInfo> bots = new ArrayList<>();
 		botListUpdate.setBots(bots);
 
 		Map<WebSocket, BotHandshake> botConnections = connHandler.getBotConnections();
-		if (botConnections != null) {
-			for (Entry<WebSocket, BotHandshake> entry : botConnections.entrySet()) {
-				InetSocketAddress address = entry.getKey().getRemoteSocketAddress();
-				BotInfo botInfo = BotHandshakeToBotInfoMapper.map(entry.getValue(), address.getHostString(), address.getPort());
-				bots.add(botInfo);
-			}
-		}
-
-		String msg = gson.toJson(botListUpdate);
-
-		return msg;
+        for (Entry<WebSocket, BotHandshake> entry : botConnections.entrySet()) {
+            InetSocketAddress address = entry.getKey().getRemoteSocketAddress();
+            BotInfo botInfo = BotHandshakeToBotInfoMapper.map(entry.getValue(), address.getHostString(), address.getPort());
+            bots.add(botInfo);
+        }
+		return gson.toJson(botListUpdate);
 	}
 	
 	private void sendBotListUpdateToObservers() {
