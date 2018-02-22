@@ -5,7 +5,7 @@
         <b-col>
           <b-input-group>
             <b-input-group-addon>Server URL</b-input-group-addon>
-            <b-input placeholder="ws://server:port" v-model="serverUrl"/>
+            <b-input placeholder="ws://server:port" v-model="serverUrl" />
             <b-input-group-button slot="right">
               <b-btn @click="connect" v-show="!isConnected()">Connect</b-btn>
               <b-btn variant="warning" @click="disconnect" v-show="isConnected()">Disconnect</b-btn>
@@ -20,7 +20,7 @@
           <label>Game Type</label>
         </b-col>
         <b-col sm="3">
-          <b-form-select :options="gameTypeOptions" @change.native="onGameTypeSelected"/>
+          <b-form-select :options="gameTypeOptions" @change.native="gameTypeChanged" />
         </b-col>
       </b-row>
 
@@ -31,13 +31,15 @@
         <b-col sm="4">
           <b-input-group>
             <b-input-group-addon>width</b-input-group-addon>
-            <b-input type="number" v-model="selectedGameType.arenaWidth" :disabled="selectedGameType.isArenaWidthLocked" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
+            <b-input type="number" v-model="selectedGameType.arenaWidth" :disabled="selectedGameType.isArenaWidthLocked" :min="rules.arenaMinSize"
+              :max="rules.arenaMaxSize" step="100" />
           </b-input-group>
         </b-col>
         <b-col sm="4">
           <b-input-group>
             <b-input-group-addon>height</b-input-group-addon>
-            <b-input type="number" v-model="selectedGameType.arenaHeight" :disabled="selectedGameType.isArenaHeightLocked" :min="rules.arenaMinSize" :max="rules.arenaMaxSize" step="100"/>
+            <b-input type="number" v-model="selectedGameType.arenaHeight" :disabled="selectedGameType.isArenaHeightLocked" :min="rules.arenaMinSize"
+              :max="rules.arenaMaxSize" step="100" />
           </b-input-group>
         </b-col>
       </b-row>
@@ -47,235 +49,275 @@
           <label>Min. number of participants</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="selectedGameType.minNumberOfParticipants" :disabled="selectedGameType.isMinNumberOfParticipantsLocked" :min="1"/>
+          <b-input type="number" v-model="selectedGameType.minNumberOfParticipants" :disabled="selectedGameType.isMinNumberOfParticipantsLocked"
+            :min="1" />
         </b-col>
         <b-col sm="3">
           <label>Max. number of participants</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="selectedGameType.maxNumberOfParticipants" :disabled="selectedGameType.isMaxNumberOfParticipantsLocked" :min="1"/>
+          <b-input type="number" v-model="selectedGameType.maxNumberOfParticipants" :disabled="selectedGameType.isMaxNumberOfParticipantsLocked"
+            :min="1" />
         </b-col>
       </b-row>
 
       <b-row class="mt-2" v-show="isConnected()">
-       <b-col sm="3">
+        <b-col sm="3">
           <label>Number of rounds</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="selectedGameType.numberOfRounds" :disabled="selectedGameType.isNumberOfRoundsLocked" :min="1"/>
+          <b-input type="number" v-model="selectedGameType.numberOfRounds" :disabled="selectedGameType.isNumberOfRoundsLocked" :min="1"
+          />
         </b-col>
-       <b-col sm="3">
+        <b-col sm="3">
           <label>Inactivity turns</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="selectedGameType.inactivityTurns" :disabled="selectedGameType.isInactivityTurnsLocked" :min="1" step="50"/>
+          <b-input type="number" v-model="selectedGameType.inactivityTurns" :disabled="selectedGameType.isInactivityTurnsLocked" :min="1"
+            step="50" />
         </b-col>
       </b-row>
 
       <b-row class="mt-2" v-show="isConnected()">
-       <b-col sm="3">
+        <b-col sm="3">
           <label>Ready timeout (ms)</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="selectedGameType.delayedObserverTurns" :disabled="selectedGameType.delayedObserverTurnsLocked" :min="1"/>
+          <b-input type="number" v-model="selectedGameType.delayedObserverTurns" :disabled="selectedGameType.delayedObserverTurnsLocked"
+            :min="1" />
         </b-col>
-       <b-col sm="3">
+        <b-col sm="3">
           <label>Turn timeout (ms)</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="selectedGameType.turnTimeout" :disabled="selectedGameType.turnTimeoutLocked" :min="1"/>
+          <b-input type="number" v-model="selectedGameType.turnTimeout" :disabled="selectedGameType.turnTimeoutLocked" :min="1" />
         </b-col>
       </b-row>
 
       <b-row class="mt-2" v-show="isConnected()">
-       <b-col sm="3">
+        <b-col sm="3">
           <label>Gun cooling rate</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="selectedGameType.gunCoolingRate" :disabled="selectedGameType.isGunCoolingRateLocked" :min="rules.minGunCoolingRate" :max="rules.maxGunCoolingRate" step="0.1"/>
+          <b-input type="number" v-model="selectedGameType.gunCoolingRate" :disabled="selectedGameType.isGunCoolingRateLocked" :min="rules.minGunCoolingRate"
+            :max="rules.maxGunCoolingRate" step="0.1" />
         </b-col>
-       <b-col sm="3">
+        <b-col sm="3">
           <label>Delayed observer turns</label>
         </b-col>
         <b-col sm="2">
-          <b-input type="number" v-model="selectedGameType.delayedObserverTurns" :disabled="selectedGameType.delayedObserverTurnsLocked" :min="1"/>
+          <b-input type="number" v-model="selectedGameType.delayedObserverTurns" :disabled="selectedGameType.delayedObserverTurnsLocked"
+            :min="1" />
         </b-col>
       </b-row>
 
       <b-card-group deck class="mt-4">
         <b-card header="Available bots">
-          <b-button style="width: 100%">&gt;&gt;</b-button>
+          <b-button style="width: 100%" @click="allAvailableBotsClicked">&gt;&gt;</b-button>
           <b-list-group class="bot-list">
-            <b-list-group-item v-for="bot in availableBots" :key="bot.key">{{bot.host}}:{{bot.port}}</b-list-group-item>
+            <b-list-group-item button v-for="bot in availableBots" :key="bot.key" @click="availableBotClicked(bot)">{{bot.host}}:{{bot.port}}</b-list-group-item>
           </b-list-group>
         </b-card>
 
         <b-card header="Selected bots">
-          <b-button style="width: 100%">&lt;&lt;</b-button>
+          <b-button style="width: 100%" @click="allSelectedBotsClicked">&lt;&lt;</b-button>
           <b-list-group class="bot-list">
-            <b-list-group-item v-for="bot in selectedBots" :key="bot.key">{{bot.host}}:{{bot.port}}</b-list-group-item>
+            <b-list-group-item button v-for="bot in selectedBots" :key="bot.key" @click="selectedBotClicked(bot)">{{bot.host}}:{{bot.port}}</b-list-group-item>
           </b-list-group>
         </b-card>
       </b-card-group>
-  </b-container>
+    </b-container>
 
   </div>
 </template>
 
 <script>
-export default {
-  name: 'selectedGameType-controller',
-  data () {
-    return {
-      server: 'localhost',
-      port: 50000,
-      serverUrl: null,
-      connection: null,
-      connectionStatus: 'not connected',
+  export default {
+    name: 'selectedGameType-controller',
+    data () {
+      return {
+        server: 'localhost',
+        port: 50000,
+        serverUrl: null,
+        connection: null,
+        connectionStatus: 'not connected',
 
-      serverHandshake: null, // from server
+        serverHandshake: null, // from server
 
-      gameTypeOptions: null,
-      selectedGameType: {},
+        gameTypeOptions: null,
+        selectedGameType: {},
 
-      rules: {
-        arenaMinSize: 400,
-        arenaMaxSize: 5000,
-        minGunCoolingRate: 0.1,
-        maxGunCoolingRate: 3.0
+        rules: {
+          arenaMinSize: 400,
+          arenaMaxSize: 5000,
+          minGunCoolingRate: 0.1,
+          maxGunCoolingRate: 3.0
+        },
+
+        availableBots: [
+          { key: 'test1:1000', host: 'test1', port: 1000 },
+          { key: 'test2:2000', host: 'test2', port: 2000 },
+          { key: 'test3:3000', host: 'test3', port: 3000 },
+          { key: 'test4:4000', host: 'test4', port: 4000 },
+          { key: 'test5:5000', host: 'test5', port: 5000 },
+          { key: 'test6:6000', host: 'test6', port: 6000 },
+          { key: 'test7:7000', host: 'test7', port: 7000 },
+          { key: 'test8:8000', host: 'test8', port: 8000 },
+          { key: 'test9:9000', host: 'test9', port: 9000 },
+          { key: 'test10:10000', host: 'test10', port: 10000 },
+          { key: 'test11:11000', host: 'test11', port: 11000 },
+          { key: 'test12:12000', host: 'test12', port: 12000 }
+        ],
+
+        selectedBots: []
+      }
+    },
+    mounted () {
+      const server = this.$route.query.server
+      if (server) {
+        this.server = server
+      }
+      const port = this.$route.query.port
+      if (port) {
+        this.port = port
+      }
+      this.serverUrl = 'ws://' + this.server + ':' + this.port
+    },
+    methods: {
+      isConnected () {
+        // var c = this.connection
+        // return c != null && c.readyState === WebSocket.OPEN
+        return true
       },
+      connect () {
+        const vm = this
 
-      availableBots: [
-        {key: 'test1:1000', host: 'test1', port: 1000},
-        {key: 'test2:2000', host: 'test2', port: 2000},
-        {key: 'test3:3000', host: 'test3', port: 3000},
-        {key: 'test4:4000', host: 'test4', port: 4000},
-        {key: 'test5:5000', host: 'test5', port: 5000},
-        {key: 'test6:6000', host: 'test6', port: 6000},
-        {key: 'test7:7000', host: 'test7', port: 7000},
-        {key: 'test8:8000', host: 'test8', port: 8000},
-        {key: 'test9:9000', host: 'test9', port: 9000},
-        {key: 'test10:10000', host: 'test10', port: 10000},
-        {key: 'test11:11000', host: 'test11', port: 11000},
-        {key: 'test12:12000', host: 'test12', port: 12000}
-      ],
+        const connection = new WebSocket(vm.serverUrl)
 
-      selectedBots: []
-    }
-  },
-  mounted () {
-    const server = this.$route.query.server
-    if (server) {
-      this.server = server
-    }
-    const port = this.$route.query.port
-    if (port) {
-      this.port = port
-    }
-    this.serverUrl = 'ws://' + this.server + ':' + this.port
-  },
-  methods: {
-    isConnected () {
-      // var c = this.connection
-      // return c != null && c.readyState === WebSocket.OPEN
-      return true
-    },
-    connect () {
-      const vm = this
+        vm.connection = connection
 
-      const connection = new WebSocket(vm.serverUrl)
+        connection.onopen = function (event) {
+          console.log('ws connected to: ' + event.target.url)
 
-      vm.connection = connection
+          vm.connectionStatus = 'connected'
 
-      connection.onopen = function (event) {
-        console.log('ws connected to: ' + event.target.url)
-
-        vm.connectionStatus = 'connected'
-
-        vm.sendControllerHandshake(connection)
-      }
-      connection.onerror = function (event) {
-        console.log('ws error: ' + event.data)
-
-        vm.connectionStatus = 'error: ' + event.data
-      }
-      connection.onclose = function (event) {
-        console.log('ws closed: ' + event.target.url)
-
-        vm.connectionStatus = 'not connected'
-      }
-      connection.onmessage = function (event) {
-        console.log('ws message: ' + event.data)
-
-        const message = JSON.parse(event.data)
-        switch (message.type) {
-          case 'serverHandshake':
-            vm.handleServerHandshake(message)
-            break
-          case 'botListUpdate':
-            vm.handleBotListUpdate(message)
-            break
+          vm.sendControllerHandshake(connection)
         }
-      }
-    },
-    disconnect () {
-      if (this.isConnected) {
-        this.connection.close()
-      }
-      this.connection = null
-      this.gameTypeOptions = null
-    },
-    sendControllerHandshake (connection) {
-      console.log('<-controllerHandshake')
+        connection.onerror = function (event) {
+          console.log('ws error: ' + event.data)
 
-      connection.send(
-        JSON.stringify({
-          type: 'controllerHandshake',
-          name: 'Robocode 2 Game Controller',
-          version: '0.1.0',
-          author: 'Flemming N. Larsen <fnl@users.sourceforge.net>'
-        })
-      )
-    },
-    handleServerHandshake (serverHandshake) {
-      console.log('->serverHandshake')
+          vm.connectionStatus = 'error: ' + event.data
+        }
+        connection.onclose = function (event) {
+          console.log('ws closed: ' + event.target.url)
 
-      this.serverHandshake = serverHandshake
+          vm.connectionStatus = 'not connected'
+        }
+        connection.onmessage = function (event) {
+          console.log('ws message: ' + event.data)
 
-      var gameTypeOptions = []
+          const message = JSON.parse(event.data)
+          switch (message.type) {
+            case 'serverHandshake':
+              vm.handleServerHandshake(message)
+              break
+            case 'botListUpdate':
+              vm.handleBotListUpdate(message)
+              break
+          }
+        }
+      },
+      disconnect () {
+        if (this.isConnected) {
+          this.connection.close()
+        }
+        this.connection = null
+        this.gameTypeOptions = null
+      },
+      sendControllerHandshake (connection) {
+        console.log('<-controllerHandshake')
 
-      if (serverHandshake) {
-        const games = serverHandshake.games
-        if (games) {
-          gameTypeOptions.push({'value': null, 'text': '-- select --'})
-          games.forEach(element => {
-            var gameType = element['gameType']
-            gameTypeOptions.push({'value': gameType, 'text': gameType})
+        connection.send(
+          JSON.stringify({
+            type: 'controllerHandshake',
+            name: 'Robocode 2 Game Controller',
+            version: '0.1.0',
+            author: 'Flemming N. Larsen <fnl@users.sourceforge.net>'
           })
-        }
-      }
-      this.gameTypeOptions = gameTypeOptions
-    },
-    handleBotListUpdate (botListUpdate) {
-      console.log('->botListUpdate')
+        )
+      },
+      handleServerHandshake (serverHandshake) {
+        console.log('->serverHandshake')
 
-      var bots = botListUpdate.bots
-      for (var bot in bots) bot.key = bot.host + ':' + bot.port
-      this.availableBots = bots
-    },
-    onGameTypeSelected (event) {
-      var foundGame = this.serverHandshake.games.find(selectedGameType => selectedGameType.gameType === event.target.value)
-      if (!foundGame) {
-        foundGame = null
+        this.serverHandshake = serverHandshake
+
+        var gameTypeOptions = []
+
+        if (serverHandshake) {
+          const games = serverHandshake.games
+          if (games) {
+            gameTypeOptions.push({ 'value': null, 'text': '-- select --' })
+            games.forEach(element => {
+              var gameType = element['gameType']
+              gameTypeOptions.push({ 'value': gameType, 'text': gameType })
+            })
+          }
+        }
+        this.gameTypeOptions = gameTypeOptions
+      },
+      handleBotListUpdate (botListUpdate) {
+        console.log('->botListUpdate')
+
+        var bots = botListUpdate.bots
+        for (var bot in bots) bot.key = bot.host + ':' + bot.port
+        this.availableBots = bots
+      },
+      gameTypeChanged (event) {
+        var foundGame = this.serverHandshake.games.find(selectedGameType => selectedGameType.gameType === event.target.value)
+        if (!foundGame) {
+          foundGame = null
+        }
+        this.selectedGameType = foundGame
+      },
+      availableBotClicked (bot) {
+        this.selectedBots.push(bot)
+        this.selectedBots.sort(this.compareBotKey)
+        this.removeItem(this.availableBots, bot)
+      },
+      selectedBotClicked (bot) {
+        this.availableBots.push(bot)
+        this.availableBots.sort(this.compareBotKey)
+        this.removeItem(this.selectedBots, bot)
+      },
+      allAvailableBotsClicked () {
+        this.selectedBots = this.selectedBots.concat(this.availableBots)
+        this.selectedBots.sort(this.compareBotKey)
+        this.availableBots = []
+      },
+      allSelectedBotsClicked () {
+        this.availableBots = this.availableBots.concat(this.selectedBots)
+        this.availableBots.sort(this.compareBotKey)
+        this.selectedBots = []
+      },
+      removeItem (array, item) {
+        for (var i = 0; i < array.length; i++) {
+          if (array[i] === item) {
+            array.splice(i, 1)
+            return
+          }
+        }
+      },
+      compareBotKey (a, b) {
+        if (a.key < b.key) return -1
+        if (a.key > b.key) return 1
+        return 0
       }
-      this.selectedGameType = foundGame
     }
   }
-}
 </script>
 
 <style lang="scss">
-@import "../styles/_variables.scss";
-@import "../../node_modules/bootstrap/scss/bootstrap.scss";
-@import "../styles/_bootswatch.scss";
+  @import "../styles/_variables.scss";
+  @import "../../node_modules/bootstrap/scss/bootstrap.scss";
+  @import "../styles/_bootswatch.scss";
 </style>
