@@ -4,7 +4,7 @@
 
       <b-row class="mt-3">
         <b-col>
-          <b-input-group>
+          <b-input-group size="sm">
             <b-input-group-addon>Server URL</b-input-group-addon>
             <b-input placeholder="ws://server:port" v-model="serverUrl" />
             <b-input-group-button slot="right">
@@ -19,21 +19,21 @@
       <div v-if="isConnected()">
         <b-row class="mt-0">
           <b-col sm="12"><label>Game Type</label></b-col>
-          <b-col sm="3"><b-form-select :options="gameTypeOptions" @change.native="onGameTypeChanged" /></b-col>
+          <b-col sm="4"><b-form-select size="sm" :options="gameTypeOptions" @change.native="onGameTypeChanged" /></b-col>
         </b-row>
 
         <div v-if="isGameTypeSelected()">
           <b-row class="mt-3">
             <b-col sm="12"><label>Arena size</label></b-col>
-            <b-col sm="5">
-              <b-input-group>
+            <b-col sm="4">
+              <b-input-group size="sm">
                 <b-input-group-addon>width</b-input-group-addon>
                 <b-input type="number" v-model="selectedGameType.arenaWidth" :disabled="selectedGameType.isArenaWidthLocked" :min="rules.arenaMinSize"
                   :max="rules.arenaMaxSize" step="100" />
               </b-input-group>
             </b-col>
-            <b-col sm="5">
-              <b-input-group>
+            <b-col sm="4">
+              <b-input-group size="sm">
                 <b-input-group-addon>height</b-input-group-addon>
                 <b-input type="number" v-model="selectedGameType.arenaHeight" :disabled="selectedGameType.isArenaHeightLocked" :min="rules.arenaMinSize"
                   :max="rules.arenaMaxSize" step="100" />
@@ -44,12 +44,12 @@
           <b-row class="mt-4">
             <b-col sm="3"><label>Min. number of participants</label></b-col>
             <b-col sm="2">
-              <b-input type="number" v-model="selectedGameType.minNumberOfParticipants" :disabled="selectedGameType.isMinNumberOfParticipantsLocked"
+              <b-input size="sm" type="number" v-model="selectedGameType.minNumberOfParticipants" :disabled="selectedGameType.isMinNumberOfParticipantsLocked"
                 :min="1" />
             </b-col>
             <b-col sm="3"><label>Max. number of participants</label></b-col>
             <b-col sm="2">
-              <b-input type="number" v-model="selectedGameType.maxNumberOfParticipants" :disabled="selectedGameType.isMaxNumberOfParticipantsLocked"
+              <b-input size="sm" type="number" v-model="selectedGameType.maxNumberOfParticipants" :disabled="selectedGameType.isMaxNumberOfParticipantsLocked"
                 :min="1" />
             </b-col>
           </b-row>
@@ -57,59 +57,57 @@
           <b-row class="mt-2">
             <b-col sm="3"><label>Number of rounds</label></b-col>
             <b-col sm="2">
-              <b-input type="number" v-model="selectedGameType.numberOfRounds" :disabled="selectedGameType.isNumberOfRoundsLocked" :min="1"/>
+              <b-input size="sm" type="number" v-model="selectedGameType.numberOfRounds" :disabled="selectedGameType.isNumberOfRoundsLocked" :min="1"/>
             </b-col>
             <b-col sm="3"><label>Inactivity turns</label></b-col>
             <b-col sm="2">
-              <b-input type="number" v-model="selectedGameType.inactivityTurns" :disabled="selectedGameType.isInactivityTurnsLocked" :min="1" step="50" />
+              <b-input size="sm" type="number" v-model="selectedGameType.inactivityTurns" :disabled="selectedGameType.isInactivityTurnsLocked" :min="1" step="50" />
             </b-col>
           </b-row>
 
           <b-row class="mt-2">
             <b-col sm="3"><label>Ready timeout (ms)</label></b-col>
             <b-col sm="2">
-              <b-input type="number" v-model="selectedGameType.delayedObserverTurns" :disabled="selectedGameType.delayedObserverTurnsLocked"
+              <b-input size="sm" type="number" v-model="selectedGameType.delayedObserverTurns" :disabled="selectedGameType.delayedObserverTurnsLocked"
                 :min="1" />
             </b-col>
             <b-col sm="3"><label>Turn timeout (ms)</label></b-col>
             <b-col sm="2">
-              <b-input type="number" v-model="selectedGameType.turnTimeout" :disabled="selectedGameType.turnTimeoutLocked" :min="1" />
+              <b-input size="sm" type="number" v-model="selectedGameType.turnTimeout" :disabled="selectedGameType.turnTimeoutLocked" :min="1" />
             </b-col>
           </b-row>
 
           <b-row class="mt-2">
             <b-col sm="3"><label>Gun cooling rate</label></b-col>
             <b-col sm="2">
-              <b-input type="number" v-model="selectedGameType.gunCoolingRate" :disabled="selectedGameType.isGunCoolingRateLocked" :min="rules.minGunCoolingRate"
+              <b-input size="sm" type="number" v-model="selectedGameType.gunCoolingRate" :disabled="selectedGameType.isGunCoolingRateLocked" :min="rules.minGunCoolingRate"
                 :max="rules.maxGunCoolingRate" step="0.1" />
             </b-col>
             <b-col sm="3"><label>Delayed observer turns</label></b-col>
             <b-col sm="2">
-              <b-input type="number" v-model="selectedGameType.delayedObserverTurns" :disabled="selectedGameType.delayedObserverTurnsLocked"
+              <b-input size="sm" type="number" v-model="selectedGameType.delayedObserverTurns" :disabled="selectedGameType.delayedObserverTurnsLocked"
                 :min="1" />
             </b-col>
           </b-row>
 
           <b-card-group deck class="mt-4">
             <b-card header="Available bots">
-              <b-button style="width: 100%" @click="onAllAvailableBotsClicked">&gt;&gt;</b-button>
+              <b-button size="sm" style="width: 100%" @click="onAllAvailableBotsClicked">&gt;&gt;</b-button>
               <b-list-group class="bot-list">
-                <b-list-group-item button v-for="bot in availableBots" :key="bot.key" @click="onAvailableBotClicked(bot)">{{bot.displayText}}</b-list-group-item>
+                <b-list-group-item style="padding: 5px 10px;" button v-for="bot in availableBots" :key="bot.key" @click="onAvailableBotClicked(bot)">{{bot.displayText}}</b-list-group-item>
               </b-list-group>
             </b-card>
 
             <b-card header="Selected bots">
-              <b-button style="width: 100%" @click="onAllSelectedBotsClicked">&lt;&lt;</b-button>
+              <b-button size="sm" style="width: 100%" @click="onAllSelectedBotsClicked">&lt;&lt;</b-button>
               <b-list-group class="bot-list">
-                <b-list-group-item button v-for="bot in selectedBots" :key="bot.key" @click="onSelectedBotClicked(bot)">{{bot.displayText}}</b-list-group-item>
+                <b-list-group-item size="sm" button v-for="bot in selectedBots" :key="bot.key" @click="onSelectedBotClicked(bot)">{{bot.displayText}}</b-list-group-item>
               </b-list-group>
             </b-card>
           </b-card-group>
 
           <b-row class="mt-3">
-            <b-col sm="12">
-              <b-button variant="secondary" size="lg" style="width: 100%; text-align: center" @click="onStartGameClicked" :disabled="!isGameStartValid()">Start Game</b-button>
-            </b-col>
+            <b-col sm="12"><b-button size="md" variant="secondary" style="width: 100%; text-align: center" @click="onStartGameClicked" :disabled="!isGameStartValid()">Start Game</b-button></b-col>
           </b-row>
         </div> <!-- v=show="isGameTypeSelected" -->
       </div> <!-- v-show="isConnected()"" -->
