@@ -12,7 +12,7 @@ export default new Router({
     {
       path: '/',
       redirect: {
-        name: 'Arena'
+        name: 'Setup'
       }
     },
     {
