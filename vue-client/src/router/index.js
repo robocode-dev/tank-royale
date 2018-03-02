@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import GameController from '@/components/GameController'
+import Setup from '@/components/Setup'
+import Arena from '@/components/Arena'
 
 import '../styles/styles.css'
 
@@ -10,8 +11,19 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'GameController',
-      component: GameController
+      redirect: {
+        name: 'Arena'
+      }
+    },
+    {
+      path: '/setup',
+      name: 'Setup',
+      component: Setup
+    },
+    {
+      path: '/arena',
+      name: 'Arena',
+      component: Arena
     }
   ]
 })

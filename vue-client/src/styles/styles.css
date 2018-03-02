@@ -1,5 +1,11 @@
 .bot-list {
     min-height: 15rem;
     max-height: 15rem;
-    overflow-y: auto
+    overflow-y: auto;
+}
+
+.bot-list .list-group-item {
+    background-color: #272B30;
+    color: white;
+    padding: 5px 10px;
 }

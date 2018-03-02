@@ -1,17 +1,19 @@
 <template>
   <div id="app">
-    <game-controller/>
+    <setup/>
   </div>
 </template>
 
 <script>
 
-import GameController from './components/GameController'
+import Setup from './components/Setup'
+import Arena from './components/Arena'
 
 export default {
   name: 'app',
   components: {
-    GameController
+    Setup,
+    Arena
   }
 }
 </script>
