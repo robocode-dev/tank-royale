@@ -1,9 +1,7 @@
 <template>
   <div class="arena">
     <b-container>
-      <div>
-        Battle Arena! :-D
-      </div>
+      <canvas id="canvas" width="800" height="600"/>
     </b-container>
   </div>
 </template>
