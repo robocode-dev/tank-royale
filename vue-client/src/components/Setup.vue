@@ -28,14 +28,14 @@
             <b-col sm="4">
               <b-input-group size="sm">
                 <b-input-group-addon>width</b-input-group-addon>
-                <b-input type="number" v-model="shared.gameSetup.arenaWidth" :disabled="shared.gameSetup.isArenaWidthLocked" :min="rules.arenaMinSize"
+                <b-input type="number" v-model="ctrl.gameSetup.arenaWidth" :disabled="ctrl.gameSetup.isArenaWidthLocked" :min="rules.arenaMinSize"
                   :max="rules.arenaMaxSize" step="100" />
               </b-input-group>
             </b-col>
             <b-col sm="4">
               <b-input-group size="sm">
                 <b-input-group-addon>height</b-input-group-addon>
-                <b-input type="number" v-model="shared.gameSetup.arenaHeight" :disabled="shared.gameSetup.isArenaHeightLocked" :min="rules.arenaMinSize"
+                <b-input type="number" v-model="ctrl.gameSetup.arenaHeight" :disabled="ctrl.gameSetup.isArenaHeightLocked" :min="rules.arenaMinSize"
                   :max="rules.arenaMaxSize" step="100" />
               </b-input-group>
             </b-col>
@@ -44,12 +44,12 @@
           <b-row class="mt-4">
             <b-col sm="3"><label>Min. number of participants</label></b-col>
             <b-col sm="2">
-              <b-input size="sm" type="number" v-model="shared.gameSetup.minNumberOfParticipants" :disabled="shared.gameSetup.isMinNumberOfParticipantsLocked"
+              <b-input size="sm" type="number" v-model="ctrl.gameSetup.minNumberOfParticipants" :disabled="ctrl.gameSetup.isMinNumberOfParticipantsLocked"
                 :min="1" />
             </b-col>
             <b-col sm="3"><label>Max. number of participants</label></b-col>
             <b-col sm="2">
-              <b-input size="sm" type="number" v-model="shared.gameSetup.maxNumberOfParticipants" :disabled="shared.gameSetup.isMaxNumberOfParticipantsLocked"
+              <b-input size="sm" type="number" v-model="ctrl.gameSetup.maxNumberOfParticipants" :disabled="ctrl.gameSetup.isMaxNumberOfParticipantsLocked"
                 :min="1" />
             </b-col>
           </b-row>
@@ -57,35 +57,35 @@
           <b-row class="mt-2">
             <b-col sm="3"><label>Number of rounds</label></b-col>
             <b-col sm="2">
-              <b-input size="sm" type="number" v-model="shared.gameSetup.numberOfRounds" :disabled="shared.gameSetup.isNumberOfRoundsLocked" :min="1"/>
+              <b-input size="sm" type="number" v-model="ctrl.gameSetup.numberOfRounds" :disabled="ctrl.gameSetup.isNumberOfRoundsLocked" :min="1"/>
             </b-col>
             <b-col sm="3"><label>Inactivity turns</label></b-col>
             <b-col sm="2">
-              <b-input size="sm" type="number" v-model="shared.gameSetup.inactivityTurns" :disabled="shared.gameSetup.isInactivityTurnsLocked" :min="1" step="50" />
+              <b-input size="sm" type="number" v-model="ctrl.gameSetup.inactivityTurns" :disabled="ctrl.gameSetup.isInactivityTurnsLocked" :min="1" step="50" />
             </b-col>
           </b-row>
 
           <b-row class="mt-2">
             <b-col sm="3"><label>Ready timeout (ms)</label></b-col>
             <b-col sm="2">
-              <b-input size="sm" type="number" v-model="shared.gameSetup.delayedObserverTurns" :disabled="shared.gameSetup.delayedObserverTurnsLocked"
+              <b-input size="sm" type="number" v-model="ctrl.gameSetup.delayedObserverTurns" :disabled="ctrl.gameSetup.delayedObserverTurnsLocked"
                 :min="1" />
             </b-col>
             <b-col sm="3"><label>Turn timeout (ms)</label></b-col>
             <b-col sm="2">
-              <b-input size="sm" type="number" v-model="shared.gameSetup.turnTimeout" :disabled="shared.gameSetup.turnTimeoutLocked" :min="1" />
+              <b-input size="sm" type="number" v-model="ctrl.gameSetup.turnTimeout" :disabled="ctrl.gameSetup.turnTimeoutLocked" :min="1" />
             </b-col>
           </b-row>
 
           <b-row class="mt-2">
             <b-col sm="3"><label>Gun cooling rate</label></b-col>
             <b-col sm="2">
-              <b-input size="sm" type="number" v-model="shared.gameSetup.gunCoolingRate" :disabled="shared.gameSetup.isGunCoolingRateLocked" :min="rules.minGunCoolingRate"
+              <b-input size="sm" type="number" v-model="ctrl.gameSetup.gunCoolingRate" :disabled="ctrl.gameSetup.isGunCoolingRateLocked" :min="rules.minGunCoolingRate"
                 :max="rules.maxGunCoolingRate" step="0.1" />
             </b-col>
             <b-col sm="3"><label>Delayed observer turns</label></b-col>
             <b-col sm="2">
-              <b-input size="sm" type="number" v-model="shared.gameSetup.delayedObserverTurns" :disabled="shared.gameSetup.delayedObserverTurnsLocked"
+              <b-input size="sm" type="number" v-model="ctrl.gameSetup.delayedObserverTurns" :disabled="ctrl.gameSetup.delayedObserverTurnsLocked"
                 :min="1" />
             </b-col>
           </b-row>
@@ -101,7 +101,7 @@
             <b-card header="Selected bots">
               <b-button size="sm" style="width: 100%" @click="onAllSelectedBotsClicked">&lt;&lt;</b-button>
               <b-list-group class="bot-list">
-                <b-list-group-item button v-for="bot in shared.selectedBots" :key="bot.key" @click="onSelectedBotClicked(bot)">{{bot.displayText}}</b-list-group-item>
+                <b-list-group-item button v-for="bot in ctrl.selectedBots" :key="bot.key" @click="onSelectedBotClicked(bot)">{{bot.displayText}}</b-list-group-item>
               </b-list-group>
             </b-card>
           </b-card-group>
@@ -124,6 +124,7 @@
     data () {
       return {
         shared: sharedData,
+        ctrl: sharedData.controller,
 
         server: 'localhost',
         port: 50000,
@@ -155,30 +156,34 @@
       this.shared.serverUrl = 'ws://' + this.server + ':' + this.port
     },
     methods: {
+      isConnected () {
+        const c = this.ctrl.connection
+        return c != null && c.readyState === WebSocket.OPEN
+      },
       onConnect () {
         const vm = this
 
-        const ws = new WebSocket(this.shared.serverUrl)
-        this.shared.connection = ws
+        const connection = new WebSocket(this.shared.serverUrl)
+        this.ctrl.connection = connection
 
-        ws.onopen = function (event) {
+        connection.onopen = function (event) {
           console.log('ws connected to: ' + event.target.url)
 
           vm.connectionStatus = 'connected'
 
-          vm.sendControllerHandshake()
+          vm.sendControllerHandshake(connection)
         }
-        ws.onerror = function (event) {
+        connection.onerror = function (event) {
           console.log('ws error: ' + event.data)
 
           vm.connectionStatus = 'error: ' + event.data
         }
-        ws.onclose = function (event) {
+        connection.onclose = function (event) {
           console.log('ws closed: ' + event.target.url)
 
           vm.connectionStatus = 'not connected'
         }
-        ws.onmessage = function (event) {
+        connection.onmessage = function (event) {
           console.log('ws message: ' + event.data)
 
           const message = JSON.parse(event.data)
@@ -194,21 +199,17 @@
       },
       onDisconnect () {
         if (this.isConnected) {
-          this.shared.connection.close()
+          this.ctrl.connection.close()
         }
-        this.shared.connection = null
-        this.shared.gameSetup = null
-        this.shared.selectedBots = []
+        this.ctrl.connection = null
+        this.ctrl.gameSetup = null
+        this.ctrl.selectedBots = []
         this.gameTypeOptions = null
       },
-      isConnected () {
-        const c = this.shared.connection
-        return c != null && c.readyState === WebSocket.OPEN
-      },
-      sendControllerHandshake () {
+      sendControllerHandshake (connection) {
         console.log('<-controllerHandshake')
 
-        this.shared.connection.send(
+        connection.send(
           JSON.stringify({
             type: 'controllerHandshake',
             name: 'Robocode 2 Game Controller',
@@ -248,33 +249,33 @@
         this.availableBots.sort(this.compareBots)
       },
       isGameTypeSelected () {
-        return this.shared.gameSetup != null
+        return this.ctrl.gameSetup != null
       },
       onGameTypeChanged (event) {
         var foundGameSetup = this.serverHandshake.games.find(gameSetup => gameSetup.gameType === event.target.value)
         if (!foundGameSetup) {
           foundGameSetup = null
         }
-        this.shared.gameSetup = foundGameSetup
+        this.ctrl.gameSetup = foundGameSetup
       },
       onAvailableBotClicked (bot) {
-        this.shared.selectedBots.push(bot)
-        this.shared.selectedBots.sort(this.compareBots)
+        this.ctrl.selectedBots.push(bot)
+        this.ctrl.selectedBots.sort(this.compareBots)
         this.removeItem(this.availableBots, bot)
       },
       onSelectedBotClicked (bot) {
         this.availableBots.push(bot)
         this.availableBots.sort(this.compareBots)
-        this.removeItem(this.shared.selectedBots, bot)
+        this.removeItem(this.ctrl.selectedBots, bot)
       },
       onAllAvailableBotsClicked () {
-        this.shared.selectedBots = this.shared.selectedBots.concat(this.availableBots).sort(this.compareBots)
+        this.ctrl.selectedBots = this.ctrl.selectedBots.concat(this.availableBots).sort(this.compareBots)
         this.availableBots = []
       },
       onAllSelectedBotsClicked () {
-        this.availableBots = this.availableBots.concat(this.shared.selectedBots)
+        this.availableBots = this.availableBots.concat(this.ctrl.selectedBots)
         this.availableBots.sort(this.compareBots)
-        this.shared.selectedBots = []
+        this.ctrl.selectedBots = []
       },
       removeItem (array, item) {
         for (var i = 0; i < array.length; i++) {
@@ -290,15 +291,15 @@
         return 0
       },
       isGameStartValid () {
-        const selectedBotsCount = this.shared.selectedBots.length
-        const gameType = this.shared.gameSetup
+        const selectedBotsCount = this.ctrl.selectedBots.length
+        const gameType = this.ctrl.gameSetup
         return this.isConnected() &&
           this.isGameTypeSelected() &&
           (selectedBotsCount >= gameType.minNumberOfParticipants) &&
           ((selectedBotsCount <= gameType.maxNumberOfParticipants) || gameType.maxNumberOfParticipants == null)
       },
       onStartGameClicked () {
-        console.log('Goto arena')
+        console.log('Start Game')
         this.$router.push('/arena')
       }
     }
