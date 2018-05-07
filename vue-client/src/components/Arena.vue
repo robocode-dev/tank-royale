@@ -18,20 +18,22 @@
       }
     },
     mounted () {
-      const connection = new WebSocket(sharedData.serverUrl)
-      this.observer.connection = connection
-
-      connection.onmessage = function (event) {
+      this.$options.sockets.onmessage = function (event) {
         console.log('ws message: ' + event.data)
+
+        const message = JSON.parse(event.data)
+        switch (message.type) {
+        }
       }
 
-      this.ctrl.connection.send(
-        JSON.stringify({
+      this.$socket.sendObj(
+        {
           type: 'startGame',
           gameSetup: this.ctrl.gameSetup,
           botAddresses: this.ctrl.selectedBots
-        })
+        }
       )
+      console.info("Start game")
     },
     methods: {
     }

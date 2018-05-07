@@ -8,15 +8,15 @@
             <b-input-group-addon>Server URL</b-input-group-addon>
             <b-input placeholder="ws://server:port" v-model="shared.serverUrl" />
             <b-input-group-button slot="right">
-              <b-btn @click="onConnect" v-show="!isConnected()">Connect</b-btn>
-              <b-btn variant="warning" @click="onDisconnect" v-show="isConnected()">Disconnect</b-btn>
+              <b-btn @click="onConnect" v-show="!isConnected">Connect</b-btn>
+              <b-btn variant="warning" @click="onDisconnect" v-show="isConnected">Disconnect</b-btn>
             </b-input-group-button>
           </b-input-group>
           <label style="width: 100%; text-align: right">Status: {{ connectionStatus }}</label>
         </b-col>
       </b-row>
 
-      <div v-if="isConnected()">
+      <div v-if="isConnected">
         <b-row class="mt-0">
           <b-col sm="12"><label>Game Type</label></b-col>
           <b-col sm="4"><b-form-select size="sm" :options="gameTypeOptions" @change.native="onGameTypeChanged" /></b-col>
@@ -129,6 +129,7 @@
         server: 'localhost',
         port: 50000,
         connectionStatus: 'not connected',
+        isConnected: false,
 
         serverHandshake: null, // from server
 
@@ -154,68 +155,64 @@
         this.port = port
       }
       this.shared.serverUrl = 'ws://' + this.server + ':' + this.port
+
+      const vm = this
+
+      vm.$options.sockets.onmessage = (data) => console.log('ws data: ' + data)
+
+      vm.$options.sockets.onopen = function (event) {
+        console.log('ws connected to: ' + event.target.url)
+
+        vm.isConnected = true
+        vm.connectionStatus = 'connected'
+
+        vm.sendControllerHandshake()
+      }
+      vm.$options.sockets.onclose = function (event) {
+        console.log('ws closed: ' + event.target.url)
+
+        vm.isConnected = false
+        vm.connectionStatus = 'not connected'
+      }
+      vm.$options.sockets.onerror = function (event) {
+        console.log('ws error: ' + event.data)
+
+        vm.connectionStatus = 'error: ' + event.data
+      }
+      vm.$options.sockets.onmessage = function (event) {
+        console.log('ws message: ' + event.data)
+
+        const message = JSON.parse(event.data)
+        switch (message.type) {
+          case 'serverHandshake':
+            vm.onServerHandshake(message)
+            break
+          case 'botListUpdate':
+            vm.onBotListUpdate(message)
+            break
+        }
+      }
+
     },
     methods: {
-      isConnected () {
-        const c = this.ctrl.connection
-        return c != null && c.readyState === WebSocket.OPEN
-      },
       onConnect () {
-        const vm = this
-
-        const connection = new WebSocket(this.shared.serverUrl)
-        this.ctrl.connection = connection
-
-        connection.onopen = function (event) {
-          console.log('ws connected to: ' + event.target.url)
-
-          vm.connectionStatus = 'connected'
-
-          vm.sendControllerHandshake(connection)
-        }
-        connection.onerror = function (event) {
-          console.log('ws error: ' + event.data)
-
-          vm.connectionStatus = 'error: ' + event.data
-        }
-        connection.onclose = function (event) {
-          console.log('ws closed: ' + event.target.url)
-
-          vm.connectionStatus = 'not connected'
-        }
-        connection.onmessage = function (event) {
-          console.log('ws message: ' + event.data)
-
-          const message = JSON.parse(event.data)
-          switch (message.type) {
-            case 'serverHandshake':
-              vm.onServerHandshake(message)
-              break
-            case 'botListUpdate':
-              vm.onBotListUpdate(message)
-              break
-          }
-        }
+        // no nothing yet?
       },
       onDisconnect () {
-        if (this.isConnected) {
-          this.ctrl.connection.close()
-        }
-        this.ctrl.connection = null
         this.ctrl.gameSetup = null
         this.ctrl.selectedBots = []
         this.gameTypeOptions = null
       },
-      sendControllerHandshake (connection) {
+      sendControllerHandshake () {
         console.log('<-controllerHandshake')
 
-        connection.send(
-          JSON.stringify({
+        this.$socket.sendObj(
+          {
             type: 'controllerHandshake',
             name: 'Robocode 2 Game Controller',
             version: '0.1.0',
             author: 'Flemming N. Larsen <fnl@users.sourceforge.net>'
-          })
+          }
         )
       },
       onServerHandshake (serverHandshake) {
@@ -293,13 +290,13 @@
       isGameStartValid () {
         const selectedBotsCount = this.ctrl.selectedBots.length
         const gameType = this.ctrl.gameSetup
-        return this.isConnected() &&
+        return this.isConnected &&
           this.isGameTypeSelected() &&
           (selectedBotsCount >= gameType.minNumberOfParticipants) &&
           ((selectedBotsCount <= gameType.maxNumberOfParticipants) || gameType.maxNumberOfParticipants == null)
       },
       onStartGameClicked () {
-        console.log('Start Game')
+        console.log('Goto arena')
         this.$router.push('/arena')
       }
     }
