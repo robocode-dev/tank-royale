@@ -13,8 +13,8 @@
     name: 'arena',
     data () {
       return {
-        ctrl: sharedData.controller,
-        observer: sharedData.observer
+        gameSetup: sharedData.gameSetup,
+        selectedBots: sharedData.selectedBots
       }
     },
     mounted () {
@@ -29,8 +29,8 @@
       this.$socket.sendObj(
         {
           type: 'startGame',
-          gameSetup: this.ctrl.gameSetup,
-          botAddresses: this.ctrl.selectedBots
+          gameSetup: this.gameSetup,
+          botAddresses: this.selectedBots
         }
       )
       console.info("Start game")
