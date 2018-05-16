@@ -1,5 +1,11 @@
 module.exports = {
   serverUrl: null,
-  gameSetup: null,
-  selectedBots: []
+  controller: {
+    connection: null,
+    gameSetup: null,
+    selectedBots: []
+  },
+  observer: {
+    connection: null
+  }
 }
