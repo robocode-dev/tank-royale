@@ -117,6 +117,8 @@
 </template>
 
 <script>
+  import ReconnectingWebSocket from 'reconnectingwebsocket'
+
   const sharedData = require('./shared-data.js')
 
   export default {
@@ -128,6 +130,8 @@
 
         server: 'localhost',
         port: 50000,
+
+        socket: null,
         connectionStatus: 'not connected',
         isConnected: false,
 
@@ -154,13 +158,15 @@
       if (port) {
         this.port = port
       }
-      this.shared.serverUrl = 'ws://' + this.server + ':' + this.port
+      var serverUrl = 'ws://' + this.server + ':' + this.port
+      this.shared.serverUrl = serverUrl
 
       const vm = this
 
-      vm.$options.sockets.onmessage = (data) => console.log('ws data: ' + data)
+      var socket = new ReconnectingWebSocket(serverUrl)
+      this.socket = socket
 
-      vm.$options.sockets.onopen = function (event) {
+      socket.onopen = function (event) {
         console.log('ws connected to: ' + event.target.url)
 
         vm.isConnected = true
@@ -168,21 +174,22 @@
 
         vm.sendControllerHandshake()
       }
-      vm.$options.sockets.onclose = function (event) {
+      socket.onclose = function (event) {
         console.log('ws closed: ' + event.target.url)
 
         vm.isConnected = false
         vm.connectionStatus = 'not connected'
       }
-      vm.$options.sockets.onerror = function (event) {
+      socket.onerror = function (event) {
         console.log('ws error: ' + event.data)
 
         vm.connectionStatus = 'error: ' + event.data
       }
-      vm.$options.sockets.onmessage = function (event) {
+      socket.onmessage = function (event) {
         console.log('ws message: ' + event.data)
 
         const message = JSON.parse(event.data)
+
         switch (message.type) {
           case 'serverHandshake':
             vm.onServerHandshake(message)
@@ -192,13 +199,14 @@
             break
         }
       }
-
     },
     methods: {
       onConnect () {
-        // no nothing yet?
+        this.socket.open()
       },
       onDisconnect () {
+        this.socket.close()
+
         this.ctrl.gameSetup = null
         this.ctrl.selectedBots = []
         this.gameTypeOptions = null
@@ -206,14 +214,14 @@
       sendControllerHandshake () {
         console.log('<-controllerHandshake')
 
-        this.$socket.sendObj(
+        this.socket.send(JSON.stringify(
           {
             type: 'controllerHandshake',
             name: 'Robocode 2 Game Controller',
             version: '0.1.0',
             author: 'Flemming N. Larsen <fnl@users.sourceforge.net>'
           }
-        )
+        ))
       },
       onServerHandshake (serverHandshake) {
         console.log('->serverHandshake')

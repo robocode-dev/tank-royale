@@ -7,33 +7,44 @@
 </template>
 
 <script>
+  import ReconnectingWebSocket from 'reconnectingwebsocket'
+
   const sharedData = require('./shared-data.js')
 
   export default {
     name: 'arena',
     data () {
       return {
+        shared: sharedData,
+        socket: null,
+
         ctrl: sharedData.controller,
         observer: sharedData.observer
       }
     },
     mounted () {
-      this.$options.sockets.onmessage = function (event) {
+      var socket = new ReconnectingWebSocket(this.shared.serverUrl)
+      this.socket = socket
+
+      socket.onmessage = function (event) {
         console.log('ws message: ' + event.data)
 
         const message = JSON.parse(event.data)
         switch (message.type) {
         }
       }
-
-      this.$socket.sendObj(
-        {
-          type: 'startGame',
-          gameSetup: this.ctrl.gameSetup,
-          botAddresses: this.ctrl.selectedBots
-        }
-      )
+/*
+      socket.onopen = function (event) {
+        this.socket.send(JSON.stringify(
+          {
+            type: 'startGame',
+            gameSetup: this.ctrl.gameSetup,
+            botAddresses: this.ctrl.selectedBots
+          }
+        ))
+      }
       console.info("Start game")
+*/
     },
     methods: {
     }
