@@ -4,10 +4,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 
+import net.robocode2.json_schema.comm.*;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_10;
-import org.java_websocket.handshake.ServerHandshake;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -17,9 +17,6 @@ import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 
 import net.robocode2.json_schema.events.Event;
 import net.robocode2.json_schema.events.ScannedBotEvent;
-import net.robocode2.json_schema.comm.BotHandshake;
-import net.robocode2.json_schema.comm.BotIntent;
-import net.robocode2.json_schema.comm.BotReady;
 import net.robocode2.json_schema.events.GameStartedEventForBot;
 import net.robocode2.json_schema.events.TickEventForBot;
 import net.robocode2.json_schema.types.Point;
@@ -45,6 +42,9 @@ public class BotClient1 extends WebSocketClient {
 	}
 
 	static final String TYPE = "type";
+	static final String CLIENT_KEY = "clientKey";
+
+	String clientKey;
 
 	int turn;
 	double targetSpeed = 10;
@@ -60,20 +60,8 @@ public class BotClient1 extends WebSocketClient {
 	}
 
 	@Override
-	public void onOpen(ServerHandshake handshakedata) {
+	public void onOpen(org.java_websocket.handshake.ServerHandshake serverHandshake) {
 		System.out.println("onOpen()");
-
-		BotHandshake handshake = new BotHandshake();
-		handshake.setType(BotHandshake.Type.BOT_HANDSHAKE);
-		handshake.setName("Bot name");
-		handshake.setVersion("0.1");
-		handshake.setAuthor("Author name");
-		handshake.setCountryCode("DK");
-		handshake.setGameTypes(Arrays.asList("melee", "1v1"));
-		handshake.setProgrammingLanguage("Java");
-
-		String msg = gson.toJson(handshake);
-		send(msg);
 	}
 
 	@Override
@@ -85,16 +73,34 @@ public class BotClient1 extends WebSocketClient {
 	public void onMessage(String message) {
 		System.out.println("onMessage(): " + message);
 
-		JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
+		JsonObject jsonMessage = gson.fromJson(message, JsonObject.class);
 
-		JsonElement jsonElement = jsonObject.get(TYPE);
-		if (jsonElement != null) {
-			String type = jsonElement.getAsString();
+		JsonElement jsonType = jsonMessage.get(TYPE);
+		if (jsonType != null) {
+			String type = jsonType.getAsString();
 
-			if (GameStartedEventForBot.Type.GAME_STARTED_EVENT_FOR_BOT.toString().equalsIgnoreCase(type)) {
+			if (ServerHandshake.Type.SERVER_HANDSHAKE.toString().equalsIgnoreCase(type)) {
+				clientKey = jsonMessage.get(CLIENT_KEY).getAsString();
+
+				// Send bot handshake
+				BotHandshake handshake = new BotHandshake();
+				handshake.setType(BotHandshake.Type.BOT_HANDSHAKE);
+				handshake.setClientKey(clientKey);
+				handshake.setName("Bot name");
+				handshake.setVersion("0.1");
+				handshake.setAuthor("Author name");
+				handshake.setCountryCode("DK");
+				handshake.setGameTypes(Arrays.asList("melee", "1v1"));
+				handshake.setProgrammingLanguage("Java");
+
+				String msg = gson.toJson(handshake);
+				send(msg);
+
+			} else if (GameStartedEventForBot.Type.GAME_STARTED_EVENT_FOR_BOT.toString().equalsIgnoreCase(type)) {
 				// Send ready signal
 				BotReady ready = new BotReady();
 				ready.setType(BotReady.Type.BOT_READY);
+				ready.setClientKey(clientKey);
 
 				String msg = gson.toJson(ready);
 				send(msg);
@@ -107,6 +113,7 @@ public class BotClient1 extends WebSocketClient {
 				// Prepare intent
 				BotIntent intent = new BotIntent();
 				intent.setType(BotIntent.Type.BOT_INTENT);
+				intent.setClientKey(clientKey);
 
 				for (Event event : tick.getEvents()) {
 					if (event instanceof ScannedBotEvent) {

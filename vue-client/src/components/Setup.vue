@@ -127,6 +127,7 @@
       return {
         shared: sharedData,
         ctrl: sharedData.controller,
+        clientKey: sharedData.clientKey,
 
         server: 'localhost',
         port: 50000,
@@ -161,48 +162,51 @@
       var serverUrl = 'ws://' + this.server + ':' + this.port
       this.shared.serverUrl = serverUrl
 
-      const vm = this
-
-      var socket = new ReconnectingWebSocket(serverUrl)
-      this.socket = socket
-
-      socket.onopen = function (event) {
-        console.log('ws connected to: ' + event.target.url)
-
-        vm.isConnected = true
-        vm.connectionStatus = 'connected'
-
-        vm.sendControllerHandshake()
-      }
-      socket.onclose = function (event) {
-        console.log('ws closed: ' + event.target.url)
-
-        vm.isConnected = false
-        vm.connectionStatus = 'not connected'
-      }
-      socket.onerror = function (event) {
-        console.log('ws error: ' + event.data)
-
-        vm.connectionStatus = 'error: ' + event.data
-      }
-      socket.onmessage = function (event) {
-        console.log('ws message: ' + event.data)
-
-        const message = JSON.parse(event.data)
-
-        switch (message.type) {
-          case 'serverHandshake':
-            vm.onServerHandshake(message)
-            break
-          case 'botListUpdate':
-            vm.onBotListUpdate(message)
-            break
-        }
-      }
     },
     methods: {
       onConnect () {
-        this.socket.open()
+        var socket = this.socket
+        if (socket) {
+          socket.open()
+          return
+        }
+
+        socket = new ReconnectingWebSocket(this.shared.serverUrl)
+        this.socket = socket
+
+        const vm = this
+
+        socket.onopen = function (event) {
+          console.log('ws connected to: ' + event.target.url)
+
+          vm.isConnected = true
+          vm.connectionStatus = 'connected'
+        }
+        socket.onclose = function (event) {
+          console.log('ws closed: ' + event.target.url)
+
+          vm.isConnected = false
+          vm.connectionStatus = 'not connected'
+        }
+        socket.onerror = function (event) {
+          console.log('ws error: ' + event.data)
+
+          vm.connectionStatus = 'error: ' + event.data
+        }
+        socket.onmessage = function (event) {
+          console.log('ws message: ' + event.data)
+
+          const message = JSON.parse(event.data)
+
+          switch (message.type) {
+            case 'serverHandshake':
+              vm.onServerHandshake(message)
+              break
+            case 'botListUpdate':
+              vm.onBotListUpdate(message)
+              break
+          }
+        }
       },
       onDisconnect () {
         this.socket.close()
@@ -216,6 +220,7 @@
 
         this.socket.send(JSON.stringify(
           {
+            clientKey: this.shared.clientKey,
             type: 'controllerHandshake',
             name: 'Robocode 2 Game Controller',
             version: '0.1.0',
@@ -231,6 +236,10 @@
         const gameTypeOptions = []
 
         if (serverHandshake) {
+          this.shared.clientKey = serverHandshake.clientKey
+
+          this.sendControllerHandshake()
+
           const games = serverHandshake.games
           if (games) {
             gameTypeOptions.push({ 'value': null, 'text': '-- select --' })

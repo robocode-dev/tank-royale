@@ -15,27 +15,27 @@ public interface ConnListener {
 
 	void onException(Exception exception);
 
-	void onBotJoined(WebSocket socket, net.robocode2.json_schema.comm.BotHandshake handshake);
+	void onBotJoined(String clientKey, net.robocode2.json_schema.comm.BotHandshake handshake);
 
-	void onBotLeft(WebSocket socket);
+	void onBotLeft(String clientKey);
 
-	void onObserverJoined(WebSocket socket, ObserverHandshake handshake);
+	void onObserverJoined(String clientKey, ObserverHandshake handshake);
 
-	void onObserverLeft(WebSocket socket);
+	void onObserverLeft(String clientKey);
 
-	void onControllerJoined(WebSocket socket, ControllerHandshake handshake);
+	void onControllerJoined(String clientKey, ControllerHandshake handshake);
 
-	void onControllerLeft(WebSocket socket);
+	void onControllerLeft(String clientKey);
 
-	void onBotReady(WebSocket socket);
+	void onBotReady(String clientKey);
 
-	void onBotIntent(WebSocket socket, BotIntent intent);
+	void onBotIntent(String clientKey, BotIntent intent);
 
-	void onStartGame(WebSocket socket, GameSetup gameSetup, Collection<BotAddress> botAddresses);
+	void onStartGame(GameSetup gameSetup, Collection<BotAddress> botAddresses);
 
-	void onStopGame(WebSocket socket);
+	void onStopGame();
 
-	void onPauseGame(WebSocket socket);
+	void onPauseGame();
 
-	void onResumeGame(WebSocket socket);
+	void onResumeGame();
 }

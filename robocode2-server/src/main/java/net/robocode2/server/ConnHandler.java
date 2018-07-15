@@ -1,12 +1,7 @@
 package net.robocode2.server;
 
 import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -37,17 +32,22 @@ public final class ConnHandler {
 	private final ConnListener listener;
 	private final WebSocketObserver webSocketObserver;
 
-	private final Set<WebSocket> connections = Collections.synchronizedSet(new HashSet<>());
+	private final Map<String /* clientKey */, WebSocket> connections = Collections.synchronizedMap(new HashMap<>());
 
-	private final Map<WebSocket, BotHandshake> botConnections = Collections.synchronizedMap(new HashMap<>());
-	private final Map<WebSocket, ObserverHandshake> observerConnections = Collections.synchronizedMap(new HashMap<>());
-	private final Map<WebSocket, ControllerHandshake> controllerConnections = Collections.synchronizedMap(new HashMap<>());
+    private final Map<String /* clientKey */, WebSocket> botConnections = Collections.synchronizedMap(new HashMap<>());
+    private final Map<String /* clientKey */, WebSocket> observerConnections = Collections.synchronizedMap(new HashMap<>());
+    private final Map<String /* clientKey */, WebSocket> controllerConnections = Collections.synchronizedMap(new HashMap<>());
 
+    private final Map<String /* clientKey */, BotHandshake> botHandshakes = Collections.synchronizedMap(new HashMap<>());
+    private final Map<String /* clientKey */, ObserverHandshake> observerHandshakes = Collections.synchronizedMap(new HashMap<>());
+    private final Map<String /* clientKey */, ControllerHandshake> controllerHandshakes = Collections.synchronizedMap(new HashMap<>());
+
+    private static final String CLIENT_KEY = "clientKey";
 	private static final String TYPE = "type";
 
 	private final ExecutorService executorService;
 
-	public ConnHandler(ServerSetup setup, ConnListener listener) {
+	ConnHandler(ServerSetup setup, ConnListener listener) {
 		this.setup = setup;
 		this.listener = listener;
 
@@ -57,7 +57,7 @@ public final class ConnHandler {
 		this.executorService = Executors.newCachedThreadPool();
 	}
 
-	public void start() {
+	void start() {
 		webSocketObserver.run();
 	}
 
@@ -66,39 +66,59 @@ public final class ConnHandler {
 		shutdownAndAwaitTermination(executorService);
 	}
 
-	public Map<WebSocket, BotHandshake> getBotConnections() {
+	public WebSocket getConnection(String clientKey) {
+		return connections.get(clientKey);
+	}
+
+	Map<String /* clientKey */, WebSocket> getBotConnections() {
 		return Collections.unmodifiableMap(botConnections);
 	}
 
-	public Map<WebSocket, ObserverHandshake> getObserverConnections() {
+	Map<String /* clientKey */, WebSocket> getObserverConnections() {
 		return Collections.unmodifiableMap(observerConnections);
 	}
 
-	public Map<WebSocket, ControllerHandshake> getControllerConnections() {
+	Map<String /* clientKey */, WebSocket> getControllerConnections() {
 		return Collections.unmodifiableMap(controllerConnections);
 	}
 
-	public Set<WebSocket> getBotConnections(Collection<BotAddress> botAddresses) {
-		Set<WebSocket> foundConnections = new HashSet<>();
+	Map<String /* clientKey */, BotHandshake> getBotHandshakes() {
+		return Collections.unmodifiableMap(botHandshakes);
+	}
 
-		if (botConnections != null) {
-			for (WebSocket conn : botConnections.keySet()) {
-				InetSocketAddress addr = conn.getRemoteSocketAddress();
-				if (addr != null) {
-					int port = addr.getPort();
-					String hostname = addr.getHostName();
+	Map<String /* clientKey */, ObserverHandshake> getObserverHandshakes() {
+		return Collections.unmodifiableMap(observerHandshakes);
+	}
 
-					for (BotAddress botAddr : botAddresses) {
-						if (botAddr.getHost().equals(hostname) && botAddr.getPort() == port) {
-							foundConnections.add(conn);
-							break;
-						}
+	Map<String /* clientKey */, ControllerHandshake> getControllerHandshakes() {
+		return Collections.unmodifiableMap(controllerHandshakes);
+	}
+
+	Set<String> getBotKeys(Collection<BotAddress> botAddresses) {
+		Set<String> foundKeys = new HashSet<>();
+
+		for (WebSocket conn : botConnections.values()) {
+			InetSocketAddress addr = conn.getRemoteSocketAddress();
+			if (addr != null) {
+				int port = addr.getPort();
+				String hostname = addr.getHostName();
+
+				for (BotAddress botAddr : botAddresses) {
+					if (botAddr.getHost().equals(hostname) && botAddr.getPort() == port) {
+						foundKeys.add(getKeyFromConnection(botConnections, conn));
+						break;
 					}
 				}
 			}
 		}
 
-		return foundConnections;
+		return foundKeys;
+	}
+
+	public static String getKeyFromConnection(Map<String, WebSocket> connections, WebSocket conn) {
+		return connections.entrySet().stream()
+				.filter(entry -> Objects.equals(entry.getValue(), conn))
+				.findFirst().get().getKey();
 	}
 
 	private void shutdownAndAwaitTermination(ExecutorService pool) {
@@ -141,9 +161,11 @@ public final class ConnHandler {
 		public void onOpen(WebSocket conn, ClientHandshake handshake) {
 			System.out.println("onOpen(): " + conn.getRemoteSocketAddress());
 
-			connections.add(conn);
+			String clientKey = Long.toHexString(System.nanoTime());
+			connections.put(clientKey, conn);
 
 			ServerHandshake hs = new ServerHandshake();
+			hs.setClientKey(clientKey);
 			hs.setType(ServerHandshake.Type.SERVER_HANDSHAKE);
 			hs.setGames(GameSetupToGameSetupMapper.map(setup.getGames()));
 
@@ -156,19 +178,20 @@ public final class ConnHandler {
 			System.out.println("onClose(): " + conn.getRemoteSocketAddress() + ", code: " + code + ", reason: " + reason
 					+ ", remote: " + remote);
 
-			connections.remove(conn);
+			String clientKey = getKeyFromConnection(connections, conn);
+			connections.remove(clientKey);
 
-			if (botConnections.containsKey(conn)) {
-				botConnections.remove(conn);
-				executorService.submit(() -> listener.onBotLeft(conn));
+			if (botConnections.containsKey(clientKey)) {
+				botConnections.remove(clientKey);
+				executorService.submit(() -> listener.onBotLeft(clientKey));
 
-			} else if (observerConnections.containsKey(conn)) {
-				observerConnections.remove(conn);
-				executorService.submit(() -> listener.onObserverLeft(conn));
+			} else if (observerConnections.containsKey(clientKey)) {
+				observerConnections.remove(clientKey);
+				executorService.submit(() -> listener.onObserverLeft(clientKey));
 
-			} else if (controllerConnections.containsKey(conn)) {
-				controllerConnections.remove(conn);
-				executorService.submit(() -> listener.onControllerLeft(conn));
+			} else if (controllerConnections.containsKey(clientKey)) {
+				controllerConnections.remove(clientKey);
+				executorService.submit(() -> listener.onControllerLeft(clientKey));
 			}
 		}
 
@@ -179,88 +202,88 @@ public final class ConnHandler {
 			Gson gson = new Gson();
 			JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
 
-			JsonElement jsonElement = jsonObject.get(TYPE);
-			if (jsonElement != null) {
+			JsonElement jsonType = jsonObject.get(TYPE);
+			if (jsonType != null) {
 				try {
-					final Message.Type type = Message.Type.fromValue(jsonElement.getAsString());
-
+					Message.Type type = Message.Type.fromValue(jsonType.getAsString());
 					System.out.println("Handling message: " + type);
+
+					JsonElement jsonClientKey = jsonObject.get(CLIENT_KEY);
+					if (jsonClientKey == null) {
+						System.out.println("Client key is missing in message");
+						return;
+					}
+					String clientKeyNotFinal = jsonClientKey.getAsString();
+					if (!connections.keySet().contains(clientKeyNotFinal)) {
+						System.out.println("Client key not recognized, ignoring: " + clientKeyNotFinal);
+						return;
+					}
+					final String clientKey = clientKeyNotFinal;
 
 					switch (type) {
 					case BOT_HANDSHAKE: {
 						BotHandshake handshake = gson.fromJson(message, BotHandshake.class);
-						botConnections.put(conn, handshake);
+						botConnections.put(clientKey, conn);
+						botHandshakes.put(clientKey, handshake);
 
-						executorService.submit(() -> listener.onBotJoined(conn, handshake));
+						executorService.submit(() -> listener.onBotJoined(clientKey, handshake));
 						break;
 					}
 					case OBSERVER_HANDSHAKE: {
 						ObserverHandshake handshake = gson.fromJson(message, ObserverHandshake.class);
-						observerConnections.put(conn, handshake);
+						observerConnections.put(clientKey, conn);
+						observerHandshakes.put(clientKey, handshake);
 
-						executorService.submit(() -> listener.onObserverJoined(conn, handshake));
+						executorService.submit(() -> listener.onObserverJoined(clientKey, handshake));
 						break;
 					}
 					case CONTROLLER_HANDSHAKE: {
 						ControllerHandshake handshake = gson.fromJson(message, ControllerHandshake.class);
-						controllerConnections.put(conn, handshake);
+						controllerConnections.put(clientKey, conn);
+						controllerHandshakes.put(clientKey, handshake);
 
-						executorService.submit(() -> listener.onControllerJoined(conn, handshake));
+						executorService.submit(() -> listener.onControllerJoined(clientKey, handshake));
 						break;
 					}
 					case BOT_READY: {
-						BotHandshake handshake = botConnections.get(conn);
-						if (handshake != null) {
-							executorService.submit(() -> listener.onBotReady(conn));
-						}
+						executorService.submit(() -> listener.onBotReady(clientKey));
 						break;
 					}
 					case BOT_INTENT: {
-						BotHandshake handshake = botConnections.get(conn);
-						if (handshake != null) {
-							BotIntent intent = gson.fromJson(message, BotIntent.class);
-							executorService.submit(() -> listener.onBotIntent(conn, intent));
-						}
+						BotIntent intent = gson.fromJson(message, BotIntent.class);
+						executorService.submit(() -> listener.onBotIntent(clientKey, intent));
 						break;
 					}
 					default:
 						notifyException(new IllegalStateException("Unhandled message type: " + type));
 					}
 				} catch (IllegalArgumentException e) {
-					final Command.Type type = Command.Type.fromValue(jsonElement.getAsString());
-
+					Command.Type type = Command.Type.fromValue(jsonType.getAsString());
 					System.out.println("Handling command: " + type);
+
+					String clientKey = jsonObject.get(CLIENT_KEY).getAsString();
+					if (!connections.keySet().contains(clientKey)) {
+						System.out.println("Client key not recognized, ignoring: " + clientKey);
+					}
 
 					switch (type) {
 					case START_GAME: {
-						ControllerHandshake handshake = controllerConnections.get(conn);
 						StartGame startGame = gson.fromJson(message, StartGame.class);
 						GameSetup gameSetup = startGame.getGameSetup();
 						Collection<BotAddress> botAddresses = startGame.getBotAddresses();
-						if (handshake != null) {
-							executorService.submit(() -> listener.onStartGame(conn, gameSetup, botAddresses));
-						}
+						executorService.submit(() -> listener.onStartGame(gameSetup, botAddresses));
 						break;
 					}
 					case STOP_GAME: {
-						ControllerHandshake handshake = controllerConnections.get(conn);
-						if (handshake != null) {
-							executorService.submit(() -> listener.onStopGame(conn));
-						}
+						executorService.submit(() -> listener.onStopGame());
 						break;
 					}
 					case PAUSE_GAME: {
-						ControllerHandshake handshake = controllerConnections.get(conn);
-						if (handshake != null) {
-							executorService.submit(() -> listener.onPauseGame(conn));
-						}
+						executorService.submit(() -> listener.onPauseGame());
 						break;
 					}
 					case RESUME_GAME: {
-						ControllerHandshake handshake = controllerConnections.get(conn);
-						if (handshake != null) {
-							executorService.submit(() -> listener.onResumeGame(conn));
-						}
+						executorService.submit(() -> listener.onResumeGame());
 						break;
 					}
 

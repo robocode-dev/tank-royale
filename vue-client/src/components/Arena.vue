@@ -26,6 +26,8 @@
       var socket = new ReconnectingWebSocket(this.shared.serverUrl)
       this.socket = socket
 
+      var vm = this
+
       socket.onmessage = function (event) {
         console.log('ws message: ' + event.data)
 
@@ -33,18 +35,18 @@
         switch (message.type) {
         }
       }
-/*
+
       socket.onopen = function (event) {
-        this.socket.send(JSON.stringify(
+        vm.socket.send(JSON.stringify(
           {
+            clientKey: sharedData.clientKey,
             type: 'startGame',
-            gameSetup: this.ctrl.gameSetup,
-            botAddresses: this.ctrl.selectedBots
+            gameSetup: vm.ctrl.gameSetup,
+            botAddresses: vm.ctrl.selectedBots
           }
         ))
+        console.info("Start game")
       }
-      console.info("Start game")
-*/
     },
     methods: {
     }
