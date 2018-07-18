@@ -137,13 +137,8 @@ public final class GameServer {
 
 		runningState = RunningState.GAME_RUNNING;
 
-		// Send NewBattle to all participant observers to get them started
-		if (connHandler.getObserverConnections().size() > 0) {
-			GameStartedEventForObserver gameStartedForObserver = new GameStartedEventForObserver();
-			gameStartedForObserver.setType(GameStartedEventForObserver.Type.GAME_STARTED_EVENT_FOR_OBSERVER);
-			gameStartedForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
-
-			List<Participant> list = new ArrayList<>();
+		List<Participant> participantList = new ArrayList<>();
+		if (connHandler.getObserverAndControllerConnections().size() > 0) {
 			for (String botKey : participants) {
 				BotHandshake h = connHandler.getBotHandshakes().get(botKey);
 				Participant p = new Participant();
@@ -154,13 +149,21 @@ public final class GameServer {
 				p.setName(h.getName());
 				p.setProgrammingLanguage(h.getProgrammingLanguage());
 				p.setVersion(h.getVersion());
-				list.add(p);
+				participantList.add(p);
 			}
-			gameStartedForObserver.setParticipants(list);
+		}
+
+		// Send NewBattle to all participant observers to get them started
+		if (connHandler.getObserverAndControllerConnections().size() > 0) {
+			GameStartedEventForObserver gameStartedForObserver = new GameStartedEventForObserver();
+			gameStartedForObserver.setType(GameStartedEventForObserver.Type.GAME_STARTED_EVENT_FOR_OBSERVER);
+			gameStartedForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
+
+			gameStartedForObserver.setParticipants(participantList);
 
 			String msg = gson.toJson(gameStartedForObserver);
 
-			for (Entry<String, WebSocket> entry : connHandler.getObserverConnections().entrySet()) {
+			for (Entry<String, WebSocket> entry : connHandler.getObserverAndControllerConnections().entrySet()) {
 				send(entry.getValue(), msg);
 			}
 		}
@@ -291,12 +294,12 @@ public final class GameServer {
 				observerTurn = observerRound.getTurns().get(delayedObserverTurnNumber);
 
 				// Send game state as 'tick' to observers
-				for (Map.Entry<String, ObserverHandshake> entry : connHandler.getObserverHandshakes().entrySet()) {
+				for (String clientId : connHandler.getObserverAndControllerConnections().keySet()) {
 					TickEventForObserver gameTickForObserver = TurnToGameTickForObserverMapper.map(observerRound,
 							observerTurn);
 
 					String msg = gson.toJson(gameTickForObserver);
-					send(entry.getKey(), msg);
+					send(clientId, msg);
 				}
 			}
 		}
@@ -333,10 +336,10 @@ public final class GameServer {
 
 		Map<String, WebSocket> botConnections = connHandler.getBotConnections();
         for (Entry<String, WebSocket> entry : botConnections.entrySet()) {
-        	String botKey = entry.getKey();
+        	String clientKey = entry.getKey();
             InetSocketAddress address = entry.getValue().getRemoteSocketAddress();
             BotInfo botInfo = BotHandshakeToBotInfoMapper.map(
-            		connHandler.getBotHandshakes().get(botKey), address.getHostString(), address.getPort());
+            		connHandler.getBotHandshakes().get(clientKey), address.getHostString(), address.getPort());
             bots.add(botInfo);
         }
 		return gson.toJson(botListUpdate);
@@ -344,11 +347,8 @@ public final class GameServer {
 	
 	private void sendBotListUpdateToObservers() {
 		String msg = createBotListUpdateMessage();
-		for (WebSocket observerConn : connHandler.getObserverConnections().values()) {
-			send(observerConn, msg);
-		}
-		for (WebSocket controllerConn : connHandler.getControllerConnections().values()) {
-			send(controllerConn, msg);
+		for (WebSocket conn : connHandler.getObserverAndControllerConnections().values()) {
+			send(conn, msg);
 		}
 	}
 

@@ -18,6 +18,8 @@
         shared: sharedData,
         socket: null,
 
+        clientKey: null,
+
         ctrl: sharedData.controller,
         observer: sharedData.observer
       }
@@ -26,29 +28,57 @@
       var socket = new ReconnectingWebSocket(this.shared.serverUrl)
       this.socket = socket
 
-      var vm = this
+      const vm = this
 
       socket.onmessage = function (event) {
         console.log('ws message: ' + event.data)
 
         const message = JSON.parse(event.data)
         switch (message.type) {
+          case 'serverHandshake':
+            vm.onServerHandshake(message)
+            break
         }
+        var canvasDiv = document.getElementById('canvas')
       }
 
       socket.onopen = function (event) {
-        vm.socket.send(JSON.stringify(
-          {
-            clientKey: sharedData.clientKey,
-            type: 'startGame',
-            gameSetup: vm.ctrl.gameSetup,
-            botAddresses: vm.ctrl.selectedBots
-          }
-        ))
-        console.info("Start game")
+        vm.sendBotHandshake()
       }
     },
     methods: {
+      onServerHandshake(serverHandshake) {
+        console.log('->serverHandshake')
+
+        this.clientKey = serverHandshake.clientKey
+        this.startGame()
+      },
+      sendBotHandshake() {
+        console.log('<-controllerHandshake')
+
+        this.socket.send(JSON.stringify(
+          {
+            clientKey: this.clientKey,
+            type: 'controllerHandshake',
+            name: 'Robocode 2 Game Controller',
+            version: '0.1.0',
+            author: 'Flemming N. Larsen <fnl@users.sourceforge.net>'
+          }
+        ))
+      },
+      startGame() {
+        console.info("Starting game")
+
+        // Start the game
+        this.socket.send(JSON.stringify(
+          {
+            clientKey: this.clientKey,
+            type: 'startGame',
+            gameSetup: this.ctrl.gameSetup,
+            botAddresses: this.ctrl.selectedBots
+          }
+        ))
+      }
     }
   }
 </script>

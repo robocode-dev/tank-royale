@@ -35,7 +35,7 @@ public final class ConnHandler {
 	private final Map<String /* clientKey */, WebSocket> connections = Collections.synchronizedMap(new HashMap<>());
 
     private final Map<String /* clientKey */, WebSocket> botConnections = Collections.synchronizedMap(new HashMap<>());
-    private final Map<String /* clientKey */, WebSocket> observerConnections = Collections.synchronizedMap(new HashMap<>());
+    private final Map<String /* clientKey */, WebSocket> observerAndControllerConnections = Collections.synchronizedMap(new HashMap<>());
     private final Map<String /* clientKey */, WebSocket> controllerConnections = Collections.synchronizedMap(new HashMap<>());
 
     private final Map<String /* clientKey */, BotHandshake> botHandshakes = Collections.synchronizedMap(new HashMap<>());
@@ -74,8 +74,8 @@ public final class ConnHandler {
 		return Collections.unmodifiableMap(botConnections);
 	}
 
-	Map<String /* clientKey */, WebSocket> getObserverConnections() {
-		return Collections.unmodifiableMap(observerConnections);
+	Map<String /* clientKey */, WebSocket> getObserverAndControllerConnections() {
+		return Collections.unmodifiableMap(observerAndControllerConnections);
 	}
 
 	Map<String /* clientKey */, WebSocket> getControllerConnections() {
@@ -185,13 +185,23 @@ public final class ConnHandler {
 				botConnections.remove(clientKey);
 				executorService.submit(() -> listener.onBotLeft(clientKey));
 
-			} else if (observerConnections.containsKey(clientKey)) {
-				observerConnections.remove(clientKey);
+			} else if (observerAndControllerConnections.containsKey(clientKey)) {
+				observerAndControllerConnections.remove(clientKey);
 				executorService.submit(() -> listener.onObserverLeft(clientKey));
 
 			} else if (controllerConnections.containsKey(clientKey)) {
 				controllerConnections.remove(clientKey);
 				executorService.submit(() -> listener.onControllerLeft(clientKey));
+			}
+
+			if (botHandshakes.containsKey(clientKey)) {
+				botHandshakes.remove(clientKey);
+
+			} else if (observerHandshakes.containsKey(clientKey)) {
+				observerHandshakes.remove(clientKey);
+
+			} else if (controllerHandshakes.containsKey(clientKey)) {
+				controllerHandshakes.remove(clientKey);
 			}
 		}
 
@@ -231,7 +241,7 @@ public final class ConnHandler {
 					}
 					case OBSERVER_HANDSHAKE: {
 						ObserverHandshake handshake = gson.fromJson(message, ObserverHandshake.class);
-						observerConnections.put(clientKey, conn);
+						observerAndControllerConnections.put(clientKey, conn);
 						observerHandshakes.put(clientKey, handshake);
 
 						executorService.submit(() -> listener.onObserverJoined(clientKey, handshake));
@@ -241,6 +251,7 @@ public final class ConnHandler {
 						ControllerHandshake handshake = gson.fromJson(message, ControllerHandshake.class);
 						controllerConnections.put(clientKey, conn);
 						controllerHandshakes.put(clientKey, handshake);
+						observerAndControllerConnections.put(clientKey, conn); // controller is also an observer
 
 						executorService.submit(() -> listener.onControllerJoined(clientKey, handshake));
 						break;
