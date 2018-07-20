@@ -38,12 +38,17 @@
           case 'serverHandshake':
             vm.onServerHandshake(message)
             break
+          case 'gameStartedEventForObserver':
+            vm.onGameStarted(message)
+            break
+          case 'tickEventForObserver':
+            vm.onTick(message)
+            break
         }
         var canvasDiv = document.getElementById('canvas')
       }
 
       socket.onopen = function (event) {
-        vm.sendBotHandshake()
       }
     },
     methods: {
@@ -51,9 +56,18 @@
         console.log('->serverHandshake')
 
         this.clientKey = serverHandshake.clientKey
+
+        this.sendControllerHandshake()
+
         this.startGame()
       },
-      sendBotHandshake() {
+      onGameStarted(gameStartedEvent) {
+        console.log('->gameStarted')
+      },
+      onTick(tickEvent) {
+        console.log('->tickEvent')
+      },
+      sendControllerHandshake() {
         console.log('<-controllerHandshake')
 
         this.socket.send(JSON.stringify(

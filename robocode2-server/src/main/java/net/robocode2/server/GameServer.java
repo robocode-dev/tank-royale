@@ -153,7 +153,7 @@ public final class GameServer {
 			}
 		}
 
-		// Send NewBattle to all participant observers to get them started
+		// Send GameStarted to all participant observers to get them started
 		if (connHandler.getObserverAndControllerConnections().size() > 0) {
 			GameStartedEventForObserver gameStartedForObserver = new GameStartedEventForObserver();
 			gameStartedForObserver.setType(GameStartedEventForObserver.Type.GAME_STARTED_EVENT_FOR_OBSERVER);
@@ -163,8 +163,8 @@ public final class GameServer {
 
 			String msg = gson.toJson(gameStartedForObserver);
 
-			for (Entry<String, WebSocket> entry : connHandler.getObserverAndControllerConnections().entrySet()) {
-				send(entry.getValue(), msg);
+			for (String clientKey: connHandler.getObserverAndControllerConnections().keySet()) {
+				send(clientKey, msg);
 			}
 		}
 
@@ -294,12 +294,12 @@ public final class GameServer {
 				observerTurn = observerRound.getTurns().get(delayedObserverTurnNumber);
 
 				// Send game state as 'tick' to observers
-				for (String clientId : connHandler.getObserverAndControllerConnections().keySet()) {
+				for (String clientKey : connHandler.getObserverAndControllerConnections().keySet()) {
 					TickEventForObserver gameTickForObserver = TurnToGameTickForObserverMapper.map(observerRound,
 							observerTurn);
 
 					String msg = gson.toJson(gameTickForObserver);
-					send(clientId, msg);
+					send(clientKey, msg);
 				}
 			}
 		}
