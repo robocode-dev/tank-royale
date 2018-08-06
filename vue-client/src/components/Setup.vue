@@ -4,13 +4,12 @@
 
       <b-row class="mt-3">
         <b-col>
-          <b-input-group size="sm">
-            <b-input-group-addon>Server URL</b-input-group-addon>
+          <b-input-group size="sm" prepend="Server URL">
             <b-input placeholder="ws://server:port" v-model="shared.serverUrl" />
-            <b-input-group-button slot="right">
+            <b-input-group-append>
               <b-btn @click="onConnect" v-show="!isConnected">Connect</b-btn>
-              <b-btn variant="warning" @click="onDisconnect" v-show="isConnected">Disconnect</b-btn>
-            </b-input-group-button>
+              <b-btn @click="onDisconnect" v-show="isConnected" variant="warning">Disconnect</b-btn>
+            </b-input-group-append>
           </b-input-group>
           <label style="width: 100%; text-align: right">Status: {{ connectionStatus }}</label>
         </b-col>
@@ -26,15 +25,13 @@
           <b-row class="mt-3">
             <b-col sm="12"><label>Arena size</label></b-col>
             <b-col sm="4">
-              <b-input-group size="sm">
-                <b-input-group-addon>width</b-input-group-addon>
+              <b-input-group size="sm" prepend="width">
                 <b-input type="number" v-model="ctrl.gameSetup.arenaWidth" :disabled="ctrl.gameSetup.isArenaWidthLocked" :min="rules.arenaMinSize"
                   :max="rules.arenaMaxSize" step="100" />
               </b-input-group>
             </b-col>
             <b-col sm="4">
-              <b-input-group size="sm">
-                <b-input-group-addon>height</b-input-group-addon>
+              <b-input-group size="sm" prepend="height">
                 <b-input type="number" v-model="ctrl.gameSetup.arenaHeight" :disabled="ctrl.gameSetup.isArenaHeightLocked" :min="rules.arenaMinSize"
                   :max="rules.arenaMaxSize" step="100" />
               </b-input-group>
@@ -138,7 +135,7 @@
 
         serverHandshake: null, // from server
 
-        gameTypeOptions: null,
+        gameTypeOptions: [],
 
         rules: {
           arenaMinSize: 400,
