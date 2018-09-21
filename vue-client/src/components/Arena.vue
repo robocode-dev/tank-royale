@@ -2,6 +2,15 @@
   <div class="arena">
     <b-container>
       <canvas id="canvas" width="800" height="600" />
+      <b-row class="mt-3">
+        <b-col sm="12">
+            <b-btn @click="startGame" v-show="!isGameRunning">Start Game</b-btn>
+            <b-btn @click="stopGame" v-show="isGameRunning">Stop Game</b-btn>
+
+            <b-btn @click="pauseGame" v-show="!isGamePaused" :disabled="!isGameRunning">Pause Game</b-btn>
+            <b-btn @click="resumeGame" v-show="isGamePaused" :disabled="!isGameRunning">Resume Game</b-btn>
+        </b-col>
+      </b-row>
     </b-container>
   </div>
 </template>
@@ -47,11 +56,16 @@
 
         lastBotPositions: [],
         explosions: [],
+
+        isGameRunning: false,
+        isGamePaused: false
       }
     },
     mounted() {
       this.canvas = document.getElementById("canvas")
       this.ctx = canvas.getContext("2d")
+
+      this.clearCanvas()
 
       var socket = new ReconnectingWebSocket(this.shared.serverUrl)
       this.socket = socket
@@ -72,6 +86,18 @@
           case 'tickEventForObserver':
             vm.onTick(message)
             break
+          case 'gameAbortedEventForObserver':
+            vm.onGameAborted(message)
+            break
+          case 'gameEndedEventForObserver':
+            vm.onGameEnded(message)
+            break
+          case 'gamePausedEventForObserver':
+            vm.onGamePaused(message)
+            break
+          case 'gameResumedEventForObserver':
+            vm.onGameResumed(message)
+            break
         }
         var canvasDiv = document.getElementById('canvas')
       }
@@ -86,8 +112,6 @@
         this.clientKey = serverHandshake.clientKey
 
         this.sendControllerHandshake()
-
-        this.startGame()
       },
       sendControllerHandshake() {
         console.log('<-controllerHandshake')
@@ -103,9 +127,8 @@
         ))
       },
       startGame() {
-        console.info("Starting game")
+        console.info("<-startGame")
 
-        // Start the game
         this.socket.send(JSON.stringify(
           {
             clientKey: this.clientKey,
@@ -115,7 +138,39 @@
           }
         ))
       },
+      stopGame() {
+        console.info("<-stopGame")
+
+        this.socket.send(JSON.stringify(
+          {
+            clientKey: this.clientKey,
+            type: 'stopGame'
+          }
+        ))
+      },
+      pauseGame() {
+        console.info("<-pauseGame")
+
+        this.socket.send(JSON.stringify(
+          {
+            clientKey: this.clientKey,
+            type: 'pauseGame'
+          }
+        ))
+      },
+      resumeGame() {
+        console.info("<-resumeGame")
+
+        this.socket.send(JSON.stringify(
+          {
+            clientKey: this.clientKey,
+            type: 'resumeGame'
+          }
+        ))
+      },
       onGameStarted(gameStartedEvent) {
+        this.isGameRunning = true
+
         console.log('->gameStarted')
 
         this.botStates = []
@@ -125,6 +180,18 @@
 
         this.lastBotPositions = []
         this.explosions = []
+      },
+      onGameAborted(gameAbortedEvent) {
+        this.isGameRunning = false
+      },
+      onGameEnded(gameEndedEvent) {
+        this.isGameRunning = false
+      },
+      onGamePaused(gamePausedEvent) {
+        this.isGamePaused = true
+      },
+      onGameResumed(gameResumedEvent) {
+        this.isGamePaused = false
       },
       onTick(tickEvent) {
         console.log('->tickEvent')
@@ -174,9 +241,7 @@
         }
       },
       draw() {
-        // Clear canvas
-        this.ctx.fillStyle = 'black'
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
+        this.clearCanvas()
 
         this.bulletStates.forEach(bullet => {
           var pos = bullet.position
@@ -197,6 +262,10 @@
           var pos = explosion.pos
           this.fillCircle(pos.x, pos.y, explosion.size, 'red')
         })
+      },
+      clearCanvas() {
+        this.ctx.fillStyle = 'black'
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
       },
       drawBullet(x, y, power) {
         var size = Math.max(Math.sqrt(5 * power), 1)
