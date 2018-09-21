@@ -1,6 +1,7 @@
 $id: #command.yaml
 $schema: http://json-schema.org/draft-07/schema#
 description: Controller command
+javaType: net.robocode2.json_schema.control.Command
 properties:
   type:
     enum:

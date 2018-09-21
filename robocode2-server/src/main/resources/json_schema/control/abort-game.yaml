@@ -1,6 +1,6 @@
-$id: #stop-game.yaml
+$id: #abort-game.yaml
 $schema: http://json-schema.org/draft-07/schema#
-description: Command to stop a game
+description: Command to abort a game
 type: object
 extends:
   $ref: command.yaml

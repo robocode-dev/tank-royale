@@ -286,7 +286,7 @@ public final class ConnHandler {
 						break;
 					}
 					case STOP_GAME: {
-						executorService.submit(() -> listener.onStopGame());
+						executorService.submit(() -> listener.onAbortGame());
 						break;
 					}
 					case PAUSE_GAME: {

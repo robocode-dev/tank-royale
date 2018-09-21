@@ -22,7 +22,6 @@ properties:
     type: array
     items:
       $ref: event.yaml
-
 required:
 - roundState
 - botStates

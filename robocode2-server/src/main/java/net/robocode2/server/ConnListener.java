@@ -2,8 +2,6 @@ package net.robocode2.server;
 
 import java.util.Collection;
 
-import org.java_websocket.WebSocket;
-
 import net.robocode2.json_schema.GameSetup;
 import net.robocode2.json_schema.comm.BotAddress;
 import net.robocode2.json_schema.comm.BotIntent;
@@ -33,7 +31,7 @@ public interface ConnListener {
 
 	void onStartGame(GameSetup gameSetup, Collection<BotAddress> botAddresses);
 
-	void onStopGame();
+	void onAbortGame();
 
 	void onPauseGame();
 

@@ -14,6 +14,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import lombok.val;
+import net.robocode2.json_schema.events.*;
 import org.java_websocket.WebSocket;
 
 import com.google.gson.Gson;
@@ -27,10 +28,6 @@ import net.robocode2.json_schema.comm.BotListUpdate;
 import net.robocode2.json_schema.comm.ControllerHandshake;
 import net.robocode2.json_schema.comm.Message;
 import net.robocode2.json_schema.comm.ObserverHandshake;
-import net.robocode2.json_schema.events.GameStartedEventForBot;
-import net.robocode2.json_schema.events.GameStartedEventForObserver;
-import net.robocode2.json_schema.events.TickEventForBot;
-import net.robocode2.json_schema.events.TickEventForObserver;
 import net.robocode2.mappers.BotHandshakeToBotInfoMapper;
 import net.robocode2.mappers.BotIntentToBotIntentMapper;
 import net.robocode2.mappers.GameSetupToGameSetupMapper;
@@ -161,11 +158,7 @@ public final class GameServer {
 
 			gameStartedForObserver.setParticipants(participantList);
 
-			String msg = gson.toJson(gameStartedForObserver);
-
-			for (String clientKey: connHandler.getObserverAndControllerConnections().keySet()) {
-				send(clientKey, msg);
-			}
+			sendMessageToObservers(gson.toJson(gameStartedForObserver));
 		}
 
 		// Prepare model update
@@ -183,24 +176,56 @@ public final class GameServer {
 		}, gameSetup.getTurnTimeout(), gameSetup.getTurnTimeout());
 	}
 
-	private void stopGame() {
-		System.out.println("#### STOP GAME #####");
+	private void startGame(net.robocode2.json_schema.GameSetup gameSetup, Collection<BotAddress> botAddresses) {
+		System.out.println("#### START GAME #####");
+
+		this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup);
+		participants = connHandler.getBotKeys(botAddresses);
+		if (participants.size() > 0) {
+			prepareGame();
+		}
+	}
+
+	private void abortGame() {
+		System.out.println("#### ABORT GAME #####");
 
 		runningState = RunningState.GAME_STOPPED;
 
-		// TODO: Present score for bots and observers. Af that, set game state to the initial state
+		GameAbortedEventForObserver abortedEvent = new GameAbortedEventForObserver();
+		abortedEvent.setType(GameAbortedEventForObserver.Type.GAME_ABORTED_EVENT_FOR_OBSERVER);
+		sendMessageToObservers(gson.toJson(abortedEvent));
+
+		// TODO: Present score for bots and observers. After that, set game state to the initial state
+	}
+
+	private void endGame() {
+		System.out.println("#### END GAME #####");
+
+		runningState = RunningState.GAME_STOPPED;
+
+		// TODO: Send GameEndedEvent to bots and observers
+
+		// TODO: Present score for bots and observers. After that, set game state to the initial state
 	}
 
 	private void pauseGame() {
 		System.out.println("#### PAUSE GAME #####");
 
-		runningState = RunningState.GAME_PAUSED;
+		GamePausedEventForObserver pausedEvent = new GamePausedEventForObserver();
+		pausedEvent.setType(GamePausedEventForObserver.Type.GAME_PAUSED_EVENT_FOR_OBSERVER);
+        sendMessageToObservers(gson.toJson(pausedEvent));
+
+        runningState = RunningState.GAME_PAUSED;
 	}
 
 	private void resumeGame() {
 		System.out.println("#### RESUME GAME #####");
 
-		if (runningState == RunningState.GAME_PAUSED) {
+        GameResumedEventForObserver resumedEvent = new GameResumedEventForObserver();
+        resumedEvent.setType(GameResumedEventForObserver.Type.GAME_RESUMED_EVENT_FOR_OBSERVER);
+        sendMessageToObservers(gson.toJson(resumedEvent));
+
+        if (runningState == RunningState.GAME_PAUSED) {
 			runningState = RunningState.GAME_RUNNING;
 		}
 	}
@@ -290,17 +315,13 @@ public final class GameServer {
 					}
 				}
 			}
-			if (delayedObserverTurnNumber >= 0) {
+			if (delayedObserverTurnNumber >= 0 && delayedObserverTurnNumber < observerRound.getTurns().size()) {
 				observerTurn = observerRound.getTurns().get(delayedObserverTurnNumber);
 
 				// Send game state as 'tick' to observers
-				for (String clientKey : connHandler.getObserverAndControllerConnections().keySet()) {
-					TickEventForObserver gameTickForObserver = TurnToGameTickForObserverMapper.map(observerRound,
-							observerTurn);
-
-					String msg = gson.toJson(gameTickForObserver);
-					send(clientKey, msg);
-				}
+				TickEventForObserver gameTickForObserver =
+						TurnToGameTickForObserverMapper.map(observerRound, observerTurn);
+				sendMessageToObservers(gson.toJson(gameTickForObserver));
 			}
 		}
 	}
@@ -345,11 +366,14 @@ public final class GameServer {
 		return gson.toJson(botListUpdate);
 	}
 	
-	private void sendBotListUpdateToObservers() {
-		String msg = createBotListUpdateMessage();
+	private void sendMessageToObservers(String msg) {
 		for (WebSocket conn : connHandler.getObserverAndControllerConnections().values()) {
 			send(conn, msg);
 		}
+	}
+
+	private void sendBotListUpdateToObservers() {
+		sendMessageToObservers(createBotListUpdateMessage());
 	}
 
 	private class GameServerConnListener implements ConnListener {
@@ -407,17 +431,12 @@ public final class GameServer {
 
 		@Override
 		public void onStartGame(net.robocode2.json_schema.GameSetup gameSetup, Collection<BotAddress> botAddresses) {
-
-			GameServer.this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup);
-			participants = connHandler.getBotKeys(botAddresses);
-			if (participants.size() > 0) {
-				prepareGame();
-			}
+			startGame(gameSetup, botAddresses);
 		}
 
 		@Override
-		public void onStopGame() {
-			stopGame();
+		public void onAbortGame() {
+			abortGame();
 		}
 
 		@Override
