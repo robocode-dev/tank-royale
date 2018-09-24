@@ -107,7 +107,7 @@
             <b-col sm="12"><b-button size="lg" variant="secondary" style="width: 100%; text-align: center" @click="onStartGameClicked" :disabled="!isGameStartValid()">Start Game</b-button></b-col>
           </b-row>
         </div> <!-- v=show="isGameTypeSelected" -->
-      </div> <!-- v-show="isConnected()"" -->
+      </div> <!-- v-show="isConnected" -->
     </b-container>
 
   </div>
@@ -210,7 +210,7 @@
 
         this.ctrl.gameSetup = null
         this.ctrl.selectedBots = []
-        this.gameTypeOptions = null
+        this.gameTypeOptions = []
       },
       sendControllerHandshake () {
         console.log('<-controllerHandshake')

@@ -1,9 +1,10 @@
 <template>
   <div class="arena">
     <b-container>
-      <canvas id="canvas" width="800" height="600" />
-      <b-row class="mt-3">
-        <b-col sm="12">
+      <div class="mt-3"></div>
+      <canvas id="canvas" width="800" height="600"></canvas>
+      <b-row class="mt-2">
+        <b-col sm="8">
             <b-btn @click="startGame" v-show="!isGameRunning">Start Game</b-btn>
             <b-btn @click="stopGame" v-show="isGameRunning">Stop Game</b-btn>
 
@@ -100,6 +101,8 @@
             break
         }
         var canvasDiv = document.getElementById('canvas')
+
+//        vm.startGame()
       }
 
       socket.onopen = function (event) {
