@@ -19,8 +19,6 @@
 <script>
   import ReconnectingWebSocket from 'reconnectingwebsocket'
 
-  const sharedData = require('./shared-data.js')
-
   class Point {
     constructor(x, y) {
       this.x = x
@@ -42,13 +40,8 @@
         canvas: null,
         ctx: null,
 
-        shared: sharedData,
         socket: null,
-
         clientKey: null,
-
-        ctrl: sharedData.controller,
-        observer: sharedData.observer,
 
         botStates: [],
         bulletStates: [],
@@ -68,7 +61,7 @@
 
       this.clearCanvas()
 
-      var socket = new ReconnectingWebSocket(this.shared.serverUrl)
+      var socket = new ReconnectingWebSocket(this.$store.getters.serverUrl)
       this.socket = socket
 
       const vm = this
@@ -136,8 +129,8 @@
           {
             clientKey: this.clientKey,
             type: 'startGame',
-            gameSetup: this.ctrl.gameSetup,
-            botAddresses: this.ctrl.selectedBots
+            gameSetup: this.$store.getters.gameSetup,
+            botAddresses: this.$store.getters.selectedBots
           }
         ))
       },
