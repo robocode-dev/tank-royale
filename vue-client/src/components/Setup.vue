@@ -18,7 +18,9 @@
       <div v-if="isConnected">
         <b-row class="mt-0">
           <b-col sm="12"><label>Game Type</label></b-col>
-          <b-col sm="4"><b-form-select size="sm" :options="gameTypeOptions" @change.native="onGameTypeChanged" /></b-col>
+          <b-col sm="4">
+            <b-form-select size="sm" :options="gameTypeOptions" @change.native="onGameTypeChanged" />
+          </b-col>
         </b-row>
 
         <div v-if="isGameTypeSelected()">
@@ -54,11 +56,13 @@
           <b-row class="mt-2">
             <b-col sm="3"><label>Number of rounds</label></b-col>
             <b-col sm="2">
-              <b-input size="sm" type="number" v-model="gameSetup.numberOfRounds" :disabled="gameSetup.isNumberOfRoundsLocked" :min="1"/>
+              <b-input size="sm" type="number" v-model="gameSetup.numberOfRounds" :disabled="gameSetup.isNumberOfRoundsLocked"
+                :min="1" />
             </b-col>
             <b-col sm="3"><label>Inactivity turns</label></b-col>
             <b-col sm="2">
-              <b-input size="sm" type="number" v-model="gameSetup.inactivityTurns" :disabled="gameSetup.isInactivityTurnsLocked" :min="1" step="50" />
+              <b-input size="sm" type="number" v-model="gameSetup.inactivityTurns" :disabled="gameSetup.isInactivityTurnsLocked"
+                :min="1" step="50" />
             </b-col>
           </b-row>
 
@@ -70,15 +74,16 @@
             </b-col>
             <b-col sm="3"><label>Turn timeout (ms)</label></b-col>
             <b-col sm="2">
-              <b-input size="sm" type="number" v-model="gameSetup.turnTimeout" :disabled="gameSetup.turnTimeoutLocked" :min="1" />
+              <b-input size="sm" type="number" v-model="gameSetup.turnTimeout" :disabled="gameSetup.turnTimeoutLocked"
+                :min="1" />
             </b-col>
           </b-row>
 
           <b-row class="mt-2">
             <b-col sm="3"><label>Gun cooling rate</label></b-col>
             <b-col sm="2">
-              <b-input size="sm" type="number" v-model="gameSetup.gunCoolingRate" :disabled="gameSetup.isGunCoolingRateLocked" :min="rules.minGunCoolingRate"
-                :max="rules.maxGunCoolingRate" step="0.1" />
+              <b-input size="sm" type="number" v-model="gameSetup.gunCoolingRate" :disabled="gameSetup.isGunCoolingRateLocked"
+                :min="rules.minGunCoolingRate" :max="rules.maxGunCoolingRate" step="0.1" />
             </b-col>
             <b-col sm="3"><label>Delayed observer turns</label></b-col>
             <b-col sm="2">
@@ -104,7 +109,10 @@
           </b-card-group>
 
           <b-row class="mt-3">
-            <b-col sm="12"><b-button size="lg" variant="secondary" style="width: 100%; text-align: center" @click="onStartGameClicked" :disabled="!isGameStartValid()">Start Game</b-button></b-col>
+            <b-col sm="12">
+              <b-button size="lg" variant="secondary" style="width: 100%; text-align: center" @click="onStartGameClicked"
+                :disabled="!isGameStartValid()">Start Game</b-button>
+            </b-col>
           </b-row>
         </div> <!-- v=show="isGameTypeSelected" -->
       </div> <!-- v-show="isConnected" -->
@@ -114,11 +122,12 @@
 </template>
 
 <script>
+  import store from '../store/store.js'
   import ReconnectingWebSocket from 'reconnectingwebsocket'
 
   export default {
     name: 'setup',
-    data () {
+    data() {
       return {
         serverUrl: null,
         clientKey: null,
@@ -147,7 +156,7 @@
         availableBots: []
       }
     },
-    mounted () {
+    mounted() {
       const server = this.$route.query.server
       if (server) {
         this.server = server
@@ -159,7 +168,7 @@
       this.serverUrl = 'ws://' + this.server + ':' + this.port
     },
     methods: {
-      onConnect () {
+      onConnect() {
         var socket = this.socket
         if (socket) {
           socket.open()
@@ -167,7 +176,7 @@
         }
 
         // Store the server URL
-        this.$store.commit('setServerUrl', this.serverUrl)
+        store.setServerUrl(this.serverUrl)
 
         socket = new ReconnectingWebSocket(this.serverUrl)
         this.socket = socket
@@ -206,14 +215,14 @@
           }
         }
       },
-      onDisconnect () {
+      onDisconnect() {
         this.socket.close()
 
         this.gameSetup = null
         this.selectedBots = []
         this.gameTypeOptions = []
       },
-      sendControllerHandshake () {
+      sendControllerHandshake() {
         console.log('<-controllerHandshake')
 
         this.socket.send(JSON.stringify(
@@ -226,7 +235,7 @@
           }
         ))
       },
-      onServerHandshake (serverHandshake) {
+      onServerHandshake(serverHandshake) {
         console.log('->serverHandshake')
 
         this.serverHandshake = serverHandshake
@@ -249,7 +258,7 @@
         }
         this.gameTypeOptions = gameTypeOptions
       },
-      onBotListUpdate (botListUpdate) {
+      onBotListUpdate(botListUpdate) {
         console.log('->botListUpdate')
 
         const bots = botListUpdate.bots
@@ -260,36 +269,36 @@
         this.availableBots = bots
         this.availableBots.sort(this.compareBots)
       },
-      isGameTypeSelected () {
+      isGameTypeSelected() {
         return this.gameSetup != null
       },
-      onGameTypeChanged (event) {
+      onGameTypeChanged(event) {
         var foundGameSetup = this.serverHandshake.games.find(gameSetup => gameSetup.gameType === event.target.value)
         if (!foundGameSetup) {
           foundGameSetup = null
         }
         this.gameSetup = foundGameSetup
       },
-      onAvailableBotClicked (bot) {
+      onAvailableBotClicked(bot) {
         this.selectedBots.push(bot)
         this.selectedBots.sort(this.compareBots)
         this.removeItem(this.availableBots, bot)
       },
-      onSelectedBotClicked (bot) {
+      onSelectedBotClicked(bot) {
         this.availableBots.push(bot)
         this.availableBots.sort(this.compareBots)
         this.removeItem(this.selectedBots, bot)
       },
-      onAllAvailableBotsClicked () {
+      onAllAvailableBotsClicked() {
         this.selectedBots = this.selectedBots.concat(this.availableBots).sort(this.compareBots)
         this.availableBots = []
       },
-      onAllSelectedBotsClicked () {
+      onAllSelectedBotsClicked() {
         this.availableBots = this.availableBots.concat(this.selectedBots)
         this.availableBots.sort(this.compareBots)
         this.selectedBots = []
       },
-      removeItem (array, item) {
+      removeItem(array, item) {
         for (var i = 0; i < array.length; i++) {
           if (array[i] === item) {
             array.splice(i, 1)
@@ -297,12 +306,12 @@
           }
         }
       },
-      compareBots (a, b) {
+      compareBots(a, b) {
         if (a.displayText < b.displayText) return -1
         if (a.displayText > b.displayText) return 1
         return 0
       },
-      isGameStartValid () {
+      isGameStartValid() {
         const selectedBotsCount = this.selectedBots.length
         const gameSetup = this.gameSetup
         return this.isConnected &&
@@ -310,11 +319,11 @@
           (selectedBotsCount >= gameSetup.minNumberOfParticipants) &&
           ((selectedBotsCount <= gameSetup.maxNumberOfParticipants) || gameSetup.maxNumberOfParticipants == null)
       },
-      onStartGameClicked () {
+      onStartGameClicked() {
         console.log('Goto arena')
 
-        this.$store.commit('setGameSetup', this.gameSetup)
-        this.$store.commit('setSelectedBots', this.selectedBots)
+        store.setGameSetup(this.gameSetup)
+        store.setSelectedBots(this.selectedBots)
 
         this.$router.push('/arena')
       }

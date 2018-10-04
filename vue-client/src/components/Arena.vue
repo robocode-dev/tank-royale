@@ -5,11 +5,11 @@
       <canvas id="canvas" width="800" height="600"></canvas>
       <b-row class="mt-2">
         <b-col sm="8">
-            <b-btn @click="startGame" v-show="!isGameRunning">Start Game</b-btn>
-            <b-btn @click="stopGame" v-show="isGameRunning">Stop Game</b-btn>
+          <b-btn @click="startGame" v-show="!isGameRunning">Start Game</b-btn>
+          <b-btn @click="stopGame" v-show="isGameRunning">Stop Game</b-btn>
 
-            <b-btn @click="pauseGame" v-show="!isGamePaused" :disabled="!isGameRunning">Pause Game</b-btn>
-            <b-btn @click="resumeGame" v-show="isGamePaused" :disabled="!isGameRunning">Resume Game</b-btn>
+          <b-btn @click="pauseGame" v-show="!isGamePaused" :disabled="!isGameRunning">Pause Game</b-btn>
+          <b-btn @click="resumeGame" v-show="isGamePaused" :disabled="!isGameRunning">Resume Game</b-btn>
         </b-col>
       </b-row>
     </b-container>
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+  import store from '../store/store.js'
   import ReconnectingWebSocket from 'reconnectingwebsocket'
 
   class Point {
@@ -61,7 +62,7 @@
 
       this.clearCanvas()
 
-      var socket = new ReconnectingWebSocket(this.$store.getters.serverUrl)
+      var socket = new ReconnectingWebSocket(store.getServerUrl())
       this.socket = socket
 
       const vm = this
@@ -95,7 +96,7 @@
         }
         var canvasDiv = document.getElementById('canvas')
 
-//        vm.startGame()
+        //        vm.startGame()
       }
 
       socket.onopen = function (event) {
@@ -129,8 +130,8 @@
           {
             clientKey: this.clientKey,
             type: 'startGame',
-            gameSetup: this.$store.getters.gameSetup,
-            botAddresses: this.$store.getters.selectedBots
+            gameSetup: store.getGameSetup(),
+            botAddresses: store.getSelectedBots()
           }
         ))
       },
