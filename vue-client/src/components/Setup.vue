@@ -122,7 +122,7 @@
 </template>
 
 <script>
-  import store from '../store/store.js'
+  import state from '../store/store.js'
   import ReconnectingWebSocket from 'reconnectingwebsocket'
 
   export default {
@@ -176,7 +176,7 @@
         }
 
         // Store the server URL
-        store.setServerUrl(this.serverUrl)
+        state.setServerUrl(this.serverUrl)
 
         socket = new ReconnectingWebSocket(this.serverUrl)
         this.socket = socket
@@ -322,8 +322,8 @@
       onStartGameClicked() {
         console.log('Goto arena')
 
-        store.setGameSetup(this.gameSetup)
-        store.setSelectedBots(this.selectedBots)
+        state.setGameSetup(this.gameSetup)
+        state.setSelectedBots(this.selectedBots)
 
         this.$router.push('/arena')
       }

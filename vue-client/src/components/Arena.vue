@@ -5,11 +5,11 @@
       <canvas id="canvas" width="800" height="600"></canvas>
       <b-row class="mt-2">
         <b-col sm="8">
-          <b-btn @click="startGame" v-show="!isGameRunning">Start Game</b-btn>
-          <b-btn @click="stopGame" v-show="isGameRunning">Stop Game</b-btn>
+          <b-btn @click="startGame" v-show="!isRunning">Start Game</b-btn>
+          <b-btn @click="stopGame" v-show="isRunning">Stop Game</b-btn>
 
-          <b-btn @click="pauseGame" v-show="!isGamePaused" :disabled="!isGameRunning">Pause Game</b-btn>
-          <b-btn @click="resumeGame" v-show="isGamePaused" :disabled="!isGameRunning">Resume Game</b-btn>
+          <b-btn @click="pauseGame" v-show="!isPaused" :disabled="!isRunning">Pause Game</b-btn>
+          <b-btn @click="resumeGame" v-show="isPaused" :disabled="!isRunning">Resume Game</b-btn>
         </b-col>
       </b-row>
     </b-container>
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import store from '../store/store.js'
+  import state from '../store/store.js'
   import ReconnectingWebSocket from 'reconnectingwebsocket'
 
   class Point {
@@ -38,6 +38,9 @@
     name: 'arena',
     data() {
       return {
+        isRunning: state.isRunning(),
+        isPaused: state.isPaused(),
+
         canvas: null,
         ctx: null,
 
@@ -51,9 +54,6 @@
 
         lastBotPositions: [],
         explosions: [],
-
-        isGameRunning: false,
-        isGamePaused: false
       }
     },
     mounted() {
@@ -62,7 +62,7 @@
 
       this.clearCanvas()
 
-      var socket = new ReconnectingWebSocket(store.getServerUrl())
+      var socket = new ReconnectingWebSocket(state.getServerUrl())
       this.socket = socket
 
       const vm = this
@@ -130,8 +130,8 @@
           {
             clientKey: this.clientKey,
             type: 'startGame',
-            gameSetup: store.getGameSetup(),
-            botAddresses: store.getSelectedBots()
+            gameSetup: state.getGameSetup(),
+            botAddresses: state.getSelectedBots()
           }
         ))
       },
@@ -166,7 +166,7 @@
         ))
       },
       onGameStarted(gameStartedEvent) {
-        this.isGameRunning = true
+        state.setRunning(this.isRunning = true)
 
         console.log('->gameStarted')
 
@@ -179,16 +179,16 @@
         this.explosions = []
       },
       onGameAborted(gameAbortedEvent) {
-        this.isGameRunning = false
+        state.setRunning(this.isRunning = false)
       },
       onGameEnded(gameEndedEvent) {
-        this.isGameRunning = false
+        state.setRunning(this.isPaused = false)
       },
       onGamePaused(gamePausedEvent) {
-        this.isGamePaused = true
+        state.setPaused(this.isPaused = true)
       },
       onGameResumed(gameResumedEvent) {
-        this.isGamePaused = false
+        state.setPaused(this.isPaused = false)
       },
       onTick(tickEvent) {
         console.log('->tickEvent')
@@ -234,7 +234,7 @@
             }
           })
         } catch (err) {
-          debugger
+          console.err(err)
         }
       },
       draw() {
