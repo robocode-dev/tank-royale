@@ -38,19 +38,16 @@
     name: 'arena',
     data() {
       return {
-        isRunning: state.isRunning(),
-        isPaused: state.isPaused(),
-
         canvas: null,
         ctx: null,
 
         socket: null,
         clientKey: null,
 
-        botStates: [],
-        bulletStates: [],
-        events: [],
-        scanEvents: [],
+        isRunning: state.isRunning(),
+        isPaused: state.isPaused(),
+
+        lastTick: null,
 
         lastBotPositions: [],
         explosions: [],
@@ -60,7 +57,11 @@
       this.canvas = document.getElementById("canvas")
       this.ctx = canvas.getContext("2d")
 
-      this.clearCanvas()
+      if (this.isRunning) {
+        this.draw()
+      } else {
+        this.clearCanvas()
+      }
 
       var socket = new ReconnectingWebSocket(state.getServerUrl())
       this.socket = socket
@@ -170,10 +171,7 @@
 
         console.log('->gameStarted')
 
-        this.botStates = []
-        this.bulletStates = []
-        this.events = []
-        this.scanEvents = []
+        this.lastTickEvent = null;
 
         this.lastBotPositions = []
         this.explosions = []
@@ -193,32 +191,24 @@
       onTick(tickEvent) {
         console.log('->tickEvent')
 
-        this.botStates = tickEvent.botStates
-        this.bulletStates = tickEvent.bulletStates
-        this.events = tickEvent.events
-        this.scanEvents = []
+        this.lastTickEvent = tickEvent;
 
-        this.botStates.forEach(bot => {
+        this.lastTickEvent.botStates.forEach(bot => {
           this.lastBotPositions[bot.id] = bot.position
         })
 
-        this.events.forEach(event => {
+        this.lastTickEvent.events.forEach(event => {
           switch (event.type) {
-
             case "botDeathEvent":
               var explosionPos = this.lastBotPositions[event.victimId]
               this.explosions.push(new Explosion(explosionPos, 40))
               break
-
             case "bulletHitBotEvent":
               var explosionPos = event.bullet.position
               this.explosions.push(new Explosion(explosionPos, 15))
               break
-
             case "scannedBotEvent":
-              this.scanEvents.push(event)
-              break
-
+              break;
             default:
               console.error('Unknown event type: ' + event.type)
           }
@@ -240,21 +230,28 @@
       draw() {
         this.clearCanvas()
 
-        this.bulletStates.forEach(bullet => {
-          var pos = bullet.position
-          this.drawBullet(pos.x, pos.y, bullet.power)
-        })
+        if (this.lastTickEvent) {
+          if (this.lastTickEvent.bulletStates) {
+            this.lastTickEvent.bulletStates.forEach(bullet => {
+              var pos = bullet.position
+              this.drawBullet(pos.x, pos.y, bullet.power)
+            })
+          }
 
-        this.botStates.forEach(bot => {
-          var pos = bot.position
-          this.drawBot(pos.x, pos.y, bot)
-        })
+          if (this.lastTickEvent.botStates) {
+            this.lastTickEvent.botStates.forEach(bot => {
+              var pos = bot.position
+              this.drawBot(pos.x, pos.y, bot)
+            })
+          }
 
-        this.scanEvents.forEach(scanEvent => {
-          var pos = scanEvent.position
-          this.fillCircle(pos.x, pos.y, 18, 'rgba(255, 255, 0, 1.0)')
-        })
-
+          if (this.lastTickEvent.events) {
+            this.lastTickEvent.events.filter(event => event.type === "scannedBotEvent").forEach(scanEvent => {
+              var pos = scanEvent.position
+              this.fillCircle(pos.x, pos.y, 18, 'rgba(255, 255, 0, 1.0)')
+            })
+          }
+        }
         this.explosions.forEach(explosion => {
           var pos = explosion.pos
           this.fillCircle(pos.x, pos.y, explosion.size, 'red')
