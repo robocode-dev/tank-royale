@@ -309,7 +309,7 @@ public final class GameServer {
 				delayedObserverTurnNumber = observerTurn.getTurnNumber() - gameSetup.getDelayedObserverTurns();
 				if (delayedObserverTurnNumber < 0) {
 					int delayedRoundNumber = observerRound.getRoundNumber() - 1;
-					if (delayedRoundNumber >= 0) {
+					if (delayedRoundNumber >= 0 && gameState.getRounds().size() < delayedRoundNumber) {
 						observerRound = gameState.getRounds().get(delayedRoundNumber);
 						delayedObserverTurnNumber += observerRound.getTurns().size();
 					}
