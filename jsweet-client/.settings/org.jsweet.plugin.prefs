@@ -1,9 +1,0 @@
-compiler.bundle=true
-compiler.candyJsFolder=target
-compiler.debugMode=java
-compiler.javascriptFolder=target/js
-compiler.moduleKind=none
-compiler.profiles=default
-compiler.sourceFolders=src/main/java
-compiler.typescriptFolder=target/ts
-eclipse.preferences.version=1

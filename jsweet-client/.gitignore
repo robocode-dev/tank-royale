@@ -1,7 +1,0 @@
-/target
-.classpath
-.jsweet
-.project
-/webapp/j4ts-*
-/webapp/jquery-*
-/bin/
