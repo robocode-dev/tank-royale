@@ -5,11 +5,11 @@
       <canvas id="canvas" width="800" height="600"></canvas>
       <b-row class="mt-2">
         <b-col sm="8">
-          <b-btn @click="startGame" v-show="!isRunning">Start Game</b-btn>
-          <b-btn @click="stopGame" v-show="isRunning">Stop Game</b-btn>
+          <b-btn @click="startGame" v-show="!loadIsRunning">Start Game</b-btn>
+          <b-btn @click="stopGame" v-show="loadIsRunning">Stop Game</b-btn>
 
-          <b-btn @click="pauseGame" v-show="!isPaused" :disabled="!isRunning">Pause Game</b-btn>
-          <b-btn @click="resumeGame" v-show="isPaused" :disabled="!isRunning">Resume Game</b-btn>
+          <b-btn @click="pauseGame" v-show="!loadIsPaused" :disabled="!loadIsRunning">Pause Game</b-btn>
+          <b-btn @click="resumeGame" v-show="loadIsPaused" :disabled="!loadIsRunning">Resume Game</b-btn>
         </b-col>
       </b-row>
     </b-container>
@@ -44,26 +44,23 @@
         socket: null,
         clientKey: null,
 
-        isRunning: state.isRunning(),
-        isPaused: state.isPaused(),
+        loadIsRunning: state.loadIsRunning(),
+        loadIsPaused: state.loadIsPaused(),
 
-        lastTick: null,
-
-        lastBotPositions: [],
-        explosions: [],
+        lastTickEvent: state.loadTickEvent(),
       }
     },
     mounted() {
       this.canvas = document.getElementById("canvas")
       this.ctx = canvas.getContext("2d")
 
-      if (this.isRunning) {
+      if (this.lastTickEvent) {
         this.draw()
       } else {
         this.clearCanvas()
       }
 
-      var socket = new ReconnectingWebSocket(state.getServerUrl())
+      var socket = new ReconnectingWebSocket(state.loadServerUrl())
       this.socket = socket
 
       const vm = this
@@ -96,8 +93,6 @@
             break
         }
         var canvasDiv = document.getElementById('canvas')
-
-        //        vm.startGame()
       }
 
       socket.onopen = function (event) {
@@ -108,8 +103,11 @@
         console.log('->serverHandshake')
 
         this.clientKey = serverHandshake.clientKey
-
         this.sendControllerHandshake()
+
+        if (!state.loadIsRunning()) {
+          this.startGame()
+        }
       },
       sendControllerHandshake() {
         console.log('<-controllerHandshake')
@@ -131,8 +129,8 @@
           {
             clientKey: this.clientKey,
             type: 'startGame',
-            gameSetup: state.getGameSetup(),
-            botAddresses: state.getSelectedBots()
+            gameSetup: state.loadGameSetup(),
+            botAddresses: state.loadSelectedBots()
           }
         ))
       },
@@ -167,60 +165,64 @@
         ))
       },
       onGameStarted(gameStartedEvent) {
-        state.setRunning(this.isRunning = true)
+        state.saveloadIsRunning(this.loadIsRunning = true)
 
         console.log('->gameStarted')
 
-        this.lastTickEvent = null;
-
-        this.lastBotPositions = []
-        this.explosions = []
+        state.saveTickEvent(this.lastTickEvent = null)
       },
       onGameAborted(gameAbortedEvent) {
-        state.setRunning(this.isRunning = false)
+        state.saveloadIsRunning(this.loadIsRunning = false)
       },
       onGameEnded(gameEndedEvent) {
-        state.setRunning(this.isPaused = false)
+        state.saveloadIsRunning(this.loadIsPaused = false)
       },
       onGamePaused(gamePausedEvent) {
-        state.setPaused(this.isPaused = true)
+        state.saveloadIsPaused(this.loadIsPaused = true)
       },
       onGameResumed(gameResumedEvent) {
-        state.setPaused(this.isPaused = false)
+        state.saveloadIsPaused(this.loadIsPaused = false)
       },
       onTick(tickEvent) {
         console.log('->tickEvent')
 
-        this.lastTickEvent = tickEvent;
+        this.lastTickEvent = tickEvent
+
+        var botPositions = []
+        var explosions = []
 
         this.lastTickEvent.botStates.forEach(bot => {
-          this.lastBotPositions[bot.id] = bot.position
+          botPositions[bot.id] = bot.position
         })
 
         this.lastTickEvent.events.forEach(event => {
           switch (event.type) {
             case "botDeathEvent":
-              var explosionPos = this.lastBotPositions[event.victimId]
-              this.explosions.push(new Explosion(explosionPos, 40))
+              var explosionPos = botPositions[event.victimId]
+              explosions.push(new Explosion(explosionPos, 40))
               break
             case "bulletHitBotEvent":
               var explosionPos = event.bullet.position
-              this.explosions.push(new Explosion(explosionPos, 15))
+              explosions.push(new Explosion(explosionPos, 15))
               break
             case "scannedBotEvent":
-              break;
+              break
             default:
               console.error('Unknown event type: ' + event.type)
           }
         })
 
+        this.lastTickEvent.explosions = explosions
+
+        state.saveTickEvent(this.lastTickEvent)
+
         this.draw()
 
         try {
-          this.explosions.forEach(explosion => {
+          explosions.forEach(explosion => {
             explosion.size -= 5
             if (explosion.size <= 0) {
-              this.explosions.splice(this.explosions.indexOf(explosion), 1)
+              explosions.splice(explosions.indexOf(explosion), 1)
             }
           })
         } catch (err) {
@@ -251,11 +253,14 @@
               this.fillCircle(pos.x, pos.y, 18, 'rgba(255, 255, 0, 1.0)')
             })
           }
+
+          if (this.lastTickEvent.explosions) {
+            this.lastTickEvent.explosions.forEach(explosion => {
+              var pos = explosion.pos
+              this.fillCircle(pos.x, pos.y, explosion.size, 'red')
+            })
+          }
         }
-        this.explosions.forEach(explosion => {
-          var pos = explosion.pos
-          this.fillCircle(pos.x, pos.y, explosion.size, 'red')
-        })
       },
       clearCanvas() {
         this.ctx.fillStyle = 'black'

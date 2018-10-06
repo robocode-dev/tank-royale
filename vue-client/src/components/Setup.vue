@@ -176,7 +176,7 @@
         }
 
         // Store the server URL
-        state.setServerUrl(this.serverUrl)
+        state.saveServerUrl(this.serverUrl)
 
         socket = new ReconnectingWebSocket(this.serverUrl)
         this.socket = socket
@@ -322,8 +322,8 @@
       onStartGameClicked() {
         console.log('Goto arena')
 
-        state.setGameSetup(this.gameSetup)
-        state.setSelectedBots(this.selectedBots)
+        state.saveGameSetup(this.gameSetup)
+        state.saveSelectedBots(this.selectedBots)
 
         this.$router.push('/arena')
       }

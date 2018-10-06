@@ -1,34 +1,40 @@
 export default {
-  setServerUrl(serverUrl) {
+  saveServerUrl(serverUrl) {
     sessionStorage.setItem("serverUrl", serverUrl);
   },
-  getServerUrl() {
+  loadServerUrl() {
     return sessionStorage.getItem("serverUrl");
   },
-  setGameSetup(gameSetup) {
+  saveGameSetup(gameSetup) {
     sessionStorage.setItem("gameSetup", JSON.stringify(gameSetup));
   },
-  getGameSetup() {
+  loadGameSetup() {
     return JSON.parse(sessionStorage.getItem("gameSetup"));
   },
-  setSelectedBots(selectedBots) {
+  saveSelectedBots(selectedBots) {
     sessionStorage.setItem("selectedBots", JSON.stringify(selectedBots));
   },
-  getSelectedBots() {
+  loadSelectedBots() {
     return JSON.parse(sessionStorage.getItem("selectedBots"));
   },
-  setRunning(isRunning) {
-    sessionStorage.setItem("isRunning", isRunning);
+  saveloadIsRunning(loadIsRunning) {
+    sessionStorage.setItem("isRunning", loadIsRunning);
   },
-  isRunning() {
+  loadIsRunning() {
     var value = sessionStorage.getItem("isRunning");
     return value == null ? false : value === "true";
   },
-  setPaused(isPaused) {
-    sessionStorage.setItem("isPaused", isPaused);
+  saveloadIsPaused(loadIsPaused) {
+    sessionStorage.setItem("isPaused", loadIsPaused);
   },
-  isPaused() {
+  loadIsPaused() {
     var value = sessionStorage.getItem("isPaused");
     return value == null ? false : value === "true";
+  },
+  saveTickEvent(tickEvent) {
+    sessionStorage.setItem("tickEvent", JSON.stringify(tickEvent));
+  },
+  loadTickEvent() {
+    return JSON.parse(sessionStorage.getItem("tickEvent"));
   }
 };
