@@ -8,7 +8,7 @@
             <b-input placeholder="ws://server:port" v-model="serverUrl" />
             <b-input-group-append>
               <b-btn @click="onConnect" v-show="!isConnected">Connect</b-btn>
-              <b-btn @click="onDisconnect" v-show="isConnected" variant="warning">Disconnect</b-btn>
+              <b-btn @click="onDisconnect" v-show="isConnected" letiant="warning">Disconnect</b-btn>
             </b-input-group-append>
           </b-input-group>
           <label style="width: 100%; text-align: right">Status: {{ connectionStatus }}</label>
@@ -110,7 +110,7 @@
 
           <b-row class="mt-3">
             <b-col sm="12">
-              <b-button size="lg" variant="secondary" style="width: 100%; text-align: center" @click="onStartGameClicked"
+              <b-button size="lg" letiant="secondary" style="width: 100%; text-align: center" @click="onStartGameClicked"
                 :disabled="!isGameStartValid()">Start Game</b-button>
             </b-col>
           </b-row>
@@ -122,8 +122,8 @@
 </template>
 
 <script>
-  import state from '../store/store.js'
-  import ReconnectingWebSocket from 'reconnectingwebsocket'
+  import state from '../store/store.js';
+  import ReconnectingWebSocket from 'reconnectingwebsocket';
 
   export default {
     name: 'setup',
@@ -150,80 +150,80 @@
           arenaMinSize: 400,
           arenaMaxSize: 5000,
           minGunCoolingRate: 0.1,
-          maxGunCoolingRate: 3.0
+          maxGunCoolingRate: 3.0,
         },
 
-        availableBots: []
-      }
+        availableBots: [],
+      };
     },
     mounted() {
-      const server = this.$route.query.server
+      const server = this.$route.query.server;
       if (server) {
-        this.server = server
+        this.server = server;
       }
-      const port = this.$route.query.port
+      const port = this.$route.query.port;
       if (port) {
-        this.port = port
+        this.port = port;
       }
-      this.serverUrl = 'ws://' + this.server + ':' + this.port
+      this.serverUrl = 'ws://' + this.server + ':' + this.port;
     },
     methods: {
       onConnect() {
-        var socket = this.socket
+        let socket = this.socket;
         if (socket) {
-          socket.open()
-          return
+          socket.open();
+          return;
         }
 
         // Store the server URL
-        state.saveServerUrl(this.serverUrl)
+        state.saveServerUrl(this.serverUrl);
 
-        socket = new ReconnectingWebSocket(this.serverUrl)
-        this.socket = socket
+        socket = new ReconnectingWebSocket(this.serverUrl);
+        this.socket = socket;
 
-        const vm = this
+        const vm = this;
 
-        socket.onopen = function (event) {
-          console.log('ws connected to: ' + event.target.url)
+        socket.onopen = (event) => {
+          console.log('ws connected to: ' + event.target.url);
 
-          vm.isConnected = true
-          vm.connectionStatus = 'connected'
-        }
-        socket.onclose = function (event) {
-          console.log('ws closed: ' + event.target.url)
+          vm.isConnected = true;
+          vm.connectionStatus = 'connected';
+        };
+        socket.onclose = (event) => {
+          console.log('ws closed: ' + event.target.url);
 
-          vm.isConnected = false
-          vm.connectionStatus = 'not connected'
-        }
-        socket.onerror = function (event) {
-          console.log('ws error: ' + event.data)
+          vm.isConnected = false;
+          vm.connectionStatus = 'not connected';
+        };
+        socket.onerror = (event) => {
+          console.log('ws error: ' + event.data);
 
-          vm.connectionStatus = 'error: ' + event.data
-        }
-        socket.onmessage = function (event) {
-          console.log('ws message: ' + event.data)
+          vm.connectionStatus = 'error: ' + event.data;
+        };
+        socket.onmessage = (event) => {
+          console.log('ws message: ' + event.data);
 
-          const message = JSON.parse(event.data)
+          const message = JSON.parse(event.data);
 
           switch (message.type) {
             case 'serverHandshake':
-              vm.onServerHandshake(message)
-              break
+              vm.onServerHandshake(message);
+              break;
             case 'botListUpdate':
-              vm.onBotListUpdate(message)
-              break
+              vm.onBotListUpdate(message);
+              break;
           }
-        }
+        };
       },
       onDisconnect() {
-        this.socket.close()
+        this.socket.close();
 
-        this.gameSetup = null
-        this.selectedBots = []
-        this.gameTypeOptions = []
+        this.gameSetup = null;
+        this.selectedBots = [];
+        this.gameTypeOptions = [];
       },
       sendControllerHandshake() {
-        console.log('<-controllerHandshake')
+        console.log('<-controllerHandshake');
 
         this.socket.send(JSON.stringify(
           {
@@ -231,104 +231,107 @@
             type: 'controllerHandshake',
             name: 'Robocode 2 Game Controller',
             version: '0.1.0',
-            author: 'Flemming N. Larsen <fnl@users.sourceforge.net>'
-          }
-        ))
+            author: 'Flemming N. Larsen <fnl@users.sourceforge.net>',
+          },
+        ));
       },
       onServerHandshake(serverHandshake) {
-        console.log('->serverHandshake')
+        console.log('->serverHandshake');
 
-        this.serverHandshake = serverHandshake
+        this.serverHandshake = serverHandshake;
 
-        const gameTypeOptions = []
+        const gameTypeOptions = [];
 
         if (serverHandshake) {
-          this.clientKey = serverHandshake.clientKey
+          this.clientKey = serverHandshake.clientKey;
 
-          this.sendControllerHandshake()
+          this.sendControllerHandshake();
 
-          const games = serverHandshake.games
+          const games = serverHandshake.games;
           if (games) {
-            gameTypeOptions.push({ 'value': null, 'text': '-- select --' })
-            games.forEach(element => {
-              const gameType = element.gameType
-              gameTypeOptions.push({ 'value': gameType, 'text': gameType })
-            })
+            gameTypeOptions.push({ value: null, text: '-- select --' });
+            games.forEach((element) => {
+              const gameType = element.gameType;
+              gameTypeOptions.push({ value: gameType, text: gameType });
+            });
           }
         }
-        this.gameTypeOptions = gameTypeOptions
+        this.gameTypeOptions = gameTypeOptions;
       },
       onBotListUpdate(botListUpdate) {
-        console.log('->botListUpdate')
+        console.log('->botListUpdate');
 
-        const bots = botListUpdate.bots
-        for (var i = 0; i < bots.length; i++) {
-          const bot = bots[i]
-          bot.displayText = `${bot.name} ${bot.version} (${bot.host}:${bot.port})`
+        const bots = botListUpdate.bots;
+        for (const bot of bots) {
+          bot.displayText = `${bot.name} ${bot.version} (${bot.host}:${bot.port})`;
         }
-        this.availableBots = bots
-        this.availableBots.sort(this.compareBots)
+        this.availableBots = bots;
+        this.availableBots.sort(this.compareBots);
       },
       isGameTypeSelected() {
-        return this.gameSetup != null
+        return this.gameSetup != null;
       },
       onGameTypeChanged(event) {
-        var foundGameSetup = this.serverHandshake.games.find(gameSetup => gameSetup.gameType === event.target.value)
+        let foundGameSetup = this.serverHandshake.games.find((gameSetup) => gameSetup.gameType === event.target.value);
         if (!foundGameSetup) {
-          foundGameSetup = null
+          foundGameSetup = null;
         }
-        this.gameSetup = foundGameSetup
+        this.gameSetup = foundGameSetup;
       },
       onAvailableBotClicked(bot) {
-        this.selectedBots.push(bot)
-        this.selectedBots.sort(this.compareBots)
-        this.removeItem(this.availableBots, bot)
+        this.selectedBots.push(bot);
+        this.selectedBots.sort(this.compareBots);
+        this.removeItem(this.availableBots, bot);
       },
       onSelectedBotClicked(bot) {
-        this.availableBots.push(bot)
-        this.availableBots.sort(this.compareBots)
-        this.removeItem(this.selectedBots, bot)
+        this.availableBots.push(bot);
+        this.availableBots.sort(this.compareBots);
+        this.removeItem(this.selectedBots, bot);
       },
       onAllAvailableBotsClicked() {
-        this.selectedBots = this.selectedBots.concat(this.availableBots).sort(this.compareBots)
-        this.availableBots = []
+        this.selectedBots = this.selectedBots.concat(this.availableBots).sort(this.compareBots);
+        this.availableBots = [];
       },
       onAllSelectedBotsClicked() {
-        this.availableBots = this.availableBots.concat(this.selectedBots)
-        this.availableBots.sort(this.compareBots)
-        this.selectedBots = []
+        this.availableBots = this.availableBots.concat(this.selectedBots);
+        this.availableBots.sort(this.compareBots);
+        this.selectedBots = [];
       },
       removeItem(array, item) {
-        for (var i = 0; i < array.length; i++) {
+        for (let i = 0; i < array.length; i++) {
           if (array[i] === item) {
-            array.splice(i, 1)
-            return
+            array.splice(i, 1);
+            return;
           }
         }
       },
       compareBots(a, b) {
-        if (a.displayText < b.displayText) return -1
-        if (a.displayText > b.displayText) return 1
-        return 0
+        if (a.displayText < b.displayText) {
+          return -1;
+        }
+        if (a.displayText > b.displayText) {
+          return 1;
+        }
+        return 0;
       },
       isGameStartValid() {
-        const selectedBotsCount = this.selectedBots.length
-        const gameSetup = this.gameSetup
+        const selectedBotsCount = this.selectedBots.length;
+        const gameSetup = this.gameSetup;
         return this.isConnected &&
           this.isGameTypeSelected() &&
           (selectedBotsCount >= gameSetup.minNumberOfParticipants) &&
-          ((selectedBotsCount <= gameSetup.maxNumberOfParticipants) || gameSetup.maxNumberOfParticipants == null)
+          ((selectedBotsCount <= gameSetup.maxNumberOfParticipants) || gameSetup.maxNumberOfParticipants == null);
       },
       onStartGameClicked() {
-        console.log('Goto arena')
+        console.log('Goto arena');
 
-        state.saveGameSetup(this.gameSetup)
-        state.saveSelectedBots(this.selectedBots)
+        state.saveGameSetup(this.gameSetup);
+        state.saveSelectedBots(this.selectedBots);
 
-        this.$router.push('/arena')
-      }
-    }
-  }
+        this.$router.push('/arena');
+      },
+    },
+  };
 </script>
 
 <style lang="scss">
