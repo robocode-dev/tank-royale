@@ -20,15 +20,6 @@
   import state from '../store/store.js';
   import ReconnectingWebSocket from 'reconnectingwebsocket';
 
-  // tslint:disable-next-line
-  class Point {
-    constructor(x, y) {
-      this.x = x;
-      this.y = y;
-    }
-  }
-
-  // tslint:disable-next-line
   class Explosion {
     constructor(pos, size) {
       this.pos = pos;
