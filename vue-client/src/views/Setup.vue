@@ -122,11 +122,11 @@
 </template>
 
 <script>
-  import state from '../store/store.js';
-  import ReconnectingWebSocket from 'reconnectingwebsocket';
+  import state from "../store/store.ts";
+  import ReconnectingWebSocket from "reconnectingwebsocket";
 
   export default {
-    name: 'setup',
+    name: "setup",
     data() {
       return {
         serverUrl: null,
@@ -135,11 +135,11 @@
         gameSetup: null,
         selectedBots: [],
 
-        server: 'localhost',
+        server: "localhost",
         port: 50000,
 
         socket: null,
-        connectionStatus: 'not connected',
+        connectionStatus: "not connected",
         isConnected: false,
 
         serverHandshake: null, // from server
@@ -165,7 +165,7 @@
       if (port) {
         this.port = port;
       }
-      this.serverUrl = 'ws://' + this.server + ':' + this.port;
+      this.serverUrl = "ws://" + this.server + ":" + this.port;
     },
     methods: {
       onConnect() {
@@ -184,32 +184,32 @@
         const vm = this;
 
         socket.onopen = (event) => {
-          console.log('ws connected to: ' + event.target.url);
+          console.log("ws connected to: " + event.target.url);
 
           vm.isConnected = true;
-          vm.connectionStatus = 'connected';
+          vm.connectionStatus = "connected";
         };
         socket.onclose = (event) => {
-          console.log('ws closed: ' + event.target.url);
+          console.log("ws closed: " + event.target.url);
 
           vm.isConnected = false;
-          vm.connectionStatus = 'not connected';
+          vm.connectionStatus = "not connected";
         };
         socket.onerror = (event) => {
-          console.log('ws error: ' + event.data);
+          console.log("ws error: " + event.data);
 
-          vm.connectionStatus = 'error: ' + event.data;
+          vm.connectionStatus = "error: " + event.data;
         };
         socket.onmessage = (event) => {
-          console.log('ws message: ' + event.data);
+          console.log("ws message: " + event.data);
 
           const message = JSON.parse(event.data);
 
           switch (message.type) {
-            case 'serverHandshake':
+            case "serverHandshake":
               vm.onServerHandshake(message);
               break;
-            case 'botListUpdate':
+            case "botListUpdate":
               vm.onBotListUpdate(message);
               break;
           }
@@ -223,20 +223,20 @@
         this.gameTypeOptions = [];
       },
       sendControllerHandshake() {
-        console.log('<-controllerHandshake');
+        console.log("<-controllerHandshake");
 
         this.socket.send(JSON.stringify(
           {
             clientKey: this.clientKey,
-            type: 'controllerHandshake',
-            name: 'Robocode 2 Game Controller',
-            version: '0.1.0',
-            author: 'Flemming N. Larsen <fnl@users.sourceforge.net>',
+            type: "controllerHandshake",
+            name: "Robocode 2 Game Controller",
+            version: "0.1.0",
+            author: "Flemming N. Larsen <fnl@users.sourceforge.net>",
           },
         ));
       },
       onServerHandshake(serverHandshake) {
-        console.log('->serverHandshake');
+        console.log("->serverHandshake");
 
         this.serverHandshake = serverHandshake;
 
@@ -249,7 +249,7 @@
 
           const games = serverHandshake.games;
           if (games) {
-            gameTypeOptions.push({ value: null, text: '-- select --' });
+            gameTypeOptions.push({ value: null, text: "-- select --" });
             games.forEach((element) => {
               const gameType = element.gameType;
               gameTypeOptions.push({ value: gameType, text: gameType });
@@ -259,7 +259,7 @@
         this.gameTypeOptions = gameTypeOptions;
       },
       onBotListUpdate(botListUpdate) {
-        console.log('->botListUpdate');
+        console.log("->botListUpdate");
 
         const bots = botListUpdate.bots;
         for (const bot of bots) {
@@ -323,12 +323,12 @@
           ((selectedBotsCount <= gameSetup.maxNumberOfParticipants) || gameSetup.maxNumberOfParticipants == null);
       },
       onStartGameClicked() {
-        console.log('Goto arena');
+        console.log("Goto arena");
 
         state.saveGameSetup(this.gameSetup);
         state.saveSelectedBots(this.selectedBots);
 
-        this.$router.push('/arena');
+        this.$router.push("/arena");
       },
     },
   };
