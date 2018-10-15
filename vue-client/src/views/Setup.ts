@@ -1,6 +1,7 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import ReconnectingWebSocket from "reconnectingwebsocket";
+import GameSetup from "../schemas/GameSetup";
 import state from "../store/store.ts";
 
 class GameTypeOption {
@@ -16,9 +17,9 @@ class GameTypeOption {
 @Component
 export default class Setup extends Vue {
   private serverUrl: string = "";
-  private clientKey?: string = undefined;
+  private clientKey?: string;
 
-  private gameSetup: any = null;
+  private gameSetup: GameSetup | null = null;
   private selectedBots: string[] = [];
 
   private server: string = "localhost";
@@ -222,9 +223,10 @@ export default class Setup extends Vue {
     return (
       this.isConnected &&
       this.isGameTypeSelected() &&
+      gameSetup &&
       selectedBotsCount >= gameSetup.minNumberOfParticipants &&
-      (selectedBotsCount <= gameSetup.maxNumberOfParticipants ||
-        gameSetup.maxNumberOfParticipants == null)
+      (gameSetup.maxNumberOfParticipants == null ||
+        selectedBotsCount <= gameSetup.maxNumberOfParticipants)
     );
   }
 
