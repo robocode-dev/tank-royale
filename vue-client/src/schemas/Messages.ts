@@ -1,3 +1,7 @@
+export enum MessageType {
+  ServerHandshake = "serverHandshake",
+}
+
 export class Message {
   public type?: string;
   public clientKey?: string;

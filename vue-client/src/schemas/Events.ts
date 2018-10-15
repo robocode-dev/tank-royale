@@ -4,7 +4,13 @@ import { Point } from "./Types";
 export enum EventType {
   BotDeathEvent = "botDeathEvent",
   BulletHitBotEvent = "bulletHitBotEvent",
+  GameStartedEventForObserver = "gameStartedEventForObserver",
+  GameAbortedEventForObserver = "gameAbortedEventForObserver",
+  GameEndedEventForObserver = "gameEndedEventForObserver",
+  GamePausedEventForObserver = "gamePausedEventForObserver",
+  GameResumedEventForObserver = "gameResumedEventForObserver",
   ScannedBotEvent = "scannedBotEvent",
+  TickEventForObserver = "tickEventForObserver",
 }
 
 export class Event {

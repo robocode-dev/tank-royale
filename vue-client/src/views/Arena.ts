@@ -3,7 +3,7 @@ import { Component } from "vue-property-decorator";
 import ReconnectingWebSocket from "reconnectingwebsocket";
 import { Point } from "../schemas/Types";
 import { Explosion, BotState } from "../schemas/States";
-import { ServerHandshake } from "../schemas/Messages";
+import { MessageType, ServerHandshake } from "../schemas/Messages";
 import {
   EventType,
   GameStartedEvent,
@@ -52,25 +52,25 @@ export default class Arena extends Vue {
 
       const message = JSON.parse(event.data);
       switch (message.type) {
-        case "serverHandshake":
+        case MessageType.ServerHandshake:
           vm.onServerHandshake(message);
           break;
-        case "gameStartedEventForObserver":
+        case EventType.GameStartedEventForObserver:
           vm.onGameStarted(message);
           break;
-        case "tickEventForObserver":
+        case EventType.TickEventForObserver:
           vm.onTick(message);
           break;
-        case "gameAbortedEventForObserver":
+        case EventType.GameAbortedEventForObserver:
           vm.onGameAborted(message);
           break;
-        case "gameEndedEventForObserver":
+        case EventType.GameEndedEventForObserver:
           vm.onGameEnded(message);
           break;
-        case "gamePausedEventForObserver":
+        case EventType.GamePausedEventForObserver:
           vm.onGamePaused(message);
           break;
-        case "gameResumedEventForObserver":
+        case EventType.GameResumedEventForObserver:
           vm.onGameResumed(message);
           break;
       }
