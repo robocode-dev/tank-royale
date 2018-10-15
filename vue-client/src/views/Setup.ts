@@ -2,8 +2,9 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import ReconnectingWebSocket from "reconnectingwebsocket";
 import GameSetup from "../schemas/GameSetup";
+import { MessageType } from "@/schemas/Messages";
+import { ServerHandshake, BotListUpdate } from "@/schemas/Comm";
 import state from "../store/store.ts";
-import { MessageType, ServerHandshake } from "@/schemas/Messages";
 
 class GameTypeOption {
   public value: string | null;
@@ -41,7 +42,7 @@ export default class Setup extends Vue {
     maxGunCoolingRate: 3.0,
   };
 
-  private availableBots: any[] = [];
+  private availableBots: string[] = [];
 
   private mounted() {
     const server = this.$route.query.server;

@@ -3,7 +3,7 @@ import { Component } from "vue-property-decorator";
 import ReconnectingWebSocket from "reconnectingwebsocket";
 import { Point } from "../schemas/Types";
 import { Explosion, BotState } from "../schemas/States";
-import { MessageType, ServerHandshake } from "../schemas/Messages";
+import { MessageType } from "../schemas/Messages";
 import {
   EventType,
   GameStartedEvent,
@@ -16,6 +16,7 @@ import {
   BulletHitBotEvent,
   ScannedBotEvent,
 } from "../schemas/Events";
+import { ServerHandshake } from "@/schemas/Comm";
 
 import state from "../store/store";
 
@@ -167,10 +168,12 @@ export default class Arena extends Vue {
 
   private onGameAborted(event: GameAbortedEvent) {
     this.setRunning(false);
+    this.setPaused(false);
   }
 
   private onGameEnded(event: GameEndedEvent) {
     this.setRunning(false);
+    this.setPaused(false);
   }
 
   private onGamePaused(event: GamePausedEvent) {
