@@ -3,7 +3,7 @@ import { Component } from "vue-property-decorator";
 import ReconnectingWebSocket from "reconnectingwebsocket";
 import GameSetup from "../schemas/GameSetup";
 import { MessageType } from "@/schemas/Messages";
-import { ServerHandshake, BotListUpdate } from "@/schemas/Comm";
+import { ServerHandshake, BotListUpdate, BotInfo } from "@/schemas/Comm";
 import state from "../store/store.ts";
 
 class GameTypeOption {
@@ -22,7 +22,9 @@ export default class Setup extends Vue {
   private clientKey?: string;
 
   private gameSetup: GameSetup | null = null;
-  private selectedBots: string[] = [];
+
+  private availableBots: BotInfo[] = [];
+  private selectedBots: BotInfo[] = [];
 
   private server: string = "localhost";
   private port: number = 50000;
@@ -41,8 +43,6 @@ export default class Setup extends Vue {
     minGunCoolingRate: 0.1,
     maxGunCoolingRate: 3.0,
   };
-
-  private availableBots: string[] = [];
 
   private mounted() {
     const server = this.$route.query.server;
@@ -150,7 +150,7 @@ export default class Setup extends Vue {
     this.gameTypeOptions = gameTypeOptions;
   }
 
-  private onBotListUpdate(botListUpdate) {
+  private onBotListUpdate(botListUpdate: BotListUpdate) {
     console.log("->botListUpdate");
 
     const bots = botListUpdate.bots;
@@ -178,13 +178,13 @@ export default class Setup extends Vue {
     this.gameSetup = foundGameSetup;
   }
 
-  private onAvailableBotClicked(bot) {
+  private onAvailableBotClicked(bot: BotInfo) {
     this.selectedBots.push(bot);
     this.selectedBots.sort(this.compareBots);
     this.removeItem(this.availableBots, bot);
   }
 
-  private onSelectedBotClicked(bot) {
+  private onSelectedBotClicked(bot: BotInfo) {
     this.availableBots.push(bot);
     this.availableBots.sort(this.compareBots);
     this.removeItem(this.selectedBots, bot);
@@ -212,7 +212,10 @@ export default class Setup extends Vue {
     }
   }
 
-  private compareBots(a, b) {
+  private compareBots(a: BotInfo, b: BotInfo) {
+    if (!a.displayText || !b.displayText) {
+      throw new Error("compareBots: Illegal argument");
+    }
     if (a.displayText < b.displayText) {
       return -1;
     }
