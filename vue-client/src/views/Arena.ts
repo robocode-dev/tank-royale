@@ -19,6 +19,7 @@ import {
 import { ServerHandshake } from "@/schemas/Comm";
 
 import state from "../store/store";
+import { Command } from "@/schemas/Command";
 
 @Component
 export default class Arena extends Vue {
@@ -118,7 +119,7 @@ export default class Arena extends Vue {
     this.socket.send(
       JSON.stringify({
         clientKey: this.clientKey,
-        type: "startGame",
+        type: Command.StartGame,
         gameSetup: state.loadGameSetup(),
         botAddresses: state.loadSelectedBots(),
       }),
@@ -131,7 +132,7 @@ export default class Arena extends Vue {
     this.socket.send(
       JSON.stringify({
         clientKey: this.clientKey,
-        type: "stopGame",
+        type: Command.StopGame,
       }),
     );
   }
@@ -142,7 +143,7 @@ export default class Arena extends Vue {
     this.socket.send(
       JSON.stringify({
         clientKey: this.clientKey,
-        type: "pauseGame",
+        type: Command.PauseGame,
       }),
     );
   }
@@ -153,7 +154,7 @@ export default class Arena extends Vue {
     this.socket.send(
       JSON.stringify({
         clientKey: this.clientKey,
-        type: "resumeGame",
+        type: Command.ResumeGame,
       }),
     );
   }
