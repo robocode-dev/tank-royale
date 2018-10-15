@@ -1,4 +1,4 @@
-import { TickEvent } from "../schemas/Events";
+import { TickEventForObserver } from "../schemas/Events";
 
 export default {
   saveServerUrl(serverUrl: string) {
@@ -41,10 +41,10 @@ export default {
     const isPaused = sessionStorage.getItem("isPaused");
     return isPaused == null ? false : isPaused === "true";
   },
-  saveTickEvent(event: TickEvent | null) {
+  saveTickEvent(event: TickEventForObserver | null) {
     sessionStorage.setItem("tickEvent", JSON.stringify(event));
   },
-  loadTickEvent(): TickEvent | null {
+  loadTickEvent(): TickEventForObserver | null {
     const event = sessionStorage.getItem("tickEvent");
     if (event) {
       return JSON.parse(event);

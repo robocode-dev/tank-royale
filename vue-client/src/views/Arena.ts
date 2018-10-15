@@ -2,16 +2,16 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import ReconnectingWebSocket from "reconnectingwebsocket";
 import { Point } from "../schemas/Types";
-import { Explosion, BotState } from "../schemas/States";
+import { BotState } from "../schemas/States";
 import { MessageType } from "../schemas/Messages";
 import {
   EventType,
-  GameStartedEvent,
-  GameAbortedEvent,
-  GameEndedEvent,
-  GamePausedEvent,
-  GameResumedEvent,
-  TickEvent,
+  GameStartedEventForObserver,
+  GameAbortedEventForObserver,
+  GameEndedEventForObserver,
+  GamePausedEventForObserver,
+  GameResumedEventForObserver,
+  TickEventForObserver,
   BotDeathEvent,
   BulletHitBotEvent,
   ScannedBotEvent,
@@ -20,6 +20,16 @@ import { ServerHandshake } from "@/schemas/Comm";
 
 import state from "../store/store";
 import { Command } from "@/schemas/Command";
+
+class Explosion {
+  public position: Point;
+  public size: number;
+
+  constructor(position: Point, size: number) {
+    this.position = position;
+    this.size = size;
+  }
+}
 
 @Component
 export default class Arena extends Vue {
@@ -32,7 +42,7 @@ export default class Arena extends Vue {
   private socket: any;
   private clientKey?: string;
 
-  private lastTickEvent?: TickEvent | null = state.loadTickEvent();
+  private lastTickEvent?: TickEventForObserver | null = state.loadTickEvent();
 
   public mounted() {
     this.canvas = document.getElementById("canvas");
@@ -159,7 +169,7 @@ export default class Arena extends Vue {
     );
   }
 
-  private onGameStarted(event: GameStartedEvent) {
+  private onGameStarted(event: GameStartedEventForObserver) {
     this.setRunning(true);
 
     console.log("->gameStarted");
@@ -167,25 +177,25 @@ export default class Arena extends Vue {
     state.saveTickEvent((this.lastTickEvent = null));
   }
 
-  private onGameAborted(event: GameAbortedEvent) {
+  private onGameAborted(event: GameAbortedEventForObserver) {
     this.setRunning(false);
     this.setPaused(false);
   }
 
-  private onGameEnded(event: GameEndedEvent) {
+  private onGameEnded(event: GameEndedEventForObserver) {
     this.setRunning(false);
     this.setPaused(false);
   }
 
-  private onGamePaused(event: GamePausedEvent) {
+  private onGamePaused(event: GamePausedEventForObserver) {
     this.setPaused(true);
   }
 
-  private onGameResumed(event: GameResumedEvent) {
+  private onGameResumed(event: GameResumedEventForObserver) {
     this.setPaused(false);
   }
 
-  private onTick(event: TickEvent) {
+  private onTick(event: TickEventForObserver) {
     console.log("->tickEvent");
 
     this.lastTickEvent = event;
