@@ -3,6 +3,7 @@ import { Component } from "vue-property-decorator";
 import ReconnectingWebSocket from "reconnectingwebsocket";
 import GameSetup from "../schemas/GameSetup";
 import state from "../store/store.ts";
+import { MessageType, ServerHandshake } from "@/schemas/Messages";
 
 class GameTypeOption {
   public value: string | null;
@@ -29,7 +30,7 @@ export default class Setup extends Vue {
   private connectionStatus: string = "not connected";
   private isConnected: boolean = false;
 
-  private serverHandshake: any;
+  private serverHandshake: ServerHandshake | null = null;
 
   private gameTypeOptions: GameTypeOption[] = [];
 
@@ -92,10 +93,10 @@ export default class Setup extends Vue {
       const message = JSON.parse(event.data);
 
       switch (message.type) {
-        case "serverHandshake":
+        case MessageType.ServerHandshake:
           vm.onServerHandshake(message);
           break;
-        case "botListUpdate":
+        case MessageType.BotListUpdate:
           vm.onBotListUpdate(message);
           break;
       }
@@ -164,9 +165,12 @@ export default class Setup extends Vue {
   }
 
   private onGameTypeChanged(event) {
-    let foundGameSetup = this.serverHandshake.games.find(
-      (gameSetup) => gameSetup.gameType === event.target.value,
-    );
+    let foundGameSetup;
+    if (this.serverHandshake) {
+      foundGameSetup = this.serverHandshake.games.find(
+        (gameSetup) => gameSetup.gameType === event.target.value,
+      );
+    }
     if (!foundGameSetup) {
       foundGameSetup = null;
     }

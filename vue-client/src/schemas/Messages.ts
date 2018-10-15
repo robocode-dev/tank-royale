@@ -1,5 +1,8 @@
+import GameSetup from "./GameSetup";
+
 export enum MessageType {
   ServerHandshake = "serverHandshake",
+  BotListUpdate = "botListUpdate",
 }
 
 export class Message {
@@ -7,4 +10,7 @@ export class Message {
   public clientKey?: string;
 }
 
-export class ServerHandshake extends Message {}
+export class ServerHandshake extends Message {
+  public clientKey: string = "";
+  public games: GameSetup[] = [];
+}
