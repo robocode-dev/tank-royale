@@ -12,18 +12,18 @@ export default new Router({
     {
       path: "/",
       redirect: {
-        name: "Setup"
-      }
+        name: "Setup",
+      },
     },
     {
       path: "/setup",
       name: "Setup",
-      component: Setup
+      component: Setup,
     },
     {
       path: "/arena",
       name: "Arena",
-      component: Arena
-    }
-  ]
+      component: Arena,
+    },
+  ],
 });

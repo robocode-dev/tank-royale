@@ -1,5 +1,6 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import ReconnectingWebSocket from "reconnectingwebsocket";
 import { Point } from "../schemas/Types";
 import { Explosion, BotState } from "../schemas/States";
 import { ServerHandshake } from "../schemas/Messages";
@@ -16,7 +17,6 @@ import {
   ScannedBotEvent,
 } from "../schemas/Events";
 
-import ReconnectingWebSocket from "reconnectingwebsocket";
 import state from "../store/store";
 
 @Component
@@ -24,11 +24,11 @@ export default class Arena extends Vue {
   private isRunning: boolean = state.loadIsRunning();
   private isPaused: boolean = state.loadIsPaused();
 
-  private canvas: any = null;
-  private ctx: any = null;
+  private canvas: any;
+  private ctx: any;
 
-  private socket: any = null;
-  private clientKey?: string = undefined;
+  private socket: any;
+  private clientKey?: string;
 
   private lastTickEvent?: TickEvent | null = state.loadTickEvent();
 
@@ -421,7 +421,7 @@ export default class Arena extends Vue {
     ctx.restore();
   }
 
-  private fillCircle(x: number, y: number, radius: number, color: any) {
+  private fillCircle(x: number, y: number, radius: number, color: string) {
     const ctx = this.ctx;
     ctx.fillStyle = color;
     ctx.beginPath();
