@@ -1,10 +1,10 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import ReconnectingWebSocket from "reconnectingwebsocket";
-import GameSetup from "../schemas/GameSetup";
+import GameSetup from "@/schemas/GameSetup";
 import { MessageType } from "@/schemas/Messages";
 import { ServerHandshake, BotListUpdate, BotInfo } from "@/schemas/Comm";
-import state from "../store/store.ts";
+import state from "@/store/store.ts";
 
 class GameTypeOption {
   public value: string | null;

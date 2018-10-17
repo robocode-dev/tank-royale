@@ -1,9 +1,9 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import ReconnectingWebSocket from "reconnectingwebsocket";
-import { Point } from "../schemas/Types";
-import { BotState } from "../schemas/States";
-import { MessageType } from "../schemas/Messages";
+import { Point } from "@/schemas/Types";
+import { BotState } from "@/schemas/States";
+import { MessageType } from "@/schemas/Messages";
 import {
   EventType,
   GameStartedEventForObserver,
@@ -15,10 +15,10 @@ import {
   BotDeathEvent,
   BulletHitBotEvent,
   ScannedBotEvent,
-} from "../schemas/Events";
+} from "@/schemas/Events";
 import { ServerHandshake } from "@/schemas/Comm";
 
-import state from "../store/store";
+import state from "@/store/store";
 import { Command } from "@/schemas/Command";
 
 class Explosion {

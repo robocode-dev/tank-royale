@@ -1,4 +1,5 @@
-import { TickEventForObserver } from "../schemas/Events";
+import { TickEventForObserver } from "@/schemas/Events";
+import { BotInfo } from "@/schemas/Comm";
 
 export default {
   saveServerUrl(serverUrl: string) {
@@ -17,10 +18,10 @@ export default {
     }
     return null;
   },
-  saveSelectedBots(selectedBots: string[]) {
+  saveSelectedBots(selectedBots: BotInfo[]) {
     sessionStorage.setItem("selectedBots", JSON.stringify(selectedBots));
   },
-  loadSelectedBots(): string[] {
+  loadSelectedBots(): BotInfo[] {
     const selectedBots = sessionStorage.getItem("selectedBots");
     if (selectedBots) {
       return JSON.parse(selectedBots);
