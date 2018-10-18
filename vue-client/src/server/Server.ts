@@ -1,5 +1,3 @@
-import EventEmitter from "events";
-import ReconnectingWebSocket from "reconnectingwebsocket";
 import { TypedEvent } from "@/events/TypedEvent";
 import { ServerHandshake, BotListUpdate } from "@/schemas/Comm";
 import { MessageType } from "@/schemas/Messages";
@@ -42,7 +40,7 @@ export class Server {
   public gamePausedEvent = new TypedEvent<GamePausedEventForObserver>();
   public gameResumedEvent = new TypedEvent<GameResumedEventForObserver>();
 
-  private _socket: any;
+  private _websocket: any;
 
   private _serverUrl: string = "ws://localhost:50000";
   private _clientKey?: string;
@@ -51,19 +49,19 @@ export class Server {
   private _connectionErrorMsg: string = "";
 
   public connect(serverUrl: string) {
-    let socket = this._socket;
-    if (socket !== null && socket !== undefined) {
+    let websocket = this._websocket;
+    if (websocket !== null && websocket !== undefined) {
       throw new Error("connect: Already connected");
     }
 
     this._serverUrl = serverUrl;
 
-    socket = new ReconnectingWebSocket(serverUrl);
-    this._socket = socket;
+    websocket = new WebSocket(serverUrl);
+    this._websocket = websocket;
 
     const self = this;
 
-    socket.onopen = (event) => {
+    websocket.onopen = (event) => {
       console.log("ws connected to: " + event.target.url);
 
       self._connectionStatus = ConnectionStatus.Connected;
@@ -71,7 +69,7 @@ export class Server {
 
       self.connectedEvent.emit(undefined);
     };
-    socket.onclose = (event) => {
+    websocket.onclose = (event) => {
       console.log("ws closed: " + event.target.url);
 
       self._connectionStatus = ConnectionStatus.NotConnected;
@@ -79,7 +77,7 @@ export class Server {
 
       self.disconnectedEvent.emit(undefined);
     };
-    socket.onerror = (event) => {
+    websocket.onerror = (event) => {
       console.log("ws error: " + event.data);
 
       self._connectionStatus = ConnectionStatus.Error;
@@ -87,7 +85,7 @@ export class Server {
 
       self.connectionErrorEvent.emit(undefined);
     };
-    socket.onmessage = (event) => {
+    websocket.onmessage = (event) => {
       console.log("ws message: " + event.data);
 
       const message = JSON.parse(event.data);
@@ -123,9 +121,9 @@ export class Server {
   }
 
   public disconnect() {
-    if (this._socket !== null) {
-      this._socket.close();
-      this._socket = null;
+    if (this._websocket !== null) {
+      this._websocket.close();
+      this._websocket = null;
     }
   }
 
@@ -141,7 +139,7 @@ export class Server {
   }
 
   public sendStartGame(gameSetup: GameSetup, botAddresses: BotInfo[]) {
-    this._socket.send(
+    this._websocket.send(
       JSON.stringify({
         clientKey: this._clientKey,
         type: CommandType.StartGame,
@@ -152,7 +150,7 @@ export class Server {
   }
 
   public sendStopGame() {
-    this._socket.send(
+    this._websocket.send(
       JSON.stringify({
         clientKey: this._clientKey,
         type: CommandType.StopGame,
@@ -161,7 +159,7 @@ export class Server {
   }
 
   public sendPauseGame() {
-    this._socket.send(
+    this._websocket.send(
       JSON.stringify({
         clientKey: this._clientKey,
         type: CommandType.PauseGame,
@@ -170,7 +168,7 @@ export class Server {
   }
 
   public sendResumeGame() {
-    this._socket.send(
+    this._websocket.send(
       JSON.stringify({
         clientKey: this._clientKey,
         type: CommandType.ResumeGame,
@@ -184,7 +182,7 @@ export class Server {
   }
 
   private sendControllerHandshake() {
-    this._socket.send(
+    this._websocket.send(
       JSON.stringify({
         clientKey: this._clientKey,
         type: MessageType.ControllerHandshake,
