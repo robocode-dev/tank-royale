@@ -1,8 +1,9 @@
 export enum MessageType {
   ServerHandshake = "serverHandshake",
   BotHandshake = "botHandshake",
+  ControllerHandshake = "controllerHandshake",
   BotListUpdate = "botListUpdate",
-  BotInfo = "botInfo",
+  BotInfo = "botInfo"
 }
 
 export class Message {

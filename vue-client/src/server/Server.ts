@@ -3,6 +3,8 @@ import ReconnectingWebSocket from "reconnectingwebsocket";
 import { TypedEvent } from "@/events/TypedEvent";
 import { ServerHandshake, BotListUpdate } from "@/schemas/Comm";
 import { MessageType } from "@/schemas/Messages";
+import { CommandType } from "@/schemas/CommandType";
+import { BotInfo } from "@/schemas/Comm";
 import {
   EventType,
   TickEventForObserver,
@@ -12,49 +14,45 @@ import {
   GamePausedEventForObserver,
   GameResumedEventForObserver
 } from "@/schemas/Events";
+import GameSetup from "@/schemas/GameSetup";
 
-enum ConnectionStatus {
+export enum ConnectionStatus {
   NotConnected = "not connected",
   Connected = "connected",
   Error = "error"
 }
 
-export const connectedEvent = new EventEmitter();
-export const disconnectedEvent = new EventEmitter();
-export const connectionErrorEvent = new EventEmitter();
+export class Server {
+  public static _instance = new Server();
 
-export const serverHandshakeEvent = new TypedEvent<ServerHandshake>();
-export const botListUpdateEvent = new TypedEvent<BotListUpdate>();
-export const tickEvent = new TypedEvent<TickEventForObserver>();
-export const gameStartedEvent = new TypedEvent<GameStartedEventForObserver>();
-export const gameAbortedEvent = new TypedEvent<GameAbortedEventForObserver>();
-export const gameEndedEvent = new TypedEvent<GameEndedEventForObserver>();
-export const gamePausedEvent = new TypedEvent<GamePausedEventForObserver>();
-export const gameResumedEvent = new TypedEvent<GameResumedEventForObserver>();
+  public connectedEvent = new TypedEvent<void>();
+  public disconnectedEvent = new TypedEvent<void>();
+  public connectionErrorEvent = new TypedEvent<void>();
 
-export default class Server {
+  public serverHandshakeEvent = new TypedEvent<ServerHandshake>();
+  public botListUpdateEvent = new TypedEvent<BotListUpdate>();
+  public tickEvent = new TypedEvent<TickEventForObserver>();
+  public gameStartedEvent = new TypedEvent<GameStartedEventForObserver>();
+  public gameAbortedEvent = new TypedEvent<GameAbortedEventForObserver>();
+  public gameEndedEvent = new TypedEvent<GameEndedEventForObserver>();
+  public gamePausedEvent = new TypedEvent<GamePausedEventForObserver>();
+  public gameResumedEvent = new TypedEvent<GameResumedEventForObserver>();
+
   private _socket: any;
 
-  private _serverUrl?: string;
+  private _serverUrl: string = "ws://localhost:50000";
   private _clientKey?: string;
 
   private _connectionStatus: string = ConnectionStatus.NotConnected;
   private _connectionErrorMsg: string = "";
 
-  get connectionStatus(): string {
-    if (this._connectionStatus === ConnectionStatus.Error) {
-      return ConnectionStatus.Error + ": " + this._connectionErrorMsg;
-    }
-    return this._connectionStatus;
+  static instance(): Server {
+    return this._instance;
   }
 
-  get isConnected(): boolean {
-    return this._connectionStatus === ConnectionStatus.Connected;
-  }
-
-  public connect(serverUrl: string): void {
+  public connect(serverUrl: string) {
     let socket = this._socket;
-    if (socket !== null) {
+    if (socket !== null && socket !== undefined) {
       throw new Error("connect: Already connected");
     }
 
@@ -71,7 +69,7 @@ export default class Server {
       self._connectionStatus = ConnectionStatus.Connected;
       self._connectionErrorMsg = "";
 
-      connectedEvent.emit();
+      self.connectedEvent.emit(undefined);
     };
     socket.onclose = event => {
       console.log("ws closed: " + event.target.url);
@@ -79,7 +77,7 @@ export default class Server {
       self._connectionStatus = ConnectionStatus.NotConnected;
       self._connectionErrorMsg = "";
 
-      disconnectedEvent.emit();
+      self.disconnectedEvent.emit(undefined);
     };
     socket.onerror = event => {
       console.log("ws error: " + event.data);
@@ -87,7 +85,7 @@ export default class Server {
       self._connectionStatus = ConnectionStatus.Error;
       self._connectionErrorMsg = event.data;
 
-      connectionErrorEvent.emit();
+      self.connectionErrorEvent.emit(undefined);
     };
     socket.onmessage = event => {
       console.log("ws message: " + event.data);
@@ -96,37 +94,104 @@ export default class Server {
 
       switch (message.type) {
         case MessageType.ServerHandshake:
-          serverHandshakeEvent.emit(message);
+          self.onServerHandhake(message);
+          self.serverHandshakeEvent.emit(message);
           break;
         case MessageType.BotListUpdate:
-          botListUpdateEvent.emit(message);
+          self.botListUpdateEvent.emit(message);
           break;
         case EventType.TickEventForObserver:
-          tickEvent.emit(message);
+          self.tickEvent.emit(message);
           break;
         case EventType.GameStartedEventForObserver:
-          gameStartedEvent.emit(message);
+          self.gameStartedEvent.emit(message);
           break;
         case EventType.GameAbortedEventForObserver:
-          gameAbortedEvent.emit(message);
+          self.gameAbortedEvent.emit(message);
           break;
         case EventType.GameEndedEventForObserver:
-          gameEndedEvent.emit(message);
+          self.gameEndedEvent.emit(message);
           break;
         case EventType.GamePausedEventForObserver:
-          gamePausedEvent.emit(message);
+          self.gamePausedEvent.emit(message);
           break;
         case EventType.GameResumedEventForObserver:
-          gameResumedEvent.emit(message);
+          self.gameResumedEvent.emit(message);
           break;
       }
     };
   }
 
-  public disconnect(): void {
+  public disconnect() {
     if (this._socket !== null) {
       this._socket.close();
       this._socket = null;
     }
+  }
+
+  public connectionStatus(): string {
+    if (this._connectionStatus === ConnectionStatus.Error) {
+      return ConnectionStatus.Error + ": " + this._connectionErrorMsg;
+    }
+    return this._connectionStatus;
+  }
+
+  public isConnected(): boolean {
+    return this._connectionStatus === ConnectionStatus.Connected;
+  }
+
+  public sendStartGame(gameSetup: GameSetup, botAddresses: BotInfo[]) {
+    this._socket.send(
+      JSON.stringify({
+        clientKey: this._clientKey,
+        type: CommandType.StartGame,
+        gameSetup: gameSetup,
+        botAddresses: botAddresses
+      })
+    );
+  }
+
+  public sendStopGame() {
+    this._socket.send(
+      JSON.stringify({
+        clientKey: this._clientKey,
+        type: CommandType.StopGame
+      })
+    );
+  }
+
+  public sendPauseGame() {
+    this._socket.send(
+      JSON.stringify({
+        clientKey: this._clientKey,
+        type: CommandType.PauseGame
+      })
+    );
+  }
+
+  public sendResumeGame() {
+    this._socket.send(
+      JSON.stringify({
+        clientKey: this._clientKey,
+        type: CommandType.ResumeGame
+      })
+    );
+  }
+
+  private onServerHandhake(serverHandshake: ServerHandshake) {
+    this._clientKey = serverHandshake.clientKey;
+    this.sendControllerHandshake();
+  }
+
+  private sendControllerHandshake() {
+    this._socket.send(
+      JSON.stringify({
+        clientKey: this._clientKey,
+        type: MessageType.ControllerHandshake,
+        name: "Robocode 2 Web UI",
+        version: "0.1.0",
+        author: "Flemming N. Larsen <fnl@users.sourceforge.net>"
+      })
+    );
   }
 }

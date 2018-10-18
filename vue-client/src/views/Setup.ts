@@ -1,8 +1,7 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import ReconnectingWebSocket from "reconnectingwebsocket";
+import { ConnectionStatus, Server } from "@/server/Server";
 import GameSetup from "@/schemas/GameSetup";
-import { MessageType } from "@/schemas/Messages";
 import { ServerHandshake, BotListUpdate, BotInfo } from "@/schemas/Comm";
 import state from "@/store/store.ts";
 
@@ -18,20 +17,15 @@ class GameTypeOption {
 
 @Component
 export default class Setup extends Vue {
+  private server: Server = Server.instance();
   private serverUrl: string = "";
-  private clientKey?: string;
+
+  private connectionStatus: string = ConnectionStatus.NotConnected;
 
   private gameSetup: GameSetup | null = null;
 
   private availableBots: BotInfo[] = [];
   private selectedBots: BotInfo[] = [];
-
-  private server: string = "localhost";
-  private port: number = 50000;
-
-  private socket: any;
-  private connectionStatus: string = "not connected";
-  private isConnected: boolean = false;
 
   private serverHandshake: ServerHandshake | null = null;
 
@@ -41,89 +35,62 @@ export default class Setup extends Vue {
     arenaMinSize: 400,
     arenaMaxSize: 5000,
     minGunCoolingRate: 0.1,
-    maxGunCoolingRate: 3.0,
+    maxGunCoolingRate: 3.0
   };
 
   private mounted() {
-    const server = this.$route.query.server;
-    if (server) {
-      this.server = server;
-    }
-    const port = this.$route.query.port;
-    if (port) {
-      this.port = Number(port);
-    }
-    this.serverUrl = "ws://" + this.server + ":" + this.port;
+    this.setServerUrl();
   }
 
-  private onConnect() {
-    let socket = this.socket;
-    if (socket) {
-      socket.open();
-      return;
+  private setServerUrl() {
+    let serverAddr = this.$route.query.server;
+    if (!serverAddr) {
+      serverAddr = "localhost";
     }
-
-    // Store the server URL
-    state.saveServerUrl(this.serverUrl);
-
-    socket = new ReconnectingWebSocket(this.serverUrl);
-    this.socket = socket;
-
-    const vm = this;
-
-    socket.onopen = (event) => {
-      console.log("ws connected to: " + event.target.url);
-
-      vm.isConnected = true;
-      vm.connectionStatus = "connected";
-    };
-    socket.onclose = (event) => {
-      console.log("ws closed: " + event.target.url);
-
-      vm.isConnected = false;
-      vm.connectionStatus = "not connected";
-    };
-    socket.onerror = (event) => {
-      console.log("ws error: " + event.data);
-
-      vm.connectionStatus = "error: " + event.data;
-    };
-    socket.onmessage = (event) => {
-      console.log("ws message: " + event.data);
-
-      const message = JSON.parse(event.data);
-
-      switch (message.type) {
-        case MessageType.ServerHandshake:
-          vm.onServerHandshake(message);
-          break;
-        case MessageType.BotListUpdate:
-          vm.onBotListUpdate(message);
-          break;
-      }
-    };
+    let port = this.$route.query.port;
+    if (!port) {
+      port = "50000";
+    }
+    this.serverUrl = "ws://" + serverAddr + ":" + port;
   }
 
-  private onDisconnect() {
-    this.socket.close();
+  private isConnected(): boolean {
+    return this.server.isConnected();
+  }
 
+  private connect() {
+    const server = this.server;
+    server.connect(this.serverUrl);
+
+    const self = this;
+
+    server.connectedEvent.on(event => {
+      self.connectionStatus = server.connectionStatus();
+    });
+    server.disconnectedEvent.on(event => {
+      self.connectionStatus = server.connectionStatus();
+
+      self.onDisconnected();
+    });
+    server.connectionErrorEvent.on(event => {
+      self.connectionStatus = server.connectionStatus();
+    });
+    server.serverHandshakeEvent.on(event => {
+      self.onServerHandshake(event);
+    });
+    server.botListUpdateEvent.on(event => {
+      self.onBotListUpdate(event);
+    });
+  }
+
+  private disconnect() {
+    this.server.disconnect();
+  }
+
+  private onDisconnected() {
     this.gameSetup = null;
     this.selectedBots = [];
     this.gameTypeOptions = [];
-  }
-
-  private sendControllerHandshake() {
-    console.log("<-controllerHandshake");
-
-    this.socket.send(
-      JSON.stringify({
-        clientKey: this.clientKey,
-        type: "controllerHandshake",
-        name: "Robocode 2 Game Controller",
-        version: "0.1.0",
-        author: "Flemming N. Larsen <fnl@users.sourceforge.net>",
-      }),
-    );
   }
 
   private onServerHandshake(serverHandshake) {
@@ -134,14 +101,10 @@ export default class Setup extends Vue {
     const gameTypeOptions: GameTypeOption[] = [];
 
     if (serverHandshake) {
-      this.clientKey = serverHandshake.clientKey;
-
-      this.sendControllerHandshake();
-
       const games = serverHandshake.games;
       if (games) {
         gameTypeOptions.push(new GameTypeOption(null, "-- select --"));
-        games.forEach((element) => {
+        games.forEach(element => {
           const gameType = element.gameType;
           gameTypeOptions.push(new GameTypeOption(gameType, gameType));
         });
@@ -168,9 +131,7 @@ export default class Setup extends Vue {
   private onGameTypeChanged(event) {
     let foundGameSetup;
     if (this.serverHandshake) {
-      foundGameSetup = this.serverHandshake.games.find(
-        (gameSetup) => gameSetup.gameType === event.target.value,
-      );
+      foundGameSetup = this.serverHandshake.games.find(gameSetup => gameSetup.gameType === event.target.value);
     }
     if (!foundGameSetup) {
       foundGameSetup = null;
@@ -191,9 +152,7 @@ export default class Setup extends Vue {
   }
 
   private onAllAvailableBotsClicked() {
-    this.selectedBots = this.selectedBots
-      .concat(this.availableBots)
-      .sort(this.compareBots);
+    this.selectedBots = this.selectedBots.concat(this.availableBots).sort(this.compareBots);
     this.availableBots = [];
   }
 
@@ -212,14 +171,14 @@ export default class Setup extends Vue {
     }
   }
 
-  private compareBots(a: BotInfo, b: BotInfo) {
-    if (!a.displayText || !b.displayText) {
+  private compareBots(b1: BotInfo, b2: BotInfo) {
+    if (!b1.displayText || !b2.displayText) {
       throw new Error("compareBots: Illegal argument");
     }
-    if (a.displayText < b.displayText) {
+    if (b1.displayText < b2.displayText) {
       return -1;
     }
-    if (a.displayText > b.displayText) {
+    if (b1.displayText > b2.displayText) {
       return 1;
     }
     return 0;
@@ -229,12 +188,11 @@ export default class Setup extends Vue {
     const selectedBotsCount = this.selectedBots.length;
     const gameSetup = this.gameSetup;
     return (
-      this.isConnected &&
+      this.server.isConnected() &&
       this.isGameTypeSelected() &&
       gameSetup &&
       selectedBotsCount >= gameSetup.minNumberOfParticipants &&
-      (gameSetup.maxNumberOfParticipants == null ||
-        selectedBotsCount <= gameSetup.maxNumberOfParticipants)
+      (gameSetup.maxNumberOfParticipants == null || selectedBotsCount <= gameSetup.maxNumberOfParticipants)
     );
   }
 

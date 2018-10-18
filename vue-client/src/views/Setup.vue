@@ -7,15 +7,15 @@
           <b-input-group size="sm" prepend="Server URL">
             <b-input placeholder="ws://server:port" v-model="serverUrl" />
             <b-input-group-append>
-              <b-btn @click="onConnect" v-show="!isConnected">Connect</b-btn>
-              <b-btn @click="onDisconnect" v-show="isConnected" letiant="warning">Disconnect</b-btn>
+              <b-btn @click="connect" v-show="!isConnected()">Connect</b-btn>
+              <b-btn @click="disconnect" v-show="isConnected()" letiant="warning">Disconnect</b-btn>
             </b-input-group-append>
           </b-input-group>
           <label style="width: 100%; text-align: right">Status: {{ connectionStatus }}</label>
         </b-col>
       </b-row>
 
-      <div v-if="isConnected">
+      <div v-if="isConnected()">
         <b-row class="mt-0">
           <b-col sm="12"><label>Game Type</label></b-col>
           <b-col sm="4">

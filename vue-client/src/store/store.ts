@@ -1,5 +1,6 @@
 import { TickEventForObserver } from "@/schemas/Events";
 import { BotInfo } from "@/schemas/Comm";
+import GameSetup from "@/schemas/GameSetup";
 
 export default {
   saveServerUrl(serverUrl: string) {
@@ -8,10 +9,10 @@ export default {
   loadServerUrl(): string | null {
     return sessionStorage.getItem("serverUrl");
   },
-  saveGameSetup(gameSetup: any) {
+  saveGameSetup(gameSetup: GameSetup | null) {
     sessionStorage.setItem("gameSetup", JSON.stringify(gameSetup));
   },
-  loadGameSetup(): any {
+  loadGameSetup(): GameSetup | null {
     const gameSetup = sessionStorage.getItem("gameSetup");
     if (gameSetup) {
       return JSON.parse(gameSetup);
@@ -51,5 +52,5 @@ export default {
       return JSON.parse(event);
     }
     return null;
-  },
+  }
 };
