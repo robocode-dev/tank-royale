@@ -12,18 +12,22 @@ import {
   GameAbortedEventForObserver,
   GameEndedEventForObserver,
   GamePausedEventForObserver,
-  GameResumedEventForObserver
+  GameResumedEventForObserver,
 } from "@/schemas/Events";
 import GameSetup from "@/schemas/GameSetup";
 
 export enum ConnectionStatus {
   NotConnected = "not connected",
   Connected = "connected",
-  Error = "error"
+  Error = "error",
 }
 
 export class Server {
   public static _instance = new Server();
+
+  public static instance(): Server {
+    return this._instance;
+  }
 
   public connectedEvent = new TypedEvent<void>();
   public disconnectedEvent = new TypedEvent<void>();
@@ -46,10 +50,6 @@ export class Server {
   private _connectionStatus: string = ConnectionStatus.NotConnected;
   private _connectionErrorMsg: string = "";
 
-  static instance(): Server {
-    return this._instance;
-  }
-
   public connect(serverUrl: string) {
     let socket = this._socket;
     if (socket !== null && socket !== undefined) {
@@ -63,7 +63,7 @@ export class Server {
 
     const self = this;
 
-    socket.onopen = event => {
+    socket.onopen = (event) => {
       console.log("ws connected to: " + event.target.url);
 
       self._connectionStatus = ConnectionStatus.Connected;
@@ -71,7 +71,7 @@ export class Server {
 
       self.connectedEvent.emit(undefined);
     };
-    socket.onclose = event => {
+    socket.onclose = (event) => {
       console.log("ws closed: " + event.target.url);
 
       self._connectionStatus = ConnectionStatus.NotConnected;
@@ -79,7 +79,7 @@ export class Server {
 
       self.disconnectedEvent.emit(undefined);
     };
-    socket.onerror = event => {
+    socket.onerror = (event) => {
       console.log("ws error: " + event.data);
 
       self._connectionStatus = ConnectionStatus.Error;
@@ -87,7 +87,7 @@ export class Server {
 
       self.connectionErrorEvent.emit(undefined);
     };
-    socket.onmessage = event => {
+    socket.onmessage = (event) => {
       console.log("ws message: " + event.data);
 
       const message = JSON.parse(event.data);
@@ -145,9 +145,9 @@ export class Server {
       JSON.stringify({
         clientKey: this._clientKey,
         type: CommandType.StartGame,
-        gameSetup: gameSetup,
-        botAddresses: botAddresses
-      })
+        gameSetup,
+        botAddresses,
+      }),
     );
   }
 
@@ -155,8 +155,8 @@ export class Server {
     this._socket.send(
       JSON.stringify({
         clientKey: this._clientKey,
-        type: CommandType.StopGame
-      })
+        type: CommandType.StopGame,
+      }),
     );
   }
 
@@ -164,8 +164,8 @@ export class Server {
     this._socket.send(
       JSON.stringify({
         clientKey: this._clientKey,
-        type: CommandType.PauseGame
-      })
+        type: CommandType.PauseGame,
+      }),
     );
   }
 
@@ -173,8 +173,8 @@ export class Server {
     this._socket.send(
       JSON.stringify({
         clientKey: this._clientKey,
-        type: CommandType.ResumeGame
-      })
+        type: CommandType.ResumeGame,
+      }),
     );
   }
 
@@ -190,8 +190,8 @@ export class Server {
         type: MessageType.ControllerHandshake,
         name: "Robocode 2 Web UI",
         version: "0.1.0",
-        author: "Flemming N. Larsen <fnl@users.sourceforge.net>"
-      })
+        author: "Flemming N. Larsen <fnl@users.sourceforge.net>",
+      }),
     );
   }
 }

@@ -23,8 +23,10 @@ export class TypedEvent<T> {
   }
 
   public off = (listener: Listener<T>) => {
-    let callbackIndex = this.listeners.indexOf(listener);
-    if (callbackIndex > -1) { this.listeners.splice(callbackIndex, 1); }
+    const callbackIndex = this.listeners.indexOf(listener);
+    if (callbackIndex > -1) {
+      this.listeners.splice(callbackIndex, 1);
+    }
   }
 
   public emit = (event: T) => {

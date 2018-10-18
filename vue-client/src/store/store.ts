@@ -52,5 +52,5 @@ export default {
       return JSON.parse(event);
     }
     return null;
-  }
+  },
 };

@@ -35,7 +35,7 @@ export default class Setup extends Vue {
     arenaMinSize: 400,
     arenaMaxSize: 5000,
     minGunCoolingRate: 0.1,
-    maxGunCoolingRate: 3.0
+    maxGunCoolingRate: 3.0,
   };
 
   private mounted() {
@@ -64,21 +64,21 @@ export default class Setup extends Vue {
 
     const self = this;
 
-    server.connectedEvent.on(event => {
+    server.connectedEvent.on((event) => {
       self.connectionStatus = server.connectionStatus();
     });
-    server.disconnectedEvent.on(event => {
+    server.disconnectedEvent.on((event) => {
       self.connectionStatus = server.connectionStatus();
 
       self.onDisconnected();
     });
-    server.connectionErrorEvent.on(event => {
+    server.connectionErrorEvent.on((event) => {
       self.connectionStatus = server.connectionStatus();
     });
-    server.serverHandshakeEvent.on(event => {
+    server.serverHandshakeEvent.on((event) => {
       self.onServerHandshake(event);
     });
-    server.botListUpdateEvent.on(event => {
+    server.botListUpdateEvent.on((event) => {
       self.onBotListUpdate(event);
     });
   }
@@ -104,7 +104,7 @@ export default class Setup extends Vue {
       const games = serverHandshake.games;
       if (games) {
         gameTypeOptions.push(new GameTypeOption(null, "-- select --"));
-        games.forEach(element => {
+        games.forEach((element) => {
           const gameType = element.gameType;
           gameTypeOptions.push(new GameTypeOption(gameType, gameType));
         });
@@ -131,7 +131,9 @@ export default class Setup extends Vue {
   private onGameTypeChanged(event) {
     let foundGameSetup;
     if (this.serverHandshake) {
-      foundGameSetup = this.serverHandshake.games.find(gameSetup => gameSetup.gameType === event.target.value);
+      foundGameSetup = this.serverHandshake.games.find(
+        (gameSetup) => gameSetup.gameType === event.target.value,
+      );
     }
     if (!foundGameSetup) {
       foundGameSetup = null;
@@ -152,7 +154,9 @@ export default class Setup extends Vue {
   }
 
   private onAllAvailableBotsClicked() {
-    this.selectedBots = this.selectedBots.concat(this.availableBots).sort(this.compareBots);
+    this.selectedBots = this.selectedBots
+      .concat(this.availableBots)
+      .sort(this.compareBots);
     this.availableBots = [];
   }
 
@@ -192,7 +196,8 @@ export default class Setup extends Vue {
       this.isGameTypeSelected() &&
       gameSetup &&
       selectedBotsCount >= gameSetup.minNumberOfParticipants &&
-      (gameSetup.maxNumberOfParticipants == null || selectedBotsCount <= gameSetup.maxNumberOfParticipants)
+      (gameSetup.maxNumberOfParticipants == null ||
+        selectedBotsCount <= gameSetup.maxNumberOfParticipants)
     );
   }
 

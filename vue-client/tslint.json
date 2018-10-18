@@ -13,6 +13,7 @@
     "no-consecutive-blank-lines": false,
 
     "no-console": false,
-    "max-classes-per-file": false
+    "max-classes-per-file": false,
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
   }
 }
