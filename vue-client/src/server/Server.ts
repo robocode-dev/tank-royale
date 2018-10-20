@@ -41,41 +41,39 @@ export class Server {
   >();
 
   public static connect(serverUrl: string) {
-    let websocket = this._websocket;
+    let websocket = Server._websocket;
     if (websocket !== null && websocket !== undefined) {
       throw new Error("connect: Already connected");
     }
 
-    this._serverUrl = serverUrl;
+    Server._serverUrl = serverUrl;
 
     websocket = new WebSocket(serverUrl);
-    this._websocket = websocket;
-
-    const self = this;
+    Server._websocket = websocket;
 
     websocket.onopen = (event) => {
       console.log("ws connected to: " + event.target.url);
 
-      self._connectionStatus = ConnectionStatus.Connected;
-      self._connectionErrorMsg = "";
+      Server._connectionStatus = ConnectionStatus.Connected;
+      Server._connectionErrorMsg = "";
 
-      self.connectedEvent.emit(undefined);
+      Server.connectedEvent.emit(undefined);
     };
     websocket.onclose = (event) => {
       console.log("ws closed: " + event.target.url);
 
-      self._connectionStatus = ConnectionStatus.NotConnected;
-      self._connectionErrorMsg = "";
+      Server._connectionStatus = ConnectionStatus.NotConnected;
+      Server._connectionErrorMsg = "";
 
-      self.disconnectedEvent.emit(undefined);
+      Server.disconnectedEvent.emit(undefined);
     };
     websocket.onerror = (event) => {
       console.log("ws error: " + event.data);
 
-      self._connectionStatus = ConnectionStatus.Error;
-      self._connectionErrorMsg = event.data;
+      Server._connectionStatus = ConnectionStatus.Error;
+      Server._connectionErrorMsg = event.data;
 
-      self.connectionErrorEvent.emit(undefined);
+      Server.connectionErrorEvent.emit(undefined);
     };
     websocket.onmessage = (event) => {
       console.log("ws message: " + event.data);
@@ -84,74 +82,74 @@ export class Server {
 
       switch (message.type) {
         case MessageType.ServerHandshake:
-          self.onServerHandhake(message);
-          self.serverHandshakeEvent.emit(message);
+          Server.onServerHandhake(message);
+          Server.serverHandshakeEvent.emit(message);
           break;
         case MessageType.BotListUpdate:
-          self.botListUpdateEvent.emit(message);
+          Server.botListUpdateEvent.emit(message);
           break;
         case EventType.TickEventForObserver:
-          self._lastTickEvent = message;
-          self.tickEvent.emit(message);
+          Server._lastTickEvent = message;
+          Server.tickEvent.emit(message);
           break;
         case EventType.GameStartedEventForObserver:
-          self._gameRunning = true;
-          self._gamePaused = false;
-          self.gameStartedEvent.emit(message);
+          Server._gameRunning = true;
+          Server._gamePaused = false;
+          Server.gameStartedEvent.emit(message);
           break;
         case EventType.GameAbortedEventForObserver:
-          self._gameRunning = false;
-          self._gamePaused = false;
-          self.gameAbortedEvent.emit(message);
+          Server._gameRunning = false;
+          Server._gamePaused = false;
+          Server.gameAbortedEvent.emit(message);
           break;
         case EventType.GameEndedEventForObserver:
-          self._gameRunning = false;
-          self._gamePaused = false;
-          self.gameEndedEvent.emit(message);
+          Server._gameRunning = false;
+          Server._gamePaused = false;
+          Server.gameEndedEvent.emit(message);
           break;
         case EventType.GamePausedEventForObserver:
-          self._gamePaused = true;
-          self.gamePausedEvent.emit(message);
+          Server._gamePaused = true;
+          Server.gamePausedEvent.emit(message);
           break;
         case EventType.GameResumedEventForObserver:
-          self._gamePaused = false;
-          self.gameResumedEvent.emit(message);
+          Server._gamePaused = false;
+          Server.gameResumedEvent.emit(message);
           break;
       }
     };
   }
 
   public static disconnect() {
-    if (this._websocket !== null) {
-      this._websocket.close();
-      this._websocket = null;
+    if (Server._websocket !== null) {
+      Server._websocket.close();
+      Server._websocket = null;
     }
   }
 
   public static connectionStatus(): string {
-    if (this._connectionStatus === ConnectionStatus.Error) {
-      return ConnectionStatus.Error + ": " + this._connectionErrorMsg;
+    if (Server._connectionStatus === ConnectionStatus.Error) {
+      return ConnectionStatus.Error + ": " + Server._connectionErrorMsg;
     }
-    return this._connectionStatus;
+    return Server._connectionStatus;
   }
 
   public static isConnected(): boolean {
-    return this._connectionStatus === ConnectionStatus.Connected;
+    return Server._connectionStatus === ConnectionStatus.Connected;
   }
 
   public static isGameRunning(): boolean {
-    return this._gameRunning;
+    return Server._gameRunning;
   }
 
   public static isGamePaused(): boolean {
-    return this._gamePaused;
+    return Server._gamePaused;
   }
 
   public static sendStartGame(gameSetup: GameSetup, botAddresses: BotInfo[]) {
-    this._websocket.send(
+    Server._websocket.send(
       JSON.stringify({
-        clientKey: this._clientKey,
         type: CommandType.StartGame,
+        clientKey: Server._clientKey,
         gameSetup,
         botAddresses,
       }),
@@ -159,34 +157,34 @@ export class Server {
   }
 
   public static sendStopGame() {
-    this._websocket.send(
+    Server._websocket.send(
       JSON.stringify({
-        clientKey: this._clientKey,
         type: CommandType.StopGame,
+        clientKey: Server._clientKey,
       }),
     );
   }
 
   public static sendPauseGame() {
-    this._websocket.send(
+    Server._websocket.send(
       JSON.stringify({
-        clientKey: this._clientKey,
         type: CommandType.PauseGame,
+        clientKey: Server._clientKey,
       }),
     );
   }
 
   public static sendResumeGame() {
-    this._websocket.send(
+    Server._websocket.send(
       JSON.stringify({
-        clientKey: this._clientKey,
         type: CommandType.ResumeGame,
+        clientKey: Server._clientKey,
       }),
     );
   }
 
   public static getLastTickEvent(): TickEventForObserver | null {
-    return this._lastTickEvent;
+    return Server._lastTickEvent;
   }
 
   private static _websocket: any;
@@ -203,15 +201,15 @@ export class Server {
   private static _lastTickEvent: TickEventForObserver | null;
 
   private static onServerHandhake(serverHandshake: ServerHandshake) {
-    this._clientKey = serverHandshake.clientKey;
-    this.sendControllerHandshake();
+    Server._clientKey = serverHandshake.clientKey;
+    Server.sendControllerHandshake();
   }
 
   private static sendControllerHandshake() {
-    this._websocket.send(
+    Server._websocket.send(
       JSON.stringify({
-        clientKey: this._clientKey,
         type: MessageType.ControllerHandshake,
+        clientKey: Server._clientKey,
         name: "Robocode 2 Web UI",
         version: "0.1.0",
         author: "Flemming N. Larsen <fnl@users.sourceforge.net>",
