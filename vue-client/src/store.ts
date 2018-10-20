@@ -29,14 +29,4 @@ export default {
     }
     return [];
   },
-  saveTickEvent(event: TickEventForObserver | null) {
-    sessionStorage.setItem("tickEvent", JSON.stringify(event));
-  },
-  loadTickEvent(): TickEventForObserver | null {
-    const event = sessionStorage.getItem("tickEvent");
-    if (event) {
-      return JSON.parse(event);
-    }
-    return null;
-  },
 };

@@ -91,6 +91,7 @@ export class Server {
           self.botListUpdateEvent.emit(message);
           break;
         case EventType.TickEventForObserver:
+          self._lastTickEvent = message;
           self.tickEvent.emit(message);
           break;
         case EventType.GameStartedEventForObserver:
@@ -184,6 +185,10 @@ export class Server {
     );
   }
 
+  public static getLastTickEvent(): TickEventForObserver | null {
+    return this._lastTickEvent;
+  }
+
   private static _websocket: any;
 
   private static _serverUrl: string = "ws://localhost:50000";
@@ -194,6 +199,8 @@ export class Server {
 
   private static _gameRunning: boolean = false;
   private static _gamePaused: boolean = false;
+
+  private static _lastTickEvent: TickEventForObserver | null;
 
   private static onServerHandhake(serverHandshake: ServerHandshake) {
     this._clientKey = serverHandshake.clientKey;

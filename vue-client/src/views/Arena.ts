@@ -35,7 +35,7 @@ export default class Arena extends Vue {
   private isRunning: boolean = Server.isGameRunning();
   private isPaused: boolean = Server.isGamePaused();
 
-  private lastTickEvent?: TickEventForObserver | null = state.loadTickEvent();
+  private lastTickEvent: TickEventForObserver | null = Server.getLastTickEvent();
 
   public mounted() {
     this.canvas = document.getElementById("canvas");
@@ -96,7 +96,6 @@ export default class Arena extends Vue {
   private onGameStarted(event: GameStartedEventForObserver) {
     console.log("->gameStarted");
     this.updateRunningAndPausedStates();
-    state.saveTickEvent((this.lastTickEvent = null));
   }
 
   private onGameAborted(event: GameAbortedEventForObserver) {
@@ -165,8 +164,6 @@ export default class Arena extends Vue {
     }
 
     this.lastTickEvent.explosions = explosions;
-
-    state.saveTickEvent(this.lastTickEvent);
 
     this.draw();
 
