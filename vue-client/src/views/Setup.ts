@@ -96,18 +96,11 @@ export default class Setup extends Vue {
 
     this.serverHandshake = serverHandshake;
 
+    const gameTypes = Server.getGameTypes();
     const gameTypeOptions: GameTypeOption[] = [];
-
-    if (serverHandshake) {
-      const games = serverHandshake.games;
-      if (games) {
-        gameTypeOptions.push(new GameTypeOption(null, "-- select --"));
-        games.forEach((element) => {
-          const gameType = element.gameType;
-          gameTypeOptions.push(new GameTypeOption(gameType, gameType));
-        });
-      }
-    }
+    gameTypes.forEach((type) => {
+      gameTypeOptions.push(new GameTypeOption(type, type));
+    });
     this.gameTypeOptions = gameTypeOptions;
   }
 
@@ -127,16 +120,7 @@ export default class Setup extends Vue {
   }
 
   private onGameTypeChanged(event) {
-    let foundGameSetup;
-    if (this.serverHandshake) {
-      foundGameSetup = this.serverHandshake.games.find(
-        (gameSetup) => gameSetup.gameType === event.target.value,
-      );
-    }
-    if (!foundGameSetup) {
-      foundGameSetup = null;
-    }
-    this.gameSetup = foundGameSetup;
+    this.gameSetup = Server.selectGameType(event.target.value);
   }
 
   private onAvailableBotClicked(bot: BotInfo) {
@@ -202,7 +186,6 @@ export default class Setup extends Vue {
   private onStartGameClicked() {
     console.log("Goto arena");
 
-    state.saveGameSetup(this.gameSetup);
     state.saveSelectedBots(this.selectedBots);
 
     this.$router.push("/arena");

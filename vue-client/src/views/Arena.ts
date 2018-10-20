@@ -71,11 +71,7 @@ export default class Arena extends Vue {
 
   private startGame() {
     console.info("<-startGame");
-    const gameSetup = state.loadGameSetup();
-    if (gameSetup === null) {
-      throw new Error("startGame: No game setup");
-    }
-    Server.sendStartGame(gameSetup, state.loadSelectedBots());
+    Server.sendStartGame(state.loadSelectedBots());
   }
 
   private stopGame() {

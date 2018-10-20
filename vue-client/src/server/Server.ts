@@ -133,6 +133,10 @@ export class Server {
     return Server._connectionStatus;
   }
 
+  public static getGameTypes(): string[] {
+    return Server._games.map((game) => game.gameType);
+  }
+
   public static isConnected(): boolean {
     return Server._connectionStatus === ConnectionStatus.Connected;
   }
@@ -145,12 +149,22 @@ export class Server {
     return Server._gamePaused;
   }
 
-  public static sendStartGame(gameSetup: GameSetup, botAddresses: BotInfo[]) {
+  public static selectGameType(gameType: string): GameSetup | null {
+    const gameSetup: GameSetup | undefined = Server._games.find(
+      (game) => game.gameType === gameType,
+    );
+    if (typeof gameSetup === "undefined") {
+      return (this._gameSetup = null);
+    }
+    return (this._gameSetup = gameSetup);
+  }
+
+  public static sendStartGame(botAddresses: BotInfo[]) {
     Server._websocket.send(
       JSON.stringify({
         type: CommandType.StartGame,
         clientKey: Server._clientKey,
-        gameSetup,
+        gameSetup: Server._gameSetup,
         botAddresses,
       }),
     );
@@ -187,9 +201,8 @@ export class Server {
     return Server._lastTickEvent;
   }
 
-  private static _websocket: any;
-
   private static _serverUrl: string = "ws://localhost:50000";
+  private static _websocket: any;
   private static _clientKey?: string;
 
   private static _connectionStatus: string = ConnectionStatus.NotConnected;
@@ -198,10 +211,13 @@ export class Server {
   private static _gameRunning: boolean = false;
   private static _gamePaused: boolean = false;
 
+  private static _games: GameSetup[];
+  private static _gameSetup: GameSetup | null;
   private static _lastTickEvent: TickEventForObserver | null;
 
   private static onServerHandhake(serverHandshake: ServerHandshake) {
     Server._clientKey = serverHandshake.clientKey;
+    Server._games = serverHandshake.games;
     Server.sendControllerHandshake();
   }
 
