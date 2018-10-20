@@ -15,8 +15,7 @@ import {
   BulletHitBotEvent,
   ScannedBotEvent,
 } from "@/schemas/Events";
-
-import state from "@/store/store";
+import state from "@/store";
 
 class Explosion {
   public position: Point;

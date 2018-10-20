@@ -3,7 +3,7 @@ import { Component } from "vue-property-decorator";
 import { ConnectionStatus, Server } from "@/server/Server";
 import GameSetup from "@/schemas/GameSetup";
 import { ServerHandshake, BotListUpdate, BotInfo } from "@/schemas/Comm";
-import state from "@/store/store.ts";
+import state from "@/store.ts";
 
 class GameTypeOption {
   public value: string | null;
