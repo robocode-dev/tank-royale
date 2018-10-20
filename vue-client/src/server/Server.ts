@@ -94,18 +94,26 @@ export class Server {
           self.tickEvent.emit(message);
           break;
         case EventType.GameStartedEventForObserver:
+          self._gameRunning = true;
+          self._gamePaused = false;
           self.gameStartedEvent.emit(message);
           break;
         case EventType.GameAbortedEventForObserver:
+          self._gameRunning = false;
+          self._gamePaused = false;
           self.gameAbortedEvent.emit(message);
           break;
         case EventType.GameEndedEventForObserver:
+          self._gameRunning = false;
+          self._gamePaused = false;
           self.gameEndedEvent.emit(message);
           break;
         case EventType.GamePausedEventForObserver:
+          self._gamePaused = true;
           self.gamePausedEvent.emit(message);
           break;
         case EventType.GameResumedEventForObserver:
+          self._gamePaused = false;
           self.gameResumedEvent.emit(message);
           break;
       }
@@ -128,6 +136,14 @@ export class Server {
 
   public static isConnected(): boolean {
     return this._connectionStatus === ConnectionStatus.Connected;
+  }
+
+  public static isGameRunning(): boolean {
+    return this._gameRunning;
+  }
+
+  public static isGamePaused(): boolean {
+    return this._gamePaused;
   }
 
   public static sendStartGame(gameSetup: GameSetup, botAddresses: BotInfo[]) {
@@ -175,6 +191,9 @@ export class Server {
 
   private static _connectionStatus: string = ConnectionStatus.NotConnected;
   private static _connectionErrorMsg: string = "";
+
+  private static _gameRunning: boolean = false;
+  private static _gamePaused: boolean = false;
 
   private static onServerHandhake(serverHandshake: ServerHandshake) {
     this._clientKey = serverHandshake.clientKey;

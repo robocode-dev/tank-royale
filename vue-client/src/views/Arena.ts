@@ -32,8 +32,8 @@ export default class Arena extends Vue {
   private canvas: any;
   private ctx: any;
 
-  private isRunning: boolean = state.loadIsRunning();
-  private isPaused: boolean = state.loadIsPaused();
+  private isRunning: boolean = Server.isGameRunning();
+  private isPaused: boolean = Server.isGamePaused();
 
   private lastTickEvent?: TickEventForObserver | null = state.loadTickEvent();
 
@@ -69,14 +69,6 @@ export default class Arena extends Vue {
     });
   }
 
-  private setRunning(isRunning: boolean) {
-    state.saveIsRunning((this.isRunning = isRunning));
-  }
-
-  private setPaused(isPaused: boolean) {
-    state.saveIsPaused((this.isPaused = isPaused));
-  }
-
   private startGame() {
     console.info("<-startGame");
     const gameSetup = state.loadGameSetup();
@@ -103,30 +95,33 @@ export default class Arena extends Vue {
 
   private onGameStarted(event: GameStartedEventForObserver) {
     console.log("->gameStarted");
-    this.setRunning(true);
+    this.updateRunningAndPausedStates();
     state.saveTickEvent((this.lastTickEvent = null));
   }
 
   private onGameAborted(event: GameAbortedEventForObserver) {
     console.log("->gameAborted");
-    this.setRunning(false);
-    this.setPaused(false);
+    this.updateRunningAndPausedStates();
   }
 
   private onGameEnded(event: GameEndedEventForObserver) {
     console.log("->gameEnded");
-    this.setRunning(false);
-    this.setPaused(false);
+    this.updateRunningAndPausedStates();
   }
 
   private onGamePaused(event: GamePausedEventForObserver) {
     console.log("->gamePaused");
-    this.setPaused(true);
+    this.updateRunningAndPausedStates();
   }
 
   private onGameResumed(event: GameResumedEventForObserver) {
     console.log("->gameResumed");
-    this.setPaused(false);
+    this.updateRunningAndPausedStates();
+  }
+
+  private updateRunningAndPausedStates() {
+    this.isRunning = Server.isGameRunning();
+    this.isPaused = Server.isGamePaused();
   }
 
   private onTick(event: TickEventForObserver) {

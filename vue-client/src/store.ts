@@ -29,20 +29,6 @@ export default {
     }
     return [];
   },
-  saveIsRunning(isRunning: boolean) {
-    sessionStorage.setItem("isRunning", "" + isRunning);
-  },
-  loadIsRunning(): boolean {
-    const isRunning = sessionStorage.getItem("isRunning");
-    return isRunning == null ? false : isRunning === "true";
-  },
-  saveIsPaused(isPaused: boolean) {
-    sessionStorage.setItem("isPaused", "" + isPaused);
-  },
-  loadIsPaused(): boolean {
-    const isPaused = sessionStorage.getItem("isPaused");
-    return isPaused == null ? false : isPaused === "true";
-  },
   saveTickEvent(event: TickEventForObserver | null) {
     sessionStorage.setItem("tickEvent", JSON.stringify(event));
   },

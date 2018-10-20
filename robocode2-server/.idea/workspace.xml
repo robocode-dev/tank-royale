@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2f422183-d735-456c-a4da-2fefffa06048" name="Default Changelist" comment="" />
+    <list default="true" id="2f422183-d735-456c-a4da-2fefffa06048" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../vue-client/src/server/Server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../vue-client/src/server/Server.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../vue-client/src/store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../vue-client/src/store.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../vue-client/src/views/Arena.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../vue-client/src/views/Arena.ts" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -158,7 +162,7 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7055016" weight="0.1881663" />
-      <window_info id="Structure" order="1" sideWeight="0.29449838" side_tool="true" visible="true" weight="0.20309168" />
+      <window_info id="Structure" order="1" sideWeight="0.29449838" side_tool="true" visible="true" weight="0.20735608" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
       <window_info id="Capture Tool" order="4" />
