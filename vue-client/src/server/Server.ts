@@ -21,34 +21,26 @@ export enum ConnectionStatus {
 }
 
 export class Server {
-  public static _instance = new Server();
+  public static connectedEvent = new TypedEvent<void>();
+  public static disconnectedEvent = new TypedEvent<void>();
+  public static connectionErrorEvent = new TypedEvent<void>();
 
-  public static getInstance(): Server {
-    return this._instance;
-  }
+  public static serverHandshakeEvent = new TypedEvent<ServerHandshake>();
+  public static botListUpdateEvent = new TypedEvent<BotListUpdate>();
+  public static tickEvent = new TypedEvent<TickEventForObserver>();
+  public static gameStartedEvent = new TypedEvent<
+    GameStartedEventForObserver
+  >();
+  public static gameAbortedEvent = new TypedEvent<
+    GameAbortedEventForObserver
+  >();
+  public static gameEndedEvent = new TypedEvent<GameEndedEventForObserver>();
+  public static gamePausedEvent = new TypedEvent<GamePausedEventForObserver>();
+  public static gameResumedEvent = new TypedEvent<
+    GameResumedEventForObserver
+  >();
 
-  public connectedEvent = new TypedEvent<void>();
-  public disconnectedEvent = new TypedEvent<void>();
-  public connectionErrorEvent = new TypedEvent<void>();
-
-  public serverHandshakeEvent = new TypedEvent<ServerHandshake>();
-  public botListUpdateEvent = new TypedEvent<BotListUpdate>();
-  public tickEvent = new TypedEvent<TickEventForObserver>();
-  public gameStartedEvent = new TypedEvent<GameStartedEventForObserver>();
-  public gameAbortedEvent = new TypedEvent<GameAbortedEventForObserver>();
-  public gameEndedEvent = new TypedEvent<GameEndedEventForObserver>();
-  public gamePausedEvent = new TypedEvent<GamePausedEventForObserver>();
-  public gameResumedEvent = new TypedEvent<GameResumedEventForObserver>();
-
-  private _websocket: any;
-
-  private _serverUrl: string = "ws://localhost:50000";
-  private _clientKey?: string;
-
-  private _connectionStatus: string = ConnectionStatus.NotConnected;
-  private _connectionErrorMsg: string = "";
-
-  public connect(serverUrl: string) {
+  public static connect(serverUrl: string) {
     let websocket = this._websocket;
     if (websocket !== null && websocket !== undefined) {
       throw new Error("connect: Already connected");
@@ -120,25 +112,25 @@ export class Server {
     };
   }
 
-  public disconnect() {
+  public static disconnect() {
     if (this._websocket !== null) {
       this._websocket.close();
       this._websocket = null;
     }
   }
 
-  public connectionStatus(): string {
+  public static connectionStatus(): string {
     if (this._connectionStatus === ConnectionStatus.Error) {
       return ConnectionStatus.Error + ": " + this._connectionErrorMsg;
     }
     return this._connectionStatus;
   }
 
-  public isConnected(): boolean {
+  public static isConnected(): boolean {
     return this._connectionStatus === ConnectionStatus.Connected;
   }
 
-  public sendStartGame(gameSetup: GameSetup, botAddresses: BotInfo[]) {
+  public static sendStartGame(gameSetup: GameSetup, botAddresses: BotInfo[]) {
     this._websocket.send(
       JSON.stringify({
         clientKey: this._clientKey,
@@ -149,7 +141,7 @@ export class Server {
     );
   }
 
-  public sendStopGame() {
+  public static sendStopGame() {
     this._websocket.send(
       JSON.stringify({
         clientKey: this._clientKey,
@@ -158,7 +150,7 @@ export class Server {
     );
   }
 
-  public sendPauseGame() {
+  public static sendPauseGame() {
     this._websocket.send(
       JSON.stringify({
         clientKey: this._clientKey,
@@ -167,7 +159,7 @@ export class Server {
     );
   }
 
-  public sendResumeGame() {
+  public static sendResumeGame() {
     this._websocket.send(
       JSON.stringify({
         clientKey: this._clientKey,
@@ -176,12 +168,20 @@ export class Server {
     );
   }
 
-  private onServerHandhake(serverHandshake: ServerHandshake) {
+  private static _websocket: any;
+
+  private static _serverUrl: string = "ws://localhost:50000";
+  private static _clientKey?: string;
+
+  private static _connectionStatus: string = ConnectionStatus.NotConnected;
+  private static _connectionErrorMsg: string = "";
+
+  private static onServerHandhake(serverHandshake: ServerHandshake) {
     this._clientKey = serverHandshake.clientKey;
     this.sendControllerHandshake();
   }
 
-  private sendControllerHandshake() {
+  private static sendControllerHandshake() {
     this._websocket.send(
       JSON.stringify({
         clientKey: this._clientKey,

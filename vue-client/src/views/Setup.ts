@@ -17,7 +17,6 @@ class GameTypeOption {
 
 @Component
 export default class Setup extends Vue {
-  private server: Server = Server.getInstance();
   private serverUrl: string = "";
 
   private connectionStatus: string = ConnectionStatus.NotConnected;
@@ -55,36 +54,35 @@ export default class Setup extends Vue {
   }
 
   private isConnected(): boolean {
-    return this.server.isConnected();
+    return Server.isConnected();
   }
 
   private connect() {
-    const server = this.server;
-    server.connect(this.serverUrl);
+    Server.connect(this.serverUrl);
 
     const self = this;
 
-    server.connectedEvent.on((event) => {
-      self.connectionStatus = server.connectionStatus();
+    Server.connectedEvent.on((event) => {
+      self.connectionStatus = Server.connectionStatus();
     });
-    server.disconnectedEvent.on((event) => {
-      self.connectionStatus = server.connectionStatus();
+    Server.disconnectedEvent.on((event) => {
+      self.connectionStatus = Server.connectionStatus();
 
       self.onDisconnected();
     });
-    server.connectionErrorEvent.on((event) => {
-      self.connectionStatus = server.connectionStatus();
+    Server.connectionErrorEvent.on((event) => {
+      self.connectionStatus = Server.connectionStatus();
     });
-    server.serverHandshakeEvent.on((event) => {
+    Server.serverHandshakeEvent.on((event) => {
       self.onServerHandshake(event);
     });
-    server.botListUpdateEvent.on((event) => {
+    Server.botListUpdateEvent.on((event) => {
       self.onBotListUpdate(event);
     });
   }
 
   private disconnect() {
-    this.server.disconnect();
+    Server.disconnect();
   }
 
   private onDisconnected() {
@@ -192,7 +190,7 @@ export default class Setup extends Vue {
     const selectedBotsCount = this.selectedBots.length;
     const gameSetup = this.gameSetup;
     return (
-      this.server.isConnected() &&
+      Server.isConnected() &&
       this.isGameTypeSelected() &&
       gameSetup &&
       selectedBotsCount >= gameSetup.minNumberOfParticipants &&

@@ -29,8 +29,6 @@ class Explosion {
 
 @Component
 export default class Arena extends Vue {
-  private server: Server = Server.getInstance();
-
   private canvas: any;
   private ctx: any;
 
@@ -49,25 +47,24 @@ export default class Arena extends Vue {
       this.clearCanvas();
     }
 
-    const server = this.server;
     const self = this;
 
-    server.tickEvent.on((event) => {
+    Server.tickEvent.on((event) => {
       self.onTick(event);
     });
-    server.gameStartedEvent.on((event) => {
+    Server.gameStartedEvent.on((event) => {
       self.onGameStarted(event);
     });
-    server.gameAbortedEvent.on((event) => {
+    Server.gameAbortedEvent.on((event) => {
       self.onGameAborted(event);
     });
-    server.gameEndedEvent.on((event) => {
+    Server.gameEndedEvent.on((event) => {
       self.onGameEnded(event);
     });
-    server.gamePausedEvent.on((event) => {
+    Server.gamePausedEvent.on((event) => {
       self.onGamePaused(event);
     });
-    server.gameResumedEvent.on((event) => {
+    Server.gameResumedEvent.on((event) => {
       self.onGameResumed(event);
     });
   }
@@ -86,22 +83,22 @@ export default class Arena extends Vue {
     if (gameSetup === null) {
       throw new Error("startGame: No game setup");
     }
-    this.server.sendStartGame(gameSetup, state.loadSelectedBots());
+    Server.sendStartGame(gameSetup, state.loadSelectedBots());
   }
 
   private stopGame() {
     console.info("<-stopGame");
-    this.server.sendStopGame();
+    Server.sendStopGame();
   }
 
   private pauseGame() {
     console.info("<-pauseGame");
-    this.server.sendPauseGame();
+    Server.sendPauseGame();
   }
 
   private resumeGame() {
     console.info("<-resumeGame");
-    this.server.sendResumeGame();
+    Server.sendResumeGame();
   }
 
   private onGameStarted(event: GameStartedEventForObserver) {
