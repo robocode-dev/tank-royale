@@ -17,7 +17,7 @@ class GameTypeOption {
 
 @Component
 export default class Setup extends Vue {
-  private server: Server = Server.instance();
+  private server: Server = Server.getInstance();
   private serverUrl: string = "";
 
   private connectionStatus: string = ConnectionStatus.NotConnected;

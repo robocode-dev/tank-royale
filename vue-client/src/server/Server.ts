@@ -23,7 +23,7 @@ export enum ConnectionStatus {
 export class Server {
   public static _instance = new Server();
 
-  public static instance(): Server {
+  public static getInstance(): Server {
     return this._instance;
   }
 

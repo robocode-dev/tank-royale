@@ -29,7 +29,7 @@ class Explosion {
 
 @Component
 export default class Arena extends Vue {
-  private server: Server = Server.instance();
+  private server: Server = Server.getInstance();
 
   private canvas: any;
   private ctx: any;
