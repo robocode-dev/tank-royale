@@ -3,12 +3,6 @@ import { BotInfo } from "@/schemas/Comm";
 import GameSetup from "@/schemas/GameSetup";
 
 export default {
-  saveServerUrl(serverUrl: string) {
-    sessionStorage.setItem("serverUrl", serverUrl);
-  },
-  loadServerUrl(): string | null {
-    return sessionStorage.getItem("serverUrl");
-  },
   saveGameSetup(gameSetup: GameSetup | null) {
     sessionStorage.setItem("gameSetup", JSON.stringify(gameSetup));
   },
