@@ -15,7 +15,6 @@ import {
   BulletHitBotEvent,
   ScannedBotEvent,
 } from "@/schemas/Events";
-import state from "@/store";
 
 class Explosion {
   public position: Point;
@@ -71,7 +70,7 @@ export default class Arena extends Vue {
 
   private startGame() {
     console.info("<-startGame");
-    Server.sendStartGame(state.loadSelectedBots());
+    Server.sendStartGame();
   }
 
   private stopGame() {

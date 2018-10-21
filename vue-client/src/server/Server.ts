@@ -159,13 +159,17 @@ export class Server {
     return (this._gameSetup = gameSetup);
   }
 
-  public static sendStartGame(botAddresses: BotInfo[]) {
+  public static selectBots(bots: BotInfo[]) {
+    this._selectedBots = bots;
+  }
+
+  public static sendStartGame() {
     Server._websocket.send(
       JSON.stringify({
         type: CommandType.StartGame,
         clientKey: Server._clientKey,
         gameSetup: Server._gameSetup,
-        botAddresses,
+        botAddresses: Server._selectedBots,
       }),
     );
   }
@@ -213,6 +217,9 @@ export class Server {
 
   private static _games: GameSetup[];
   private static _gameSetup: GameSetup | null;
+
+  private static _selectedBots: BotInfo[];
+
   private static _lastTickEvent: TickEventForObserver | null;
 
   private static onServerHandhake(serverHandshake: ServerHandshake) {

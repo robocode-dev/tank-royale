@@ -3,7 +3,6 @@ import { Component } from "vue-property-decorator";
 import { ConnectionStatus, Server } from "@/server/Server";
 import GameSetup from "@/schemas/GameSetup";
 import { ServerHandshake, BotListUpdate, BotInfo } from "@/schemas/Comm";
-import state from "@/store.ts";
 
 class GameTypeOption {
   public value: string | null;
@@ -25,8 +24,6 @@ export default class Setup extends Vue {
 
   private availableBots: BotInfo[] = [];
   private selectedBots: BotInfo[] = [];
-
-  private serverHandshake: ServerHandshake | null = null;
 
   private gameTypeOptions: GameTypeOption[] = [];
 
@@ -67,14 +64,13 @@ export default class Setup extends Vue {
     });
     Server.disconnectedEvent.on((event) => {
       self.connectionStatus = Server.connectionStatus();
-
       self.onDisconnected();
     });
     Server.connectionErrorEvent.on((event) => {
       self.connectionStatus = Server.connectionStatus();
     });
     Server.serverHandshakeEvent.on((event) => {
-      self.onServerHandshake(event);
+      self.onServerHandhake();
     });
     Server.botListUpdateEvent.on((event) => {
       self.onBotListUpdate(event);
@@ -91,11 +87,7 @@ export default class Setup extends Vue {
     this.gameTypeOptions = [];
   }
 
-  private onServerHandshake(serverHandshake) {
-    console.log("->serverHandshake");
-
-    this.serverHandshake = serverHandshake;
-
+  private onServerHandhake() {
     const gameTypes = Server.getGameTypes();
     const gameTypeOptions: GameTypeOption[] = [];
     gameTypes.forEach((type) => {
@@ -186,7 +178,7 @@ export default class Setup extends Vue {
   private onStartGameClicked() {
     console.log("Goto arena");
 
-    state.saveSelectedBots(this.selectedBots);
+    Server.selectBots(this.selectedBots);
 
     this.$router.push("/arena");
   }
