@@ -2,7 +2,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { ConnectionStatus, Server } from "@/server/Server";
 import GameSetup from "@/schemas/GameSetup";
-import { ServerHandshake, BotListUpdate, BotInfo } from "@/schemas/Comm";
+import { BotListUpdate, BotInfo } from "@/schemas/Comm";
 
 class GameTypeOption {
   public value: string | null;
@@ -20,12 +20,12 @@ export default class Setup extends Vue {
 
   private connectionStatus: string = ConnectionStatus.NotConnected;
 
-  private gameSetup: GameSetup | null = null;
+  private gameSetup: GameSetup | null = Server.getGameSetup();
 
-  private availableBots: BotInfo[] = [];
-  private selectedBots: BotInfo[] = [];
+  private availableBots: BotInfo[] = Server.getAvailableBots();
+  private selectedBots: BotInfo[] = Server.getSelectedBots();
 
-  private gameTypeOptions: GameTypeOption[] = [];
+  private gameTypeOptions: GameTypeOption[] = this.loadGameTypeOptions();
 
   private rules: any = {
     arenaMinSize: 400,
@@ -113,6 +113,7 @@ export default class Setup extends Vue {
 
   private onGameTypeChanged(event) {
     this.gameSetup = Server.selectGameType(event.target.value);
+    this.saveGameTypeOptions();
   }
 
   private onAvailableBotClicked(bot: BotInfo) {
@@ -167,8 +168,7 @@ export default class Setup extends Vue {
     const gameSetup = this.gameSetup;
     return (
       Server.isConnected() &&
-      this.isGameTypeSelected() &&
-      gameSetup &&
+      gameSetup !== null &&
       selectedBotsCount >= gameSetup.minNumberOfParticipants &&
       (gameSetup.maxNumberOfParticipants == null ||
         selectedBotsCount <= gameSetup.maxNumberOfParticipants)
@@ -181,5 +181,20 @@ export default class Setup extends Vue {
     Server.selectBots(this.selectedBots);
 
     this.$router.push("/arena");
+  }
+
+  private saveGameTypeOptions() {
+    sessionStorage.setItem(
+      "gameTypeOptions",
+      JSON.stringify(this.gameTypeOptions),
+    );
+  }
+
+  private loadGameTypeOptions(): GameTypeOption[] {
+    const gameTypeOptions = sessionStorage.getItem("gameTypeOptions");
+    if (gameTypeOptions) {
+      return JSON.parse(gameTypeOptions);
+    }
+    return [];
   }
 }

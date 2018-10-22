@@ -93,6 +93,6 @@ export class BulletHitBotEvent extends Event {
   }
 }
 
-export interface ScannedBotEvent extends Event {
-  position: Point;
+export class ScannedBotEvent extends Event {
+  public position?: Point;
 }

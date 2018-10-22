@@ -86,6 +86,7 @@ export class Server {
           Server.serverHandshakeEvent.emit(message);
           break;
         case MessageType.BotListUpdate:
+          Server.onBotListUpdate(message);
           Server.botListUpdateEvent.emit(message);
           break;
         case EventType.TickEventForObserver:
@@ -159,8 +160,20 @@ export class Server {
     return (this._gameSetup = gameSetup);
   }
 
+  public static getGameSetup(): GameSetup | null {
+    return typeof this._gameSetup === "undefined" ? null : this._gameSetup;
+  }
+
   public static selectBots(bots: BotInfo[]) {
     this._selectedBots = bots;
+  }
+
+  public static getSelectedBots(): BotInfo[] {
+    return this._selectedBots;
+  }
+
+  public static getAvailableBots(): BotInfo[] {
+    return this._availableBots;
   }
 
   public static sendStartGame() {
@@ -218,7 +231,8 @@ export class Server {
   private static _games: GameSetup[];
   private static _gameSetup: GameSetup | null;
 
-  private static _selectedBots: BotInfo[];
+  private static _availableBots: BotInfo[] = [];
+  private static _selectedBots: BotInfo[] = [];
 
   private static _lastTickEvent: TickEventForObserver | null;
 
@@ -226,6 +240,10 @@ export class Server {
     Server._clientKey = serverHandshake.clientKey;
     Server._games = serverHandshake.games;
     Server.sendControllerHandshake();
+  }
+
+  private static onBotListUpdate(botListUpdate: BotListUpdate) {
+    Server._availableBots = botListUpdate.bots;
   }
 
   private static sendControllerHandshake() {
