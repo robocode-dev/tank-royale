@@ -143,6 +143,15 @@ public class ModelUpdater {
 	}
 
 	/**
+	 * Returns current results.
+	 *
+	 * @return a map where the key is a bot id, and the value is the scores.
+	 */
+	public Map<Integer /* botId */, Score> getResults() {
+		return scoreKeeper.getResults();
+	}
+
+	/**
 	 * Updates the current bot intents with the new bot intents
 	 * 
 	 * @param botIntents

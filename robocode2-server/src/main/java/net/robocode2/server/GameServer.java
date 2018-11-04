@@ -1,20 +1,12 @@
 package net.robocode2.server;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import lombok.val;
 import net.robocode2.json_schema.events.*;
+import net.robocode2.model.*;
 import org.java_websocket.WebSocket;
 
 import com.google.gson.Gson;
@@ -33,11 +25,6 @@ import net.robocode2.mappers.BotIntentToBotIntentMapper;
 import net.robocode2.mappers.GameSetupToGameSetupMapper;
 import net.robocode2.mappers.TurnToGameTickForBotMapper;
 import net.robocode2.mappers.TurnToGameTickForObserverMapper;
-import net.robocode2.model.BotIntent;
-import net.robocode2.model.GameSetup;
-import net.robocode2.model.GameState;
-import net.robocode2.model.Round;
-import net.robocode2.model.Turn;
 
 public final class GameServer {
 
@@ -195,17 +182,71 @@ public final class GameServer {
 		abortedEvent.setType(GameAbortedEventForObserver.Type.GAME_ABORTED_EVENT_FOR_OBSERVER);
 		sendMessageToObservers(gson.toJson(abortedEvent));
 
-		// TODO: Present score for bots and observers. After that, set game state to the initial state
+		// No score is generated for aborted games
 	}
 
-	private void endGame() {
-		System.out.println("#### END GAME #####");
+	private List<BotResultsForBot> getResultsForBots() {
+		List<BotResultsForBot> botResultsList = new ArrayList<>();
 
-		runningState = RunningState.GAME_STOPPED;
+		this.modelUpdater.getResults().entrySet().forEach(entry -> {
+			BotResultsForBot botResults = new BotResultsForBot();
+			Score score = entry.getValue();
+			botResults.setId(entry.getKey());
+			botResults.setSurvival(score.getSurvival());
+			botResults.setLastSurvivorBonus(score.getLastSurvivorBonus());
+			botResults.setBulletDamage(score.getBulletDamage());
+			botResults.setBulletKillBonus(score.getBulletKillBonus());
+			botResults.setRamDamage(score.getRamDamage());
+			botResults.setRamKillBonus(score.getRamKillBonus());
+			botResults.setTotalScore(score.getTotalScore());
+		});
 
-		// TODO: Send GameEndedEvent to bots and observers
+		botResultsList.sort(Comparator.comparing(BotResultsForBot::getTotalScore));
 
-		// TODO: Present score for bots and observers. After that, set game state to the initial state
+		int rank = 1;
+		for (BotResultsForBot botResult : botResultsList) {
+			botResult.setRank(rank++);
+		}
+
+		return botResultsList;
+	}
+
+	private List<BotResultsForObserver> getResultsForObservers() {
+		List<BotResultsForObserver> botResultsList = new ArrayList<>();
+
+		this.modelUpdater.getResults().entrySet().forEach(entry -> {
+			BotResultsForObserver botResults = new BotResultsForObserver();
+			Score score = entry.getValue();
+			botResults.setId(entry.getKey());
+			botResults.setSurvival(score.getSurvival());
+			botResults.setLastSurvivorBonus(score.getLastSurvivorBonus());
+			botResults.setBulletDamage(score.getBulletDamage());
+			botResults.setBulletKillBonus(score.getBulletKillBonus());
+			botResults.setRamDamage(score.getRamDamage());
+			botResults.setRamKillBonus(score.getRamKillBonus());
+			botResults.setTotalScore(score.getTotalScore());
+
+			String clientKey = null;
+			for (Entry<String, Integer> entry2 : participantIds.entrySet()) {
+				if (entry2.getValue().equals(entry.getKey())) {
+					clientKey = entry2.getKey();
+					break;
+				}
+			}
+
+			BotHandshake botHandshake = connHandler.getBotHandshakes().get(clientKey);
+			botResults.setName(botHandshake.getName());
+			botResults.setVersion(botHandshake.getVersion());
+		});
+
+		botResultsList.sort(Comparator.comparing(BotResultsForBot::getTotalScore));
+
+		int rank = 1;
+		for (BotResultsForBot botResult : botResultsList) {
+			botResult.setRank(rank++);
+		}
+
+		return botResultsList;
 	}
 
 	private void pauseGame() {
@@ -262,28 +303,39 @@ public final class GameServer {
 			return;
 		}
 
-		// Update game state
 		if (runningState != RunningState.GAME_STOPPED) {
+			// Update game state
 			gameState = updateGameState();
 
-			// Clear bot intents
-			botIntents.clear();
+			if (gameState.isGameEnded()) {
+				runningState = RunningState.GAME_STOPPED;
 
-			// Send tick to bots
+				System.out.println("#### GAME ENDED FOR BOTS #####");
 
-			Round round = gameState.getLastRound();
-			if (round != null) {
-				Turn turn = round.getLastTurn();
-				if (turn != null) {
-                    // Send game state as 'game tick' to participants
-                    for (String botKey : participants) {
-                        TickEventForBot gameTickForBot = TurnToGameTickForBotMapper.map(round, turn, participantIds.get(botKey));
-                        if (gameTickForBot != null) { // Bot alive?
-                            String msg = gson.toJson(gameTickForBot);
-                            send(botKey, msg);
-                        }
-                    }
-                }
+				GameEndedEventForBot endEventForBot = new GameEndedEventForBot();
+				endEventForBot.setType(GameEndedEventForObserver.Type.GAME_ENDED_EVENT_FOR_BOT);
+				endEventForBot.setResults(getResultsForBots());
+				sendMessageToBots(gson.toJson(endEventForBot));
+			} else {
+				// Clear bot intents
+				botIntents.clear();
+
+				// Send tick to bots
+
+				Round round = gameState.getLastRound();
+				if (round != null) {
+					Turn turn = round.getLastTurn();
+					if (turn != null) {
+						// Send game state as 'game tick' to participants
+						for (String botKey : participants) {
+							TickEventForBot gameTickForBot = TurnToGameTickForBotMapper.map(round, turn, participantIds.get(botKey));
+							if (gameTickForBot != null) { // Bot alive?
+								String msg = gson.toJson(gameTickForBot);
+								send(botKey, msg);
+							}
+						}
+					}
+				}
 			}
 		}
 
@@ -293,17 +345,22 @@ public final class GameServer {
 		if (observerRound != null) {
 			Turn observerTurn = observerRound.getLastTurn();
 
-			if (gameState.isGameEnded() || runningState == RunningState.GAME_STOPPED) {
+			if (gameState.isGameEnded() && runningState == RunningState.GAME_STOPPED) {
 				delayedObserverTurnNumber++;
 				if (observerTurn != null && delayedObserverTurnNumber == observerTurn.getTurnNumber()) {
 
-					System.out.println("#### GAME ENDED #####");
+					System.out.println("#### GAME ENDED FOR OBSERVERS #####");
 
 					// Stop timer for updating game state
 					turnTimer.cancel();
 
-					// Game has stopped
-					runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
+					// End game for bots
+					GameEndedEventForObserver endEventForObserver = new GameEndedEventForObserver();
+					endEventForObserver.setType(GameEndedEventForObserver.Type.GAME_ENDED_EVENT_FOR_OBSERVER);
+					endEventForObserver.setResults(getResultsForObservers());
+					sendMessageToObservers(gson.toJson(endEventForObserver));
+
+//					runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN; // TODO: Correct?
 				}
 			} else if (observerTurn != null) {
 				delayedObserverTurnNumber = observerTurn.getTurnNumber() - gameSetup.getDelayedObserverTurns();
@@ -365,11 +422,13 @@ public final class GameServer {
         }
 		return gson.toJson(botListUpdate);
 	}
-	
+
+	private void sendMessageToBots(String msg) {
+		connHandler.getBotConnections().values().forEach(conn -> send(conn, msg));
+	}
+
 	private void sendMessageToObservers(String msg) {
-		for (WebSocket conn : connHandler.getObserverAndControllerConnections().values()) {
-			send(conn, msg);
-		}
+		connHandler.getObserverAndControllerConnections().values().forEach(conn -> send(conn, msg));
 	}
 
 	private void sendBotListUpdateToObservers() {

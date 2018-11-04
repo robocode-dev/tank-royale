@@ -20,7 +20,7 @@ public final class RuleConstants {
 	public static final double MAX_GUN_COOLING_RATE = 3.0;
 
 	/** Initial bot energy level */
-	public static final double INITIAL_BOT_ENERGY = 100.0;
+	public static final double INITIAL_BOT_ENERGY = 10.0; // FIXME
 	/** Initial gun heat */
 	public static final double INITIAL_GUN_HEAT = 3.0;
 

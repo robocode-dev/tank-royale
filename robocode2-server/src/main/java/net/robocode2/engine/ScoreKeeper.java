@@ -1,11 +1,8 @@
 package net.robocode2.engine;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import net.robocode2.json_schema.events.BotResultsForBot;
 import net.robocode2.model.RuleConstants;
 import net.robocode2.model.Score;
 import net.robocode2.model.Score.ScoreBuilder;
@@ -46,6 +43,17 @@ public class ScoreKeeper {
 		damageAndSurvivals.clear();
 		populateDamageAndSurvivals();
 		botsAliveIds.clear();
+	}
+
+	/**
+	 * Returns current results.
+	 *
+	 * @return a map where the key is a bot id, and the value is the scores.
+	 */
+	public Map<Integer /* botId */, Score> getResults() {
+		Map<Integer, Score> results = new HashMap<>();
+		botIds.forEach(botId -> results.put(botId, getScore(botId)));
+		return results;
 	}
 
 	/**
