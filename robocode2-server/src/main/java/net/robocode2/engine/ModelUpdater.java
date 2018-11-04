@@ -55,7 +55,7 @@ public class ModelUpdater {
 	private final Set<Integer> participantIds;
 
 	/** Score keeper */
-	private final ScoreKeeper scoreKeeper;
+	private final ScoreTracker scoreTracker;
 
 	/** Map over bot intents identified by bot ids */
 	private final Map<Integer /* BotId */, BotIntent> botIntentsMap = new HashMap<>();
@@ -109,7 +109,7 @@ public class ModelUpdater {
 		this.setup = setup;
 		this.participantIds = new HashSet<>(participantIds);
 
-		this.scoreKeeper = new ScoreKeeper(participantIds);
+		this.scoreTracker = new ScoreTracker(participantIds);
 
 		round = Round.builder().build();
 		turnBuilder = Turn.builder();
@@ -143,12 +143,12 @@ public class ModelUpdater {
 	}
 
 	/**
-	 * Returns current results.
+	 * Returns the current bot scores.
 	 *
-	 * @return a map where the key is a bot id, and the value is the scores.
+	 * @return a map where the key is a bot id, and the value is a score.
 	 */
-	public Map<Integer /* botId */, Score> getResults() {
-		return scoreKeeper.getResults();
+	public Map<Integer /* botId */, Score> getBotScores() {
+		return scoreTracker.getBotScores();
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class ModelUpdater {
 
 		initializeBotStates();
 
-		scoreKeeper.clear();
+		scoreTracker.clear();
 	}
 
 	/**
@@ -449,7 +449,7 @@ public class ModelUpdater {
 					double energyBonus = RuleConstants.BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
 					botBuilderMap.get(botId).changeEnergy(energyBonus);
 
-					scoreKeeper.registerBulletHit(botId, victimId, damage, killed);
+					scoreTracker.registerBulletHit(botId, victimId, damage, killed);
 
 					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet, victimId, damage, botBuilder.getEnergy());
 
@@ -523,12 +523,12 @@ public class ModelUpdater {
 					if (bot1RammedBot2) {
 						botBuilder1.speed(0);
 						bot1BounceDist = overlapDist;
-						scoreKeeper.registerRamHit(botId2, botId1, RAM_DAMAGE, bot1Killed);
+						scoreTracker.registerRamHit(botId2, botId1, RAM_DAMAGE, bot1Killed);
 					}
 					if (bot2rammedBot1) {
 						botBuilder2.speed(0);
 						bot2BounceDist = overlapDist;
-						scoreKeeper.registerRamHit(botId1, botId2, RAM_DAMAGE, bot2Killed);
+						scoreTracker.registerRamHit(botId1, botId2, RAM_DAMAGE, bot2Killed);
 					}
 					if (bot1RammedBot2 && bot2rammedBot1) {
 						double totalSpeed = botBuilder1.getSpeed() + botBuilder1.getSpeed();

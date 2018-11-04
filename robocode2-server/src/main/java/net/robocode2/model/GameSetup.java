@@ -28,7 +28,7 @@ public class GameSetup {
 	public static final Integer DEFAULT_MAX_NUMBER_OF_PARTICIPANTS = null;
 
 	/** Default number of rounds */
-	public static final int DEFAULT_NUMBER_OF_ROUNDS = 2; // FIXME
+	public static final int DEFAULT_NUMBER_OF_ROUNDS = 1; // FIXME
 
 	/** Default gun cooling rate */
 	public static final double DEFAULT_GUN_COOLING_RATE = 0.1;

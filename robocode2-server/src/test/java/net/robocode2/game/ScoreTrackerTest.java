@@ -13,14 +13,14 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import net.robocode2.engine.ScoreTracker;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import net.robocode2.engine.ScoreKeeper;
 import net.robocode2.model.Score;
 
-public class ScoreKeeperTest {
+public class ScoreTrackerTest {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -28,12 +28,12 @@ public class ScoreKeeperTest {
 	@Test
 	public void constructor() {
 		try {
-			new ScoreKeeper(null);
+			new ScoreTracker(null);
 			fail();
 		} catch (NullPointerException e) {
 		}
 
-		ScoreKeeper sk = new ScoreKeeper(new HashSet<>(Arrays.asList(1, 2, 3)));
+		ScoreTracker sk = new ScoreTracker(new HashSet<>(Arrays.asList(1, 2, 3)));
 
 		testZeroScore(sk.getScore(1));
 		testZeroScore(sk.getScore(2));
@@ -42,7 +42,7 @@ public class ScoreKeeperTest {
 
 	@Test
 	public void getScore() {
-		ScoreKeeper sk = new ScoreKeeper(new HashSet<>(Arrays.asList(1, 2, 3)));
+		ScoreTracker sk = new ScoreTracker(new HashSet<>(Arrays.asList(1, 2, 3)));
 
 		assertNotNull(sk.getScore(1));
 		assertNotNull(sk.getScore(2));
@@ -63,7 +63,7 @@ public class ScoreKeeperTest {
 
 	@Test
 	public void clear() {
-		ScoreKeeper sk = new ScoreKeeper(new HashSet<>(Arrays.asList(1, 2, 3)));
+		ScoreTracker sk = new ScoreTracker(new HashSet<>(Arrays.asList(1, 2, 3)));
 
 		sk.registerBulletHit(1, 2, 10, false);
 		sk.registerRamHit(1, 2, 20, false);
@@ -83,7 +83,7 @@ public class ScoreKeeperTest {
 
 	@Test
 	public void registerBulletHit() {
-		ScoreKeeper sk = new ScoreKeeper(new HashSet<>(Arrays.asList(1, 2, 3, 4)));
+		ScoreTracker sk = new ScoreTracker(new HashSet<>(Arrays.asList(1, 2, 3, 4)));
 
 		// --- Bot 1 hits bot 2, no kill
 		sk.registerBulletHit(1, 2, 7, false);
@@ -230,7 +230,7 @@ public class ScoreKeeperTest {
 
 	@Test
 	public void registerRamHit() {
-		ScoreKeeper sk = new ScoreKeeper(new HashSet<>(Arrays.asList(1, 2, 3, 4)));
+		ScoreTracker sk = new ScoreTracker(new HashSet<>(Arrays.asList(1, 2, 3, 4)));
 
 		// --- Bot 1 hits bot 2, no kill
 		sk.registerRamHit(1, 2, 7, false);

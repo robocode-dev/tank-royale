@@ -47,6 +47,7 @@ public final class GameServer {
 	private ModelUpdater modelUpdater;
 
 	private int delayedObserverTurnNumber;
+	private List<BotResultsForObserver> resultsForObservers;
 
 	private final Gson gson = new Gson();
 
@@ -188,8 +189,10 @@ public final class GameServer {
 	private List<BotResultsForBot> getResultsForBots() {
 		List<BotResultsForBot> botResultsList = new ArrayList<>();
 
-		this.modelUpdater.getResults().entrySet().forEach(entry -> {
+		this.modelUpdater.getBotScores().entrySet().forEach(entry -> {
 			BotResultsForBot botResults = new BotResultsForBot();
+			botResultsList.add(botResults);
+
 			Score score = entry.getValue();
 			botResults.setId(entry.getKey());
 			botResults.setSurvival(score.getSurvival());
@@ -199,9 +202,10 @@ public final class GameServer {
 			botResults.setRamDamage(score.getRamDamage());
 			botResults.setRamKillBonus(score.getRamKillBonus());
 			botResults.setTotalScore(score.getTotalScore());
+
 		});
 
-		botResultsList.sort(Comparator.comparing(BotResultsForBot::getTotalScore));
+		botResultsList.sort(Comparator.comparing(BotResultsForBot::getTotalScore).reversed());
 
 		int rank = 1;
 		for (BotResultsForBot botResult : botResultsList) {
@@ -214,8 +218,10 @@ public final class GameServer {
 	private List<BotResultsForObserver> getResultsForObservers() {
 		List<BotResultsForObserver> botResultsList = new ArrayList<>();
 
-		this.modelUpdater.getResults().entrySet().forEach(entry -> {
+		this.modelUpdater.getBotScores().entrySet().forEach(entry -> {
 			BotResultsForObserver botResults = new BotResultsForObserver();
+			botResultsList.add(botResults);
+
 			Score score = entry.getValue();
 			botResults.setId(entry.getKey());
 			botResults.setSurvival(score.getSurvival());
@@ -316,6 +322,10 @@ public final class GameServer {
 				endEventForBot.setType(GameEndedEventForObserver.Type.GAME_ENDED_EVENT_FOR_BOT);
 				endEventForBot.setResults(getResultsForBots());
 				sendMessageToBots(gson.toJson(endEventForBot));
+
+				// Store result for observers for later (before score is reset)
+				resultsForObservers = getResultsForObservers();
+
 			} else {
 				// Clear bot intents
 				botIntents.clear();
@@ -357,7 +367,7 @@ public final class GameServer {
 					// End game for bots
 					GameEndedEventForObserver endEventForObserver = new GameEndedEventForObserver();
 					endEventForObserver.setType(GameEndedEventForObserver.Type.GAME_ENDED_EVENT_FOR_OBSERVER);
-					endEventForObserver.setResults(getResultsForObservers());
+					endEventForObserver.setResults(resultsForObservers); // Use the stored score!
 					sendMessageToObservers(gson.toJson(endEventForObserver));
 
 //					runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN; // TODO: Correct?

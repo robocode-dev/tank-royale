@@ -12,7 +12,7 @@ import net.robocode2.model.Score.ScoreBuilder;
  * 
  * @author Flemming N. Larsen
  */
-public class ScoreKeeper {
+public class ScoreTracker {
 
 	/** Set of bot identifiers */
 	private final Set<Integer> botIds;
@@ -24,12 +24,12 @@ public class ScoreKeeper {
 	private final Set<Integer> botsAliveIds;
 
 	/**
-	 * Creates a new ScoreKeeper instance.
+	 * Creates a new ScoreTracker instance.
 	 *
 	 * @param botIds
 	 *            is a set of bot identifiers, which cannot be null.
 	 */
-	public ScoreKeeper(Set<Integer> botIds) {
+	public ScoreTracker(Set<Integer> botIds) {
 		this.botIds = new HashSet<>(botIds);
 		this.botsAliveIds = new HashSet<>(botIds);
 		this.damageAndSurvivals = new HashMap<>();
@@ -46,14 +46,14 @@ public class ScoreKeeper {
 	}
 
 	/**
-	 * Returns current results.
+	 * Returns the current bot scores.
 	 *
-	 * @return a map where the key is a bot id, and the value is the scores.
+	 * @return a map where the key is a bot id, and the value is a score.
 	 */
-	public Map<Integer /* botId */, Score> getResults() {
-		Map<Integer, Score> results = new HashMap<>();
-		botIds.forEach(botId -> results.put(botId, getScore(botId)));
-		return results;
+	public Map<Integer /* botId */, Score> getBotScores() {
+		Map<Integer, Score> scoreMap = new HashMap<>();
+		botIds.forEach(botId -> scoreMap.put(botId, getScore(botId)));
+		return scoreMap;
 	}
 
 	/**
