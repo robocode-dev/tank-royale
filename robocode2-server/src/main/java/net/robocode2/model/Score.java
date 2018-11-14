@@ -9,8 +9,11 @@ import lombok.Value;
  * @author Flemming N. Larsen
  */
 @Value
-@Builder
+@Builder(toBuilder=true)
 public class Score {
+
+	/** Bot ID */
+	int id;
 
 	/** Survival score gained whenever another bot is defeated */
 	double survival;
@@ -34,4 +37,13 @@ public class Score {
 	public double getTotalScore() {
 		return survival + lastSurvivorBonus + bulletDamage + bulletKillBonus + ramDamage + ramKillBonus;
 	}
+
+	/** Number of 1st places */
+	int firstPlaces;
+
+	/** Number of 2nd places */
+	int secondPlaces;
+
+	/** Number of 3rd places */
+	int thirdPlaces;
 }

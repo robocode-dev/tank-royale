@@ -62,7 +62,7 @@ public class ScoreTrackerTest {
 	}
 
 	@Test
-	public void clear() {
+	public void finalizeRound() {
 		ScoreTracker sk = new ScoreTracker(new HashSet<>(Arrays.asList(1, 2, 3)));
 
 		sk.registerBulletHit(1, 2, 10, false);
@@ -74,7 +74,7 @@ public class ScoreTrackerTest {
 		sk.registerBulletHit(3, 1, 10, false);
 		sk.registerRamHit(3, 1, 20, false);
 
-		sk.clear();
+		sk.finalizeRound();
 
 		testZeroScore(sk.getScore(1));
 		testZeroScore(sk.getScore(2));

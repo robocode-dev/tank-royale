@@ -10,12 +10,7 @@ import static net.robocode2.model.RuleConstants.MIN_BULLET_POWER;
 import static net.robocode2.model.RuleConstants.RAM_DAMAGE;
 import static net.robocode2.util.MathUtil.normalAbsoluteDegrees;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import net.robocode2.events.BotDeathEvent;
 import net.robocode2.events.BotHitBotEvent;
@@ -143,12 +138,12 @@ public class ModelUpdater {
 	}
 
 	/**
-	 * Returns the current bot scores.
+	 * Returns the current results ordered with highest total scores first.
 	 *
-	 * @return a map where the key is a bot id, and the value is a score.
+	 * @return a list of scores.
 	 */
-	public Map<Integer /* botId */, Score> getBotScores() {
-		return scoreTracker.getBotScores();
+	public List<Score> getResults() {
+		return scoreTracker.getResults();
 	}
 
 	/**
@@ -185,7 +180,7 @@ public class ModelUpdater {
 
 		initializeBotStates();
 
-		scoreTracker.clear();
+		scoreTracker.finalizeRound();
 	}
 
 	/**

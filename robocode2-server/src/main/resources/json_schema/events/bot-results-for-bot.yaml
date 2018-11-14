@@ -11,25 +11,34 @@ properties:
     minimum: 1
   survival:
     description: Survival score gained whenever another bot is defeated
-    type: number
+    type: integer
   lastSurvivorBonus:
     description: Last survivor score as last survivor in a round
-    type: number
+    type: integer
   bulletDamage:
     description: Bullet damage given
-    type: number
+    type: integer
   bulletKillBonus:
     description: Bullet kill bonus
-    type: number
+    type: integer
   ramDamage:
     description: Ram damage given
-    type: number
+    type: integer
   ramKillBonus:
     description: Ram kill bonus
-    type: number
+    type: integer
   totalScore:
     description: Total score
-    type: number
+    type: integer
+  firstPlaces:
+    desctiption: Number of 1st places
+    type: integer
+  secondPlaces:
+    desctiption: Number of 2nd places
+    type: integer
+  thirdPlaces:
+    desctiption: Number of 3rd places
+    type: integer
 required:
 - id
 - rank
@@ -40,3 +49,6 @@ required:
 - ramDamage
 - ramKillBonus
 - totalScore
+- firstPlaces
+- secondPlaces
+- thirdPlaces

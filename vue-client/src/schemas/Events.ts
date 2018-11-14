@@ -1,5 +1,6 @@
 import { BotState, BulletState } from "./States";
 import { Point } from "./Types";
+import { BotResultsForObservers } from "./BotResults";
 
 export enum EventType {
   BotDeathEvent = "botDeathEvent",
@@ -35,6 +36,8 @@ export class GameAbortedEventForObserver extends Event {
 }
 
 export class GameEndedEventForObserver extends Event {
+  public results: BotResultsForObservers[] = [];
+
   constructor() {
     super(EventType.GameEndedEventForObserver);
   }

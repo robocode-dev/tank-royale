@@ -13,6 +13,10 @@
         </b-col>
       </b-row>
     </b-container>
+    <b-modal ref="resultsModal" lazy size="lg" hide-footer title="Results for x rounds">
+      <b-table style="font-size: 12px;" head-variant="dark" small responsive hover :items="getResults"></b-table>
+      <b-btn class="mt-3" block>OK</b-btn>
+    </b-modal>
   </div>
 </template>
 

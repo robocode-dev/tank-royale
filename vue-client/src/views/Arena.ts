@@ -15,6 +15,8 @@ import {
   BulletHitBotEvent,
   ScannedBotEvent,
 } from "@/schemas/Events";
+import { Modal } from "bootstrap-vue";
+import { BotResultsForObservers } from "@/schemas/BotResults";
 
 class Explosion {
   public position: Point;
@@ -35,6 +37,20 @@ export default class Arena extends Vue {
   private isPaused: boolean = Server.isGamePaused();
 
   private lastTickEvent: TickEventForObserver | null = Server.getLastTickEvent();
+
+  private results: any = [];
+
+  public showModal() {
+    (this.$refs.resultsModal as Modal).show();
+  }
+
+  public hideModal() {
+    (this.$refs.resultsModal as Modal).hide();
+  }
+
+  public getResults(): any {
+    return this.results;
+  }
 
   public mounted() {
     this.canvas = document.getElementById("canvas");
@@ -101,6 +117,31 @@ export default class Arena extends Vue {
   private onGameEnded(event: GameEndedEventForObserver) {
     console.log("->gameEnded");
     this.updateRunningAndPausedStates();
+
+    this.results = [];
+
+    const botResults: BotResultsForObservers[] = event.results;
+    if (botResults) {
+      let rank = 1;
+      botResults.forEach((r) => {
+        this.results.push({
+          "Rank": rank++,
+          "Robot Name": r.name + (r.version ? " " + r.version : ""),
+          "Total Score": r.totalScore,
+          "Survival": r.survival,
+          "Surv Bonus": r.lastSurvivorBonus,
+          "Bullet Dmg": r.bulletDamage,
+          "Bullet Bonus": r.bulletKillBonus,
+          "Ram Damage": r.ramDamage,
+          "Ram Bonus": r.ramKillBonus,
+          '#1': r.firstPlaces,
+          '#2': r.secondPlaces,
+          '#3': r.thirdPlaces,
+        });
+      });
+    }
+
+    this.showModal();
   }
 
   private onGamePaused(event: GamePausedEventForObserver) {

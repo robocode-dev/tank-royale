@@ -26,6 +26,8 @@ import net.robocode2.mappers.GameSetupToGameSetupMapper;
 import net.robocode2.mappers.TurnToGameTickForBotMapper;
 import net.robocode2.mappers.TurnToGameTickForObserverMapper;
 
+import static java.lang.Math.round;
+
 public final class GameServer {
 
 	private ConnHandler connHandler;
@@ -189,23 +191,22 @@ public final class GameServer {
 	private List<BotResultsForBot> getResultsForBots() {
 		List<BotResultsForBot> botResultsList = new ArrayList<>();
 
-		this.modelUpdater.getBotScores().entrySet().forEach(entry -> {
+		this.modelUpdater.getResults().forEach(score -> {
 			BotResultsForBot botResults = new BotResultsForBot();
 			botResultsList.add(botResults);
 
-			Score score = entry.getValue();
-			botResults.setId(entry.getKey());
-			botResults.setSurvival(score.getSurvival());
-			botResults.setLastSurvivorBonus(score.getLastSurvivorBonus());
-			botResults.setBulletDamage(score.getBulletDamage());
-			botResults.setBulletKillBonus(score.getBulletKillBonus());
-			botResults.setRamDamage(score.getRamDamage());
-			botResults.setRamKillBonus(score.getRamKillBonus());
-			botResults.setTotalScore(score.getTotalScore());
-
+			botResults.setId(score.getId());
+			botResults.setSurvival((int) round(score.getSurvival()));
+			botResults.setLastSurvivorBonus((int) round(score.getLastSurvivorBonus()));
+			botResults.setBulletDamage((int) round(score.getBulletDamage()));
+			botResults.setBulletKillBonus((int) round(score.getBulletKillBonus()));
+			botResults.setRamDamage((int) round(score.getRamDamage()));
+			botResults.setRamKillBonus((int) round(score.getRamKillBonus()));
+			botResults.setTotalScore((int) round(score.getTotalScore()));
+			botResults.setFirstPlaces(score.getFirstPlaces());
+			botResults.setSecondPlaces(score.getSecondPlaces());
+			botResults.setThirdPlaces(score.getThirdPlaces());
 		});
-
-		botResultsList.sort(Comparator.comparing(BotResultsForBot::getTotalScore).reversed());
 
 		int rank = 1;
 		for (BotResultsForBot botResult : botResultsList) {
@@ -218,23 +219,25 @@ public final class GameServer {
 	private List<BotResultsForObserver> getResultsForObservers() {
 		List<BotResultsForObserver> botResultsList = new ArrayList<>();
 
-		this.modelUpdater.getBotScores().entrySet().forEach(entry -> {
+		this.modelUpdater.getResults().forEach(score -> {
 			BotResultsForObserver botResults = new BotResultsForObserver();
 			botResultsList.add(botResults);
 
-			Score score = entry.getValue();
-			botResults.setId(entry.getKey());
-			botResults.setSurvival(score.getSurvival());
-			botResults.setLastSurvivorBonus(score.getLastSurvivorBonus());
-			botResults.setBulletDamage(score.getBulletDamage());
-			botResults.setBulletKillBonus(score.getBulletKillBonus());
-			botResults.setRamDamage(score.getRamDamage());
-			botResults.setRamKillBonus(score.getRamKillBonus());
-			botResults.setTotalScore(score.getTotalScore());
+			botResults.setId(score.getId());
+			botResults.setSurvival((int) round(score.getSurvival()));
+			botResults.setLastSurvivorBonus((int) round(score.getLastSurvivorBonus()));
+			botResults.setBulletDamage((int) round(score.getBulletDamage()));
+			botResults.setBulletKillBonus((int) round(score.getBulletKillBonus()));
+			botResults.setRamDamage((int) round(score.getRamDamage()));
+			botResults.setRamKillBonus((int) round(score.getRamKillBonus()));
+			botResults.setTotalScore((int) round(score.getTotalScore()));
+			botResults.setFirstPlaces(score.getFirstPlaces());
+			botResults.setSecondPlaces(score.getSecondPlaces());
+			botResults.setThirdPlaces(score.getThirdPlaces());
 
 			String clientKey = null;
 			for (Entry<String, Integer> entry2 : participantIds.entrySet()) {
-				if (entry2.getValue().equals(entry.getKey())) {
+				if (entry2.getValue().equals(score.getId())) {
 					clientKey = entry2.getKey();
 					break;
 				}
@@ -245,10 +248,8 @@ public final class GameServer {
 			botResults.setVersion(botHandshake.getVersion());
 		});
 
-		botResultsList.sort(Comparator.comparing(BotResultsForBot::getTotalScore));
-
 		int rank = 1;
-		for (BotResultsForBot botResult : botResultsList) {
+		for (BotResultsForObserver botResult : botResultsList) {
 			botResult.setRank(rank++);
 		}
 

@@ -2,7 +2,6 @@ package net.robocode2.engine;
 
 import java.util.*;
 
-import net.robocode2.json_schema.events.BotResultsForBot;
 import net.robocode2.model.RuleConstants;
 import net.robocode2.model.Score;
 import net.robocode2.model.Score.ScoreBuilder;
@@ -17,11 +16,18 @@ public class ScoreTracker {
 	/** Set of bot identifiers */
 	private final Set<Integer> botIds;
 
-	/** Map from bot identifier to a DamageAndSurvival record */
-	private final Map<Integer, DamageAndSurvival> damageAndSurvivals;
+	/** Map from bot identifier to a bot record */
+	private final Map<Integer, BotRecord> botRecords;
 
 	/** Set of identifiers of bots alive */
 	private final Set<Integer> botsAliveIds;
+
+	/** 1st places */
+	private final Map<Integer /* Bot ID */, Integer> place1st = new HashMap<>();
+	/** 2nd places */
+	private final Map<Integer /* Bot ID */, Integer> place2nd = new HashMap<>();
+	/** 3rd places */
+	private final Map<Integer /* Bot ID */, Integer> place3rd = new HashMap<>();
 
 	/**
 	 * Creates a new ScoreTracker instance.
@@ -32,36 +38,96 @@ public class ScoreTracker {
 	public ScoreTracker(Set<Integer> botIds) {
 		this.botIds = new HashSet<>(botIds);
 		this.botsAliveIds = new HashSet<>(botIds);
-		this.damageAndSurvivals = new HashMap<>();
-		populateDamageAndSurvivals();
+		this.botRecords = new HashMap<>();
+		initializeDamageAndSurvivals();
+	}
+
+	public void finalizeRound() {
+		calculatePlacements();
+		clearRound();
+	}
+
+	/**
+	 * Returns the current results ordered with highest total scores first.
+	 *
+	 * @return a list of scores.
+	 */
+	public List<Score> getResults() {
+		List<Score> scores = getBotScores();
+		for (int i = 0; i < scores.size(); i++) {
+			Score score = scores.get(i);
+			int botId = score.getId();
+			Integer firstPlaces = place1st.get(botId);
+			Integer secondPlaces = place2nd.get(botId);
+			Integer thirdPlaces = place3rd.get(botId);
+			scores.set(i, score.toBuilder()
+					.firstPlaces(firstPlaces != null ? firstPlaces : 0)
+					.secondPlaces(secondPlaces != null ? secondPlaces : 0)
+					.thirdPlaces(thirdPlaces != null ? thirdPlaces : 0)
+					.build());
+		}
+		return scores;
 	}
 
 	/**
 	 * Clears all scores for all bots.
 	 */
-	public void clear() {
-		damageAndSurvivals.clear();
-		populateDamageAndSurvivals();
+	private void clearRound() {
+		botRecords.clear();
+		initializeDamageAndSurvivals();
 		botsAliveIds.clear();
 	}
 
 	/**
-	 * Returns the current bot scores.
-	 *
-	 * @return a map where the key is a bot id, and the value is a score.
+	 * Calculates 1st, 2nd, and 3rd places.
 	 */
-	public Map<Integer /* botId */, Score> getBotScores() {
-		Map<Integer, Score> scoreMap = new HashMap<>();
-		botIds.forEach(botId -> scoreMap.put(botId, getScore(botId)));
-		return scoreMap;
+	private void calculatePlacements() {
+		List<Score> scores = getBotScores();
+		if (scores.size() >= 1) {
+			Score soore = scores.get(0);
+			Integer count = place1st.get(soore.getId());
+			if (count == null) {
+				count = 0;
+			}
+			place1st.put(soore.getId(), ++count);
+		}
+		if (scores.size() >= 2) {
+			Score soore = scores.get(1);
+			Integer count = place2nd.get(soore.getId());
+			if (count == null) {
+				count = 0;
+			}
+			place2nd.put(soore.getId(), ++count);
+		}
+		if (scores.size() >= 3) {
+			Score soore = scores.get(2);
+			Integer count = place3rd.get(soore.getId());
+			if (count == null) {
+				count = 0;
+			}
+			place3rd.put(soore.getId(), ++count);
+		}
 	}
 
 	/**
-	 * Populates the map containing the DamageAndSurvival record for each bot.
+	 * Returns the current bot scores ordered with highest total scores first.
+	 *
+	 * @return a list of bot scores.
 	 */
-	private void populateDamageAndSurvivals() {
+	private List<Score> getBotScores() {
+		List<Score> scores = new ArrayList<>();
+		botIds.forEach(botId -> scores.add(getScore(botId)));
+
+		scores.sort(Comparator.comparing(Score::getTotalScore).reversed());
+		return scores;
+	}
+
+	/**
+	 * Initializes the map containing the BotRecord record for each bot.
+	 */
+	private void initializeDamageAndSurvivals() {
 		for (int botId : botIds) {
-			damageAndSurvivals.put(botId, new DamageAndSurvival());
+			botRecords.put(botId, new BotRecord());
 		}
 	}
 
@@ -75,8 +141,9 @@ public class ScoreTracker {
 	public Score getScore(int botId) {
 		ScoreBuilder builder = Score.builder();
 
-		DamageAndSurvival damageRecord = damageAndSurvivals.get(botId);
-		
+		BotRecord damageRecord = botRecords.get(botId);
+
+		builder.id(botId);
 		builder.survival(RuleConstants.SCORE_PER_SURVIVAL * damageRecord.getSurvivalCount());
 		builder.lastSurvivorBonus(RuleConstants.BONUS_PER_LAST_SURVIVOR * damageRecord.getLastSurvivorCount());
 
@@ -113,7 +180,7 @@ public class ScoreTracker {
 	 *            is a flag specifying, if the bot got killed by this bullet
 	 */
 	public void registerBulletHit(int botId, int victimBotId, double damage, boolean kill) {
-		DamageAndSurvival damageRecord = damageAndSurvivals.get(botId);
+		BotRecord damageRecord = botRecords.get(botId);
 
 		damageRecord.addBulletDamage(victimBotId, damage);
 		if (kill) {
@@ -136,7 +203,7 @@ public class ScoreTracker {
 	 *            is a flag specifying, if the bot got killed by the ramming
 	 */
 	public void registerRamHit(int botId, int victimBotId, double damage, boolean kill) {
-		DamageAndSurvival damageRecord = damageAndSurvivals.get(botId);
+		BotRecord damageRecord = botRecords.get(botId);
 
 		damageRecord.addRamDamage(victimBotId, damage);
 		if (kill) {
@@ -156,23 +223,23 @@ public class ScoreTracker {
 		botsAliveIds.remove(killedBotId);
 
 		for (int botId : botsAliveIds) {
-			damageAndSurvivals.get(botId).incrementSurvivalCount();
+			botRecords.get(botId).incrementSurvivalCount();
 		}
 
 		if (botsAliveIds.size() == 1) {
 			int survivorId = botsAliveIds.iterator().next();
-			int deadCount = damageAndSurvivals.size() - botsAliveIds.size();
+			int deadCount = botRecords.size() - botsAliveIds.size();
 
-			damageAndSurvivals.get(survivorId).addLastSurvivorCount(deadCount);
+			botRecords.get(survivorId).addLastSurvivorCount(deadCount);
 		}
 	}
 
 	/**
-	 * Dammage and survival record required to calculate the score of the individual bot.
+	 * Bot record that tracks damage and survival of a bot, and can calculate score.
 	 * 
 	 * @author Flemming N. Larsen
 	 */
-	private static class DamageAndSurvival {
+	private static class BotRecord {
 
 		private int survivalCount;
 		private int lastSurvivorCount;
