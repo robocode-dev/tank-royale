@@ -5,9 +5,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/robocode2/engine/ModelUpdater.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/robocode2/engine/ModelUpdater.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/robocode2/engine/ScoreTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/robocode2/engine/ScoreTracker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/robocode2/model/GameSetup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/robocode2/model/GameSetup.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/robocode2/model/RuleConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/robocode2/model/RuleConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/robocode2/server/GameServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/robocode2/server/GameServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/net/robocode2/game/ScoreTrackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/robocode2/game/ScoreTrackerTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -30,7 +28,7 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="40" />
-          <entry key="java" value="5449" />
+          <entry key="java" value="5627" />
           <entry key="txt" value="57" />
           <entry key="xml" value="5" />
           <entry key="yaml" value="292" />
@@ -38,7 +36,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="5449" />
+          <entry key="JAVA" value="5627" />
           <entry key="PLAIN_TEXT" value="97" />
           <entry key="XML" value="5" />
           <entry key="YAML" value="292" />
@@ -46,14 +44,14 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="java" value="111" />
+          <entry key="java" value="114" />
           <entry key="xml" value="1" />
           <entry key="yaml" value="17" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="JAVA" value="111" />
+          <entry key="JAVA" value="114" />
           <entry key="XML" value="1" />
           <entry key="YAML" value="17" />
         </counts>
@@ -72,11 +70,11 @@
           <entry key="project.open.time.20" value="1" />
           <entry key="project.open.time.3" value="1" />
           <entry key="project.open.time.4" value="2" />
-          <entry key="project.open.time.5" value="1" />
+          <entry key="project.open.time.5" value="2" />
           <entry key="project.open.time.7" value="3" />
           <entry key="project.open.time.8" value="7" />
           <entry key="project.open.time.9" value="3" />
-          <entry key="project.opened" value="34" />
+          <entry key="project.opened" value="35" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages" />
@@ -88,26 +86,41 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/net/robocode2/server/GameServer.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/net/robocode2/engine/ScoreTracker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="157">
-              <caret line="44" column="88" selection-start-line="44" selection-start-column="88" selection-end-line="44" selection-end-column="88" />
+            <state relative-caret-position="269">
+              <caret line="73" column="35" selection-start-line="73" selection-start-column="16" selection-end-line="73" selection-end-column="35" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#1253#1254#0" expanded="true" />
+                <element signature="e#1292#1293#0" expanded="true" />
+                <element signature="e#9988#9989#0" expanded="true" />
+                <element signature="e#10012#10013#0" expanded="true" />
+                <element signature="e#10330#10331#0" expanded="true" />
+                <element signature="e#10379#10380#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/net/robocode2/engine/ModelUpdater.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="245">
+              <caret line="133" column="48" selection-start-line="133" selection-start-column="48" selection-end-line="133" selection-end-column="48" />
+              <folding>
+                <element signature="e#4332#4333#0" expanded="true" />
+                <element signature="e#4371#4372#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/net/robocode2/engine/ModelUpdater.java">
+        <entry file="file://$PROJECT_DIR$/src/test/java/net/robocode2/game/ScoreTrackerTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="331">
-              <caret line="406" column="37" selection-start-line="406" selection-start-column="37" selection-end-line="406" selection-end-column="37" />
-              <folding>
-                <element signature="e#4332#4333#0" expanded="true" />
-                <element signature="e#4371#4372#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="292">
+              <caret line="76" column="33" selection-start-line="76" selection-start-column="33" selection-end-line="76" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -123,7 +136,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>100.0</find>
       <find>GAME ENDED</find>
       <find>aborted</find>
       <find>abortGame</find>
@@ -147,12 +159,13 @@
       <find>score</find>
       <find>checkForDefeatedBots</find>
       <find>handleBotDeath</find>
-      <find>botsAliveIds</find>
       <find>scoreTracker</find>
       <find>nextRound</find>
       <find>clear</find>
       <find>botIntents</find>
       <find>boundingLines</find>
+      <find>botsAliveIds</find>
+      <find>calculatePlacements</find>
     </findStrings>
     <dirStrings>
       <dir>D:\robocode-2-work\robocode2-server\src\main\resources\json_schema\comm</dir>
@@ -169,15 +182,15 @@
         <option value="$PROJECT_DIR$/src/main/resources/json_schema/comm/bot-list-update.yaml" />
         <option value="$PROJECT_DIR$/src/main/java/net/robocode2/engine/ScoreKeeper.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/test/java/net/robocode2/game/ScoreTrackerTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/robocode2/engine/Results.java" />
         <option value="$PROJECT_DIR$/src/main/resources/json_schema/events/bot-results-for-bot.yaml" />
         <option value="$PROJECT_DIR$/src/main/java/net/robocode2/model/Score.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/robocode2/model/RuleConstants.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/robocode2/engine/ScoreTracker.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/robocode2/model/GameSetup.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/robocode2/server/GameServer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/robocode2/engine/ScoreTracker.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/robocode2/engine/ModelUpdater.java" />
+        <option value="$PROJECT_DIR$/src/test/java/net/robocode2/game/ScoreTrackerTest.java" />
       </list>
     </option>
   </component>
@@ -216,7 +229,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -270,12 +283,12 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SearchEverywhereHistoryKey" value="gs&#9;FILE&#9;file://D:/robocode-2-work/robocode2-server/src/main/java/net/robocode2/model/GameSetup.java&#10;Score&#9;FILE&#9;file://D:/robocode-2-work/robocode2-server/src/main/java/net/robocode2/model/Score.java&#10;GameServer&#9;FILE&#9;file://D:/robocode-2-work/robocode2-server/src/main/java/net/robocode2/server/GameServer.java&#10;ScoreKeeper&#9;FILE&#9;file://D:/robocode-2-work/robocode2-server/src/main/java/net/robocode2/engine/ScoreKeeper.java&#10;GameEndedEve&#9;PSI&#9;JAVA://net.robocode2.json_schema.events.GameEndedEventForBot&#10;GameEndedEventForObserver&#9;PSI&#9;JAVA://net.robocode2.json_schema.events.GameEndedEventForObserver&#10;GameAbortedEventForObserver&#9;PSI&#9;JAVA://net.robocode2.json_schema.events.GameAbortedEventForObserver&#10;BotList&#9;PSI&#9;JAVA://net.robocode2.json_schema.comm.BotListUpdate&#10;Message&#9;ACTION&#9;ActivateMessagesToolWindow&#10;BulletHitBotEvent&#9;null&#9;null&#10;BotHandshake&#9;null&#9;null" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1542494873731" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1542662735010" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -375,8 +388,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.69175106" visible="true" weight="0.11673774" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.69175106" visible="true" weight="0.117803834" />
       <window_info id="Structure" order="1" sideWeight="0.3082489" side_tool="true" weight="0.21375267" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -384,7 +398,7 @@
       <window_info id="Favorites" order="5" sideWeight="0.5032538" side_tool="true" weight="0.1881663" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49520257" weight="0.20498915" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49626866" weight="0.4815618" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49626866" visible="true" weight="0.19305857" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4968017" weight="0.31995663" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -410,10 +424,10 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/net/robocode2/engine/ScoreTracker.java</url>
-          <line>208</line>
+          <url>file://$PROJECT_DIR$/src/main/java/net/robocode2/engine/ModelUpdater.java</url>
+          <line>753</line>
           <properties />
-          <option name="timeStamp" value="7" />
+          <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -550,13 +564,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/net/robocode2/game/ScoreTrackerTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="394">
-          <caret line="76" selection-start-line="76" selection-end-line="76" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/robocode2/engine/Results.java" />
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_162/src.zip!/java/util/ArrayList.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -638,20 +645,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/robocode2/engine/ScoreTracker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="206" column="7" lean-forward="true" selection-start-line="206" selection-start-column="7" selection-end-line="206" selection-end-column="7" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1254#1255#0" expanded="true" />
-            <element signature="e#1282#1283#0" expanded="true" />
-            <element signature="e#10229#10230#0" expanded="true" />
-            <element signature="e#10253#10254#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/robocode2/model/GameSetup.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="493">
@@ -683,14 +676,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/robocode2/engine/ScoreTracker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="269">
+          <caret line="73" column="35" selection-start-line="73" selection-start-column="16" selection-end-line="73" selection-end-column="35" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1253#1254#0" expanded="true" />
+            <element signature="e#1292#1293#0" expanded="true" />
+            <element signature="e#9988#9989#0" expanded="true" />
+            <element signature="e#10012#10013#0" expanded="true" />
+            <element signature="e#10330#10331#0" expanded="true" />
+            <element signature="e#10379#10380#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/robocode2/engine/ModelUpdater.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="331">
-          <caret line="406" column="37" selection-start-line="406" selection-start-column="37" selection-end-line="406" selection-end-column="37" />
+        <state relative-caret-position="245">
+          <caret line="133" column="48" selection-start-line="133" selection-start-column="48" selection-end-line="133" selection-end-column="48" />
           <folding>
             <element signature="e#4332#4333#0" expanded="true" />
             <element signature="e#4371#4372#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/net/robocode2/game/ScoreTrackerTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="292">
+          <caret line="76" column="33" selection-start-line="76" selection-start-column="33" selection-end-line="76" selection-end-column="33" />
         </state>
       </provider>
     </entry>

@@ -74,7 +74,7 @@ public class ScoreTrackerTest {
 		sk.registerBulletHit(3, 1, 10, false);
 		sk.registerRamHit(3, 1, 20, false);
 
-		sk.finalizeRound();
+		sk.calculatePlacements();
 
 		testZeroScore(sk.getScore(1));
 		testZeroScore(sk.getScore(2));

@@ -130,6 +130,9 @@ public class ModelUpdater {
 		updateBotIntents(botIntents);
 
 		if ((roundNumber == 0 && turnNumber == 0) || roundEnded) {
+			if (roundEnded) {
+				scoreTracker.calculatePlacements();
+			}
 			nextRound();
 		}
 		nextTurn();
@@ -180,7 +183,7 @@ public class ModelUpdater {
 
 		initializeBotStates();
 
-		scoreTracker.finalizeRound();
+		scoreTracker.prepareRound();
 	}
 
 	/**
@@ -313,7 +316,7 @@ public class ModelUpdater {
 			if (!occupiedCells.contains(cell)) {
 				occupiedCells.add(cell);
 
-				y = cell / gridWidth;
+				y = (double)cell / gridWidth;
 				x = cell - y * gridWidth;
 
 				x *= cellWidth;

@@ -42,8 +42,8 @@ public class ScoreTracker {
 		initializeDamageAndSurvivals();
 	}
 
-	public void finalizeRound() {
-		calculatePlacements();
+	public void prepareRound() {
+		this.botsAliveIds.addAll(botIds);
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class ScoreTracker {
 	/**
 	 * Calculates 1st, 2nd, and 3rd places.
 	 */
-	private void calculatePlacements() {
+	public void calculatePlacements() {
 		List<Score> scores = getBotScores();
 		if (scores.size() >= 1) {
 			Score soore = scores.get(0);
