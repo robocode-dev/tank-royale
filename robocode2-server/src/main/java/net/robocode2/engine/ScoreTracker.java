@@ -44,7 +44,6 @@ public class ScoreTracker {
 
 	public void finalizeRound() {
 		calculatePlacements();
-		clearRound();
 	}
 
 	/**
@@ -67,15 +66,6 @@ public class ScoreTracker {
 					.build());
 		}
 		return scores;
-	}
-
-	/**
-	 * Clears all scores for all bots.
-	 */
-	private void clearRound() {
-		botRecords.clear();
-		initializeDamageAndSurvivals();
-		botsAliveIds.clear();
 	}
 
 	/**
@@ -184,8 +174,6 @@ public class ScoreTracker {
 
 		damageRecord.addBulletDamage(victimBotId, damage);
 		if (kill) {
-			handleKill(victimBotId);
-
 			damageRecord.addBulletKillEnemyId(victimBotId);
 		}
 	}
@@ -207,23 +195,21 @@ public class ScoreTracker {
 
 		damageRecord.addRamDamage(victimBotId, damage);
 		if (kill) {
-			handleKill(victimBotId);
-
 			damageRecord.addRamKillEnemyId(victimBotId);
 		}
 	}
 
 	/**
-	 * Handles a kill.
+	 * Register a bot death.
 	 *
-	 * @param killedBotId
-	 *            is the identifier of the bot that has been killed
+	 * @param botId
+	 *            is the identifier of the bot that died
 	 */
-	private void handleKill(int killedBotId) {
-		botsAliveIds.remove(killedBotId);
+	public void registerBotDeath(int botId) {
+		botsAliveIds.remove(botId);
 
-		for (int botId : botsAliveIds) {
-			botRecords.get(botId).incrementSurvivalCount();
+		for (int aliveBotId : botsAliveIds) {
+			botRecords.get(aliveBotId).incrementSurvivalCount();
 		}
 
 		if (botsAliveIds.size() == 1) {

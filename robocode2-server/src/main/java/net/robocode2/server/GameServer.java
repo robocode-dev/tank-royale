@@ -3,6 +3,7 @@ package net.robocode2.server;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.val;
 import net.robocode2.json_schema.events.*;
@@ -41,7 +42,7 @@ public final class GameServer {
 
 	private Map<String /* clientKey */, Integer> participantIds = new HashMap<>();
 
-	private Map<String /* clientKey */, BotIntent> botIntents = new HashMap<>();
+	private Map<String /* clientKey */, BotIntent> botIntents = new ConcurrentHashMap<>();
 
 	private Timer readyTimer;
 	private Timer turnTimer;

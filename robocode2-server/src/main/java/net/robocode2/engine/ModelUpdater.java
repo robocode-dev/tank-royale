@@ -217,7 +217,7 @@ public class ModelUpdater {
 		// Check bullet hits
 		checkBulletHits();
 
-		// Cleanup killed robots (events)
+		// Cleanup defeated robots (events)
 		checkForDefeatedBots();
 
 		// Fire guns
@@ -371,7 +371,7 @@ public class ModelUpdater {
 	 * Check bullet hits
 	 */
 	private void checkBulletHits() {
-		Line[] boundingLines = new Line[bullets.size()];
+		final Line[] boundingLines = new Line[bullets.size()];
 
 		Bullet[] bulletArray = new Bullet[bullets.size()];
 		bulletArray = bullets.toArray(bulletArray);
@@ -392,9 +392,19 @@ public class ModelUpdater {
 		for (int i = boundingLines.length - 1; i >= 0; i--) {
 
 			// Check bullet-bullet collision
-			Point endPos1 = boundingLines[i].end;
+			Line line1 = boundingLines[i];
+			if (line1 == null) {
+				continue;
+			}
+
+			Point endPos1 = line1.end;
 			for (int j = i - 1; j >= 0; j--) {
-				Point endPos2 = boundingLines[j].end;
+				Line line2 = boundingLines[j];
+				if (line2 == null) {
+					continue;
+				}
+
+				Point endPos2 = line2.end;
 
 				// Check if the bullets bounding circles intersects (is fast) before checking if the bullets bounding
 				// lines intersect (is slower)
@@ -442,8 +452,10 @@ public class ModelUpdater {
 					boolean killed = botBuilder.addDamage(damage);
 
 					double energyBonus = RuleConstants.BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.getPower();
-					botBuilderMap.get(botId).changeEnergy(energyBonus);
-
+					BotBuilder enemyBotBuilder = botBuilderMap.get(botId);
+					if (enemyBotBuilder != null) {
+						enemyBotBuilder.changeEnergy(energyBonus);
+					}
 					scoreTracker.registerBulletHit(botId, victimId, damage, killed);
 
 					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet, victimId, damage, botBuilder.getEnergy());
@@ -735,6 +747,8 @@ public class ModelUpdater {
 				BotDeathEvent botDeathEvent = new BotDeathEvent(victimId);
 				turnBuilder.addPublicBotEvent(botDeathEvent);
 				turnBuilder.addObserverEvent(botDeathEvent);
+
+				scoreTracker.registerBotDeath(victimId);
 			}
 		}
 	}
