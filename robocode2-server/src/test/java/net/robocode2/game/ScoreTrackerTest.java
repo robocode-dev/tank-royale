@@ -67,18 +67,15 @@ public class ScoreTrackerTest {
 
 		sk.registerBulletHit(1, 2, 10, false);
 		sk.registerRamHit(1, 2, 20, false);
-
 		sk.registerBulletHit(2, 3, 10, false);
 		sk.registerRamHit(2, 3, 20, false);
 
 		sk.registerBulletHit(3, 1, 10, false);
 		sk.registerRamHit(3, 1, 20, false);
 
-		sk.calculatePlacements();
-
-		testZeroScore(sk.getScore(1));
-		testZeroScore(sk.getScore(2));
-		testZeroScore(sk.getScore(3));
+		assertEquals(10 * SCORE_PER_BULLET_DAMAGE + 20 * SCORE_PER_RAM_DAMAGE, sk.getScore(1).getTotalScore(), 0.0001);
+		assertEquals(10 * SCORE_PER_BULLET_DAMAGE + 20 * SCORE_PER_RAM_DAMAGE, sk.getScore(2).getTotalScore(), 0.0001);
+		assertEquals(10 * SCORE_PER_BULLET_DAMAGE + 20 * SCORE_PER_RAM_DAMAGE, sk.getScore(3).getTotalScore(), 0.0001);
 	}
 
 	@Test
@@ -104,6 +101,7 @@ public class ScoreTrackerTest {
 		// --- Bot 2 hits and kills bot 1
 
 		sk.registerBulletHit(2, 1, 9, true);
+		sk.registerBotDeath(1);
 
 		s = sk.getScore(1);
 		assertEquals(7 * SCORE_PER_BULLET_DAMAGE, s.getBulletDamage(), 0.00001);
@@ -145,6 +143,7 @@ public class ScoreTrackerTest {
 		// --- Bot 3 hits and kills bot 2
 
 		sk.registerBulletHit(3, 2, 13, true);
+		sk.registerBotDeath(2);
 
 		s = sk.getScore(1);
 		assertEquals(7 * SCORE_PER_BULLET_DAMAGE, s.getBulletDamage(), 0.00001);
@@ -187,6 +186,7 @@ public class ScoreTrackerTest {
 		// --- Bot 4 hits and kills bot 3
 
 		sk.registerBulletHit(4, 3, 5, true);
+		sk.registerBotDeath(3);
 
 		s = sk.getScore(1);
 		assertEquals(7 * SCORE_PER_BULLET_DAMAGE, s.getBulletDamage(), 0.00001);
@@ -251,6 +251,7 @@ public class ScoreTrackerTest {
 		// --- Bot 2 hits and kills bot 1
 
 		sk.registerRamHit(2, 1, 9, true);
+		sk.registerBotDeath(1);
 
 		s = sk.getScore(1);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -292,6 +293,7 @@ public class ScoreTrackerTest {
 		// --- Bot 3 hits and kills bot 2
 
 		sk.registerRamHit(3, 2, 13, true);
+		sk.registerBotDeath(2);
 
 		s = sk.getScore(1);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -334,6 +336,7 @@ public class ScoreTrackerTest {
 		// --- Bot 4 hits and kills bot 3
 
 		sk.registerRamHit(4, 3, 5, true);
+		sk.registerBotDeath(3);
 
 		s = sk.getScore(1);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
