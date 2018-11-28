@@ -7,7 +7,6 @@ import java.util.Arrays;
 import net.robocode2.json_schema.comm.*;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
-import org.java_websocket.drafts.Draft_10;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -155,7 +154,7 @@ public class BotClient1 extends WebSocketClient {
 	}
 
 	public static void main(String[] args) throws URISyntaxException {
-		WebSocketClient client = new BotClient1(new URI("ws://localhost:50000"), new Draft_10());
+		WebSocketClient client = new BotClient1(new URI("ws://localhost:50000"));
 		client.connect();
 	}
 

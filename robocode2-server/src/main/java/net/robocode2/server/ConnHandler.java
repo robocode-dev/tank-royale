@@ -158,6 +158,9 @@ public final class ConnHandler {
 		}
 
 		@Override
+		public void onStart() {}
+
+		@Override
 		public void onOpen(WebSocket conn, ClientHandshake handshake) {
 			System.out.println("onOpen(): " + conn.getRemoteSocketAddress());
 

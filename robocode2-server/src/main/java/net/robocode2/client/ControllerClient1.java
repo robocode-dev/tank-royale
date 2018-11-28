@@ -5,7 +5,6 @@ import java.net.URISyntaxException;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
-import org.java_websocket.drafts.Draft_10;
 import org.java_websocket.handshake.ServerHandshake;
 
 import com.google.gson.Gson;
@@ -56,7 +55,7 @@ public class ControllerClient1 extends WebSocketClient {
 	}
 
 	public static void main(String[] args) throws URISyntaxException {
-		WebSocketClient client = new ControllerClient1(new URI("ws://localhost:50000"), new Draft_10());
+		WebSocketClient client = new ControllerClient1(new URI("ws://localhost:50000"));
 		client.connect();
 	}
 
