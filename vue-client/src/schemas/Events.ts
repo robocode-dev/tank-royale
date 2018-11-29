@@ -36,6 +36,7 @@ export class GameAbortedEventForObserver extends Event {
 }
 
 export class GameEndedEventForObserver extends Event {
+  public numberOfRounds: number = 0;
   public results: BotResultsForObservers[] = [];
 
   constructor() {

@@ -3,3 +3,4 @@
 /.sonarlint
 /robocode2-server/bin
 /RemoteSystemsTempFiles
+.idea

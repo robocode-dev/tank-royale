@@ -38,14 +38,17 @@ export default class Arena extends Vue {
 
   private lastTickEvent: TickEventForObserver | null = Server.getLastTickEvent();
 
+  private numberOfPlayedRounds: number = 0;
   private results: any = [];
 
-  public showModal() {
+  public showResultsModal() {
     (this.$refs.resultsModal as Modal).show();
   }
 
-  public hideModal() {
+  public hideResultsModal() {
     (this.$refs.resultsModal as Modal).hide();
+
+    this.clearCanvas();
   }
 
   public getResults(): any {
@@ -118,6 +121,7 @@ export default class Arena extends Vue {
     console.log("->gameEnded");
     this.updateRunningAndPausedStates();
 
+    this.numberOfPlayedRounds = event.numberOfRounds;
     this.results = [];
 
     const botResults: BotResultsForObservers[] = event.results;
@@ -134,14 +138,14 @@ export default class Arena extends Vue {
           "Bullet Bonus": r.bulletKillBonus,
           "Ram Damage": r.ramDamage,
           "Ram Bonus": r.ramKillBonus,
-          '#1': r.firstPlaces,
-          '#2': r.secondPlaces,
-          '#3': r.thirdPlaces,
+          "#1": r.firstPlaces,
+          "#2": r.secondPlaces,
+          "#3": r.thirdPlaces,
         });
       });
     }
 
-    this.showModal();
+    this.showResultsModal();
   }
 
   private onGamePaused(event: GamePausedEventForObserver) {
