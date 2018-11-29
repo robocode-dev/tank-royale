@@ -55,7 +55,7 @@ public class ScoreTracker {
 		List<Score> scores = getBotScores();
 		for (int i = 0; i < scores.size(); i++) {
 			Score score = scores.get(i);
-			int botId = score.getId();
+			int botId = score.getBotId();
 			Integer firstPlaces = place1st.get(botId);
 			Integer secondPlaces = place2nd.get(botId);
 			Integer thirdPlaces = place3rd.get(botId);
@@ -74,28 +74,28 @@ public class ScoreTracker {
 	public void calculatePlacements() {
 		List<Score> scores = getBotScores();
 		if (scores.size() >= 1) {
-			Score soore = scores.get(0);
-			Integer count = place1st.get(soore.getId());
+			Score score = scores.get(0);
+			Integer count = place1st.get(score.getBotId());
 			if (count == null) {
 				count = 0;
 			}
-			place1st.put(soore.getId(), ++count);
+			place1st.put(score.getBotId(), ++count);
 		}
 		if (scores.size() >= 2) {
-			Score soore = scores.get(1);
-			Integer count = place2nd.get(soore.getId());
+			Score score = scores.get(1);
+			Integer count = place2nd.get(score.getBotId());
 			if (count == null) {
 				count = 0;
 			}
-			place2nd.put(soore.getId(), ++count);
+			place2nd.put(score.getBotId(), ++count);
 		}
 		if (scores.size() >= 3) {
-			Score soore = scores.get(2);
-			Integer count = place3rd.get(soore.getId());
+			Score score = scores.get(2);
+			Integer count = place3rd.get(score.getBotId());
 			if (count == null) {
 				count = 0;
 			}
-			place3rd.put(soore.getId(), ++count);
+			place3rd.put(score.getBotId(), ++count);
 		}
 	}
 
@@ -133,7 +133,7 @@ public class ScoreTracker {
 
 		BotRecord damageRecord = botRecords.get(botId);
 
-		builder.id(botId);
+		builder.botId(botId);
 		builder.survival(RuleConstants.SCORE_PER_SURVIVAL * damageRecord.getSurvivalCount());
 		builder.lastSurvivorBonus(RuleConstants.BONUS_PER_LAST_SURVIVOR * damageRecord.getLastSurvivorCount());
 

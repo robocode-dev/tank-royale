@@ -4,10 +4,14 @@ description: Game Ended event. Gives all game results visible for a bot.
 extends:
   $ref: event.yaml
 properties:
+  numberOfRounds:
+    description: Number of rounds played
+    type: integer
   results:
     description: Results of the battle
     type: array
     items:
       $ref: bot-results-for-bot.yaml
 required:
+- numberOfRounds
 - results

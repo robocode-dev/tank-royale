@@ -196,7 +196,7 @@ public final class GameServer {
 			BotResultsForBot botResults = new BotResultsForBot();
 			botResultsList.add(botResults);
 
-			botResults.setId(score.getId());
+			botResults.setId(score.getBotId());
 			botResults.setSurvival((int) round(score.getSurvival()));
 			botResults.setLastSurvivorBonus((int) round(score.getLastSurvivorBonus()));
 			botResults.setBulletDamage((int) round(score.getBulletDamage()));
@@ -224,7 +224,7 @@ public final class GameServer {
 			BotResultsForObserver botResults = new BotResultsForObserver();
 			botResultsList.add(botResults);
 
-			botResults.setId(score.getId());
+			botResults.setId(score.getBotId());
 			botResults.setSurvival((int) round(score.getSurvival()));
 			botResults.setLastSurvivorBonus((int) round(score.getLastSurvivorBonus()));
 			botResults.setBulletDamage((int) round(score.getBulletDamage()));
@@ -238,7 +238,7 @@ public final class GameServer {
 
 			String clientKey = null;
 			for (Entry<String, Integer> entry2 : participantIds.entrySet()) {
-				if (entry2.getValue().equals(score.getId())) {
+				if (entry2.getValue().equals(score.getBotId())) {
 					clientKey = entry2.getKey();
 					break;
 				}
@@ -305,11 +305,10 @@ public final class GameServer {
 	}
 
 	private void onUpdateGameState() {
-		System.out.println("#### UPDATE GAME STATE EVENT #####");
-
 		if (runningState == RunningState.GAME_PAUSED) {
 			return;
 		}
+		System.out.println("#### UPDATE GAME STATE EVENT #####");
 
 		if (runningState != RunningState.GAME_STOPPED) {
 			// Update game state
@@ -320,8 +319,11 @@ public final class GameServer {
 
 				System.out.println("#### GAME ENDED FOR BOTS #####");
 
+				modelUpdater.calculatePlacements();
+
 				GameEndedEventForBot endEventForBot = new GameEndedEventForBot();
 				endEventForBot.setType(GameEndedEventForObserver.Type.GAME_ENDED_EVENT_FOR_BOT);
+				endEventForBot.setNumberOfRounds(modelUpdater.getNumberOfRounds());
 				endEventForBot.setResults(getResultsForBots());
 				sendMessageToBots(gson.toJson(endEventForBot));
 
@@ -369,6 +371,7 @@ public final class GameServer {
 					// End game for bots
 					GameEndedEventForObserver endEventForObserver = new GameEndedEventForObserver();
 					endEventForObserver.setType(GameEndedEventForObserver.Type.GAME_ENDED_EVENT_FOR_OBSERVER);
+					endEventForObserver.setNumberOfRounds(modelUpdater.getNumberOfRounds());
 					endEventForObserver.setResults(resultsForObservers); // Use the stored score!
 					sendMessageToObservers(gson.toJson(endEventForObserver));
 

@@ -20,7 +20,7 @@ public class GameState {
 	@NonNull Arena arena;
 
 	/** List of rounds */
-	@Singular List<Round> rounds;
+	List<Round> rounds;
 
 	/** Flag specifying if game has ended */
 	boolean gameEnded;

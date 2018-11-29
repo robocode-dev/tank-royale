@@ -131,13 +131,20 @@ public class ModelUpdater {
 
 		if ((roundNumber == 0 && turnNumber == 0) || roundEnded) {
 			if (roundEnded) {
-				scoreTracker.calculatePlacements();
+				calculatePlacements();
 			}
 			nextRound();
 		}
 		nextTurn();
 
-		return buildUpdatedGameState();
+		return updateGameState();
+	}
+
+	/**
+	 * Calculates and sets placements for all bots, i.e. 1st, 2nd, and 3rd places.
+	 */
+	public void calculatePlacements() {
+		scoreTracker.calculatePlacements();
 	}
 
 	/**
@@ -147,6 +154,13 @@ public class ModelUpdater {
 	 */
 	public List<Score> getResults() {
 		return scoreTracker.getResults();
+	}
+
+	/**
+	 * Returns the number of rounds played so far.
+	 */
+	public int getNumberOfRounds() {
+		return gameState == null ? 0 : gameState.getRounds().size();
 	}
 
 	/**
@@ -244,14 +258,29 @@ public class ModelUpdater {
 	}
 
 	/**
-	 * Build updated game state
+	 * Update game state
 	 * 
 	 * @return new game state
 	 */
-	private GameState buildUpdatedGameState() {
+	private GameState updateGameState() {
 		round = round.toBuilder().turn(turnBuilder.build()).build();
-		
-		return gameState.toBuilder().round(round).build();
+
+		List<Round> rounds = gameState.getRounds();
+		if (rounds == null) {
+			rounds = new ArrayList<>();
+		} else {
+			rounds = new ArrayList<>(rounds); // copy due to immutable list
+		}
+
+		int roundIndex = round.getRoundNumber() - 1;
+
+		if (rounds.size() == roundIndex) {
+			rounds.add(round);
+		} else {
+			rounds.set(roundIndex, round);
+		}
+		gameState = gameState.toBuilder().rounds(rounds).build();
+		return gameState;
 	}
 
 	/**

@@ -13,7 +13,7 @@ import lombok.Value;
 public class Score {
 
 	/** Bot ID */
-	int id;
+	int botId;
 
 	/** Survival score gained whenever another bot is defeated */
 	double survival;
