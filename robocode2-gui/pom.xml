@@ -34,6 +34,11 @@
       <artifactId>rxkotlin</artifactId>
       <version>2.3.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.miglayout</groupId>
+      <artifactId>miglayout</artifactId>
+      <version>3.7.4</version>
+    </dependency>
   </dependencies>
 
   <build>
