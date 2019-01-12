@@ -1,11 +1,11 @@
 package net.robocode2.gui.settings
 
 data class GameType(
-    val width: Int = 800,
-    val height: Int = 600,
-    val minNumParticipants: Int = 2,
-    val maxNumParticipants: Int? = null,
-    val numberOfRounds: Int = 35,
-    val inactivityTurns: Int = 450,
-    val gunCoolingRate: Double = 0.1
+    var width: Int = 800,
+    var height: Int = 600,
+    var minNumParticipants: Int = 2,
+    var maxNumParticipants: Int? = null,
+    var numberOfRounds: Int = 35,
+    var inactivityTurns: Int = 450,
+    var gunCoolingRate: Double = 0.1
 )
