@@ -14,12 +14,14 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
         val alreadyExists = file.createNewFile()
         val input =  FileInputStream(file)
         input.use {
-            properties.load(input)
+            val tmp = Properties()
+            tmp.load(input)
+            properties.putAll(tmp)
         }
         return alreadyExists
     }
 
-    fun save() {
+    open fun save() {
         val output = FileOutputStream(fileName)
         output.use {
             // Properties are sorted by overriding the keys() method
