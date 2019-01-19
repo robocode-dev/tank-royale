@@ -8,4 +8,6 @@ object Constants {
     val MAX_NUM_PARTICIPANTS = 100
 
     val MAX_NUM_ROUNDS = 1_000_000_000
+    val MAX_GUN_COOLING = 0.7
+    val MAX_INACTIVITY_TURNS = 1_000_000_000
 }

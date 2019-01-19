@@ -32,7 +32,7 @@ object GameSetupSettings : PropertiesStore("Robocode Game Setup", "game-gameSetu
                 "int" -> theField.setInt(gameType, value.toInt())
                 "double" -> theField.setDouble(gameType, value.toDouble())
                 "String" -> theField.set(gameType, value)
-                "java.lang.Integer" -> theField.set(gameType, Integer.parseInt(value))
+                "java.lang.Integer" -> theField.set(gameType, try { Integer.parseInt(value) } catch (e: NumberFormatException) { null })
                 else -> throw RuntimeException("Type is missing implementation: ${theField.type.name}")
             }
         }
@@ -56,10 +56,11 @@ object GameSetupSettings : PropertiesStore("Robocode Game Setup", "game-gameSetu
         for (prop in GameType::class.java.declaredFields) {
             val field = GameType::class.java.getDeclaredField(prop.name)
             field.isAccessible = true
-            val value = field.get(gameType)?.toString()
-            if (value != null) {
-                properties.setProperty("$name.${prop.name}", value)
+            var value = field.get(gameType)?.toString()
+            if (value == null) {
+                value = ""
             }
+            properties.setProperty("$name.${prop.name}", value)
         }
     }
 

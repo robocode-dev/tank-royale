@@ -10,14 +10,15 @@ import net.robocode2.gui.extensions.JTextFieldExt.setInputVerifier
 import net.robocode2.gui.settings.GameSetupSettings
 import net.robocode2.gui.settings.GameType
 import java.awt.EventQueue
-import java.text.NumberFormat
 import javax.swing.*
-import javax.swing.text.NumberFormatter
 import net.robocode2.gui.Constants.MIN_ARENA_SIZE
 import net.robocode2.gui.Constants.MAX_ARENA_SIZE
 import net.robocode2.gui.Constants.MIN_NUM_PARTICIPANTS
 import net.robocode2.gui.Constants.MAX_NUM_PARTICIPANTS
 import net.robocode2.gui.Constants.MAX_NUM_ROUNDS
+import net.robocode2.gui.Constants.MAX_GUN_COOLING
+import net.robocode2.gui.Constants.MAX_INACTIVITY_TURNS
+import kotlin.NumberFormatException
 
 
 object RulesWindow : JDialog() {
@@ -36,8 +37,8 @@ object RulesWindow : JDialog() {
     private val minNumParticipantsTextField = JTextField(6)
     private val maxNumParticipantsTextField = JTextField(6)
     private val numberOfRoundsTextField = JTextField(6)
-    private val inactivityTurnsTextField = JTextField(6)
     private val gunCoolingRateTextField = JTextField(6)
+    private val inactivityTurnsTextField = JTextField(6)
 
     private val selectedGameType: String
         get() = gameTypeComboBox.selectedItem as String
@@ -79,11 +80,11 @@ object RulesWindow : JDialog() {
         commonPanel.addNewLabel("number_of_rounds")
         commonPanel.add(numberOfRoundsTextField, "wrap")
 
-        commonPanel.addNewLabel("inactivity_turns")
-        commonPanel.add(inactivityTurnsTextField, "wrap")
-
         commonPanel.addNewLabel("gun_cooling_rate")
         commonPanel.add(gunCoolingRateTextField, "wrap")
+
+        commonPanel.addNewLabel("inactivity_turns")
+        commonPanel.add(inactivityTurnsTextField, "wrap")
 
         arenaPanel.border = BorderFactory.createTitledBorder(STRINGS.get("arena_size"))
         arenaPanel.layout = MigLayout("insets 10")
@@ -104,6 +105,8 @@ object RulesWindow : JDialog() {
         minNumParticipantsTextField.setInputVerifier { minNumParticipantsVerifier() }
         maxNumParticipantsTextField.setInputVerifier { maxNumParticipantsVerifier() }
         numberOfRoundsTextField.setInputVerifier { numberOfRoundsVerifier() }
+        gunCoolingRateTextField.setInputVerifier { gunCoolingRateVerifier() }
+        inactivityTurnsTextField.setInputVerifier { inactivityTurnsVerifier() }
 
         onOk.subscribe { saveSettings(); close() }
         onCancel.subscribe { close() }
@@ -132,38 +135,38 @@ object RulesWindow : JDialog() {
     }
 
     private fun widthVerifier(): Boolean {
-        val width = widthTextField.text.trim().toInt()
-        val valid = sizeVerifier(width)
-        if (!valid) {
+        val width: Int? = try { widthTextField.text.trim().toInt() } catch (e: NumberFormatException) { null }
+        val valid = width != null && width in MIN_ARENA_SIZE..MAX_ARENA_SIZE
+        if (valid && width != null) {
+            gameType.width = width
+        } else {
+            showMessage(String.format(MESSAGES.get("arena_size_range"), MIN_ARENA_SIZE, MAX_ARENA_SIZE))
+
             widthTextField.text = "" + gameType.width
         }
         return valid
-    }
+}
 
     private fun heightVerifier(): Boolean {
-        val height = heightTextField.text.trim().toInt()
-        val valid = sizeVerifier(height)
-        if (!valid) {
+        val height: Int? = try { heightTextField.text.trim().toInt() } catch (e: NumberFormatException) { null }
+        val valid = height != null && height in MIN_ARENA_SIZE..MAX_ARENA_SIZE
+        if (valid && height != null) {
+            gameType.height = height
+        } else {
+            showMessage(String.format(MESSAGES.get("arena_size_range"), MIN_ARENA_SIZE, MAX_ARENA_SIZE))
+
             heightTextField.text = "" + gameType.height
         }
         return valid
     }
 
-    private fun sizeVerifier(size: Int): Boolean {
-        val valid = size in MIN_ARENA_SIZE..MAX_ARENA_SIZE
-        if (!valid) {
-            JOptionPane.showMessageDialog(this,
-                    String.format(MESSAGES.get("arena_size_range"), MIN_ARENA_SIZE, MAX_ARENA_SIZE))
-        }
-        return valid
-    }
-
     private fun minNumParticipantsVerifier(): Boolean {
-        val num = minNumParticipantsTextField.text.trim().toInt()
-        val valid = num in MIN_NUM_PARTICIPANTS..MAX_NUM_PARTICIPANTS
-        if (!valid) {
-            JOptionPane.showMessageDialog(this,
-                    String.format(MESSAGES.get("min_num_participants"), MIN_NUM_PARTICIPANTS))
+        val minNum: Int? = try { minNumParticipantsTextField.text.trim().toInt() } catch (e: NumberFormatException) { null }
+        val valid = minNum != null && minNum in MIN_NUM_PARTICIPANTS .. MAX_NUM_PARTICIPANTS
+        if (valid && minNum != null) {
+            gameType.minNumParticipants = minNum
+        } else {
+            showMessage(String.format(MESSAGES.get("min_num_participants"), MIN_NUM_PARTICIPANTS))
 
             minNumParticipantsTextField.text = "" + gameType.minNumParticipants
         }
@@ -171,15 +174,21 @@ object RulesWindow : JDialog() {
     }
 
     private fun maxNumParticipantsVerifier(): Boolean {
-        val minNum = minNumParticipantsTextField.text.trim().toInt()
-        val maxNum = maxNumParticipantsTextField.text.trim().toInt()
-        val valid = (minNum in MIN_NUM_PARTICIPANTS..MAX_NUM_PARTICIPANTS) && (maxNum in minNum..MAX_NUM_PARTICIPANTS)
-        if (!valid) {
-            if (maxNum > MAX_NUM_PARTICIPANTS) {
-                JOptionPane.showMessageDialog(this,
-                        String.format(MESSAGES.get("max_num_participants"), MAX_NUM_PARTICIPANTS))
+        if (maxNumParticipantsTextField.text.isBlank()) {
+            gameType.maxNumParticipants = null
+            return true
+        }
+        val minNum: Int? = try { minNumParticipantsTextField.text.trim().toInt() } catch (e: NumberFormatException) { null }
+        val maxNum: Int? = try { maxNumParticipantsTextField.text.trim().toInt() } catch (e: NumberFormatException) { null }
+        val valid = minNum != null && maxNum != null &&
+                (minNum in MIN_NUM_PARTICIPANTS .. MAX_NUM_PARTICIPANTS) && (maxNum in minNum..MAX_NUM_PARTICIPANTS)
+        if (valid && maxNum != null) {
+            gameType.maxNumParticipants = maxNum
+        } else {
+            if (maxNum == null || maxNum > MAX_NUM_PARTICIPANTS) {
+                showMessage(String.format(MESSAGES.get("max_num_participants"), MAX_NUM_PARTICIPANTS))
             } else {
-                JOptionPane.showMessageDialog(this, MESSAGES.get("max_num_participants_too_small"))
+                showMessage(MESSAGES.get("max_num_participants_too_small"))
             }
             maxNumParticipantsTextField.text = "" + gameType.maxNumParticipants
         }
@@ -187,49 +196,46 @@ object RulesWindow : JDialog() {
     }
 
     private fun numberOfRoundsVerifier(): Boolean {
-        val rounds = numberOfRoundsTextField.text.trim().toInt()
-        val valid = rounds in 1..MAX_NUM_ROUNDS
-        if (!valid) {
-            JOptionPane.showMessageDialog(this,
-                    String.format(MESSAGES.get("num_of_rounds_range"), MAX_NUM_ROUNDS))
+        val numRounds: Int? = try { numberOfRoundsTextField.text.trim().toInt() } catch (e: NumberFormatException) { null }
+        val valid = numRounds != null && numRounds in 1 .. MAX_NUM_ROUNDS
+        if (valid && numRounds != null) {
+            gameType.numberOfRounds = numRounds
+        } else {
+            showMessage(String.format(MESSAGES.get("num_rounds_range"), MAX_NUM_ROUNDS))
 
             maxNumParticipantsTextField.text = "" + gameType.numberOfRounds
         }
         return valid
     }
 
-    private fun onSomethingChanged() {
-        if (minNumParticipantsTextField.text.trim().isNotEmpty()) {
-            gameType.minNumParticipants = minNumParticipantsTextField.text.trim().toInt()
-        }
-        if (maxNumParticipantsTextField.text.trim().isNotEmpty()) {
-            gameType.maxNumParticipants = maxNumParticipantsTextField.text.trim().toInt()
+    private fun gunCoolingRateVerifier(): Boolean {
+        val rate: Double? = try { gunCoolingRateTextField.text.trim().toDouble() } catch (e: NumberFormatException) { null }
+        val valid = rate != null && rate > 0 && rate <= MAX_GUN_COOLING
+        if (valid && rate != null) {
+            gameType.gunCoolingRate = rate
         } else {
-            gameType.maxNumParticipants = null
+            showMessage(String.format(MESSAGES.get("gun_cooling_range"), "" + MAX_GUN_COOLING))
+
+            gunCoolingRateTextField.text = "" + gameType.gunCoolingRate
         }
-        if (numberOfRoundsTextField.text.trim().isNotEmpty()) {
-            gameType.numberOfRounds = numberOfRoundsTextField.text.trim().toInt()
-        }
-        if (inactivityTurnsTextField.text.trim().isNotEmpty()) {
-            gameType.inactivityTurns = inactivityTurnsTextField.text.trim().toInt()
-        }
-        if (gunCoolingRateTextField.text.trim().isNotEmpty()) {
-            gameType.gunCoolingRate = gunCoolingRateTextField.text.trim().toDouble()
-        }
+        return valid
     }
 
-    private fun integerFormat(min: Int = 0, max: Int = Int.MAX_VALUE,
-                              allowInvalid: Boolean = false, commitsOnValidEdit: Boolean = false): NumberFormatter {
+    private fun inactivityTurnsVerifier(): Boolean {
+        val turns: Int? = try { inactivityTurnsTextField.text.trim().toInt() } catch (e: NumberFormatException) { null }
+        val valid = turns != null && turns in 0 .. MAX_INACTIVITY_TURNS
+        if (valid && turns != null) {
+            gameType.inactivityTurns = turns
+        } else {
+            showMessage(String.format(MESSAGES.get("num_inactivity_turns_range"), MAX_INACTIVITY_TURNS))
 
-        val integerFormat = NumberFormat.getIntegerInstance()
-        integerFormat.isGroupingUsed = false
+            inactivityTurnsTextField.text = "" + gameType.inactivityTurns
+        }
+        return valid
+    }
 
-        val formatter = NumberFormatter(integerFormat)
-        formatter.minimum = min
-        formatter.maximum = max
-        formatter.allowsInvalid = allowInvalid
-        formatter.commitsOnValidEdit = commitsOnValidEdit
-        return formatter
+    private fun showMessage(msg: String) {
+        JOptionPane.showMessageDialog(this, msg)
     }
 }
 

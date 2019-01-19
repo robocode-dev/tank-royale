@@ -3,7 +3,6 @@ package net.robocode2.gui
 import io.reactivex.subjects.PublishSubject
 import javax.swing.JMenu
 import javax.swing.JMenuBar
-import javax.swing.JMenuItem
 import net.robocode2.gui.extensions.JMenuExt.addNewMenuItem
 
 object MainWindowMenu : JMenuBar() {
