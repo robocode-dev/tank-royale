@@ -3,24 +3,29 @@ package net.robocode2.gui
 import io.reactivex.subjects.PublishSubject
 import net.miginfocom.swing.MigLayout
 import net.robocode2.gui.ResourceBundles.STRINGS
+import net.robocode2.gui.ResourceBundles.MESSAGES
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
-import net.robocode2.gui.extensions.JTextFieldExt.addChangeListener
+import net.robocode2.gui.extensions.JTextFieldExt.setInputVerifier
 import net.robocode2.gui.settings.GameSetupSettings
 import net.robocode2.gui.settings.GameType
 import java.awt.EventQueue
 import java.text.NumberFormat
 import javax.swing.*
 import javax.swing.text.NumberFormatter
+import net.robocode2.gui.Constants.MIN_ARENA_SIZE
+import net.robocode2.gui.Constants.MAX_ARENA_SIZE
+import net.robocode2.gui.Constants.MIN_NUM_PARTICIPANTS
+import net.robocode2.gui.Constants.MAX_NUM_PARTICIPANTS
+import net.robocode2.gui.Constants.MAX_NUM_ROUNDS
 
-object RulesWindow : JFrame(ResourceBundles.WINDOW_TITLES.get("rules")) {
+
+object RulesWindow : JDialog() {
 
     private val gameSetup = GameSetupSettings.gameSetup
 
-    // Public events
-    val onClose: PublishSubject<Unit> = PublishSubject.create()
-
     // Private events
+    private val onClose: PublishSubject<Unit> = PublishSubject.create()
     private val onOk: PublishSubject<Unit> = PublishSubject.create()
     private val onCancel: PublishSubject<Unit> = PublishSubject.create()
     private val onResetGameType: PublishSubject<Unit> = PublishSubject.create()
@@ -37,8 +42,11 @@ object RulesWindow : JFrame(ResourceBundles.WINDOW_TITLES.get("rules")) {
     private val selectedGameType: String
         get() = gameTypeComboBox.selectedItem as String
 
+    private val gameType: GameType
+        get() = GameSetupSettings.gameSetup[selectedGameType] as GameType
+
     init {
-        defaultCloseOperation = EXIT_ON_CLOSE
+        defaultCloseOperation = DISPOSE_ON_CLOSE
 
         setSize(400, 250)
         minimumSize = size
@@ -62,10 +70,10 @@ object RulesWindow : JFrame(ResourceBundles.WINDOW_TITLES.get("rules")) {
         commonPanel.addNewLabel("game_type")
         commonPanel.add(gameTypeComboBox, "wrap")
 
-        commonPanel.addNewLabel("min_number_of_participants")
+        commonPanel.addNewLabel("min_num_of_participants")
         commonPanel.add(minNumParticipantsTextField, "wrap")
 
-        commonPanel.addNewLabel("max_number_of_participants")
+        commonPanel.addNewLabel("max_num_of_participants")
         commonPanel.add(maxNumParticipantsTextField, "wrap")
 
         commonPanel.addNewLabel("number_of_rounds")
@@ -81,7 +89,7 @@ object RulesWindow : JFrame(ResourceBundles.WINDOW_TITLES.get("rules")) {
         arenaPanel.layout = MigLayout("insets 10")
 
         arenaPanel.addNewLabel("width")
-        arenaPanel.add(widthTextField as JTextField, "wrap")
+        arenaPanel.add(widthTextField, "wrap")
         arenaPanel.addNewLabel("height")
         arenaPanel.add(heightTextField)
 
@@ -91,8 +99,11 @@ object RulesWindow : JFrame(ResourceBundles.WINDOW_TITLES.get("rules")) {
 
         gameTypeComboBox.selectedIndex = 0
 
-        widthTextField.addChangeListener { onWidthChanged() }
-        heightTextField.addChangeListener { onHeightChanged() }
+        widthTextField.setInputVerifier { widthVerifier() }
+        heightTextField.setInputVerifier { heightVerifier() }
+        minNumParticipantsTextField.setInputVerifier { minNumParticipantsVerifier() }
+        maxNumParticipantsTextField.setInputVerifier { maxNumParticipantsVerifier() }
+        numberOfRoundsTextField.setInputVerifier { numberOfRoundsVerifier() }
 
         onOk.subscribe { saveSettings(); close() }
         onCancel.subscribe { close() }
@@ -110,52 +121,100 @@ object RulesWindow : JFrame(ResourceBundles.WINDOW_TITLES.get("rules")) {
     }
 
     private fun onGameTypeChanged() {
-        val gt: GameType = GameSetupSettings.gameSetup[selectedGameType] as GameType
+        widthTextField.text = gameType.width.toString()
+        heightTextField.text = gameType.height.toString()
+        minNumParticipantsTextField.text = gameType.minNumParticipants.toString()
+        maxNumParticipantsTextField.text = gameType.maxNumParticipants?.toString()
 
-        widthTextField.text = gt.width.toString()
-        heightTextField.text = gt.height.toString()
-        minNumParticipantsTextField.text = gt.minNumParticipants.toString()
-        maxNumParticipantsTextField.text = gt.maxNumParticipants?.toString()
-
-        numberOfRoundsTextField.text = gt.numberOfRounds.toString()
-        inactivityTurnsTextField.text = gt.inactivityTurns.toString()
-        gunCoolingRateTextField.text = gt.gunCoolingRate.toString()
+        numberOfRoundsTextField.text = gameType.numberOfRounds.toString()
+        inactivityTurnsTextField.text = gameType.inactivityTurns.toString()
+        gunCoolingRateTextField.text = gameType.gunCoolingRate.toString()
     }
 
-    private fun onWidthChanged() {
-        val gameType = gameSetup[selectedGameType]
-        if (gameType != null && widthTextField.text.trim().isNotEmpty()) {
-            gameType.width = widthTextField.text.trim().toInt()
+    private fun widthVerifier(): Boolean {
+        val width = widthTextField.text.trim().toInt()
+        val valid = sizeVerifier(width)
+        if (!valid) {
+            widthTextField.text = "" + gameType.width
         }
+        return valid
     }
 
-    private fun onHeightChanged() {
-        val gameType = gameSetup[selectedGameType]
-        if (gameType != null && heightTextField.text.trim().isNotEmpty()) {
-            gameType.height = heightTextField.text.trim().toInt()
+    private fun heightVerifier(): Boolean {
+        val height = heightTextField.text.trim().toInt()
+        val valid = sizeVerifier(height)
+        if (!valid) {
+            heightTextField.text = "" + gameType.height
         }
+        return valid
+    }
+
+    private fun sizeVerifier(size: Int): Boolean {
+        val valid = size in MIN_ARENA_SIZE..MAX_ARENA_SIZE
+        if (!valid) {
+            JOptionPane.showMessageDialog(this,
+                    String.format(MESSAGES.get("arena_size_range"), MIN_ARENA_SIZE, MAX_ARENA_SIZE))
+        }
+        return valid
+    }
+
+    private fun minNumParticipantsVerifier(): Boolean {
+        val num = minNumParticipantsTextField.text.trim().toInt()
+        val valid = num in MIN_NUM_PARTICIPANTS..MAX_NUM_PARTICIPANTS
+        if (!valid) {
+            JOptionPane.showMessageDialog(this,
+                    String.format(MESSAGES.get("min_num_participants"), MIN_NUM_PARTICIPANTS))
+
+            minNumParticipantsTextField.text = "" + gameType.minNumParticipants
+        }
+        return valid
+    }
+
+    private fun maxNumParticipantsVerifier(): Boolean {
+        val minNum = minNumParticipantsTextField.text.trim().toInt()
+        val maxNum = maxNumParticipantsTextField.text.trim().toInt()
+        val valid = (minNum in MIN_NUM_PARTICIPANTS..MAX_NUM_PARTICIPANTS) && (maxNum in minNum..MAX_NUM_PARTICIPANTS)
+        if (!valid) {
+            if (maxNum > MAX_NUM_PARTICIPANTS) {
+                JOptionPane.showMessageDialog(this,
+                        String.format(MESSAGES.get("max_num_participants"), MAX_NUM_PARTICIPANTS))
+            } else {
+                JOptionPane.showMessageDialog(this, MESSAGES.get("max_num_participants_too_small"))
+            }
+            maxNumParticipantsTextField.text = "" + gameType.maxNumParticipants
+        }
+        return valid
+    }
+
+    private fun numberOfRoundsVerifier(): Boolean {
+        val rounds = numberOfRoundsTextField.text.trim().toInt()
+        val valid = rounds in 1..MAX_NUM_ROUNDS
+        if (!valid) {
+            JOptionPane.showMessageDialog(this,
+                    String.format(MESSAGES.get("num_of_rounds_range"), MAX_NUM_ROUNDS))
+
+            maxNumParticipantsTextField.text = "" + gameType.numberOfRounds
+        }
+        return valid
     }
 
     private fun onSomethingChanged() {
-        val gameType = gameSetup[selectedGameType]
-        if (gameType != null) {
-            if (minNumParticipantsTextField.text.trim().isNotEmpty()) {
-                gameType.minNumParticipants = minNumParticipantsTextField.text.trim().toInt()
-            }
-            if (maxNumParticipantsTextField.text.trim().isNotEmpty()) {
-                gameType.maxNumParticipants = maxNumParticipantsTextField.text.trim().toInt()
-            } else {
-                gameType.maxNumParticipants = null
-            }
-            if (numberOfRoundsTextField.text.trim().isNotEmpty()) {
-                gameType.numberOfRounds = numberOfRoundsTextField.text.trim().toInt()
-            }
-            if (inactivityTurnsTextField.text.trim().isNotEmpty()) {
-                gameType.inactivityTurns = inactivityTurnsTextField.text.trim().toInt()
-            }
-            if (gunCoolingRateTextField.text.trim().isNotEmpty()) {
-                gameType.gunCoolingRate = gunCoolingRateTextField.text.trim().toDouble()
-            }
+        if (minNumParticipantsTextField.text.trim().isNotEmpty()) {
+            gameType.minNumParticipants = minNumParticipantsTextField.text.trim().toInt()
+        }
+        if (maxNumParticipantsTextField.text.trim().isNotEmpty()) {
+            gameType.maxNumParticipants = maxNumParticipantsTextField.text.trim().toInt()
+        } else {
+            gameType.maxNumParticipants = null
+        }
+        if (numberOfRoundsTextField.text.trim().isNotEmpty()) {
+            gameType.numberOfRounds = numberOfRoundsTextField.text.trim().toInt()
+        }
+        if (inactivityTurnsTextField.text.trim().isNotEmpty()) {
+            gameType.inactivityTurns = inactivityTurnsTextField.text.trim().toInt()
+        }
+        if (gunCoolingRateTextField.text.trim().isNotEmpty()) {
+            gameType.gunCoolingRate = gunCoolingRateTextField.text.trim().toDouble()
         }
     }
 

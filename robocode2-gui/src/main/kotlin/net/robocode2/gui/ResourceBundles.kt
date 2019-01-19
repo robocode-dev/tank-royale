@@ -7,8 +7,8 @@ enum class ResourceBundles(val resourceName: String) {
 
     WINDOW_TITLES("WindowTitles"),
     STRINGS("Strings"),
-    MENU("Menu"),
-    RULES("Rules");
+    MESSAGES("Messages"),
+    MENU("Menu");
 
     private val supportedLocales = listOf(Locale.ENGLISH)
 

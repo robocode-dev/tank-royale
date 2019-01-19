@@ -2,7 +2,7 @@ package net.robocode2.gui.settings
 
 object GameSetupSettings : PropertiesStore("Robocode Game Setup", "game-gameSetup.properties"){
 
-    val defaultGameSetup: Map<String, GameType>
+    private val defaultGameSetup: Map<String, GameType>
         get() = mapOf(
             "classic" to GameType(),
             "1-vs-1" to GameType(width = 1000, height = 1000, maxNumParticipants = 2),
