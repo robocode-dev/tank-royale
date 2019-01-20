@@ -1,11 +1,7 @@
 package net.robocode2.gui.settings
 
-data class GameType(
-    var width: Int = 800,
-    var height: Int = 600,
-    var minNumParticipants: Int = 2,
-    var maxNumParticipants: Int? = null,
-    var numberOfRounds: Int = 35,
-    var inactivityTurns: Int = 450,
-    var gunCoolingRate: Double = 0.1
-)
+enum class GameType(val type: String) {
+    CLASSIC("classic"),
+    MELEE("melee"),
+    ONE_VS_ONE("1-vs-1")
+}

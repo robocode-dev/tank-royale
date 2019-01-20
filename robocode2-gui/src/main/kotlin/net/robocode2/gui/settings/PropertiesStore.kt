@@ -12,7 +12,7 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
     fun load(): Boolean {
         val file = File(fileName)
         val alreadyExists = file.createNewFile()
-        val input =  FileInputStream(file)
+        val input = FileInputStream(file)
         input.use {
             val tmp = Properties()
             tmp.load(input)

@@ -2,11 +2,13 @@ package net.robocode2.gui.extensions
 
 import io.reactivex.subjects.PublishSubject
 import net.robocode2.gui.ResourceBundles
-import javax.swing.*
+import javax.swing.JButton
+import javax.swing.JComponent
+import javax.swing.JLabel
 
 object JComponentExt {
 
-    fun JComponent.addNewLabel(stringResourceName: String) : JLabel {
+    fun JComponent.addNewLabel(stringResourceName: String): JLabel {
         val label = JLabel(ResourceBundles.STRINGS.get(stringResourceName))
         add(label)
         return label

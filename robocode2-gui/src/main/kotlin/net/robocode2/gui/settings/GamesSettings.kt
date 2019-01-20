@@ -1,19 +1,19 @@
 package net.robocode2.gui.settings
 
-object GameSetupSettings : PropertiesStore("Robocode Game Setup", "game-gameSetup.properties"){
+object GamesSettings : PropertiesStore("Robocode Game Setup", "game-games.properties") {
 
-    private val defaultGameSetup: Map<String, GameType>
+    val defaultGameSetup: Map<String, GameSetup>
         get() = mapOf(
-            "classic" to GameType(),
-            "1-vs-1" to GameType(width = 1000, height = 1000, maxNumParticipants = 2),
-            "melee" to GameType(width = 1000, height = 1000, minNumParticipants = 10))
+                GameType.CLASSIC.type to GameSetup(),
+                GameType.MELEE.type to GameSetup(width = 1000, height = 1000, minNumParticipants = 10),
+                GameType.ONE_VS_ONE.type to GameSetup(width = 1000, height = 1000, maxNumParticipants = 2))
 
     init {
         setProperties(defaultGameSetup)
         load()
     }
 
-    private val internalGameSetup = GameSetup()
+    private val internalGameSetup = Games()
 
     init {
         for (propName in properties.stringPropertyNames()) {
@@ -23,27 +23,31 @@ object GameSetupSettings : PropertiesStore("Robocode Game Setup", "game-gameSetu
             val value = properties.getValue(propName) as String
 
             if (internalGameSetup[gameName] == null) {
-                internalGameSetup[gameName] = GameType()
+                internalGameSetup[gameName] = GameSetup()
             }
-            val gameType = gameSetup[gameName] as GameType
-            val theField = GameType::class.java.getDeclaredField(fieldName)
+            val gameType = games[gameName] as GameSetup
+            val theField = GameSetup::class.java.getDeclaredField(fieldName)
             theField.isAccessible = true
             when (theField.type.name) {
                 "int" -> theField.setInt(gameType, value.toInt())
                 "double" -> theField.setDouble(gameType, value.toDouble())
                 "String" -> theField.set(gameType, value)
-                "java.lang.Integer" -> theField.set(gameType, try { Integer.parseInt(value) } catch (e: NumberFormatException) { null })
+                "java.lang.Integer" -> theField.set(gameType, try {
+                    Integer.parseInt(value)
+                } catch (e: NumberFormatException) {
+                    null
+                })
                 else -> throw RuntimeException("Type is missing implementation: ${theField.type.name}")
             }
         }
     }
 
-    val gameSetup: GameSetup
+    val games: Games
         get() {
             return internalGameSetup
         }
 
-    private fun setProperties(gameSetup: Map<String, GameType>) {
+    private fun setProperties(gameSetup: Map<String, GameSetup>) {
         for (key in gameSetup.keys) {
             val gameType = gameSetup[key]
             if (gameType != null) {
@@ -52,11 +56,11 @@ object GameSetupSettings : PropertiesStore("Robocode Game Setup", "game-gameSetu
         }
     }
 
-    private fun putGameType(name: String, gameType: GameType) {
-        for (prop in GameType::class.java.declaredFields) {
-            val field = GameType::class.java.getDeclaredField(prop.name)
+    private fun putGameType(name: String, gameSetup: GameSetup) {
+        for (prop in GameSetup::class.java.declaredFields) {
+            val field = GameSetup::class.java.getDeclaredField(prop.name)
             field.isAccessible = true
-            var value = field.get(gameType)?.toString()
+            var value = field.get(gameSetup)?.toString()
             if (value == null) {
                 value = ""
             }
