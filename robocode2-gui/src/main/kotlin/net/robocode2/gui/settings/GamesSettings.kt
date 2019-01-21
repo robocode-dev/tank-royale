@@ -1,6 +1,6 @@
 package net.robocode2.gui.settings
 
-object GamesSettings : PropertiesStore("Robocode Game Setup", "game-games.properties") {
+object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties") {
 
     val defaultGameSetup: Map<String, GameSetup>
         get() = mapOf(

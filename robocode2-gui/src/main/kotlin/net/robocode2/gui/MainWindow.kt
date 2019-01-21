@@ -16,7 +16,7 @@ object MainWindow : JFrame(ResourceBundles.WINDOW_TITLES.get("main")) {
 
         MainWindowMenu.onSetupRules.subscribe {
             EventQueue.invokeLater {
-                RulesWindow.isVisible = true
+                RulesWindow(this).isVisible = true
             }
         }
     }
