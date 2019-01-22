@@ -19,7 +19,7 @@ object JComponentExt {
             : JButton {
         val button = JButton(ResourceBundles.STRINGS.get(stringResourceName))
         button.addActionListener { publishSubject.onNext(Unit) }
-        parent.add(button, layoutConstraints)
+        add(button, layoutConstraints)
         return button
     }
 }
