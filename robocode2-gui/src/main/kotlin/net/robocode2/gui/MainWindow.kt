@@ -1,5 +1,6 @@
 package net.robocode2.gui
 
+import net.robocode2.gui.extensions.PublishSubjectExt.invokeLater
 import java.awt.EventQueue
 import javax.swing.JFrame
 import javax.swing.UIManager
@@ -14,11 +15,8 @@ object MainWindow : JFrame(ResourceBundles.WINDOW_TITLES.get("main")) {
 
         jMenuBar = MainWindowMenu
 
-        MainWindowMenu.onSetupRules.subscribe {
-            EventQueue.invokeLater {
-                RulesWindow(this).isVisible = true
-            }
-        }
+        MainWindowMenu.onWewBattle.invokeLater { SelectBots(this).isVisible = true }
+        MainWindowMenu.onSetupRules.invokeLater { SetupRulesDialog(this).isVisible = true }
     }
 }
 

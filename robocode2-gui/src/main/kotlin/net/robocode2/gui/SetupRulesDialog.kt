@@ -20,7 +20,7 @@ import java.awt.EventQueue
 import javax.swing.*
 
 
-class RulesWindow(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_TITLES.get("rules")) {
+class SetupRulesDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_TITLES.get("setup_rules")) {
 
     private val games = GamesSettings.games
 
@@ -283,6 +283,6 @@ fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     EventQueue.invokeLater {
-        RulesWindow().isVisible = true
+        SetupRulesDialog().isVisible = true
     }
 }

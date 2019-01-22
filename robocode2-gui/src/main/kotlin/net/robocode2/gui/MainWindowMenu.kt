@@ -1,12 +1,13 @@
 package net.robocode2.gui
 
 import io.reactivex.subjects.PublishSubject
+import net.robocode2.gui.extensions.JMenuExt.addNewMenuItem
 import javax.swing.JMenu
 import javax.swing.JMenuBar
-import net.robocode2.gui.extensions.JMenuExt.addNewMenuItem
 
 object MainWindowMenu : JMenuBar() {
 
+    // Public events
     val onWewBattle: PublishSubject<Unit> = PublishSubject.create()
     val onSetupRules: PublishSubject<Unit> = PublishSubject.create()
 
