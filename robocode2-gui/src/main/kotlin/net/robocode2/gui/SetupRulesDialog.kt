@@ -61,8 +61,8 @@ class SetupRulesDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.W
 
         gameTypeComboBox.addActionListener { changeGameType() }
 
-        contentPane.add(upperPanel, "north")
-        contentPane.add(lowerPanel, "south")
+        contentPane.add(upperPanel, "wrap")
+        contentPane.add(lowerPanel, "")
 
         upperPanel.add(commonPanel, "west")
         upperPanel.add(arenaPanel, "north")
