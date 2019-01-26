@@ -25,7 +25,6 @@ class SetupRulesDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.W
     private val games = GamesSettings.games
 
     // Private events
-    private val onClose: PublishSubject<Unit> = PublishSubject.create()
     private val onOk: PublishSubject<Unit> = PublishSubject.create()
     private val onCancel: PublishSubject<Unit> = PublishSubject.create()
     private val onResetGameType: PublishSubject<Unit> = PublishSubject.create()
@@ -115,8 +114,6 @@ class SetupRulesDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.W
     private fun close() {
         isVisible = false
         dispose()
-
-        onClose.onNext(Unit)
     }
 
     private fun saveSettings() {
