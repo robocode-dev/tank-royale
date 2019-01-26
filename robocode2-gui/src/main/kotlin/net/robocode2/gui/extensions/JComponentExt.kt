@@ -1,6 +1,6 @@
 package net.robocode2.gui.extensions
 
-import io.reactivex.subjects.PublishSubject
+import net.robocode2.gui.utils.Observable
 import net.robocode2.gui.ResourceBundles
 import javax.swing.JButton
 import javax.swing.JComponent
@@ -14,11 +14,11 @@ object JComponentExt {
         return label
     }
 
-    fun JComponent.addNewButton(stringResourceName: String, publishSubject: PublishSubject<Unit>,
-                                layoutConstraints: String? = null)
-            : JButton {
+    fun JComponent.addNewButton(
+            stringResourceName: String, observable: Observable,
+            layoutConstraints: String? = null): JButton {
         val button = JButton(ResourceBundles.STRINGS.get(stringResourceName))
-        button.addActionListener { publishSubject.onNext(Unit) }
+        button.addActionListener { observable.notifyChange() }
         add(button, layoutConstraints)
         return button
     }

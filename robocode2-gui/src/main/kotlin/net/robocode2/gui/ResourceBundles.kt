@@ -1,9 +1,8 @@
 package net.robocode2.gui
 
-import java.lang.IllegalArgumentException
 import java.util.*
 
-enum class ResourceBundles(val resourceName: String) {
+enum class ResourceBundles(private val resourceName: String) {
 
     WINDOW_TITLES("WindowTitles"),
     STRINGS("Strings"),
@@ -23,13 +22,6 @@ enum class ResourceBundles(val resourceName: String) {
             } catch (e: MissingResourceException) {
                 throw ResourceBundleException("Could not find the property name \"$propertyName\" in the resource bundle \"$resourceName\"")
             }
-        }
-    }
-
-    fun setLocate(locale: Locale) {
-        currentLocale = when (supportedLocales.contains(locale)) {
-            true -> locale
-            false -> throw IllegalArgumentException("Locale not supported")
         }
     }
 

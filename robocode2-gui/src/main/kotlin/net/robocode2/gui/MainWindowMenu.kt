@@ -1,15 +1,15 @@
 package net.robocode2.gui
 
-import io.reactivex.subjects.PublishSubject
 import net.robocode2.gui.extensions.JMenuExt.addNewMenuItem
+import net.robocode2.gui.utils.Observable
 import javax.swing.JMenu
 import javax.swing.JMenuBar
 
 object MainWindowMenu : JMenuBar() {
 
     // Public events
-    val onWewBattle: PublishSubject<Unit> = PublishSubject.create()
-    val onSetupRules: PublishSubject<Unit> = PublishSubject.create()
+    val onWewBattle = Observable()
+    val onSetupRules = Observable()
 
     init {
         val menuBundle = ResourceBundles.MENU

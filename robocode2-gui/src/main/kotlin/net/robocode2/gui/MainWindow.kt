@@ -1,6 +1,5 @@
 package net.robocode2.gui
 
-import net.robocode2.gui.extensions.PublishSubjectExt.invokeLater
 import java.awt.EventQueue
 import javax.swing.JFrame
 import javax.swing.UIManager

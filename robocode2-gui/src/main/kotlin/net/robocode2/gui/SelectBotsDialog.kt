@@ -1,23 +1,21 @@
 package net.robocode2.gui
 
-import io.reactivex.subjects.PublishSubject
 import net.miginfocom.swing.MigLayout
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
+import net.robocode2.gui.utils.Observable
 import java.awt.Dimension
 import java.awt.EventQueue
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
-
-
 class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_TITLES.get("select_bots")) {
 
     // Private events
-    private val onAdd: PublishSubject<Unit> = PublishSubject.create()
-    private val onAddAll: PublishSubject<Unit> = PublishSubject.create()
-    private val onRemove: PublishSubject<Unit> = PublishSubject.create()
-    private val onRemoveAll: PublishSubject<Unit> = PublishSubject.create()
+    private val onAdd = Observable()
+    private val onAddAll = Observable()
+    private val onRemove = Observable()
+    private val onRemoveAll = Observable()
 
     private val availableBotListModel = DefaultListModel<String>()
     private val selectedBotListModel = DefaultListModel<String>()
@@ -108,13 +106,6 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
                 }
             }
         })
-    }
-
-    private fun close() {
-        isVisible = false
-        dispose()
-
-//        onClose.onNext(Unit)
     }
 }
 

@@ -1,6 +1,5 @@
 package net.robocode2.gui
 
-import io.reactivex.subjects.PublishSubject
 import net.miginfocom.swing.MigLayout
 import net.robocode2.gui.Constants.MAX_ARENA_SIZE
 import net.robocode2.gui.Constants.MAX_GUN_COOLING
@@ -16,18 +15,18 @@ import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.extensions.JTextFieldExt.setInputVerifier
 import net.robocode2.gui.settings.GameSetup
 import net.robocode2.gui.settings.GamesSettings
+import net.robocode2.gui.utils.Observable
 import java.awt.EventQueue
 import javax.swing.*
-
 
 class SetupRulesDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_TITLES.get("setup_rules")) {
 
     private val games = GamesSettings.games
 
     // Private events
-    private val onOk: PublishSubject<Unit> = PublishSubject.create()
-    private val onCancel: PublishSubject<Unit> = PublishSubject.create()
-    private val onResetGameType: PublishSubject<Unit> = PublishSubject.create()
+    private val onOk = Observable()
+    private val onCancel = Observable()
+    private val onResetGameType = Observable()
 
     private val gameTypeComboBox = JComboBox(games.keys.toTypedArray())
     private val widthTextField = JTextField(6)
