@@ -46,21 +46,19 @@ class SetupRulesDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.W
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
-        setSize(400, 250)
-        minimumSize = size
         setLocationRelativeTo(null) // center on screen
 
-        contentPane = JPanel(MigLayout("insets 10, fill"))
+        contentPane = JPanel(MigLayout())
         val upperPanel = JPanel(MigLayout())
         val lowerPanel = JPanel(MigLayout())
 
-        val commonPanel = JPanel(MigLayout("insets 10"))
-        val arenaPanel = JPanel(MigLayout("insets 10"))
+        val commonPanel = JPanel(MigLayout())
+        val arenaPanel = JPanel(MigLayout())
 
         gameTypeComboBox.addActionListener { changeGameType() }
 
         contentPane.add(upperPanel, "wrap")
-        contentPane.add(lowerPanel, "")
+        contentPane.add(lowerPanel, "center")
 
         upperPanel.add(commonPanel, "west")
         upperPanel.add(arenaPanel, "north")
@@ -84,7 +82,6 @@ class SetupRulesDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.W
         commonPanel.add(inactivityTurnsTextField, "wrap")
 
         arenaPanel.border = BorderFactory.createTitledBorder(STRINGS.get("arena_size"))
-        arenaPanel.layout = MigLayout("insets 10")
 
         arenaPanel.addNewLabel("width")
         arenaPanel.add(widthTextField, "wrap")
@@ -108,6 +105,8 @@ class SetupRulesDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.W
         onOk.subscribe { saveSettings(); close() }
         onCancel.subscribe { close() }
         onResetGameType.subscribe { resetGameType() }
+
+        pack()
     }
 
     private fun close() {

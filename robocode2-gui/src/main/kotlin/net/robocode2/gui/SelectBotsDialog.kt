@@ -26,8 +26,8 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
-        setSize(400, 250)
-        minimumSize = size
+        preferredSize = Dimension(450, 300)
+
         setLocationRelativeTo(null) // center on screen
 
         contentPane = JPanel(MigLayout(
@@ -66,6 +66,8 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
         addPanel.addNewButton("add_all_arrow", onAddAll, "cell 0 2")
         removePanel.addNewButton("arrow_remove", onRemove, "cell 0 3")
         removePanel.addNewButton("arrow_remove_all", onRemoveAll, "cell 0 4")
+
+        pack()
 
         for (i in 1..20) {
             availableBotListModel.addElement("avail: $i")
