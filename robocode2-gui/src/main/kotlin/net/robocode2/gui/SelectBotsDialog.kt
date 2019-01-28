@@ -4,6 +4,7 @@ import net.miginfocom.swing.MigLayout
 import net.robocode2.gui.ResourceBundles.STRINGS
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
+import net.robocode2.gui.server.WebSocketClient
 import net.robocode2.gui.utils.Observable
 import java.awt.Dimension
 import java.awt.EventQueue
@@ -18,19 +19,33 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
     private val onAddAll = Observable<JButton>()
     private val onRemove = Observable<JButton>()
     private val onRemoveAll = Observable<JButton>()
-
     private val onConnectOrDisconnect = Observable<JButton>()
 
     private val serverTextField = JTextField(5)
+    private val connectButton = JButton(connectButtonText)
 
     private val availableBotListModel = DefaultListModel<String>()
     private val selectedBotListModel = DefaultListModel<String>()
     private val availableBotList = JList<String>(availableBotListModel)
     private val selectedBotList = JList<String>(selectedBotListModel)
 
-    private val connectionStatusLabel = JLabel(STRINGS.get("disconnected"))
+    private val connectionStatusLabel = JLabel(connectionStatus)
 
-    private var connected: Boolean = false
+    private val connectionStatus: String
+        get() =
+            if (WebSocketClient.isOpen()) {
+                STRINGS.get("connected")
+            } else {
+                STRINGS.get("disconnected")
+            }
+
+    private val connectButtonText: String
+        get() =
+            if (WebSocketClient.isOpen()) {
+                STRINGS.get("disconnect")
+            } else {
+                STRINGS.get("connect")
+            }
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
@@ -49,7 +64,9 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
 
         upperPanel.addNewLabel("server_endpoint")
         upperPanel.add(serverTextField, "grow")
-        upperPanel.addNewButton("connect", onConnectOrDisconnect, "wrap")
+        upperPanel.add(connectButton, "wrap")
+
+        connectButton.addActionListener { onConnectOrDisconnect.notifyChange(connectButton) }
 
         upperPanel.addNewLabel("connection_status")
         upperPanel.add(connectionStatusLabel)
@@ -90,14 +107,14 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
         pack()
 
         onConnectOrDisconnect.subscribe {
-            if (connected) {
-                it.text = STRINGS.get("connect")
-                connected = false
+            if (WebSocketClient.isOpen()) {
+                WebSocketClient.close()
             } else {
-                it.text = STRINGS.get("disconnect")
-                connected = true
+                WebSocketClient.open()
             }
         }
+        WebSocketClient.onOpen.subscribe { updateConnectionState() }
+        WebSocketClient.onClose.subscribe { updateConnectionState() }
 
         for (i in 1..20) {
             availableBotListModel.addElement("avail: $i")
@@ -122,7 +139,7 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
         onRemoveAll.subscribe {
             selectedBotListModel.clear()
         }
-        availableBotList.addMouseListener(object: MouseAdapter() {
+        availableBotList.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount == 2) {
                     val index = availableBotList.locationToIndex(e.point)
@@ -130,7 +147,7 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
                 }
             }
         })
-        selectedBotList.addMouseListener(object: MouseAdapter() {
+        selectedBotList.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount == 2) {
                     val index = selectedBotList.locationToIndex(e.point)
@@ -138,6 +155,12 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
                 }
             }
         })
+    }
+
+    private fun updateConnectionState() {
+        connectionStatusLabel.text = connectionStatus
+        connectButton.text = connectButtonText
+        connectButton.revalidate()
     }
 }
 
