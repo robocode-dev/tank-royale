@@ -24,9 +24,9 @@ class SetupRulesDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.W
     private val games = GamesSettings.games
 
     // Private events
-    private val onOk = Observable()
-    private val onCancel = Observable()
-    private val onResetGameType = Observable()
+    private val onOk = Observable<JButton>()
+    private val onCancel = Observable<JButton>()
+    private val onResetGameType = Observable<JButton>()
 
     private val gameTypeComboBox = JComboBox(games.keys.toTypedArray())
     private val widthTextField = JTextField(6)

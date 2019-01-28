@@ -4,12 +4,13 @@ import net.robocode2.gui.extensions.JMenuExt.addNewMenuItem
 import net.robocode2.gui.utils.Observable
 import javax.swing.JMenu
 import javax.swing.JMenuBar
+import javax.swing.JMenuItem
 
 object MainWindowMenu : JMenuBar() {
 
     // Public events
-    val onWewBattle = Observable()
-    val onSetupRules = Observable()
+    val onWewBattle = Observable<JMenuItem>()
+    val onSetupRules = Observable<JMenuItem>()
 
     init {
         val menuBundle = ResourceBundles.MENU

@@ -1,7 +1,9 @@
 package net.robocode2.gui
 
 import net.miginfocom.swing.MigLayout
+import net.robocode2.gui.ResourceBundles.STRINGS
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
+import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.utils.Observable
 import java.awt.Dimension
 import java.awt.EventQueue
@@ -12,16 +14,23 @@ import javax.swing.*
 class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_TITLES.get("select_bots")) {
 
     // Private events
-    private val onAdd = Observable()
-    private val onAddAll = Observable()
-    private val onRemove = Observable()
-    private val onRemoveAll = Observable()
+    private val onAdd = Observable<JButton>()
+    private val onAddAll = Observable<JButton>()
+    private val onRemove = Observable<JButton>()
+    private val onRemoveAll = Observable<JButton>()
+
+    private val onConnectOrDisconnect = Observable<JButton>()
+
+    private val serverTextField = JTextField(5)
 
     private val availableBotListModel = DefaultListModel<String>()
     private val selectedBotListModel = DefaultListModel<String>()
-
     private val availableBotList = JList<String>(availableBotListModel)
     private val selectedBotList = JList<String>(selectedBotListModel)
+
+    private val connectionStatusLabel = JLabel(STRINGS.get("disconnected"))
+
+    private var connected: Boolean = false
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
@@ -30,9 +39,20 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
 
         setLocationRelativeTo(null) // center on screen
 
-        contentPane = JPanel(MigLayout(
-                "insets 10, fill",
-                "[grow][][grow]"))
+        contentPane = JPanel(MigLayout("fill"))
+
+        val upperPanel = JPanel(MigLayout("fill", "[][grow][]"))
+        val lowerPanel = JPanel(MigLayout("insets 10, fill", "[grow][][grow]"))
+
+        contentPane.add(upperPanel, "north")
+        contentPane.add(lowerPanel, "south")
+
+        upperPanel.addNewLabel("server_endpoint")
+        upperPanel.add(serverTextField, "grow")
+        upperPanel.addNewButton("connect", onConnectOrDisconnect, "wrap")
+
+        upperPanel.addNewLabel("connection_status")
+        upperPanel.add(connectionStatusLabel)
 
         val leftPanel = JPanel(MigLayout("fill"))
         leftPanel.add(JScrollPane(availableBotList), "grow")
@@ -46,12 +66,12 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
         leftPanel.preferredSize = Dimension(10, 10)
         rightPanel.preferredSize = Dimension(10, 10)
 
-        contentPane.add(leftPanel, "grow")
-        contentPane.add(centerPanel, "")
-        contentPane.add(rightPanel, "grow")
+        lowerPanel.add(leftPanel, "grow")
+        lowerPanel.add(centerPanel, "")
+        lowerPanel.add(rightPanel, "grow")
 
-        leftPanel.border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("available_bots"))
-        rightPanel.border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("selected_bots"))
+        leftPanel.border = BorderFactory.createTitledBorder(STRINGS.get("available_bots"))
+        rightPanel.border = BorderFactory.createTitledBorder(STRINGS.get("selected_bots"))
 
         val addPanel = JPanel(MigLayout("insets 0, fill", "[fill]"))
         val removePanel = JPanel(MigLayout("insets 0, fill", "[fill]"))
@@ -68,6 +88,16 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
         removePanel.addNewButton("arrow_remove_all", onRemoveAll, "cell 0 4")
 
         pack()
+
+        onConnectOrDisconnect.subscribe {
+            if (connected) {
+                it.text = STRINGS.get("connect")
+                connected = false
+            } else {
+                it.text = STRINGS.get("disconnect")
+                connected = true
+            }
+        }
 
         for (i in 1..20) {
             availableBotListModel.addElement("avail: $i")
