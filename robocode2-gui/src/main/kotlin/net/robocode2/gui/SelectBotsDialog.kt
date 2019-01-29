@@ -4,7 +4,9 @@ import net.miginfocom.swing.MigLayout
 import net.robocode2.gui.ResourceBundles.STRINGS
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
+import net.robocode2.gui.extensions.WindowExt.onClosing
 import net.robocode2.gui.server.WebSocketClient
+import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Observable
 import java.awt.Dimension
 import java.awt.EventQueue
@@ -30,6 +32,8 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
     private val selectedBotList = JList<String>(selectedBotListModel)
 
     private val connectionStatusLabel = JLabel(connectionStatus)
+
+    var disposables = ArrayList<Disposable>()
 
     private val connectionStatus: String
         get() =
@@ -113,8 +117,6 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
                 WebSocketClient.open()
             }
         }
-        WebSocketClient.onOpen.subscribe { updateConnectionState() }
-        WebSocketClient.onClose.subscribe { updateConnectionState() }
 
         for (i in 1..20) {
             availableBotListModel.addElement("avail: $i")
@@ -155,6 +157,11 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
                 }
             }
         })
+
+        disposables.add(WebSocketClient.onOpen.subscribe { updateConnectionState() })
+        disposables.add(WebSocketClient.onClose.subscribe { updateConnectionState() })
+
+        onClosing { disposables.forEach { it.dispose() } }
     }
 
     private fun updateConnectionState() {

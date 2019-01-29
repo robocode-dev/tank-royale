@@ -9,7 +9,7 @@ import javax.swing.JMenuItem
 object MainWindowMenu : JMenuBar() {
 
     // Public events
-    val onWewBattle = Observable<JMenuItem>()
+    val onNewBattle = Observable<JMenuItem>()
     val onSetupRules = Observable<JMenuItem>()
 
     init {
@@ -18,7 +18,7 @@ object MainWindowMenu : JMenuBar() {
         val battleMenu = JMenu(menuBundle.get("menu.battle"))
         add(battleMenu)
 
-        battleMenu.addNewMenuItem("item.new_battle", onWewBattle)
+        battleMenu.addNewMenuItem("item.new_battle", onNewBattle)
         battleMenu.addSeparator()
         battleMenu.addNewMenuItem("item.setup_rules", onSetupRules)
     }
