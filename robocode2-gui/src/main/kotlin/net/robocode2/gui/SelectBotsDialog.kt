@@ -63,14 +63,13 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
         contentPane.add(lowerPanel, "south")
 
         upperPanel.addNewLabel("server_endpoint")
-        upperPanel.add(serverTextField, "span 2, grow")
+        upperPanel.add(serverTextField, "grow")
         upperPanel.add(connectButton, "wrap")
 
-        val gameTypeComboBox = JComboBox(listOf("one", "two", "three").toTypedArray())
-        upperPanel.addNewLabel("game_type")
-        upperPanel.add(gameTypeComboBox)
-        upperPanel.addNewLabel("connection_status", "right")
-        upperPanel.add(connectionStatusLabel, "center")
+        connectButton.addActionListener { onConnectOrDisconnect.notifyChange(connectButton) }
+
+        upperPanel.addNewLabel("connection_status")
+        upperPanel.add(connectionStatusLabel)
 
         val leftPanel = JPanel(MigLayout("fill"))
         leftPanel.add(JScrollPane(availableBotList), "grow")
@@ -106,8 +105,6 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
         removePanel.addNewButton("arrow_remove_all", onRemoveAll, "cell 0 4")
 
         pack()
-
-        connectButton.addActionListener { onConnectOrDisconnect.notifyChange(connectButton) }
 
         onConnectOrDisconnect.subscribe {
             if (WebSocketClient.isOpen()) {
