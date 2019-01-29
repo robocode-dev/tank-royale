@@ -1,0 +1,16 @@
+$id: #bot-info.yaml
+$schema: http://json-schema.org/draft-07/schema#
+description: Bot info
+type: object
+extends:
+  $ref: bot-handshake.yaml
+properties:
+  host:
+    description: Host name or IP address
+    type: string
+  port:
+    description: Port number
+    type: integer
+required:
+- host
+- port

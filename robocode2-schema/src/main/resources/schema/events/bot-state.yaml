@@ -1,0 +1,35 @@
+$id: #bot-state.yaml
+$schema: http://json-schema.org/draft-07/schema#
+description: Current state of a bot without an id. The id must be hidden for enemy
+  bots
+javaType: net.robocode2.schema.states.BotState
+properties:
+  energy:
+    description: Energy level
+    type: number
+  position:
+    description: Position (x, y)
+    $ref: ../types/point.yaml
+  direction:
+    description: Driving direction in degrees
+    $ref: ../types/angle.yaml
+  gunDirection:
+    description: Gun direction in degrees
+    $ref: ../types/angle.yaml
+  radarDirection:
+    description: Radar direction in degrees
+    $ref: ../types/angle.yaml
+  radarSweep:
+    description: Radar sweep angle in degrees, i.e. angle between old and current direction
+    $ref: ../types/angle.yaml
+  speed:
+    description: Speed measured in units per turn
+    type: number
+required:
+- energy
+- position
+- direction
+- gunDirection
+- radarDirection
+- radarSweep
+- speed

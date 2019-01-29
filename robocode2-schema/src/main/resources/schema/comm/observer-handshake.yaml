@@ -1,0 +1,18 @@
+$id: #observer-handshake.yaml
+$schema: http://json-schema.org/draft-07/schema#
+description: Observer handshake
+extends:
+  $ref: message.yaml
+properties:
+  name:
+    description: Name of observer, e.g. Fancy Robocode View
+    type: string
+  version:
+    description: Observer version, e.g. 1.0
+    type: string
+  author:
+    description: Author name, e.g. John Doe (john_doe@somewhere.net)
+    type: string
+required:
+- name
+- version

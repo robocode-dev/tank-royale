@@ -1,0 +1,12 @@
+$id: #bot-state-with-id.yaml
+$schema: http://json-schema.org/draft-07/schema#
+description: Current state of a bot, which included an id
+javaType: net.robocode2.schema.states.BotStateWithId
+extends:
+  $ref: bot-state.yaml
+properties:
+  id:
+    description: ID of bot for the observer
+    type: integer
+required:
+- id

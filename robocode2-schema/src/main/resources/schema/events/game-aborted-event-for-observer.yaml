@@ -1,0 +1,6 @@
+$id: #game-aborted-event-for-observer.yaml
+$schema: http://json-schema.org/draft-07/schema#
+description: Game aborted event. No score is available.
+type: object
+extends:
+  $ref: event.yaml
