@@ -1,7 +1,6 @@
 $id: #message.yaml
 $schema: http://json-schema.org/draft-07/schema#
 description: Message exchanged between server and client
-javaType: net.robocode2.schema.comm.Message
 properties:
   clientKey:
     type: string

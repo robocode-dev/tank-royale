@@ -1,8 +1,6 @@
 $id: #bot-state.yaml
 $schema: http://json-schema.org/draft-07/schema#
-description: Current state of a bot without an id. The id must be hidden for enemy
-  bots
-javaType: net.robocode2.schema.states.BotState
+description: Current state of a bot without an id. The id must be hidden for enemy bots
 properties:
   energy:
     description: Energy level
