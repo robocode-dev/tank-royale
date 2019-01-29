@@ -2,18 +2,18 @@ package net.robocode2.server;
 
 import java.util.Collection;
 
-import net.robocode2.json_schema.GameSetup;
-import net.robocode2.json_schema.comm.BotAddress;
-import net.robocode2.json_schema.comm.BotIntent;
-import net.robocode2.json_schema.comm.ControllerHandshake;
-import net.robocode2.json_schema.comm.ObserverHandshake;
+import net.robocode2.schema.GameSetup;
+import net.robocode2.schema.comm.BotAddress;
+import net.robocode2.schema.comm.BotIntent;
+import net.robocode2.schema.comm.ControllerHandshake;
+import net.robocode2.schema.comm.ObserverHandshake;
 
 
 public interface ConnListener {
 
 	void onException(Exception exception);
 
-	void onBotJoined(String clientKey, net.robocode2.json_schema.comm.BotHandshake handshake);
+	void onBotJoined(String clientKey, net.robocode2.schema.comm.BotHandshake handshake);
 
 	void onBotLeft(String clientKey);
 

@@ -2,8 +2,8 @@ package net.robocode2.mappers;
 
 import java.util.Collections;
 
-import net.robocode2.json_schema.comm.BotHandshake;
-import net.robocode2.json_schema.comm.BotInfo;
+import net.robocode2.schema.comm.BotHandshake;
+import net.robocode2.schema.comm.BotInfo;
 
 public final class BotHandshakeToBotInfoMapper {
 

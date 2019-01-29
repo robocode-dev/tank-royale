@@ -1,6 +1,6 @@
 package net.robocode2.mappers;
 
-import net.robocode2.json_schema.states.BotStateWithId;
+import net.robocode2.schema.events.BotStateWithId;
 import net.robocode2.model.Bot;
 import net.robocode2.util.MathUtil;
 

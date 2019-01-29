@@ -1,6 +1,6 @@
 package net.robocode2.mappers;
 
-import net.robocode2.json_schema.states.BulletState;
+import net.robocode2.schema.events.BulletState;
 import net.robocode2.model.Bullet;
 import net.robocode2.util.MathUtil;
 

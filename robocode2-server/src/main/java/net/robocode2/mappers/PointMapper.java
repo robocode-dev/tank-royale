@@ -1,6 +1,6 @@
 package net.robocode2.mappers;
 
-import net.robocode2.json_schema.types.Point;
+import net.robocode2.schema.types.Point;
 
 public final class PointMapper {
 

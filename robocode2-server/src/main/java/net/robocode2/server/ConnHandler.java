@@ -14,16 +14,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.robocode2.json_schema.GameSetup;
-import net.robocode2.json_schema.comm.BotAddress;
-import net.robocode2.json_schema.comm.BotHandshake;
-import net.robocode2.json_schema.comm.BotIntent;
-import net.robocode2.json_schema.comm.ControllerHandshake;
-import net.robocode2.json_schema.comm.Message;
-import net.robocode2.json_schema.comm.ObserverHandshake;
-import net.robocode2.json_schema.comm.ServerHandshake;
-import net.robocode2.json_schema.control.Command;
-import net.robocode2.json_schema.control.StartGame;
+import net.robocode2.schema.GameSetup;
+import net.robocode2.schema.comm.BotAddress;
+import net.robocode2.schema.comm.BotHandshake;
+import net.robocode2.schema.comm.BotIntent;
+import net.robocode2.schema.comm.ControllerHandshake;
+import net.robocode2.schema.comm.Message;
+import net.robocode2.schema.comm.ObserverHandshake;
+import net.robocode2.schema.comm.ServerHandshake;
+import net.robocode2.schema.control.Command;
+import net.robocode2.schema.control.StartGame;
 import net.robocode2.mappers.GameSetupToGameSetupMapper;
 
 public final class ConnHandler {

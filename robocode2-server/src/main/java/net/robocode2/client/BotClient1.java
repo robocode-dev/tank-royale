@@ -4,7 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 
-import net.robocode2.json_schema.comm.*;
+import net.robocode2.schema.comm.*;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 
@@ -14,11 +14,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 
-import net.robocode2.json_schema.events.Event;
-import net.robocode2.json_schema.events.ScannedBotEvent;
-import net.robocode2.json_schema.events.GameStartedEventForBot;
-import net.robocode2.json_schema.events.TickEventForBot;
-import net.robocode2.json_schema.types.Point;
+import net.robocode2.schema.events.Event;
+import net.robocode2.schema.events.ScannedBotEvent;
+import net.robocode2.schema.events.GameStartedEventForBot;
+import net.robocode2.schema.events.TickEventForBot;
+import net.robocode2.schema.types.Point;
 import net.robocode2.util.MathUtil;
 
 public class BotClient1 extends WebSocketClient {

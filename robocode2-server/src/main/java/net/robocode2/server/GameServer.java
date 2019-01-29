@@ -6,21 +6,21 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.val;
-import net.robocode2.json_schema.events.*;
+import net.robocode2.schema.events.*;
 import net.robocode2.model.*;
 import org.java_websocket.WebSocket;
 
 import com.google.gson.Gson;
 
 import net.robocode2.engine.ModelUpdater;
-import net.robocode2.json_schema.Participant;
-import net.robocode2.json_schema.comm.BotAddress;
-import net.robocode2.json_schema.comm.BotHandshake;
-import net.robocode2.json_schema.comm.BotInfo;
-import net.robocode2.json_schema.comm.BotListUpdate;
-import net.robocode2.json_schema.comm.ControllerHandshake;
-import net.robocode2.json_schema.comm.Message;
-import net.robocode2.json_schema.comm.ObserverHandshake;
+import net.robocode2.schema.events.Participant;
+import net.robocode2.schema.comm.BotAddress;
+import net.robocode2.schema.comm.BotHandshake;
+import net.robocode2.schema.comm.BotInfo;
+import net.robocode2.schema.comm.BotListUpdate;
+import net.robocode2.schema.comm.ControllerHandshake;
+import net.robocode2.schema.comm.Message;
+import net.robocode2.schema.comm.ObserverHandshake;
 import net.robocode2.mappers.BotHandshakeToBotInfoMapper;
 import net.robocode2.mappers.BotIntentToBotIntentMapper;
 import net.robocode2.mappers.GameSetupToGameSetupMapper;
@@ -167,7 +167,7 @@ public final class GameServer {
 		}, gameSetup.getTurnTimeout(), gameSetup.getTurnTimeout());
 	}
 
-	private void startGame(net.robocode2.json_schema.GameSetup gameSetup, Collection<BotAddress> botAddresses) {
+	private void startGame(net.robocode2.schema.GameSetup gameSetup, Collection<BotAddress> botAddresses) {
 		System.out.println("#### START GAME #####");
 
 		this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup);
@@ -409,7 +409,7 @@ public final class GameServer {
 		conn.send(message);
 	}
 
-	private void updateBotIntent(String botKey, net.robocode2.json_schema.comm.BotIntent intent) {
+	private void updateBotIntent(String botKey, net.robocode2.schema.comm.BotIntent intent) {
 		if (!participants.contains(botKey)) {
 			return;
 		}
@@ -498,13 +498,13 @@ public final class GameServer {
 		}
 
 		@Override
-		public void onBotIntent(String clientKey, net.robocode2.json_schema.comm.BotIntent intent) {
+		public void onBotIntent(String clientKey, net.robocode2.schema.comm.BotIntent intent) {
 			updateBotIntent(clientKey, intent);
 		}
 
 
 		@Override
-		public void onStartGame(net.robocode2.json_schema.GameSetup gameSetup, Collection<BotAddress> botAddresses) {
+		public void onStartGame(net.robocode2.schema.GameSetup gameSetup, Collection<BotAddress> botAddresses) {
 			startGame(gameSetup, botAddresses);
 		}
 

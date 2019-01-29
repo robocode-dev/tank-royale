@@ -4,25 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import net.robocode2.json_schema.events.BotDeathEvent;
-import net.robocode2.json_schema.events.BotHitBotEvent;
-import net.robocode2.json_schema.events.BotHitWallEvent;
-import net.robocode2.json_schema.events.BulletFiredEvent;
-import net.robocode2.json_schema.events.BulletHitBotEvent;
-import net.robocode2.json_schema.events.BulletHitBulletEvent;
-import net.robocode2.json_schema.events.BulletMissedEvent;
-import net.robocode2.json_schema.events.Event;
-import net.robocode2.json_schema.events.Event.Type;
-import net.robocode2.json_schema.events.HitByBulletEvent;
-import net.robocode2.json_schema.events.ScannedBotEvent;
-import net.robocode2.json_schema.events.SkippedTurnEvent;
+import net.robocode2.schema.events.BotDeathEvent;
+import net.robocode2.schema.events.BotHitBotEvent;
+import net.robocode2.schema.events.BotHitWallEvent;
+import net.robocode2.schema.events.BulletFiredEvent;
+import net.robocode2.schema.events.BulletHitBotEvent;
+import net.robocode2.schema.events.BulletHitBulletEvent;
+import net.robocode2.schema.events.BulletMissedEvent;
+import net.robocode2.schema.events.Event;
+import net.robocode2.schema.events.Event.Type;
+import net.robocode2.schema.events.HitByBulletEvent;
+import net.robocode2.schema.events.ScannedBotEvent;
+import net.robocode2.schema.events.SkippedTurnEvent;
 
 public final class EventsToEventsMapper {
 
 	private EventsToEventsMapper() {}
 
 	public static List<Event> map(Set<net.robocode2.events.Event> events) {
-		List<net.robocode2.json_schema.events.Event> mappedEvents = new ArrayList<>();
+		List<net.robocode2.schema.events.Event> mappedEvents = new ArrayList<>();
 		for (net.robocode2.events.Event event : events) {
 			mappedEvents.add(map(event));
 		}

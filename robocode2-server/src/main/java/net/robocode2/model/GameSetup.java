@@ -28,7 +28,7 @@ public class GameSetup {
 	public static final Integer DEFAULT_MAX_NUMBER_OF_PARTICIPANTS = null;
 
 	/** Default number of rounds */
-	public static final int DEFAULT_NUMBER_OF_ROUNDS = 35;
+	public static final int DEFAULT_NUMBER_OF_ROUNDS = 2; //35
 
 	/** Default gun cooling rate */
 	public static final double DEFAULT_GUN_COOLING_RATE = 0.1;
@@ -37,7 +37,7 @@ public class GameSetup {
 	public static final int DEFAULT_INACTIVITY_TURNS = 450;
 
 	/** Default turn timeout in milliseconds */
-	public static final int DEFAULT_TURN_TIMEOUT = 1;
+	public static final int DEFAULT_TURN_TIMEOUT = 50;
 
 	/** Default ready timeout in milliseconds */
 	public static final int DEFAULT_READY_TIMEOUT = 10_000;

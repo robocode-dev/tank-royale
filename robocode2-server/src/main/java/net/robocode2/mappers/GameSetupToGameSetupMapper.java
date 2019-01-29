@@ -3,7 +3,7 @@ package net.robocode2.mappers;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.robocode2.json_schema.GameSetup;
+import net.robocode2.schema.GameSetup;
 import net.robocode2.model.GameSetup.GameSetupBuilder;
 
 public final class GameSetupToGameSetupMapper {
