@@ -1,4 +1,4 @@
-package net.robocode2.gui
+package net.robocode2.gui.frames
 
 import java.util.*
 

@@ -1,7 +1,7 @@
-package net.robocode2.gui
+package net.robocode2.gui.frames
 
 import net.miginfocom.swing.MigLayout
-import net.robocode2.gui.ResourceBundles.STRINGS
+import net.robocode2.gui.frames.ResourceBundles.STRINGS
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.extensions.WindowExt.onClosing

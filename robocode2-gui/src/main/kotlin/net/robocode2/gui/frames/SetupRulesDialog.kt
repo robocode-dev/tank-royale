@@ -1,15 +1,15 @@
-package net.robocode2.gui
+package net.robocode2.gui.frames
 
 import net.miginfocom.swing.MigLayout
-import net.robocode2.gui.Constants.MAX_ARENA_SIZE
-import net.robocode2.gui.Constants.MAX_GUN_COOLING
-import net.robocode2.gui.Constants.MAX_INACTIVITY_TURNS
-import net.robocode2.gui.Constants.MAX_NUM_PARTICIPANTS
-import net.robocode2.gui.Constants.MAX_NUM_ROUNDS
-import net.robocode2.gui.Constants.MIN_ARENA_SIZE
-import net.robocode2.gui.Constants.MIN_NUM_PARTICIPANTS
-import net.robocode2.gui.ResourceBundles.MESSAGES
-import net.robocode2.gui.ResourceBundles.STRINGS
+import net.robocode2.gui.frames.Constants.MAX_ARENA_SIZE
+import net.robocode2.gui.frames.Constants.MAX_GUN_COOLING
+import net.robocode2.gui.frames.Constants.MAX_INACTIVITY_TURNS
+import net.robocode2.gui.frames.Constants.MAX_NUM_PARTICIPANTS
+import net.robocode2.gui.frames.Constants.MAX_NUM_ROUNDS
+import net.robocode2.gui.frames.Constants.MIN_ARENA_SIZE
+import net.robocode2.gui.frames.Constants.MIN_NUM_PARTICIPANTS
+import net.robocode2.gui.frames.ResourceBundles.MESSAGES
+import net.robocode2.gui.frames.ResourceBundles.STRINGS
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.extensions.JTextFieldExt.setInputVerifier

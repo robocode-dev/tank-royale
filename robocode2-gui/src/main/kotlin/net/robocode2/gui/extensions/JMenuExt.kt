@@ -1,6 +1,6 @@
 package net.robocode2.gui.extensions
 
-import net.robocode2.gui.ResourceBundles
+import net.robocode2.gui.frames.ResourceBundles
 import net.robocode2.gui.utils.Observable
 import javax.swing.JMenu
 import javax.swing.JMenuItem

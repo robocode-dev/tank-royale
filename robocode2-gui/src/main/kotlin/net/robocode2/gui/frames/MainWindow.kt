@@ -1,4 +1,4 @@
-package net.robocode2.gui
+package net.robocode2.gui.frames
 
 import net.robocode2.gui.extensions.WindowExt.onClosing
 import net.robocode2.gui.utils.Disposable
