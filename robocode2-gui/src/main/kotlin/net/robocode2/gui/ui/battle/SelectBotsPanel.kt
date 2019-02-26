@@ -1,20 +1,18 @@
-package net.robocode2.gui.frames
+package net.robocode2.gui.ui.battle
 
 import net.miginfocom.swing.MigLayout
-import net.robocode2.gui.frames.ResourceBundles.STRINGS
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
-import net.robocode2.gui.extensions.WindowExt.onClosing
 import net.robocode2.gui.server.Server
+import net.robocode2.gui.ui.ResourceBundles.STRINGS
 import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Observable
 import java.awt.Dimension
-import java.awt.EventQueue
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
-class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_TITLES.get("select_bots")) {
+class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
     // Private events
     private val onAdd = Observable<JButton>()
@@ -52,19 +50,11 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
             }
 
     init {
-        defaultCloseOperation = DISPOSE_ON_CLOSE
-
-        preferredSize = Dimension(450, 300)
-
-        setLocationRelativeTo(null) // center on screen
-
-        contentPane = JPanel(MigLayout("fill"))
-
         val upperPanel = JPanel(MigLayout("fill", "[][grow][]"))
         val lowerPanel = JPanel(MigLayout("insets 10, fill", "[grow][][grow]"))
 
-        contentPane.add(upperPanel, "north")
-        contentPane.add(lowerPanel, "south")
+        add(upperPanel, "north")
+        add(lowerPanel, "south")
 
         upperPanel.addNewLabel("server_endpoint")
         upperPanel.add(serverTextField, "span 2, grow")
@@ -110,8 +100,6 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
         addPanel.addNewButton("add_all_arrow", onAddAll, "cell 0 2")
         removePanel.addNewButton("arrow_remove", onRemove, "cell 0 3")
         removePanel.addNewButton("arrow_remove_all", onRemoveAll, "cell 0 4")
-
-        pack()
 
         connectButton.addActionListener { onConnectButtonClicked.notify(connectButton) }
 
@@ -165,21 +153,19 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
 
         disposables.add(Server.onConnected.subscribe { updateConnectionState() })
         disposables.add(Server.onDisconnected.subscribe { updateConnectionState() })
+    }
 
-        onClosing { disposables.forEach { it.dispose() } }
+    fun dispose() {
+        disposables.forEach { it.dispose() }
+    }
+
+    protected fun finalize() {
+        dispose()
     }
 
     private fun updateConnectionState() {
         connectionStatusLabel.text = connectionStatus
         connectButton.text = connectButtonText
         connectButton.revalidate()
-    }
-}
-
-fun main() {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
-    EventQueue.invokeLater {
-        SelectBots().isVisible = true
     }
 }

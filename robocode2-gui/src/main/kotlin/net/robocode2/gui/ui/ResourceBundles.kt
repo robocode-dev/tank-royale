@@ -1,10 +1,10 @@
-package net.robocode2.gui.frames
+package net.robocode2.gui.ui
 
 import java.util.*
 
 enum class ResourceBundles(private val resourceName: String) {
 
-    WINDOW_TITLES("WindowTitles"),
+    UI_TITLES("UI titles"),
     STRINGS("Strings"),
     MESSAGES("Messages"),
     MENU("Menu");

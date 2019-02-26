@@ -1,4 +1,4 @@
-package net.robocode2.gui.frames
+package net.robocode2.gui.ui
 
 import net.robocode2.gui.extensions.JMenuExt.addNewMenuItem
 import net.robocode2.gui.utils.Observable

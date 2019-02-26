@@ -1,4 +1,4 @@
-package net.robocode2.gui.frames
+package net.robocode2.gui.ui
 
 import net.robocode2.gui.extensions.WindowExt.onClosing
 import net.robocode2.gui.utils.Disposable
@@ -6,7 +6,7 @@ import java.awt.EventQueue
 import javax.swing.JFrame
 import javax.swing.UIManager
 
-object MainWindow : JFrame(ResourceBundles.WINDOW_TITLES.get("main")) {
+object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")) {
 
     var disposables = ArrayList<Disposable>()
 
@@ -18,8 +18,8 @@ object MainWindow : JFrame(ResourceBundles.WINDOW_TITLES.get("main")) {
 
         jMenuBar = MainWindowMenu
 
-        disposables.add(MainWindowMenu.onNewBattle.invokeLater { SelectBots(this).isVisible = true })
-        disposables.add(MainWindowMenu.onSetupRules.invokeLater { SetupRulesDialog(this).isVisible = true })
+//        disposables.add(MainWindowMenu.onNewBattle.invokeLater { SelectBotsPanel(this).isVisible = true })
+//        disposables.add(MainWindowMenu.onSetupRules.invokeLater { SetupRulesDialog(this).isVisible = true })
 
         onClosing { disposables.forEach { it.dispose() } }
     }

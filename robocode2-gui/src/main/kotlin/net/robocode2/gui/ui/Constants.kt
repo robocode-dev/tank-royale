@@ -1,4 +1,4 @@
-package net.robocode2.gui.frames
+package net.robocode2.gui.ui
 
 object Constants {
     const val MIN_ARENA_SIZE = 400

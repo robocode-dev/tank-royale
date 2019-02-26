@@ -1,25 +1,24 @@
-package net.robocode2.gui.frames
+package net.robocode2.gui.ui.battle
 
 import net.miginfocom.swing.MigLayout
-import net.robocode2.gui.frames.Constants.MAX_ARENA_SIZE
-import net.robocode2.gui.frames.Constants.MAX_GUN_COOLING
-import net.robocode2.gui.frames.Constants.MAX_INACTIVITY_TURNS
-import net.robocode2.gui.frames.Constants.MAX_NUM_PARTICIPANTS
-import net.robocode2.gui.frames.Constants.MAX_NUM_ROUNDS
-import net.robocode2.gui.frames.Constants.MIN_ARENA_SIZE
-import net.robocode2.gui.frames.Constants.MIN_NUM_PARTICIPANTS
-import net.robocode2.gui.frames.ResourceBundles.MESSAGES
-import net.robocode2.gui.frames.ResourceBundles.STRINGS
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.extensions.JTextFieldExt.setInputVerifier
 import net.robocode2.gui.settings.GameSetup
 import net.robocode2.gui.settings.GamesSettings
+import net.robocode2.gui.ui.Constants.MAX_ARENA_SIZE
+import net.robocode2.gui.ui.Constants.MAX_GUN_COOLING
+import net.robocode2.gui.ui.Constants.MAX_INACTIVITY_TURNS
+import net.robocode2.gui.ui.Constants.MAX_NUM_PARTICIPANTS
+import net.robocode2.gui.ui.Constants.MAX_NUM_ROUNDS
+import net.robocode2.gui.ui.Constants.MIN_ARENA_SIZE
+import net.robocode2.gui.ui.Constants.MIN_NUM_PARTICIPANTS
+import net.robocode2.gui.ui.ResourceBundles.MESSAGES
+import net.robocode2.gui.ui.ResourceBundles.STRINGS
 import net.robocode2.gui.utils.Observable
-import java.awt.EventQueue
 import javax.swing.*
 
-class SetupRulesDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_TITLES.get("setup_rules")) {
+class SetupRulesPanel : JPanel(MigLayout("fill")) {
 
     private val games = GamesSettings.games
 
@@ -44,11 +43,6 @@ class SetupRulesDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.W
         get() = GamesSettings.games[selectedGameType] as GameSetup
 
     init {
-        defaultCloseOperation = DISPOSE_ON_CLOSE
-
-        setLocationRelativeTo(null) // center on screen
-
-        contentPane = JPanel(MigLayout())
         val upperPanel = JPanel(MigLayout())
         val lowerPanel = JPanel(MigLayout())
 
@@ -57,8 +51,8 @@ class SetupRulesDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.W
 
         gameTypeComboBox.addActionListener { changeGameType() }
 
-        contentPane.add(upperPanel, "wrap")
-        contentPane.add(lowerPanel, "center")
+        add(upperPanel, "wrap")
+        add(lowerPanel, "center")
 
         upperPanel.add(commonPanel, "west")
         upperPanel.add(arenaPanel, "north")
@@ -102,15 +96,14 @@ class SetupRulesDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.W
         gunCoolingRateTextField.setInputVerifier { gunCoolingRateVerifier() }
         inactivityTurnsTextField.setInputVerifier { inactivityTurnsVerifier() }
 
-        onOk.subscribe { saveSettings(); close() }
-        onCancel.subscribe { close() }
+        onOk.subscribe { saveSettings() }
+        onCancel.subscribe {}
         onResetGameType.subscribe { resetGameType() }
-
-        pack()
     }
 
-    private fun close() {
-        isVisible = false
+    fun dispose() {}
+
+    protected fun finalize() {
         dispose()
     }
 
@@ -271,13 +264,5 @@ class SetupRulesDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.W
 
     private fun showMessage(msg: String) {
         JOptionPane.showMessageDialog(this, msg)
-    }
-}
-
-fun main() {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
-    EventQueue.invokeLater {
-        SetupRulesDialog().isVisible = true
     }
 }
