@@ -50,11 +50,11 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             }
 
     init {
-        val upperPanel = JPanel(MigLayout("fill", "[][grow][]"))
+        val upperPanel = JPanel(MigLayout("", "[][grow][]"))
         val lowerPanel = JPanel(MigLayout("insets 10, fill", "[grow][][grow]"))
 
         add(upperPanel, "north")
-        add(lowerPanel, "south")
+        add(lowerPanel, "south, h 1000000")
 
         upperPanel.addNewLabel("server_endpoint")
         upperPanel.add(serverTextField, "span 2, grow")

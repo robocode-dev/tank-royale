@@ -51,11 +51,11 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
 
         gameTypeComboBox.addActionListener { changeGameType() }
 
-        add(upperPanel, "wrap")
+        add(upperPanel, "center, wrap")
         add(lowerPanel, "center")
 
         upperPanel.add(commonPanel, "west")
-        upperPanel.add(arenaPanel, "north")
+        upperPanel.add(arenaPanel, "east")
 
         commonPanel.addNewLabel("game_type")
         commonPanel.add(gameTypeComboBox, "wrap")
