@@ -168,8 +168,9 @@ public final class ConnHandler {
 			connections.put(clientKey, conn);
 
 			ServerHandshake hs = new ServerHandshake();
-			hs.setClientKey(clientKey);
 			hs.setType(ServerHandshake.Type.SERVER_HANDSHAKE);
+			hs.setClientKey(clientKey);
+			hs.setProtocolVersion("0.1");
 			hs.setGames(GameSetupToGameSetupMapper.map(setup.getGames()));
 
 			String msg = new Gson().toJson(hs);
