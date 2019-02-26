@@ -113,7 +113,7 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
 
         pack()
 
-        connectButton.addActionListener { onConnectButtonClicked.notifyChange(connectButton) }
+        connectButton.addActionListener { onConnectButtonClicked.notify(connectButton) }
 
         onConnectButtonClicked.subscribe {
             if (!Server.isConnected()) {

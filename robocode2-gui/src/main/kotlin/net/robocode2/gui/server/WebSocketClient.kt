@@ -27,22 +27,22 @@ class WebSocketClient(private val uri: URI) {
     private inner class Client : WebSocketClient(uri) {
 
         override fun onOpen(serverHandshake: ServerHandshake?) {
-            onOpen.notifyChange(Unit)
+            onOpen.notify(Unit)
             println("onOpen: ")
         }
 
         override fun onClose(code: Int, reason: String, remote: Boolean) {
-            onClose.notifyChange(Unit)
+            onClose.notify(Unit)
             println("onClose: (code: $code, reason: $reason, remote: $remote)")
         }
 
         override fun onMessage(message: String) {
-            onMessage.notifyChange(message)
+            onMessage.notify(message)
             println("onMessage: $message")
         }
 
         override fun onError(ex: Exception) {
-            onError.notifyChange(ex)
+            onError.notify(ex)
             println("onError: $ex")
         }
     }

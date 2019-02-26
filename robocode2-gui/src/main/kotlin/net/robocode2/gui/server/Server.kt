@@ -10,6 +10,8 @@ object Server {
     val onConnected = Observable<Unit>()
     val onDisconnected = Observable<Unit>()
 
+    val onServerHandshake = Observable<ServerHandshake>()
+
     val defaultUri = URI("ws://localhost:50000")
 
     private var client: WebSocketClient = WebSocketClient(defaultUri)
@@ -17,8 +19,8 @@ object Server {
     fun connect(uri: URI) {
         client = WebSocketClient(uri)
 
-        client.onOpen.subscribe { onConnected.notifyChange(Unit) }
-        client.onClose.subscribe { onDisconnected.notifyChange(Unit) }
+        client.onOpen.subscribe { onConnected.notify(Unit) }
+        client.onClose.subscribe { onDisconnected.notify(Unit) }
 
         client.open() // must be called after onOpen.subscribe()
 
@@ -32,8 +34,9 @@ object Server {
     fun isConnected() = client.isOpen()
 
     private fun onMessage(msg: String) {
-
         val message = Klaxon().parse<net.robocode2.gui.model.Message>(msg)
-        if (message is ServerHandshake) println("###")
+        when (message) {
+            is ServerHandshake -> onServerHandshake.notify(message)
+        }
     }
 }

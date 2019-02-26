@@ -11,7 +11,7 @@ class Observable<T> {
         return disposable(subscriber)
     }
 
-    fun notifyChange(source: T) {
+    fun notify(source: T) {
         subscribers.forEach {
             it.invoke(source)
         }

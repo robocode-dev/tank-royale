@@ -17,7 +17,7 @@ object JComponentExt {
     fun JComponent.addNewButton(
             stringResourceName: String, observable: Observable<JButton>, layoutConstraints: String? = null): JButton {
         val button = JButton(ResourceBundles.STRINGS.get(stringResourceName))
-        button.addActionListener { observable.notifyChange(button) }
+        button.addActionListener { observable.notify(button) }
         add(button, layoutConstraints)
         return button
     }
