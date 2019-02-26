@@ -16,3 +16,4 @@ properties:
     uniqueItems: true
 required:
 - protocolVersion
+- games

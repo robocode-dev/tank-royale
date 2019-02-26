@@ -2,8 +2,6 @@ $id: #message.yaml
 $schema: http://json-schema.org/draft-07/schema#
 description: Message exchanged between server and client
 properties:
-  clientKey:
-    type: string
   type:
     enum:
     - botHandshake
@@ -14,6 +12,8 @@ properties:
     - controllerHandshake
     - observerHandshake
     - serverHandshake
+  clientKey:
+    type: string
 required:
 - type
 - clientKey

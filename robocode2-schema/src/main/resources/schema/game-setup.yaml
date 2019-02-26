@@ -82,7 +82,6 @@ required:
 - isArenaHeightLocked
 - minNumberOfParticipants
 - isMinNumberOfParticipantsLocked
-- maxNumberOfParticipants
 - isMaxNumberOfParticipantsLocked
 - numberOfRounds
 - isNumberOfRoundsLocked
