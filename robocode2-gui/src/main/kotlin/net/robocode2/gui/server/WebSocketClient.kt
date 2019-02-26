@@ -5,21 +5,16 @@ import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 
-object WebSocketClient {
+class WebSocketClient(private val uri: URI) {
 
     val onOpen = Observable<Unit>()
     val onClose = Observable<Unit>()
     val onMessage = Observable<String>()
     val onError = Observable<Exception>()
 
-    private val serverUri: URI = URI("ws://localhost:50000")
-
     private var client = Client()
 
     fun open() {
-        if (client.isClosed) {
-            client = Client()
-        }
         client.connect()
     }
 
@@ -29,26 +24,26 @@ object WebSocketClient {
 
     fun isOpen() = client.isOpen
 
-    private class Client : WebSocketClient(serverUri) {
+    private inner class Client : WebSocketClient(uri) {
 
         override fun onOpen(serverHandshake: ServerHandshake?) {
             onOpen.notifyChange(Unit)
-            println("onOpen")
+            println("onOpen: ")
         }
 
         override fun onClose(code: Int, reason: String, remote: Boolean) {
             onClose.notifyChange(Unit)
-            println("onClose")
+            println("onClose: (code: $code, reason: $reason, remote: $remote)")
         }
 
         override fun onMessage(message: String) {
             onMessage.notifyChange(message)
-            println("onMessage")
+            println("onMessage: $message")
         }
 
         override fun onError(ex: Exception) {
             onError.notifyChange(ex)
-            println("onError")
+            println("onError: $ex")
         }
     }
 }

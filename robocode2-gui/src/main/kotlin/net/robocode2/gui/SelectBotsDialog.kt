@@ -5,7 +5,7 @@ import net.robocode2.gui.ResourceBundles.STRINGS
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.extensions.WindowExt.onClosing
-import net.robocode2.gui.server.WebSocketClient
+import net.robocode2.gui.server.Server
 import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Observable
 import java.awt.Dimension
@@ -21,9 +21,9 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
     private val onAddAll = Observable<JButton>()
     private val onRemove = Observable<JButton>()
     private val onRemoveAll = Observable<JButton>()
-    private val onConnectOrDisconnect = Observable<JButton>()
+    private val onConnectButtonClicked = Observable<JButton>()
 
-    private val serverTextField = JTextField(5)
+    private val serverTextField = JTextField()
     private val connectButton = JButton(connectButtonText)
 
     private val availableBotListModel = DefaultListModel<String>()
@@ -33,11 +33,11 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
 
     private val connectionStatusLabel = JLabel(connectionStatus)
 
-    var disposables = ArrayList<Disposable>()
+    private var disposables = ArrayList<Disposable>()
 
     private val connectionStatus: String
         get() =
-            if (WebSocketClient.isOpen()) {
+            if (Server.isConnected()) {
                 STRINGS.get("connected")
             } else {
                 STRINGS.get("disconnected")
@@ -45,7 +45,7 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
 
     private val connectButtonText: String
         get() =
-            if (WebSocketClient.isOpen()) {
+            if (Server.isConnected()) {
                 STRINGS.get("disconnect")
             } else {
                 STRINGS.get("connect")
@@ -67,13 +67,16 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
         contentPane.add(lowerPanel, "south")
 
         upperPanel.addNewLabel("server_endpoint")
-        upperPanel.add(serverTextField, "grow")
+        upperPanel.add(serverTextField, "span 2, grow")
         upperPanel.add(connectButton, "wrap")
 
-        connectButton.addActionListener { onConnectOrDisconnect.notifyChange(connectButton) }
+        serverTextField.text = "localhost:50000"
 
-        upperPanel.addNewLabel("connection_status")
-        upperPanel.add(connectionStatusLabel)
+        val gameTypeComboBox = JComboBox(listOf("one", "two", "three").toTypedArray())
+        upperPanel.addNewLabel("game_type")
+        upperPanel.add(gameTypeComboBox)
+        upperPanel.addNewLabel("connection_status", "right")
+        upperPanel.add(connectionStatusLabel, "center")
 
         val leftPanel = JPanel(MigLayout("fill"))
         leftPanel.add(JScrollPane(availableBotList), "grow")
@@ -110,11 +113,13 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
 
         pack()
 
-        onConnectOrDisconnect.subscribe {
-            if (WebSocketClient.isOpen()) {
-                WebSocketClient.close()
+        connectButton.addActionListener { onConnectButtonClicked.notifyChange(connectButton) }
+
+        onConnectButtonClicked.subscribe {
+            if (!Server.isConnected()) {
+                Server.connect(Server.defaultUri) // FIXME: Use URI from text field + reset button to default URI
             } else {
-                WebSocketClient.open()
+                Server.disconnect()
             }
         }
 
@@ -158,8 +163,8 @@ class SelectBots(frame: JFrame? = null) : JDialog(frame, ResourceBundles.WINDOW_
             }
         })
 
-        disposables.add(WebSocketClient.onOpen.subscribe { updateConnectionState() })
-        disposables.add(WebSocketClient.onClose.subscribe { updateConnectionState() })
+        disposables.add(Server.onConnected.subscribe { updateConnectionState() })
+        disposables.add(Server.onDisconnected.subscribe { updateConnectionState() })
 
         onClosing { disposables.forEach { it.dispose() } }
     }
