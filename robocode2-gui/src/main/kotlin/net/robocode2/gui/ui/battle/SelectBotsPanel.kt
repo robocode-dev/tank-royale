@@ -14,7 +14,11 @@ import javax.swing.*
 
 class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
+    // Public events
+    val onStartBattle = Observable<JButton>()
+
     // Private events
+    private val onCancel = Observable<JButton>()
     private val onAdd = Observable<JButton>()
     private val onAddAll = Observable<JButton>()
     private val onRemove = Observable<JButton>()
@@ -34,24 +38,14 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
     private var disposables = ArrayList<Disposable>()
 
     private val connectionStatus: String
-        get() =
-            if (Server.isConnected()) {
-                STRINGS.get("connected")
-            } else {
-                STRINGS.get("disconnected")
-            }
+        get() = STRINGS.get(if (Server.isConnected()) "connected" else "disconnected")
 
     private val connectButtonText: String
-        get() =
-            if (Server.isConnected()) {
-                STRINGS.get("disconnect")
-            } else {
-                STRINGS.get("connect")
-            }
+        get() = STRINGS.get(if (Server.isConnected()) "disconnect" else "connect")
 
     init {
         val upperPanel = JPanel(MigLayout("", "[][grow][]"))
-        val lowerPanel = JPanel(MigLayout("insets 10, fill", "[grow][][grow]"))
+        val lowerPanel = JPanel(MigLayout("insets 10, fill"))
 
         add(upperPanel, "north")
         add(lowerPanel, "south, h 1000000")
@@ -68,38 +62,47 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         upperPanel.addNewLabel("connection_status", "right")
         upperPanel.add(connectionStatusLabel, "center")
 
-        val leftPanel = JPanel(MigLayout("fill"))
-        leftPanel.add(JScrollPane(availableBotList), "grow")
+        val selectionPanel = JPanel(MigLayout("", "[grow][][grow]"))
+        val buttonPanel = JPanel(MigLayout("center, insets 0"))
 
-        val rightPanel = JPanel(MigLayout("fill"))
-        rightPanel.add(JScrollPane(selectedBotList), "grow")
+        lowerPanel.add(selectionPanel, "north")
+        lowerPanel.add(buttonPanel, "center")
 
-        val centerPanel = JPanel(MigLayout("insets 0"))
+        val leftSelectionPanel = JPanel(MigLayout("fill"))
+        leftSelectionPanel.add(JScrollPane(availableBotList), "grow")
+
+        val rightSelectionPanel = JPanel(MigLayout("fill"))
+        rightSelectionPanel.add(JScrollPane(selectedBotList), "grow")
+
+        val centerSelectionPanel = JPanel(MigLayout("insets 0"))
 
         // Sets the preferred size to avoid right panel with to grow much larger than the right panel
-        leftPanel.preferredSize = Dimension(10, 10)
-        rightPanel.preferredSize = Dimension(10, 10)
+        leftSelectionPanel.preferredSize = Dimension(10, 10)
+        rightSelectionPanel.preferredSize = Dimension(10, 10)
 
-        lowerPanel.add(leftPanel, "grow")
-        lowerPanel.add(centerPanel, "")
-        lowerPanel.add(rightPanel, "grow")
+        selectionPanel.add(leftSelectionPanel, "grow")
+        selectionPanel.add(centerSelectionPanel, "")
+        selectionPanel.add(rightSelectionPanel, "grow")
 
-        leftPanel.border = BorderFactory.createTitledBorder(STRINGS.get("available_bots"))
-        rightPanel.border = BorderFactory.createTitledBorder(STRINGS.get("selected_bots"))
+        leftSelectionPanel.border = BorderFactory.createTitledBorder(STRINGS.get("available_bots"))
+        rightSelectionPanel.border = BorderFactory.createTitledBorder(STRINGS.get("selected_bots"))
 
         val addPanel = JPanel(MigLayout("insets 0, fill", "[fill]"))
         val removePanel = JPanel(MigLayout("insets 0, fill", "[fill]"))
 
         val middlePanel = JPanel(MigLayout("fill"))
 
-        centerPanel.add(addPanel, "north")
-        centerPanel.add(middlePanel, "h 300")
-        centerPanel.add(removePanel, "south")
+        centerSelectionPanel.add(addPanel, "north")
+        centerSelectionPanel.add(middlePanel, "h 300")
+        centerSelectionPanel.add(removePanel, "south")
 
         addPanel.addNewButton("add_arrow", onAdd, "cell 0 1")
         addPanel.addNewButton("add_all_arrow", onAddAll, "cell 0 2")
         removePanel.addNewButton("arrow_remove", onRemove, "cell 0 3")
         removePanel.addNewButton("arrow_remove_all", onRemoveAll, "cell 0 4")
+
+        buttonPanel.addNewButton("start_battle", onStartBattle, "tag ok")
+        buttonPanel.addNewButton("cancel", onCancel, "tag cancel")
 
         connectButton.addActionListener { onConnectButtonClicked.notify(connectButton) }
 

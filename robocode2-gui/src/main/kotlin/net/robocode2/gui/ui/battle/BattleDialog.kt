@@ -11,6 +11,10 @@ import javax.swing.UIManager
 
 class BattleDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.UI_TITLES.get("battle_dialog")) {
 
+    private val tabbedPane = JTabbedPane()
+    private val selectBotsPanel = SelectBotsPanel()
+    private val setupRulesPanel = SetupRulesPanel()
+
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
@@ -18,20 +22,25 @@ class BattleDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.UI_TI
 
         setLocationRelativeTo(null) // center on screen
 
-        val tabbedPane = JTabbedPane()
         contentPane.add(tabbedPane)
-
-        val selectBotsPanel = SelectBotsPanel()
         tabbedPane.addTab(ResourceBundles.UI_TITLES.get("select_bots_tab"), selectBotsPanel)
-
-        val setupRulesPanel = SetupRulesPanel()
         tabbedPane.addTab(ResourceBundles.UI_TITLES.get("setup_rules_tab"), setupRulesPanel)
+
+        tabbedPane.selectedComponent = setupRulesPanel
 
         onClosing {
             // Explicit cleanup in order to remove disposables on panels as finalize() seems to never be called
             selectBotsPanel.dispose()
             setupRulesPanel.dispose()
         }
+    }
+
+    fun selectBotsTab() {
+        tabbedPane.selectedComponent = selectBotsPanel
+    }
+
+    fun selectSetupRulesTab() {
+        tabbedPane.selectedComponent = setupRulesPanel
     }
 }
 
