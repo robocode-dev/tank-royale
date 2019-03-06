@@ -14,16 +14,15 @@ import javax.swing.*
 
 class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
-    // Public events
-    val onStartBattle = Observable<JButton>()
-
     // Private events
+    private val onStartBattle = Observable<JButton>()
+    private val onConnectButtonClicked = Observable<JButton>()
+
     private val onCancel = Observable<JButton>()
     private val onAdd = Observable<JButton>()
     private val onAddAll = Observable<JButton>()
     private val onRemove = Observable<JButton>()
     private val onRemoveAll = Observable<JButton>()
-    private val onConnectButtonClicked = Observable<JButton>()
 
     private val serverTextField = JTextField()
     private val connectButton = JButton(connectButtonText)
@@ -119,6 +118,8 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
 //            selectedBotListModel.addElement("selected: $i")
         }
 
+        onCancel.subscribe { BattleDialog.dispose() }
+
         onAdd.subscribe {
             availableBotList.selectedValuesList.forEach {
                 selectedBotListModel.addElement(it)
@@ -160,6 +161,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
     fun dispose() {
         disposables.forEach { it.dispose() }
+        Server.disconnect()
     }
 
     protected fun finalize() {

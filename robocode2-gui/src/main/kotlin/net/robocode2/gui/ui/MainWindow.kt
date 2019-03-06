@@ -14,18 +14,18 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")) {
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
 
-        setSize(1000, 850)
+        setSize(800, 600)
         setLocationRelativeTo(null) // center on screen
 
         jMenuBar = MainWindowMenu
 
         disposables.add(MainWindowMenu.onNewBattle.invokeLater {
-            val dialog = BattleDialog(this)
+            val dialog = BattleDialog
             dialog.selectBotsTab()
             dialog.isVisible = true
         })
         disposables.add(MainWindowMenu.onSetupRules.invokeLater {
-            val dialog = BattleDialog(this)
+            val dialog = BattleDialog
             dialog.selectSetupRulesTab()
             dialog.isVisible = true
         })

@@ -1,15 +1,15 @@
 package net.robocode2.gui.ui.battle
 
 import net.robocode2.gui.extensions.WindowExt.onClosing
+import net.robocode2.gui.ui.MainWindow
 import net.robocode2.gui.ui.ResourceBundles
 import java.awt.Dimension
 import java.awt.EventQueue
 import javax.swing.JDialog
-import javax.swing.JFrame
 import javax.swing.JTabbedPane
 import javax.swing.UIManager
 
-class BattleDialog(frame: JFrame? = null) : JDialog(frame, ResourceBundles.UI_TITLES.get("battle_dialog")) {
+object BattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("battle_dialog")) {
 
     private val tabbedPane = JTabbedPane()
     private val selectBotsPanel = SelectBotsPanel()
@@ -48,6 +48,6 @@ fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     EventQueue.invokeLater {
-        BattleDialog().isVisible = true
+        BattleDialog.isVisible = true
     }
 }
