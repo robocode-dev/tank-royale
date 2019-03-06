@@ -1,6 +1,7 @@
 package net.robocode2.gui.ui
 
 import net.robocode2.gui.extensions.WindowExt.onClosing
+import net.robocode2.gui.ui.battle.ArenaCanvas
 import net.robocode2.gui.ui.battle.BattleDialog
 import net.robocode2.gui.utils.Disposable
 import java.awt.EventQueue
@@ -16,6 +17,8 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")) {
 
         setSize(800, 600)
         setLocationRelativeTo(null) // center on screen
+
+        contentPane.add(ArenaCanvas())
 
         jMenuBar = MainWindowMenu
 
