@@ -3,7 +3,7 @@ package net.robocode2.gui.ui.battle
 import net.miginfocom.swing.MigLayout
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
-import net.robocode2.gui.server.Server
+import net.robocode2.gui.server.Client
 import net.robocode2.gui.ui.ResourceBundles.STRINGS
 import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Observable
@@ -37,10 +37,10 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
     private var disposables = ArrayList<Disposable>()
 
     private val connectionStatus: String
-        get() = STRINGS.get(if (Server.isConnected()) "connected" else "disconnected")
+        get() = STRINGS.get(if (Client.isConnected()) "connected" else "disconnected")
 
     private val connectButtonText: String
-        get() = STRINGS.get(if (Server.isConnected()) "disconnect" else "connect")
+        get() = STRINGS.get(if (Client.isConnected()) "disconnect" else "connect")
 
     init {
         val upperPanel = JPanel(MigLayout("", "[][grow][]"))
@@ -106,10 +106,10 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         connectButton.addActionListener { onConnectButtonClicked.notify(connectButton) }
 
         onConnectButtonClicked.subscribe {
-            if (!Server.isConnected()) {
-                Server.connect(Server.defaultUri) // FIXME: Use URI from text field + reset button to default URI
+            if (!Client.isConnected()) {
+                Client.connect(Client.defaultUri) // FIXME: Use URI from text field + reset button to default URI
             } else {
-                Server.disconnect()
+                Client.disconnect()
             }
         }
 
@@ -155,13 +155,13 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             }
         })
 
-        disposables.add(Server.onConnected.subscribe { updateConnectionState() })
-        disposables.add(Server.onDisconnected.subscribe { updateConnectionState() })
+        disposables.add(Client.onConnected.subscribe { updateConnectionState() })
+        disposables.add(Client.onDisconnected.subscribe { updateConnectionState() })
     }
 
     fun dispose() {
         disposables.forEach { it.dispose() }
-        Server.disconnect()
+        Client.disconnect()
     }
 
     protected fun finalize() {

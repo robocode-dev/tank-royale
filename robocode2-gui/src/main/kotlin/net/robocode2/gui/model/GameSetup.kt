@@ -22,4 +22,4 @@ data class GameSetup(
         val isReadyTimeoutLocked: Boolean,
         val delayedObserverTurns: Int,
         val isDelayedObserverTurnsLocked: Boolean
-) : Message(type = MessageType.GAME_SETUP.type)
+)

@@ -4,4 +4,4 @@ data class ServerHandshake(
         val clientKey: String,
         val protocolVersion: String,
         val games: Set<GameSetup>
-) : Message(type = MessageType.SERVER_HANDSHAKE.type)
+) : Content(type = ContentType.SERVER_HANDSHAKE.type)

@@ -1,5 +1,6 @@
 package net.robocode2.gui.server
 
+import com.beust.klaxon.Klaxon
 import net.robocode2.gui.utils.Observable
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
@@ -23,6 +24,10 @@ class WebSocketClient(private val uri: URI) {
     }
 
     fun isOpen() = client.isOpen
+
+    fun send(content: Any) {
+        client.send(Klaxon().toJsonString(content))
+    }
 
     private inner class Client : WebSocketClient(uri) {
 
