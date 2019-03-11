@@ -10,7 +10,7 @@ import javax.swing.UIManager
 
 object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")) {
 
-    var disposables = ArrayList<Disposable>()
+    private val disposables = ArrayList<Disposable>()
 
     init {
         defaultCloseOperation = EXIT_ON_CLOSE

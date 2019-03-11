@@ -15,19 +15,18 @@ import net.robocode2.gui.ui.Constants.MIN_ARENA_SIZE
 import net.robocode2.gui.ui.Constants.MIN_NUM_PARTICIPANTS
 import net.robocode2.gui.ui.ResourceBundles.MESSAGES
 import net.robocode2.gui.ui.ResourceBundles.STRINGS
+import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Observable
 import javax.swing.*
 
 class SetupRulesPanel : JPanel(MigLayout("fill")) {
-
-    private val games = GamesSettings.games
 
     // Private events
     private val onOk = Observable<JButton>()
     private val onCancel = Observable<JButton>()
     private val onResetGameType = Observable<JButton>()
 
-    private val gameTypeComboBox = JComboBox(games.keys.toTypedArray())
+    private val gameTypeComboBox = GameTypeComboBox()
     private val widthTextField = JTextField(6)
     private val heightTextField = JTextField(6)
     private val minNumParticipantsTextField = JTextField(6)
@@ -36,11 +35,10 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private val gunCoolingRateTextField = JTextField(6)
     private val inactivityTurnsTextField = JTextField(6)
 
-    private val selectedGameType: String
-        get() = gameTypeComboBox.selectedItem as String
-
     private val gameSetup: GameSetup
-        get() = GamesSettings.games[selectedGameType] as GameSetup
+        get() = gameTypeComboBox.gameSetup
+
+    private val disposables = ArrayList<Disposable>()
 
     init {
         val upperPanel = JPanel(MigLayout())
@@ -48,8 +46,6 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
 
         val commonPanel = JPanel(MigLayout())
         val arenaPanel = JPanel(MigLayout())
-
-        gameTypeComboBox.addActionListener { changeGameType() }
 
         add(upperPanel, "center, wrap")
         add(lowerPanel, "center")
@@ -98,32 +94,25 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
 
         onOk.subscribe { saveSettings() }
         onCancel.subscribe {}
-        onResetGameType.subscribe { resetGameType() }
+        onResetGameType.subscribe { gameTypeComboBox.resetGameType() }
+
+        gameTypeComboBox.onGameTypeChanged.subscribe { updateFieldsForGameType() }
+        updateFieldsForGameType()
     }
 
-    fun dispose() {}
-
-    protected fun finalize() {
-        dispose()
+    fun dispose() {
+        disposables.forEach { it.dispose() }
     }
 
     private fun saveSettings() {
         GamesSettings.save()
     }
 
-    private fun resetGameType() {
-        val default: GameSetup? = GamesSettings.defaultGameSetup[selectedGameType]
-        if (default != null) {
-            GamesSettings.games[selectedGameType] = default.copy()
-            changeGameType()
-        }
-    }
-
-    private fun changeGameType() {
+    private fun updateFieldsForGameType() {
         widthTextField.text = gameSetup.width.toString()
         heightTextField.text = gameSetup.height.toString()
         minNumParticipantsTextField.text = gameSetup.minNumParticipants.toString()
-        maxNumParticipantsTextField.text = gameSetup.maxNumParticipants?.toString()
+        maxNumParticipantsTextField.text = gameSetup.maxNumParticipants?.toString() ?: ""
 
         numberOfRoundsTextField.text = gameSetup.numberOfRounds.toString()
         inactivityTurnsTextField.text = gameSetup.inactivityTurns.toString()

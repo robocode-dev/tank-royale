@@ -27,6 +27,8 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
     private val serverTextField = JTextField()
     private val connectButton = JButton(connectButtonText)
 
+    private val gameTypeComboBox = GameTypeComboBox()
+
     private val availableBotListModel = DefaultListModel<String>()
     private val selectedBotListModel = DefaultListModel<String>()
     private val availableBotList = JList<String>(availableBotListModel)
@@ -55,7 +57,6 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
         serverTextField.text = "localhost:50000"
 
-        val gameTypeComboBox = JComboBox(listOf("one", "two", "three").toTypedArray())
         upperPanel.addNewLabel("game_type")
         upperPanel.add(gameTypeComboBox)
         upperPanel.addNewLabel("connection_status", "right")
@@ -157,6 +158,8 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
         disposables.add(Client.onConnected.subscribe { updateConnectionState() })
         disposables.add(Client.onDisconnected.subscribe { updateConnectionState() })
+
+        onStartBattle.subscribe { startGame() }
     }
 
     fun dispose() {
@@ -172,5 +175,8 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         connectionStatusLabel.text = connectionStatus
         connectButton.text = connectButtonText
         connectButton.revalidate()
+    }
+
+    private fun startGame() {
     }
 }
