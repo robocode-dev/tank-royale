@@ -4,6 +4,7 @@ enum class ContentType(val type: String) {
     // Messages
     SERVER_HANDSHAKE("serverHandshake"),
     CONTROLLER_HANDSHAKE("controllerHandshake"),
+    BOT_LIST_UPDATE("botListUpdate"),
     // Game Events
     BOT_DEATH_EVENT("botDeathEvent"),
     BOT_HIT_BOT_EVENT("botHitBotEvent"),

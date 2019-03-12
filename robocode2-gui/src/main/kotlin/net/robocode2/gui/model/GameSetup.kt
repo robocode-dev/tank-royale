@@ -8,7 +8,7 @@ data class GameSetup(
         val isArenaHeightLocked: Boolean,
         val minNumberOfParticipants: Int,
         val isMinNumberOfParticipantsLocked: Boolean,
-//        val maxNumberOfParticipants: Int?, // FIXME
+        val maxNumberOfParticipants: Int?,
         val isMaxNumberOfParticipantsLocked: Boolean,
         val numberOfRounds: Int,
         val isNumberOfRoundsLocked: Boolean,

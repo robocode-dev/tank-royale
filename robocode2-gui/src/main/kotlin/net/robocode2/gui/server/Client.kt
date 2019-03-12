@@ -1,7 +1,12 @@
 package net.robocode2.gui.server
 
 import com.beust.klaxon.Klaxon
-import net.robocode2.gui.model.*
+import net.robocode2.gui.model.Content
+import net.robocode2.gui.model.GameSetup
+import net.robocode2.gui.model.TickEvent
+import net.robocode2.gui.model.comm.BotAddress
+import net.robocode2.gui.model.comm.BotListUpdate
+import net.robocode2.gui.model.comm.ServerHandshake
 import net.robocode2.gui.model.control.StartGame
 import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Observable
@@ -56,6 +61,7 @@ object Client {
         val content = Klaxon().parse<Content>(msg)
         when (content) {
             is ServerHandshake -> onServerHandshake.notify(content)
+            is BotListUpdate -> println("### BOT LIST UPDATE ###")
             is TickEvent -> println("### TICK EVENT ###")
             else -> throw IllegalArgumentException("Unknown content type: $content")
         }

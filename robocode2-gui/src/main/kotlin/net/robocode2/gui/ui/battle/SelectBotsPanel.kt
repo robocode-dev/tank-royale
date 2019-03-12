@@ -178,5 +178,19 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
     }
 
     private fun startGame() {
+/*
+        val gameSetup = gameTypeComboBox.gameSetup;
+
+        val modelGameSetup: GameSetup = GameSetup(
+                arenaWidth = gameSetup.height,
+                arenaHeight = gameSetup.width,
+                minNumberOfParticipants = gameSetup.minNumParticipants,
+                maxNumberOfParticipants = gameSetup.maxNumParticipants,
+                numberOfRounds = gameSetup.numberOfRounds,
+                inactivityTurns = gameSetup.inactivityTurns,
+                gunCoolingRate = gameSetup.gunCoolingRate
+        )
+
+        Client.startGame(modelGameSetup, HashSet())*/
     }
 }
