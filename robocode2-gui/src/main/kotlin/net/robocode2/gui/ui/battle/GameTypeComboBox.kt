@@ -1,6 +1,6 @@
 package net.robocode2.gui.ui.battle
 
-import net.robocode2.gui.settings.GameSetup
+import net.robocode2.gui.model.GameSetup
 import net.robocode2.gui.settings.GamesSettings
 import net.robocode2.gui.utils.Observable
 import javax.swing.JComboBox

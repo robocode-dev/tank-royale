@@ -4,7 +4,7 @@ import net.miginfocom.swing.MigLayout
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.extensions.JTextFieldExt.setInputVerifier
-import net.robocode2.gui.settings.GameSetup
+import net.robocode2.gui.model.GameSetup
 import net.robocode2.gui.settings.GamesSettings
 import net.robocode2.gui.ui.Constants.MAX_ARENA_SIZE
 import net.robocode2.gui.ui.Constants.MAX_GUN_COOLING
@@ -109,10 +109,10 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     }
 
     private fun updateFieldsForGameType() {
-        widthTextField.text = gameSetup.width.toString()
-        heightTextField.text = gameSetup.height.toString()
-        minNumParticipantsTextField.text = gameSetup.minNumParticipants.toString()
-        maxNumParticipantsTextField.text = gameSetup.maxNumParticipants?.toString() ?: ""
+        widthTextField.text = gameSetup.arenaWidth.toString()
+        heightTextField.text = gameSetup.arenaHeight.toString()
+        minNumParticipantsTextField.text = gameSetup.minNumberOfParticipants.toString()
+        maxNumParticipantsTextField.text = gameSetup.maxNumberOfParticipants?.toString() ?: ""
 
         numberOfRoundsTextField.text = gameSetup.numberOfRounds.toString()
         inactivityTurnsTextField.text = gameSetup.inactivityTurns.toString()
@@ -127,11 +127,11 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         }
         val valid = width != null && width in MIN_ARENA_SIZE..MAX_ARENA_SIZE
         if (valid && width != null) {
-            gameSetup.width = width
+            gameSetup.arenaWidth = width
         } else {
             showMessage(String.format(MESSAGES.get("arena_size_range"), MIN_ARENA_SIZE, MAX_ARENA_SIZE))
 
-            widthTextField.text = "" + gameSetup.width
+            widthTextField.text = "" + gameSetup.arenaWidth
         }
         return valid
     }
@@ -144,11 +144,11 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         }
         val valid = height != null && height in MIN_ARENA_SIZE..MAX_ARENA_SIZE
         if (valid && height != null) {
-            gameSetup.height = height
+            gameSetup.arenaHeight = height
         } else {
             showMessage(String.format(MESSAGES.get("arena_size_range"), MIN_ARENA_SIZE, MAX_ARENA_SIZE))
 
-            heightTextField.text = "" + gameSetup.height
+            heightTextField.text = "" + gameSetup.arenaHeight
         }
         return valid
     }
@@ -161,18 +161,18 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         }
         val valid = minNum != null && minNum in MIN_NUM_PARTICIPANTS..MAX_NUM_PARTICIPANTS
         if (valid && minNum != null) {
-            gameSetup.minNumParticipants = minNum
+            gameSetup.minNumberOfParticipants = minNum
         } else {
             showMessage(String.format(MESSAGES.get("min_num_participants"), MIN_NUM_PARTICIPANTS))
 
-            minNumParticipantsTextField.text = "" + gameSetup.minNumParticipants
+            minNumParticipantsTextField.text = "" + gameSetup.minNumberOfParticipants
         }
         return valid
     }
 
     private fun maxNumParticipantsVerifier(): Boolean {
         if (maxNumParticipantsTextField.text.isBlank()) {
-            gameSetup.maxNumParticipants = null
+            gameSetup.maxNumberOfParticipants = null
             return true
         }
         val minNum: Int? = try {
@@ -188,14 +188,14 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         val valid = minNum != null && maxNum != null &&
                 (minNum in MIN_NUM_PARTICIPANTS..MAX_NUM_PARTICIPANTS) && (maxNum in minNum..MAX_NUM_PARTICIPANTS)
         if (valid && maxNum != null) {
-            gameSetup.maxNumParticipants = maxNum
+            gameSetup.maxNumberOfParticipants = maxNum
         } else {
             if (maxNum == null || maxNum > MAX_NUM_PARTICIPANTS) {
                 showMessage(String.format(MESSAGES.get("max_num_participants"), MAX_NUM_PARTICIPANTS))
             } else {
                 showMessage(MESSAGES.get("max_num_participants_too_small"))
             }
-            maxNumParticipantsTextField.text = "" + gameSetup.maxNumParticipants
+            maxNumParticipantsTextField.text = "" + gameSetup.maxNumberOfParticipants
         }
         return valid
     }
