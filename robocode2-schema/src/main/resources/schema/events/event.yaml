@@ -4,25 +4,25 @@ description: Event occurring in the battle arena
 properties:
   type:
     enum:
-    - botDeathEvent
-    - botHitBotEvent
-    - botHitWallEvent
-    - bulletFiredEvent
-    - bulletHitBotEvent
-    - bulletMissedEvent
-    - bulletHitBulletEvent
-    - gameAbortedEventForObserver
-    - gameEndedEventForBot
-    - gameEndedEventForObserver
-    - gamePausedEventForObserver
-    - gameResumedEventForObserver
-    - gameStartedEventForBot
-    - gameStartedEventForObserver
-    - hitByBulletEvent
-    - scannedBotEvent
-    - skippedTurnEvent
-    - tickEventForBot
-    - tickEventForObserver
-    - wonRoundEvent
+      - botDeathEvent
+      - botHitBotEvent
+      - botHitWallEvent
+      - bulletFiredEvent
+      - bulletHitBotEvent
+      - bulletMissedEvent
+      - bulletHitBulletEvent
+      - hitByBulletEvent
+      - scannedBotEvent
+      - skippedTurnEvent
+      - tickEventForBot
+      - tickEventForObserver
+      - wonRoundEvent
+      - gameAbortedEventForObserver
+      - gameEndedEventForBot
+      - gameEndedEventForObserver
+      - gamePausedEventForObserver
+      - gameResumedEventForObserver
+      - gameStartedEventForBot
+      - gameStartedEventForObserver
 required:
 - type

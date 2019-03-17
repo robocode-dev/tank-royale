@@ -13,6 +13,7 @@ properties:
     - observerHandshake
     - serverHandshake
   clientKey:
+    description: The client key is picked by the server to identify the client. A client must set the client key.
     type: string
 required:
 - type
