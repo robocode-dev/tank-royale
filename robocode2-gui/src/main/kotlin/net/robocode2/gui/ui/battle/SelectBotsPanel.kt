@@ -3,6 +3,7 @@ package net.robocode2.gui.ui.battle
 import net.miginfocom.swing.MigLayout
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
+import net.robocode2.gui.model.comm.BotAddress
 import net.robocode2.gui.server.Client
 import net.robocode2.gui.ui.ResourceBundles.STRINGS
 import net.robocode2.gui.utils.Disposable
@@ -114,11 +115,6 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             }
         }
 
-        for (i in 1..20) {
-            availableBotListModel.addElement("avail: $i")
-//            selectedBotListModel.addElement("selected: $i")
-        }
-
         onCancel.subscribe { BattleDialog.dispose() }
 
         onAdd.subscribe {
@@ -158,6 +154,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
         disposables.add(Client.onConnected.subscribe { updateConnectionState() })
         disposables.add(Client.onDisconnected.subscribe { updateConnectionState() })
+        disposables.add(Client.onBotListUpdate.subscribe { updateBotList() })
 
         onStartBattle.subscribe { startGame() }
     }
@@ -177,20 +174,19 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         connectButton.revalidate()
     }
 
+    private fun updateBotList() {
+        availableBotListModel.clear()
+        Client.getAvailableBots().forEach {
+            availableBotListModel.addElement("${it.name} ${it.version}")
+        }
+    }
+
     private fun startGame() {
-/*
-        val gameSetup = gameTypeComboBox.gameSetup;
+        val selectedBotAddresses = HashSet<BotAddress>()
 
-        val modelGameSetup: GameSetup = GameSetup(
-                arenaWidth = gameSetup.height,
-                arenaHeight = gameSetup.width,
-                minNumberOfParticipants = gameSetup.minNumParticipants,
-                maxNumberOfParticipants = gameSetup.maxNumParticipants,
-                numberOfRounds = gameSetup.numberOfRounds,
-                inactivityTurns = gameSetup.inactivityTurns,
-                gunCoolingRate = gameSetup.gunCoolingRate
-        )
+        selectedBotListModel.elements().toList().forEach {
+        }
 
-        Client.startGame(modelGameSetup, HashSet())*/
+        Client.startGame(gameTypeComboBox.gameSetup, selectedBotAddresses)
     }
 }

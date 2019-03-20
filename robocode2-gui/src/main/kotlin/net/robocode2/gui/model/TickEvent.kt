@@ -1,6 +1,6 @@
 package net.robocode2.gui.model
 
-data class TickEvent(
+class TickEvent(
         val roundState: RoundState,
         val botStates: Set<BotState>,
         val bulletStates: Set<BulletState>,

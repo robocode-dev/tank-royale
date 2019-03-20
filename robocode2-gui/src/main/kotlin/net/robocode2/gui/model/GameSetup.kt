@@ -8,7 +8,7 @@ data class GameSetup(
         var isArenaHeightLocked: Boolean,
         var minNumberOfParticipants: Int,
         var isMinNumberOfParticipantsLocked: Boolean,
-        var maxNumberOfParticipants: Int?,
+        var maxNumberOfParticipants: Int? = null,
         var isMaxNumberOfParticipantsLocked: Boolean,
         var numberOfRounds: Int,
         var isNumberOfRoundsLocked: Boolean,
