@@ -4,14 +4,18 @@ import net.miginfocom.swing.MigLayout
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.model.comm.BotAddress
+import net.robocode2.gui.model.comm.BotInfo
 import net.robocode2.gui.server.Client
 import net.robocode2.gui.ui.ResourceBundles.STRINGS
 import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Observable
+import java.awt.Component
 import java.awt.Dimension
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
+import javax.swing.border.EmptyBorder
+
 
 class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
 
@@ -30,10 +34,10 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
 
     private val gameTypeComboBox = GameTypeComboBox()
 
-    private val availableBotListModel = DefaultListModel<String>()
-    private val selectedBotListModel = DefaultListModel<String>()
-    private val availableBotList = JList<String>(availableBotListModel)
-    private val selectedBotList = JList<String>(selectedBotListModel)
+    private val availableBotListModel = DefaultListModel<BotInfo>()
+    private val selectedBotListModel = DefaultListModel<BotInfo>()
+    private val availableBotList = JList<BotInfo>(availableBotListModel)
+    private val selectedBotList = JList<BotInfo>(selectedBotListModel)
 
     private val connectionStatusLabel = JLabel(connectionStatus)
 
@@ -104,6 +108,9 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
 
         buttonPanel.addNewButton("start_battle", onStartBattle, "tag ok")
         buttonPanel.addNewButton("cancel", onCancel, "tag cancel")
+
+        availableBotList.cellRenderer = BotInfoCellRenderer()
+        selectedBotList.cellRenderer = BotInfoCellRenderer()
 
         connectButton.addActionListener { onConnectButtonClicked.notify(connectButton) }
 
@@ -176,7 +183,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
     private fun updateBotList() {
         availableBotListModel.clear()
         Client.getAvailableBots().forEach {
-            availableBotListModel.addElement("${it.name} ${it.version}")
+            availableBotListModel.addElement(it)
         }
     }
 
@@ -184,9 +191,33 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
         val selectedBotAddresses = HashSet<BotAddress>()
 
         selectedBotListModel.elements().toList().forEach {
-            // FIXME!
+            selectedBotAddresses.add(it.botAddress)
+        }
+        Client.startGame(gameTypeComboBox.gameSetup, selectedBotAddresses)
+    }
+
+    inner class BotInfoCellRenderer : JLabel(), ListCellRenderer<BotInfo> {
+
+        init {
+            isOpaque = true
         }
 
-        Client.startGame(gameTypeComboBox.gameSetup, selectedBotAddresses)
+        override fun getListCellRendererComponent(
+                list: JList<out BotInfo>?, value: BotInfo?, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
+
+            text = value?.displayText
+            border = EmptyBorder(1, 1, 1, 1)
+
+            if (isSelected) {
+                background = list?.selectionBackground
+                foreground = list?.selectionForeground
+            } else {
+                background = list?.background
+                foreground = list?.foreground
+            }
+            font = list?.font
+
+            return this
+        }
     }
 }
