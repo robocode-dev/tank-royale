@@ -30,8 +30,8 @@ object BattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("battle_
 
         onClosing {
             // Explicit cleanup in order to remove disposables on panels as finalize() seems to never be called
-            selectBotsPanel.dispose()
-            setupRulesPanel.dispose()
+            selectBotsPanel.close()
+            setupRulesPanel.close()
         }
     }
 

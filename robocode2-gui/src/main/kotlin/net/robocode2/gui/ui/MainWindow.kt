@@ -8,7 +8,7 @@ import java.awt.EventQueue
 import javax.swing.JFrame
 import javax.swing.UIManager
 
-object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")) {
+object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCloseable {
 
     private val disposables = ArrayList<Disposable>()
 
@@ -33,7 +33,12 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")) {
             dialog.isVisible = true
         })
 
-        onClosing { disposables.forEach { it.dispose() } }
+        onClosing { close() }
+    }
+
+    override fun close() {
+        disposables.forEach { it.dispose() }
+        disposables.clear()
     }
 }
 

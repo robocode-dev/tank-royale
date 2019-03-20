@@ -19,7 +19,7 @@ import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Observable
 import javax.swing.*
 
-class SetupRulesPanel : JPanel(MigLayout("fill")) {
+class SetupRulesPanel : JPanel(MigLayout("fill")), AutoCloseable {
 
     // Private events
     private val onOk = Observable<JButton>()
@@ -100,8 +100,9 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         updateFieldsForGameType()
     }
 
-    fun dispose() {
+    override fun close() {
         disposables.forEach { it.dispose() }
+        disposables.clear()
     }
 
     private fun saveSettings() {

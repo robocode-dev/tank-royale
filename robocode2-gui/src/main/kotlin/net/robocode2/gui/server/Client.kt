@@ -10,7 +10,7 @@ import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Observable
 import java.net.URI
 
-object Client {
+object Client : AutoCloseable {
 
     val defaultUri = URI("ws://localhost:50000")
 
@@ -27,6 +27,13 @@ object Client {
     private var games: Set<GameSetup> = HashSet()
     private var bots: Set<BotInfo> = HashSet()
 
+    override fun close() {
+        disposables.forEach { it.dispose() }
+        disposables.clear()
+
+        if (websocket.isOpen()) websocket.close()
+    }
+
     fun connect(uri: URI) {
         websocket = WebSocketClient(uri)
 
@@ -40,11 +47,6 @@ object Client {
         } catch (e: RuntimeException) {
             disposables.forEach { it.dispose() }
         }
-    }
-
-    fun disconnect() {
-        websocket.close()
-        disposables.forEach { it.dispose() }
     }
 
     fun isConnected() = websocket.isOpen()
@@ -66,9 +68,9 @@ object Client {
         }
     }
 
-    private fun handleServerHandshake(handshake: ServerHandshake) {
-        clientKey = handshake.clientKey
-        games = handshake.games
+    private fun handleServerHandshake(serverHandshake: ServerHandshake) {
+        clientKey = serverHandshake.clientKey
+        games = serverHandshake.games
 
         val handshake = ControllerHandshake(
                 clientKey = this.clientKey ?: throw IllegalStateException("client key cannot be null"),

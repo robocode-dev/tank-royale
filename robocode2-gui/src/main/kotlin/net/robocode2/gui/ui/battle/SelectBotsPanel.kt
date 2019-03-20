@@ -13,7 +13,7 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
-class SelectBotsPanel : JPanel(MigLayout("fill")) {
+class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
 
     // Private events
     private val onStartBattle = Observable<JButton>()
@@ -111,8 +111,9 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             if (!Client.isConnected()) {
                 Client.connect(Client.defaultUri) // FIXME: Use URI from text field + reset button to default URI
             } else {
-                Client.disconnect()
+                Client.close()
             }
+            updateConnectionState()
         }
 
         onCancel.subscribe { BattleDialog.dispose() }
@@ -159,13 +160,11 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         onStartBattle.subscribe { startGame() }
     }
 
-    fun dispose() {
+    override fun close() {
         disposables.forEach { it.dispose() }
-        Client.disconnect()
-    }
+        disposables.clear()
 
-    protected fun finalize() {
-        dispose()
+        Client.close()
     }
 
     private fun updateConnectionState() {
@@ -185,6 +184,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         val selectedBotAddresses = HashSet<BotAddress>()
 
         selectedBotListModel.elements().toList().forEach {
+            // FIXME!
         }
 
         Client.startGame(gameTypeComboBox.gameSetup, selectedBotAddresses)
