@@ -1,4 +1,6 @@
-package net.robocode2.gui.model
+package net.robocode2.gui.model.event
+
+import net.robocode2.gui.model.types.Point
 
 data class BulletState(
         val bulletId: Int,

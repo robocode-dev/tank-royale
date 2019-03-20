@@ -1,7 +1,5 @@
 package net.robocode2.gui.model.comm
 
-import net.robocode2.gui.model.ClientContent
-import net.robocode2.gui.model.ContentType
 import net.robocode2.gui.model.GameSetup
 
 class ServerHandshake(

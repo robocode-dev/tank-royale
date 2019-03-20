@@ -1,4 +1,4 @@
-package net.robocode2.gui.model
+package net.robocode2.gui.model.comm
 
 enum class ContentType(val type: String) {
     // Messages
@@ -23,9 +23,12 @@ enum class ContentType(val type: String) {
     PAUSE_GAME("pauseGame"),
     RESUME_GAME("resumeGame"),
     // Observer/controller Events
-    GAME_ABORTED_EVENT("gameAbortedEventForObserver"),
+    GAME_STARTED_EVENT("gameStartedEventForObserver"),
     GAME_ENDED_EVENT("gameEndedEventForObserver"),
+    GAME_ABORTED_EVENT("gameAbortedEventForObserver"),
     GAME_PAUSED_EVENT("gamePausedEventForObserver"),
     GAME_RESUMED_EVENT("gameResumedEventForObserver"),
-    GAME_STARTED_EVENT("gameStartedEventForObserver"),
+
+    PARTICIPANT("participant"),
+    BOT_RESULTS("botResultsForBot"),
 }

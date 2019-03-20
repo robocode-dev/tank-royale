@@ -1,11 +1,12 @@
 package net.robocode2.gui.server
 
 import com.beust.klaxon.Klaxon
-import net.robocode2.gui.model.Content
 import net.robocode2.gui.model.GameSetup
-import net.robocode2.gui.model.TickEvent
 import net.robocode2.gui.model.comm.*
 import net.robocode2.gui.model.control.StartGame
+import net.robocode2.gui.model.event.GameEndedEvent
+import net.robocode2.gui.model.event.GameStartedEvent
+import net.robocode2.gui.model.event.TickEvent
 import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Observable
 import java.net.URI
@@ -63,7 +64,9 @@ object Client : AutoCloseable {
         when (content) {
             is ServerHandshake -> handleServerHandshake(content)
             is BotListUpdate -> handleBotListUpdate(content)
+            is GameStartedEvent -> println("### GAME STARTED ###")
             is TickEvent -> println("### TICK EVENT ###")
+            is GameEndedEvent -> println("### GAME ENDED ###")
             else -> throw IllegalArgumentException("Unknown content type: $content")
         }
     }

@@ -1,4 +1,7 @@
-package net.robocode2.gui.model
+package net.robocode2.gui.model.event
+
+import net.robocode2.gui.model.comm.Content
+import net.robocode2.gui.model.comm.ContentType
 
 class TickEvent(
         val roundState: RoundState,

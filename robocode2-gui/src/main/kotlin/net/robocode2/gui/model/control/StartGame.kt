@@ -1,7 +1,7 @@
 package net.robocode2.gui.model.control
 
-import net.robocode2.gui.model.ClientContent
-import net.robocode2.gui.model.ContentType
+import net.robocode2.gui.model.comm.ClientContent
+import net.robocode2.gui.model.comm.ContentType
 import net.robocode2.gui.model.GameSetup
 import net.robocode2.gui.model.comm.BotAddress
 
