@@ -93,7 +93,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")), AutoCloseable {
         inactivityTurnsTextField.setInputVerifier { inactivityTurnsVerifier() }
 
         onOk.subscribe { saveSettings() }
-        onCancel.subscribe {}
+        onCancel.subscribe { BattleDialog.dispose() }
         onResetGameType.subscribe { gameTypeComboBox.resetGameType() }
 
         gameTypeComboBox.onGameTypeChanged.subscribe { updateFieldsForGameType() }

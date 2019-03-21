@@ -193,6 +193,8 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
         selectedBotListModel.elements().toList().forEach {
             selectedBotAddresses.add(it.botAddress)
         }
+        disposables.add(Client.onGameStarted.subscribe { BattleDialog.dispose() })
+
         Client.startGame(gameTypeComboBox.gameSetup, selectedBotAddresses)
     }
 

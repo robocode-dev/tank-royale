@@ -19,6 +19,7 @@ object Client : AutoCloseable {
     val onConnected = Observable<Unit>()
     val onDisconnected = Observable<Unit>()
     val onBotListUpdate = Observable<BotListUpdate>()
+    val onGameStarted = Observable<GameStartedEvent>()
 
     private val disposables = ArrayList<Disposable>()
 
@@ -64,7 +65,7 @@ object Client : AutoCloseable {
         when (content) {
             is ServerHandshake -> handleServerHandshake(content)
             is BotListUpdate -> handleBotListUpdate(content)
-            is GameStartedEvent -> println("### GAME STARTED ###")
+            is GameStartedEvent -> handleGameStarted(content)
             is TickEvent -> println("### TICK EVENT ###")
             is GameEndedEvent -> println("### GAME ENDED ###")
             else -> throw IllegalArgumentException("Unknown content type: $content")
@@ -87,5 +88,10 @@ object Client : AutoCloseable {
     private fun handleBotListUpdate(botListUpdate: BotListUpdate) {
         bots = botListUpdate.bots
         onBotListUpdate.notify(botListUpdate)
+    }
+
+    private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
+        println("### GAME STARTED EVENT ###")
+        onGameStarted.notify(gameStartedEvent)
     }
 }
