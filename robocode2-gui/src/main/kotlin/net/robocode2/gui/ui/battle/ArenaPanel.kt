@@ -1,5 +1,8 @@
 package net.robocode2.gui.ui.battle
 
+import net.robocode2.gui.client.Client
+import net.robocode2.gui.model.event.*
+import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Graphics2DState
 import java.awt.*
 import java.awt.event.MouseWheelEvent
@@ -7,17 +10,54 @@ import java.awt.geom.*
 import javax.swing.JPanel
 
 
-class ArenaPanel : JPanel() {
+class ArenaPanel : JPanel(), AutoCloseable {
 
     private var scale = 1.0
 
     private val CIRCLE_SHAPE = Area(Ellipse2D.Double(-0.5, -0.5, 1.0, 1.0))
 
-    init {
-        addMouseWheelListener { e -> if (e != null) onMouseWheel(e) }
+    private val disposables = ArrayList<Disposable>()
+
+
+    private companion object State {
+        var bots: Set<BotState> = HashSet()
     }
 
-    fun onMouseWheel(e: MouseWheelEvent) {
+    private val state = State
+
+    init {
+        addMouseWheelListener { e -> if (e != null) onMouseWheel(e) }
+
+        disposables.add(Client.onGameStarted.subscribe { onGameStarted(it) })
+        disposables.add(Client.onGameEnded.subscribe { onGameEnded(it) })
+        disposables.add(Client.onGameAborted.subscribe { onGameAborted(it) })
+        disposables.add(Client.onTickEvent.subscribe { onTickEvent(it) } )
+    }
+
+    override fun close() {
+        disposables.forEach { it.dispose() }
+        disposables.clear()
+    }
+
+    private fun onGameStarted(gameStartedEvent: GameStartedEvent) {
+        // TODO
+    }
+
+    private fun onGameEnded(gameEndedEvent: GameEndedEvent) {
+        // TODO
+    }
+
+    private fun onGameAborted(gameAbortedEvent: GameAbortedEvent) {
+        // TODO
+    }
+
+    private fun onTickEvent(tickEvent: TickEvent) {
+        state.bots = tickEvent.botStates
+
+        // TODO
+    }
+
+    private fun onMouseWheel(e: MouseWheelEvent) {
         var newScale = scale
         if (e.unitsToScroll > 0) {
             newScale *= 1.2
@@ -44,10 +84,25 @@ class ArenaPanel : JPanel() {
 
         g.scale(scale, scale)
 
+        drawBots(g)
+/*
         drawBotBody(g,18.5, 18.5, 0.0, Color.BLUE)
         drawGun(g, 18.5, 18.5, 0.0)
         drawRadar(g,18.5, 18.5, 45.0, Color.RED)
         drawScanArc(g, 18.5, 18.5, 45.0, 45.0, Color.WHITE)
+*/
+    }
+
+    private fun drawBots(g: Graphics2D) {
+        state.bots.forEach() {
+            val x = it.position.x
+            val y = it.position.y
+
+            drawBotBody(g,x, y, it.direction, Color.BLUE)
+            drawGun(g, x, y, it.gunDirection)
+            drawRadar(g,x, y, it.radarDirection, Color.RED)
+            drawScanArc(g, x, y, it.radarDirection, it.radarSweep, Color.WHITE)
+        }
     }
 
     private fun clearCanvas(g: Graphics) {

@@ -1,11 +1,11 @@
 package net.robocode2.gui.ui.battle
 
 import net.miginfocom.swing.MigLayout
+import net.robocode2.gui.client.Client
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.model.comm.BotAddress
 import net.robocode2.gui.model.comm.BotInfo
-import net.robocode2.gui.server.Client
 import net.robocode2.gui.ui.ResourceBundles.STRINGS
 import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Observable
@@ -115,10 +115,10 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
         connectButton.addActionListener { onConnectButtonClicked.notify(connectButton) }
 
         onConnectButtonClicked.subscribe {
-            if (!Client.isConnected()) {
-                Client.connect(Client.defaultUri) // FIXME: Use URI from text field + reset button to default URI
-            } else {
+            if (Client.isConnected()) {
                 Client.close()
+            } else {
+                Client.connect(Client.defaultUri) // FIXME: Use URI from text field + reset button to default URI
             }
             updateConnectionState()
         }
@@ -161,7 +161,11 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
         })
 
         disposables.add(Client.onConnected.subscribe { updateConnectionState() })
-        disposables.add(Client.onDisconnected.subscribe { updateConnectionState() })
+        disposables.add(Client.onDisconnected.subscribe {
+            updateConnectionState()
+            availableBotListModel.clear()
+            selectedBotListModel.clear()
+        })
         disposables.add(Client.onBotListUpdate.subscribe { updateBotList() })
 
         onStartBattle.subscribe { startGame() }

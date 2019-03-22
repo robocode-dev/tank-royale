@@ -19,7 +19,5 @@ data class GameSetup(
         var turnTimeout: Int,
         var isTurnTimeoutLocked: Boolean,
         var readyTimeout: Int,
-        var isReadyTimeoutLocked: Boolean,
-        var delayedObserverTurns: Int,
-        var isDelayedObserverTurnsLocked: Boolean
+        var isReadyTimeoutLocked: Boolean
 )

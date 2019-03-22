@@ -1,4 +1,4 @@
-package net.robocode2.gui.server
+package net.robocode2.gui.client
 
 import com.beust.klaxon.Klaxon
 import net.robocode2.gui.utils.Observable
@@ -6,7 +6,7 @@ import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 
-class WebSocketClient(private val uri: URI) {
+class WebSocketClient(private val uri: URI): AutoCloseable {
 
     val onOpen = Observable<Unit>()
     val onClose = Observable<Unit>()
@@ -19,7 +19,7 @@ class WebSocketClient(private val uri: URI) {
         client.connect()
     }
 
-    fun close() {
+    override fun close() {
         client.close()
     }
 
@@ -33,7 +33,7 @@ class WebSocketClient(private val uri: URI) {
 
         override fun onOpen(serverHandshake: ServerHandshake?) {
             onOpen.notify(Unit)
-            println("onOpen: ")
+            println("onOpen")
         }
 
         override fun onClose(code: Int, reason: String, remote: Boolean) {

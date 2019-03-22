@@ -1,9 +1,10 @@
-package net.robocode2.gui.server
+package net.robocode2.gui.client
 
 import com.beust.klaxon.Klaxon
 import net.robocode2.gui.model.GameSetup
 import net.robocode2.gui.model.comm.*
 import net.robocode2.gui.model.control.StartGame
+import net.robocode2.gui.model.event.GameAbortedEvent
 import net.robocode2.gui.model.event.GameEndedEvent
 import net.robocode2.gui.model.event.GameStartedEvent
 import net.robocode2.gui.model.event.TickEvent
@@ -18,8 +19,14 @@ object Client : AutoCloseable {
     // public events
     val onConnected = Observable<Unit>()
     val onDisconnected = Observable<Unit>()
+
     val onBotListUpdate = Observable<BotListUpdate>()
+
     val onGameStarted = Observable<GameStartedEvent>()
+    val onGameEnded = Observable<GameEndedEvent>()
+    val onGameAborted = Observable<GameAbortedEvent>()
+
+    val onTickEvent = Observable<TickEvent>()
 
     private val disposables = ArrayList<Disposable>()
 
@@ -34,6 +41,8 @@ object Client : AutoCloseable {
         disposables.clear()
 
         if (websocket.isOpen()) websocket.close()
+
+        onDisconnected.notify(Unit)
     }
 
     fun connect(uri: URI) {
@@ -66,8 +75,9 @@ object Client : AutoCloseable {
             is ServerHandshake -> handleServerHandshake(content)
             is BotListUpdate -> handleBotListUpdate(content)
             is GameStartedEvent -> handleGameStarted(content)
-            is TickEvent -> println("### TICK EVENT ###")
-            is GameEndedEvent -> println("### GAME ENDED ###")
+            is GameEndedEvent -> handleGameEnded(content)
+            is GameAbortedEvent -> handleGameAborted(content)
+            is TickEvent -> handleTickEvent(content)
             else -> throw IllegalArgumentException("Unknown content type: $content")
         }
     }
@@ -93,5 +103,20 @@ object Client : AutoCloseable {
     private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
         println("### GAME STARTED EVENT ###")
         onGameStarted.notify(gameStartedEvent)
+    }
+
+    private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {
+        println("### GAME ENDED EVENT ###")
+        onGameEnded.notify(gameEndedEvent)
+    }
+
+    private fun handleGameAborted(gameAbortedEvent: GameAbortedEvent) {
+        println("### GAME ABORTED EVENT ###")
+        onGameAborted.notify(gameAbortedEvent)
+    }
+
+    private fun handleTickEvent(tickEvent: TickEvent) {
+        println("### TICK EVENT ###")
+        onTickEvent.notify(tickEvent)
     }
 }

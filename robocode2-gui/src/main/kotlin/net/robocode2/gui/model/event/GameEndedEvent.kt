@@ -6,4 +6,4 @@ import net.robocode2.gui.model.comm.ContentType
 class GameEndedEvent(
         val numberOfRounds: Int,
         val results: Set<BotResults>
-) : Content(type = ContentType.BOT_RESULTS.type)
+) : Content(type = ContentType.GAME_ENDED_EVENT.type)

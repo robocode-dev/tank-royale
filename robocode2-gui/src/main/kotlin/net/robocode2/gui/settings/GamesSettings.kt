@@ -25,9 +25,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         turnTimeout = 30,
                         isTurnTimeoutLocked = false,
                         readyTimeout = 1000,
-                        isReadyTimeoutLocked = false,
-                        delayedObserverTurns = 0,
-                        isDelayedObserverTurnsLocked = false
+                        isReadyTimeoutLocked = false
                 ),
                 GameType.CLASSIC.type to GameSetup(
                         gameType = GameType.CLASSIC.type,
@@ -48,9 +46,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         turnTimeout = 30,
                         isTurnTimeoutLocked = false,
                         readyTimeout = 1000,
-                        isReadyTimeoutLocked = false,
-                        delayedObserverTurns = 0,
-                        isDelayedObserverTurnsLocked = false
+                        isReadyTimeoutLocked = false
                 ),
                 GameType.MELEE.type to GameSetup(
                         gameType = GameType.MELEE.type,
@@ -71,9 +67,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         turnTimeout = 30,
                         isTurnTimeoutLocked = false,
                         readyTimeout = 1000,
-                        isReadyTimeoutLocked = false,
-                        delayedObserverTurns = 0,
-                        isDelayedObserverTurnsLocked = false
+                        isReadyTimeoutLocked = false
                 ),
                 GameType.ONE_VS_ONE.type to GameSetup(
                         gameType = GameType.ONE_VS_ONE.type,
@@ -94,9 +88,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         turnTimeout = 30,
                         isTurnTimeoutLocked = false,
                         readyTimeout = 1000,
-                        isReadyTimeoutLocked = false,
-                        delayedObserverTurns = 0,
-                        isDelayedObserverTurnsLocked = false
+                        isReadyTimeoutLocked = false
                 )
         )
 
