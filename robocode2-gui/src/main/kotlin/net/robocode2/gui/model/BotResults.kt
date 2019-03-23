@@ -1,7 +1,7 @@
-package net.robocode2.gui.model.event
+package net.robocode2.gui.model
 
-import net.robocode2.gui.model.comm.Content
-import net.robocode2.gui.model.comm.ContentType
+import net.robocode2.gui.model.Content
+import net.robocode2.gui.model.ContentType
 
 class BotResults(
         id: Int,

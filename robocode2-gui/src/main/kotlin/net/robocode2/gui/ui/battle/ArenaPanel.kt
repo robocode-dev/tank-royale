@@ -1,7 +1,7 @@
 package net.robocode2.gui.ui.battle
 
 import net.robocode2.gui.client.Client
-import net.robocode2.gui.model.event.*
+import net.robocode2.gui.model.*
 import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Graphics2DState
 import java.awt.*

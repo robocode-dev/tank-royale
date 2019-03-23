@@ -4,8 +4,8 @@ import net.miginfocom.swing.MigLayout
 import net.robocode2.gui.client.Client
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
-import net.robocode2.gui.model.comm.BotAddress
-import net.robocode2.gui.model.comm.BotInfo
+import net.robocode2.gui.model.BotAddress
+import net.robocode2.gui.model.BotInfo
 import net.robocode2.gui.ui.ResourceBundles.STRINGS
 import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Observable

@@ -1,4 +1,4 @@
-package net.robocode2.gui.model.event
+package net.robocode2.gui.model
 
 data class RoundState(
         val roundNumber: Int,

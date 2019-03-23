@@ -1,6 +1,5 @@
-package net.robocode2.gui.model.comm
+package net.robocode2.gui.model
 
-import net.robocode2.gui.model.event.*
 import kotlin.reflect.KClass
 
 class ContentAdapter: com.beust.klaxon.TypeAdapter<Content> {

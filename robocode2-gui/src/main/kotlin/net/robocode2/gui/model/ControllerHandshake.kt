@@ -1,4 +1,4 @@
-package net.robocode2.gui.model.comm
+package net.robocode2.gui.model
 
 class ControllerHandshake(
         clientKey: String,

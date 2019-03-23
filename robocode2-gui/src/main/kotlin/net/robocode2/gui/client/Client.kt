@@ -1,13 +1,12 @@
 package net.robocode2.gui.client
 
 import com.beust.klaxon.Klaxon
-import net.robocode2.gui.model.GameSetup
-import net.robocode2.gui.model.comm.*
-import net.robocode2.gui.model.control.StartGame
-import net.robocode2.gui.model.event.GameAbortedEvent
-import net.robocode2.gui.model.event.GameEndedEvent
-import net.robocode2.gui.model.event.GameStartedEvent
-import net.robocode2.gui.model.event.TickEvent
+import net.robocode2.gui.model.*
+import net.robocode2.gui.model.StartGame
+import net.robocode2.gui.model.GameAbortedEvent
+import net.robocode2.gui.model.GameEndedEvent
+import net.robocode2.gui.model.GameStartedEvent
+import net.robocode2.gui.model.TickEvent
 import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Observable
 import java.net.URI
@@ -65,7 +64,8 @@ object Client : AutoCloseable {
     fun getAvailableBots(): Set<BotInfo> = bots
 
     fun startGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>) {
-        val startGame: StartGame = StartGame(clientKey ?: return, gameSetup, botAddresses)
+        val startGame: StartGame = StartGame(clientKey
+                ?: return, gameSetup, botAddresses)
         websocket.send(startGame)
     }
 

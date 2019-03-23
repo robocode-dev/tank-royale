@@ -1,4 +1,4 @@
-package net.robocode2.gui.model.comm
+package net.robocode2.gui.model
 
 import com.beust.klaxon.TypeFor
 

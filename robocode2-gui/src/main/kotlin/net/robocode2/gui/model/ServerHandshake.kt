@@ -1,6 +1,4 @@
-package net.robocode2.gui.model.comm
-
-import net.robocode2.gui.model.GameSetup
+package net.robocode2.gui.model
 
 class ServerHandshake(
         clientKey: String,
