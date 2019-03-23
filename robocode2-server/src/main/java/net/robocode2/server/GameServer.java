@@ -309,7 +309,10 @@ public final class GameServer {
 		}
 		System.out.println("#### UPDATE GAME STATE EVENT #####");
 
-		if (runningState != RunningState.GAME_STOPPED) {
+		if (runningState == RunningState.GAME_STOPPED) {
+			// Stop timer for updating game state
+			turnTimer.cancel();
+		} else {
 			// Update game state
 			gameState = updateGameState();
 
