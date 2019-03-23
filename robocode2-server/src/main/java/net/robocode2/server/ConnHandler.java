@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.google.gson.JsonSyntaxException;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -214,98 +215,106 @@ public final class ConnHandler {
 			System.out.println("onMessage(): " + conn.getRemoteSocketAddress() + ", message: " + message);
 
 			Gson gson = new Gson();
-			JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
+			try {
+				JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
 
-			JsonElement jsonType = jsonObject.get(TYPE);
-			if (jsonType != null) {
-				try {
-					Message.Type type = Message.Type.fromValue(jsonType.getAsString());
-					System.out.println("Handling message: " + type);
+				JsonElement jsonType = jsonObject.get(TYPE);
+				if (jsonType != null) {
+					try {
+						Message.Type type = Message.Type.fromValue(jsonType.getAsString());
+						System.out.println("Handling message: " + type);
 
-					JsonElement jsonClientKey = jsonObject.get(CLIENT_KEY);
-					if (jsonClientKey == null) {
-						System.out.println("Client key is missing in message");
-						return;
-					}
-					String clientKeyNotFinal = jsonClientKey.getAsString();
-					if (!connections.keySet().contains(clientKeyNotFinal)) {
-						System.out.println("Client key not recognized, ignoring: " + clientKeyNotFinal);
-						return;
-					}
-					final String clientKey = clientKeyNotFinal;
+						JsonElement jsonClientKey = jsonObject.get(CLIENT_KEY);
+						if (jsonClientKey == null) {
+							System.out.println("Client key is missing in message");
+							return;
+						}
+						String clientKeyNotFinal = jsonClientKey.getAsString();
+						if (!connections.keySet().contains(clientKeyNotFinal)) {
+							System.out.println("Client key not recognized, ignoring: " + clientKeyNotFinal);
+							return;
+						}
+						final String clientKey = clientKeyNotFinal;
 
-					switch (type) {
-					case BOT_HANDSHAKE: {
-						BotHandshake handshake = gson.fromJson(message, BotHandshake.class);
-						botConnections.put(clientKey, conn);
-						botHandshakes.put(clientKey, handshake);
+						switch (type) {
+							case BOT_HANDSHAKE: {
+								BotHandshake handshake = gson.fromJson(message, BotHandshake.class);
+								botConnections.put(clientKey, conn);
+								botHandshakes.put(clientKey, handshake);
 
-						executorService.submit(() -> listener.onBotJoined(clientKey, handshake));
-						break;
-					}
-					case OBSERVER_HANDSHAKE: {
-						ObserverHandshake handshake = gson.fromJson(message, ObserverHandshake.class);
-						observerAndControllerConnections.put(clientKey, conn);
-						observerHandshakes.put(clientKey, handshake);
+								executorService.submit(() -> listener.onBotJoined(clientKey, handshake));
+								break;
+							}
+							case OBSERVER_HANDSHAKE: {
+								ObserverHandshake handshake = gson.fromJson(message, ObserverHandshake.class);
+								observerAndControllerConnections.put(clientKey, conn);
+								observerHandshakes.put(clientKey, handshake);
 
-						executorService.submit(() -> listener.onObserverJoined(clientKey, handshake));
-						break;
-					}
-					case CONTROLLER_HANDSHAKE: {
-						ControllerHandshake handshake = gson.fromJson(message, ControllerHandshake.class);
-						controllerConnections.put(clientKey, conn);
-						controllerHandshakes.put(clientKey, handshake);
-						observerAndControllerConnections.put(clientKey, conn); // controller is also an observer
+								executorService.submit(() -> listener.onObserverJoined(clientKey, handshake));
+								break;
+							}
+							case CONTROLLER_HANDSHAKE: {
+								ControllerHandshake handshake = gson.fromJson(message, ControllerHandshake.class);
+								controllerConnections.put(clientKey, conn);
+								controllerHandshakes.put(clientKey, handshake);
+								observerAndControllerConnections.put(clientKey, conn); // controller is also an observer
 
-						executorService.submit(() -> listener.onControllerJoined(clientKey, handshake));
-						break;
-					}
-					case BOT_READY: {
-						executorService.submit(() -> listener.onBotReady(clientKey));
-						break;
-					}
-					case BOT_INTENT: {
-						BotIntent intent = gson.fromJson(message, BotIntent.class);
-						executorService.submit(() -> listener.onBotIntent(clientKey, intent));
-						break;
-					}
-					default:
-						notifyException(new IllegalStateException("Unhandled message type: " + type));
-					}
-				} catch (IllegalArgumentException e) {
-					Command.Type type = Command.Type.fromValue(jsonType.getAsString());
-					System.out.println("Handling command: " + type);
+								executorService.submit(() -> listener.onControllerJoined(clientKey, handshake));
+								break;
+							}
+							case BOT_READY: {
+								executorService.submit(() -> listener.onBotReady(clientKey));
+								break;
+							}
+							case BOT_INTENT: {
+								BotIntent intent = gson.fromJson(message, BotIntent.class);
+								executorService.submit(() -> listener.onBotIntent(clientKey, intent));
+								break;
+							}
+							default:
+								notifyException(new IllegalStateException("Unhandled message type: " + type));
+						}
+					} catch (IllegalArgumentException e) {
+						Command.Type type = Command.Type.fromValue(jsonType.getAsString());
+						System.out.println("Handling command: " + type);
 
-					String clientKey = jsonObject.get(CLIENT_KEY).getAsString();
-					if (!connections.keySet().contains(clientKey)) {
-						System.out.println("Client key not recognized, ignoring: " + clientKey);
-					}
+						JsonElement jsonClientKey = jsonObject.get(CLIENT_KEY);
+						if (jsonClientKey != null) {
+							String clientKey = jsonClientKey.getAsString();
+							if (!connections.keySet().contains(clientKey)) {
+								System.out.println("Client key not recognized, ignoring: " + clientKey);
+							}
+						} else {
+							System.out.println("Client key not specified, ignoring");
+						}
+						switch (type) {
+							case START_GAME: {
+								StartGame startGame = gson.fromJson(message, StartGame.class);
+								GameSetup gameSetup = startGame.getGameSetup();
+								Collection<BotAddress> botAddresses = startGame.getBotAddresses();
+								executorService.submit(() -> listener.onStartGame(gameSetup, botAddresses));
+								break;
+							}
+							case STOP_GAME: {
+								executorService.submit(() -> listener.onAbortGame());
+								break;
+							}
+							case PAUSE_GAME: {
+								executorService.submit(() -> listener.onPauseGame());
+								break;
+							}
+							case RESUME_GAME: {
+								executorService.submit(() -> listener.onResumeGame());
+								break;
+							}
 
-					switch (type) {
-					case START_GAME: {
-						StartGame startGame = gson.fromJson(message, StartGame.class);
-						GameSetup gameSetup = startGame.getGameSetup();
-						Collection<BotAddress> botAddresses = startGame.getBotAddresses();
-						executorService.submit(() -> listener.onStartGame(gameSetup, botAddresses));
-						break;
-					}
-					case STOP_GAME: {
-						executorService.submit(() -> listener.onAbortGame());
-						break;
-					}
-					case PAUSE_GAME: {
-						executorService.submit(() -> listener.onPauseGame());
-						break;
-					}
-					case RESUME_GAME: {
-						executorService.submit(() -> listener.onResumeGame());
-						break;
-					}
-
-					default:
-						notifyException(new IllegalStateException("Unhandled command type: " + type));
+							default:
+								notifyException(new IllegalStateException("Unhandled command type: " + type));
+						}
 					}
 				}
+			} catch (JsonSyntaxException e2) {
+				System.err.println("Invalid message: " + message);
 			}
 		}
 

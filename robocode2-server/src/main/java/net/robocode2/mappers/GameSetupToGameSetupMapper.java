@@ -23,7 +23,6 @@ public final class GameSetupToGameSetupMapper {
 		setup.setInactivityTurns(gameSetup.getInactivityTurns());
 		setup.setTurnTimeout(gameSetup.getTurnTimeout());
 		setup.setReadyTimeout(gameSetup.getReadyTimeout());
-		setup.setDelayedObserverTurns(gameSetup.getDelayedObserverTurns());
 
 		setup.setIsArenaWidthLocked(gameSetup.isArenaWidthLocked());
 		setup.setIsArenaHeightLocked(gameSetup.isArenaHeightLocked());
@@ -34,7 +33,6 @@ public final class GameSetupToGameSetupMapper {
 		setup.setIsInactivityTurnsLocked(gameSetup.isInactivityTurnsLocked());
 		setup.setIsTurnTimeoutLocked(gameSetup.isTurnTimeoutLocked());
 		setup.setIsReadyTimeoutLocked(gameSetup.isReadyTimeoutLocked());
-		setup.setIsDelayedObserverTurnsLocked(gameSetup.isDelayedObserverTurnsLocked());
 
 		return setup;
 	}
@@ -71,9 +69,6 @@ public final class GameSetupToGameSetupMapper {
 		}
 		if (gameSetup.getReadyTimeout() != null) {
 			builder.readyTimeout(gameSetup.getReadyTimeout());
-		}
-		if (gameSetup.getDelayedObserverTurns() != null) {
-			builder.delayedObserverTurns(gameSetup.getDelayedObserverTurns());
 		}
 		return builder.build();
 	}

@@ -49,9 +49,6 @@ public final class GameServer {
 
 	private ModelUpdater modelUpdater;
 
-	private int delayedObserverTurnNumber;
-	private List<BotResultsForObserver> resultsForObservers;
-
 	private final Gson gson = new Gson();
 
 	private GameServer() {
@@ -317,24 +314,33 @@ public final class GameServer {
 			if (gameState.isGameEnded()) {
 				runningState = RunningState.GAME_STOPPED;
 
-				System.out.println("#### GAME ENDED FOR BOTS #####");
+				System.out.println("#### GAME ENDED #####");
+
+				// Stop timer for updating game state
+				turnTimer.cancel();
 
 				modelUpdater.calculatePlacements();
 
+				// End game for bots
 				GameEndedEventForBot endEventForBot = new GameEndedEventForBot();
 				endEventForBot.setType(GameEndedEventForObserver.Type.GAME_ENDED_EVENT_FOR_BOT);
 				endEventForBot.setNumberOfRounds(modelUpdater.getNumberOfRounds());
 				endEventForBot.setResults(getResultsForBots());
 				sendMessageToBots(gson.toJson(endEventForBot));
 
-				// Store result for observers for later (before score is reset)
-				resultsForObservers = getResultsForObservers();
+				// End game for observers
+				GameEndedEventForObserver endEventForObserver = new GameEndedEventForObserver();
+				endEventForObserver.setType(GameEndedEventForObserver.Type.GAME_ENDED_EVENT_FOR_OBSERVER);
+				endEventForObserver.setNumberOfRounds(modelUpdater.getNumberOfRounds());
+				endEventForObserver.setResults(getResultsForObservers()); // Use the stored score!
+				sendMessageToObservers(gson.toJson(endEventForObserver));
 
+				// runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN; // TODO: Correct?
 			} else {
 				// Clear bot intents
 				botIntents.clear();
 
-				// Send tick to bots
+				// Send tick
 
 				Round round = gameState.getLastRound();
 				if (round != null) {
@@ -348,52 +354,10 @@ public final class GameServer {
 								send(botKey, msg);
 							}
 						}
+						TickEventForObserver gameTickForObserver = TurnToGameTickForObserverMapper.map(round, turn);
+						sendMessageToObservers(gson.toJson(gameTickForObserver));
 					}
 				}
-			}
-		}
-
-		// Send delayed tick to observers
-
-		Round observerRound = gameState.getLastRound();
-		if (observerRound != null) {
-			Turn observerTurn = observerRound.getLastTurn();
-
-			if (gameState.isGameEnded() && runningState == RunningState.GAME_STOPPED) {
-				delayedObserverTurnNumber++;
-				if (observerTurn != null && delayedObserverTurnNumber == observerTurn.getTurnNumber()) {
-
-					System.out.println("#### GAME ENDED FOR OBSERVERS #####");
-
-					// Stop timer for updating game state
-					turnTimer.cancel();
-
-					// End game for bots
-					GameEndedEventForObserver endEventForObserver = new GameEndedEventForObserver();
-					endEventForObserver.setType(GameEndedEventForObserver.Type.GAME_ENDED_EVENT_FOR_OBSERVER);
-					endEventForObserver.setNumberOfRounds(modelUpdater.getNumberOfRounds());
-					endEventForObserver.setResults(resultsForObservers); // Use the stored score!
-					sendMessageToObservers(gson.toJson(endEventForObserver));
-
-//					runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN; // TODO: Correct?
-				}
-			} else if (observerTurn != null) {
-				delayedObserverTurnNumber = observerTurn.getTurnNumber() - gameSetup.getDelayedObserverTurns();
-				if (delayedObserverTurnNumber < 0) {
-					int delayedRoundNumber = observerRound.getRoundNumber() - 1;
-					if (delayedRoundNumber >= 0 && gameState.getRounds().size() < delayedRoundNumber) {
-						observerRound = gameState.getRounds().get(delayedRoundNumber);
-						delayedObserverTurnNumber += observerRound.getTurns().size();
-					}
-				}
-			}
-			if (delayedObserverTurnNumber >= 0 && delayedObserverTurnNumber < observerRound.getTurns().size()) {
-				observerTurn = observerRound.getTurns().get(delayedObserverTurnNumber);
-
-				// Send game state as 'tick' to observers
-				TickEventForObserver gameTickForObserver =
-						TurnToGameTickForObserverMapper.map(observerRound, observerTurn);
-				sendMessageToObservers(gson.toJson(gameTickForObserver));
 			}
 		}
 	}

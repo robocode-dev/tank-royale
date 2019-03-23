@@ -76,9 +76,6 @@ public class GameSetup {
 	/** Ready timeout in milliseconds */
 	@Builder.Default int readyTimeout = DEFAULT_READY_TIMEOUT;
 
-	/** Number of delayed turns for observers */
-	@Builder.Default int delayedObserverTurns = DEFAULT_DELAYED_OBSERVER_TURNS;
-	
 
 	/** Flag specifying if the arena width is locked */
 	boolean arenaWidthLocked;
@@ -106,7 +103,4 @@ public class GameSetup {
 
 	/** Flag specifying if the ready timeout is locked */
 	boolean readyTimeoutLocked;
-
-	/** Flag specifying if the number of delayed turns for observers is locked */
-	boolean delayedObserverTurnsLocked;
 }
