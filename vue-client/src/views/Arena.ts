@@ -1,7 +1,6 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { Server } from "@/server/Server";
-import { Point } from "@/schemas/Types";
 import { BotState } from "@/schemas/States";
 import {
   EventType,
@@ -19,11 +18,13 @@ import { Modal } from "bootstrap-vue";
 import { BotResultsForObservers } from "@/schemas/BotResults";
 
 class Explosion {
-  public position: Point;
+  public x: number;
+  public y: number;
   public size: number;
 
-  constructor(position: Point, size: number) {
-    this.position = position;
+  constructor(x: number, y: number, size: number) {
+    this.x = x;
+    this.y = y;
     this.size = size;
   }
 }
@@ -168,13 +169,15 @@ export default class Arena extends Vue {
 
     this.lastTickEvent = event;
 
-    const botPositions: Point[] = [];
+    const botXs: number[] = [];
+    const botYs: number[] = [];
     const explosions: Explosion[] = [];
 
     if (this.lastTickEvent.botStates) {
       this.lastTickEvent.botStates.forEach((bot) => {
-        if (bot.id && bot.position) {
-          botPositions[bot.id] = bot.position;
+        if (bot.id && botXs && botYs) {
+          botXs[bot.id] = bot.x;
+          botYs[bot.id] = bot.x;
         }
       });
     }
@@ -183,16 +186,13 @@ export default class Arena extends Vue {
       this.lastTickEvent.events.forEach((evt) => {
         switch (evt.type) {
           case EventType.BotDeathEvent:
-            explosions.push(
-              new Explosion(botPositions[(evt as BotDeathEvent).victimId], 40),
-            );
+            const victimId = (evt as BotDeathEvent).victimId;
+            explosions.push(new Explosion(botXs[victimId], botYs[victimId], 40));
             break;
           case EventType.BulletHitBotEvent:
             const bulletHitBotEvent = evt as BulletHitBotEvent;
-            if (bulletHitBotEvent.bullet && bulletHitBotEvent.bullet.position) {
-              explosions.push(
-                new Explosion(bulletHitBotEvent.bullet.position, 15),
-              );
+            if (bulletHitBotEvent.bullet) {
+              explosions.push(new Explosion(bulletHitBotEvent.bullet.x, bulletHitBotEvent.bullet.y, 15));
             }
             break;
           case EventType.ScannedBotEvent:
@@ -225,31 +225,23 @@ export default class Arena extends Vue {
     if (this.lastTickEvent) {
       if (this.lastTickEvent.bulletStates) {
         this.lastTickEvent.bulletStates.forEach((bullet) => {
-          const pos = bullet.position;
-          if (pos && bullet.power) {
-            this.drawBullet(pos.x, pos.y, bullet.power);
+          if (bullet.power) {
+            this.drawBullet(bullet.x, bullet.y, bullet.power);
           }
         });
       }
 
       if (this.lastTickEvent.botStates) {
         this.lastTickEvent.botStates.forEach((bot) => {
-          const pos = bot.position;
-          if (pos) {
-            this.drawBot(pos.x, pos.y, bot);
-          }
+          this.drawBot(bot.x, bot.y, bot);
         });
       }
 
       if (this.lastTickEvent.events) {
-        this.lastTickEvent.events
-          .filter((event) => event.type === EventType.ScannedBotEvent)
-          .forEach((scanEvent) => {
-            const pos = (scanEvent as ScannedBotEvent).position;
-            if (pos) {
-              this.fillCircle(pos.x, pos.y, 18, "rgba(255, 255, 0, 1.0)");
-            }
-          });
+        this.lastTickEvent.events.filter((event) => event.type === EventType.ScannedBotEvent).forEach((scanEvent) => {
+          const scannedBotEvent = scanEvent as ScannedBotEvent;
+          this.fillCircle(scannedBotEvent.x, scannedBotEvent.y, 18, "rgba(255, 255, 0, 1.0)");
+        });
       }
 
       if (this.lastTickEvent.explosions) {
@@ -328,22 +320,8 @@ export default class Arena extends Vue {
 
     ctx.fillStyle = "red";
     ctx.beginPath();
-    ctx.arc(
-      10,
-      0,
-      15,
-      (7 * Math.PI) / 10,
-      Math.PI * 2 - (7 * Math.PI) / 10,
-      false,
-    );
-    ctx.arc(
-      12,
-      0,
-      13,
-      Math.PI * 2 - (7 * Math.PI) / 10,
-      (7 * Math.PI) / 10,
-      true,
-    );
+    ctx.arc(10, 0, 15, (7 * Math.PI) / 10, Math.PI * 2 - (7 * Math.PI) / 10, false);
+    ctx.arc(12, 0, 13, Math.PI * 2 - (7 * Math.PI) / 10, (7 * Math.PI) / 10, true);
     ctx.fill();
 
     ctx.beginPath();
@@ -353,12 +331,7 @@ export default class Arena extends Vue {
     ctx.restore();
   }
 
-  private drawScanField(
-    x: number,
-    y: number,
-    direction: number,
-    spreadAngle: number,
-  ) {
+  private drawScanField(x: number, y: number, direction: number, spreadAngle: number) {
     const angle = this.toRad(spreadAngle);
 
     const color = "rgba(0, 255, 255, 0.5)";

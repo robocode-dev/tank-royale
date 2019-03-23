@@ -1,5 +1,4 @@
 import { BotState, BulletState } from "./States";
-import { Point } from "./Types";
 import { BotResultsForObservers } from "./BotResults";
 
 export enum EventType {
@@ -83,12 +82,7 @@ export class BulletHitBotEvent extends Event {
   public damage: number;
   public energy: number;
 
-  constructor(
-    bullet: BulletState,
-    victimId: number,
-    damage: number,
-    energy: number,
-  ) {
+  constructor(bullet: BulletState, victimId: number, damage: number, energy: number) {
     super(EventType.BotDeathEvent);
     this.bullet = bullet;
     this.victimId = victimId;
@@ -98,5 +92,6 @@ export class BulletHitBotEvent extends Event {
 }
 
 export class ScannedBotEvent extends Event {
-  public position?: Point;
+  public x: number = 0;
+  public y: number = 0;
 }

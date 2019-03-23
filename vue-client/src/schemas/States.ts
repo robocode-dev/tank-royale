@@ -1,9 +1,8 @@
-import { Point } from "./Types";
-
 export interface BotState {
   id: number;
   energy: number;
-  position: Point;
+  x: number;
+  y: number;
   direction: number;
   gunDirection: number;
   radarDirection: number;
@@ -14,7 +13,8 @@ export interface BotState {
 export interface BulletState {
   ownerId: number;
   power: number;
-  position: Point;
+  x: number;
+  y: number;
   direction: number;
   speed: number;
 }
