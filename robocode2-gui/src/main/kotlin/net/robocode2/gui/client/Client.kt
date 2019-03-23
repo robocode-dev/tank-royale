@@ -101,12 +101,10 @@ object Client : AutoCloseable {
     }
 
     private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
-        println("### GAME STARTED EVENT ###")
         onGameStarted.notify(gameStartedEvent)
     }
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {
-        println("### GAME ENDED EVENT ###")
         onGameEnded.notify(gameEndedEvent)
     }
 
@@ -116,7 +114,6 @@ object Client : AutoCloseable {
     }
 
     private fun handleTickEvent(tickEvent: TickEvent) {
-        println("### TICK EVENT ###")
         onTickEvent.notify(tickEvent)
     }
 }

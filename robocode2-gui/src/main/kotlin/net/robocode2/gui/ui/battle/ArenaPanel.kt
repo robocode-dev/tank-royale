@@ -100,8 +100,8 @@ class ArenaPanel : JPanel(), AutoCloseable {
 
     private fun drawBots(g: Graphics2D) {
         state.bots.forEach() {
-            val x = it.position.x
-            val y = it.position.y
+            val x = it.x
+            val y = it.y
 
             drawBotBody(g,x, y, it.direction, Color.BLUE)
             drawGun(g, x, y, it.gunDirection)
@@ -112,7 +112,7 @@ class ArenaPanel : JPanel(), AutoCloseable {
 
     private fun drawBullets(g: Graphics2D) {
         state.bullets.forEach() {
-            drawBullet(g, it.position.x, it.position.y, it.power)
+            drawBullet(g, it.x, it.y, it.power)
         }
     }
 
