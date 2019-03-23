@@ -5,21 +5,24 @@ properties:
   energy:
     description: Energy level
     type: number
-  position:
-    description: Position (x, y)
-    $ref: ../types/point.yaml
+  x:
+    description: X coordinate
+    type: number
+  y:
+    description: Y coordinate
+    type: number
   direction:
     description: Driving direction in degrees
-    $ref: ../types/angle.yaml
+    type: number
   gunDirection:
     description: Gun direction in degrees
-    $ref: ../types/angle.yaml
+    type: number
   radarDirection:
     description: Radar direction in degrees
-    $ref: ../types/angle.yaml
+    type: number
   radarSweep:
     description: Radar sweep angle in degrees, i.e. angle between old and current direction
-    $ref: ../types/angle.yaml
+    type: number
   speed:
     description: Speed measured in units per turn
     type: number

@@ -11,7 +11,7 @@ properties:
   games:
     type: array
     items:
-      $ref: ../game-setup.yaml
+      $ref: game-setup.yaml
     minItems: 1
     uniqueItems: true
 required:

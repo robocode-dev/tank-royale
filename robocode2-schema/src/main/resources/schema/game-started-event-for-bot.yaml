@@ -6,7 +6,7 @@ extends:
 properties:
   gameSetup:
     description: Game setup
-    $ref: ../game-setup.yaml
+    $ref: game-setup.yaml
   myId:
     description: My ID, is an unique identifier for this bot
     type: integer

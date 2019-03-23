@@ -6,12 +6,12 @@ extends:
 properties:
   gameSetup:
     description: Game setup
-    $ref: ../game-setup.yaml
+    $ref: game-setup.yaml
   botAddresses:
     description: List of bot addressses
     type: array
     items:
       decription: Bot address
-      $ref: ../comm/bot-address.yaml
+      $ref: bot-address.yaml
 required:
 - botAddresses

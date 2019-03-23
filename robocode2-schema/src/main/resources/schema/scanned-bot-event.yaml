@@ -13,12 +13,15 @@ properties:
   energy:
     description: Energy level of the scanned bot
     type: number
-  position:
-    description: Position (x, y) of the scanned bot
-    $ref: ../types/point.yaml
+  x:
+    description: X coordinate of the scanned bot
+    type: number
+  y:
+    description: Y coordinate of the scanned bot
+    type: number
   direction:
     description: Direction in degrees of the scanned bot
-    $ref: ../types/angle.yaml
+    type: number
   speed:
     description: Speed measured in units per turn of the scanned bot
     type: number

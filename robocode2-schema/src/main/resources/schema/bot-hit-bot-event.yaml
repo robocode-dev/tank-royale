@@ -13,17 +13,18 @@ properties:
   energy:
     description: Remaining energy level of the victim bot
     type: number
-  position:
-    description: Position (x, y) of the victim bot
-    $ref: ../types/point.yaml
+  x:
+    description: X coordinate of victim bot
+    type: number
+  y:
+    description: Y coordinate of victim bot
+    type: number
   rammed:
     description: Flag specifying, if the victim bot got rammed
     type: boolean
 required:
 - botId
 - victimId
-- damage
 - energy
 - position
-- selfDamage
 - rammed

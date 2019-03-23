@@ -6,7 +6,7 @@ extends:
 properties:
   gameSetup:
     description: Game setup
-    $ref: ../game-setup.yaml
+    $ref: game-setup.yaml
   participants:
     description: List of bots participating in this battle
     type: array
