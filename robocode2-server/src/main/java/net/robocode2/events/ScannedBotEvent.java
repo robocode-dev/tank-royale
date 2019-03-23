@@ -20,8 +20,11 @@ public class ScannedBotEvent implements Event {
 	/** Energy level of the scanned bot */
 	double energy;
 	
-	/** Position of the scanned bot */
-	Point position;
+	/** X coordinate of the scanned bot */
+	double x;
+
+	/** Y coordinate of the scanned bot */
+	double y;
 
 	/** Driving direction of the scanned bot */
 	double direction;

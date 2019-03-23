@@ -19,7 +19,7 @@
 		<dependency>
 			<groupId>net.robocode2</groupId>
 			<artifactId>robocode2-schema</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
+			<version>0.2.0-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Project Lombok -->

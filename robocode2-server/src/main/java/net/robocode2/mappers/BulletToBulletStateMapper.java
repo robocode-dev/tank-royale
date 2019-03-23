@@ -1,6 +1,7 @@
 package net.robocode2.mappers;
 
-import net.robocode2.schema.events.BulletState;
+import net.robocode2.model.Point;
+import net.robocode2.schema.BulletState;
 import net.robocode2.model.Bullet;
 import net.robocode2.util.MathUtil;
 
@@ -19,7 +20,9 @@ public final class BulletToBulletStateMapper {
 		bulletState.setDirection(MathUtil.normalAbsoluteDegrees(direction));
 		bulletState.setPower(bullet.getPower());
 		bulletState.setSpeed(speed);
-		bulletState.setPosition(PointMapper.map(bullet.calcPosition()));
+		Point pos = bullet.calcPosition();
+		bulletState.setX(pos.x);
+		bulletState.setY(pos.y);
 
 		return bulletState;
 	}

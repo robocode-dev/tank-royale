@@ -3,17 +3,17 @@ package net.robocode2.server;
 import java.util.Collection;
 
 import net.robocode2.schema.GameSetup;
-import net.robocode2.schema.comm.BotAddress;
-import net.robocode2.schema.comm.BotIntent;
-import net.robocode2.schema.comm.ControllerHandshake;
-import net.robocode2.schema.comm.ObserverHandshake;
+import net.robocode2.schema.BotAddress;
+import net.robocode2.schema.BotIntent;
+import net.robocode2.schema.ControllerHandshake;
+import net.robocode2.schema.ObserverHandshake;
 
 
 public interface ConnListener {
 
 	void onException(Exception exception);
 
-	void onBotJoined(String clientKey, net.robocode2.schema.comm.BotHandshake handshake);
+	void onBotJoined(String clientKey, net.robocode2.schema.BotHandshake handshake);
 
 	void onBotLeft(String clientKey);
 

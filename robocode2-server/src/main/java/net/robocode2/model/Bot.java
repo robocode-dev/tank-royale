@@ -20,8 +20,11 @@ public class Bot {
 	/** Energy level */
 	@Default double energy = 100;
 
-	/** Position on the arena */
-	Point position;
+	/** X coordinate on the arena */
+	double x;
+
+	/** Y coordinate on the arena */
+	double y;
 
 	/** Driving direction in degrees */
 	double direction;
@@ -51,10 +54,14 @@ public class Bot {
 			return id;
 		}
 		
-		public Point getPosition() {
-			return position;
+		public double getX() {
+			return x;
 		}
-		
+
+		public double getY() {
+			return y;
+		}
+
 		public double getEnergy() {
 			return energy;
 		}
@@ -122,7 +129,9 @@ public class Bot {
 		 * Move bot to new position of the bot based on the current position, the driving direction and speed.
 		 */
 		public void moveToNewPosition() {
-			position = calcNewPosition(direction, speed);
+			Point p = calcNewPosition(direction, speed);
+			x = p.x;
+			y = p.y;
 		}
 	
 		/**
@@ -132,7 +141,9 @@ public class Bot {
 		 *            is the distance to bounce back
 		 */
 		public void bounceBack(double distance) {
-			position = calcNewPosition(direction, (speed > 0 ? -distance : distance));
+			Point p = calcNewPosition(direction, (speed > 0 ? -distance : distance));
+			x = p.x;
+			y = p.y;
 		}
 	
 		/**
@@ -146,8 +157,8 @@ public class Bot {
 		 */
 		private Point calcNewPosition(double direction, double distance) {
 			double angle = Math.toRadians(direction);
-			double x = position.x + Math.cos(angle) * distance;
-			double y = position.y + Math.sin(angle) * distance;
+			double x = this.x + Math.cos(angle) * distance;
+			double y = this.y + Math.sin(angle) * distance;
 			return new Point(x, y);
 		}
 	}

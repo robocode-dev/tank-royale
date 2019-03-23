@@ -4,25 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import net.robocode2.schema.events.BotDeathEvent;
-import net.robocode2.schema.events.BotHitBotEvent;
-import net.robocode2.schema.events.BotHitWallEvent;
-import net.robocode2.schema.events.BulletFiredEvent;
-import net.robocode2.schema.events.BulletHitBotEvent;
-import net.robocode2.schema.events.BulletHitBulletEvent;
-import net.robocode2.schema.events.BulletMissedEvent;
-import net.robocode2.schema.events.Event;
-import net.robocode2.schema.events.Event.Type;
-import net.robocode2.schema.events.HitByBulletEvent;
-import net.robocode2.schema.events.ScannedBotEvent;
-import net.robocode2.schema.events.SkippedTurnEvent;
+import net.robocode2.schema.BotDeathEvent;
+import net.robocode2.schema.BotHitBotEvent;
+import net.robocode2.schema.BotHitWallEvent;
+import net.robocode2.schema.BulletFiredEvent;
+import net.robocode2.schema.BulletHitBotEvent;
+import net.robocode2.schema.BulletHitBulletEvent;
+import net.robocode2.schema.BulletMissedEvent;
+import net.robocode2.schema.Event;
+import net.robocode2.schema.Event.Type;
+import net.robocode2.schema.HitByBulletEvent;
+import net.robocode2.schema.ScannedBotEvent;
+import net.robocode2.schema.SkippedTurnEvent;
 
 public final class EventsToEventsMapper {
 
 	private EventsToEventsMapper() {}
 
 	public static List<Event> map(Set<net.robocode2.events.Event> events) {
-		List<net.robocode2.schema.events.Event> mappedEvents = new ArrayList<>();
+		List<net.robocode2.schema.Event> mappedEvents = new ArrayList<>();
 		for (net.robocode2.events.Event event : events) {
 			mappedEvents.add(map(event));
 		}
@@ -77,7 +77,8 @@ public final class EventsToEventsMapper {
 		event.setBotId(botHitBotEvent.getBotId());
 		event.setVictimId(botHitBotEvent.getVictimId());
 		event.setEnergy(botHitBotEvent.getEnergy());
-		event.setPosition(PointMapper.map(botHitBotEvent.getPosition()));
+		event.setX(botHitBotEvent.getX());
+		event.setY(botHitBotEvent.getY());
 		event.setRammed(botHitBotEvent.isRammed());
 		return event;
 	}
@@ -136,7 +137,8 @@ public final class EventsToEventsMapper {
 		event.setScannedByBotId(scannedBotEvent.getScannedByBotId());
 		event.setScannedBotId(scannedBotEvent.getScannedBotId());
 		event.setEnergy(scannedBotEvent.getEnergy());
-		event.setPosition(PointMapper.map(scannedBotEvent.getPosition()));
+		event.setX(scannedBotEvent.getX());
+		event.setY(scannedBotEvent.getY());
 		event.setDirection(scannedBotEvent.getDirection());
 		event.setSpeed(scannedBotEvent.getSpeed());
 		return event;

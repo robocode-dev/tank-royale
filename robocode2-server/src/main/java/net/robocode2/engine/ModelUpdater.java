@@ -290,11 +290,13 @@ public class ModelUpdater {
 		Set<Integer> occupiedCells = new HashSet<>();
 
 		for (int id : participantIds) {
+			Point randomPos = randomBotPosition(occupiedCells);
 			BotBuilder botBuilder = Bot.builder()
 				.id(id)
 				.energy(INITIAL_BOT_ENERGY)
 				.speed(0)
-				.position(randomBotPosition(occupiedCells))
+				.x(randomPos.x)
+				.y(randomPos.y)
 				.direction(MathUtil.randomDirection())
 				.gunDirection(MathUtil.randomDirection())
 				.radarDirection(MathUtil.randomDirection())
@@ -345,7 +347,7 @@ public class ModelUpdater {
 			if (!occupiedCells.contains(cell)) {
 				occupiedCells.add(cell);
 
-				y = (double)cell / gridWidth;
+				y = (int)(cell / gridWidth);
 				x = cell - y * gridWidth;
 
 				x *= cellWidth;
@@ -466,7 +468,8 @@ public class ModelUpdater {
 			Point startPos1 = boundingLines[i].start;
 
 			for (BotBuilder botBuilder : botBuilderMap.values()) {
-				Point botPos = botBuilder.getPosition();
+				double botX = botBuilder.getX();
+				double botY = botBuilder.getY();
 
 				Bullet bullet = bulletArray[i];
 
@@ -478,7 +481,7 @@ public class ModelUpdater {
 					continue;
 				}
 
-				if (MathUtil.isLineIntersectingCircle(startPos1.x, startPos1.y, endPos1.x, endPos1.y, botPos.x, botPos.y, BOT_BOUNDING_CIRCLE_RADIUS)) {
+				if (MathUtil.isLineIntersectingCircle(startPos1.x, startPos1.y, endPos1.x, endPos1.y, botX, botY, BOT_BOUNDING_CIRCLE_RADIUS)) {
 
 					double damage = RuleMath.calcBulletDamage(bullet.getPower());
 					boolean killed = botBuilder.addDamage(damage);
@@ -536,13 +539,15 @@ public class ModelUpdater {
 		botBuilderArray = botBuilderMap.values().toArray(botBuilderArray);
 
 		for (int i = botBuilderArray.length - 1; i >= 0; i--) {
-			Point pos1 = botBuilderArray[i].getPosition();
+			double bot1x = botBuilderArray[i].getX();
+			double bot1y = botBuilderArray[i].getY();
 
 			for (int j = i - 1; j >= 0; j--) {
-				Point pos2 = botBuilderArray[j].getPosition();
+				double bot2x = botBuilderArray[j].getX();
+				double bot2y = botBuilderArray[j].getY();
 
-				if (isBotsBoundingCirclesColliding(pos1, pos2)) {
-					final double overlapDist = BOT_BOUNDING_CIRCLE_DIAMETER - MathUtil.distance(pos1, pos2);
+				if (isBotsBoundingCirclesColliding(bot1x, bot1y, bot2x, bot2y)) {
+					final double overlapDist = BOT_BOUNDING_CIRCLE_DIAMETER - MathUtil.distance(bot1x, bot1y, bot2x, bot2y);
 
 					final BotBuilder botBuilder1 = botBuilderArray[i];
 					final BotBuilder botBuilder2 = botBuilderArray[j];
@@ -591,10 +596,11 @@ public class ModelUpdater {
 						botBuilder2.bounceBack(bot2BounceDist);
 					}
 
-					pos1 = botBuilder1.getPosition();
+					bot1x = botBuilder1.getX();
+					bot1y = botBuilder1.getY();
 
-					BotHitBotEvent botHitBotEvent1 = new BotHitBotEvent(botId1, botId2, botBuilder2.getEnergy(), botBuilder2.getPosition(), bot1RammedBot2);
-					BotHitBotEvent botHitBotEvent2 = new BotHitBotEvent(botId2, botId1, botBuilder1.getEnergy(), botBuilder1.getPosition(), bot2rammedBot1);
+					BotHitBotEvent botHitBotEvent1 = new BotHitBotEvent(botId1, botId2, botBuilder2.getEnergy(), botBuilder2.getX(), botBuilder2.getY(), bot1RammedBot2);
+					BotHitBotEvent botHitBotEvent2 = new BotHitBotEvent(botId2, botId1, botBuilder1.getEnergy(), botBuilder1.getX(), botBuilder1.getY(), bot2rammedBot1);
 
 					turnBuilder.addPrivateBotEvent(botId1, botHitBotEvent1);
 					turnBuilder.addPrivateBotEvent(botId2, botHitBotEvent2);
@@ -613,18 +619,22 @@ public class ModelUpdater {
 	/**
 	 * Checks if the bounding circles of two bots are colliding.
 	 * 
-	 * @param bot1Position
-	 *            is the position of the 1st bot
-	 * @param bot2Position
-	 *            is the position of the 2nd bot
+	 * @param bot1x
+	 *            is the x coordinate of the 1st bot
+	 * @param bot1y
+	 *            is the y coordinate of the 1st bot
+	 * @param bot2x
+	 *            is the x coordinate of the 2nd bot
+	 * @param bot2y
+	 *            is the y coordinate of the 2nd bot
 	 * @return true if the bounding circles are colliding; false otherwise
 	 */
-	private static boolean isBotsBoundingCirclesColliding(Point bot1Position, Point bot2Position) {
-		double dx = bot2Position.x - bot1Position.x;
+	private static boolean isBotsBoundingCirclesColliding(double bot1x, double bot1y, double bot2x, double bot2y) {
+		double dx = bot2x - bot1x;
 		if (Math.abs(dx) > BOT_BOUNDING_CIRCLE_DIAMETER) { // 2 x radius
 			return false;
 		}
-		double dy = bot2Position.y - bot1Position.y;
+		double dy = bot2y - bot1y;
 		// 2 x radius
 		return !(Math.abs(dy) > BOT_BOUNDING_CIRCLE_DIAMETER) && ((dx * dx) + (dy * dy) <= BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED);
 	}
@@ -640,8 +650,8 @@ public class ModelUpdater {
 	 */
 	private static boolean isRamming(BotBuilder bot, BotBuilder victim) {
 
-		double dx = victim.getPosition().x - bot.getPosition().x;
-		double dy = victim.getPosition().y - bot.getPosition().y;
+		double dx = victim.getX() - bot.getX();
+		double dy = victim.getY() - bot.getY();
 
 		double angle = Math.atan2(dy, dx);
 
@@ -676,18 +686,18 @@ public class ModelUpdater {
 
 		for (BotBuilder botBuilder : botBuilderMap.values()) {
 
-			Point position = botBuilder.getPosition();
-			double x = position.x;
-			double y = position.y;
+			double x = botBuilder.getX();
+			double y = botBuilder.getY();
 
 			if (previousTurn != null) {
 				Bot prevBotState = previousTurn.getBot(botBuilder.getId());
 				if (prevBotState == null) {
 					continue;
 				}
-				Point oldPosition = prevBotState.getPosition();
-				double dx = x - oldPosition.x;
-				double dy = y - oldPosition.y;
+				double oldX = prevBotState.getX();
+				double oldY = prevBotState.getY();
+				double dx = x - oldX;
+				double dy = y - oldY;
 	
 				boolean hitWall = false;
 	
@@ -697,8 +707,8 @@ public class ModelUpdater {
 					x = BOT_BOUNDING_CIRCLE_RADIUS;
 	
 					if (dx != 0) {
-						double dxCut = x - oldPosition.x;
-						y = oldPosition.y + (dxCut * dy / dx);
+						double dxCut = x - oldX;
+						y = oldY + (dxCut * dy / dx);
 					}
 				} else if (x + BOT_BOUNDING_CIRCLE_RADIUS >= setup.getArenaWidth()) {
 					hitWall = true;
@@ -706,8 +716,8 @@ public class ModelUpdater {
 					x = (double) setup.getArenaWidth() - BOT_BOUNDING_CIRCLE_RADIUS;
 	
 					if (dx != 0) {
-						double dxCut = x - oldPosition.x;
-						y = oldPosition.y + (dxCut * dy / dx);
+						double dxCut = x - oldX;
+						y = oldY + (dxCut * dy / dx);
 					}
 				} else if (y - BOT_BOUNDING_CIRCLE_RADIUS <= 0) {
 					hitWall = true;
@@ -715,8 +725,8 @@ public class ModelUpdater {
 					y = BOT_BOUNDING_CIRCLE_RADIUS;
 	
 					if (dy != 0) {
-						double dyCut = y - oldPosition.y;
-						x = oldPosition.x + (dyCut * dx / dy);
+						double dyCut = y - oldY;
+						x = oldX + (dyCut * dx / dy);
 					}
 				} else if (y + BOT_BOUNDING_CIRCLE_RADIUS >= setup.getArenaHeight()) {
 					hitWall = true;
@@ -724,13 +734,14 @@ public class ModelUpdater {
 					y = (double) setup.getArenaHeight() - BOT_BOUNDING_CIRCLE_RADIUS;
 	
 					if (dy != 0) {
-						double dyCut = y - oldPosition.y;
-						x = oldPosition.x + (dyCut * dx / dy);
+						double dyCut = y - oldY;
+						x = oldX + (dyCut * dx / dy);
 					}
 				}
 	
 				if (hitWall) {
-					botBuilder.position(new Point(x, y));
+					botBuilder.x(x);
+					botBuilder.y(y);
 	
 					// Skip this check, if the bot hit the wall in the previous turn
 					if (previousTurn.getBotEvents(botBuilder.getId()).stream().noneMatch(e -> e instanceof BotHitWallEvent)) {
@@ -838,7 +849,8 @@ public class ModelUpdater {
 			.botId(botId)
 			.bulletId(++nextBulletId)
 			.power(firepower)
-			.firePosition(botBuilder.getPosition())
+			.startX(botBuilder.getX())
+			.startY(botBuilder.getY())
 			.direction(botBuilder.getGunDirection())
 			.build();
 		
@@ -861,7 +873,8 @@ public class ModelUpdater {
 			BotBuilder scanningBot = botArray[i];
 
 			double spreadAngle = scanningBot.getRadarSpreadAngle();
-			Point scanCenter = scanningBot.getPosition();
+			double scanCenterX = scanningBot.getX();
+			double scanCenterY = scanningBot.getY();
 
 			double arcStartAngle;
 			double arcEndAngle;
@@ -881,11 +894,12 @@ public class ModelUpdater {
 
 				BotBuilder scannedBot = botArray[j];
 
-				if (MathUtil.isCircleIntersectingCircleSector(scannedBot.getPosition(), BOT_BOUNDING_CIRCLE_RADIUS,
-						scanCenter, RuleConstants.RADAR_RADIUS, arcStartAngle, arcEndAngle)) {
+				if (MathUtil.isCircleIntersectingCircleSector(scannedBot.getX(), scannedBot.getY(),
+						BOT_BOUNDING_CIRCLE_RADIUS, scanCenterX, scanCenterY,
+						RuleConstants.RADAR_RADIUS, arcStartAngle, arcEndAngle)) {
 
 					ScannedBotEvent scannedBotEvent = new ScannedBotEvent(scanningBot.getId(), scannedBot.getId(),
-							scannedBot.getEnergy(), scannedBot.getPosition(), scannedBot.getDirection(),
+							scannedBot.getEnergy(), scannedBot.getX(), scannedBot.getY(), scannedBot.getDirection(),
 							scannedBot.getSpeed());
 
 					turnBuilder.addPrivateBotEvent(scanningBot.getId(), scannedBotEvent);

@@ -9,7 +9,7 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import com.google.gson.Gson;
 
-import net.robocode2.schema.comm.ControllerHandshake;
+import net.robocode2.schema.ControllerHandshake;
 
 public class ControllerClient1 extends WebSocketClient {
 

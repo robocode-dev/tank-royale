@@ -1,6 +1,6 @@
 package net.robocode2.mappers;
 
-import net.robocode2.schema.events.TickEventForBot;
+import net.robocode2.schema.TickEventForBot;
 import net.robocode2.model.Bot;
 import net.robocode2.model.Turn;
 import net.robocode2.model.Round;

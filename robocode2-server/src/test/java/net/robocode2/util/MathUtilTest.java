@@ -73,27 +73,27 @@ public class MathUtilTest {
 		Point p3 = new Point(-3.141, 5.999);
 		Point p4 = new Point(-2.519, -7.886);
 
-		assertEquals(0, MathUtil.distance(p0, p0), 1E-6);
-		assertEquals(0, MathUtil.distance(p1, p1), 1E-6);
-		assertEquals(0, MathUtil.distance(p2, p2), 1E-6);
-		assertEquals(0, MathUtil.distance(p3, p3), 1E-6);
-		assertEquals(0, MathUtil.distance(p4, p4), 1E-6);
+		assertEquals(0, MathUtil.distance(p0.x, p0.y, p0.x, p0.y), 1E-6);
+		assertEquals(0, MathUtil.distance(p1.x, p1.y, p1.x, p1.y), 1E-6);
+		assertEquals(0, MathUtil.distance(p2.x, p2.y, p2.x, p2.y), 1E-6);
+		assertEquals(0, MathUtil.distance(p3.x, p3.y, p3.x, p3.y), 1E-6);
+		assertEquals(0, MathUtil.distance(p4.x, p4.y, p4.x, p4.y), 1E-6);
 
-		assertEquals(Math.hypot(p1.x - p2.x, p1.y - p2.y), MathUtil.distance(p1, p2), 1E-6);
-		assertEquals(Math.hypot(p1.x - p3.x, p1.y - p3.y), MathUtil.distance(p1, p3), 1E-6);
-		assertEquals(Math.hypot(p1.x - p4.x, p1.y - p4.y), MathUtil.distance(p1, p4), 1E-6);
+		assertEquals(Math.hypot(p1.x - p2.x, p1.y - p2.y), MathUtil.distance(p1.x, p1.y, p2.x, p2.y), 1E-6);
+		assertEquals(Math.hypot(p1.x - p3.x, p1.y - p3.y), MathUtil.distance(p1.x, p1.y, p3.x, p3.y), 1E-6);
+		assertEquals(Math.hypot(p1.x - p4.x, p1.y - p4.y), MathUtil.distance(p1.x, p1.y, p4.x, p4.y), 1E-6);
 
-		assertEquals(Math.hypot(p2.x - p1.x, p2.y - p1.y), MathUtil.distance(p2, p1), 1E-6);
-		assertEquals(Math.hypot(p2.x - p3.x, p2.y - p3.y), MathUtil.distance(p2, p3), 1E-6);
-		assertEquals(Math.hypot(p2.x - p4.x, p2.y - p4.y), MathUtil.distance(p2, p4), 1E-6);
+		assertEquals(Math.hypot(p2.x - p1.x, p2.y - p1.y), MathUtil.distance(p2.x, p2.y, p1.x, p1.y), 1E-6);
+		assertEquals(Math.hypot(p2.x - p3.x, p2.y - p3.y), MathUtil.distance(p2.x, p2.y, p3.x, p3.y), 1E-6);
+		assertEquals(Math.hypot(p2.x - p4.x, p2.y - p4.y), MathUtil.distance(p2.x, p2.y, p4.x, p4.y), 1E-6);
 
-		assertEquals(Math.hypot(p3.x - p1.x, p3.y - p1.y), MathUtil.distance(p3, p1), 1E-6);
-		assertEquals(Math.hypot(p3.x - p2.x, p3.y - p2.y), MathUtil.distance(p3, p2), 1E-6);
-		assertEquals(Math.hypot(p3.x - p4.x, p3.y - p4.y), MathUtil.distance(p3, p4), 1E-6);
+		assertEquals(Math.hypot(p3.x - p1.x, p3.y - p1.y), MathUtil.distance(p3.x, p3.y, p1.x, p1.y), 1E-6);
+		assertEquals(Math.hypot(p3.x - p2.x, p3.y - p2.y), MathUtil.distance(p3.x, p3.y, p2.x, p2.y), 1E-6);
+		assertEquals(Math.hypot(p3.x - p4.x, p3.y - p4.y), MathUtil.distance(p3.x, p3.y, p4.x, p4.y), 1E-6);
 
-		assertEquals(Math.hypot(p4.x - p1.x, p4.y - p1.y), MathUtil.distance(p4, p1), 1E-6);
-		assertEquals(Math.hypot(p4.x - p2.x, p4.y - p2.y), MathUtil.distance(p4, p2), 1E-6);
-		assertEquals(Math.hypot(p4.x - p3.x, p4.y - p3.y), MathUtil.distance(p4, p3), 1E-6);
+		assertEquals(Math.hypot(p4.x - p1.x, p4.y - p1.y), MathUtil.distance(p4.x, p4.y, p1.x, p1.y), 1E-6);
+		assertEquals(Math.hypot(p4.x - p2.x, p4.y - p2.y), MathUtil.distance(p4.x, p4.y, p2.x, p2.y), 1E-6);
+		assertEquals(Math.hypot(p4.x - p3.x, p4.y - p3.y), MathUtil.distance(p4.x, p4.y, p3.x, p3.y), 1E-6);
 	}
 
 	@Test
@@ -358,45 +358,45 @@ public class MathUtilTest {
 	public void isCircleIntersectingCircleSector() {
 		// circle center(cx,cy),cr=x, sector center(sx,sy),sr=x, arcStart=x, arcEnd=x
 
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(0, 0), 10, 90, 0));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(0,0, 5, 0,0, 10, 90, 0));
 
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(10, 10), 10, 90, 0));
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(10, 10), 10, 90, 360));
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(10, 10), 10, 0, 90));
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(10, 10), 10, 360, 90));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(0, 0, 5, 10, 10, 10, 90, 0));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(0, 0, 5, 10, 10, 10, 90, 360));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(0, 0, 5, 10, 10, 10, 0, 90));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(0, 0, 5, 10, 10, 10, 360, 90));
 
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(-10, 10), 10, 180, 90));
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(-10, 10), 10, 90, 180));
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(-10, -10), 10, 180, 270));
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(-10, -10), 10, 270, 180));
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(10, -10), 10, 270, 360));
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(10, -10), 10, 270, 0));
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(10, -10), 10, 0, 270));
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(0, 0), 5, new Point(10, -10), 10, 360, 270));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(0, 0, 5, -10, 10, 10, 180, 90));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(0, 0, 5, -10, 10, 10, 90, 180));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(0, 0, 5, -10, -10, 10, 180, 270));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(0, 0, 5, -10, -10, 10, 270, 180));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(0, 0, 5, 10, -10, 10, 270, 360));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(0, 0, 5, 10, -10, 10, 270, 0));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(0, 0, 5, 10, -10, 10, 0, 270));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(0, 0, 5, 10, -10, 10, 360, 270));
 
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(10, 10), 4, new Point(0, 0), 10, 0, 359.999));
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(10, -10), 4, new Point(0, 0), 10, 0, 359.999));
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(-10, 10), 4, new Point(0, 0), 10, 0, 359.999));
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(-10, -10), 4, new Point(0, 0), 10, 0, 359.999));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(10, 10, 4, 0, 0, 10, 0, 359.999));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(10, -10, 4,0, 0, 10, 0, 359.999));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(-10, 10, 4, 0, 0, 10, 0, 359.999));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(-10, -10, 4, 0, 0, 10, 0, 359.999));
 
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(10, 10), 4, new Point(0, 0), 10, 359.999, 0));
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(10, -10), 4, new Point(0, 0), 10, 359.999, 0));
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(-10, 10), 4, new Point(0, 0), 10, 359.999, 0));
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(-10, -10), 4, new Point(0, 0), 10, 359.999, 0));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(10, 10, 4, 0, 0, 10, 359.999, 0));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(10, -10, 4, 0, 0, 10, 359.999, 0));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(-10, 10, 4, 0, 0, 10, 359.999, 0));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(-10, -10, 4, 0, 0, 10, 359.999, 0));
 
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(10, 10), 5, new Point(0, 0), 10, 90, 0));
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(10, -10), 10, new Point(0, 0), 10, 0, 359.999));
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(-10, 10), 10, new Point(0, 0), 10, 180, 179.9));
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(-10, -10), 10, new Point(0, 0), 10, 270, 269.9));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(10, 10, 5, 0, 0, 10, 90, 0));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(10, -10, 10, 0, 0, 10, 0, 359.999));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(-10, 10, 10, 0, 0, 10, 180, 179.9));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(-10, -10, 10, 0, 0, 10, 270, 269.9));
 
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(-5, -5), 7.0711, new Point(0, 0), 10, 90, 0));
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(5, -5), 5, new Point(0, 0), 10, 90, 0));
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(-5, 5), 5, new Point(0, 0), 10, 90, 0));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(-5, -5, 7.0711, 0, 0, 10, 90, 0));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(5, -5, 5, 0, 0, 10, 90, 0));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(-5, 5, 5, 0, 0, 10, 90, 0));
 
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(-5, 15), 7.0711, new Point(0, 0), 10, 90, 0));
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(-5, 15), 7.071, new Point(0, 0), 10, 90, 0));
-		assertTrue(MathUtil.isCircleIntersectingCircleSector(new Point(15, -5), 7.0711, new Point(0, 0), 10, 90, 0));
-		assertFalse(MathUtil.isCircleIntersectingCircleSector(new Point(15, -5), 7.071, new Point(0, 0), 10, 90, 0));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(-5, 15, 7.0711, 0, 0, 10, 90, 0));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(-5, 15, 7.071, 0, 0, 10, 90, 0));
+		assertTrue(MathUtil.isCircleIntersectingCircleSector(15, -5, 7.0711, 0, 0, 10, 90, 0));
+		assertFalse(MathUtil.isCircleIntersectingCircleSector(15, -5, 7.071, 0, 0, 10, 90, 0));
 	}
 
 	@Test

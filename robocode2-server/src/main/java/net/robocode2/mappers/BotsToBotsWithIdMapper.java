@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import net.robocode2.schema.events.BotStateWithId;
+import net.robocode2.schema.BotStateWithId;
 import net.robocode2.model.Bot;
 
 public final class BotsToBotsWithIdMapper {

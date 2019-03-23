@@ -52,14 +52,18 @@ public final class MathUtil {
 	/**
 	 * Returns the shortest distance between two points: sqrt(dx*dx + dy*dy).
 	 * 
-	 * @param p1
-	 *            is one point
-	 * @param p2
-	 *            is another point
+	 * @param x1
+	 *            is the x coordinate of the 1st point
+	 * @param y1
+	 *            is the y coordinate of the 1st point
+	 * @param x2
+	 *            is the x coordinate of the 2nd point
+	 * @param y2
+	 *            is the y coordinate of the 2nd point
 	 * @return the distance between the two points
 	 */
-	public static double distance(Point p1, Point p2) {
-		return Math.hypot((p2.x - p1.x), (p2.y - p1.y));
+	public static double distance(double x1, double y1, double x2, double y2) {
+		return Math.hypot((x2 - x1), (y2 - y1));
 	}
 
 	/**
@@ -268,12 +272,16 @@ public final class MathUtil {
 	 * The algorithm used in this method is based on Oren Trutner algorithm:
 	 * http://stackoverflow.com/questions/13652518/efficiently-find-points-inside-a-circle-sector
 	 * 
-	 * @param circleCenter
-	 *            is the center point of the circle
+	 * @param circleCenterX
+	 *            is the x coordinate of the center point of the circle
+	 * @param circleCenterY
+	 *            is the y coordinate of the center point of the circle
 	 * @param circleRadius
 	 *            is the radius of the circle
-	 * @param sectorCenter
-	 *            is the center point of the circle sector
+	 * @param sectorCenterX
+	 *            is the x coordinate of the center point of the circle sector
+	 * @param sectorCenterY
+	 *            is the y coordinate of the center point of the circle sector
 	 * @param sectorRadius
 	 *            is the radius of the circle sector
 	 * @param arcStartAngle
@@ -282,13 +290,14 @@ public final class MathUtil {
 	 *            is the arc end angle in degrees
 	 * @return {@code true} if the circle lines is intersecting/inside the circle segment; {@code false} otherwise.
 	 */
-	public static boolean isCircleIntersectingCircleSector(Point circleCenter, double circleRadius, Point sectorCenter,
-			double sectorRadius, double arcStartAngle, double arcEndAngle) {
+	public static boolean isCircleIntersectingCircleSector(double circleCenterX, double circleCenterY, double circleRadius,
+														   double sectorCenterX, double sectorCenterY, double sectorRadius,
+														   double arcStartAngle, double arcEndAngle) {
 
 		double maxRadiusToPoint = sectorRadius + circleRadius;
 
-		double vx = circleCenter.x - sectorCenter.x;
-		double vy = circleCenter.y - sectorCenter.y;
+		double vx = circleCenterX - sectorCenterX;
+		double vy = circleCenterY - sectorCenterY;
 
 		// Check if point is outside max radius to point
 		if (((vx * vx) + (vy * vy)) > (maxRadiusToPoint * maxRadiusToPoint)) {
@@ -312,10 +321,10 @@ public final class MathUtil {
 		}
 
 		// Check if circle is intersecting one of the arms
-		return isLineIntersectingCircle(sectorCenter.x, sectorCenter.y, sectorCenter.x + arcStart.x,
-				sectorCenter.y + arcStart.y, circleCenter.x, circleCenter.y, circleRadius)
-				|| isLineIntersectingCircle(sectorCenter.x, sectorCenter.y, sectorCenter.x + arcEnd.x,
-						sectorCenter.y + arcEnd.y, circleCenter.x, circleCenter.y, circleRadius);
+		return isLineIntersectingCircle(sectorCenterX, sectorCenterY, sectorCenterX + arcStart.x,
+				sectorCenterY + arcStart.y, circleCenterX, circleCenterY, circleRadius)
+				|| isLineIntersectingCircle(sectorCenterX, sectorCenterY, sectorCenterX + arcEnd.x,
+						sectorCenterY + arcEnd.y, circleCenterX, circleCenterY, circleRadius);
 	}
 
 	/**

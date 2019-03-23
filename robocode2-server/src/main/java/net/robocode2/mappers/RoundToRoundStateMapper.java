@@ -1,6 +1,6 @@
 package net.robocode2.mappers;
 
-import net.robocode2.schema.events.RoundState;
+import net.robocode2.schema.RoundState;
 import net.robocode2.model.Turn;
 import net.robocode2.model.Round;
 

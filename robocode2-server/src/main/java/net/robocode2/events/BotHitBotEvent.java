@@ -20,9 +20,12 @@ public class BotHitBotEvent implements Event {
 	/** Energy level of the victim */
 	double energy;
 	
-	/** Position of the victim */
-	Point position;
-	
+	/** X coordinate of the victim */
+	double x;
+
+	/** Y coordinate of the victim */
+	double y;
+
 	/** Flag specifying if the victim was rammed */
 	boolean rammed;
 }

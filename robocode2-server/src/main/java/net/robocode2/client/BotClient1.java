@@ -4,7 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 
-import net.robocode2.schema.comm.*;
+import net.robocode2.schema.*;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 
@@ -14,11 +14,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 
-import net.robocode2.schema.events.Event;
-import net.robocode2.schema.events.ScannedBotEvent;
-import net.robocode2.schema.events.GameStartedEventForBot;
-import net.robocode2.schema.events.TickEventForBot;
-import net.robocode2.schema.types.Point;
+import net.robocode2.schema.Event;
+import net.robocode2.schema.ScannedBotEvent;
+import net.robocode2.schema.GameStartedEventForBot;
+import net.robocode2.schema.TickEventForBot;
 import net.robocode2.util.MathUtil;
 
 public class BotClient1 extends WebSocketClient {
@@ -48,7 +47,8 @@ public class BotClient1 extends WebSocketClient {
 	int turn;
 	double targetSpeed = 10;
 
-	Point targetPos;
+	Double targetX;
+	Double targetY;
 
 	public BotClient1(URI serverUri, Draft draft) {
 		super(serverUri, draft);
@@ -106,8 +106,8 @@ public class BotClient1 extends WebSocketClient {
 
 			} else if (TickEventForBot.Type.TICK_EVENT_FOR_BOT.toString().equalsIgnoreCase(type)) {
 				TickEventForBot tick = gson.fromJson(message, TickEventForBot.class);
-
-				Point botPos = tick.getBotState().getPosition();
+				double botX = tick.getBotState().getX();
+				double botY = tick.getBotState().getY();
 
 				// Prepare intent
 				BotIntent intent = new BotIntent();
@@ -117,7 +117,8 @@ public class BotClient1 extends WebSocketClient {
 				for (Event event : tick.getEvents()) {
 					if (event instanceof ScannedBotEvent) {
 						ScannedBotEvent scanEvent = (ScannedBotEvent) event;
-						targetPos = scanEvent.getPosition();
+						targetX = scanEvent.getX();
+						targetY = scanEvent.getY();
 					}
 				}
 
@@ -129,9 +130,9 @@ public class BotClient1 extends WebSocketClient {
 				intent.setBulletPower(Math.random() * 2.9 + 0.1);
 				intent.setRadarTurnRate(45.0);
 
-				if (targetPos != null) {
-					double dx = targetPos.getX() - botPos.getX();
-					double dy = targetPos.getY() - botPos.getY();
+				if (targetX != null && targetY != null) {
+					double dx = targetX - botX;
+					double dy = targetY - botY;
 
 					double angle = Math.toDegrees(Math.atan2(dy, dx));
 

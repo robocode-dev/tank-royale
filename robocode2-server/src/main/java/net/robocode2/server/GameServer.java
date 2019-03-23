@@ -6,21 +6,23 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.val;
-import net.robocode2.schema.events.*;
+import net.robocode2.model.BotIntent;
+import net.robocode2.model.GameSetup;
+import net.robocode2.schema.*;
 import net.robocode2.model.*;
 import org.java_websocket.WebSocket;
 
 import com.google.gson.Gson;
 
 import net.robocode2.engine.ModelUpdater;
-import net.robocode2.schema.events.Participant;
-import net.robocode2.schema.comm.BotAddress;
-import net.robocode2.schema.comm.BotHandshake;
-import net.robocode2.schema.comm.BotInfo;
-import net.robocode2.schema.comm.BotListUpdate;
-import net.robocode2.schema.comm.ControllerHandshake;
-import net.robocode2.schema.comm.Message;
-import net.robocode2.schema.comm.ObserverHandshake;
+import net.robocode2.schema.Participant;
+import net.robocode2.schema.BotAddress;
+import net.robocode2.schema.BotHandshake;
+import net.robocode2.schema.BotInfo;
+import net.robocode2.schema.BotListUpdate;
+import net.robocode2.schema.ControllerHandshake;
+import net.robocode2.schema.Message;
+import net.robocode2.schema.ObserverHandshake;
 import net.robocode2.mappers.BotHandshakeToBotInfoMapper;
 import net.robocode2.mappers.BotIntentToBotIntentMapper;
 import net.robocode2.mappers.GameSetupToGameSetupMapper;
@@ -373,7 +375,7 @@ public final class GameServer {
 		conn.send(message);
 	}
 
-	private void updateBotIntent(String botKey, net.robocode2.schema.comm.BotIntent intent) {
+	private void updateBotIntent(String botKey, net.robocode2.schema.BotIntent intent) {
 		if (!participants.contains(botKey)) {
 			return;
 		}
@@ -462,7 +464,7 @@ public final class GameServer {
 		}
 
 		@Override
-		public void onBotIntent(String clientKey, net.robocode2.schema.comm.BotIntent intent) {
+		public void onBotIntent(String clientKey, net.robocode2.schema.BotIntent intent) {
 			updateBotIntent(clientKey, intent);
 		}
 

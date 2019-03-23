@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import net.robocode2.schema.events.BulletState;
+import net.robocode2.schema.BulletState;
 import net.robocode2.model.Bullet;
 
 public final class BulletsToBulletStatesMapper {
