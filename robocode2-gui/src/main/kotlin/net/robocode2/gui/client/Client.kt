@@ -2,11 +2,6 @@ package net.robocode2.gui.client
 
 import com.beust.klaxon.Klaxon
 import net.robocode2.gui.model.*
-import net.robocode2.gui.model.StartGame
-import net.robocode2.gui.model.GameAbortedEvent
-import net.robocode2.gui.model.GameEndedEvent
-import net.robocode2.gui.model.GameStartedEvent
-import net.robocode2.gui.model.TickEvent
 import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Observable
 import java.net.URI
@@ -35,11 +30,17 @@ object Client : AutoCloseable {
     private var games: Set<GameSetup> = HashSet()
     private var bots: Set<BotInfo> = HashSet()
 
+    var isGameRunning: Boolean = false
+
     override fun close() {
+        abortGame()
+
         disposables.forEach { it.dispose() }
         disposables.clear()
 
-        if (websocket.isOpen()) websocket.close()
+        if (websocket.isOpen()) {
+            websocket.close()
+        }
 
         onDisconnected.notify(Unit)
     }
@@ -64,9 +65,15 @@ object Client : AutoCloseable {
     fun getAvailableBots(): Set<BotInfo> = bots
 
     fun startGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>) {
-        val startGame: StartGame = StartGame(clientKey
-                ?: return, gameSetup, botAddresses)
-        websocket.send(startGame)
+        if (!isGameRunning && websocket.isOpen()) {
+            websocket.send(StartGame(gameSetup, botAddresses))
+        }
+    }
+
+    fun abortGame() {
+        if (isGameRunning && websocket.isOpen()) {
+            websocket.send(AbortGame())
+        }
     }
 
     private fun onMessage(msg: String) {
@@ -101,15 +108,17 @@ object Client : AutoCloseable {
     }
 
     private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
+        isGameRunning = true
         onGameStarted.notify(gameStartedEvent)
     }
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {
+        isGameRunning = false
         onGameEnded.notify(gameEndedEvent)
     }
 
     private fun handleGameAborted(gameAbortedEvent: GameAbortedEvent) {
-        println("### GAME ABORTED EVENT ###")
+        isGameRunning = false
         onGameAborted.notify(gameAbortedEvent)
     }
 

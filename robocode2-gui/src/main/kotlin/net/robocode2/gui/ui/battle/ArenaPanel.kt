@@ -107,6 +107,7 @@ class ArenaPanel : JPanel(), AutoCloseable {
             drawGun(g, x, y, it.gunDirection)
             drawRadar(g,x, y, it.radarDirection, Color.RED)
             drawScanArc(g, x, y, it.radarDirection, it.radarSweep, Color.WHITE)
+            drawEnergy(g, x, y, it.energy)
         }
     }
 
@@ -200,6 +201,16 @@ class ArenaPanel : JPanel(), AutoCloseable {
         val arc = Arc2D.Double()
         arc.setArcByCenter(x, y, 1200.0, (360 - direction) - spreadAngle / 2, spreadAngle, Arc2D.PIE)
         g.fill(arc)
+
+        oldState.restore(g)
+    }
+
+    private fun drawEnergy(g: Graphics2D, x: Double, y: Double, energy: Double) {
+        val oldState = Graphics2DState(g)
+
+        g.color = Color.WHITE
+        g.translate(x, y)
+        g.drawString("$energy", x.toFloat(), y.toFloat() - 20)
 
         oldState.restore(g)
     }

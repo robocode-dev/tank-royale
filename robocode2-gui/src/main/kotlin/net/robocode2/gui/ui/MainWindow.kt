@@ -1,5 +1,6 @@
 package net.robocode2.gui.ui
 
+import net.robocode2.gui.client.Client
 import net.robocode2.gui.extensions.WindowExt.onClosing
 import net.robocode2.gui.ui.battle.ArenaPanel
 import net.robocode2.gui.ui.battle.BattleDialog
@@ -33,12 +34,16 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
             dialog.isVisible = true
         })
 
-        onClosing { close() }
+        onClosing {
+            close()
+        }
     }
 
     override fun close() {
         disposables.forEach { it.dispose() }
         disposables.clear()
+
+        Client.close()
     }
 }
 
