@@ -20,7 +20,11 @@ class ArenaPanel : JPanel(), AutoCloseable {
 
 
     private companion object State {
+        var arenaWidth: Int = 800
+        var arenaHeight: Int = 600
+
         var bots: Set<BotState> = HashSet()
+        var bullets: Set<BulletState> = HashSet()
     }
 
     private val state = State
@@ -40,11 +44,12 @@ class ArenaPanel : JPanel(), AutoCloseable {
     }
 
     private fun onGameStarted(gameStartedEvent: GameStartedEvent) {
-        // TODO
+        val setup = gameStartedEvent.gameSetup
+        state.arenaWidth = setup.arenaWidth
+        state.arenaHeight = setup.arenaHeight
     }
 
     private fun onGameEnded(gameEndedEvent: GameEndedEvent) {
-        // TODO
     }
 
     private fun onGameAborted(gameAbortedEvent: GameAbortedEvent) {
@@ -53,8 +58,8 @@ class ArenaPanel : JPanel(), AutoCloseable {
 
     private fun onTickEvent(tickEvent: TickEvent) {
         state.bots = tickEvent.botStates
-
-        // TODO
+        state.bullets = tickEvent.bulletStates
+        repaint()
     }
 
     private fun onMouseWheel(e: MouseWheelEvent) {
@@ -71,8 +76,9 @@ class ArenaPanel : JPanel(), AutoCloseable {
     }
 
     override fun paintComponent(g: Graphics) {
+        (g as Graphics2D).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
         try {
-            drawArena(g as Graphics2D)
+            drawArena(g)
         } finally {
             g.dispose()
         }
@@ -80,17 +86,16 @@ class ArenaPanel : JPanel(), AutoCloseable {
 
     private fun drawArena(g: Graphics2D) {
         clearCanvas(g)
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
 
+        val marginX = (size.width - scale * arenaWidth) / 2
+        val marginY = (size.height - scale * arenaHeight) / 2
+
+        g.translate(marginX, marginY)
         g.scale(scale, scale)
 
+        drawGround(g)
         drawBots(g)
-/*
-        drawBotBody(g,18.5, 18.5, 0.0, Color.BLUE)
-        drawGun(g, 18.5, 18.5, 0.0)
-        drawRadar(g,18.5, 18.5, 45.0, Color.RED)
-        drawScanArc(g, 18.5, 18.5, 45.0, 45.0, Color.WHITE)
-*/
+        drawBullets(g)
     }
 
     private fun drawBots(g: Graphics2D) {
@@ -105,9 +110,20 @@ class ArenaPanel : JPanel(), AutoCloseable {
         }
     }
 
+    private fun drawBullets(g: Graphics2D) {
+        state.bullets.forEach() {
+            drawBullet(g, it.position.x, it.position.y, it.power)
+        }
+    }
+
     private fun clearCanvas(g: Graphics) {
-        g.color = Color.BLACK
+        g.color = Color.DARK_GRAY
         g.fillRect(0, 0, size.width, size.height)
+    }
+
+    private fun drawGround(g: Graphics) {
+        g.color = Color.BLACK
+        g.fillRect(0, 0, state.arenaWidth, state.arenaHeight)
     }
 
     private fun drawBullet(g: Graphics2D, x: Double, y: Double, power: Double) {

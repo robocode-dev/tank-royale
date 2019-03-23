@@ -1,5 +1,6 @@
 package net.robocode2.gui.ui.battle
 
+import net.robocode2.gui.client.Client
 import net.robocode2.gui.extensions.WindowExt.onClosing
 import net.robocode2.gui.ui.MainWindow
 import net.robocode2.gui.ui.ResourceBundles
@@ -32,6 +33,8 @@ object BattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("battle_
             // Explicit cleanup in order to remove disposables on panels as finalize() seems to never be called
             selectBotsPanel.close()
             setupRulesPanel.close()
+
+            Client.close()
         }
     }
 
