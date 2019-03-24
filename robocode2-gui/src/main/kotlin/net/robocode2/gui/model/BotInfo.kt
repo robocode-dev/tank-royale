@@ -1,6 +1,6 @@
 package net.robocode2.gui.model
 
-data class BotInfo(
+class BotInfo(
         val name: String,
         val version: String,
         val author: String?,

@@ -1,6 +1,6 @@
 package net.robocode2.gui.model
 
-data class BotState(
+class BotState(
         val id: Int,
         val energy: Double,
         val x: Double,

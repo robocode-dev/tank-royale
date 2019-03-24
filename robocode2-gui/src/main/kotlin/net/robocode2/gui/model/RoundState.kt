@@ -1,6 +1,6 @@
 package net.robocode2.gui.model
 
-data class RoundState(
+class RoundState(
         val roundNumber: Int,
         val turnNumber: Int
 )

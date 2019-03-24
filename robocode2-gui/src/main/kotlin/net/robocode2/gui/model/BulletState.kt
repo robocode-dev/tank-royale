@@ -1,6 +1,6 @@
 package net.robocode2.gui.model
 
-data class BulletState(
+class BulletState(
         val bulletId: Int,
         val ownerId: Int,
         val power: Double,

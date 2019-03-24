@@ -1,19 +1,16 @@
 package net.robocode2.gui.model
 
-import net.robocode2.gui.model.Content
-import net.robocode2.gui.model.ContentType
-
 class BotResults(
-        id: Int,
-        rank: Int,
-        survival: Int,
-        lastSurvivorBonus: Int,
-        bulletDamage: Int,
-        bulletKillBonus: Int,
-        ramDamage: Int,
-        ramKillBonus: Int,
-        totalScore: Int,
-        firstPlaces: Int,
-        secondPlaces: Int,
-        thirdPlaces: Int
+        val id: Int,
+        val rank: Int,
+        val survival: Int,
+        val lastSurvivorBonus: Int,
+        val bulletDamage: Int,
+        val bulletKillBonus: Int,
+        val ramDamage: Int,
+        val ramKillBonus: Int,
+        val totalScore: Int,
+        val firstPlaces: Int,
+        val secondPlaces: Int,
+        val thirdPlaces: Int
 ) : Content(type = ContentType.BOT_RESULTS.type)
