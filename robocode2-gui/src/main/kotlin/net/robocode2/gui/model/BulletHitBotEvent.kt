@@ -1,6 +1,6 @@
 package net.robocode2.gui.model
 
-class BulletHitBotEvent(
+data class BulletHitBotEvent(
         val bullet: BulletState,
         val victimId: Int,
         val damage: Double,

@@ -60,7 +60,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
         upperPanel.add(serverTextField, "span 2, grow")
         upperPanel.add(connectButton, "wrap")
 
-        serverTextField.text = "localhost:50000"
+        serverTextField.text = "localhost:55000"
 
         upperPanel.addNewLabel("game_type")
         upperPanel.add(gameTypeComboBox)

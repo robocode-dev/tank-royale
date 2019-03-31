@@ -1,6 +1,6 @@
 package net.robocode2.gui.model
 
-class ScannedBotEvent(
+data class ScannedBotEvent(
         val scannedByBotId: Int,
         val scannedBotId: Int,
         val energy: Double,

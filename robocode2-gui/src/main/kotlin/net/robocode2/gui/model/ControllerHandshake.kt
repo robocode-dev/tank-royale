@@ -1,7 +1,7 @@
 package net.robocode2.gui.model
 
-class ControllerHandshake(
-        clientKey: String,
+data class ControllerHandshake(
+        override val clientKey: String,
         val name: String,
         val version: String,
         val author: String?

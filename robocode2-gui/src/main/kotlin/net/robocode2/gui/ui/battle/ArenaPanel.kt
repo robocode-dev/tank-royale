@@ -209,8 +209,9 @@ class ArenaPanel : JPanel(), AutoCloseable {
         val oldState = Graphics2DState(g)
 
         g.color = Color.WHITE
-        g.translate(x, y)
-        g.drawString("$energy", x.toFloat(), y.toFloat() - 20)
+        val text = "%.1f".format(energy)
+        val width = g.fontMetrics.stringWidth(text)
+        g.drawString(text, x.toFloat() - width / 2, (y - 30).toFloat())
 
         oldState.restore(g)
     }

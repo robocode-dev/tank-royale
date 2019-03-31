@@ -1,6 +1,6 @@
 package net.robocode2.gui.model
 
-class Participant(
+data class Participant(
     val id: Int,
     val name: String,
     val version: String,

@@ -8,7 +8,7 @@ import java.net.URI
 
 object Client : AutoCloseable {
 
-    val defaultUri = URI("ws://localhost:50000")
+    val defaultUri = URI("ws://localhost:55000")
 
     // public events
     val onConnected = Observable<Unit>()

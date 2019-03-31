@@ -1,6 +1,6 @@
 package net.robocode2.gui.model
 
-class BotResults(
+data class BotResults(
         val id: Int,
         val rank: Int,
         val survival: Int,
