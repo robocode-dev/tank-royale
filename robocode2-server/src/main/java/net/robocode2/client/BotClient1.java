@@ -155,7 +155,7 @@ public class BotClient1 extends WebSocketClient {
 	}
 
 	public static void main(String[] args) throws URISyntaxException {
-		WebSocketClient client = new BotClient1(new URI("ws://localhost:50000"));
+		WebSocketClient client = new BotClient1(new URI("ws://localhost:55000"));
 		client.connect();
 	}
 

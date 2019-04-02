@@ -12,7 +12,7 @@ public final class ServerSetup {
 	}
 
 	public int getPort() {
-		return 50000;
+		return 55000;
 	}
 
 	public Set<GameSetup> getGames() {
