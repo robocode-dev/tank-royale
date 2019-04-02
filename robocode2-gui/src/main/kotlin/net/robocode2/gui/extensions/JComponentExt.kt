@@ -1,7 +1,7 @@
 package net.robocode2.gui.extensions
 
 import net.robocode2.gui.ui.ResourceBundles
-import net.robocode2.gui.utils.Observable
+import net.robocode2.gui.utils.Event
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JLabel
@@ -15,9 +15,9 @@ object JComponentExt {
     }
 
     fun JComponent.addNewButton(
-            stringResourceName: String, observable: Observable<JButton>, layoutConstraints: String? = null): JButton {
+            stringResourceName: String, event: Event<JButton>, layoutConstraints: String? = null): JButton {
         val button = JButton(ResourceBundles.STRINGS.get(stringResourceName))
-        button.addActionListener { observable.notify(button) }
+        button.addActionListener { event.publish(button) }
         add(button, layoutConstraints)
         return button
     }

@@ -10,7 +10,7 @@ import javax.swing.JDialog
 import javax.swing.JTabbedPane
 import javax.swing.UIManager
 
-object BattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("battle_dialog")), AutoCloseable {
+object BattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("battle_dialog")) {
 
     private val tabbedPane = JTabbedPane()
     private val selectBotsPanel = SelectBotsPanel()
@@ -30,16 +30,8 @@ object BattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("battle_
         tabbedPane.selectedComponent = setupRulesPanel
 
         onClosing {
-            close()
+            Client.close()
         }
-    }
-
-    override fun close() {
-        // Explicit cleanup in order to remove disposables on panels as finalize() seems to never be called
-        selectBotsPanel.close()
-        setupRulesPanel.close()
-
-        Client.close()
     }
 
     fun selectBotsTab() {

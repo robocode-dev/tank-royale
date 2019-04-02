@@ -15,16 +15,15 @@ import net.robocode2.gui.ui.Constants.MIN_ARENA_SIZE
 import net.robocode2.gui.ui.Constants.MIN_NUM_PARTICIPANTS
 import net.robocode2.gui.ui.ResourceBundles.MESSAGES
 import net.robocode2.gui.ui.ResourceBundles.STRINGS
-import net.robocode2.gui.utils.Disposable
-import net.robocode2.gui.utils.Observable
+import net.robocode2.gui.utils.Event
 import javax.swing.*
 
-class SetupRulesPanel : JPanel(MigLayout("fill")), AutoCloseable {
+class SetupRulesPanel : JPanel(MigLayout("fill")) {
 
     // Private events
-    private val onOk = Observable<JButton>()
-    private val onCancel = Observable<JButton>()
-    private val onResetGameType = Observable<JButton>()
+    private val onOk = Event<JButton>()
+    private val onCancel = Event<JButton>()
+    private val onResetGameType = Event<JButton>()
 
     private val gameTypeComboBox = GameTypeComboBox()
     private val widthTextField = JTextField(6)
@@ -37,8 +36,6 @@ class SetupRulesPanel : JPanel(MigLayout("fill")), AutoCloseable {
 
     private val gameSetup: GameSetup
         get() = gameTypeComboBox.gameSetup
-
-    private val disposables = ArrayList<Disposable>()
 
     init {
         val upperPanel = JPanel(MigLayout())
@@ -98,11 +95,6 @@ class SetupRulesPanel : JPanel(MigLayout("fill")), AutoCloseable {
 
         gameTypeComboBox.onGameTypeChanged.subscribe { updateFieldsForGameType() }
         updateFieldsForGameType()
-    }
-
-    override fun close() {
-        disposables.forEach { it.dispose() }
-        disposables.clear()
     }
 
     private fun saveSettings() {

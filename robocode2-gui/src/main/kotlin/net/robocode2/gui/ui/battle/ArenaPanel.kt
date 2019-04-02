@@ -2,7 +2,6 @@ package net.robocode2.gui.ui.battle
 
 import net.robocode2.gui.client.Client
 import net.robocode2.gui.model.*
-import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Graphics2DState
 import java.awt.*
 import java.awt.event.MouseWheelEvent
@@ -10,14 +9,11 @@ import java.awt.geom.*
 import javax.swing.JPanel
 
 
-class ArenaPanel : JPanel(), AutoCloseable {
+class ArenaPanel : JPanel() {
 
     private var scale = 1.0
 
     private val CIRCLE_SHAPE = Area(Ellipse2D.Double(-0.5, -0.5, 1.0, 1.0))
-
-    private val disposables = ArrayList<Disposable>()
-
 
     private companion object State {
         var arenaWidth: Int = 800
@@ -32,15 +28,10 @@ class ArenaPanel : JPanel(), AutoCloseable {
     init {
         addMouseWheelListener { e -> if (e != null) onMouseWheel(e) }
 
-        disposables.add(Client.onGameStarted.subscribe { onGameStarted(it) })
-        disposables.add(Client.onGameEnded.subscribe { onGameEnded(it) })
-        disposables.add(Client.onGameAborted.subscribe { onGameAborted(it) })
-        disposables.add(Client.onTickEvent.subscribe { onTickEvent(it) } )
-    }
-
-    override fun close() {
-        disposables.forEach { it.dispose() }
-        disposables.clear()
+        Client.onGameStarted.subscribe { onGameStarted(it) }
+        Client.onGameEnded.subscribe { onGameEnded(it) }
+        Client.onGameAborted.subscribe { onGameAborted(it) }
+        Client.onTickEvent.subscribe { onTickEvent(it) }
     }
 
     private fun onGameStarted(gameStartedEvent: GameStartedEvent) {

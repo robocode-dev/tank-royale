@@ -1,17 +1,21 @@
 package net.robocode2.gui.utils
 
+import sun.misc.Cleaner
 import java.awt.EventQueue
 
-class Observable<T> {
+class Event<T> {
 
     private val subscribers = ArrayList<((T) -> Unit)>()
 
     fun subscribe(subscriber: ((T) -> Unit)): Disposable {
         subscribers.add(subscriber)
+        Cleaner.create(subscriber) {
+            subscribers.remove(subscriber)
+        }
         return disposable(subscriber)
     }
 
-    fun notify(source: T) {
+    fun publish(source: T) {
         subscribers.forEach {
             it.invoke(source)
         }
@@ -29,8 +33,10 @@ class Observable<T> {
                     get() = disposed
 
                 override fun dispose() {
-                    subscribers.remove(subscriber)
-                    disposed = true
+                    if (!disposed) {
+                        subscribers.remove(subscriber)
+                        disposed = true
+                    }
                 }
             }
 }

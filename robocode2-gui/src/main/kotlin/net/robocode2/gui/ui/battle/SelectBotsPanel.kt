@@ -7,8 +7,7 @@ import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.model.BotAddress
 import net.robocode2.gui.model.BotInfo
 import net.robocode2.gui.ui.ResourceBundles.STRINGS
-import net.robocode2.gui.utils.Disposable
-import net.robocode2.gui.utils.Observable
+import net.robocode2.gui.utils.Event
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.event.MouseAdapter
@@ -17,17 +16,17 @@ import javax.swing.*
 import javax.swing.border.EmptyBorder
 
 
-class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
+class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
     // Private events
-    private val onStartBattle = Observable<JButton>()
-    private val onConnectButtonClicked = Observable<JButton>()
+    private val onStartBattle = Event<JButton>()
+    private val onConnectButtonClicked = Event<JButton>()
 
-    private val onCancel = Observable<JButton>()
-    private val onAdd = Observable<JButton>()
-    private val onAddAll = Observable<JButton>()
-    private val onRemove = Observable<JButton>()
-    private val onRemoveAll = Observable<JButton>()
+    private val onCancel = Event<JButton>()
+    private val onAdd = Event<JButton>()
+    private val onAddAll = Event<JButton>()
+    private val onRemove = Event<JButton>()
+    private val onRemoveAll = Event<JButton>()
 
     private val serverTextField = JTextField()
     private val connectButton = JButton(connectButtonText)
@@ -40,8 +39,6 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
     private val selectedBotList = JList<BotInfo>(selectedBotListModel)
 
     private val connectionStatusLabel = JLabel(connectionStatus)
-
-    private var disposables = ArrayList<Disposable>()
 
     private val connectionStatus: String
         get() = STRINGS.get(if (Client.isConnected()) "connected" else "disconnected")
@@ -112,7 +109,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
         availableBotList.cellRenderer = BotInfoCellRenderer()
         selectedBotList.cellRenderer = BotInfoCellRenderer()
 
-        connectButton.addActionListener { onConnectButtonClicked.notify(connectButton) }
+        connectButton.addActionListener { onConnectButtonClicked.publish(connectButton) }
 
         onConnectButtonClicked.subscribe {
             if (Client.isConnected()) {
@@ -160,22 +157,15 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
             }
         })
 
-        disposables.add(Client.onConnected.subscribe { updateConnectionState() })
-        disposables.add(Client.onDisconnected.subscribe {
+        Client.onConnected.subscribe { updateConnectionState() }
+        Client.onDisconnected.subscribe {
             updateConnectionState()
             availableBotListModel.clear()
             selectedBotListModel.clear()
-        })
-        disposables.add(Client.onBotListUpdate.subscribe { updateBotList() })
+        }
+        Client.onBotListUpdate.subscribe { updateBotList() }
 
         onStartBattle.subscribe { startGame() }
-    }
-
-    override fun close() {
-        disposables.forEach { it.dispose() }
-        disposables.clear()
-
-        Client.close()
     }
 
     private fun updateConnectionState() {
@@ -197,7 +187,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), AutoCloseable {
         selectedBotListModel.elements().toList().forEach {
             selectedBotAddresses.add(it.botAddress)
         }
-        disposables.add(Client.onGameStarted.subscribe { BattleDialog.dispose() })
+        Client.onGameStarted.subscribe { BattleDialog.dispose() }
 
         Client.startGame(gameTypeComboBox.gameSetup, selectedBotAddresses)
     }

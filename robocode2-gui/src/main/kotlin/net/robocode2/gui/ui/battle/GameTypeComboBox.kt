@@ -2,12 +2,12 @@ package net.robocode2.gui.ui.battle
 
 import net.robocode2.gui.model.GameSetup
 import net.robocode2.gui.settings.GamesSettings
-import net.robocode2.gui.utils.Observable
+import net.robocode2.gui.utils.Event
 import javax.swing.JComboBox
 
 class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray()) {
 
-    val onGameTypeChanged = Observable<String>()
+    val onGameTypeChanged = Event<String>()
 
     val gameSetup: GameSetup
         get() = GamesSettings.games[selectedGameType] as GameSetup
@@ -28,6 +28,6 @@ class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray
     }
 
     fun notifyGameTypeChanged() {
-        onGameTypeChanged.notify(selectedGameType)
+        onGameTypeChanged.publish(selectedGameType)
     }
 }

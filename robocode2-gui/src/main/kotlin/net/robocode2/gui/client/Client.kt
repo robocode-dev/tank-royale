@@ -2,8 +2,7 @@ package net.robocode2.gui.client
 
 import com.beust.klaxon.Klaxon
 import net.robocode2.gui.model.*
-import net.robocode2.gui.utils.Disposable
-import net.robocode2.gui.utils.Observable
+import net.robocode2.gui.utils.Event
 import java.net.URI
 
 object Client : AutoCloseable {
@@ -11,18 +10,16 @@ object Client : AutoCloseable {
     val defaultUri = URI("ws://localhost:55000")
 
     // public events
-    val onConnected = Observable<Unit>()
-    val onDisconnected = Observable<Unit>()
+    val onConnected = Event<Unit>()
+    val onDisconnected = Event<Unit>()
 
-    val onBotListUpdate = Observable<BotListUpdate>()
+    val onBotListUpdate = Event<BotListUpdate>()
 
-    val onGameStarted = Observable<GameStartedEvent>()
-    val onGameEnded = Observable<GameEndedEvent>()
-    val onGameAborted = Observable<GameAbortedEvent>()
+    val onGameStarted = Event<GameStartedEvent>()
+    val onGameEnded = Event<GameEndedEvent>()
+    val onGameAborted = Event<GameAbortedEvent>()
 
-    val onTickEvent = Observable<TickEvent>()
-
-    private val disposables = ArrayList<Disposable>()
+    val onTickEvent = Event<TickEvent>()
 
     private var websocket: WebSocketClient = WebSocketClient(defaultUri)
 
@@ -35,29 +32,21 @@ object Client : AutoCloseable {
     override fun close() {
         abortGame()
 
-        disposables.forEach { it.dispose() }
-        disposables.clear()
-
         if (websocket.isOpen()) {
             websocket.close()
         }
 
-        onDisconnected.notify(Unit)
+        onDisconnected.publish(Unit)
     }
 
     fun connect(uri: URI) {
         websocket = WebSocketClient(uri)
 
-        try {
-            disposables.add(websocket.onOpen.subscribe { onConnected.notify(Unit) })
-            disposables.add(websocket.onClose.subscribe { onDisconnected.notify(Unit) })
-            disposables.add(websocket.onMessage.subscribe { onMessage(it) })
+        websocket.onOpen.subscribe { onConnected.publish(Unit) }
+        websocket.onClose.subscribe { onDisconnected.publish(Unit) }
+        websocket.onMessage.subscribe { onMessage(it) }
 
-            websocket.open() // must be called after onOpen.subscribe()
-
-        } catch (e: RuntimeException) {
-            disposables.forEach { it.dispose() }
-        }
+        websocket.open() // must be called after onOpen.subscribe()
     }
 
     fun isConnected() = websocket.isOpen()
@@ -104,25 +93,25 @@ object Client : AutoCloseable {
 
     private fun handleBotListUpdate(botListUpdate: BotListUpdate) {
         bots = botListUpdate.bots
-        onBotListUpdate.notify(botListUpdate)
+        onBotListUpdate.publish(botListUpdate)
     }
 
     private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
         isGameRunning = true
-        onGameStarted.notify(gameStartedEvent)
+        onGameStarted.publish(gameStartedEvent)
     }
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {
         isGameRunning = false
-        onGameEnded.notify(gameEndedEvent)
+        onGameEnded.publish(gameEndedEvent)
     }
 
     private fun handleGameAborted(gameAbortedEvent: GameAbortedEvent) {
         isGameRunning = false
-        onGameAborted.notify(gameAbortedEvent)
+        onGameAborted.publish(gameAbortedEvent)
     }
 
     private fun handleTickEvent(tickEvent: TickEvent) {
-        onTickEvent.notify(tickEvent)
+        onTickEvent.publish(tickEvent)
     }
 }
