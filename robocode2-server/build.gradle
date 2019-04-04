@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'maven-publish'
 }
 
 repositories {
@@ -21,18 +20,3 @@ dependencies {
 group = 'net.robocode2'
 version = '0.1.0-SNAPSHOT'
 sourceCompatibility = '1.8'
-
-configurations.all {
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
-    }
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
