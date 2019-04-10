@@ -53,20 +53,20 @@ public final class GameServer {
 
 	private final Gson gson = new Gson();
 
-	private GameServer() {
+	public GameServer() {
 		val serverSetup = new ServerSetup();
 		val connListener = new GameServerConnListener();
 		this.connHandler = new ConnHandler(serverSetup, connListener);
 		this.runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
 	}
 
-	private void start() {
-		connHandler.start();
-	}
-
 	public static void main(String[] args) {
 		GameServer server = new GameServer();
 		server.start();
+	}
+
+	public void start() {
+		connHandler.start();
 	}
 
 	private void startGameIfParticipantsReady() {
