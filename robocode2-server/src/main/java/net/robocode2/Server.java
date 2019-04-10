@@ -1,15 +1,29 @@
 package net.robocode2;
 
-import net.robocode2.server.GameServer;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 import java.io.*;
 
-import static org.fusesource.jansi.Ansi.ansi;
-
-@Command(name = "Server", versionProvider = Server.VersionFileProvider.class)
+@Command(
+        name = "Server",
+        versionProvider = Server.VersionFileProvider.class,
+        header = {
+                "              __________",
+                "             //       \\ I============###",
+                " ___________//_________\\__\\______________",
+                "( ___ __O____O____O____O____O____O__ ___ )",
+                " / _ ) ___  ___  ___  ___  ___  ___ / __)",
+                " \\_\\_\\/ _ \\| __)/ _ \\/ __// _ \\| _ \\\\__|",
+                "      \\___/|___)\\___/\\___|\\___/|___/",
+                "",
+                "@|green     Build the best. Destroy the rest!|@",
+                ""
+        },
+        descriptionHeading = "Description:%n",
+        description = "Runs a Robocode 2 server"
+)
 public class Server {
 
     private final static int DEFAULT_PORT = 55000;
@@ -42,20 +56,6 @@ public class Server {
             System.err.println("Port must not be lower than 1024 or bigger than 65535");
             System.exit(-1);
         }
-
-        printLogo();
-
-        new GameServer().start();
-    }
-
-    private static void printLogo() {
-        String logo =
-                " ____  ___  ___  ___  ___  ___  ___  ___\n" +
-                "| __ )| _ \\| __)| _ \\/ __|| _ \\| _ \\| __|\n" +
-                "|_|\\_\\|___||___)|___||___||___||___/|___|\n" +
-                "    @|green Build the best. Destroy the rest!|@";
-
-        System.out.println(ansi().render(logo));
     }
 
     static class VersionFileProvider implements CommandLine.IVersionProvider {
@@ -68,7 +68,7 @@ public class Server {
                     version = br.readLine();
                 }
             }
-            return new String[] { "Robocode Server " + version };
+            return new String[]{"Robocode Server " + version};
         }
     }
 }
