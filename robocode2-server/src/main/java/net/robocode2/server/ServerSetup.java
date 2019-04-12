@@ -5,17 +5,17 @@ import java.util.Set;
 
 import net.robocode2.model.GameSetup;
 
-public final class ServerSetup {
+final class ServerSetup {
 
-	public String getHostName() {
+	String getHostName() {
 		return "localhost";
 	}
 
-	public int getPort() {
+	int getPort() {
 		return 55000;
 	}
 
-	public Set<GameSetup> getGames() {
+	Set<GameSetup> getGames() {
 		Set<GameSetup> games = new HashSet<>();
 
 		GameSetup setup1 = GameSetup.builder()

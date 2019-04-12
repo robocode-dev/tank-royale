@@ -1,5 +1,6 @@
 package net.robocode2;
 
+import net.robocode2.server.GameServer;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -56,6 +57,12 @@ public class Server {
             System.err.println("Port must not be lower than 1024 or bigger than 65535");
             System.exit(-1);
         }
+
+        new GameServer().start();
+    }
+
+    public static int getPort() {
+        return port;
     }
 
     static class VersionFileProvider implements CommandLine.IVersionProvider {

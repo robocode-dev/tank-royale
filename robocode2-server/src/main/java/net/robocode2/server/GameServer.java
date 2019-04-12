@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.val;
+import net.robocode2.Server;
 import net.robocode2.model.BotIntent;
 import net.robocode2.model.GameSetup;
 import net.robocode2.schema.*;
@@ -28,16 +29,19 @@ import net.robocode2.mappers.BotIntentToBotIntentMapper;
 import net.robocode2.mappers.GameSetupToGameSetupMapper;
 import net.robocode2.mappers.TurnToGameTickForBotMapper;
 import net.robocode2.mappers.TurnToGameTickForObserverMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.lang.Math.round;
 
 public final class GameServer {
 
+	private static Logger logger = LoggerFactory.getLogger(GameServer.class);
+
 	private ConnHandler connHandler;
 
 	private RunningState runningState;
 	private GameSetup gameSetup;
-	private GameState gameState;
 
 	private Set<String /* clientKey */> participants;
 	private Set<String /* clientKey */> readyParticipants;
@@ -66,6 +70,7 @@ public final class GameServer {
 	}
 
 	public void start() {
+		logger.info("Starting server on port " + Server.getPort());
 		connHandler.start();
 	}
 
@@ -83,7 +88,7 @@ public final class GameServer {
 	}
 
 	private void prepareGame() {
-		System.out.println("#### PREPARE GAME #####");
+		logger.debug("Preparing game");
 
 		runningState = RunningState.WAIT_FOR_READY_PARTICIPANTS;
 
@@ -120,7 +125,7 @@ public final class GameServer {
 	}
 
 	private void startGame() {
-		System.out.println("#### START GAME #####");
+		logger.debug("Starting game");
 
 		runningState = RunningState.GAME_RUNNING;
 
@@ -167,8 +172,6 @@ public final class GameServer {
 	}
 
 	private void startGame(net.robocode2.schema.GameSetup gameSetup, Collection<BotAddress> botAddresses) {
-		System.out.println("#### START GAME #####");
-
 		this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup);
 		participants = connHandler.getBotKeys(botAddresses);
 		if (participants.size() > 0) {
@@ -177,7 +180,7 @@ public final class GameServer {
 	}
 
 	private void abortGame() {
-		System.out.println("#### ABORT GAME #####");
+		logger.info("Aborting game");
 
 		runningState = RunningState.GAME_STOPPED;
 
@@ -257,7 +260,7 @@ public final class GameServer {
 	}
 
 	private void pauseGame() {
-		System.out.println("#### PAUSE GAME #####");
+		logger.info("Pausing game");
 
 		GamePausedEventForObserver pausedEvent = new GamePausedEventForObserver();
 		pausedEvent.setType(GamePausedEventForObserver.Type.GAME_PAUSED_EVENT_FOR_OBSERVER);
@@ -267,7 +270,7 @@ public final class GameServer {
 	}
 
 	private void resumeGame() {
-		System.out.println("#### RESUME GAME #####");
+		logger.info("Resuming game");
 
         GameResumedEventForObserver resumedEvent = new GameResumedEventForObserver();
         resumedEvent.setType(GameResumedEventForObserver.Type.GAME_RESUMED_EVENT_FOR_OBSERVER);
@@ -290,7 +293,7 @@ public final class GameServer {
 	}
 
 	private void onReadyTimeout() {
-		System.out.println("#### READY TIMEOUT EVENT #####");
+		logger.debug("Ready timer timed out");
 
 		if (readyParticipants.size() >= gameSetup.getMinNumberOfParticipants()) {
 			// Start the game with the participants that are ready
@@ -307,19 +310,20 @@ public final class GameServer {
 		if (runningState == RunningState.GAME_PAUSED) {
 			return;
 		}
-		System.out.println("#### UPDATE GAME STATE EVENT #####");
+
+		logger.debug("Updating game state");
 
 		if (runningState == RunningState.GAME_STOPPED) {
 			// Stop timer for updating game state
 			turnTimer.cancel();
 		} else {
 			// Update game state
-			gameState = updateGameState();
+			GameState gameState = updateGameState();
 
 			if (gameState.isGameEnded()) {
 				runningState = RunningState.GAME_STOPPED;
 
-				System.out.println("#### GAME ENDED #####");
+				logger.info("Game ended");
 
 				// Stop timer for updating game state
 				turnTimer.cancel();
@@ -373,7 +377,7 @@ public final class GameServer {
 	}
 
 	private static void send(WebSocket conn, String message) {
-		System.out.println("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
+		logger.debug("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
 
 		conn.send(message);
 	}

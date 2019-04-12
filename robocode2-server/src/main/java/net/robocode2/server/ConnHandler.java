@@ -26,8 +26,12 @@ import net.robocode2.schema.ServerHandshake;
 import net.robocode2.schema.Command;
 import net.robocode2.schema.StartGame;
 import net.robocode2.mappers.GameSetupToGameSetupMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class ConnHandler {
+
+	private static Logger logger = LoggerFactory.getLogger(ConnHandler.class);
 
 	private final ServerSetup setup;
 	private final ConnListener listener;
@@ -67,7 +71,7 @@ public final class ConnHandler {
 		shutdownAndAwaitTermination(executorService);
 	}
 
-	public WebSocket getConnection(String clientKey) {
+	WebSocket getConnection(String clientKey) {
 		return connections.get(clientKey);
 	}
 
@@ -116,7 +120,7 @@ public final class ConnHandler {
 		return foundKeys;
 	}
 
-	public static String getKeyFromConnection(Map<String, WebSocket> connections, WebSocket conn) {
+	private static String getKeyFromConnection(Map<String, WebSocket> connections, WebSocket conn) {
 		return connections.entrySet().stream()
 				.filter(entry -> Objects.equals(entry.getValue(), conn))
 				.findFirst().get().getKey();
@@ -131,7 +135,7 @@ public final class ConnHandler {
 				pool.shutdownNow();
 				// Wait a while for tasks to respond to being cancelled
 				if (!pool.awaitTermination(5, TimeUnit.SECONDS)) {
-					System.err.println("Pool did not terminate");
+					logger.warn("Pool did not terminate");
 				}
 			}
 		} catch (InterruptedException ie) {
@@ -143,12 +147,14 @@ public final class ConnHandler {
 	}
 
 	private static void send(WebSocket conn, String message) {
-		System.out.println("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
+		logger.debug("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
 
 		conn.send(message);
 	}
 
 	private void notifyException(Exception exception) {
+		logger.debug("Exception occurred: " + exception);
+
 		executorService.submit(() -> listener.onException(exception));
 	}
 
@@ -163,7 +169,7 @@ public final class ConnHandler {
 
 		@Override
 		public void onOpen(WebSocket conn, ClientHandshake handshake) {
-			System.out.println("onOpen(): " + conn.getRemoteSocketAddress());
+			logger.debug("onOpen(): " + conn.getRemoteSocketAddress());
 
 			String clientKey = Long.toHexString(System.nanoTime());
 			connections.put(clientKey, conn);
@@ -180,7 +186,7 @@ public final class ConnHandler {
 
 		@Override
 		public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-			System.out.println("onClose(): " + conn.getRemoteSocketAddress() + ", code: " + code + ", reason: " + reason
+			logger.debug("onClose(): " + conn.getRemoteSocketAddress() + ", code: " + code + ", reason: " + reason
 					+ ", remote: " + remote);
 
 			String clientKey = getKeyFromConnection(connections, conn);
@@ -212,7 +218,7 @@ public final class ConnHandler {
 
 		@Override
 		public void onMessage(WebSocket conn, String message) {
-			System.out.println("onMessage(): " + conn.getRemoteSocketAddress() + ", message: " + message);
+			logger.debug("onMessage(): " + conn.getRemoteSocketAddress() + ", message: " + message);
 
 			Gson gson = new Gson();
 			try {
@@ -222,16 +228,16 @@ public final class ConnHandler {
 				if (jsonType != null) {
 					try {
 						Message.Type type = Message.Type.fromValue(jsonType.getAsString());
-						System.out.println("Handling message: " + type);
+						logger.debug("Handling message: " + type);
 
 						JsonElement jsonClientKey = jsonObject.get(CLIENT_KEY);
 						if (jsonClientKey == null) {
-							System.out.println("Client key is missing in message");
+							logger.warn("Client key is missing in message");
 							return;
 						}
 						String clientKeyNotFinal = jsonClientKey.getAsString();
 						if (!connections.keySet().contains(clientKeyNotFinal)) {
-							System.out.println("Client key not recognized, ignoring: " + clientKeyNotFinal);
+							logger.warn("Client key not recognized, ignoring: " + clientKeyNotFinal);
 							return;
 						}
 						final String clientKey = clientKeyNotFinal;
@@ -276,16 +282,16 @@ public final class ConnHandler {
 						}
 					} catch (IllegalArgumentException e) {
 						Command.Type type = Command.Type.fromValue(jsonType.getAsString());
-						System.out.println("Handling command: " + type);
+						logger.debug("Handling command: " + type);
 
 						JsonElement jsonClientKey = jsonObject.get(CLIENT_KEY);
 						if (jsonClientKey != null) {
 							String clientKey = jsonClientKey.getAsString();
 							if (!connections.keySet().contains(clientKey)) {
-								System.out.println("Client key not recognized, ignoring: " + clientKey);
+								logger.warn("Client key not recognized, ignoring: " + clientKey);
 							}
 						} else {
-							System.out.println("Client key not specified, ignoring");
+							logger.warn("Client key not specified, ignoring");
 						}
 						switch (type) {
 							case START_GAME: {
@@ -314,7 +320,7 @@ public final class ConnHandler {
 					}
 				}
 			} catch (JsonSyntaxException e2) {
-				System.err.println("Invalid message: " + message);
+				logger.error("Invalid message: " + message, e2);
 			}
 		}
 
