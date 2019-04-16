@@ -1,27 +1,18 @@
 package net.robocode2.client;
 
+import com.google.gson.Gson;
+import net.robocode2.schema.ControllerHandshake;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.drafts.Draft;
-import org.java_websocket.handshake.ServerHandshake;
-
-import com.google.gson.Gson;
-
-import net.robocode2.schema.ControllerHandshake;
-
 public class ControllerClient1 extends WebSocketClient {
 
-	final Gson gson = new Gson();
+	private final Gson gson = new Gson();
 
-	static final String TYPE = "type";
-
-	public ControllerClient1(URI serverUri, Draft draft) {
-		super(serverUri, draft);
-	}
-
-	public ControllerClient1(URI serverURI) {
+	private ControllerClient1(URI serverURI) {
 		super(serverURI);
 	}
 

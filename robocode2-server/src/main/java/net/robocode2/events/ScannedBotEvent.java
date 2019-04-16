@@ -1,7 +1,6 @@
 package net.robocode2.events;
 
 import lombok.Value;
-import net.robocode2.model.Point;
 
 /**
  * Event sent when a bot got scanned.

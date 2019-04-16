@@ -42,7 +42,7 @@ public class ScoreTracker {
 		initializeDamageAndSurvivals();
 	}
 
-	public void prepareRound() {
+	void prepareRound() {
 		this.botsAliveIds.addAll(botIds);
 	}
 
@@ -51,7 +51,7 @@ public class ScoreTracker {
 	 *
 	 * @return a list of scores.
 	 */
-	public List<Score> getResults() {
+	List<Score> getResults() {
 		List<Score> scores = getBotScores();
 		for (int i = 0; i < scores.size(); i++) {
 			Score score = scores.get(i);
@@ -71,7 +71,7 @@ public class ScoreTracker {
 	/**
 	 * Calculates 1st, 2nd, and 3rd places.
 	 */
-	public void calculatePlacements() {
+	void calculatePlacements() {
 		List<Score> scores = getBotScores();
 		if (scores.size() >= 1) {
 			Score score = scores.get(0);

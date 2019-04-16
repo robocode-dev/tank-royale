@@ -1,60 +1,41 @@
 package net.robocode2.client;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-
-import net.robocode2.schema.*;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.drafts.Draft;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
-
-import net.robocode2.schema.Event;
-import net.robocode2.schema.ScannedBotEvent;
-import net.robocode2.schema.GameStartedEventForBot;
-import net.robocode2.schema.TickEventForBot;
+import net.robocode2.schema.*;
 import net.robocode2.util.MathUtil;
+import org.java_websocket.client.WebSocketClient;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
 
 public class BotClient1 extends WebSocketClient {
 
-	final Gson gson;
+	private final Gson gson;
+
 	{
 		RuntimeTypeAdapterFactory<Event> typeFactory = RuntimeTypeAdapterFactory.of(Event.class)
-				// .registerSubtype(BotDeathEvent.class, "botDeathEvent")
-				// .registerSubtype(BotHitBotEvent.class, "botHitBotEvent")
-				// .registerSubtype(BotHitWallEvent.class, "botHitWallEvent")
-				// .registerSubtype(BulletFiredEvent.class, "bulletFiredEvent")
-				// .registerSubtype(BulletHitBotEvent.class, "bulletHitBotEvent")
-				// .registerSubtype(BulletHitBulletEvent.class, "bulletHitBulletEvent")
-				// .registerSubtype(BulletMissedEvent.class, "bulletMissedEvent")
-				.registerSubtype(ScannedBotEvent.class, "scannedBotEvent")
-		// .registerSubtype(SkippedTurnEvent.class, "skippedTurnEvent")
-		;
+				.registerSubtype(ScannedBotEvent.class, "scannedBotEvent");
 
 		gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
 	}
 
-	static final String TYPE = "type";
-	static final String CLIENT_KEY = "clientKey";
+	private static final String TYPE = "type";
+	private static final String CLIENT_KEY = "clientKey";
 
-	String clientKey;
+	private String clientKey;
 
-	int turn;
-	double targetSpeed = 10;
+	private int turn;
+	private double targetSpeed = 10;
 
-	Double targetX;
-	Double targetY;
+	private Double targetX;
+	private Double targetY;
 
-	public BotClient1(URI serverUri, Draft draft) {
-		super(serverUri, draft);
-	}
-
-	public BotClient1(URI serverURI) {
+	private BotClient1(URI serverURI) {
 		super(serverURI);
 	}
 
