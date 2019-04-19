@@ -14,10 +14,13 @@ repositories {
 dependencies {
     compile 'net.robocode2:robocode2-schema:0.2.0-SNAPSHOT'
     compile 'org.danilopianini:gson-extras:0.2.1'
+
     compile 'org.java-websocket:Java-WebSocket:1.4.0'
+
     compile 'info.picocli:picocli:3.9.6'
-    compile 'org.apache.logging.log4j:log4j-core:2.11.2'
-    compile 'org.slf4j:slf4j-simple:1.7.26'
+
+    compile 'ch.qos.logback:logback-classic:1.2.3'
+    compile 'ch.qos.logback:logback-core:1.2.3'
     compile 'org.slf4j:slf4j-api:1.7.26'
 
     compileOnly 'org.projectlombok:lombok:1.18.4'

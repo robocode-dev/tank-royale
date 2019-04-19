@@ -1,11 +1,19 @@
 package net.robocode2;
 
+import net.robocode2.server.ConnHandler;
 import net.robocode2.server.GameServer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Spec;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 @Command(
         name = "Server",
@@ -25,7 +33,9 @@ import java.io.*;
         descriptionHeading = "Description:%n",
         description = "Runs a Robocode 2 server"
 )
-public class Server {
+public class Server implements Runnable {
+
+    private static Logger logger = LoggerFactory.getLogger(ConnHandler.class);
 
     private final static int DEFAULT_PORT = 55000;
 
@@ -38,9 +48,15 @@ public class Server {
     @Option(names = {"-p", "--port"}, type = Integer.class, description = "port number (default: " + DEFAULT_PORT + ")")
     private static Integer port;
 
+    @Spec
+    private CommandSpec spec;
+
     public static void main(String[] args) {
+        CommandLine.run(new Server(), System.out, CommandLine.Help.Ansi.ON, args);
+    }
+
+    public void run() {
         CommandLine cmdLine = new CommandLine(new Server());
-        cmdLine.parse(args);
 
         if (Server.isUsageHelpRequested) {
             cmdLine.usage(System.out);
@@ -48,6 +64,11 @@ public class Server {
         } else if (Server.isVersionInfoRequested) {
             cmdLine.printVersionHelp(System.out);
             System.exit(0);
+        } else {
+            String[] banner = this.spec.usageMessage().header();
+            for (String line : banner) {
+                println(line);
+            }
         }
 
         // Handle port
@@ -63,6 +84,11 @@ public class Server {
 
     public static int getPort() {
         return port;
+    }
+
+    private void println(String s) {
+        if (s == null) s = "null";
+        System.out.println(CommandLine.Help.Ansi.AUTO.string(s));
     }
 
     static class VersionFileProvider implements CommandLine.IVersionProvider {
