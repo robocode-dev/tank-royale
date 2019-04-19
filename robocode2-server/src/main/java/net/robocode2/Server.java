@@ -3,6 +3,7 @@ package net.robocode2;
 import net.robocode2.server.ConnHandler;
 import net.robocode2.server.GameServer;
 
+import org.fusesource.jansi.AnsiConsole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
@@ -87,8 +88,11 @@ public class Server implements Runnable {
     }
 
     private void println(String s) {
-        if (s == null) s = "null";
+        if (s == null)
+            s = "null";
+        AnsiConsole.systemInstall();
         System.out.println(CommandLine.Help.Ansi.AUTO.string(s));
+        AnsiConsole.systemUninstall();
     }
 
     static class VersionFileProvider implements CommandLine.IVersionProvider {
