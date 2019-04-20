@@ -6,6 +6,7 @@ import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.model.BotAddress
 import net.robocode2.gui.model.BotInfo
+import net.robocode2.gui.server.ServerProcess
 import net.robocode2.gui.ui.ResourceBundles.STRINGS
 import net.robocode2.gui.utils.Event
 import java.awt.Component

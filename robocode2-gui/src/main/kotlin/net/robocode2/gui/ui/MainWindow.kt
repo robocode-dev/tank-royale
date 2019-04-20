@@ -2,6 +2,8 @@ package net.robocode2.gui.ui
 
 import net.robocode2.gui.client.Client
 import net.robocode2.gui.extensions.WindowExt.onClosing
+import net.robocode2.gui.server.ServerProcess
+import net.robocode2.gui.server.ServerWindow
 import net.robocode2.gui.ui.battle.ArenaPanel
 import net.robocode2.gui.ui.battle.BattleDialog
 import java.awt.EventQueue
@@ -32,6 +34,11 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
             dialog.isVisible = true
         }
 
+        MainWindowMenu.onShowServerLog.invokeLater {
+            val window = ServerWindow
+            window.isVisible = true
+        }
+
         onClosing {
             close()
         }
@@ -39,6 +46,7 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
     override fun close() {
         Client.close()
+        ServerProcess.stop()
     }
 }
 
@@ -48,4 +56,6 @@ fun main() {
     EventQueue.invokeLater {
         MainWindow.isVisible = true
     }
+
+    ServerProcess.start()
 }
