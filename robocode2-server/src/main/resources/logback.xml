@@ -1,14 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <appender name="colorAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- Stop output INFO at start -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <withJansi>true</withJansi>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>[%thread] %highlight(%-5level) %cyan(%logger{15}) - %msg %n</pattern>
         </encoder>
     </appender>
 
-    <root level="trace">
-        <appender-ref ref="colorAppender"/>
+    <root level="debug">
+        <appender-ref ref="CONSOLE"/>
     </root>
 
 </configuration>
