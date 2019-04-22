@@ -15,6 +15,7 @@ import picocli.CommandLine.Spec;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
 @Command(
         name = "Server",
@@ -80,6 +81,18 @@ public class Server implements Runnable {
             System.exit(-1);
         }
 
+        // Run thread that checks standard input (stdin) for an exit signal ("q")
+        new Thread(() -> {
+            Scanner sc = new Scanner(System.in);
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                if (line.trim().equalsIgnoreCase("q")) {
+                    System.exit(1);
+                }
+            }
+        }).start();
+
+        // Start game server on main thread
         new GameServer().start();
     }
 
