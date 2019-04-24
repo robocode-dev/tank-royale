@@ -1,0 +1,1 @@
+java -Dpicocli.ansi=true -jar robocode2-server.jar %*

@@ -12,8 +12,6 @@ object ServerWindow : JFrame(ResourceBundles.UI_TITLES.get("server_window")), Au
     private var textArea = JTextArea()
 
     init {
-        defaultCloseOperation = EXIT_ON_CLOSE
-
         setSize(800, 600)
         setLocationRelativeTo(null) // center on screen
 

@@ -1,37 +1,48 @@
 package net.robocode2.gui.server
 
-import java.io.InputStreamReader
 import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.util.concurrent.TimeUnit
 
 
 object ServerProcess {
 
-    val builder = ProcessBuilder("D:\\robocode2-server\\robocode2-server.bat")
-    var process: Process? = null
+    private const val BAT_FILE_NAME = "server.bat"
+
+    private var builder: ProcessBuilder? = null
+    private var process: Process? = null
 
     init {
-        builder.redirectError()
+        val filename = BAT_FILE_NAME
+
+        val url = javaClass.classLoader.getResource(filename)
+                ?: throw IllegalStateException("Could not find the file: $filename")
+
+        builder = ProcessBuilder(url.file)
+        builder?.redirectErrorStream(true)
     }
 
     fun start() {
-        process = builder.start()
+        process = builder?.start()
 
-        val isr = InputStreamReader(process?.inputStream)
-        isr.use {
-            val br = BufferedReader(isr)
-            br.use {
+        InputStreamReader(process?.inputStream).use { isr ->
+            BufferedReader(isr).use { br ->
                 for (line in br.lines()) {
                     ServerWindow.append(line + "\n")
                 }
             }
         }
-        process?.waitFor()
     }
 
     fun stop() {
-        val p = process
-        if (p != null && p.isAlive)
-            p.destroyForcibly()
+        val proc = ServerProcess.process
+        if (proc != null && proc.isAlive) {
+
+            // Send quit signal to server
+            val out = proc.outputStream
+            out.write("q\n".toByteArray())
+            out.flush() // important!
+        }
     }
 }
 

@@ -12,6 +12,11 @@ buildscript {
 apply plugin: 'kotlin'
 apply plugin: 'application'
 
+group = 'net.robocode2'
+version = '0.1.0-SNAPSHOT'
+description = 'Robocode 2 GUI'
+sourceCompatibility = '1.8'
+
 mainClassName = 'net.robocode2.gui.ui.MainWindowKt'
 
 defaultTasks 'run'
@@ -27,7 +32,8 @@ dependencies {
     compile 'org.java-websocket:Java-WebSocket:1.3.9'
     compile 'com.miglayout:miglayout:3.7.4'
     compile 'com.beust:klaxon:5.0.3'
-    runtime "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    runtime 'net.robocode2:robocode2-server:0.2.0'
 }
 
 jar {
@@ -35,8 +41,12 @@ jar {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
-group = 'net.robocode2'
-version = '0.1.0-SNAPSHOT'
-description = 'Robocode 2 GUI'
-sourceCompatibility = '1.8'
+task copyServerJar(type: Copy) {
+    into "$buildDir/resources/main"
+    from configurations.runtime
+    include('robocode2-server-*.jar')
+    rename '(.*)-[0-9]+\\..*.jar', '$1.jar'
+}
+
+build.dependsOn(copyServerJar)
 
