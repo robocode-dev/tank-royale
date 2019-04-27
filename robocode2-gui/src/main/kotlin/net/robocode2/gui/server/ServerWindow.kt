@@ -35,5 +35,8 @@ object ServerWindow : JFrame(ResourceBundles.UI_TITLES.get("server_window")), Au
         val result = regex.replace(line, "")
 
         textArea.append(result)
+
+        // Scroll to bottom
+        textArea.caretPosition = textArea.document.length
     }
 }
