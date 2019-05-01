@@ -4,6 +4,7 @@ buildscript {
 
 plugins {
     id 'java'
+    id 'maven'
 }
 
 repositories {
@@ -44,5 +45,5 @@ jar {
 //apply plugin: "maven"
 
 group = 'net.robocode2'
-version = '0.1.0-SNAPSHOT'
+version = '0.2.1'
 sourceCompatibility = '1.8'

@@ -48,7 +48,7 @@ public class Server implements Runnable {
     private static boolean isUsageHelpRequested = false;
 
     @Option(names = {"-p", "--port"}, type = Integer.class, description = "port number (default: " + DEFAULT_PORT + ")")
-    private static Integer port;
+    private static Integer port = DEFAULT_PORT;
 
     @Spec
     private CommandSpec spec;
@@ -71,6 +71,7 @@ public class Server implements Runnable {
             for (String line : banner) {
                 println(line);
             }
+            cmdLine.printVersionHelp(System.out);
         }
 
         // Handle port

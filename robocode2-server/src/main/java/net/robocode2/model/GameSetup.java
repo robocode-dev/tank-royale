@@ -37,13 +37,10 @@ public class GameSetup {
 	public static final int DEFAULT_INACTIVITY_TURNS = 450;
 
 	/** Default turn timeout in milliseconds */
-	public static final int DEFAULT_TURN_TIMEOUT = 50;
+	public static final int DEFAULT_TURN_TIMEOUT = 1; // 50
 
 	/** Default ready timeout in milliseconds */
 	public static final int DEFAULT_READY_TIMEOUT = 10_000;
-
-	/** Default number of delayed turns for observers */
-	public static final int DEFAULT_DELAYED_OBSERVER_TURNS = 10;
 
 	
 	/** Game type */

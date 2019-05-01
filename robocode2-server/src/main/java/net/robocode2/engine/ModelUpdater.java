@@ -913,11 +913,11 @@ public class ModelUpdater {
 	 * Checks if the round is ended or game is over
 	 */
 	private void checkIfRoundOrGameOver() {
-		if (botBuilderMap.size() <= 1) {
+		if (botBuilderMap.size() < 2) {
 			// Round ended
 			roundEnded = true;
 
-			if (roundNumber == setup.getNumberOfRounds()) {
+			if (roundNumber >= setup.getNumberOfRounds()) {
 				// Game over
 				gameState = gameState.toBuilder().gameEnded(true).build();
 			}
