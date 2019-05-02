@@ -10,7 +10,7 @@ import javax.swing.JDialog
 import javax.swing.JTabbedPane
 import javax.swing.UIManager
 
-object BattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("battle_dialog")) {
+object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
 
     private val tabbedPane = JTabbedPane()
     private val selectBotsPanel = SelectBotsPanel()
@@ -43,7 +43,11 @@ object BattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("battle_
     }
 }
 
-fun main() {
+private fun getWindowTitle(): String {
+    return ResourceBundles.UI_TITLES.get("battle_dialog")
+}
+
+private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     EventQueue.invokeLater {

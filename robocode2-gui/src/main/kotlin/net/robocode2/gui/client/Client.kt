@@ -21,6 +21,8 @@ object Client : AutoCloseable {
 
     val onTickEvent = Event<TickEvent>()
 
+    var currentGameSetup: GameSetup? = null
+
     private var websocket: WebSocketClient = WebSocketClient(defaultUri)
 
     private var clientKey: String? = null
@@ -99,6 +101,8 @@ object Client : AutoCloseable {
     private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
         isGameRunning = true
         onGameStarted.publish(gameStartedEvent)
+
+        currentGameSetup = gameStartedEvent.gameSetup
     }
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {

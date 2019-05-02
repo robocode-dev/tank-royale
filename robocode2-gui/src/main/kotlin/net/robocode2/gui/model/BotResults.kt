@@ -2,6 +2,8 @@ package net.robocode2.gui.model
 
 data class BotResults(
         val id: Int,
+        val name: String,
+        val version: String,
         val rank: Int,
         val survival: Int,
         val lastSurvivorBonus: Int,

@@ -7,7 +7,7 @@ import javax.swing.JFrame
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 
-object ServerWindow : JFrame(ResourceBundles.UI_TITLES.get("server_window")), AutoCloseable {
+object ServerWindow : JFrame(getWindowTitle()), AutoCloseable {
 
     private var textArea = JTextArea()
 
@@ -39,4 +39,8 @@ object ServerWindow : JFrame(ResourceBundles.UI_TITLES.get("server_window")), Au
         // Scroll to bottom
         textArea.caretPosition = textArea.document.length
     }
+}
+
+private fun getWindowTitle(): String {
+    return ResourceBundles.UI_TITLES.get("server_window")
 }

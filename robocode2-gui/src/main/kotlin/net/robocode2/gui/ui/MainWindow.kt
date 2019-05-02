@@ -10,7 +10,7 @@ import java.awt.EventQueue
 import javax.swing.JFrame
 import javax.swing.UIManager
 
-object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCloseable {
+object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
 
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
@@ -50,7 +50,11 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
     }
 }
 
-fun main() {
+private fun getWindowTitle(): String {
+    return ResourceBundles.UI_TITLES.get("main_window")
+}
+
+private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     EventQueue.invokeLater {
