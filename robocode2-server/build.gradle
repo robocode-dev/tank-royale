@@ -1,11 +1,10 @@
-buildscript {
-    version = rootProject.file('/src/main/resources/version.txt').text.trim()
-}
-
 plugins {
     id 'java'
     id 'maven'
 }
+group = 'net.robocode2'
+version = '0.2.2'
+sourceCompatibility = '1.8'
 
 repositories {
     mavenLocal()
@@ -42,8 +41,12 @@ jar {
     }
 }
 
-//apply plugin: "maven"
+import org.apache.tools.ant.filters.ReplaceTokens
 
-group = 'net.robocode2'
-version = '0.2.1'
-sourceCompatibility = '1.8'
+processResources {
+    with copySpec {
+        from 'src/main/resources'
+        include 'version.txt'
+        filter(ReplaceTokens, tokens: [version: version])
+    }
+}
