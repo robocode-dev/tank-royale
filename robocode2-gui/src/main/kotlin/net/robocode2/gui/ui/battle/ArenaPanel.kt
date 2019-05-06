@@ -1,6 +1,7 @@
 package net.robocode2.gui.ui.battle
 
 import net.robocode2.gui.client.Client
+import net.robocode2.gui.fx.Explosion
 import net.robocode2.gui.model.*
 import net.robocode2.gui.ui.ResultsWindow
 import net.robocode2.gui.utils.Graphics2DState
@@ -14,12 +15,15 @@ class ArenaPanel : JPanel() {
 
     private var scale = 1.0
 
-    private val CIRCLE_SHAPE = Area(Ellipse2D.Double(-0.5, -0.5, 1.0, 1.0))
+    private val circleShape = Area(Ellipse2D.Double(-0.5, -0.5, 1.0, 1.0))
+
+    private val explosions = ArrayList<Explosion>()
 
     private companion object State {
         var arenaWidth: Int = 800
         var arenaHeight: Int = 600
 
+        var time: Int = 0
         var bots: Set<BotState> = HashSet()
         var bullets: Set<BulletState> = HashSet()
     }
@@ -50,9 +54,22 @@ class ArenaPanel : JPanel() {
     }
 
     private fun onTickEvent(tickEvent: TickEvent) {
+        state.time = tickEvent.roundState.turnNumber
         state.bots = tickEvent.botStates
         state.bullets = tickEvent.bulletStates
+
+        tickEvent.events.forEach { event ->
+            when(event) {
+                is BotDeathEvent -> onBotDeathEvent(event)
+            }
+        }
         repaint()
+    }
+
+    private fun onBotDeathEvent(botDeathEvent: BotDeathEvent) {
+        val bot = bots.first { bot -> bot.id == botDeathEvent.victimId }
+        val explosion = Explosion(bot.x, bot.y, 80, 50, 15, state.time)
+        explosions.add(explosion)
     }
 
     private fun onMouseWheel(e: MouseWheelEvent) {
@@ -88,24 +105,25 @@ class ArenaPanel : JPanel() {
 
         drawGround(g)
         drawBots(g)
+        drawExplosions(g)
         drawBullets(g)
     }
 
     private fun drawBots(g: Graphics2D) {
-        state.bots.forEach() {
+        state.bots.forEach {
             val x = it.x
             val y = it.y
 
-            drawBotBody(g,x, y, it.direction, Color.BLUE)
+            drawBotBody(g, x, y, it.direction, Color.BLUE)
             drawGun(g, x, y, it.gunDirection)
-            drawRadar(g,x, y, it.radarDirection, Color.RED)
+            drawRadar(g, x, y, it.radarDirection, Color.RED)
             drawScanArc(g, x, y, it.radarDirection, it.radarSweep, Color.WHITE)
             drawEnergy(g, x, y, it.energy)
         }
     }
 
     private fun drawBullets(g: Graphics2D) {
-        state.bullets.forEach() {
+        state.bullets.forEach {
             drawBullet(g, it.x, it.y, it.power)
         }
     }
@@ -120,18 +138,21 @@ class ArenaPanel : JPanel() {
         g.fillRect(0, 0, state.arenaWidth, state.arenaHeight)
     }
 
-    private fun drawBullet(g: Graphics2D, x: Double, y: Double, power: Double) {
-        val size = 2 * Math.sqrt(2.5 * power)
-        fillCircle(g, x, y, size, Color.WHITE)
+    private fun drawExplosions(g: Graphics2D) {
+        val it = explosions.iterator()
+        while (it.hasNext()) {
+            val explosion = it.next()
+            explosion.update(g, state.time)
+            if (explosion.done) {
+                it.remove()
+            }
+        }
     }
 
-    private fun fillCircle(g: Graphics2D, x: Double, y: Double, size: Double, color: Color) {
-        val transform = AffineTransform.getTranslateInstance(x, y)
-        transform.scale(size, size)
-        val transformedCircle = CIRCLE_SHAPE.createTransformedArea(transform)
-
-        g.color = color
-        g.fill(transformedCircle)
+    private fun drawBullet(g: Graphics2D, x: Double, y: Double, power: Double) {
+        val size = 2 * Math.sqrt(2.5 * power)
+        g.color = Color.WHITE
+        g.fillCircle(x, y, size)
     }
 
     private fun drawBotBody(g: Graphics2D, x: Double, y: Double, direction: Double, color: Color) {
@@ -156,7 +177,8 @@ class ArenaPanel : JPanel() {
 
         g.translate(x, y)
 
-        fillCircle(g,0.0, 0.0, 18.0, Color.LIGHT_GRAY)
+        g.color = Color.LIGHT_GRAY
+        g.fillCircle(0.0, 0.0, 18.0)
 
         g.rotate(Math.toRadians(direction))
         g.fillRect(8, -2, 16, 4)
@@ -176,7 +198,7 @@ class ArenaPanel : JPanel() {
         path.moveTo(8.0, 10.0)
         path.curveTo(-2.0, 10.0, -2.0, -10.0, 8.0, -10.0)
 
-        path.moveTo(10.0-2, -10.0)
+        path.moveTo(10.0 - 2, -10.0)
         path.curveTo(-9.0, -10.0, -9.0, 10.0, 8.0, 10.0)
         path.closePath()
 
@@ -207,5 +229,12 @@ class ArenaPanel : JPanel() {
         g.drawString(text, x.toFloat() - width / 2, (y - 30).toFloat())
 
         oldState.restore(g)
+    }
+
+    private fun Graphics2D.fillCircle(x: Double, y: Double, size: Double) {
+        this.color = color
+        val transform = AffineTransform.getTranslateInstance(x, y)
+        transform.scale(size, size)
+        fill(circleShape.createTransformedArea(transform))
     }
 }

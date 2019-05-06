@@ -21,6 +21,8 @@ object Client : AutoCloseable {
 
     val onTickEvent = Event<TickEvent>()
 
+    val onBotDeathEvent = Event<BotDeathEvent>()
+
     var currentGameSetup: GameSetup? = null
 
     private var websocket: WebSocketClient = WebSocketClient(defaultUri)
@@ -68,8 +70,7 @@ object Client : AutoCloseable {
     }
 
     private fun onMessage(msg: String) {
-        val content = Klaxon().parse<Content>(msg)
-        when (content) {
+        when (val content = Klaxon().parse<Content>(msg)) {
             is ServerHandshake -> handleServerHandshake(content)
             is BotListUpdate -> handleBotListUpdate(content)
             is GameStartedEvent -> handleGameStarted(content)
@@ -100,9 +101,9 @@ object Client : AutoCloseable {
 
     private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
         isGameRunning = true
-        onGameStarted.publish(gameStartedEvent)
-
         currentGameSetup = gameStartedEvent.gameSetup
+
+        onGameStarted.publish(gameStartedEvent)
     }
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {
