@@ -9,14 +9,14 @@ class Explosion(
         period: Int,
         numberOfCircles: Int,
         startTime: Int
-) {
-    var done: Boolean = false
+) : Animation {
+    var finished: Boolean = false
         set(value) {
-            parts.forEach { it.done = value }
+            parts.forEach { it.finished = value }
             field = value
         }
 
-    private val smallBurstRadius = radius * 0.75
+    private val smallBurstRadius = if (numberOfCircles == 1) radius.toDouble() else radius * 0.75
     private val parts = ArrayList<CircleBurst>()
 
     init {
@@ -37,17 +37,21 @@ class Explosion(
         }
     }
 
-    fun update(g: Graphics2D, time: Int) {
+    override fun paint(g: Graphics2D, time: Int) {
         var count = parts.size
 
         for (part in parts) {
-            part.update(g, time)
+            part.paint(g, time)
 
-            if (part.done) {
+            if (part.finished) {
                 count--
             }
         }
-        done = count == 0
+        finished = count == 0
+    }
+
+    override fun isFinished(): Boolean {
+        return finished
     }
 
     private fun radiusRandom(): Double {

@@ -6,15 +6,16 @@ import java.awt.geom.AffineTransform
 import java.awt.geom.Area
 import java.awt.geom.Ellipse2D
 
-class CircleBurst(
-    private val x: Double,
-    private val y: Double,
+open class CircleBurst(
+    var x: Double,
+    var y: Double,
     private val startRadius: Double,
     private val endRadius: Double,
     private val period: Int,
     private val startTime: Int
-) {
-    var done = false
+) : Animation {
+
+    var finished = false
 
     private val colors = arrayOf(
         Color.LIGHT_GRAY,
@@ -35,7 +36,7 @@ class CircleBurst(
         Color.BLACK
     )
 
-    fun update(g: Graphics2D, time: Int) {
+    override fun paint(g: Graphics2D, time: Int) {
         if (time < startTime) return
 
         val dt = time - startTime
@@ -50,7 +51,11 @@ class CircleBurst(
             g.color = lerpRGB(colorA, colorB, t, (1.0 - t))
             g.fillCircle(x, y, r)
         } else
-            done = true
+            finished = true
+    }
+
+    override fun isFinished(): Boolean {
+        return finished
     }
 
     private val circleShape = Area(Ellipse2D.Double(-0.5, -0.5, 1.0, 1.0))

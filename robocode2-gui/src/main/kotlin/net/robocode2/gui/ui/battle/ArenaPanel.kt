@@ -1,6 +1,8 @@
 package net.robocode2.gui.ui.battle
 
 import net.robocode2.gui.client.Client
+import net.robocode2.gui.fx.Animation
+import net.robocode2.gui.fx.CircleBurst
 import net.robocode2.gui.fx.Explosion
 import net.robocode2.gui.model.*
 import net.robocode2.gui.ui.ResultsWindow
@@ -17,7 +19,7 @@ class ArenaPanel : JPanel() {
 
     private val circleShape = Area(Ellipse2D.Double(-0.5, -0.5, 1.0, 1.0))
 
-    private val explosions = ArrayList<Explosion>()
+    private val explosions = ArrayList<Animation>()
 
     private companion object State {
         var arenaWidth: Int = 800
@@ -36,7 +38,7 @@ class ArenaPanel : JPanel() {
         Client.onGameStarted.subscribe { onGameStarted(it) }
         Client.onGameEnded.subscribe { onGameEnded(it) }
         Client.onGameAborted.subscribe { onGameAborted(it) }
-        Client.onTickEvent.subscribe { onTickEvent(it) }
+        Client.onTickEvent.subscribe { onTick(it) }
     }
 
     private fun onGameStarted(gameStartedEvent: GameStartedEvent) {
@@ -53,22 +55,34 @@ class ArenaPanel : JPanel() {
         // TODO
     }
 
-    private fun onTickEvent(tickEvent: TickEvent) {
+    private fun onTick(tickEvent: TickEvent) {
         state.time = tickEvent.roundState.turnNumber
         state.bots = tickEvent.botStates
         state.bullets = tickEvent.bulletStates
 
         tickEvent.events.forEach { event ->
-            when(event) {
-                is BotDeathEvent -> onBotDeathEvent(event)
+            when (event) {
+                is BotDeathEvent -> onBotDeath(event)
+                is BulletHitBotEvent -> onBulletHitBot(event)
             }
         }
         repaint()
     }
 
-    private fun onBotDeathEvent(botDeathEvent: BotDeathEvent) {
+    private fun onBotDeath(botDeathEvent: BotDeathEvent) {
         val bot = bots.first { bot -> bot.id == botDeathEvent.victimId }
         val explosion = Explosion(bot.x, bot.y, 80, 50, 15, state.time)
+        explosions.add(explosion)
+    }
+
+    private fun onBulletHitBot(bulletHitBotEvent: BulletHitBotEvent) {
+        val bullet = bulletHitBotEvent.bullet
+        val bot = bots.first { bot -> bot.id == bulletHitBotEvent.victimId }
+
+        val xOffset = bot.x - bullet.x
+        val yOffset = bot.y - bullet.y
+
+        val explosion = BotHitExplosion(bot.x, bot.y, xOffset, yOffset, bot.id,4.0, 40.0, 25, state.time)
         explosions.add(explosion)
     }
 
@@ -142,8 +156,17 @@ class ArenaPanel : JPanel() {
         val it = explosions.iterator()
         while (it.hasNext()) {
             val explosion = it.next()
-            explosion.update(g, state.time)
-            if (explosion.done) {
+
+            if (explosion is BotHitExplosion) {
+                val bot = bots.firstOrNull() { bot -> bot.id == explosion.victimId }
+                if (bot != null) {
+                    explosion.x = bot.x
+                    explosion.y = bot.y
+                }
+            }
+
+            explosion.paint(g, state.time)
+            if (explosion.isFinished()) {
                 it.remove()
             }
         }
@@ -236,5 +259,32 @@ class ArenaPanel : JPanel() {
         val transform = AffineTransform.getTranslateInstance(x, y)
         transform.scale(size, size)
         fill(circleShape.createTransformedArea(transform))
+    }
+
+    class BotHitExplosion(
+            x: Double,
+            y: Double,
+            private val xOffset: Double,
+            private val yOffset: Double,
+            val victimId: Int,
+            startRadius: Double,
+            endRadius: Double,
+            period: Int,
+            startTime: Int
+    ) : CircleBurst(x, y, startRadius, endRadius, period, startTime) {
+
+        override fun paint(g: Graphics2D, time: Int) {
+
+            val origX = x
+            val origY = y
+
+            x += xOffset
+            y += yOffset
+
+            super.paint(g, time)
+
+            x = origX
+            y = origY
+        }
     }
 }
