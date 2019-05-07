@@ -19,7 +19,7 @@ class ContentAdapter: com.beust.klaxon.TypeAdapter<Content> {
         ContentType.BULLET_FIRED_EVENT.type -> BulletFiredEvent::class
         ContentType.BULLET_HIT_BOT_EVENT.type -> BulletHitBotEvent::class
         ContentType.BULLET_HIT_BULLET_EVENT.type -> BulletHitBulletEvent::class
-        ContentType.BULLET_MISSED_EVENT.type -> BulletMissedEvent::class
+        ContentType.BULLET_HIT_WALL_EVENT.type -> BulletHitWallEvent::class
         ContentType.HIT_BY_BULLET_EVENT.type -> HitByBulletEvent::class
         else -> throw IllegalStateException("Unknown message type: $type")
     }

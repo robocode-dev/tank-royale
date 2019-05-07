@@ -64,7 +64,7 @@ class ArenaPanel : JPanel() {
             when (event) {
                 is BotDeathEvent -> onBotDeath(event)
                 is BulletHitBotEvent -> onBulletHitBot(event)
-                is BulletMissedEvent -> onBulletMissed(event)
+                is BulletHitWallEvent -> onBulletMissed(event)
                 is BulletHitBulletEvent -> onBulletHitBullet(event)
             }
         }
@@ -88,8 +88,8 @@ class ArenaPanel : JPanel() {
         explosions.add(explosion)
     }
 
-    private fun onBulletMissed(bulletMissedEvent: BulletMissedEvent) {
-        val bullet = bulletMissedEvent.bullet
+    private fun onBulletMissed(bulletHitWallEvent: BulletHitWallEvent) {
+        val bullet = bulletHitWallEvent.bullet
         val explosion = CircleBurst(bullet.x, bullet.y, 4.0, 40.0, 25, state.time)
         explosions.add(explosion)
     }
