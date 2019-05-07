@@ -117,7 +117,7 @@ public final class EventsToEventsMapper {
 
 	private static BulletHitWallEvent map(net.robocode2.events.BulletHitWallEvent bulletHitWallEvent) {
 		BulletHitWallEvent event = new BulletHitWallEvent();
-		event.setType(Type.BULLET_MISSED_EVENT);
+		event.setType(Type.BULLET_HIT_WALL_EVENT);
 		event.setBullet(BulletToBulletStateMapper.map(bulletHitWallEvent.getBullet()));
 		return event;
 	}
