@@ -9,8 +9,8 @@ properties:
       - botHitWallEvent
       - bulletFiredEvent
       - bulletHitBotEvent
-      - bulletMissedEvent
       - bulletHitBulletEvent
+      - bulletHitWallEvent
       - hitByBulletEvent
       - scannedBotEvent
       - skippedTurnEvent
