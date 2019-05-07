@@ -64,6 +64,8 @@ class ArenaPanel : JPanel() {
             when (event) {
                 is BotDeathEvent -> onBotDeath(event)
                 is BulletHitBotEvent -> onBulletHitBot(event)
+                is BulletMissedEvent -> onBulletMissed(event)
+                is BulletHitBulletEvent -> onBulletHitBullet(event)
             }
         }
         repaint()
@@ -82,7 +84,13 @@ class ArenaPanel : JPanel() {
         val xOffset = bot.x - bullet.x
         val yOffset = bot.y - bullet.y
 
-        val explosion = BotHitExplosion(bot.x, bot.y, xOffset, yOffset, bot.id,4.0, 40.0, 25, state.time)
+        val explosion = BotHitExplosion(bot.x, bot.y, xOffset, yOffset, bot.id, 4.0, 40.0, 25, state.time)
+        explosions.add(explosion)
+    }
+
+    private fun onBulletMissed(bulletMissedEvent: BulletMissedEvent) {
+        val bullet = bulletMissedEvent.bullet
+        val explosion = CircleBurst(bullet.x, bullet.y, 4.0, 40.0, 25, state.time)
         explosions.add(explosion)
     }
 
@@ -97,6 +105,17 @@ class ArenaPanel : JPanel() {
             scale = newScale
             repaint()
         }
+    }
+
+    private fun onBulletHitBullet(bulletHitBulletEvent: BulletHitBulletEvent) {
+        val bullet1 = bulletHitBulletEvent.bullet
+        val bullet2 = bulletHitBulletEvent.hitBullet
+
+        val x = (bullet1.x + bullet2.x) / 2
+        val y = (bullet1.y + bullet2.y) / 2
+
+        val explosion = CircleBurst(x, y, 4.0, 40.0, 25, state.time)
+        explosions.add(explosion)
     }
 
     override fun paintComponent(g: Graphics) {
