@@ -114,8 +114,6 @@ public class Turn {
 		/**
 		 * Adds a public bot event
 		 * 
-		 * @param botId
-		 *            is the bot id
 		 * @param event
 		 *            is the bot event
 		 */

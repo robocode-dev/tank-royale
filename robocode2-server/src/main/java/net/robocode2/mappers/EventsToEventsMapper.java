@@ -10,7 +10,7 @@ import net.robocode2.schema.BotHitWallEvent;
 import net.robocode2.schema.BulletFiredEvent;
 import net.robocode2.schema.BulletHitBotEvent;
 import net.robocode2.schema.BulletHitBulletEvent;
-import net.robocode2.schema.BulletMissedEvent;
+import net.robocode2.schema.BulletHitWallEvent;
 import net.robocode2.schema.Event;
 import net.robocode2.schema.Event.Type;
 import net.robocode2.schema.HitByBulletEvent;
@@ -49,8 +49,8 @@ public final class EventsToEventsMapper {
 		if (event instanceof net.robocode2.events.BulletHitBulletEvent) {
 			return map((net.robocode2.events.BulletHitBulletEvent) event);
 		}
-		if (event instanceof net.robocode2.events.BulletMissedEvent) {
-			return map((net.robocode2.events.BulletMissedEvent) event);
+		if (event instanceof net.robocode2.events.BulletHitWallEvent) {
+			return map((net.robocode2.events.BulletHitWallEvent) event);
 		}
 		if (event instanceof net.robocode2.events.HitByBulletEvent) {
 			return map((net.robocode2.events.HitByBulletEvent) event);
@@ -115,10 +115,10 @@ public final class EventsToEventsMapper {
 		return event;
 	}
 
-	private static BulletMissedEvent map(net.robocode2.events.BulletMissedEvent bulletMissedEvent) {
-		BulletMissedEvent event = new BulletMissedEvent();
+	private static BulletHitWallEvent map(net.robocode2.events.BulletHitWallEvent bulletHitWallEvent) {
+		BulletHitWallEvent event = new BulletHitWallEvent();
 		event.setType(Type.BULLET_MISSED_EVENT);
-		event.setBullet(BulletToBulletStateMapper.map(bulletMissedEvent.getBullet()));
+		event.setBullet(BulletToBulletStateMapper.map(bulletHitWallEvent.getBullet()));
 		return event;
 	}
 

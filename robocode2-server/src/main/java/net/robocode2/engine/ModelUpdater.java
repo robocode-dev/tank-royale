@@ -18,7 +18,7 @@ import net.robocode2.events.BotHitWallEvent;
 import net.robocode2.events.BulletFiredEvent;
 import net.robocode2.events.BulletHitBotEvent;
 import net.robocode2.events.BulletHitBulletEvent;
-import net.robocode2.events.BulletMissedEvent;
+import net.robocode2.events.BulletHitWallEvent;
 import net.robocode2.events.ScannedBotEvent;
 import net.robocode2.model.Arena;
 import net.robocode2.model.Bot;
@@ -772,9 +772,9 @@ public class ModelUpdater {
 
 				iterator.remove(); // remove bullet from arena
 
-				BulletMissedEvent bulletMissedEvent = new BulletMissedEvent(bullet);
-				turnBuilder.addPrivateBotEvent(bullet.getBotId(), bulletMissedEvent);
-				turnBuilder.addObserverEvent(bulletMissedEvent);
+				BulletHitWallEvent bulletHitWallEvent = new BulletHitWallEvent(bullet);
+				turnBuilder.addPrivateBotEvent(bullet.getBotId(), bulletHitWallEvent);
+				turnBuilder.addObserverEvent(bulletHitWallEvent);
 			}
 		}
 	}
