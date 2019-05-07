@@ -1,0 +1,11 @@
+$id: #bullet-hit-wall-event.yaml
+$schema: http://json-schema.org/draft-07/schema#
+description: Bot event occuring, when one of its bullets hits the wall of the battle arena
+extends:
+  $ref: event.yaml
+properties:
+  bullet:
+    description: Bullet that hit the wall
+    $ref: bullet-state.yaml
+required:
+- bullet
