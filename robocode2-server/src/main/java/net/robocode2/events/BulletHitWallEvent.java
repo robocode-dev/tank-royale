@@ -11,6 +11,9 @@ import net.robocode2.model.Bullet;
 @Value
 public class BulletHitWallEvent implements Event {
 
+	/** Turn number when event occurred */
+	int turnNumber;
+
 	/** Bullet that missed */
 	Bullet bullet;
 }

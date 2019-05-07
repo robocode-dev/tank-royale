@@ -10,6 +10,9 @@ import lombok.Value;
 @Value
 public class ScannedBotEvent implements Event {
 
+	/** Turn number when event occurred */
+	int turnNumber;
+
 	/** Bot id of the bot that scanned the bot */
 	int scannedByBotId;
 

@@ -3,13 +3,14 @@ package net.robocode2.events;
 import lombok.Value;
 
 /**
- * Event sent when a bot has skipped a turn
+ * Event sent when a bot has skipped a turn.
+ * The skipped turn is the turn number of the event.
  * 
  * @author Flemming N. Larsen
  */
 @Value
 public class SkippedTurnEvent implements Event {
 
-	/** Turn the got skipped */
-	int skippedTurn;
+    /** Turn number when event occurred */
+    int turnNumber;
 }

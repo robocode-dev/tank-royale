@@ -10,6 +10,9 @@ import lombok.Value;
 @Value
 public class BotHitBotEvent implements Event {
 
+	/** Turn number when event occurred */
+	int turnNumber;
+
 	/** Bot id of the bot hitting another bot */
 	int botId;
 

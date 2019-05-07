@@ -11,6 +11,9 @@ import net.robocode2.model.Bullet;
 @Value
 public class BulletFiredEvent implements Event {
 
+	/** Turn number when event occurred */
+	int turnNumber;
+
 	/** Fired bullet */
 	Bullet bullet;
 }

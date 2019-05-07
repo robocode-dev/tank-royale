@@ -5,11 +5,14 @@ import net.robocode2.model.Bullet;
 
 /**
  * Event sent when a bullet hits another bullet.
- * 
+ *
  * @author Flemming N. Larsen
  */
 @Value
 public class BulletHitBulletEvent implements Event {
+
+	/** Turn number when event occurred */
+	int turnNumber;
 
 	/** Bullet that hit another bullet */
 	Bullet bullet;

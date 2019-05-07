@@ -10,6 +10,9 @@ import lombok.Value;
 @Value
 public class BotDeathEvent implements Event {
 
+	/** Turn number when event occurred */
+	int turnNumber;
+
 	/** Bot id of the victim that got killed */
 	int victimId;
 }

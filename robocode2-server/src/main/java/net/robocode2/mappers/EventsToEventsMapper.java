@@ -67,6 +67,7 @@ public final class EventsToEventsMapper {
 	private static BotDeathEvent map(net.robocode2.events.BotDeathEvent botDeathEvent) {
 		BotDeathEvent event = new BotDeathEvent();
 		event.setType(Type.BOT_DEATH_EVENT);
+		event.setTurnNumber(botDeathEvent.getTurnNumber());
 		event.setVictimId(botDeathEvent.getVictimId());
 		return event;
 	}
@@ -74,6 +75,7 @@ public final class EventsToEventsMapper {
 	private static BotHitBotEvent map(net.robocode2.events.BotHitBotEvent botHitBotEvent) {
 		BotHitBotEvent event = new BotHitBotEvent();
 		event.setType(Type.BOT_HIT_BOT_EVENT);
+		event.setTurnNumber(botHitBotEvent.getTurnNumber());
 		event.setBotId(botHitBotEvent.getBotId());
 		event.setVictimId(botHitBotEvent.getVictimId());
 		event.setEnergy(botHitBotEvent.getEnergy());
@@ -86,6 +88,7 @@ public final class EventsToEventsMapper {
 	private static BotHitWallEvent map(net.robocode2.events.BotHitWallEvent botHitWallEvent) {
 		BotHitWallEvent event = new BotHitWallEvent();
 		event.setType(Type.BOT_HIT_WALL_EVENT);
+		event.setTurnNumber(botHitWallEvent.getTurnNumber());
 		event.setVictimId(botHitWallEvent.getVictimId());
 		return event;
 	}
@@ -93,6 +96,7 @@ public final class EventsToEventsMapper {
 	private static BulletFiredEvent map(net.robocode2.events.BulletFiredEvent bulletFiredEvent) {
 		BulletFiredEvent event = new BulletFiredEvent();
 		event.setType(Type.BULLET_FIRED_EVENT);
+		event.setTurnNumber(bulletFiredEvent.getTurnNumber());
 		event.setBullet(BulletToBulletStateMapper.map(bulletFiredEvent.getBullet()));
 		return event;
 	}
@@ -100,6 +104,7 @@ public final class EventsToEventsMapper {
 	private static BulletHitBotEvent map(net.robocode2.events.BulletHitBotEvent bulletHitBotEvent) {
 		BulletHitBotEvent event = new BulletHitBotEvent();
 		event.setType(Type.BULLET_HIT_BOT_EVENT);
+		event.setTurnNumber(bulletHitBotEvent.getTurnNumber());
 		event.setBullet(BulletToBulletStateMapper.map(bulletHitBotEvent.getBullet()));
 		event.setVictimId(bulletHitBotEvent.getVictimId());
 		event.setDamage(bulletHitBotEvent.getDamage());
@@ -110,6 +115,7 @@ public final class EventsToEventsMapper {
 	private static BulletHitBulletEvent map(net.robocode2.events.BulletHitBulletEvent bulletHitBulletEvent) {
 		BulletHitBulletEvent event = new BulletHitBulletEvent();
 		event.setType(Type.BULLET_HIT_BULLET_EVENT);
+		event.setTurnNumber(bulletHitBulletEvent.getTurnNumber());
 		event.setBullet(BulletToBulletStateMapper.map(bulletHitBulletEvent.getBullet()));
 		event.setHitBullet(BulletToBulletStateMapper.map(bulletHitBulletEvent.getHitBullet()));
 		return event;
@@ -118,6 +124,7 @@ public final class EventsToEventsMapper {
 	private static BulletHitWallEvent map(net.robocode2.events.BulletHitWallEvent bulletHitWallEvent) {
 		BulletHitWallEvent event = new BulletHitWallEvent();
 		event.setType(Type.BULLET_HIT_WALL_EVENT);
+		event.setTurnNumber(bulletHitWallEvent.getTurnNumber());
 		event.setBullet(BulletToBulletStateMapper.map(bulletHitWallEvent.getBullet()));
 		return event;
 	}
@@ -125,6 +132,7 @@ public final class EventsToEventsMapper {
 	private static HitByBulletEvent map(net.robocode2.events.HitByBulletEvent hitByBulletEvent) {
 		HitByBulletEvent event = new HitByBulletEvent();
 		event.setType(Type.HIT_BY_BULLET_EVENT);
+		event.setTurnNumber(hitByBulletEvent.getTurnNumber());
 		event.setBullet(BulletToBulletStateMapper.map(hitByBulletEvent.getBullet()));
 		event.setDamage(hitByBulletEvent.getDamage());
 		event.setEnergy(hitByBulletEvent.getEnergy());
@@ -134,6 +142,7 @@ public final class EventsToEventsMapper {
 	private static ScannedBotEvent map(net.robocode2.events.ScannedBotEvent scannedBotEvent) {
 		ScannedBotEvent event = new ScannedBotEvent();
 		event.setType(Type.SCANNED_BOT_EVENT);
+		event.setTurnNumber(scannedBotEvent.getTurnNumber());
 		event.setScannedByBotId(scannedBotEvent.getScannedByBotId());
 		event.setScannedBotId(scannedBotEvent.getScannedBotId());
 		event.setEnergy(scannedBotEvent.getEnergy());
@@ -147,7 +156,7 @@ public final class EventsToEventsMapper {
 	private static SkippedTurnEvent map(net.robocode2.events.SkippedTurnEvent skippedTurnEvent) {
 		SkippedTurnEvent event = new SkippedTurnEvent();
 		event.setType(Type.SKIPPED_TURN_EVENT);
-		event.setSkippedTurn(skippedTurnEvent.getSkippedTurn());
+		event.setTurnNumber(skippedTurnEvent.getTurnNumber());
 		return event;
 	}
 }

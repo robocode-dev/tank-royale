@@ -347,7 +347,7 @@ public class ModelUpdater {
 			if (!occupiedCells.contains(cell)) {
 				occupiedCells.add(cell);
 
-				y = (int)(cell / gridWidth);
+				y = cell / gridWidth;
 				x = cell - y * gridWidth;
 
 				x *= cellWidth;
@@ -448,8 +448,8 @@ public class ModelUpdater {
 					Bullet bullet1 = bulletArray[i];
 					Bullet bullet2 = bulletArray[j];
 
-					BulletHitBulletEvent bulletHitBulletEvent1 = new BulletHitBulletEvent(bullet1, bullet2);
-					BulletHitBulletEvent bulletHitBulletEvent2 = new BulletHitBulletEvent(bullet2, bullet1);
+					BulletHitBulletEvent bulletHitBulletEvent1 = new BulletHitBulletEvent(turnNumber, bullet1, bullet2);
+					BulletHitBulletEvent bulletHitBulletEvent2 = new BulletHitBulletEvent(turnNumber, bullet2, bullet1);
 
 					turnBuilder.addPrivateBotEvent(bullet1.getBotId(), bulletHitBulletEvent1);
 					turnBuilder.addPrivateBotEvent(bullet2.getBotId(), bulletHitBulletEvent2);
@@ -493,7 +493,7 @@ public class ModelUpdater {
 					}
 					scoreTracker.registerBulletHit(botId, victimId, damage, killed);
 
-					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(bullet, victimId, damage, botBuilder.getEnergy());
+					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(turnNumber, bullet, victimId, damage, botBuilder.getEnergy());
 
 					turnBuilder.addPrivateBotEvent(botId, bulletHitBotEvent);
 					turnBuilder.addObserverEvent(bulletHitBotEvent);
@@ -599,8 +599,8 @@ public class ModelUpdater {
 					bot1x = botBuilder1.getX();
 					bot1y = botBuilder1.getY();
 
-					BotHitBotEvent botHitBotEvent1 = new BotHitBotEvent(botId1, botId2, botBuilder2.getEnergy(), botBuilder2.getX(), botBuilder2.getY(), bot1RammedBot2);
-					BotHitBotEvent botHitBotEvent2 = new BotHitBotEvent(botId2, botId1, botBuilder1.getEnergy(), botBuilder1.getX(), botBuilder1.getY(), bot2rammedBot1);
+					BotHitBotEvent botHitBotEvent1 = new BotHitBotEvent(turnNumber, botId1, botId2, botBuilder2.getEnergy(), botBuilder2.getX(), botBuilder2.getY(), bot1RammedBot2);
+					BotHitBotEvent botHitBotEvent2 = new BotHitBotEvent(turnNumber, botId2, botId1, botBuilder1.getEnergy(), botBuilder1.getX(), botBuilder1.getY(), bot2rammedBot1);
 
 					turnBuilder.addPrivateBotEvent(botId1, botHitBotEvent1);
 					turnBuilder.addPrivateBotEvent(botId2, botHitBotEvent2);
@@ -746,7 +746,7 @@ public class ModelUpdater {
 					// Skip this check, if the bot hit the wall in the previous turn
 					if (previousTurn.getBotEvents(botBuilder.getId()).stream().noneMatch(e -> e instanceof BotHitWallEvent)) {
 		
-						BotHitWallEvent botHitWallEvent = new BotHitWallEvent(botBuilder.getId());
+						BotHitWallEvent botHitWallEvent = new BotHitWallEvent(turnNumber, botBuilder.getId());
 						turnBuilder.addPrivateBotEvent(botBuilder.getId(), botHitWallEvent);
 						turnBuilder.addObserverEvent(botHitWallEvent);
 		
@@ -772,7 +772,7 @@ public class ModelUpdater {
 
 				iterator.remove(); // remove bullet from arena
 
-				BulletHitWallEvent bulletHitWallEvent = new BulletHitWallEvent(bullet);
+				BulletHitWallEvent bulletHitWallEvent = new BulletHitWallEvent(turnNumber, bullet);
 				turnBuilder.addPrivateBotEvent(bullet.getBotId(), bulletHitWallEvent);
 				turnBuilder.addObserverEvent(bulletHitWallEvent);
 			}
@@ -787,7 +787,7 @@ public class ModelUpdater {
 			if (botBuilder.isDead()) {
 				int victimId = botBuilder.getId();
 
-				BotDeathEvent botDeathEvent = new BotDeathEvent(victimId);
+				BotDeathEvent botDeathEvent = new BotDeathEvent(turnNumber, victimId);
 				turnBuilder.addPublicBotEvent(botDeathEvent);
 				turnBuilder.addObserverEvent(botDeathEvent);
 
@@ -856,7 +856,7 @@ public class ModelUpdater {
 		
 		bullets.add(bullet);
 
-		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(bullet);
+		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(turnNumber, bullet);
 		turnBuilder.addPrivateBotEvent(botId, bulletFiredEvent);
 		turnBuilder.addObserverEvent(bulletFiredEvent);
 	}
@@ -898,7 +898,7 @@ public class ModelUpdater {
 						BOT_BOUNDING_CIRCLE_RADIUS, scanCenterX, scanCenterY,
 						RuleConstants.RADAR_RADIUS, arcStartAngle, arcEndAngle)) {
 
-					ScannedBotEvent scannedBotEvent = new ScannedBotEvent(scanningBot.getId(), scannedBot.getId(),
+					ScannedBotEvent scannedBotEvent = new ScannedBotEvent(turnNumber, scanningBot.getId(), scannedBot.getId(),
 							scannedBot.getEnergy(), scannedBot.getX(), scannedBot.getY(), scannedBot.getDirection(),
 							scannedBot.getSpeed());
 
