@@ -22,7 +22,7 @@ properties:
     type: array
     items:
       type: string
-  programmingLanguage:
+  programmingLang:
     description: Language used for programming the bot, e.g. Java 9
     type: string
 required:
