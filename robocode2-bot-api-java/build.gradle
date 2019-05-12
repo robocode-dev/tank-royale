@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'net.robocode2:robocode2-schema:0.2.3-SNAPSHOT'
+    implementation 'net.robocode2:robocode2-schema:0.2.4-SNAPSHOT'
     implementation 'org.java-websocket:Java-WebSocket:1.4.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.neovisionaries:nv-i18n:1.22'
