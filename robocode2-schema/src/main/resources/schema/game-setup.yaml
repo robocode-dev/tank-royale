@@ -66,14 +66,6 @@ properties:
   isReadyTimeoutLocked:
     description: Flag specifying if the ready timeout is fixed for this game type
     type: boolean
-  delayedObserverTurns:
-    description: Number of turns that are delayed for observers relative to the current
-      turn enforced by the game
-    type: integer
-  isDelayedObserverTurnsLocked:
-    description: Flag specifying if the delayed observer turns is fixed for this game
-      type
-    type: boolean
 required:
 - gameType
 - arenaWidth
@@ -93,5 +85,3 @@ required:
 - isTurnTimeoutLocked
 - readyTimeout
 - isReadyTimeoutLocked
-- delayedObserverTurns
-- isDelayedObserverTurnsLocked
