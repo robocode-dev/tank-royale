@@ -7,15 +7,13 @@ import com.google.gson.JsonObject;
 import lombok.NonNull;
 import lombok.val;
 import lombok.var;
-import net.robocode2.events.ConnectedEvent;
-import net.robocode2.events.ConnectionErrorEvent;
-import net.robocode2.events.DisconnectedEvent;
-import net.robocode2.events.GameStartedEvent;
+import net.robocode2.events.*;
 import net.robocode2.schema.*;
 import org.java_websocket.client.WebSocketClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 public abstract class Bot implements IBot {
 
@@ -194,10 +192,10 @@ public abstract class Bot implements IBot {
       }
 
       private void handleGameStartedEvent(JsonObject jsonMsg) {
-        val gameStartedEvent = gson.fromJson(jsonMsg, GameStartedEventForBot.class);
-        val gameSetup = gameStartedEvent.getGameSetup();
+        val gameStartedEventForBot = gson.fromJson(jsonMsg, GameStartedEventForBot.class);
+        val gameSetup = gameStartedEventForBot.getGameSetup();
 
-        Bot.__Internals.this.myId = gameStartedEvent.getMyId();
+        Bot.__Internals.this.myId = gameStartedEventForBot.getMyId();
 
         Bot.__Internals.this.gameSetup =
             GameSetup.builder()
@@ -219,16 +217,39 @@ public abstract class Bot implements IBot {
         val msg = gson.toJson(ready);
         send(msg);
 
-        val newGameStartedEvent =
+        val gameStartedEvent =
             GameStartedEvent.builder()
-                .myId(gameStartedEvent.getMyId())
+                .myId(gameStartedEventForBot.getMyId())
                 .gameSetup(Bot.__Internals.this.gameSetup)
                 .build();
-        Bot.this.onGameStarted(newGameStartedEvent);
+        Bot.this.onGameStarted(gameStartedEvent);
       }
     }
 
     private void handleGameEndedEvent(JsonObject jsonMsg) {
+      val gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
+
+      val results = new ArrayList<BotResults>();
+      gameEndedEventForBot.getResults().forEach(r -> results.add(BotResults.builder()
+              .id(r.getId())
+              .rank(r.getRank())
+              .survival(r.getSurvival())
+              .lastSurvivorBonus(r.getLastSurvivorBonus())
+              .bulletDamage(r.getBulletDamage())
+              .bulletKillBonus(r.getBulletKillBonus())
+              .ramDamage(r.getRamDamage())
+              .ramKillBonus(r.getRamKillBonus())
+              .totalScore(r.getTotalScore())
+              .firstPlaces(r.getFirstPlaces())
+              .secondPlaces(r.getSecondPlaces())
+              .thirdPlaces(r.getThirdPlaces())
+              .build()));
+
+      val newBattleEndedEvent = GameEndedEvent.builder()
+              .numberOfRounds(gameEndedEventForBot.getNumberOfRounds())
+              .results(results)
+              .build();
+      Bot.this.onGameEnded(newBattleEndedEvent);
     }
   }
 

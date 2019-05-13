@@ -1,9 +1,6 @@
 package net.robocode2;
 
-import net.robocode2.events.ConnectedEvent;
-import net.robocode2.events.ConnectionErrorEvent;
-import net.robocode2.events.DisconnectedEvent;
-import net.robocode2.events.GameStartedEvent;
+import net.robocode2.events.*;
 
 /** Interface for a bot. */
 public interface IBot {
@@ -58,4 +55,7 @@ public interface IBot {
 
   /** Event handler triggered when game has started */
   void onGameStarted(GameStartedEvent gameStatedEvent);
+
+  /** Event handler triggered when game has ended */
+  void onGameEnded(GameEndedEvent gameEndedEvent);
 }
