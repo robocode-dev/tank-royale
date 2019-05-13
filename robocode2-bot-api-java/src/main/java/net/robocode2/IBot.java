@@ -3,6 +3,7 @@ package net.robocode2;
 import net.robocode2.events.ConnectedEvent;
 import net.robocode2.events.ConnectionErrorEvent;
 import net.robocode2.events.DisconnectedEvent;
+import net.robocode2.events.GameStartedEvent;
 
 /** Interface for a bot. */
 public interface IBot {
@@ -56,5 +57,5 @@ public interface IBot {
   void onConnectionError(ConnectionErrorEvent connectionErrorEvent);
 
   /** Event handler triggered when game has started */
-  void onGameStarted();
+  void onGameStarted(GameStartedEvent gameStatedEvent);
 }

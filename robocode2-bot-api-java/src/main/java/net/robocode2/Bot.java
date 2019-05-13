@@ -10,6 +10,7 @@ import lombok.var;
 import net.robocode2.events.ConnectedEvent;
 import net.robocode2.events.ConnectionErrorEvent;
 import net.robocode2.events.DisconnectedEvent;
+import net.robocode2.events.GameStartedEvent;
 import net.robocode2.schema.*;
 import org.java_websocket.client.WebSocketClient;
 
@@ -38,37 +39,36 @@ public abstract class Bot implements IBot {
   }
 
   public String getGameType() {
-    return __internals.gameType;
+    return __internals.gameSetup.getGameType();
   }
 
   public int getArenaWidth() {
-    return __internals.arenaWidth;
+    return __internals.gameSetup.getArenaWidth();
   }
 
   public int getArenaHeight() {
-    return __internals.arenaHeight;
+    return __internals.gameSetup.getArenaHeight();
   }
 
   public int getNumberOfRounds() {
-    return __internals.numberOfRounds;
+    return __internals.gameSetup.getNumberOfRounds();
   }
 
   public double getGunCoolingRate() {
-    return __internals.gunCoolingRate;
+    return __internals.gameSetup.getGunCoolingRate();
   }
 
   public int getInactivityTurns() {
-    return __internals.inactivityTurns;
+    return __internals.gameSetup.getInactivityTurns();
   }
 
   public int getTurnTimeout() {
-    return __internals.turnTimeout;
+    return __internals.gameSetup.getTurnTimeout();
   }
 
   public int getReadyTimeout() {
-    return __internals.readyTimeout;
+    return __internals.gameSetup.getReadyTimeout();
   }
-
 
   private final class __Internals {
     private static final String SERVER_URI_PROPERTY_KEY = "server.uri";
@@ -83,14 +83,7 @@ public abstract class Bot implements IBot {
     private String clientKey;
 
     private int myId;
-    private String gameType;
-    private int arenaWidth;
-    private int arenaHeight;
-    private int numberOfRounds;
-    private double gunCoolingRate;
-    private int inactivityTurns;
-    private int turnTimeout;
-    private int readyTimeout;
+    private GameSetup gameSetup;
 
     __Internals(BotInfo botInfo) {
       this.botInfo = botInfo;
@@ -164,6 +157,9 @@ public abstract class Bot implements IBot {
             case GAME_STARTED_EVENT_FOR_BOT:
               handleGameStartedEvent(jsonMsg);
               break;
+            case GAME_ENDED_EVENT_FOR_BOT:
+              handleGameEndedEvent(jsonMsg);
+              break;
             default:
               switch (Message.Type.fromValue(type)) {
                 case SERVER_HANDSHAKE:
@@ -173,40 +169,6 @@ public abstract class Bot implements IBot {
           }
         }
         // TODO
-      }
-
-      private void handleServerHandshake(JsonObject jsonMsg) {
-        // The client key is assigned to the bot from the server only
-        clientKey = jsonMsg.get("clientKey").getAsString();
-
-        // Send bot handshake
-        val msg = gson.toJson(createBotHandshake());
-        send(msg);
-      }
-
-      private void handleGameStartedEvent(JsonObject jsonMsg) {
-        val gameStartedEvent = gson.fromJson(jsonMsg, GameStartedEventForBot.class);
-        val gameSetup = gameStartedEvent.getGameSetup();
-
-        myId = gameStartedEvent.getMyId();
-        gameType = gameSetup.getGameType();
-        arenaWidth = gameSetup.getArenaWidth();
-        arenaHeight = gameSetup.getArenaHeight();
-        numberOfRounds = gameSetup.getNumberOfRounds();
-        gunCoolingRate = gameSetup.getGunCoolingRate();
-        inactivityTurns = gameSetup.getInactivityTurns();
-        turnTimeout = gameSetup.getTurnTimeout();
-        readyTimeout = gameSetup.getReadyTimeout();
-
-        // Send ready signal
-        BotReady ready = new BotReady();
-        ready.setType(BotReady.Type.BOT_READY);
-        ready.setClientKey(clientKey);
-
-        val msg = gson.toJson(ready);
-        send(msg);
-
-        Bot.this.onGameStarted();
       }
 
       private BotHandshake createBotHandshake() {
@@ -221,6 +183,52 @@ public abstract class Bot implements IBot {
         handshake.setProgrammingLang(botInfo.getProgrammingLang());
         return handshake;
       }
+
+      private void handleServerHandshake(JsonObject jsonMsg) {
+        // The client key is assigned to the bot from the server only
+        Bot.__Internals.this.clientKey = jsonMsg.get("clientKey").getAsString();
+
+        // Send bot handshake
+        val msg = gson.toJson(createBotHandshake());
+        send(msg);
+      }
+
+      private void handleGameStartedEvent(JsonObject jsonMsg) {
+        val gameStartedEvent = gson.fromJson(jsonMsg, GameStartedEventForBot.class);
+        val gameSetup = gameStartedEvent.getGameSetup();
+
+        Bot.__Internals.this.myId = gameStartedEvent.getMyId();
+
+        Bot.__Internals.this.gameSetup =
+            GameSetup.builder()
+                .gameType(gameSetup.getGameType())
+                .arenaWidth(gameSetup.getArenaWidth())
+                .arenaHeight(gameSetup.getArenaHeight())
+                .numberOfRounds(gameSetup.getNumberOfRounds())
+                .gunCoolingRate(gameSetup.getGunCoolingRate())
+                .inactivityTurns(gameSetup.getInactivityTurns())
+                .turnTimeout(gameSetup.getTurnTimeout())
+                .readyTimeout(gameSetup.getReadyTimeout())
+                .build();
+
+        // Send ready signal
+        BotReady ready = new BotReady();
+        ready.setType(BotReady.Type.BOT_READY);
+        ready.setClientKey(__Internals.this.clientKey);
+
+        val msg = gson.toJson(ready);
+        send(msg);
+
+        val newGameStartedEvent =
+            GameStartedEvent.builder()
+                .myId(gameStartedEvent.getMyId())
+                .gameSetup(Bot.__Internals.this.gameSetup)
+                .build();
+        Bot.this.onGameStarted(newGameStartedEvent);
+      }
+    }
+
+    private void handleGameEndedEvent(JsonObject jsonMsg) {
     }
   }
 
