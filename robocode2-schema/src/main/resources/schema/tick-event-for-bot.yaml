@@ -4,9 +4,9 @@ description: Tick event, when next turn has started. Gives internal bot details.
 extends:
   $ref: event.yaml
 properties:
-  roundState:
-    description: Current state of the round
-    $ref: round-state.yaml
+  roundNumber:
+    description: Round number in a battle
+    type: integer
   botState:
     description: Current state of this bot
     $ref: bot-state.yaml
@@ -16,7 +16,7 @@ properties:
     items:
       $ref: bullet-state.yaml
   events:
-    description: Events occurring relevant for this bot
+    description: Events occurring in the turn relevant for this bot
     type: array
     items:
       $ref: event.yaml

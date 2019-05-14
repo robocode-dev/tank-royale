@@ -6,7 +6,7 @@ properties:
     description: Identifier of the bot used in this battle
     type: integer
   rank:
-    description: The rank bot, where 1 is 1st place, 4 is 4th place etc.
+    description: Rank/placement of the bot, where 1 is 1st place, 4 is 4th place etc.
     type: integer
     minimum: 1
   survival:

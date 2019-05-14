@@ -7,13 +7,13 @@ properties:
     description: Type of game
     type: string
   arenaWidth:
-    description: Width of arena in units
+    description: Width of arena measured in pixels
     type: integer
   isArenaWidthLocked:
     description: Flag specifying if the width of arena is fixed for this game type
     type: boolean
   arenaHeight:
-    description: Height of arena in units
+    description: Height of arena measured in pixels
     type: integer
   isArenaHeightLocked:
     description: Flag specifying if the height of arena is fixed for this game type
@@ -47,7 +47,7 @@ properties:
     type: boolean
   inactivityTurns:
     description: Maximum number of inactive turns allowed, where a bot does not take
-      any action, before it is zapped by the game
+      any action before it is zapped by the game
     type: integer
   isInactivityTurnsLocked:
     description: Flag specifying if the inactive turns is fixed for this game type
@@ -61,7 +61,7 @@ properties:
     type: boolean
   readyTimeout:
     description: Time limit in milliseconds for sending ready message after having
-      received 'new battle' message
+      received 'game started' message
     type: integer
   isReadyTimeoutLocked:
     description: Flag specifying if the ready timeout is fixed for this game type

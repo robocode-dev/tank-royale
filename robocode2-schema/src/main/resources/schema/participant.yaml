@@ -23,7 +23,7 @@ properties:
     description: 2-letter country code defined by ISO 3166-1
     type: string
     pattern: (^[a-z]{2}$)|(^[A-Z]{2}$)
-  programmingLanguage:
+  programmingLang:
     description: Language used for programming the bot, e.g. Java 9
     type: string
 required:

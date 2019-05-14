@@ -8,7 +8,7 @@ properties:
     description: Game setup
     $ref: game-setup.yaml
   myId:
-    description: My ID, is an unique identifier for this bot
+    description: My ID is an unique identifier for this bot
     type: integer
 required:
 - gameSetup
