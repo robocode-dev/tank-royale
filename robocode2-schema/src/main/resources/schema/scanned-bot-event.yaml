@@ -29,6 +29,7 @@ required:
 - scannedByBotId
 - scannedBotId
 - energy
-- position
+- x
+- y
 - direction
 - speed

@@ -27,6 +27,7 @@ required:
 - bulletId
 - ownerId
 - power
-- position
+- x
+- y
 - direction
 - speed

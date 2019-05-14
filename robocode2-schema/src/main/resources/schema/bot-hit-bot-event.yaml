@@ -26,5 +26,6 @@ required:
 - botId
 - victimId
 - energy
-- position
+- x
+- y
 - rammed
