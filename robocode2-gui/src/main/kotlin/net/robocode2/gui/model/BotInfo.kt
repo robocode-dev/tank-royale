@@ -6,7 +6,7 @@ data class BotInfo(
         val author: String?,
         val countryCode: String?,
         val gameTypes: Set<String>,
-        val programmingLanguage: String?,
+        val programmingLang: String?,
         val host: String,
         val port: Int) {
 

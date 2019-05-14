@@ -7,5 +7,5 @@ data class Participant(
     val gameTypes: Set<String>?,
     val author: String?,
     val countryCode: String?,
-    val programmingLanguage: String?
+    val programmingLang: String?
 ) : Content(type = ContentType.PARTICIPANT.type)

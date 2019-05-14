@@ -56,7 +56,7 @@ class ArenaPanel : JPanel() {
     }
 
     private fun onTick(tickEvent: TickEvent) {
-        state.time = tickEvent.roundState.turnNumber
+        state.time = tickEvent.turnNumber
         state.bots = tickEvent.botStates
         state.bullets = tickEvent.bulletStates
 
