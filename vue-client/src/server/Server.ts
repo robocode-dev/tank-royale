@@ -218,7 +218,7 @@ export class Server {
     return Server._lastTickEvent;
   }
 
-  private static _serverUrl: string = "ws://localhost:50000";
+  private static _serverUrl: string = "ws://localhost:55000";
   private static _websocket: any;
   private static _clientKey?: string;
 

@@ -45,7 +45,7 @@ export default class Setup extends Vue {
     }
     let port = this.$route.query.port;
     if (!port) {
-      port = "50000";
+      port = "55000";
     }
     this.serverUrl = "ws://" + serverAddr + ":" + port;
   }
@@ -129,9 +129,7 @@ export default class Setup extends Vue {
   }
 
   private onAllAvailableBotsClicked() {
-    this.selectedBots = this.selectedBots
-      .concat(this.availableBots)
-      .sort(this.compareBots);
+    this.selectedBots = this.selectedBots.concat(this.availableBots).sort(this.compareBots);
     this.availableBots = [];
   }
 
@@ -170,8 +168,7 @@ export default class Setup extends Vue {
       Server.isConnected() &&
       gameSetup !== null &&
       selectedBotsCount >= gameSetup.minNumberOfParticipants &&
-      (gameSetup.maxNumberOfParticipants == null ||
-        selectedBotsCount <= gameSetup.maxNumberOfParticipants)
+      (gameSetup.maxNumberOfParticipants == null || selectedBotsCount <= gameSetup.maxNumberOfParticipants)
     );
   }
 
@@ -184,10 +181,7 @@ export default class Setup extends Vue {
   }
 
   private saveGameTypeOptions() {
-    sessionStorage.setItem(
-      "gameTypeOptions",
-      JSON.stringify(this.gameTypeOptions),
-    );
+    sessionStorage.setItem("gameTypeOptions", JSON.stringify(this.gameTypeOptions));
   }
 
   private loadGameTypeOptions(): GameTypeOption[] {
