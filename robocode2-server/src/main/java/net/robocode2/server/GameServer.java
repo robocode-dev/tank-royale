@@ -139,7 +139,7 @@ public final class GameServer {
 				p.setCountryCode(h.getCountryCode());
 				p.setGameTypes(h.getGameTypes());
 				p.setName(h.getName());
-				p.setProgrammingLanguage(h.getProgrammingLanguage());
+				p.setProgrammingLang(h.getProgrammingLang());
 				p.setVersion(h.getVersion());
 				participantList.add(p);
 			}

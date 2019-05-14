@@ -16,9 +16,10 @@ public final class TurnToGameTickForBotMapper {
 		}
 		TickEventForBot tick = new TickEventForBot();
 		tick.setType(TickEventForBot.Type.TICK_EVENT_FOR_BOT);
+		tick.setRoundNumber(round.getRoundNumber());
+		tick.setTurnNumber(turn.getTurnNumber());
 		tick.setBotState(BotToBotStateMapper.map(bot));
 		tick.setBulletStates(BulletsToBulletStatesMapper.map(turn.getBullets(botId)));
-		tick.setRoundState(RoundToRoundStateMapper.map(round, turn));
 		tick.setEvents(EventsToEventsMapper.map(turn.getBotEvents(botId)));
 		
 		return tick;

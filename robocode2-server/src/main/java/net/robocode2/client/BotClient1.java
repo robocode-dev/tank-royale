@@ -71,7 +71,7 @@ public class BotClient1 extends WebSocketClient {
 				handshake.setAuthor("Author name");
 				handshake.setCountryCode("DK");
 				handshake.setGameTypes(Arrays.asList("melee", "1v1"));
-				handshake.setProgrammingLanguage("Java");
+				handshake.setProgrammingLang("Java");
 
 				String msg = gson.toJson(handshake);
 				send(msg);

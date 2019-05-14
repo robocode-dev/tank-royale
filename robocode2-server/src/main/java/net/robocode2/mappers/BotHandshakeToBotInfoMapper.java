@@ -16,7 +16,7 @@ public final class BotHandshakeToBotInfoMapper {
 		botInfo.setCountryCode(botHandshake.getCountryCode());
 		botInfo.setGameTypes(Collections.unmodifiableList(botHandshake.getGameTypes()));
 		botInfo.setName(botHandshake.getName());
-		botInfo.setProgrammingLanguage(botHandshake.getProgrammingLanguage());
+		botInfo.setProgrammingLang(botHandshake.getProgrammingLang());
 		botInfo.setVersion(botHandshake.getVersion());
 		botInfo.setHost(hostName);
 		botInfo.setPort(port);
