@@ -230,22 +230,28 @@ public abstract class Bot implements IBot {
       val gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
 
       val results = new ArrayList<BotResults>();
-      gameEndedEventForBot.getResults().forEach(r -> results.add(BotResults.builder()
-              .id(r.getId())
-              .rank(r.getRank())
-              .survival(r.getSurvival())
-              .lastSurvivorBonus(r.getLastSurvivorBonus())
-              .bulletDamage(r.getBulletDamage())
-              .bulletKillBonus(r.getBulletKillBonus())
-              .ramDamage(r.getRamDamage())
-              .ramKillBonus(r.getRamKillBonus())
-              .totalScore(r.getTotalScore())
-              .firstPlaces(r.getFirstPlaces())
-              .secondPlaces(r.getSecondPlaces())
-              .thirdPlaces(r.getThirdPlaces())
-              .build()));
+      gameEndedEventForBot
+          .getResults()
+          .forEach(
+              r ->
+                  results.add(
+                      BotResults.builder()
+                          .id(r.getId())
+                          .rank(r.getRank())
+                          .survival(r.getSurvival())
+                          .lastSurvivorBonus(r.getLastSurvivorBonus())
+                          .bulletDamage(r.getBulletDamage())
+                          .bulletKillBonus(r.getBulletKillBonus())
+                          .ramDamage(r.getRamDamage())
+                          .ramKillBonus(r.getRamKillBonus())
+                          .totalScore(r.getTotalScore())
+                          .firstPlaces(r.getFirstPlaces())
+                          .secondPlaces(r.getSecondPlaces())
+                          .thirdPlaces(r.getThirdPlaces())
+                          .build()));
 
-      val newBattleEndedEvent = GameEndedEvent.builder()
+      val newBattleEndedEvent =
+          GameEndedEvent.builder()
               .numberOfRounds(gameEndedEventForBot.getNumberOfRounds())
               .results(results)
               .build();

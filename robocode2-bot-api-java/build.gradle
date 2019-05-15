@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'maven'
+    id 'idea'
 }
 group = 'net.robocode2'
 version = '0.1.0'
@@ -10,6 +11,10 @@ targetCompatibility = '1.8'
 repositories {
     mavenLocal()
     mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
 }
 
 dependencies {
@@ -24,8 +29,4 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
     testImplementation 'org.assertj:assertj-core:3.9.1'
-}
-
-test {
-    useJUnitPlatform()
 }

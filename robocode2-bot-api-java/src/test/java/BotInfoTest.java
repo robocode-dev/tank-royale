@@ -1,11 +1,11 @@
 import com.neovisionaries.i18n.CountryCode;
-import lombok.val;
 import net.robocode2.BotInfo;
 import net.robocode2.GameType;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -16,7 +16,7 @@ class BotInfoTest {
 
   @Test
   void whenAllParamsIsDefinedInConstructor_thenTheSameParamsCanBeReadOut() {
-    val botInfo =
+    BotInfo botInfo =
         new BotInfo(
             "MyBot",
             "1.0",
@@ -164,7 +164,7 @@ class BotInfoTest {
 
   @Test
   void whenCountryCodeIsNullInConstructor_thenCountryCodeIsSetToDefaultLocale() {
-    val defaultLocateCountryCode = CountryCode.getByLocale(Locale.getDefault()).getAlpha2();
+    String defaultLocateCountryCode = CountryCode.getByLocale(Locale.getDefault()).getAlpha2();
     assertEquals(
         defaultLocateCountryCode.toUpperCase(),
         new BotInfo(
@@ -180,7 +180,7 @@ class BotInfoTest {
 
   @Test
   void whenCountryCodeIsEmptyInConstructor_thenCountryCodeIsSetToDefaultLocale() {
-    val defaultLocateCountryCode = CountryCode.getByLocale(Locale.getDefault()).getAlpha2();
+    String defaultLocateCountryCode = CountryCode.getByLocale(Locale.getDefault()).getAlpha2();
     assertEquals(
         defaultLocateCountryCode.toUpperCase(),
         new BotInfo(
@@ -196,7 +196,7 @@ class BotInfoTest {
 
   @Test
   void whenCountryCodeIsBlankInConstructor_thenCountryCodeIsSetToDefaultLocale() {
-    val defaultLocateCountryCode = CountryCode.getByLocale(Locale.getDefault()).getAlpha2();
+    String defaultLocateCountryCode = CountryCode.getByLocale(Locale.getDefault()).getAlpha2();
     assertEquals(
         defaultLocateCountryCode.toUpperCase(),
         new BotInfo(
@@ -278,11 +278,11 @@ class BotInfoTest {
 
   @Test
   void whenGameTypesIsUntrimmedInConstructor_thenTrimGameTypes() {
-    val botInfo =
+    BotInfo botInfo =
         new BotInfo(
             "MyBot", "1.0", "John Doe", "dk", Arrays.asList("  melee  ", "  1v1  "), "Java");
 
-    val gameTypes = botInfo.getGameTypes();
+    List<String> gameTypes = botInfo.getGameTypes();
 
     assertThat(gameTypes).asList().hasSize(2).contains("melee", "1v1");
   }
