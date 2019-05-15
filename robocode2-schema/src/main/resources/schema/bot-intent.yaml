@@ -14,7 +14,7 @@ properties:
     description: Turn rate of the radar in degrees per turn (can be positive and negative)
     type: number
   targetSpeed:
-    description: New target speed in units per turn (can be positive and negative)
+    description: New target speed in pixels per turn (can be positive and negative)
     type: number
   bulletPower:
     description: Attempt to fire bullet with a specific amount of power

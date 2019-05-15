@@ -24,7 +24,7 @@ properties:
     description: Radar sweep angle in degrees, i.e. angle between old and current direction
     type: number
   speed:
-    description: Speed measured in units per turn
+    description: Speed measured in pixel per turn
     type: number
 required:
 - energy
