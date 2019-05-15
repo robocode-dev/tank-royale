@@ -7,13 +7,19 @@ import com.google.gson.JsonObject;
 import lombok.NonNull;
 import lombok.val;
 import lombok.var;
+import net.robocode2.events.BotDeathEvent;
 import net.robocode2.events.*;
+import net.robocode2.factory.BotHandshakeFactory;
+import net.robocode2.mapper.EventMapper;
+import net.robocode2.mapper.GameSetupMapper;
+import net.robocode2.mapper.ResultsMapper;
 import net.robocode2.schema.*;
 import org.java_websocket.client.WebSocketClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+
+import static net.robocode2.schema.Message.Type.SERVER_HANDSHAKE;
 
 public abstract class Bot implements IBot {
 
@@ -30,6 +36,13 @@ public abstract class Bot implements IBot {
 
   public Bot(@NonNull final BotInfo botInfo, @NonNull URI serverUri) {
     __internals = new __Internals(botInfo, serverUri);
+  }
+
+  public void run() {
+    val wsClient = __internals.wsClient;
+    if (!wsClient.isOpen()) {
+      wsClient.connect();
+    }
   }
 
   public int getMyId() {
@@ -151,44 +164,54 @@ public abstract class Bot implements IBot {
         if (jsonType != null) {
           val type = jsonType.getAsString();
 
-          switch (Event.Type.fromValue(type)) {
-            case GAME_STARTED_EVENT_FOR_BOT:
-              handleGameStartedEvent(jsonMsg);
-              break;
-            case GAME_ENDED_EVENT_FOR_BOT:
-              handleGameEndedEvent(jsonMsg);
-              break;
-            default:
-              switch (Message.Type.fromValue(type)) {
-                case SERVER_HANDSHAKE:
-                  handleServerHandshake(jsonMsg);
-                  break;
-              }
-          }
+          if (SERVER_HANDSHAKE == Message.Type.fromValue(type)) {
+            handleServerHandshake(jsonMsg);
+          } else
+            switch (Event.Type.fromValue(type)) {
+              case TICK_EVENT_FOR_BOT:
+                handleTickEvent(jsonMsg);
+                break;
+              case GAME_STARTED_EVENT_FOR_BOT:
+                handleGameStartedEvent(jsonMsg);
+                break;
+              case GAME_ENDED_EVENT_FOR_BOT:
+                handleGameEndedEvent(jsonMsg);
+                break;
+              default:
+                throw new BotException("Unsupported websocket message type: " + type);
+            }
+        } else {
+          throw new BotException("No type is defined for the websocket message");
         }
         // TODO
       }
 
-      private BotHandshake createBotHandshake() {
-        BotHandshake handshake = new BotHandshake();
-        handshake.setType(BotHandshake.Type.BOT_HANDSHAKE);
-        handshake.setClientKey(clientKey);
-        handshake.setName(botInfo.getName());
-        handshake.setVersion(botInfo.getVersion());
-        handshake.setAuthor(botInfo.getAuthor());
-        handshake.setCountryCode(botInfo.getCountryCode());
-        handshake.setGameTypes(botInfo.getGameTypes());
-        handshake.setProgrammingLang(botInfo.getProgrammingLang());
-        return handshake;
-      }
-
       private void handleServerHandshake(JsonObject jsonMsg) {
         // The client key is assigned to the bot from the server only
-        Bot.__Internals.this.clientKey = jsonMsg.get("clientKey").getAsString();
+        val clientKey = jsonMsg.get("clientKey").getAsString();
+        Bot.__Internals.this.clientKey = clientKey;
 
         // Send bot handshake
-        val msg = gson.toJson(createBotHandshake());
+        val botHandshake = BotHandshakeFactory.create(clientKey, Bot.__Internals.this.botInfo);
+        val msg = gson.toJson(botHandshake);
         send(msg);
+      }
+
+      private void handleTickEvent(JsonObject jsonMsg) {
+        val tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
+        val tickEvent = EventMapper.map(tickEventForBot);
+        Bot.this.onTickEvent(tickEvent);
+
+        // TODO: Loop through all game events and trigger the individual event handlers
+
+        tickEvent
+            .getEvents()
+            .forEach(
+                gameEvent -> {
+                  if (gameEvent instanceof BotDeathEvent) {
+                    Bot.this.onBotDeathEvent((BotDeathEvent) gameEvent);
+                  }
+                });
       }
 
       private void handleGameStartedEvent(JsonObject jsonMsg) {
@@ -196,18 +219,7 @@ public abstract class Bot implements IBot {
         val gameSetup = gameStartedEventForBot.getGameSetup();
 
         Bot.__Internals.this.myId = gameStartedEventForBot.getMyId();
-
-        Bot.__Internals.this.gameSetup =
-            GameSetup.builder()
-                .gameType(gameSetup.getGameType())
-                .arenaWidth(gameSetup.getArenaWidth())
-                .arenaHeight(gameSetup.getArenaHeight())
-                .numberOfRounds(gameSetup.getNumberOfRounds())
-                .gunCoolingRate(gameSetup.getGunCoolingRate())
-                .inactivityTurns(gameSetup.getInactivityTurns())
-                .turnTimeout(gameSetup.getTurnTimeout())
-                .readyTimeout(gameSetup.getReadyTimeout())
-                .build();
+        Bot.__Internals.this.gameSetup = GameSetupMapper.map(gameSetup);
 
         // Send ready signal
         BotReady ready = new BotReady();
@@ -228,40 +240,12 @@ public abstract class Bot implements IBot {
 
     private void handleGameEndedEvent(JsonObject jsonMsg) {
       val gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
-
-      val results = new ArrayList<BotResults>();
-      gameEndedEventForBot
-          .getResults()
-          .forEach(
-              r ->
-                  results.add(
-                      BotResults.builder()
-                          .id(r.getId())
-                          .rank(r.getRank())
-                          .survival(r.getSurvival())
-                          .lastSurvivorBonus(r.getLastSurvivorBonus())
-                          .bulletDamage(r.getBulletDamage())
-                          .bulletKillBonus(r.getBulletKillBonus())
-                          .ramDamage(r.getRamDamage())
-                          .ramKillBonus(r.getRamKillBonus())
-                          .totalScore(r.getTotalScore())
-                          .firstPlaces(r.getFirstPlaces())
-                          .secondPlaces(r.getSecondPlaces())
-                          .thirdPlaces(r.getThirdPlaces())
-                          .build()));
-
       val newBattleEndedEvent =
           GameEndedEvent.builder()
               .numberOfRounds(gameEndedEventForBot.getNumberOfRounds())
-              .results(results)
+              .results(ResultsMapper.map(gameEndedEventForBot.getResults()))
               .build();
       Bot.this.onGameEnded(newBattleEndedEvent);
-    }
-  }
-
-  public static final class BotException extends RuntimeException {
-    BotException(final String message) {
-      super(message);
     }
   }
 }

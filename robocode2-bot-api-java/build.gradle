@@ -18,8 +18,11 @@ test {
 }
 
 dependencies {
-    implementation 'net.robocode2:robocode2-schema:0.2.4-SNAPSHOT'
+    implementation 'net.robocode2:robocode2-schema:0.2.5-SNAPSHOT'
     implementation 'org.java-websocket:Java-WebSocket:1.4.0'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-core:1.2.3'
+    implementation 'org.slf4j:slf4j-api:1.7.26'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.neovisionaries:nv-i18n:1.22'
 

@@ -5,6 +5,9 @@ import net.robocode2.events.*;
 /** Interface for a bot. */
 public interface IBot {
 
+  /** Main method for running the bot */
+  void run();
+
   /** Returns the unique id of this bot in the battle. Available when game has started. */
   int getMyId();
 
@@ -45,17 +48,26 @@ public interface IBot {
   int getReadyTimeout();
 
   /** Event handler triggered when connected to server */
-  void onConnected(ConnectedEvent connectedEvent);
+  default void onConnected(ConnectedEvent connectedEvent) {}
 
   /** Event handler triggered when disconnected from server */
-  void onDisconnected(DisconnectedEvent disconnectedEvent);
+  default void onDisconnected(DisconnectedEvent disconnectedEvent) {}
 
   /** Event handler triggered when a connection error occurs */
-  void onConnectionError(ConnectionErrorEvent connectionErrorEvent);
+  default void onConnectionError(ConnectionErrorEvent connectionErrorEvent) {}
 
   /** Event handler triggered when game has started */
-  void onGameStarted(GameStartedEvent gameStatedEvent);
+  default void onGameStarted(GameStartedEvent gameStatedEvent) {}
 
   /** Event handler triggered when game has ended */
-  void onGameEnded(GameEndedEvent gameEndedEvent);
+  default void onGameEnded(GameEndedEvent gameEndedEvent) {}
+
+  /**
+   * Event handler triggered when a game tick event occurs, i.e. when a new turn in a round has
+   * started
+   */
+  default void onTickEvent(TickEvent tickEvent) {}
+
+  /** Event handler triggered when another bot has died */
+  default void onBotDeathEvent(BotDeathEvent botDeathEvent) {}
 }
