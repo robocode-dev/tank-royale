@@ -1,6 +1,6 @@
 $id: #event.yaml
 $schema: http://json-schema.org/draft-07/schema#
-description: Event occurring in the battle arena
+description: Event occurring during a battle
 properties:
   turnNumber:
     description: Round number in a battle when event occurred

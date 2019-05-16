@@ -1,6 +1,6 @@
 $id: #tick-event-for-bot.yaml
 $schema: http://json-schema.org/draft-07/schema#
-description: Tick event, when next turn has started. Gives internal bot details.
+description: Event occuring for before each new turn in the battle. Gives internal bot details.
 extends:
   $ref: event.yaml
 properties:
@@ -21,7 +21,7 @@ properties:
     items:
       $ref: event.yaml
 required:
-- roundState
+- roundNumber
 - botState
 - bulletStates
 - events

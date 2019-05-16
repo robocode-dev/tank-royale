@@ -1,5 +1,5 @@
 $id: #won-round-event.yaml
 $schema: http://json-schema.org/draft-07/schema#
-description: Bot event occurring, when the bot has won the round
+description: Event occurring when the bot has won the round
 extends:
   $ref: event.yaml

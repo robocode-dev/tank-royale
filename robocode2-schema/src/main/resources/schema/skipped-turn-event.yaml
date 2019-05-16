@@ -1,6 +1,6 @@
 $id: #skipped-turn-event.yaml
 $schema: http://json-schema.org/draft-07/schema#
-description: Bot event occurring, when a bot has skipped a turn, meaning that no intent has been recieved from the bot
+description: Event occurring when the bot has skipped a turn, meaning that no intent has been recieved at the server from the bot
 type: object
 extends:
   $ref: event.yaml

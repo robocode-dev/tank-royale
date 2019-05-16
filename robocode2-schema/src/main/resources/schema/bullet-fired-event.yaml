@@ -1,6 +1,6 @@
 $id: #bullet-fired-event.yaml
 $schema: http://json-schema.org/draft-07/schema#
-description: Bot event occurring, when a bullet is fired
+description: Event occurring when a bullet has fired from the cannon
 extends:
   $ref: event.yaml
 properties:
