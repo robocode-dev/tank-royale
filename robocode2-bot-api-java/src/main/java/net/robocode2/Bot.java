@@ -12,6 +12,11 @@ import net.robocode2.events.*;
 import net.robocode2.events.BotHitBotEvent;
 import net.robocode2.events.BotHitWallEvent;
 import net.robocode2.events.BulletFiredEvent;
+import net.robocode2.events.BulletHitBotEvent;
+import net.robocode2.events.BulletHitBulletEvent;
+import net.robocode2.events.BulletHitWallEvent;
+import net.robocode2.events.ScannedBotEvent;
+import net.robocode2.events.SkippedTurnEvent;
 import net.robocode2.factory.BotHandshakeFactory;
 import net.robocode2.mapper.EventMapper;
 import net.robocode2.mapper.GameSetupMapper;
@@ -219,6 +224,16 @@ public abstract class Bot implements IBot {
                     Bot.this.onHitWall((BotHitWallEvent) event);
                   } else if (event instanceof BulletFiredEvent) {
                     Bot.this.onBulletFired((BulletFiredEvent) event);
+                  } else if (event instanceof BulletHitBotEvent) {
+                    Bot.this.onHitByBullet((BulletHitBotEvent) event);
+                  } else if (event instanceof BulletHitBulletEvent) {
+                    Bot.this.onBulletHitBullet((BulletHitBulletEvent) event);
+                  } else if (event instanceof BulletHitWallEvent) {
+                    Bot.this.onBulletHitWall((BulletHitWallEvent) event);
+                  } else if (event instanceof ScannedBotEvent) {
+                    Bot.this.onScannedBot((ScannedBotEvent) event);
+                  } else if (event instanceof SkippedTurnEvent) {
+                    Bot.this.onSkippedTurn((SkippedTurnEvent) event);
                   }
                 });
       }

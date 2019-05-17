@@ -41,6 +41,21 @@ public class EventMapper {
     if (source instanceof net.robocode2.schema.BulletFiredEvent) {
       return map((net.robocode2.schema.BulletFiredEvent) source);
     }
+    if (source instanceof net.robocode2.schema.BulletHitBotEvent) {
+      return map((net.robocode2.schema.BulletHitBotEvent) source);
+    }
+    if (source instanceof net.robocode2.schema.BulletHitBulletEvent) {
+      return map((net.robocode2.schema.BulletHitBulletEvent) source);
+    }
+    if (source instanceof net.robocode2.schema.BulletHitWallEvent) {
+      return map((net.robocode2.schema.BulletHitWallEvent) source);
+    }
+    if (source instanceof net.robocode2.schema.ScannedBotEvent) {
+      return map((net.robocode2.schema.ScannedBotEvent) source);
+    }
+    if (source instanceof net.robocode2.schema.SkippedTurnEvent) {
+      return map((net.robocode2.schema.SkippedTurnEvent) source);
+    }
     throw new BotException(
         "No mapping exists for event type: " + source.getClass().getSimpleName());
   }
@@ -66,5 +81,42 @@ public class EventMapper {
 
   private BulletFiredEvent map(@NonNull final net.robocode2.schema.BulletFiredEvent source) {
     return BulletFiredEvent.builder().bullet(BulletStateMapper.map(source.getBullet())).build();
+  }
+
+  private BulletHitBotEvent map(@NonNull final net.robocode2.schema.BulletHitBotEvent source) {
+    return BulletHitBotEvent.builder()
+        .victimId(source.getVictimId())
+        .bullet(BulletStateMapper.map(source.getBullet()))
+        .damage((source.getDamage()))
+        .energy(source.getEnergy())
+        .build();
+  }
+
+  private BulletHitBulletEvent map(
+      @NonNull final net.robocode2.schema.BulletHitBulletEvent source) {
+    return BulletHitBulletEvent.builder()
+        .bullet(BulletStateMapper.map(source.getBullet()))
+        .hitBullet(BulletStateMapper.map(source.getHitBullet()))
+        .build();
+  }
+
+  private BulletHitWallEvent map(@NonNull final net.robocode2.schema.BulletHitWallEvent source) {
+    return BulletHitWallEvent.builder().bullet(BulletStateMapper.map(source.getBullet())).build();
+  }
+
+  private ScannedBotEvent map(@NonNull final net.robocode2.schema.ScannedBotEvent source) {
+    return ScannedBotEvent.builder()
+        .scannedByBotId(source.getScannedByBotId())
+        .scannedBotId(source.getScannedBotId())
+        .energy(source.getEnergy())
+        .x(source.getX())
+        .y(source.getY())
+        .direction((source.getDirection()))
+        .speed(source.getSpeed())
+        .build();
+  }
+
+  private SkippedTurnEvent map(@NonNull final net.robocode2.schema.SkippedTurnEvent source) {
+    return SkippedTurnEvent.builder().build();
   }
 }

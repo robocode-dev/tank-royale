@@ -68,10 +68,10 @@ public interface IBot {
    */
   default void onTick(TickEvent tickEvent) {}
 
-  /** Event handler triggered when a bot has died */
+  /** Event handler triggered when another bot has died */
   default void onBotDeath(BotDeathEvent botDeathEvent) {}
 
-  /** Event handler triggered when the bot has been hit by a bullet from another bot */
+  /** Event handler triggered when the bot has collided with another bot */
   default void onHitByBot(BotHitBotEvent botHitBotEvent) {}
 
   /** Event handler triggered when the bot has hit a wall */
@@ -79,4 +79,19 @@ public interface IBot {
 
   /** Event handler triggered when the bot has fired a bullet */
   default void onBulletFired(BulletFiredEvent bulletFiredEvent) {}
+
+  /** Event handler triggered when the bot has been hit by a bullet */
+  default void onHitByBullet(BulletHitBotEvent bulletHitBotEvent) {}
+
+  /** Event handler triggered a bullet has collided with another bullet */
+  default void onBulletHitBullet(BulletHitBulletEvent bulletHitBulletEvent) {}
+
+  /** Event handler triggered a bullet has a wall */
+  default void onBulletHitWall(BulletHitWallEvent bulletHitWallEvent) {}
+
+  /** Event handler triggered when the bot has scanned another bot */
+  default void onScannedBot(ScannedBotEvent scannedBotEvent) {}
+
+  /** Event handler triggered when the bot has skipped a turn */
+  default void onSkippedTurn(SkippedTurnEvent skippedTurnEvent) {}
 }
