@@ -67,21 +67,21 @@ properties:
     description: Flag specifying if the ready timeout is fixed for this game type
     type: boolean
 required:
-- gameType
-- arenaWidth
-- isArenaWidthLocked
-- arenaHeight
-- isArenaHeightLocked
-- minNumberOfParticipants
-- isMinNumberOfParticipantsLocked
-- isMaxNumberOfParticipantsLocked
-- numberOfRounds
-- isNumberOfRoundsLocked
-- gunCoolingRate
-- isGunCoolingRateLocked
-- inactivityTurns
-- isInactivityTurnsLocked
-- turnTimeout
-- isTurnTimeoutLocked
-- readyTimeout
-- isReadyTimeoutLocked
+  - gameType
+  - arenaWidth
+  - isArenaWidthLocked
+  - arenaHeight
+  - isArenaHeightLocked
+  - minNumberOfParticipants
+  - isMinNumberOfParticipantsLocked
+  - isMaxNumberOfParticipantsLocked
+  - numberOfRounds
+  - isNumberOfRoundsLocked
+  - gunCoolingRate
+  - isGunCoolingRateLocked
+  - inactivityTurns
+  - isInactivityTurnsLocked
+  - turnTimeout
+  - isTurnTimeoutLocked
+  - readyTimeout
+  - isReadyTimeoutLocked

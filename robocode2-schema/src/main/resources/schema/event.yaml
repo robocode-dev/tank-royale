@@ -28,5 +28,5 @@ properties:
       - gameStartedEventForBot
       - gameStartedEventForObserver
 required:
-- turnNumber
-- type
+  - turnNumber
+  - type

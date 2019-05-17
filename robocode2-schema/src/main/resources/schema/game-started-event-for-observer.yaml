@@ -13,5 +13,5 @@ properties:
     items:
       $ref: participant.yaml
 required:
-- gameSetup
-- participants
+  - gameSetup
+  - participants

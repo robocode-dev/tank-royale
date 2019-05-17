@@ -1,11 +1,11 @@
 $id: #bullet-hit-wall-event.yaml
 $schema: http://json-schema.org/draft-07/schema#
-description: Event occuring when alle bullet has hit a wall
+description: Event occuring when a bullet has hit a wall
 extends:
   $ref: event.yaml
 properties:
   bullet:
-    description: Bullet that hit the wall
+    description: Bullet that has hit a wall
     $ref: bullet-state.yaml
 required:
-- bullet
+  - bullet

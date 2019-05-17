@@ -11,4 +11,4 @@ properties:
       decription: Bot info
       $ref: bot-info.yaml
 required:
-- bots
+  - bots

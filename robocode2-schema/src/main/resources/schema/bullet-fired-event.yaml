@@ -1,6 +1,6 @@
 $id: #bullet-fired-event.yaml
 $schema: http://json-schema.org/draft-07/schema#
-description: Event occurring when a bullet has fired from the cannon
+description: Event occurring when a bullet has been fired from a bot
 extends:
   $ref: event.yaml
 properties:
@@ -8,4 +8,4 @@ properties:
     description: Bullet that was fired
     $ref: bullet-state.yaml
 required:
-- bullet
+  - bullet

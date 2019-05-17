@@ -14,5 +14,5 @@ properties:
     description: Author name, e.g. John Doe (john_doe@somewhere.net)
     type: string
 required:
-- name
-- version
+  - name
+  - version

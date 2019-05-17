@@ -1,6 +1,6 @@
 $id: #hit-by-bullet-event.yaml
 $schema: http://json-schema.org/draft-07/schema#
-description: Event occurring when the bot has been hit by a bullet.
+description: Event occurring when a bot has been hit by a bullet.
 extends:
   $ref: event.yaml
 properties:
@@ -14,6 +14,6 @@ properties:
     description: Remaining energy level of the bot after the damage was inflicted
     type: number
 required:
-- bullet
-- damage
-- energy
+  - bullet
+  - damage
+  - energy

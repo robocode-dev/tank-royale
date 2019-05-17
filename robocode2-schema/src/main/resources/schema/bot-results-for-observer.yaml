@@ -11,5 +11,5 @@ properties:
     description: Bot version, e.g. 1.0
     type: string
 required:
-- name
-- version
+  - name
+  - version

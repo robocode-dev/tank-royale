@@ -12,5 +12,5 @@ properties:
     description: Port number
     type: integer
 required:
-- host
-- port
+  - host
+  - port

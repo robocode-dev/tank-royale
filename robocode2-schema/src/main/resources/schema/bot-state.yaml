@@ -27,11 +27,11 @@ properties:
     description: Speed measured in pixel per turn
     type: number
 required:
-- energy
-- x
-- y
-- direction
-- gunDirection
-- radarDirection
-- radarSweep
-- speed
+  - energy
+  - x
+  - y
+  - direction
+  - gunDirection
+  - radarDirection
+  - radarSweep
+  - speed

@@ -1,7 +1,11 @@
 $id: #bot-hit-wall-event.yaml
 $schema: http://json-schema.org/draft-07/schema#
-description: Event occurring when the bot has hit a wall
+description: Event occurring when a bot has hit a wall
 extends:
   $ref: event.yaml
 properties:
+  victimId:
+    description: ID of the victim bot that hit the wall
+    type: integer
 required:
+  - victimId

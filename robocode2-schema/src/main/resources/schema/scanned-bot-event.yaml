@@ -1,11 +1,11 @@
 $id: #scanned-bot-event.yaml
 $schema: http://json-schema.org/draft-07/schema#
-description: Bot event occurring, when a bot scans another bot
+description: Event occurring when a bot has scanned another bot
 extends:
   $ref: event.yaml
 properties:
   scannedByBotId:
-    description: ID of the bot that performed the scanning
+    description: ID of the bot did the scanning
     type: integer
   scannedBotId:
     description: ID of the bot that was scanned
@@ -26,10 +26,10 @@ properties:
     description: Speed measured in pixels per turn of the scanned bot
     type: number
 required:
-- scannedByBotId
-- scannedBotId
-- energy
-- x
-- y
-- direction
-- speed
+  - scannedByBotId
+  - scannedBotId
+  - energy
+  - x
+  - y
+  - direction
+  - speed

@@ -24,10 +24,10 @@ properties:
     description: Speed measured in pixels per turn
     type: number
 required:
-- bulletId
-- ownerId
-- power
-- x
-- y
-- direction
-- speed
+  - bulletId
+  - ownerId
+  - power
+  - x
+  - y
+  - direction
+  - speed

@@ -4,9 +4,12 @@ description: Server handshake
 extends:
   $ref: message.yaml
 properties:
-  protocolVersion:
+  variant:
     type: string
-    description: Protocol version - expected to change
+    descrition: Game variant, e.g. 'R2TR' for Robocode 2 Tank Royale
+  version:
+    type: string
+    description: Game version, e.g. '1.0.0'
     pattern: ^\\d+(\\.\\d+)*$
   games:
     type: array
@@ -15,5 +18,6 @@ properties:
     minItems: 1
     uniqueItems: true
 required:
-- protocolVersion
-- games
+  - variant
+  - version
+  - games

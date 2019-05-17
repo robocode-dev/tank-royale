@@ -14,4 +14,4 @@ properties:
       decription: Bot address
       $ref: bot-address.yaml
 required:
-- botAddresses
+  - botAddresses

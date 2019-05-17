@@ -11,5 +11,5 @@ properties:
     description: The other bullet that was hit by the bullet
     $ref: bullet-state.yaml
 required:
-- bullet
-- hitBullet
+  - bullet
+  - hitBullet

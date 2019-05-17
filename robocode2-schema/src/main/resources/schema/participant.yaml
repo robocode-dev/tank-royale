@@ -27,6 +27,6 @@ properties:
     description: Language used for programming the bot, e.g. Java 9
     type: string
 required:
-- id
-- name
-- version
+  - id
+  - name
+  - version

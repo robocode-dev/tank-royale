@@ -23,7 +23,7 @@ properties:
     items:
       $ref: event.yaml
 required:
-- roundNumber
-- botStates
-- bulletStates
-- events
+  - roundNumber
+  - botStates
+  - bulletStates
+  - events

@@ -40,15 +40,15 @@ properties:
     desctiption: Number of 3rd places
     type: integer
 required:
-- id
-- rank
-- survival
-- lastSurvivorBonus
-- bulletDamage
-- bulletKillBonus
-- ramDamage
-- ramKillBonus
-- totalScore
-- firstPlaces
-- secondPlaces
-- thirdPlaces
+  - id
+  - rank
+  - survival
+  - lastSurvivorBonus
+  - bulletDamage
+  - bulletKillBonus
+  - ramDamage
+  - ramKillBonus
+  - totalScore
+  - firstPlaces
+  - secondPlaces
+  - thirdPlaces

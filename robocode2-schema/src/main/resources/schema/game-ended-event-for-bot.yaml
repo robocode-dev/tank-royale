@@ -13,5 +13,5 @@ properties:
     items:
       $ref: bot-results-for-bot.yaml
 required:
-- numberOfRounds
-- results
+  - numberOfRounds
+  - results

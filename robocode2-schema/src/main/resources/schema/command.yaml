@@ -4,9 +4,9 @@ description: Controller command
 properties:
   type:
     enum:
-    - startGame
-    - stopGame
-    - pauseGame
-    - resumeGame
+      - startGame
+      - stopGame
+      - pauseGame
+      - resumeGame
 required:
-- type
+  - type
