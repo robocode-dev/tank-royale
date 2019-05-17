@@ -26,6 +26,7 @@ import net.robocode2.schema.ServerHandshake;
 import net.robocode2.schema.Command;
 import net.robocode2.schema.StartGame;
 import net.robocode2.mappers.GameSetupToGameSetupMapper;
+import net.robocode2.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,7 +169,8 @@ public final class ConnHandler {
             ServerHandshake hs = new ServerHandshake();
             hs.setType(ServerHandshake.Type.SERVER_HANDSHAKE);
             hs.setClientKey(clientKey);
-            hs.setProtocolVersion("0.1");
+            hs.setVariant("R2TR"); // Robocode 2 Tank Royale
+            hs.setVersion(Version.getVersion());
             hs.setGames(GameSetupToGameSetupMapper.map(setup.getGames()));
 
             String msg = new Gson().toJson(hs);
