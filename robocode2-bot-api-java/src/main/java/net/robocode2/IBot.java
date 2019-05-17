@@ -66,8 +66,17 @@ public interface IBot {
    * Event handler triggered when a game tick event occurs, i.e. when a new turn in a round has
    * started
    */
-  default void onTickEvent(TickEvent tickEvent) {}
+  default void onTick(TickEvent tickEvent) {}
 
-  /** Event handler triggered when another bot has died */
-  default void onBotDeathEvent(BotDeathEvent botDeathEvent) {}
+  /** Event handler triggered when a bot has died */
+  default void onBotDeath(BotDeathEvent botDeathEvent) {}
+
+  /** Event handler triggered when the bot has been hit by a bullet from another bot */
+  default void onHitByBot(BotHitBotEvent botHitBotEvent) {}
+
+  /** Event handler triggered when the bot has hit a wall */
+  default void onHitWall(BotHitWallEvent botHitWallEvent) {}
+
+  /** Event handler triggered when the bot has fired a bullet */
+  default void onBulletFired(BulletFiredEvent bulletFiredEvent) {}
 }

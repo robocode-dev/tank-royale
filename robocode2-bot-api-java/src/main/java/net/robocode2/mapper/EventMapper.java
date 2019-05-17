@@ -4,9 +4,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.val;
 import net.robocode2.BotException;
-import net.robocode2.events.BotDeathEvent;
-import net.robocode2.events.GameEvent;
-import net.robocode2.events.TickEvent;
+import net.robocode2.events.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +32,39 @@ public class EventMapper {
     if (source instanceof net.robocode2.schema.BotDeathEvent) {
       return map((net.robocode2.schema.BotDeathEvent) source);
     }
+    if (source instanceof net.robocode2.schema.BotHitBotEvent) {
+      return map((net.robocode2.schema.BotHitBotEvent) source);
+    }
+    if (source instanceof net.robocode2.schema.BotHitWallEvent) {
+      return map((net.robocode2.schema.BotHitWallEvent) source);
+    }
+    if (source instanceof net.robocode2.schema.BulletFiredEvent) {
+      return map((net.robocode2.schema.BulletFiredEvent) source);
+    }
     throw new BotException(
         "No mapping exists for event type: " + source.getClass().getSimpleName());
   }
 
   private BotDeathEvent map(@NonNull final net.robocode2.schema.BotDeathEvent source) {
     return BotDeathEvent.builder().victimId(source.getVictimId()).build();
+  }
+
+  private BotHitBotEvent map(@NonNull final net.robocode2.schema.BotHitBotEvent source) {
+    return BotHitBotEvent.builder()
+        .botId(source.getBotId())
+        .victimId(source.getVictimId())
+        .energy(source.getEnergy())
+        .x(source.getX())
+        .y(source.getY())
+        .rammed(source.getRammed())
+        .build();
+  }
+
+  private BotHitWallEvent map(@NonNull final net.robocode2.schema.BotHitWallEvent source) {
+    return BotHitWallEvent.builder().victimId(source.getVictimId()).build();
+  }
+
+  private BulletFiredEvent map(@NonNull final net.robocode2.schema.BulletFiredEvent source) {
+    return BulletFiredEvent.builder().bullet(BulletStateMapper.map(source.getBullet())).build();
   }
 }

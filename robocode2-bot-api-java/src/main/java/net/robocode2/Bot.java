@@ -9,6 +9,9 @@ import lombok.val;
 import lombok.var;
 import net.robocode2.events.BotDeathEvent;
 import net.robocode2.events.*;
+import net.robocode2.events.BotHitBotEvent;
+import net.robocode2.events.BotHitWallEvent;
+import net.robocode2.events.BulletFiredEvent;
 import net.robocode2.factory.BotHandshakeFactory;
 import net.robocode2.mapper.EventMapper;
 import net.robocode2.mapper.GameSetupMapper;
@@ -200,16 +203,22 @@ public abstract class Bot implements IBot {
       private void handleTickEvent(JsonObject jsonMsg) {
         val tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
         val tickEvent = EventMapper.map(tickEventForBot);
-        Bot.this.onTickEvent(tickEvent);
+        Bot.this.onTick(tickEvent);
 
         // TODO: Loop through all game events and trigger the individual event handlers
 
         tickEvent
             .getEvents()
             .forEach(
-                gameEvent -> {
-                  if (gameEvent instanceof BotDeathEvent) {
-                    Bot.this.onBotDeathEvent((BotDeathEvent) gameEvent);
+                event -> {
+                  if (event instanceof BotDeathEvent) {
+                    Bot.this.onBotDeath((BotDeathEvent) event);
+                  } else if (event instanceof BotHitBotEvent) {
+                    Bot.this.onHitByBot((BotHitBotEvent) event);
+                  } else if (event instanceof BotHitWallEvent) {
+                    Bot.this.onHitWall((BotHitWallEvent) event);
+                  } else if (event instanceof BulletFiredEvent) {
+                    Bot.this.onBulletFired((BulletFiredEvent) event);
                   }
                 });
       }

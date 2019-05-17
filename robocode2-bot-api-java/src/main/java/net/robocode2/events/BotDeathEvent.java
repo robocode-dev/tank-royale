@@ -8,7 +8,7 @@ import net.robocode2.BulletState;
 
 import java.util.List;
 
-/** Event occurring when another bot has died */
+/** Event occurring when a bot has died */
 @Value
 @EqualsAndHashCode(callSuper = true)
 @Builder
