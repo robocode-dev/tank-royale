@@ -15,6 +15,7 @@ public class EventMapper {
 
   public TickEvent map(@NonNull final net.robocode2.schema.TickEventForBot source) {
     return TickEvent.builder()
+        .turnNumber(source.getTurnNumber())
         .roundNumber(source.getRoundNumber())
         .botState(BotStateMapper.map(source.getBotState()))
         .bulletStates(BulletStateMapper.map(source.getBulletStates()))
@@ -61,11 +62,15 @@ public class EventMapper {
   }
 
   private BotDeathEvent map(@NonNull final net.robocode2.schema.BotDeathEvent source) {
-    return BotDeathEvent.builder().victimId(source.getVictimId()).build();
+    return BotDeathEvent.builder()
+        .turnNumber(source.getTurnNumber())
+        .victimId(source.getVictimId())
+        .build();
   }
 
   private BotHitBotEvent map(@NonNull final net.robocode2.schema.BotHitBotEvent source) {
     return BotHitBotEvent.builder()
+        .turnNumber(source.getTurnNumber())
         .botId(source.getBotId())
         .victimId(source.getVictimId())
         .energy(source.getEnergy())
@@ -76,15 +81,22 @@ public class EventMapper {
   }
 
   private BotHitWallEvent map(@NonNull final net.robocode2.schema.BotHitWallEvent source) {
-    return BotHitWallEvent.builder().victimId(source.getVictimId()).build();
+    return BotHitWallEvent.builder()
+        .turnNumber(source.getTurnNumber())
+        .victimId(source.getVictimId())
+        .build();
   }
 
   private BulletFiredEvent map(@NonNull final net.robocode2.schema.BulletFiredEvent source) {
-    return BulletFiredEvent.builder().bullet(BulletStateMapper.map(source.getBullet())).build();
+    return BulletFiredEvent.builder()
+        .turnNumber(source.getTurnNumber())
+        .bullet(BulletStateMapper.map(source.getBullet()))
+        .build();
   }
 
   private BulletHitBotEvent map(@NonNull final net.robocode2.schema.BulletHitBotEvent source) {
     return BulletHitBotEvent.builder()
+        .turnNumber(source.getTurnNumber())
         .victimId(source.getVictimId())
         .bullet(BulletStateMapper.map(source.getBullet()))
         .damage((source.getDamage()))
@@ -95,17 +107,22 @@ public class EventMapper {
   private BulletHitBulletEvent map(
       @NonNull final net.robocode2.schema.BulletHitBulletEvent source) {
     return BulletHitBulletEvent.builder()
+        .turnNumber(source.getTurnNumber())
         .bullet(BulletStateMapper.map(source.getBullet()))
         .hitBullet(BulletStateMapper.map(source.getHitBullet()))
         .build();
   }
 
   private BulletHitWallEvent map(@NonNull final net.robocode2.schema.BulletHitWallEvent source) {
-    return BulletHitWallEvent.builder().bullet(BulletStateMapper.map(source.getBullet())).build();
+    return BulletHitWallEvent.builder()
+        .turnNumber(source.getTurnNumber())
+        .bullet(BulletStateMapper.map(source.getBullet()))
+        .build();
   }
 
   private ScannedBotEvent map(@NonNull final net.robocode2.schema.ScannedBotEvent source) {
     return ScannedBotEvent.builder()
+        .turnNumber(source.getTurnNumber())
         .scannedByBotId(source.getScannedByBotId())
         .scannedBotId(source.getScannedBotId())
         .energy(source.getEnergy())
@@ -117,6 +134,6 @@ public class EventMapper {
   }
 
   private SkippedTurnEvent map(@NonNull final net.robocode2.schema.SkippedTurnEvent source) {
-    return SkippedTurnEvent.builder().build();
+    return SkippedTurnEvent.builder().turnNumber(source.getTurnNumber()).build();
   }
 }

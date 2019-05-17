@@ -7,8 +7,13 @@ import lombok.Value;
 /** Event occurring when the bot has hit a wall */
 @Value
 @EqualsAndHashCode(callSuper = true)
-@Builder
 public class BotHitWallEvent extends GameEvent {
-    /** ID of the victim bot that hit the wall */
-    int victimId;
+  /** ID of the victim bot that hit the wall */
+  int victimId;
+
+  @Builder
+  private BotHitWallEvent(int turnNumber, int victimId) {
+    this.turnNumber = turnNumber;
+    this.victimId = victimId;
+  }
 }

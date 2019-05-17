@@ -10,12 +10,16 @@ import java.util.List;
 /** Event occurring when game has just ended */
 @Value
 @EqualsAndHashCode(callSuper = true)
-@Builder
 public class GameEndedEvent extends GameEvent {
-
   /** Number of rounds played */
   int numberOfRounds;
-
   /** Results of the battle */
   List<BotResults> results;
+
+  @Builder
+  private GameEndedEvent(int turnNumber, int numberOfRounds, List<BotResults> results) {
+    this.turnNumber = turnNumber;
+    this.numberOfRounds = numberOfRounds;
+    this.results = results;
+  }
 }

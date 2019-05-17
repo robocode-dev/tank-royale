@@ -7,7 +7,6 @@ import lombok.Value;
 /** Event occurring when a bot has scanned another bot */
 @Value
 @EqualsAndHashCode(callSuper = true)
-@Builder
 public class ScannedBotEvent extends GameEvent {
   /** ID of the bot did the scanning */
   int scannedByBotId;
@@ -23,4 +22,24 @@ public class ScannedBotEvent extends GameEvent {
   double direction;
   /** Speed measured in pixels per turn of the scanned bot */
   double speed;
+
+  @Builder
+  private ScannedBotEvent(
+      int turnNumber,
+      int scannedByBotId,
+      int scannedBotId,
+      double energy,
+      double x,
+      double y,
+      double direction,
+      double speed) {
+    this.turnNumber = turnNumber;
+    this.scannedByBotId = scannedByBotId;
+    this.scannedBotId = scannedBotId;
+    this.energy = energy;
+    this.x = x;
+    this.y = y;
+    this.direction = direction;
+    this.speed = speed;
+  }
 }

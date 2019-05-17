@@ -8,8 +8,13 @@ import net.robocode2.BulletState;
 /** Event occurring when a bullet has hit a wall */
 @Value
 @EqualsAndHashCode(callSuper = true)
-@Builder
 public class BulletHitWallEvent extends GameEvent {
   /** Bullet that has hit a wall */
   BulletState bullet;
+
+  @Builder
+  private BulletHitWallEvent(int turnNumber, BulletState bullet) {
+    this.turnNumber = turnNumber;
+    this.bullet = bullet;
+  }
 }
