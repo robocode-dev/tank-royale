@@ -12,9 +12,32 @@ properties:
       - controllerHandshake
       - observerHandshake
       - serverHandshake
-  clientKey:
-    description: The client key is picked by the server to identify the client. A client must set the client key.
-    type: string
+
+      - gameAbortedEventForObserver
+      - gameEndedEventForBot
+      - gameEndedEventForObserver
+      - gamePausedEventForObserver
+      - gameResumedEventForObserver
+      - gameStartedEventForBot
+      - gameStartedEventForObserver
+
+      - botDeathEvent
+      - botHitBotEvent
+      - botHitWallEvent
+      - bulletFiredEvent
+      - bulletHitBotEvent
+      - bulletHitBulletEvent
+      - bulletHitWallEvent
+      - hitByBulletEvent
+      - scannedBotEvent
+      - skippedTurnEvent
+      - tickEventForBot
+      - tickEventForObserver
+      - wonRoundEvent
+
+      - startGame
+      - stopGame
+      - pauseGame
+      - resumeGame
 required:
   - type
-  - clientKey

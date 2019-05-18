@@ -3,4 +3,4 @@ $schema: http://json-schema.org/draft-07/schema#
 description: Event occuring when game has been aborted. No score is available.
 type: object
 extends:
-  $ref: event.yaml
+  $ref: message.yaml

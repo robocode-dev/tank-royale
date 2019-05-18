@@ -1,32 +1,11 @@
 $id: #event.yaml
 $schema: http://json-schema.org/draft-07/schema#
 description: Event occurring during a battle
+extends:
+  $ref: message.yaml
 properties:
   turnNumber:
     description: Round number in a battle when event occurred
     type: integer
-  type:
-    enum:
-      - botDeathEvent
-      - botHitBotEvent
-      - botHitWallEvent
-      - bulletFiredEvent
-      - bulletHitBotEvent
-      - bulletHitBulletEvent
-      - bulletHitWallEvent
-      - hitByBulletEvent
-      - scannedBotEvent
-      - skippedTurnEvent
-      - tickEventForBot
-      - tickEventForObserver
-      - wonRoundEvent
-      - gameAbortedEventForObserver
-      - gameEndedEventForBot
-      - gameEndedEventForObserver
-      - gamePausedEventForObserver
-      - gameResumedEventForObserver
-      - gameStartedEventForBot
-      - gameStartedEventForObserver
 required:
   - turnNumber
-  - type

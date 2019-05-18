@@ -2,7 +2,7 @@ $id: #game-ended-event-for-observer.yaml
 $schema: http://json-schema.org/draft-07/schema#
 description: Event occuring when game has ended. Gives all game results visible for an observer.
 extends:
-  $ref: event.yaml
+  $ref: message.yaml
 properties:
   numberOfRounds:
     description: Number of rounds played

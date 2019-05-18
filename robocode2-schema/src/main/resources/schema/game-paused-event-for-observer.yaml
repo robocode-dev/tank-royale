@@ -3,4 +3,4 @@ $schema: http://json-schema.org/draft-07/schema#
 description: Event occuring when a game has been paused
 type: object
 extends:
-  $ref: event.yaml
+  $ref: message.yaml
