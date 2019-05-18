@@ -1,21 +1,11 @@
 package net.robocode2.mappers;
 
+import net.robocode2.schema.*;
+import net.robocode2.schema.Message.Type;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import net.robocode2.schema.BotDeathEvent;
-import net.robocode2.schema.BotHitBotEvent;
-import net.robocode2.schema.BotHitWallEvent;
-import net.robocode2.schema.BulletFiredEvent;
-import net.robocode2.schema.BulletHitBotEvent;
-import net.robocode2.schema.BulletHitBulletEvent;
-import net.robocode2.schema.BulletHitWallEvent;
-import net.robocode2.schema.Event;
-import net.robocode2.schema.Event.Type;
-import net.robocode2.schema.HitByBulletEvent;
-import net.robocode2.schema.ScannedBotEvent;
-import net.robocode2.schema.SkippedTurnEvent;
 
 public final class EventsToEventsMapper {
 
