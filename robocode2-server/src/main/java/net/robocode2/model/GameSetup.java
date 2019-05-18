@@ -93,7 +93,7 @@ public class GameSetup {
 	boolean gunCoolingRateLocked;
 
 	/** Flag specifying if the number of allowed inactivity turns is locked */
-	boolean inactivityTurnsLocked;
+	boolean maxInactivityTurnsLocked;
 
 	/** Flag specifying if the turn timeout is locked */
 	boolean turnTimeoutLocked;

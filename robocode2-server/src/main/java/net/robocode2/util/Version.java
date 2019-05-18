@@ -14,12 +14,14 @@ public class Version {
 
   public String getVersion() {
     if (version == null) {
-      try (InputStream inputStream =
-              Version.class.getClassLoader().getResourceAsStream("version.txt");
-          BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-        version = reader.readLine().trim();
-      } catch (IOException e) {
-        throw new IllegalStateException("Cannot read version");
+      InputStream inputStream = Version.class.getClassLoader().getResourceAsStream("version.txt");
+      if (inputStream != null) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+          version = reader.readLine().trim();
+          inputStream.close();
+        } catch (IOException e) {
+          throw new IllegalStateException("Cannot read version");
+        }
       }
     }
     return version;

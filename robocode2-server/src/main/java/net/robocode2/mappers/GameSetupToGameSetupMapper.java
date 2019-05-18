@@ -20,7 +20,7 @@ public final class GameSetupToGameSetupMapper {
 		setup.setMaxNumberOfParticipants(gameSetup.getMaxNumberOfParticipants());
 		setup.setNumberOfRounds(gameSetup.getNumberOfRounds());
 		setup.setGunCoolingRate(gameSetup.getGunCoolingRate());
-		setup.setInactivityTurns(gameSetup.getInactivityTurns());
+		setup.setMaxInactivityTurns(gameSetup.getInactivityTurns());
 		setup.setTurnTimeout(gameSetup.getTurnTimeout());
 		setup.setReadyTimeout(gameSetup.getReadyTimeout());
 
@@ -30,7 +30,7 @@ public final class GameSetupToGameSetupMapper {
 		setup.setIsMaxNumberOfParticipantsLocked(gameSetup.isMaxNumberOfParticipantsLocked());
 		setup.setIsNumberOfRoundsLocked(gameSetup.isNumberOfRoundsLocked());
 		setup.setIsGunCoolingRateLocked(gameSetup.isGunCoolingRateLocked());
-		setup.setIsInactivityTurnsLocked(gameSetup.isInactivityTurnsLocked());
+		setup.setIsMaxInactivityTurnsLocked(gameSetup.isMaxInactivityTurnsLocked());
 		setup.setIsTurnTimeoutLocked(gameSetup.isTurnTimeoutLocked());
 		setup.setIsReadyTimeoutLocked(gameSetup.isReadyTimeoutLocked());
 
@@ -61,8 +61,8 @@ public final class GameSetupToGameSetupMapper {
 		if (gameSetup.getGunCoolingRate() != null) {
 			builder.gunCoolingRate(gameSetup.getGunCoolingRate());
 		}
-		if (gameSetup.getInactivityTurns() != null) {
-			builder.inactivityTurns(gameSetup.getInactivityTurns());
+		if (gameSetup.getMaxInactivityTurns() != null) {
+			builder.inactivityTurns(gameSetup.getMaxInactivityTurns());
 		}
 		if (gameSetup.getTurnTimeout() != null) {
 			builder.turnTimeout(gameSetup.getTurnTimeout());
