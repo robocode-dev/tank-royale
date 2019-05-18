@@ -272,24 +272,22 @@ public abstract class Bot implements IBot {
         if (jsonType != null) {
           val type = jsonType.getAsString();
 
-          if (SERVER_HANDSHAKE == Message.Type.fromValue(type)) {
-            handleServerHandshake(jsonMsg);
-          } else
-            switch (net.robocode2.schema.Event.Type.fromValue(type)) {
-              case TICK_EVENT_FOR_BOT:
-                handleTickEvent(jsonMsg);
-                break;
-              case GAME_STARTED_EVENT_FOR_BOT:
-                handleGameStartedEvent(jsonMsg);
-                break;
-              case GAME_ENDED_EVENT_FOR_BOT:
-                handleGameEndedEvent(jsonMsg);
-                break;
-              default:
-                throw new BotException("Unsupported websocket message type: " + type);
-            }
-        } else {
-          throw new BotException("No type is defined for the websocket message");
+          switch (Message.Type.fromValue(type)) {
+            case SERVER_HANDSHAKE:
+              handleServerHandshake(jsonMsg);
+              break;
+            case TICK_EVENT_FOR_BOT:
+              handleTickEvent(jsonMsg);
+              break;
+            case GAME_STARTED_EVENT_FOR_BOT:
+              handleGameStartedEvent(jsonMsg);
+              break;
+            case GAME_ENDED_EVENT_FOR_BOT:
+              handleGameEndedEvent(jsonMsg);
+              break;
+            default:
+              throw new BotException("Unsupported WebSocket message type: " + type);
+          }
         }
       }
 
