@@ -45,11 +45,11 @@ properties:
   isGunCoolingRateLocked:
     description: Flag specifying if the gun cooling rate is fixed for this game type
     type: boolean
-  inactivityTurns:
+  maxInactivityTurns:
     description: Maximum number of inactive turns allowed, where a bot does not take
       any action before it is zapped by the game
     type: integer
-  isInactivityTurnsLocked:
+  isMaxInactivityTurnsLocked:
     description: Flag specifying if the inactive turns is fixed for this game type
     type: boolean
   turnTimeout:
