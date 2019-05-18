@@ -8,7 +8,6 @@ import lombok.NonNull;
 import lombok.val;
 import lombok.var;
 import net.robocode2.events.BotDeathEvent;
-import net.robocode2.events.*;
 import net.robocode2.events.BotHitBotEvent;
 import net.robocode2.events.BotHitWallEvent;
 import net.robocode2.events.BulletFiredEvent;
@@ -18,6 +17,7 @@ import net.robocode2.events.BulletHitWallEvent;
 import net.robocode2.events.ScannedBotEvent;
 import net.robocode2.events.SkippedTurnEvent;
 import net.robocode2.events.WonRoundEvent;
+import net.robocode2.events.*;
 import net.robocode2.factory.BotHandshakeFactory;
 import net.robocode2.mapper.EventMapper;
 import net.robocode2.mapper.GameSetupMapper;
@@ -48,69 +48,75 @@ public abstract class Bot implements IBot {
   }
 
   public final void run() {
-    val wsClient = __internals.wsClient;
-    if (!wsClient.isOpen()) {
-      wsClient.connect();
+    val webSocket = __internals.getWebSocket();
+    if (!webSocket.isOpen()) {
+      webSocket.connect();
     }
   }
 
   public final String getVariant() {
-    return __internals.serverHandshake.getVariant();
+    return __internals.getServerHandshake().getVariant();
   }
 
   public final String getVersion() {
-    return __internals.serverHandshake.getVersion();
+    return __internals.getServerHandshake().getVersion();
   }
 
   public final int getMyId() {
-    return __internals.myId;
+    return __internals.getMyId();
   }
 
   public final String getGameType() {
-    return __internals.gameSetup.getGameType();
+    return __internals.getGameSetup().getGameType();
   }
 
   public final int getArenaWidth() {
-    return __internals.gameSetup.getArenaWidth();
+    return __internals.getGameSetup().getArenaWidth();
   }
 
   public final int getArenaHeight() {
-    return __internals.gameSetup.getArenaHeight();
+    return __internals.getGameSetup().getArenaHeight();
   }
 
   public final int getNumberOfRounds() {
-    return __internals.gameSetup.getNumberOfRounds();
+    return __internals.getGameSetup().getNumberOfRounds();
   }
 
   public final double getGunCoolingRate() {
-    return __internals.gameSetup.getGunCoolingRate();
+    return __internals.getGameSetup().getGunCoolingRate();
   }
 
   public final int getInactivityTurns() {
-    return __internals.gameSetup.getInactivityTurns();
+    return __internals.getGameSetup().getInactivityTurns();
   }
 
   public final int getTurnTimeout() {
-    return __internals.gameSetup.getTurnTimeout();
+    return __internals.getGameSetup().getTurnTimeout();
   }
 
   public final int getReadyTimeout() {
-    return __internals.gameSetup.getReadyTimeout();
+    return __internals.getGameSetup().getReadyTimeout();
   }
 
   private final class __Internals {
     private static final String SERVER_URI_PROPERTY_KEY = "server.uri";
     private static final String SERVER_URI_ENV_VAR = "ROBOCODE2_SERVER_URI";
 
+    private static final String GAME_NOT_RUNNING_MSG =
+        "Game is not running. Make sure onGameStarted() event handler has been called first";
+
+    private static final String NOT_CONNECTED_TO_SERVER_MSG =
+        "Not connected to game server yes. Make sure onConnected() event handler has been called first";
+
     private final BotInfo botInfo;
 
-    private WebSocketClient wsClient;
+    private WebSocketClient webSocket;
 
     private final Gson gson = new GsonBuilder().create();
 
     private ServerHandshake serverHandshake;
     private String clientKey;
-    private int myId;
+    private Integer myId;
     private GameSetup gameSetup;
 
     __Internals(BotInfo botInfo) {
@@ -124,7 +130,7 @@ public abstract class Bot implements IBot {
     }
 
     private void init(URI serverUri) {
-      wsClient = new WSClient(serverUri);
+      webSocket = new WSClient(serverUri);
     }
 
     private URI getServerUriSetting() {
@@ -143,6 +149,34 @@ public abstract class Bot implements IBot {
       } catch (URISyntaxException ex) {
         throw new BotException("Incorrect syntax for server uri: " + uri);
       }
+    }
+
+    private WebSocketClient getWebSocket() {
+      if (webSocket == null) {
+        throw new BotException(NOT_CONNECTED_TO_SERVER_MSG);
+      }
+      return webSocket;
+    }
+
+    private ServerHandshake getServerHandshake() {
+      if (serverHandshake == null) {
+        throw new BotException(NOT_CONNECTED_TO_SERVER_MSG);
+      }
+      return serverHandshake;
+    }
+
+    private int getMyId() {
+      if (myId == null) {
+        throw new BotException(GAME_NOT_RUNNING_MSG);
+      }
+      return myId;
+    }
+
+    private GameSetup getGameSetup() {
+      if (gameSetup == null) {
+        throw new BotException(GAME_NOT_RUNNING_MSG);
+      }
+      return gameSetup;
     }
 
     private final class WSClient extends WebSocketClient {
@@ -247,13 +281,18 @@ public abstract class Bot implements IBot {
     }
 
     private void handleGameEndedEvent(JsonObject jsonMsg) {
+      // Clear setting that are only available during a running game
+      gameSetup = null;
+      myId = null;
+
+      // Send the game ended event
       val gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
-      val newBattleEndedEvent =
+      val gameEndedEvent =
           GameEndedEvent.builder()
               .numberOfRounds(gameEndedEventForBot.getNumberOfRounds())
               .results(ResultsMapper.map(gameEndedEventForBot.getResults()))
               .build();
-      Bot.this.onGameEnded(newBattleEndedEvent);
+      Bot.this.onGameEnded(gameEndedEvent);
     }
 
     private void fireEvents(TickEvent tickEvent) {
