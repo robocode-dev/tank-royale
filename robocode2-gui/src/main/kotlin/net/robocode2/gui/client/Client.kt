@@ -31,7 +31,7 @@ object Client : AutoCloseable {
     private var games: Set<GameSetup> = HashSet()
     private var bots: Set<BotInfo> = HashSet()
 
-    var isGameRunning: Boolean = false
+    private var isGameRunning: Boolean = false
 
     override fun close() {
         abortGame()

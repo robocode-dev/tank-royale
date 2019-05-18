@@ -5,7 +5,7 @@ data class Participant(
     val name: String,
     val version: String,
     val author: String,
-    val countryCode: String?,
-    val gameTypes: Set<String>?,
-    val programmingLang: String?
-) : Message(type = MessageType.PARTICIPANT.type)
+    val countryCode: String? = null,
+    val gameTypes: Set<String>? = HashSet(),
+    val programmingLang: String? = null
+) : Message(MessageType.PARTICIPANT.type)
