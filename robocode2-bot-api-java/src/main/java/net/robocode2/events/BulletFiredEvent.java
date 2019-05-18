@@ -8,7 +8,7 @@ import net.robocode2.BulletState;
 /** Event occurring when a bullet has been fired from a bot */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class BulletFiredEvent extends GameEvent {
+public class BulletFiredEvent extends Event {
   /** Bullet that was fired */
   BulletState bullet;
 

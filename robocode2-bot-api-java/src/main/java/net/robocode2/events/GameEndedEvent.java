@@ -10,7 +10,7 @@ import java.util.List;
 /** Event occurring when game has just ended */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class GameEndedEvent extends GameEvent {
+public class GameEndedEvent extends Event {
   /** Number of rounds played */
   int numberOfRounds;
   /** Results of the battle */

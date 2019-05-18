@@ -14,6 +14,7 @@ import net.robocode2.events.BulletFiredEvent;
 import net.robocode2.events.BulletHitBotEvent;
 import net.robocode2.events.BulletHitBulletEvent;
 import net.robocode2.events.BulletHitWallEvent;
+import net.robocode2.events.Event;
 import net.robocode2.events.ScannedBotEvent;
 import net.robocode2.events.SkippedTurnEvent;
 import net.robocode2.events.WonRoundEvent;
@@ -97,8 +98,8 @@ public abstract class Bot implements IBot {
   }
 
   @Override
-  public final int getInactivityTurns() {
-    return __internals.getGameSetup().getInactivityTurns();
+  public final int getMaxInactivityTurns() {
+    return __internals.getGameSetup().getMaxInactivityTurns();
   }
 
   @Override
@@ -127,7 +128,7 @@ public abstract class Bot implements IBot {
   }
 
   @Override
-  public final List<GameEvent> getEvents() {
+  public final List<Event> getEvents() {
     return __internals.getCurrentTurn().getEvents();
   }
 
@@ -274,7 +275,7 @@ public abstract class Bot implements IBot {
           if (SERVER_HANDSHAKE == Message.Type.fromValue(type)) {
             handleServerHandshake(jsonMsg);
           } else
-            switch (Event.Type.fromValue(type)) {
+            switch (net.robocode2.schema.Event.Type.fromValue(type)) {
               case TICK_EVENT_FOR_BOT:
                 handleTickEvent(jsonMsg);
                 break;

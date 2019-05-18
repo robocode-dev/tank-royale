@@ -10,7 +10,7 @@ import lombok.Value;
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class SkippedTurnEvent extends GameEvent {
+public class SkippedTurnEvent extends Event {
 
   @Builder
   private SkippedTurnEvent(int turnNumber) {

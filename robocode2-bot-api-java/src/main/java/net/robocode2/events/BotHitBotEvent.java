@@ -7,7 +7,7 @@ import lombok.Value;
 /** Event occurring when a bot has collided with another bot */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class BotHitBotEvent extends GameEvent {
+public class BotHitBotEvent extends Event {
   /** ID of the victim bot that got hit */
   int victimId;
   /** ID of the bot that hit another bot */

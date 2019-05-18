@@ -24,7 +24,7 @@ public class GameSetup {
    * Maximum number of inactive turns allowed, where a bot does not take any action before it is
    * zapped by the game
    */
-  int inactivityTurns;
+  int maxInactivityTurns;
   /** Timeout in milliseconds for sending intent after having received 'tick' message */
   int turnTimeout;
   /**

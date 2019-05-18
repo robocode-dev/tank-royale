@@ -8,7 +8,7 @@ import net.robocode2.BulletState;
 /** Event occurring when a bullet has hit a bot */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class BulletHitBotEvent extends GameEvent {
+public class BulletHitBotEvent extends Event {
   /** ID of the victim bot that got hit */
   int victimId;
   /** Bullet that hit the bot */

@@ -8,7 +8,7 @@ import net.robocode2.GameSetup;
 /** Event occurring when game has just started */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class GameStartedEvent extends GameEvent {
+public class GameStartedEvent extends Event {
   /** The ID used for identifying your bot in the current battle */
   int myId;
   /** The game setup for the battle just started */

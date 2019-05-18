@@ -7,7 +7,7 @@ import lombok.Value;
 /** Event occurring when a bot has died */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class BotDeathEvent extends GameEvent {
+public class BotDeathEvent extends Event {
   /** ID of the bot that has died */
   int victimId;
 

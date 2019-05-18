@@ -23,13 +23,13 @@ public class EventMapper {
         .build();
   }
 
-  private List<GameEvent> map(@NonNull final List<net.robocode2.schema.Event> source) {
-    val gameEvents = new ArrayList<GameEvent>();
+  private List<Event> map(@NonNull final List<net.robocode2.schema.Event> source) {
+    val gameEvents = new ArrayList<Event>();
     source.forEach(event -> gameEvents.add(map(event)));
     return gameEvents;
   }
 
-  private GameEvent map(@NonNull final net.robocode2.schema.Event source) {
+  private Event map(@NonNull final net.robocode2.schema.Event source) {
     if (source instanceof net.robocode2.schema.BotDeathEvent) {
       return map((net.robocode2.schema.BotDeathEvent) source);
     }

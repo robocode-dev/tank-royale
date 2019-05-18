@@ -11,7 +11,7 @@ import java.util.List;
 /** Event occurring whenever a new turn in a round has started */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class TickEvent extends GameEvent {
+public class TickEvent extends Event {
   /** Current round number */
   int roundNumber;
   /** Current state of this bot */
@@ -19,7 +19,7 @@ public class TickEvent extends GameEvent {
   /** Current state of the bullets fired by this bot */
   List<BulletState> bulletStates;
   /** Events occurring in the turn relevant for this bot */
-  List<GameEvent> events;
+  List<Event> events;
 
   @Builder
   private TickEvent(
@@ -27,7 +27,7 @@ public class TickEvent extends GameEvent {
       int roundNumber,
       BotState botState,
       List<BulletState> bulletStates,
-      List<GameEvent> events) {
+      List<Event> events) {
     this.turnNumber = turnNumber;
     this.roundNumber = roundNumber;
     this.botState = botState;

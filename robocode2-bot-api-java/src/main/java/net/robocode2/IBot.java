@@ -41,7 +41,7 @@ public interface IBot {
    * Returns the maximum number of inactive turns allowed, where a bot does not take any action
    * before it is zapped by the game. Available when game has started.
    */
-  int getInactivityTurns();
+  int getMaxInactivityTurns();
 
   /**
    * Returns turn timeout in milliseconds. Available when game has started.
@@ -61,7 +61,7 @@ public interface IBot {
   List<BulletState> getBulletStates();
 
   /** Returns the game events received for the current turn when the game is running */
-  List<GameEvent> getEvents();
+  List<Event> getEvents();
 
   /** Event handler triggered when connected to server */
   default void onConnected(ConnectedEvent connectedEvent) {}

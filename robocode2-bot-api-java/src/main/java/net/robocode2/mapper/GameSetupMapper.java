@@ -15,7 +15,7 @@ public class GameSetupMapper {
         .arenaHeight(source.getArenaHeight())
         .numberOfRounds(source.getNumberOfRounds())
         .gunCoolingRate(source.getGunCoolingRate())
-        .inactivityTurns(source.getInactivityTurns())
+        .maxInactivityTurns(source.getMaxInactivityTurns())
         .turnTimeout(source.getTurnTimeout())
         .readyTimeout(source.getReadyTimeout())
         .build();
