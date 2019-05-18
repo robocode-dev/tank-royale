@@ -12,12 +12,12 @@ public final class BotHandshakeToBotInfoMapper {
 	public static BotInfo map(BotHandshake botHandshake, String hostName, Integer port) {
 		BotInfo botInfo = new BotInfo();
 
+		botInfo.setName(botHandshake.getName());
+		botInfo.setVersion(botHandshake.getVersion());
 		botInfo.setAuthor(botHandshake.getAuthor());
 		botInfo.setCountryCode(botHandshake.getCountryCode());
-		botInfo.setGameTypes(Collections.unmodifiableList(botHandshake.getGameTypes()));
-		botInfo.setName(botHandshake.getName());
 		botInfo.setProgrammingLang(botHandshake.getProgrammingLang());
-		botInfo.setVersion(botHandshake.getVersion());
+		botInfo.setGameTypes(Collections.unmodifiableList(botHandshake.getGameTypes()));
 		botInfo.setHost(hostName);
 		botInfo.setPort(port);
 
