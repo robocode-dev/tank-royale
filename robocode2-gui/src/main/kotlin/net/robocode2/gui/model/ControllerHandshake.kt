@@ -5,4 +5,4 @@ data class ControllerHandshake(
         val name: String,
         val version: String,
         val author: String?
-) : ClientContent(type = ContentType.CONTROLLER_HANDSHAKE.type, clientKey = clientKey)
+) : ClientMessage(type = MessageType.CONTROLLER_HANDSHAKE.type, clientKey = clientKey)

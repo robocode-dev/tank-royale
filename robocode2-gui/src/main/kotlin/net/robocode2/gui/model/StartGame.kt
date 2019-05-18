@@ -1,4 +1,7 @@
 package net.robocode2.gui.model
 
-data class StartGame(val gameSetup: GameSetup, val botAddresses: Set<BotAddress>)
-    : Content(type = ContentType.START_GAME.type)
+data class StartGame(
+        override val clientKey: String,
+        val gameSetup: GameSetup,
+        val botAddresses: Set<BotAddress>
+) : ClientMessage(MessageType.START_GAME.type, clientKey)

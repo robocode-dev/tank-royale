@@ -1,6 +1,7 @@
 package net.robocode2.gui.model
 
 data class ScannedBotEvent(
+        override val turnNumber: Int,
         val scannedByBotId: Int,
         val scannedBotId: Int,
         val energy: Double,
@@ -8,4 +9,4 @@ data class ScannedBotEvent(
         val y: Double,
         val direction: Double,
         val speed: Double
-) : Content(type = ContentType.SCANNED_BOT_EVENT.type)
+) : Event(MessageType.SCANNED_BOT_EVENT.type, turnNumber)

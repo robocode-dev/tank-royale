@@ -59,18 +59,18 @@ object Client : AutoCloseable {
 
     fun startGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>) {
         if (!isGameRunning && websocket.isOpen()) {
-            websocket.send(StartGame(gameSetup, botAddresses))
+            websocket.send(StartGame(clientKey!!, gameSetup, botAddresses))
         }
     }
 
     fun abortGame() {
         if (isGameRunning && websocket.isOpen()) {
-            websocket.send(AbortGame())
+            websocket.send(StopGame(clientKey!!))
         }
     }
 
     private fun onMessage(msg: String) {
-        when (val content = Klaxon().parse<Content>(msg)) {
+        when (val content = Klaxon().parse<Message>(msg)) {
             is ServerHandshake -> handleServerHandshake(content)
             is BotListUpdate -> handleBotListUpdate(content)
             is GameStartedEvent -> handleGameStarted(content)

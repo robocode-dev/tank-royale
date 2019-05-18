@@ -1,8 +1,9 @@
 package net.robocode2.gui.model
 
 data class BulletHitBotEvent(
-        val bullet: BulletState,
+        override val turnNumber: Int,
         val victimId: Int,
+        val bullet: BulletState,
         val damage: Double,
         val energy: Double
-) : Content(type = ContentType.BOT_HIT_BOT_EVENT.type)
+) : Event(MessageType.BOT_HIT_BOT_EVENT.type, turnNumber)

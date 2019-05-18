@@ -15,4 +15,4 @@ data class BotResults(
         val firstPlaces: Int,
         val secondPlaces: Int,
         val thirdPlaces: Int
-) : Content(type = ContentType.BOT_RESULTS.type)
+) : Message(MessageType.BOT_RESULTS.type)

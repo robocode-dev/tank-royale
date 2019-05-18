@@ -37,7 +37,7 @@ class ArenaPanel : JPanel() {
 
         Client.onGameStarted.subscribe { onGameStarted(it) }
         Client.onGameEnded.subscribe { onGameEnded(it) }
-        Client.onGameAborted.subscribe { onGameAborted(it) }
+        Client.onGameAborted.subscribe { onGameAborted() }
         Client.onTickEvent.subscribe { onTick(it) }
     }
 
@@ -51,7 +51,7 @@ class ArenaPanel : JPanel() {
         ResultsWindow(gameEndedEvent.results).isVisible = true
     }
 
-    private fun onGameAborted(gameAbortedEvent: GameAbortedEvent) {
+    private fun onGameAborted() {
         // TODO
     }
 

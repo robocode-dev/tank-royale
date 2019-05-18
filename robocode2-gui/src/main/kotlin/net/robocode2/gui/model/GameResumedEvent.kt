@@ -1,3 +1,3 @@
 package net.robocode2.gui.model
 
-class GameResumedEvent : Content(type = ContentType.GAME_RESUMED_EVENT.type)
+class GameResumedEvent : Message(MessageType.GAME_RESUMED_EVENT.type)

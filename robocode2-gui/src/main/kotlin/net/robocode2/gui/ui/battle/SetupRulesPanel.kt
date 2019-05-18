@@ -108,7 +108,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         maxNumParticipantsTextField.text = gameSetup.maxNumberOfParticipants?.toString() ?: ""
 
         numberOfRoundsTextField.text = gameSetup.numberOfRounds.toString()
-        inactivityTurnsTextField.text = gameSetup.inactivityTurns.toString()
+        inactivityTurnsTextField.text = gameSetup.maxInactivityTurns.toString()
         gunCoolingRateTextField.text = gameSetup.gunCoolingRate.toString()
     }
 
@@ -235,11 +235,11 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         }
         val valid = turns != null && turns in 0..MAX_INACTIVITY_TURNS
         if (valid && turns != null) {
-            gameSetup.inactivityTurns = turns
+            gameSetup.maxInactivityTurns = turns
         } else {
             showMessage(String.format(MESSAGES.get("num_inactivity_turns_range"), MAX_INACTIVITY_TURNS))
 
-            inactivityTurnsTextField.text = "" + gameSetup.inactivityTurns
+            inactivityTurnsTextField.text = "" + gameSetup.maxInactivityTurns
         }
         return valid
     }

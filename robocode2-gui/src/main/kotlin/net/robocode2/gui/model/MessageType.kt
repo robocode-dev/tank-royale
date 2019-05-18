@@ -1,6 +1,6 @@
 package net.robocode2.gui.model
 
-enum class ContentType(val type: String) {
+enum class MessageType(val type: String) {
     // Messages
     SERVER_HANDSHAKE("serverHandshake"),
     CONTROLLER_HANDSHAKE("controllerHandshake"),
@@ -13,7 +13,7 @@ enum class ContentType(val type: String) {
     BULLET_FIRED_EVENT("bulletFiredEvent"),
     BULLET_HIT_BOT_EVENT("bulletHitBotEvent"),
     BULLET_HIT_BULLET_EVENT("bulletHitBulletEvent"),
-    BULLET_HIT_WALL_EVENT("bulletHitWall"),
+    BULLET_HIT_WALL_EVENT("bulletHitWallEvent"),
     HIT_BY_BULLET_EVENT("hitByBulletEvent"),
     SCANNED_BOT_EVENT("scannedBotEvent"),
     SKIPPED_TURN_EVENT("skippedTurnEvent"),
