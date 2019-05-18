@@ -57,6 +57,9 @@ public class EventMapper {
     if (source instanceof net.robocode2.schema.SkippedTurnEvent) {
       return map((net.robocode2.schema.SkippedTurnEvent) source);
     }
+    if (source instanceof net.robocode2.schema.WonRoundEvent) {
+      return map((net.robocode2.schema.WonRoundEvent) source);
+    }
     throw new BotException(
         "No mapping exists for event type: " + source.getClass().getSimpleName());
   }
@@ -135,5 +138,9 @@ public class EventMapper {
 
   private SkippedTurnEvent map(@NonNull final net.robocode2.schema.SkippedTurnEvent source) {
     return SkippedTurnEvent.builder().turnNumber(source.getTurnNumber()).build();
+  }
+
+  private WonRoundEvent map(@NonNull final net.robocode2.schema.WonRoundEvent source) {
+    return WonRoundEvent.builder().turnNumber(source.getTurnNumber()).build();
   }
 }

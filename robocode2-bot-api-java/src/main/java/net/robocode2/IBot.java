@@ -11,6 +11,12 @@ public interface IBot {
   /** Returns the unique id of this bot in the battle. Available when game has started. */
   int getMyId();
 
+  /** Get the game variant, e.g. "R2TR" for Robocode 2 Tank Royale */
+  String getVariant();
+
+  /** Get the game version, e.g. "1.0.0" */
+  String getVersion();
+
   /** Returns the game type, e.g. "melee". Available when game has started. */
   String getGameType();
 
@@ -94,4 +100,7 @@ public interface IBot {
 
   /** Event handler triggered when the bot has skipped a turn */
   default void onSkippedTurn(SkippedTurnEvent skippedTurnEvent) {}
+
+  /** Event handler triggered when the bot has won a round */
+  default void onWonRound(WonRoundEvent wonRoundEvent) {}
 }

@@ -17,6 +17,7 @@ import net.robocode2.events.BulletHitBulletEvent;
 import net.robocode2.events.BulletHitWallEvent;
 import net.robocode2.events.ScannedBotEvent;
 import net.robocode2.events.SkippedTurnEvent;
+import net.robocode2.events.WonRoundEvent;
 import net.robocode2.factory.BotHandshakeFactory;
 import net.robocode2.mapper.EventMapper;
 import net.robocode2.mapper.GameSetupMapper;
@@ -33,7 +34,7 @@ public abstract class Bot implements IBot {
 
   private final __Internals __internals;
 
-  // Default constructor is not allowed, and thus must be hidden
+  // Default constructor is not allowed and thus must be hidden
   private Bot() {
     __internals = new __Internals(null);
   }
@@ -46,46 +47,54 @@ public abstract class Bot implements IBot {
     __internals = new __Internals(botInfo, serverUri);
   }
 
-  public void run() {
+  public final void run() {
     val wsClient = __internals.wsClient;
     if (!wsClient.isOpen()) {
       wsClient.connect();
     }
   }
 
-  public int getMyId() {
+  public final String getVariant() {
+    return __internals.serverHandshake.getVariant();
+  }
+
+  public final String getVersion() {
+    return __internals.serverHandshake.getVersion();
+  }
+
+  public final int getMyId() {
     return __internals.myId;
   }
 
-  public String getGameType() {
+  public final String getGameType() {
     return __internals.gameSetup.getGameType();
   }
 
-  public int getArenaWidth() {
+  public final int getArenaWidth() {
     return __internals.gameSetup.getArenaWidth();
   }
 
-  public int getArenaHeight() {
+  public final int getArenaHeight() {
     return __internals.gameSetup.getArenaHeight();
   }
 
-  public int getNumberOfRounds() {
+  public final int getNumberOfRounds() {
     return __internals.gameSetup.getNumberOfRounds();
   }
 
-  public double getGunCoolingRate() {
+  public final double getGunCoolingRate() {
     return __internals.gameSetup.getGunCoolingRate();
   }
 
-  public int getInactivityTurns() {
+  public final int getInactivityTurns() {
     return __internals.gameSetup.getInactivityTurns();
   }
 
-  public int getTurnTimeout() {
+  public final int getTurnTimeout() {
     return __internals.gameSetup.getTurnTimeout();
   }
 
-  public int getReadyTimeout() {
+  public final int getReadyTimeout() {
     return __internals.gameSetup.getReadyTimeout();
   }
 
@@ -99,8 +108,8 @@ public abstract class Bot implements IBot {
 
     private final Gson gson = new GsonBuilder().create();
 
+    private ServerHandshake serverHandshake;
     private String clientKey;
-
     private int myId;
     private GameSetup gameSetup;
 
@@ -191,12 +200,13 @@ public abstract class Bot implements IBot {
         } else {
           throw new BotException("No type is defined for the websocket message");
         }
-        // TODO
       }
 
       private void handleServerHandshake(JsonObject jsonMsg) {
+        serverHandshake = gson.fromJson(jsonMsg, ServerHandshake.class);
+
         // The client key is assigned to the bot from the server only
-        val clientKey = jsonMsg.get("clientKey").getAsString();
+        val clientKey = serverHandshake.getClientKey();
         Bot.__Internals.this.clientKey = clientKey;
 
         // Send bot handshake
@@ -209,33 +219,7 @@ public abstract class Bot implements IBot {
         val tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
         val tickEvent = EventMapper.map(tickEventForBot);
         Bot.this.onTick(tickEvent);
-
-        // TODO: Loop through all game events and trigger the individual event handlers
-
-        tickEvent
-            .getEvents()
-            .forEach(
-                event -> {
-                  if (event instanceof BotDeathEvent) {
-                    Bot.this.onBotDeath((BotDeathEvent) event);
-                  } else if (event instanceof BotHitBotEvent) {
-                    Bot.this.onHitByBot((BotHitBotEvent) event);
-                  } else if (event instanceof BotHitWallEvent) {
-                    Bot.this.onHitWall((BotHitWallEvent) event);
-                  } else if (event instanceof BulletFiredEvent) {
-                    Bot.this.onBulletFired((BulletFiredEvent) event);
-                  } else if (event instanceof BulletHitBotEvent) {
-                    Bot.this.onHitByBullet((BulletHitBotEvent) event);
-                  } else if (event instanceof BulletHitBulletEvent) {
-                    Bot.this.onBulletHitBullet((BulletHitBulletEvent) event);
-                  } else if (event instanceof BulletHitWallEvent) {
-                    Bot.this.onBulletHitWall((BulletHitWallEvent) event);
-                  } else if (event instanceof ScannedBotEvent) {
-                    Bot.this.onScannedBot((ScannedBotEvent) event);
-                  } else if (event instanceof SkippedTurnEvent) {
-                    Bot.this.onSkippedTurn((SkippedTurnEvent) event);
-                  }
-                });
+        fireEvents(tickEvent);
       }
 
       private void handleGameStartedEvent(JsonObject jsonMsg) {
@@ -270,6 +254,35 @@ public abstract class Bot implements IBot {
               .results(ResultsMapper.map(gameEndedEventForBot.getResults()))
               .build();
       Bot.this.onGameEnded(newBattleEndedEvent);
+    }
+
+    private void fireEvents(TickEvent tickEvent) {
+      tickEvent
+          .getEvents()
+          .forEach(
+              event -> {
+                if (event instanceof BotDeathEvent) {
+                  Bot.this.onBotDeath((BotDeathEvent) event);
+                } else if (event instanceof BotHitBotEvent) {
+                  Bot.this.onHitByBot((BotHitBotEvent) event);
+                } else if (event instanceof BotHitWallEvent) {
+                  Bot.this.onHitWall((BotHitWallEvent) event);
+                } else if (event instanceof BulletFiredEvent) {
+                  Bot.this.onBulletFired((BulletFiredEvent) event);
+                } else if (event instanceof BulletHitBotEvent) {
+                  Bot.this.onHitByBullet((BulletHitBotEvent) event);
+                } else if (event instanceof BulletHitBulletEvent) {
+                  Bot.this.onBulletHitBullet((BulletHitBulletEvent) event);
+                } else if (event instanceof BulletHitWallEvent) {
+                  Bot.this.onBulletHitWall((BulletHitWallEvent) event);
+                } else if (event instanceof ScannedBotEvent) {
+                  Bot.this.onScannedBot((ScannedBotEvent) event);
+                } else if (event instanceof SkippedTurnEvent) {
+                  Bot.this.onSkippedTurn((SkippedTurnEvent) event);
+                } else if (event instanceof WonRoundEvent) {
+                  Bot.this.onWonRound((WonRoundEvent) event);
+                }
+              });
     }
   }
 }
