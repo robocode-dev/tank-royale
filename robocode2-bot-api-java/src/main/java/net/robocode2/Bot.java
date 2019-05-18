@@ -27,6 +27,7 @@ import org.java_websocket.client.WebSocketClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import static net.robocode2.schema.Message.Type.SERVER_HANDSHAKE;
 
@@ -47,6 +48,7 @@ public abstract class Bot implements IBot {
     __internals = new __Internals(botInfo, serverUri);
   }
 
+  @Override
   public final void run() {
     val webSocket = __internals.getWebSocket();
     if (!webSocket.isOpen()) {
@@ -54,70 +56,107 @@ public abstract class Bot implements IBot {
     }
   }
 
+  @Override
   public final String getVariant() {
     return __internals.getServerHandshake().getVariant();
   }
 
+  @Override
   public final String getVersion() {
     return __internals.getServerHandshake().getVersion();
   }
 
+  @Override
   public final int getMyId() {
     return __internals.getMyId();
   }
 
+  @Override
   public final String getGameType() {
     return __internals.getGameSetup().getGameType();
   }
 
+  @Override
   public final int getArenaWidth() {
     return __internals.getGameSetup().getArenaWidth();
   }
 
+  @Override
   public final int getArenaHeight() {
     return __internals.getGameSetup().getArenaHeight();
   }
 
+  @Override
   public final int getNumberOfRounds() {
     return __internals.getGameSetup().getNumberOfRounds();
   }
 
+  @Override
   public final double getGunCoolingRate() {
     return __internals.getGameSetup().getGunCoolingRate();
   }
 
+  @Override
   public final int getInactivityTurns() {
     return __internals.getGameSetup().getInactivityTurns();
   }
 
+  @Override
   public final int getTurnTimeout() {
     return __internals.getGameSetup().getTurnTimeout();
   }
 
-  public final int getReadyTimeout() {
-    return __internals.getGameSetup().getReadyTimeout();
+  @Override
+  public final int getRoundNumber() {
+    return __internals.getCurrentTurn().getRoundNumber();
+  }
+
+  @Override
+  public final int getTurnNumber() {
+    return __internals.getCurrentTurn().getTurnNumber();
+  }
+
+  @Override
+  public final BotState getBotState() {
+    return __internals.getCurrentTurn().getBotState();
+  }
+
+  @Override
+  public final List<BulletState> getBulletStates() {
+    return __internals.getCurrentTurn().getBulletStates();
+  }
+
+  @Override
+  public final List<GameEvent> getEvents() {
+    return __internals.getCurrentTurn().getEvents();
   }
 
   private final class __Internals {
     private static final String SERVER_URI_PROPERTY_KEY = "server.uri";
     private static final String SERVER_URI_ENV_VAR = "ROBOCODE2_SERVER_URI";
 
-    private static final String GAME_NOT_RUNNING_MSG =
-        "Game is not running. Make sure onGameStarted() event handler has been called first";
-
     private static final String NOT_CONNECTED_TO_SERVER_MSG =
         "Not connected to game server yes. Make sure onConnected() event handler has been called first";
 
-    private final BotInfo botInfo;
+    private static final String GAME_NOT_RUNNING_MSG =
+        "Game is not running. Make sure onGameStarted() event handler has been called first";
 
-    private WebSocketClient webSocket;
+    private static final String TICK_NOT_AVAILABLE_MSG =
+        "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first";
 
     private final Gson gson = new GsonBuilder().create();
 
+    private final BotInfo botInfo;
+
+    // Server connection:
+    private WebSocketClient webSocket;
     private ServerHandshake serverHandshake;
     private String clientKey;
+
+    // Current game states:
     private Integer myId;
     private GameSetup gameSetup;
+    private TickEvent currentTurn;
 
     __Internals(BotInfo botInfo) {
       this.botInfo = botInfo;
@@ -131,6 +170,13 @@ public abstract class Bot implements IBot {
 
     private void init(URI serverUri) {
       webSocket = new WSClient(serverUri);
+    }
+
+    private void clearCurrentGame() {
+      // Clear setting that are only available during a running game
+      currentTurn = null;
+      gameSetup = null;
+      myId = null;
     }
 
     private URI getServerUriSetting() {
@@ -179,6 +225,13 @@ public abstract class Bot implements IBot {
       return gameSetup;
     }
 
+    private TickEvent getCurrentTurn() {
+      if (currentTurn == null) {
+        throw new BotException(TICK_NOT_AVAILABLE_MSG);
+      }
+      return currentTurn;
+    }
+
     private final class WSClient extends WebSocketClient {
 
       private WSClient(final URI uri) {
@@ -199,6 +252,9 @@ public abstract class Bot implements IBot {
       public final void onClose(final int code, final String reason, final boolean remote) {
         val event = DisconnectedEvent.builder().code(code).reason(reason).remote(remote).build();
         Bot.this.onDisconnected(event);
+
+        // Clear current game state
+        Bot.this.__internals.clearCurrentGame();
       }
 
       @Override
@@ -251,9 +307,9 @@ public abstract class Bot implements IBot {
 
       private void handleTickEvent(JsonObject jsonMsg) {
         val tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
-        val tickEvent = EventMapper.map(tickEventForBot);
-        Bot.this.onTick(tickEvent);
-        fireEvents(tickEvent);
+        currentTurn = EventMapper.map(tickEventForBot);
+        Bot.this.onTick(currentTurn);
+        dispatchEvents(currentTurn);
       }
 
       private void handleGameStartedEvent(JsonObject jsonMsg) {
@@ -281,9 +337,8 @@ public abstract class Bot implements IBot {
     }
 
     private void handleGameEndedEvent(JsonObject jsonMsg) {
-      // Clear setting that are only available during a running game
-      gameSetup = null;
-      myId = null;
+      // Clear current game state
+      Bot.this.__internals.clearCurrentGame();
 
       // Send the game ended event
       val gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
@@ -295,7 +350,7 @@ public abstract class Bot implements IBot {
       Bot.this.onGameEnded(gameEndedEvent);
     }
 
-    private void fireEvents(TickEvent tickEvent) {
+    private void dispatchEvents(TickEvent tickEvent) {
       tickEvent
           .getEvents()
           .forEach(

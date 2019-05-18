@@ -2,6 +2,8 @@ package net.robocode2;
 
 import net.robocode2.events.*;
 
+import java.util.List;
+
 /** Interface for a bot. */
 public interface IBot {
 
@@ -42,16 +44,24 @@ public interface IBot {
   int getInactivityTurns();
 
   /**
-   * Returns turn timeout in milliseconds for sending intent after having received 'tick' message.
-   * Available when game has started.
+   * Returns turn timeout in milliseconds. Available when game has started.
    */
   int getTurnTimeout();
 
-  /**
-   * Returns time limit in milliseconds for sending ready message after having received 'new battle'
-   * message. Available when game has started.
-   */
-  int getReadyTimeout();
+  /** Returns the current round number when the game is running */
+  int getRoundNumber();
+
+  /** Return the current turn number when the game is running */
+  int getTurnNumber();
+
+  /** Returns the current bot state when the game is running */
+  BotState getBotState();
+
+  /** Returns the current bullet states when the game is running */
+  List<BulletState> getBulletStates();
+
+  /** Returns the game events received for the current turn when the game is running */
+  List<GameEvent> getEvents();
 
   /** Event handler triggered when connected to server */
   default void onConnected(ConnectedEvent connectedEvent) {}
