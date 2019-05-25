@@ -1,12 +1,10 @@
 package net.robocode2.gui.settings
 
-import net.robocode2.gui.model.GameSetup
-
 object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties") {
 
-    val defaultGameSetup: Map<String, GameSetup>
+    val defaultGameSetup: Map<String, MutableGameSetup>
         get() = mapOf(
-                GameType.CUSTOM.type to GameSetup(
+                GameType.CUSTOM.type to MutableGameSetup(
                         gameType = GameType.CUSTOM.type,
                         arenaWidth = 800,
                         isArenaWidthLocked = false,
@@ -27,7 +25,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         readyTimeout = 1000,
                         isReadyTimeoutLocked = false
                 ),
-                GameType.CLASSIC.type to GameSetup(
+                GameType.CLASSIC.type to MutableGameSetup(
                         gameType = GameType.CLASSIC.type,
                         arenaWidth = 800,
                         isArenaWidthLocked = true,
@@ -48,7 +46,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         readyTimeout = 1000,
                         isReadyTimeoutLocked = false
                 ),
-                GameType.MELEE.type to GameSetup(
+                GameType.MELEE.type to MutableGameSetup(
                         gameType = GameType.MELEE.type,
                         arenaWidth = 1000,
                         isArenaWidthLocked = true,
@@ -69,7 +67,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         readyTimeout = 1000,
                         isReadyTimeoutLocked = false
                 ),
-                GameType.ONE_VS_ONE.type to GameSetup(
+                GameType.ONE_VS_ONE.type to MutableGameSetup(
                         gameType = GameType.ONE_VS_ONE.type,
                         arenaWidth = 1000,
                         isArenaWidthLocked = true,
@@ -97,7 +95,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
         load()
     }
 
-    private val internalGameSetup = HashMap<String, GameSetup?>()
+    private val internGameSetup = HashMap<String, MutableGameSetup?>()
 
     init {
         for (propName in properties.stringPropertyNames()) {
@@ -106,11 +104,11 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
             val fieldName = strings[1]
             val value = properties.getValue(propName) as String
 
-            if (internalGameSetup[gameName] == null) {
-                internalGameSetup[gameName] = defaultGameSetup[GameType.CUSTOM.type]
+            if (internGameSetup[gameName] == null) {
+                internGameSetup[gameName] = defaultGameSetup[GameType.CUSTOM.type]
             }
-            val gameType = games[gameName] as GameSetup
-            val theField = GameSetup::class.java.getDeclaredField(fieldName)
+            val gameType = games[gameName] as MutableGameSetup
+            val theField = MutableGameSetup::class.java.getDeclaredField(fieldName)
             theField.isAccessible = true
             when (theField.type.name) {
                 "boolean" -> theField.setBoolean(gameType, value.toBoolean())
@@ -127,12 +125,12 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
         }
     }
 
-    val games: MutableMap<String, GameSetup?>
+    val games: MutableMap<String, MutableGameSetup?>
             get() {
-            return internalGameSetup
+            return internGameSetup
         }
 
-    private fun setProperties(gameSetup: Map<String, GameSetup?>) {
+    private fun setProperties(gameSetup: Map<String, MutableGameSetup?>) {
         for (key in gameSetup.keys) {
             val gameType = gameSetup[key]
             if (gameType != null) {
@@ -141,9 +139,9 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
         }
     }
 
-    private fun putGameType(name: String, gameSetup: GameSetup) {
-        for (prop in GameSetup::class.java.declaredFields) {
-            val field = GameSetup::class.java.getDeclaredField(prop.name)
+    private fun putGameType(name: String, gameSetup: MutableGameSetup) {
+        for (prop in MutableGameSetup::class.java.declaredFields) {
+            val field = MutableGameSetup::class.java.getDeclaredField(prop.name)
             field.isAccessible = true
             var value = field.get(gameSetup)?.toString()
             if (value == null) {
@@ -154,7 +152,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
     }
 
     override fun save() {
-        setProperties(internalGameSetup)
+        setProperties(internGameSetup)
         super.save()
     }
 }

@@ -4,8 +4,8 @@ import net.miginfocom.swing.MigLayout
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.extensions.JTextFieldExt.setInputVerifier
-import net.robocode2.gui.model.GameSetup
 import net.robocode2.gui.settings.GamesSettings
+import net.robocode2.gui.settings.MutableGameSetup
 import net.robocode2.gui.ui.Constants.MAX_ARENA_SIZE
 import net.robocode2.gui.ui.Constants.MAX_GUN_COOLING
 import net.robocode2.gui.ui.Constants.MAX_INACTIVITY_TURNS
@@ -34,8 +34,8 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private val gunCoolingRateTextField = JTextField(6)
     private val inactivityTurnsTextField = JTextField(6)
 
-    private val gameSetup: GameSetup
-        get() = gameTypeComboBox.gameSetup
+    private val gameSetup: MutableGameSetup
+        get() = gameTypeComboBox.mutableGameSetup
 
     init {
         val upperPanel = JPanel(MigLayout())

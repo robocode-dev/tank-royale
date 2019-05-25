@@ -1,7 +1,7 @@
 package net.robocode2.gui.ui.battle
 
-import net.robocode2.gui.model.GameSetup
 import net.robocode2.gui.settings.GamesSettings
+import net.robocode2.gui.settings.MutableGameSetup
 import net.robocode2.gui.utils.Event
 import javax.swing.JComboBox
 
@@ -9,8 +9,8 @@ class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray
 
     val onGameTypeChanged = Event<String>()
 
-    val gameSetup: GameSetup
-        get() = GamesSettings.games[selectedGameType] as GameSetup
+    val mutableGameSetup: MutableGameSetup
+        get() = GamesSettings.games[selectedGameType] as MutableGameSetup
 
     private val selectedGameType: String
         get() = selectedItem as String
@@ -20,7 +20,7 @@ class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray
     }
 
     fun resetGameType() {
-        val default: GameSetup? = GamesSettings.defaultGameSetup[selectedGameType]
+        val default: MutableGameSetup? = GamesSettings.defaultGameSetup[selectedGameType]
         if (default != null) {
             GamesSettings.games[selectedGameType] = default.copy()
             notifyGameTypeChanged()

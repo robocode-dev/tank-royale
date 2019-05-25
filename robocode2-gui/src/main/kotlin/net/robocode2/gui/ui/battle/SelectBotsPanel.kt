@@ -189,7 +189,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         }
         Client.onGameStarted.subscribe { BattleDialog.dispose() }
 
-        Client.startGame(gameTypeComboBox.gameSetup, selectedBotAddresses)
+        Client.startGame(gameTypeComboBox.mutableGameSetup.toGameSetup(), selectedBotAddresses)
     }
 
     inner class BotInfoCellRenderer : JLabel(), ListCellRenderer<BotInfo> {
