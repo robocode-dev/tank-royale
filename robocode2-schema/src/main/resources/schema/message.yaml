@@ -4,40 +4,40 @@ description: Message exchanged between server and client
 properties:
   type:
     enum:
-      - botHandshake
-      - botInfo
-      - botIntent
-      - botListUpdate
-      - botReady
-      - controllerHandshake
-      - observerHandshake
-      - serverHandshake
+      - BotHandshake
+      - BotInfo
+      - BotIntent
+      - BotListUpdate
+      - BotReady
+      - ControllerHandshake
+      - ObserverHandshake
+      - ServerHandshake
 
-      - gameAbortedEventForObserver
-      - gameEndedEventForBot
-      - gameEndedEventForObserver
-      - gamePausedEventForObserver
-      - gameResumedEventForObserver
-      - gameStartedEventForBot
-      - gameStartedEventForObserver
+      - GameAbortedEventForObserver
+      - GameEndedEventForBot
+      - GameEndedEventForObserver
+      - GamePausedEventForObserver
+      - GameResumedEventForObserver
+      - GameStartedEventForBot
+      - GameStartedEventForObserver
 
-      - botDeathEvent
-      - botHitBotEvent
-      - botHitWallEvent
-      - bulletFiredEvent
-      - bulletHitBotEvent
-      - bulletHitBulletEvent
-      - bulletHitWallEvent
-      - hitByBulletEvent
-      - scannedBotEvent
-      - skippedTurnEvent
-      - tickEventForBot
-      - tickEventForObserver
-      - wonRoundEvent
+      - BotDeathEvent
+      - BotHitBotEvent
+      - BotHitWallEvent
+      - BulletFiredEvent
+      - BulletHitBotEvent
+      - BulletHitBulletEvent
+      - BulletHitWallEvent
+      - HitByBulletEvent
+      - ScannedBotEvent
+      - SkippedTurnEvent
+      - TickEventForBot
+      - TickEventForObserver
+      - WonRoundEvent
 
-      - startGame
-      - stopGame
-      - pauseGame
-      - resumeGame
+      - StartGame
+      - StopGame
+      - PauseGame
+      - ResumeGame
 required:
   - type
