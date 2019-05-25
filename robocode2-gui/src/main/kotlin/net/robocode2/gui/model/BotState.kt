@@ -1,5 +1,8 @@
 package net.robocode2.gui.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class BotState(
         val id: Int,
         val energy: Double,

@@ -1,5 +1,8 @@
 package net.robocode2.gui.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class BotResults(
         val id: Int,
         val name: String,
@@ -15,4 +18,4 @@ data class BotResults(
         val firstPlaces: Int,
         val secondPlaces: Int,
         val thirdPlaces: Int
-) : Message(MessageType.BOT_RESULTS.type)
+)

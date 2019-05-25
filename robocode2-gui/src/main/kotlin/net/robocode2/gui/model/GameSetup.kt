@@ -1,5 +1,8 @@
 package net.robocode2.gui.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class GameSetup(
         val gameType: String,
         val arenaWidth: Int,

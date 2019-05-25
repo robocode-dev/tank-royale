@@ -1,5 +1,8 @@
 package net.robocode2.gui.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Participant(
     val id: Int,
     val name: String,
@@ -8,4 +11,4 @@ data class Participant(
     val countryCode: String? = null,
     val gameTypes: Set<String>? = HashSet(),
     val programmingLang: String? = null
-) : Message(MessageType.PARTICIPANT.type)
+)

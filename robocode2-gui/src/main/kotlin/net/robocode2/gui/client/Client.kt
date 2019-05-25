@@ -1,6 +1,7 @@
 package net.robocode2.gui.client
 
-import com.beust.klaxon.Klaxon
+import kotlinx.serialization.PolymorphicSerializer
+import kotlinx.serialization.json.Json
 import net.robocode2.gui.model.*
 import net.robocode2.gui.utils.Event
 import java.net.URI
@@ -26,6 +27,8 @@ object Client : AutoCloseable {
     var currentGameSetup: GameSetup? = null
 
     private var websocket: WebSocketClient = WebSocketClient(defaultUri)
+
+    private val json = Json(context = messageModule)
 
     private var clientKey: String? = null
     private var games: Set<GameSetup> = HashSet()
@@ -70,14 +73,14 @@ object Client : AutoCloseable {
     }
 
     private fun onMessage(msg: String) {
-        when (val content = Klaxon().parse<Message>(msg)) {
-            is ServerHandshake -> handleServerHandshake(content)
-            is BotListUpdate -> handleBotListUpdate(content)
-            is GameStartedEvent -> handleGameStarted(content)
-            is GameEndedEvent -> handleGameEnded(content)
-            is GameAbortedEvent -> handleGameAborted(content)
-            is TickEvent -> handleTickEvent(content)
-            else -> throw IllegalArgumentException("Unknown content type: $content")
+        when (val type = json.parse(PolymorphicSerializer(Message::class), msg)) {
+            is ServerHandshake -> handleServerHandshake(type)
+            is BotListUpdate -> handleBotListUpdate(type)
+            is GameStartedEvent -> handleGameStarted(type)
+            is GameEndedEvent -> handleGameEnded(type)
+            is GameAbortedEvent -> handleGameAborted(type)
+            is TickEvent -> handleTickEvent(type)
+            else -> throw IllegalArgumentException("Unknown content type: $type")
         }
     }
 
