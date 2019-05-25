@@ -2,16 +2,16 @@ import { BotState, BulletState } from "./States";
 import { BotResultsForObservers } from "./BotResults";
 
 export enum EventType {
-  BotDeathEvent = "botDeathEvent",
-  BotListUpdate = "botListUpdate",
-  BulletHitBotEvent = "bulletHitBotEvent",
-  GameStartedEventForObserver = "gameStartedEventForObserver",
-  GameAbortedEventForObserver = "gameAbortedEventForObserver",
-  GameEndedEventForObserver = "gameEndedEventForObserver",
-  GamePausedEventForObserver = "gamePausedEventForObserver",
-  GameResumedEventForObserver = "gameResumedEventForObserver",
-  ScannedBotEvent = "scannedBotEvent",
-  TickEventForObserver = "tickEventForObserver",
+  BotDeathEvent = "BotDeathEvent",
+  BotListUpdate = "BotListUpdate",
+  BulletHitBotEvent = "BulletHitBotEvent",
+  GameStartedEventForObserver = "GameStartedEventForObserver",
+  GameAbortedEventForObserver = "GameAbortedEventForObserver",
+  GameEndedEventForObserver = "GameEndedEventForObserver",
+  GamePausedEventForObserver = "GamePausedEventForObserver",
+  GameResumedEventForObserver = "GameResumedEventForObserver",
+  ScannedBotEvent = "ScannedBotEvent",
+  TickEventForObserver = "TickEventForObserver",
 }
 
 export class Event {

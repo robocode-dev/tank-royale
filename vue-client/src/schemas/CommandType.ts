@@ -1,6 +1,6 @@
 export enum CommandType {
-  StartGame = "startGame",
-  StopGame = "stopGame",
-  PauseGame = "pauseGame",
-  ResumeGame = "resumeGame",
+  StartGame = "StartGame",
+  StopGame = "StopGame",
+  PauseGame = "PauseGame",
+  ResumeGame = "ResumeGame",
 }
