@@ -123,7 +123,7 @@ public final class GameServer {
             onReadyTimeout();
           }
         },
-        gameSetup.getReadyTimeout());
+        gameSetup.getReadyTimeout() / 1000);
   }
 
   private void startGame() {
@@ -169,8 +169,8 @@ public final class GameServer {
             onUpdateGameState();
           }
         },
-        gameSetup.getTurnTimeout(),
-        gameSetup.getTurnTimeout());
+        gameSetup.getTurnTimeout() / 1000,
+        gameSetup.getTurnTimeout() / 1000);
   }
 
   private void startGame(
