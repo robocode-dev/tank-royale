@@ -20,9 +20,9 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         isGunCoolingRateLocked = false,
                         maxInactivityTurns = 450,
                         isMaxInactivityTurnsLocked = false,
-                        turnTimeout = 30,
+                        turnTimeout = 5_000, // 5 milliseconds
                         isTurnTimeoutLocked = false,
-                        readyTimeout = 1000,
+                        readyTimeout = 1_000_000, // 1 second
                         isReadyTimeoutLocked = false
                 ),
                 GameType.CLASSIC.type to MutableGameSetup(
@@ -41,9 +41,9 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         isGunCoolingRateLocked = true,
                         maxInactivityTurns = 450,
                         isMaxInactivityTurnsLocked = true,
-                        turnTimeout = 30,
+                        turnTimeout = 5_000, // 5 milliseconds
                         isTurnTimeoutLocked = false,
-                        readyTimeout = 1000,
+                        readyTimeout = 1_000_000, // 1 second
                         isReadyTimeoutLocked = false
                 ),
                 GameType.MELEE.type to MutableGameSetup(
@@ -62,9 +62,9 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         isGunCoolingRateLocked = false,
                         maxInactivityTurns = 450,
                         isMaxInactivityTurnsLocked = false,
-                        turnTimeout = 30,
+                        turnTimeout = 5_000, // 5 milliseconds
                         isTurnTimeoutLocked = false,
-                        readyTimeout = 1000,
+                        readyTimeout = 1_000_000, // 1 second
                         isReadyTimeoutLocked = false
                 ),
                 GameType.ONE_VS_ONE.type to MutableGameSetup(
@@ -83,9 +83,9 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         isGunCoolingRateLocked = false,
                         maxInactivityTurns = 450,
                         isMaxInactivityTurnsLocked = false,
-                        turnTimeout = 30,
+                        turnTimeout = 5_000, // 5 milliseconds
                         isTurnTimeoutLocked = false,
-                        readyTimeout = 1000,
+                        readyTimeout = 1_000_000, // 1 second
                         isReadyTimeoutLocked = false
                 )
         )

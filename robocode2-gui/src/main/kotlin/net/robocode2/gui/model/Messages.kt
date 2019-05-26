@@ -137,7 +137,7 @@ sealed class GamePausedEvent : Message()
 sealed class GameResumedEvent : Message()
 
 @Serializable
-@SerialName("GameResumedEvent")
+@SerialName("GameStartedEventForObserver")
 data class GameStartedEvent(
         val gameSetup: GameSetup,
         val participants: List<Participant>

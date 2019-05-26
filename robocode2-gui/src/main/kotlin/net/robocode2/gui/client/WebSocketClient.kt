@@ -2,8 +2,6 @@ package net.robocode2.gui.client
 
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonNull.content
-import net.robocode2.gui.model.BotDeathEvent
 import net.robocode2.gui.model.Message
 import net.robocode2.gui.model.messageModule
 import net.robocode2.gui.utils.Event
