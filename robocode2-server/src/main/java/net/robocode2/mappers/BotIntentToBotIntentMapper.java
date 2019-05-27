@@ -13,7 +13,7 @@ public final class BotIntentToBotIntentMapper {
 			.turnRate(intent.getTurnRate())
 			.gunTurnRate(intent.getGunTurnRate())
 			.radarTurnRate(intent.getRadarTurnRate())
-			.bulletPower(intent.getBulletPower())
+			.bulletPower(intent.getFirePower())
 			.build();
 	}
 }
