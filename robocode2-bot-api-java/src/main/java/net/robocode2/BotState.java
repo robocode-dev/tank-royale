@@ -19,8 +19,10 @@ public class BotState {
   double gunDirection;
   /** Radar direction in degrees */
   double radarDirection;
-  /** Radar sweep angle in degrees, i.e. angle between old and current direction */
+  /** Radar sweep angle in degrees, i.e. angle between previous and current radar direction */
   double radarSweep;
   /** Speed measured in pixels per turn */
   double speed;
+  /** Gun heat */
+  double gunHeat;
 }

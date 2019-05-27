@@ -30,8 +30,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import static net.robocode2.schema.Message.Type.SERVER_HANDSHAKE;
-
 public abstract class Bot implements IBot {
 
   private final __Internals __internals;
@@ -51,10 +49,12 @@ public abstract class Bot implements IBot {
 
   @Override
   public final void run() {
-    val webSocket = __internals.getWebSocket();
-    if (!webSocket.isOpen()) {
-      webSocket.connect();
-    }
+    __internals.connect();
+  }
+
+  @Override
+  public final void go() {
+    __internals.sendBotIntent();
   }
 
   @Override
@@ -118,8 +118,43 @@ public abstract class Bot implements IBot {
   }
 
   @Override
-  public final BotState getBotState() {
-    return __internals.getCurrentTurn().getBotState();
+  public final double getEnergy() {
+    return __internals.getCurrentTurn().getBotState().getEnergy();
+  }
+
+  @Override
+  public final double getX() {
+    return __internals.getCurrentTurn().getBotState().getX();
+  }
+
+  @Override
+  public final double getY() {
+    return __internals.getCurrentTurn().getBotState().getY();
+  }
+
+  @Override
+  public final double getDirection() {
+    return __internals.getCurrentTurn().getBotState().getDirection();
+  }
+
+  @Override
+  public final double getGunDirection() {
+    return __internals.getCurrentTurn().getBotState().getGunDirection();
+  }
+
+  @Override
+  public final double getRadarDirection() {
+    return __internals.getCurrentTurn().getBotState().getRadarDirection();
+  }
+
+  @Override
+  public final double getSpeed() {
+    return __internals.getCurrentTurn().getBotState().getSpeed();
+  }
+
+  @Override
+  public final double getGunHeat() {
+    return __internals.getCurrentTurn().getBotState().getGunHeat();
   }
 
   @Override
@@ -130,6 +165,31 @@ public abstract class Bot implements IBot {
   @Override
   public final List<Event> getEvents() {
     return __internals.getCurrentTurn().getEvents();
+  }
+
+  @Override
+  public final void setTurnRate(double turnRate) {
+    __internals.botIntent.setTurnRate(turnRate);
+  }
+
+  @Override
+  public final void setGunTurnRate(double gunTurnRate) {
+    __internals.botIntent.setGunTurnRate(gunTurnRate);
+  }
+
+  @Override
+  public final void setRadarTurnRate(double radarTurnRate) {
+    __internals.botIntent.setRadarTurnRate(radarTurnRate);
+  }
+
+  @Override
+  public final void setTargetSpeed(double targetSpeed) {
+    __internals.botIntent.setTargetSpeed(targetSpeed);
+  }
+
+  @Override
+  public final void setFire(double firePower) {
+    __internals.botIntent.setFirePower(firePower);
   }
 
   private final class __Internals {
@@ -148,6 +208,8 @@ public abstract class Bot implements IBot {
     private final Gson gson = new GsonBuilder().create();
 
     private final BotInfo botInfo;
+
+    private final BotIntent botIntent = new BotIntent();
 
     // Server connection:
     private WebSocketClient webSocket;
@@ -173,6 +235,16 @@ public abstract class Bot implements IBot {
       webSocket = new WSClient(serverUri);
     }
 
+    private void connect() {
+      if (!webSocket.isOpen()) {
+        webSocket.connect();
+      }
+    }
+
+    private void sendBotIntent() {
+      webSocket.send(gson.toJson(botIntent));
+    }
+
     private void clearCurrentGame() {
       // Clear setting that are only available during a running game
       currentTurn = null;
@@ -196,13 +268,6 @@ public abstract class Bot implements IBot {
       } catch (URISyntaxException ex) {
         throw new BotException("Incorrect syntax for server uri: " + uri);
       }
-    }
-
-    private WebSocketClient getWebSocket() {
-      if (webSocket == null) {
-        throw new BotException(NOT_CONNECTED_TO_SERVER_MSG);
-      }
-      return webSocket;
     }
 
     private ServerHandshake getServerHandshake() {

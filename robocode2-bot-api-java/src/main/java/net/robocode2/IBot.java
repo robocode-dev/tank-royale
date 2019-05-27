@@ -4,11 +4,23 @@ import net.robocode2.events.*;
 
 import java.util.List;
 
+// TODO: Add constants from server + update Javadoc
+// TODO: Add convenient methods for calculating bullet speed from fire power etc.
+
 /** Interface for a bot. */
 public interface IBot {
 
-  /** Main method for running the bot */
+  /** Main method for start running the bot */
   void run();
+
+  /**
+   * Commits the current actions for the current turn. This method must be called in order to send
+   * the bot actions to the server, and MUST before the turn timeout occurs. The turn timeout is
+   * started when the TickEvent occurs. If the go() is called too late, SkippedTurnEvents will
+   * occur. Actions are set by calling the setter methods prior to calling the go() method:
+   * setTurnRate(), setGunTurnRate(), setRadarTurnRate(), setTargetSpeed(), and setFire().
+   */
+  void go();
 
   /** Returns the unique id of this bot in the battle. Available when game has started. */
   int getMyId();
@@ -19,49 +31,196 @@ public interface IBot {
   /** Get the game version, e.g. "1.0.0" */
   String getVersion();
 
-  /** Returns the game type, e.g. "melee". Available when game has started. */
+  /**
+   * Returns the game type, e.g. "melee".
+   *
+   * <p>Available when game has started.
+   */
   String getGameType();
 
-  /** Returns the width of the arena measured in pixels. Available when game has started. */
+  /**
+   * Returns the width of the arena measured in pixels.
+   *
+   * <p>Available when game has started.
+   */
   int getArenaWidth();
 
-  /** Returns the height of the arena measured in pixels. Available when game has started. */
+  /**
+   * Returns the height of the arena measured in pixels.
+   *
+   * <p>Available when game has started.
+   */
   int getArenaHeight();
 
-  /** Returns the number of rounds in a battle. Available when game has started. */
+  /**
+   * Returns the number of rounds in a battle.
+   *
+   * <p>Available when game has started.
+   */
   int getNumberOfRounds();
 
   /**
    * Returns the gun cooling rate. The gun needs to cool down to a gun heat of zero before the gun
-   * is able to fire. Available when game has started.
+   * is able to fire. The gun cooling rate determines how fast the gun cools down. That is, the gun
+   * cooling rate is subtracted from the gun heat each turn until the gun heat reaches zero.
+   *
+   * <p>Available when game has started.
    */
   double getGunCoolingRate();
 
   /**
    * Returns the maximum number of inactive turns allowed, where a bot does not take any action
-   * before it is zapped by the game. Available when game has started.
+   * before it is zapped by the game.
+   *
+   * <p>Available when game has started.
    */
   int getMaxInactivityTurns();
 
   /**
-   * Returns turn timeout in milliseconds. Available when game has started.
+   * Returns turn timeout in microseconds (1 / 1,000,000 second). The turn timeout is important as
+   * the bot need to take action by calling go() before the turn timeout occurs. As soon as the
+   * TickEvent is triggered, i.e. when onTick() is called, you need to call go() to take action
+   * before the turn timeout occurs. Otherwise your bot will receive SkippedTurnEvent(s).
+   *
+   * <p>Available when game has started.
    */
   int getTurnTimeout();
 
-  /** Returns the current round number when the game is running */
+  /** Returns the current round number */
   int getRoundNumber();
 
-  /** Return the current turn number when the game is running */
+  /** Return the current turn number */
   int getTurnNumber();
 
-  /** Returns the current bot state when the game is running */
-  BotState getBotState();
+  /**
+   * Returns the current energy level. When positive, the bot is alive and active. When 0, the bot
+   * is alive, but disabled, meaning that it will not be able to move. If negative, the bot has been
+   * defeated.
+   */
+  double getEnergy();
 
-  /** Returns the current bullet states when the game is running */
+  /** Returns the X coordinate of the center of the bot */
+  double getX();
+
+  /** Returns the Y coordinate of the center of the bot */
+  double getY();
+
+  /** Returns the driving direction of the body in degrees */
+  double getDirection();
+
+  /** Returns the the gun direction in degrees */
+  double getGunDirection();
+
+  /** Returns the radar direction in degrees */
+  double getRadarDirection();
+
+  /**
+   * Returns the speed measured in pixels per turn. If the speed is positive, the bot moves forward.
+   * If negative, the bot moves backwards. A zero speed means that the bot is not moving from its
+   * current position.
+   */
+  double getSpeed();
+
+  /**
+   * Returns the gun heat. The gun is heated then it fired, and will first be able to fire again,
+   * when the gun has cooled down, meaning that the gun heat must be zero.
+   *
+   * <p>When the gun is fired the gun heat is set to 1 + (firePower / 5). The gun is cooled down by
+   * the gun cooling rate.
+   */
+  double getGunHeat();
+
+  /** Returns the current bullet states. */
   List<BulletState> getBulletStates();
 
-  /** Returns the game events received for the current turn when the game is running */
+  /** Returns the game events received for the current turn. */
   List<Event> getEvents();
+
+  /**
+   * Sets the new turn rate of the body in degrees per turn (can be positive and negative). The turn
+   * rate is added to the current turn direction of the body. But it is also added to the current
+   * direction of the gun and radar. This is because the gun is mounted on the body, and hence turns
+   * with the body. The radar is mounted on the gun, and hence moves with the gun. By subtracting
+   * the turn rate of the body from the turn rate of the gun and radar, you can compensate for the
+   * turn rate of the body. But be aware that the turn limits for the gun and radar cannot be
+   * exceeded.
+   *
+   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   *
+   * @param turnRate is the new turn rate of the body
+   */
+  void setTurnRate(double turnRate);
+
+  /**
+   * Sets the new turn rate of the gun in degrees per turn (can be positive and negative). The turn
+   * rate is added to the current turn direction of the gun. But it is also added to the current
+   * direction of the radar. This is because the radar is mounted on the gun, and hence moves with
+   * the gun. You can compensate for this by subtracting the turn rate of the gun and body from the
+   * turn rate of the radar. And you can compensate the turn rate of the body on the gun by
+   * subtracting the turn rate of the body from the turn rate of the gun. But be aware that the turn
+   * limits for the radar (and also body and gun) cannot be exceeded.
+   *
+   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   *
+   * @param gunTurnRate is the new turn rate of the gun
+   */
+  void setGunTurnRate(double gunTurnRate);
+
+  /**
+   * Sets the new turn rate of the radar in degrees per turn (can be positive and negative). The
+   * turn rate is added to the current turn direction of the radar. Note that beside the turn rate
+   * of the radar, the turn rates of the body and gun is also added to the radar direction, as the
+   * radar moves with the gun, which is mounted on the gun that moves with the body. You can
+   * compensate for this by subtracting the turn rate of the body and gun from the turn rate of the
+   * radar. But be aware that the turn limits for the radar (and also body and gun) cannot be
+   * exceeded.
+   *
+   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   *
+   * @param gunRadarTurnRate is the new turn rate of the radar
+   */
+  void setRadarTurnRate(double gunRadarTurnRate);
+
+  /**
+   * Sets the new target speed for the bot. The target speed is the speed you want to achieve
+   * eventually, which could take one to several turns to achieve depending on the current speed.
+   * For example, if the bot is moving forward with max speed, and then must change to move
+   * backwards at full speed, the bot will need to first decelerate/brake its positive speed (moving
+   * forward). When passing a speed of zero, it will then need to accelerate backwards to achieve
+   * max negative speed.
+   *
+   * <p>Note that acceleration is 1 pixel/turn and deceleration/braking is faster than acceleration
+   * as it is -2 pixel/turn. Deceleration is negative as it is added to the speed and hence needs to
+   * be negative.
+   *
+   * @param targetSpeed is the new target speed
+   */
+  void setTargetSpeed(double targetSpeed);
+
+  /**
+   * Sets the gun to fire in the direction as the gun is pointing as soon as the the gun heat has
+   * reached zero in a turn. This might not be the next turn or the turn after if the gun has just
+   * been fired recently.
+   *
+   * <p>Whenever the gun is firing the gun is heated an needs to cool down before it is able to fire
+   * again. The gun heat must be zero before the gun is able to fire. The gun heat generated by
+   * firing the gun is 1 + (firePower / 5). Hence, the more firepower used the longer it takes to
+   * cool down the gun. The gun cooling rate can be read by calling getGunCoolingRate().
+   *
+   * <p>The amount of energy used for firing the gun is subtracted from the bots total energy. The
+   * amount of damage dealt by a bullet hitting another bot is 4x firePower, and if the firePower is
+   * greater than 1 it will do an additional 2 x (firePower - 1) damage.
+   *
+   * <p>When hitting another bot, your bot will be rewarded and retrieve an energy boost of 3x
+   * firePower.
+   *
+   * <p>Note that the gun will automatically keep firing at any turn when the gun heat reaches zero.
+   * It is possible disable the gun firing by setting the firePower to zero.
+   *
+   * @param firePower is the amount of energy spend on firing the gun. If set to zero, the gun will
+   *     not fire (automatically) when the gun heat reaches zero.
+   */
+  void setFire(double firePower);
 
   /** Event handler triggered when connected to server */
   default void onConnected(ConnectedEvent connectedEvent) {}
@@ -80,7 +239,8 @@ public interface IBot {
 
   /**
    * Event handler triggered when a game tick event occurs, i.e. when a new turn in a round has
-   * started
+   * started. When this handler is triggered, your bot must figure out the next action to take and
+   * call go() when it needs to commit the action to the server.
    */
   default void onTick(TickEvent tickEvent) {}
 
@@ -108,7 +268,14 @@ public interface IBot {
   /** Event handler triggered when the bot has scanned another bot */
   default void onScannedBot(ScannedBotEvent scannedBotEvent) {}
 
-  /** Event handler triggered when the bot has skipped a turn */
+  /**
+   * Event handler triggered when the bot has skipped a turn. This event occurs if the bot did not
+   * take any action in a specific turn. That is, go() was not called before the turn timeout
+   * occurred for the turn. If the bot does not take action for multiple turns in a row, it will
+   * receive a SkippedTurnEvent for each turn where it did not take action. When the bot is skipping
+   * a turn the server did not receive the message from the bot, and the server will use the newest
+   * received instructions for target speed, turn rates, firing etc.
+   */
   default void onSkippedTurn(SkippedTurnEvent skippedTurnEvent) {}
 
   /** Event handler triggered when the bot has won a round */
