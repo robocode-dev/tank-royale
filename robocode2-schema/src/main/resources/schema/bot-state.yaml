@@ -21,10 +21,13 @@ properties:
     description: Radar direction in degrees
     type: number
   radarSweep:
-    description: Radar sweep angle in degrees, i.e. angle between old and current direction
+    description: Radar sweep angle in degrees, i.e. angle between previous and current radar direction
     type: number
   speed:
     description: Speed measured in pixel per turn
+    type: number
+  gunHeat:
+    description: Gun heat
     type: number
 required:
   - energy
@@ -35,3 +38,4 @@ required:
   - radarDirection
   - radarSweep
   - speed
+  - gunHeat

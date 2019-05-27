@@ -5,7 +5,7 @@ extends:
   $ref: client-message.yaml
 properties:
   turnRate:
-    description: Turn rate of the hull in degrees per turn (can be positive and negative)
+    description: Turn rate of the body in degrees per turn (can be positive and negative)
     type: number
   gunTurnRate:
     description: Turn rate of the gun in degrees per turn (can be positive and negative)
@@ -16,8 +16,8 @@ properties:
   targetSpeed:
     description: New target speed in pixels per turn (can be positive and negative)
     type: number
-  bulletPower:
-    description: Attempt to fire bullet with a specific amount of power
+  firePower:
+    description: Attempt to fire gun with the specified fire power
     type: number
     minimum: 0
     exclusiveMinimum: true
