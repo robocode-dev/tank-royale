@@ -12,5 +12,6 @@ data class BotState(
         val gunDirection: Double,
         val radarDirection: Double,
         val radarSweep: Double,
-        val speed: Double
+        val speed: Double,
+        val gunHeat: Double
 )

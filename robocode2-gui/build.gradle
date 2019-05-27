@@ -37,7 +37,7 @@ dependencies {
     compile 'org.java-websocket:Java-WebSocket:1.4.0'
     compile 'com.miglayout:miglayout:3.7.4'
 
-    runtime 'net.robocode2:robocode2-server:0.2.3'
+    runtime 'net.robocode2:robocode2-server:0.2.6'
 }
 
 jar {

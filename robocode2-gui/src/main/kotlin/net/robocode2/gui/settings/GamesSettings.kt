@@ -20,7 +20,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         isGunCoolingRateLocked = false,
                         maxInactivityTurns = 450,
                         isMaxInactivityTurnsLocked = false,
-                        turnTimeout = 5_000, // 5 milliseconds
+                        turnTimeout = 30_000, // 30 milliseconds
                         isTurnTimeoutLocked = false,
                         readyTimeout = 1_000_000, // 1 second
                         isReadyTimeoutLocked = false
@@ -41,7 +41,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         isGunCoolingRateLocked = true,
                         maxInactivityTurns = 450,
                         isMaxInactivityTurnsLocked = true,
-                        turnTimeout = 5_000, // 5 milliseconds
+                        turnTimeout = 30_000, // 30 milliseconds
                         isTurnTimeoutLocked = false,
                         readyTimeout = 1_000_000, // 1 second
                         isReadyTimeoutLocked = false
@@ -62,7 +62,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         isGunCoolingRateLocked = false,
                         maxInactivityTurns = 450,
                         isMaxInactivityTurnsLocked = false,
-                        turnTimeout = 5_000, // 5 milliseconds
+                        turnTimeout = 30_000, // 30 milliseconds
                         isTurnTimeoutLocked = false,
                         readyTimeout = 1_000_000, // 1 second
                         isReadyTimeoutLocked = false
@@ -83,7 +83,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
                         isGunCoolingRateLocked = false,
                         maxInactivityTurns = 450,
                         isMaxInactivityTurnsLocked = false,
-                        turnTimeout = 5_000, // 5 milliseconds
+                        turnTimeout = 30_000, // 30 milliseconds
                         isTurnTimeoutLocked = false,
                         readyTimeout = 1_000_000, // 1 second
                         isReadyTimeoutLocked = false
