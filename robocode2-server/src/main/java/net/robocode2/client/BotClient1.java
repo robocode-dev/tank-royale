@@ -19,7 +19,7 @@ public class BotClient1 extends WebSocketClient {
 
 	{
 		RuntimeTypeAdapterFactory<Event> typeFactory = RuntimeTypeAdapterFactory.of(Event.class)
-				.registerSubtype(ScannedBotEvent.class, "scannedBotEvent");
+				.registerSubtype(ScannedBotEvent.class, "ScannedBotEvent");
 
 		gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
 	}
