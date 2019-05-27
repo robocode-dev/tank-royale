@@ -1,41 +1,15 @@
 package net.robocode2.engine;
 
-import static net.robocode2.model.RuleConstants.BOT_BOUNDING_CIRCLE_DIAMETER;
-import static net.robocode2.model.RuleConstants.BOT_BOUNDING_CIRCLE_RADIUS;
-import static net.robocode2.model.RuleConstants.INITIAL_BOT_ENERGY;
-import static net.robocode2.model.RuleConstants.INITIAL_GUN_HEAT;
-import static net.robocode2.model.RuleConstants.MAX_BULLET_POWER;
-import static net.robocode2.model.RuleConstants.MAX_BULLET_SPEED;
-import static net.robocode2.model.RuleConstants.MIN_BULLET_POWER;
-import static net.robocode2.model.RuleConstants.RAM_DAMAGE;
-import static net.robocode2.util.MathUtil.normalAbsoluteDegrees;
+import net.robocode2.events.*;
+import net.robocode2.model.*;
+import net.robocode2.model.Bot.BotBuilder;
+import net.robocode2.model.Turn.TurnBuilder;
+import net.robocode2.util.MathUtil;
 
 import java.util.*;
 
-import net.robocode2.events.BotDeathEvent;
-import net.robocode2.events.BotHitBotEvent;
-import net.robocode2.events.BotHitWallEvent;
-import net.robocode2.events.BulletFiredEvent;
-import net.robocode2.events.BulletHitBotEvent;
-import net.robocode2.events.BulletHitBulletEvent;
-import net.robocode2.events.BulletHitWallEvent;
-import net.robocode2.events.ScannedBotEvent;
-import net.robocode2.model.Arena;
-import net.robocode2.model.Bot;
-import net.robocode2.model.Bot.BotBuilder;
-import net.robocode2.model.BotIntent;
-import net.robocode2.model.Bullet;
-import net.robocode2.model.GameSetup;
-import net.robocode2.model.GameState;
-import net.robocode2.model.RuleConstants;
-import net.robocode2.model.Point;
-import net.robocode2.model.Round;
-import net.robocode2.model.RuleMath;
-import net.robocode2.model.Score;
-import net.robocode2.model.Size;
-import net.robocode2.model.Turn;
-import net.robocode2.model.Turn.TurnBuilder;
-import net.robocode2.util.MathUtil;
+import static net.robocode2.model.RuleConstants.*;
+import static net.robocode2.util.MathUtil.normalAbsoluteDegrees;
 
 /**
  * Model updater, which keep track of the model state for each turn of a game.
@@ -384,10 +358,17 @@ public class ModelUpdater {
 					double limitedTurnRate = RuleMath.limitTurnRate(immuBotIntent.getTurnRate(), speed);
 					double limitedGunTurnRate = RuleMath.limitGunTurnRate(immuBotIntent.getGunTurnRate());
 					double limitedRadarTurnRate = RuleMath.limitRadarTurnRate(immuBotIntent.getRadarTurnRate());
-		
-					double direction = normalAbsoluteDegrees(botBuilder.getDirection() + limitedTurnRate);
-					double gunDirection = normalAbsoluteDegrees(botBuilder.getGunDirection() + limitedGunTurnRate);
-					double radarDirection = normalAbsoluteDegrees(botBuilder.getRadarDirection() + limitedRadarTurnRate);
+
+					double totalTurnRate = limitedTurnRate;
+					double direction = normalAbsoluteDegrees(botBuilder.getDirection() + totalTurnRate);
+
+					// Gun direction depends on the turn rate of both the body and the gun
+					totalTurnRate += limitedGunTurnRate;
+					double gunDirection = normalAbsoluteDegrees(botBuilder.getGunDirection() + totalTurnRate);
+
+					// Radar direction depends on the turn rate of the body, the gun, and the radar
+					totalTurnRate += limitedRadarTurnRate;
+					double radarDirection = normalAbsoluteDegrees(botBuilder.getRadarDirection() + totalTurnRate);
 		
 					botBuilder.direction(direction);
 					botBuilder.gunDirection(gunDirection);
