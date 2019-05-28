@@ -37,24 +37,20 @@ public final class ConnHandler {
   private final ConnListener listener;
   private final WebSocketObserver webSocketObserver;
 
-  private final Map<String /* clientKey */, WebSocket> connections =
+  private final Set<WebSocket> connections = Collections.synchronizedSet(new HashSet<>());
+
+  private final Set<WebSocket> botConnections = Collections.synchronizedSet(new HashSet<>());
+  private final Set<WebSocket> observerAndControllerConnections =
+      Collections.synchronizedSet(new HashSet<>());
+  private final Set<WebSocket> controllerConnections = Collections.synchronizedSet(new HashSet<>());
+
+  private final Map<WebSocket, BotHandshake> botHandshakes =
+      Collections.synchronizedMap(new HashMap<>());
+  private final Map<WebSocket, ObserverHandshake> observerHandshakes =
+      Collections.synchronizedMap(new HashMap<>());
+  private final Map<WebSocket, ControllerHandshake> controllerHandshakes =
       Collections.synchronizedMap(new HashMap<>());
 
-  private final Map<String /* clientKey */, WebSocket> botConnections =
-      Collections.synchronizedMap(new HashMap<>());
-  private final Map<String /* clientKey */, WebSocket> observerAndControllerConnections =
-      Collections.synchronizedMap(new HashMap<>());
-  private final Map<String /* clientKey */, WebSocket> controllerConnections =
-      Collections.synchronizedMap(new HashMap<>());
-
-  private final Map<String /* clientKey */, BotHandshake> botHandshakes =
-      Collections.synchronizedMap(new HashMap<>());
-  private final Map<String /* clientKey */, ObserverHandshake> observerHandshakes =
-      Collections.synchronizedMap(new HashMap<>());
-  private final Map<String /* clientKey */, ControllerHandshake> controllerHandshakes =
-      Collections.synchronizedMap(new HashMap<>());
-
-  private static final String CLIENT_KEY = "clientKey";
   private static final String TYPE = "type";
 
   private final ExecutorService executorService;
@@ -78,26 +74,22 @@ public final class ConnHandler {
     shutdownAndAwaitTermination(executorService);
   }
 
-  WebSocket getConnection(String clientKey) {
-    return connections.get(clientKey);
+  Set<WebSocket> getBotConnections() {
+    return Collections.unmodifiableSet(botConnections);
   }
 
-  Map<String /* clientKey */, WebSocket> getBotConnections() {
-    return Collections.unmodifiableMap(botConnections);
+  Set<WebSocket> getObserverAndControllerConnections() {
+    return Collections.unmodifiableSet(observerAndControllerConnections);
   }
 
-  Map<String /* clientKey */, WebSocket> getObserverAndControllerConnections() {
-    return Collections.unmodifiableMap(observerAndControllerConnections);
-  }
-
-  Map<String /* clientKey */, BotHandshake> getBotHandshakes() {
+  Map<WebSocket, BotHandshake> getBotHandshakes() {
     return Collections.unmodifiableMap(botHandshakes);
   }
 
-  Set<String> getBotKeys(Collection<BotAddress> botAddresses) {
-    Set<String> foundKeys = new HashSet<>();
+  public Set<WebSocket> getBotConnections(Collection<BotAddress> botAddresses) {
+    Set<WebSocket> foundConnections = new HashSet<>();
 
-    for (WebSocket conn : botConnections.values()) {
+    for (WebSocket conn : botHandshakes.keySet()) {
       InetSocketAddress addr = conn.getRemoteSocketAddress();
       if (addr != null) {
         int port = addr.getPort();
@@ -105,23 +97,13 @@ public final class ConnHandler {
 
         for (BotAddress botAddr : botAddresses) {
           if (botAddr.getHost().equals(hostname) && botAddr.getPort() == port) {
-            foundKeys.add(getKeyFromConnection(botConnections, conn));
+            foundConnections.add(conn);
             break;
           }
         }
       }
     }
-
-    return foundKeys;
-  }
-
-  private static String getKeyFromConnection(Map<String, WebSocket> connections, WebSocket conn) {
-    Optional<Map.Entry<String, WebSocket>> optEntry =
-        connections.entrySet().stream()
-            .filter(entry -> Objects.equals(entry.getValue(), conn))
-            .findFirst();
-
-    return optEntry.map(Map.Entry::getKey).orElse(null);
+    return foundConnections;
   }
 
   private void shutdownAndAwaitTermination(ExecutorService pool) {
@@ -169,12 +151,10 @@ public final class ConnHandler {
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
       logger.debug("onOpen(): " + conn.getRemoteSocketAddress());
 
-      String clientKey = Long.toHexString(System.nanoTime());
-      connections.put(clientKey, conn);
+      connections.add(conn);
 
       ServerHandshake hs = new ServerHandshake();
       hs.setType(ServerHandshake.Type.SERVER_HANDSHAKE);
-      hs.setClientKey(clientKey);
       hs.setVariant("R2TR"); // Robocode 2 Tank Royale
       hs.setVersion(Version.getVersion());
       hs.setGames(GameSetupToGameSetupMapper.map(setup.getGames()));
@@ -195,20 +175,17 @@ public final class ConnHandler {
               + ", remote: "
               + remote);
 
-      String clientKey = getKeyFromConnection(connections, conn);
-      connections.remove(clientKey);
+      connections.remove(conn);
 
-      if (botConnections.remove(clientKey) != null) {
-        executorService.submit(() -> listener.onBotLeft(clientKey));
-      } else if (observerAndControllerConnections.remove(clientKey) != null) {
-        executorService.submit(() -> listener.onObserverLeft(clientKey));
-      } else if (controllerConnections.remove(clientKey) != null) {
-        executorService.submit(() -> listener.onControllerLeft(clientKey));
-      }
-      if (botHandshakes.remove(clientKey) == null) {
-        if (observerHandshakes.remove(clientKey) == null) {
-          controllerHandshakes.remove(clientKey);
-        }
+      if (botConnections.remove(conn)) {
+        botHandshakes.remove(conn);
+        executorService.submit(() -> listener.onBotLeft(conn));
+      } else if (observerAndControllerConnections.remove(conn)) {
+        observerHandshakes.remove(conn);
+        executorService.submit(() -> listener.onObserverLeft(conn));
+      } else if (controllerConnections.remove(conn)) {
+        controllerHandshakes.remove(conn);
+        executorService.submit(() -> listener.onControllerLeft(conn));
       }
     }
 
@@ -225,57 +202,45 @@ public final class ConnHandler {
           Message.Type type = Message.Type.fromValue(jsonType.getAsString());
           logger.debug("Handling message: " + type);
 
-          JsonElement jsonClientKey = jsonObject.get(CLIENT_KEY);
-          if (jsonClientKey == null) {
-            logger.warn("Client key is missing in message");
-            return;
-          }
-          String clientKeyNotFinal = jsonClientKey.getAsString();
-          if (!connections.keySet().contains(clientKeyNotFinal)) {
-            logger.warn("Client key not recognized, ignoring: " + clientKeyNotFinal);
-            return;
-          }
-          final String clientKey = clientKeyNotFinal;
-
           switch (type) {
             case BOT_HANDSHAKE:
               {
                 BotHandshake handshake = gson.fromJson(message, BotHandshake.class);
-                botConnections.put(clientKey, conn);
-                botHandshakes.put(clientKey, handshake);
+                botConnections.add(conn);
+                botHandshakes.put(conn, handshake);
 
-                executorService.submit(() -> listener.onBotJoined(clientKey, handshake));
+                executorService.submit(() -> listener.onBotJoined(conn, handshake));
                 break;
               }
             case OBSERVER_HANDSHAKE:
               {
                 ObserverHandshake handshake = gson.fromJson(message, ObserverHandshake.class);
-                observerAndControllerConnections.put(clientKey, conn);
-                observerHandshakes.put(clientKey, handshake);
+                observerAndControllerConnections.add(conn);
+                observerHandshakes.put(conn, handshake);
 
-                executorService.submit(() -> listener.onObserverJoined(clientKey, handshake));
+                executorService.submit(() -> listener.onObserverJoined(conn, handshake));
                 break;
               }
             case CONTROLLER_HANDSHAKE:
               {
                 ControllerHandshake handshake = gson.fromJson(message, ControllerHandshake.class);
-                controllerConnections.put(clientKey, conn);
-                controllerHandshakes.put(clientKey, handshake);
-                observerAndControllerConnections.put(
-                    clientKey, conn); // controller is also an observer
+                controllerConnections.add(conn);
+                controllerHandshakes.put(conn, handshake);
+                // Controller is also an observer
+                observerAndControllerConnections.add(conn);
 
-                executorService.submit(() -> listener.onControllerJoined(clientKey, handshake));
+                executorService.submit(() -> listener.onControllerJoined(conn, handshake));
                 break;
               }
             case BOT_READY:
               {
-                executorService.submit(() -> listener.onBotReady(clientKey));
+                executorService.submit(() -> listener.onBotReady(conn));
                 break;
               }
             case BOT_INTENT:
               {
                 BotIntent intent = gson.fromJson(message, BotIntent.class);
-                executorService.submit(() -> listener.onBotIntent(clientKey, intent));
+                executorService.submit(() -> listener.onBotIntent(conn, intent));
                 break;
               }
             case START_GAME:

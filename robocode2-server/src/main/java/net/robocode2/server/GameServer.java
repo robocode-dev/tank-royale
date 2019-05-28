@@ -43,12 +43,12 @@ public final class GameServer {
   private RunningState runningState;
   private GameSetup gameSetup;
 
-  private Set<String /* clientKey */> participants;
-  private Set<String /* clientKey */> readyParticipants;
+  private Set<WebSocket> participants;
+  private Set<WebSocket> readyParticipants;
 
-  private Map<String /* clientKey */, Integer> participantIds = new HashMap<>();
+  private Map<WebSocket, Integer> participantIds = new HashMap<>();
 
-  private Map<String /* clientKey */, BotIntent> botIntents = new ConcurrentHashMap<>();
+  private Map<WebSocket, BotIntent> botIntents = new ConcurrentHashMap<>();
 
   private Timer readyTimer;
   private Timer turnTimer;
@@ -101,12 +101,12 @@ public final class GameServer {
     gameStartedForBot.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
 
     int id = 1;
-    for (String botKey : participants) {
-      participantIds.put(botKey, id);
+    for (WebSocket conn : participants) {
+      participantIds.put(conn, id);
       gameStartedForBot.setMyId(id);
 
       String msg = gson.toJson(gameStartedForBot);
-      send(botKey, msg);
+      send(conn, msg);
 
       id++;
     }
@@ -132,10 +132,10 @@ public final class GameServer {
     runningState = RunningState.GAME_RUNNING;
 
     List<Participant> participantList = new ArrayList<>();
-    for (String botKey : participants) {
-      BotHandshake h = connHandler.getBotHandshakes().get(botKey);
+    for (WebSocket conn : participants) {
+      BotHandshake h = connHandler.getBotHandshakes().get(conn);
       Participant p = new Participant();
-      p.setId(participantIds.get(botKey));
+      p.setId(participantIds.get(conn));
       p.setAuthor(h.getAuthor());
       p.setCountryCode(h.getCountryCode());
       p.setGameTypes(h.getGameTypes());
@@ -176,7 +176,7 @@ public final class GameServer {
   private void startGame(
       net.robocode2.schema.GameSetup gameSetup, Collection<BotAddress> botAddresses) {
     this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup);
-    participants = connHandler.getBotKeys(botAddresses);
+    participants = connHandler.getBotConnections(botAddresses);
     if (participants.size() > 0) {
       prepareGame();
     }
@@ -247,15 +247,15 @@ public final class GameServer {
               botResults.setSecondPlaces(score.getSecondPlaces());
               botResults.setThirdPlaces(score.getThirdPlaces());
 
-              String clientKey = null;
-              for (Entry<String, Integer> entry2 : participantIds.entrySet()) {
-                if (entry2.getValue().equals(score.getBotId())) {
-                  clientKey = entry2.getKey();
+              WebSocket conn = null;
+              for (Entry<WebSocket, Integer> entry : participantIds.entrySet()) {
+                if (entry.getValue().equals(score.getBotId())) {
+                  conn = entry.getKey();
                   break;
                 }
               }
 
-              BotHandshake botHandshake = connHandler.getBotHandshakes().get(clientKey);
+              BotHandshake botHandshake = connHandler.getBotHandshakes().get(conn);
               botResults.setName(botHandshake.getName());
               botResults.setVersion(botHandshake.getVersion());
             });
@@ -293,7 +293,7 @@ public final class GameServer {
   private GameState updateGameState() {
     Map<Integer /* BotId */, BotIntent> mappedBotIntents = new HashMap<>();
 
-    for (Entry<String, BotIntent> entry : botIntents.entrySet()) {
+    for (Entry<WebSocket, BotIntent> entry : botIntents.entrySet()) {
       int botId = participantIds.get(entry.getKey());
       mappedBotIntents.put(botId, entry.getValue());
     }
@@ -365,12 +365,12 @@ public final class GameServer {
           Turn turn = round.getLastTurn();
           if (turn != null) {
             // Send game state as 'game tick' to participants
-            for (String botKey : participants) {
+            for (WebSocket conn : participants) {
               TickEventForBot gameTickForBot =
-                  TurnToGameTickForBotMapper.map(round, turn, participantIds.get(botKey));
+                  TurnToGameTickForBotMapper.map(round, turn, participantIds.get(conn));
               if (gameTickForBot != null) { // Bot alive?
                 String msg = gson.toJson(gameTickForBot);
-                send(botKey, msg);
+                send(conn, msg);
               }
             }
             TickEventForObserver gameTickForObserver =
@@ -382,27 +382,22 @@ public final class GameServer {
     }
   }
 
-  private void send(String clientKey, String message) {
-    WebSocket conn = connHandler.getConnection(clientKey);
-    send(conn, message);
-  }
-
   private static void send(WebSocket conn, String message) {
     logger.debug("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
 
     conn.send(message);
   }
 
-  private void updateBotIntent(String botKey, net.robocode2.schema.BotIntent intent) {
-    if (!participants.contains(botKey)) {
+  private void updateBotIntent(WebSocket conn, net.robocode2.schema.BotIntent intent) {
+    if (!participants.contains(conn)) {
       return;
     }
-    BotIntent botIntent = botIntents.get(botKey);
+    BotIntent botIntent = botIntents.get(conn);
     if (botIntent == null) {
       botIntent = BotIntent.builder().build();
     }
     botIntent = botIntent.update(BotIntentToBotIntentMapper.map(intent));
-    botIntents.put(botKey, botIntent);
+    botIntents.put(conn, botIntent);
   }
 
   private String createBotListUpdateMessage() {
@@ -411,13 +406,12 @@ public final class GameServer {
     List<BotInfo> bots = new ArrayList<>();
     botListUpdate.setBots(bots);
 
-    Map<String, WebSocket> botConnections = connHandler.getBotConnections();
-    for (Entry<String, WebSocket> entry : botConnections.entrySet()) {
-      String clientKey = entry.getKey();
-      InetSocketAddress address = entry.getValue().getRemoteSocketAddress();
+    Set<WebSocket> botConnections = connHandler.getBotConnections();
+    for (WebSocket conn: botConnections) {
+      InetSocketAddress address = conn.getRemoteSocketAddress();
       BotInfo botInfo =
           BotHandshakeToBotInfoMapper.map(
-              connHandler.getBotHandshakes().get(clientKey),
+              connHandler.getBotHandshakes().get(conn),
               address.getHostString(),
               address.getPort());
       bots.add(botInfo);
@@ -426,11 +420,11 @@ public final class GameServer {
   }
 
   private void sendMessageToBots(String msg) {
-    connHandler.getBotConnections().values().forEach(conn -> send(conn, msg));
+    connHandler.getBotConnections().forEach(conn -> send(conn, msg));
   }
 
   private void sendMessageToObservers(String msg) {
-    connHandler.getObserverAndControllerConnections().values().forEach(conn -> send(conn, msg));
+    connHandler.getObserverAndControllerConnections().forEach(conn -> send(conn, msg));
   }
 
   private void sendBotListUpdateToObservers() {
@@ -445,48 +439,48 @@ public final class GameServer {
     }
 
     @Override
-    public void onBotJoined(String clientKey, BotHandshake bot) {
+    public void onBotJoined(WebSocket conn, BotHandshake bot) {
       sendBotListUpdateToObservers();
     }
 
     @Override
-    public void onBotLeft(String clientKey) {
+    public void onBotLeft(WebSocket conn) {
       sendBotListUpdateToObservers();
     }
 
     @Override
-    public void onObserverJoined(String clientKey, ObserverHandshake bot) {
+    public void onObserverJoined(WebSocket conn, ObserverHandshake bot) {
       String msg = createBotListUpdateMessage();
-      send(clientKey, msg);
+      send(conn, msg);
     }
 
     @Override
-    public void onObserverLeft(String clientKey) {
+    public void onObserverLeft(WebSocket conn) {
       // Do nothing
     }
 
     @Override
-    public void onControllerJoined(String clientKey, ControllerHandshake bot) {
+    public void onControllerJoined(WebSocket conn, ControllerHandshake bot) {
       String msg = createBotListUpdateMessage();
-      send(clientKey, msg);
+      send(conn, msg);
     }
 
     @Override
-    public void onControllerLeft(String clientKey) {
+    public void onControllerLeft(WebSocket conn) {
       // Do nothing
     }
 
     @Override
-    public void onBotReady(String clientKey) {
+    public void onBotReady(WebSocket conn) {
       if (runningState == RunningState.WAIT_FOR_READY_PARTICIPANTS) {
-        readyParticipants.add(clientKey);
+        readyParticipants.add(conn);
         startGameIfParticipantsReady();
       }
     }
 
     @Override
-    public void onBotIntent(String clientKey, net.robocode2.schema.BotIntent intent) {
-      updateBotIntent(clientKey, intent);
+    public void onBotIntent(WebSocket conn, net.robocode2.schema.BotIntent intent) {
+      updateBotIntent(conn, intent);
     }
 
     @Override

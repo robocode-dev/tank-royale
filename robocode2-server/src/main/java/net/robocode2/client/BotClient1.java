@@ -25,9 +25,6 @@ public class BotClient1 extends WebSocketClient {
 	}
 
 	private static final String TYPE = "type";
-	private static final String CLIENT_KEY = "clientKey";
-
-	private String clientKey;
 
 	private int turn;
 	private double targetSpeed = 10;
@@ -60,12 +57,10 @@ public class BotClient1 extends WebSocketClient {
 			String type = jsonType.getAsString();
 
 			if (ServerHandshake.Type.SERVER_HANDSHAKE.toString().equalsIgnoreCase(type)) {
-				clientKey = jsonMessage.get(CLIENT_KEY).getAsString();
 
 				// Send bot handshake
 				BotHandshake handshake = new BotHandshake();
 				handshake.setType(BotHandshake.Type.BOT_HANDSHAKE);
-				handshake.setClientKey(clientKey);
 				handshake.setName("Bot name");
 				handshake.setVersion("0.1");
 				handshake.setAuthor("Author name");
@@ -80,7 +75,6 @@ public class BotClient1 extends WebSocketClient {
 				// Send ready signal
 				BotReady ready = new BotReady();
 				ready.setType(BotReady.Type.BOT_READY);
-				ready.setClientKey(clientKey);
 
 				String msg = gson.toJson(ready);
 				send(msg);
@@ -93,7 +87,6 @@ public class BotClient1 extends WebSocketClient {
 				// Prepare intent
 				BotIntent intent = new BotIntent();
 				intent.setType(BotIntent.Type.BOT_INTENT);
-				intent.setClientKey(clientKey);
 
 				for (Event event : tick.getEvents()) {
 					if (event instanceof ScannedBotEvent) {

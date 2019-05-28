@@ -7,27 +7,28 @@ import net.robocode2.schema.BotAddress;
 import net.robocode2.schema.BotIntent;
 import net.robocode2.schema.ControllerHandshake;
 import net.robocode2.schema.ObserverHandshake;
+import org.java_websocket.WebSocket;
 
 
 public interface ConnListener {
 
 	void onException(Exception exception);
 
-	void onBotJoined(String clientKey, net.robocode2.schema.BotHandshake handshake);
+	void onBotJoined(WebSocket conn, net.robocode2.schema.BotHandshake handshake);
 
-	void onBotLeft(String clientKey);
+	void onBotLeft(WebSocket conn);
 
-	void onObserverJoined(String clientKey, ObserverHandshake handshake);
+	void onObserverJoined(WebSocket conn, ObserverHandshake handshake);
 
-	void onObserverLeft(String clientKey);
+	void onObserverLeft(WebSocket conn);
 
-	void onControllerJoined(String clientKey, ControllerHandshake handshake);
+	void onControllerJoined(WebSocket conn, ControllerHandshake handshake);
 
-	void onControllerLeft(String clientKey);
+	void onControllerLeft(WebSocket conn);
 
-	void onBotReady(String clientKey);
+	void onBotReady(WebSocket conn);
 
-	void onBotIntent(String clientKey, BotIntent intent);
+	void onBotIntent(WebSocket conn, BotIntent intent);
 
 	void onStartGame(GameSetup gameSetup, Collection<BotAddress> botAddresses);
 
