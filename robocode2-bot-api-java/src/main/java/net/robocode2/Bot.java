@@ -214,7 +214,6 @@ public abstract class Bot implements IBot {
     // Server connection:
     private WebSocketClient webSocket;
     private ServerHandshake serverHandshake;
-    private String clientKey;
 
     // Current game states:
     private Integer myId;
@@ -245,7 +244,7 @@ public abstract class Bot implements IBot {
       webSocket.send(gson.toJson(botIntent));
     }
 
-    private void clearCurrentGame() {
+    private void clearCurrentGameState() {
       // Clear setting that are only available during a running game
       currentTurn = null;
       gameSetup = null;
@@ -316,11 +315,10 @@ public abstract class Bot implements IBot {
 
       @Override
       public final void onClose(final int code, final String reason, final boolean remote) {
-        val event = DisconnectedEvent.builder().code(code).reason(reason).remote(remote).build();
+        val event = DisconnectedEvent.builder().remote(remote).build();
         Bot.this.onDisconnected(event);
 
-        // Clear current game state
-        Bot.this.__internals.clearCurrentGame();
+        Bot.this.__internals.clearCurrentGameState();
       }
 
       @Override
@@ -359,12 +357,8 @@ public abstract class Bot implements IBot {
       private void handleServerHandshake(JsonObject jsonMsg) {
         serverHandshake = gson.fromJson(jsonMsg, ServerHandshake.class);
 
-        // The client key is assigned to the bot from the server only
-        val clientKey = serverHandshake.getClientKey();
-        Bot.__Internals.this.clientKey = clientKey;
-
         // Send bot handshake
-        val botHandshake = BotHandshakeFactory.create(clientKey, Bot.__Internals.this.botInfo);
+        val botHandshake = BotHandshakeFactory.create(Bot.__Internals.this.botInfo);
         val msg = gson.toJson(botHandshake);
         send(msg);
       }
@@ -386,7 +380,6 @@ public abstract class Bot implements IBot {
         // Send ready signal
         BotReady ready = new BotReady();
         ready.setType(BotReady.Type.BOT_READY);
-        ready.setClientKey(__Internals.this.clientKey);
 
         val msg = gson.toJson(ready);
         send(msg);
@@ -402,7 +395,7 @@ public abstract class Bot implements IBot {
 
     private void handleGameEndedEvent(JsonObject jsonMsg) {
       // Clear current game state
-      Bot.this.__internals.clearCurrentGame();
+      Bot.this.__internals.clearCurrentGameState();
 
       // Send the game ended event
       val gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);

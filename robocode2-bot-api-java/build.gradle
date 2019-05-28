@@ -18,7 +18,7 @@ test {
 }
 
 dependencies {
-    implementation 'net.robocode2:robocode2-schema:0.3.2'
+    implementation 'net.robocode2:robocode2-schema:0.3.3'
     implementation 'org.java-websocket:Java-WebSocket:1.4.0'
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'ch.qos.logback:logback-core:1.2.3'

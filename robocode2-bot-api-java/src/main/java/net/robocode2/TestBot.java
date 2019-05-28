@@ -2,6 +2,8 @@ package net.robocode2;
 
 import net.robocode2.events.ConnectedEvent;
 import net.robocode2.events.DisconnectedEvent;
+import net.robocode2.events.ScannedBotEvent;
+import net.robocode2.events.TickEvent;
 
 import java.net.URI;
 import java.util.Collections;
@@ -22,6 +24,33 @@ public class TestBot extends Bot {
 
   public static void main(String[] args) throws Exception {
     new TestBot().run();
+  }
+
+  private double targetSpeed = 8;
+
+  @Override
+  public void onTick(TickEvent event) {
+    System.out.println("onTick: " + event);
+
+    setRadarTurnRate(100);
+
+    if (getSpeed() == targetSpeed) {
+      targetSpeed = -targetSpeed;
+    }
+    setTargetSpeed(targetSpeed);
+    go();
+  }
+
+  @Override
+  public void onScannedBot(ScannedBotEvent event) {
+    System.out.println("onScannedBot: " + event);
+
+    double dx = event.getX() - getX();
+    double dy = event.getY() - getY();
+    double angle = Math.toDegrees(Math.atan2(dy, dx));
+
+    setGunTurnRate(angle - getGunDirection());
+    setFire(3);
   }
 
   @Override

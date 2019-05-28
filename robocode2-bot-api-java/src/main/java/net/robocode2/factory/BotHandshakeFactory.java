@@ -9,10 +9,9 @@ import net.robocode2.schema.BotHandshake;
 @UtilityClass
 public class BotHandshakeFactory {
 
-  public BotHandshake create(String clientKey, BotInfo botInfo) {
+  public BotHandshake create(BotInfo botInfo) {
     val handshake = new BotHandshake();
     handshake.setType(BotHandshake.Type.BOT_HANDSHAKE);
-    handshake.setClientKey(clientKey);
     handshake.setName(botInfo.getName());
     handshake.setVersion(botInfo.getVersion());
     handshake.setAuthor(botInfo.getAuthor());
