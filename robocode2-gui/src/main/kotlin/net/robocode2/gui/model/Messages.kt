@@ -17,11 +17,6 @@ sealed class Event : Message() {
 }
 
 @Serializable
-sealed class ClientMessage : Message() {
-    abstract val clientKey: String
-}
-
-@Serializable
 @SerialName("BotDeathEvent")
 data class BotDeathEvent(
         override val turnNumber: Int,
@@ -122,7 +117,7 @@ data class BotListUpdate(
 sealed class GameAbortedEvent : Message()
 
 @Serializable
-@SerialName("GameEndedEvent")
+@SerialName("GameEndedEventForObserver")
 data class GameEndedEvent(
         val numberOfRounds: Int,
         val results: List<BotResults>
@@ -147,34 +142,29 @@ data class GameStartedEvent(
 @Serializable
 @SerialName("ControllerHandshake")
 data class ControllerHandshake(
-        override val clientKey: String,
         val name: String,
         val version: String,
         val author: String?
-) : ClientMessage()
+) : Message()
 
 @Serializable
 @SerialName("ServerHandshake")
 data class ServerHandshake(
-        override val clientKey: String,
         val variant: String,
         val version: String,
         val games: Set<GameSetup>
-) : ClientMessage()
+) : Message()
 
 @Serializable
 @SerialName("StartGame")
 data class StartGame(
-        override val clientKey: String,
         val gameSetup: GameSetup,
         val botAddresses: Set<BotAddress>
-) : ClientMessage()
+) : Message()
 
 @Serializable
 @SerialName("StopGame")
-class StopGame(
-        override val clientKey: String
-) : ClientMessage()
+class StopGame : Message()
 
 val messageModule = SerializersModule {
     polymorphic(Message::class) {
@@ -203,7 +193,6 @@ val messageModule = SerializersModule {
 
 fun main() {
     val json = Json(context = messageModule)
-
 
     val str = json.stringify(PolymorphicSerializer(Message::class), BotDeathEvent(1, 2))
     println(str)

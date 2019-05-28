@@ -30,14 +30,13 @@ object Client : AutoCloseable {
 
     private val json = Json(context = messageModule)
 
-    private var clientKey: String? = null
     private var games: Set<GameSetup> = HashSet()
     private var bots: Set<BotInfo> = HashSet()
 
     private var isGameRunning: Boolean = false
 
     override fun close() {
-        abortGame()
+        stopGame()
 
         if (websocket.isOpen()) {
             websocket.close()
@@ -62,13 +61,13 @@ object Client : AutoCloseable {
 
     fun startGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>) {
         if (!isGameRunning && websocket.isOpen()) {
-            websocket.send(StartGame(clientKey!!, gameSetup, botAddresses))
+            websocket.send(StartGame(gameSetup, botAddresses))
         }
     }
 
-    fun abortGame() {
+    fun stopGame() {
         if (isGameRunning && websocket.isOpen()) {
-            websocket.send(StopGame(clientKey!!))
+            websocket.send(StopGame())
         }
     }
 
@@ -85,13 +84,11 @@ object Client : AutoCloseable {
     }
 
     private fun handleServerHandshake(serverHandshake: ServerHandshake) {
-        clientKey = serverHandshake.clientKey
         games = serverHandshake.games
 
         val handshake = ControllerHandshake(
-                clientKey = this.clientKey ?: throw IllegalStateException("client key cannot be null"),
                 name = "Robocode 2 UI",
-                version = "0.1",
+                version = "0.1", // TODO from version.txt file?
                 author = "Flemming N. Larsen"
         )
         websocket.send(handshake)
