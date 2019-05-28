@@ -2,7 +2,7 @@ $id: #server-handshake.yaml
 $schema: http://json-schema.org/draft-07/schema#
 description: Server handshake
 extends:
-  $ref: client-message.yaml
+  $ref: message.yaml
 properties:
   variant:
     type: string

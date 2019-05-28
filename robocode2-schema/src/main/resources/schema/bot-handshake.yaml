@@ -2,7 +2,7 @@ $id: #bot-handshake.yaml
 $schema: http://json-schema.org/draft-07/schema#
 description: Bot handshake
 extends:
-  $ref: client-message.yaml
+  $ref: message.yaml
 properties:
   name:
     description: Name of bot, e.g. Killer Bee

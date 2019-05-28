@@ -2,7 +2,7 @@ $id: #bot-intent.yaml
 $schema: http://json-schema.org/draft-07/schema#
 description: Intent from a bot
 extends:
-  $ref: client-message.yaml
+  $ref: message.yaml
 properties:
   turnRate:
     description: Turn rate of the body in degrees per turn (can be positive and negative)
