@@ -41,8 +41,8 @@ public final class RuleConstants {
 
 	/** Maximum forward speed */
 	public static final double MAX_FORWARD_SPEED = 8.0;
-	/** Maximum reverse speed */
-	public static final double MAX_REVERSE_SPEED = -8.0;
+	/** Maximum backward speed */
+	public static final double MAX_BACKWARD_SPEED = -8.0;
 
 	/** Minimum bullet power */
 	public static final double MIN_BULLET_POWER = 0.1;

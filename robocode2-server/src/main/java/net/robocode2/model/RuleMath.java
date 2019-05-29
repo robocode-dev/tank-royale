@@ -9,7 +9,7 @@ import static net.robocode2.model.RuleConstants.DECELERATION;
 import static net.robocode2.model.RuleConstants.MAX_FORWARD_SPEED;
 import static net.robocode2.model.RuleConstants.MAX_GUN_TURN_RATE;
 import static net.robocode2.model.RuleConstants.MAX_RADAR_TURN_RATE;
-import static net.robocode2.model.RuleConstants.MAX_REVERSE_SPEED;
+import static net.robocode2.model.RuleConstants.MAX_BACKWARD_SPEED;
 import static net.robocode2.model.RuleConstants.MAX_TURN_RATE;
 
 /**
@@ -38,7 +38,7 @@ public final class RuleMath {
 				return min(currentSpeed + step, MAX_FORWARD_SPEED);
 			} else {
 				double step = (delta <= DECELERATION) ? DECELERATION : delta;
-				return max(currentSpeed + step, MAX_REVERSE_SPEED);
+				return max(currentSpeed + step, MAX_BACKWARD_SPEED);
 			}
 		} else {
 			if (delta < 0) {
@@ -46,7 +46,7 @@ public final class RuleMath {
 				return max(currentSpeed - step, -MAX_FORWARD_SPEED);
 			} else {
 				double step = (-delta <= DECELERATION) ? DECELERATION : -delta;
-				return min(currentSpeed - step, -MAX_REVERSE_SPEED);
+				return min(currentSpeed - step, -MAX_BACKWARD_SPEED);
 			}
 		}
 	}
@@ -65,7 +65,7 @@ public final class RuleMath {
 	}
 
 	/**
-	 * Limis the gun turn rate
+	 * Limits the gun turn rate
 	 * 
 	 * @param gunTurnRate
 	 *            is the gun turn rate to limit
@@ -135,7 +135,7 @@ public final class RuleMath {
 	}
 
 	/**
-	 * Calculate gun heat after having fire the gun
+	 * Calculate gun heat after having fired the gun
 	 * 
 	 * @param firepower
 	 *            is the firepower used for firing the bullet
