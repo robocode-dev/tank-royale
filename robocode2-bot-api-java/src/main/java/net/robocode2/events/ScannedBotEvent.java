@@ -2,11 +2,13 @@ package net.robocode2.events;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.Value;
 
 /** Event occurring when a bot has scanned another bot */
 @Value
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class ScannedBotEvent extends Event {
   /** ID of the bot did the scanning */
   int scannedByBotId;

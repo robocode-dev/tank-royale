@@ -2,12 +2,14 @@ package net.robocode2.events;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.Value;
 import net.robocode2.BulletState;
 
 /** Event occurring when a bullet has collided with another bullet */
 @Value
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class BulletHitBulletEvent extends Event {
   /** Bullet that hit another bullet */
   BulletState bullet;

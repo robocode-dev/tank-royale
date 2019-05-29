@@ -2,6 +2,7 @@ package net.robocode2.events;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.Value;
 import net.robocode2.BotState;
 import net.robocode2.BulletState;
@@ -11,6 +12,7 @@ import java.util.List;
 /** Event occurring whenever a new turn in a round has started */
 @Value
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class TickEvent extends Event {
   /** Current round number */
   int roundNumber;

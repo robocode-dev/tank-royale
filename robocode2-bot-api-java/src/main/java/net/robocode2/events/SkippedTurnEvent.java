@@ -2,6 +2,7 @@ package net.robocode2.events;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.Value;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Value;
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class SkippedTurnEvent extends Event {
 
   @Builder

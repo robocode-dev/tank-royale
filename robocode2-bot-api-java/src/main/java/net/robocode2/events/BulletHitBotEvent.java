@@ -2,12 +2,14 @@ package net.robocode2.events;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.Value;
 import net.robocode2.BulletState;
 
 /** Event occurring when a bullet has hit a bot */
 @Value
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class BulletHitBotEvent extends Event {
   /** ID of the victim bot that got hit */
   int victimId;
