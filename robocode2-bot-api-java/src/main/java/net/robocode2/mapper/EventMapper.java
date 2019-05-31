@@ -23,7 +23,7 @@ public class EventMapper {
         .build();
   }
 
-  private List<Event> map(@NonNull final List<net.robocode2.schema.Event> source) {
+  private List<Event> map(@NonNull final List<? extends net.robocode2.schema.Event> source) {
     val gameEvents = new ArrayList<Event>();
     source.forEach(event -> gameEvents.add(map(event)));
     return gameEvents;

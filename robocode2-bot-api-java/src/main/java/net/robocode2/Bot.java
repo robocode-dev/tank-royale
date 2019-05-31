@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import lombok.NonNull;
 import lombok.val;
 import lombok.var;
@@ -163,7 +164,7 @@ public abstract class Bot implements IBot {
   }
 
   @Override
-  public final List<Event> getEvents() {
+  public final List<? extends Event> getEvents() {
     return __internals.getCurrentTurn().getEvents();
   }
 
@@ -192,6 +193,33 @@ public abstract class Bot implements IBot {
     __internals.botIntent.setFirePower(firePower);
   }
 
+  @Override
+  public double calcMaxTurnRate(double speed) {
+    return MAX_TURN_RATE - 0.75 * Math.abs(speed);
+  }
+
+  @Override
+  public final double calcBulletSpeed(double firepower) {
+    return 20 - 3 * firepower;
+  }
+
+  @Override
+  public final double calcGunHeat(double firepower) {
+    return 1 + (firepower / 5);
+  }
+
+  @Override
+  public final double normalAbsoluteDegrees(double angle) {
+    return (angle %= 360) >= 0 ? angle : (angle + 360);
+  }
+
+  @Override
+  public final double normalRelativeDegrees(double angle) {
+    return (angle %= 360) >= 0
+        ? ((angle < 180) ? angle : (angle - 360))
+        : ((angle >= -180) ? angle : (angle + 360));
+  }
+
   private final class __Internals {
     private static final String SERVER_URI_PROPERTY_KEY = "server.uri";
     private static final String SERVER_URI_ENV_VAR = "ROBOCODE2_SERVER_URI";
@@ -205,7 +233,26 @@ public abstract class Bot implements IBot {
     private static final String TICK_NOT_AVAILABLE_MSG =
         "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first";
 
-    private final Gson gson = new GsonBuilder().create();
+    private final Gson gson;
+
+    {
+      val typeFactory =
+          RuntimeTypeAdapterFactory.of(net.robocode2.schema.Event.class)
+              .registerSubtype(net.robocode2.schema.BotDeathEvent.class, "BotDeathEvent")
+              .registerSubtype(net.robocode2.schema.BotHitBotEvent.class, "BotHitBotEvent")
+              .registerSubtype(net.robocode2.schema.BotHitWallEvent.class, "BotHitWallEvent")
+              .registerSubtype(net.robocode2.schema.BulletFiredEvent.class, "BulletFiredEvent")
+              .registerSubtype(net.robocode2.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
+              .registerSubtype(
+                  net.robocode2.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
+              .registerSubtype(net.robocode2.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
+              .registerSubtype(net.robocode2.schema.ScannedBotEvent.class, "ScannedBotEvent")
+              .registerSubtype(net.robocode2.schema.SkippedTurnEvent.class, "SkippedTurnEvent")
+              .registerSubtype(net.robocode2.schema.TickEventForBot.class, "TickEvent")
+              .registerSubtype(net.robocode2.schema.WonRoundEvent.class, "WonRoundEvent");
+
+      gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
+    }
 
     private final BotInfo botInfo;
 
@@ -232,6 +279,8 @@ public abstract class Bot implements IBot {
 
     private void init(URI serverUri) {
       webSocket = new WSClient(serverUri);
+
+      botIntent.setType(BotReady.Type.BOT_INTENT); // must be set!
     }
 
     private void connect() {
@@ -335,7 +384,7 @@ public abstract class Bot implements IBot {
         if (jsonType != null) {
           val type = jsonType.getAsString();
 
-          switch (Message.Type.fromValue(type)) {
+          switch (net.robocode2.schema.Message.Type.fromValue(type)) {
             case SERVER_HANDSHAKE:
               handleServerHandshake(jsonMsg);
               break;
@@ -366,8 +415,10 @@ public abstract class Bot implements IBot {
       private void handleTickEvent(JsonObject jsonMsg) {
         val tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
         currentTurn = EventMapper.map(tickEventForBot);
-        Bot.this.onTick(currentTurn);
+
+        // Dispatch all on the tick event before the tick event itself
         dispatchEvents(currentTurn);
+        Bot.this.onTick(currentTurn);
       }
 
       private void handleGameStartedEvent(JsonObject jsonMsg) {

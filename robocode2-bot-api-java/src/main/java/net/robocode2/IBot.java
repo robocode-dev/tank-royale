@@ -17,7 +17,7 @@ public interface IBot {
    * Radar radius. This is how far a bot is able to scan other bots with the radar. Bots outside the
    * radar radius will not be scanned.
    */
-  public static final double RADAR_RADIUS = 1200.0;
+  public static final double RADAR_RADIUS = 1200;
 
   /**
    * Maximum driving turn rate measured in degrees/turn. This is the max. possible turn rate of the
@@ -28,25 +28,25 @@ public interface IBot {
    * abs(speed). Hence, the turn rate is at max. 10 degrees/turn when the speed is zero, and down to
    * only 4 degrees/turn when the robot is at max speed (8 pixels/turn).
    */
-  public static final double MAX_TURN_RATE = 10.0;
+  public static final double MAX_TURN_RATE = 10;
 
   /** Maximum gun turn rate measured in degrees/turn. */
-  public static final double MAX_GUN_TURN_RATE = 20.0;
+  public static final double MAX_GUN_TURN_RATE = 20;
 
   /** Maximum radar turn rate measured in degrees/turn. */
-  public static final double MAX_RADAR_TURN_RATE = 45.0;
+  public static final double MAX_RADAR_TURN_RATE = 45;
 
   /**
    * Maximum forward speed measured in pixels/turn. When the speed is positive the bot is moving
    * forwards.
    */
-  public static final double MAX_FORWARD_SPEED = 8.0;
+  public static final double MAX_FORWARD_SPEED = 8;
 
   /**
    * Maximum backward speed measured in pixels/turn. When the speed is negative the bot is moving
    * backwards.
    */
-  public static final double MAX_BACKWARD_SPEED = -8.0;
+  public static final double MAX_BACKWARD_SPEED = -8;
 
   /** Minimum bullet power. The gun will not fire with a power less than the minimum fire power. */
   public static final double MIN_BULLET_POWER = 0.1;
@@ -55,33 +55,33 @@ public interface IBot {
    * Maximum bullet power. The gun will fire with this fire power if the gun is set to fire with a
    * higher fire power.
    */
-  public static final double MAX_BULLET_POWER = 3.0;
+  public static final double MAX_BULLET_POWER = 3;
 
   /**
    * Minimum bullet speed measured in pixels/turn. The bullet speed is determined by this formula:
    * 20 - 3 x firepower. The more fire power the slower bullet speed. Hence, the minimum bullet
    * speed is 11 pixels/turn.
    */
-  public static final double MIN_BULLET_SPEED = calcBulletSpeed(MAX_BULLET_POWER);
+  public static final double MIN_BULLET_SPEED = 11;
 
   /**
    * Maximum bullet speed measured in pixels/turn. The bullet speed is determined by this formula:
    * 20 - 3 x firepower. The less fire power the faster bullet speed. Hence, the maximum bullet
    * speed is 17 pixels/turn.
    */
-  public static final double MAX_BULLET_SPEED = calcBulletSpeed(MIN_BULLET_POWER);
+  public static final double MAX_BULLET_SPEED = 17;
 
   /**
    * Acceleration that adds 1 additional pixel to the speed per turn when the bot is increasing its
    * speed moving forwards.
    */
-  public static final double ACCELERATION = 1.0;
+  public static final double ACCELERATION = 1;
 
   /**
    * Deceleration that subtract 2 pixels from the speed per turn when the bot is decreasing its
    * speed moving backwards. Note that the deceleration is negative.
    */
-  public static final double DECELERATION = -2.0;
+  public static final double DECELERATION = -2;
 
   /** Main method for start running the bot */
   void run();
@@ -207,7 +207,7 @@ public interface IBot {
   List<BulletState> getBulletStates();
 
   /** Returns the game events received for the current turn. */
-  List<Event> getEvents();
+  List<? extends Event> getEvents();
 
   /**
    * Sets the new turn rate of the body in degrees per turn (can be positive and negative). The turn
@@ -360,9 +360,7 @@ public interface IBot {
    * @param speed is the speed
    * @return maximum turn rate determined by the given speed
    */
-  public static double calcMaxTurnRate(double speed) {
-    return MAX_TURN_RATE - 0.75 * Math.abs(speed);
-  }
+  double calcMaxTurnRate(double speed);
 
   /**
    * Convenient method that calculates the bullet speed given a fire power.
@@ -370,9 +368,7 @@ public interface IBot {
    * @param firepower is the firepower
    * @return bullet speed determined by the given firepower
    */
-  public static double calcBulletSpeed(double firepower) {
-    return 20 - 3 * firepower;
-  }
+  double calcBulletSpeed(double firepower);
 
   /**
    * Convenient method that calculate gun heat after having fired the gun.
@@ -380,7 +376,21 @@ public interface IBot {
    * @param firepower is the firepower used when firing the gun
    * @return gun heat produced when firing the gun with the given firepower
    */
-  public static double calcGunHeat(double firepower) {
-    return 1 + (firepower / 5);
-  }
+ double calcGunHeat(double firepower);
+
+  /**
+   * Normalizes an angle to an absolute angle into the range [0,360[
+   *
+   * @param angle the angle to normalize
+   * @return the normalized absolute angle
+   */
+  double normalAbsoluteDegrees(double angle);
+
+  /**
+   * Normalizes an angle to an relative angle into the range [-180,180[
+   *
+   * @param angle the angle to normalize
+   * @return the normalized relative angle.
+   */
+  double normalRelativeDegrees(double angle);
 }

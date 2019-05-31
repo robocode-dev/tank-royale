@@ -21,7 +21,7 @@ public class TickEvent extends Event {
   /** Current state of the bullets fired by this bot */
   List<BulletState> bulletStates;
   /** Events occurring in the turn relevant for this bot */
-  List<Event> events;
+  List<? extends Event> events;
 
   @Builder
   private TickEvent(
@@ -29,7 +29,7 @@ public class TickEvent extends Event {
       int roundNumber,
       BotState botState,
       List<BulletState> bulletStates,
-      List<Event> events) {
+      List<? extends Event> events) {
     this.turnNumber = turnNumber;
     this.roundNumber = roundNumber;
     this.botState = botState;

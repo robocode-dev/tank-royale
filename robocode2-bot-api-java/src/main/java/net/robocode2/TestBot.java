@@ -38,19 +38,31 @@ public class TestBot extends Bot {
       targetSpeed = -targetSpeed;
     }
     setTargetSpeed(targetSpeed);
+
+    if (targetX != null) {
+
+      double dx = targetX - getX();
+      double dy = targetY - getY();
+      double angle = Math.toDegrees(Math.atan2(dy, dx));
+
+      double gunTurnRate = normalRelativeDegrees(angle - getGunDirection());
+
+      setGunTurnRate(gunTurnRate);
+    }
+    setFire(0.1 + Math.random() * 2.9);
+
     go();
   }
+
+  Double targetX;
+  Double targetY;
 
   @Override
   public void onScannedBot(ScannedBotEvent event) {
     System.out.println("onScannedBot: " + event);
 
-    double dx = event.getX() - getX();
-    double dy = event.getY() - getY();
-    double angle = Math.toDegrees(Math.atan2(dy, dx));
-
-    setGunTurnRate(angle - getGunDirection());
-    setFire(3);
+    targetX = event.getX();
+    targetY = event.getY();
   }
 
   @Override

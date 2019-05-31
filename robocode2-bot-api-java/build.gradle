@@ -24,6 +24,7 @@ dependencies {
     implementation 'ch.qos.logback:logback-core:1.2.3'
     implementation 'org.slf4j:slf4j-api:1.7.26'
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'org.danilopianini:gson-extras:0.2.1'
     implementation 'com.neovisionaries:nv-i18n:1.22'
 
     compileOnly 'org.projectlombok:lombok:1.18.8'
