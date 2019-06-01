@@ -130,6 +130,14 @@ public class ModelUpdater {
 		return scoreTracker.getResults();
 	}
 
+
+	/**
+	 * Returns the current turn number.
+	 */
+	public int getTurnNumber() {
+		return turnNumber;
+	}
+
 	/**
 	 * Returns the number of rounds played so far.
 	 */

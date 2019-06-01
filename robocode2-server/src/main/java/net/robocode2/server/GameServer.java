@@ -1,37 +1,23 @@
 package net.robocode2.server;
 
+import com.google.gson.Gson;
+import lombok.val;
+import net.robocode2.Server;
+import net.robocode2.engine.ModelUpdater;
+import net.robocode2.mappers.*;
+import net.robocode2.model.BotIntent;
+import net.robocode2.model.GameSetup;
+import net.robocode2.model.*;
+import net.robocode2.schema.*;
+import org.java_websocket.WebSocket;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-
-import lombok.val;
-import net.robocode2.Server;
-import net.robocode2.model.BotIntent;
-import net.robocode2.model.GameSetup;
-import net.robocode2.schema.*;
-import net.robocode2.model.*;
-import org.java_websocket.WebSocket;
-
-import com.google.gson.Gson;
-
-import net.robocode2.engine.ModelUpdater;
-import net.robocode2.schema.Participant;
-import net.robocode2.schema.BotAddress;
-import net.robocode2.schema.BotHandshake;
-import net.robocode2.schema.BotInfo;
-import net.robocode2.schema.BotListUpdate;
-import net.robocode2.schema.ControllerHandshake;
-import net.robocode2.schema.Message;
-import net.robocode2.schema.ObserverHandshake;
-import net.robocode2.mappers.BotHandshakeToBotInfoMapper;
-import net.robocode2.mappers.BotIntentToBotIntentMapper;
-import net.robocode2.mappers.GameSetupToGameSetupMapper;
-import net.robocode2.mappers.TurnToGameTickForBotMapper;
-import net.robocode2.mappers.TurnToGameTickForObserverMapper;
-import org.java_websocket.exceptions.WebsocketNotConnectedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static java.lang.Math.round;
 
@@ -300,10 +286,23 @@ public final class GameServer {
   private void onTurnTimeout() {
     logger.debug("Turn timeout");
 
-    onUpdateGameState();
+    // Send SkippedTurnEvents to all bots that skipped a turn, i.e. where the server did not receive a bot intent
+    // before the turn ended.
+    participantIds.forEach((conn, id) -> {
+      if (botIntents.get(conn) == null) {
+        SkippedTurnEvent skippedTurnEvent = new SkippedTurnEvent();
+        skippedTurnEvent.setType(Message.Type.SKIPPED_TURN_EVENT);
+        skippedTurnEvent.setTurnNumber(modelUpdater.getTurnNumber());
+
+        sendMessageToBots(gson.toJson(skippedTurnEvent));
+      }
+    });
+
+    nextTurnTick();
   }
 
-  private void onUpdateGameState() {
+  synchronized
+  private void nextTurnTick() {
     // Stop turn timeout timer
     turnTimer.stop();
 
@@ -389,6 +388,11 @@ public final class GameServer {
     }
     botIntent = botIntent.update(BotIntentToBotIntentMapper.map(intent));
     botIntents.put(conn, botIntent);
+
+    // Prepare next turn if all participant bots delivered their intents
+    if (botIntents.size() == participants.size()) {
+      nextTurnTick();
+    }
   }
 
   private String createBotListUpdateMessage() {
