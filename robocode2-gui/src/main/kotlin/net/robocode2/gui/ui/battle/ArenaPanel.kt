@@ -10,7 +10,10 @@ import net.robocode2.gui.utils.Graphics2DState
 import java.awt.*
 import java.awt.event.MouseWheelEvent
 import java.awt.geom.*
+import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.JPanel
+import kotlin.collections.HashSet
 
 
 class ArenaPanel : JPanel() {
@@ -19,7 +22,7 @@ class ArenaPanel : JPanel() {
 
     private val circleShape = Area(Ellipse2D.Double(-0.5, -0.5, 1.0, 1.0))
 
-    private val explosions = ArrayList<Animation>()
+    private val explosions = Collections.synchronizedList(ArrayList<Animation>())
 
     private companion object State {
         var arenaWidth: Int = 800
@@ -55,20 +58,19 @@ class ArenaPanel : JPanel() {
         // TODO
     }
 
+    var tick = AtomicBoolean(false)
+
     private fun onTick(tickEvent: TickEvent) {
+        if (tick.get()) return
+        tick.set(true)
+
         state.time = tickEvent.turnNumber
         state.bots = tickEvent.botStates
         state.bullets = tickEvent.bulletStates
 
-        tickEvent.events.forEach { event ->
-            when (event) {
-                is BotDeathEvent -> onBotDeath(event)
-                is BulletHitBotEvent -> onBulletHitBot(event)
-                is BulletHitWallEvent -> onBulletMissed(event)
-                is BulletHitBulletEvent -> onBulletHitBullet(event)
-            }
-        }
         repaint()
+
+        tick.set(false)
     }
 
     private fun onBotDeath(botDeathEvent: BotDeathEvent) {
@@ -172,22 +174,17 @@ class ArenaPanel : JPanel() {
     }
 
     private fun drawExplosions(g: Graphics2D) {
-        val it = explosions.iterator()
-        while (it.hasNext()) {
-            val explosion = it.next()
-
+        ArrayList(explosions).forEach { explosion ->
             if (explosion is BotHitExplosion) {
-                val bot = bots.firstOrNull() { bot -> bot.id == explosion.victimId }
+                val bot = bots.firstOrNull { bot -> bot.id == explosion.victimId }
                 if (bot != null) {
                     explosion.x = bot.x
                     explosion.y = bot.y
                 }
             }
-
             explosion.paint(g, state.time)
-            if (explosion.isFinished()) {
-                it.remove()
-            }
+
+            explosions.removeIf { explosion.isFinished() }
         }
     }
 
