@@ -3,7 +3,7 @@ plugins {
     id 'maven'
 }
 group = 'net.robocode2'
-version = '0.2.6'
+version = '0.2.7'
 sourceCompatibility = '1.8'
 
 repositories {

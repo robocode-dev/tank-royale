@@ -29,6 +29,7 @@ import net.robocode2.mappers.BotIntentToBotIntentMapper;
 import net.robocode2.mappers.GameSetupToGameSetupMapper;
 import net.robocode2.mappers.TurnToGameTickForBotMapper;
 import net.robocode2.mappers.TurnToGameTickForObserverMapper;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,9 +47,9 @@ public final class GameServer {
   private Set<WebSocket> participants;
   private Set<WebSocket> readyParticipants;
 
-  private Map<WebSocket, Integer> participantIds = new HashMap<>();
+  private final Map<WebSocket, Integer> participantIds = new HashMap<>();
 
-  private Map<WebSocket, BotIntent> botIntents = new ConcurrentHashMap<>();
+  private final Map<WebSocket, BotIntent> botIntents = new ConcurrentHashMap<>();
 
   private Timer readyTimer;
   private Timer turnTimer;
@@ -77,9 +78,7 @@ public final class GameServer {
   private void startGameIfParticipantsReady() {
     if (readyParticipants.size() == participants.size()) {
 
-      if (readyTimer != null) {
-        readyTimer.cancel();
-      }
+      readyTimer.stop();
       readyParticipants.clear();
       botIntents.clear();
 
@@ -113,17 +112,9 @@ public final class GameServer {
 
     readyParticipants = new HashSet<>();
 
-    // Start 'ready' timer
-
-    readyTimer = new Timer("Bot-ready-timer");
-    readyTimer.schedule(
-        new TimerTask() {
-          @Override
-          public void run() {
-            onReadyTimeout();
-          }
-        },
-        gameSetup.getReadyTimeout() / 1000);
+    // Start 'bot-ready' timeout timer
+    readyTimer = new Timer(gameSetup.getReadyTimeout(), this::onReadyTimeout);
+    readyTimer.start();
   }
 
   private void startGame() {
@@ -159,18 +150,9 @@ public final class GameServer {
 
     modelUpdater = ModelUpdater.create(gameSetup, new HashSet<>(participantIds.values()));
 
-    // Create timer to updating game state
-
-    turnTimer = new Timer("turn-timer");
-    turnTimer.schedule(
-        new TimerTask() {
-          @Override
-          public void run() {
-            onUpdateGameState();
-          }
-        },
-        gameSetup.getTurnTimeout() / 1000,
-        gameSetup.getTurnTimeout() / 1000);
+    // Restart turn timeout timer
+    turnTimer = new Timer(gameSetup.getTurnTimeout(), this::onTurnTimeout);
+    turnTimer.start();
   }
 
   private void startGame(
@@ -302,7 +284,7 @@ public final class GameServer {
   }
 
   private void onReadyTimeout() {
-    logger.debug("Ready timer timed out");
+    logger.debug("Ready timeout");
 
     if (readyParticipants.size() >= gameSetup.getMinNumberOfParticipants()) {
       // Start the game with the participants that are ready
@@ -315,17 +297,23 @@ public final class GameServer {
     }
   }
 
+  private void onTurnTimeout() {
+    logger.debug("Turn timeout");
+
+    onUpdateGameState();
+  }
+
   private void onUpdateGameState() {
+    // Stop turn timeout timer
+    turnTimer.stop();
+
     if (runningState == RunningState.GAME_PAUSED) {
       return;
     }
 
     logger.debug("Updating game state");
 
-    if (runningState == RunningState.GAME_STOPPED) {
-      // Stop timer for updating game state
-      turnTimer.cancel();
-    } else {
+    if (runningState != RunningState.GAME_STOPPED) {
       // Update game state
       GameState gameState = updateGameState();
 
@@ -333,9 +321,6 @@ public final class GameServer {
         runningState = RunningState.GAME_STOPPED;
 
         logger.info("Game ended");
-
-        // Stop timer for updating game state
-        turnTimer.cancel();
 
         modelUpdater.calculatePlacements();
 
@@ -378,6 +363,8 @@ public final class GameServer {
             sendMessageToObservers(gson.toJson(gameTickForObserver));
           }
         }
+        // Restart turn timeout timer
+        turnTimer.start();
       }
     }
   }
@@ -385,7 +372,11 @@ public final class GameServer {
   private static void send(WebSocket conn, String message) {
     logger.debug("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
 
-    conn.send(message);
+    try {
+      conn.send(message);
+    } catch (WebsocketNotConnectedException ignore) {
+      // Bot cannot receive events and send new intents.
+    }
   }
 
   private void updateBotIntent(WebSocket conn, net.robocode2.schema.BotIntent intent) {
@@ -407,13 +398,11 @@ public final class GameServer {
     botListUpdate.setBots(bots);
 
     Set<WebSocket> botConnections = connHandler.getBotConnections();
-    for (WebSocket conn: botConnections) {
+    for (WebSocket conn : botConnections) {
       InetSocketAddress address = conn.getRemoteSocketAddress();
       BotInfo botInfo =
           BotHandshakeToBotInfoMapper.map(
-              connHandler.getBotHandshakes().get(conn),
-              address.getHostString(),
-              address.getPort());
+              connHandler.getBotHandshakes().get(conn), address.getHostString(), address.getPort());
       bots.add(botInfo);
     }
     return gson.toJson(botListUpdate);
