@@ -284,6 +284,8 @@ public final class GameServer {
   }
 
   private void onTurnTimeout() {
+    turnTimer.stop();
+
     logger.debug("Turn timeout");
 
     // Send SkippedTurnEvents to all bots that skipped a turn, i.e. where the server did not receive a bot intent
@@ -294,7 +296,7 @@ public final class GameServer {
         skippedTurnEvent.setType(Message.Type.SKIPPED_TURN_EVENT);
         skippedTurnEvent.setTurnNumber(modelUpdater.getTurnNumber());
 
-        sendMessageToBots(gson.toJson(skippedTurnEvent));
+        send(conn, gson.toJson(skippedTurnEvent));
       }
     });
 

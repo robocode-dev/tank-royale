@@ -30,6 +30,6 @@ public class Timer {
         if (timer != null) {
             timer.cancel();
         }
+        timer = null;
     }
-
 }
