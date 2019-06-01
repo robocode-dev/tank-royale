@@ -247,8 +247,6 @@ public abstract class Bot implements IBot {
                   net.robocode2.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
               .registerSubtype(net.robocode2.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
               .registerSubtype(net.robocode2.schema.ScannedBotEvent.class, "ScannedBotEvent")
-              .registerSubtype(net.robocode2.schema.SkippedTurnEvent.class, "SkippedTurnEvent")
-              .registerSubtype(net.robocode2.schema.TickEventForBot.class, "TickEvent")
               .registerSubtype(net.robocode2.schema.WonRoundEvent.class, "WonRoundEvent");
 
       gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
@@ -385,11 +383,14 @@ public abstract class Bot implements IBot {
           val type = jsonType.getAsString();
 
           switch (net.robocode2.schema.Message.Type.fromValue(type)) {
-            case SERVER_HANDSHAKE:
-              handleServerHandshake(jsonMsg);
+            case SKIPPED_TURN_EVENT:
+              handleSkippedTurnEvent(jsonMsg);
               break;
             case TICK_EVENT_FOR_BOT:
               handleTickEvent(jsonMsg);
+              break;
+            case SERVER_HANDSHAKE:
+              handleServerHandshake(jsonMsg);
               break;
             case GAME_STARTED_EVENT_FOR_BOT:
               handleGameStartedEvent(jsonMsg);
@@ -456,6 +457,11 @@ public abstract class Bot implements IBot {
               .results(ResultsMapper.map(gameEndedEventForBot.getResults()))
               .build();
       Bot.this.onGameEnded(gameEndedEvent);
+    }
+
+    private void handleSkippedTurnEvent(JsonObject jsonMsg) {
+      val skippedTurnEvent = gson.fromJson(jsonMsg, net.robocode2.schema.SkippedTurnEvent.class);
+      Bot.this.onSkippedTurn((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
     }
 
     private void dispatchEvents(TickEvent tickEvent) {

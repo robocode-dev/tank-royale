@@ -29,7 +29,7 @@ public class EventMapper {
     return gameEvents;
   }
 
-  private Event map(@NonNull final net.robocode2.schema.Event source) {
+  public Event map(@NonNull final net.robocode2.schema.Event source) {
     if (source instanceof net.robocode2.schema.BotDeathEvent) {
       return map((net.robocode2.schema.BotDeathEvent) source);
     }

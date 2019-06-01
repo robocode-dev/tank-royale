@@ -89,9 +89,10 @@ public interface IBot {
   /**
    * Commits the current actions for the current turn. This method must be called in order to send
    * the bot actions to the server, and MUST before the turn timeout occurs. The turn timeout is
-   * started when the TickEvent occurs. If the go() is called too late, SkippedTurnEvents will
-   * occur. Actions are set by calling the setter methods prior to calling the go() method:
-   * setTurnRate(), setGunTurnRate(), setRadarTurnRate(), setTargetSpeed(), and setFire().
+   * started when the GameStartedEvent and TickEvent occurs. If the go() is called too late,
+   * SkippedTurnEvents will occur. Actions are set by calling the setter methods prior to calling
+   * the go() method: setTurnRate(), setGunTurnRate(), setRadarTurnRate(), setTargetSpeed(), and
+   * setFire().
    */
   void go();
 
@@ -376,7 +377,7 @@ public interface IBot {
    * @param firepower is the firepower used when firing the gun
    * @return gun heat produced when firing the gun with the given firepower
    */
- double calcGunHeat(double firepower);
+  double calcGunHeat(double firepower);
 
   /**
    * Normalizes an angle to an absolute angle into the range [0,360[
