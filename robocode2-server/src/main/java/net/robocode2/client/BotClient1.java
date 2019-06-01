@@ -19,7 +19,18 @@ public class BotClient1 extends WebSocketClient {
 
 	{
 		RuntimeTypeAdapterFactory<Event> typeFactory = RuntimeTypeAdapterFactory.of(Event.class)
-				.registerSubtype(ScannedBotEvent.class, "ScannedBotEvent");
+				.registerSubtype(net.robocode2.schema.BotDeathEvent.class, "BotDeathEvent")
+				.registerSubtype(net.robocode2.schema.BotHitBotEvent.class, "BotHitBotEvent")
+				.registerSubtype(net.robocode2.schema.BotHitWallEvent.class, "BotHitWallEvent")
+				.registerSubtype(net.robocode2.schema.BulletFiredEvent.class, "BulletFiredEvent")
+				.registerSubtype(net.robocode2.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
+				.registerSubtype(
+						net.robocode2.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
+				.registerSubtype(net.robocode2.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
+				.registerSubtype(net.robocode2.schema.ScannedBotEvent.class, "ScannedBotEvent")
+				.registerSubtype(net.robocode2.schema.SkippedTurnEvent.class, "SkippedTurnEvent")
+				.registerSubtype(net.robocode2.schema.TickEventForBot.class, "TickEvent")
+				.registerSubtype(net.robocode2.schema.WonRoundEvent.class, "WonRoundEvent");
 
 		gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
 	}
