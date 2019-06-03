@@ -42,9 +42,6 @@ public final class EventsToEventsMapper {
 		if (event instanceof net.robocode2.events.BulletHitWallEvent) {
 			return map((net.robocode2.events.BulletHitWallEvent) event);
 		}
-		if (event instanceof net.robocode2.events.HitByBulletEvent) {
-			return map((net.robocode2.events.HitByBulletEvent) event);
-		}
 		if (event instanceof net.robocode2.events.ScannedBotEvent) {
 			return map((net.robocode2.events.ScannedBotEvent) event);
 		}
@@ -116,16 +113,6 @@ public final class EventsToEventsMapper {
 		event.setType(Type.BULLET_HIT_WALL_EVENT);
 		event.setTurnNumber(bulletHitWallEvent.getTurnNumber());
 		event.setBullet(BulletToBulletStateMapper.map(bulletHitWallEvent.getBullet()));
-		return event;
-	}
-
-	private static HitByBulletEvent map(net.robocode2.events.HitByBulletEvent hitByBulletEvent) {
-		HitByBulletEvent event = new HitByBulletEvent();
-		event.setType(Type.HIT_BY_BULLET_EVENT);
-		event.setTurnNumber(hitByBulletEvent.getTurnNumber());
-		event.setBullet(BulletToBulletStateMapper.map(hitByBulletEvent.getBullet()));
-		event.setDamage(hitByBulletEvent.getDamage());
-		event.setEnergy(hitByBulletEvent.getEnergy());
 		return event;
 	}
 

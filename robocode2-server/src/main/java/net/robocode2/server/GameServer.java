@@ -88,12 +88,10 @@ public final class GameServer {
     int id = 1;
     for (WebSocket conn : participants) {
       participantIds.put(conn, id);
-      gameStartedForBot.setMyId(id);
+      gameStartedForBot.setMyId(id++);
 
       String msg = gson.toJson(gameStartedForBot);
       send(conn, msg);
-
-      id++;
     }
 
     readyParticipants = new HashSet<>();
@@ -393,7 +391,7 @@ public final class GameServer {
 
     // Prepare next turn if all participant bots delivered their intents
     if (botIntents.size() == participants.size()) {
-      nextTurnTick();
+//      nextTurnTick();
     }
   }
 

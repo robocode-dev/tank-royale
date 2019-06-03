@@ -452,7 +452,7 @@ public class ModelUpdater {
 				}
 			}
 
-			// Check bullet-bot collision (hit)
+			// Check bullet-hit-bot collision (hit)
 
 			Point startPos1 = boundingLines[i].start;
 
@@ -466,8 +466,7 @@ public class ModelUpdater {
 				int victimId = botBuilder.getId();
 
 				if (botId == victimId) {
-					// A bot cannot shot itself. The bullet must leave the cannon before it counts
-					continue;
+					continue; // A bot cannot shot itself
 				}
 
 				if (MathUtil.isLineIntersectingCircle(startPos1.x, startPos1.y, endPos1.x, endPos1.y, botX, botY, BOT_BOUNDING_CIRCLE_RADIUS)) {
@@ -483,8 +482,8 @@ public class ModelUpdater {
 					scoreTracker.registerBulletHit(botId, victimId, damage, killed);
 
 					BulletHitBotEvent bulletHitBotEvent = new BulletHitBotEvent(turnNumber, bullet, victimId, damage, botBuilder.getEnergy());
-
-					turnBuilder.addPrivateBotEvent(botId, bulletHitBotEvent);
+					turnBuilder.addPrivateBotEvent(botId, bulletHitBotEvent); // Bot itself gets event
+					turnBuilder.addPrivateBotEvent(victimId, bulletHitBotEvent); // Victim bot gets event too
 					turnBuilder.addObserverEvent(bulletHitBotEvent);
 
 					// Remove bullet from the arena
