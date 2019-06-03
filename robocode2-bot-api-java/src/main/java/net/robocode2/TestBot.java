@@ -80,6 +80,11 @@ public class TestBot extends Bot {
   }
 
   @Override
+  public void onHitWall(BotHitWallEvent event) {
+    targetSpeed =- targetSpeed;
+  }
+
+  @Override
   public void onSkippedTurn(SkippedTurnEvent event) {
     System.out.println("onSkippedTurn: turn: " + event.getTurnNumber() + "/" + getRoundNumber());
   }
