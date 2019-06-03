@@ -689,7 +689,7 @@ public class ModelUpdater {
 	
 				boolean hitWall = false;
 	
-				if (x - BOT_BOUNDING_CIRCLE_RADIUS <= 0) {
+				if (x - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
 					hitWall = true;
 	
 					x = BOT_BOUNDING_CIRCLE_RADIUS;
@@ -698,7 +698,7 @@ public class ModelUpdater {
 						double dxCut = x - oldX;
 						y = oldY + (dxCut * dy / dx);
 					}
-				} else if (x + BOT_BOUNDING_CIRCLE_RADIUS >= setup.getArenaWidth()) {
+				} else if (x + BOT_BOUNDING_CIRCLE_RADIUS > setup.getArenaWidth()) {
 					hitWall = true;
 	
 					x = (double) setup.getArenaWidth() - BOT_BOUNDING_CIRCLE_RADIUS;
@@ -707,7 +707,7 @@ public class ModelUpdater {
 						double dxCut = x - oldX;
 						y = oldY + (dxCut * dy / dx);
 					}
-				} else if (y - BOT_BOUNDING_CIRCLE_RADIUS <= 0) {
+				} else if (y - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
 					hitWall = true;
 	
 					y = BOT_BOUNDING_CIRCLE_RADIUS;
@@ -716,7 +716,7 @@ public class ModelUpdater {
 						double dyCut = y - oldY;
 						x = oldX + (dyCut * dx / dy);
 					}
-				} else if (y + BOT_BOUNDING_CIRCLE_RADIUS >= setup.getArenaHeight()) {
+				} else if (y + BOT_BOUNDING_CIRCLE_RADIUS > setup.getArenaHeight()) {
 					hitWall = true;
 	
 					y = (double) setup.getArenaHeight() - BOT_BOUNDING_CIRCLE_RADIUS;
@@ -741,6 +741,9 @@ public class ModelUpdater {
 						double damage = RuleMath.calcWallDamage(botBuilder.getSpeed());
 						botBuilder.addDamage(damage);
 					}
+
+					// Bot is stopped to zero speed regardless of its previous direction
+					botBuilder.speed(0);
 				}
 			}
 		}
