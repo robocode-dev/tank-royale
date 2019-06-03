@@ -333,6 +333,9 @@ public interface IBot {
   /** Event handler triggered when the bot has been hit by a bullet */
   default void onHitByBullet(BulletHitBotEvent bulletHitBotEvent) {}
 
+  /** Event handler triggered when the bot has hit another bot with a bullet */
+  default void onBulletHit(BulletHitBotEvent bulletHitBotEvent) {}
+
   /** Event handler triggered a bullet has collided with another bullet */
   default void onBulletHitBullet(BulletHitBulletEvent bulletHitBulletEvent) {}
 

@@ -478,7 +478,12 @@ public abstract class Bot implements IBot {
                 } else if (event instanceof BulletFiredEvent) {
                   Bot.this.onBulletFired((BulletFiredEvent) event);
                 } else if (event instanceof BulletHitBotEvent) {
-                  Bot.this.onHitByBullet((BulletHitBotEvent) event);
+                  BulletHitBotEvent bulletEvent = (BulletHitBotEvent) event;
+                  if (bulletEvent.getVictimId() == myId) {
+                    Bot.this.onHitByBullet((BulletHitBotEvent) event);
+                  } else {
+                    Bot.this.onBulletHit((BulletHitBotEvent) event);
+                  }
                 } else if (event instanceof BulletHitBulletEvent) {
                   Bot.this.onBulletHitBullet((BulletHitBulletEvent) event);
                 } else if (event instanceof BulletHitWallEvent) {

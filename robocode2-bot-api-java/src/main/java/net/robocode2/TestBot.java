@@ -35,7 +35,7 @@ public class TestBot extends Bot {
 
   @Override
   public void onGameStarted(GameStartedEvent event) {
-    System.out.println("onGameStarted: turnTimeout: " + event.getGameSetup().getTurnTimeout());
+    System.out.println("onGameStarted: " + event);
 
     setRadarTurnRate(100);
     setTargetSpeed(targetSpeed);
@@ -81,6 +81,16 @@ public class TestBot extends Bot {
 
   @Override
   public void onSkippedTurn(SkippedTurnEvent event) {
-    System.out.println("onSkippedTurn: turn: " + event.getTurnNumber());
+    System.out.println("onSkippedTurn: turn: " + event.getTurnNumber() + "/" + getRoundNumber());
+  }
+
+  @Override
+  public void onHitByBullet(BulletHitBotEvent event) {
+    System.out.println("-> onHitByBullet: " + event.getTurnNumber() + "/" + getRoundNumber());
+  }
+
+  @Override
+  public void onBulletHit(BulletHitBotEvent event) {
+    System.out.println("<- onBulletHit: " + event.getTurnNumber() + "/" + getRoundNumber());
   }
 }
