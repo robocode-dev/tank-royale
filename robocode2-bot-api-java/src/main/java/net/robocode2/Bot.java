@@ -189,8 +189,8 @@ public abstract class Bot implements IBot {
   }
 
   @Override
-  public final void setFire(double firePower) {
-    __internals.botIntent.setFirePower(firePower);
+  public final void setFire(double firepower) {
+    __internals.botIntent.setFirepower(firepower);
   }
 
   @Override
@@ -477,7 +477,7 @@ public abstract class Bot implements IBot {
                   Bot.this.onHitWall((BotHitWallEvent) event);
                 } else if (event instanceof BulletFiredEvent) {
                   // Stop firing, when bullet has fired
-                  botIntent.setFirePower(0d);
+                  botIntent.setFirepower(0d);
                   Bot.this.onBulletFired((BulletFiredEvent) event);
                 } else if (event instanceof BulletHitBotEvent) {
                   BulletHitBotEvent bulletEvent = (BulletHitBotEvent) event;
