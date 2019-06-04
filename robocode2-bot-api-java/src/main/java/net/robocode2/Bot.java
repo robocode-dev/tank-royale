@@ -476,6 +476,8 @@ public abstract class Bot implements IBot {
                 } else if (event instanceof BotHitWallEvent) {
                   Bot.this.onHitWall((BotHitWallEvent) event);
                 } else if (event instanceof BulletFiredEvent) {
+                  // Stop firing, when bullet has fired
+                  botIntent.setFirePower(0d);
                   Bot.this.onBulletFired((BulletFiredEvent) event);
                 } else if (event instanceof BulletHitBotEvent) {
                   BulletHitBotEvent bulletEvent = (BulletHitBotEvent) event;
