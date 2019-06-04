@@ -77,4 +77,7 @@ public final class RuleConstants {
 	public static final double SCORE_PER_RAM_DAMAGE = 2;
 	/** Bonus per ram kill */
 	public static final double BONUS_PER_RAM_KILL = 0.30;
+
+	/** Inactivity punishment damage per turn */
+	public static final double INACTIVITY_DAMAGE = 0.1;
 }

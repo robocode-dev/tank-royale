@@ -53,6 +53,9 @@ public class ModelUpdater {
 	/** Previous turn */
 	private Turn previousTurn;
 
+	/** Inactivity counter */
+	private int inactivityCounter;
+
 	/**
 	 * Creates a new model updater
 	 * 
@@ -164,7 +167,7 @@ public class ModelUpdater {
 	}
 
 	/**
-	 * Proceed to next round
+	 * Proceed with next round
 	 */
 	private void nextRound() {
 		roundNumber++;
@@ -180,10 +183,12 @@ public class ModelUpdater {
 		initializeBotStates();
 
 		scoreTracker.prepareRound();
+
+		inactivityCounter = 0;
 	}
 
 	/**
-	 * Proceed to next turn
+	 * Proceed with next turn
 	 */
 	private void nextTurn() {
 
@@ -215,6 +220,9 @@ public class ModelUpdater {
 
 		// Check bullet hits
 		checkBulletHits();
+
+		// Check for inactivity
+		checkInactivity();
 
 		// Cleanup defeated robots (events)
 		checkForDefeatedBots();
@@ -470,6 +478,8 @@ public class ModelUpdater {
 				}
 
 				if (MathUtil.isLineIntersectingCircle(startPos1.x, startPos1.y, endPos1.x, endPos1.y, botX, botY, BOT_BOUNDING_CIRCLE_RADIUS)) {
+
+					inactivityCounter = 0; // reset collective inactivity counter due to robot taking bullet damage
 
 					double damage = RuleMath.calcBulletDamage(bullet.getPower());
 					boolean killed = botBuilder.addDamage(damage);
@@ -771,6 +781,15 @@ public class ModelUpdater {
 	}
 
 	/**
+	 * Check if the bots are inactive collectively. That is when no bot have been hit by bullets for some time.
+	 */
+	private void checkInactivity() {
+		if (inactivityCounter++ > setup.getInactivityTurns()) {
+			botBuilderMap.values().forEach(bot -> bot.addDamage(INACTIVITY_DAMAGE));
+		}
+	}
+
+	/**
 	 * Checks if any bots have been defeated
 	 */
 	private void checkForDefeatedBots() {
@@ -803,7 +822,9 @@ public class ModelUpdater {
 					BotIntent botIntent = botIntentsMap.get(botBuilder.getId());
 					if (botIntent != null) {
 						double firepower = botIntent.zerofied().getBulletPower();
-						fireBullet(botBuilder, firepower);
+						if (firepower >= MIN_BULLET_POWER) {
+							fireBullet(botBuilder, firepower);
+						}
 					}
 				} else {
 					// Gun is too hot => Cool down gun
@@ -815,11 +836,9 @@ public class ModelUpdater {
 	}
 
 	private void fireBullet(BotBuilder botBuilder, double firepower) {
-		if (firepower >= MIN_BULLET_POWER) {
-			// Gun is fired
-			firepower = Math.min(firepower, MAX_BULLET_POWER);
-			handleFiredBullet(botBuilder, firepower);
-		}		
+		// Gun is fired
+		firepower = Math.min(firepower, MAX_BULLET_POWER);
+		handleFiredBullet(botBuilder, firepower);
 	}
 	
 	/**
