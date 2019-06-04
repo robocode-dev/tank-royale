@@ -113,7 +113,7 @@ public class BotClient1 extends WebSocketClient {
           intent.setTargetSpeed(targetSpeed);
         }
 
-        intent.setFirePower(0.1 + Math.random() * 2.9);
+        intent.setFirepower(0.1 + Math.random() * 2.9);
         intent.setRadarTurnRate(45.0);
 
         if (targetX != null && targetY != null) {
