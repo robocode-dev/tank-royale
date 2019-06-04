@@ -16,8 +16,9 @@ properties:
   targetSpeed:
     description: New target speed in pixels per turn (can be positive and negative)
     type: number
-  firePower:
-    description: Attempt to fire gun with the specified fire power
+  firepower:
+    description: Attempt to fire gun with the specified firepower
     type: number
-    minimum: 0
+    minimum: 0.0
+    maximum: 3.0
     exclusiveMinimum: true
