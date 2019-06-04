@@ -44,15 +44,15 @@ public final class RuleConstants {
 	/** Maximum backward speed */
 	public static final double MAX_BACKWARD_SPEED = -8.0;
 
-	/** Minimum bullet power */
-	public static final double MIN_BULLET_POWER = 0.1;
-	/** Maximum bullet power */
-	public static final double MAX_BULLET_POWER = 3.0;
+	/** Minimum firepower */
+	public static final double MIN_FIREPOWER = 0.1;
+	/** Maximum firepower */
+	public static final double MAX_FIREPOWER = 3.0;
 
 	/** Minimum bullet speed */
-	public static final double MIN_BULLET_SPEED = RuleMath.calcBulletSpeed(MAX_BULLET_POWER);
+	public static final double MIN_BULLET_SPEED = RuleMath.calcBulletSpeed(MAX_FIREPOWER);
 	/** Maximum bullet speed */
-	public static final double MAX_BULLET_SPEED = RuleMath.calcBulletSpeed(MIN_BULLET_POWER);
+	public static final double MAX_BULLET_SPEED = RuleMath.calcBulletSpeed(MIN_FIREPOWER);
 
 	/** Acceleration */
 	public static final double ACCELERATION = 1.0;

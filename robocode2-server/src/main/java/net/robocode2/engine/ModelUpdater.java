@@ -822,7 +822,7 @@ public class ModelUpdater {
 					BotIntent botIntent = botIntentsMap.get(botBuilder.getId());
 					if (botIntent != null) {
 						double firepower = botIntent.zerofied().getBulletPower();
-						if (firepower >= MIN_BULLET_POWER) {
+						if (firepower >= MIN_FIREPOWER) {
 							fireBullet(botBuilder, firepower);
 						}
 					}
@@ -837,7 +837,7 @@ public class ModelUpdater {
 
 	private void fireBullet(BotBuilder botBuilder, double firepower) {
 		// Gun is fired
-		firepower = Math.min(firepower, MAX_BULLET_POWER);
+		firepower = Math.min(firepower, MAX_FIREPOWER);
 		handleFiredBullet(botBuilder, firepower);
 	}
 	
