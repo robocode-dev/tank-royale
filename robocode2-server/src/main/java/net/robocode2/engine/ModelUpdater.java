@@ -13,7 +13,7 @@ import static net.robocode2.util.MathUtil.normalAbsoluteDegrees;
 
 /**
  * Model updater, which keep track of the model state for each turn of a game.
- * 
+ *
  * @author Flemming N. Larsen
  */
 public class ModelUpdater {
@@ -58,7 +58,7 @@ public class ModelUpdater {
 
 	/**
 	 * Creates a new model updater
-	 * 
+	 *
 	 * @param setup
 	 *            is the game setup
 	 * @param participantIds
@@ -71,7 +71,7 @@ public class ModelUpdater {
 
 	/**
 	 * Creates a new model updater
-	 * 
+	 *
 	 * @param setup
 	 *            is the game setup
 	 * @param participantIds
@@ -97,7 +97,7 @@ public class ModelUpdater {
 
 	/**
 	 * Updates game state
-	 * 
+	 *
 	 * @param botIntents
 	 *            is the bot intents, which gives instructions to the game from the individual bot
 	 * @return new game state
@@ -150,7 +150,7 @@ public class ModelUpdater {
 
 	/**
 	 * Updates the current bot intents with the new bot intents
-	 * 
+	 *
 	 * @param botIntents
 	 *            is the new bot intents
 	 */
@@ -171,7 +171,7 @@ public class ModelUpdater {
 	 */
 	private void nextRound() {
 		roundNumber++;
-		
+
 		round = round.toBuilder().roundNumber(roundNumber).build();
 
 		roundEnded = false;
@@ -249,7 +249,7 @@ public class ModelUpdater {
 
 	/**
 	 * Update game state
-	 * 
+	 *
 	 * @return new game state
 	 */
 	private GameState updateGameState() {
@@ -306,7 +306,7 @@ public class ModelUpdater {
 
 	/**
 	 * Calculates a random bot position
-	 * 
+	 *
 	 * @param occupiedCells
 	 *            is the occupied cells, where other bots are positioned
 	 * @return a random bot position
@@ -359,18 +359,18 @@ public class ModelUpdater {
 
 		for (Map.Entry<Integer /* botId */, BotBuilder> entry : botBuilderMap.entrySet()) {
 			int botId = entry.getKey();
-	
+
 			BotBuilder botBuilder = botBuilderMap.get(botId);
 
 			if (botBuilder.isAlive() && !botBuilder.isDisabled()) {
 
 				BotIntent botIntent = botIntentsMap.get(botId);
 				if (botIntent != null) {
-	
+
 					BotIntent immuBotIntent = botIntent.zerofied();
-		
+
 					double speed = RuleMath.calcNewBotSpeed(botBuilder.getSpeed(), immuBotIntent.getTargetSpeed());
-		
+
 					double limitedTurnRate = RuleMath.limitTurnRate(immuBotIntent.getTurnRate(), speed);
 					double limitedGunTurnRate = RuleMath.limitGunTurnRate(immuBotIntent.getGunTurnRate());
 					double limitedRadarTurnRate = RuleMath.limitRadarTurnRate(immuBotIntent.getRadarTurnRate());
@@ -385,13 +385,13 @@ public class ModelUpdater {
 					// Radar direction depends on the turn rate of the body, the gun, and the radar
 					totalTurnRate += limitedRadarTurnRate;
 					double radarDirection = normalAbsoluteDegrees(botBuilder.getRadarDirection() + totalTurnRate);
-		
+
 					botBuilder.direction(direction);
 					botBuilder.gunDirection(gunDirection);
 					botBuilder.radarDirection(radarDirection);
 					botBuilder.radarSpreadAngle(limitedRadarTurnRate);
 					botBuilder.speed(speed);
-		
+
 					botBuilder.moveToNewPosition();
 				}
 			}
@@ -512,7 +512,7 @@ public class ModelUpdater {
 	/**
 	 * Checks if the maximum bounding circles of two bullets are colliding. This is a pre-check if two bullets might be
 	 * colliding.
-	 * 
+	 *
 	 * @param bullet1Position
 	 *            is the position of the 1st bullet
 	 * @param bullet2Position
@@ -559,43 +559,70 @@ public class ModelUpdater {
 					final boolean bot1RammedBot2 = isRamming(botBuilder1, botBuilder2);
 					final boolean bot2rammedBot1 = isRamming(botBuilder2, botBuilder1);
 
-					double bot1BounceDist = 0;
-					double bot2BounceDist = 0;
-
 					if (bot1RammedBot2) {
-						botBuilder1.speed(0);
-						bot1BounceDist = overlapDist;
 						scoreTracker.registerRamHit(botId2, botId1, RAM_DAMAGE, bot1Killed);
 					}
 					if (bot2rammedBot1) {
-						botBuilder2.speed(0);
-						bot2BounceDist = overlapDist;
 						scoreTracker.registerRamHit(botId1, botId2, RAM_DAMAGE, bot2Killed);
 					}
-					if (bot1RammedBot2 && bot2rammedBot1) {
-						double totalSpeed = botBuilder1.getSpeed() + botBuilder1.getSpeed();
+					double totalSpeed = botBuilder1.getSpeed() + botBuilder2.getSpeed();
 
-						if (totalSpeed == 0.0) {
-							bot1BounceDist /= 2;
-							bot2BounceDist /= 2;
+					double bot1BounceDist;
+					double bot2BounceDist;
 
-						} else {
-							double t = overlapDist / totalSpeed;
+					if (totalSpeed == 0.0) {
+						bot1BounceDist = overlapDist / 2;
+						bot2BounceDist = overlapDist / 2;
 
-							// The faster speed, the less bounce distance. Hence the speeds for the bots are swapped
-							bot1BounceDist = botBuilder2.getSpeed() * t;
-							bot2BounceDist = botBuilder1.getSpeed() * t;
-						}
-					}
-					if (bot1BounceDist != 0) {
-						botBuilder1.bounceBack(bot1BounceDist);
-					}
-					if (bot2BounceDist != 0) {
-						botBuilder2.bounceBack(bot2BounceDist);
+					} else {
+						double t = overlapDist / totalSpeed;
+
+						// The faster speed, the less bounce distance. Hence the speeds for the bots are swapped0
+						bot1BounceDist = botBuilder2.getSpeed() * t;
+						bot2BounceDist = botBuilder1.getSpeed() * t;
 					}
 
-					bot1x = botBuilder1.getX();
-					bot1y = botBuilder1.getY();
+					double oldBot1X = botBuilder1.getX();
+					double oldBot1Y = botBuilder1.getY();
+					double oldBot2X = botBuilder2.getX();
+					double oldBot2Y = botBuilder2.getY();
+
+					botBuilder1.bounceBack(bot1BounceDist);
+					botBuilder2.bounceBack(bot2BounceDist);
+
+					double newBot1X = botBuilder1.getX();
+					double newBot1Y = botBuilder1.getY();
+					double newBot2X = botBuilder2.getX();
+					double newBot2Y = botBuilder2.getY();
+
+					// Check if one of the bot bounced into a wall
+
+					if (newBot1X < BOT_BOUNDING_CIRCLE_RADIUS || newBot1Y < BOT_BOUNDING_CIRCLE_RADIUS ||
+							newBot1X > (setup.getArenaWidth() - BOT_BOUNDING_CIRCLE_RADIUS) ||
+							newBot1Y > (setup.getArenaHeight() - BOT_BOUNDING_CIRCLE_RADIUS)) {
+
+						botBuilder1.x(oldBot1X);
+						botBuilder1.y(oldBot1Y);
+
+						botBuilder2.bounceBack(bot1BounceDist /* remaining distance */);
+					}
+
+					if (newBot2X < BOT_BOUNDING_CIRCLE_RADIUS || newBot2Y < BOT_BOUNDING_CIRCLE_RADIUS ||
+							newBot2X > (setup.getArenaWidth() - BOT_BOUNDING_CIRCLE_RADIUS) ||
+							newBot2Y > (setup.getArenaHeight() - BOT_BOUNDING_CIRCLE_RADIUS)) {
+
+						botBuilder2.x(oldBot2X);
+						botBuilder2.y(oldBot2Y);
+
+						botBuilder1.bounceBack(bot2BounceDist /* remaining distance */);
+					}
+
+					if (bot1RammedBot2) {
+            			botBuilder1.speed(0);
+					}
+					if (bot2rammedBot1) {
+            			botBuilder2.speed(0);
+					}
 
 					BotHitBotEvent botHitBotEvent1 = new BotHitBotEvent(turnNumber, botId1, botId2, botBuilder2.getEnergy(), botBuilder2.getX(), botBuilder2.getY(), bot1RammedBot2);
 					BotHitBotEvent botHitBotEvent2 = new BotHitBotEvent(turnNumber, botId2, botId1, botBuilder1.getEnergy(), botBuilder1.getX(), botBuilder1.getY(), bot2rammedBot1);
@@ -605,6 +632,8 @@ public class ModelUpdater {
 
 					turnBuilder.addObserverEvent(botHitBotEvent1);
 					turnBuilder.addObserverEvent(botHitBotEvent2);
+
+					break;
 				}
 			}
 		}
@@ -616,7 +645,7 @@ public class ModelUpdater {
 
 	/**
 	 * Checks if the bounding circles of two bots are colliding.
-	 * 
+	 *
 	 * @param bot1x
 	 *            is the x coordinate of the 1st bot
 	 * @param bot1y
@@ -639,7 +668,7 @@ public class ModelUpdater {
 
 	/**
 	 * Checks if a bot is ramming another bot
-	 * 
+	 *
 	 * @param bot
 	 *            is the bot the attempts ramming
 	 * @param victim
@@ -665,14 +694,14 @@ public class ModelUpdater {
 	private void updateBulletPositions() {
 
 		Set<Bullet> newBulletSet = new HashSet<>();
-	
+
 		for (Bullet bullet : bullets) {
 			// The tick is used to calculate new position by calling getPosition()
 			Bullet updatedBullet = bullet.toBuilder().tick(bullet.getTick() + 1).build();
-			
+
 			newBulletSet.add(updatedBullet);
 		}
-		
+
 		bullets.clear();
 		bullets.addAll(newBulletSet);
 	}
@@ -696,58 +725,58 @@ public class ModelUpdater {
 				double oldY = prevBotState.getY();
 				double dx = x - oldX;
 				double dy = y - oldY;
-	
+
 				boolean hitWall = false;
-	
+
 				if (x - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
 					hitWall = true;
-	
+
 					x = BOT_BOUNDING_CIRCLE_RADIUS;
-	
+
 					if (dx != 0) {
 						double dxCut = x - oldX;
 						y = oldY + (dxCut * dy / dx);
 					}
 				} else if (x + BOT_BOUNDING_CIRCLE_RADIUS > setup.getArenaWidth()) {
 					hitWall = true;
-	
+
 					x = (double) setup.getArenaWidth() - BOT_BOUNDING_CIRCLE_RADIUS;
-	
+
 					if (dx != 0) {
 						double dxCut = x - oldX;
 						y = oldY + (dxCut * dy / dx);
 					}
 				} else if (y - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
 					hitWall = true;
-	
+
 					y = BOT_BOUNDING_CIRCLE_RADIUS;
-	
+
 					if (dy != 0) {
 						double dyCut = y - oldY;
 						x = oldX + (dyCut * dx / dy);
 					}
 				} else if (y + BOT_BOUNDING_CIRCLE_RADIUS > setup.getArenaHeight()) {
 					hitWall = true;
-	
+
 					y = (double) setup.getArenaHeight() - BOT_BOUNDING_CIRCLE_RADIUS;
-	
+
 					if (dy != 0) {
 						double dyCut = y - oldY;
 						x = oldX + (dyCut * dx / dy);
 					}
 				}
-	
+
 				if (hitWall) {
 					botBuilder.x(x);
 					botBuilder.y(y);
-	
+
 					// Skip this check, if the bot hit the wall in the previous turn
 					if (previousTurn.getBotEvents(botBuilder.getId()).stream().noneMatch(e -> e instanceof BotHitWallEvent)) {
-		
+
 						BotHitWallEvent botHitWallEvent = new BotHitWallEvent(turnNumber, botBuilder.getId());
 						turnBuilder.addPrivateBotEvent(botBuilder.getId(), botHitWallEvent);
 						turnBuilder.addObserverEvent(botHitWallEvent);
-		
+
 						double damage = RuleMath.calcWallDamage(botBuilder.getSpeed());
 						botBuilder.addDamage(damage);
 					}
@@ -840,10 +869,10 @@ public class ModelUpdater {
 		firepower = Math.min(firepower, MAX_FIREPOWER);
 		handleFiredBullet(botBuilder, firepower);
 	}
-	
+
 	/**
 	 * Handle fired bullet
-	 * 
+	 *
 	 * @param botBuilder
 	 *            is the bot firing the bullet
 	 * @param firepower
@@ -863,7 +892,7 @@ public class ModelUpdater {
 			.startY(botBuilder.getY())
 			.direction(botBuilder.getGunDirection())
 			.build();
-		
+
 		bullets.add(bullet);
 
 		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(turnNumber, bullet);
