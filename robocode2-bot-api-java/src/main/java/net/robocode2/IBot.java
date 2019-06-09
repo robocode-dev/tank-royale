@@ -325,7 +325,7 @@ public interface IBot {
   default void onBotDeath(BotDeathEvent botDeathEvent) {}
 
   /** Event handler triggered when the bot has collided with another bot */
-  default void onHitByBot(BotHitBotEvent botHitBotEvent) {}
+  default void onHitBot(BotHitBotEvent botHitBotEvent) {}
 
   /** Event handler triggered when the bot has hit a wall */
   default void onHitWall(BotHitWallEvent botHitWallEvent) {}

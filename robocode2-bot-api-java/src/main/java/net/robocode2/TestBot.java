@@ -86,16 +86,23 @@ public class TestBot extends Bot {
 
   @Override
   public void onSkippedTurn(SkippedTurnEvent event) {
-    System.out.println("onSkippedTurn: turn: " + event.getTurnNumber() + "/" + getRoundNumber());
+//    System.out.println("onSkippedTurn: turn: " + event.getTurnNumber() + "/" + getRoundNumber());
   }
 
   @Override
   public void onHitByBullet(BulletHitBotEvent event) {
-    System.out.println("-> onHitByBullet: " + event.getTurnNumber() + "/" + getRoundNumber());
+//    System.out.println("-> onHitByBullet: " + event.getTurnNumber() + "/" + getRoundNumber());
   }
 
   @Override
   public void onBulletHit(BulletHitBotEvent event) {
-    System.out.println("<- onBulletHit: " + event.getTurnNumber() + "/" + getRoundNumber());
+//    System.out.println("<- onBulletHit: " + event.getTurnNumber() + "/" + getRoundNumber());
+  }
+
+  @Override
+  public void onHitBot(BotHitBotEvent event) {
+//    System.out.println("BotHitBotEvent: " + event);
+
+    targetSpeed =- targetSpeed;
   }
 }
