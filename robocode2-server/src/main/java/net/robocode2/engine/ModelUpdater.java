@@ -224,7 +224,10 @@ public class ModelUpdater {
 		// Check for inactivity
 		checkInactivity();
 
-		// Cleanup defeated robots (events)
+		// Check for disabled bots
+		checkForDisabledBots();
+
+		// Cleanup defeated bots (events)
 		checkForDefeatedBots();
 
 		// Fire guns
@@ -362,7 +365,7 @@ public class ModelUpdater {
 
 			BotBuilder botBuilder = botBuilderMap.get(botId);
 
-			if (botBuilder.isAlive() && !botBuilder.isDisabled()) {
+			if (!botBuilder.isDisabled()) {
 
 				BotIntent botIntent = botIntentsMap.get(botId);
 				if (botIntent != null) {
@@ -479,7 +482,7 @@ public class ModelUpdater {
 
 				if (MathUtil.isLineIntersectingCircle(startPos1.x, startPos1.y, endPos1.x, endPos1.y, botX, botY, BOT_BOUNDING_CIRCLE_RADIUS)) {
 
-					inactivityCounter = 0; // reset collective inactivity counter due to robot taking bullet damage
+					inactivityCounter = 0; // reset collective inactivity counter due to bot taking bullet damage
 
 					double damage = RuleMath.calcBulletDamage(bullet.getPower());
 					boolean killed = botBuilder.addDamage(damage);
@@ -810,12 +813,27 @@ public class ModelUpdater {
 	}
 
 	/**
-	 * Check if the bots are inactive collectively. That is when no bot have been hit by bullets for some time.
+	 * Check if the bots are inactive collectively. That is when no bot have been hit by bullets for some time
 	 */
 	private void checkInactivity() {
 		if (inactivityCounter++ > setup.getInactivityTurns()) {
 			botBuilderMap.values().forEach(bot -> bot.addDamage(INACTIVITY_DAMAGE));
 		}
+	}
+
+	/**
+	 * Check if the bots have been disabled (when energy is zero or close to zero)
+	 */
+	private void checkForDisabledBots() {
+		botBuilderMap.values().forEach(bot -> {
+			if (bot.getEnergy() < 0.01 && bot.getEnergy() > 0) {
+				bot.energy(0);
+			}
+			// If bot is disabled => Set then reset all bot intent values to zeros
+			if (bot.getEnergy() == 0) {
+				botIntentsMap.put(bot.getId(), BotIntent.builder().build().zerofied());
+			}
+		});
 	}
 
 	/**
@@ -842,7 +860,7 @@ public class ModelUpdater {
 		for (BotBuilder botBuilder : botBuilderMap.values()) {
 
 			// Bot cannot fire if it is disabled
-			if (botBuilder.isAlive() && !botBuilder.isDisabled()) {
+			if (!botBuilder.isDisabled()) {
 
 				// Fire gun, if the gun heat is zero
 				double gunHeat = botBuilder.getGunHeat();

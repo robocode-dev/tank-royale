@@ -107,7 +107,7 @@ public class Bot {
 		 * 
 		 * @param damage
 		 *            is the damage done to this bot
-		 * @return true if the robot got killed due to the damage, false otherwise.
+		 * @return true if the bot got killed due to the damage, false otherwise.
 		 */
 		public boolean addDamage(double damage) {
 			boolean aliveBefore = isAlive();
