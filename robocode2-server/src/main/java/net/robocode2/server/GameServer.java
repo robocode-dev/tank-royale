@@ -439,10 +439,7 @@ public final class GameServer {
     @Override
     public void onBotLeft(WebSocket conn) {
       // If a bot leaves while in a game, make sure to reset all intent values to zeroes
-      BotIntent intent = botIntents.get(conn);
-      if (intent != null) {
-        botIntents.put(conn, BotIntent.builder().build().zerofied());
-      }
+      botIntents.put(conn, BotIntent.builder().build().zerofied());
 
       sendBotListUpdateToObservers();
     }
