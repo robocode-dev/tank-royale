@@ -13,7 +13,7 @@ apply plugin: 'kotlin'
 apply plugin: 'application'
 
 group = 'net.robocode2'
-version = '0.1.0'
+version = '0.1.1'
 description = 'Robocode 2 Bootstrap'
 sourceCompatibility = '1.8'
 
@@ -36,4 +36,14 @@ dependencies {
 jar {
     manifest { attributes 'Main-Class': 'net.robocode2.BootstrapKt' }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+processResources {
+    with copySpec {
+        from 'src/main/resources'
+        include 'version.txt'
+        filter(ReplaceTokens, tokens: [version: version])
+    }
 }
