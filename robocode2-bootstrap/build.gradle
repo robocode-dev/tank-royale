@@ -1,0 +1,37 @@
+buildscript {
+    ext.kotlin_version = '1.3.31'
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+group = 'net.robocode2'
+version = '0.1.0'
+description = 'Robocode 2 Bootstrap'
+sourceCompatibility = '1.8'
+
+mainClassName = 'net.robocode2.BootstrapKt'
+
+defaultTasks 'run'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+}
+
+jar {
+    manifest { attributes 'Main-Class': 'net.robocode2.BootstrapKt' }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
