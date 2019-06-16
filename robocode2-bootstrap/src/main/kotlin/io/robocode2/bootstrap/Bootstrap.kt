@@ -24,19 +24,22 @@ fun main(args: Array<String>) {
 )
 class Bootstrap : Runnable {
 
-    @Option(names = ["-V", "--version"], description = ["display version info"])
+    @Option(names = ["-V", "--version"], description = ["Display version info"])
     private var isVersionInfoRequested = false
 
-    @Option(names = ["-h", "--help"], description = ["display this help message"])
+    @Option(names = ["-h", "--help"], description = ["Display this help message"])
     private var isUsageHelpRequested = false
 
-    @Option(names = ["-d", "--dir"], paramLabel = "DIR", description = ["the bootstrap directory"])
+    @Option(names = ["-d", "--dir"], paramLabel = "DIR", description = ["Set the bootstrap directory"])
     private var dir = File("").absolutePath
+
+    @Option(names = ["-l", "--list"], description = ["List all available bots"])
+    private var isListRequested = false
 
     @Spec
     private val spec: CommandSpec? = null
 
-    @UseExperimental(ImplicitReflectionSerializer::class)
+    @ImplicitReflectionSerializer
     override fun run() {
         val cmdLine = CommandLine(Bootstrap())
 
@@ -47,6 +50,10 @@ class Bootstrap : Runnable {
             }
             isVersionInfoRequested -> {
                 cmdLine.printVersionHelp(System.out)
+                System.exit(0)
+            }
+            isListRequested -> {
+                BotFinder(dir).findBotInfos().forEach { println(it.key) }
                 System.exit(0)
             }
             else -> {
@@ -60,8 +67,6 @@ class Bootstrap : Runnable {
                 cmdLine.printVersionHelp(System.out)
             }
         }
-
-        BotFinder(dir).findBotInfos().forEach { println(it) }
 
         println(BotFinder(dir).findOsScript("TestBot"))
     }

@@ -20,12 +20,12 @@ import java.nio.file.Paths
 class BotFinder(val bootDirPath: String) {
 
     @ImplicitReflectionSerializer
-    fun findBotInfos(): Set<BotInfo> {
+    fun findBotInfos(): Map<String, BotInfo> {
         val botNames = findBotNames()
-        val botInfo = HashSet<BotInfo>()
+        val botInfo = HashMap<String, BotInfo>()
         botNames.forEach { botName ->
             try {
-                botInfo += getBotInfo(botName)
+                botInfo += Pair(botName, getBotInfo(botName))
             } catch (ex: Exception) {
                 System.err.println(ex.message)
             }
