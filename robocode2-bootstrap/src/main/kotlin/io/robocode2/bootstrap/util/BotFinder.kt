@@ -2,17 +2,19 @@ package io.robocode2.bootstrap.util
 
 import io.robocode2.bootstrap.BootstrapException
 import io.robocode2.bootstrap.model.BotInfo
-import io.robocode2.bootstrap.util.OSUtil.OSType.Windows
 import io.robocode2.bootstrap.util.OSUtil.OSType.MacOS
+import io.robocode2.bootstrap.util.OSUtil.OSType.Windows
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonParsingException
 import kotlinx.serialization.parse
+import java.io.File
+import java.io.FileInputStream
+import java.io.FilenameFilter
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.io.*
 
 
 class BotFinder(val bootDirPath: String) {
@@ -54,13 +56,15 @@ class BotFinder(val bootDirPath: String) {
 
         val files = botsDir().listFiles(BotFilenameFilter(botName))
         files.forEach { file ->
-            if (readFirstLine(file).trim().startsWith("#!")) return file.absolutePath
+            if (file.name.toLowerCase() == botName.toLowerCase() ||
+                    readFirstLine(file).trim().startsWith("#!"))
+                return file.absolutePath
         }
         return null
     }
 
     private fun readFirstLine(filePath: File): String {
-        return FileInputStream(filePath).bufferedReader().readLine()
+        return FileInputStream(filePath).bufferedReader().readLine() ?: ""
     }
 
     private fun findBotNames(): Set<String> {
