@@ -39,6 +39,7 @@ class BotFinder(val bootDirPath: String) {
 
     private fun findWindowsScript(botName: String): String? = when {
         File(botsDir(), "$botName.bat").exists() -> "$botName.bat"
+        File(botsDir(), "$botName.cmd").exists() -> "$botName.cmd"
         File(botsDir(), "$botName.ps1").exists() -> "$botName.ps1"
         else -> null
     }
@@ -53,7 +54,7 @@ class BotFinder(val bootDirPath: String) {
 
         val files = botsDir().listFiles(BotFilenameFilter(botName))
         files.forEach { file ->
-            if (readFirstLine(file).startsWith("#!")) return file.absolutePath
+            if (readFirstLine(file).trim().startsWith("#!")) return file.absolutePath
         }
         return null
     }
@@ -108,5 +109,6 @@ internal class FilenameExtFilter(private val fileExtensions: Array<String>) : Fi
 
 internal class BotFilenameFilter(private val botName: String) : FilenameFilter {
     override fun accept(dir: File, filename: String): Boolean =
-            filename.toLowerCase().startsWith('.' + botName.toLowerCase())
+            filename.toLowerCase() == botName.toLowerCase() ||
+                    filename.toLowerCase().startsWith(botName.toLowerCase() + '.')
 }
