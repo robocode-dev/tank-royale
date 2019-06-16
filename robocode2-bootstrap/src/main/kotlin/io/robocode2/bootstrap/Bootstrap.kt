@@ -1,5 +1,6 @@
 package io.robocode2.bootstrap
 
+import io.robocode2.bootstrap.util.BotFinder
 import kotlinx.serialization.ImplicitReflectionSerializer
 import picocli.CommandLine
 import picocli.CommandLine.Command

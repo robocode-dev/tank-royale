@@ -1,7 +1,7 @@
-package io.robocode2.bootstrap
+package io.robocode2.bootstrap.util
 
+import io.robocode2.bootstrap.BootstrapException
 import io.robocode2.bootstrap.model.BotInfo
-import io.robocode2.bootstrap.util.OSUtil
 import io.robocode2.bootstrap.util.OSUtil.OSType.Windows
 import io.robocode2.bootstrap.util.OSUtil.OSType.MacOS
 import kotlinx.serialization.ImplicitReflectionSerializer
