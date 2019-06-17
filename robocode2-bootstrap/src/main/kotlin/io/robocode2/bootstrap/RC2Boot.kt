@@ -15,39 +15,28 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 fun main(args: Array<String>) {
-    CommandLine.run(Bootstrap(), System.out, CommandLine.Help.Ansi.OFF, *args)
+    CommandLine.run(RC2Boot(), System.out, CommandLine.Help.Ansi.OFF, *args)
 }
 
 @Command(
-        name = "bootstrap",
+        name = "rc2boot",
         versionProvider = VersionFileProvider::class,
         description = ["Tool for booting up Robocode 2 bots"],
         mixinStandardHelpOptions = true
 )
-class Bootstrap : Runnable {
+class RC2Boot : Runnable {
 
-    @Option(names = ["--boot-bootDir"], paramLabel = "BOOTDIR", description = ["Sets the path to the boot directory"])
+    @Option(names = ["--boot-dir"], paramLabel = "BOOTDIR", description = ["Sets the path to the boot directory"])
     private var bootDir = getBootDir()
 
     override fun run() {
-        val cmdLine = CommandLine(Bootstrap())
-
+        val cmdLine = CommandLine(RC2Boot())
         when {
-            cmdLine.isUsageHelpRequested -> {
-                cmdLine.usage(System.out)
-                System.exit(0)
-            }
-            cmdLine.isVersionHelpRequested -> {
-                cmdLine.printVersionHelp(System.out)
-                System.exit(0)
-            }
-            else -> {
-                // TODO: Print header/banner?
-                cmdLine.printVersionHelp(System.out)
-            }
+            cmdLine.isUsageHelpRequested -> cmdLine.usage(System.out)
+            cmdLine.isVersionHelpRequested -> cmdLine.printVersionHelp(System.out)
+            else -> cmdLine.usage(System.out)
         }
-
-        println(BotFinder(bootDir).findOsScript("TestBot"))
+        System.exit(0)
     }
 
     @Command(name = "filenames", description = ["List filenames of available bots"])
@@ -78,6 +67,6 @@ internal class VersionFileProvider : CommandLine.IVersionProvider {
         if (inputStream != null) {
             BufferedReader(InputStreamReader(inputStream)).use { br -> version = br.readLine() }
         }
-        return arrayOf("Robocode2 io.robocode2.bootstrap.Bootstrap $version")
+        return arrayOf("Robocode2 io.robocode2.bootstrap.RC2Boot $version")
     }
 }
