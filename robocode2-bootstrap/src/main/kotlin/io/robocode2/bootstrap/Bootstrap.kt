@@ -4,23 +4,19 @@ import io.robocode2.bootstrap.util.BotFinder
 import kotlinx.serialization.ImplicitReflectionSerializer
 import picocli.CommandLine
 import picocli.CommandLine.Command
-import picocli.CommandLine.Model.CommandSpec
 import picocli.CommandLine.Option
-import picocli.CommandLine.Spec
 import java.io.BufferedReader
-import java.io.File
 import java.io.InputStreamReader
+import java.nio.file.Paths
 
 fun main(args: Array<String>) {
     CommandLine.run(Bootstrap(), System.out, CommandLine.Help.Ansi.OFF, *args)
 }
 
 @Command(
-        name = "Robocode2 io.robocode2.bootstrap.Bootstrap",
+        name = "bootstrap",
         versionProvider = VersionFileProvider::class,
-        header = [],
-        descriptionHeading = "Description:%n",
-        description = ["Used for starting up bot applications"]
+        description = ["Tool for booting up Robocode 2 bots"]
 )
 class Bootstrap : Runnable {
 
@@ -31,13 +27,10 @@ class Bootstrap : Runnable {
     private var isUsageHelpRequested = false
 
     @Option(names = ["-d", "--dir"], paramLabel = "DIR", description = ["Set the bootstrap directory"])
-    private var dir = File("").absolutePath
+    private var dir = Paths.get("").toAbsolutePath()
 
     @Option(names = ["-l", "--list"], description = ["List filenames on available bots"])
     private var isListRequested = false
-
-    @Spec
-    private val spec: CommandSpec? = null
 
     @ImplicitReflectionSerializer
     override fun run() {
@@ -57,13 +50,7 @@ class Bootstrap : Runnable {
                 System.exit(0)
             }
             else -> {
-                // Print out header as banner
-                val header = this.spec?.usageMessage()?.header()
-                if (header != null) {
-                    for (line in header) {
-                        println(line)
-                    }
-                }
+                // TODO: Print header/banner?
                 cmdLine.printVersionHelp(System.out)
             }
         }

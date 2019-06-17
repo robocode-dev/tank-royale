@@ -9,15 +9,15 @@ import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonParsingException
 import kotlinx.serialization.parse
-import java.io.File
-import java.io.FileInputStream
-import java.io.FilenameFilter
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
-import java.nio.file.Paths
+import java.nio.file.Files.list
+import java.nio.file.Path
+import java.util.function.Predicate
+import java.util.stream.Collectors.toList
 
 
-class BotFinder(private val bootDirPath: String) {
+class BotFinder(private val bootstrapPath: Path) {
 
     @ImplicitReflectionSerializer
     fun findBotInfos(): Map<String, BotInfo> {
@@ -33,54 +33,62 @@ class BotFinder(private val bootDirPath: String) {
         return botInfo
     }
 
-    fun findOsScript(botName: String): String? = when (OSUtil.getOsType()) {
+    fun findOsScript(botName: String): Path? = when (OSUtil.getOsType()) {
         Windows -> findWindowsScript(botName)
         MacOS -> findMacOsScript(botName)
         else -> findFirstUnixScript(botName)
     }
 
-    private fun findWindowsScript(botName: String): String? = when {
-        File(bootDirPath, "$botName.bat").exists() -> "$botName.bat"
-        File(bootDirPath, "$botName.cmd").exists() -> "$botName.cmd"
-        File(bootDirPath, "$botName.ps1").exists() -> "$botName.ps1"
-        else -> null
+    private fun findWindowsScript(botName: String): Path? {
+        var path = bootstrapPath.resolve("$botName.bat")
+        if (Files.exists(path)) return path
+
+        path = path.resolve("$botName.cmd")
+        if (Files.exists(path)) return path
+
+        path = path.resolve("$botName.ps1")
+        if (Files.exists(path)) return path
+
+        return null
     }
 
-    private fun findMacOsScript(botName: String): String? = when {
-        File(bootDirPath, "$botName.command").exists() -> "$botName.command"
-        else -> findFirstUnixScript(botName)
+    private fun findMacOsScript(botName: String): Path? {
+        val commandFile = bootstrapPath.resolve("$botName.command")
+        if (Files.exists(commandFile)) return commandFile
+        return findFirstUnixScript(botName)
     }
 
-    private fun findFirstUnixScript(botName: String): String? {
-        if (File(bootDirPath, "$botName.sh").exists()) return "$botName.sh"
+    private fun findFirstUnixScript(botName: String): Path? {
+        val shFile = bootstrapPath.resolve("$botName.sh")
+        if (Files.exists(shFile)) return shFile
 
-        val files = File(bootDirPath).listFiles(BotFilenameFilter(botName))
-        files.forEach { file ->
-            if (file.name.toLowerCase() == botName.toLowerCase() ||
-                    readFirstLine(file).trim().startsWith("#!"))
-                return file.absolutePath
+        list(bootstrapPath).filter(IsBotFile(botName)).collect(toList()).forEach { path ->
+            if (path.fileName.toString().toLowerCase() == botName.toLowerCase() ||
+                    readFirstLine(path).trim().startsWith("#!")) {
+                return path
+            }
         }
         return null
     }
 
-    private fun readFirstLine(filePath: File): String {
-        return FileInputStream(filePath).bufferedReader().readLine() ?: ""
+    private fun readFirstLine(filePath: Path): String {
+        return Files.newInputStream(bootstrapPath.resolve(filePath)).bufferedReader().readLine() ?: ""
     }
 
     private fun findBotNames(): Set<String> {
-        val files = File(bootDirPath).listFiles(FilenameExtFilter(arrayOf("json")))
+        val files = list(bootstrapPath).filter(HasFileExtensions(arrayOf("json")))
 
         val names = HashSet<String>()
-        files?.forEach { names += it.nameWithoutExtension }
+        files?.forEach { path -> names += path.toFile().nameWithoutExtension }
         return names
     }
 
     @ImplicitReflectionSerializer
     private fun getBotInfo(botName: String): BotInfo {
-        var filePath = "<unknown>"
+        var filePath: Path? = null
         try {
-            filePath = File(bootDirPath, "$botName.json").absolutePath
-            val content = readAllLines(filePath)
+            filePath = bootstrapPath.resolve("$botName.json").toAbsolutePath()
+            val content = readContent(filePath)
             return Json.parse(content)
         } catch (ex: JsonParsingException) {
             throw BootstrapException("Could not parse JSON file: $filePath")
@@ -89,28 +97,32 @@ class BotFinder(private val bootDirPath: String) {
         }
     }
 
-    private fun readAllLines(filePath: String): String {
+    private fun readContent(filePath: Path): String {
         val contentBuilder = StringBuilder()
-        Files.lines(Paths.get(filePath), StandardCharsets.UTF_8).use { stream ->
+        Files.lines(filePath, StandardCharsets.UTF_8).use { stream ->
             stream.forEach { s -> contentBuilder.append(s).append('\n') }
         }
         return contentBuilder.toString()
     }
 }
 
-internal class FilenameExtFilter(private val fileExtensions: Array<String>) : FilenameFilter {
-    override fun accept(dir: File, filename: String): Boolean {
-        fileExtensions.forEach {
-            if (File(dir, filename).isDirectory) return false
-            val ext = it.replace(".", "").toLowerCase()
-            if (filename.toLowerCase().endsWith(".$ext")) return true
+internal class HasFileExtensions(private val fileExtensions: Array<String>) : Predicate<Path> {
+
+    override fun test(path: Path): Boolean {
+        if (Files.isDirectory(path)) return false
+        fileExtensions.forEach { ext ->
+            if (path.toString().toLowerCase().endsWith(".${ext.toLowerCase()}")) return true
         }
         return false
     }
 }
 
-internal class BotFilenameFilter(private val botName: String) : FilenameFilter {
-    override fun accept(dir: File, filename: String): Boolean =
-            filename.toLowerCase() == botName.toLowerCase() ||
-                    filename.toLowerCase().startsWith(botName.toLowerCase() + '.')
+internal class IsBotFile(private val botName: String) : Predicate<Path> {
+
+    override fun test(path: Path): Boolean {
+        val filenameLC = path.fileName.toString().toLowerCase()
+        val botNameLC = botName.toLowerCase()
+
+        return filenameLC == botNameLC || filenameLC.startsWith("$botNameLC.")
+    }
 }
