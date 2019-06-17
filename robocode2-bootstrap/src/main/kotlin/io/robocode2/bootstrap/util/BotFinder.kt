@@ -17,7 +17,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 
-class BotFinder(val bootDirPath: String) {
+class BotFinder(private val bootDirPath: String) {
 
     @ImplicitReflectionSerializer
     fun findBotInfos(): Map<String, BotInfo> {
@@ -40,21 +40,21 @@ class BotFinder(val bootDirPath: String) {
     }
 
     private fun findWindowsScript(botName: String): String? = when {
-        File(botsDir(), "$botName.bat").exists() -> "$botName.bat"
-        File(botsDir(), "$botName.cmd").exists() -> "$botName.cmd"
-        File(botsDir(), "$botName.ps1").exists() -> "$botName.ps1"
+        File(bootDirPath, "$botName.bat").exists() -> "$botName.bat"
+        File(bootDirPath, "$botName.cmd").exists() -> "$botName.cmd"
+        File(bootDirPath, "$botName.ps1").exists() -> "$botName.ps1"
         else -> null
     }
 
     private fun findMacOsScript(botName: String): String? = when {
-        File(botsDir(), "$botName.command").exists() -> "$botName.command"
+        File(bootDirPath, "$botName.command").exists() -> "$botName.command"
         else -> findFirstUnixScript(botName)
     }
 
     private fun findFirstUnixScript(botName: String): String? {
-        if (File(botsDir(), "$botName.sh").exists()) return "$botName.sh"
+        if (File(bootDirPath, "$botName.sh").exists()) return "$botName.sh"
 
-        val files = botsDir().listFiles(BotFilenameFilter(botName))
+        val files = File(bootDirPath).listFiles(BotFilenameFilter(botName))
         files.forEach { file ->
             if (file.name.toLowerCase() == botName.toLowerCase() ||
                     readFirstLine(file).trim().startsWith("#!"))
@@ -68,7 +68,7 @@ class BotFinder(val bootDirPath: String) {
     }
 
     private fun findBotNames(): Set<String> {
-        val files = botsDir().listFiles(FilenameExtFilter(arrayOf("json")))
+        val files = File(bootDirPath).listFiles(FilenameExtFilter(arrayOf("json")))
 
         val names = HashSet<String>()
         files?.forEach { names += it.nameWithoutExtension }
@@ -79,7 +79,7 @@ class BotFinder(val bootDirPath: String) {
     private fun getBotInfo(botName: String): BotInfo {
         var filePath = "<unknown>"
         try {
-            filePath = File(botsDir(), "$botName.json").absolutePath
+            filePath = File(bootDirPath, "$botName.json").absolutePath
             val content = readAllLines(filePath)
             return Json.parse(content)
         } catch (ex: JsonParsingException) {
@@ -96,8 +96,6 @@ class BotFinder(val bootDirPath: String) {
         }
         return contentBuilder.toString()
     }
-
-    private fun botsDir(): File = File(bootDirPath, "bots")
 }
 
 internal class FilenameExtFilter(private val fileExtensions: Array<String>) : FilenameFilter {

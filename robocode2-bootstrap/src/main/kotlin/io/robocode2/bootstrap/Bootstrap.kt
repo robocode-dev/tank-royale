@@ -33,7 +33,7 @@ class Bootstrap : Runnable {
     @Option(names = ["-d", "--dir"], paramLabel = "DIR", description = ["Set the bootstrap directory"])
     private var dir = File("").absolutePath
 
-    @Option(names = ["-l", "--list"], description = ["List all available bots"])
+    @Option(names = ["-l", "--list"], description = ["List filenames on available bots"])
     private var isListRequested = false
 
     @Spec
