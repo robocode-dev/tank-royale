@@ -16,11 +16,11 @@ apply plugin: 'application'
 apply plugin: 'kotlinx-serialization'
 
 group = 'net.robocode2'
-version = '0.1.1'
+version = '0.2.0'
 description = 'Robocode 2 Bootstrap'
 sourceCompatibility = '1.8'
 
-mainClassName = 'net.robocode2.BootstrapKt'
+mainClassName = 'io.robocode2.bootstrap.RC2BootKt'
 
 defaultTasks 'run'
 
@@ -39,7 +39,7 @@ dependencies {
 }
 
 jar {
-    manifest { attributes 'Main-Class': 'net.robocode2.BootstrapKt' }
+    manifest { attributes 'Main-Class': 'io.robocode2.bootstrap.RC2BootKt' }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 

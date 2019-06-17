@@ -15,7 +15,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 fun main(args: Array<String>) {
-    CommandLine.run(RC2Boot(), System.out, CommandLine.Help.Ansi.OFF, *args)
+    CommandLine.run(RC2Boot(), System.out, CommandLine.Help.Ansi.ON, *args)
 }
 
 @Command(
