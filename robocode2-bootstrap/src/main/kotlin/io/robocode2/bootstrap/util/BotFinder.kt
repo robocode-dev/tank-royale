@@ -1,6 +1,7 @@
 package io.robocode2.bootstrap.util
 
 import io.robocode2.bootstrap.BootstrapException
+import io.robocode2.bootstrap.model.BotEntry
 import io.robocode2.bootstrap.model.BotInfo
 import io.robocode2.bootstrap.util.OSUtil.OSType.MacOS
 import io.robocode2.bootstrap.util.OSUtil.OSType.Windows
@@ -20,17 +21,17 @@ import java.util.stream.Collectors.toList
 class BotFinder(private val bootstrapPath: Path) {
 
     @ImplicitReflectionSerializer
-    fun findBotInfos(): Map<String, BotInfo> {
+    fun findBotEntries(): List<BotEntry> {
         val botNames = findBotNames()
-        val botInfo = HashMap<String, BotInfo>()
+        val botEntries = ArrayList<BotEntry>()
         botNames.forEach { botName ->
             try {
-                botInfo += Pair(botName, getBotInfo(botName))
+                botEntries += BotEntry(botName, getBotInfo(botName))
             } catch (ex: Exception) {
                 System.err.println(ex.message)
             }
         }
-        return botInfo
+        return botEntries
     }
 
     fun findOsScript(botName: String): Path? = when (OSUtil.getOsType()) {
