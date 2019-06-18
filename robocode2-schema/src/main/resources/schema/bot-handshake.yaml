@@ -13,17 +13,20 @@ properties:
   author:
     description: Author name, e.g. John Doe (john_doe@somewhere.net)
     type: string
+  description:
+    decription: Short description of the bot, preferable a one-liner
+    type: string
   countryCode:
-    description: 2-letter country code defined by ISO 3166-1
+    description: 2-letter country code defined by ISO 3166-1, e.g. "UK"
     type: string
     pattern: (^[a-z]{2}$)|(^[A-Z]{2}$)
   gameTypes:
-    description: Game types supported by this bot
+    description: Game types supported by this bot (defined elsewhere), e.g. "melee" and "1vs1"
     type: array
     items:
       type: string
   programmingLang:
-    description: Language used for programming the bot, e.g. Java 9
+    description: Language used for programming the bot, e.g. Java
     type: string
 required:
   - name
