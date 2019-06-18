@@ -21,6 +21,7 @@ class BotInfoTest {
             "MyBot",
             "1.0",
             "John Doe",
+            "Sample bot",
             "dk",
             Arrays.asList(GameType.MELEE.toString(), GameType.TWIN_DUAL.toString()),
             "Java");
@@ -28,6 +29,7 @@ class BotInfoTest {
     assertEquals("MyBot", botInfo.getName());
     assertEquals("1.0", botInfo.getVersion());
     assertEquals("John Doe", botInfo.getAuthor());
+    assertEquals("Sample bot", botInfo.getDescription());
     assertEquals("DK", botInfo.getCountryCode().toUpperCase());
     assertThat(botInfo.getGameTypes())
         .asList()
@@ -45,6 +47,7 @@ class BotInfoTest {
                 null,
                 "1.0",
                 "John Doe",
+                "Sample bot",
                 "dk",
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java"));
@@ -59,6 +62,7 @@ class BotInfoTest {
                 "",
                 "1.0",
                 "John Doe",
+                "Sample bot",
                 "dk",
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java"));
@@ -73,6 +77,7 @@ class BotInfoTest {
                 " \r\n",
                 "1.0",
                 "John Doe",
+                "Sample bot",
                 "dk",
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java"));
@@ -87,6 +92,7 @@ class BotInfoTest {
                 "MyBot",
                 null,
                 "John Doe",
+                "Sample bot",
                 "dk",
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java"));
@@ -101,6 +107,7 @@ class BotInfoTest {
                 "MyBot",
                 "",
                 "John Doe",
+                "Sample bot",
                 "dk",
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java"));
@@ -115,6 +122,7 @@ class BotInfoTest {
                 "MyBot",
                 " \r\n",
                 "John Doe",
+                "Sample bot",
                 "dk",
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java"));
@@ -129,6 +137,7 @@ class BotInfoTest {
                 "MyBot",
                 "1.0",
                 null,
+                "Sample bot",
                 "dk",
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java"));
@@ -143,6 +152,7 @@ class BotInfoTest {
                 "MyBot",
                 "1.0",
                 "",
+                "Sample bot",
                 "dk",
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java"));
@@ -157,6 +167,7 @@ class BotInfoTest {
                 "MyBot",
                 "1.0",
                 " \r\n",
+                "Sample bot",
                 "dk",
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java"));
@@ -171,6 +182,7 @@ class BotInfoTest {
                 "MyBot",
                 "1.0",
                 "John Doe",
+                "Sample bot",
                 null,
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java")
@@ -187,6 +199,7 @@ class BotInfoTest {
                 "MyBot",
                 "1.0",
                 "John Doe",
+                "Sample bot",
                 "",
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java")
@@ -203,6 +216,7 @@ class BotInfoTest {
                 "MyBot",
                 "1.0",
                 "John Doe",
+                "Sample bot",
                 " \r\n",
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java")
@@ -218,6 +232,7 @@ class BotInfoTest {
                 "MyBot",
                 "1.0",
                 "John Doe",
+                "Sample bot",
                 "dk",
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java")
@@ -233,6 +248,7 @@ class BotInfoTest {
                 "MyBot",
                 "1.0",
                 "John Doe",
+                "Sample bot",
                 "DNK",
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java")
@@ -248,6 +264,7 @@ class BotInfoTest {
                 "MyBot",
                 "1.0",
                 "John Doe",
+                "Sample bot",
                 "208",
                 Arrays.asList(GameType.MELEE.toString(), GameType.ONE_VS_ONE.toString()),
                 "Java")
@@ -259,28 +276,38 @@ class BotInfoTest {
   void whenGameTypesIsNullInConstructor_thenThrowIllegalArgumentException() {
     assertThrows(
         IllegalArgumentException.class,
-        () -> new BotInfo("MyBot", "1.0", "John Doe", "dk", null, "Java"));
+        () -> new BotInfo("MyBot", "1.0", "John Doe", "Sample bot", "dk", null, "Java"));
   }
 
   @Test
   void whenGameTypesIsEmptyInConstructor_thenThrowIllegalArgumentException() {
     assertThrows(
         IllegalArgumentException.class,
-        () -> new BotInfo("MyBot", "1.0", "John Doe", "dk", Collections.emptyList(), "Java"));
+        () ->
+            new BotInfo(
+                "MyBot", "1.0", "John Doe", "Sample bot", "dk", Collections.emptyList(), "Java"));
   }
 
   @Test
   void whenGameTypesHasNoGamesInConstructor_thenThrowIllegalArgumentException() {
     assertThrows(
         IllegalArgumentException.class,
-        () -> new BotInfo("MyBot", "1.0", "John Doe", "dk", Arrays.asList(null, ""), "Java"));
+        () ->
+            new BotInfo(
+                "MyBot", "1.0", "John Doe", "Sample bot", "dk", Arrays.asList(null, ""), "Java"));
   }
 
   @Test
   void whenGameTypesIsUntrimmedInConstructor_thenTrimGameTypes() {
     BotInfo botInfo =
         new BotInfo(
-            "MyBot", "1.0", "John Doe", "dk", Arrays.asList("  melee  ", "  1v1  "), "Java");
+            "MyBot",
+            "1.0",
+            "John Doe",
+            "Sample bot",
+            "dk",
+            Arrays.asList("  melee  ", "  1v1  "),
+            "Java");
 
     List<String> gameTypes = botInfo.getGameTypes();
 

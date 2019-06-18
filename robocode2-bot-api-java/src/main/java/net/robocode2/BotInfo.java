@@ -21,6 +21,9 @@ public class BotInfo {
   /** Author, e.g. "John Doe (johndoe@somewhere.io)" (required field) */
   @NonNull String author;
 
+  /** Short description of the bot, preferable a one-liner */
+  String description;
+
   /**
    * Country code defined by ISO 3166-1 alpha-2: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
    * If no country code is provided, the locale of the system is being used instead.
@@ -41,6 +44,7 @@ public class BotInfo {
       final String name,
       final String version,
       final String author,
+      final String description,
       final String countryCode,
       final List<String> gameTypes,
       final String programmingLang) {
@@ -84,6 +88,7 @@ public class BotInfo {
     this.name = name;
     this.version = version;
     this.author = author;
+    this.description = description;
     this.countryCode = (code == null) ? null : code.getAlpha2();
     this.gameTypes = trimmedGameTypes;
     this.programmingLang = programmingLang;
