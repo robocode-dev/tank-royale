@@ -16,7 +16,7 @@ apply plugin: 'application'
 apply plugin: 'kotlinx-serialization'
 
 group = 'net.robocode2'
-version = '0.1.0-SNAPSHOT'
+version = '0.2.0'
 description = 'Robocode 2 GUI'
 sourceCompatibility = '1.8'
 
@@ -37,7 +37,7 @@ dependencies {
     compile 'org.java-websocket:Java-WebSocket:1.4.0'
     compile 'com.miglayout:miglayout:3.7.4'
 
-    runtime 'net.robocode2:robocode2-server:0.2.8'
+    runtime 'net.robocode2:robocode2-server:0.2.10'
 }
 
 jar {
