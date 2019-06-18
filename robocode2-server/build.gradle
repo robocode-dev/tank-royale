@@ -3,7 +3,7 @@ plugins {
     id 'maven'
 }
 group = 'net.robocode2'
-version = '0.2.9'
+version = '0.2.10'
 sourceCompatibility = '1.8'
 
 repositories {
@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compile 'net.robocode2:robocode2-schema:0.3.4'
+    compile 'net.robocode2:robocode2-schema:0.3.5'
     compile 'org.danilopianini:gson-extras:0.2.1'
 
     compile 'org.java-websocket:Java-WebSocket:1.4.0'

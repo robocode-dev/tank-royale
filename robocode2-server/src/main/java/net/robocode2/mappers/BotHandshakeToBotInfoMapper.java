@@ -15,6 +15,7 @@ public final class BotHandshakeToBotInfoMapper {
 		botInfo.setName(botHandshake.getName());
 		botInfo.setVersion(botHandshake.getVersion());
 		botInfo.setAuthor(botHandshake.getAuthor());
+		botInfo.setDescription(botHandshake.getDescription());
 		botInfo.setCountryCode(botHandshake.getCountryCode());
 		botInfo.setProgrammingLang(botHandshake.getProgrammingLang());
 		botInfo.setGameTypes(Collections.unmodifiableList(botHandshake.getGameTypes()));
