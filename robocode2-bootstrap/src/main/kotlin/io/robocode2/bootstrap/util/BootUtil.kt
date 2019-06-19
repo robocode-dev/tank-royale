@@ -10,6 +10,7 @@ import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonParsingException
 import kotlinx.serialization.parse
+import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Files.list
@@ -18,7 +19,7 @@ import java.util.function.Predicate
 import java.util.stream.Collectors.toList
 
 
-class BotFinder(private val bootstrapPath: Path) {
+class BootUtil(private val bootstrapPath: Path) {
 
     @ImplicitReflectionSerializer
     fun findBotEntries(): List<BotEntry> {
@@ -28,13 +29,52 @@ class BotFinder(private val bootstrapPath: Path) {
             try {
                 botEntries += BotEntry(botName, getBotInfo(botName))
             } catch (ex: Exception) {
-                System.err.println(ex.message)
+                System.err.println("ERROR: ${ex.message}")
             }
         }
         return botEntries
     }
 
-    fun findOsScript(botName: String): Path? = when (OSUtil.getOsType()) {
+    fun startBots(filenames: Array<String>): List<Process> {
+        val processes = ArrayList<Process>()
+        filenames.forEach { filename ->
+            run {
+                val process = startBot(filename)
+                if (process != null) processes += process
+            }
+        }
+        return processes
+    }
+
+    private fun startBot(filename: String): Process? {
+        try {
+            val scriptPath = findOsScript(filename)
+
+            val command = scriptPath.toString()
+
+            val processBuilder = if (command.toLowerCase().endsWith(".ps1")) {
+                // handle PowerShell script
+                ProcessBuilder("powershell.exe", "-ExecutionPolicy ByPass", "-File \"$command\"")
+            } else if (command.toLowerCase().endsWith(".sh")) {
+                // handle Bash Shell script
+                ProcessBuilder("bash.exe", "-c \"$command\"")
+            } else {
+                // handle regular command
+                ProcessBuilder(command)
+            }
+
+            val process = processBuilder.start()
+
+            println("$filename started")
+            return process
+
+        } catch (ex: IOException) {
+            System.err.println("ERROR: ${ex.message}")
+            return null
+        }
+    }
+
+    private fun findOsScript(botName: String): Path? = when (OSUtil.getOsType()) {
         Windows -> findWindowsScript(botName)
         MacOS -> findMacOsScript(botName)
         else -> findFirstUnixScript(botName)
@@ -44,13 +84,13 @@ class BotFinder(private val bootstrapPath: Path) {
         var path = bootstrapPath.resolve("$botName.bat")
         if (Files.exists(path)) return path
 
-        path = path.resolve("$botName.cmd")
+        path = bootstrapPath.resolve("$botName.cmd")
         if (Files.exists(path)) return path
 
-        path = path.resolve("$botName.ps1")
+        path = bootstrapPath.resolve("$botName.ps1")
         if (Files.exists(path)) return path
 
-        return null
+        return findFirstUnixScript(botName)
     }
 
     private fun findMacOsScript(botName: String): Path? {
