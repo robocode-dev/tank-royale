@@ -1,10 +1,10 @@
-package io.robocode2.bootstrap.util
+package net.robocode2.bootstrap.util
 
-import io.robocode2.bootstrap.BootstrapException
-import io.robocode2.bootstrap.model.BotEntry
-import io.robocode2.bootstrap.model.BotInfo
-import io.robocode2.bootstrap.util.OSUtil.OSType.MacOS
-import io.robocode2.bootstrap.util.OSUtil.OSType.Windows
+import net.robocode2.bootstrap.BootstrapException
+import net.robocode2.bootstrap.model.BotEntry
+import net.robocode2.bootstrap.model.BotInfo
+import net.robocode2.bootstrap.util.OSUtil.OSType.MacOS
+import net.robocode2.bootstrap.util.OSUtil.OSType.Windows
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.json.Json

@@ -1,4 +1,4 @@
-package io.robocode2.bootstrap.model
+package net.robocode2.bootstrap.model
 
 import kotlinx.serialization.Serializable
 

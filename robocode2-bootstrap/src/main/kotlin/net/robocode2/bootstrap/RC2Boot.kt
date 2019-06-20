@@ -1,6 +1,6 @@
-package io.robocode2.bootstrap
+package net.robocode2.bootstrap
 
-import io.robocode2.bootstrap.util.BootUtil
+import net.robocode2.bootstrap.util.BootUtil
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json

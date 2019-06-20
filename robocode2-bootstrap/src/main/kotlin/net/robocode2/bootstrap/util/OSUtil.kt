@@ -1,4 +1,4 @@
-package io.robocode2.bootstrap.util
+package net.robocode2.bootstrap.util
 
 import java.util.*
 
