@@ -16,7 +16,7 @@ apply plugin: 'application'
 apply plugin: 'kotlinx-serialization'
 
 group = 'net.robocode2'
-version = '0.2.0'
+version = '0.2.1'
 description = 'Robocode 2 Bootstrap'
 sourceCompatibility = '1.8'
 

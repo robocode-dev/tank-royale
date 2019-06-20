@@ -27,7 +27,7 @@ class BootUtil(private val bootstrapPath: Path) {
         val botEntries = ArrayList<BotEntry>()
         botNames.forEach { botName ->
             try {
-                botEntries += BotEntry(botName, getBotInfo(botName))
+                botEntries.add(BotEntry(botName, getBotInfo(botName)))
             } catch (ex: Exception) {
                 System.err.println("ERROR: ${ex.message}")
             }
@@ -40,7 +40,7 @@ class BootUtil(private val bootstrapPath: Path) {
         filenames.forEach { filename ->
             run {
                 val process = startBot(filename)
-                if (process != null) processes += process
+                if (process != null) processes.add(process)
             }
         }
         return processes
@@ -49,21 +49,37 @@ class BootUtil(private val bootstrapPath: Path) {
     private fun startBot(filename: String): Process? {
         try {
             val scriptPath = findOsScript(filename)
-
-            val command = scriptPath.toString()
-
-            val processBuilder = if (command.toLowerCase().endsWith(".ps1")) {
-                // handle PowerShell script
-                ProcessBuilder("powershell.exe", "-ExecutionPolicy ByPass", "-File \"$command\"")
-            } else if (command.toLowerCase().endsWith(".sh")) {
-                // handle Bash Shell script
-                ProcessBuilder("bash.exe", "-c \"$command\"")
-            } else {
-                // handle regular command
-                ProcessBuilder(command)
+            if (scriptPath == null) {
+                System.err.println("ERROR: No script found for the bot: $filename")
+                return null
             }
 
+            val command = scriptPath.toString()
+            val commandLC = command.toLowerCase()
+
+            val processBuilder = when {
+                commandLC.endsWith(".bat") -> // handle Batch script
+                    ProcessBuilder("cmd.exe", "/c \"$command\"")
+                commandLC.endsWith(".ps1") -> // handle PowerShell script
+                    ProcessBuilder("powershell.exe", "-ExecutionPolicy ByPass", "-File \"$command\"")
+                commandLC.endsWith(".sh") -> // handle Bash Shell script
+                    ProcessBuilder("bash.exe", "-c \"$command\"")
+                else -> // handle regular command
+                    ProcessBuilder(command)
+            }
+
+//            processBuilder.redirectErrorStream(true)
             val process = processBuilder.start()
+
+//            val reader = BufferedReader(InputStreamReader(process.inputStream))
+
+//            Thread.sleep(2000)
+
+//            var line: String? = reader.readLine()
+//            do {
+//                println(line)
+//                line = reader.readLine()
+//            } while (line != null)
 
             println("$filename started")
             return process

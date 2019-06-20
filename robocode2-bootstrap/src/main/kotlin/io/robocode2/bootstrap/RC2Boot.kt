@@ -14,6 +14,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.*
 
 fun main(args: Array<String>) {
     CommandLine.run(RC2Boot(), System.out, CommandLine.Help.Ansi.ON, *args)
@@ -58,7 +59,7 @@ class RC2Boot : Runnable {
 
     @Command(name = "run", description = [
         "Start running the specified bots in individual processes.",
-        "Press any key to stop all started bots and quit this tool."
+        "Press enter key to stop all started bots and quit this tool."
     ])
     private fun boot(
             @Option(names = ["--boot-dir"], paramLabel = "BOOTDIR",
@@ -69,7 +70,6 @@ class RC2Boot : Runnable {
         val processes = BootUtil(getBootDir(bootDir)).startBots(filenames)
 
         readLine()
-
         processes.forEach{ p -> p.destroyForcibly() }
     }
 
