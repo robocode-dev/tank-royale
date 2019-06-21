@@ -10,7 +10,7 @@ import java.util.Locale;
 /** Required information about the bot. */
 @Value
 @Builder
-public class BotInfo {
+public final class BotInfo {
 
   /** Name, e.g. "MyBot" (required field) */
   @NonNull String name;

@@ -222,7 +222,7 @@ public abstract class Bot implements IBot {
 
   private final class __Internals {
     private static final String SERVER_URI_PROPERTY_KEY = "server.uri";
-    private static final String SERVER_URI_ENV_VAR = "ROBOCODE2_SERVER_URI";
+
 
     private static final String NOT_CONNECTED_TO_SERVER_MSG =
         "Not connected to game server yes. Make sure onConnected() event handler has been called first";
@@ -301,13 +301,13 @@ public abstract class Bot implements IBot {
     private URI getServerUriSetting() {
       var uri = System.getProperty(SERVER_URI_PROPERTY_KEY);
       if (uri == null) {
-        uri = System.getenv(SERVER_URI_ENV_VAR);
+        uri = System.getenv(EnvVar.SERVER_URI);
       }
       if (uri == null) {
         throw new BotException(
             String.format(
                 "Property %s or system environment variable %s is not defined",
-                SERVER_URI_PROPERTY_KEY, SERVER_URI_ENV_VAR));
+                SERVER_URI_PROPERTY_KEY, EnvVar.SERVER_URI));
       }
       try {
         return new URI(uri);

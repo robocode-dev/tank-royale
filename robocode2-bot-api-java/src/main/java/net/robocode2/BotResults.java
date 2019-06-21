@@ -6,7 +6,7 @@ import lombok.Value;
 /** Individual bot results */
 @Value
 @Builder
-public class BotResults {
+public final class BotResults {
   /** Identifier of the bot used in this battle */
   int id;
   /** Rank/placement of the bot, where 1 is 1st place, 4 is 4th place etc. */

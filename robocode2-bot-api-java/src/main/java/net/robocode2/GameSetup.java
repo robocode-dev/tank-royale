@@ -6,7 +6,7 @@ import lombok.Value;
 /** Game setup retrieved when game is started. */
 @Value
 @Builder
-public class GameSetup {
+public final class GameSetup {
   /** Game type, e.g. "melee" */
   String gameType;
   /** Width of the arena measured in pixels */

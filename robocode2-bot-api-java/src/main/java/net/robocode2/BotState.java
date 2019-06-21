@@ -6,7 +6,7 @@ import lombok.Value;
 /** Current bot state */
 @Value
 @Builder
-public class BotState {
+public final class BotState {
   /** Energy level */
   double energy;
   /** X coordinate */

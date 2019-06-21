@@ -6,7 +6,7 @@ import lombok.Value;
 /** Current bullet state */
 @Value
 @Builder
-public class BulletState {
+public final class BulletState {
     /** ID of the bullet */
     int bulletId;
     /** ID of the bot that fired the bullet */
