@@ -2,25 +2,14 @@ package net.robocode2;
 
 import net.robocode2.events.*;
 
-import java.net.URI;
-import java.util.Collections;
-
 public class TestBot extends Bot {
 
-  private static final BotInfo botInfo =
-      BotInfo.builder()
-          .name("Test")
-          .version("1")
-          .author("fnl")
-          .gameTypes(Collections.singletonList(GameType.MELEE.toString()))
-          .build();
-
-  private TestBot() throws Exception {
-    super(botInfo, new URI("ws://localhost:55000"));
+  public static void main(String[] args) {
+    new TestBot().run();
   }
 
-  public static void main(String[] args) throws Exception {
-    new TestBot().run();
+  private TestBot() {
+    super();
   }
 
   @Override

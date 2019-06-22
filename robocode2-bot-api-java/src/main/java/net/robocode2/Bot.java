@@ -35,16 +35,45 @@ public abstract class Bot implements IBot {
 
   private final __Internals __internals;
 
-  // Default constructor is not allowed and thus must be hidden
-  private Bot() {
-    __internals = new __Internals(null);
+  /**
+   * Constructor used when both BotInfo and serverUri are provided through environment variables.
+   * This constructor should be used when starting up the bot using a bootstrap. These environment
+   * variables must be set to provide the server URI and bot information, and are automatically set
+   * by the bootstrap tool for Robocode. ROBOCODE2_SERVER_URI, BOT_NAME, BOT_VERSION, BOT_AUTHOR,
+   * BOT_DESCRIPTION, BOT_COUNTRY_CODE, BOT_GAME_TYPES, BOT_PROG_LANG.
+   *
+   * <p><b>Example:</b>
+   *
+   * <p>ROBOCODE2_SERVER_URI=ws://localhost:55000<br>
+   * BOT_NAME=MyBot<br>
+   * BOT_VERSION=1.0<br>
+   * BOT_AUTHOR=fnl<br>
+   * BOT_DESCRIPTION=Sample bot<br>
+   * BOT_COUNTRY_CODE=DK<br>
+   * BOT_GAME_TYPES=melee,1v1<br>
+   * BOT_PROG_LANG=Java<br>
+   */
+  public Bot() {
+    __internals = new __Internals(null, null);
   }
 
-  public Bot(@NonNull final BotInfo botInfo) {
-    __internals = new __Internals(botInfo);
+  /**
+   * Constructor used when serverUri is provided through the environment variable
+   * ROBOCODE2_SERVER_URI.
+   *
+   * @param botInfo is the bot info containing information about your bot.
+   */
+  public Bot(final BotInfo botInfo) {
+    __internals = new __Internals(botInfo, null);
   }
 
-  public Bot(@NonNull final BotInfo botInfo, @NonNull URI serverUri) {
+  /**
+   * Constructor used when you want to provide both the bot information and server URI for your bot.
+   *
+   * @param botInfo is the bot info containing information about your bot.
+   * @param serverUri is the server URI
+   */
+  public Bot(final BotInfo botInfo, URI serverUri) {
     __internals = new __Internals(botInfo, serverUri);
   }
 
@@ -223,7 +252,6 @@ public abstract class Bot implements IBot {
   private final class __Internals {
     private static final String SERVER_URI_PROPERTY_KEY = "server.uri";
 
-
     private static final String NOT_CONNECTED_TO_SERVER_MSG =
         "Not connected to game server yes. Make sure onConnected() event handler has been called first";
 
@@ -265,14 +293,9 @@ public abstract class Bot implements IBot {
     private GameSetup gameSetup;
     private TickEvent currentTurn;
 
-    __Internals(BotInfo botInfo) {
-      this.botInfo = botInfo;
-      init(getServerUriSetting());
-    }
-
     __Internals(BotInfo botInfo, URI serverUri) {
-      this.botInfo = botInfo;
-      init(serverUri);
+      this.botInfo = (botInfo == null) ? Env.getBotInfo() : botInfo;
+      init(serverUri == null ? getServerUriFromSetting() : serverUri);
     }
 
     private void init(URI serverUri) {
@@ -298,16 +321,16 @@ public abstract class Bot implements IBot {
       myId = null;
     }
 
-    private URI getServerUriSetting() {
+    private URI getServerUriFromSetting() {
       var uri = System.getProperty(SERVER_URI_PROPERTY_KEY);
       if (uri == null) {
-        uri = System.getenv(EnvVar.SERVER_URI);
+        uri = Env.getServerUri();
       }
       if (uri == null) {
         throw new BotException(
             String.format(
                 "Property %s or system environment variable %s is not defined",
-                SERVER_URI_PROPERTY_KEY, EnvVar.SERVER_URI));
+                SERVER_URI_PROPERTY_KEY, Env.SERVER_URI));
       }
       try {
         return new URI(uri);
