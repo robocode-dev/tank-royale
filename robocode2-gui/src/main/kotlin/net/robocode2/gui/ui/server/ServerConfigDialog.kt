@@ -8,7 +8,10 @@ import net.robocode2.gui.extensions.WindowExt.onClosing
 import net.robocode2.gui.settings.ServerSettings
 import net.robocode2.gui.ui.MainWindow
 import net.robocode2.gui.ui.ResourceBundles
+import net.robocode2.gui.ui.ResourceBundles.MESSAGES
+import net.robocode2.gui.ui.ResourceBundles.STRINGS
 import net.robocode2.gui.utils.Event
+import java.awt.Cursor
 import java.awt.Dimension
 import java.awt.EventQueue
 import java.net.URI
@@ -19,7 +22,7 @@ object ServerConfigDialog : JDialog(MainWindow, getWindowTitle()) {
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
-        size = Dimension(400, 180)
+        size = Dimension(500, 150)
 
         setLocationRelativeTo(null) // center on screen
 
@@ -48,15 +51,10 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
     private val testButton = JButton(testButtonText)
 
     private val testButtonText: String
-        get() = ResourceBundles.STRINGS.get("server_test")
+        get() = STRINGS.get("server_test")
 
-    private val remoteServerCheckbox = JCheckBox(ResourceBundles.STRINGS.get(("use_remote_server")),
+    private val remoteServerCheckbox = JCheckBox(STRINGS.get(("use_remote_server")),
             ServerSettings.useRemoteServer)
-
-    private val connectionStatus: String
-        get() = ResourceBundles.STRINGS.get(if (Client.isConnected()) "connected" else "disconnected")
-
-    private val connectionStatusLabel = JLabel(connectionStatus)
 
     init {
 //        Client.connect(URI(serverEndpoint))
@@ -67,13 +65,10 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
         add(lowerPanel, "south")
 
         upperPanel.addNewLabel("server_endpoint")
-        upperPanel.add(serverTextField, "span 2, grow, wrap")
+        upperPanel.add(serverTextField, "span 2, grow")
+        upperPanel.add(testButton, "wrap")
 
         serverTextField.text = ServerSettings.endpoint
-
-        upperPanel.addNewLabel("connection_status")
-        upperPanel.add(connectionStatusLabel)
-        upperPanel.add(testButton, "wrap")
 
         upperPanel.add(remoteServerCheckbox)
 
@@ -87,22 +82,35 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
         testButton.addActionListener { onTestButtonClicked.publish(testButton) }
 
         onTestButtonClicked.subscribe {
-            if (Client.isConnected()) {
-                Client.close()
-            }
+            cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
             Client.connect(URI(serverTextField.text))
+        }
+
+        Client.onConnected.subscribe {
+            JOptionPane.showMessageDialog(null,
+                    MESSAGES.get("connected_successfully_to_server"))
+
+            Client.close()
+
+            cursor = Cursor.getDefaultCursor()
+        }
+
+        Client.onDisconnected.subscribe {
+            cursor = Cursor.getDefaultCursor()
+        }
+
+        Client.onError.subscribe {
+            JOptionPane.showMessageDialog(null,
+                    MESSAGES.get("could_not_connect_to_server"),
+                    MESSAGES.get("title_warning"),
+                    JOptionPane.WARNING_MESSAGE)
+
+            cursor = Cursor.getDefaultCursor()
         }
 
         onOk.subscribe { ServerSettings.save(); ServerConfigDialog.dispose() }
         onCancel.subscribe { ServerConfigDialog.dispose() }
-        onResetServerConfig.subscribe { resetServerConfig()  }
-
-        Client.onConnected.subscribe { updateConnectionStatusLabel() }
-        Client.onDisconnected.subscribe { updateConnectionStatusLabel() }
-    }
-
-    private fun updateConnectionStatusLabel() {
-        connectionStatusLabel.text = connectionStatus
+        onResetServerConfig.subscribe { resetServerConfig() }
     }
 
     private fun resetServerConfig() {

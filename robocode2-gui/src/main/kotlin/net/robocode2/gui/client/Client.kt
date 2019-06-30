@@ -13,6 +13,7 @@ object Client : AutoCloseable {
     // public events
     val onConnected = Event<Unit>()
     val onDisconnected = Event<Unit>()
+    val onError = Event<Exception>()
 
     val onBotListUpdate = Event<BotListUpdate>()
 
@@ -21,8 +22,6 @@ object Client : AutoCloseable {
     val onGameAborted = Event<GameAbortedEvent>()
 
     val onTickEvent = Event<TickEvent>()
-
-    val onBotDeathEvent = Event<BotDeathEvent>()
 
     var currentGameSetup: GameSetup? = null
 
@@ -55,6 +54,7 @@ object Client : AutoCloseable {
         websocket.onOpen.subscribe { onConnected.publish(Unit) }
         websocket.onClose.subscribe { onDisconnected.publish(Unit) }
         websocket.onMessage.subscribe { onMessage(it) }
+        websocket.onError.subscribe { onError.publish(it) }
 
         websocket.open() // must be called after onOpen.subscribe()
     }
