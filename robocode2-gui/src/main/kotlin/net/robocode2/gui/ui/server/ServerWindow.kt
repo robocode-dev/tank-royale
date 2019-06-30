@@ -1,4 +1,4 @@
-package net.robocode2.gui.server
+package net.robocode2.gui.ui.server
 
 import net.robocode2.gui.extensions.WindowExt.onClosing
 import net.robocode2.gui.ui.ResourceBundles

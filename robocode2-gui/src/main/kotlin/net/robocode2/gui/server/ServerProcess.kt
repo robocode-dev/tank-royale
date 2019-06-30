@@ -1,8 +1,8 @@
 package net.robocode2.gui.server
 
+import net.robocode2.gui.ui.server.ServerWindow
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.util.concurrent.TimeUnit
 
 
 object ServerProcess {

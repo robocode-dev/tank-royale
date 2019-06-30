@@ -3,9 +3,10 @@ package net.robocode2.gui.ui
 import net.robocode2.gui.client.Client
 import net.robocode2.gui.extensions.WindowExt.onClosing
 import net.robocode2.gui.server.ServerProcess
-import net.robocode2.gui.server.ServerWindow
+import net.robocode2.gui.ui.server.ServerWindow
 import net.robocode2.gui.ui.battle.ArenaPanel
 import net.robocode2.gui.ui.battle.BattleDialog
+import net.robocode2.gui.ui.server.ServerConfigDialog
 import java.awt.EventQueue
 import javax.swing.JFrame
 import javax.swing.UIManager
@@ -35,8 +36,11 @@ object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
         }
 
         MainWindowMenu.onShowServerLog.invokeLater {
-            val window = ServerWindow
-            window.isVisible = true
+            ServerWindow.isVisible = true
+        }
+
+        MainWindowMenu.onServerConfig.invokeLater {
+            ServerConfigDialog.isVisible = true
         }
 
         onClosing {

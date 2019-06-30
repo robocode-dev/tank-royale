@@ -12,6 +12,7 @@ object MainWindowMenu : JMenuBar() {
     val onNewBattle = Event<JMenuItem>()
     val onSetupRules = Event<JMenuItem>()
     val onShowServerLog = Event<JMenuItem>()
+    val onServerConfig = Event<JMenuItem>()
 
     init {
         val menuBundle = ResourceBundles.MENU
@@ -27,5 +28,6 @@ object MainWindowMenu : JMenuBar() {
         add(serverMenu)
 
         serverMenu.addNewMenuItem("item.show_server_log", onShowServerLog)
+        serverMenu.addNewMenuItem("item.server_config", onServerConfig)
     }
 }

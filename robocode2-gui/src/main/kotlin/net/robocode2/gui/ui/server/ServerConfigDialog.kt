@@ -49,7 +49,7 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
     private val testButtonText: String
         get() = ResourceBundles.STRINGS.get("server_test")
 
-    private val localServerCheckbox = JCheckBox(ResourceBundles.STRINGS.get(("run_server_locally")))
+    private val localServerCheckbox = JCheckBox(ResourceBundles.STRINGS.get(("run_server_locally")), true)
 
     private val connectionStatus: String
         get() = ResourceBundles.STRINGS.get(if (Client.isConnected()) "connected" else "disconnected")
@@ -93,6 +93,10 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
             }
             Client.connect(URI(serverEndpoint))
         }
+
+        onOk.subscribe { ServerConfigDialog.dispose() }
+        onCancel.subscribe { ServerConfigDialog.dispose() }
+        onResetServerConfig.subscribe {  }
 
         Client.onConnected.subscribe { updateConnectionStatusLabel() }
         Client.onDisconnected.subscribe { updateConnectionStatusLabel() }
