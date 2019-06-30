@@ -25,7 +25,7 @@ object ServerProcess {
     fun start() {
         process = builder?.start()
 
-        InputStreamReader(process?.inputStream).use { isr ->
+        InputStreamReader(process?.inputStream!!).use { isr ->
             BufferedReader(isr).use { br ->
                 for (line in br.lines()) {
                     ServerWindow.append(line + "\n")
@@ -35,7 +35,7 @@ object ServerProcess {
     }
 
     fun stop() {
-        val proc = ServerProcess.process
+        val proc = process
         if (proc != null && proc.isAlive) {
 
             // Send quit signal to server

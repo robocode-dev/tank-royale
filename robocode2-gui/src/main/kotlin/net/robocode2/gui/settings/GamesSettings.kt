@@ -95,7 +95,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
         load()
     }
 
-    private val internGameSetup = HashMap<String, MutableGameSetup?>()
+    private val gameSetup = HashMap<String, MutableGameSetup?>()
 
     init {
         for (propName in properties.stringPropertyNames()) {
@@ -104,8 +104,8 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
             val fieldName = strings[1]
             val value = properties.getValue(propName) as String
 
-            if (internGameSetup[gameName] == null) {
-                internGameSetup[gameName] = defaultGameSetup[GameType.CUSTOM.type]
+            if (gameSetup[gameName] == null) {
+                gameSetup[gameName] = defaultGameSetup[GameType.CUSTOM.type]
             }
             val gameType = games[gameName] as MutableGameSetup
             val theField = MutableGameSetup::class.java.getDeclaredField(fieldName)
@@ -127,7 +127,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
 
     val games: MutableMap<String, MutableGameSetup?>
             get() {
-            return internGameSetup
+            return gameSetup
         }
 
     private fun setProperties(gameSetup: Map<String, MutableGameSetup?>) {
@@ -152,7 +152,7 @@ object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties"
     }
 
     override fun save() {
-        setProperties(internGameSetup)
+        setProperties(gameSetup)
         super.save()
     }
 }

@@ -46,6 +46,10 @@ object Client : AutoCloseable {
     }
 
     fun connect(uri: URI) {
+        if (isConnected()) {
+            close()
+        }
+
         websocket = WebSocketClient(uri)
 
         websocket.onOpen.subscribe { onConnected.publish(Unit) }
