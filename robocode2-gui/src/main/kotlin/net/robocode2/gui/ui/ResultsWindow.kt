@@ -6,7 +6,6 @@ import net.robocode2.gui.ui.ResourceBundles.STRINGS
 import java.awt.EventQueue
 import javax.swing.*
 import javax.swing.table.DefaultTableCellRenderer
-import com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table
 import java.awt.Dimension
 
 

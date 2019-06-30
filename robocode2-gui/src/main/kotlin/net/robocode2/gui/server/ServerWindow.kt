@@ -12,7 +12,7 @@ object ServerWindow : JFrame(getWindowTitle()), AutoCloseable {
     private var textArea = JTextArea()
 
     init {
-        setSize(800, 600)
+        setSize(700, 550)
         setLocationRelativeTo(null) // center on screen
 
         textArea.isEditable = false
