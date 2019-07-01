@@ -2,10 +2,11 @@ package net.robocode2.gui.utils
 
 import sun.misc.Cleaner
 import java.awt.EventQueue
+import java.util.*
 
 class Event<T> {
 
-    private val subscribers = ArrayList<((T) -> Unit)>()
+    private val subscribers = Collections.synchronizedList(ArrayList<((T) -> Unit)>())
 
     fun subscribe(subscriber: ((T) -> Unit)): Disposable {
         subscribers.add(subscriber)
@@ -16,7 +17,7 @@ class Event<T> {
     }
 
     fun publish(source: T) {
-        subscribers.forEach {
+        subscribers.toList().forEach {
             it.invoke(source)
         }
     }

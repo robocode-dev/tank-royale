@@ -10,11 +10,15 @@ import net.robocode2.gui.ui.MainWindow
 import net.robocode2.gui.ui.ResourceBundles
 import net.robocode2.gui.ui.ResourceBundles.MESSAGES
 import net.robocode2.gui.ui.ResourceBundles.STRINGS
+import net.robocode2.gui.utils.Disposable
 import net.robocode2.gui.utils.Event
 import java.awt.Cursor
 import java.awt.Dimension
 import java.awt.EventQueue
+import java.net.MalformedURLException
 import java.net.URI
+import java.net.URISyntaxException
+import java.net.URL
 import javax.swing.*
 
 object ServerConfigDialog : JDialog(MainWindow, getWindowTitle()) {
@@ -53,12 +57,10 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
     private val testButtonText: String
         get() = STRINGS.get("server_test")
 
-    private val remoteServerCheckbox = JCheckBox(STRINGS.get(("use_remote_server")),
+    private val remoteServerCheckBox = JCheckBox(STRINGS.get(("use_remote_server")),
             ServerSettings.useRemoteServer)
 
     init {
-//        Client.connect(URI(serverEndpoint))
-
         val upperPanel = JPanel(MigLayout("", "[][grow][]"))
         val lowerPanel = JPanel(MigLayout("", "[grow]"))
         add(upperPanel, "north")
@@ -70,7 +72,7 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
 
         serverTextField.text = ServerSettings.endpoint
 
-        upperPanel.add(remoteServerCheckbox)
+        upperPanel.add(remoteServerCheckBox)
 
         val buttonPanel = JPanel(MigLayout())
         lowerPanel.add(buttonPanel, "center")
@@ -81,34 +83,46 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
 
         testButton.addActionListener { onTestButtonClicked.publish(testButton) }
 
+        var disposables = ArrayList<Disposable>()
+
         onTestButtonClicked.subscribe {
             cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
+
+            disposables.add(Client.onConnected.subscribe {
+                JOptionPane.showMessageDialog(null,
+                        MESSAGES.get("connected_successfully_to_server"))
+
+                Client.close()
+            })
+
+            disposables.add(Client.onDisconnected.subscribe {
+                cursor = Cursor.getDefaultCursor()
+
+                disposables.forEach { it.dispose() }
+                disposables.clear()
+            })
+
+            disposables.add(Client.onError.subscribe {
+                JOptionPane.showMessageDialog(null,
+                        MESSAGES.get("could_not_connect_to_server"),
+                        MESSAGES.get("title_warning"),
+                        JOptionPane.WARNING_MESSAGE)
+
+                cursor = Cursor.getDefaultCursor()
+
+                disposables.forEach { it.dispose() }
+                disposables.clear()
+            })
+
             Client.connect(URI(serverTextField.text))
         }
 
-        Client.onConnected.subscribe {
-            JOptionPane.showMessageDialog(null,
-                    MESSAGES.get("connected_successfully_to_server"))
 
-            Client.close()
 
-            cursor = Cursor.getDefaultCursor()
+        onOk.subscribe {
+            if (saveServerConfig())
+                ServerConfigDialog.dispose()
         }
-
-        Client.onDisconnected.subscribe {
-            cursor = Cursor.getDefaultCursor()
-        }
-
-        Client.onError.subscribe {
-            JOptionPane.showMessageDialog(null,
-                    MESSAGES.get("could_not_connect_to_server"),
-                    MESSAGES.get("title_warning"),
-                    JOptionPane.WARNING_MESSAGE)
-
-            cursor = Cursor.getDefaultCursor()
-        }
-
-        onOk.subscribe { ServerSettings.save(); ServerConfigDialog.dispose() }
         onCancel.subscribe { ServerConfigDialog.dispose() }
         onResetServerConfig.subscribe { resetServerConfig() }
     }
@@ -117,7 +131,25 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
         ServerSettings.resetToDefault()
 
         serverTextField.text = ServerSettings.endpoint
-        remoteServerCheckbox.isSelected = ServerSettings.useRemoteServer
+        remoteServerCheckBox.isSelected = ServerSettings.useRemoteServer
+    }
+
+    private fun saveServerConfig(): Boolean {
+        try {
+            URI(serverTextField.text)
+
+            ServerSettings.endpoint = serverTextField.text
+            ServerSettings.useRemoteServer = remoteServerCheckBox.isSelected
+            ServerSettings.save()
+            return true
+
+        } catch (ex: URISyntaxException) {
+            JOptionPane.showMessageDialog(null,
+                    MESSAGES.get("endpoint_is_not_valid"),
+                    MESSAGES.get("title_error"),
+                    JOptionPane.ERROR_MESSAGE)
+            return false
+        }
     }
 }
 

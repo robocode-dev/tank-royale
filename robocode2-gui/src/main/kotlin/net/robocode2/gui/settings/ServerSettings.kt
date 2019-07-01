@@ -3,7 +3,7 @@ package net.robocode2.gui.settings
 object ServerSettings : PropertiesStore("Robocode Server Config", "server.properties") {
 
     private const val SERVER_ENDPOINT_PROPERTY = "server.endpoint"
-    private const val DEFAULT_SERVER_ENDPOINT = "ws://localhost:55000"
+    const val DEFAULT_SERVER_ENDPOINT = "ws://localhost:55000"
 
     private const val REMOTE_SERVER_PROPERTY = "remote.server"
     private const val DEFAULT_REMOTE_SERVER = false

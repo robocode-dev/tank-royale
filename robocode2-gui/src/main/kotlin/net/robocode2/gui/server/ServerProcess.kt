@@ -3,14 +3,17 @@ package net.robocode2.gui.server
 import net.robocode2.gui.ui.server.ServerWindow
 import java.io.BufferedReader
 import java.io.InputStreamReader
-
+import java.util.concurrent.atomic.AtomicBoolean
 
 object ServerProcess {
 
     private const val BAT_FILE_NAME = "server.bat"
 
+    private val isRunning = AtomicBoolean(false)
     private var builder: ProcessBuilder? = null
     private var process: Process? = null
+    private var logThread: Thread? = null
+    private val logThreadRunning = AtomicBoolean(false)
 
     init {
         val filename = BAT_FILE_NAME
@@ -22,27 +25,63 @@ object ServerProcess {
         builder?.redirectErrorStream(true)
     }
 
+    fun isRunning(): Boolean {
+        return isRunning.get()
+    }
+
     fun start() {
+        if (isRunning.get())
+            return
+
+        isRunning.set(true)
+
         process = builder?.start()
 
-        InputStreamReader(process?.inputStream!!).use { isr ->
-            BufferedReader(isr).use { br ->
-                for (line in br.lines()) {
-                    ServerWindow.append(line + "\n")
-                }
-            }
-        }
+        startLogThead()
     }
 
     fun stop() {
-        val proc = process
-        if (proc != null && proc.isAlive) {
+        if (!isRunning.get())
+            return
+
+        isRunning.set(false)
+
+        stopLogThread()
+
+        val p = process
+        if (p != null && p.isAlive) {
 
             // Send quit signal to server
-            val out = proc.outputStream
+            val out = p.outputStream
             out.write("q\n".toByteArray())
             out.flush() // important!
         }
+    }
+
+    private fun startLogThead() {
+        logThread = Thread {
+            logThreadRunning.set(true)
+
+            while (logThreadRunning.get()) {
+                try {
+                    InputStreamReader(process?.inputStream!!).use { isr ->
+                        BufferedReader(isr).use { br ->
+                            for (line in br.lines()) {
+                                ServerWindow.append(line + "\n")
+                            }
+                        }
+                    }
+                } catch (e: InterruptedException) {
+                    Thread.currentThread().interrupt()
+                }
+            }
+        }
+        logThread?.start()
+    }
+
+    private fun stopLogThread() {
+        logThreadRunning.set(false)
+        logThread?.interrupt()
     }
 }
 

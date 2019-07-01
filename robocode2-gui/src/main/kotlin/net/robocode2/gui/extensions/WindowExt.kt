@@ -13,4 +13,20 @@ object WindowExt {
             }
         })
     }
+
+    fun Window.onActivated(handler: ((WindowEvent) -> Unit)) {
+        addWindowListener(object : WindowAdapter() {
+            override fun windowActivated(e: WindowEvent) {
+                handler.invoke(e)
+            }
+        })
+    }
+
+    fun Window.onDeactivated(handler: ((WindowEvent) -> Unit)) {
+        addWindowListener(object : WindowAdapter() {
+            override fun windowDeactivated(e: WindowEvent) {
+                handler.invoke(e)
+            }
+        })
+    }
 }

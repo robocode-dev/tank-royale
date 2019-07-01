@@ -28,9 +28,6 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
     private val onRemove = Event<JButton>()
     private val onRemoveAll = Event<JButton>()
 
-    private val serverTextField = JTextField()
-    private val connectButton = JButton(connectButtonText)
-
     private val gameTypeComboBox = GameTypeComboBox()
 
     private val availableBotListModel = DefaultListModel<BotInfo>()
@@ -41,10 +38,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
     private val connectionStatusLabel = JLabel(connectionStatus)
 
     private val connectionStatus: String
-        get() = STRINGS.get(if (Client.isConnected()) "connected" else "disconnected")
-
-    private val connectButtonText: String
-        get() = STRINGS.get(if (Client.isConnected()) "disconnect" else "connect")
+        get() = STRINGS.get(if (Client.isConnected) "connected" else "disconnected")
 
     init {
         val upperPanel = JPanel(MigLayout("", "[][grow][]"))
@@ -52,12 +46,6 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
         add(upperPanel, "north")
         add(lowerPanel, "south, h 1000000")
-
-        upperPanel.addNewLabel("server_endpoint")
-        upperPanel.add(serverTextField, "span 2, grow")
-        upperPanel.add(connectButton, "wrap")
-
-        serverTextField.text = "localhost:55000"
 
         upperPanel.addNewLabel("game_type")
         upperPanel.add(gameTypeComboBox)
@@ -109,10 +97,8 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         availableBotList.cellRenderer = BotInfoCellRenderer()
         selectedBotList.cellRenderer = BotInfoCellRenderer()
 
-        connectButton.addActionListener { onConnectButtonClicked.publish(connectButton) }
-
         onConnectButtonClicked.subscribe {
-            if (Client.isConnected()) {
+            if (Client.isConnected) {
                 Client.close()
             } else {
                 Client.connect(Client.defaultUri) // FIXME: Use URI from text field + reset button to default URI
@@ -170,8 +156,6 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
     private fun updateConnectionState() {
         connectionStatusLabel.text = connectionStatus
-        connectButton.text = connectButtonText
-        connectButton.revalidate()
     }
 
     private fun updateBotList() {

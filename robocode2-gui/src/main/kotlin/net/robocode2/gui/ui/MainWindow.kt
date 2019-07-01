@@ -64,6 +64,4 @@ private fun main() {
     EventQueue.invokeLater {
         MainWindow.isVisible = true
     }
-
-    ServerProcess.start()
 }

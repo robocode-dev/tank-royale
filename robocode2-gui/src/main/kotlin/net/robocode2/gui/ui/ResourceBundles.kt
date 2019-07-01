@@ -20,7 +20,7 @@ enum class ResourceBundles(private val resourceName: String) {
             try {
                 ResourceBundle.getBundle(resourceName, Locale.ENGLISH).getString(propertyName)
             } catch (e: MissingResourceException) {
-                throw ResourceBundleException("Could not find the property name \"$propertyName\" in the resource bundle \"$resourceName\"")
+                return "[$propertyName]"
             }
         }
     }
@@ -32,6 +32,4 @@ enum class ResourceBundles(private val resourceName: String) {
             false -> Locale.ENGLISH
         }
     }
-
-    class ResourceBundleException(msg: String) : RuntimeException(msg)
 }

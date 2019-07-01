@@ -34,20 +34,18 @@ object Client : AutoCloseable {
 
     private var isGameRunning: Boolean = false
 
+    val isConnected: Boolean get() = websocket.isOpen()
+
     override fun close() {
         stopGame()
 
-        if (websocket.isOpen()) {
-            websocket.close()
-        }
+        if (isConnected) websocket.close()
 
         onDisconnected.publish(Unit)
     }
 
     fun connect(uri: URI) {
-        if (isConnected()) {
-            close()
-        }
+        if (isConnected) close()
 
         websocket = WebSocketClient(uri)
 
@@ -59,12 +57,10 @@ object Client : AutoCloseable {
         websocket.open() // must be called after onOpen.subscribe()
     }
 
-    fun isConnected() = websocket.isOpen()
-
     fun getAvailableBots(): Set<BotInfo> = bots
 
     fun startGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>) {
-        if (!isGameRunning && websocket.isOpen()) {
+        if (!isGameRunning && isConnected) {
             websocket.send(StartGame(gameSetup, botAddresses))
         }
     }
