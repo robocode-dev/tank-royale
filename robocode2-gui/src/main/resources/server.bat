@@ -1,1 +1,0 @@
-java -Dpicocli.ansi=true -jar %~dp0/robocode2-server.jar %*
