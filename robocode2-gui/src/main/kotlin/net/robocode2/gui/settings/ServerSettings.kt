@@ -2,16 +2,31 @@ package net.robocode2.gui.settings
 
 object ServerSettings : PropertiesStore("Robocode Server Config", "server.properties") {
 
-    private const val SERVER_ENDPOINT_PROPERTY = "server.endpoint"
-    const val DEFAULT_SERVER_ENDPOINT = "ws://localhost:55000"
+    private const val SERVER_ADDRESS_PROPERTY = "server.address"
+    private const val DEFAULT_SERVER_ADDRESS = "localhost"
+
+    private const val SERVER_PORT_PROPERTY = "server.port"
+    private const val DEFAULT_SERVER_PORT: UShort = 55000u
 
     private const val REMOTE_SERVER_PROPERTY = "remote.server"
     private const val DEFAULT_REMOTE_SERVER = false
 
-    var endpoint: String
-        get() = properties.getProperty(SERVER_ENDPOINT_PROPERTY, DEFAULT_SERVER_ENDPOINT)
-        set(endpoint) {
-            properties.setProperty(SERVER_ENDPOINT_PROPERTY, endpoint)
+    val endpoint: String get() = "ws://$address:$port"
+
+    var address: String
+        get() =
+            if (useRemoteServer)
+                properties.getProperty(SERVER_ADDRESS_PROPERTY, DEFAULT_SERVER_ADDRESS)
+            else
+                DEFAULT_SERVER_ADDRESS
+        set(value) {
+            properties.setProperty(SERVER_ADDRESS_PROPERTY, value)
+        }
+
+    var port: UShort
+        get() = properties.getProperty(SERVER_PORT_PROPERTY, "$DEFAULT_SERVER_PORT")!!.toUShort()
+        set(value) {
+            properties.setProperty(SERVER_PORT_PROPERTY, "$value")
         }
 
     var useRemoteServer: Boolean
@@ -26,7 +41,8 @@ object ServerSettings : PropertiesStore("Robocode Server Config", "server.proper
     }
 
     fun resetToDefault() {
-        endpoint = DEFAULT_SERVER_ENDPOINT
+        address = DEFAULT_SERVER_ADDRESS
+        port = DEFAULT_SERVER_PORT
         useRemoteServer = DEFAULT_REMOTE_SERVER
     }
 }

@@ -5,6 +5,7 @@ import net.robocode2.gui.extensions.WindowExt.onActivated
 import net.robocode2.gui.extensions.WindowExt.onDeactivated
 import net.robocode2.gui.server.ServerProcess
 import net.robocode2.gui.settings.ServerSettings
+import net.robocode2.gui.settings.ServerSettings.endpoint
 import net.robocode2.gui.ui.MainWindow
 import net.robocode2.gui.ui.ResourceBundles
 import net.robocode2.gui.utils.Disposable
@@ -67,14 +68,16 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
 
             if (option == YES_OPTION) {
                 ServerProcess.start()
-                Client.connect(URI(ServerSettings.DEFAULT_SERVER_ENDPOINT))
+                Client.connect(URI(ServerSettings.endpoint))
             } else {
                 dispose() // dispose the dialog, when server is not available
             }
         }
 
         // Connect to the server. The error handler above is triggered if the connection cannot be established
-        Client.connect(URI(ServerSettings.endpoint))
+        if (!Client.isConnected) {
+            Client.connect(URI(ServerSettings.endpoint))
+        }
     }
 }
 

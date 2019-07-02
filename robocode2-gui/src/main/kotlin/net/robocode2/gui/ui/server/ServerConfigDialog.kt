@@ -15,11 +15,10 @@ import net.robocode2.gui.utils.Event
 import java.awt.Cursor
 import java.awt.Dimension
 import java.awt.EventQueue
-import java.net.MalformedURLException
 import java.net.URI
 import java.net.URISyntaxException
-import java.net.URL
 import javax.swing.*
+import net.robocode2.gui.extensions.JTextFieldExt.setInputVerifier
 
 object ServerConfigDialog : JDialog(MainWindow, getWindowTitle()) {
 
@@ -50,8 +49,10 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
     private val onResetServerConfig = Event<JButton>()
 
     private val onTestButtonClicked = Event<JButton>()
+    private val onRemoteServerCheckBoxChanged = Event<JCheckBox>()
 
-    private val serverTextField = JTextField()
+    private val addressTextField = JTextField()
+    private val portTextField = JTextField("${ServerSettings.port}", 5)
     private val testButton = JButton(testButtonText)
 
     private val testButtonText: String
@@ -66,11 +67,15 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
         add(upperPanel, "north")
         add(lowerPanel, "south")
 
+        portTextField.setInputVerifier { portTextFieldVerifier() }
+
         upperPanel.addNewLabel("server_endpoint")
-        upperPanel.add(serverTextField, "span 2, grow")
+        upperPanel.add(addressTextField, "span 2, grow")
+        upperPanel.add(portTextField)
         upperPanel.add(testButton, "wrap")
 
-        serverTextField.text = ServerSettings.endpoint
+        addressTextField.text = ServerSettings.address
+        addressTextField.isEnabled = remoteServerCheckBox.isSelected
 
         upperPanel.add(remoteServerCheckBox)
 
@@ -82,63 +87,73 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
         buttonPanel.addNewButton("reset_server_config_to_default", onResetServerConfig, "tag apply")
 
         testButton.addActionListener { onTestButtonClicked.publish(testButton) }
+        remoteServerCheckBox.addActionListener { onRemoteServerCheckBoxChanged.publish(remoteServerCheckBox) }
 
-        var disposables = ArrayList<Disposable>()
+        onRemoteServerCheckBoxChanged.subscribe { addressTextField.isEnabled = remoteServerCheckBox.isSelected }
 
-        onTestButtonClicked.subscribe {
-            cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-
-            disposables.add(Client.onConnected.subscribe {
-                JOptionPane.showMessageDialog(null,
-                        MESSAGES.get("connected_successfully_to_server"))
-
-                Client.close()
-            })
-
-            disposables.add(Client.onDisconnected.subscribe {
-                cursor = Cursor.getDefaultCursor()
-
-                disposables.forEach { it.dispose() }
-                disposables.clear()
-            })
-
-            disposables.add(Client.onError.subscribe {
-                JOptionPane.showMessageDialog(null,
-                        MESSAGES.get("could_not_connect_to_server"),
-                        MESSAGES.get("title_warning"),
-                        JOptionPane.WARNING_MESSAGE)
-
-                cursor = Cursor.getDefaultCursor()
-
-                disposables.forEach { it.dispose() }
-                disposables.clear()
-            })
-
-            Client.connect(URI(serverTextField.text))
-        }
-
-
+        onTestButtonClicked.subscribe { testServerConnection() }
 
         onOk.subscribe {
             if (saveServerConfig())
                 ServerConfigDialog.dispose()
         }
+        onCancel.subscribe {
+            setFieldsToServerConfig()
+        }
+
         onCancel.subscribe { ServerConfigDialog.dispose() }
         onResetServerConfig.subscribe { resetServerConfig() }
     }
 
+    private fun testServerConnection() {
+        val disposables = ArrayList<Disposable>()
+
+        disposables.add(Client.onConnected.subscribe {
+            JOptionPane.showMessageDialog(this,
+                    MESSAGES.get("connected_successfully_to_server"))
+
+            Client.close()
+
+            disposables.forEach { it.dispose() }
+            disposables.clear()
+        })
+
+        disposables.add(Client.onDisconnected.subscribe {
+            cursor = Cursor.getDefaultCursor()
+        })
+
+        disposables.add(Client.onError.subscribe {
+            JOptionPane.showMessageDialog(this,
+                    MESSAGES.get("could_not_connect_to_server"),
+                    MESSAGES.get("title_warning"),
+                    JOptionPane.WARNING_MESSAGE)
+
+            cursor = Cursor.getDefaultCursor()
+
+            disposables.forEach { it.dispose() }
+            disposables.clear()
+        })
+
+        val endpoint = "ws://${addressTextField.text}:${portTextField.text}"
+
+        Client.connect(URI(endpoint)) // Connect or re-connect
+    }
+
     private fun resetServerConfig() {
         ServerSettings.resetToDefault()
+        setFieldsToServerConfig()
+    }
 
-        serverTextField.text = ServerSettings.endpoint
+    private fun setFieldsToServerConfig() {
+        addressTextField.text = ServerSettings.address
         remoteServerCheckBox.isSelected = ServerSettings.useRemoteServer
     }
 
     private fun saveServerConfig(): Boolean {
         try {
-            URI(serverTextField.text)
+            URI(addressTextField.text)
 
-            ServerSettings.endpoint = serverTextField.text
+            ServerSettings.address = addressTextField.text
             ServerSettings.useRemoteServer = remoteServerCheckBox.isSelected
             ServerSettings.save()
             return true
@@ -150,6 +165,20 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
                     JOptionPane.ERROR_MESSAGE)
             return false
         }
+    }
+
+    private fun portTextFieldVerifier(): Boolean {
+        val port: UShort? = try {
+            portTextField.text.trim().toUShort()
+        } catch (e: NumberFormatException) {
+            null
+        }
+        val valid = port != null && port >= 1024u && port <= 65535u
+        if (!valid || port == null) {
+            JOptionPane.showMessageDialog(this, MESSAGES.get("port_number_range"))
+            portTextField.text = "${ServerSettings.port}"
+        }
+        return valid
     }
 }
 
