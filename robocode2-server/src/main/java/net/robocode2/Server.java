@@ -1,11 +1,7 @@
 package net.robocode2;
 
-import net.robocode2.server.ConnHandler;
 import net.robocode2.server.GameServer;
-
 import org.fusesource.jansi.AnsiConsole;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
@@ -36,8 +32,6 @@ import java.util.Scanner;
         description = "Runs a Robocode 2 server"
 )
 public class Server implements Runnable {
-
-    private static Logger logger = LoggerFactory.getLogger(ConnHandler.class);
 
     private final static int DEFAULT_PORT = 55000;
 
@@ -75,9 +69,7 @@ public class Server implements Runnable {
         }
 
         // Handle port
-        if (port == null) {
-            port = DEFAULT_PORT;
-        } else if (port < 1024 || port > 65535) {
+        if (port < 1024 || port > 65535) {
             System.err.println("Port must not be lower than 1024 or bigger than 65535");
             System.exit(-1);
         }

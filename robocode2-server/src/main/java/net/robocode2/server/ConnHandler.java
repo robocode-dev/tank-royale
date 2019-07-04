@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.JsonSyntaxException;
+import net.robocode2.Server;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -59,7 +60,7 @@ public final class ConnHandler {
     this.setup = setup;
     this.listener = listener;
 
-    InetSocketAddress address = new InetSocketAddress(setup.getHostName(), setup.getPort());
+    InetSocketAddress address = new InetSocketAddress("localhost", Server.getPort());
     this.webSocketObserver = new WebSocketObserver(address);
     this.webSocketObserver.setConnectionLostTimeout(1 /* second */);
 

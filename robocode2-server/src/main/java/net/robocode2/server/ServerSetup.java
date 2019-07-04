@@ -3,17 +3,10 @@ package net.robocode2.server;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.robocode2.Server;
 import net.robocode2.model.GameSetup;
 
 final class ServerSetup {
-
-	String getHostName() {
-		return "localhost";
-	}
-
-	int getPort() {
-		return 55000;
-	}
 
 	Set<GameSetup> getGames() {
 		Set<GameSetup> games = new HashSet<>();
