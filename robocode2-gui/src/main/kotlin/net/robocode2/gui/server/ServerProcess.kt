@@ -1,5 +1,6 @@
 package net.robocode2.gui.server
 
+import net.robocode2.gui.settings.ServerSettings
 import net.robocode2.gui.ui.server.ServerWindow
 import java.io.BufferedReader
 import java.io.File
@@ -16,15 +17,11 @@ object ServerProcess {
     private var logThread: Thread? = null
     private val logThreadRunning = AtomicBoolean(false)
 
-    init {
-        val filename = JAR_FILE_NAME
+    private val jarFileUrl =  javaClass.classLoader.getResource(JAR_FILE_NAME)
+            ?: throw IllegalStateException("Could not find the file: $JAR_FILE_NAME")
 
-        val url = javaClass.classLoader.getResource(filename)
-                ?: throw IllegalStateException("Could not find the file: $filename")
 
-        builder = ProcessBuilder("java", "-jar", File(url.toURI()).toString())
-        builder?.redirectErrorStream(true)
-    }
+    var port: UShort = ServerSettings.port
 
     fun isRunning(): Boolean {
         return isRunning.get()
@@ -34,9 +31,15 @@ object ServerProcess {
         if (isRunning.get())
             return
 
-        isRunning.set(true)
+        ServerWindow.clear()
 
+        port = ServerSettings.port;
+
+        builder = ProcessBuilder("java", "-jar", File(jarFileUrl.toURI()).toString(), "--port=$port")
+        builder?.redirectErrorStream(true)
         process = builder?.start()
+
+        isRunning.set(true)
 
         startLogThead()
     }
@@ -45,9 +48,8 @@ object ServerProcess {
         if (!isRunning.get())
             return
 
-        isRunning.set(false)
-
         stopLogThread()
+        isRunning.set(false)
 
         val p = process
         if (p != null && p.isAlive) {
@@ -67,8 +69,12 @@ object ServerProcess {
                 try {
                     InputStreamReader(process?.inputStream!!).use { isr ->
                         BufferedReader(isr).use { br ->
-                            for (line in br.lines()) {
-                                ServerWindow.append(line + "\n")
+                            try {
+                                for (line in br.lines()) {
+                                    ServerWindow.append(line + "\n")
+                                }
+                            } catch (ex: Error) { // "Stream closed" or "Could not acquire lock"
+                                Thread.currentThread().interrupt()
                             }
                         }
                     }

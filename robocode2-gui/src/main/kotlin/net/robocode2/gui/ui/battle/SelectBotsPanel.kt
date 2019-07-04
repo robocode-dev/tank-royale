@@ -6,6 +6,7 @@ import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.model.BotAddress
 import net.robocode2.gui.model.BotInfo
+import net.robocode2.gui.settings.ServerSettings
 import net.robocode2.gui.ui.ResourceBundles.STRINGS
 import net.robocode2.gui.utils.Event
 import java.awt.Component
@@ -101,7 +102,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             if (Client.isConnected) {
                 Client.close()
             } else {
-                Client.connect(Client.defaultUri) // FIXME: Use URI from text field + reset button to default URI
+                Client.connect(ServerSettings.endpoint)
             }
             updateConnectionState()
         }

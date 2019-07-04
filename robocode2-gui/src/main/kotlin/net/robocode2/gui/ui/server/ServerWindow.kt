@@ -29,6 +29,10 @@ object ServerWindow : JFrame(getWindowTitle()), AutoCloseable {
     override fun close() {
     }
 
+    fun clear() {
+        textArea.text = null
+    }
+
     fun append(line: String) {
         val regex = Regex("\u001B\\[[^m]+m")
 

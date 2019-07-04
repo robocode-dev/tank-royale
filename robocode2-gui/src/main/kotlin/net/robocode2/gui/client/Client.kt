@@ -8,7 +8,7 @@ import java.net.URI
 
 object Client : AutoCloseable {
 
-    val defaultUri = URI("ws://localhost:55000")
+    private val defaultUri = URI("ws://localhost:55000")
 
     // public events
     val onConnected = Event<Unit>()
@@ -44,10 +44,8 @@ object Client : AutoCloseable {
         onDisconnected.publish(Unit)
     }
 
-    fun connect(uri: URI) {
-        if (isConnected) close()
-
-        websocket = WebSocketClient(uri)
+    fun connect(endpoint: String) {
+        websocket = WebSocketClient(URI(endpoint))
 
         websocket.onOpen.subscribe { onConnected.publish(Unit) }
         websocket.onClose.subscribe { onDisconnected.publish(Unit) }

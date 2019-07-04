@@ -5,13 +5,11 @@ import net.robocode2.gui.extensions.WindowExt.onActivated
 import net.robocode2.gui.extensions.WindowExt.onDeactivated
 import net.robocode2.gui.server.ServerProcess
 import net.robocode2.gui.settings.ServerSettings
-import net.robocode2.gui.settings.ServerSettings.endpoint
 import net.robocode2.gui.ui.MainWindow
 import net.robocode2.gui.ui.ResourceBundles
 import net.robocode2.gui.utils.Disposable
 import java.awt.Dimension
 import java.awt.EventQueue
-import java.net.URI
 import javax.swing.*
 import javax.swing.JOptionPane.YES_OPTION
 
@@ -55,7 +53,7 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
 
     private fun startServerOrCloseDialog() {
         // If no server is running and a local server must be started => start server
-        if (!ServerProcess.isRunning() && !ServerSettings.useRemoteServer) {
+        if (ServerSettings.useLocalServer && !ServerProcess.isRunning()) {
             ServerProcess.start()
         }
 
@@ -68,15 +66,21 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
 
             if (option == YES_OPTION) {
                 ServerProcess.start()
-                Client.connect(URI(ServerSettings.endpoint))
+                Client.connect(ServerSettings.endpoint)
             } else {
                 dispose() // dispose the dialog, when server is not available
             }
         }
 
+        if (ServerProcess.isRunning() && ServerSettings.port != ServerProcess.port) {
+            Client.close()
+            ServerProcess.stop()
+            ServerProcess.start()
+        }
+
         // Connect to the server. The error handler above is triggered if the connection cannot be established
         if (!Client.isConnected) {
-            Client.connect(URI(ServerSettings.endpoint))
+            Client.connect(ServerSettings.endpoint)
         }
     }
 }

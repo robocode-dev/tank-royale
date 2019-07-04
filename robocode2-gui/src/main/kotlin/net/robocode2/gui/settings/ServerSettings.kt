@@ -1,5 +1,6 @@
 package net.robocode2.gui.settings
 
+
 object ServerSettings : PropertiesStore("Robocode Server Config", "server.properties") {
 
     private const val SERVER_ADDRESS_PROPERTY = "server.address"
@@ -31,9 +32,11 @@ object ServerSettings : PropertiesStore("Robocode Server Config", "server.proper
 
     var useRemoteServer: Boolean
         get() = properties.getProperty(REMOTE_SERVER_PROPERTY, "$DEFAULT_REMOTE_SERVER")!!.toBoolean()
-        set(useRemoteServer) {
-            properties.setProperty(REMOTE_SERVER_PROPERTY, "$useRemoteServer")
+        set(value) {
+            properties.setProperty(REMOTE_SERVER_PROPERTY, "$value")
         }
+
+    val useLocalServer: Boolean get() = !useRemoteServer
 
     init {
         resetToDefault()

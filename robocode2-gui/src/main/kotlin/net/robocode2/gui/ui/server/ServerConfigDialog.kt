@@ -136,7 +136,7 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
 
         val endpoint = "ws://${addressTextField.text}:${portTextField.text}"
 
-        Client.connect(URI(endpoint)) // Connect or re-connect
+        Client.connect(endpoint) // Connect or re-connect
     }
 
     private fun resetServerConfig() {
@@ -146,6 +146,7 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
 
     private fun setFieldsToServerConfig() {
         addressTextField.text = ServerSettings.address
+        portTextField.text = "${ServerSettings.port}"
         remoteServerCheckBox.isSelected = ServerSettings.useRemoteServer
     }
 
@@ -154,6 +155,7 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
             URI(addressTextField.text)
 
             ServerSettings.address = addressTextField.text
+            ServerSettings.port = portTextField.text.toUShort()
             ServerSettings.useRemoteServer = remoteServerCheckBox.isSelected
             ServerSettings.save()
             return true
