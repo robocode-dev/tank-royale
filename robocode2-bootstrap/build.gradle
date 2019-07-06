@@ -40,7 +40,7 @@ dependencies {
 }
 
 jar {
-    manifest { attributes 'Main-Class': 'io.robocode2.bootstrap.RC2BootKt' }
+    manifest { attributes 'Main-Class': 'net.robocode2.bootstrap.RC2BootKt' }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 

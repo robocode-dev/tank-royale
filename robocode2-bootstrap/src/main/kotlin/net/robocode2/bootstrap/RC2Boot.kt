@@ -57,6 +57,7 @@ class RC2Boot : Runnable {
         println(Json(JsonConfiguration.Default).stringify(entries))
     }
 
+    @ImplicitReflectionSerializer
     @Command(name = "run", description = [
         "Start running the specified bots in individual processes.",
         "Press enter key to stop all started bots and quit this tool."
@@ -87,6 +88,6 @@ internal class VersionFileProvider : CommandLine.IVersionProvider {
         if (inputStream != null) {
             BufferedReader(InputStreamReader(inputStream)).use { br -> version = br.readLine() }
         }
-        return arrayOf("Robocode2 io.robocode2.bootstrap.RC2Boot $version")
+        return arrayOf("Robocode2 net.robocode2.bootstrap.RC2Boot $version")
     }
 }

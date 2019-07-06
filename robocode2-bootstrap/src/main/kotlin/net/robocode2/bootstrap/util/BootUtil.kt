@@ -35,6 +35,7 @@ class BootUtil(private val bootstrapPath: Path) {
         return botEntries
     }
 
+    @ImplicitReflectionSerializer
     fun startBots(filenames: Array<String>): List<Process> {
         val processes = ArrayList<Process>()
         filenames.forEach { filename ->
@@ -46,6 +47,7 @@ class BootUtil(private val bootstrapPath: Path) {
         return processes
     }
 
+    @ImplicitReflectionSerializer
     private fun startBot(filename: String): Process? {
         try {
             val scriptPath = findOsScript(filename)
@@ -69,6 +71,22 @@ class BootUtil(private val bootstrapPath: Path) {
             }
 
 //            processBuilder.redirectErrorStream(true)
+
+            val botInfo = getBotInfo(filename)
+
+            val env = processBuilder.environment()
+
+            env[Env.BOT_NAME.name] = botInfo.name
+            env[Env.BOT_VERSION.name] = botInfo.version
+            env[Env.BOT_AUTHOR.name] = botInfo.author
+            if (botInfo.description != null)
+                env[Env.BOT_DESCRIPTION.name] = botInfo.description
+            if (botInfo.countryCode != null)
+                env[Env.BOT_COUNTRY_CODE.name] = botInfo.countryCode
+            env[Env.BOT_GAME_TYPES.name] = botInfo.gameTypes.joinToString()
+            if (botInfo.programmingLang != null)
+                env[Env.BOT_PROG_LANG.name] = botInfo.programmingLang
+
             val process = processBuilder.start()
 
 //            val reader = BufferedReader(InputStreamReader(process.inputStream))
