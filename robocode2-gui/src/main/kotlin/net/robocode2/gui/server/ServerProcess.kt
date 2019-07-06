@@ -65,23 +65,17 @@ object ServerProcess {
         logThread = Thread {
             logThreadRunning.set(true)
 
+            val br = BufferedReader(InputStreamReader(process?.inputStream!!))
             while (logThreadRunning.get()) {
                 try {
-                    InputStreamReader(process?.inputStream!!).use { isr ->
-                        BufferedReader(isr).use { br ->
-                            try {
-                                for (line in br.lines()) {
-                                    ServerWindow.append(line + "\n")
-                                }
-                            } catch (ex: Error) { // "Stream closed" or "Could not acquire lock"
-                                Thread.currentThread().interrupt()
-                            }
-                        }
+                    for (line in br.lines()) {
+                        ServerWindow.append(line + "\n")
                     }
                 } catch (e: InterruptedException) {
                     Thread.currentThread().interrupt()
                 }
             }
+            br.close()
         }
         logThread?.start()
     }
