@@ -14,7 +14,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.*
+import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
     CommandLine.run(RC2Boot(), System.out, CommandLine.Help.Ansi.ON, *args)
@@ -38,7 +38,7 @@ class RC2Boot : Runnable {
             cmdLine.isVersionHelpRequested -> cmdLine.printVersionHelp(System.out)
             else -> cmdLine.usage(System.out)
         }
-        System.exit(0)
+        exitProcess(0)
     }
 
     @Command(name = "filenames", description = ["List filenames of available bots"])
