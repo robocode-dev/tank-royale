@@ -41,7 +41,7 @@ object ServerProcess {
 
         isRunning.set(true)
 
-        startLogThead()
+        startLogThread()
     }
 
     fun stop() {
@@ -61,7 +61,7 @@ object ServerProcess {
         }
     }
 
-    private fun startLogThead() {
+    private fun startLogThread() {
         logThread = Thread {
             logThreadRunning.set(true)
 
