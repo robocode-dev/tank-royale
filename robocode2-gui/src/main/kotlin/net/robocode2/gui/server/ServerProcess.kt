@@ -11,15 +11,13 @@ object ServerProcess {
 
     private const val JAR_FILE_NAME = "robocode2-server.jar"
 
-    private val isRunning = AtomicBoolean(false)
-    private var builder: ProcessBuilder? = null
-    private var process: Process? = null
-    private var logThread: Thread? = null
-    private val logThreadRunning = AtomicBoolean(false)
-
     private val jarFileUrl =  javaClass.classLoader.getResource(JAR_FILE_NAME)
             ?: throw IllegalStateException("Could not find the file: $JAR_FILE_NAME")
 
+    private val isRunning = AtomicBoolean(false)
+    private var process: Process? = null
+    private var logThread: Thread? = null
+    private val logThreadRunning = AtomicBoolean(false)
 
     var port: UShort = ServerSettings.port
 
@@ -35,9 +33,9 @@ object ServerProcess {
 
         port = ServerSettings.port;
 
-        builder = ProcessBuilder("java", "-jar", File(jarFileUrl.toURI()).toString(), "--port=$port")
-        builder?.redirectErrorStream(true)
-        process = builder?.start()
+        val builder = ProcessBuilder("java", "-jar", File(jarFileUrl.toURI()).toString(), "--port=$port")
+        builder.redirectErrorStream(true)
+        process = builder.start()
 
         isRunning.set(true)
 
@@ -59,6 +57,9 @@ object ServerProcess {
             out.write("q\n".toByteArray())
             out.flush() // important!
         }
+
+        process = null
+        logThread = null
     }
 
     private fun startLogThread() {
