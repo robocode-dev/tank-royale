@@ -6,7 +6,7 @@ import java.io.InputStreamReader
 
 object BootstrapProcess {
 
-    private const val BOOT_DIR = "D:\\robocode-2-work\\robocode2-boot" // FIXME
+    private const val BOOT_DIR = "D:/robocode-2-work/robocode2-boot" // FIXME
 
     private const val JAR_FILE_NAME = "robocode2-bootstrap.jar"
 
@@ -16,12 +16,12 @@ object BootstrapProcess {
     private val jarFileUrl =  javaClass.classLoader.getResource(JAR_FILE_NAME)
             ?: throw IllegalStateException("Could not find the file: $JAR_FILE_NAME")
 
-    fun list(): List<String> {
+    fun list(): String {
         builder = ProcessBuilder("java", "-jar", File(jarFileUrl.toURI()).toString(),
                 "list", "--boot-dir=$BOOT_DIR")
         process = builder?.start()
         readErrorToStdError()
-        return readInputLines()
+        return readInputLines().joinToString()
     }
 
     private fun readErrorToStdError() {
@@ -37,14 +37,14 @@ object BootstrapProcess {
         val reader = BufferedReader(InputStreamReader(process?.inputStream!!))
         var line: String? = null
         while ({ line = reader.readLine(); line }() != null) {
-            println(line)
+            list += line!!
         }
         return list
     }
 }
 
 fun main() {
-    BootstrapProcess.list().forEach { println(it) }
+    println(BootstrapProcess.list())
 }
 
 
