@@ -1,11 +1,16 @@
 package net.robocode2.gui.bootstrap
 
+import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.parseList
 import net.robocode2.gui.server.ServerProcess.stop
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 import java.util.concurrent.atomic.AtomicBoolean
 
+@ImplicitReflectionSerializer
 object BootstrapProcess {
 
     private const val BOOT_DIR = "D:/robocode-2-work/robocode2-boot" // FIXME
@@ -21,12 +26,15 @@ object BootstrapProcess {
     private var errorThread: Thread? = null
     private val errorThreadRunning = AtomicBoolean(false)
 
-    fun list(): String {
+    private val json = Json(JsonConfiguration.Default)
+
+    fun list(): List<BotEntry> {
         val builder = ProcessBuilder("java", "-jar", File(jarFileUrl.toURI()).toString(),
                 "list", "--boot-dir=$BOOT_DIR")
         val process = builder.start()
         readErrorToStdError(process)
-        return readInputLines(process).joinToString()
+        val entries = readInputLines(process).joinToString()
+        return json.parseList(entries)
     }
 
     fun run(entries: List<String>) {
@@ -107,6 +115,7 @@ object BootstrapProcess {
     }
 }
 
+@ImplicitReflectionSerializer
 fun main() {
 //    println(BootstrapProcess.list())
 
