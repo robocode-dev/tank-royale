@@ -1,5 +1,6 @@
 package net.robocode2.gui.ui
 
+import kotlinx.serialization.ImplicitReflectionSerializer
 import net.robocode2.gui.client.Client
 import net.robocode2.gui.extensions.WindowExt.onClosing
 import net.robocode2.gui.server.ServerProcess
@@ -11,6 +12,7 @@ import java.awt.EventQueue
 import javax.swing.JFrame
 import javax.swing.UIManager
 
+@ImplicitReflectionSerializer
 object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
 
     init {
@@ -58,6 +60,7 @@ private fun getWindowTitle(): String {
     return ResourceBundles.UI_TITLES.get("main_window")
 }
 
+@ImplicitReflectionSerializer
 private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 

@@ -1,5 +1,6 @@
 package net.robocode2.gui.ui.battle
 
+import kotlinx.serialization.ImplicitReflectionSerializer
 import net.robocode2.gui.client.Client
 import net.robocode2.gui.extensions.WindowExt.onActivated
 import net.robocode2.gui.extensions.WindowExt.onDeactivated
@@ -13,10 +14,10 @@ import java.awt.EventQueue
 import javax.swing.*
 import javax.swing.JOptionPane.YES_OPTION
 
+@ImplicitReflectionSerializer
 object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
 
     private val tabbedPane = JTabbedPane()
-    private val selectBotsPanel = SelectBotsPanel()
     private val setupRulesPanel = SetupRulesPanel()
     private var onErrorDisposable: Disposable? = null
 
@@ -28,7 +29,7 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
         setLocationRelativeTo(null) // center on screen
 
         contentPane.add(tabbedPane)
-        tabbedPane.addTab(ResourceBundles.UI_TITLES.get("select_bots_tab"), selectBotsPanel)
+        tabbedPane.addTab(ResourceBundles.UI_TITLES.get("select_bots_tab"), SelectBotsPanel)
         tabbedPane.addTab(ResourceBundles.UI_TITLES.get("setup_rules_tab"), setupRulesPanel)
 
         tabbedPane.selectedComponent = setupRulesPanel
@@ -44,7 +45,7 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
     }
 
     fun selectBotsTab() {
-        tabbedPane.selectedComponent = selectBotsPanel
+        tabbedPane.selectedComponent = SelectBotsPanel
     }
 
     fun selectSetupRulesTab() {
@@ -89,6 +90,7 @@ private fun getWindowTitle(): String {
     return ResourceBundles.UI_TITLES.get("battle_dialog")
 }
 
+@ImplicitReflectionSerializer
 private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 

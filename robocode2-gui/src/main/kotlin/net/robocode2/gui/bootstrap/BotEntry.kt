@@ -6,7 +6,12 @@ import kotlinx.serialization.Serializable
 data class BotEntry(
         val filename: String,
         val info: Info
-)
+) {
+    val displayText: String
+        get() {
+            return info.displayText
+        }
+}
 
 @Serializable
 data class Info(
@@ -17,4 +22,9 @@ data class Info(
         val countryCode: String? = null,
         val programmingLang: String? = null,
         val gameTypes: Set<String>
-)
+) {
+    val displayText: String
+        get() {
+            return if (author.isBlank()) "$name $version" else "$author: $name $version"
+        }
+}

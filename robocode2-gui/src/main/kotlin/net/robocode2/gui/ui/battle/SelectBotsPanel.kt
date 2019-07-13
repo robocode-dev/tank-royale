@@ -1,11 +1,14 @@
 package net.robocode2.gui.ui.battle
 
+import kotlinx.serialization.ImplicitReflectionSerializer
 import net.miginfocom.swing.MigLayout
+import net.robocode2.gui.bootstrap.BootstrapProcess
+import net.robocode2.gui.bootstrap.BotEntry
 import net.robocode2.gui.client.Client
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.model.BotAddress
-import net.robocode2.gui.model.BotInfo
+import net.robocode2.gui.model.GameSetup
 import net.robocode2.gui.settings.ServerSettings
 import net.robocode2.gui.ui.ResourceBundles.STRINGS
 import net.robocode2.gui.utils.Event
@@ -17,7 +20,8 @@ import javax.swing.*
 import javax.swing.border.EmptyBorder
 
 
-class SelectBotsPanel : JPanel(MigLayout("fill")) {
+@ImplicitReflectionSerializer
+object SelectBotsPanel : JPanel(MigLayout("fill")) {
 
     // Private events
     private val onStartBattle = Event<JButton>()
@@ -31,15 +35,18 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
     private val gameTypeComboBox = GameTypeComboBox()
 
-    private val availableBotListModel = DefaultListModel<BotInfo>()
-    private val selectedBotListModel = DefaultListModel<BotInfo>()
-    private val availableBotList = JList<BotInfo>(availableBotListModel)
-    private val selectedBotList = JList<BotInfo>(selectedBotListModel)
+    private val availableBotListModel = DefaultListModel<BotEntry>()
+    private val selectedBotListModel = DefaultListModel<BotEntry>()
+    private val availableBotList = JList<BotEntry>(availableBotListModel)
+    private val selectedBotList = JList<BotEntry>(selectedBotListModel)
 
     private val connectionStatusLabel = JLabel(connectionStatus)
 
     private val connectionStatus: String
-        get() = STRINGS.get(if (Client.isConnected) "connected" else "disconnected")
+        get() = if (Client.isConnected) STRINGS.get("connected") else STRINGS.get("disconnected")
+
+    val gameSetup: GameSetup
+        get() = gameTypeComboBox.mutableGameSetup.toGameSetup()
 
     init {
         val upperPanel = JPanel(MigLayout("", "[][grow][]"))
@@ -95,8 +102,8 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         buttonPanel.addNewButton("start_battle", onStartBattle, "tag ok")
         buttonPanel.addNewButton("cancel", onCancel, "tag cancel")
 
-        availableBotList.cellRenderer = BotInfoCellRenderer()
-        selectedBotList.cellRenderer = BotInfoCellRenderer()
+        availableBotList.cellRenderer = BotEntryCellRenderer()
+        selectedBotList.cellRenderer = BotEntryCellRenderer()
 
         onConnectButtonClicked.subscribe {
             if (Client.isConnected) {
@@ -145,58 +152,66 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         })
 
         Client.onConnected.subscribe { updateConnectionState() }
-        Client.onDisconnected.subscribe {
-            updateConnectionState()
-            availableBotListModel.clear()
-            selectedBotListModel.clear()
-        }
-        Client.onBotListUpdate.subscribe { updateBotList() }
+        Client.onDisconnected.subscribe { updateConnectionState() }
 
         onStartBattle.subscribe { startGame() }
+
+        availableBotListModel.clear()
+        BootstrapProcess.list().forEach { availableBotListModel.addElement(it) }
     }
 
     private fun updateConnectionState() {
         connectionStatusLabel.text = connectionStatus
     }
 
-    private fun updateBotList() {
-        availableBotListModel.clear()
-        Client.getAvailableBots().forEach {
-            availableBotListModel.addElement(it)
-        }
-    }
-
     private fun startGame() {
-        val selectedBotAddresses = HashSet<BotAddress>()
+        StartGameWindow.isVisible = true
 
-        selectedBotListModel.elements().toList().forEach {
-            selectedBotAddresses.add(it.botAddress)
+        val botEntries = ArrayList<String>()
+        selectedBotListModel.toArray().forEach { b -> botEntries += (b as BotEntry).filename }
+
+        BootstrapProcess.run(botEntries)
+
+        StartGameWindow.isVisible = true
+        BattleDialog.dispose()
+/*
+        Client.onBotListUpdate.subscribe { botListUpdate ->
+            run {
+                if (botListUpdate.bots.size == botEntries.size) { // FIXME: Show dialog instead with running bots and failing bots. Let user decide when to run battle
+                    val selectedBotAddresses = HashSet<BotAddress>()
+                    botListUpdate.bots.forEach { botInfo -> selectedBotAddresses += botInfo.botAddress }
+
+                    Client.onGameStarted.subscribe { BattleDialog.dispose() }
+                    Client.onGameAborted.subscribe { BootstrapProcess.stopRunning() }
+                    Client.onGameEnded.subscribe { BootstrapProcess.stopRunning() }
+
+                    Client.startGame(gameTypeComboBox.mutableGameSetup.toGameSetup(), selectedBotAddresses)
+                }
+            }
         }
-        Client.onGameStarted.subscribe { BattleDialog.dispose() }
-
-        Client.startGame(gameTypeComboBox.mutableGameSetup.toGameSetup(), selectedBotAddresses)
+ */
     }
 
-    inner class BotInfoCellRenderer : JLabel(), ListCellRenderer<BotInfo> {
+    class BotEntryCellRenderer : JLabel(), ListCellRenderer<BotEntry> {
 
         init {
             isOpaque = true
         }
 
         override fun getListCellRendererComponent(
-                list: JList<out BotInfo>?, value: BotInfo?, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
+                list: JList<out BotEntry>, value: BotEntry, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
 
-            text = value?.displayText
+            text = value.displayText
             border = EmptyBorder(1, 1, 1, 1)
 
             if (isSelected) {
-                background = list?.selectionBackground
-                foreground = list?.selectionForeground
+                background = list.selectionBackground
+                foreground = list.selectionForeground
             } else {
-                background = list?.background
-                foreground = list?.foreground
+                background = list.background
+                foreground = list.foreground
             }
-            font = list?.font
+            font = list.font
 
             return this
         }

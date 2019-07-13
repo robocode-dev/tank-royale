@@ -1,5 +1,6 @@
 package net.robocode2.gui.ui.server
 
+import kotlinx.serialization.ImplicitReflectionSerializer
 import net.miginfocom.swing.MigLayout
 import net.robocode2.gui.client.Client
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
@@ -20,6 +21,7 @@ import java.net.URISyntaxException
 import javax.swing.*
 import net.robocode2.gui.extensions.JTextFieldExt.setInputVerifier
 
+@ImplicitReflectionSerializer
 object ServerConfigDialog : JDialog(MainWindow, getWindowTitle()) {
 
     init {
@@ -41,6 +43,7 @@ private fun getWindowTitle(): String {
     return ResourceBundles.UI_TITLES.get("server_config_dialog")
 }
 
+@ImplicitReflectionSerializer
 private object ServerConfigPanel : JPanel(MigLayout("fill")) {
 
     // Private events
@@ -53,12 +56,9 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
 
     private val addressTextField = JTextField()
     private val portTextField = JTextField("${ServerSettings.port}", 5)
-    private val testButton = JButton(testButtonText)
+    private val testButton = JButton(STRINGS.get("server_test"))
 
-    private val testButtonText: String
-        get() = STRINGS.get("server_test")
-
-    private val remoteServerCheckBox = JCheckBox(STRINGS.get(("use_remote_server")),
+    private val remoteServerCheckBox = JCheckBox(STRINGS.get("use_remote_server"),
             ServerSettings.useRemoteServer)
 
     init {
@@ -108,7 +108,7 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
     private fun testServerConnection() {
         val disposables = ArrayList<Disposable>()
 
-        disposables.add(Client.onConnected.subscribe {
+        disposables += Client.onConnected.subscribe {
             JOptionPane.showMessageDialog(this,
                     MESSAGES.get("connected_successfully_to_server"))
 
@@ -116,13 +116,13 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
 
             disposables.forEach { it.dispose() }
             disposables.clear()
-        })
+        }
 
-        disposables.add(Client.onDisconnected.subscribe {
+        disposables += Client.onDisconnected.subscribe {
             cursor = Cursor.getDefaultCursor()
-        })
+        }
 
-        disposables.add(Client.onError.subscribe {
+        disposables += Client.onError.subscribe {
             JOptionPane.showMessageDialog(this,
                     MESSAGES.get("could_not_connect_to_server"),
                     MESSAGES.get("title_warning"),
@@ -132,7 +132,7 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
 
             disposables.forEach { it.dispose() }
             disposables.clear()
-        })
+        }
 
         val endpoint = "ws://${addressTextField.text}:${portTextField.text}"
 
@@ -184,6 +184,7 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
     }
 }
 
+@ImplicitReflectionSerializer
 private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 

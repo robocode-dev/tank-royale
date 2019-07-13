@@ -1,23 +1,25 @@
 package net.robocode2.gui.ui.battle
 
+import kotlinx.serialization.ImplicitReflectionSerializer
 import net.miginfocom.swing.MigLayout
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
 import net.robocode2.gui.extensions.JTextFieldExt.setInputVerifier
 import net.robocode2.gui.settings.GamesSettings
 import net.robocode2.gui.settings.MutableGameSetup
-import net.robocode2.gui.ui.Constants.MAX_ARENA_SIZE
-import net.robocode2.gui.ui.Constants.MAX_GUN_COOLING
-import net.robocode2.gui.ui.Constants.MAX_INACTIVITY_TURNS
-import net.robocode2.gui.ui.Constants.MAX_NUM_PARTICIPANTS
-import net.robocode2.gui.ui.Constants.MAX_NUM_ROUNDS
-import net.robocode2.gui.ui.Constants.MIN_ARENA_SIZE
-import net.robocode2.gui.ui.Constants.MIN_NUM_PARTICIPANTS
+import net.robocode2.gui.ui.GameConstants.MAX_ARENA_SIZE
+import net.robocode2.gui.ui.GameConstants.MAX_GUN_COOLING
+import net.robocode2.gui.ui.GameConstants.MAX_INACTIVITY_TURNS
+import net.robocode2.gui.ui.GameConstants.MAX_NUM_PARTICIPANTS
+import net.robocode2.gui.ui.GameConstants.MAX_NUM_ROUNDS
+import net.robocode2.gui.ui.GameConstants.MIN_ARENA_SIZE
+import net.robocode2.gui.ui.GameConstants.MIN_NUM_PARTICIPANTS
 import net.robocode2.gui.ui.ResourceBundles.MESSAGES
 import net.robocode2.gui.ui.ResourceBundles.STRINGS
 import net.robocode2.gui.utils.Event
 import javax.swing.*
 
+@ImplicitReflectionSerializer
 class SetupRulesPanel : JPanel(MigLayout("fill")) {
 
     // Private events

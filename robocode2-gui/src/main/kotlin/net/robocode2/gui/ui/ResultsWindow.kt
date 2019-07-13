@@ -9,7 +9,7 @@ import javax.swing.table.DefaultTableCellRenderer
 import java.awt.Dimension
 
 
-class ResultsWindow(results: List<BotResults>) : JFrame(getWindowTitle()), AutoCloseable {
+class ResultsWindow(results: List<BotResults>) : JFrame(getWindowTitle()) {
 
     init {
         val table = JTable(getData(results), getColumns())
@@ -39,9 +39,6 @@ class ResultsWindow(results: List<BotResults>) : JFrame(getWindowTitle()), AutoC
 
         pack()
         setLocationRelativeTo(null) // center on screen
-    }
-
-    override fun close() {
     }
 
     private fun getData(results: List<BotResults>): Array<Array<String>> {

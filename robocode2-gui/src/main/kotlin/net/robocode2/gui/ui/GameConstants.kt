@@ -1,6 +1,6 @@
 package net.robocode2.gui.ui
 
-object Constants {
+object GameConstants {
     const val MIN_ARENA_SIZE = 400
     const val MAX_ARENA_SIZE = 5000
 
