@@ -2,8 +2,8 @@ package net.robocode2.gui.server
 
 import net.robocode2.gui.settings.ServerSettings
 import net.robocode2.gui.ui.server.ServerWindow
+import net.robocode2.gui.utils.ResourceUtil
 import java.io.BufferedReader
-import java.io.File
 import java.io.InputStreamReader
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -11,15 +11,14 @@ object ServerProcess {
 
     private const val JAR_FILE_NAME = "robocode2-server.jar"
 
-    private val jarFileUrl =  javaClass.classLoader.getResource(JAR_FILE_NAME)
-            ?: throw IllegalStateException("Could not find the file: $JAR_FILE_NAME")
+    private val jarFileName = ResourceUtil.getResourceFile(JAR_FILE_NAME).toString()
 
     private val isRunning = AtomicBoolean(false)
     private var process: Process? = null
     private var logThread: Thread? = null
     private val logThreadRunning = AtomicBoolean(false)
 
-    var port: UShort = ServerSettings.port
+    var port: Int = ServerSettings.port
 
     fun isRunning(): Boolean {
         return isRunning.get()
@@ -33,7 +32,7 @@ object ServerProcess {
 
         port = ServerSettings.port;
 
-        val builder = ProcessBuilder("java", "-jar", File(jarFileUrl.toURI()).toString(), "--port=$port")
+        val builder = ProcessBuilder("java", "-jar", jarFileName, "--port=$port")
         builder.redirectErrorStream(true)
         process = builder.start()
 

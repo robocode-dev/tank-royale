@@ -7,7 +7,7 @@ object ServerSettings : PropertiesStore("Robocode Server Config", "server.proper
     private const val DEFAULT_SERVER_ADDRESS = "localhost"
 
     private const val SERVER_PORT_PROPERTY = "server.port"
-    private const val DEFAULT_SERVER_PORT: UShort = 55000u
+    private const val DEFAULT_SERVER_PORT: Int = 55000
 
     private const val REMOTE_SERVER_PROPERTY = "remote.server"
     private const val DEFAULT_REMOTE_SERVER = false
@@ -24,8 +24,8 @@ object ServerSettings : PropertiesStore("Robocode Server Config", "server.proper
             properties.setProperty(SERVER_ADDRESS_PROPERTY, value)
         }
 
-    var port: UShort
-        get() = properties.getProperty(SERVER_PORT_PROPERTY, "$DEFAULT_SERVER_PORT")!!.toUShort()
+    var port: Int
+        get() = properties.getProperty(SERVER_PORT_PROPERTY, "$DEFAULT_SERVER_PORT")!!.toInt()
         set(value) {
             properties.setProperty(SERVER_PORT_PROPERTY, "$value")
         }

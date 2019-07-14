@@ -7,7 +7,6 @@ import net.robocode2.gui.bootstrap.BotEntry
 import net.robocode2.gui.client.Client
 import net.robocode2.gui.extensions.JComponentExt.addNewButton
 import net.robocode2.gui.extensions.JComponentExt.addNewLabel
-import net.robocode2.gui.model.BotAddress
 import net.robocode2.gui.model.GameSetup
 import net.robocode2.gui.settings.ServerSettings
 import net.robocode2.gui.ui.ResourceBundles.STRINGS

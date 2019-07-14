@@ -5,8 +5,8 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.parseList
 import net.robocode2.gui.server.ServerProcess.stop
+import net.robocode2.gui.utils.ResourceUtil
 import java.io.BufferedReader
-import java.io.File
 import java.io.InputStreamReader
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -17,8 +17,7 @@ object BootstrapProcess {
 
     private const val JAR_FILE_NAME = "robocode2-bootstrap.jar"
 
-    private val jarFileUrl =  javaClass.classLoader.getResource(JAR_FILE_NAME)
-            ?: throw IllegalStateException("Could not find the file: $JAR_FILE_NAME")
+    private val jarFileName = ResourceUtil.getResourceFile(JAR_FILE_NAME).toString()
 
     private val isRunning = AtomicBoolean(false)
     private var runProcess: Process? = null
@@ -29,7 +28,7 @@ object BootstrapProcess {
     private val json = Json(JsonConfiguration.Default)
 
     fun list(): List<BotEntry> {
-        val builder = ProcessBuilder("java", "-jar", File(jarFileUrl.toURI()).toString(),
+        val builder = ProcessBuilder("java", "-jar", jarFileName,
                 "list", "--boot-dir=$BOOT_DIR")
         val process = builder.start()
         readErrorToStdError(process)
@@ -44,7 +43,7 @@ object BootstrapProcess {
         val args = ArrayList<String>()
         args += "java"
         args += "-jar"
-        args += File(jarFileUrl.toURI()).toString()
+        args += jarFileName
         args += "run"
         args += "--boot-dir=$BOOT_DIR"
         args += entries

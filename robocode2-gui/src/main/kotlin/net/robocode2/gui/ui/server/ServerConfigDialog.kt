@@ -155,7 +155,7 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
             URI(addressTextField.text)
 
             ServerSettings.address = addressTextField.text
-            ServerSettings.port = portTextField.text.toUShort()
+            ServerSettings.port = portTextField.text.toInt()
             ServerSettings.useRemoteServer = remoteServerCheckBox.isSelected
             ServerSettings.save()
             return true
@@ -170,12 +170,12 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
     }
 
     private fun portTextFieldVerifier(): Boolean {
-        val port: UShort? = try {
-            portTextField.text.trim().toUShort()
+        val port: Int? = try {
+            portTextField.text.trim().toInt()
         } catch (e: NumberFormatException) {
             null
         }
-        val valid = port != null && port >= 1024u && port <= 65535u
+        val valid = port != null && port >= 1024 && port <= 65535
         if (!valid || port == null) {
             JOptionPane.showMessageDialog(this, MESSAGES.get("port_number_range"))
             portTextField.text = "${ServerSettings.port}"
