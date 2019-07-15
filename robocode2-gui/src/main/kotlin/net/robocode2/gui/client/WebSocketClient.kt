@@ -39,22 +39,18 @@ class WebSocketClient(private val uri: URI): AutoCloseable {
 
         override fun onOpen(serverHandshake: ServerHandshake?) {
             onOpen.publish(Unit)
-            println("onOpen")
         }
 
         override fun onClose(code: Int, reason: String, remote: Boolean) {
             onClose.publish(Unit)
-            println("onClose: (code: $code, reason: $reason, remote: $remote)")
         }
 
         override fun onMessage(message: String) {
             onMessage.publish(message)
-            println("onMessage: $message")
         }
 
         override fun onError(ex: Exception) {
             onError.publish(ex)
-            println("onError: $ex")
         }
     }
 }
