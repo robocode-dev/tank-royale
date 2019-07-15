@@ -30,7 +30,7 @@ object ServerProcess {
 
         ServerWindow.clear()
 
-        port = ServerSettings.port;
+        port = ServerSettings.port
 
         val builder = ProcessBuilder("java", "-jar", jarFileName, "--port=$port")
         builder.redirectErrorStream(true)

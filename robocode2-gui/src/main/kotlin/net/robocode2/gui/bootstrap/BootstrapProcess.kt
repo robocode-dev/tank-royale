@@ -1,6 +1,7 @@
 package net.robocode2.gui.bootstrap
 
 import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.parseList
@@ -10,6 +11,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.concurrent.atomic.AtomicBoolean
 
+@UnstableDefault
 @ImplicitReflectionSerializer
 object BootstrapProcess {
 
@@ -39,12 +41,7 @@ object BootstrapProcess {
         if (isRunning.get())
             stop()
 
-        val args = ArrayList<String>()
-        args += "java"
-        args += "-jar"
-        args += jarFileName
-        args += "run"
-        args += "--boot-dir=$BOOT_DIR"
+        val args = arrayListOf("java", "-jar", jarFileName, "run", "--boot-dir=$BOOT_DIR")
         args += entries
 
         val builder = ProcessBuilder(args)
@@ -113,6 +110,7 @@ object BootstrapProcess {
     }
 }
 
+@UnstableDefault
 @ImplicitReflectionSerializer
 fun main() {
 //    println(BootstrapProcess.list())

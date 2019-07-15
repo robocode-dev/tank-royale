@@ -55,8 +55,6 @@ object Client : AutoCloseable {
         websocket.open() // must be called after onOpen.subscribe()
     }
 
-    fun getAvailableBots(): Set<BotInfo> = bots
-
     fun startGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>) {
         if (!isGameRunning && isConnected) {
             websocket.send(StartGame(gameSetup, botAddresses))

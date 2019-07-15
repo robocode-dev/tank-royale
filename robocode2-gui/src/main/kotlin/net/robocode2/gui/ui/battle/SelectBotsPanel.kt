@@ -1,6 +1,7 @@
 package net.robocode2.gui.ui.battle
 
 import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import net.robocode2.gui.bootstrap.BootstrapProcess
 import net.robocode2.gui.bootstrap.BotEntry
@@ -19,6 +20,7 @@ import javax.swing.*
 import javax.swing.border.EmptyBorder
 
 
+@UnstableDefault
 @ImplicitReflectionSerializer
 object SelectBotsPanel : JPanel(MigLayout("fill")) {
 
@@ -48,58 +50,62 @@ object SelectBotsPanel : JPanel(MigLayout("fill")) {
         get() = gameTypeComboBox.mutableGameSetup.toGameSetup()
 
     init {
-        val upperPanel = JPanel(MigLayout("", "[][grow][]"))
-        val lowerPanel = JPanel(MigLayout("insets 10, fill"))
+        val upperPanel = JPanel(MigLayout("", "[][grow][]")).apply {
+            addNewLabel("game_type")
+            add(gameTypeComboBox)
+            addNewLabel("connection_status", "right")
+            add(connectionStatusLabel, "center")
+        }
+        val leftSelectionPanel = JPanel(MigLayout("fill")).apply {
+            add(JScrollPane(availableBotList), "grow")
+            // Sets the preferred size to avoid right panel width to grow much larger than the right panel
+            preferredSize = Dimension(10, 10)
+            border = BorderFactory.createTitledBorder(STRINGS.get("available_bots"))
+        }
 
-        add(upperPanel, "north")
-        add(lowerPanel, "south, h 1000000")
-
-        upperPanel.addNewLabel("game_type")
-        upperPanel.add(gameTypeComboBox)
-        upperPanel.addNewLabel("connection_status", "right")
-        upperPanel.add(connectionStatusLabel, "center")
-
-        val selectionPanel = JPanel(MigLayout("", "[grow][][grow]"))
-        val buttonPanel = JPanel(MigLayout("center, insets 0"))
-
-        lowerPanel.add(selectionPanel, "north")
-        lowerPanel.add(buttonPanel, "center")
-
-        val leftSelectionPanel = JPanel(MigLayout("fill"))
-        leftSelectionPanel.add(JScrollPane(availableBotList), "grow")
-
-        val rightSelectionPanel = JPanel(MigLayout("fill"))
-        rightSelectionPanel.add(JScrollPane(selectedBotList), "grow")
-
-        val centerSelectionPanel = JPanel(MigLayout("insets 0"))
-
-        // Sets the preferred size to avoid right panel with to grow much larger than the right panel
-        leftSelectionPanel.preferredSize = Dimension(10, 10)
-        rightSelectionPanel.preferredSize = Dimension(10, 10)
-
-        selectionPanel.add(leftSelectionPanel, "grow")
-        selectionPanel.add(centerSelectionPanel, "")
-        selectionPanel.add(rightSelectionPanel, "grow")
-
-        leftSelectionPanel.border = BorderFactory.createTitledBorder(STRINGS.get("available_bots"))
-        rightSelectionPanel.border = BorderFactory.createTitledBorder(STRINGS.get("selected_bots"))
+        val rightSelectionPanel = JPanel(MigLayout("fill")).apply {
+            add(JScrollPane(selectedBotList), "grow")
+            preferredSize = Dimension(10, 10)
+            border = BorderFactory.createTitledBorder(STRINGS.get("selected_bots"))
+        }
 
         val addPanel = JPanel(MigLayout("insets 0, fill", "[fill]"))
         val removePanel = JPanel(MigLayout("insets 0, fill", "[fill]"))
 
         val middlePanel = JPanel(MigLayout("fill"))
 
-        centerSelectionPanel.add(addPanel, "north")
-        centerSelectionPanel.add(middlePanel, "h 300")
-        centerSelectionPanel.add(removePanel, "south")
+        val centerSelectionPanel = JPanel(MigLayout("insets 0")).apply {
+            add(addPanel, "north")
+            add(middlePanel, "h 300")
+            add(removePanel, "south")
+        }
+        val selectionPanel = JPanel(MigLayout("", "[grow][][grow]")).apply {
+            add(leftSelectionPanel, "grow")
+            add(centerSelectionPanel, "")
+            add(rightSelectionPanel, "grow")
+        }
+        val buttonPanel = JPanel(MigLayout("center, insets 0"))
 
-        addPanel.addNewButton("add_arrow", onAdd, "cell 0 1")
-        addPanel.addNewButton("add_all_arrow", onAddAll, "cell 0 2")
-        removePanel.addNewButton("arrow_remove", onRemove, "cell 0 3")
-        removePanel.addNewButton("arrow_remove_all", onRemoveAll, "cell 0 4")
+        val lowerPanel = JPanel(MigLayout("insets 10, fill")).apply {
+            add(selectionPanel, "north")
+            add(buttonPanel, "center")
+        }
 
-        buttonPanel.addNewButton("start_battle", onStartBattle, "tag ok")
-        buttonPanel.addNewButton("cancel", onCancel, "tag cancel")
+        add(upperPanel, "north")
+        add(lowerPanel, "south, h 1000000")
+
+        addPanel.apply {
+            addNewButton("add_arrow", onAdd, "cell 0 1")
+            addNewButton("add_all_arrow", onAddAll, "cell 0 2")
+        }
+        removePanel.apply {
+            addNewButton("arrow_remove", onRemove, "cell 0 3")
+            addNewButton("arrow_remove_all", onRemoveAll, "cell 0 4")
+        }
+        buttonPanel.apply {
+            addNewButton("start_battle", onStartBattle, "tag ok")
+            addNewButton("cancel", onCancel, "tag cancel")
+        }
 
         availableBotList.cellRenderer = BotEntryCellRenderer()
         selectedBotList.cellRenderer = BotEntryCellRenderer()
@@ -173,22 +179,6 @@ object SelectBotsPanel : JPanel(MigLayout("fill")) {
 
         StartGameWindow.isVisible = true
         BattleDialog.dispose()
-/*
-        Client.onBotListUpdate.subscribe { botListUpdate ->
-            run {
-                if (botListUpdate.bots.size == botEntries.size) { // FIXME: Show dialog instead with running bots and failing bots. Let user decide when to run battle
-                    val selectedBotAddresses = HashSet<BotAddress>()
-                    botListUpdate.bots.forEach { botInfo -> selectedBotAddresses += botInfo.botAddress }
-
-                    Client.onGameStarted.subscribe { BattleDialog.dispose() }
-                    Client.onGameAborted.subscribe { BootstrapProcess.stopRunning() }
-                    Client.onGameEnded.subscribe { BootstrapProcess.stopRunning() }
-
-                    Client.startGame(gameTypeComboBox.mutableGameSetup.toGameSetup(), selectedBotAddresses)
-                }
-            }
-        }
- */
     }
 
     class BotEntryCellRenderer : JLabel(), ListCellRenderer<BotEntry> {
