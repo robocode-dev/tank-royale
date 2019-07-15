@@ -1,6 +1,5 @@
 package net.robocode2.gui.utils
 
-import sun.misc.Cleaner
 import java.awt.EventQueue
 import java.util.*
 
@@ -10,9 +9,6 @@ class Event<T> {
 
     fun subscribe(subscriber: ((T) -> Unit)): Disposable {
         subscribers.add(subscriber)
-        Cleaner.create(subscriber) {
-            subscribers.remove(subscriber)
-        }
         return disposable(subscriber)
     }
 

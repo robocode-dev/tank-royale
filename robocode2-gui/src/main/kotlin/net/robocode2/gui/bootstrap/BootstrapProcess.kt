@@ -28,8 +28,7 @@ object BootstrapProcess {
     private val json = Json(JsonConfiguration.Default)
 
     fun list(): List<BotEntry> {
-        val builder = ProcessBuilder("java", "-jar", jarFileName,
-                "list", "--boot-dir=$BOOT_DIR")
+        val builder = ProcessBuilder("java", "-jar", jarFileName, "list", "--boot-dir=$BOOT_DIR")
         val process = builder.start()
         readErrorToStdError(process)
         val entries = readInputLines(process).joinToString()
