@@ -23,9 +23,9 @@ import javax.swing.*
 class SetupRulesPanel : JPanel(MigLayout("fill")) {
 
     // Private events
-    private val onOk = Event<JButton>()
+    private val onSave = Event<JButton>()
     private val onCancel = Event<JButton>()
-    private val onResetGameType = Event<JButton>()
+    private val onResetToDefault = Event<JButton>()
 
     private val gameTypeComboBox = GameTypeComboBox()
     private val widthTextField = JTextField(6)
@@ -36,8 +36,13 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private val gunCoolingRateTextField = JTextField(6)
     private val inactivityTurnsTextField = JTextField(6)
 
-    private val gameSetup: MutableGameSetup
+    private var gameSetup: MutableGameSetup
         get() = gameTypeComboBox.mutableGameSetup
+        set(value) {
+            gameTypeComboBox.mutableGameSetup = value.copy()
+        }
+
+    private var lastGameSetup = gameSetup.copy()
 
     init {
         val upperPanel = JPanel(MigLayout())
@@ -77,9 +82,9 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         arenaPanel.addNewLabel("height")
         arenaPanel.add(heightTextField)
 
-        lowerPanel.addNewButton("ok", onOk, "tag ok")
+        lowerPanel.addNewButton("save", onSave, "tag ok")
         lowerPanel.addNewButton("cancel", onCancel, "tag cancel")
-        lowerPanel.addNewButton("reset_game_type_to_default", onResetGameType, "tag apply")
+        lowerPanel.addNewButton("reset_to_default", onResetToDefault, "tag apply")
 
         gameTypeComboBox.selectedIndex = 0
 
@@ -91,11 +96,21 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         gunCoolingRateTextField.setInputVerifier { gunCoolingRateVerifier() }
         inactivityTurnsTextField.setInputVerifier { inactivityTurnsVerifier() }
 
-        onOk.subscribe { saveSettings() }
-        onCancel.subscribe { BattleDialog.dispose() }
-        onResetGameType.subscribe { gameTypeComboBox.resetGameType() }
+        onSave.subscribe {
+            lastGameSetup = gameSetup
+            saveSettings()
+        }
+        onCancel.subscribe {
+            gameSetup = lastGameSetup
+            updateFieldsForGameType()
+        }
+        onResetToDefault.subscribe {
+            gameTypeComboBox.resetGameType()
+        }
 
-        gameTypeComboBox.onGameTypeChanged.subscribe { updateFieldsForGameType() }
+        gameTypeComboBox.onGameTypeChanged.subscribe {
+            updateFieldsForGameType()
+        }
         updateFieldsForGameType()
     }
 

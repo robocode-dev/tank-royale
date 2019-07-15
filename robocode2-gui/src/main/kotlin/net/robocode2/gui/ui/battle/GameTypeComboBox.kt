@@ -9,8 +9,9 @@ class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray
 
     val onGameTypeChanged = Event<String>()
 
-    val mutableGameSetup: MutableGameSetup
+    var mutableGameSetup: MutableGameSetup
         get() = GamesSettings.games[selectedGameType] as MutableGameSetup
+        set(value) { GamesSettings.games[selectedGameType] = value }
 
     private val selectedGameType: String
         get() = selectedItem as String
