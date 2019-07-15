@@ -13,6 +13,13 @@ class ResultsWindow(results: List<BotResults>) : JFrame(getWindowTitle()) {
 
     init {
         val table = JTable(getData(results), getColumns())
+        val tableSize = Dimension(700, table.model.rowCount * table.rowHeight)
+
+        table.apply {
+            preferredScrollableViewportSize = tableSize
+            preferredSize = tableSize
+            minimumSize = tableSize
+        }
 
         val tableHeader = table.tableHeader
         val headerFontMetrics = tableHeader.getFontMetrics(tableHeader.font)
@@ -28,11 +35,6 @@ class ResultsWindow(results: List<BotResults>) : JFrame(getWindowTitle()) {
             cellRenderer.horizontalAlignment = JLabel.CENTER
             column.cellRenderer = cellRenderer
         }
-
-        val tableSize = Dimension(700, table.model.rowCount * table.rowHeight)
-        table.preferredScrollableViewportSize = tableSize
-        table.preferredSize = tableSize
-        table.minimumSize = tableSize
 
         val scrollPane = JScrollPane(table)
         contentPane.add(scrollPane)

@@ -205,32 +205,32 @@ class ArenaPanel : JPanel() {
 
     private fun drawBotBody(g: Graphics2D, x: Double, y: Double, direction: Double, color: Color) {
         val oldState = Graphics2DState(g)
+        g.apply {
+            translate(x, y)
+            rotate(Math.toRadians(direction))
 
-        g.translate(x, y)
-        g.rotate(Math.toRadians(direction))
+            this.color = color
+            fillRect(-18, -18 + 1 + 6, 36, 36 - 2 * 7)
 
-        g.color = color
-        g.fillRect(-18, -18 + 1 + 6, 36, 36 - 2 * 7)
+            this.color = Color.GRAY
 
-        g.color = Color.GRAY
-
-        g.fillRect(-18, -18, 36, 6)
-        g.fillRect(-18, 18 - 6, 36, 6)
-
+            fillRect(-18, -18, 36, 6)
+            fillRect(-18, 18 - 6, 36, 6)
+        }
         oldState.restore(g)
     }
 
     private fun drawGun(g: Graphics2D, x: Double, y: Double, direction: Double) {
         val oldState = Graphics2DState(g)
+        g.apply {
+            translate(x, y)
 
-        g.translate(x, y)
+            this.color = Color.LIGHT_GRAY
+            fillCircle(0.0, 0.0, 18.0)
 
-        g.color = Color.LIGHT_GRAY
-        g.fillCircle(0.0, 0.0, 18.0)
-
-        g.rotate(Math.toRadians(direction))
-        g.fillRect(8, -2, 16, 4)
-
+            rotate(Math.toRadians(direction))
+            fillRect(8, -2, 16, 4)
+        }
         oldState.restore(g)
     }
 

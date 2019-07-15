@@ -15,19 +15,14 @@ object MainWindowMenu : JMenuBar() {
     val onServerConfig = Event<JMenuItem>()
 
     init {
-        val menuBundle = ResourceBundles.MENU
-
-        val battleMenu = JMenu(menuBundle.get("menu.battle"))
-        add(battleMenu)
-
-        battleMenu.addNewMenuItem("item.new_battle", onNewBattle)
-        battleMenu.addSeparator()
-        battleMenu.addNewMenuItem("item.setup_rules", onSetupRules)
-
-        val serverMenu = JMenu(menuBundle.get("menu.server"))
-        add(serverMenu)
-
-        serverMenu.addNewMenuItem("item.show_server_log", onShowServerLog)
-        serverMenu.addNewMenuItem("item.server_config", onServerConfig)
+        add(JMenu(ResourceBundles.MENU.get("menu.battle")).apply {
+            addNewMenuItem("item.new_battle", onNewBattle)
+            addSeparator()
+            addNewMenuItem("item.setup_rules", onSetupRules)
+        })
+        add(JMenu(ResourceBundles.MENU.get("menu.server")).apply {
+            addNewMenuItem("item.show_server_log", onShowServerLog)
+            addNewMenuItem("item.server_config", onServerConfig)
+        })
     }
 }

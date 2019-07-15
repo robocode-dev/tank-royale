@@ -45,46 +45,44 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private var lastGameSetup = gameSetup.copy()
 
     init {
-        val upperPanel = JPanel(MigLayout())
-        val lowerPanel = JPanel(MigLayout())
+        val commonPanel = JPanel(MigLayout()).apply {
+            addNewLabel("game_type")
+            add(gameTypeComboBox, "wrap")
 
-        val commonPanel = JPanel(MigLayout())
-        val arenaPanel = JPanel(MigLayout())
+            addNewLabel("min_num_of_participants")
+            add(minNumParticipantsTextField, "wrap")
 
+            addNewLabel("max_num_of_participants")
+            add(maxNumParticipantsTextField, "wrap")
+
+            addNewLabel("number_of_rounds")
+            add(numberOfRoundsTextField, "wrap")
+
+            addNewLabel("gun_cooling_rate")
+            add(gunCoolingRateTextField, "wrap")
+
+            addNewLabel("inactivity_turns")
+            add(inactivityTurnsTextField, "wrap")
+        }
+        val arenaPanel = JPanel(MigLayout()).apply {
+            border = BorderFactory.createTitledBorder(STRINGS.get("arena_size"))
+
+            addNewLabel("width")
+            add(widthTextField, "wrap")
+            addNewLabel("height")
+            add(heightTextField)
+        }
+        val upperPanel = JPanel(MigLayout()).apply {
+            add(commonPanel, "west")
+            add(arenaPanel, "east")
+        }
+        val lowerPanel = JPanel(MigLayout()).apply {
+            addNewButton("save", onSave, "tag ok")
+            addNewButton("cancel", onCancel, "tag cancel")
+            addNewButton("reset_to_default", onResetToDefault, "tag apply")
+        }
         add(upperPanel, "center, wrap")
         add(lowerPanel, "center")
-
-        upperPanel.add(commonPanel, "west")
-        upperPanel.add(arenaPanel, "east")
-
-        commonPanel.addNewLabel("game_type")
-        commonPanel.add(gameTypeComboBox, "wrap")
-
-        commonPanel.addNewLabel("min_num_of_participants")
-        commonPanel.add(minNumParticipantsTextField, "wrap")
-
-        commonPanel.addNewLabel("max_num_of_participants")
-        commonPanel.add(maxNumParticipantsTextField, "wrap")
-
-        commonPanel.addNewLabel("number_of_rounds")
-        commonPanel.add(numberOfRoundsTextField, "wrap")
-
-        commonPanel.addNewLabel("gun_cooling_rate")
-        commonPanel.add(gunCoolingRateTextField, "wrap")
-
-        commonPanel.addNewLabel("inactivity_turns")
-        commonPanel.add(inactivityTurnsTextField, "wrap")
-
-        arenaPanel.border = BorderFactory.createTitledBorder(STRINGS.get("arena_size"))
-
-        arenaPanel.addNewLabel("width")
-        arenaPanel.add(widthTextField, "wrap")
-        arenaPanel.addNewLabel("height")
-        arenaPanel.add(heightTextField)
-
-        lowerPanel.addNewButton("save", onSave, "tag ok")
-        lowerPanel.addNewButton("cancel", onCancel, "tag cancel")
-        lowerPanel.addNewButton("reset_to_default", onResetToDefault, "tag apply")
 
         gameTypeComboBox.selectedIndex = 0
 

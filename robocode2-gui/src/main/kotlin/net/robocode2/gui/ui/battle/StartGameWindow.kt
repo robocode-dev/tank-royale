@@ -1,12 +1,12 @@
 package net.robocode2.gui.ui.battle
 
 import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.UnstableDefault
 import net.robocode2.gui.bootstrap.BootstrapProcess
 import net.robocode2.gui.client.Client
 import net.robocode2.gui.extensions.WindowExt.onClosing
 import net.robocode2.gui.model.BotAddress
 import net.robocode2.gui.model.BotInfo
-import net.robocode2.gui.server.ServerProcess
 import net.robocode2.gui.ui.ResourceBundles
 import net.robocode2.gui.utils.Disposable
 import java.awt.BorderLayout
@@ -14,6 +14,7 @@ import java.awt.Color
 import javax.swing.*
 
 
+@UnstableDefault
 @ImplicitReflectionSerializer
 object StartGameWindow : JFrame(getWindowTitle()) {
 
@@ -27,10 +28,11 @@ object StartGameWindow : JFrame(getWindowTitle()) {
         setSize(500, 300)
         setLocationRelativeTo(null) // center on screen
 
-        textArea.isEditable = false
-        textArea.foreground = Color.WHITE
-        textArea.background = Color(0x28, 0x28, 0x28)
-
+        textArea.apply {
+            isEditable = false
+            foreground = Color.WHITE
+            background = Color(0x28, 0x28, 0x28)
+        }
         val scrollPane = JScrollPane(textArea)
 
         contentPane.add(scrollPane, BorderLayout.CENTER)
@@ -46,14 +48,16 @@ object StartGameWindow : JFrame(getWindowTitle()) {
         }
 
         startButton.addActionListener {
-            Client.onGameStarted.subscribe { dispose() }
-            Client.onGameAborted.subscribe { BootstrapProcess.stopRunning() }
-            Client.onGameEnded.subscribe { BootstrapProcess.stopRunning() }
+            Client.apply {
+                onGameStarted.subscribe { dispose() }
+                onGameAborted.subscribe { BootstrapProcess.stopRunning() }
+                onGameEnded.subscribe { BootstrapProcess.stopRunning() }
 
-            val botAddresses = HashSet<BotAddress>()
-            botEntries.forEach { botAddresses += it.botAddress }
+                val botAddresses = HashSet<BotAddress>()
+                botEntries.forEach { botAddresses += it.botAddress }
 
-            Client.startGame(SelectBotsPanel.gameSetup, botAddresses)
+                startGame(SelectBotsPanel.gameSetup, botAddresses)
+            }
         }
 
         onClosing {
@@ -66,6 +70,7 @@ private fun getWindowTitle(): String {
     return ResourceBundles.UI_TITLES.get("start_game_window")
 }
 
+@UnstableDefault
 @ImplicitReflectionSerializer
 fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())

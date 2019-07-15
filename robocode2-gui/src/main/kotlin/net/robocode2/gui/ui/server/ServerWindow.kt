@@ -14,10 +14,11 @@ object ServerWindow : JFrame(getWindowTitle()) {
         setSize(700, 550)
         setLocationRelativeTo(null) // center on screen
 
-        textArea.isEditable = false
-        textArea.foreground = Color.WHITE
-        textArea.background = Color(0x28, 0x28, 0x28)
-
+        textArea.apply {
+            isEditable = false
+            foreground = Color.WHITE
+            background = Color(0x28, 0x28, 0x28)
+        }
         val scrollPane = JScrollPane(textArea)
         contentPane.add(scrollPane)
     }

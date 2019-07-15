@@ -26,15 +26,17 @@ object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
         jMenuBar = MainWindowMenu
 
         MainWindowMenu.onNewBattle.invokeLater {
-            val dialog = BattleDialog
-            dialog.selectBotsTab()
-            dialog.isVisible = true
+            BattleDialog.apply {
+                selectBotsTab()
+                isVisible = true
+            }
         }
 
         MainWindowMenu.onSetupRules.invokeLater {
-            val dialog = BattleDialog
-            dialog.selectSetupRulesTab()
-            dialog.isVisible = true
+            BattleDialog.apply {
+                selectSetupRulesTab()
+                isVisible = true
+            }
         }
 
         MainWindowMenu.onShowServerLog.invokeLater {

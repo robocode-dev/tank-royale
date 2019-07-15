@@ -58,33 +58,33 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
     private val portTextField = JTextField("${ServerSettings.port}", 5)
     private val testButton = JButton(STRINGS.get("server_test"))
 
-    private val remoteServerCheckBox = JCheckBox(STRINGS.get("use_remote_server"),
-            ServerSettings.useRemoteServer)
+    private val remoteServerCheckBox = JCheckBox(STRINGS.get("use_remote_server"), ServerSettings.useRemoteServer)
 
     init {
-        val upperPanel = JPanel(MigLayout("", "[][grow][]"))
+        val upperPanel = JPanel(MigLayout("", "[][grow][]")).apply {
+            addNewLabel("server_endpoint")
+            add(addressTextField, "span 2, grow")
+            add(portTextField)
+            add(testButton, "wrap")
+        }
         val lowerPanel = JPanel(MigLayout("", "[grow]"))
+
         add(upperPanel, "north")
         add(lowerPanel, "south")
 
         portTextField.setInputVerifier { portTextFieldVerifier() }
-
-        upperPanel.addNewLabel("server_endpoint")
-        upperPanel.add(addressTextField, "span 2, grow")
-        upperPanel.add(portTextField)
-        upperPanel.add(testButton, "wrap")
 
         addressTextField.text = ServerSettings.address
         addressTextField.isEnabled = remoteServerCheckBox.isSelected
 
         upperPanel.add(remoteServerCheckBox)
 
-        val buttonPanel = JPanel(MigLayout())
+        val buttonPanel = JPanel(MigLayout()).apply {
+            addNewButton("ok", onOk, "tag ok")
+            addNewButton("cancel", onCancel, "tag cancel")
+            addNewButton("reset_server_config_to_default", onResetServerConfig, "tag apply")
+        }
         lowerPanel.add(buttonPanel, "center")
-
-        buttonPanel.addNewButton("ok", onOk, "tag ok")
-        buttonPanel.addNewButton("cancel", onCancel, "tag cancel")
-        buttonPanel.addNewButton("reset_server_config_to_default", onResetServerConfig, "tag apply")
 
         testButton.addActionListener { onTestButtonClicked.publish(testButton) }
         remoteServerCheckBox.addActionListener { onRemoteServerCheckBoxChanged.publish(remoteServerCheckBox) }
@@ -154,10 +154,12 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
         try {
             URI(addressTextField.text)
 
-            ServerSettings.address = addressTextField.text
-            ServerSettings.port = portTextField.text.toInt()
-            ServerSettings.useRemoteServer = remoteServerCheckBox.isSelected
-            ServerSettings.save()
+            ServerSettings.apply {
+                address = addressTextField.text
+                port = portTextField.text.toInt()
+                useRemoteServer = remoteServerCheckBox.isSelected
+                save()
+            }
             return true
 
         } catch (ex: URISyntaxException) {
