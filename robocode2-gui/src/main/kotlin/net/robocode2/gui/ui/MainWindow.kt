@@ -7,6 +7,8 @@ import net.robocode2.gui.server.ServerProcess
 import net.robocode2.gui.ui.server.ServerWindow
 import net.robocode2.gui.ui.battle.ArenaPanel
 import net.robocode2.gui.ui.battle.BattleDialog
+import net.robocode2.gui.ui.battle.BattlePanel
+import net.robocode2.gui.ui.battle.LogoPanel
 import net.robocode2.gui.ui.server.ServerConfigDialog
 import java.awt.EventQueue
 import javax.swing.JFrame
@@ -21,7 +23,8 @@ object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
         setSize(800, 600)
         setLocationRelativeTo(null) // center on screen
 
-        contentPane.add(ArenaPanel())
+        contentPane.add(LogoPanel)
+        contentPane.add(BattlePanel)
 
         jMenuBar = MainWindowMenu
 
@@ -47,9 +50,37 @@ object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
             ServerConfigDialog.isVisible = true
         }
 
+        Client.onGameStarted.subscribe {
+            showBattle()
+        }
+
+        Client.onGameEnded.subscribe {
+            showLogo()
+        }
+
+        Client.onGameAborted.subscribe {
+            showLogo()
+        }
+
         onClosing {
             close()
         }
+    }
+
+    private fun showLogo() {
+        contentPane.remove(BattlePanel)
+        contentPane.add(LogoPanel)
+
+        BattlePanel.isVisible = false
+        LogoPanel.isVisible = true
+    }
+
+    private fun showBattle() {
+        contentPane.remove(LogoPanel)
+        contentPane.add(BattlePanel)
+
+        BattlePanel.isVisible = true
+        LogoPanel.isVisible = false
     }
 
     override fun close() {

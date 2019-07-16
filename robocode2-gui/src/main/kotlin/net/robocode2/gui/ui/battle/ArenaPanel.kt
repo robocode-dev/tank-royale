@@ -6,6 +6,9 @@ import net.robocode2.gui.fx.CircleBurst
 import net.robocode2.gui.fx.Explosion
 import net.robocode2.gui.model.*
 import net.robocode2.gui.ui.ResultsWindow
+import net.robocode2.gui.ui.battle.ArenaPanel.State.arenaHeight
+import net.robocode2.gui.ui.battle.ArenaPanel.State.arenaWidth
+import net.robocode2.gui.ui.battle.ArenaPanel.State.bots
 import net.robocode2.gui.utils.Graphics2DState
 import java.awt.*
 import java.awt.event.MouseWheelEvent
@@ -16,7 +19,7 @@ import javax.swing.JPanel
 import kotlin.collections.HashSet
 
 
-class ArenaPanel : JPanel() {
+object ArenaPanel : JPanel() {
 
     private var scale = 1.0
 
@@ -24,7 +27,7 @@ class ArenaPanel : JPanel() {
 
     private val explosions = Collections.synchronizedList(ArrayList<Animation>())
 
-    private companion object State {
+    private object State {
         var arenaWidth: Int = 800
         var arenaHeight: Int = 600
 
