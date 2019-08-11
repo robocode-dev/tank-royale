@@ -307,6 +307,7 @@ public final class GameServer {
     turnTimer.stop();
 
     if (runningState == RunningState.GAME_PAUSED) {
+      turnTimer.start(); // Restart timer in order to reinvoke this method later
       return;
     }
 

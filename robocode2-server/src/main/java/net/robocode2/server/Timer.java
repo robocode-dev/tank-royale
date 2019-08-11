@@ -5,12 +5,12 @@ import java.util.TimerTask;
 public class Timer {
 
   private java.util.Timer timer;
-  private final long timeInterval;
+  private final long delay;
   private final Runnable task;
 
   public Timer(long intervalMicroseconds, Runnable task) {
-      this.timeInterval = intervalMicroseconds / 1000;
-      this.task = task;
+    this.delay = intervalMicroseconds / 1000;
+    this.task = task;
   }
 
   public void start() {
@@ -23,13 +23,13 @@ public class Timer {
             task.run();
           }
         },
-        timeInterval);
+        delay);
   }
 
-    public void stop() {
-        if (timer != null) {
-            timer.cancel();
-        }
-        timer = null;
+  public void stop() {
+    if (timer != null) {
+      timer.cancel();
     }
+    timer = null;
+  }
 }

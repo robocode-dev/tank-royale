@@ -25,8 +25,8 @@ dependencies {
     compile 'ch.qos.logback:logback-core:1.2.3'
     compile 'org.slf4j:slf4j-api:1.7.26'
 
-    compileOnly 'org.projectlombok:lombok:1.18.4'
-    annotationProcessor 'org.projectlombok:lombok:1.18.4'
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.unitils:unitils-core:3.4.6'
