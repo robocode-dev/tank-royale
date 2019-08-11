@@ -4,12 +4,11 @@ import kotlinx.serialization.ImplicitReflectionSerializer
 import net.robocode2.gui.client.Client
 import net.robocode2.gui.extensions.WindowExt.onClosing
 import net.robocode2.gui.server.ServerProcess
-import net.robocode2.gui.ui.server.ServerWindow
-import net.robocode2.gui.ui.battle.ArenaPanel
 import net.robocode2.gui.ui.battle.BattleDialog
 import net.robocode2.gui.ui.battle.BattlePanel
 import net.robocode2.gui.ui.battle.LogoPanel
 import net.robocode2.gui.ui.server.ServerConfigDialog
+import net.robocode2.gui.ui.server.ServerWindow
 import java.awt.EventQueue
 import javax.swing.JFrame
 import javax.swing.UIManager
@@ -24,7 +23,6 @@ object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
         setLocationRelativeTo(null) // center on screen
 
         contentPane.add(LogoPanel)
-        contentPane.add(BattlePanel)
 
         jMenuBar = MainWindowMenu
 
@@ -71,16 +69,16 @@ object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
         contentPane.remove(BattlePanel)
         contentPane.add(LogoPanel)
 
-        BattlePanel.isVisible = false
-        LogoPanel.isVisible = true
+        validate()
+        repaint()
     }
 
     private fun showBattle() {
         contentPane.remove(LogoPanel)
         contentPane.add(BattlePanel)
 
-        BattlePanel.isVisible = true
-        LogoPanel.isVisible = false
+        validate()
+        repaint()
     }
 
     override fun close() {

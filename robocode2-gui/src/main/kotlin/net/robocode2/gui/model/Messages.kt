@@ -113,8 +113,15 @@ data class BotListUpdate(
 ) : Message()
 
 @Serializable
-@SerialName("GameAbortedEvent")
-sealed class GameAbortedEvent : Message()
+@SerialName("GameStartedEventForObserver")
+data class GameStartedEvent(
+        val gameSetup: GameSetup,
+        val participants: List<Participant>
+) : Message()
+
+@Serializable
+@SerialName("GameAbortedEventForObserver")
+class GameAbortedEvent : Message()
 
 @Serializable
 @SerialName("GameEndedEventForObserver")
@@ -124,20 +131,12 @@ data class GameEndedEvent(
 ) : Message()
 
 @Serializable
-@SerialName("GamePausedEvent")
-sealed class GamePausedEvent : Message()
+@SerialName("GamePausedEventForObserver")
+class GamePausedEvent : Message()
 
 @Serializable
-@SerialName("GameResumedEvent")
-sealed class GameResumedEvent : Message()
-
-@Serializable
-@SerialName("GameStartedEventForObserver")
-data class GameStartedEvent(
-        val gameSetup: GameSetup,
-        val participants: List<Participant>
-) : Message()
-
+@SerialName("GameResumedEventForObserver")
+class GameResumedEvent : Message()
 
 @Serializable
 @SerialName("ControllerHandshake")
@@ -166,6 +165,14 @@ data class StartGame(
 @SerialName("StopGame")
 class StopGame : Message()
 
+@Serializable
+@SerialName("PauseGame")
+class PauseGame : Message()
+
+@Serializable
+@SerialName("ResumeGame")
+class ResumeGame : Message()
+
 val messageModule = SerializersModule {
     polymorphic(Message::class) {
         BotDeathEvent::class with BotDeathEvent.serializer()
@@ -179,9 +186,12 @@ val messageModule = SerializersModule {
         ControllerHandshake::class with ControllerHandshake.serializer()
         GameAbortedEvent::class with GameAbortedEvent.serializer()
         GameEndedEvent::class with GameEndedEvent.serializer()
+        GamePausedEvent::class with GamePausedEvent.serializer()
         GameResumedEvent::class with GameResumedEvent.serializer()
         GameStartedEvent::class with GameStartedEvent.serializer()
         HitByBulletEvent::class with HitByBulletEvent.serializer()
+        PauseGame::class with PauseGame.serializer()
+        ResumeGame::class with ResumeGame.serializer()
         ScannedBotEvent::class with ScannedBotEvent.serializer()
         ServerHandshake::class with ServerHandshake.serializer()
         StartGame::class with StartGame.serializer()

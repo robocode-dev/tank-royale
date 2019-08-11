@@ -20,6 +20,8 @@ object Client : AutoCloseable {
     val onGameStarted = Event<GameStartedEvent>()
     val onGameEnded = Event<GameEndedEvent>()
     val onGameAborted = Event<GameAbortedEvent>()
+    val onGamePaused = Event<GamePausedEvent>()
+    val onGameResumed = Event<GameResumedEvent>()
 
     val onTickEvent = Event<TickEvent>()
 
@@ -32,7 +34,13 @@ object Client : AutoCloseable {
     private var games: Set<GameSetup> = HashSet()
     private var bots: Set<BotInfo> = HashSet()
 
-    private var isGameRunning: Boolean = false
+    var isGameRunning: Boolean = false
+        private set
+
+    var isGamePaused: Boolean = false
+        private set
+
+    private var lastStartGame: StartGame? = null
 
     val isConnected: Boolean get() = websocket.isOpen()
 
@@ -57,7 +65,9 @@ object Client : AutoCloseable {
 
     fun startGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>) {
         if (!isGameRunning && isConnected) {
-            websocket.send(StartGame(gameSetup, botAddresses))
+            lastStartGame = StartGame(gameSetup, botAddresses)
+            val startGame = lastStartGame
+            websocket.send(startGame!!)
         }
     }
 
@@ -67,14 +77,35 @@ object Client : AutoCloseable {
         }
     }
 
+    fun restartGame() {
+        stopGame()
+        val startGame = lastStartGame
+        websocket.send(startGame!!)
+    }
+
+    fun pauseGame() {
+        if (!isGamePaused) {
+            websocket.send(PauseGame())
+        }
+    }
+
+    fun resumeGame() {
+        if (isGamePaused) {
+            println("send ResumeGame()")
+            websocket.send(ResumeGame())
+        }
+    }
+
     private fun onMessage(msg: String) {
         when (val type = json.parse(PolymorphicSerializer(Message::class), msg)) {
+            is TickEvent -> handleTickEvent(type)
             is ServerHandshake -> handleServerHandshake(type)
             is BotListUpdate -> handleBotListUpdate(type)
             is GameStartedEvent -> handleGameStarted(type)
             is GameEndedEvent -> handleGameEnded(type)
             is GameAbortedEvent -> handleGameAborted(type)
-            is TickEvent -> handleTickEvent(type)
+            is GamePausedEvent -> handleGamePaused(type)
+            is GameResumedEvent -> handleGameResumed(type)
             else -> throw IllegalArgumentException("Unknown content type: $type")
         }
     }
@@ -104,12 +135,26 @@ object Client : AutoCloseable {
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {
         isGameRunning = false
+        isGamePaused = false
         onGameEnded.publish(gameEndedEvent)
     }
 
     private fun handleGameAborted(gameAbortedEvent: GameAbortedEvent) {
         isGameRunning = false
+        isGamePaused = false
         onGameAborted.publish(gameAbortedEvent)
+    }
+
+    private fun handleGamePaused(gamePausedEvent: GamePausedEvent) {
+        println("handleGamePaused")
+        isGamePaused = true
+        onGamePaused.publish(gamePausedEvent)
+    }
+
+    private fun handleGameResumed(gameResumedEvent: GameResumedEvent) {
+        println("handleGameResumed")
+        isGamePaused = false
+        onGameResumed.publish(gameResumedEvent)
     }
 
     private fun handleTickEvent(tickEvent: TickEvent) {
