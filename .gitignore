@@ -5,3 +5,4 @@
 /RemoteSystemsTempFiles
 .idea
 target
+/robocode2-bootstrap/.gradle
