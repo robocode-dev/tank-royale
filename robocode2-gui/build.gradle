@@ -41,7 +41,7 @@ dependencies {
     compile 'com.miglayout:miglayout-swing:5.2'
 
     runtime 'net.robocode2:robocode2-server:0.2.12'
-    runtime 'net.robocode2:robocode2-bootstrap:0.2.1'
+    runtime 'net.robocode2:robocode2-bootstrap:0.2.3'
 }
 
 jar {
