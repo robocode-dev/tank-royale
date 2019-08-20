@@ -70,8 +70,6 @@ class BootUtil(private val bootstrapPath: Path) {
                     ProcessBuilder(command)
             }
 
-//            processBuilder.redirectErrorStream(true)
-
             val botInfo = getBotInfo(filename)
 
             val env = processBuilder.environment()
@@ -88,16 +86,6 @@ class BootUtil(private val bootstrapPath: Path) {
                 env[Env.BOT_PROG_LANG.name] = botInfo.programmingLang
 
             val process = processBuilder.start()
-
-//            val reader = BufferedReader(InputStreamReader(process.inputStream))
-
-//            Thread.sleep(2000)
-
-//            var line: String? = reader.readLine()
-//            do {
-//                println(line)
-//                line = reader.readLine()
-//            } while (line != null)
 
             println("$filename started")
             return process

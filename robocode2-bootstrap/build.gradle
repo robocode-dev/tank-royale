@@ -17,7 +17,7 @@ apply plugin: 'kotlinx-serialization'
 apply plugin: 'maven'
 
 group = 'net.robocode2'
-version = '0.2.1'
+version = '0.2.3'
 description = 'Robocode 2 Bootstrap'
 sourceCompatibility = '1.8'
 

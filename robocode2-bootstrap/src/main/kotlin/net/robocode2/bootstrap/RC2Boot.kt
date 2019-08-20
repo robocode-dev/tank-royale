@@ -14,6 +14,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
@@ -71,7 +72,20 @@ class RC2Boot : Runnable {
         val processes = BootUtil(getBootDir(bootDir)).startBots(filenames)
 
         readLine()
-        processes.forEach{ p -> p.destroyForcibly() }
+
+        processes.parallelStream().forEach {
+            p -> p.descendants().forEach {
+                d -> d.destroy()
+                if (d.isAlive)
+                    d.destroyForcibly()
+            }
+            p.destroy()
+            p.waitFor(10, TimeUnit.SECONDS)
+            if (p.isAlive) {
+                p.destroyForcibly()
+                p.waitFor(10, TimeUnit.SECONDS)
+            }
+        }
     }
 
     /** Returns the set boot-dir which will be set to the current working directory if it is not provided as option */
