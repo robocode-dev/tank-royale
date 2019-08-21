@@ -19,9 +19,9 @@ apply plugin: 'kotlinx-serialization'
 apply plugin: "com.vanniktech.dependency.graph.generator"
 
 group = 'net.robocode2'
-version = '0.3.0'
+version = '0.3.1'
 description = 'Robocode 2 GUI'
-sourceCompatibility = '1.8'
+sourceCompatibility = '9' // due to UTF-8 support in property files
 
 mainClassName = 'net.robocode2.gui.ui.MainWindowKt'
 

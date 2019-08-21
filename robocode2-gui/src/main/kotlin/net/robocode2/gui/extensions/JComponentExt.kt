@@ -15,7 +15,8 @@ object JComponentExt {
     }
 
     fun JComponent.addNewButton(
-            stringResourceName: String, event: Event<JButton>, layoutConstraints: String? = null): JButton {
+        stringResourceName: String, event: Event<JButton>, layoutConstraints: String? = null
+    ): JButton {
         val button = JButton(ResourceBundles.STRINGS.get(stringResourceName))
         button.addActionListener { event.publish(button) }
         add(button, layoutConstraints)

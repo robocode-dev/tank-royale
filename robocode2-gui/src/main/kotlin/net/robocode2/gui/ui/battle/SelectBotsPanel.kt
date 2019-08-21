@@ -188,7 +188,8 @@ object SelectBotsPanel : JPanel(MigLayout("fill")) {
         }
 
         override fun getListCellRendererComponent(
-                list: JList<out BotEntry>, value: BotEntry, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
+            list: JList<out BotEntry>, value: BotEntry, index: Int, isSelected: Boolean, cellHasFocus: Boolean
+        ): Component {
 
             text = value.displayText
             border = EmptyBorder(1, 1, 1, 1)

@@ -10,4 +10,7 @@ object GameConstants {
     const val MAX_NUM_ROUNDS = 1_000_000_000
     const val MAX_GUN_COOLING = 0.7
     const val MAX_INACTIVITY_TURNS = 1_000_000_000
+
+    const val MAX_READY_TIMEOUT = 2_000_000_000
+    const val MAX_TURN_TIMEOUT = 2_000_000_000
 }

@@ -12,6 +12,8 @@ import net.robocode2.gui.ui.GameConstants.MAX_GUN_COOLING
 import net.robocode2.gui.ui.GameConstants.MAX_INACTIVITY_TURNS
 import net.robocode2.gui.ui.GameConstants.MAX_NUM_PARTICIPANTS
 import net.robocode2.gui.ui.GameConstants.MAX_NUM_ROUNDS
+import net.robocode2.gui.ui.GameConstants.MAX_READY_TIMEOUT
+import net.robocode2.gui.ui.GameConstants.MAX_TURN_TIMEOUT
 import net.robocode2.gui.ui.GameConstants.MIN_ARENA_SIZE
 import net.robocode2.gui.ui.GameConstants.MIN_NUM_PARTICIPANTS
 import net.robocode2.gui.ui.ResourceBundles.MESSAGES
@@ -35,6 +37,8 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private val numberOfRoundsTextField = JTextField(6)
     private val gunCoolingRateTextField = JTextField(6)
     private val inactivityTurnsTextField = JTextField(6)
+    private val readyTimeoutTextField = JTextField(6)
+    private val turnTimeoutTextField = JTextField(6)
 
     private var gameSetup: MutableGameSetup
         get() = gameTypeComboBox.mutableGameSetup
@@ -61,8 +65,14 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             addNewLabel("gun_cooling_rate")
             add(gunCoolingRateTextField, "wrap")
 
-            addNewLabel("inactivity_turns")
+            addNewLabel("max_inactivity_turns")
             add(inactivityTurnsTextField, "wrap")
+
+            addNewLabel("ready_timeout");
+            add(readyTimeoutTextField, "wrap")
+
+            addNewLabel("turn_timeout");
+            add(turnTimeoutTextField, "wrap")
         }
         val arenaPanel = JPanel(MigLayout()).apply {
             border = BorderFactory.createTitledBorder(STRINGS.get("arena_size"))
@@ -93,6 +103,8 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         numberOfRoundsTextField.setInputVerifier { numberOfRoundsVerifier() }
         gunCoolingRateTextField.setInputVerifier { gunCoolingRateVerifier() }
         inactivityTurnsTextField.setInputVerifier { inactivityTurnsVerifier() }
+        readyTimeoutTextField.setInputVerifier { readyTimeoutVerifier() }
+        turnTimeoutTextField.setInputVerifier { turnTimeoutVerifier() }
 
         onSave.subscribe {
             lastGameSetup = gameSetup
@@ -121,10 +133,11 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         heightTextField.text = gameSetup.arenaHeight.toString()
         minNumParticipantsTextField.text = gameSetup.minNumberOfParticipants.toString()
         maxNumParticipantsTextField.text = gameSetup.maxNumberOfParticipants?.toString() ?: ""
-
         numberOfRoundsTextField.text = gameSetup.numberOfRounds.toString()
         inactivityTurnsTextField.text = gameSetup.maxInactivityTurns.toString()
         gunCoolingRateTextField.text = gameSetup.gunCoolingRate.toString()
+        readyTimeoutTextField.text = gameSetup.readyTimeout.toString()
+        turnTimeoutTextField.text = gameSetup.turnTimeout.toString()
     }
 
     private fun widthVerifier(): Boolean {
@@ -255,6 +268,40 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             showMessage(String.format(MESSAGES.get("num_inactivity_turns_range"), MAX_INACTIVITY_TURNS))
 
             inactivityTurnsTextField.text = "" + gameSetup.maxInactivityTurns
+        }
+        return valid
+    }
+
+    private fun readyTimeoutVerifier(): Boolean {
+        val timeout: Int? = try {
+            readyTimeoutTextField.text.trim().toInt()
+        } catch (e: NumberFormatException) {
+            null
+        }
+        val valid = timeout != null && timeout >= 0
+        if (valid && timeout != null) {
+            gameSetup.readyTimeout = timeout
+        } else {
+            showMessage(String.format(MESSAGES.get("ready_timeout_range"), MAX_READY_TIMEOUT))
+
+            readyTimeoutTextField.text = "" + gameSetup.readyTimeout
+        }
+        return valid
+    }
+
+    private fun turnTimeoutVerifier(): Boolean {
+        val timeout: Int? = try {
+            turnTimeoutTextField.text.trim().toInt()
+        } catch (e: NumberFormatException) {
+            null
+        }
+        val valid = timeout != null && timeout >= 0
+        if (valid && timeout != null) {
+            gameSetup.turnTimeout = timeout
+        } else {
+            showMessage(String.format(MESSAGES.get("turn_timeout_range"), MAX_TURN_TIMEOUT))
+
+            turnTimeoutTextField.text = "" + gameSetup.turnTimeout
         }
         return valid
     }

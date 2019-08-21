@@ -3,12 +3,12 @@ package net.robocode2.gui.fx
 import java.awt.Graphics2D
 
 class Explosion(
-        x: Double,
-        y: Double,
-        private val radius: Int,
-        period: Int,
-        numberOfCircles: Int,
-        startTime: Int
+    x: Double,
+    y: Double,
+    private val radius: Int,
+    period: Int,
+    numberOfCircles: Int,
+    startTime: Int
 ) : Animation {
     var finished: Boolean = false
         set(value) {
@@ -27,13 +27,15 @@ class Explosion(
                 cx += radiusRandom()
                 cy += radiusRandom()
             }
-            parts.add(CircleBurst(
+            parts.add(
+                CircleBurst(
                     cx, cy,
                     smallBurstRadius * .1,
                     smallBurstRadius,
                     period,
                     startTime + (Math.random() * period * .3).toInt()
-            ))
+                )
+            )
         }
     }
 

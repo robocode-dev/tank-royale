@@ -42,7 +42,7 @@ object BattlePanel : JPanel() {
             if (Client.isGamePaused) {
                 println("Client.resumeGame()")
                 Client.resumeGame()
-            }  else {
+            } else {
                 println("Client.pauseGame()")
                 Client.pauseGame()
             }

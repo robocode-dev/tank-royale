@@ -9,7 +9,7 @@ import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 
-class WebSocketClient(private val uri: URI): AutoCloseable {
+class WebSocketClient(private val uri: URI) : AutoCloseable {
 
     val onOpen = Event<Unit>()
     val onClose = Event<Unit>()

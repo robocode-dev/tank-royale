@@ -114,9 +114,9 @@ object Client : AutoCloseable {
         games = serverHandshake.games
 
         val handshake = ControllerHandshake(
-                name = "Robocode 2 UI",
-                version = "0.1", // TODO from version.txt file?
-                author = "Flemming N. Larsen"
+            name = "Robocode 2 UI",
+            version = "0.1", // TODO from version.txt file?
+            author = "Flemming N. Larsen"
         )
         websocket.send(handshake)
     }

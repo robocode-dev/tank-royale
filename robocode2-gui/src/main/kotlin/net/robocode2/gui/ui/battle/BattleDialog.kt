@@ -60,10 +60,12 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
 
         // Error handler that shows a dialog asking the user to start a local server or dismiss battle dialog
         onErrorDisposable = Client.onError.subscribe {
-            val option = JOptionPane.showConfirmDialog(this,
-                    ResourceBundles.MESSAGES.get("could_not_connect_to_server_start_local_question"),
-                    ResourceBundles.MESSAGES.get("title_question"),
-                    JOptionPane.YES_NO_OPTION)
+            val option = JOptionPane.showConfirmDialog(
+                this,
+                ResourceBundles.MESSAGES.get("could_not_connect_to_server_start_local_question"),
+                ResourceBundles.MESSAGES.get("title_question"),
+                JOptionPane.YES_NO_OPTION
+            )
 
             if (option == YES_OPTION) {
                 ServerProcess.start()

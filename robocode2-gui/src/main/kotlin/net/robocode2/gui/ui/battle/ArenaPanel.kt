@@ -290,15 +290,15 @@ object ArenaPanel : JPanel() {
     }
 
     class BotHitExplosion(
-            x: Double,
-            y: Double,
-            private val xOffset: Double,
-            private val yOffset: Double,
-            val victimId: Int,
-            startRadius: Double,
-            endRadius: Double,
-            period: Int,
-            startTime: Int
+        x: Double,
+        y: Double,
+        private val xOffset: Double,
+        private val yOffset: Double,
+        val victimId: Int,
+        startRadius: Double,
+        endRadius: Double,
+        period: Int,
+        startTime: Int
     ) : CircleBurst(x, y, startRadius, endRadius, period, startTime) {
 
         override fun paint(g: Graphics2D, time: Int) {

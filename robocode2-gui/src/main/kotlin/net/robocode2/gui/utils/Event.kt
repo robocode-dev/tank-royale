@@ -23,17 +23,17 @@ class Event<T> {
     }
 
     private fun disposable(subscriber: ((T) -> Unit)) =
-            object : Disposable {
-                private var disposed = false
+        object : Disposable {
+            private var disposed = false
 
-                override val isDisposed: Boolean
-                    get() = disposed
+            override val isDisposed: Boolean
+                get() = disposed
 
-                override fun dispose() {
-                    if (!disposed) {
-                        subscribers.remove(subscriber)
-                        disposed = true
-                    }
+            override fun dispose() {
+                if (!disposed) {
+                    subscribers.remove(subscriber)
+                    disposed = true
                 }
             }
+        }
 }

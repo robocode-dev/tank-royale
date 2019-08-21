@@ -47,7 +47,8 @@ class ResultsWindow(results: List<BotResults>) : JFrame(getWindowTitle()) {
         val list = ArrayList<Array<String>>()
         results.forEach {
             val name = "${it.name} ${it.version}"
-            list.add(arrayOf(
+            list.add(
+                arrayOf(
                     "" + it.rank,
                     "" + name,
                     "" + it.totalScore,
@@ -60,25 +61,26 @@ class ResultsWindow(results: List<BotResults>) : JFrame(getWindowTitle()) {
                     "" + it.firstPlaces,
                     "" + it.secondPlaces,
                     "" + it.thirdPlaces
-            ))
+                )
+            )
         }
         return list.toArray(arrayOfNulls<Array<String>>(list.size))
     }
 
     private fun getColumns(): Array<String> {
         return arrayOf(
-                STRINGS.get("results.rank"),
-                STRINGS.get("results.robot_name"),
-                STRINGS.get("results.total_score"),
-                STRINGS.get("results.survival_score"),
-                STRINGS.get("results.last_survivor_bonus"),
-                STRINGS.get("results.bullet_damage_score"),
-                STRINGS.get("results.bullet_kill_bonus"),
-                STRINGS.get("results.ram_damage"),
-                STRINGS.get("results.ram_kill_bonus"),
-                STRINGS.get("results.firsts"),
-                STRINGS.get("results.seconds"),
-                STRINGS.get("results.thirds")
+            STRINGS.get("results.rank"),
+            STRINGS.get("results.robot_name"),
+            STRINGS.get("results.total_score"),
+            STRINGS.get("results.survival_score"),
+            STRINGS.get("results.last_survivor_bonus"),
+            STRINGS.get("results.bullet_damage_score"),
+            STRINGS.get("results.bullet_kill_bonus"),
+            STRINGS.get("results.ram_damage"),
+            STRINGS.get("results.ram_kill_bonus"),
+            STRINGS.get("results.firsts"),
+            STRINGS.get("results.seconds"),
+            STRINGS.get("results.thirds")
         )
     }
 }
@@ -92,38 +94,38 @@ private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     val results: List<BotResults> = listOf(
-            BotResults(
-                    name = "Rampage",
-                    version = "1.0",
-                    id = 1,
-                    rank = 1,
-                    totalScore = 2204,
-                    survival = 250,
-                    lastSurvivorBonus = 50,
-                    bulletDamage = 1724,
-                    bulletKillBonus = 180,
-                    ramDamage = 10,
-                    ramKillBonus = 20,
-                    firstPlaces = 5,
-                    secondPlaces = 6,
-                    thirdPlaces = 7
-            ),
-            BotResults(
-                    name = "Master",
-                    version = "0.0.2",
-                    rank = 2,
-                    id = 2,
-                    totalScore = 2108,
-                    survival = 245,
-                    lastSurvivorBonus = 40,
-                    bulletDamage = 797,
-                    bulletKillBonus = 21,
-                    ramDamage = 0,
-                    ramKillBonus = 0,
-                    firstPlaces = 3,
-                    secondPlaces = 1,
-                    thirdPlaces = 9
-            )
+        BotResults(
+            name = "Rampage",
+            version = "1.0",
+            id = 1,
+            rank = 1,
+            totalScore = 2204,
+            survival = 250,
+            lastSurvivorBonus = 50,
+            bulletDamage = 1724,
+            bulletKillBonus = 180,
+            ramDamage = 10,
+            ramKillBonus = 20,
+            firstPlaces = 5,
+            secondPlaces = 6,
+            thirdPlaces = 7
+        ),
+        BotResults(
+            name = "Master",
+            version = "0.0.2",
+            rank = 2,
+            id = 2,
+            totalScore = 2108,
+            survival = 245,
+            lastSurvivorBonus = 40,
+            bulletDamage = 797,
+            bulletKillBonus = 21,
+            ramDamage = 0,
+            ramKillBonus = 0,
+            firstPlaces = 3,
+            secondPlaces = 1,
+            thirdPlaces = 9
+        )
     )
 
     EventQueue.invokeLater {

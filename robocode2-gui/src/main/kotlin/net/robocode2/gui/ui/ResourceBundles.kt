@@ -2,6 +2,7 @@ package net.robocode2.gui.ui
 
 import java.util.*
 
+
 enum class ResourceBundles(private val resourceName: String) {
 
     UI_TITLES("UI titles"),
@@ -20,7 +21,7 @@ enum class ResourceBundles(private val resourceName: String) {
             try {
                 ResourceBundle.getBundle(resourceName, Locale.ENGLISH).getString(propertyName)
             } catch (e: MissingResourceException) {
-                return "[$propertyName]"
+                "[$propertyName]"
             }
         }
     }

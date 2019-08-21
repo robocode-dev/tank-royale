@@ -109,8 +109,10 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
         val disposables = ArrayList<Disposable>()
 
         disposables += Client.onConnected.subscribe {
-            JOptionPane.showMessageDialog(this,
-                    MESSAGES.get("connected_successfully_to_server"))
+            JOptionPane.showMessageDialog(
+                this,
+                MESSAGES.get("connected_successfully_to_server")
+            )
 
             Client.close()
 
@@ -123,10 +125,12 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
         }
 
         disposables += Client.onError.subscribe {
-            JOptionPane.showMessageDialog(this,
-                    MESSAGES.get("could_not_connect_to_server"),
-                    MESSAGES.get("title_warning"),
-                    JOptionPane.WARNING_MESSAGE)
+            JOptionPane.showMessageDialog(
+                this,
+                MESSAGES.get("could_not_connect_to_server"),
+                MESSAGES.get("title_warning"),
+                JOptionPane.WARNING_MESSAGE
+            )
 
             cursor = Cursor.getDefaultCursor()
 
@@ -163,10 +167,12 @@ private object ServerConfigPanel : JPanel(MigLayout("fill")) {
             return true
 
         } catch (ex: URISyntaxException) {
-            JOptionPane.showMessageDialog(null,
-                    MESSAGES.get("endpoint_is_not_valid"),
-                    MESSAGES.get("title_error"),
-                    JOptionPane.ERROR_MESSAGE)
+            JOptionPane.showMessageDialog(
+                null,
+                MESSAGES.get("endpoint_is_not_valid"),
+                MESSAGES.get("title_error"),
+                JOptionPane.ERROR_MESSAGE
+            )
             return false
         }
     }

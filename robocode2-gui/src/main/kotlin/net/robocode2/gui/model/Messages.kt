@@ -19,104 +19,104 @@ sealed class Event : Message() {
 @Serializable
 @SerialName("BotDeathEvent")
 data class BotDeathEvent(
-        override val turnNumber: Int,
-        val victimId: Int
+    override val turnNumber: Int,
+    val victimId: Int
 ) : Event()
 
 @Serializable
 @SerialName("BotHitWallEvent")
 data class BotHitWallEvent(
-        override val turnNumber: Int,
-        val victimId: Int
+    override val turnNumber: Int,
+    val victimId: Int
 ) : Event()
 
 @Serializable
 @SerialName("BotHitBotEvent")
 data class BotHitBotEvent(
-        override val turnNumber: Int,
-        val victimId: Int,
-        val botId: Int,
-        val energy: Double,
-        val x: Double,
-        val y: Double,
-        val rammed: Boolean
+    override val turnNumber: Int,
+    val victimId: Int,
+    val botId: Int,
+    val energy: Double,
+    val x: Double,
+    val y: Double,
+    val rammed: Boolean
 ) : Event()
 
 @Serializable
 @SerialName("BulletFiredEvent")
 data class BulletFiredEvent(
-        override val turnNumber: Int,
-        val bullet: BulletState
+    override val turnNumber: Int,
+    val bullet: BulletState
 ) : Event()
 
 @Serializable
 @SerialName("BulletHitBotEvent")
 data class BulletHitBotEvent(
-        override val turnNumber: Int,
-        val victimId: Int,
-        val bullet: BulletState,
-        val damage: Double,
-        val energy: Double
+    override val turnNumber: Int,
+    val victimId: Int,
+    val bullet: BulletState,
+    val damage: Double,
+    val energy: Double
 ) : Event()
 
 @Serializable
 @SerialName("BulletHitBulletEvent")
 data class BulletHitBulletEvent(
-        override val turnNumber: Int,
-        val bullet: BulletState,
-        val hitBullet: BulletState
+    override val turnNumber: Int,
+    val bullet: BulletState,
+    val hitBullet: BulletState
 ) : Event()
 
 @Serializable
 @SerialName("BulletHitWallEvent")
 data class BulletHitWallEvent(
-        override val turnNumber: Int,
-        val bullet: BulletState
+    override val turnNumber: Int,
+    val bullet: BulletState
 ) : Event()
 
 @Serializable
 @SerialName("HitByBulletEvent")
 data class HitByBulletEvent(
-        override val turnNumber: Int,
-        val bullet: BulletState,
-        val damage: Double,
-        val energy: Double
+    override val turnNumber: Int,
+    val bullet: BulletState,
+    val damage: Double,
+    val energy: Double
 ) : Event()
 
 @Serializable
 @SerialName("ScannedBotEvent")
 data class ScannedBotEvent(
-        override val turnNumber: Int,
-        val scannedByBotId: Int,
-        val scannedBotId: Int,
-        val energy: Double,
-        val x: Double,
-        val y: Double,
-        val direction: Double,
-        val speed: Double
+    override val turnNumber: Int,
+    val scannedByBotId: Int,
+    val scannedBotId: Int,
+    val energy: Double,
+    val x: Double,
+    val y: Double,
+    val direction: Double,
+    val speed: Double
 ) : Event()
 
 @Serializable
 @SerialName("TickEventForObserver")
 open class TickEvent(
-        override val turnNumber: Int,
-        val roundNumber: Int,
-        val botStates: Set<BotState>,
-        val bulletStates: Set<BulletState>,
-        val events: Set<Message>
+    override val turnNumber: Int,
+    val roundNumber: Int,
+    val botStates: Set<BotState>,
+    val bulletStates: Set<BulletState>,
+    val events: Set<Message>
 ) : Event()
 
 @Serializable
 @SerialName("BotListUpdate")
 data class BotListUpdate(
-        val bots: Set<BotInfo>
+    val bots: Set<BotInfo>
 ) : Message()
 
 @Serializable
 @SerialName("GameStartedEventForObserver")
 data class GameStartedEvent(
-        val gameSetup: GameSetup,
-        val participants: List<Participant>
+    val gameSetup: GameSetup,
+    val participants: List<Participant>
 ) : Message()
 
 @Serializable
@@ -126,8 +126,8 @@ class GameAbortedEvent : Message()
 @Serializable
 @SerialName("GameEndedEventForObserver")
 data class GameEndedEvent(
-        val numberOfRounds: Int,
-        val results: List<BotResults>
+    val numberOfRounds: Int,
+    val results: List<BotResults>
 ) : Message()
 
 @Serializable
@@ -141,24 +141,24 @@ class GameResumedEvent : Message()
 @Serializable
 @SerialName("ControllerHandshake")
 data class ControllerHandshake(
-        val name: String,
-        val version: String,
-        val author: String?
+    val name: String,
+    val version: String,
+    val author: String?
 ) : Message()
 
 @Serializable
 @SerialName("ServerHandshake")
 data class ServerHandshake(
-        val variant: String,
-        val version: String,
-        val games: Set<GameSetup>
+    val variant: String,
+    val version: String,
+    val games: Set<GameSetup>
 ) : Message()
 
 @Serializable
 @SerialName("StartGame")
 data class StartGame(
-        val gameSetup: GameSetup,
-        val botAddresses: Set<BotAddress>
+    val gameSetup: GameSetup,
+    val botAddresses: Set<BotAddress>
 ) : Message()
 
 @Serializable
