@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.robocode2</groupId>
-	<artifactId>robocode2-schema</artifactId>
-	<version>0.3.5</version>
+	<groupId>dev.robocode.tankroyale</groupId>
+	<artifactId>robocode-tankroyale-schema</artifactId>
+	<version>0.5.0</version>
 	<packaging>jar</packaging>
 
-	<description>Robocode 2 Schema</description>
+	<description>Robocode Tank Royale Schema</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -83,7 +83,7 @@
 				<configuration>
 					<sourceType>yamlschema</sourceType>
 					<sourceDirectory>${basedir}/src/main/resources/schema</sourceDirectory>
-					<targetPackage>net.robocode2.schema</targetPackage>
+					<targetPackage>dev.robocode.tankroyale.schema</targetPackage>
 					<annotationStyle>gson</annotationStyle>
 				</configuration>
 				<executions>
