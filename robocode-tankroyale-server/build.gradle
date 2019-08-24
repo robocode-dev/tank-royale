@@ -2,8 +2,8 @@ plugins {
     id 'java'
     id 'maven'
 }
-group = 'dev.robocode'
-version = '0.2.12'
+group = 'dev.robocode.tankroyale'
+version = '0.5.0'
 sourceCompatibility = '1.8'
 
 repositories {
@@ -34,7 +34,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class": "dev.robocode.Server"
+        attributes "Main-Class": "dev.robocode.tankroyale.Server"
     }
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
