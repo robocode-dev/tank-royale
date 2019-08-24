@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.server.mappers;
 
 import dev.robocode.tankroyale.server.model.Bot;
 import dev.robocode.tankroyale.server.util.MathUtil;
-import net.robocode2.schema.BotStateWithId;
+import dev.robocode.tankroyale.schema.BotStateWithId;
 
 public final class BotToBotStateWithIdMapper {
 

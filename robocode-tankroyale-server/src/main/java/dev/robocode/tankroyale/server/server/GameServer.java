@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.server.model.GameState;
 import dev.robocode.tankroyale.server.model.Round;
 import dev.robocode.tankroyale.server.model.Turn;
 import lombok.val;
-import net.robocode2.schema.*;
+import dev.robocode.tankroyale.schema.*;
 import org.java_websocket.WebSocket;
 import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import org.slf4j.Logger;
@@ -138,7 +138,7 @@ public final class GameServer {
   }
 
   private void startGame(
-      net.robocode2.schema.GameSetup gameSetup, Collection<BotAddress> botAddresses) {
+      dev.robocode.tankroyale.schema.GameSetup gameSetup, Collection<BotAddress> botAddresses) {
     this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup);
     participants = connHandler.getBotConnections(botAddresses);
     if (participants.size() > 0) {
@@ -377,7 +377,7 @@ public final class GameServer {
     }
   }
 
-  private void updateBotIntent(WebSocket conn, net.robocode2.schema.BotIntent intent) {
+  private void updateBotIntent(WebSocket conn, dev.robocode.tankroyale.schema.BotIntent intent) {
     if (!participants.contains(conn)) {
       return;
     }
@@ -474,13 +474,13 @@ public final class GameServer {
     }
 
     @Override
-    public void onBotIntent(WebSocket conn, net.robocode2.schema.BotIntent intent) {
+    public void onBotIntent(WebSocket conn, dev.robocode.tankroyale.schema.BotIntent intent) {
       updateBotIntent(conn, intent);
     }
 
     @Override
     public void onStartGame(
-        net.robocode2.schema.GameSetup gameSetup, Collection<BotAddress> botAddresses) {
+        dev.robocode.tankroyale.schema.GameSetup gameSetup, Collection<BotAddress> botAddresses) {
       startGame(gameSetup, botAddresses);
     }
 

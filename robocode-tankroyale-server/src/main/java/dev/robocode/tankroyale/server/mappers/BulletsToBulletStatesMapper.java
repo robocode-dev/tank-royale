@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import dev.robocode.tankroyale.server.model.Bullet;
-import net.robocode2.schema.BulletState;
+import dev.robocode.tankroyale.schema.BulletState;
 
 public final class BulletsToBulletStatesMapper {
 

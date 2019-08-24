@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.server.mappers;
 
-import net.robocode2.schema.*;
-import net.robocode2.schema.Message.Type;
+import dev.robocode.tankroyale.schema.*;
+import dev.robocode.tankroyale.schema.Message.Type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ public final class EventsToEventsMapper {
 	private EventsToEventsMapper() {}
 
 	public static List<Event> map(Set<dev.robocode.tankroyale.server.events.Event> events) {
-		List<net.robocode2.schema.Event> mappedEvents = new ArrayList<>();
+		List<dev.robocode.tankroyale.schema.Event> mappedEvents = new ArrayList<>();
 		for (dev.robocode.tankroyale.server.events.Event event : events) {
 			mappedEvents.add(map(event));
 		}

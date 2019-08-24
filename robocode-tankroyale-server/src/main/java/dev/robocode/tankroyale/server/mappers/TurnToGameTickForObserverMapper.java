@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.server.mappers;
 
 import dev.robocode.tankroyale.server.model.Round;
 import dev.robocode.tankroyale.server.model.Turn;
-import net.robocode2.schema.TickEventForObserver;
+import dev.robocode.tankroyale.schema.TickEventForObserver;
 
 public final class TurnToGameTickForObserverMapper {
 

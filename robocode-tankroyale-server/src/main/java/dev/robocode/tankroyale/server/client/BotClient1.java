@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
-import net.robocode2.schema.*;
+import dev.robocode.tankroyale.schema.*;
 import dev.robocode.tankroyale.server.util.MathUtil;
 import org.java_websocket.client.WebSocketClient;
 
@@ -20,16 +20,16 @@ public class BotClient1 extends WebSocketClient {
   {
     RuntimeTypeAdapterFactory<Event> typeFactory =
         RuntimeTypeAdapterFactory.of(Event.class)
-            .registerSubtype(net.robocode2.schema.BotDeathEvent.class, "BotDeathEvent")
-            .registerSubtype(net.robocode2.schema.BotHitBotEvent.class, "BotHitBotEvent")
-            .registerSubtype(net.robocode2.schema.BotHitWallEvent.class, "BotHitWallEvent")
-            .registerSubtype(net.robocode2.schema.BulletFiredEvent.class, "BulletFiredEvent")
-            .registerSubtype(net.robocode2.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.BotDeathEvent.class, "BotDeathEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.BotHitBotEvent.class, "BotHitBotEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.BotHitWallEvent.class, "BotHitWallEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.BulletFiredEvent.class, "BulletFiredEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
             .registerSubtype(
-                net.robocode2.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
-            .registerSubtype(net.robocode2.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
-            .registerSubtype(net.robocode2.schema.ScannedBotEvent.class, "ScannedBotEvent")
-            .registerSubtype(net.robocode2.schema.WonRoundEvent.class, "WonRoundEvent");
+                dev.robocode.tankroyale.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.WonRoundEvent.class, "WonRoundEvent");
 
     gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
   }

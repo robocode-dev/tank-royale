@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.server.mappers;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.robocode2.schema.GameSetup;
+import dev.robocode.tankroyale.schema.GameSetup;
 import dev.robocode.tankroyale.server.model.GameSetup.GameSetupBuilder;
 
 public final class GameSetupToGameSetupMapper {

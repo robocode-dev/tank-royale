@@ -6,7 +6,7 @@ public final class BotIntentToBotIntentMapper {
 
 	private BotIntentToBotIntentMapper() {}
 
-	public static BotIntent map(net.robocode2.schema.BotIntent intent) {
+	public static BotIntent map(dev.robocode.tankroyale.schema.BotIntent intent) {
 
 		return BotIntent.builder()
 			.targetSpeed(intent.getTargetSpeed())

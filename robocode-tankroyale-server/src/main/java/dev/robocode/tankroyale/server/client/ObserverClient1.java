@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.server.client;
 
 import com.google.gson.Gson;
-import net.robocode2.schema.ObserverHandshake;
+import dev.robocode.tankroyale.schema.ObserverHandshake;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 

@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.server.mappers;
 import dev.robocode.tankroyale.server.model.Bullet;
 import dev.robocode.tankroyale.server.model.Point;
 import dev.robocode.tankroyale.server.util.MathUtil;
-import net.robocode2.schema.BulletState;
+import dev.robocode.tankroyale.schema.BulletState;
 
 public final class BulletToBulletStateMapper {
 

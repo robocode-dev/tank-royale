@@ -2,8 +2,8 @@ package dev.robocode.tankroyale.server.mappers;
 
 import java.util.Collections;
 
-import net.robocode2.schema.BotHandshake;
-import net.robocode2.schema.BotInfo;
+import dev.robocode.tankroyale.schema.BotHandshake;
+import dev.robocode.tankroyale.schema.BotInfo;
 
 public final class BotHandshakeToBotInfoMapper {
 
