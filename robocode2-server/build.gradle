@@ -2,8 +2,8 @@ plugins {
     id 'java'
     id 'maven'
 }
-group = 'net.robocode2'
-version = '0.2.11'
+group = 'dev.robocode'
+version = '0.2.12'
 sourceCompatibility = '1.8'
 
 repositories {
@@ -34,7 +34,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class": "net.robocode2.Server"
+        attributes "Main-Class": "dev.robocode.Server"
     }
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
