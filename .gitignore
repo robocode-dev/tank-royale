@@ -1,8 +1,10 @@
 /.metadata
 /.recommenders
 /.sonarlint
+.idea
+.gradle
 /robocode2-server/bin
 /RemoteSystemsTempFiles
-.idea
 target
+gradle
 /robocode2-bootstrap/.gradle
