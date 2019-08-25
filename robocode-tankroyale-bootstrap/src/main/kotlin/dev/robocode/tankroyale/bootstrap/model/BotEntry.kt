@@ -1,4 +1,4 @@
-package net.robocode2.bootstrap.model
+package dev.robocode.tankroyale.bootstrap.model
 
 import kotlinx.serialization.Serializable
 

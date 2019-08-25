@@ -1,7 +1,7 @@
-package net.robocode2.bootstrap.util
+package dev.robocode.tankroyale.bootstrap.util
 
 enum class Env {
-    ROBOCODE2_BOOT_DIR,
+    ROBOCODE_BOOT_DIR,
 
     BOT_NAME,
     BOT_VERSION,

@@ -1,3 +1,3 @@
-package net.robocode2.bootstrap
+package dev.robocode.tankroyale.bootstrap
 
 class BootstrapException(message: String) : RuntimeException(message)

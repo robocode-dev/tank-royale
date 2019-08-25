@@ -1,10 +1,10 @@
-package net.robocode2.bootstrap.util
+package dev.robocode.tankroyale.bootstrap.util
 
-import net.robocode2.bootstrap.BootstrapException
-import net.robocode2.bootstrap.model.BotEntry
-import net.robocode2.bootstrap.model.BotInfo
-import net.robocode2.bootstrap.util.OSUtil.OSType.MacOS
-import net.robocode2.bootstrap.util.OSUtil.OSType.Windows
+import dev.robocode.tankroyale.bootstrap.BootstrapException
+import dev.robocode.tankroyale.bootstrap.model.BotEntry
+import dev.robocode.tankroyale.bootstrap.model.BotInfo
+import dev.robocode.tankroyale.bootstrap.util.OSUtil.OSType.MacOS
+import dev.robocode.tankroyale.bootstrap.util.OSUtil.OSType.Windows
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.json.Json

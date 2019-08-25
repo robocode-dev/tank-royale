@@ -1,4 +1,4 @@
-package net.robocode2.bootstrap.util
+package dev.robocode.tankroyale.bootstrap.util
 
 import java.util.*
 

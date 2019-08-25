@@ -16,12 +16,12 @@ apply plugin: 'application'
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'maven'
 
-group = 'net.robocode2'
-version = '0.2.3'
-description = 'Robocode 2 Bootstrap'
+group = 'dev.robocode.tankroyale'
+version = '0.5.0'
+description = 'Robocode Tank Royale Bootstrap'
 sourceCompatibility = '1.8'
 
-mainClassName = 'net.robocode2.bootstrap.RC2BootKt'
+mainClassName = 'dev.robocode.tankroyale.bootstrap.Bootstrap'
 
 defaultTasks 'run'
 
@@ -40,7 +40,7 @@ dependencies {
 }
 
 jar {
-    manifest { attributes 'Main-Class': 'net.robocode2.bootstrap.RC2BootKt' }
+    manifest { attributes 'Main-Class': 'dev.robocode.tankroyale.bootstrap.BootstrapKt' }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 

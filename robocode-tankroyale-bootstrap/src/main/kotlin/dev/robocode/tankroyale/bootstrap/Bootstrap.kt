@@ -1,6 +1,6 @@
-package net.robocode2.bootstrap
+package dev.robocode.tankroyale.bootstrap
 
-import net.robocode2.bootstrap.util.BootUtil
+import dev.robocode.tankroyale.bootstrap.util.BootUtil
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
@@ -22,9 +22,9 @@ fun main(args: Array<String>) {
 }
 
 @Command(
-        name = "rc2boot",
+        name = "bootstrap",
         versionProvider = VersionFileProvider::class,
-        description = ["Tool for booting up Robocode 2 bots"],
+        description = ["Tool for booting up Robocode bots"],
         mixinStandardHelpOptions = true
 )
 class RC2Boot : Runnable {
@@ -102,6 +102,6 @@ internal class VersionFileProvider : CommandLine.IVersionProvider {
         if (inputStream != null) {
             BufferedReader(InputStreamReader(inputStream)).use { br -> version = br.readLine() }
         }
-        return arrayOf("Robocode2 net.robocode2.bootstrap.RC2Boot $version")
+        return arrayOf("Robocode Tank Royale Bootstrap $version")
     }
 }
