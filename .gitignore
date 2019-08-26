@@ -6,5 +6,6 @@
 /robocode2-server/bin
 /RemoteSystemsTempFiles
 target
+build
 gradle
-/robocode2-bootstrap/.gradle
+out
