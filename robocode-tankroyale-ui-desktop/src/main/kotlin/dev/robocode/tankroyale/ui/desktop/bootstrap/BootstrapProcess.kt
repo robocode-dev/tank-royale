@@ -15,9 +15,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 @ImplicitReflectionSerializer
 object BootstrapProcess {
 
-    private const val BOOT_DIR = "D:/robocode-2-work/robocode2-boot" // FIXME
+    private const val BOOT_DIR = "D:/robocode2-boot" // FIXME
 
-    private const val JAR_FILE_NAME = "robocode2-bootstrap.jar"
+    private const val JAR_FILE_NAME = "robocode-tankroyale-bootstrap.jar"
 
     private val jarFileName = ResourceUtil.getResourceFile(JAR_FILE_NAME).toString()
 

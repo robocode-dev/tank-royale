@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 object ServerProcess {
 
-    private const val JAR_FILE_NAME = "robocode2-server.jar"
+    private const val JAR_FILE_NAME = "robocode-tankroyale-server.jar"
 
     private val jarFileName = ResourceUtil.getResourceFile(JAR_FILE_NAME).toString()
 

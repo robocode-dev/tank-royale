@@ -1,6 +1,6 @@
 
 buildscript {
-    ext.kotlin_version = '1.3.41'
+    ext.kotlin_version = '1.3.50'
     repositories {
         mavenLocal()
         mavenCentral()
@@ -18,12 +18,12 @@ apply plugin: 'application'
 apply plugin: 'kotlinx-serialization'
 apply plugin: "com.vanniktech.dependency.graph.generator"
 
-group = 'net.robocode2'
-version = '0.3.1'
-description = 'Robocode 2 GUI'
+group = 'dev.robocode.tankroyale'
+version = '0.5.0'
+description = 'Robocode Tank Royale UI Desktop'
 sourceCompatibility = '9' // due to UTF-8 support in property files
 
-mainClassName = 'net.robocode2.gui.ui.MainWindowKt'
+mainClassName = 'dev.robocode.tankroyale.ui.desktop.ui.MainWindowKt'
 
 defaultTasks 'run'
 
@@ -40,28 +40,28 @@ dependencies {
     compile 'org.java-websocket:Java-WebSocket:1.4.0'
     compile 'com.miglayout:miglayout-swing:5.2'
 
-    runtime ('net.robocode2:robocode2-server:0.2.12') {
+    runtime ('dev.robocode.tankroyale:robocode-tankroyale-server:0.5.0') {
         exclude group: 'ch.qos.logback'
     }
-    runtime 'net.robocode2:robocode2-bootstrap:0.2.3'
+    runtime 'dev.robocode.tankroyale:robocode-tankroyale-bootstrap:0.5.0'
 }
 
 jar {
-    manifest { attributes 'Main-Class': 'net.robocode2.gui.ui.MainWindowKt' }
+    manifest { attributes 'Main-Class': 'dev.robocode.tankroyale.ui.desktop.ui.MainWindowKt' }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 task copyServerJar(type: Copy) {
     into "$buildDir/resources/main"
     from configurations.runtime
-    include('robocode2-server-*.jar')
+    include('robocode-tankroyale-server-*.jar')
     rename '(.*)-[0-9]+\\..*.jar', '$1.jar'
 }
 
 task copyBootstrapJar(type: Copy) {
     into "$buildDir/resources/main"
     from configurations.runtime
-    include('robocode2-bootstrap-*.jar')
+    include('robocode-tankroyale-bootstrap-*.jar')
     rename '(.*)-[0-9]+\\..*.jar', '$1.jar'
 }
 
