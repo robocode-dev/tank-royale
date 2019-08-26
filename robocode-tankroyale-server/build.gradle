@@ -34,7 +34,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class": "dev.robocode.tankroyale.Server"
+        attributes "Main-Class": "dev.robocode.tankroyale.server.Server"
     }
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
