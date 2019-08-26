@@ -15,6 +15,7 @@ import java.io.InputStreamReader
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
+import kotlin.streams.toList
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
@@ -22,10 +23,10 @@ fun main(args: Array<String>) {
 }
 
 @Command(
-        name = "bootstrap",
-        versionProvider = VersionFileProvider::class,
-        description = ["Tool for booting up Robocode bots"],
-        mixinStandardHelpOptions = true
+    name = "bootstrap",
+    versionProvider = VersionFileProvider::class,
+    description = ["Tool for booting up Robocode bots"],
+    mixinStandardHelpOptions = true
 )
 class RC2Boot : Runnable {
 
@@ -44,38 +45,53 @@ class RC2Boot : Runnable {
 
     @Command(name = "filenames", description = ["List filenames of available bots"])
     @ImplicitReflectionSerializer
-    private fun filenames(@Option(names = ["--boot-dir"], paramLabel = "BOOTDIR",
-            description = ["Sets the path to the boot directory"]) bootDir: Path?) {
+    private fun filenames(
+        @Option(
+            names = ["--boot-dir"], paramLabel = "BOOTDIR",
+            description = ["Sets the path to the boot directory"]
+        ) bootDir: Path?
+    ) {
         BootUtil(getBootDir(bootDir)).findBotEntries().forEach { entry -> println(entry.filename) }
     }
 
     @Command(name = "list", description = ["List available bot entries"])
     @UnstableDefault
     @ImplicitReflectionSerializer
-    private fun list(@Option(names = ["--boot-dir"], paramLabel = "BOOTDIR",
-            description = ["Sets the path to the boot directory"]) bootDir: Path?) {
+    private fun list(
+        @Option(
+            names = ["--boot-dir"], paramLabel = "BOOTDIR",
+            description = ["Sets the path to the boot directory"]
+        ) bootDir: Path?
+    ) {
         val entries = BootUtil(getBootDir(bootDir)).findBotEntries()
         println(Json(JsonConfiguration.Default).stringify(entries))
     }
 
     @ImplicitReflectionSerializer
-    @Command(name = "run", description = [
-        "Start running the specified bots in individual processes.",
-        "Press enter key to stop all started bots and quit this tool."
-    ])
+    @Command(
+        name = "run", description = [
+            "Start running the specified bots in individual processes.",
+            "Press enter key to stop all started bots and quit this tool."
+        ]
+    )
     private fun boot(
-            @Option(names = ["--boot-dir"], paramLabel = "BOOTDIR",
-                    description = ["Sets the path to the boot directory"]) bootDir: Path?,
-            @Parameters(arity = "1..*", paramLabel = "FILE",
-                    description = ["Filenames of the bots to start without file extensions"]) filenames: Array<String>
+        @Option(
+            names = ["--boot-dir"], paramLabel = "BOOTDIR",
+            description = ["Sets the path to the boot directory"]
+        ) bootDir: Path?,
+        @Parameters(
+            arity = "1..*", paramLabel = "FILE",
+            description = ["Filenames of the bots to start without file extensions"]
+        ) filenames: Array<String>
     ) {
         val processes = BootUtil(getBootDir(bootDir)).startBots(filenames)
 
         readLine()
 
-        processes.parallelStream().forEach {
-            p -> p.descendants().forEach {
-                d -> d.destroy()
+        processes.parallelStream().forEach { p ->
+
+            p.descendants().forEach { d ->
+                d.destroy()
                 if (d.isAlive)
                     d.destroyForcibly()
             }

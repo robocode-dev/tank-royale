@@ -19,7 +19,7 @@ apply plugin: 'maven'
 group = 'dev.robocode.tankroyale'
 version = '0.5.0'
 description = 'Robocode Tank Royale Bootstrap'
-sourceCompatibility = '1.8'
+sourceCompatibility = '9'
 
 mainClassName = 'dev.robocode.tankroyale.bootstrap.Bootstrap'
 
