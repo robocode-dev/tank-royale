@@ -19,7 +19,7 @@ import kotlin.streams.toList
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
-    CommandLine.run(RC2Boot(), System.out, CommandLine.Help.Ansi.ON, *args)
+    CommandLine.run(Bootstrap(), System.out, CommandLine.Help.Ansi.ON, *args)
 }
 
 @Command(
@@ -28,13 +28,13 @@ fun main(args: Array<String>) {
     description = ["Tool for booting up Robocode bots"],
     mixinStandardHelpOptions = true
 )
-class RC2Boot : Runnable {
+class Bootstrap : Runnable {
 
     @Option(names = ["--boot-dir"], paramLabel = "BOOTDIR", description = ["Sets the path to the boot directory"])
     private var bootDir = getBootDir()
 
     override fun run() {
-        val cmdLine = CommandLine(RC2Boot())
+        val cmdLine = CommandLine(Bootstrap())
         when {
             cmdLine.isUsageHelpRequested -> cmdLine.usage(System.out)
             cmdLine.isVersionHelpRequested -> cmdLine.printVersionHelp(System.out)
