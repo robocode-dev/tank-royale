@@ -21,9 +21,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class GameServer {
 
-  private static Logger logger = LoggerFactory.getLogger(GameServer.class);
+  private static final Logger logger = LoggerFactory.getLogger(GameServer.class);
 
-  private ConnHandler connHandler;
+  private final ConnHandler connHandler;
 
   private RunningState runningState;
   private dev.robocode.tankroyale.server.model.GameSetup gameSetup;
@@ -390,7 +390,7 @@ public final class GameServer {
 
     // Prepare next turn if all participant bots delivered their intents
     if (botIntents.size() == participants.size()) {
-//      nextTurnTick();     // FIXME: Temporarily uncommented
+      nextTurnTick();
     }
   }
 
@@ -423,6 +423,7 @@ public final class GameServer {
     sendMessageToObservers(createBotListUpdateMessage());
   }
 
+  @SuppressWarnings("unused")
   private class GameServerConnListener implements ConnListener {
 
     @Override
@@ -438,7 +439,7 @@ public final class GameServer {
     @Override
     public void onBotLeft(WebSocket conn) {
       // If a bot leaves while in a game, make sure to reset all intent values to zeroes
-      botIntents.put(conn, dev.robocode.tankroyale.server.model.BotIntent.builder().build().zerofied());
+      botIntents.put(conn, dev.robocode.tankroyale.server.model.BotIntent.builder().build().zeroed());
 
       sendBotListUpdateToObservers();
     }

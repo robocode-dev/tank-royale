@@ -3,8 +3,12 @@ plugins {
     id 'maven'
 }
 group = 'dev.robocode.tankroyale'
-version = '0.5.0'
-sourceCompatibility = '1.8'
+version = '0.5.1'
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
 
 repositories {
     mavenLocal()
@@ -17,7 +21,7 @@ dependencies {
 
     compile 'org.java-websocket:Java-WebSocket:1.4.0'
 
-    compile 'info.picocli:picocli:3.9.6'
+    compile 'info.picocli:picocli:4.0.2'
 
     compile 'org.fusesource.jansi:jansi:1.18'
 

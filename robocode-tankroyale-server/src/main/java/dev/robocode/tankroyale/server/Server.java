@@ -36,15 +36,19 @@ public class Server implements Runnable {
     private final static int DEFAULT_PORT = 55000;
 
     @Option(names = {"-V", "--version"}, description = "display version info")
+    @SuppressWarnings("CanBeFinal")
     private static boolean isVersionInfoRequested = false;
 
     @Option(names = {"-h", "--help"}, description = "display this help message")
+    @SuppressWarnings("CanBeFinal")
     private static boolean isUsageHelpRequested = false;
 
     @Option(names = {"-p", "--port"}, type = Integer.class, description = "port number (default: " + DEFAULT_PORT + ")")
+    @SuppressWarnings("CanBeFinal")
     private static Integer port = DEFAULT_PORT;
 
     @Spec
+    @SuppressWarnings("unused")
     private CommandSpec spec;
 
     public static void main(String[] args) {
@@ -101,6 +105,7 @@ public class Server implements Runnable {
         AnsiConsole.systemUninstall();
     }
 
+    @SuppressWarnings("WeakerAccess")
     static class VersionFileProvider implements CommandLine.IVersionProvider {
 
         public String[] getVersion() throws Exception {

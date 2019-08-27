@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Assert;
 import org.junit.Test;
 
+@SuppressWarnings("IntegerDivisionInFloatingPointContext")
 public class RuleMathTest {
 
 	@Test
@@ -133,16 +134,16 @@ public class RuleMathTest {
 		assertEquals(0, RuleMath.calcWallDamage(0.5), 0);
 		assertEquals(0, RuleMath.calcWallDamage(1), 0);
 		assertEquals(0, RuleMath.calcWallDamage(1.5), 0);
-		assertEquals(2 / 2 - 1, RuleMath.calcWallDamage(2), 0);
+		assertEquals(2.0 / 2 - 1, RuleMath.calcWallDamage(2), 0);
 		assertEquals(2.5 / 2 - 1, RuleMath.calcWallDamage(2.5), 0);
 		assertEquals(4.3 / 2 - 1, RuleMath.calcWallDamage(4.3), 0);
-		assertEquals(8 / 2 - 1, RuleMath.calcWallDamage(8), 0);
+		assertEquals(8.0 / 2 - 1, RuleMath.calcWallDamage(8), 0);
 		assertEquals(10 / 2 - 1, RuleMath.calcWallDamage(10), 0);
 
 		assertEquals(0, RuleMath.calcWallDamage(-0.5), 0);
 		assertEquals(0, RuleMath.calcWallDamage(-1), 0);
 		assertEquals(0, RuleMath.calcWallDamage(-1.5), 0);
-		assertEquals(2 / 2 - 1, RuleMath.calcWallDamage(-2), 0);
+		assertEquals(2.0 / 2 - 1, RuleMath.calcWallDamage(-2), 0);
 		assertEquals(2.5 / 2 - 1, RuleMath.calcWallDamage(-2.5), 0);
 		assertEquals(4.3 / 2 - 1, RuleMath.calcWallDamage(-4.3), 0);
 		assertEquals(8 / 2 - 1, RuleMath.calcWallDamage(-8), 0);
@@ -151,7 +152,7 @@ public class RuleMathTest {
 
 	@Test
 	public void calcBulletSpeed() {
-		assertEquals(20 - 3 * 0, RuleMath.calcBulletSpeed(0), 0);
+		assertEquals(20, RuleMath.calcBulletSpeed(0), 0);
 		assertEquals(20 - 3 * 0.1, RuleMath.calcBulletSpeed(0.1), 0);
 		assertEquals(20 - 3 * 1.57, RuleMath.calcBulletSpeed(1.57), 0);
 		assertEquals(20 - 3 * 3, RuleMath.calcBulletSpeed(3), 0);
@@ -167,7 +168,7 @@ public class RuleMathTest {
 
 	@Test
 	public void calcGunHeat() {
-		assertEquals(1 + (0 / 5), RuleMath.calcGunHeat(0), 0);
+		assertEquals(1 + (0.0 / 5), RuleMath.calcGunHeat(0), 0);
 		assertEquals(1 + (0.1 / 5), RuleMath.calcGunHeat(0.1), 0);
 		assertEquals(1 + (1.57 / 5), RuleMath.calcGunHeat(1.57), 0);
 		assertEquals(1 + (3.0 / 5), RuleMath.calcGunHeat(3), 0);

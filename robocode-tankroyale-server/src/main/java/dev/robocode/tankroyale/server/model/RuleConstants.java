@@ -5,6 +5,7 @@ package dev.robocode.tankroyale.server.model;
  * 
  * @author Flemming N. Larsen
  */
+@SuppressWarnings("unused")
 public final class RuleConstants {
 	
 	private RuleConstants() {}

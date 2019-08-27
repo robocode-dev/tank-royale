@@ -34,18 +34,18 @@ public final class RuleMath {
 		double delta = targetSpeed - currentSpeed;
 		if (currentSpeed >= 0) {
 			if (delta >= 0) {
-				double step = (delta >= ACCELERATION) ? ACCELERATION : delta;
+				double step = Math.min(delta, ACCELERATION);
 				return min(currentSpeed + step, MAX_FORWARD_SPEED);
 			} else {
-				double step = (delta <= DECELERATION) ? DECELERATION : delta;
+				double step = Math.max(delta, DECELERATION);
 				return max(currentSpeed + step, MAX_BACKWARD_SPEED);
 			}
 		} else {
 			if (delta < 0) {
-				double step = (-delta >= ACCELERATION) ? ACCELERATION : -delta;
+				double step = Math.min(-delta, ACCELERATION);
 				return max(currentSpeed - step, -MAX_FORWARD_SPEED);
 			} else {
-				double step = (-delta <= DECELERATION) ? DECELERATION : -delta;
+				double step = Math.max(-delta, DECELERATION);
 				return min(currentSpeed - step, -MAX_BACKWARD_SPEED);
 			}
 		}

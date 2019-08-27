@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings("WeakerAccess")
 public final class EventsToEventsMapper {
 
 	private EventsToEventsMapper() {}

@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Value;
 
 /**
- * Mutable bot intent. A bot intent is updated by a bot between turns. The bot intent reflects the bot's wiches/orders
+ * Mutable bot intent. A bot intent is updated by a bot between turns. The bot intent reflects the bot's wishes/orders
  * for new target speed, turn rates, bullet power etc.
  * 
  * @author Flemming N. Larsen
@@ -56,9 +56,9 @@ public class BotIntent {
 	}
 
 	/**
-	 * Returns a zerofied version of this bot intent where all null field have been changed into zeros.
+	 * Returns a zeroed version of this bot intent where all null field have been changed into zeros.
 	 */
-	public BotIntent zerofied() {
+	public BotIntent zeroed() {
 		BotIntentBuilder builder = BotIntent.builder();
 		builder.targetSpeed(targetSpeed == null ? 0 : targetSpeed);
 		builder.turnRate(turnRate == null ? 0 : turnRate);

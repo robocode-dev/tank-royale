@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.server.model.Point;
 import dev.robocode.tankroyale.server.util.MathUtil;
 import dev.robocode.tankroyale.schema.BulletState;
 
+@SuppressWarnings("WeakerAccess")
 public final class BulletToBulletStateMapper {
 
 	private BulletToBulletStateMapper() {}

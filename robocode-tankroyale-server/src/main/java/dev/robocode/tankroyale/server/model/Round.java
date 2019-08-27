@@ -11,6 +11,7 @@ import lombok.Value;
  * 
  * @author Flemming N. Larsen
  */
+@SuppressWarnings("ALL")
 @Value
 @Builder(toBuilder=true)
 public final class Round {

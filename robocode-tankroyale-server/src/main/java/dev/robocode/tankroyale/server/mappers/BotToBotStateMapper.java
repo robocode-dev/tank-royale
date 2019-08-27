@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.server.model.Bot;
 import dev.robocode.tankroyale.server.util.MathUtil;
 import dev.robocode.tankroyale.schema.BotState;
 
+@SuppressWarnings("WeakerAccess")
 public final class BotToBotStateMapper {
 
 	private BotToBotStateMapper() {}

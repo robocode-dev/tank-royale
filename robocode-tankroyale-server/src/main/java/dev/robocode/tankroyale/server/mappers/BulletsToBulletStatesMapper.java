@@ -7,6 +7,7 @@ import java.util.Set;
 import dev.robocode.tankroyale.server.model.Bullet;
 import dev.robocode.tankroyale.schema.BulletState;
 
+@SuppressWarnings("WeakerAccess")
 public final class BulletsToBulletStatesMapper {
 
 	private BulletsToBulletStatesMapper() {}

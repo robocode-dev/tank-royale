@@ -1,12 +1,5 @@
 package dev.robocode.tankroyale.server.game;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
-import java.util.Arrays;
-import java.util.HashSet;
-
 import dev.robocode.tankroyale.server.engine.ScoreTracker;
 import dev.robocode.tankroyale.server.model.RuleConstants;
 import dev.robocode.tankroyale.server.model.Score;
@@ -15,6 +8,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 public class ScoreTrackerTest {
 
 	@Rule
@@ -22,12 +21,6 @@ public class ScoreTrackerTest {
 
 	@Test
 	public void constructor() {
-		try {
-			new ScoreTracker(null);
-			fail();
-		} catch (NullPointerException e) {
-		}
-
 		ScoreTracker sk = new ScoreTracker(new HashSet<>(Arrays.asList(1, 2, 3)));
 
 		testZeroScore(sk.getScore(1));
@@ -35,7 +28,12 @@ public class ScoreTrackerTest {
 		testZeroScore(sk.getScore(3));
 	}
 
-	@Test
+	@Test(expected=NullPointerException.class)
+	public void constructorNullParam() {
+		new ScoreTracker(null);
+	}
+
+	@Test(expected=NullPointerException.class)
 	public void getScore() {
 		ScoreTracker sk = new ScoreTracker(new HashSet<>(Arrays.asList(1, 2, 3)));
 
@@ -43,17 +41,7 @@ public class ScoreTrackerTest {
 		assertNotNull(sk.getScore(2));
 		assertNotNull(sk.getScore(3));
 
-		try {
-			sk.getScore(0);
-			fail();
-		} catch (NullPointerException e) {
-		}
-
-		try {
-			sk.getScore(4);
-			fail();
-		} catch (NullPointerException e) {
-		}
+		sk.getScore(0);
 	}
 
 	@Test
@@ -87,7 +75,7 @@ public class ScoreTrackerTest {
 		assertEquals(0, s.getRamKillBonus(), 0.00001);
 		assertEquals(0, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
-		Assert.assertEquals(7 * RuleConstants.SCORE_PER_BULLET_DAMAGE, s.getTotalScore(), 00001);
+		Assert.assertEquals(7 * RuleConstants.SCORE_PER_BULLET_DAMAGE, s.getTotalScore(), 0.00001);
 
 		testZeroScore(sk.getScore(2));
 		testZeroScore(sk.getScore(3));
@@ -105,7 +93,7 @@ public class ScoreTrackerTest {
 		assertEquals(0, s.getRamKillBonus(), 0.00001);
 		assertEquals(0, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
-		Assert.assertEquals(7 * RuleConstants.SCORE_PER_BULLET_DAMAGE, s.getTotalScore(), 00001);
+		Assert.assertEquals(7 * RuleConstants.SCORE_PER_BULLET_DAMAGE, s.getTotalScore(), 0.00001);
 
 		s = sk.getScore(2);
 		Assert.assertEquals(9 * RuleConstants.SCORE_PER_BULLET_DAMAGE, s.getBulletDamage(), 0.00001);
@@ -115,7 +103,7 @@ public class ScoreTrackerTest {
 		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
 		Assert.assertEquals(9 * (RuleConstants.SCORE_PER_BULLET_DAMAGE + RuleConstants.BONUS_PER_BULLET_KILL) + 1 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(),
-				00001);
+				0.00001);
 
 		s = sk.getScore(3);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -124,7 +112,7 @@ public class ScoreTrackerTest {
 		assertEquals(0, s.getRamKillBonus(), 0.00001);
 		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
-		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(), 00001);
+		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(), 0.00001);
 
 		s = sk.getScore(4);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -133,7 +121,7 @@ public class ScoreTrackerTest {
 		assertEquals(0, s.getRamKillBonus(), 0.00001);
 		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
-		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(), 00001);
+		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(), 0.00001);
 
 		// --- Bot 3 hits and kills bot 2
 
@@ -147,7 +135,7 @@ public class ScoreTrackerTest {
 		assertEquals(0, s.getRamKillBonus(), 0.00001);
 		assertEquals(0, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
-		Assert.assertEquals(7 * RuleConstants.SCORE_PER_BULLET_DAMAGE, s.getTotalScore(), 00001);
+		Assert.assertEquals(7 * RuleConstants.SCORE_PER_BULLET_DAMAGE, s.getTotalScore(), 0.00001);
 
 		s = sk.getScore(2);
 		Assert.assertEquals(9 * RuleConstants.SCORE_PER_BULLET_DAMAGE, s.getBulletDamage(), 0.00001);
@@ -157,7 +145,7 @@ public class ScoreTrackerTest {
 		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
 		Assert.assertEquals(9 * (RuleConstants.SCORE_PER_BULLET_DAMAGE + RuleConstants.BONUS_PER_BULLET_KILL) + 1 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(),
-				00001);
+				0.00001);
 
 		s = sk.getScore(3);
 		Assert.assertEquals(13 * RuleConstants.SCORE_PER_BULLET_DAMAGE, s.getBulletDamage(), 0.00001);
@@ -167,7 +155,7 @@ public class ScoreTrackerTest {
 		Assert.assertEquals(2 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
 		Assert.assertEquals(13 * (RuleConstants.SCORE_PER_BULLET_DAMAGE + RuleConstants.BONUS_PER_BULLET_KILL) + 2 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(),
-				00001);
+				0.00001);
 
 		s = sk.getScore(4);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -176,7 +164,7 @@ public class ScoreTrackerTest {
 		assertEquals(0, s.getRamKillBonus(), 0.00001);
 		Assert.assertEquals(2 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
-		Assert.assertEquals(2 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(), 00001);
+		Assert.assertEquals(2 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(), 0.00001);
 
 		// --- Bot 4 hits and kills bot 3
 
@@ -190,7 +178,7 @@ public class ScoreTrackerTest {
 		assertEquals(0, s.getRamKillBonus(), 0.00001);
 		assertEquals(0, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
-		Assert.assertEquals(7 * RuleConstants.SCORE_PER_BULLET_DAMAGE, s.getTotalScore(), 00001);
+		Assert.assertEquals(7 * RuleConstants.SCORE_PER_BULLET_DAMAGE, s.getTotalScore(), 0.00001);
 
 		s = sk.getScore(2);
 		Assert.assertEquals(9 * RuleConstants.SCORE_PER_BULLET_DAMAGE, s.getBulletDamage(), 0.00001);
@@ -200,7 +188,7 @@ public class ScoreTrackerTest {
 		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
 		Assert.assertEquals(9 * (RuleConstants.SCORE_PER_BULLET_DAMAGE + RuleConstants.BONUS_PER_BULLET_KILL) + 1 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(),
-				00001);
+				0.00001);
 
 		s = sk.getScore(3);
 		Assert.assertEquals(13 * RuleConstants.SCORE_PER_BULLET_DAMAGE, s.getBulletDamage(), 0.00001);
@@ -210,7 +198,7 @@ public class ScoreTrackerTest {
 		Assert.assertEquals(2 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
 		Assert.assertEquals(13 * (RuleConstants.SCORE_PER_BULLET_DAMAGE + RuleConstants.BONUS_PER_BULLET_KILL) + 2 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(),
-				00001);
+				0.00001);
 
 		s = sk.getScore(4);
 		Assert.assertEquals(5 * RuleConstants.SCORE_PER_BULLET_DAMAGE, s.getBulletDamage(), 0.00001);
@@ -220,7 +208,7 @@ public class ScoreTrackerTest {
 		Assert.assertEquals(3 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		Assert.assertEquals(3 * RuleConstants.BONUS_PER_LAST_SURVIVOR, s.getLastSurvivorBonus(), 0.00001); // Only last bot gets this
 		Assert.assertEquals(5 * (RuleConstants.SCORE_PER_BULLET_DAMAGE + RuleConstants.BONUS_PER_BULLET_KILL)
-				+ 3 * (RuleConstants.SCORE_PER_SURVIVAL + RuleConstants.BONUS_PER_LAST_SURVIVOR), s.getTotalScore(), 00001);
+				+ 3 * (RuleConstants.SCORE_PER_SURVIVAL + RuleConstants.BONUS_PER_LAST_SURVIVOR), s.getTotalScore(), 0.00001);
 	}
 
 	@Test
@@ -237,7 +225,7 @@ public class ScoreTrackerTest {
 		assertEquals(0, s.getRamKillBonus(), 0.00001);
 		assertEquals(0, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
-		Assert.assertEquals(7 * RuleConstants.SCORE_PER_RAM_DAMAGE, s.getTotalScore(), 00001);
+		Assert.assertEquals(7 * RuleConstants.SCORE_PER_RAM_DAMAGE, s.getTotalScore(), 0.00001);
 
 		testZeroScore(sk.getScore(2));
 		testZeroScore(sk.getScore(3));
@@ -255,7 +243,7 @@ public class ScoreTrackerTest {
 		assertEquals(0, s.getRamKillBonus(), 0.00001);
 		assertEquals(0, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
-		Assert.assertEquals(7 * RuleConstants.SCORE_PER_RAM_DAMAGE, s.getTotalScore(), 00001);
+		Assert.assertEquals(7 * RuleConstants.SCORE_PER_RAM_DAMAGE, s.getTotalScore(), 0.00001);
 
 		s = sk.getScore(2);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -265,7 +253,7 @@ public class ScoreTrackerTest {
 		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
 		Assert.assertEquals(9 * (RuleConstants.SCORE_PER_RAM_DAMAGE + RuleConstants.BONUS_PER_RAM_KILL) + 1 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(),
-				00001);
+				0.00001);
 
 		s = sk.getScore(3);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -274,7 +262,7 @@ public class ScoreTrackerTest {
 		assertEquals(0, s.getRamKillBonus(), 0.00001);
 		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
-		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(), 00001);
+		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(), 0.00001);
 
 		s = sk.getScore(4);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -283,7 +271,7 @@ public class ScoreTrackerTest {
 		assertEquals(0, s.getRamKillBonus(), 0.00001);
 		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
-		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(), 00001);
+		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(), 0.00001);
 
 		// --- Bot 3 hits and kills bot 2
 
@@ -297,7 +285,7 @@ public class ScoreTrackerTest {
 		assertEquals(0, s.getRamKillBonus(), 0.00001);
 		assertEquals(0, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
-		Assert.assertEquals(7 * RuleConstants.SCORE_PER_RAM_DAMAGE, s.getTotalScore(), 00001);
+		Assert.assertEquals(7 * RuleConstants.SCORE_PER_RAM_DAMAGE, s.getTotalScore(), 0.00001);
 
 		s = sk.getScore(2);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -307,7 +295,7 @@ public class ScoreTrackerTest {
 		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
 		Assert.assertEquals(9 * (RuleConstants.SCORE_PER_RAM_DAMAGE + RuleConstants.BONUS_PER_RAM_KILL) + 1 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(),
-				00001);
+				0.00001);
 
 		s = sk.getScore(3);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -317,7 +305,7 @@ public class ScoreTrackerTest {
 		Assert.assertEquals(2 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
 		Assert.assertEquals(13 * (RuleConstants.SCORE_PER_RAM_DAMAGE + RuleConstants.BONUS_PER_RAM_KILL) + 2 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(),
-				00001);
+				0.00001);
 
 		s = sk.getScore(4);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -326,7 +314,7 @@ public class ScoreTrackerTest {
 		assertEquals(0, s.getRamKillBonus(), 0.00001);
 		Assert.assertEquals(2 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
-		Assert.assertEquals(2 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(), 00001);
+		Assert.assertEquals(2 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(), 0.00001);
 
 		// --- Bot 4 hits and kills bot 3
 
@@ -340,7 +328,7 @@ public class ScoreTrackerTest {
 		assertEquals(0, s.getRamKillBonus(), 0.00001);
 		assertEquals(0, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
-		Assert.assertEquals(7 * RuleConstants.SCORE_PER_RAM_DAMAGE, s.getTotalScore(), 00001);
+		Assert.assertEquals(7 * RuleConstants.SCORE_PER_RAM_DAMAGE, s.getTotalScore(), 0.00001);
 
 		s = sk.getScore(2);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -350,7 +338,7 @@ public class ScoreTrackerTest {
 		Assert.assertEquals(1 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
 		Assert.assertEquals(9 * (RuleConstants.SCORE_PER_RAM_DAMAGE + RuleConstants.BONUS_PER_RAM_KILL) + 1 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(),
-				00001);
+				0.00001);
 
 		s = sk.getScore(3);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -360,7 +348,7 @@ public class ScoreTrackerTest {
 		Assert.assertEquals(2 * RuleConstants.SCORE_PER_SURVIVAL, s.getSurvival(), 0.00001);
 		assertEquals(0, s.getLastSurvivorBonus(), 0.00001);
 		Assert.assertEquals(13 * (RuleConstants.SCORE_PER_RAM_DAMAGE + RuleConstants.BONUS_PER_RAM_KILL) + 2 * RuleConstants.SCORE_PER_SURVIVAL, s.getTotalScore(),
-				00001);
+				0.00001);
 
 		s = sk.getScore(4);
 		assertEquals(0, s.getBulletDamage(), 0.00001);
@@ -371,7 +359,7 @@ public class ScoreTrackerTest {
 		Assert.assertEquals(3 * RuleConstants.BONUS_PER_LAST_SURVIVOR, s.getLastSurvivorBonus(), 0.00001);
 		Assert.assertEquals(
 				5 * (RuleConstants.SCORE_PER_RAM_DAMAGE + RuleConstants.BONUS_PER_RAM_KILL) + 3 * (RuleConstants.SCORE_PER_SURVIVAL + RuleConstants.BONUS_PER_LAST_SURVIVOR),
-				s.getTotalScore(), 00001);
+				s.getTotalScore(), 0.00001);
 	}
 
 	private void testZeroScore(Score score) {

@@ -74,6 +74,7 @@ public class Turn {
 		return Collections.unmodifiableSet(botEvents);
 	}
 
+	@SuppressWarnings("unused")
 	public static final class TurnBuilder {
 
 		public TurnBuilder() {

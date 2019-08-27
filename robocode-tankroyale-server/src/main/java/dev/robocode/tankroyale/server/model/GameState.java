@@ -13,6 +13,7 @@ import lombok.Value;
  */
 @Value
 @Builder(toBuilder=true)
+@SuppressWarnings("unused")
 public class GameState {
 
 	/** Arena */

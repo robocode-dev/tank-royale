@@ -30,9 +30,10 @@ import dev.robocode.tankroyale.server.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("WeakerAccess")
 public final class ConnHandler {
 
-  private static Logger logger = LoggerFactory.getLogger(ConnHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(ConnHandler.class);
 
   private final ServerSetup setup;
   private final ConnListener listener;

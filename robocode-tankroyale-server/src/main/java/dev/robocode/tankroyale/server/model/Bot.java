@@ -48,12 +48,13 @@ public class Bot {
 	Score score;
 
 
+	@SuppressWarnings("WeakerAccess")
 	public static class BotBuilder {
 
 		public int getId() {
 			return id;
 		}
-		
+
 		public double getX() {
 			return x;
 		}
@@ -80,6 +81,10 @@ public class Bot {
 
 		public boolean isDisabled() {
 			return isAlive() && MathUtil.nearlyEqual(getEnergy(), 0);
+		}
+
+		public boolean isEnabled() {
+			return !isDisabled();
 		}
 
 		public double getDirection() {

@@ -10,6 +10,7 @@ import dev.robocode.tankroyale.schema.ObserverHandshake;
 import org.java_websocket.WebSocket;
 
 
+@SuppressWarnings({"WeakerAccess", "EmptyMethod", "unused"})
 public interface ConnListener {
 
 	void onException(Exception exception);

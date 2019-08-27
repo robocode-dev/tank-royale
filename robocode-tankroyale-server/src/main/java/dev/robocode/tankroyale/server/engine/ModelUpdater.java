@@ -38,7 +38,7 @@ public class ModelUpdater {
 	/** Round record */
 	private Round round;
 	/** Turn record */
-	private TurnBuilder turnBuilder;
+	private final TurnBuilder turnBuilder;
 
 	/** Current round number */
 	private int roundNumber;
@@ -340,6 +340,7 @@ public class ModelUpdater {
 			if (!occupiedCells.contains(cell)) {
 				occupiedCells.add(cell);
 
+				//noinspection IntegerDivisionInFloatingPointContext
 				y = cell / gridWidth;
 				x = cell - y * gridWidth;
 
@@ -365,12 +366,12 @@ public class ModelUpdater {
 
 			BotBuilder botBuilder = botBuilderMap.get(botId);
 
-			if (!botBuilder.isDisabled()) {
+			if (botBuilder.isEnabled()) {
 
 				BotIntent botIntent = botIntentsMap.get(botId);
 				if (botIntent != null) {
 
-					BotIntent immuBotIntent = botIntent.zerofied();
+					BotIntent immuBotIntent = botIntent.zeroed();
 
 					double speed = RuleMath.calcNewBotSpeed(botBuilder.getSpeed(), immuBotIntent.getTargetSpeed());
 
@@ -831,7 +832,7 @@ public class ModelUpdater {
 			}
 			// If bot is disabled => Set then reset all bot intent values to zeros
 			if (bot.getEnergy() == 0) {
-				botIntentsMap.put(bot.getId(), BotIntent.builder().build().zerofied());
+				botIntentsMap.put(bot.getId(), BotIntent.builder().build().zeroed());
 			}
 		});
 	}
@@ -860,7 +861,7 @@ public class ModelUpdater {
 		for (BotBuilder botBuilder : botBuilderMap.values()) {
 
 			// Bot cannot fire if it is disabled
-			if (!botBuilder.isDisabled()) {
+			if (botBuilder.isEnabled()) {
 
 				// Fire gun, if the gun heat is zero
 				double gunHeat = botBuilder.getGunHeat();
@@ -868,7 +869,7 @@ public class ModelUpdater {
 					// Gun can fire => Check if intent is to fire gun
 					BotIntent botIntent = botIntentsMap.get(botBuilder.getId());
 					if (botIntent != null) {
-						double firepower = botIntent.zerofied().getBulletPower();
+						double firepower = botIntent.zeroed().getBulletPower();
 						if (firepower >= MIN_FIREPOWER) {
 							fireBullet(botBuilder, firepower);
 						}
@@ -982,7 +983,7 @@ public class ModelUpdater {
 	}
 
 	/** Simple line class */
-	private class Line {
+	private static class Line {
 		Point start;
 		Point end;
 	}
