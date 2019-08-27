@@ -12,15 +12,15 @@ object OSUtil {
 
     fun getOsType(): OSType {
         if (detectedOS == null) {
-            val OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH)
-            detectedOS = if (OS.indexOf("mac") >= 0 || OS.indexOf("darwin") >= 0) {
-                OSUtil.OSType.MacOS
-            } else if (OS.indexOf("win") >= 0) {
-                OSUtil.OSType.Windows
-            } else if (OS.indexOf("nux") >= 0) {
-                OSUtil.OSType.Linux
+            val os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH)
+            detectedOS = if (os.indexOf("mac") >= 0 || os.indexOf("darwin") >= 0) {
+                OSType.MacOS
+            } else if (os.indexOf("win") >= 0) {
+                OSType.Windows
+            } else if (os.indexOf("nux") >= 0) {
+                OSType.Linux
             } else {
-                OSUtil.OSType.Other
+                OSType.Other
             }
         }
         return detectedOS!!

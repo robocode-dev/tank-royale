@@ -14,12 +14,15 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.concurrent.Callable
 import java.util.concurrent.TimeUnit
-import kotlin.streams.toList
 import kotlin.system.exitProcess
 
+val cmdLine = CommandLine(Bootstrap())
+
 fun main(args: Array<String>) {
-    CommandLine.run(Bootstrap(), System.out, CommandLine.Help.Ansi.ON, *args)
+    System.setProperty("picocli.ansi", "true")
+    exitProcess(cmdLine.execute(*args))
 }
 
 @Command(
@@ -28,19 +31,15 @@ fun main(args: Array<String>) {
     description = ["Tool for booting up Robocode bots"],
     mixinStandardHelpOptions = true
 )
-class Bootstrap : Runnable {
+class Bootstrap : Callable<Int> {
 
-    @Option(names = ["--boot-dir"], paramLabel = "BOOTDIR", description = ["Sets the path to the boot directory"])
-    private var bootDir = getBootDir()
-
-    override fun run() {
-        val cmdLine = CommandLine(Bootstrap())
+    override fun call(): Int {
         when {
             cmdLine.isUsageHelpRequested -> cmdLine.usage(System.out)
             cmdLine.isVersionHelpRequested -> cmdLine.printVersionHelp(System.out)
             else -> cmdLine.usage(System.out)
         }
-        exitProcess(0)
+        return 0
     }
 
     @Command(name = "filenames", description = ["List filenames of available bots"])
