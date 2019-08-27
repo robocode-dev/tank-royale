@@ -2,11 +2,15 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.*;
 
+@SuppressWarnings("UnusedDeclaration")
 public class TestBot extends Bot {
 
   public static void main(String[] args) {
     new TestBot().run();
   }
+
+  private Double targetX;
+  private Double targetY;
 
   private TestBot() {
     super();
@@ -35,8 +39,6 @@ public class TestBot extends Bot {
 
   @Override
   public void onTick(TickEvent event) {
-//    System.out.println("onTick: " + event);
-
     if (getSpeed() == targetSpeed) {
       targetSpeed = -targetSpeed;
     }
@@ -57,13 +59,8 @@ public class TestBot extends Bot {
     go();
   }
 
-  private Double targetX;
-  private Double targetY;
-
   @Override
   public void onScannedBot(ScannedBotEvent event) {
-//    System.out.println("onScannedBot: " + event);
-
     targetX = event.getX();
     targetY = event.getY();
   }
@@ -74,24 +71,7 @@ public class TestBot extends Bot {
   }
 
   @Override
-  public void onSkippedTurn(SkippedTurnEvent event) {
-//    System.out.println("onSkippedTurn: turn: " + event.getTurnNumber() + "/" + getRoundNumber());
-  }
-
-  @Override
-  public void onHitByBullet(BulletHitBotEvent event) {
-//    System.out.println("-> onHitByBullet: " + event.getTurnNumber() + "/" + getRoundNumber());
-  }
-
-  @Override
-  public void onBulletHit(BulletHitBotEvent event) {
-//    System.out.println("<- onBulletHit: " + event.getTurnNumber() + "/" + getRoundNumber());
-  }
-
-  @Override
   public void onHitBot(BotHitBotEvent event) {
-//    System.out.println("BotHitBotEvent: " + event);
-
     targetSpeed =- targetSpeed;
   }
 }

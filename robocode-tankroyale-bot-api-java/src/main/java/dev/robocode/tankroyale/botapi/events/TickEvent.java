@@ -24,6 +24,7 @@ public class TickEvent extends Event {
   List<? extends Event> events;
 
   @Builder
+  @SuppressWarnings("unused")
   private TickEvent(
       int turnNumber,
       int roundNumber,

@@ -30,6 +30,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+@SuppressWarnings("UnusedDeclaration")
 public abstract class Bot implements IBot {
 
   private final __Internals __internals;
@@ -52,6 +53,7 @@ public abstract class Bot implements IBot {
    * BOT_GAME_TYPES=melee,1v1<br>
    * BOT_PROG_LANG=Java<br>
    */
+  @SuppressWarnings("WeakerAccess")
   public Bot() {
     __internals = new __Internals(null, null);
   }
@@ -72,6 +74,7 @@ public abstract class Bot implements IBot {
    * @param botInfo is the bot info containing information about your bot.
    * @param serverUri is the server URI
    */
+  @SuppressWarnings("UnusedDeclaration")
   public Bot(final BotInfo botInfo, URI serverUri) {
     __internals = new __Internals(botInfo, serverUri);
   }

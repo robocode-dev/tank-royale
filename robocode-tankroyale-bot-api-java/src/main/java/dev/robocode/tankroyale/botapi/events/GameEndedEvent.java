@@ -17,6 +17,7 @@ public class GameEndedEvent implements Message {
   List<BotResults> results;
 
   @Builder
+  @SuppressWarnings("UnusedDeclaration")
   private GameEndedEvent(int numberOfRounds, List<BotResults> results) {
     this.numberOfRounds = numberOfRounds;
     this.results = results;

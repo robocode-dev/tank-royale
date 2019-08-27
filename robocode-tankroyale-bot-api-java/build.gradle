@@ -5,8 +5,11 @@ plugins {
 }
 group = 'net.robocode2'
 version = '0.1.2'
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
 
 repositories {
     mavenLocal()

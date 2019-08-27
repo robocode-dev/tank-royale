@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.botapi.events.*;
 import java.util.List;
 
 /** Interface for a bot. */
+@SuppressWarnings({"UnusedDeclaration", "EmptyMethod"})
 public interface IBot {
 
   /**

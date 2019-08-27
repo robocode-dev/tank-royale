@@ -21,6 +21,7 @@ public class BulletHitBotEvent extends Event {
   double energy;
 
   @Builder
+  @SuppressWarnings("UnusedDeclaration")
   private BulletHitBotEvent(
       int turnNumber, int victimId, BulletState bullet, double damage, double energy) {
     this.turnNumber = turnNumber;

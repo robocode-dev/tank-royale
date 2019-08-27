@@ -15,6 +15,7 @@ public class GameStartedEvent implements Message {
   GameSetup gameSetup;
 
   @Builder
+  @SuppressWarnings("UnusedDeclaration")
   private GameStartedEvent(int myId, GameSetup gameSetup) {
     this.myId = myId;
     this.gameSetup = gameSetup;

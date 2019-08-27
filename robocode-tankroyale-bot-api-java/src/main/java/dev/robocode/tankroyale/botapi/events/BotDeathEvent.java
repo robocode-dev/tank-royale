@@ -14,6 +14,7 @@ public class BotDeathEvent extends Event {
   int victimId;
 
   @Builder
+  @SuppressWarnings("UnusedDeclaration")
   private BotDeathEvent(int turnNumber, int victimId) {
     this.turnNumber = turnNumber;
     this.victimId = victimId;

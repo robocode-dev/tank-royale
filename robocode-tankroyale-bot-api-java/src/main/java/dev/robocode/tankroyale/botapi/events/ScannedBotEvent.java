@@ -26,6 +26,7 @@ public class ScannedBotEvent extends Event {
   double speed;
 
   @Builder
+  @SuppressWarnings("UnusedDeclaration")
   private ScannedBotEvent(
       int turnNumber,
       int scannedByBotId,

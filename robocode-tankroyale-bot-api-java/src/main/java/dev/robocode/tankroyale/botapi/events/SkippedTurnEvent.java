@@ -15,6 +15,7 @@ import lombok.Value;
 public class SkippedTurnEvent extends Event {
 
   @Builder
+  @SuppressWarnings("UnusedDeclaration")
   private SkippedTurnEvent(int turnNumber) {
     this.turnNumber = turnNumber;
   }

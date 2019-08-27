@@ -12,6 +12,7 @@ import lombok.Value;
 public class WonRoundEvent extends Event {
 
   @Builder
+  @SuppressWarnings("unused")
   private WonRoundEvent(int turnNumber) {
     this.turnNumber = turnNumber;
   }

@@ -14,6 +14,7 @@ public class BotHitWallEvent extends Event {
   int victimId;
 
   @Builder
+  @SuppressWarnings("UnusedDeclaration")
   private BotHitWallEvent(int turnNumber, int victimId) {
     this.turnNumber = turnNumber;
     this.victimId = victimId;

@@ -24,6 +24,7 @@ public class BotHitBotEvent extends Event {
   boolean rammed;
 
   @Builder
+  @SuppressWarnings("UnusedDeclaration")
   private BotHitBotEvent(
       int turnNumber, int victimId, int botId, double energy, double x, double y, boolean rammed) {
     this.turnNumber = turnNumber;

@@ -17,6 +17,7 @@ public class BulletHitBulletEvent extends Event {
   BulletState hitBullet;
 
   @Builder
+  @SuppressWarnings("UnusedDeclaration")
   private BulletHitBulletEvent(int turnNumber, BulletState bullet, BulletState hitBullet) {
     this.turnNumber = turnNumber;
     this.bullet = bullet;
