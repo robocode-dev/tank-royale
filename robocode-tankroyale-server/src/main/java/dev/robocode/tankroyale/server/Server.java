@@ -51,8 +51,11 @@ public class Server implements Runnable {
     @SuppressWarnings("unused")
     private CommandSpec spec;
 
+    private static CommandLine cmdLine = new CommandLine(new Server());
+
     public static void main(String[] args) {
-        CommandLine.run(new Server(), System.out, CommandLine.Help.Ansi.ON, args);
+        System.setProperty("picocli.ansi", "true");
+        System.exit(cmdLine.execute(args));
     }
 
     public void run() {
@@ -105,7 +108,6 @@ public class Server implements Runnable {
         AnsiConsole.systemUninstall();
     }
 
-    @SuppressWarnings("WeakerAccess")
     static class VersionFileProvider implements CommandLine.IVersionProvider {
 
         public String[] getVersion() throws Exception {
