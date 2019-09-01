@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.ui.desktop.utils
 import dev.robocode.tankroyale.ui.desktop.extensions.PathExt.getFileExtension
 import java.io.File
 import java.io.IOException
+import java.lang.RuntimeException
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.LocalDateTime
@@ -13,7 +14,8 @@ object ResourceUtil {
     fun getResourceFile(resourceName: String): File? {
         var file: File? = null
         val resource = javaClass.classLoader.getResource(resourceName)
-        if (resource?.toString()!!.startsWith("jar:")) {
+            ?: throw RuntimeException("Could not find resource file: $resourceName")
+        if (resource.toString().startsWith("jar:")) {
             try {
                 val inputStream = javaClass.classLoader.getResourceAsStream(resourceName)
                 if (inputStream != null) {
