@@ -2,12 +2,26 @@ plugins {
     id 'java'
     id 'maven'
 }
+
 group = 'dev.robocode.tankroyale'
 version = '0.5.1'
 
 compileJava {
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
+}
+
+mainClassName = 'dev.robocode.tankroyale.server.Server'
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': project.getProperty('name'),
+                'Implementation-Version': project.getProperty('version'),
+                'Main-Class': project.getProperty('mainClassName')
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 repositories {
@@ -34,15 +48,6 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.unitils:unitils-core:3.4.6'
-}
-
-jar {
-    manifest {
-        attributes "Main-Class": "dev.robocode.tankroyale.server.Server"
-    }
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
