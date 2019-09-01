@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'maven'
+    id 'application'
 }
 
 group = 'dev.robocode.tankroyale'
