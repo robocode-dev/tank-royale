@@ -25,7 +25,16 @@ compileJava {
     targetCompatibility = '9'
 }
 
-mainClassName = 'dev.robocode.tankroyale.bootstrap.Bootstrap'
+mainClassName = 'dev.robocode.tankroyale.bootstrap.BootstrapKt'
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': project.getProperty('name'),
+                'Implementation-Version': project.getProperty('version'),
+                'Main-Class': project.getProperty('mainClassName')
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
 
 defaultTasks 'run'
 
@@ -41,11 +50,6 @@ dependencies {
     compile 'org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.11.0'
 
     compile 'info.picocli:picocli:4.0.2'
-}
-
-jar {
-    manifest { attributes 'Main-Class': 'dev.robocode.tankroyale.bootstrap.BootstrapKt' }
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
