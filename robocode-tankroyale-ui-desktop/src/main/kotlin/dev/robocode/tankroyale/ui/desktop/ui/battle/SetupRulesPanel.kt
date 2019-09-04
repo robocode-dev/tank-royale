@@ -216,7 +216,8 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             } else {
                 showMessage(MESSAGES.get("max_num_participants_too_small"))
             }
-            maxNumParticipantsTextField.text = "" + gameSetup.maxNumberOfParticipants
+            maxNumParticipantsTextField.text =
+                if (gameSetup.maxNumberOfParticipants == null) "" else "${gameSetup.maxNumberOfParticipants}"
         }
         return valid
     }
