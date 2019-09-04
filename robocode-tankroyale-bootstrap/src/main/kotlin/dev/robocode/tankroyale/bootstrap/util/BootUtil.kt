@@ -19,7 +19,7 @@ import java.util.function.Predicate
 import java.util.stream.Collectors.toList
 
 
-class BootUtil(private val bootstrapPath: Path) {
+class BootUtil(private val botPaths: List<Path>) {
 
     @ImplicitReflectionSerializer
     fun findBotEntries(): List<BotEntry> {
@@ -27,7 +27,9 @@ class BootUtil(private val bootstrapPath: Path) {
         val botEntries = ArrayList<BotEntry>()
         botNames.forEach { botName ->
             try {
-                botEntries.add(BotEntry(botName, getBotInfo(botName)))
+                val botPath = getBotInfo(botName)
+                if (botPath != null)
+                    botEntries.add(BotEntry(botName, botPath))
             } catch (ex: Exception) {
                 System.err.println("ERROR: ${ex.message}")
             }
@@ -70,7 +72,7 @@ class BootUtil(private val bootstrapPath: Path) {
                     ProcessBuilder(command)
             }
 
-            val botInfo = getBotInfo(filename)
+            val botInfo = getBotInfo(filename)!!
 
             val env = processBuilder.environment()
 
@@ -103,61 +105,95 @@ class BootUtil(private val bootstrapPath: Path) {
     }
 
     private fun findWindowsScript(botName: String): Path? {
-        var path = bootstrapPath.resolve("$botName.bat")
-        if (Files.exists(path)) return path
+        var path: Path?
+        botPaths.forEach { dirPath ->
+            run {
+                path = resolveFullBotPath(dirPath, "$botName.bat")
+                if (path != null) return path
 
-        path = bootstrapPath.resolve("$botName.cmd")
-        if (Files.exists(path)) return path
+                path = resolveFullBotPath(dirPath, "$botName.cmd")
+                if (path != null) return path
 
-        path = bootstrapPath.resolve("$botName.ps1")
-        if (Files.exists(path)) return path
-
+                path = resolveFullBotPath(dirPath, "$botName.psi")
+                if (path != null) return path
+            }
+        }
         return findFirstUnixScript(botName)
     }
 
     private fun findMacOsScript(botName: String): Path? {
-        val commandFile = bootstrapPath.resolve("$botName.command")
-        if (Files.exists(commandFile)) return commandFile
+        var path: Path?
+        botPaths.forEach { dirPath ->
+            run {
+                path = resolveFullBotPath(dirPath, "$botName.command")
+                if (path != null) return path
+            }
+        }
         return findFirstUnixScript(botName)
     }
 
     private fun findFirstUnixScript(botName: String): Path? {
-        val shFile = bootstrapPath.resolve("$botName.sh")
-        if (Files.exists(shFile)) return shFile
-
-        list(bootstrapPath).filter(IsBotFile(botName)).collect(toList()).forEach { path ->
-            if (path.fileName.toString().toLowerCase() == botName.toLowerCase() ||
-                    readFirstLine(path).trim().startsWith("#!")) {
-                return path
+        var path: Path?
+        botPaths.forEach { dirPath ->
+            run {
+                path = resolveFullBotPath(dirPath, "$botName.sh")
+                if (path != null) return path
             }
         }
-        return null
+
+        // Look for any file with no file extension or where the file containing the '#!' characters, i.e. a script
+        botPaths.forEach { dirPath ->
+            run {
+                list(dirPath).filter(IsBotFile(botName)).collect(toList()).forEach { path ->
+                    if (path.fileName.toString().toLowerCase() == botName.toLowerCase())
+                        return path
+                    if (readFirstLine(dirPath.resolve(path)).trim().startsWith("#!"))
+                        return path
+                }
+            }
+        }
+
+        return null // No path found
     }
 
-    private fun readFirstLine(filePath: Path): String {
-        return Files.newInputStream(bootstrapPath.resolve(filePath)).bufferedReader().readLine() ?: ""
+    private fun readFirstLine(path: Path): String {
+        return Files.newInputStream(path).bufferedReader().readLine() ?: ""
     }
 
     private fun findBotNames(): Set<String> {
-        val files = list(bootstrapPath).filter(HasFileExtensions(arrayOf("json")))
-
         val names = HashSet<String>()
-        files?.forEach { path -> names += path.toFile().nameWithoutExtension }
+        botPaths.forEach { dirPath ->
+            val files = list(dirPath).filter(HasFileExtensions(arrayOf("json")))
+            files?.forEach { path -> names += path.toFile().nameWithoutExtension }
+        }
         return names
     }
 
+    private fun resolveFullBotPath(botDirPath: Path, botPath: String): Path? {
+        val path = botDirPath.resolve(botPath)
+        return if (Files.exists(path)) path else null
+    }
+
+
     @ImplicitReflectionSerializer
-    private fun getBotInfo(botName: String): BotInfo {
-        var filePath: Path? = null
-        try {
-            filePath = bootstrapPath.resolve("$botName.json").toAbsolutePath()
-            val content = readContent(filePath)
-            return Json.parse(content)
-        } catch (ex: JsonParsingException) {
-            throw BootstrapException("Could not parse JSON file: $filePath")
-        } catch (ex: MissingFieldException) {
-            throw BootstrapException("${ex.message}. File: $filePath")
+    private fun getBotInfo(botName: String): BotInfo? {
+        var path: Path? = null
+        botPaths.forEach { dirPath ->
+            run {
+                try {
+                    path = resolveFullBotPath(dirPath, "$botName.json")?.toAbsolutePath()
+                    if (path != null) {
+                        val content = readContent(path!!)
+                        return Json.parse(content)
+                    }
+                } catch (ex: JsonParsingException) {
+                    throw BootstrapException("Could not parse JSON file: $path")
+                } catch (ex: MissingFieldException) {
+                    throw BootstrapException("${ex.message}. File: $path")
+                }
+            }
         }
+        return null // not found
     }
 
     private fun readContent(filePath: Path): String {

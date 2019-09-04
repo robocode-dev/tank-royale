@@ -45,11 +45,11 @@ class Bootstrap : Callable<Int> {
     @ImplicitReflectionSerializer
     private fun filenames(
         @Option(
-            names = ["--boot-dir"], paramLabel = "BOOTDIR",
-            description = ["Sets the path to the boot directory"]
-        ) bootDir: Path?
+            names = ["--bot-dir"], paramLabel = "BOT_DIR",
+            description = ["Semicolon separated string of file paths to directories containing bots"]
+        ) botsDir: String?
     ) {
-        BootUtil(getBootDir(bootDir)).findBotEntries().forEach { entry -> println(entry.filename) }
+        BootUtil(getBotDirectories(botsDir)).findBotEntries().forEach { entry -> println(entry.filename) }
     }
 
     @Command(name = "list", description = ["List available bot entries"])
@@ -57,11 +57,11 @@ class Bootstrap : Callable<Int> {
     @ImplicitReflectionSerializer
     private fun list(
         @Option(
-            names = ["--boot-dir"], paramLabel = "BOOTDIR",
-            description = ["Sets the path to the boot directory"]
-        ) bootDir: Path?
+            names = ["--bot-dir"], paramLabel = "BOT_DIR",
+            description = ["Semicolon separated string of file paths to directories containing bots"]
+        ) botsDir: String?
     ) {
-        val entries = BootUtil(getBootDir(bootDir)).findBotEntries()
+        val entries = BootUtil(getBotDirectories(botsDir)).findBotEntries()
         println(Json(JsonConfiguration.Default).stringify(entries))
     }
 
@@ -72,17 +72,17 @@ class Bootstrap : Callable<Int> {
             "Press enter key to stop all started bots and quit this tool."
         ]
     )
-    private fun boot(
+    private fun run(
         @Option(
-            names = ["--boot-dir"], paramLabel = "BOOTDIR",
-            description = ["Sets the path to the boot directory"]
-        ) bootDir: Path?,
+            names = ["--bot-dir"], paramLabel = "BOT_DIR",
+            description = ["Semicolon separated string of file paths to directories containing bots"]
+        ) botsDir: String?,
         @Parameters(
             arity = "1..*", paramLabel = "FILE",
             description = ["Filenames of the bots to start without file extensions"]
         ) filenames: Array<String>
     ) {
-        val processes = BootUtil(getBootDir(bootDir)).startBots(filenames)
+        val processes = BootUtil(getBotDirectories(botsDir)).startBots(filenames)
 
         readLine()
 
@@ -102,9 +102,15 @@ class Bootstrap : Callable<Int> {
         }
     }
 
-    /** Returns the set boot-dir which will be set to the current working directory if it is not provided as option */
-    private fun getBootDir(dir: Path? = null): Path {
-        return dir ?: Paths.get("").toAbsolutePath()
+    /** Returns file paths to specified bot directories (semicolon separated list).
+     * If no file paths are provided, the file path of current working directory is returned */
+    private fun getBotDirectories(directories: String? = null): List<Path> {
+        if (directories == null)
+            return listOf(Paths.get("").toAbsolutePath())
+
+        val paths : ArrayList<Path> = ArrayList()
+        directories.split(";").forEach { paths.add(Paths.get(it.trim())) }
+        return paths
     }
 }
 
