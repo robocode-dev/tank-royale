@@ -21,7 +21,6 @@ import kotlin.system.exitProcess
 val cmdLine = CommandLine(Bootstrap())
 
 fun main(args: Array<String>) {
-    System.setProperty("picocli.ansi", "true")
     exitProcess(cmdLine.execute(*args))
 }
 
