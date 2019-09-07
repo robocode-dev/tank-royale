@@ -6,6 +6,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.parseList
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess.stop
+import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings
 import dev.robocode.tankroyale.ui.desktop.utils.ResourceUtil
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -14,8 +15,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 @UnstableDefault
 @ImplicitReflectionSerializer
 object BootstrapProcess {
-
-    private const val BOOT_DIR = "D:/robocode2-boot" // FIXME
 
     private const val JAR_FILE_NAME = "robocode-tankroyale-bootstrap.jar"
 
@@ -30,7 +29,7 @@ object BootstrapProcess {
     private val json = Json(JsonConfiguration.Default)
 
     fun list(): List<BotEntry> {
-        val builder = ProcessBuilder("java", "-jar", jarFileName, "list", "--boot-dir=$BOOT_DIR")
+        val builder = ProcessBuilder("java", "-jar", jarFileName, "list", "--bot-dir=${getBotDirs()}")
         val process = builder.start()
         readErrorToStdError(process)
         val entries = readInputLines(process).joinToString()
@@ -41,7 +40,7 @@ object BootstrapProcess {
         if (isRunning.get())
             stop()
 
-        val args = arrayListOf("java", "-jar", jarFileName, "run", "--boot-dir=$BOOT_DIR")
+        val args = arrayListOf("java", "-jar", jarFileName, "run", "--bot-dir=${getBotDirs()}")
         args += entries
 
         val builder = ProcessBuilder(args)
@@ -70,6 +69,8 @@ object BootstrapProcess {
 
         runProcess = null
     }
+
+    private fun getBotDirs(): String = MiscSettings.botsDirectories.joinToString(separator = ";")
 
     private fun readErrorToStdError(process: Process) {
         val reader = BufferedReader(InputStreamReader(process.errorStream!!))

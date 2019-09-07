@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.ui.desktop.settings
 
-object GamesSettings : PropertiesStore("Robocode Game Setup", "games.properties") {
+object GamesSettings : PropertiesStore("Robocode Games Config", "games.properties") {
 
     val defaultGameSetup: Map<String, MutableGameSetup>
         get() = mapOf(
