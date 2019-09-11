@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.ui.desktop.ui
 
 import dev.robocode.tankroyale.ui.desktop.extensions.JMenuExt.addNewMenuItem
+import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.MENU
 import dev.robocode.tankroyale.ui.desktop.utils.Event
 import javax.swing.JMenu
 import javax.swing.JMenuBar
@@ -13,16 +14,20 @@ object MainWindowMenu : JMenuBar() {
     val onSetupRules = Event<JMenuItem>()
     val onShowServerLog = Event<JMenuItem>()
     val onServerConfig = Event<JMenuItem>()
+    val onBotDirConfig = Event<JMenuItem>()
 
     init {
-        add(JMenu(ResourceBundles.MENU.get("menu.battle")).apply {
+        add(JMenu(MENU.get("menu.battle")).apply {
             addNewMenuItem("item.new_battle", onNewBattle)
             addSeparator()
             addNewMenuItem("item.setup_rules", onSetupRules)
         })
-        add(JMenu(ResourceBundles.MENU.get("menu.server")).apply {
+        add(JMenu(MENU.get("menu.server")).apply {
             addNewMenuItem("item.show_server_log", onShowServerLog)
             addNewMenuItem("item.server_config", onServerConfig)
+        })
+        add(JMenu(MENU.get("menu.config")).apply {
+            addNewMenuItem("item.bot_dir_config", onBotDirConfig)
         })
     }
 }

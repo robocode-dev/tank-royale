@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.ui.desktop.ui.config
 
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewButton
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewLabel
-import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
@@ -20,15 +19,11 @@ object BotDirectoryConfigDialog : JDialog(MainWindow, getWindowTitle()) {
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
-        size = Dimension(500, 250)
+        size = Dimension(500, 200)
 
         setLocationRelativeTo(null) // center on screen
 
         contentPane.add(BotDirectoryConfigPanel)
-
-        onActivated() {
-
-        }
 
         onClosing() {
             MiscSettings.botsDirectories = BotDirectoryConfigPanel.listModel.elements().toList()
