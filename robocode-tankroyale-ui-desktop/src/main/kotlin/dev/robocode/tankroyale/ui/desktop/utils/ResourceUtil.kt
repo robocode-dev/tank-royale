@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.ui.desktop.utils
 
 import dev.robocode.tankroyale.ui.desktop.extensions.PathExt.getFileExtension
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.lang.RuntimeException
 import java.nio.file.Files
@@ -14,7 +15,7 @@ object ResourceUtil {
     fun getResourceFile(resourceName: String): File? {
         var file: File? = null
         val resource = javaClass.classLoader.getResource(resourceName)
-            ?: throw RuntimeException("Could not find resource file: $resourceName")
+            ?: throw FileNotFoundException("Could not find resource file: $resourceName")
         if (resource.toString().startsWith("jar:")) {
             try {
                 val inputStream = javaClass.classLoader.getResourceAsStream(resourceName)

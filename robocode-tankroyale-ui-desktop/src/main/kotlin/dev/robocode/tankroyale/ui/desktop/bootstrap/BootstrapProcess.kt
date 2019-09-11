@@ -1,24 +1,25 @@
 package dev.robocode.tankroyale.ui.desktop.bootstrap
 
+import dev.robocode.tankroyale.ui.desktop.server.ServerProcess.stop
+import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.parseList
-import dev.robocode.tankroyale.ui.desktop.server.ServerProcess.stop
-import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings
-import dev.robocode.tankroyale.ui.desktop.utils.ResourceUtil
 import java.io.BufferedReader
+import java.io.File
+import java.io.FileNotFoundException
 import java.io.InputStreamReader
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicBoolean
 
 @UnstableDefault
 @ImplicitReflectionSerializer
 object BootstrapProcess {
 
-    private const val JAR_FILE_NAME = "robocode-tankroyale-bootstrap.jar"
-
-    private val jarFileName = ResourceUtil.getResourceFile(JAR_FILE_NAME).toString()
+    private const val DEFAULT_JAR_FILE_NAME = "robocode-tankroyale-bootstrap.jar"
 
     private val isRunning = AtomicBoolean(false)
     private var runProcess: Process? = null
@@ -29,7 +30,7 @@ object BootstrapProcess {
     private val json = Json(JsonConfiguration.Default)
 
     fun list(): List<BotEntry> {
-        val builder = ProcessBuilder("java", "-jar", jarFileName, "list", "--bot-dir=${getBotDirs()}")
+        val builder = ProcessBuilder("java", "-jar", getBootstrapJar(), "list", "--bot-dir=${getBotDirs()}")
         val process = builder.start()
         readErrorToStdError(process)
         val entries = readInputLines(process).joinToString()
@@ -40,7 +41,7 @@ object BootstrapProcess {
         if (isRunning.get())
             stop()
 
-        val args = arrayListOf("java", "-jar", jarFileName, "run", "--bot-dir=${getBotDirs()}")
+        val args = arrayListOf("java", "-jar", getBootstrapJar(), "run", "--bot-dir=${getBotDirs()}")
         args += entries
 
         val builder = ProcessBuilder(args)
@@ -70,7 +71,22 @@ object BootstrapProcess {
         runProcess = null
     }
 
-    private fun getBotDirs(): String = MiscSettings.botsDirectories.joinToString(separator = ";")
+    private fun getBootstrapJar(): String {
+        val path = Paths.get(System.getProperty("bootstrapJar", DEFAULT_JAR_FILE_NAME))
+        if (!Files.exists(path)) {
+            throw FileNotFoundException(path.toString())
+        }
+        return path.toString()
+    }
+
+    private fun getBotDirs(): String {
+        // Use 'bots' dir from current and parent directory
+        var dirs = System.getProperty("botDir", "") + ";"
+
+        // Add bot directories from settings
+        dirs += MiscSettings.botsDirectories.joinToString(separator = ";")
+        return dirs.trim()
+    }
 
     private fun readErrorToStdError(process: Process) {
         val reader = BufferedReader(InputStreamReader(process.errorStream!!))
@@ -111,6 +127,7 @@ object BootstrapProcess {
     }
 }
 
+
 @UnstableDefault
 @ImplicitReflectionSerializer
 fun main() {
@@ -120,5 +137,3 @@ fun main() {
     readLine()
     BootstrapProcess.stopRunning()
 }
-
-

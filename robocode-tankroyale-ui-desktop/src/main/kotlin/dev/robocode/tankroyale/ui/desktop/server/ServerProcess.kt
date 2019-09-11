@@ -2,16 +2,16 @@ package dev.robocode.tankroyale.ui.desktop.server
 
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.server.ServerWindow
-import dev.robocode.tankroyale.ui.desktop.utils.ResourceUtil
 import java.io.BufferedReader
+import java.io.FileNotFoundException
 import java.io.InputStreamReader
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicBoolean
 
 object ServerProcess {
 
-    private const val JAR_FILE_NAME = "robocode-tankroyale-server.jar"
-
-    private val jarFileName = ResourceUtil.getResourceFile(JAR_FILE_NAME).toString()
+    private const val DEFAULT_JAR_FILE_NAME = "robocode-tankroyale-server.jar"
 
     private val isRunning = AtomicBoolean(false)
     private var process: Process? = null
@@ -32,7 +32,7 @@ object ServerProcess {
 
         port = ServerSettings.port
 
-        val builder = ProcessBuilder("java", "-jar", jarFileName, "--port=$port")
+        val builder = ProcessBuilder("java", "-jar", getServerJar(), "--port=$port")
         builder.redirectErrorStream(true)
         process = builder.start()
 
@@ -59,6 +59,14 @@ object ServerProcess {
 
         process = null
         logThread = null
+    }
+
+    private fun getServerJar(): String {
+        val path = Paths.get(System.getProperty("serverJar", DEFAULT_JAR_FILE_NAME))
+        if (!Files.exists(path)) {
+            throw FileNotFoundException(path.toString())
+        }
+        return path.toString()
     }
 
     private fun startLogThread() {
