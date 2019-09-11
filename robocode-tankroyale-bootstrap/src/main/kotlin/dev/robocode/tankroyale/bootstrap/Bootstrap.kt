@@ -12,6 +12,7 @@ import picocli.CommandLine.Option
 import picocli.CommandLine.Parameters
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.concurrent.Callable
@@ -108,8 +109,13 @@ class Bootstrap : Callable<Int> {
         if (directories == null)
             return listOf(Paths.get("").toAbsolutePath())
 
-        val paths : ArrayList<Path> = ArrayList()
-        directories.split(";").forEach { paths.add(Paths.get(it.trim())) }
+        val paths: ArrayList<Path> = ArrayList()
+        directories.split(";").forEach {
+            val path = Paths.get(it.trim())
+            if (Files.exists(path)) {
+                paths.add(path)
+            }
+        }
         return paths
     }
 }
