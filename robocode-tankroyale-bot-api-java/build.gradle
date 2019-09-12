@@ -3,7 +3,7 @@ plugins {
     id 'maven'
     id 'idea'
 }
-group = 'net.robocode2'
+group = 'dev.robocode.tankroyale'
 version = '0.1.2'
 
 compileJava {

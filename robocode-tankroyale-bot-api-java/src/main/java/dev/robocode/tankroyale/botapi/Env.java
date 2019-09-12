@@ -23,7 +23,7 @@ final class Env {
 
   private Env() {}
 
-  static final String SERVER_URI = "ROBOCODE2_SERVER_URI";
+  static final String SERVER_URI = "ROBOCODE_SERVER_URI";
 
   private static final String BOT_NAME = "BOT_NAME";
   private static final String BOT_VERSION = "BOT_VERSION";

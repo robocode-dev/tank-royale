@@ -39,12 +39,12 @@ public abstract class Bot implements IBot {
    * Constructor used when both BotInfo and serverUri are provided through environment variables.
    * This constructor should be used when starting up the bot using a bootstrap. These environment
    * variables must be set to provide the server URI and bot information, and are automatically set
-   * by the bootstrap tool for Robocode. ROBOCODE2_SERVER_URI, BOT_NAME, BOT_VERSION, BOT_AUTHOR,
+   * by the bootstrap tool for Robocode. ROBOCODE_SERVER_URI, BOT_NAME, BOT_VERSION, BOT_AUTHOR,
    * BOT_DESCRIPTION, BOT_COUNTRY_CODE, BOT_GAME_TYPES, BOT_PROG_LANG.
    *
    * <p><b>Example:</b>
    *
-   * <p>ROBOCODE2_SERVER_URI=ws://localhost:55000<br>
+   * <p>ROBOCODE_SERVER_URI=ws://localhost:55000<br>
    * BOT_NAME=MyBot<br>
    * BOT_VERSION=1.0<br>
    * BOT_AUTHOR=fnl<br>
@@ -60,7 +60,7 @@ public abstract class Bot implements IBot {
 
   /**
    * Constructor used when serverUri is provided through the environment variable
-   * ROBOCODE2_SERVER_URI.
+   * ROBOCODE_SERVER_URI.
    *
    * @param botInfo is the bot info containing information about your bot.
    */
@@ -269,14 +269,20 @@ public abstract class Bot implements IBot {
       val typeFactory =
           RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class)
               .registerSubtype(dev.robocode.tankroyale.schema.BotDeathEvent.class, "BotDeathEvent")
-              .registerSubtype(dev.robocode.tankroyale.schema.BotHitBotEvent.class, "BotHitBotEvent")
-              .registerSubtype(dev.robocode.tankroyale.schema.BotHitWallEvent.class, "BotHitWallEvent")
-              .registerSubtype(dev.robocode.tankroyale.schema.BulletFiredEvent.class, "BulletFiredEvent")
-              .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
+              .registerSubtype(
+                  dev.robocode.tankroyale.schema.BotHitBotEvent.class, "BotHitBotEvent")
+              .registerSubtype(
+                  dev.robocode.tankroyale.schema.BotHitWallEvent.class, "BotHitWallEvent")
+              .registerSubtype(
+                  dev.robocode.tankroyale.schema.BulletFiredEvent.class, "BulletFiredEvent")
+              .registerSubtype(
+                  dev.robocode.tankroyale.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
               .registerSubtype(
                   dev.robocode.tankroyale.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
-              .registerSubtype(dev.robocode.tankroyale.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
-              .registerSubtype(dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
+              .registerSubtype(
+                  dev.robocode.tankroyale.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
+              .registerSubtype(
+                  dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
               .registerSubtype(dev.robocode.tankroyale.schema.WonRoundEvent.class, "WonRoundEvent");
 
       gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
@@ -485,7 +491,8 @@ public abstract class Bot implements IBot {
     }
 
     private void handleSkippedTurnEvent(JsonObject jsonMsg) {
-      val skippedTurnEvent = gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
+      val skippedTurnEvent =
+          gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
       Bot.this.onSkippedTurn((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
     }
 
