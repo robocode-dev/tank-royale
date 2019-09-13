@@ -1,5 +1,6 @@
-package dev.robocode.tankroyale.botapi;
+package dev.robocode.tankroyale.bot;
 
+import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.events.*;
 
 @SuppressWarnings("UnusedDeclaration")

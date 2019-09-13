@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.ui.desktop.server
 
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.server.ServerWindow
+import dev.robocode.tankroyale.ui.desktop.utils.ResourceUtil
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
@@ -11,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 object ServerProcess {
 
-    private const val DEFAULT_JAR_FILE_NAME = "robocode-tankroyale-server.jar"
+    private const val JAR_FILE_NAME = "robocode-tankroyale-server"
 
     private val isRunning = AtomicBoolean(false)
     private var process: Process? = null
@@ -62,11 +63,20 @@ object ServerProcess {
     }
 
     private fun getServerJar(): String {
-        val path = Paths.get(System.getProperty("serverJar", DEFAULT_JAR_FILE_NAME))
-        if (!Files.exists(path)) {
-            throw FileNotFoundException(path.toString())
+        val propertyValue = System.getProperty("serverJar")
+        if (propertyValue != null) {
+            val path = Paths.get(propertyValue)
+            if (!Files.exists(path)) {
+                throw FileNotFoundException(path.toString())
+            }
+            return path.toString()
         }
-        return path.toString()
+        val cwd = Paths.get("")
+        val pathOpt = Files.list(cwd).filter { it.startsWith(JAR_FILE_NAME) && it.endsWith(".jar") }.findFirst()
+        if (pathOpt.isPresent) {
+            return pathOpt.get().toString()
+        }
+        return ResourceUtil.getResourceFile("${JAR_FILE_NAME}.jar")?.absolutePath ?: ""
     }
 
     private fun startLogThread() {

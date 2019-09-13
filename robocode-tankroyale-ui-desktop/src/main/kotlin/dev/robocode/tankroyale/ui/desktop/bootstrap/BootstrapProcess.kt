@@ -2,13 +2,14 @@ package dev.robocode.tankroyale.ui.desktop.bootstrap
 
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess.stop
 import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings
+import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings.BOT_DIRS_SEPARATOR
+import dev.robocode.tankroyale.ui.desktop.utils.ResourceUtil
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.parseList
 import java.io.BufferedReader
-import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.nio.file.Files
@@ -19,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 @ImplicitReflectionSerializer
 object BootstrapProcess {
 
-    private const val DEFAULT_JAR_FILE_NAME = "robocode-tankroyale-bootstrap.jar"
+    private const val JAR_FILE_NAME = "robocode-tankroyale-bootstrap"
 
     private val isRunning = AtomicBoolean(false)
     private var runProcess: Process? = null
@@ -72,19 +73,31 @@ object BootstrapProcess {
     }
 
     private fun getBootstrapJar(): String {
-        val path = Paths.get(System.getProperty("bootstrapJar", DEFAULT_JAR_FILE_NAME))
-        if (!Files.exists(path)) {
-            throw FileNotFoundException(path.toString())
+        val propertyValue = System.getProperty("bootstrapJar")
+        if (propertyValue != null) {
+            val path = Paths.get(propertyValue)
+            if (!Files.exists(path)) {
+                throw FileNotFoundException(path.toString())
+            }
+            return path.toString()
         }
-        return path.toString()
+        val cwd = Paths.get("")
+        val pathOpt = Files.list(cwd).filter { it.startsWith(JAR_FILE_NAME) && it.endsWith(".jar") }.findFirst()
+        if (pathOpt.isPresent) {
+            return pathOpt.get().toString()
+        }
+        return ResourceUtil.getResourceFile("$JAR_FILE_NAME.jar")?.absolutePath ?: ""
     }
 
     private fun getBotDirs(): String {
         // Use 'bots' dir from current and parent directory
-        var dirs = System.getProperty("botDir", "") + ";"
+        var dirs = System.getProperty("botDir", "")
+        if (dirs.isNotBlank()) {
+            dirs += BOT_DIRS_SEPARATOR
+        }
 
         // Add bot directories from settings
-        dirs += MiscSettings.botsDirectories.joinToString(separator = ";")
+        dirs += MiscSettings.botsDirectories.joinToString(separator = BOT_DIRS_SEPARATOR)
         return dirs.trim()
     }
 
