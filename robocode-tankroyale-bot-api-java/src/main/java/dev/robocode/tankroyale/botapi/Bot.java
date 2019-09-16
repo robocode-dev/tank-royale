@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
+import com.neovisionaries.ws.client.*;
 import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.factory.BotHandshakeFactory;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
@@ -24,11 +25,12 @@ import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.botapi.events.WonRoundEvent;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
 import dev.robocode.tankroyale.botapi.mapper.ResultsMapper;
-import org.java_websocket.client.WebSocketClient;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("UnusedDeclaration")
 public abstract class Bot implements IBot {
@@ -293,7 +295,7 @@ public abstract class Bot implements IBot {
     private final BotIntent botIntent = new BotIntent();
 
     // Server connection:
-    private WebSocketClient webSocket;
+    private WebSocket webSocket;
     private ServerHandshake serverHandshake;
 
     // Current game states:
@@ -307,19 +309,28 @@ public abstract class Bot implements IBot {
     }
 
     private void init(URI serverUri) {
-      webSocket = new WSClient(serverUri);
+      try {
+        webSocket = new WebSocketFactory().createSocket(serverUri);
+        webSocket.addListener(new WebSocketListener());
 
+      } catch (IOException ex) {
+        throw new RuntimeException("Could not create web socket for URI: " + serverUri, ex);
+      }
       botIntent.setType(BotReady.Type.BOT_INTENT); // must be set!
     }
 
     private void connect() {
       if (!webSocket.isOpen()) {
-        webSocket.connect();
+        try {
+          webSocket.connect();
+        } catch (WebSocketException ex) {
+          throw new RuntimeException("Could not connect to web socket", ex);
+        }
       }
     }
 
     private void sendBotIntent() {
-      webSocket.send(gson.toJson(botIntent));
+      webSocket.sendText(gson.toJson(botIntent));
     }
 
     private void clearCurrentGameState() {
@@ -375,39 +386,36 @@ public abstract class Bot implements IBot {
       return currentTurn;
     }
 
-    private final class WSClient extends WebSocketClient {
-
-      private WSClient(final URI uri) {
-        super(uri);
-      }
+    private final class WebSocketListener extends WebSocketAdapter {
 
       @Override
-      public final void onOpen(final org.java_websocket.handshake.ServerHandshake handshake) {
-        val event =
-            ConnectedEvent.builder()
-                .httpStatus(handshake.getHttpStatus())
-                .httpStatusMessage(handshake.getHttpStatusMessage())
-                .build();
+      public final void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
+        val event = ConnectedEvent.builder().build();
         Bot.this.onConnected(event);
       }
 
       @Override
-      public final void onClose(final int code, final String reason, final boolean remote) {
-        val event = DisconnectedEvent.builder().remote(remote).build();
+      public final void onDisconnected(
+          WebSocket websocket,
+          WebSocketFrame serverCloseFrame,
+          WebSocketFrame clientCloseFrame,
+          boolean closedByServer) {
+
+        val event = DisconnectedEvent.builder().remote(closedByServer).build();
         Bot.this.onDisconnected(event);
 
         Bot.this.__internals.clearCurrentGameState();
       }
 
       @Override
-      public final void onError(final Exception ex) {
-        val event = ConnectionErrorEvent.builder().exception(ex).build();
+      public final void onError(WebSocket websocket, WebSocketException cause) {
+        val event = ConnectionErrorEvent.builder().exception(cause).build();
         Bot.this.onConnectionError(event);
       }
 
       @Override
-      public final void onMessage(final String message) {
-        JsonObject jsonMsg = gson.fromJson(message, JsonObject.class);
+      public final void onTextMessage(WebSocket websocket, String text) {
+        JsonObject jsonMsg = gson.fromJson(text, JsonObject.class);
 
         JsonElement jsonType = jsonMsg.get("type");
         if (jsonType != null) {
@@ -441,7 +449,8 @@ public abstract class Bot implements IBot {
         // Send bot handshake
         val botHandshake = BotHandshakeFactory.create(Bot.__Internals.this.botInfo);
         val msg = gson.toJson(botHandshake);
-        send(msg);
+
+        webSocket.sendText(msg);
       }
 
       private void handleTickEvent(JsonObject jsonMsg) {
@@ -465,7 +474,7 @@ public abstract class Bot implements IBot {
         ready.setType(BotReady.Type.BOT_READY);
 
         val msg = gson.toJson(ready);
-        send(msg);
+        webSocket.sendText(msg);
 
         val gameStartedEvent =
             GameStartedEvent.builder()

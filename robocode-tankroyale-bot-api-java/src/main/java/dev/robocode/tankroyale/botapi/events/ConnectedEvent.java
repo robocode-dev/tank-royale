@@ -9,10 +9,4 @@ import lombok.Value;
 @Builder
 @ToString
 public class ConnectedEvent {
-
-  /** HTTP status code */
-  short httpStatus;
-
-  /** Status message */
-  String httpStatusMessage;
 }

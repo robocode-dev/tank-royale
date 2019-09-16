@@ -4,7 +4,7 @@ plugins {
     id 'idea'
 }
 group = 'dev.robocode.tankroyale'
-version = '0.1.2'
+version = '0.2.0'
 
 compileJava {
     sourceCompatibility = '1.8'
@@ -18,13 +18,9 @@ repositories {
 
 dependencies {
     compile 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.5.0'
-    compile 'org.java-websocket:Java-WebSocket:1.4.0'
-    compile 'ch.qos.logback:logback-classic:1.2.3'
-    compile 'ch.qos.logback:logback-core:1.2.3'
-    compile 'org.slf4j:slf4j-api:1.7.26'
-    compile 'com.google.code.gson:gson:2.8.5'
-    compile 'org.danilopianini:gson-extras:0.2.1'
+    compile 'com.neovisionaries:nv-websocket-client:2.9'
     compile 'com.neovisionaries:nv-i18n:1.22'
+    compile 'org.danilopianini:gson-extras:0.2.1'
 
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
