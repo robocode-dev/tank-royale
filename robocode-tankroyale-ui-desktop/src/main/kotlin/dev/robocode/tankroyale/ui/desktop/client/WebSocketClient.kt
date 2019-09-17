@@ -4,7 +4,7 @@ import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.json.Json
 import dev.robocode.tankroyale.ui.desktop.model.Message
 import dev.robocode.tankroyale.ui.desktop.model.messageModule
-import dev.robocode.tankroyale.ui.desktop.utils.Event
+import dev.robocode.tankroyale.ui.desktop.util.Event
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI

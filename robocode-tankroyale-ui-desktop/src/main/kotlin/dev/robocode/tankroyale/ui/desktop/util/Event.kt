@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.ui.desktop.utils
+package dev.robocode.tankroyale.ui.desktop.util
 
 import java.awt.EventQueue
 import java.util.*

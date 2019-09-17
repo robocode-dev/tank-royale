@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.ui.desktop.server
 
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.server.ServerWindow
-import dev.robocode.tankroyale.ui.desktop.utils.ResourceUtil
+import dev.robocode.tankroyale.ui.desktop.util.ResourceUtil
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader

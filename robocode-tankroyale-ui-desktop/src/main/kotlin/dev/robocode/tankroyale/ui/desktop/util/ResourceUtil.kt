@@ -1,10 +1,9 @@
-package dev.robocode.tankroyale.ui.desktop.utils
+package dev.robocode.tankroyale.ui.desktop.util
 
 import dev.robocode.tankroyale.ui.desktop.extensions.PathExt.getFileExtension
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.lang.RuntimeException
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.LocalDateTime

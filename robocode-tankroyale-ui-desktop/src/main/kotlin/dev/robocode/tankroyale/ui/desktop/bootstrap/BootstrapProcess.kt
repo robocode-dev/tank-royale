@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.ui.desktop.server.ServerProcess.stop
 import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings
 import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings.BOT_DIRS_SEPARATOR
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
-import dev.robocode.tankroyale.ui.desktop.utils.ResourceUtil
+import dev.robocode.tankroyale.ui.desktop.util.ResourceUtil
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json

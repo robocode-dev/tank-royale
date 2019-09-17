@@ -11,7 +11,7 @@ import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewLabel
 import dev.robocode.tankroyale.ui.desktop.model.GameSetup
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.STRINGS
-import dev.robocode.tankroyale.ui.desktop.utils.Event
+import dev.robocode.tankroyale.ui.desktop.util.Event
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.event.MouseAdapter

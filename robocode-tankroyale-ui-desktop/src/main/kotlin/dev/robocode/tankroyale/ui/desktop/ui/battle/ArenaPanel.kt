@@ -9,7 +9,7 @@ import dev.robocode.tankroyale.ui.desktop.ui.ResultsWindow
 import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.State.arenaHeight
 import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.State.arenaWidth
 import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.State.bots
-import dev.robocode.tankroyale.ui.desktop.utils.Graphics2DState
+import dev.robocode.tankroyale.ui.desktop.util.Graphics2DState
 import java.awt.*
 import java.awt.event.MouseWheelEvent
 import java.awt.geom.*
@@ -58,7 +58,7 @@ object ArenaPanel : JPanel() {
     }
 
     private fun onGameAborted() {
-        // TODO
+        // Do nothing currently
     }
 
     var tick = AtomicBoolean(false)

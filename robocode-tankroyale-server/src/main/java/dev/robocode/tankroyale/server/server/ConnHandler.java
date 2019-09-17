@@ -72,8 +72,7 @@ public final class ConnHandler {
     webSocketObserver.run();
   }
 
-  // TODO: Call this method
-  public void stop() {
+  void stop() {
     shutdownAndAwaitTermination(executorService);
   }
 

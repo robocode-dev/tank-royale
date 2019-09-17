@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.ui.desktop.ui
 
 import dev.robocode.tankroyale.ui.desktop.extensions.JMenuExt.addNewMenuItem
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.MENU
-import dev.robocode.tankroyale.ui.desktop.utils.Event
+import dev.robocode.tankroyale.ui.desktop.util.Event
 import javax.swing.JMenu
 import javax.swing.JMenuBar
 import javax.swing.JMenuItem

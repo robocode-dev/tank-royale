@@ -75,3 +75,15 @@ task copyBootstrapJar(type: Copy) {
 
 build.dependsOn copyServerJar
 build.dependsOn copyBootstrapJar
+
+// Modify versions.txt using replacement of @version@ token
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+processResources {
+    with copySpec {
+        from 'src/main/resources'
+        include 'version.txt'
+        filter(ReplaceTokens, tokens: [version: version])
+    }
+}

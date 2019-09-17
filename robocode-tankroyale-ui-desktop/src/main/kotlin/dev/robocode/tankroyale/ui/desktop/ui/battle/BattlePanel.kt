@@ -2,9 +2,8 @@ package dev.robocode.tankroyale.ui.desktop.ui.battle
 
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewButton
-import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.STRINGS
-import dev.robocode.tankroyale.ui.desktop.utils.Event
+import dev.robocode.tankroyale.ui.desktop.util.Event
 import java.awt.BorderLayout
 import javax.swing.JButton
 import javax.swing.JPanel

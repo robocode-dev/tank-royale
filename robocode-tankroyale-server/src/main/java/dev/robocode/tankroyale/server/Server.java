@@ -53,6 +53,8 @@ public class Server implements Runnable {
 
     private static CommandLine cmdLine = new CommandLine(new Server());
 
+    private GameServer gameServer;
+
     public static void main(String[] args) {
         System.setProperty("picocli.ansi", "true");
         System.exit(cmdLine.execute(args));
@@ -87,13 +89,15 @@ public class Server implements Runnable {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 if (line.trim().equalsIgnoreCase("q")) {
+                    gameServer.stop();
                     System.exit(1);
                 }
             }
         }).start();
 
         // Start game server on main thread
-        new GameServer().start();
+        gameServer = new GameServer();
+        gameServer.start();
     }
 
     public static int getPort() {

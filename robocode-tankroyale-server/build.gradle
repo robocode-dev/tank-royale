@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.5.1'
+version = '0.5.2'
 
 compileJava {
     sourceCompatibility = '1.8'
@@ -50,6 +50,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.unitils:unitils-core:3.4.6'
 }
+
+// Modify versions.txt using replacement of @version@ token
 
 import org.apache.tools.ant.filters.ReplaceTokens
 

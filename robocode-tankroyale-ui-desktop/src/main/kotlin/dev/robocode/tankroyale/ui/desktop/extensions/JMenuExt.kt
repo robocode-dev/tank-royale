@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.ui.desktop.extensions
 
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
-import dev.robocode.tankroyale.ui.desktop.utils.Event
+import dev.robocode.tankroyale.ui.desktop.util.Event
 import javax.swing.JMenu
 import javax.swing.JMenuItem
 

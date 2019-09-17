@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.ui.desktop.ui.battle
 
 import dev.robocode.tankroyale.ui.desktop.settings.GamesSettings
 import dev.robocode.tankroyale.ui.desktop.settings.MutableGameSetup
-import dev.robocode.tankroyale.ui.desktop.utils.Event
+import dev.robocode.tankroyale.ui.desktop.util.Event
 import javax.swing.JComboBox
 
 class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray()) {

@@ -59,6 +59,11 @@ public final class GameServer {
     connHandler.start();
   }
 
+  public void stop() {
+    logger.info("Stopping server");
+    connHandler.stop();
+  }
+
   private void startGameIfParticipantsReady() {
     if (readyParticipants.size() == participants.size()) {
 
@@ -336,7 +341,6 @@ public final class GameServer {
         endEventForObserver.setResults(getResultsForObservers()); // Use the stored score!
         sendMessageToObservers(gson.toJson(endEventForObserver));
 
-        // runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN; // TODO: Correct?
       } else {
         // Clear bot intents
         botIntents.clear();

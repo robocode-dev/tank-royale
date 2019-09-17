@@ -18,7 +18,7 @@ import dev.robocode.tankroyale.ui.desktop.ui.GameConstants.MIN_ARENA_SIZE
 import dev.robocode.tankroyale.ui.desktop.ui.GameConstants.MIN_NUM_PARTICIPANTS
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.MESSAGES
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.STRINGS
-import dev.robocode.tankroyale.ui.desktop.utils.Event
+import dev.robocode.tankroyale.ui.desktop.util.Event
 import javax.swing.*
 
 @ImplicitReflectionSerializer

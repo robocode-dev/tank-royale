@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.model.BotAddress
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
-import dev.robocode.tankroyale.ui.desktop.utils.Disposable
+import dev.robocode.tankroyale.ui.desktop.util.Disposable
 import java.awt.BorderLayout
 import java.awt.Color
 import javax.swing.*
