@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.ui.desktop.bootstrap
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess.stop
 import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings
 import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings.BOT_DIRS_SEPARATOR
+import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.utils.ResourceUtil
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
@@ -42,7 +43,14 @@ object BootstrapProcess {
         if (isRunning.get())
             stop()
 
-        val args = arrayListOf("java", "-jar", getBootstrapJar(), "run", "--bot-dir=${getBotDirs()}")
+        val args = arrayListOf(
+            "java",
+            "-Dserver.uri=${ServerSettings.endpoint}",
+            "-jar",
+            getBootstrapJar(),
+            "run",
+            "--bot-dir=${getBotDirs()}"
+        )
         args += entries
 
         val builder = ProcessBuilder(args)

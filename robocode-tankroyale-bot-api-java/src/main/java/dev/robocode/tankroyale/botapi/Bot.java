@@ -254,6 +254,7 @@ public abstract class Bot implements IBot {
   }
 
   private final class __Internals {
+    private static final String SERVER_URI_ENV_VAR_NAME = "SERVER_URI";
     private static final String SERVER_URI_PROPERTY_KEY = "server.uri";
 
     private static final String NOT_CONNECTED_TO_SERVER_MSG =
@@ -341,9 +342,12 @@ public abstract class Bot implements IBot {
     }
 
     private URI getServerUriFromSetting() {
-      var uri = System.getProperty(SERVER_URI_PROPERTY_KEY);
+      var uri = System.getenv(SERVER_URI_ENV_VAR_NAME);
       if (uri == null) {
-        uri = Env.getServerUri();
+        uri = System.getProperty(SERVER_URI_PROPERTY_KEY);
+        if (uri == null) {
+          uri = Env.getServerUri();
+        }
       }
       if (uri == null) {
         throw new BotException(

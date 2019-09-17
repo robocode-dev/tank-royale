@@ -76,6 +76,7 @@ class BootUtil(private val botPaths: List<Path>) {
 
             val env = processBuilder.environment()
 
+            env[Env.SERVER_URI.name] = System.getProperty("server.uri")
             env[Env.BOT_NAME.name] = botInfo.name
             env[Env.BOT_VERSION.name] = botInfo.version
             env[Env.BOT_AUTHOR.name] = botInfo.author
