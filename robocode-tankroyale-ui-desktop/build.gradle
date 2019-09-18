@@ -23,8 +23,8 @@ version = '0.5.1'
 description = 'Robocode Tank Royale UI Desktop'
 
 compileJava {
-    sourceCompatibility = '9'
-    targetCompatibility = '9'
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
 }
 
 defaultTasks 'run'
