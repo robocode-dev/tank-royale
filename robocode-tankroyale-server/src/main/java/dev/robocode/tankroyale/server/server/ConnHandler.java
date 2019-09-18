@@ -37,6 +37,8 @@ public final class ConnHandler {
 
   private final ServerSetup setup;
   private final ConnListener listener;
+  private final String clientSecret;
+
   private final WebSocketObserver webSocketObserver;
 
   private final Set<WebSocket> connections = Collections.synchronizedSet(new HashSet<>());
@@ -57,9 +59,10 @@ public final class ConnHandler {
 
   private final ExecutorService executorService;
 
-  ConnHandler(ServerSetup setup, ConnListener listener) {
+  ConnHandler(ServerSetup setup, ConnListener listener, String clientSecret) {
     this.setup = setup;
     this.listener = listener;
+    this.clientSecret = clientSecret == null ? null : clientSecret.trim();
 
     InetSocketAddress address = new InetSocketAddress("localhost", Server.getPort());
     this.webSocketObserver = new WebSocketObserver(address);
@@ -217,6 +220,19 @@ public final class ConnHandler {
             case OBSERVER_HANDSHAKE:
               {
                 ObserverHandshake handshake = gson.fromJson(message, ObserverHandshake.class);
+
+                // Validate client secret before continuing
+                if (clientSecret != null
+                    && !clientSecret.isEmpty()
+                    && !handshake.getSecret().equals(clientSecret)) {
+                  logger.info(
+                      "Ignoring observer using invalid secret. Name: "
+                          + handshake.getName()
+                          + ", Version: "
+                          + handshake.getVersion());
+                  return; // Ignore client with wrong secret
+                }
+
                 observerAndControllerConnections.add(conn);
                 observerHandshakes.put(conn, handshake);
 
@@ -226,6 +242,19 @@ public final class ConnHandler {
             case CONTROLLER_HANDSHAKE:
               {
                 ControllerHandshake handshake = gson.fromJson(message, ControllerHandshake.class);
+
+                // Validate client secret before continuing
+                if (clientSecret != null
+                        && !clientSecret.isEmpty()
+                        && !handshake.getSecret().equals(clientSecret)) {
+                  logger.info(
+                          "Ignoring controller using invalid secret. Name: "
+                                  + handshake.getName()
+                                  + ", Version: "
+                                  + handshake.getVersion());
+                  return; // Ignore client with wrong secret
+                }
+
                 controllerConnections.add(conn);
                 controllerHandshakes.put(conn, handshake);
                 // Controller is also an observer

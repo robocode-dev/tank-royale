@@ -42,15 +42,15 @@ public final class GameServer {
 
   private final Gson gson = new Gson();
 
-  public GameServer() {
+  public GameServer(String clientSecret) {
     val serverSetup = new ServerSetup();
     val connListener = new GameServerConnListener();
-    this.connHandler = new ConnHandler(serverSetup, connListener);
+    this.connHandler = new ConnHandler(serverSetup, connListener, clientSecret);
     this.runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
   }
 
   public static void main(String[] args) {
-    GameServer server = new GameServer();
+    GameServer server = new GameServer(null);
     server.start();
   }
 

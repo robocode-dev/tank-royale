@@ -5,6 +5,7 @@ enum class MessageType(val type: String) {
     SERVER_HANDSHAKE("ServerHandshake"),
     CONTROLLER_HANDSHAKE("ControllerHandshake"),
     BOT_LIST_UPDATE("BotListUpdate"),
+
     // Game Events
     TICK_EVENT("TickEventForObserver"),
     BOT_DEATH_EVENT("BotDeathEvent"),
@@ -18,11 +19,13 @@ enum class MessageType(val type: String) {
     SCANNED_BOT_EVENT("ScannedBotEvent"),
     SKIPPED_TURN_EVENT("SkippedTurnEvent"),
     WON_ROUND_EVENT("WonRoundEvent"),
+
     // Controller Commands
     START_GAME("StartGame"),
     STOP_GAME("StopGame"),
     PAUSE_GAME("PauseGame"),
     RESUME_GAME("ResumeGame"),
+
     // Observer/controller Events
     GAME_STARTED_EVENT("GameStartedEventForObserver"),
     GAME_ENDED_EVENT("GameEndedEventForObserver"),

@@ -143,7 +143,8 @@ class GameResumedEvent : Message()
 data class ControllerHandshake(
     val name: String,
     val version: String,
-    val author: String?
+    val author: String?,
+    val secret: String?
 ) : Message()
 
 @Serializable

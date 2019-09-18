@@ -29,23 +29,27 @@ import java.util.Scanner;
                 ""
         },
         descriptionHeading = "Description:%n",
-        description = "Runs a Robocode server"
+        description = "Runs a Robocode Tank Royale server"
 )
 public class Server implements Runnable {
 
     private final static int DEFAULT_PORT = 55000;
 
-    @Option(names = {"-V", "--version"}, description = "display version info")
+    @Option(names = {"-V", "--version"}, description = "Display version info")
     @SuppressWarnings("CanBeFinal")
     private static boolean isVersionInfoRequested = false;
 
-    @Option(names = {"-h", "--help"}, description = "display this help message")
+    @Option(names = {"-h", "--help"}, description = "Display this help message")
     @SuppressWarnings("CanBeFinal")
     private static boolean isUsageHelpRequested = false;
 
-    @Option(names = {"-p", "--port"}, type = Integer.class, description = "port number (default: " + DEFAULT_PORT + ")")
+    @Option(names = {"-p", "--port"}, type = Integer.class, description = "Port number (default: " + DEFAULT_PORT + ")")
     @SuppressWarnings("CanBeFinal")
     private static Integer port = DEFAULT_PORT;
+
+    @Option(names = {"-s", "--secret"}, description = "Client secret used for access control")
+    @SuppressWarnings("CanBeFinal")
+    private static String secret = null;
 
     @Spec
     @SuppressWarnings("unused")
@@ -96,7 +100,7 @@ public class Server implements Runnable {
         }).start();
 
         // Start game server on main thread
-        gameServer = new GameServer();
+        gameServer = new GameServer(secret);
         gameServer.start();
     }
 

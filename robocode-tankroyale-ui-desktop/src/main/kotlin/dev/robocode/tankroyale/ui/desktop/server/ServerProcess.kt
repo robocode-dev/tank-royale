@@ -8,7 +8,9 @@ import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+import javax.crypto.KeyGenerator
 
 object ServerProcess {
 
@@ -20,6 +22,10 @@ object ServerProcess {
     private val logThreadRunning = AtomicBoolean(false)
 
     var port: Int = ServerSettings.port
+        private set
+
+    var secret: String? = null
+        private set
 
     fun isRunning(): Boolean {
         return isRunning.get()
@@ -32,8 +38,9 @@ object ServerProcess {
         ServerWindow.clear()
 
         port = ServerSettings.port
+        secret = generateSecret()
 
-        val builder = ProcessBuilder("java", "-jar", getServerJar(), "--port=$port")
+        val builder = ProcessBuilder("java", "-jar", getServerJar(), "--port=$port", "--secret=$secret")
         builder.redirectErrorStream(true)
         process = builder.start()
 
@@ -60,6 +67,13 @@ object ServerProcess {
 
         process = null
         logThread = null
+    }
+
+    private fun generateSecret(): String {
+        val secretKey = KeyGenerator.getInstance("AES").generateKey()
+        val encodedKey = Base64.getEncoder().encodeToString(secretKey.encoded)
+        // Remove trailing "=="
+        return encodedKey.substring(0, encodedKey.length - 2)
     }
 
     private fun getServerJar(): String {

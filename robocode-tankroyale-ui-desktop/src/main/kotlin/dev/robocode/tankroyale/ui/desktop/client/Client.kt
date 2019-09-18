@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.ui.desktop.client
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.json.Json
 import dev.robocode.tankroyale.ui.desktop.model.*
+import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import dev.robocode.tankroyale.ui.desktop.util.Version
 import java.net.URI
@@ -117,7 +118,8 @@ object Client : AutoCloseable {
         val handshake = ControllerHandshake(
             name = "Robocode Tank Royale UI",
             version = "${Version.getVersion()}",
-            author = "Flemming N. Larsen"
+            author = "Flemming N. Larsen",
+            secret = ServerProcess.secret
         )
         websocket.send(handshake)
     }
