@@ -23,8 +23,9 @@ version = '0.5.1'
 description = 'Robocode Tank Royale UI Desktop'
 
 compileJava {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
+    // Java 9 supports UTF-8 in properties files
+    sourceCompatibility = '9'
+    targetCompatibility = '9'
 }
 
 defaultTasks 'run'
