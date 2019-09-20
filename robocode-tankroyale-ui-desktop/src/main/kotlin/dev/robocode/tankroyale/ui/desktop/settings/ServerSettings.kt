@@ -1,42 +1,42 @@
 package dev.robocode.tankroyale.ui.desktop.settings
 
+import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings.endpoint
+import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings.startLocalServer
+import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings.userEndpoints
+
 
 object ServerSettings : PropertiesStore("Robocode Server Config", "server.properties") {
 
-    private const val SERVER_ADDRESS_PROPERTY = "server.address"
-    private const val DEFAULT_SERVER_ADDRESS = "localhost"
+    private const val DEFAULT_ENDPOINT_PROPERTY = "default.endpoint"
+    private const val DEFAULT_ENDPOINT_VALUE = "ws://localhost:55000"
 
-    private const val SERVER_PORT_PROPERTY = "server.port"
-    private const val DEFAULT_SERVER_PORT: Int = 55000
+    private const val START_LOCAL_SERVER_PROPERTY = "start_local_server"
+    private const val START_LOCAL_SERVER_VALUE = true
 
-    private const val REMOTE_SERVER_PROPERTY = "remote.server"
-    private const val DEFAULT_REMOTE_SERVER = false
+    private const val USER_ENDPOINTS_PROPERTY = "user.endpoints"
 
-    val endpoint: String get() = "ws://$address:$port"
-
-    var address: String
-        get() =
-            if (useRemoteServer)
-                properties.getProperty(SERVER_ADDRESS_PROPERTY, DEFAULT_SERVER_ADDRESS)
-            else
-                DEFAULT_SERVER_ADDRESS
+    var endpoint: String
+        get() = properties.getProperty(DEFAULT_ENDPOINT_PROPERTY, DEFAULT_ENDPOINT_VALUE)
         set(value) {
-            properties.setProperty(SERVER_ADDRESS_PROPERTY, value)
+            properties.setProperty(DEFAULT_ENDPOINT_PROPERTY, value)
         }
 
-    var port: Int
-        get() = properties.getProperty(SERVER_PORT_PROPERTY, "$DEFAULT_SERVER_PORT")!!.toInt()
+    var startLocalServer: Boolean
+        get() = properties.getProperty(START_LOCAL_SERVER_PROPERTY, "$START_LOCAL_SERVER_VALUE")!!.toBoolean()
         set(value) {
-            properties.setProperty(SERVER_PORT_PROPERTY, "$value")
+            properties.setProperty(START_LOCAL_SERVER_PROPERTY, "$value")
         }
 
-    var useRemoteServer: Boolean
-        get() = properties.getProperty(REMOTE_SERVER_PROPERTY, "$DEFAULT_REMOTE_SERVER")!!.toBoolean()
+    var userEndpoints: List<String>
+        get() = properties.getProperty(USER_ENDPOINTS_PROPERTY, "").split(";")
         set(value) {
-            properties.setProperty(REMOTE_SERVER_PROPERTY, "$value")
+            val list = ArrayList(value)
+            list.remove(DEFAULT_ENDPOINT_VALUE)
+            properties.setProperty(USER_ENDPOINTS_PROPERTY, list.joinToString(separator = ";"))
         }
 
-    val useLocalServer: Boolean get() = !useRemoteServer
+    val port: Int
+        get() = endpoint.substring(endpoint.lastIndexOf(':') + 1).toInt()
 
     init {
         resetToDefault()
@@ -44,8 +44,8 @@ object ServerSettings : PropertiesStore("Robocode Server Config", "server.proper
     }
 
     fun resetToDefault() {
-        address = DEFAULT_SERVER_ADDRESS
-        port = DEFAULT_SERVER_PORT
-        useRemoteServer = DEFAULT_REMOTE_SERVER
+        endpoint = DEFAULT_ENDPOINT_VALUE
+        startLocalServer = true
+        userEndpoints = emptyList()
     }
 }

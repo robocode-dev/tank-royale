@@ -17,8 +17,6 @@ object BattlePanel : JPanel() {
 
     private var pauseResumeButton: JButton
 
-    private var isPaused = false
-
     init {
         val buttonPanel = JPanel().apply {
             addNewButton("battle.stop", onStop)

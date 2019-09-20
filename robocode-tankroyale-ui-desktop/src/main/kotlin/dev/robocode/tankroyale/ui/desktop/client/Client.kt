@@ -1,16 +1,15 @@
 package dev.robocode.tankroyale.ui.desktop.client
 
-import kotlinx.serialization.PolymorphicSerializer
-import kotlinx.serialization.json.Json
 import dev.robocode.tankroyale.ui.desktop.model.*
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
+import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import dev.robocode.tankroyale.ui.desktop.util.Version
+import kotlinx.serialization.PolymorphicSerializer
+import kotlinx.serialization.json.Json
 import java.net.URI
 
 object Client : AutoCloseable {
-
-    private val defaultUri = URI("ws://localhost:55000")
 
     // public events
     val onConnected = Event<Unit>()
@@ -29,7 +28,7 @@ object Client : AutoCloseable {
 
     var currentGameSetup: GameSetup? = null
 
-    private var websocket: WebSocketClient = WebSocketClient(defaultUri)
+    private var websocket: WebSocketClient = WebSocketClient(URI(ServerSettings.endpoint))
 
     private val json = Json(context = messageModule)
 

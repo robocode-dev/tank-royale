@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.ui.desktop.ui.battle.BattleDialog
 import dev.robocode.tankroyale.ui.desktop.ui.battle.BattlePanel
 import dev.robocode.tankroyale.ui.desktop.ui.battle.LogoPanel
 import dev.robocode.tankroyale.ui.desktop.ui.config.BotDirectoryConfigDialog
-import dev.robocode.tankroyale.ui.desktop.ui.server.ServerConfigDialog
+import dev.robocode.tankroyale.ui.desktop.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.ui.desktop.ui.server.ServerWindow
 import java.awt.EventQueue
 import javax.swing.JFrame
@@ -41,7 +41,7 @@ object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
             }
         }
         MainWindowMenu.onShowServerLog.invokeLater { ServerWindow.isVisible = true }
-        MainWindowMenu.onServerConfig.invokeLater { ServerConfigDialog.isVisible = true }
+        MainWindowMenu.onServerConfig.invokeLater { SelectServerDialog.isVisible = true }
         MainWindowMenu.onBotDirConfig.invokeLater { BotDirectoryConfigDialog.isVisible = true }
 
         Client.onGameStarted.subscribe { showBattle() }

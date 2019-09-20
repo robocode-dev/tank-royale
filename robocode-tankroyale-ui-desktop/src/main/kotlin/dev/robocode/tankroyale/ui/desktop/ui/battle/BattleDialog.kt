@@ -54,7 +54,7 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
 
     private fun startServerOrCloseDialog() {
         // If no server is running and a local server must be started => start server
-        if (ServerSettings.useLocalServer && !ServerProcess.isRunning()) {
+        if (ServerSettings.startLocalServer && !ServerProcess.isRunning()) {
             ServerProcess.start()
         }
 

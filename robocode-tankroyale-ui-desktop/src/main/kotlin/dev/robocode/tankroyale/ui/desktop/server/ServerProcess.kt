@@ -22,7 +22,6 @@ object ServerProcess {
     private val logThreadRunning = AtomicBoolean(false)
 
     var port: Int = ServerSettings.port
-        private set
 
     var secret: String? = null
         private set
