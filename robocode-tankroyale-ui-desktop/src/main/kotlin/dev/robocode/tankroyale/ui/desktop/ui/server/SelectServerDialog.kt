@@ -16,11 +16,7 @@ import net.miginfocom.swing.MigLayout
 import java.awt.Cursor
 import java.awt.Dimension
 import java.awt.EventQueue
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
-import java.awt.event.ComponentListener
 import javax.swing.*
-import javax.swing.text.JTextComponent
 
 @ImplicitReflectionSerializer
 object SelectServerDialog : JDialog(MainWindow, getWindowTitle()) {
@@ -95,10 +91,9 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
 
         lowerPanel.add(buttonPanel, "center")
 
-        testButton.addActionListener { onTest.publish(testButton) }
         startLocalServerCheckBox.addActionListener { onStartLocalServerCheckBoxChanged.publish(startLocalServerCheckBox) }
 
-        NewEndpointDialog.onOk.subscribe {
+        NewEndpointDialog.onComplete.subscribe {
             endpointsComboBox.addItem(NewEndpointDialog.newEndpoint)
         }
 

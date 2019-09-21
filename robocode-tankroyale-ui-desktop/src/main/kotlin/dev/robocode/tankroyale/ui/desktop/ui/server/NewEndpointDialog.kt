@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewButton
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
-import dev.robocode.tankroyale.ui.desktop.ui.server.NewEndpointDialog.onOk
+import dev.robocode.tankroyale.ui.desktop.ui.server.NewEndpointDialog.onComplete
 import dev.robocode.tankroyale.ui.desktop.ui.server.NewEndpointPanel.endpointTextField
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
@@ -20,7 +20,7 @@ import javax.swing.event.DocumentListener
 @ImplicitReflectionSerializer
 object NewEndpointDialog : JDialog(SelectServerDialog, getWindowTitle()) {
 
-    val onOk = Event<JButton>()
+    val onComplete = Event<JButton>()
 
     var newEndpoint: String = ""
 
@@ -58,10 +58,10 @@ private object NewEndpointPanel : JPanel(MigLayout("fill")) {
 
     init {
         add(endpointTextField)
-        val okButton = addNewButton("ok", NewEndpointDialog.onOk)
+        val okButton = addNewButton("ok", NewEndpointDialog.onComplete)
         NewEndpointDialog.rootPane.defaultButton = okButton
 
-        onOk.subscribe {
+        onComplete.subscribe {
             if (isValidEndpoint()) {
                 NewEndpointDialog.newEndpoint = endpointTextField.text
                 NewEndpointDialog.dispose()
