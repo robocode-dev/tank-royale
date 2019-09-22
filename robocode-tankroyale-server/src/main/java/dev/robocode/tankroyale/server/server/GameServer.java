@@ -287,8 +287,6 @@ public final class GameServer {
   private void onTurnTimeout() {
     turnTimer.stop();
 
-    logger.debug("Turn timeout");
-
     // Send SkippedTurnEvents to all bots that skipped a turn, i.e. where the server did not receive a bot intent
     // before the turn ended.
     participantIds.forEach((conn, id) -> {

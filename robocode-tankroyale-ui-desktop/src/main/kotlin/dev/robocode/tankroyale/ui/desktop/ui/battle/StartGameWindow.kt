@@ -1,16 +1,16 @@
 package dev.robocode.tankroyale.ui.desktop.ui.battle
 
-import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.UnstableDefault
 import dev.robocode.tankroyale.ui.desktop.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.model.BotAddress
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
-import dev.robocode.tankroyale.ui.desktop.util.Disposable
+import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.UnstableDefault
 import java.awt.BorderLayout
 import java.awt.Color
+import java.io.Closeable
 import javax.swing.*
 
 
@@ -21,7 +21,7 @@ object StartGameWindow : JFrame(getWindowTitle()) {
     private val textArea = JTextArea()
     private val startButton = JButton(ResourceBundles.STRINGS.get("start_battle"))
 
-    private val disposables = ArrayList<Disposable>()
+    private val disposables = ArrayList<Closeable>()
     private var botEntries: Set<BotInfo> = emptySet()
 
     init {
@@ -61,7 +61,7 @@ object StartGameWindow : JFrame(getWindowTitle()) {
         }
 
         onClosing {
-            disposables.forEach { it.dispose() }
+            disposables.forEach { it.close() }
         }
     }
 }

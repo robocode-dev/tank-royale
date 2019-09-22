@@ -8,9 +8,9 @@ import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
-import dev.robocode.tankroyale.ui.desktop.util.Disposable
 import java.awt.Dimension
 import java.awt.EventQueue
+import java.io.Closeable
 import javax.swing.*
 import javax.swing.JOptionPane.YES_OPTION
 
@@ -19,7 +19,7 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
 
     private val tabbedPane = JTabbedPane()
     private val setupRulesPanel = SetupRulesPanel()
-    private var onErrorDisposable: Disposable? = null
+    private var onErrorCloseable: Closeable? = null
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
@@ -39,8 +39,8 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
         }
 
         onDeactivated {
-            onErrorDisposable?.dispose()
-            onErrorDisposable = null
+            onErrorCloseable?.close()
+            onErrorCloseable = null
         }
     }
 
@@ -59,7 +59,7 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
         }
 
         // Error handler that shows a dialog asking the user to start a local server or dismiss battle dialog
-        onErrorDisposable = Client.onError.subscribe {
+        onErrorCloseable = Client.onError.subscribe {
             val option = JOptionPane.showConfirmDialog(
                 this,
                 ResourceBundles.MESSAGES.get("could_not_connect_to_server_start_local_question"),

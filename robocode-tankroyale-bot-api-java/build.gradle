@@ -4,7 +4,7 @@ plugins {
     id 'idea'
 }
 group = 'dev.robocode.tankroyale'
-version = '0.2.0'
+version = '0.3.0'
 
 compileJava {
     sourceCompatibility = '1.8'
@@ -28,11 +28,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
     testImplementation 'org.assertj:assertj-core:3.9.1'
-}
-
-jar {
-    manifest { attributes 'Main-Class': 'dev.robocode.tankroyale.bot.TestBot' }
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 test {

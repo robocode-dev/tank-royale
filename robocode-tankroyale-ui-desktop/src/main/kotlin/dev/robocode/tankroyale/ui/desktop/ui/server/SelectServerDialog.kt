@@ -9,13 +9,13 @@ import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.MESSAGES
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.STRINGS
-import dev.robocode.tankroyale.ui.desktop.util.Disposable
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
 import net.miginfocom.swing.MigLayout
 import java.awt.Cursor
 import java.awt.Dimension
 import java.awt.EventQueue
+import java.io.Closeable
 import javax.swing.*
 
 @ImplicitReflectionSerializer
@@ -124,7 +124,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     }
 
     private fun testServerConnection() {
-        val disposables = ArrayList<Disposable>()
+        val disposables = ArrayList<Closeable>()
 
         disposables += Client.onConnected.subscribe {
             JOptionPane.showMessageDialog(
@@ -134,7 +134,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
 
             Client.close()
 
-            disposables.forEach { it.dispose() }
+            disposables.forEach { it.close() }
             disposables.clear()
         }
 
@@ -152,7 +152,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
 
             cursor = Cursor.getDefaultCursor()
 
-            disposables.forEach { it.dispose() }
+            disposables.forEach { it.close() }
             disposables.clear()
         }
 
