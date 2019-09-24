@@ -1,14 +1,12 @@
 package dev.robocode.tankroyale.ui.desktop.settings
 
-import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings.endpoint
-import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings.startLocalServer
-import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings.userEndpoints
-
 
 object ServerSettings : PropertiesStore("Robocode Server Config", "server.properties") {
 
+    private const val DEFAULT_PORT: Int = 55000
+
     private const val DEFAULT_ENDPOINT_PROPERTY = "default.endpoint"
-    private const val DEFAULT_ENDPOINT_VALUE = "ws://localhost:55000"
+    private const val DEFAULT_ENDPOINT_VALUE = "ws://localhost:$DEFAULT_PORT"
 
     private const val START_LOCAL_SERVER_PROPERTY = "start_local_server"
     private const val START_LOCAL_SERVER_VALUE = true
@@ -16,7 +14,19 @@ object ServerSettings : PropertiesStore("Robocode Server Config", "server.proper
     private const val USER_ENDPOINTS_PROPERTY = "user.endpoints"
 
     var endpoint: String
-        get() = properties.getProperty(DEFAULT_ENDPOINT_PROPERTY, DEFAULT_ENDPOINT_VALUE)
+        get() {
+            var endpoint = properties.getProperty(DEFAULT_ENDPOINT_PROPERTY, DEFAULT_ENDPOINT_VALUE)
+
+            // Make sure the endpoint starts with "ws://"
+            if (!endpoint.startsWith("ws://", ignoreCase = true)) {
+                endpoint = "ws://$endpoint"
+            }
+            // Add a (default) port number, if it is not specified
+            if (!endpoint.contains(Regex(".*:\\d{1,5}$"))) {
+                endpoint = "$endpoint:$DEFAULT_PORT"
+            }
+            return endpoint
+        }
         set(value) {
             properties.setProperty(DEFAULT_ENDPOINT_PROPERTY, value)
         }

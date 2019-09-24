@@ -98,7 +98,7 @@ private object NewEndpointPanel : JPanel(MigLayout("fill")) {
     private fun isValidEndpoint(): Boolean {
         val endpoint = endpointTextField.text.trim()
         return !endpoint.isBlank() &&
-                endpoint.matches(Regex("^(ws://)?(\\p{L})?(\\p{L}|\\.|[-])*(\\p{L})(:[0-9]{1,5})?$"))
+                endpoint.matches(Regex("^(ws://)?(\\p{L})?(\\p{L}|\\.|[-])*(\\p{L})(:\\d{1,5})?$"))
     }
 }
 
