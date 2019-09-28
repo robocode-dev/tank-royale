@@ -53,8 +53,8 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
     }
 
     private fun startServerOrCloseDialog() {
-        // If no server is running and a local server must be started => start server
-        if (ServerSettings.startLocalServer && !ServerProcess.isRunning()) {
+        // If no server is running => start server
+        if (!ServerProcess.isRunning()) {
             ServerProcess.start()
         }
 
@@ -62,11 +62,10 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
         onErrorCloseable = Client.onError.subscribe {
             val option = JOptionPane.showConfirmDialog(
                 this,
-                ResourceBundles.MESSAGES.get("could_not_connect_to_server_start_local_question"),
+                ResourceBundles.MESSAGES.get("could_not_connect_start_local_server_question"),
                 ResourceBundles.MESSAGES.get("title_question"),
                 JOptionPane.YES_NO_OPTION
             )
-
             if (option == YES_OPTION) {
                 ServerProcess.start()
                 Client.connect(ServerSettings.endpoint)

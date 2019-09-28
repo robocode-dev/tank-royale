@@ -4,15 +4,14 @@ import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewButton
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewLabel
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
+import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.MESSAGES
-import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.STRINGS
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
 import net.miginfocom.swing.MigLayout
-import java.awt.Cursor
 import java.awt.Dimension
 import java.awt.EventQueue
 import java.io.Closeable
@@ -58,8 +57,6 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     private val removeButton = addNewButton("remove", onRemove)
     private val testButton = addNewButton("server_test", onTest)
 
-    private val startLocalServerCheckBox = JCheckBox(STRINGS.get("start_local_server"), ServerSettings.startLocalServer)
-
     init {
         val upperPanel = JPanel(MigLayout("", "[][grow][][][]")).apply {
             addNewLabel("endpoint")
@@ -73,14 +70,6 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         add(upperPanel, "north")
         add(lowerPanel, "south")
 
-//        endpointsComboBox.isEditable = true
-//
-//        // Set caret position to avoid text getting selected
-//        (endpointsComboBox.editor.editorComponent as JTextComponent).caretPosition =
-//            (endpointsComboBox.selectedItem as String).length
-
-        upperPanel.add(startLocalServerCheckBox)
-
         val okButton: JButton
 
         val buttonPanel = JPanel(MigLayout()).apply {
@@ -91,10 +80,12 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
 
         lowerPanel.add(buttonPanel, "center")
 
-        startLocalServerCheckBox.addActionListener { onStartLocalServerCheckBoxChanged.publish(startLocalServerCheckBox) }
-
         NewEndpointDialog.onComplete.subscribe {
             endpointsComboBox.addItem(NewEndpointDialog.newEndpoint)
+
+            removeButton.isEnabled = true
+            okButton.isEnabled = true
+            testButton.isEnabled = true
         }
 
         onAdd.subscribe {
@@ -106,6 +97,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
             if (endpointsComboBox.itemCount == 0) {
                 removeButton.isEnabled = false
                 okButton.isEnabled = false
+                testButton.isEnabled = false
             }
         }
 
@@ -138,26 +130,24 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
             disposables.clear()
         }
 
-        disposables += Client.onDisconnected.subscribe {
-            cursor = Cursor.getDefaultCursor()
-        }
-
         disposables += Client.onError.subscribe {
-            JOptionPane.showMessageDialog(
+            val option = JOptionPane.showConfirmDialog(
                 this,
-                MESSAGES.get("could_not_connect_to_server"),
-                MESSAGES.get("title_warning"),
-                JOptionPane.WARNING_MESSAGE
+                ResourceBundles.MESSAGES.get("could_not_connect_start_local_server_question"),
+                ResourceBundles.MESSAGES.get("title_question"),
+                JOptionPane.YES_NO_OPTION
             )
-
-            cursor = Cursor.getDefaultCursor()
+            if (option == JOptionPane.YES_OPTION) {
+                ServerProcess.start()
+                Client.connect(ServerSettings.endpoint)
+            }
 
             disposables.forEach { it.close() }
             disposables.clear()
         }
 
         var endpoint = endpointsComboBox.selectedItem as String
-        if (!endpoint.contains("//:")) {
+        if (!endpoint.contains("//:")) { // FIXME: Use WsEndpoint
             endpoint = "ws://$endpoint"
         }
 
@@ -173,8 +163,6 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
             endpointsComboBox.addItem(ServerSettings.endpoint)
         }
         endpointsComboBox.selectedItem = ServerSettings.endpoint
-
-        startLocalServerCheckBox.isSelected = ServerSettings.startLocalServer
     }
 
     private fun saveServerConfig() {
@@ -186,8 +174,6 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
             userEndpoints.add(endpointsComboBox.getItemAt(i))
         }
         ServerSettings.userEndpoints = userEndpoints
-
-        ServerSettings.startLocalServer = startLocalServerCheckBox.isSelected
 
         ServerSettings.save()
     }
