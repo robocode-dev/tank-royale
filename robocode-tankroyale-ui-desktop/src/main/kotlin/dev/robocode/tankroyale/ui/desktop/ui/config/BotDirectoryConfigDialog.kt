@@ -47,7 +47,6 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
     val scrollPane = JScrollPane(list)
 
     init {
-
         addNewLabel("bot_directories", "wrap")
         add(scrollPane, "span 2, grow, wrap")
 

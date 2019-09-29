@@ -16,6 +16,8 @@ import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.EventQueue
 import java.io.Closeable
+import java.net.ConnectException
+import java.net.UnknownHostException
 import javax.swing.*
 
 @ImplicitReflectionSerializer
@@ -51,8 +53,6 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     private val onOk = Event<JButton>()
     private val onCancel = Event<JButton>()
 
-    private val onStartLocalServerCheckBoxChanged = Event<JCheckBox>()
-
     private val endpointsComboBox = JComboBox(arrayOf("localhost:55000"))
     private val addButton = addNewButton("add", onAdd)
     private val removeButton = addNewButton("remove", onRemove)
@@ -83,6 +83,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
 
         NewEndpointDialog.onComplete.subscribe {
             endpointsComboBox.addItem(NewEndpointDialog.newEndpoint)
+            endpointsComboBox.selectedItem = NewEndpointDialog.newEndpoint
 
             removeButton.isEnabled = true
             okButton.isEnabled = true
@@ -116,7 +117,11 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         setFieldsToServerConfig()
     }
 
+    var testConnectionRunning = false
+
     private fun testServerConnection() {
+        if (testConnectionRunning) return
+        testConnectionRunning = true
         val disposables = ArrayList<Closeable>()
 
         disposables += Client.onConnected.subscribe {
@@ -125,26 +130,33 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
                 MESSAGES.get("connected_successfully_to_server")
             )
 
-            Client.close()
-
-            disposables.forEach { it.close() }
-            disposables.clear()
-        }
-
-        disposables += Client.onError.subscribe {
-            val option = JOptionPane.showConfirmDialog(
-                this,
-                ResourceBundles.MESSAGES.get("could_not_connect_start_local_server_question"),
-                ResourceBundles.MESSAGES.get("title_question"),
-                JOptionPane.YES_NO_OPTION
-            )
-            if (option == JOptionPane.YES_OPTION) {
-                ServerProcess.start()
-                Client.connect(ServerSettings.endpoint)
+            if (!Client.isGameRunning) {
+                Client.close()
             }
 
             disposables.forEach { it.close() }
             disposables.clear()
+
+            testConnectionRunning = false
+        }
+
+        disposables += Client.onError.subscribe { exception ->
+            if (exception is ConnectException || exception is UnknownHostException) {
+                val option = JOptionPane.showConfirmDialog(
+                    this,
+                    ResourceBundles.MESSAGES.get("could_not_connect_start_local_server_question"),
+                    ResourceBundles.MESSAGES.get("title_question"),
+                    JOptionPane.YES_NO_OPTION
+                )
+                if (option == JOptionPane.YES_OPTION) {
+                    ServerProcess.start()
+                    Client.connect(ServerSettings.endpoint)
+                }
+            }
+            disposables.forEach { it.close() }
+            disposables.clear()
+
+            testConnectionRunning = false
         }
 
         val endpoint = WsEndpoint(endpointsComboBox.selectedItem as String)
