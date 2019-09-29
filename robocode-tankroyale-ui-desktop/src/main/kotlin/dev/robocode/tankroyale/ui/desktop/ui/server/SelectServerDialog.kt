@@ -10,6 +10,7 @@ import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.MESSAGES
 import dev.robocode.tankroyale.ui.desktop.util.Event
+import dev.robocode.tankroyale.ui.desktop.util.WsEndpoint
 import kotlinx.serialization.ImplicitReflectionSerializer
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
@@ -146,12 +147,8 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
             disposables.clear()
         }
 
-        var endpoint = endpointsComboBox.selectedItem as String
-        if (!endpoint.contains("//:")) { // FIXME: Use WsEndpoint
-            endpoint = "ws://$endpoint"
-        }
-
-        Client.connect(endpoint) // Connect or re-connect
+        val endpoint = WsEndpoint(endpointsComboBox.selectedItem as String)
+        Client.connect(endpoint.origin) // Connect or re-connect
     }
 
     private fun setFieldsToServerConfig() {
