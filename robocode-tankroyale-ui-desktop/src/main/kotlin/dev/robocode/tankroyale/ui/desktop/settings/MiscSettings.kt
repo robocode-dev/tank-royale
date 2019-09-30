@@ -5,7 +5,7 @@ object MiscSettings : PropertiesStore("Robocode Misc Config", "misc.properties")
     private const val BOT_DIRECTORIES_PROPERTY = "bot.directories"
     private const val DEFAULT_BOT_DIRECTORIES = "bots"
 
-    const val BOT_DIRS_SEPARATOR = ";"
+    const val BOT_DIRS_SEPARATOR = ","
 
     init {
         load()

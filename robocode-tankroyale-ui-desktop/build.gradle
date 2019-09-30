@@ -46,7 +46,7 @@ dependencies {
     runtime ('dev.robocode.tankroyale:robocode-tankroyale-server:0.5.2') {
         exclude group: 'ch.qos.logback'
     }
-    runtime 'dev.robocode.tankroyale:robocode-tankroyale-bootstrap:0.5.4'
+    runtime 'dev.robocode.tankroyale:robocode-tankroyale-bootstrap:0.6.0'
 }
 
 mainClassName = 'dev.robocode.tankroyale.ui.desktop.ui.MainWindowKt'

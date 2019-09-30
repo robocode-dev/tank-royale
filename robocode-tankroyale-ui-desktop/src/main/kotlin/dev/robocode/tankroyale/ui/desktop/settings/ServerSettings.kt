@@ -1,7 +1,5 @@
 package dev.robocode.tankroyale.ui.desktop.settings
 
-import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings.endpoint
-import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings.userEndpoints
 import dev.robocode.tankroyale.ui.desktop.util.WsEndpoint
 
 
@@ -46,7 +44,7 @@ object ServerSettings : PropertiesStore("Robocode Server Config", "server.proper
         load()
     }
 
-    fun resetToDefault() {
+    private fun resetToDefault() {
         endpoint = DEFAULT_ENDPOINT_VALUE
         userEndpoints = emptyList()
     }

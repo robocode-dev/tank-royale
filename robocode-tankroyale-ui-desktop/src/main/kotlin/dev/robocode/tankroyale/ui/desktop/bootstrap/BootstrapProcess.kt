@@ -32,7 +32,13 @@ object BootstrapProcess {
     private val json = Json(JsonConfiguration.Default)
 
     fun list(): List<BotEntry> {
-        val builder = ProcessBuilder("java", "-jar", getBootstrapJar(), "list", "--bot-dir=${getBotDirs()}")
+        val builder = ProcessBuilder(
+            "java",
+            "-jar",
+            getBootstrapJar(),
+            "list",
+            "--bot-dirs=${getBotDirs()}"
+        )
         val process = builder.start()
         readErrorToStdError(process)
         val entries = readInputLines(process).joinToString()
@@ -49,7 +55,7 @@ object BootstrapProcess {
             "-jar",
             getBootstrapJar(),
             "run",
-            "--bot-dir=${getBotDirs()}"
+            "--bot-dirs=${getBotDirs()}"
         )
         args += entries
 

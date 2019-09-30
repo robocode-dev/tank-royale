@@ -144,8 +144,8 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
             if (exception is ConnectException || exception is UnknownHostException) {
                 val option = JOptionPane.showConfirmDialog(
                     this,
-                    ResourceBundles.MESSAGES.get("could_not_connect_start_local_server_question"),
-                    ResourceBundles.MESSAGES.get("title_question"),
+                    MESSAGES.get("could_not_connect_start_local_server_question"),
+                    MESSAGES.get("title_question"),
                     JOptionPane.YES_NO_OPTION
                 )
                 if (option == JOptionPane.YES_OPTION) {
