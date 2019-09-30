@@ -18,18 +18,19 @@ import java.nio.file.Path
 import java.util.function.Predicate
 import java.util.stream.Collectors.toList
 
-
 class BootUtil(private val botPaths: List<Path>) {
 
     @ImplicitReflectionSerializer
-    fun findBotEntries(): List<BotEntry> {
+    fun findBotEntries(gameTypesCSV: String?): List<BotEntry> {
+        val gameTypes: List<String>? = gameTypesCSV?.split(",")?.map { it.trim() }
+
         val botNames = findBotNames()
         val botEntries = ArrayList<BotEntry>()
         botNames.forEach { botName ->
             try {
-                val botPath = getBotInfo(botName)
-                if (botPath != null)
-                    botEntries.add(BotEntry(botName, botPath))
+                val botInfo = getBotInfo(botName)
+                if (botInfo != null && (gameTypes == null || botInfo.gameTypes.containsAll(gameTypes)))
+                    botEntries.add(BotEntry(botName, botInfo))
             } catch (ex: Exception) {
                 System.err.println("ERROR: ${ex.message}")
             }

@@ -46,11 +46,15 @@ class Bootstrap : Callable<Int> {
     @ImplicitReflectionSerializer
     private fun filenames(
         @Option(
-            names = ["--bot-dir"], paramLabel = "BOT_DIR",
-            description = ["Semicolon separated string of file paths to directories containing bots"]
-        ) botsDir: String?
+            names = ["--bot-dirs", "-D"], paramLabel = "BOT_DIR",
+            description = ["Comma-separated string of file paths to directories containing bots"]
+        ) botDirs: String?,
+        @Option(
+            names = ["--game-types", "-T"], paramLabel = "GAME_TYPES",
+            description = ["Comma-separated string of game types that the bot entries must support in order to be included in the list"]
+        ) gameTypes: String?
     ) {
-        BootUtil(getBotDirectories(botsDir)).findBotEntries().forEach { entry -> println(entry.filename) }
+        BootUtil(getBotDirectories(botDirs)).findBotEntries(gameTypes).forEach { entry -> println(entry.filename) }
     }
 
     @Command(name = "list", description = ["List available bot entries"])
@@ -58,11 +62,15 @@ class Bootstrap : Callable<Int> {
     @ImplicitReflectionSerializer
     private fun list(
         @Option(
-            names = ["--bot-dir"], paramLabel = "BOT_DIR",
-            description = ["Semicolon separated string of file paths to directories containing bots"]
-        ) botsDir: String?
+            names = ["--bot-dirs", "-D"], paramLabel = "BOT_DIR",
+            description = ["Comma-separated string of file paths to directories containing bots"]
+        ) botDirs: String?,
+        @Option(
+            names = ["--game-types", "-T"], paramLabel = "GAME_TYPES",
+            description = ["Comma-separated string of game types that the bot entries must support in order to be included in the list"]
+        ) gameTypes: String?
     ) {
-        val entries = BootUtil(getBotDirectories(botsDir)).findBotEntries()
+        val entries = BootUtil(getBotDirectories(botDirs)).findBotEntries(gameTypes)
         println(Json(JsonConfiguration.Default).stringify(entries))
     }
 
@@ -75,15 +83,15 @@ class Bootstrap : Callable<Int> {
     )
     private fun run(
         @Option(
-            names = ["--bot-dir"], paramLabel = "BOT_DIR",
-            description = ["Semicolon separated string of file paths to directories containing bots"]
-        ) botsDir: String?,
+            names = ["--bot-dirs", "-D"], paramLabel = "BOT_DIR",
+            description = ["Comma-separated string of file paths to directories containing bots"]
+        ) botDirs: String?,
         @Parameters(
             arity = "1..*", paramLabel = "FILE",
             description = ["Filenames of the bots to start without file extensions"]
         ) filenames: Array<String>
     ) {
-        val processes = BootUtil(getBotDirectories(botsDir)).startBots(filenames)
+        val processes = BootUtil(getBotDirectories(botDirs)).startBots(filenames)
 
         readLine()
 
@@ -103,14 +111,14 @@ class Bootstrap : Callable<Int> {
         }
     }
 
-    /** Returns file paths to specified bot directories (semicolon separated list).
+    /** Returns file paths to specified bot directoriesCSV (semicolon separated list).
      * If no file paths are provided, the file path of current working directory is returned */
-    private fun getBotDirectories(directories: String? = null): List<Path> {
-        if (directories == null)
+    private fun getBotDirectories(directoriesCSV: String?): List<Path> {
+        if (directoriesCSV == null)
             return listOf(Paths.get("").toAbsolutePath())
 
-        val paths: ArrayList<Path> = ArrayList()
-        directories.split(";").forEach {
+        val paths = ArrayList<Path>()
+        directoriesCSV.split(",").forEach {
             val path = Paths.get(it.trim())
             if (Files.exists(path)) {
                 paths.add(path)
