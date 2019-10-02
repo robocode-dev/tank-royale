@@ -21,7 +21,6 @@ object StartGameWindow : JFrame(getWindowTitle()) {
     private val textArea = JTextArea()
     private val startButton = JButton(ResourceBundles.STRINGS.get("start_battle"))
 
-    private val disposables = ArrayList<Closeable>()
     private var botEntries: Set<BotInfo> = emptySet()
 
     init {
@@ -40,7 +39,7 @@ object StartGameWindow : JFrame(getWindowTitle()) {
 
         textArea.append(ResourceBundles.STRINGS.get("start_game_waiting_for_bots"))
 
-        disposables += Client.onBotListUpdate.subscribe {
+        Client.onBotListUpdate.subscribe {
             botEntries = it.bots
 
             textArea.text = ResourceBundles.STRINGS.get("start_game_joined_bots") + '\n'
@@ -58,10 +57,6 @@ object StartGameWindow : JFrame(getWindowTitle()) {
 
                 startGame(SelectBotsPanel.gameSetup, botAddresses)
             }
-        }
-
-        onClosing {
-            disposables.forEach { it.close() }
         }
     }
 }

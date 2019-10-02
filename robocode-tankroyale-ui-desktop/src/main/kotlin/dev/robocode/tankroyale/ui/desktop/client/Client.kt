@@ -54,6 +54,11 @@ object Client : AutoCloseable {
     }
 
     fun connect(endpoint: String) {
+        websocket.onOpen.removeAllSubscribers()
+        websocket.onClose.removeAllSubscribers()
+        websocket.onMessage.removeAllSubscribers()
+        websocket.onError.removeAllSubscribers()
+
         websocket = WebSocketClient(URI(endpoint))
 
         websocket.onOpen.subscribe { onConnected.publish(Unit) }

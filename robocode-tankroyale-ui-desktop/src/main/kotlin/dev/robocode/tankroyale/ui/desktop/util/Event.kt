@@ -13,6 +13,10 @@ class Event<T> {
         return disposable(subscriber)
     }
 
+    fun removeAllSubscribers() {
+        subscribers.clear()
+    }
+
     fun publish(source: T) {
         subscribers.toList().forEach { it.invoke(source) }
     }
