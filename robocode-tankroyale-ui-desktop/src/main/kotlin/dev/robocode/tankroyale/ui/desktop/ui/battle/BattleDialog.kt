@@ -58,17 +58,19 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
             ServerProcess.start()
         }
 
+        var url = ServerSettings.defaultUrl
+
         // Error handler that shows a dialog asking the user to start a local server or dismiss battle dialog
         onErrorCloseable = Client.onError.subscribe {
             val option = JOptionPane.showConfirmDialog(
                 this,
-                ResourceBundles.MESSAGES.get("could_not_connect_start_local_server_question"),
+                String.format(ResourceBundles.MESSAGES.get("could_not_connect__start_local_server_question"), url),
                 ResourceBundles.MESSAGES.get("title_question"),
                 JOptionPane.YES_NO_OPTION
             )
             if (option == YES_OPTION) {
                 ServerProcess.start()
-                Client.connect(ServerSettings.endpoint)
+                Client.connect(url)
             } else {
                 dispose() // dispose the dialog, when server is not available
             }
@@ -82,7 +84,7 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
 
         // Connect to the server. The error handler above is triggered if the connection cannot be established
         if (!Client.isConnected) {
-            Client.connect(ServerSettings.endpoint)
+            Client.connect(ServerSettings.defaultUrl)
         }
     }
 }

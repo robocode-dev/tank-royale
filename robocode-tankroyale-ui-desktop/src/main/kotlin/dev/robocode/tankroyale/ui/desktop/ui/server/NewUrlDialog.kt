@@ -5,8 +5,8 @@ import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewButton
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
-import dev.robocode.tankroyale.ui.desktop.ui.server.NewEndpointDialog.onComplete
-import dev.robocode.tankroyale.ui.desktop.ui.server.NewEndpointPanel.endpointTextField
+import dev.robocode.tankroyale.ui.desktop.ui.server.NewUrlPanel.urlTextField
+import dev.robocode.tankroyale.ui.desktop.ui.server.NewUrlDialog.onComplete
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
 import net.miginfocom.swing.MigLayout
@@ -18,11 +18,11 @@ import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
 @ImplicitReflectionSerializer
-object NewEndpointDialog : JDialog(SelectServerDialog, getWindowTitle()) {
+object NewUrlDialog : JDialog(SelectServerDialog, getWindowTitle()) {
 
     val onComplete = Event<JButton>()
 
-    var newEndpoint: String = ""
+    var newUrl: String = ""
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
@@ -31,11 +31,11 @@ object NewEndpointDialog : JDialog(SelectServerDialog, getWindowTitle()) {
 
         setLocationRelativeTo(null) // center on screen
 
-        contentPane.add(NewEndpointPanel)
+        contentPane.add(NewUrlPanel)
 
         onActivated {
-            endpointTextField.text = ""
-            endpointTextField.background = NewEndpointPanel.endpointTextFieldDefaultBackground
+            urlTextField.text = ""
+            urlTextField.background = NewUrlPanel.urlTextFieldDefaultBackground
         }
 
         onClosing {
@@ -45,32 +45,32 @@ object NewEndpointDialog : JDialog(SelectServerDialog, getWindowTitle()) {
 }
 
 private fun getWindowTitle(): String {
-    return ResourceBundles.UI_TITLES.get("new_endpoint_dialog")
+    return ResourceBundles.UI_TITLES.get("new_url_dialog")
 }
 
 @ImplicitReflectionSerializer
-private object NewEndpointPanel : JPanel(MigLayout("fill")) {
+private object NewUrlPanel : JPanel(MigLayout("fill")) {
 
     // Private events
-    val endpointTextField = JTextField(50)
+    val urlTextField = JTextField(50)
 
-    val endpointTextFieldDefaultBackground: Color = endpointTextField.background
+    val urlTextFieldDefaultBackground: Color = urlTextField.background
 
     init {
-        add(endpointTextField)
-        val okButton = addNewButton("ok", NewEndpointDialog.onComplete)
-        NewEndpointDialog.rootPane.defaultButton = okButton
+        add(urlTextField)
+        val okButton = addNewButton("ok", NewUrlDialog.onComplete)
+        NewUrlDialog.rootPane.defaultButton = okButton
 
         onComplete.subscribe {
-            if (isValidEndpoint()) {
-                NewEndpointDialog.newEndpoint = endpointTextField.text
-                NewEndpointDialog.dispose()
+            if (isValidWsUrl()) {
+                NewUrlDialog.newUrl = urlTextField.text
+                NewUrlDialog.dispose()
             } else {
-                NewEndpointDialog.newEndpoint = ""
+                NewUrlDialog.newUrl = ""
             }
         }
 
-        endpointTextField.document.addDocumentListener(object : DocumentListener {
+        urlTextField.document.addDocumentListener(object : DocumentListener {
 
             val lightRed = Color(0xFF, 0xAA, 0xAA)
             val lightGreen = Color(0xAA, 0xFF, 0xAA)
@@ -88,17 +88,17 @@ private object NewEndpointPanel : JPanel(MigLayout("fill")) {
             }
 
             fun validate() {
-                val valid= isValidEndpoint()
-                endpointTextField.background = if (valid) lightGreen else lightRed
+                val valid= isValidWsUrl()
+                urlTextField.background = if (valid) lightGreen else lightRed
                 okButton.isEnabled = valid
             }
         })
     }
 
-    private fun isValidEndpoint(): Boolean {
-        val endpoint = endpointTextField.text.trim()
-        return !endpoint.isBlank() &&
-                endpoint.matches(Regex("^(ws://)?(\\p{L})?(\\p{L}|\\.|[-])*(\\p{L})(:\\d{1,5})?$"))
+    private fun isValidWsUrl(): Boolean {
+        val url = urlTextField.text.trim()
+        return !url.isBlank() &&
+                url.matches(Regex("^(ws://)?(\\p{L})?(\\p{L}|\\.|[-])*(\\p{L})(:\\d{1,5})?$"))
     }
 }
 
@@ -107,6 +107,6 @@ private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     EventQueue.invokeLater {
-        NewEndpointDialog.isVisible = true
+        NewUrlDialog.isVisible = true
     }
 }

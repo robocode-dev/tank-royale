@@ -1,43 +1,42 @@
 package dev.robocode.tankroyale.ui.desktop.settings
 
-import dev.robocode.tankroyale.ui.desktop.util.WsEndpoint
+import dev.robocode.tankroyale.ui.desktop.util.WsUrl
 
 
 object ServerSettings : PropertiesStore("Robocode Server Config", "server.properties") {
 
     const val DEFAULT_PORT: Int = 55000
+    const val DEFAULT_LOCALHOST_URL = "ws://localhost:$DEFAULT_PORT"
 
-    private const val DEFAULT_ENDPOINT_PROPERTY = "default.endpoint"
-    private const val DEFAULT_ENDPOINT_VALUE = "ws://localhost:$DEFAULT_PORT"
+    private const val DEFAULT_URL_PROPERTY = "default.url"
+    private const val USER_URLS_PROPERTY = "user.urls"
 
-    private const val USER_ENDPOINTS_PROPERTY = "user.endpoints"
-
-    var endpoint: String
+    var defaultUrl: String
         get() {
-            val endpoint = properties.getProperty(DEFAULT_ENDPOINT_PROPERTY, DEFAULT_ENDPOINT_VALUE)
-            return WsEndpoint(endpoint).origin
+            val url = properties.getProperty(DEFAULT_URL_PROPERTY, DEFAULT_LOCALHOST_URL)
+            return WsUrl(url).origin
         }
         set(value) {
-            properties.setProperty(DEFAULT_ENDPOINT_PROPERTY, value)
+            properties.setProperty(DEFAULT_URL_PROPERTY, value)
         }
 
-    var userEndpoints: List<String>
+    var userUrls: List<String>
         get() {
-            val endpoints = properties.getProperty(USER_ENDPOINTS_PROPERTY, "")
-            return if (endpoints.isBlank()) {
-                listOf(endpoint)
+            val urls = properties.getProperty(USER_URLS_PROPERTY, "")
+            return if (urls.isBlank()) {
+                listOf(defaultUrl)
             } else {
-                endpoints.split(";")
+                urls.split(";")
             }
         }
         set(value) {
             val list = ArrayList(value)
-            list.remove(DEFAULT_ENDPOINT_VALUE)
-            properties.setProperty(USER_ENDPOINTS_PROPERTY, list.joinToString(separator = ";"))
+            list.remove(DEFAULT_LOCALHOST_URL)
+            properties.setProperty(USER_URLS_PROPERTY, list.joinToString(separator = ";"))
         }
 
     val port: Int
-        get() = endpoint.substring(endpoint.lastIndexOf(':') + 1).toInt()
+        get() = defaultUrl.substring(defaultUrl.lastIndexOf(':') + 1).toInt()
 
     init {
         resetToDefault()
@@ -45,7 +44,7 @@ object ServerSettings : PropertiesStore("Robocode Server Config", "server.proper
     }
 
     private fun resetToDefault() {
-        endpoint = DEFAULT_ENDPOINT_VALUE
-        userEndpoints = emptyList()
+        defaultUrl = DEFAULT_LOCALHOST_URL
+        userUrls = emptyList()
     }
 }

@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.ui.desktop.util.Event
 import dev.robocode.tankroyale.ui.desktop.util.Version
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.json.Json
+import java.io.Closeable
 import java.net.URI
 
 object Client : AutoCloseable {
@@ -28,12 +29,14 @@ object Client : AutoCloseable {
 
     var currentGameSetup: GameSetup? = null
 
-    private var websocket: WebSocketClient = WebSocketClient(URI(ServerSettings.endpoint))
+    private var websocket: WebSocketClient = WebSocketClient(URI(ServerSettings.defaultUrl))
 
     private val json = Json(context = messageModule)
 
     private var games: Set<GameSetup> = HashSet()
     private var bots: Set<BotInfo> = HashSet()
+
+    private val disposables = ArrayList<Closeable>()
 
     var isGameRunning: Boolean = false
         private set
@@ -53,18 +56,15 @@ object Client : AutoCloseable {
         onDisconnected.publish(Unit)
     }
 
-    fun connect(endpoint: String) {
-        websocket.onOpen.removeAllSubscribers()
-        websocket.onClose.removeAllSubscribers()
-        websocket.onMessage.removeAllSubscribers()
-        websocket.onError.removeAllSubscribers()
+    fun connect(url: String) {
+        disposables.forEach { it.close() }
 
-        websocket = WebSocketClient(URI(endpoint))
+        websocket = WebSocketClient(URI(url))
 
-        websocket.onOpen.subscribe { onConnected.publish(Unit) }
-        websocket.onClose.subscribe { onDisconnected.publish(Unit) }
-        websocket.onMessage.subscribe { onMessage(it) }
-        websocket.onError.subscribe { onError.publish(it) }
+        disposables += websocket.onOpen.subscribe { onConnected.publish(Unit) }
+        disposables += websocket.onClose.subscribe { onDisconnected.publish(Unit) }
+        disposables += websocket.onMessage.subscribe { onMessage(it) }
+        disposables += websocket.onError.subscribe { onError.publish(it) }
 
         websocket.open() // must be called after onOpen.subscribe()
     }

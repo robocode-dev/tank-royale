@@ -2,23 +2,18 @@ package dev.robocode.tankroyale.ui.desktop.util
 
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import java.net.URI
-import java.io.IOException
-import java.net.URL
-import java.net.URLStreamHandler
-import java.net.URL.setURLStreamHandlerFactory
-import java.net.URLConnection
 
 
-class WsEndpoint(private val partialEndpoint: String) {
+class WsUrl(private val partialUrl: String) {
 
     private val uri: URI
 
     init {
         // protocol + host + port, e.g. ws://localhost:55000
 
-        var origin = partialEndpoint
+        var origin = partialUrl
 
-        // Make sure the endpoint starts with "ws://"
+        // Make sure the url starts with "ws://"
         if (!origin.startsWith("ws://", ignoreCase = true)) {
             origin = "ws://$origin"
         }

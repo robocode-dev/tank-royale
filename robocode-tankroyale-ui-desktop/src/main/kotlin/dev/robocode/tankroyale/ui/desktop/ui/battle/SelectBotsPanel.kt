@@ -114,7 +114,7 @@ object SelectBotsPanel : JPanel(MigLayout("fill")) {
             if (Client.isConnected) {
                 Client.close()
             } else {
-                Client.connect(ServerSettings.endpoint)
+                Client.connect(ServerSettings.defaultUrl)
             }
             updateConnectionState()
         }

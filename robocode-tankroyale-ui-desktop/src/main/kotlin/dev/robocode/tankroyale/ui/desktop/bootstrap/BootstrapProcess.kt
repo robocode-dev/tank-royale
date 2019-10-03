@@ -51,7 +51,7 @@ object BootstrapProcess {
 
         val args = arrayListOf(
             "java",
-            "-Dserver.uri=${ServerSettings.endpoint}",
+            "-Dserver.uri=${ServerSettings.defaultUrl}",
             "-jar",
             getBootstrapJar(),
             "run",

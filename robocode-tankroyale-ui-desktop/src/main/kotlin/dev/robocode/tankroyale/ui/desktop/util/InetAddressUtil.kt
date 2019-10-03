@@ -6,10 +6,6 @@ import java.net.UnknownHostException
 
 object InetAddressUtil {
 
-    fun isLocalAddress(uri: URI): Boolean {
-        return isLocalAddress(uri.host)
-    }
-
     fun isLocalAddress(nameOrIpAddr: String): Boolean {
         return try {
             val inetAddr = InetAddress.getByName(nameOrIpAddr)

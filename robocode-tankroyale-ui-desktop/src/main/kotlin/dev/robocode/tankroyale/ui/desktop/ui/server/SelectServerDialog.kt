@@ -1,23 +1,16 @@
 package dev.robocode.tankroyale.ui.desktop.ui.server
 
-import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewButton
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewLabel
-import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
-import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
-import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.MESSAGES
 import dev.robocode.tankroyale.ui.desktop.util.Event
-import dev.robocode.tankroyale.ui.desktop.util.WsEndpoint
 import kotlinx.serialization.ImplicitReflectionSerializer
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.EventQueue
 import java.io.Closeable
-import java.net.ConnectException
-import java.net.UnknownHostException
 import javax.swing.*
 
 @ImplicitReflectionSerializer
@@ -31,10 +24,6 @@ object SelectServerDialog : JDialog(MainWindow, getWindowTitle()) {
         setLocationRelativeTo(null) // center on screen
 
         contentPane.add(SelectServerPanel)
-
-        onClosing {
-            Client.close()
-        }
     }
 }
 
@@ -53,15 +42,15 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     private val onOk = Event<JButton>()
     private val onCancel = Event<JButton>()
 
-    private val endpointsComboBox = JComboBox(arrayOf("localhost:55000"))
+    private val urlComboBox = JComboBox(arrayOf("localhost:55000"))
     private val addButton = addNewButton("add", onAdd)
     private val removeButton = addNewButton("remove", onRemove)
     private val testButton = addNewButton("server_test", onTest)
 
     init {
         val upperPanel = JPanel(MigLayout("", "[][grow][][][]")).apply {
-            addNewLabel("endpoint")
-            add(endpointsComboBox, "span 2, grow")
+            addNewLabel("url")
+            add(urlComboBox, "span 2, grow")
             add(addButton)
             add(removeButton)
             add(testButton, "wrap")
@@ -81,9 +70,9 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
 
         lowerPanel.add(buttonPanel, "center")
 
-        NewEndpointDialog.onComplete.subscribe {
-            endpointsComboBox.addItem(NewEndpointDialog.newEndpoint)
-            endpointsComboBox.selectedItem = NewEndpointDialog.newEndpoint
+        NewUrlDialog.onComplete.subscribe {
+            urlComboBox.addItem(NewUrlDialog.newUrl)
+            urlComboBox.selectedItem = NewUrlDialog.newUrl
 
             removeButton.isEnabled = true
             okButton.isEnabled = true
@@ -91,12 +80,12 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         }
 
         onAdd.subscribe {
-            NewEndpointDialog.isVisible = true
+            NewUrlDialog.isVisible = true
         }
 
         onRemove.subscribe {
-            endpointsComboBox.removeItem(endpointsComboBox.selectedItem)
-            if (endpointsComboBox.itemCount == 0) {
+            urlComboBox.removeItem(urlComboBox.selectedItem)
+            if (urlComboBox.itemCount == 0) {
                 removeButton.isEnabled = false
                 okButton.isEnabled = false
                 testButton.isEnabled = false
@@ -117,72 +106,44 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         setFieldsToServerConfig()
     }
 
-    var testConnectionRunning = false
+    private var testConnectionRunning = false
 
     private fun testServerConnection() {
-        if (testConnectionRunning) return
+        if (testConnectionRunning)
+            return
+
+        val testServerCommand = TestServerCommand(urlComboBox.selectedItem as String)
+
+        var disposable: Closeable? = null
+        disposable = testServerCommand.onCompleted.subscribe {
+            testConnectionRunning = false
+            disposable?.close()
+        }
+
+        testServerCommand.execute()
         testConnectionRunning = true
-        val disposables = ArrayList<Closeable>()
-
-        disposables += Client.onConnected.subscribe {
-            JOptionPane.showMessageDialog(
-                this,
-                MESSAGES.get("connected_successfully_to_server")
-            )
-
-            if (!Client.isGameRunning) {
-                Client.close()
-            }
-
-            disposables.forEach { it.close() }
-            disposables.clear()
-
-            testConnectionRunning = false
-        }
-
-        disposables += Client.onError.subscribe { exception ->
-            if (exception is ConnectException || exception is UnknownHostException) {
-                val option = JOptionPane.showConfirmDialog(
-                    this,
-                    MESSAGES.get("could_not_connect_start_local_server_question"),
-                    MESSAGES.get("title_question"),
-                    JOptionPane.YES_NO_OPTION
-                )
-                if (option == JOptionPane.YES_OPTION) {
-                    ServerProcess.start()
-                    Client.connect(ServerSettings.endpoint)
-                }
-            }
-            disposables.forEach { it.close() }
-            disposables.clear()
-
-            testConnectionRunning = false
-        }
-
-        val endpoint = WsEndpoint(endpointsComboBox.selectedItem as String)
-        Client.connect(endpoint.origin) // Connect or re-connect
     }
 
     private fun setFieldsToServerConfig() {
-        endpointsComboBox.removeAllItems()
+        urlComboBox.removeAllItems()
 
-        if (ServerSettings.userEndpoints.isNotEmpty()) {
-            ServerSettings.userEndpoints.forEach { endpointsComboBox.addItem(it) }
+        if (ServerSettings.userUrls.isNotEmpty()) {
+            ServerSettings.userUrls.forEach { urlComboBox.addItem(it) }
         } else {
-            endpointsComboBox.addItem(ServerSettings.endpoint)
+            urlComboBox.addItem(ServerSettings.defaultUrl)
         }
-        endpointsComboBox.selectedItem = ServerSettings.endpoint
+        urlComboBox.selectedItem = ServerSettings.defaultUrl
     }
 
     private fun saveServerConfig() {
-        ServerSettings.endpoint = endpointsComboBox.selectedItem as String
+        ServerSettings.defaultUrl = urlComboBox.selectedItem as String
 
-        val userEndpoints = ArrayList<String>()
-        val size = endpointsComboBox.itemCount
+        val userUrls = ArrayList<String>()
+        val size = urlComboBox.itemCount
         for (i in 0 until size) {
-            userEndpoints.add(endpointsComboBox.getItemAt(i))
+            userUrls.add(urlComboBox.getItemAt(i))
         }
-        ServerSettings.userEndpoints = userEndpoints
+        ServerSettings.userUrls = userUrls
 
         ServerSettings.save()
     }

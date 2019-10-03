@@ -4,11 +4,13 @@ import kotlinx.serialization.ImplicitReflectionSerializer
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
+import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.battle.BattleDialog
 import dev.robocode.tankroyale.ui.desktop.ui.battle.BattlePanel
 import dev.robocode.tankroyale.ui.desktop.ui.battle.LogoPanel
 import dev.robocode.tankroyale.ui.desktop.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.ui.desktop.ui.server.SelectServerDialog
+import dev.robocode.tankroyale.ui.desktop.ui.server.StartServerCommand
 import dev.robocode.tankroyale.ui.desktop.ui.server.ServerWindow
 import java.awt.EventQueue
 import java.io.IOException
@@ -36,6 +38,10 @@ object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
                 selectBotsTab()
                 isVisible = true
             }
+        }
+
+        MainWindowMenu.onNewBattle2.invokeLater {
+            StartServerCommand(ServerSettings.defaultUrl).execute()
         }
 
         MainWindowMenu.onSetupRules.invokeLater {
