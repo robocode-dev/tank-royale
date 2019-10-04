@@ -26,13 +26,13 @@ object ServerSettings : PropertiesStore("Robocode Server Config", "server.proper
             return if (urls.isBlank()) {
                 listOf(defaultUrl)
             } else {
-                urls.split(";")
+                urls.split(",")
             }
         }
         set(value) {
             val list = ArrayList(value)
             list.remove(DEFAULT_LOCALHOST_URL)
-            properties.setProperty(USER_URLS_PROPERTY, list.joinToString(separator = ";"))
+            properties.setProperty(USER_URLS_PROPERTY, list.joinToString(separator = ","))
         }
 
     val port: Int
