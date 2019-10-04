@@ -38,5 +38,5 @@ object ServerLogWindow : JFrame(getWindowTitle()) {
 }
 
 private fun getWindowTitle(): String {
-    return ResourceBundles.UI_TITLES.get("server_window")
+    return ResourceBundles.UI_TITLES.get("server_log_window")
 }

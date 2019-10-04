@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewButton
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
-import dev.robocode.tankroyale.ui.desktop.ui.server.NewUrlPanel.urlTextField
 import dev.robocode.tankroyale.ui.desktop.ui.server.AddNewUrlDialog.onComplete
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
@@ -31,11 +30,11 @@ object AddNewUrlDialog : JDialog(SelectServerDialog, getWindowTitle()) {
 
         setLocationRelativeTo(null) // center on screen
 
-        contentPane.add(NewUrlPanel)
+        contentPane.add(AddNewUrlPanel)
 
         onActivated {
-            urlTextField.text = ""
-            urlTextField.background = NewUrlPanel.urlTextFieldDefaultBackground
+            AddNewUrlPanel.urlTextField.text = ""
+            AddNewUrlPanel.urlTextField.background = AddNewUrlPanel.urlTextFieldDefaultBackground
         }
 
         onClosing {
@@ -45,11 +44,11 @@ object AddNewUrlDialog : JDialog(SelectServerDialog, getWindowTitle()) {
 }
 
 private fun getWindowTitle(): String {
-    return ResourceBundles.UI_TITLES.get("new_url_dialog")
+    return ResourceBundles.UI_TITLES.get("add_new_url_dialog")
 }
 
 @ImplicitReflectionSerializer
-private object NewUrlPanel : JPanel(MigLayout("fill")) {
+private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
 
     // Private events
     val urlTextField = JTextField(50)
@@ -58,7 +57,7 @@ private object NewUrlPanel : JPanel(MigLayout("fill")) {
 
     init {
         add(urlTextField)
-        val okButton = addNewButton("ok", AddNewUrlDialog.onComplete)
+        val okButton = addNewButton("ok", onComplete)
         AddNewUrlDialog.rootPane.defaultButton = okButton
 
         onComplete.subscribe {
