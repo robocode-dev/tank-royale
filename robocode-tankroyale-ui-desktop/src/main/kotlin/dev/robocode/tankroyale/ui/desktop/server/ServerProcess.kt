@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.ui.desktop.server
 
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
-import dev.robocode.tankroyale.ui.desktop.ui.server.ServerWindow
+import dev.robocode.tankroyale.ui.desktop.ui.server.ServerLogWindow
 import dev.robocode.tankroyale.ui.desktop.util.ResourceUtil
 import java.io.BufferedReader
 import java.io.FileNotFoundException
@@ -34,7 +34,7 @@ object ServerProcess {
         if (isRunning.get())
             return
 
-        ServerWindow.clear()
+        ServerLogWindow.clear()
 
         port = ServerSettings.port
         secret = generateSecret()
@@ -100,7 +100,7 @@ object ServerProcess {
             while (logThreadRunning.get()) {
                 try {
                     for (line in br.lines()) {
-                        ServerWindow.append(line + "\n")
+                        ServerLogWindow.append(line + "\n")
                     }
                 } catch (e: InterruptedException) {
                     Thread.currentThread().interrupt()

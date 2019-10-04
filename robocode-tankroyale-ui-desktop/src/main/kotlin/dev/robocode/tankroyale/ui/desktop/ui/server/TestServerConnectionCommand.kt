@@ -7,7 +7,7 @@ import dev.robocode.tankroyale.ui.desktop.util.ICommand
 import java.io.Closeable
 import javax.swing.JOptionPane
 
-class TestServerCommand(private val serverUrl: String) : ICommand {
+class TestServerConnectionCommand(private val serverUrl: String) : ICommand {
 
     val onCompleted = Event<Unit>()
 
@@ -33,7 +33,7 @@ class TestServerCommand(private val serverUrl: String) : ICommand {
             }
         }
 
-        StartServerCommand(serverUrl).execute()
+        ConnectToServerCommand(serverUrl).execute()
     }
 
     private fun complete() {

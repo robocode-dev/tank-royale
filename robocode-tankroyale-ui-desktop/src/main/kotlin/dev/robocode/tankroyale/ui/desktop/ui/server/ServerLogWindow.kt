@@ -6,7 +6,7 @@ import javax.swing.JFrame
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 
-object ServerWindow : JFrame(getWindowTitle()) {
+object ServerLogWindow : JFrame(getWindowTitle()) {
 
     private var textArea = JTextArea()
 

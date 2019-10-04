@@ -10,8 +10,8 @@ import dev.robocode.tankroyale.ui.desktop.ui.battle.BattlePanel
 import dev.robocode.tankroyale.ui.desktop.ui.battle.LogoPanel
 import dev.robocode.tankroyale.ui.desktop.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.ui.desktop.ui.server.SelectServerDialog
-import dev.robocode.tankroyale.ui.desktop.ui.server.StartServerCommand
-import dev.robocode.tankroyale.ui.desktop.ui.server.ServerWindow
+import dev.robocode.tankroyale.ui.desktop.ui.server.ConnectToServerCommand
+import dev.robocode.tankroyale.ui.desktop.ui.server.ServerLogWindow
 import java.awt.EventQueue
 import java.io.IOException
 import java.net.URL
@@ -41,7 +41,7 @@ object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
         }
 
         MainWindowMenu.onNewBattle2.invokeLater {
-            StartServerCommand(ServerSettings.defaultUrl).execute()
+            ConnectToServerCommand(ServerSettings.defaultUrl).execute()
         }
 
         MainWindowMenu.onSetupRules.invokeLater {
@@ -50,7 +50,7 @@ object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
                 isVisible = true
             }
         }
-        MainWindowMenu.onShowServerLog.invokeLater { ServerWindow.isVisible = true }
+        MainWindowMenu.onShowServerLog.invokeLater { ServerLogWindow.isVisible = true }
         MainWindowMenu.onServerConfig.invokeLater { SelectServerDialog.isVisible = true }
         MainWindowMenu.onBotDirConfig.invokeLater { BotDirectoryConfigDialog.isVisible = true }
 

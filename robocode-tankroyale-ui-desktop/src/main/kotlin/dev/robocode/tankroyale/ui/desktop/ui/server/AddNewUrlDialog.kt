@@ -6,7 +6,7 @@ import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.ui.server.NewUrlPanel.urlTextField
-import dev.robocode.tankroyale.ui.desktop.ui.server.NewUrlDialog.onComplete
+import dev.robocode.tankroyale.ui.desktop.ui.server.AddNewUrlDialog.onComplete
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
 import net.miginfocom.swing.MigLayout
@@ -18,7 +18,7 @@ import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
 @ImplicitReflectionSerializer
-object NewUrlDialog : JDialog(SelectServerDialog, getWindowTitle()) {
+object AddNewUrlDialog : JDialog(SelectServerDialog, getWindowTitle()) {
 
     val onComplete = Event<JButton>()
 
@@ -58,15 +58,15 @@ private object NewUrlPanel : JPanel(MigLayout("fill")) {
 
     init {
         add(urlTextField)
-        val okButton = addNewButton("ok", NewUrlDialog.onComplete)
-        NewUrlDialog.rootPane.defaultButton = okButton
+        val okButton = addNewButton("ok", AddNewUrlDialog.onComplete)
+        AddNewUrlDialog.rootPane.defaultButton = okButton
 
         onComplete.subscribe {
             if (isValidWsUrl()) {
-                NewUrlDialog.newUrl = urlTextField.text
-                NewUrlDialog.dispose()
+                AddNewUrlDialog.newUrl = urlTextField.text
+                AddNewUrlDialog.dispose()
             } else {
-                NewUrlDialog.newUrl = ""
+                AddNewUrlDialog.newUrl = ""
             }
         }
 
@@ -107,6 +107,6 @@ private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     EventQueue.invokeLater {
-        NewUrlDialog.isVisible = true
+        AddNewUrlDialog.isVisible = true
     }
 }

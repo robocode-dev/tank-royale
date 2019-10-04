@@ -70,9 +70,9 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
 
         lowerPanel.add(buttonPanel, "center")
 
-        NewUrlDialog.onComplete.subscribe {
-            urlComboBox.addItem(NewUrlDialog.newUrl)
-            urlComboBox.selectedItem = NewUrlDialog.newUrl
+        AddNewUrlDialog.onComplete.subscribe {
+            urlComboBox.addItem(AddNewUrlDialog.newUrl)
+            urlComboBox.selectedItem = AddNewUrlDialog.newUrl
 
             removeButton.isEnabled = true
             okButton.isEnabled = true
@@ -80,7 +80,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         }
 
         onAdd.subscribe {
-            NewUrlDialog.isVisible = true
+            AddNewUrlDialog.isVisible = true
         }
 
         onRemove.subscribe {
@@ -112,7 +112,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         if (testConnectionRunning)
             return
 
-        val testServerCommand = TestServerCommand(urlComboBox.selectedItem as String)
+        val testServerCommand = TestServerConnectionCommand(urlComboBox.selectedItem as String)
 
         var disposable: Closeable? = null
         disposable = testServerCommand.onCompleted.subscribe {

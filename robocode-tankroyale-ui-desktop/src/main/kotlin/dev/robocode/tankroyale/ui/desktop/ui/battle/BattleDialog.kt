@@ -64,7 +64,7 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
         onErrorCloseable = Client.onError.subscribe {
             val option = JOptionPane.showConfirmDialog(
                 this,
-                String.format(ResourceBundles.MESSAGES.get("could_not_connect__start_local_server_question"), url),
+                String.format(ResourceBundles.MESSAGES.get("no_connection__start_server_question"), url),
                 ResourceBundles.MESSAGES.get("title_question"),
                 JOptionPane.YES_NO_OPTION
             )

@@ -26,7 +26,7 @@ object MainWindowMenu : JMenuBar() {
         })
         add(JMenu(MENU.get("menu.server")).apply {
             addNewMenuItem("item.show_server_log", onShowServerLog)
-            addNewMenuItem("item.server_config", onServerConfig)
+            addNewMenuItem("item.select_server", onServerConfig)
         })
         add(JMenu(MENU.get("menu.config")).apply {
             addNewMenuItem("item.bot_dir_config", onBotDirConfig)
