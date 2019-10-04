@@ -6,6 +6,8 @@ import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.MESSAGES
 import dev.robocode.tankroyale.ui.desktop.util.ICommand
 import dev.robocode.tankroyale.ui.desktop.util.WsUrl
+import kotlinx.serialization.ImplicitReflectionSerializer
+import java.awt.EventQueue
 import java.io.Closeable
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -15,6 +17,7 @@ class ConnectToServerCommand(private val serverUrl: String) : ICommand {
 
     private val disposables = ArrayList<Closeable>()
 
+    @ImplicitReflectionSerializer
     override fun execute() {
         dispose()
 
@@ -33,7 +36,9 @@ class ConnectToServerCommand(private val serverUrl: String) : ICommand {
                     JOptionPane.YES_NO_OPTION
                 )
                 if (option == JOptionPane.YES_OPTION) {
-                    StartServerCommand().execute()
+                    EventQueue.invokeLater {
+                        StartServerDialog.isVisible = true
+                    }
                 }
             }
         }

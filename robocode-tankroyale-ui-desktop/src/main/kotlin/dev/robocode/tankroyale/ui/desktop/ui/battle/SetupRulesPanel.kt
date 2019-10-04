@@ -4,6 +4,7 @@ import kotlinx.serialization.ImplicitReflectionSerializer
 import net.miginfocom.swing.MigLayout
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewButton
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewLabel
+import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.ui.desktop.extensions.JTextFieldExt.setInputVerifier
 import dev.robocode.tankroyale.ui.desktop.settings.GamesSettings
 import dev.robocode.tankroyale.ui.desktop.settings.MutableGameSetup
@@ -41,9 +42,9 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private val turnTimeoutTextField = JTextField(6)
 
     private var gameSetup: MutableGameSetup
-        get() = gameTypeComboBox.mutableGameSetup
+        get() = gameTypeComboBox.gameSetup.toMutableGameSetup()
         set(value) {
-            gameTypeComboBox.mutableGameSetup = value.copy()
+            gameTypeComboBox.gameSetup = value.copy().toGameSetup()
         }
 
     private var lastGameSetup = gameSetup.copy()
@@ -305,9 +306,5 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             turnTimeoutTextField.text = "" + gameSetup.turnTimeout
         }
         return valid
-    }
-
-    private fun showMessage(msg: String) {
-        JOptionPane.showMessageDialog(this, msg)
     }
 }

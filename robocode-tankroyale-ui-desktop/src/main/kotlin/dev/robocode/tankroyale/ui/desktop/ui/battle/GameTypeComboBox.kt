@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.ui.desktop.ui.battle
 
+import dev.robocode.tankroyale.ui.desktop.model.GameSetup
 import dev.robocode.tankroyale.ui.desktop.settings.GamesSettings
 import dev.robocode.tankroyale.ui.desktop.settings.MutableGameSetup
 import dev.robocode.tankroyale.ui.desktop.util.Event
@@ -9,10 +10,10 @@ class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray
 
     val onGameTypeChanged = Event<String>()
 
-    var mutableGameSetup: MutableGameSetup
-        get() = GamesSettings.games[selectedGameType] as MutableGameSetup
+    var gameSetup: GameSetup
+        get() = (GamesSettings.games[selectedGameType] as MutableGameSetup).toGameSetup()
         set(value) {
-            GamesSettings.games[selectedGameType] = value
+            GamesSettings.games[selectedGameType] = value.toMutableGameSetup()
         }
 
     private val selectedGameType: String
@@ -30,7 +31,7 @@ class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray
         }
     }
 
-    fun notifyGameTypeChanged() {
+    private fun notifyGameTypeChanged() {
         onGameTypeChanged.publish(selectedGameType)
     }
 }

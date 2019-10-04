@@ -22,6 +22,7 @@ object ServerProcess {
     private val logThreadRunning = AtomicBoolean(false)
 
     var port: Int = ServerSettings.port
+        private set
 
     var secret: String? = null
         private set
@@ -30,13 +31,14 @@ object ServerProcess {
         return isRunning.get()
     }
 
-    fun start() {
+    fun start(port: Int = ServerSettings.port) {
         if (isRunning.get())
             return
 
+        this.port = port
+
         ServerLogWindow.clear()
 
-        port = ServerSettings.port
         secret = generateSecret()
 
         val builder = ProcessBuilder("java", "-jar", getServerJar(), "--port=$port", "--secret=$secret")

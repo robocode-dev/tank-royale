@@ -42,7 +42,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     private val onOk = Event<JButton>()
     private val onCancel = Event<JButton>()
 
-    private val urlComboBox = JComboBox(arrayOf("localhost:55000"))
+    private val urlComboBox = JComboBox(arrayOf(ServerSettings.DEFAULT_LOCALHOST_URL))
     private val addButton = addNewButton("add", onAdd)
     private val removeButton = addNewButton("remove", onRemove)
     private val testButton = addNewButton("server_test", onTest)

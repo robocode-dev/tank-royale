@@ -47,7 +47,7 @@ object SelectBotsPanel : JPanel(MigLayout("fill")) {
         get() = if (Client.isConnected) STRINGS.get("connected") else STRINGS.get("disconnected")
 
     val gameSetup: GameSetup
-        get() = gameTypeComboBox.mutableGameSetup.toGameSetup()
+        get() = gameTypeComboBox.gameSetup
 
     init {
         val upperPanel = JPanel(MigLayout("", "[][grow][]")).apply {
