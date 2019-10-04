@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.ui.desktop.model.*
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.util.Event
+import dev.robocode.tankroyale.ui.desktop.util.RegisterWsProtocolCommand
 import dev.robocode.tankroyale.ui.desktop.util.Version
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.json.Json
@@ -11,6 +12,10 @@ import java.io.Closeable
 import java.net.URI
 
 object Client : AutoCloseable {
+
+    init {
+        RegisterWsProtocolCommand().execute()
+    }
 
     // public events
     val onConnected = Event<Unit>()
