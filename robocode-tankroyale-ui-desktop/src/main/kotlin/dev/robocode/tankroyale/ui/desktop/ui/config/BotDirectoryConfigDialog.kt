@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.ui.desktop.ui.config
 
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewButton
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewLabel
+import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
@@ -47,12 +47,12 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
     val scrollPane = JScrollPane(list)
 
     init {
-        addNewLabel("bot_directories", "wrap")
+        addLabel("bot_directories", "wrap")
         add(scrollPane, "span 2, grow, wrap")
 
         val buttonPanel = JPanel()
-        buttonPanel.addNewButton("add", onAdd)
-        buttonPanel.addNewButton("remove", onRemove)
+        buttonPanel.addButton("add", onAdd)
+        buttonPanel.addButton("remove", onRemove)
         add(buttonPanel)
 
         MiscSettings.load()

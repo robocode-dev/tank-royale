@@ -6,8 +6,8 @@ import net.miginfocom.swing.MigLayout
 import dev.robocode.tankroyale.ui.desktop.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.ui.desktop.bootstrap.BotEntry
 import dev.robocode.tankroyale.ui.desktop.client.Client
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewButton
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewLabel
+import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.ui.desktop.model.GameSetup
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.STRINGS
@@ -51,9 +51,9 @@ object SelectBotsPanel : JPanel(MigLayout("fill")) {
 
     init {
         val upperPanel = JPanel(MigLayout("", "[][grow][]")).apply {
-            addNewLabel("game_type")
+            addLabel("game_type")
             add(gameTypeComboBox)
-            addNewLabel("connection_status", "right")
+            addLabel("connection_status", "right")
             add(connectionStatusLabel, "center")
         }
         val leftSelectionPanel = JPanel(MigLayout("fill")).apply {
@@ -95,16 +95,16 @@ object SelectBotsPanel : JPanel(MigLayout("fill")) {
         add(lowerPanel, "south, h 1000000")
 
         addPanel.apply {
-            addNewButton("add_arrow", onAdd, "cell 0 1")
-            addNewButton("add_all_arrow", onAddAll, "cell 0 2")
+            addButton("add_arrow", onAdd, "cell 0 1")
+            addButton("add_all_arrow", onAddAll, "cell 0 2")
         }
         removePanel.apply {
-            addNewButton("arrow_remove", onRemove, "cell 0 3")
-            addNewButton("arrow_remove_all", onRemoveAll, "cell 0 4")
+            addButton("arrow_remove", onRemove, "cell 0 3")
+            addButton("arrow_remove_all", onRemoveAll, "cell 0 4")
         }
         buttonPanel.apply {
-            addNewButton("start_battle", onStartBattle, "tag ok")
-            addNewButton("cancel", onCancel, "tag cancel")
+            addButton("start_battle", onStartBattle, "tag ok")
+            addButton("cancel", onCancel, "tag cancel")
         }
 
         availableBotList.cellRenderer = BotEntryCellRenderer()

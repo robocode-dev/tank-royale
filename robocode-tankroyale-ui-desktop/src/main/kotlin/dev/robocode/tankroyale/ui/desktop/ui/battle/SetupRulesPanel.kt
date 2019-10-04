@@ -2,8 +2,8 @@ package dev.robocode.tankroyale.ui.desktop.ui.battle
 
 import kotlinx.serialization.ImplicitReflectionSerializer
 import net.miginfocom.swing.MigLayout
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewButton
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewLabel
+import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.ui.desktop.extensions.JTextFieldExt.setInputVerifier
 import dev.robocode.tankroyale.ui.desktop.settings.GamesSettings
@@ -51,36 +51,36 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
 
     init {
         val commonPanel = JPanel(MigLayout()).apply {
-            addNewLabel("game_type")
+            addLabel("game_type")
             add(gameTypeComboBox, "wrap")
 
-            addNewLabel("min_num_of_participants")
+            addLabel("min_num_of_participants")
             add(minNumParticipantsTextField, "wrap")
 
-            addNewLabel("max_num_of_participants")
+            addLabel("max_num_of_participants")
             add(maxNumParticipantsTextField, "wrap")
 
-            addNewLabel("number_of_rounds")
+            addLabel("number_of_rounds")
             add(numberOfRoundsTextField, "wrap")
 
-            addNewLabel("gun_cooling_rate")
+            addLabel("gun_cooling_rate")
             add(gunCoolingRateTextField, "wrap")
 
-            addNewLabel("max_inactivity_turns")
+            addLabel("max_inactivity_turns")
             add(inactivityTurnsTextField, "wrap")
 
-            addNewLabel("ready_timeout");
+            addLabel("ready_timeout");
             add(readyTimeoutTextField, "wrap")
 
-            addNewLabel("turn_timeout");
+            addLabel("turn_timeout");
             add(turnTimeoutTextField, "wrap")
         }
         val arenaPanel = JPanel(MigLayout()).apply {
             border = BorderFactory.createTitledBorder(STRINGS.get("arena_size"))
 
-            addNewLabel("width")
+            addLabel("width")
             add(widthTextField, "wrap")
-            addNewLabel("height")
+            addLabel("height")
             add(heightTextField)
         }
         val upperPanel = JPanel(MigLayout()).apply {
@@ -88,9 +88,9 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             add(arenaPanel, "east")
         }
         val lowerPanel = JPanel(MigLayout()).apply {
-            addNewButton("save", onSave, "tag ok")
-            addNewButton("cancel", onCancel, "tag cancel")
-            addNewButton("reset_to_default", onResetToDefault, "tag apply")
+            addButton("save", onSave, "tag ok")
+            addButton("cancel", onCancel, "tag cancel")
+            addButton("reset_to_default", onResetToDefault, "tag apply")
         }
         add(upperPanel, "center, wrap")
         add(lowerPanel, "center")

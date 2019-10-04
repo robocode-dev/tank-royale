@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.ui.desktop.ui.server
 
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewButton
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewLabel
+import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.showWarning
 import dev.robocode.tankroyale.ui.desktop.extensions.JTextFieldExt.setInputVerifier
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
@@ -52,14 +52,14 @@ private object StartServerPanel : JPanel(MigLayout("fill")) {
     private var port: Int = ServerSettings.DEFAULT_PORT
 
     init {
-        addNewLabel("port", "right")
+        addLabel("port", "right")
         add(portTextField, "wrap")
 
-        addNewLabel("game_type", "right")
+        addLabel("game_type", "right")
         add(gameTypeComboBox, "wrap")
 
-        addNewButton("ok", onOk, "center")
-        addNewButton("cancel", onCancel, "center")
+        addButton("ok", onOk, "center")
+        addButton("cancel", onCancel, "center")
 
         portTextField.setInputVerifier { portVerifier() }
 

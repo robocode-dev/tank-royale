@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.ui.desktop.ui.server
 
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewButton
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewLabel
+import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
@@ -43,13 +43,13 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     private val onCancel = Event<JButton>()
 
     private val urlComboBox = JComboBox(arrayOf(ServerSettings.DEFAULT_LOCALHOST_URL))
-    private val addButton = addNewButton("add", onAdd)
-    private val removeButton = addNewButton("remove", onRemove)
-    private val testButton = addNewButton("server_test", onTest)
+    private val addButton = addButton("add", onAdd)
+    private val removeButton = addButton("remove", onRemove)
+    private val testButton = addButton("server_test", onTest)
 
     init {
         val upperPanel = JPanel(MigLayout("", "[][grow][][][]")).apply {
-            addNewLabel("url")
+            addLabel("url")
             add(urlComboBox, "span 2, grow")
             add(addButton)
             add(removeButton)
@@ -63,8 +63,8 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         val okButton: JButton
 
         val buttonPanel = JPanel(MigLayout()).apply {
-            okButton = addNewButton("ok", onOk, "tag ok")
-            addNewButton("cancel", onCancel, "tag cancel")
+            okButton = addButton("ok", onOk, "tag ok")
+            addButton("cancel", onCancel, "tag cancel")
         }
         SelectServerDialog.rootPane.defaultButton = okButton
 

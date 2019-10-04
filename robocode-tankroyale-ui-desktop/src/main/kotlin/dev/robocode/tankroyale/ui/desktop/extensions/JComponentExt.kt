@@ -10,13 +10,13 @@ import javax.swing.JOptionPane
 
 object JComponentExt {
 
-    fun JComponent.addNewLabel(stringResourceName: String, layoutConstraints: String? = null): JLabel {
+    fun JComponent.addLabel(stringResourceName: String, layoutConstraints: String? = null): JLabel {
         val label = JLabel(STRINGS.get(stringResourceName) + ':')
         add(label, layoutConstraints)
         return label
     }
 
-    fun JComponent.addNewButton(
+    fun JComponent.addButton(
         stringResourceName: String, event: Event<JButton>, layoutConstraints: String? = null
     ): JButton {
         val button = JButton(STRINGS.get(stringResourceName))

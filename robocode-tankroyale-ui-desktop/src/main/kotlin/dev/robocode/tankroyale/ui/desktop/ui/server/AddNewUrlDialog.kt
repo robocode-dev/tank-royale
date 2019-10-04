@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.ui.desktop.ui.server
 
 import dev.robocode.tankroyale.ui.desktop.client.Client
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addNewButton
+import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
@@ -57,7 +57,7 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
 
     init {
         add(urlTextField)
-        val okButton = addNewButton("ok", onComplete)
+        val okButton = addButton("ok", onComplete)
         AddNewUrlDialog.rootPane.defaultButton = okButton
 
         onComplete.subscribe {
