@@ -13,7 +13,7 @@ import lombok.Value;
 public class GameSetup {
 
 	/** Default game type */
-	public static final String DEFAULT_GAME_TYPE = "melee";
+	public static final String DEFAULT_GAME_TYPE = "classic";
 
 	/** Default arena width */
 	public static final int DEFAULT_ARENA_WIDTH = 800;
