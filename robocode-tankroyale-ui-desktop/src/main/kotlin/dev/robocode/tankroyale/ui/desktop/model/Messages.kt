@@ -152,7 +152,7 @@ data class ControllerHandshake(
 data class ServerHandshake(
     val variant: String,
     val version: String,
-    val games: Set<GameSetup>
+    val gameTypes: Set<String>
 ) : Message()
 
 @Serializable

@@ -38,7 +38,7 @@ object Client : AutoCloseable {
 
     private val json = Json(context = messageModule)
 
-    private var games: Set<GameSetup> = HashSet()
+    private var gameTypes: Set<String> = HashSet()
     private var bots: Set<BotInfo> = HashSet()
 
     private val disposables = ArrayList<Closeable>()
@@ -122,7 +122,7 @@ object Client : AutoCloseable {
     }
 
     private fun handleServerHandshake(serverHandshake: ServerHandshake) {
-        games = serverHandshake.games
+        gameTypes = serverHandshake.gameTypes
 
         val handshake = ControllerHandshake(
             name = "Robocode Tank Royale UI",
