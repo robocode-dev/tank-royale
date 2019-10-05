@@ -65,7 +65,7 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
             val option = JOptionPane.showConfirmDialog(
                 this,
                 String.format(ResourceBundles.MESSAGES.get("no_connection__start_server_question"), url),
-                ResourceBundles.MESSAGES.get("title_question"),
+                ResourceBundles.UI_TITLES.get("question"),
                 JOptionPane.YES_NO_OPTION
             )
             if (option == YES_OPTION) {

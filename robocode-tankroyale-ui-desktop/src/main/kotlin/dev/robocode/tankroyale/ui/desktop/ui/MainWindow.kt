@@ -11,6 +11,7 @@ import dev.robocode.tankroyale.ui.desktop.ui.battle.LogoPanel
 import dev.robocode.tankroyale.ui.desktop.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.ui.desktop.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.ui.desktop.ui.server.ConnectToServerCommand
+import dev.robocode.tankroyale.ui.desktop.ui.server.PrepareServerCommand
 import dev.robocode.tankroyale.ui.desktop.ui.server.ServerLogWindow
 import java.awt.EventQueue
 import java.io.IOException
@@ -41,7 +42,7 @@ object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
         }
 
         MainWindowMenu.onNewBattle2.invokeLater {
-            ConnectToServerCommand(ServerSettings.defaultUrl).execute()
+            PrepareServerCommand().execute()
         }
 
         MainWindowMenu.onSetupRules.invokeLater {

@@ -1,9 +1,8 @@
 package dev.robocode.tankroyale.ui.desktop.ui.server
 
 import dev.robocode.tankroyale.ui.desktop.client.Client
-import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
-import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.MESSAGES
+import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.UI_TITLES
 import dev.robocode.tankroyale.ui.desktop.util.ICommand
 import dev.robocode.tankroyale.ui.desktop.util.WsUrl
 import kotlinx.serialization.ImplicitReflectionSerializer
@@ -32,7 +31,7 @@ class ConnectToServerCommand(private val serverUrl: String) : ICommand {
                 val option = JOptionPane.showConfirmDialog(
                     null,
                     String.format(MESSAGES.get("no_connection__start_server_question"), serverUrl),
-                    MESSAGES.get("title_question"),
+                    UI_TITLES.get("question"),
                     JOptionPane.YES_NO_OPTION
                 )
                 if (option == JOptionPane.YES_OPTION) {

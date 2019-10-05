@@ -22,6 +22,9 @@ object ServerProcess {
     private var logThread: Thread? = null
     private val logThreadRunning = AtomicBoolean(false)
 
+    var gameType: String? = null
+        private set
+
     var port: Int = ServerSettings.port
         private set
 
@@ -36,6 +39,7 @@ object ServerProcess {
         if (isRunning.get())
             return
 
+        this.gameType = gameType
         this.port = port
 
         ServerLogWindow.clear()
