@@ -6,18 +6,19 @@ extends:
 properties:
   variant:
     type: string
-    descrition: Game variant, e.g. 'R2TR' for Robocode 2 Tank Royale
+    description: Game variant, e.g. 'Tank Royale' for Robocode 2 Tank Royale
   version:
     type: string
     description: Game version, e.g. '1.0.0'
     pattern: ^\\d+(\\.\\d+)*$
-  games:
+  gameTypes:
+    description: Game types running at this server, e.g. "melee" and "1v1"
     type: array
     items:
-      $ref: game-setup.yaml
+      type: string
     minItems: 1
     uniqueItems: true
 required:
   - variant
   - version
-  - games
+  - gameTypes

@@ -21,7 +21,7 @@ properties:
     type: string
     pattern: (^[a-z]{2}$)|(^[A-Z]{2}$)
   gameTypes:
-    description: Game types supported by this bot (defined elsewhere), e.g. "melee" and "1vs1"
+    description: Game types supported by this bot (defined elsewhere), e.g. "melee" and "1v1"
     type: array
     items:
       type: string
