@@ -23,6 +23,8 @@ public final class GameServer {
 
   private static final Logger logger = LoggerFactory.getLogger(GameServer.class);
 
+  private final String gameTypes;
+
   private final ConnHandler connHandler;
 
   private RunningState runningState;
@@ -33,7 +35,8 @@ public final class GameServer {
 
   private final Map<WebSocket, Integer> participantIds = new HashMap<>();
 
-  private final Map<WebSocket, dev.robocode.tankroyale.server.model.BotIntent> botIntents = new ConcurrentHashMap<>();
+  private final Map<WebSocket, dev.robocode.tankroyale.server.model.BotIntent> botIntents =
+      new ConcurrentHashMap<>();
 
   private Timer readyTimer;
   private Timer turnTimer;
@@ -42,20 +45,31 @@ public final class GameServer {
 
   private final Gson gson = new Gson();
 
-  public GameServer(String clientSecret) {
+  public GameServer(String gameTypes, String clientSecret) {
+    if (gameTypes == null) {
+      gameTypes = "";
+    } else {
+      gameTypes = gameTypes.replaceAll("\\s", "");
+    }
+
+    this.gameTypes = gameTypes;
     val serverSetup = new ServerSetup();
+    if (!gameTypes.isEmpty()) {
+      serverSetup.setGameTypes(new HashSet<>(Arrays.asList(gameTypes.split(","))));
+    }
+
     val connListener = new GameServerConnListener();
     this.connHandler = new ConnHandler(serverSetup, connListener, clientSecret);
     this.runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN;
   }
 
   public static void main(String[] args) {
-    GameServer server = new GameServer(null);
+    GameServer server = new GameServer(null, null);
     server.start();
   }
 
   public void start() {
-    logger.info("Starting server on port " + Server.getPort());
+    logger.info("Starting server on port " + Server.getPort() + " with game types: " + gameTypes);
     connHandler.start();
   }
 
@@ -260,9 +274,11 @@ public final class GameServer {
   }
 
   private GameState updateGameState() {
-    Map<Integer /* BotId */, dev.robocode.tankroyale.server.model.BotIntent> mappedBotIntents = new HashMap<>();
+    Map<Integer /* BotId */, dev.robocode.tankroyale.server.model.BotIntent> mappedBotIntents =
+        new HashMap<>();
 
-    for (Entry<WebSocket, dev.robocode.tankroyale.server.model.BotIntent> entry : botIntents.entrySet()) {
+    for (Entry<WebSocket, dev.robocode.tankroyale.server.model.BotIntent> entry :
+        botIntents.entrySet()) {
       int botId = participantIds.get(entry.getKey());
       mappedBotIntents.put(botId, entry.getValue());
     }
@@ -287,23 +303,24 @@ public final class GameServer {
   private void onTurnTimeout() {
     turnTimer.stop();
 
-    // Send SkippedTurnEvents to all bots that skipped a turn, i.e. where the server did not receive a bot intent
+    // Send SkippedTurnEvents to all bots that skipped a turn, i.e. where the server did not receive
+    // a bot intent
     // before the turn ended.
-    participantIds.forEach((conn, id) -> {
-      if (botIntents.get(conn) == null) {
-        SkippedTurnEvent skippedTurnEvent = new SkippedTurnEvent();
-        skippedTurnEvent.setType(Message.Type.SKIPPED_TURN_EVENT);
-        skippedTurnEvent.setTurnNumber(modelUpdater.getTurnNumber());
+    participantIds.forEach(
+        (conn, id) -> {
+          if (botIntents.get(conn) == null) {
+            SkippedTurnEvent skippedTurnEvent = new SkippedTurnEvent();
+            skippedTurnEvent.setType(Message.Type.SKIPPED_TURN_EVENT);
+            skippedTurnEvent.setTurnNumber(modelUpdater.getTurnNumber());
 
-        send(conn, gson.toJson(skippedTurnEvent));
-      }
-    });
+            send(conn, gson.toJson(skippedTurnEvent));
+          }
+        });
 
     nextTurnTick();
   }
 
-  synchronized
-  private void nextTurnTick() {
+  private synchronized void nextTurnTick() {
     // Stop turn timeout timer
     turnTimer.stop();
 
@@ -441,7 +458,8 @@ public final class GameServer {
     @Override
     public void onBotLeft(WebSocket conn) {
       // If a bot leaves while in a game, make sure to reset all intent values to zeroes
-      botIntents.put(conn, dev.robocode.tankroyale.server.model.BotIntent.builder().build().zeroed());
+      botIntents.put(
+          conn, dev.robocode.tankroyale.server.model.BotIntent.builder().build().zeroed());
 
       sendBotListUpdateToObservers();
     }

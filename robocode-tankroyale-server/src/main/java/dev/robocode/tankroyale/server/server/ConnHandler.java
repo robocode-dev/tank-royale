@@ -1,34 +1,23 @@
 package dev.robocode.tankroyale.server.server;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import dev.robocode.tankroyale.schema.*;
+import dev.robocode.tankroyale.server.Server;
+import dev.robocode.tankroyale.server.util.Version;
+import org.java_websocket.WebSocket;
+import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.WebSocketServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import com.google.gson.JsonSyntaxException;
-import dev.robocode.tankroyale.server.mappers.GameSetupToGameSetupMapper;
-import dev.robocode.tankroyale.server.Server;
-import org.java_websocket.WebSocket;
-import org.java_websocket.handshake.ClientHandshake;
-import org.java_websocket.server.WebSocketServer;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import dev.robocode.tankroyale.schema.GameSetup;
-import dev.robocode.tankroyale.schema.BotAddress;
-import dev.robocode.tankroyale.schema.BotHandshake;
-import dev.robocode.tankroyale.schema.BotIntent;
-import dev.robocode.tankroyale.schema.ControllerHandshake;
-import dev.robocode.tankroyale.schema.Message;
-import dev.robocode.tankroyale.schema.ObserverHandshake;
-import dev.robocode.tankroyale.schema.ServerHandshake;
-import dev.robocode.tankroyale.schema.StartGame;
-import dev.robocode.tankroyale.server.util.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("WeakerAccess")
 public final class ConnHandler {
@@ -162,7 +151,7 @@ public final class ConnHandler {
       hs.setType(ServerHandshake.Type.SERVER_HANDSHAKE);
       hs.setVariant("Tank Royale"); // Robocode Tank Royale
       hs.setVersion(Version.getVersion());
-      hs.setGames(GameSetupToGameSetupMapper.map(setup.getGames()));
+      hs.setGameTypes(setup.getGameTypes());
 
       String msg = new Gson().toJson(hs);
       send(conn, msg);

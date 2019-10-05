@@ -13,6 +13,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Scanner;
 
+import static dev.robocode.tankroyale.server.model.GameSetup.DEFAULT_GAME_TYPE;
+
 @Command(
         name = "Server",
         versionProvider = Server.VersionFileProvider.class,
@@ -46,6 +48,10 @@ public class Server implements Runnable {
     @Option(names = {"-p", "--port"}, type = Integer.class, description = "Port number (default: " + DEFAULT_PORT + ")")
     @SuppressWarnings("CanBeFinal")
     private static Integer port = DEFAULT_PORT;
+
+    @SuppressWarnings("CanBeFinal")
+    @Option(names = {"-g", "--games"}, type = String.class, description = "Comma-separated list of game types (default: " + DEFAULT_GAME_TYPE + ")")
+    private static String gameTypes = DEFAULT_GAME_TYPE;
 
     @Option(names = {"-s", "--secret"}, description = "Client secret used for access control")
     @SuppressWarnings("CanBeFinal")
@@ -100,7 +106,7 @@ public class Server implements Runnable {
         }).start();
 
         // Start game server on main thread
-        gameServer = new GameServer(secret);
+        gameServer = new GameServer(gameTypes, secret);
         gameServer.start();
     }
 
