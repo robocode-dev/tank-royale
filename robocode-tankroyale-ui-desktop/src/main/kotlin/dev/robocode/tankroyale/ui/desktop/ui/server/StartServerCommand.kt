@@ -8,13 +8,13 @@ import dev.robocode.tankroyale.ui.desktop.util.WsUrl
 import kotlinx.serialization.ImplicitReflectionSerializer
 
 class StartServerCommand(
-    val port: Int = ServerSettings.DEFAULT_PORT,
-    val gameType: GameType = GameType.CLASSIC
+    private val port: Int = ServerSettings.DEFAULT_PORT,
+    private val gameType: String = GameType.CLASSIC.type
 ) : ICommand {
 
     @ImplicitReflectionSerializer
     override fun execute() {
-        ServerProcess.start(port)
+        ServerProcess.start(gameType, port)
         val url = WsUrl("localhost:${port}").origin
         TestServerConnectionCommand(url).execute()
     }

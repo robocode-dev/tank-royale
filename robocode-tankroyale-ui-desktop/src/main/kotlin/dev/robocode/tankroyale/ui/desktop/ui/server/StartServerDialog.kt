@@ -66,7 +66,10 @@ private object StartServerPanel : JPanel(MigLayout("fill")) {
         onCancel.subscribe { StartServerDialog.dispose() }
 
         onOk.subscribe {
-            StartServerCommand(port = portTextField.text.toInt()).execute() // FIXME: Missing game type!!
+            StartServerCommand(
+                port = portTextField.text.toInt(),
+                gameType = gameTypeComboBox.gameSetup.gameType
+            ).execute()
             StartServerDialog.dispose()
         }
     }

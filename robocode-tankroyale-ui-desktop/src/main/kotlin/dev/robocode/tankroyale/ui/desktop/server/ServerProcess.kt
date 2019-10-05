@@ -11,6 +11,7 @@ import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.crypto.KeyGenerator
+import kotlin.collections.ArrayList
 
 object ServerProcess {
 
@@ -31,7 +32,7 @@ object ServerProcess {
         return isRunning.get()
     }
 
-    fun start(port: Int = ServerSettings.port) {
+    fun start(gameType: String? = null, port: Int = ServerSettings.port) {
         if (isRunning.get())
             return
 
@@ -41,7 +42,18 @@ object ServerProcess {
 
         secret = generateSecret()
 
-        val builder = ProcessBuilder("java", "-jar", getServerJar(), "--port=$port", "--secret=$secret")
+        val command = ArrayList<String>()
+        command += "java"
+        command += "-jar"
+        command += getServerJar()
+        command += "--port=$port"
+        command += "--secret=$secret"
+        if (gameType != null) {
+            command += "--games=$gameType"
+        }
+
+        val builder = ProcessBuilder(command)
+
         builder.redirectErrorStream(true)
         process = builder.start()
 
