@@ -6,9 +6,9 @@ import java.util.*
 
 class Event<T> {
 
-    private val subscribers = Collections.synchronizedList(ArrayList<((T) -> Unit)>())
+    private val subscribers = Collections.synchronizedList(ArrayList<(T) -> Unit>())
 
-    fun subscribe(subscriber: ((T) -> Unit)): Closeable {
+    fun subscribe(subscriber: (T) -> Unit): Closeable {
         subscribers.add(subscriber)
         return disposable(subscriber)
     }
@@ -17,9 +17,9 @@ class Event<T> {
         subscribers.toList().forEach { it.invoke(source) }
     }
 
-    fun invokeLater(runnable: (() -> Unit)): Closeable {
+    fun invokeLater(runnable: () -> Unit): Closeable {
         return subscribe { EventQueue.invokeLater { runnable.invoke() } }
     }
 
-    private fun disposable(subscriber: ((T) -> Unit)) = Closeable { subscribers.remove(subscriber) }
+    private fun disposable(subscriber: (T) -> Unit) = Closeable { subscribers.remove(subscriber) }
 }

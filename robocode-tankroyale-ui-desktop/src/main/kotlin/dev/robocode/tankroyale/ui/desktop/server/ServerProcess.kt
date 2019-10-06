@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.ui.desktop.server
 
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.server.ServerLogWindow
+import dev.robocode.tankroyale.ui.desktop.util.Event
 import dev.robocode.tankroyale.ui.desktop.util.ResourceUtil
 import java.io.BufferedReader
 import java.io.FileNotFoundException
@@ -14,6 +15,9 @@ import javax.crypto.KeyGenerator
 import kotlin.collections.ArrayList
 
 object ServerProcess {
+
+    val onStarted = Event<Unit>()
+    val onStopped = Event<Unit>()
 
     private const val JAR_FILE_NAME = "robocode-tankroyale-server"
 
@@ -64,6 +68,8 @@ object ServerProcess {
         isRunning.set(true)
 
         startLogThread()
+
+        onStarted.publish(Unit)
     }
 
     fun stop() {
@@ -84,6 +90,8 @@ object ServerProcess {
 
         process = null
         logThread = null
+
+        onStopped.publish(Unit)
     }
 
     private fun generateSecret(): String {

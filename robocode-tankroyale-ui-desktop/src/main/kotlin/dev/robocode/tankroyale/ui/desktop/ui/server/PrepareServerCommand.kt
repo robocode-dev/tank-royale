@@ -25,9 +25,9 @@ class PrepareServerCommand : ICommand {
             if (option == JOptionPane.YES_OPTION) {
                 ServerProcess.stop()
                 StartServerDialog.isVisible = true
+                return
             }
-        } else {
-            ConnectToServerCommand(ServerSettings.defaultUrl).execute()
         }
+        ConnectToServerCommand(ServerSettings.defaultUrl).execute()
     }
 }

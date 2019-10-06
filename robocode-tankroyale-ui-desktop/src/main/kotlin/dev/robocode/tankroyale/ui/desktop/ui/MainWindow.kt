@@ -1,26 +1,24 @@
 package dev.robocode.tankroyale.ui.desktop.ui
 
-import kotlinx.serialization.ImplicitReflectionSerializer
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
-import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.battle.BattleDialog
 import dev.robocode.tankroyale.ui.desktop.ui.battle.BattlePanel
 import dev.robocode.tankroyale.ui.desktop.ui.battle.LogoPanel
+import dev.robocode.tankroyale.ui.desktop.ui.bootstrap.BootstrapDialog
 import dev.robocode.tankroyale.ui.desktop.ui.config.BotDirectoryConfigDialog
-import dev.robocode.tankroyale.ui.desktop.ui.server.SelectServerDialog
-import dev.robocode.tankroyale.ui.desktop.ui.server.ConnectToServerCommand
 import dev.robocode.tankroyale.ui.desktop.ui.server.PrepareServerCommand
+import dev.robocode.tankroyale.ui.desktop.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.ui.desktop.ui.server.ServerLogWindow
+import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.UnstableDefault
 import java.awt.EventQueue
-import java.io.IOException
-import java.net.URL
-import java.net.URLConnection
-import java.net.URLStreamHandler
+import java.io.Closeable
 import javax.swing.JFrame
 import javax.swing.UIManager
 
+@UnstableDefault
 @ImplicitReflectionSerializer
 object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
 
@@ -42,7 +40,12 @@ object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
         }
 
         MainWindowMenu.onNewBattle2.invokeLater {
+            Client.onConnected.subscribe {
+                BootstrapDialog.isVisible = true
+            }
             PrepareServerCommand().execute()
+
+            // TODO: Select bots to participate in battle and start the game
         }
 
         MainWindowMenu.onSetupRules.invokeLater {
