@@ -31,35 +31,29 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
         jMenuBar = MainWindowMenu
 
-        MainWindowMenu.onNewBattle.invokeLater {
-            BattleDialog.apply {
-                selectBotsTab()
-                isVisible = true
+        MainWindowMenu.apply {
+            onNewBattle.invokeLater {
+                Client.onConnected.subscribe {
+                    BootstrapDialog.isVisible = true
+                }
+                PrepareServerCommand().execute()
             }
+            onSetupRules.invokeLater {
+                BattleDialog.apply {
+                    selectSetupRulesTab()
+                    isVisible = true
+                }
+            }
+            onShowServerLog.invokeLater { ServerLogWindow.isVisible = true }
+            onServerConfig.invokeLater { SelectServerDialog.isVisible = true }
+            onBotDirConfig.invokeLater { BotDirectoryConfigDialog.isVisible = true }
         }
 
-        MainWindowMenu.onNewBattle2.invokeLater {
-            Client.onConnected.subscribe {
-                BootstrapDialog.isVisible = true
-            }
-            PrepareServerCommand().execute()
-
-            // TODO: Select bots to participate in battle and start the game
+        Client.apply {
+            onGameStarted.subscribe { showBattle() }
+            onGameEnded.subscribe { showLogo() }
+            onGameAborted.subscribe { showLogo() }
         }
-
-        MainWindowMenu.onSetupRules.invokeLater {
-            BattleDialog.apply {
-                selectSetupRulesTab()
-                isVisible = true
-            }
-        }
-        MainWindowMenu.onShowServerLog.invokeLater { ServerLogWindow.isVisible = true }
-        MainWindowMenu.onServerConfig.invokeLater { SelectServerDialog.isVisible = true }
-        MainWindowMenu.onBotDirConfig.invokeLater { BotDirectoryConfigDialog.isVisible = true }
-
-        Client.onGameStarted.subscribe { showBattle() }
-        Client.onGameEnded.subscribe { showLogo() }
-        Client.onGameAborted.subscribe { showLogo() }
 
         onClosing {
             close()
@@ -67,9 +61,10 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
     }
 
     private fun showLogo() {
-        contentPane.remove(BattlePanel)
-        contentPane.add(LogoPanel)
-
+        contentPane.apply {
+            remove(BattlePanel)
+            add(LogoPanel)
+        }
         validate()
         repaint()
     }

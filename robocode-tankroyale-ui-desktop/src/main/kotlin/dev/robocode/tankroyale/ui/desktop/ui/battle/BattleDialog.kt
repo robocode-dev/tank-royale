@@ -29,7 +29,6 @@ object BattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("battle_
         setLocationRelativeTo(null) // center on screen
 
         contentPane.add(tabbedPane)
-        tabbedPane.addTab(ResourceBundles.UI_TITLES.get("select_bots_tab"), SelectBotsPanel)
         tabbedPane.addTab(ResourceBundles.UI_TITLES.get("setup_rules_tab"), setupRulesPanel)
 
         tabbedPane.selectedComponent = setupRulesPanel
@@ -42,10 +41,6 @@ object BattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("battle_
             onErrorCloseable?.close()
             onErrorCloseable = null
         }
-    }
-
-    fun selectBotsTab() {
-        tabbedPane.selectedComponent = SelectBotsPanel
     }
 
     fun selectSetupRulesTab() {

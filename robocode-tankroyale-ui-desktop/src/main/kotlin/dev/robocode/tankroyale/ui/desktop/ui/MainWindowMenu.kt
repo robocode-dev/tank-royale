@@ -20,7 +20,6 @@ object MainWindowMenu : JMenuBar() {
     init {
         add(JMenu(MENU.get("menu.battle")).apply {
             addNewMenuItem("item.new_battle", onNewBattle)
-            addNewMenuItem("item.new_battle2", onNewBattle2)
             addSeparator()
             addNewMenuItem("item.setup_rules", onSetupRules)
         })
