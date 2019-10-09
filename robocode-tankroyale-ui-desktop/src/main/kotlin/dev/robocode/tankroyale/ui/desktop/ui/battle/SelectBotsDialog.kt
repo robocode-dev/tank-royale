@@ -2,7 +2,10 @@ package dev.robocode.tankroyale.ui.desktop.ui.battle
 
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
+import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
+import dev.robocode.tankroyale.ui.desktop.settings.GamesSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.util.Event
@@ -16,8 +19,6 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 import javax.swing.border.EmptyBorder
-
-import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
 
 
 @UnstableDefault
@@ -35,6 +36,7 @@ object SelectBotsDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sel
 
         onActivated {
             SelectBotsPanel2.updateAvailableBots()
+            SelectBotsPanel2.selectedBotListModel.clear()
         }
     }
 }
@@ -52,7 +54,7 @@ private object SelectBotsPanel2 : JPanel(MigLayout("fill")) {
     private val onRemoveAll = Event<JButton>()
 
     private val availableBotListModel = DefaultListModel<BotInfo>()
-    private val selectedBotListModel = DefaultListModel<BotInfo>()
+    val selectedBotListModel = DefaultListModel<BotInfo>()
     private val availableBotList = JList<BotInfo>(availableBotListModel)
     private val selectedBotList = JList<BotInfo>(selectedBotListModel)
 
@@ -168,14 +170,11 @@ private object SelectBotsPanel2 : JPanel(MigLayout("fill")) {
     @UnstableDefault
     private fun startGame() {
         isVisible = true
-/* TODO
-        val botEntries = ArrayList<String>()
-        selectedBotListModel.toArray().forEach { b -> botEntries += (b as BotInfo).filename }
 
-        BootstrapProcess.run(botEntries)
-*/
-        StartGameWindow.isVisible = true
-        BattleDialog.dispose()
+        val botAddresses = selectedBotListModel.toArray().map { b -> (b as BotInfo).botAddress }
+        Client.startGame(GamesSettings.games[ServerProcess.gameType]?.toGameSetup()!!, botAddresses.toSet())
+
+        SelectBotsDialog.dispose()
     }
 
     class BotInfoCellRenderer : JLabel(), ListCellRenderer<BotInfo> {
