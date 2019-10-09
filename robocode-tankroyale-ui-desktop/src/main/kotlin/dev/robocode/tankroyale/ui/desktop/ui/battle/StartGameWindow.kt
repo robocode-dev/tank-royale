@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.ui.desktop.ui.battle
 
 import dev.robocode.tankroyale.ui.desktop.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.ui.desktop.client.Client
-import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.model.BotAddress
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
@@ -10,13 +9,12 @@ import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import java.awt.BorderLayout
 import java.awt.Color
-import java.io.Closeable
 import javax.swing.*
 
 
 @UnstableDefault
 @ImplicitReflectionSerializer
-object StartGameWindow : JFrame(getWindowTitle()) {
+object StartGameWindow : JFrame(ResourceBundles.UI_TITLES.get("start_game_window")) {
 
     private val textArea = JTextArea()
     private val startButton = JButton(ResourceBundles.STRINGS.get("start_battle"))
@@ -59,10 +57,6 @@ object StartGameWindow : JFrame(getWindowTitle()) {
             }
         }
     }
-}
-
-private fun getWindowTitle(): String {
-    return ResourceBundles.UI_TITLES.get("start_game_window")
 }
 
 @UnstableDefault

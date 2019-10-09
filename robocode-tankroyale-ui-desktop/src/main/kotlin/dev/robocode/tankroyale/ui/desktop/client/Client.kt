@@ -34,24 +34,31 @@ object Client : AutoCloseable {
 
     var currentGameSetup: GameSetup? = null
 
-    private var websocket: WebSocketClient = WebSocketClient(URI(ServerSettings.defaultUrl))
-
-    private val json = Json(context = messageModule)
-
-    private var gameTypes: Set<String> = HashSet()
-    private var bots: Set<BotInfo> = HashSet()
-
-    private val disposables = ArrayList<Closeable>()
-
     var isGameRunning: Boolean = false
         private set
 
     var isGamePaused: Boolean = false
         private set
 
+    val isConnected: Boolean get() = websocket.isOpen()
+
+    private var bots: Set<BotInfo> = HashSet()
+
+    val availableBots: Set<BotInfo>
+        get() {
+            return bots
+        }
+
+    private var websocket: WebSocketClient = WebSocketClient(URI(ServerSettings.defaultUrl))
+
+    private val json = Json(context = messageModule)
+
+    private var gameTypes: Set<String> = HashSet()
+
+    private val disposables = ArrayList<Closeable>()
+
     private var lastStartGame: StartGame? = null
 
-    val isConnected: Boolean get() = websocket.isOpen()
 
     override fun close() {
         stopGame()

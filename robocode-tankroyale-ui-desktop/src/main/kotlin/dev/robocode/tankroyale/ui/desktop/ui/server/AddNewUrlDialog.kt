@@ -17,7 +17,7 @@ import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
 @ImplicitReflectionSerializer
-object AddNewUrlDialog : JDialog(SelectServerDialog, getWindowTitle()) {
+object AddNewUrlDialog : JDialog(SelectServerDialog, ResourceBundles.UI_TITLES.get("add_new_url_dialog")) {
 
     val onComplete = Event<JButton>()
 
@@ -41,10 +41,6 @@ object AddNewUrlDialog : JDialog(SelectServerDialog, getWindowTitle()) {
             Client.close()
         }
     }
-}
-
-private fun getWindowTitle(): String {
-    return ResourceBundles.UI_TITLES.get("add_new_url_dialog")
 }
 
 @ImplicitReflectionSerializer

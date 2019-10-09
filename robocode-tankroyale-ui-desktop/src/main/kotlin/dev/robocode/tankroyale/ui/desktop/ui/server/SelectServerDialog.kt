@@ -14,7 +14,7 @@ import java.io.Closeable
 import javax.swing.*
 
 @ImplicitReflectionSerializer
-object SelectServerDialog : JDialog(MainWindow, getWindowTitle()) {
+object SelectServerDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("select_server_dialog")) {
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
@@ -25,10 +25,6 @@ object SelectServerDialog : JDialog(MainWindow, getWindowTitle()) {
 
         contentPane.add(SelectServerPanel)
     }
-}
-
-private fun getWindowTitle(): String {
-    return ResourceBundles.UI_TITLES.get("select_server_dialog")
 }
 
 @ImplicitReflectionSerializer

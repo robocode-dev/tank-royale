@@ -21,7 +21,7 @@ import javax.swing.JPanel
 import javax.swing.UIManager
 
 @ImplicitReflectionSerializer
-object StartServerDialog : JDialog(MainWindow, getWindowTitle()) {
+object StartServerDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("start_server_dialog")) {
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
@@ -32,10 +32,6 @@ object StartServerDialog : JDialog(MainWindow, getWindowTitle()) {
 
         contentPane.add(StartServerPanel)
     }
-}
-
-private fun getWindowTitle(): String {
-    return ResourceBundles.UI_TITLES.get("start_server_dialog")
 }
 
 @ImplicitReflectionSerializer

@@ -11,6 +11,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.parseList
 import java.io.BufferedReader
+import java.io.File.separator
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.nio.file.Files
@@ -57,7 +58,7 @@ object BootstrapProcess {
             "run",
             "--bot-dirs=${getBotDirs()}"
         )
-        args += entries
+        entries.forEach { args += it }
 
         val builder = ProcessBuilder(args)
         runProcess = builder.start()

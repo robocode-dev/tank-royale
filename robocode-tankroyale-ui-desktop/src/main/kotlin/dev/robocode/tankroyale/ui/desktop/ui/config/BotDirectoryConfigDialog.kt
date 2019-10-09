@@ -14,7 +14,7 @@ import java.awt.EventQueue
 import javax.swing.*
 
 @ImplicitReflectionSerializer
-object BotDirectoryConfigDialog : JDialog(MainWindow, getWindowTitle()) {
+object BotDirectoryConfigDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("bot_directory_config_dialog")) {
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
@@ -30,10 +30,6 @@ object BotDirectoryConfigDialog : JDialog(MainWindow, getWindowTitle()) {
             MiscSettings.save()
         }
     }
-}
-
-private fun getWindowTitle(): String {
-    return ResourceBundles.UI_TITLES.get("bot_directory_config_dialog")
 }
 
 private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {

@@ -6,7 +6,7 @@ import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
 import dev.robocode.tankroyale.ui.desktop.ui.battle.BattleDialog
 import dev.robocode.tankroyale.ui.desktop.ui.battle.BattlePanel
 import dev.robocode.tankroyale.ui.desktop.ui.battle.LogoPanel
-import dev.robocode.tankroyale.ui.desktop.ui.bootstrap.BootstrapDialog
+import dev.robocode.tankroyale.ui.desktop.ui.server.BootstrapDialog
 import dev.robocode.tankroyale.ui.desktop.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.ui.desktop.ui.server.PrepareServerCommand
 import dev.robocode.tankroyale.ui.desktop.ui.server.SelectServerDialog
@@ -14,13 +14,12 @@ import dev.robocode.tankroyale.ui.desktop.ui.server.ServerLogWindow
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import java.awt.EventQueue
-import java.io.Closeable
 import javax.swing.JFrame
 import javax.swing.UIManager
 
 @UnstableDefault
 @ImplicitReflectionSerializer
-object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
+object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCloseable {
 
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
@@ -87,10 +86,6 @@ object MainWindow : JFrame(getWindowTitle()), AutoCloseable {
         Client.close()
         ServerProcess.stop()
     }
-}
-
-private fun getWindowTitle(): String {
-    return ResourceBundles.UI_TITLES.get("main_window")
 }
 
 @ImplicitReflectionSerializer

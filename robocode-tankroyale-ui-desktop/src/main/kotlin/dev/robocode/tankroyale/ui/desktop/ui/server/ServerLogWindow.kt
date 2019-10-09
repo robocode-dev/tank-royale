@@ -6,7 +6,7 @@ import javax.swing.JFrame
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 
-object ServerLogWindow : JFrame(getWindowTitle()) {
+object ServerLogWindow : JFrame(ResourceBundles.UI_TITLES.get("server_log_window")) {
 
     private var textArea = JTextArea()
 
@@ -35,8 +35,4 @@ object ServerLogWindow : JFrame(getWindowTitle()) {
         // Scroll to bottom
         textArea.caretPosition = textArea.document.length
     }
-}
-
-private fun getWindowTitle(): String {
-    return ResourceBundles.UI_TITLES.get("server_log_window")
 }

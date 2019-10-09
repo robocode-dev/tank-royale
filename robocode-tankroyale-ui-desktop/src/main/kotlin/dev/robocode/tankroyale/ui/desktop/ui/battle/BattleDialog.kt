@@ -15,7 +15,7 @@ import javax.swing.*
 import javax.swing.JOptionPane.YES_OPTION
 
 @ImplicitReflectionSerializer
-object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
+object BattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("battle_dialog")) {
 
     private val tabbedPane = JTabbedPane()
     private val setupRulesPanel = SetupRulesPanel()
@@ -87,10 +87,6 @@ object BattleDialog : JDialog(MainWindow, getWindowTitle()) {
             Client.connect(ServerSettings.defaultUrl)
         }
     }
-}
-
-private fun getWindowTitle(): String {
-    return ResourceBundles.UI_TITLES.get("battle_dialog")
 }
 
 @ImplicitReflectionSerializer
