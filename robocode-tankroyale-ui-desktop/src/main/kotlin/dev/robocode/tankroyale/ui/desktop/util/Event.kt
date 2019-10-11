@@ -10,7 +10,7 @@ class Event<T> {
 
     fun subscribe(subscriber: (T) -> Unit): Closeable {
         subscribers.add(subscriber)
-        return disposable(subscriber)
+        return Closeable { subscribers.remove(subscriber) }
     }
 
     fun publish(source: T) {
@@ -20,6 +20,4 @@ class Event<T> {
     fun invokeLater(runnable: () -> Unit): Closeable {
         return subscribe { EventQueue.invokeLater { runnable.invoke() } }
     }
-
-    private fun disposable(subscriber: (T) -> Unit) = Closeable { subscribers.remove(subscriber) }
 }
