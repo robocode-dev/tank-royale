@@ -22,19 +22,7 @@ class TestServerConnectionCommand(private val serverUrl: String) : ICommand {
         disposables += Client.onConnected.subscribe { complete() }
         disposables += Client.onDisconnected.subscribe { complete() }
         disposables += Client.onError.subscribe { complete() }
-/*
-        val wasAlreadyConnected = Client.isConnected
 
-        disposables += Client.onConnected.subscribe {
-            JOptionPane.showMessageDialog(
-                null, ResourceBundles.MESSAGES.get("server_started")
-            )
-            // Close server, if it was closed prior to testing
-            if (!wasAlreadyConnected) {
-                Client.close()
-            }
-        }
-*/
         ConnectToServerCommand(serverUrl).execute()
     }
 

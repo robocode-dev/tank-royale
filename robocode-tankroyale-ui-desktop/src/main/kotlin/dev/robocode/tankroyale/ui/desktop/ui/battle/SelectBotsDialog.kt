@@ -157,9 +157,9 @@ private object SelectBotsPanel2 : JPanel(MigLayout("fill")) {
 
         onStartBattle.subscribe { startGame() }
 
-        updateAvailableBots()
-
         Client.onBotListUpdate.subscribe { updateAvailableBots() }
+
+        updateAvailableBots()
     }
 
     fun updateAvailableBots() {

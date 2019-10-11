@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.ui.desktop.bootstrap
 
-import dev.robocode.tankroyale.ui.desktop.server.ServerProcess.stop
 import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings
 import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings.BOT_DIRS_SEPARATOR
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
@@ -11,7 +10,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.parseList
 import java.io.BufferedReader
-import java.io.File.separator
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.nio.file.Files
@@ -48,7 +46,7 @@ object BootstrapProcess {
 
     fun run(entries: List<String>) {
         if (isRunning.get())
-            stop()
+            stopRunning()
 
         val args = arrayListOf(
             "java",

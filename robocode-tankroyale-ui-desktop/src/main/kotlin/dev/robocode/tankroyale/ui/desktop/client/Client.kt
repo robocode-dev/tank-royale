@@ -10,6 +10,9 @@ import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.json.Json
 import java.io.Closeable
 import java.net.URI
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 object Client : AutoCloseable {
 
@@ -141,7 +144,7 @@ object Client : AutoCloseable {
     }
 
     private fun handleBotListUpdate(botListUpdate: BotListUpdate) {
-        bots = botListUpdate.bots
+        bots = Collections.unmodifiableSet(botListUpdate.bots)
         onBotListUpdate.publish(botListUpdate)
     }
 
