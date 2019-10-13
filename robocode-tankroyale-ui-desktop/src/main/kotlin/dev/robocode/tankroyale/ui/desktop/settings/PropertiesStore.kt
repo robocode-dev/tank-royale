@@ -1,9 +1,8 @@
 package dev.robocode.tankroyale.ui.desktop.settings
 
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
+import java.io.*
 import java.util.*
+
 
 open class PropertiesStore(private val title: String, private val fileName: String) {
 
@@ -22,16 +21,21 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
     }
 
     open fun save() {
-        val output = FileOutputStream(fileName)
+        val output = FileWriter(fileName)
         output.use {
-            // Properties are sorted by overriding the keys() method
-            val wrapper = object : Properties() {
-                override fun keys(): Enumeration<Any>? {
-                    return Collections.enumeration(TreeSet<Any>(keys))
+            val sortedProperties = object : Properties() {
+                override fun store(writer: Writer, comments: String) {
+                    keys.stream().map { k -> k }.sorted().forEach { k ->
+                        try {
+                            writer.append("${k}=${get(k)}\n")
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+                    }
                 }
             }
-            wrapper.putAll(properties) // Use our properties
-            wrapper.store(output, title)
+            sortedProperties.putAll(properties) // Use our properties
+            sortedProperties.store(output, title)
         }
     }
 }
