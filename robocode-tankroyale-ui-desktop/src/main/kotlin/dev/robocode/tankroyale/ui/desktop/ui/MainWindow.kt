@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.ui.desktop.ui
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
-import dev.robocode.tankroyale.ui.desktop.ui.battle.BattleDialog
+import dev.robocode.tankroyale.ui.desktop.ui.battle.SetupRulesDialog
 import dev.robocode.tankroyale.ui.desktop.ui.battle.BattlePanel
 import dev.robocode.tankroyale.ui.desktop.ui.battle.LogoPanel
 import dev.robocode.tankroyale.ui.desktop.ui.server.BootstrapDialog
@@ -33,16 +33,11 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
         MainWindowMenu.apply {
             onNewBattle.invokeLater {
-                Client.onConnected.subscribe {
-                    BootstrapDialog.isVisible = true
-                }
+                Client.onConnected.subscribe { BootstrapDialog.isVisible = true }
                 PrepareServerCommand().execute()
             }
             onSetupRules.invokeLater {
-                BattleDialog.apply {
-                    selectSetupRulesTab()
-                    isVisible = true
-                }
+                SetupRulesDialog.isVisible = true
             }
             onShowServerLog.invokeLater { ServerLogWindow.isVisible = true }
             onServerConfig.invokeLater { SelectServerDialog.isVisible = true }

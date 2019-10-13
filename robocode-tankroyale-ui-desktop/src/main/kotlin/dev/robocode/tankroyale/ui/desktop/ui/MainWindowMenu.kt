@@ -11,7 +11,6 @@ object MainWindowMenu : JMenuBar() {
 
     // Public events
     val onNewBattle = Event<JMenuItem>()
-    val onNewBattle2 = Event<JMenuItem>()
     val onSetupRules = Event<JMenuItem>()
     val onShowServerLog = Event<JMenuItem>()
     val onServerConfig = Event<JMenuItem>()

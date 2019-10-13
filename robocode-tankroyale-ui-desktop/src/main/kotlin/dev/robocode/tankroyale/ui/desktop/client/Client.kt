@@ -168,13 +168,11 @@ object Client : AutoCloseable {
     }
 
     private fun handleGamePaused(gamePausedEvent: GamePausedEvent) {
-        println("handleGamePaused")
         isGamePaused = true
         onGamePaused.publish(gamePausedEvent)
     }
 
     private fun handleGameResumed(gameResumedEvent: GameResumedEvent) {
-        println("handleGameResumed")
         isGamePaused = false
         onGameResumed.publish(gameResumedEvent)
     }
