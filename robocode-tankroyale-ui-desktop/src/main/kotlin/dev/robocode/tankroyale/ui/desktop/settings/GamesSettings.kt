@@ -1,10 +1,15 @@
 package dev.robocode.tankroyale.ui.desktop.settings
 
+import dev.robocode.tankroyale.ui.desktop.model.GameSetup
+import dev.robocode.tankroyale.ui.desktop.model.IGameSetup
+import java.util.*
+import kotlin.collections.HashMap
+
 object GamesSettings : PropertiesStore("Robocode Games Config", "games.properties") {
 
-    val defaultGameSetup: Map<String, MutableGameSetup>
+    val defaultGameSetup: Map<String, GameSetup>
         get() = mapOf(
-            GameType.CUSTOM.type to MutableGameSetup(
+            GameType.CUSTOM.type to GameSetup(
                 gameType = GameType.CUSTOM.type,
                 arenaWidth = 800,
                 isArenaWidthLocked = false,
@@ -25,7 +30,7 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
                 readyTimeout = 1_000_000, // 1 second
                 isReadyTimeoutLocked = false
             ),
-            GameType.CLASSIC.type to MutableGameSetup(
+            GameType.CLASSIC.type to GameSetup(
                 gameType = GameType.CLASSIC.type,
                 arenaWidth = 800,
                 isArenaWidthLocked = true,
@@ -46,7 +51,7 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
                 readyTimeout = 1_000_000, // 1 second
                 isReadyTimeoutLocked = false
             ),
-            GameType.MELEE.type to MutableGameSetup(
+            GameType.MELEE.type to GameSetup(
                 gameType = GameType.MELEE.type,
                 arenaWidth = 1000,
                 isArenaWidthLocked = true,
@@ -67,7 +72,7 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
                 readyTimeout = 1_000_000, // 1 second
                 isReadyTimeoutLocked = false
             ),
-            GameType.ONE_VS_ONE.type to MutableGameSetup(
+            GameType.ONE_VS_ONE.type to GameSetup(
                 gameType = GameType.ONE_VS_ONE.type,
                 arenaWidth = 1000,
                 isArenaWidthLocked = true,
@@ -102,10 +107,11 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
             val strings = propName.split(".", limit = 2)
             val gameName = strings[0]
             val fieldName = strings[1]
+
             val value = properties.getValue(propName) as String
 
             if (gameSetups[gameName] == null) {
-                gameSetups[gameName] = defaultGameSetup[GameType.CUSTOM.type]
+                gameSetups[gameName] = defaultGameSetup[GameType.CUSTOM.type]?.toMutableGameSetup()
             }
             val gameType = games[gameName] as MutableGameSetup
             val theField = MutableGameSetup::class.java.getDeclaredField(fieldName)
@@ -128,11 +134,9 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
     }
 
     val games: MutableMap<String, MutableGameSetup?>
-        get() {
-            return gameSetups
-        }
+        get() = Collections.unmodifiableMap(gameSetups)
 
-    private fun setProperties(gameSetup: Map<String, MutableGameSetup?>) {
+    private fun setProperties(gameSetup: Map<String, IGameSetup?>) {
         for (key in gameSetup.keys) {
             val gameType = gameSetup[key]
             if (gameType != null) {
@@ -141,9 +145,14 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
         }
     }
 
-    private fun putGameType(name: String, gameSetup: MutableGameSetup) {
-        for (prop in MutableGameSetup::class.java.declaredFields) {
-            val field = MutableGameSetup::class.java.getDeclaredField(prop.name)
+    private fun putGameType(name: String, gameSetup: IGameSetup) {
+        val javaClass = (if (gameSetup is GameSetup) GameSetup::class else MutableGameSetup::class).java
+
+        for (prop in javaClass.declaredFields) {
+            if (prop.name == "Companion")
+                continue
+
+            val field = javaClass.getDeclaredField(prop.name)
             field.isAccessible = true
             var value = field.get(gameSetup)?.toString()
             if (value == null) {

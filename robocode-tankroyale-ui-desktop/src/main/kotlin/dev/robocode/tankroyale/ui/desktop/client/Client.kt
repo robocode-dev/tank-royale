@@ -84,7 +84,7 @@ object Client : AutoCloseable {
         websocket.open() // must be called after onOpen.subscribe()
     }
 
-    fun startGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>) {
+    fun startGame(gameSetup: IGameSetup, botAddresses: Set<BotAddress>) {
         if (!isGameRunning && isConnected) {
             lastStartGame = StartGame(gameSetup, botAddresses)
             val startGame = lastStartGame

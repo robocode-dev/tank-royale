@@ -5,26 +5,27 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GameSetup(
-    val gameType: String,
-    val arenaWidth: Int,
-    val isArenaWidthLocked: Boolean,
-    val arenaHeight: Int,
-    val isArenaHeightLocked: Boolean,
-    val minNumberOfParticipants: Int,
-    val isMinNumberOfParticipantsLocked: Boolean,
-    val maxNumberOfParticipants: Int? = null,
-    val isMaxNumberOfParticipantsLocked: Boolean,
-    val numberOfRounds: Int,
-    val isNumberOfRoundsLocked: Boolean,
-    val gunCoolingRate: Double,
-    val isGunCoolingRateLocked: Boolean,
-    val maxInactivityTurns: Int,
-    val isMaxInactivityTurnsLocked: Boolean,
-    val turnTimeout: Int,
-    val isTurnTimeoutLocked: Boolean,
-    val readyTimeout: Int,
-    val isReadyTimeoutLocked: Boolean
-) {
+    override val gameType: String,
+    override val arenaWidth: Int,
+    override val isArenaWidthLocked: Boolean,
+    override val arenaHeight: Int,
+    override val isArenaHeightLocked: Boolean,
+    override val minNumberOfParticipants: Int,
+    override val isMinNumberOfParticipantsLocked: Boolean,
+    override val maxNumberOfParticipants: Int? = null,
+    override val isMaxNumberOfParticipantsLocked: Boolean,
+    override val numberOfRounds: Int,
+    override val isNumberOfRoundsLocked: Boolean,
+    override val gunCoolingRate: Double,
+    override val isGunCoolingRateLocked: Boolean,
+    override val maxInactivityTurns: Int,
+    override val isMaxInactivityTurnsLocked: Boolean,
+    override val turnTimeout: Int,
+    override val isTurnTimeoutLocked: Boolean,
+    override val readyTimeout: Int,
+    override val isReadyTimeoutLocked: Boolean
+) : IGameSetup {
+
     fun toMutableGameSetup(): MutableGameSetup {
         return MutableGameSetup(
             gameType,

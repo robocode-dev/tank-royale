@@ -5,6 +5,8 @@ import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.ui.desktop.extensions.JTextFieldExt.onChange
 import dev.robocode.tankroyale.ui.desktop.extensions.JTextFieldExt.setInputVerifier
+import dev.robocode.tankroyale.ui.desktop.model.IGameSetup
+import dev.robocode.tankroyale.ui.desktop.settings.GameType
 import dev.robocode.tankroyale.ui.desktop.settings.GamesSettings
 import dev.robocode.tankroyale.ui.desktop.settings.MutableGameSetup
 import dev.robocode.tankroyale.ui.desktop.ui.GameConstants
@@ -58,13 +60,10 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
 
     private var changed = false
 
-    private var gameSetup: MutableGameSetup
-        get() = gameTypeComboBox.gameSetup.toMutableGameSetup()
-        set(value) {
-            gameTypeComboBox.gameSetup = value.copy().toGameSetup()
-        }
+    private val gameSetup: MutableGameSetup
+        get() = GamesSettings.games[gameTypeComboBox.selectedGameType]!!
 
-    private var lastGameSetup = gameSetup.copy()
+    private var lastGameSetup: IGameSetup = gameSetup.copy()
 
     private val okButton: JButton
     private val applyButton: JButton
@@ -115,12 +114,16 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         }
         SetupRulesDialog.rootPane.defaultButton = okButton
 
+        gameTypeComboBox.addItemListener {
+            updateFieldsForGameType()
+        }
+        gameTypeComboBox.setSelectedGameType(GameType.CLASSIC)
+        updateFieldsForGameType()
+
         applyButton.isVisible = false
 
         add(upperPanel, "center, wrap")
         add(lowerPanel, "center")
-
-        gameTypeComboBox.selectedIndex = 0
 
         widthTextField.setInputVerifier { widthVerifier() }
         heightTextField.setInputVerifier { heightVerifier() }
@@ -140,17 +143,17 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             apply()
         }
         onCancel.subscribe {
-            gameSetup = lastGameSetup
+            lastGameSetup = gameSetup
             SetupRulesDialog.dispose()
         }
         onResetToDefault.subscribe {
-            gameTypeComboBox.resetGameType()
+            val selectedGameType = gameTypeComboBox.selectedGameType
+            val default: MutableGameSetup? = GamesSettings.defaultGameSetup[selectedGameType]?.toMutableGameSetup()
+            if (default != null) {
+                GamesSettings.games[selectedGameType]?.copy(default)
+                updateFieldsForGameType()
+            }
         }
-
-        gameTypeComboBox.onGameTypeChanged.subscribe {
-            updateFieldsForGameType()
-        }
-        updateFieldsForGameType()
 
         listOf(
             widthTextField,

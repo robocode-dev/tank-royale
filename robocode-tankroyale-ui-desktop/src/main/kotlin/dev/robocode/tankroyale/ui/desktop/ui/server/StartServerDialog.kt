@@ -12,6 +12,7 @@ import dev.robocode.tankroyale.ui.desktop.ui.battle.GameTypeComboBox
 import dev.robocode.tankroyale.ui.desktop.ui.components.JLimitedTextField
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.EventQueue
@@ -20,6 +21,7 @@ import javax.swing.JDialog
 import javax.swing.JPanel
 import javax.swing.UIManager
 
+@UnstableDefault
 @ImplicitReflectionSerializer
 object StartServerDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("start_server_dialog")) {
 
@@ -34,6 +36,7 @@ object StartServerDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("st
     }
 }
 
+@UnstableDefault
 @ImplicitReflectionSerializer
 private object StartServerPanel : JPanel(MigLayout("fill")) {
 
@@ -64,7 +67,7 @@ private object StartServerPanel : JPanel(MigLayout("fill")) {
         onOk.subscribe {
             StartServerCommand(
                 port = portTextField.text.toInt(),
-                gameType = gameTypeComboBox.gameSetup.gameType
+                gameType = gameTypeComboBox.selectedGameType
             ).execute()
             StartServerDialog.dispose()
         }
@@ -87,6 +90,7 @@ private object StartServerPanel : JPanel(MigLayout("fill")) {
     }
 }
 
+@UnstableDefault
 @ImplicitReflectionSerializer
 private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())

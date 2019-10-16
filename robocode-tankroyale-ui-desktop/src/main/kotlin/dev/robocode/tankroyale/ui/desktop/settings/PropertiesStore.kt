@@ -1,6 +1,9 @@
 package dev.robocode.tankroyale.ui.desktop.settings
 
-import java.io.*
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileWriter
+import java.io.Writer
 import java.util.*
 
 
@@ -26,11 +29,7 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
             val sortedProperties = object : Properties() {
                 override fun store(writer: Writer, comments: String) {
                     keys.stream().map { k -> k }.sorted().forEach { k ->
-                        try {
-                            writer.append("${k}=${get(k)}\n")
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
+                        writer.append("${k}=${get(k)}\n")
                     }
                 }
             }
