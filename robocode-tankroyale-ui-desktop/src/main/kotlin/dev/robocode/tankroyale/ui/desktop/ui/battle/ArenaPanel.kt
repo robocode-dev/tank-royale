@@ -28,8 +28,8 @@ object ArenaPanel : JPanel() {
     private val explosions = Collections.synchronizedList(ArrayList<Animation>())
 
     private object State {
-        var arenaWidth: Int = 800
-        var arenaHeight: Int = 600
+        var arenaWidth: Int = Client.currentGameSetup?.arenaWidth ?: 800
+        var arenaHeight: Int = Client.currentGameSetup?.arenaHeight ?: 600
 
         var time: Int = 0
         var bots: Set<BotState> = HashSet()
