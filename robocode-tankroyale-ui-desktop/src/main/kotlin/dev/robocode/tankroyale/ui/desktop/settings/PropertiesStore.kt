@@ -24,17 +24,20 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
     }
 
     open fun save() {
-/*        val output = FileWriter(fileName)
+        val output = FileWriter(fileName)
         output.use {
             val sortedProperties = object : Properties() {
                 override fun store(writer: Writer, comments: String) {
                     keys.stream().map { k -> k }.sorted().forEach { k ->
-                        writer.append("${k}=${get(k)}\n")
+                        run {
+                            val value = "${get(k)}".replace("\\", "\\\\")
+                            writer.append("${k}=${value}\n")
+                        }
                     }
                 }
             }
             sortedProperties.putAll(properties) // Use our properties
             sortedProperties.store(output, title)
-        }*/
+        }
     }
 }

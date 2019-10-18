@@ -8,7 +8,7 @@ class Panel : JPanel() {
 
     private var time = 1
 
-    private val explosion = Explosion(400.0, 400.0, 200, 30, 15)
+    private val explosion = Explosion(400.0, 400.0, 500, 10, 400)
 
     override fun paintComponent(g: Graphics) {
         (g as Graphics2D).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
