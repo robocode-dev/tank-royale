@@ -1,8 +1,8 @@
 package dev.robocode.tankroyale.ui.desktop.model
 
-import dev.robocode.tankroyale.ui.desktop.settings.MutableGameSetup
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
+@SerialName("GameSetup")
 interface IGameSetup {
     val gameType: String
     val arenaWidth: Int
@@ -23,4 +23,28 @@ interface IGameSetup {
     val isTurnTimeoutLocked: Boolean
     val readyTimeout: Int
     val isReadyTimeoutLocked: Boolean
+
+    fun toGameSetup(): GameSetup {
+        return GameSetup(
+            gameType,
+            arenaWidth,
+            isArenaWidthLocked,
+            arenaHeight,
+            isArenaHeightLocked,
+            minNumberOfParticipants,
+            isMinNumberOfParticipantsLocked,
+            maxNumberOfParticipants,
+            isMaxNumberOfParticipantsLocked,
+            numberOfRounds,
+            isNumberOfRoundsLocked,
+            gunCoolingRate,
+            isGunCoolingRateLocked,
+            maxInactivityTurns,
+            isMaxInactivityTurnsLocked,
+            turnTimeout,
+            isTurnTimeoutLocked,
+            readyTimeout,
+            isReadyTimeoutLocked
+        )
+    }
 }

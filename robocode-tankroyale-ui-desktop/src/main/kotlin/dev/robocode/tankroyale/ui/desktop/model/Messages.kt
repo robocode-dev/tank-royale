@@ -158,7 +158,7 @@ data class ServerHandshake(
 @Serializable
 @SerialName("StartGame")
 data class StartGame(
-    val gameSetup: IGameSetup,
+    val gameSetup: GameSetup,
     val botAddresses: Set<BotAddress>
 ) : Message()
 
