@@ -171,6 +171,7 @@ public class ModelUpdater {
 	 */
 	private void nextRound() {
 		roundNumber++;
+		turnNumber = 0;
 
 		round = round.toBuilder().roundNumber(roundNumber).build();
 
