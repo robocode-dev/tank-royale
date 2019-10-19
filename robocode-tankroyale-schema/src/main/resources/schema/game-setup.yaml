@@ -65,6 +65,9 @@ properties:
   isReadyTimeoutLocked:
     description: Flag specifying if the ready timeout is fixed for this game type
     type: boolean
+  defaultTurnsPerSecond:
+    description: Default number of turns to show per second for an observer/UI
+    type: integer
 required:
   - gameType
   - arenaWidth
@@ -84,3 +87,4 @@ required:
   - isTurnTimeoutLocked
   - readyTimeout
   - isReadyTimeoutLocked
+  - defaultTurnsPerSecond
