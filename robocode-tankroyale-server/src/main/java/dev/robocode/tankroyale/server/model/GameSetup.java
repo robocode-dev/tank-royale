@@ -77,7 +77,7 @@ public class GameSetup {
 	@Builder.Default int readyTimeout = DEFAULT_READY_TIMEOUT;
 
 	/** Default turns per second (TPS) in milliseconds */
-	@Builder.Default int defaultTurnsPerSecond = DEFAULT_TURNS_PER_SECOND;
+	@Builder.Default Integer defaultTurnsPerSecond = DEFAULT_TURNS_PER_SECOND;
 
 	/** Flag specifying if the arena width is locked */
 	boolean arenaWidthLocked;
