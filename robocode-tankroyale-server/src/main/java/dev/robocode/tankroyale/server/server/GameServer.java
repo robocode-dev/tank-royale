@@ -9,6 +9,7 @@ import dev.robocode.tankroyale.server.model.Round;
 import dev.robocode.tankroyale.server.model.Turn;
 import lombok.val;
 import dev.robocode.tankroyale.schema.*;
+import lombok.var;
 import org.java_websocket.WebSocket;
 import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import org.slf4j.Logger;
@@ -152,10 +153,20 @@ public final class GameServer {
 
     modelUpdater = ModelUpdater.create(gameSetup, new HashSet<>(participantIds.values()));
 
+    val turnTimeout = gameSetup.getTurnTimeout();
+
     // Restart timers (turn timeout + tps)
-    turnTimeoutTimer = new Timer(gameSetup.getTurnTimeout(), this::onTurnTimeout);
-    tpsTimer =
-        new Timer(1_000_000 / gameSetup.getDefaultTurnsPerSecond(), this::onTpsTimeout);
+    turnTimeoutTimer = new Timer(turnTimeout, this::onTurnTimeout);
+
+    val defaultTps = gameSetup.getDefaultTurnsPerSecond();
+    var tpsTimeout = turnTimeout;
+    if (defaultTps != null) {
+      tpsTimeout = 1_000_000 / gameSetup.getTurnTimeout();
+      if (tpsTimeout < turnTimeout) {
+        tpsTimeout = turnTimeout;
+      }
+    }
+    tpsTimer = new Timer(tpsTimeout, this::onTpsTimeout);
 
     turnTimeoutTimer.start();
     tpsTimer.start();
