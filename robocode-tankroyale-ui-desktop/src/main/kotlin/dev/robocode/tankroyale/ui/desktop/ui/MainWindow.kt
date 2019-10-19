@@ -24,7 +24,7 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
 
-        setSize(800, 600)
+        setSize(800, 750)
         setLocationRelativeTo(null) // center on screen
 
         contentPane.add(LogoPanel)

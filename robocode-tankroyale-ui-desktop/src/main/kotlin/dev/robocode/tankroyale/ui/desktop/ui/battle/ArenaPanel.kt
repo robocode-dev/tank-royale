@@ -9,6 +9,7 @@ import dev.robocode.tankroyale.ui.desktop.ui.ResultsWindow
 import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.State.arenaHeight
 import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.State.arenaWidth
 import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.State.bots
+import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.State.round
 import dev.robocode.tankroyale.ui.desktop.util.Graphics2DState
 import java.awt.*
 import java.awt.event.MouseWheelEvent
@@ -31,6 +32,7 @@ object ArenaPanel : JPanel() {
         var arenaWidth: Int = Client.currentGameSetup?.arenaWidth ?: 800
         var arenaHeight: Int = Client.currentGameSetup?.arenaHeight ?: 600
 
+        var round: Int = 0
         var time: Int = 0
         var bots: Set<BotState> = HashSet()
         var bullets: Set<BulletState> = HashSet()
@@ -67,6 +69,7 @@ object ArenaPanel : JPanel() {
         if (tick.get()) return
         tick.set(true)
 
+        state.round = tickEvent.roundNumber
         state.time = tickEvent.turnNumber
         state.bots = tickEvent.botStates
         state.bullets = tickEvent.bulletStates
@@ -154,6 +157,7 @@ object ArenaPanel : JPanel() {
         drawBots(g)
         drawExplosions(g)
         drawBullets(g)
+        drawRoundInfo(g)
     }
 
     private fun drawBots(g: Graphics2D) {
@@ -267,6 +271,15 @@ object ArenaPanel : JPanel() {
         val arc = Arc2D.Double()
         arc.setArcByCenter(x, y, 1200.0, (360 - direction) - spreadAngle / 2, spreadAngle, Arc2D.PIE)
         g.fill(arc)
+
+        oldState.restore(g)
+    }
+
+    private fun drawRoundInfo(g: Graphics2D) {
+        val oldState = Graphics2DState(g)
+
+        g.color = Color.YELLOW
+        g.drawString("Round ${state.round}, Turn: ${state.time}", 10, 10)
 
         oldState.restore(g)
     }
