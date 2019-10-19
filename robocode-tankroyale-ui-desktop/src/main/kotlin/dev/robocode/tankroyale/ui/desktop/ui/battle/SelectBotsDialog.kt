@@ -139,9 +139,11 @@ private object SelectBotsPanel2 : JPanel(MigLayout("fill")) {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount > 1) {
                     val index = availableBotList.locationToIndex(e.point)
-                    val botInfo = availableBotListModel[index]
-                    if (!selectedBotListModel.contains(botInfo)) {
-                        selectedBotListModel.addElement(botInfo)
+                    if (index >= 0 && index < availableBotListModel.size()) {
+                        val botInfo = availableBotListModel[index]
+                        if (!selectedBotListModel.contains(botInfo)) {
+                            selectedBotListModel.addElement(botInfo)
+                        }
                     }
                 }
             }
@@ -150,7 +152,9 @@ private object SelectBotsPanel2 : JPanel(MigLayout("fill")) {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount > 1) {
                     val index = selectedBotList.locationToIndex(e.point)
-                    selectedBotListModel.removeElement(selectedBotListModel[index])
+                    if (index >= 0 && index < selectedBotListModel.size()) {
+                        selectedBotListModel.removeElement(selectedBotListModel[index])
+                    }
                 }
             }
         })

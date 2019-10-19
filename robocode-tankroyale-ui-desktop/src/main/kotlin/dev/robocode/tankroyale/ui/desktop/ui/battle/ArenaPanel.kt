@@ -9,7 +9,7 @@ import dev.robocode.tankroyale.ui.desktop.ui.ResultsWindow
 import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.State.arenaHeight
 import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.State.arenaWidth
 import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.State.bots
-import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.State.round
+import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.addMouseWheelListener
 import dev.robocode.tankroyale.ui.desktop.util.Graphics2DState
 import java.awt.*
 import java.awt.event.MouseWheelEvent
