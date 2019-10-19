@@ -1,13 +1,16 @@
 package dev.robocode.tankroyale.ui.desktop.ui.battle
 
 import dev.robocode.tankroyale.ui.desktop.client.Client
+import dev.robocode.tankroyale.ui.desktop.client.Client.startGame
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.onContentsChanged
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
 import dev.robocode.tankroyale.ui.desktop.settings.GamesSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
+import dev.robocode.tankroyale.ui.desktop.ui.battle.SelectBotsPanel.selectedBotListModel
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
@@ -32,18 +35,18 @@ object SelectBotsDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sel
 
         setLocationRelativeTo(null) // center on screen
 
-        contentPane.add(SelectBotsPanel2) // FIXME: Name of panel -> SelectBotsPanel
+        contentPane.add(SelectBotsPanel) // FIXME: Name of panel -> SelectBotsPanel
 
         onActivated {
-            SelectBotsPanel2.updateAvailableBots()
-            SelectBotsPanel2.selectedBotListModel.clear()
+            SelectBotsPanel.updateAvailableBots()
+            SelectBotsPanel.selectedBotListModel.clear()
         }
     }
 }
 
 @UnstableDefault
 @ImplicitReflectionSerializer
-private object SelectBotsPanel2 : JPanel(MigLayout("fill")) {
+private object SelectBotsPanel : JPanel(MigLayout("fill")) {
     // Private events
     private val onStartBattle = Event<JButton>()
 
@@ -57,6 +60,8 @@ private object SelectBotsPanel2 : JPanel(MigLayout("fill")) {
     val selectedBotListModel = DefaultListModel<BotInfo>()
     private val availableBotList = JList<BotInfo>(availableBotListModel)
     private val selectedBotList = JList<BotInfo>(selectedBotListModel)
+
+    private val startBattleButton: JButton
 
     init {
         val leftSelectionPanel = JPanel(MigLayout("fill")).apply {
@@ -105,7 +110,7 @@ private object SelectBotsPanel2 : JPanel(MigLayout("fill")) {
             addButton("arrow_remove_all", onRemoveAll, "cell 0 4")
         }
         buttonPanel.apply {
-            addButton("start_battle", onStartBattle, "tag ok")
+            startBattleButton = addButton("start_battle", onStartBattle, "tag ok")
             addButton("cancel", onCancel, "tag cancel")
         }
 
@@ -158,6 +163,8 @@ private object SelectBotsPanel2 : JPanel(MigLayout("fill")) {
                 }
             }
         })
+
+        selectedBotList.onContentsChanged { startBattleButton.isEnabled = selectedBotList.model.size > 0  }
 
         onStartBattle.subscribe { startGame() }
 
