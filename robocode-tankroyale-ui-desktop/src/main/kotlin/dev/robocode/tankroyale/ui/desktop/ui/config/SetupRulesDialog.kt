@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.ui.desktop.ui.battle
+package dev.robocode.tankroyale.ui.desktop.ui.config
 
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addLabel
@@ -12,6 +12,7 @@ import dev.robocode.tankroyale.ui.desktop.settings.MutableGameSetup
 import dev.robocode.tankroyale.ui.desktop.ui.GameConstants
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
+import dev.robocode.tankroyale.ui.desktop.ui.battle.GameTypeComboBox
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault

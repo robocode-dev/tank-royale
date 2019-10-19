@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.ui.desktop.ui
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
-import dev.robocode.tankroyale.ui.desktop.ui.battle.SetupRulesDialog
+import dev.robocode.tankroyale.ui.desktop.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.ui.desktop.ui.battle.BattlePanel
 import dev.robocode.tankroyale.ui.desktop.ui.battle.LogoPanel
 import dev.robocode.tankroyale.ui.desktop.ui.server.BootstrapDialog
