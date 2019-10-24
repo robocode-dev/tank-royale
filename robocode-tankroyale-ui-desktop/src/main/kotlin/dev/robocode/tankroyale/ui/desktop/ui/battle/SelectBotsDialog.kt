@@ -176,6 +176,7 @@ private object SelectBotsPanel : JPanel(MigLayout("fill")) {
         SwingUtilities.invokeLater {
             availableBotListModel.clear()
             Client.availableBots.forEach { availableBotListModel.addElement(it) }
+            startBattleButton.isEnabled = Client.availableBots.isNotEmpty()
         }
     }
 
