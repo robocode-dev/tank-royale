@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.ui.desktop.ui.battle
 
 import dev.robocode.tankroyale.ui.desktop.client.Client
-import dev.robocode.tankroyale.ui.desktop.client.Client.startGame
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.onContentsChanged
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
@@ -10,7 +9,6 @@ import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
 import dev.robocode.tankroyale.ui.desktop.settings.GamesSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
-import dev.robocode.tankroyale.ui.desktop.ui.battle.SelectBotsPanel.selectedBotListModel
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
@@ -62,6 +60,7 @@ private object SelectBotsPanel : JPanel(MigLayout("fill")) {
     private val selectedBotList = JList<BotInfo>(selectedBotListModel)
 
     private val startBattleButton: JButton
+
 
     init {
         val leftSelectionPanel = JPanel(MigLayout("fill")).apply {
@@ -174,8 +173,10 @@ private object SelectBotsPanel : JPanel(MigLayout("fill")) {
     }
 
     fun updateAvailableBots() {
-        availableBotListModel.clear()
-        Client.availableBots.forEach { availableBotListModel.addElement(it) }
+        SwingUtilities.invokeLater {
+            availableBotListModel.clear()
+            Client.availableBots.forEach { availableBotListModel.addElement(it) }
+        }
     }
 
     @UnstableDefault
@@ -219,7 +220,8 @@ private object SelectBotsPanel : JPanel(MigLayout("fill")) {
 private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
-    EventQueue.invokeLater {
+    EventQueue.
+        invokeLater {
         SelectBotsDialog.isVisible = true
     }
 }
