@@ -30,6 +30,11 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.9.1'
 }
 
+jar {
+    manifest { attributes 'Main-Class': 'dev.robocode.tankroyale.bot.TestBot' }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
 test {
     useJUnitPlatform()
 }
