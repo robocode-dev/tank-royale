@@ -2,11 +2,23 @@ package dev.robocode.tankroyale.bot;
 
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.events.*;
+import lombok.extern.log4j.Log4j;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
+
+import java.util.UUID;
 
 @SuppressWarnings("UnusedDeclaration")
+@Log4j
 public class TestBot extends Bot {
 
+  static {
+    MDC.put("myUuid", UUID.randomUUID());
+  }
+
   public static void main(String[] args) {
+    Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.error(e));
     new TestBot().run();
   }
 
@@ -19,17 +31,17 @@ public class TestBot extends Bot {
 
   @Override
   public void onConnected(ConnectedEvent event) {
-    System.out.println("onConnected");
+    log.info("onConnected");
   }
 
   @Override
   public void onDisconnected(DisconnectedEvent event) {
-    System.out.println("onDisconnected");
+    log.info("onDisconnected");
   }
 
   @Override
   public void onGameStarted(GameStartedEvent event) {
-    System.out.println("onGameStarted: " + event);
+    log.info("onGameStarted: " + event);
 
     setRadarTurnRate(100);
     setTargetSpeed(targetSpeed);
@@ -40,6 +52,8 @@ public class TestBot extends Bot {
 
   @Override
   public void onTick(TickEvent event) {
+    log.info("onTick: " + event.getTurnNumber());
+
     if (getSpeed() == targetSpeed) {
       targetSpeed = -targetSpeed;
     }
@@ -62,6 +76,8 @@ public class TestBot extends Bot {
 
   @Override
   public void onScannedBot(ScannedBotEvent event) {
+    log.info("onScannedBot");
+
     targetX = event.getX();
     targetY = event.getY();
   }

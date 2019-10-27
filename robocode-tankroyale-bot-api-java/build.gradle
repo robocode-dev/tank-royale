@@ -21,6 +21,7 @@ dependencies {
     compile 'com.neovisionaries:nv-websocket-client:2.9'
     compile 'com.neovisionaries:nv-i18n:1.22'
     compile 'org.danilopianini:gson-extras:0.2.1'
+    compile 'log4j:log4j:1.2.17'
 
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
