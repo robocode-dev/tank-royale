@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @SuppressWarnings("UnusedDeclaration")
 @Log4j
-public class TestBasicBot extends BasicBot {
+public class TestBot extends BasicBot {
 
   static {
     MDC.put("myUuid", UUID.randomUUID());
@@ -17,13 +17,13 @@ public class TestBasicBot extends BasicBot {
 
   public static void main(String[] args) {
     Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.error(e));
-    new TestBasicBot().run();
+    new TestBot().run();
   }
 
   private Double targetX;
   private Double targetY;
 
-  private TestBasicBot() {
+  private TestBot() {
     super();
   }
 
