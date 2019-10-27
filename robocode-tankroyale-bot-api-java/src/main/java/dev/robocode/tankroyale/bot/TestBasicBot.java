@@ -1,17 +1,15 @@
 package dev.robocode.tankroyale.bot;
 
-import dev.robocode.tankroyale.botapi.Bot;
+import dev.robocode.tankroyale.botapi.BasicBot;
 import dev.robocode.tankroyale.botapi.events.*;
 import lombok.extern.log4j.Log4j;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
 import java.util.UUID;
 
 @SuppressWarnings("UnusedDeclaration")
 @Log4j
-public class TestBot extends Bot {
+public class TestBasicBot extends BasicBot {
 
   static {
     MDC.put("myUuid", UUID.randomUUID());
@@ -19,13 +17,13 @@ public class TestBot extends Bot {
 
   public static void main(String[] args) {
     Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.error(e));
-    new TestBot().run();
+    new TestBasicBot().run();
   }
 
   private Double targetX;
   private Double targetY;
 
-  private TestBot() {
+  private TestBasicBot() {
     super();
   }
 

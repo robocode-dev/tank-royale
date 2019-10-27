@@ -6,7 +6,7 @@ import java.util.List;
 
 /** Interface for a bot. */
 @SuppressWarnings({"UnusedDeclaration", "EmptyMethod"})
-public interface IBot {
+public interface IBasicBot {
 
   /**
    * Bounding circle radius. A bot gets hit by a bullet when the distance between the center of the
