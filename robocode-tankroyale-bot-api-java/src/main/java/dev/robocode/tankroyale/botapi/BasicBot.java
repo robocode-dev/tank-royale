@@ -35,10 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
-@SuppressWarnings("UnusedDeclaration")
 public abstract class BasicBot implements IBasicBot {
 
-  protected final __Internals __internals;
+  final __Internals __internals;
 
   /**
    * Constructor used when both BotInfo and serverUri are provided through environment variables.
@@ -58,7 +57,6 @@ public abstract class BasicBot implements IBasicBot {
    * BOT_GAME_TYPES=melee,1v1<br>
    * BOT_PROG_LANG=Java<br>
    */
-  @SuppressWarnings("WeakerAccess")
   public BasicBot() {
     __internals = new __Internals(null, null);
   }
@@ -79,7 +77,6 @@ public abstract class BasicBot implements IBasicBot {
    * @param botInfo is the bot info containing information about your bot.
    * @param serverUri is the server URI
    */
-  @SuppressWarnings("UnusedDeclaration")
   public BasicBot(final BotInfo botInfo, URI serverUri) {
     __internals = new __Internals(botInfo, serverUri);
   }
@@ -90,7 +87,11 @@ public abstract class BasicBot implements IBasicBot {
   }
 
   @Override
-  public void go() {
+  public final void go() {
+    // Let other bot implementation have the chance of setting the intent before it is sent to the server
+    __internals.onGo.publish(null);
+
+    // Send the bot intent to the server
     __internals.sendBotIntent();
   }
 
@@ -261,7 +262,7 @@ public abstract class BasicBot implements IBasicBot {
         : ((angle >= -180) ? angle : (angle + 360));
   }
 
-  private final class __Internals {
+  protected final class __Internals {
     private static final String SERVER_URI_ENV_VAR_NAME = "SERVER_URI";
     private static final String SERVER_URI_PROPERTY_KEY = "server.uri";
 
@@ -317,11 +318,11 @@ public abstract class BasicBot implements IBasicBot {
     private final Event<ConnectionErrorEvent> onConnectionError = new Event<>();
     private final Event<GameStartedEvent> onGameStarted = new Event<>();
     private final Event<GameEndedEvent> onGameEnded = new Event<>();
-    private final Event<TickEvent> onTick = new Event<>();
+    final Event<TickEvent> onTick = new Event<>();
     private final Event<SkippedTurnEvent> onSkippedTurn = new Event<>();
     private final Event<BotDeathEvent> onBotDeath = new Event<>();
-    private final Event<BotHitBotEvent> onHitBot = new Event<>();
-    private final Event<BotHitWallEvent> onHitWall = new Event<>();
+    final Event<BotHitBotEvent> onHitBot = new Event<>();
+    final Event<BotHitWallEvent> onHitWall = new Event<>();
     private final Event<BulletFiredEvent> onBulletFired = new Event<>();
     private final Event<BulletHitBotEvent> onHitByBullet = new Event<>();
     private final Event<BulletHitBotEvent> onBulletHit = new Event<>();
@@ -329,6 +330,7 @@ public abstract class BasicBot implements IBasicBot {
     private final Event<BulletHitWallEvent> onBulletHitWall = new Event<>();
     private final Event<ScannedBotEvent> onScannedBot = new Event<>();
     private final Event<WonRoundEvent> onWonRound = new Event<>();
+    final Event<Void> onGo = new Event<>();
 
     __Internals(BotInfo botInfo, URI serverUri) {
       this.botInfo = (botInfo == null) ? Env.getBotInfo() : botInfo;
@@ -662,7 +664,7 @@ public abstract class BasicBot implements IBasicBot {
               });
     }
 
-    private class Event<T> {
+    protected class Event<T> {
       private List<UnaryOperator<T>> subscribers = Collections.synchronizedList(new ArrayList<>());
 
       void subscribe(UnaryOperator<T> subscriber) {

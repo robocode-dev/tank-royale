@@ -2,11 +2,26 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.BotHitBotEvent;
 import dev.robocode.tankroyale.botapi.events.BotHitWallEvent;
+import dev.robocode.tankroyale.botapi.events.TickEvent;
 import lombok.val;
+
+import java.net.URI;
 
 public abstract class Bot extends BasicBot implements IBot {
 
   private final __Internals __internals = new __Internals();
+
+  public Bot() {
+    super();
+  }
+
+  public Bot(final BotInfo botInfo) {
+    super(botInfo);
+  }
+
+  public Bot(final BotInfo botInfo, URI serverUri) {
+    super(botInfo, serverUri);
+  }
 
   @Override
   public final void setForward(double distance) {
@@ -39,29 +54,6 @@ public abstract class Bot extends BasicBot implements IBot {
       maxSpeed = MAX_SPEED;
     }
     __internals.maxSpeed = maxSpeed;
-  }
-
-  @Override
-  public final void go() {
-    updateDistanceRemaining();
-
-    // updateMovement() // TODO
-
-    super.go();
-  }
-
-  private void updateDistanceRemaining() {
-    // Set the remaining distance to 0 if the bot is disabled, has rammed another another bot, or has hit a wall
-    if (isDisabled()
-        || getEvents().stream()
-            .anyMatch(
-                event ->
-                    (event instanceof BotHitBotEvent && ((BotHitBotEvent) event).isRammed())
-                        || (event instanceof BotHitWallEvent))) {
-      __internals.distanceRemaining = 0.0;
-    } else {
-      // TODO
-    }
   }
 
   /**
@@ -119,8 +111,65 @@ public abstract class Bot extends BasicBot implements IBot {
     return Math.min(1, decelTime) * DECELERATION + Math.max(0, accelTime) * ACCELERATION;
   }
 
-  private static final class __Internals {
+  private final class __Internals {
     double distanceRemaining;
+    double turnRemaining;
+
     double maxSpeed = MAX_FORWARD_SPEED;
+
+    private __Internals() {
+      val superInt = Bot.super.__internals;
+
+      superInt.onTick.subscribe(
+          event -> {
+            onTick(event);
+            return null;
+          });
+      superInt.onGo.subscribe(
+          event -> {
+            onGo();
+            return null;
+          });
+      superInt.onHitBot.subscribe(
+          event -> {
+            onHitBot(event);
+            return null;
+          });
+      superInt.onHitWall.subscribe(
+          event -> {
+            onHitWall(event);
+            return null;
+          });
+    }
+
+    private void onTick(TickEvent tick) {
+      // No movement is possible, when the bot has become disabled
+      if (isDisabled()) {
+        resetRemainingDistanceAndTurn();
+      }
+    }
+
+    private void onHitBot(BotHitBotEvent event) {
+      if (event.isRammed()) {
+        resetRemainingDistanceAndTurn();
+      }
+    }
+
+    private void onHitWall(BotHitWallEvent event) {
+      resetRemainingDistanceAndTurn();
+    }
+
+    private void onGo() {
+      updateMovement();
+    }
+
+    private void updateMovement() {
+      // FIXME!
+    }
+
+    private void resetRemainingDistanceAndTurn() {
+      distanceRemaining = 0.0;
+      turnRemaining = 0.0;
+    }
   }
 }
