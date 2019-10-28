@@ -29,13 +29,16 @@ import dev.robocode.tankroyale.botapi.mapper.ResultsMapper;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
 @SuppressWarnings("UnusedDeclaration")
 public abstract class BasicBot implements IBasicBot {
 
-  private final __Internals __internals;
+  protected final __Internals __internals;
 
   /**
    * Constructor used when both BotInfo and serverUri are provided through environment variables.
@@ -87,7 +90,7 @@ public abstract class BasicBot implements IBasicBot {
   }
 
   @Override
-  public final void go() {
+  public void go() {
     __internals.sendBotIntent();
   }
 
@@ -154,6 +157,11 @@ public abstract class BasicBot implements IBasicBot {
   @Override
   public final double getEnergy() {
     return __internals.getCurrentTurn().getBotState().getEnergy();
+  }
+
+  @Override
+  public final boolean isDisabled() {
+    return getEnergy() == 0;
   }
 
   @Override
@@ -304,6 +312,24 @@ public abstract class BasicBot implements IBasicBot {
     private GameSetup gameSetup;
     private TickEvent currentTurn;
 
+    private final Event<ConnectedEvent> onConnected = new Event<>();
+    private final Event<DisconnectedEvent> onDisconnected = new Event<>();
+    private final Event<ConnectionErrorEvent> onConnectionError = new Event<>();
+    private final Event<GameStartedEvent> onGameStarted = new Event<>();
+    private final Event<GameEndedEvent> onGameEnded = new Event<>();
+    private final Event<TickEvent> onTick = new Event<>();
+    private final Event<SkippedTurnEvent> onSkippedTurn = new Event<>();
+    private final Event<BotDeathEvent> onBotDeath = new Event<>();
+    private final Event<BotHitBotEvent> onHitBot = new Event<>();
+    private final Event<BotHitWallEvent> onHitWall = new Event<>();
+    private final Event<BulletFiredEvent> onBulletFired = new Event<>();
+    private final Event<BulletHitBotEvent> onHitByBullet = new Event<>();
+    private final Event<BulletHitBotEvent> onBulletHit = new Event<>();
+    private final Event<BulletHitBulletEvent> onBulletHitBullet = new Event<>();
+    private final Event<BulletHitWallEvent> onBulletHitWall = new Event<>();
+    private final Event<ScannedBotEvent> onScannedBot = new Event<>();
+    private final Event<WonRoundEvent> onWonRound = new Event<>();
+
     __Internals(BotInfo botInfo, URI serverUri) {
       this.botInfo = (botInfo == null) ? Env.getBotInfo() : botInfo;
       init(serverUri == null ? getServerUriFromSetting() : serverUri);
@@ -311,6 +337,92 @@ public abstract class BasicBot implements IBasicBot {
 
     private void init(URI serverUri) {
       try {
+        onConnected.subscribe(
+            event -> {
+              BasicBot.this.onConnected(event);
+              return null;
+            });
+        onDisconnected.subscribe(
+            event -> {
+              BasicBot.this.onDisconnected(event);
+              return null;
+            });
+        onConnectionError.subscribe(
+            event -> {
+              BasicBot.this.onConnectionError(event);
+              return null;
+            });
+        onGameStarted.subscribe(
+            event -> {
+              BasicBot.this.onGameStarted(event);
+              return null;
+            });
+        onGameEnded.subscribe(
+            event -> {
+              BasicBot.this.onGameEnded(event);
+              return null;
+            });
+        onTick.subscribe(
+            event -> {
+              BasicBot.this.onTick(event);
+              return null;
+            });
+        onSkippedTurn.subscribe(
+            event -> {
+              BasicBot.this.onSkippedTurn(event);
+              return null;
+            });
+        onBotDeath.subscribe(
+            event -> {
+              BasicBot.this.onBotDeath(event);
+              return null;
+            });
+        onHitBot.subscribe(
+            event -> {
+              BasicBot.this.onHitBot(event);
+              return null;
+            });
+        onHitWall.subscribe(
+            event -> {
+              BasicBot.this.onHitWall(event);
+              return null;
+            });
+        onBulletFired.subscribe(
+            event -> {
+              BasicBot.this.onBulletFired(event);
+              return null;
+            });
+        onHitByBullet.subscribe(
+            event -> {
+              BasicBot.this.onHitByBullet(event);
+              return null;
+            });
+        onBulletHit.subscribe(
+            event -> {
+              BasicBot.this.onBulletHit(event);
+              return null;
+            });
+        onBulletHitBullet.subscribe(
+            event -> {
+              BasicBot.this.onBulletHitBullet(event);
+              return null;
+            });
+        onBulletHitWall.subscribe(
+            event -> {
+              BasicBot.this.onBulletHitWall(event);
+              return null;
+            });
+        onScannedBot.subscribe(
+            event -> {
+              BasicBot.this.onScannedBot(event);
+              return null;
+            });
+        onWonRound.subscribe(
+            event -> {
+              BasicBot.this.onWonRound(event);
+              return null;
+            });
+
         webSocket = new WebSocketFactory().createSocket(serverUri);
         webSocket.addListener(new WebSocketListener());
 
@@ -395,7 +507,7 @@ public abstract class BasicBot implements IBasicBot {
       @Override
       public final void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
         val event = ConnectedEvent.builder().build();
-        BasicBot.this.onConnected(event);
+        onConnected.publish(event);
       }
 
       @Override
@@ -406,7 +518,7 @@ public abstract class BasicBot implements IBasicBot {
           boolean closedByServer) {
 
         val event = DisconnectedEvent.builder().remote(closedByServer).build();
-        BasicBot.this.onDisconnected(event);
+        onDisconnected.publish(event);
 
         BasicBot.this.__internals.clearCurrentGameState();
       }
@@ -414,7 +526,7 @@ public abstract class BasicBot implements IBasicBot {
       @Override
       public final void onError(WebSocket websocket, WebSocketException cause) {
         val event = ConnectionErrorEvent.builder().exception(cause).build();
-        BasicBot.this.onConnectionError(event);
+        onConnectionError.publish(event);
       }
 
       @Override
@@ -426,7 +538,7 @@ public abstract class BasicBot implements IBasicBot {
           val type = jsonType.getAsString();
 
           switch (dev.robocode.tankroyale.schema.Message.Type.fromValue(type)) {
-            case SKIPPED_TURN_EVENT:
+            case SKIPPED_TURN_EVENT: // FIXME: Already handled somewhere else
               handleSkippedTurnEvent(jsonMsg);
               break;
             case TICK_EVENT_FOR_BOT:
@@ -457,15 +569,6 @@ public abstract class BasicBot implements IBasicBot {
         webSocket.sendText(msg);
       }
 
-      private void handleTickEvent(JsonObject jsonMsg) {
-        val tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
-        currentTurn = EventMapper.map(tickEventForBot);
-
-        // Dispatch all on the tick event before the tick event itself
-        dispatchEvents(currentTurn);
-        BasicBot.this.onTick(currentTurn);
-      }
-
       private void handleGameStartedEvent(JsonObject jsonMsg) {
         val gameStartedEventForBot = gson.fromJson(jsonMsg, GameStartedEventForBot.class);
         val gameSetup = gameStartedEventForBot.getGameSetup();
@@ -485,7 +588,8 @@ public abstract class BasicBot implements IBasicBot {
                 .myId(gameStartedEventForBot.getMyId())
                 .gameSetup(BasicBot.__Internals.this.gameSetup)
                 .build();
-        BasicBot.this.onGameStarted(gameStartedEvent);
+
+        onGameStarted.publish(gameStartedEvent);
       }
     }
 
@@ -500,13 +604,25 @@ public abstract class BasicBot implements IBasicBot {
               .numberOfRounds(gameEndedEventForBot.getNumberOfRounds())
               .results(ResultsMapper.map(gameEndedEventForBot.getResults()))
               .build();
-      BasicBot.this.onGameEnded(gameEndedEvent);
+
+      onGameEnded.publish(gameEndedEvent);
+    }
+
+    private void handleTickEvent(JsonObject jsonMsg) {
+      val tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
+      currentTurn = EventMapper.map(tickEventForBot);
+
+      // Dispatch all on the tick event before the tick event itself
+      dispatchEvents(currentTurn);
+
+      onTick.publish(currentTurn);
     }
 
     private void handleSkippedTurnEvent(JsonObject jsonMsg) {
       val skippedTurnEvent =
           gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
-      BasicBot.this.onSkippedTurn((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
+
+      onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
     }
 
     private void dispatchEvents(TickEvent tickEvent) {
@@ -515,34 +631,49 @@ public abstract class BasicBot implements IBasicBot {
           .forEach(
               event -> {
                 if (event instanceof BotDeathEvent) {
-                  BasicBot.this.onBotDeath((BotDeathEvent) event);
+                  onBotDeath.publish((BotDeathEvent) event);
                 } else if (event instanceof BotHitBotEvent) {
-                  BasicBot.this.onHitBot((BotHitBotEvent) event);
+                  onHitBot.publish((BotHitBotEvent) event);
                 } else if (event instanceof BotHitWallEvent) {
-                  BasicBot.this.onHitWall((BotHitWallEvent) event);
+                  onHitWall.publish((BotHitWallEvent) event);
                 } else if (event instanceof BulletFiredEvent) {
                   // Stop firing, when bullet has fired
                   botIntent.setFirepower(0d);
-                  BasicBot.this.onBulletFired((BulletFiredEvent) event);
+                  onBulletFired.publish((BulletFiredEvent) event);
                 } else if (event instanceof BulletHitBotEvent) {
                   BulletHitBotEvent bulletEvent = (BulletHitBotEvent) event;
                   if (bulletEvent.getVictimId() == myId) {
-                    BasicBot.this.onHitByBullet((BulletHitBotEvent) event);
+                    onHitByBullet.publish(bulletEvent);
                   } else {
-                    BasicBot.this.onBulletHit((BulletHitBotEvent) event);
+                    onBulletHit.publish(bulletEvent);
                   }
                 } else if (event instanceof BulletHitBulletEvent) {
-                  BasicBot.this.onBulletHitBullet((BulletHitBulletEvent) event);
+                  onBulletHitBullet.publish((BulletHitBulletEvent) event);
                 } else if (event instanceof BulletHitWallEvent) {
-                  BasicBot.this.onBulletHitWall((BulletHitWallEvent) event);
+                  onBulletHitWall.publish((BulletHitWallEvent) event);
                 } else if (event instanceof ScannedBotEvent) {
-                  BasicBot.this.onScannedBot((ScannedBotEvent) event);
-                } else if (event instanceof SkippedTurnEvent) {
-                  BasicBot.this.onSkippedTurn((SkippedTurnEvent) event);
+                  onScannedBot.publish((ScannedBotEvent) event);
+                } else if (event
+                    instanceof SkippedTurnEvent) { // FIXME: Already handled somewhere else
+                  onSkippedTurn.publish((SkippedTurnEvent) event);
                 } else if (event instanceof WonRoundEvent) {
-                  BasicBot.this.onWonRound((WonRoundEvent) event);
+                  onWonRound.publish((WonRoundEvent) event);
                 }
               });
+    }
+
+    private class Event<T> {
+      private List<UnaryOperator<T>> subscribers = Collections.synchronizedList(new ArrayList<>());
+
+      void subscribe(UnaryOperator<T> subscriber) {
+        subscribers.add(subscriber);
+      }
+
+      void publish(T source) {
+        for (UnaryOperator<T> subscriber : subscribers) {
+          subscriber.apply(source);
+        }
+      }
     }
   }
 }
