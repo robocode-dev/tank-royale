@@ -1,9 +1,5 @@
 package dev.robocode.tankroyale.botapi;
 
-import dev.robocode.tankroyale.botapi.events.BotHitBotEvent;
-import dev.robocode.tankroyale.botapi.events.BotHitWallEvent;
-import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
-import dev.robocode.tankroyale.botapi.events.TickEvent;
 import lombok.val;
 
 import java.net.URI;
@@ -72,41 +68,41 @@ public abstract class Bot extends BasicBot implements IBot {
 
       superInt.onTick.subscribe(
           event -> {
-            onTick(event);
+            onTick();
             return null;
           });
       superInt.onSkippedTurn.subscribe(
           event -> {
-            onSkippedTurn(event);
+            onSkippedTurn();
             return null;
           });
       superInt.onHitBot.subscribe(
           event -> {
-            onHitBot(event);
+            onHitBot(event.isRammed());
             return null;
           });
       superInt.onHitWall.subscribe(
           event -> {
-            onHitWall(event);
+            onHitWall();
             return null;
           });
     }
 
-    private void onTick(TickEvent tick) {
+    private void onTick() {
       processTurn();
     }
 
-    private void onSkippedTurn(SkippedTurnEvent skippedTurn) {
+    private void onSkippedTurn() {
       processTurn();
     }
 
-    private void onHitBot(BotHitBotEvent event) {
-      if (event.isRammed()) {
+    private void onHitBot(boolean isRamming) {
+      if (isRamming) {
         resetRemainingDistanceAndTurn();
       }
     }
 
-    private void onHitWall(BotHitWallEvent event) {
+    private void onHitWall() {
       resetRemainingDistanceAndTurn();
     }
 
@@ -135,7 +131,7 @@ public abstract class Bot extends BasicBot implements IBot {
       setTargetSpeed(speed);
 
       // If we are over-driving our distance and we are now at velocity=0 then we stopped
-      if (isNear(speed, 0) && isOverDriving) {
+      if (isNearZero(speed) && isOverDriving) {
         distanceRemaining = 0;
         distance = 0;
         isOverDriving = false;
@@ -221,8 +217,8 @@ public abstract class Bot extends BasicBot implements IBot {
       turnRemaining = 0;
     }
 
-    private boolean isNear(double value1, double value2) {
-      return (Math.abs(value1 - value2) < .00001);
+    private boolean isNearZero(double value) {
+      return (Math.abs(value) < .00001);
     }
   }
 }

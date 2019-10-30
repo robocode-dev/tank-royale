@@ -68,7 +68,7 @@ public class TestBot2 extends Bot {
       setGunTurnRate(gunTurnRate);
     }
     setFire(0.1 + Math.random() * 2.9);
-
+    this.
     go();
   }
 
