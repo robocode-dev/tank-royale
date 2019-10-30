@@ -88,9 +88,6 @@ public abstract class BasicBot implements IBasicBot {
 
   @Override
   public final void go() {
-    // Let other bot implementation have the chance of setting the intent before it is sent to the server
-    __internals.onGo.publish(null);
-
     // Send the bot intent to the server
     __internals.sendBotIntent();
   }
@@ -319,7 +316,7 @@ public abstract class BasicBot implements IBasicBot {
     private final Event<GameStartedEvent> onGameStarted = new Event<>();
     private final Event<GameEndedEvent> onGameEnded = new Event<>();
     final Event<TickEvent> onTick = new Event<>();
-    private final Event<SkippedTurnEvent> onSkippedTurn = new Event<>();
+    final Event<SkippedTurnEvent> onSkippedTurn = new Event<>();
     private final Event<BotDeathEvent> onBotDeath = new Event<>();
     final Event<BotHitBotEvent> onHitBot = new Event<>();
     final Event<BotHitWallEvent> onHitWall = new Event<>();
@@ -330,7 +327,6 @@ public abstract class BasicBot implements IBasicBot {
     private final Event<BulletHitWallEvent> onBulletHitWall = new Event<>();
     private final Event<ScannedBotEvent> onScannedBot = new Event<>();
     private final Event<WonRoundEvent> onWonRound = new Event<>();
-    final Event<Void> onGo = new Event<>();
 
     __Internals(BotInfo botInfo, URI serverUri) {
       this.botInfo = (botInfo == null) ? Env.getBotInfo() : botInfo;

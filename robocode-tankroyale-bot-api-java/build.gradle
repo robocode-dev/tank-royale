@@ -32,7 +32,7 @@ dependencies {
 }
 
 jar {
-    manifest { attributes 'Main-Class': 'dev.robocode.tankroyale.bot.TestBot' }
+    manifest { attributes 'Main-Class': 'dev.robocode.tankroyale.bot.TestBot2' }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
