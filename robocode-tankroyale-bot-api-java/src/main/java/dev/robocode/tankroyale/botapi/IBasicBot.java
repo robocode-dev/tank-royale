@@ -161,8 +161,20 @@ public interface IBasicBot {
    * before the turn timeout occurs. Otherwise your bot will receive SkippedTurnEvent(s).
    *
    * <p>Available when game has started.
+   *
+   * @see #getTimeLeft()
+   * @see #go()
    */
   int getTurnTimeout();
+
+  /**
+   * Returns the number of microseconds left for this round before the bot will skip the turn. Make
+   * sure to call {@link #go()} before the time runs out.
+   *
+   * @see #getTurnTimeout()
+   * @see #go()
+   */
+  int getTimeLeft();
 
   /** Returns the current round number */
   int getRoundNumber();

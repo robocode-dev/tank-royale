@@ -70,22 +70,22 @@ public abstract class Bot extends BasicBot implements IBot {
           event -> {
             onTick();
             return null;
-          });
+          }, 50);
       superInt.onSkippedTurn.subscribe(
           event -> {
             onSkippedTurn();
             return null;
-          });
+          }, 50);
       superInt.onHitBot.subscribe(
           event -> {
             onHitBot(event.isRammed());
             return null;
-          });
+          }, 50);
       superInt.onHitWall.subscribe(
           event -> {
             onHitWall();
             return null;
-          });
+          }, 50);
     }
 
     private void onTick() {

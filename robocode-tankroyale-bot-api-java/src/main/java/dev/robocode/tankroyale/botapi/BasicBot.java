@@ -29,10 +29,7 @@ import dev.robocode.tankroyale.botapi.mapper.ResultsMapper;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.UnaryOperator;
 
 public abstract class BasicBot implements IBasicBot {
@@ -140,6 +137,12 @@ public abstract class BasicBot implements IBasicBot {
   @Override
   public final int getTurnTimeout() {
     return __internals.getGameSetup().getTurnTimeout();
+  }
+
+  @Override
+  public final int getTimeLeft() {
+    long passesMicroSeconds = (System.nanoTime() - __internals.tickStartNanoTime) / 1000;
+    return (int)(__internals.getGameSetup().getTurnTimeout() - passesMicroSeconds);
   }
 
   @Override
@@ -309,6 +312,7 @@ public abstract class BasicBot implements IBasicBot {
     private Integer myId;
     private GameSetup gameSetup;
     private TickEvent currentTurn;
+    private long tickStartNanoTime;
 
     private final Event<ConnectedEvent> onConnected = new Event<>();
     private final Event<DisconnectedEvent> onDisconnected = new Event<>();
@@ -339,87 +343,88 @@ public abstract class BasicBot implements IBasicBot {
             event -> {
               BasicBot.this.onConnected(event);
               return null;
-            });
+            }, 100);
         onDisconnected.subscribe(
             event -> {
               BasicBot.this.onDisconnected(event);
               return null;
-            });
+            }, 100);
         onConnectionError.subscribe(
             event -> {
               BasicBot.this.onConnectionError(event);
               return null;
-            });
+            }, 100);
         onGameStarted.subscribe(
             event -> {
               BasicBot.this.onGameStarted(event);
               return null;
-            });
+            }, 100);
         onGameEnded.subscribe(
             event -> {
               BasicBot.this.onGameEnded(event);
               return null;
-            });
+            }, 100);
         onTick.subscribe(
             event -> {
+              tickStartNanoTime = System.nanoTime();
               BasicBot.this.onTick(event);
               return null;
-            });
+            }, 100);
         onSkippedTurn.subscribe(
             event -> {
               BasicBot.this.onSkippedTurn(event);
               return null;
-            });
+            }, 100);
         onBotDeath.subscribe(
             event -> {
               BasicBot.this.onBotDeath(event);
               return null;
-            });
+            }, 100);
         onHitBot.subscribe(
             event -> {
               BasicBot.this.onHitBot(event);
               return null;
-            });
+            }, 100);
         onHitWall.subscribe(
             event -> {
               BasicBot.this.onHitWall(event);
               return null;
-            });
+            }, 100);
         onBulletFired.subscribe(
             event -> {
               BasicBot.this.onBulletFired(event);
               return null;
-            });
+            }, 100);
         onHitByBullet.subscribe(
             event -> {
               BasicBot.this.onHitByBullet(event);
               return null;
-            });
+            }, 100);
         onBulletHit.subscribe(
             event -> {
               BasicBot.this.onBulletHit(event);
               return null;
-            });
+            }, 100);
         onBulletHitBullet.subscribe(
             event -> {
               BasicBot.this.onBulletHitBullet(event);
               return null;
-            });
+            }, 100);
         onBulletHitWall.subscribe(
             event -> {
               BasicBot.this.onBulletHitWall(event);
               return null;
-            });
+            }, 100);
         onScannedBot.subscribe(
             event -> {
               BasicBot.this.onScannedBot(event);
               return null;
-            });
+            }, 100);
         onWonRound.subscribe(
             event -> {
               BasicBot.this.onWonRound(event);
               return null;
-            });
+            }, 100);
 
         webSocket = new WebSocketFactory().createSocket(serverUri);
         webSocket.addListener(new WebSocketListener());
@@ -661,14 +666,15 @@ public abstract class BasicBot implements IBasicBot {
     }
 
     protected class Event<T> {
-      private List<UnaryOperator<T>> subscribers = Collections.synchronizedList(new ArrayList<>());
+      private Map<Integer /* priority, lower first */, UnaryOperator<T> /* method */> subscribers =
+          Collections.synchronizedMap(new TreeMap<>());
 
-      void subscribe(UnaryOperator<T> subscriber) {
-        subscribers.add(subscriber);
+      void subscribe(UnaryOperator<T> subscriber, int priority) {
+        subscribers.put(priority, subscriber);
       }
 
       void publish(T source) {
-        for (UnaryOperator<T> subscriber : subscribers) {
+        for (UnaryOperator<T> subscriber : subscribers.values()) {
           subscriber.apply(source);
         }
       }
