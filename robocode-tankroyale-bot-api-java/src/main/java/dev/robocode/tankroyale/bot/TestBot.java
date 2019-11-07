@@ -46,7 +46,7 @@ public class TestBot extends BasicBot {
     go();
   }
 
-  private double targetSpeed = 15;
+  private double targetSpeed = 8;
 
   @Override
   public void onTick(TickEvent event) {

@@ -243,11 +243,20 @@ public interface IBasicBot {
    * turn rate of the body. But be aware that the turn limits for the gun and radar cannot be
    * exceeded.
    *
+   * <p>The turn rate is truncated to {@link #MAX_TURN_RATE} if the turn rate exceeds this value.
+   *
    * <p>If this method is called multiple times, the last call before go() is executed counts.
    *
    * @param turnRate is the new turn rate of the body
    */
   void setTurnRate(double turnRate);
+
+  /**
+   * Returns the turn rate.
+   *
+   * @see #setTurnRate(double)
+   */
+  double getTurnRate();
 
   /**
    * Sets the new turn rate of the gun in degrees per turn (can be positive and negative). The turn
@@ -258,11 +267,21 @@ public interface IBasicBot {
    * subtracting the turn rate of the body from the turn rate of the gun. But be aware that the turn
    * limits for the radar (and also body and gun) cannot be exceeded.
    *
+   * <p>The gun turn rate is truncated to {@link #MAX_GUN_TURN_RATE} if the gun turn rate exceeds
+   * this value.
+   *
    * <p>If this method is called multiple times, the last call before go() is executed counts.
    *
    * @param gunTurnRate is the new turn rate of the gun
    */
   void setGunTurnRate(double gunTurnRate);
+
+  /**
+   * Returns the gun turn rate.
+   *
+   * @see #setGunTurnRate(double)
+   */
+  double getGunTurnRate();
 
   /**
    * Sets the new turn rate of the radar in degrees per turn (can be positive and negative). The
@@ -273,11 +292,21 @@ public interface IBasicBot {
    * radar. But be aware that the turn limits for the radar (and also body and gun) cannot be
    * exceeded.
    *
+   * <p>The radar turn rate is truncated to {@link #MAX_RADAR_TURN_RATE} if the radar turn rate
+   * exceeds this value.
+   *
    * <p>If this method is called multiple times, the last call before go() is executed counts.
    *
    * @param gunRadarTurnRate is the new turn rate of the radar
    */
   void setRadarTurnRate(double gunRadarTurnRate);
+
+  /**
+   * Returns the radar turn rate.
+   *
+   * @see #setRadarTurnRate(double)
+   */
+  double getRadarTurnRate();
 
   /**
    * Sets the new target speed for the bot. The target speed is the speed you want to achieve
@@ -291,9 +320,18 @@ public interface IBasicBot {
    * as it is -2 pixel/turn. Deceleration is negative as it is added to the speed and hence needs to
    * be negative.
    *
+   * <p>The target speed is truncated to {@link #MAX_SPEED} if the target speed exceeds this value.
+   *
    * @param targetSpeed is the new target speed
    */
   void setTargetSpeed(double targetSpeed);
+
+  /**
+   * Returns the target speed.
+   *
+   * @see #setTargetSpeed(double)
+   */
+  double getTargetSpeed();
 
   /**
    * Sets the gun to fire in the direction as the gun is pointing as soon as the the gun heat has
@@ -318,10 +356,85 @@ public interface IBasicBot {
    * <p>Note that the gun will automatically keep firing at any turn when the gun heat reaches zero.
    * It is possible disable the gun firing by setting the firepower to zero.
    *
+   * <p>The firepower is truncated to {@link #MIN_FIREPOWER} and {@link #MAX_FIREPOWER} if the
+   * firepower exceeds these values.
+   *
    * @param firepower is the amount of energy spend on firing the gun. If set to zero, the gun will
    *     not fire (automatically) when the gun heat reaches zero.
    */
   void setFire(double firepower);
+
+  /**
+   * Sets the gun to adjust for the bot's turn when calling {@link #setGunTurnRate(double)}. So the
+   * gun behaves like it is turning independent of the bot's turn.
+   *
+   * <p>Ok, so this needs some explanation: The gun is mounted on the bot's body. So, normally, if
+   * the bot turns 90 degrees to the right, then the gun will turn with it as it is mounted on top
+   * of the bot's body. To compensate for this, you can call {@code setAdjustGunForBodyTurn(true)}.
+   * When this is set, the gun will turn independent from the bot's turn.
+   *
+   * <p>Note: This method is additive until you reach the maximum the gun can turn ({@link
+   * #MAX_GUN_TURN_RATE}). The "adjust" is added to the amount you set for turning the bot by {@link
+   * #setTurnRate(double)}, then capped by the physics of the game.
+   *
+   * <p>Note: The gun compensating this way does count as "turning the gun"
+   *
+   * @param adjust {@code true} if the gun must adjust/compensate for the bot's turn; {@code false}
+   *     if the gun must turn with the bot's turn.
+   * @see #setAdjustRadarForGunTurn(boolean)
+   * @see #isAdjustGunForBodyTurn()
+   */
+  void setAdjustGunForBodyTurn(boolean adjust);
+
+  /**
+   * Checks if the gun is set to adjust for the bot turning, i.e. to turn independent from the bot's
+   * body turn.
+   *
+   * <p>This call returns {@code true} if the gun is set to turn independent of the turn of the
+   * bot's body. Otherwise, {@code false} is returned, meaning that the gun is set to turn with the
+   * bot's body turn.
+   *
+   * @return {@code true} if the gun is set to turn independent of the bot turning; {@code false} if
+   *     the gun is set to turn with the bot turning
+   * @see #setAdjustGunForBodyTurn(boolean)
+   */
+  boolean isAdjustGunForBodyTurn();
+
+  /**
+   * Sets the radar to adjust for the gun's turn when calling {@link #setRadarTurnRate(double)}. So
+   * the radar behaves like it is turning independent of the gun's turn.
+   *
+   * <p>Ok, so this needs some explanation: The radar is mounted on the gun. So, normally, if the
+   * gun turns 90 degrees to the right, then the radar will turn with it as it is mounted on top of
+   * the gun. To compensate for this, you can call {@code setAdjustRadarForGunTurn(true)}. When this
+   * is set, the radar will turn independent from the gun's turn.
+   *
+   * <p>Note: This method is additive until you reach the maximum the radar can turn ({@link
+   * #MAX_RADAR_TURN_RATE}). The "adjust" is added to the amount you set for turning the gun by
+   * {@link #setGunTurnRate(double)}, then capped by the physics of the game.
+   *
+   * <p>Note: The radar compensating this way does count as "turning the radar".
+   *
+   * @param adjust {@code true} if the radar must adjust/compensate for the gun's turn; {@code
+   *     false} if the radar must turn with the gun's turn.
+   * @see #setAdjustGunForBodyTurn(boolean)
+   * @see #isAdjustRadarForGunTurn()
+   */
+  void setAdjustRadarForGunTurn(boolean adjust);
+
+  /**
+   * Checks if the radar is set to adjust for the gun turning, i.e. to turn independent from the
+   * gun's turn.
+   *
+   * <p>This call returns {@code true} if the radar is set to turn independent of the turn of the
+   * gun. Otherwise, {@code false} is returned, meaning that the radar is set to turn with the gun's
+   * turn.
+   *
+   * @return {@code true} if the radar is set to turn independent of the gun turning; {@code false}
+   *     if the radar is set to turn with the gun turning
+   * @see #setAdjustRadarForGunTurn(boolean)
+   */
+  boolean isAdjustRadarForGunTurn();
 
   /** Event handler triggered when connected to server */
   default void onConnected(ConnectedEvent connectedEvent) {}

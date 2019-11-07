@@ -41,6 +41,9 @@ public interface IBot extends IBasicBot {
    * #setForward(double)} or {@link #setBack(double)}. When the distance remaining has reached 0,
    * the bot has finished its move.
    *
+   * <p>When the distance remaining is positive, the bot is moving forward. When the distance
+   * remaining is negative, the bot is moving backwards.
+   *
    * <p>If this method is called multiple times, the last call before go() is executed counts.
    *
    * @see #setForward(double)
@@ -51,9 +54,12 @@ public interface IBot extends IBasicBot {
 
   /**
    * Sets the maximum speed which applies when moving forwards and backwards. The maximum speed must
-   * be a value from 0 to {@link #MAX_SPEED}, both values are included. If the input speed is
-   * negative, the max speed will be set to zero. If the input speed is above {@link #MAX_SPEED},
-   * the max speed will be set to {@link #MAX_SPEED}
+   * be an absolute value from 0 to {@link #MAX_SPEED}, both values are included. If the input speed
+   * is negative, the max speed will be cut to zero. If the input speed is above {@link #MAX_SPEED},
+   * the max speed will be set to {@link #MAX_SPEED}.
+   *
+   * <p>If for example the maximum speed is set to 5, then the bot will be able to move backwards
+   * with a speed down to -5 pixels/turn and up to 5 pixels/turn when moving forward.
    *
    * <p>If this method is called multiple times, the last call before go() is executed counts.
    *
@@ -96,9 +102,12 @@ public interface IBot extends IBasicBot {
   void setTurnRight(double degrees);
 
   /**
-   * Returns the turn remaining till the bot has finished turning after having called {@link
-   * #setTurnLeft(double)} or {@link #setTurnRight(double)}. When the turn remaining has reached 0,
-   * the bot has finished turning.
+   * Returns the remaining turn in degrees till the bot has finished turning after having called
+   * {@link #setTurnLeft(double)} or {@link #setTurnRight(double)}. When the turn remaining has
+   * reached 0, the bot has finished turning. If the
+   *
+   * <p>When the turn remaining is positive, the bot is turning to the left (along the unit circle).
+   * When the turn remaining is negative, the bot is turning to the right.
    *
    * <p>If this method is called multiple times, the last call before go() is executed counts.
    *
@@ -141,9 +150,12 @@ public interface IBot extends IBasicBot {
   void setTurnGunRight(double degrees);
 
   /**
-   * Returns the turn remaining till the gun has finished turning after having called {@link
-   * #setTurnGunLeft(double)} or {@link #setTurnGunRight(double)}. When the turn remaining has
-   * reached 0, the gun has finished turning.
+   * Returns the remaining turn in degrees till the gun has finished turning after having called
+   * {@link #setTurnGunLeft(double)} or {@link #setTurnGunRight(double)}. When the turn remaining
+   * has reached 0, the gun has finished turning.
+   *
+   * <p>When the turn remaining is positive, the bot is turning to the left (along the unit circle).
+   * When the turn remaining is negative, the bot is turning to the right.
    *
    * <p>If this method is called multiple times, the last call before go() is executed counts.
    *
@@ -158,7 +170,8 @@ public interface IBot extends IBasicBot {
    * turned the specified amount of degrees, i.e., when {@link #getRadarTurnRemaining()} is 0. The
    * amount of degrees to turn each turn is limited by {@link #setRadarTurnRate(double)}.
    *
-   * <p>This method will cancel the effect of earlier called to setTurnRadarLeft or setTurnRadarRight.
+   * <p>This method will cancel the effect of earlier called to setTurnRadarLeft or
+   * setTurnRadarRight.
    *
    * <p>If this method is called multiple times, the last call before go() is executed counts.
    *
@@ -174,7 +187,8 @@ public interface IBot extends IBasicBot {
    * turned the specified amount of degrees, i.e., when {@link #getRadarTurnRemaining()} is 0. The
    * amount of degrees to turn each turn is limited by {@link #setRadarTurnRate(double)}.
    *
-   * <p>This method will cancel the effect of earlier called to setTurnRadarLeft or setTurnRadarRight.
+   * <p>This method will cancel the effect of earlier called to setTurnRadarLeft or
+   * setTurnRadarRight.
    *
    * <p>If this method is called multiple times, the last call before go() is executed counts.
    *
@@ -186,9 +200,12 @@ public interface IBot extends IBasicBot {
   void setTurnRadarRight(double degrees);
 
   /**
-   * Returns the turn remaining till the radar has finished turning after having called {@link
-   * #setTurnRadarLeft(double)} or {@link #setTurnRadarRight(double)}. When the turn remaining has
-   * reached 0, the radar has finished turning.
+   * Returns the remaining turn in degrees till the radar has finished turning after having called
+   * {@link #setTurnRadarLeft(double)} or {@link #setTurnRadarRight(double)}. When the turn
+   * remaining has reached 0, the radar has finished turning.
+   *
+   * <p>When the turn remaining is positive, the bot is turning to the left (along the unit circle).
+   * When the turn remaining is negative, the bot is turning to the right.
    *
    * <p>If this method is called multiple times, the last call before go() is executed counts.
    *

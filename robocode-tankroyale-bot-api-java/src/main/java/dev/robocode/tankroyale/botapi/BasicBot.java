@@ -212,31 +212,123 @@ public abstract class BasicBot implements IBasicBot {
 
   @Override
   public final void setTurnRate(double turnRate) {
+    if (Double.isNaN(turnRate)) {
+      throw new IllegalArgumentException("turnRate cannot be NaN");
+    }
+    if (Math.abs(turnRate) > MAX_TURN_RATE) {
+      turnRate = turnRate > 0 ? MAX_TURN_RATE : -MAX_TURN_RATE;
+    }
     __internals.botIntent.setTurnRate(turnRate);
   }
 
   @Override
+  public final double getTurnRate() {
+    var turnRate = __internals.botIntent.getTurnRate();
+    if (turnRate == null) {
+      return 0;
+    }
+    return turnRate;
+  }
+
+  @Override
   public final void setGunTurnRate(double gunTurnRate) {
+    if (Double.isNaN(gunTurnRate)) {
+      throw new IllegalArgumentException("gunTurnRate cannot be NaN");
+    }
+    if (isAdjustGunForBodyTurn()) {
+      gunTurnRate -= getTurnRate();
+    }
+    if (Math.abs(gunTurnRate) > MAX_GUN_TURN_RATE) {
+      gunTurnRate = gunTurnRate > 0 ? MAX_GUN_TURN_RATE : -MAX_GUN_TURN_RATE;
+    }
     __internals.botIntent.setGunTurnRate(gunTurnRate);
   }
 
   @Override
+  public final double getGunTurnRate() {
+    var turnRate = __internals.botIntent.getGunTurnRate();
+    if (turnRate == null) {
+      return 0;
+    }
+    return turnRate;
+  }
+
+  @Override
   public final void setRadarTurnRate(double radarTurnRate) {
+    if (Double.isNaN(radarTurnRate)) {
+      throw new IllegalArgumentException("radarTurnRate cannot be NaN");
+    }
+    if (isAdjustRadarForGunTurn()) {
+      radarTurnRate -= getGunTurnRate();
+    }
+    if (Math.abs(radarTurnRate) > MAX_RADAR_TURN_RATE) {
+      radarTurnRate = radarTurnRate > 0 ? MAX_RADAR_TURN_RATE : -MAX_RADAR_TURN_RATE;
+    }
     __internals.botIntent.setRadarTurnRate(radarTurnRate);
   }
 
   @Override
+  public final double getRadarTurnRate() {
+    var turnRate = __internals.botIntent.getRadarTurnRate();
+    if (turnRate == null) {
+      return 0;
+    }
+    return turnRate;
+  }
+
+  @Override
   public final void setTargetSpeed(double targetSpeed) {
+    if (Double.isNaN(targetSpeed)) {
+      throw new IllegalArgumentException("targetSpeed cannot be NaN");
+    }
+    if (targetSpeed > MAX_SPEED) {
+      targetSpeed = MAX_SPEED;
+    } else if (targetSpeed < -MAX_SPEED) {
+      targetSpeed = -MAX_SPEED;
+    }
     __internals.botIntent.setTargetSpeed(targetSpeed);
   }
 
   @Override
+  public final double getTargetSpeed() {
+    return __internals.botIntent.getTargetSpeed();
+  }
+
+  @Override
   public final void setFire(double firepower) {
+    if (Double.isNaN(firepower)) {
+      throw new IllegalArgumentException("firepower cannot be NaN");
+    }
+    if (firepower > MAX_FIREPOWER) {
+      firepower = MAX_FIREPOWER;
+    } else if (firepower < MIN_FIREPOWER) {
+      firepower = MIN_FIREPOWER;
+    }
     __internals.botIntent.setFirepower(firepower);
   }
 
   @Override
-  public double calcMaxTurnRate(double speed) {
+  public final void setAdjustGunForBodyTurn(boolean adjust) {
+    __internals.isAdjustGunForBodyTurn = adjust;
+  }
+
+  @Override
+  public final void setAdjustRadarForGunTurn(boolean adjust) {
+    __internals.isAdjustRadarForGunTurn = adjust;
+  }
+
+  @Override
+  public final boolean isAdjustGunForBodyTurn() {
+    return __internals.isAdjustGunForBodyTurn;
+  }
+
+  @Override
+  public final boolean isAdjustRadarForGunTurn() {
+    return __internals.isAdjustRadarForGunTurn;
+  }
+
+  @Override
+  public final double calcMaxTurnRate(double speed) {
     return MAX_TURN_RATE - 0.75 * Math.abs(speed);
   }
 
@@ -313,6 +405,10 @@ public abstract class BasicBot implements IBasicBot {
     private GameSetup gameSetup;
     private TickEvent currentTurn;
     private long tickStartNanoTime;
+
+    // Adjustment of turn rates
+    private boolean isAdjustGunForBodyTurn;
+    private boolean isAdjustRadarForGunTurn;
 
     private final Event<ConnectedEvent> onConnected = new Event<>();
     private final Event<DisconnectedEvent> onDisconnected = new Event<>();
@@ -669,11 +765,11 @@ public abstract class BasicBot implements IBasicBot {
       private Map<Integer /* priority, lower first */, UnaryOperator<T> /* method */> subscribers =
           Collections.synchronizedMap(new TreeMap<>());
 
-      void subscribe(UnaryOperator<T> subscriber, int priority) {
+      final void subscribe(UnaryOperator<T> subscriber, int priority) {
         subscribers.put(priority, subscriber);
       }
 
-      void publish(T source) {
+      final void publish(T source) {
         for (UnaryOperator<T> subscriber : subscribers.values()) {
           subscriber.apply(source);
         }

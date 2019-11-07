@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.botapi;
 import lombok.val;
 
 import java.net.URI;
+import static java.lang.Math.abs;
 
 public abstract class Bot extends BasicBot implements IBot {
 
@@ -46,8 +47,9 @@ public abstract class Bot extends BasicBot implements IBot {
   @Override
   public final void setMaxSpeed(double maxSpeed) {
     if (Double.isNaN(maxSpeed)) {
-      maxSpeed = MAX_SPEED;
-    } else if (maxSpeed < 0) {
+      throw new IllegalArgumentException("maxSpeed cannot be NaN");
+    }
+    if (maxSpeed < 0) {
       maxSpeed = 0;
     } else if (maxSpeed > MAX_SPEED) {
       maxSpeed = MAX_SPEED;
@@ -55,12 +57,78 @@ public abstract class Bot extends BasicBot implements IBot {
     __internals.maxSpeed = maxSpeed;
   }
 
+  @Override
+  public final void setTurnLeft(double degrees) {
+    if (Double.isNaN(degrees)) {
+      throw new IllegalArgumentException("degrees cannot be NaN");
+    }
+    __internals.turnRemaining = degrees;
+  }
+
+  @Override
+  public final void setTurnRight(double degrees) {
+    if (Double.isNaN(degrees)) {
+      throw new IllegalArgumentException("degrees cannot be NaN");
+    }
+    __internals.turnRemaining = -degrees;
+  }
+
+  @Override
+  public final double getTurnRemaining() {
+    return __internals.turnRemaining;
+  }
+
+  @Override
+  public final void setTurnGunLeft(double degrees) {
+    if (Double.isNaN(degrees)) {
+      throw new IllegalArgumentException("degrees cannot be NaN");
+    }
+    __internals.gunTurnRemaining = degrees;
+  }
+
+  @Override
+  public final void setTurnGunRight(double degrees) {
+    if (Double.isNaN(degrees)) {
+      throw new IllegalArgumentException("degrees cannot be NaN");
+    }
+    __internals.gunTurnRemaining = -degrees;
+  }
+
+  @Override
+  public final double getGunTurnRemaining() {
+    return __internals.gunTurnRemaining;
+  }
+
+  @Override
+  public final void setTurnRadarLeft(double degrees) {
+    if (Double.isNaN(degrees)) {
+      throw new IllegalArgumentException("degrees cannot be NaN");
+    }
+    __internals.radarTurnRemaining = degrees;
+  }
+
+  @Override
+  public final void setTurnRadarRight(double degrees) {
+    if (Double.isNaN(degrees)) {
+      throw new IllegalArgumentException("degrees cannot be NaN");
+    }
+    __internals.radarTurnRemaining = -degrees;
+  }
+
+  @Override
+  public final double getRadarTurnRemaining() {
+    return __internals.radarTurnRemaining;
+  }
+
   private final class __Internals {
     private double maxSpeed = MAX_FORWARD_SPEED;
 
     private double distanceRemaining;
     private double turnRemaining;
+    private double gunTurnRemaining;
+    private double radarTurnRemaining;
 
+    private boolean isCollidingWithBot;
     private boolean isOverDriving;
 
     private __Internals() {
@@ -70,22 +138,26 @@ public abstract class Bot extends BasicBot implements IBot {
           event -> {
             onTick();
             return null;
-          }, 50);
+          },
+          50);
       superInt.onSkippedTurn.subscribe(
           event -> {
             onSkippedTurn();
             return null;
-          }, 50);
+          },
+          50);
       superInt.onHitBot.subscribe(
           event -> {
             onHitBot(event.isRammed());
             return null;
-          }, 50);
+          },
+          50);
       superInt.onHitWall.subscribe(
           event -> {
             onHitWall();
             return null;
-          }, 50);
+          },
+          50);
     }
 
     private void onTick() {
@@ -98,20 +170,72 @@ public abstract class Bot extends BasicBot implements IBot {
 
     private void onHitBot(boolean isRamming) {
       if (isRamming) {
-        resetRemainingDistanceAndTurn();
+        __internals.distanceRemaining = 0;
       }
+      isCollidingWithBot = true;
     }
 
     private void onHitWall() {
-      resetRemainingDistanceAndTurn();
+      __internals.distanceRemaining = 0;
     }
 
     private void processTurn() {
       // No movement is possible, when the bot has become disabled
       if (isDisabled()) {
-        resetRemainingDistanceAndTurn();
+        __internals.distanceRemaining = 0;
+        __internals.turnRemaining = 0;
+      }
+      updateHeadings();
+      updateMovement();
+      __internals.isCollidingWithBot = false;
+    }
+
+    /** Updates the bot heading, gun heading, and radar heading. */
+    private void updateHeadings() {
+      if (!isCollidingWithBot) {
+        updateTurnRemaining();
+      }
+      updateGunTurnRemaining();
+      updateRadarTurnRemaining();
+    }
+
+    private void updateTurnRemaining() {
+      double turnRate = Math.min(abs(getTurnRate()), calcMaxTurnRate(getSpeed()));
+      if (getTurnRemaining() > 0) {
+        turnRate *= -1;
+      }
+      if (abs(getTurnRemaining()) < abs(turnRate)) {
+        if (isAdjustGunForBodyTurn()) {
+          __internals.gunTurnRemaining -= __internals.turnRemaining;
+        }
+        __internals.turnRemaining = 0;
       } else {
-        updateMovement();
+        if (isAdjustGunForBodyTurn()) {
+          __internals.gunTurnRemaining -= turnRate;
+        }
+        __internals.turnRemaining -= turnRate;
+      }
+    }
+
+    private void updateGunTurnRemaining() {
+      if (abs(getGunTurnRemaining()) < getGunTurnRate()) {
+        if (isAdjustRadarForGunTurn()) {
+          __internals.radarTurnRemaining -= __internals.gunTurnRemaining;
+        }
+        __internals.gunTurnRemaining = 0;
+      } else {
+        if (isAdjustRadarForGunTurn()) {
+          __internals.radarTurnRemaining -= getGunTurnRate();
+        }
+        __internals.gunTurnRemaining -= getGunTurnRate();
+      }
+    }
+
+    private void updateRadarTurnRemaining() {
+      if (abs(getRadarTurnRemaining()) < getRadarTurnRate()) {
+        __internals.radarTurnRemaining = 0;
+      } else {
+        __internals.radarTurnRemaining -= getRadarTurnRate();
       }
     }
 
@@ -210,11 +334,6 @@ public abstract class Bot extends BasicBot implements IBot {
         distance += (speed = getNewSpeed(speed, 0));
       }
       return distance;
-    }
-
-    private void resetRemainingDistanceAndTurn() {
-      distanceRemaining = 0;
-      turnRemaining = 0;
     }
 
     private boolean isNearZero(double value) {
