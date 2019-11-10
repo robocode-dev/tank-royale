@@ -206,7 +206,7 @@ public abstract class Bot extends BasicBot implements IBot {
       }
       if (abs(getTurnRemaining()) < abs(turnRate)) {
         if (isAdjustGunForBodyTurn()) {
-          __internals.gunTurnRemaining -= __internals.turnRemaining;
+          __internals.gunTurnRemaining -= getTurnRemaining();
         }
         __internals.turnRemaining = 0;
       } else {
@@ -215,12 +215,14 @@ public abstract class Bot extends BasicBot implements IBot {
         }
         __internals.turnRemaining -= turnRate;
       }
+      setTurnRate(__internals.turnRemaining);
     }
 
     private void updateGunTurnRemaining() {
+      System.out.println("gunTurnRemaining: " + getGunTurnRemaining());
       if (abs(getGunTurnRemaining()) < getGunTurnRate()) {
         if (isAdjustRadarForGunTurn()) {
-          __internals.radarTurnRemaining -= __internals.gunTurnRemaining;
+          __internals.radarTurnRemaining -= getGunTurnRemaining();
         }
         __internals.gunTurnRemaining = 0;
       } else {
@@ -229,6 +231,7 @@ public abstract class Bot extends BasicBot implements IBot {
         }
         __internals.gunTurnRemaining -= getGunTurnRate();
       }
+      setGunTurnRate(__internals.gunTurnRemaining);
     }
 
     private void updateRadarTurnRemaining() {
@@ -237,6 +240,7 @@ public abstract class Bot extends BasicBot implements IBot {
       } else {
         __internals.radarTurnRemaining -= getRadarTurnRate();
       }
+      setRadarTurnRate(__internals.radarTurnRemaining);
     }
 
     /**

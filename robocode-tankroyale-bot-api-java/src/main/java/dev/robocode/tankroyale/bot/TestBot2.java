@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.bot;
 
-import dev.robocode.tankroyale.botapi.BasicBot;
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.events.*;
 import lombok.extern.log4j.Log4j;
@@ -43,7 +42,7 @@ public class TestBot2 extends Bot {
   public void onGameStarted(GameStartedEvent event) {
     log.info("onGameStarted: " + event);
 
-    setRadarTurnRate(100);
+    setTurnRadarLeft(Double.POSITIVE_INFINITY);
     setForward(move);
     go();
   }
@@ -58,17 +57,14 @@ public class TestBot2 extends Bot {
     }
 
     if (targetX != null) {
-
       double dx = targetX - getX();
       double dy = targetY - getY();
       double angle = Math.toDegrees(Math.atan2(dy, dx));
 
-      double gunTurnRate = normalRelativeDegrees(angle - getGunDirection());
-
-      setGunTurnRate(gunTurnRate);
+      setTurnGunLeft(normalRelativeDegrees(angle - getGunDirection()));
     }
     setFire(0.1 + Math.random() * 2.9);
-    this.
+
     go();
   }
 
