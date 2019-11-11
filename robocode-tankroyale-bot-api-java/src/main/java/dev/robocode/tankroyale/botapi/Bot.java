@@ -26,7 +26,7 @@ public abstract class Bot extends BasicBot implements IBot {
   @Override
   public final void setForward(double distance) {
     if (Double.isNaN(distance)) {
-      distance = 0.0;
+      throw new IllegalArgumentException("distance cannot be NaN");
     }
     __internals.distanceRemaining = distance;
   }
@@ -34,9 +34,9 @@ public abstract class Bot extends BasicBot implements IBot {
   @Override
   public final void setBack(double distance) {
     if (Double.isNaN(distance)) {
-      distance = 0.0;
+      throw new IllegalArgumentException("distance cannot be NaN");
     }
-    setForward(-distance);
+    __internals.distanceRemaining = -distance;
   }
 
   @Override
@@ -46,9 +46,6 @@ public abstract class Bot extends BasicBot implements IBot {
 
   @Override
   public final void setMaxSpeed(double maxSpeed) {
-    if (Double.isNaN(maxSpeed)) {
-      throw new IllegalArgumentException("maxSpeed cannot be NaN");
-    }
     if (maxSpeed < 0) {
       maxSpeed = 0;
     } else if (maxSpeed > MAX_SPEED) {
@@ -79,6 +76,16 @@ public abstract class Bot extends BasicBot implements IBot {
   }
 
   @Override
+  public final void setMaxTurnRate(double maxTurnRate) {
+    if (maxTurnRate < 0) {
+      maxTurnRate = 0;
+    } else if (maxTurnRate > MAX_TURN_RATE) {
+      maxTurnRate = MAX_TURN_RATE;
+    }
+    __internals.maxTurnRate = maxTurnRate;
+  }
+
+  @Override
   public final void setTurnGunLeft(double degrees) {
     if (Double.isNaN(degrees)) {
       throw new IllegalArgumentException("degrees cannot be NaN");
@@ -97,6 +104,16 @@ public abstract class Bot extends BasicBot implements IBot {
   @Override
   public final double getGunTurnRemaining() {
     return __internals.gunTurnRemaining;
+  }
+
+  @Override
+  public final void setMaxGunTurnRate(double maxGunTurnRate) {
+    if (maxGunTurnRate < 0) {
+      maxGunTurnRate = 0;
+    } else if (maxGunTurnRate > MAX_GUN_TURN_RATE) {
+      maxGunTurnRate = MAX_GUN_TURN_RATE;
+    }
+    __internals.maxGunTurnRate = maxGunTurnRate;
   }
 
   @Override
@@ -120,8 +137,21 @@ public abstract class Bot extends BasicBot implements IBot {
     return __internals.radarTurnRemaining;
   }
 
+  @Override
+  public final void setMaxRadarTurnRate(double maxRadarTurnRate) {
+    if (maxRadarTurnRate < 0) {
+      maxRadarTurnRate = 0;
+    } else if (maxRadarTurnRate > MAX_RADAR_TURN_RATE) {
+      maxRadarTurnRate = MAX_RADAR_TURN_RATE;
+    }
+    __internals.maxRadarTurnRate = maxRadarTurnRate;
+  }
+
   private final class __Internals {
     private double maxSpeed = MAX_FORWARD_SPEED;
+    private double maxTurnRate = MAX_TURN_RATE;
+    private double maxGunTurnRate = MAX_GUN_TURN_RATE;
+    private double maxRadarTurnRate = MAX_RADAR_TURN_RATE;
 
     private double distanceRemaining;
     private double turnRemaining;
@@ -200,11 +230,13 @@ public abstract class Bot extends BasicBot implements IBot {
     }
 
     private void updateTurnRemaining() {
-      double turnRate = Math.min(abs(getTurnRate()), calcMaxTurnRate(getSpeed()));
-      if (getTurnRemaining() > 0) {
+      final double absTurnRate = abs(getTurnRate());
+
+      double turnRate = Math.min(absTurnRate, calcMaxTurnRate(getSpeed()));
+      if (getTurnRemaining() < 0) {
         turnRate *= -1;
       }
-      if (abs(getTurnRemaining()) < abs(turnRate)) {
+      if (abs(getTurnRemaining()) < absTurnRate) {
         if (isAdjustGunForBodyTurn()) {
           __internals.gunTurnRemaining -= getTurnRemaining();
         }
@@ -215,12 +247,19 @@ public abstract class Bot extends BasicBot implements IBot {
         }
         __internals.turnRemaining -= turnRate;
       }
-      setTurnRate(__internals.turnRemaining);
+      if (__internals.turnRemaining > 0) {
+        setTurnRate(Math.min(__internals.maxTurnRate, __internals.turnRemaining));
+      } else {
+        setTurnRate(Math.max(-__internals.maxTurnRate, __internals.turnRemaining));
+      }
     }
 
     private void updateGunTurnRemaining() {
-      System.out.println("gunTurnRemaining: " + getGunTurnRemaining());
-      if (abs(getGunTurnRemaining()) < getGunTurnRate()) {
+      System.out.println(
+              "gunTurnRemaining: " + getGunTurnRemaining() + ", gunTurnRate: " + getGunTurnRate() + ", gunTurnRateLimit: " + __internals.maxGunTurnRate);
+      final double absGunTurnRate = abs(getGunTurnRate());
+
+      if (abs(getGunTurnRemaining()) < absGunTurnRate) {
         if (isAdjustRadarForGunTurn()) {
           __internals.radarTurnRemaining -= getGunTurnRemaining();
         }
@@ -231,16 +270,28 @@ public abstract class Bot extends BasicBot implements IBot {
         }
         __internals.gunTurnRemaining -= getGunTurnRate();
       }
-      setGunTurnRate(__internals.gunTurnRemaining);
+      if (__internals.gunTurnRemaining > 0) {
+        setGunTurnRate(Math.min(__internals.maxGunTurnRate, __internals.gunTurnRemaining));
+      } else {
+        setGunTurnRate(Math.max(-__internals.maxGunTurnRate, __internals.gunTurnRemaining));
+      }
     }
 
     private void updateRadarTurnRemaining() {
-      if (abs(getRadarTurnRemaining()) < getRadarTurnRate()) {
+      System.out.println(
+              "radarTurnRemaining: " + getRadarTurnRemaining() + ", radarTurnRate: " + getRadarTurnRate() + ", radarTurnRateLimit: " + __internals.maxRadarTurnRate);
+      final double absRadarTurnRate = abs(getRadarTurnRate());
+
+      if (abs(getRadarTurnRemaining()) < absRadarTurnRate) {
         __internals.radarTurnRemaining = 0;
       } else {
         __internals.radarTurnRemaining -= getRadarTurnRate();
       }
-      setRadarTurnRate(__internals.radarTurnRemaining);
+      if (__internals.radarTurnRemaining > 0) {
+        setRadarTurnRate(Math.min(__internals.maxRadarTurnRate, __internals.radarTurnRemaining));
+      } else {
+        setRadarTurnRate(Math.max(-__internals.maxRadarTurnRate, __internals.radarTurnRemaining));
+      }
     }
 
     /**

@@ -42,7 +42,11 @@ public class TestBot2 extends Bot {
   public void onGameStarted(GameStartedEvent event) {
     log.info("onGameStarted: " + event);
 
+    setMaxGunTurnRate(4);
+    setMaxRadarTurnRate(4);
+
     setTurnRadarLeft(Double.POSITIVE_INFINITY);
+
     setForward(move);
     go();
   }
@@ -78,13 +82,13 @@ public class TestBot2 extends Bot {
 
   @Override
   public void onHitWall(BotHitWallEvent event) {
-    move =- move;
+    move = -move;
     setForward(move);
   }
 
   @Override
   public void onHitBot(BotHitBotEvent event) {
-    move =- move;
+    move = -move;
     setForward(move);
   }
 }

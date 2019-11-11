@@ -72,7 +72,7 @@ public interface IBot extends IBasicBot {
   /**
    * Sets the bot to turn left (following the increasing degrees of the unity circle) until it
    * turned the specified amount of degrees, i.e., when {@link #getTurnRemaining()} is 0. The amount
-   * of degrees to turn each turn is limited by {@link #setTurnRate(double)}.
+   * of degrees to turn each turn is limited by {@link #setMaxTurnRate(double)}.
    *
    * <p>This method will cancel the effect of earlier called to setTurnLeft or setTurnRight.
    *
@@ -88,7 +88,7 @@ public interface IBot extends IBasicBot {
   /**
    * Sets the bot to turn right (following the decreasing degrees of the unity circle) until it
    * turned the specified amount of degrees, i.e., when {@link #getTurnRemaining()} is 0. The amount
-   * of degrees to turn each turn is limited by {@link #setTurnRate(double)}.
+   * of degrees to turn each turn is limited by {@link #setMaxTurnRate(double)}.
    *
    * <p>This method will cancel the effect of earlier called to setTurnLeft or setTurnRight.
    *
@@ -118,9 +118,29 @@ public interface IBot extends IBasicBot {
   double getTurnRemaining();
 
   /**
+   * Sets the maximum turn rate which applies turning the bot to the left or right with the methods
+   * {@link #setTurnLeft(double)} and {@link #setTurnRight(double)}. The maximum turn rate must be
+   * an absolute value from 0 to {@link #MAX_TURN_RATE}, both values are included. If the input turn
+   * rate is negative, the max turn rate will be cut to zero. If the input turn rate is above {@link
+   * #MAX_TURN_RATE}, the max turn rate will be set to {@link #MAX_TURN_RATE}.
+   *
+   * <p>If for example the max turn rate is set to 5, then the bot will be able to turn left or
+   * right with a turn rate down to -5 degrees/turn when turning right and up to 5 degrees/turn when
+   * turning left.
+   *
+   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   *
+   * @see #setTurnRate(double)
+   * @see #setTurnLeft(double)
+   * @see #setTurnRight(double)
+   * @param maxTurnRate is the new maximum turn rate
+   */
+  void setMaxTurnRate(double maxTurnRate);
+
+  /**
    * Sets the gun to turn left (following the increasing degrees of the unity circle) until it
    * turned the specified amount of degrees, i.e., when {@link #getGunTurnRemaining()} is 0. The
-   * amount of degrees to turn each turn is limited by {@link #setGunTurnRate(double)}.
+   * amount of degrees to turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
    *
    * <p>This method will cancel the effect of earlier called to setTurnGunLeft or setTurnGunRight.
    *
@@ -136,7 +156,7 @@ public interface IBot extends IBasicBot {
   /**
    * Sets the gun to turn right (following the decreasing degrees of the unity circle) until it
    * turned the specified amount of degrees, i.e., when {@link #getGunTurnRemaining()} is 0. The
-   * amount of degrees to turn each turn is limited by {@link #setGunTurnRate(double)}.
+   * amount of degrees to turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
    *
    * <p>This method will cancel the effect of earlier called to setTurnGunLeft or setTurnGunRight.
    *
@@ -166,9 +186,30 @@ public interface IBot extends IBasicBot {
   double getGunTurnRemaining();
 
   /**
+   * Sets the maximum turn rate which applies turning the gun to the left or right with the methods
+   * {@link #setTurnGunLeft(double)} and {@link #setTurnGunRight(double)}. The maximum turn rate
+   * must be an absolute value from 0 to {@link #MAX_GUN_TURN_RATE}, both values are included. If
+   * the input turn rate is negative, the max turn rate will be cut to zero. If the input turn rate
+   * is above {@link #MAX_GUN_TURN_RATE}, the max turn rate will be set to {@link
+   * #MAX_GUN_TURN_RATE}.
+   *
+   * <p>If for example the max gun turn rate is set to 5, then the gun will be able to turn left or
+   * right with a turn rate down to -5 degrees/turn when turning right and up to 5 degrees/turn when
+   * turning left.
+   *
+   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   *
+   * @see #setGunTurnRate(double)
+   * @see #setTurnGunLeft(double)
+   * @see #setTurnGunRight(double)
+   * @param maxGunTurnRate is the new maximum gun turn rate
+   */
+  void setMaxGunTurnRate(double maxGunTurnRate);
+
+  /**
    * Sets the radar to turn left (following the increasing degrees of the unity circle) until it
    * turned the specified amount of degrees, i.e., when {@link #getRadarTurnRemaining()} is 0. The
-   * amount of degrees to turn each turn is limited by {@link #setRadarTurnRate(double)}.
+   * amount of degrees to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
    *
    * <p>This method will cancel the effect of earlier called to setTurnRadarLeft or
    * setTurnRadarRight.
@@ -185,7 +226,7 @@ public interface IBot extends IBasicBot {
   /**
    * Sets the radar to turn right (following the decreasing degrees of the unity circle) until it
    * turned the specified amount of degrees, i.e., when {@link #getRadarTurnRemaining()} is 0. The
-   * amount of degrees to turn each turn is limited by {@link #setRadarTurnRate(double)}.
+   * amount of degrees to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
    *
    * <p>This method will cancel the effect of earlier called to setTurnRadarLeft or
    * setTurnRadarRight.
@@ -214,4 +255,25 @@ public interface IBot extends IBasicBot {
    * @return the remaining degrees to turn the gun
    */
   double getRadarTurnRemaining();
+
+  /**
+   * Sets the maximum turn rate which applies turning the radar to the left or right with the
+   * methods {@link #setTurnRadarLeft(double)} and {@link #setTurnRadarRight(double)}. The maximum
+   * turn rate must be an absolute value from 0 to {@link #MAX_RADAR_TURN_RATE}, both values are
+   * included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
+   * input turn rate is above {@link #MAX_RADAR_TURN_RATE}, the max turn rate will be set to {@link
+   * #MAX_RADAR_TURN_RATE}.
+   *
+   * <p>If for example the max radar turn rate is set to 5, then the radar will be able to turn left
+   * or right with a turn rate down to -5 degrees/turn when turning right and up to 5 degrees/turn
+   * when turning left.
+   *
+   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   *
+   * @see #setRadarTurnRate(double)
+   * @see #setTurnRadarLeft(double)
+   * @see #setTurnRadarRight(double)
+   * @param maxRadarTurnRate is the new maximum radar turn rate
+   */
+  void setMaxRadarTurnRate(double maxRadarTurnRate);
 }
