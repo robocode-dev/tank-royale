@@ -43,7 +43,7 @@ public class GameSetup {
 	public static final int DEFAULT_READY_TIMEOUT = 1_000_000; // 1 second
 
 	/** Default turns per second in milliseconds */
-	public static final int DEFAULT_TURNS_PER_SECOND = 30; // milliseconds
+	public static final int DEFAULT_TURNS_PER_SECOND = 30;
 
 
 	/** Game type */

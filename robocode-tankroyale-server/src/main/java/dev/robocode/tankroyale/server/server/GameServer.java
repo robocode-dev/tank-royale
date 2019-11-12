@@ -158,19 +158,17 @@ public final class GameServer {
     // Restart timers (turn timeout + tps)
     turnTimeoutTimer = new Timer(turnTimeout, this::onTurnTimeout);
 
-    val defaultTps = gameSetup.getDefaultTurnsPerSecond();
-    var tpsTimeout = turnTimeout;
-    if (defaultTps != null) {
-      tpsTimeout = 1_000_000 / gameSetup.getTurnTimeout();
-      if (tpsTimeout < turnTimeout) {
-        tpsTimeout = turnTimeout;
-      }
+    val tps = gameSetup.getDefaultTurnsPerSecond();
+    var tpsTimeout = 1_000_000 / tps;
+    if (turnTimeout > tpsTimeout) {
+      tpsTimeout = turnTimeout;
     }
     tpsTimer = new Timer(tpsTimeout, this::onTpsTimeout);
 
     turnTimeoutTimer.start();
     tpsTimer.start();
   }
+
 
   private void startGame(
       dev.robocode.tankroyale.schema.GameSetup gameSetup, Collection<BotAddress> botAddresses) {

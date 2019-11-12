@@ -285,15 +285,18 @@ public class ModelUpdater {
 
 		for (int id : participantIds) {
 			Point randomPos = randomBotPosition(occupiedCells);
+
+			double direction = MathUtil.randomDirection(); // body, gun, and radar starts in the same direction
+
 			BotBuilder botBuilder = Bot.builder()
 				.id(id)
 				.energy(INITIAL_BOT_ENERGY)
 				.speed(0)
 				.x(randomPos.x)
 				.y(randomPos.y)
-				.direction(MathUtil.randomDirection())
-				.gunDirection(MathUtil.randomDirection())
-				.radarDirection(MathUtil.randomDirection())
+				.direction(direction)
+				.gunDirection(direction)
+				.radarDirection(direction)
 				.gunHeat(INITIAL_GUN_HEAT)
 				.score(Score.builder().build());
 
