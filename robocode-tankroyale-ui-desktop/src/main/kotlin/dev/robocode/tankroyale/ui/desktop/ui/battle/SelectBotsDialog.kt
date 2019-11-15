@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.onContentsChanged
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
+import dev.robocode.tankroyale.ui.desktop.settings.GameType
 import dev.robocode.tankroyale.ui.desktop.settings.GamesSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
@@ -184,8 +185,10 @@ private object SelectBotsPanel : JPanel(MigLayout("fill")) {
     private fun startGame() {
         isVisible = true
 
+        val gameType = ServerProcess.gameType ?: GameType.CLASSIC.type // FIXME: Dialog must be shown to select game with remote server
+
         val botAddresses = selectedBotListModel.toArray().map { b -> (b as BotInfo).botAddress }
-        Client.startGame(GamesSettings.games[ServerProcess.gameType]!!, botAddresses.toSet())
+        Client.startGame(GamesSettings.games[gameType]!!, botAddresses.toSet())
 
         SelectBotsDialog.dispose()
     }

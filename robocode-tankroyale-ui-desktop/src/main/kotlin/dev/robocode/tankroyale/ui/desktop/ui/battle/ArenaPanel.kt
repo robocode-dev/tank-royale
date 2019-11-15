@@ -98,8 +98,8 @@ object ArenaPanel : JPanel() {
         val bullet = bulletHitBotEvent.bullet
         val bot = bots.first { bot -> bot.id == bulletHitBotEvent.victimId }
 
-        val xOffset = bot.x - bullet.x
-        val yOffset = bot.y - bullet.y
+        val xOffset = bullet.x - bot.x
+        val yOffset = bullet.y - bot.y
 
         val explosion = BotHitExplosion(bot.x, bot.y, xOffset, yOffset, bot.id, 4.0, 40.0, 25, state.time)
         explosions.add(explosion)
@@ -269,8 +269,23 @@ object ArenaPanel : JPanel() {
         g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f)
 
         val arc = Arc2D.Double()
-        arc.setArcByCenter(x, y, 1200.0, (360 - direction) - spreadAngle / 2, spreadAngle, Arc2D.PIE)
-        g.fill(arc)
+
+        var startAngle = 360 - direction
+        var angleEx = spreadAngle
+
+        if (spreadAngle < 0) {
+            startAngle += spreadAngle
+            angleEx *= -1
+        }
+        startAngle %= 360
+
+        arc.setArcByCenter(x, y, 1200.0, startAngle, angleEx, Arc2D.PIE)
+
+        if (angleEx >= .5) {
+            g.fill(arc)
+        } else {
+            g.draw(arc)
+        }
 
         oldState.restore(g)
     }
