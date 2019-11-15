@@ -397,7 +397,7 @@ public class ModelUpdater {
 					botBuilder.direction(direction);
 					botBuilder.gunDirection(gunDirection);
 					botBuilder.radarDirection(radarDirection);
-					botBuilder.radarSpreadAngle(limitedRadarTurnRate);
+					botBuilder.radarSpreadAngle(totalTurnRate); // radar sweep includes body and gun rate
 					botBuilder.speed(speed);
 
 					botBuilder.moveToNewPosition();
@@ -863,26 +863,22 @@ public class ModelUpdater {
 	 */
 	private void cooldownAndFireGuns() {
 		for (BotBuilder botBuilder : botBuilderMap.values()) {
+			double gunHeat = botBuilder.getGunHeat();
 
-			// Bot cannot fire if it is disabled
-			if (botBuilder.isEnabled()) {
-
-				// Fire gun, if the gun heat is zero
-				double gunHeat = botBuilder.getGunHeat();
-				if (gunHeat == 0) {
-					// Gun can fire => Check if intent is to fire gun
-					BotIntent botIntent = botIntentsMap.get(botBuilder.getId());
-					if (botIntent != null) {
-						double firepower = botIntent.zeroed().getBulletPower();
-						if (firepower >= MIN_FIREPOWER) {
-							fireBullet(botBuilder, firepower);
-						}
+			// If gun heat is zero and the bot is enabled, it is able to fire
+			if (gunHeat == 0 && botBuilder.isEnabled()) {
+				// Gun can fire => Check if intent is set to fire gun
+				BotIntent botIntent = botIntentsMap.get(botBuilder.getId());
+				if (botIntent != null) {
+					double firepower = botIntent.zeroed().getBulletPower();
+					if (firepower >= MIN_FIREPOWER) {
+						fireBullet(botBuilder, firepower);
 					}
-				} else {
-					// Gun is too hot => Cool down gun
-					gunHeat = Math.max(gunHeat - setup.getGunCoolingRate(), 0);
-					botBuilder.gunHeat(gunHeat);
 				}
+			} else {
+				// Gun is too hot => Cool down gun
+				gunHeat = Math.max(gunHeat - setup.getGunCoolingRate(), 0);
+				botBuilder.gunHeat(gunHeat);
 			}
 		}
 	}

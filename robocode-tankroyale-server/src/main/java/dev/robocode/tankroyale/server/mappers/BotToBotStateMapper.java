@@ -16,9 +16,9 @@ public final class BotToBotStateMapper {
 		botState.setY(bot.getY());
 		botState.setSpeed(bot.getSpeed());
 		botState.setDirection(MathUtil.normalAbsoluteDegrees(bot.getDirection()));
-		botState.setRadarDirection(MathUtil.normalAbsoluteDegrees(bot.getRadarDirection()));
-		botState.setRadarSweep(MathUtil.normalAbsoluteDegrees(bot.getRadarSpreadAngle()));
 		botState.setGunDirection(MathUtil.normalAbsoluteDegrees(bot.getGunDirection()));
+		botState.setRadarDirection(MathUtil.normalAbsoluteDegrees(bot.getRadarDirection()));
+		botState.setRadarSweep(bot.getRadarSpreadAngle());
 		botState.setGunHeat(bot.getGunHeat());
 		return botState;
 	}
