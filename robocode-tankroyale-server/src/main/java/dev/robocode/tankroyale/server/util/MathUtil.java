@@ -340,7 +340,7 @@ public final class MathUtil {
 	 * 
 	 */
 	public static boolean isClockwise(double v1_x, double v1_y, double v2_x, double v2_y) {
-		return -v1_x * v2_y + v1_y * v2_x > 0;
+		return v1_x * v2_y > v1_y * v2_x;
 	}
 
 	/**
