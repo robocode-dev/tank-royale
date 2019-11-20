@@ -19,18 +19,19 @@ public class MyFirstBot extends Bot {
   // This method is called when our bot must take action for the next turn
   @Override
   public void onTick(TickEvent event) {
-    // Only do something, when the bot has finished it's movement
-    if (getDistanceRemaining() == 0 && getTurnRemaining() == 0) {
+    // Only do something, when the bot has finished it's movement or finished turning the gun
+    if (getDistanceRemaining() == 0 && getGunTurnRemaining() == 0) {
       if (step == 1) {
         setForward(100); // remaining distance = 100
       } else if (step == 2 || step == 4) {
-        setTurnGunLeft(360); // remaining turn = 360
+        setTurnGunRight(360); // remaining turn = 360
       } else if (step == 3) {
         setBack(100); // remaining distance = -100
-      } else {
-        step = 0; // reset step, so it becomes 1 when step++ is called next
       }
       step++; // next step
+      if (step > 4) {
+        step = 1; // reset step
+      }
     }
     // execute our set command. Our turn is over!
     go();
