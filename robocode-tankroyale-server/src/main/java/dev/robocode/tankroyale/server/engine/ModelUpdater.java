@@ -204,6 +204,9 @@ public class ModelUpdater {
 		// Remove dead bots (cannot participate in new round)
 		botBuilderMap.values().removeIf(BotBuilder::isDead);
 
+		// Fire guns
+		cooldownAndFireGuns();
+
 		// Execute bot intents
 		executeBotIntents();
 
@@ -230,9 +233,6 @@ public class ModelUpdater {
 
 		// Cleanup defeated bots (events)
 		checkForDefeatedBots();
-
-		// Fire guns
-		cooldownAndFireGuns();
 
 		// Generate scan events
 		checkScanFields();
@@ -570,6 +570,7 @@ public class ModelUpdater {
 					if (bot1RammedBot2) {
 						scoreTracker.registerRamHit(botId2, botId1, RAM_DAMAGE, bot1Killed);
 					}
+					// FIXME hit damage!
 					if (bot2rammedBot1) {
 						scoreTracker.registerRamHit(botId1, botId2, RAM_DAMAGE, bot2Killed);
 					}
@@ -871,7 +872,7 @@ public class ModelUpdater {
 				BotIntent botIntent = botIntentsMap.get(botBuilder.getId());
 				if (botIntent != null) {
 					double firepower = botIntent.zeroed().getBulletPower();
-					if (firepower >= MIN_FIREPOWER) {
+					if (firepower >= MIN_FIREPOWER && botBuilder.getEnergy() > firepower) {
 						fireBullet(botBuilder, firepower);
 					}
 				}
@@ -917,6 +918,9 @@ public class ModelUpdater {
 		BulletFiredEvent bulletFiredEvent = new BulletFiredEvent(turnNumber, bullet);
 		turnBuilder.addPrivateBotEvent(botId, bulletFiredEvent);
 		turnBuilder.addObserverEvent(bulletFiredEvent);
+
+		// Firing a bullet cost energy
+		botBuilder.changeEnergy(-firepower);
 	}
 
 	/**
