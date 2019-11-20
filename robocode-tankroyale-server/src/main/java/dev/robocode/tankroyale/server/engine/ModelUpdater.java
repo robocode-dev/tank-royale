@@ -930,19 +930,17 @@ public class ModelUpdater {
 		for (int i = botArray.length - 1; i >= 0; i--) {
 			BotBuilder scanningBot = botArray[i];
 
-			double spreadAngle = scanningBot.getRadarSpreadAngle();
-			double scanCenterX = scanningBot.getX();
-			double scanCenterY = scanningBot.getY();
+      		double spreadAngle = scanningBot.getRadarSpreadAngle();
 
 			double arcStartAngle;
 			double arcEndAngle;
 
-			if (spreadAngle < 0) {
+			if (spreadAngle > 0) {
+				arcEndAngle = scanningBot.getRadarDirection();
+				arcStartAngle = arcEndAngle - spreadAngle;
+			} else {
 				arcStartAngle = scanningBot.getRadarDirection();
 				arcEndAngle = arcStartAngle - spreadAngle;
-			} else {
-				arcEndAngle = scanningBot.getRadarDirection();
-				arcStartAngle = arcEndAngle + spreadAngle;
 			}
 
 			for (int j = botArray.length - 1; j >= 0; j--) {
@@ -953,7 +951,7 @@ public class ModelUpdater {
 				BotBuilder scannedBot = botArray[j];
 
 				if (MathUtil.isCircleIntersectingCircleSector(scannedBot.getX(), scannedBot.getY(),
-						BOT_BOUNDING_CIRCLE_RADIUS, scanCenterX, scanCenterY,
+						BOT_BOUNDING_CIRCLE_RADIUS, scanningBot.getX(), scanningBot.getY(),
 						RuleConstants.RADAR_RADIUS, arcStartAngle, arcEndAngle)) {
 
 					ScannedBotEvent scannedBotEvent = new ScannedBotEvent(turnNumber, scanningBot.getId(), scannedBot.getId(),
