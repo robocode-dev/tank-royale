@@ -295,16 +295,18 @@ public abstract class BasicBot implements IBasicBot {
   }
 
   @Override
-  public final void setFire(double firepower) {
+  public final boolean setFire(double firepower) {
     if (Double.isNaN(firepower)) {
       throw new IllegalArgumentException("firepower cannot be NaN");
     }
+    if (firepower < MIN_FIREPOWER || getGunHeat() > 0 || firepower > getEnergy()) {
+      return false; // could not fire
+    }
     if (firepower > MAX_FIREPOWER) {
       firepower = MAX_FIREPOWER;
-    } else if (firepower < MIN_FIREPOWER) {
-      firepower = MIN_FIREPOWER;
     }
     __internals.botIntent.setFirepower(firepower);
+    return true; // could fire
   }
 
   @Override

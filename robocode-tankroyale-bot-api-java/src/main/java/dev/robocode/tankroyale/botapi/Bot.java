@@ -255,8 +255,6 @@ public abstract class Bot extends BasicBot implements IBot {
     }
 
     private void updateGunTurnRemaining() {
-      System.out.println(
-              "gunTurnRemaining: " + getGunTurnRemaining() + ", gunTurnRate: " + getGunTurnRate() + ", gunTurnRateLimit: " + __internals.maxGunTurnRate);
       final double absGunTurnRate = abs(getGunTurnRate());
 
       if (abs(getGunTurnRemaining()) < absGunTurnRate) {
@@ -278,8 +276,6 @@ public abstract class Bot extends BasicBot implements IBot {
     }
 
     private void updateRadarTurnRemaining() {
-      System.out.println(
-              "radarTurnRemaining: " + getRadarTurnRemaining() + ", radarTurnRate: " + getRadarTurnRate() + ", radarTurnRateLimit: " + __internals.maxRadarTurnRate);
       final double absRadarTurnRate = abs(getRadarTurnRate());
 
       if (abs(getRadarTurnRemaining()) < absRadarTurnRate) {

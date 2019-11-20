@@ -18,6 +18,7 @@ class BotStateMapper {
         .radarDirection(source.getRadarDirection())
         .radarSweep(source.getRadarSweep())
         .speed(source.getSpeed())
+        .gunHeat(source.getGunHeat())
         .build();
   }
 }
