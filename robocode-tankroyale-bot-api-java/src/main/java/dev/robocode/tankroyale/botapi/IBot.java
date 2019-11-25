@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.botapi;
 
-public interface IBot extends IBasicBot {
+public interface IBot extends IBaseBot {
 
   /**
    * Sets the bot to move forward until it has traveled a specific distance from its current

@@ -5,7 +5,7 @@ import lombok.val;
 import java.net.URI;
 import static java.lang.Math.abs;
 
-public abstract class Bot extends BasicBot implements IBot {
+public abstract class Bot extends BaseBot implements IBot {
 
   private static final double ABS_DECELERATION = Math.abs(DECELERATION);
 

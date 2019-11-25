@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.bot;
 
-import dev.robocode.tankroyale.botapi.BasicBot;
+import dev.robocode.tankroyale.botapi.BaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
 import lombok.extern.log4j.Log4j;
 import org.apache.log4j.MDC;
@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @SuppressWarnings("UnusedDeclaration")
 @Log4j
-public class TestBot extends BasicBot {
+public class TestBot extends BaseBot {
 
   static {
     MDC.put("myUuid", UUID.randomUUID());

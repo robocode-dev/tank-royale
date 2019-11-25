@@ -32,7 +32,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
-public abstract class BasicBot implements IBasicBot {
+public abstract class BaseBot implements IBaseBot {
 
   final __Internals __internals;
 
@@ -54,7 +54,7 @@ public abstract class BasicBot implements IBasicBot {
    * BOT_GAME_TYPES=melee,1v1<br>
    * BOT_PROG_LANG=Java<br>
    */
-  public BasicBot() {
+  public BaseBot() {
     __internals = new __Internals(null, null);
   }
 
@@ -64,7 +64,7 @@ public abstract class BasicBot implements IBasicBot {
    *
    * @param botInfo is the bot info containing information about your bot.
    */
-  public BasicBot(final BotInfo botInfo) {
+  public BaseBot(final BotInfo botInfo) {
     __internals = new __Internals(botInfo, null);
   }
 
@@ -74,7 +74,7 @@ public abstract class BasicBot implements IBasicBot {
    * @param botInfo is the bot info containing information about your bot.
    * @param serverUri is the server URI
    */
-  public BasicBot(final BotInfo botInfo, URI serverUri) {
+  public BaseBot(final BotInfo botInfo, URI serverUri) {
     __internals = new __Internals(botInfo, serverUri);
   }
 
@@ -439,88 +439,88 @@ public abstract class BasicBot implements IBasicBot {
       try {
         onConnected.subscribe(
             event -> {
-              BasicBot.this.onConnected(event);
+              BaseBot.this.onConnected(event);
               return null;
             }, 100);
         onDisconnected.subscribe(
             event -> {
-              BasicBot.this.onDisconnected(event);
+              BaseBot.this.onDisconnected(event);
               return null;
             }, 100);
         onConnectionError.subscribe(
             event -> {
-              BasicBot.this.onConnectionError(event);
+              BaseBot.this.onConnectionError(event);
               return null;
             }, 100);
         onGameStarted.subscribe(
             event -> {
-              BasicBot.this.onGameStarted(event);
+              BaseBot.this.onGameStarted(event);
               return null;
             }, 100);
         onGameEnded.subscribe(
             event -> {
-              BasicBot.this.onGameEnded(event);
+              BaseBot.this.onGameEnded(event);
               return null;
             }, 100);
         onTick.subscribe(
             event -> {
               tickStartNanoTime = System.nanoTime();
-              BasicBot.this.onTick(event);
+              BaseBot.this.onTick(event);
               return null;
             }, 100);
         onSkippedTurn.subscribe(
             event -> {
-              BasicBot.this.onSkippedTurn(event);
+              BaseBot.this.onSkippedTurn(event);
               return null;
             }, 100);
         onBotDeath.subscribe(
             event -> {
-              BasicBot.this.onBotDeath(event);
+              BaseBot.this.onBotDeath(event);
               return null;
             }, 100);
         onHitBot.subscribe(
             event -> {
-              BasicBot.this.onHitBot(event);
+              BaseBot.this.onHitBot(event);
               return null;
             }, 100);
         onHitWall.subscribe(
             event -> {
-              BasicBot.this.onHitWall(event);
+              BaseBot.this.onHitWall(event);
               return null;
             }, 100);
         onBulletFired.subscribe(
             event -> {
-              BasicBot.this.onBulletFired(event);
+              BaseBot.this.onBulletFired(event);
               return null;
             }, 100);
         onHitByBullet.subscribe(
             event -> {
-              BasicBot.this.onHitByBullet(event);
+              BaseBot.this.onHitByBullet(event);
               return null;
             }, 100);
         onBulletHit.subscribe(
             event -> {
-              BasicBot.this.onBulletHit(event);
+              BaseBot.this.onBulletHit(event);
               return null;
             }, 100);
         onBulletHitBullet.subscribe(
             event -> {
-              BasicBot.this.onBulletHitBullet(event);
+              BaseBot.this.onBulletHitBullet(event);
               return null;
             }, 100);
         onBulletHitWall.subscribe(
             event -> {
-              BasicBot.this.onBulletHitWall(event);
+              BaseBot.this.onBulletHitWall(event);
               return null;
             }, 100);
         onScannedBot.subscribe(
             event -> {
-              BasicBot.this.onScannedBot(event);
+              BaseBot.this.onScannedBot(event);
               return null;
             }, 100);
         onWonRound.subscribe(
             event -> {
-              BasicBot.this.onWonRound(event);
+              BaseBot.this.onWonRound(event);
               return null;
             }, 100);
 
@@ -621,7 +621,7 @@ public abstract class BasicBot implements IBasicBot {
         val event = DisconnectedEvent.builder().remote(closedByServer).build();
         onDisconnected.publish(event);
 
-        BasicBot.this.__internals.clearCurrentGameState();
+        BaseBot.this.__internals.clearCurrentGameState();
       }
 
       @Override
@@ -664,7 +664,7 @@ public abstract class BasicBot implements IBasicBot {
         serverHandshake = gson.fromJson(jsonMsg, ServerHandshake.class);
 
         // Send bot handshake
-        val botHandshake = BotHandshakeFactory.create(BasicBot.__Internals.this.botInfo);
+        val botHandshake = BotHandshakeFactory.create(BaseBot.__Internals.this.botInfo);
         val msg = gson.toJson(botHandshake);
 
         webSocket.sendText(msg);
@@ -674,8 +674,8 @@ public abstract class BasicBot implements IBasicBot {
         val gameStartedEventForBot = gson.fromJson(jsonMsg, GameStartedEventForBot.class);
         val gameSetup = gameStartedEventForBot.getGameSetup();
 
-        BasicBot.__Internals.this.myId = gameStartedEventForBot.getMyId();
-        BasicBot.__Internals.this.gameSetup = GameSetupMapper.map(gameSetup);
+        BaseBot.__Internals.this.myId = gameStartedEventForBot.getMyId();
+        BaseBot.__Internals.this.gameSetup = GameSetupMapper.map(gameSetup);
 
         // Send ready signal
         BotReady ready = new BotReady();
@@ -687,7 +687,7 @@ public abstract class BasicBot implements IBasicBot {
         val gameStartedEvent =
             GameStartedEvent.builder()
                 .myId(gameStartedEventForBot.getMyId())
-                .gameSetup(BasicBot.__Internals.this.gameSetup)
+                .gameSetup(BaseBot.__Internals.this.gameSetup)
                 .build();
 
         onGameStarted.publish(gameStartedEvent);
@@ -696,7 +696,7 @@ public abstract class BasicBot implements IBasicBot {
 
     private void handleGameEndedEvent(JsonObject jsonMsg) {
       // Clear current game state
-      BasicBot.this.__internals.clearCurrentGameState();
+      BaseBot.this.__internals.clearCurrentGameState();
 
       // Send the game ended event
       val gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
