@@ -2,22 +2,13 @@ package dev.robocode.tankroyale.bot;
 
 import dev.robocode.tankroyale.botapi.BaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
-import lombok.extern.log4j.Log4j;
-import org.apache.log4j.MDC;
-
-import java.util.UUID;
 
 @SuppressWarnings("UnusedDeclaration")
-@Log4j
 public class TestBot extends BaseBot {
 
-  static {
-    MDC.put("myUuid", UUID.randomUUID());
-  }
-
   public static void main(String[] args) {
-    Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.error(e));
-    new TestBot().run();
+    Thread.setDefaultUncaughtExceptionHandler((t, e) -> e.printStackTrace());
+    new TestBot().start();
   }
 
   private Double targetX;
@@ -29,17 +20,17 @@ public class TestBot extends BaseBot {
 
   @Override
   public void onConnected(ConnectedEvent event) {
-    log.info("onConnected");
+    System.out.println("onConnected");
   }
 
   @Override
   public void onDisconnected(DisconnectedEvent event) {
-    log.info("onDisconnected");
+    System.out.println("onDisconnected");
   }
 
   @Override
   public void onGameStarted(GameStartedEvent event) {
-    log.info("onGameStarted: " + event);
+    System.out.println("onGameStarted: " + event);
 
     setRadarTurnRate(100);
     setTargetSpeed(targetSpeed);
@@ -50,7 +41,7 @@ public class TestBot extends BaseBot {
 
   @Override
   public void onTick(TickEvent event) {
-    log.info("onTick: " + event.getTurnNumber());
+    System.out.println("onTick: " + event.getTurnNumber());
 
     if (getSpeed() == targetSpeed) {
       targetSpeed = -targetSpeed;
@@ -74,7 +65,7 @@ public class TestBot extends BaseBot {
 
   @Override
   public void onScannedBot(ScannedBotEvent event) {
-    log.info("onScannedBot");
+    System.out.println("onScannedBot");
 
     targetX = event.getX();
     targetY = event.getY();

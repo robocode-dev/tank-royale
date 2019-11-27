@@ -3,11 +3,11 @@ package dev.robocode.tankroyale.botapi;
 import lombok.val;
 
 import java.net.URI;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static java.lang.Math.abs;
 
 public abstract class Bot extends BaseBot implements IBot {
-
-  private static final double ABS_DECELERATION = Math.abs(DECELERATION);
 
   private final __Internals __internals = new __Internals();
 
@@ -32,11 +32,25 @@ public abstract class Bot extends BaseBot implements IBot {
   }
 
   @Override
+  public final void forward(double distance) {
+    setForward(distance);
+    go();
+    __internals.awaitMovementComplete();
+  }
+
+  @Override
   public final void setBack(double distance) {
     if (Double.isNaN(distance)) {
       throw new IllegalArgumentException("distance cannot be NaN");
     }
     __internals.distanceRemaining = -distance;
+  }
+
+  @Override
+  public final void back(double distance) {
+    setBack(distance);
+    go();
+    __internals.awaitMovementComplete();
   }
 
   @Override
@@ -63,11 +77,25 @@ public abstract class Bot extends BaseBot implements IBot {
   }
 
   @Override
+  public final void turnLeft(double degrees) {
+    setTurnLeft(degrees);
+    go();
+    __internals.awaitTurnComplete();
+  }
+
+  @Override
   public final void setTurnRight(double degrees) {
     if (Double.isNaN(degrees)) {
       throw new IllegalArgumentException("degrees cannot be NaN");
     }
     __internals.turnRemaining = -degrees;
+  }
+
+  @Override
+  public final void turnRight(double degrees) {
+    setTurnRight(degrees);
+    go();
+    __internals.awaitTurnComplete();
   }
 
   @Override
@@ -94,11 +122,25 @@ public abstract class Bot extends BaseBot implements IBot {
   }
 
   @Override
+  public final void turnGunLeft(double degrees) {
+    setTurnGunLeft(degrees);
+    go();
+    __internals.awaitGunTurnComplete();
+  }
+
+  @Override
   public final void setTurnGunRight(double degrees) {
     if (Double.isNaN(degrees)) {
       throw new IllegalArgumentException("degrees cannot be NaN");
     }
     __internals.gunTurnRemaining = -degrees;
+  }
+
+  @Override
+  public final void turnGunRight(double degrees) {
+    setTurnGunRight(degrees);
+    go();
+    __internals.awaitGunTurnComplete();
   }
 
   @Override
@@ -125,11 +167,25 @@ public abstract class Bot extends BaseBot implements IBot {
   }
 
   @Override
+  public final void turnRadarLeft(double degrees) {
+    setTurnRadarLeft(degrees);
+    go();
+    __internals.awaitRadarTurnComplete();
+  }
+
+  @Override
   public final void setTurnRadarRight(double degrees) {
     if (Double.isNaN(degrees)) {
       throw new IllegalArgumentException("degrees cannot be NaN");
     }
     __internals.radarTurnRemaining = -degrees;
+  }
+
+  @Override
+  public final void turnRadarRight(double degrees) {
+    setTurnRadarRight(degrees);
+    go();
+    __internals.awaitRadarTurnComplete();
   }
 
   @Override
@@ -147,7 +203,14 @@ public abstract class Bot extends BaseBot implements IBot {
     __internals.maxRadarTurnRate = maxRadarTurnRate;
   }
 
+  @Override
+  public final boolean isRunning() {
+    return __internals.running.get();
+  }
+
   private final class __Internals {
+    private final double ABS_DECELERATION = Math.abs(DECELERATION);
+
     private double maxSpeed = MAX_FORWARD_SPEED;
     private double maxTurnRate = MAX_TURN_RATE;
     private double maxGunTurnRate = MAX_GUN_TURN_RATE;
@@ -161,11 +224,19 @@ public abstract class Bot extends BaseBot implements IBot {
     private boolean isCollidingWithBot;
     private boolean isOverDriving;
 
+    private int turnNumber;
+
+    private Thread thread;
+
+    private final AtomicBoolean blocked = new AtomicBoolean();
+    private final AtomicBoolean running = new AtomicBoolean();
+
     private __Internals() {
       val superInt = Bot.super.__internals;
 
       superInt.onTick.subscribe(
           event -> {
+            turnNumber = event.getTurnNumber();
             onTick();
             return null;
           },
@@ -188,6 +259,20 @@ public abstract class Bot extends BaseBot implements IBot {
             return null;
           },
           50);
+      superInt.onBotDeath.subscribe(
+          event -> {
+            if (event.getVictimId() == getMyId()) {
+              stopThread();
+            }
+            return null;
+          },
+          50);
+      superInt.onGameEnded.subscribe(
+          event -> {
+            stopThread();
+            return null;
+          },
+          50);
     }
 
     private void onTick() {
@@ -200,24 +285,62 @@ public abstract class Bot extends BaseBot implements IBot {
 
     private void onHitBot(boolean isRamming) {
       if (isRamming) {
-        __internals.distanceRemaining = 0;
+        distanceRemaining = 0;
       }
       isCollidingWithBot = true;
     }
 
     private void onHitWall() {
-      __internals.distanceRemaining = 0;
+      distanceRemaining = 0;
     }
 
     private void processTurn() {
       // No movement is possible, when the bot has become disabled
       if (isDisabled()) {
-        __internals.distanceRemaining = 0;
-        __internals.turnRemaining = 0;
+        distanceRemaining = 0;
+        turnRemaining = 0;
       }
       updateHeadings();
       updateMovement();
-      __internals.isCollidingWithBot = false;
+      isCollidingWithBot = false;
+
+      // If this is the first turn -> Call the run method on the Bot class
+      if (__internals.turnNumber == 1) {
+        stopThread();
+
+        distanceRemaining = 0;
+        turnRemaining = 0;
+        gunTurnRemaining = 0;
+        radarTurnRemaining = 0;
+        isCollidingWithBot = false;
+        isOverDriving = false;
+
+        startThread();
+      }
+
+      // Unblock waiting methods
+      synchronized (blocked) {
+        if (blocked.get()) {
+          go();
+          blocked.notifyAll();
+        }
+      }
+    }
+
+    private void startThread() {
+      thread = new Thread(Bot.this::run);
+      thread.start();
+      running.set(true);
+    }
+
+    private void stopThread() {
+      running.set(false);
+
+      synchronized (blocked) {
+        if (blocked.get()) {
+          blocked.notifyAll();
+        }
+      }
     }
 
     /** Updates the bot heading, gun heading, and radar heading. */
@@ -238,19 +361,19 @@ public abstract class Bot extends BaseBot implements IBot {
       }
       if (abs(getTurnRemaining()) < absTurnRate) {
         if (isAdjustGunForBodyTurn()) {
-          __internals.gunTurnRemaining -= getTurnRemaining();
+          gunTurnRemaining -= getTurnRemaining();
         }
-        __internals.turnRemaining = 0;
+        turnRemaining = 0;
       } else {
         if (isAdjustGunForBodyTurn()) {
-          __internals.gunTurnRemaining -= turnRate;
+          gunTurnRemaining -= turnRate;
         }
-        __internals.turnRemaining -= turnRate;
+        turnRemaining -= turnRate;
       }
-      if (__internals.turnRemaining > 0) {
-        setTurnRate(Math.min(__internals.maxTurnRate, __internals.turnRemaining));
+      if (turnRemaining > 0) {
+        setTurnRate(Math.min(maxTurnRate, turnRemaining));
       } else {
-        setTurnRate(Math.max(-__internals.maxTurnRate, __internals.turnRemaining));
+        setTurnRate(Math.max(-maxTurnRate, turnRemaining));
       }
     }
 
@@ -259,19 +382,19 @@ public abstract class Bot extends BaseBot implements IBot {
 
       if (abs(getGunTurnRemaining()) < absGunTurnRate) {
         if (isAdjustRadarForGunTurn()) {
-          __internals.radarTurnRemaining -= getGunTurnRemaining();
+          radarTurnRemaining -= getGunTurnRemaining();
         }
-        __internals.gunTurnRemaining = 0;
+        gunTurnRemaining = 0;
       } else {
         if (isAdjustRadarForGunTurn()) {
-          __internals.radarTurnRemaining -= getGunTurnRate();
+          radarTurnRemaining -= getGunTurnRate();
         }
-        __internals.gunTurnRemaining -= getGunTurnRate();
+        gunTurnRemaining -= getGunTurnRate();
       }
-      if (__internals.gunTurnRemaining > 0) {
-        setGunTurnRate(Math.min(__internals.maxGunTurnRate, __internals.gunTurnRemaining));
+      if (gunTurnRemaining > 0) {
+        setGunTurnRate(Math.min(maxGunTurnRate, gunTurnRemaining));
       } else {
-        setGunTurnRate(Math.max(-__internals.maxGunTurnRate, __internals.gunTurnRemaining));
+        setGunTurnRate(Math.max(-maxGunTurnRate, gunTurnRemaining));
       }
     }
 
@@ -279,14 +402,14 @@ public abstract class Bot extends BaseBot implements IBot {
       final double absRadarTurnRate = abs(getRadarTurnRate());
 
       if (abs(getRadarTurnRemaining()) < absRadarTurnRate) {
-        __internals.radarTurnRemaining = 0;
+        radarTurnRemaining = 0;
       } else {
-        __internals.radarTurnRemaining -= getRadarTurnRate();
+        radarTurnRemaining -= getRadarTurnRate();
       }
-      if (__internals.radarTurnRemaining > 0) {
-        setRadarTurnRate(Math.min(__internals.maxRadarTurnRate, __internals.radarTurnRemaining));
+      if (radarTurnRemaining > 0) {
+        setRadarTurnRate(Math.min(maxRadarTurnRate, radarTurnRemaining));
       } else {
-        setRadarTurnRate(Math.max(-__internals.maxRadarTurnRate, __internals.radarTurnRemaining));
+        setRadarTurnRate(Math.max(-maxRadarTurnRate, radarTurnRemaining));
       }
     }
 
@@ -341,9 +464,9 @@ public abstract class Bot extends BaseBot implements IBot {
 
       final double targetSpeed;
       if (distance == Double.POSITIVE_INFINITY) {
-        targetSpeed = __internals.maxSpeed;
+        targetSpeed = maxSpeed;
       } else {
-        targetSpeed = Math.min(getMaxSpeed(distance), __internals.maxSpeed);
+        targetSpeed = Math.min(getMaxSpeed(distance), maxSpeed);
       }
 
       if (speed >= 0) {
@@ -390,5 +513,39 @@ public abstract class Bot extends BaseBot implements IBot {
     private boolean isNearZero(double value) {
       return (Math.abs(value) < .00001);
     }
+
+    private void awaitMovementComplete() {
+      await(() -> getDistanceRemaining() != 0);
+    }
+
+    private void awaitTurnComplete() {
+      await(() -> getTurnRemaining() != 0);
+    }
+
+    private void awaitGunTurnComplete() {
+      await(() -> getGunTurnRemaining() != 0);
+    }
+
+    private void awaitRadarTurnComplete() {
+      await(() -> getRadarTurnRemaining() != 0);
+    }
+
+    private void await(ICondition condition) {
+      synchronized (blocked) {
+        blocked.set(true);
+        while (condition.test()) {
+          try {
+            blocked.wait();
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+          }
+        }
+        blocked.set(false);
+      }
+    }
+  }
+
+  private interface ICondition {
+    boolean test();
   }
 }

@@ -88,7 +88,7 @@ public interface IBaseBot {
   double DECELERATION = -2;
 
   /** Main method for start running the bot */
-  void run();
+  void start();
 
   /**
    * Commits the current actions for the current turn. This method must be called in order to send
@@ -99,6 +99,9 @@ public interface IBaseBot {
    * setFire().
    */
   void go();
+
+  // TODO: Documentation
+  default void run() {}
 
   /** Returns the unique id of this bot in the battle. Available when game has started. */
   int getMyId();
@@ -463,6 +466,9 @@ public interface IBaseBot {
 
   /** Event handler triggered when another bot has died */
   default void onBotDeath(BotDeathEvent botDeathEvent) {}
+
+  /** Event handler triggered when this bot has died */
+  default void onDeath(BotDeathEvent botDeathEvent) {}
 
   /** Event handler triggered when the bot has collided with another bot */
   default void onHitBot(BotHitBotEvent botHitBotEvent) {}

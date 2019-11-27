@@ -19,6 +19,8 @@ public interface IBot extends IBaseBot {
    */
   void setForward(double distance);
 
+  void forward(double distance); // TODO: Javadoc
+
   /**
    * Sets the bot to move backward until it has traveled a specific distance from its current
    * position or is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
@@ -35,6 +37,8 @@ public interface IBot extends IBaseBot {
    * @param distance is the distance to move backward. If negative, the bot will move forward.
    */
   void setBack(double distance);
+
+  void back(double distance); // TODO: Javadoc
 
   /**
    * Returns the distance remaining till the bot has finished moving after having called {@link
@@ -85,6 +89,8 @@ public interface IBot extends IBaseBot {
    */
   void setTurnLeft(double degrees);
 
+  void turnLeft(double degrees); // TODO: Javadoc
+
   /**
    * Sets the bot to turn right (following the decreasing degrees of the unity circle) until it
    * turned the specified amount of degrees, i.e., when {@link #getTurnRemaining()} is 0. The amount
@@ -100,6 +106,8 @@ public interface IBot extends IBaseBot {
    * @param degrees is the amount of degrees to turn right. If negative, the bot will turn left.
    */
   void setTurnRight(double degrees);
+
+  void turnRight(double degrees); // TODO: Javadoc
 
   /**
    * Returns the remaining turn in degrees till the bot has finished turning after having called
@@ -153,6 +161,8 @@ public interface IBot extends IBaseBot {
    */
   void setTurnGunLeft(double degrees);
 
+  void turnGunLeft(double degrees); // TODO: Javadoc
+
   /**
    * Sets the gun to turn right (following the decreasing degrees of the unity circle) until it
    * turned the specified amount of degrees, i.e., when {@link #getGunTurnRemaining()} is 0. The
@@ -168,6 +178,8 @@ public interface IBot extends IBaseBot {
    * @param degrees is the amount of degrees to turn right. If negative, the gun will turn left.
    */
   void setTurnGunRight(double degrees);
+
+  void turnGunRight(double degrees); // TODO: Javadoc
 
   /**
    * Returns the remaining turn in degrees till the gun has finished turning after having called
@@ -223,6 +235,8 @@ public interface IBot extends IBaseBot {
    */
   void setTurnRadarLeft(double degrees);
 
+  void turnRadarLeft(double degrees); // TODO: Javadoc
+
   /**
    * Sets the radar to turn right (following the decreasing degrees of the unity circle) until it
    * turned the specified amount of degrees, i.e., when {@link #getRadarTurnRemaining()} is 0. The
@@ -239,6 +253,8 @@ public interface IBot extends IBaseBot {
    * @param degrees is the amount of degrees to turn right. If negative, the radar will turn left.
    */
   void setTurnRadarRight(double degrees);
+
+  void turnRadarRight(double degrees); // TODO: Javadoc
 
   /**
    * Returns the remaining turn in degrees till the radar has finished turning after having called
@@ -276,4 +292,6 @@ public interface IBot extends IBaseBot {
    * @param maxRadarTurnRate is the new maximum radar turn rate
    */
   void setMaxRadarTurnRate(double maxRadarTurnRate);
+
+  boolean isRunning();  // TODO: Javadoc
 }

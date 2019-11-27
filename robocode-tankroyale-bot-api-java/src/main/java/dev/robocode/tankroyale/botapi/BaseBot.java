@@ -79,7 +79,7 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   @Override
-  public final void run() {
+  public final void start() {
     __internals.connect();
   }
 
@@ -87,6 +87,7 @@ public abstract class BaseBot implements IBaseBot {
   public final void go() {
     // Send the bot intent to the server
     __internals.sendBotIntent();
+    __internals.sendPong();
   }
 
   @Override
@@ -416,10 +417,10 @@ public abstract class BaseBot implements IBaseBot {
     private final Event<DisconnectedEvent> onDisconnected = new Event<>();
     private final Event<ConnectionErrorEvent> onConnectionError = new Event<>();
     private final Event<GameStartedEvent> onGameStarted = new Event<>();
-    private final Event<GameEndedEvent> onGameEnded = new Event<>();
+    final Event<GameEndedEvent> onGameEnded = new Event<>();
     final Event<TickEvent> onTick = new Event<>();
     final Event<SkippedTurnEvent> onSkippedTurn = new Event<>();
-    private final Event<BotDeathEvent> onBotDeath = new Event<>();
+    final Event<BotDeathEvent> onBotDeath = new Event<>();
     final Event<BotHitBotEvent> onHitBot = new Event<>();
     final Event<BotHitWallEvent> onHitWall = new Event<>();
     private final Event<BulletFiredEvent> onBulletFired = new Event<>();
@@ -475,9 +476,14 @@ public abstract class BaseBot implements IBaseBot {
             }, 100);
         onBotDeath.subscribe(
             event -> {
-              BaseBot.this.onBotDeath(event);
+              if (event.getVictimId() == myId) {
+                BaseBot.this.onDeath(event);
+              } else {
+                BaseBot.this.onBotDeath(event);
+              }
               return null;
-            }, 100);
+            },
+            100);
         onHitBot.subscribe(
             event -> {
               BaseBot.this.onHitBot(event);
@@ -541,6 +547,10 @@ public abstract class BaseBot implements IBaseBot {
           throw new RuntimeException("Could not connect to web socket", ex);
         }
       }
+    }
+
+    private void sendPong() {
+      webSocket.sendPong();
     }
 
     private void sendBotIntent() {
