@@ -33,25 +33,26 @@ public class TestBot2 extends Bot {
   public void onGameStarted(GameStartedEvent event) {
     System.out.println("onGameStarted: " + event);
 
-//    setMaxGunTurnRate(4);
-//    setMaxRadarTurnRate(4);
+    setMaxGunTurnRate(4);
+    setMaxRadarTurnRate(4);
+    setMaxSpeed(4);
 
-//    setTurnRadarLeft(Double.POSITIVE_INFINITY);
+    setTurnRadarLeft(Double.POSITIVE_INFINITY);
 
-//    setForward(move);
-//    go();
+    setForward(move);
+    go();
   }
 
   public void run() {
-    System.out.println("## run() ##");
+//    System.out.println("## run() ##");
     while (isRunning()) {
-      System.out.println("forward: " + getTurnNumber());
+//      System.out.println("forward: " + getTurnNumber() + ", thread: " + Thread.currentThread().getId());
       forward(100);
-      System.out.println("turnGun Left: " + getTurnNumber());
+//      System.out.println("turnGun Left: " + getTurnNumber() + ", thread: " + Thread.currentThread().getId());
       turnGunLeft(360);
-      System.out.println("back: " + getTurnNumber());
+//      System.out.println("back: " + getTurnNumber() + ", thread: " + Thread.currentThread().getId());
       back(100);
-      System.out.println("turnGun Right: " + getTurnNumber());
+//      System.out.println("turnGun Right: " + getTurnNumber() + ", thread: " + Thread.currentThread().getId());
       turnGunRight(360);
     }
   }

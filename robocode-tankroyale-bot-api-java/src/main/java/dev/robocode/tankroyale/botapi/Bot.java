@@ -205,7 +205,7 @@ public abstract class Bot extends BaseBot implements IBot {
 
   @Override
   public final boolean isRunning() {
-    return __internals.running.get();
+    return __internals.running;
   }
 
   private final class __Internals {
@@ -227,9 +227,8 @@ public abstract class Bot extends BaseBot implements IBot {
     private int turnNumber;
 
     private Thread thread;
-
     private final AtomicBoolean blocked = new AtomicBoolean();
-    private final AtomicBoolean running = new AtomicBoolean();
+    private volatile boolean running;
 
     private __Internals() {
       val superInt = Bot.super.__internals;
@@ -328,18 +327,20 @@ public abstract class Bot extends BaseBot implements IBot {
     }
 
     private void startThread() {
+      running = true;
       thread = new Thread(Bot.this::run);
       thread.start();
-      running.set(true);
     }
 
     private void stopThread() {
-      running.set(false);
-
-      synchronized (blocked) {
-        if (blocked.get()) {
-          blocked.notifyAll();
+      if (thread != null) {
+        running = false;
+        thread.interrupt();
+        try {
+          thread.join();
+        } catch (InterruptedException ignored) {
         }
+        thread = null;
       }
     }
 
@@ -533,11 +534,11 @@ public abstract class Bot extends BaseBot implements IBot {
     private void await(ICondition condition) {
       synchronized (blocked) {
         blocked.set(true);
-        while (condition.test()) {
+        while (running && condition.test()) {
           try {
             blocked.wait();
           } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            running = false;
           }
         }
         blocked.set(false);
