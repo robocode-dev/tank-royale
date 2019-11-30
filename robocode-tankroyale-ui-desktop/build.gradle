@@ -1,6 +1,6 @@
 
 buildscript {
-    ext.kotlin_version = '1.3.50'
+    ext.kotlin_version = '1.3.60'
     repositories {
         mavenLocal()
         mavenCentral()
@@ -39,7 +39,7 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    compile "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.13.0"
+    compile "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.14.0"
     compile 'org.java-websocket:Java-WebSocket:1.4.0'
     compile 'com.miglayout:miglayout-swing:5.2'
 
