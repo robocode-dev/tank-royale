@@ -120,15 +120,17 @@ private object SelectBotsPanel : JPanel(MigLayout("fill")) {
         onCancel.subscribe { SelectBotsDialog.dispose() }
 
         onAdd.subscribe {
-            availableBotList.selectedValuesList.forEach {
-                selectedBotListModel.addElement(it)
+            availableBotList.selectedValuesList.forEach { bot ->
+                if (selectedBotList.selectedValuesList.count { sel -> bot.host == sel.host && bot.port == sel.port } == 0) {
+                    selectedBotListModel.addElement(bot)
+                }
             }
         }
         onAddAll.subscribe {
             for (i in 0 until availableBotListModel.size) {
-                val botInfo = availableBotListModel[i]
-                if (!selectedBotListModel.contains(botInfo)) {
-                    selectedBotListModel.addElement(botInfo)
+                val bot = availableBotListModel[i]
+                if (!selectedBotListModel.contains(bot)) {
+                    selectedBotListModel.addElement(bot)
                 }
             }
         }
@@ -164,7 +166,7 @@ private object SelectBotsPanel : JPanel(MigLayout("fill")) {
             }
         })
 
-        selectedBotList.onContentsChanged { startBattleButton.isEnabled = selectedBotList.model.size > 0  }
+        selectedBotList.onContentsChanged { startBattleButton.isEnabled = selectedBotList.model.size > 0 }
 
         onStartBattle.subscribe { startGame() }
 
@@ -185,7 +187,8 @@ private object SelectBotsPanel : JPanel(MigLayout("fill")) {
     private fun startGame() {
         isVisible = true
 
-        val gameType = ServerProcess.gameType ?: GameType.CLASSIC.type // FIXME: Dialog must be shown to select game with remote server
+        val gameType = ServerProcess.gameType
+            ?: GameType.CLASSIC.type // FIXME: Dialog must be shown to select game with remote server
 
         val botAddresses = selectedBotListModel.toArray().map { b -> (b as BotInfo).botAddress }
         Client.startGame(GamesSettings.games[gameType]!!, botAddresses.toSet())
@@ -224,8 +227,7 @@ private object SelectBotsPanel : JPanel(MigLayout("fill")) {
 private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
-    EventQueue.
-        invokeLater {
+    EventQueue.invokeLater {
         SelectBotsDialog.isVisible = true
     }
 }
