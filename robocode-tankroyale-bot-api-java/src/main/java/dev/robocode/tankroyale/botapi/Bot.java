@@ -204,6 +204,13 @@ public abstract class Bot extends BaseBot implements IBot {
   }
 
   @Override
+  public final boolean fire(double firepower) {
+    boolean couldFire = setFire(firepower);
+    go();
+    return couldFire;
+  }
+
+  @Override
   public final boolean isRunning() {
     return __internals.running;
   }

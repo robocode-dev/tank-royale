@@ -61,6 +61,8 @@ public class TestBot2 extends Bot {
   public void onScannedBot(ScannedBotEvent event) {
     targetX = event.getX();
     targetY = event.getY();
+
+//    fire(1);
   }
 
   @Override

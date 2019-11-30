@@ -1,63 +1,124 @@
 package dev.robocode.tankroyale.botapi;
 
+import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
+
 public interface IBot extends IBaseBot {
 
   /**
-   * Sets the bot to move forward until it has traveled a specific distance from its current
-   * position or is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
+   * Set the bot to move forward until it has traveled a specific distance from its current
+   * position, or it is moving into an obstacle. The speed is limited by {@link
+   * #setMaxSpeed(double)}.
    *
-   * <p>This method will cancel the effect of calling {@link #setTargetSpeed(double)} as the
-   * setForward and setBack methods calls the setTargetSpeed for each turn until {@link
-   * #getDistanceRemaining()} reaches 0.
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods prior to execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
    *
+   * <p>This method will cancel the effect of prior calls to {@link #setTargetSpeed(double)} as the
+   * setForward(double) and {@link #setBack(double)} methods calls the {@link
+   * #setTargetSpeed(double)} for each turn until {@link #getDistanceRemaining()} reaches 0.
+   *
+   * @param distance is the distance to move forward. If negative, the bot will move backwards.
+   * @see #forward(double)
    * @see #setBack(double)
+   * @see #back(double)
    * @see #getDistanceRemaining()
    * @see #setTargetSpeed(double)
-   * @param distance is the distance to move forward. If negative, the bot will move backwards.
    */
   void setForward(double distance);
 
-  void forward(double distance); // TODO: Javadoc
-
   /**
-   * Sets the bot to move backward until it has traveled a specific distance from its current
-   * position or is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
+   * Move the bot forward until it has traveled a specific distance from its current position, or it
+   * is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
    *
-   * <p>This method will cancel the effect of calling {@link #setTargetSpeed(double)} as the
-   * setForward and setBack methods calls the setTargetSpeed for each turn until {@link
-   * #getDistanceRemaining()} reaches 0.
+   * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
+   * will block until its has been completed completed, which can take one to several turns. New
+   * commands will first take place after this method is completed. If you need to execute multiple
+   * commands in parallel, use <strong>setter</strong> methods instead of this blocking method.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>This method will cancel the effect of prior calls to {@link #setTargetSpeed(double)}, {@link
+   * #setForward(double)}, and {@link #setBack(double)} methods.
    *
+   * @param distance is the distance to move forward. If negative, the bot will move backwards.
    * @see #setForward(double)
+   * @see #setBack(double)
+   * @see #back(double)
    * @see #getDistanceRemaining()
    * @see #setTargetSpeed(double)
+   */
+  void forward(double distance);
+
+  /**
+   * Set the bot to move backwards until it has traveled a specific distance from its current
+   * position, or it is moving into an obstacle. The speed is limited by {@link
+   * #setMaxSpeed(double)}.
+   *
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods prior to execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
+   *
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
+   *
+   * <p>This method will cancel the effect of prior calls to {@link #setTargetSpeed(double)} as the
+   * {@link #setForward(double)} and setBack(double) methods calls the {@link
+   * #setTargetSpeed(double)} for each turn until {@link #getDistanceRemaining()} reaches 0.
+   *
    * @param distance is the distance to move backward. If negative, the bot will move forward.
+   * @see #back(double)
+   * @see #setForward(double)
+   * @see #forward(double)
+   * @see #getDistanceRemaining()
+   * @see #setTargetSpeed(double)
    */
   void setBack(double distance);
 
-  void back(double distance); // TODO: Javadoc
+  /**
+   * Move the bot backwards until it has traveled a specific distance from its current position, or
+   * it is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
+   *
+   * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
+   * will block until its has been completed completed, which can take one to several turns. New
+   * commands will first take place after this method is completed. If you need to execute multiple
+   * commands in parallel, use <strong>setter</strong> methods instead of this blocking method.
+   *
+   * <p>This method will cancel the effect of prior calls to {@link #setTargetSpeed(double)}, {@link
+   * #setForward(double)}, and {@link #setBack(double)} methods.
+   *
+   * @param distance is the distance to move forward. If negative, the bot will move backwards.
+   * @see #setForward(double)
+   * @see #setBack(double)
+   * @see #forward(double)
+   * @see #getDistanceRemaining()
+   * @see #setTargetSpeed(double)
+   */
+  void back(double distance);
 
   /**
    * Returns the distance remaining till the bot has finished moving after having called {@link
-   * #setForward(double)} or {@link #setBack(double)}. When the distance remaining has reached 0,
-   * the bot has finished its move.
+   * #setForward(double)}, {@link #setBack(double)}, {@link #forward(double)}, or {@link
+   * #back(double)}. When the distance remaining has reached 0, the bot has finished its current
+   * move.
    *
    * <p>When the distance remaining is positive, the bot is moving forward. When the distance
    * remaining is negative, the bot is moving backwards.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
-   *
+   * @return the remaining distance to move before its current movement is completed.
    * @see #setForward(double)
    * @see #setBack(double)
-   * @return the remaining distance to move.
+   * @see #forward(double)
+   * @see #back(double)
    */
   double getDistanceRemaining();
 
   /**
-   * Sets the maximum speed which applies when moving forwards and backwards. The maximum speed must
+   * Sets the maximum speed which applies when moving forward and backward. The maximum speed must
    * be an absolute value from 0 to {@link #MAX_SPEED}, both values are included. If the input speed
    * is negative, the max speed will be cut to zero. If the input speed is above {@link #MAX_SPEED},
    * the max speed will be set to {@link #MAX_SPEED}.
@@ -65,216 +126,433 @@ public interface IBot extends IBaseBot {
    * <p>If for example the maximum speed is set to 5, then the bot will be able to move backwards
    * with a speed down to -5 pixels/turn and up to 5 pixels/turn when moving forward.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods prior to execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
    *
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
+   *
+   * @param maxSpeed is the new maximum speed
    * @see #setForward(double)
    * @see #setBack(double)
-   * @param maxSpeed is the new maximum speed
    */
   void setMaxSpeed(double maxSpeed);
 
   /**
-   * Sets the bot to turn left (following the increasing degrees of the unity circle) until it
-   * turned the specified amount of degrees, i.e., when {@link #getTurnRemaining()} is 0. The amount
-   * of degrees to turn each turn is limited by {@link #setMaxTurnRate(double)}.
+   * Set the bot to turn to the left (following the increasing degrees of the <a
+   * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+   * amount of degrees. That is, when {@link #getTurnRemaining()} is 0. The amount of degrees to
+   * turn each turn is limited by {@link #setMaxTurnRate(double)}.
    *
-   * <p>This method will cancel the effect of earlier called to setTurnLeft or setTurnRight.
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods prior to execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
    *
+   * <p>This method will cancel the effect of prior calls to {@link #setTurnRight(double)}.
+   *
+   * @param degrees is the amount of degrees to turn left. If negative, the bot will turn right.
+   * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
    * @see #setTurnRight(double)
+   * @see #turnRight(double)
+   * @see #turnLeft(double)
    * @see #getTurnRemaining()
    * @see #setTurnRate(double)
-   * @param degrees is the amount of degrees to turn left. If negative, the bot will turn right.
    */
   void setTurnLeft(double degrees);
 
-  void turnLeft(double degrees); // TODO: Javadoc
-
   /**
-   * Sets the bot to turn right (following the decreasing degrees of the unity circle) until it
-   * turned the specified amount of degrees, i.e., when {@link #getTurnRemaining()} is 0. The amount
-   * of degrees to turn each turn is limited by {@link #setMaxTurnRate(double)}.
+   * Turn the bot to the left (following the increasing degrees of the <a
+   * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+   * amount of degrees. That is, when {@link #getTurnRemaining()} is 0. The amount of degrees to
+   * turn each turn is limited by {@link #setMaxTurnRate(double)}.
    *
-   * <p>This method will cancel the effect of earlier called to setTurnLeft or setTurnRight.
+   * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
+   * will block until its has been completed completed, which can take one to several turns. New
+   * commands will first take place after this method is completed. If you need to execute multiple
+   * commands in parallel, use <strong>setter</strong> methods instead of this blocking method.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>This method will cancel the effect of prior calls to {@link #setTurnLeft(double)} and {@link
+   * #setTurnRight(double)}.
    *
+   * @param degrees is the amount of degrees to turn left. If negative, the bot will turn right.
+   * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
    * @see #setTurnLeft(double)
+   * @see #setTurnRight(double)
+   * @see #turnRight(double)
    * @see #getTurnRemaining()
    * @see #setTurnRate(double)
+   */
+  void turnLeft(double degrees);
+
+  /**
+   * Set the bot to turn to the right (following the decreasing degrees of the <a
+   * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+   * amount of degrees. That is, when {@link #getTurnRemaining()} is 0. The amount of degrees to
+   * turn each turn is limited by {@link #setMaxTurnRate(double)}.
+   *
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods prior to execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
+   *
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
+   *
+   * <p>This method will cancel the effect of prior calls to {@link #setTurnLeft(double)}.
+   *
    * @param degrees is the amount of degrees to turn right. If negative, the bot will turn left.
+   * @see #setTurnLeft(double)
+   * @see #turnRight(double)
+   * @see #turnLeft(double)
+   * @see #getTurnRemaining()
+   * @see #setTurnRate(double)
    */
   void setTurnRight(double degrees);
 
-  void turnRight(double degrees); // TODO: Javadoc
+  /**
+   * Turn the bot to the right (following the increasing degrees of the <a
+   * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+   * amount of degrees. That is, when {@link #getTurnRemaining()} is 0. The amount of degrees to
+   * turn each turn is limited by {@link #setMaxTurnRate(double)}.
+   *
+   * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
+   * will block until its has been completed completed, which can take one to several turns. New
+   * commands will first take place after this method is completed. If you need to execute multiple
+   * commands in parallel, use <strong>setter</strong> methods instead of this blocking method.
+   *
+   * <p>This method will cancel the effect of prior calls to {@link #setTurnLeft(double)} and {@link
+   * #setTurnRight(double)}.
+   *
+   * @param degrees is the amount of degrees to turn right. If negative, the bot will turn left.
+   * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
+   * @see #setTurnLeft(double)
+   * @see #setTurnRight(double)
+   * @see #turnLeft(double)
+   * @see #getTurnRemaining()
+   * @see #setTurnRate(double)
+   */
+  void turnRight(double degrees);
 
   /**
    * Returns the remaining turn in degrees till the bot has finished turning after having called
-   * {@link #setTurnLeft(double)} or {@link #setTurnRight(double)}. When the turn remaining has
-   * reached 0, the bot has finished turning. If the
+   * {@link #setTurnLeft(double)}, {@link #setTurnRight(double)}, {@link #turnLeft(double)}, or
+   * {@link #turnRight(double)}. When the turn remaining has reached 0, the bot has finished
+   * turning.
    *
    * <p>When the turn remaining is positive, the bot is turning to the left (along the unit circle).
    * When the turn remaining is negative, the bot is turning to the right.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
-   *
-   * @see #setForward(double)
-   * @see #setBack(double)
    * @return the remaining degrees to turn
+   * @see #setTurnLeft(double)
+   * @see #setTurnRight(double)
+   * @see #turnLeft(double)
+   * @see #turnRight(double)
    */
   double getTurnRemaining();
 
   /**
-   * Sets the maximum turn rate which applies turning the bot to the left or right with the methods
-   * {@link #setTurnLeft(double)} and {@link #setTurnRight(double)}. The maximum turn rate must be
-   * an absolute value from 0 to {@link #MAX_TURN_RATE}, both values are included. If the input turn
-   * rate is negative, the max turn rate will be cut to zero. If the input turn rate is above {@link
-   * #MAX_TURN_RATE}, the max turn rate will be set to {@link #MAX_TURN_RATE}.
+   * Sets the maximum turn rate which applies to turning the bot to the left or right. The maximum
+   * turn rate must be an absolute value from 0 to {@link #MAX_TURN_RATE}, both values are included.
+   * If the input turn rate is negative, the max turn rate will be cut to zero. If the input turn
+   * rate is above {@link #MAX_TURN_RATE}, the max turn rate will be set to {@link #MAX_TURN_RATE}.
    *
    * <p>If for example the max turn rate is set to 5, then the bot will be able to turn left or
-   * right with a turn rate down to -5 degrees/turn when turning right and up to 5 degrees/turn when
-   * turning left.
+   * right with a turn rate down to -5 degrees/turn when turning right, and up to 5 degrees/turn
+   * when turning left.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods prior to execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
    *
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
+   *
+   * @param maxTurnRate is the new maximum turn rate
    * @see #setTurnRate(double)
    * @see #setTurnLeft(double)
    * @see #setTurnRight(double)
-   * @param maxTurnRate is the new maximum turn rate
+   * @see #turnLeft(double)
+   * @see #turnRight(double)
    */
   void setMaxTurnRate(double maxTurnRate);
 
   /**
-   * Sets the gun to turn left (following the increasing degrees of the unity circle) until it
-   * turned the specified amount of degrees, i.e., when {@link #getGunTurnRemaining()} is 0. The
-   * amount of degrees to turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
+   * Set the gun to turn to the left (following the increasing degrees of the <a
+   * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+   * amount of degrees. That is, when {@link #getGunTurnRemaining()} is 0. The amount of degrees to
+   * turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
    *
-   * <p>This method will cancel the effect of earlier called to setTurnGunLeft or setTurnGunRight.
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods prior to execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
    *
+   * <p>This method will cancel the effect of prior calls to {@link #setTurnGunRight(double)}.
+   *
+   * @param degrees is the amount of degrees to turn left. If negative, the gun will turn right.
+   * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
    * @see #setTurnGunRight(double)
+   * @see #turnGunRight(double)
+   * @see #turnGunLeft(double)
    * @see #getGunTurnRemaining()
    * @see #setGunTurnRate(double)
-   * @param degrees is the amount of degrees to turn left. If negative, the gun will turn right.
    */
   void setTurnGunLeft(double degrees);
 
-  void turnGunLeft(double degrees); // TODO: Javadoc
-
   /**
-   * Sets the gun to turn right (following the decreasing degrees of the unity circle) until it
-   * turned the specified amount of degrees, i.e., when {@link #getGunTurnRemaining()} is 0. The
-   * amount of degrees to turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
+   * Turn the gun to the left (following the increasing degrees of the <a
+   * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+   * amount of degrees. That is, when {@link #getGunTurnRemaining()} is 0. The amount of degrees to
+   * turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
    *
-   * <p>This method will cancel the effect of earlier called to setTurnGunLeft or setTurnGunRight.
+   * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
+   * will block until its has been completed completed, which can take one to several turns. New
+   * commands will first take place after this method is completed. If you need to execute multiple
+   * commands in parallel, use <strong>setter</strong> methods instead of this blocking method.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>This method will cancel the effect of prior calls to {@link #setTurnGunLeft(double)} and
+   * {@link #setTurnGunRight(double)}.
    *
+   * @param degrees is the amount of degrees to turn left. If negative, the gun will turn right.
+   * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
    * @see #setTurnGunLeft(double)
+   * @see #setTurnGunRight(double)
+   * @see #turnGunRight(double)
    * @see #getGunTurnRemaining()
    * @see #setGunTurnRate(double)
+   */
+  void turnGunLeft(double degrees);
+
+  /**
+   * Set the gun to turn to the right (following the decreasing degrees of the <a
+   * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+   * amount of degrees. That is, when {@link #getGunTurnRemaining()} is 0. The amount of degrees to
+   * turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
+   *
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods prior to execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
+   *
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
+   *
+   * <p>This method will cancel the effect of prior calls to {@link #setTurnGunLeft(double)}.
+   *
    * @param degrees is the amount of degrees to turn right. If negative, the gun will turn left.
+   * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
+   * @see #setTurnGunLeft(double)
+   * @see #turnGunRight(double)
+   * @see #turnGunLeft(double)
+   * @see #getGunTurnRemaining()
+   * @see #setGunTurnRate(double)
    */
   void setTurnGunRight(double degrees);
 
+  /**
+   * Turn the gun to the right (following the decreasing degrees of the <a
+   * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+   * amount of degrees. That is, when {@link #getGunTurnRemaining()} is 0. The amount of degrees to
+   * turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
+   *
+   * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
+   * will block until its has been completed completed, which can take one to several turns. New
+   * commands will first take place after this method is completed. If you need to execute multiple
+   * commands in parallel, use <strong>setter</strong> methods instead of this blocking method.
+   *
+   * <p>This method will cancel the effect of prior calls to {@link #setTurnGunLeft(double)} and
+   * {@link #setTurnGunRight(double)}.
+   *
+   * @param degrees is the amount of degrees to turn right. If negative, the gun will turn left.
+   * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
+   * @see #setTurnGunLeft(double)
+   * @see #setTurnGunRight(double)
+   * @see #turnGunLeft(double)
+   * @see #getGunTurnRemaining()
+   * @see #setGunTurnRate(double)
+   */
   void turnGunRight(double degrees); // TODO: Javadoc
 
   /**
    * Returns the remaining turn in degrees till the gun has finished turning after having called
-   * {@link #setTurnGunLeft(double)} or {@link #setTurnGunRight(double)}. When the turn remaining
-   * has reached 0, the gun has finished turning.
+   * {@link #setTurnGunLeft(double)}, {@link #setTurnGunRight(double)}, {@link
+   * #turnGunLeft(double)}, or {@link #turnGunRight(double)}. When the turn remaining has reached 0,
+   * the gun has finished turning.
    *
    * <p>When the turn remaining is positive, the bot is turning to the left (along the unit circle).
    * When the turn remaining is negative, the bot is turning to the right.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
-   *
+   * @return the remaining degrees to turn the gun
    * @see #setTurnGunLeft(double)
    * @see #setTurnGunRight(double)
-   * @return the remaining degrees to turn the gun
+   * @see #turnGunLeft(double)
+   * @see #turnGunRight(double)
    */
   double getGunTurnRemaining();
 
   /**
-   * Sets the maximum turn rate which applies turning the gun to the left or right with the methods
-   * {@link #setTurnGunLeft(double)} and {@link #setTurnGunRight(double)}. The maximum turn rate
-   * must be an absolute value from 0 to {@link #MAX_GUN_TURN_RATE}, both values are included. If
-   * the input turn rate is negative, the max turn rate will be cut to zero. If the input turn rate
-   * is above {@link #MAX_GUN_TURN_RATE}, the max turn rate will be set to {@link
+   * Sets the maximum turn rate which applies turning the gun to the left or right. The maximum turn
+   * rate must be an absolute value from 0 to {@link #MAX_GUN_TURN_RATE}, both values are included.
+   * If the input turn rate is negative, the max turn rate will be cut to zero. If the input turn
+   * rate is above {@link #MAX_GUN_TURN_RATE}, the max turn rate will be set to {@link
    * #MAX_GUN_TURN_RATE}.
    *
    * <p>If for example the max gun turn rate is set to 5, then the gun will be able to turn left or
    * right with a turn rate down to -5 degrees/turn when turning right and up to 5 degrees/turn when
    * turning left.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods prior to execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
    *
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
+   *
+   * @param maxGunTurnRate is the new maximum gun turn rate
    * @see #setGunTurnRate(double)
    * @see #setTurnGunLeft(double)
    * @see #setTurnGunRight(double)
-   * @param maxGunTurnRate is the new maximum gun turn rate
+   * @see #turnGunLeft(double)
+   * @see #turnGunRight(double)
    */
   void setMaxGunTurnRate(double maxGunTurnRate);
 
   /**
-   * Sets the radar to turn left (following the increasing degrees of the unity circle) until it
-   * turned the specified amount of degrees, i.e., when {@link #getRadarTurnRemaining()} is 0. The
-   * amount of degrees to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
+   * Set the radar to turn to the left (following the increasing degrees of the <a
+   * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+   * amount of degrees. That is, when {@link #getRadarTurnRemaining()} is 0. The amount of degrees
+   * to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
    *
-   * <p>This method will cancel the effect of earlier called to setTurnRadarLeft or
-   * setTurnRadarRight.
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods prior to execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
    *
+   * <p>This method will cancel the effect of prior calls to {@link #setTurnRadarRight(double)}.
+   *
+   * @param degrees is the amount of degrees to turn left. If negative, the radar will turn right.
+   * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
    * @see #setTurnRadarRight(double)
+   * @see #turnRadarRight(double)
+   * @see #turnRadarLeft(double)
    * @see #getRadarTurnRemaining()
    * @see #setRadarTurnRate(double)
-   * @param degrees is the amount of degrees to turn left. If negative, the radar will turn right.
    */
   void setTurnRadarLeft(double degrees);
 
-  void turnRadarLeft(double degrees); // TODO: Javadoc
-
   /**
-   * Sets the radar to turn right (following the decreasing degrees of the unity circle) until it
-   * turned the specified amount of degrees, i.e., when {@link #getRadarTurnRemaining()} is 0. The
-   * amount of degrees to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
+   * Turn the radar to the left (following the increasing degrees of the <a
+   * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+   * amount of degrees. That is, when {@link #getRadarTurnRemaining()} is 0. The amount of degrees
+   * to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
    *
-   * <p>This method will cancel the effect of earlier called to setTurnRadarLeft or
-   * setTurnRadarRight.
+   * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
+   * will block until its has been completed completed, which can take one to several turns. New
+   * commands will first take place after this method is completed. If you need to execute multiple
+   * commands in parallel, use <strong>setter</strong> methods instead of this blocking method.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>This method will cancel the effect of prior calls to {@link #setTurnRadarLeft(double)} and
+   * {@link #setTurnRadarRight(double)}.
    *
+   * @param degrees is the amount of degrees to turn left. If negative, the radar will turn right.
+   * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
    * @see #setTurnRadarLeft(double)
+   * @see #setTurnRadarRight(double)
+   * @see #turnRadarRight(double)
    * @see #getRadarTurnRemaining()
    * @see #setRadarTurnRate(double)
+   */
+  void turnRadarLeft(double degrees);
+
+  /**
+   * Turn the radar to the right (following the decreasing degrees of the <a
+   * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+   * amount of degrees. That is, when {@link #getRadarTurnRemaining()} is 0. The amount of degrees
+   * to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
+   *
+   * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
+   * will block until its has been completed completed, which can take one to several turns. New
+   * commands will first take place after this method is completed. If you need to execute multiple
+   * commands in parallel, use <strong>setter</strong> methods instead of this blocking method.
+   *
+   * <p>This method will cancel the effect of prior calls to {@link #setTurnRadarLeft(double)} and
+   * setTurnRadarRight(double).
+   *
    * @param degrees is the amount of degrees to turn right. If negative, the radar will turn left.
+   * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
+   * @see #setTurnRadarLeft(double)
+   * @see #setTurnRadarRight(double)
+   * @see #turnRadarRight(double)
+   * @see #getRadarTurnRemaining()
+   * @see #setRadarTurnRate(double)
    */
   void setTurnRadarRight(double degrees);
 
-  void turnRadarRight(double degrees); // TODO: Javadoc
+  /**
+   * Turn the radar to the right (following the increasing degrees of the <a
+   * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+   * amount of degrees. That is, when {@link #getRadarTurnRemaining()} is 0. The amount of degrees
+   * to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
+   *
+   * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
+   * will block until its has been completed completed, which can take one to several turns. New
+   * commands will first take place after this method is completed. If you need to execute multiple
+   * commands in parallel, use <strong>setter</strong> methods instead of this blocking method.
+   *
+   * <p>This method will cancel the effect of prior calls to {@link #setTurnRadarLeft(double)} and
+   * {@link #setTurnRadarRight(double)}.
+   *
+   * @param degrees is the amount of degrees to turn right. If negative, the radar will turn left.
+   * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
+   * @see #setTurnRadarLeft(double)
+   * @see #setTurnRadarRight(double)
+   * @see #turnRadarRight(double)
+   * @see #getRadarTurnRemaining()
+   * @see #setRadarTurnRate(double)
+   */
+  void turnRadarRight(double degrees);
 
   /**
    * Returns the remaining turn in degrees till the radar has finished turning after having called
-   * {@link #setTurnRadarLeft(double)} or {@link #setTurnRadarRight(double)}. When the turn
-   * remaining has reached 0, the radar has finished turning.
+   * {@link #setTurnRadarLeft(double)}, {@link #setTurnRadarRight(double)}, {@link
+   * #turnRadarLeft(double)}, or {@link #turnRadarRight(double)}. When the turn remaining has
+   * reached 0, the radar has finished turning.
    *
    * <p>When the turn remaining is positive, the bot is turning to the left (along the unit circle).
    * When the turn remaining is negative, the bot is turning to the right.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
-   *
-   * @see #setTurnGunLeft(double)
-   * @see #setTurnGunRight(double)
-   * @return the remaining degrees to turn the gun
+   * @return the remaining degrees to turn the radar
+   * @see #setTurnRadarLeft(double)
+   * @see #setTurnRadarRight(double)
+   * @see #turnRadarLeft(double)
+   * @see #turnRadarRight(double)
    */
   double getRadarTurnRemaining();
 
   /**
-   * Sets the maximum turn rate which applies turning the radar to the left or right with the
-   * methods {@link #setTurnRadarLeft(double)} and {@link #setTurnRadarRight(double)}. The maximum
+   * Sets the maximum turn rate which applies turning the radar to the left or right. The maximum
    * turn rate must be an absolute value from 0 to {@link #MAX_RADAR_TURN_RATE}, both values are
    * included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
    * input turn rate is above {@link #MAX_RADAR_TURN_RATE}, the max turn rate will be set to {@link
@@ -284,14 +562,67 @@ public interface IBot extends IBaseBot {
    * or right with a turn rate down to -5 degrees/turn when turning right and up to 5 degrees/turn
    * when turning left.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods prior to execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
    *
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
+   *
+   * @param maxRadarTurnRate is the new maximum radar turn rate
    * @see #setRadarTurnRate(double)
    * @see #setTurnRadarLeft(double)
    * @see #setTurnRadarRight(double)
-   * @param maxRadarTurnRate is the new maximum radar turn rate
+   * @see #turnRadarLeft(double)
+   * @see #turnRadarRight(double)
    */
   void setMaxRadarTurnRate(double maxRadarTurnRate);
 
-  boolean isRunning();  // TODO: Javadoc
+  /**
+   * Fire the gun in the direction as the gun is pointing.
+   *
+   * <p>Note that your bot is spending energy when firing a bullet, the amount of energy used for
+   * firing the bullet is taken from the bot. The amount of energy loss is equal to the firepower.
+   *
+   * <p>If the bullet hits an opponent bot, you will gain energy from the bullet hit. When hitting
+   * another bot, your bot will be rewarded and retrieve an energy boost of 3x firepower.
+   *
+   * <p>The gun will only fire when the firepower is at {@link #MAX_FIREPOWER} or higher. If the
+   * firepower is more than {@link #MAX_FIREPOWER}, the power will be truncated to the max
+   * firepower.
+   *
+   * <p>Whenever the gun is fired, the gun is heated an needs to cool down before it is able to fire
+   * again. The gun heat must be zero before the gun is able to fire (see {@link #getGunHeat()}. The
+   * gun heat generated by firing the gun is 1 + (firepower / 5). Hence, the more firepower used the
+   * longer it takes to cool down the gun. The gun cooling rate can be read by calling {@link
+   * #getGunCoolingRate()}.
+   *
+   * <p>The amount of energy used for firing the gun is subtracted from the bots total energy. The
+   * amount of damage dealt by a bullet hitting another bot is 4x firepower, and if the firepower is
+   * greater than 1 it will do an additional 2 x (firepower - 1) damage.
+   *
+   * <p>The firepower is truncated to {@link #MIN_FIREPOWER} and {@link #MAX_FIREPOWER} if the
+   * firepower exceeds these values.
+   *
+   * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
+   * will block until its has been completed completed, which can take one to several turns. New
+   * commands will first take place after this method is completed. If you need to execute multiple
+   * commands in parallel, use <strong>setter</strong> methods instead of this blocking method.
+   *
+   * <p>This method will cancel the effect of prior calls to {@link #setFire(double)}.
+   *
+   * @param firepower is the amount of energy spend on firing the gun. You cannot spend more energy
+   *     that available from the bot. The bullet power must be > {@link #MIN_FIREPOWER}.
+   * @return true if the gun could fire; false otherwise, for example if the gun heat is too high
+   * @see #onBulletFired(BulletFiredEvent)
+   * @see #setFire(double)
+   */
+  boolean fire(double firepower);
+
+  /**
+   * Returns true when the bot is running, false otherwise.
+   */
+  boolean isRunning();
 }
