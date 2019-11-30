@@ -76,8 +76,8 @@ public interface IBaseBot {
   double MAX_BULLET_SPEED = 20 - 3 * MIN_FIREPOWER;
 
   /**
-   * Acceleration that adds 1 additional pixel to the speed per turn when the bot is increasing its
-   * speed moving forwards.
+   * Acceleration that adds 1 pixel to the speed per turn when the bot is increasing its speed
+   * moving forwards.
    */
   double ACCELERATION = 1;
 
@@ -99,24 +99,6 @@ public interface IBaseBot {
    * setFire().
    */
   void go();
-
-  /**
-   * The run method is used for running a program for the bot like:
-   *
-   * <pre>
-   * public void run() {
-   *   while (isRunning()) {
-   *     forward(100);
-   *     turnGunLeft(360);
-   *     back(100);
-   *     turnGunRight(360);
-   * 	}
-   * }
-   * </pre>
-   *
-   * @see #isRunning()
-   */
-  default void run() {}
 
   /** Returns the unique id of this bot in the battle. Available when game has started. */
   int getMyId();

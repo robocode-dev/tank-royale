@@ -2,12 +2,47 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
 
+@SuppressWarnings({"UnusedDeclaration"})
 public interface IBot extends IBaseBot {
+
+  /**
+   * The run method is used for running a program for the bot like:
+   *
+   * <pre>
+   * public void run() {
+   *   while (isRunning()) {
+   *     forward(100);
+   *     turnGunLeft(360);
+   *     back(100);
+   *     turnGunRight(360);
+   *   }
+   * }
+   * </pre>
+   *
+   * <p>Note that the program runs in a loop in this example, meaning that it will start moving
+   * forward as soon as turnGunRight() has executed.
+   *
+   * <p>When running a loop that could potentially "run forever", best practise is to check if the
+   * bot is still running in order to stop and exit the loop. This gives the game a chance of
+   * stopping the thread running the loop in the code behind. If the thread is not stopped
+   * correctly, the bot may behave strange in new rounds.
+   *
+   * @see #isRunning()
+   */
+  default void run() {}
+
+  /** Returns true when the bot is running, false otherwise. */
+  boolean isRunning();
 
   /**
    * Set the bot to move forward until it has traveled a specific distance from its current
    * position, or it is moving into an obstacle. The speed is limited by {@link
    * #setMaxSpeed(double)}.
+   *
+   * <p>When the bot is moving forward, the {@link #ACCELERATION} determine the acceleration of the
+   * bot that adds 1 additional pixel to the speed per turn while accelerating. However, the bot is
+   * faster at braking. The {@link #DECELERATION} determine the deceleration of the bot that
+   * subtracts 2 pixels from the speed per turn.
    *
    * <p>This method will first be executed when {@link #go()} is called making it possible to call
    * other set methods prior to execution. This makes it possible to set the bot to move, turn the
@@ -35,6 +70,11 @@ public interface IBot extends IBaseBot {
    * Move the bot forward until it has traveled a specific distance from its current position, or it
    * is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
    *
+   * <p>When the bot is moving forward, the {@link #ACCELERATION} determine the acceleration of the
+   * bot that adds 1 additional pixel to the speed per turn while accelerating. However, the bot is
+   * faster at braking. The {@link #DECELERATION} determine the deceleration of the bot that
+   * subtracts 2 pixels from the speed per turn.
+   *
    * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
    * will block until its has been completed completed, which can take one to several turns. New
    * commands will first take place after this method is completed. If you need to execute multiple
@@ -56,6 +96,11 @@ public interface IBot extends IBaseBot {
    * Set the bot to move backwards until it has traveled a specific distance from its current
    * position, or it is moving into an obstacle. The speed is limited by {@link
    * #setMaxSpeed(double)}.
+   *
+   * <p>When the bot is moving forward, the {@link #ACCELERATION} determine the acceleration of the
+   * bot that adds 1 additional pixel to the speed per turn while accelerating. However, the bot is
+   * faster at braking. The {@link #DECELERATION} determine the deceleration of the bot that
+   * subtracts 2 pixels from the speed per turn.
    *
    * <p>This method will first be executed when {@link #go()} is called making it possible to call
    * other set methods prior to execution. This makes it possible to set the bot to move, turn the
@@ -82,6 +127,11 @@ public interface IBot extends IBaseBot {
   /**
    * Move the bot backwards until it has traveled a specific distance from its current position, or
    * it is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
+   *
+   * <p>When the bot is moving forward, the {@link #ACCELERATION} determine the acceleration of the
+   * bot that adds 1 additional pixel to the speed per turn while accelerating. However, the bot is
+   * faster at braking. The {@link #DECELERATION} determine the deceleration of the bot that
+   * subtracts 2 pixels from the speed per turn.
    *
    * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
    * will block until its has been completed completed, which can take one to several turns. New
@@ -387,7 +437,7 @@ public interface IBot extends IBaseBot {
    * @see #getGunTurnRemaining()
    * @see #setGunTurnRate(double)
    */
-  void turnGunRight(double degrees); // TODO: Javadoc
+  void turnGunRight(double degrees);
 
   /**
    * Returns the remaining turn in degrees till the gun has finished turning after having called
@@ -620,9 +670,4 @@ public interface IBot extends IBaseBot {
    * @see #setFire(double)
    */
   boolean fire(double firepower);
-
-  /**
-   * Returns true when the bot is running, false otherwise.
-   */
-  boolean isRunning();
 }
