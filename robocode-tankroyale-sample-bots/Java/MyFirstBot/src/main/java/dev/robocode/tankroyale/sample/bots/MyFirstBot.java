@@ -3,45 +3,30 @@ package dev.robocode.tankroyale.sample.bots;
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.events.BulletHitBotEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
-import dev.robocode.tankroyale.botapi.events.TickEvent;
 
 public class MyFirstBot extends Bot {
 
   // Main method
   public static void main(String[] args) {
-    // Run our bot
-    new MyFirstBot().run();
+    // Start our bot
+    new MyFirstBot().start();
   }
 
-  // Variable used for storing next step to be taken
-  private int step = 1;
-
-  // This method is called when our bot must take action for the next turn
+  // This method runs our bot program, where each command is executed one at a time
   @Override
-  public void onTick(TickEvent event) {
-    // Only do something, when the bot has finished it's movement or finished turning the gun
-    if (getDistanceRemaining() == 0 && getGunTurnRemaining() == 0) {
-      if (step == 1) {
-        setForward(100); // remaining distance = 100
-      } else if (step == 2 || step == 4) {
-        setTurnGunRight(360); // remaining turn = 360
-      } else if (step == 3) {
-        setBack(100); // remaining distance = -100
-      }
-      step++; // next step
-      if (step > 4) {
-        step = 1; // reset step
-      }
+  public void run() {
+    while (isRunning()) {
+      forward(100);
+      turnGunRight(360);
+      back(100);
+      turnGunRight(360);
     }
-    // execute our set command. Our turn is over!
-    go();
   }
 
   // This method is called when our bot has scanned another bot
   @Override
   public void onScannedBot(ScannedBotEvent e) {
-    // Fire the cannon!
-    setFire(1);
+    setFire(1); // Fire the cannon!
   }
 
   // This method is called when our bot is hit by a bullet
