@@ -143,7 +143,7 @@ public abstract class BaseBot implements IBaseBot {
   @Override
   public final int getTimeLeft() {
     long passesMicroSeconds = (System.nanoTime() - __internals.tickStartNanoTime) / 1000;
-    return (int)(__internals.getGameSetup().getTurnTimeout() - passesMicroSeconds);
+    return (int) (__internals.getGameSetup().getTurnTimeout() - passesMicroSeconds);
   }
 
   @Override
@@ -442,38 +442,45 @@ public abstract class BaseBot implements IBaseBot {
             event -> {
               BaseBot.this.onConnected(event);
               return null;
-            }, 100);
+            },
+            100);
         onDisconnected.subscribe(
             event -> {
               BaseBot.this.onDisconnected(event);
               return null;
-            }, 100);
+            },
+            100);
         onConnectionError.subscribe(
             event -> {
               BaseBot.this.onConnectionError(event);
               return null;
-            }, 100);
+            },
+            100);
         onGameStarted.subscribe(
             event -> {
               BaseBot.this.onGameStarted(event);
               return null;
-            }, 100);
+            },
+            100);
         onGameEnded.subscribe(
             event -> {
               BaseBot.this.onGameEnded(event);
               return null;
-            }, 100);
+            },
+            100);
         onTick.subscribe(
             event -> {
               tickStartNanoTime = System.nanoTime();
               BaseBot.this.onTick(event);
               return null;
-            }, 100);
+            },
+            100);
         onSkippedTurn.subscribe(
             event -> {
               BaseBot.this.onSkippedTurn(event);
               return null;
-            }, 100);
+            },
+            100);
         onBotDeath.subscribe(
             event -> {
               if (event.getVictimId() == myId) {
@@ -488,47 +495,56 @@ public abstract class BaseBot implements IBaseBot {
             event -> {
               BaseBot.this.onHitBot(event);
               return null;
-            }, 100);
+            },
+            100);
         onHitWall.subscribe(
             event -> {
               BaseBot.this.onHitWall(event);
               return null;
-            }, 100);
+            },
+            100);
         onBulletFired.subscribe(
             event -> {
               BaseBot.this.onBulletFired(event);
               return null;
-            }, 100);
+            },
+            100);
         onHitByBullet.subscribe(
             event -> {
               BaseBot.this.onHitByBullet(event);
               return null;
-            }, 100);
+            },
+            100);
         onBulletHit.subscribe(
             event -> {
               BaseBot.this.onBulletHit(event);
               return null;
-            }, 100);
+            },
+            100);
         onBulletHitBullet.subscribe(
             event -> {
               BaseBot.this.onBulletHitBullet(event);
               return null;
-            }, 100);
+            },
+            100);
         onBulletHitWall.subscribe(
             event -> {
               BaseBot.this.onBulletHitWall(event);
               return null;
-            }, 100);
+            },
+            100);
         onScannedBot.subscribe(
             event -> {
               BaseBot.this.onScannedBot(event);
               return null;
-            }, 100);
+            },
+            100);
         onWonRound.subscribe(
             event -> {
               BaseBot.this.onWonRound(event);
               return null;
-            }, 100);
+            },
+            100);
 
         webSocket = new WebSocketFactory().createSocket(serverUri);
         webSocket.addListener(new WebSocketListener());
@@ -649,9 +665,6 @@ public abstract class BaseBot implements IBaseBot {
           val type = jsonType.getAsString();
 
           switch (dev.robocode.tankroyale.schema.Message.Type.fromValue(type)) {
-            case SKIPPED_TURN_EVENT: // FIXME: Already handled somewhere else
-              handleSkippedTurnEvent(jsonMsg);
-              break;
             case TICK_EVENT_FOR_BOT:
               handleTickEvent(jsonMsg);
               break;
@@ -764,8 +777,7 @@ public abstract class BaseBot implements IBaseBot {
                   onBulletHitWall.publish((BulletHitWallEvent) event);
                 } else if (event instanceof ScannedBotEvent) {
                   onScannedBot.publish((ScannedBotEvent) event);
-                } else if (event
-                    instanceof SkippedTurnEvent) { // FIXME: Already handled somewhere else
+                } else if (event instanceof SkippedTurnEvent) {
                   onSkippedTurn.publish((SkippedTurnEvent) event);
                 } else if (event instanceof WonRoundEvent) {
                   onWonRound.publish((WonRoundEvent) event);
