@@ -1,14 +1,17 @@
 package dev.robocode.tankroyale.ui.desktop.ui.server
 
+import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import java.awt.Color
 import javax.swing.JFrame
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 
+
 object ServerLogWindow : JFrame(ResourceBundles.UI_TITLES.get("server_log_window")) {
 
-    private var textArea = JTextArea()
+    private val textArea = JTextArea()
+    private val scrollPane = JScrollPane(textArea)
 
     init {
         setSize(700, 550)
@@ -19,8 +22,13 @@ object ServerLogWindow : JFrame(ResourceBundles.UI_TITLES.get("server_log_window
             foreground = Color.WHITE
             background = Color(0x28, 0x28, 0x28)
         }
-        val scrollPane = JScrollPane(textArea)
         contentPane.add(scrollPane)
+
+        onActivated() {
+            // Scroll to the bottom
+            val scrollBar = scrollPane.verticalScrollBar
+            scrollBar.value = scrollBar.maximum
+        }
     }
 
     fun clear() {
