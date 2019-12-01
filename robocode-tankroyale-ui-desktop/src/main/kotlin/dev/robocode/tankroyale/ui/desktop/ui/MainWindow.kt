@@ -14,6 +14,7 @@ import dev.robocode.tankroyale.ui.desktop.ui.server.ServerLogWindow
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import java.awt.EventQueue
+import java.io.Closeable
 import javax.swing.JFrame
 import javax.swing.UIManager
 
@@ -33,7 +34,12 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
         MainWindowMenu.apply {
             onNewBattle.invokeLater {
-                Client.onConnected.subscribe { BootstrapDialog.isVisible = true }
+                var disposable: Closeable? = null
+                disposable = Client.onConnected.subscribe {
+                    BootstrapDialog.isVisible = true
+                    // Make sure to dispose. Otherwise the dialog will be shown when testing if the server is running
+                    disposable?.close()
+                }
                 PrepareServerCommand().execute()
             }
             onSetupRules.invokeLater {

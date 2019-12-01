@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.UI_TITLES
 import dev.robocode.tankroyale.ui.desktop.util.ICommand
 import dev.robocode.tankroyale.ui.desktop.util.WsUrl
 import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.UnstableDefault
 import java.awt.EventQueue
 import java.io.Closeable
 import java.net.ConnectException
@@ -16,6 +17,7 @@ class ConnectToServerCommand(private val serverUrl: String) : ICommand {
 
     private val disposables = ArrayList<Closeable>()
 
+    @UnstableDefault
     @ImplicitReflectionSerializer
     override fun execute() {
         dispose()

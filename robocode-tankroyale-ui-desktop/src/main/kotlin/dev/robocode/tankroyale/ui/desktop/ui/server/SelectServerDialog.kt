@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.ui.desktop.ui.server
 
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addLabel
+import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
@@ -12,6 +13,7 @@ import java.awt.Dimension
 import java.awt.EventQueue
 import java.io.Closeable
 import javax.swing.*
+import javax.swing.JOptionPane.OK_OPTION
 
 @ImplicitReflectionSerializer
 object SelectServerDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("select_server_dialog")) {
@@ -110,10 +112,20 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
 
         val testServerCommand = TestServerConnectionCommand(urlComboBox.selectedItem as String)
 
-        var disposable: Closeable? = null
-        disposable = testServerCommand.onCompleted.subscribe {
+        var foundDisposable: Closeable? = null
+        foundDisposable = testServerCommand.onFound.subscribe {
+            showMessage(ResourceBundles.STRINGS.get("server_is_running"))
+
             testConnectionRunning = false
-            disposable?.close()
+            foundDisposable?.close()
+        }
+
+        var notFoundDisposable: Closeable? = null
+        notFoundDisposable = testServerCommand.onNotFound.subscribe {
+            showMessage(ResourceBundles.STRINGS.get("server_not_found"))
+
+            testConnectionRunning = false
+            notFoundDisposable?.close()
         }
 
         testServerCommand.execute()
