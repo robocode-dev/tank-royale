@@ -46,8 +46,8 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
         Client.apply {
             onGameStarted.subscribe { showBattle() }
-            onGameEnded.subscribe { showLogo() }
-            onGameAborted.subscribe { showLogo() }
+//            onGameEnded.subscribe { showLogo() }
+//            onGameAborted.subscribe { showLogo() }
         }
 
         onClosing {
@@ -78,6 +78,7 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
     }
 }
 
+@UnstableDefault
 @ImplicitReflectionSerializer
 private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())

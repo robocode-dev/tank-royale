@@ -98,6 +98,7 @@ object Client : AutoCloseable {
         if (isGameRunning && websocket.isOpen()) {
             websocket.send(StopGame())
         }
+        isGamePaused = false
     }
 
     fun restartGame() {
@@ -106,13 +107,13 @@ object Client : AutoCloseable {
     }
 
     fun pauseGame() {
-        if (!isGamePaused) {
+        if (isGameRunning && !isGamePaused) {
             websocket.send(PauseGame())
         }
     }
 
     fun resumeGame() {
-        if (isGamePaused) {
+        if (isGameRunning && isGamePaused) {
             websocket.send(ResumeGame())
         }
     }

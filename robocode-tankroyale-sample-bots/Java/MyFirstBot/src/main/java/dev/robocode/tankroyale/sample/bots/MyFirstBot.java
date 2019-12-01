@@ -2,6 +2,8 @@ package dev.robocode.tankroyale.sample.bots;
 
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.events.BulletHitBotEvent;
+import dev.robocode.tankroyale.botapi.events.ConnectedEvent;
+import dev.robocode.tankroyale.botapi.events.DisconnectedEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 
 public class MyFirstBot extends Bot {
@@ -10,6 +12,16 @@ public class MyFirstBot extends Bot {
   public static void main(String[] args) {
     // Start our bot
     new MyFirstBot().start();
+  }
+
+  @Override
+  public void onConnected(ConnectedEvent event) {
+    System.out.println("Connected");
+  }
+
+  @Override
+  public void onDisconnected(DisconnectedEvent event) {
+    System.out.println("Disconnected");
   }
 
   // This method runs our bot program, where each command is executed one at a time

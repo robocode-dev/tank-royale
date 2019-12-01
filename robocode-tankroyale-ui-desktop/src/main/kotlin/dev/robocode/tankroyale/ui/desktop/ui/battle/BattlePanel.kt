@@ -28,11 +28,11 @@ object BattlePanel : JPanel() {
         add(ArenaPanel, BorderLayout.CENTER)
         add(buttonPanel, BorderLayout.SOUTH)
 
-        Client.onGamePaused.subscribe { pauseResumeButton.text = STRINGS.get("battle.resume") }
-        Client.onGameResumed.subscribe { pauseResumeButton.text = STRINGS.get("battle.pause") }
-        Client.onGameStarted.subscribe { pauseResumeButton.text = STRINGS.get("battle.pause") }
+        Client.onGamePaused.subscribe { setResumedText() }
+        Client.onGameResumed.subscribe { setPausedText() }
+        Client.onGameStarted.subscribe { setPausedText() }
 
-        onStop.subscribe { Client.stopGame() }
+        onStop.subscribe { Client.stopGame(); setPausedText() }
         onRestart.subscribe { Client.restartGame() }
 
         onPauseResume.subscribe {
@@ -42,5 +42,13 @@ object BattlePanel : JPanel() {
                 Client.pauseGame()
             }
         }
+    }
+
+    private fun setPausedText() {
+        pauseResumeButton.text = STRINGS.get("battle.pause")
+    }
+
+    private fun setResumedText() {
+        pauseResumeButton.text = STRINGS.get("battle.resume")
     }
 }
