@@ -240,6 +240,12 @@ public abstract class Bot extends BaseBot implements IBot {
     private __Internals() {
       val superInt = Bot.super.__internals;
 
+      superInt.onDisconnected.subscribe(
+          event -> {
+            stopThread();
+            return null;
+          },
+          50);
       superInt.onTick.subscribe(
           event -> {
             turnNumber = event.getTurnNumber();

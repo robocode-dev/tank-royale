@@ -414,7 +414,7 @@ public abstract class BaseBot implements IBaseBot {
     private boolean isAdjustRadarForGunTurn;
 
     private final Event<ConnectedEvent> onConnected = new Event<>();
-    private final Event<DisconnectedEvent> onDisconnected = new Event<>();
+    final Event<DisconnectedEvent> onDisconnected = new Event<>();
     private final Event<ConnectionErrorEvent> onConnectionError = new Event<>();
     private final Event<GameStartedEvent> onGameStarted = new Event<>();
     final Event<GameEndedEvent> onGameEnded = new Event<>();
