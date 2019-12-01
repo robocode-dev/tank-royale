@@ -55,7 +55,7 @@ public final class ConnHandler {
 
     InetSocketAddress address = new InetSocketAddress("localhost", Server.getPort());
     this.webSocketObserver = new WebSocketObserver(address);
-    this.webSocketObserver.setConnectionLostTimeout(1 /* second */);
+    this.webSocketObserver.setConnectionLostTimeout(10 /* second */); // TODO: Put this in a config file.
 
     this.executorService = Executors.newCachedThreadPool();
   }
