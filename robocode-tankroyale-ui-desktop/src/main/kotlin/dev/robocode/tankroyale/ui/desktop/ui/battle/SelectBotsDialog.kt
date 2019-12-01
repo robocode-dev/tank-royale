@@ -21,6 +21,7 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 import javax.swing.border.EmptyBorder
+import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.toList
 
 
 @UnstableDefault
@@ -121,7 +122,7 @@ private object SelectBotsPanel : JPanel(MigLayout("fill")) {
 
         onAdd.subscribe {
             availableBotList.selectedValuesList.forEach { bot ->
-                if (selectedBotList.selectedValuesList.count { sel -> bot.host == sel.host && bot.port == sel.port } == 0) {
+                if (selectedBotList.toList().count { sel -> bot.host == sel.host && bot.port == sel.port } == 0) {
                     selectedBotListModel.addElement(bot)
                 }
             }
