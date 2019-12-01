@@ -45,7 +45,6 @@ object ArenaPanel : JPanel() {
 
         Client.onGameStarted.subscribe { onGameStarted(it) }
         Client.onGameEnded.subscribe { onGameEnded(it) }
-        Client.onGameAborted.subscribe { onGameAborted() }
         Client.onTickEvent.subscribe { onTick(it) }
     }
 
@@ -59,11 +58,7 @@ object ArenaPanel : JPanel() {
         ResultsWindow(gameEndedEvent.results).isVisible = true
     }
 
-    private fun onGameAborted() {
-        // Do nothing currently
-    }
-
-    var tick = AtomicBoolean(false)
+    private val tick = AtomicBoolean(false)
 
     private fun onTick(tickEvent: TickEvent) {
         if (tick.get()) return

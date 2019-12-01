@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.ui.desktop.client
 
 import dev.robocode.tankroyale.ui.desktop.model.*
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
-import dev.robocode.tankroyale.ui.desktop.settings.MutableGameSetup
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import dev.robocode.tankroyale.ui.desktop.util.RegisterWsProtocolCommand
@@ -38,13 +37,12 @@ object Client : AutoCloseable {
 
     var currentGameSetup: GameSetup? = null
 
-    var isGameRunning: Boolean = false
-        private set
+    private var isGameRunning: Boolean = false
 
     var isGamePaused: Boolean = false
         private set
 
-    val isConnected: Boolean get() = websocket.isOpen()
+    private val isConnected: Boolean get() = websocket.isOpen()
 
     private var bots: Set<BotInfo> = HashSet()
 
@@ -87,7 +85,7 @@ object Client : AutoCloseable {
 
     fun startGame(gameSetup: IGameSetup, botAddresses: Set<BotAddress>) {
         if (isGameRunning) {
-            stopGame();
+            stopGame()
         }
         if (isConnected) {
             lastStartGame = StartGame(gameSetup.toGameSetup(), botAddresses)
@@ -104,8 +102,7 @@ object Client : AutoCloseable {
 
     fun restartGame() {
         stopGame()
-        val startGame = lastStartGame
-        websocket.send(startGame!!)
+        websocket.send(lastStartGame!!)
     }
 
     fun pauseGame() {
@@ -116,7 +113,6 @@ object Client : AutoCloseable {
 
     fun resumeGame() {
         if (isGamePaused) {
-            println("send ResumeGame()")
             websocket.send(ResumeGame())
         }
     }

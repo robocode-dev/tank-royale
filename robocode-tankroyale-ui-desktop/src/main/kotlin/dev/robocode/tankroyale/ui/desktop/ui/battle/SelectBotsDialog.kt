@@ -34,7 +34,7 @@ object SelectBotsDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sel
 
         setLocationRelativeTo(null) // center on screen
 
-        contentPane.add(SelectBotsPanel) // FIXME: Name of panel -> SelectBotsPanel
+        contentPane.add(SelectBotsPanel)
 
         onActivated {
             SelectBotsPanel.updateAvailableBots()
@@ -223,6 +223,7 @@ private object SelectBotsPanel : JPanel(MigLayout("fill")) {
     }
 }
 
+@UnstableDefault
 @ImplicitReflectionSerializer
 private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())

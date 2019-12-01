@@ -37,10 +37,8 @@ object BattlePanel : JPanel() {
 
         onPauseResume.subscribe {
             if (Client.isGamePaused) {
-                println("Client.resumeGame()")
                 Client.resumeGame()
             } else {
-                println("Client.pauseGame()")
                 Client.pauseGame()
             }
         }
