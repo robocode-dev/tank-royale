@@ -1,19 +1,17 @@
+
 import java.awt.Graphics2D
+import kotlin.math.sqrt
 
 class Explosion(
     x: Double,
     y: Double,
     private val radius: Int,
     period: Int,
-    numberOfCircles: Int
-) {
-    var done: Boolean = false
-        set(value) {
-            parts.forEach { it.done = value }
-            field = value
-        }
+    numberOfCircles: Int,
+    startTime: Int
+) : Animation {
 
-    private val smallBurstRadius = radius * 0.75
+    private val smallBurstRadius = if (numberOfCircles == 1) radius.toDouble() else radius * 0.75
     private val parts = ArrayList<CircleBurst>()
 
     init {
@@ -30,29 +28,25 @@ class Explosion(
                     smallBurstRadius * .1,
                     smallBurstRadius,
                     period,
-                    (Math.random() * period * .3).toInt()
+                    startTime + (Math.random() * period * .3).toInt()
                 )
             )
         }
     }
 
-    fun update(g: Graphics2D, time: Int) {
-        var count = parts.size
+    override fun isFinished(): Boolean {
+        return parts.count { it.finished } == parts.size
+    }
 
+    override fun paint(g: Graphics2D, time: Int) {
         for (part in parts) {
-            part.update(g, time)
-
-            if (part.done) {
-                count--
-            }
+            part.paint(g, time)
         }
-        done = count == 0
     }
 
     private fun radiusRandom(): Double {
         var r = radius - smallBurstRadius
-        r *= 1.0 - Math.sqrt(Math.random())
+        r *= 1.0 - sqrt(Math.random())
         return if (Math.random() > 0.5) r else -r
     }
 }
-

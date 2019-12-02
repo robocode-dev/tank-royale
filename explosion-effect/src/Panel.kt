@@ -8,7 +8,9 @@ class Panel : JPanel() {
 
     private var time = 1
 
-    private val explosion = Explosion(400.0, 400.0, 500, 10, 400)
+//    private val explosion = Explosion(400.0, 400.0, 80, 50, 15, 0)
+    private val explosion = Explosion(400.0, 400.0, 500, 10, 400, 0)
+
 
     override fun paintComponent(g: Graphics) {
         (g as Graphics2D).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
@@ -17,18 +19,14 @@ class Panel : JPanel() {
         } finally {
             g.dispose()
         }
-        if (explosion.done) {
-            time = 1
-            explosion.done = false
-        } else {
-            time++
-        }
     }
 
     fun draw(g: Graphics2D) {
         g.color = Color.BLACK
         g.fillRect(0, 0, width, height)
 
-        explosion.update(g, time)
+        if (!explosion.isFinished()) {
+            explosion.paint(g, time++)
+        }
     }
 }
