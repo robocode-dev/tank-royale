@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.ui.desktop.fx
 
 import java.awt.Graphics2D
+import kotlin.math.sqrt
 
 class Explosion(
     x: Double,
@@ -10,11 +11,6 @@ class Explosion(
     numberOfCircles: Int,
     startTime: Int
 ) : Animation {
-    var finished: Boolean = false
-        set(value) {
-            parts.forEach { it.finished = value }
-            field = value
-        }
 
     private val smallBurstRadius = if (numberOfCircles == 1) radius.toDouble() else radius * 0.75
     private val parts = ArrayList<CircleBurst>()
@@ -39,27 +35,19 @@ class Explosion(
         }
     }
 
-    override fun paint(g: Graphics2D, time: Int) {
-        var count = parts.size
-
-        for (part in parts) {
-            part.paint(g, time)
-
-            if (part.finished) {
-                count--
-            }
-        }
-        finished = count == 0
+    override fun isFinished(): Boolean {
+        return parts.count { it.finished } == parts.size
     }
 
-    override fun isFinished(): Boolean {
-        return finished
+    override fun paint(g: Graphics2D, time: Int) {
+        for (part in parts) {
+            part.paint(g, time)
+        }
     }
 
     private fun radiusRandom(): Double {
         var r = radius - smallBurstRadius
-        r *= 1.0 - Math.sqrt(Math.random())
+        r *= 1.0 - sqrt(Math.random())
         return if (Math.random() > 0.5) r else -r
     }
 }
-

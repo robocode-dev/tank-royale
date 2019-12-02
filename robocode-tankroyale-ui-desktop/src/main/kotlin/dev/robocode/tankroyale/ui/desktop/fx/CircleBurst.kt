@@ -41,7 +41,7 @@ open class CircleBurst(
 
         val dt = time - startTime
         val t = dt.toDouble() / period
-        val r: Double = Math.min(startRadius + (endRadius - startRadius) * t, endRadius)
+        val r: Double = (startRadius + (endRadius - startRadius) * t).coerceAtMost(endRadius)
 
         val ct = (t * (colors.size - 1)).toInt()
         if (dt < period) {
@@ -76,4 +76,3 @@ open class CircleBurst(
         )
     }
 }
-
