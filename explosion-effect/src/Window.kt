@@ -27,11 +27,9 @@ private fun main() {
     Thread.sleep(500)
 
     Thread().run {
-        for (i in 1..1000) {
-
+        while (true) {
             Window.refresh()
-
-            Thread.sleep(1000 / 50)
+            Thread.sleep(1000 / 30)
         }
     }
 }
