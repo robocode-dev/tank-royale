@@ -185,17 +185,18 @@ object ArenaPanel : JPanel() {
     }
 
     private fun drawExplosions(g: Graphics2D) {
-        ArrayList(explosions).forEach { explosion ->
-            if (explosion is BotHitExplosion) {
-                val bot = bots.firstOrNull { bot -> bot.id == explosion.victimId }
-                if (bot != null) {
-                    explosion.x = bot.x
-                    explosion.y = bot.y
+        with(explosions.iterator()) {
+            forEach { explosion ->
+                if (explosion is BotHitExplosion) {
+                    val bot = bots.firstOrNull { bot -> bot.id == explosion.victimId }
+                    if (bot != null) {
+                        explosion.x = bot.x
+                        explosion.y = bot.y
+                    }
                 }
+                if (explosion.isFinished()) remove()
+                else explosion.paint(g, state.time)
             }
-            explosion.paint(g, state.time)
-
-            explosions.removeIf { explosion.isFinished() }
         }
     }
 
