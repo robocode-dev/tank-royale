@@ -87,7 +87,6 @@ public abstract class BaseBot implements IBaseBot {
   public final void go() {
     // Send the bot intent to the server
     __internals.sendBotIntent();
-    __internals.sendPong();
   }
 
   @Override
@@ -565,10 +564,6 @@ public abstract class BaseBot implements IBaseBot {
       }
     }
 
-    private void sendPong() {
-      webSocket.sendPong();
-    }
-
     private void sendBotIntent() {
       webSocket.sendText(gson.toJson(botIntent));
     }
@@ -657,6 +652,11 @@ public abstract class BaseBot implements IBaseBot {
       }
 
       @Override
+      public void onPingFrame(WebSocket websocket, WebSocketFrame frame) {
+        webSocket.sendPong(); // Make sure to send pong as reply to ping in order to stay connected to server
+      }
+
+      @Override
       public final void onTextMessage(WebSocket websocket, String text) {
         JsonObject jsonMsg = gson.fromJson(text, JsonObject.class);
 
@@ -676,6 +676,9 @@ public abstract class BaseBot implements IBaseBot {
               break;
             case GAME_ENDED_EVENT_FOR_BOT:
               handleGameEndedEvent(jsonMsg);
+              break;
+            case SKIPPED_TURN_EVENT:
+              handleSkippedTurnEvent(jsonMsg);
               break;
             default:
               throw new BotException("Unsupported WebSocket message type: " + type);

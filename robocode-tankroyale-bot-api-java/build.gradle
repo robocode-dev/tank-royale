@@ -4,7 +4,7 @@ plugins {
     id 'idea'
 }
 group = 'dev.robocode.tankroyale'
-version = '0.5.1'
+version = '0.5.2'
 
 compileJava {
     sourceCompatibility = '1.8'
