@@ -146,7 +146,7 @@ public final class GameServer {
           GameStartedEventForObserver.Type.GAME_STARTED_EVENT_FOR_OBSERVER);
       gameStartedForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
       gameStartedForObserver.setParticipants(participantList);
-      sendMessageToObservers(gson.toJson(gameStartedForObserver));
+      broadcastToObserverAndControllers(gson.toJson(gameStartedForObserver));
     }
 
     // Prepare model update
@@ -169,7 +169,6 @@ public final class GameServer {
     tpsTimer.start();
   }
 
-
   private void startGame(
       dev.robocode.tankroyale.schema.GameSetup gameSetup, Collection<BotAddress> botAddresses) {
     this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup);
@@ -186,7 +185,7 @@ public final class GameServer {
 
     GameAbortedEventForObserver abortedEvent = new GameAbortedEventForObserver();
     abortedEvent.setType(GameAbortedEventForObserver.Type.GAME_ABORTED_EVENT_FOR_OBSERVER);
-    sendMessageToObservers(gson.toJson(abortedEvent));
+    broadcastToObserverAndControllers(gson.toJson(abortedEvent));
 
     // No score is generated for aborted games
   }
@@ -270,7 +269,7 @@ public final class GameServer {
 
     GamePausedEventForObserver pausedEvent = new GamePausedEventForObserver();
     pausedEvent.setType(GamePausedEventForObserver.Type.GAME_PAUSED_EVENT_FOR_OBSERVER);
-    sendMessageToObservers(gson.toJson(pausedEvent));
+    broadcastToObserverAndControllers(gson.toJson(pausedEvent));
 
     runningState = RunningState.GAME_PAUSED;
 
@@ -283,7 +282,7 @@ public final class GameServer {
 
     GameResumedEventForObserver resumedEvent = new GameResumedEventForObserver();
     resumedEvent.setType(GameResumedEventForObserver.Type.GAME_RESUMED_EVENT_FOR_OBSERVER);
-    sendMessageToObservers(gson.toJson(resumedEvent));
+    broadcastToObserverAndControllers(gson.toJson(resumedEvent));
 
     if (runningState == RunningState.GAME_PAUSED) {
       runningState = RunningState.GAME_RUNNING;
@@ -366,14 +365,14 @@ public final class GameServer {
         endEventForBot.setType(GameEndedEventForObserver.Type.GAME_ENDED_EVENT_FOR_BOT);
         endEventForBot.setNumberOfRounds(modelUpdater.getNumberOfRounds());
         endEventForBot.setResults(getResultsForBots());
-        sendMessageToBots(gson.toJson(endEventForBot));
+        broadcastToBots(gson.toJson(endEventForBot));
 
         // End game for observers
         GameEndedEventForObserver endEventForObserver = new GameEndedEventForObserver();
         endEventForObserver.setType(GameEndedEventForObserver.Type.GAME_ENDED_EVENT_FOR_OBSERVER);
         endEventForObserver.setNumberOfRounds(modelUpdater.getNumberOfRounds());
         endEventForObserver.setResults(getResultsForObservers()); // Use the stored score!
-        sendMessageToObservers(gson.toJson(endEventForObserver));
+        broadcastToObserverAndControllers(gson.toJson(endEventForObserver));
 
       } else {
         // Clear bot intents
@@ -396,7 +395,7 @@ public final class GameServer {
             }
             TickEventForObserver gameTickForObserver =
                 TurnToGameTickForObserverMapper.map(round, turn);
-            sendMessageToObservers(gson.toJson(gameTickForObserver));
+            broadcastToObserverAndControllers(gson.toJson(gameTickForObserver));
           }
         }
         // Restart turn timeout timer
@@ -445,16 +444,16 @@ public final class GameServer {
     return gson.toJson(botListUpdate);
   }
 
-  private void sendMessageToBots(String msg) {
-    connHandler.getBotConnections().forEach(conn -> send(conn, msg));
+  public void broadcastToBots(String msg) {
+    connHandler.broadcastToBots(msg);
   }
 
-  private void sendMessageToObservers(String msg) {
-    connHandler.getObserverAndControllerConnections().forEach(conn -> send(conn, msg));
+  private void broadcastToObserverAndControllers(String msg) {
+    connHandler.broadcastToObserverAndControllers(msg);
   }
 
   private void sendBotListUpdateToObservers() {
-    sendMessageToObservers(createBotListUpdateMessage());
+    broadcastToObserverAndControllers(createBotListUpdateMessage());
   }
 
   @SuppressWarnings("unused")

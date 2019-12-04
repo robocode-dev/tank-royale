@@ -68,6 +68,14 @@ public final class ConnHandler {
     shutdownAndAwaitTermination(executorService);
   }
 
+  void broadcastToBots(String message) {
+    broadcast(getBotConnections(), message);
+  }
+
+  void broadcastToObserverAndControllers(String message) {
+    broadcast(getObserverAndControllerConnections(), message);
+  }
+
   Set<WebSocket> getBotConnections() {
     return Collections.unmodifiableSet(botConnections);
   }
@@ -80,7 +88,7 @@ public final class ConnHandler {
     return Collections.unmodifiableMap(botHandshakes);
   }
 
-  public Set<WebSocket> getBotConnections(Collection<BotAddress> botAddresses) {
+  Set<WebSocket> getBotConnections(Collection<BotAddress> botAddresses) {
     Set<WebSocket> foundConnections = new HashSet<>();
 
     for (WebSocket conn : botHandshakes.keySet()) {
@@ -124,6 +132,12 @@ public final class ConnHandler {
     logger.debug("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
 
     conn.send(message);
+  }
+
+  private void broadcast(Collection<WebSocket> clients, String message) {
+    logger.debug("Broadcast message: " + message);
+
+    webSocketObserver.broadcast(message, clients);
   }
 
   private void notifyException(Exception exception) {
