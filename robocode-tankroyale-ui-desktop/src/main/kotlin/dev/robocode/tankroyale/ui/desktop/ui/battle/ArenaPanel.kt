@@ -64,6 +64,11 @@ object ArenaPanel : JPanel() {
         if (tick.get()) return
         tick.set(true)
 
+        if (tickEvent.turnNumber == 1) {
+            // Make sure to remove any explosion left from earlier battle
+            explosions.clear();
+        }
+
         state.round = tickEvent.roundNumber
         state.time = tickEvent.turnNumber
         state.bots = tickEvent.botStates
@@ -187,15 +192,8 @@ object ArenaPanel : JPanel() {
     private fun drawExplosions(g: Graphics2D) {
         with(explosions.iterator()) {
             forEach { explosion ->
-                if (explosion is BotHitExplosion) {
-                    val bot = bots.firstOrNull { bot -> bot.id == explosion.victimId }
-                    if (bot != null) {
-                        explosion.x = bot.x
-                        explosion.y = bot.y
-                    }
-                }
+                explosion.paint(g, state.time)
                 if (explosion.isFinished()) remove()
-                else explosion.paint(g, state.time)
             }
         }
     }
