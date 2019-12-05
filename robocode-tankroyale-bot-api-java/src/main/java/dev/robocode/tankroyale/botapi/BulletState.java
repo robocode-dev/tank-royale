@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.botapi;
 import lombok.Builder;
 import lombok.Value;
 
-/** Current bullet state */
+/** Bullet state */
 @Value
 @Builder
 public final class BulletState {

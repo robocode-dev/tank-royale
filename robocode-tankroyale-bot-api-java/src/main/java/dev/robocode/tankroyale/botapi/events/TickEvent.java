@@ -8,6 +8,7 @@ import dev.robocode.tankroyale.botapi.BotState;
 import dev.robocode.tankroyale.botapi.BulletState;
 
 import java.util.List;
+import java.util.Set;
 
 /** Event occurring whenever a new turn in a round has started */
 @Value
@@ -19,9 +20,9 @@ public class TickEvent extends Event {
   /** Current state of this bot */
   BotState botState;
   /** Current state of the bullets fired by this bot */
-  List<BulletState> bulletStates;
+  Set<BulletState> bulletStates;
   /** Events occurring in the turn relevant for this bot */
-  List<? extends Event> events;
+  Set<? extends Event> events;
 
   @Builder
   @SuppressWarnings("unused")
@@ -29,8 +30,8 @@ public class TickEvent extends Event {
       int turnNumber,
       int roundNumber,
       BotState botState,
-      List<BulletState> bulletStates,
-      List<? extends Event> events) {
+      Set<BulletState> bulletStates,
+      Set<? extends Event> events) {
     this.turnNumber = turnNumber;
     this.roundNumber = roundNumber;
     this.botState = botState;

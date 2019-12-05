@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.*;
 
-import java.util.List;
+import java.util.Collection;
 
 /** Interface for a bot. */
 @SuppressWarnings({"UnusedDeclaration", "EmptyMethod"})
@@ -93,72 +93,77 @@ public interface IBaseBot {
   /**
    * Commits the current actions for the current turn. This method must be called in order to send
    * the bot actions to the server, and MUST before the turn timeout occurs. The turn timeout is
-   * started when the GameStartedEvent and TickEvent occurs. If the go() is called too late,
+   * started when the GameStartedEvent and TickEvent occurs. If go() is called too late,
    * SkippedTurnEvents will occur. Actions are set by calling the setter methods prior to calling
    * the go() method: setTurnRate(), setGunTurnRate(), setRadarTurnRate(), setTargetSpeed(), and
    * setFire().
    */
   void go();
 
-  /** Returns the unique id of this bot in the battle. Available when game has started. */
+  /**
+   * Property containing the unique id of this bot in the battle. Available when game has started.
+   */
   int getMyId();
 
-  /** Returns the game variant, e.g. "R2TR" for Robocode 2 Tank Royale */
+  /** Property containing the game variant, e.g. "Tank Royale" for Robocode Tank Royale. */
   String getVariant();
 
-  /** Returns the game version, e.g. "1.0.0" */
+  /** Property containing the game version, e.g. "1.0.0" */
   String getVersion();
 
   /**
-   * Returns the game type, e.g. "melee".
+   * Property containing the game type, e.g. "melee".
    *
    * <p>Available when game has started.
    */
   String getGameType();
 
   /**
-   * Returns the width of the arena measured in pixels.
+   * Property containing the width of the arena measured in pixels.
    *
    * <p>Available when game has started.
    */
   int getArenaWidth();
 
   /**
-   * Returns the height of the arena measured in pixels.
+   * Property containing the height of the arena measured in pixels.
    *
    * <p>Available when game has started.
    */
   int getArenaHeight();
 
   /**
-   * Returns the number of rounds in a battle.
+   * Property containing the number of rounds in a battle.
    *
    * <p>Available when game has started.
    */
   int getNumberOfRounds();
 
   /**
-   * Returns the gun cooling rate. The gun needs to cool down to a gun heat of zero before the gun
-   * is able to fire. The gun cooling rate determines how fast the gun cools down. That is, the gun
-   * cooling rate is subtracted from the gun heat each turn until the gun heat reaches zero.
+   * Property containing the gun cooling rate. The gun needs to cool down to a gun heat of zero
+   * before the gun is able to fire. The gun cooling rate determines how fast the gun cools down.
+   * That is, the gun cooling rate is subtracted from the gun heat each turn until the gun heat
+   * reaches zero.
    *
    * <p>Available when game has started.
+   *
+   * @see #getGunHeat()
    */
   double getGunCoolingRate();
 
   /**
-   * Returns the maximum number of inactive turns allowed, where a bot does not take any action
-   * before it is zapped by the game.
+   * Property containing the maximum number of inactive turns allowed, where a bot does not take any
+   * action before it is zapped by the game.
    *
    * <p>Available when game has started.
    */
   int getMaxInactivityTurns();
 
   /**
-   * Returns turn timeout in microseconds (1 / 1,000,000 second). The turn timeout is important as
-   * the bot need to take action by calling go() before the turn timeout occurs. As soon as the
-   * TickEvent is triggered, i.e. when onTick() is called, you need to call go() to take action
-   * before the turn timeout occurs. Otherwise your bot will receive SkippedTurnEvent(s).
+   * Property containing turn timeout in microseconds (1 / 1,000,000 second). The turn timeout is
+   * important as the bot need to take action by calling go() before the turn timeout occurs. As
+   * soon as the TickEvent is triggered, i.e. when onTick() is called, you need to call go() to take
+   * action before the turn timeout occurs. Otherwise your bot will receive SkippedTurnEvent(s).
    *
    * <p>Available when game has started.
    *
@@ -168,71 +173,71 @@ public interface IBaseBot {
   int getTurnTimeout();
 
   /**
-   * Returns the number of microseconds left for this round before the bot will skip the turn. Make
-   * sure to call {@link #go()} before the time runs out.
+   * Property containing the number of microseconds left for this round before the bot will skip the
+   * turn. Make sure to call go() before the time runs out.
    *
    * @see #getTurnTimeout()
    * @see #go()
    */
   int getTimeLeft();
 
-  /** Returns the current round number */
+  /** Property containing the current round number. */
   int getRoundNumber();
 
-  /** Return the current turn number */
+  /** Property containing the current turn number. */
   int getTurnNumber();
 
   /**
-   * Returns the current energy level. When positive, the bot is alive and active. When 0, the bot
-   * is alive, but disabled, meaning that it will not be able to move. If negative, the bot has been
-   * defeated.
+   * Property containing the current energy level. When positive, the bot is alive and active. When
+   * 0, the bot is alive, but disabled, meaning that it will not be able to move. If negative, the
+   * bot has been defeated.
    */
   double getEnergy();
 
   /**
-   * Checks if the bot is disabled, i.e. when the energy is zero. When the bot is disabled, it it is
-   * not able to take any action like movement, turning and firing.
-   *
-   * @return true if the bot is disabled; false otherwise
+   * Property indicating if the bot is disabled, i.e. when the energy is zero. When the bot is
+   * disabled, it it is not able to take any action like movement, turning and firing.
    */
   boolean isDisabled();
 
-  /** Returns the X coordinate of the center of the bot */
+  /** Property containing the X coordinate of the center of the bot. */
   double getX();
 
-  /** Returns the Y coordinate of the center of the bot */
+  /** Property containing the Y coordinate of the center of the bot. */
   double getY();
 
-  /** Returns the driving direction of the body in degrees */
+  /** Property containing the driving direction of the body in degrees. */
   double getDirection();
 
-  /** Returns the the gun direction in degrees */
+  /** Property containing the the gun direction in degrees. */
   double getGunDirection();
 
-  /** Returns the radar direction in degrees */
+  /** Property containing the radar direction in degrees. */
   double getRadarDirection();
 
   /**
-   * Returns the speed measured in pixels per turn. If the speed is positive, the bot moves forward.
-   * If negative, the bot moves backwards. A zero speed means that the bot is not moving from its
-   * current position.
+   * Property containing the speed measured in pixels per turn. If the speed is positive, the bot
+   * moves forward. If negative, the bot moves backwards. A zero speed means that the bot is not
+   * moving from its current position.
    */
   double getSpeed();
 
   /**
-   * Returns the gun heat. The gun is heated then it fired, and will first be able to fire again,
-   * when the gun has cooled down, meaning that the gun heat must be zero.
+   * Property containing the gun heat. The gun gets heated when it is fired, and will first be able
+   * to fire again, when the gun has cooled down, meaning that the gun heat must be zero.
    *
    * <p>When the gun is fired the gun heat is set to 1 + (firepower / 5). The gun is cooled down by
    * the gun cooling rate.
+   *
+   * @see #getGunCoolingRate()
    */
   double getGunHeat();
 
-  /** Returns the current bullet states. */
-  List<BulletState> getBulletStates();
+  /** Property containing the current bullet states. */
+  Collection<BulletState> getBulletStates();
 
-  /** Returns the game events received for the current turn. */
-  List<? extends Event> getEvents();
+  /** Property containing the game events received for the current turn. */
+  Collection<? extends Event> getEvents();
 
   /**
    * Sets the new turn rate of the body in degrees per turn (can be positive and negative). The turn
@@ -245,14 +250,14 @@ public interface IBaseBot {
    *
    * <p>The turn rate is truncated to {@link #MAX_TURN_RATE} if the turn rate exceeds this value.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>If this property is set multiple times, the last value set before go() counts.
    *
-   * @param turnRate is the new turn rate of the body
+   * @param turnRate is the new turn rate of the body in degrees per turn.
    */
   void setTurnRate(double turnRate);
 
   /**
-   * Returns the turn rate.
+   * Returns the turn rate in degrees per turn.
    *
    * @see #setTurnRate(double)
    */
@@ -270,14 +275,14 @@ public interface IBaseBot {
    * <p>The gun turn rate is truncated to {@link #MAX_GUN_TURN_RATE} if the gun turn rate exceeds
    * this value.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>If this property is set multiple times, the last value set before go() counts.
    *
-   * @param gunTurnRate is the new turn rate of the gun
+   * @param gunTurnRate is the new turn rate of the gun in degrees per turn.
    */
   void setGunTurnRate(double gunTurnRate);
 
   /**
-   * Returns the gun turn rate.
+   * Returns the gun turn rate in degrees per turn.
    *
    * @see #setGunTurnRate(double)
    */
@@ -295,26 +300,26 @@ public interface IBaseBot {
    * <p>The radar turn rate is truncated to {@link #MAX_RADAR_TURN_RATE} if the radar turn rate
    * exceeds this value.
    *
-   * <p>If this method is called multiple times, the last call before go() is executed counts.
+   * <p>If this property is set multiple times, the last value set before go() counts.
    *
-   * @param gunRadarTurnRate is the new turn rate of the radar
+   * @param gunRadarTurnRate is the new turn rate of the radar in degrees per turn.
    */
   void setRadarTurnRate(double gunRadarTurnRate);
 
   /**
-   * Returns the radar turn rate.
+   * Returns the radar turn rate in degrees per turn.
    *
    * @see #setRadarTurnRate(double)
    */
   double getRadarTurnRate();
 
   /**
-   * Sets the new target speed for the bot. The target speed is the speed you want to achieve
-   * eventually, which could take one to several turns to achieve depending on the current speed.
-   * For example, if the bot is moving forward with max speed, and then must change to move
-   * backwards at full speed, the bot will need to first decelerate/brake its positive speed (moving
-   * forward). When passing a speed of zero, it will then need to accelerate backwards to achieve
-   * max negative speed.
+   * Sets the new target speed for the bot in units per turn. The target speed is the speed you want
+   * to achieve eventually, which could take one to several turns to achieve depending on the
+   * current speed. For example, if the bot is moving forward with max speed, and then must change
+   * to move backwards at full speed, the bot will need to first decelerate/brake its positive speed
+   * (moving forward). When passing a speed of zero, it will then need to accelerate backwards to
+   * achieve max negative speed.
    *
    * <p>Note that acceleration is 1 pixel/turn and deceleration/braking is faster than acceleration
    * as it is -2 pixel/turn. Deceleration is negative as it is added to the speed and hence needs to
@@ -322,34 +327,39 @@ public interface IBaseBot {
    *
    * <p>The target speed is truncated to {@link #MAX_SPEED} if the target speed exceeds this value.
    *
-   * @param targetSpeed is the new target speed
+   * <p>If this property is set multiple times, the last value set before go() counts.
+   *
+   * @param targetSpeed is the new target speed in units per turn.
    */
   void setTargetSpeed(double targetSpeed);
 
   /**
-   * Returns the target speed.
+   * Returns the target speed in units per turn.
    *
    * @see #setTargetSpeed(double)
    */
   double getTargetSpeed();
 
   /**
-   * Sets the gun to fire in the direction as the gun is pointing.
+   * Sets the gun to fire in the direction as the gun is pointing with the specified firepower.
    *
-   * <p>Note that your bot is spending energy when firing a bullet, the amount of energy used for
-   * firing the bullet is taken from the bot. The amount of energy loss is equal to the firepower.
+   * <p>Firepower is the amount of energy spend on firing the gun. You cannot spend more energy that
+   * available from the bot. The amount of energy loss is equal to the firepower.
+   *
+   * <p>The bullet power must be > {@link #MIN_FIREPOWER} and the gun heat zero before the gun is
+   * able to fire.
    *
    * <p>If the bullet hits an opponent bot, you will gain energy from the bullet hit. When hitting
    * another bot, your bot will be rewarded and retrieve an energy boost of 3x firepower.
    *
-   * <p>The gun will only fire when the firepower is at {@link #MAX_FIREPOWER} or higher. If the
+   * <p>The gun will only fire when the firepower is at {@link #MIN_FIREPOWER} or higher. If the
    * firepower is more than {@link #MAX_FIREPOWER}, the power will be truncated to the max
    * firepower.
    *
    * <p>Whenever the gun is fired, the gun is heated an needs to cool down before it is able to fire
-   * again. The gun heat must be zero before the gun is able to fire (see {@link #getGunHeat()}. The
-   * gun heat generated by firing the gun is 1 + (firepower / 5). Hence, the more firepower used the
-   * longer it takes to cool down the gun. The gun cooling rate can be read by calling {@link
+   * again. The gun heat must be zero before the gun is able to fire (see {@link #getGunHeat()}).
+   * The gun heat generated by firing the gun is 1 + (firepower / 5). Hence, the more firepower used
+   * the longer it takes to cool down the gun. The gun cooling rate can be read by calling {@link
    * #getGunCoolingRate()}.
    *
    * <p>The amount of energy used for firing the gun is subtracted from the bots total energy. The
@@ -357,32 +367,36 @@ public interface IBaseBot {
    * greater than 1 it will do an additional 2 x (firepower - 1) damage.
    *
    * <p>Note that the gun will automatically keep firing at any turn when the gun heat reaches zero.
-   * It is possible disable the gun firing by setting the firepower to zero.
+   * It is possible disable the gun firing by setting the firepower on this property to zero.
    *
-   * <p>The firepower is truncated to {@link #MIN_FIREPOWER} and {@link #MAX_FIREPOWER} if the
-   * firepower exceeds these values.
+   * <p>The firepower is truncated to 0 and {@link #MAX_FIREPOWER} if the firepower exceeds these
+   * values.
+   *
+   * <p>If this property is set multiple times, the last value set before go() counts.
    *
    * @param firepower is the amount of energy spend on firing the gun. You cannot spend more energy
-   *     that available from the bot. The bullet power must be > {@link #MIN_FIREPOWER}.
-   * @return true if the gun could fire; false otherwise, for example if the gun heat is too high
+   *     that available from the bot. The bullet power must be > {@link #MIN_FIREPOWER} and the gun
+   *     heat zero before the gun is able to fire.
    * @see #onBulletFired(BulletFiredEvent)
+   * @see #getGunHeat()
+   * @see #getGunCoolingRate()
    */
-  boolean setFire(double firepower);
+  void setFire(double firepower);
 
   /**
-   * Sets the gun to adjust for the bot's turn when calling {@link #setGunTurnRate(double)}. So the
-   * gun behaves like it is turning independent of the bot's turn.
+   * Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun behaves
+   * like it is turning independent of the bot's turn.
    *
    * <p>Ok, so this needs some explanation: The gun is mounted on the bot's body. So, normally, if
    * the bot turns 90 degrees to the right, then the gun will turn with it as it is mounted on top
-   * of the bot's body. To compensate for this, you can call {@code setAdjustGunForBodyTurn(true)}.
+   * of the bot's body. To compensate for this, you can adjust the gun for the body turn.
    * When this is set, the gun will turn independent from the bot's turn.
    *
-   * <p>Note: This method is additive until you reach the maximum the gun can turn ({@link
-   * #MAX_GUN_TURN_RATE}). The "adjust" is added to the amount you set for turning the bot by {@link
-   * #setTurnRate(double)}, then capped by the physics of the game.
+   * <p>Note: This property is additive until you reach the maximum the gun can turn MAX_GUN_TURN_RATE.
+   * The "adjust" is added to the amount, you set for turning the bot by the turn rate, then capped
+   * by the physics of the game.
    *
-   * <p>Note: The gun compensating this way does count as "turning the gun"
+   * <p>Note: The gun compensating this way does count as "turning the gun".
    *
    * @param adjust {@code true} if the gun must adjust/compensate for the bot's turn; {@code false}
    *     if the gun must turn with the bot's turn.
@@ -406,17 +420,17 @@ public interface IBaseBot {
   boolean isAdjustGunForBodyTurn();
 
   /**
-   * Sets the radar to adjust for the gun's turn when calling {@link #setRadarTurnRate(double)}. So
-   * the radar behaves like it is turning independent of the gun's turn.
+   * Sets the radar to adjust for the gun's turn when setting the radar turn rate. So the radar
+   * behaves like it is turning independent of the gun's turn.
    *
    * <p>Ok, so this needs some explanation: The radar is mounted on the gun. So, normally, if the
    * gun turns 90 degrees to the right, then the radar will turn with it as it is mounted on top of
-   * the gun. To compensate for this, you can call {@code setAdjustRadarForGunTurn(true)}. When this
+   * the gun. To compensate for this, you can adjust the radar for the gun turn. When this
    * is set, the radar will turn independent from the gun's turn.
    *
-   * <p>Note: This method is additive until you reach the maximum the radar can turn ({@link
-   * #MAX_RADAR_TURN_RATE}). The "adjust" is added to the amount you set for turning the gun by
-   * {@link #setGunTurnRate(double)}, then capped by the physics of the game.
+   * <p>Note: This property is additive until you reach the maximum the radar can turn ({@link
+   * #MAX_RADAR_TURN_RATE}). The "adjust" is added to the amount, you set for turning the gun by
+   * the gun turn rate, then capped by the physics of the game.
    *
    * <p>Note: The radar compensating this way does count as "turning the radar".
    *

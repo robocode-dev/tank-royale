@@ -201,12 +201,12 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   @Override
-  public final List<BulletState> getBulletStates() {
+  public final Set<BulletState> getBulletStates() {
     return __internals.getCurrentTurn().getBulletStates();
   }
 
   @Override
-  public final List<? extends Event> getEvents() {
+  public final Set<? extends Event> getEvents() {
     return __internals.getCurrentTurn().getEvents();
   }
 
@@ -295,18 +295,16 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   @Override
-  public final boolean setFire(double firepower) {
+  public final void setFire(double firepower) {
     if (Double.isNaN(firepower)) {
       throw new IllegalArgumentException("firepower cannot be NaN");
     }
-    if (firepower < MIN_FIREPOWER || getGunHeat() > 0 || firepower > getEnergy()) {
-      return false; // could not fire
-    }
-    if (firepower > MAX_FIREPOWER) {
+    if (firepower < 0) {
+      firepower = 0;
+    } else if (firepower > MAX_FIREPOWER) {
       firepower = MAX_FIREPOWER;
     }
     __internals.botIntent.setFirepower(firepower);
-    return true; // could fire
   }
 
   @Override

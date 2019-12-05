@@ -4,7 +4,7 @@ import lombok.ToString;
 
 /** Event occurring during a battle */
 @ToString
-public abstract class Event implements Message {
+public abstract class Event implements IMessage {
   /** Current turn number */
   int turnNumber;
 

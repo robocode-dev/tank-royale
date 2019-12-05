@@ -5,8 +5,9 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.val;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /** Utility class for mapping a bot state */
 @UtilityClass
@@ -24,8 +25,8 @@ class BulletStateMapper {
         .build();
   }
 
-  List<BulletState> map(@NonNull final List<dev.robocode.tankroyale.schema.BulletState> source) {
-    val bulletStates = new ArrayList<BulletState>();
+  Set<BulletState> map(@NonNull final List<dev.robocode.tankroyale.schema.BulletState> source) {
+    val bulletStates = new HashSet<BulletState>();
     source.forEach(bulletState -> bulletStates.add(map(bulletState)));
     return bulletStates;
   }

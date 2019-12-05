@@ -665,9 +665,10 @@ public interface IBot extends IBaseBot {
    *
    * @param firepower is the amount of energy spend on firing the gun. You cannot spend more energy
    *     that available from the bot. The bullet power must be > {@link #MIN_FIREPOWER}.
-   * @return true if the gun could fire; false otherwise, for example if the gun heat is too high
    * @see #onBulletFired(BulletFiredEvent)
    * @see #setFire(double)
+   * @see #getGunHeat()
+   * @see #getGunCoolingRate()
    */
-  boolean fire(double firepower);
+  void fire(double firepower);
 }

@@ -1,13 +1,14 @@
 package dev.robocode.tankroyale.botapi.mapper;
 
+import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.events.*;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.val;
-import dev.robocode.tankroyale.botapi.BotException;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /** Utility class for mapping events */
 @UtilityClass
@@ -23,8 +24,8 @@ public class EventMapper {
         .build();
   }
 
-  private List<Event> map(@NonNull final List<? extends dev.robocode.tankroyale.schema.Event> source) {
-    val gameEvents = new ArrayList<Event>();
+  private Set<Event> map(@NonNull final List<? extends dev.robocode.tankroyale.schema.Event> source) {
+    val gameEvents = new HashSet<Event>();
     source.forEach(event -> gameEvents.add(map(event)));
     return gameEvents;
   }
