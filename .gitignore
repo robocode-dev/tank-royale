@@ -9,3 +9,5 @@ target
 build
 gradle
 out
+bin
+obj
