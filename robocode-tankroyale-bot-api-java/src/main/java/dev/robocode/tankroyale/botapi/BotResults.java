@@ -12,19 +12,19 @@ public final class BotResults {
   /** Rank/placement of the bot, where 1 is 1st place, 4 is 4th place etc. */
   int rank;
   /** Survival score gained whenever another bot is defeated */
-  int survival;
+  double survival;
   /** Last survivor score as last survivor in a round */
-  int lastSurvivorBonus;
+  double lastSurvivorBonus;
   /** Bullet damage given */
-  int bulletDamage;
+  double bulletDamage;
   /** Bullet kill bonus */
-  int bulletKillBonus;
+  double bulletKillBonus;
   /** Ram damage given */
-  int ramDamage;
+  double ramDamage;
   /** Ram kill bonus */
-  int ramKillBonus;
+  double ramKillBonus;
   /** Total score */
-  int totalScore;
+  double totalScore;
   /** Number of 1st places */
   int firstPlaces;
   /** Number of 2nd places */
