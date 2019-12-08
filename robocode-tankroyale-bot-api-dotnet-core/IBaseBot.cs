@@ -5,6 +5,89 @@ namespace Robocode.TankRoyale
   public interface IBaseBot
   {
     /// <summary>
+    /// Bounding circle radius. A bot gets hit by a bullet when the distance between the center of the
+    /// bullet and the position of the bot (center) is less than the bounding circle radius.
+    /// </summary>
+    int BoundingCircleRadius { get; }
+
+    /// <summary>
+    /// Radar radius. This is how far a bot is able to scan other bots with the radar. Bots outside the
+    /// radar radius will not be scanned.
+    /// </summary>
+    double RadarRadius { get; }
+
+    /// <summary>
+    /// Maximum driving turn rate measured in degrees/turn. This is the max. possible turn rate of the
+    /// bot. Note that the speed of the bot has an impact on the turn rate. The faster speed the less
+    /// turn rate.
+    /// 
+    /// The formula for the max. possible turn rate at a given speed is: MaxTurnRate - 0.75 x
+    /// abs(speed). Hence, the turn rate is at max. 10 degrees/turn when the speed is zero, and down to
+    /// only 4 degrees/turn when the robot is at max speed (8 pixels/turn).
+    /// </summary>
+    double MaxTurnRate { get; }
+
+    /// <summary>
+    /// Maximum gun turn rate measured in degrees/turn.
+    /// </summary>
+    double MaxGunTurnRate { get; }
+
+    /// <summary>
+    /// Maximum radar turn rate measured in degrees/turn.
+    /// </summary>
+    double MaxRadarTurnRate { get; }
+
+    /// <summary>
+    /// Maximum absolute speed measured in pixels/turn.
+    /// </summary>
+    double MaxSpeed { get; }
+
+    /// <summary>
+    /// Maximum forward speed measured in pixels/turn. When the speed is positive the bot is moving forwards.
+    /// </summary>
+    double MaxForwardSpeed { get; }
+
+    /// <summary>
+    /// Maximum backward speed measured in pixels/turn. When the speed is negative the bot is moving backwards.
+    /// </summary>
+    double MaxBackwardSpeed { get; }
+
+    /// <summary>
+    /// Minimum firepower. The gun will not fire with a power less than the minimum firepower.
+    /// </summary>
+    double MinFirepower { get; }
+
+    /// <summary>
+    /// Maximum firepower. The gun will fire with this firepower if the gun is set to fire with a higher firepower.
+    /// </summary>
+    double MaxFirepower { get; }
+
+    /// <summary>
+    /// Minimum bullet speed measured in pixels/turn. The bullet speed is determined by this formula:
+    /// 20 - 3 x firepower. The more fire power the slower bullet speed. Hence, the minimum bullet
+    /// speed is 11 pixels/turn.
+    /// </summary>
+    double MinBulletSpeed { get; }
+
+    /// <summary>
+    /// Maximum bullet speed measured in pixels/turn. The bullet speed is determined by this formula:
+    /// 20 - 3 x firepower. The less fire power the faster bullet speed. Hence, the maximum bullet
+    /// speed is 17 pixels/turn.
+    /// </summary>
+    double MaxBulletSpeed { get; }
+
+    /// <summary>
+    /// Acceleration that adds 1 pixel to the speed per turn when the bot is increasing its speed moving forwards.
+    /// </summary>
+    double Acceleration { get; }
+
+    /// <summary>
+    /// Deceleration that subtract 2 pixels from the speed per turn when the bot is decreasing its
+    /// speed moving backwards. Note that the deceleration is negative.
+    /// </summary>
+    double Deceleration { get; }
+
+    /// <summary>
     /// Main method for start running the bot.
     /// </summary>
     void Start();
@@ -20,53 +103,52 @@ namespace Robocode.TankRoyale
     void Go();
 
     /// <summary>
-    /// Property containing the unique id of this bot in the battle. Available when game has started.
+    /// Unique id of this bot in the battle. Available when game has started.
     /// </summary>
     int MyId { get; }
 
     /// <summary>
-    /// Property containing the game variant, e.g. "Tank Royale" for Robocode Tank Royale.
+    /// Game variant, e.g. "Tank Royale" for Robocode Tank Royale.
     /// </summary>
     string Variant { get; }
 
     /// <summary>
-    /// Property containing the game version, e.g. "1.0.0"
+    /// Game version, e.g. "1.0.0"
     /// </summary>
     string Version { get; }
 
     /// <summary>
-    /// Property containing the game type, e.g. "melee".
+    /// Game type, e.g. "melee".
     ///
     /// Available when game has started.
     /// </summary>
     string GameType { get; }
 
     /// <summary>
-    /// Property containing the width of the arena measured in pixels.
+    /// Width of the arena measured in pixels.
     ///
     /// Available when game has started.
     /// </summary>
     int ArenaWidth { get; }
 
     /// <summary>
-    /// Property containing the height of the arena measured in pixels.
+    /// Height of the arena measured in pixels.
     ///
     /// Available when game has started.
     /// </summary>
     int ArenaHeight { get; }
 
     /// <summary>
-    /// Property containing the number of rounds in a battle.
+    /// Number of rounds in a battle.
     ///
     /// Available when game has started.
     /// </summary>
     int NumberOfRounds { get; }
 
     /// <summary>
-    /// Property containing the gun cooling rate. The gun needs to cool down to a gun heat of zero
-    /// before the gun is able to fire. The gun cooling rate determines how fast the gun cools down.
-    /// That is, the gun cooling rate is subtracted from the gun heat each turn until the gun heat
-    /// reaches zero.
+    /// Gun cooling rate. The gun needs to cool down to a gun heat of zero before the gun is able to
+    /// fire. The gun cooling rate determines how fast the gun cools down. That is, the gun cooling
+    /// rate is subtracted from the gun heat each turn until the gun heat reaches zero.
     ///
     /// Available when game has started.
     /// </summary>
@@ -74,17 +156,17 @@ namespace Robocode.TankRoyale
     double GunCoolingRate { get; }
 
     /// <summary>
-    /// Property containing the maximum number of inactive turns allowed, where a bot does not take any
-    /// action before it is zapped by the game.
+    /// Maximum number of inactive turns allowed, where a bot does not take any action before it is
+    /// zapped by the game.
     ///
     /// Available when game has started.
     /// </summary>
     int MaxInactivityTurns { get; }
 
     /// <summary>
-    /// Property containing turn timeout in microseconds (1 / 1,000,000 second). The turn timeout is
-    /// important as the bot need to take action by calling Go() before the turn timeout occurs. As
-    /// soon as the TickEvent is triggered, i.e. when OnTick() is called, you need to call Go() to take
+    /// Turn timeout in microseconds (1 / 1,000,000 second). The turn timeout is important as the
+    /// bot need to take action by calling Go() before the turn timeout occurs. As soon as the
+    /// TickEvent is triggered, i.e. when OnTick() is called, you need to call Go() to take
     /// action before the turn timeout occurs. Otherwise your bot will receive SkippedTurnEvent(s).
     ///
     /// Available when game has started.
@@ -94,71 +176,71 @@ namespace Robocode.TankRoyale
     int TurnTimeout { get; }
 
     /// <summary>
-    /// Property containing the number of microseconds left for this round before the bot will skip the
-    /// turn. Make sure to call Go() before the time runs out.
+    /// Number of microseconds left for this round before the bot will skip the turn. Make sure to
+    /// call Go() before the time runs out.
     /// </summary>
     /// <seealso cref="TurnTimeout"/>
     /// <seealso cref="Go"/>
     int TimeLeft { get; }
 
     /// <summary>
-    /// Property containing the current round number.
+    /// Current round number.
     /// </summary>
     int RoundNumber { get; }
 
     /// <summary>
-    /// Property containing the current turn number.
+    /// Current turn number.
     /// </summary>
     int TurnNumber { get; }
 
     /// <summary>
-    /// Property containing the current energy level. When positive, the bot is alive and active. When
+    /// Current energy level. When positive, the bot is alive and active. When
     /// 0, the bot is alive, but disabled, meaning that it will not be able to move. If negative, the
     /// bot has been defeated.
     /// </summary>
     double Energy { get; }
 
     /// <summary>
-    /// Property indicating if the bot is disabled, i.e. when the energy is zero. When the bot is
+    /// Flag specifying if the bot is disabled, i.e. when the energy is zero. When the bot is
     /// disabled, it it is not able to take any action like movement, turning and firing.
     /// </summary>
     bool Disabled { get; }
 
     /// <summary>
-    /// Property containing the X coordinate of the center of the bot.
+    /// X coordinate of the center of the bot.
     /// </summary>
     double X { get; }
 
     /// <summary>
-    /// Property containing the Y coordinate of the center of the bot.
+    /// Y coordinate of the center of the bot.
     /// </summary>
     double Y { get; }
 
     /// <summary>
-    /// Property containing the driving direction of the body in degrees.
+    /// Driving direction of the body in degrees.
     /// </summary>
     double Direction { get; }
 
     /// <summary>
-    /// Property containing the gun direction of the body in degrees.
+    /// Gun direction of the body in degrees.
     /// </summary>
     double GunDirection { get; }
 
     /// <summary>
-    /// Property containing the radar direction of the body in degrees.
+    /// Radar direction of the body in degrees.
     /// </summary>
     double RadarDirection { get; }
 
     /// <summary>
-    /// Property containing the speed measured in pixels per turn. If the speed is positive, the bot
-    /// moves forward. If negative, the bot moves backwards. A zero speed means that the bot is not
-    /// moving from its current position.
+    /// Speed measured in pixels per turn. If the speed is positive, the bot moves forward. If
+    /// negative, the bot moves backwards. A zero speed means that the bot is not moving from its
+    /// current position.
     /// </summary>
     double Speed { get; }
 
     /// <summary>
-    /// Property containing the gun heat. The gun gets heated when it is fired, and will first be able
-    /// to fire again, when the gun has cooled down, meaning that the gun heat must be zero.
+    /// Gun heat. The gun gets heated when it is fired, and will first be able to fire again, when
+    /// the gun has cooled down, meaning that the gun heat must be zero.
     /// 
     /// When the gun is fired the gun heat is set to 1 + (firepower / 5). The gun is cooled down by
     /// the gun cooling rate.
@@ -167,12 +249,12 @@ namespace Robocode.TankRoyale
     double GunHeat { get; }
 
     /// <summary>
-    /// Property containing the current bullet states.
+    /// Current bullet states.
     /// </summary>
     ICollection<BulletState> BulletStates { get; }
 
     /// <summary>
-    /// Property containing the game events received for the current turn.
+    /// Game events received for the current turn.
     /// </summary>
     ICollection<Event> Events { get; }
 
@@ -185,7 +267,7 @@ namespace Robocode.TankRoyale
     /// turn rate of the body. But be aware that the turn limits for the gun and radar cannot be
     /// exceeded.
     /// 
-    /// The turn rate is truncated to MAX_TURN_RATE if the turn rate exceeds this value.
+    /// The turn rate is truncated to MaxTurnRate if the turn rate exceeds this value.
     /// 
     /// If this property is set multiple times, the last value set before Go() counts.
     /// </summary>
@@ -200,7 +282,7 @@ namespace Robocode.TankRoyale
     /// subtracting the turn rate of the body from the turn rate of the gun. But be aware that the turn
     /// limits for the radar (and also body and gun) cannot be exceeded.
     ///
-    /// The gun turn rate is truncated to MAX_GUN_TURN_RATE if the gun turn rate exceeds
+    /// The gun turn rate is truncated to MaxGunTurnRate if the gun turn rate exceeds
     /// this value.
     ///
     /// If this property is set multiple times, the last value set before Go() counts.
@@ -216,7 +298,7 @@ namespace Robocode.TankRoyale
     /// radar. But be aware that the turn limits for the radar (and also body and gun) cannot be
     /// exceeded.
     ///
-    /// The radar turn rate is truncated to MAX_RADAR_TURN_RATE if the radar turn rate
+    /// The radar turn rate is truncated to MaxRadarTurnRate if the radar turn rate
     /// exceeds this value.
     ///
     /// If this property is set multiple times, the last value set before Go() counts.
@@ -235,7 +317,7 @@ namespace Robocode.TankRoyale
     /// as it is -2 pixel/turn. Deceleration is negative as it is added to the speed and hence needs to
     /// be negative.
     ///
-    /// The target speed is truncated to MAX_SPEED if the target speed exceeds this value.
+    /// The target speed is truncated to MaxSpeed if the target speed exceeds this value.
     ///
     /// If this property is set multiple times, the last value set before go() counts.
     /// </summary>
@@ -247,13 +329,13 @@ namespace Robocode.TankRoyale
     /// Firepower is the amount of energy spend on firing the gun. You cannot spend more energy
     /// that available from the bot. The amount of energy loss is equal to the firepower.
     /// 
-    /// The bullet power must be > MIN_FIREPOWER and the gun heat zero before the gun is able to fire.
+    /// The bullet power must be > MinFirePower and the gun heat zero before the gun is able to fire.
     /// 
     /// If the bullet hits an opponent bot, you will gain energy from the bullet hit. When hitting
     /// another bot, your bot will be rewarded and retrieve an energy boost of 3x firepower.
     ///
-    /// The gun will only fire when the firepower is at MIN_FIREPOWER or higher. If the
-    /// firepower is more than MAX_FIREPOWER, the power will be truncated to the max
+    /// The gun will only fire when the firepower is at MinFirePower or higher. If the
+    /// firepower is more than MaxFirePower, the power will be truncated to the max
     /// firepower.
     ///
     /// Whenever the gun is fired, the gun is heated an needs to cool down before it is able to fire
@@ -269,7 +351,7 @@ namespace Robocode.TankRoyale
     /// Note that the gun will automatically keep firing at any turn when the gun heat reaches zero.
     /// It is possible disable the gun firing by setting the firepower on this property to zero.
     ///
-    /// The firepower is truncated to 0 and MAX_FIREPOWER if the firepower exceeds these values.
+    /// The firepower is truncated to 0 and MaxFirePower if the firepower exceeds these values.
     ///
     /// If this property is set multiple times, the last value set before Go() counts.
     /// </summary>
@@ -287,7 +369,7 @@ namespace Robocode.TankRoyale
     /// of the bot's body. To compensate for this, you can adjust the gun for the body turn.
     /// When this is set, the gun will turn independent from the bot's turn.
     ///
-    /// Note: This property is additive until you reach the maximum the gun can turn MAX_GUN_TURN_RATE.
+    /// Note: This property is additive until you reach the maximum the gun can turn MaxGunTurnRate.
     /// The "adjust" is added to the amount, you set for turning the bot by the turn rate, then capped
     /// by the physics of the game.
     ///
@@ -306,7 +388,7 @@ namespace Robocode.TankRoyale
     /// is set, the radar will turn independent from the gun's turn.
     ///
     /// Note: This property is additive until you reach the maximum the radar can turn
-    /// MAX_RADAR_TURN_RATE. The "adjust" is added to the amount, you set for turning the gun by
+    /// MaxRadarTurnRate. The "adjust" is added to the amount, you set for turning the gun by
     /// the gun turn rate, then capped by the physics of the game.
     ///
     /// Note: The radar compensating this way does count as "turning the radar".
