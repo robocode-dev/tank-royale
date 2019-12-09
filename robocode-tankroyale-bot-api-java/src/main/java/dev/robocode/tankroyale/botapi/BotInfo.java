@@ -3,9 +3,7 @@ package dev.robocode.tankroyale.botapi;
 import com.neovisionaries.i18n.CountryCode;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /** Required information about the bot. */
 @Value
@@ -31,11 +29,10 @@ public final class BotInfo {
   String countryCode;
 
   /**
-   * Game types accepted by the bot, e.g. Arrays.asList("melee", "1v1"). The game types defines
-   * which game types the bot is able to participate in. See {@link GameType} for using predefined
-   * game type.
+   * Game types accepted by the bot, e.g. "melee", "1v1". The game types defines which game types
+   * the bot is able to participate in. See {@link GameType} for using predefined game type.
    */
-  @NonNull List<String> gameTypes;
+  @NonNull Collection<String> gameTypes;
 
   /** Programming language used for developing the bot, e.g. "Java" or "C#" */
   String programmingLang;
@@ -46,7 +43,7 @@ public final class BotInfo {
       final String author,
       final String description,
       final String countryCode,
-      final List<String> gameTypes,
+      final Collection<String> gameTypes,
       final String programmingLang) {
 
     if (name == null || name.trim().isEmpty()) {
@@ -58,20 +55,21 @@ public final class BotInfo {
     if (author == null || author.trim().isEmpty()) {
       throw new IllegalArgumentException("Author cannot be null, empty or blank");
     }
-
-    CountryCode code = null;
-    if (countryCode != null) {
-      code = CountryCode.getByCodeIgnoreCase(countryCode);
-    }
-    if (code == null) {
-      code = CountryCode.getByLocale(Locale.getDefault());
-    }
-
     if (gameTypes == null || gameTypes.isEmpty()) {
       throw new IllegalArgumentException("Game types cannot be null, empty or blank");
     }
+    CountryCode code = null;
+    if (countryCode != null) {
+      // Get country code from input parameter
+      code = CountryCode.getByCodeIgnoreCase(countryCode);
+    }
+    if (code == null) {
+      // Get local country code
+      code = CountryCode.getByLocale(Locale.getDefault());
+    }
+
     // Remove null, empty or blank game types
-    val trimmedGameTypes = new ArrayList<String>();
+    val trimmedGameTypes = new HashSet<String>();
     gameTypes
         .iterator()
         .forEachRemaining(
