@@ -1,15 +1,13 @@
 package dev.robocode.tankroyale.botapi;
 
-/** Predefined (known) game types. */
+/** Predefined game types. */
 public final class GameType {
+  // Hide constructor
   private GameType() {}
 
-  /** Melee with every bot against every other bot */
+  /** Melee battle with every bot against every other bot */
   public final static String MELEE = "melee";
 
-  /** One versus one (1-vs-1) */
+  /** One versus one (1-vs-1) battle */
   public final static String ONE_VS_ONE ="1v1";
-
-  /** Twin dual with two team both containing two bots */
-  public final static String TWIN_DUAL = "twin dual";
 }

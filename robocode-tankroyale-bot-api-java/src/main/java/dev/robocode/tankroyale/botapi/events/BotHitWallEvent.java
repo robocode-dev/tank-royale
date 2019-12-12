@@ -9,7 +9,7 @@ import lombok.Value;
 @Value
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class BotHitWallEvent extends Event {
+public final class BotHitWallEvent extends Event {
   /** ID of the victim bot that hit the wall */
   int victimId;
 

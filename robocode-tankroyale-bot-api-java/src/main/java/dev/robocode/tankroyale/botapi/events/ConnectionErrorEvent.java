@@ -8,7 +8,7 @@ import lombok.Value;
 @Value
 @Builder
 @ToString
-public class ConnectionErrorEvent {
+public final class ConnectionErrorEvent {
 
   /** The exception causing the error */
   Exception exception;

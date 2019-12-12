@@ -9,7 +9,7 @@ import lombok.Value;
 @Value
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class ScannedBotEvent extends Event {
+public final class ScannedBotEvent extends Event {
   /** ID of the bot did the scanning */
   int scannedByBotId;
   /** ID of the bot that was scanned */

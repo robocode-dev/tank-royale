@@ -8,5 +8,5 @@ import lombok.Value;
 @Value
 @Builder
 @ToString
-public class ConnectedEvent {
+public final class ConnectedEvent {
 }

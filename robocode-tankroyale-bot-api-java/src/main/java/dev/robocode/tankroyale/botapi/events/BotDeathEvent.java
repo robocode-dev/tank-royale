@@ -9,7 +9,7 @@ import lombok.Value;
 @Value
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class BotDeathEvent extends Event {
+public final class BotDeathEvent extends Event {
   /** ID of the bot that has died */
   int victimId;
 

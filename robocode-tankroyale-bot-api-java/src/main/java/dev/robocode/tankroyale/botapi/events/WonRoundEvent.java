@@ -9,7 +9,7 @@ import lombok.Value;
 @Value
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class WonRoundEvent extends Event {
+public final class WonRoundEvent extends Event {
 
   @Builder
   @SuppressWarnings("unused")

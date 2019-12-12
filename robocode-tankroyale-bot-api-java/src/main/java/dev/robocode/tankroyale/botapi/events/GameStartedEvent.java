@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.botapi.GameSetup;
 /** Event occurring when game has just started */
 @Value
 @ToString
-public class GameStartedEvent implements IMessage {
+public final class GameStartedEvent implements IMessage {
   /** The ID used for identifying your bot in the current battle */
   int myId;
   /** The game setup for the battle just started */

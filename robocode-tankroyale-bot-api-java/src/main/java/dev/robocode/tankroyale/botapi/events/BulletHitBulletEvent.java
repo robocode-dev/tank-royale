@@ -10,7 +10,7 @@ import dev.robocode.tankroyale.botapi.BulletState;
 @Value
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class BulletHitBulletEvent extends Event {
+public final class BulletHitBulletEvent extends Event {
   /** Bullet that hit another bullet */
   BulletState bullet;
   /** The other bullet that was hit by the bullet */

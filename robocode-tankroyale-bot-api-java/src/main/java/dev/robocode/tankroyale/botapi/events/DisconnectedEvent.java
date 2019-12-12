@@ -8,7 +8,7 @@ import lombok.Value;
 @Value
 @Builder
 @ToString
-public class DisconnectedEvent {
+public final class DisconnectedEvent {
   /** Indication if closing of the connection was initiated by the remote host */
   boolean remote;
 }

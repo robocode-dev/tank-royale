@@ -10,7 +10,7 @@ import java.util.List;
 /** Event occurring when game has just ended */
 @Value
 @ToString
-public class GameEndedEvent implements IMessage {
+public final class GameEndedEvent implements IMessage {
   /** Number of rounds played */
   int numberOfRounds;
   /** Results of the battle */

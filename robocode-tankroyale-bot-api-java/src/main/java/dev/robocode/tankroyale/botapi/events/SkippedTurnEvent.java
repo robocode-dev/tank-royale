@@ -12,7 +12,7 @@ import lombok.Value;
 @Value
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class SkippedTurnEvent extends Event {
+public final class SkippedTurnEvent extends Event {
 
   @Builder
   @SuppressWarnings("UnusedDeclaration")
