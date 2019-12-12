@@ -3,7 +3,7 @@ namespace Robocode.TankRoyale
   /// <summary>
   /// Event occurring when a bullet has hit a bot.
   /// </summary>
-  public class BulletHitBotEvent : Event
+  public sealed class BulletHitBotEvent : Event
   {
     /// <summary>ID of the victim bot that got hit.<summary>
     int VictimId { get; }

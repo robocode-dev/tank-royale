@@ -5,7 +5,7 @@ namespace Robocode.TankRoyale
   /// <summary>
   /// Event occurring when a connection error occurs.
   /// </summary>
-  public class ConnectionErrorEvent
+  public sealed class ConnectionErrorEvent
   {
     /// <summary>The exception causing the error.</summary>
     Exception Exception { get; }

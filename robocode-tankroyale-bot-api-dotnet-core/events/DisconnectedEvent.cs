@@ -3,7 +3,7 @@ namespace Robocode.TankRoyale
   /// <summary>
   /// Event occurring when bot gets disconnected from server.
   /// </summary>
-  public class DisconnectedEvent
+  public sealed class DisconnectedEvent
   {
     /// <summary>Indication if closing of the connection was initiated by the remote host.</summary>
     bool Remote { get; }

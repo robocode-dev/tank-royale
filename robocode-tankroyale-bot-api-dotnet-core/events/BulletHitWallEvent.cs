@@ -3,7 +3,7 @@ namespace Robocode.TankRoyale
   /// <summary>
   /// Event occurring when a bullet has hit a wall.
   /// </summary>
-  public class BulletHitWallEvent : Event
+  public sealed class BulletHitWallEvent : Event
   {
     /// <summary>Bullet that has hit a wall.<summary>
     BulletState Bullet { get; }

@@ -3,7 +3,7 @@ namespace Robocode.TankRoyale
   /// <summary>
   /// Event occurring when a bot has died.
   /// </summary>
-  public class BotDeathEvent : Event
+  public sealed class BotDeathEvent : Event
   {
     /// <summary>ID of the bot that has died.<summary>
     int VictimId { get; }

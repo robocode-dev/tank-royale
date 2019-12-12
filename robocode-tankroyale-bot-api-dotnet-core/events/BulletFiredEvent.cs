@@ -3,7 +3,7 @@ namespace Robocode.TankRoyale
   /// <summary>
   /// Event occurring when a bullet has been fired from a bot.
   /// </summary>
-  public class BulletFiredEvent : Event
+  public sealed class BulletFiredEvent : Event
   {
     /// <summary>Bullet that was fired.<summary>
     BulletState Bullet { get; }

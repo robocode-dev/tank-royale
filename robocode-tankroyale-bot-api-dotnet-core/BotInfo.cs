@@ -9,7 +9,7 @@ namespace Robocode.TankRoyale
   /// <summary>
   /// Required information about the bot.
   /// </summary>
-  public class BotInfo
+  public sealed class BotInfo
   {
     string name;
     string version;

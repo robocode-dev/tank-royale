@@ -5,7 +5,7 @@ namespace Robocode.TankRoyale
   /// <summary>
   /// Event occurring when game has just ended.
   /// </summary>
-  public class GameEndedEvent : IMessage
+  public sealed class GameEndedEvent : IMessage
   {
     /// <summary>Number of rounds played.</summary>
     int NumberOfRounds { get; }
