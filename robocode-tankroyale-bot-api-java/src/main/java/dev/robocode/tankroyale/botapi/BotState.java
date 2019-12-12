@@ -24,5 +24,5 @@ public final class BotState {
   /** Speed measured in pixels per turn */
   double speed;
   /** Gun heat */
-  double                    ;
+  double gunHeat;
 }

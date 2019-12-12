@@ -5,6 +5,8 @@ import dev.robocode.tankroyale.schema.BotHandshake;
 import lombok.experimental.UtilityClass;
 import lombok.val;
 
+import java.util.ArrayList;
+
 /** Utility class used fro creating bot handshakes */
 @UtilityClass
 public class BotHandshakeFactory {
@@ -16,7 +18,7 @@ public class BotHandshakeFactory {
     handshake.setVersion(botInfo.getVersion());
     handshake.setAuthor(botInfo.getAuthor());
     handshake.setCountryCode(botInfo.getCountryCode());
-    handshake.setGameTypes(botInfo.getGameTypes());
+    handshake.setGameTypes(new ArrayList<>(botInfo.getGameTypes()));
     handshake.setProgrammingLang(botInfo.getProgrammingLang());
     return handshake;
   }

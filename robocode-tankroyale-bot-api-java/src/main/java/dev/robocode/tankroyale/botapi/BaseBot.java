@@ -271,12 +271,12 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   @Override
-  public final Set<BulletState> getBulletStates() {
+  public final Collection<BulletState> getBulletStates() {
     return __internals.getCurrentTurn().getBulletStates();
   }
 
   @Override
-  public final Set<? extends Event> getEvents() {
+  public final Collection<? extends Event> getEvents() {
     return __internals.getCurrentTurn().getEvents();
   }
 
