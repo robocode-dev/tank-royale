@@ -54,7 +54,7 @@ public class TestBot extends BaseBot {
       double dy = targetY - getY();
       double angle = Math.toDegrees(Math.atan2(dy, dx));
 
-      double gunTurnRate = normalRelativeDegrees(angle - getGunDirection());
+      double gunTurnRate = normalizeRelativeDegrees(angle - getGunDirection());
 
       setGunTurnRate(gunTurnRate);
     }

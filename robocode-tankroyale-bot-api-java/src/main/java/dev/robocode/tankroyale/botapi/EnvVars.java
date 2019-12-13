@@ -2,28 +2,19 @@ package dev.robocode.tankroyale.botapi;
 
 import lombok.val;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
-final class Env {
+/**
+ * Class for reading environment variables.
+ */
+final class EnvVars {
 
-  public static void main(String[] args) {
+  // Hide constructor
+  private EnvVars() {}
 
-    val list = new ArrayList<String>(Arrays.asList(" ".split("\\s*,\\s*")));
-    if (list.size() == 1 && list.get(0).trim().length() == 0) {
-      list.remove(0);
-    }
-
-    for (String s : list) {
-      System.out.println('"' + s + '"');
-    }
-  }
-
-  private Env() {}
-
-  static final String SERVER_URI = "ROBOCODE_SERVER_URI";
+  private static final String SERVER_URI = "ROBOCODE_SERVER_URI";
 
   private static final String BOT_NAME = "BOT_NAME";
   private static final String BOT_VERSION = "BOT_VERSION";
@@ -35,17 +26,18 @@ final class Env {
 
   private static final String NO_ENV_VALUE = "No value for environment variable: ";
 
-  static BotInfo getBotInfo() {
-    if (getBotName() == null) {
+  /** Bot Info */
+  public static BotInfo getBotInfo() {
+    if (isNullOrEmpty(getBotName())) {
       throw new BotException(NO_ENV_VALUE + BOT_NAME);
     }
-    if (getBotVersion() == null) {
+    if (isNullOrEmpty(getBotVersion())) {
       throw new BotException(NO_ENV_VALUE + BOT_VERSION);
     }
-    if (getBotAuthor() == null) {
+    if (isNullOrEmpty(getBotAuthor())) {
       throw new BotException(NO_ENV_VALUE + BOT_AUTHOR);
     }
-    if (getBotGameTypes().isEmpty()) {
+    if (isNullOrEmpty(getBotGameTypes())) {
       throw new BotException(NO_ENV_VALUE + BOT_GAME_TYPES);
     }
     return BotInfo.builder()
@@ -59,31 +51,38 @@ final class Env {
         .build();
   }
 
-  static String getServerUri() {
+  /** Server URI */
+  public static String getServerUri() {
     return System.getenv(SERVER_URI);
   }
 
-  private static String getBotName() {
+  /** Bot name */
+  public static String getBotName() {
     return System.getenv(BOT_NAME);
   }
 
-  private static String getBotVersion() {
+  /** Bot version */
+  public static String getBotVersion() {
     return System.getenv(BOT_VERSION);
   }
 
-  private static String getBotAuthor() {
+  /** Bot author */
+  public static String getBotAuthor() {
     return System.getenv(BOT_AUTHOR);
   }
 
-  private static String getBotDescription() {
+  /** Bot description */
+  public static String getBotDescription() {
     return System.getenv(BOT_DESCRIPTION);
   }
 
-  private static String getBotCountryCode() {
+  /** Bot country code */
+  public static String getBotCountryCode() {
     return System.getenv(BOT_COUNTRY_CODE);
   }
 
-  private static List<String> getBotGameTypes() {
+  /** List of game types, which the bot supports */
+  public static Collection<String> getBotGameTypes() {
     val gameTypes = System.getenv(BOT_GAME_TYPES);
     if (gameTypes == null || gameTypes.trim().length() == 0) {
       return Collections.emptyList();
@@ -91,7 +90,16 @@ final class Env {
     return Arrays.asList(gameTypes.split("\\s*,\\s*"));
   }
 
-  private static String getBotProgrammingLang() {
+  /** Language used for programming the bot */
+  public static String getBotProgrammingLang() {
     return System.getenv(BOT_PROG_LANG);
+  }
+
+  private static boolean isNullOrEmpty(String s) {
+    return s == null || s.trim().isEmpty();
+  }
+
+  private static boolean isNullOrEmpty(Collection<?> c) {
+    return c == null || c.isEmpty();
   }
 }

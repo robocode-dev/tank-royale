@@ -452,56 +452,118 @@ public interface IBaseBot {
    */
   boolean isAdjustRadarForGunTurn();
 
-  /** Event handler triggered when connected to server */
+  /**
+   * Event handler triggered when connected to server
+   *
+   * @param connectedEvent is the event details from the game
+   */
   default void onConnected(ConnectedEvent connectedEvent) {}
 
-  /** Event handler triggered when disconnected from server */
+  /**
+   * Event handler triggered when disconnected from server
+   *
+   * @param disconnectedEvent is the event details from the game
+   */
   default void onDisconnected(DisconnectedEvent disconnectedEvent) {}
 
-  /** Event handler triggered when a connection error occurs */
+  /**
+   * Event handler triggered when a connection error occurs
+   *
+   * @param connectionErrorEvent is the event details from the game
+   */
   default void onConnectionError(ConnectionErrorEvent connectionErrorEvent) {}
 
-  /** Event handler triggered when game has started */
+  /**
+   * Event handler triggered when game has started
+   *
+   * @param gameStatedEvent is the event details from the game
+   */
   default void onGameStarted(GameStartedEvent gameStatedEvent) {}
 
-  /** Event handler triggered when game has ended */
+  /**
+   * Event handler triggered when game has ended
+   *
+   * @param gameEndedEvent is the event details from the game
+   */
   default void onGameEnded(GameEndedEvent gameEndedEvent) {}
 
   /**
    * Event handler triggered when a game tick event occurs, i.e. when a new turn in a round has
    * started. When this handler is triggered, your bot must figure out the next action to take and
    * call go() when it needs to commit the action to the server.
+   *
+   * @param tickEvent is the event details from the game
    */
   default void onTick(TickEvent tickEvent) {}
 
-  /** Event handler triggered when another bot has died */
+  /**
+   * Event handler triggered when another bot has died
+   *
+   * @param botDeathEvent is the event details from the game
+   */
   default void onBotDeath(BotDeathEvent botDeathEvent) {}
 
-  /** Event handler triggered when this bot has died */
+  /**
+   * Event handler triggered when this bot has died
+   *
+   * @param botDeathEvent is the event details from the game
+   */
   default void onDeath(BotDeathEvent botDeathEvent) {}
 
-  /** Event handler triggered when the bot has collided with another bot */
+  /**
+   * Event handler triggered when the bot has collided with another bot
+   *
+   * @param botHitBotEvent is the event details from the game
+   */
   default void onHitBot(BotHitBotEvent botHitBotEvent) {}
 
-  /** Event handler triggered when the bot has hit a wall */
+  /**
+   * Event handler triggered when the bot has hit a wall
+   *
+   * @param botHitWallEvent is the event details from the game
+   */
   default void onHitWall(BotHitWallEvent botHitWallEvent) {}
 
-  /** Event handler triggered when the bot has fired a bullet */
+  /**
+   * Event handler triggered when the bot has fired a bullet
+   *
+   * @param bulletFiredEvent is the event details from the game
+   */
   default void onBulletFired(BulletFiredEvent bulletFiredEvent) {}
 
-  /** Event handler triggered when the bot has been hit by a bullet */
+  /**
+   * Event handler triggered when the bot has been hit by a bullet
+   *
+   * @param bulletHitBotEvent is the event details from the game
+   */
   default void onHitByBullet(BulletHitBotEvent bulletHitBotEvent) {}
 
-  /** Event handler triggered when the bot has hit another bot with a bullet */
+  /**
+   * Event handler triggered when the bot has hit another bot with a bullet
+   *
+   * @param bulletHitBotEvent is the event details from the game
+   */
   default void onBulletHit(BulletHitBotEvent bulletHitBotEvent) {}
 
-  /** Event handler triggered a bullet has collided with another bullet */
+  /**
+   * Event handler triggered a bullet has collided with another bullet
+   *
+   * @param bulletHitBulletEvent is the event details from the game
+   */
   default void onBulletHitBullet(BulletHitBulletEvent bulletHitBulletEvent) {}
 
-  /** Event handler triggered a bullet has a wall */
+  /**
+   * Event handler triggered a bullet has a wall
+   *
+   * @param bulletHitWallEvent is the event details from the game
+   */
   default void onBulletHitWall(BulletHitWallEvent bulletHitWallEvent) {}
 
-  /** Event handler triggered when the bot has scanned another bot */
+  /**
+   * Event handler triggered when the bot has scanned another bot
+   *
+   * @param scannedBotEvent is the event details from the game
+   */
   default void onScannedBot(ScannedBotEvent scannedBotEvent) {}
 
   /**
@@ -511,14 +573,20 @@ public interface IBaseBot {
    * receive a SkippedTurnEvent for each turn where it did not take action. When the bot is skipping
    * a turn the server did not receive the message from the bot, and the server will use the newest
    * received instructions for target speed, turn rates, firing etc.
+   *
+   * @param skippedTurnEvent is the event details from the game
    */
   default void onSkippedTurn(SkippedTurnEvent skippedTurnEvent) {}
 
-  /** Event handler triggered when the bot has won a round */
+  /**
+   * Event handler triggered when the bot has won a round
+   *
+   * @param wonRoundEvent is the event details from the game
+   */
   default void onWonRound(WonRoundEvent wonRoundEvent) {}
 
   /**
-   * Convenient method that calculates the maximum turn rate for a specific speed.
+   * Calculates the maximum turn rate for a specific speed.
    *
    * @param speed is the speed
    * @return maximum turn rate determined by the given speed
@@ -526,7 +594,7 @@ public interface IBaseBot {
   double calcMaxTurnRate(double speed);
 
   /**
-   * Convenient method that calculates the bullet speed given a fire power.
+   * Calculates the bullet speed given a fire power.
    *
    * @param firepower is the firepower
    * @return bullet speed determined by the given firepower
@@ -534,7 +602,7 @@ public interface IBaseBot {
   double calcBulletSpeed(double firepower);
 
   /**
-   * Convenient method that calculate gun heat after having fired the gun.
+   * Calculates gun heat after having fired the gun.
    *
    * @param firepower is the firepower used when firing the gun
    * @return gun heat produced when firing the gun with the given firepower
@@ -544,16 +612,16 @@ public interface IBaseBot {
   /**
    * Normalizes an angle to an absolute angle into the range [0,360[
    *
-   * @param angle the angle to normalize
+   * @param angle is the angle to normalize
    * @return the normalized absolute angle
    */
-  double normalAbsoluteDegrees(double angle);
+  double normalizeAbsoluteDegrees(double angle);
 
   /**
    * Normalizes an angle to an relative angle into the range [-180,180[
    *
-   * @param angle the angle to normalize
+   * @param angle is the angle to normalize
    * @return the normalized relative angle.
    */
-  double normalRelativeDegrees(double angle);
+  double normalizeRelativeDegrees(double angle);
 }

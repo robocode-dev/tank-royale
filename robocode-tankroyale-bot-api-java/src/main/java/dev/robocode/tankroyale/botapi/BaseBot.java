@@ -413,12 +413,12 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   @Override
-  public final double normalAbsoluteDegrees(double angle) {
+  public final double normalizeAbsoluteDegrees(double angle) {
     return (angle %= 360) >= 0 ? angle : (angle + 360);
   }
 
   @Override
-  public final double normalRelativeDegrees(double angle) {
+  public final double normalizeRelativeDegrees(double angle) {
     return (angle %= 360) >= 0
         ? ((angle < 180) ? angle : (angle - 360))
         : ((angle >= -180) ? angle : (angle + 360));
@@ -499,7 +499,7 @@ public abstract class BaseBot implements IBaseBot {
     private final Event<WonRoundEvent> onWonRound = new Event<>();
 
     __Internals(BotInfo botInfo, URI serverUri) {
-      this.botInfo = (botInfo == null) ? Env.getBotInfo() : botInfo;
+      this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
       init(serverUri == null ? getServerUriFromSetting() : serverUri);
     }
 
@@ -648,14 +648,14 @@ public abstract class BaseBot implements IBaseBot {
       if (uri == null) {
         uri = System.getProperty(SERVER_URI_PROPERTY_KEY);
         if (uri == null) {
-          uri = Env.getServerUri();
+          uri = EnvVars.getServerUri();
         }
       }
       if (uri == null) {
         throw new BotException(
             String.format(
                 "Property %s or system environment variable %s is not defined",
-                SERVER_URI_PROPERTY_KEY, Env.SERVER_URI));
+                SERVER_URI_PROPERTY_KEY, EnvVars.getServerUri()));
       }
       try {
         return new URI(uri);

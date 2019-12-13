@@ -3,10 +3,7 @@ import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.GameType;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +20,7 @@ class BotInfoTest {
             "John Doe",
             "Sample bot",
             "dk",
-            Arrays.asList(GameType.MELEE, GameType.TWIN_DUAL),
+            Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
             "Java");
 
     assertEquals("MyBot", botInfo.getName());
@@ -34,7 +31,7 @@ class BotInfoTest {
     assertThat(botInfo.getGameTypes())
         .asList()
         .hasSize(2)
-        .contains(GameType.MELEE, GameType.TWIN_DUAL);
+        .contains(GameType.MELEE, GameType.ONE_VS_ONE);
     assertEquals("Java", botInfo.getProgrammingLang());
   }
 
@@ -309,7 +306,7 @@ class BotInfoTest {
             Arrays.asList("  melee  ", "  1v1  "),
             "Java");
 
-    List<String> gameTypes = botInfo.getGameTypes();
+    Collection<String> gameTypes = botInfo.getGameTypes();
 
     assertThat(gameTypes).asList().hasSize(2).contains("melee", "1v1");
   }

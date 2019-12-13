@@ -396,5 +396,148 @@ namespace Robocode.TankRoyale
     /// <seealso cref="AdjustGunForBodyTurn"/>
     bool AdjustRadarForGunTurn { get; set; }
 
+    /// <summary>
+    /// Event handler triggered when connected to server.
+    /// </summary>
+    /// <param name="connectedEvent">Event details from the game</param>
+    void OnDisconnected(ConnectedEvent connectedEvent);
+
+    /// <summary>
+    /// Event handler triggered when disconnected from server.
+    /// </summary>
+    /// <param name="disconnectedEvent">Event details from the game</param>
+    void OnDisconnected(DisconnectedEvent disconnectedEvent);
+
+    /// <summary>
+    /// Event handler triggered when a connection error occurs.
+    /// </summary>
+    /// <param name="connectionErrorEvent">Event details from the game</param>
+    void OnConnectionError(ConnectionErrorEvent connectionErrorEvent);
+
+    /// <summary>
+    /// Event handler triggered when game has started.
+    /// </summary>
+    /// <param name="gameStatedEvent">Event details from the game</param>
+    void OnGameStarted(GameStartedEvent gameStatedEvent);
+
+    /// <summary>
+    /// Event handler triggered when game has ended.
+    /// </summary>
+    /// <param name="gameStatedEvent">Event details from the game</param>
+    void OnGameEnded(GameEndedEvent gameEndedEvent);
+
+    /// <summary>
+    /// Event handler triggered when a game tick event occurs, i.e. when a new turn in a round has
+    /// started. When this handler is triggered, your bot must figure out the next action to take and
+    /// call Go() when it needs to commit the action to the server.
+    /// </summary>
+    /// <param name="tickEvent">Event details from the game</param>
+    void OnTick(TickEvent tickEvent);
+
+    /// <summary>
+    /// Event handler triggered when another bot has died.
+    /// </summary>
+    /// <param name="botDeathEvent">Event details from the game</param>
+    void OnBotDeath(BotDeathEvent botDeathEvent);
+
+    /// <summary>
+    /// Event handler triggered when the bot has collided with another bot.
+    /// </summary>
+    /// <param name="BotHitBotEvent">Event details from the game</param>
+    void OnHitBot(BotHitBotEvent botHitBotEvent);
+
+    /// <summary>
+    /// Event handler triggered when the bot has hit a wall.
+    /// </summary>
+    /// <param name="BotHitBotEvent">Event details from the game</param>
+    void OnHitWall(BotHitWallEvent botHitWallEvent);
+
+    /// <summary>
+    /// Event handler triggered when the bot has fired a bullet.
+    /// </summary>
+    /// <param name="BotHitBotEvent">Event details from the game</param>
+    void OnBulletFired(BulletFiredEvent bulletFiredEvent);
+
+    /// <summary>
+    /// Event handler triggered when the bot has been hit by a bullet.
+    /// </summary>
+    /// <param name="bulletHitBotEvent">Event details from the game</param>
+    void OnHitByBullet(BulletHitBotEvent bulletHitBotEvent);
+
+    /// <summary>
+    /// Event handler triggered when the bot has hit another bot with a bullet.
+    /// </summary>
+    /// <param name="bulletHitBotEvent">Event details from the game</param>
+    void OnBulletHit(BulletHitBotEvent bulletHitBotEvent);
+
+    /// <summary>
+    /// Event handler triggered a bullet has collided with another bullet.
+    /// </summary>
+    /// <param name="bulletHitBulletEvent">Event details from the game</param>
+    void OnBulletHitBullet(BulletHitBulletEvent bulletHitBulletEvent);
+
+    /// <summary>
+    /// Event handler triggered a bullet has a wall.
+    /// </summary>
+    /// <param name="bulletHitWallEvent">Event details from the game</param>
+    void OnBulletHitWall(BulletHitWallEvent bulletHitWallEvent);
+
+    /// <summary>
+    /// Event handler triggered when the bot has scanned another bot.
+    /// </summary>
+    /// <param name="scannedBotEvent">Event details from the game</param>
+    void OnScannedBot(ScannedBotEvent scannedBotEvent);
+
+    /// <summary>
+    /// Event handler triggered when the bot has skipped a turn. This event occurs if the bot did not
+    /// take any action in a specific turn. That is, Go() was not called before the turn timeout
+    /// occurred for the turn. If the bot does not take action for multiple turns in a row, it will
+    /// receive a SkippedTurnEvent for each turn where it did not take action. When the bot is skipping
+    /// a turn the server did not receive the message from the bot, and the server will use the newest
+    /// received instructions for target speed, turn rates, firing etc.
+    /// </summary>
+    /// <param name="skippedTurnEvent">Event details from the game</param>
+    void OnSkippedTurn(SkippedTurnEvent skippedTurnEvent);
+
+    /// <summary>
+    /// Event handler triggered when the bot has won a round.
+    /// </summary>
+    /// <param name="wonRoundEvent">Event details from the game</param>
+    void OnWonRound(WonRoundEvent wonRoundEvent);
+
+    /// <summary>
+    /// Calculates the maximum turn rate for a specific speed.
+    /// </summary>
+    /// <param name="speed">Is the speed</param>
+    /// <returns>Maximum turn rate determined by the given speed</returns>
+    double CalcMaxTurnRate(double speed);
+
+    /// <summary>
+    /// Calculates the bullet speed given a fire power.
+    /// </summary>
+    /// <param name="firepower">Is the firepower</param>
+    /// <returns>Bullet speed determined by the given firepower</returns>
+    double CalcBulletSpeed(double firepower);
+
+    /// <summary>
+    /// Calculates gun heat after having fired the gun.
+    /// </summary>
+    /// <param name="firepower">Is the firepower used when firing the gun</param>
+    /// <returns>Gun heat produced when firing the gun with the given firepower</returns>
+    double CalcGunHeat(double firepower);
+
+    /// <summary>
+    /// Normalizes an angle to an absolute angle into the range [0,360[
+    /// </summary>
+    /// <param name="angle">Is the angle to normalize</param>
+    /// <returns>The normalized absolute angle</returns>
+    double NormalizeAbsoluteDegrees(double angle);
+
+    /// <summary>
+    /// Normalizes an angle to an relative angle into the range [-180,180[
+    /// </summary>
+    /// <param name="angle">Is the angle to normalize</param>
+    /// <returns>The normalized relative angle</returns>
+    double NormalizeRelativeDegrees(double angle);
   }
 }
