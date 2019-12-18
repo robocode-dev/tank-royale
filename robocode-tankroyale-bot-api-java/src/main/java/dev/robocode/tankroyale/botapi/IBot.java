@@ -67,7 +67,7 @@ public interface IBot extends IBaseBot {
   void setForward(double distance);
 
   /**
-   * Move the bot forward until it has traveled a specific distance from its current position, or it
+   * Moves the bot forward until it has traveled a specific distance from its current position, or it
    * is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
    *
    * <p>When the bot is moving forward, the {@link #getAcceleration()} determine the acceleration of
@@ -125,7 +125,7 @@ public interface IBot extends IBaseBot {
   void setBack(double distance);
 
   /**
-   * Move the bot backwards until it has traveled a specific distance from its current position, or
+   * Moves the bot backwards until it has traveled a specific distance from its current position, or
    * it is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
    *
    * <p>When the bot is moving forward, the {@link #getAcceleration()} determine the acceleration of
@@ -543,10 +543,14 @@ public interface IBot extends IBaseBot {
    * amount of degrees. That is, when {@link #getRadarTurnRemaining()} is 0. The amount of degrees
    * to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
    *
-   * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
-   * will block until its has been completed completed, which can take one to several turns. New
-   * commands will first take place after this method is completed. If you need to execute multiple
-   * commands in parallel, use <strong>setter</strong> methods instead of this blocking method.
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods prior to execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
+   *
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
    *
    * <p>This method will cancel the effect of prior calls to {@link #setTurnRadarLeft(double)} and
    * setTurnRadarRight(double).
@@ -554,7 +558,7 @@ public interface IBot extends IBaseBot {
    * @param degrees is the amount of degrees to turn right. If negative, the radar will turn left.
    * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
    * @see #setTurnRadarLeft(double)
-   * @see #setTurnRadarRight(double)
+   * @see #turnRadarLeft(double)
    * @see #turnRadarRight(double)
    * @see #getRadarTurnRemaining()
    * @see #setRadarTurnRate(double)
@@ -641,7 +645,7 @@ public interface IBot extends IBaseBot {
    * another bot, your bot will be rewarded and retrieve an energy boost of 3x firepower.
    *
    * <p>The gun will only fire when the firepower is at {@link #getMinFirepower()} or higher. If the
-   * firepower is more than {@link #getMinFirepower()}, the power will be truncated to the max
+   * firepower is more than {@link #getMaxFirepower()}, the power will be truncated to the max
    * firepower.
    *
    * <p>Whenever the gun is fired, the gun is heated an needs to cool down before it is able to fire
