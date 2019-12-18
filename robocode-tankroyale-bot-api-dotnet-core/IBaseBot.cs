@@ -8,13 +8,13 @@ namespace Robocode.TankRoyale
     /// Bounding circle radius. A bot gets hit by a bullet when the distance between the center of the
     /// bullet and the position of the bot (center) is less than the bounding circle radius.
     /// </summary>
-    int BoundingCircleRadius { get; }
+    int BoundingCircleRadius { get { return 18; } }
 
     /// <summary>
     /// Radar radius. This is how far a bot is able to scan other bots with the radar. Bots outside the
     /// radar radius will not be scanned.
     /// </summary>
-    double RadarRadius { get; }
+    double RadarRadius { get { return 1200; } }
 
     /// <summary>
     /// Maximum driving turn rate measured in degrees/turn. This is the max. possible turn rate of the
@@ -25,67 +25,67 @@ namespace Robocode.TankRoyale
     /// abs(speed). Hence, the turn rate is at max. 10 degrees/turn when the speed is zero, and down to
     /// only 4 degrees/turn when the robot is at max speed (8 pixels/turn).
     /// </summary>
-    double MaxTurnRate { get; }
+    double MaxTurnRate { get { return 10; } }
 
     /// <summary>
     /// Maximum gun turn rate measured in degrees/turn.
     /// </summary>
-    double MaxGunTurnRate { get; }
+    double MaxGunTurnRate { get { return 20; } }
 
     /// <summary>
     /// Maximum radar turn rate measured in degrees/turn.
     /// </summary>
-    double MaxRadarTurnRate { get; }
+    double MaxRadarTurnRate { get { return 45; } }
 
     /// <summary>
     /// Maximum absolute speed measured in pixels/turn.
     /// </summary>
-    double MaxSpeed { get; }
+    double MaxSpeed { get { return 8; } }
 
     /// <summary>
     /// Maximum forward speed measured in pixels/turn. When the speed is positive the bot is moving forwards.
     /// </summary>
-    double MaxForwardSpeed { get; }
+    double MaxForwardSpeed { get { return MaxSpeed; } }
 
     /// <summary>
     /// Maximum backward speed measured in pixels/turn. When the speed is negative the bot is moving backwards.
     /// </summary>
-    double MaxBackwardSpeed { get; }
+    double MaxBackwardSpeed { get { return -MaxSpeed; } }
 
     /// <summary>
     /// Minimum firepower. The gun will not fire with a power less than the minimum firepower.
     /// </summary>
-    double MinFirepower { get; }
+    double MinFirepower { get { return 0.1; } }
 
     /// <summary>
     /// Maximum firepower. The gun will fire with this firepower if the gun is set to fire with a higher firepower.
     /// </summary>
-    double MaxFirepower { get; }
+    double MaxFirepower { get { return 3; } }
 
     /// <summary>
     /// Minimum bullet speed measured in pixels/turn. The bullet speed is determined by this formula:
     /// 20 - 3 x firepower. The more fire power the slower bullet speed. Hence, the minimum bullet
     /// speed is 11 pixels/turn.
     /// </summary>
-    double MinBulletSpeed { get; }
+    double MinBulletSpeed { get { return 20 - 3 * MaxFirepower; } }
 
     /// <summary>
     /// Maximum bullet speed measured in pixels/turn. The bullet speed is determined by this formula:
     /// 20 - 3 x firepower. The less fire power the faster bullet speed. Hence, the maximum bullet
     /// speed is 17 pixels/turn.
     /// </summary>
-    double MaxBulletSpeed { get; }
+    double MaxBulletSpeed { get { return 20 - 3 * MinFirepower; } }
 
     /// <summary>
     /// Acceleration that adds 1 pixel to the speed per turn when the bot is increasing its speed moving forwards.
     /// </summary>
-    double Acceleration { get; }
+    double Acceleration { get { return 1; } }
 
     /// <summary>
     /// Deceleration that subtract 2 pixels from the speed per turn when the bot is decreasing its
     /// speed moving backwards. Note that the deceleration is negative.
     /// </summary>
-    double Deceleration { get; }
+    double Deceleration { get { return -2; } }
 
     /// <summary>
     /// Main method for start running the bot.
