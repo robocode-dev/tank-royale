@@ -400,31 +400,31 @@ namespace Robocode.TankRoyale
     /// Event handler triggered when connected to server.
     /// </summary>
     /// <param name="connectedEvent">Event details from the game</param>
-    void OnDisconnected(ConnectedEvent connectedEvent);
+    void OnDisconnected(ConnectedEvent connectedEvent) { }
 
     /// <summary>
     /// Event handler triggered when disconnected from server.
     /// </summary>
     /// <param name="disconnectedEvent">Event details from the game</param>
-    void OnDisconnected(DisconnectedEvent disconnectedEvent);
+    void OnDisconnected(DisconnectedEvent disconnectedEvent) { }
 
     /// <summary>
     /// Event handler triggered when a connection error occurs.
     /// </summary>
     /// <param name="connectionErrorEvent">Event details from the game</param>
-    void OnConnectionError(ConnectionErrorEvent connectionErrorEvent);
+    void OnConnectionError(ConnectionErrorEvent connectionErrorEvent) { }
 
     /// <summary>
     /// Event handler triggered when game has started.
     /// </summary>
     /// <param name="gameStatedEvent">Event details from the game</param>
-    void OnGameStarted(GameStartedEvent gameStatedEvent);
+    void OnGameStarted(GameStartedEvent gameStatedEvent) { }
 
     /// <summary>
     /// Event handler triggered when game has ended.
     /// </summary>
     /// <param name="gameStatedEvent">Event details from the game</param>
-    void OnGameEnded(GameEndedEvent gameEndedEvent);
+    void OnGameEnded(GameEndedEvent gameEndedEvent) { }
 
     /// <summary>
     /// Event handler triggered when a game tick event occurs, i.e. when a new turn in a round has
@@ -432,61 +432,61 @@ namespace Robocode.TankRoyale
     /// call Go() when it needs to commit the action to the server.
     /// </summary>
     /// <param name="tickEvent">Event details from the game</param>
-    void OnTick(TickEvent tickEvent);
+    void OnTick(TickEvent tickEvent) { }
 
     /// <summary>
     /// Event handler triggered when another bot has died.
     /// </summary>
     /// <param name="botDeathEvent">Event details from the game</param>
-    void OnBotDeath(BotDeathEvent botDeathEvent);
+    void OnBotDeath(BotDeathEvent botDeathEvent) { }
 
     /// <summary>
     /// Event handler triggered when the bot has collided with another bot.
     /// </summary>
     /// <param name="BotHitBotEvent">Event details from the game</param>
-    void OnHitBot(BotHitBotEvent botHitBotEvent);
+    void OnHitBot(BotHitBotEvent botHitBotEvent) { }
 
     /// <summary>
     /// Event handler triggered when the bot has hit a wall.
     /// </summary>
     /// <param name="BotHitBotEvent">Event details from the game</param>
-    void OnHitWall(BotHitWallEvent botHitWallEvent);
+    void OnHitWall(BotHitWallEvent botHitWallEvent) { }
 
     /// <summary>
     /// Event handler triggered when the bot has fired a bullet.
     /// </summary>
     /// <param name="BotHitBotEvent">Event details from the game</param>
-    void OnBulletFired(BulletFiredEvent bulletFiredEvent);
+    void OnBulletFired(BulletFiredEvent bulletFiredEvent) { }
 
     /// <summary>
     /// Event handler triggered when the bot has been hit by a bullet.
     /// </summary>
     /// <param name="bulletHitBotEvent">Event details from the game</param>
-    void OnHitByBullet(BulletHitBotEvent bulletHitBotEvent);
+    void OnHitByBullet(BulletHitBotEvent bulletHitBotEvent) { }
 
     /// <summary>
     /// Event handler triggered when the bot has hit another bot with a bullet.
     /// </summary>
     /// <param name="bulletHitBotEvent">Event details from the game</param>
-    void OnBulletHit(BulletHitBotEvent bulletHitBotEvent);
+    void OnBulletHit(BulletHitBotEvent bulletHitBotEvent) { }
 
     /// <summary>
     /// Event handler triggered a bullet has collided with another bullet.
     /// </summary>
     /// <param name="bulletHitBulletEvent">Event details from the game</param>
-    void OnBulletHitBullet(BulletHitBulletEvent bulletHitBulletEvent);
+    void OnBulletHitBullet(BulletHitBulletEvent bulletHitBulletEvent) { }
 
     /// <summary>
     /// Event handler triggered a bullet has a wall.
     /// </summary>
     /// <param name="bulletHitWallEvent">Event details from the game</param>
-    void OnBulletHitWall(BulletHitWallEvent bulletHitWallEvent);
+    void OnBulletHitWall(BulletHitWallEvent bulletHitWallEvent) { }
 
     /// <summary>
     /// Event handler triggered when the bot has scanned another bot.
     /// </summary>
     /// <param name="scannedBotEvent">Event details from the game</param>
-    void OnScannedBot(ScannedBotEvent scannedBotEvent);
+    void OnScannedBot(ScannedBotEvent scannedBotEvent) { }
 
     /// <summary>
     /// Event handler triggered when the bot has skipped a turn. This event occurs if the bot did not
@@ -497,13 +497,13 @@ namespace Robocode.TankRoyale
     /// received instructions for target speed, turn rates, firing etc.
     /// </summary>
     /// <param name="skippedTurnEvent">Event details from the game</param>
-    void OnSkippedTurn(SkippedTurnEvent skippedTurnEvent);
+    void OnSkippedTurn(SkippedTurnEvent skippedTurnEvent) { }
 
     /// <summary>
     /// Event handler triggered when the bot has won a round.
     /// </summary>
     /// <param name="wonRoundEvent">Event details from the game</param>
-    void OnWonRound(WonRoundEvent wonRoundEvent);
+    void OnWonRound(WonRoundEvent wonRoundEvent) { }
 
     /// <summary>
     /// Calculates the maximum turn rate for a specific speed.
@@ -531,13 +531,21 @@ namespace Robocode.TankRoyale
     /// </summary>
     /// <param name="angle">Is the angle to normalize</param>
     /// <returns>The normalized absolute angle</returns>
-    double NormalizeAbsoluteDegrees(double angle);
+    double NormalizeAbsoluteDegrees(double angle)
+    {
+      return (angle %= 360) >= 0 ? angle : (angle + 360);
+    }
 
     /// <summary>
     /// Normalizes an angle to an relative angle into the range [-180,180[
     /// </summary>
     /// <param name="angle">Is the angle to normalize</param>
     /// <returns>The normalized relative angle</returns>
-    double NormalizeRelativeDegrees(double angle);
+    double NormalizeRelativeDegrees(double angle)
+    {
+      return (angle %= 360) >= 0
+        ? ((angle < 180) ? angle : (angle - 360))
+        : ((angle >= -180) ? angle : (angle + 360));
+    }
   }
 }

@@ -79,76 +79,6 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   @Override
-  public final int getBoundingCircleRadius() {
-    return 18;
-  }
-
-  @Override
-  public final double getRadarRadius() {
-    return 1200;
-  }
-
-  @Override
-  public final double getMaxTurnRate() {
-    return 10;
-  }
-
-  @Override
-  public final double getMaxGunTurnRate() {
-    return 20;
-  }
-
-  @Override
-  public final double getMaxRadarTurnRate() {
-    return 45;
-  }
-
-  @Override
-  public final double getMaxSpeed() {
-    return 8;
-  }
-
-  @Override
-  public final double getMaxForwardSpeed() {
-    return getMaxSpeed();
-  }
-
-  @Override
-  public final double getMaxBackwardSpeed() {
-    return -getMaxSpeed();
-  }
-
-  @Override
-  public final double getMinFirepower() {
-    return 0.1;
-  }
-
-  @Override
-  public final double getMaxFirepower() {
-    return 3;
-  }
-
-  @Override
-  public final double getMinBulletSpeed() {
-    return 20 - 3 * getMaxFirepower();
-  }
-
-  @Override
-  public final double getMaxBulletSpeed() {
-    return 20 - 3 * getMinFirepower();
-  }
-
-  @Override
-  public final double getAcceleration() {
-    return 1;
-  }
-
-  @Override
-  public final double getDeceleration() {
-    return -2;
-  }
-
-  @Override
   public final void start() {
     __internals.connect();
   }
@@ -412,17 +342,6 @@ public abstract class BaseBot implements IBaseBot {
     return 1 + (firepower / 5);
   }
 
-  @Override
-  public final double normalizeAbsoluteDegrees(double angle) {
-    return (angle %= 360) >= 0 ? angle : (angle + 360);
-  }
-
-  @Override
-  public final double normalizeRelativeDegrees(double angle) {
-    return (angle %= 360) >= 0
-        ? ((angle < 180) ? angle : (angle - 360))
-        : ((angle >= -180) ? angle : (angle + 360));
-  }
 
   protected final class __Internals {
     private static final String SERVER_URI_ENV_VAR_NAME = "SERVER_URI";

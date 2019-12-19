@@ -12,13 +12,15 @@ public interface IBaseBot {
    * Bounding circle radius. A bot gets hit by a bullet when the distance between the center of the
    * bullet and the position of the bot (center) is less than the bounding circle radius.
    */
-  int getBoundingCircleRadius();
+  default int getBoundingCircleRadius() {
+    return 18;
+  }
 
   /**
    * Radar radius. This is how far a bot is able to scan other bots with the radar. Bots outside the
    * radar radius will not be scanned.
    */
-  double getRadarRadius();
+  default double getRadarRadius() { return 1200; }
 
   /**
    * Maximum driving turn rate measured in degrees/turn. This is the max. possible turn rate of the
@@ -29,63 +31,71 @@ public interface IBaseBot {
    * abs(speed). Hence, the turn rate is at max. 10 degrees/turn when the speed is zero, and down to
    * only 4 degrees/turn when the robot is at max speed (8 pixels/turn).
    */
-  double getMaxTurnRate();
+  default double getMaxTurnRate() { return 10; }
 
   /** Maximum gun turn rate measured in degrees/turn. */
-  double getMaxGunTurnRate();
+  default double getMaxGunTurnRate() { return 20; }
 
   /** Maximum radar turn rate measured in degrees/turn. */
-  double getMaxRadarTurnRate();
+  default double getMaxRadarTurnRate() { return 45; }
 
   /** Maximum absolute speed measured in pixels/turn. */
-  double getMaxSpeed();
+  default double getMaxSpeed() { return 8; }
 
   /**
    * Maximum forward speed measured in pixels/turn. When the speed is positive the bot is moving
    * forwards.
    */
-  double getMaxForwardSpeed();
+  default double getMaxForwardSpeed() {
+    return getMaxSpeed();
+  }
 
   /**
    * Maximum backward speed measured in pixels/turn. When the speed is negative the bot is moving
    * backwards.
    */
-  double getMaxBackwardSpeed();
+  default double getMaxBackwardSpeed() {
+    return -getMaxSpeed();
+  }
 
   /** Minimum firepower. The gun will not fire with a power less than the minimum firepower. */
-  double getMinFirepower();
+  default double getMinFirepower() { return 0.1; }
 
   /**
    * Maximum firepower. The gun will fire with this firepower if the gun is set to fire with a
    * higher firepower.
    */
-  double getMaxFirepower();
+  default double getMaxFirepower() { return 3; }
 
   /**
    * Minimum bullet speed measured in pixels/turn. The bullet speed is determined by this formula:
    * 20 - 3 x firepower. The more fire power the slower bullet speed. Hence, the minimum bullet
    * speed is 11 pixels/turn.
    */
-  double getMinBulletSpeed();
+  default double getMinBulletSpeed() {
+    return 20 - 3 * getMaxFirepower();
+  }
 
   /**
    * Maximum bullet speed measured in pixels/turn. The bullet speed is determined by this formula:
    * 20 - 3 x firepower. The less fire power the faster bullet speed. Hence, the maximum bullet
    * speed is 17 pixels/turn.
    */
-  double getMaxBulletSpeed();
+  default double getMaxBulletSpeed()  {
+    return 20 - 3 * getMinFirepower();
+  }
 
   /**
    * Acceleration that adds 1 pixel to the speed per turn when the bot is increasing its speed
    * moving forwards.
    */
-  double getAcceleration();
+  default double getAcceleration() { return 1; }
 
   /**
    * Deceleration that subtract 2 pixels from the speed per turn when the bot is decreasing its
    * speed moving backwards. Note that the deceleration is negative.
    */
-  double getDeceleration();
+  default double getDeceleration() { return -2; }
 
   /** Main method for start running the bot */
   void start();
@@ -615,7 +625,9 @@ public interface IBaseBot {
    * @param angle is the angle to normalize
    * @return the normalized absolute angle
    */
-  double normalizeAbsoluteDegrees(double angle);
+  default double normalizeAbsoluteDegrees(double angle) {
+    return (angle %= 360) >= 0 ? angle : (angle + 360);
+  }
 
   /**
    * Normalizes an angle to an relative angle into the range [-180,180[
@@ -623,5 +635,9 @@ public interface IBaseBot {
    * @param angle is the angle to normalize
    * @return the normalized relative angle.
    */
-  double normalizeRelativeDegrees(double angle);
+  default double normalizeRelativeDegrees(double angle) {
+    return (angle %= 360) >= 0
+            ? ((angle < 180) ? angle : (angle - 360))
+            : ((angle >= -180) ? angle : (angle + 360));
+  }
 }
