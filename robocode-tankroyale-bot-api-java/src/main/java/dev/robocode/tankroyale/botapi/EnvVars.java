@@ -14,15 +14,22 @@ final class EnvVars {
   // Hide constructor
   private EnvVars() {}
 
-  private static final String SERVER_URI = "ROBOCODE_SERVER_URI";
-
-  private static final String BOT_NAME = "BOT_NAME";
-  private static final String BOT_VERSION = "BOT_VERSION";
-  private static final String BOT_AUTHOR = "BOT_AUTHOR";
-  private static final String BOT_DESCRIPTION = "BOT_DESCRIPTION";
-  private static final String BOT_COUNTRY_CODE = "BOT_COUNTRY_CODE";
-  private static final String BOT_GAME_TYPES = "BOT_GAME_TYPES";
-  private static final String BOT_PROG_LANG = "BOT_PROG_LANG";
+  /** Name of environment variable for server URI */
+  public static final String SERVER_URI = "ROBOCODE_SERVER_URI";
+  /** Name of environment variable for bot name */
+  public static final String BOT_NAME = "BOT_NAME";
+  /** Name of environment variable for bot version */
+  public static final String BOT_VERSION = "BOT_VERSION";
+  /** Name of environment variable for bot author */
+  public static final String BOT_AUTHOR = "BOT_AUTHOR";
+  /** Name of environment variable for bot description */
+  public static final String BOT_DESCRIPTION = "BOT_DESCRIPTION";
+  /** Name of environment variable for bot country code */
+  public static final String BOT_COUNTRY_CODE = "BOT_COUNTRY_CODE";
+  /** Name of environment variable for bot game types */
+  public static final String BOT_GAME_TYPES = "BOT_GAME_TYPES";
+  /** Name of environment variable for bot programming language */
+  public static final String BOT_PROG_LANG = "BOT_PROG_LANG";
 
   private static final String NO_ENV_VALUE = "No value for environment variable: ";
 

@@ -37,7 +37,7 @@ public abstract class BaseBot implements IBaseBot {
   final __Internals __internals;
 
   /**
-   * Constructor used when both BotInfo and serverUri are provided through environment variables.
+   * Constructor used when both BotInfo and server URI are provided through environment variables.
    * This constructor should be used when starting up the bot using a bootstrap. These environment
    * variables must be set to provide the server URI and bot information, and are automatically set
    * by the bootstrap tool for Robocode. ROBOCODE_SERVER_URI, BOT_NAME, BOT_VERSION, BOT_AUTHOR,
@@ -59,7 +59,7 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   /**
-   * Constructor used when serverUri is provided through the environment variable
+   * Constructor used when server URI is provided through the environment variable
    * ROBOCODE_SERVER_URI.
    *
    * @param botInfo is the bot info containing information about your bot.
@@ -69,7 +69,7 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   /**
-   * Constructor used when you want to provide both the bot information and server URI for your bot.
+   * Constructor used providing both the bot information and server URI for your bot.
    *
    * @param botInfo is the bot info containing information about your bot.
    * @param serverUri is the server URI
@@ -344,7 +344,6 @@ public abstract class BaseBot implements IBaseBot {
 
 
   protected final class __Internals {
-    private static final String SERVER_URI_ENV_VAR_NAME = "SERVER_URI";
     private static final String SERVER_URI_PROPERTY_KEY = "server.uri";
 
     private static final String NOT_CONNECTED_TO_SERVER_MSG =
@@ -386,7 +385,7 @@ public abstract class BaseBot implements IBaseBot {
     private final BotIntent botIntent = new BotIntent();
 
     // Server connection:
-    private WebSocket webSocket;
+    private WebSocket socket;
     private ServerHandshake serverHandshake;
 
     // Current game states:
@@ -532,27 +531,27 @@ public abstract class BaseBot implements IBaseBot {
             },
             100);
 
-        webSocket = new WebSocketFactory().createSocket(serverUri);
-        webSocket.addListener(new WebSocketListener());
+        socket = new WebSocketFactory().createSocket(serverUri);
+        socket.addListener(new WebSocketListener());
 
       } catch (IOException ex) {
-        throw new RuntimeException("Could not create web socket for URI: " + serverUri, ex);
+        throw new BotException("Could not create socket for URI: " + serverUri, ex);
       }
       botIntent.setType(BotReady.Type.BOT_INTENT); // must be set!
     }
 
     private void connect() {
-      if (!webSocket.isOpen()) {
+      if (!socket.isOpen()) {
         try {
-          webSocket.connect();
+          socket.connect();
         } catch (WebSocketException ex) {
-          throw new RuntimeException("Could not connect to web socket", ex);
+          throw new BotException("Could not connect to web socket", ex);
         }
       }
     }
 
     private void sendBotIntent() {
-      webSocket.sendText(gson.toJson(botIntent));
+      socket.sendText(gson.toJson(botIntent));
     }
 
     private void clearCurrentGameState() {
@@ -563,7 +562,7 @@ public abstract class BaseBot implements IBaseBot {
     }
 
     private URI getServerUriFromSetting() {
-      var uri = System.getenv(SERVER_URI_ENV_VAR_NAME);
+      var uri = EnvVars.getServerUri();
       if (uri == null) {
         uri = System.getProperty(SERVER_URI_PROPERTY_KEY);
         if (uri == null) {
@@ -573,8 +572,8 @@ public abstract class BaseBot implements IBaseBot {
       if (uri == null) {
         throw new BotException(
             String.format(
-                "Property %s or system environment variable %s is not defined",
-                SERVER_URI_PROPERTY_KEY, EnvVars.getServerUri()));
+                "Property %s or environment variable %s is not defined",
+                SERVER_URI_PROPERTY_KEY, EnvVars.SERVER_URI));
       }
       try {
         return new URI(uri);
@@ -640,7 +639,7 @@ public abstract class BaseBot implements IBaseBot {
 
       @Override
       public void onPingFrame(WebSocket websocket, WebSocketFrame frame) {
-        webSocket.sendPong(); // Make sure to send pong as reply to ping in order to stay connected to server
+        socket.sendPong(); // Make sure to send pong as reply to ping in order to stay connected to server
       }
 
       @Override
@@ -680,7 +679,7 @@ public abstract class BaseBot implements IBaseBot {
         val botHandshake = BotHandshakeFactory.create(BaseBot.__Internals.this.botInfo);
         val msg = gson.toJson(botHandshake);
 
-        webSocket.sendText(msg);
+        socket.sendText(msg);
       }
 
       private void handleGameStartedEvent(JsonObject jsonMsg) {
@@ -695,7 +694,7 @@ public abstract class BaseBot implements IBaseBot {
         ready.setType(BotReady.Type.BOT_READY);
 
         val msg = gson.toJson(ready);
-        webSocket.sendText(msg);
+        socket.sendText(msg);
 
         val gameStartedEvent =
             GameStartedEvent.builder()
