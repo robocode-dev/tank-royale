@@ -14,5 +14,14 @@ namespace Robocode.TankRoyale
     public BotException(string message) : base(message)
     {
     }
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="message">Error message</param>
+    /// </summary>
+    public BotException(string message, Exception innerException) : base(message, innerException)
+    {
+    }
   }
 }
