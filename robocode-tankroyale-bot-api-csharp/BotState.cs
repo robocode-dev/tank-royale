@@ -5,31 +5,31 @@ namespace Robocode.TankRoyale
   public sealed class BotState
   {
     /// <summary>Energy level.</summary>
-    double Energy { get; }
+    public double Energy { get; }
 
     /// <summary>X coordinate.</summary>
-    double X { get; }
+    public double X { get; }
 
     /// <summary>Y coordinate.</summary>
-    double Y { get; }
+    public double Y { get; }
 
     /// <summary>Driving direction in degrees.</summary>
-    double Direction { get; }
+    public double Direction { get; }
 
     /// <summary>Gun direction in degrees.</summary>
-    double GunDirection { get; }
+    public double GunDirection { get; }
 
     /// <summary>Radar direction in degrees.</summary>
-    double RadarDirection { get; }
+    public double RadarDirection { get; }
 
     /// <summary>Radar sweep angle in degrees, i.e. angle between previous and current radar direction.</summary>
-    double RadarSweep { get; }
+    public double RadarSweep { get; }
 
     /// <summary>Speed measured in pixels per turn.</summary>
-    double Speed { get; }
+    public double Speed { get; }
 
     /// <summary>Gun heat.</summary>
-    double GunHeat { get; }
+    public double GunHeat { get; }
 
     /// <summary>
     /// Constructor.

@@ -6,7 +6,7 @@ namespace Robocode.TankRoyale
   public abstract class Event : IMessage
   {
     /// <summary>Turn number.</summary>
-    int TurnNumber { get; }
+    public int TurnNumber { get; }
 
     /// <summary>
     /// Constructor.

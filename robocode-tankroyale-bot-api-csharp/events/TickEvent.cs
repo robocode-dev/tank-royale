@@ -8,16 +8,16 @@ namespace Robocode.TankRoyale
   public sealed class TickEvent : Event
   {
     /// <summary>Current round number.</summary>
-    int RoundNumber { get; }
+    public int RoundNumber { get; }
 
     /// <summary>Current state of this bot.</summary>
-    BotState BotState { get; }
+    public BotState BotState { get; }
 
     /// <summary>Current state of the bullets fired by this bot.</summary>
-    ICollection<BulletState> BulletStates { get; }
+    public ICollection<BulletState> BulletStates { get; }
 
     /// <summary>Current state of the bullets fired by this bot.</summary>
-    ICollection<Event> Events { get; }
+    public ICollection<Event> Events { get; }
 
     /// <summary>
     /// Constructor.

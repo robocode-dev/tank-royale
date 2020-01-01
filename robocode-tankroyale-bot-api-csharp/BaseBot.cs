@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Text.Json;
+using Robocode.TankRoyale.Schema;
 
 namespace Robocode.TankRoyale
 {
@@ -62,9 +64,211 @@ namespace Robocode.TankRoyale
       __internals.SendBotIntent();
     }
 
+    public String Variant
+    {
+      get
+      {
+        return __internals.ServerHandshake.Variant;
+      }
+    }
+
+    public String Version
+    {
+      get
+      {
+        return __internals.ServerHandshake.Version;
+      }
+    }
+
+    public int MyId
+    {
+      get
+      {
+        return __internals.MyId;
+      }
+    }
+
+    public String GameType
+    {
+      get
+      {
+        return __internals.GameSetup.GameType;
+      }
+    }
+
+    public int ArenaWidth
+    {
+      get
+      {
+        return __internals.GameSetup.ArenaWidth;
+      }
+    }
+
+    public int ArenaHeight
+    {
+      get
+      {
+        return __internals.GameSetup.ArenaHeight;
+      }
+    }
+
+    public int NumberOfRounds
+    {
+      get
+      {
+        return __internals.GameSetup.NumberOfRounds;
+      }
+    }
+
+    public double GunCoolingRate
+    {
+      get
+      {
+        return __internals.GameSetup.GunCoolingRate;
+      }
+    }
+
+    public int getMaxInactivityTurns
+    {
+      get
+      {
+        return __internals.GameSetup.MaxInactivityTurns;
+      }
+    }
+
+    public int getTurnTimeout
+    {
+      get
+      {
+        return __internals.GameSetup.TurnTimeout;
+      }
+    }
+
+    public int TimeLeft
+    {
+      get
+      {
+        long passesMicroSeconds = (DateTime.Now.Ticks - __internals.tickStart) / 10;
+        return (int)(__internals.GameSetup.TurnTimeout - passesMicroSeconds);
+      }
+    }
+
+    public int RoundNumber
+    {
+      get
+      {
+        return __internals.CurrentTurn.RoundNumber;
+      }
+    }
+
+    public int TurnNumber
+    {
+      get
+      {
+        return __internals.CurrentTurn.TurnNumber;
+      }
+    }
+
+    public double Energy
+    {
+      get
+      {
+        return __internals.CurrentTurn.BotState.Energy;
+      }
+    }
+
+    public bool IsDisabled
+    {
+      get
+      {
+        return Energy == 0;
+      }
+    }
+
+    public double X
+    {
+      get
+      {
+        return __internals.CurrentTurn.BotState.X;
+      }
+    }
+
+    public double Y
+    {
+      get
+      {
+        return __internals.CurrentTurn.BotState.Y;
+      }
+    }
+
+    public double Direction
+    {
+      get
+      {
+        return __internals.CurrentTurn.BotState.Direction;
+      }
+    }
+
+    public double GunDirection
+    {
+      get
+      {
+        return __internals.CurrentTurn.BotState.GunDirection;
+      }
+    }
+
+    public double RadarDirection
+    {
+      get
+      {
+        return __internals.CurrentTurn.BotState.RadarDirection;
+      }
+    }
+
+    public double getSpeed
+    {
+      get
+      {
+        return __internals.CurrentTurn.BotState.Speed;
+      }
+    }
+
+    public double getGunHeat
+    {
+      get
+      {
+        return __internals.CurrentTurn.BotState.GunHeat;
+      }
+    }
+
+    public ICollection<BulletState> BulletStates
+    {
+      get
+      {
+        return __internals.CurrentTurn.BulletStates;
+      }
+    }
+
+    public ICollection<Event> Events
+    {
+      get
+      {
+        return __internals.CurrentTurn.Events;
+      }
+    }
+
 
     internal class __Internals
     {
+      private const string NotConnectedToServerMsg =
+          "Not connected to game server yes. Make sure onConnected() event handler has been called first";
+
+      private const string GameNotRunningMsg =
+          "Game is not running. Make sure onGameStarted() event handler has been called first";
+
+      private const string TickNotAvailableMsg =
+          "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first";
+
       private BotInfo botInfo;
 
       private BotIntent botIntent = new BotIntent();
@@ -72,11 +276,18 @@ namespace Robocode.TankRoyale
       // Server connection
       private ClientWebSocket socket;
       private Uri serverUri;
+      private ServerHandshake serverHandshake;
+
+      // Current game states:
+      private int? myId;
+      private GameSetup gameSetup;
+      private TickEvent currentTurn;
+      private long tickStart = DateTime.Now.Ticks;
 
       internal __Internals(BotInfo botInfo, Uri serverUri)
       {
         this.botInfo = (botInfo == null) ? EnvVars.GetBotInfo() : botInfo;
-        this.serverUri = (serverUri == null) ? GetServerUriFromSetting() : serverUri;
+        this.serverUri = (serverUri == null) ? ServerUriFromSetting : serverUri;
         socket = new ClientWebSocket();
       }
 
@@ -100,18 +311,69 @@ namespace Robocode.TankRoyale
         socket.SendAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(botIntent)), WebSocketMessageType.Text, true, CancellationToken.None);
       }
 
-      private Uri GetServerUriFromSetting()
+      private Uri ServerUriFromSetting
       {
-        var uri = EnvVars.GetServerUri();
-        if (uri == null)
+        get
         {
-          throw new BotException(String.Format("Environment variable {0} is not defined", EnvVars.SERVER_URI));
+          var uri = EnvVars.GetServerUri();
+          if (uri == null)
+          {
+            throw new BotException(String.Format("Environment variable {0} is not defined", EnvVars.SERVER_URI));
+          }
+          if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+          {
+            throw new BotException("Incorrect syntax for server uri: " + uri);
+          }
+          return new Uri(uri);
         }
-        if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+      }
+
+      internal ServerHandshake ServerHandshake
+      {
+        get
         {
-          throw new BotException("Incorrect syntax for server uri: " + uri);
+          if (serverHandshake == null)
+          {
+            throw new BotException(NotConnectedToServerMsg);
+          }
+          return serverHandshake;
         }
-        return new Uri(uri);
+      }
+
+      internal int MyId
+      {
+        get
+        {
+          if (myId == null)
+          {
+            throw new BotException(GameNotRunningMsg);
+          }
+          return (int)myId;
+        }
+      }
+
+      internal GameSetup GameSetup
+      {
+        get
+        {
+          if (gameSetup == null)
+          {
+            throw new BotException(GameNotRunningMsg);
+          }
+          return gameSetup;
+        }
+      }
+
+      internal TickEvent CurrentTurn
+      {
+        get
+        {
+          if (currentTurn == null)
+          {
+            throw new BotException(TickNotAvailableMsg);
+          }
+          return currentTurn;
+        }
       }
     }
   }
