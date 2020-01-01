@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>CodeGeneratorApp</AssemblyName>
+    <RootNamespace>Robocode.TankRoyale.Schema.Generator</RootNamespace>
+    <StartupObject>Robocode.TankRoyale.SchemaCodeGenerator.Program</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NJsonSchema.CodeGeneration.CSharp" Version="10.1.2" />
+    <PackageReference Include="NJsonSchema.Yaml" Version="10.1.2" />
+  </ItemGroup>
+
+</Project>

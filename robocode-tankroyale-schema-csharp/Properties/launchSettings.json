@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CodeGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "D:\\robocode-tank-royale\\robocode-tankroyale-schema D:\\temp"
+    }
+  }
+}
