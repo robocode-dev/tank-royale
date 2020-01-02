@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using NJsonSchema;
 using NJsonSchema.CodeGeneration.CSharp;
 using NJsonSchema.Yaml;
 
@@ -51,8 +52,10 @@ namespace Robocode.TankRoyale.SchemaCodeGenerator
                 schema.AllowAdditionalProperties = false;
 
                 // Prepare a C# code generator with our settings
-                var generator = new CSharpGenerator(schema);
-                var settings = generator.Settings;
+                var settings = new CSharpGeneratorSettings();
+                var typeResolver = new CustomizedCSharpTypeResolver(settings);
+
+                var generator = new CSharpGenerator(schema, settings, typeResolver);
                 settings.Namespace = "Robocode.TankRoyale.Schema";
 
                 // Generate and output source file
@@ -115,6 +118,24 @@ namespace Robocode.TankRoyale.SchemaCodeGenerator
                 sb.Append(str.Substring(1).ToLower());
             }
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// This is customized CSharpTypeResolver, where the Resolve() method has been overridden in order to support
+        /// nullable primitives.
+        /// </summary>
+        private class CustomizedCSharpTypeResolver : CSharpTypeResolver
+        {
+            public CustomizedCSharpTypeResolver(CSharpGeneratorSettings settings) : base(settings) {}
+
+            public override string Resolve(JsonSchema schema, bool isNullable, string typeNameHint)
+            {
+                if (!isNullable && schema is JsonSchemaProperty property)
+                {
+                    isNullable = !property.IsRequired;
+                }
+                return Resolve(schema, isNullable, typeNameHint, true);
+            }
         }
     }
 }
