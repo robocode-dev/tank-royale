@@ -43,7 +43,7 @@ namespace Robocode.TankRoyale.Schema
     
         /// <summary>Maximum number of bots participating in battle</summary>
         [Newtonsoft.Json.JsonProperty("maxNumberOfParticipants", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int MaxNumberOfParticipants { get; set; }
+        public int? MaxNumberOfParticipants { get; set; }
     
         /// <summary>Flag specifying if the maximum number of bots participating in battle is fixed for this game type</summary>
         [Newtonsoft.Json.JsonProperty("isMaxNumberOfParticipantsLocked", Required = Newtonsoft.Json.Required.Always)]
@@ -67,11 +67,11 @@ namespace Robocode.TankRoyale.Schema
     
         /// <summary>Maximum number of inactive turns allowed, where a bot does not take any action before it is zapped by the game</summary>
         [Newtonsoft.Json.JsonProperty("maxInactivityTurns", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int MaxInactivityTurns { get; set; }
+        public int? MaxInactivityTurns { get; set; }
     
         /// <summary>Flag specifying if the inactive turns is fixed for this game type</summary>
         [Newtonsoft.Json.JsonProperty("isMaxInactivityTurnsLocked", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool IsMaxInactivityTurnsLocked { get; set; }
+        public bool? IsMaxInactivityTurnsLocked { get; set; }
     
         /// <summary>Turn timeout in microseconds (1 / 1,000,000 second) for sending intent after having received 'tick' message</summary>
         [Newtonsoft.Json.JsonProperty("turnTimeout", Required = Newtonsoft.Json.Required.Always)]

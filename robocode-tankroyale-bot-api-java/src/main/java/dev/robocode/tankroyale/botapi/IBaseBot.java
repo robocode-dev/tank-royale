@@ -106,7 +106,7 @@ public interface IBaseBot {
    * started when the GameStartedEvent and TickEvent occurs. If go() is called too late,
    * SkippedTurnEvents will occur. Actions are set by calling the setter methods prior to calling
    * the go() method: setTurnRate(), setGunTurnRate(), setRadarTurnRate(), setTargetSpeed(), and
-   * setFire().
+   * setFirepower().
    */
   void go();
 
@@ -388,7 +388,14 @@ public interface IBaseBot {
    * @see #getGunHeat()
    * @see #getGunCoolingRate()
    */
-  void setFire(double firepower);
+  void setFirepower(double firepower);
+
+  /**
+   * Returns the set firepower.
+   *
+   * @see #setFirepower(double)
+   */
+  double getFirepower();
 
   /**
    * Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun behaves

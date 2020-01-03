@@ -14,24 +14,24 @@ namespace Robocode.TankRoyale.Schema
     {
         /// <summary>Turn rate of the body in degrees per turn (can be positive and negative)</summary>
         [Newtonsoft.Json.JsonProperty("turnRate", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public double TurnRate { get; set; }
+        public double? TurnRate { get; set; }
     
         /// <summary>Turn rate of the gun in degrees per turn (can be positive and negative)</summary>
         [Newtonsoft.Json.JsonProperty("gunTurnRate", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public double GunTurnRate { get; set; }
+        public double? GunTurnRate { get; set; }
     
         /// <summary>Turn rate of the radar in degrees per turn (can be positive and negative)</summary>
         [Newtonsoft.Json.JsonProperty("radarTurnRate", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public double RadarTurnRate { get; set; }
+        public double? RadarTurnRate { get; set; }
     
         /// <summary>New target speed in pixels per turn (can be positive and negative)</summary>
         [Newtonsoft.Json.JsonProperty("targetSpeed", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public double TargetSpeed { get; set; }
+        public double? TargetSpeed { get; set; }
     
         /// <summary>Attempt to fire gun with the specified firepower</summary>
         [Newtonsoft.Json.JsonProperty("firepower", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [System.ComponentModel.DataAnnotations.Range(0.0D, 3.0D)]
-        public double Firepower { get; set; }
+        public double? Firepower { get; set; }
     
     
     }

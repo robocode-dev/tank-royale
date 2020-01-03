@@ -66,197 +66,255 @@ namespace Robocode.TankRoyale
 
     public String Variant
     {
-      get
-      {
-        return __internals.ServerHandshake.Variant;
-      }
+      get => __internals.ServerHandshake.Variant;
     }
 
     public String Version
     {
-      get
-      {
-        return __internals.ServerHandshake.Version;
-      }
+      get => __internals.ServerHandshake.Version;
     }
 
     public int MyId
     {
-      get
-      {
-        return __internals.MyId;
-      }
+      get => __internals.MyId;
     }
 
     public String GameType
     {
-      get
-      {
-        return __internals.GameSetup.GameType;
-      }
+      get => __internals.GameSetup.GameType;
     }
 
     public int ArenaWidth
     {
-      get
-      {
-        return __internals.GameSetup.ArenaWidth;
-      }
+      get => __internals.GameSetup.ArenaWidth;
     }
 
     public int ArenaHeight
     {
-      get
-      {
-        return __internals.GameSetup.ArenaHeight;
-      }
+      get => __internals.GameSetup.ArenaHeight;
     }
 
     public int NumberOfRounds
     {
-      get
-      {
-        return __internals.GameSetup.NumberOfRounds;
-      }
+      get => __internals.GameSetup.NumberOfRounds;
     }
 
     public double GunCoolingRate
     {
-      get
-      {
-        return __internals.GameSetup.GunCoolingRate;
-      }
+      get => __internals.GameSetup.GunCoolingRate;
     }
 
-    public int getMaxInactivityTurns
+    public int MaxInactivityTurns
     {
-      get
-      {
-        return __internals.GameSetup.MaxInactivityTurns;
-      }
+      get => __internals.GameSetup.MaxInactivityTurns;
     }
 
-    public int getTurnTimeout
+    public int TurnTimeout
     {
-      get
-      {
-        return __internals.GameSetup.TurnTimeout;
-      }
+      get => __internals.GameSetup.TurnTimeout;
     }
 
     public int TimeLeft
     {
       get
       {
-        long passesMicroSeconds = (DateTime.Now.Ticks - __internals.tickStart) / 10;
+        long passesMicroSeconds = (DateTime.Now.Ticks - __internals.TicksStart) / 10;
         return (int)(__internals.GameSetup.TurnTimeout - passesMicroSeconds);
       }
     }
 
     public int RoundNumber
     {
-      get
-      {
-        return __internals.CurrentTurn.RoundNumber;
-      }
+      get => __internals.CurrentTurn.RoundNumber;
     }
 
     public int TurnNumber
     {
-      get
-      {
-        return __internals.CurrentTurn.TurnNumber;
-      }
+      get => __internals.CurrentTurn.TurnNumber;
     }
 
     public double Energy
     {
-      get
-      {
-        return __internals.CurrentTurn.BotState.Energy;
-      }
+      get => __internals.CurrentTurn.BotState.Energy;
     }
 
     public bool IsDisabled
     {
-      get
-      {
-        return Energy == 0;
-      }
+      get => Energy == 0;
     }
 
     public double X
     {
-      get
-      {
-        return __internals.CurrentTurn.BotState.X;
-      }
+      get => __internals.CurrentTurn.BotState.X;
     }
 
     public double Y
     {
-      get
-      {
-        return __internals.CurrentTurn.BotState.Y;
-      }
+      get => __internals.CurrentTurn.BotState.Y;
     }
 
     public double Direction
     {
-      get
-      {
-        return __internals.CurrentTurn.BotState.Direction;
-      }
+      get => __internals.CurrentTurn.BotState.Direction;
     }
 
     public double GunDirection
     {
-      get
-      {
-        return __internals.CurrentTurn.BotState.GunDirection;
-      }
+      get => __internals.CurrentTurn.BotState.GunDirection;
     }
 
     public double RadarDirection
     {
-      get
-      {
-        return __internals.CurrentTurn.BotState.RadarDirection;
-      }
+      get => __internals.CurrentTurn.BotState.RadarDirection;
     }
 
-    public double getSpeed
+    public double Speed
     {
-      get
-      {
-        return __internals.CurrentTurn.BotState.Speed;
-      }
+      get => __internals.CurrentTurn.BotState.Speed;
     }
 
-    public double getGunHeat
+    public double GunHeat
     {
-      get
-      {
-        return __internals.CurrentTurn.BotState.GunHeat;
-      }
+      get => __internals.CurrentTurn.BotState.GunHeat;
     }
 
     public ICollection<BulletState> BulletStates
     {
-      get
-      {
-        return __internals.CurrentTurn.BulletStates;
-      }
+      get => __internals.CurrentTurn.BulletStates;
     }
 
     public ICollection<Event> Events
     {
-      get
-      {
-        return __internals.CurrentTurn.Events;
-      }
+      get => __internals.CurrentTurn.Events;
     }
 
+    public double TurnRate
+    {
+      set
+      {
+        if (Double.IsNaN(value))
+        {
+          throw new ArgumentException("TurnRate cannot be NaN");
+        }
+        if (Math.Abs(value) > ((IBaseBot)this).MaxTurnRate)
+        {
+          value = ((IBaseBot)this).MaxTurnRate * (value > 0 ? 1 : -1);
+        }
+        __internals.BotIntent.TurnRate = value;
+      }
+      get => __internals.BotIntent.TurnRate ?? 0d;
+    }
+
+    public double GunTurnRate
+    {
+      set
+      {
+        if (Double.IsNaN(value))
+        {
+          throw new ArgumentException("GunTurnRate cannot be NaN");
+        }
+        if (IsAdjustGunForBodyTurn)
+        {
+          value -= value;
+        }
+        if (Math.Abs(value) > ((IBaseBot)this).MaxGunTurnRate)
+        {
+          value = ((IBaseBot)this).MaxGunTurnRate * (value > 0 ? 1 : -1);
+        }
+        __internals.BotIntent.GunTurnRate = value;
+      }
+      get => __internals.BotIntent.GunTurnRate ?? 0d;
+    }
+
+    public double RadarTurnRate
+    {
+      set
+      {
+        if (Double.IsNaN(value))
+        {
+          throw new ArgumentException("RadarTurnRate cannot be NaN");
+        }
+        if (IsAdjustRadarForGunTurn)
+        {
+          value -= value;
+        }
+        if (Math.Abs(value) > ((IBaseBot)this).MaxRadarTurnRate)
+        {
+          value = ((IBaseBot)this).MaxRadarTurnRate * (value > 0 ? 1 : -1);
+        }
+        __internals.BotIntent.RadarTurnRate = value;
+      }
+      get => __internals.BotIntent.RadarTurnRate ?? 0d;
+    }
+
+    public double TargetSpeed
+    {
+      set
+      {
+        if (Double.IsNaN(value))
+        {
+          throw new ArgumentException("TargetSpeed cannot be NaN");
+        }
+        if (value > ((IBaseBot)this).MaxForwardSpeed)
+        {
+          value = ((IBaseBot)this).MaxForwardSpeed;
+        }
+        else if (value < ((IBaseBot)this).MaxBackwardSpeed)
+        {
+          value = ((IBaseBot)this).MaxBackwardSpeed;
+        }
+        __internals.BotIntent.TargetSpeed = value;
+      }
+      get => __internals.BotIntent.TargetSpeed ?? 0d;
+    }
+
+    public double Firepower
+    {
+      set
+      {
+        if (Double.IsNaN(value))
+        {
+          throw new ArgumentException("Firepower cannot be NaN");
+        }
+        if (value < 0)
+        {
+          value = 0;
+        }
+        else if (value > ((IBaseBot)this).MaxFirepower)
+        {
+          value = ((IBaseBot)this).MaxFirepower;
+        }
+        __internals.BotIntent.Firepower = value;
+      }
+      get => __internals.BotIntent.Firepower ?? 0d;
+    }
+
+    public bool IsAdjustGunForBodyTurn
+    {
+      set => __internals.isAdjustGunForBodyTurn = value;
+      get => __internals.isAdjustGunForBodyTurn;
+    }
+
+    public bool IsAdjustRadarForGunTurn
+    {
+      set => __internals.isAdjustRadarForGunTurn = value;
+      get => __internals.isAdjustRadarForGunTurn;
+    }
+
+    public double CalcMaxTurnRate(double speed)
+    {
+      return ((IBaseBot)this).MaxTurnRate - 0.75 * Math.Abs(speed);
+    }
+
+    public double CalcBulletSpeed(double firepower)
+    {
+      return 20 - 3 * firepower;
+    }
+
+    public double CalcGunHeat(double firepower)
+    {
+      return 1 + (firepower / 5);
+    }
 
     internal class __Internals
     {
@@ -282,7 +340,11 @@ namespace Robocode.TankRoyale
       private int? myId;
       private GameSetup gameSetup;
       private TickEvent currentTurn;
-      private long tickStart = DateTime.Now.Ticks;
+      private long? ticksStart = DateTime.Now.Ticks;
+
+      // Adjustment of turn rates
+      internal bool isAdjustGunForBodyTurn;
+      internal bool isAdjustRadarForGunTurn;
 
       internal __Internals(BotInfo botInfo, Uri serverUri)
       {
@@ -364,6 +426,18 @@ namespace Robocode.TankRoyale
         }
       }
 
+      internal BotIntent BotIntent
+      {
+        get
+        {
+          if (botIntent == null)
+          {
+            throw new BotException(GameNotRunningMsg);
+          }
+          return botIntent;
+        }
+      }
+
       internal TickEvent CurrentTurn
       {
         get
@@ -373,6 +447,18 @@ namespace Robocode.TankRoyale
             throw new BotException(TickNotAvailableMsg);
           }
           return currentTurn;
+        }
+      }
+
+      internal long TicksStart
+      {
+        get
+        {
+          if (ticksStart == null)
+          {
+            throw new BotException(TickNotAvailableMsg);
+          }
+          return (long)ticksStart;
         }
       }
     }

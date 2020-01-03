@@ -141,7 +141,7 @@ public abstract class BaseBot implements IBaseBot {
 
   @Override
   public final int getTimeLeft() {
-    long passesMicroSeconds = (System.nanoTime() - __internals.tickStartNanoTime) / 1000;
+    long passesMicroSeconds = (System.nanoTime() - __internals.getTicksStart()) / 1000;
     return (int) (__internals.getGameSetup().getTurnTimeout() - passesMicroSeconds);
   }
 
@@ -295,7 +295,7 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   @Override
-  public final void setFire(double firepower) {
+  public final void setFirepower(double firepower) {
     if (Double.isNaN(firepower)) {
       throw new IllegalArgumentException("firepower cannot be NaN");
     }
@@ -308,18 +308,21 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   @Override
+  public final double getFirepower() { return __internals.botIntent.getFirepower(); }
+
+  @Override
   public final void setAdjustGunForBodyTurn(boolean adjust) {
     __internals.isAdjustGunForBodyTurn = adjust;
   }
 
   @Override
-  public final void setAdjustRadarForGunTurn(boolean adjust) {
-    __internals.isAdjustRadarForGunTurn = adjust;
+  public final boolean isAdjustGunForBodyTurn() {
+    return __internals.isAdjustGunForBodyTurn;
   }
 
   @Override
-  public final boolean isAdjustGunForBodyTurn() {
-    return __internals.isAdjustGunForBodyTurn;
+  public final void setAdjustRadarForGunTurn(boolean adjust) {
+    __internals.isAdjustRadarForGunTurn = adjust;
   }
 
   @Override
@@ -392,7 +395,7 @@ public abstract class BaseBot implements IBaseBot {
     private Integer myId;
     private GameSetup gameSetup;
     private TickEvent currentTurn;
-    private long tickStartNanoTime;
+    private Long ticksStartNanoTime;
 
     // Adjustment of turn rates
     private boolean isAdjustGunForBodyTurn;
@@ -455,7 +458,7 @@ public abstract class BaseBot implements IBaseBot {
             100);
         onTick.subscribe(
             event -> {
-              tickStartNanoTime = System.nanoTime();
+              ticksStartNanoTime = System.nanoTime();
               BaseBot.this.onTick(event);
               return null;
             },
@@ -573,7 +576,8 @@ public abstract class BaseBot implements IBaseBot {
         throw new BotException(
             String.format(
                 "Property %s or environment variable %s is not defined",
-                SERVER_URI_PROPERTY_KEY, EnvVars.SERVER_URI));
+                SERVER_URI_PROPERTY_KEY, EnvVars.SERVER_URI)
+        );
       }
       try {
         return new URI(uri);
@@ -608,6 +612,13 @@ public abstract class BaseBot implements IBaseBot {
         throw new BotException(TICK_NOT_AVAILABLE_MSG);
       }
       return currentTurn;
+    }
+
+    private long getTicksStart() {
+      if (ticksStartNanoTime == null) {
+        throw new BotException(TICK_NOT_AVAILABLE_MSG);
+      }
+      return ticksStartNanoTime;
     }
 
     private final class WebSocketListener extends WebSocketAdapter {
