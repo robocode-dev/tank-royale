@@ -32,6 +32,10 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
+/**
+ * Abstract Bot containing convenient methods for movement, turning, and firing the gun.
+ * Most bots should inherit from this class.
+ */
 public abstract class BaseBot implements IBaseBot {
 
   final __Internals __internals;

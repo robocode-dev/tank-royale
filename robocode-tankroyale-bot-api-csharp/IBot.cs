@@ -1,5 +1,8 @@
 ﻿namespace Robocode.TankRoyale
 {
+  /// <summary>
+  /// Interface for a bot containing convenient methods for movement, turning, and firing the gun.
+  /// </summary>
   public interface IBot : IBaseBot
   {
     /// <summary>

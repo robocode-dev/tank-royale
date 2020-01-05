@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 import java.util.Collection;
 
-/** Interface for a bot. */
+/** Interface for a bot containing basic methods only. */
 @SuppressWarnings({"UnusedDeclaration", "EmptyMethod"})
 public interface IBaseBot {
 

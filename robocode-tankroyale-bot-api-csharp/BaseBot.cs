@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Text.Json;
@@ -8,6 +7,10 @@ using Robocode.TankRoyale.Schema;
 
 namespace Robocode.TankRoyale
 {
+  /// <summary>
+  /// Abstract Bot containing convenient methods for movement, turning, and firing the gun.
+  /// Most bots should inherit from this class.
+  /// </summary>
   public abstract class BaseBot : IBaseBot
   {
     readonly __Internals __internals;
@@ -332,8 +335,7 @@ namespace Robocode.TankRoyale
       private BotIntent botIntent = new BotIntent();
 
       // Server connection
-      private ClientWebSocket socket;
-      private Uri serverUri;
+      private WebSocketClient socket;
       private ServerHandshake serverHandshake;
 
       // Current game states:
@@ -349,28 +351,45 @@ namespace Robocode.TankRoyale
       internal __Internals(BotInfo botInfo, Uri serverUri)
       {
         this.botInfo = (botInfo == null) ? EnvVars.GetBotInfo() : botInfo;
-        this.serverUri = (serverUri == null) ? ServerUriFromSetting : serverUri;
-        socket = new ClientWebSocket();
+        socket = new WebSocketClient((serverUri == null) ? ServerUriFromSetting : serverUri);
       }
 
       internal void Connect()
       {
-        if (socket.State != WebSocketState.Open)
+        try
         {
-          try
-          {
-            socket.ConnectAsync(serverUri, CancellationToken.None);
-          }
-          catch (Exception ex)
-          {
-            throw new BotException("Could not connect to web socket", ex);
-          }
+          socket.OnError += new WebSocketClient.OnErrorHandler(OnWebSocketError);
+          socket.OnMessage += new WebSocketClient.OnMessageHandler(OnWebSocketMessage);
+          socket.Connect();
+        }
+        catch (Exception ex)
+        {
+          throw new BotException("Could not connect to web socket", ex);
+        }
+      }
+
+      internal void Disconnect()
+      {
+        try
+        {
+          socket.Disconnect();
+        }
+        catch (Exception ex)
+        {
+          throw new BotException("Could not disconnect from web socket", ex);
         }
       }
 
       internal void SendBotIntent()
       {
-        socket.SendAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(botIntent)), WebSocketMessageType.Text, true, CancellationToken.None);
+        try
+        {
+          socket.SendMessage(JsonSerializer.Serialize(botIntent));
+        }
+        catch (Exception ex)
+        {
+          throw new BotException("Could not send message", ex);
+        }
       }
 
       private Uri ServerUriFromSetting
@@ -460,6 +479,16 @@ namespace Robocode.TankRoyale
           }
           return (long)ticksStart;
         }
+      }
+
+      private void OnWebSocketError(Exception ex)
+      {
+        throw new BotException("Could not connect with websocket", ex);
+      }
+
+      private void OnWebSocketMessage(string message)
+      {
+        // TODO: Parse data to internal fields
       }
     }
   }

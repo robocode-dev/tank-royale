@@ -2,6 +2,9 @@
 
 namespace Robocode.TankRoyale
 {
+  /// <summary>
+  /// Interface for a bot containing basic methods only.
+  /// </summary>
   public interface IBaseBot
   {
     /// <summary>

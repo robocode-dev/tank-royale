@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
 
+/** Interface for a bot containing convenient methods for movement, turning, and firing the gun. */
 @SuppressWarnings({"UnusedDeclaration"})
 public interface IBot extends IBaseBot {
 

@@ -7,6 +7,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.Math.abs;
 
+/**
+ * Abstract Bot containing convenient methods for movement, turning, and firing the gun.
+ * Most bots can inherit from this class to get access to basic methods.
+ */
 public abstract class Bot extends BaseBot implements IBot {
 
   private final __Internals __internals = new __Internals();
