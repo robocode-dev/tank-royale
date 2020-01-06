@@ -13,37 +13,66 @@ namespace Robocode.TankRoyale.BotApi
   /// </summary>
   public class WebSocketClient
   {
-    public delegate void OnErrorHandler(Exception ex);
-    public delegate void OnMessageHandler(string message);
+    /// <summary>Event called when the web socket got connected.</summary>
+    public event OnConnectedHandler OnConnected;
 
+    /// <summary>Event called when the web socket got disconnected.</summary>
+    public event OnDisconnectedHandler OnDisconnected;
+
+    /// <summary>Event called when an error occured.</summary>
     public event OnErrorHandler OnError;
-    public event OnMessageHandler OnMessage;
+
+    /// <summary>Event called when a text message has been recieved.</summary>
+    public event OnTextMessageHandler OnTextMessage;
+
+    /// <summary>Event handler for OnConnected events</summary>
+    public delegate void OnConnectedHandler();
+
+    /// <summary>Event handler for OnDisconnected events</summary>
+    /// <param name="remove">true if the web socket was disconnected remotely by the server; false otherwise</param>
+    public delegate void OnDisconnectedHandler(bool remote);
+
+    /// <summary>Event handler for OnError events</summary>
+    /// <param name="error">Is the error/exception that occurred</param>
+    public delegate void OnErrorHandler(Exception error);
+
+    /// <summary>Event handler for OnTextMessage events</summary>
+    /// <param name="text">Is the recieved text message</param>
+    public delegate void OnTextMessageHandler(string text);
 
     private ClientWebSocket socket = new ClientWebSocket();
     private Uri uri;
 
     private CancellationTokenSource receiveCancelSource = new CancellationTokenSource();
 
+    /// <summary>Constructor.</summary>
+    /// <param name="uri">Is the server URI</param>
     public WebSocketClient(Uri uri)
     {
       this.uri = uri;
     }
 
+    /// <summary>Connect to the server.</summary>
     public void Connect()
     {
       socket.ConnectAsync(uri, CancellationToken.None).GetAwaiter().GetResult();
       Task.Factory.StartNew(HandleIncomingMessages);
+      OnConnected();
     }
 
+    /// <summary>Disconnect from the server.</summary>
     public void Disconnect()
     {
       receiveCancelSource.Cancel(); // signal that ReceiveAsync() should cancel
       socket.CloseOutputAsync(WebSocketCloseStatus.Empty, null /* when empty */, CancellationToken.None);
+      OnDisconnected(false /* not remote */);
     }
 
-    public void SendMessage(string message)
+    /// <summary>Sends a text message to the server.</summary>
+    /// <param name="text">Is the text to send.</param>
+    public void SendTextMessage(string text)
     {
-      socket.SendAsync(Encoding.UTF8.GetBytes(message), WebSocketMessageType.Text, true, CancellationToken.None);
+      socket.SendAsync(Encoding.UTF8.GetBytes(text), WebSocketMessageType.Text, true, CancellationToken.None);
     }
 
     private async void HandleIncomingMessages()
@@ -68,8 +97,8 @@ namespace Robocode.TankRoyale.BotApi
 
             using (var reader = new StreamReader(ms, Encoding.UTF8))
             {
-              string message = reader.ReadToEnd();
-              OnMessage(message);
+              string text = reader.ReadToEnd();
+              OnTextMessage(text);
             }
           }
         }

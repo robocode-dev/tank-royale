@@ -359,7 +359,7 @@ namespace Robocode.TankRoyale.BotApi
         try
         {
           socket.OnError += new WebSocketClient.OnErrorHandler(OnWebSocketError);
-          socket.OnMessage += new WebSocketClient.OnMessageHandler(OnWebSocketMessage);
+          socket.OnTextMessage += new WebSocketClient.OnTextMessageHandler(OnWebSocketMessage);
           socket.Connect();
         }
         catch (Exception ex)
@@ -384,7 +384,7 @@ namespace Robocode.TankRoyale.BotApi
       {
         try
         {
-          socket.SendMessage(JsonSerializer.Serialize(botIntent));
+          socket.SendTextMessage(JsonSerializer.Serialize(botIntent));
         }
         catch (Exception ex)
         {
