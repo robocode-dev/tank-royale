@@ -1,4 +1,4 @@
-﻿namespace Robocode.TankRoyale
+﻿namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
   /// Interface for a bot containing convenient methods for movement, turning, and firing the gun.

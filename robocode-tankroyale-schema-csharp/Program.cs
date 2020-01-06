@@ -68,6 +68,16 @@ namespace Robocode.TankRoyale.SchemaCodeGenerator
                     text = text.Insert(text.LastIndexOf('}') - 1, "public partial class Yaml\n    {\n    }\n");
                 }
 
+                // Remove embedded classes in the generated source file.
+                // All files are put in individual schema files instead of all in a single big file.
+                int firstClassStartIndex = text.IndexOf("\n    /// <summary>");
+                int lastClassStartIndex = text.LastIndexOf("\n    /// <summary>");
+                if (firstClassStartIndex > 0 && lastClassStartIndex > firstClassStartIndex)
+                {
+                    var count = lastClassStartIndex - firstClassStartIndex;
+                    text = text.Remove(firstClassStartIndex + 1, count);
+                }
+
                 // Repare replacement string for providing the correct class name (instead of "Yaml")
                 string replacement = "public class " + className;
 
@@ -83,15 +93,10 @@ namespace Robocode.TankRoyale.SchemaCodeGenerator
                 // (correct class name + extension, if is was missing)
                 text = text.Replace("public partial class Yaml", replacement);
 
-                // Remove embedded classes in the generated source file.
-                // All files are put in individual schema files instead of all in a single big file.
-                int firstClassStartIndex = text.IndexOf("\n    /// <summary>");
-                int lastClassStartIndex = text.LastIndexOf("\n    /// <summary>");
-                if (firstClassStartIndex > 0 && lastClassStartIndex > firstClassStartIndex)
-                {
-                    var count = lastClassStartIndex - firstClassStartIndex;
-                    text = text.Remove(firstClassStartIndex + 1, count);
-                }
+                // Replace the "YamlType" with <class mame>Type
+                string classNameType = className + "Type";
+                text = text.Replace("public enum YamlType", "public enum " + classNameType)
+                    .Replace("public YamlType Type", "public " + classNameType + " Type");
 
                 // Write the source file to the destination folder
                 var outputFilename = destDir + '/' + className + ".cs";

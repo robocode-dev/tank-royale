@@ -1,4 +1,4 @@
-namespace Robocode.TankRoyale
+namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
   /// Event occurring when a bullet has collided with another bullet.

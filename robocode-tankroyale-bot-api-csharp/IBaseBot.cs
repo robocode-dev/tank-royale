@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Robocode.TankRoyale
+namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
   /// Interface for a bot containing basic methods only.

@@ -1,4 +1,4 @@
-namespace Robocode.TankRoyale
+namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
   /// Event occurring when a bullet has hit a wall.

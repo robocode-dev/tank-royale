@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Robocode.TankRoyale
+namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
   /// Event occurring when the bot has skipped a turn, meaning that no intent has reached the server

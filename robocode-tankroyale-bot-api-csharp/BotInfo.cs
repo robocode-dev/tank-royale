@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 
-namespace Robocode.TankRoyale
+namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
   /// Required information about the bot.

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Net.WebSockets;
 
-namespace Robocode.TankRoyale
+namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
   /// Client WebSocket class based on ClientWebSocket from System.Net.WebSockets which provides these delegate methods:
@@ -38,7 +38,7 @@ namespace Robocode.TankRoyale
     public void Disconnect()
     {
       receiveCancelSource.Cancel(); // signal that ReceiveAsync() should cancel
-      socket.CloseOutputAsync(WebSocketCloseStatus.Empty, "Disconnected", CancellationToken.None);
+      socket.CloseOutputAsync(WebSocketCloseStatus.Empty, null /* when empty */, CancellationToken.None);
     }
 
     public void SendMessage(string message)

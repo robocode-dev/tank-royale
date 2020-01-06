@@ -1,4 +1,4 @@
-namespace Robocode.TankRoyale
+namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
   /// Individual bot results.

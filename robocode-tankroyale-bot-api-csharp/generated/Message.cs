@@ -13,13 +13,13 @@ namespace Robocode.TankRoyale.Schema
     public class Message 
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
-        public YamlType Type { get; set; }
+        public MessageType Type { get; set; }
     
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.2.0 (Newtonsoft.Json v9.0.0.0)")]
-    public enum YamlType
+    public enum MessageType
     {
         [System.Runtime.Serialization.EnumMember(Value = @"BotHandshake")]
         BotHandshake = 0,

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Robocode.TankRoyale
+namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
   /// Event occurring when a bot has scanned another bot.

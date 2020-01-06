@@ -1,6 +1,6 @@
 using System;
 
-namespace Robocode.TankRoyale
+namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
   /// Bot exception.

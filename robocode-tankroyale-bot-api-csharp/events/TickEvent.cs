@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Robocode.TankRoyale
+namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
   /// Event occurring whenever a new turn in a round has started.

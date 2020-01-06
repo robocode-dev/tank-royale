@@ -5,7 +5,7 @@ using System.Threading;
 using System.Text.Json;
 using Robocode.TankRoyale.Schema;
 
-namespace Robocode.TankRoyale
+namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
   /// Abstract Bot containing convenient methods for movement, turning, and firing the gun.
@@ -336,12 +336,12 @@ namespace Robocode.TankRoyale
 
       // Server connection
       private WebSocketClient socket;
-      private ServerHandshake serverHandshake;
+      private ServerHandshake serverHandshake = null;
 
       // Current game states:
-      private int? myId;
-      private GameSetup gameSetup;
-      private TickEvent currentTurn;
+      private int? myId = null;
+      private GameSetup gameSetup = null;
+      private TickEvent currentTurn = null;
       private long? ticksStart = DateTime.Now.Ticks;
 
       // Adjustment of turn rates
