@@ -8,25 +8,25 @@ namespace Robocode.TankRoyale.BotApi
   public sealed class ScannedBotEvent : Event
   {
     /// <summary>ID of the bot did the scanning.</summary>
-    int ScannedByBotId { get; }
+    public int ScannedByBotId { get; }
 
     /// <summary>ID of the bot that was scanned.</summary>
-    int ScannedBotId { get; }
+    public int ScannedBotId { get; }
 
     /// <summary>Energy level of the scanned bot.</summary>
-    double Energy { get; }
+    public double Energy { get; }
 
     /// <summary>X coordinate of the scanned bot.</summary>
-    double X { get; }
+    public double X { get; }
 
     /// <summary>Y coordinate of the scanned bot.</summary>
-    double Y { get; }
+    public double Y { get; }
 
     /// <summary>Direction in degrees of the scanned bot.</summary>
-    double Direction { get; }
+    public double Direction { get; }
 
     /// <summary>Speed measured in pixels per turn of the scanned bot.</summary>
-    double Speed { get; }
+    public double Speed { get; }
 
     /// <summary>
     /// Constructor.

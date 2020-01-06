@@ -6,22 +6,22 @@ namespace Robocode.TankRoyale.BotApi
   public sealed class BotHitBotEvent : Event
   {
     /// <summary>ID of the victim bot that got hit.</summary>
-    int VictimId { get; }
+    public int VictimId { get; }
 
     /// <summary>ID of the bot that hit another bot.</summary>
-    int BotId { get; }
+    public int BotId { get; }
 
     /// <summary>Remaining energy level of the victim bot.</summary>
-    double Energy { get; }
+    public double Energy { get; }
 
     /// <summary>X coordinate of victim bot.</summary>
-    double X { get; }
+    public double X { get; }
 
     /// <summary>Y coordinate of victim bot.</summary>
-    double Y { get; }
+    public double Y { get; }
 
     /// <summary>Flag specifying, if the victim bot got rammed.</summary>
-    bool Rammed { get; }
+    public bool Rammed { get; }
 
     /// <summary>
     /// Constructor.

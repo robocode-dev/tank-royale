@@ -6,16 +6,16 @@ namespace Robocode.TankRoyale.BotApi
   public sealed class BulletHitBotEvent : Event
   {
     /// <summary>ID of the victim bot that got hit.<summary>
-    int VictimId { get; }
+    public int VictimId { get; }
 
     /// <summary>Bullet that hit the bot.<summary>
-    BulletState Bullet { get; }
+    public BulletState Bullet { get; }
 
     /// <summary>Damage inflicted by the bullet.<summary>
-    double Damage { get; }
+    public double Damage { get; }
 
     /// <summary>Remaining energy level of the bot that got hit.<summary>
-    double Energy { get; }
+    public double Energy { get; }
 
     /// <summary>
     /// Constrcutor.

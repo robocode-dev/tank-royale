@@ -11,63 +11,63 @@ namespace Robocode.TankRoyale.BotApi
   /// </summary>
   public sealed class BotInfo
   {
-    string name;
-    string version;
-    string author;
-    ICollection<string> gameTypes;
+    private string name;
+    private string version;
+    private string author;
+    private ICollection<string> gameTypes;
 
     /// <summary>
     /// Name, e.g. "MyBot" (required field).
     /// </summary>
-    string Name
+    public string Name
     {
-      get { return name; }
+      get => name;
       set { if (value == null) { throw new NullReferenceException("Name cannot be null"); } }
     }
 
     /// <summary>
     /// Version, e.g. "1.0" (required field).
     /// </summary>
-    string Version
+    public string Version
     {
-      get { return version; }
+      get => version;
       set { if (value == null) { throw new NullReferenceException("Version cannot be null"); } }
     }
 
     /// <summary>
     /// Author, e.g. "John Doe (johndoe@somewhere.io)" (required field).
     /// </summary>
-    string Author
+    public string Author
     {
-      get { return author; }
+      get => author;
       set { if (value == null) { throw new NullReferenceException("Author cannot be null"); } }
     }
 
     /// <summary>
     /// Short description of the bot, preferable a one-liner.
     /// </summary>
-    string Description { get; set; }
+    public string Description { get; set; }
 
     /// <summary>
     /// Country code defined by ISO 3166-1 alpha-2: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
     /// If no country code is provided, the locale of the system is being used instead.
     /// </summary>
-    string CountryCode { get; set; }
+    public string CountryCode { get; set; }
 
     /// <summary>
     /// Game types accepted by the bot, e.g. "melee", "1v1". The game types defines which game types
     /// the bot is able to participate in. See <see cref="GameType"/> for using predefined game type.
     /// </summary>
-    ICollection<string> GameTypes
+    public ICollection<string> GameTypes
     {
-      get { return gameTypes; }
+      get => gameTypes;
       set { if (value == null) { throw new NullReferenceException("GameTypes cannot be null"); } }
     }
 
     /// <summary>
     /// Programming language used for developing the bot, e.g. "Java" or "C#".
     /// </summary>
-    string ProgrammingLang { get; set; }
+    public string ProgrammingLang { get; set; }
 
     /// <summary>
     /// Counstructor.

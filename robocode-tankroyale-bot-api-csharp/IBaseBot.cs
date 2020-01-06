@@ -403,7 +403,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Event handler triggered when connected to server.
     /// </summary>
     /// <param name="connectedEvent">Event details from the game</param>
-    void OnDisconnected(ConnectedEvent connectedEvent) { }
+    void OnConnected(ConnectedEvent connectedEvent) { }
 
     /// <summary>
     /// Event handler triggered when disconnected from server.

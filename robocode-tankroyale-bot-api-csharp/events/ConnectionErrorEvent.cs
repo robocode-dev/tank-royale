@@ -8,7 +8,7 @@ namespace Robocode.TankRoyale.BotApi
   public sealed class ConnectionErrorEvent
   {
     /// <summary>The exception causing the error.</summary>
-    Exception Exception { get; }
+    public Exception Exception { get; }
 
     /// <summary>
     /// Constructor.

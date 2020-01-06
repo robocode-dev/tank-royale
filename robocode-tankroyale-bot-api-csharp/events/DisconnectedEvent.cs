@@ -6,7 +6,7 @@ namespace Robocode.TankRoyale.BotApi
   public sealed class DisconnectedEvent
   {
     /// <summary>Indication if closing of the connection was initiated by the remote host.</summary>
-    bool Remote { get; }
+    public bool Remote { get; }
 
     /// <summary>
     /// Constructor.

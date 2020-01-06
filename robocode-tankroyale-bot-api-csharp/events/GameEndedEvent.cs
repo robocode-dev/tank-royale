@@ -8,10 +8,10 @@ namespace Robocode.TankRoyale.BotApi
   public sealed class GameEndedEvent : IMessage
   {
     /// <summary>Number of rounds played.</summary>
-    int NumberOfRounds { get; }
+    public int NumberOfRounds { get; }
 
     /// <summary>Results of the battle.</summary>
-    List<BotResults> Results { get; }
+    public List<BotResults> Results { get; }
 
     /// <summary>
     /// Constructor.

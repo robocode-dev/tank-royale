@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Text.Json;
+using Newtonsoft.Json;
+using AutoMapper;
 using Robocode.TankRoyale.Schema;
 
 namespace Robocode.TankRoyale.BotApi
@@ -34,7 +33,7 @@ namespace Robocode.TankRoyale.BotApi
     /// </example>
     public BaseBot()
     {
-      __internals = new __Internals(null, null);
+      __internals = new __Internals(this, null, null);
     }
 
     /// <summary>
@@ -44,7 +43,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
     public BaseBot(BotInfo botInfo)
     {
-      __internals = new __Internals(botInfo, null);
+      __internals = new __Internals(this, botInfo, null);
     }
 
     /// <summary>
@@ -54,7 +53,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="serverUri">Is the server URI</param>
     public BaseBot(BotInfo botInfo, Uri serverUri)
     {
-      __internals = new __Internals(botInfo, serverUri);
+      __internals = new __Internals(this, botInfo, serverUri);
     }
 
     public void Start()
@@ -330,6 +329,8 @@ namespace Robocode.TankRoyale.BotApi
       private const string TickNotAvailableMsg =
           "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first";
 
+      private IBaseBot parent;
+
       private BotInfo botInfo;
 
       private BotIntent botIntent = new BotIntent();
@@ -348,18 +349,42 @@ namespace Robocode.TankRoyale.BotApi
       internal bool isAdjustGunForBodyTurn;
       internal bool isAdjustRadarForGunTurn;
 
-      internal __Internals(BotInfo botInfo, Uri serverUri)
+      private MapperConfiguration mapperConfig = new MapperConfiguration(cfg =>
       {
+        cfg.CreateMap<Robocode.TankRoyale.Schema.GameSetup, Robocode.TankRoyale.BotApi.GameSetup>();
+        cfg.CreateMap<Robocode.TankRoyale.Schema.BotResultsForBot, Robocode.TankRoyale.BotApi.BotResults>();
+        cfg.CreateMap<Robocode.TankRoyale.Schema.BotDeathEvent, Robocode.TankRoyale.BotApi.BotDeathEvent>();
+        cfg.CreateMap<Robocode.TankRoyale.Schema.BotHitBotEvent, Robocode.TankRoyale.BotApi.BotHitBotEvent>();
+        cfg.CreateMap<Robocode.TankRoyale.Schema.BotHitWallEvent, Robocode.TankRoyale.BotApi.BotHitWallEvent>();
+        cfg.CreateMap<Robocode.TankRoyale.Schema.BulletFiredEvent, Robocode.TankRoyale.BotApi.BulletFiredEvent>();
+        cfg.CreateMap<Robocode.TankRoyale.Schema.BulletHitBotEvent, Robocode.TankRoyale.BotApi.BulletHitBotEvent>();
+        cfg.CreateMap<Robocode.TankRoyale.Schema.BulletHitBulletEvent, Robocode.TankRoyale.BotApi.BulletHitBulletEvent>();
+        cfg.CreateMap<Robocode.TankRoyale.Schema.BulletHitWallEvent, Robocode.TankRoyale.BotApi.BulletHitWallEvent>();
+        cfg.CreateMap<Robocode.TankRoyale.Schema.ScannedBotEvent, Robocode.TankRoyale.BotApi.ScannedBotEvent>();
+        cfg.CreateMap<Robocode.TankRoyale.Schema.SkippedTurnEvent, Robocode.TankRoyale.BotApi.SkippedTurnEvent>();
+        cfg.CreateMap<Robocode.TankRoyale.Schema.TickEventForBot, Robocode.TankRoyale.BotApi.TickEvent>();
+        cfg.CreateMap<Robocode.TankRoyale.Schema.WonRoundEvent, Robocode.TankRoyale.BotApi.WonRoundEvent>();
+      });
+      private IMapper mapper;
+
+      internal __Internals(IBaseBot parent, BotInfo botInfo, Uri serverUri)
+      {
+        this.parent = parent;
         this.botInfo = (botInfo == null) ? EnvVars.GetBotInfo() : botInfo;
+
         socket = new WebSocketClient((serverUri == null) ? ServerUriFromSetting : serverUri);
+
+        mapper = mapperConfig.CreateMapper();
       }
 
       internal void Connect()
       {
         try
         {
-          socket.OnError += new WebSocketClient.OnErrorHandler(OnWebSocketError);
-          socket.OnTextMessage += new WebSocketClient.OnTextMessageHandler(OnWebSocketMessage);
+          socket.OnConnected += new WebSocketClient.OnConnectedHandler(OnConnected);
+          socket.OnDisconnected += new WebSocketClient.OnDisconnectedHandler(OnDisconnected);
+          socket.OnError += new WebSocketClient.OnErrorHandler(OnConnectionError);
+          socket.OnTextMessage += new WebSocketClient.OnTextMessageHandler(OnTextMessage);
           socket.Connect();
         }
         catch (Exception ex)
@@ -380,11 +405,19 @@ namespace Robocode.TankRoyale.BotApi
         }
       }
 
+      private void ClearCurrentGameState()
+      {
+        // Clear setting that are only available during a running game
+        currentTurn = null;
+        gameSetup = null;
+        myId = null;
+      }
+
       internal void SendBotIntent()
       {
         try
         {
-          socket.SendTextMessage(JsonSerializer.Serialize(botIntent));
+          socket.SendTextMessage(JsonConvert.SerializeObject(botIntent));
         }
         catch (Exception ex)
         {
@@ -481,14 +514,166 @@ namespace Robocode.TankRoyale.BotApi
         }
       }
 
-      private void OnWebSocketError(Exception ex)
+      private void OnConnected()
       {
-        throw new BotException("Could not connect with websocket", ex);
+        parent.OnConnected(new ConnectedEvent());
       }
 
-      private void OnWebSocketMessage(string message)
+      private void OnDisconnected(bool remote)
       {
-        // TODO: Parse data to internal fields
+        parent.OnDisconnected(new DisconnectedEvent(remote));
+      }
+
+      private void OnConnectionError(Exception ex)
+      {
+        parent.OnConnectionError(new ConnectionErrorEvent(ex));
+      }
+
+      private void OnTextMessage(string json)
+      {
+        var jsonMsg = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+        var type = (string)jsonMsg["type"];
+        if (!string.IsNullOrWhiteSpace(type))
+        {
+          var msgType = (MessageType)Enum.Parse(typeof(MessageType), type);
+          switch (msgType)
+          {
+            case MessageType.TickEventForBot:
+              HandleTickEvent(json);
+              break;
+            case MessageType.ServerHandshake:
+              HandleServerHandshake(json);
+              break;
+            case MessageType.GameStartedEventForBot:
+              HandleGameStartedEvent(json);
+              break;
+            case MessageType.GameEndedEventForBot:
+              HandleGameEndedEvent(json);
+              break;
+            case MessageType.SkippedTurnEvent:
+              HandleSkippedTurnEvent(json);
+              break;
+            default:
+              throw new BotException("Unsupported WebSocket message type: " + type);
+          }
+        }
+      }
+
+      private void HandleServerHandshake(string json)
+      {
+        var serverHandshake = JsonConvert.DeserializeObject<ServerHandshake>(json);
+
+        // Reply by sending bot handshake
+        var botHandshake = BotHandshakeFactory.Create(botInfo);
+        var text = JsonConvert.SerializeObject(botHandshake);
+
+        socket.SendTextMessage(text);
+      }
+
+      private void HandleGameStartedEvent(string json)
+      {
+        var gameStartedEventForBot = JsonConvert.DeserializeObject<GameStartedEventForBot>(json);
+
+        myId = gameStartedEventForBot.MyId;
+        gameSetup = mapper.Map<GameSetup>(gameStartedEventForBot.GameSetup);
+
+        // Send ready signal
+        BotReady ready = new BotReady();
+        ready.Type = MessageType.BotReady;
+
+        var text = JsonConvert.SerializeObject(ready);
+        socket.SendTextMessage(text);
+
+        var gameStartedEvent = new GameStartedEvent((int)myId, gameSetup);
+        parent.OnGameStarted(gameStartedEvent);
+      }
+
+      private void HandleGameEndedEvent(string json)
+      {
+        // Clear current game state
+        ClearCurrentGameState();
+
+        // Send the game ended event
+        var gameEndedEventForBot = JsonConvert.DeserializeObject<GameEndedEventForBot>(json);
+        var results = mapper.Map<List<BotResults>>(gameEndedEventForBot.Results);
+
+        var gameEndedEvent = new GameEndedEvent(gameEndedEventForBot.NumberOfRounds, results);
+        parent.OnGameEnded(gameEndedEvent);
+      }
+
+      private void HandleSkippedTurnEvent(string json)
+      {
+        var skippedTurnEvent = JsonConvert.DeserializeObject<SkippedTurnEvent>(json);
+        parent.OnSkippedTurn(mapper.Map<SkippedTurnEvent>(skippedTurnEvent));
+      }
+
+      private void HandleTickEvent(string json)
+      {
+        var tickEventForBot = JsonConvert.DeserializeObject<TickEventForBot>(json);
+        currentTurn = mapper.Map<TickEvent>(tickEventForBot);
+
+        // Dispatch all on the tick event before the tick event itself
+        DispatchEvents(currentTurn);
+
+        parent.OnTick(currentTurn);
+      }
+
+      private void DispatchEvents(TickEvent tickEvent)
+      {
+        foreach (var te in tickEvent.Events)
+        {
+          switch (te)
+          {
+            case BotDeathEvent botDeathEvent:
+              parent.OnBotDeath(botDeathEvent);
+              break;
+
+            case BotHitBotEvent botHitBotEvent:
+              parent.OnHitBot(botHitBotEvent);
+              break;
+
+            case BotHitWallEvent botHitWallEvent:
+              parent.OnHitWall(botHitWallEvent);
+              break;
+
+            case BulletFiredEvent bulletFiredEvent:
+              // Stop firing, when bullet has fired
+              botIntent.Firepower = 0d;
+              parent.OnBulletFired(bulletFiredEvent);
+              break;
+
+            case BulletHitBotEvent bulletHitBotEvent:
+              if (bulletHitBotEvent.VictimId == myId)
+              {
+                parent.OnHitByBullet(bulletHitBotEvent);
+              }
+              else
+              {
+                parent.OnBulletHit(bulletHitBotEvent);
+              }
+              break;
+
+            case BulletHitBulletEvent bulletHitBulletEvent:
+              parent.OnBulletHitBullet(bulletHitBulletEvent);
+              break;
+
+            case BulletHitWallEvent bulletHitWallEvent:
+              parent.OnBulletHitWall(bulletHitWallEvent);
+              break;
+
+            case ScannedBotEvent scannedBotEvent:
+              parent.OnScannedBot(scannedBotEvent);
+              break;
+
+            case SkippedTurnEvent skippedTurnEvent:
+              parent.OnSkippedTurn(skippedTurnEvent);
+              break;
+
+            case WonRoundEvent wonRoundEvent:
+              parent.OnWonRound(wonRoundEvent);
+              break;
+          }
+        }
       }
     }
   }

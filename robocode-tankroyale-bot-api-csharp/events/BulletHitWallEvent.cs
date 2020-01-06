@@ -6,7 +6,7 @@ namespace Robocode.TankRoyale.BotApi
   public sealed class BulletHitWallEvent : Event
   {
     /// <summary>Bullet that has hit a wall.<summary>
-    BulletState Bullet { get; }
+    public BulletState Bullet { get; }
 
     /// <summary>
     /// Constructor.

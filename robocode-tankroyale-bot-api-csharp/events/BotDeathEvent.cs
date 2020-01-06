@@ -6,7 +6,7 @@ namespace Robocode.TankRoyale.BotApi
   public sealed class BotDeathEvent : Event
   {
     /// <summary>ID of the bot that has died.<summary>
-    int VictimId { get; }
+    public int VictimId { get; }
 
     /// <summary>
     /// Constructor.

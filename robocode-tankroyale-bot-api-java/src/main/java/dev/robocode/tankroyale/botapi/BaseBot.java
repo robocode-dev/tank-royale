@@ -643,7 +643,7 @@ public abstract class BaseBot implements IBaseBot {
         val event = DisconnectedEvent.builder().remote(closedByServer).build();
         onDisconnected.publish(event);
 
-        BaseBot.this.__internals.clearCurrentGameState();
+        clearCurrentGameState();
       }
 
       @Override
@@ -658,8 +658,8 @@ public abstract class BaseBot implements IBaseBot {
       }
 
       @Override
-      public final void onTextMessage(WebSocket websocket, String text) {
-        JsonObject jsonMsg = gson.fromJson(text, JsonObject.class);
+      public final void onTextMessage(WebSocket websocket, String json) {
+        JsonObject jsonMsg = gson.fromJson(json, JsonObject.class);
 
         JsonElement jsonType = jsonMsg.get("type");
         if (jsonType != null) {
@@ -690,8 +690,8 @@ public abstract class BaseBot implements IBaseBot {
       private void handleServerHandshake(JsonObject jsonMsg) {
         serverHandshake = gson.fromJson(jsonMsg, ServerHandshake.class);
 
-        // Send bot handshake
-        val botHandshake = BotHandshakeFactory.create(BaseBot.__Internals.this.botInfo);
+        // Reply by sending bot handshake
+        val botHandshake = BotHandshakeFactory.create(botInfo);
         val msg = gson.toJson(botHandshake);
 
         socket.sendText(msg);
@@ -699,10 +699,9 @@ public abstract class BaseBot implements IBaseBot {
 
       private void handleGameStartedEvent(JsonObject jsonMsg) {
         val gameStartedEventForBot = gson.fromJson(jsonMsg, GameStartedEventForBot.class);
-        val gameSetup = gameStartedEventForBot.getGameSetup();
 
-        BaseBot.__Internals.this.myId = gameStartedEventForBot.getMyId();
-        BaseBot.__Internals.this.gameSetup = GameSetupMapper.map(gameSetup);
+        myId = gameStartedEventForBot.getMyId();
+        gameSetup = GameSetupMapper.map(gameStartedEventForBot.getGameSetup());
 
         // Send ready signal
         BotReady ready = new BotReady();
@@ -714,7 +713,7 @@ public abstract class BaseBot implements IBaseBot {
         val gameStartedEvent =
             GameStartedEvent.builder()
                 .myId(gameStartedEventForBot.getMyId())
-                .gameSetup(BaseBot.__Internals.this.gameSetup)
+                .gameSetup(gameSetup)
                 .build();
 
         onGameStarted.publish(gameStartedEvent);
@@ -723,7 +722,7 @@ public abstract class BaseBot implements IBaseBot {
 
     private void handleGameEndedEvent(JsonObject jsonMsg) {
       // Clear current game state
-      BaseBot.this.__internals.clearCurrentGameState();
+      clearCurrentGameState();
 
       // Send the game ended event
       val gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
@@ -736,6 +735,13 @@ public abstract class BaseBot implements IBaseBot {
       onGameEnded.publish(gameEndedEvent);
     }
 
+    private void handleSkippedTurnEvent(JsonObject jsonMsg) {
+      val skippedTurnEvent =
+              gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
+
+      onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
+    }
+
     private void handleTickEvent(JsonObject jsonMsg) {
       val tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
       currentTurn = EventMapper.map(tickEventForBot);
@@ -746,13 +752,7 @@ public abstract class BaseBot implements IBaseBot {
       onTick.publish(currentTurn);
     }
 
-    private void handleSkippedTurnEvent(JsonObject jsonMsg) {
-      val skippedTurnEvent =
-          gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
-
-      onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
-    }
-
+    // FIXME: https://stackoverflow.com/questions/5579309/is-it-possible-to-use-the-instanceof-operator-in-a-switch-statement
     private void dispatchEvents(TickEvent tickEvent) {
       tickEvent
           .getEvents()
@@ -760,14 +760,18 @@ public abstract class BaseBot implements IBaseBot {
               event -> {
                 if (event instanceof BotDeathEvent) {
                   onBotDeath.publish((BotDeathEvent) event);
+
                 } else if (event instanceof BotHitBotEvent) {
                   onHitBot.publish((BotHitBotEvent) event);
+
                 } else if (event instanceof BotHitWallEvent) {
                   onHitWall.publish((BotHitWallEvent) event);
+
                 } else if (event instanceof BulletFiredEvent) {
                   // Stop firing, when bullet has fired
                   botIntent.setFirepower(0d);
                   onBulletFired.publish((BulletFiredEvent) event);
+
                 } else if (event instanceof BulletHitBotEvent) {
                   BulletHitBotEvent bulletEvent = (BulletHitBotEvent) event;
                   if (bulletEvent.getVictimId() == myId) {
@@ -775,14 +779,19 @@ public abstract class BaseBot implements IBaseBot {
                   } else {
                     onBulletHit.publish(bulletEvent);
                   }
+
                 } else if (event instanceof BulletHitBulletEvent) {
                   onBulletHitBullet.publish((BulletHitBulletEvent) event);
+
                 } else if (event instanceof BulletHitWallEvent) {
                   onBulletHitWall.publish((BulletHitWallEvent) event);
+
                 } else if (event instanceof ScannedBotEvent) {
                   onScannedBot.publish((ScannedBotEvent) event);
+
                 } else if (event instanceof SkippedTurnEvent) {
                   onSkippedTurn.publish((SkippedTurnEvent) event);
+
                 } else if (event instanceof WonRoundEvent) {
                   onWonRound.publish((WonRoundEvent) event);
                 }

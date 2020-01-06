@@ -6,7 +6,7 @@ namespace Robocode.TankRoyale.BotApi
   public sealed class BotHitWallEvent : Event
   {
     /// <summary>ID of the victim bot that hit the wall.<summary>
-    int VictimId { get; }
+    public int VictimId { get; }
 
     /// <summary>
     /// Constructor.

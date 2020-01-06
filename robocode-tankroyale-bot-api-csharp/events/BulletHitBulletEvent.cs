@@ -6,10 +6,10 @@ namespace Robocode.TankRoyale.BotApi
   public sealed class BulletHitBulletEvent : Event
   {
     /// <summary>Bullet that hit another bullet.<summary>
-    BulletState Bullet { get; }
+    public BulletState Bullet { get; }
 
     /// <summary>The other bullet that was hit by the bullet.<summary>
-    BulletState HitBullet { get; }
+    public BulletState HitBullet { get; }
 
     /// <summary>
     /// Constructor.
