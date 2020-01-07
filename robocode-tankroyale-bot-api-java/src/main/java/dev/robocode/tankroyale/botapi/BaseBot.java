@@ -424,121 +424,41 @@ public abstract class BaseBot implements IBaseBot {
 
     private void init(URI serverUri) {
       try {
-        onConnected.subscribe(
-            event -> {
-              BaseBot.this.onConnected(event);
-              return null;
-            },
-            100);
-        onDisconnected.subscribe(
-            event -> {
-              BaseBot.this.onDisconnected(event);
-              return null;
-            },
-            100);
-        onConnectionError.subscribe(
-            event -> {
-              BaseBot.this.onConnectionError(event);
-              return null;
-            },
-            100);
-        onGameStarted.subscribe(
-            event -> {
-              BaseBot.this.onGameStarted(event);
-              return null;
-            },
-            100);
-        onGameEnded.subscribe(
-            event -> {
-              BaseBot.this.onGameEnded(event);
-              return null;
-            },
-            100);
-        onTick.subscribe(
-            event -> {
-              ticksStartNanoTime = System.nanoTime();
-              BaseBot.this.onTick(event);
-              return null;
-            },
-            100);
-        onSkippedTurn.subscribe(
-            event -> {
-              BaseBot.this.onSkippedTurn(event);
-              return null;
-            },
-            100);
-        onBotDeath.subscribe(
-            event -> {
-              if (event.getVictimId() == myId) {
-                BaseBot.this.onDeath(event);
-              } else {
-                BaseBot.this.onBotDeath(event);
-              }
-              return null;
-            },
-            100);
-        onHitBot.subscribe(
-            event -> {
-              BaseBot.this.onHitBot(event);
-              return null;
-            },
-            100);
-        onHitWall.subscribe(
-            event -> {
-              BaseBot.this.onHitWall(event);
-              return null;
-            },
-            100);
-        onBulletFired.subscribe(
-            event -> {
-              BaseBot.this.onBulletFired(event);
-              return null;
-            },
-            100);
-        onHitByBullet.subscribe(
-            event -> {
-              BaseBot.this.onHitByBullet(event);
-              return null;
-            },
-            100);
-        onBulletHit.subscribe(
-            event -> {
-              BaseBot.this.onBulletHit(event);
-              return null;
-            },
-            100);
-        onBulletHitBullet.subscribe(
-            event -> {
-              BaseBot.this.onBulletHitBullet(event);
-              return null;
-            },
-            100);
-        onBulletHitWall.subscribe(
-            event -> {
-              BaseBot.this.onBulletHitWall(event);
-              return null;
-            },
-            100);
-        onScannedBot.subscribe(
-            event -> {
-              BaseBot.this.onScannedBot(event);
-              return null;
-            },
-            100);
-        onWonRound.subscribe(
-            event -> {
-              BaseBot.this.onWonRound(event);
-              return null;
-            },
-            100);
-
         socket = new WebSocketFactory().createSocket(serverUri);
-        socket.addListener(new WebSocketListener());
-
       } catch (IOException ex) {
         throw new BotException("Could not create socket for URI: " + serverUri, ex);
       }
+      socket.addListener(new WebSocketListener());
       botIntent.setType(BotReady.Type.BOT_INTENT); // must be set!
+
+      onConnected.subscribe(event -> { BaseBot.this.onConnected(event); return null; });
+      onDisconnected.subscribe(event -> { BaseBot.this.onDisconnected(event); return null; });
+      onConnectionError.subscribe(event -> { BaseBot.this.onConnectionError(event); return null; });
+      onGameStarted.subscribe(event -> { BaseBot.this.onGameStarted(event); return null; });
+      onGameEnded.subscribe(event -> { BaseBot.this.onGameEnded(event); return null; });
+      onTick.subscribe(event -> {
+            ticksStartNanoTime = System.nanoTime();
+            BaseBot.this.onTick(event);
+            return null;
+          });
+      onSkippedTurn.subscribe(event -> { BaseBot.this.onSkippedTurn(event); return null; });
+      onBotDeath.subscribe(event -> {
+            if (event.getVictimId() == myId) {
+              BaseBot.this.onDeath(event);
+            } else {
+              BaseBot.this.onBotDeath(event);
+            }
+            return null;
+          });
+      onHitBot.subscribe(event -> { BaseBot.this.onHitBot(event); return null; });
+      onHitWall.subscribe( event -> { BaseBot.this.onHitWall(event); return null; });
+      onBulletFired.subscribe(event -> { BaseBot.this.onBulletFired(event); return null; });
+      onHitByBullet.subscribe(event -> { BaseBot.this.onHitByBullet(event); return null; });
+      onBulletHit.subscribe(event -> { BaseBot.this.onBulletHit(event); return null; });
+      onBulletHitBullet.subscribe(event -> { BaseBot.this.onBulletHitBullet(event); return null; });
+      onBulletHitWall.subscribe(event -> { BaseBot.this.onBulletHitWall(event); return null; });
+      onScannedBot.subscribe(event -> { BaseBot.this.onScannedBot(event); return null; });
+      onWonRound.subscribe(event -> { BaseBot.this.onWonRound(event); return null; });
     }
 
     private void connect() {
@@ -792,17 +712,17 @@ public abstract class BaseBot implements IBaseBot {
               });
     }
 
+    // Event handler which events in the order they have been added to the handler
     protected class Event<T> {
-      private Map<Integer /* priority, lower first */, UnaryOperator<T> /* method */> subscribers =
-          Collections.synchronizedMap(new TreeMap<>());
+      private List<UnaryOperator<T>> subscribers = Collections.synchronizedList(new ArrayList<>());
 
-      final void subscribe(UnaryOperator<T> subscriber, int priority) {
-        subscribers.put(priority, subscriber);
+      final void subscribe(UnaryOperator<T> subscriber) {
+        subscribers.add(subscriber);
       }
 
-      final void publish(T eventData) {
-        for (UnaryOperator<T> subscriber : subscribers.values()) {
-          subscriber.apply(eventData);
+      final void publish(T event) {
+        for (UnaryOperator<T> subscriber : subscribers) {
+          subscriber.apply(event);
         }
       }
     }
