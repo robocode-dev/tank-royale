@@ -349,6 +349,47 @@ namespace Robocode.TankRoyale.BotApi
       internal bool isAdjustGunForBodyTurn;
       internal bool isAdjustRadarForGunTurn;
 
+      // Event Managers
+      private EventManager<ConnectedEvent> onConnectedManager = new EventManager<ConnectedEvent>();
+      private EventManager<DisconnectedEvent> onDisconnectedManager = new EventManager<DisconnectedEvent>();
+      private EventManager<ConnectionErrorEvent> onConnectionErrorManager = new EventManager<ConnectionErrorEvent>();
+      private EventManager<GameStartedEvent> onGameStartedManager = new EventManager<GameStartedEvent>();
+      private EventManager<GameEndedEvent> onGameEndedManager = new EventManager<GameEndedEvent>();
+      private EventManager<TickEvent> onTickManager = new EventManager<TickEvent>();
+      private EventManager<SkippedTurnEvent> onSkippedTurnManager = new EventManager<SkippedTurnEvent>();
+      private EventManager<BotDeathEvent> onDeathManager = new EventManager<BotDeathEvent>();
+      private EventManager<BotDeathEvent> onBotDeathManager = new EventManager<BotDeathEvent>();
+      private EventManager<BotHitBotEvent> onHitBotManager = new EventManager<BotHitBotEvent>();
+      private EventManager<BotHitWallEvent> onHitWallManager = new EventManager<BotHitWallEvent>();
+      private EventManager<BulletFiredEvent> onBulletFiredManager = new EventManager<BulletFiredEvent>();
+      private EventManager<BulletHitBotEvent> onHitByBulletManager = new EventManager<BulletHitBotEvent>();
+      private EventManager<BulletHitBotEvent> onBulletHitManager = new EventManager<BulletHitBotEvent>();
+      private EventManager<BulletHitBulletEvent> onBulletHitBulletManager = new EventManager<BulletHitBulletEvent>();
+      private EventManager<BulletHitWallEvent> onBulletHitWallManager = new EventManager<BulletHitWallEvent>();
+      private EventManager<ScannedBotEvent> onScannedBotManager = new EventManager<ScannedBotEvent>();
+      private EventManager<WonRoundEvent> onWonRoundManager = new EventManager<WonRoundEvent>();
+
+      // Events
+      private event EventManager<ConnectedEvent>.EventHandler OnConnected;
+      private event EventManager<DisconnectedEvent>.EventHandler OnDisconnected;
+      private event EventManager<ConnectionErrorEvent>.EventHandler OnConnectionError;
+      private event EventManager<GameStartedEvent>.EventHandler OnGameStarted;
+      private event EventManager<GameEndedEvent>.EventHandler OnGameEnded;
+      private event EventManager<TickEvent>.EventHandler OnTick;
+      private event EventManager<SkippedTurnEvent>.EventHandler OnSkippedTurn;
+      private event EventManager<BotDeathEvent>.EventHandler OnDeath;
+      private event EventManager<BotDeathEvent>.EventHandler OnBotDeath;
+      private event EventManager<BotHitBotEvent>.EventHandler OnHitBot;
+      private event EventManager<BotHitWallEvent>.EventHandler OnHitWall;
+      private event EventManager<BulletFiredEvent>.EventHandler OnBulletFired;
+      private event EventManager<BulletHitBotEvent>.EventHandler OnHitByBullet;
+      private event EventManager<BulletHitBotEvent>.EventHandler OnBulletHit;
+      private event EventManager<BulletHitBulletEvent>.EventHandler OnBulletHitBullet;
+      private event EventManager<BulletHitWallEvent>.EventHandler OnBulletHitWall;
+      private event EventManager<ScannedBotEvent>.EventHandler OnScannedBot;
+      private event EventManager<WonRoundEvent>.EventHandler OnWonRound;
+
+      // AutoMapper configuration
       private MapperConfiguration mapperConfig = new MapperConfiguration(cfg =>
       {
         cfg.CreateMap<Robocode.TankRoyale.Schema.GameSetup, Robocode.TankRoyale.BotApi.GameSetup>();
@@ -372,19 +413,80 @@ namespace Robocode.TankRoyale.BotApi
         this.parent = parent;
         this.botInfo = (botInfo == null) ? EnvVars.GetBotInfo() : botInfo;
 
+        Init(serverUri);
+      }
+
+      private void Init(Uri serverUri)
+      {
         socket = new WebSocketClient((serverUri == null) ? ServerUriFromSetting : serverUri);
 
+        botIntent.Type = MessageType.BotIntent; // must be set
+
         mapper = mapperConfig.CreateMapper();
+
+        onConnectedManager.Add(parent.OnConnected);
+        OnConnected += onConnectedManager.InvokeAll;
+
+        onDisconnectedManager.Add(parent.OnDisconnected);
+        OnDisconnected += onDisconnectedManager.InvokeAll;
+
+        onConnectionErrorManager.Add(parent.OnConnectionError);
+        OnConnectionError += onConnectionErrorManager.InvokeAll;
+
+        onGameStartedManager.Add(parent.OnGameStarted);
+        OnGameStarted += onGameStartedManager.InvokeAll;
+
+        onGameEndedManager.Add(parent.OnGameEnded);
+        OnGameEnded += onGameEndedManager.InvokeAll;
+
+        onTickManager.Add(parent.OnTick);
+        OnTick += onTickManager.InvokeAll;
+
+        onSkippedTurnManager.Add(parent.OnSkippedTurn);
+        OnSkippedTurn += onSkippedTurnManager.InvokeAll;
+
+        onDeathManager.Add(parent.OnBotDeath); // DeathManager uses BotDeath events
+        OnDeath += onDeathManager.InvokeAll;
+
+        onBotDeathManager.Add(parent.OnBotDeath);
+        OnBotDeath += onBotDeathManager.InvokeAll;
+
+        onHitBotManager.Add(parent.OnHitBot);
+        OnHitBot += onHitBotManager.InvokeAll;
+
+        onHitWallManager.Add(parent.OnHitWall);
+        OnHitWall += onHitWallManager.InvokeAll;
+
+        onBulletFiredManager.Add(parent.OnBulletFired);
+        OnBulletFired += onBulletFiredManager.InvokeAll;
+
+        onHitByBulletManager.Add(parent.OnHitByBullet);
+        OnHitByBullet += onHitByBulletManager.InvokeAll;
+
+        onBulletHitManager.Add(parent.OnBulletHit);
+        OnBulletHit += onBulletHitManager.InvokeAll;
+
+        onBulletHitBulletManager.Add(parent.OnBulletHitBullet);
+        OnBulletHitBullet += onBulletHitBulletManager.InvokeAll;
+
+        onBulletHitWallManager.Add(parent.OnBulletHitWall);
+        OnBulletHitWall += onBulletHitWallManager.InvokeAll;
+
+        onScannedBotManager.Add(parent.OnScannedBot);
+        OnScannedBot += onScannedBotManager.InvokeAll;
+
+        onWonRoundManager.Add(parent.OnWonRound);
+        OnWonRound += onWonRoundManager.InvokeAll;
       }
 
       internal void Connect()
       {
         try
         {
-          socket.OnConnected += new WebSocketClient.OnConnectedHandler(OnConnected);
-          socket.OnDisconnected += new WebSocketClient.OnDisconnectedHandler(OnDisconnected);
-          socket.OnError += new WebSocketClient.OnErrorHandler(OnConnectionError);
-          socket.OnTextMessage += new WebSocketClient.OnTextMessageHandler(OnTextMessage);
+          socket.OnConnected += new WebSocketClient.OnConnectedHandler(HandleConnected);
+          socket.OnDisconnected += new WebSocketClient.OnDisconnectedHandler(HandleDisconnected);
+          socket.OnError += new WebSocketClient.OnErrorHandler(HandleConnectionError);
+          socket.OnTextMessage += new WebSocketClient.OnTextMessageHandler(HandleTextMessage);
           socket.Connect();
         }
         catch (Exception ex)
@@ -514,22 +616,22 @@ namespace Robocode.TankRoyale.BotApi
         }
       }
 
-      private void OnConnected()
+      private void HandleConnected()
       {
-        parent.OnConnected(new ConnectedEvent());
+        OnConnected(new ConnectedEvent());
       }
 
-      private void OnDisconnected(bool remote)
+      private void HandleDisconnected(bool remote)
       {
-        parent.OnDisconnected(new DisconnectedEvent(remote));
+        OnDisconnected(new DisconnectedEvent(remote));
       }
 
-      private void OnConnectionError(Exception ex)
+      private void HandleConnectionError(Exception ex)
       {
-        parent.OnConnectionError(new ConnectionErrorEvent(ex));
+        OnConnectionError(new ConnectionErrorEvent(ex));
       }
 
-      private void OnTextMessage(string json)
+      private void HandleTextMessage(string json)
       {
         var jsonMsg = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
         var type = (string)jsonMsg["type"];
@@ -585,7 +687,7 @@ namespace Robocode.TankRoyale.BotApi
         socket.SendTextMessage(text);
 
         var gameStartedEvent = new GameStartedEvent((int)myId, gameSetup);
-        parent.OnGameStarted(gameStartedEvent);
+        OnGameStarted(gameStartedEvent);
       }
 
       private void HandleGameEndedEvent(string json)
@@ -598,13 +700,13 @@ namespace Robocode.TankRoyale.BotApi
         var results = mapper.Map<List<BotResults>>(gameEndedEventForBot.Results);
 
         var gameEndedEvent = new GameEndedEvent(gameEndedEventForBot.NumberOfRounds, results);
-        parent.OnGameEnded(gameEndedEvent);
+        OnGameEnded(gameEndedEvent);
       }
 
       private void HandleSkippedTurnEvent(string json)
       {
         var skippedTurnEvent = JsonConvert.DeserializeObject<SkippedTurnEvent>(json);
-        parent.OnSkippedTurn(mapper.Map<SkippedTurnEvent>(skippedTurnEvent));
+        OnSkippedTurn(mapper.Map<SkippedTurnEvent>(skippedTurnEvent));
       }
 
       private void HandleTickEvent(string json)
@@ -615,7 +717,7 @@ namespace Robocode.TankRoyale.BotApi
         // Dispatch all on the tick event before the tick event itself
         DispatchEvents(currentTurn);
 
-        parent.OnTick(currentTurn);
+        OnTick(currentTurn);
       }
 
       private void DispatchEvents(TickEvent tickEvent)
@@ -625,52 +727,55 @@ namespace Robocode.TankRoyale.BotApi
           switch (te)
           {
             case BotDeathEvent botDeathEvent:
-              parent.OnBotDeath(botDeathEvent);
+              if (botDeathEvent.VictimId == MyId)
+                OnDeath(botDeathEvent);
+              else
+                OnBotDeath(botDeathEvent);
               break;
 
             case BotHitBotEvent botHitBotEvent:
-              parent.OnHitBot(botHitBotEvent);
+              OnHitBot(botHitBotEvent);
               break;
 
             case BotHitWallEvent botHitWallEvent:
-              parent.OnHitWall(botHitWallEvent);
+              OnHitWall(botHitWallEvent);
               break;
 
             case BulletFiredEvent bulletFiredEvent:
               // Stop firing, when bullet has fired
               botIntent.Firepower = 0d;
-              parent.OnBulletFired(bulletFiredEvent);
+              OnBulletFired(bulletFiredEvent);
               break;
 
             case BulletHitBotEvent bulletHitBotEvent:
               if (bulletHitBotEvent.VictimId == myId)
               {
-                parent.OnHitByBullet(bulletHitBotEvent);
+                OnHitByBullet(bulletHitBotEvent);
               }
               else
               {
-                parent.OnBulletHit(bulletHitBotEvent);
+                OnBulletHit(bulletHitBotEvent);
               }
               break;
 
             case BulletHitBulletEvent bulletHitBulletEvent:
-              parent.OnBulletHitBullet(bulletHitBulletEvent);
+              OnBulletHitBullet(bulletHitBulletEvent);
               break;
 
             case BulletHitWallEvent bulletHitWallEvent:
-              parent.OnBulletHitWall(bulletHitWallEvent);
+              OnBulletHitWall(bulletHitWallEvent);
               break;
 
             case ScannedBotEvent scannedBotEvent:
-              parent.OnScannedBot(scannedBotEvent);
+              OnScannedBot(scannedBotEvent);
               break;
 
             case SkippedTurnEvent skippedTurnEvent:
-              parent.OnSkippedTurn(skippedTurnEvent);
+              OnSkippedTurn(skippedTurnEvent);
               break;
 
             case WonRoundEvent wonRoundEvent:
-              parent.OnWonRound(wonRoundEvent);
+              OnWonRound(wonRoundEvent);
               break;
           }
         }

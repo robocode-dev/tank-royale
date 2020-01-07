@@ -368,20 +368,13 @@ public abstract class BaseBot implements IBaseBot {
       val typeFactory =
           RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class)
               .registerSubtype(dev.robocode.tankroyale.schema.BotDeathEvent.class, "BotDeathEvent")
-              .registerSubtype(
-                  dev.robocode.tankroyale.schema.BotHitBotEvent.class, "BotHitBotEvent")
-              .registerSubtype(
-                  dev.robocode.tankroyale.schema.BotHitWallEvent.class, "BotHitWallEvent")
-              .registerSubtype(
-                  dev.robocode.tankroyale.schema.BulletFiredEvent.class, "BulletFiredEvent")
-              .registerSubtype(
-                  dev.robocode.tankroyale.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
-              .registerSubtype(
-                  dev.robocode.tankroyale.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
-              .registerSubtype(
-                  dev.robocode.tankroyale.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
-              .registerSubtype(
-                  dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
+              .registerSubtype(dev.robocode.tankroyale.schema.BotHitBotEvent.class, "BotHitBotEvent")
+              .registerSubtype(dev.robocode.tankroyale.schema.BotHitWallEvent.class, "BotHitWallEvent")
+              .registerSubtype(dev.robocode.tankroyale.schema.BulletFiredEvent.class, "BulletFiredEvent")
+              .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
+              .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
+              .registerSubtype(dev.robocode.tankroyale.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
+              .registerSubtype(dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
               .registerSubtype(dev.robocode.tankroyale.schema.WonRoundEvent.class, "WonRoundEvent");
 
       gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
@@ -405,6 +398,7 @@ public abstract class BaseBot implements IBaseBot {
     private boolean isAdjustGunForBodyTurn;
     private boolean isAdjustRadarForGunTurn;
 
+    // Events
     private final Event<ConnectedEvent> onConnected = new Event<>();
     final Event<DisconnectedEvent> onDisconnected = new Event<>();
     private final Event<ConnectionErrorEvent> onConnectionError = new Event<>();
@@ -806,9 +800,9 @@ public abstract class BaseBot implements IBaseBot {
         subscribers.put(priority, subscriber);
       }
 
-      final void publish(T source) {
+      final void publish(T eventData) {
         for (UnaryOperator<T> subscriber : subscribers.values()) {
-          subscriber.apply(source);
+          subscriber.apply(eventData);
         }
       }
     }
