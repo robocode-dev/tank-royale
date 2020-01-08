@@ -749,13 +749,9 @@ namespace Robocode.TankRoyale.BotApi
 
             case BulletHitBotEvent bulletHitBotEvent:
               if (bulletHitBotEvent.VictimId == myId)
-              {
                 OnHitByBullet(bulletHitBotEvent);
-              }
               else
-              {
                 OnBulletHit(bulletHitBotEvent);
-              }
               break;
 
             case BulletHitBulletEvent bulletHitBulletEvent:

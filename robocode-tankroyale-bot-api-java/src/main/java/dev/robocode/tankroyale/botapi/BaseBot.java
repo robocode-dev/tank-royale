@@ -30,11 +30,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.function.UnaryOperator;
+import java.util.function.Consumer;
 
 /**
- * Abstract Bot containing convenient methods for movement, turning, and firing the gun.
- * Most bots should inherit from this class.
+ * Abstract Bot containing convenient methods for movement, turning, and firing the gun. Most bots
+ * should inherit from this class.
  */
 public abstract class BaseBot implements IBaseBot {
 
@@ -312,7 +312,9 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   @Override
-  public final double getFirepower() { return __internals.botIntent.getFirepower(); }
+  public final double getFirepower() {
+    return __internals.botIntent.getFirepower();
+  }
 
   @Override
   public final void setAdjustGunForBodyTurn(boolean adjust) {
@@ -349,7 +351,6 @@ public abstract class BaseBot implements IBaseBot {
     return 1 + (firepower / 5);
   }
 
-
   protected final class __Internals {
     private static final String SERVER_URI_PROPERTY_KEY = "server.uri";
 
@@ -368,13 +369,20 @@ public abstract class BaseBot implements IBaseBot {
       val typeFactory =
           RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class)
               .registerSubtype(dev.robocode.tankroyale.schema.BotDeathEvent.class, "BotDeathEvent")
-              .registerSubtype(dev.robocode.tankroyale.schema.BotHitBotEvent.class, "BotHitBotEvent")
-              .registerSubtype(dev.robocode.tankroyale.schema.BotHitWallEvent.class, "BotHitWallEvent")
-              .registerSubtype(dev.robocode.tankroyale.schema.BulletFiredEvent.class, "BulletFiredEvent")
-              .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
-              .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
-              .registerSubtype(dev.robocode.tankroyale.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
-              .registerSubtype(dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
+              .registerSubtype(
+                  dev.robocode.tankroyale.schema.BotHitBotEvent.class, "BotHitBotEvent")
+              .registerSubtype(
+                  dev.robocode.tankroyale.schema.BotHitWallEvent.class, "BotHitWallEvent")
+              .registerSubtype(
+                  dev.robocode.tankroyale.schema.BulletFiredEvent.class, "BulletFiredEvent")
+              .registerSubtype(
+                  dev.robocode.tankroyale.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
+              .registerSubtype(
+                  dev.robocode.tankroyale.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
+              .registerSubtype(
+                  dev.robocode.tankroyale.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
+              .registerSubtype(
+                  dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
               .registerSubtype(dev.robocode.tankroyale.schema.WonRoundEvent.class, "WonRoundEvent");
 
       gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
@@ -406,6 +414,7 @@ public abstract class BaseBot implements IBaseBot {
     final Event<GameEndedEvent> onGameEnded = new Event<>();
     final Event<TickEvent> onTick = new Event<>();
     final Event<SkippedTurnEvent> onSkippedTurn = new Event<>();
+    final Event<BotDeathEvent> onDeath = new Event<>();
     final Event<BotDeathEvent> onBotDeath = new Event<>();
     final Event<BotHitBotEvent> onHitBot = new Event<>();
     final Event<BotHitWallEvent> onHitWall = new Event<>();
@@ -431,34 +440,24 @@ public abstract class BaseBot implements IBaseBot {
       socket.addListener(new WebSocketListener());
       botIntent.setType(BotReady.Type.BOT_INTENT); // must be set!
 
-      onConnected.subscribe(event -> { BaseBot.this.onConnected(event); return null; });
-      onDisconnected.subscribe(event -> { BaseBot.this.onDisconnected(event); return null; });
-      onConnectionError.subscribe(event -> { BaseBot.this.onConnectionError(event); return null; });
-      onGameStarted.subscribe(event -> { BaseBot.this.onGameStarted(event); return null; });
-      onGameEnded.subscribe(event -> { BaseBot.this.onGameEnded(event); return null; });
-      onTick.subscribe(event -> {
-            ticksStartNanoTime = System.nanoTime();
-            BaseBot.this.onTick(event);
-            return null;
-          });
-      onSkippedTurn.subscribe(event -> { BaseBot.this.onSkippedTurn(event); return null; });
-      onBotDeath.subscribe(event -> {
-            if (event.getVictimId() == myId) {
-              BaseBot.this.onDeath(event);
-            } else {
-              BaseBot.this.onBotDeath(event);
-            }
-            return null;
-          });
-      onHitBot.subscribe(event -> { BaseBot.this.onHitBot(event); return null; });
-      onHitWall.subscribe( event -> { BaseBot.this.onHitWall(event); return null; });
-      onBulletFired.subscribe(event -> { BaseBot.this.onBulletFired(event); return null; });
-      onHitByBullet.subscribe(event -> { BaseBot.this.onHitByBullet(event); return null; });
-      onBulletHit.subscribe(event -> { BaseBot.this.onBulletHit(event); return null; });
-      onBulletHitBullet.subscribe(event -> { BaseBot.this.onBulletHitBullet(event); return null; });
-      onBulletHitWall.subscribe(event -> { BaseBot.this.onBulletHitWall(event); return null; });
-      onScannedBot.subscribe(event -> { BaseBot.this.onScannedBot(event); return null; });
-      onWonRound.subscribe(event -> { BaseBot.this.onWonRound(event); return null; });
+      onConnected.subscribe(BaseBot.this::onConnected);
+      onDisconnected.subscribe(BaseBot.this::onDisconnected);
+      onConnectionError.subscribe(BaseBot.this::onConnectionError);
+      onGameStarted.subscribe(BaseBot.this::onGameStarted);
+      onGameEnded.subscribe(BaseBot.this::onGameEnded);
+      onTick.subscribe(BaseBot.this::onTick);
+      onSkippedTurn.subscribe(BaseBot.this::onSkippedTurn);
+      onDeath.subscribe(BaseBot.this::onDeath);
+      onBotDeath.subscribe(BaseBot.this::onBotDeath);
+      onHitBot.subscribe(BaseBot.this::onHitBot);
+      onHitWall.subscribe(BaseBot.this::onHitWall);
+      onBulletFired.subscribe(BaseBot.this::onBulletFired);
+      onHitByBullet.subscribe(BaseBot.this::onHitByBullet);
+      onBulletHit.subscribe(BaseBot.this::onBulletHit);
+      onBulletHitBullet.subscribe(BaseBot.this::onBulletHitBullet);
+      onBulletHitWall.subscribe(BaseBot.this::onBulletHitWall);
+      onScannedBot.subscribe(BaseBot.this::onScannedBot);
+      onWonRound.subscribe(BaseBot.this::onWonRound);
     }
 
     private void connect() {
@@ -494,8 +493,7 @@ public abstract class BaseBot implements IBaseBot {
         throw new BotException(
             String.format(
                 "Property %s or environment variable %s is not defined",
-                SERVER_URI_PROPERTY_KEY, EnvVars.SERVER_URI)
-        );
+                SERVER_URI_PROPERTY_KEY, EnvVars.SERVER_URI));
       }
       try {
         return new URI(uri);
@@ -568,7 +566,8 @@ public abstract class BaseBot implements IBaseBot {
 
       @Override
       public void onPingFrame(WebSocket websocket, WebSocketFrame frame) {
-        socket.sendPong(); // Make sure to send pong as reply to ping in order to stay connected to server
+        // Make sure to send pong as reply to ping in order to stay connected to server
+        socket.sendPong();
       }
 
       @Override
@@ -651,7 +650,7 @@ public abstract class BaseBot implements IBaseBot {
 
     private void handleSkippedTurnEvent(JsonObject jsonMsg) {
       val skippedTurnEvent =
-              gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
+          gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
 
       onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
     }
@@ -663,17 +662,24 @@ public abstract class BaseBot implements IBaseBot {
       // Dispatch all on the tick event before the tick event itself
       dispatchEvents(currentTurn);
 
+      ticksStartNanoTime = System.nanoTime();
       onTick.publish(currentTurn);
     }
 
-    // FIXME: https://stackoverflow.com/questions/5579309/is-it-possible-to-use-the-instanceof-operator-in-a-switch-statement
+    // FIXME:
+    // https://stackoverflow.com/questions/5579309/is-it-possible-to-use-the-instanceof-operator-in-a-switch-statement
     private void dispatchEvents(TickEvent tickEvent) {
       tickEvent
           .getEvents()
           .forEach(
               event -> {
                 if (event instanceof BotDeathEvent) {
-                  onBotDeath.publish((BotDeathEvent) event);
+                  BotDeathEvent botDeathEvent = (BotDeathEvent) event;
+                  if (botDeathEvent.getVictimId() == myId) {
+                    onDeath.publish((BotDeathEvent) event);
+                  } else {
+                    onBotDeath.publish((BotDeathEvent) event);
+                  }
 
                 } else if (event instanceof BotHitBotEvent) {
                   onHitBot.publish((BotHitBotEvent) event);
@@ -714,15 +720,15 @@ public abstract class BaseBot implements IBaseBot {
 
     // Event handler which events in the order they have been added to the handler
     protected class Event<T> {
-      private List<UnaryOperator<T>> subscribers = Collections.synchronizedList(new ArrayList<>());
+      private List<Consumer<T>> subscribers = Collections.synchronizedList(new ArrayList<>());
 
-      final void subscribe(UnaryOperator<T> subscriber) {
+      final void subscribe(Consumer<T> subscriber) {
         subscribers.add(subscriber);
       }
 
       final void publish(T event) {
-        for (UnaryOperator<T> subscriber : subscribers) {
-          subscriber.apply(event);
+        for (Consumer<T> subscriber : subscribers) {
+          subscriber.accept(event);
         }
       }
     }
