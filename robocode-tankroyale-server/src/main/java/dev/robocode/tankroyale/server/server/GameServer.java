@@ -298,8 +298,11 @@ public final class GameServer {
 
     for (Entry<WebSocket, dev.robocode.tankroyale.server.model.BotIntent> entry :
         botIntents.entrySet()) {
-      int botId = participantIds.get(entry.getKey());
-      mappedBotIntents.put(botId, entry.getValue());
+      val key = entry.getKey();
+      if (key != null) {
+        int botId = participantIds.get(key);
+        mappedBotIntents.put(botId, entry.getValue());
+      }
     }
 
     return modelUpdater.update(Collections.unmodifiableMap(mappedBotIntents));

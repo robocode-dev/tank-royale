@@ -8,8 +8,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static java.lang.Math.abs;
 
 /**
- * Abstract Bot containing convenient methods for movement, turning, and firing the gun.
- * Most bots can inherit from this class to get access to basic methods.
+ * Abstract Bot containing convenient methods for movement, turning, and firing the gun. Most bots
+ * can inherit from this class to get access to basic methods.
  */
 public abstract class Bot extends BaseBot implements IBot {
 
@@ -241,53 +241,24 @@ public abstract class Bot extends BaseBot implements IBot {
     private volatile boolean running;
 
     private __Internals() {
-      val superInt = Bot.super.__internals;
+      val internals = Bot.super.__internals;
 
-      superInt.onDisconnected.subscribe(
-          event -> {
-            stopThread();
-            return null;
-          },
-          50);
-      superInt.onTick.subscribe(
+      internals.onDisconnected.subscribe(event -> stopThread());
+      internals.onGameEnded.subscribe(event -> stopThread());
+      internals.onSkippedTurn.subscribe(event -> onSkippedTurn());
+      internals.onHitBot.subscribe(event -> onHitBot(event.isRammed()));
+      internals.onHitWall.subscribe(event -> onHitWall());
+      internals.onTick.subscribe(
           event -> {
             turnNumber = event.getTurnNumber();
             onTick();
-            return null;
-          },
-          50);
-      superInt.onSkippedTurn.subscribe(
-          event -> {
-            onSkippedTurn();
-            return null;
-          },
-          50);
-      superInt.onHitBot.subscribe(
-          event -> {
-            onHitBot(event.isRammed());
-            return null;
-          },
-          50);
-      superInt.onHitWall.subscribe(
-          event -> {
-            onHitWall();
-            return null;
-          },
-          50);
-      superInt.onBotDeath.subscribe(
+          });
+      internals.onBotDeath.subscribe(
           event -> {
             if (event.getVictimId() == getMyId()) {
               stopThread();
             }
-            return null;
-          },
-          50);
-      superInt.onGameEnded.subscribe(
-          event -> {
-            stopThread();
-            return null;
-          },
-          50);
+          });
     }
 
     private void onTick() {
@@ -489,7 +460,8 @@ public abstract class Bot extends BaseBot implements IBot {
       if (speed >= 0) {
         return Math.max(speed - ABS_DECELERATION, Math.min(targetSpeed, speed + getAcceleration()));
       } // else
-      return Math.max(speed - getAcceleration(), Math.min(targetSpeed, speed + maxDeceleration(-speed)));
+      return Math.max(
+          speed - getAcceleration(), Math.min(targetSpeed, speed + maxDeceleration(-speed)));
     }
 
     private double getMaxSpeed(double distance) {

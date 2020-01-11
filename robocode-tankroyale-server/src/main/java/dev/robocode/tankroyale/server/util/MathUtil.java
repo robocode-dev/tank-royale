@@ -314,7 +314,7 @@ public final class MathUtil {
 		Point arcEnd = new Point(dx, dy);
 
 		// Check if circle center is within the circle sector arms
-		if (isClockwise(arcStart.x, arcStart.y, vx, vy) && !isClockwise(arcEnd.x, arcEnd.y, vx, vy)) {
+		if (!isClockwise(arcStart.x, arcStart.y, vx, vy) && isClockwise(arcEnd.x, arcEnd.y, vx, vy)) {
 			return true;
 		}
 
@@ -340,7 +340,7 @@ public final class MathUtil {
 	 * 
 	 */
 	public static boolean isClockwise(double v1_x, double v1_y, double v2_x, double v2_y) {
-		return v1_x * v2_y > v1_y * v2_x;
+		return v1_x * v2_y <= v1_y * v2_x;
 	}
 
 	/**

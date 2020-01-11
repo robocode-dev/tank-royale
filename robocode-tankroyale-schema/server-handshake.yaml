@@ -4,6 +4,9 @@ description: Server handshake
 extends:
   $ref: message.yaml
 properties:
+  name:
+    description: Name of server, e.g. John Doe's RoboRumble Server
+    type: string
   variant:
     type: string
     description: Game variant, e.g. 'Tank Royale' for Robocode 2 Tank Royale

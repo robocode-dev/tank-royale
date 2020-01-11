@@ -5,7 +5,7 @@ extends:
   $ref: message.yaml
 properties:
   name:
-    description: Name of observer, e.g. Fancy Robocode View
+    description: Name of observer, e.g. Tron Neon 3D Window
     type: string
   version:
     description: Observer version, e.g. 1.0

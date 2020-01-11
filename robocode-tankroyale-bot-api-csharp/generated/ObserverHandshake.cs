@@ -12,7 +12,7 @@ namespace Robocode.TankRoyale.Schema
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.2.0 (Newtonsoft.Json v9.0.0.0)")]
     public class ObserverHandshake : Message 
     {
-        /// <summary>Name of observer, e.g. Fancy Robocode View</summary>
+        /// <summary>Name of observer, e.g. Tron Neon 3D Window</summary>
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Name { get; set; }

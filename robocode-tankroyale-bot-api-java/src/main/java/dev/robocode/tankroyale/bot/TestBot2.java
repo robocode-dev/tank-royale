@@ -44,15 +44,10 @@ public class TestBot2 extends Bot {
   }
 
   public void run() {
-//    System.out.println("## run() ##");
     while (isRunning()) {
-//      System.out.println("forward: " + getTurnNumber() + ", thread: " + Thread.currentThread().getId());
       forward(100);
-//      System.out.println("turnGun Left: " + getTurnNumber() + ", thread: " + Thread.currentThread().getId());
       turnGunLeft(360);
-//      System.out.println("back: " + getTurnNumber() + ", thread: " + Thread.currentThread().getId());
       back(100);
-//      System.out.println("turnGun Right: " + getTurnNumber() + ", thread: " + Thread.currentThread().getId());
       turnGunRight(360);
     }
   }
@@ -62,7 +57,7 @@ public class TestBot2 extends Bot {
     targetX = event.getX();
     targetY = event.getY();
 
-//    fire(1);
+    fire(1);
   }
 
   @Override

@@ -12,6 +12,10 @@ namespace Robocode.TankRoyale.Schema
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.2.0 (Newtonsoft.Json v9.0.0.0)")]
     public class ServerHandshake : Message 
     {
+        /// <summary>Name of server, e.g. John Doe's RoboRumble Server</summary>
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+    
         /// <summary>Game variant, e.g. 'Tank Royale' for Robocode 2 Tank Royale</summary>
         [Newtonsoft.Json.JsonProperty("variant", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
