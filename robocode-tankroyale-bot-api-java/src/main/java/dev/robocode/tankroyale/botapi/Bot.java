@@ -403,12 +403,9 @@ public abstract class Bot extends BaseBot implements IBot {
       }
     }
 
-    /**
-     * Updates the movement.
-     *
-     * <p>This is Nat Pavasants method described here:
-     * http://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
-     */
+    /** Updates the movement. */
+    // This is Nat Pavasants method described here:
+    // http://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
     private void updateMovement() {
       double distance = distanceRemaining;
       if (Double.isNaN(distance)) {
@@ -440,11 +437,11 @@ public abstract class Bot extends BaseBot implements IBot {
      * @param speed is the current speed
      * @param distance is the distance to move
      * @return the new speed
-     *     <p>Credits for this algorithm goes to Patrick Cupka (aka Voidious), Julian Kent (aka
-     *     Skilgannon), and Positive:
-     *     http://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
      */
+    // Credits for this algorithm goes to Patrick Cupka (aka Voidious), Julian Kent (aka Skilgannon), and Positive:
+    // http://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
     private double getNewSpeed(double speed, double distance) {
+
       if (distance < 0) {
         // If the distance is negative, then change it to be positive and change the sign of the
         // input
