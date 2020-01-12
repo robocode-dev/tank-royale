@@ -209,7 +209,9 @@ public abstract class Bot extends BaseBot implements IBot {
 
   @Override
   public final void fire(double firepower) {
-    this.setFirepower(firepower);
+    if (getGunHeat() == 0) {
+      setFirepower(firepower);
+    }
     go();
   }
 
