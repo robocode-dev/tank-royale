@@ -941,29 +941,27 @@ public class ModelUpdater {
 
 			if (spreadAngle > 0) {
 				arcEndAngle = scanningBot.getRadarDirection();
-				arcStartAngle = arcEndAngle - spreadAngle;
+				arcStartAngle = normalAbsoluteDegrees(arcEndAngle - spreadAngle);
 			} else {
 				arcStartAngle = scanningBot.getRadarDirection();
-				arcEndAngle = arcStartAngle - spreadAngle;
+				arcEndAngle = normalAbsoluteDegrees(arcStartAngle - spreadAngle);
 			}
 
 			for (int j = botArray.length - 1; j >= 0; j--) {
-				if (i == j) {
-					continue;
-				}
+				if (i != j) {
+					BotBuilder scannedBot = botArray[j];
 
-				BotBuilder scannedBot = botArray[j];
+					if (MathUtil.isCircleIntersectingCircleSector(scannedBot.getX(), scannedBot.getY(),
+							BOT_BOUNDING_CIRCLE_RADIUS, scanningBot.getX(), scanningBot.getY(),
+							RuleConstants.RADAR_RADIUS, arcStartAngle, arcEndAngle)) {
 
-				if (MathUtil.isCircleIntersectingCircleSector(scannedBot.getX(), scannedBot.getY(),
-						BOT_BOUNDING_CIRCLE_RADIUS, scanningBot.getX(), scanningBot.getY(),
-						RuleConstants.RADAR_RADIUS, arcStartAngle, arcEndAngle)) {
+						ScannedBotEvent scannedBotEvent = new ScannedBotEvent(turnNumber, scanningBot.getId(),
+								scannedBot.getId(),	scannedBot.getEnergy(), scannedBot.getX(), scannedBot.getY(),
+								scannedBot.getDirection(), scannedBot.getSpeed());
 
-					ScannedBotEvent scannedBotEvent = new ScannedBotEvent(turnNumber, scanningBot.getId(), scannedBot.getId(),
-							scannedBot.getEnergy(), scannedBot.getX(), scannedBot.getY(), scannedBot.getDirection(),
-							scannedBot.getSpeed());
-
-					turnBuilder.addPrivateBotEvent(scanningBot.getId(), scannedBotEvent);
-					turnBuilder.addObserverEvent(scannedBotEvent);
+						turnBuilder.addPrivateBotEvent(scanningBot.getId(), scannedBotEvent);
+						turnBuilder.addObserverEvent(scannedBotEvent);
+					}
 				}
 			}
 		}
