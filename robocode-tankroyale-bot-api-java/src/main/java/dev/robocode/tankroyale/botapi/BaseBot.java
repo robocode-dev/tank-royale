@@ -303,12 +303,14 @@ public abstract class BaseBot implements IBaseBot {
     if (Double.isNaN(firepower)) {
       throw new IllegalArgumentException("firepower cannot be NaN");
     }
-    if (firepower < 0) {
-      firepower = 0;
-    } else if (firepower > getMaxFirepower()) {
-      firepower = getMaxFirepower();
+    if (getGunHeat() == 0) {
+      if (firepower < getMinFirepower()) {
+        firepower = 0;
+      } else if (firepower > getMaxFirepower()) {
+        firepower = getMaxFirepower();
+      }
+      __internals.botIntent.setFirepower(firepower);
     }
-    __internals.botIntent.setFirepower(firepower);
   }
 
   @Override
