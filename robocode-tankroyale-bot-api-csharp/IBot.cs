@@ -637,6 +637,6 @@
     /// <seealso cref="SetFire"/>
     /// <seealso cref="GunHeat"/>
     /// <seealso cref="GunCoolingRate"/>
-    void fire(double firepower);
+    void Fire(double firepower);
   }
 }
