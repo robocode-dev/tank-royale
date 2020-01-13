@@ -28,6 +28,11 @@ public abstract class Bot extends BaseBot implements IBot {
   }
 
   @Override
+  public final boolean isRunning() {
+    return __internals.isRunning;
+  }
+
+  @Override
   public final void setForward(double distance) {
     if (Double.isNaN(distance)) {
       throw new IllegalArgumentException("distance cannot be NaN");
@@ -213,11 +218,6 @@ public abstract class Bot extends BaseBot implements IBot {
     go();
   }
 
-  @Override
-  public final boolean isRunning() {
-    return __internals.running;
-  }
-
   private final class __Internals {
     private final double ABS_DECELERATION = Math.abs(getDeceleration());
 
@@ -237,8 +237,8 @@ public abstract class Bot extends BaseBot implements IBot {
     private int turnNumber;
 
     private Thread thread;
-    private final AtomicBoolean blocked = new AtomicBoolean();
-    private volatile boolean running;
+    private final AtomicBoolean isBlocked = new AtomicBoolean();
+    private volatile boolean isRunning;
 
     private __Internals() {
       val internals = Bot.super.__internals;
@@ -305,23 +305,23 @@ public abstract class Bot extends BaseBot implements IBot {
       }
 
       // Unblock waiting methods
-      synchronized (blocked) {
-        if (blocked.get()) {
+      synchronized (isBlocked) {
+        if (isBlocked.get()) {
           go();
-          blocked.notifyAll();
+          isBlocked.notifyAll();
         }
       }
     }
 
     private void startThread() {
-      running = true;
+      isRunning = true;
       thread = new Thread(Bot.this::run);
       thread.start();
     }
 
     private void stopThread() {
       if (thread != null) {
-        running = false;
+        isRunning = false;
         thread.interrupt();
         try {
           thread.join();
@@ -436,7 +436,8 @@ public abstract class Bot extends BaseBot implements IBot {
      * @param distance is the distance to move
      * @return the new speed
      */
-    // Credits for this algorithm goes to Patrick Cupka (aka Voidious), Julian Kent (aka Skilgannon), and Positive:
+    // Credits for this algorithm goes to Patrick Cupka (aka Voidious), Julian Kent (aka
+    // Skilgannon), and Positive:
     // http://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
     private double getNewSpeed(double speed, double distance) {
 
@@ -501,32 +502,32 @@ public abstract class Bot extends BaseBot implements IBot {
     }
 
     private void awaitMovementComplete() {
-      await(() -> getDistanceRemaining() != 0);
+      await(() -> distanceRemaining == 0);
     }
 
     private void awaitTurnComplete() {
-      await(() -> getTurnRemaining() != 0);
+      await(() -> turnRemaining == 0);
     }
 
     private void awaitGunTurnComplete() {
-      await(() -> getGunTurnRemaining() != 0);
+      await(() -> gunTurnRemaining == 0);
     }
 
     private void awaitRadarTurnComplete() {
-      await(() -> getRadarTurnRemaining() != 0);
+      await(() -> radarTurnRemaining == 0);
     }
 
     private void await(ICondition condition) {
-      synchronized (blocked) {
-        blocked.set(true);
-        while (running && condition.test()) {
+      synchronized (isBlocked) {
+        isBlocked.set(true);
+        while (isRunning && !condition.test()) {
           try {
-            blocked.wait();
+            isBlocked.wait();
           } catch (InterruptedException e) {
-            running = false;
+            isRunning = false;
           }
         }
-        blocked.set(false);
+        isBlocked.set(false);
       }
     }
   }
