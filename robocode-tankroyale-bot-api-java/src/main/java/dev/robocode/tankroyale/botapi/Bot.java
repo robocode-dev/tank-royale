@@ -269,8 +269,8 @@ public abstract class Bot extends BaseBot implements IBot {
       processTurn();
     }
 
-    private void onHitBot(boolean isRamming) {
-      if (isRamming) {
+    private void onHitBot(boolean isRammed) {
+      if (isRammed) {
         distanceRemaining = 0;
       }
       isCollidingWithBot = true;
@@ -291,7 +291,7 @@ public abstract class Bot extends BaseBot implements IBot {
       isCollidingWithBot = false;
 
       // If this is the first turn -> Call the run method on the Bot class
-      if (__internals.turnNumber == 1) {
+      if (turnNumber == 1) {
         stopThread();
 
         distanceRemaining = 0;
@@ -314,9 +314,9 @@ public abstract class Bot extends BaseBot implements IBot {
     }
 
     private void startThread() {
-      isRunning = true;
       thread = new Thread(Bot.this::run);
       thread.start();
+      isRunning = true;
     }
 
     private void stopThread() {
@@ -459,7 +459,7 @@ public abstract class Bot extends BaseBot implements IBot {
         return Math.max(speed - ABS_DECELERATION, Math.min(targetSpeed, speed + getAcceleration()));
       } // else
       return Math.max(
-          speed - getAcceleration(), Math.min(targetSpeed, speed + maxDeceleration(-speed)));
+          speed - getAcceleration(), Math.min(targetSpeed, speed + getMaxDeceleration(-speed)));
     }
 
     private double getMaxSpeed(double distance) {
@@ -481,7 +481,7 @@ public abstract class Bot extends BaseBot implements IBot {
       return ((decelTime - 1) * ABS_DECELERATION) + ((distance - decelDist) / decelTime);
     }
 
-    private double maxDeceleration(double speed) {
+    private double getMaxDeceleration(double speed) {
       val decelTime = speed / ABS_DECELERATION;
       val accelTime = (1 - decelTime);
 

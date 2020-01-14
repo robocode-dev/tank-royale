@@ -409,10 +409,10 @@ public abstract class BaseBot implements IBaseBot {
     private boolean isAdjustRadarForGunTurn;
 
     // Events
-    private final Event<ConnectedEvent> onConnected = new Event<>();
+    final Event<ConnectedEvent> onConnected = new Event<>();
     final Event<DisconnectedEvent> onDisconnected = new Event<>();
-    private final Event<ConnectionErrorEvent> onConnectionError = new Event<>();
-    private final Event<GameStartedEvent> onGameStarted = new Event<>();
+    final Event<ConnectionErrorEvent> onConnectionError = new Event<>();
+    final Event<GameStartedEvent> onGameStarted = new Event<>();
     final Event<GameEndedEvent> onGameEnded = new Event<>();
     final Event<TickEvent> onTick = new Event<>();
     final Event<SkippedTurnEvent> onSkippedTurn = new Event<>();
@@ -420,13 +420,13 @@ public abstract class BaseBot implements IBaseBot {
     final Event<BotDeathEvent> onBotDeath = new Event<>();
     final Event<BotHitBotEvent> onHitBot = new Event<>();
     final Event<BotHitWallEvent> onHitWall = new Event<>();
-    private final Event<BulletFiredEvent> onBulletFired = new Event<>();
-    private final Event<BulletHitBotEvent> onHitByBullet = new Event<>();
-    private final Event<BulletHitBotEvent> onBulletHit = new Event<>();
-    private final Event<BulletHitBulletEvent> onBulletHitBullet = new Event<>();
-    private final Event<BulletHitWallEvent> onBulletHitWall = new Event<>();
-    private final Event<ScannedBotEvent> onScannedBot = new Event<>();
-    private final Event<WonRoundEvent> onWonRound = new Event<>();
+    final Event<BulletFiredEvent> onBulletFired = new Event<>();
+    final Event<BulletHitBotEvent> onHitByBullet = new Event<>();
+    final Event<BulletHitBotEvent> onBulletHit = new Event<>();
+    final Event<BulletHitBulletEvent> onBulletHitBullet = new Event<>();
+    final Event<BulletHitWallEvent> onBulletHitWall = new Event<>();
+    final Event<ScannedBotEvent> onScannedBot = new Event<>();
+    final Event<WonRoundEvent> onWonRound = new Event<>();
 
     __Internals(BotInfo botInfo, URI serverUri) {
       this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
