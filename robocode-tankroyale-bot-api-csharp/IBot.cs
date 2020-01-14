@@ -11,7 +11,7 @@
     /// <code>
     /// public void Run()
     /// {
-    ///   while (IsRunning())
+    ///   while (IsRunning)
     ///   {
     ///     Forward(100);
     ///     TurnGunLeft(360);
@@ -36,7 +36,7 @@
     /// <summary>
     /// Returns true when the bot is running, false otherwise.
     /// </summary>
-    bool IsRunning();
+    bool IsRunning { get; }
 
     /// <summary>
     /// Set the bot to move forward until it has traveled a specific distance from its current

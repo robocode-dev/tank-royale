@@ -12,7 +12,7 @@ namespace Robocode.TankRoyale.BotApi
   /// </summary>
   public abstract class BaseBot : IBaseBot
   {
-    readonly __Internals __internals;
+    internal readonly __Internals __internals;
 
     /// <summary>
     /// Constructor used when both BotInfo and server URI are provided through environment variables.
@@ -350,44 +350,44 @@ namespace Robocode.TankRoyale.BotApi
       internal bool isAdjustRadarForGunTurn;
 
       // Event Managers
-      private EventManager<ConnectedEvent> onConnectedManager = new EventManager<ConnectedEvent>();
-      private EventManager<DisconnectedEvent> onDisconnectedManager = new EventManager<DisconnectedEvent>();
-      private EventManager<ConnectionErrorEvent> onConnectionErrorManager = new EventManager<ConnectionErrorEvent>();
-      private EventManager<GameStartedEvent> onGameStartedManager = new EventManager<GameStartedEvent>();
-      private EventManager<GameEndedEvent> onGameEndedManager = new EventManager<GameEndedEvent>();
-      private EventManager<TickEvent> onTickManager = new EventManager<TickEvent>();
-      private EventManager<SkippedTurnEvent> onSkippedTurnManager = new EventManager<SkippedTurnEvent>();
-      private EventManager<BotDeathEvent> onDeathManager = new EventManager<BotDeathEvent>();
-      private EventManager<BotDeathEvent> onBotDeathManager = new EventManager<BotDeathEvent>();
-      private EventManager<BotHitBotEvent> onHitBotManager = new EventManager<BotHitBotEvent>();
-      private EventManager<BotHitWallEvent> onHitWallManager = new EventManager<BotHitWallEvent>();
-      private EventManager<BulletFiredEvent> onBulletFiredManager = new EventManager<BulletFiredEvent>();
-      private EventManager<BulletHitBotEvent> onHitByBulletManager = new EventManager<BulletHitBotEvent>();
-      private EventManager<BulletHitBotEvent> onBulletHitManager = new EventManager<BulletHitBotEvent>();
-      private EventManager<BulletHitBulletEvent> onBulletHitBulletManager = new EventManager<BulletHitBulletEvent>();
-      private EventManager<BulletHitWallEvent> onBulletHitWallManager = new EventManager<BulletHitWallEvent>();
-      private EventManager<ScannedBotEvent> onScannedBotManager = new EventManager<ScannedBotEvent>();
-      private EventManager<WonRoundEvent> onWonRoundManager = new EventManager<WonRoundEvent>();
+      internal EventManager<ConnectedEvent> onConnectedManager = new EventManager<ConnectedEvent>();
+      internal EventManager<DisconnectedEvent> onDisconnectedManager = new EventManager<DisconnectedEvent>();
+      internal EventManager<ConnectionErrorEvent> onConnectionErrorManager = new EventManager<ConnectionErrorEvent>();
+      internal EventManager<GameStartedEvent> onGameStartedManager = new EventManager<GameStartedEvent>();
+      internal EventManager<GameEndedEvent> onGameEndedManager = new EventManager<GameEndedEvent>();
+      internal EventManager<TickEvent> onTickManager = new EventManager<TickEvent>();
+      internal EventManager<SkippedTurnEvent> onSkippedTurnManager = new EventManager<SkippedTurnEvent>();
+      internal EventManager<BotDeathEvent> onDeathManager = new EventManager<BotDeathEvent>();
+      internal EventManager<BotDeathEvent> onBotDeathManager = new EventManager<BotDeathEvent>();
+      internal EventManager<BotHitBotEvent> onHitBotManager = new EventManager<BotHitBotEvent>();
+      internal EventManager<BotHitWallEvent> onHitWallManager = new EventManager<BotHitWallEvent>();
+      internal EventManager<BulletFiredEvent> onBulletFiredManager = new EventManager<BulletFiredEvent>();
+      internal EventManager<BulletHitBotEvent> onHitByBulletManager = new EventManager<BulletHitBotEvent>();
+      internal EventManager<BulletHitBotEvent> onBulletHitManager = new EventManager<BulletHitBotEvent>();
+      internal EventManager<BulletHitBulletEvent> onBulletHitBulletManager = new EventManager<BulletHitBulletEvent>();
+      internal EventManager<BulletHitWallEvent> onBulletHitWallManager = new EventManager<BulletHitWallEvent>();
+      internal EventManager<ScannedBotEvent> onScannedBotManager = new EventManager<ScannedBotEvent>();
+      internal EventManager<WonRoundEvent> onWonRoundManager = new EventManager<WonRoundEvent>();
 
       // Events
-      private event EventManager<ConnectedEvent>.EventHandler OnConnected;
-      private event EventManager<DisconnectedEvent>.EventHandler OnDisconnected;
-      private event EventManager<ConnectionErrorEvent>.EventHandler OnConnectionError;
-      private event EventManager<GameStartedEvent>.EventHandler OnGameStarted;
-      private event EventManager<GameEndedEvent>.EventHandler OnGameEnded;
-      private event EventManager<TickEvent>.EventHandler OnTick;
-      private event EventManager<SkippedTurnEvent>.EventHandler OnSkippedTurn;
-      private event EventManager<BotDeathEvent>.EventHandler OnDeath;
-      private event EventManager<BotDeathEvent>.EventHandler OnBotDeath;
-      private event EventManager<BotHitBotEvent>.EventHandler OnHitBot;
-      private event EventManager<BotHitWallEvent>.EventHandler OnHitWall;
-      private event EventManager<BulletFiredEvent>.EventHandler OnBulletFired;
-      private event EventManager<BulletHitBotEvent>.EventHandler OnHitByBullet;
-      private event EventManager<BulletHitBotEvent>.EventHandler OnBulletHit;
-      private event EventManager<BulletHitBulletEvent>.EventHandler OnBulletHitBullet;
-      private event EventManager<BulletHitWallEvent>.EventHandler OnBulletHitWall;
-      private event EventManager<ScannedBotEvent>.EventHandler OnScannedBot;
-      private event EventManager<WonRoundEvent>.EventHandler OnWonRound;
+      internal event EventManager<ConnectedEvent>.EventHandler OnConnected;
+      internal event EventManager<DisconnectedEvent>.EventHandler OnDisconnected;
+      internal event EventManager<ConnectionErrorEvent>.EventHandler OnConnectionError;
+      internal event EventManager<GameStartedEvent>.EventHandler OnGameStarted;
+      internal event EventManager<GameEndedEvent>.EventHandler OnGameEnded;
+      internal event EventManager<TickEvent>.EventHandler OnTick;
+      internal event EventManager<SkippedTurnEvent>.EventHandler OnSkippedTurn;
+      internal event EventManager<BotDeathEvent>.EventHandler OnDeath;
+      internal event EventManager<BotDeathEvent>.EventHandler OnBotDeath;
+      internal event EventManager<BotHitBotEvent>.EventHandler OnHitBot;
+      internal event EventManager<BotHitWallEvent>.EventHandler OnHitWall;
+      internal event EventManager<BulletFiredEvent>.EventHandler OnBulletFired;
+      internal event EventManager<BulletHitBotEvent>.EventHandler OnHitByBullet;
+      internal event EventManager<BulletHitBotEvent>.EventHandler OnBulletHit;
+      internal event EventManager<BulletHitBulletEvent>.EventHandler OnBulletHitBullet;
+      internal event EventManager<BulletHitWallEvent>.EventHandler OnBulletHitWall;
+      internal event EventManager<ScannedBotEvent>.EventHandler OnScannedBot;
+      internal event EventManager<WonRoundEvent>.EventHandler OnWonRound;
 
       // AutoMapper configuration
       private MapperConfiguration mapperConfig = new MapperConfiguration(cfg =>
