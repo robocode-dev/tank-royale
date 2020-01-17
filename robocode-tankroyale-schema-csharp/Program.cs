@@ -98,6 +98,9 @@ namespace Robocode.TankRoyale.SchemaCodeGenerator
                 text = text.Replace("public enum YamlType", "public enum " + classNameType)
                     .Replace("public YamlType Type", "public " + classNameType + " Type");
 
+                // Replace MessageType enums with a string using for serializing the type
+                text = text.Replace("public MessageType Type", "public string Type");
+
                 // Write the source file to the destination folder
                 var outputFilename = destDir + '/' + className + ".cs";
                 File.WriteAllText(outputFilename, text);
