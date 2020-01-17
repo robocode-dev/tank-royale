@@ -23,6 +23,7 @@ interface IGameSetup {
     val isTurnTimeoutLocked: Boolean
     val readyTimeout: Int
     val isReadyTimeoutLocked: Boolean
+    val defaultTurnsPerSecond: Int
 
     fun toGameSetup(): GameSetup {
         return GameSetup(
@@ -44,7 +45,8 @@ interface IGameSetup {
             turnTimeout,
             isTurnTimeoutLocked,
             readyTimeout,
-            isReadyTimeoutLocked
+            isReadyTimeoutLocked,
+            defaultTurnsPerSecond
         )
     }
 }

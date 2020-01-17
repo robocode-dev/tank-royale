@@ -28,7 +28,8 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
                 turnTimeout = 30_000, // 30 milliseconds
                 isTurnTimeoutLocked = false,
                 readyTimeout = 1_000_000, // 1 second
-                isReadyTimeoutLocked = false
+                isReadyTimeoutLocked = false,
+                defaultTurnsPerSecond = 30
             ),
             GameType.CLASSIC.type to GameSetup(
                 gameType = GameType.CLASSIC.type,
@@ -49,7 +50,8 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
                 turnTimeout = 30_000, // 30 milliseconds
                 isTurnTimeoutLocked = false,
                 readyTimeout = 1_000_000, // 1 second
-                isReadyTimeoutLocked = false
+                isReadyTimeoutLocked = false,
+                defaultTurnsPerSecond = 30
             ),
             GameType.MELEE.type to GameSetup(
                 gameType = GameType.MELEE.type,
@@ -70,7 +72,8 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
                 turnTimeout = 30_000, // 30 milliseconds
                 isTurnTimeoutLocked = false,
                 readyTimeout = 1_000_000, // 1 second
-                isReadyTimeoutLocked = false
+                isReadyTimeoutLocked = false,
+                defaultTurnsPerSecond = 30
             ),
             GameType.ONE_VS_ONE.type to GameSetup(
                 gameType = GameType.ONE_VS_ONE.type,
@@ -91,7 +94,8 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
                 turnTimeout = 30_000, // 30 milliseconds
                 isTurnTimeoutLocked = false,
                 readyTimeout = 1_000_000, // 1 second
-                isReadyTimeoutLocked = false
+                isReadyTimeoutLocked = false,
+                defaultTurnsPerSecond = 30
             )
         )
 

@@ -21,7 +21,8 @@ data class MutableGameSetup(
     override var turnTimeout: Int,
     override var isTurnTimeoutLocked: Boolean,
     override var readyTimeout: Int,
-    override var isReadyTimeoutLocked: Boolean
+    override var isReadyTimeoutLocked: Boolean,
+    override var defaultTurnsPerSecond: Int
 ) : IGameSetup {
 
     fun copy(other: IGameSetup) {
@@ -44,5 +45,6 @@ data class MutableGameSetup(
         isTurnTimeoutLocked = other.isTurnTimeoutLocked
         readyTimeout = other.readyTimeout
         isReadyTimeoutLocked = other.isReadyTimeoutLocked
+        defaultTurnsPerSecond = other.defaultTurnsPerSecond
     }
 }
