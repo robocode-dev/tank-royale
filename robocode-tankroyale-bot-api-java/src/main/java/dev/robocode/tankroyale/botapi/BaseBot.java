@@ -90,7 +90,7 @@ public abstract class BaseBot implements IBaseBot {
   @Override
   public final void go() {
     // Send the bot intent to the server
-    __internals.sendBotIntent();
+    __internals.sendIntent();
   }
 
   @Override
@@ -472,7 +472,7 @@ public abstract class BaseBot implements IBaseBot {
       }
     }
 
-    private void sendBotIntent() {
+    private void sendIntent() {
       socket.sendText(gson.toJson(botIntent));
     }
 
