@@ -23,6 +23,7 @@ public final class GameSetupToGameSetupMapper {
 		setup.setMaxInactivityTurns(gameSetup.getInactivityTurns());
 		setup.setTurnTimeout(gameSetup.getTurnTimeout());
 		setup.setReadyTimeout(gameSetup.getReadyTimeout());
+		setup.setDefaultTurnsPerSecond(gameSetup.getDefaultTurnsPerSecond());
 
 		setup.setIsArenaWidthLocked(gameSetup.isArenaWidthLocked());
 		setup.setIsArenaHeightLocked(gameSetup.isArenaHeightLocked());
@@ -69,6 +70,9 @@ public final class GameSetupToGameSetupMapper {
 		}
 		if (gameSetup.getReadyTimeout() != null) {
 			builder.readyTimeout(gameSetup.getReadyTimeout());
+		}
+		if (gameSetup.getDefaultTurnsPerSecond() != null) {
+			builder.defaultTurnsPerSecond(gameSetup.getDefaultTurnsPerSecond());
 		}
 		return builder.build();
 	}

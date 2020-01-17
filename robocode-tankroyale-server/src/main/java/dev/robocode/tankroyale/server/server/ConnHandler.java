@@ -207,7 +207,14 @@ public final class ConnHandler {
 
         JsonElement jsonType = jsonObject.get(TYPE);
         if (jsonType != null) {
-          Message.Type type = Message.Type.fromValue(jsonType.getAsString());
+          Message.Type type = null;
+          try {
+            type = Message.Type.fromValue(jsonType.getAsString());
+          } catch (IllegalArgumentException ex) {
+            notifyException(new IllegalStateException("Unhandled message type: " + jsonType.getAsString()));
+            return;
+          }
+
           logger.debug("Handling message: " + type);
 
           switch (type) {
