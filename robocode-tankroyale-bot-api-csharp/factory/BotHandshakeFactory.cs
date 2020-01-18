@@ -8,7 +8,7 @@ namespace Robocode.TankRoyale.BotApi
     public static BotHandshake Create(BotInfo botInfo)
     {
       var handshake = new BotHandshake();
-      handshake.Type = MessageType.BotHandshake;
+      handshake.Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotHandshake);
       handshake.Name = botInfo.Name;
       handshake.Version = botInfo.Version;
       handshake.Author = botInfo.Author;

@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Robocode.TankRoyale.BotApi
 {
-  public abstract class Bot : BaseBot, IBot
+  public class Bot : BaseBot, IBot
   {
     readonly __BotInternals __botInternals;
 
@@ -240,7 +240,7 @@ namespace Robocode.TankRoyale.BotApi
       private int turnNumber;
 
       internal Thread thread;
-      private readonly ManualResetEvent isBlocked = new ManualResetEvent(false);
+      private EventWaitHandle isBlocked = new ManualResetEvent(false);
       private volatile bool isRunning;
 
       public __BotInternals(IBot parent)

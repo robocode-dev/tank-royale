@@ -13,7 +13,7 @@ namespace Robocode.TankRoyale.Schema
     public class Message 
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
-        public MessageType Type { get; set; }
+        public string Type { get; set; }
     
     
     }

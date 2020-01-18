@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -421,7 +422,11 @@ namespace Robocode.TankRoyale.BotApi
     /// Event handler triggered when game has started.
     /// </summary>
     /// <param name="gameStatedEvent">Event details from the game</param>
-    void OnGameStarted(GameStartedEvent gameStatedEvent) { }
+    void OnGameStarted(GameStartedEvent gameStatedEvent)
+    {
+      Console.WriteLine("## OnGameStarted");
+
+    }
 
     /// <summary>
     /// Event handler triggered when game has ended.

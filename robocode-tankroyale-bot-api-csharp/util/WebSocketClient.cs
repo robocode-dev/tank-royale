@@ -43,7 +43,7 @@ namespace Robocode.TankRoyale.BotApi
     private ClientWebSocket socket = new ClientWebSocket();
     private Uri uri;
 
-    private CancellationTokenSource receiveCancelSource = new CancellationTokenSource();
+    private CancellationTokenSource cancelSource = new CancellationTokenSource();
 
     /// <summary>Constructor.</summary>
     /// <param name="uri">Is the server URI</param>
@@ -63,7 +63,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>Disconnect from the server.</summary>
     public void Disconnect()
     {
-      receiveCancelSource.Cancel(); // signal that ReceiveAsync() should cancel
+      cancelSource.Cancel(); // signal that ReceiveAsync() should cancel
       socket.CloseOutputAsync(WebSocketCloseStatus.Empty, null /* when empty */, CancellationToken.None);
       OnDisconnected(false /* not remote */);
     }
@@ -75,20 +75,20 @@ namespace Robocode.TankRoyale.BotApi
       socket.SendAsync(Encoding.UTF8.GetBytes(text), WebSocketMessageType.Text, true, CancellationToken.None);
     }
 
-    private async void HandleIncomingMessages()
+    private void HandleIncomingMessages()
     {
       try
       {
         ArraySegment<Byte> buffer = new ArraySegment<byte>(new Byte[8192]);
         WebSocketReceiveResult result = null;
 
-        while (!receiveCancelSource.IsCancellationRequested)
+        while (!cancelSource.IsCancellationRequested)
         {
           using (var ms = new MemoryStream())
           {
             do
             {
-              result = await socket.ReceiveAsync(buffer, receiveCancelSource.Token);
+              result = socket.ReceiveAsync(buffer, cancelSource.Token).GetAwaiter().GetResult();
               ms.Write(buffer.Array, buffer.Offset, result.Count);
             }
             while (!result.EndOfMessage);

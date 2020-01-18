@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
@@ -43,6 +45,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="radarSweep">Radar sweep angle in degrees, i.e. angle between previous and current radar direction.</param>
     /// <param name="speed">Speed measured in pixels per turn.</param>
     /// <param name="gunHeat">Gun heat.</param>
+    [JsonConstructor]
     BotState(double energy, double x, double y, double direction, double gunDirection,
       double radarDirection, double radarSweep, double speed, double gunHeat) =>
       (Energy, X, Y, Direction, GunDirection, RadarDirection, RadarSweep, Speed, GunHeat) =

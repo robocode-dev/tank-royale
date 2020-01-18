@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Newtonsoft.Json;
 using AutoMapper;
 using Robocode.TankRoyale.Schema;
@@ -10,7 +11,7 @@ namespace Robocode.TankRoyale.BotApi
   /// Abstract Bot containing convenient methods for movement, turning, and firing the gun.
   /// Most bots should inherit from this class.
   /// </summary>
-  public abstract class BaseBot : IBaseBot
+  public class BaseBot : IBaseBot
   {
     internal readonly __Internals __internals;
 
@@ -59,11 +60,12 @@ namespace Robocode.TankRoyale.BotApi
     public void Start()
     {
       __internals.Connect();
+      __internals.exitEvent.WaitOne();
     }
 
     public void Go()
     {
-      __internals.SendBotIntent();
+      __internals.SendIntent();
     }
 
     public String Variant
@@ -339,6 +341,8 @@ namespace Robocode.TankRoyale.BotApi
       private WebSocketClient socket;
       private ServerHandshake serverHandshake = null;
 
+      internal EventWaitHandle exitEvent = new ManualResetEvent(false);
+
       // Current game states:
       private int? myId = null;
       private GameSetup gameSetup = null;
@@ -420,7 +424,7 @@ namespace Robocode.TankRoyale.BotApi
       {
         socket = new WebSocketClient((serverUri == null) ? ServerUriFromSetting : serverUri);
 
-        botIntent.Type = MessageType.BotIntent; // must be set
+        botIntent.Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotIntent); // must be set
 
         mapper = mapperConfig.CreateMapper();
 
@@ -515,7 +519,7 @@ namespace Robocode.TankRoyale.BotApi
         myId = null;
       }
 
-      internal void SendBotIntent()
+      internal void SendIntent()
       {
         try
         {
@@ -638,6 +642,7 @@ namespace Robocode.TankRoyale.BotApi
         if (!string.IsNullOrWhiteSpace(type))
         {
           var msgType = (MessageType)Enum.Parse(typeof(MessageType), type);
+          Console.WriteLine($"#### {msgType}");
           switch (msgType)
           {
             case MessageType.TickEventForBot:
@@ -667,6 +672,7 @@ namespace Robocode.TankRoyale.BotApi
 
         // Reply by sending bot handshake
         var botHandshake = BotHandshakeFactory.Create(botInfo);
+        botHandshake.Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotHandshake);
         var text = JsonConvert.SerializeObject(botHandshake);
 
         socket.SendTextMessage(text);
@@ -681,7 +687,7 @@ namespace Robocode.TankRoyale.BotApi
 
         // Send ready signal
         BotReady ready = new BotReady();
-        ready.Type = MessageType.BotReady;
+        ready.Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotReady);
 
         var text = JsonConvert.SerializeObject(ready);
         socket.SendTextMessage(text);
@@ -711,7 +717,7 @@ namespace Robocode.TankRoyale.BotApi
 
       private void HandleTickEvent(string json)
       {
-        var tickEventForBot = JsonConvert.DeserializeObject<TickEventForBot>(json);
+        var tickEventForBot = JsonConvert.DeserializeObject<TickEvent>(json);
         currentTurn = mapper.Map<TickEvent>(tickEventForBot);
 
         // Dispatch all on the tick event before the tick event itself

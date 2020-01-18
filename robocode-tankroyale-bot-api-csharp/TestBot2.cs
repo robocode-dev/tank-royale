@@ -17,12 +17,12 @@ public class TestBot2 : Bot
 
     Uri serverUri = new Uri("ws://localhost:55000");
 
-    new TestBot2().Start();
+    new TestBot2(botInfo, serverUri).Start();
   }
 
   private double move = 200;
 
-  private TestBot2() : base() { }
+  private TestBot2(BotInfo botInfo, Uri serverUri) : base(botInfo, serverUri) { }
 
   public void OnConnected(ConnectedEvent evt)
   {
