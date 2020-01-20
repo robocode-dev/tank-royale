@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.botapi;
 import lombok.val;
 
 import java.net.URI;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.Math.abs;
 
@@ -237,7 +236,7 @@ public abstract class Bot extends BaseBot implements IBot {
     private int turnNumber;
 
     private Thread thread;
-    private final AtomicBoolean isBlocked = new AtomicBoolean();
+    private final Object nextTurn = new Object();
     private volatile boolean isRunning;
 
     private __Internals() {
@@ -305,11 +304,12 @@ public abstract class Bot extends BaseBot implements IBot {
       }
 
       // Unblock waiting methods
-      synchronized (isBlocked) {
-        if (isBlocked.get()) {
-          go();
-          isBlocked.notifyAll();
-        }
+      synchronized (nextTurn) {
+        // Let's go ;-)
+        go();
+
+        // Unblock waiting methods waiting for the next turn
+        nextTurn.notifyAll();
       }
     }
 
@@ -518,16 +518,16 @@ public abstract class Bot extends BaseBot implements IBot {
     }
 
     private void await(ICondition condition) {
-      synchronized (isBlocked) {
-        isBlocked.set(true);
+      synchronized (nextTurn) {
+        // Loop while bot is running and condition has not been met
         while (isRunning && !condition.test()) {
           try {
-            isBlocked.wait();
+            // Wait for next turn
+            nextTurn.wait();
           } catch (InterruptedException e) {
             isRunning = false;
           }
         }
-        isBlocked.set(false);
       }
     }
   }
