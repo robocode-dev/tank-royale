@@ -320,6 +320,41 @@ namespace Robocode.TankRoyale.BotApi
       return 1 + (firepower / 5);
     }
 
+    public virtual void OnConnected(ConnectedEvent connectedEvent) { }
+
+    public virtual void OnDisconnected(DisconnectedEvent disconnectedEvent) { }
+
+    public virtual void OnConnectionError(ConnectionErrorEvent connectionErrorEvent) { }
+
+    public virtual void OnGameStarted(GameStartedEvent gameStatedEvent) { }
+
+    public virtual void OnGameEnded(GameEndedEvent gameEndedEvent) { }
+
+    public virtual void OnTick(TickEvent tickEvent) { }
+
+    public virtual void OnBotDeath(BotDeathEvent botDeathEvent) { }
+
+    public virtual void OnHitBot(BotHitBotEvent botHitBotEvent) { }
+
+    public virtual void OnHitWall(BotHitWallEvent botHitWallEvent) { }
+
+    public virtual void OnBulletFired(BulletFiredEvent bulletFiredEvent) { }
+
+    public virtual void OnHitByBullet(BulletHitBotEvent bulletHitBotEvent) { }
+
+    public virtual void OnBulletHit(BulletHitBotEvent bulletHitBotEvent) { }
+
+    public virtual void OnBulletHitBullet(BulletHitBulletEvent bulletHitBulletEvent) { }
+
+    public virtual void OnBulletHitWall(BulletHitWallEvent bulletHitWallEvent) { }
+
+    public virtual void OnScannedBot(ScannedBotEvent scannedBotEvent) { }
+
+    public virtual void OnSkippedTurn(SkippedTurnEvent skippedTurnEvent) { }
+
+    public virtual void OnWonRound(WonRoundEvent wonRoundEvent) { }
+
+
     internal class __Internals
     {
       private const string NotConnectedToServerMsg =
@@ -642,7 +677,6 @@ namespace Robocode.TankRoyale.BotApi
         if (!string.IsNullOrWhiteSpace(type))
         {
           var msgType = (MessageType)Enum.Parse(typeof(MessageType), type);
-          Console.WriteLine($"#### {msgType}");
           switch (msgType)
           {
             case MessageType.TickEventForBot:
