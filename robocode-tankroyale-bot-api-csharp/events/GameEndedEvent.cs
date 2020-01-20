@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -18,6 +19,7 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <param name="turnNumber">Turn number.</param>
     /// <param name="victimId">ID of the bot that has died.</param>
+    [JsonConstructor]
     public GameEndedEvent(int numberOfRounds, List<BotResults> results) : base() =>
       (NumberOfRounds, Results) = (numberOfRounds, results);
   }

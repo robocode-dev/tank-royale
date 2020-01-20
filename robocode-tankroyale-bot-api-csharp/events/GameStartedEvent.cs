@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -18,6 +18,7 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <param name="myId">The ID used for identifying your bot in the current battle.</param>
     /// <param name="gameSetup">The game setup for the battle just started.</param>
+    [JsonConstructor]
     public GameStartedEvent(int myId, GameSetup gameSetup) : base() =>
       (MyId, GameSetup) = (myId, gameSetup);
   }

@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -14,6 +15,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Constructor.
     /// </summary>
     /// <param name="exception">The exception causing the error.</param>
+    [JsonConstructor]
     public ConnectionErrorEvent(Exception exception) => Exception = exception;
   }
 }

@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
@@ -12,6 +14,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Constructor.
     /// </summary>
     /// <param name="remote">Indication if closing of the connection was initiated by the remote host.</param>
+    [JsonConstructor]
     public DisconnectedEvent(bool remote) => Remote = remote;
   }
 }

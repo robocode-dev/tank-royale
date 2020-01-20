@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
@@ -18,6 +20,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="bullet">Bullet that hit another bullet.</param>
     /// <param name="hitBullet">The other bullet that was hit by the bullet.</param>
     /// <returns></returns>
+    [JsonConstructor]
     public BulletHitBulletEvent(int turnNumber, BulletState bullet, BulletState hitBullet) : base(turnNumber) =>
       (Bullet, HitBullet) = (bullet, hitBullet);
   }

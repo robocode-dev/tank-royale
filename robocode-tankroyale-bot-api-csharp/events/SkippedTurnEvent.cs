@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -12,8 +12,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Constructor.
     /// </summary>
     /// <param name="turnNumber">Turn number.</param>
-    public SkippedTurnEvent(int turnNumber) : base(turnNumber)
-    {
-    }
+    [JsonConstructor]
+    public SkippedTurnEvent(int turnNumber) : base(turnNumber) { }
   }
 }

@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
@@ -6,6 +8,7 @@ namespace Robocode.TankRoyale.BotApi
   public sealed class BulletHitBotEvent : Event
   {
     /// <summary>ID of the victim bot that got hit.<summary>
+    [Newtonsoft.Json.JsonProperty("victimId", Required = Newtonsoft.Json.Required.Always)]
     public int VictimId { get; }
 
     /// <summary>Bullet that hit the bot.<summary>
@@ -24,6 +27,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="bullet">Bullet that hit the bot.</param>
     /// <param name="damage">Damage inflicted by the bullet.</param>
     /// <param name="energy">Remaining energy level of the bot that got hit.</param>
+    [JsonConstructor]
     public BulletHitBotEvent(int turnNumber, int victimId, BulletState bullet, double damage, double energy) : base(turnNumber) =>
       (VictimId, Bullet, Damage, Energy) = (victimId, bullet, damage, energy);
   }

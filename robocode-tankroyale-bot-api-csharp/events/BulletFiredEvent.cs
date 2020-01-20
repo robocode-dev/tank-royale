@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
@@ -13,6 +15,7 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <param name="turnNumber">Turn number.</param>
     /// <param name="bullet">Bullet that was fired.</param>
+    [JsonConstructor]
     public BulletFiredEvent(int turnNumber, BulletState bullet) : base(turnNumber) => Bullet = bullet;
   }
 }

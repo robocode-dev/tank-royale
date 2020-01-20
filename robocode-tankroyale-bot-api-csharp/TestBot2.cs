@@ -24,20 +24,18 @@ public class TestBot2 : Bot
 
   private TestBot2(BotInfo botInfo, Uri serverUri) : base(botInfo, serverUri) { }
 
-  public void OnConnected(ConnectedEvent evt)
+  public override void OnConnected(ConnectedEvent evt)
   {
     Console.WriteLine("OnConnected");
   }
 
-  public void OnDisconnected(DisconnectedEvent evt)
+  public override void OnDisconnected(DisconnectedEvent evt)
   {
     Console.WriteLine("OnDisconnected");
   }
 
-  public void OnGameStarted(GameStartedEvent evt)
+  public override void OnGameStarted(GameStartedEvent evt)
   {
-    Console.WriteLine("OnGameStarted: " + evt);
-
     SetMaxGunTurnRate(4);
     SetMaxRadarTurnRate(4);
     SetMaxSpeed(4);
@@ -48,7 +46,7 @@ public class TestBot2 : Bot
     Go();
   }
 
-  public void Run()
+  public override void Run()
   {
     while (IsRunning)
     {
@@ -59,18 +57,18 @@ public class TestBot2 : Bot
     }
   }
 
-  public void OnScannedBot(ScannedBotEvent evt)
+  public override void OnScannedBot(ScannedBotEvent evt)
   {
     Fire(1);
   }
 
-  public void OnHitWall(BotHitWallEvent ev)
+  public override void OnHitWall(BotHitWallEvent evt)
   {
     move = -move;
     SetForward(move);
   }
 
-  public void OnHitBot(BotHitBotEvent evt)
+  public override void OnHitBot(BotHitBotEvent evt)
   {
     move = -move;
     SetForward(move);

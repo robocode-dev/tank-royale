@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -23,6 +24,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Constructor.
     /// </summary>
     /// <param name="turnNumber">Turn number.</param>
+    [JsonConstructor]
     public TickEvent(int turnNumber, int roundNumber, BotState botState,
       ICollection<BulletState> bulletStates, ICollection<Event> events) : base(turnNumber) =>
       (RoundNumber, BotState, BulletStates, Events) =

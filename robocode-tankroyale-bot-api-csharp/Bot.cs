@@ -22,6 +22,8 @@ namespace Robocode.TankRoyale.BotApi
       __botInternals = new __BotInternals(this);
     }
 
+    public virtual void Run() { }
+
     public bool IsRunning => __botInternals.IsRunning;
 
     public void SetForward(double distance)
@@ -240,7 +242,8 @@ namespace Robocode.TankRoyale.BotApi
       private int turnNumber;
 
       internal Thread thread;
-      private EventWaitHandle isBlocked = new ManualResetEvent(false);
+      private readonly Object nextTurn = new Object();
+
       private volatile bool isRunning;
 
       public __BotInternals(IBot parent)
@@ -340,11 +343,13 @@ namespace Robocode.TankRoyale.BotApi
           StartThread();
         }
 
-        // Unblock waiting methods
-        lock (isBlocked)
+        lock (nextTurn)
         {
+          // Let's go ;-)
           parent.Go();
-          isBlocked.Set();
+
+          // Unblock waiting methods waiting for the next turn
+          Monitor.PulseAll(nextTurn);
         }
       }
 
@@ -601,12 +606,20 @@ namespace Robocode.TankRoyale.BotApi
 
       private void Await(Func<bool> condition)
       {
-        lock (isBlocked)
+        lock (nextTurn)
         {
-          while (IsRunning && condition.Invoke())
+          // Loop while bot is running and condition has not been met
+          while (isRunning && !condition.Invoke())
           {
-            isBlocked.WaitOne();
-            isBlocked.Reset();
+            try
+            {
+              // Wait for next turn
+              Monitor.Wait(nextTurn);
+            }
+            catch (ThreadInterruptedException)
+            {
+              isRunning = false;
+            }
           }
         }
       }

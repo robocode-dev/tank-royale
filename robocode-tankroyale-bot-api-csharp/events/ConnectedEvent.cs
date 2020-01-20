@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
@@ -6,5 +8,8 @@ namespace Robocode.TankRoyale.BotApi
   public sealed class ConnectedEvent
   {
     // Currently empty. Preserved for future
+
+    [JsonConstructor]
+    public ConnectedEvent() {}
   }
 }
