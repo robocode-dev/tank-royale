@@ -77,7 +77,6 @@ private object BootstrapDialogPanel : JPanel(MigLayout("fill")) {
         val tableModel = BDTableModel()
         table = JTooltipTable(tableModel)
 
-
         val scrollPane = JScrollPane(table)
         upperPanel.add(scrollPane)
 

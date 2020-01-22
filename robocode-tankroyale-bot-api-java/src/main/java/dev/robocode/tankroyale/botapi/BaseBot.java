@@ -366,10 +366,9 @@ public abstract class BaseBot implements IBaseBot {
         "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first";
 
     private final Gson gson;
-
     {
       val typeFactory =
-          RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class)
+          RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class, "$type")
               .registerSubtype(dev.robocode.tankroyale.schema.BotDeathEvent.class, "BotDeathEvent")
               .registerSubtype(
                   dev.robocode.tankroyale.schema.BotHitBotEvent.class, "BotHitBotEvent")
@@ -440,7 +439,7 @@ public abstract class BaseBot implements IBaseBot {
         throw new BotException("Could not create socket for URI: " + serverUri, ex);
       }
       socket.addListener(new WebSocketListener());
-      botIntent.setType(BotReady.Type.BOT_INTENT); // must be set!
+      botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
 
       onConnected.subscribe(BaseBot.this::onConnected);
       onDisconnected.subscribe(BaseBot.this::onDisconnected);
@@ -576,11 +575,11 @@ public abstract class BaseBot implements IBaseBot {
       public final void onTextMessage(WebSocket websocket, String json) {
         JsonObject jsonMsg = gson.fromJson(json, JsonObject.class);
 
-        JsonElement jsonType = jsonMsg.get("type");
+        JsonElement jsonType = jsonMsg.get("$type");
         if (jsonType != null) {
           val type = jsonType.getAsString();
 
-          switch (dev.robocode.tankroyale.schema.Message.Type.fromValue(type)) {
+          switch (dev.robocode.tankroyale.schema.Message.$type.fromValue(type)) {
             case TICK_EVENT_FOR_BOT:
               handleTickEvent(jsonMsg);
               break;
@@ -620,7 +619,7 @@ public abstract class BaseBot implements IBaseBot {
 
         // Send ready signal
         BotReady ready = new BotReady();
-        ready.setType(BotReady.Type.BOT_READY);
+        ready.set$type(BotReady.$type.BOT_READY);
 
         val msg = gson.toJson(ready);
         socket.sendText(msg);

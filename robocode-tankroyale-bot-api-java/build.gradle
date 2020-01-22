@@ -4,7 +4,7 @@ plugins {
     id 'idea'
 }
 group = 'dev.robocode.tankroyale'
-version = '0.5.4'
+version = '0.5.5'
 
 compileJava {
     sourceCompatibility = '1.8'
@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    compile 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.5.4'
+    compile 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.5.5'
     compile 'com.neovisionaries:nv-websocket-client:2.9'
     compile 'com.neovisionaries:nv-i18n:1.22'
     compile 'org.danilopianini:gson-extras:0.2.1'

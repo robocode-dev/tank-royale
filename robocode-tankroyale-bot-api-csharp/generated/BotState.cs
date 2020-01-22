@@ -6,48 +6,48 @@
 
 namespace Robocode.TankRoyale.Schema
 {
-#pragma warning disable // Disable all warnings
+    #pragma warning disable // Disable all warnings
 
-  /// <summary>Current state of a bot without an id. The id must be hidden for enemy bots</summary>
-  [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.2.0 (Newtonsoft.Json v9.0.0.0)")]
-  public class BotState
-  {
-    /// <summary>Energy level</summary>
-    [Newtonsoft.Json.JsonProperty("energy", Required = Newtonsoft.Json.Required.Always)]
-    public double Energy { get; set; }
-
-    /// <summary>X coordinate</summary>
-    [Newtonsoft.Json.JsonProperty("x", Required = Newtonsoft.Json.Required.Always)]
-    public double X { get; set; }
-
-    /// <summary>Y coordinate</summary>
-    [Newtonsoft.Json.JsonProperty("y", Required = Newtonsoft.Json.Required.Always)]
-    public double Y { get; set; }
-
-    /// <summary>Driving direction in degrees</summary>
-    [Newtonsoft.Json.JsonProperty("direction", Required = Newtonsoft.Json.Required.Always)]
-    public double Direction { get; set; }
-
-    /// <summary>Gun direction in degrees</summary>
-    [Newtonsoft.Json.JsonProperty("gunDirection", Required = Newtonsoft.Json.Required.Always)]
-    public double GunDirection { get; set; }
-
-    /// <summary>Radar direction in degrees</summary>
-    [Newtonsoft.Json.JsonProperty("radarDirection", Required = Newtonsoft.Json.Required.Always)]
-    public double RadarDirection { get; set; }
-
-    /// <summary>Radar sweep angle in degrees, i.e. angle between previous and current radar direction</summary>
-    [Newtonsoft.Json.JsonProperty("radarSweep", Required = Newtonsoft.Json.Required.Always)]
-    public double RadarSweep { get; set; }
-
-    /// <summary>Speed measured in pixel per turn</summary>
-    [Newtonsoft.Json.JsonProperty("speed", Required = Newtonsoft.Json.Required.Always)]
-    public double Speed { get; set; }
-
-    /// <summary>Gun heat</summary>
-    [Newtonsoft.Json.JsonProperty("gunHeat", Required = Newtonsoft.Json.Required.Always)]
-    public double GunHeat { get; set; }
-
-
-  }
+    /// <summary>Current state of a bot without an id. The id must be hidden for enemy bots</summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.2.0 (Newtonsoft.Json v9.0.0.0)")]
+    public class BotState 
+    {
+        /// <summary>Energy level</summary>
+        [Newtonsoft.Json.JsonProperty("energy", Required = Newtonsoft.Json.Required.Always)]
+        public double Energy { get; set; }
+    
+        /// <summary>X coordinate</summary>
+        [Newtonsoft.Json.JsonProperty("x", Required = Newtonsoft.Json.Required.Always)]
+        public double X { get; set; }
+    
+        /// <summary>Y coordinate</summary>
+        [Newtonsoft.Json.JsonProperty("y", Required = Newtonsoft.Json.Required.Always)]
+        public double Y { get; set; }
+    
+        /// <summary>Driving direction in degrees</summary>
+        [Newtonsoft.Json.JsonProperty("direction", Required = Newtonsoft.Json.Required.Always)]
+        public double Direction { get; set; }
+    
+        /// <summary>Gun direction in degrees</summary>
+        [Newtonsoft.Json.JsonProperty("gunDirection", Required = Newtonsoft.Json.Required.Always)]
+        public double GunDirection { get; set; }
+    
+        /// <summary>Radar direction in degrees</summary>
+        [Newtonsoft.Json.JsonProperty("radarDirection", Required = Newtonsoft.Json.Required.Always)]
+        public double RadarDirection { get; set; }
+    
+        /// <summary>Radar sweep angle in degrees, i.e. angle between previous and current radar direction</summary>
+        [Newtonsoft.Json.JsonProperty("radarSweep", Required = Newtonsoft.Json.Required.Always)]
+        public double RadarSweep { get; set; }
+    
+        /// <summary>Speed measured in pixel per turn</summary>
+        [Newtonsoft.Json.JsonProperty("speed", Required = Newtonsoft.Json.Required.Always)]
+        public double Speed { get; set; }
+    
+        /// <summary>Gun heat</summary>
+        [Newtonsoft.Json.JsonProperty("gunHeat", Required = Newtonsoft.Json.Required.Always)]
+        public double GunHeat { get; set; }
+    
+    
+    }
 }

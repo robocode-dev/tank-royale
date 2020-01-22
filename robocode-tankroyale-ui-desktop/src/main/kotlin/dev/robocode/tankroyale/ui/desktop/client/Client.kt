@@ -7,7 +7,6 @@ import dev.robocode.tankroyale.ui.desktop.util.Event
 import dev.robocode.tankroyale.ui.desktop.util.RegisterWsProtocolCommand
 import dev.robocode.tankroyale.ui.desktop.util.Version
 import kotlinx.serialization.PolymorphicSerializer
-import kotlinx.serialization.json.Json
 import java.io.Closeable
 import java.net.URI
 import java.util.*
@@ -53,7 +52,7 @@ object Client : AutoCloseable {
 
     private var websocket: WebSocketClient = WebSocketClient(URI(ServerSettings.defaultUrl))
 
-    private val json = Json(context = messageModule)
+    private val json = MessageConstants.Json
 
     private var gameTypes: Set<String> = HashSet()
 

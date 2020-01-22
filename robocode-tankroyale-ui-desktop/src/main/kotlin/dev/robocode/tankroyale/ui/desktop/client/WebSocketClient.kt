@@ -1,10 +1,9 @@
 package dev.robocode.tankroyale.ui.desktop.client
 
-import kotlinx.serialization.PolymorphicSerializer
-import kotlinx.serialization.json.Json
 import dev.robocode.tankroyale.ui.desktop.model.Message
-import dev.robocode.tankroyale.ui.desktop.model.messageModule
+import dev.robocode.tankroyale.ui.desktop.model.MessageConstants
 import dev.robocode.tankroyale.ui.desktop.util.Event
+import kotlinx.serialization.PolymorphicSerializer
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
@@ -18,7 +17,7 @@ class WebSocketClient(private val uri: URI) : AutoCloseable {
 
     private var client = Client()
 
-    private val json = Json(context = messageModule)
+    private val json = MessageConstants.Json
 
     fun open() {
         client.connect()

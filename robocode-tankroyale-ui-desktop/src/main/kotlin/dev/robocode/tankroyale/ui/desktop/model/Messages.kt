@@ -5,7 +5,17 @@ import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.modules.SerializersModule
+
+sealed class MessageConstants {
+    companion object {
+        val Json = Json(
+            configuration = JsonConfiguration(classDiscriminator = "\$type"),
+            context = messageModule
+        )
+    }
+}
 
 @Polymorphic
 @Serializable
@@ -150,6 +160,7 @@ data class ControllerHandshake(
 @Serializable
 @SerialName("ServerHandshake")
 data class ServerHandshake(
+//    val name: String?,
     val variant: String,
     val version: String,
     val gameTypes: Set<String>
@@ -203,7 +214,7 @@ val messageModule = SerializersModule {
 
 
 fun main() {
-    val json = Json(context = messageModule)
+    val json= MessageConstants.Json;
 
     val str = json.stringify(PolymorphicSerializer(Message::class), BotDeathEvent(1, 2))
     println(str)

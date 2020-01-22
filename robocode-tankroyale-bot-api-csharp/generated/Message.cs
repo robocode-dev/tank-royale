@@ -12,7 +12,7 @@ namespace Robocode.TankRoyale.Schema
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.2.0 (Newtonsoft.Json v9.0.0.0)")]
     public class Message 
     {
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonProperty("$type", Required = Newtonsoft.Json.Required.Always)]
         public string Type { get; set; }
     
     

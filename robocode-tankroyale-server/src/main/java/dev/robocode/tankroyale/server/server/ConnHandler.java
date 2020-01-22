@@ -44,8 +44,6 @@ public final class ConnHandler {
   private final Map<WebSocket, ControllerHandshake> controllerHandshakes =
       Collections.synchronizedMap(new HashMap<>());
 
-  private static final String TYPE = "type";
-
   private final ExecutorService executorService;
 
   ConnHandler(ServerSetup setup, ConnListener listener, String clientSecret) {
@@ -162,7 +160,7 @@ public final class ConnHandler {
       connections.add(conn);
 
       ServerHandshake hs = new ServerHandshake();
-      hs.setType(ServerHandshake.Type.SERVER_HANDSHAKE);
+      hs.set$type(ServerHandshake.$type.SERVER_HANDSHAKE);
       hs.setVariant("Tank Royale"); // Robocode Tank Royale
       hs.setVersion(Version.getVersion());
       hs.setGameTypes(setup.getGameTypes());
@@ -205,19 +203,19 @@ public final class ConnHandler {
       try {
         JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
 
-        JsonElement jsonType = jsonObject.get(TYPE);
+        JsonElement jsonType = jsonObject.get("$type");
         if (jsonType != null) {
-          Message.Type type = null;
+          Message.$type $type;
           try {
-            type = Message.Type.fromValue(jsonType.getAsString());
+            $type = Message.$type.fromValue(jsonType.getAsString());
           } catch (IllegalArgumentException ex) {
             notifyException(new IllegalStateException("Unhandled message type: " + jsonType.getAsString()));
             return;
           }
 
-          logger.debug("Handling message: " + type);
+          logger.debug("Handling message: " + $type);
 
-          switch (type) {
+          switch ($type) {
             case BOT_HANDSHAKE:
               {
                 BotHandshake handshake = gson.fromJson(message, BotHandshake.class);
@@ -308,7 +306,7 @@ public final class ConnHandler {
                 break;
               }
             default:
-              notifyException(new IllegalStateException("Unhandled message type: " + type));
+              notifyException(new IllegalStateException("Unhandled message type: " + $type));
           }
         }
       } catch (JsonSyntaxException e2) {

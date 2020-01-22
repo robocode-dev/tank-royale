@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.server.mappers;
 
 import dev.robocode.tankroyale.schema.*;
-import dev.robocode.tankroyale.schema.Message.Type;
+import dev.robocode.tankroyale.schema.Message.$type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +54,7 @@ public final class EventsToEventsMapper {
 
 	private static BotDeathEvent map(dev.robocode.tankroyale.server.events.BotDeathEvent botDeathEvent) {
 		BotDeathEvent event = new BotDeathEvent();
-		event.setType(Type.BOT_DEATH_EVENT);
+		event.set$type($type.BOT_DEATH_EVENT);
 		event.setTurnNumber(botDeathEvent.getTurnNumber());
 		event.setVictimId(botDeathEvent.getVictimId());
 		return event;
@@ -62,7 +62,7 @@ public final class EventsToEventsMapper {
 
 	private static BotHitBotEvent map(dev.robocode.tankroyale.server.events.BotHitBotEvent botHitBotEvent) {
 		BotHitBotEvent event = new BotHitBotEvent();
-		event.setType(Type.BOT_HIT_BOT_EVENT);
+		event.set$type($type.BOT_HIT_BOT_EVENT);
 		event.setTurnNumber(botHitBotEvent.getTurnNumber());
 		event.setBotId(botHitBotEvent.getBotId());
 		event.setVictimId(botHitBotEvent.getVictimId());
@@ -75,7 +75,7 @@ public final class EventsToEventsMapper {
 
 	private static BotHitWallEvent map(dev.robocode.tankroyale.server.events.BotHitWallEvent botHitWallEvent) {
 		BotHitWallEvent event = new BotHitWallEvent();
-		event.setType(Type.BOT_HIT_WALL_EVENT);
+		event.set$type($type.BOT_HIT_WALL_EVENT);
 		event.setTurnNumber(botHitWallEvent.getTurnNumber());
 		event.setVictimId(botHitWallEvent.getVictimId());
 		return event;
@@ -83,7 +83,7 @@ public final class EventsToEventsMapper {
 
 	private static BulletFiredEvent map(dev.robocode.tankroyale.server.events.BulletFiredEvent bulletFiredEvent) {
 		BulletFiredEvent event = new BulletFiredEvent();
-		event.setType(Type.BULLET_FIRED_EVENT);
+		event.set$type($type.BULLET_FIRED_EVENT);
 		event.setTurnNumber(bulletFiredEvent.getTurnNumber());
 		event.setBullet(BulletToBulletStateMapper.map(bulletFiredEvent.getBullet()));
 		return event;
@@ -91,7 +91,7 @@ public final class EventsToEventsMapper {
 
 	private static BulletHitBotEvent map(dev.robocode.tankroyale.server.events.BulletHitBotEvent bulletHitBotEvent) {
 		BulletHitBotEvent event = new BulletHitBotEvent();
-		event.setType(Type.BULLET_HIT_BOT_EVENT);
+		event.set$type($type.BULLET_HIT_BOT_EVENT);
 		event.setTurnNumber(bulletHitBotEvent.getTurnNumber());
 		event.setBullet(BulletToBulletStateMapper.map(bulletHitBotEvent.getBullet()));
 		event.setVictimId(bulletHitBotEvent.getVictimId());
@@ -102,7 +102,7 @@ public final class EventsToEventsMapper {
 
 	private static BulletHitBulletEvent map(dev.robocode.tankroyale.server.events.BulletHitBulletEvent bulletHitBulletEvent) {
 		BulletHitBulletEvent event = new BulletHitBulletEvent();
-		event.setType(Type.BULLET_HIT_BULLET_EVENT);
+		event.set$type($type.BULLET_HIT_BULLET_EVENT);
 		event.setTurnNumber(bulletHitBulletEvent.getTurnNumber());
 		event.setBullet(BulletToBulletStateMapper.map(bulletHitBulletEvent.getBullet()));
 		event.setHitBullet(BulletToBulletStateMapper.map(bulletHitBulletEvent.getHitBullet()));
@@ -111,7 +111,7 @@ public final class EventsToEventsMapper {
 
 	private static BulletHitWallEvent map(dev.robocode.tankroyale.server.events.BulletHitWallEvent bulletHitWallEvent) {
 		BulletHitWallEvent event = new BulletHitWallEvent();
-		event.setType(Type.BULLET_HIT_WALL_EVENT);
+		event.set$type($type.BULLET_HIT_WALL_EVENT);
 		event.setTurnNumber(bulletHitWallEvent.getTurnNumber());
 		event.setBullet(BulletToBulletStateMapper.map(bulletHitWallEvent.getBullet()));
 		return event;
@@ -119,7 +119,7 @@ public final class EventsToEventsMapper {
 
 	private static ScannedBotEvent map(dev.robocode.tankroyale.server.events.ScannedBotEvent scannedBotEvent) {
 		ScannedBotEvent event = new ScannedBotEvent();
-		event.setType(Type.SCANNED_BOT_EVENT);
+		event.set$type($type.SCANNED_BOT_EVENT);
 		event.setTurnNumber(scannedBotEvent.getTurnNumber());
 		event.setScannedByBotId(scannedBotEvent.getScannedByBotId());
 		event.setScannedBotId(scannedBotEvent.getScannedBotId());
@@ -133,7 +133,7 @@ public final class EventsToEventsMapper {
 
 	private static SkippedTurnEvent map(dev.robocode.tankroyale.server.events.SkippedTurnEvent skippedTurnEvent) {
 		SkippedTurnEvent event = new SkippedTurnEvent();
-		event.setType(Type.SKIPPED_TURN_EVENT);
+		event.set$type($type.SKIPPED_TURN_EVENT);
 		event.setTurnNumber(skippedTurnEvent.getTurnNumber());
 		return event;
 	}

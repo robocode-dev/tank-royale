@@ -1,13 +1,12 @@
 package dev.robocode.tankroyale.ui.desktop.bootstrap
 
+import dev.robocode.tankroyale.ui.desktop.model.MessageConstants
 import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings
 import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings.BOT_DIRS_SEPARATOR
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.util.ResourceUtil
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.parseList
 import java.io.BufferedReader
 import java.io.FileNotFoundException
@@ -28,7 +27,7 @@ object BootstrapProcess {
     private var errorThread: Thread? = null
     private val errorThreadRunning = AtomicBoolean(false)
 
-    private val json = Json(JsonConfiguration.Default)
+    private val json = MessageConstants.Json
 
     fun list(): List<BotEntry> {
         val builder = ProcessBuilder(

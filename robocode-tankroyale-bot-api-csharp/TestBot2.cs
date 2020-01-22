@@ -59,6 +59,8 @@ public class TestBot2 : Bot
 
   public override void OnScannedBot(ScannedBotEvent evt)
   {
+    Console.WriteLine("OnScannedBot");
+
     Fire(1);
   }
 

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.6.0'
+version = '0.6.1'
 
 compileJava {
     sourceCompatibility = '1.8'
@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    compile 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.5.4'
+    compile 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.5.5'
     compile 'org.danilopianini:gson-extras:0.2.1'
 
     compile 'org.java-websocket:Java-WebSocket:1.4.0'

@@ -10,7 +10,7 @@ public final class TurnToGameTickForObserverMapper {
 
 	public static TickEventForObserver map(Round round, Turn turn) {
 		TickEventForObserver tick = new TickEventForObserver();
-		tick.setType(TickEventForObserver.Type.TICK_EVENT_FOR_OBSERVER);
+		tick.set$type(TickEventForObserver.$type.TICK_EVENT_FOR_OBSERVER);
 		tick.setRoundNumber(round.getRoundNumber());
 		tick.setTurnNumber(turn.getTurnNumber());
 		tick.setBotStates(BotsToBotsWithIdMapper.map(turn.getBots()));

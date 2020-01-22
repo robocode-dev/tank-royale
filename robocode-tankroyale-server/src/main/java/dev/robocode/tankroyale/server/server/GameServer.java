@@ -101,7 +101,7 @@ public final class GameServer {
     // Send NewBattle to all participant bots to get them started
 
     GameStartedEventForBot gameStartedForBot = new GameStartedEventForBot();
-    gameStartedForBot.setType(GameStartedEventForBot.Type.GAME_STARTED_EVENT_FOR_BOT);
+    gameStartedForBot.set$type(GameStartedEventForBot.$type.GAME_STARTED_EVENT_FOR_BOT);
     gameStartedForBot.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
 
     int id = 1;
@@ -142,8 +142,8 @@ public final class GameServer {
     // Send GameStarted to all participant observers to get them started
     if (connHandler.getObserverAndControllerConnections().size() > 0) {
       GameStartedEventForObserver gameStartedForObserver = new GameStartedEventForObserver();
-      gameStartedForObserver.setType(
-          GameStartedEventForObserver.Type.GAME_STARTED_EVENT_FOR_OBSERVER);
+      gameStartedForObserver.set$type(
+          GameStartedEventForObserver.$type.GAME_STARTED_EVENT_FOR_OBSERVER);
       gameStartedForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
       gameStartedForObserver.setParticipants(participantList);
       broadcastToObserverAndControllers(gson.toJson(gameStartedForObserver));
@@ -184,7 +184,7 @@ public final class GameServer {
     runningState = RunningState.GAME_STOPPED;
 
     GameAbortedEventForObserver abortedEvent = new GameAbortedEventForObserver();
-    abortedEvent.setType(GameAbortedEventForObserver.Type.GAME_ABORTED_EVENT_FOR_OBSERVER);
+    abortedEvent.set$type(GameAbortedEventForObserver.$type.GAME_ABORTED_EVENT_FOR_OBSERVER);
     broadcastToObserverAndControllers(gson.toJson(abortedEvent));
 
     // No score is generated for aborted games
@@ -268,7 +268,7 @@ public final class GameServer {
     logger.info("Pausing game");
 
     GamePausedEventForObserver pausedEvent = new GamePausedEventForObserver();
-    pausedEvent.setType(GamePausedEventForObserver.Type.GAME_PAUSED_EVENT_FOR_OBSERVER);
+    pausedEvent.set$type(GamePausedEventForObserver.$type.GAME_PAUSED_EVENT_FOR_OBSERVER);
     broadcastToObserverAndControllers(gson.toJson(pausedEvent));
 
     runningState = RunningState.GAME_PAUSED;
@@ -281,7 +281,7 @@ public final class GameServer {
     logger.info("Resuming game");
 
     GameResumedEventForObserver resumedEvent = new GameResumedEventForObserver();
-    resumedEvent.setType(GameResumedEventForObserver.Type.GAME_RESUMED_EVENT_FOR_OBSERVER);
+    resumedEvent.set$type(GameResumedEventForObserver.$type.GAME_RESUMED_EVENT_FOR_OBSERVER);
     broadcastToObserverAndControllers(gson.toJson(resumedEvent));
 
     if (runningState == RunningState.GAME_PAUSED) {
@@ -332,7 +332,7 @@ public final class GameServer {
         (conn, id) -> {
           if (botIntents.get(conn) == null) {
             SkippedTurnEvent skippedTurnEvent = new SkippedTurnEvent();
-            skippedTurnEvent.setType(Message.Type.SKIPPED_TURN_EVENT);
+            skippedTurnEvent.set$type(Message.$type.SKIPPED_TURN_EVENT);
             skippedTurnEvent.setTurnNumber(modelUpdater.getTurnNumber());
 
             send(conn, gson.toJson(skippedTurnEvent));
@@ -365,14 +365,14 @@ public final class GameServer {
 
         // End game for bots
         GameEndedEventForBot endEventForBot = new GameEndedEventForBot();
-        endEventForBot.setType(GameEndedEventForObserver.Type.GAME_ENDED_EVENT_FOR_BOT);
+        endEventForBot.set$type(GameEndedEventForObserver.$type.GAME_ENDED_EVENT_FOR_BOT);
         endEventForBot.setNumberOfRounds(modelUpdater.getNumberOfRounds());
         endEventForBot.setResults(getResultsForBots());
         broadcastToBots(gson.toJson(endEventForBot));
 
         // End game for observers
         GameEndedEventForObserver endEventForObserver = new GameEndedEventForObserver();
-        endEventForObserver.setType(GameEndedEventForObserver.Type.GAME_ENDED_EVENT_FOR_OBSERVER);
+        endEventForObserver.set$type(GameEndedEventForObserver.$type.GAME_ENDED_EVENT_FOR_OBSERVER);
         endEventForObserver.setNumberOfRounds(modelUpdater.getNumberOfRounds());
         endEventForObserver.setResults(getResultsForObservers()); // Use the stored score!
         broadcastToObserverAndControllers(gson.toJson(endEventForObserver));
@@ -432,7 +432,7 @@ public final class GameServer {
 
   private String createBotListUpdateMessage() {
     BotListUpdate botListUpdate = new BotListUpdate();
-    botListUpdate.setType(Message.Type.BOT_LIST_UPDATE);
+    botListUpdate.set$type(Message.$type.BOT_LIST_UPDATE);
     List<BotInfo> bots = new ArrayList<>();
     botListUpdate.setBots(bots);
 

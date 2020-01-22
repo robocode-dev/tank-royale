@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using AutoMapper;
 using Robocode.TankRoyale.Schema;
 
@@ -673,7 +674,7 @@ namespace Robocode.TankRoyale.BotApi
       private void HandleTextMessage(string json)
       {
         var jsonMsg = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-        var type = (string)jsonMsg["type"];
+        var type = (string)jsonMsg["$type"];
         if (!string.IsNullOrWhiteSpace(type))
         {
           var msgType = (MessageType)Enum.Parse(typeof(MessageType), type);
@@ -755,17 +756,19 @@ namespace Robocode.TankRoyale.BotApi
         currentTurn = mapper.Map<TickEvent>(tickEventForBot);
 
         // Dispatch all on the tick event before the tick event itself
-        DispatchEvents(currentTurn);
+        JObject jsonResponse = JsonConvert.DeserializeObject<JObject>(json);
+        //        var events = jsonResponse["events"].ToObject<List<Event>>();
+        //        DispatchEvents(events);
 
         OnTick(currentTurn);
       }
 
-      private void DispatchEvents(TickEvent tickEvent)
+      private void DispatchEvents(List<Event> events)
       {
-        foreach (var te in tickEvent.Events)
+        foreach (var evt in events)
         {
-          switch (te)
-          {
+          switch (EnumUtil.GetEnumMemberAttrValue(evt))
+          {/*
             case BotDeathEvent botDeathEvent:
               if (botDeathEvent.VictimId == MyId)
                 OnDeath(botDeathEvent);
@@ -801,18 +804,23 @@ namespace Robocode.TankRoyale.BotApi
             case BulletHitWallEvent bulletHitWallEvent:
               OnBulletHitWall(bulletHitWallEvent);
               break;
+*/
+            /*            case "ScannedBotEvent":
+                          OnScannedBot((ScannedBotEvent)te);
+                          break;*/
+            /*
+                        case SkippedTurnEvent skippedTurnEvent:
+                          OnSkippedTurn(skippedTurnEvent);
+                          break;
 
-            case ScannedBotEvent scannedBotEvent:
-              OnScannedBot(scannedBotEvent);
+                        case WonRoundEvent wonRoundEvent:
+                          OnWonRound(wonRoundEvent);
+                          break;
+*/
+            default:
+              Console.WriteLine(evt);
               break;
 
-            case SkippedTurnEvent skippedTurnEvent:
-              OnSkippedTurn(skippedTurnEvent);
-              break;
-
-            case WonRoundEvent wonRoundEvent:
-              OnWonRound(wonRoundEvent);
-              break;
           }
         }
       }
