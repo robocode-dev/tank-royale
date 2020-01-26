@@ -46,9 +46,18 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="speed">Speed measured in pixels per turn.</param>
     /// <param name="gunHeat">Gun heat.</param>
     [JsonConstructor]
-    BotState(double energy, double x, double y, double direction, double gunDirection,
-      double radarDirection, double radarSweep, double speed, double gunHeat) =>
-      (Energy, X, Y, Direction, GunDirection, RadarDirection, RadarSweep, Speed, GunHeat) =
-      (energy, x, y, direction, gunDirection, radarDirection, radarSweep, speed, gunHeat);
+    public BotState(double energy, double x, double y, double direction, double gunDirection,
+      double radarDirection, double radarSweep, double speed, double gunHeat)
+    {
+      Energy = energy;
+      X = x;
+      Y = y;
+      Direction = direction;
+      GunDirection = gunDirection;
+      RadarDirection = radarDirection;
+      RadarSweep = radarSweep;
+      Speed = speed;
+      GunHeat = gunHeat;
+    }
   }
 }

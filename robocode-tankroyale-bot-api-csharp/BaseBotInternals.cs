@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using AutoMapper;
+using Newtonsoft.Json.Serialization;
 using Robocode.TankRoyale.Schema;
+using System.Linq;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -83,25 +83,6 @@ namespace Robocode.TankRoyale.BotApi
       internal event EventManager<ScannedBotEvent>.EventHandler OnScannedBot;
       internal event EventManager<WonRoundEvent>.EventHandler OnWonRound;
 
-      // AutoMapper configuration
-      private MapperConfiguration mapperConfig = new MapperConfiguration(cfg =>
-      {
-        cfg.CreateMap<Robocode.TankRoyale.Schema.GameSetup, Robocode.TankRoyale.BotApi.GameSetup>();
-        cfg.CreateMap<Robocode.TankRoyale.Schema.BotResultsForBot, Robocode.TankRoyale.BotApi.BotResults>();
-        cfg.CreateMap<Robocode.TankRoyale.Schema.BotDeathEvent, Robocode.TankRoyale.BotApi.BotDeathEvent>();
-        cfg.CreateMap<Robocode.TankRoyale.Schema.BotHitBotEvent, Robocode.TankRoyale.BotApi.BotHitBotEvent>();
-        cfg.CreateMap<Robocode.TankRoyale.Schema.BotHitWallEvent, Robocode.TankRoyale.BotApi.BotHitWallEvent>();
-        cfg.CreateMap<Robocode.TankRoyale.Schema.BulletFiredEvent, Robocode.TankRoyale.BotApi.BulletFiredEvent>();
-        cfg.CreateMap<Robocode.TankRoyale.Schema.BulletHitBotEvent, Robocode.TankRoyale.BotApi.BulletHitBotEvent>();
-        cfg.CreateMap<Robocode.TankRoyale.Schema.BulletHitBulletEvent, Robocode.TankRoyale.BotApi.BulletHitBulletEvent>();
-        cfg.CreateMap<Robocode.TankRoyale.Schema.BulletHitWallEvent, Robocode.TankRoyale.BotApi.BulletHitWallEvent>();
-        cfg.CreateMap<Robocode.TankRoyale.Schema.ScannedBotEvent, Robocode.TankRoyale.BotApi.ScannedBotEvent>();
-        cfg.CreateMap<Robocode.TankRoyale.Schema.SkippedTurnEvent, Robocode.TankRoyale.BotApi.SkippedTurnEvent>();
-        cfg.CreateMap<Robocode.TankRoyale.Schema.TickEventForBot, Robocode.TankRoyale.BotApi.TickEvent>();
-        cfg.CreateMap<Robocode.TankRoyale.Schema.WonRoundEvent, Robocode.TankRoyale.BotApi.WonRoundEvent>();
-      });
-      private IMapper mapper;
-
       internal BaseBotInternals(IBaseBot parent, BotInfo botInfo, Uri serverUri)
       {
         this.parent = parent;
@@ -115,8 +96,6 @@ namespace Robocode.TankRoyale.BotApi
         socket = new WebSocketClient((serverUri == null) ? ServerUriFromSetting : serverUri);
 
         botIntent.Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotIntent); // must be set
-
-        mapper = mapperConfig.CreateMapper();
 
         onConnectedManager.Add(parent.OnConnected);
         OnConnected += onConnectedManager.InvokeAll;
@@ -372,7 +351,7 @@ namespace Robocode.TankRoyale.BotApi
         var gameStartedEventForBot = JsonConvert.DeserializeObject<GameStartedEventForBot>(json);
 
         myId = gameStartedEventForBot.MyId;
-        gameSetup = mapper.Map<GameSetup>(gameStartedEventForBot.GameSetup);
+        gameSetup = GameSetupMapper.Map(gameStartedEventForBot.GameSetup);
 
         // Send ready signal
         BotReady ready = new BotReady();
@@ -392,7 +371,7 @@ namespace Robocode.TankRoyale.BotApi
 
         // Send the game ended event
         var gameEndedEventForBot = JsonConvert.DeserializeObject<GameEndedEventForBot>(json);
-        var results = mapper.Map<List<BotResults>>(gameEndedEventForBot.Results);
+        var results = ResultsMapper.Map(gameEndedEventForBot.Results);
 
         var gameEndedEvent = new GameEndedEvent(gameEndedEventForBot.NumberOfRounds, results);
         OnGameEnded(gameEndedEvent);
@@ -400,21 +379,20 @@ namespace Robocode.TankRoyale.BotApi
 
       private void HandleSkippedTurnEvent(string json)
       {
-        var skippedTurnEvent = JsonConvert.DeserializeObject<SkippedTurnEvent>(json);
-        OnSkippedTurn(mapper.Map<SkippedTurnEvent>(skippedTurnEvent));
+        var skippedTurnEvent = JsonConvert.DeserializeObject<Schema.SkippedTurnEvent>(json);
+        OnSkippedTurn((SkippedTurnEvent)EventMapper.Map(skippedTurnEvent));
       }
 
       private void HandleTickEvent(string json)
       {
-        var tickEventForBot = JsonConvert.DeserializeObject<TickEvent>(json);
-        currentTurn = mapper.Map<TickEvent>(tickEventForBot);
-
-        JObject jsonResponse = JsonConvert.DeserializeObject<JObject>(json);
+        var tickEventForBot = JsonConvert.DeserializeObject<Schema.TickEventForBot>(json);
+        currentTurn = EventMapper.Map(tickEventForBot);
+        DispatchEvents(currentTurn.Events);
 
         OnTick(currentTurn);
       }
 
-      private void DispatchEvents(List<Event> events)
+      private void DispatchEvents(IEnumerable<Event> events)
       {
         foreach (var evt in events)
         {
@@ -474,6 +452,22 @@ namespace Robocode.TankRoyale.BotApi
           }
         }
       }
+    }
+  }
+
+  public class KnownTypesBinder : ISerializationBinder
+  {
+    public IList<Type> KnownTypes { get; set; }
+
+    public Type BindToType(string assemblyName, string typeName)
+    {
+      return KnownTypes.SingleOrDefault(t => t.Name == typeName);
+    }
+
+    public void BindToName(Type serializedType, out string assemblyName, out string typeName)
+    {
+      assemblyName = null;
+      typeName = serializedType.Name;
     }
   }
 }

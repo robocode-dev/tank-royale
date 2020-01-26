@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -165,7 +164,7 @@ namespace Robocode.TankRoyale.BotApi
     ///
     /// Available when game has started.
     /// </summary>
-    int MaxInactivityTurns { get; }
+    int? MaxInactivityTurns { get; }
 
     /// <summary>
     /// Turn timeout in microseconds (1 / 1,000,000 second). The turn timeout is important as the
@@ -255,12 +254,12 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// Current bullet states.
     /// </summary>
-    ICollection<BulletState> BulletStates { get; }
+    IEnumerable<BulletState> BulletStates { get; }
 
     /// <summary>
     /// Game events received for the current turn.
     /// </summary>
-    ICollection<Event> Events { get; }
+    IEnumerable<Event> Events { get; }
 
     /// <summary>
     /// Sets the turn rate of the body in degrees per turn (can be positive and negative). The turn

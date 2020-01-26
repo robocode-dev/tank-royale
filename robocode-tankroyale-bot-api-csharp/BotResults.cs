@@ -23,6 +23,9 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>Bullet kill bonus.</summary>
     double BulletKillBonus { get; }
 
+    /// <summary>Ram damage given.</summary>
+    double RamDamage { get; }
+
     /// <summary>Ram kill bonus.</summary>
     double RamKillBonus { get; }
 
@@ -38,8 +41,22 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>Number of 3rd places.</summary>
     double ThirdPlaces { get; }
 
-    BotResults(int id, int rank, double survival, double lastSurvivorBonus, double bulletDamage, double bulletKillBonus, double ramKillBonus, double totalScore, double firstPlaces, double secondPlaces, double thirdPlaces) =>
-      (Id, Rank, Survival, LastSurvivorBonus, BulletDamage, BulletKillBonus, RamKillBonus, totalScore, FirstPlaces, SecondPlaces, ThirdPlaces) =
-      (id, rank, survival, lastSurvivorBonus, bulletDamage, bulletKillBonus, ramKillBonus, TotalScore, firstPlaces, secondPlaces, thirdPlaces);
+    public BotResults(int id, int rank, double survival, double lastSurvivorBonus, double bulletDamage,
+      double bulletKillBonus, double ramDamage, double ramKillBonus, double totalScore, double firstPlaces,
+      double secondPlaces, double thirdPlaces)
+    {
+      Id = id;
+      Rank = rank;
+      Survival = survival;
+      LastSurvivorBonus = lastSurvivorBonus;
+      BulletDamage = bulletDamage;
+      BulletKillBonus = bulletKillBonus;
+      RamDamage = ramDamage;
+      RamKillBonus = ramKillBonus;
+      TotalScore = totalScore;
+      FirstPlaces = firstPlaces;
+      SecondPlaces = secondPlaces;
+      ThirdPlaces = thirdPlaces;
+    }
   }
 }

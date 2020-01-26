@@ -104,7 +104,7 @@ namespace Robocode.TankRoyale.BotApi
       get => __baseBotInternals.GameSetup.GunCoolingRate;
     }
 
-    public int MaxInactivityTurns
+    public int? MaxInactivityTurns
     {
       get => __baseBotInternals.GameSetup.MaxInactivityTurns;
     }
@@ -178,12 +178,12 @@ namespace Robocode.TankRoyale.BotApi
       get => __baseBotInternals.CurrentTurn.BotState.GunHeat;
     }
 
-    public ICollection<BulletState> BulletStates
+    public IEnumerable<BulletState> BulletStates
     {
       get => __baseBotInternals.CurrentTurn.BulletStates;
     }
 
-    public ICollection<Event> Events
+    public IEnumerable<Event> Events
     {
       get => __baseBotInternals.CurrentTurn.Events;
     }

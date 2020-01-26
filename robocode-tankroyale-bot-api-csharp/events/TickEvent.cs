@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Robocode.TankRoyale.BotApi;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -15,10 +16,10 @@ namespace Robocode.TankRoyale.BotApi
     public BotState BotState { get; }
 
     /// <summary>Current state of the bullets fired by this bot.</summary>
-    public ICollection<BulletState> BulletStates { get; }
+    public IEnumerable<BulletState> BulletStates { get; }
 
     /// <summary>Current state of the bullets fired by this bot.</summary>
-    public ICollection<Event> Events { get; }
+    public IEnumerable<Event> Events { get; }
 
     /// <summary>
     /// Constructor.
@@ -26,7 +27,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="turnNumber">Turn number.</param>
     [JsonConstructor]
     public TickEvent(int turnNumber, int roundNumber, BotState botState,
-      ICollection<BulletState> bulletStates, ICollection<Event> events) : base(turnNumber) =>
+      IEnumerable<BulletState> bulletStates, IEnumerable<Event> events) : base(turnNumber) =>
       (RoundNumber, BotState, BulletStates, Events) =
       (roundNumber, botState, bulletStates, events);
   }

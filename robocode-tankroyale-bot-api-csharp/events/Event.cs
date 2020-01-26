@@ -1,11 +1,9 @@
-using Newtonsoft.Json;
-
 namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
   /// Event occurring during a battle.
   /// </summary>
-  public class Event : IMessage
+  public abstract class Event : IMessage
   {
     /// <summary>Turn number.</summary>
     public int TurnNumber { get; }
@@ -14,7 +12,6 @@ namespace Robocode.TankRoyale.BotApi
     /// Constructor.
     /// </summary>
     /// <param name="turnNumber">Turn number</param>
-    [JsonConstructor]
     public Event(int turnNumber) => TurnNumber = turnNumber;
   }
 }

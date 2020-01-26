@@ -14,7 +14,7 @@ namespace Robocode.TankRoyale.BotApi
     private string name;
     private string version;
     private string author;
-    private ICollection<string> gameTypes;
+    private IEnumerable<string> gameTypes;
 
     /// <summary>
     /// Name, e.g. "MyBot" (required field).
@@ -58,7 +58,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Game types accepted by the bot, e.g. "melee", "1v1". The game types defines which game types
     /// the bot is able to participate in. See <see cref="GameType"/> for using predefined game type.
     /// </summary>
-    public ICollection<string> GameTypes
+    public IEnumerable<string> GameTypes
     {
       get => gameTypes;
       set { if (value == null) { throw new NullReferenceException("GameTypes cannot be null"); } }
@@ -78,7 +78,7 @@ namespace Robocode.TankRoyale.BotApi
       string author,
       string description,
       string countryCode,
-      ICollection<string> gameTypes,
+      IEnumerable<string> gameTypes,
       string programmingLang)
     {
       if (string.IsNullOrWhiteSpace(name))
