@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.val;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +26,7 @@ class BulletStateMapper {
         .build();
   }
 
-  Set<BulletState> map(@NonNull final List<dev.robocode.tankroyale.schema.BulletState> source) {
+  Set<BulletState> map(@NonNull final Collection<dev.robocode.tankroyale.schema.BulletState> source) {
     val bulletStates = new HashSet<BulletState>();
     source.forEach(bulletState -> bulletStates.add(map(bulletState)));
     return bulletStates;

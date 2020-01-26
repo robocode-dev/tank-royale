@@ -6,8 +6,8 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.val;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /** Utility class for mapping events */
@@ -24,7 +24,7 @@ public class EventMapper {
         .build();
   }
 
-  private Set<Event> map(@NonNull final List<? extends dev.robocode.tankroyale.schema.Event> source) {
+  private Set<Event> map(@NonNull final Collection<? extends dev.robocode.tankroyale.schema.Event> source) {
     val gameEvents = new HashSet<Event>();
     source.forEach(event -> gameEvents.add(map(event)));
     return gameEvents;
