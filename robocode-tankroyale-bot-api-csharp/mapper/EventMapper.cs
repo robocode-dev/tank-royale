@@ -1,56 +1,65 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Robocode.TankRoyale.BotApi
 {
   public sealed class EventMapper
   {
-    public static TickEvent Map(Schema.TickEventForBot source)
+    public static TickEvent Map(string json)
     {
+      var source = JsonConvert.DeserializeObject<Schema.TickEventForBot>(json);
+
+      var jsonTickEvent = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+      JArray events = (JArray)jsonTickEvent["events"];
+
       return new TickEvent(
         source.TurnNumber,
         source.RoundNumber,
         BotStateMapper.Map(source.BotState),
         BulletStateMapper.Map(source.BulletStates),
-        Map(source.Events)
+        Map(events)
       );
     }
 
-    private static HashSet<Event> Map(IEnumerable<Schema.Event> source)
+    private static HashSet<Event> Map(JArray events)
     {
       var gameEvents = new HashSet<Event>();
-      foreach (var evt in source)
+      foreach (JObject evt in events)
       {
         gameEvents.Add(Map(evt));
       }
       return gameEvents;
     }
 
-    public static Event Map(Schema.Event source)
+    public static Event Map(JObject evt)
     {
-      switch (source)
+      string type = evt.GetValue("$type").ToString();
+
+      switch (type)
       {
-        case Schema.BotDeathEvent botDeathEvent:
-          return Map(botDeathEvent);
-        case Schema.BotHitBotEvent hitBotEvent:
-          return Map(hitBotEvent);
-        case Schema.BotHitWallEvent botHitWallEvent:
-          return Map(botHitWallEvent);
-        case Schema.BulletFiredEvent bulletFiredEvent:
-          return Map(bulletFiredEvent);
-        case Schema.BulletHitBotEvent bulletHitBotEvent:
-          return Map(bulletHitBotEvent);
-        case Schema.BulletHitBulletEvent bulletHitBulletEvent:
-          return Map(bulletHitBulletEvent);
-        case Schema.BulletHitWallEvent bulletHitWallEvent:
-          return Map(bulletHitWallEvent);
-        case Schema.ScannedBotEvent scannedBotEvent:
-          return Map(scannedBotEvent);
-        case Schema.SkippedTurnEvent skippedTurnEvent:
-          return Map(skippedTurnEvent);
-        case Schema.WonRoundEvent wonRoundEvent:
-          return Map(wonRoundEvent);
+        case "BotDeathEvent":
+          return Map(evt.ToObject<Schema.BotDeathEvent>());
+        case "BotHitBotEvent":
+          return Map(evt.ToObject<Schema.BotHitBotEvent>());
+        case "BotHitWallEvent":
+          return Map(evt.ToObject<Schema.BotHitWallEvent>());
+        case "BulletFiredEvent":
+          return Map(evt.ToObject<Schema.BulletFiredEvent>());
+        case "BulletHtBotEvent":
+          return Map(evt.ToObject<Schema.BulletHitBotEvent>());
+        case "BulletHtBulletEvent":
+          return Map(evt.ToObject<Schema.BulletHitBulletEvent>());
+        case "BulletHitWallEvent":
+          return Map(evt.ToObject<Schema.BulletHitWallEvent>());
+        case "ScannedBotEvent":
+          return Map(evt.ToObject<Schema.ScannedBotEvent>());
+        case "SkippedTurnEvent":
+          return Map(evt.ToObject<Schema.SkippedTurnEvent>());
+        case "WonRoundEvent":
+          return Map(evt.ToObject<Schema.WonRoundEvent>());
         default:
-          throw new BotException("No mapping exists for event type: " + source.GetType().Name);
+          throw new BotException("No mapping exists for event type: " + type);
       }
     }
 
@@ -133,7 +142,7 @@ namespace Robocode.TankRoyale.BotApi
       );
     }
 
-    private static SkippedTurnEvent Map(Schema.SkippedTurnEvent source)
+    public static SkippedTurnEvent Map(Schema.SkippedTurnEvent source)
     {
       return new SkippedTurnEvent(
         source.TurnNumber

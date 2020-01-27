@@ -377,16 +377,16 @@ namespace Robocode.TankRoyale.BotApi
         OnGameEnded(gameEndedEvent);
       }
 
-      private void HandleSkippedTurnEvent(string json)
+      public void HandleSkippedTurnEvent(string json)
       {
         var skippedTurnEvent = JsonConvert.DeserializeObject<Schema.SkippedTurnEvent>(json);
-        OnSkippedTurn((SkippedTurnEvent)EventMapper.Map(skippedTurnEvent));
+        OnSkippedTurn(EventMapper.Map(skippedTurnEvent));
       }
 
       private void HandleTickEvent(string json)
       {
         var tickEventForBot = JsonConvert.DeserializeObject<Schema.TickEventForBot>(json);
-        currentTurn = EventMapper.Map(tickEventForBot);
+        currentTurn = EventMapper.Map(json);
         DispatchEvents(currentTurn.Events);
 
         OnTick(currentTurn);
