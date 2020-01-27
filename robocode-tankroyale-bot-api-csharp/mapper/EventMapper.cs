@@ -46,9 +46,9 @@ namespace Robocode.TankRoyale.BotApi
           return Map(evt.ToObject<Schema.BotHitWallEvent>());
         case "BulletFiredEvent":
           return Map(evt.ToObject<Schema.BulletFiredEvent>());
-        case "BulletHtBotEvent":
+        case "BulletHitBotEvent":
           return Map(evt.ToObject<Schema.BulletHitBotEvent>());
-        case "BulletHtBulletEvent":
+        case "BulletHitBulletEvent":
           return Map(evt.ToObject<Schema.BulletHitBulletEvent>());
         case "BulletHitWallEvent":
           return Map(evt.ToObject<Schema.BulletHitWallEvent>());

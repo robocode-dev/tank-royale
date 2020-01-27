@@ -276,15 +276,18 @@ namespace Robocode.TankRoyale.BotApi
         {
           throw new ArgumentException("Firepower cannot be NaN");
         }
-        if (value < 0)
+        if (GunHeat == 0)
         {
-          value = 0;
+          if (value < ((IBaseBot)this).MinFirepower)
+          {
+            value = 0;
+          }
+          else if (value > ((IBaseBot)this).MaxFirepower)
+          {
+            value = ((IBaseBot)this).MaxFirepower;
+          }
+          __baseBotInternals.BotIntent.Firepower = value;
         }
-        else if (value > ((IBaseBot)this).MaxFirepower)
-        {
-          value = ((IBaseBot)this).MaxFirepower;
-        }
-        __baseBotInternals.BotIntent.Firepower = value;
       }
       get => __baseBotInternals.BotIntent.Firepower ?? 0d;
     }
