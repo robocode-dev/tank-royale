@@ -1,14 +1,18 @@
 package dev.robocode.tankroyale.botapi.events;
 
-import lombok.Builder;
-import lombok.ToString;
-import lombok.Value;
-
 /** Event occurring when bot gets disconnected from server */
-@Value
-@Builder
-@ToString
+@SuppressWarnings("unused")
 public final class DisconnectedEvent {
+
   /** Indication if closing of the connection was initiated by the remote host */
-  boolean remote;
+  private final boolean remote;
+
+  public DisconnectedEvent(boolean remote) {
+    this.remote = remote;
+  }
+
+  /** Returns true if closing the connection was initiated by the remote host; false otherwise */
+  public boolean isRemote() {
+    return remote;
+  }
 }

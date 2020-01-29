@@ -1,23 +1,21 @@
 package dev.robocode.tankroyale.botapi.events;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import lombok.Value;
 import dev.robocode.tankroyale.botapi.BulletState;
 
 /** Event occurring when a bullet has hit a wall */
-@Value
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@SuppressWarnings("unused")
 public final class BulletHitWallEvent extends Event {
-  /** Bullet that has hit a wall */
-  BulletState bullet;
 
-  @Builder
-  @SuppressWarnings("UnusedDeclaration")
-  private BulletHitWallEvent(int turnNumber, BulletState bullet) {
-    this.turnNumber = turnNumber;
+  /** Bullet that has hit a wall */
+  private final BulletState bullet;
+
+  public BulletHitWallEvent(int turnNumber, BulletState bullet) {
+    super(turnNumber);
     this.bullet = bullet;
+  }
+
+  /** Returns the bullet that has hit a wall */
+  public BulletState getBullet() {
+    return bullet;
   }
 }

@@ -1,26 +1,30 @@
 package dev.robocode.tankroyale.botapi.events;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import lombok.Value;
 import dev.robocode.tankroyale.botapi.BulletState;
 
 /** Event occurring when a bullet has collided with another bullet */
-@Value
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@SuppressWarnings("unused")
 public final class BulletHitBulletEvent extends Event {
-  /** Bullet that hit another bullet */
-  BulletState bullet;
-  /** The other bullet that was hit by the bullet */
-  BulletState hitBullet;
 
-  @Builder
-  @SuppressWarnings("UnusedDeclaration")
-  private BulletHitBulletEvent(int turnNumber, BulletState bullet, BulletState hitBullet) {
-    this.turnNumber = turnNumber;
+  /** Bullet that hit another bullet */
+  private final BulletState bullet;
+
+  /** The other bullet that was hit by the bullet */
+  private final BulletState hitBullet;
+
+  public BulletHitBulletEvent(int turnNumber, BulletState bullet, BulletState hitBullet) {
+    super(turnNumber);
     this.bullet = bullet;
     this.hitBullet = hitBullet;
+  }
+
+  /** Returns the bullet that hit another bullet */
+  public BulletState getBullet() {
+    return bullet;
+  }
+
+  /** Returns the other bullet that was hit by the bullet */
+  public BulletState getHitBullet() {
+    return hitBullet;
   }
 }

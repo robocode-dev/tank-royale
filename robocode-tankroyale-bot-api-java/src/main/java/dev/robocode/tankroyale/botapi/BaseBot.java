@@ -10,8 +10,6 @@ import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.factory.BotHandshakeFactory;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.schema.*;
-import lombok.val;
-import lombok.var;
 import dev.robocode.tankroyale.botapi.events.BotDeathEvent;
 import dev.robocode.tankroyale.botapi.events.BotHitBotEvent;
 import dev.robocode.tankroyale.botapi.events.BotHitWallEvent;
@@ -227,7 +225,7 @@ public abstract class BaseBot implements IBaseBot {
 
   @Override
   public final double getTurnRate() {
-    var turnRate = __internals.botIntent.getTurnRate();
+    Double turnRate = __internals.botIntent.getTurnRate();
     if (turnRate == null) {
       return 0;
     }
@@ -250,7 +248,7 @@ public abstract class BaseBot implements IBaseBot {
 
   @Override
   public final double getGunTurnRate() {
-    var turnRate = __internals.botIntent.getGunTurnRate();
+    Double turnRate = __internals.botIntent.getGunTurnRate();
     if (turnRate == null) {
       return 0;
     }
@@ -273,7 +271,7 @@ public abstract class BaseBot implements IBaseBot {
 
   @Override
   public final double getRadarTurnRate() {
-    var turnRate = __internals.botIntent.getRadarTurnRate();
+    Double turnRate = __internals.botIntent.getRadarTurnRate();
     if (turnRate == null) {
       return 0;
     }
@@ -366,8 +364,9 @@ public abstract class BaseBot implements IBaseBot {
         "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first";
 
     private final Gson gson;
+
     {
-      val typeFactory =
+      RuntimeTypeAdapterFactory<dev.robocode.tankroyale.schema.Event> typeFactory =
           RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class, "$type")
               .registerSubtype(dev.robocode.tankroyale.schema.BotDeathEvent.class, "BotDeathEvent")
               .registerSubtype(
@@ -483,7 +482,7 @@ public abstract class BaseBot implements IBaseBot {
     }
 
     private URI getServerUriFromSetting() {
-      var uri = EnvVars.getServerUri();
+      String uri = EnvVars.getServerUri();
       if (uri == null) {
         uri = System.getProperty(SERVER_URI_PROPERTY_KEY);
         if (uri == null) {
@@ -542,8 +541,7 @@ public abstract class BaseBot implements IBaseBot {
 
       @Override
       public final void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
-        val event = ConnectedEvent.builder().build();
-        onConnected.publish(event);
+        onConnected.publish(new ConnectedEvent());
       }
 
       @Override
@@ -553,16 +551,14 @@ public abstract class BaseBot implements IBaseBot {
           WebSocketFrame clientCloseFrame,
           boolean closedByServer) {
 
-        val event = DisconnectedEvent.builder().remote(closedByServer).build();
-        onDisconnected.publish(event);
+        onDisconnected.publish(new DisconnectedEvent(closedByServer));
 
         clearCurrentGameState();
       }
 
       @Override
       public final void onError(WebSocket websocket, WebSocketException cause) {
-        val event = ConnectionErrorEvent.builder().exception(cause).build();
-        onConnectionError.publish(event);
+        onConnectionError.publish(new ConnectionErrorEvent(cause));
       }
 
       @Override
@@ -577,7 +573,7 @@ public abstract class BaseBot implements IBaseBot {
 
         JsonElement jsonType = jsonMsg.get("$type");
         if (jsonType != null) {
-          val type = jsonType.getAsString();
+          String type = jsonType.getAsString();
 
           switch (dev.robocode.tankroyale.schema.Message.$type.fromValue(type)) {
             case TICK_EVENT_FOR_BOT:
@@ -605,14 +601,15 @@ public abstract class BaseBot implements IBaseBot {
         serverHandshake = gson.fromJson(jsonMsg, ServerHandshake.class);
 
         // Reply by sending bot handshake
-        val botHandshake = BotHandshakeFactory.create(botInfo);
-        val msg = gson.toJson(botHandshake);
+        BotHandshake botHandshake = BotHandshakeFactory.create(botInfo);
+        String msg = gson.toJson(botHandshake);
 
         socket.sendText(msg);
       }
 
       private void handleGameStartedEvent(JsonObject jsonMsg) {
-        val gameStartedEventForBot = gson.fromJson(jsonMsg, GameStartedEventForBot.class);
+        GameStartedEventForBot gameStartedEventForBot =
+            gson.fromJson(jsonMsg, GameStartedEventForBot.class);
 
         myId = gameStartedEventForBot.getMyId();
         gameSetup = GameSetupMapper.map(gameStartedEventForBot.getGameSetup());
@@ -621,16 +618,10 @@ public abstract class BaseBot implements IBaseBot {
         BotReady ready = new BotReady();
         ready.set$type(BotReady.$type.BOT_READY);
 
-        val msg = gson.toJson(ready);
+        String msg = gson.toJson(ready);
         socket.sendText(msg);
 
-        val gameStartedEvent =
-            GameStartedEvent.builder()
-                .myId(gameStartedEventForBot.getMyId())
-                .gameSetup(gameSetup)
-                .build();
-
-        onGameStarted.publish(gameStartedEvent);
+        onGameStarted.publish(new GameStartedEvent(gameStartedEventForBot.getMyId(), gameSetup));
       }
     }
 
@@ -639,25 +630,26 @@ public abstract class BaseBot implements IBaseBot {
       clearCurrentGameState();
 
       // Send the game ended event
-      val gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
-      val gameEndedEvent =
-          GameEndedEvent.builder()
-              .numberOfRounds(gameEndedEventForBot.getNumberOfRounds())
-              .results(ResultsMapper.map(gameEndedEventForBot.getResults()))
-              .build();
+      GameEndedEventForBot gameEndedEventForBot =
+          gson.fromJson(jsonMsg, GameEndedEventForBot.class);
+
+      GameEndedEvent gameEndedEvent =
+          new GameEndedEvent(
+              gameEndedEventForBot.getNumberOfRounds(),
+              ResultsMapper.map(gameEndedEventForBot.getResults()));
 
       onGameEnded.publish(gameEndedEvent);
     }
 
     private void handleSkippedTurnEvent(JsonObject jsonMsg) {
-      val skippedTurnEvent =
+      dev.robocode.tankroyale.schema.SkippedTurnEvent skippedTurnEvent =
           gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
 
       onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
     }
 
     private void handleTickEvent(JsonObject jsonMsg) {
-      val tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
+      TickEventForBot tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
       currentTurn = EventMapper.map(tickEventForBot);
 
       // Dispatch all on the tick event before the tick event itself

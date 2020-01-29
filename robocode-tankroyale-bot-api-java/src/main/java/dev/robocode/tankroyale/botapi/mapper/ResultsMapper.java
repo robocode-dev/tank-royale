@@ -1,37 +1,32 @@
 package dev.robocode.tankroyale.botapi.mapper;
 
 import dev.robocode.tankroyale.botapi.BotResults;
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
-import lombok.val;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /** Utility class for mapping bot results */
-@UtilityClass
 public class ResultsMapper {
 
-  public List<BotResults> map(@NonNull final List<dev.robocode.tankroyale.schema.BotResultsForBot> source) {
-    val botResultsList = new ArrayList<BotResults>();
+  public static List<BotResults> map(final List<dev.robocode.tankroyale.schema.BotResultsForBot> source) {
+    List<BotResults> botResultsList = new ArrayList<>();
     source.forEach(botResults -> botResultsList.add(map(botResults)));
     return botResultsList;
   }
 
-  private BotResults map(@NonNull final dev.robocode.tankroyale.schema.BotResultsForBot source) {
-    return BotResults.builder()
-        .id(source.getId())
-        .rank(source.getRank())
-        .survival(source.getSurvival())
-        .lastSurvivorBonus(source.getLastSurvivorBonus())
-        .bulletDamage(source.getBulletDamage())
-        .bulletKillBonus(source.getBulletKillBonus())
-        .ramDamage(source.getRamDamage())
-        .ramKillBonus(source.getRamKillBonus())
-        .totalScore(source.getTotalScore())
-        .firstPlaces(source.getFirstPlaces())
-        .secondPlaces(source.getSecondPlaces())
-        .thirdPlaces(source.getThirdPlaces())
-        .build();
+  private static BotResults map(final dev.robocode.tankroyale.schema.BotResultsForBot source) {
+    return new BotResults(
+        source.getId(),
+        source.getRank(),
+        source.getSurvival(),
+        source.getLastSurvivorBonus(),
+        source.getBulletDamage(),
+        source.getBulletKillBonus(),
+        source.getRamDamage(),
+        source.getRamKillBonus(),
+        source.getTotalScore(),
+        source.getFirstPlaces(),
+        source.getSecondPlaces(),
+        source.getThirdPlaces());
   }
 }

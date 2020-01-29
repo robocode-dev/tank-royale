@@ -2,17 +2,14 @@ package dev.robocode.tankroyale.botapi.factory;
 
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.schema.BotHandshake;
-import lombok.experimental.UtilityClass;
-import lombok.val;
 
 import java.util.ArrayList;
 
 /** Utility class used fro creating bot handshakes */
-@UtilityClass
-public class BotHandshakeFactory {
+public final class BotHandshakeFactory {
 
-  public BotHandshake create(BotInfo botInfo) {
-    val handshake = new BotHandshake();
+  public static BotHandshake create(BotInfo botInfo) {
+    BotHandshake handshake = new BotHandshake();
     handshake.set$type(BotHandshake.$type.BOT_HANDSHAKE);
     handshake.setName(botInfo.getName());
     handshake.setVersion(botInfo.getVersion());

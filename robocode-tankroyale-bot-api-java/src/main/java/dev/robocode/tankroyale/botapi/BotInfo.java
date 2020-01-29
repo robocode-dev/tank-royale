@@ -1,41 +1,39 @@
 package dev.robocode.tankroyale.botapi;
 
 import com.neovisionaries.i18n.CountryCode;
-import lombok.*;
 
 import java.util.*;
 
 /** Required information about the bot. */
-@Value
-@Builder
+@SuppressWarnings("unused")
 public final class BotInfo {
 
   /** Name, e.g. "MyBot" (required field) */
-  @NonNull String name;
+  private String name;
 
   /** Version, e.g. "1.0" (required field) */
-  @NonNull String version;
+  private String version;
 
   /** Author, e.g. "John Doe (johndoe@somewhere.io)" (required field) */
-  @NonNull String author;
+  private String author;
 
   /** Short description of the bot, preferable a one-liner */
-  String description;
+  private String description;
 
   /**
    * Country code defined by ISO 3166-1 alpha-2: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
    * If no country code is provided, the locale of the system is being used instead.
    */
-  String countryCode;
+  private String countryCode;
 
   /**
    * Game types accepted by the bot, e.g. "melee", "1v1". The game types defines which game types
    * the bot is able to participate in. See {@link GameType} for using predefined game type.
    */
-  @NonNull Collection<String> gameTypes;
+  private Set<String> gameTypes;
 
   /** Programming language used for developing the bot, e.g. "Java" or "C#" */
-  String programmingLang;
+  private String programmingLang;
 
   public BotInfo(
       final String name,
@@ -69,7 +67,7 @@ public final class BotInfo {
     }
 
     // Remove null, empty or blank game types
-    val trimmedGameTypes = new HashSet<String>();
+    Set<String> trimmedGameTypes = new HashSet<>();
     gameTypes
         .iterator()
         .forEachRemaining(
@@ -90,5 +88,46 @@ public final class BotInfo {
     this.countryCode = (code == null) ? null : code.getAlpha2();
     this.gameTypes = trimmedGameTypes;
     this.programmingLang = programmingLang;
+  }
+
+  /** Returns the name, e.g. "MyBot" (required field) */
+  public String getName() {
+    return name;
+  }
+
+  /** Returns the version, e.g. "1.0" (required field) */
+  public String getVersion() {
+    return version;
+  }
+
+  /** Returns the author, e.g. "John Doe (johndoe@somewhere.io)" (required field) */
+  public String getAuthor() {
+    return author;
+  }
+
+  /** Returns a short description of the bot, preferable a one-liner */
+  public String getDescription() {
+    return description;
+  }
+
+  /**
+   * Returns the country code defined by ISO 3166-1 alpha-2: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
+   * If no country code is provided, the locale of the system is being used instead.
+   */
+  public String getCountryCode() {
+    return countryCode;
+  }
+
+  /**
+   * Returns the game types accepted by the bot, e.g. "melee", "1v1". The game types defines which game types
+   * the bot is able to participate in. See {@link GameType} for using predefined game type.
+   */
+  public Set<String> getGameTypes() {
+    return gameTypes;
+  }
+
+  /** Returns the Programming language used for developing the bot, e.g. "Java" or "C#" */
+  public String getProgrammingLang() {
+    return programmingLang;
   }
 }

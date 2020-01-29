@@ -1,25 +1,31 @@
 package dev.robocode.tankroyale.botapi.events;
 
-import lombok.Builder;
-import lombok.ToString;
-import lombok.Value;
 import dev.robocode.tankroyale.botapi.BotResults;
 
 import java.util.List;
 
 /** Event occurring when game has just ended */
-@Value
-@ToString
+@SuppressWarnings("unused")
 public final class GameEndedEvent implements IMessage {
-  /** Number of rounds played */
-  int numberOfRounds;
-  /** Results of the battle */
-  List<BotResults> results;
 
-  @Builder
-  @SuppressWarnings("UnusedDeclaration")
-  private GameEndedEvent(int numberOfRounds, List<BotResults> results) {
+  /** Number of rounds played */
+  private final int numberOfRounds;
+
+  /** Results of the battle */
+  private final List<BotResults> results;
+
+  public GameEndedEvent(int numberOfRounds, List<BotResults> results) {
     this.numberOfRounds = numberOfRounds;
     this.results = results;
+  }
+
+  /** Returns the number of rounds played */
+  public int getNumberOfRounds() {
+    return numberOfRounds;
+  }
+
+  /** Returns the results of the battle */
+  public List<BotResults> getResults() {
+    return results;
   }
 }

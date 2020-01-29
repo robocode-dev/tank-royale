@@ -1,14 +1,10 @@
 package dev.robocode.tankroyale.botapi;
 
-import lombok.val;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-/**
- * Class for reading environment variables.
- */
+/** Class for reading environment variables. */
 final class EnvVars {
 
   // Hide constructor
@@ -47,15 +43,14 @@ final class EnvVars {
     if (isNullOrEmpty(getBotGameTypes())) {
       throw new BotException(NO_ENV_VALUE + BOT_GAME_TYPES);
     }
-    return BotInfo.builder()
-        .name(getBotName())
-        .version((getBotVersion()))
-        .author(getBotAuthor())
-        .description(getBotDescription())
-        .countryCode(getBotCountryCode())
-        .gameTypes(getBotGameTypes())
-        .programmingLang(getBotProgrammingLang())
-        .build();
+    return new BotInfo(
+        getBotName(),
+        getBotVersion(),
+        getBotAuthor(),
+        getBotDescription(),
+        getBotCountryCode(),
+        getBotGameTypes(),
+        getBotProgrammingLang());
   }
 
   /** Server URI */
@@ -90,7 +85,7 @@ final class EnvVars {
 
   /** List of game types, which the bot supports */
   public static Collection<String> getBotGameTypes() {
-    val gameTypes = System.getenv(BOT_GAME_TYPES);
+    String gameTypes = System.getenv(BOT_GAME_TYPES);
     if (gameTypes == null || gameTypes.trim().length() == 0) {
       return Collections.emptyList();
     }

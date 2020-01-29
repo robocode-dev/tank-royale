@@ -29,9 +29,7 @@ class BotInfoTest {
     assertEquals("Sample bot", botInfo.getDescription());
     assertEquals("DK", botInfo.getCountryCode().toUpperCase());
     assertThat(botInfo.getGameTypes())
-        .asList()
-        .hasSize(2)
-        .contains(GameType.MELEE, GameType.ONE_VS_ONE);
+            .isIn(GameType.MELEE, GameType.ONE_VS_ONE);
     assertEquals("Java", botInfo.getProgrammingLang());
   }
 
@@ -308,6 +306,6 @@ class BotInfoTest {
 
     Collection<String> gameTypes = botInfo.getGameTypes();
 
-    assertThat(gameTypes).asList().hasSize(2).contains("melee", "1v1");
+    assertThat(gameTypes).isIn("melee", "1v1");
   }
 }

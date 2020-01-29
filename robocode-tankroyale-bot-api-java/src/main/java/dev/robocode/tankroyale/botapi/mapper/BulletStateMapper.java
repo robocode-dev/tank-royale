@@ -1,33 +1,27 @@
 package dev.robocode.tankroyale.botapi.mapper;
 
 import dev.robocode.tankroyale.botapi.BulletState;
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
-import lombok.val;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /** Utility class for mapping a bot state */
-@UtilityClass
-class BulletStateMapper {
+public final class BulletStateMapper {
 
-  BulletState map(@NonNull final dev.robocode.tankroyale.schema.BulletState source) {
-    return BulletState.builder()
-        .bulletId(source.getBulletId())
-        .ownerId(source.getOwnerId())
-        .power(source.getPower())
-        .x(source.getX())
-        .y(source.getY())
-        .direction(source.getDirection())
-        .speed(source.getSpeed())
-        .build();
+  public static BulletState map(final dev.robocode.tankroyale.schema.BulletState source) {
+    return new BulletState(
+        source.getBulletId(),
+        source.getOwnerId(),
+        source.getPower(),
+        source.getX(),
+        source.getY(),
+        source.getDirection(),
+        source.getSpeed());
   }
 
-  Set<BulletState> map(@NonNull final Collection<dev.robocode.tankroyale.schema.BulletState> source) {
-    val bulletStates = new HashSet<BulletState>();
+  public static Set<BulletState> map(final Collection<dev.robocode.tankroyale.schema.BulletState> source) {
+    Set<BulletState> bulletStates = new HashSet<>();
     source.forEach(bulletState -> bulletStates.add(map(bulletState)));
     return bulletStates;
   }

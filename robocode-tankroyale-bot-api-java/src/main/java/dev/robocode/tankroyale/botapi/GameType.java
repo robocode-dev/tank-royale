@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.botapi;
 
 /** Predefined game types. */
 public final class GameType {
+
   // Hide constructor
   private GameType() {}
 

@@ -1,15 +1,18 @@
 package dev.robocode.tankroyale.botapi.events;
 
-import lombok.Builder;
-import lombok.ToString;
-import lombok.Value;
-
 /** Event occurring when a connection error occurs */
-@Value
-@Builder
-@ToString
+@SuppressWarnings("unused")
 public final class ConnectionErrorEvent {
 
   /** The exception causing the error */
-  Exception exception;
+  private final Exception exception;
+
+  public ConnectionErrorEvent(Exception exception) {
+    this.exception = exception;
+  }
+
+  /** Returns the exception causing the error */
+  public Exception getException() {
+    return exception;
+  }
 }

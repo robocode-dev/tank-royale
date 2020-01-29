@@ -1,22 +1,19 @@
 package dev.robocode.tankroyale.botapi.events;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import lombok.Value;
-
 /** Event occurring when a bot has died */
-@Value
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@SuppressWarnings("unused")
 public final class BotDeathEvent extends Event {
-  /** ID of the bot that has died */
-  int victimId;
 
-  @Builder
-  @SuppressWarnings("UnusedDeclaration")
-  private BotDeathEvent(int turnNumber, int victimId) {
-    this.turnNumber = turnNumber;
+  /** ID of the bot that has died */
+  private final int victimId;
+
+  public BotDeathEvent(int turnNumber, int victimId) {
+    super(turnNumber);
     this.victimId = victimId;
+  }
+
+  /** Returns the ID of the bot that has died */
+  public int getVictimId() {
+    return victimId;
   }
 }

@@ -1,7 +1,5 @@
 package dev.robocode.tankroyale.botapi;
 
-import lombok.val;
-
 import java.net.URI;
 
 import static java.lang.Math.abs;
@@ -10,6 +8,7 @@ import static java.lang.Math.abs;
  * Abstract Bot containing convenient methods for movement, turning, and firing the gun. Most bots
  * can inherit from this class to get access to basic methods.
  */
+@SuppressWarnings("unused")
 public abstract class Bot extends BaseBot implements IBot {
 
   private final __Internals __internals = new __Internals();
@@ -240,7 +239,7 @@ public abstract class Bot extends BaseBot implements IBot {
     private volatile boolean isRunning;
 
     private __Internals() {
-      val internals = Bot.super.__internals;
+      BaseBot.__Internals internals = Bot.super.__internals;
 
       internals.onDisconnected.subscribe(event -> stopThread());
       internals.onGameEnded.subscribe(event -> stopThread());
@@ -410,7 +409,7 @@ public abstract class Bot extends BaseBot implements IBot {
         distance = 0;
       }
 
-      val speed = getNewSpeed(getSpeed(), distance);
+      double speed = getNewSpeed(getSpeed(), distance);
       setTargetSpeed(speed);
 
       // If we are over-driving our distance and we are now at velocity=0 then we stopped
@@ -463,7 +462,7 @@ public abstract class Bot extends BaseBot implements IBot {
     }
 
     private double getMaxSpeed(double distance) {
-      val decelTime =
+      double decelTime =
           Math.max(
               1,
               Math.ceil( // sum of 0... decelTime, solving for decelTime using quadratic formula
@@ -473,7 +472,7 @@ public abstract class Bot extends BaseBot implements IBot {
         return Bot.this.getMaxSpeed();
       }
 
-      val decelDist =
+      double decelDist =
           (decelTime / 2)
               * (decelTime - 1) // sum of 0..(decelTime-1)
               * ABS_DECELERATION;
@@ -482,8 +481,8 @@ public abstract class Bot extends BaseBot implements IBot {
     }
 
     private double getMaxDeceleration(double speed) {
-      val decelTime = speed / ABS_DECELERATION;
-      val accelTime = (1 - decelTime);
+      double decelTime = speed / ABS_DECELERATION;
+      double accelTime = (1 - decelTime);
 
       return Math.min(1, decelTime) * ABS_DECELERATION + Math.max(0, accelTime) * getAcceleration();
     }

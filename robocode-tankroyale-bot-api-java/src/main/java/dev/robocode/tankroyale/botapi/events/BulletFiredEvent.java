@@ -1,23 +1,21 @@
 package dev.robocode.tankroyale.botapi.events;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import lombok.Value;
 import dev.robocode.tankroyale.botapi.BulletState;
 
 /** Event occurring when a bullet has been fired from a bot */
-@Value
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@SuppressWarnings("unused")
 public final class BulletFiredEvent extends Event {
-  /** Bullet that was fired */
-  BulletState bullet;
 
-  @Builder
-  @SuppressWarnings("UnusedDeclaration")
-  private BulletFiredEvent(int turnNumber, BulletState bullet) {
-    this.turnNumber = turnNumber;
+  /** Bullet that was fired */
+  private final BulletState bullet;
+
+  public BulletFiredEvent(int turnNumber, BulletState bullet) {
+    super(turnNumber);
     this.bullet = bullet;
+  }
+
+  /** Returns the bullet that was fired */
+  public BulletState getBullet() {
+    return bullet;
   }
 }
