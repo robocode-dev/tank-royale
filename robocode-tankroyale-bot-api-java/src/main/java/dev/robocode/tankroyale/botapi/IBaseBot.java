@@ -20,7 +20,9 @@ public interface IBaseBot {
    * Radar radius. This is how far a bot is able to scan other bots with the radar. Bots outside the
    * radar radius will not be scanned.
    */
-  default double getRadarRadius() { return 1200; }
+  default double getRadarRadius() {
+    return 1200;
+  }
 
   /**
    * Maximum driving turn rate measured in degrees/turn. This is the max. possible turn rate of the
@@ -31,16 +33,24 @@ public interface IBaseBot {
    * abs(speed). Hence, the turn rate is at max. 10 degrees/turn when the speed is zero, and down to
    * only 4 degrees/turn when the robot is at max speed (8 pixels/turn).
    */
-  default double getMaxTurnRate() { return 10; }
+  default double getMaxTurnRate() {
+    return 10;
+  }
 
   /** Maximum gun turn rate measured in degrees/turn. */
-  default double getMaxGunTurnRate() { return 20; }
+  default double getMaxGunTurnRate() {
+    return 20;
+  }
 
   /** Maximum radar turn rate measured in degrees/turn. */
-  default double getMaxRadarTurnRate() { return 45; }
+  default double getMaxRadarTurnRate() {
+    return 45;
+  }
 
   /** Maximum absolute speed measured in pixels/turn. */
-  default double getMaxSpeed() { return 8; }
+  default double getMaxSpeed() {
+    return 8;
+  }
 
   /**
    * Maximum forward speed measured in pixels/turn. When the speed is positive the bot is moving
@@ -59,13 +69,17 @@ public interface IBaseBot {
   }
 
   /** Minimum firepower. The gun will not fire with a power less than the minimum firepower. */
-  default double getMinFirepower() { return 0.1; }
+  default double getMinFirepower() {
+    return 0.1;
+  }
 
   /**
    * Maximum firepower. The gun will fire with this firepower if the gun is set to fire with a
    * higher firepower.
    */
-  default double getMaxFirepower() { return 3; }
+  default double getMaxFirepower() {
+    return 3;
+  }
 
   /**
    * Minimum bullet speed measured in pixels/turn. The bullet speed is determined by this formula:
@@ -81,7 +95,7 @@ public interface IBaseBot {
    * 20 - 3 x firepower. The less fire power the faster bullet speed. Hence, the maximum bullet
    * speed is 17 pixels/turn.
    */
-  default double getMaxBulletSpeed()  {
+  default double getMaxBulletSpeed() {
     return 20 - 3 * getMinFirepower();
   }
 
@@ -89,13 +103,17 @@ public interface IBaseBot {
    * Acceleration that adds 1 pixel to the speed per turn when the bot is increasing its speed
    * moving forwards.
    */
-  default double getAcceleration() { return 1; }
+  default double getAcceleration() {
+    return 1;
+  }
 
   /**
    * Deceleration that subtract 2 pixels from the speed per turn when the bot is decreasing its
    * speed moving backwards. Note that the deceleration is negative.
    */
-  default double getDeceleration() { return -2; }
+  default double getDeceleration() {
+    return -2;
+  }
 
   /** Main method for start running the bot */
   void start();
@@ -353,8 +371,8 @@ public interface IBaseBot {
    * <p>Firepower is the amount of energy spend on firing the gun. You cannot spend more energy that
    * available from the bot. The amount of energy loss is equal to the firepower.
    *
-   * <p>The bullet power must be > {@link #getMinFirepower()} and the gun heat zero before the gun
-   * is able to fire.
+   * <p>The bullet power must be greater than {@link #getMinFirepower()} and the gun heat zero
+   * before the gun is able to fire.
    *
    * <p>If the bullet hits an opponent bot, you will gain energy from the bullet hit. When hitting
    * another bot, your bot will be rewarded and retrieve an energy boost of 3x firepower.
@@ -382,8 +400,8 @@ public interface IBaseBot {
    * <p>If this property is set multiple times, the last value set before go() counts.
    *
    * @param firepower is the amount of energy spend on firing the gun. You cannot spend more energy
-   *     that available from the bot. The bullet power must be > {@link #getMinFirepower()} and the
-   *     gun heat zero before the gun is able to fire.
+   *     that available from the bot. The bullet power must be &gt; {@link #getMinFirepower()} and
+   *     the gun heat zero before the gun is able to fire.
    * @see #onBulletFired(BulletFiredEvent)
    * @see #getGunHeat()
    * @see #getGunCoolingRate()
@@ -644,7 +662,7 @@ public interface IBaseBot {
    */
   default double normalizeRelativeDegrees(double angle) {
     return (angle %= 360) >= 0
-            ? ((angle < 180) ? angle : (angle - 360))
-            : ((angle >= -180) ? angle : (angle + 360));
+        ? ((angle < 180) ? angle : (angle - 360))
+        : ((angle >= -180) ? angle : (angle + 360));
   }
 }
