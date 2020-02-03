@@ -13,11 +13,11 @@ class JTooltipTable(model: AbstractTableModel) : JTable(model) {
         val colIndex = columnAtPoint(p)
         try {
             // Wrap value into <html> tag and replace newlines with <br> tags to get a multi-line tip
-            var value = getValueAt(rowIndex, colIndex) as String
-            value = value.replace("\n", "<br>")
-            tip = "<html>$value</html>"
+            val value = getValueAt(rowIndex, colIndex) ?: return null
+            val text = "" + value
+            tip = "<html>$text</html>"
         } catch (ex: RuntimeException) {
-            //catch null pointer exception if mouse is over an empty line
+            // catch exception if mouse is over an empty line
         }
         return tip
     }

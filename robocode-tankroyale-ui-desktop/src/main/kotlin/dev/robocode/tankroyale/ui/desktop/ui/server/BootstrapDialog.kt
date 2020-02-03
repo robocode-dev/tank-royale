@@ -7,9 +7,9 @@ import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.UI_TITLES
 import dev.robocode.tankroyale.ui.desktop.ui.battle.SelectBotsDialog
+import dev.robocode.tankroyale.ui.desktop.ui.components.JTooltipTable
 import dev.robocode.tankroyale.ui.desktop.ui.server.BootstrapDialog.onCancel
 import dev.robocode.tankroyale.ui.desktop.ui.server.BootstrapDialog.onOk
-import dev.robocode.tankroyale.ui.desktop.ui.components.JTooltipTable
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import javafx.scene.input.MouseButton
 import kotlinx.serialization.ImplicitReflectionSerializer
@@ -51,14 +51,17 @@ private object BootstrapDialogPanel : JPanel(MigLayout("fill")) {
     private val botEntries: List<BotEntry> = BootstrapProcess.list()
 
     private val table: JTable
+    private val okButton: JButton
 
     private val selectedBotFiles: List<String>
         get() {
             val files = ArrayList<String>()
-            table.selectedRows.forEach { row ->
-                val count = ("" + table.getValueAt(row, 0)).toInt()
-                repeat(count) {
-                    files += botEntries[row].filename
+            for (row in 0 until table.model.rowCount) {
+                if (table.getValueAt(row, 0) as Boolean) {
+                    val count = getCountFromTableRow(row)
+                    repeat(count) {
+                        files += botEntries[row].filename
+                    }
                 }
             }
             return Collections.unmodifiableList(files)
@@ -76,13 +79,15 @@ private object BootstrapDialogPanel : JPanel(MigLayout("fill")) {
 
         val tableModel = BDTableModel()
         table = JTooltipTable(tableModel)
+        table.rowSelectionAllowed = false
 
         val scrollPane = JScrollPane(table)
         upperPanel.add(scrollPane)
 
-        val okButton = lowerPanel.addButton("ok", onOk, "tag ok")
+        okButton = lowerPanel.addButton("ok", onOk, "tag ok")
         lowerPanel.addButton("cancel", onCancel, "tag cancel")
 
+        tableModel.addColumn(UI_TITLES.get("select_column"))
         tableModel.addColumn(UI_TITLES.get("count_column"))
         tableModel.addColumn(UI_TITLES.get("name_column"))
         tableModel.addColumn(UI_TITLES.get("version_column"))
@@ -93,18 +98,20 @@ private object BootstrapDialogPanel : JPanel(MigLayout("fill")) {
 
         val cols = table.columnModel
 
-        cols.getColumn(0).preferredWidth = 30  // count
-        cols.getColumn(1).preferredWidth = 100 // name
-        cols.getColumn(2).preferredWidth = 30  // version
-        cols.getColumn(3).preferredWidth = 100 // author
-        cols.getColumn(4).preferredWidth = 30  // country code
-        cols.getColumn(5).preferredWidth = 50  // programming language
-        cols.getColumn(6).preferredWidth = 200 // description
+        cols.getColumn(0).preferredWidth = 30  // select
+        cols.getColumn(1).preferredWidth = 30  // count
+        cols.getColumn(2).preferredWidth = 100 // name
+        cols.getColumn(3).preferredWidth = 30  // version
+        cols.getColumn(4).preferredWidth = 100 // author
+        cols.getColumn(5).preferredWidth = 30  // country code
+        cols.getColumn(6).preferredWidth = 50  // programming language
+        cols.getColumn(7).preferredWidth = 200 // description
 
         botEntries.forEach { entry ->
             run {
                 val info = entry.info
                 val list = listOf(
+                    false,
                     1,
                     info.name,
                     info.version,
@@ -117,25 +124,23 @@ private object BootstrapDialogPanel : JPanel(MigLayout("fill")) {
             }
         }
 
-        okButton.isEnabled = false
+        enableOrDisableOkButton()
 
         table.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(event: MouseEvent) {
-
                 val row = table.rowAtPoint(event.point)
                 val col = table.columnAtPoint(event.point)
                 if (row >= 0 && col >= 0) {
-                    if (col == 0) {
-                        var count = ("" + table.getValueAt(row, 0)).toInt()
+                    if (col == 1) {
+                        var count = getCountFromTableRow(row)
                         if (event.button == MouseButton.PRIMARY.ordinal) {
                             count += 1
                         } else if (event.button == MouseButton.SECONDARY.ordinal) {
                             count = 0.coerceAtLeast(count - 1)
                         }
-                        table.setValueAt(count, row, 0)
+                        table.setValueAt(count, row, 1)
                     }
-
-                    okButton.isEnabled = table.selectedRowCount > 0
+                    enableOrDisableOkButton() // update OK button
                 }
             }
         })
@@ -148,15 +153,35 @@ private object BootstrapDialogPanel : JPanel(MigLayout("fill")) {
         onCancel.subscribe { BootstrapDialog.dispose() }
     }
 
+    private fun enableOrDisableOkButton() {
+        okButton.isEnabled = countNumberOfSelectedBots() > 1
+    }
+
+    private fun countNumberOfSelectedBots(): Int {
+        var count = 0
+        for (row in 0 until table.model.rowCount) {
+            if (table.getValueAt(row, 0) as Boolean) {
+                count += getCountFromTableRow(row)
+            }
+        }
+        return count
+    }
+
+    private fun getCountFromTableRow(row: Int): Int {
+        return ("" + table.getValueAt(row, 1)).toInt()
+    }
+
     private fun bootstrapBots() {
         SelectBotsDialog.isVisible = true
         BootstrapProcess.run(selectedBotFiles)
     }
 
     class BDTableModel : DefaultTableModel() {
-        override fun isCellEditable(row: Int, column: Int): Boolean {
-            return (column == 0) // Only count column is editable
-        }
+        // 'Select' and 'Count' (column 0 and 1) are editable
+        override fun isCellEditable(row: Int, column: Int) = (column < 2)
+
+        override fun getColumnClass(column: Int): Class<*>? =
+            if (column == 0) Boolean::class.javaObjectType else String::class.javaObjectType
     }
 }
 
