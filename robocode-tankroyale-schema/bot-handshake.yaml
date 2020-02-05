@@ -25,8 +25,11 @@ properties:
     type: array
     items:
       type: string
+  platform:
+    description: Platform used for running the bot, e.g. OpenJDK 11 or .NET Core 3
+    type: string
   programmingLang:
-    description: Language used for programming the bot, e.g. Java
+    description: Language used for programming the bot, e.g. Java or C#
     type: string
 required:
   - name
