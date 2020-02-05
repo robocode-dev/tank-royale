@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.bootstrap.util.OSUtil.OSType.Windows
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonParsingException
+import kotlinx.serialization.json.JsonDecodingException
 import kotlinx.serialization.parse
 import java.io.IOException
 import java.nio.charset.StandardCharsets
@@ -188,7 +188,7 @@ class BootUtil(private val botPaths: List<Path>) {
                         val content = readContent(path!!)
                         return Json.parse(content)
                     }
-                } catch (ex: JsonParsingException) {
+                } catch (ex: JsonDecodingException) {
                     throw BootstrapException("Could not parse JSON file: $path")
                 } catch (ex: MissingFieldException) {
                     throw BootstrapException("${ex.message}. File: $path")
