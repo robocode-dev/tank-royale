@@ -12,6 +12,7 @@ public class TestBot2 : Bot
       "A sample bot",
       "dk",
       new string[] { "1v1", "melee" },
+      ".NET Core 3",
       "C#"
     );
 

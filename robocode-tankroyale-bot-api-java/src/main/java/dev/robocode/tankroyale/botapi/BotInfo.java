@@ -32,7 +32,10 @@ public final class BotInfo {
    */
   private Set<String> gameTypes;
 
-  /** Programming language used for developing the bot, e.g. "Java" or "C#" */
+  /** Platform used for running the bot, e.g. OpenJDK 11 or .NET Core 3 */
+  private String platform;
+
+  /** Language used for programming the bot, e.g. Java or C# */
   private String programmingLang;
 
   public BotInfo(
@@ -42,6 +45,7 @@ public final class BotInfo {
       final String description,
       final String countryCode,
       final Collection<String> gameTypes,
+      final String platform,
       final String programmingLang) {
 
     if (name == null || name.trim().isEmpty()) {
@@ -87,6 +91,7 @@ public final class BotInfo {
     this.description = description;
     this.countryCode = (code == null) ? null : code.getAlpha2();
     this.gameTypes = trimmedGameTypes;
+    this.platform = platform;
     this.programmingLang = programmingLang;
   }
 
@@ -125,6 +130,9 @@ public final class BotInfo {
   public Set<String> getGameTypes() {
     return gameTypes;
   }
+
+  /** Returns the language used for programming the bot, e.g. Java or C# */
+  public String getPlatform() { return platform; }
 
   /** Returns the Programming language used for developing the bot, e.g. "Java" or "C#" */
   public String getProgrammingLang() {

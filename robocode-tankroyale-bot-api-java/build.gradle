@@ -4,7 +4,7 @@ plugins {
     id 'idea'
 }
 group = 'dev.robocode.tankroyale'
-version = '0.6.0'
+version = '0.6.1'
 
 compileJava {
     sourceCompatibility = '1.8'
@@ -17,14 +17,14 @@ repositories {
 }
 
 dependencies {
-    compile 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.5.5'
+    compile 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.5.6'
     compile 'com.neovisionaries:nv-websocket-client:2.9'
-    compile 'com.neovisionaries:nv-i18n:1.22'
-    compile 'org.danilopianini:gson-extras:0.2.1'
+    compile 'com.neovisionaries:nv-i18n:1.27'
+    compile 'org.danilopianini:gson-extras:0.2.2'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-    testImplementation 'org.assertj:assertj-core:3.9.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
+    testImplementation 'org.assertj:assertj-core:3.15.0'
 }
 
 jar {

@@ -21,6 +21,7 @@ data class Info(
     val description: String? = null,
     val countryCode: String? = null,
     val programmingLang: String? = null,
+    val platform: String? = null,
     val gameTypes: Set<String>
 ) {
     val displayText: String

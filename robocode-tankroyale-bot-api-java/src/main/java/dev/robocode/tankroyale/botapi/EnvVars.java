@@ -24,6 +24,8 @@ final class EnvVars {
   public static final String BOT_COUNTRY_CODE = "BOT_COUNTRY_CODE";
   /** Name of environment variable for bot game types */
   public static final String BOT_GAME_TYPES = "BOT_GAME_TYPES";
+  /** Name of environment variable for bot platform */
+  public static final String BOT_PLATFORM = "BOT_PLATFORM";
   /** Name of environment variable for bot programming language */
   public static final String BOT_PROG_LANG = "BOT_PROG_LANG";
 
@@ -50,6 +52,7 @@ final class EnvVars {
         getBotDescription(),
         getBotCountryCode(),
         getBotGameTypes(),
+        getBotPlatform(),
         getBotProgrammingLang());
   }
 
@@ -91,6 +94,9 @@ final class EnvVars {
     }
     return Arrays.asList(gameTypes.split("\\s*,\\s*"));
   }
+
+  /** Platform used for running the bot */
+  public static String getBotPlatform() { return System.getenv(BOT_PLATFORM); }
 
   /** Language used for programming the bot */
   public static String getBotProgrammingLang() {

@@ -19,7 +19,7 @@ apply plugin: 'kotlinx-serialization'
 apply plugin: "com.vanniktech.dependency.graph.generator"
 
 group = 'dev.robocode.tankroyale'
-version = '0.5.3'
+version = '0.5.4'
 description = 'Robocode Tank Royale UI Desktop'
 
 compileJava {
@@ -43,10 +43,10 @@ dependencies {
     compile 'org.java-websocket:Java-WebSocket:1.4.0'
     compile 'com.miglayout:miglayout-swing:5.2'
 
-    runtime ('dev.robocode.tankroyale:robocode-tankroyale-server:0.6.1') {
+    runtime ('dev.robocode.tankroyale:robocode-tankroyale-server:0.6.2') {
         exclude group: 'ch.qos.logback'
     }
-    runtime 'dev.robocode.tankroyale:robocode-tankroyale-bootstrap:0.6.0'
+    runtime 'dev.robocode.tankroyale:robocode-tankroyale-bootstrap:0.6.1'
 }
 
 mainClassName = 'dev.robocode.tankroyale.ui.desktop.ui.MainWindowKt'
@@ -61,15 +61,15 @@ jar {
 }
 
 task copyServerJar(type: Copy) {
-    into "$buildDir/resources/main"
     from configurations.runtime
+    into "$buildDir/resources/main"
     include('robocode-tankroyale-server-*.jar')
     rename '(.*)-[0-9]+\\..*.jar', '$1.jar'
 }
 
 task copyBootstrapJar(type: Copy) {
-    into "$buildDir/resources/main"
     from configurations.runtime
+    into "$buildDir/resources/main"
     include('robocode-tankroyale-bootstrap-*.jar')
     rename '(.*)-[0-9]+\\..*.jar', '$1.jar'
 }

@@ -65,6 +65,11 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <summary>
+    /// Platform used for running the bot, e.g.abstract OpenJDK 11 or .NET Core 3.
+    /// </summary>
+    public string Platform { get; set; }
+
+    /// <summary>
     /// Programming language used for developing the bot, e.g. "Java" or "C#".
     /// </summary>
     public string ProgrammingLang { get; set; }
@@ -79,6 +84,7 @@ namespace Robocode.TankRoyale.BotApi
       string description,
       string countryCode,
       IEnumerable<string> gameTypes,
+      string platform,
       string programmingLang)
     {
       if (string.IsNullOrWhiteSpace(name))
@@ -130,6 +136,7 @@ namespace Robocode.TankRoyale.BotApi
       this.Description = description;
       this.CountryCode = regionInfo.TwoLetterISORegionName;
       this.gameTypes = trimmedGameTypes;
+      this.Platform = platform;
       this.ProgrammingLang = programmingLang;
     }
   }

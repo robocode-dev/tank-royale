@@ -40,7 +40,11 @@ namespace Robocode.TankRoyale.Schema
         [System.ComponentModel.DataAnnotations.Required]
         public System.Collections.Generic.ICollection<string> GameTypes { get; set; } = new System.Collections.ObjectModel.Collection<string>();
     
-        /// <summary>Language used for programming the bot, e.g. Java</summary>
+        /// <summary>Platform used for running the bot, e.g. OpenJDK 11 or .NET Core 3</summary>
+        [Newtonsoft.Json.JsonProperty("platform", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Platform { get; set; }
+    
+        /// <summary>Language used for programming the bot, e.g. Java or C#</summary>
         [Newtonsoft.Json.JsonProperty("programmingLang", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ProgrammingLang { get; set; }
     

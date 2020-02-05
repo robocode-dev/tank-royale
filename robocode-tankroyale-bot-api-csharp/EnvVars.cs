@@ -22,6 +22,8 @@ namespace Robocode.TankRoyale.BotApi
     public const string BOT_COUNTRY_CODE = "BOT_COUNTRY_CODE";
     /** Name of environment variable for bot game types */
     public const string BOT_GAME_TYPES = "BOT_GAME_TYPES";
+    /** Name of environment variable for bot platform */
+    public const string BOT_PLATFORM = "BOT_PLATFORM";
     /** Name of environment variable for bot programming language */
     public const string BOT_PROG_LANG = "BOT_PROG_LANG";
 
@@ -53,6 +55,7 @@ namespace Robocode.TankRoyale.BotApi
         GetBotDescription(),
         GetBotCountryCode(),
         GetBotGameTypes(),
+        GetBotPlatform(),
         GetBotProgrammingLang()
       );
     }
@@ -102,6 +105,12 @@ namespace Robocode.TankRoyale.BotApi
         return new List<string>();
       }
       return new List<string>(gameTypes.Split("\\s*,\\s*"));
+    }
+
+    /// <summary>Platform used for running the bot</summary>
+    public static string GetBotPlatform()
+    {
+      return Environment.GetEnvironmentVariable(BOT_PLATFORM);
     }
 
     /// <summary>Language used for programming the bot</summary>
