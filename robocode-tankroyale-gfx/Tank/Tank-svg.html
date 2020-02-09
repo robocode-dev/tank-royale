@@ -1,0 +1,73 @@
+<html>
+  <body style="background-color: #444">
+    <svg
+      width="2000"
+      height="2000"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+      <!-- <rect x="0" y="0" width="100%" height="100%" fill="#222" /> -->
+
+      <use xlink:href="#tank" transform="translate(250,250)" />
+
+      <defs>
+        <g id="body">
+          <rect x="20" y="40" width="460" height="420" fill="#333" stroke="black" stroke-width="10" />
+
+          <g id="link">
+            <rect x="5" y="8" width="125" height="25" fill="#aaa" />
+            <rect x="8" y="20" width="115" height="35" fill="#555" rx="10" ry="10" />
+            <rect x="3" y="3" width="125" height="50" fill="none" stroke="black" stroke-width="10" rx="10" ry="10" />
+          </g>
+
+          <g id="track">
+            <use xlink:href="#link" x="0" y="0" />
+            <use xlink:href="#link" x="0" y="75" />
+            <use xlink:href="#link" x="0" y="150" />
+            <use xlink:href="#link" x="0" y="225" />
+            <use xlink:href="#link" x="0" y="300" />
+            <use xlink:href="#link" x="0" y="375" />
+            <use xlink:href="#link" x="0" y="450" />
+          </g>
+
+          <use xlink:href="#track" x="369" y="0" />
+
+          <rect x="90" y="40" width="320" height="420" fill="#019" stroke="black" stroke-width="20" rx="10" ry="10" />
+          <rect x="100" y="370" width="300" height="80" fill="black" opacity="0.5" />
+        </g>
+
+        <g id="turret">
+          <rect x="150" y="200" width="200" height="200" fill="#039" stroke="black" stroke-width="20" rx="10" ry="10" />
+          <rect x="160" y="340" width="180" height="50" fill="black" opacity="0.5" />
+
+          <rect x="200" y="100" width="100" height="100" fill="url(#cannon-grad)" stroke="black" stroke-width="20" />
+          <rect x="225" y="-50" width="50" height="150" fill="url(#cannon-grad)" stroke="black" stroke-width="20" />
+
+          <linearGradient id="cannon-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#333" />
+            <stop offset="50%" stop-color="#CCC" />
+            <stop offset="100%" stop-color="#333" />
+          </linearGradient>
+        </g>
+
+        <g id="radar">
+          <circle cx="250" cy="250" r="30" fill="#99F" stroke="black" stroke-width="20" />
+          <path d="M 140 270 q 110 100 220 0 z" fill="#99F" stroke="black" stroke-width="20" />
+          <!--<path d="M 250 250 L 50, -300 q 200 -100 400 0 z" fill="grey" opacity="0.5" />-->
+        </g>
+
+        <g id="tank">
+          <use xlink:href="#body" transform="rotate(0,250,250)" />
+          <use xlink:href="#turret" transform="rotate(0,250,250)" />
+          <use xlink:href="#radar" transform="rotate(0,250,250)" />
+          <!--<use xlink:href="#bounding-sphere" />-->
+        </g>
+
+        <g id="bounding-sphere">
+          <circle cx="250" cy="250" r="250" fill="red" opacity="0.35" />
+        </g>
+      </defs>
+    </svg>
+  </body>
+</html>
