@@ -8,6 +8,7 @@ import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.EventQueue
@@ -15,6 +16,7 @@ import java.io.Closeable
 import javax.swing.*
 import javax.swing.JOptionPane.OK_OPTION
 
+@UnstableDefault
 @ImplicitReflectionSerializer
 object SelectServerDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("select_server_dialog")) {
 

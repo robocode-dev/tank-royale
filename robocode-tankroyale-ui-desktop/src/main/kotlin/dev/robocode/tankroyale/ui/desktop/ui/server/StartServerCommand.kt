@@ -6,7 +6,9 @@ import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.util.ICommand
 import dev.robocode.tankroyale.ui.desktop.util.WsUrl
 import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.UnstableDefault
 
+@UnstableDefault
 class StartServerCommand(
     private val port: Int = ServerSettings.DEFAULT_PORT,
     private val gameType: String = GameType.CLASSIC.type

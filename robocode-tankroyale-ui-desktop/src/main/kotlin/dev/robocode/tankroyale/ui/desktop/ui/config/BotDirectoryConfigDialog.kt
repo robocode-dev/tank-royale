@@ -8,11 +8,13 @@ import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.EventQueue
 import javax.swing.*
 
+@UnstableDefault
 @ImplicitReflectionSerializer
 object BotDirectoryConfigDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("bot_directory_config_dialog")) {
 
@@ -70,6 +72,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
     }
 }
 
+@UnstableDefault
 @ImplicitReflectionSerializer
 private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
