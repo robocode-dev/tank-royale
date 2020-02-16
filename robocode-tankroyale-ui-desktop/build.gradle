@@ -18,15 +18,18 @@ apply plugin: 'application'
 apply plugin: 'kotlinx-serialization'
 apply plugin: "com.vanniktech.dependency.graph.generator"
 
+sourceCompatibility = 9
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "9"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "9"
+}
+
 group = 'dev.robocode.tankroyale'
 version = '0.5.4'
 description = 'Robocode Tank Royale UI Desktop'
-
-compileJava {
-    // Java 9 supports UTF-8 in properties files
-    sourceCompatibility = '9'
-    targetCompatibility = '9'
-}
 
 defaultTasks 'run'
 
