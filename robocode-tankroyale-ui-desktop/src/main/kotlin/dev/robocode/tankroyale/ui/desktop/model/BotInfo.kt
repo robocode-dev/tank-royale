@@ -8,7 +8,9 @@ data class BotInfo(
     val version: String,
     val author: String,
     val description: String? = null,
+    val url: String? = null,
     val countryCode: String? = null,
+    val platform: String? = null,
     val programmingLang: String? = null,
     val gameTypes: Set<String>,
     val host: String,
@@ -18,7 +20,5 @@ data class BotInfo(
         get() = BotAddress(host, port)
 
     val displayText: String
-        get() {
-            return if (author.isBlank()) "$name $version" else "$author: $name $version"
-        }
+        get() = "$name $version"
 }

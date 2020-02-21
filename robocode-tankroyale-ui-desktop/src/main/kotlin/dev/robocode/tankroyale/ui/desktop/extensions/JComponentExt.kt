@@ -3,10 +3,7 @@ package dev.robocode.tankroyale.ui.desktop.extensions
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.UI_TITLES
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.STRINGS
 import dev.robocode.tankroyale.ui.desktop.util.Event
-import javax.swing.JButton
-import javax.swing.JComponent
-import javax.swing.JLabel
-import javax.swing.JOptionPane
+import javax.swing.*
 
 object JComponentExt {
 

@@ -28,7 +28,7 @@ compileTestKotlin {
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.5.4'
+version = '0.5.5'
 description = 'Robocode Tank Royale UI Desktop'
 
 defaultTasks 'run'
@@ -46,7 +46,7 @@ dependencies {
     compile 'org.java-websocket:Java-WebSocket:1.4.0'
     compile 'com.miglayout:miglayout-swing:5.2'
 
-    runtime ('dev.robocode.tankroyale:robocode-tankroyale-server:0.6.2') {
+    runtime ('dev.robocode.tankroyale:robocode-tankroyale-server:0.6.3') {
         exclude group: 'ch.qos.logback'
     }
     runtime 'dev.robocode.tankroyale:robocode-tankroyale-bootstrap:0.6.1'
@@ -81,7 +81,6 @@ build.dependsOn copyServerJar
 build.dependsOn copyBootstrapJar
 
 // Modify versions.txt using replacement of @version@ token
-
 import org.apache.tools.ant.filters.ReplaceTokens
 
 processResources {
