@@ -10,6 +10,7 @@ public class TestBot2 : Bot
       "1.0",
       "fnl",
       "A sample bot",
+      null,
       "dk",
       new string[] { "1v1", "melee" },
       ".NET Core 3",

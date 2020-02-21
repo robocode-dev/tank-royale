@@ -18,6 +18,8 @@ namespace Robocode.TankRoyale.BotApi
     public const string BOT_AUTHOR = "BOT_AUTHOR";
     /** Name of environment variable for bot description */
     public const string BOT_DESCRIPTION = "BOT_DESCRIPTION";
+    /** Name of environment variable for bot url */
+    public const string BOT_URL = "BOT_URL";
     /** Name of environment variable for bot country code */
     public const string BOT_COUNTRY_CODE = "BOT_COUNTRY_CODE";
     /** Name of environment variable for bot game types */
@@ -53,6 +55,7 @@ namespace Robocode.TankRoyale.BotApi
         GetBotVersion(),
         GetBotAuthor(),
         GetBotDescription(),
+        GetBotUrl(),
         GetBotCountryCode(),
         GetBotGameTypes(),
         GetBotPlatform(),
@@ -88,6 +91,12 @@ namespace Robocode.TankRoyale.BotApi
     public static string GetBotDescription()
     {
       return Environment.GetEnvironmentVariable(BOT_DESCRIPTION);
+    }
+
+    /// <summary>Bot url</summary>
+    public static string GetBotUrl()
+    {
+      return Environment.GetEnvironmentVariable(BOT_URL);
     }
 
     /// <summary>Bot country code</summary>

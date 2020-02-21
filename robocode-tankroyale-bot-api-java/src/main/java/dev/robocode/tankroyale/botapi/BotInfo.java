@@ -20,6 +20,9 @@ public final class BotInfo {
   /** Short description of the bot, preferable a one-liner */
   private String description;
 
+  /** URL to a home page for the bot */
+  private String url;
+
   /**
    * Country code defined by ISO 3166-1 alpha-2: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
    * If no country code is provided, the locale of the system is being used instead.
@@ -43,6 +46,7 @@ public final class BotInfo {
       final String version,
       final String author,
       final String description,
+      final String url,
       final String countryCode,
       final Collection<String> gameTypes,
       final String platform,
@@ -89,6 +93,7 @@ public final class BotInfo {
     this.version = version;
     this.author = author;
     this.description = description;
+    this.url = url;
     this.countryCode = (code == null) ? null : code.getAlpha2();
     this.gameTypes = trimmedGameTypes;
     this.platform = platform;

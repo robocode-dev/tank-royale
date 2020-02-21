@@ -49,6 +49,11 @@ namespace Robocode.TankRoyale.BotApi
     public string Description { get; set; }
 
     /// <summary>
+    /// URL to a home page for the bot.
+    /// </summary>
+    public string Url { get; set; }
+
+    /// <summary>
     /// Country code defined by ISO 3166-1 alpha-2: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
     /// If no country code is provided, the locale of the system is being used instead.
     /// </summary>
@@ -82,6 +87,7 @@ namespace Robocode.TankRoyale.BotApi
       string version,
       string author,
       string description,
+      string url,
       string countryCode,
       IEnumerable<string> gameTypes,
       string platform,
@@ -134,6 +140,7 @@ namespace Robocode.TankRoyale.BotApi
       this.version = version;
       this.author = author;
       this.Description = description;
+      this.Url = url;
       this.CountryCode = regionInfo.TwoLetterISORegionName;
       this.gameTypes = trimmedGameTypes;
       this.Platform = platform;

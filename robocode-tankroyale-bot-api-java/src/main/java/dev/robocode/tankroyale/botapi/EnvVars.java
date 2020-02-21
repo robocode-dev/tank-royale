@@ -20,6 +20,8 @@ final class EnvVars {
   public static final String BOT_AUTHOR = "BOT_AUTHOR";
   /** Name of environment variable for bot description */
   public static final String BOT_DESCRIPTION = "BOT_DESCRIPTION";
+  /** Name of environment variable for bot URL */
+  public static final String BOT_URL = "BOT_URL";
   /** Name of environment variable for bot country code */
   public static final String BOT_COUNTRY_CODE = "BOT_COUNTRY_CODE";
   /** Name of environment variable for bot game types */
@@ -50,6 +52,7 @@ final class EnvVars {
         getBotVersion(),
         getBotAuthor(),
         getBotDescription(),
+        getBotUrl(),
         getBotCountryCode(),
         getBotGameTypes(),
         getBotPlatform(),
@@ -79,6 +82,11 @@ final class EnvVars {
   /** Bot description */
   public static String getBotDescription() {
     return System.getenv(BOT_DESCRIPTION);
+  }
+
+  /** Bot URL */
+  public static String getBotUrl() {
+    return System.getenv(BOT_URL);
   }
 
   /** Bot country code */
