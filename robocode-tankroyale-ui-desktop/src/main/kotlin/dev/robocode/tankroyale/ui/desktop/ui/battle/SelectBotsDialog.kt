@@ -26,7 +26,7 @@ object SelectBotsDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sel
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
-        size = Dimension(600, 450)
+        size = Dimension(600, 600)
 
         setLocationRelativeTo(null) // center on screen
 
@@ -52,16 +52,16 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
 
     private val startBattleButton: JButton
 
-    private val selectBotsPanel = SelectBotsPanel()
+    private val selectPanel = SelectBotsWithBotInfoPanel()
 
     init {
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
 
         val lowerPanel = JPanel(MigLayout("insets 10, fill")).apply {
-            add(selectBotsPanel, "north")
+            add(selectPanel, "north")
             add(buttonPanel, "center")
         }
-        add(lowerPanel, "south, h 1000000")
+        add(lowerPanel, "south")
 
         buttonPanel.apply {
             startBattleButton = addButton("start_battle", onStartBattle, "tag ok")
@@ -69,8 +69,8 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
         }
         startBattleButton.isEnabled = false
 
-        selectBotsPanel.selectedBotList.onChanged {
-            startBattleButton.isEnabled = selectBotsPanel.selectedBotListModel.size >= 2
+        selectPanel.selectedBotList.onChanged {
+            startBattleButton.isEnabled = selectPanel.selectedBotListModel.size >= 2
         }
 
         onStartBattle.subscribe { startGame() }
@@ -81,12 +81,12 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
     }
 
     fun clear() {
-        selectBotsPanel.selectedBotListModel.clear()
+        selectPanel.selectedBotListModel.clear()
     }
 
     fun updateAvailableBots() {
         SwingUtilities.invokeLater {
-            val availableBotListModel = selectBotsPanel.availableBotListModel
+            val availableBotListModel = selectPanel.availableBotListModel
             availableBotListModel.clear()
             Client.availableBots.forEach { availableBotListModel.addElement(it) }
         }
@@ -98,9 +98,9 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
         isVisible = true
 
         val gameType = ServerProcess.gameType
-            ?: GameType.CLASSIC.type // FIXME: Dialog must be shown to select game with remote server
+            ?: GameType.CLASSIC.type // FIXME: Dialog must be shown to select game type with remote server
 
-        val botAddresses = selectBotsPanel.selectedBotListModel.toArray()
+        val botAddresses = selectPanel.selectedBotListModel.toArray()
             .map { b -> (b as BotInfo).botAddress }
         Client.startGame(GamesSettings.games[gameType]!!, botAddresses.toSet())
 

@@ -3,38 +3,16 @@ package dev.robocode.tankroyale.ui.desktop.ui.battle
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.toList
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
-import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.util.Event
-import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
-import java.awt.EventQueue
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
-@UnstableDefault
-@ImplicitReflectionSerializer
-object SelectBotsDialog2 : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("select_bots_dialog")) {
-
-    private val selectBotsPanel = SelectBotsPanel()
-
-    init {
-        defaultCloseOperation = DISPOSE_ON_CLOSE
-
-        size = Dimension(600, 450)
-
-        setLocationRelativeTo(null) // center on screen
-
-        contentPane.add(selectBotsPanel)
-    }
-}
-
 class SelectBotsPanel : JPanel(MigLayout("fill")) {
     // Private events
-
     private val onAdd = Event<JButton>()
     private val onAddAll = Event<JButton>()
     private val onRemove = Event<JButton>()
@@ -55,16 +33,17 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
         val rightSelectionPanel = JPanel(MigLayout("fill")).apply {
             add(JScrollPane(selectedBotList), "grow")
+            // Sets the preferred size to avoid right panel width to grow much larger than the right panel
             preferredSize = Dimension(10, 10)
             border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("selected_bots"))
         }
 
-        val addPanel = JPanel(MigLayout("insets 0, fill", "[fill]"))
-        val removePanel = JPanel(MigLayout("insets 0, fill", "[fill]"))
+        val addPanel = JPanel(MigLayout("fill", "[fill]"))
+        val removePanel = JPanel(MigLayout("fill", "[fill]"))
 
         val middlePanel = JPanel(MigLayout("fill"))
 
-        val centerSelectionPanel = JPanel(MigLayout("insets 0")).apply {
+        val centerSelectionPanel = JPanel(MigLayout()).apply {
             add(addPanel, "north")
             add(middlePanel, "h 300")
             add(removePanel, "south")
@@ -134,15 +113,5 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
                 }
             }
         })
-    }
-}
-
-@UnstableDefault
-@ImplicitReflectionSerializer
-private fun main() {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
-    EventQueue.invokeLater {
-        SelectBotsDialog.isVisible = true
     }
 }
