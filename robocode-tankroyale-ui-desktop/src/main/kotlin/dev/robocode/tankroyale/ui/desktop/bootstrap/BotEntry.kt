@@ -19,6 +19,7 @@ data class Info(
     val version: String,
     val author: String,
     val description: String? = null,
+    val url: String? = null,
     val countryCode: String? = null,
     val programmingLang: String? = null,
     val platform: String? = null,

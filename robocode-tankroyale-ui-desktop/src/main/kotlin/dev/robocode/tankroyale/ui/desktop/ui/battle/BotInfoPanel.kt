@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.ui.desktop.ui.battle
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import net.miginfocom.swing.MigLayout
-import java.awt.Dimension
 import java.util.*
 import javax.swing.*
 
@@ -31,15 +30,14 @@ class BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
         addLabel("bot_info.author")
         add(authorTextField, "growx, wrap")
 
+        addLabel("bot_info.country_code")
+        add(countryCodeTextPane, "growx, wrap")
+
         addLabel("bot_info.description")
         add(descriptionTextField, "growx, wrap")
-
         descriptionTextField.border = nameTextField.border
         descriptionTextField.background = background
         descriptionTextField.font = font
-
-        addLabel("bot_info.country_code")
-        add(countryCodeTextPane, "growx, wrap")
 
         addLabel("bot_info.url")
         add(urlTextPane, "growx, wrap")

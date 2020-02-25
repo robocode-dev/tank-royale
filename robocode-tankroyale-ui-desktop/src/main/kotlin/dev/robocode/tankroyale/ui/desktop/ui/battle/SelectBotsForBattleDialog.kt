@@ -21,7 +21,7 @@ import javax.swing.*
 
 @UnstableDefault
 @ImplicitReflectionSerializer
-object SelectBotsDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("select_bots_dialog")) {
+object SelectBotsForBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("select_bots_dialog")) {
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
@@ -30,14 +30,14 @@ object SelectBotsDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sel
 
         setLocationRelativeTo(null) // center on screen
 
-        val selectBotsAndStartPanel = SelectBotsAndStartPanel()
+        val selectBotsAndStartPanel = SelectBotsForBattlePanel()
 
         contentPane.add(selectBotsAndStartPanel)
 
         onActivated {
             selectBotsAndStartPanel.apply {
                 updateAvailableBots()
-                clear()
+                clearSelectedBots()
             }
         }
     }
@@ -45,14 +45,12 @@ object SelectBotsDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sel
 
 @UnstableDefault
 @ImplicitReflectionSerializer
-class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
+class SelectBotsForBattlePanel : JPanel(MigLayout("fill")) {
     // Private events
     private val onStartBattle = Event<JButton>()
     private val onCancel = Event<JButton>()
 
-    private val startBattleButton: JButton
-
-    private val selectPanel = SelectBotsWithBotInfoPanel()
+    private val selectPanel = SelectBotsWithBotInfoPanel(onlySelectUnique = true)
 
     init {
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
@@ -62,6 +60,8 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
             add(buttonPanel, "center")
         }
         add(lowerPanel, "south")
+
+        val startBattleButton: JButton
 
         buttonPanel.apply {
             startBattleButton = addButton("start_battle", onStartBattle, "tag ok")
@@ -75,12 +75,14 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
 
         onStartBattle.subscribe { startGame() }
 
+        onCancel.subscribe { SelectBotsForBattleDialog.dispose() }
+
         Client.onBotListUpdate.subscribe { updateAvailableBots() }
 
         updateAvailableBots()
     }
 
-    fun clear() {
+    fun clearSelectedBots() {
         selectPanel.selectedBotListModel.clear()
     }
 
@@ -104,7 +106,7 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
             .map { b -> (b as BotInfo).botAddress }
         Client.startGame(GamesSettings.games[gameType]!!, botAddresses.toSet())
 
-        SelectBotsDialog.dispose()
+        SelectBotsForBattleDialog.dispose()
     }
 }
 
@@ -114,6 +116,6 @@ private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     EventQueue.invokeLater {
-        SelectBotsDialog.isVisible = true
+        SelectBotsForBattleDialog.isVisible = true
     }
 }

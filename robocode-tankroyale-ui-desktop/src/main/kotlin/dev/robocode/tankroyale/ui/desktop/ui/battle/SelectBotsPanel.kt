@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.ui.desktop.ui.battle
 
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
-import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.toList
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.util.Event
@@ -11,7 +10,7 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
-class SelectBotsPanel : JPanel(MigLayout("fill")) {
+class SelectBotsPanel(val onlySelectUnique: Boolean = false) : JPanel(MigLayout("fill")) {
     // Private events
     private val onAdd = Event<JButton>()
     private val onAddAll = Event<JButton>()
@@ -68,17 +67,17 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         selectedBotList.cellRenderer = BotInfoListCellRenderer()
 
         onAdd.subscribe {
-            availableBotList.selectedValuesList.forEach { bot ->
-                if (selectedBotList.toList().count { sel -> bot.host == sel.host && bot.port == sel.port } == 0) {
-                    selectedBotListModel.addElement(bot)
+            availableBotList.selectedValuesList.forEach { botInfo ->
+                if (!(onlySelectUnique && selectedBotListModel.contains(botInfo))) {
+                    selectedBotListModel.addElement(botInfo)
                 }
             }
         }
         onAddAll.subscribe {
             for (i in 0 until availableBotListModel.size) {
-                val bot = availableBotListModel[i]
-                if (!selectedBotListModel.contains(bot)) {
-                    selectedBotListModel.addElement(bot)
+                val botInfo = availableBotListModel[i]
+                if (!(onlySelectUnique && selectedBotListModel.contains(botInfo))) {
+                    selectedBotListModel.addElement(botInfo)
                 }
             }
         }
@@ -96,7 +95,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
                     val index = availableBotList.locationToIndex(e.point)
                     if (index >= 0 && index < availableBotListModel.size()) {
                         val botInfo = availableBotListModel[index]
-                        if (!selectedBotListModel.contains(botInfo)) {
+                        if (!(onlySelectUnique && selectedBotListModel.contains(botInfo))) {
                             selectedBotListModel.addElement(botInfo)
                         }
                     }

@@ -5,9 +5,9 @@ import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
 import dev.robocode.tankroyale.ui.desktop.ui.battle.BattlePanel
 import dev.robocode.tankroyale.ui.desktop.ui.battle.LogoPanel
+import dev.robocode.tankroyale.ui.desktop.ui.battle.SelectBotsForBootUpDialog
 import dev.robocode.tankroyale.ui.desktop.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.ui.desktop.ui.config.SetupRulesDialog
-import dev.robocode.tankroyale.ui.desktop.ui.server.BootstrapDialog
 import dev.robocode.tankroyale.ui.desktop.ui.server.PrepareServerCommand
 import dev.robocode.tankroyale.ui.desktop.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.ui.desktop.ui.server.ServerLogWindow
@@ -43,7 +43,7 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
             onNewBattle.invokeLater {
                 var disposable: Closeable? = null
                 disposable = Client.onConnected.subscribe {
-                    BootstrapDialog.isVisible = true
+                    SelectBotsForBootUpDialog.isVisible = true
                     // Make sure to dispose. Otherwise the dialog will be shown when testing if the server is running
                     disposable?.close()
                 }
