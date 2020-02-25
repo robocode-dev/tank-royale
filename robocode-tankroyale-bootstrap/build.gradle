@@ -17,7 +17,7 @@ apply plugin: 'kotlinx-serialization'
 apply plugin: 'maven'
 
 group = 'dev.robocode.tankroyale'
-version = '0.6.1'
+version = '0.6.2'
 description = 'Robocode Tank Royale Bootstrap'
 
 compileJava {
