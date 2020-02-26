@@ -3,7 +3,7 @@
 namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
-  /// Interface for a bot containing basic methods only.
+  /// Interface for a bot that contains only the core API.
   /// </summary>
   public interface IBaseBot
   {
