@@ -3,105 +3,146 @@
 namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
-  /// Interface for a bot that contains only the core API.
+  /// Interface containing the core API for a bot.
   /// </summary>
   public interface IBaseBot
   {
     /// <summary>
-    /// Bounding circle radius. A bot gets hit by a bullet when the distance between the center of the
-    /// bullet and the position of the bot (center) is less than the bounding circle radius.
+    /// The bounding circle of a bot is a circle going from the center of the bot with a radius so
+    /// that the circle covers most of the bot. The bounding circle is used for determining when a
+    /// bot is hit by a bullet.
+    ///
+    /// A bot gets hit by a bullet when the bullet gets inside the bounding circle, i.e. the
+    /// distance between the bullet and the center of the bounding circle is less than the radius
+    /// of the bounding circle.
     /// </summary>
-    int BoundingCircleRadius => 18;
+    /// <value>The radius of the bounding circle of the bot, which is a constant of 18 units.</value>
+    sbyte BoundingCircleRadius => 18;
 
     /// <summary>
-    /// Radar radius. This is how far a bot is able to scan other bots with the radar. Bots outside the
-    /// radar radius will not be scanned.
+    /// The radar is used for scanning the battlefield for opponent bots. The shape of the scan
+    /// beam of the radar is a circle arc ("pizza slice") starting from the center of the bot.
+    /// Opponent bots that get inside the scan arc will be detected by the radar.
+    ///
+    /// The radius of the arc is a constant of 1200 units. This means that that the radar will not
+    /// be able to detect bots that are more than 1200 units away from the bot.
+    ///
+    /// The radar needs to be turned (left or right) to scan opponent bots. So make sure the radar
+    /// is always turned. The more the radar is turned, the larger the area of the scan arc
+    /// becomes, and the bigger the chance is that the radar detects an opponent. If the radar is
+    /// not turning, the scan arc becomes a thin line, unable to scan and detect anything.
     /// </summary>
-    double RadarRadius => 1200d;
+    /// <value>The radius of the radar's scan beam, which is a constant of 1200 units.</value>
+    short ScanRadius => 1200;
 
     /// <summary>
-    /// Maximum driving turn rate measured in degrees/turn. This is the max. possible turn rate of the
-    /// bot. Note that the speed of the bot has an impact on the turn rate. The faster speed the less
-    /// turn rate.
-    /// 
-    /// The formula for the max. possible turn rate at a given speed is: MaxTurnRate - 0.75 x
-    /// abs(speed). Hence, the turn rate is at max. 10 degrees/turn when the speed is zero, and down to
-    /// only 4 degrees/turn when the robot is at max speed (8 pixels/turn).
+    /// This is the max. possible turn rate of the bot. Note that the speed of the bot has a direct
+    /// impact on the turn rate. The faster the speed the less turn rate.
+    ///
+    /// The formula for the max. possible turn rate at a given speed is:
+    /// MaxTurnRate - 0.75 x abs(speed).
+    /// Hence, the turn rate is at max. 10 degrees/turn when the speed is zero, and down to only 4
+    /// degrees per turn when the robot is at max speed (which is 8 units per turn).
     /// </summary>
-    double MaxTurnRate => 10d;
+    /// <value>The maximum possible driving turn rate, which is max. 10 degrees per turn.</value>
+    sbyte MaxTurnRate => 10;
 
     /// <summary>
-    /// Maximum gun turn rate measured in degrees/turn.
+    /// The maximum gun turn rate, which is a constant of 20 degrees per turn.
     /// </summary>
-    double MaxGunTurnRate => 20d;
+    sbyte MaxGunTurnRate => 20;
 
     /// <summary>
-    /// Maximum radar turn rate measured in degrees/turn.
+    /// The maximum radar turn rate, which is a constant of 45 degrees per turn.
     /// </summary>
-    double MaxRadarTurnRate => 45d;
+    sbyte MaxRadarTurnRate => 45;
 
     /// <summary>
-    /// Maximum absolute speed measured in pixels/turn.
+    /// The maximum absolute speed, which is 8 units per turn.
     /// </summary>
-    double MaxSpeed => 8d;
+    sbyte MaxSpeed => 8;
 
     /// <summary>
-    /// Maximum forward speed measured in pixels/turn. When the speed is positive the bot is moving forwards.
+    /// The maximum forward speed, which is 8 units per turn.
     /// </summary>
-    double MaxForwardSpeed => MaxSpeed;
+    sbyte MaxForwardSpeed => 8;
 
     /// <summary>
-    /// Maximum backward speed measured in pixels/turn. When the speed is negative the bot is moving backwards.
+    /// The maximum backward speed, which is -8 units per turn.
     /// </summary>
-    double MaxBackwardSpeed => -MaxSpeed;
+    sbyte MaxBackwardSpeed => -8;
 
     /// <summary>
-    /// Minimum firepower. The gun will not fire with a power less than the minimum firepower.
+    /// The gun will not fire with a power that is less than the minimum firepower, which is 0.1.
     /// </summary>
+    /// <value>The minimum firepower, which is 0.1.</value>
     double MinFirepower => 0.1;
 
     /// <summary>
-    /// Maximum firepower. The gun will fire with this firepower if the gun is set to fire with a higher firepower.
+    /// The gun will fire up to this power only if the firepower is set to a higher value.
     /// </summary>
-    double MaxFirepower => 3.0;
+    /// <value>The maximum firepower, which is 3.</value>
+    sbyte MaxFirepower => 3;
 
     /// <summary>
-    /// Minimum bullet speed measured in pixels/turn. The bullet speed is determined by this formula:
-    /// 20 - 3 x firepower. The more fire power the slower bullet speed. Hence, the minimum bullet
-    /// speed is 11 pixels/turn.
+    /// The minimum bullet speed is the slowest possible speed that a bullet can travel and is
+    /// defined by the maximum firepower. Min. bullet speed = 20 - 3 x max. firepower, i.e.
+    /// 20 - 3 x 3 = 11. The more power, the slower the bullet speed will be.
     /// </summary>
-    double MinBulletSpeed => 20 - 3 * MaxFirepower;
+    /// <value>The minimum bullet speed is 11 units per turn.</value>
+    sbyte MinBulletSpeed => (sbyte)(20 - 3 * MaxFirepower);
 
     /// <summary>
-    /// Maximum bullet speed measured in pixels/turn. The bullet speed is determined by this formula:
-    /// 20 - 3 x firepower. The less fire power the faster bullet speed. Hence, the maximum bullet
-    /// speed is 17 pixels/turn.
+    /// The maximum bullet speed is the fastest possible speed that a bullet can travel and is
+    /// defined by the minimum firepower. Max. bullet speed = 20 - 3 x min. firepower, i.e.
+    /// 20 - 3 x 0.1 = 19.7. The lesser power, the faster the bullet speed will be.
     /// </summary>
+    /// <value>The maximum bullet speed is 19.7 units per turn.</value>
     double MaxBulletSpeed => 20 - 3 * MinFirepower;
 
     /// <summary>
-    /// Acceleration that adds 1 pixel to the speed per turn when the bot is increasing its speed moving forwards.
+    /// Acceleration is the increase in speed per turn, which adds 1 unit to the speed per turn
+    /// when the bot is increasing its speed moving forward.
     /// </summary>
-    double Acceleration => 1d;
+    /// <value>The acceleration is 1 additional unit per turn.</value>
+    sbyte Acceleration => 1;
 
     /// <summary>
-    /// Deceleration that subtract 2 pixels from the speed per turn when the bot is decreasing its
-    /// speed moving backwards. Note that the deceleration is negative.
+    /// Deceleration is the decrease in speed per turn, which subtracts 2 units to the speed per
+    /// turn when the bot is decreasing its speed moving backward. This means that a bot is faster
+    /// at braking than accelerating forward.
     /// </summary>
-    double Deceleration => -2d;
+    /// <value>The deceleration is 2 units less per turn.</value>
+    sbyte Deceleration => -2;
 
     /// <summary>
-    /// Main method for start running the bot.
+    /// The method used to start running the bot. You should call this method from the main method
+    /// or similar.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// static void Main(string[] args)
+    /// {
+    ///     // create myBot
+    ///     ...
+    ///     myBot.Start();
+    /// } 
+    /// </code>
+    /// </example>
     void Start();
 
     /// <summary>
-    /// Commits the current actions for the current turn. This method must be called in order to send
-    /// the bot actions to the server, and MUST before the turn timeout occurs. The turn timeout is
-    /// started when the GameStartedEvent and TickEvent occurs. If Go() is called too late,
-    /// SkippedTurnEvents will occur. Actions are set by calling the setter methods prior to calling
-    /// the Go() method: SetTurnRate(), SetGunTurnRate(), SetRadarTurnRate(), SetTargetSpeed(), and
-    /// SetFire().
+    /// Commits the current actions for the current turn.
+    /// 
+    /// This method must be called once per turn to send the bot actions to the server and must be
+    /// called before the turn timeout occurs. The turn timeout is started when the <see
+    /// cref="GameStartedEvent"/> and <see cref="TickEvent"/> occurs. If the <see cref="Go"/>
+    /// method is called too late, a SkippedTurnEvent will occur.
+    /// 
+    /// Actions are that the bot needs to execute by calling <see cref="Go"/> are set by setting
+    /// various properties prior to calling <see cref="Go"/>: <see cref="TurnRate"/>,
+    /// <see cref="GunTurnRate"/>, <see cref="RadarTurnRate"/>, <see cref="TargetSpeed"/>, and
+    /// <see cref="Firepower"/>.
     /// </summary>
     void Go();
 

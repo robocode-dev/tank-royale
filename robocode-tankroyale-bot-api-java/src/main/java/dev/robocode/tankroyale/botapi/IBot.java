@@ -40,9 +40,9 @@ public interface IBot extends IBaseBot {
    * position, or it is moving into an obstacle. The speed is limited by {@link
    * #setMaxSpeed(double)}.
    *
-   * <p>When the bot is moving forward, the {@link #getAcceleration()} determine the acceleration of
+   * <p>When the bot is moving forward, the {@link #ACCELERATION} determine the acceleration of
    * the bot that adds 1 additional pixel to the speed per turn while accelerating. However, the bot
-   * is faster at braking. The {@link #getDeceleration()} determine the deceleration of the bot that
+   * is faster at braking. The {@link #DECELERATION} determine the deceleration of the bot that
    * subtracts 2 pixels from the speed per turn.
    *
    * <p>This method will first be executed when {@link #go()} is called making it possible to call
@@ -71,9 +71,9 @@ public interface IBot extends IBaseBot {
    * Moves the bot forward until it has traveled a specific distance from its current position, or it
    * is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
    *
-   * <p>When the bot is moving forward, the {@link #getAcceleration()} determine the acceleration of
+   * <p>When the bot is moving forward, the {@link #ACCELERATION} determine the acceleration of
    * the bot that adds 1 additional pixel to the speed per turn while accelerating. However, the bot
-   * is faster at braking. The {@link #getDeceleration()} determine the deceleration of the bot that
+   * is faster at braking. The {@link #DECELERATION} determine the deceleration of the bot that
    * subtracts 2 pixels from the speed per turn.
    *
    * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
@@ -98,9 +98,9 @@ public interface IBot extends IBaseBot {
    * position, or it is moving into an obstacle. The speed is limited by {@link
    * #setMaxSpeed(double)}.
    *
-   * <p>When the bot is moving forward, the {@link #getAcceleration()} determine the acceleration of
+   * <p>When the bot is moving forward, the {@link #ACCELERATION} determine the acceleration of
    * the bot that adds 1 additional pixel to the speed per turn while accelerating. However, the bot
-   * is faster at braking. The {@link #getDeceleration()} determine the deceleration of the bot that
+   * is faster at braking. The {@link #DECELERATION} determine the deceleration of the bot that
    * subtracts 2 pixels from the speed per turn.
    *
    * <p>This method will first be executed when {@link #go()} is called making it possible to call
@@ -129,9 +129,9 @@ public interface IBot extends IBaseBot {
    * Moves the bot backwards until it has traveled a specific distance from its current position, or
    * it is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
    *
-   * <p>When the bot is moving forward, the {@link #getAcceleration()} determine the acceleration of
+   * <p>When the bot is moving forward, the {@link #ACCELERATION} determine the acceleration of
    * the bot that adds 1 additional pixel to the speed per turn while accelerating. However, the bot
-   * is faster at braking. The {@link #getDeceleration()} determine the deceleration of the bot that
+   * is faster at braking. The {@link #DECELERATION} determine the deceleration of the bot that
    * subtracts 2 pixels from the speed per turn.
    *
    * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
@@ -170,9 +170,9 @@ public interface IBot extends IBaseBot {
 
   /**
    * Sets the maximum speed which applies when moving forward and backward. The maximum speed must
-   * be an absolute value from 0 to {@link #getMaxSpeed()}, both values are included. If the input
+   * be an absolute value from 0 to {@link #MAX_SPEED}, both values are included. If the input
    * speed is negative, the max speed will be cut to zero. If the input speed is above {@link
-   * #getMaxSpeed()}, the max speed will be set to {@link #getMaxSpeed()}.
+   * #MAX_SPEED}, the max speed will be set to {@link #MAX_SPEED}.
    *
    * <p>If for example the maximum speed is set to 5, then the bot will be able to move backwards
    * with a speed down to -5 pixels/turn and up to 5 pixels/turn when moving forward.
@@ -312,10 +312,10 @@ public interface IBot extends IBaseBot {
 
   /**
    * Sets the maximum turn rate which applies to turning the bot to the left or right. The maximum
-   * turn rate must be an absolute value from 0 to {@link #getMaxTurnRate()}, both values are
+   * turn rate must be an absolute value from 0 to {@link #MAX_TURN_RATE}, both values are
    * included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
-   * input turn rate is above {@link #getMaxTurnRate()}, the max turn rate will be set to {@link
-   * #getMaxTurnRate()}.
+   * input turn rate is above {@link #MAX_TURN_RATE}, the max turn rate will be set to {@link
+   * #MAX_TURN_RATE}.
    *
    * <p>If for example the max turn rate is set to 5, then the bot will be able to turn left or
    * right with a turn rate down to -5 degrees/turn when turning right, and up to 5 degrees/turn
@@ -460,10 +460,10 @@ public interface IBot extends IBaseBot {
 
   /**
    * Sets the maximum turn rate which applies turning the gun to the left or right. The maximum turn
-   * rate must be an absolute value from 0 to {@link #getMaxGunTurnRate()}, both values are
+   * rate must be an absolute value from 0 to {@link #MAX_GUN_TURN_RATE}, both values are
    * included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
-   * input turn rate is above {@link #getMaxGunTurnRate()}, the max turn rate will be set to {@link
-   * #getMaxGunTurnRate()}.
+   * input turn rate is above {@link #MAX_GUN_TURN_RATE}, the max turn rate will be set to {@link
+   * #MAX_GUN_TURN_RATE}.
    *
    * <p>If for example the max gun turn rate is set to 5, then the gun will be able to turn left or
    * right with a turn rate down to -5 degrees/turn when turning right and up to 5 degrees/turn when
@@ -609,10 +609,10 @@ public interface IBot extends IBaseBot {
 
   /**
    * Sets the maximum turn rate which applies turning the radar to the left or right. The maximum
-   * turn rate must be an absolute value from 0 to {@link #getMaxRadarTurnRate()}, both values are
+   * turn rate must be an absolute value from 0 to {@link #MAX_RADAR_TURN_RATE}, both values are
    * included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
-   * input turn rate is above {@link #getMaxRadarTurnRate()}, the max turn rate will be set to
-   * {@link #getMaxRadarTurnRate()}.
+   * input turn rate is above {@link #MAX_RADAR_TURN_RATE}, the max turn rate will be set to
+   * {@link #MAX_RADAR_TURN_RATE}.
    *
    * <p>If for example the max radar turn rate is set to 5, then the radar will be able to turn left
    * or right with a turn rate down to -5 degrees/turn when turning right and up to 5 degrees/turn
@@ -645,8 +645,8 @@ public interface IBot extends IBaseBot {
    * <p>If the bullet hits an opponent bot, you will gain energy from the bullet hit. When hitting
    * another bot, your bot will be rewarded and retrieve an energy boost of 3x firepower.
    *
-   * <p>The gun will only fire when the firepower is at {@link #getMinFirepower()} or higher. If the
-   * firepower is more than {@link #getMaxFirepower()}, the power will be truncated to the max
+   * <p>The gun will only fire when the firepower is at {@link #MIN_FIREPOWER} or higher. If the
+   * firepower is more than {@link #MAX_FIREPOWER}, the power will be truncated to the max
    * firepower.
    *
    * <p>Whenever the gun is fired, the gun is heated an needs to cool down before it is able to fire
@@ -659,7 +659,7 @@ public interface IBot extends IBaseBot {
    * amount of damage dealt by a bullet hitting another bot is 4x firepower, and if the firepower is
    * greater than 1 it will do an additional 2 x (firepower - 1) damage.
    *
-   * <p>The firepower is truncated to {@link #getMinFirepower()} and {@link #getMaxFirepower} if the
+   * <p>The firepower is truncated to {@link #MIN_FIREPOWER} and {@link #MAX_FIREPOWER} if the
    * firepower exceeds these values.
    *
    * <p>This call is executed immediately be calling {@link #go()} in the code behind. This method
@@ -670,7 +670,7 @@ public interface IBot extends IBaseBot {
    * <p>This method will cancel the effect of prior calls to {@link #setFirepower(double)}.
    *
    * @param firepower is the amount of energy spend on firing the gun. You cannot spend more energy
-   *     that available from the bot. The bullet power must be greater than {@link #getMinFirepower()}.
+   *     that available from the bot. The bullet power must be greater than {@link #MIN_FIREPOWER}.
    * @see #onBulletFired(BulletFiredEvent)
    * @see #setFirepower(double)
    * @see #getGunHeat()

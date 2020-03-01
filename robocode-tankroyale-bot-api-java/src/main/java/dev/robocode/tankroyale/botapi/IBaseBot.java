@@ -4,127 +4,138 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 import java.util.Collection;
 
-/** Interface for a bot containing basic methods only. */
+/** Interface containing the core API for a bot. */
 @SuppressWarnings({"UnusedDeclaration", "EmptyMethod"})
 public interface IBaseBot {
 
   /**
-   * Bounding circle radius. A bot gets hit by a bullet when the distance between the center of the
-   * bullet and the position of the bot (center) is less than the bounding circle radius.
-   */
-  default int getBoundingCircleRadius() {
-    return 18;
-  }
-
-  /**
-   * Radar radius. This is how far a bot is able to scan other bots with the radar. Bots outside the
-   * radar radius will not be scanned.
-   */
-  default double getRadarRadius() {
-    return 1200;
-  }
-
-  /**
-   * Maximum driving turn rate measured in degrees/turn. This is the max. possible turn rate of the
-   * bot. Note that the speed of the bot has an impact on the turn rate. The faster speed the less
-   * turn rate.
+   * The radius of the bounding circle of the bot, which is a constant of {@value} units.
    *
-   * <p>The formula for the max. possible turn rate at a given speed is: MAX_TURN_RATE - 0.75 x
+   * <p>The bounding circle of a bot is a circle going from the center of the bot with a radius so
+   * that the circle covers most of the bot. The bounding circle is used for determining when a bot
+   * is hit by a bullet.
+   *
+   * <p>A bot gets hit by a bullet when the bullet gets inside the bounding circle, i.e. the
+   * distance between the bullet and the center of the bounding circle is less than the radius of
+   * the bounding circle.
+   */
+  short BOUNDING_CIRCLE_RADIUS = 18;
+
+  /**
+   * The radius of the radar's scan beam, which is a constant of {@value} units.
+   *
+   * <p>The radar is used for scanning the battlefield for opponent bots. The shape of the scan beam
+   * of the radar is a circle arc ("pizza slice") starting from the center of the bot. Opponent bots
+   * that get inside the scan arc will be detected by the radar.
+   *
+   * <p>The radius of the arc is a constant of {@value} units. This means that that the radar will
+   * not be able to detect bots that are more than {@value} units away from the bot.
+   *
+   * <p>The radar needs to be turned (left or right) to scan opponent bots. So make sure the radar
+   * is always turned. The more the radar is turned, the larger the area of the scan arc becomes,
+   * and the bigger the chance is that the radar detects an opponent. If the radar is not turning,
+   * the scan arc becomes a thin line, unable to scan and detect anything.
+   */
+  short SCAN_RADIUS = 1200;
+
+  /**
+   * The maximum possible driving turn rate, which is max. {@value} degrees per turn.
+   *
+   * <p>This is the max. possible turn rate of the bot. Note that the speed of the bot has a direct
+   * impact on the turn rate. The faster the speed the less turn rate.
+   *
+   * <p>The formula for the max. possible turn rate at a given speed is: MaxTurnRate - 0.75 x
    * abs(speed). Hence, the turn rate is at max. 10 degrees/turn when the speed is zero, and down to
-   * only 4 degrees/turn when the robot is at max speed (8 pixels/turn).
+   * only 4 degrees per turn when the robot is at max speed (which is 8 units per turn).
    */
-  default double getMaxTurnRate() {
-    return 10;
-  }
+  short MAX_TURN_RATE = 10;
 
-  /** Maximum gun turn rate measured in degrees/turn. */
-  default double getMaxGunTurnRate() {
-    return 20;
-  }
+  /** The maximum gun turn rate, which is a constant of 20 degrees per turn. */
+  short MAX_GUN_TURN_RATE = 20;
 
-  /** Maximum radar turn rate measured in degrees/turn. */
-  default double getMaxRadarTurnRate() {
-    return 45;
-  }
+  /** The maximum radar turn rate, which is a constant of 45 degrees per turn. */
+  short MAX_RADAR_TURN_RATE = 45;
 
-  /** Maximum absolute speed measured in pixels/turn. */
-  default double getMaxSpeed() {
-    return 8;
-  }
+  /** The maximum absolute speed, which is 8 units per turn. */
+  short MAX_SPEED = 8;
+
+  /** The maximum backward speed, which is -8 units per turn. */
+  short MAX_FORWARD_SPEED = MAX_SPEED;
+
+  /** The minimum forward speed, which is -8 units per turn. */
+  short MAX_BACKWARD_SPEED = -MAX_SPEED;
 
   /**
-   * Maximum forward speed measured in pixels/turn. When the speed is positive the bot is moving
-   * forwards.
+   * The minimum firepower, which is 0.1. The gun will not fire with a power that is less than the
+   * minimum firepower, which is 0.1.
    */
-  default double getMaxForwardSpeed() {
-    return getMaxSpeed();
-  }
+  double MIN_FIREPOWER = 0.1;
 
   /**
-   * Maximum backward speed measured in pixels/turn. When the speed is negative the bot is moving
-   * backwards.
+   * The maximum firepower, which is 3. The gun will fire up to this power, even if the firepower is
+   * set to a higher value.
    */
-  default double getMaxBackwardSpeed() {
-    return -getMaxSpeed();
-  }
-
-  /** Minimum firepower. The gun will not fire with a power less than the minimum firepower. */
-  default double getMinFirepower() {
-    return 0.1;
-  }
+  short MAX_FIREPOWER = 3;
 
   /**
-   * Maximum firepower. The gun will fire with this firepower if the gun is set to fire with a
-   * higher firepower.
+   * The minimum bullet speed is 11 units per turn.
+   *
+   * <p>The minimum bullet speed is the slowest possible speed that a bullet can travel and is
+   * defined by the maximum firepower: 20 - 3 x max. firepower, i.e. 20 - 3 x 3 = 11. The more
+   * power, the slower the bullet speed will be.
    */
-  default double getMaxFirepower() {
-    return 3;
-  }
+  short MIN_BULLET_SPEED = 20 - 3 * MAX_FIREPOWER;
 
   /**
-   * Minimum bullet speed measured in pixels/turn. The bullet speed is determined by this formula:
-   * 20 - 3 x firepower. The more fire power the slower bullet speed. Hence, the minimum bullet
-   * speed is 11 pixels/turn.
+   * The maximum bullet speed is 19.7 units per turn.
+   *
+   * <p>The maximum bullet speed is the fastest possible speed that a bullet can travel and is
+   * defined by the minimum firepower. Max. bullet speed = 20 - 3 x min. firepower, i.e. 20 - 3 x
+   * 0.1 = 19.7. The lesser power, the faster the bullet speed will be.
    */
-  default double getMinBulletSpeed() {
-    return 20 - 3 * getMaxFirepower();
-  }
+  double MAX_BULLET_SPEED = 20 - 3 * MIN_FIREPOWER;
 
   /**
-   * Maximum bullet speed measured in pixels/turn. The bullet speed is determined by this formula:
-   * 20 - 3 x firepower. The less fire power the faster bullet speed. Hence, the maximum bullet
-   * speed is 17 pixels/turn.
+   * Acceleration is the increase in speed per turn, which adds 1 unit to the speed per turn when
+   * the bot is increasing its speed moving forward.
    */
-  default double getMaxBulletSpeed() {
-    return 20 - 3 * getMinFirepower();
-  }
+  short ACCELERATION = 1;
 
   /**
-   * Acceleration that adds 1 pixel to the speed per turn when the bot is increasing its speed
-   * moving forwards.
+   * Deceleration is the decrease in speed per turn, which subtracts 2 units to the speed per turn
+   * when the bot is decreasing its speed moving backward. This means that a bot is faster at
+   * braking than accelerating forward.
    */
-  default double getAcceleration() {
-    return 1;
-  }
+  short DECELERATION = -2;
 
   /**
-   * Deceleration that subtract 2 pixels from the speed per turn when the bot is decreasing its
-   * speed moving backwards. Note that the deceleration is negative.
+   * The method used to start running the bot. You should call this method from the main method or
+   * similar.
+   *
+   * <p>Example:
+   *
+   * <pre>{@code
+   * public void main(String[] args) {
+   *     // create myBot
+   *     ...
+   *     myBot.start();
+   * }
+   * }</pre>
    */
-  default double getDeceleration() {
-    return -2;
-  }
-
-  /** Main method for start running the bot */
   void start();
 
   /**
-   * Commits the current actions for the current turn. This method must be called in order to send
-   * the bot actions to the server, and MUST before the turn timeout occurs. The turn timeout is
-   * started when the GameStartedEvent and TickEvent occurs. If go() is called too late,
-   * SkippedTurnEvents will occur. Actions are set by calling the setter methods prior to calling
-   * the go() method: setTurnRate(), setGunTurnRate(), setRadarTurnRate(), setTargetSpeed(), and
-   * setFirepower().
+   * Commits the current actions for the current turn.
+   *
+   * <p>This method must be called once per turn to send the bot actions to the server and must be
+   * called before the turn timeout occurs. The turn timeout is started when the {@link
+   * GameStartedEvent} and {@link TickEvent} occurs. If the {@link #go} method is called too late, a
+   * {@link SkippedTurnEvent} will occur.
+   *
+   * <p>Actions are that the bot needs to execute by calling {@link #go} are set by calling the
+   * various setter methods prior to calling {@link #go}: {@link #setTurnRate}, {@link
+   * #setGunTurnRate}, {@link #setRadarTurnRate}, {@link #setTargetSpeed}, and {@link
+   * #setFirepower}.
    */
   void go();
 
@@ -272,7 +283,7 @@ public interface IBaseBot {
    * turn rate of the body. But be aware that the turn limits for the gun and radar cannot be
    * exceeded.
    *
-   * <p>The turn rate is truncated to {@link #getMaxTurnRate()} if the turn rate exceeds this value.
+   * <p>The turn rate is truncated to {@link #MAX_TURN_RATE} if the turn rate exceeds this value.
    *
    * <p>If this property is set multiple times, the last value set before go() counts.
    *
@@ -296,7 +307,7 @@ public interface IBaseBot {
    * subtracting the turn rate of the body from the turn rate of the gun. But be aware that the turn
    * limits for the radar (and also body and gun) cannot be exceeded.
    *
-   * <p>The gun turn rate is truncated to {@link #getMaxGunTurnRate()} if the gun turn rate exceeds
+   * <p>The gun turn rate is truncated to {@link #MAX_GUN_TURN_RATE} if the gun turn rate exceeds
    * this value.
    *
    * <p>If this property is set multiple times, the last value set before go() counts.
@@ -321,7 +332,7 @@ public interface IBaseBot {
    * radar. But be aware that the turn limits for the radar (and also body and gun) cannot be
    * exceeded.
    *
-   * <p>The radar turn rate is truncated to {@link #getMaxRadarTurnRate()} if the radar turn rate
+   * <p>The radar turn rate is truncated to {@link #MAX_RADAR_TURN_RATE} if the radar turn rate
    * exceeds this value.
    *
    * <p>If this property is set multiple times, the last value set before go() counts.
@@ -349,8 +360,7 @@ public interface IBaseBot {
    * as it is -2 pixel/turn. Deceleration is negative as it is added to the speed and hence needs to
    * be negative.
    *
-   * <p>The target speed is truncated to {@link #getMaxSpeed()} if the target speed exceeds this
-   * value.
+   * <p>The target speed is truncated to {@link #MAX_SPEED} if the target speed exceeds this value.
    *
    * <p>If this property is set multiple times, the last value set before go() counts.
    *
@@ -371,14 +381,14 @@ public interface IBaseBot {
    * <p>Firepower is the amount of energy spend on firing the gun. You cannot spend more energy that
    * available from the bot. The amount of energy loss is equal to the firepower.
    *
-   * <p>The bullet power must be greater than {@link #getMinFirepower()} and the gun heat zero
-   * before the gun is able to fire.
+   * <p>The bullet power must be greater than {@link #MIN_FIREPOWER} and the gun heat zero before
+   * the gun is able to fire.
    *
    * <p>If the bullet hits an opponent bot, you will gain energy from the bullet hit. When hitting
    * another bot, your bot will be rewarded and retrieve an energy boost of 3x firepower.
    *
-   * <p>The gun will only fire when the firepower is at {@link #getMinFirepower()} or higher. If the
-   * firepower is more than {@link #getMaxFirepower()}, the power will be truncated to the max
+   * <p>The gun will only fire when the firepower is at {@link #MIN_FIREPOWER} or higher. If the
+   * firepower is more than {@link #MAX_FIREPOWER}, the power will be truncated to the max
    * firepower.
    *
    * <p>Whenever the gun is fired, the gun is heated an needs to cool down before it is able to fire
@@ -394,14 +404,14 @@ public interface IBaseBot {
    * <p>Note that the gun will automatically keep firing at any turn when the gun heat reaches zero.
    * It is possible disable the gun firing by setting the firepower on this property to zero.
    *
-   * <p>The firepower is truncated to 0 and {@link #getMaxFirepower()} if the firepower exceeds
-   * these values.
+   * <p>The firepower is truncated to 0 and {@link #MAX_FIREPOWER} if the firepower exceeds these
+   * values.
    *
    * <p>If this property is set multiple times, the last value set before go() counts.
    *
    * @param firepower is the amount of energy spend on firing the gun. You cannot spend more energy
-   *     that available from the bot. The bullet power must be &gt; {@link #getMinFirepower()} and
-   *     the gun heat zero before the gun is able to fire.
+   *     that available from the bot. The bullet power must be &gt; {@link #MIN_FIREPOWER} and the
+   *     gun heat zero before the gun is able to fire.
    * @see #onBulletFired(BulletFiredEvent)
    * @see #getGunHeat()
    * @see #getGunCoolingRate()
@@ -461,8 +471,8 @@ public interface IBaseBot {
    * the radar will turn independent from the gun's turn.
    *
    * <p>Note: This property is additive until you reach the maximum the radar can turn ({@link
-   * #getMaxRadarTurnRate()}). The "adjust" is added to the amount, you set for turning the gun by
-   * the gun turn rate, then capped by the physics of the game.
+   * #MAX_RADAR_TURN_RATE}). The "adjust" is added to the amount, you set for turning the gun by the
+   * gun turn rate, then capped by the physics of the game.
    *
    * <p>Note: The radar compensating this way does count as "turning the radar".
    *
