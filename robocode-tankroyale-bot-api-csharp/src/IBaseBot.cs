@@ -108,16 +108,16 @@ namespace Robocode.TankRoyale.BotApi
     sbyte Acceleration => 1;
 
     /// <summary>
-    /// Deceleration is the decrease in speed per turn, which subtracts 2 units to the speed per
-    /// turn when the bot is decreasing its speed moving backward. This means that a bot is faster
-    /// at braking than accelerating forward.
+    /// Deceleration is the decrease in speed per turn, which subtracts 2 units to the speed
+    /// per turn when the bot is decreasing its speed moving backward. This means that a bot
+    /// is faster at braking than accelerating forward.
     /// </summary>
     /// <value>The deceleration is 2 units less per turn.</value>
     sbyte Deceleration => -2;
 
     /// <summary>
-    /// The method used to start running the bot. You should call this method from the main method
-    /// or similar.
+    /// The method used to start running the bot. You should call this method from the main
+    /// method or similar.
     /// </summary>
     /// <example>
     /// <code>
@@ -132,97 +132,114 @@ namespace Robocode.TankRoyale.BotApi
     void Start();
 
     /// <summary>
-    /// Commits the current actions for the current turn.
+    /// Commits the current commands (actions), which finalizes the current turn for the bot.
     /// 
     /// This method must be called once per turn to send the bot actions to the server and must be
-    /// called before the turn timeout occurs. The turn timeout is started when the <see
-    /// cref="GameStartedEvent"/> and <see cref="TickEvent"/> occurs. If the <see cref="Go"/>
-    /// method is called too late, a SkippedTurnEvent will occur.
+    /// called before the turn timeout occurs. A turn timer is started when the
+    /// <see cref="GameStartedEvent"/> and <see cref="TickEvent"/> occurs. If the Go() method is
+    /// called too late,a turn timeout will occur and the <see cref="SkippedTurnEvent"/> will
+    /// occur, which means that the bot has skipped all actions for the last turn. In this case,
+    /// the server will continue executing the last actions received. This could be fatal for the
+    /// bot due to loss of control over the bot. So make sure that Go() is called before the turn
+    /// ends.
     /// 
-    /// Actions are that the bot needs to execute by calling <see cref="Go"/> are set by setting
-    /// various properties prior to calling <see cref="Go"/>: <see cref="TurnRate"/>,
-    /// <see cref="GunTurnRate"/>, <see cref="RadarTurnRate"/>, <see cref="TargetSpeed"/>, and
-    /// <see cref="Firepower"/>.
+    /// The commands executed when Go() is called are set by setting these properties prior to
+    /// calling the Go() method: <see cref="TurnRate"/>, <see cref="GunTurnRate"/>,
+    /// <see cref="RadarTurnRate"/>, <see cref="TargetSpeed"/>, and <see cref="Firepower"/>.
     /// </summary>
+    /// <seealso cref="TurnTimeout"/>
     void Go();
 
     /// <summary>
-    /// Unique id of this bot in the battle. Available when game has started.
+    /// Unique id of this bot, which is available when the game has started.
     /// </summary>
+    /// <value>The unique id of this bot.</value>
     int MyId { get; }
 
     /// <summary>
-    /// Game variant, e.g. "Tank Royale" for Robocode Tank Royale.
+    /// The game variant, which is "Tank Royale".
     /// </summary>
+    /// <value>The game variant of Robocode.</value>
     string Variant { get; }
 
     /// <summary>
-    /// Game version, e.g. "1.0.0"
+    /// Game version, e.g. "1.0.0".
     /// </summary>
+    /// <value>The game version.</value>
     string Version { get; }
 
     /// <summary>
-    /// Game type, e.g. "melee".
+    /// Game type, e.g. "melee" or "1v1".
     ///
-    /// Available when game has started.
+    /// First available when the game has started.
     /// </summary>
+    /// <value>The game type</value>
     string GameType { get; }
 
     /// <summary>
-    /// Width of the arena measured in pixels.
+    /// Width of the arena measured in unit.
     ///
-    /// Available when game has started.
+    /// First available when the game has started.
     /// </summary>
+    /// <value>The arena width measured in units</value>
     int ArenaWidth { get; }
 
     /// <summary>
-    /// Height of the arena measured in pixels.
+    /// Height of the arena measured in unit.
     ///
-    /// Available when game has started.
+    /// First available when the game has started.
     /// </summary>
+    /// <value>The arena height measured in units</value>
     int ArenaHeight { get; }
 
     /// <summary>
-    /// Number of rounds in a battle.
+    /// The number of rounds in a battle.
     ///
-    /// Available when game has started.
+    /// First available when the game has started.
     /// </summary>
+    /// <value>The number of rounds in a battle.</value>
     int NumberOfRounds { get; }
 
     /// <summary>
-    /// Gun cooling rate. The gun needs to cool down to a gun heat of zero before the gun is able to
-    /// fire. The gun cooling rate determines how fast the gun cools down. That is, the gun cooling
-    /// rate is subtracted from the gun heat each turn until the gun heat reaches zero.
+    /// Gun cooling rate. The gun needs to cool down to a gun heat of zero before the gun can fire.
+    /// The gun cooling rate determines how fast the gun cools down. That is, the gun cooling rate
+    /// is subtracted from the gun heat each turn until the gun heat reaches zero.
     ///
-    /// Available when game has started.
+    /// First available when the game has started.
     /// </summary>
+    /// <value>The gun cooling rate</value>
     /// <seealso cref="GunHeat"/>
     double GunCoolingRate { get; }
 
     /// <summary>
-    /// Maximum number of inactive turns allowed, where a bot does not take any action before it is
-    /// zapped by the game.
+    /// The maximum number of inactive turns allowed the bot will become zapped by the game for
+    /// being inactive. Inactive means that the bot has taken no action in several turns in a row.
     ///
-    /// Available when game has started.
+    /// First available when the game has started.
     /// </summary>
+    /// <value>The maximum number of allowed inactive turns.</value>
     int? MaxInactivityTurns { get; }
 
     /// <summary>
     /// Turn timeout in microseconds (1 / 1,000,000 second). The turn timeout is important as the
-    /// bot need to take action by calling Go() before the turn timeout occurs. As soon as the
-    /// TickEvent is triggered, i.e. when OnTick() is called, you need to call Go() to take
-    /// action before the turn timeout occurs. Otherwise your bot will receive SkippedTurnEvent(s).
+    /// bot needs to take action by calling <see cref="Go"/> before the turn timeout occurs. As
+    /// soon as the <see cref="TickEvent"/> is triggered, i.e. when <see cref="OnTick"/> is called,
+    /// you need to call <see cref="Go"/> to take action before the turn timeout occurs. Otherwise,
+    /// your bot will skip a turn and receive a <see cref="OnSkippedTurn"/> for each turn where
+    /// <see cref="Go"/> is called too late.
     ///
-    /// Available when game has started.
+    /// First available when the game has started.
     /// </summary>
+    /// <value>The turn timeout in microseconds.</value>
     /// <seealso cref="TimeLeft"/>
     /// <seealso cref="Go"/>
     int TurnTimeout { get; }
 
     /// <summary>
-    /// Number of microseconds left for this round before the bot will skip the turn. Make sure to
-    /// call Go() before the time runs out.
+    /// The number of microseconds left of this turn before the bot will skip the turn. Make sure
+    /// to call <see cref="Go"/> before the time runs out.
     /// </summary>
+    /// <value>The amount of time left in microseconds.</value>
     /// <seealso cref="TurnTimeout"/>
     /// <seealso cref="Go"/>
     int TimeLeft { get; }
@@ -230,141 +247,160 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// Current round number.
     /// </summary>
+    /// <value>The current round number.</value>
     int RoundNumber { get; }
 
     /// <summary>
     /// Current turn number.
     /// </summary>
+    /// <value>The current turn number.</value>
     int TurnNumber { get; }
 
     /// <summary>
-    /// Current energy level. When positive, the bot is alive and active. When
-    /// 0, the bot is alive, but disabled, meaning that it will not be able to move. If negative, the
-    /// bot has been defeated.
+    /// Current energy level. When the energy level is positive, the bot is alive and active. When
+    /// the energy level is 0, the bot is still alive but disabled. If the bot becomes disabled it
+    /// will not be able to move or take any action. If negative, the bot has been defeated.
     /// </summary>
+    /// <value>The current energy level.</value>
     double Energy { get; }
 
     /// <summary>
-    /// Flag specifying if the bot is disabled, i.e. when the energy is zero. When the bot is
-    /// disabled, it it is not able to take any action like movement, turning and firing.
+    /// Specifies if the bot is disabled, i.e., when the energy is zero. When the bot is disabled,
+    /// it is not able to take any action like movement, turning, and firing.
     /// </summary>
+    /// <value><em>true</em> if the bot is disabled; <em>false</em> otherwise</value>
     bool IsDisabled { get; }
 
     /// <summary>
-    /// X coordinate of the center of the bot.
+    /// Current X coordinate of the center of the bot.
     /// </summary>
+    /// <value>Current X coordinate of the bot.</value>
     double X { get; }
 
     /// <summary>
-    /// Y coordinate of the center of the bot.
+    /// Current Y coordinate of the center of the bot.
     /// </summary>
+    /// <value>Current Y coordinate of the bot.</value>
     double Y { get; }
 
     /// <summary>
-    /// Driving direction of the body in degrees.
+    /// Current driving direction of the bot in degrees.
     /// </summary>
+    /// <value>The current driving direction of the bot.</value>
     double Direction { get; }
 
     /// <summary>
-    /// Gun direction of the body in degrees.
+    /// Current direction of the gun in degrees.
     /// </summary>
+    /// <value>The current gun direction of the bot.</value>
     double GunDirection { get; }
 
     /// <summary>
-    /// Radar direction of the body in degrees.
+    /// Current direction of the radar in degrees.
     /// </summary>
+    /// <value>The current radar direction of the bot.</value>
     double RadarDirection { get; }
 
     /// <summary>
-    /// Speed measured in pixels per turn. If the speed is positive, the bot moves forward. If
-    /// negative, the bot moves backwards. A zero speed means that the bot is not moving from its
-    /// current position.
+    /// The current speed measured in units per turn. If the speed is positive, the bot moves
+    /// forward. If negative, the bot moves backward. Zero speed means that the bot is not moving
+    /// from its current position.
     /// </summary>
+    /// <value>The current speed.</value>
     double Speed { get; }
 
     /// <summary>
-    /// Gun heat. The gun gets heated when it is fired, and will first be able to fire again, when
-    /// the gun has cooled down, meaning that the gun heat must be zero.
-    /// 
-    /// When the gun is fired the gun heat is set to 1 + (firepower / 5). The gun is cooled down by
-    /// the gun cooling rate.
+    /// Current gun heat. When the is fired it gets heated and will not be able to fire before it
+    /// has been cooled down. The gun is cooled down when the gun heat is zero.
+    ///
+    /// When the gun has fired the gun heat is set to 1 + (firepower / 5) and will be cooled down
+    /// by the gun cooling rate.
     /// </summary>
+    /// <value>The current gun heat.</value>
     /// <seealso cref="GunCoolingRate"/>
     double GunHeat { get; }
 
     /// <summary>
-    /// Current bullet states.
+    /// Current bullet states. Keeps track of all the bullets fired by the bot, which are still
+    /// active on the arena.
     /// </summary>
+    /// <value>The current bullet states.</value>
     IEnumerable<BulletState> BulletStates { get; }
 
     /// <summary>
-    /// Game events received for the current turn.
+    /// Game events received for the current turn. Note that all event handlers are automatically
+    /// being called when each of these events occurs.
     /// </summary>
+    /// <value>The game events received for the current turn.</value>
     IEnumerable<Event> Events { get; }
 
     /// <summary>
-    /// Sets the turn rate of the body in degrees per turn (can be positive and negative). The turn
-    /// rate is added to the current turn direction of the body. But it is also added to the current
-    /// direction of the gun and radar. This is because the gun is mounted on the body, and hence turns
-    /// with the body. The radar is mounted on the gun, and hence moves with the gun. By subtracting
-    /// the turn rate of the body from the turn rate of the gun and radar, you can compensate for the
-    /// turn rate of the body. But be aware that the turn limits for the gun and radar cannot be
-    /// exceeded.
+    /// Set or get the turn rate of the bot, which can be positive and negative. The turn rate is
+    /// measured in degrees per turn. The turn rate is added to the current direction of the bot.
+    /// But it is also added to the current direction of the gun and radar. This is because the gun
+    /// is mounted on the body, and hence turns with the body. The radar is mounted on the gun and
+    /// hence moves with the gun. You can compensate for the turn rate of the bot by subtracting
+    /// the turn rate of the bot from the turn rate of the gun and radar. But be aware that the
+    /// turn limits defined for the gun and radar cannot be exceeded.
+    ///
+    /// The turn rate is truncated to <see cref="MaxTurnRate"/> if the turn rate exceeds this
+    /// value.
     /// 
-    /// The turn rate is truncated to MaxTurnRate if the turn rate exceeds this value.
-    /// 
-    /// If this property is set multiple times, the last value set before Go() counts.
+    /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
     /// </summary>
+    /// <value>The turn rate of the bot</value>
     double TurnRate { get; set; }
 
     /// <summary>
-    /// Sets the new turn rate of the gun in degrees per turn (can be positive and negative). The turn
-    /// rate is added to the current turn direction of the gun. But it is also added to the current
-    /// direction of the radar. This is because the radar is mounted on the gun, and hence moves with
-    /// the gun. You can compensate for this by subtracting the turn rate of the gun and body from the
-    /// turn rate of the radar. And you can compensate the turn rate of the body on the gun by
-    /// subtracting the turn rate of the body from the turn rate of the gun. But be aware that the turn
-    /// limits for the radar (and also body and gun) cannot be exceeded.
+    /// Set or get the turn rate of the gun, which can be positive and negative. The gun turn rate
+    /// is measured in degrees per turn. The turn rate is added to the current turn direction of
+    /// the gun. But it is also added to the current direction of the radar. This is because the
+    /// radar is mounted on the gun, and hence moves with the gun. You can compensate for the turn
+    /// rate of the gun by subtracting the turn rate of the gun from the turn rate of the radar.
+    /// But be aware that the turn limits defined for the radar cannot be exceeded.
     ///
-    /// The gun turn rate is truncated to MaxGunTurnRate if the gun turn rate exceeds
+    /// The gun turn rate is truncated to <see cref="MaxGunTurnRate"/> if the gun turn rate exceeds
     /// this value.
     ///
-    /// If this property is set multiple times, the last value set before Go() counts.
+    /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
     /// </summary>
+    /// <value>The turn rate of the gun.</value>
     double GunTurnRate { get; set; }
 
     /// <summary>
-    /// Sets the new turn rate of the radar in degrees per turn (can be positive and negative). The
-    /// turn rate is added to the current turn direction of the radar. Note that beside the turn rate
-    /// of the radar, the turn rates of the body and gun is also added to the radar direction, as the
-    /// radar moves with the gun, which is mounted on the gun that moves with the body. You can
-    /// compensate for this by subtracting the turn rate of the body and gun from the turn rate of the
-    /// radar. But be aware that the turn limits for the radar (and also body and gun) cannot be
-    /// exceeded.
+    /// Set or get the turn rate of the radar, which can be positive and negative. The radar turn
+    /// rate is measured in degrees per turn. The turn rate is added to the current direction of
+    /// the radar. Note that besides the turn rate of the radar, the turn rates of the bot and gun
+    /// are also added to the radar direction, as the radar moves with the gun, which is mounted on
+    /// the gun that moves with the body. You can compensate for the turn rate of the gun by
+    /// subtracting the turn rate of the bot and gun from the turn rate of the radar. But be aware
+    /// that the turn limits defined for the radar cannot be exceeded.
     ///
-    /// The radar turn rate is truncated to MaxRadarTurnRate if the radar turn rate
+    /// The radar turn rate is truncated to <see cref="MaxRadarTurnRate"/> if the radar turn rate
     /// exceeds this value.
     ///
-    /// If this property is set multiple times, the last value set before Go() counts.
+    /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
     /// </summary>
+    /// <value>The turn rate of the radar.</value>
     double RadarTurnRate { get; set; }
 
     /// <summary>
-    /// Sets the new target speed for the bot in units per turn. The target speed is the speed you want
-    /// to achieve eventually, which could take one to several turns to achieve depending on the
-    /// current speed. For example, if the bot is moving forward with max speed, and then must change
-    /// to move backwards at full speed, the bot will need to first decelerate/brake its positive speed
-    /// (moving forward). When passing a speed of zero, it will then need to accelerate backwards to
-    /// achieve max negative speed.
+    /// Set or get the target speed for the bot in units per turn. The target speed is the speed
+    /// you want to achieve eventually, which could take one to several turns depending on the
+    /// current speed. For example, if the bot is moving forward with max speed, and then must
+    /// change to move backward at full speed, the bot will have to first decelerate/brake its
+    /// positive speed (moving forward). When passing speed of zero, it will then have to
+    /// accelerate back to achieve max negative speed.
     ///
-    /// Note that acceleration is 1 pixel/turn and deceleration/braking is faster than acceleration
-    /// as it is -2 pixel/turn. Deceleration is negative as it is added to the speed and hence needs to
-    /// be negative.
+    /// Note that acceleration is 1 unit per turn and deceleration/braking is faster than
+    /// acceleration as it is -2 unit per turn. Deceleration is negative as it is added to the
+    /// speed and hence needs to be negative speed down.
     ///
-    /// The target speed is truncated to MaxSpeed if the target speed exceeds this value.
+    /// The target speed is truncated to <see cref="MaxSpeed"/> if the target speed exceeds this value.
     ///
-    /// If this property is set multiple times, the last value set before go() counts.
+    /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
     /// </summary>
+    /// <value></value>
     double TargetSpeed { get; set; }
 
     /// <summary>
@@ -402,6 +438,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <seealso cref="OnBulletFired"/>
     /// <seealso cref="GunHeat"/>
     /// <seealso cref="GunCoolingRate"/>
+    /// <value></value>
     double Firepower { set; }
 
     /// <summary>
@@ -420,6 +457,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Note: The gun compensating this way does count as "turning the gun".
     /// </summary>
     /// <seealso cref="AdjustRadarForGunTurn"/>
+    /// <value></value>
     bool IsAdjustGunForBodyTurn { get; set; }
 
     /// <summary>
@@ -438,6 +476,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Note: The radar compensating this way does count as "turning the radar".
     /// </summary>
     /// <seealso cref="AdjustGunForBodyTurn"/>
+    /// <value></value>
     bool IsAdjustRadarForGunTurn { get; set; }
 
     /// <summary>
