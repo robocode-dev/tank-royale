@@ -120,6 +120,11 @@ public final class BotInfo {
     return description;
   }
 
+  /** Returns the url of the bot */
+  public String getUrl() {
+    return url;
+  }
+
   /**
    * Returns the country code defined by ISO 3166-1 alpha-2: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
    * If no country code is provided, the locale of the system is being used instead.
@@ -136,7 +141,7 @@ public final class BotInfo {
     return gameTypes;
   }
 
-  /** Returns the language used for programming the bot, e.g. Java or C# */
+  /** Returns the platform used for running the bot, e.g. "Java Runtime Environment" or ".Net Core" */
   public String getPlatform() { return platform; }
 
   /** Returns the Programming language used for developing the bot, e.g. "Java" or "C#" */

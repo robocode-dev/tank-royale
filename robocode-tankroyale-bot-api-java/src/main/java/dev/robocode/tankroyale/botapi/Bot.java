@@ -69,8 +69,8 @@ public abstract class Bot extends BaseBot implements IBot {
   public final void setMaxSpeed(double maxSpeed) {
     if (maxSpeed < 0) {
       maxSpeed = 0;
-    } else if (maxSpeed > getMaxSpeed()) {
-      maxSpeed = getMaxSpeed();
+    } else if (maxSpeed > MAX_SPEED) {
+      maxSpeed = MAX_SPEED;
     }
     __internals.maxSpeed = maxSpeed;
   }
@@ -114,8 +114,8 @@ public abstract class Bot extends BaseBot implements IBot {
   public final void setMaxTurnRate(double maxTurnRate) {
     if (maxTurnRate < 0) {
       maxTurnRate = 0;
-    } else if (maxTurnRate > getMaxTurnRate()) {
-      maxTurnRate = getMaxTurnRate();
+    } else if (maxTurnRate > MAX_TURN_RATE) {
+      maxTurnRate = MAX_TURN_RATE;
     }
     __internals.maxTurnRate = maxTurnRate;
   }
@@ -159,8 +159,8 @@ public abstract class Bot extends BaseBot implements IBot {
   public final void setMaxGunTurnRate(double maxGunTurnRate) {
     if (maxGunTurnRate < 0) {
       maxGunTurnRate = 0;
-    } else if (maxGunTurnRate > getMaxGunTurnRate()) {
-      maxGunTurnRate = getMaxGunTurnRate();
+    } else if (maxGunTurnRate > MAX_GUN_TURN_RATE) {
+      maxGunTurnRate = MAX_GUN_TURN_RATE;
     }
     __internals.maxGunTurnRate = maxGunTurnRate;
   }
@@ -204,8 +204,8 @@ public abstract class Bot extends BaseBot implements IBot {
   public final void setMaxRadarTurnRate(double maxRadarTurnRate) {
     if (maxRadarTurnRate < 0) {
       maxRadarTurnRate = 0;
-    } else if (maxRadarTurnRate > getMaxRadarTurnRate()) {
-      maxRadarTurnRate = getMaxRadarTurnRate();
+    } else if (maxRadarTurnRate > MAX_RADAR_TURN_RATE) {
+      maxRadarTurnRate = MAX_RADAR_TURN_RATE;
     }
     __internals.maxRadarTurnRate = maxRadarTurnRate;
   }
@@ -217,12 +217,12 @@ public abstract class Bot extends BaseBot implements IBot {
   }
 
   private final class __Internals {
-    private final double ABS_DECELERATION = Math.abs(getDeceleration());
+    private final double ABS_DECELERATION = Math.abs(DECELERATION);
 
-    private double maxSpeed = getMaxForwardSpeed();
-    private double maxTurnRate = getMaxTurnRate();
-    private double maxGunTurnRate = getMaxGunTurnRate();
-    private double maxRadarTurnRate = getMaxRadarTurnRate();
+    private double maxSpeed = MAX_SPEED;
+    private double maxTurnRate = MAX_TURN_RATE;
+    private double maxGunTurnRate = MAX_GUN_TURN_RATE;
+    private double maxRadarTurnRate = MAX_RADAR_TURN_RATE;
 
     private double distanceRemaining;
     private double turnRemaining;
@@ -455,10 +455,10 @@ public abstract class Bot extends BaseBot implements IBot {
       }
 
       if (speed >= 0) {
-        return Math.max(speed - ABS_DECELERATION, Math.min(targetSpeed, speed + getAcceleration()));
+        return Math.max(speed - ABS_DECELERATION, Math.min(targetSpeed, speed + ACCELERATION));
       } // else
       return Math.max(
-          speed - getAcceleration(), Math.min(targetSpeed, speed + getMaxDeceleration(-speed)));
+          speed - ACCELERATION, Math.min(targetSpeed, speed + getMaxDeceleration(-speed)));
     }
 
     private double getMaxSpeed(double distance) {
@@ -469,7 +469,7 @@ public abstract class Bot extends BaseBot implements IBot {
                   (Math.sqrt((4 * 2 / ABS_DECELERATION) * distance + 1) - 1) / 2));
 
       if (decelTime == Double.POSITIVE_INFINITY) {
-        return Bot.this.getMaxSpeed();
+        return Bot.this.MAX_SPEED;
       }
 
       double decelDist =
@@ -484,7 +484,7 @@ public abstract class Bot extends BaseBot implements IBot {
       double decelTime = speed / ABS_DECELERATION;
       double accelTime = (1 - decelTime);
 
-      return Math.min(1, decelTime) * ABS_DECELERATION + Math.max(0, accelTime) * getAcceleration();
+      return Math.min(1, decelTime) * ABS_DECELERATION + Math.max(0, accelTime) * ACCELERATION;
     }
 
     private double getDistanceTraveledUntilStop(double speed) {

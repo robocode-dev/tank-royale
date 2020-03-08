@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -19,16 +18,21 @@ class BotInfoTest {
             "1.0",
             "John Doe",
             "Sample bot",
+            "https://samplebot.robocode.dev",
             "dk",
             Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+            "Java Runtime Environment",
             "Java");
 
     assertEquals("MyBot", botInfo.getName());
     assertEquals("1.0", botInfo.getVersion());
     assertEquals("John Doe", botInfo.getAuthor());
     assertEquals("Sample bot", botInfo.getDescription());
+    assertEquals("https://samplebot.robocode.dev", botInfo.getUrl());
     assertEquals("DK", botInfo.getCountryCode().toUpperCase());
-    assertEquals(botInfo.getGameTypes(), new HashSet<>(Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE)));
+    assertEquals(
+        botInfo.getGameTypes(), new HashSet<>(Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE)));
+    assertEquals("Java Runtime Environment", botInfo.getPlatform());
     assertEquals("Java", botInfo.getProgrammingLang());
   }
 
@@ -42,8 +46,10 @@ class BotInfoTest {
                 "1.0",
                 "John Doe",
                 "Sample bot",
+                "https://samplebot.robocode.dev",
                 "dk",
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java"));
   }
 
@@ -57,8 +63,10 @@ class BotInfoTest {
                 "1.0",
                 "John Doe",
                 "Sample bot",
+                "https://samplebot.robocode.dev",
                 "dk",
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java"));
   }
 
@@ -68,12 +76,14 @@ class BotInfoTest {
         IllegalArgumentException.class,
         () ->
             new BotInfo(
-                " \r\n",
+                "\r\n",
                 "1.0",
                 "John Doe",
                 "Sample bot",
+                "https://samplebot.robocode.dev",
                 "dk",
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java"));
   }
 
@@ -87,8 +97,10 @@ class BotInfoTest {
                 null,
                 "John Doe",
                 "Sample bot",
+                "https://samplebot.robocode.dev",
                 "dk",
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java"));
   }
 
@@ -102,8 +114,10 @@ class BotInfoTest {
                 "",
                 "John Doe",
                 "Sample bot",
+                "https://samplebot.robocode.dev",
                 "dk",
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java"));
   }
 
@@ -114,11 +128,13 @@ class BotInfoTest {
         () ->
             new BotInfo(
                 "MyBot",
-                " \r\n",
+                "\r\n",
                 "John Doe",
                 "Sample bot",
+                "https://samplebot.robocode.dev",
                 "dk",
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java"));
   }
 
@@ -132,8 +148,10 @@ class BotInfoTest {
                 "1.0",
                 null,
                 "Sample bot",
+                "https://samplebot.robocode.dev",
                 "dk",
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java"));
   }
 
@@ -147,8 +165,10 @@ class BotInfoTest {
                 "1.0",
                 "",
                 "Sample bot",
+                "https://samplebot.robocode.dev",
                 "dk",
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java"));
   }
 
@@ -160,10 +180,12 @@ class BotInfoTest {
             new BotInfo(
                 "MyBot",
                 "1.0",
-                " \r\n",
+                "\r\n",
                 "Sample bot",
+                "https://samplebot.robocode.dev",
                 "dk",
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java"));
   }
 
@@ -177,8 +199,10 @@ class BotInfoTest {
                 "1.0",
                 "John Doe",
                 "Sample bot",
+                "https://samplebot.robocode.dev",
                 null,
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java")
             .getCountryCode()
             .toUpperCase());
@@ -194,8 +218,10 @@ class BotInfoTest {
                 "1.0",
                 "John Doe",
                 "Sample bot",
+                "https://samplebot.robocode.dev",
                 "",
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java")
             .getCountryCode()
             .toUpperCase());
@@ -211,8 +237,10 @@ class BotInfoTest {
                 "1.0",
                 "John Doe",
                 "Sample bot",
-                " \r\n",
+                "https://samplebot.robocode.dev",
+                "\r\n",
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java")
             .getCountryCode()
             .toUpperCase());
@@ -227,8 +255,10 @@ class BotInfoTest {
                 "1.0",
                 "John Doe",
                 "Sample bot",
+                "https://samplebot.robocode.dev",
                 "dk",
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java")
             .getCountryCode()
             .toUpperCase());
@@ -243,8 +273,10 @@ class BotInfoTest {
                 "1.0",
                 "John Doe",
                 "Sample bot",
+                "https://samplebot.robocode.dev",
                 "DNK",
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java")
             .getCountryCode()
             .toUpperCase());
@@ -259,8 +291,10 @@ class BotInfoTest {
                 "1.0",
                 "John Doe",
                 "Sample bot",
+                "https://samplebot.robocode.dev",
                 "208",
                 Arrays.asList(GameType.MELEE, GameType.ONE_VS_ONE),
+                "Java Runtime Environment",
                 "Java")
             .getCountryCode()
             .toUpperCase());
@@ -270,7 +304,17 @@ class BotInfoTest {
   void whenGameTypesIsNullInConstructor_thenThrowIllegalArgumentException() {
     assertThrows(
         IllegalArgumentException.class,
-        () -> new BotInfo("MyBot", "1.0", "John Doe", "Sample bot", "dk", null, "Java"));
+        () ->
+            new BotInfo(
+                "MyBot",
+                "1.0",
+                "John Doe",
+                "Sample bot",
+                "https://samplebot.robocode.dev",
+                "dk",
+                null,
+                "Java Runtime Environment",
+                "Java"));
   }
 
   @Test
@@ -279,7 +323,15 @@ class BotInfoTest {
         IllegalArgumentException.class,
         () ->
             new BotInfo(
-                "MyBot", "1.0", "John Doe", "Sample bot", "dk", Collections.emptyList(), "Java"));
+                "MyBot",
+                "1.0",
+                "John Doe",
+                "Sample bot",
+                "https://samplebot.robocode.dev",
+                "dk",
+                Collections.emptyList(),
+                "Java Runtime Environment",
+                "Java"));
   }
 
   @Test
@@ -288,7 +340,15 @@ class BotInfoTest {
         IllegalArgumentException.class,
         () ->
             new BotInfo(
-                "MyBot", "1.0", "John Doe", "Sample bot", "dk", Arrays.asList(null, ""), "Java"));
+                "MyBot",
+                "1.0",
+                "John Doe",
+                "Sample bot",
+                "https://samplebot.robocode.dev",
+                "dk",
+                Arrays.asList(null, ""),
+                "Java Runtime Environment",
+                "Java"));
   }
 
   @Test
@@ -299,8 +359,10 @@ class BotInfoTest {
             "1.0",
             "John Doe",
             "Sample bot",
+            "https://samplebot.robocode.dev",
             "dk",
             Arrays.asList("  melee  ", "  1v1  "),
+            "Java Runtime Environment",
             "Java");
 
     Collection<String> gameTypes = botInfo.getGameTypes();
