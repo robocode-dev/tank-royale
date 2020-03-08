@@ -118,7 +118,7 @@ namespace Robocode.TankRoyale.BotApi
         onSkippedTurnManager.Add(parent.OnSkippedTurn);
         OnSkippedTurn += onSkippedTurnManager.InvokeAll;
 
-        onDeathManager.Add(parent.OnBotDeath); // DeathManager uses BotDeath events
+        onDeathManager.Add(parent.OnDeath);
         OnDeath += onDeathManager.InvokeAll;
 
         onBotDeathManager.Add(parent.OnBotDeath);
