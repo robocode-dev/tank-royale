@@ -49,8 +49,7 @@ namespace Robocode.TankRoyale.BotApi
       {
         throw new BotException(NO_ENV_VALUE + BOT_GAME_TYPES);
       }
-      return new BotInfo
-      (
+      return new BotInfo(
         GetBotName(),
         GetBotVersion(),
         GetBotAuthor(),

@@ -22,12 +22,12 @@ namespace Robocode.TankRoyale.BotApi
     public IEnumerable<Event> Events { get; }
 
     /// <summary>
-    /// Constructor.
+    /// Initializes a new instance of the TickEvent class.
     /// </summary>
     /// <param name="turnNumber">Turn number.</param>
     [JsonConstructor]
     public TickEvent(int turnNumber, int roundNumber, BotState botState,
-      IEnumerable<BulletState> bulletStates, IEnumerable<Event> events) : base(turnNumber) =>
+        IEnumerable<BulletState> bulletStates, IEnumerable<Event> events) : base(turnNumber) =>
       (RoundNumber, BotState, BulletStates, Events) =
       (roundNumber, botState, bulletStates, events);
   }

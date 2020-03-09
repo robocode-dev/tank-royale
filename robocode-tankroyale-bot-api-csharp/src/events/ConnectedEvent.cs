@@ -9,7 +9,10 @@ namespace Robocode.TankRoyale.BotApi
   {
     // Currently empty. Preserved for future
 
+    /// <summary>
+    /// Initializes a new instance of the ConnectedEvent class.
+    /// </summary>
     [JsonConstructor]
-    public ConnectedEvent() {}
+    public ConnectedEvent() { }
   }
 }

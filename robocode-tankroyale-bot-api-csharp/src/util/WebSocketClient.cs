@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Net.WebSockets;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -64,8 +64,8 @@ namespace Robocode.TankRoyale.BotApi
     public void Disconnect()
     {
       cancelSource.Cancel(); // signal that ReceiveAsync() should cancel
-      socket.CloseOutputAsync(WebSocketCloseStatus.Empty, null /* when empty */, CancellationToken.None);
-      OnDisconnected(false /* not remote */);
+      socket.CloseOutputAsync(WebSocketCloseStatus.Empty, null /* when empty */ , CancellationToken.None);
+      OnDisconnected(false /* not remote */ );
     }
 
     /// <summary>Sends a text message to the server.</summary>

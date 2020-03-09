@@ -11,7 +11,7 @@ namespace Robocode.TankRoyale.BotApi
     public bool Remote { get; }
 
     /// <summary>
-    /// Constructor.
+    /// Initializes a new instance of the DisconnectedEvent class.
     /// </summary>
     /// <param name="remote">Indication if closing of the connection was initiated by the remote host.</param>
     [JsonConstructor]

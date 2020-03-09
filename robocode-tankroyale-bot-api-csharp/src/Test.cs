@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -33,7 +32,6 @@ public class Test
         default:
           break;
       }
-
 
       if (type == MessageType.ServerHandshake.ToString())
       {

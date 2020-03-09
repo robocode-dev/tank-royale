@@ -7,21 +7,21 @@ namespace Robocode.TankRoyale.BotApi
   /// </summary>
   public sealed class BulletHitBotEvent : Event
   {
-    /// <summary>ID of the victim bot that got hit.<summary>
+    /// <summary>The id of the bot that got hit.</summary>
     [Newtonsoft.Json.JsonProperty("victimId", Required = Newtonsoft.Json.Required.Always)]
     public int VictimId { get; }
 
-    /// <summary>Bullet that hit the bot.<summary>
+    /// <summary>Bullet that hit the bot.</summary>
     public BulletState Bullet { get; }
 
-    /// <summary>Damage inflicted by the bullet.<summary>
+    /// <summary>Damage inflicted by the bullet.</summary>
     public double Damage { get; }
 
-    /// <summary>Remaining energy level of the bot that got hit.<summary>
+    /// <summary>Remaining energy level of the bot that got hit.</summary>
     public double Energy { get; }
 
     /// <summary>
-    /// Constrcutor.
+    /// Initializes a new instance of the BulletHitBotEvent class.
     /// </summary>
     /// <param name="turnNumber">Turn number.</param>
     /// <param name="bullet">Bullet that hit the bot.</param>

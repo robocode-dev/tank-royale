@@ -12,7 +12,7 @@ namespace Robocode.TankRoyale.BotApi
     public Exception Exception { get; }
 
     /// <summary>
-    /// Constructor.
+    /// Initializes a new instance of the ConnectionErrorEvent class.
     /// </summary>
     /// <param name="exception">The exception causing the error.</param>
     [JsonConstructor]

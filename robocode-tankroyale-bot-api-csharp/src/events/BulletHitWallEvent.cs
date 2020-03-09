@@ -7,15 +7,14 @@ namespace Robocode.TankRoyale.BotApi
   /// </summary>
   public sealed class BulletHitWallEvent : Event
   {
-    /// <summary>Bullet that has hit a wall.<summary>
+    /// <summary>Bullet that has hit a wall.</summary>
     public BulletState Bullet { get; }
 
     /// <summary>
-    /// Constructor.
+    /// Initializes a new instance of the BulletHitWallEvent class.
     /// </summary>
     /// <param name="turnNumber">Turn number.</param>
     /// <param name="bullet">Bullet that has hit a wall.</param>
-    /// <returns></returns>
     [JsonConstructor]
     public BulletHitWallEvent(int turnNumber, BulletState bullet) : base(turnNumber) => Bullet = bullet;
   }

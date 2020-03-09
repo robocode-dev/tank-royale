@@ -7,11 +7,11 @@ namespace Robocode.TankRoyale.BotApi
   /// </summary>
   public sealed class BulletFiredEvent : Event
   {
-    /// <summary>Bullet that was fired.<summary>
+    /// <summary>Bullet that was fired.</summary>
     public BulletState Bullet { get; }
 
     /// <summary>
-    /// Constructor.
+    /// Initializes a new instance of the BulletFiredEvent class.
     /// </summary>
     /// <param name="turnNumber">Turn number.</param>
     /// <param name="bullet">Bullet that was fired.</param>

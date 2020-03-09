@@ -155,9 +155,7 @@ namespace Robocode.TankRoyale.BotApi
           {
             thread.Join();
           }
-          catch (ThreadInterruptedException)
-          {
-          }
+          catch (ThreadInterruptedException) { }
           thread = null;
         }
       }
@@ -330,10 +328,10 @@ namespace Robocode.TankRoyale.BotApi
       private double GetMaxSpeed(double distance)
       {
         var decelTime =
-            Math.Max(
-                1,
-                Math.Ceiling( // sum of 0... decelTime, solving for decelTime using quadratic formula
-                    (Math.Sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
+          Math.Max(
+            1,
+            Math.Ceiling( // sum of 0... decelTime, solving for decelTime using quadratic formula
+              (Math.Sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
 
         if (decelTime == Double.PositiveInfinity)
         {
@@ -341,9 +339,10 @@ namespace Robocode.TankRoyale.BotApi
         }
 
         var decelDist =
-            (decelTime / 2)
-                * (decelTime - 1) // sum of 0..(decelTime-1)
-                * absDeceleration;
+          (decelTime / 2) *
+          (decelTime - 1) // sum of 0..(decelTime-1)
+          *
+          absDeceleration;
 
         return ((decelTime - 1) * absDeceleration) + ((distance - decelDist) / decelTime);
       }

@@ -9,7 +9,7 @@ namespace Robocode.TankRoyale.BotApi
   public sealed class SkippedTurnEvent : Event
   {
     /// <summary>
-    /// Constructor.
+    /// Initializes a new instance of the SkippedTurnEvent class.
     /// </summary>
     /// <param name="turnNumber">Turn number.</param>
     [JsonConstructor]

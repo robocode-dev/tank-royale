@@ -8,7 +8,7 @@ namespace Robocode.TankRoyale.BotApi
   public sealed class WonRoundEvent : Event
   {
     /// <summary>
-    /// Constructor.
+    /// Initializes a new instance of the WonRoundEvent class.
     /// </summary>
     /// <param name="turnNumber">Turn number.</param>
     [JsonConstructor]

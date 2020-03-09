@@ -9,7 +9,7 @@ namespace Robocode.TankRoyale.BotApi
     public int TurnNumber { get; }
 
     /// <summary>
-    /// Constructor.
+    /// Initializes a new instance of the Event class.
     /// </summary>
     /// <param name="turnNumber">Turn number</param>
     public Event(int turnNumber) => TurnNumber = turnNumber;

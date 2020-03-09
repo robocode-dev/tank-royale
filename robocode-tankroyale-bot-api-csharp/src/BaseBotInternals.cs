@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Robocode.TankRoyale.Schema;
-using System.Linq;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -13,13 +13,13 @@ namespace Robocode.TankRoyale.BotApi
     internal class BaseBotInternals
     {
       private const string NotConnectedToServerMsg =
-          "Not connected to game server yes. Make sure onConnected() event handler has been called first";
+        "Not connected to game server yes. Make sure onConnected() event handler has been called first";
 
       private const string GameNotRunningMsg =
-          "Game is not running. Make sure onGameStarted() event handler has been called first";
+        "Game is not running. Make sure onGameStarted() event handler has been called first";
 
       private const string TickNotAvailableMsg =
-          "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first";
+        "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first";
 
       private IBaseBot parent;
 

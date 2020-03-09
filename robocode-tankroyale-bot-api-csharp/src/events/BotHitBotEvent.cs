@@ -7,7 +7,7 @@ namespace Robocode.TankRoyale.BotApi
   /// </summary>
   public sealed class BotHitBotEvent : Event
   {
-    /// <summary>ID of the victim bot that got hit.</summary>
+    /// <summary>The id of the bot that got hit.</summary>
     [Newtonsoft.Json.JsonProperty("victimId", Required = Newtonsoft.Json.Required.Always)]
     public int VictimId { get; }
 
@@ -27,11 +27,11 @@ namespace Robocode.TankRoyale.BotApi
     public bool Rammed { get; }
 
     /// <summary>
-    /// Constructor.
+    /// Initializes a new instance of the BotHitBotEvent class.
     /// </summary>
     /// <param name="turnNumber">Turn number.</param>
-    /// <param name="victimId">ID of the victim bot that got hit.</param>
-    /// <param name="botId">ID of the bot that hit another bot.</param>
+    /// <param name="victimId">Id of the victim bot that got hit.</param>
+    /// <param name="botId">Id of the bot that hit another bot.</param>
     /// <param name="energy">Remaining energy level of the victim bot.</param>
     /// <param name="x">X coordinate of victim bot.</param>
     /// <param name="y">Y coordinate of victim bot.</param>

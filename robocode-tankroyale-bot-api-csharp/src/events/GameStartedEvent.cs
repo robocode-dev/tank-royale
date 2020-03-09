@@ -14,7 +14,7 @@ namespace Robocode.TankRoyale.BotApi
     public GameSetup GameSetup { get; }
 
     /// <summary>
-    /// Constructor.
+    /// Initializes a new instance of the GameStartedEvent class.
     /// </summary>
     /// <param name="myId">The ID used for identifying your bot in the current battle.</param>
     /// <param name="gameSetup">The game setup for the battle just started.</param>

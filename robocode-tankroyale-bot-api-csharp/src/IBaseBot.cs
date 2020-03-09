@@ -462,14 +462,14 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <value><em>true</em> if the gun is set to adjust for the bot's turn; <em>false</em>
     /// otherwise.</value>
-    /// <seealso cref="AdjustRadarForGunTurn"/>
+    /// <seealso cref="IsAdjustRadarForGunTurn"/>
     bool IsAdjustGunForBodyTurn { get; set; }
 
     /// <summary>
     /// Sets the radar to adjust for the gun's turn when setting the radar turn rate. So the radar
     /// behaves like it is turning independent of the gun's turn.
     ///
-    /// Ok, so this needs some explanation: The radar is mounted on the gun. So, normally, if the
+    /// /// Ok, so this needs some explanation: The radar is mounted on the gun. So, normally, if the
     /// gun turns 90 degrees to the right, then the radar will turn with it as it is mounted on top
     /// of the gun. To compensate for this, you can adjust the radar for the gun turn. When this is
     /// set, the radar will turn independent from the gun's turn.
@@ -482,7 +482,7 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <value><em>true</em> if the radar is set to adjust for the bot's turn; <em>false</em>
     /// otherwise.</value>
-    /// <seealso cref="AdjustGunForBodyTurn"/>
+    /// <seealso cref="IsAdjustGunForBodyTurn"/>
     bool IsAdjustRadarForGunTurn { get; set; }
 
     /// <summary>
@@ -639,9 +639,9 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns>The normalized relative angle.</returns>
     double NormalizeRelativeDegrees(double angle)
     {
-      return (angle %= 360) >= 0
-        ? ((angle < 180) ? angle : (angle - 360))
-        : ((angle >= -180) ? angle : (angle + 360));
+      return (angle %= 360) >= 0 ?
+        ((angle < 180) ? angle : (angle - 360)) :
+        ((angle >= -180) ? angle : (angle + 360));
     }
   }
 }
