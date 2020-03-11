@@ -4,25 +4,25 @@ package dev.robocode.tankroyale.botapi;
 @SuppressWarnings("unused")
 public final class BotResults {
 
-  /** Identifier of the bot used in this battle */
+  /** Unique id of the bot */
   private final int id;
 
-  /** Rank/placement of the bot, where 1 is 1st place, 4 is 4th place etc. */
+  /** Rank/placement of the bot */
   private final int rank;
 
-  /** Survival score gained whenever another bot is defeated */
+  /** Survival score */
   private final double survival;
 
-  /** Last survivor score as last survivor in a round */
+  /** Last survivor score */
   private final double lastSurvivorBonus;
 
-  /** Bullet damage given */
+  /** Bullet damage score */
   private final double bulletDamage;
 
   /** Bullet kill bonus */
   private final double bulletKillBonus;
 
-  /** Ram damage given */
+  /** Ram damage score */
   private final double ramDamage;
 
   /** Ram kill bonus */
@@ -40,6 +40,22 @@ public final class BotResults {
   /** Number of 3rd places */
   private final int thirdPlaces;
 
+  /**
+   * Initializes a new instance of the BotInfo class.
+   *
+   * @param id is the unique id of the bot.
+   * @param rank is the rank/placement of the bot.
+   * @param survival is the survival score.
+   * @param lastSurvivorBonus is the last survivor score.
+   * @param bulletDamage is the bullet damage score.
+   * @param bulletKillBonus is the bullet kill bonus.
+   * @param ramDamage is the ram damage score.
+   * @param ramKillBonus is the ram kill bonus.
+   * @param totalScore is the total score.
+   * @param firstPlaces is the number of 1st places.
+   * @param secondPlaces is the number of 2nd places.
+   * @param thirdPlaces is the number of 3rd places.
+   */
   public BotResults(
       int id,
       int rank,
@@ -67,62 +83,117 @@ public final class BotResults {
     this.thirdPlaces = thirdPlaces;
   }
 
-  /** Returns the identifier of the bot used in this battle */
+  /**
+   * Returns the unique id of the bot used in the battle.
+   *
+   * @return the unique bot id.
+   */
   public int getId() {
     return id;
   }
 
-  /** Returns the rank/placement of the bot, where 1 is 1st place, 4 is 4th place etc. */
+  /**
+   * Returns the rank/placement of the bot, where 1 means 1st place, 4 means 4th place etc.
+   *
+   * @return the rank of the bot for this battle.
+   */
   public int getRank() {
     return rank;
   }
 
-  /** Returns the survival score gained whenever another bot is defeated */
+  /**
+   * Returns the accumulated survival score. Every bot still alive score 50 points every time
+   * another bot is defeated.
+   *
+   * @return the survival score.
+   */
   public double getSurvival() {
     return survival;
   }
 
-  /** Returns the last survivor score as last survivor in a round */
+  /**
+   * Returns the last survivor score. The last bot alive scores 10 points or each bot that has been
+   * defeated.
+   *
+   * @return the last survivor score.
+   */
   public double getLastSurvivorBonus() {
     return lastSurvivorBonus;
   }
 
-  /** Returns the bullet damage given */
+  /**
+   * Returns the bullet damage score. A bot score 1 point for each point of damage they do to other
+   * bots.
+   *
+   * @return the bullet damage score.
+   */
   public double getBulletDamage() {
     return bulletDamage;
   }
 
-  /** Returns the bullet kill bonus */
+  /**
+   * Returns the bullet kill-bonus. When a bot kills another bot, it scores an additional 20% points
+   * of the total damage it did to that bot.
+   *
+   * @return the bullet kill-bonus.
+   */
   public double getBulletKillBonus() {
     return bulletKillBonus;
   }
 
-  /** Returns the ram damage given */
+  /**
+   * Returns the ram damage score. Bots score 2 points for each point of damage inflicted by ramming
+   * an enemy bot. Ramming is the act deliberately driving forward (not backward) and hitting
+   * another bot.
+   *
+   * @return the ram damage score.
+   */
   public double getRamDamage() {
     return ramDamage;
   }
 
-  /** Returns the ram kill bonus */
+  /**
+   * Returns the ram kill-bonus. When a bot kills another bot due to ramming, it scores an
+   * additional 30% of the total ramming damage it did to that bot.
+   *
+   * @return the ram kill-bonus.
+   */
   public double getRamKillBonus() {
     return ramKillBonus;
   }
 
-  /** Returns the total score */
+  /**
+   * Returns the total score is the sum of all scores and determines the ranking.
+   *
+   * @return the total score.
+   */
   public double getTotalScore() {
     return totalScore;
   }
 
-  /** Returns the number of 1st places */
+  /**
+   * Returns the number of 1st places for the bot.
+   *
+   * @return the number of 1st places.
+   */
   public int getFirstPlaces() {
     return firstPlaces;
   }
 
-  /** Returns the number of 2nd places */
+  /**
+   * Returns the number of 2nd places for the bot.
+   *
+   * @return the number of 2nd places.
+   */
   public int getSecondPlaces() {
     return secondPlaces;
   }
 
-  /** Returns the number of 3rd places */
+  /**
+   * Returns the number of 3rd places for the bot.
+   *
+   * @return the number of 3rd places.
+   */
   public int getThirdPlaces() {
     return thirdPlaces;
   }
