@@ -4,43 +4,33 @@ import com.neovisionaries.i18n.CountryCode;
 
 import java.util.*;
 
-/** Required information about the bot. */
+/** Required information about a bot. */
 @SuppressWarnings("unused")
 public final class BotInfo {
 
-  /** Name, e.g. "MyBot" (required field) */
-  private String name;
-
-  /** Version, e.g. "1.0" (required field) */
-  private String version;
-
-  /** Author, e.g. "John Doe (johndoe@somewhere.io)" (required field) */
-  private String author;
-
-  /** Short description of the bot, preferable a one-liner */
-  private String description;
-
-  /** URL to a home page for the bot */
-  private String url;
+  private String name; // required
+  private String version; // required
+  private String author; // required
+  private String description; // optional
+  private String url; // optional
+  private String countryCode; // optional
+  private Set<String> gameTypes; // required
+  private String platform; // optional
+  private String programmingLang; // optional
 
   /**
-   * Country code defined by ISO 3166-1 alpha-2: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
-   * If no country code is provided, the locale of the system is being used instead.
+   * Initializes a new instance of the BotInfo class.
+   *
+   * @param name is the name of the bot (required).
+   * @param version is the version of the bot (required).
+   * @param author is the author of the bot (required).
+   * @param description is a short description of the bot (optional).
+   * @param url is the URL to a web page for the bot (optional).
+   * @param countryCode is the country code for the bot (optional).
+   * @param gameTypes is the game types that this bot can handle (required).
+   * @param platform is the platform used for running the bot (optional).
+   * @param programmingLang is the programming language used for developing the bot (optional).
    */
-  private String countryCode;
-
-  /**
-   * Game types accepted by the bot, e.g. "melee", "1v1". The game types defines which game types
-   * the bot is able to participate in. See {@link GameType} for using predefined game type.
-   */
-  private Set<String> gameTypes;
-
-  /** Platform used for running the bot, e.g. OpenJDK 11 or .NET Core 3 */
-  private String platform;
-
-  /** Language used for programming the bot, e.g. Java or C# */
-  private String programmingLang;
-
   public BotInfo(
       final String name,
       final String version,
@@ -100,51 +90,90 @@ public final class BotInfo {
     this.programmingLang = programmingLang;
   }
 
-  /** Returns the name, e.g. "MyBot" (required field) */
+  /**
+   * Returns the name, e.g., "MyBot". This field must always be provided with the bot info.
+   *
+   * @return the name of the bot.
+   */
   public String getName() {
     return name;
   }
 
-  /** Returns the version, e.g. "1.0" (required field) */
+  /**
+   * Returns the version, e.g., "1.0". This field must always be provided with the bot info.
+   *
+   * @return the version of the bot.
+   */
   public String getVersion() {
     return version;
   }
 
-  /** Returns the author, e.g. "John Doe (johndoe@somewhere.io)" (required field) */
+  /**
+   * Returns the author, e.g., "John Doe (johndoe@somewhere.io)". This field must always be provided
+   * with the bot info.
+   *
+   * @return the author of the bot.
+   */
   public String getAuthor() {
     return author;
   }
 
-  /** Returns a short description of the bot, preferable a one-liner */
+  /**
+   * Returns a short description of the bot, preferably a one-liner. This field is optional.
+   *
+   * @return a short description of the bot.
+   */
   public String getDescription() {
     return description;
   }
 
-  /** Returns the url of the bot */
+  /**
+   * Returns the URL of a web page for the bot. This field is optional.
+   *
+   * @return the URL of a web page for the bot.
+   */
   public String getUrl() {
     return url;
   }
 
   /**
-   * Returns the country code defined by ISO 3166-1 alpha-2: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
-   * If no country code is provided, the locale of the system is being used instead.
+   * Returns the country code defined by ISO 3166-1 alpha-2, e.g. "us":
+   * https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2. This field is optional. If no country code is
+   * provided, the locale of the system is being used instead.
+   *
+   * @return the country code for the bot.
    */
   public String getCountryCode() {
     return countryCode;
   }
 
   /**
-   * Returns the game types accepted by the bot, e.g. "melee", "1v1". The game types defines which game types
-   * the bot is able to participate in. See {@link GameType} for using predefined game type.
+   * Returns the game types accepted by the bot, e.g., "melee", "1v1". This field must always be
+   * provided with the bot info. The game types define which game types the bot can participate in.
+   * See {@link GameType} for using predefined game type.
+   *
+   * @return the game types that this bot can handle.
    */
   public Set<String> getGameTypes() {
     return gameTypes;
   }
 
-  /** Returns the platform used for running the bot, e.g. "Java Runtime Environment" or ".Net Core" */
-  public String getPlatform() { return platform; }
+  /**
+   * Returns the platform used for running the bot, e.g., "Java Runtime Environment" or ".Net Core".
+   * This field is optional.
+   *
+   * @return the platform used for running the bot.
+   */
+  public String getPlatform() {
+    return platform;
+  }
 
-  /** Returns the Programming language used for developing the bot, e.g. "Java" or "C#" */
+  /**
+   * Returns the programming language used for developing the bot, e.g., "Java" or "C#". This field
+   * is optional.
+   *
+   * @return the programming language used for developing the bot.
+   */
   public String getProgrammingLang() {
     return programmingLang;
   }

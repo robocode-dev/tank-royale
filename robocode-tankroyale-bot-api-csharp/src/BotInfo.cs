@@ -7,8 +7,9 @@ using System.Threading;
 namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
-  /// Required information about the bot.
+  /// Required information about a bot.
   /// </summary>
+  /// <value></value>
   public sealed class BotInfo
   {
     private string name;
@@ -17,71 +18,94 @@ namespace Robocode.TankRoyale.BotApi
     private IEnumerable<string> gameTypes;
 
     /// <summary>
-    /// Name, e.g. "MyBot" (required field).
+    /// The name, e.g., "MyBot". This field must always be provided with the bot info.
     /// </summary>
+    /// <value>The name of the bot.</value>
     public string Name
     {
       get => name;
-      set { if (value == null) { throw new NullReferenceException("Name cannot be null"); } }
+      private set { if (value == null) { throw new NullReferenceException("Name cannot be null"); } }
     }
 
     /// <summary>
-    /// Version, e.g. "1.0" (required field).
+    /// The version, e.g., "1.0". This field must always be provided with the bot info.
     /// </summary>
+    /// <value>The version of the bot.</value>
     public string Version
     {
       get => version;
-      set { if (value == null) { throw new NullReferenceException("Version cannot be null"); } }
+      private set { if (value == null) { throw new NullReferenceException("Version cannot be null"); } }
     }
 
     /// <summary>
-    /// Author, e.g. "John Doe (johndoe@somewhere.io)" (required field).
+    /// The author, e.g., "John Doe (johndoe@somewhere.io)". This field must always be provided
+    /// with the bot info.
     /// </summary>
+    /// <value>The author of the bot.</value>
     public string Author
     {
       get => author;
-      set { if (value == null) { throw new NullReferenceException("Author cannot be null"); } }
+      private set { if (value == null) { throw new NullReferenceException("Author cannot be null"); } }
     }
 
     /// <summary>
-    /// Short description of the bot, preferable a one-liner.
+    /// Short description of the bot, preferably a one-liner. This field is optional.
     /// </summary>
-    public string Description { get; set; }
+    /// <value>A short description of the bot.</value>
+    public string Description { get; private set; }
 
     /// <summary>
-    /// URL to a home page for the bot.
+    /// The URL of a web page for the bot. This field is optional.
     /// </summary>
-    public string Url { get; set; }
+    /// <value>The URL of a web page for the bot.</value>
+    public string Url { get; private set; }
 
     /// <summary>
-    /// Country code defined by ISO 3166-1 alpha-2: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
+    /// The country code defined by ISO 3166-1 alpha-2, e.g. "us":
+    /// https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
     /// If no country code is provided, the locale of the system is being used instead.
     /// </summary>
-    public string CountryCode { get; set; }
+    /// <value>The country code for the bot.</value>
+    public string CountryCode { get; private set; }
 
     /// <summary>
-    /// Game types accepted by the bot, e.g. "melee", "1v1". The game types defines which game types
-    /// the bot is able to participate in. See <see cref="GameType"/> for using predefined game type.
+    /// The game types accepted by the bot, e.g., "melee", "1v1". This field must always be
+    /// provided with the bot info. The game types define which game types the bot can participate
+    /// in. See <see cref="GameType"/> for using predefined game type.
     /// </summary>
+    /// <value>The game types that this bot can handle.</value>
     public IEnumerable<string> GameTypes
     {
       get => gameTypes;
-      set { if (value == null) { throw new NullReferenceException("GameTypes cannot be null"); } }
+      private set { if (value == null) { throw new NullReferenceException("GameTypes cannot be null"); } }
     }
 
     /// <summary>
-    /// Platform used for running the bot, e.g.abstract OpenJDK 11 or .NET Core 3.
+    /// The platform used for running the bot, e.g., "Java Runtime Environment" or ".Net Core".
+    /// This field is optional.
     /// </summary>
-    public string Platform { get; set; }
+    /// <value>The platform used for running the bot.</value>
+    public string Platform { get; private set; }
 
     /// <summary>
-    /// Programming language used for developing the bot, e.g. "Java" or "C#".
+    /// The programming language used for developing the bot, e.g., "Java" or "C#". Thisfield is
+    /// optional.
     /// </summary>
-    public string ProgrammingLang { get; set; }
+    /// <value>The programming language used for developing the bot.</value>
+    public string ProgrammingLang { get; private set; }
 
     /// <summary>
-    /// Counstructor.
+    /// Initializes a new instance of the BotInfo class.
     /// </summary>
+    /// <param name="name">The name of the bot (required).</param>
+    /// <param name="version">The version of the bot (required).</param>
+    /// <param name="author">The author of the bot (required).</param>
+    /// <param name="description">A short description of the bot (optional).</param>
+    /// <param name="url">The URL to a web page for the bot (optional).</param>
+    /// <param name="countryCode">The country code for the bot (optional).</param>
+    /// <param name="gameTypes">The game types that this bot can handle (required).</param>
+    /// <param name="platform">The platform used for running the bot (optional).</param>
+    /// <param name="programmingLang">The programming language used for developing the bot (optional).</param>
     public BotInfo(
       string name,
       string version,
