@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.bootstrap.util
 
 enum class Env {
-    SERVER_URI,
+    SERVER_URL,
     BOT_NAME,
     BOT_VERSION,
     BOT_AUTHOR,
