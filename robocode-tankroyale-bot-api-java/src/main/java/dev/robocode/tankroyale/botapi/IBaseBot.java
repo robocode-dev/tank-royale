@@ -19,7 +19,7 @@ public interface IBaseBot {
    * distance between the bullet and the center of the bounding circle is less than the radius of
    * the bounding circle.
    */
-  short BOUNDING_CIRCLE_RADIUS = 18;
+  int BOUNDING_CIRCLE_RADIUS = 18;
 
   /**
    * The radius of the radar's scan beam, which is a constant of {@value} units.
@@ -36,7 +36,7 @@ public interface IBaseBot {
    * and the bigger the chance is that the radar detects an opponent. If the radar is not turning,
    * the scan arc becomes a thin line, unable to scan and detect anything.
    */
-  short SCAN_RADIUS = 1200;
+  int SCAN_RADIUS = 1200;
 
   /**
    * The maximum possible driving turn rate, which is max. {@value} degrees per turn.
@@ -48,22 +48,22 @@ public interface IBaseBot {
    * abs(speed). Hence, the turn rate is at max. 10 degrees/turn when the speed is zero, and down to
    * only 4 degrees per turn when the robot is at max speed (which is 8 units per turn).
    */
-  short MAX_TURN_RATE = 10;
+  int MAX_TURN_RATE = 10;
 
   /** The maximum gun turn rate, which is a constant of 20 degrees per turn. */
-  short MAX_GUN_TURN_RATE = 20;
+  int MAX_GUN_TURN_RATE = 20;
 
   /** The maximum radar turn rate, which is a constant of 45 degrees per turn. */
-  short MAX_RADAR_TURN_RATE = 45;
+  int MAX_RADAR_TURN_RATE = 45;
 
   /** The maximum absolute speed, which is 8 units per turn. */
-  short MAX_SPEED = 8;
+  int MAX_SPEED = 8;
 
   /** The maximum backward speed, which is -8 units per turn. */
-  short MAX_FORWARD_SPEED = MAX_SPEED;
+  int MAX_FORWARD_SPEED = MAX_SPEED;
 
   /** The minimum forward speed, which is -8 units per turn. */
-  short MAX_BACKWARD_SPEED = -MAX_SPEED;
+  int MAX_BACKWARD_SPEED = -MAX_SPEED;
 
   /**
    * The minimum firepower, which is 0.1. The gun will not fire with a power that is less than the
@@ -75,7 +75,7 @@ public interface IBaseBot {
    * The maximum firepower, which is 3. The gun will fire up to this power, even if the firepower is
    * set to a higher value.
    */
-  short MAX_FIREPOWER = 3;
+  double MAX_FIREPOWER = 3;
 
   /**
    * The minimum bullet speed is 11 units per turn.
@@ -84,7 +84,7 @@ public interface IBaseBot {
    * defined by the maximum firepower: 20 - 3 x max. firepower, i.e. 20 - 3 x 3 = 11. The more
    * power, the slower the bullet speed will be.
    */
-  short MIN_BULLET_SPEED = 20 - 3 * MAX_FIREPOWER;
+  double MIN_BULLET_SPEED = 20 - 3 * MAX_FIREPOWER;
 
   /**
    * The maximum bullet speed is 19.7 units per turn.
@@ -99,14 +99,14 @@ public interface IBaseBot {
    * Acceleration is the increase in speed per turn, which adds 1 unit to the speed per turn when
    * the bot is increasing its speed moving forward.
    */
-  short ACCELERATION = 1;
+  int ACCELERATION = 1;
 
   /**
    * Deceleration is the decrease in speed per turn, which subtracts 2 units to the speed per turn
    * when the bot is decreasing its speed moving backward. This means that a bot is faster at
    * braking than accelerating forward.
    */
-  short DECELERATION = -2;
+  int DECELERATION = -2;
 
   /**
    * The method used to start running the bot. You should call this method from the main method or
@@ -224,17 +224,17 @@ public interface IBaseBot {
   int getMaxInactivityTurns();
 
   /**
-   * Turn timeout in microseconds (1 / 1,000,000 second). The turn timeout is important as the bot
-   * needs to take action by calling {@link #go()} before the turn timeout occurs. As soon as the
-   * {@link TickEvent} is triggered, i.e. when {@link #onTick(TickEvent)} is called, you need to
-   * call {@link #go()} to take action before the turn timeout occurs. Otherwise, your bot will skip
-   * a turn and receive a {@link #onSkippedTurn(SkippedTurnEvent)} for each turn where {@link #go()}
-   * is called too late.
+   * The turn timeout is important as the bot needs to take action by calling {@link #go()} before
+   * the turn timeout occurs. As soon as the {@link TickEvent} is triggered, i.e. when {@link
+   * #onTick(TickEvent)} is called, you need to call {@link #go()} to take action before the turn
+   * timeout occurs. Otherwise, your bot will skip a turn and receive a {@link
+   * #onSkippedTurn(SkippedTurnEvent)} for each turn where {@link #go()} is called too late.
    *
    * <p>First available when the game has started.
    *
    * @see #getTimeLeft()
    * @see #go()
+   * @return the turn timeout in microseconds (1 / 1,000,000 second).
    */
   int getTurnTimeout();
 
@@ -275,7 +275,7 @@ public interface IBaseBot {
    * Specifies if the bot is disabled, i.e., when the energy is zero. When the bot is disabled, it
    * is not able to take any action like movement, turning, and firing.
    *
-   * @return {@code true} if the bot is disabled; {@code false} otherwise</value>
+   * @return {@code true} if the bot is disabled; {@code false} otherwise.
    */
   boolean isDisabled();
 
