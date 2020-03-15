@@ -204,10 +204,10 @@ namespace Robocode.TankRoyale.BotApi
       {
         get
         {
-          var uri = EnvVars.GetServerUri();
+          var uri = EnvVars.GetServerUrl();
           if (uri == null)
           {
-            throw new BotException(String.Format("Environment variable {0} is not defined", EnvVars.SERVER_URI));
+            throw new BotException(String.Format("Environment variable {0} is not defined", EnvVars.SERVER_URL));
           }
           if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
           {
@@ -421,7 +421,7 @@ namespace Robocode.TankRoyale.BotApi
 
             case BulletHitBotEvent bulletHitBotEvent:
               if (bulletHitBotEvent.VictimId == myId)
-                OnHitByBullet(bulletHitBotEvent);
+                OnHitByBullet(bulletHitBotEvent); w
               else
                 OnBulletHit(bulletHitBotEvent);
               break;

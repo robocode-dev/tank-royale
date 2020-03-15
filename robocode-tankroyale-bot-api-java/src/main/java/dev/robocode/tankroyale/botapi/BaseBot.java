@@ -39,30 +39,30 @@ public abstract class BaseBot implements IBaseBot {
   final __Internals __internals;
 
   /**
-   * Constructor used when both BotInfo and server URI are provided through environment variables.
-   * This constructor should be used when starting up the bot using a bootstrap. These environment
-   * variables must be set to provide the server URI and bot information, and are automatically set
-   * by the bootstrap tool for Robocode. ROBOCODE_SERVER_URI, BOT_NAME, BOT_VERSION, BOT_AUTHOR,
-   * BOT_DESCRIPTION, BOT_COUNTRY_CODE, BOT_GAME_TYPES, BOT_PROG_LANG.
+   * Constructor for initializing a new instance of the BaseBot, which should be used when both
+   * BotInfo and server URL is provided through environment variables, i.e., when starting up the
+   * bot using a bootstrap. These environment variables must be set to provide the server URL and
+   * bot information, and are automatically set by the bootstrap tool for Robocode.
    *
    * <p><b>Example:</b>
    *
-   * <p>ROBOCODE_SERVER_URI=ws://localhost:55000<br>
+   * <p>ROBOCODE_SERVER_URL=ws://localhost:55000<br>
    * BOT_NAME=MyBot<br>
    * BOT_VERSION=1.0<br>
    * BOT_AUTHOR=fnl<br>
    * BOT_DESCRIPTION=Sample bot<br>
-   * BOT_COUNTRY_CODE=DK<br>
+   * BOT_URL=https://mybot.robocode.dev BOT_COUNTRY_CODE=DK<br>
    * BOT_GAME_TYPES=melee,1v1<br>
-   * BOT_PROG_LANG=Java<br>
+   * BOT_PLATFORM=Java<br>
+   * BOT_PROG_LANG=Java 8<br>
    */
   public BaseBot() {
     __internals = new __Internals(null, null);
   }
 
   /**
-   * Constructor used when server URI is provided through the environment variable
-   * ROBOCODE_SERVER_URI.
+   * Constructor for initializing a new instance of the BaseBot, which should be used when server
+   * URI is provided through the environment variable ROBOCODE_SERVER_URL.
    *
    * @param botInfo is the bot info containing information about your bot.
    */
@@ -71,13 +71,14 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   /**
-   * Constructor used providing both the bot information and server URI for your bot.
+   * Constructor for initializing a new instance of the BaseBot, which should be used providing both
+   * the bot information and server URL for your bot.
    *
    * @param botInfo is the bot info containing information about your bot.
-   * @param serverUri is the server URI
+   * @param serverUrl is the server URI
    */
-  public BaseBot(final BotInfo botInfo, URI serverUri) {
-    __internals = new __Internals(botInfo, serverUri);
+  public BaseBot(final BotInfo botInfo, URI serverUrl) {
+    __internals = new __Internals(botInfo, serverUrl);
   }
 
   @Override
@@ -482,18 +483,18 @@ public abstract class BaseBot implements IBaseBot {
     }
 
     private URI getServerUriFromSetting() {
-      String uri = EnvVars.getServerUri();
+      String uri = EnvVars.getServerUrl();
       if (uri == null) {
         uri = System.getProperty(SERVER_URI_PROPERTY_KEY);
         if (uri == null) {
-          uri = EnvVars.getServerUri();
+          uri = EnvVars.getServerUrl();
         }
       }
       if (uri == null) {
         throw new BotException(
             String.format(
                 "Property %s or environment variable %s is not defined",
-                SERVER_URI_PROPERTY_KEY, EnvVars.SERVER_URI));
+                SERVER_URI_PROPERTY_KEY, EnvVars.SERVER_URL));
       }
       try {
         return new URI(uri);

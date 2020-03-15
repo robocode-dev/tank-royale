@@ -12,21 +12,22 @@ namespace Robocode.TankRoyale.BotApi
     internal readonly BaseBotInternals __baseBotInternals;
 
     /// <summary>
-    /// Constructor used when both BotInfo and server URI are provided through environment variables.
-    /// This constructor should be used when starting up the bot using a bootstrap. These environment
-    /// variables must be set to provide the server URI and bot information, and are automatically set
-    /// by the bootstrap tool for Robocode. ROBOCODE_SERVER_URI, BOT_NAME, BOT_VERSION, BOT_AUTHOR,
-    /// BOT_DESCRIPTION, BOT_COUNTRY_CODE, BOT_GAME_TYPES, BOT_PROG_LANG.
+    /// Constructor for initializing a new instance of the BaseBot, which should be used when both
+    /// BotInfo and server URI is provided through environment variables, i.e., when starting up
+    /// the bot using a bootstrap. These environment variables must be set to provide the server
+    /// URL and bot information, and are automatically set by the bootstrap tool for Robocode.
     /// </summary>
     /// <example>
     /// ROBOCODE_SERVER_URI=ws://localhost:55000
     /// BOT_NAME=MyBot
     /// BOT_VERSION=1.0
     /// BOT_AUTHOR=fnl
-    /// /// BOT_DESCRIPTION=Sample bot
+    /// BOT_DESCRIPTION=Sample bot
+    /// BOT_URL=https://mybot.robocode.dev
     /// BOT_COUNTRY_CODE=DK
     /// BOT_GAME_TYPES=melee,1v1
-    /// BOT_PROG_LANG=Java
+    /// BOT_PROG_PLATFORM=.Net Core 3.1
+    /// BOT_PROG_LANG=C# 8
     /// </example>
     public BaseBot()
     {
@@ -34,8 +35,8 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <summary>
-    /// Constructor used when server URI is provided through the environment variable
-    /// ROBOCODE_SERVER_URI.
+    /// Constructor for initializing a new instance of the BaseBot, which should be used when
+    /// server URI is provided through the environment variable ROBOCODE_SERVER_URL.
     /// </summary>
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
     public BaseBot(BotInfo botInfo)
@@ -44,13 +45,14 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <summary>
-    /// Constructor used providing both the bot information and server URI for your bot.
+    /// Constructor for initializing a new instance of the BaseBot, which should be used providing
+    /// both the bot information and server URL for your bot.
     /// </summary>
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
-    /// <param name="serverUri">Is the server URI</param>
-    public BaseBot(BotInfo botInfo, Uri serverUri)
+    /// <param name="serverUrl">Is the server URI</param>
+    public BaseBot(BotInfo botInfo, Uri serverUrl)
     {
-      __baseBotInternals = new BaseBotInternals(this, botInfo, serverUri);
+      __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl);
     }
 
     public void Start()
