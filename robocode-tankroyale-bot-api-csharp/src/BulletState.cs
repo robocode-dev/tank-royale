@@ -1,43 +1,50 @@
 namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
-  /// Bullet state.
+  /// Represents the state of a bullet that has been fired by a bot.
   /// </summary>
   public sealed class BulletState
   {
     /// <summary>
-    /// ID of the bullet.
+    /// Unique id of the bullet.
     /// </summary>
+    /// <value>The unique id of the bullet.</value>
     int BulletId { get; }
 
-    /// <summary>ID of the bot that fired the bullet.</summary>
+    /// <summary>Id of the bot that fired the bullet.</summary>
+    /// <value>The id of the bot that fired the bullet.</value>
     int OwnerId { get; }
 
     /// <summary>Bullet firepower level.</summary>
+    /// <value>The bullet firepower level.</value>
     double Power { get; }
 
-    /// <summary>X coordinate.</summary>
+    /// <summary>X coordinate of the bullet.</summary>
+    /// <value>The X coordinate of the bullet.</value>
     double X { get; }
 
-    /// <summary>Y coordinate.</summary>
+    /// <summary>Y coordinate of the bullet.</summary>
+    /// <value>The Y coordinate of the bullet.</value>
     double Y { get; }
 
-    /// <summary>Direction in degrees.</summary>
+    /// <summary>Direction of the bullet in degrees.</summary>
+    /// <value>The direction of the bullet in degrees.</value>
     double Direction { get; }
 
-    /// <summary>Speed measured in pixels per turn.</summary>
+    /// <summary>Speed measured of the bullet in units per turn.</summary>
+    /// <value>The speed measured of the bullet in units per turn.</value>
     double Speed { get; }
 
     /// <summary>
-    /// Constructor
+    /// Initializes a new instance of the BulletState class.
     /// </summary>
-    /// <param name="bulletId">ID of the bullet.</param>
-    /// <param name="ownerId">ID of the bot that fired the bullet.</param>
+    /// <param name="bulletId">Unique id of the bullet.</param>
+    /// <param name="ownerId">Id of the bot that fired the bullet.</param>
     /// <param name="power">Bullet firepower level.</param>
-    /// <param name="x">X coordinate.</param>
-    /// <param name="y">Y coordinate.</param>
+    /// <param name="x">X coordinate of the bullet.</param>
+    /// <param name="y">Y coordinate of the bullet.</param>
     /// <param name="direction">Direction in degrees.</param>
-    /// <param name="speed">Speed measured in pixels per turn.</param>
+    /// <param name="speed">Speed measured in units per turn.</param>
     public BulletState(int bulletId, int ownerId, double power, double x, double y, double direction, double speed)
     {
       BulletId = bulletId;
