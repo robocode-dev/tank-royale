@@ -421,7 +421,7 @@ namespace Robocode.TankRoyale.BotApi
 
             case BulletHitBotEvent bulletHitBotEvent:
               if (bulletHitBotEvent.VictimId == myId)
-                OnHitByBullet(bulletHitBotEvent); w
+                OnHitByBullet(bulletHitBotEvent);
               else
                 OnBulletHit(bulletHitBotEvent);
               break;

@@ -6,10 +6,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.neovisionaries.ws.client.*;
-import dev.robocode.tankroyale.botapi.events.*;
-import dev.robocode.tankroyale.botapi.factory.BotHandshakeFactory;
-import dev.robocode.tankroyale.botapi.mapper.EventMapper;
-import dev.robocode.tankroyale.schema.*;
 import dev.robocode.tankroyale.botapi.events.BotDeathEvent;
 import dev.robocode.tankroyale.botapi.events.BotHitBotEvent;
 import dev.robocode.tankroyale.botapi.events.BotHitWallEvent;
@@ -21,8 +17,12 @@ import dev.robocode.tankroyale.botapi.events.Event;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.botapi.events.WonRoundEvent;
+import dev.robocode.tankroyale.botapi.events.*;
+import dev.robocode.tankroyale.botapi.factory.BotHandshakeFactory;
+import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
 import dev.robocode.tankroyale.botapi.mapper.ResultsMapper;
+import dev.robocode.tankroyale.schema.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -31,8 +31,9 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * Abstract Bot containing convenient methods for movement, turning, and firing the gun. Most bots
- * should inherit from this class.
+ * Abstract bot class that takes care of communication between the bot and the server, and sends
+ * notifications through the event handlers. Most bots can inherit from this class to get access to
+ * basic methods.
  */
 public abstract class BaseBot implements IBaseBot {
 
@@ -44,7 +45,7 @@ public abstract class BaseBot implements IBaseBot {
    * bot using a bootstrap. These environment variables must be set to provide the server URL and
    * bot information, and are automatically set by the bootstrap tool for Robocode.
    *
-   * <p><b>Example:</b>
+   * <p><b>Example of how to set the predefined environment variables:</b>
    *
    * <p>ROBOCODE_SERVER_URL=ws://localhost:55000<br>
    * BOT_NAME=MyBot<br>
@@ -62,7 +63,7 @@ public abstract class BaseBot implements IBaseBot {
 
   /**
    * Constructor for initializing a new instance of the BaseBot, which should be used when server
-   * URI is provided through the environment variable ROBOCODE_SERVER_URL.
+   * URL is provided through the environment variable ROBOCODE_SERVER_URL.
    *
    * @param botInfo is the bot info containing information about your bot.
    */
@@ -75,7 +76,7 @@ public abstract class BaseBot implements IBaseBot {
    * the bot information and server URL for your bot.
    *
    * @param botInfo is the bot info containing information about your bot.
-   * @param serverUrl is the server URI
+   * @param serverUrl is the server URL
    */
   public BaseBot(final BotInfo botInfo, URI serverUrl) {
     __internals = new __Internals(botInfo, serverUrl);
@@ -353,7 +354,7 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   protected final class __Internals {
-    private static final String SERVER_URI_PROPERTY_KEY = "server.uri";
+    private static final String SERVER_URL_PROPERTY_KEY = "server.url";
 
     private static final String NOT_CONNECTED_TO_SERVER_MSG =
         "Not connected to game server yes. Make sure onConnected() event handler has been called first";
@@ -427,16 +428,16 @@ public abstract class BaseBot implements IBaseBot {
     final Event<ScannedBotEvent> onScannedBot = new Event<>();
     final Event<WonRoundEvent> onWonRound = new Event<>();
 
-    __Internals(BotInfo botInfo, URI serverUri) {
+    __Internals(BotInfo botInfo, URI serverUrl) {
       this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
-      init(serverUri == null ? getServerUriFromSetting() : serverUri);
+      init(serverUrl == null ? getServerUrlFromSetting() : serverUrl);
     }
 
-    private void init(URI serverUri) {
+    private void init(URI serverUrl) {
       try {
-        socket = new WebSocketFactory().createSocket(serverUri);
+        socket = new WebSocketFactory().createSocket(serverUrl);
       } catch (IOException ex) {
-        throw new BotException("Could not create socket for URI: " + serverUri, ex);
+        throw new BotException("Could not create socket for URL: " + serverUrl, ex);
       }
       socket.addListener(new WebSocketListener());
       botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
@@ -482,24 +483,24 @@ public abstract class BaseBot implements IBaseBot {
       myId = null;
     }
 
-    private URI getServerUriFromSetting() {
-      String uri = EnvVars.getServerUrl();
-      if (uri == null) {
-        uri = System.getProperty(SERVER_URI_PROPERTY_KEY);
-        if (uri == null) {
-          uri = EnvVars.getServerUrl();
+    private URI getServerUrlFromSetting() {
+      String url = EnvVars.getServerUrl();
+      if (url == null) {
+        url = System.getProperty(SERVER_URL_PROPERTY_KEY);
+        if (url == null) {
+          url = EnvVars.getServerUrl();
         }
       }
-      if (uri == null) {
+      if (url == null) {
         throw new BotException(
             String.format(
                 "Property %s or environment variable %s is not defined",
-                SERVER_URI_PROPERTY_KEY, EnvVars.SERVER_URL));
+                    SERVER_URL_PROPERTY_KEY, EnvVars.SERVER_URL));
       }
       try {
-        return new URI(uri);
+        return new URI(url);
       } catch (URISyntaxException ex) {
-        throw new BotException("Incorrect syntax for server uri: " + uri);
+        throw new BotException("Incorrect syntax for server URL: " + url);
       }
     }
 

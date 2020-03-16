@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
+  /// Represents the current bot state. 
   /// </summary>
   public sealed class BotState
   {

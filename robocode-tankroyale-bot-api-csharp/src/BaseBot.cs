@@ -4,8 +4,9 @@ using System.Collections.Generic;
 namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
-  /// Abstract Bot containing convenient methods for movement, turning, and firing the gun.
-  /// Most bots should inherit from this class.
+  /// Abstract bot class that takes care of communication between the bot and the server, and sends
+  /// notifications through the event handlers. Most bots can inherit from this class to get access
+  /// to basic methods.
   /// </summary>
   public partial class BaseBot : IBaseBot
   {
@@ -16,19 +17,20 @@ namespace Robocode.TankRoyale.BotApi
     /// BotInfo and server URI is provided through environment variables, i.e., when starting up
     /// the bot using a bootstrap. These environment variables must be set to provide the server
     /// URL and bot information, and are automatically set by the bootstrap tool for Robocode.
+    ///
+    /// Example of how to set the predefined environment variables:
+    ///
+    /// ROBOCODE_SERVER_URI=ws://localhost:55000<br/>
+    /// BOT_NAME=MyBot<br/>
+    /// BOT_VERSION=1.0<br/>
+    /// BOT_AUTHOR=fnl<br/>
+    /// BOT_DESCRIPTION=Sample bot<br/>
+    /// BOT_URL=https://mybot.robocode.dev<br/>
+    /// BOT_COUNTRY_CODE=DK<br/>
+    /// BOT_GAME_TYPES=melee,1v1<br/>
+    /// BOT_PROG_PLATFORM=.Net Core 3.1<br/>
+    /// BOT_PROG_LANG=C# 8<br/>
     /// </summary>
-    /// <example>
-    /// ROBOCODE_SERVER_URI=ws://localhost:55000
-    /// BOT_NAME=MyBot
-    /// BOT_VERSION=1.0
-    /// BOT_AUTHOR=fnl
-    /// BOT_DESCRIPTION=Sample bot
-    /// BOT_URL=https://mybot.robocode.dev
-    /// BOT_COUNTRY_CODE=DK
-    /// BOT_GAME_TYPES=melee,1v1
-    /// BOT_PROG_PLATFORM=.Net Core 3.1
-    /// BOT_PROG_LANG=C# 8
-    /// </example>
     public BaseBot()
     {
       __baseBotInternals = new BaseBotInternals(this, null, null);
@@ -55,67 +57,80 @@ namespace Robocode.TankRoyale.BotApi
       __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl);
     }
 
+    /// <inheritdoc/>
     public void Start()
     {
       __baseBotInternals.Connect();
       __baseBotInternals.exitEvent.WaitOne();
     }
 
+    /// <inheritdoc/>
     public void Go()
     {
       __baseBotInternals.SendIntent();
     }
 
+    /// <inheritdoc/>
     public String Variant
     {
       get => __baseBotInternals.ServerHandshake.Variant;
     }
 
+    /// <inheritdoc/>
     public String Version
     {
       get => __baseBotInternals.ServerHandshake.Version;
     }
 
+    /// <inheritdoc/>
     public int MyId
     {
       get => __baseBotInternals.MyId;
     }
 
+    /// <inheritdoc/>
     public String GameType
     {
       get => __baseBotInternals.GameSetup.GameType;
     }
 
+    /// <inheritdoc/>
     public int ArenaWidth
     {
       get => __baseBotInternals.GameSetup.ArenaWidth;
     }
 
+    /// <inheritdoc/>
     public int ArenaHeight
     {
       get => __baseBotInternals.GameSetup.ArenaHeight;
     }
 
+    /// <inheritdoc/>
     public int NumberOfRounds
     {
       get => __baseBotInternals.GameSetup.NumberOfRounds;
     }
 
+    /// <inheritdoc/>
     public double GunCoolingRate
     {
       get => __baseBotInternals.GameSetup.GunCoolingRate;
     }
 
+    /// <inheritdoc/>
     public int? MaxInactivityTurns
     {
       get => __baseBotInternals.GameSetup.MaxInactivityTurns;
     }
 
+    /// <inheritdoc/>
     public int TurnTimeout
     {
       get => __baseBotInternals.GameSetup.TurnTimeout;
     }
 
+    /// <inheritdoc/>
     public int TimeLeft
     {
       get
@@ -125,71 +140,85 @@ namespace Robocode.TankRoyale.BotApi
       }
     }
 
+    /// <inheritdoc/>
     public int RoundNumber
     {
       get => __baseBotInternals.CurrentTurn.RoundNumber;
     }
 
+    /// <inheritdoc/>
     public int TurnNumber
     {
       get => __baseBotInternals.CurrentTurn.TurnNumber;
     }
 
+    /// <inheritdoc/>
     public double Energy
     {
       get => __baseBotInternals.CurrentTurn.BotState.Energy;
     }
 
+    /// <inheritdoc/>
     public bool IsDisabled
     {
       get => Energy == 0;
     }
 
+    /// <inheritdoc/>
     public double X
     {
       get => __baseBotInternals.CurrentTurn.BotState.X;
     }
 
+    /// <inheritdoc/>
     public double Y
     {
       get => __baseBotInternals.CurrentTurn.BotState.Y;
     }
 
+    /// <inheritdoc/>
     public double Direction
     {
       get => __baseBotInternals.CurrentTurn.BotState.Direction;
     }
 
+    /// <inheritdoc/>
     public double GunDirection
     {
       get => __baseBotInternals.CurrentTurn.BotState.GunDirection;
     }
 
+    /// <inheritdoc/>
     public double RadarDirection
     {
       get => __baseBotInternals.CurrentTurn.BotState.RadarDirection;
     }
 
+    /// <inheritdoc/>
     public double Speed
     {
       get => __baseBotInternals.CurrentTurn.BotState.Speed;
     }
 
+    /// <inheritdoc/>
     public double GunHeat
     {
       get => __baseBotInternals.CurrentTurn.BotState.GunHeat;
     }
 
+    /// <inheritdoc/>
     public IEnumerable<BulletState> BulletStates
     {
       get => __baseBotInternals.CurrentTurn.BulletStates;
     }
 
+    /// <inheritdoc/>
     public IEnumerable<Event> Events
     {
       get => __baseBotInternals.CurrentTurn.Events;
     }
 
+    /// <inheritdoc/>
     public double TurnRate
     {
       set
@@ -207,6 +236,7 @@ namespace Robocode.TankRoyale.BotApi
       get => __baseBotInternals.BotIntent.TurnRate ?? 0d;
     }
 
+    /// <inheritdoc/>
     public double GunTurnRate
     {
       set
@@ -228,6 +258,7 @@ namespace Robocode.TankRoyale.BotApi
       get => __baseBotInternals.BotIntent.GunTurnRate ?? 0d;
     }
 
+    /// <inheritdoc/>
     public double RadarTurnRate
     {
       set
@@ -249,6 +280,7 @@ namespace Robocode.TankRoyale.BotApi
       get => __baseBotInternals.BotIntent.RadarTurnRate ?? 0d;
     }
 
+    /// <inheritdoc/>
     public double TargetSpeed
     {
       set
@@ -270,6 +302,7 @@ namespace Robocode.TankRoyale.BotApi
       get => __baseBotInternals.BotIntent.TargetSpeed ?? 0d;
     }
 
+    /// <inheritdoc/>
     public double Firepower
     {
       set
@@ -294,65 +327,87 @@ namespace Robocode.TankRoyale.BotApi
       get => __baseBotInternals.BotIntent.Firepower ?? 0d;
     }
 
+    /// <inheritdoc/>
     public bool IsAdjustGunForBodyTurn
     {
       set => __baseBotInternals.isAdjustGunForBodyTurn = value;
       get => __baseBotInternals.isAdjustGunForBodyTurn;
     }
 
+    /// <inheritdoc/>
     public bool IsAdjustRadarForGunTurn
     {
       set => __baseBotInternals.isAdjustRadarForGunTurn = value;
       get => __baseBotInternals.isAdjustRadarForGunTurn;
     }
 
+    /// <inheritdoc/>
     public double CalcMaxTurnRate(double speed)
     {
       return ((IBaseBot)this).MaxTurnRate - 0.75 * Math.Abs(speed);
     }
 
+    /// <inheritdoc/>
     public double CalcBulletSpeed(double firepower)
     {
       return 20 - 3 * firepower;
     }
 
+    /// <inheritdoc/>
     public double CalcGunHeat(double firepower)
     {
       return 1 + (firepower / 5);
     }
 
+    /// <inheritdoc/>
     public virtual void OnConnected(ConnectedEvent connectedEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnDisconnected(DisconnectedEvent disconnectedEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnConnectionError(ConnectionErrorEvent connectionErrorEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnGameStarted(GameStartedEvent gameStatedEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnGameEnded(GameEndedEvent gameEndedEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnTick(TickEvent tickEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnBotDeath(BotDeathEvent botDeathEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnHitBot(BotHitBotEvent botHitBotEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnHitWall(BotHitWallEvent botHitWallEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnBulletFired(BulletFiredEvent bulletFiredEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnHitByBullet(BulletHitBotEvent bulletHitBotEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnBulletHit(BulletHitBotEvent bulletHitBotEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnBulletHitBullet(BulletHitBulletEvent bulletHitBulletEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnBulletHitWall(BulletHitWallEvent bulletHitWallEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnScannedBot(ScannedBotEvent scannedBotEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnSkippedTurn(SkippedTurnEvent skippedTurnEvent) { }
 
+    /// <inheritdoc/>
     public virtual void OnWonRound(WonRoundEvent wonRoundEvent) { }
   }
 }

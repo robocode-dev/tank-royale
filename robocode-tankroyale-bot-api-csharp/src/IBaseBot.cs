@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace Robocode.TankRoyale.BotApi {
+namespace Robocode.TankRoyale.BotApi
+{
   /// <summary>
   /// Interface containing the core API for a bot.
   /// </summary>
-  public interface IBaseBot {
+  public interface IBaseBot
+  {
     /// <summary>
     /// The bounding circle of a bot is a circle going from the center of the bot with a radius so
     /// that the circle covers most of the bot. The bounding circle is used for determining when a
@@ -88,7 +90,7 @@ namespace Robocode.TankRoyale.BotApi {
     /// 20 - 3 x 3 = 11. The more power, the slower the bullet speed will be.
     /// </summary>
     /// <value>The minimum bullet speed is 11 units per turn.</value>
-    double MinBulletSpeed => (sbyte) (20 - 3 * MaxFirepower);
+    double MinBulletSpeed => (sbyte)(20 - 3 * MaxFirepower);
 
     /// <summary>
     /// The maximum bullet speed is the fastest possible speed that a bullet can travel and is
@@ -127,7 +129,7 @@ namespace Robocode.TankRoyale.BotApi {
     /// } 
     /// </code>
     /// </example>
-    void Start ();
+    void Start();
 
     /// <summary>
     /// Commits the current commands (actions), which finalizes the current turn for the bot.
@@ -146,7 +148,7 @@ namespace Robocode.TankRoyale.BotApi {
     /// <see cref="RadarTurnRate"/>, <see cref="TargetSpeed"/>, and <see cref="Firepower"/>.
     /// </summary>
     /// <seealso cref="TurnTimeout"/>
-    void Go ();
+    void Go();
 
     /// <summary>
     /// Unique id of this bot, which is available when the game has started.
@@ -487,31 +489,31 @@ namespace Robocode.TankRoyale.BotApi {
     /// The event handler triggered when connected to the server.
     /// </summary>
     /// <param name="connectedEvent">Event details from the game.</param>
-    void OnConnected (ConnectedEvent connectedEvent) { }
+    void OnConnected(ConnectedEvent connectedEvent) { }
 
     /// <summary>
     /// The event handler triggered when disconnected from the server.
     /// </summary>
     /// <param name="disconnectedEvent">Event details from the game.</param>
-    void OnDisconnected (DisconnectedEvent disconnectedEvent) { }
+    void OnDisconnected(DisconnectedEvent disconnectedEvent) { }
 
     /// <summary>
     /// The event handler triggered when a connection error occurs.
     /// </summary>
     /// <param name="connectionErrorEvent">Event details from the game.</param>
-    void OnConnectionError (ConnectionErrorEvent connectionErrorEvent) { }
+    void OnConnectionError(ConnectionErrorEvent connectionErrorEvent) { }
 
     /// <summary>
     /// The event handler triggered when the game has started.
     /// </summary>
     /// <param name="gameStatedEvent">Event details from the game.</param>
-    void OnGameStarted (GameStartedEvent gameStatedEvent) { }
+    void OnGameStarted(GameStartedEvent gameStatedEvent) { }
 
     /// <summary>
     /// The event handler triggered when the game has ended.
     /// </summary>
     /// <param name="gameStatedEvent">Event details from the game.</param>
-    void OnGameEnded (GameEndedEvent gameEndedEvent) { }
+    void OnGameEnded(GameEndedEvent gameEndedEvent) { }
 
     /// <summary>
     /// The event handler triggered when a game tick event occurs, i.e., when a new turn in a round
@@ -519,67 +521,67 @@ namespace Robocode.TankRoyale.BotApi {
     /// take and call <see cref="Go"/> when it needs to commit the action to the server.
     /// </summary>
     /// <param name="tickEvent">Event details from the game.</param>
-    void OnTick (TickEvent tickEvent) { }
+    void OnTick(TickEvent tickEvent) { }
 
     /// <summary>
     /// The event handler triggered when another bot has died.
     /// </summary>
     /// <param name="botDeathEvent">Event details from the game.</param>
-    void OnBotDeath (BotDeathEvent botDeathEvent) { }
+    void OnBotDeath(BotDeathEvent botDeathEvent) { }
 
     /// <summary>
     /// The event handler triggered when this bot has died.
     /// </summary>
     /// <param name="botDeathEvent">Event details from the game.</param>
-    void OnDeath (BotDeathEvent botDeathEvent) { }
+    void OnDeath(BotDeathEvent botDeathEvent) { }
 
     /// <summary>
     /// The event handler triggered when the bot has collided with another bot.
     /// </summary>
     /// <param name="BotHitBotEvent">Event details from the game.</param>
-    void OnHitBot (BotHitBotEvent botHitBotEvent) { }
+    void OnHitBot(BotHitBotEvent botHitBotEvent) { }
 
     /// <summary>
     /// The event handler triggered when the bot has hit a wall.
     /// </summary>
     /// <param name="BotHitBotEvent">Event details from the game.</param>
-    void OnHitWall (BotHitWallEvent botHitWallEvent) { }
+    void OnHitWall(BotHitWallEvent botHitWallEvent) { }
 
     /// <summary>
     /// The event handler triggered when the bot has fired a bullet.
     /// </summary>
     /// <param name="BotHitBotEvent">Event details from the game.</param>
-    void OnBulletFired (BulletFiredEvent bulletFiredEvent) { }
+    void OnBulletFired(BulletFiredEvent bulletFiredEvent) { }
 
     /// <summary>
     /// The event handler triggered when the bot has been hit by a bullet.
     /// </summary>
     /// <param name="bulletHitBotEvent">Event details from the game.</param>
-    void OnHitByBullet (BulletHitBotEvent bulletHitBotEvent) { }
+    void OnHitByBullet(BulletHitBotEvent bulletHitBotEvent) { }
 
     /// <summary>
     /// The event handler triggered when the bot has hit another bot with a bullet.
     /// </summary>
     /// <param name="bulletHitBotEvent">Event details from the game.</param>
-    void OnBulletHit (BulletHitBotEvent bulletHitBotEvent) { }
+    void OnBulletHit(BulletHitBotEvent bulletHitBotEvent) { }
 
     /// <summary>
     /// The event handler triggered a bullet fired from the bot has collided with another bullet.
     /// </summary>
     /// <param name="bulletHitBulletEvent">Event details from the game.</param>
-    void OnBulletHitBullet (BulletHitBulletEvent bulletHitBulletEvent) { }
+    void OnBulletHitBullet(BulletHitBulletEvent bulletHitBulletEvent) { }
 
     /// <summary>
     /// The event handler triggered a bullet has a wall.
     /// </summary>
     /// <param name="bulletHitWallEvent">Event details from the game.</param>
-    void OnBulletHitWall (BulletHitWallEvent bulletHitWallEvent) { }
+    void OnBulletHitWall(BulletHitWallEvent bulletHitWallEvent) { }
 
     /// <summary>
     /// The event handler triggered when the bot has scanned another bot.
     /// </summary>
     /// <param name="scannedBotEvent">Event details from the game.</param>
-    void OnScannedBot (ScannedBotEvent scannedBotEvent) { }
+    void OnScannedBot(ScannedBotEvent scannedBotEvent) { }
 
     /// <summary>
     /// The event handler triggered when the bot has skipped a turn. This event occurs if the bot
@@ -591,41 +593,42 @@ namespace Robocode.TankRoyale.BotApi {
     /// rates, firing, etc.
     /// </summary>
     /// <param name="skippedTurnEvent">Event details from the game.</param>
-    void OnSkippedTurn (SkippedTurnEvent skippedTurnEvent) { }
+    void OnSkippedTurn(SkippedTurnEvent skippedTurnEvent) { }
 
     /// <summary>
     /// The event handler triggered when the bot has won a round.
     /// </summary>
     /// <param name="wonRoundEvent">Event details from the game.</param>
-    void OnWonRound (WonRoundEvent wonRoundEvent) { }
+    void OnWonRound(WonRoundEvent wonRoundEvent) { }
 
     /// <summary>
     /// Calculates the maximum turn rate for a specific speed.
     /// </summary>
     /// <param name="speed">Is the speed.</param>
     /// <returns>The maximum turn rate determined by the given speed.</returns>
-    double CalcMaxTurnRate (double speed);
+    double CalcMaxTurnRate(double speed);
 
     /// <summary>
     /// Calculates the bullet speed given a fire power.
     /// </summary>
     /// <param name="firepower">Is the firepower.</param>
     /// <returns>The bullet speed determined by the given firepower.</returns>
-    double CalcBulletSpeed (double firepower);
+    double CalcBulletSpeed(double firepower);
 
     /// <summary>
     /// Calculates gun heat after having fired the gun.
     /// </summary>
     /// <param name="firepower">Is the firepower used when firing the gun.</param>
     /// <returns>The gun heat produced when firing the gun with the given firepower.</returns>
-    double CalcGunHeat (double firepower);
+    double CalcGunHeat(double firepower);
 
     /// <summary>
     /// Normalizes an angle to an absolute angle into the range [0,360[
     /// </summary>
     /// <param name="angle">Is the angle to normalize.</param>
     /// <returns>The normalized absolute angle.</returns>
-    double NormalizeAbsoluteDegrees (double angle) {
+    double NormalizeAbsoluteDegrees(double angle)
+    {
       return (angle %= 360) >= 0 ? angle : (angle + 360);
     }
 
@@ -634,7 +637,8 @@ namespace Robocode.TankRoyale.BotApi {
     /// </summary>
     /// <param name="angle">Is the angle to normalize.</param>
     /// <returns>The normalized relative angle.</returns>
-    double NormalizeRelativeDegrees (double angle) {
+    double NormalizeRelativeDegrees(double angle)
+    {
       return (angle %= 360) >= 0 ?
         ((angle < 180) ? angle : (angle - 360)) :
         ((angle >= -180) ? angle : (angle + 360));

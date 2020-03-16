@@ -1,12 +1,13 @@
 package dev.robocode.tankroyale.botapi;
 
 import java.net.URI;
+import java.net.URL;
 
 import static java.lang.Math.abs;
 
 /**
- * Abstract Bot containing convenient methods for movement, turning, and firing the gun. Most bots
- * can inherit from this class to get access to basic methods.
+ * Abstract bot class provides convenient methods for movement, turning, and firing the gun.
+ * Most bots should inherit from this class.
  */
 @SuppressWarnings("unused")
 public abstract class Bot extends BaseBot implements IBot {
@@ -21,8 +22,8 @@ public abstract class Bot extends BaseBot implements IBot {
     super(botInfo);
   }
 
-  public Bot(final BotInfo botInfo, URI serverUri) {
-    super(botInfo, serverUri);
+  public Bot(final BotInfo botInfo, URI serverUrl) {
+    super(botInfo, serverUrl);
   }
 
   @Override

@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.botapi;
 
-/** Current bot state */
+/** Represents the current bot state. */
 @SuppressWarnings("unused")
 public final class BotState {
 

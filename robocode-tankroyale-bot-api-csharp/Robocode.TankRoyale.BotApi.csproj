@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <RootNamespace>Robocode.TankRoyale.BotApi</RootNamespace>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>8.0</LangVersion>
-    <RootNamespace>Robocode.TankRoyale.BotApi</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
