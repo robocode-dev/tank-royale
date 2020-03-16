@@ -6,7 +6,9 @@ enum class Env {
     BOT_VERSION,
     BOT_AUTHOR,
     BOT_DESCRIPTION,
+    BOT_URL,
     BOT_COUNTRY_CODE,
     BOT_GAME_TYPES,
+    BOT_PLATFORM,
     BOT_PROG_LANG
 }

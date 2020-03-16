@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.bootstrap.util.OSUtil.OSType.MacOS
 import dev.robocode.tankroyale.bootstrap.util.OSUtil.OSType.Windows
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.MissingFieldException
+import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonDecodingException
 import kotlinx.serialization.parse
@@ -83,9 +84,13 @@ class BootUtil(private val botPaths: List<Path>) {
             env[Env.BOT_AUTHOR.name] = botInfo.author
             if (botInfo.description != null)
                 env[Env.BOT_DESCRIPTION.name] = botInfo.description
+            if (botInfo.url != null)
+                env[Env.BOT_URL.name] = botInfo.url
             if (botInfo.countryCode != null)
                 env[Env.BOT_COUNTRY_CODE.name] = botInfo.countryCode
             env[Env.BOT_GAME_TYPES.name] = botInfo.gameTypes.joinToString()
+            if (botInfo.platform != null)
+                env[Env.BOT_PLATFORM.name] = botInfo.platform
             if (botInfo.programmingLang != null)
                 env[Env.BOT_PROG_LANG.name] = botInfo.programmingLang
 
