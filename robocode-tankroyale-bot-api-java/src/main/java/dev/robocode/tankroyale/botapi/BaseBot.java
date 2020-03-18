@@ -40,10 +40,10 @@ public abstract class BaseBot implements IBaseBot {
   final __Internals __internals;
 
   /**
-   * Constructor for initializing a new instance of the BaseBot, which should be used when both
-   * BotInfo and server URL is provided through environment variables, i.e., when starting up the
-   * bot using a bootstrap. These environment variables must be set to provide the server URL and
-   * bot information, and are automatically set by the bootstrap tool for Robocode.
+   * Constructor for initializing a new instance of the BaseBot class, which should be used when
+   * both BotInfo and server URL is provided through environment variables, i.e., when starting up
+   * the bot using a bootstrap. These environment variables must be set to provide the server URL
+   * and bot information, and are automatically set by the bootstrap tool for Robocode.
    *
    * <p><b>Example of how to set the predefined environment variables:</b>
    *
@@ -52,7 +52,8 @@ public abstract class BaseBot implements IBaseBot {
    * BOT_VERSION=1.0<br>
    * BOT_AUTHOR=fnl<br>
    * BOT_DESCRIPTION=Sample bot<br>
-   * BOT_URL=https://mybot.robocode.dev BOT_COUNTRY_CODE=DK<br>
+   * BOT_URL=https://mybot.robocode.dev
+   * BOT_COUNTRY_CODE=DK<br>
    * BOT_GAME_TYPES=melee,1v1<br>
    * BOT_PLATFORM=Java<br>
    * BOT_PROG_LANG=Java 8<br>
@@ -62,8 +63,8 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   /**
-   * Constructor for initializing a new instance of the BaseBot, which should be used when server
-   * URL is provided through the environment variable ROBOCODE_SERVER_URL.
+   * Constructor for initializing a new instance of the BaseBot class, which should be used when
+   * server URL is provided through the environment variable ROBOCODE_SERVER_URL.
    *
    * @param botInfo is the bot info containing information about your bot.
    */
@@ -72,8 +73,8 @@ public abstract class BaseBot implements IBaseBot {
   }
 
   /**
-   * Constructor for initializing a new instance of the BaseBot, which should be used providing both
-   * the bot information and server URL for your bot.
+   * Constructor for initializing a new instance of the BaseBot class, which should be used
+   * providing both the bot information and server URL for your bot.
    *
    * @param botInfo is the bot info containing information about your bot.
    * @param serverUrl is the server URL
@@ -82,138 +83,165 @@ public abstract class BaseBot implements IBaseBot {
     __internals = new __Internals(botInfo, serverUrl);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void start() {
     __internals.connect();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void go() {
     // Send the bot intent to the server
     __internals.sendIntent();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String getVariant() {
     return __internals.getServerHandshake().getVariant();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String getVersion() {
     return __internals.getServerHandshake().getVersion();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getMyId() {
     return __internals.getMyId();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String getGameType() {
     return __internals.getGameSetup().getGameType();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getArenaWidth() {
     return __internals.getGameSetup().getArenaWidth();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getArenaHeight() {
     return __internals.getGameSetup().getArenaHeight();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getNumberOfRounds() {
     return __internals.getGameSetup().getNumberOfRounds();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double getGunCoolingRate() {
     return __internals.getGameSetup().getGunCoolingRate();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getMaxInactivityTurns() {
     return __internals.getGameSetup().getMaxInactivityTurns();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getTurnTimeout() {
     return __internals.getGameSetup().getTurnTimeout();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getTimeLeft() {
     long passesMicroSeconds = (System.nanoTime() - __internals.getTicksStart()) / 1000;
     return (int) (__internals.getGameSetup().getTurnTimeout() - passesMicroSeconds);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getRoundNumber() {
     return __internals.getCurrentTurn().getRoundNumber();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getTurnNumber() {
     return __internals.getCurrentTurn().getTurnNumber();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double getEnergy() {
     return __internals.getCurrentTurn().getBotState().getEnergy();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isDisabled() {
     return getEnergy() == 0;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double getX() {
     return __internals.getCurrentTurn().getBotState().getX();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double getY() {
     return __internals.getCurrentTurn().getBotState().getY();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double getDirection() {
     return __internals.getCurrentTurn().getBotState().getDirection();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double getGunDirection() {
     return __internals.getCurrentTurn().getBotState().getGunDirection();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double getRadarDirection() {
     return __internals.getCurrentTurn().getBotState().getRadarDirection();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double getSpeed() {
     return __internals.getCurrentTurn().getBotState().getSpeed();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double getGunHeat() {
     return __internals.getCurrentTurn().getBotState().getGunHeat();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Collection<BulletState> getBulletStates() {
     return __internals.getCurrentTurn().getBulletStates();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Collection<? extends Event> getEvents() {
     return __internals.getCurrentTurn().getEvents();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void setTurnRate(double turnRate) {
     if (Double.isNaN(turnRate)) {
@@ -225,6 +253,7 @@ public abstract class BaseBot implements IBaseBot {
     __internals.botIntent.setTurnRate(turnRate);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double getTurnRate() {
     Double turnRate = __internals.botIntent.getTurnRate();
@@ -234,6 +263,7 @@ public abstract class BaseBot implements IBaseBot {
     return turnRate;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void setGunTurnRate(double gunTurnRate) {
     if (Double.isNaN(gunTurnRate)) {
@@ -248,6 +278,7 @@ public abstract class BaseBot implements IBaseBot {
     __internals.botIntent.setGunTurnRate(gunTurnRate);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double getGunTurnRate() {
     Double turnRate = __internals.botIntent.getGunTurnRate();
@@ -257,6 +288,7 @@ public abstract class BaseBot implements IBaseBot {
     return turnRate;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void setRadarTurnRate(double radarTurnRate) {
     if (Double.isNaN(radarTurnRate)) {
@@ -271,6 +303,7 @@ public abstract class BaseBot implements IBaseBot {
     __internals.botIntent.setRadarTurnRate(radarTurnRate);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double getRadarTurnRate() {
     Double turnRate = __internals.botIntent.getRadarTurnRate();
@@ -280,6 +313,7 @@ public abstract class BaseBot implements IBaseBot {
     return turnRate;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void setTargetSpeed(double targetSpeed) {
     if (Double.isNaN(targetSpeed)) {
@@ -293,11 +327,13 @@ public abstract class BaseBot implements IBaseBot {
     __internals.botIntent.setTargetSpeed(targetSpeed);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double getTargetSpeed() {
     return __internals.botIntent.getTargetSpeed();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void setFirepower(double firepower) {
     if (Double.isNaN(firepower)) {
@@ -313,41 +349,49 @@ public abstract class BaseBot implements IBaseBot {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double getFirepower() {
     return __internals.botIntent.getFirepower();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void setAdjustGunForBodyTurn(boolean adjust) {
     __internals.isAdjustGunForBodyTurn = adjust;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isAdjustGunForBodyTurn() {
     return __internals.isAdjustGunForBodyTurn;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void setAdjustRadarForGunTurn(boolean adjust) {
     __internals.isAdjustRadarForGunTurn = adjust;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isAdjustRadarForGunTurn() {
     return __internals.isAdjustRadarForGunTurn;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double calcMaxTurnRate(double speed) {
     return MAX_TURN_RATE - 0.75 * Math.abs(speed);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double calcBulletSpeed(double firepower) {
     return 20 - 3 * firepower;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final double calcGunHeat(double firepower) {
     return 1 + (firepower / 5);
@@ -495,7 +539,7 @@ public abstract class BaseBot implements IBaseBot {
         throw new BotException(
             String.format(
                 "Property %s or environment variable %s is not defined",
-                    SERVER_URL_PROPERTY_KEY, EnvVars.SERVER_URL));
+                SERVER_URL_PROPERTY_KEY, EnvVars.SERVER_URL));
       }
       try {
         return new URI(url);

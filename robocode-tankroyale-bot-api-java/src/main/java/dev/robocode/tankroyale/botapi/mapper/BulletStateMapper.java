@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-/** Utility class for mapping a bot state */
+/** Utility class for mapping a bot state. */
 public final class BulletStateMapper {
 
   public static BulletState map(final dev.robocode.tankroyale.schema.BulletState source) {

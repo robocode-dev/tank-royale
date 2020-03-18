@@ -1,30 +1,42 @@
 package dev.robocode.tankroyale.botapi.events;
 
-/** Event occurring when a bot has scanned another bot */
+/** Event occurring when a bot has scanned another bot. */
 @SuppressWarnings("unused")
 public final class ScannedBotEvent extends Event {
 
-  /** ID of the bot did the scanning */
+  /** ID of the bot did the scanning. */
   private final int scannedByBotId;
 
-  /** ID of the bot that was scanned */
+  /** ID of the bot that was scanned. */
   private final int scannedBotId;
 
-  /** Energy level of the scanned bot */
+  /** Energy level of the scanned bot. */
   private final double energy;
 
-  /** X coordinate of the scanned bot */
+  /** X coordinate of the scanned bot. */
   private final double x;
 
-  /** Y coordinate of the scanned bot */
+  /** Y coordinate of the scanned bot. */
   private final double y;
 
-  /** Direction in degrees of the scanned bot */
+  /** Direction in degrees of the scanned bot. */
   private final double direction;
 
-  /** Speed measured in pixels per turn of the scanned bot */
+  /** Speed measured in units per turn of the scanned bot. */
   private final double speed;
 
+  /**
+   * Initializes a new instance of the ScannedBotEvent class.
+   *
+   * @param turnNumber is the turn number when the bot was scanned.
+   * @param scannedByBotId is the ID of the bot did the scanning.
+   * @param scannedBotId is the ID of the bot that was scanned.
+   * @param energy is the energy level of the scanned bot.
+   * @param x is the X coordinate of the scanned bot.
+   * @param y is the Y coordinate of the scanned bot.
+   * @param direction is the direction in degrees of the scanned bot.
+   * @param speed is the speed measured in units per turn of the scanned bot.
+   */
   public ScannedBotEvent(
       int turnNumber,
       int scannedByBotId,
@@ -44,37 +56,65 @@ public final class ScannedBotEvent extends Event {
     this.speed = speed;
   }
 
-  /** Returns the ID of the bot did the scanning */
+  /**
+   * Returns the ID of the bot did the scanning.
+   *
+   * @return The ID of the bot did the scanning.
+   */
   public int getScannedByBotId() {
     return scannedByBotId;
   }
 
-  /** Returns the ID of the bot that was scanned */
+  /**
+   * Returns the ID of the bot that was scanned.
+   *
+   * @return The ID of the bot that was scanned.
+   */
   public int getScannedBotId() {
     return scannedBotId;
   }
 
-  /** Returns the energy level of the scanned bot */
+  /**
+   * Returns the energy level of the scanned bot.
+   *
+   * @return The energy level of the scanned bot.
+   */
   public double getEnergy() {
     return energy;
   }
 
-  /** Returns the X coordinate of the scanned bot */
+  /**
+   * Returns the X coordinate of the scanned bot.
+   *
+   * @return The X coordinate of the scanned bot.
+   */
   public double getX() {
     return x;
   }
 
-  /** Returns the Y coordinate of the scanned bot */
+  /**
+   * Returns the Y coordinate of the scanned bot.
+   *
+   * @return The Y coordinate of the scanned bot.
+   */
   public double getY() {
     return y;
   }
 
-  /** Returns the direction in degrees of the scanned bot */
+  /**
+   * Returns the direction in degrees of the scanned bot.
+   *
+   * @return The direction in degrees of the scanned bot.
+   */
   public double getDirection() {
     return direction;
   }
 
-  /** Returns the Speed measured in pixels per turn of the scanned bot */
+  /**
+   * Returns the Speed measured in units per turn of the scanned bot.
+   *
+   * @return The Speed measured in units per turn of the scanned bot.
+   */
   public double getSpeed() {
     return speed;
   }

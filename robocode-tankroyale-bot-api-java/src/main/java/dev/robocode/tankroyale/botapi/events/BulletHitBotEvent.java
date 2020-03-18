@@ -2,22 +2,31 @@ package dev.robocode.tankroyale.botapi.events;
 
 import dev.robocode.tankroyale.botapi.BulletState;
 
-/** Event occurring when a bullet has hit a bot */
+/** Event occurring when a bullet has hit a bot. */
 @SuppressWarnings("unused")
 public final class BulletHitBotEvent extends Event {
 
-  /** ID of the victim bot that got hit */
+  /** ID of the victim bot that got hit. */
   private final int victimId;
 
-  /** Bullet that hit the bot */
+  /** Bullet that hit the bot. */
   private final BulletState bullet;
 
-  /** Damage inflicted by the bullet */
+  /** Damage inflicted by the bullet. */
   private final double damage;
 
-  /** Remaining energy level of the bot that got hit */
+  /** Remaining energy level of the bot that got hit. */
   private final double energy;
 
+  /**
+   * Initializes a new instance of the BulletHitBotEvent class.
+   *
+   * @param turnNumber is the turn number when the bullet has hit a bot.
+   * @param victimId is the ID of the victim bot that got hit.
+   * @param bullet is the bullet that hit the bot.
+   * @param damage is the damage inflicted by the bullet.
+   * @param energy is the remaining energy level of the bot that got hit.
+   */
   public BulletHitBotEvent(
       int turnNumber, int victimId, BulletState bullet, double damage, double energy) {
     super(turnNumber);
@@ -27,22 +36,38 @@ public final class BulletHitBotEvent extends Event {
     this.energy = energy;
   }
 
-  /** Returns the ID of the victim bot that got hit */
+  /**
+   * Returns the ID of the victim bot that got hit.
+   *
+   * @return The ID of the victim bot that got hit.
+   */
   public int getVictimId() {
     return victimId;
   }
 
-  /** Returns the bullet that hit the bot */
+  /**
+   * Returns the bullet that hit the bot.
+   *
+   * @return The bullet that hit the bot.
+   */
   public BulletState getBullet() {
     return bullet;
   }
 
-  /** Returns the damage inflicted by the bullet */
+  /**
+   * Returns the damage inflicted by the bullet.
+   *
+   * @return The damage inflicted by the bullet.
+   */
   public double getDamage() {
     return damage;
   }
 
-  /** Returns the remaining energy level of the bot that got hit */
+  /**
+   * Returns the remaining energy level of the bot that got hit.
+   *
+   * @return The remaining energy level of the bot that got hit.
+   */
   public double getEnergy() {
     return energy;
   }

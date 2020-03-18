@@ -39,4 +39,8 @@ test {
 javadoc {
     source = sourceSets.main.allJava
     classpath = configurations.compile
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+    classpath = sourceSets.main.compileClasspath + sourceSets.main.output // avoid javadoc error
+    exclude "**/dev/robocode/tankroyale/botapi/factory/**",
+            "**/dev/robocode/tankroyale/botapi/mapper/**"
 }

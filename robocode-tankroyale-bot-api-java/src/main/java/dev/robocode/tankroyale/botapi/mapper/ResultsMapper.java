@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.botapi.BotResults;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Utility class for mapping bot results */
+/** Utility class for mapping bot results. */
 public class ResultsMapper {
 
   public static List<BotResults> map(final List<dev.robocode.tankroyale.schema.BotResultsForBot> source) {

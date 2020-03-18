@@ -4,25 +4,25 @@ package dev.robocode.tankroyale.botapi;
 @SuppressWarnings("unused")
 public final class BulletState {
 
-  /** Unique id of the bullet */
+  /** Unique id of the bullet. */
   private final int bulletId;
 
-  /** Id of the bot that fired the bullet */
+  /** Id of the bot that fired the bullet. */
   private final int ownerId;
 
-  /** Bullet firepower level */
+  /** Bullet firepower level. */
   private final double power;
 
-  /** X coordinate */
+  /** X coordinate. */
   private final double x;
 
-  /** Y coordinate */
+  /** Y coordinate. */
   private final double y;
 
-  /** Direction in degrees */
+  /** Direction in degrees. */
   private final double direction;
 
-  /** Speed measured in units per turn */
+  /** Speed measured in units per turn. */
   private final double speed;
 
   /**
@@ -47,37 +47,65 @@ public final class BulletState {
     this.speed = speed;
   }
 
-  /** Returns the unique id of the bullet */
+  /**
+   * Returns the unique id of the bullet.
+   *
+   * @return The unique id of the bullet.
+   */
   public int getBulletId() {
     return bulletId;
   }
 
-  /** Returns the id of the bot that fired the bullet */
+  /**
+   * Returns the id of the owner bot that fired the bullet.
+   *
+   * @return The id of the owner bot that fired the bullet.
+   */
   public int getOwnerId() {
     return ownerId;
   }
 
-  /** Returns the bullet firepower level */
+  /**
+   * Returns the bullet firepower level.
+   *
+   * @return The bullet firepower level.
+   */
   public double getPower() {
     return power;
   }
 
-  /** Returns the X coordinate of the bullet */
+  /**
+   * Returns the X coordinate of the bullet.
+   *
+   * @return The X coordinate of the bullet.
+   */
   public double getX() {
     return x;
   }
 
-  /** Returns the Y coordinate of the bullet */
+  /**
+   * Returns the Y coordinate of the bullet.
+   *
+   * @return The Y coordinate of the bullet.
+   */
   public double getY() {
     return y;
   }
 
-  /** Returns the direction of the bullet in degrees */
+  /**
+   * Returns the direction of the bullet in degrees.
+   *
+   * @return The direction of the bullet in degrees.
+   */
   public double getDirection() {
     return direction;
   }
 
-  /** Returns the speed of the bullet measured in units per turn */
+  /**
+   * Returns the speed of the bullet measured in units per turn.
+   *
+   * @return The speed of the bullet measured in units per turn.
+   */
   public double getSpeed() {
     return speed;
   }

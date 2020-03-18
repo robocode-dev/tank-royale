@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.schema.BotHandshake;
 
 import java.util.ArrayList;
 
-/** Utility class used fro creating bot handshakes */
+/** Utility class used fro creating bot handshakes. */
 public final class BotHandshakeFactory {
 
   public static BotHandshake create(BotInfo botInfo) {

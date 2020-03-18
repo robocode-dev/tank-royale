@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-/** Utility class for mapping events */
+/** Utility class for mapping events. */
 public final class EventMapper {
 
   public static TickEvent map(final dev.robocode.tankroyale.schema.TickEventForBot source) {

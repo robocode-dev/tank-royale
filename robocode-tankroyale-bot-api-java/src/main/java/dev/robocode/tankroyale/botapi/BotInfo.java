@@ -93,7 +93,7 @@ public final class BotInfo {
   /**
    * Returns the name, e.g., "MyBot". This field must always be provided with the bot info.
    *
-   * @return the name of the bot.
+   * @return The name of the bot.
    */
   public String getName() {
     return name;
@@ -102,7 +102,7 @@ public final class BotInfo {
   /**
    * Returns the version, e.g., "1.0". This field must always be provided with the bot info.
    *
-   * @return the version of the bot.
+   * @return The version of the bot.
    */
   public String getVersion() {
     return version;
@@ -112,7 +112,7 @@ public final class BotInfo {
    * Returns the author, e.g., "John Doe (johndoe@somewhere.io)". This field must always be provided
    * with the bot info.
    *
-   * @return the author of the bot.
+   * @return The author of the bot.
    */
   public String getAuthor() {
     return author;
@@ -130,7 +130,7 @@ public final class BotInfo {
   /**
    * Returns the URL of a web page for the bot. This field is optional.
    *
-   * @return the URL of a web page for the bot.
+   * @return The URL of a web page for the bot.
    */
   public String getUrl() {
     return url;
@@ -141,7 +141,7 @@ public final class BotInfo {
    * https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2. This field is optional. If no country code is
    * provided, the locale of the system is being used instead.
    *
-   * @return the country code for the bot.
+   * @return The country code for the bot.
    */
   public String getCountryCode() {
     return countryCode;
@@ -152,7 +152,7 @@ public final class BotInfo {
    * provided with the bot info. The game types define which game types the bot can participate in.
    * See {@link GameType} for using predefined game type.
    *
-   * @return the game types that this bot can handle.
+   * @return The game types that this bot can handle.
    */
   public Set<String> getGameTypes() {
     return gameTypes;
@@ -162,7 +162,7 @@ public final class BotInfo {
    * Returns the platform used for running the bot, e.g., "Java Runtime Environment" or ".Net Core".
    * This field is optional.
    *
-   * @return the platform used for running the bot.
+   * @return The platform used for running the bot.
    */
   public String getPlatform() {
     return platform;
@@ -172,7 +172,7 @@ public final class BotInfo {
    * Returns the programming language used for developing the bot, e.g., "Java" or "C#". This field
    * is optional.
    *
-   * @return the programming language used for developing the bot.
+   * @return The programming language used for developing the bot.
    */
   public String getProgrammingLang() {
     return programmingLang;

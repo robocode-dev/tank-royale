@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.botapi.events;
 
-/** Message */
+/** Interface for a message. */
 @SuppressWarnings("WeakerAccess")
 public interface IMessage {
 }

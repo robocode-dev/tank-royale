@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.botapi.mapper;
 
 import dev.robocode.tankroyale.botapi.BotState;
 
-/** Utility class for mapping a bot state */
+/** Utility class for mapping a bot state. */
 public final class BotStateMapper {
 
   public static BotState map(final dev.robocode.tankroyale.schema.BotState source) {

@@ -48,9 +48,9 @@ public interface IBot extends IBaseBot {
    * #setMaxSpeed(double)}.
    *
    * <p>When the bot is moving forward, the {@link #ACCELERATION} determines the acceleration of the
-   * bot that adds 1 additional pixel to the speed per turn while accelerating. However, the bot is
+   * bot that adds 1 additional unit to the speed per turn while accelerating. However, the bot is
    * faster at braking. The {@link #DECELERATION} determines the deceleration of the bot that
-   * subtracts 2 pixels from the speed per turn.
+   * subtracts 2 units from the speed per turn.
    *
    * <p>This method will first be executed when {@link #go()} is called making it possible to call
    * other set methods before execution. This makes it possible to set the bot to move, turn the
@@ -79,9 +79,9 @@ public interface IBot extends IBaseBot {
    * it is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
    *
    * <p>When the bot is moving forward, the {@link #ACCELERATION} determine the acceleration of the
-   * bot that adds 1 additional pixel to the speed per turn while accelerating. However, the bot is
+   * bot that adds 1 additional unit to the speed per turn while accelerating. However, the bot is
    * faster at braking. The {@link #DECELERATION} determines the deceleration of the bot that
-   * subtracts 2 pixels from the speed per turn.
+   * subtracts 2 units from the speed per turn.
    *
    * <p>This call is executed immediately by calling {@link #go()} in the code behind. This method
    * will block until it has been completed, which can take one to several turns. New commands will
@@ -106,9 +106,9 @@ public interface IBot extends IBaseBot {
    * #setMaxSpeed(double)}.
    *
    * <p>When the bot is moving forward, the {@link #ACCELERATION} determines the acceleration of the
-   * bot that adds 1 additional pixel to the speed per turn while accelerating. However, the bot is
+   * bot that adds 1 additional unit to the speed per turn while accelerating. However, the bot is
    * faster at braking. The {@link #DECELERATION} determines the deceleration of the bot that
-   * subtracts 2 pixels from the speed per turn.
+   * subtracts 2 units from the speed per turn.
    *
    * <p>This method will first be executed when {@link #go()} is called making it possible to call
    * other set methods after execution. This makes it possible to set the bot to move, turn the
@@ -137,9 +137,9 @@ public interface IBot extends IBaseBot {
    * it is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
    *
    * <p>When the bot is moving forward, the {@link #ACCELERATION} determine the acceleration of the
-   * bot that adds 1 additional pixel to the speed per turn while accelerating. However, the bot is
+   * bot that adds 1 additional unit to the speed per turn while accelerating. However, the bot is
    * faster at braking. The {@link #DECELERATION} determine the deceleration of the bot that
-   * subtracts 2 pixels from the speed per turn.
+   * subtracts 2 units from the speed per turn.
    *
    * <p>This call is executed immediately by calling {@link #go()} in the code behind. This method
    * will block until it has been completed, which can take one to several turns. New commands will
@@ -167,7 +167,7 @@ public interface IBot extends IBaseBot {
    * <p>When the distance remaining is positive, the bot is moving forward. When the distance
    * remaining is negative, the bot is moving backward.
    *
-   * @return the remaining distance to move before its current movement is completed.
+   * @return The remaining distance to move before its current movement is completed.
    * @see #setForward(double)
    * @see #setBack(double)
    * @see #forward(double)
@@ -182,7 +182,7 @@ public interface IBot extends IBaseBot {
    * the max speed will be set to {@link #MAX_SPEED}.
    *
    * <p>If for example the maximum speed is set to 5, then the bot will be able to move backwards
-   * with a speed down to -5 pixels per turn and up to 5 pixels per turn when moving forward.
+   * with a speed down to -5 units per turn and up to 5 units per turn when moving forward.
    *
    * <p>This method will first be executed when {@link #go()} is called making it possible to call
    * other set methods after execution. This makes it possible to set the bot to move, turn the
@@ -309,7 +309,7 @@ public interface IBot extends IBaseBot {
    * <p>When the turn remaining is positive, the bot is turning to the left (along the unit circle).
    * When the turn remaining is negative, the bot is turning to the right.
    *
-   * @return the remaining degrees to turn before its current turning is completed.
+   * @return The remaining degrees to turn before its current turning is completed.
    * @see #setTurnLeft(double)
    * @see #setTurnRight(double)
    * @see #turnLeft(double)
@@ -456,7 +456,7 @@ public interface IBot extends IBaseBot {
    * <p>When the turn remaining is positive, the bot is turning to the left (along the unit circle).
    * When the turn remaining is negative, the bot is turning to the right.
    *
-   * @return the remaining degrees to turn the gun before its current turning is completed.
+   * @return The remaining degrees to turn the gun before its current turning is completed.
    * @see #setTurnGunLeft(double)
    * @see #setTurnGunRight(double)
    * @see #turnGunLeft(double)
@@ -605,7 +605,7 @@ public interface IBot extends IBaseBot {
    * <p>When the turn remaining is positive, the bot is turning to the left (along the unit circle).
    * When the turn remaining is negative, the bot is turning to the right.
    *
-   * @return the remaining degrees to turn the radar before its current turning is completed.
+   * @return The remaining degrees to turn the radar before its current turning is completed.
    * @see #setTurnRadarLeft(double)
    * @see #setTurnRadarRight(double)
    * @see #turnRadarLeft(double)

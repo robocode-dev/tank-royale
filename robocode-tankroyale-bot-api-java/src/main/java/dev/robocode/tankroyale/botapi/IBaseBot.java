@@ -147,21 +147,21 @@ public interface IBaseBot {
   /**
    * Unique id of this bot, which is available when the game has started.
    *
-   * @return the unique id of this bot.
+   * @return The unique id of this bot.
    */
   int getMyId();
 
   /**
    * The game variant, which is "Tank Royale".
    *
-   * @return the game variant of Robocode.
+   * @return The game variant of Robocode.
    */
   String getVariant();
 
   /**
    * Game version, e.g. "1.0.0".
    *
-   * @return the game version.
+   * @return The game version.
    */
   String getVersion();
 
@@ -170,7 +170,7 @@ public interface IBaseBot {
    *
    * <p>First available when the game has started.
    *
-   * @return the game type.
+   * @return The game type.
    */
   String getGameType();
 
@@ -179,7 +179,7 @@ public interface IBaseBot {
    *
    * <p>First available when the game has started.
    *
-   * @return the arena width measured in units
+   * @return The arena width measured in units
    */
   int getArenaWidth();
 
@@ -188,7 +188,7 @@ public interface IBaseBot {
    *
    * <p>First available when the game has started.
    *
-   * @return the arena height measured in units
+   * @return The arena height measured in units
    */
   int getArenaHeight();
 
@@ -197,7 +197,7 @@ public interface IBaseBot {
    *
    * <p>First available when the game has started.
    *
-   * @return the number of rounds in a battle.
+   * @return The number of rounds in a battle.
    */
   int getNumberOfRounds();
 
@@ -208,7 +208,7 @@ public interface IBaseBot {
    *
    * <p>First available when the game has started.
    *
-   * @return the gun cooling rate.
+   * @return The gun cooling rate.
    * @see #getGunHeat()
    */
   double getGunCoolingRate();
@@ -219,7 +219,7 @@ public interface IBaseBot {
    *
    * <p>First available when the game has started.
    *
-   * @return the maximum number of allowed inactive turns.
+   * @return The maximum number of allowed inactive turns.
    */
   int getMaxInactivityTurns();
 
@@ -234,7 +234,7 @@ public interface IBaseBot {
    *
    * @see #getTimeLeft()
    * @see #go()
-   * @return the turn timeout in microseconds (1 / 1,000,000 second).
+   * @return The turn timeout in microseconds (1 / 1,000,000 second).
    */
   int getTurnTimeout();
 
@@ -242,7 +242,7 @@ public interface IBaseBot {
    * The number of microseconds left of this turn before the bot will skip the turn. Make sure to
    * call {@link #go()} before the time runs out.
    *
-   * @return the amount of time left in microseconds.
+   * @return The amount of time left in microseconds.
    * @see #getTurnTimeout()
    * @see #go()
    */
@@ -251,14 +251,14 @@ public interface IBaseBot {
   /**
    * Current round number.
    *
-   * @return the current round number.
+   * @return The current round number.
    */
   int getRoundNumber();
 
   /**
    * Current turn number.
    *
-   * @return the current turn number.
+   * @return The current turn number.
    */
   int getTurnNumber();
 
@@ -267,7 +267,7 @@ public interface IBaseBot {
    * energy level is 0, the bot is still alive but disabled. If the bot becomes disabled it will not
    * be able to move or take any action. If negative, the bot has been defeated.
    *
-   * @return the current energy level.
+   * @return The current energy level.
    */
   double getEnergy();
 
@@ -282,21 +282,21 @@ public interface IBaseBot {
   /**
    * Current X coordinate of the center of the bot.
    *
-   * @return the current X coordinate of the bot.
+   * @return The current X coordinate of the bot.
    */
   double getX();
 
   /**
    * Current Y coordinate of the center of the bot.
    *
-   * @return the current Y coordinate of the bot.
+   * @return The current Y coordinate of the bot.
    */
   double getY();
 
   /**
    * Current driving direction of the bot in degrees.
    *
-   * @return the current driving direction of the bot.
+   * @return The current driving direction of the bot.
    */
   double getDirection();
 
@@ -319,7 +319,7 @@ public interface IBaseBot {
    * If negative, the bot moves backward. Zero speed means that the bot is not moving from its
    * current position.
    *
-   * @return the current speed.
+   * @return The current speed.
    */
   double getSpeed();
 
@@ -330,7 +330,7 @@ public interface IBaseBot {
    * <p>When the gun has fired the gun heat is set to 1 + (firepower / 5) and will be cooled down by
    * the gun cooling rate.
    *
-   * @return the current gun heat.
+   * @return The current gun heat.
    * @see #getGunCoolingRate()
    */
   double getGunHeat();
@@ -339,7 +339,7 @@ public interface IBaseBot {
    * Current bullet states. Keeps track of all the bullets fired by the bot, which are still active
    * on the arena.
    *
-   * @return the current bullet states.
+   * @return The current bullet states.
    */
   Collection<BulletState> getBulletStates();
 
@@ -347,7 +347,7 @@ public interface IBaseBot {
    * Game events received for the current turn. Note that all event handlers are automatically being
    * called when each of these events occurs.
    *
-   * @return the game events received for the current turn.
+   * @return The game events received for the current turn.
    */
   Collection<? extends Event> getEvents();
 
@@ -371,7 +371,7 @@ public interface IBaseBot {
   /**
    * Returns the turn rate of th bot in degrees per turn.
    *
-   * @return the turn rate of the bot.
+   * @return The turn rate of the bot.
    * @see #setTurnRate(double)
    */
   double getTurnRate();
@@ -396,7 +396,7 @@ public interface IBaseBot {
   /**
    * Returns the gun turn rate in degrees per turn.
    *
-   * @return the turn rate of the gun.
+   * @return The turn rate of the gun.
    * @see #setGunTurnRate(double)
    */
   double getGunTurnRate();
@@ -422,7 +422,7 @@ public interface IBaseBot {
   /**
    * Returns the radar turn rate in degrees per turn.
    *
-   * @return the turn rate of the radar.
+   * @return The turn rate of the radar.
    * @see #setRadarTurnRate(double)
    */
   double getRadarTurnRate();
@@ -449,7 +449,7 @@ public interface IBaseBot {
   /**
    * Returns the target speed in units per turn.
    *
-   * @return the target speed.
+   * @return The target speed.
    * @see #setTargetSpeed(double)
    */
   double getTargetSpeed();
@@ -498,7 +498,7 @@ public interface IBaseBot {
   /**
    * Returns the firepower.
    *
-   * @return the firepower.
+   * @return The firepower.
    * @see #setFirepower(double)
    */
   double getFirepower();
@@ -717,7 +717,7 @@ public interface IBaseBot {
    * Calculates the maximum turn rate for a specific speed.
    *
    * @param speed is the speed.
-   * @return the maximum turn rate determined by the given speed.
+   * @return The maximum turn rate determined by the given speed.
    */
   double calcMaxTurnRate(double speed);
 
@@ -725,7 +725,7 @@ public interface IBaseBot {
    * Calculates the bullet speed given a fire power.
    *
    * @param firepower is the firepower.
-   * @return the bullet speed determined by the given firepower.
+   * @return The bullet speed determined by the given firepower.
    */
   double calcBulletSpeed(double firepower);
 
@@ -733,7 +733,7 @@ public interface IBaseBot {
    * Calculates gun heat after having fired the gun.
    *
    * @param firepower is the firepower used when firing the gun.
-   * @return the gun heat produced when firing the gun with the given firepower.
+   * @return The gun heat produced when firing the gun with the given firepower.
    */
   double calcGunHeat(double firepower);
 
@@ -741,7 +741,7 @@ public interface IBaseBot {
    * Normalizes an angle to an absolute angle into the range [0,360[
    *
    * @param angle is the angle to normalize.
-   * @return the normalized absolute angle.
+   * @return The normalized absolute angle.
    */
   default double normalizeAbsoluteDegrees(double angle) {
     return (angle %= 360) >= 0 ? angle : (angle + 360);
@@ -751,7 +751,7 @@ public interface IBaseBot {
    * Normalizes an angle to an relative angle into the range [-180,180[
    *
    * @param angle is the angle to normalize.
-   * @return the normalized relative angle.
+   * @return The normalized relative angle.
    */
   default double normalizeRelativeDegrees(double angle) {
     return (angle %= 360) >= 0

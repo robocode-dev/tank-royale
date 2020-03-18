@@ -1,43 +1,43 @@
 package dev.robocode.tankroyale.botapi;
 
-/** Individual bot results */
+/** Represents individual bot results. */
 @SuppressWarnings("unused")
 public final class BotResults {
 
-  /** Unique id of the bot */
+  /** Unique id of the bot. */
   private final int id;
 
-  /** Rank/placement of the bot */
+  /** Rank/placement of the bot. */
   private final int rank;
 
-  /** Survival score */
+  /** Survival score. */
   private final double survival;
 
-  /** Last survivor score */
+  /** Last survivor score. */
   private final double lastSurvivorBonus;
 
-  /** Bullet damage score */
+  /** Bullet damage score. */
   private final double bulletDamage;
 
-  /** Bullet kill bonus */
+  /** Bullet kill bonus. */
   private final double bulletKillBonus;
 
-  /** Ram damage score */
+  /** Ram damage score. */
   private final double ramDamage;
 
-  /** Ram kill bonus */
+  /** Ram kill bonus. */
   private final double ramKillBonus;
 
-  /** Total score */
+  /** Total score. */
   private final double totalScore;
 
-  /** Number of 1st places */
+  /** Number of 1st places. */
   private final int firstPlaces;
 
-  /** Number of 2nd places */
+  /** Number of 2nd places. */
   private final int secondPlaces;
 
-  /** Number of 3rd places */
+  /** Number of 3rd places. */
   private final int thirdPlaces;
 
   /**
@@ -86,7 +86,7 @@ public final class BotResults {
   /**
    * Returns the unique id of the bot used in the battle.
    *
-   * @return the unique bot id.
+   * @return The unique bot id.
    */
   public int getId() {
     return id;
@@ -95,7 +95,7 @@ public final class BotResults {
   /**
    * Returns the rank/placement of the bot, where 1 means 1st place, 4 means 4th place etc.
    *
-   * @return the rank of the bot for this battle.
+   * @return The rank of the bot for this battle.
    */
   public int getRank() {
     return rank;
@@ -105,7 +105,7 @@ public final class BotResults {
    * Returns the accumulated survival score. Every bot still alive score 50 points every time
    * another bot is defeated.
    *
-   * @return the survival score.
+   * @return The survival score.
    */
   public double getSurvival() {
     return survival;
@@ -115,7 +115,7 @@ public final class BotResults {
    * Returns the last survivor score. The last bot alive scores 10 points or each bot that has been
    * defeated.
    *
-   * @return the last survivor score.
+   * @return The last survivor score.
    */
   public double getLastSurvivorBonus() {
     return lastSurvivorBonus;
@@ -125,7 +125,7 @@ public final class BotResults {
    * Returns the bullet damage score. A bot score 1 point for each point of damage they do to other
    * bots.
    *
-   * @return the bullet damage score.
+   * @return The bullet damage score.
    */
   public double getBulletDamage() {
     return bulletDamage;
@@ -135,7 +135,7 @@ public final class BotResults {
    * Returns the bullet kill-bonus. When a bot kills another bot, it scores an additional 20% points
    * of the total damage it did to that bot.
    *
-   * @return the bullet kill-bonus.
+   * @return The bullet kill-bonus.
    */
   public double getBulletKillBonus() {
     return bulletKillBonus;
@@ -146,7 +146,7 @@ public final class BotResults {
    * an enemy bot. Ramming is the act deliberately driving forward (not backward) and hitting
    * another bot.
    *
-   * @return the ram damage score.
+   * @return The ram damage score.
    */
   public double getRamDamage() {
     return ramDamage;
@@ -156,7 +156,7 @@ public final class BotResults {
    * Returns the ram kill-bonus. When a bot kills another bot due to ramming, it scores an
    * additional 30% of the total ramming damage it did to that bot.
    *
-   * @return the ram kill-bonus.
+   * @return The ram kill-bonus.
    */
   public double getRamKillBonus() {
     return ramKillBonus;
@@ -165,7 +165,7 @@ public final class BotResults {
   /**
    * Returns the total score is the sum of all scores and determines the ranking.
    *
-   * @return the total score.
+   * @return The total score.
    */
   public double getTotalScore() {
     return totalScore;
@@ -174,7 +174,7 @@ public final class BotResults {
   /**
    * Returns the number of 1st places for the bot.
    *
-   * @return the number of 1st places.
+   * @return The number of 1st places.
    */
   public int getFirstPlaces() {
     return firstPlaces;
@@ -183,7 +183,7 @@ public final class BotResults {
   /**
    * Returns the number of 2nd places for the bot.
    *
-   * @return the number of 2nd places.
+   * @return The number of 2nd places.
    */
   public int getSecondPlaces() {
     return secondPlaces;
@@ -192,7 +192,7 @@ public final class BotResults {
   /**
    * Returns the number of 3rd places for the bot.
    *
-   * @return the number of 3rd places.
+   * @return The number of 3rd places.
    */
   public int getThirdPlaces() {
     return thirdPlaces;
