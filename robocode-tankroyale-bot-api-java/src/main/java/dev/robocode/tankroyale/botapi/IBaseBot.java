@@ -129,14 +129,14 @@ public interface IBaseBot {
    *
    * <p>This method must be called once per turn to send the bot actions to the server and must be
    * called before the turn timeout occurs. A turn timer is started when the {@link
-   * GameStartedEvent} and {@link TickEvent} occurs. If the go() method is called too late, a turn
-   * timeout will occur and the {@link SkippedTurnEvent} will occur, which means that the bot has
-   * skipped all actions for the last turn. In this case, the server will continue executing the
+   * GameStartedEvent} and {@link TickEvent} occurs. If the {@link #go()} method is called too late,
+   * a turn timeout will occur and the {@link SkippedTurnEvent} will occur, which means that the bot
+   * has skipped all actions for the last turn. In this case, the server will continue executing the
    * last actions received. This could be fatal for the bot due to loss of control over the bot. So
-   * make sure that go() is called before the turn ends.
+   * make sure that {@link #go()} is called before the turn ends.
    *
-   * <p>The commands executed when go() is called are set by calling the various setter methods
-   * prior to calling the go() method: {@link #setTurnRate(double)}, {@link
+   * <p>The commands executed when {@link #go()} is called are set by calling the various setter
+   * methods prior to calling the {@link #go()} method: {@link #setTurnRate(double)}, {@link
    * #setGunTurnRate(double)}, {@link #setRadarTurnRate(double)}, {@link #setTargetSpeed(double)},
    * and {@link #setFirepower(double)}.
    *

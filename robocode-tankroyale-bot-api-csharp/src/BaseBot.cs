@@ -13,9 +13,9 @@ namespace Robocode.TankRoyale.BotApi
     internal readonly BaseBotInternals __baseBotInternals;
 
     /// <summary>
-    /// Constructor for initializing a new instance of the BaseBot, which should be used when both
-    /// BotInfo and server URI is provided through environment variables, i.e., when starting up
-    /// the bot using a bootstrap. These environment variables must be set to provide the server
+    /// Constructor for initializing a new instance of the BaseBot class, which should be used when
+    /// both BotInfo and server URI is provided through environment variables, i.e., when starting
+    /// up the bot using a bootstrap. These environment variables must be set to provide the server
     /// URL and bot information, and are automatically set by the bootstrap tool for Robocode.
     ///
     /// Example of how to set the predefined environment variables:
@@ -37,7 +37,7 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <summary>
-    /// Constructor for initializing a new instance of the BaseBot, which should be used when
+    /// Constructor for initializing a new instance of the BaseBot class, which should be used when
     /// server URI is provided through the environment variable ROBOCODE_SERVER_URL.
     /// </summary>
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
@@ -47,7 +47,7 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <summary>
-    /// Constructor for initializing a new instance of the BaseBot, which should be used providing
+    /// Constructor for initializing a new instance of the BaseBot class, which should be used providing
     /// both the bot information and server URL for your bot.
     /// </summary>
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>

@@ -1,7 +1,6 @@
-namespace Robocode.TankRoyale.BotApi
-{
+namespace Robocode.TankRoyale.BotApi {
   /// <summary>
-  /// Message interface.
+  /// Interface for a message.
   /// </summary>
   public interface IMessage { }
 }

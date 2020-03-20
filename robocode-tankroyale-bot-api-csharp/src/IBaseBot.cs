@@ -120,6 +120,7 @@ namespace Robocode.TankRoyale.BotApi
     /// method or similar.
     /// </summary>
     /// <example>
+    /// This sample shows how to call the <see cref="Start"/> method.
     /// <code>
     /// static void Main(string[] args)
     /// {
@@ -135,17 +136,18 @@ namespace Robocode.TankRoyale.BotApi
     /// Commits the current commands (actions), which finalizes the current turn for the bot.
     /// 
     /// This method must be called once per turn to send the bot actions to the server and must be
-    /// called before the turn timeout occurs. A turn timer is started when the
-    /// <see cref="GameStartedEvent"/> and <see cref="TickEvent"/> occurs. If the Go() method is
-    /// called too late,a turn timeout will occur and the <see cref="SkippedTurnEvent"/> will
-    /// occur, which means that the bot has skipped all actions for the last turn. In this case,
-    /// the server will continue executing the last actions received. This could be fatal for the
-    /// bot due to loss of control over the bot. So make sure that Go() is called before the turn
-    /// ends.
+    /// called before the turn timeout occurs. A turn timer is started when the <see
+    /// cref="GameStartedEvent"/> and <see cref="TickEvent"/> occurs. If the <see cref="Go"/>
+    /// method is called too late,a turn timeout will occur and the <see cref="SkippedTurnEvent"/>
+    /// will occur, which means that the bot has skipped all actions for the last turn. In this
+    /// case, the server will continue executing the last actions received. This could be fatal for
+    /// the bot due to loss of control over the bot. So make sure that <see cref="Go"/> is called
+    /// before the turn ends.
     /// 
-    /// The commands executed when Go() is called are set by setting these properties prior to
-    /// calling the Go() method: <see cref="TurnRate"/>, <see cref="GunTurnRate"/>,
-    /// <see cref="RadarTurnRate"/>, <see cref="TargetSpeed"/>, and <see cref="Firepower"/>.
+    /// The commands executed when <see cref="Go"/> is called are set by setting these properties
+    /// prior to calling the <see cref="Go"/> method: <see cref="TurnRate"/>, <see
+    /// cref="GunTurnRate"/>, <see cref="RadarTurnRate"/>, <see cref="TargetSpeed"/>, and <see
+    /// cref="Firepower"/>.
     /// </summary>
     /// <seealso cref="TurnTimeout"/>
     void Go();
@@ -512,7 +514,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// The event handler triggered when the game has ended.
     /// </summary>
-    /// <param name="gameStatedEvent">Event details from the game.</param>
+    /// <param name="gameEndedEvent">Event details from the game.</param>
     void OnGameEnded(GameEndedEvent gameEndedEvent) { }
 
     /// <summary>
@@ -538,19 +540,19 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// The event handler triggered when the bot has collided with another bot.
     /// </summary>
-    /// <param name="BotHitBotEvent">Event details from the game.</param>
+    /// <param name="botHitBotEvent">Event details from the game.</param>
     void OnHitBot(BotHitBotEvent botHitBotEvent) { }
 
     /// <summary>
     /// The event handler triggered when the bot has hit a wall.
     /// </summary>
-    /// <param name="BotHitBotEvent">Event details from the game.</param>
+    /// <param name="botHitWallEvent">Event details from the game.</param>
     void OnHitWall(BotHitWallEvent botHitWallEvent) { }
 
     /// <summary>
     /// The event handler triggered when the bot has fired a bullet.
     /// </summary>
-    /// <param name="BotHitBotEvent">Event details from the game.</param>
+    /// <param name="bulletFiredEvent">Event details from the game.</param>
     void OnBulletFired(BulletFiredEvent bulletFiredEvent) { }
 
     /// <summary>

@@ -1,18 +1,16 @@
-namespace Robocode.TankRoyale.BotApi
-{
+namespace Robocode.TankRoyale.BotApi {
   /// <summary>
   /// Represents the state of a bullet that has been fired by a bot.
   /// </summary>
-  public sealed class BulletState
-  {
+  public sealed class BulletState {
     /// <summary>
     /// Unique id of the bullet.
     /// </summary>
     /// <value>The unique id of the bullet.</value>
     int BulletId { get; }
 
-    /// <summary>Id of the bot that fired the bullet.</summary>
-    /// <value>The id of the bot that fired the bullet.</value>
+    /// <summary>Id of the owner bot that fired the bullet.</summary>
+    /// <value>The id of the owner bot that fired the bullet.</value>
     int OwnerId { get; }
 
     /// <summary>Bullet firepower level.</summary>
@@ -45,8 +43,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="y">Y coordinate of the bullet.</param>
     /// <param name="direction">Direction in degrees.</param>
     /// <param name="speed">Speed measured in units per turn.</param>
-    public BulletState(int bulletId, int ownerId, double power, double x, double y, double direction, double speed)
-    {
+    public BulletState (int bulletId, int ownerId, double power, double x, double y, double direction, double speed) {
       BulletId = bulletId;
       OwnerId = ownerId;
       Power = power;

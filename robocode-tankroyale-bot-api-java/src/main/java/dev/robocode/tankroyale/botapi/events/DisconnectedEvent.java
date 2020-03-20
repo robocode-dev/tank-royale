@@ -20,7 +20,7 @@ public final class DisconnectedEvent {
   /**
    * Checks if closing the connection was initiated by the remote host.
    *
-   * @return true if closing the connection was initiated by the remote host; false otherwise.
+   * @return {@code true} if closing the connection was initiated by the remote host; {@code false} otherwise.
    */
   public boolean isRemote() {
     return remote;

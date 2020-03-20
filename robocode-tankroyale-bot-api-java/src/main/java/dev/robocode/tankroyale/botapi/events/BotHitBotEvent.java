@@ -92,7 +92,7 @@ public final class BotHitBotEvent extends Event {
   /**
    * Checks if the victim bot got rammed.
    *
-   * @return true if the victim bot got rammed; false otherwise.
+   * @return {@code true} if the victim bot got rammed; {@code false} otherwise.
    */
   public boolean isRammed() {
     return rammed;

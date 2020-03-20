@@ -1,10 +1,8 @@
-namespace Robocode.TankRoyale.BotApi
-{
+namespace Robocode.TankRoyale.BotApi {
   /// <summary>
-  /// Individual bot results.
+  /// Represents individual bot results.
   /// </summary>
-  public sealed class BotResults
-  {
+  public sealed class BotResults {
     /// <summary>
     /// The unique id of the bot used in the battle.
     /// </summary>
@@ -99,10 +97,9 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="firstPlaces">The number of 1st places.</param>
     /// <param name="secondPlaces">The number of 2nd places.</param>
     /// <param name="thirdPlaces">The number of 3rd places.</param>
-    public BotResults(int id, int rank, double survival, double lastSurvivorBonus, double bulletDamage,
+    public BotResults (int id, int rank, double survival, double lastSurvivorBonus, double bulletDamage,
       double bulletKillBonus, double ramDamage, double ramKillBonus, double totalScore, double firstPlaces,
-      double secondPlaces, double thirdPlaces)
-    {
+      double secondPlaces, double thirdPlaces) {
       Id = id;
       Rank = rank;
       Survival = survival;
