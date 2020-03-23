@@ -66,7 +66,7 @@ object ArenaPanel : JPanel() {
 
         if (tickEvent.turnNumber == 1) {
             // Make sure to remove any explosion left from earlier battle
-            explosions.clear();
+            explosions.clear()
         }
 
         state.round = tickEvent.roundNumber
@@ -151,7 +151,8 @@ object ArenaPanel : JPanel() {
         val marginY = (size.height - scale * arenaHeight) / 2
 
         g.translate(marginX, marginY)
-        g.scale(scale, scale)
+        g.scale(scale, -scale)
+        g.translate(0, -arenaHeight)
 
         drawGround(g)
         drawBots(g)
@@ -287,8 +288,9 @@ object ArenaPanel : JPanel() {
     private fun drawRoundInfo(g: Graphics2D) {
         val oldState = Graphics2DState(g)
 
+        g.scale(1.0, -1.0)
         g.color = Color.YELLOW
-        g.drawString("Round ${state.round}, Turn: ${state.time}", 10, 10)
+        g.drawString("Round ${state.round}, Turn: ${state.time}", 10, 20 - arenaHeight)
 
         oldState.restore(g)
     }
@@ -299,7 +301,9 @@ object ArenaPanel : JPanel() {
         g.color = Color.WHITE
         val text = "%.1f".format(energy)
         val width = g.fontMetrics.stringWidth(text)
-        g.drawString(text, x.toFloat() - width / 2, (y - 30).toFloat())
+
+        g.scale(1.0, -1.0)
+        g.drawString(text, x.toFloat() - width / 2,  (-30 - y).toFloat())
 
         oldState.restore(g)
     }
