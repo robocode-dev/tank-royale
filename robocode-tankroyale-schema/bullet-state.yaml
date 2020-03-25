@@ -21,7 +21,7 @@ properties:
     description: Direction in degrees
     type: number
   speed:
-    description: Speed measured in pixels per turn
+    description: Speed measured in units per turn
     type: number
 required:
   - bulletId

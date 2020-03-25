@@ -24,7 +24,7 @@ properties:
     description: Radar sweep angle in degrees, i.e. angle between previous and current radar direction
     type: number
   speed:
-    description: Speed measured in pixel per turn
+    description: Speed measured in units per turn
     type: number
   gunHeat:
     description: Gun heat

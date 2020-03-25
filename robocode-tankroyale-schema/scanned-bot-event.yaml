@@ -23,7 +23,7 @@ properties:
     description: Direction in degrees of the scanned bot
     type: number
   speed:
-    description: Speed measured in pixels per turn of the scanned bot
+    description: Speed measured in units per turn of the scanned bot
     type: number
 required:
   - scannedByBotId

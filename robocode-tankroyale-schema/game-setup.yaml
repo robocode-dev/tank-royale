@@ -6,13 +6,13 @@ properties:
     description: Type of game
     type: string
   arenaWidth:
-    description: Width of arena measured in pixels
+    description: Width of arena measured in units
     type: integer
   isArenaWidthLocked:
     description: Flag specifying if the width of arena is fixed for this game type
     type: boolean
   arenaHeight:
-    description: Height of arena measured in pixels
+    description: Height of arena measured in units
     type: integer
   isArenaHeightLocked:
     description: Flag specifying if the height of arena is fixed for this game type
