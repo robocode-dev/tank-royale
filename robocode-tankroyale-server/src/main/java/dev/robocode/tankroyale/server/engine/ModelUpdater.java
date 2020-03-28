@@ -204,11 +204,11 @@ public class ModelUpdater {
 		// Remove dead bots (cannot participate in new round)
 		botBuilderMap.values().removeIf(BotBuilder::isDead);
 
-		// Fire guns
-		cooldownAndFireGuns();
-
 		// Execute bot intents
 		executeBotIntents();
+
+		// Fire guns
+		cooldownAndFireGuns();
 
 		// Check bot wall collisions
 		checkBotWallCollisions();
@@ -394,10 +394,13 @@ public class ModelUpdater {
 					totalTurnRate += limitedRadarTurnRate;
 					double radarDirection = normalAbsoluteDegrees(botBuilder.getRadarDirection() + totalTurnRate);
 
+					// The radar sweep is the difference between the new and old radar direction
+					double spreadAngle = radarDirection - botBuilder.getRadarDirection();
+
 					botBuilder.direction(direction);
 					botBuilder.gunDirection(gunDirection);
 					botBuilder.radarDirection(radarDirection);
-					botBuilder.radarSpreadAngle(totalTurnRate); // radar sweep includes body and gun rate
+					botBuilder.radarSpreadAngle(spreadAngle);
 					botBuilder.speed(speed);
 
 					botBuilder.moveToNewPosition();
