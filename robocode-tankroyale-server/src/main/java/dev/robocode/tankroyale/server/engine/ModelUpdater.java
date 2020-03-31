@@ -192,7 +192,6 @@ public class ModelUpdater {
 	 * Proceed with next turn
 	 */
 	private void nextTurn() {
-
 		previousTurn = round.getLastTurn();
 
 		// Reset events
@@ -204,11 +203,16 @@ public class ModelUpdater {
 		// Remove dead bots (cannot participate in new round)
 		botBuilderMap.values().removeIf(BotBuilder::isDead);
 
-		// Execute bot intents
+		// Cool down and fire gun
+		// Note: Called here before updating headings as we need to sync firing the gun with the gun's direction.
+		// That is if the gun was set to fire with the last turn, then it will fire in the correct gun heading now.
+		cooldownAndFireGuns();
+
+		// Execute bot intents, which will update heading of body, gun and radar
 		executeBotIntents();
 
-		// Fire guns
-		cooldownAndFireGuns();
+		// Generate scan events
+		checkScanFields();
 
 		// Check bot wall collisions
 		checkBotWallCollisions();
@@ -233,9 +237,6 @@ public class ModelUpdater {
 
 		// Cleanup defeated bots (events)
 		checkForDefeatedBots();
-
-		// Generate scan events
-		checkScanFields();
 
 		// Check if the round is over
 		checkIfRoundOrGameOver();
@@ -564,6 +565,7 @@ public class ModelUpdater {
 					final int botId1 = botBuilder1.getId();
 					final int botId2 = botBuilder2.getId();
 
+					// Both bots takes damage when hitting each other
 					final boolean bot1Killed = botBuilder1.addDamage(RAM_DAMAGE);
 					final boolean bot2Killed = botBuilder2.addDamage(RAM_DAMAGE);
 
@@ -571,11 +573,10 @@ public class ModelUpdater {
 					final boolean bot2rammedBot1 = isRamming(botBuilder2, botBuilder1);
 
 					if (bot1RammedBot2) {
-						scoreTracker.registerRamHit(botId2, botId1, RAM_DAMAGE, bot1Killed);
+						scoreTracker.registerRamHit(botId2, botId1, bot1Killed);
 					}
-					// FIXME hit damage!
 					if (bot2rammedBot1) {
-						scoreTracker.registerRamHit(botId1, botId2, RAM_DAMAGE, bot2Killed);
+						scoreTracker.registerRamHit(botId1, botId2, bot2Killed);
 					}
 					double totalSpeed = botBuilder1.getSpeed() + botBuilder2.getSpeed();
 

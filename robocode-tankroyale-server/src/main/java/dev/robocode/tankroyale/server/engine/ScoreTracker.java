@@ -185,15 +185,13 @@ public class ScoreTracker {
 	 *            is the identifier of the bot that rammed another bot
 	 * @param victimBotId
 	 *            is the identifier of the victim bot that got rammed
-	 * @param damage
-	 *            is the damage that the victim bot receives
 	 * @param kill
 	 *            is a flag specifying, if the bot got killed by the ramming
 	 */
-	public void registerRamHit(int botId, int victimBotId, double damage, boolean kill) {
+	public void registerRamHit(int botId, int victimBotId, boolean kill) {
 		BotRecord damageRecord = botRecords.get(botId);
 
-		damageRecord.addRamDamage(victimBotId, damage);
+		damageRecord.addRamDamage(victimBotId);
 		if (kill) {
 			damageRecord.addRamKillEnemyId(victimBotId);
 		}
@@ -256,7 +254,7 @@ public class ScoreTracker {
 		}
 
 		/**
-		 * Returns the total bullet damage dealth by this bot to other bots.
+		 * Returns the total bullet damage dealt by this bot to other bots.
 		 * 
 		 * @return the total bullet damage.
 		 */
@@ -269,7 +267,7 @@ public class ScoreTracker {
 		}
 
 		/**
-		 * Returns the total ram damage dealth by this bot to other bots.
+		 * Returns the total ram damage dealt by this bot to other bots.
 		 * 
 		 * @return the total ram damage.
 		 */
@@ -282,11 +280,11 @@ public class ScoreTracker {
 		}
 
 		/**
-		 * Returns the bullet damage dealth by this bot to specific bot.
+		 * Returns the bullet damage dealt by this bot to specific bot.
 		 * 
 		 * @param enemyId
 		 *            is the enemy bot to retrieve the damage for.
-		 * @return the bullet damage dealth to a specific bot.
+		 * @return the bullet damage dealt to a specific bot.
 		 */
 		double getBulletDamage(int enemyId) {
 			Double sum = bulletDamage.get(enemyId);
@@ -297,11 +295,11 @@ public class ScoreTracker {
 		}
 
 		/**
-		 * Returns the ram damage dealth by this bot to specific bot.
+		 * Returns the ram damage dealt by this bot to specific bot.
 		 * 
 		 * @param enemyId
 		 *            is the enemy bot to retrieve the damage for.
-		 * @return the ram damage dealth to a specific bot.
+		 * @return the ram damage dealt to a specific bot.
 		 */
 		double getRamDamage(int enemyId) {
 			Double sum = ramDamage.get(enemyId);
@@ -347,11 +345,9 @@ public class ScoreTracker {
 		 *
 		 * @param enemyId
 		 *            is the identifier of the enemy bot
-		 * @param damage
-		 *            is the amount of damage that the enemy bot has received
 		 */
-		void addRamDamage(int enemyId, double damage) {
-			double sum = getRamDamage(enemyId) + damage;
+		void addRamDamage(int enemyId) {
+			double sum = getRamDamage(enemyId) + RuleConstants.RAM_DAMAGE;
 			ramDamage.put(enemyId, sum);
 		}
 
