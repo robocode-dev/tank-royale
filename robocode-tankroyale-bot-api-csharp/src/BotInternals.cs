@@ -117,14 +117,6 @@ namespace Robocode.TankRoyale.BotApi
         if (turnNumber == 1)
         {
           StopThread();
-
-          distanceRemaining = 0;
-          turnRemaining = 0;
-          gunTurnRemaining = 0;
-          radarTurnRemaining = 0;
-          isCollidingWithBot = false;
-          isOverDriving = false;
-
           StartThread();
         }
 

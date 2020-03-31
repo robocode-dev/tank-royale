@@ -349,14 +349,6 @@ public abstract class Bot extends BaseBot implements IBot {
       // If this is the first turn -> Call the run method on the Bot class
       if (turnNumber == 1) {
         stopThread();
-
-        distanceRemaining = 0;
-        turnRemaining = 0;
-        gunTurnRemaining = 0;
-        radarTurnRemaining = 0;
-        isCollidingWithBot = false;
-        isOverDriving = false;
-
         startThread();
       }
 
