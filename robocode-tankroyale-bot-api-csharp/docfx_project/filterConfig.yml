@@ -1,0 +1,4 @@
+apiRules:
+  - exclude:
+      uidRegex: ^Robocode\.TankRoyale\.Schema$
+      type: Namespace

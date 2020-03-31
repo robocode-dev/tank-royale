@@ -2,7 +2,9 @@
   href: intro.md
 - name: Tank Royale
   href: tank-royale.md
-- name: Coordinate System
-  href: coordinate-system.md
+- name: Coordinates and Angles
+  href: coordinates-and-angles.md
+- name: Physics
+  href: physics.md
 - name: History
   href: history.md
