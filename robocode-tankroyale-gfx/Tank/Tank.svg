@@ -11,19 +11,19 @@
 
   <defs>
     <symbol id="link0">
-      <rect x="5" y="58" width="125" height="25" fill="#aaa" />
+      <rect x="5" y="55" width="125" height="25" fill="#aaa" />
       <rect x="10" y="70" width="116" height="35" fill="#666" rx="10" ry="10" />
       <rect x="5" y="55" width="125" height="50" fill="none" stroke="black" stroke-width="10" rx="10" ry="10" />
     </symbol>
 
     <symbol id="link30">
-      <rect x="5" y="58" width="125" height="25" fill="#888" />
+      <rect x="5" y="55" width="125" height="25" fill="#888" />
       <rect x="10" y="70" width="116" height="30" fill="#444" rx="10" ry="10" />
       <rect x="5" y="55" width="125" height="42" fill="none" stroke="black" stroke-width="10" rx="10" ry="10" />
     </symbol>
 
     <symbol id="link60">
-      <rect x="5" y="58" width="125" height="20" fill="#444" />
+      <rect x="5" y="55" width="125" height="20" fill="#444" />
       <rect x="5" y="55" width="125" height="20" fill="none" stroke="black" stroke-width="10" rx="10" ry="10" />
     </symbol>
 
