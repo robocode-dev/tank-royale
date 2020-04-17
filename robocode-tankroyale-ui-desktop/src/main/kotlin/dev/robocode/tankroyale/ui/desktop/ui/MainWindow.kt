@@ -34,7 +34,7 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
         jMenuBar = MainWindowMenu
 
-        val iconUrl = javaClass.getResource("/gfx/robocode-tank.png")
+        val iconUrl = javaClass.getResource("/gfx/Tank.png")
         val iconImage = ImageIcon(iconUrl)
         setIconImage(iconImage.image)
 

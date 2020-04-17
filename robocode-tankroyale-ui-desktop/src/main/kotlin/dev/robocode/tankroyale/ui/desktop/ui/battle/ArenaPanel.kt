@@ -166,9 +166,8 @@ object ArenaPanel : JPanel() {
             val x = it.x
             val y = it.y
 
-            drawBotBody(g, x, y, it.direction, Color.BLUE)
-            drawGun(g, x, y, it.gunDirection)
-            drawRadar(g, x, y, it.radarDirection, Color.RED)
+            Tank(x, y, it.direction, it.gunDirection, it.radarDirection).paint(g)
+
             drawScanArc(g, x, y, it.radarDirection, it.radarSweep, Color.WHITE)
             drawEnergy(g, x, y, it.energy)
         }
@@ -205,62 +204,11 @@ object ArenaPanel : JPanel() {
         g.fillCircle(x, y, size)
     }
 
-    private fun drawBotBody(g: Graphics2D, x: Double, y: Double, direction: Double, color: Color) {
-        val oldState = Graphics2DState(g)
-        g.apply {
-            translate(x, y)
-            rotate(Math.toRadians(direction))
-
-            this.color = color
-            fillRect(-18, -18 + 1 + 6, 36, 36 - 2 * 7)
-
-            this.color = Color.GRAY
-
-            fillRect(-18, -18, 36, 6)
-            fillRect(-18, 18 - 6, 36, 6)
-        }
-        oldState.restore(g)
-    }
-
-    private fun drawGun(g: Graphics2D, x: Double, y: Double, direction: Double) {
-        val oldState = Graphics2DState(g)
-        g.apply {
-            translate(x, y)
-
-            this.color = Color.LIGHT_GRAY
-            fillCircle(0.0, 0.0, 18.0)
-
-            rotate(Math.toRadians(direction))
-            fillRect(8, -2, 16, 4)
-        }
-        oldState.restore(g)
-    }
-
-    private fun drawRadar(g: Graphics2D, x: Double, y: Double, direction: Double, color: Color) {
-        val oldState = Graphics2DState(g)
-
-        g.translate(x, y)
-        g.rotate(Math.toRadians(direction))
-
-        g.color = color
-
-        val path = GeneralPath()
-        path.moveTo(8.0, 10.0)
-        path.curveTo(-2.0, 10.0, -2.0, -10.0, 8.0, -10.0)
-
-        path.moveTo(10.0 - 2, -10.0)
-        path.curveTo(-9.0, -10.0, -9.0, 10.0, 8.0, 10.0)
-        path.closePath()
-
-        g.fill(path)
-
-        oldState.restore(g)
-    }
-
     private fun drawScanArc(g: Graphics2D, x: Double, y: Double, direction: Double, spreadAngle: Double, color: Color) {
         val oldState = Graphics2DState(g)
 
         g.color = color
+        g.stroke = BasicStroke(1f)
         g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f)
 
         val arc = Arc2D.Double()
@@ -268,10 +216,15 @@ object ArenaPanel : JPanel() {
         var startAngle = 360 - direction
         var angleEx = spreadAngle
 
-        if (spreadAngle < 0) {
-            startAngle += spreadAngle
+        if (angleEx < 0) {
+            startAngle += angleEx
             angleEx *= -1
         }
+        if (angleEx > 180) {
+            startAngle += angleEx
+            angleEx *= -1
+        }
+
         startAngle %= 360
 
         arc.setArcByCenter(x, y, 1200.0, startAngle, angleEx, Arc2D.PIE)
