@@ -396,7 +396,7 @@ public class ModelUpdater {
 					double radarDirection = normalAbsoluteDegrees(botBuilder.getRadarDirection() + totalTurnRate);
 
 					// The radar sweep is the difference between the new and old radar direction
-					double spreadAngle = radarDirection - botBuilder.getRadarDirection();
+					double spreadAngle = (radarDirection - botBuilder.getRadarDirection() + 360) % 360;
 
 					botBuilder.direction(direction);
 					botBuilder.gunDirection(gunDirection);
@@ -590,7 +590,7 @@ public class ModelUpdater {
 					} else {
 						double t = overlapDist / totalSpeed;
 
-						// The faster speed, the less bounce distance. Hence the speeds for the bots are swapped0
+						// The faster speed, the less bounce distance. Hence the speeds for the bots are swapped
 						bot1BounceDist = botBuilder2.getSpeed() * t;
 						bot2BounceDist = botBuilder1.getSpeed() * t;
 					}
@@ -618,6 +618,8 @@ public class ModelUpdater {
 						botBuilder1.y(oldBot1Y);
 
 						botBuilder2.bounceBack(bot1BounceDist /* remaining distance */);
+
+						// FIXME: Add wall damage: abs(velocity) * 0.5 - 1 (never < 0).
 					}
 
 					if (newBot2X < BOT_BOUNDING_CIRCLE_RADIUS || newBot2Y < BOT_BOUNDING_CIRCLE_RADIUS ||
@@ -628,6 +630,8 @@ public class ModelUpdater {
 						botBuilder2.y(oldBot2Y);
 
 						botBuilder1.bounceBack(bot2BounceDist /* remaining distance */);
+
+						// FIXME: Add wall damage: abs(velocity) * 0.5 - 1 (never < 0).
 					}
 
 					if (bot1RammedBot2) {

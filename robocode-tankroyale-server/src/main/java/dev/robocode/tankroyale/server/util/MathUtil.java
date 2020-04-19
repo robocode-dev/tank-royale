@@ -292,13 +292,15 @@ public final class MathUtil {
 														   double sectorCenterX, double sectorCenterY, double sectorRadius,
 														   double arcStartAngle, double arcEndAngle) {
 
+		assert(arcEndAngle > arcStartAngle);
+
 		double maxRadiusToPoint = sectorRadius + circleRadius;
 
 		double vx = circleCenterX - sectorCenterX;
 		double vy = circleCenterY - sectorCenterY;
 
 		// Check if point is outside max radius to point
-		if (((vx * vx) + (vy * vy)) > (maxRadiusToPoint * maxRadiusToPoint)) {
+		if ((vx * vx) + (vy * vy) > (maxRadiusToPoint * maxRadiusToPoint)) {
 			return false; // outside radius
 		}
 
