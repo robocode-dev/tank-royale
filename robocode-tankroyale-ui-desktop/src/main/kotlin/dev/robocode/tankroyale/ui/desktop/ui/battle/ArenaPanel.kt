@@ -220,11 +220,6 @@ object ArenaPanel : JPanel() {
             startAngle += angleEx
             angleEx *= -1
         }
-        if (angleEx > 180) {
-            startAngle += angleEx
-            angleEx *= -1
-        }
-
         startAngle %= 360
 
         arc.setArcByCenter(x, y, 1200.0, startAngle, angleEx, Arc2D.PIE)
