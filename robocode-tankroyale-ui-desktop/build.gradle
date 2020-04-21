@@ -55,7 +55,7 @@ dependencies {
     compile 'org.java-websocket:Java-WebSocket:1.4.0'
     compile 'com.miglayout:miglayout-swing:5.2'
 
-    runtime ('dev.robocode.tankroyale:robocode-tankroyale-server:0.6.5') {
+    runtime ('dev.robocode.tankroyale:robocode-tankroyale-server:0.6.7') {
         exclude group: 'ch.qos.logback'
     }
     runtime 'dev.robocode.tankroyale:robocode-tankroyale-bootstrap:0.6.4'

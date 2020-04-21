@@ -9,7 +9,7 @@ class WsUrl(private val partialUrl: String) {
     private val uri: URI
 
     init {
-        // protocol + host + port, e.g. ws://localhost:55000
+        // protocol + host + port, e.g. ws://localhost:80
 
         var origin = partialUrl
 

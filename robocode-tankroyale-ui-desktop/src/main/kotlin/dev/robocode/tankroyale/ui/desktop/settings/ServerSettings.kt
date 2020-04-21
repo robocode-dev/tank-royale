@@ -5,8 +5,8 @@ import dev.robocode.tankroyale.ui.desktop.util.WsUrl
 
 object ServerSettings : PropertiesStore("Robocode Server Config", "server.properties") {
 
-    const val DEFAULT_PORT: Int = 55000
-    const val DEFAULT_LOCALHOST_URL = "ws://localhost:$DEFAULT_PORT"
+    const val DEFAULT_PORT: Int = 80
+    const val DEFAULT_LOCALHOST_URL = "ws://localhost"
 
     private const val DEFAULT_URL_PROPERTY = "default.url"
     private const val USER_URLS_PROPERTY = "user.urls"

@@ -79,11 +79,11 @@ private object StartServerPanel : JPanel(MigLayout("fill")) {
         } catch (e: NumberFormatException) {
             null
         }
-        val valid = port != null && port in 1024..65535
+        val valid = port in 1..65535
         if (valid) {
             StartServerPanel.port = port!!
         } else {
-            showWarning(String.format(MESSAGES.get("port_must_be_in_range"), 1024, 65535))
+            showWarning(String.format(MESSAGES.get("port_must_be_in_range"), 1, 65535))
             portTextField.text = "${ServerSettings.DEFAULT_PORT}"
         }
         return valid

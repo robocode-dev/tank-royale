@@ -35,7 +35,7 @@ import static dev.robocode.tankroyale.server.model.GameSetup.DEFAULT_GAME_TYPE;
 )
 public class Server implements Runnable {
 
-    private final static int DEFAULT_PORT = 55000;
+    private final static int DEFAULT_PORT = 80;
 
     @Option(names = {"-V", "--version"}, description = "Display version info")
     @SuppressWarnings("CanBeFinal")
@@ -66,7 +66,7 @@ public class Server implements Runnable {
     private GameServer gameServer;
 
     public static void main(String[] args) {
-        System.setProperty("picocli.ansi", "true");
+//        System.setProperty("picocli.ansi", "true");
         System.exit(cmdLine.execute(args));
     }
 
@@ -88,8 +88,9 @@ public class Server implements Runnable {
         }
 
         // Handle port
-        if (port < 1024 || port > 65535) {
-            System.err.println("Port must not be lower than 1024 or bigger than 65535");
+        if (port < 1 || port > 65535) {
+            System.err.println("Port must not be lower than 1 or bigger than 65535.\n" +
+                    "Default port is 80 used for http.");
             System.exit(-1);
         }
 
