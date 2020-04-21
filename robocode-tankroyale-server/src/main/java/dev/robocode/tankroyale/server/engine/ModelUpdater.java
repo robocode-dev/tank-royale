@@ -396,7 +396,7 @@ public class ModelUpdater {
 					double radarDirection = normalAbsoluteDegrees(botBuilder.getRadarDirection() + totalTurnRate);
 
 					// The radar sweep is the difference between the new and old radar direction
-					double spreadAngle = (radarDirection - botBuilder.getRadarDirection() + 360) % 360;
+					double spreadAngle = MathUtil.normalRelativeDegrees(radarDirection - botBuilder.getRadarDirection());
 
 					botBuilder.direction(direction);
 					botBuilder.gunDirection(gunDirection);
