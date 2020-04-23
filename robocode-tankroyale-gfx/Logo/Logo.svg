@@ -16,13 +16,13 @@
     <use transform="translate(790, 250)" xlink:href="#letter-e"/>
 
     <!-- Over Wheels -->
-    <polygon fill="grey" points="175,225 150,250 250,300 750,300 850,250 825,225"/>
+    <polygon fill="grey" points="195,215 170,240 270,290 730,290 830,240 805,215"/>
     <!-- Turret -->
-    <polygon fill="grey" points="325,220 325,175 425,125 600,125 600,220"/>
+    <polygon fill="grey" points="325,205 325,160 425,100 600,100 600,205"/>
 
     <!-- Cannon -->
-    <polygon fill="grey" points="605,200 605,140, 700,140 700,200"/>
-    <polygon fill="grey" points="705,185 705,155 950,155 950,185"/>
+    <polygon fill="grey" points="610,190 610,130 700,130 700,190"/>
+    <polygon fill="grey" points="710,175 710,145 950,145 950,175"/>
 
     <polygon fill="grey" points="175,225 "/>
   </g>
@@ -41,11 +41,14 @@
 
     <symbol id="letter-o">
       <circle cx="50" cy="50" r="45" stroke="grey" stroke-width="10"/>
+      <circle cx="50" cy="50" r="5" stroke="grey" stroke-width="10"/>
     </symbol>
 
     <symbol id="letter-b">
       <circle cx="50" cy="50" r="45" stroke="grey" stroke-width="10" mask="url(#b_hole)"/>
       <polygon stroke="grey" stroke-width="10" points="60,50 88,25 88,75" mask="url(#b_hole)"/>
+      <rect x="20" y="0" width="10" height="100"/>
+      <rect x="30" y="10" width="10" height="80" fill="grey"/>
     </symbol>
 
     <mask id="b_hole">
@@ -55,6 +58,7 @@
 
     <symbol id="letter-c">
       <circle cx="50" cy="50" r="45" stroke="grey" stroke-width="10" mask="url(#c_hole)"/>
+      <circle cx="50" cy="50" r="5" stroke="grey" stroke-width="10"/>
     </symbol>
 
     <mask id="c_hole">
@@ -66,11 +70,13 @@
       <circle cx="50" cy="50" r="45" stroke="grey" stroke-width="10"/>
       <rect x="20" y="0" width="10" height="100"/>
       <rect x="30" y="10" width="10" height="80" fill="grey"/>
+      <circle cx="50" cy="50" r="5" stroke="grey" stroke-width="10"/>
     </symbol>
 
     <symbol id="letter-e">
       <circle cx="50" cy="50" r="45" stroke="grey" stroke-width="10" mask="url(#c_hole)"/>
       <line x1="5" y1="50" x2="50" y2="50" stroke="grey" stroke-width="10"/>
+      <circle cx="50" cy="50" r="5" stroke="grey" stroke-width="10"/>
     </symbol>
   </defs>
 </svg>
