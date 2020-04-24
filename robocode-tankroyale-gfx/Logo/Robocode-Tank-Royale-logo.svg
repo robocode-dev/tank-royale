@@ -1,15 +1,20 @@
-<svg version="1.1" width="1000" height="1000" 
+<svg version="1.1" width="1000" height="310" 
   xmlns="http://www.w3.org/2000/svg" 
   xmlns:xlink="http://www.w3.org/1999/xlink">
 
   <rect x="0" y="0" width="100%" height="100%" fill="black" />
 
   <g>
-    <path d="M 60,30 L 80,10 220,10 240,30 290,80 290,210 150,292 10,210 10,80 60,30 80,10" fill="#333" stroke="#333" stroke-width="20"/>
-    <use xlink:href="#RTR" transform="translate(0,0)" fill="#333" stroke="#999" stroke-width="20"/>
+    <use xlink:href="#RTR-bg" transform="translate(350,0)" fill="#333" stroke="#333" stroke-width="20"/>
+    <use xlink:href="#RTR" transform="translate(350,0)" fill="#333" stroke="#999" stroke-width="20"/>
+
+    <use xlink:href="#wing" transform="translate(350,0)" fill="#333" stroke="#999" stroke-width="20"/>
+    <use xlink:href="#wing" transform="translate(650,0) scale(-1,1) " fill="#333" stroke="#999" stroke-width="20"/>
   </g>
 
   <defs>
+    <path id="RTR-bg" d="M 60,30 L 80,10 220,10 240,30 290,80 290,210 150,292 10,210 10,80 60,30 80,10"/>
+
     <symbol id="RTR">
       <path d="M 60,30 L 80,10 220,10 240,30"/>
       <use xlink:href="#R" transform="translate(160,40)"/>
@@ -21,5 +26,10 @@
       L 130,40 130,170 10,240 10,10
       a 80,80 0 0 1 80,80
       L 10,90 50,90 86,166"/>
+
+    <symbol id="wing">
+      <path d="M 330,75 L 380,10 620,10 580,50 330,80 Z"/>
+      <path d="M 330,195 L 330,120 550,90 470,150 330,195 Z"/>
+    </symbol>
   </defs>
 </svg>
