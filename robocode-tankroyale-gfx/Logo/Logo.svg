@@ -1,28 +1,28 @@
-<svg version="1.1" width="1000" height="1000" 
+<svg version="1.1" width="870" height="330" 
   xmlns="http://www.w3.org/2000/svg" 
   xmlns:xlink="http://www.w3.org/1999/xlink">
 
   <rect x="0" y="0" width="100%" height="100%" fill="black" />
 
   <g>
-
-    <use transform="translate(110, 250)" xlink:href="#letter-r"/>
-    <use transform="translate(200, 300)" xlink:href="#letter-o"/>
-    <use transform="translate(300, 300)" xlink:href="#letter-b"/>
-    <use transform="translate(400, 300)" xlink:href="#letter-o"/>
-    <use transform="translate(500, 300)" xlink:href="#letter-c"/>
-    <use transform="translate(600, 300)" xlink:href="#letter-o"/>
-    <use transform="translate(700, 300)" xlink:href="#letter-d"/>
-    <use transform="translate(790, 250)" xlink:href="#letter-e"/>
+    <!-- Turret -->
+    <polygon fill="#006" stroke-width="10" stroke="#00C" points="225,120 225,80 325,20 500,20 500,120"/>
+    <!-- Cannon -->
+    <polygon fill="#333" stroke-width="10" stroke="#666" points="515,105 515,45 600,45 600,105"/>
+    <polygon fill="#333" stroke-width="10" stroke="#666" points="615,90 615,60 850,60 850,90"/>
 
     <!-- Over Wheels -->
-    <polygon fill="#006" stroke-width="10" stroke="#00C" points="195,215 170,240 270,290 730,290 830,240 805,215"/>
+    <polygon fill="#006" stroke-width="10" stroke="#00C" points="95,135 70,160 170,210 630,210 730,160 705,135"/>
 
-    <!-- Turret -->
-    <polygon fill="#006" stroke-width="10" stroke="#00C" points="325,200 325,160 425,100 600,100 600,200"/>
-    <!-- Cannon -->
-    <polygon fill="#333" stroke-width="10" stroke="#666" points="615,185 615,125 700,125 700,185"/>
-    <polygon fill="#333" stroke-width="10" stroke="#666" points="715,170 715,140 950,140 950,170"/>
+    <!-- Wheels / letters -->
+    <use transform="translate(10, 170)" xlink:href="#letter-r"/>
+    <use transform="translate(100, 220)" xlink:href="#letter-o"/>
+    <use transform="translate(200, 220)" xlink:href="#letter-b"/>
+    <use transform="translate(300, 220)" xlink:href="#letter-o"/>
+    <use transform="translate(400, 220)" xlink:href="#letter-c"/>
+    <use transform="translate(500, 220)" xlink:href="#letter-o"/>
+    <use transform="translate(600, 220)" xlink:href="#letter-d"/>
+    <use transform="translate(690, 170)" xlink:href="#letter-e"/>
   </g>
 
   <defs>
