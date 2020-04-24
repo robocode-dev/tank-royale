@@ -5,14 +5,18 @@
   <rect x="0" y="0" width="100%" height="100%" fill="black" />
 
   <g>
-    <use xlink:href="#RTR-bg" transform="translate(350,0)" fill="#333" stroke="#333" stroke-width="20"/>
-    <use xlink:href="#RTR" transform="translate(350,0)" fill="#333" stroke="#999" stroke-width="20"/>
-
-    <use xlink:href="#wing" transform="translate(350,0)" fill="#333" stroke="#999" stroke-width="20"/>
-    <use xlink:href="#wing" transform="translate(650,0) scale(-1,1) " fill="#333" stroke="#999" stroke-width="20"/>
+    <use xlink:href="#RTR-logo"/>
   </g>
 
   <defs>
+    <symbol id="RTR-logo">
+      <use xlink:href="#RTR-bg" transform="translate(350,0)" fill="#333" stroke="#333" stroke-width="20"/>
+      <use xlink:href="#RTR" transform="translate(350,0)" fill="#333" stroke="#999" stroke-width="20"/>
+
+      <use xlink:href="#wing" transform="translate(350,0)" fill="#333" stroke="#999" stroke-width="20"/>
+      <use xlink:href="#wing" transform="translate(650,0) scale(-1,1) " fill="#333" stroke="#999" stroke-width="20"/>
+    </symbol>
+
     <path id="RTR-bg" d="M 60,30 L 80,10 220,10 240,30 290,80 290,210 150,292 10,210 10,80 60,30 80,10"/>
 
     <symbol id="RTR">
