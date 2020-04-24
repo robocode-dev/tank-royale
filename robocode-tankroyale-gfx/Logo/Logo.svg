@@ -16,13 +16,13 @@
     <use transform="translate(790, 250)" xlink:href="#letter-e"/>
 
     <!-- Over Wheels -->
-    <polygon fill="#030" stroke-width="10" stroke="#060" points="195,215 170,240 270,290 730,290 830,240 805,215"/>
-    <!-- Turret -->
-    <polygon fill="#030" stroke-width="10" stroke="#060" points="325,205 325,160 425,100 600,100 600,205"/>
+    <polygon fill="#006" stroke-width="10" stroke="#00C" points="195,215 170,240 270,290 730,290 830,240 805,215"/>
 
+    <!-- Turret -->
+    <polygon fill="#006" stroke-width="10" stroke="#00C" points="325,200 325,160 425,100 600,100 600,200"/>
     <!-- Cannon -->
-    <polygon fill="#333" stroke-width="10" stroke="#666" points="610,190 610,130 700,130 700,190"/>
-    <polygon fill="#333" stroke-width="10" stroke="#666" points="710,175 710,145 950,145 950,175"/>
+    <polygon fill="#333" stroke-width="10" stroke="#666" points="615,185 615,125 700,125 700,185"/>
+    <polygon fill="#333" stroke-width="10" stroke="#666" points="715,170 715,140 950,140 950,170"/>
   </g>
 
   <defs>
