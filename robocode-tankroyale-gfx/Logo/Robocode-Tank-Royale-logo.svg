@@ -6,7 +6,6 @@
 
   <g>
     <path d="M 250,125 L 300,75 650,75 700,125" stroke="grey" stroke-width="50"/>
-    <path d="M 750,175 L 825,250 825,575 500,750" stroke="grey" stroke-width="50"/>
 
     <use xlink:href="#R" stroke="grey" stroke-width="50" transform="translate(500,150)"/>
     <use xlink:href="#R" stroke="grey" stroke-width="50" transform="translate(450,150) scale(-1,1)"/>
@@ -14,8 +13,8 @@
 
   <defs>
     <path id="R" d="
-      M 25,500
-      L 25,25
+      M 250,25
+      L 325,100 325,425 25,600 25,25
       a 200,200 0 0 1 200,200
       L 25,225 125,225 215,415"/>
   </defs>
