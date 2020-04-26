@@ -36,7 +36,7 @@
       <rect x="20" y="0" width="10" height="100" fill="#222" mask="url(#wheel_hole)"/>
       <rect x="30" y="10" width="10" height="80" fill="#666"/>
       <polygon points="70,55 100,55 110,110" fill="#222" mask="url(#wheel_hole)"/>
-      <polygon points="40,110 40,65, 70,110" fill="#222" mask="url(#wheel_hole)"/>
+      <polygon points="40,110 40,40, 70,110" fill="#222" mask="url(#wheel_hole)"/>
     </symbol>
 
     <mask id="wheel_hole">
