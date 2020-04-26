@@ -32,7 +32,7 @@
 
     <symbol id="letter-r">
       <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
-      <polygon stroke="#666" stroke-width="10" points="60,50 90,50 82,80" mask="url(#wheel_hole)"/>
+      <polygon stroke="#666" stroke-width="10" points="60,50 90,50 82,80" stroke-linejoin="round"/>
       <rect x="20" y="0" width="10" height="100" fill="#222" mask="url(#wheel_hole)"/>
       <rect x="30" y="10" width="10" height="80" fill="#666"/>
       <polygon points="70,55 100,55 110,110" fill="#222" mask="url(#wheel_hole)"/>
@@ -50,10 +50,10 @@
 
     <symbol id="letter-b">
       <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
-      <polygon stroke="#666" stroke-width="10" points="60,50 88,25 88,75" mask="url(#wheel_hole)"/>
+      <polygon stroke="#666" stroke-width="10" points="68,50 88,25 88,75" stroke-linejoin="round"/>
       <rect x="20" y="0" width="10" height="100" fill="#222" mask="url(#wheel_hole)"/>
       <rect x="30" y="10" width="10" height="80" fill="#666"/>
-      <polygon points="67,50 110,10 110,90" fill="#222" mask="url(#wheel_hole)"/>
+      <polygon points="73,50 110,10 110,90" fill="#222" mask="url(#wheel_hole)"/>
     </symbol>
 
     <symbol id="letter-c">

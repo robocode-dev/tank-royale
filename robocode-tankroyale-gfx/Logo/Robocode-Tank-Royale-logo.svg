@@ -9,7 +9,7 @@
   </g>
 
   <defs>
-    <symbol id="RTR-logo">
+    <symbol id="RTR-logo" stroke-linejoin="miter">
       <use xlink:href="#RTR-bg" transform="translate(350,0)" fill="#333" stroke="#333" stroke-width="20"/>
       <use xlink:href="#RTR" transform="translate(350,0)" fill="#333" stroke="#999" stroke-width="20"/>
 
@@ -33,7 +33,7 @@
 
     <symbol id="wing">
       <path d="M 330,75 L 380,10 620,10 580,50 330,80 Z"/>
-      <path d="M 330,195 L 330,120 550,90 470,150 330,195 Z"/>
+      <path d="M 330,195 L 330,120 538,94 470,150 330,195 Z"/>
     </symbol>
   </defs>
 </svg>

@@ -35,7 +35,7 @@
 
     <symbol id="letter-r">
       <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
-      <polygon stroke="#666" stroke-width="10" points="60,50 90,50 82,80" mask="url(#wheel_hole)"/>
+      <polygon stroke="#666" stroke-width="10" points="60,50 90,50 82,80" stroke-linejoin="round"/>
       <rect x="20" y="0" width="10" height="100" fill="#222" mask="url(#wheel_hole)"/>
       <rect x="30" y="10" width="10" height="80" fill="#666"/>
       <polygon points="70,55 100,55 110,110" fill="#222" mask="url(#wheel_hole)"/>
@@ -53,10 +53,10 @@
 
     <symbol id="letter-b">
       <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
-      <polygon stroke="#666" stroke-width="10" points="60,50 88,25 88,75" mask="url(#wheel_hole)"/>
+      <polygon stroke="#666" stroke-width="10" points="68,50 88,25 88,75" stroke-linejoin="round"/>
       <rect x="20" y="0" width="10" height="100" fill="#222" mask="url(#wheel_hole)"/>
       <rect x="30" y="10" width="10" height="80" fill="#666"/>
-      <polygon points="67,50 110,10 110,90" fill="#222" mask="url(#wheel_hole)"/>
+      <polygon points="73,50 110,10 110,90" fill="#222" mask="url(#wheel_hole)"/>
     </symbol>
 
     <symbol id="letter-c">
@@ -79,7 +79,7 @@
       <circle cx="50" cy="50" r="5" stroke="#666" stroke-width="10"/>
     </symbol>
 
-    <symbol id="RTR-logo" transform="scale(0.8,0.8)">
+    <symbol id="RTR-logo" stroke-linejoin="miter">
       <use xlink:href="#RTR-bg" transform="translate(350,0)" fill="#333" stroke="#333" stroke-width="20"/>
       <use xlink:href="#RTR" transform="translate(350,0)" fill="#333" stroke="#999" stroke-width="20"/>
 
@@ -103,7 +103,8 @@
 
     <symbol id="wing">
       <path d="M 330,75 L 380,10 620,10 580,50 330,80 Z"/>
-      <path d="M 330,195 L 330,120 550,90 470,150 330,195 Z"/>
+      <path d="M 330,195 L 330,120 538,94 470,150 330,195 Z"/>
     </symbol>
+  </defs>
   </defs>
 </svg>
