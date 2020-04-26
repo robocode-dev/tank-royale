@@ -6,9 +6,9 @@
 
   <g>
     <use xlink:href="#robocode-logo" transform="translate(90,0)"/>
-    <use xlink:href="#RTR-logo" transform="scale(0.6,0.6) translate(320,620)"/>
-    <text x="280" y="355" fill="#966" style="font: bold 30px sans-serif">Build the best - destroy the rest!</text>
-    <text x="327" y="586" fill="#696" style="font: bold 30px sans-serif">Robocode Tank Royale</text>
+    <use xlink:href="#RTR-logo" transform="translate(240,380) scale(0.5,0.5)"/>
+    <text x="265" y="355" fill="#966" style="font: bold 30px sans-serif">Build the best - destroy the rest!</text>
+    <text x="327" y="570" fill="#696" style="font: bold 30px sans-serif">Robocode Tank Royale</text>
   </g>
 
   <defs>
