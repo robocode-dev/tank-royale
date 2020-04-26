@@ -28,13 +28,15 @@
   <defs>
     <symbol id="letter-r">
       <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222" mask="url(#r_hole)"/>
-      <polygon stroke="#666" stroke-width="10" points="60,50 88,25 88,65" mask="url(#r_hole)"/>
+      <polygon stroke="#666" stroke-width="10" points="60,50 90,50 82,80" mask="url(#r_hole)"/>
+      <rect x="20" y="0" width="10" height="100"/>
+      <rect x="30" y="10" width="10" height="80" fill="#666"/>
     </symbol>
 
     <mask id="r_hole">
       <rect width="100%" height="100%" fill="white"/>
-      <polygon points="66,50 110,15 110,70"/>
-      <polygon points="25,110 50,50, 75,110"/>
+      <polygon points="70,55 100,55 110,110"/>
+      <polygon points="40,110 40,65, 70,110"/>
     </mask>
 
     <symbol id="letter-o">
