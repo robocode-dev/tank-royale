@@ -5,14 +5,14 @@
   <rect x="0" y="0" width="100%" height="100%" fill="black" />
 
   <g>
-    <use xlink:href="#Robocode-logo" transform="translate(90,0)"/>
-    <text x="325" y="355" fill="white" style="font: bold 30px sans-serif">Robocode Tank Royale</text>
+    <use xlink:href="#robocode-logo" transform="translate(90,0)"/>
     <use xlink:href="#RTR-logo" transform="scale(0.6,0.6) translate(320,620)"/>
-    <text x="278" y="580" fill="white" style="font: bold 30px sans-serif">Build the best - destroy the rest!</text>
+    <text x="280" y="355" fill="#966" style="font: bold 30px sans-serif">Build the best - destroy the rest!</text>
+    <text x="327" y="586" fill="#696" style="font: bold 30px sans-serif">Robocode Tank Royale</text>
   </g>
 
   <defs>
-    <symbol id="Robocode-logo">
+    <symbol id="robocode-logo">
       <!-- Turret -->
       <polygon fill="#006" stroke-width="10" stroke="#00C" points="225,120 225,80 325,20 500,20 500,120"/>
       <!-- Cannon -->
@@ -34,14 +34,16 @@
     </symbol>
 
     <symbol id="letter-r">
-      <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222" mask="url(#r_hole)"/>
-      <polygon stroke="#666" stroke-width="10" points="60,50 88,25 88,65" mask="url(#r_hole)"/>
+      <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
+      <polygon stroke="#666" stroke-width="10" points="60,50 90,50 82,80" mask="url(#wheel_hole)"/>
+      <rect x="20" y="0" width="10" height="100" fill="#222" mask="url(#wheel_hole)"/>
+      <rect x="30" y="10" width="10" height="80" fill="#666"/>
+      <polygon points="70,55 100,55 110,110" fill="#222" mask="url(#wheel_hole)"/>
+      <polygon points="40,110 40,65, 70,110" fill="#222" mask="url(#wheel_hole)"/>
     </symbol>
 
-    <mask id="r_hole">
-      <rect width="100%" height="100%" fill="white"/>
-      <polygon points="66,50 110,15 110,70"/>
-      <polygon points="25,110 50,50, 75,110"/>
+    <mask id="wheel_hole">
+      <circle cx="50" cy="50" r="50" fill="white"/>
     </mask>
 
     <symbol id="letter-o">
@@ -50,36 +52,29 @@
     </symbol>
 
     <symbol id="letter-b">
-      <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222" mask="url(#b_hole)"/>
-      <polygon stroke="#666" stroke-width="10" points="60,50 88,25 88,75" mask="url(#b_hole)"/>
-      <rect x="20" y="0" width="10" height="100"/>
+      <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
+      <polygon stroke="#666" stroke-width="10" points="60,50 88,25 88,75" mask="url(#wheel_hole)"/>
+      <rect x="20" y="0" width="10" height="100" fill="#222" mask="url(#wheel_hole)"/>
       <rect x="30" y="10" width="10" height="80" fill="#666"/>
+      <polygon points="67,50 110,10 110,90" fill="#222" mask="url(#wheel_hole)"/>
     </symbol>
 
-    <mask id="b_hole">
-      <rect width="100%" height="100%" fill="white"/>
-      <polygon points="70,50 110,10 110,90"/>
-    </mask>
-
     <symbol id="letter-c">
-      <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222" mask="url(#c_hole)"/>
+      <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
+      <polygon points="50,50 110,25 110,75" fill="#222" mask="url(#wheel_hole)"/>
       <circle cx="50" cy="50" r="5" stroke="#666" stroke-width="10"/>
     </symbol>
 
-    <mask id="c_hole">
-      <rect width="100%" height="100%" fill="white"/>
-      <polygon points="50,50 110,25 110,75"/>
-    </mask>
-
     <symbol id="letter-d">
       <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
-      <rect x="20" y="0" width="10" height="100"/>
+      <rect x="20" y="0" width="10" height="100" fill="#222" mask="url(#wheel_hole)"/>
       <rect x="30" y="10" width="10" height="80" fill="#666"/>
       <circle cx="50" cy="50" r="5" stroke="#666" stroke-width="10"/>
     </symbol>
 
     <symbol id="letter-e">
-      <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222" mask="url(#c_hole)"/>
+      <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
+      <polygon points="50,50 110,25 110,75" fill="#222" mask="url(#wheel_hole)"/>
       <line x1="5" y1="50" x2="50" y2="50" stroke="#666" stroke-width="10"/>
       <circle cx="50" cy="50" r="5" stroke="#666" stroke-width="10"/>
     </symbol>
