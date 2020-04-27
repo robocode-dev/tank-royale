@@ -6,8 +6,12 @@ A bot consists of three individual parts:
 
 **Gun**: Mounted on the body and is used for firing energy bullets. The gun can turn left or right. Carries the radar on top.
 
-**Radar**: Mounted on the gun and is used to scan for other bots when moved. The radar can turn left or right. When the radar is turned it will detect bots when is within the radar sweep.
-
-The radar sweep is a pie shape starting from the center of the bot and has a radius of 1200 units. The sides of the pie shape is defined by the angle of the radar in the last turn and the current angle of the radar in this turn.
+**Radar**: Mounted on the gun and is used to scan for other bots when moved. The radar can turn left or right. When the radar is turned it will scan and detect bots when is within the radar sweep.
 
 ![Bot anatomy](../images/bot-anatomy.svg)
+
+## Radar sweep
+
+The radar sweep is a pie shape starting from the centre of the bot and has a radius of 1200 units. The sides of the pie shape are defined by the angle of the radar in the last turn and the current angle of the radar in this turn.
+
+![Radar sweep](../images/radar-sweep.svg)
