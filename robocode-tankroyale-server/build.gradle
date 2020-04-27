@@ -34,7 +34,7 @@ dependencies {
     compile 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.5.7'
     compile 'org.danilopianini:gson-extras:0.2.2'
 
-    compile 'org.java-websocket:Java-WebSocket:1.4.0'
+    compile 'org.java-websocket:Java-WebSocket:1.4.1'
 
     compile 'info.picocli:picocli:4.1.4'
 
