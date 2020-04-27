@@ -49,7 +49,7 @@ If standing still (0 units/turn), the maximum rate is 10° per turn. But the tur
 The maximum rate of rotation is:
 
 ```math
-10 - \frac{3}{4} |v|.
+10 - 0.75|v|.
 ```
 
 This means that the faster you're moving, the slower you turn.
@@ -99,7 +99,7 @@ This means that the maximum bullet speed is 19.7 units/turn with the minimum bul
 The gun gets heated when fired. The amount of gun heat produced is:
 
 ```math
-1 + \frac{firepower}{5}
+1 + firepower / 5
 ```
 
 Bots cannot fire if gun heat > 0. All guns start hot at the start of each round and start at 3.
@@ -122,14 +122,14 @@ Each robot takes 0.6 damage when colliding.
 
 ### Ramming
 
-If a bot is hiting another bot by moving forward, this counts as _ramming_, meaning that the bot is deliberately trying to hit the other bot. Both bots take damage, but an ramming bot will get a ramming kill bonus. (see more under [Scoring](scoring)).
+If a bot is hitting another bot by moving forward, this counts as _ramming_, meaning that the bot is deliberately trying to hit the other bot. Both bots take damage, but a ramming bot will get a ramming kill bonus. (see more under [Scoring](scoring.md)).
 
 ### Collision with a wall
 
 When a bot hits a wall it will take damage depending on its speed (v):
 
 ```math
-\frac{1}{2}|v| - 1
+0.5|v| - 1
 ```
 
 Hence, the higher speed the more damage.

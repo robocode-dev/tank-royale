@@ -2,7 +2,7 @@
 
 ## About
 
-Robocode is a [programming game](https://en.wikipedia.org/wiki/Programming_game) where the goal is to code an autonomous bot to compete against other bots in a virtual battle arena. A player is a programmer of a bot, who have no direct influence on the game. Instead, the player must write the program of a bot containing commands for how the bot must behave and react to various events occurring during a battle. The name Robocode is short for _Robot code_.
+Robocode is a [programming game](https://en.wikipedia.org/wiki/Programming_game) where the goal is to code an autonomous bot to compete against other bots in a virtual battle arena. A player is a programmer of a bot, who have no direct influence on the game. Instead, the player must write the program of a bot containing commands for how the bot must behave and react to various events occurring during a battle. The name Robocode is short for*Robot code*.
 
 ## Motto
 
