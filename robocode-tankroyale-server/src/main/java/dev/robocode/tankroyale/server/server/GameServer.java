@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.server.server;
 import com.google.gson.Gson;
 import dev.robocode.tankroyale.server.Server;
 import dev.robocode.tankroyale.server.engine.ModelUpdater;
+import dev.robocode.tankroyale.server.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.server.mappers.*;
 import dev.robocode.tankroyale.server.model.GameState;
 import dev.robocode.tankroyale.server.model.Round;
@@ -130,12 +131,15 @@ public final class GameServer {
       BotHandshake h = connHandler.getBotHandshakes().get(conn);
       Participant p = new Participant();
       p.setId(participantIds.get(conn));
+      p.setName(h.getName());
+      p.setVersion(h.getVersion());
+      p.setDescription(h.getDescription());
       p.setAuthor(h.getAuthor());
+      p.setUrl(h.getUrl());
       p.setCountryCode(h.getCountryCode());
       p.setGameTypes(h.getGameTypes());
-      p.setName(h.getName());
+      p.setPlatform(h.getPlatform());
       p.setProgrammingLang(h.getProgrammingLang());
-      p.setVersion(h.getVersion());
       participantList.add(p);
     }
 
@@ -331,9 +335,8 @@ public final class GameServer {
     participantIds.forEach(
         (conn, id) -> {
           if (botIntents.get(conn) == null) {
-            SkippedTurnEvent skippedTurnEvent = new SkippedTurnEvent();
-            skippedTurnEvent.set$type(Message.$type.SKIPPED_TURN_EVENT);
-            skippedTurnEvent.setTurnNumber(modelUpdater.getTurnNumber());
+            dev.robocode.tankroyale.server.events.SkippedTurnEvent skippedTurnEvent =
+                    new SkippedTurnEvent(modelUpdater.getTurnNumber());
 
             send(conn, gson.toJson(skippedTurnEvent));
           }

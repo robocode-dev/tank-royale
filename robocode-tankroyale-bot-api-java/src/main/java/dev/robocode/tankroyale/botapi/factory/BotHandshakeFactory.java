@@ -14,8 +14,11 @@ public final class BotHandshakeFactory {
     handshake.setName(botInfo.getName());
     handshake.setVersion(botInfo.getVersion());
     handshake.setAuthor(botInfo.getAuthor());
+    handshake.setDescription(botInfo.getDescription());
+    handshake.setUrl(botInfo.getUrl());
     handshake.setCountryCode(botInfo.getCountryCode());
     handshake.setGameTypes(new ArrayList<>(botInfo.getGameTypes()));
+    handshake.setPlatform(botInfo.getPlatform());
     handshake.setProgrammingLang(botInfo.getProgrammingLang());
     return handshake;
   }

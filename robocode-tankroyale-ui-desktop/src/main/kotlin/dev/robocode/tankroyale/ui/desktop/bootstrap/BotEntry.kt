@@ -6,12 +6,7 @@ import kotlinx.serialization.Serializable
 data class BotEntry(
     val filename: String,
     val info: Info
-) {
-    val displayText: String
-        get() {
-            return info.displayText
-        }
-}
+) {}
 
 @Serializable
 data class Info(
@@ -21,9 +16,9 @@ data class Info(
     val description: String? = null,
     val url: String? = null,
     val countryCode: String? = null,
+    val gameTypes: Set<String>,
     val programmingLang: String? = null,
-    val platform: String? = null,
-    val gameTypes: Set<String>
+    val platform: String? = null
 ) {
     val displayText: String
         get() {

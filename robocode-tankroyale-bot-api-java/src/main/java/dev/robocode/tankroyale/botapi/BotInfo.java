@@ -109,7 +109,7 @@ public final class BotInfo {
           prop.getProperty("name"),
           prop.getProperty("version"),
           prop.getProperty("author"),
-          prop.getProperty("getDescription"),
+          prop.getProperty("description"),
           prop.getProperty("url"),
           prop.getProperty("countryCode"),
           Arrays.asList(prop.getProperty("gameTypes").split("\\s*,\\s*")),

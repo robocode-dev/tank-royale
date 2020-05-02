@@ -10,9 +10,9 @@ data class BotInfo(
     val description: String? = null,
     val url: String? = null,
     val countryCode: String? = null,
+    val gameTypes: Set<String>,
     val platform: String? = null,
     val programmingLang: String? = null,
-    val gameTypes: Set<String>,
     val host: String,
     val port: Int
 ) {

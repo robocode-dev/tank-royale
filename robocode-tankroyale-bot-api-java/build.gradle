@@ -6,7 +6,7 @@ plugins {
 //    id "com.github.ben-manes.versions" version "0.28.0"
 }
 group = 'dev.robocode.tankroyale'
-version = '0.6.6'
+version = '0.6.7'
 /*
 license {
     ext.year = Calendar.getInstance().get(Calendar.YEAR)
@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    compile 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.5.7'
+    compile 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.0'
     compile 'com.neovisionaries:nv-websocket-client:2.9'
     compile 'com.neovisionaries:nv-i18n:1.27'
     compile 'org.danilopianini:gson-extras:0.2.2'

@@ -115,9 +115,9 @@ object SelectBotsForBootUpPanel : JPanel(MigLayout("fill")) {
                         info.description,
                         info.url,
                         info.countryCode,
+                        info.gameTypes,
                         info.platform,
                         info.programmingLang,
-                        info.gameTypes,
                         host = botEntry.filename, // host serves as filename here
                         port = -1
                     )
