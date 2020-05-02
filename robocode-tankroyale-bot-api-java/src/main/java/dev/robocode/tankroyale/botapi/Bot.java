@@ -270,7 +270,7 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void fire(double firepower) {
-    setFire(firepower);
+    setFirepower(firepower);
     go();
   }
 

@@ -138,7 +138,7 @@ public interface IBaseBot {
    * <p>The commands executed when {@link #go()} is called are set by calling the various setter
    * methods prior to calling the {@link #go()} method: {@link #setTurnRate(double)}, {@link
    * #setGunTurnRate(double)}, {@link #setRadarTurnRate(double)}, {@link #setTargetSpeed(double)},
-   * and {@link #setFire(double)}.
+   * and {@link #setFirepower(double)}.
    *
    * @see #getTurnTimeout()
    */
@@ -493,15 +493,15 @@ public interface IBaseBot {
    * @see #getGunHeat()
    * @see #getGunCoolingRate()
    */
-  void setFire(double firepower);
+  void setFirepower(double firepower);
 
   /**
    * Returns the firepower.
    *
    * @return The firepower.
-   * @see #setFire(double)
+   * @see #setFirepower(double)
    */
-  double getFire();
+  double getFirepower();
 
   /**
    * Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun behaves

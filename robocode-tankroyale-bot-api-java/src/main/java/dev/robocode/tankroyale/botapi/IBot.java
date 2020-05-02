@@ -673,12 +673,12 @@ public interface IBot extends IBaseBot {
    * first take place after this method is completed. If you need to execute multiple commands in
    * parallel, use <strong>setter</strong> methods instead of this blocking method.
    *
-   * <p>This method will cancel the effect of prior calls to {@link #setFire(double)}.
+   * <p>This method will cancel the effect of prior calls to {@link #setFirepower(double)}.
    *
    * @param firepower is the amount of energy spent on firing the gun. You cannot spend more energy
    *     than available from the bot. The bullet power must be greater than {@link #MIN_FIREPOWER}.
    * @see #onBulletFired(BulletFiredEvent)
-   * @see #setFire(double)
+   * @see #setFirepower(double)
    * @see #getGunHeat()
    * @see #getGunCoolingRate()
    */
