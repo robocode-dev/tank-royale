@@ -38,7 +38,7 @@ public class MyFirstBot extends Bot {
   // This method is called when our bot has scanned another bot
   @Override
   public void onScannedBot(ScannedBotEvent e) {
-    setFire(1); // Fire the cannon!
+    setFirepower(1); // Fire the cannon!
   }
 
   // This method is called when our bot is hit by a bullet

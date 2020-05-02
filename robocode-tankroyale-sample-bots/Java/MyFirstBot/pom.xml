@@ -3,10 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
  
   <groupId>dev.robocode.tankroyale.sample.bots</groupId>
-  <artifactId>my-first-bot</artifactId>
+  <artifactId>MyFirstBot</artifactId>
   <version>1.0</version>
  
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
@@ -15,7 +16,7 @@
     <dependency>
       <groupId>dev.robocode.tankroyale</groupId>
       <artifactId>robocode-tankroyale-bot-api-java</artifactId>
-      <version>0.5.3</version>
+      <version>0.6.5</version>
     </dependency>
   </dependencies>
 </project>
