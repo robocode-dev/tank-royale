@@ -19,16 +19,16 @@ import static dev.robocode.tankroyale.server.model.GameSetup.DEFAULT_GAME_TYPE;
         name = "Server",
         versionProvider = Server.VersionFileProvider.class,
         header = {
-                "              __________",
-                "             //       \\ I============###",
-                " ___________//_________\\__\\______________",
-                "( ___ __O____O____O____O____O____O__ ___ )",
-                " / _ ) ___  ___  ___  ___  ___  ___ / __)",
+                "               __________",
+                "              /          |DDD==============",
+                "    _________|___________|____________",
+                "  _/_ ______________________________ _\\_",
+                " / _ ) ___  ___  ___  ___  ___  ___ / __|",
                 " \\_\\_\\/ _ \\| __)/ _ \\/ __// _ \\| _ \\\\__|",
                 "      \\___/|___)\\___/\\___|\\___/|___/",
                 "",
-                "@|green     Build the best. Destroy the rest!|@",
-                ""
+                "           Robocode Tank Royale",
+                "",
         },
         descriptionHeading = "Description:%n",
         description = "Runs a Robocode Tank Royale server"
