@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.ui.desktop.util.ICommand
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import javax.swing.JOptionPane
+import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.STRINGS
 
 @UnstableDefault
 class PrepareServerCommand : ICommand {
@@ -14,7 +15,11 @@ class PrepareServerCommand : ICommand {
     @ImplicitReflectionSerializer
     override fun execute() {
         if (ServerProcess.isRunning()) {
-            val option = JOptionPane.showConfirmDialog(
+            val options = arrayOf(
+                STRINGS.get("use"),
+                STRINGS.get("restart")
+            )
+            val option = JOptionPane.showOptionDialog(
                 null,
                 String.format(
                     ResourceBundles.MESSAGES.get("server_already_running"),
@@ -22,9 +27,13 @@ class PrepareServerCommand : ICommand {
                     ServerProcess.gameType
                 ),
                 ResourceBundles.UI_TITLES.get("question"),
-                JOptionPane.YES_NO_OPTION
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0] // default button
             )
-            if (option == JOptionPane.YES_OPTION) {
+            if (option == JOptionPane.NO_OPTION) {
                 ServerProcess.stop()
                 StartServerDialog.isVisible = true
                 return

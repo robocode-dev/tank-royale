@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
 import dev.robocode.tankroyale.ui.desktop.ui.battle.BattlePanel
 import dev.robocode.tankroyale.ui.desktop.ui.battle.LogoPanel
+import dev.robocode.tankroyale.ui.desktop.ui.battle.SelectBotsForBattleDialog
 import dev.robocode.tankroyale.ui.desktop.ui.battle.SelectBotsForBootUpDialog
 import dev.robocode.tankroyale.ui.desktop.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.ui.desktop.ui.config.SetupRulesDialog
@@ -40,18 +41,9 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
 
         MainWindowMenu.apply {
-            onNewBattle.invokeLater {
-                var disposable: Closeable? = null
-                disposable = Client.onConnected.subscribe {
-                    SelectBotsForBootUpDialog.isVisible = true
-                    // Make sure to dispose. Otherwise the dialog will be shown when testing if the server is running
-                    disposable?.close()
-                }
-                PrepareServerCommand().execute()
-            }
-            onSetupRules.invokeLater {
-                SetupRulesDialog.isVisible = true
-            }
+            onSelectBots.invokeLater { selectBots() }
+            onBootUpBots.invokeLater { bootUpBots() }
+            onSetupRules.invokeLater { SetupRulesDialog.isVisible = true }
             onShowServerLog.invokeLater { ServerLogWindow.isVisible = true }
             onServerConfig.invokeLater { SelectServerDialog.isVisible = true }
             onBotDirConfig.invokeLater { BotDirectoryConfigDialog.isVisible = true }
@@ -66,6 +58,26 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
         onClosing {
             close()
         }
+    }
+
+    private fun selectBots() {
+        var disposable: Closeable? = null
+        disposable = Client.onConnected.subscribe {
+            SelectBotsForBattleDialog.isVisible = true
+            // Make sure to dispose. Otherwise the dialog will be shown when testing if the server is running
+            disposable?.close()
+        }
+        PrepareServerCommand().execute()
+    }
+
+    private fun bootUpBots() {
+        var disposable: Closeable? = null
+        disposable = Client.onConnected.subscribe {
+            SelectBotsForBootUpDialog.isVisible = true
+            // Make sure to dispose. Otherwise the dialog will be shown when testing if the server is running
+            disposable?.close()
+        }
+        PrepareServerCommand().execute()
     }
 
     private fun showLogo() {
