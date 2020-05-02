@@ -2,21 +2,24 @@ package dev.robocode.tankroyale.botapi;
 
 import com.neovisionaries.i18n.CountryCode;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 
-/** Required information about a bot. */
+/** Bot info contains the properties of a bot. */
 @SuppressWarnings("unused")
 public final class BotInfo {
 
-  private String name; // required
-  private String version; // required
-  private String author; // required
-  private String description; // optional
-  private String url; // optional
-  private String countryCode; // optional
-  private Set<String> gameTypes; // required
-  private String platform; // optional
-  private String programmingLang; // optional
+  private final String name; // required
+  private final String version; // required
+  private final String author; // required
+  private final String description; // optional
+  private final String url; // optional
+  private final String countryCode; // optional
+  private final Set<String> gameTypes; // required
+  private final String platform; // optional
+  private final String programmingLang; // optional
 
   /**
    * Initializes a new instance of the BotInfo class.
@@ -88,6 +91,31 @@ public final class BotInfo {
     this.gameTypes = trimmedGameTypes;
     this.platform = platform;
     this.programmingLang = programmingLang;
+  }
+
+  /**
+   * Reads the bot info from a file.
+   *
+   * @param fileName is the filename of the file containing bot properties.
+   * @return A BotInfo instance containing the bot properties read from the file.
+   * @throws IOException if an error occurs when reading the file.
+   */
+  public static BotInfo fromFile(String fileName) throws IOException {
+    File file = new File(BotInfo.class.getClassLoader().getResource(fileName).getFile());
+    try (FileInputStream fis = new FileInputStream(file)) {
+      Properties prop = new Properties();
+      prop.load(fis);
+      return new BotInfo(
+          prop.getProperty("name"),
+          prop.getProperty("version"),
+          prop.getProperty("author"),
+          prop.getProperty("getDescription"),
+          prop.getProperty("url"),
+          prop.getProperty("countryCode"),
+          Arrays.asList(prop.getProperty("gameTypes").split("\\s*,\\s*")),
+          prop.getProperty("platform"),
+          prop.getProperty("programmingLang"));
+    }
   }
 
   /**
