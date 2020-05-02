@@ -335,7 +335,7 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
-  public final void setFirepower(double firepower) {
+  public final void setFire(double firepower) {
     if (Double.isNaN(firepower)) {
       throw new IllegalArgumentException("firepower cannot be NaN");
     }
@@ -351,7 +351,7 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
-  public final double getFirepower() {
+  public final double getFire() {
     return __internals.botIntent.getFirepower();
   }
 
