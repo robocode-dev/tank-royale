@@ -2,17 +2,17 @@ plugins {
     id 'java'
     id 'maven'
     id 'idea'
-    id "com.github.hierynomus.license" version "0.15.0"
-    id "com.github.ben-manes.versions" version "0.28.0"
+//    id "com.github.hierynomus.license" version "0.15.0"
+//    id "com.github.ben-manes.versions" version "0.28.0"
 }
 group = 'dev.robocode.tankroyale'
 version = '0.6.4'
-
+/*
 license {
     ext.year = Calendar.getInstance().get(Calendar.YEAR)
     ext.name = 'Flemming Noernberg Larsen'
 }
-
+*/
 compileJava {
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
