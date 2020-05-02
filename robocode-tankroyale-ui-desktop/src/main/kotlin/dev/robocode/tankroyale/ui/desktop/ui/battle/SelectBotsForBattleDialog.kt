@@ -78,7 +78,6 @@ class SelectBotsForBattlePanel : JPanel(MigLayout("fill")) {
         onCancel.subscribe { SelectBotsForBattleDialog.dispose() }
 
         Client.onBotListUpdate.subscribe { updateAvailableBots() }
-
         updateAvailableBots()
     }
 

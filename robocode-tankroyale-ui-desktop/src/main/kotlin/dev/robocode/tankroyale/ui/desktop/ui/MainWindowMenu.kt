@@ -19,8 +19,8 @@ object MainWindowMenu : JMenuBar() {
 
     init {
         add(JMenu(MENU.get("menu.battle")).apply {
-            addNewMenuItem("item.select_bots", onSelectBots)
             addNewMenuItem("item.boot_up_bots", onBootUpBots)
+            addNewMenuItem("item.select_bots", onSelectBots)
             addSeparator()
             addNewMenuItem("item.setup_rules", onSetupRules)
         })

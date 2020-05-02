@@ -2,11 +2,13 @@ package dev.robocode.tankroyale.ui.desktop.ui.battle
 
 import dev.robocode.tankroyale.ui.desktop.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.ui.desktop.bootstrap.BotEntry
+import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
-import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.toList
 import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.onChanged
+import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.toList
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
+import dev.robocode.tankroyale.ui.desktop.model.BotListUpdate
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.util.Event
@@ -15,6 +17,7 @@ import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.EventQueue
+import java.awt.Font
 import java.util.*
 import javax.swing.*
 import kotlin.collections.ArrayList
@@ -26,7 +29,7 @@ object SelectBotsForBootUpDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
-        size = Dimension(600, 600)
+        size = Dimension(600, 620)
 
         setLocationRelativeTo(null) // center on screen
 
@@ -63,26 +66,36 @@ object SelectBotsForBootUpPanel : JPanel(MigLayout("fill")) {
             return Collections.unmodifiableList(files)
         }
 
+    private var botsOnServerCount = 0;
+    private val botsOnServerLabel = JLabel();
 
     init {
+        // Set label to bold
+        val font = botsOnServerLabel.font
+        botsOnServerLabel.font = font.deriveFont(font.style or Font.BOLD)
+
+        val upperPanel = JPanel(MigLayout("insets 10"))
+        upperPanel.add(botsOnServerLabel)
+
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
 
         val lowerPanel = JPanel(MigLayout("insets 10, fill")).apply {
             add(selectPanel, "north")
             add(buttonPanel, "center")
         }
+        add(upperPanel)
         add(lowerPanel, "south")
 
         val okButton: JButton
 
         buttonPanel.apply {
-            okButton = addButton("ok", onOK, "tag ok")
+            okButton = addButton("boot_up", onOK, "tag ok")
             addButton("cancel", onCancel, "tag cancel")
         }
         okButton.isEnabled = false
 
         selectPanel.selectedBotList.onChanged {
-            okButton.isEnabled = selectPanel.selectedBotListModel.size >= 1
+            okButton.isEnabled = selectPanel.selectedBotListModel.size >= 0
         }
 
         onOK.subscribe {
@@ -91,12 +104,19 @@ object SelectBotsForBootUpPanel : JPanel(MigLayout("fill")) {
         }
 
         onCancel.subscribe { SelectBotsForBootUpDialog.dispose() }
-
         updateAvailableBots()
+
+        Client.onBotListUpdate.subscribe { updateBotsOnServer(it) }
+        updateBotsOnServer()
     }
 
     fun clearSelectedBots() {
         selectPanel.selectedBotListModel.clear()
+    }
+
+    private fun updateBotsOnServer(botListUpdate: BotListUpdate? = null) {
+        botsOnServerCount = botListUpdate?.bots?.size ?: 0
+        botsOnServerLabel.text = String.format(ResourceBundles.MESSAGES.get("x_bots_are_ready"), botsOnServerCount)
     }
 
     fun updateAvailableBots() {
