@@ -12,7 +12,7 @@ import javax.swing.*
 import javax.swing.table.DefaultTableModel
 
 
-class SelectBotsPanel2(val onlySelectUnique: Boolean = false) : JPanel(MigLayout("fill")) {
+class SelectBotsPanel2 : JPanel(MigLayout("fill")) {
     // Private events
     private val onAdd = Event<JButton>()
     private val onAddAll = Event<JButton>()
@@ -61,53 +61,44 @@ class SelectBotsPanel2(val onlySelectUnique: Boolean = false) : JPanel(MigLayout
         }
 
         onAdd.subscribe {
-            availableBotTable.selected().forEach { row ->
-                if (row.availability === BotAvailability.OFFLINE ||
-                    (row.availability === BotAvailability.READY && !selectedBotTable.contains(row.botInfo))
-                ) {
-                    selectedBotTable.add(row)
-                }
-            }
+            availableBotTable.selected().forEach { add(it) }
         }
-/*
         onAddAll.subscribe {
-            for (i in 0 until availableBotListModel.size) {
-                val botInfo = availableBotListModel[i]
-                if (!(onlySelectUnique && selectedBotListModel.contains(botInfo))) {
-                    selectedBotListModel.addElement(botInfo)
-                }
-            }
+            availableBotTable.rows().forEach { add(it) }
         }
         onRemove.subscribe {
-            selectedBotList.selectedValuesList.forEach {
-                selectedBotListModel.removeElement(it)
-            }
+            selectedBotTable.selectedIndices().forEach { selectedBotTable.removeAt(it) }
         }
         onRemoveAll.subscribe {
-            selectedBotListModel.clear()
+            selectedBotTable.clear()
         }
-        availableBotList.addMouseListener(object : MouseAdapter() {
+        availableBotTable.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount > 1) {
-                    val index = availableBotList.locationToIndex(e.point)
-                    if (index >= 0 && index < availableBotListModel.size()) {
-                        val botInfo = availableBotListModel[index]
-                        if (!(onlySelectUnique && selectedBotListModel.contains(botInfo))) {
-                            selectedBotListModel.addElement(botInfo)
-                        }
+                    val row = availableBotTable.rowAtPoint(e.point)
+                    if (row >= 0) {
+                        add(availableBotTable[row])
                     }
                 }
             }
         })
-        selectedBotList.addMouseListener(object : MouseAdapter() {
+        selectedBotTable.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount > 1) {
-                    val index = selectedBotList.locationToIndex(e.point)
-                    if (index >= 0 && index < selectedBotListModel.size()) {
-                        selectedBotListModel.removeElement(selectedBotListModel[index])
+                    val row = selectedBotTable.rowAtPoint(e.point)
+                    if (row >= 0) {
+                        selectedBotTable.removeAt(row)
                     }
                 }
             }
-        })*/
+        })
+    }
+
+    private fun add(row: BotSelectionTableRow) {
+        if (row.availability === BotAvailability.OFFLINE ||
+            (row.availability === BotAvailability.READY && !selectedBotTable.contains(row.botInfo))
+        ) {
+            selectedBotTable.add(row)
+        }
     }
 }

@@ -1,12 +1,11 @@
 package dev.robocode.tankroyale.ui.desktop.ui.battle
 
-import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.onSelection
 import net.miginfocom.swing.MigLayout
 import javax.swing.JPanel
 
-class SelectBotsWithBotInfoPanel2(val onlySelectUnique: Boolean = false) : JPanel(MigLayout("fill")) {
+class SelectBotsWithBotInfoPanel2 : JPanel(MigLayout("fill")) {
 
-    private val selectBotsPanel = SelectBotsPanel2(onlySelectUnique)
+    private val selectBotsPanel = SelectBotsPanel2()
     private val botInfoPanel = BotInfoPanel()
 
     val availableBotTable = selectBotsPanel.availableBotTable

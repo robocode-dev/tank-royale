@@ -25,22 +25,26 @@ class BotSelectionTable : JTable(BotSelectionTableModel()) {
     }
 
     fun clear() {
-        (this.model as DefaultTableModel).rowCount = 0
+        (model as DefaultTableModel).rowCount = 0
     }
 
     fun add(botInfo: BotInfo, availability: BotAvailability) {
-        (this.model as DefaultTableModel).addRow(arrayOf(botInfo, availability));
+        (model as DefaultTableModel).addRow(arrayOf(botInfo, availability));
     }
 
     fun add(row: BotSelectionTableRow) {
         add(row.botInfo, row.availability)
     }
 
-    fun contains(botInfo: BotInfo): Boolean {
-        return listBots().any { it.botInfo === botInfo }
+    fun removeAt(row: Int) {
+        (model as DefaultTableModel).removeRow(row)
     }
 
-    private fun listBots(): List<BotSelectionTableRow> {
+    fun contains(botInfo: BotInfo): Boolean {
+        return rows().any { it.botInfo === botInfo }
+    }
+
+    fun rows(): List<BotSelectionTableRow> {
         val list = ArrayList<BotSelectionTableRow>()
         for (i in 0 until rowCount) {
             list.add(get(i))
@@ -54,7 +58,11 @@ class BotSelectionTable : JTable(BotSelectionTableModel()) {
         return selected
     }
 
-    fun get(row: Int): BotSelectionTableRow {
+    fun selectedIndices(): List<Int> {
+        return selectedRows.toList()
+    }
+
+    operator fun get(row: Int): BotSelectionTableRow {
         return BotSelectionTableRow(
             model.getValueAt(row, 0) as BotInfo,
             model.getValueAt(row, 1) as BotAvailability

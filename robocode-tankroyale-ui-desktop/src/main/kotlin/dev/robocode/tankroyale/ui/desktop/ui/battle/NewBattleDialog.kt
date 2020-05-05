@@ -50,7 +50,7 @@ class NewBattleDialogPanel : JPanel(MigLayout("fill")) {
     private val onStartBattle = Event<JButton>()
     private val onCancel = Event<JButton>()
 
-    private val selectPanel = SelectBotsWithBotInfoPanel2(onlySelectUnique = true)
+    private val selectPanel = SelectBotsWithBotInfoPanel2()
 
     private val botEntries: List<BotEntry> by lazy { BootstrapProcess.list() }
 /*
