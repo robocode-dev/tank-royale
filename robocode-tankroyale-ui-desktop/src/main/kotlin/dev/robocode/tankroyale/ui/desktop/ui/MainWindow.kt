@@ -3,10 +3,7 @@ package dev.robocode.tankroyale.ui.desktop.ui
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
-import dev.robocode.tankroyale.ui.desktop.ui.battle.BattlePanel
-import dev.robocode.tankroyale.ui.desktop.ui.battle.LogoPanel
-import dev.robocode.tankroyale.ui.desktop.ui.battle.SelectBotsForBattleDialog
-import dev.robocode.tankroyale.ui.desktop.ui.battle.SelectBotsForBootUpDialog
+import dev.robocode.tankroyale.ui.desktop.ui.battle.*
 import dev.robocode.tankroyale.ui.desktop.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.ui.desktop.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.ui.desktop.ui.server.PrepareServerCommand
@@ -42,7 +39,6 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
         MainWindowMenu.apply {
             onSelectBots.invokeLater { selectBots() }
-            onBootUpBots.invokeLater { bootUpBots() }
             onSetupRules.invokeLater { SetupRulesDialog.isVisible = true }
             onShowServerLog.invokeLater { ServerLogWindow.isVisible = true }
             onServerConfig.invokeLater { SelectServerDialog.isVisible = true }
@@ -63,17 +59,7 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
     private fun selectBots() {
         var disposable: Closeable? = null
         disposable = Client.onConnected.subscribe {
-            SelectBotsForBattleDialog.isVisible = true
-            // Make sure to dispose. Otherwise the dialog will be shown when testing if the server is running
-            disposable?.close()
-        }
-        PrepareServerCommand().execute()
-    }
-
-    private fun bootUpBots() {
-        var disposable: Closeable? = null
-        disposable = Client.onConnected.subscribe {
-            SelectBotsForBootUpDialog.isVisible = true
+            NewBattleDialog.isVisible = true
             // Make sure to dispose. Otherwise the dialog will be shown when testing if the server is running
             disposable?.close()
         }

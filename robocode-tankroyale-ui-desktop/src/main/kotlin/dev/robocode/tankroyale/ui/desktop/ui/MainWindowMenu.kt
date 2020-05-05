@@ -11,7 +11,6 @@ object MainWindowMenu : JMenuBar() {
 
     // Public events
     val onSelectBots = Event<JMenuItem>()
-    val onBootUpBots = Event<JMenuItem>()
     val onSetupRules = Event<JMenuItem>()
     val onShowServerLog = Event<JMenuItem>()
     val onServerConfig = Event<JMenuItem>()
@@ -19,7 +18,6 @@ object MainWindowMenu : JMenuBar() {
 
     init {
         add(JMenu(MENU.get("menu.battle")).apply {
-            addNewMenuItem("item.boot_up_bots", onBootUpBots)
             addNewMenuItem("item.select_bots", onSelectBots)
             addSeparator()
             addNewMenuItem("item.setup_rules", onSetupRules)
