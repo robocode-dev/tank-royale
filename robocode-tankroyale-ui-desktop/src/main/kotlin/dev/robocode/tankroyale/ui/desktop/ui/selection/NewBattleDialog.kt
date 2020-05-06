@@ -1,14 +1,13 @@
-package dev.robocode.tankroyale.ui.desktop.ui.battle
+package dev.robocode.tankroyale.ui.desktop.ui.selection
 
 import dev.robocode.tankroyale.ui.desktop.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.ui.desktop.bootstrap.BotEntry
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
-import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.onChanged
-import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.toList
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
-import dev.robocode.tankroyale.ui.desktop.model.BotListUpdate
+import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
+import dev.robocode.tankroyale.ui.desktop.settings.GameType
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.util.Event
@@ -17,28 +16,26 @@ import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.EventQueue
-import java.awt.Font
-import java.util.*
 import javax.swing.*
-import kotlin.collections.ArrayList
+
 
 @UnstableDefault
 @ImplicitReflectionSerializer
-object SelectBotsForBootUpDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("boot_up_dialog")) {
+object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("new_battle_dialog")) {
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
-        size = Dimension(600, 620)
+        size = Dimension(600, 600)
 
         setLocationRelativeTo(null) // center on screen
 
-        val selectBotsAndStartPanel = SelectBotsForBootUpPanel
+        val newBattleDialogPanel = NewBattleDialogPanel()
 
-        contentPane.add(selectBotsAndStartPanel)
+        contentPane.add(newBattleDialogPanel)
 
         onActivated {
-            selectBotsAndStartPanel.apply {
+            newBattleDialogPanel.apply {
                 updateAvailableBots()
                 clearSelectedBots()
             }
@@ -48,86 +45,68 @@ object SelectBotsForBootUpDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES
 
 @UnstableDefault
 @ImplicitReflectionSerializer
-object SelectBotsForBootUpPanel : JPanel(MigLayout("fill")) {
+class NewBattleDialogPanel : JPanel(MigLayout("fill")) {
     // Private events
-    private val onOK = Event<JButton>()
+    private val onStartBattle = Event<JButton>()
     private val onCancel = Event<JButton>()
 
-    private val selectPanel = SelectBotsWithBotInfoPanel()
+    private val selectPanel = SelectBotsWithBotInfoPanel2()
 
     private val botEntries: List<BotEntry> by lazy { BootstrapProcess.list() }
-
+/*
     private val selectedBotFiles: List<String>
         get() {
             val files = ArrayList<String>()
-            selectPanel.selectedBotList.toList().forEach { botInfo ->
+            selectPanel.selectedBotTable.toList().forEach { botInfo ->
                 files += botInfo.host // host serves as filename here
             }
             return Collections.unmodifiableList(files)
         }
-
-    private var botsOnServerCount = 0;
-    private val botsOnServerLabel = JLabel();
+*/
 
     init {
-        // Set label to bold
-        val font = botsOnServerLabel.font
-        botsOnServerLabel.font = font.deriveFont(font.style or Font.BOLD)
-
-        val upperPanel = JPanel(MigLayout("insets 10"))
-        upperPanel.add(botsOnServerLabel)
-
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
 
         val lowerPanel = JPanel(MigLayout("insets 10, fill")).apply {
             add(selectPanel, "north")
             add(buttonPanel, "center")
         }
-        add(upperPanel)
         add(lowerPanel, "south")
 
-        val okButton: JButton
+        val startBattleButton: JButton
 
         buttonPanel.apply {
-            okButton = addButton("boot_up", onOK, "tag ok")
+            startBattleButton = addButton("start_battle", onStartBattle, "tag ok")
             addButton("cancel", onCancel, "tag cancel")
         }
-        okButton.isEnabled = false
-
+        startBattleButton.isEnabled = false
+/*
         selectPanel.selectedBotList.onChanged {
-            okButton.isEnabled = selectPanel.selectedBotListModel.size >= 0
+            startBattleButton.isEnabled = selectPanel.selectedBotListModel.size >= 2
         }
+*/
+        onStartBattle.subscribe { startGame() }
 
-        onOK.subscribe {
-            bootUpBots()
-            SelectBotsForBootUpDialog.dispose()
-        }
+        onCancel.subscribe { SelectBotsForBattleDialog.dispose() }
 
-        onCancel.subscribe { SelectBotsForBootUpDialog.dispose() }
+        Client.onBotListUpdate.subscribe { updateAvailableBots() }
         updateAvailableBots()
-
-        Client.onBotListUpdate.subscribe { updateBotsOnServer(it) }
-        updateBotsOnServer()
     }
 
     fun clearSelectedBots() {
-        selectPanel.selectedBotListModel.clear()
-    }
-
-    private fun updateBotsOnServer(botListUpdate: BotListUpdate? = null) {
-        botsOnServerCount = botListUpdate?.bots?.size ?: 0
-        botsOnServerLabel.text = String.format(ResourceBundles.MESSAGES.get("x_bots_are_ready"), botsOnServerCount)
+        selectPanel.selectedBotTable.clear()
     }
 
     fun updateAvailableBots() {
         SwingUtilities.invokeLater {
-            val availableBotListModel = selectPanel.availableBotListModel
+            val table = selectPanel.availableBotTable
+            table.clear()
 
-            availableBotListModel.clear()
+            Client.availableBots.forEach { table.add(it, BotAvailability.READY) }
 
             botEntries.forEach { botEntry ->
                 val info = botEntry.info
-                selectPanel.availableBotListModel.addElement(
+                selectPanel.availableBotTable.add(
                     BotInfo(
                         info.name,
                         info.version,
@@ -140,15 +119,26 @@ object SelectBotsForBootUpPanel : JPanel(MigLayout("fill")) {
                         info.programmingLang,
                         host = botEntry.filename, // host serves as filename here
                         port = -1
-                    )
+                    ),
+                    BotAvailability.OFFLINE
                 )
             }
         }
     }
 
-    private fun bootUpBots() {
-        SelectBotsForBattleDialog.isVisible = true
-        BootstrapProcess.run(selectedBotFiles)
+    @ImplicitReflectionSerializer
+    @UnstableDefault
+    private fun startGame() {
+        isVisible = true
+
+        val gameType = ServerProcess.gameType
+            ?: GameType.CLASSIC.type // FIXME: Dialog must be shown to select game type with remote server
+
+//        val botAddresses = selectPanel.selectedBotListModel.toArray()
+//            .map { b -> (b as BotInfo).botAddress }
+//        Client.startGame(GamesSettings.games[gameType]!!, botAddresses.toSet())
+
+        SelectBotsForBattleDialog.dispose()
     }
 }
 
@@ -158,6 +148,6 @@ private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     EventQueue.invokeLater {
-        SelectBotsForBootUpDialog.isVisible = true
+        NewBattleDialog.isVisible = true
     }
 }

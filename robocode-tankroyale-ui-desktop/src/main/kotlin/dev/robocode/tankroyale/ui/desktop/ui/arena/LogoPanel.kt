@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.ui.desktop.ui.battle
+package dev.robocode.tankroyale.ui.desktop.ui.arena
 
 import java.awt.Color
 import javax.swing.JPanel

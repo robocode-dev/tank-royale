@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.MESSAGES
-import dev.robocode.tankroyale.ui.desktop.ui.battle.GameTypeComboBox
+import dev.robocode.tankroyale.ui.desktop.ui.selection.GameTypeComboBox
 import dev.robocode.tankroyale.ui.desktop.ui.components.JLimitedTextField
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer

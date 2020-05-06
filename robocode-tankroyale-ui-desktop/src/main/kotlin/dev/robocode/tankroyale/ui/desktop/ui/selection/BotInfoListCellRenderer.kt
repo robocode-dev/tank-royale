@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.ui.desktop.ui.battle
+package dev.robocode.tankroyale.ui.desktop.ui.selection
 
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import java.awt.Component

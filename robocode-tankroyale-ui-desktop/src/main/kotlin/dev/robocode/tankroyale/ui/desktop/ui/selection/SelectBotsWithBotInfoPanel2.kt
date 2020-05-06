@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.ui.desktop.ui.battle
+package dev.robocode.tankroyale.ui.desktop.ui.selection
 
 import dev.robocode.tankroyale.ui.desktop.extensions.JTableExt.onSelection
 import net.miginfocom.swing.MigLayout

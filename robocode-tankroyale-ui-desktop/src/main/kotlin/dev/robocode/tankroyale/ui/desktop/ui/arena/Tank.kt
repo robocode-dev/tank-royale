@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.ui.desktop.ui.battle
+package dev.robocode.tankroyale.ui.desktop.ui.arena
 
 import java.awt.BasicStroke
 import java.awt.Color
@@ -8,7 +8,6 @@ import java.awt.Graphics2D
 import java.awt.geom.Ellipse2D
 import java.awt.geom.GeneralPath
 import java.awt.geom.Rectangle2D
-import kotlin.math.abs
 import kotlin.math.hypot
 
 class Tank(

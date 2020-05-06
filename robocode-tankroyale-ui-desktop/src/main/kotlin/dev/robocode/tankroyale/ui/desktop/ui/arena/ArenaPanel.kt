@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.ui.desktop.ui.battle
+package dev.robocode.tankroyale.ui.desktop.ui.arena
 
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.fx.Animation
@@ -6,10 +6,10 @@ import dev.robocode.tankroyale.ui.desktop.fx.CircleBurst
 import dev.robocode.tankroyale.ui.desktop.fx.Explosion
 import dev.robocode.tankroyale.ui.desktop.model.*
 import dev.robocode.tankroyale.ui.desktop.ui.ResultsWindow
-import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.State.arenaHeight
-import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.State.arenaWidth
-import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.State.bots
-import dev.robocode.tankroyale.ui.desktop.ui.battle.ArenaPanel.addMouseWheelListener
+import dev.robocode.tankroyale.ui.desktop.ui.arena.ArenaPanel.State.arenaHeight
+import dev.robocode.tankroyale.ui.desktop.ui.arena.ArenaPanel.State.arenaWidth
+import dev.robocode.tankroyale.ui.desktop.ui.arena.ArenaPanel.State.bots
+import dev.robocode.tankroyale.ui.desktop.ui.arena.ArenaPanel.addMouseWheelListener
 import dev.robocode.tankroyale.ui.desktop.util.Graphics2DState
 import java.awt.*
 import java.awt.event.MouseWheelEvent
@@ -41,11 +41,26 @@ object ArenaPanel : JPanel() {
     private val state = State
 
     init {
-        addMouseWheelListener { e -> if (e != null) onMouseWheel(e) }
+        addMouseWheelListener { e -> if (e != null) onMouseWheel(
+            e
+        )
+        }
 
-        Client.onGameStarted.subscribe { onGameStarted(it) }
-        Client.onGameEnded.subscribe { onGameEnded(it) }
-        Client.onTickEvent.subscribe { onTick(it) }
+        Client.onGameStarted.subscribe {
+            onGameStarted(
+                it
+            )
+        }
+        Client.onGameEnded.subscribe {
+            onGameEnded(
+                it
+            )
+        }
+        Client.onTickEvent.subscribe {
+            onTick(
+                it
+            )
+        }
     }
 
     private fun onGameStarted(gameStartedEvent: GameStartedEvent) {
@@ -69,17 +84,25 @@ object ArenaPanel : JPanel() {
             explosions.clear()
         }
 
-        state.round = tickEvent.roundNumber
-        state.time = tickEvent.turnNumber
+        State.round = tickEvent.roundNumber
+        State.time = tickEvent.turnNumber
         state.bots = tickEvent.botStates
-        state.bullets = tickEvent.bulletStates
+        State.bullets = tickEvent.bulletStates
 
         tickEvent.events.forEach {
             when (it) {
-                is BotDeathEvent -> onBotDeath(it)
-                is BulletHitBotEvent -> onBulletHitBot(it)
-                is BulletHitWallEvent -> onBulletHitWall(it)
-                is BulletHitBulletEvent -> onBulletHitBullet(it)
+                is BotDeathEvent -> onBotDeath(
+                    it
+                )
+                is BulletHitBotEvent -> onBulletHitBot(
+                    it
+                )
+                is BulletHitWallEvent -> onBulletHitWall(
+                    it
+                )
+                is BulletHitBulletEvent -> onBulletHitBullet(
+                    it
+                )
             }
         }
 
@@ -90,7 +113,9 @@ object ArenaPanel : JPanel() {
 
     private fun onBotDeath(botDeathEvent: BotDeathEvent) {
         val bot = bots.first { bot -> bot.id == botDeathEvent.victimId }
-        val explosion = Explosion(bot.x, bot.y, 80, 50, 15, state.time)
+        val explosion = Explosion(bot.x, bot.y, 80, 50, 15,
+            State.time
+        )
         explosions.add(explosion)
     }
 
@@ -101,13 +126,25 @@ object ArenaPanel : JPanel() {
         val xOffset = bullet.x - bot.x
         val yOffset = bullet.y - bot.y
 
-        val explosion = BotHitExplosion(bot.x, bot.y, xOffset, yOffset, bot.id, 4.0, 40.0, 25, state.time)
+        val explosion = BotHitExplosion(
+            bot.x,
+            bot.y,
+            xOffset,
+            yOffset,
+            bot.id,
+            4.0,
+            40.0,
+            25,
+            State.time
+        )
         explosions.add(explosion)
     }
 
     private fun onBulletHitWall(bulletHitWallEvent: BulletHitWallEvent) {
         val bullet = bulletHitWallEvent.bullet
-        val explosion = CircleBurst(bullet.x, bullet.y, 4.0, 40.0, 25, state.time)
+        val explosion = CircleBurst(bullet.x, bullet.y, 4.0, 40.0, 25,
+            State.time
+        )
         explosions.add(explosion)
     }
 
@@ -118,7 +155,9 @@ object ArenaPanel : JPanel() {
         val x = (bullet1.x + bullet2.x) / 2
         val y = (bullet1.y + bullet2.y) / 2
 
-        val explosion = CircleBurst(x, y, 4.0, 40.0, 25, state.time)
+        val explosion = CircleBurst(x, y, 4.0, 40.0, 25,
+            State.time
+        )
         explosions.add(explosion)
     }
 
@@ -166,16 +205,34 @@ object ArenaPanel : JPanel() {
             val x = it.x
             val y = it.y
 
-            Tank(x, y, it.direction, it.gunDirection, it.radarDirection).paint(g)
+            Tank(
+                x,
+                y,
+                it.direction,
+                it.gunDirection,
+                it.radarDirection
+            ).paint(g)
 
-            drawScanArc(g, x, y, it.radarDirection, it.radarSweep, Color.WHITE)
+            drawScanArc(
+                g,
+                x,
+                y,
+                it.radarDirection,
+                it.radarSweep,
+                Color.WHITE
+            )
             drawEnergy(g, x, y, it.energy)
         }
     }
 
     private fun drawBullets(g: Graphics2D) {
-        state.bullets.forEach {
-            drawBullet(g, it.x, it.y, it.power)
+        State.bullets.forEach {
+            drawBullet(
+                g,
+                it.x,
+                it.y,
+                it.power
+            )
         }
     }
 
@@ -192,7 +249,7 @@ object ArenaPanel : JPanel() {
     private fun drawExplosions(g: Graphics2D) {
         with(explosions.iterator()) {
             forEach { explosion ->
-                explosion.paint(g, state.time)
+                explosion.paint(g, State.time)
                 if (explosion.isFinished()) remove()
             }
         }
@@ -238,7 +295,7 @@ object ArenaPanel : JPanel() {
 
         g.scale(1.0, -1.0)
         g.color = Color.YELLOW
-        g.drawString("Round ${state.round}, Turn: ${state.time}", 10, 20 - arenaHeight)
+        g.drawString("Round ${State.round}, Turn: ${State.time}", 10, 20 - arenaHeight)
 
         oldState.restore(g)
     }

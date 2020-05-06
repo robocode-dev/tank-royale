@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.ui.desktop.ui.battle
+package dev.robocode.tankroyale.ui.desktop.ui.arena
 
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
@@ -20,8 +20,12 @@ object BattlePanel : JPanel() {
     init {
         val buttonPanel = JPanel().apply {
             addButton("battle.stop", onStop)
-            addButton("battle.restart", onRestart)
-            pauseResumeButton = addButton("battle.pause", onPauseResume)
+            addButton("battle.restart",
+                onRestart
+            )
+            pauseResumeButton = addButton("battle.pause",
+                onPauseResume
+            )
         }
 
         layout = BorderLayout()
