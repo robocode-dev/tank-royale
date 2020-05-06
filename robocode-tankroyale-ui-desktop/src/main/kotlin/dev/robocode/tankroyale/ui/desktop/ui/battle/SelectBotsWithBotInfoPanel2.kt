@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.ui.desktop.ui.battle
 
+import dev.robocode.tankroyale.ui.desktop.extensions.JTableExt.onSelection
 import net.miginfocom.swing.MigLayout
 import javax.swing.JPanel
 
@@ -19,7 +20,11 @@ class SelectBotsWithBotInfoPanel2 : JPanel(MigLayout("fill")) {
 
         add(groupPanel, "south")
 
-//        selectedBotList.onSelection { botInfo -> botInfoPanel.updateBotInfo(botInfo) }
-//        availableBotList.onSelection { botInfo -> botInfoPanel.updateBotInfo(botInfo) }
+        availableBotTable.onSelection {
+                row -> botInfoPanel.updateBotInfo(availableBotTable[row].botInfo)
+        }
+        selectedBotTable.onSelection {
+                row -> botInfoPanel.updateBotInfo(selectedBotTable[row].botInfo)
+        }
     }
 }
