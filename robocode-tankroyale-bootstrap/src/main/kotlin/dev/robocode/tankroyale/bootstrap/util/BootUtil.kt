@@ -19,9 +19,10 @@ import java.nio.file.Path
 import java.util.function.Predicate
 import java.util.stream.Collectors.toList
 
+@UnstableDefault
+@ImplicitReflectionSerializer
 class BootUtil(private val botPaths: List<Path>) {
 
-    @ImplicitReflectionSerializer
     fun findBotEntries(gameTypesCSV: String?): List<BotEntry> {
         val gameTypes: List<String>? = gameTypesCSV?.split(",")?.map { it.trim() }
 
@@ -39,7 +40,6 @@ class BootUtil(private val botPaths: List<Path>) {
         return botEntries
     }
 
-    @ImplicitReflectionSerializer
     fun startBots(filenames: Array<String>): List<Process> {
         val processes = ArrayList<Process>()
         filenames.forEach { filename ->
@@ -51,7 +51,6 @@ class BootUtil(private val botPaths: List<Path>) {
         return processes
     }
 
-    @ImplicitReflectionSerializer
     private fun startBot(filename: String): Process? {
         try {
             val scriptPath = findOsScript(filename)
@@ -74,27 +73,10 @@ class BootUtil(private val botPaths: List<Path>) {
                     ProcessBuilder(command)
             }
 
-            val botInfo = getBotInfo(filename)!!
-
+            val process = processBuilder.start()
             val env = processBuilder.environment()
 
-            env[Env.SERVER_URL.name] = System.getProperty("server.url")
-            env[Env.BOT_NAME.name] = botInfo.name
-            env[Env.BOT_VERSION.name] = botInfo.version
-            env[Env.BOT_AUTHOR.name] = botInfo.author
-            if (botInfo.description != null)
-                env[Env.BOT_DESCRIPTION.name] = botInfo.description
-            if (botInfo.url != null)
-                env[Env.BOT_URL.name] = botInfo.url
-            if (botInfo.countryCode != null)
-                env[Env.BOT_COUNTRY_CODE.name] = botInfo.countryCode
-            env[Env.BOT_GAME_TYPES.name] = botInfo.gameTypes.joinToString()
-            if (botInfo.platform != null)
-                env[Env.BOT_PLATFORM.name] = botInfo.platform
-            if (botInfo.programmingLang != null)
-                env[Env.BOT_PROG_LANG.name] = botInfo.programmingLang
-
-            val process = processBuilder.start()
+            setEnvVars(env, getBotInfo(filename)!!);
 
             println("$filename started")
             return process
@@ -103,6 +85,23 @@ class BootUtil(private val botPaths: List<Path>) {
             System.err.println("ERROR: ${ex.message}")
             return null
         }
+    }
+
+    private fun setEnvVars(envMap: MutableMap<String,String>, botInfo: BotInfo) {
+        setEnvVar(envMap, Env.SERVER_URL, System.getProperty("server.url"))
+        setEnvVar(envMap, Env.BOT_NAME, botInfo.name)
+        setEnvVar(envMap, Env.BOT_VERSION, botInfo.version)
+        setEnvVar(envMap, Env.BOT_AUTHOR, botInfo.author)
+        setEnvVar(envMap, Env.BOT_DESCRIPTION, botInfo.description)
+        setEnvVar(envMap, Env.BOT_URL, botInfo.url)
+        setEnvVar(envMap, Env.BOT_COUNTRY_CODE, botInfo.countryCode)
+        setEnvVar(envMap, Env.BOT_GAME_TYPES, botInfo.gameTypes.joinToString())
+        setEnvVar(envMap, Env.BOT_PLATFORM, botInfo.platform)
+        setEnvVar(envMap, Env.BOT_PROG_LANG, botInfo.programmingLang)
+    }
+
+    private fun setEnvVar(envMap: MutableMap<String,String>, env: Env, value: Any?) {
+        if (value != null) envMap[env.name] = value.toString()
     }
 
     private fun findOsScript(botName: String): Path? = when (OSUtil.getOsType()) {
@@ -181,8 +180,6 @@ class BootUtil(private val botPaths: List<Path>) {
         return if (Files.exists(path)) path else null
     }
 
-
-    @ImplicitReflectionSerializer
     private fun getBotInfo(botName: String): BotInfo? {
         var path: Path? = null
         botPaths.forEach { dirPath ->

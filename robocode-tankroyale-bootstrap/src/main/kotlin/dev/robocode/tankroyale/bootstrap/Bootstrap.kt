@@ -19,12 +19,18 @@ import java.util.concurrent.Callable
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
+@UnstableDefault
+@ImplicitReflectionSerializer
 val cmdLine = CommandLine(Bootstrap())
 
+@UnstableDefault
+@ImplicitReflectionSerializer
 fun main(args: Array<String>) {
     exitProcess(cmdLine.execute(*args))
 }
 
+@UnstableDefault
+@ImplicitReflectionSerializer
 @Command(
     name = "bootstrap",
     versionProvider = VersionFileProvider::class,
@@ -43,7 +49,6 @@ class Bootstrap : Callable<Int> {
     }
 
     @Command(name = "filenames", description = ["List filenames of available bots"])
-    @ImplicitReflectionSerializer
     private fun filenames(
         @Option(
             names = ["--bot-dirs", "-D"], paramLabel = "BOT_DIR",
@@ -58,8 +63,6 @@ class Bootstrap : Callable<Int> {
     }
 
     @Command(name = "list", description = ["List available bot entries"])
-    @UnstableDefault
-    @ImplicitReflectionSerializer
     private fun list(
         @Option(
             names = ["--bot-dirs", "-D"], paramLabel = "BOT_DIR",
@@ -74,7 +77,6 @@ class Bootstrap : Callable<Int> {
         println(Json(JsonConfiguration.Default).stringify(entries))
     }
 
-    @ImplicitReflectionSerializer
     @Command(
         name = "run", description = [
             "Start running the specified bots in individual processes.",
