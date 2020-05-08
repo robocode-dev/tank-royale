@@ -13,7 +13,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.concurrent.Callable
-import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
 @UnstableDefault
@@ -56,7 +55,8 @@ class Bootstrap : Callable<Int> {
             description = ["Comma-separated string of game types that the bot entries must support in order to be included in the list"]
         ) gameTypes: String?
     ) {
-        FilenamesCommand(getBotDirectories(botDirs)).listBotEntries(gameTypes).forEach { entry -> println(entry.filename) }
+        FilenamesCommand(getBotDirectories(botDirs))
+            .listBotEntries(gameTypes).forEach { entry -> println(entry.filename) }
     }
 
     @Command(name = "list", description = ["List available bot entries"])
@@ -70,7 +70,8 @@ class Bootstrap : Callable<Int> {
             description = ["Comma-separated string of game types that the bot entries must support in order to be included in the list"]
         ) gameTypes: String?
     ) {
-        val entries = FilenamesCommand(getBotDirectories(botDirs)).listBotEntries(gameTypes)
+        val entries = FilenamesCommand(getBotDirectories(botDirs))
+            .listBotEntries(gameTypes)
         println(Json(JsonConfiguration.Default).stringify(entries))
     }
 
@@ -91,23 +92,8 @@ class Bootstrap : Callable<Int> {
         ) filenames: Array<String>
     ) {
         val processes = RunCommand(getBotDirectories(botDirs)).startBots(filenames)
-
         readLine()
-
-        processes.parallelStream().forEach { p ->
-
-            p.descendants().forEach { d ->
-                d.destroy()
-                if (d.isAlive)
-                    d.destroyForcibly()
-            }
-            p.destroy()
-            p.waitFor(10, TimeUnit.SECONDS)
-            if (p.isAlive) {
-                p.destroyForcibly()
-                p.waitFor(10, TimeUnit.SECONDS)
-            }
-        }
+        killProcesses(processes)
     }
 
     /** Returns file paths to specified bot directoriesCSV (semicolon separated list).
@@ -124,5 +110,12 @@ class Bootstrap : Callable<Int> {
             }
         }
         return paths
+    }
+
+    private fun killProcesses(processes: List<Process>) {
+        processes.parallelStream().forEach { p ->
+            p.descendants().forEach { d -> d.destroyForcibly() }
+            p.destroyForcibly().waitFor()
+        }
     }
 }

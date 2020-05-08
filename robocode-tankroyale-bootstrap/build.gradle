@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id "java-library"
     id "maven-publish"
@@ -22,6 +24,14 @@ dependencies {
     implementation "info.picocli:picocli:4.2.0"
 }
 
+processResources {
+    with copySpec {
+        from 'src/main/resources'
+        include 'version.txt'
+        filter(ReplaceTokens, tokens: [version: version])
+    }
+}
+
 task fatJar(type: Jar) {
     manifest {
         attributes 'Main-Class': 'dev.robocode.tankroyale.bootstrap.BootstrapKt'
@@ -33,12 +43,10 @@ task fatJar(type: Jar) {
     with jar
 }
 
-import org.apache.tools.ant.filters.ReplaceTokens
-
-processResources {
-    with copySpec {
-        from 'src/main/resources'
-        include 'version.txt'
-        filter(ReplaceTokens, tokens: [version: version])
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact fatJar
+        }
     }
 }
