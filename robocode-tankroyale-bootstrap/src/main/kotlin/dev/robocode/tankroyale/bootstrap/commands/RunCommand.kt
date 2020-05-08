@@ -1,18 +1,13 @@
-package dev.robocode.tankroyale.bootstrap.util
+package dev.robocode.tankroyale.bootstrap.commands
 
-import dev.robocode.tankroyale.bootstrap.BootstrapException
-import dev.robocode.tankroyale.bootstrap.model.BotEntry
 import dev.robocode.tankroyale.bootstrap.model.BotInfo
+import dev.robocode.tankroyale.bootstrap.util.Env
+import dev.robocode.tankroyale.bootstrap.util.OSUtil
 import dev.robocode.tankroyale.bootstrap.util.OSUtil.OSType.MacOS
 import dev.robocode.tankroyale.bootstrap.util.OSUtil.OSType.Windows
 import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.UnstableDefault
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonDecodingException
-import kotlinx.serialization.parse
 import java.io.IOException
-import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Files.list
 import java.nio.file.Path
@@ -21,24 +16,7 @@ import java.util.stream.Collectors.toList
 
 @UnstableDefault
 @ImplicitReflectionSerializer
-class BootUtil(private val botPaths: List<Path>) {
-
-    fun findBotEntries(gameTypesCSV: String?): List<BotEntry> {
-        val gameTypes: List<String>? = gameTypesCSV?.split(",")?.map { it.trim() }
-
-        val botNames = findBotNames()
-        val botEntries = ArrayList<BotEntry>()
-        botNames.forEach { botName ->
-            try {
-                val botInfo = getBotInfo(botName)
-                if (botInfo != null && (gameTypes == null || botInfo.gameTypes.containsAll(gameTypes)))
-                    botEntries.add(BotEntry(botName, botInfo))
-            } catch (ex: Exception) {
-                System.err.println("ERROR: ${ex.message}")
-            }
-        }
-        return botEntries
-    }
+class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
 
     fun startBots(filenames: Array<String>): List<Process> {
         val processes = ArrayList<Process>()
@@ -76,7 +54,7 @@ class BootUtil(private val botPaths: List<Path>) {
             val process = processBuilder.start()
             val env = processBuilder.environment()
 
-            setEnvVars(env, getBotInfo(filename)!!);
+            setEnvVars(env, getBotInfo(filename)!!)
 
             println("$filename started")
             return process
@@ -158,65 +136,11 @@ class BootUtil(private val botPaths: List<Path>) {
                 }
             }
         }
-
         return null // No path found
     }
 
     private fun readFirstLine(path: Path): String {
         return Files.newInputStream(path).bufferedReader().readLine() ?: ""
-    }
-
-    private fun findBotNames(): Set<String> {
-        val names = HashSet<String>()
-        botPaths.forEach { dirPath ->
-            val files = list(dirPath).filter(HasFileExtensions(arrayOf("json")))
-            files?.forEach { path -> names += path.toFile().nameWithoutExtension }
-        }
-        return names
-    }
-
-    private fun resolveFullBotPath(botDirPath: Path, botPath: String): Path? {
-        val path = botDirPath.resolve(botPath)
-        return if (Files.exists(path)) path else null
-    }
-
-    private fun getBotInfo(botName: String): BotInfo? {
-        var path: Path? = null
-        botPaths.forEach { dirPath ->
-            run {
-                try {
-                    path = resolveFullBotPath(dirPath, "$botName.json")?.toAbsolutePath()
-                    if (path != null) {
-                        val content = readContent(path!!)
-                        return Json.parse(content)
-                    }
-                } catch (ex: JsonDecodingException) {
-                    throw BootstrapException("Could not parse JSON file: $path")
-                } catch (ex: MissingFieldException) {
-                    throw BootstrapException("${ex.message}. File: $path")
-                }
-            }
-        }
-        return null // not found
-    }
-
-    private fun readContent(filePath: Path): String {
-        val contentBuilder = StringBuilder()
-        Files.lines(filePath, StandardCharsets.UTF_8).use { stream ->
-            stream.forEach { s -> contentBuilder.append(s).append('\n') }
-        }
-        return contentBuilder.toString()
-    }
-}
-
-internal class HasFileExtensions(private val fileExtensions: Array<String>) : Predicate<Path> {
-
-    override fun test(path: Path): Boolean {
-        if (Files.isDirectory(path)) return false
-        fileExtensions.forEach { ext ->
-            if (path.toString().toLowerCase().endsWith(".${ext.toLowerCase()}")) return true
-        }
-        return false
     }
 }
 

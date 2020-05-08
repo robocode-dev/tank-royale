@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.bootstrap
 
-import dev.robocode.tankroyale.bootstrap.util.BootUtil
+import dev.robocode.tankroyale.bootstrap.commands.FilenamesCommand
+import dev.robocode.tankroyale.bootstrap.commands.RunCommand
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
@@ -59,7 +60,7 @@ class Bootstrap : Callable<Int> {
             description = ["Comma-separated string of game types that the bot entries must support in order to be included in the list"]
         ) gameTypes: String?
     ) {
-        BootUtil(getBotDirectories(botDirs)).findBotEntries(gameTypes).forEach { entry -> println(entry.filename) }
+        FilenamesCommand(getBotDirectories(botDirs)).listBotEntries(gameTypes).forEach { entry -> println(entry.filename) }
     }
 
     @Command(name = "list", description = ["List available bot entries"])
@@ -73,7 +74,7 @@ class Bootstrap : Callable<Int> {
             description = ["Comma-separated string of game types that the bot entries must support in order to be included in the list"]
         ) gameTypes: String?
     ) {
-        val entries = BootUtil(getBotDirectories(botDirs)).findBotEntries(gameTypes)
+        val entries = FilenamesCommand(getBotDirectories(botDirs)).listBotEntries(gameTypes)
         println(Json(JsonConfiguration.Default).stringify(entries))
     }
 
@@ -93,7 +94,7 @@ class Bootstrap : Callable<Int> {
             description = ["Filenames of the bots to start without file extensions"]
         ) filenames: Array<String>
     ) {
-        val processes = BootUtil(getBotDirectories(botDirs)).startBots(filenames)
+        val processes = RunCommand(getBotDirectories(botDirs)).startBots(filenames)
 
         readLine()
 
