@@ -9,13 +9,13 @@ plugins {
     id "com.github.ben-manes.versions" version "0.28.0"
 }
 
+group = 'dev.robocode.tankroyale'
+version = '0.6.5'
+description = 'Bootstap utility for booting up bots for Robocode Tank Royale'
+
 repositories {
     jcenter()
 }
-
-group = 'dev.robocode.tankroyale'
-version = '0.6.5'
-description = 'Robocode Tank Royale Bootstrap'
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
@@ -52,7 +52,8 @@ task fatJar(type: Jar) {
 
 publishing {
     publications {
-        maven(MavenPublication) {
+        mavenJava(MavenPublication) {
+            artifactId = 'robocode-tankroyale-bootstrap'
             artifact fatJar
         }
     }
