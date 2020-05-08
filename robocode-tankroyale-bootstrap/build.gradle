@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.6.5'
+version = '0.6.6'
 description = 'Bootstap utility for booting up bots for Robocode Tank Royale'
 
 repositories {

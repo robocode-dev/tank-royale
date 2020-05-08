@@ -56,7 +56,7 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
 
             setEnvVars(env, getBotInfo(filename)!!)
 
-            println("$filename started")
+            println("${process.pid()}:$filename")
             return process
 
         } catch (ex: IOException) {

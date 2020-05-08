@@ -96,26 +96,30 @@ class Bootstrap : Callable<Int> {
         killProcesses(processes)
     }
 
-    /** Returns file paths to specified bot directoriesCSV (semicolon separated list).
-     * If no file paths are provided, the file path of current working directory is returned */
-    private fun getBotDirectories(directoriesCSV: String?): List<Path> {
-        if (directoriesCSV == null)
-            return listOf(Paths.get("").toAbsolutePath())
+    companion object {
+        /**
+         * Returns file paths to specified bot directoriesCSV (semicolon separated list).
+         * If no file paths are provided, the file path of current working directory is returned
+         */
+        private fun getBotDirectories(directoriesCSV: String?): List<Path> {
+            if (directoriesCSV == null)
+                return listOf(Paths.get("").toAbsolutePath())
 
-        val paths = ArrayList<Path>()
-        directoriesCSV.split(",").forEach {
-            val path = Paths.get(it.trim())
-            if (Files.exists(path)) {
-                paths.add(path)
+            val paths = ArrayList<Path>()
+            directoriesCSV.split(",").forEach {
+                val path = Paths.get(it.trim())
+                if (Files.exists(path)) {
+                    paths.add(path)
+                }
             }
+            return paths
         }
-        return paths
-    }
 
-    private fun killProcesses(processes: List<Process>) {
-        processes.parallelStream().forEach { p ->
-            p.descendants().forEach { d -> d.destroyForcibly() }
-            p.destroyForcibly().waitFor()
+        private fun killProcesses(processes: List<Process>) {
+            processes.parallelStream().forEach { p ->
+                p.descendants().forEach { d -> d.destroyForcibly() }
+                p.destroyForcibly().waitFor()
+            }
         }
     }
 }
