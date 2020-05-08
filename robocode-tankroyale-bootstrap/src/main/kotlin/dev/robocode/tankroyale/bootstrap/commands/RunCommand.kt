@@ -65,23 +65,6 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
         }
     }
 
-    private fun setEnvVars(envMap: MutableMap<String,String>, botInfo: BotInfo) {
-        setEnvVar(envMap, Env.SERVER_URL, System.getProperty("server.url"))
-        setEnvVar(envMap, Env.BOT_NAME, botInfo.name)
-        setEnvVar(envMap, Env.BOT_VERSION, botInfo.version)
-        setEnvVar(envMap, Env.BOT_AUTHOR, botInfo.author)
-        setEnvVar(envMap, Env.BOT_DESCRIPTION, botInfo.description)
-        setEnvVar(envMap, Env.BOT_URL, botInfo.url)
-        setEnvVar(envMap, Env.BOT_COUNTRY_CODE, botInfo.countryCode)
-        setEnvVar(envMap, Env.BOT_GAME_TYPES, botInfo.gameTypes.joinToString())
-        setEnvVar(envMap, Env.BOT_PLATFORM, botInfo.platform)
-        setEnvVar(envMap, Env.BOT_PROG_LANG, botInfo.programmingLang)
-    }
-
-    private fun setEnvVar(envMap: MutableMap<String,String>, env: Env, value: Any?) {
-        if (value != null) envMap[env.name] = value.toString()
-    }
-
     private fun findOsScript(botName: String): Path? = when (OSUtil.getOsType()) {
         Windows -> findWindowsScript(botName)
         MacOS -> findMacOsScript(botName)
@@ -139,8 +122,27 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
         return null // No path found
     }
 
-    private fun readFirstLine(path: Path): String {
-        return Files.newInputStream(path).bufferedReader().readLine() ?: ""
+    companion object {
+        private fun readFirstLine(path: Path): String {
+            return Files.newInputStream(path).bufferedReader().readLine() ?: ""
+        }
+
+        private fun setEnvVars(envMap: MutableMap<String,String>, botInfo: BotInfo) {
+            setEnvVar(envMap, Env.SERVER_URL, System.getProperty("server.url"))
+            setEnvVar(envMap, Env.BOT_NAME, botInfo.name)
+            setEnvVar(envMap, Env.BOT_VERSION, botInfo.version)
+            setEnvVar(envMap, Env.BOT_AUTHOR, botInfo.author)
+            setEnvVar(envMap, Env.BOT_DESCRIPTION, botInfo.description)
+            setEnvVar(envMap, Env.BOT_URL, botInfo.url)
+            setEnvVar(envMap, Env.BOT_COUNTRY_CODE, botInfo.countryCode)
+            setEnvVar(envMap, Env.BOT_GAME_TYPES, botInfo.gameTypes.joinToString())
+            setEnvVar(envMap, Env.BOT_PLATFORM, botInfo.platform)
+            setEnvVar(envMap, Env.BOT_PROG_LANG, botInfo.programmingLang)
+        }
+
+        private fun setEnvVar(envMap: MutableMap<String,String>, env: Env, value: Any?) {
+            if (value != null) envMap[env.name] = value.toString()
+        }
     }
 }
 
