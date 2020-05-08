@@ -8,11 +8,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.stringify
 import picocli.CommandLine
-import picocli.CommandLine.Command
-import picocli.CommandLine.Option
-import picocli.CommandLine.Parameters
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import picocli.CommandLine.*
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -128,17 +124,5 @@ class Bootstrap : Callable<Int> {
             }
         }
         return paths
-    }
-}
-
-internal class VersionFileProvider : CommandLine.IVersionProvider {
-
-    override fun getVersion(): Array<String> {
-        val inputStream = this.javaClass.classLoader.getResourceAsStream("version.txt")
-        var version = "?"
-        if (inputStream != null) {
-            BufferedReader(InputStreamReader(inputStream)).use { br -> version = br.readLine() }
-        }
-        return arrayOf("Robocode Tank Royale Bootstrap $version")
     }
 }
