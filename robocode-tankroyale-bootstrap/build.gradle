@@ -3,6 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id "java-library"
     id "maven-publish"
+    id "idea"
     id "org.jetbrains.kotlin.jvm" version "$kotlin_version"
     id "org.jetbrains.kotlin.plugin.serialization" version "$kotlin_version"
     id "com.github.ben-manes.versions" version "0.28.0"
@@ -22,6 +23,12 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
 
     implementation "info.picocli:picocli:4.2.0"
+}
+
+idea {
+    module {
+        outputDir = file("$buildDir/classes/kotlin/main")
+    }
 }
 
 processResources {
