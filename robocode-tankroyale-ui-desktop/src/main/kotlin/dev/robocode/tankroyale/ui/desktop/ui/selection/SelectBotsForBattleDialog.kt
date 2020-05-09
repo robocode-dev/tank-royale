@@ -1,15 +1,15 @@
 package dev.robocode.tankroyale.ui.desktop.ui.selection
 
 import dev.robocode.tankroyale.ui.desktop.client.Client
-import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addButton
-import dev.robocode.tankroyale.ui.desktop.ui.extensions.JListExt.onChanged
-import dev.robocode.tankroyale.ui.desktop.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
 import dev.robocode.tankroyale.ui.desktop.settings.GameType
 import dev.robocode.tankroyale.ui.desktop.settings.GamesSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JListExt.onChanged
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
