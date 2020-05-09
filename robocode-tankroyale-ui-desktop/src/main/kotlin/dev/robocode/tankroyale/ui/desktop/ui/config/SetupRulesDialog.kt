@@ -1,10 +1,10 @@
 package dev.robocode.tankroyale.ui.desktop.ui.config
 
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addLabel
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.showMessage
-import dev.robocode.tankroyale.ui.desktop.extensions.JTextFieldExt.onChange
-import dev.robocode.tankroyale.ui.desktop.extensions.JTextFieldExt.setInputVerifier
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addLabel
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.showMessage
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JTextFieldExt.onChange
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JTextFieldExt.setInputVerifier
 import dev.robocode.tankroyale.ui.desktop.model.IGameSetup
 import dev.robocode.tankroyale.ui.desktop.settings.GameType
 import dev.robocode.tankroyale.ui.desktop.settings.GamesSettings

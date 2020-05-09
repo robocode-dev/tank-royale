@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.ui.desktop.ui.server
 
-import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import java.awt.Color
 import javax.swing.JFrame

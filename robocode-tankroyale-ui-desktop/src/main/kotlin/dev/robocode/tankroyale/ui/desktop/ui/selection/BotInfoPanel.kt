@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.ui.desktop.ui.selection
 
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addLabel
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import net.miginfocom.swing.MigLayout
 import java.util.*

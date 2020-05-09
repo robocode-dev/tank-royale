@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.ui.desktop.ui.arena
 
 import dev.robocode.tankroyale.ui.desktop.client.Client
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.STRINGS
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import java.awt.BorderLayout

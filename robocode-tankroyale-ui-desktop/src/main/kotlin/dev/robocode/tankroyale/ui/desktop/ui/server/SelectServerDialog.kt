@@ -1,8 +1,8 @@
 package dev.robocode.tankroyale.ui.desktop.ui.server
 
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addLabel
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.showMessage
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addLabel
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
@@ -14,7 +14,6 @@ import java.awt.Dimension
 import java.awt.EventQueue
 import java.io.Closeable
 import javax.swing.*
-import javax.swing.JOptionPane.OK_OPTION
 
 @UnstableDefault
 @ImplicitReflectionSerializer

@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.ui.desktop.extensions
+package dev.robocode.tankroyale.ui.desktop.ui.extensions
 
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.util.Event

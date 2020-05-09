@@ -3,10 +3,10 @@ package dev.robocode.tankroyale.ui.desktop.ui.selection
 import dev.robocode.tankroyale.ui.desktop.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.ui.desktop.bootstrap.BotEntry
 import dev.robocode.tankroyale.ui.desktop.client.Client
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
-import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.onChanged
-import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.toList
-import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JListExt.onChanged
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JListExt.toList
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import dev.robocode.tankroyale.ui.desktop.model.BotListUpdate
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow

@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.ui.desktop.extensions
+package dev.robocode.tankroyale.ui.desktop.ui.extensions
 
 import javax.swing.InputVerifier
 import javax.swing.JComponent

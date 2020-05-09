@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.ui.desktop.extensions
+package dev.robocode.tankroyale.ui.desktop.ui.extensions
 
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.UI_TITLES
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.STRINGS

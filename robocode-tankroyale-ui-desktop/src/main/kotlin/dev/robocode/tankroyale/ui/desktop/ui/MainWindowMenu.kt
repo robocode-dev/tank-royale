@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.ui.desktop.ui
 
-import dev.robocode.tankroyale.ui.desktop.extensions.JMenuExt.addNewMenuItem
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JMenuExt.addNewMenuItem
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.MENU
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import javax.swing.JMenu

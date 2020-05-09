@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.ui.desktop.ui.selection
 
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.util.Event

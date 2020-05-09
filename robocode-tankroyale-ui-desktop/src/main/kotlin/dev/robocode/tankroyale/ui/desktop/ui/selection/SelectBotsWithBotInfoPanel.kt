@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.ui.desktop.ui.selection
 
-import dev.robocode.tankroyale.ui.desktop.extensions.JListExt.onSelection
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JListExt.onSelection
 import net.miginfocom.swing.MigLayout
 import javax.swing.JPanel
 

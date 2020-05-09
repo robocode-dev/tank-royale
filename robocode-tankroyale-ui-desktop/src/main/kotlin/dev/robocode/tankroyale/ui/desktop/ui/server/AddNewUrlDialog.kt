@@ -1,9 +1,9 @@
 package dev.robocode.tankroyale.ui.desktop.ui.server
 
 import dev.robocode.tankroyale.ui.desktop.client.Client
-import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
-import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
-import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onClosing
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.WindowExt.onActivated
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.ui.server.AddNewUrlDialog.onComplete
 import dev.robocode.tankroyale.ui.desktop.util.Event
