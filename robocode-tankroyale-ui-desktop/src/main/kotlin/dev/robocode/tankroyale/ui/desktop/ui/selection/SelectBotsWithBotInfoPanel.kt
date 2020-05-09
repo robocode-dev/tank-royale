@@ -9,8 +9,10 @@ class SelectBotsWithBotInfoPanel(val onlySelectUnique: Boolean = false) : JPanel
     private val selectBotsPanel = SelectBotsPanel(onlySelectUnique)
     private val botInfoPanel = BotInfoPanel()
 
-    val availableBotList = selectBotsPanel.joinedBotList
+    val joinedBotList = selectBotsPanel.joinedBotList
     val selectedBotList = selectBotsPanel.selectedBotList
+    val joinedBotListModel = selectBotsPanel.joinedBotListModel
+    val selectedBotListModel = selectBotsPanel.selectedBotListModel
 
     init {
         val groupPanel = JPanel(MigLayout("fill"))
@@ -21,6 +23,6 @@ class SelectBotsWithBotInfoPanel(val onlySelectUnique: Boolean = false) : JPanel
         add(groupPanel, "south")
 
         selectedBotList.onSelection { botInfo -> botInfoPanel.updateBotInfo(botInfo) }
-        availableBotList.onSelection { botInfo -> botInfoPanel.updateBotInfo(botInfo) }
+        joinedBotList.onSelection { botInfo -> botInfoPanel.updateBotInfo(botInfo) }
     }
 }

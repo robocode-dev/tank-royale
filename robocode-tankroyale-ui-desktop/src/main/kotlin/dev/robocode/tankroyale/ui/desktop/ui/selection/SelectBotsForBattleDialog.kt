@@ -82,12 +82,12 @@ class SelectBotsForBattlePanel : JPanel(MigLayout("fill")) {
     }
 
     fun clearSelectedBots() {
-        (selectPanel.selectedBotList.model as DefaultListModel).clear()
+        selectPanel.selectedBotListModel.clear()
     }
 
     fun updateAvailableBots() {
         SwingUtilities.invokeLater {
-            val availableBotListModel = selectPanel.availableBotList.model as DefaultListModel
+            val availableBotListModel = selectPanel.joinedBotListModel
             availableBotListModel.clear()
             Client.availableBots.forEach { availableBotListModel.addElement(it) }
         }
@@ -101,7 +101,7 @@ class SelectBotsForBattlePanel : JPanel(MigLayout("fill")) {
         val gameType = ServerProcess.gameType
             ?: GameType.CLASSIC.type // FIXME: Dialog must be shown to select game type with remote server
 
-        val botAddresses = (selectPanel.selectedBotList.model as DefaultListModel).toArray()
+        val botAddresses = selectPanel.selectedBotListModel.toArray()
             .map { b -> (b as BotInfo).botAddress }
         Client.startGame(GamesSettings.games[gameType]!!, botAddresses.toSet())
 

@@ -12,8 +12,8 @@ import javax.swing.*
 class SelectBotsPanel(val onlySelectUnique: Boolean = false) : JPanel(MigLayout("fill")) {
 
     private val offlineBotListModel = DefaultListModel<BotInfo>()
-    private val joinedBotListModel = DefaultListModel<BotInfo>()
-    private val selectedBotListModel = DefaultListModel<BotInfo>()
+    val joinedBotListModel = DefaultListModel<BotInfo>()
+    val selectedBotListModel = DefaultListModel<BotInfo>()
 
     private val offlineBotList = JList(offlineBotListModel)
     val joinedBotList = JList(joinedBotListModel)

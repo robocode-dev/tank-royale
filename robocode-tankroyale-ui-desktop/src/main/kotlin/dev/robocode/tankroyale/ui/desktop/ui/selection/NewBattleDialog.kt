@@ -26,7 +26,7 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
-        size = Dimension(600, 600)
+        size = Dimension(750, 600)
 
         setLocationRelativeTo(null) // center on screen
 
@@ -70,7 +70,7 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
         startBattleButton.isEnabled = false
 
         selectPanel.selectedBotList.onChanged {
-            startBattleButton.isEnabled = selectPanel.selectedBotList.model.size >= 2
+            startBattleButton.isEnabled = selectPanel.selectedBotListModel.size >= 2
         }
 
         onStartBattle.subscribe { startGame() }
@@ -82,12 +82,12 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
     }
 
     fun clearSelectedBots() {
-        (selectPanel.selectedBotList.model as DefaultListModel).clear()
+        selectPanel.selectedBotListModel.clear()
     }
 
     fun updateAvailableBots() {
         SwingUtilities.invokeLater {
-            val availableBotListModel = selectPanel.availableBotList.model as DefaultListModel
+            val availableBotListModel = selectPanel.joinedBotListModel
             availableBotListModel.clear()
             Client.availableBots.forEach { availableBotListModel.addElement(it) }
         }
@@ -101,7 +101,7 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
         val gameType = ServerProcess.gameType
             ?: GameType.CLASSIC.type // FIXME: Dialog must be shown to select game type with remote server
 
-        val botAddresses = (selectPanel.selectedBotList.model as DefaultListModel).toArray()
+        val botAddresses = selectPanel.selectedBotListModel.toArray()
             .map { b -> (b as BotInfo).botAddress }
         Client.startGame(GamesSettings.games[gameType]!!, botAddresses.toSet())
 
