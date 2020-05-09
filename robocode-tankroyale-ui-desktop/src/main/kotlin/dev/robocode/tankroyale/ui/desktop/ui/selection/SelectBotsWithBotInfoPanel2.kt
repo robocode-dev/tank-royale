@@ -9,7 +9,7 @@ class SelectBotsWithBotInfoPanel2 : JPanel(MigLayout("fill")) {
     private val selectBotsPanel = SelectBotsPanel2()
     private val botInfoPanel = BotInfoPanel()
 
-    val availableBotTable = selectBotsPanel.availableBotTable
+    val availableBotTable = selectBotsPanel.joinedBotTable
     val selectedBotTable = selectBotsPanel.selectedBotTable
 
     init {

@@ -37,7 +37,7 @@ compileTestKotlin {
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.5.5'
+version = '0.6.0'
 description = 'Robocode Tank Royale UI Desktop'
 
 defaultTasks 'run'
@@ -55,10 +55,10 @@ dependencies {
     compile 'org.java-websocket:Java-WebSocket:1.4.0'
     compile 'com.miglayout:miglayout-swing:5.2'
 
+    runtime 'dev.robocode.tankroyale:robocode-tankroyale-bootstrap:0.6.6'
     runtime ('dev.robocode.tankroyale:robocode-tankroyale-server:0.6.10') {
         exclude group: 'ch.qos.logback'
     }
-    runtime 'dev.robocode.tankroyale:robocode-tankroyale-bootstrap:0.6.4'
 }
 
 mainClassName = 'dev.robocode.tankroyale.ui.desktop.ui.MainWindowKt'

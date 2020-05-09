@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.showWarning
 import dev.robocode.tankroyale.ui.desktop.extensions.JTextFieldExt.setInputVerifier
+import dev.robocode.tankroyale.ui.desktop.settings.GameType
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
@@ -67,7 +68,7 @@ private object StartServerPanel : JPanel(MigLayout("fill")) {
         onOk.subscribe {
             StartServerCommand(
                 port = portTextField.text.toInt(),
-                gameType = gameTypeComboBox.selectedGameType
+                gameType = GameType.valueOf(gameTypeComboBox.selectedGameType)
             ).execute()
             StartServerDialog.dispose()
         }

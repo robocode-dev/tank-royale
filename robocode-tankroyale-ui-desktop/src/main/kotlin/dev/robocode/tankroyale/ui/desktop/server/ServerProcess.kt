@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.ui.desktop.server
 
+import dev.robocode.tankroyale.ui.desktop.settings.GameType
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.server.ServerLogWindow
 import dev.robocode.tankroyale.ui.desktop.util.Event
@@ -16,8 +17,8 @@ import kotlin.collections.ArrayList
 
 object ServerProcess {
 
-    val onStarted = Event<Unit>()
-    val onStopped = Event<Unit>()
+    private val onStarted = Event<Unit>()
+    private val onStopped = Event<Unit>()
 
     private const val JAR_FILE_NAME = "robocode-tankroyale-server"
 
@@ -26,7 +27,7 @@ object ServerProcess {
     private var logThread: Thread? = null
     private val logThreadRunning = AtomicBoolean(false)
 
-    var gameType: String? = null
+    var gameType: GameType = GameType.CLASSIC
         private set
 
     var port: Int = ServerSettings.port
@@ -39,7 +40,7 @@ object ServerProcess {
         return isRunning.get()
     }
 
-    fun start(gameType: String? = null, port: Int = ServerSettings.port) {
+    fun start(gameType: GameType, port: Int = ServerSettings.port) {
         if (isRunning.get())
             return
 
@@ -56,9 +57,7 @@ object ServerProcess {
         command += getServerJar()
         command += "--port=$port"
         command += "--secret=$secret"
-        if (gameType != null) {
-            command += "--games=$gameType"
-        }
+        command += "--games=$gameType"
 
         val builder = ProcessBuilder(command)
 
@@ -144,7 +143,7 @@ object ServerProcess {
 }
 
 fun main() {
-    ServerProcess.start()
+    ServerProcess.start(GameType.CLASSIC)
     println("Server started")
     System.`in`.read()
     ServerProcess.stop()

@@ -4,10 +4,9 @@ import dev.robocode.tankroyale.ui.desktop.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.ui.desktop.bootstrap.BotEntry
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.extensions.JTableExt.onChanged
 import dev.robocode.tankroyale.ui.desktop.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
-import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
-import dev.robocode.tankroyale.ui.desktop.settings.GameType
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.util.Event
@@ -16,7 +15,9 @@ import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.EventQueue
+import java.util.*
 import javax.swing.*
+import kotlin.collections.ArrayList
 
 
 @UnstableDefault
@@ -53,16 +54,18 @@ class NewBattleDialogPanel : JPanel(MigLayout("fill")) {
     private val selectPanel = SelectBotsWithBotInfoPanel2()
 
     private val botEntries: List<BotEntry> by lazy { BootstrapProcess.list() }
-/*
-    private val selectedBotFiles: List<String>
+
+    private val selectedOfflineBotFiles: List<String>
         get() {
             val files = ArrayList<String>()
-            selectPanel.selectedBotTable.toList().forEach { botInfo ->
-                files += botInfo.host // host serves as filename here
-            }
+            selectPanel.selectedBotTable.rows()
+                .filter { it.availability === BotAvailability.OFFLINE }
+                .forEach {
+                    files.add(it.botInfo.host)
+                }
             return Collections.unmodifiableList(files)
         }
-*/
+
 
     init {
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
@@ -80,11 +83,10 @@ class NewBattleDialogPanel : JPanel(MigLayout("fill")) {
             addButton("cancel", onCancel, "tag cancel")
         }
         startBattleButton.isEnabled = false
-/*
-        selectPanel.selectedBotList.onChanged {
-            startBattleButton.isEnabled = selectPanel.selectedBotListModel.size >= 2
+        selectPanel.selectedBotTable.onChanged {
+            startBattleButton.isEnabled = selectPanel.selectedBotTable.rowCount >= 1
         }
-*/
+
         onStartBattle.subscribe { startGame() }
 
         onCancel.subscribe { SelectBotsForBattleDialog.dispose() }
@@ -129,15 +131,19 @@ class NewBattleDialogPanel : JPanel(MigLayout("fill")) {
     @ImplicitReflectionSerializer
     @UnstableDefault
     private fun startGame() {
-        isVisible = true
+//        isVisible = true // TODO: Necessary?
 
+        if (selectedOfflineBotFiles.isNotEmpty()) {
+
+        }
+/*
         val gameType = ServerProcess.gameType
             ?: GameType.CLASSIC.type // FIXME: Dialog must be shown to select game type with remote server
 
-//        val botAddresses = selectPanel.selectedBotListModel.toArray()
-//            .map { b -> (b as BotInfo).botAddress }
-//        Client.startGame(GamesSettings.games[gameType]!!, botAddresses.toSet())
-
+        val botAddresses = selectPanel.selectedBotListModel.toArray()
+            .map { b -> (b as BotInfo).botAddress }
+        Client.startGame(GamesSettings.games[gameType]!!, botAddresses.toSet())
+*/
         SelectBotsForBattleDialog.dispose()
     }
 }

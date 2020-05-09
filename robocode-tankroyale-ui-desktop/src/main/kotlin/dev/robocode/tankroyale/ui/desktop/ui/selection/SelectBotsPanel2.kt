@@ -17,12 +17,12 @@ class SelectBotsPanel2 : JPanel(MigLayout("fill")) {
     private val onRemove = Event<JButton>()
     private val onRemoveAll = Event<JButton>()
 
-    val availableBotTable = BotSelectionTable()
+    val joinedBotTable = BotSelectionTable()
     val selectedBotTable = BotSelectionTable()
 
     init {
         val leftSelectionPanel = JPanel(MigLayout("fill")).apply {
-            val scrollPane = JScrollPane(availableBotTable)
+            val scrollPane = JScrollPane(joinedBotTable)
             add(scrollPane, "grow")
             border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("available_bots"))
         }
@@ -59,10 +59,10 @@ class SelectBotsPanel2 : JPanel(MigLayout("fill")) {
         }
 
         onAdd.subscribe {
-            availableBotTable.selected().forEach { add(it) }
+            joinedBotTable.selected().forEach { add(it) }
         }
         onAddAll.subscribe {
-            availableBotTable.rows().forEach { add(it) }
+            joinedBotTable.rows().forEach { add(it) }
         }
         onRemove.subscribe {
             selectedBotTable.selectedIndices().forEach { selectedBotTable.removeAt(it) }
@@ -70,12 +70,12 @@ class SelectBotsPanel2 : JPanel(MigLayout("fill")) {
         onRemoveAll.subscribe {
             selectedBotTable.clear()
         }
-        availableBotTable.addMouseListener(object : MouseAdapter() {
+        joinedBotTable.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount > 1) {
-                    val row = availableBotTable.rowAtPoint(e.point)
+                    val row = joinedBotTable.rowAtPoint(e.point)
                     if (row >= 0) {
-                        add(availableBotTable[row])
+                        add(joinedBotTable[row])
                     }
                 }
             }

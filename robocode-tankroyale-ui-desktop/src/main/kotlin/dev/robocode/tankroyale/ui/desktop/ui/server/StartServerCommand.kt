@@ -11,7 +11,7 @@ import kotlinx.serialization.UnstableDefault
 @UnstableDefault
 class StartServerCommand(
     private val port: Int = ServerSettings.DEFAULT_PORT,
-    private val gameType: String = GameType.CLASSIC.type
+    private val gameType: GameType = GameType.CLASSIC
 ) : ICommand {
 
     @ImplicitReflectionSerializer
