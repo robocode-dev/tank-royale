@@ -9,9 +9,7 @@ class SelectBotsWithBotInfoPanel(val onlySelectUnique: Boolean = false) : JPanel
     private val selectBotsPanel = SelectBotsPanel(onlySelectUnique)
     private val botInfoPanel = BotInfoPanel()
 
-    val availableBotListModel = selectBotsPanel.availableBotListModel
-    val selectedBotListModel = selectBotsPanel.selectedBotListModel
-    private val availableBotList = selectBotsPanel.availableBotList
+    val availableBotList = selectBotsPanel.joinedBotList
     val selectedBotList = selectBotsPanel.selectedBotList
 
     init {

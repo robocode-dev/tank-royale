@@ -95,7 +95,7 @@ object SelectBotsForBootUpPanel : JPanel(MigLayout("fill")) {
         okButton.isEnabled = false
 
         selectPanel.selectedBotList.onChanged {
-            okButton.isEnabled = selectPanel.selectedBotListModel.size >= 0
+            okButton.isEnabled = selectPanel.selectedBotList.model.size >= 0
         }
 
         onOK.subscribe {
@@ -111,7 +111,7 @@ object SelectBotsForBootUpPanel : JPanel(MigLayout("fill")) {
     }
 
     fun clearSelectedBots() {
-        selectPanel.selectedBotListModel.clear()
+        (selectPanel.selectedBotList.model as DefaultListModel).clear()
     }
 
     private fun updateBotsOnServer(botListUpdate: BotListUpdate? = null) {
@@ -121,13 +121,13 @@ object SelectBotsForBootUpPanel : JPanel(MigLayout("fill")) {
 
     fun updateAvailableBots() {
         SwingUtilities.invokeLater {
-            val availableBotListModel = selectPanel.availableBotListModel
+            val availableBotListModel = selectPanel.availableBotList.model as DefaultListModel
 
             availableBotListModel.clear()
 
             botEntries.forEach { botEntry ->
                 val info = botEntry.info
-                selectPanel.availableBotListModel.addElement(
+                (selectPanel.availableBotList.model as DefaultListModel).addElement(
                     BotInfo(
                         info.name,
                         info.version,

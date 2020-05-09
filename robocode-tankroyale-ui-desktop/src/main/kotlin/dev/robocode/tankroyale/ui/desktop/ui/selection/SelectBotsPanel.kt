@@ -5,54 +5,64 @@ import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import net.miginfocom.swing.MigLayout
-import java.awt.Dimension
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
 class SelectBotsPanel(val onlySelectUnique: Boolean = false) : JPanel(MigLayout("fill")) {
-    // Private events
+
+    private val offlineBotListModel = DefaultListModel<BotInfo>()
+    private val joinedBotListModel = DefaultListModel<BotInfo>()
+    private val selectedBotListModel = DefaultListModel<BotInfo>()
+
+    private val offlineBotList = JList(offlineBotListModel)
+    val joinedBotList = JList(joinedBotListModel)
+    val selectedBotList = JList(selectedBotListModel)
+
+    private val onBoot = Event<JButton>()
+
     private val onAdd = Event<JButton>()
     private val onAddAll = Event<JButton>()
     private val onRemove = Event<JButton>()
     private val onRemoveAll = Event<JButton>()
 
-    val availableBotListModel = DefaultListModel<BotInfo>()
-    val selectedBotListModel = DefaultListModel<BotInfo>()
-    val availableBotList = JList<BotInfo>(availableBotListModel)
-    val selectedBotList = JList<BotInfo>(selectedBotListModel)
-
     init {
-        val leftSelectionPanel = JPanel(MigLayout("fill")).apply {
-            add(JScrollPane(availableBotList), "grow")
-            // Sets the preferred size to avoid right panel width to grow much larger than the right panel
-            preferredSize = Dimension(10, 10)
-            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("available_bots"))
+        val offlineBotsPanel = JPanel(MigLayout("fill")).apply {
+            add(JScrollPane(offlineBotList), "grow")
+            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("offline_bots"))
         }
 
-        val rightSelectionPanel = JPanel(MigLayout("fill")).apply {
+        val joinedBotsPanel = JPanel(MigLayout("fill")).apply {
+            add(JScrollPane(joinedBotList), "grow")
+            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("joined_bots"))
+        }
+
+        val selectBotsPanel = JPanel(MigLayout("fill")).apply {
             add(JScrollPane(selectedBotList), "grow")
-            // Sets the preferred size to avoid right panel width to grow much larger than the right panel
-            preferredSize = Dimension(10, 10)
             border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("selected_bots"))
         }
 
+        val bootButtonPanel = JPanel(MigLayout("fill", "[fill]"))
+
         val addPanel = JPanel(MigLayout("fill", "[fill]"))
+        val middlePanel = JPanel(MigLayout("fill"))
         val removePanel = JPanel(MigLayout("fill", "[fill]"))
 
-        val middlePanel = JPanel(MigLayout("fill"))
-
-        val centerSelectionPanel = JPanel(MigLayout()).apply {
+        val addRemoveButtonsPanel = JPanel(MigLayout()).apply {
             add(addPanel, "north")
             add(middlePanel, "h 300")
             add(removePanel, "south")
         }
-        val selectionPanel = JPanel(MigLayout("", "[grow][][grow]")).apply {
-            add(leftSelectionPanel, "grow")
-            add(centerSelectionPanel, "")
-            add(rightSelectionPanel, "grow")
+        val selectionPanel = JPanel(MigLayout("", "[grow][grow][][grow]")).apply {
+            add(offlineBotsPanel, "grow")
+            add(bootButtonPanel, "")
+            add(joinedBotsPanel, "grow")
+            add(addRemoveButtonsPanel, "")
+            add(selectBotsPanel, "grow")
         }
         add(selectionPanel, "north")
+
+        bootButtonPanel.addButton("boot_arrow", onBoot)
 
         addPanel.apply {
             addButton("add_arrow", onAdd, "cell 0 1")
@@ -63,19 +73,19 @@ class SelectBotsPanel(val onlySelectUnique: Boolean = false) : JPanel(MigLayout(
             addButton("arrow_remove_all", onRemoveAll, "cell 0 4")
         }
 
-        availableBotList.cellRenderer = BotInfoListCellRenderer()
+        joinedBotList.cellRenderer = BotInfoListCellRenderer()
         selectedBotList.cellRenderer = BotInfoListCellRenderer()
 
         onAdd.subscribe {
-            availableBotList.selectedValuesList.forEach { botInfo ->
+            joinedBotList.selectedValuesList.forEach { botInfo ->
                 if (!(onlySelectUnique && selectedBotListModel.contains(botInfo))) {
                     selectedBotListModel.addElement(botInfo)
                 }
             }
         }
         onAddAll.subscribe {
-            for (i in 0 until availableBotListModel.size) {
-                val botInfo = availableBotListModel[i]
+            for (i in 0 until joinedBotListModel.size) {
+                val botInfo = joinedBotListModel[i]
                 if (!(onlySelectUnique && selectedBotListModel.contains(botInfo))) {
                     selectedBotListModel.addElement(botInfo)
                 }
@@ -89,12 +99,12 @@ class SelectBotsPanel(val onlySelectUnique: Boolean = false) : JPanel(MigLayout(
         onRemoveAll.subscribe {
             selectedBotListModel.clear()
         }
-        availableBotList.addMouseListener(object : MouseAdapter() {
+        joinedBotList.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount > 1) {
-                    val index = availableBotList.locationToIndex(e.point)
-                    if (index >= 0 && index < availableBotListModel.size()) {
-                        val botInfo = availableBotListModel[index]
+                    val index = joinedBotList.locationToIndex(e.point)
+                    if (index >= 0 && index < joinedBotListModel.size()) {
+                        val botInfo = joinedBotListModel[index]
                         if (!(onlySelectUnique && selectedBotListModel.contains(botInfo))) {
                             selectedBotListModel.addElement(botInfo)
                         }

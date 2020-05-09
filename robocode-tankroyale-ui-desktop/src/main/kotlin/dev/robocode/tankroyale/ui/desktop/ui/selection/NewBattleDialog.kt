@@ -1,28 +1,27 @@
 package dev.robocode.tankroyale.ui.desktop.ui.selection
 
-import dev.robocode.tankroyale.ui.desktop.bootstrap.BootstrapProcess
-import dev.robocode.tankroyale.ui.desktop.bootstrap.BotEntry
 import dev.robocode.tankroyale.ui.desktop.client.Client
-import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addButton
-import dev.robocode.tankroyale.ui.desktop.ui.extensions.JTableExt.onChanged
-import dev.robocode.tankroyale.ui.desktop.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
+import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
+import dev.robocode.tankroyale.ui.desktop.settings.GameType
+import dev.robocode.tankroyale.ui.desktop.settings.GamesSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.JListExt.onChanged
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.EventQueue
-import java.util.*
 import javax.swing.*
-import kotlin.collections.ArrayList
 
 
 @UnstableDefault
 @ImplicitReflectionSerializer
-object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("new_battle_dialog")) {
+object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("select_bots_dialog")) {
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
@@ -31,12 +30,12 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("new_
 
         setLocationRelativeTo(null) // center on screen
 
-        val newBattleDialogPanel = NewBattleDialogPanel()
+        val selectBotsAndStartPanel = SelectBotsAndStartPanel()
 
-        contentPane.add(newBattleDialogPanel)
+        contentPane.add(selectBotsAndStartPanel)
 
         onActivated {
-            newBattleDialogPanel.apply {
+            selectBotsAndStartPanel.apply {
                 updateAvailableBots()
                 clearSelectedBots()
             }
@@ -46,26 +45,12 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("new_
 
 @UnstableDefault
 @ImplicitReflectionSerializer
-class NewBattleDialogPanel : JPanel(MigLayout("fill")) {
+class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
     // Private events
     private val onStartBattle = Event<JButton>()
     private val onCancel = Event<JButton>()
 
-    private val selectPanel = SelectBotsWithBotInfoPanel2()
-
-    private val botEntries: List<BotEntry> by lazy { BootstrapProcess.list() }
-
-    private val selectedOfflineBotFiles: List<String>
-        get() {
-            val files = ArrayList<String>()
-            selectPanel.selectedBotTable.rows()
-                .filter { it.availability === BotAvailability.OFFLINE }
-                .forEach {
-                    files.add(it.botInfo.host)
-                }
-            return Collections.unmodifiableList(files)
-        }
-
+    private val selectPanel = SelectBotsWithBotInfoPanel(onlySelectUnique = true)
 
     init {
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
@@ -83,8 +68,9 @@ class NewBattleDialogPanel : JPanel(MigLayout("fill")) {
             addButton("cancel", onCancel, "tag cancel")
         }
         startBattleButton.isEnabled = false
-        selectPanel.selectedBotTable.onChanged {
-            startBattleButton.isEnabled = selectPanel.selectedBotTable.rowCount >= 1
+
+        selectPanel.selectedBotList.onChanged {
+            startBattleButton.isEnabled = selectPanel.selectedBotList.model.size >= 2
         }
 
         onStartBattle.subscribe { startGame() }
@@ -96,54 +82,29 @@ class NewBattleDialogPanel : JPanel(MigLayout("fill")) {
     }
 
     fun clearSelectedBots() {
-        selectPanel.selectedBotTable.clear()
+        (selectPanel.selectedBotList.model as DefaultListModel).clear()
     }
 
     fun updateAvailableBots() {
         SwingUtilities.invokeLater {
-            val table = selectPanel.availableBotTable
-            table.clear()
-
-            Client.availableBots.forEach { table.add(it, BotAvailability.READY) }
-
-            botEntries.forEach { botEntry ->
-                val info = botEntry.info
-                selectPanel.availableBotTable.add(
-                    BotInfo(
-                        info.name,
-                        info.version,
-                        info.author,
-                        info.description,
-                        info.url,
-                        info.countryCode,
-                        info.gameTypes,
-                        info.platform,
-                        info.programmingLang,
-                        host = botEntry.filename, // host serves as filename here
-                        port = -1
-                    ),
-                    BotAvailability.OFFLINE
-                )
-            }
+            val availableBotListModel = selectPanel.availableBotList.model as DefaultListModel
+            availableBotListModel.clear()
+            Client.availableBots.forEach { availableBotListModel.addElement(it) }
         }
     }
 
     @ImplicitReflectionSerializer
     @UnstableDefault
     private fun startGame() {
-//        isVisible = true // TODO: Necessary?
+        isVisible = true
 
-        if (selectedOfflineBotFiles.isNotEmpty()) {
-
-        }
-/*
         val gameType = ServerProcess.gameType
             ?: GameType.CLASSIC.type // FIXME: Dialog must be shown to select game type with remote server
 
-        val botAddresses = selectPanel.selectedBotListModel.toArray()
+        val botAddresses = (selectPanel.selectedBotList.model as DefaultListModel).toArray()
             .map { b -> (b as BotInfo).botAddress }
         Client.startGame(GamesSettings.games[gameType]!!, botAddresses.toSet())
-*/
+
         SelectBotsForBattleDialog.dispose()
     }
 }
