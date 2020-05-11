@@ -91,7 +91,7 @@ class Bootstrap : Callable<Int> {
             description = ["Filenames of the bots to start without file extensions"]
         ) filenames: Array<String>
     ) {
-        val processes = RunCommand(getBotDirectories(botDirs)).startBots(filenames)
+        val processes = RunCommand(getBotDirectories(botDirs)).runBots(filenames)
         readLine()
         killProcesses(processes)
     }

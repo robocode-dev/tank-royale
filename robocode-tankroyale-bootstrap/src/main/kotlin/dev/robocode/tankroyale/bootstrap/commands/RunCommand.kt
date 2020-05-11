@@ -18,18 +18,18 @@ import java.util.stream.Collectors.toList
 @ImplicitReflectionSerializer
 class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
 
-    fun startBots(filenames: Array<String>): List<Process> {
+    fun runBots(filenames: Array<String>): List<Process> {
         val processes = ArrayList<Process>()
         filenames.forEach { filename ->
             run {
-                val process = startBot(filename)
+                val process = startBotProcess(filename)
                 if (process != null) processes.add(process)
             }
         }
         return processes
     }
 
-    private fun startBot(filename: String): Process? {
+    private fun startBotProcess(filename: String): Process? {
         try {
             val scriptPath = findOsScript(filename)
             if (scriptPath == null) {
@@ -38,19 +38,7 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
             }
 
             val command = scriptPath.toString()
-            val commandLC = command.toLowerCase()
-
-            val processBuilder = when {
-                commandLC.endsWith(".bat") -> // handle Batch script
-                    ProcessBuilder("cmd.exe", "/c \"$command\"")
-                commandLC.endsWith(".ps1") -> // handle PowerShell script
-                    ProcessBuilder("powershell.exe", "-ExecutionPolicy ByPass", "-File \"$command\"")
-                commandLC.endsWith(".sh") -> // handle Bash Shell script
-                    ProcessBuilder("bash.exe", "-c \"$command\"")
-                else -> // handle regular command
-                    ProcessBuilder(command)
-            }
-
+            val processBuilder = createProcessBuilder(command)
             val process = processBuilder.start()
             val env = processBuilder.environment()
 
@@ -62,6 +50,21 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
         } catch (ex: IOException) {
             System.err.println("ERROR: ${ex.message}")
             return null
+        }
+    }
+
+    private fun createProcessBuilder(command: String): ProcessBuilder {
+        val cmd = command.toLowerCase()
+
+        return when {
+            cmd.endsWith(".bat") -> // handle Batch script
+                ProcessBuilder("cmd.exe", "/c \"$command\"")
+            cmd.endsWith(".ps1") -> // handle PowerShell script
+                ProcessBuilder("powershell.exe", "-ExecutionPolicy ByPass", "-File \"$command\"")
+            cmd.endsWith(".sh") -> // handle Bash Shell script
+                ProcessBuilder("bash.exe", "-c \"$command\"")
+            else -> // handle regular command
+                ProcessBuilder(command)
         }
     }
 
