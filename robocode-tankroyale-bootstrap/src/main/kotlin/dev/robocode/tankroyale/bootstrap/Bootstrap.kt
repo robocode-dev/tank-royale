@@ -91,9 +91,7 @@ class Bootstrap : Callable<Int> {
             description = ["Filenames of the bots to start without file extensions"]
         ) filenames: Array<String>
     ) {
-        val processes = RunCommand(getBotDirectories(botDirs)).runBots(filenames)
-        readLine()
-        killProcesses(processes)
+        RunCommand(getBotDirectories(botDirs)).runBots(filenames)
     }
 
     companion object {
@@ -113,13 +111,6 @@ class Bootstrap : Callable<Int> {
                 }
             }
             return paths
-        }
-
-        private fun killProcesses(processes: List<Process>) {
-            processes.parallelStream().forEach { p ->
-                p.descendants().forEach { d -> d.destroyForcibly() }
-                p.destroyForcibly().waitFor()
-            }
         }
     }
 }

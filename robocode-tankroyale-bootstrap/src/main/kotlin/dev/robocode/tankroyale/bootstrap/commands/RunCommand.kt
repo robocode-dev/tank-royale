@@ -18,15 +18,30 @@ import java.util.stream.Collectors.toList
 @ImplicitReflectionSerializer
 class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
 
-    fun runBots(filenames: Array<String>): List<Process> {
+    fun runBots(filenames: Array<String>) {
+
+        // Start up the bots provided with the input list
         val processes = ArrayList<Process>()
-        filenames.forEach { filename ->
-            run {
-                val process = startBotProcess(filename)
-                if (process != null) processes.add(process)
+        filenames.forEach { filename -> addBotProcess(filename, processes) }
+
+        // Add new bots from the stdin or terminate if blank line is provided
+        do {
+            val filename = readLine()?.trim()
+            if (filename == null || filename.isBlank()) {
+                break
             }
+            addBotProcess(filename, processes)
+        } while (true)
+
+        // Kill all running processes before terminating
+        killProcesses(processes)
+    }
+
+    private fun addBotProcess(filename: String, processes: MutableList<Process>) {
+        val process = startBotProcess(filename)
+        if (process != null) {
+            processes.add(process)
         }
-        return processes
     }
 
     private fun startBotProcess(filename: String): Process? {
@@ -145,6 +160,13 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
 
         private fun setEnvVar(envMap: MutableMap<String,String>, env: Env, value: Any?) {
             if (value != null) envMap[env.name] = value.toString()
+        }
+
+        private fun killProcesses(processes: List<Process>) {
+            processes.parallelStream().forEach { p ->
+                p.descendants().forEach { d -> d.destroyForcibly() }
+                p.destroyForcibly().waitFor()
+            }
         }
     }
 }
