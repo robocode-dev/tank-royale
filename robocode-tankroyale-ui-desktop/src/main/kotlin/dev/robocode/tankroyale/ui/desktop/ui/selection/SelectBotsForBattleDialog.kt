@@ -89,7 +89,7 @@ class SelectBotsForBattlePanel : JPanel(MigLayout("fill")) {
         SwingUtilities.invokeLater {
             val availableBotListModel = selectPanel.joinedBotListModel
             availableBotListModel.clear()
-            Client.availableBots.forEach { availableBotListModel.addElement(it) }
+            Client.joinedBots.forEach { availableBotListModel.addElement(it) }
         }
     }
 

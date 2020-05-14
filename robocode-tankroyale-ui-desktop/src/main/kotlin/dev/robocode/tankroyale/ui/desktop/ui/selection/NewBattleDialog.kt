@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.ui.desktop.ui.selection
 
+import dev.robocode.tankroyale.ui.desktop.bootstrap.BootstrapProcess
+import dev.robocode.tankroyale.ui.desktop.bootstrap.BotEntry
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
@@ -36,7 +38,8 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
 
         onActivated {
             selectBotsAndStartPanel.apply {
-                updateAvailableBots()
+                updateOfflineBots()
+                updateJoinedBots()
                 clearSelectedBots()
             }
         }
@@ -51,6 +54,9 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
     private val onCancel = Event<JButton>()
 
     private val selectPanel = SelectBotsWithBotInfoPanel(onlySelectUnique = true)
+
+    private val offlineBotEntries: List<BotEntry> by lazy { BootstrapProcess.list() }
+
 
     init {
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
@@ -77,19 +83,42 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
 
         onCancel.subscribe { SelectBotsForBattleDialog.dispose() }
 
-        Client.onBotListUpdate.subscribe { updateAvailableBots() }
-        updateAvailableBots()
+        Client.onBotListUpdate.subscribe { updateJoinedBots() }
+        updateJoinedBots()
     }
 
     fun clearSelectedBots() {
         selectPanel.selectedBotListModel.clear()
     }
 
-    fun updateAvailableBots() {
+    fun updateOfflineBots() {
+        selectPanel.offlineBotListModel.clear()
+
+        offlineBotEntries.forEach { botEntry ->
+            val info = botEntry.info
+            selectPanel.offlineBotListModel.addElement(
+                BotInfo(
+                    info.name,
+                    info.version,
+                    info.author,
+                    info.description,
+                    info.url,
+                    info.countryCode,
+                    info.gameTypes,
+                    info.platform,
+                    info.programmingLang,
+                    host = botEntry.filename, // host serves as filename here
+                    port = -1
+                )
+            )
+        }
+    }
+
+    fun updateJoinedBots() {
         SwingUtilities.invokeLater {
-            val availableBotListModel = selectPanel.joinedBotListModel
-            availableBotListModel.clear()
-            Client.availableBots.forEach { availableBotListModel.addElement(it) }
+            val joinedBotListModel = selectPanel.joinedBotListModel
+            joinedBotListModel.clear()
+            Client.joinedBots.forEach { joinedBotListModel.addElement(it) }
         }
     }
 

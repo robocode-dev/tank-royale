@@ -66,8 +66,8 @@ object SelectBotsForBootUpPanel : JPanel(MigLayout("fill")) {
             return Collections.unmodifiableList(files)
         }
 
-    private var botsOnServerCount = 0;
-    private val botsOnServerLabel = JLabel();
+    private var botsOnServerCount = 0
+    private val botsOnServerLabel = JLabel()
 
     init {
         // Set label to bold

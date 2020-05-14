@@ -45,7 +45,7 @@ object Client : AutoCloseable {
 
     private var bots: Set<BotInfo> = HashSet()
 
-    val availableBots: Set<BotInfo>
+    val joinedBots: Set<BotInfo>
         get() {
             return bots
         }

@@ -8,12 +8,11 @@ import dev.robocode.tankroyale.ui.desktop.util.ResourceUtil
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.parseList
-import java.io.BufferedReader
-import java.io.FileNotFoundException
-import java.io.InputStreamReader
+import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicBoolean
+
 
 @UnstableDefault
 @ImplicitReflectionSerializer
@@ -44,10 +43,15 @@ object BootstrapProcess {
     }
 
     fun run(entries: List<String>) {
-        if (isRunning.get())
-            stopRunning()
+        if (isRunning.get()) {
+            addBotsToRunningBotProcess(entries)
+        } else {
+            startRunningBotProcess(entries)
+        }
+    }
 
-        val args = arrayListOf(
+    private fun startRunningBotProcess(entries: List<String>) {
+        val args = mutableListOf(
             "java",
             "-Dserver.url=${ServerSettings.defaultUrl}",
             "-jar",
@@ -57,12 +61,17 @@ object BootstrapProcess {
         )
         entries.forEach { args += it }
 
-        val builder = ProcessBuilder(args)
-        runProcess = builder.start()
+        runProcess = ProcessBuilder(args).start()
 
         isRunning.set(true)
-
         startErrorThread()
+    }
+
+    private fun addBotsToRunningBotProcess(entries: List<String>) {
+        val printStream = PrintStream(runProcess?.outputStream!!)
+        entries.forEach {
+                filename -> printStream.println(filename) }
+        printStream.flush()
     }
 
     fun stopRunning() {

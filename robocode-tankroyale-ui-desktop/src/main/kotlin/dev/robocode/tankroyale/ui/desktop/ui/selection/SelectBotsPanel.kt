@@ -1,17 +1,22 @@
 package dev.robocode.tankroyale.ui.desktop.ui.selection
 
+import dev.robocode.tankroyale.ui.desktop.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.ui.desktop.util.Event
+import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
+@UnstableDefault
+@ImplicitReflectionSerializer
 class SelectBotsPanel(val onlySelectUnique: Boolean = false) : JPanel(MigLayout("fill")) {
 
-    private val offlineBotListModel = DefaultListModel<BotInfo>()
+    val offlineBotListModel = DefaultListModel<BotInfo>()
     val joinedBotListModel = DefaultListModel<BotInfo>()
     val selectedBotListModel = DefaultListModel<BotInfo>()
 
@@ -73,8 +78,16 @@ class SelectBotsPanel(val onlySelectUnique: Boolean = false) : JPanel(MigLayout(
             addButton("arrow_remove_all", onRemoveAll, "cell 0 4")
         }
 
+        offlineBotList.cellRenderer = BotInfoListCellRenderer()
         joinedBotList.cellRenderer = BotInfoListCellRenderer()
         selectedBotList.cellRenderer = BotInfoListCellRenderer()
+
+        onBoot.subscribe {
+            val files = ArrayList<String>()
+            offlineBotList.selectedIndices.forEach { files.add(offlineBotListModel.getElementAt(it).host) }
+
+            BootstrapProcess.run(files)
+        }
 
         onAdd.subscribe {
             joinedBotList.selectedValuesList.forEach { botInfo ->
