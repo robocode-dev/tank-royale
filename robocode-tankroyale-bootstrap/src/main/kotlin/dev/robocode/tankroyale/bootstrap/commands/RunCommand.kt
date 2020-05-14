@@ -8,6 +8,7 @@ import dev.robocode.tankroyale.bootstrap.util.OSUtil.OSType.Windows
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import java.io.IOException
+import java.lang.Thread.sleep
 import java.nio.file.Files
 import java.nio.file.Files.list
 import java.nio.file.Path
@@ -27,10 +28,14 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
         // Add new bots from the stdin or terminate if blank line is provided
         do {
             val filename = readLine()?.trim()
-            if (filename == null || filename.isBlank()) {
+            if (filename != null && filename.isBlank()) {
                 break
             }
-            addBotProcess(filename, processes)
+            if (filename != null) {
+                addBotProcess(filename, processes)
+            } else {
+                sleep(500)
+            }
         } while (true)
 
         // Kill all running processes before terminating
