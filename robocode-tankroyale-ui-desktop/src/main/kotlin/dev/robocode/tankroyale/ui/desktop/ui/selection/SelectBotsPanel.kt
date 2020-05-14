@@ -116,6 +116,17 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         onRemoveAll.subscribe {
             selectedBotListModel.clear()
         }
+        offlineBotList.addMouseListener(object : MouseAdapter() {
+            override fun mouseClicked(e: MouseEvent) {
+                if (e.clickCount > 1) {
+                    val index = offlineBotList.locationToIndex(e.point)
+                    if (index >= 0 && index < offlineBotListModel.size()) {
+                        val botInfo = offlineBotListModel[index]
+                        BootstrapProcess.run(listOf(botInfo.host))
+                    }
+                }
+            }
+        })
         joinedBotList.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount > 1) {

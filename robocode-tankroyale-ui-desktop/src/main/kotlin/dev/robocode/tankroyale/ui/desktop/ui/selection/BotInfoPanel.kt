@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.ui.desktop.ui.selection
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addLabel
 import net.miginfocom.swing.MigLayout
+import java.awt.Dimension
 import java.util.*
 import javax.swing.*
 
@@ -32,6 +33,7 @@ class BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
 
         addLabel("bot_info.country_code")
         add(countryCodeTextPane, "growx, wrap")
+        countryCodeTextPane.minimumSize = Dimension(100, 24)
 
         addLabel("bot_info.description")
         add(descriptionTextField, "growx, wrap")
@@ -41,6 +43,7 @@ class BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
 
         addLabel("bot_info.url")
         add(urlTextPane, "growx, wrap")
+        urlTextPane.minimumSize = descriptionTextField.minimumSize
 
         addLabel("bot_info.game_types")
         add(gameTypesTextField, "growx, wrap")
@@ -60,7 +63,7 @@ class BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
         authorTextField.text = botInfo?.author
         descriptionTextField.text =
             if (botInfo != null) botInfo.description?.let { truncateDescriptionLines(it) } else ""
-        urlTextPane.text = if (botInfo != null) botInfo.url?.let { generateUrlHtml(botInfo.url) } else ""
+        urlTextPane.text = if (botInfo != null) botInfo.url?.let { generateUrlHtml(botInfo.url) } else " "
         gameTypesTextField.text = if (botInfo != null) gameTypesToString(botInfo.gameTypes) else ""
         countryCodeTextPane.text =
             if (botInfo != null) botInfo.countryCode?.let { generateCountryHtml(botInfo.countryCode) } else ""
