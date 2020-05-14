@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.ui.desktop.ui
 
+import com.sun.jdi.Bootstrap
+import dev.robocode.tankroyale.ui.desktop.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
@@ -54,6 +56,7 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
         }
 
         onClosing {
+            BootstrapProcess.stopRunning()
             close()
         }
     }

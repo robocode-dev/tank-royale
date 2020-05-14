@@ -86,7 +86,7 @@ object BootstrapProcess {
 
             // Send quit signal to server
             val out = p.outputStream
-            out.write("q\n".toByteArray())
+            out.write("\n".toByteArray())
             out.flush() // important!
         }
 
@@ -159,15 +159,4 @@ object BootstrapProcess {
         errorThreadRunning.set(false)
         errorThread?.interrupt()
     }
-}
-
-
-@UnstableDefault
-@ImplicitReflectionSerializer
-fun main() {
-//    println(BootstrapProcess.list())
-
-    BootstrapProcess.run(listOf("TestBot", "TestBot"))
-    readLine()
-    BootstrapProcess.stopRunning()
 }

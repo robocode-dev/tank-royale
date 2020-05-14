@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.ui.desktop.bootstrap.BotEntry
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
-import dev.robocode.tankroyale.ui.desktop.settings.GameType
 import dev.robocode.tankroyale.ui.desktop.settings.GamesSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
@@ -53,10 +52,9 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
     private val onStartBattle = Event<JButton>()
     private val onCancel = Event<JButton>()
 
-    private val selectPanel = SelectBotsWithBotInfoPanel(onlySelectUnique = true)
+    private val selectPanel = SelectBotsWithBotInfoPanel()
 
     private val offlineBotEntries: List<BotEntry> by lazy { BootstrapProcess.list() }
-
 
     init {
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
@@ -81,7 +79,7 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
 
         onStartBattle.subscribe { startGame() }
 
-        onCancel.subscribe { SelectBotsForBattleDialog.dispose() }
+        onCancel.subscribe { NewBattleDialog.dispose() }
 
         Client.onBotListUpdate.subscribe { updateJoinedBots() }
         updateJoinedBots()
@@ -127,14 +125,11 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
     private fun startGame() {
         isVisible = true
 
-        val gameType = ServerProcess.gameType
-            ?: GameType.CLASSIC.type // FIXME: Dialog must be shown to select game type with remote server
-
         val botAddresses = selectPanel.selectedBotListModel.toArray()
             .map { b -> (b as BotInfo).botAddress }
-        Client.startGame(GamesSettings.games[gameType]!!, botAddresses.toSet())
+        Client.startGame(GamesSettings.games[ServerProcess.gameType.type]!!, botAddresses.toSet())
 
-        SelectBotsForBattleDialog.dispose()
+        NewBattleDialog.dispose()
     }
 }
 

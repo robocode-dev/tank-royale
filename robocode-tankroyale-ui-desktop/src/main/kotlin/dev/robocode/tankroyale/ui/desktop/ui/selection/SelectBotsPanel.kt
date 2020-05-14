@@ -8,19 +8,20 @@ import dev.robocode.tankroyale.ui.desktop.util.Event
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
+import java.awt.Dimension
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
 @UnstableDefault
 @ImplicitReflectionSerializer
-class SelectBotsPanel(val onlySelectUnique: Boolean = false) : JPanel(MigLayout("fill")) {
+class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
     val offlineBotListModel = DefaultListModel<BotInfo>()
     val joinedBotListModel = DefaultListModel<BotInfo>()
     val selectedBotListModel = DefaultListModel<BotInfo>()
 
-    private val offlineBotList = JList(offlineBotListModel)
+    val offlineBotList = JList(offlineBotListModel)
     val joinedBotList = JList(joinedBotListModel)
     val selectedBotList = JList(selectedBotListModel)
 
@@ -34,16 +35,19 @@ class SelectBotsPanel(val onlySelectUnique: Boolean = false) : JPanel(MigLayout(
     init {
         val offlineBotsPanel = JPanel(MigLayout("fill")).apply {
             add(JScrollPane(offlineBotList), "grow")
+            preferredSize = Dimension(1000, 1000)
             border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("offline_bots"))
         }
 
         val joinedBotsPanel = JPanel(MigLayout("fill")).apply {
             add(JScrollPane(joinedBotList), "grow")
+            preferredSize = Dimension(1000, 1000)
             border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("joined_bots"))
         }
 
         val selectBotsPanel = JPanel(MigLayout("fill")).apply {
             add(JScrollPane(selectedBotList), "grow")
+            preferredSize = Dimension(1000, 1000)
             border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("selected_bots"))
         }
 
@@ -91,7 +95,7 @@ class SelectBotsPanel(val onlySelectUnique: Boolean = false) : JPanel(MigLayout(
 
         onAdd.subscribe {
             joinedBotList.selectedValuesList.forEach { botInfo ->
-                if (!(onlySelectUnique && selectedBotListModel.contains(botInfo))) {
+                if (!selectedBotListModel.contains(botInfo)) {
                     selectedBotListModel.addElement(botInfo)
                 }
             }
@@ -99,7 +103,7 @@ class SelectBotsPanel(val onlySelectUnique: Boolean = false) : JPanel(MigLayout(
         onAddAll.subscribe {
             for (i in 0 until joinedBotListModel.size) {
                 val botInfo = joinedBotListModel[i]
-                if (!(onlySelectUnique && selectedBotListModel.contains(botInfo))) {
+                if (!selectedBotListModel.contains(botInfo)) {
                     selectedBotListModel.addElement(botInfo)
                 }
             }
@@ -118,7 +122,7 @@ class SelectBotsPanel(val onlySelectUnique: Boolean = false) : JPanel(MigLayout(
                     val index = joinedBotList.locationToIndex(e.point)
                     if (index >= 0 && index < joinedBotListModel.size()) {
                         val botInfo = joinedBotListModel[index]
-                        if (!(onlySelectUnique && selectedBotListModel.contains(botInfo))) {
+                        if (!selectedBotListModel.contains(botInfo)) {
                             selectedBotListModel.addElement(botInfo)
                         }
                     }
