@@ -1,9 +1,9 @@
 package dev.robocode.tankroyale.ui.desktop.ui.arena
 
 import dev.robocode.tankroyale.ui.desktop.client.Client
-import dev.robocode.tankroyale.ui.desktop.fx.Animation
-import dev.robocode.tankroyale.ui.desktop.fx.CircleBurst
-import dev.robocode.tankroyale.ui.desktop.fx.Explosion
+import dev.robocode.tankroyale.ui.desktop.ui.fx.Animation
+import dev.robocode.tankroyale.ui.desktop.ui.fx.CircleBurst
+import dev.robocode.tankroyale.ui.desktop.ui.fx.Explosion
 import dev.robocode.tankroyale.ui.desktop.model.*
 import dev.robocode.tankroyale.ui.desktop.ui.ResultsWindow
 import dev.robocode.tankroyale.ui.desktop.ui.arena.ArenaPanel.State.arenaHeight

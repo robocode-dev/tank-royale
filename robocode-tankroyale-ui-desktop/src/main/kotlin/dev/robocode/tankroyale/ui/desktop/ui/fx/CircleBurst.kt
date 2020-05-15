@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.ui.desktop.fx
+package dev.robocode.tankroyale.ui.desktop.ui.fx
 
 import java.awt.Color
 import java.awt.Graphics2D
