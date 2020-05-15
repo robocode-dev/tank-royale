@@ -68,7 +68,7 @@ private object StartServerPanel : JPanel(MigLayout("fill")) {
         onOk.subscribe {
             StartServerCommand(
                 port = portTextField.text.toInt(),
-                gameType = GameType.values().first { it.type == gameTypeComboBox.selectedGameType }
+                gameType = GameType.values().first { it.displayName == gameTypeComboBox.selectedGameType }
             ).execute()
             StartServerDialog.dispose()
         }

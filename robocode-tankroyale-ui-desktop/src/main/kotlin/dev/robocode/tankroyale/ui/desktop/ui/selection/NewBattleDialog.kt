@@ -37,7 +37,7 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
 
         onActivated {
             selectBotsAndStartPanel.apply {
-                updateOfflineBots()
+                updateBotsDirectoryBots()
                 updateJoinedBots()
                 clearSelectedBots()
             }
@@ -54,7 +54,7 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
 
     private val selectPanel = SelectBotsWithBotInfoPanel()
 
-    private val offlineBotEntries: List<BotEntry> by lazy { BootstrapProcess.list() }
+    private val botsDirectoryEntries: List<BotEntry> by lazy { BootstrapProcess.list() }
 
     init {
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
@@ -89,12 +89,12 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
         selectPanel.selectedBotListModel.clear()
     }
 
-    fun updateOfflineBots() {
-        selectPanel.offlineBotListModel.clear()
+    fun updateBotsDirectoryBots() {
+        selectPanel.botsDirectoryListModel.clear()
 
-        offlineBotEntries.forEach { botEntry ->
+        botsDirectoryEntries.forEach { botEntry ->
             val info = botEntry.info
-            selectPanel.offlineBotListModel.addElement(
+            selectPanel.botsDirectoryListModel.addElement(
                 BotInfo(
                     info.name,
                     info.version,
@@ -127,7 +127,7 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
 
         val botAddresses = selectPanel.selectedBotListModel.toArray()
             .map { b -> (b as BotInfo).botAddress }
-        Client.startGame(GamesSettings.games[ServerProcess.gameType.type]!!, botAddresses.toSet())
+        Client.startGame(GamesSettings.games[ServerProcess.gameType.displayName]!!, botAddresses.toSet())
 
         NewBattleDialog.dispose()
     }

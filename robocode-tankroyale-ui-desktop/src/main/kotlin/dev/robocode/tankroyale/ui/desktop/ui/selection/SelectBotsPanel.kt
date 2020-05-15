@@ -17,11 +17,11 @@ import javax.swing.*
 @ImplicitReflectionSerializer
 class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
-    val offlineBotListModel = DefaultListModel<BotInfo>()
+    val botsDirectoryListModel = DefaultListModel<BotInfo>()
     val joinedBotListModel = DefaultListModel<BotInfo>()
     val selectedBotListModel = DefaultListModel<BotInfo>()
 
-    val offlineBotList = JList(offlineBotListModel)
+    val botsDirectoryList = JList(botsDirectoryListModel)
     val joinedBotList = JList(joinedBotListModel)
     val selectedBotList = JList(selectedBotListModel)
 
@@ -33,10 +33,10 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
     private val onRemoveAll = Event<JButton>()
 
     init {
-        val offlineBotsPanel = JPanel(MigLayout("fill")).apply {
-            add(JScrollPane(offlineBotList), "grow")
+        val botsDirectoryPanel = JPanel(MigLayout("fill")).apply {
+            add(JScrollPane(botsDirectoryList), "grow")
             preferredSize = Dimension(1000, 1000)
-            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("offline_bots"))
+            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("bot_directory"))
         }
 
         val joinedBotsPanel = JPanel(MigLayout("fill")).apply {
@@ -63,7 +63,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             add(removePanel, "south")
         }
         val selectionPanel = JPanel(MigLayout("", "[grow][grow][][grow]")).apply {
-            add(offlineBotsPanel, "grow")
+            add(botsDirectoryPanel, "grow")
             add(bootButtonPanel, "")
             add(joinedBotsPanel, "grow")
             add(addRemoveButtonsPanel, "")
@@ -82,13 +82,13 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             addButton("arrow_remove_all", onRemoveAll, "cell 0 4")
         }
 
-        offlineBotList.cellRenderer = BotInfoListCellRenderer()
+        botsDirectoryList.cellRenderer = BotInfoListCellRenderer()
         joinedBotList.cellRenderer = BotInfoListCellRenderer()
         selectedBotList.cellRenderer = BotInfoListCellRenderer()
 
         onBoot.subscribe {
             val files = ArrayList<String>()
-            offlineBotList.selectedIndices.forEach { files.add(offlineBotListModel.getElementAt(it).host) }
+            botsDirectoryList.selectedIndices.forEach { files.add(botsDirectoryListModel.getElementAt(it).host) }
 
             BootstrapProcess.run(files)
         }
@@ -116,12 +116,12 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         onRemoveAll.subscribe {
             selectedBotListModel.clear()
         }
-        offlineBotList.addMouseListener(object : MouseAdapter() {
+        botsDirectoryList.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount > 1) {
-                    val index = offlineBotList.locationToIndex(e.point)
-                    if (index >= 0 && index < offlineBotListModel.size()) {
-                        val botInfo = offlineBotListModel[index]
+                    val index = botsDirectoryList.locationToIndex(e.point)
+                    if (index >= 0 && index < botsDirectoryListModel.size()) {
+                        val botInfo = botsDirectoryListModel[index]
                         BootstrapProcess.run(listOf(botInfo.host))
                     }
                 }

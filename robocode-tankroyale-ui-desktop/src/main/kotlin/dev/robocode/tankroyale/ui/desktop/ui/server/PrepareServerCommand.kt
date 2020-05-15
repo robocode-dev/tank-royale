@@ -24,7 +24,7 @@ class PrepareServerCommand : ICommand {
                 String.format(
                     ResourceBundles.MESSAGES.get("server_already_running"),
                     ServerProcess.port,
-                    ServerProcess.gameType
+                    ServerProcess.gameType.displayName
                 ),
                 ResourceBundles.UI_TITLES.get("question"),
                 JOptionPane.YES_NO_OPTION,

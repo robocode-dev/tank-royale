@@ -9,8 +9,8 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
 
     val defaultGameSetup: Map<String, GameSetup>
         get() = mapOf(
-            GameType.CUSTOM.type to GameSetup(
-                gameType = GameType.CUSTOM.type,
+            GameType.CUSTOM.displayName to GameSetup(
+                gameType = GameType.CUSTOM.displayName,
                 arenaWidth = 800,
                 isArenaWidthLocked = false,
                 arenaHeight = 600,
@@ -31,8 +31,8 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
                 isReadyTimeoutLocked = false,
                 defaultTurnsPerSecond = 30
             ),
-            GameType.CLASSIC.type to GameSetup(
-                gameType = GameType.CLASSIC.type,
+            GameType.CLASSIC.displayName to GameSetup(
+                gameType = GameType.CLASSIC.displayName,
                 arenaWidth = 800,
                 isArenaWidthLocked = true,
                 arenaHeight = 600,
@@ -53,8 +53,8 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
                 isReadyTimeoutLocked = false,
                 defaultTurnsPerSecond = 30
             ),
-            GameType.MELEE.type to GameSetup(
-                gameType = GameType.MELEE.type,
+            GameType.MELEE.displayName to GameSetup(
+                gameType = GameType.MELEE.displayName,
                 arenaWidth = 1000,
                 isArenaWidthLocked = true,
                 arenaHeight = 1000,
@@ -75,8 +75,8 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
                 isReadyTimeoutLocked = false,
                 defaultTurnsPerSecond = 30
             ),
-            GameType.ONE_VS_ONE.type to GameSetup(
-                gameType = GameType.ONE_VS_ONE.type,
+            GameType.ONE_VS_ONE.displayName to GameSetup(
+                gameType = GameType.ONE_VS_ONE.displayName,
                 arenaWidth = 1000,
                 isArenaWidthLocked = true,
                 arenaHeight = 1000,
@@ -115,7 +115,7 @@ object GamesSettings : PropertiesStore("Robocode Games Config", "games.propertie
             val value = properties.getValue(propName) as String
 
             if (gameSetups[gameName] == null) {
-                gameSetups[gameName] = defaultGameSetup[GameType.CUSTOM.type]?.toMutableGameSetup()
+                gameSetups[gameName] = defaultGameSetup[GameType.CUSTOM.displayName]?.toMutableGameSetup()
             }
             val gameType = games[gameName] as MutableGameSetup
             val theField = MutableGameSetup::class.java.getDeclaredField(fieldName)

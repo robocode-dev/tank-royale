@@ -6,9 +6,9 @@ import javax.swing.JComboBox
 
 class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray()) {
 
-    val selectedGameType: String get() = (selectedItem ?: GameType.CLASSIC.type) as String
+    val selectedGameType: String get() = (selectedItem ?: GameType.CLASSIC.displayName) as String
 
     fun setSelectedGameType(gameType: GameType) {
-        model.selectedItem = gameType.type
+        model.selectedItem = gameType.displayName
     }
 }
