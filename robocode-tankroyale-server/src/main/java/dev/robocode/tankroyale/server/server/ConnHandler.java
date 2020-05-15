@@ -86,6 +86,14 @@ public final class ConnHandler {
     return Collections.unmodifiableMap(botHandshakes);
   }
 
+  Map<WebSocket, ObserverHandshake> getObserverHandshakes() {
+    return Collections.unmodifiableMap(observerHandshakes);
+  }
+
+  Map<WebSocket, ControllerHandshake> getControllerHandshakes() {
+    return Collections.unmodifiableMap(controllerHandshakes);
+  }
+
   Set<WebSocket> getBotConnections(Collection<BotAddress> botAddresses) {
     Set<WebSocket> foundConnections = new HashSet<>();
 

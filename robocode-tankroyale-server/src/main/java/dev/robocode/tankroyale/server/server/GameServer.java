@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class GameServer {
 
-  private static final Logger logger = LoggerFactory.getLogger(GameServer.class);
+  private static final Logger log = LoggerFactory.getLogger(GameServer.class);
 
   private final String gameTypes;
 
@@ -72,12 +72,12 @@ public final class GameServer {
   }
 
   public void start() {
-    logger.info("Starting server on port " + Server.getPort() + " with game types: " + gameTypes);
+    log.info("Starting server on port " + Server.getPort() + " with game types: " + gameTypes);
     connHandler.start();
   }
 
   public void stop() {
-    logger.info("Stopping server");
+    log.info("Stopping server");
     connHandler.stop();
   }
 
@@ -93,7 +93,7 @@ public final class GameServer {
   }
 
   private void prepareGame() {
-    logger.debug("Preparing game");
+    log.debug("Preparing game");
 
     runningState = RunningState.WAIT_FOR_READY_PARTICIPANTS;
 
@@ -122,7 +122,7 @@ public final class GameServer {
   }
 
   private void startGame() {
-    logger.debug("Starting game");
+    log.info("Starting game");
 
     runningState = RunningState.GAME_RUNNING;
 
@@ -183,7 +183,7 @@ public final class GameServer {
   }
 
   private void abortGame() {
-    logger.info("Aborting game");
+    log.info("Aborting game");
 
     runningState = RunningState.GAME_STOPPED;
 
@@ -269,7 +269,7 @@ public final class GameServer {
   }
 
   private void pauseGame() {
-    logger.info("Pausing game");
+    log.info("Pausing game");
 
     GamePausedEventForObserver pausedEvent = new GamePausedEventForObserver();
     pausedEvent.set$type(GamePausedEventForObserver.$type.GAME_PAUSED_EVENT_FOR_OBSERVER);
@@ -282,7 +282,7 @@ public final class GameServer {
   }
 
   private void resumeGame() {
-    logger.info("Resuming game");
+    log.info("Resuming game");
 
     GameResumedEventForObserver resumedEvent = new GameResumedEventForObserver();
     resumedEvent.set$type(GameResumedEventForObserver.$type.GAME_RESUMED_EVENT_FOR_OBSERVER);
@@ -313,7 +313,7 @@ public final class GameServer {
   }
 
   private void onReadyTimeout() {
-    logger.debug("Ready timeout");
+    log.debug("Ready timeout");
 
     if (readyParticipants.size() >= gameSetup.getMinNumberOfParticipants()) {
       // Start the game with the participants that are ready
@@ -348,7 +348,7 @@ public final class GameServer {
   }
 
   private synchronized void nextTurnTick() {
-    logger.debug("Updating game state");
+    log.debug("Updating game state");
 
     if (runningState != RunningState.GAME_STOPPED) {
       // Update game state
@@ -362,7 +362,7 @@ public final class GameServer {
 
         runningState = RunningState.GAME_STOPPED;
 
-        logger.info("Game ended");
+        log.info("Game ended");
 
         modelUpdater.calculatePlacements();
 
@@ -412,7 +412,7 @@ public final class GameServer {
   }
 
   private static void send(WebSocket conn, String message) {
-    logger.debug("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
+    log.debug("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
 
     try {
       conn.send(message);
@@ -471,12 +471,15 @@ public final class GameServer {
     }
 
     @Override
-    public void onBotJoined(WebSocket conn, BotHandshake bot) {
+    public void onBotJoined(WebSocket conn, BotHandshake handshake) {
+      log.info("Bot joined: " + getDisplayName(handshake));
       sendBotListUpdateToObservers();
     }
 
     @Override
     public void onBotLeft(WebSocket conn) {
+      log.info("Bot joined: " + getDisplayName(connHandler.getBotHandshakes().get(conn)));
+
       // If a bot leaves while in a game, make sure to reset all intent values to zeroes
       botIntents.put(
           conn, dev.robocode.tankroyale.server.model.BotIntent.builder().build().zeroed());
@@ -485,25 +488,27 @@ public final class GameServer {
     }
 
     @Override
-    public void onObserverJoined(WebSocket conn, ObserverHandshake bot) {
+    public void onObserverJoined(WebSocket conn, ObserverHandshake handshake) {
+      log.info("Observer joined: " + getDisplayName(handshake));
       String msg = createBotListUpdateMessage();
       send(conn, msg);
     }
 
     @Override
     public void onObserverLeft(WebSocket conn) {
-      // Do nothing
+      log.info("Observer left: " + getDisplayName(connHandler.getObserverHandshakes().get(conn)));
     }
 
     @Override
-    public void onControllerJoined(WebSocket conn, ControllerHandshake bot) {
+    public void onControllerJoined(WebSocket conn, ControllerHandshake handshake) {
+      log.info("Controller joined: " + getDisplayName(handshake));
       String msg = createBotListUpdateMessage();
       send(conn, msg);
     }
 
     @Override
     public void onControllerLeft(WebSocket conn) {
-      // Do nothing
+      log.info("Controller left: " + getDisplayName(connHandler.getControllerHandshakes().get(conn)));
     }
 
     @Override
@@ -538,6 +543,35 @@ public final class GameServer {
     @Override
     public void onResumeGame() {
       resumeGame();
+    }
+
+    private String getDisplayName(BotHandshake handshake) {
+      return getDisplayName(handshake.getName(), handshake.getVersion());
+    }
+
+    private String getDisplayName(ObserverHandshake handshake) {
+      return getDisplayName(handshake.getName(), handshake.getVersion());
+    }
+
+    private String getDisplayName(ControllerHandshake handshake) {
+      return getDisplayName(handshake.getName(), handshake.getVersion());
+    }
+
+    private String getDisplayName(String name, String version) {
+      String displayName = "";
+      if (name != null) {
+        name = name.trim();
+        if (!name.isEmpty()) {
+          displayName = name;
+        }
+      }
+      if (version != null) {
+        version = version.trim();
+        if (!version.isEmpty()) {
+          displayName += ' ' + version;
+        }
+      }
+      return displayName;
     }
   }
 }
