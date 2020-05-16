@@ -31,6 +31,7 @@ object BootstrapProcess {
     fun list(): List<BotEntry> {
         val builder = ProcessBuilder(
             "java",
+            "-Dserver.url=${ServerSettings.defaultUrl}",
             "-jar",
             getBootstrapJar(),
             "list",
@@ -87,7 +88,7 @@ object BootstrapProcess {
             // Send quit signal to server
             val out = p.outputStream
             out.write("\n".toByteArray())
-            out.flush() // important!
+            out.flush()
         }
 
         runProcess = null

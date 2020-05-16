@@ -90,6 +90,7 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
     override fun close() {
         Client.close()
+        BootstrapProcess.stopRunning()
         ServerProcess.stop()
     }
 }
@@ -97,6 +98,10 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 @UnstableDefault
 @ImplicitReflectionSerializer
 private fun main() {
+    Runtime.getRuntime().addShutdownHook(Thread {
+        MainWindow.close()
+    })
+
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     EventQueue.invokeLater {

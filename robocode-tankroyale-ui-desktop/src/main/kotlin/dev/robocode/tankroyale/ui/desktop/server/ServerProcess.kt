@@ -84,7 +84,7 @@ object ServerProcess {
             // Send quit signal to server
             val out = p.outputStream
             out.write("q\n".toByteArray())
-            out.flush() // important!
+            out.flush()
         }
 
         process = null
