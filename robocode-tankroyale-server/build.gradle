@@ -1,8 +1,11 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id 'java'
-    id 'maven'
+    id 'maven-publish'
     id 'application'
-    id "com.github.ben-manes.versions" version "0.28.0"
+    id 'idea'
+    id 'com.github.ben-manes.versions' version '0.28.0'
 }
 
 group = 'dev.robocode.tankroyale'
@@ -13,53 +16,63 @@ compileJava {
     targetCompatibility = '1.8'
 }
 
-mainClassName = 'dev.robocode.tankroyale.server.Server'
-
-jar {
-    manifest {
-        attributes 'Implementation-Title': project.getProperty('name'),
-                'Implementation-Version': project.getProperty('version'),
-                'Main-Class': project.getProperty('mainClassName')
-    }
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
-
 repositories {
+    jcenter()
     mavenLocal()
-    mavenCentral()
 }
 
 dependencies {
-    compile 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.0'
-    compile 'org.danilopianini:gson-extras:0.2.2'
+    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.0'
+    implementation 'org.danilopianini:gson-extras:0.2.2'
 
-    compile 'org.java-websocket:Java-WebSocket:1.4.1'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.1'
 
-    compile 'info.picocli:picocli:4.1.4'
+    implementation 'info.picocli:picocli:4.3.2'
 
-    compile 'org.fusesource.jansi:jansi:1.18'
+    implementation 'org.fusesource.jansi:jansi:1.18'
 
-    compile 'ch.qos.logback:logback-classic:1.2.3'
-    compile 'ch.qos.logback:logback-core:1.2.3'
-    compile 'org.slf4j:slf4j-api:1.7.26'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-core:1.2.3'
+    implementation 'org.slf4j:slf4j-api:1.7.26'
 
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.unitils:unitils-core:3.4.6'
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'org.unitils:unitils-core:3.4.6'
+}
+
+idea {
+    module {
+        outputDir = file("$buildDir/classes/kotlin/main")
+    }
 }
 
 // Modify versions.txt using replacement of @version@ token
-
-import org.apache.tools.ant.filters.ReplaceTokens
-
 processResources {
     with copySpec {
         from 'src/main/resources'
         include 'version.txt'
         filter(ReplaceTokens, tokens: [version: version])
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'dev.robocode.tankroyale.server.Server'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'robocode-tankroyale-server'
+            artifact fatJar
+        }
     }
 }

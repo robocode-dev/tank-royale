@@ -63,9 +63,7 @@ public class Bot {
 			return y;
 		}
 
-		public double getEnergy() {
-			return energy;
-		}
+		public double getEnergy() { return energy; }
 
 		public double getSpeed() {
 			return speed;
