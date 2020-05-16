@@ -2,10 +2,11 @@ plugins {
     id 'java'
     id 'maven'
     id 'application'
+    id "com.github.ben-manes.versions" version "0.28.0"
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.6.11'
+version = '0.6.12'
 
 compileJava {
     sourceCompatibility = '1.8'

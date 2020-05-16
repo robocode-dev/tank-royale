@@ -7,6 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import dev.robocode.tankroyale.schema.*;
 import dev.robocode.tankroyale.server.Server;
 import dev.robocode.tankroyale.server.util.Version;
+import lombok.val;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -84,14 +85,6 @@ public final class ConnHandler {
 
   Map<WebSocket, BotHandshake> getBotHandshakes() {
     return Collections.unmodifiableMap(botHandshakes);
-  }
-
-  Map<WebSocket, ObserverHandshake> getObserverHandshakes() {
-    return Collections.unmodifiableMap(observerHandshakes);
-  }
-
-  Map<WebSocket, ControllerHandshake> getControllerHandshakes() {
-    return Collections.unmodifiableMap(controllerHandshakes);
   }
 
   Set<WebSocket> getBotConnections(Collection<BotAddress> botAddresses) {
@@ -192,14 +185,19 @@ public final class ConnHandler {
       connections.remove(conn);
 
       if (botConnections.remove(conn)) {
+        BotHandshake handshake = botHandshakes.get(conn);
+        executorService.submit(() -> listener.onBotLeft(conn, handshake));
         botHandshakes.remove(conn);
-        executorService.submit(() -> listener.onBotLeft(conn));
+
       } else if (observerAndControllerConnections.remove(conn)) {
+        ObserverHandshake handshake = observerHandshakes.get(conn);
+        executorService.submit(() -> listener.onObserverLeft(conn, handshake));
         observerHandshakes.remove(conn);
-        executorService.submit(() -> listener.onObserverLeft(conn));
+
       } else if (controllerConnections.remove(conn)) {
+        ControllerHandshake handshake = controllerHandshakes.get(conn);
+        executorService.submit(() -> listener.onControllerLeft(conn, handshake));
         controllerHandshakes.remove(conn);
-        executorService.submit(() -> listener.onControllerLeft(conn));
       }
     }
 

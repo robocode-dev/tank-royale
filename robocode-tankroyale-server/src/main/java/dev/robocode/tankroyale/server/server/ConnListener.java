@@ -2,11 +2,7 @@ package dev.robocode.tankroyale.server.server;
 
 import java.util.Collection;
 
-import dev.robocode.tankroyale.schema.GameSetup;
-import dev.robocode.tankroyale.schema.BotAddress;
-import dev.robocode.tankroyale.schema.BotIntent;
-import dev.robocode.tankroyale.schema.ControllerHandshake;
-import dev.robocode.tankroyale.schema.ObserverHandshake;
+import dev.robocode.tankroyale.schema.*;
 import org.java_websocket.WebSocket;
 
 
@@ -15,17 +11,17 @@ public interface ConnListener {
 
 	void onException(Exception exception);
 
-	void onBotJoined(WebSocket conn, dev.robocode.tankroyale.schema.BotHandshake handshake);
+	void onBotJoined(WebSocket conn, BotHandshake handshake);
 
-	void onBotLeft(WebSocket conn);
+	void onBotLeft(WebSocket conn, BotHandshake handshake);
 
 	void onObserverJoined(WebSocket conn, ObserverHandshake handshake);
 
-	void onObserverLeft(WebSocket conn);
+	void onObserverLeft(WebSocket conn, ObserverHandshake handshake);
 
 	void onControllerJoined(WebSocket conn, ControllerHandshake handshake);
 
-	void onControllerLeft(WebSocket conn);
+	void onControllerLeft(WebSocket conn, ControllerHandshake handshake);
 
 	void onBotReady(WebSocket conn);
 

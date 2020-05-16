@@ -477,12 +477,11 @@ public final class GameServer {
     }
 
     @Override
-    public void onBotLeft(WebSocket conn) {
-      log.info("Bot joined: " + getDisplayName(connHandler.getBotHandshakes().get(conn)));
+    public void onBotLeft(WebSocket conn, BotHandshake handshake) {
+      log.info("Bot left: " + getDisplayName(handshake));
 
       // If a bot leaves while in a game, make sure to reset all intent values to zeroes
-      botIntents.put(
-          conn, dev.robocode.tankroyale.server.model.BotIntent.builder().build().zeroed());
+      botIntents.put(conn, dev.robocode.tankroyale.server.model.BotIntent.builder().build().zeroed());
 
       sendBotListUpdateToObservers();
     }
@@ -495,8 +494,8 @@ public final class GameServer {
     }
 
     @Override
-    public void onObserverLeft(WebSocket conn) {
-      log.info("Observer left: " + getDisplayName(connHandler.getObserverHandshakes().get(conn)));
+    public void onObserverLeft(WebSocket conn, ObserverHandshake handshake) {
+      log.info("Observer left: " + getDisplayName(handshake));
     }
 
     @Override
@@ -507,8 +506,8 @@ public final class GameServer {
     }
 
     @Override
-    public void onControllerLeft(WebSocket conn) {
-      log.info("Controller left: " + getDisplayName(connHandler.getControllerHandshakes().get(conn)));
+    public void onControllerLeft(WebSocket conn, ControllerHandshake handshake) {
+      log.info("Controller left: " + getDisplayName(handshake));
     }
 
     @Override
