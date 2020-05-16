@@ -1,12 +1,12 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id "java-library"
-    id "maven-publish"
-    id "idea"
-    id "org.jetbrains.kotlin.jvm" version "$kotlin_version"
-    id "org.jetbrains.kotlin.plugin.serialization" version "$kotlin_version"
-    id "com.github.ben-manes.versions" version "0.28.0"
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm" version "$kotlin_version'
+    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlin_version"
+    id 'maven-publish'
+    id 'idea'
+    id 'com.github.ben-manes.versions' version '0.28.0'
 }
 
 group = 'dev.robocode.tankroyale'
@@ -20,9 +20,9 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0'
 
-    implementation "info.picocli:picocli:4.2.0"
+    implementation 'info.picocli:picocli:4.2.0'
 }
 
 idea {
