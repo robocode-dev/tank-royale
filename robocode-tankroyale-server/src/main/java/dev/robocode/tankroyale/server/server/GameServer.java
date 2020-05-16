@@ -144,7 +144,7 @@ public final class GameServer {
     }
 
     // Send GameStarted to all participant observers to get them started
-    if (connHandler.getObserverAndControllerConnections().size() > 0) {
+    if (connHandler.getObserverConnections().size() > 0) {
       GameStartedEventForObserver gameStartedForObserver = new GameStartedEventForObserver();
       gameStartedForObserver.set$type(
           GameStartedEventForObserver.$type.GAME_STARTED_EVENT_FOR_OBSERVER);

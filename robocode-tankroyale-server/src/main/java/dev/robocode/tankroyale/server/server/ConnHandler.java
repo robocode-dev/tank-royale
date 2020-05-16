@@ -7,7 +7,6 @@ import com.google.gson.JsonSyntaxException;
 import dev.robocode.tankroyale.schema.*;
 import dev.robocode.tankroyale.server.Server;
 import dev.robocode.tankroyale.server.util.Version;
-import lombok.val;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -34,8 +33,7 @@ public final class ConnHandler {
   private final Set<WebSocket> connections = Collections.synchronizedSet(new HashSet<>());
 
   private final Set<WebSocket> botConnections = Collections.synchronizedSet(new HashSet<>());
-  private final Set<WebSocket> observerAndControllerConnections =
-      Collections.synchronizedSet(new HashSet<>());
+  private final Set<WebSocket> observerConnections = Collections.synchronizedSet(new HashSet<>());
   private final Set<WebSocket> controllerConnections = Collections.synchronizedSet(new HashSet<>());
 
   private final Map<WebSocket, BotHandshake> botHandshakes =
@@ -72,16 +70,15 @@ public final class ConnHandler {
   }
 
   void broadcastToObserverAndControllers(String message) {
-    broadcast(getObserverAndControllerConnections(), message);
+    broadcast(getObserverConnections(), message);
+    broadcast(getControllerConnections(), message);
   }
 
   Set<WebSocket> getBotConnections() {
     return Collections.unmodifiableSet(botConnections);
   }
-
-  Set<WebSocket> getObserverAndControllerConnections() {
-    return Collections.unmodifiableSet(observerAndControllerConnections);
-  }
+  Set<WebSocket> getObserverConnections() { return Collections.unmodifiableSet(observerConnections); }
+  Set<WebSocket> getControllerConnections() { return Collections.unmodifiableSet(controllerConnections); }
 
   Map<WebSocket, BotHandshake> getBotHandshakes() {
     return Collections.unmodifiableMap(botHandshakes);
@@ -189,7 +186,7 @@ public final class ConnHandler {
         executorService.submit(() -> listener.onBotLeft(conn, handshake));
         botHandshakes.remove(conn);
 
-      } else if (observerAndControllerConnections.remove(conn)) {
+      } else if (observerConnections.remove(conn)) {
         ObserverHandshake handshake = observerHandshakes.get(conn);
         executorService.submit(() -> listener.onObserverLeft(conn, handshake));
         observerHandshakes.remove(conn);
@@ -247,7 +244,7 @@ public final class ConnHandler {
                   return; // Ignore client with wrong secret
                 }
 
-                observerAndControllerConnections.add(conn);
+                observerConnections.add(conn);
                 observerHandshakes.put(conn, handshake);
 
                 executorService.submit(() -> listener.onObserverJoined(conn, handshake));
@@ -271,8 +268,6 @@ public final class ConnHandler {
 
                 controllerConnections.add(conn);
                 controllerHandshakes.put(conn, handshake);
-                // Controller is also an observer
-                observerAndControllerConnections.add(conn);
 
                 executorService.submit(() -> listener.onControllerJoined(conn, handshake));
                 break;
