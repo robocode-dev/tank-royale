@@ -94,8 +94,19 @@ public final class BotInfo {
   }
 
   /**
-   * Reads the bot info from a file.
-   *
+   * Reads the bot info from a file.<br>
+   * <br>
+   * Example file:</br>
+   * <pre>
+   * name=MyBot
+   * version=1.0
+   * author=John Doe
+   * description=A short description
+   * url=http://somewhere.net/MyBot
+   * countryCode=us
+   * gameTypes=melee,classic,1v1
+   * programmingLang=Java 8
+   * </pre>
    * @param fileName is the filename of the file containing bot properties.
    * @return A BotInfo instance containing the bot properties read from the file.
    * @throws IOException if an error occurs when reading the file.
