@@ -70,15 +70,19 @@ public final class ConnHandler {
   }
 
   void broadcastToObserverAndControllers(String message) {
-    broadcast(getObserverConnections(), message);
-    broadcast(getControllerConnections(), message);
+    broadcast(getObserverAndControllerConnections(), message);
   }
 
   Set<WebSocket> getBotConnections() {
     return Collections.unmodifiableSet(botConnections);
   }
-  Set<WebSocket> getObserverConnections() { return Collections.unmodifiableSet(observerConnections); }
-  Set<WebSocket> getControllerConnections() { return Collections.unmodifiableSet(controllerConnections); }
+
+  Set<WebSocket> getObserverAndControllerConnections() {
+    Set<WebSocket> combined = new HashSet<>();
+    combined.addAll(observerConnections);
+    combined.addAll(controllerConnections);
+    return Collections.unmodifiableSet(combined);
+  }
 
   Map<WebSocket, BotHandshake> getBotHandshakes() {
     return Collections.unmodifiableMap(botHandshakes);
