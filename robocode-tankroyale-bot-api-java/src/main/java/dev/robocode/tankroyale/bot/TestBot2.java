@@ -7,7 +7,6 @@ import dev.robocode.tankroyale.botapi.events.*;
 public class TestBot2 extends Bot {
 
   public static void main(String[] args) {
-    Thread.setDefaultUncaughtExceptionHandler((t, e) -> e.printStackTrace());
     new TestBot2().start();
   }
 

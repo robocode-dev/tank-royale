@@ -1,42 +1,39 @@
 plugins {
     id 'java'
-    id 'maven'
+    id 'maven-publish'
     id 'idea'
+    id 'com.github.ben-manes.versions' version '0.28.0'
 //    id "com.github.hierynomus.license" version "0.15.0"
-//    id "com.github.ben-manes.versions" version "0.28.0"
 }
 group = 'dev.robocode.tankroyale'
 version = '0.6.7'
+
 /*
 license {
     ext.year = Calendar.getInstance().get(Calendar.YEAR)
     ext.name = 'Flemming Noernberg Larsen'
 }
 */
+
 compileJava {
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
 }
 
 repositories {
+    jcenter()
     mavenLocal()
-    mavenCentral()
 }
 
 dependencies {
-    compile 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.0'
-    compile 'com.neovisionaries:nv-websocket-client:2.9'
-    compile 'com.neovisionaries:nv-i18n:1.27'
-    compile 'org.danilopianini:gson-extras:0.2.2'
+    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.0'
+    implementation 'com.neovisionaries:nv-websocket-client:2.9'
+    implementation 'com.neovisionaries:nv-i18n:1.27'
+    implementation 'org.danilopianini:gson-extras:0.2.2'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.1'
     testImplementation 'org.assertj:assertj-core:3.15.0'
-}
-
-jar {
-    manifest { attributes 'Main-Class': 'dev.robocode.tankroyale.bot.TestBot2' }
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 test {
@@ -50,4 +47,24 @@ javadoc {
     classpath = sourceSets.main.compileClasspath + sourceSets.main.output // avoid javadoc error
     exclude "**/dev/robocode/tankroyale/botapi/factory/**",
             "**/dev/robocode/tankroyale/botapi/mapper/**"
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'dev.robocode.tankroyale.bot.TestBot2'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'robocode-tankroyale-bot-api-java'
+            artifact fatJar
+        }
+    }
 }
