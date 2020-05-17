@@ -28,7 +28,7 @@ object Client : AutoCloseable {
 
     val onGameStarted = Event<GameStartedEvent>()
     val onGameEnded = Event<GameEndedEvent>()
-    val onGameAborted = Event<GameAbortedEvent>()
+    private val onGameAborted = Event<GameAbortedEvent>()
     val onGamePaused = Event<GamePausedEvent>()
     val onGameResumed = Event<GameResumedEvent>()
 

@@ -41,26 +41,11 @@ object ArenaPanel : JPanel() {
     private val state = State
 
     init {
-        addMouseWheelListener { e -> if (e != null) onMouseWheel(
-            e
-        )
-        }
+        addMouseWheelListener { e -> if (e != null) onMouseWheel(e) }
 
-        Client.onGameStarted.subscribe {
-            onGameStarted(
-                it
-            )
-        }
-        Client.onGameEnded.subscribe {
-            onGameEnded(
-                it
-            )
-        }
-        Client.onTickEvent.subscribe {
-            onTick(
-                it
-            )
-        }
+        Client.onGameStarted.subscribe { onGameStarted(it) }
+        Client.onGameEnded.subscribe { onGameEnded(it) }
+        Client.onTickEvent.subscribe { onTick(it) }
     }
 
     private fun onGameStarted(gameStartedEvent: GameStartedEvent) {
@@ -91,18 +76,10 @@ object ArenaPanel : JPanel() {
 
         tickEvent.events.forEach {
             when (it) {
-                is BotDeathEvent -> onBotDeath(
-                    it
-                )
-                is BulletHitBotEvent -> onBulletHitBot(
-                    it
-                )
-                is BulletHitWallEvent -> onBulletHitWall(
-                    it
-                )
-                is BulletHitBulletEvent -> onBulletHitBullet(
-                    it
-                )
+                is BotDeathEvent -> onBotDeath(it)
+                is BulletHitBotEvent -> onBulletHitBot(it)
+                is BulletHitWallEvent -> onBulletHitWall(it)
+                is BulletHitBulletEvent -> onBulletHitBullet(it)
             }
         }
 

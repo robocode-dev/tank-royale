@@ -1,31 +1,28 @@
+import org.apache.tools.ant.filters.ReplaceTokens
 
-buildscript {
-    ext.kotlin_version = '1.3.72'
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
-    }
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.72'
+    id 'maven-publish'
+    id 'idea'
+    id 'com.github.ben-manes.versions' version '0.28.0'
 }
 
-allprojects {
-    apply plugin: 'idea'
-    idea {
-        module {
-            inheritOutputDirs = true
-        }
-    }
+group = 'dev.robocode.tankroyale'
+version = '0.6.0'
+description = 'UI Desktop application for running Robocode Tank Royale'
+
+repositories {
+    jcenter()
+    mavenLocal()
 }
 
-apply plugin: 'kotlin'
-apply plugin: 'application'
-apply plugin: 'kotlinx-serialization'
-
-sourceCompatibility = 9
+idea {
+    module {
+        outputDir = file("$buildDir/classes/kotlin/main")
+    }
+}
 
 compileKotlin {
     kotlinOptions.jvmTarget = "9"
@@ -34,40 +31,17 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "9"
 }
 
-group = 'dev.robocode.tankroyale'
-version = '0.6.0'
-description = 'Robocode Tank Royale UI Desktop'
-
-defaultTasks 'run'
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-}
-
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    compile "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
-    compile 'org.java-websocket:Java-WebSocket:1.5.1'
-    compile 'com.miglayout:miglayout-swing:5.2'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.3.72'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.1'
+    implementation 'com.miglayout:miglayout-swing:5.2'
 
     runtime 'dev.robocode.tankroyale:robocode-tankroyale-bootstrap:0.6.8'
-    runtime ('dev.robocode.tankroyale:robocode-tankroyale-server:0.6.12') {
+    runtime ('dev.robocode.tankroyale:robocode-tankroyale-server:0.6.13') {
         exclude group: 'ch.qos.logback'
     }
-}
-
-mainClassName = 'dev.robocode.tankroyale.ui.desktop.ui.MainWindowKt'
-
-jar {
-    manifest {
-        attributes 'Implementation-Title': project.getProperty('name'),
-                'Implementation-Version': project.getProperty('version'),
-                'Main-Class': project.getProperty('mainClassName')
-    }
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 task copyServerJar(type: Copy) {
@@ -88,12 +62,30 @@ build.dependsOn copyServerJar
 build.dependsOn copyBootstrapJar
 
 // Modify versions.txt using replacement of @version@ token
-import org.apache.tools.ant.filters.ReplaceTokens
-
 processResources {
     with copySpec {
         from 'src/main/resources'
         include 'version.txt'
         filter(ReplaceTokens, tokens: [version: version])
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'dev.robocode.tankroyale.ui.desktop.ui.MainWindowKt'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'robocode-tankroyale-ui-desktop'
+            artifact fatJar
+        }
     }
 }
