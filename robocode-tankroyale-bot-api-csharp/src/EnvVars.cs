@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.Versioning;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -158,7 +160,16 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns>The platform used for running the game.</returns>
     public static string GetBotPlatform()
     {
-      return Environment.GetEnvironmentVariable(BOT_PLATFORM);
+      string platform = Environment.GetEnvironmentVariable(BOT_PLATFORM);
+      if (platform != null)
+      {
+        platform = platform.Trim();
+        if (platform.Length > 0)
+        {
+          return platform;
+        }
+      }
+      return Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
     }
 
     /// <summary>

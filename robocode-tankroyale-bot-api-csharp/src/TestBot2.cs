@@ -1,23 +1,20 @@
 using System;
+using System.IO;
+using Microsoft.Extensions.Configuration;
 using Robocode.TankRoyale.BotApi;
 
 public class TestBot2 : Bot
 {
   static void Main()
   {
-    var botInfo = new BotInfo(
-      "TestBot2",
-      "1.0",
-      "fnl",
-      "A sample bot",
-      null,
-      "dk",
-      new string[] { "1v1", "melee" },
-      ".NET Core 3",
-      "C#"
-    );
+    var configBuilder = new ConfigurationBuilder()
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile("botsettings.json");
+    var config = configBuilder.Build();
 
-    Uri serverUri = new Uri("ws://localhost:55000");
+    var botInfo = BotInfo.From(config);
+
+    Uri serverUri = new Uri("ws://localhost");
 
     new TestBot2(botInfo, serverUri).Start();
   }

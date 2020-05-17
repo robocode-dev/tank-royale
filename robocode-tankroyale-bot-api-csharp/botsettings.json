@@ -1,0 +1,12 @@
+{
+  "Bot": {
+    "Name": "MyBot",
+    "Version": "1.0",
+    "Author": "John Doe",
+    "Description": "A short description",
+    "Url": "http://somewhere.net/MyBot",
+    "CountryCode": "us",
+    "GameTypes": "melee, classic, 1v1",
+    "ProgrammingLang": "C# 8.0"
+  }
+}

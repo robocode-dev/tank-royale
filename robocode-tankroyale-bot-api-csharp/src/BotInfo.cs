@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
+using Microsoft.Extensions.Configuration;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -81,15 +83,15 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <summary>
-    /// The platform used for running the bot, e.g., "Java Runtime Environment" or ".Net Core".
+    /// The platform used for running the bot, e.g., ".Net Core 3.1".
     /// This field is optional.
     /// </summary>
     /// <value>The platform used for running the bot.</value>
     public string Platform { get; private set; }
 
     /// <summary>
-    /// The programming language used for developing the bot, e.g., "Java" or "C#". Thisfield is
-    /// optional.
+    /// The programming language used for developing the bot, e.g., "C#" or "F#".
+    /// This field is optional.
     /// </summary>
     /// <value>The programming language used for developing the bot.</value>
     public string ProgrammingLang { get; private set; }
@@ -169,6 +171,43 @@ namespace Robocode.TankRoyale.BotApi
       this.gameTypes = trimmedGameTypes;
       this.Platform = platform;
       this.ProgrammingLang = programmingLang;
+    }
+
+    /// <summary>
+    /// Reads the bot info from a configuration.
+    /// </summary>
+    /// <example>
+    /// Using a appsettings.json file:
+    /// <code>
+    /// {
+    ///   "Bot": {
+    ///     "Name": "MyBot",
+    ///     "Version": "1.0",
+    ///     "Author": "John Doe",
+    ///     "Description": "A short description",
+    ///     "Url": "http://somewhere.net/MyBot",
+    ///     "CountryCode": "us",
+    ///     "GameTypes": "melee,classic,1v1",
+    ///     "ProgrammingLang": "C# 8.0"
+    ///   }
+    /// }
+    /// </code>
+    /// </example>
+    /// <param name="configuration">Is the configuration</param>
+    /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
+    public static BotInfo From(IConfiguration configuration)
+    {
+      return new BotInfo(
+        configuration["Bot:Name"],
+        configuration["Bot:Version"],
+        configuration["Bot:Author"],
+        configuration["Bot:Description"],
+        configuration["Bot:Url"],
+        configuration["Bot:CountryCode"],
+        Regex.Split(configuration["Bot:GameTypes"], @"\s*,\s*"),
+        configuration["Bot:Platform"],
+        configuration["Bot:ProgrammingLang"]
+      );
     }
   }
 }
