@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Microsoft.Extensions.Configuration;
@@ -160,6 +162,11 @@ namespace Robocode.TankRoyale.BotApi
       if (trimmedGameTypes.Count == 0)
       {
         throw new ArgumentException("GameTypes does not contain any game types");
+      }
+
+      if (string.IsNullOrWhiteSpace(platform))
+      {
+        platform = Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
       }
 
       this.name = name;
