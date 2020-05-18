@@ -2,7 +2,7 @@
   "profiles": {
     "CodeGenerator": {
       "commandName": "Project",
-      "commandLineArgs": "D:\\robocode-tank-royale\\robocode-tankroyale-schema D:\\robocode-tank-royale\\robocode-tankroyale-bot-api-csharp\\generated"
+      "commandLineArgs": "D:\\robocode-tank-royale\\robocode-tankroyale-schema D:\\robocode-tank-royale\\robocode-tankroyale-bot-api-csharp\\src\\generated"
     }
   }
 }
