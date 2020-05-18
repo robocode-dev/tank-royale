@@ -114,14 +114,7 @@ final class EnvVars {
 
   /** Platform used for running the bot */
   public static String getBotPlatform() {
-    String platform = System.getenv(BOT_PLATFORM);
-    if (platform != null) {
-      platform = platform.trim();
-      if (platform.length() > 0) {
-        return platform;
-      }
-    }
-    return "Java Runtime Environment (JRE) " + System.getProperty("java.version");
+    return System.getenv(BOT_PLATFORM);
   }
 
   /** Language used for programming the bot */

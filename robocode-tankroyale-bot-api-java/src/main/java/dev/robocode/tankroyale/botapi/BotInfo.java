@@ -82,6 +82,11 @@ public final class BotInfo {
       throw new IllegalArgumentException("Game types does not contain any game types");
     }
 
+    String platform2 = platform;
+    if (platform2 == null || platform2.trim().length() == 0) {
+      platform2 = "Java Runtime Environment (JRE) " + System.getProperty("java.version");
+    }
+
     this.name = name;
     this.version = version;
     this.author = author;
@@ -89,7 +94,7 @@ public final class BotInfo {
     this.url = url;
     this.countryCode = (code == null) ? null : code.getAlpha2();
     this.gameTypes = trimmedGameTypes;
-    this.platform = platform;
+    this.platform = platform2;
     this.programmingLang = programmingLang;
   }
 
