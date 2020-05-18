@@ -24,7 +24,7 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("radarTurnRate", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double? RadarTurnRate { get; set; }
     
-        /// <summary>New target speed in pixels per turn (can be positive and negative)</summary>
+        /// <summary>New target speed in units per turn (can be positive and negative)</summary>
         [Newtonsoft.Json.JsonProperty("targetSpeed", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double? TargetSpeed { get; set; }
     

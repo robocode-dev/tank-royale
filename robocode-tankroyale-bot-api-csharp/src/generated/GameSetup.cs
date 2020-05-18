@@ -17,7 +17,7 @@ namespace Robocode.TankRoyale.Schema
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string GameType { get; set; }
     
-        /// <summary>Width of arena measured in pixels</summary>
+        /// <summary>Width of arena measured in units</summary>
         [Newtonsoft.Json.JsonProperty("arenaWidth", Required = Newtonsoft.Json.Required.Always)]
         public int ArenaWidth { get; set; }
     
@@ -25,7 +25,7 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("isArenaWidthLocked", Required = Newtonsoft.Json.Required.Always)]
         public bool IsArenaWidthLocked { get; set; }
     
-        /// <summary>Height of arena measured in pixels</summary>
+        /// <summary>Height of arena measured in units</summary>
         [Newtonsoft.Json.JsonProperty("arenaHeight", Required = Newtonsoft.Json.Required.Always)]
         public int ArenaHeight { get; set; }
     

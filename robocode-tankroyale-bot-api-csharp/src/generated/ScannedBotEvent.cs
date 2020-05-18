@@ -36,7 +36,7 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("direction", Required = Newtonsoft.Json.Required.Always)]
         public double Direction { get; set; }
     
-        /// <summary>Speed measured in pixels per turn of the scanned bot</summary>
+        /// <summary>Speed measured in units per turn of the scanned bot</summary>
         [Newtonsoft.Json.JsonProperty("speed", Required = Newtonsoft.Json.Required.Always)]
         public double Speed { get; set; }
     

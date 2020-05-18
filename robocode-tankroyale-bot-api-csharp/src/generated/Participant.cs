@@ -13,8 +13,8 @@ namespace Robocode.TankRoyale.Schema
     public class Participant 
     {
         /// <summary>Identifier for the participant in a battle</summary>
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
-        public int Id { get; set; }
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Id { get; set; }
     
         /// <summary>Name of bot, e.g. Killer Bee</summary>
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
@@ -31,16 +31,28 @@ namespace Robocode.TankRoyale.Schema
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Author { get; set; }
     
-        /// <summary>2-letter country code defined by ISO 3166-1</summary>
+        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Description { get; set; }
+    
+        /// <summary>URL to a home page for the bot</summary>
+        [Newtonsoft.Json.JsonProperty("url", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Url { get; set; }
+    
+        /// <summary>2-letter country code defined by ISO 3166-1, e.g. "UK"</summary>
         [Newtonsoft.Json.JsonProperty("countryCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [System.ComponentModel.DataAnnotations.RegularExpression(@"(^[a-z]{2}$)|(^[A-Z]{2}$)")]
         public string CountryCode { get; set; }
     
-        /// <summary>Game types supported by this bot</summary>
-        [Newtonsoft.Json.JsonProperty("gameTypes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<string> GameTypes { get; set; }
+        /// <summary>Game types supported by this bot (defined elsewhere), e.g. "melee" and "1v1"</summary>
+        [Newtonsoft.Json.JsonProperty("gameTypes", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.Collections.Generic.ICollection<string> GameTypes { get; set; } = new System.Collections.ObjectModel.Collection<string>();
     
-        /// <summary>Language used for programming the bot, e.g. Java 9</summary>
+        /// <summary>Platform used for running the bot, e.g. OpenJDK 11 or .NET Core 3</summary>
+        [Newtonsoft.Json.JsonProperty("platform", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Platform { get; set; }
+    
+        /// <summary>Language used for programming the bot, e.g. Java or C#</summary>
         [Newtonsoft.Json.JsonProperty("programmingLang", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ProgrammingLang { get; set; }
     

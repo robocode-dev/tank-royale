@@ -12,8 +12,11 @@ namespace Robocode.TankRoyale.BotApi
       handshake.Name = botInfo.Name;
       handshake.Version = botInfo.Version;
       handshake.Author = botInfo.Author;
+      handshake.Description = botInfo.Description;
+      handshake.Url = botInfo.Url;
       handshake.CountryCode = (botInfo.CountryCode);
       handshake.GameTypes = new List<string>(botInfo.GameTypes);
+      handshake.Platform = botInfo.Platform;
       handshake.ProgrammingLang = botInfo.ProgrammingLang;
       return handshake;
     }

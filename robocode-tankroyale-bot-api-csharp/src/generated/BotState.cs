@@ -40,7 +40,7 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("radarSweep", Required = Newtonsoft.Json.Required.Always)]
         public double RadarSweep { get; set; }
     
-        /// <summary>Speed measured in pixel per turn</summary>
+        /// <summary>Speed measured in units per turn</summary>
         [Newtonsoft.Json.JsonProperty("speed", Required = Newtonsoft.Json.Required.Always)]
         public double Speed { get; set; }
     
