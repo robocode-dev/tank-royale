@@ -207,7 +207,7 @@ namespace Robocode.TankRoyale.BotApi
           var uri = EnvVars.GetServerUrl();
           if (uri == null)
           {
-            throw new BotException(String.Format("Environment variable {0} is not defined", EnvVars.SERVER_URL));
+            uri = "ws://localhost";
           }
           if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
           {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
@@ -181,6 +182,73 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <summary>
+    /// Reads the bot info from a JSON file in the specified base path.
+    /// </summary>
+    /// <example>
+    /// Using a appsettings.json file:
+    /// <code>
+    /// {
+    ///   "Bot": {
+    ///     "Name": "MyBot",
+    ///     "Version": "1.0",
+    ///     "Author": "John Doe",
+    ///     "Description": "A short description",
+    ///     "Url": "http://somewhere.net/MyBot",
+    ///     "CountryCode": "us",
+    ///     "GameTypes": "melee,classic,1v1",
+    ///     "ProgrammingLang": "C# 8.0"
+    ///   }
+    /// }
+    /// </code>
+    /// </example>
+    /// <param name="filePath">Is the file path, e.g. "bot-settings.json</param>
+    /// <param name="basePath">Is the base path, e.g. Directory.GetCurrentDirectory().
+    /// If null, the current directory will automatically be used as base path</param>
+    /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
+    public static BotInfo FromJsonFile(string filePath, string basePath)
+    {
+      if (basePath == null)
+      {
+        basePath = Directory.GetCurrentDirectory();
+      }
+      var configBuilder = new ConfigurationBuilder()
+          .SetBasePath(basePath)
+          .AddJsonFile(filePath);
+      var config = configBuilder.Build();
+
+      return BotInfo.FromConfiguration(config);
+    }
+
+    /// <summary>
+    /// Reads the bot info from a JSON file from the current directory.
+    /// </summary>
+    /// <example>
+    /// Using a appsettings.json file:
+    /// <code>
+    /// {
+    ///   "Bot": {
+    ///     "Name": "MyBot",
+    ///     "Version": "1.0",
+    ///     "Author": "John Doe",
+    ///     "Description": "A short description",
+    ///     "Url": "http://somewhere.net/MyBot",
+    ///     "CountryCode": "us",
+    ///     "GameTypes": "melee,classic,1v1",
+    ///     "ProgrammingLang": "C# 8.0"
+    ///   }
+    /// }
+    /// </code>
+    /// </example>
+    /// <param name="filePath">Is the file path, e.g. "bot-settings.json</param>
+    /// <param name="basePath">Is the base path, e.g. Directory.GetCurrentDirectory().
+    /// If null, the current directory will automatically be used as base path</param>
+    /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
+    public static BotInfo FromJsonFile(string filePath)
+    {
+      return FromJsonFile(filePath, null);
+    }
+
+    /// <summary>
     /// Reads the bot info from a configuration.
     /// </summary>
     /// <example>
@@ -202,7 +270,7 @@ namespace Robocode.TankRoyale.BotApi
     /// </example>
     /// <param name="configuration">Is the configuration</param>
     /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
-    public static BotInfo From(IConfiguration configuration)
+    public static BotInfo FromConfiguration(IConfiguration configuration)
     {
       return new BotInfo(
         configuration["Bot:Name"],

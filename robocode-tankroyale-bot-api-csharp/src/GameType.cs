@@ -8,6 +8,9 @@ namespace Robocode.TankRoyale.BotApi
     // Hide constuctor.
     private GameType() { }
 
+    /// <summary>Classic battle.</summary>
+    public const string Classic = "classic";
+
     /// <summary>Melee battle with every bot against every other bot.</summary>
     public const string Melee = "melee";
 

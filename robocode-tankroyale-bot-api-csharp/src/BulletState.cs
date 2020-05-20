@@ -1,37 +1,39 @@
-namespace Robocode.TankRoyale.BotApi {
+namespace Robocode.TankRoyale.BotApi
+{
   /// <summary>
   /// Represents the state of a bullet that has been fired by a bot.
   /// </summary>
-  public sealed class BulletState {
+  public sealed class BulletState
+  {
     /// <summary>
     /// Unique id of the bullet.
     /// </summary>
     /// <value>The unique id of the bullet.</value>
-    int BulletId { get; }
+    public int BulletId { get; }
 
     /// <summary>Id of the owner bot that fired the bullet.</summary>
     /// <value>The id of the owner bot that fired the bullet.</value>
-    int OwnerId { get; }
+    public int OwnerId { get; }
 
     /// <summary>Bullet firepower level.</summary>
     /// <value>The bullet firepower level.</value>
-    double Power { get; }
+    public double Power { get; }
 
     /// <summary>X coordinate of the bullet.</summary>
     /// <value>The X coordinate of the bullet.</value>
-    double X { get; }
+    public double X { get; }
 
     /// <summary>Y coordinate of the bullet.</summary>
     /// <value>The Y coordinate of the bullet.</value>
-    double Y { get; }
+    public double Y { get; }
 
     /// <summary>Direction of the bullet in degrees.</summary>
     /// <value>The direction of the bullet in degrees.</value>
-    double Direction { get; }
+    public double Direction { get; }
 
     /// <summary>Speed measured of the bullet in units per turn.</summary>
     /// <value>The speed measured of the bullet in units per turn.</value>
-    double Speed { get; }
+    public double Speed { get; }
 
     /// <summary>
     /// Initializes a new instance of the BulletState class.
@@ -43,7 +45,8 @@ namespace Robocode.TankRoyale.BotApi {
     /// <param name="y">Y coordinate of the bullet.</param>
     /// <param name="direction">Direction in degrees.</param>
     /// <param name="speed">Speed measured in units per turn.</param>
-    public BulletState (int bulletId, int ownerId, double power, double x, double y, double direction, double speed) {
+    public BulletState(int bulletId, int ownerId, double power, double x, double y, double direction, double speed)
+    {
       BulletId = bulletId;
       OwnerId = ownerId;
       Power = power;
