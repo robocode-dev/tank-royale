@@ -52,8 +52,7 @@ public abstract class BaseBot implements IBaseBot {
    * BOT_VERSION=1.0<br>
    * BOT_AUTHOR=fnl<br>
    * BOT_DESCRIPTION=Sample bot<br>
-   * BOT_URL=https://mybot.robocode.dev
-   * BOT_COUNTRY_CODE=DK<br>
+   * BOT_URL=https://mybot.robocode.dev BOT_COUNTRY_CODE=DK<br>
    * BOT_GAME_TYPES=melee,1v1<br>
    * BOT_PLATFORM=Java<br>
    * BOT_PROG_LANG=Java 8<br>
@@ -511,7 +510,13 @@ public abstract class BaseBot implements IBaseBot {
         try {
           socket.connect();
         } catch (WebSocketException ex) {
-          throw new BotException("Could not connect to web socket", ex);
+          throw new BotException(
+              "Could not connect to web socket: "
+                  + socket.getURI()
+                  + ". Setup "
+                  + EnvVars.SERVER_URL
+                  + " to point to a server that is up and running.",
+              ex);
         }
       }
     }
@@ -536,10 +541,7 @@ public abstract class BaseBot implements IBaseBot {
         }
       }
       if (url == null) {
-        throw new BotException(
-            String.format(
-                "Property %s or environment variable %s is not defined",
-                SERVER_URL_PROPERTY_KEY, EnvVars.SERVER_URL));
+        url = "ws://localhost";
       }
       try {
         return new URI(url);
