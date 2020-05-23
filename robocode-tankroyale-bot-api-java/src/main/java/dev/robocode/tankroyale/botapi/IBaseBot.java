@@ -129,14 +129,14 @@ public interface IBaseBot {
    *
    * <p>This method must be called once per turn to send the bot actions to the server and must be
    * called before the turn timeout occurs. A turn timer is started when the {@link
-   * GameStartedEvent} and {@link TickEvent} occurs. If the {@link #go()} method is called too late,
+   * GameStartedEvent} and {@link TickEvent} occurs. If the {@code go()} method is called too late,
    * a turn timeout will occur and the {@link SkippedTurnEvent} will occur, which means that the bot
    * has skipped all actions for the last turn. In this case, the server will continue executing the
    * last actions received. This could be fatal for the bot due to loss of control over the bot. So
-   * make sure that {@link #go()} is called before the turn ends.
+   * make sure that {@code go()} is called before the turn ends.
    *
-   * <p>The commands executed when {@link #go()} is called are set by calling the various setter
-   * methods prior to calling the {@link #go()} method: {@link #setTurnRate(double)}, {@link
+   * <p>The commands executed when {@code go()} is called are set by calling the various setter
+   * methods prior to calling the {@code go()} method: {@link #setTurnRate(double)}, {@link
    * #setGunTurnRate(double)}, {@link #setRadarTurnRate(double)}, {@link #setTargetSpeed(double)},
    * and {@link #setFirepower(double)}.
    *
@@ -736,6 +736,58 @@ public interface IBaseBot {
    * @return The gun heat produced when firing the gun with the given firepower.
    */
   double calcGunHeat(double firepower);
+
+  /**
+   * Calculates the bearing (delta angle) between the input direction and the direction of this bot.
+   *
+   * <pre>
+   * bearing = calcBearing(direction) = normalizeRelativeDegrees(direction - getDirection())
+   * </pre>
+   *
+   * @param direction is the input direction to calculate the bearing from.
+   * @return A bearing (delta angle) between the input direction and the direction of this bot. The
+   *     bearing is a normalized angle in the range [-180,180[
+   * @see #getDirection
+   * @see #normalizeRelativeDegrees
+   */
+  default double calcBearing(double direction) {
+    return normalizeRelativeDegrees(direction - getDirection());
+  }
+
+  /**
+   * Calculates the bearing (delta angle) between the input direction and the direction of the gun.
+   *
+   * <pre>
+   * bearing = calcGunBearing(direction) = normalizeRelativeDegrees(direction - getGunDirection())
+   * </pre>
+   *
+   * @param direction is the input direction to calculate the bearing from.
+   * @return A bearing (delta angle) between the input direction and the direction of the gun. The
+   *     bearing is a normalized angle in the range [-180,180[
+   * @see #getGunDirection
+   * @see #normalizeRelativeDegrees
+   */
+  default double calcGunBearing(double direction) {
+    return normalizeRelativeDegrees(direction - getGunDirection());
+  }
+
+  /**
+   * Calculates the bearing (delta angle) between the input direction and the direction of the
+   * radar.
+   *
+   * <pre>
+   * bearing = calcRadarBearing(direction) = normalizeRelativeDegrees(direction - getRadarDirection())
+   * </pre>
+   *
+   * @param direction is the input direction to calculate the bearing from.
+   * @return A bearing (delta angle) between the input direction and the direction of the radar. The
+   *     bearing is a normalized angle in the range [-180,180[
+   * @see #getRadarDirection
+   * @see #normalizeRelativeDegrees
+   */
+  default double calcRadarBearing(double direction) {
+    return normalizeRelativeDegrees(direction - getRadarDirection());
+  }
 
   /**
    * Normalizes an angle to an absolute angle into the range [0,360[

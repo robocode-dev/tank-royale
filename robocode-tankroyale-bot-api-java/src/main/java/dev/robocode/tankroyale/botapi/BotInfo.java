@@ -117,7 +117,7 @@ public final class BotInfo {
    * @throws IOException if an error occurs when reading the file.
    */
   public static BotInfo fromFile(String fileName) throws IOException {
-    File file = new File(BotInfo.class.getClassLoader().getResource(fileName).getFile());
+    File file = new File(Objects.requireNonNull(BotInfo.class.getClassLoader().getResource(fileName)).getFile());
     try (FileInputStream fis = new FileInputStream(file)) {
       Properties prop = new Properties();
       prop.load(fis);

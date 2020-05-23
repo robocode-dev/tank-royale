@@ -625,6 +625,54 @@ namespace Robocode.TankRoyale.BotApi
     double CalcGunHeat(double firepower);
 
     /// <summary>
+    /// Calculates the bearing (delta angle) between the input direction and the direction of this bot.
+    /// </summary>
+    /// <code>
+    /// bearing = CalcBearing(direction) = NormalizeRelativeDegrees(direction - this.Direction)
+    /// </code>
+    /// <param name="direction">Is the input direction to calculate the bearing from.</param>
+    /// <returns>A bearing (delta angle) between the input direction and the direction of this bot.
+    /// The bearing is a normalized angle in the range [-180,180[</returns>
+    /// <seealso cref="Direction"/>
+    /// <seealso cref="NormalizeRelativeDegrees"/>
+    double CalcBearing(double direction)
+    {
+      return NormalizeRelativeDegrees(direction - Direction);
+    }
+
+    /// <summary>
+    /// Calculates the bearing (delta angle) between the input direction and the direction of the gun.
+    /// </summary>
+    /// <code>
+    /// bearing = CalcGunBearing(direction) = NormalizeRelativeDegrees(direction - this.GunDirection)
+    /// </code>
+    /// <param name="direction">Is the input direction to calculate the bearing from.</param>
+    /// <returns>A bearing (delta angle) between the input direction and the direction of the gun.
+    /// The bearing is a normalized angle in the range [-180,180[</returns>
+    /// <seealso cref="GunDirection"/>
+    /// <seealso cref="NormalizeRelativeDegrees"/>
+    double CalcGunBearing(double direction)
+    {
+      return NormalizeRelativeDegrees(direction - GunDirection);
+    }
+
+    /// <summary>
+    /// Calculates the bearing (delta angle) between the input direction and the direction of the radar.
+    /// </summary>
+    /// <code>
+    /// bearing = CalcRadarBearing(direction) = NormalizeRelativeDegrees(direction - this.RadarDirection)
+    /// </code>
+    /// <param name="direction">Is the input direction to calculate the bearing from.</param>
+    /// <returns>A bearing (delta angle) between the input direction and the direction of the radar.
+    /// The bearing is a normalized angle in the range [-180,180[</returns>
+    /// <seealso cref="RadarDirection"/>
+    /// <seealso cref="NormalizeRelativeDegrees"/>
+    double CalcRadarBearing(double direction)
+    {
+      return NormalizeRelativeDegrees(direction - RadarDirection);
+    }
+
+    /// <summary>
     /// Normalizes an angle to an absolute angle into the range [0,360[
     /// </summary>
     /// <param name="angle">Is the angle to normalize.</param>
