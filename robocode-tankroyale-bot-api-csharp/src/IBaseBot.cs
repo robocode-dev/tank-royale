@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -670,6 +671,17 @@ namespace Robocode.TankRoyale.BotApi
     double CalcRadarBearing(double direction)
     {
       return NormalizeRelativeDegrees(direction - RadarDirection);
+    }
+
+    /// <summary>
+    /// Calculates the direction (angle) from the bots coordinates to a point x,y.
+    /// </summary>
+    /// <param name="x">Is the x coordinate of the point.</param>
+    /// <param name="y">Is the y coordinate of the point.</param>
+    /// <returns>The direction to the point x,y.</returns>
+    double CalcDirection(double x, double y)
+    {
+      return NormalizeAbsoluteDegrees(Math.Atan2(x - X, y - Y));
     }
 
     /// <summary>

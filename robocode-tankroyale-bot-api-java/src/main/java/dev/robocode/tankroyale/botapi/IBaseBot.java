@@ -790,6 +790,17 @@ public interface IBaseBot {
   }
 
   /**
+   * Calculates the direction (angle) from the bots coordinates to a point x,y.
+   *
+   * @param x is the x coordinate of the point.
+   * @param y is the y coordinate of the point.
+   * @return The direction to the point x,y.
+   */
+  default double calcDirection(double x, double y) {
+    return normalizeAbsoluteDegrees(Math.atan2(x - getX(), y - getY()));
+  }
+
+  /**
    * Normalizes an angle to an absolute angle into the range [0,360[
    *
    * @param angle is the angle to normalize.

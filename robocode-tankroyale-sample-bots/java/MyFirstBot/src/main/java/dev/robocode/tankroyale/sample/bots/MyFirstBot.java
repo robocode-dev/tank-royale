@@ -10,7 +10,9 @@ import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 import java.io.IOException;
 
 /**
- * MyFirstBot sample bot.
+ * MyFirstBot - a sample bot.
+ * <p>
+ * Probably the first bot you will learn about.
  */
 public class MyFirstBot extends Bot {
 
@@ -35,6 +37,7 @@ public class MyFirstBot extends Bot {
   // This method runs our bot program, where each command is executed one at a time
   @Override
   public void run() {
+    // Repeat while bot is running
     while (isRunning()) {
       forward(100);
       turnGunRight(360);
