@@ -1,10 +1,12 @@
-using System;
-using System.IO;
-using Microsoft.Extensions.Configuration;
 using Robocode.TankRoyale.BotApi;
 
 namespace Robocode.TankRoyale.Sample.Bots
 {
+  /// <summary>
+  /// MyFirstBot - a sample bot.
+  ///
+  /// Probably the first bot you will learn about.
+  /// </summary>
   public class MyFirstBot : Bot
   {
     static void Main(string[] args)
@@ -14,19 +16,10 @@ namespace Robocode.TankRoyale.Sample.Bots
 
     MyFirstBot() : base(BotInfo.FromJsonFile("bot-settings.json")) { }
 
-    public override void OnConnected(ConnectedEvent evt)
-    {
-      Console.WriteLine("Connected to server");
-    }
-
-    public override void OnDisconnected(DisconnectedEvent evt)
-    {
-      Console.WriteLine("Disconnected from server");
-    }
-
     // This method runs our bot program, where each command is executed one at a time
     public override void Run()
     {
+      // Repeat while bot is running
       while (IsRunning)
       {
         Forward(100);

@@ -3,16 +3,14 @@ package dev.robocode.tankroyale.sample.bots;
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.events.BulletHitBotEvent;
-import dev.robocode.tankroyale.botapi.events.ConnectedEvent;
-import dev.robocode.tankroyale.botapi.events.DisconnectedEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 
 import java.io.IOException;
 
 /**
  * MyFirstBot - a sample bot.
- * <p>
- * Probably the first bot you will learn about.
+ *
+ * <p>Probably the first bot you will learn about.
  */
 public class MyFirstBot extends Bot {
 
@@ -22,16 +20,6 @@ public class MyFirstBot extends Bot {
 
   protected MyFirstBot() throws IOException {
     super(BotInfo.fromFile("bot.properties"));
-  }
-
-  @Override
-  public void onConnected(ConnectedEvent event) {
-    System.out.println("Connected to server");
-  }
-
-  @Override
-  public void onDisconnected(DisconnectedEvent event) {
-    System.out.println("Disconnected from server");
   }
 
   // This method runs our bot program, where each command is executed one at a time
