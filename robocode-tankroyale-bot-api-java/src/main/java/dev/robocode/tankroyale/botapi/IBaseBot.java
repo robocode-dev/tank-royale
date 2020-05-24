@@ -580,28 +580,36 @@ public interface IBaseBot {
    *
    * @param connectedEvent is the event details from the game.
    */
-  default void onConnected(ConnectedEvent connectedEvent) {}
+  default void onConnected(ConnectedEvent connectedEvent) {
+    System.out.println("Connected to: " + connectedEvent.getServerUri());
+  }
 
   /**
    * The event handler triggered when disconnected from the server.
    *
    * @param disconnectedEvent is the event details from the game.
    */
-  default void onDisconnected(DisconnectedEvent disconnectedEvent) {}
+  default void onDisconnected(DisconnectedEvent disconnectedEvent) {
+    System.out.println("Disconnected from: " + disconnectedEvent.getServerUri());
+  }
 
   /**
    * The event handler triggered when a connection error occurs.
    *
    * @param connectionErrorEvent is the event details from the game.
    */
-  default void onConnectionError(ConnectionErrorEvent connectionErrorEvent) {}
+  default void onConnectionError(ConnectionErrorEvent connectionErrorEvent) {
+    System.err.println("Connection error with: " + connectionErrorEvent.getServerUri());
+  }
 
   /**
    * The event handler triggered when the game has started.
    *
    * @param gameStatedEvent is the event details from the game.
    */
-  default void onGameStarted(GameStartedEvent gameStatedEvent) {}
+  default void onGameStarted(GameStartedEvent gameStatedEvent) {
+    System.out.println("Game started");
+  }
 
   /**
    * The event handler triggered when the game has ended.

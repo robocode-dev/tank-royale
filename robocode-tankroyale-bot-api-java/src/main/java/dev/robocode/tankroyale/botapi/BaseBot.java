@@ -589,7 +589,7 @@ public abstract class BaseBot implements IBaseBot {
 
       @Override
       public final void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
-        onConnected.publish(new ConnectedEvent());
+        onConnected.publish(new ConnectedEvent(websocket.getURI()));
       }
 
       @Override
@@ -599,14 +599,15 @@ public abstract class BaseBot implements IBaseBot {
           WebSocketFrame clientCloseFrame,
           boolean closedByServer) {
 
-        onDisconnected.publish(new DisconnectedEvent(closedByServer));
+        onDisconnected.publish(
+            new DisconnectedEvent(websocket.getURI(), closedByServer));
 
         clearCurrentGameState();
       }
 
       @Override
       public final void onError(WebSocket websocket, WebSocketException cause) {
-        onConnectionError.publish(new ConnectionErrorEvent(cause));
+        onConnectionError.publish(new ConnectionErrorEvent(websocket.getURI(), cause));
       }
 
       @Override
@@ -761,7 +762,7 @@ public abstract class BaseBot implements IBaseBot {
 
     // Event handler which events in the order they have been added to the handler
     protected class Event<T> {
-      private List<Consumer<T>> subscribers = Collections.synchronizedList(new ArrayList<>());
+      private final List<Consumer<T>> subscribers = Collections.synchronizedList(new ArrayList<>());
 
       final void subscribe(Consumer<T> subscriber) {
         subscribers.add(subscriber);
