@@ -7,7 +7,7 @@
     <LangVersion>8.0</LangVersion>
 
     <PackageId>Robocode.TankRoyale.BotApi</PackageId>
-    <Version>0.6.13</Version>
+    <Version>0.6.14</Version>
     <Authors>Flemming Noernberg Larsen</Authors>
   </PropertyGroup>
 

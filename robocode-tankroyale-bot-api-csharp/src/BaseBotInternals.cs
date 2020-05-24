@@ -291,17 +291,17 @@ namespace Robocode.TankRoyale.BotApi
 
       private void HandleConnected()
       {
-        OnConnected(new ConnectedEvent());
+        OnConnected(new ConnectedEvent(socket.ServerUri));
       }
 
       private void HandleDisconnected(bool remote)
       {
-        OnDisconnected(new DisconnectedEvent(remote));
+        OnDisconnected(new DisconnectedEvent(socket.ServerUri, remote));
       }
 
-      private void HandleConnectionError(Exception ex)
+      private void HandleConnectionError(Exception cause)
       {
-        OnConnectionError(new ConnectionErrorEvent(ex));
+        OnConnectionError(new ConnectionErrorEvent(socket.ServerUri, cause));
       }
 
       private void HandleTextMessage(string json)

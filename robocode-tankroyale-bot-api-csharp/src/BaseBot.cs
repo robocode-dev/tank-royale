@@ -342,31 +342,42 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public double CalcMaxTurnRate(double speed)
-    {
-      return ((IBaseBot)this).MaxTurnRate - 0.75 * Math.Abs(speed);
-    }
+    public double CalcMaxTurnRate(double speed) => ((IBaseBot)this).MaxTurnRate - 0.75 * Math.Abs(speed);
 
     /// <inheritdoc/>
-    public double CalcBulletSpeed(double firepower)
-    {
-      return 20 - 3 * firepower;
-    }
+    public double CalcBulletSpeed(double firepower) => 20 - 3 * firepower;
 
     /// <inheritdoc/>
-    public double CalcGunHeat(double firepower)
-    {
-      return 1 + (firepower / 5);
-    }
+    public double CalcGunHeat(double firepower) => 1 + (firepower / 5);
 
     /// <inheritdoc/>
-    public virtual void OnConnected(ConnectedEvent connectedEvent) { }
+    public double CalcDirection(double x, double y) => NormalizeAbsoluteDegrees(Math.Atan2(x - X, y - Y));
 
     /// <inheritdoc/>
-    public virtual void OnDisconnected(DisconnectedEvent disconnectedEvent) { }
+    public double CalcBearing(double direction) => NormalizeRelativeDegrees(direction - Direction);
 
     /// <inheritdoc/>
-    public virtual void OnConnectionError(ConnectionErrorEvent connectionErrorEvent) { }
+    public double CalcGunBearing(double direction) => NormalizeRelativeDegrees(direction - GunDirection);
+
+    /// <inheritdoc/>
+    public double CalcRadarBearing(double direction) => NormalizeRelativeDegrees(direction - RadarDirection);
+
+    /// <inheritdoc/>
+    public double NormalizeAbsoluteDegrees(double angle) => (angle %= 360) >= 0 ? angle : (angle + 360);
+
+    /// <inheritdoc/>
+    public double NormalizeRelativeDegrees(double angle) => (angle %= 360) >= 0 ?
+        ((angle < 180) ? angle : (angle - 360)) :
+        ((angle >= -180) ? angle : (angle + 360));
+
+    /// <inheritdoc/>
+    public virtual void OnConnected(ConnectedEvent connectedEvent) => Console.WriteLine($"Connected to: {connectedEvent.ServerUri}");
+
+    /// <inheritdoc/>
+    public virtual void OnDisconnected(DisconnectedEvent disconnectedEvent) => Console.WriteLine($"Disconnected from: {disconnectedEvent.ServerUri}");
+
+    /// <inheritdoc/>
+    public virtual void OnConnectionError(ConnectionErrorEvent connectionErrorEvent) => Console.Error.WriteLine($"Connection error with: {connectionErrorEvent.ServerUri}");
 
     /// <inheritdoc/>
     public virtual void OnGameStarted(GameStartedEvent gameStatedEvent) { }
@@ -379,6 +390,9 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <inheritdoc/>
     public virtual void OnBotDeath(BotDeathEvent botDeathEvent) { }
+
+    /// <inheritdoc/>
+    public virtual void OnDeath(BotDeathEvent botDeathEvent) { }
 
     /// <inheritdoc/>
     public virtual void OnHitBot(BotHitBotEvent botHitBotEvent) { }

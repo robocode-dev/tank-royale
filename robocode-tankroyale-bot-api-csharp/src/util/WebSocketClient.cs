@@ -41,21 +41,20 @@ namespace Robocode.TankRoyale.BotApi
     public delegate void OnTextMessageHandler(string text);
 
     private ClientWebSocket socket = new ClientWebSocket();
-    private Uri uri;
+
+    public Uri ServerUri { get; }
 
     private CancellationTokenSource cancelSource = new CancellationTokenSource();
 
     /// <summary>Constructor.</summary>
     /// <param name="uri">Is the server URI</param>
-    public WebSocketClient(Uri uri)
-    {
-      this.uri = uri;
-    }
+    public WebSocketClient(Uri serverUri) => ServerUri = serverUri;
 
     /// <summary>Connect to the server.</summary>
     public void Connect()
     {
-      socket.ConnectAsync(uri, CancellationToken.None).GetAwaiter().GetResult();
+      socket.Options.KeepAliveInterval = TimeSpan.FromSeconds(1);
+      socket.ConnectAsync(ServerUri, CancellationToken.None).GetAwaiter().GetResult();
       Task.Factory.StartNew(HandleIncomingMessages);
       OnConnected();
     }
