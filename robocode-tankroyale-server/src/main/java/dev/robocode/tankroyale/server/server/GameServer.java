@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.server.server;
 import com.google.gson.Gson;
 import dev.robocode.tankroyale.server.Server;
 import dev.robocode.tankroyale.server.engine.ModelUpdater;
-import dev.robocode.tankroyale.server.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.server.mappers.*;
 import dev.robocode.tankroyale.server.model.GameState;
 import dev.robocode.tankroyale.server.model.Round;
@@ -46,7 +45,7 @@ public final class GameServer {
 
   private ModelUpdater modelUpdater;
 
-  private final Gson gson = new Gson();
+  private final static Gson gson = new Gson();
 
   public GameServer(String gameTypes, String clientSecret) {
     if (gameTypes == null) {
@@ -109,9 +108,7 @@ public final class GameServer {
     for (WebSocket conn : participants) {
       participantIds.put(conn, id);
       gameStartedForBot.setMyId(id++);
-
-      String msg = gson.toJson(gameStartedForBot);
-      send(conn, msg);
+      send(conn, gameStartedForBot);
     }
 
     readyParticipants = new HashSet<>();
@@ -150,7 +147,7 @@ public final class GameServer {
           GameStartedEventForObserver.$type.GAME_STARTED_EVENT_FOR_OBSERVER);
       gameStartedForObserver.setGameSetup(GameSetupToGameSetupMapper.map(gameSetup));
       gameStartedForObserver.setParticipants(participantList);
-      broadcastToObserverAndControllers(gson.toJson(gameStartedForObserver));
+      broadcastToObserverAndControllers(gameStartedForObserver);
     }
 
     // Prepare model update
@@ -163,7 +160,7 @@ public final class GameServer {
     turnTimeoutTimer = new Timer(turnTimeout, this::onTurnTimeout);
 
     val tps = gameSetup.getDefaultTurnsPerSecond();
-    var tpsTimeout = 1_000_000 / tps;
+    long tpsTimeout = 1_000_000 / tps;
     if (turnTimeout > tpsTimeout) {
       tpsTimeout = turnTimeout;
     }
@@ -189,7 +186,7 @@ public final class GameServer {
 
     GameAbortedEventForObserver abortedEvent = new GameAbortedEventForObserver();
     abortedEvent.set$type(GameAbortedEventForObserver.$type.GAME_ABORTED_EVENT_FOR_OBSERVER);
-    broadcastToObserverAndControllers(gson.toJson(abortedEvent));
+    broadcastToObserverAndControllers(abortedEvent);
 
     // No score is generated for aborted games
   }
@@ -273,7 +270,7 @@ public final class GameServer {
 
     GamePausedEventForObserver pausedEvent = new GamePausedEventForObserver();
     pausedEvent.set$type(GamePausedEventForObserver.$type.GAME_PAUSED_EVENT_FOR_OBSERVER);
-    broadcastToObserverAndControllers(gson.toJson(pausedEvent));
+    broadcastToObserverAndControllers(pausedEvent);
 
     runningState = RunningState.GAME_PAUSED;
 
@@ -286,7 +283,7 @@ public final class GameServer {
 
     GameResumedEventForObserver resumedEvent = new GameResumedEventForObserver();
     resumedEvent.set$type(GameResumedEventForObserver.$type.GAME_RESUMED_EVENT_FOR_OBSERVER);
-    broadcastToObserverAndControllers(gson.toJson(resumedEvent));
+    broadcastToObserverAndControllers(resumedEvent);
 
     if (runningState == RunningState.GAME_PAUSED) {
       runningState = RunningState.GAME_RUNNING;
@@ -330,15 +327,14 @@ public final class GameServer {
     turnTimeoutTimer.stop();
 
     // Send SkippedTurnEvents to all bots that skipped a turn, i.e. where the server did not receive
-    // a bot intent
-    // before the turn ended.
+    // a bot intent before the turn ended.
     participantIds.forEach(
         (conn, id) -> {
           if (botIntents.get(conn) == null) {
-            dev.robocode.tankroyale.server.events.SkippedTurnEvent skippedTurnEvent =
-                    new SkippedTurnEvent(modelUpdater.getTurnNumber());
-
-            send(conn, gson.toJson(skippedTurnEvent));
+            SkippedTurnEvent skippedTurnEvent = new SkippedTurnEvent();
+            skippedTurnEvent.set$type(SkippedTurnEvent.$type.SKIPPED_TURN_EVENT);
+            skippedTurnEvent.setTurnNumber(modelUpdater.getTurnNumber());
+            send(conn, skippedTurnEvent);
           }
         });
   }
@@ -371,14 +367,14 @@ public final class GameServer {
         endEventForBot.set$type(GameEndedEventForObserver.$type.GAME_ENDED_EVENT_FOR_BOT);
         endEventForBot.setNumberOfRounds(modelUpdater.getNumberOfRounds());
         endEventForBot.setResults(getResultsForBots());
-        broadcastToBots(gson.toJson(endEventForBot));
+        broadcastToBots(endEventForBot);
 
         // End game for observers
         GameEndedEventForObserver endEventForObserver = new GameEndedEventForObserver();
         endEventForObserver.set$type(GameEndedEventForObserver.$type.GAME_ENDED_EVENT_FOR_OBSERVER);
         endEventForObserver.setNumberOfRounds(modelUpdater.getNumberOfRounds());
         endEventForObserver.setResults(getResultsForObservers()); // Use the stored score!
-        broadcastToObserverAndControllers(gson.toJson(endEventForObserver));
+        broadcastToObserverAndControllers(endEventForObserver);
 
       } else {
         // Clear bot intents
@@ -395,13 +391,12 @@ public final class GameServer {
               TickEventForBot gameTickForBot =
                   TurnToGameTickForBotMapper.map(round, turn, participantIds.get(conn));
               if (gameTickForBot != null) { // Bot alive?
-                String msg = gson.toJson(gameTickForBot);
-                send(conn, msg);
+                send(conn, gameTickForBot);
               }
             }
             TickEventForObserver gameTickForObserver =
                 TurnToGameTickForObserverMapper.map(round, turn);
-            broadcastToObserverAndControllers(gson.toJson(gameTickForObserver));
+            broadcastToObserverAndControllers(gameTickForObserver);
           }
         }
         // Restart turn timeout timer
@@ -411,11 +406,13 @@ public final class GameServer {
     }
   }
 
-  private static void send(WebSocket conn, String message) {
-    log.debug("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + message);
+  private static void send(WebSocket conn, Message message) {
+    String msg = gson.toJson(message);
+
+    log.debug("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + msg);
 
     try {
-      conn.send(message);
+      conn.send(msg);
     } catch (WebsocketNotConnectedException ignore) {
       // Bot cannot receive events and send new intents.
     }
@@ -433,7 +430,7 @@ public final class GameServer {
     botIntents.put(conn, botIntent);
   }
 
-  private String createBotListUpdateMessage() {
+  private Message createBotListUpdateMessage() {
     BotListUpdate botListUpdate = new BotListUpdate();
     botListUpdate.set$type(Message.$type.BOT_LIST_UPDATE);
     List<BotInfo> bots = new ArrayList<>();
@@ -447,15 +444,21 @@ public final class GameServer {
               connHandler.getBotHandshakes().get(conn), address.getHostString(), address.getPort());
       bots.add(botInfo);
     }
-    return gson.toJson(botListUpdate);
+    return botListUpdate;
   }
 
-  public void broadcastToBots(String msg) {
-    connHandler.broadcastToBots(msg);
+  private void broadcastToBots(Message msg) {
+    if (msg.get$type() == null) {
+      throw new IllegalArgumentException("$type is required on the message");
+    }
+    connHandler.broadcastToBots(gson.toJson(msg));
   }
 
-  private void broadcastToObserverAndControllers(String msg) {
-    connHandler.broadcastToObserverAndControllers(msg);
+  private void broadcastToObserverAndControllers(Message msg) {
+    if (msg.get$type() == null) {
+      throw new IllegalArgumentException("$type is required on the message");
+    }
+    connHandler.broadcastToObserverAndControllers(gson.toJson(msg));
   }
 
   private void sendBotListUpdateToObservers() {
@@ -489,7 +492,7 @@ public final class GameServer {
     @Override
     public void onObserverJoined(WebSocket conn, ObserverHandshake handshake) {
       log.info("Observer joined: " + getDisplayName(handshake));
-      String msg = createBotListUpdateMessage();
+      Message msg = createBotListUpdateMessage();
       send(conn, msg);
     }
 
@@ -501,7 +504,7 @@ public final class GameServer {
     @Override
     public void onControllerJoined(WebSocket conn, ControllerHandshake handshake) {
       log.info("Controller joined: " + getDisplayName(handshake));
-      String msg = createBotListUpdateMessage();
+      Message msg = createBotListUpdateMessage();
       send(conn, msg);
     }
 
