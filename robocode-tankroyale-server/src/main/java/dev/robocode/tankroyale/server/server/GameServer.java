@@ -161,7 +161,7 @@ public final class GameServer {
     if (turnTimeout > timeout) {
       timeout = turnTimeout;
     }
-    turnTimeoutTimer = new Timer(timeout, this::onNextTurnTick);
+    turnTimeoutTimer = new Timer(timeout, this::onNextTurn);
     turnTimeoutTimer.start();
   }
 
@@ -316,23 +316,11 @@ public final class GameServer {
     }
   }
 
-  private synchronized void onNextTurnTick() {
-    log.debug("next turn tick => updating game state");
+  private synchronized void onNextTurn() {
+    log.debug("Next turn => updating game state");
 
     // Stop turn timeout timer
     turnTimeoutTimer.stop();
-
-    // Send SkippedTurnEvents to all bots that skipped a turn, i.e. where the server did not receive
-    // a bot intent before the turn ended.
-    participantIds.forEach(
-            (conn, id) -> {
-              if (botIntents.get(conn) == null) {
-                SkippedTurnEvent skippedTurnEvent = new SkippedTurnEvent();
-                skippedTurnEvent.set$type(SkippedTurnEvent.$type.SKIPPED_TURN_EVENT);
-                skippedTurnEvent.setTurnNumber(modelUpdater.getTurnNumber());
-                send(conn, skippedTurnEvent);
-              }
-            });
 
     if (runningState != RunningState.GAME_STOPPED) {
       // Update game state
@@ -360,9 +348,6 @@ public final class GameServer {
         broadcastToObserverAndControllers(endEventForObserver);
 
       } else {
-        // Clear bot intents
-        botIntents.clear();
-
         // Send tick
 
         Round round = gameState.getLastRound();
@@ -372,16 +357,33 @@ public final class GameServer {
             // Send game state as 'game tick' to participants
             for (WebSocket conn : participants) {
               TickEventForBot gameTickForBot =
-                  TurnToGameTickForBotMapper.map(round, turn, participantIds.get(conn));
+                  TurnToTickEventForBotMapper.map(round, turn, participantIds.get(conn));
               if (gameTickForBot != null) { // Bot alive?
                 send(conn, gameTickForBot);
               }
             }
             TickEventForObserver gameTickForObserver =
-                TurnToGameTickForObserverMapper.map(round, turn);
+                TurnToTickEventForObserverMapper.map(round, turn);
             broadcastToObserverAndControllers(gameTickForObserver);
           }
+
+          // Send SkippedTurnEvents to all bots that skipped a turn, i.e. where the server did not
+          // receive a bot intent before the turn ended.
+          participantIds.keySet().forEach(
+                  (conn) -> {
+                    if (botIntents.get(conn) == null) {
+                      SkippedTurnEvent skippedTurnEvent = new SkippedTurnEvent();
+                      skippedTurnEvent.set$type(SkippedTurnEvent.$type.SKIPPED_TURN_EVENT);
+                      skippedTurnEvent.setTurnNumber(modelUpdater.getTurnNumber());
+                      send(conn, skippedTurnEvent);
+
+                      log.info("skipped turn: " + turn.getTurnNumber());
+                    }
+                  });
         }
+        // Clear bot intents
+        botIntents.clear();
+
         // Restart turn timeout timer
         turnTimeoutTimer.start();
       }

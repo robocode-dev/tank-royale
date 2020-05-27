@@ -5,9 +5,9 @@ import dev.robocode.tankroyale.server.model.Round;
 import dev.robocode.tankroyale.server.model.Turn;
 import dev.robocode.tankroyale.schema.TickEventForBot;
 
-public final class TurnToGameTickForBotMapper {
+public final class TurnToTickEventForBotMapper {
 
-	private TurnToGameTickForBotMapper() {}
+	private TurnToTickEventForBotMapper() {}
 
 	public static TickEventForBot map(Round round, Turn turn, int botId) {
 		Bot bot = turn.getBot(botId);

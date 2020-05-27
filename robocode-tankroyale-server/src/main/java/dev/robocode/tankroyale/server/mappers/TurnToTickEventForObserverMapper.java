@@ -4,9 +4,9 @@ import dev.robocode.tankroyale.server.model.Round;
 import dev.robocode.tankroyale.server.model.Turn;
 import dev.robocode.tankroyale.schema.TickEventForObserver;
 
-public final class TurnToGameTickForObserverMapper {
+public final class TurnToTickEventForObserverMapper {
 
-	private TurnToGameTickForObserverMapper() {}
+	private TurnToTickEventForObserverMapper() {}
 
 	public static TickEventForObserver map(Round round, Turn turn) {
 		TickEventForObserver tick = new TickEventForObserver();
