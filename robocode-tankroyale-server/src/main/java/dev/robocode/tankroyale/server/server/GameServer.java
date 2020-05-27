@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.server.server;
 
 import com.google.gson.Gson;
+import dev.robocode.tankroyale.schema.*;
 import dev.robocode.tankroyale.server.Server;
 import dev.robocode.tankroyale.server.engine.ModelUpdater;
 import dev.robocode.tankroyale.server.mappers.*;
@@ -8,8 +9,6 @@ import dev.robocode.tankroyale.server.model.GameState;
 import dev.robocode.tankroyale.server.model.Round;
 import dev.robocode.tankroyale.server.model.Turn;
 import lombok.val;
-import dev.robocode.tankroyale.schema.*;
-import lombok.var;
 import org.java_websocket.WebSocket;
 import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import org.slf4j.Logger;
@@ -41,7 +40,6 @@ public final class GameServer {
 
   private Timer readyTimeoutTimer;
   private Timer turnTimeoutTimer;
-  private Timer tpsTimer;
 
   private ModelUpdater modelUpdater;
 
@@ -156,18 +154,15 @@ public final class GameServer {
 
     val turnTimeout = gameSetup.getTurnTimeout();
 
-    // Restart timers (turn timeout + tps)
-    turnTimeoutTimer = new Timer(turnTimeout, this::onTurnTimeout);
+    // Restart turn timeout timer
 
     val tps = gameSetup.getDefaultTurnsPerSecond();
-    long tpsTimeout = 1_000_000 / tps;
-    if (turnTimeout > tpsTimeout) {
-      tpsTimeout = turnTimeout;
+    long timeout = 1_000_000 / tps;
+    if (turnTimeout > timeout) {
+      timeout = turnTimeout;
     }
-    tpsTimer = new Timer(tpsTimeout, this::onTpsTimeout);
-
+    turnTimeoutTimer = new Timer(timeout, this::onNextTurnTick);
     turnTimeoutTimer.start();
-    tpsTimer.start();
   }
 
   private void startGame(
@@ -268,14 +263,13 @@ public final class GameServer {
   private void pauseGame() {
     log.info("Pausing game");
 
+    turnTimeoutTimer.stop();
+
     GamePausedEventForObserver pausedEvent = new GamePausedEventForObserver();
     pausedEvent.set$type(GamePausedEventForObserver.$type.GAME_PAUSED_EVENT_FOR_OBSERVER);
     broadcastToObserverAndControllers(pausedEvent);
 
     runningState = RunningState.GAME_PAUSED;
-
-    tpsTimer.stop();
-    turnTimeoutTimer.stop();
   }
 
   private void resumeGame() {
@@ -288,7 +282,6 @@ public final class GameServer {
     if (runningState == RunningState.GAME_PAUSED) {
       runningState = RunningState.GAME_RUNNING;
 
-      tpsTimer.start();
       turnTimeoutTimer.start();
     }
   }
@@ -323,39 +316,29 @@ public final class GameServer {
     }
   }
 
-  private void onTurnTimeout() {
+  private synchronized void onNextTurnTick() {
+    log.debug("next turn tick => updating game state");
+
+    // Stop turn timeout timer
     turnTimeoutTimer.stop();
 
     // Send SkippedTurnEvents to all bots that skipped a turn, i.e. where the server did not receive
     // a bot intent before the turn ended.
     participantIds.forEach(
-        (conn, id) -> {
-          if (botIntents.get(conn) == null) {
-            SkippedTurnEvent skippedTurnEvent = new SkippedTurnEvent();
-            skippedTurnEvent.set$type(SkippedTurnEvent.$type.SKIPPED_TURN_EVENT);
-            skippedTurnEvent.setTurnNumber(modelUpdater.getTurnNumber());
-            send(conn, skippedTurnEvent);
-          }
-        });
-  }
-
-  private void onTpsTimeout() {
-    nextTurnTick();
-  }
-
-  private synchronized void nextTurnTick() {
-    log.debug("Updating game state");
+            (conn, id) -> {
+              if (botIntents.get(conn) == null) {
+                SkippedTurnEvent skippedTurnEvent = new SkippedTurnEvent();
+                skippedTurnEvent.set$type(SkippedTurnEvent.$type.SKIPPED_TURN_EVENT);
+                skippedTurnEvent.setTurnNumber(modelUpdater.getTurnNumber());
+                send(conn, skippedTurnEvent);
+              }
+            });
 
     if (runningState != RunningState.GAME_STOPPED) {
       // Update game state
       GameState gameState = updateGameState();
 
       if (gameState.isGameEnded()) {
-
-        // Restart turn timeout timer
-        turnTimeoutTimer.stop();
-        tpsTimer.stop();
-
         runningState = RunningState.GAME_STOPPED;
 
         log.info("Game ended");
@@ -401,7 +384,6 @@ public final class GameServer {
         }
         // Restart turn timeout timer
         turnTimeoutTimer.start();
-        tpsTimer.start();
       }
     }
   }
