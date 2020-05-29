@@ -53,7 +53,6 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>Connect to the server.</summary>
     public void Connect()
     {
-      socket.Options.KeepAliveInterval = TimeSpan.FromSeconds(1);
       socket.ConnectAsync(ServerUri, CancellationToken.None).GetAwaiter().GetResult();
       Task.Factory.StartNew(HandleIncomingMessages);
       OnConnected();

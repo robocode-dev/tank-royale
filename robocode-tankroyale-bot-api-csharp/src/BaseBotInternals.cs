@@ -13,13 +13,13 @@ namespace Robocode.TankRoyale.BotApi
     internal class BaseBotInternals
     {
       private const string NotConnectedToServerMsg =
-        "Not connected to game server yes. Make sure onConnected() event handler has been called first";
+        "Not connected to game server yes. Make sure OnConnected() event handler has been called first";
 
       private const string GameNotRunningMsg =
-        "Game is not running. Make sure onGameStarted() event handler has been called first";
+        "Game is not running. Make sure OnGameStarted() event handler has been called first";
 
       private const string TickNotAvailableMsg =
-        "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first";
+        "Game is not running or tick has not occurred yet. Make sure OnTick() event handler has been called first";
 
       private IBaseBot parent;
 
@@ -307,30 +307,38 @@ namespace Robocode.TankRoyale.BotApi
       private void HandleTextMessage(string json)
       {
         var jsonMsg = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-        var type = (string)jsonMsg["$type"];
-        if (!string.IsNullOrWhiteSpace(type))
+        try
         {
-          var msgType = (MessageType)Enum.Parse(typeof(MessageType), type);
-          switch (msgType)
+          var type = (string)jsonMsg["$type"];
+
+          if (!string.IsNullOrWhiteSpace(type))
           {
-            case MessageType.TickEventForBot:
-              HandleTickEvent(json);
-              break;
-            case MessageType.ServerHandshake:
-              HandleServerHandshake(json);
-              break;
-            case MessageType.GameStartedEventForBot:
-              HandleGameStartedEvent(json);
-              break;
-            case MessageType.GameEndedEventForBot:
-              HandleGameEndedEvent(json);
-              break;
-            case MessageType.SkippedTurnEvent:
-              HandleSkippedTurnEvent(json);
-              break;
-            default:
-              throw new BotException("Unsupported WebSocket message type: " + type);
+            var msgType = (MessageType)Enum.Parse(typeof(MessageType), type);
+            switch (msgType)
+            {
+              case MessageType.TickEventForBot:
+                HandleTickEvent(json);
+                break;
+              case MessageType.ServerHandshake:
+                HandleServerHandshake(json);
+                break;
+              case MessageType.GameStartedEventForBot:
+                HandleGameStartedEvent(json);
+                break;
+              case MessageType.GameEndedEventForBot:
+                HandleGameEndedEvent(json);
+                break;
+              case MessageType.SkippedTurnEvent:
+                HandleSkippedTurnEvent(json);
+                break;
+              default:
+                throw new BotException("Unsupported WebSocket message type: " + type);
+            }
           }
+        }
+        catch (KeyNotFoundException)
+        {
+          throw new BotException($"$type is missing on the JSON message: {string.Join(Environment.NewLine, jsonMsg)}");
         }
       }
 
