@@ -39,11 +39,11 @@ public class SpinBot extends Bot {
   /** onScannedBot: Fire hard when scanning another bot! */
   @Override
   public void onScannedBot(ScannedBotEvent e) {
-    fire(3);
+    fire(3); // Fire the cannon!
   }
 
   /**
-   * onHitRobot: If it's our fault, we'll stop turning and moving, so we need to turn again to keep spinning.
+   * onHitBot: If it's our fault, we'll stop turning and moving, so we need to turn again to keep spinning.
    */
   @Override
   public void onHitBot(BotHitBotEvent e) {
