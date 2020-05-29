@@ -485,15 +485,14 @@ public abstract class Bot extends BaseBot implements IBot {
      * @param distance is the distance to move
      * @return The new speed
      */
-    // Credits for this algorithm goes to Patrick Cupka (aka Voidious), Julian Kent (aka
-    // Skilgannon), and Positive:
-    // http://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
+    // Credits for this algorithm goes to Patrick Cupka (aka Voidious),
+    // Julian Kent (aka Skilgannon), and Positive:
+    // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
     private double getNewSpeed(double speed, double distance) {
 
       if (distance < 0) {
         // If the distance is negative, then change it to be positive and change the sign of the
-        // input
-        // velocity and the result
+        // input velocity and the result
         return -getNewSpeed(-speed, -distance);
       }
 
