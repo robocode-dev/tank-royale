@@ -1,5 +1,11 @@
 package dev.robocode.tankroyale.ui.desktop.ui.arena
 
+import dev.robocode.tankroyale.ui.desktop.model.BotState
+import dev.robocode.tankroyale.ui.desktop.ui.arena.ColorConstant.DEFAULT_BODY_COLOR
+import dev.robocode.tankroyale.ui.desktop.ui.arena.ColorConstant.DEFAULT_TURRET_COLOR
+import dev.robocode.tankroyale.ui.desktop.ui.arena.ColorConstant.DEFAULT_RADAR_COLOR
+import dev.robocode.tankroyale.ui.desktop.ui.arena.ColorConstant.DEFAULT_TRACKS_COLOR
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.ColorExt.toHsl
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Color.BLACK
@@ -10,37 +16,33 @@ import java.awt.geom.GeneralPath
 import java.awt.geom.Rectangle2D
 import kotlin.math.hypot
 
-class Tank(
-    private val x: Double,
-    private val y: Double,
-    private val direction: Double,
-    private val gunDirection: Double,
-    private val radarDirection: Double
-) {
+class Tank(private val bot: BotState) {
 
     var oldX = 0.0
     var oldY = 0.0
+
+    private val tracksColor: Color = Color(bot.tracksColor ?: DEFAULT_TRACKS_COLOR)
 
     fun paint(g: Graphics2D) {
         val oldTransform = g.transform
 
         val scale = 36.0 / 500
-        g.translate(x, y)
+        g.translate(bot.x, bot.y)
         g.scale(scale, scale)
 
-        paintBody(g, Color(0x001199))
-        paintTurret(g, Color(0x0066CC))
-        paintRadar(g, Color(0xAAAAFF))
+        paintBody(g)
+        paintTurret(g)
+        paintRadar(g)
 
         g.transform = oldTransform
 
-        oldX = x
-        oldY = y
+        oldX = bot.x
+        oldY = bot.y
     }
 
-    private fun paintBody(g: Graphics2D, color: Color) {
+    private fun paintBody(g: Graphics2D) {
         val oldTransform = g.transform
-        g.rotate(Math.toRadians(direction + 180))
+        g.rotate(Math.toRadians(bot.direction + 180))
 
         // Tracks
         val localTransform = g.transform
@@ -53,11 +55,11 @@ class Tank(
         g.transform = localTransform
 
         // Body rect
-        g.color = color
+        g.color = Color(bot.bodyColor ?: DEFAULT_BODY_COLOR)
         g.fillRect(-210, -160, 420, 320)
 
         // Body Shadow
-        g.color = Color(0, 0, 0, 0x7F)
+        g.color = Color(0, 0, 0, 0x3F)
         g.fillRect(120, -160, 90, 320)
 
         // Body border
@@ -69,8 +71,8 @@ class Tank(
     }
 
     private fun paintTrack(g: Graphics2D) {
-        val dx = x - oldX
-        val dy = y - oldY
+        val dx = bot.x - oldX
+        val dy = bot.y - oldY
 
         val dist = hypot(dx, dy)
         val mod: Int = ((dist / 10) % 3).toInt()
@@ -139,7 +141,7 @@ class Tank(
     private fun paintMainTrack(g: Graphics2D) {
         g.stroke = BasicStroke(10f)
 
-        g.color = Color(0x333333)
+        g.color = tracksColor.toHsl().multLight(0.6f).toColor()
         g.fillRect(75, 20, 450, 95)
         g.color = BLACK
         g.drawRect(75, 20, 450, 95)
@@ -148,10 +150,10 @@ class Tank(
     private fun paintLink0(g: Graphics2D) {
         g.stroke = BasicStroke(10f)
 
-        g.color = Color(0xAAAAAA)
+        g.color = tracksColor.toHsl().addLight(0.3f).toColor()
         g.fillRect(55, 5, 25, 125)
 
-        g.color = Color(0x666666)
+        g.color = tracksColor
         g.fillRoundRect(70, 10, 35, 116, 20, 20)
 
         g.color = BLACK
@@ -161,10 +163,10 @@ class Tank(
     private fun paintLink30(g: Graphics2D) {
         g.stroke = BasicStroke(10f)
 
-        g.color = Color(0x888888)
+        g.color = tracksColor.toHsl().addLight(0.2f).multLight(0.866f /* 30 deg */).toColor()
         g.fillRect(55, 5, 25, 125)
 
-        g.color = Color(0x444444)
+        g.color = tracksColor.toHsl().multLight(0.866f /* 30 deg */).toColor()
         g.fillRoundRect(70, 10, 30, 116, 20, 20)
 
         g.color = BLACK
@@ -174,23 +176,23 @@ class Tank(
     private fun paintLink60(g: Graphics2D) {
         g.stroke = BasicStroke(10f)
 
-        g.color = Color(0x444444)
+        g.color = tracksColor.toHsl().addLight(0.2f).multLight(0.5f /* 60 deg */).toColor()
         g.fillRect(55, 5, 20, 125)
 
         g.color = BLACK
         g.drawRoundRect(55, 5, 20, 125, 20, 20)
     }
 
-    private fun paintTurret(g: Graphics2D, color: Color) {
+    private fun paintTurret(g: Graphics2D) {
         val oldTransform = g.transform
-        g.rotate(Math.toRadians(gunDirection + 180))
+        g.rotate(Math.toRadians(bot.gunDirection + 180))
 
         // Turret rect
-        g.color = color
+        g.color = Color(bot.turretColor ?: DEFAULT_TURRET_COLOR)
         g.fillRect(-80, -100, 200, 200)
 
         // Turret shadow
-        g.color = Color(0, 0, 0, 0x7F)
+        g.color = Color(0, 0, 0, 0x5F)
         g.fillRect(60, -100, 50, 200)
 
         // Turret border
@@ -224,8 +226,10 @@ class Tank(
 
     }
 
-    private fun paintRadar(g: Graphics2D, color: Color) {
+    private fun paintRadar(g: Graphics2D) {
         val oldTransform = g.transform
+
+        val color = Color(bot.radarColor ?: DEFAULT_RADAR_COLOR)
 
         // Circle
         val circle = Ellipse2D.Float(-30f, -30f, 60f, 60f)
@@ -235,7 +239,7 @@ class Tank(
         g.draw(circle)
 
         // Radar
-        g.rotate(Math.toRadians(radarDirection + 180))
+        g.rotate(Math.toRadians(bot.radarDirection + 180))
         val path = GeneralPath()
         path.moveTo(20.0, -110.0)
         path.quadTo(120.0, 0.0, 20.0, 110.0)

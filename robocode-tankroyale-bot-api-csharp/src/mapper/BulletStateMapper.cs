@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using System.Collections.Generic;
 
 namespace Robocode.TankRoyale.BotApi
@@ -13,7 +14,8 @@ namespace Robocode.TankRoyale.BotApi
         source.X,
         source.Y,
         source.Direction,
-        source.Speed
+        source.Speed,
+        source.Color
       );
     }
 

@@ -13,7 +13,14 @@ namespace Robocode.TankRoyale.BotApi
         source.RadarDirection,
         source.RadarSweep,
         source.Speed,
-        source.GunHeat
+        source.GunHeat,
+        source.BodyColor,
+        source.TurretColor,
+        source.RadarColor,
+        source.BulletColor,
+        source.ScanColor,
+        source.TracksColor,
+        source.GunColor
       );
     }
   }

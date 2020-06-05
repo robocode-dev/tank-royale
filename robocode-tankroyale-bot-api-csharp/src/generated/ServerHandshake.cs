@@ -21,10 +21,9 @@ namespace Robocode.TankRoyale.Schema
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Variant { get; set; }
     
-        /// <summary>Game version, e.g. '1.0.0'</summary>
+        /// <summary>Game version, e.g. '1.0.0' using Semantic Versioning (https://semver.org/)</summary>
         [Newtonsoft.Json.JsonProperty("version", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [System.ComponentModel.DataAnnotations.RegularExpression(@"^\\d+(\\.\\d+)*$")]
         public string Version { get; set; }
     
         /// <summary>Game types running at this server, e.g. "melee" and "1v1"</summary>

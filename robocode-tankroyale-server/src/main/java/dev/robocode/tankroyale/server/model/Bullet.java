@@ -33,6 +33,9 @@ public class Bullet {
 	/** Tick, which is the number of turns since the bullet was fired */
 	int tick;
 
+	/** Color of the bullet */
+	Integer color;
+
 	public double getSpeed() {
 		return RuleMath.calcBulletSpeed(power);
 	}

@@ -20,12 +20,12 @@ namespace Robocode.TankRoyale.BotApi
     ///
     /// Example of how to set the predefined environment variables:
     ///
-    /// ROBOCODE_SERVER_URI=ws://localhost:55000<br/>
+    /// ROBOCODE_SERVER_URI=ws://localhost<br/>
     /// BOT_NAME=MyBot<br/>
     /// BOT_VERSION=1.0<br/>
     /// BOT_AUTHOR=fnl<br/>
     /// BOT_DESCRIPTION=Sample bot<br/>
-    /// BOT_URL=https://mybot.robocode.dev<br/>
+    /// BOT_URL=https://mybot.somewhere.net<br/>
     /// BOT_COUNTRY_CODE=DK<br/>
     /// BOT_GAME_TYPES=melee,1v1<br/>
     /// BOT_PROG_PLATFORM=.Net Core 3.1<br/>
@@ -340,6 +340,48 @@ namespace Robocode.TankRoyale.BotApi
       set => __baseBotInternals.isAdjustRadarForGunTurn = value;
       get => __baseBotInternals.isAdjustRadarForGunTurn;
     }
+
+    /// <inheritdoc/>
+    public int? GetBodyColor() => __baseBotInternals.CurrentTurn.BotState.BodyColor;
+
+    /// <inheritdoc/>
+    public void SetBodyColor(string bodyColor) => __baseBotInternals.BotIntent.BodyColor = bodyColor;
+
+    /// <inheritdoc/>
+    public int? GetTurretColor() => __baseBotInternals.CurrentTurn.BotState.TurretColor;
+
+    /// <inheritdoc/>
+    public void SetTurretColor(string turretColor) => __baseBotInternals.BotIntent.TurretColor = turretColor;
+
+    /// <inheritdoc/>
+    public int? GetRadarColor() => __baseBotInternals.CurrentTurn.BotState.RadarColor;
+
+    /// <inheritdoc/>
+    public void SetRadarColor(string radarColor) => __baseBotInternals.BotIntent.RadarColor = radarColor;
+
+    /// <inheritdoc/>
+    public int? GetBulletColor() => __baseBotInternals.CurrentTurn.BotState.BulletColor;
+
+    /// <inheritdoc/>
+    public void SetBulletColor(string bulletColor) => __baseBotInternals.BotIntent.BulletColor = bulletColor;
+
+    /// <inheritdoc/>
+    public int? GetScanColor() => __baseBotInternals.CurrentTurn.BotState.ScanColor;
+
+    /// <inheritdoc/>
+    public void SetScanColor(string scanColor) => __baseBotInternals.BotIntent.ScanColor = scanColor;
+
+    /// <inheritdoc/>
+    public int? GetTracksColor() => __baseBotInternals.CurrentTurn.BotState.TracksColor;
+
+    /// <inheritdoc/>
+    public void SetTracksColor(string tracksColor) => __baseBotInternals.BotIntent.TracksColor = tracksColor;
+
+    /// <inheritdoc/>
+    public int? GetGunColor() => __baseBotInternals.CurrentTurn.BotState.GunColor;
+
+    /// <inheritdoc/>
+    public void SetGunColor(string gunColor) => __baseBotInternals.BotIntent.GunColor = gunColor;
 
     /// <inheritdoc/>
     public double CalcMaxTurnRate(double speed) => ((IBaseBot)this).MaxTurnRate - 0.75 * Math.Abs(speed);

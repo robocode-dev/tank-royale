@@ -44,9 +44,29 @@ public class Bot {
 	/** Gun heat */
 	double gunHeat;
 
+	/** Body color */
+	Integer bodyColor;
+
+	/** Gun turret color */
+	Integer turretColor;
+
+	/** Radar color */
+	Integer radarColor;
+
+	/** Bullet color */
+	Integer bulletColor;
+
+	/** Scan color */
+	Integer scanColor;
+
+	/** Tracks color */
+	Integer tracksColor;
+
+	/** Gun color */
+	Integer gunColor;
+
 	/** Score record */
 	Score score;
-
 
 	@SuppressWarnings("WeakerAccess")
 	public static class BotBuilder {
@@ -104,7 +124,9 @@ public class Bot {
 		public double getGunHeat() {
 			return gunHeat;
 		}
-		
+
+		public Integer getBulletColor() { return bulletColor; }
+
 		/**
 		 * Adds damage to the bot.
 		 * 

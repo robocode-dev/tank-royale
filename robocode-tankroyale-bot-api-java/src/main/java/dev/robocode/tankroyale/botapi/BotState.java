@@ -31,6 +31,27 @@ public final class BotState {
   /** Gun heat. */
   private final double gunHeat;
 
+  /** Body color */
+  private final Integer bodyColor;
+
+  /** Gun turret color code */
+  private final Integer turretColor;
+
+  /** Radar color code */
+  private final Integer radarColor;
+
+  /** Bullet color code */
+  private final Integer bulletColor;
+
+  /** Scan arc color code */
+  private final Integer scanColor;
+
+  /** Tracks color code */
+  private final Integer tracksColor;
+
+  /** Gun color code */
+  private final Integer gunColor;
+
   /**
    * Initializes a new instance of the BotState class.
    *
@@ -43,6 +64,13 @@ public final class BotState {
    * @param radarSweep is the radar sweep angle in degrees.
    * @param speed is the speed measured in units per turn.
    * @param gunHeat is the gun heat.
+   * @param bodyColor is the body color code.
+   * @param turretColor is the gun turret color code.
+   * @param radarColor is the radar color code.
+   * @param bulletColor is the bullet color code.
+   * @param scanColor is the scan arc color code.
+   * @param tracksColor is the tracks color code.
+   * @param gunColor is the gun color code.
    */
   public BotState(
       double energy,
@@ -53,7 +81,15 @@ public final class BotState {
       double radarDirection,
       double radarSweep,
       double speed,
-      double gunHeat) {
+      double gunHeat,
+      Integer bodyColor,
+      Integer turretColor,
+      Integer radarColor,
+      Integer bulletColor,
+      Integer scanColor,
+      Integer tracksColor,
+      Integer gunColor
+  ) {
     this.energy = energy;
     this.x = x;
     this.y = y;
@@ -63,6 +99,13 @@ public final class BotState {
     this.radarSweep = radarSweep;
     this.speed = speed;
     this.gunHeat = gunHeat;
+    this.bodyColor = bodyColor;
+    this.turretColor = turretColor;
+    this.radarColor = radarColor;
+    this.bulletColor = bulletColor;
+    this.scanColor = scanColor;
+    this.tracksColor = tracksColor;
+    this.gunColor = gunColor;
   }
 
   /**
@@ -151,5 +194,90 @@ public final class BotState {
    */
   public double getGunHeat() {
     return gunHeat;
+  }
+
+  /**
+   * Returns the RGB color code of the body. The color code is an integer in hexadecimal format
+   * using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
+   *
+   * @return The color code of the body or {@code null} if the bot uses the default code.
+   * @see <a
+   *     href="https://www.rapidtables.com/web/color/RGB_Color.html">https://www.rapidtables.com/web/color/RGB_Color.html</a>
+   */
+  public Integer getBodyColor() {
+    return bodyColor;
+  }
+
+  /**
+   * Returns the RGB color code of the gun turret. The color code is an integer in hexadecimal
+   * format using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
+   *
+   * @return The color code of the gun turret or {@code null} if the bot uses the default code.
+   * @see <a
+   *     href="https://www.rapidtables.com/web/color/RGB_Color.html">https://www.rapidtables.com/web/color/RGB_Color.html</a>
+   */
+  public Integer getTurretColor() {
+    return turretColor;
+  }
+
+  /**
+   * Returns the RGB color code of the radar. The color code is an integer in hexadecimal format
+   * using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
+   *
+   * @return The color code of the radar or {@code null} if the bot uses the default code.
+   * @see <a
+   *     href="https://www.rapidtables.com/web/color/RGB_Color.html">https://www.rapidtables.com/web/color/RGB_Color.html</a>
+   */
+  public Integer getRadarColor() {
+    return radarColor;
+  }
+
+  /**
+   * Returns the RGB color code of the bullets when fired. The color code is an integer in
+   * hexadecimal format using bits 0 - 23 using an 8-bit channel for each color component; red,
+   * green, and blue.
+   *
+   * @return The color code of the bullets or {@code null} if the bot uses the default code.
+   * @see <a
+   *     href="https://www.rapidtables.com/web/color/RGB_Color.html">https://www.rapidtables.com/web/color/RGB_Color.html</a>
+   */
+  public Integer getBulletColor() {
+    return bulletColor;
+  }
+
+  /**
+   * Returns the RGB color code of the scan arc. The color code is an integer in hexadecimal format
+   * using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
+   *
+   * @return The color code of the scan arc or {@code null} if the bot uses the default code.
+   * @see <a
+   *     href="https://www.rapidtables.com/web/color/RGB_Color.html">https://www.rapidtables.com/web/color/RGB_Color.html</a>
+   */
+  public Integer getScanColor() {
+    return scanColor;
+  }
+
+  /**
+   * Returns the RGB color code of the tracks. The color code is an integer in hexadecimal format
+   * using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
+   *
+   * @return The color code of the tracks or {@code null} if the bot uses the default code.
+   * @see <a
+   *     href="https://www.rapidtables.com/web/color/RGB_Color.html">https://www.rapidtables.com/web/color/RGB_Color.html</a>
+   */
+  public Integer getTracksColor() {
+    return tracksColor;
+  }
+
+  /**
+   * Returns the RGB color code of the gun. The color code is an integer in hexadecimal format
+   * using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
+   *
+   * @return The color code of the gun or {@code null} if the bot uses the default code.
+   * @see <a
+   *     href="https://www.rapidtables.com/web/color/RGB_Color.html">https://www.rapidtables.com/web/color/RGB_Color.html</a>
+   */
+  public Integer getGunColor() {
+    return gunColor;
   }
 }

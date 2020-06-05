@@ -47,12 +47,13 @@ public abstract class BaseBot implements IBaseBot {
    *
    * <p><b>Example of how to set the predefined environment variables:</b>
    *
-   * <p>ROBOCODE_SERVER_URL=ws://localhost:55000<br>
+   * <p>ROBOCODE_SERVER_URL=ws://localhost<br>
    * BOT_NAME=MyBot<br>
    * BOT_VERSION=1.0<br>
    * BOT_AUTHOR=fnl<br>
    * BOT_DESCRIPTION=Sample bot<br>
-   * BOT_URL=https://mybot.robocode.dev BOT_COUNTRY_CODE=DK<br>
+   * BOT_URL=https://mybot.somewhere.net
+   * BOT_COUNTRY_CODE=DK<br>
    * BOT_GAME_TYPES=melee,1v1<br>
    * BOT_PLATFORM=Java<br>
    * BOT_PROG_LANG=Java 8<br>
@@ -376,6 +377,90 @@ public abstract class BaseBot implements IBaseBot {
   @Override
   public final boolean isAdjustRadarForGunTurn() {
     return __internals.isAdjustRadarForGunTurn;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Integer getBodyColor() {
+    return __internals.getCurrentTurn().getBotState().getBodyColor();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setBodyColor(String bodyColor) {
+    __internals.botIntent.setBodyColor(bodyColor);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Integer getTurretColor() {
+    return __internals.getCurrentTurn().getBotState().getTurretColor();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setTurretColor(String turretColor) {
+    __internals.botIntent.setTurretColor(turretColor);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Integer getRadarColor() {
+    return __internals.getCurrentTurn().getBotState().getRadarColor();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setRadarColor(String radarColor) {
+    __internals.botIntent.setRadarColor(radarColor);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Integer getBulletColor() {
+    return __internals.getCurrentTurn().getBotState().getBulletColor();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setBulletColor(String bulletColor) {
+    __internals.botIntent.setBulletColor(bulletColor);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Integer getScanColor() {
+    return __internals.getCurrentTurn().getBotState().getScanColor();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setScanColor(String scanColor) {
+    __internals.botIntent.setScanColor(scanColor);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Integer getTracksColor() {
+    return __internals.getCurrentTurn().getBotState().getTracksColor();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setTracksColor(String tracksColor) {
+    __internals.botIntent.setTracksColor(tracksColor);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Integer getGunColor() {
+    return __internals.getCurrentTurn().getBotState().getGunColor();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setGunColor(String gunColor) {
+    __internals.botIntent.setGunColor(gunColor);
   }
 
   /** {@inheritDoc} */

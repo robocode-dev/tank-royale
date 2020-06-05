@@ -36,6 +36,12 @@ namespace Robocode.TankRoyale.BotApi
     public double Speed { get; }
 
     /// <summary>
+    /// Color code of the bullet.
+    /// </summary>
+    /// <value>The color code of the bullet.</value>
+    public int? Color { get; }
+
+    /// <summary>
     /// Initializes a new instance of the BulletState class.
     /// </summary>
     /// <param name="bulletId">Unique id of the bullet.</param>
@@ -45,7 +51,8 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="y">Y coordinate of the bullet.</param>
     /// <param name="direction">Direction in degrees.</param>
     /// <param name="speed">Speed measured in units per turn.</param>
-    public BulletState(int bulletId, int ownerId, double power, double x, double y, double direction, double speed)
+    /// <param name="color">Color code of the bullet.</param>
+    public BulletState(int bulletId, int ownerId, double power, double x, double y, double direction, double speed, int? color)
     {
       BulletId = bulletId;
       OwnerId = ownerId;
@@ -54,6 +61,7 @@ namespace Robocode.TankRoyale.BotApi
       Y = y;
       Direction = direction;
       Speed = speed;
+      Color = color;
     }
   }
 }

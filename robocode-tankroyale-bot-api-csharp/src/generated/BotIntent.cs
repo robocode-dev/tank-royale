@@ -33,6 +33,41 @@ namespace Robocode.TankRoyale.Schema
         [System.ComponentModel.DataAnnotations.Range(0.0D, 3.0D)]
         public double? Firepower { get; set; }
     
+        /// <summary>New color of the body</summary>
+        [Newtonsoft.Json.JsonProperty("bodyColor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.RegularExpression(@"/^#[0-9A-F]{3,6}$/ig")]
+        public string BodyColor { get; set; }
+    
+        /// <summary>New color of the cannon turret</summary>
+        [Newtonsoft.Json.JsonProperty("turretColor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.RegularExpression(@"/^#[0-9A-F]{3,6}$/ig")]
+        public string TurretColor { get; set; }
+    
+        /// <summary>New color of the radar</summary>
+        [Newtonsoft.Json.JsonProperty("radarColor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.RegularExpression(@"/^#[0-9A-F]{3,6}$/ig")]
+        public string RadarColor { get; set; }
+    
+        /// <summary>New color of the bullet. Note. This will be the color of a bullet when it is fired</summary>
+        [Newtonsoft.Json.JsonProperty("bulletColor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.RegularExpression(@"/^#[0-9A-F]{3,6}$/ig")]
+        public string BulletColor { get; set; }
+    
+        /// <summary>New color of the scan arc</summary>
+        [Newtonsoft.Json.JsonProperty("scanColor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.RegularExpression(@"/^#[0-9A-F]{3,6}$/ig")]
+        public string ScanColor { get; set; }
+    
+        /// <summary>New color of the tracks</summary>
+        [Newtonsoft.Json.JsonProperty("tracksColor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.RegularExpression(@"/^#[0-9A-F]{3,6}$/ig")]
+        public string TracksColor { get; set; }
+    
+        /// <summary>New color of the gun</summary>
+        [Newtonsoft.Json.JsonProperty("gunColor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.RegularExpression(@"/^#[0-9A-F]{3,6}$/ig")]
+        public string GunColor { get; set; }
+    
     
     }
 }

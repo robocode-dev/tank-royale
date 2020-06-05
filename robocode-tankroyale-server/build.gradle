@@ -9,7 +9,7 @@ plugins {
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.6.17'
+version = '0.6.19'
 
 compileJava {
     sourceCompatibility = '1.8'
@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.0'
+    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.4'
     implementation 'org.danilopianini:gson-extras:0.2.2'
 
     implementation 'org.java-websocket:Java-WebSocket:1.5.1'

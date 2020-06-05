@@ -24,6 +24,7 @@ public final class BulletToBulletStateMapper {
 		Point pos = bullet.calcPosition();
 		bulletState.setX(pos.x);
 		bulletState.setY(pos.y);
+		bulletState.setColor(bullet.getColor());
 
 		return bulletState;
 	}

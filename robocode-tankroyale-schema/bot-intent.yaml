@@ -22,3 +22,24 @@ properties:
     minimum: 0.0
     maximum: 3.0
     exclusiveMinimum: true
+  bodyColor:
+    description: New color of the body
+    $ref: color.yaml
+  turretColor:
+    description: New color of the cannon turret
+    $ref: color.yaml
+  radarColor:
+    description: New color of the radar
+    $ref: color.yaml
+  bulletColor:
+    description: New color of the bullet. Note. This will be the color of a bullet when it is fired
+    $ref: color.yaml
+  scanColor:
+    description: New color of the scan arc
+    $ref: color.yaml
+  tracksColor:
+    description: New color of the tracks
+    $ref: color.yaml
+  gunColor:
+    description: New color of the gun
+    $ref: color.yaml

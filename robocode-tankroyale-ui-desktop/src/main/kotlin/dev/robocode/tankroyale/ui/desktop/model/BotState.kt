@@ -13,5 +13,12 @@ data class BotState(
     val radarDirection: Double,
     val radarSweep: Double,
     val speed: Double,
-    val gunHeat: Double
+    val gunHeat: Double,
+    val bodyColor: Int? = null,
+    val turretColor: Int? = null,
+    val radarColor: Int? = null,
+    val bulletColor: Int? = null,
+    val scanColor: Int? = null,
+    val tracksColor: Int? = null,
+    val gunColor: Int? = null
 )

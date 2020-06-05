@@ -18,6 +18,7 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.JPanel
 import kotlin.collections.HashSet
+import kotlin.math.sqrt
 
 
 object ArenaPanel : JPanel() {
@@ -108,7 +109,6 @@ object ArenaPanel : JPanel() {
             bot.y,
             xOffset,
             yOffset,
-            bot.id,
             4.0,
             40.0,
             25,
@@ -178,39 +178,15 @@ object ArenaPanel : JPanel() {
     }
 
     private fun drawBots(g: Graphics2D) {
-        state.bots.forEach {
-            val x = it.x
-            val y = it.y
-
-            Tank(
-                x,
-                y,
-                it.direction,
-                it.gunDirection,
-                it.radarDirection
-            ).paint(g)
-
-            drawScanArc(
-                g,
-                x,
-                y,
-                it.radarDirection,
-                it.radarSweep,
-                Color.WHITE
-            )
-            drawEnergy(g, x, y, it.energy)
+        state.bots.forEach { bot ->
+            Tank(bot).paint(g)
+            drawScanArc(g, bot)
+            drawEnergy(g, bot)
         }
     }
 
     private fun drawBullets(g: Graphics2D) {
-        State.bullets.forEach {
-            drawBullet(
-                g,
-                it.x,
-                it.y,
-                it.power
-            )
-        }
+        State.bullets.forEach { drawBullet(g, it) }
     }
 
     private fun clearCanvas(g: Graphics) {
@@ -232,23 +208,23 @@ object ArenaPanel : JPanel() {
         }
     }
 
-    private fun drawBullet(g: Graphics2D, x: Double, y: Double, power: Double) {
-        val size = 2 * Math.sqrt(2.5 * power)
-        g.color = Color.WHITE
-        g.fillCircle(x, y, size)
+    private fun drawBullet(g: Graphics2D, bullet: BulletState) {
+        val size = 2 * sqrt(2.5 * bullet.power)
+        g.color = Color(bullet.color ?: ColorConstant.DEFAULT_BULLET_COLOR)
+        g.fillCircle(bullet.x, bullet.y, size)
     }
 
-    private fun drawScanArc(g: Graphics2D, x: Double, y: Double, direction: Double, spreadAngle: Double, color: Color) {
+    private fun drawScanArc(g: Graphics2D, bot: BotState) {
         val oldState = Graphics2DState(g)
 
-        g.color = color
+        g.color = Color(bot.scanColor ?: ColorConstant.DEFAULT_SCAN_COLOR)
         g.stroke = BasicStroke(1f)
-        g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f)
+        g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f)
 
         val arc = Arc2D.Double()
 
-        var startAngle = 360 - direction
-        var angleEx = spreadAngle
+        var startAngle = 360 - bot.radarDirection
+        var angleEx = bot.radarSweep
 
         if (angleEx < 0) {
             startAngle += angleEx
@@ -256,7 +232,7 @@ object ArenaPanel : JPanel() {
         }
         startAngle %= 360
 
-        arc.setArcByCenter(x, y, 1200.0, startAngle, angleEx, Arc2D.PIE)
+        arc.setArcByCenter(bot.x, bot.y, 1200.0, startAngle, angleEx, Arc2D.PIE)
 
         if (angleEx >= .5) {
             g.fill(arc)
@@ -277,15 +253,15 @@ object ArenaPanel : JPanel() {
         oldState.restore(g)
     }
 
-    private fun drawEnergy(g: Graphics2D, x: Double, y: Double, energy: Double) {
+    private fun drawEnergy(g: Graphics2D, bot: BotState) {
         val oldState = Graphics2DState(g)
 
         g.color = Color.WHITE
-        val text = "%.1f".format(energy)
+        val text = "%.1f".format(bot.energy)
         val width = g.fontMetrics.stringWidth(text)
 
         g.scale(1.0, -1.0)
-        g.drawString(text, x.toFloat() - width / 2,  (-30 - y).toFloat())
+        g.drawString(text, bot.x.toFloat() - width / 2,  (-30 - bot.y).toFloat())
 
         oldState.restore(g)
     }
@@ -302,7 +278,6 @@ object ArenaPanel : JPanel() {
         y: Double,
         private val xOffset: Double,
         private val yOffset: Double,
-        val victimId: Int,
         startRadius: Double,
         endRadius: Double,
         period: Int,

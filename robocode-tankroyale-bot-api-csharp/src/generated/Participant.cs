@@ -40,7 +40,7 @@ namespace Robocode.TankRoyale.Schema
     
         /// <summary>2-letter country code defined by ISO 3166-1, e.g. "UK"</summary>
         [Newtonsoft.Json.JsonProperty("countryCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.RegularExpression(@"(^[a-z]{2}$)|(^[A-Z]{2}$)")]
+        [System.ComponentModel.DataAnnotations.RegularExpression(@"/^[a-z]{2}$/ig")]
         public string CountryCode { get; set; }
     
         /// <summary>Game types supported by this bot (defined elsewhere), e.g. "melee" and "1v1"</summary>

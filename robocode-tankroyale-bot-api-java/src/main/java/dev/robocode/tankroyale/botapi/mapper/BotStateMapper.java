@@ -15,6 +15,14 @@ public final class BotStateMapper {
         source.getRadarDirection(),
         source.getRadarSweep(),
         source.getSpeed(),
-        source.getGunHeat());
+        source.getGunHeat(),
+        source.getBodyColor(),
+        source.getTurretColor(),
+        source.getRadarColor(),
+        source.getBulletColor(),
+        source.getScanColor(),
+        source.getTracksColor(),
+        source.getGunColor()
+    );
   }
 }

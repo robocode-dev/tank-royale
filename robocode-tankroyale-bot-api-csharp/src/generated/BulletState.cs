@@ -40,6 +40,10 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("speed", Required = Newtonsoft.Json.Required.Always)]
         public double Speed { get; set; }
     
+        /// <summary>Color of the bullet</summary>
+        [Newtonsoft.Json.JsonProperty("color", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Color { get; set; }
+    
     
     }
 }

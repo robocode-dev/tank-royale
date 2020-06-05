@@ -21,12 +21,12 @@ public abstract class Bot extends BaseBot implements IBot {
    *
    * <p><b>Example of how to set the predefined environment variables:</b>
    *
-   * <p>ROBOCODE_SERVER_URL=ws://localhost:55000<br>
+   * <p>ROBOCODE_SERVER_URL=ws://localhost<br>
    * BOT_NAME=MyBot<br>
    * BOT_VERSION=1.0<br>
    * BOT_AUTHOR=fnl<br>
    * BOT_DESCRIPTION=Sample bot<br>
-   * BOT_URL=https://mybot.robocode.dev
+   * BOT_URL=https://mybot.somewhere.net
    * BOT_COUNTRY_CODE=DK<br>
    * BOT_GAME_TYPES=melee,1v1<br>
    * BOT_PLATFORM=Java<br>

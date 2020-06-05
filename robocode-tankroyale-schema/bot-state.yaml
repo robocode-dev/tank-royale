@@ -29,6 +29,27 @@ properties:
   gunHeat:
     description: Gun heat
     type: number
+  bodyColor:
+    description: Current RGB color of the body
+    $ref: rgb-color.yaml
+  turretColor:
+    description: New color of the gun turret
+    $ref: rgb-color.yaml
+  radarColor:
+    description: New color of the radar
+    $ref: rgb-color.yaml
+  bulletColor:
+    description: New color of the bullet. Note. This will be the color of a bullet when it is fired
+    $ref: rgb-color.yaml
+  scanColor:
+    description: New color of the scan arc
+    $ref: rgb-color.yaml
+  tracksColor:
+    description: New color of the tracks
+    $ref: rgb-color.yaml
+  gunColor:
+    description: New color of gun
+    $ref: rgb-color.yaml
 required:
   - energy
   - x

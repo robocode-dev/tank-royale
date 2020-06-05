@@ -20,6 +20,13 @@ public final class BotToBotStateMapper {
 		botState.setRadarDirection(MathUtil.normalAbsoluteDegrees(bot.getRadarDirection()));
 		botState.setRadarSweep(bot.getRadarSpreadAngle());
 		botState.setGunHeat(bot.getGunHeat());
+		botState.setBodyColor(bot.getBodyColor());
+		botState.setTurretColor(bot.getTurretColor());
+		botState.setRadarColor(bot.getRadarColor());
+		botState.setBulletColor(bot.getBulletColor());
+		botState.setScanColor(bot.getScanColor());
+		botState.setTracksColor(bot.getTracksColor());
+		botState.setGunColor(bot.getGunColor());
 		return botState;
 	}
 }

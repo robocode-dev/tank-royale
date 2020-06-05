@@ -23,6 +23,9 @@ properties:
   speed:
     description: Speed measured in units per turn
     type: number
+  color:
+    description: Color of the bullet
+    $ref: rgb-color.yaml
 required:
   - bulletId
   - ownerId

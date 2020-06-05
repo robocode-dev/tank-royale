@@ -37,6 +37,13 @@ public class TestBot2 : Bot
 
   public override void Run()
   {
+    SetBodyColor("#FF0000");
+    SetTurretColor("#00FF00");
+    SetRadarColor("#FFFFFF");
+    SetScanColor("#00FFFF");
+    SetBulletColor("#FF00FF");
+    SetTracksColor("#FFFF00");
+
     while (IsRunning)
     {
       Forward(100);

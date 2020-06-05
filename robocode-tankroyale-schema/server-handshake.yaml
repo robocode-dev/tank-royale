@@ -12,8 +12,7 @@ properties:
     description: Game variant, e.g. 'Tank Royale' for Robocode 2 Tank Royale
   version:
     type: string
-    description: Game version, e.g. '1.0.0'
-    pattern: ^\\d+(\\.\\d+)*$
+    description: Game version, e.g. '1.0.0' using Semantic Versioning (https://semver.org/)
   gameTypes:
     description: Game types running at this server, e.g. "melee" and "1v1"
     type: array

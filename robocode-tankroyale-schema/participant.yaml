@@ -23,7 +23,7 @@ properties:
   countryCode:
     description: 2-letter country code defined by ISO 3166-1, e.g. "UK"
     type: string
-    pattern: (^[a-z]{2}$)|(^[A-Z]{2}$)
+    pattern: /^[a-z]{2}$/ig
   gameTypes:
     description: Game types supported by this bot (defined elsewhere), e.g. "melee" and "1v1"
     type: array

@@ -9,7 +9,7 @@ public class Test
 {
   public static void Main2(string[] args)
   {
-    var socket = new WebSocketClient(new Uri("ws://localhost:55000"));
+    var socket = new WebSocketClient(new Uri("ws://localhost"));
 
     socket.OnError += (ex) =>
     {

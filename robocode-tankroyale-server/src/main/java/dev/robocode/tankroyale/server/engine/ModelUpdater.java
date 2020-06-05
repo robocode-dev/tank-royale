@@ -9,6 +9,7 @@ import dev.robocode.tankroyale.server.util.MathUtil;
 import java.util.*;
 
 import static dev.robocode.tankroyale.server.model.RuleConstants.*;
+import static dev.robocode.tankroyale.server.util.ColorUtil.colorStringToRGB;
 import static dev.robocode.tankroyale.server.util.MathUtil.normalAbsoluteDegrees;
 
 /**
@@ -405,6 +406,14 @@ public class ModelUpdater {
 					botBuilder.speed(speed);
 
 					botBuilder.moveToNewPosition();
+
+					botBuilder.bodyColor(colorStringToRGB(immuBotIntent.getBodyColor()));
+					botBuilder.turretColor(colorStringToRGB(immuBotIntent.getTurretColor()));
+					botBuilder.radarColor(colorStringToRGB(immuBotIntent.getRadarColor()));
+					botBuilder.bulletColor(colorStringToRGB(immuBotIntent.getBulletColor()));
+					botBuilder.scanColor(colorStringToRGB(immuBotIntent.getScanColor()));
+					botBuilder.tracksColor(colorStringToRGB(immuBotIntent.getTracksColor()));
+					botBuilder.gunColor(colorStringToRGB(immuBotIntent.getGunColor()));
 				}
 			}
 		}
@@ -919,6 +928,7 @@ public class ModelUpdater {
 			.startX(botBuilder.getX())
 			.startY(botBuilder.getY())
 			.direction(botBuilder.getGunDirection())
+			.color(botBuilder.getBulletColor())
 			.build();
 
 		bullets.add(bullet);

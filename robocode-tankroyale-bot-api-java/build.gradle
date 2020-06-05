@@ -6,7 +6,7 @@ plugins {
 //    id "com.github.hierynomus.license" version "0.15.0"
 }
 group = 'dev.robocode.tankroyale'
-version = '0.6.14'
+version = '0.6.16'
 
 /*
 license {
@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.0'
+    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.4'
     implementation 'com.neovisionaries:nv-websocket-client:2.9'
     implementation 'com.neovisionaries:nv-i18n:1.27'
     implementation 'org.danilopianini:gson-extras:0.2.2'
