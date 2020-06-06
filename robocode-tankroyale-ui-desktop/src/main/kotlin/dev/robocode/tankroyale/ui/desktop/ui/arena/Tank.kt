@@ -2,9 +2,11 @@ package dev.robocode.tankroyale.ui.desktop.ui.arena
 
 import dev.robocode.tankroyale.ui.desktop.model.BotState
 import dev.robocode.tankroyale.ui.desktop.ui.arena.ColorConstant.DEFAULT_BODY_COLOR
+import dev.robocode.tankroyale.ui.desktop.ui.arena.ColorConstant.DEFAULT_GUN_COLOR
 import dev.robocode.tankroyale.ui.desktop.ui.arena.ColorConstant.DEFAULT_TURRET_COLOR
 import dev.robocode.tankroyale.ui.desktop.ui.arena.ColorConstant.DEFAULT_RADAR_COLOR
 import dev.robocode.tankroyale.ui.desktop.ui.arena.ColorConstant.DEFAULT_TRACKS_COLOR
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.ColorExt.lightness
 import dev.robocode.tankroyale.ui.desktop.ui.extensions.ColorExt.toHsl
 import java.awt.BasicStroke
 import java.awt.Color
@@ -55,7 +57,8 @@ class Tank(private val bot: BotState) {
         g.transform = localTransform
 
         // Body rect
-        g.color = Color(bot.bodyColor ?: DEFAULT_BODY_COLOR)
+        val bodyColor = Color(bot.bodyColor ?: DEFAULT_BODY_COLOR)
+        g.color = bodyColor
         g.fillRect(-210, -160, 420, 320)
 
         // Body Shadow
@@ -63,7 +66,7 @@ class Tank(private val bot: BotState) {
         g.fillRect(120, -160, 90, 320)
 
         // Body border
-        g.paint = BLACK
+        g.paint = borderColor(bodyColor)
         g.stroke = BasicStroke(20f)
         g.drawRoundRect(-210, -160, 420, 320, 20, 20)
 
@@ -141,9 +144,10 @@ class Tank(private val bot: BotState) {
     private fun paintMainTrack(g: Graphics2D) {
         g.stroke = BasicStroke(10f)
 
-        g.color = tracksColor.toHsl().multLight(0.6f).toColor()
+        val tracksColor = tracksColor.toHsl().multLight(0.6f).toColor()
+        g.color = tracksColor
         g.fillRect(75, 20, 450, 95)
-        g.color = BLACK
+        g.color = borderColor(tracksColor)
         g.drawRect(75, 20, 450, 95)
     }
 
@@ -156,7 +160,7 @@ class Tank(private val bot: BotState) {
         g.color = tracksColor
         g.fillRoundRect(70, 10, 35, 116, 20, 20)
 
-        g.color = BLACK
+        g.color = borderColor(tracksColor)
         g.drawRoundRect(55, 5, 50, 125, 20, 20)
     }
 
@@ -169,7 +173,7 @@ class Tank(private val bot: BotState) {
         g.color = tracksColor.toHsl().multLight(0.866f /* 30 deg */).toColor()
         g.fillRoundRect(70, 10, 30, 116, 20, 20)
 
-        g.color = BLACK
+        g.color = borderColor(tracksColor)
         g.drawRoundRect(55, 5, 42, 125, 20, 20)
     }
 
@@ -179,7 +183,7 @@ class Tank(private val bot: BotState) {
         g.color = tracksColor.toHsl().addLight(0.2f).multLight(0.5f /* 60 deg */).toColor()
         g.fillRect(55, 5, 20, 125)
 
-        g.color = BLACK
+        g.color = borderColor(tracksColor)
         g.drawRoundRect(55, 5, 20, 125, 20, 20)
     }
 
@@ -187,8 +191,39 @@ class Tank(private val bot: BotState) {
         val oldTransform = g.transform
         g.rotate(Math.toRadians(bot.gunDirection + 180))
 
+        // Cannon thick part
+
+        val gunColor = Color(bot.gunColor ?: DEFAULT_GUN_COLOR)
+
+        val cannonLight = gunColor.toHsl().addLight(0.1f).toColor()
+        val cannonDark = gunColor.toHsl().addLight(-0.3f).toColor()
+
+        val borderColor = borderColor(gunColor)
+
+        val x1 = -160f
+        val y1 = -40f
+        g.paint = GradientPaint(x1, y1 + 10, cannonDark, x1, y1 + 40, cannonLight)
+        g.fill(Rectangle2D.Float(x1, y1, 80f, 40f))
+        g.paint = GradientPaint(x1, y1 + 40, cannonLight, x1, y1 + 80 - 10, cannonDark)
+        g.fill(Rectangle2D.Float(x1, y1 + 40, 80f, 40f))
+
+        g.color = borderColor
+        g.drawRect(x1.toInt(), y1.toInt(), 80, 80)
+
+        // Cannon long part
+        val x2 = -330f
+        val y2 = -25f
+        g.paint = GradientPaint(x2, y2 + 10, cannonDark, x2, y2 + 25, cannonLight)
+        g.fill(Rectangle2D.Float(x2, y2, 170f, 25f))
+        g.paint = GradientPaint(x2, y2 + 25, cannonLight, x2, y2 + 50 - 10, cannonDark)
+        g.fill(Rectangle2D.Float(x2, y2 + 25, 170f, 25f))
+
+        g.color = borderColor(cannonDark)
+        g.drawRect(x2.toInt(), y2.toInt(), 170, 50)
+
         // Turret rect
-        g.color = Color(bot.turretColor ?: DEFAULT_TURRET_COLOR)
+        val turretColor = Color(bot.turretColor ?: DEFAULT_TURRET_COLOR)
+        g.color = turretColor
         g.fillRect(-80, -100, 200, 200)
 
         // Turret shadow
@@ -196,46 +231,24 @@ class Tank(private val bot: BotState) {
         g.fillRect(60, -100, 50, 200)
 
         // Turret border
-        g.color = BLACK
+        g.color = borderColor(turretColor)
         g.stroke = BasicStroke(20f)
         g.drawRoundRect(-80, -100, 200, 200, 20, 20)
 
-        // Cannon thick part
-        val x1 = -160f
-        val y1 = -40f
-        g.paint = GradientPaint(x1, y1 + 10, Color(0x333333), x1, y1 + 40, Color(0xCCCCCC))
-        g.fill(Rectangle2D.Float(x1, y1, 80f, 40f))
-        g.paint = GradientPaint(x1, y1 + 40, Color(0xCCCCCC), x1, y1 + 80 - 10, Color(0x333333))
-        g.fill(Rectangle2D.Float(x1, y1 + 40, 80f, 40f))
-
-        g.color = BLACK
-        g.drawRect(x1.toInt(), y1.toInt(), 80, 80)
-
-        // Cannon long part
-        val x2 = -330f
-        val y2 = -25f
-        g.paint = GradientPaint(x2, y2 + 10, Color(0x333333), x2, y2 + 25, Color(0xCCCCCC))
-        g.fill(Rectangle2D.Float(x2, y2, 170f, 25f))
-        g.paint = GradientPaint(x2, y2 + 25, Color(0xCCCCCC), x2, y2 + 50 - 10, Color(0x333333))
-        g.fill(Rectangle2D.Float(x2, y2 + 25, 170f, 25f))
-
-        g.color = BLACK
-        g.drawRect(x2.toInt(), y2.toInt(), 170, 50)
-
         g.transform = oldTransform
-
     }
 
     private fun paintRadar(g: Graphics2D) {
         val oldTransform = g.transform
 
         val color = Color(bot.radarColor ?: DEFAULT_RADAR_COLOR)
+        val borderColor = borderColor(color)
 
         // Circle
         val circle = Ellipse2D.Float(-30f, -30f, 60f, 60f)
         g.color = color
         g.fill(circle)
-        g.color = BLACK
+        g.color = borderColor
         g.draw(circle)
 
         // Radar
@@ -247,9 +260,13 @@ class Tank(private val bot: BotState) {
 
         g.color = color
         g.fill(path)
-        g.color = BLACK
+        g.color = borderColor
         g.draw(path)
 
         g.transform = oldTransform
+    }
+
+    private fun borderColor(color: Color): Color {
+        return if (color.lightness < 0.2) Color.DARK_GRAY else BLACK
     }
 }

@@ -7,4 +7,5 @@ object ColorConstant {
     const val DEFAULT_BULLET_COLOR = 0xFFFFFF
     const val DEFAULT_SCAN_COLOR = 0xFFFFFF
     const val DEFAULT_TRACKS_COLOR = 0x888888
+    const val DEFAULT_GUN_COLOR = 0x888888
 }

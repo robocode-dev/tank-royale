@@ -10,7 +10,10 @@ import dev.robocode.tankroyale.ui.desktop.ui.arena.ArenaPanel.State.arenaHeight
 import dev.robocode.tankroyale.ui.desktop.ui.arena.ArenaPanel.State.arenaWidth
 import dev.robocode.tankroyale.ui.desktop.ui.arena.ArenaPanel.State.bots
 import dev.robocode.tankroyale.ui.desktop.ui.arena.ArenaPanel.addMouseWheelListener
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.ColorExt.lightness
+import dev.robocode.tankroyale.ui.desktop.ui.extensions.ColorExt.toHsl
 import dev.robocode.tankroyale.ui.desktop.util.Graphics2DState
+import dev.robocode.tankroyale.ui.desktop.util.HslColor
 import java.awt.*
 import java.awt.event.MouseWheelEvent
 import java.awt.geom.*
@@ -210,14 +213,16 @@ object ArenaPanel : JPanel() {
 
     private fun drawBullet(g: Graphics2D, bullet: BulletState) {
         val size = 2 * sqrt(2.5 * bullet.power)
-        g.color = Color(bullet.color ?: ColorConstant.DEFAULT_BULLET_COLOR)
+        val bulletColor = Color(bullet.color ?: ColorConstant.DEFAULT_BULLET_COLOR)
+        g.color = visibleDark(bulletColor)
         g.fillCircle(bullet.x, bullet.y, size)
     }
 
     private fun drawScanArc(g: Graphics2D, bot: BotState) {
         val oldState = Graphics2DState(g)
 
-        g.color = Color(bot.scanColor ?: ColorConstant.DEFAULT_SCAN_COLOR)
+        val scanColor = Color(bot.scanColor ?: ColorConstant.DEFAULT_SCAN_COLOR)
+        g.color = visibleDark(scanColor)
         g.stroke = BasicStroke(1f)
         g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f)
 
@@ -271,6 +276,14 @@ object ArenaPanel : JPanel() {
         val transform = AffineTransform.getTranslateInstance(x, y)
         transform.scale(size, size)
         fill(circleShape.createTransformedArea(transform))
+    }
+
+    private fun visibleDark(color: Color): Color {
+        if (color.lightness < 0.2) {
+            val hsl = color.toHsl()
+            return HslColor(hsl.hue, hsl.saturation, 0.2f).toColor()
+        }
+        return color
     }
 
     class BotHitExplosion(
