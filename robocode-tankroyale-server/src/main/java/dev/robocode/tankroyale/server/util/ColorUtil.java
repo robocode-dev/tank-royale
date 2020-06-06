@@ -32,9 +32,9 @@ public final class ColorUtil {
     int g = Integer.valueOf(colorStr.substring(2, 3), 16);
     int b = Integer.valueOf(colorStr.substring(3, 4), 16);
 
-    r = r << 8 | r;
-    g = g << 8 | g;
-    b = b << 8 | b;
+    r = r << 4 | r;
+    g = g << 4 | g;
+    b = b << 4 | b;
 
     return r << 16 | g << 8 | b;
   }
