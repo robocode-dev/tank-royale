@@ -15,6 +15,8 @@ import dev.robocode.tankroyale.ui.desktop.ui.extensions.ColorExt.toHsl
 import dev.robocode.tankroyale.ui.desktop.util.Graphics2DState
 import dev.robocode.tankroyale.ui.desktop.util.HslColor
 import java.awt.*
+import java.awt.event.MouseEvent
+import java.awt.event.MouseMotionAdapter
 import java.awt.event.MouseWheelEvent
 import java.awt.geom.*
 import java.util.*
@@ -27,6 +29,8 @@ import kotlin.math.sqrt
 object ArenaPanel : JPanel() {
 
     private var scale = 1.0
+    private var offsetX = Double.NEGATIVE_INFINITY
+    private var offsetY = Double.NEGATIVE_INFINITY
 
     private val circleShape = Area(Ellipse2D.Double(-0.5, -0.5, 1.0, 1.0))
 
@@ -46,6 +50,12 @@ object ArenaPanel : JPanel() {
 
     init {
         addMouseWheelListener { e -> if (e != null) onMouseWheel(e) }
+
+        addMouseMotionListener ( object : MouseMotionAdapter() {
+            override fun mouseDragged(e: MouseEvent) {
+                onMouseDragged(e)
+            }
+        })
 
         Client.onGameStarted.subscribe { onGameStarted(it) }
         Client.onGameEnded.subscribe { onGameEnded(it) }
@@ -154,6 +164,11 @@ object ArenaPanel : JPanel() {
         }
     }
 
+    private fun onMouseDragged(e: MouseEvent) {
+        offsetX = e.point.x.toDouble()
+        offsetY = e.point.y.toDouble()
+    }
+
     override fun paintComponent(g: Graphics) {
         (g as Graphics2D).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
         try {
@@ -166,10 +181,16 @@ object ArenaPanel : JPanel() {
     private fun drawArena(g: Graphics2D) {
         clearCanvas(g)
 
-        val marginX = (size.width - scale * arenaWidth) / 2
-        val marginY = (size.height - scale * arenaHeight) / 2
+        // Move the offset of the arena
+        if (offsetX == Double.NEGATIVE_INFINITY) {
+            val marginX = (size.width - scale * arenaWidth) / 2
+            val marginY = (size.height - scale * arenaHeight) / 2
 
-        g.translate(marginX, marginY)
+            g.translate(marginX, marginY)
+        } else {
+            g.translate(offsetX, offsetY)
+        }
+
         g.scale(scale, -scale)
         g.translate(0, -arenaHeight)
 
