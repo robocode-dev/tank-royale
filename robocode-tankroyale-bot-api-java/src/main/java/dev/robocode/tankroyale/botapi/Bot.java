@@ -299,29 +299,20 @@ public abstract class Bot extends BaseBot implements IBot {
     private __Internals() {
       BaseBot.__Internals internals = Bot.super.__internals;
 
-      internals.onDisconnected.subscribe(event -> stopThread());
-      internals.onGameEnded.subscribe(event -> stopThread());
-      internals.onSkippedTurn.subscribe(event -> onSkippedTurn());
-      internals.onHitBot.subscribe(event -> onHitBot(event.isRammed()));
-      internals.onHitWall.subscribe(event -> onHitWall());
-      internals.onTick.subscribe(
-          event -> {
-            turnNumber = event.getTurnNumber();
-            onTick();
-          });
+      internals.onDisconnected.subscribe(e -> stopThread());
+      internals.onGameEnded.subscribe(e -> stopThread());
+      internals.onHitBot.subscribe(e -> onHitBot(e.isRammed()));
+      internals.onHitWall.subscribe(e -> onHitWall());
+      internals.onTick.subscribe(e -> { turnNumber = e.getTurnNumber(); onTick(); });
       internals.onBotDeath.subscribe(
-          event -> {
-            if (event.getVictimId() == getMyId()) {
+          e -> {
+            if (e.getVictimId() == getMyId()) {
               stopThread();
             }
           });
     }
 
     private void onTick() {
-      processTurn();
-    }
-
-    private void onSkippedTurn() {
       processTurn();
     }
 
@@ -348,7 +339,9 @@ public abstract class Bot extends BaseBot implements IBot {
 
       // If this is the first turn -> Call the run method on the Bot class
       if (turnNumber == 1) {
-        stopThread();
+        if (isRunning) {
+          stopThread();
+        }
         startThread();
       }
 

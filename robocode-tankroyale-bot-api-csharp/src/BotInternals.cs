@@ -46,7 +46,6 @@ namespace Robocode.TankRoyale.BotApi
 
         internals.onDisconnectedManager.Add((OnDisconnected));
         internals.onGameEndedManager.Add(OnGameEnded);
-        internals.onSkippedTurnManager.Add(OnSkippedTurn);
         internals.onHitBotManager.Add(OnHitBot);
         internals.onHitWallManager.Add(OnHitWall);
         internals.onTickManager.Add(OnTick);
@@ -72,11 +71,6 @@ namespace Robocode.TankRoyale.BotApi
       private void OnGameEnded(GameEndedEvent evt)
       {
         StopThread();
-      }
-
-      private void OnSkippedTurn(SkippedTurnEvent evt)
-      {
-        ProcessTurn();
       }
 
       private void OnHitBot(BotHitBotEvent evt)
@@ -116,7 +110,10 @@ namespace Robocode.TankRoyale.BotApi
         // If this is the first turn -> Call the run method on the Bot class
         if (turnNumber == 1)
         {
-          StopThread();
+          if (isRunning)
+          {
+            StopThread();
+          }
           StartThread();
         }
 
