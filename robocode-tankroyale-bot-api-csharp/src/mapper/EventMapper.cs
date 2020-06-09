@@ -75,7 +75,6 @@ namespace Robocode.TankRoyale.BotApi
     {
       return new BotHitBotEvent(
         source.TurnNumber,
-        source.BotId,
         source.VictimId,
         source.Energy,
         source.X,
@@ -86,10 +85,7 @@ namespace Robocode.TankRoyale.BotApi
 
     private static BotHitWallEvent Map(Schema.BotHitWallEvent source)
     {
-      return new BotHitWallEvent(
-        source.TurnNumber,
-        source.VictimId
-      );
+      return new BotHitWallEvent(source.TurnNumber);
     }
 
     private static BulletFiredEvent Map(Schema.BulletFiredEvent source)

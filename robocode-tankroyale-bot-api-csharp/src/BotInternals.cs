@@ -75,7 +75,7 @@ namespace Robocode.TankRoyale.BotApi
 
       private void OnHitBot(BotHitBotEvent evt)
       {
-        if (evt.Rammed)
+        if (evt.IsRammed)
         {
           distanceRemaining = 0;
         }

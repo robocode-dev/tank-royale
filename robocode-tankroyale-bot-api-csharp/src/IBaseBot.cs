@@ -42,7 +42,7 @@ namespace Robocode.TankRoyale.BotApi
     /// The formula for the max. possible turn rate at a given speed is:
     /// MaxTurnRate - 0.75 x abs(speed).
     /// Hence, the turn rate is at max. 10 degrees/turn when the speed is zero, and down to only 4
-    /// degrees per turn when the robot is at max speed (which is 8 units per turn).
+    /// degrees per turn when the bot is at max speed (which is 8 units per turn).
     /// </summary>
     /// <value>The maximum possible driving turn rate, which is max. 10 degrees per turn.</value>
     int MaxTurnRate => 10;
