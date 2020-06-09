@@ -69,7 +69,6 @@ public final class EventMapper {
   private static BotHitBotEvent map(final dev.robocode.tankroyale.schema.BotHitBotEvent source) {
     return new BotHitBotEvent(
         source.getTurnNumber(),
-        source.getBotId(),
         source.getVictimId(),
         source.getEnergy(),
         source.getX(),
@@ -78,9 +77,7 @@ public final class EventMapper {
   }
 
   private static BotHitWallEvent map(final dev.robocode.tankroyale.schema.BotHitWallEvent source) {
-    return new BotHitWallEvent(
-        source.getTurnNumber(),
-        source.getVictimId());
+    return new BotHitWallEvent(source.getTurnNumber());
   }
 
   private static BulletFiredEvent map(final dev.robocode.tankroyale.schema.BulletFiredEvent source) {

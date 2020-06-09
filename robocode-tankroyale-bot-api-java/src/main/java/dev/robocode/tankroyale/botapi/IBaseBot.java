@@ -46,7 +46,7 @@ public interface IBaseBot {
    *
    * <p>The formula for the max. possible turn rate at a given speed is: MaxTurnRate - 0.75 x
    * abs(speed). Hence, the turn rate is at max. 10 degrees/turn when the speed is zero, and down to
-   * only 4 degrees per turn when the robot is at max speed (which is 8 units per turn).
+   * only 4 degrees per turn when the bot is at max speed (which is 8 units per turn).
    */
   int MAX_TURN_RATE = 10;
 
