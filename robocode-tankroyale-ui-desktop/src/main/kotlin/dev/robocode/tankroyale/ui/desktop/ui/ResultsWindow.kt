@@ -68,20 +68,22 @@ class ResultsWindow(results: List<BotResults>) : JFrame(getWindowTitle()) {
     }
 
     private fun getColumns(): Array<String> {
-        return arrayOf(
-            STRINGS.get("results.rank"),
-            STRINGS.get("results.robot_name"),
-            STRINGS.get("results.total_score"),
-            STRINGS.get("results.survival_score"),
-            STRINGS.get("results.last_survivor_bonus"),
-            STRINGS.get("results.bullet_damage_score"),
-            STRINGS.get("results.bullet_kill_bonus"),
-            STRINGS.get("results.ram_damage"),
-            STRINGS.get("results.ram_kill_bonus"),
-            STRINGS.get("results.firsts"),
-            STRINGS.get("results.seconds"),
-            STRINGS.get("results.thirds")
-        )
+        STRINGS.apply {
+            return arrayOf(
+                get("results.rank"),
+                get("results.robot_name"),
+                get("results.total_score"),
+                get("results.survival_score"),
+                get("results.last_survivor_bonus"),
+                get("results.bullet_damage_score"),
+                get("results.bullet_kill_bonus"),
+                get("results.ram_damage"),
+                get("results.ram_kill_bonus"),
+                get("results.firsts"),
+                get("results.seconds"),
+                get("results.thirds")
+            )
+        }
     }
 }
 
