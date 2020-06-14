@@ -5,43 +5,30 @@ import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.events.BotHitBotEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 
-import java.awt.*;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
 
 /**
- * SpinBot - a sample robot.
+ * SpinBot - a sample bot.
  *
  * <p>Moves in a circle, firing hard when an enemy is detected.
  */
 public class SpinBot extends Bot {
 
   public static void main(String[] args) throws IOException {
-    BotInfo botInfo =
-        new BotInfo("SpinBot", "1.0", "fnl", "", "", "dk", Arrays.asList("melee"), "jvm", "java");
-    new SpinBot(botInfo).start();
+    new SpinBot().start();
   }
 
-  protected SpinBot(BotInfo botInfo) throws IOException {
-    super(botInfo);
+  protected SpinBot() throws IOException {
+    super(BotInfo.fromFile("bot.properties"));
   }
 
   /** SpinBot's run method - Move in a circle */
   @Override
   public void run() {
-    /*
-    setBodyColor("#0000FF"); // blue
-    setTurretColor("#0000FF"); // blue
-    setRadarColor("#000000"); // black
-    setScanColor("#FFFF00"); // yellow
-     */
-    setBodyColor("#000000");
-    setTurretColor("#000000");
-    setRadarColor("#000000");
-    setScanColor("#000000");
-    setBulletColor("#FF0000");
-    setTracksColor("#FFFF00");
+    setBodyColor("#00F"); // blue
+    setTurretColor("#00F"); // blue
+    setRadarColor("#000"); // black
+    setScanColor("#FF0"); // yellow
 
     // Repeat while bot is running
     while (isRunning()) {
@@ -61,8 +48,7 @@ public class SpinBot extends Bot {
   }
 
   /**
-   * onHitBot: If it's our fault, we'll stop turning and moving, so we need to turn again to keep
-   * spinning.
+   * onHitBot: If it's our fault, we'll stop turning and moving, so we need to turn again to keep spinning.
    */
   @Override
   public void onHitBot(BotHitBotEvent e) {
