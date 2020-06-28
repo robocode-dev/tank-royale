@@ -3,7 +3,7 @@ using Robocode.TankRoyale.BotApi;
 namespace Robocode.TankRoyale.Sample.Bots
 {
   /// <summary>
-  /// SpinBot - a sample robot.
+  /// SpinBot - a sample bot.
   ///
   /// Moves in a circle, firing hard when an enemy is detected.
   /// </summary>
@@ -19,6 +19,11 @@ namespace Robocode.TankRoyale.Sample.Bots
     // This method runs our bot program, where each command is executed one at a time
     public override void Run()
     {
+      SetBodyColor("#00F"); // blue
+      SetTurretColor("#00F"); // blue
+      SetRadarColor("#000"); // black
+      SetScanColor("#FF0"); // yellow
+
       // Repeat while bot is running
       while (IsRunning)
       {

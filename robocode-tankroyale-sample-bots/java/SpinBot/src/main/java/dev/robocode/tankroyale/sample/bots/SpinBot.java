@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.events.BotHitBotEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 
-import java.awt.*;
 import java.io.IOException;
 
 /**
