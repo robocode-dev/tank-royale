@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.botapi;
 
 import static java.lang.Math.abs;
 
-public class BotInternals {
+final class BotInternals {
   private final IBot bot;
 
   private final double ABS_DECELERATION = Math.abs(IBot.DECELERATION);
@@ -26,7 +26,7 @@ public class BotInternals {
   private final Object nextTurn = new Object();
   volatile boolean isRunning;
 
-  BotInternals(IBot bot, BaseBot.__Internals internals) {
+  BotInternals(IBot bot, BaseBotInternals internals) {
     this.bot = bot;
 
     internals.onDisconnected.subscribe(e -> stopThread());

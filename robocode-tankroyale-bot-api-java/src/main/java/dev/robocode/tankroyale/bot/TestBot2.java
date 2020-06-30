@@ -1,22 +1,26 @@
 package dev.robocode.tankroyale.bot;
 
 import dev.robocode.tankroyale.botapi.Bot;
+import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.events.*;
+
+import java.io.IOException;
 
 @SuppressWarnings("UnusedDeclaration")
 public class TestBot2 extends Bot {
 
-  public static void main(String[] args) {
-    new TestBot2().start();
+  public static void main(String[] args) throws IOException {
+    new SpinBot().start();
+  }
+
+  protected TestBot2() throws IOException {
+    super(BotInfo.fromFile("bot.properties"));
   }
 
   private Double targetX;
   private Double targetY;
   private double move = 200;
 
-  private TestBot2() {
-    super();
-  }
 
   @Override
   public void onConnected(ConnectedEvent event) {
