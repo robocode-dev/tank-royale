@@ -6,17 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.neovisionaries.ws.client.*;
-import dev.robocode.tankroyale.botapi.events.*;
-import dev.robocode.tankroyale.botapi.events.BotDeathEvent;
-import dev.robocode.tankroyale.botapi.events.BotHitBotEvent;
-import dev.robocode.tankroyale.botapi.events.BotHitWallEvent;
-import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
-import dev.robocode.tankroyale.botapi.events.BulletHitBotEvent;
-import dev.robocode.tankroyale.botapi.events.BulletHitBulletEvent;
-import dev.robocode.tankroyale.botapi.events.BulletHitWallEvent;
-import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
-import dev.robocode.tankroyale.botapi.events.WonRoundEvent;
+import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.factory.BotHandshakeFactory;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
@@ -26,13 +17,10 @@ import dev.robocode.tankroyale.schema.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
-final class BaseBotInternals {
+final class BaseBotInternals extends BotEventInternals {
   private static final String SERVER_URL_PROPERTY_KEY = "server.url";
 
   private static final String NOT_CONNECTED_TO_SERVER_MSG =
@@ -68,7 +56,6 @@ final class BaseBotInternals {
     gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
   }
 
-  private final IBaseBot baseBot;
   private final BotInfo botInfo;
 
   final BotIntent botIntent = new BotIntent();
@@ -87,28 +74,9 @@ final class BaseBotInternals {
   boolean isAdjustGunForBodyTurn;
   boolean isAdjustRadarForGunTurn;
 
-  // Events
-  final Event<ConnectedEvent> onConnected = new Event<>();
-  final Event<DisconnectedEvent> onDisconnected = new Event<>();
-  final Event<ConnectionErrorEvent> onConnectionError = new Event<>();
-  final Event<GameStartedEvent> onGameStarted = new Event<>();
-  final Event<GameEndedEvent> onGameEnded = new Event<>();
-  final Event<TickEvent> onTick = new Event<>();
-  final Event<SkippedTurnEvent> onSkippedTurn = new Event<>();
-  final Event<BotDeathEvent> onDeath = new Event<>();
-  final Event<BotDeathEvent> onBotDeath = new Event<>();
-  final Event<BotHitBotEvent> onHitBot = new Event<>();
-  final Event<BotHitWallEvent> onHitWall = new Event<>();
-  final Event<BulletFiredEvent> onBulletFired = new Event<>();
-  final Event<BulletHitBotEvent> onHitByBullet = new Event<>();
-  final Event<BulletHitBotEvent> onBulletHit = new Event<>();
-  final Event<BulletHitBulletEvent> onBulletHitBullet = new Event<>();
-  final Event<BulletHitWallEvent> onBulletHitWall = new Event<>();
-  final Event<ScannedBotEvent> onScannedBot = new Event<>();
-  final Event<WonRoundEvent> onWonRound = new Event<>();
-
   BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {
-    this.baseBot = baseBot;
+    super(baseBot);
+
     this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
     init(serverUrl == null ? getServerUrlFromSetting() : serverUrl);
   }
@@ -341,72 +309,5 @@ final class BaseBotInternals {
 
     ticksStartNanoTime = System.nanoTime();
     onTick.publish(currentTurn);
-  }
-
-  // FIXME:
-  // https://stackoverflow.com/questions/5579309/is-it-possible-to-use-the-instanceof-operator-in-a-switch-statement
-  private void dispatchEvents(TickEvent tickEvent) {
-    tickEvent
-        .getEvents()
-        .forEach(
-            event -> {
-              if (event instanceof BotDeathEvent) {
-                BotDeathEvent botDeathEvent = (BotDeathEvent) event;
-                if (botDeathEvent.getVictimId() == myId) {
-                  onDeath.publish((BotDeathEvent) event);
-                } else {
-                  onBotDeath.publish((BotDeathEvent) event);
-                }
-
-              } else if (event instanceof BotHitBotEvent) {
-                onHitBot.publish((BotHitBotEvent) event);
-
-              } else if (event instanceof BotHitWallEvent) {
-                onHitWall.publish((BotHitWallEvent) event);
-
-              } else if (event instanceof BulletFiredEvent) {
-                // Stop firing, when bullet has fired
-                botIntent.setFirepower(0d);
-                onBulletFired.publish((BulletFiredEvent) event);
-
-              } else if (event instanceof BulletHitBotEvent) {
-                BulletHitBotEvent bulletEvent = (BulletHitBotEvent) event;
-                if (bulletEvent.getVictimId() == myId) {
-                  onHitByBullet.publish(bulletEvent);
-                } else {
-                  onBulletHit.publish(bulletEvent);
-                }
-
-              } else if (event instanceof BulletHitBulletEvent) {
-                onBulletHitBullet.publish((BulletHitBulletEvent) event);
-
-              } else if (event instanceof BulletHitWallEvent) {
-                onBulletHitWall.publish((BulletHitWallEvent) event);
-
-              } else if (event instanceof ScannedBotEvent) {
-                onScannedBot.publish((ScannedBotEvent) event);
-
-              } else if (event instanceof SkippedTurnEvent) {
-                onSkippedTurn.publish((SkippedTurnEvent) event);
-
-              } else if (event instanceof WonRoundEvent) {
-                onWonRound.publish((WonRoundEvent) event);
-              }
-            });
-  }
-
-  // Event handler which events in the order they have been added to the handler
-  protected static class Event<T> {
-    private final List<Consumer<T>> subscribers = Collections.synchronizedList(new ArrayList<>());
-
-    final void subscribe(Consumer<T> subscriber) {
-      subscribers.add(subscriber);
-    }
-
-    final void publish(T event) {
-      for (Consumer<T> subscriber : subscribers) {
-        subscriber.accept(event);
-      }
-    }
   }
 }

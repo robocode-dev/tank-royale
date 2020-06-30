@@ -2,10 +2,11 @@ package dev.robocode.tankroyale.botapi;
 
 import static java.lang.Math.abs;
 
-final class BotInternals {
-  private final IBot bot;
+final class BotInternals extends BotEventInternals {
 
   private final double ABS_DECELERATION = Math.abs(IBot.DECELERATION);
+
+  private final IBot bot;
 
   double maxSpeed = IBot.MAX_SPEED;
   double maxTurnRate = IBot.MAX_TURN_RATE;
@@ -27,6 +28,8 @@ final class BotInternals {
   volatile boolean isRunning;
 
   BotInternals(IBot bot, BaseBotInternals internals) {
+    super(bot);
+
     this.bot = bot;
 
     internals.onDisconnected.subscribe(e -> stopThread());
