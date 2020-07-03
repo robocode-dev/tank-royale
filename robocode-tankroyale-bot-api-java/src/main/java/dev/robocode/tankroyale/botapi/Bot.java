@@ -270,5 +270,6 @@ public abstract class Bot extends BaseBot implements IBot {
   public final void fire(double firepower) {
     setFirepower(firepower);
     go();
+    setFirepower(0);
   }
 }
