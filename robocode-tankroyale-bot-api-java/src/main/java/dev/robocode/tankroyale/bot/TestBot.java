@@ -10,7 +10,7 @@ import java.io.IOException;
 public class TestBot extends BaseBot {
 
   public static void main(String[] args) throws IOException {
-    new SpinBot().start();
+    new TestBot().start();
   }
 
   protected TestBot() throws IOException {

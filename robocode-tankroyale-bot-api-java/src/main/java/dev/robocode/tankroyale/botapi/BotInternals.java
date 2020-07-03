@@ -1,12 +1,15 @@
 package dev.robocode.tankroyale.botapi;
 
+import dev.robocode.tankroyale.botapi.events.TickEvent;
+
 import static java.lang.Math.abs;
 
-final class BotInternals extends BotEventInternals {
+final class BotInternals {
 
   private final double ABS_DECELERATION = Math.abs(IBot.DECELERATION);
 
   private final IBot bot;
+  private final BotEvents botEvents;
 
   double maxSpeed = IBot.MAX_SPEED;
   double maxTurnRate = IBot.MAX_TURN_RATE;
@@ -21,27 +24,26 @@ final class BotInternals extends BotEventInternals {
   private boolean isCollidingWithBot;
   private boolean isOverDriving;
 
-  private int turnNumber;
+  private TickEvent currentTurn;
 
   private Thread thread;
   private final Object nextTurn = new Object();
   volatile boolean isRunning;
 
-  BotInternals(IBot bot, BaseBotInternals internals) {
-    super(bot);
-
+  BotInternals(IBot bot, BotEvents botEvents) {
     this.bot = bot;
+    this.botEvents = botEvents;
 
-    internals.onDisconnected.subscribe(e -> stopThread());
-    internals.onGameEnded.subscribe(e -> stopThread());
-    internals.onHitBot.subscribe(e -> onHitBot(e.isRammed()));
-    internals.onHitWall.subscribe(e -> onHitWall());
-    internals.onTick.subscribe(
+    botEvents.onDisconnected.subscribe(e -> stopThread());
+    botEvents.onGameEnded.subscribe(e -> stopThread());
+    botEvents.onHitBot.subscribe(e -> onHitBot(e.isRammed()));
+    botEvents.onHitWall.subscribe(e -> onHitWall());
+    botEvents.onTick.subscribe(
         e -> {
-          turnNumber = e.getTurnNumber();
+          currentTurn = e;
           onTick();
         });
-    internals.onBotDeath.subscribe(
+    botEvents.onBotDeath.subscribe(
         e -> {
           if (e.getVictimId() == bot.getMyId()) {
             stopThread();
@@ -75,7 +77,7 @@ final class BotInternals extends BotEventInternals {
     isCollidingWithBot = false;
 
     // If this is the first turn -> Call the run method on the Bot class
-    if (turnNumber == 1) {
+    if (currentTurn.getTurnNumber() == 1) {
       if (isRunning) {
         stopThread();
       }
@@ -300,8 +302,8 @@ final class BotInternals extends BotEventInternals {
       // Loop while bot is running and condition has not been met
       while (isRunning && !condition.test()) {
         try {
-          // Wait for next turn
           nextTurn.wait();
+          botEvents.dispatchEvents(currentTurn);
         } catch (InterruptedException e) {
           isRunning = false;
         }

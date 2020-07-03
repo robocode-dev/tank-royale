@@ -2,8 +2,6 @@ package dev.robocode.tankroyale.botapi;
 
 import java.net.URI;
 
-import static java.lang.Math.abs;
-
 /**
  * Abstract bot class provides convenient methods for movement, turning, and firing the gun. Most
  * bots should inherit from this class.
@@ -11,7 +9,7 @@ import static java.lang.Math.abs;
 @SuppressWarnings("unused")
 public abstract class Bot extends BaseBot implements IBot {
 
-  private final BotInternals __internals = new BotInternals(this, super.__internals);
+  private final BotInternals __internals = new BotInternals(this, super.__internals.botEvents);
 
   /**
    * Constructor for initializing a new instance of the BaseBot class, which should be used when

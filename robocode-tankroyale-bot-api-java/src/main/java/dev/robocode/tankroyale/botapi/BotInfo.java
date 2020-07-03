@@ -101,7 +101,7 @@ public final class BotInfo {
   /**
    * Reads the bot info from a file.<br>
    * <br>
-   * Example file:</br>
+   * Example file:<br>
    * <pre>
    * name=MyBot
    * version=1.0

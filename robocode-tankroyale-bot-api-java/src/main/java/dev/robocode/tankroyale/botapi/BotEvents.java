@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-abstract class BotEventInternals {
+class BotEvents {
 
   protected final IBaseBot baseBot;
 
@@ -31,7 +31,7 @@ abstract class BotEventInternals {
   final Event<ScannedBotEvent> onScannedBot = new Event<>();
   final Event<WonRoundEvent> onWonRound = new Event<>();
 
-  BotEventInternals(IBaseBot baseBot) {
+  BotEvents(IBaseBot baseBot) {
     this.baseBot = baseBot;
   }
 

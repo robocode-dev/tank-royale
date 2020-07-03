@@ -20,7 +20,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
-final class BaseBotInternals extends BotEventInternals {
+final class BaseBotInternals {
   private static final String SERVER_URL_PROPERTY_KEY = "server.url";
 
   private static final String NOT_CONNECTED_TO_SERVER_MSG =
@@ -56,7 +56,9 @@ final class BaseBotInternals extends BotEventInternals {
     gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
   }
 
+  private final IBaseBot baseBot;
   private final BotInfo botInfo;
+  final BotEvents botEvents;
 
   final BotIntent botIntent = new BotIntent();
 
@@ -74,10 +76,13 @@ final class BaseBotInternals extends BotEventInternals {
   boolean isAdjustGunForBodyTurn;
   boolean isAdjustRadarForGunTurn;
 
-  BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {
-    super(baseBot);
+  private final boolean doDispatchEvents;
 
+  BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {
+    this.baseBot = baseBot;
+    this.botEvents = new BotEvents(baseBot);
     this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
+    this.doDispatchEvents = !(baseBot instanceof IBot);
     init(serverUrl == null ? getServerUrlFromSetting() : serverUrl);
   }
 
@@ -90,24 +95,24 @@ final class BaseBotInternals extends BotEventInternals {
     socket.addListener(new WebSocketListener());
     botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
 
-    onConnected.subscribe(baseBot::onConnected);
-    onDisconnected.subscribe(baseBot::onDisconnected);
-    onConnectionError.subscribe(baseBot::onConnectionError);
-    onGameStarted.subscribe(baseBot::onGameStarted);
-    onGameEnded.subscribe(baseBot::onGameEnded);
-    onTick.subscribe(baseBot::onTick);
-    onSkippedTurn.subscribe(baseBot::onSkippedTurn);
-    onDeath.subscribe(baseBot::onDeath);
-    onBotDeath.subscribe(baseBot::onBotDeath);
-    onHitBot.subscribe(baseBot::onHitBot);
-    onHitWall.subscribe(baseBot::onHitWall);
-    onBulletFired.subscribe(baseBot::onBulletFired);
-    onHitByBullet.subscribe(baseBot::onHitByBullet);
-    onBulletHit.subscribe(baseBot::onBulletHit);
-    onBulletHitBullet.subscribe(baseBot::onBulletHitBullet);
-    onBulletHitWall.subscribe(baseBot::onBulletHitWall);
-    onScannedBot.subscribe(baseBot::onScannedBot);
-    onWonRound.subscribe(baseBot::onWonRound);
+    botEvents.onConnected.subscribe(baseBot::onConnected);
+    botEvents.onDisconnected.subscribe(baseBot::onDisconnected);
+    botEvents.onConnectionError.subscribe(baseBot::onConnectionError);
+    botEvents.onGameStarted.subscribe(baseBot::onGameStarted);
+    botEvents.onGameEnded.subscribe(baseBot::onGameEnded);
+    botEvents.onTick.subscribe(baseBot::onTick);
+    botEvents.onSkippedTurn.subscribe(baseBot::onSkippedTurn);
+    botEvents.onDeath.subscribe(baseBot::onDeath);
+    botEvents.onBotDeath.subscribe(baseBot::onBotDeath);
+    botEvents.onHitBot.subscribe(baseBot::onHitBot);
+    botEvents.onHitWall.subscribe(baseBot::onHitWall);
+    botEvents.onBulletFired.subscribe(baseBot::onBulletFired);
+    botEvents.onHitByBullet.subscribe(baseBot::onHitByBullet);
+    botEvents.onBulletHit.subscribe(baseBot::onBulletHit);
+    botEvents.onBulletHitBullet.subscribe(baseBot::onBulletHitBullet);
+    botEvents.onBulletHitWall.subscribe(baseBot::onBulletHitWall);
+    botEvents.onScannedBot.subscribe(baseBot::onScannedBot);
+    botEvents.onWonRound.subscribe(baseBot::onWonRound);
   }
 
   void connect() {
@@ -194,7 +199,7 @@ final class BaseBotInternals extends BotEventInternals {
 
     @Override
     public final void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
-      onConnected.publish(new ConnectedEvent(websocket.getURI()));
+      botEvents.onConnected.publish(new ConnectedEvent(websocket.getURI()));
     }
 
     @Override
@@ -204,14 +209,14 @@ final class BaseBotInternals extends BotEventInternals {
         WebSocketFrame clientCloseFrame,
         boolean closedByServer) {
 
-      onDisconnected.publish(new DisconnectedEvent(websocket.getURI(), closedByServer));
+      botEvents.onDisconnected.publish(new DisconnectedEvent(websocket.getURI(), closedByServer));
 
       clearCurrentGameState();
     }
 
     @Override
     public final void onError(WebSocket websocket, WebSocketException cause) {
-      onConnectionError.publish(new ConnectionErrorEvent(websocket.getURI(), cause));
+      botEvents.onConnectionError.publish(new ConnectionErrorEvent(websocket.getURI(), cause));
     }
 
     @Override
@@ -274,7 +279,8 @@ final class BaseBotInternals extends BotEventInternals {
       String msg = gson.toJson(ready);
       socket.sendText(msg);
 
-      onGameStarted.publish(new GameStartedEvent(gameStartedEventForBot.getMyId(), gameSetup));
+      botEvents.onGameStarted.publish(
+          new GameStartedEvent(gameStartedEventForBot.getMyId(), gameSetup));
     }
   }
 
@@ -290,24 +296,25 @@ final class BaseBotInternals extends BotEventInternals {
             gameEndedEventForBot.getNumberOfRounds(),
             ResultsMapper.map(gameEndedEventForBot.getResults()));
 
-    onGameEnded.publish(gameEndedEvent);
+    botEvents.onGameEnded.publish(gameEndedEvent);
   }
 
   private void handleSkippedTurnEvent(JsonObject jsonMsg) {
     dev.robocode.tankroyale.schema.SkippedTurnEvent skippedTurnEvent =
         gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
 
-    onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
+    botEvents.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
   }
 
   private void handleTickEvent(JsonObject jsonMsg) {
     TickEventForBot tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
     currentTurn = EventMapper.map(tickEventForBot);
 
-    // Dispatch all on the tick event before the tick event itself
-    dispatchEvents(currentTurn);
-
     ticksStartNanoTime = System.nanoTime();
-    onTick.publish(currentTurn);
+    botEvents.onTick.publish(currentTurn);
+
+    if (doDispatchEvents) {
+      botEvents.dispatchEvents(currentTurn);
+    }
   }
 }
