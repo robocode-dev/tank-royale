@@ -272,6 +272,7 @@ namespace Robocode.TankRoyale.BotApi
 
       Firepower = firepower;
       Go();
+      Firepower = 0;
     }
   }
 }
