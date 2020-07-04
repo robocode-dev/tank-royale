@@ -81,6 +81,9 @@ class BotEvents {
 
               } else if (event instanceof WonRoundEvent) {
                 onWonRound.publish((WonRoundEvent) event);
+
+              } else {
+                System.err.println("Unhandled event: " + event);
               }
             });
   }
