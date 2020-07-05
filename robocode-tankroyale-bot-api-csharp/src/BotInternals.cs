@@ -9,7 +9,8 @@ namespace Robocode.TankRoyale.BotApi
     {
       private double absDeceleration;
 
-      private IBot parent;
+      private readonly IBot bot;
+      private readonly BotEvents botEvents;
 
       internal double maxSpeed;
       internal double maxTurnRate;
@@ -24,32 +25,33 @@ namespace Robocode.TankRoyale.BotApi
       private bool isCollidingWithBot;
       private bool isOverDriving;
 
-      private int turnNumber;
+      private TickEvent currentTurn;
 
       internal Thread thread;
       private readonly Object nextTurn = new Object();
 
       private volatile bool isRunning;
 
-      public BotInternals(IBot parent)
+      public BotInternals(IBot bot, BotEvents botEvents)
       {
-        this.parent = parent;
+        this.bot = bot;
+        this.botEvents = botEvents;
 
-        this.absDeceleration = Math.Abs(parent.Deceleration);
+        this.absDeceleration = Math.Abs(bot.Deceleration);
 
-        this.maxSpeed = parent.MaxForwardSpeed;
-        this.maxTurnRate = parent.MaxTurnRate;
-        this.maxGunTurnRate = parent.MaxGunTurnRate;
-        this.maxRadarTurnRate = parent.MaxRadarTurnRate;
+        this.maxSpeed = bot.MaxForwardSpeed;
+        this.maxTurnRate = bot.MaxTurnRate;
+        this.maxGunTurnRate = bot.MaxGunTurnRate;
+        this.maxRadarTurnRate = bot.MaxRadarTurnRate;
 
-        var internals = ((BaseBot)parent).__baseBotInternals;
+        var internals = ((BaseBot)bot).__baseBotInternals;
 
-        internals.onDisconnectedManager.Add((OnDisconnected));
-        internals.onGameEndedManager.Add(OnGameEnded);
-        internals.onHitBotManager.Add(OnHitBot);
-        internals.onHitWallManager.Add(OnHitWall);
-        internals.onTickManager.Add(OnTick);
-        internals.onDeathManager.Add(OnDeath);
+        botEvents.onDisconnectedManager.Add((OnDisconnected));
+        botEvents.onGameEndedManager.Add(OnGameEnded);
+        botEvents.onHitBotManager.Add(OnHitBot);
+        botEvents.onHitWallManager.Add(OnHitWall);
+        botEvents.onTickManager.Add(OnTick);
+        botEvents.onDeathManager.Add(OnDeath);
       }
 
       internal bool IsRunning
@@ -59,7 +61,7 @@ namespace Robocode.TankRoyale.BotApi
 
       private void OnTick(TickEvent evt)
       {
-        turnNumber = evt.TurnNumber;
+        currentTurn = evt;
         ProcessTurn();
       }
 
@@ -89,7 +91,7 @@ namespace Robocode.TankRoyale.BotApi
 
       private void OnDeath(BotDeathEvent evt)
       {
-        if (evt.VictimId == parent.MyId)
+        if (evt.VictimId == bot.MyId)
         {
           StopThread();
         }
@@ -98,7 +100,7 @@ namespace Robocode.TankRoyale.BotApi
       private void ProcessTurn()
       {
         // No movement is possible, when the bot has become disabled
-        if (parent.IsDisabled)
+        if (bot.IsDisabled)
         {
           distanceRemaining = 0;
           turnRemaining = 0;
@@ -108,7 +110,7 @@ namespace Robocode.TankRoyale.BotApi
         isCollidingWithBot = false;
 
         // If this is the first turn -> Call the run method on the Bot class
-        if (turnNumber == 1)
+        if (currentTurn.TurnNumber == 1)
         {
           if (isRunning)
           {
@@ -120,7 +122,7 @@ namespace Robocode.TankRoyale.BotApi
         lock (nextTurn)
         {
           // Let's go ;-)
-          parent.Go();
+          bot.Go();
 
           // Unblock waiting methods waiting for the next turn
           Monitor.PulseAll(nextTurn);
@@ -129,7 +131,7 @@ namespace Robocode.TankRoyale.BotApi
 
       private void StartThread()
       {
-        thread = new Thread(new ThreadStart(parent.Run));
+        thread = new Thread(new ThreadStart(bot.Run));
         thread.Start();
         isRunning = true;
       }
@@ -162,24 +164,24 @@ namespace Robocode.TankRoyale.BotApi
 
       private void UpdateTurnRemaining()
       {
-        double absTurnRate = Math.Abs(parent.TurnRate);
+        double absTurnRate = Math.Abs(bot.TurnRate);
 
-        double turnRate = Math.Min(absTurnRate, parent.CalcMaxTurnRate(parent.Speed));
-        if (parent.TurnRemaining < 0)
+        double turnRate = Math.Min(absTurnRate, bot.CalcMaxTurnRate(bot.Speed));
+        if (bot.TurnRemaining < 0)
         {
           turnRate *= -1;
         }
-        if (Math.Abs(parent.TurnRemaining) < absTurnRate)
+        if (Math.Abs(bot.TurnRemaining) < absTurnRate)
         {
-          if (parent.IsAdjustGunForBodyTurn)
+          if (bot.IsAdjustGunForBodyTurn)
           {
-            gunTurnRemaining -= parent.TurnRemaining;
+            gunTurnRemaining -= bot.TurnRemaining;
           }
           turnRemaining = 0;
         }
         else
         {
-          if (parent.IsAdjustGunForBodyTurn)
+          if (bot.IsAdjustGunForBodyTurn)
           {
             gunTurnRemaining -= turnRate;
           }
@@ -187,21 +189,21 @@ namespace Robocode.TankRoyale.BotApi
         }
         if (turnRemaining > 0)
         {
-          parent.TurnRate = Math.Min(maxTurnRate, turnRemaining);
+          bot.TurnRate = Math.Min(maxTurnRate, turnRemaining);
         }
         else
         {
-          parent.TurnRate = Math.Max(-maxTurnRate, turnRemaining);
+          bot.TurnRate = Math.Max(-maxTurnRate, turnRemaining);
         }
       }
 
       private void UpdateGunTurnRemaining()
       {
-        double absGunTurnRate = Math.Abs(parent.GunTurnRate);
+        double absGunTurnRate = Math.Abs(bot.GunTurnRate);
 
         if (Math.Abs(gunTurnRemaining) < absGunTurnRate)
         {
-          if (parent.IsAdjustRadarForGunTurn)
+          if (bot.IsAdjustRadarForGunTurn)
           {
             radarTurnRemaining -= gunTurnRemaining;
           }
@@ -209,41 +211,41 @@ namespace Robocode.TankRoyale.BotApi
         }
         else
         {
-          if (parent.IsAdjustRadarForGunTurn)
+          if (bot.IsAdjustRadarForGunTurn)
           {
-            radarTurnRemaining -= parent.GunTurnRate;
+            radarTurnRemaining -= bot.GunTurnRate;
           }
-          gunTurnRemaining -= parent.GunTurnRate;
+          gunTurnRemaining -= bot.GunTurnRate;
         }
         if (gunTurnRemaining > 0)
         {
-          parent.GunTurnRate = Math.Min(maxGunTurnRate, gunTurnRemaining);
+          bot.GunTurnRate = Math.Min(maxGunTurnRate, gunTurnRemaining);
         }
         else
         {
-          parent.GunTurnRate = Math.Max(-maxGunTurnRate, gunTurnRemaining);
+          bot.GunTurnRate = Math.Max(-maxGunTurnRate, gunTurnRemaining);
         }
       }
 
       private void UpdateRadarTurnRemaining()
       {
-        double absRadarTurnRate = Math.Abs(parent.RadarTurnRate);
+        double absRadarTurnRate = Math.Abs(bot.RadarTurnRate);
 
-        if (Math.Abs(parent.RadarTurnRemaining) < absRadarTurnRate)
+        if (Math.Abs(bot.RadarTurnRemaining) < absRadarTurnRate)
         {
           radarTurnRemaining = 0;
         }
         else
         {
-          radarTurnRemaining -= parent.RadarTurnRate;
+          radarTurnRemaining -= bot.RadarTurnRate;
         }
         if (radarTurnRemaining > 0)
         {
-          parent.RadarTurnRate = Math.Min(maxRadarTurnRate, radarTurnRemaining);
+          bot.RadarTurnRate = Math.Min(maxRadarTurnRate, radarTurnRemaining);
         }
         else
         {
-          parent.RadarTurnRate = Math.Max(-maxRadarTurnRate, radarTurnRemaining);
+          bot.RadarTurnRate = Math.Max(-maxRadarTurnRate, radarTurnRemaining);
         }
       }
 
@@ -257,8 +259,8 @@ namespace Robocode.TankRoyale.BotApi
           distance = 0;
         }
 
-        var speed = GetNewSpeed(parent.Speed, distance);
-        parent.TargetSpeed = speed;
+        var speed = GetNewSpeed(bot.Speed, distance);
+        bot.TargetSpeed = speed;
 
         // If we are over-driving our distance and we are now at velocity=0 then we stopped
         if (IsNearZero(speed) && isOverDriving)
@@ -309,9 +311,9 @@ namespace Robocode.TankRoyale.BotApi
 
         if (speed >= 0)
         {
-          return Math.Max(speed - absDeceleration, Math.Min(targetSpeed, speed + parent.Acceleration));
+          return Math.Max(speed - absDeceleration, Math.Min(targetSpeed, speed + bot.Acceleration));
         } // else
-        return Math.Max(speed - parent.Acceleration, Math.Min(targetSpeed, speed + GetMaxDeceleration(-speed)));
+        return Math.Max(speed - bot.Acceleration, Math.Min(targetSpeed, speed + GetMaxDeceleration(-speed)));
       }
 
       private double GetMaxSpeed(double distance)
@@ -324,7 +326,7 @@ namespace Robocode.TankRoyale.BotApi
 
         if (decelTime == Double.PositiveInfinity)
         {
-          return parent.MaxSpeed;
+          return bot.MaxSpeed;
         }
 
         var decelDist =
@@ -341,7 +343,7 @@ namespace Robocode.TankRoyale.BotApi
         var decelTime = speed / absDeceleration;
         var accelTime = (1 - decelTime);
 
-        return Math.Min(1, decelTime) * absDeceleration + Math.Max(0, accelTime) * parent.Acceleration;
+        return Math.Min(1, decelTime) * absDeceleration + Math.Max(0, accelTime) * bot.Acceleration;
       }
 
       private double GetDistanceTraveledUntilStop(double speed)
@@ -388,6 +390,7 @@ namespace Robocode.TankRoyale.BotApi
             {
               // Wait for next turn
               Monitor.Wait(nextTurn);
+              botEvents.DispatchEvents(currentTurn);
             }
             catch (ThreadInterruptedException)
             {

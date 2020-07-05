@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <RootNamespace>Robocode.TankRoyale.BotApi</RootNamespace>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>8.0</LangVersion>
 

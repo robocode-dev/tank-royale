@@ -7,7 +7,7 @@ using Robocode.TankRoyale.Schema;
 
 public class Test
 {
-  public static void Main2(string[] args)
+  public static void Main3(string[] args)
   {
     var socket = new WebSocketClient(new Uri("ws://localhost"));
 

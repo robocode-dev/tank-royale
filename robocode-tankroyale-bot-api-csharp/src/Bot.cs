@@ -32,19 +32,19 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     public Bot() : base()
     {
-      __botInternals = new BotInternals(this);
+      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
     }
 
     /// <inheritdoc/>
     public Bot(BotInfo botInfo) : base(botInfo)
     {
-      __botInternals = new BotInternals(this);
+      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
     }
 
     /// <inheritdoc/>
     public Bot(BotInfo botInfo, Uri serverUrl) : base(botInfo, serverUrl)
     {
-      __botInternals = new BotInternals(this);
+      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
     }
 
     /// <inheritdoc/>
@@ -268,8 +268,6 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void Fire(double firepower)
     {
-      Console.WriteLine("Fire");
-
       Firepower = firepower;
       Go();
       Firepower = 0;
