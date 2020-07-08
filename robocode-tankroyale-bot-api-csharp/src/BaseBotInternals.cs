@@ -74,7 +74,12 @@ namespace Robocode.TankRoyale.BotApi
         }
         catch (Exception ex)
         {
-          throw new BotException("Could not connect to web socket", ex);
+          throw new BotException("Could not connect to web socket: "
+              + socket.ServerUri
+              + ". Setup "
+              + EnvVars.SERVER_URL
+              + " to point to a server that is up and running.",
+            ex);
         }
       }
 

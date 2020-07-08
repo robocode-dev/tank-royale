@@ -5,13 +5,12 @@ public class TestBot2 : Bot
 {
   static void Main()
   {
-    var botInfo = BotInfo.FromJsonFile("bot-settings.json");
-    new TestBot2(botInfo).Start();
+    new TestBot2().Start();
   }
 
   private double move = 200;
 
-  private TestBot2(BotInfo botInfo) : base(botInfo) { }
+  private TestBot2() : base(BotInfo.FromJsonFile("bot-settings.json")) { }
 
   public override void OnConnected(ConnectedEvent evt)
   {
@@ -37,13 +36,6 @@ public class TestBot2 : Bot
 
   public override void Run()
   {
-    SetBodyColor("#FF0000");
-    SetTurretColor("#00FF00");
-    SetRadarColor("#FFFFFF");
-    SetScanColor("#00FFFF");
-    SetBulletColor("#FF00FF");
-    SetTracksColor("#FFFF00");
-
     while (IsRunning)
     {
       Forward(100);
@@ -55,8 +47,6 @@ public class TestBot2 : Bot
 
   public override void OnScannedBot(ScannedBotEvent evt)
   {
-    Console.WriteLine("OnScannedBot");
-
     Fire(1);
   }
 
