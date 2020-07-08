@@ -17,10 +17,7 @@ public class TestBot2 extends Bot {
     super(BotInfo.fromFile("bot.properties"));
   }
 
-  private Double targetX;
-  private Double targetY;
   private double move = 200;
-
 
   @Override
   public void onConnected(ConnectedEvent event) {
@@ -34,8 +31,6 @@ public class TestBot2 extends Bot {
 
   @Override
   public void onGameStarted(GameStartedEvent event) {
-    System.out.println("onGameStarted: " + event);
-
     setMaxGunTurnRate(4);
     setMaxRadarTurnRate(4);
     setMaxSpeed(4);
