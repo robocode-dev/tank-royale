@@ -11,6 +11,8 @@ import java.io.IOException;
  * MyFirstBot - a sample bot.
  *
  * <p>Probably the first bot you will learn about.
+ *
+ * <p>Moves in a seesaw motion, and spins the gun around at each end.
  */
 public class MyFirstBot extends Bot {
 
@@ -22,7 +24,7 @@ public class MyFirstBot extends Bot {
     super(BotInfo.fromFile("bot.properties"));
   }
 
-  // This method runs our bot program, where each command is executed one at a time
+  /** This method runs our bot program, where each command is executed one at a time in a loop. */
   @Override
   public void run() {
     // Repeat while bot is running
@@ -34,19 +36,22 @@ public class MyFirstBot extends Bot {
     }
   }
 
-  // This method is called when our bot has scanned another bot
+  /** Our bot scanned another bot. Fire when we see another bot! */
   @Override
   public void onScannedBot(ScannedBotEvent e) {
-    setFirepower(1); // Fire the cannon!
+    fire(1);
   }
 
-  // This method is called when our bot is hit by a bullet
+  /**
+   * Our bot has been hit by a bullet. Turn perpendicular to the bullet so our seesaw might avoid a
+   * future shot.
+   */
   @Override
   public void onHitByBullet(BulletHitBotEvent e) {
     // Calculate the bearing to the direction of the bullet
     double bearing = e.getBullet().getDirection() - getDirection();
 
     // Turn 90 degrees to the bullet direction based on the bearing
-    setTurnLeft(90 - bearing);
+    turnLeft(90 - bearing);
   }
 }

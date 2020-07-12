@@ -6,6 +6,8 @@ namespace Robocode.TankRoyale.Sample.Bots
   /// MyFirstBot - a sample bot.
   ///
   /// Probably the first bot you will learn about.
+  ///
+  /// Moves in a seesaw motion, and spins the gun around at each end.
   /// </summary>
   public class MyFirstBot : Bot
   {
@@ -16,7 +18,7 @@ namespace Robocode.TankRoyale.Sample.Bots
 
     MyFirstBot() : base(BotInfo.FromJsonFile("bot-settings.json")) { }
 
-    // This method runs our bot program, where each command is executed one at a time
+    /// This method runs our bot program, where each command is executed one at a time in a loop.
     public override void Run()
     {
       // Repeat while bot is running
@@ -29,20 +31,20 @@ namespace Robocode.TankRoyale.Sample.Bots
       }
     }
 
-    // This method is called when our bot has scanned another bot
+    /// Our bot scanned another bot. Fire when we see another bot!
     public override void OnScannedBot(ScannedBotEvent evt)
     {
-      Firepower = 1; // Fire the cannon!
+      Fire(1);
     }
 
-    // This method is called when our bot is hit by a bullet
+    /// Our bot has been hit by a bullet. Turn perpendicular to the bullet so our seesaw might avoid a future shot.
     public override void OnHitByBullet(BulletHitBotEvent evt)
     {
       // Calculate the bearing to the direction of the bullet
       double bearing = evt.Bullet.Direction - Direction;
 
       // Turn 90 degrees to the bullet direction based on the bearing
-      SetTurnLeft(90 - bearing);
+      TurnLeft(90 - bearing);
     }
   }
 }
