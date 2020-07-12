@@ -40,8 +40,8 @@ namespace Robocode.TankRoyale.BotApi
       private long? ticksStart = DateTime.Now.Ticks;
 
       // Adjustment of turn rates
-      internal bool isAdjustGunForBodyTurn;
-      internal bool isAdjustRadarForGunTurn;
+      internal bool doAdjustGunForBodyTurn;
+      internal bool doAdjustRadarForGunTurn;
 
       private readonly bool doDispatchEvents;
 

@@ -44,7 +44,7 @@ namespace Robocode.TankRoyale.BotApi
         this.maxGunTurnRate = bot.MaxGunTurnRate;
         this.maxRadarTurnRate = bot.MaxRadarTurnRate;
 
-        var internals = ((BaseBot)bot).__baseBotInternals;
+        var internals = ((BaseBot)bot).__internals;
 
         botEvents.onDisconnectedManager.Add((OnDisconnected));
         botEvents.onGameEndedManager.Add(OnGameEnded);

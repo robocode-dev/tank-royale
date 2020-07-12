@@ -32,19 +32,19 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     public Bot() : base()
     {
-      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
+      __botInternals = new BotInternals(this, base.__internals.botEvents);
     }
 
     /// <inheritdoc/>
     public Bot(BotInfo botInfo) : base(botInfo)
     {
-      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
+      __botInternals = new BotInternals(this, base.__internals.botEvents);
     }
 
     /// <inheritdoc/>
     public Bot(BotInfo botInfo, Uri serverUrl) : base(botInfo, serverUrl)
     {
-      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
+      __botInternals = new BotInternals(this, base.__internals.botEvents);
     }
 
     /// <inheritdoc/>
