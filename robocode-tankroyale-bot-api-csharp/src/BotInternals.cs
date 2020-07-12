@@ -173,7 +173,7 @@ namespace Robocode.TankRoyale.BotApi
         }
         if (Math.Abs(bot.TurnRemaining) < absTurnRate)
         {
-          if (bot.IsAdjustGunForBodyTurn)
+          if (bot.DoAdjustGunForBodyTurn)
           {
             gunTurnRemaining -= bot.TurnRemaining;
           }
@@ -181,7 +181,7 @@ namespace Robocode.TankRoyale.BotApi
         }
         else
         {
-          if (bot.IsAdjustGunForBodyTurn)
+          if (bot.DoAdjustGunForBodyTurn)
           {
             gunTurnRemaining -= turnRate;
           }
@@ -201,17 +201,17 @@ namespace Robocode.TankRoyale.BotApi
       {
         double absGunTurnRate = Math.Abs(bot.GunTurnRate);
 
-        if (Math.Abs(gunTurnRemaining) < absGunTurnRate)
+        if (Math.Abs(bot.GunTurnRemaining) < absGunTurnRate)
         {
-          if (bot.IsAdjustRadarForGunTurn)
+          if (bot.DoAdjustRadarForGunTurn)
           {
-            radarTurnRemaining -= gunTurnRemaining;
+            radarTurnRemaining -= bot.GunTurnRemaining;
           }
           gunTurnRemaining = 0;
         }
         else
         {
-          if (bot.IsAdjustRadarForGunTurn)
+          if (bot.DoAdjustRadarForGunTurn)
           {
             radarTurnRemaining -= bot.GunTurnRate;
           }

@@ -28,6 +28,8 @@ public class TestBot2 : Bot
     SetMaxRadarTurnRate(4);
     SetMaxSpeed(4);
 
+    DoAdjustRadarForGunTurn = true;
+
     SetTurnRadarLeft(Double.PositiveInfinity);
 
     SetForward(move);

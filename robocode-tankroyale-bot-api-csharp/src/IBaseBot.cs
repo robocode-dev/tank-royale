@@ -464,8 +464,8 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <value><em>true</em> if the gun is set to adjust for the bot's turn; <em>false</em>
     /// otherwise.</value>
-    /// <seealso cref="IsAdjustRadarForGunTurn"/>
-    bool IsAdjustGunForBodyTurn { get; set; }
+    /// <seealso cref="DoAdjustRadarForGunTurn"/>
+    bool DoAdjustGunForBodyTurn { get; set; }
 
     /// <summary>
     /// Sets the radar to adjust for the gun's turn when setting the radar turn rate. So the radar
@@ -484,8 +484,8 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <value><em>true</em> if the radar is set to adjust for the bot's turn; <em>false</em>
     /// otherwise.</value>
-    /// <seealso cref="IsAdjustGunForBodyTurn"/>
-    bool IsAdjustRadarForGunTurn { get; set; }
+    /// <seealso cref="DoAdjustGunForBodyTurn"/>
+    bool DoAdjustRadarForGunTurn { get; set; }
 
     /// <summary>
     /// Returns the RGB color code of the body. The color code is an integer in hexadecimal format

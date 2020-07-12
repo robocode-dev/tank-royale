@@ -245,7 +245,7 @@ namespace Robocode.TankRoyale.BotApi
         {
           throw new ArgumentException("GunTurnRate cannot be NaN");
         }
-        if (IsAdjustGunForBodyTurn)
+        if (DoAdjustGunForBodyTurn)
         {
           value -= value;
         }
@@ -267,7 +267,7 @@ namespace Robocode.TankRoyale.BotApi
         {
           throw new ArgumentException("RadarTurnRate cannot be NaN");
         }
-        if (IsAdjustRadarForGunTurn)
+        if (DoAdjustRadarForGunTurn)
         {
           value -= value;
         }
@@ -328,17 +328,17 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public bool IsAdjustGunForBodyTurn
+    public bool DoAdjustGunForBodyTurn
     {
-      set => __baseBotInternals.isAdjustGunForBodyTurn = value;
-      get => __baseBotInternals.isAdjustGunForBodyTurn;
+      set => __baseBotInternals.doAdjustGunForBodyTurn = value;
+      get => __baseBotInternals.doAdjustGunForBodyTurn;
     }
 
     /// <inheritdoc/>
-    public bool IsAdjustRadarForGunTurn
+    public bool DoAdjustRadarForGunTurn
     {
-      set => __baseBotInternals.isAdjustRadarForGunTurn = value;
-      get => __baseBotInternals.isAdjustRadarForGunTurn;
+      set => __baseBotInternals.doAdjustRadarForGunTurn = value;
+      get => __baseBotInternals.doAdjustRadarForGunTurn;
     }
 
     /// <inheritdoc/>
