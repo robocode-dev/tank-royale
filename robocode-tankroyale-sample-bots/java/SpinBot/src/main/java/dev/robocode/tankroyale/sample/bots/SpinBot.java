@@ -14,10 +14,12 @@ import java.io.IOException;
  */
 public class SpinBot extends Bot {
 
+  /** Main method starts our bot */
   public static void main(String[] args) throws IOException {
     new SpinBot().start();
   }
 
+  /** Constructor, which loads the bot settings file */
   protected SpinBot() throws IOException {
     super(BotInfo.fromFile("bot.properties"));
   }
@@ -32,23 +34,26 @@ public class SpinBot extends Bot {
 
     // Repeat while bot is running
     while (isRunning()) {
-      // Tell the game that when we take move, we'll also want to turn right... a lot.
+      // Tell the game that when we take move,
+      // we'll also want to turn right... a lot.
       setTurnRight(10000);
       // Limit our speed to 5
       setMaxSpeed(5);
       // Start moving (and turning)
       forward(10000);
+      // Repeat
     }
   }
 
-  /** onScannedBot: Fire hard when scanning another bot! */
+  /** Fire hard when scanning another bot! */
   @Override
   public void onScannedBot(ScannedBotEvent e) {
     fire(3); // Fire the cannon!
   }
 
   /**
-   * onHitBot: If it's our fault, we'll stop turning and moving, so we need to turn again to keep spinning.
+   * We hit another bot. If we rammed the bot, we'll stop turning and moving, so we need to turn
+   * again to keep spinning.
    */
   @Override
   public void onHitBot(BotHitBotEvent e) {

@@ -11,11 +11,13 @@ namespace Robocode.TankRoyale.Sample.Bots
   /// </summary>
   public class MyFirstBot : Bot
   {
+    /// Main method starts our bot
     static void Main(string[] args)
     {
       new MyFirstBot().Start();
     }
 
+    /// Constructor, which loads the bot settings file
     MyFirstBot() : base(BotInfo.FromJsonFile("bot-settings.json")) { }
 
     /// This method runs our bot program, where each command is executed one at a time in a loop.

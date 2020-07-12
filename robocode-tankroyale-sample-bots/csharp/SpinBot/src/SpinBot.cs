@@ -9,14 +9,16 @@ namespace Robocode.TankRoyale.Sample.Bots
   /// </summary>
   public class SpinBot : Bot
   {
+    /// Main method starts our bot
     static void Main(string[] args)
     {
       new SpinBot().Start();
     }
 
+    /// Constructor, which loads the bot settings file
     SpinBot() : base(BotInfo.FromJsonFile("bot-settings.json")) { }
 
-    // This method runs our bot program, where each command is executed one at a time
+    /// SpinBot's run method - Move in a circle
     public override void Run()
     {
       SetBodyColor("#00F"); // blue
@@ -27,22 +29,25 @@ namespace Robocode.TankRoyale.Sample.Bots
       // Repeat while bot is running
       while (IsRunning)
       {
-        // Tell the game that when we take move, we'll also want to turn right... a lot.
+        // Tell the game that when we take move,
+        // we'll also want to turn right... a lot.
         SetTurnRight(10000);
         // Limit our speed to 5
         SetMaxSpeed(5);
         // Start moving (and turning)
         Forward(10000);
+        // Repeat
       }
     }
 
-    // OnScannedBot: Fire hard when scanning another bot!
+    /// Fire hard when scanning another bot!
     public override void OnScannedBot(ScannedBotEvent evt)
     {
       Firepower = 3; // Fire the cannon!
     }
 
-    // OnHitBot: If it's our fault, we'll stop turning and moving, so we need to turn again to keep spinning.
+    /// We hit another bot. If we rammed the bot, we'll stop turning and moving, so we need to turn
+    /// again to keep spinning.
     public override void OnHitBot(BotHitBotEvent e)
     {
       double direction = CalcDirection(e.X, e.Y);
