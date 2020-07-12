@@ -35,6 +35,8 @@ public class TestBot2 extends Bot {
     setMaxRadarTurnRate(4);
     setMaxSpeed(4);
 
+    setAdjustRadarForGunTurn(true);
+
     setTurnRadarLeft(Double.POSITIVE_INFINITY);
 
     setForward(move);

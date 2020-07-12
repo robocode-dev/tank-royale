@@ -333,25 +333,25 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final void setAdjustGunForBodyTurn(boolean adjust) {
-    __internals.isAdjustGunForBodyTurn = adjust;
+    __internals.doAdjustGunForBodyTurn = adjust;
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean isAdjustGunForBodyTurn() {
-    return __internals.isAdjustGunForBodyTurn;
+    return __internals.doAdjustGunForBodyTurn;
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setAdjustRadarForGunTurn(boolean adjust) {
-    __internals.isAdjustRadarForGunTurn = adjust;
+    __internals.doAdjustRadarForGunTurn = adjust;
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean isAdjustRadarForGunTurn() {
-    return __internals.isAdjustRadarForGunTurn;
+    return __internals.doAdjustRadarForGunTurn;
   }
 
   /** {@inheritDoc} */

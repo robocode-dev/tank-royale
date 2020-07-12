@@ -73,8 +73,8 @@ final class BaseBotInternals {
   private Long ticksStartNanoTime;
 
   // Adjustment of turn rates
-  boolean isAdjustGunForBodyTurn;
-  boolean isAdjustRadarForGunTurn;
+  boolean doAdjustGunForBodyTurn;
+  boolean doAdjustRadarForGunTurn;
 
   private final boolean doDispatchEvents;
 
