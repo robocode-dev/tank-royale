@@ -1,9 +1,11 @@
-﻿namespace Robocode.TankRoyale.BotApi {
+﻿namespace Robocode.TankRoyale.BotApi
+{
   /// <summary>
   /// Interface for a bot that extends the core API with convenient methods for movement, turning,
   /// and firing the gun.
   /// </summary>
-  public interface IBot : IBaseBot {
+  public interface IBot : IBaseBot
+  {
     /// <summary>
     /// The Run() method is used for running a program for the bot like:
     ///
@@ -29,7 +31,7 @@
     /// correctly, the bot may behave strangely in new rounds.
     /// </summary>
     /// <seealso cref="IsRunning"/>
-    void Run () { }
+    void Run() { }
 
     /// <summary>
     /// Checks if this bot is running.
@@ -67,7 +69,7 @@
     /// <seealso cref="Back"/>
     /// <seealso cref="DistanceRemaining"/>
     /// <seealso cref="IBaseBot.TargetSpeed"/>
-    void SetForward (double distance);
+    void SetForward(double distance);
 
     /// <summary>
     /// Moves the bot forward until it has traveled a specific distance from its current position,
@@ -94,7 +96,7 @@
     /// <seealso cref="Back"/>
     /// <seealso cref="DistanceRemaining"/>
     /// <seealso cref="IBaseBot.TargetSpeed"/>
-    void Forward (double distance);
+    void Forward(double distance);
 
     /// <summary>
     /// Set the bot to move backward until it has traveled a specific distance from its current
@@ -125,7 +127,7 @@
     /// <seealso cref="Forward"/>
     /// <seealso cref="DistanceRemaining"/>
     /// <seealso cref="IBaseBot.TargetSpeed"/>
-    void SetBack (double distance);
+    void SetBack(double distance);
 
     /// <summary>
     /// Moves the bot backward until it has traveled a specific distance from its current position, or
@@ -152,7 +154,7 @@
     /// <seealso cref="Forward"/>
     /// <seealso cref="DistanceRemaining"/>
     /// <seealso cref="IBaseBot.TargetSpeed"/>
-    void Back (double distance);
+    void Back(double distance);
 
     /// <summary>
     /// The distance remaining till the bot has finished moving after having called
@@ -190,7 +192,7 @@
     /// <param name="maxSpeed">Is the new maximum speed.</param>
     /// <seealso cref="SetForward"/>
     /// <seealso cref="SetBack"/>
-    void SetMaxSpeed (double maxSpeed);
+    void SetMaxSpeed(double maxSpeed);
 
     /// <summary>
     /// Set the bot to turn to the left (following the increasing degrees of the <a
@@ -216,7 +218,7 @@
     /// <seealso cref="TurnLeft"/>
     /// <seealso cref="TurnRemaining"/>
     /// <seealso cref="IBaseBot.TurnRate"/>
-    void SetTurnLeft (double degrees);
+    void SetTurnLeft(double degrees);
 
     /// <summary>
     /// Turn the bot to the left (following the increasing degrees of the <a
@@ -240,7 +242,7 @@
     /// <seealso cref="TurnRight"/>
     /// <seealso cref="TurnRemaining"/>
     /// <seealso cref="IBaseBot.TurnRate"/>
-    void TurnLeft (double degrees);
+    void TurnLeft(double degrees);
 
     /// <summary>
     /// Set the bot to turn to the right (following the decreasing degrees of the <a
@@ -266,7 +268,7 @@
     /// <seealso cref="TurnLeft"/>
     /// <seealso cref="TurnRemaining"/>
     /// <seealso cref="IBaseBot.TurnRate"/>
-    void SetTurnRight (double degrees);
+    void SetTurnRight(double degrees);
 
     /// <summary>
     /// Turn the bot to the right (following the increasing degrees of the <a
@@ -290,7 +292,7 @@
     /// <seealso cref="TurnLeft"/>
     /// <seealso cref="TurnRemaining"/>
     /// <seealso cref="IBaseBot.TurnRate"/>
-    void TurnRight (double degrees);
+    void TurnRight(double degrees);
 
     /// <summary>
     /// The remaining turn in degrees till the bot has finished turning after having called
@@ -334,7 +336,7 @@
     /// <seealso cref="SetTurnRight"/>
     /// <seealso cref="TurnLeft"/>
     /// <seealso cref="TurnRight"/>
-    void SetMaxTurnRate (double maxTurnRate);
+    void SetMaxTurnRate(double maxTurnRate);
 
     /// <summary>
     /// Set the gun to turn to the left (following the increasing degrees of the <a
@@ -360,7 +362,7 @@
     /// <seealso cref="SetTurnRight"/>
     /// <seealso cref="GunTurnRemaining"/>
     /// <seealso cref="IBaseBot.GunTurnRate"/>
-    void SetTurnGunLeft (double degrees);
+    void SetTurnGunLeft(double degrees);
 
     /// <summary>
     /// Turn the gun to the left (following the increasing degrees of the <a
@@ -384,7 +386,7 @@
     /// <seealso cref="TurnGunRight"/>
     /// <seealso cref="GunTurnRemaining"/>
     /// <seealso cref="IBaseBot.GunTurnRate"/>
-    void TurnGunLeft (double degrees);
+    void TurnGunLeft(double degrees);
 
     /// <summary>
     /// Set the gun to turn to the right (following the decreasing degrees of the <a
@@ -410,7 +412,7 @@
     /// <seealso cref="TurnGunLeft"/>
     /// <seealso cref="GunTurnRemaining"/>
     /// <seealso cref="IBaseBot.GunTurnRate"/>
-    void SetTurnGunRight (double degrees);
+    void SetTurnGunRight(double degrees);
 
     /// <summary>
     /// Turn the gun to the right (following the decreasing degrees of the <a
@@ -434,7 +436,7 @@
     /// <seealso cref="TurnGunLeft"/>
     /// <seealso cref="GunTurnRemaining"/>
     /// <seealso cref="IBaseBot.GunTurnRate"/>W
-    void TurnGunRight (double degrees);
+    void TurnGunRight(double degrees);
 
     /// <summary>
     /// The remaining turn in degrees till the gun has finished turning after having called
@@ -477,7 +479,7 @@
     /// <seealso cref="SetTurnGunRight"/>
     /// <seealso cref="TurnGunLeft"/>
     /// <seealso cref="TurnGunRight"/>
-    void SetMaxGunTurnRate (double maxGunTurnRate);
+    void SetMaxGunTurnRate(double maxGunTurnRate);
 
     /// <summary>
     /// Set the radar to turn to the left (following the increasing degrees of the <a
@@ -503,7 +505,7 @@
     /// <seealso cref="TurnRadarLeft"/>
     /// <seealso cref="RadarTurnRemaining"/>
     /// <seealso cref="IBaseBot.RadarTurnRate"/>
-    void SetTurnRadarLeft (double degrees);
+    void SetTurnRadarLeft(double degrees);
 
     /// <summary>
     /// Turn the radar to the left (following the increasing degrees of the <a
@@ -527,7 +529,7 @@
     /// <seealso cref="TurnRadarLeft"/>
     /// <seealso cref="RadarTurnRemaining"/>
     /// <seealso cref="IBaseBot.RadarTurnRate"/>
-    void TurnRadarLeft (double degrees);
+    void TurnRadarLeft(double degrees);
 
     /// <summary>
     /// Turn the radar to the right (following the decreasing degrees of the <a
@@ -554,7 +556,7 @@
     /// <seealso cref="TurnRadarRight"/>
     /// <seealso cref="RadarTurnRemaining"/>
     /// <seealso cref="IBaseBot.RadarTurnRate"/>
-    void SetTurnRadarRight (double degrees);
+    void SetTurnRadarRight(double degrees);
 
     /// <summary>
     /// Turn the radar to the right (following the increasing degrees of the <a
@@ -578,7 +580,7 @@
     /// <seealso cref="TurnRadarRight"/>
     /// <seealso cref="RadarTurnRemaining"/>
     /// <seealso cref="IBaseBot.RadarTurnRate"/>
-    void TurnRadarRight (double degrees);
+    void TurnRadarRight(double degrees);
 
     /// <summary>
     /// The remaining turn in degrees till the radar has finished turning after having called
@@ -620,7 +622,7 @@
     /// <seealso cref="SetTurnRadarRight"/>
     /// <seealso cref="TurnRadarLeft"/>
     /// <seealso cref="TurnRadarRight"/>
-    void SetMaxRadarTurnRate (double maxRadarTurnRate);
+    void SetMaxRadarTurnRate(double maxRadarTurnRate);
 
     /// <summary>
     /// Fire the gun in the direction as the gun is pointing.
@@ -662,6 +664,27 @@
     /// <seealso cref="IBaseBot.Firepower"/>
     /// <seealso cref="IBaseBot.GunHeat"/>
     /// <seealso cref="IBaseBot.GunCoolingRate"/>
-    void Fire (double firepower);
+    void Fire(double firepower);
+
+    /// <summary>
+    /// Stop all movement including turning the gun and radar. The remaining movement is saved for a call to <see cref="Resume"/>.
+    /// This method has no effect, if it has already been called.
+    /// </summary>
+    /// <seealso cref="Resume"/>
+    /// <seealso cref="DistanceRemaining"/>
+    /// <seealso cref="TurnRemaining"/>
+    /// <seealso cref="GunTurnRemaining"/>
+    /// <seealso cref="RadarTurnRemaining"/>
+    void Stop();
+
+    /// <summary>
+    /// Resume the movement prior to calling the <see cref="Stop"/> method. This method has no effect, if it has already been called.
+    /// </summary>
+    /// <seealso cref="Stop"/>
+    /// <seealso cref="DistanceRemaining"/>
+    /// <seealso cref="TurnRemaining"/>
+    /// <seealso cref="GunTurnRemaining"/>
+    /// <seealso cref="RadarTurnRemaining"/>
+    void Resume();
   }
 }

@@ -545,7 +545,7 @@ public interface IBot extends IBaseBot {
   void turnRadarLeft(double degrees);
 
   /**
-   * Turn the radar to the right (following the decreasing degrees of the <a
+   * Set the radar to turn to the right (following the decreasing degrees of the <a
    * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
    * amount of degrees. That is, when {@link #getRadarTurnRemaining()} is 0. The amount of degrees
    * to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
@@ -683,4 +683,28 @@ public interface IBot extends IBaseBot {
    * @see #getGunCoolingRate()
    */
   void fire(double firepower);
+
+  /**
+   * Stop all movement including turning the gun and radar. The remaining movement is saved for a
+   * call to {@link #resume()}. This method has no effect, if it has already been called.
+   *
+   * @see #resume()
+   * @see #getDistanceRemaining()
+   * @see #getTurnRemaining()
+   * @see #getGunTurnRemaining()
+   * @see #getRadarTurnRemaining()
+   */
+  void stop();
+
+  /**
+   * Resume the movement prior to calling the {@link #stop()} method. This method has no effect, if
+   * it has already been called.
+   *
+   * @see #stop()
+   * @see #getDistanceRemaining()
+   * @see #getTurnRemaining()
+   * @see #getGunTurnRemaining()
+   * @see #getRadarTurnRemaining()
+   */
+  void resume();
 }

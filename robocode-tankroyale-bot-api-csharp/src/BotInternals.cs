@@ -32,6 +32,12 @@ namespace Robocode.TankRoyale.BotApi
 
       private volatile bool isRunning;
 
+      private bool isStopped;
+      private double savedDistanceRemaining;
+      private double savedTurnRemaining;
+      private double savedGunTurnRemaining;
+      private double savedRadarTurnRemaining;
+
       public BotInternals(IBot bot, BotEvents botEvents)
       {
         this.bot = bot;
@@ -355,6 +361,30 @@ namespace Robocode.TankRoyale.BotApi
           distance += (speed = GetNewSpeed(speed, 0));
         }
         return distance;
+      }
+
+      internal void Stop()
+      {
+        if (!isStopped)
+        {
+          savedDistanceRemaining = distanceRemaining;
+          savedTurnRemaining = turnRemaining;
+          savedGunTurnRemaining = gunTurnRemaining;
+          savedRadarTurnRemaining = radarTurnRemaining;
+          isStopped = true;
+        }
+      }
+
+      internal void Resume()
+      {
+        if (isStopped)
+        {
+          distanceRemaining = savedDistanceRemaining;
+          turnRemaining = savedTurnRemaining;
+          gunTurnRemaining = savedGunTurnRemaining;
+          radarTurnRemaining = savedRadarTurnRemaining;
+          isStopped = false;
+        }
       }
 
       private bool IsNearZero(double value) => Math.Abs(value) < .00001;

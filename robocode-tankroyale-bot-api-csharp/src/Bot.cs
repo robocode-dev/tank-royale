@@ -270,7 +270,19 @@ namespace Robocode.TankRoyale.BotApi
     {
       Firepower = firepower;
       Go();
-      Firepower = 0;
+      Firepower = 0; // No more firing!
+    }
+
+    /// <inheritdoc/>
+    public void Stop()
+    {
+      __botInternals.Stop();
+    }
+
+    /// <inheritdoc/>
+    public void Resume()
+    {
+      __botInternals.Resume();
     }
   }
 }

@@ -270,6 +270,18 @@ public abstract class Bot extends BaseBot implements IBot {
   public final void fire(double firepower) {
     setFirepower(firepower);
     go();
-    setFirepower(0);
+    setFirepower(0); // No more firing!
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void stop() {
+    __internals.stop();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void resume() {
+    __internals.resume();
   }
 }

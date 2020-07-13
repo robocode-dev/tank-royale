@@ -30,6 +30,12 @@ final class BotInternals {
   private final Object nextTurn = new Object();
   volatile boolean isRunning;
 
+  boolean isStopped;
+  double savedDistanceRemaining;
+  double savedTurnRemaining;
+  double savedGunTurnRemaining;
+  double savedRadarTurnRemaining;
+
   BotInternals(IBot bot, BotEvents botEvents) {
     this.bot = bot;
     this.botEvents = botEvents;
@@ -275,6 +281,26 @@ final class BotInternals {
       distance += (speed = getNewSpeed(speed, 0));
     }
     return distance;
+  }
+
+  void stop() {
+    if (!isStopped) {
+      savedDistanceRemaining = distanceRemaining;
+      savedTurnRemaining = turnRemaining;
+      savedGunTurnRemaining = gunTurnRemaining;
+      savedRadarTurnRemaining = radarTurnRemaining;
+      isStopped = true;
+    }
+  }
+
+  void resume() {
+    if (isStopped) {
+      distanceRemaining = savedDistanceRemaining;
+      turnRemaining = savedTurnRemaining;
+      gunTurnRemaining = savedGunTurnRemaining;
+      radarTurnRemaining = savedRadarTurnRemaining;
+      isStopped = false;
+    }
   }
 
   private boolean isNearZero(double value) {
