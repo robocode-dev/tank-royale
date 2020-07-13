@@ -263,6 +263,13 @@ public interface IBaseBot {
   int getTurnNumber();
 
   /**
+   * Number of enemies left in the round.
+   *
+   * @return The number of enemies left in the round.
+   */
+  int getEnemyCount();
+
+  /**
    * Current energy level. When the energy level is positive, the bot is alive and active. When the
    * energy level is 0, the bot is still alive but disabled. If the bot becomes disabled it will not
    * be able to move or take any action. If negative, the bot has been defeated.

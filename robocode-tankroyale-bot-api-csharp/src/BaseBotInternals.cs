@@ -36,7 +36,7 @@ namespace Robocode.TankRoyale.BotApi
       // Current game states:
       private int? myId = null;
       private GameSetup gameSetup = null;
-      private TickEvent currentTurn = null;
+      private TickEvent currentTick = null;
       private long? ticksStart = DateTime.Now.Ticks;
 
       // Adjustment of turn rates
@@ -98,7 +98,7 @@ namespace Robocode.TankRoyale.BotApi
       private void ClearCurrentGameState()
       {
         // Clear setting that are only available during a running game
-        currentTurn = null;
+        currentTick = null;
         gameSetup = null;
         myId = null;
       }
@@ -180,15 +180,15 @@ namespace Robocode.TankRoyale.BotApi
         }
       }
 
-      internal TickEvent CurrentTurn
+      internal TickEvent CurrentTick
       {
         get
         {
-          if (currentTurn == null)
+          if (currentTick == null)
           {
             throw new BotException(TickNotAvailableMsg);
           }
-          return currentTurn;
+          return currentTick;
         }
       }
 
@@ -307,13 +307,13 @@ namespace Robocode.TankRoyale.BotApi
       private void HandleTickEvent(string json)
       {
         var tickEventForBot = JsonConvert.DeserializeObject<Schema.TickEventForBot>(json);
-        currentTurn = EventMapper.Map(json);
+        currentTick = EventMapper.Map(json);
 
-        botEvents.FireTickEvent(currentTurn);
+        botEvents.FireTickEvent(currentTick);
 
         if (doDispatchEvents)
         {
-          botEvents.DispatchEvents(currentTurn);
+          botEvents.DispatchEvents(currentTick);
         }
       }
     }

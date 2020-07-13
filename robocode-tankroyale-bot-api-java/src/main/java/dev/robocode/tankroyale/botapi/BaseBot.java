@@ -141,19 +141,25 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final int getRoundNumber() {
-    return __internals.getCurrentTurn().getRoundNumber();
+    return __internals.getCurrentTick().getRoundNumber();
   }
 
   /** {@inheritDoc} */
   @Override
   public final int getTurnNumber() {
-    return __internals.getCurrentTurn().getTurnNumber();
+    return __internals.getCurrentTick().getTurnNumber();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final int getEnemyCount() {
+    return __internals.getCurrentTick().getEnemyCount();
   }
 
   /** {@inheritDoc} */
   @Override
   public final double getEnergy() {
-    return __internals.getCurrentTurn().getBotState().getEnergy();
+    return __internals.getCurrentTick().getBotState().getEnergy();
   }
 
   /** {@inheritDoc} */
@@ -165,55 +171,55 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final double getX() {
-    return __internals.getCurrentTurn().getBotState().getX();
+    return __internals.getCurrentTick().getBotState().getX();
   }
 
   /** {@inheritDoc} */
   @Override
   public final double getY() {
-    return __internals.getCurrentTurn().getBotState().getY();
+    return __internals.getCurrentTick().getBotState().getY();
   }
 
   /** {@inheritDoc} */
   @Override
   public final double getDirection() {
-    return __internals.getCurrentTurn().getBotState().getDirection();
+    return __internals.getCurrentTick().getBotState().getDirection();
   }
 
   /** {@inheritDoc} */
   @Override
   public final double getGunDirection() {
-    return __internals.getCurrentTurn().getBotState().getGunDirection();
+    return __internals.getCurrentTick().getBotState().getGunDirection();
   }
 
   /** {@inheritDoc} */
   @Override
   public final double getRadarDirection() {
-    return __internals.getCurrentTurn().getBotState().getRadarDirection();
+    return __internals.getCurrentTick().getBotState().getRadarDirection();
   }
 
   /** {@inheritDoc} */
   @Override
   public final double getSpeed() {
-    return __internals.getCurrentTurn().getBotState().getSpeed();
+    return __internals.getCurrentTick().getBotState().getSpeed();
   }
 
   /** {@inheritDoc} */
   @Override
   public final double getGunHeat() {
-    return __internals.getCurrentTurn().getBotState().getGunHeat();
+    return __internals.getCurrentTick().getBotState().getGunHeat();
   }
 
   /** {@inheritDoc} */
   @Override
   public final Collection<BulletState> getBulletStates() {
-    return __internals.getCurrentTurn().getBulletStates();
+    return __internals.getCurrentTick().getBulletStates();
   }
 
   /** {@inheritDoc} */
   @Override
   public final Collection<? extends Event> getEvents() {
-    return __internals.getCurrentTurn().getEvents();
+    return __internals.getCurrentTick().getEvents();
   }
 
   /** {@inheritDoc} */
@@ -357,7 +363,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final Integer getBodyColor() {
-    return __internals.getCurrentTurn().getBotState().getBodyColor();
+    return __internals.getCurrentTick().getBotState().getBodyColor();
   }
 
   /** {@inheritDoc} */
@@ -369,7 +375,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final Integer getTurretColor() {
-    return __internals.getCurrentTurn().getBotState().getTurretColor();
+    return __internals.getCurrentTick().getBotState().getTurretColor();
   }
 
   /** {@inheritDoc} */
@@ -381,7 +387,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final Integer getRadarColor() {
-    return __internals.getCurrentTurn().getBotState().getRadarColor();
+    return __internals.getCurrentTick().getBotState().getRadarColor();
   }
 
   /** {@inheritDoc} */
@@ -393,7 +399,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final Integer getBulletColor() {
-    return __internals.getCurrentTurn().getBotState().getBulletColor();
+    return __internals.getCurrentTick().getBotState().getBulletColor();
   }
 
   /** {@inheritDoc} */
@@ -405,7 +411,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final Integer getScanColor() {
-    return __internals.getCurrentTurn().getBotState().getScanColor();
+    return __internals.getCurrentTick().getBotState().getScanColor();
   }
 
   /** {@inheritDoc} */
@@ -417,7 +423,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final Integer getTracksColor() {
-    return __internals.getCurrentTurn().getBotState().getTracksColor();
+    return __internals.getCurrentTick().getBotState().getTracksColor();
   }
 
   /** {@inheritDoc} */
@@ -429,7 +435,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final Integer getGunColor() {
-    return __internals.getCurrentTurn().getBotState().getGunColor();
+    return __internals.getCurrentTick().getBotState().getGunColor();
   }
 
   /** {@inheritDoc} */

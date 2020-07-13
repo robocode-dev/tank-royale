@@ -14,8 +14,8 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// Initializes a new instance of the ConnectionErrorEvent class.
     /// </summary>
-    /// <param name="serverUri">Is the URI of the server.</param>
-    /// <param name="exception">The exception causing the error.</param>
+    /// <param name="serverUri">URI of the server.</param>
+    /// <param name="exception">Exception causing the error.</param>
     [JsonConstructor]
     public ConnectionErrorEvent(Uri serverUri, Exception exception) : base(serverUri) => Exception = exception;
   }

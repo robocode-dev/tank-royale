@@ -69,7 +69,7 @@ final class BaseBotInternals {
   // Current game states:
   private Integer myId;
   private GameSetup gameSetup;
-  private TickEvent currentTurn;
+  private TickEvent currentTick;
   private Long ticksStartNanoTime;
 
   // Adjustment of turn rates
@@ -137,7 +137,7 @@ final class BaseBotInternals {
 
   private void clearCurrentGameState() {
     // Clear setting that are only available during a running game
-    currentTurn = null;
+    currentTick = null;
     gameSetup = null;
     myId = null;
   }
@@ -181,11 +181,11 @@ final class BaseBotInternals {
     return gameSetup;
   }
 
-  TickEvent getCurrentTurn() {
-    if (currentTurn == null) {
+  TickEvent getCurrentTick() {
+    if (currentTick == null) {
       throw new BotException(TICK_NOT_AVAILABLE_MSG);
     }
-    return currentTurn;
+    return currentTick;
   }
 
   long getTicksStart() {
@@ -308,13 +308,13 @@ final class BaseBotInternals {
 
   private void handleTickEvent(JsonObject jsonMsg) {
     TickEventForBot tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
-    currentTurn = EventMapper.map(tickEventForBot);
+    currentTick = EventMapper.map(tickEventForBot);
 
     ticksStartNanoTime = System.nanoTime();
-    botEvents.onTick.publish(currentTurn);
+    botEvents.onTick.publish(currentTick);
 
     if (doDispatchEvents) {
-      botEvents.dispatchEvents(currentTurn);
+      botEvents.dispatchEvents(currentTick);
     }
   }
 }

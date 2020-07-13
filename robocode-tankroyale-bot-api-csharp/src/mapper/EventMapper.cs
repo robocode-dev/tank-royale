@@ -16,6 +16,7 @@ namespace Robocode.TankRoyale.BotApi
       return new TickEvent(
         source.TurnNumber,
         source.RoundNumber,
+        source.EnemyCount,
         BotStateMapper.Map(source.BotState),
         BulletStateMapper.Map(source.BulletStates),
         Map(events)

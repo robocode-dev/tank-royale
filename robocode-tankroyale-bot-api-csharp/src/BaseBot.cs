@@ -143,19 +143,25 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public int RoundNumber
     {
-      get => __internals.CurrentTurn.RoundNumber;
+      get => __internals.CurrentTick.RoundNumber;
     }
 
     /// <inheritdoc/>
     public int TurnNumber
     {
-      get => __internals.CurrentTurn.TurnNumber;
+      get => __internals.CurrentTick.TurnNumber;
+    }
+
+    /// <inheritdoc>
+    public int EnemyCount
+    {
+      get => __internals.CurrentTick.EnemyCount;
     }
 
     /// <inheritdoc/>
     public double Energy
     {
-      get => __internals.CurrentTurn.BotState.Energy;
+      get => __internals.CurrentTick.BotState.Energy;
     }
 
     /// <inheritdoc/>
@@ -167,55 +173,55 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public double X
     {
-      get => __internals.CurrentTurn.BotState.X;
+      get => __internals.CurrentTick.BotState.X;
     }
 
     /// <inheritdoc/>
     public double Y
     {
-      get => __internals.CurrentTurn.BotState.Y;
+      get => __internals.CurrentTick.BotState.Y;
     }
 
     /// <inheritdoc/>
     public double Direction
     {
-      get => __internals.CurrentTurn.BotState.Direction;
+      get => __internals.CurrentTick.BotState.Direction;
     }
 
     /// <inheritdoc/>
     public double GunDirection
     {
-      get => __internals.CurrentTurn.BotState.GunDirection;
+      get => __internals.CurrentTick.BotState.GunDirection;
     }
 
     /// <inheritdoc/>
     public double RadarDirection
     {
-      get => __internals.CurrentTurn.BotState.RadarDirection;
+      get => __internals.CurrentTick.BotState.RadarDirection;
     }
 
     /// <inheritdoc/>
     public double Speed
     {
-      get => __internals.CurrentTurn.BotState.Speed;
+      get => __internals.CurrentTick.BotState.Speed;
     }
 
     /// <inheritdoc/>
     public double GunHeat
     {
-      get => __internals.CurrentTurn.BotState.GunHeat;
+      get => __internals.CurrentTick.BotState.GunHeat;
     }
 
     /// <inheritdoc/>
     public IEnumerable<BulletState> BulletStates
     {
-      get => __internals.CurrentTurn.BulletStates;
+      get => __internals.CurrentTick.BulletStates;
     }
 
     /// <inheritdoc/>
     public IEnumerable<Event> Events
     {
-      get => __internals.CurrentTurn.Events;
+      get => __internals.CurrentTick.Events;
     }
 
     /// <inheritdoc/>
@@ -342,43 +348,43 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public int? GetBodyColor() => __internals.CurrentTurn.BotState.BodyColor;
+    public int? GetBodyColor() => __internals.CurrentTick.BotState.BodyColor;
 
     /// <inheritdoc/>
     public void SetBodyColor(string bodyColor) => __internals.BotIntent.BodyColor = bodyColor;
 
     /// <inheritdoc/>
-    public int? GetTurretColor() => __internals.CurrentTurn.BotState.TurretColor;
+    public int? GetTurretColor() => __internals.CurrentTick.BotState.TurretColor;
 
     /// <inheritdoc/>
     public void SetTurretColor(string turretColor) => __internals.BotIntent.TurretColor = turretColor;
 
     /// <inheritdoc/>
-    public int? GetRadarColor() => __internals.CurrentTurn.BotState.RadarColor;
+    public int? GetRadarColor() => __internals.CurrentTick.BotState.RadarColor;
 
     /// <inheritdoc/>
     public void SetRadarColor(string radarColor) => __internals.BotIntent.RadarColor = radarColor;
 
     /// <inheritdoc/>
-    public int? GetBulletColor() => __internals.CurrentTurn.BotState.BulletColor;
+    public int? GetBulletColor() => __internals.CurrentTick.BotState.BulletColor;
 
     /// <inheritdoc/>
     public void SetBulletColor(string bulletColor) => __internals.BotIntent.BulletColor = bulletColor;
 
     /// <inheritdoc/>
-    public int? GetScanColor() => __internals.CurrentTurn.BotState.ScanColor;
+    public int? GetScanColor() => __internals.CurrentTick.BotState.ScanColor;
 
     /// <inheritdoc/>
     public void SetScanColor(string scanColor) => __internals.BotIntent.ScanColor = scanColor;
 
     /// <inheritdoc/>
-    public int? GetTracksColor() => __internals.CurrentTurn.BotState.TracksColor;
+    public int? GetTracksColor() => __internals.CurrentTick.BotState.TracksColor;
 
     /// <inheritdoc/>
     public void SetTracksColor(string tracksColor) => __internals.BotIntent.TracksColor = tracksColor;
 
     /// <inheritdoc/>
-    public int? GetGunColor() => __internals.CurrentTurn.BotState.GunColor;
+    public int? GetGunColor() => __internals.CurrentTick.BotState.GunColor;
 
     /// <inheritdoc/>
     public void SetGunColor(string gunColor) => __internals.BotIntent.GunColor = gunColor;

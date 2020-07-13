@@ -13,7 +13,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// Initializes a new instance of the ConnectionEvent class.
     /// </summary>
-    /// <param name="serverUri">Is the URI of the server.</param>
+    /// <param name="serverUri">URI of the server.</param>
     protected ConnectionEvent(Uri serverUri) => ServerUri = serverUri;
   }
 }

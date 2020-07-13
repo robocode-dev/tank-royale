@@ -13,7 +13,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// Initializes a new instance of the DisconnectedEvent class.
     /// </summary>
-    /// <param name="serverUri">Is the URI of the server.</param>
+    /// <param name="serverUri">URI of the server.</param>
     /// <param name="remote">Indication if closing of the connection was initiated by the remote host.</param>
     [JsonConstructor]
     public DisconnectedEvent(System.Uri serverUri, bool remote) : base(serverUri) => Remote = remote;

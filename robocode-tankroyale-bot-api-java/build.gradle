@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.4'
+    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.5'
     implementation 'com.neovisionaries:nv-websocket-client:2.9'
     implementation 'com.neovisionaries:nv-i18n:1.27'
     implementation 'org.danilopianini:gson-extras:0.2.2'

@@ -16,9 +16,9 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("roundNumber", Required = Newtonsoft.Json.Required.Always)]
         public int RoundNumber { get; set; }
     
-        /// <summary>Number of opponents left in the current round</summary>
-        [Newtonsoft.Json.JsonProperty("opponentsCount", Required = Newtonsoft.Json.Required.Always)]
-        public int OpponentsCount { get; set; }
+        /// <summary>Number of enemies left in the current round</summary>
+        [Newtonsoft.Json.JsonProperty("enemyCount", Required = Newtonsoft.Json.Required.Always)]
+        public int EnemyCount { get; set; }
     
         /// <summary>Current state of this bot</summary>
         [Newtonsoft.Json.JsonProperty("botState", Required = Newtonsoft.Json.Required.Always)]

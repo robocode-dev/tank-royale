@@ -10,7 +10,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// Initializes a new instance of the ConnectedEvent class.
     /// </summary>
-    /// <param name="serverUri">Is the URI of the server.</param>
+    /// <param name="serverUri">URI of the server.</param>
     [JsonConstructor]
     public ConnectedEvent(System.Uri serverUri) : base(serverUri) { }
   }
