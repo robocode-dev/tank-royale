@@ -14,6 +14,7 @@ public final class EventMapper {
     return new TickEvent(
         source.getTurnNumber(),
         source.getRoundNumber(),
+        source.getEnemyCount(),
         BotStateMapper.map(source.getBotState()),
         BulletStateMapper.map(source.getBulletStates()),
         map(source.getEvents()));
