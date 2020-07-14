@@ -213,7 +213,7 @@ public class ModelUpdater {
 		executeBotIntents();
 
 		// Generate scan events
-		checkScanFields();
+		generateScanEvents();
 
 		// Check bot wall collisions
 		checkBotWallCollisions();
@@ -944,7 +944,7 @@ public class ModelUpdater {
 	/**
 	 * Checks the scan field for scanned bots
 	 */
-	private void checkScanFields() {
+	private void generateScanEvents() {
 
 		BotBuilder[] botArray = new BotBuilder[botBuilderMap.size()];
 		botArray = botBuilderMap.values().toArray(botArray);

@@ -18,6 +18,7 @@ public final class TurnToTickEventForBotMapper {
 		tick.set$type(TickEventForBot.$type.TICK_EVENT_FOR_BOT);
 		tick.setRoundNumber(round.getRoundNumber());
 		tick.setTurnNumber(turn.getTurnNumber());
+		tick.setEnemyCount(turn.getBots().size() - 1);
 		tick.setBotState(BotToBotStateMapper.map(bot));
 		tick.setBulletStates(BulletsToBulletStatesMapper.map(turn.getBullets(botId)));
 		tick.setEvents(EventsToEventsMapper.map(turn.getBotEvents(botId)));
