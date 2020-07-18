@@ -500,7 +500,7 @@ public interface IBaseBot {
    * @see #getGunHeat()
    * @see #getGunCoolingRate()
    */
-  void setFirepower(double firepower);
+  boolean setFirepower(double firepower); // fixme: Update doc regarding return of boolean
 
   /**
    * Returns the firepower.

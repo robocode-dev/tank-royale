@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.neovisionaries.ws.client.*;
+import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.factory.BotHandshakeFactory;
@@ -60,7 +61,7 @@ final class BaseBotInternals {
   private final BotInfo botInfo;
   final BotEvents botEvents;
 
-  final BotIntent botIntent = new BotIntent();
+  BotIntent botIntent = new BotIntent();
 
   // Server connection:
   private WebSocket socket;
@@ -77,6 +78,8 @@ final class BaseBotInternals {
   boolean doAdjustRadarForGunTurn;
 
   private final boolean doDispatchEvents;
+
+  private int turnWhenGunFired = -1;
 
   BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {
     this.baseBot = baseBot;
@@ -113,6 +116,8 @@ final class BaseBotInternals {
     botEvents.onBulletHitWall.subscribe(baseBot::onBulletHitWall);
     botEvents.onScannedBot.subscribe(baseBot::onScannedBot);
     botEvents.onWonRound.subscribe(baseBot::onWonRound);
+
+    botEvents.onBulletFired.subscribe(this::handleBulletFired);
   }
 
   void connect() {
@@ -193,6 +198,17 @@ final class BaseBotInternals {
       throw new BotException(TICK_NOT_AVAILABLE_MSG);
     }
     return ticksStartNanoTime;
+  }
+
+  boolean hasGunFired() {
+    System.out.println(
+        "hasGunFired, currentTick.getTurnNumber: "
+            + currentTick.getTurnNumber()
+            + ", turnWhenGunFired: "
+            + turnWhenGunFired
+            + ", heat: "
+            + baseBot.getGunHeat());
+    return (currentTick.getTurnNumber() == turnWhenGunFired);
   }
 
   private final class WebSocketListener extends WebSocketAdapter {
@@ -316,5 +332,15 @@ final class BaseBotInternals {
     if (doDispatchEvents) {
       botEvents.dispatchEvents(currentTick);
     }
+  }
+
+  private void handleBulletFired(BulletFiredEvent e) {
+    System.out.println(
+        "## handleBulletFired: "
+            + e.getTurnNumber()
+            + ", curentTick.turnNumber: "
+            + getCurrentTick().getTurnNumber());
+    botIntent.setFirepower(0d); // Reset firepower so the bot stops firing continuously
+    turnWhenGunFired = currentTick.getTurnNumber();
   }
 }

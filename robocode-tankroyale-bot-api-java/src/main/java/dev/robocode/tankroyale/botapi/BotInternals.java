@@ -1,6 +1,8 @@
 package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.TickEvent;
+import dev.robocode.tankroyale.schema.BotIntent;
+import dev.robocode.tankroyale.schema.BotReady;
 
 import static java.lang.Math.abs;
 
@@ -8,7 +10,7 @@ final class BotInternals {
 
   private final double ABS_DECELERATION = Math.abs(IBot.DECELERATION);
 
-  private final IBot bot;
+  private final Bot bot;
   private final BotEvents botEvents;
 
   double maxSpeed = IBot.MAX_SPEED;
@@ -24,19 +26,20 @@ final class BotInternals {
   private boolean isCollidingWithBot;
   private boolean isOverDriving;
 
-  private TickEvent currentTurn;
+  private TickEvent currentTick;
 
   private Thread thread;
   private final Object nextTurn = new Object();
   volatile boolean isRunning;
 
   boolean isStopped;
+  BotIntent savedBotIntent;
   double savedDistanceRemaining;
   double savedTurnRemaining;
   double savedGunTurnRemaining;
   double savedRadarTurnRemaining;
 
-  BotInternals(IBot bot, BotEvents botEvents) {
+  BotInternals(Bot bot, BotEvents botEvents) {
     this.bot = bot;
     this.botEvents = botEvents;
 
@@ -46,7 +49,7 @@ final class BotInternals {
     botEvents.onHitWall.subscribe(e -> onHitWall());
     botEvents.onTick.subscribe(
         e -> {
-          currentTurn = e;
+          currentTick = e;
           onTick();
         });
     botEvents.onBotDeath.subscribe(
@@ -83,7 +86,7 @@ final class BotInternals {
     isCollidingWithBot = false;
 
     // If this is the first turn -> Call the run method on the Bot class
-    if (currentTurn.getTurnNumber() == 1) {
+    if (currentTick.getTurnNumber() == 1) {
       if (isRunning) {
         stopThread();
       }
@@ -285,20 +288,49 @@ final class BotInternals {
 
   void stop() {
     if (!isStopped) {
+
+      final BotIntent botIntent = bot.__baseBotInternals.botIntent;
+      savedBotIntent = botIntent;
+
+      BotIntent newIntent = new BotIntent();
+
+      newIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
+      newIntent.setTargetSpeed(0d);
+      newIntent.setTurnRate(0d);
+      newIntent.setGunTurnRate(0d);
+      newIntent.setRadarTurnRate(0d);
+      newIntent.setFirepower(0d);
+      newIntent.setBodyColor(botIntent.getBodyColor());
+      newIntent.setTurretColor(botIntent.getTurretColor());
+      newIntent.setGunColor(botIntent.getGunColor());
+      newIntent.setRadarColor(botIntent.getRadarColor());
+      newIntent.setBulletColor(botIntent.getBulletColor());
+      newIntent.setScanColor(botIntent.getScanColor());
+      newIntent.setTracksColor(botIntent.getTracksColor());
+
+      bot.__baseBotInternals.botIntent = newIntent;
+
       savedDistanceRemaining = distanceRemaining;
       savedTurnRemaining = turnRemaining;
       savedGunTurnRemaining = gunTurnRemaining;
       savedRadarTurnRemaining = radarTurnRemaining;
+
+      System.out.println("saved BotIntent: " + savedBotIntent);
+
       isStopped = true;
     }
   }
 
   void resume() {
     if (isStopped) {
+      System.out.println("restored BotIntent: " + savedBotIntent);
+
+      bot.__baseBotInternals.botIntent = savedBotIntent;
       distanceRemaining = savedDistanceRemaining;
       turnRemaining = savedTurnRemaining;
       gunTurnRemaining = savedGunTurnRemaining;
       radarTurnRemaining = savedRadarTurnRemaining;
+
       isStopped = false;
     }
   }
@@ -308,19 +340,33 @@ final class BotInternals {
   }
 
   void awaitMovementComplete() {
+    System.out.println("awaitMovementComplete: " + currentTick.getTurnNumber());
     await(() -> distanceRemaining == 0);
   }
 
   void awaitTurnComplete() {
+    System.out.println("awaitTurnComplete: " + currentTick.getTurnNumber());
     await(() -> turnRemaining == 0);
   }
 
   void awaitGunTurnComplete() {
+    System.out.println("awaitGunTurnComplete: " + currentTick.getTurnNumber());
     await(() -> gunTurnRemaining == 0);
   }
 
   void awaitRadarTurnComplete() {
+    System.out.println("awaitRadarTurnComplete: " + currentTick.getTurnNumber());
     await(() -> radarTurnRemaining == 0);
+  }
+
+  void awaitGunFired() {
+    System.out.println("awaitGunFired: " + currentTick.getTurnNumber());
+    await(bot.__baseBotInternals::hasGunFired);
+  }
+
+  void awaitNextTurn() {
+    System.out.println("awaitNextTurn: " + currentTick.getTurnNumber());
+    await(() -> true);
   }
 
   private void await(ICondition condition) {
@@ -329,11 +375,12 @@ final class BotInternals {
       while (isRunning && !condition.test()) {
         try {
           nextTurn.wait();
-          botEvents.dispatchEvents(currentTurn);
+          botEvents.dispatchEvents(currentTick);
         } catch (InterruptedException e) {
           isRunning = false;
         }
       }
+      System.out.println("after await: " + currentTick.getTurnNumber() + ", caller: " + Thread.currentThread().getStackTrace()[2].getMethodName());
     }
   }
 

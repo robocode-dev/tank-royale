@@ -55,8 +55,6 @@ class BotEvents {
                 onHitWall.publish((BotHitWallEvent) event);
 
               } else if (event instanceof BulletFiredEvent) {
-                // Stop firing, when bullet has fired
-                baseBot.setFirepower(0d);
                 onBulletFired.publish((BulletFiredEvent) event);
 
               } else if (event instanceof BulletHitBotEvent) {
