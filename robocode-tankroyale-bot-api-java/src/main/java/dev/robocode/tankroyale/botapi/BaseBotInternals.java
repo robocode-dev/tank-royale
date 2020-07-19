@@ -79,8 +79,6 @@ final class BaseBotInternals {
 
   private final boolean doDispatchEvents;
 
-  private int turnWhenGunFired = -1;
-
   BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {
     this.baseBot = baseBot;
     this.botEvents = new BotEvents(baseBot);
@@ -198,17 +196,6 @@ final class BaseBotInternals {
       throw new BotException(TICK_NOT_AVAILABLE_MSG);
     }
     return ticksStartNanoTime;
-  }
-
-  boolean hasGunFired() {
-    System.out.println(
-        "hasGunFired, currentTick.getTurnNumber: "
-            + currentTick.getTurnNumber()
-            + ", turnWhenGunFired: "
-            + turnWhenGunFired
-            + ", heat: "
-            + baseBot.getGunHeat());
-    return (currentTick.getTurnNumber() == turnWhenGunFired);
   }
 
   private final class WebSocketListener extends WebSocketAdapter {
@@ -335,12 +322,6 @@ final class BaseBotInternals {
   }
 
   private void handleBulletFired(BulletFiredEvent e) {
-    System.out.println(
-        "## handleBulletFired: "
-            + e.getTurnNumber()
-            + ", curentTick.turnNumber: "
-            + getCurrentTick().getTurnNumber());
     botIntent.setFirepower(0d); // Reset firepower so the bot stops firing continuously
-    turnWhenGunFired = currentTick.getTurnNumber();
   }
 }

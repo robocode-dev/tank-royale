@@ -682,7 +682,7 @@ public interface IBot extends IBaseBot {
    * @see #getGunHeat()
    * @see #getGunCoolingRate()
    */
-  boolean fire(double firepower); // fixme: Update doc regarding return of boolean
+  void fire(double firepower);
 
   /**
    * Stop all movement including turning the gun and radar. The remaining movement is saved for a

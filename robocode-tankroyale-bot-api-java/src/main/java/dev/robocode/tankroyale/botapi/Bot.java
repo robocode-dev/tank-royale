@@ -74,7 +74,7 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void forward(double distance) {
     setForward(distance);
-    goAwait();
+    go();
     __botInternals.awaitMovementComplete();
   }
 
@@ -91,7 +91,7 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void back(double distance) {
     setBack(distance);
-    goAwait();
+    go();
     __botInternals.awaitMovementComplete();
   }
 
@@ -125,7 +125,7 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void turnLeft(double degrees) {
     setTurnLeft(degrees);
-    goAwait();
+    go();
     __botInternals.awaitTurnComplete();
   }
 
@@ -142,7 +142,7 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void turnRight(double degrees) {
     setTurnRight(degrees);
-    goAwait();
+    go();
     __botInternals.awaitTurnComplete();
   }
 
@@ -176,7 +176,7 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void turnGunLeft(double degrees) {
     setTurnGunLeft(degrees);
-    goAwait();
+    go();
     __botInternals.awaitGunTurnComplete();
   }
 
@@ -193,7 +193,7 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void turnGunRight(double degrees) {
     setTurnGunRight(degrees);
-    goAwait();
+    go();
     __botInternals.awaitGunTurnComplete();
   }
 
@@ -227,7 +227,7 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void turnRadarLeft(double degrees) {
     setTurnRadarLeft(degrees);
-    goAwait();
+    go();
     __botInternals.awaitRadarTurnComplete();
   }
 
@@ -244,7 +244,7 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void turnRadarRight(double degrees) {
     setTurnRadarRight(degrees);
-    goAwait();
+    go();
     __botInternals.awaitRadarTurnComplete();
   }
 
@@ -267,34 +267,33 @@ public abstract class Bot extends BaseBot implements IBot {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean fire(double firepower) {
+  public final void fire(double firepower) {
     System.out.println("fire: " + __baseBotInternals.getCurrentTick().getTurnNumber());
-    boolean canFire = setFirepower(firepower);
-    if (canFire) {
-      goAwait();
+    if (setFirepower(firepower)) {
+      go();
       __botInternals.awaitGunFired();
     }
-    return canFire;
   }
 
   /** {@inheritDoc} */
   @Override
   public void stop() {
     System.out.println("stop: " + __baseBotInternals.getCurrentTick().getTurnNumber());
-    __botInternals.stop();
-    goAwait();
+    if (!__botInternals.isStopped) {
+      __botInternals.stop();
+      go();
+      __botInternals.awaitNextTurn();
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public void resume() {
     System.out.println("resume: " + __baseBotInternals.getCurrentTick().getTurnNumber());
-    __botInternals.resume();
-    goAwait();
-  }
-
-  private void goAwait() {
-    go();
-//    __botInternals.awaitNextTurn();
+    if (__botInternals.isStopped) {
+      __botInternals.resume();
+      go();
+      __botInternals.awaitNextTurn();
+    }
   }
 }

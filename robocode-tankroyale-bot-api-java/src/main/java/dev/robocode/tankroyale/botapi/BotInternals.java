@@ -39,6 +39,8 @@ final class BotInternals {
   double savedGunTurnRemaining;
   double savedRadarTurnRemaining;
 
+  int awaitTurn = -1;
+
   BotInternals(Bot bot, BotEvents botEvents) {
     this.bot = bot;
     this.botEvents = botEvents;
@@ -288,7 +290,6 @@ final class BotInternals {
 
   void stop() {
     if (!isStopped) {
-
       final BotIntent botIntent = bot.__baseBotInternals.botIntent;
       savedBotIntent = botIntent;
 
@@ -361,12 +362,12 @@ final class BotInternals {
 
   void awaitGunFired() {
     System.out.println("awaitGunFired: " + currentTick.getTurnNumber());
-    await(bot.__baseBotInternals::hasGunFired);
+    await(() -> bot.getGunHeat() > 0);
   }
 
   void awaitNextTurn() {
-    System.out.println("awaitNextTurn: " + currentTick.getTurnNumber());
-    await(() -> true);
+    awaitTurn = currentTick.getTurnNumber();
+    await(() -> currentTick.getTurnNumber() > awaitTurn);
   }
 
   private void await(ICondition condition) {
@@ -380,7 +381,6 @@ final class BotInternals {
           isRunning = false;
         }
       }
-      System.out.println("after await: " + currentTick.getTurnNumber() + ", caller: " + Thread.currentThread().getStackTrace()[2].getMethodName());
     }
   }
 
