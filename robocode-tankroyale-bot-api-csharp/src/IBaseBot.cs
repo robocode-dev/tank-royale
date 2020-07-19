@@ -851,7 +851,15 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="x">Is the x coordinate of the point.</param>
     /// <param name="y">Is the y coordinate of the point.</param>
     /// <returns>The direction to the point x,y.</returns>
-    double CalcDirection(double x, double y);
+    double DirectionTo(double x, double y);
+
+    /// <summary>
+    /// Calculates the distance from the bots coordinates to a point x,y.
+    /// </summary>
+    /// <param name="x">Is the x coordinate of the point.</param>
+    /// <param name="y">Is the y coordinate of the point.</param>
+    /// <returns>The distance to the point x,y.</returns>
+    double DistanceTo(double x, double y);
 
     /// <summary>
     /// Normalizes an angle to an absolute angle into the range [0,360[

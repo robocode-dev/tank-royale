@@ -1018,8 +1018,19 @@ public interface IBaseBot {
    * @param y is the y coordinate of the point.
    * @return The direction to the point x,y.
    */
-  default double calcDirection(double x, double y) {
+  default double directionTo(double x, double y) {
     return normalizeAbsoluteDegrees(Math.atan2(x - getX(), y - getY()));
+  }
+
+  /**
+   * Calculates the distance from the bots coordinates to a point x,y.
+   *
+   * @param x is the x coordinate of the point.
+   * @param y is the y coordinate of the point.
+   * @return The distance to the point x,y.
+   */
+  default double distanceTo(double x, double y) {
+    return Math.hypot(x - getX(), y - getY());
   }
 
   /**

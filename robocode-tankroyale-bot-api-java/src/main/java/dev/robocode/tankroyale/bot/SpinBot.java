@@ -52,7 +52,7 @@ public class SpinBot extends Bot {
    */
   @Override
   public void onHitBot(BotHitBotEvent e) {
-    double direction = calcDirection(e.getX(), e.getY());
+    double direction = directionTo(e.getX(), e.getY());
     double bearing = calcBearing(direction);
     if (bearing > -10 && bearing < 10) {
       fire(3);

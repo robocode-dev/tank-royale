@@ -45,7 +45,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     // OnHitBot: If it's our fault, we'll stop turning and moving, so we need to turn again to keep spinning.
     public override void OnHitBot(BotHitBotEvent e)
     {
-      double direction = CalcDirection(e.X, e.Y);
+      double direction = DirectionTo(e.X, e.Y);
       double bearing = CalcBearing(direction);
       if (bearing > -10 && bearing < 10)
       {

@@ -72,7 +72,7 @@ public class Corners extends Bot {
   /** We saw another bot. Stop and fire! */
   @Override
   public void onScannedBot(ScannedBotEvent e) {
-    double distance = Math.hypot(e.getX() - getX(), e.getY() - getY());
+    double distance = distanceTo(e.getX(), e.getY());
 
     // Should we stop, or just fire?
     if (stopWhenSeeRobot) {
@@ -90,12 +90,12 @@ public class Corners extends Bot {
   /**
    * Custom fire method that determines firepower based on distance.
    *
-   * @param robotDistance the distance to the robot to fire at
+   * @param distance the distance to the robot to fire at
    */
-  private void smartFire(double robotDistance) {
-    if (robotDistance > 200 || getEnergy() < 15) {
+  private void smartFire(double distance) {
+    if (distance > 200 || getEnergy() < 15) {
       fire(1);
-    } else if (robotDistance > 50) {
+    } else if (distance > 50) {
       fire(2);
     } else {
       fire(3);
@@ -118,7 +118,7 @@ public class Corners extends Bot {
       }
       System.out.println("I died and did poorly... switching corner to " + corner);
     } else {
-      System.out.println("I died but did well.  I will still use corner " + corner);
+      System.out.println("I died but did well. I will still use corner " + corner);
     }
   }
 }

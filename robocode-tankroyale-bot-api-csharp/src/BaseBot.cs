@@ -397,9 +397,6 @@ namespace Robocode.TankRoyale.BotApi
     public double CalcGunHeat(double firepower) => 1 + (firepower / 5);
 
     /// <inheritdoc/>
-    public double CalcDirection(double x, double y) => NormalizeAbsoluteDegrees(Math.Atan2(x - X, y - Y));
-
-    /// <inheritdoc/>
     public double CalcBearing(double direction) => NormalizeRelativeDegrees(direction - Direction);
 
     /// <inheritdoc/>
@@ -410,6 +407,17 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <inheritdoc/>
     public double NormalizeAbsoluteDegrees(double angle) => (angle %= 360) >= 0 ? angle : (angle + 360);
+
+    /// <inheritdoc/>
+    public double DirectionTo(double x, double y)
+    {
+      var dx = x - X;
+      var dy = y - Y;
+      return Math.Sqrt(dx * dx + dy * dy);
+    }
+
+    /// <inheritdoc/>
+    public double DistanceTo(double x, double y) => NormalizeAbsoluteDegrees(Math.Atan2(x - X, y - Y));
 
     /// <inheritdoc/>
     public double NormalizeRelativeDegrees(double angle) => (angle %= 360) >= 0 ?

@@ -69,9 +69,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     /** We saw another bot. Stop and fire! */
     public override void OnScannedBot(ScannedBotEvent e)
     {
-      double dx = e.X - X;
-      double dy = e.Y - Y;
-      double distance = Math.Sqrt(dx * dx + dy + dy);
+      var distance = DistanceTo(e.X, e.Y);
 
       // Should we stop, or just fire?
       if (stopWhenSeeRobot)
@@ -90,14 +88,14 @@ namespace Robocode.TankRoyale.Sample.Bots
     }
 
     // Custom fire method that determines firepower based on distance. 
-    // robotDistance: The distance to the robot to fire at
-    private void SmartFire(double robotDistance)
+    // distance: The distance to the robot to fire at.
+    private void SmartFire(double distance)
     {
-      if (robotDistance > 200 || Energy < 15)
+      if (distance > 200 || Energy < 15)
       {
         Fire(1);
       }
-      else if (robotDistance > 50)
+      else if (distance > 50)
       {
         Fire(2);
       }
@@ -128,7 +126,7 @@ namespace Robocode.TankRoyale.Sample.Bots
       }
       else
       {
-        Console.WriteLine("I died but did well.  I will still use corner " + corner);
+        Console.WriteLine("I died but did well. I will still use corner " + corner);
       }
     }
   }
