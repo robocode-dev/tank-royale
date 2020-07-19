@@ -33,13 +33,13 @@ final class BotInternals {
   volatile boolean isRunning;
 
   boolean isStopped;
-  BotIntent savedBotIntent;
-  double savedDistanceRemaining;
-  double savedTurnRemaining;
-  double savedGunTurnRemaining;
-  double savedRadarTurnRemaining;
+  private BotIntent savedBotIntent;
+  private double savedDistanceRemaining;
+  private double savedTurnRemaining;
+  private double savedGunTurnRemaining;
+  private double savedRadarTurnRemaining;
 
-  int awaitTurn = -1;
+  private int awaitTurn = -1;
 
   BotInternals(Bot bot, BotEvents botEvents) {
     this.bot = bot;
@@ -294,7 +294,6 @@ final class BotInternals {
       savedBotIntent = botIntent;
 
       BotIntent newIntent = new BotIntent();
-
       newIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
       newIntent.setTargetSpeed(0d);
       newIntent.setTurnRate(0d);
@@ -316,16 +315,12 @@ final class BotInternals {
       savedGunTurnRemaining = gunTurnRemaining;
       savedRadarTurnRemaining = radarTurnRemaining;
 
-      System.out.println("saved BotIntent: " + savedBotIntent);
-
       isStopped = true;
     }
   }
 
   void resume() {
     if (isStopped) {
-      System.out.println("restored BotIntent: " + savedBotIntent);
-
       bot.__baseBotInternals.botIntent = savedBotIntent;
       distanceRemaining = savedDistanceRemaining;
       turnRemaining = savedTurnRemaining;
@@ -341,27 +336,22 @@ final class BotInternals {
   }
 
   void awaitMovementComplete() {
-    System.out.println("awaitMovementComplete: " + currentTick.getTurnNumber());
     await(() -> distanceRemaining == 0);
   }
 
   void awaitTurnComplete() {
-    System.out.println("awaitTurnComplete: " + currentTick.getTurnNumber());
     await(() -> turnRemaining == 0);
   }
 
   void awaitGunTurnComplete() {
-    System.out.println("awaitGunTurnComplete: " + currentTick.getTurnNumber());
     await(() -> gunTurnRemaining == 0);
   }
 
   void awaitRadarTurnComplete() {
-    System.out.println("awaitRadarTurnComplete: " + currentTick.getTurnNumber());
     await(() -> radarTurnRemaining == 0);
   }
 
   void awaitGunFired() {
-    System.out.println("awaitGunFired: " + currentTick.getTurnNumber());
     await(() -> bot.getGunHeat() > 0);
   }
 

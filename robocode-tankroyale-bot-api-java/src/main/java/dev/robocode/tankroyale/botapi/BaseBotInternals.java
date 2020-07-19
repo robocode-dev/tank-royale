@@ -57,7 +57,6 @@ final class BaseBotInternals {
     gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
   }
 
-  private final IBaseBot baseBot;
   private final BotInfo botInfo;
   final BotEvents botEvents;
 
@@ -80,7 +79,6 @@ final class BaseBotInternals {
   private final boolean doDispatchEvents;
 
   BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {
-    this.baseBot = baseBot;
     this.botEvents = new BotEvents(baseBot);
     this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
     this.doDispatchEvents = !(baseBot instanceof IBot);
@@ -95,25 +93,6 @@ final class BaseBotInternals {
     }
     socket.addListener(new WebSocketListener());
     botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
-
-    botEvents.onConnected.subscribe(baseBot::onConnected);
-    botEvents.onDisconnected.subscribe(baseBot::onDisconnected);
-    botEvents.onConnectionError.subscribe(baseBot::onConnectionError);
-    botEvents.onGameStarted.subscribe(baseBot::onGameStarted);
-    botEvents.onGameEnded.subscribe(baseBot::onGameEnded);
-    botEvents.onTick.subscribe(baseBot::onTick);
-    botEvents.onSkippedTurn.subscribe(baseBot::onSkippedTurn);
-    botEvents.onDeath.subscribe(baseBot::onDeath);
-    botEvents.onBotDeath.subscribe(baseBot::onBotDeath);
-    botEvents.onHitBot.subscribe(baseBot::onHitBot);
-    botEvents.onHitWall.subscribe(baseBot::onHitWall);
-    botEvents.onBulletFired.subscribe(baseBot::onBulletFired);
-    botEvents.onHitByBullet.subscribe(baseBot::onHitByBullet);
-    botEvents.onBulletHit.subscribe(baseBot::onBulletHit);
-    botEvents.onBulletHitBullet.subscribe(baseBot::onBulletHitBullet);
-    botEvents.onBulletHitWall.subscribe(baseBot::onBulletHitWall);
-    botEvents.onScannedBot.subscribe(baseBot::onScannedBot);
-    botEvents.onWonRound.subscribe(baseBot::onWonRound);
 
     botEvents.onBulletFired.subscribe(this::handleBulletFired);
   }

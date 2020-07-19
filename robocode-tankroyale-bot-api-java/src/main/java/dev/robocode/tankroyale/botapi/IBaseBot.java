@@ -496,11 +496,13 @@ public interface IBaseBot {
    * <p>If this property is set multiple times, the last value set before go() counts.
    *
    * @param firepower is the new firepower
+   * @return {@code true} if the cannon can fire, i.e. if there no gun heat; {@code false}
+   *     otherwise.
    * @see #onBulletFired(BulletFiredEvent)
    * @see #getGunHeat()
    * @see #getGunCoolingRate()
    */
-  boolean setFirepower(double firepower); // fixme: Update doc regarding return of boolean
+  boolean setFirepower(double firepower);
 
   /**
    * Returns the firepower.
@@ -615,7 +617,8 @@ public interface IBaseBot {
    * Returns the RGB color code of the gun turret. The color code is an integer in hexadecimal
    * format using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
    *
-   * @return The color code of the gun turret or {@code null} if the bot uses the default color code.
+   * @return The color code of the gun turret or {@code null} if the bot uses the default color
+   *     code.
    * @see <a
    *     href="https://www.rapidtables.com/web/color/RGB_Color.html">https://www.rapidtables.com/web/color/RGB_Color.html</a>
    */

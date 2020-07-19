@@ -268,7 +268,6 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void fire(double firepower) {
-    System.out.println("fire: " + __baseBotInternals.getCurrentTick().getTurnNumber());
     if (setFirepower(firepower)) {
       go();
       __botInternals.awaitGunFired();
@@ -278,7 +277,6 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public void stop() {
-    System.out.println("stop: " + __baseBotInternals.getCurrentTick().getTurnNumber());
     if (!__botInternals.isStopped) {
       __botInternals.stop();
       go();
@@ -289,7 +287,6 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public void resume() {
-    System.out.println("resume: " + __baseBotInternals.getCurrentTick().getTurnNumber());
     if (__botInternals.isStopped) {
       __botInternals.resume();
       go();

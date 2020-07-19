@@ -33,6 +33,28 @@ class BotEvents {
 
   BotEvents(IBaseBot baseBot) {
     this.baseBot = baseBot;
+    init();
+  }
+
+  private void init() {
+    onConnected.subscribe(baseBot::onConnected);
+    onDisconnected.subscribe(baseBot::onDisconnected);
+    onConnectionError.subscribe(baseBot::onConnectionError);
+    onGameStarted.subscribe(baseBot::onGameStarted);
+    onGameEnded.subscribe(baseBot::onGameEnded);
+    onTick.subscribe(baseBot::onTick);
+    onSkippedTurn.subscribe(baseBot::onSkippedTurn);
+    onDeath.subscribe(baseBot::onDeath);
+    onBotDeath.subscribe(baseBot::onBotDeath);
+    onHitBot.subscribe(baseBot::onHitBot);
+    onHitWall.subscribe(baseBot::onHitWall);
+    onBulletFired.subscribe(baseBot::onBulletFired);
+    onHitByBullet.subscribe(baseBot::onHitByBullet);
+    onBulletHit.subscribe(baseBot::onBulletHit);
+    onBulletHitBullet.subscribe(baseBot::onBulletHitBullet);
+    onBulletHitWall.subscribe(baseBot::onBulletHitWall);
+    onScannedBot.subscribe(baseBot::onScannedBot);
+    onWonRound.subscribe(baseBot::onWonRound);
   }
 
   protected void dispatchEvents(TickEvent tickEvent) {
