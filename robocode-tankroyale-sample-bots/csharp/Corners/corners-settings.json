@@ -1,0 +1,12 @@
+{
+  "Bot": {
+    "Name": "Corners",
+    "Version": "1.0",
+    "Author": "Flemming Nørnberg Larsen",
+    "Description": "Moves to a corner, then swings the gun back and forth. If it dies, it tries a new corner in the next round.",
+    "Url": "",
+    "CountryCode": "dk",
+    "GameTypes": "melee, classic, 1v1",
+    "ProgrammingLang": "C# 8.0"
+  }
+}

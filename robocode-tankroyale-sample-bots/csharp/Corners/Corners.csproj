@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Corners</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <LangVersion>8.0</LangVersion> <RestoreSources>$(RestoreSources);https://api.nuget.org/v3/index.json;D:\LocalNugetPackages</RestoreSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Robocode.TankRoyale.BotApi" Version="0.6.22" />
+  </ItemGroup>
+
+</Project>
