@@ -3,14 +3,14 @@ using Robocode.TankRoyale.BotApi;
 
 public class TestBot2 : Bot
 {
-  static void Main()
+  static void Main_TestBot2()
   {
     new TestBot2().Start();
   }
 
   private double move = 200;
 
-  private TestBot2() : base(BotInfo.FromJsonFile("bot-settings.json")) { }
+  private TestBot2() : base(BotInfo.FromJsonFile("testbot2-settings.json")) { }
 
   public override void OnConnected(ConnectedEvent evt)
   {

@@ -32,19 +32,19 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     public Bot() : base()
     {
-      __botInternals = new BotInternals(this, base.__internals.botEvents);
+      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
     }
 
     /// <inheritdoc/>
     public Bot(BotInfo botInfo) : base(botInfo)
     {
-      __botInternals = new BotInternals(this, base.__internals.botEvents);
+      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
     }
 
     /// <inheritdoc/>
     public Bot(BotInfo botInfo, Uri serverUrl) : base(botInfo, serverUrl)
     {
-      __botInternals = new BotInternals(this, base.__internals.botEvents);
+      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
     }
 
     /// <inheritdoc/>
@@ -268,21 +268,33 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void Fire(double firepower)
     {
-      Firepower = firepower;
-      Go();
-      Firepower = 0; // No more firing!
+      if (SetFirepower(firepower))
+      {
+        Go();
+        __botInternals.AwaitGunFired();
+      }
     }
 
     /// <inheritdoc/>
     public void Stop()
     {
-      __botInternals.Stop();
+      if (!__botInternals.IsStopped)
+      {
+        __botInternals.Stop();
+        Go();
+        __botInternals.AwaitNextTurn();
+      }
     }
 
     /// <inheritdoc/>
     public void Resume()
     {
-      __botInternals.Resume();
+      if (__botInternals.IsStopped)
+      {
+        __botInternals.Resume();
+        Go();
+        __botInternals.AwaitNextTurn();
+      }
     }
   }
 }

@@ -447,11 +447,13 @@ namespace Robocode.TankRoyale.BotApi
     ///
     /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
     /// </summary>
-    /// <value>The new firepower.</value>
+    /// <param name="firepower">The new firepower.</param>
+    /// <returns><c>true</c> if the cannon can fire, i.e. if there no gun heat; <c>false</c>
+    /// otherwise.</returns>
     /// <seealso cref="OnBulletFired"/>
     /// <seealso cref="GunHeat"/>
     /// <seealso cref="GunCoolingRate"/>
-    double Firepower { set; }
+    bool SetFirepower(double firepower);
 
     /// <summary>
     /// Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun

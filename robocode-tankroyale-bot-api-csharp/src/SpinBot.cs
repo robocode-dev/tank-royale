@@ -9,12 +9,12 @@ namespace Robocode.TankRoyale.Sample.Bots
   /// </summary>
   public class SpinBot : Bot
   {
-    static void Main2(string[] args)
+    static void Main_SpinBot(string[] args)
     {
       new SpinBot().Start();
     }
 
-    SpinBot() : base(BotInfo.FromJsonFile("bot-settings.json")) { }
+    SpinBot() : base(BotInfo.FromJsonFile("spinbot-settings.json")) { }
 
     // This method runs our bot program, where each command is executed one at a time
     public override void Run()

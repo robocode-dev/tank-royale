@@ -10,7 +10,7 @@ namespace Robocode.TankRoyale.BotApi
   /// </summary>
   public partial class BaseBot : IBaseBot
   {
-    internal readonly BaseBotInternals __internals;
+    internal readonly BaseBotInternals __baseBotInternals;
 
     /// <summary>
     /// Constructor for initializing a new instance of the BaseBot class, which should be used when
@@ -33,7 +33,7 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     public BaseBot()
     {
-      __internals = new BaseBotInternals(this, null, null);
+      __baseBotInternals = new BaseBotInternals(this, null, null);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
     public BaseBot(BotInfo botInfo)
     {
-      __internals = new BaseBotInternals(this, botInfo, null);
+      __baseBotInternals = new BaseBotInternals(this, botInfo, null);
     }
 
     /// <summary>
@@ -54,80 +54,80 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="serverUrl">Is the server URI</param>
     public BaseBot(BotInfo botInfo, Uri serverUrl)
     {
-      __internals = new BaseBotInternals(this, botInfo, serverUrl);
+      __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl);
     }
 
     /// <inheritdoc/>
     public void Start()
     {
-      __internals.Connect();
-      __internals.exitEvent.WaitOne();
+      __baseBotInternals.Connect();
+      __baseBotInternals.exitEvent.WaitOne();
     }
 
     /// <inheritdoc/>
     public void Go()
     {
-      __internals.SendIntent();
+      __baseBotInternals.SendIntent();
     }
 
     /// <inheritdoc/>
     public String Variant
     {
-      get => __internals.ServerHandshake.Variant;
+      get => __baseBotInternals.ServerHandshake.Variant;
     }
 
     /// <inheritdoc/>
     public String Version
     {
-      get => __internals.ServerHandshake.Version;
+      get => __baseBotInternals.ServerHandshake.Version;
     }
 
     /// <inheritdoc/>
     public int MyId
     {
-      get => __internals.MyId;
+      get => __baseBotInternals.MyId;
     }
 
     /// <inheritdoc/>
     public String GameType
     {
-      get => __internals.GameSetup.GameType;
+      get => __baseBotInternals.GameSetup.GameType;
     }
 
     /// <inheritdoc/>
     public int ArenaWidth
     {
-      get => __internals.GameSetup.ArenaWidth;
+      get => __baseBotInternals.GameSetup.ArenaWidth;
     }
 
     /// <inheritdoc/>
     public int ArenaHeight
     {
-      get => __internals.GameSetup.ArenaHeight;
+      get => __baseBotInternals.GameSetup.ArenaHeight;
     }
 
     /// <inheritdoc/>
     public int NumberOfRounds
     {
-      get => __internals.GameSetup.NumberOfRounds;
+      get => __baseBotInternals.GameSetup.NumberOfRounds;
     }
 
     /// <inheritdoc/>
     public double GunCoolingRate
     {
-      get => __internals.GameSetup.GunCoolingRate;
+      get => __baseBotInternals.GameSetup.GunCoolingRate;
     }
 
     /// <inheritdoc/>
     public int? MaxInactivityTurns
     {
-      get => __internals.GameSetup.MaxInactivityTurns;
+      get => __baseBotInternals.GameSetup.MaxInactivityTurns;
     }
 
     /// <inheritdoc/>
     public int TurnTimeout
     {
-      get => __internals.GameSetup.TurnTimeout;
+      get => __baseBotInternals.GameSetup.TurnTimeout;
     }
 
     /// <inheritdoc/>
@@ -135,33 +135,33 @@ namespace Robocode.TankRoyale.BotApi
     {
       get
       {
-        long passesMicroSeconds = (DateTime.Now.Ticks - __internals.TicksStart) / 10;
-        return (int)(__internals.GameSetup.TurnTimeout - passesMicroSeconds);
+        long passesMicroSeconds = (DateTime.Now.Ticks - __baseBotInternals.TicksStart) / 10;
+        return (int)(__baseBotInternals.GameSetup.TurnTimeout - passesMicroSeconds);
       }
     }
 
     /// <inheritdoc/>
     public int RoundNumber
     {
-      get => __internals.CurrentTick.RoundNumber;
+      get => __baseBotInternals.CurrentTick.RoundNumber;
     }
 
     /// <inheritdoc/>
     public int TurnNumber
     {
-      get => __internals.CurrentTick.TurnNumber;
+      get => __baseBotInternals.CurrentTick.TurnNumber;
     }
 
     /// <inheritdoc>
     public int EnemyCount
     {
-      get => __internals.CurrentTick.EnemyCount;
+      get => __baseBotInternals.CurrentTick.EnemyCount;
     }
 
     /// <inheritdoc/>
     public double Energy
     {
-      get => __internals.CurrentTick.BotState.Energy;
+      get => __baseBotInternals.CurrentTick.BotState.Energy;
     }
 
     /// <inheritdoc/>
@@ -173,55 +173,55 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public double X
     {
-      get => __internals.CurrentTick.BotState.X;
+      get => __baseBotInternals.CurrentTick.BotState.X;
     }
 
     /// <inheritdoc/>
     public double Y
     {
-      get => __internals.CurrentTick.BotState.Y;
+      get => __baseBotInternals.CurrentTick.BotState.Y;
     }
 
     /// <inheritdoc/>
     public double Direction
     {
-      get => __internals.CurrentTick.BotState.Direction;
+      get => __baseBotInternals.CurrentTick.BotState.Direction;
     }
 
     /// <inheritdoc/>
     public double GunDirection
     {
-      get => __internals.CurrentTick.BotState.GunDirection;
+      get => __baseBotInternals.CurrentTick.BotState.GunDirection;
     }
 
     /// <inheritdoc/>
     public double RadarDirection
     {
-      get => __internals.CurrentTick.BotState.RadarDirection;
+      get => __baseBotInternals.CurrentTick.BotState.RadarDirection;
     }
 
     /// <inheritdoc/>
     public double Speed
     {
-      get => __internals.CurrentTick.BotState.Speed;
+      get => __baseBotInternals.CurrentTick.BotState.Speed;
     }
 
     /// <inheritdoc/>
     public double GunHeat
     {
-      get => __internals.CurrentTick.BotState.GunHeat;
+      get => __baseBotInternals.CurrentTick.BotState.GunHeat;
     }
 
     /// <inheritdoc/>
     public IEnumerable<BulletState> BulletStates
     {
-      get => __internals.CurrentTick.BulletStates;
+      get => __baseBotInternals.CurrentTick.BulletStates;
     }
 
     /// <inheritdoc/>
     public IEnumerable<Event> Events
     {
-      get => __internals.CurrentTick.Events;
+      get => __baseBotInternals.CurrentTick.Events;
     }
 
     /// <inheritdoc/>
@@ -237,9 +237,9 @@ namespace Robocode.TankRoyale.BotApi
         {
           value = ((IBaseBot)this).MaxTurnRate * (value > 0 ? 1 : -1);
         }
-        __internals.BotIntent.TurnRate = value;
+        __baseBotInternals.BotIntent.TurnRate = value;
       }
-      get => __internals.BotIntent.TurnRate ?? 0d;
+      get => __baseBotInternals.BotIntent.TurnRate ?? 0d;
     }
 
     /// <inheritdoc/>
@@ -259,9 +259,9 @@ namespace Robocode.TankRoyale.BotApi
         {
           value = ((IBaseBot)this).MaxGunTurnRate * (value > 0 ? 1 : -1);
         }
-        __internals.BotIntent.GunTurnRate = value;
+        __baseBotInternals.BotIntent.GunTurnRate = value;
       }
-      get => __internals.BotIntent.GunTurnRate ?? 0d;
+      get => __baseBotInternals.BotIntent.GunTurnRate ?? 0d;
     }
 
     /// <inheritdoc/>
@@ -281,9 +281,9 @@ namespace Robocode.TankRoyale.BotApi
         {
           value = ((IBaseBot)this).MaxRadarTurnRate * (value > 0 ? 1 : -1);
         }
-        __internals.BotIntent.RadarTurnRate = value;
+        __baseBotInternals.BotIntent.RadarTurnRate = value;
       }
-      get => __internals.BotIntent.RadarTurnRate ?? 0d;
+      get => __baseBotInternals.BotIntent.RadarTurnRate ?? 0d;
     }
 
     /// <inheritdoc/>
@@ -303,91 +303,89 @@ namespace Robocode.TankRoyale.BotApi
         {
           value = ((IBaseBot)this).MaxBackwardSpeed;
         }
-        __internals.BotIntent.TargetSpeed = value;
+        __baseBotInternals.BotIntent.TargetSpeed = value;
       }
-      get => __internals.BotIntent.TargetSpeed ?? 0d;
+      get => __baseBotInternals.BotIntent.TargetSpeed ?? 0d;
     }
 
     /// <inheritdoc/>
-    public double Firepower
+    public bool SetFirepower(double firepower)
     {
-      set
+      if (Double.IsNaN(firepower))
       {
-        if (Double.IsNaN(value))
-        {
-          throw new ArgumentException("Firepower cannot be NaN");
-        }
-        if (GunHeat == 0)
-        {
-          if (value < ((IBaseBot)this).MinFirepower)
-          {
-            value = 0;
-          }
-          else if (value > ((IBaseBot)this).MaxFirepower)
-          {
-            value = ((IBaseBot)this).MaxFirepower;
-          }
-          __internals.BotIntent.Firepower = value;
-        }
+        throw new ArgumentException("Firepower cannot be NaN");
       }
-      get => __internals.BotIntent.Firepower ?? 0d;
+      if (GunHeat > 0)
+      {
+        return false; // cannot fire yet
+      }
+      if (firepower < ((IBaseBot)this).MinFirepower)
+      {
+        firepower = 0;
+      }
+      else if (firepower > ((IBaseBot)this).MaxFirepower)
+      {
+        firepower = ((IBaseBot)this).MaxFirepower;
+      }
+      __baseBotInternals.BotIntent.Firepower = firepower;
+      return true;
     }
 
     /// <inheritdoc/>
     public bool DoAdjustGunForBodyTurn
     {
-      set => __internals.doAdjustGunForBodyTurn = value;
-      get => __internals.doAdjustGunForBodyTurn;
+      set => __baseBotInternals.doAdjustGunForBodyTurn = value;
+      get => __baseBotInternals.doAdjustGunForBodyTurn;
     }
 
     /// <inheritdoc/>
     public bool DoAdjustRadarForGunTurn
     {
-      set => __internals.doAdjustRadarForGunTurn = value;
-      get => __internals.doAdjustRadarForGunTurn;
+      set => __baseBotInternals.doAdjustRadarForGunTurn = value;
+      get => __baseBotInternals.doAdjustRadarForGunTurn;
     }
 
     /// <inheritdoc/>
-    public int? GetBodyColor() => __internals.CurrentTick.BotState.BodyColor;
+    public int? GetBodyColor() => __baseBotInternals.CurrentTick.BotState.BodyColor;
 
     /// <inheritdoc/>
-    public void SetBodyColor(string bodyColor) => __internals.BotIntent.BodyColor = bodyColor;
+    public void SetBodyColor(string bodyColor) => __baseBotInternals.BotIntent.BodyColor = bodyColor;
 
     /// <inheritdoc/>
-    public int? GetTurretColor() => __internals.CurrentTick.BotState.TurretColor;
+    public int? GetTurretColor() => __baseBotInternals.CurrentTick.BotState.TurretColor;
 
     /// <inheritdoc/>
-    public void SetTurretColor(string turretColor) => __internals.BotIntent.TurretColor = turretColor;
+    public void SetTurretColor(string turretColor) => __baseBotInternals.BotIntent.TurretColor = turretColor;
 
     /// <inheritdoc/>
-    public int? GetRadarColor() => __internals.CurrentTick.BotState.RadarColor;
+    public int? GetRadarColor() => __baseBotInternals.CurrentTick.BotState.RadarColor;
 
     /// <inheritdoc/>
-    public void SetRadarColor(string radarColor) => __internals.BotIntent.RadarColor = radarColor;
+    public void SetRadarColor(string radarColor) => __baseBotInternals.BotIntent.RadarColor = radarColor;
 
     /// <inheritdoc/>
-    public int? GetBulletColor() => __internals.CurrentTick.BotState.BulletColor;
+    public int? GetBulletColor() => __baseBotInternals.CurrentTick.BotState.BulletColor;
 
     /// <inheritdoc/>
-    public void SetBulletColor(string bulletColor) => __internals.BotIntent.BulletColor = bulletColor;
+    public void SetBulletColor(string bulletColor) => __baseBotInternals.BotIntent.BulletColor = bulletColor;
 
     /// <inheritdoc/>
-    public int? GetScanColor() => __internals.CurrentTick.BotState.ScanColor;
+    public int? GetScanColor() => __baseBotInternals.CurrentTick.BotState.ScanColor;
 
     /// <inheritdoc/>
-    public void SetScanColor(string scanColor) => __internals.BotIntent.ScanColor = scanColor;
+    public void SetScanColor(string scanColor) => __baseBotInternals.BotIntent.ScanColor = scanColor;
 
     /// <inheritdoc/>
-    public int? GetTracksColor() => __internals.CurrentTick.BotState.TracksColor;
+    public int? GetTracksColor() => __baseBotInternals.CurrentTick.BotState.TracksColor;
 
     /// <inheritdoc/>
-    public void SetTracksColor(string tracksColor) => __internals.BotIntent.TracksColor = tracksColor;
+    public void SetTracksColor(string tracksColor) => __baseBotInternals.BotIntent.TracksColor = tracksColor;
 
     /// <inheritdoc/>
-    public int? GetGunColor() => __internals.CurrentTick.BotState.GunColor;
+    public int? GetGunColor() => __baseBotInternals.CurrentTick.BotState.GunColor;
 
     /// <inheritdoc/>
-    public void SetGunColor(string gunColor) => __internals.BotIntent.GunColor = gunColor;
+    public void SetGunColor(string gunColor) => __baseBotInternals.BotIntent.GunColor = gunColor;
 
     /// <inheritdoc/>
     public double CalcMaxTurnRate(double speed) => ((IBaseBot)this).MaxTurnRate - 0.75 * Math.Abs(speed);

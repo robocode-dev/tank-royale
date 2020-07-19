@@ -50,7 +50,6 @@ namespace Robocode.TankRoyale.BotApi
     internal BotEvents(IBaseBot baseBot)
     {
       this.baseBot = baseBot;
-
       init();
     }
 
@@ -169,7 +168,6 @@ namespace Robocode.TankRoyale.BotApi
 
           case BulletFiredEvent bulletFiredEvent:
             // Stop firing, when bullet has fired
-            baseBot.Firepower = 0d;
             OnBulletFired(bulletFiredEvent);
             break;
 

@@ -21,11 +21,10 @@ namespace Robocode.TankRoyale.BotApi
       private const string TickNotAvailableMsg =
         "Game is not running or tick has not occurred yet. Make sure OnTick() event handler has been called first";
 
-      private readonly IBaseBot baseBot;
       private readonly BotInfo botInfo;
       internal readonly BotEvents botEvents;
 
-      private readonly BotIntent botIntent = new BotIntent();
+      internal BotIntent botIntent = new BotIntent();
 
       // Server connection
       private WebSocketClient socket;
@@ -47,7 +46,6 @@ namespace Robocode.TankRoyale.BotApi
 
       internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUri)
       {
-        this.baseBot = baseBot;
         this.botEvents = new BotEvents(baseBot);
         this.botInfo = (botInfo == null) ? EnvVars.GetBotInfo() : botInfo;
         this.doDispatchEvents = !(baseBot is IBot);
@@ -60,6 +58,8 @@ namespace Robocode.TankRoyale.BotApi
         socket = new WebSocketClient((serverUri == null) ? ServerUriFromSetting : serverUri);
 
         botIntent.Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotIntent); // must be set
+
+        botEvents.onBulletFiredManager.Add(HandleBulletFired);
       }
 
       internal void Connect()
@@ -315,6 +315,11 @@ namespace Robocode.TankRoyale.BotApi
         {
           botEvents.DispatchEvents(currentTick);
         }
+      }
+
+      private void HandleBulletFired(BulletFiredEvent bulletFiredEvent)
+      {
+        botIntent.Firepower = 0; // Reset firepower so the bot stops firing continuously
       }
     }
   }

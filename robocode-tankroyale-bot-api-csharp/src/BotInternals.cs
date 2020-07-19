@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Robocode.TankRoyale.Schema;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -25,7 +26,7 @@ namespace Robocode.TankRoyale.BotApi
       private bool isCollidingWithBot;
       private bool isOverDriving;
 
-      private TickEvent currentTurn;
+      private TickEvent currentTick;
 
       internal Thread thread;
       private readonly Object nextTurn = new Object();
@@ -33,10 +34,13 @@ namespace Robocode.TankRoyale.BotApi
       private volatile bool isRunning;
 
       private bool isStopped;
+      private BotIntent savedBotIntent;
       private double savedDistanceRemaining;
       private double savedTurnRemaining;
       private double savedGunTurnRemaining;
       private double savedRadarTurnRemaining;
+
+      private int awaitTurn = -1;
 
       public BotInternals(IBot bot, BotEvents botEvents)
       {
@@ -50,7 +54,7 @@ namespace Robocode.TankRoyale.BotApi
         this.maxGunTurnRate = bot.MaxGunTurnRate;
         this.maxRadarTurnRate = bot.MaxRadarTurnRate;
 
-        var internals = ((BaseBot)bot).__internals;
+        var internals = ((BaseBot)bot).__baseBotInternals;
 
         botEvents.onDisconnectedManager.Add((OnDisconnected));
         botEvents.onGameEndedManager.Add(OnGameEnded);
@@ -65,9 +69,14 @@ namespace Robocode.TankRoyale.BotApi
         get => isRunning;
       }
 
+      internal bool IsStopped
+      {
+        get => isStopped;
+      }
+
       private void OnTick(TickEvent evt)
       {
-        currentTurn = evt;
+        currentTick = evt;
         ProcessTurn();
       }
 
@@ -116,7 +125,7 @@ namespace Robocode.TankRoyale.BotApi
         isCollidingWithBot = false;
 
         // If this is the first turn -> Call the run method on the Bot class
-        if (currentTurn.TurnNumber == 1)
+        if (currentTick.TurnNumber == 1)
         {
           if (isRunning)
           {
@@ -367,10 +376,31 @@ namespace Robocode.TankRoyale.BotApi
       {
         if (!isStopped)
         {
+          var botIntent = ((BaseBot)bot).__baseBotInternals.botIntent;
+          savedBotIntent = botIntent;
+
+          var newIntent = new BotIntent();
+          newIntent.Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotIntent); // must be set
+          newIntent.TargetSpeed = 0d;
+          newIntent.TurnRate = 0d;
+          newIntent.GunTurnRate = 0d;
+          newIntent.RadarTurnRate = 0d;
+          newIntent.Firepower = 0d;
+          newIntent.BodyColor = botIntent.BodyColor;
+          newIntent.TurretColor = botIntent.TurretColor;
+          newIntent.GunColor = botIntent.GunColor;
+          newIntent.RadarColor = botIntent.RadarColor;
+          newIntent.BulletColor = botIntent.BulletColor;
+          newIntent.ScanColor = botIntent.ScanColor;
+          newIntent.TracksColor = botIntent.TracksColor;
+
+          ((BaseBot)bot).__baseBotInternals.botIntent = savedBotIntent;
+
           savedDistanceRemaining = distanceRemaining;
           savedTurnRemaining = turnRemaining;
           savedGunTurnRemaining = gunTurnRemaining;
           savedRadarTurnRemaining = radarTurnRemaining;
+
           isStopped = true;
         }
       }
@@ -379,10 +409,12 @@ namespace Robocode.TankRoyale.BotApi
       {
         if (isStopped)
         {
+          ((BaseBot)bot).__baseBotInternals.botIntent = savedBotIntent;
           distanceRemaining = savedDistanceRemaining;
           turnRemaining = savedTurnRemaining;
           gunTurnRemaining = savedGunTurnRemaining;
           radarTurnRemaining = savedRadarTurnRemaining;
+
           isStopped = false;
         }
       }
@@ -409,6 +441,17 @@ namespace Robocode.TankRoyale.BotApi
         Await(() => radarTurnRemaining == 0);
       }
 
+      internal void AwaitGunFired()
+      {
+        Await(() => bot.GunHeat > 0);
+      }
+
+      internal void AwaitNextTurn()
+      {
+        awaitTurn = currentTick.TurnNumber;
+        Await(() => currentTick.TurnNumber > awaitTurn);
+      }
+
       private void Await(Func<bool> condition)
       {
         lock (nextTurn)
@@ -420,7 +463,7 @@ namespace Robocode.TankRoyale.BotApi
             {
               // Wait for next turn
               Monitor.Wait(nextTurn);
-              botEvents.DispatchEvents(currentTurn);
+              botEvents.DispatchEvents(currentTick);
             }
             catch (ThreadInterruptedException)
             {
