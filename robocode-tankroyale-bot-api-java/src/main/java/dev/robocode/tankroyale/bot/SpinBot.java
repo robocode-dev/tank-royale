@@ -19,7 +19,7 @@ public class SpinBot extends Bot {
   }
 
   protected SpinBot() throws IOException {
-    super(BotInfo.fromFile("bot.properties"));
+    super(BotInfo.fromFile("spinbot.properties"));
   }
 
   /** SpinBot's run method - Move in a circle */

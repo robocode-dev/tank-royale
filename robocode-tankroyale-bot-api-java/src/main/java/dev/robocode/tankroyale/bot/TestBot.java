@@ -14,7 +14,7 @@ public class TestBot extends BaseBot {
   }
 
   protected TestBot() throws IOException {
-    super(BotInfo.fromFile("bot.properties"));
+    super(BotInfo.fromFile("testbot.properties"));
   }
 
   private Double targetX;

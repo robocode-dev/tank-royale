@@ -14,7 +14,7 @@ public class TestBot2 extends Bot {
   }
 
   protected TestBot2() throws IOException {
-    super(BotInfo.fromFile("bot.properties"));
+    super(BotInfo.fromFile("testbot2.properties"));
   }
 
   private double move = 200;

@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.bot;
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.events.BotDeathEvent;
-import dev.robocode.tankroyale.botapi.events.Event;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 
 import java.io.IOException;
@@ -72,9 +71,7 @@ public class Corners extends Bot {
 
   /** We saw another bot. Stop and fire! */
   @Override
-  public synchronized void onScannedBot(ScannedBotEvent e) {
-    System.out.println("onScannedBot: " + e.getTurnNumber());
-
+  public void onScannedBot(ScannedBotEvent e) {
     double distance = Math.hypot(e.getX() - getX(), e.getY() - getY());
 
     // Should we stop, or just fire?
@@ -96,7 +93,6 @@ public class Corners extends Bot {
    * @param robotDistance the distance to the robot to fire at
    */
   private void smartFire(double robotDistance) {
-    System.out.println("smartFire start");
     if (robotDistance > 200 || getEnergy() < 15) {
       fire(1);
     } else if (robotDistance > 50) {
@@ -104,7 +100,6 @@ public class Corners extends Bot {
     } else {
       fire(3);
     }
-    System.out.println("smartFire finished");
   }
 
   /** We died. Figure out if we need to switch to another corner. */
