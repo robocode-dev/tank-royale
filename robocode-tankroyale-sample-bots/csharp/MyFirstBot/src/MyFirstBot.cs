@@ -43,7 +43,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     public override void OnHitByBullet(BulletHitBotEvent evt)
     {
       // Calculate the bearing to the direction of the bullet
-      double bearing = evt.Bullet.Direction - Direction;
+      double bearing = CalcBearing(evt.Bullet.Direction);
 
       // Turn 90 degrees to the bullet direction based on the bearing
       TurnLeft(90 - bearing);

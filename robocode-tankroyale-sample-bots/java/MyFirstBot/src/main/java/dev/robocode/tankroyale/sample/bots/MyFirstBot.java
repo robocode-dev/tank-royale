@@ -23,7 +23,7 @@ public class MyFirstBot extends Bot {
 
   /** Constructor, which loads the bot settings file */
   protected MyFirstBot() throws IOException {
-    super(BotInfo.fromFile("bot.properties"));
+    super(BotInfo.fromFile("myfirstbot.properties"));
   }
 
   /** This method runs our bot program, where each command is executed one at a time in a loop. */
@@ -51,7 +51,7 @@ public class MyFirstBot extends Bot {
   @Override
   public void onHitByBullet(BulletHitBotEvent e) {
     // Calculate the bearing to the direction of the bullet
-    double bearing = e.getBullet().getDirection() - getDirection();
+    double bearing = calcBearing(e.getBullet().getDirection());
 
     // Turn 90 degrees to the bullet direction based on the bearing
     turnLeft(90 - bearing);

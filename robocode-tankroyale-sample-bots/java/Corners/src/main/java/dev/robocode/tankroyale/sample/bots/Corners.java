@@ -11,7 +11,7 @@ public class Corners extends Bot {
 
   int enemies; // Number of enemy robots in the game
   int corner = 0; // Which corner we are currently using
-  boolean stopWhenSeeRobot = false; // See goCorner()
+  volatile boolean stopWhenSeeRobot = false; // See goCorner()
 
   /** Main method starts our bot */
   public static void main(String[] args) throws IOException {
@@ -20,7 +20,7 @@ public class Corners extends Bot {
 
   /** Constructor, which loads the bot settings file */
   protected Corners() throws IOException {
-    super(BotInfo.fromFile("bot.properties"));
+    super(BotInfo.fromFile("corners.properties"));
   }
 
   /** This method runs our bot program, where each command is executed one at a time in a loop. */
@@ -72,21 +72,17 @@ public class Corners extends Bot {
   /** We saw another bot. Stop and fire! */
   @Override
   public void onScannedBot(ScannedBotEvent e) {
-    double distance = Math.hypot(e.getX() - getX(), e.getY() - getY());
+    double distance = distanceTo(e.getX(), e.getY());
 
     // Should we stop, or just fire?
     if (stopWhenSeeRobot) {
       // Stop movement
-      System.out.println("stop: " + this.getTurnNumber());
       stop();
       // Call our custom firing method
-      System.out.println("smartFire: " + this.getTurnNumber());
       smartFire(distance);
       // Resume movement
-      System.out.println("resume: " + this.getTurnNumber());
       resume();
     } else {
-      System.out.println("else smartFire: " + this.getTurnNumber());
       smartFire(distance);
     }
   }
@@ -94,12 +90,12 @@ public class Corners extends Bot {
   /**
    * Custom fire method that determines firepower based on distance.
    *
-   * @param robotDistance the distance to the robot to fire at
+   * @param distance the distance to the robot to fire at
    */
-  private void smartFire(double robotDistance) {
-    if (robotDistance > 200 || getEnergy() < 15) {
+  private void smartFire(double distance) {
+    if (distance > 200 || getEnergy() < 15) {
       fire(1);
-    } else if (robotDistance > 50) {
+    } else if (distance > 50) {
       fire(2);
     } else {
       fire(3);
@@ -122,7 +118,7 @@ public class Corners extends Bot {
       }
       System.out.println("I died and did poorly... switching corner to " + corner);
     } else {
-      System.out.println("I died but did well.  I will still use corner " + corner);
+      System.out.println("I died but did well. I will still use corner " + corner);
     }
   }
 }
