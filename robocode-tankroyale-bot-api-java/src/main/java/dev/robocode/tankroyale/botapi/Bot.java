@@ -9,7 +9,8 @@ import java.net.URI;
 @SuppressWarnings("unused")
 public abstract class Bot extends BaseBot implements IBot {
 
-  private final BotInternals __botInternals = new BotInternals(this, super.__baseBotInternals.botEvents);
+  private final BotInternals __botInternals =
+      new BotInternals(this, super.__baseBotInternals.botEvents);
 
   /**
    * Constructor for initializing a new instance of the BaseBot class, which should be used when
@@ -68,6 +69,8 @@ public abstract class Bot extends BaseBot implements IBot {
       throw new IllegalArgumentException("distance cannot be NaN");
     }
     __botInternals.distanceRemaining = distance;
+    double speed = __botInternals.getNewSpeed(getSpeed(), distance);
+    setTargetSpeed(speed);
   }
 
   /** {@inheritDoc} */
@@ -81,18 +84,13 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void setBack(double distance) {
-    if (Double.isNaN(distance)) {
-      throw new IllegalArgumentException("distance cannot be NaN");
-    }
-    __botInternals.distanceRemaining = -distance;
+    setForward(-distance);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void back(double distance) {
-    setBack(distance);
-    go();
-    __botInternals.awaitMovementComplete();
+    forward(-distance);
   }
 
   /** {@inheritDoc} */
@@ -119,6 +117,7 @@ public abstract class Bot extends BaseBot implements IBot {
       throw new IllegalArgumentException("degrees cannot be NaN");
     }
     __botInternals.turnRemaining = degrees;
+    __botInternals.setTurnRate();
   }
 
   /** {@inheritDoc} */
@@ -132,18 +131,13 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void setTurnRight(double degrees) {
-    if (Double.isNaN(degrees)) {
-      throw new IllegalArgumentException("degrees cannot be NaN");
-    }
-    __botInternals.turnRemaining = -degrees;
+    setTurnLeft(-degrees);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void turnRight(double degrees) {
-    setTurnRight(degrees);
-    go();
-    __botInternals.awaitTurnComplete();
+    turnLeft(-degrees);
   }
 
   /** {@inheritDoc} */
@@ -170,6 +164,7 @@ public abstract class Bot extends BaseBot implements IBot {
       throw new IllegalArgumentException("degrees cannot be NaN");
     }
     __botInternals.gunTurnRemaining = degrees;
+    __botInternals.setGunTurnRate();
   }
 
   /** {@inheritDoc} */
@@ -183,18 +178,13 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void setTurnGunRight(double degrees) {
-    if (Double.isNaN(degrees)) {
-      throw new IllegalArgumentException("degrees cannot be NaN");
-    }
-    __botInternals.gunTurnRemaining = -degrees;
+    setTurnGunLeft(-degrees);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void turnGunRight(double degrees) {
-    setTurnGunRight(degrees);
-    go();
-    __botInternals.awaitGunTurnComplete();
+    turnGunLeft(-degrees);
   }
 
   /** {@inheritDoc} */
@@ -221,6 +211,7 @@ public abstract class Bot extends BaseBot implements IBot {
       throw new IllegalArgumentException("degrees cannot be NaN");
     }
     __botInternals.radarTurnRemaining = degrees;
+    __botInternals.setRadarTurnRate();
   }
 
   /** {@inheritDoc} */
@@ -234,18 +225,13 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void setTurnRadarRight(double degrees) {
-    if (Double.isNaN(degrees)) {
-      throw new IllegalArgumentException("degrees cannot be NaN");
-    }
-    __botInternals.radarTurnRemaining = -degrees;
+    setTurnRadarLeft(-degrees);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void turnRadarRight(double degrees) {
-    setTurnRadarRight(degrees);
-    go();
-    __botInternals.awaitRadarTurnComplete();
+    turnRadarLeft(-degrees);
   }
 
   /** {@inheritDoc} */

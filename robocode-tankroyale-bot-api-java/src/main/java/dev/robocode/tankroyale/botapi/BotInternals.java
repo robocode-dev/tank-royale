@@ -1,10 +1,8 @@
 package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.TickEvent;
-import dev.robocode.tankroyale.schema.BotIntent;
-import dev.robocode.tankroyale.schema.BotReady;
 
-import static java.lang.Math.abs;
+import static java.lang.Math.*;
 
 final class BotInternals {
 
@@ -33,7 +31,6 @@ final class BotInternals {
   volatile boolean isRunning;
 
   boolean isStopped;
-  private BotIntent savedBotIntent;
   private double savedDistanceRemaining;
   private double savedTurnRemaining;
   private double savedGunTurnRemaining;
@@ -125,17 +122,19 @@ final class BotInternals {
 
   /** Updates the bot heading, gun heading, and radar heading. */
   private void updateHeadings() {
-    if (!isCollidingWithBot) {
-      updateTurnRemaining();
-    }
+    updateTurnRemaining();
     updateGunTurnRemaining();
     updateRadarTurnRemaining();
   }
 
   private void updateTurnRemaining() {
+    if (isCollidingWithBot) {
+      return;
+    }
+
     final double absTurnRate = abs(bot.getTurnRate());
 
-    double turnRate = Math.min(absTurnRate, bot.calcMaxTurnRate(bot.getSpeed()));
+    double turnRate = min(absTurnRate, bot.calcMaxTurnRate(bot.getSpeed()));
     if (bot.getTurnRemaining() < 0) {
       turnRate *= -1;
     }
@@ -150,11 +149,7 @@ final class BotInternals {
       }
       turnRemaining -= turnRate;
     }
-    if (turnRemaining > 0) {
-      bot.setTurnRate(Math.min(maxTurnRate, turnRemaining));
-    } else {
-      bot.setTurnRate(Math.max(-maxTurnRate, turnRemaining));
-    }
+    setTurnRate();
   }
 
   private void updateGunTurnRemaining() {
@@ -171,11 +166,7 @@ final class BotInternals {
       }
       gunTurnRemaining -= bot.getGunTurnRate();
     }
-    if (gunTurnRemaining > 0) {
-      bot.setGunTurnRate(Math.min(maxGunTurnRate, gunTurnRemaining));
-    } else {
-      bot.setGunTurnRate(Math.max(-maxGunTurnRate, gunTurnRemaining));
-    }
+    setGunTurnRate();
   }
 
   private void updateRadarTurnRemaining() {
@@ -186,11 +177,7 @@ final class BotInternals {
     } else {
       radarTurnRemaining -= bot.getRadarTurnRate();
     }
-    if (radarTurnRemaining > 0) {
-      bot.setRadarTurnRate(Math.min(maxRadarTurnRate, radarTurnRemaining));
-    } else {
-      bot.setRadarTurnRate(Math.max(-maxRadarTurnRate, radarTurnRemaining));
-    }
+    setRadarTurnRate();
   }
 
   /** Updates the movement. */
@@ -201,7 +188,6 @@ final class BotInternals {
     if (Double.isNaN(distance)) {
       distance = 0;
     }
-
     double speed = getNewSpeed(bot.getSpeed(), distance);
     bot.setTargetSpeed(speed);
 
@@ -221,6 +207,28 @@ final class BotInternals {
     distanceRemaining = distance - speed;
   }
 
+  void setTurnRate() {
+    double turnRate =
+        (turnRemaining > 0) ? min(maxTurnRate, turnRemaining) : max(-maxTurnRate, turnRemaining);
+    bot.setTurnRate(turnRate);
+  }
+
+  void setGunTurnRate() {
+    double gunTurnRate =
+        (gunTurnRemaining > 0)
+            ? min(maxGunTurnRate, gunTurnRemaining)
+            : max(-maxGunTurnRate, gunTurnRemaining);
+    bot.setGunTurnRate(gunTurnRate);
+  }
+
+  void setRadarTurnRate() {
+    double radarTurnRate =
+        (radarTurnRemaining > 0)
+            ? min(maxRadarTurnRate, radarTurnRemaining)
+            : max(-maxRadarTurnRate, radarTurnRemaining);
+    bot.setRadarTurnRate(radarTurnRate);
+  }
+
   /**
    * Returns the new speed based on the current speed and distance to move.
    *
@@ -231,7 +239,7 @@ final class BotInternals {
   // Credits for this algorithm goes to Patrick Cupka (aka Voidious),
   // Julian Kent (aka Skilgannon), and Positive:
   // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
-  private double getNewSpeed(double speed, double distance) {
+  double getNewSpeed(double speed, double distance) {
 
     if (distance < 0) {
       // If the distance is negative, then change it to be positive and change the sign of the
@@ -243,19 +251,18 @@ final class BotInternals {
     if (distance == Double.POSITIVE_INFINITY) {
       targetSpeed = maxSpeed;
     } else {
-      targetSpeed = Math.min(getMaxSpeed(distance), maxSpeed);
+      targetSpeed = min(getMaxSpeed(distance), maxSpeed);
     }
 
     if (speed >= 0) {
-      return Math.max(speed - ABS_DECELERATION, Math.min(targetSpeed, speed + IBot.ACCELERATION));
+      return max(speed - ABS_DECELERATION, min(targetSpeed, speed + IBot.ACCELERATION));
     } // else
-    return Math.max(
-        speed - IBot.ACCELERATION, Math.min(targetSpeed, speed + getMaxDeceleration(-speed)));
+    return max(speed - IBot.ACCELERATION, min(targetSpeed, speed + getMaxDeceleration(-speed)));
   }
 
   private double getMaxSpeed(double distance) {
     double decelTime =
-        Math.max(
+        max(
             1,
             Math.ceil( // sum of 0... decelTime, solving for decelTime using quadratic formula
                 (Math.sqrt((4 * 2 / ABS_DECELERATION) * distance + 1) - 1) / 2));
@@ -276,7 +283,7 @@ final class BotInternals {
     double decelTime = speed / ABS_DECELERATION;
     double accelTime = (1 - decelTime);
 
-    return Math.min(1, decelTime) * ABS_DECELERATION + Math.max(0, accelTime) * IBot.ACCELERATION;
+    return min(1, decelTime) * ABS_DECELERATION + max(0, accelTime) * IBot.ACCELERATION;
   }
 
   private double getDistanceTraveledUntilStop(double speed) {
@@ -290,30 +297,15 @@ final class BotInternals {
 
   void stop() {
     if (!isStopped) {
-      final BotIntent botIntent = bot.__baseBotInternals.botIntent;
-      savedBotIntent = botIntent;
-
-      BotIntent newIntent = new BotIntent();
-      newIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
-      newIntent.setTargetSpeed(0d);
-      newIntent.setTurnRate(0d);
-      newIntent.setGunTurnRate(0d);
-      newIntent.setRadarTurnRate(0d);
-      newIntent.setFirepower(0d);
-      newIntent.setBodyColor(botIntent.getBodyColor());
-      newIntent.setTurretColor(botIntent.getTurretColor());
-      newIntent.setGunColor(botIntent.getGunColor());
-      newIntent.setRadarColor(botIntent.getRadarColor());
-      newIntent.setBulletColor(botIntent.getBulletColor());
-      newIntent.setScanColor(botIntent.getScanColor());
-      newIntent.setTracksColor(botIntent.getTracksColor());
-
-      bot.__baseBotInternals.botIntent = newIntent;
-
       savedDistanceRemaining = distanceRemaining;
       savedTurnRemaining = turnRemaining;
       savedGunTurnRemaining = gunTurnRemaining;
       savedRadarTurnRemaining = radarTurnRemaining;
+
+      distanceRemaining = 0d;
+      turnRemaining = 0d;
+      gunTurnRemaining = 0d;
+      radarTurnRemaining = 0d;
 
       isStopped = true;
     }
@@ -321,7 +313,6 @@ final class BotInternals {
 
   void resume() {
     if (isStopped) {
-      bot.__baseBotInternals.botIntent = savedBotIntent;
       distanceRemaining = savedDistanceRemaining;
       turnRemaining = savedTurnRemaining;
       gunTurnRemaining = savedGunTurnRemaining;

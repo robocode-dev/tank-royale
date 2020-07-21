@@ -235,7 +235,7 @@ namespace Robocode.TankRoyale.BotApi
         }
         if (Math.Abs(value) > ((IBaseBot)this).MaxTurnRate)
         {
-          value = ((IBaseBot)this).MaxTurnRate * (value > 0 ? 1 : -1);
+          value = ((IBaseBot)this).MaxTurnRate * Math.Sign(value);
         }
         __baseBotInternals.BotIntent.TurnRate = value;
       }
@@ -257,7 +257,7 @@ namespace Robocode.TankRoyale.BotApi
         }
         if (Math.Abs(value) > ((IBaseBot)this).MaxGunTurnRate)
         {
-          value = ((IBaseBot)this).MaxGunTurnRate * (value > 0 ? 1 : -1);
+          value = ((IBaseBot)this).MaxGunTurnRate * Math.Sign(value);
         }
         __baseBotInternals.BotIntent.GunTurnRate = value;
       }
@@ -279,7 +279,7 @@ namespace Robocode.TankRoyale.BotApi
         }
         if (Math.Abs(value) > ((IBaseBot)this).MaxRadarTurnRate)
         {
-          value = ((IBaseBot)this).MaxRadarTurnRate * (value > 0 ? 1 : -1);
+          value = ((IBaseBot)this).MaxRadarTurnRate * Math.Sign(value);
         }
         __baseBotInternals.BotIntent.RadarTurnRate = value;
       }

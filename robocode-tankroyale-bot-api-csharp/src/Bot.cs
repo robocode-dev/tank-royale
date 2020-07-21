@@ -61,6 +61,8 @@ namespace Robocode.TankRoyale.BotApi
         throw new ArgumentException("distance cannot be NaN");
       }
       __botInternals.distanceRemaining = distance;
+      double speed = __botInternals.GetNewSpeed(Speed, distance);
+      TargetSpeed = speed;
     }
 
     /// <inheritdoc/>
@@ -74,19 +76,13 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void SetBack(double distance)
     {
-      if (Double.IsNaN(distance))
-      {
-        throw new ArgumentException("distance cannot be NaN");
-      }
-      __botInternals.distanceRemaining = -distance;
+      SetForward(-distance);
     }
 
     /// <inheritdoc/>
     public void Back(double distance)
     {
-      SetBack(distance);
-      Go();
-      __botInternals.AwaitMovementComplete();
+      Forward(-distance);
     }
 
     /// <inheritdoc/>
@@ -114,6 +110,7 @@ namespace Robocode.TankRoyale.BotApi
         throw new ArgumentException("degrees cannot be NaN");
       }
       __botInternals.turnRemaining = degrees;
+      __botInternals.SetTurnRate();
     }
 
     /// <inheritdoc/>
@@ -127,19 +124,13 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void SetTurnRight(double degrees)
     {
-      if (Double.IsNaN(degrees))
-      {
-        throw new ArgumentException("degrees cannot be NaN");
-      }
-      __botInternals.turnRemaining = -degrees;
+      SetTurnLeft(-degrees);
     }
 
     /// <inheritdoc/>
     public void TurnRight(double degrees)
     {
-      SetTurnRight(degrees);
-      Go();
-      __botInternals.AwaitTurnComplete();
+      TurnLeft(-degrees);
     }
 
     /// <inheritdoc/>
@@ -167,6 +158,7 @@ namespace Robocode.TankRoyale.BotApi
         throw new ArgumentException("degrees cannot be NaN");
       }
       __botInternals.gunTurnRemaining = degrees;
+      __botInternals.SetGunTurnRate();
     }
 
     /// <inheritdoc/>
@@ -180,19 +172,13 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void SetTurnGunRight(double degrees)
     {
-      if (Double.IsNaN(degrees))
-      {
-        throw new ArgumentException("degrees cannot be NaN");
-      }
-      __botInternals.gunTurnRemaining = -degrees;
+      SetTurnGunLeft(-degrees);
     }
 
     /// <inheritdoc/>
     public void TurnGunRight(double degrees)
     {
-      SetTurnGunRight(degrees);
-      Go();
-      __botInternals.awaitGunTurnComplete();
+      TurnGunLeft(-degrees);
     }
 
     /// <inheritdoc/>
@@ -220,6 +206,7 @@ namespace Robocode.TankRoyale.BotApi
         throw new ArgumentException("degrees cannot be NaN");
       }
       __botInternals.radarTurnRemaining = degrees;
+      __botInternals.SetRadarTurnRate();
     }
 
     /// <inheritdoc/>
@@ -233,19 +220,13 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void SetTurnRadarRight(double degrees)
     {
-      if (Double.IsNaN(degrees))
-      {
-        throw new ArgumentException("degrees cannot be NaN");
-      }
-      __botInternals.radarTurnRemaining = -degrees;
+      SetTurnRadarLeft(-degrees);
     }
 
     /// <inheritdoc/>
     public void TurnRadarRight(double degrees)
     {
-      SetTurnRadarRight(degrees);
-      Go();
-      __botInternals.awaitRadarTurnComplete();
+      TurnRadarRight(-degrees);
     }
 
     /// <inheritdoc/>

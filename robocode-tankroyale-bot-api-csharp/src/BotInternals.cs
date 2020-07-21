@@ -34,7 +34,6 @@ namespace Robocode.TankRoyale.BotApi
       private volatile bool isRunning;
 
       private bool isStopped;
-      private BotIntent savedBotIntent;
       private double savedDistanceRemaining;
       private double savedTurnRemaining;
       private double savedGunTurnRemaining;
@@ -169,16 +168,18 @@ namespace Robocode.TankRoyale.BotApi
       /** Updates the bot heading, gun heading, and radar heading. */
       private void UpdateHeadings()
       {
-        if (!isCollidingWithBot)
-        {
-          UpdateTurnRemaining();
-        }
+        UpdateTurnRemaining();
         UpdateGunTurnRemaining();
         UpdateRadarTurnRemaining();
       }
 
       private void UpdateTurnRemaining()
       {
+        if (isCollidingWithBot)
+        {
+          return;
+        }
+
         double absTurnRate = Math.Abs(bot.TurnRate);
 
         double turnRate = Math.Min(absTurnRate, bot.CalcMaxTurnRate(bot.Speed));
@@ -202,14 +203,7 @@ namespace Robocode.TankRoyale.BotApi
           }
           turnRemaining -= turnRate;
         }
-        if (turnRemaining > 0)
-        {
-          bot.TurnRate = Math.Min(maxTurnRate, turnRemaining);
-        }
-        else
-        {
-          bot.TurnRate = Math.Max(-maxTurnRate, turnRemaining);
-        }
+        SetTurnRate();
       }
 
       private void UpdateGunTurnRemaining()
@@ -232,14 +226,7 @@ namespace Robocode.TankRoyale.BotApi
           }
           gunTurnRemaining -= bot.GunTurnRate;
         }
-        if (gunTurnRemaining > 0)
-        {
-          bot.GunTurnRate = Math.Min(maxGunTurnRate, gunTurnRemaining);
-        }
-        else
-        {
-          bot.GunTurnRate = Math.Max(-maxGunTurnRate, gunTurnRemaining);
-        }
+        SetGunTurnRate();
       }
 
       private void UpdateRadarTurnRemaining()
@@ -254,14 +241,7 @@ namespace Robocode.TankRoyale.BotApi
         {
           radarTurnRemaining -= bot.RadarTurnRate;
         }
-        if (radarTurnRemaining > 0)
-        {
-          bot.RadarTurnRate = Math.Min(maxRadarTurnRate, radarTurnRemaining);
-        }
-        else
-        {
-          bot.RadarTurnRate = Math.Max(-maxRadarTurnRate, radarTurnRemaining);
-        }
+        SetRadarTurnRate();
       }
 
       // This is Nat Pavasants method described here:
@@ -295,6 +275,27 @@ namespace Robocode.TankRoyale.BotApi
         distanceRemaining = distance - speed;
       }
 
+      internal void SetTurnRate()
+      {
+        bot.TurnRate = (turnRemaining > 0)
+          ? Math.Min(maxTurnRate, turnRemaining)
+          : Math.Max(-maxTurnRate, turnRemaining);
+      }
+
+      internal void SetGunTurnRate()
+      {
+        bot.GunTurnRate = (gunTurnRemaining > 0)
+          ? Math.Min(maxGunTurnRate, gunTurnRemaining)
+          : Math.Max(-maxGunTurnRate, gunTurnRemaining);
+      }
+
+      internal void SetRadarTurnRate()
+      {
+        bot.RadarTurnRate = (radarTurnRemaining > 0)
+          ? Math.Min(maxRadarTurnRate, radarTurnRemaining)
+          : Math.Max(-maxRadarTurnRate, radarTurnRemaining);
+      }
+
       /// <summary>
       /// Returns the new speed based on the current speed and distance to move.
       ///
@@ -305,7 +306,7 @@ namespace Robocode.TankRoyale.BotApi
       // Credits for this algorithm goes to Patrick Cupka (aka Voidious), Julian Kent (aka
       // Skilgannon), and Positive:
       // http://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
-      private double GetNewSpeed(double speed, double distance)
+      internal double GetNewSpeed(double speed, double distance)
       {
         if (distance < 0)
         {
@@ -376,30 +377,15 @@ namespace Robocode.TankRoyale.BotApi
       {
         if (!isStopped)
         {
-          var botIntent = ((BaseBot)bot).__baseBotInternals.botIntent;
-          savedBotIntent = botIntent;
-
-          var newIntent = new BotIntent();
-          newIntent.Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotIntent); // must be set
-          newIntent.TargetSpeed = 0d;
-          newIntent.TurnRate = 0d;
-          newIntent.GunTurnRate = 0d;
-          newIntent.RadarTurnRate = 0d;
-          newIntent.Firepower = 0d;
-          newIntent.BodyColor = botIntent.BodyColor;
-          newIntent.TurretColor = botIntent.TurretColor;
-          newIntent.GunColor = botIntent.GunColor;
-          newIntent.RadarColor = botIntent.RadarColor;
-          newIntent.BulletColor = botIntent.BulletColor;
-          newIntent.ScanColor = botIntent.ScanColor;
-          newIntent.TracksColor = botIntent.TracksColor;
-
-          ((BaseBot)bot).__baseBotInternals.botIntent = savedBotIntent;
-
           savedDistanceRemaining = distanceRemaining;
           savedTurnRemaining = turnRemaining;
           savedGunTurnRemaining = gunTurnRemaining;
           savedRadarTurnRemaining = radarTurnRemaining;
+
+          distanceRemaining = 0d;
+          turnRemaining = 0d;
+          gunTurnRemaining = 0d;
+          radarTurnRemaining = 0d;
 
           isStopped = true;
         }
@@ -409,7 +395,6 @@ namespace Robocode.TankRoyale.BotApi
       {
         if (isStopped)
         {
-          ((BaseBot)bot).__baseBotInternals.botIntent = savedBotIntent;
           distanceRemaining = savedDistanceRemaining;
           turnRemaining = savedTurnRemaining;
           gunTurnRemaining = savedGunTurnRemaining;

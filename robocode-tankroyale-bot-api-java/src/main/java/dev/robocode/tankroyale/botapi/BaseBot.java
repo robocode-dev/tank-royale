@@ -229,7 +229,7 @@ public abstract class BaseBot implements IBaseBot {
       throw new IllegalArgumentException("turnRate cannot be NaN");
     }
     if (Math.abs(turnRate) > MAX_TURN_RATE) {
-      turnRate = MAX_TURN_RATE * (turnRate > 0 ? 1 : -1);
+      turnRate = MAX_TURN_RATE * Math.signum(turnRate);
     }
     __baseBotInternals.botIntent.setTurnRate(turnRate);
   }
@@ -254,7 +254,7 @@ public abstract class BaseBot implements IBaseBot {
       gunTurnRate -= getTurnRate();
     }
     if (Math.abs(gunTurnRate) > MAX_GUN_TURN_RATE) {
-      gunTurnRate = MAX_GUN_TURN_RATE * (gunTurnRate > 0 ? 1 : -1);
+      gunTurnRate = MAX_GUN_TURN_RATE * Math.signum(gunTurnRate);
     }
     __baseBotInternals.botIntent.setGunTurnRate(gunTurnRate);
   }
@@ -279,7 +279,7 @@ public abstract class BaseBot implements IBaseBot {
       radarTurnRate -= getGunTurnRate();
     }
     if (Math.abs(radarTurnRate) > MAX_RADAR_TURN_RATE) {
-      radarTurnRate = MAX_RADAR_TURN_RATE * (radarTurnRate > 0 ? 1 : -1);
+      radarTurnRate = MAX_RADAR_TURN_RATE * Math.signum(radarTurnRate);
     }
     __baseBotInternals.botIntent.setRadarTurnRate(radarTurnRate);
   }

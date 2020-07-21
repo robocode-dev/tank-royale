@@ -11,7 +11,7 @@ public class Corners extends Bot {
 
   int enemies; // Number of enemy robots in the game
   int corner = 0; // Which corner we are currently using
-  boolean stopWhenSeeRobot = false; // See goCorner()
+  volatile boolean stopWhenSeeRobot = false; // See goCorner()
 
   /** Main method starts our bot */
   public static void main(String[] args) throws IOException {
