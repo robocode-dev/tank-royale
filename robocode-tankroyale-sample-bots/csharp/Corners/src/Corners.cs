@@ -52,8 +52,9 @@ namespace Robocode.TankRoyale.Sample.Bots
     {
       // We don't want to stop when we're just turning...
       stopWhenSeeRobot = false;
-      // turn to face the wall to the "right" of our desired corner.
-      TurnLeft(NormalizeRelativeDegrees(corner - Direction));
+
+      // turn to face the wall towards our desired corner.
+      TurnLeft(CalcBearing(corner));
       // Ok, now we don't want to crash into any robot in our way...
       stopWhenSeeRobot = true;
       // Move to that wall

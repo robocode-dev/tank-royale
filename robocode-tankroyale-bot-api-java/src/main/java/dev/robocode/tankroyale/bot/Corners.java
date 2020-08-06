@@ -55,8 +55,9 @@ public class Corners extends Bot {
   private void goCorner() {
     // We don't want to stop when we're just turning...
     stopWhenSeeRobot = false;
-    // turn to face the wall to the "right" of our desired corner.
-    turnLeft(normalizeRelativeDegrees(corner - getDirection()));
+
+    // turn to face the wall towards our desired corner.
+    turnLeft(calcBearing(corner));
     // Ok, now we don't want to crash into any robot in our way...
     stopWhenSeeRobot = true;
     // Move to that wall

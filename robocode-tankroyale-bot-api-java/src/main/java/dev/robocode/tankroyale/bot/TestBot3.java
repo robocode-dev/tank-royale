@@ -18,11 +18,14 @@ public class TestBot3 extends Bot {
   }
 
   public void run() {
-    double delta = (360 + (90 - getDirection())) % 360;
 
-    if (delta < 180)
-      turnLeft(delta);
-    else
-      turnRight(360 - delta);
+    while (isRunning()) {
+      turnLeft(calcBearing(90));
+      try {
+        Thread.sleep(1);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }
