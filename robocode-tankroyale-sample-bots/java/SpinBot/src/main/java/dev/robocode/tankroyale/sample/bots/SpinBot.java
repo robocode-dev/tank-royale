@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 import java.io.IOException;
 
 /**
- * SpinBot - a sample bot.
+ * SpinBot - a sample bot, original version by Mathew Nelson for Robocode.
  *
  * <p>Moves in a circle, firing hard when an enemy is detected.
  */

@@ -3,7 +3,7 @@ using Robocode.TankRoyale.BotApi;
 namespace Robocode.TankRoyale.Sample.Bots
 {
   /// <summary>
-  /// MyFirstBot - a sample bot.
+  /// MyFirstBot - a sample bot, original version by Mathew Nelson for Robocode.
   ///
   /// Probably the first bot you will learn about.
   ///

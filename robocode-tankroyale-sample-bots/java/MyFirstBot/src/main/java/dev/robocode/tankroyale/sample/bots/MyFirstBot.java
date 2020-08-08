@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 import java.io.IOException;
 
 /**
- * MyFirstBot - a sample bot.
+ * MyFirstBot - a sample bot, original version by Mathew Nelson for Robocode.
  *
  * <p>Probably the first bot you will learn about.
  *

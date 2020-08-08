@@ -7,6 +7,12 @@ import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 
 import java.io.IOException;
 
+/**
+ * Corners - a sample bot, original version by Mathew Nelson for Robocode.
+ *
+ * <p>This bot moves to a corner, then swings the gun back and forth. If it dies, it tries a new
+ * corner in the next round.
+ */
 public class Corners extends Bot {
 
   int enemies; // Number of enemy robots in the game

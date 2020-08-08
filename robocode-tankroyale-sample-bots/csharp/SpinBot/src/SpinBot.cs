@@ -3,7 +3,7 @@ using Robocode.TankRoyale.BotApi;
 namespace Robocode.TankRoyale.Sample.Bots
 {
   /// <summary>
-  /// SpinBot - a sample bot.
+  /// SpinBot - a sample bot, original version by Mathew Nelson for Robocode.
   ///
   /// Moves in a circle, firing hard when an enemy is detected.
   /// </summary>

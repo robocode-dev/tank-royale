@@ -3,6 +3,12 @@ using Robocode.TankRoyale.BotApi;
 
 namespace Robocode.TankRoyale.Sample.Bots
 {
+  /// <summary>
+  /// Corners - a sample bot, original version by Mathew Nelson for Robocode.
+  /// 
+  /// This bot moves to a corner, then swings the gun back and forth. If it dies, it tries a new
+  /// corner in the next round.
+  /// </summary>
   public class Corners : Bot
   {
 
