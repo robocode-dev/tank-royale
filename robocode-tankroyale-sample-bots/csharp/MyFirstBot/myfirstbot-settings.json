@@ -2,10 +2,10 @@
   "Bot": {
     "Name": "MyFirstBot",
     "Version": "1.0",
-    "Author": "Flemming Nørnberg Larsen",
+    "Author": "Mathew Nelson & Flemming N. Larsen",
     "Description": "This sample bot that is probably the first you need to learn",
     "Url": "",
-    "CountryCode": "dk",
+    "CountryCode": "us",
     "GameTypes": "melee, classic, 1v1",
     "ProgrammingLang": "C# 8.0"
   }
