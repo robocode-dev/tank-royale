@@ -267,6 +267,6 @@ class Tank(private val bot: BotState) {
     }
 
     private fun borderColor(color: Color): Color {
-        return if (color.lightness < 0.2) Color.DARK_GRAY else BLACK
+        return if (color.lightness < 0.15) Color.DARK_GRAY else BLACK
     }
 }
