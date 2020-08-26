@@ -707,4 +707,23 @@ public interface IBot extends IBaseBot {
    * @see #getRadarTurnRemaining()
    */
   void resume();
+
+  /**
+   * Blocks until a condition is met, i.e. when a {@link Condition#test()} returns true.
+   *
+   * @param condition is the condition that must be met before this method will stop waiting.
+   * @see Condition
+   * @see #onCondition(Condition)
+   */
+  void waitFor(Condition condition);
+
+  /**
+   * The event handler triggered when a condition has been met with the {@link #waitFor(Condition)}
+   * method. Use the {@link Condition#getName()} of the condition if you need to differ between
+   * multiple conditions being met.
+   *
+   * @param condition is the condition that has been met.
+   * @see #waitFor(Condition)
+   */
+  default void onCondition(Condition condition) {}
 }

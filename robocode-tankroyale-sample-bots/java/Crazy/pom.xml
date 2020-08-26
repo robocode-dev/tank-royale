@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
  
   <groupId>dev.robocode.tankroyale.sample.bots</groupId>
-  <artifactId>Corners</artifactId>
+  <artifactId>Crazy</artifactId>
   <version>1.0</version>
  
   <properties>
@@ -16,7 +16,7 @@
     <dependency>
       <groupId>dev.robocode.tankroyale</groupId>
       <artifactId>robocode-tankroyale-bot-api-java</artifactId>
-      <version>0.6.25</version>
+      <version>0.6.24</version>
     </dependency>
   </dependencies>
 </project>

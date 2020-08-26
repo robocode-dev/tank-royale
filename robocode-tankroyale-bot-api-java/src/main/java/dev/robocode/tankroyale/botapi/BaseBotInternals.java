@@ -296,7 +296,7 @@ final class BaseBotInternals {
     botEvents.onTick.publish(currentTick);
 
     if (doDispatchEvents) {
-      botEvents.dispatchEvents(currentTick);
+      botEvents.fireEvents(currentTick);
     }
   }
 

@@ -891,14 +891,14 @@ public interface IBaseBot {
   default void onBulletHit(BulletHitBotEvent bulletHitBotEvent) {}
 
   /**
-   * The event handler triggered a bullet fired from the bot has collided with another bullet.
+   * The event handler triggered when a bullet fired from the bot has collided with another bullet.
    *
    * @param bulletHitBulletEvent is the event details from the game.
    */
   default void onBulletHitBullet(BulletHitBulletEvent bulletHitBulletEvent) {}
 
   /**
-   * The event handler triggered a bullet has a wall.
+   * The event handler triggered when a bullet has hit a wall.
    *
    * @param bulletHitWallEvent is the event details from the game.
    */
@@ -934,6 +934,14 @@ public interface IBaseBot {
    * @param wonRoundEvent is the event details from the game.
    */
   default void onWonRound(WonRoundEvent wonRoundEvent) {}
+
+  /**
+   * The event handler triggered when a condition has been met. Use the {@link Condition#getName()}
+   * of the condition if you need to differ between multiple conditions being met.
+   *
+   * @param condition is the condition that has been met.
+   */
+  default void onCondition(Condition condition) {}
 
   /**
    * Calculates the maximum turn rate for a specific speed.

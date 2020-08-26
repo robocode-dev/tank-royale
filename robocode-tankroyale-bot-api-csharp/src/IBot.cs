@@ -686,5 +686,12 @@
     /// <seealso cref="GunTurnRemaining"/>
     /// <seealso cref="RadarTurnRemaining"/>
     void Resume();
+
+    /// <summary>
+    /// Blocks until a condition is met, i.e. when a <see cref="Condition.test()"/> returns <c>true</c>.
+    /// </summary>
+    /// <seealso cref="Condition"/>
+    /// <seealso cref="IBaseBot.OnCondition(Condition)"/>
+    void WaitFor(Condition condition);
   }
 }

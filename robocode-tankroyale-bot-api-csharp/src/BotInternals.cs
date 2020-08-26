@@ -1,6 +1,5 @@
 using System;
 using System.Threading;
-using Robocode.TankRoyale.Schema;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -23,6 +22,7 @@ namespace Robocode.TankRoyale.BotApi
       internal double gunTurnRemaining;
       internal double radarTurnRemaining;
 
+      private bool isCollidingWithWall;
       private bool isCollidingWithBot;
       private bool isOverDriving;
 
@@ -30,7 +30,6 @@ namespace Robocode.TankRoyale.BotApi
 
       internal Thread thread;
       private readonly Object nextTurn = new Object();
-
       private volatile bool isRunning;
 
       private bool isStopped;
@@ -55,12 +54,12 @@ namespace Robocode.TankRoyale.BotApi
 
         var internals = ((BaseBot)bot).__baseBotInternals;
 
-        botEvents.onDisconnectedManager.Add((OnDisconnected));
-        botEvents.onGameEndedManager.Add(OnGameEnded);
-        botEvents.onHitBotManager.Add(OnHitBot);
-        botEvents.onHitWallManager.Add(OnHitWall);
-        botEvents.onTickManager.Add(OnTick);
-        botEvents.onDeathManager.Add(OnDeath);
+        botEvents.onDisconnectedManager.Subscribe(OnDisconnected, 100);
+        botEvents.onGameEndedManager.Subscribe(OnGameEnded, 100);
+        botEvents.onHitBotManager.Subscribe(OnHitBot, 100);
+        botEvents.onHitWallManager.Subscribe(OnHitWall, 100);
+        botEvents.onTickManager.Subscribe(OnTick, 100);
+        botEvents.onDeathManager.Subscribe(OnDeath, 100);
       }
 
       internal bool IsRunning
@@ -73,12 +72,6 @@ namespace Robocode.TankRoyale.BotApi
         get => isStopped;
       }
 
-      private void OnTick(TickEvent evt)
-      {
-        currentTick = evt;
-        ProcessTurn();
-      }
-
       private void OnDisconnected(DisconnectedEvent evt)
       {
         StopThread();
@@ -87,6 +80,12 @@ namespace Robocode.TankRoyale.BotApi
       private void OnGameEnded(GameEndedEvent evt)
       {
         StopThread();
+      }
+
+      private void OnTick(TickEvent evt)
+      {
+        currentTick = evt;
+        ProcessTurn();
       }
 
       private void OnHitBot(BotHitBotEvent evt)
@@ -101,6 +100,7 @@ namespace Robocode.TankRoyale.BotApi
       private void OnHitWall(BotHitWallEvent evt)
       {
         distanceRemaining = 0;
+        isCollidingWithWall = true;
       }
 
       private void OnDeath(BotDeathEvent evt)
@@ -121,6 +121,8 @@ namespace Robocode.TankRoyale.BotApi
         }
         UpdateHeadings();
         UpdateMovement();
+
+        isCollidingWithWall = false;
         isCollidingWithBot = false;
 
         // If this is the first turn -> Call the run method on the Bot class
@@ -248,6 +250,11 @@ namespace Robocode.TankRoyale.BotApi
       // http://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
       private void UpdateMovement()
       {
+        if (isCollidingWithWall)
+        {
+          return;
+        }
+
         double distance = distanceRemaining;
         if (Double.IsNaN(distance))
         {
@@ -448,7 +455,7 @@ namespace Robocode.TankRoyale.BotApi
             {
               // Wait for next turn
               Monitor.Wait(nextTurn);
-              botEvents.DispatchEvents(currentTick);
+              botEvents.FireEvents(currentTick);
             }
             catch (ThreadInterruptedException)
             {
@@ -456,6 +463,12 @@ namespace Robocode.TankRoyale.BotApi
             }
           }
         }
+      }
+
+      public void WaitFor(Condition condition)
+      {
+        Await(condition.Test);
+        botEvents.FireConditionMet(condition);
       }
     }
   }

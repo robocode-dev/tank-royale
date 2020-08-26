@@ -12,28 +12,56 @@ namespace Robocode.TankRoyale.BotApi
     /// Delegate method used for declaring events.
     /// </summary>
     /// <param name="eventData"></param>
-    public delegate void EventHandler(T eventData);
+    public delegate void Subscriber(T eventData);
 
-    private List<EventHandler> handlers = new List<EventHandler>();
+    private List<EntryWithPriority> subscriberEntries = new List<EntryWithPriority>();
 
     /// <summary>
-    /// Adds an event handler.
+    /// Subscribe to events on the event manager.
     /// </summary>
-    /// <param name="handler">Is the event handler to add.</param>
-    public void Add(EventHandler handler)
+    /// <param name="subscriber">Is the subscriber that receives notifications when an event is triggered.</param>
+    /// <param name="priority">Is the priority of the event, where higher values means higher priorities.</param>
+    public void Subscribe(Subscriber subscriber, int priority)
     {
-      handlers.Add(handler);
+      subscriberEntries.Add(new EntryWithPriority(subscriber, priority));
     }
 
     /// <summary>
-    /// Invoke all event handlers in the same sequence as they were added.
+    /// Subscribe to events on the event manager.
     /// </summary>
-    /// <param name="eventData"></param>
-    public void InvokeAll(T eventData)
+    /// <param name="subscriber">Is the subscriber that receives notifications when an event is triggered.</param>
+    public void Subscribe(Subscriber subscriber)
     {
-      foreach (var handler in handlers)
+      Subscribe(subscriber, 1);
+    }
+
+    /// <summary>
+    /// Publish an event, which invokes all subscribers in the same sequence as they were added to the manager.
+    /// </summary>
+    /// <param name="eventData">Is the data for the event.</param>
+    public void Publish(T eventData)
+    {
+      subscriberEntries.Sort(compareByPriority);
+      foreach (var entry in new List<EntryWithPriority>(subscriberEntries))
       {
-        handler.Invoke(eventData);
+        entry.subscriber.Invoke(eventData);
+      }
+    }
+
+    public static int compareByPriority(EntryWithPriority e1, EntryWithPriority e2)
+    {
+      return e2.priority - e1.priority;
+    }
+
+    public class EntryWithPriority
+    {
+      public readonly int priority; // Lower values means lower priority
+      public readonly Subscriber subscriber;
+
+      public EntryWithPriority(Subscriber subscriber, int priority)
+      {
+        this.subscriber = subscriber;
+        this.priority = priority;
       }
     }
   }

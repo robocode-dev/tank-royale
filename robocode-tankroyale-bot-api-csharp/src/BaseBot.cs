@@ -477,5 +477,8 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <inheritdoc/>
     public virtual void OnWonRound(WonRoundEvent wonRoundEvent) { }
+
+    /// <inheritdoc/>
+    public virtual void OnCondition(Condition condition) { }
   }
 }

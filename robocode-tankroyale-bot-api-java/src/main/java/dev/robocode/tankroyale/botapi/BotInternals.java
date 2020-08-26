@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.botapi;
 
-import dev.robocode.tankroyale.botapi.events.TickEvent;
+import dev.robocode.tankroyale.botapi.events.*;
 
 import static java.lang.Math.*;
 
@@ -21,6 +21,7 @@ final class BotInternals {
   double gunTurnRemaining;
   double radarTurnRemaining;
 
+  private boolean isCollidingWithWall;
   private boolean isCollidingWithBot;
   private boolean isOverDriving;
 
@@ -42,29 +43,29 @@ final class BotInternals {
     this.bot = bot;
     this.botEvents = botEvents;
 
-    botEvents.onDisconnected.subscribe(e -> stopThread());
-    botEvents.onGameEnded.subscribe(e -> stopThread());
-    botEvents.onHitBot.subscribe(e -> onHitBot(e.isRammed()));
-    botEvents.onHitWall.subscribe(e -> onHitWall());
-    botEvents.onTick.subscribe(
-        e -> {
-          currentTick = e;
-          onTick();
-        });
-    botEvents.onBotDeath.subscribe(
-        e -> {
-          if (e.getVictimId() == bot.getMyId()) {
-            stopThread();
-          }
-        });
+    botEvents.onDisconnected.subscribe(this::onDisconnected, 100);
+    botEvents.onGameEnded.subscribe(this::onGameEnded, 100);
+    botEvents.onHitBot.subscribe(this::onHitBot, 100);
+    botEvents.onHitWall.subscribe(e -> onHitWall(), 100);
+    botEvents.onTick.subscribe(this::onTick, 100);
+    botEvents.onBotDeath.subscribe(this::onDeath, 100);
   }
 
-  private void onTick() {
+  private void onDisconnected(DisconnectedEvent e) {
+    stopThread();
+  }
+
+  private void onGameEnded(GameEndedEvent e) {
+    stopThread();
+  }
+
+  private void onTick(TickEvent e) {
+    currentTick = e;
     processTurn();
   }
 
-  private void onHitBot(boolean isRammed) {
-    if (isRammed) {
+  private void onHitBot(BotHitBotEvent e) {
+    if (e.isRammed()) {
       distanceRemaining = 0;
     }
     isCollidingWithBot = true;
@@ -72,6 +73,13 @@ final class BotInternals {
 
   private void onHitWall() {
     distanceRemaining = 0;
+    isCollidingWithWall = true;
+  }
+
+  private void onDeath(BotDeathEvent e) {
+    if (e.getVictimId() == bot.getMyId()) {
+      stopThread();
+    }
   }
 
   private void processTurn() {
@@ -82,6 +90,8 @@ final class BotInternals {
     }
     updateHeadings();
     updateMovement();
+
+    isCollidingWithWall = false;
     isCollidingWithBot = false;
 
     // If this is the first turn -> Call the run method on the Bot class
@@ -184,6 +194,10 @@ final class BotInternals {
   // This is Nat Pavasants method described here:
   // http://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
   private void updateMovement() {
+    if (isCollidingWithWall) {
+      return;
+    }
+
     double distance = distanceRemaining;
     if (Double.isNaN(distance)) {
       distance = 0;
@@ -357,12 +371,17 @@ final class BotInternals {
       while (isRunning && !condition.test()) {
         try {
           nextTurn.wait();
-          botEvents.dispatchEvents(currentTick);
+          botEvents.fireEvents(currentTick);
         } catch (InterruptedException e) {
           isRunning = false;
         }
       }
     }
+  }
+
+  protected void waitFor(Condition condition) {
+    await(condition::test);
+    botEvents.fireConditionMet(condition);
   }
 
   private interface ICondition {

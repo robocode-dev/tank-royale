@@ -277,5 +277,11 @@ namespace Robocode.TankRoyale.BotApi
         __botInternals.AwaitNextTurn();
       }
     }
+
+    /// <inheritdoc/>
+    public void WaitFor(Condition condition)
+    {
+      __botInternals.WaitFor(condition);
+    }
   }
 }

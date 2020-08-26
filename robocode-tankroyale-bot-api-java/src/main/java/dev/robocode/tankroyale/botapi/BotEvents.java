@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -30,6 +31,7 @@ class BotEvents {
   final Event<BulletHitWallEvent> onBulletHitWall = new Event<>();
   final Event<ScannedBotEvent> onScannedBot = new Event<>();
   final Event<WonRoundEvent> onWonRound = new Event<>();
+  final Event<Condition> onCondition = new Event<>();
 
   BotEvents(IBaseBot baseBot) {
     this.baseBot = baseBot;
@@ -55,9 +57,10 @@ class BotEvents {
     onBulletHitWall.subscribe(baseBot::onBulletHitWall);
     onScannedBot.subscribe(baseBot::onScannedBot);
     onWonRound.subscribe(baseBot::onWonRound);
+    onCondition.subscribe(baseBot::onCondition);
   }
 
-  protected void dispatchEvents(TickEvent tickEvent) {
+  protected void fireEvents(TickEvent tickEvent) {
     tickEvent
         .getEvents()
         .forEach(
@@ -108,17 +111,43 @@ class BotEvents {
             });
   }
 
+  protected void fireConditionMet(Condition condition) {
+    onCondition.publish(condition);
+  }
+
   // Event handler which events in the order they have been added to the handler
   protected static class Event<T> {
-    private final List<Consumer<T>> subscribers = Collections.synchronizedList(new ArrayList<>());
+    private final List<EntryWithPriority> subscriberEntries = Collections.synchronizedList(new ArrayList<>());
+
+    final void subscribe(Consumer<T> subscriber, int priority) {
+      subscriberEntries.add(new EntryWithPriority(subscriber, priority));
+    }
 
     final void subscribe(Consumer<T> subscriber) {
-      subscribers.add(subscriber);
+      subscribe(subscriber, 1);
     }
 
     final void publish(T event) {
-      for (Consumer<T> subscriber : subscribers) {
-        subscriber.accept(event);
+      subscriberEntries.sort(new EntryWithPriorityComparator());
+      for (EntryWithPriority entry : subscriberEntries) {
+        entry.subscriber.accept(event);
+      }
+    }
+
+    class EntryWithPriority {
+      private final int priority; // Lower values means lower priority
+      private final Consumer<T> subscriber;
+
+      EntryWithPriority(Consumer<T> subscriber, int priority) {
+        this.subscriber = subscriber;
+        this.priority = priority;
+      }
+    }
+
+    class EntryWithPriorityComparator implements Comparator<EntryWithPriority> {
+      @Override
+      public int compare(EntryWithPriority e1, EntryWithPriority e2) {
+        return e2.priority - e1.priority;
       }
     }
   }

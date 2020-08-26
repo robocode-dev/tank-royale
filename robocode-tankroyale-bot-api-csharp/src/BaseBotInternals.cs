@@ -59,7 +59,7 @@ namespace Robocode.TankRoyale.BotApi
 
         botIntent.Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotIntent); // must be set
 
-        botEvents.onBulletFiredManager.Add(HandleBulletFired);
+        botEvents.onBulletFiredManager.Subscribe(HandleBulletFired);
       }
 
       internal void Connect()
@@ -313,7 +313,7 @@ namespace Robocode.TankRoyale.BotApi
 
         if (doDispatchEvents)
         {
-          botEvents.DispatchEvents(currentTick);
+          botEvents.FireEvents(currentTick);
         }
       }
 

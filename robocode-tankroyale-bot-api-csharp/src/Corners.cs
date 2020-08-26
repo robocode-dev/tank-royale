@@ -10,7 +10,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     int corner = 0; // Which corner we are currently using
     bool stopWhenSeeRobot = false; // See GoCorner()
 
-    static void Main(string[] args)
+    static void Main_Corners()
     {
       new Corners().Start();
     }

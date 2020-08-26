@@ -14,7 +14,6 @@ namespace Robocode.TankRoyale.BotApi
   /// <summary>
   /// Required information about a bot.
   /// </summary>
-  /// <value></value>
   public sealed class BotInfo
   {
     private string name;

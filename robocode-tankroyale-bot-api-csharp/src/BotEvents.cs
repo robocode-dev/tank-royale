@@ -26,26 +26,28 @@ namespace Robocode.TankRoyale.BotApi
     public EventManager<BulletHitWallEvent> onBulletHitWallManager = new EventManager<BulletHitWallEvent>();
     public EventManager<ScannedBotEvent> onScannedBotManager = new EventManager<ScannedBotEvent>();
     public EventManager<WonRoundEvent> onWonRoundManager = new EventManager<WonRoundEvent>();
+    public EventManager<Condition> onConditionManager = new EventManager<Condition>();
 
     // Events
-    private event EventManager<ConnectedEvent>.EventHandler OnConnected;
-    private event EventManager<DisconnectedEvent>.EventHandler OnDisconnected;
-    private event EventManager<ConnectionErrorEvent>.EventHandler OnConnectionError;
-    private event EventManager<GameStartedEvent>.EventHandler OnGameStarted;
-    private event EventManager<GameEndedEvent>.EventHandler OnGameEnded;
-    private event EventManager<TickEvent>.EventHandler OnTick;
-    private event EventManager<SkippedTurnEvent>.EventHandler OnSkippedTurn;
-    private event EventManager<BotDeathEvent>.EventHandler OnDeath;
-    private event EventManager<BotDeathEvent>.EventHandler OnBotDeath;
-    private event EventManager<BotHitBotEvent>.EventHandler OnHitBot;
-    private event EventManager<BotHitWallEvent>.EventHandler OnHitWall;
-    private event EventManager<BulletFiredEvent>.EventHandler OnBulletFired;
-    private event EventManager<BulletHitBotEvent>.EventHandler OnHitByBullet;
-    private event EventManager<BulletHitBotEvent>.EventHandler OnBulletHit;
-    private event EventManager<BulletHitBulletEvent>.EventHandler OnBulletHitBullet;
-    private event EventManager<BulletHitWallEvent>.EventHandler OnBulletHitWall;
-    private event EventManager<ScannedBotEvent>.EventHandler OnScannedBot;
-    private event EventManager<WonRoundEvent>.EventHandler OnWonRound;
+    private event EventManager<ConnectedEvent>.Subscriber OnConnected;
+    private event EventManager<DisconnectedEvent>.Subscriber OnDisconnected;
+    private event EventManager<ConnectionErrorEvent>.Subscriber OnConnectionError;
+    private event EventManager<GameStartedEvent>.Subscriber OnGameStarted;
+    private event EventManager<GameEndedEvent>.Subscriber OnGameEnded;
+    private event EventManager<TickEvent>.Subscriber OnTick;
+    private event EventManager<SkippedTurnEvent>.Subscriber OnSkippedTurn;
+    private event EventManager<BotDeathEvent>.Subscriber OnDeath;
+    private event EventManager<BotDeathEvent>.Subscriber OnBotDeath;
+    private event EventManager<BotHitBotEvent>.Subscriber OnHitBot;
+    private event EventManager<BotHitWallEvent>.Subscriber OnHitWall;
+    private event EventManager<BulletFiredEvent>.Subscriber OnBulletFired;
+    private event EventManager<BulletHitBotEvent>.Subscriber OnHitByBullet;
+    private event EventManager<BulletHitBotEvent>.Subscriber OnBulletHit;
+    private event EventManager<BulletHitBulletEvent>.Subscriber OnBulletHitBullet;
+    private event EventManager<BulletHitWallEvent>.Subscriber OnBulletHitWall;
+    private event EventManager<ScannedBotEvent>.Subscriber OnScannedBot;
+    private event EventManager<WonRoundEvent>.Subscriber OnWonRound;
+    private event EventManager<Condition>.Subscriber OnCondition;
 
     internal BotEvents(IBaseBot baseBot)
     {
@@ -55,59 +57,62 @@ namespace Robocode.TankRoyale.BotApi
 
     private void init()
     {
-      onConnectedManager.Add(baseBot.OnConnected);
-      OnConnected += onConnectedManager.InvokeAll;
+      onConnectedManager.Subscribe(baseBot.OnConnected);
+      OnConnected += onConnectedManager.Publish;
 
-      onDisconnectedManager.Add(baseBot.OnDisconnected);
-      OnDisconnected += onDisconnectedManager.InvokeAll;
+      onDisconnectedManager.Subscribe(baseBot.OnDisconnected);
+      OnDisconnected += onDisconnectedManager.Publish;
 
-      onConnectionErrorManager.Add(baseBot.OnConnectionError);
-      OnConnectionError += onConnectionErrorManager.InvokeAll;
+      onConnectionErrorManager.Subscribe(baseBot.OnConnectionError);
+      OnConnectionError += onConnectionErrorManager.Publish;
 
-      onGameStartedManager.Add(baseBot.OnGameStarted);
-      OnGameStarted += onGameStartedManager.InvokeAll;
+      onGameStartedManager.Subscribe(baseBot.OnGameStarted);
+      OnGameStarted += onGameStartedManager.Publish;
 
-      onGameEndedManager.Add(baseBot.OnGameEnded);
-      OnGameEnded += onGameEndedManager.InvokeAll;
+      onGameEndedManager.Subscribe(baseBot.OnGameEnded);
+      OnGameEnded += onGameEndedManager.Publish;
 
-      onTickManager.Add(baseBot.OnTick);
-      OnTick += onTickManager.InvokeAll;
+      onTickManager.Subscribe(baseBot.OnTick);
+      OnTick += onTickManager.Publish;
 
-      onSkippedTurnManager.Add(baseBot.OnSkippedTurn);
-      OnSkippedTurn += onSkippedTurnManager.InvokeAll;
+      onSkippedTurnManager.Subscribe(baseBot.OnSkippedTurn);
+      OnSkippedTurn += onSkippedTurnManager.Publish;
 
-      onDeathManager.Add(baseBot.OnDeath);
-      OnDeath += onDeathManager.InvokeAll;
+      onDeathManager.Subscribe(baseBot.OnDeath);
+      OnDeath += onDeathManager.Publish;
 
-      onBotDeathManager.Add(baseBot.OnBotDeath);
-      OnBotDeath += onBotDeathManager.InvokeAll;
+      onBotDeathManager.Subscribe(baseBot.OnBotDeath);
+      OnBotDeath += onBotDeathManager.Publish;
 
-      onHitBotManager.Add(baseBot.OnHitBot);
-      OnHitBot += onHitBotManager.InvokeAll;
+      onHitBotManager.Subscribe(baseBot.OnHitBot);
+      OnHitBot += onHitBotManager.Publish;
 
-      onHitWallManager.Add(baseBot.OnHitWall);
-      OnHitWall += onHitWallManager.InvokeAll;
+      onHitWallManager.Subscribe(baseBot.OnHitWall);
+      OnHitWall += onHitWallManager.Publish;
 
-      onBulletFiredManager.Add(baseBot.OnBulletFired);
-      OnBulletFired += onBulletFiredManager.InvokeAll;
+      onBulletFiredManager.Subscribe(baseBot.OnBulletFired);
+      OnBulletFired += onBulletFiredManager.Publish;
 
-      onHitByBulletManager.Add(baseBot.OnHitByBullet);
-      OnHitByBullet += onHitByBulletManager.InvokeAll;
+      onHitByBulletManager.Subscribe(baseBot.OnHitByBullet);
+      OnHitByBullet += onHitByBulletManager.Publish;
 
-      onBulletHitManager.Add(baseBot.OnBulletHit);
-      OnBulletHit += onBulletHitManager.InvokeAll;
+      onBulletHitManager.Subscribe(baseBot.OnBulletHit);
+      OnBulletHit += onBulletHitManager.Publish;
 
-      onBulletHitBulletManager.Add(baseBot.OnBulletHitBullet);
-      OnBulletHitBullet += onBulletHitBulletManager.InvokeAll;
+      onBulletHitBulletManager.Subscribe(baseBot.OnBulletHitBullet);
+      OnBulletHitBullet += onBulletHitBulletManager.Publish;
 
-      onBulletHitWallManager.Add(baseBot.OnBulletHitWall);
-      OnBulletHitWall += onBulletHitWallManager.InvokeAll;
+      onBulletHitWallManager.Subscribe(baseBot.OnBulletHitWall);
+      OnBulletHitWall += onBulletHitWallManager.Publish;
 
-      onScannedBotManager.Add(baseBot.OnScannedBot);
-      OnScannedBot += onScannedBotManager.InvokeAll;
+      onScannedBotManager.Subscribe(baseBot.OnScannedBot);
+      OnScannedBot += onScannedBotManager.Publish;
 
-      onWonRoundManager.Add(baseBot.OnWonRound);
-      OnWonRound += onWonRoundManager.InvokeAll;
+      onWonRoundManager.Subscribe(baseBot.OnWonRound);
+      OnWonRound += onWonRoundManager.Publish;
+
+      onConditionManager.Subscribe(baseBot.OnCondition);
+      OnCondition += onConditionManager.Publish;
     }
 
     public void FireConnectedEvent(ConnectedEvent evt)
@@ -145,7 +150,7 @@ namespace Robocode.TankRoyale.BotApi
       OnTick(evt);
     }
 
-    public void DispatchEvents(TickEvent tickEvent)
+    public void FireEvents(TickEvent tickEvent)
     {
       foreach (var evt in tickEvent.Events)
       {
@@ -203,6 +208,11 @@ namespace Robocode.TankRoyale.BotApi
             break;
         }
       }
+    }
+
+    public void FireConditionMet(Condition condition)
+    {
+      OnCondition(condition);
     }
   }
 }

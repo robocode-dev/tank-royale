@@ -750,13 +750,13 @@ namespace Robocode.TankRoyale.BotApi
     void OnBulletHit(BulletHitBotEvent bulletHitBotEvent);
 
     /// <summary>
-    /// The event handler triggered a bullet fired from the bot has collided with another bullet.
+    /// The event handler triggered when a bullet fired from the bot has collided with another bullet.
     /// </summary>
     /// <param name="bulletHitBulletEvent">Event details from the game.</param>
     void OnBulletHitBullet(BulletHitBulletEvent bulletHitBulletEvent);
 
     /// <summary>
-    /// The event handler triggered a bullet has a wall.
+    /// The event handler triggered when a bullet has hit a wall.
     /// </summary>
     /// <param name="bulletHitWallEvent">Event details from the game.</param>
     void OnBulletHitWall(BulletHitWallEvent bulletHitWallEvent);
@@ -784,6 +784,13 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <param name="wonRoundEvent">Event details from the game.</param>
     void OnWonRound(WonRoundEvent wonRoundEvent);
+
+    /// <summary>
+    /// The event handler triggered when a condition has been met. Use the <see cref="Condition.GetName()"/> of the
+    /// condition if you need to differ between multiple conditions being met.
+    /// </summary>
+    /// <param name="condition">Is the condition that has been met.</param>
+    void OnCondition(Condition condition);
 
     /// <summary>
     /// Calculates the maximum turn rate for a specific speed.

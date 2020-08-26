@@ -6,7 +6,6 @@ import java.net.URI;
  * Abstract bot class provides convenient methods for movement, turning, and firing the gun. Most
  * bots should inherit from this class.
  */
-@SuppressWarnings("unused")
 public abstract class Bot extends BaseBot implements IBot {
 
   private final BotInternals __botInternals =
@@ -278,5 +277,11 @@ public abstract class Bot extends BaseBot implements IBot {
       go();
       __botInternals.awaitNextTurn();
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void waitFor(Condition condition) {
+    __botInternals.waitFor(condition);
   }
 }
