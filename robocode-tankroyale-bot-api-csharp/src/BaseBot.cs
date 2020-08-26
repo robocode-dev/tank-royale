@@ -152,7 +152,7 @@ namespace Robocode.TankRoyale.BotApi
       get => __baseBotInternals.CurrentTick.TurnNumber;
     }
 
-    /// <inheritdoc>
+    /// <inheritdoc/>
     public int EnemyCount
     {
       get => __baseBotInternals.CurrentTick.EnemyCount;

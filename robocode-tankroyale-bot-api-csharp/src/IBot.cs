@@ -656,12 +656,12 @@
     /// multiple commands in parallel, use <em>setter</em> methods instead of this blocking
     /// method.
     ///
-    /// This method will cancel the effect of prior calls to setting <see cref="IBaseBot.Firepower"/>.
+    /// This method will cancel the effect of prior calls to setting <see cref="IBaseBot.SetFirepower"/>.
     /// </summary>
     /// <param name="firepower">Is the amount of energy spent on firing the gun. You cannot spend
     /// more energy than available from the bot. The bullet power must be > MinFirepower.</param>
     /// <seealso cref="IBaseBot.OnBulletFired"/>
-    /// <seealso cref="IBaseBot.Firepower"/>
+    /// <seealso cref="IBaseBot.SetFirepower"/>
     /// <seealso cref="IBaseBot.GunHeat"/>
     /// <seealso cref="IBaseBot.GunCoolingRate"/>
     void Fire(double firepower);
@@ -688,7 +688,7 @@
     void Resume();
 
     /// <summary>
-    /// Blocks until a condition is met, i.e. when a <see cref="Condition.test()"/> returns <c>true</c>.
+    /// Blocks until a condition is met, i.e. when a <see cref="Condition.Test"/> returns <c>true</c>.
     /// </summary>
     /// <seealso cref="Condition"/>
     /// <seealso cref="IBaseBot.OnCondition(Condition)"/>

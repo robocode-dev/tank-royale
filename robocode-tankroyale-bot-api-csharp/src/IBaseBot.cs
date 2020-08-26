@@ -147,7 +147,7 @@ namespace Robocode.TankRoyale.BotApi
     /// The commands executed when <see cref="Go"/> is called are set by setting these properties
     /// prior to calling the <see cref="Go"/> method: <see cref="TurnRate"/>, <see
     /// cref="GunTurnRate"/>, <see cref="RadarTurnRate"/>, <see cref="TargetSpeed"/>, and <see
-    /// cref="Firepower"/>.
+    /// cref="SetFirepower"/>.
     /// </summary>
     /// <seealso cref="TurnTimeout"/>
     void Go();
@@ -786,7 +786,7 @@ namespace Robocode.TankRoyale.BotApi
     void OnWonRound(WonRoundEvent wonRoundEvent);
 
     /// <summary>
-    /// The event handler triggered when a condition has been met. Use the <see cref="Condition.GetName()"/> of the
+    /// The event handler triggered when a condition has been met. Use the <see cref="Condition.Name"/> of the
     /// condition if you need to differ between multiple conditions being met.
     /// </summary>
     /// <param name="condition">Is the condition that has been met.</param>

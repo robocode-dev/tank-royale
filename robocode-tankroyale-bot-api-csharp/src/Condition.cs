@@ -45,7 +45,7 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <value>The name of this condition or <c>null</c> if no name has been provided for it.</value>
     /// <seealso cref="IBaseBot.OnCondition(Condition)"/>
-    public string name { get; }
+    public string Name { get; }
 
     /// <summary>
     /// Constructor for initializing a new instance of the Condition class. With this constructor the condition will be
@@ -53,7 +53,7 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     public Condition()
     {
-      this.name = null;
+      this.Name = null;
     }
 
     /// <summary>
@@ -64,7 +64,7 @@ namespace Robocode.TankRoyale.BotApi
     /// conditions with the <see cref="IBaseBot.OnCondition(Condition)"/> event handler.</param>
     public Condition(string name)
     {
-      this.name = name;
+      this.Name = name;
     }
 
     /// <summary>
