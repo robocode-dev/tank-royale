@@ -247,7 +247,7 @@ namespace Robocode.TankRoyale.BotApi
       }
 
       // This is Nat Pavasants method described here:
-      // http://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
+      // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
       private void UpdateMovement()
       {
         if (isCollidingWithWall)
@@ -312,7 +312,7 @@ namespace Robocode.TankRoyale.BotApi
       //
       // Credits for this algorithm goes to Patrick Cupka (aka Voidious), Julian Kent (aka
       // Skilgannon), and Positive:
-      // http://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
+      // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
       internal double GetNewSpeed(double speed, double distance)
       {
         if (distance < 0)

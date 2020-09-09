@@ -172,7 +172,6 @@ namespace Robocode.TankRoyale.BotApi
             break;
 
           case BulletFiredEvent bulletFiredEvent:
-            // Stop firing, when bullet has fired
             OnBulletFired(bulletFiredEvent);
             break;
 

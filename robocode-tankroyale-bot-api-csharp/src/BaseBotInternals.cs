@@ -36,7 +36,7 @@ namespace Robocode.TankRoyale.BotApi
       private int? myId = null;
       private GameSetup gameSetup = null;
       private TickEvent currentTick = null;
-      private long? ticksStart = DateTime.Now.Ticks;
+      private long? ticksStart;
 
       // Adjustment of turn rates
       internal bool doAdjustGunForBodyTurn;
@@ -309,6 +309,7 @@ namespace Robocode.TankRoyale.BotApi
         var tickEventForBot = JsonConvert.DeserializeObject<Schema.TickEventForBot>(json);
         currentTick = EventMapper.Map(json);
 
+        ticksStart = DateTime.Now.Ticks;
         botEvents.FireTickEvent(currentTick);
 
         if (doDispatchEvents)
