@@ -6,7 +6,7 @@ import static java.lang.Math.*;
 
 final class BotInternals {
 
-  private final double ABS_DECELERATION = Math.abs(IBot.DECELERATION);
+  private final double absDeceleration = Math.abs(IBot.DECELERATION);
 
   private final Bot bot;
   private final BotEvents botEvents;
@@ -149,12 +149,12 @@ final class BotInternals {
       turnRate *= -1;
     }
     if (abs(bot.getTurnRemaining()) < absTurnRate) {
-      if (bot.isAdjustGunForBodyTurn()) {
+      if (bot.doAdjustGunForBodyTurn()) {
         gunTurnRemaining -= bot.getTurnRemaining();
       }
       turnRemaining = 0;
     } else {
-      if (bot.isAdjustGunForBodyTurn()) {
+      if (bot.doAdjustGunForBodyTurn()) {
         gunTurnRemaining -= turnRate;
       }
       turnRemaining -= turnRate;
@@ -166,12 +166,12 @@ final class BotInternals {
     final double absGunTurnRate = abs(bot.getGunTurnRate());
 
     if (abs(bot.getGunTurnRemaining()) < absGunTurnRate) {
-      if (bot.isAdjustRadarForGunTurn()) {
+      if (bot.doAdjustRadarForGunTurn()) {
         radarTurnRemaining -= bot.getGunTurnRemaining();
       }
       gunTurnRemaining = 0;
     } else {
-      if (bot.isAdjustRadarForGunTurn()) {
+      if (bot.doAdjustRadarForGunTurn()) {
         radarTurnRemaining -= bot.getGunTurnRate();
       }
       gunTurnRemaining -= bot.getGunTurnRate();
@@ -190,9 +190,8 @@ final class BotInternals {
     setRadarTurnRate();
   }
 
-  /** Updates the movement. */
   // This is Nat Pavasants method described here:
-  // http://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
+  // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
   private void updateMovement() {
     if (isCollidingWithWall) {
       return;
@@ -269,7 +268,7 @@ final class BotInternals {
     }
 
     if (speed >= 0) {
-      return max(speed - ABS_DECELERATION, min(targetSpeed, speed + IBot.ACCELERATION));
+      return max(speed - absDeceleration, min(targetSpeed, speed + IBot.ACCELERATION));
     } // else
     return max(speed - IBot.ACCELERATION, min(targetSpeed, speed + getMaxDeceleration(-speed)));
   }
@@ -279,7 +278,7 @@ final class BotInternals {
         max(
             1,
             Math.ceil( // sum of 0... decelTime, solving for decelTime using quadratic formula
-                (Math.sqrt((4 * 2 / ABS_DECELERATION) * distance + 1) - 1) / 2));
+                (Math.sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
 
     if (decelTime == Double.POSITIVE_INFINITY) {
       return IBot.MAX_SPEED;
@@ -288,16 +287,16 @@ final class BotInternals {
     double decelDist =
         (decelTime / 2)
             * (decelTime - 1) // sum of 0..(decelTime-1)
-            * ABS_DECELERATION;
+            * absDeceleration;
 
-    return ((decelTime - 1) * ABS_DECELERATION) + ((distance - decelDist) / decelTime);
+    return ((decelTime - 1) * absDeceleration) + ((distance - decelDist) / decelTime);
   }
 
   private double getMaxDeceleration(double speed) {
-    double decelTime = speed / ABS_DECELERATION;
+    double decelTime = speed / absDeceleration;
     double accelTime = (1 - decelTime);
 
-    return min(1, decelTime) * ABS_DECELERATION + max(0, accelTime) * IBot.ACCELERATION;
+    return min(1, decelTime) * absDeceleration + max(0, accelTime) * IBot.ACCELERATION;
   }
 
   private double getDistanceTraveledUntilStop(double speed) {

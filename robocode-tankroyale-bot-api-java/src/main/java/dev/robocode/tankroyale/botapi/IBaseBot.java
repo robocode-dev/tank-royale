@@ -530,7 +530,7 @@ public interface IBaseBot {
    * @param adjust {@code true} if the gun must adjust/compensate for the bot's turn; {@code false}
    *     if the gun must turn with the bot's turn.
    * @see #setAdjustRadarForGunTurn(boolean)
-   * @see #isAdjustGunForBodyTurn()
+   * @see #doAdjustGunForBodyTurn()
    */
   void setAdjustGunForBodyTurn(boolean adjust);
 
@@ -546,7 +546,7 @@ public interface IBaseBot {
    *     the gun is set to turn with the bot turning.
    * @see #setAdjustGunForBodyTurn(boolean)
    */
-  boolean isAdjustGunForBodyTurn();
+  boolean doAdjustGunForBodyTurn();
 
   /**
    * Sets the radar to adjust for the gun's turn when setting the radar turn rate. So the radar
@@ -566,7 +566,7 @@ public interface IBaseBot {
    * @param adjust {@code true} if the radar must adjust/compensate for the gun's turn; {@code
    *     false} if the radar must turn with the gun's turn.
    * @see #setAdjustGunForBodyTurn(boolean)
-   * @see #isAdjustRadarForGunTurn()
+   * @see #doAdjustRadarForGunTurn()
    */
   void setAdjustRadarForGunTurn(boolean adjust);
 
@@ -582,7 +582,7 @@ public interface IBaseBot {
    *     if the radar is set to turn with the gun turning.
    * @see #setAdjustRadarForGunTurn(boolean)
    */
-  boolean isAdjustRadarForGunTurn();
+  boolean doAdjustRadarForGunTurn();
 
   /**
    * Returns the RGB color code of the body. The color code is an integer in hexadecimal format

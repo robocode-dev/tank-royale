@@ -250,7 +250,7 @@ public abstract class BaseBot implements IBaseBot {
     if (Double.isNaN(gunTurnRate)) {
       throw new IllegalArgumentException("gunTurnRate cannot be NaN");
     }
-    if (isAdjustGunForBodyTurn()) {
+    if (doAdjustGunForBodyTurn()) {
       gunTurnRate -= getTurnRate();
     }
     if (Math.abs(gunTurnRate) > MAX_GUN_TURN_RATE) {
@@ -275,7 +275,7 @@ public abstract class BaseBot implements IBaseBot {
     if (Double.isNaN(radarTurnRate)) {
       throw new IllegalArgumentException("radarTurnRate cannot be NaN");
     }
-    if (isAdjustRadarForGunTurn()) {
+    if (doAdjustRadarForGunTurn()) {
       radarTurnRate -= getGunTurnRate();
     }
     if (Math.abs(radarTurnRate) > MAX_RADAR_TURN_RATE) {
@@ -346,7 +346,7 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isAdjustGunForBodyTurn() {
+  public final boolean doAdjustGunForBodyTurn() {
     return __baseBotInternals.doAdjustGunForBodyTurn;
   }
 
@@ -358,7 +358,7 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isAdjustRadarForGunTurn() {
+  public final boolean doAdjustRadarForGunTurn() {
     return __baseBotInternals.doAdjustRadarForGunTurn;
   }
 
