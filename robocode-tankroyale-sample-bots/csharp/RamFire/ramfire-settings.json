@@ -1,0 +1,12 @@
+{
+  "Bot": {
+    "Name": "RamFire",
+    "Version": "1.0",
+    "Author": "Mathew Nelson & Flemming N. Larsen",
+    "Description": "Drives at robots trying to ram them. Fires when it hits them.",
+    "Url": "",
+    "CountryCode": "us",
+    "GameTypes": "melee, classic, 1v1",
+    "ProgrammingLang": "C# 8.0"
+  }
+}
