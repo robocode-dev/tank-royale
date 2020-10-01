@@ -853,15 +853,24 @@ namespace Robocode.TankRoyale.BotApi
     double CalcRadarBearing(double direction);
 
     /// <summary>
-    /// Calculates the direction (angle) from the bots coordinates to a point x,y.
+    /// Calculates the direction (angle) from the bot�s coordinates to a point x,y.
     /// </summary>
     /// <param name="x">Is the x coordinate of the point.</param>
     /// <param name="y">Is the y coordinate of the point.</param>
-    /// <returns>The direction to the point x,y.</returns>
+    /// <returns>The direction to the point x,y in the range [0,360[</returns>
     double DirectionTo(double x, double y);
 
     /// <summary>
-    /// Calculates the distance from the bots coordinates to a point x,y.
+    /// Calculates the bearing (delta angle) between the bot's coordinates and direction and the
+    /// direction to the point x,y.
+    /// </summary>
+    /// <param name="x">Is the x coordinate of the point.</param>
+    /// <param name="y">Is the y coordinate of the point.</param>
+    /// <returns>The bearing to the point x,y in the range [-180,180[</returns>
+    double BearingTo(double x, double y);
+
+    /// <summary>
+    /// Calculates the distance from the bot's coordinates to a point x,y.
     /// </summary>
     /// <param name="x">Is the x coordinate of the point.</param>
     /// <param name="y">Is the y coordinate of the point.</param>
