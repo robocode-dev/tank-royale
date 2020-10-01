@@ -18,19 +18,9 @@ namespace Robocode.TankRoyale.Sample.Bots
     // Main method starts our bot
     static void Main(string[] args)
     {
-      //AppDomain currentDomain = AppDomain.CurrentDomain;
-      //      currentDomain.UnhandledException += new UnhandledExceptionEventHandler(MyHandler);
-
       new Fire().Start();
     }
-    /*
-        static void MyHandler(object sender, UnhandledExceptionEventArgs args)
-        {
-          Exception e = (Exception)args.ExceptionObject;
-          Console.WriteLine("MyHandler caught : " + e.Message);
-          Console.WriteLine("Runtime terminating: {0}", args.IsTerminating);
-        }
-    */
+
     // Constructor, which loads the bot settings file
     Fire() : base(BotInfo.FromJsonFile("fire-settings.json")) { }
 
