@@ -1020,14 +1020,26 @@ public interface IBaseBot {
   }
 
   /**
-   * Calculates the direction (angle) from the bots coordinates to a point x,y.
+   * Calculates the direction (angle) from the bot's coordinates to a point x,y.
    *
    * @param x is the x coordinate of the point.
    * @param y is the y coordinate of the point.
-   * @return The direction to the point x,y.
+   * @return The direction to the point x,y in the range [0,360[
    */
   default double directionTo(double x, double y) {
-    return normalizeAbsoluteDegrees(Math.atan2(x - getX(), y - getY()));
+    return normalizeAbsoluteDegrees(Math.toDegrees(Math.atan2(y - getY(), x - getX())));
+  }
+
+  /**
+   * Calculates the bearing (delta angle) between the bot's coordinates and direction and the
+   * direction to the point x,y.
+   *
+   * @param x is the x coordinate of the point.
+   * @param y is the y coordinate of the point.
+   * @return The bearing to the point x,y in the range [-180,180[
+   */
+  default double bearingTo(double x, double y) {
+    return normalizeRelativeDegrees(directionTo(x, y) - getDirection());
   }
 
   /**
