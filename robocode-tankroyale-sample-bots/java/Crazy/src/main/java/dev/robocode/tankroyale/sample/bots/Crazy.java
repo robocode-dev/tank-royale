@@ -38,8 +38,6 @@ public class Crazy extends Bot {
 
     // Loop while as long as the bot is running
     while (isRunning()) {
-      System.out.println("-----");
-
       // Tell the game we will want to move ahead 40000 -- some large number
       setForward(40000);
       movingForward = true;
@@ -52,18 +50,15 @@ public class Crazy extends Bot {
       // waitFor.
       // waitFor actually starts the action -- we start moving and turning.
       // It will not return until we have finished turning.
-      System.out.println("#1");
       waitFor(new TurnCompleteCondition(this));
       // Note:  We are still moving ahead now, but the turn is complete.
       // Now we'll turn the other way...
       setTurnLeft(180);
       // ... and wait for the turn to finish ...
-      System.out.println("#2");
       waitFor(new TurnCompleteCondition(this));
       // ... then the other way ...
       setTurnRight(180);
       // ... and wait for that turn to finish.
-      System.out.println("#3");
       waitFor(new TurnCompleteCondition(this));
       // then back to the top to do it all again
     }
@@ -72,25 +67,18 @@ public class Crazy extends Bot {
   /** onHitWall: Handle collision with wall. */
   @Override
   public void onHitWall(BotHitWallEvent e) {
-    System.out.println("Hit wall!!!");
-
     // Bounce off!
     reverseDirection();
   }
 
   /** reverseDirection: Switch from ahead to back & vice versa */
   public void reverseDirection() {
-    System.out.println("reverseDirection");
     if (movingForward) {
       setBack(40000);
       movingForward = false;
-      setBodyColor("#0F0");
-      System.out.println("setBack");
     } else {
       setForward(40000);
       movingForward = true;
-      setBodyColor("#F00");
-      System.out.println("setForward");
     }
   }
 
@@ -103,11 +91,9 @@ public class Crazy extends Bot {
   /** onHitRobot: Back up! */
   @Override
   public void onHitBot(BotHitBotEvent e) {
-    System.out.println("Hit bot!!");
-
     // If we're moving into the other robot, reverse!
-//    if (e.isRammed()) {
+    if (e.isRammed()) {
       reverseDirection();
-//    }
+    }
   }
 }
