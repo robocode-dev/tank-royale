@@ -4,9 +4,7 @@ import dev.robocode.tankroyale.server.engine.ScoreTracker;
 import dev.robocode.tankroyale.server.model.RuleConstants;
 import dev.robocode.tankroyale.server.model.Score;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -15,9 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class ScoreTrackerTest {
-
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
 	public void constructor() {
