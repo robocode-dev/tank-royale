@@ -53,6 +53,7 @@ public class Fire extends Bot {
   }
 
   /** onTick: Every new turn, reset/remove the interrupt */
+  @Override
   public void onTick(TickEvent e) {
     interrupt = false; // no interrupt means that the gun will turn 5 degrees to the right in the run() method
   }
