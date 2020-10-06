@@ -9,7 +9,7 @@ plugins {
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.6.20'
+version = '0.6.26'
 
 compileJava {
     sourceCompatibility = '1.8'
@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.5'
+    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.6'
     implementation 'org.danilopianini:gson-extras:0.2.2'
 
     implementation 'org.java-websocket:Java-WebSocket:1.5.1'
@@ -35,8 +35,8 @@ dependencies {
     implementation 'ch.qos.logback:logback-core:1.2.3'
     implementation 'org.slf4j:slf4j-api:1.7.26'
 
-    compileOnly 'org.projectlombok:lombok:1.18.8'
-    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     testImplementation 'junit:junit:4.13'
     testImplementation 'org.unitils:unitils-core:3.4.6'

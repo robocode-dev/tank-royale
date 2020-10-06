@@ -239,7 +239,7 @@ namespace Robocode.TankRoyale.BotApi
         }
         __baseBotInternals.BotIntent.TurnRate = value;
       }
-      get => __baseBotInternals.BotIntent.TurnRate ?? 0d;
+      get => __baseBotInternals.CurrentTick.BotState.TurnRate;
     }
 
     /// <inheritdoc/>
@@ -261,7 +261,7 @@ namespace Robocode.TankRoyale.BotApi
         }
         __baseBotInternals.BotIntent.GunTurnRate = value;
       }
-      get => __baseBotInternals.BotIntent.GunTurnRate ?? 0d;
+      get => __baseBotInternals.CurrentTick.BotState.GunTurnRate;
     }
 
     /// <inheritdoc/>
@@ -283,7 +283,7 @@ namespace Robocode.TankRoyale.BotApi
         }
         __baseBotInternals.BotIntent.RadarTurnRate = value;
       }
-      get => __baseBotInternals.BotIntent.RadarTurnRate ?? 0d;
+      get => __baseBotInternals.CurrentTick.BotState.RadarTurnRate;
     }
 
     /// <inheritdoc/>
@@ -434,7 +434,7 @@ namespace Robocode.TankRoyale.BotApi
     public virtual void OnDisconnected(DisconnectedEvent disconnectedEvent) => Console.WriteLine($"Disconnected from: {disconnectedEvent.ServerUri}");
 
     /// <inheritdoc/>
-    public virtual void OnConnectionError(ConnectionErrorEvent connectionErrorEvent) => Console.Error.WriteLine($"Connection error with: {connectionErrorEvent.ServerUri}");
+    public virtual void OnConnectionError(ConnectionErrorEvent connectionErrorEvent) => Console.Error.WriteLine($"Connection error with {connectionErrorEvent.ServerUri}: " + connectionErrorEvent.Exception.Message);
 
     /// <inheritdoc/>
     public virtual void OnGameStarted(GameStartedEvent gameStatedEvent) { }

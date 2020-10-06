@@ -404,6 +404,9 @@ public class ModelUpdater {
 					botBuilder.radarDirection(radarDirection);
 					botBuilder.radarSpreadAngle(spreadAngle);
 					botBuilder.speed(speed);
+					botBuilder.turnRate(limitedTurnRate);
+					botBuilder.gunTurnRate(limitedGunTurnRate);
+					botBuilder.radarTurnRate(limitedRadarTurnRate);
 
 					botBuilder.moveToNewPosition();
 

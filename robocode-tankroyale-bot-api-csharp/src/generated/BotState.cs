@@ -44,6 +44,18 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("speed", Required = Newtonsoft.Json.Required.Always)]
         public double Speed { get; set; }
     
+        /// <summary>Turn rate of the body in degrees per turn (can be positive and negative)</summary>
+        [Newtonsoft.Json.JsonProperty("turnRate", Required = Newtonsoft.Json.Required.Always)]
+        public double TurnRate { get; set; }
+    
+        /// <summary>Turn rate of the gun in degrees per turn (can be positive and negative)</summary>
+        [Newtonsoft.Json.JsonProperty("gunTurnRate", Required = Newtonsoft.Json.Required.Always)]
+        public double GunTurnRate { get; set; }
+    
+        /// <summary>Turn rate of the radar in degrees per turn (can be positive and negative)</summary>
+        [Newtonsoft.Json.JsonProperty("radarTurnRate", Required = Newtonsoft.Json.Required.Always)]
+        public double RadarTurnRate { get; set; }
+    
         /// <summary>Gun heat</summary>
         [Newtonsoft.Json.JsonProperty("gunHeat", Required = Newtonsoft.Json.Required.Always)]
         public double GunHeat { get; set; }

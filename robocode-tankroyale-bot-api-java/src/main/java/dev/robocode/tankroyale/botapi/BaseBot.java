@@ -237,11 +237,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final double getTurnRate() {
-    Double turnRate = __baseBotInternals.botIntent.getTurnRate();
-    if (turnRate == null) {
-      return 0;
-    }
-    return turnRate;
+    return __baseBotInternals.getCurrentTick().getBotState().getTurnRate();
   }
 
   /** {@inheritDoc} */
@@ -262,11 +258,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final double getGunTurnRate() {
-    Double turnRate = __baseBotInternals.botIntent.getGunTurnRate();
-    if (turnRate == null) {
-      return 0;
-    }
-    return turnRate;
+    return __baseBotInternals.getCurrentTick().getBotState().getGunTurnRate();
   }
 
   /** {@inheritDoc} */
@@ -287,11 +279,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final double getRadarTurnRate() {
-    Double turnRate = __baseBotInternals.botIntent.getRadarTurnRate();
-    if (turnRate == null) {
-      return 0;
-    }
-    return turnRate;
+    return __baseBotInternals.getCurrentTick().getBotState().getRadarTurnRate();
   }
 
   /** {@inheritDoc} */

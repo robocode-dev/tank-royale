@@ -26,6 +26,15 @@ properties:
   speed:
     description: Speed measured in units per turn
     type: number
+  turnRate:
+    description: Turn rate of the body in degrees per turn (can be positive and negative)
+    type: number
+  gunTurnRate:
+    description: Turn rate of the gun in degrees per turn (can be positive and negative)
+    type: number
+  radarTurnRate:
+    description: Turn rate of the radar in degrees per turn (can be positive and negative)
+    type: number
   gunHeat:
     description: Gun heat
     type: number
@@ -59,4 +68,7 @@ required:
   - radarDirection
   - radarSweep
   - speed
+  - turnRate
+  - gunTurnRate
+  - radarTurnRate
   - gunHeat

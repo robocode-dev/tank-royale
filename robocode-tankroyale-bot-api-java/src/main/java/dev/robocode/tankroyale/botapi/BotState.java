@@ -28,6 +28,15 @@ public final class BotState {
   /** Speed measured in units per turn. */
   private final double speed;
 
+  /** Turn rate of the body in degrees per turn (can be positive and negative) */
+  private final double turnRate;
+
+  /** Turn rate of the gun in degrees per turn (can be positive and negative) */
+  private final double gunTurnRate;
+
+  /** Turn rate of the radar in degrees per turn (can be positive and negative) */
+  private final double radarTurnRate;
+
   /** Gun heat. */
   private final double gunHeat;
 
@@ -63,6 +72,9 @@ public final class BotState {
    * @param radarDirection is the radar direction in degrees.
    * @param radarSweep is the radar sweep angle in degrees.
    * @param speed is the speed measured in units per turn.
+   * @param turnRate is the turn rate of the body in degrees per turn.
+   * @param gunTurnRate is the turn rate of the gun in degrees per turn.
+   * @param radarTurnRate is the turn rate of the radar in degrees per turn.
    * @param gunHeat is the gun heat.
    * @param bodyColor is the body color code.
    * @param turretColor is the gun turret color code.
@@ -81,6 +93,9 @@ public final class BotState {
       double radarDirection,
       double radarSweep,
       double speed,
+      double turnRate,
+      double gunTurnRate,
+      double radarTurnRate,
       double gunHeat,
       Integer bodyColor,
       Integer turretColor,
@@ -88,8 +103,7 @@ public final class BotState {
       Integer bulletColor,
       Integer scanColor,
       Integer tracksColor,
-      Integer gunColor
-  ) {
+      Integer gunColor) {
     this.energy = energy;
     this.x = x;
     this.y = y;
@@ -98,6 +112,9 @@ public final class BotState {
     this.radarDirection = radarDirection;
     this.radarSweep = radarSweep;
     this.speed = speed;
+    this.turnRate = turnRate;
+    this.gunTurnRate = gunTurnRate;
+    this.radarTurnRate = radarTurnRate;
     this.gunHeat = gunHeat;
     this.bodyColor = bodyColor;
     this.turretColor = turretColor;
@@ -186,6 +203,33 @@ public final class BotState {
   }
 
   /**
+   * Returns the turn rate of the body in degrees per turn (can be positive and negative).
+   *
+   * @return the turn rate.
+   */
+  public double getTurnRate() {
+    return turnRate;
+  }
+
+  /**
+   * Returns the turn rate of the gun in degrees per turn (can be positive and negative).
+   *
+   * @return the gun turn rate.
+   */
+  public double getGunTurnRate() {
+    return gunTurnRate;
+  }
+
+  /**
+   * Returns the turn rate of the radar in degrees per turn (can be positive and negative).
+   *
+   * @return the radar turn rate.
+   */
+  public double getRadarTurnRate() {
+    return radarTurnRate;
+  }
+
+  /**
    * Returns the gun heat. When firing the gun, it will be heated up. The gun will need to cool down
    * before it can fire another bullet. When the gun heat is zero, the gun will be able to fire
    * again.
@@ -270,8 +314,8 @@ public final class BotState {
   }
 
   /**
-   * Returns the RGB color code of the gun. The color code is an integer in hexadecimal format
-   * using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
+   * Returns the RGB color code of the gun. The color code is an integer in hexadecimal format using
+   * bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
    *
    * @return The color code of the gun or {@code null} if the bot uses the default code.
    * @see <a

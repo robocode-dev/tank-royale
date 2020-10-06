@@ -813,7 +813,11 @@ public interface IBaseBot {
    * @param connectionErrorEvent is the event details from the game.
    */
   default void onConnectionError(ConnectionErrorEvent connectionErrorEvent) {
-    System.err.println("Connection error with: " + connectionErrorEvent.getServerUri());
+    System.err.println(
+        "Connection error with "
+            + connectionErrorEvent.getServerUri()
+            + ": "
+            + connectionErrorEvent.getException().getMessage());
   }
 
   /**

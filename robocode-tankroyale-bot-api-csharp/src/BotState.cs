@@ -40,6 +40,18 @@ namespace Robocode.TankRoyale.BotApi
     /// <value>The speed measured in pixels per turn.</value>
     public double Speed { get; }
 
+    /// <summary>Turn rate of the body in degrees per turn (can be positive and negative).</summary>
+    /// <value>The turn rate of the body in degrees per turn (can be positive and negative).</value>
+    public double TurnRate { get; }
+
+    /// <summary>Turn rate of the gun in degrees per turn (can be positive and negative).</summary>
+    /// <value>The turn rate of the gun in degrees per turn (can be positive and negative).</value>
+    public double GunTurnRate { get; }
+
+    /// <summary>Turn rate of the radar in degrees per turn (can be positive and negative).</summary>
+    /// <value>The turn rate of the radar in degrees per turn (can be positive and negative).</value>
+    public double RadarTurnRate { get; }
+
     /// <summary>Gun heat.</summary>
     /// <value>The gun heat.</value>
     public double GunHeat { get; }
@@ -97,6 +109,9 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="radarDirection">Radar direction in degrees.</param>
     /// <param name="radarSweep">Radar sweep angle in degrees.</param>
     /// <param name="speed">Speed measured in pixels per turn.</param>
+    /// <param name="turnRate">Turn rate of the body in degrees per turn.</param>
+    /// <param name="gunTurnRate">Turn rate of the gun in degrees per turn.</param>
+    /// <param name="radarTurnRate">Turn rate of the radar in degrees per turn.</param>
     /// <param name="gunHeat">Gun heat.</param>
     /// <param name="bodyColor">Body color code.</param>
     /// <param name="turretColor">Gun turret color code.</param>
@@ -107,8 +122,9 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="gunColor">Gun color code.</param>
     [JsonConstructor]
     public BotState(double energy, double x, double y, double direction, double gunDirection,
-      double radarDirection, double radarSweep, double speed, double gunHeat, int? bodyColor,
-      int? turretColor, int? radarColor, int? bulletColor, int? scanColor, int? tracksColor,
+      double radarDirection, double radarSweep,
+      double speed, double turnRate, double gunTurnRate, double radarTurnRate, double gunHeat,
+      int? bodyColor, int? turretColor, int? radarColor, int? bulletColor, int? scanColor, int? tracksColor,
       int? gunColor)
     {
       Energy = energy;
@@ -119,6 +135,9 @@ namespace Robocode.TankRoyale.BotApi
       RadarDirection = radarDirection;
       RadarSweep = radarSweep;
       Speed = speed;
+      TurnRate = turnRate;
+      GunTurnRate = gunTurnRate;
+      RadarTurnRate = radarTurnRate;
       GunHeat = gunHeat;
       BodyColor = bodyColor;
       TurretColor = turretColor;

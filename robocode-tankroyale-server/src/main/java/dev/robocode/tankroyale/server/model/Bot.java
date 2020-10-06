@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.server.model;
 
 import lombok.Builder;
-import lombok.Builder.Default;
 import dev.robocode.tankroyale.server.util.MathUtil;
 import lombok.Value;
 
@@ -18,7 +17,7 @@ public class Bot {
 	int id;
 
 	/** Energy level */
-	@Default double energy = 100;
+	double energy;
 
 	/** X coordinate on the arena */
 	double x;
@@ -40,6 +39,15 @@ public class Bot {
 
 	/** Speed */
 	double speed;
+
+	/** Turn rate */
+	double turnRate;
+
+	/** Gun turn rate */
+	double gunTurnRate;
+
+	/** Radar turn rate */
+	double radarTurnRate;
 
 	/** Gun heat */
 	double gunHeat;
@@ -71,6 +79,10 @@ public class Bot {
 	@SuppressWarnings("WeakerAccess")
 	public static class BotBuilder {
 
+		public BotBuilder() {
+			energy = 100; // default
+		}
+
 		public int getId() {
 			return id;
 		}
@@ -88,6 +100,12 @@ public class Bot {
 		public double getSpeed() {
 			return speed;
 		}
+
+		public double getTurnRate() { return turnRate; }
+
+		public double getGunTurnRate() { return gunTurnRate; }
+
+		public double getRadarTurnRate() { return radarTurnRate; }
 
 		public boolean isAlive() {
 			return energy >= 0;

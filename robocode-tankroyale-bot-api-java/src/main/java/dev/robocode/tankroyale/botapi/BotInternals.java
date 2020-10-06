@@ -141,53 +141,24 @@ final class BotInternals {
     if (isCollidingWithBot) {
       return;
     }
-
-    final double absTurnRate = abs(bot.getTurnRate());
-
-    double turnRate = min(absTurnRate, bot.calcMaxTurnRate(bot.getSpeed()));
-    if (bot.getTurnRemaining() < 0) {
-      turnRate *= -1;
+    if (bot.doAdjustGunForBodyTurn()) {
+      gunTurnRemaining -= bot.getTurnRate();
     }
-    if (abs(bot.getTurnRemaining()) < absTurnRate) {
-      if (bot.doAdjustGunForBodyTurn()) {
-        gunTurnRemaining -= bot.getTurnRemaining();
-      }
-      turnRemaining = 0;
-    } else {
-      if (bot.doAdjustGunForBodyTurn()) {
-        gunTurnRemaining -= turnRate;
-      }
-      turnRemaining -= turnRate;
-    }
-    setTurnRate();
+    turnRemaining -= bot.getTurnRate();
+    bot.setTurnRate(turnRemaining);
   }
 
   private void updateGunTurnRemaining() {
-    final double absGunTurnRate = abs(bot.getGunTurnRate());
-
-    if (abs(bot.getGunTurnRemaining()) < absGunTurnRate) {
-      if (bot.doAdjustRadarForGunTurn()) {
-        radarTurnRemaining -= bot.getGunTurnRemaining();
-      }
-      gunTurnRemaining = 0;
-    } else {
-      if (bot.doAdjustRadarForGunTurn()) {
-        radarTurnRemaining -= bot.getGunTurnRate();
-      }
-      gunTurnRemaining -= bot.getGunTurnRate();
+    if (bot.doAdjustRadarForGunTurn()) {
+      radarTurnRemaining -= bot.getGunTurnRate();
     }
-    setGunTurnRate();
+    gunTurnRemaining -= bot.getGunTurnRate();
+    bot.setGunTurnRate(gunTurnRemaining);
   }
 
   private void updateRadarTurnRemaining() {
-    final double absRadarTurnRate = abs(bot.getRadarTurnRate());
-
-    if (abs(bot.getRadarTurnRemaining()) < absRadarTurnRate) {
-      radarTurnRemaining = 0;
-    } else {
-      radarTurnRemaining -= bot.getRadarTurnRate();
-    }
-    setRadarTurnRate();
+    radarTurnRemaining -= bot.getRadarTurnRate();
+    bot.setRadarTurnRate(radarTurnRemaining);
   }
 
   // This is Nat Pavasants method described here:
@@ -218,28 +189,6 @@ final class BotInternals {
     }
 
     distanceRemaining = distance - speed;
-  }
-
-  void setTurnRate() {
-    double turnRate =
-        (turnRemaining > 0) ? min(maxTurnRate, turnRemaining) : max(-maxTurnRate, turnRemaining);
-    bot.setTurnRate(turnRate);
-  }
-
-  void setGunTurnRate() {
-    double gunTurnRate =
-        (gunTurnRemaining > 0)
-            ? min(maxGunTurnRate, gunTurnRemaining)
-            : max(-maxGunTurnRate, gunTurnRemaining);
-    bot.setGunTurnRate(gunTurnRate);
-  }
-
-  void setRadarTurnRate() {
-    double radarTurnRate =
-        (radarTurnRemaining > 0)
-            ? min(maxRadarTurnRate, radarTurnRemaining)
-            : max(-maxRadarTurnRate, radarTurnRemaining);
-    bot.setRadarTurnRate(radarTurnRate);
   }
 
   /**

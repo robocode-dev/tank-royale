@@ -181,69 +181,28 @@ namespace Robocode.TankRoyale.BotApi
         {
           return;
         }
-
-        double absTurnRate = Math.Abs(bot.TurnRate);
-
-        double turnRate = Math.Min(absTurnRate, bot.CalcMaxTurnRate(bot.Speed));
-        if (bot.TurnRemaining < 0)
+        if (bot.DoAdjustGunForBodyTurn)
         {
-          turnRate *= -1;
+          gunTurnRemaining -= bot.TurnRate;
         }
-        if (Math.Abs(bot.TurnRemaining) < absTurnRate)
-        {
-          if (bot.DoAdjustGunForBodyTurn)
-          {
-            gunTurnRemaining -= bot.TurnRemaining;
-          }
-          turnRemaining = 0;
-        }
-        else
-        {
-          if (bot.DoAdjustGunForBodyTurn)
-          {
-            gunTurnRemaining -= turnRate;
-          }
-          turnRemaining -= turnRate;
-        }
-        SetTurnRate();
+        turnRemaining -= bot.TurnRate;
+        bot.TurnRate = turnRemaining;
       }
 
       private void UpdateGunTurnRemaining()
       {
-        double absGunTurnRate = Math.Abs(bot.GunTurnRate);
-
-        if (Math.Abs(bot.GunTurnRemaining) < absGunTurnRate)
+        if (bot.DoAdjustRadarForGunTurn)
         {
-          if (bot.DoAdjustRadarForGunTurn)
-          {
-            radarTurnRemaining -= bot.GunTurnRemaining;
-          }
-          gunTurnRemaining = 0;
+          radarTurnRemaining -= bot.GunTurnRate;
         }
-        else
-        {
-          if (bot.DoAdjustRadarForGunTurn)
-          {
-            radarTurnRemaining -= bot.GunTurnRate;
-          }
-          gunTurnRemaining -= bot.GunTurnRate;
-        }
-        SetGunTurnRate();
+        gunTurnRemaining -= bot.GunTurnRate;
+        bot.GunTurnRate = gunTurnRemaining;
       }
 
       private void UpdateRadarTurnRemaining()
       {
-        double absRadarTurnRate = Math.Abs(bot.RadarTurnRate);
-
-        if (Math.Abs(bot.RadarTurnRemaining) < absRadarTurnRate)
-        {
-          radarTurnRemaining = 0;
-        }
-        else
-        {
-          radarTurnRemaining -= bot.RadarTurnRate;
-        }
-        SetRadarTurnRate();
+        radarTurnRemaining -= bot.RadarTurnRate;
+        bot.RadarTurnRate = radarTurnRemaining;
       }
 
       // This is Nat Pavasants method described here:
@@ -280,27 +239,6 @@ namespace Robocode.TankRoyale.BotApi
         }
 
         distanceRemaining = distance - speed;
-      }
-
-      internal void SetTurnRate()
-      {
-        bot.TurnRate = (turnRemaining > 0)
-          ? Math.Min(maxTurnRate, turnRemaining)
-          : Math.Max(-maxTurnRate, turnRemaining);
-      }
-
-      internal void SetGunTurnRate()
-      {
-        bot.GunTurnRate = (gunTurnRemaining > 0)
-          ? Math.Min(maxGunTurnRate, gunTurnRemaining)
-          : Math.Max(-maxGunTurnRate, gunTurnRemaining);
-      }
-
-      internal void SetRadarTurnRate()
-      {
-        bot.RadarTurnRate = (radarTurnRemaining > 0)
-          ? Math.Min(maxRadarTurnRate, radarTurnRemaining)
-          : Math.Max(-maxRadarTurnRate, radarTurnRemaining);
       }
 
       /// <summary>

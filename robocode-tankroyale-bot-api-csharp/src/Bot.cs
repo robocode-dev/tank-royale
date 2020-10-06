@@ -110,7 +110,7 @@ namespace Robocode.TankRoyale.BotApi
         throw new ArgumentException("degrees cannot be NaN");
       }
       __botInternals.turnRemaining = degrees;
-      __botInternals.SetTurnRate();
+      TurnRate = degrees;
     }
 
     /// <inheritdoc/>
@@ -158,7 +158,7 @@ namespace Robocode.TankRoyale.BotApi
         throw new ArgumentException("degrees cannot be NaN");
       }
       __botInternals.gunTurnRemaining = degrees;
-      __botInternals.SetGunTurnRate();
+      GunTurnRate = degrees;
     }
 
     /// <inheritdoc/>
@@ -206,7 +206,7 @@ namespace Robocode.TankRoyale.BotApi
         throw new ArgumentException("degrees cannot be NaN");
       }
       __botInternals.radarTurnRemaining = degrees;
-      __botInternals.SetRadarTurnRate();
+      RadarTurnRate = degrees;
     }
 
     /// <inheritdoc/>

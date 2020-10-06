@@ -1,9 +1,9 @@
 {
   "Bot": {
-    "Name": "Crazy",
+    "Name": "Walls",
     "Version": "1.0",
     "Author": "Mathew Nelson & Flemming N. Larsen",
-    "Description": "This bot moves around in a crazy pattern.",
+    "Description": "Moves around the outer edge with the gun facing in.",
     "Url": "",
     "CountryCode": "us",
     "GameTypes": "melee, classic, 1v1",
