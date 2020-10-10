@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.server.model.Bot.BotBuilder;
 import dev.robocode.tankroyale.server.model.Turn.TurnBuilder;
 import dev.robocode.tankroyale.server.util.MathUtil;
 
+import javax.sound.sampled.Line;
 import java.util.*;
 
 import static dev.robocode.tankroyale.server.model.RuleConstants.*;
@@ -388,12 +389,18 @@ public class ModelUpdater {
 					double totalTurnRate = limitedTurnRate;
 					double direction = normalAbsoluteDegrees(botBuilder.getDirection() + totalTurnRate);
 
-					// Gun direction depends on the turn rate of both the body and the gun
-					totalTurnRate += limitedGunTurnRate;
-					double gunDirection = normalAbsoluteDegrees(botBuilder.getGunDirection() + totalTurnRate);
+                    // Gun direction depends on the turn rate of both the body and the gun
+                    totalTurnRate += limitedGunTurnRate;
+                    if (immuBotIntent.getAdjustGunForBodyTurn()) {
+                        totalTurnRate -= limitedTurnRate;
+                    }
+      				double gunDirection = normalAbsoluteDegrees(botBuilder.getGunDirection() + totalTurnRate);
 
 					// Radar direction depends on the turn rate of the body, the gun, and the radar
 					totalTurnRate += limitedRadarTurnRate;
+                    if (immuBotIntent.getAdjustRadarForGunTurn()) {
+                        totalTurnRate -= limitedGunTurnRate;
+                    }
 					double radarDirection = normalAbsoluteDegrees(botBuilder.getRadarDirection() + totalTurnRate);
 
 					// The radar sweep is the difference between the new and old radar direction

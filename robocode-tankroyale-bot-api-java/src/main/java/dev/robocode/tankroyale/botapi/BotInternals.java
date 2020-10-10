@@ -91,6 +91,7 @@ final class BotInternals {
     updateHeadings();
     updateMovement();
 
+    // Reset collision flags after updating movement
     isCollidingWithWall = false;
     isCollidingWithBot = false;
 
@@ -161,7 +162,7 @@ final class BotInternals {
     bot.setRadarTurnRate(radarTurnRemaining);
   }
 
-  // This is Nat Pavasants method described here:
+  // This is Nat Pavasant's method described here:
   // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
   private void updateMovement() {
     if (isCollidingWithWall) {

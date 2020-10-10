@@ -14,6 +14,8 @@ public final class BotIntentToBotIntentMapper {
 			.gunTurnRate(intent.getGunTurnRate())
 			.radarTurnRate(intent.getRadarTurnRate())
 			.bulletPower(intent.getFirepower())
+			.adjustGunForBodyTurn(intent.getAdjustGunForBodyTurn())
+			.adjustRadarForGunTurn(intent.getAdjustRadarForGunTurn())
             .bodyColor(intent.getBodyColor())
             .turretColor(intent.getTurretColor())
             .radarColor(intent.getRadarColor())

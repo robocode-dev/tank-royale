@@ -38,10 +38,6 @@ namespace Robocode.TankRoyale.BotApi
       private TickEvent currentTick = null;
       private long? ticksStart;
 
-      // Adjustment of turn rates
-      internal bool doAdjustGunForBodyTurn;
-      internal bool doAdjustRadarForGunTurn;
-
       private readonly bool doDispatchEvents;
 
       internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUri)

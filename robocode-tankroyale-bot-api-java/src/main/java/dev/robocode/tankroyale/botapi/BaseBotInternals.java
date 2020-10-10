@@ -72,10 +72,6 @@ final class BaseBotInternals {
   private TickEvent currentTick;
   private Long ticksStartNanoTime;
 
-  // Adjustment of turn rates
-  boolean doAdjustGunForBodyTurn;
-  boolean doAdjustRadarForGunTurn;
-
   private final boolean doDispatchEvents;
 
   BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {

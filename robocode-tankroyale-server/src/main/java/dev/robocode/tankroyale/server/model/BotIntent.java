@@ -28,6 +28,12 @@ public class BotIntent {
   /** Desired bullet power */
   Double bulletPower;
 
+  /** Adjust gun for body turn */
+  Boolean adjustGunForBodyTurn;
+
+  /** Adjust radar for gun turn */
+  Boolean adjustRadarForGunTurn;
+
   /** Body color */
   String bodyColor;
 
@@ -73,6 +79,12 @@ public class BotIntent {
     if (botIntent.bulletPower != null) {
       builder.bulletPower(botIntent.bulletPower);
     }
+    if (botIntent.adjustGunForBodyTurn != null) {
+      builder.adjustGunForBodyTurn(botIntent.adjustGunForBodyTurn);
+    }
+    if (botIntent.adjustRadarForGunTurn != null) {
+      builder.adjustRadarForGunTurn(botIntent.adjustRadarForGunTurn);
+    }
     if (botIntent.bodyColor != null) {
       builder.bodyColor(botIntent.bodyColor);
     }
@@ -108,6 +120,8 @@ public class BotIntent {
     builder.gunTurnRate(gunTurnRate == null ? 0 : gunTurnRate);
     builder.radarTurnRate(radarTurnRate == null ? 0 : radarTurnRate);
     builder.bulletPower(bulletPower == null ? 0 : bulletPower);
+    builder.adjustGunForBodyTurn(adjustGunForBodyTurn != null && adjustGunForBodyTurn);
+    builder.adjustRadarForGunTurn(adjustRadarForGunTurn != null && adjustRadarForGunTurn);
     builder.bodyColor(bodyColor);
     builder.turretColor(turretColor);
     builder.radarColor(radarColor);

@@ -5,7 +5,7 @@
 
 	<groupId>dev.robocode.tankroyale</groupId>
 	<artifactId>robocode-tankroyale-schema</artifactId>
-	<version>0.6.6</version>
+	<version>0.6.7</version>
 	<packaging>jar</packaging>
 
 	<description>Robocode Tank Royale Schema</description>
@@ -79,7 +79,7 @@
 			<plugin>
 				<groupId>org.jsonschema2pojo</groupId>
 				<artifactId>jsonschema2pojo-maven-plugin</artifactId>
-				<version>1.0.1</version>
+				<version>1.0.2</version>
 				<configuration>
 					<sourceType>yamlschema</sourceType>
 					<sourceDirectory>${project.basedir}/../robocode-tankroyale-schema</sourceDirectory>
@@ -100,7 +100,7 @@
 	<repositories>
 		<repository>
 			<id>maven-central</id>
-			<url>http://repo1.maven.org/maven2</url>
+			<url>https://repo1.maven.org/maven2</url>
 		</repository>
 	</repositories>
 </project>

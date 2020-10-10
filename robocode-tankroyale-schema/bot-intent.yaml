@@ -22,6 +22,12 @@ properties:
     minimum: 0.0
     maximum: 3.0
     exclusiveMinimum: true
+  adjustGunForBodyTurn:
+    description: Flag indicating if the gun must be adjusted to compensate for the body turn.
+    type: boolean
+  adjustRadarForGunTurn:
+    description: Flag indicating if the radar must be adjusted to compensate for the gun turn.
+    type: boolean
   bodyColor:
     description: New color of the body
     $ref: color.yaml

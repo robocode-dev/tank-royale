@@ -233,10 +233,6 @@ namespace Robocode.TankRoyale.BotApi
         {
           throw new ArgumentException("TurnRate cannot be NaN");
         }
-        if (Math.Abs(value) > ((IBaseBot)this).MaxTurnRate)
-        {
-          value = ((IBaseBot)this).MaxTurnRate * Math.Sign(value);
-        }
         __baseBotInternals.BotIntent.TurnRate = value;
       }
       get => __baseBotInternals.CurrentTick.BotState.TurnRate;
@@ -250,14 +246,6 @@ namespace Robocode.TankRoyale.BotApi
         if (Double.IsNaN(value))
         {
           throw new ArgumentException("GunTurnRate cannot be NaN");
-        }
-        if (DoAdjustGunForBodyTurn)
-        {
-          value -= value;
-        }
-        if (Math.Abs(value) > ((IBaseBot)this).MaxGunTurnRate)
-        {
-          value = ((IBaseBot)this).MaxGunTurnRate * Math.Sign(value);
         }
         __baseBotInternals.BotIntent.GunTurnRate = value;
       }
@@ -273,14 +261,6 @@ namespace Robocode.TankRoyale.BotApi
         {
           throw new ArgumentException("RadarTurnRate cannot be NaN");
         }
-        if (DoAdjustRadarForGunTurn)
-        {
-          value -= value;
-        }
-        if (Math.Abs(value) > ((IBaseBot)this).MaxRadarTurnRate)
-        {
-          value = ((IBaseBot)this).MaxRadarTurnRate * Math.Sign(value);
-        }
         __baseBotInternals.BotIntent.RadarTurnRate = value;
       }
       get => __baseBotInternals.CurrentTick.BotState.RadarTurnRate;
@@ -294,14 +274,6 @@ namespace Robocode.TankRoyale.BotApi
         if (Double.IsNaN(value))
         {
           throw new ArgumentException("TargetSpeed cannot be NaN");
-        }
-        if (value > ((IBaseBot)this).MaxForwardSpeed)
-        {
-          value = ((IBaseBot)this).MaxForwardSpeed;
-        }
-        else if (value < ((IBaseBot)this).MaxBackwardSpeed)
-        {
-          value = ((IBaseBot)this).MaxBackwardSpeed;
         }
         __baseBotInternals.BotIntent.TargetSpeed = value;
       }
@@ -319,14 +291,6 @@ namespace Robocode.TankRoyale.BotApi
       {
         return false; // cannot fire yet
       }
-      if (firepower < ((IBaseBot)this).MinFirepower)
-      {
-        firepower = 0;
-      }
-      else if (firepower > ((IBaseBot)this).MaxFirepower)
-      {
-        firepower = ((IBaseBot)this).MaxFirepower;
-      }
       __baseBotInternals.BotIntent.Firepower = firepower;
       return true;
     }
@@ -334,15 +298,15 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public bool DoAdjustGunForBodyTurn
     {
-      set => __baseBotInternals.doAdjustGunForBodyTurn = value;
-      get => __baseBotInternals.doAdjustGunForBodyTurn;
+      set => __baseBotInternals.BotIntent.AdjustGunForBodyTurn = value;
+      get => __baseBotInternals.BotIntent.AdjustGunForBodyTurn ?? false;
     }
 
     /// <inheritdoc/>
     public bool DoAdjustRadarForGunTurn
     {
-      set => __baseBotInternals.doAdjustRadarForGunTurn = value;
-      get => __baseBotInternals.doAdjustRadarForGunTurn;
+      set => __baseBotInternals.BotIntent.AdjustRadarForGunTurn = value;
+      get => __baseBotInternals.BotIntent.AdjustRadarForGunTurn ?? false;
     }
 
     /// <inheritdoc/>
