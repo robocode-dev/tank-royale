@@ -39,8 +39,8 @@ namespace Robocode.TankRoyale.Sample.Bots
 
       // Turn the gun to turn right 90 degrees.
       peek = true;
-      TurnGunLeft(90);
-      TurnLeft(90);
+      TurnGunRight(90);
+      TurnRight(90);
 
       // Main loop
       while (IsRunning)
@@ -58,7 +58,7 @@ namespace Robocode.TankRoyale.Sample.Bots
           // Don't peek now
           peek = false;
           // Turn to the next wall
-          TurnLeft(90);
+          TurnRight(90);
         }
       }
     }

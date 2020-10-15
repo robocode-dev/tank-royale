@@ -68,9 +68,8 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void Forward(double distance)
     {
-      SetForward(distance);
-      Go();
-      __botInternals.AwaitMovementComplete();
+      __botInternals.QueueForward(distance);
+      __botInternals.Await();
     }
 
     /// <inheritdoc/>
@@ -116,9 +115,8 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void TurnLeft(double degrees)
     {
-      SetTurnLeft(degrees);
-      Go();
-      __botInternals.AwaitTurnComplete();
+      __botInternals.QueueTurn(degrees);
+      __botInternals.Await();
     }
 
     /// <inheritdoc/>
@@ -164,9 +162,8 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void TurnGunLeft(double degrees)
     {
-      SetTurnGunLeft(degrees);
-      Go();
-      __botInternals.awaitGunTurnComplete();
+      __botInternals.QueueGunTurn(degrees);
+      __botInternals.Await();
     }
 
     /// <inheritdoc/>
@@ -212,9 +209,8 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void TurnRadarLeft(double degrees)
     {
-      SetTurnRadarLeft(degrees);
-      Go();
-      __botInternals.awaitRadarTurnComplete();
+      __botInternals.QueueRadarTurn(degrees);
+      __botInternals.Await();
     }
 
     /// <inheritdoc/>
@@ -249,11 +245,8 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void Fire(double firepower)
     {
-      if (SetFirepower(firepower))
-      {
-        Go();
-        __botInternals.AwaitGunFired();
-      }
+      __botInternals.QueueFireGun(firepower);
+      __botInternals.Await();
     }
 
     /// <inheritdoc/>
@@ -261,9 +254,8 @@ namespace Robocode.TankRoyale.BotApi
     {
       if (!__botInternals.IsStopped)
       {
-        __botInternals.Stop();
-        Go();
-        __botInternals.AwaitNextTurn();
+        __botInternals.QueueStop();
+        __botInternals.Await();
       }
     }
 
@@ -272,16 +264,17 @@ namespace Robocode.TankRoyale.BotApi
     {
       if (__botInternals.IsStopped)
       {
-        __botInternals.Resume();
-        Go();
-        __botInternals.AwaitNextTurn();
+        __botInternals.QueueResume();
+        __botInternals.Await();
       }
     }
 
     /// <inheritdoc/>
     public void WaitFor(Condition condition)
     {
-      __botInternals.WaitFor(condition);
+    __botInternals.QueueCondition(condition);
+    __botInternals.Await();
+    __botInternals.FireConditionMet(condition);
     }
   }
 }

@@ -76,7 +76,7 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void forward(double distance) {
     __botInternals.queueForward(distance);
-    __botInternals.blockTillDone();
+    __botInternals.await();
   }
 
   /** {@inheritDoc} */
@@ -121,9 +121,8 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void turnLeft(double degrees) {
-    System.out.println("turnLeft: " + degrees);
     __botInternals.queueTurn(degrees);
-    __botInternals.blockTillDone();
+    __botInternals.await();
   }
 
   /** {@inheritDoc} */
@@ -169,7 +168,7 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void turnGunLeft(double degrees) {
     __botInternals.queueGunTurn(degrees);
-    __botInternals.blockTillDone();
+    __botInternals.await();
   }
 
   /** {@inheritDoc} */
@@ -215,7 +214,7 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void turnRadarLeft(double degrees) {
     __botInternals.queueRadarTurn(degrees);
-    __botInternals.blockTillDone();
+    __botInternals.await();
   }
 
   /** {@inheritDoc} */
@@ -251,28 +250,28 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void fire(double firepower) {
     __botInternals.queueFireGun(firepower);
-    __botInternals.blockTillDone();
+    __botInternals.await();
   }
 
   /** {@inheritDoc} */
   @Override
   public void stop() {
     __botInternals.queueStop();
-    __botInternals.blockTillDone();
+    __botInternals.await();
   }
 
   /** {@inheritDoc} */
   @Override
   public void resume() {
     __botInternals.queueResume();
-    __botInternals.blockTillDone();
+    __botInternals.await();
   }
 
   /** {@inheritDoc} */
   @Override
   public void waitFor(Condition condition) {
     __botInternals.queueCondition(condition);
-    __botInternals.blockTillDone();
+    __botInternals.await();
     __botInternals.fireConditionMet(condition);
   }
 }

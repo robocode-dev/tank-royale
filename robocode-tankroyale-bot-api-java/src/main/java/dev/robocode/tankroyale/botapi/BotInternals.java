@@ -42,6 +42,8 @@ final class BotInternals {
   private double savedGunTurnRemaining;
   private double savedRadarTurnRemaining;
 
+  private final LinkedHashMap<Class<?>, Command> pendingCommands = new LinkedHashMap<>();
+
   BotInternals(Bot bot, BotEvents botEvents) {
     this.bot = bot;
     this.botEvents = botEvents;
@@ -292,28 +294,33 @@ final class BotInternals {
     return (Math.abs(value) < .00001);
   }
 
-  public void blockTillDone() {
+  void await() {
     synchronized (nextTurn) {
       while (isRunning && pendingCommands.entrySet().size() > 0) {
-        Iterator<Map.Entry<String, Command>> iterator = pendingCommands.entrySet().iterator();
-        Map.Entry<String, Command> entry = iterator.next();
+        // Fetch next pending command
+        Iterator<Map.Entry<Class<?>, Command>> iterator = pendingCommands.entrySet().iterator();
+        Map.Entry<Class<?>, Command> entry = iterator.next();
         Command cmd = entry.getValue();
 
+        // Run the command, if it is not running already
         if (!cmd.isRunning()) {
           cmd.run();
+          // Send the bot intend if the bot is now running
           if (cmd.isRunning()) {
             bot.go();
           }
         }
-        // Loop while bot is running and command is still running
+        // Loop while bot is running and command is not done yet
         while (isRunning && !cmd.isDone()) {
           try {
+            // Wait for next turn and fire events
             nextTurn.wait();
             botEvents.fireEvents(currentTick);
           } catch (InterruptedException e) {
             isRunning = false;
           }
         }
+        // Remove the command
         pendingCommands.entrySet().remove(entry);
       }
     }
@@ -355,10 +362,8 @@ final class BotInternals {
     botEvents.fireConditionMet(condition);
   }
 
-  private final LinkedHashMap<String, Command> pendingCommands = new LinkedHashMap<>();
-
   private void queueCommand(Command command) {
-    pendingCommands.put(command.getClass().getSimpleName(), command);
+    pendingCommands.put(command.getClass(), command);
   }
 
   private abstract static class Command {
@@ -373,7 +378,7 @@ final class BotInternals {
     abstract boolean isDone();
   }
 
-  private class MoveCommand extends Command {
+  private final class MoveCommand extends Command {
     final double distance;
 
     MoveCommand(double distance) {
@@ -392,7 +397,7 @@ final class BotInternals {
     }
   }
 
-  private class TurnCommand extends Command {
+  private final class TurnCommand extends Command {
     final double degrees;
 
     TurnCommand(double degrees) {
@@ -411,7 +416,7 @@ final class BotInternals {
     }
   }
 
-  private class GunTurnCommand extends Command {
+  private final class GunTurnCommand extends Command {
     final double degrees;
 
     GunTurnCommand(double degrees) {
@@ -430,7 +435,7 @@ final class BotInternals {
     }
   }
 
-  private class RadarTurnCommand extends Command {
+  private final class RadarTurnCommand extends Command {
     final double degrees;
 
     RadarTurnCommand(double degrees) {
@@ -449,7 +454,7 @@ final class BotInternals {
     }
   }
 
-  private class FireGunCommand extends Command {
+  private final class FireGunCommand extends Command {
     final double firepower;
 
     FireGunCommand(double firepower) {
@@ -463,11 +468,11 @@ final class BotInternals {
 
     @Override
     public boolean isDone() {
-      return true;
+      return bot.getGunHeat() > 0;
     }
   }
 
-  private class StopCommand extends Command {
+  private final class StopCommand extends Command {
     final int turnNumber;
 
     StopCommand() {
@@ -486,7 +491,7 @@ final class BotInternals {
     }
   }
 
-  private class ResumeCommand extends Command {
+  private final class ResumeCommand extends Command {
     final int turnNumber;
 
     ResumeCommand() {
@@ -505,7 +510,7 @@ final class BotInternals {
     }
   }
 
-  private static class ConditionCommand extends Command {
+  private final static class ConditionCommand extends Command {
     final Condition condition;
 
     ConditionCommand(Condition condition) {
