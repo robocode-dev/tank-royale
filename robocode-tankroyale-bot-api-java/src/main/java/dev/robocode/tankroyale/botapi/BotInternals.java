@@ -295,11 +295,6 @@ final class BotInternals {
   public void blockTillDone() {
     synchronized (nextTurn) {
       while (isRunning && pendingCommands.entrySet().size() > 0) {
-
-        System.out.println("Entries: " + pendingCommands.entrySet().size());
-        for (Map.Entry<String, Command> entry : pendingCommands.entrySet()) {
-          System.out.println("entry: " + entry.getKey());
-        }
         Iterator<Map.Entry<String, Command>> iterator = pendingCommands.entrySet().iterator();
         Map.Entry<String, Command> entry = iterator.next();
         Command cmd = entry.getValue();
@@ -307,13 +302,6 @@ final class BotInternals {
         if (!cmd.isRunning()) {
           cmd.run();
           if (cmd.isRunning()) {
-            System.out.println(
-                "Run ("
-                    + pendingCommands.entrySet().size()
-                    + "): "
-                    + cmd.getClass().getSimpleName()
-                    + ", "
-                    + cmd.hashCode());
             bot.go();
           }
         }
@@ -327,7 +315,6 @@ final class BotInternals {
           }
         }
         pendingCommands.entrySet().remove(entry);
-        System.out.println("remove: " + cmd.getClass().getSimpleName() + ", " + cmd.hashCode());
       }
     }
   }

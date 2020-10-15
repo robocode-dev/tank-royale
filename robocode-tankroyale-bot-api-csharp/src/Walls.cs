@@ -88,7 +88,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     /** OnScannedBot: Fire! */
     public override void OnScannedBot(ScannedBotEvent e)
     {
-      Fire(2);
+      SetFirepower(2);
 
       if (peek)
       {
