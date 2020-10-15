@@ -357,84 +357,115 @@ namespace Robocode.TankRoyale.BotApi
       {
         lock (nextTurn)
         {
-          while (isRunning && pendingCommands.Count > 0) {
-            // Fetch next pending command
-            IDictionaryEnumerator enumerator = pendingCommands.GetEnumerator();
-            enumerator.MoveNext();
-            var entry = enumerator.Entry;
-            Command cmd = (Command)entry.Value;
+          try
+          {
+            while (isRunning && pendingCommands.Count > 0)
+            {
+              // Fetch next pending command
+              IDictionaryEnumerator enumerator = pendingCommands.GetEnumerator();
+              enumerator.MoveNext();
+              var entry = enumerator.Entry;
+              Command cmd = (Command)entry.Value;
 
-            // Run the command, if it is not running already
-            if (!cmd.IsRunning()) {
-              cmd.Run();
-              // Send the bot intend if the bot is now running
-              if (cmd.IsRunning()) {
-                bot.Go();
+              // Run the command, if it is not running already
+              if (!cmd.IsRunning())
+              {
+                cmd.Run();
+                // Send the bot intend if the bot is now running
+                if (cmd.IsRunning())
+                {
+                  bot.Go();
+                }
               }
+              // Loop while bot is running and command is not done yet
+              while (isRunning && !cmd.IsDone())
+              {
+                try
+                {
+                  // Wait for next turn and fire events
+                  Monitor.Wait(nextTurn);
+                  botEvents.FireEvents(currentTick);
+                }
+                catch (ThreadInterruptedException)
+                {
+                  isRunning = false;
+                }
+              }
+              // Remove the command
+              pendingCommands.Remove(entry.Key);
             }
-            // Loop while bot is running and command is not done yet
-            while (isRunning && !cmd.IsDone()) {
-              // Wait for next turn and fire events
-              Monitor.Wait(nextTurn);
-              botEvents.FireEvents(currentTick);
-            }
-            // Remove the command
-            pendingCommands.Remove(entry.Key);
+          }
+          catch (Exception ex)
+          {
+            Console.Error.WriteLine(ex.ToString());
           }
         }
       }
 
-      internal void QueueForward(double distance) {
+      internal void QueueForward(double distance)
+      {
         QueueCommand(new MoveCommand(this, distance));
       }
 
-      internal void QueueTurn(double degrees) {
+      internal void QueueTurn(double degrees)
+      {
         QueueCommand(new TurnCommand(this, degrees));
       }
 
-      internal void QueueGunTurn(double degrees) {
+      internal void QueueGunTurn(double degrees)
+      {
         QueueCommand(new GunTurnCommand(this, degrees));
       }
 
-      internal void QueueRadarTurn(double degrees) {
+      internal void QueueRadarTurn(double degrees)
+      {
         QueueCommand(new RadarTurnCommand(this, degrees));
       }
 
-      internal void QueueFireGun(double firepower) {
+      internal void QueueFireGun(double firepower)
+      {
         QueueCommand(new FireGunCommand(this, firepower));
       }
 
-      internal void QueueStop() {
+      internal void QueueStop()
+      {
         QueueCommand(new StopCommand(this));
       }
 
-      internal void QueueResume() {
+      internal void QueueResume()
+      {
         QueueCommand(new ResumeCommand(this));
       }
 
-      internal void QueueCondition(Condition condition) {
+      internal void QueueCondition(Condition condition)
+      {
         QueueCommand(new ConditionCommand(this, condition));
       }
 
-      internal void FireConditionMet(Condition condition) {
+      internal void FireConditionMet(Condition condition)
+      {
         botEvents.FireConditionMet(condition);
       }
 
-      private void QueueCommand(Command command) {
+      private void QueueCommand(Command command)
+      {
         pendingCommands.Remove(command.GetType());
         pendingCommands.Add(command.GetType(), command);
       }
 
-      private abstract class Command {
+      private abstract class Command
+      {
         protected BotInternals outerInstance;
 
         internal bool isRunning;
 
-        internal Command(BotInternals outerInstance) {
+        internal Command(BotInternals outerInstance)
+        {
           this.outerInstance = outerInstance;
         }
 
-        internal bool IsRunning() {
+        internal bool IsRunning()
+        {
           return isRunning;
         }
 
@@ -443,136 +474,168 @@ namespace Robocode.TankRoyale.BotApi
         internal abstract bool IsDone();
       }
 
-      private sealed class MoveCommand : Command {
+      private sealed class MoveCommand : Command
+      {
         readonly double distance;
 
-        internal MoveCommand(BotInternals outerInstance, double distance) : base(outerInstance) {
+        internal MoveCommand(BotInternals outerInstance, double distance) : base(outerInstance)
+        {
           this.distance = distance;
         }
 
-        internal override void Run() {
+        internal override void Run()
+        {
           outerInstance.bot.SetForward(distance);
           isRunning = true;
         }
 
-        internal override bool IsDone() {
+        internal override bool IsDone()
+        {
           return outerInstance.distanceRemaining == 0;
         }
       }
 
-      private sealed class TurnCommand : Command {
+      private sealed class TurnCommand : Command
+      {
         readonly double degrees;
 
-        internal TurnCommand(BotInternals outerInstance, double degrees) : base(outerInstance) {
+        internal TurnCommand(BotInternals outerInstance, double degrees) : base(outerInstance)
+        {
           this.degrees = degrees;
         }
 
-        internal override void Run() {
+        internal override void Run()
+        {
           outerInstance.bot.SetTurnLeft(degrees);
           isRunning = true;
         }
 
-        internal override bool IsDone() {
+        internal override bool IsDone()
+        {
           return outerInstance.turnRemaining == 0;
         }
       }
 
-      private sealed class GunTurnCommand : Command {
+      private sealed class GunTurnCommand : Command
+      {
         readonly double degrees;
 
-        internal GunTurnCommand(BotInternals outerInstance, double degrees) : base(outerInstance) {
+        internal GunTurnCommand(BotInternals outerInstance, double degrees) : base(outerInstance)
+        {
           this.degrees = degrees;
         }
 
-        internal override void Run() {
+        internal override void Run()
+        {
           outerInstance.bot.SetTurnGunLeft(degrees);
           isRunning = true;
         }
 
-        internal override bool IsDone() {
+        internal override bool IsDone()
+        {
           return outerInstance.gunTurnRemaining == 0;
         }
       }
 
-      private sealed class RadarTurnCommand : Command {
+      private sealed class RadarTurnCommand : Command
+      {
         readonly double degrees;
 
-        internal RadarTurnCommand(BotInternals outerInstance, double degrees) : base(outerInstance) {
+        internal RadarTurnCommand(BotInternals outerInstance, double degrees) : base(outerInstance)
+        {
           this.degrees = degrees;
         }
 
-        internal override void Run() {
+        internal override void Run()
+        {
           outerInstance.bot.SetTurnRadarLeft(degrees);
           isRunning = true;
         }
 
-        internal override bool IsDone() {
+        internal override bool IsDone()
+        {
           return outerInstance.radarTurnRemaining == 0;
         }
       }
 
-      private sealed class FireGunCommand : Command {
+      private sealed class FireGunCommand : Command
+      {
         readonly double firepower;
 
-        internal FireGunCommand(BotInternals outerInstance, double firepower) : base(outerInstance) {
+        internal FireGunCommand(BotInternals outerInstance, double firepower) : base(outerInstance)
+        {
           this.firepower = firepower;
         }
 
-        internal override void Run() {
+        internal override void Run()
+        {
           isRunning = outerInstance.bot.SetFirepower(firepower);
         }
 
-        internal override bool IsDone() {
+        internal override bool IsDone()
+        {
           return outerInstance.bot.GunHeat > 0;
         }
       }
 
-      private sealed class StopCommand : Command {
+      private sealed class StopCommand : Command
+      {
         readonly int turnNumber;
 
-        internal StopCommand(BotInternals outerInstance): base(outerInstance) {
+        internal StopCommand(BotInternals outerInstance) : base(outerInstance)
+        {
           this.turnNumber = outerInstance.bot.TurnNumber;
         }
 
-        internal override void Run() {
+        internal override void Run()
+        {
           outerInstance.Stop();
           isRunning = true;
         }
 
-        internal override bool IsDone() {
+        internal override bool IsDone()
+        {
           return outerInstance.currentTick.TurnNumber > turnNumber;
         }
       }
 
-      private sealed class ResumeCommand : Command {
+      private sealed class ResumeCommand : Command
+      {
         readonly int turnNumber;
 
-        internal ResumeCommand(BotInternals outerInstance): base(outerInstance) {
+        internal ResumeCommand(BotInternals outerInstance) : base(outerInstance)
+        {
           this.turnNumber = outerInstance.bot.TurnNumber;
         }
 
-       internal override void Run() {
+        internal override void Run()
+        {
           outerInstance.Resume();
           isRunning = true;
         }
 
-        internal override bool IsDone() {
+        internal override bool IsDone()
+        {
           return outerInstance.currentTick.TurnNumber > turnNumber;
         }
       }
 
-      private sealed class ConditionCommand : Command {
+      private sealed class ConditionCommand : Command
+      {
         readonly Condition condition;
 
-        internal ConditionCommand(BotInternals outerInstance, Condition condition): base(outerInstance) {
+        internal ConditionCommand(BotInternals outerInstance, Condition condition) : base(outerInstance)
+        {
           this.condition = condition;
         }
 
-       internal override void Run() {
+        internal override void Run()
+        {
           isRunning = true;
         }
 
-        internal override bool IsDone() {
+        internal override bool IsDone()
+        {
           return condition.Test();
         }
       }

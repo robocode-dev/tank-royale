@@ -1,6 +1,12 @@
 using System;
 using Robocode.TankRoyale.BotApi;
 
+/// <summary>
+/// Walls - a sample bot, original version by Mathew Nelson for Robocode.
+/// Modified by Flemming N. Larsen.
+///
+/// Moves around the outer edge with the gun facing in.
+/// </summary>
 namespace Robocode.TankRoyale.Sample.Bots
 {
   public class Walls : Bot
