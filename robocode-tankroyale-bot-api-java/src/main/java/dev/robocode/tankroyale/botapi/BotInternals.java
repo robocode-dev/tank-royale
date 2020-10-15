@@ -2,7 +2,12 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.*;
 
-import static java.lang.Math.*;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 final class BotInternals {
 
@@ -36,8 +41,6 @@ final class BotInternals {
   private double savedTurnRemaining;
   private double savedGunTurnRemaining;
   private double savedRadarTurnRemaining;
-
-  private int awaitTurn = -1;
 
   BotInternals(Bot bot, BotEvents botEvents) {
     this.bot = bot;
@@ -289,51 +292,247 @@ final class BotInternals {
     return (Math.abs(value) < .00001);
   }
 
-  void awaitMovementComplete() {
-    await(() -> distanceRemaining == 0);
-  }
-
-  void awaitTurnComplete() {
-    await(() -> turnRemaining == 0);
-  }
-
-  void awaitGunTurnComplete() {
-    await(() -> gunTurnRemaining == 0);
-  }
-
-  void awaitRadarTurnComplete() {
-    await(() -> radarTurnRemaining == 0);
-  }
-
-  void awaitGunFired() {
-    await(() -> bot.getGunHeat() > 0);
-  }
-
-  void awaitNextTurn() {
-    awaitTurn = currentTick.getTurnNumber();
-    await(() -> currentTick.getTurnNumber() > awaitTurn);
-  }
-
-  private void await(ICondition condition) {
+  public void blockTillDone() {
     synchronized (nextTurn) {
-      // Loop while bot is running and condition has not been met
-      while (isRunning && !condition.test()) {
-        try {
-          nextTurn.wait();
-          botEvents.fireEvents(currentTick);
-        } catch (InterruptedException e) {
-          isRunning = false;
+      while (isRunning && pendingCommands.entrySet().size() > 0) {
+
+        System.out.println("Entries: " + pendingCommands.entrySet().size());
+        for (Map.Entry<String, Command> entry : pendingCommands.entrySet()) {
+          System.out.println("entry: " + entry.getKey());
         }
+        Iterator<Map.Entry<String, Command>> iterator = pendingCommands.entrySet().iterator();
+        Map.Entry<String, Command> entry = iterator.next();
+        Command cmd = entry.getValue();
+
+        if (!cmd.isRunning()) {
+          cmd.run();
+          if (cmd.isRunning()) {
+            System.out.println(
+                "Run ("
+                    + pendingCommands.entrySet().size()
+                    + "): "
+                    + cmd.getClass().getSimpleName()
+                    + ", "
+                    + cmd.hashCode());
+            bot.go();
+          }
+        }
+        // Loop while bot is running and command is still running
+        while (isRunning && !cmd.isDone()) {
+          try {
+            nextTurn.wait();
+            botEvents.fireEvents(currentTick);
+          } catch (InterruptedException e) {
+            isRunning = false;
+          }
+        }
+        pendingCommands.entrySet().remove(entry);
+        System.out.println("remove: " + cmd.getClass().getSimpleName() + ", " + cmd.hashCode());
       }
     }
   }
 
-  protected void waitFor(Condition condition) {
-    await(condition::test);
+  void queueForward(double distance) {
+    queueCommand(new MoveCommand(distance));
+  }
+
+  void queueTurn(double degrees) {
+    queueCommand(new TurnCommand(degrees));
+  }
+
+  void queueGunTurn(double degrees) {
+    queueCommand(new GunTurnCommand(degrees));
+  }
+
+  void queueRadarTurn(double degrees) {
+    queueCommand(new RadarTurnCommand(degrees));
+  }
+
+  void queueFireGun(double firepower) {
+    queueCommand(new FireGunCommand(firepower));
+  }
+
+  void queueStop() {
+    queueCommand(new StopCommand());
+  }
+
+  void queueResume() {
+    queueCommand(new ResumeCommand());
+  }
+
+  void queueCondition(Condition condition) {
+    queueCommand(new ConditionCommand(condition));
+  }
+
+  void fireConditionMet(Condition condition) {
     botEvents.fireConditionMet(condition);
   }
 
-  private interface ICondition {
-    boolean test();
+  private final LinkedHashMap<String, Command> pendingCommands = new LinkedHashMap<>();
+
+  private void queueCommand(Command command) {
+    pendingCommands.put(command.getClass().getSimpleName(), command);
+  }
+
+  private abstract static class Command {
+    boolean isRunning;
+
+    boolean isRunning() {
+      return isRunning;
+    }
+
+    abstract void run(); // must set isRunning
+
+    abstract boolean isDone();
+  }
+
+  private class MoveCommand extends Command {
+    final double distance;
+
+    MoveCommand(double distance) {
+      this.distance = distance;
+    }
+
+    @Override
+    public void run() {
+      bot.setForward(distance);
+      isRunning = true;
+    }
+
+    @Override
+    public boolean isDone() {
+      return distanceRemaining == 0;
+    }
+  }
+
+  private class TurnCommand extends Command {
+    final double degrees;
+
+    TurnCommand(double degrees) {
+      this.degrees = degrees;
+    }
+
+    @Override
+    public void run() {
+      bot.setTurnLeft(degrees);
+      isRunning = true;
+    }
+
+    @Override
+    public boolean isDone() {
+      return turnRemaining == 0;
+    }
+  }
+
+  private class GunTurnCommand extends Command {
+    final double degrees;
+
+    GunTurnCommand(double degrees) {
+      this.degrees = degrees;
+    }
+
+    @Override
+    public void run() {
+      bot.setTurnGunLeft(degrees);
+      isRunning = true;
+    }
+
+    @Override
+    public boolean isDone() {
+      return gunTurnRemaining == 0;
+    }
+  }
+
+  private class RadarTurnCommand extends Command {
+    final double degrees;
+
+    RadarTurnCommand(double degrees) {
+      this.degrees = degrees;
+    }
+
+    @Override
+    public void run() {
+      bot.setTurnRadarLeft(degrees);
+      isRunning = true;
+    }
+
+    @Override
+    public boolean isDone() {
+      return radarTurnRemaining == 0;
+    }
+  }
+
+  private class FireGunCommand extends Command {
+    final double firepower;
+
+    FireGunCommand(double firepower) {
+      this.firepower = firepower;
+    }
+
+    @Override
+    public void run() {
+      isRunning = bot.setFirepower(firepower);
+    }
+
+    @Override
+    public boolean isDone() {
+      return true;
+    }
+  }
+
+  private class StopCommand extends Command {
+    final int turnNumber;
+
+    StopCommand() {
+      this.turnNumber = bot.getTurnNumber();
+    }
+
+    @Override
+    public void run() {
+      stop();
+      isRunning = true;
+    }
+
+    @Override
+    public boolean isDone() {
+      return currentTick.getTurnNumber() > turnNumber;
+    }
+  }
+
+  private class ResumeCommand extends Command {
+    final int turnNumber;
+
+    ResumeCommand() {
+      this.turnNumber = bot.getTurnNumber();
+    }
+
+    @Override
+    public void run() {
+      resume();
+      isRunning = true;
+    }
+
+    @Override
+    public boolean isDone() {
+      return currentTick.getTurnNumber() > turnNumber;
+    }
+  }
+
+  private static class ConditionCommand extends Command {
+    final Condition condition;
+
+    ConditionCommand(Condition condition) {
+      this.condition = condition;
+    }
+
+    @Override
+    public void run() {
+      isRunning = true;
+    }
+
+    @Override
+    public boolean isDone() {
+      return condition.test();
+    }
   }
 }

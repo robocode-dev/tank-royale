@@ -75,9 +75,8 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void forward(double distance) {
-    setForward(distance);
-    go();
-    __botInternals.awaitMovementComplete();
+    __botInternals.queueForward(distance);
+    __botInternals.blockTillDone();
   }
 
   /** {@inheritDoc} */
@@ -122,9 +121,9 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void turnLeft(double degrees) {
-    setTurnLeft(degrees);
-    go();
-    __botInternals.awaitTurnComplete();
+    System.out.println("turnLeft: " + degrees);
+    __botInternals.queueTurn(degrees);
+    __botInternals.blockTillDone();
   }
 
   /** {@inheritDoc} */
@@ -169,9 +168,8 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void turnGunLeft(double degrees) {
-    setTurnGunLeft(degrees);
-    go();
-    __botInternals.awaitGunTurnComplete();
+    __botInternals.queueGunTurn(degrees);
+    __botInternals.blockTillDone();
   }
 
   /** {@inheritDoc} */
@@ -216,9 +214,8 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void turnRadarLeft(double degrees) {
-    setTurnRadarLeft(degrees);
-    go();
-    __botInternals.awaitRadarTurnComplete();
+    __botInternals.queueRadarTurn(degrees);
+    __botInternals.blockTillDone();
   }
 
   /** {@inheritDoc} */
@@ -253,35 +250,29 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void fire(double firepower) {
-    if (setFirepower(firepower)) {
-      go();
-      __botInternals.awaitGunFired();
-    }
+    __botInternals.queueFireGun(firepower);
+    __botInternals.blockTillDone();
   }
 
   /** {@inheritDoc} */
   @Override
   public void stop() {
-    if (!__botInternals.isStopped) {
-      __botInternals.stop();
-      go();
-      __botInternals.awaitNextTurn();
-    }
+    __botInternals.queueStop();
+    __botInternals.blockTillDone();
   }
 
   /** {@inheritDoc} */
   @Override
   public void resume() {
-    if (__botInternals.isStopped) {
-      __botInternals.resume();
-      go();
-      __botInternals.awaitNextTurn();
-    }
+    __botInternals.queueResume();
+    __botInternals.blockTillDone();
   }
 
   /** {@inheritDoc} */
   @Override
   public void waitFor(Condition condition) {
-    __botInternals.waitFor(condition);
+    __botInternals.queueCondition(condition);
+    __botInternals.blockTillDone();
+    __botInternals.fireConditionMet(condition);
   }
 }
