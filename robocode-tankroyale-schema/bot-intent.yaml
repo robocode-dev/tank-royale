@@ -28,6 +28,9 @@ properties:
   adjustRadarForGunTurn:
     description: Flag indicating if the radar must be adjusted to compensate for the gun turn.
     type: boolean
+  scan:
+    description: Flag indicating if the bot should rescan with previous radar direction and scan sweep angle.
+    type: boolean
   bodyColor:
     description: New color of the body
     $ref: color.yaml
