@@ -147,7 +147,7 @@ namespace Robocode.TankRoyale.BotApi
     /// The commands executed when <see cref="Go"/> is called are set by setting these properties
     /// prior to calling the <see cref="Go"/> method: <see cref="TurnRate"/>, <see
     /// cref="GunTurnRate"/>, <see cref="RadarTurnRate"/>, <see cref="TargetSpeed"/>, and <see
-    /// cref="SetFirepower"/>.
+    /// cref="SetFire"/>.
     /// </summary>
     /// <seealso cref="TurnTimeout"/>
     void Go();
@@ -453,7 +453,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <seealso cref="OnBulletFired"/>
     /// <seealso cref="GunHeat"/>
     /// <seealso cref="GunCoolingRate"/>
-    bool SetFirepower(double firepower);
+    bool SetFire(double firepower);
 
     /// <summary>
     /// Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun

@@ -138,7 +138,7 @@ public interface IBaseBot {
    * <p>The commands executed when {@code go()} is called are set by calling the various setter
    * methods prior to calling the {@code go()} method: {@link #setTurnRate(double)}, {@link
    * #setGunTurnRate(double)}, {@link #setRadarTurnRate(double)}, {@link #setTargetSpeed(double)},
-   * and {@link #setFirepower(double)}.
+   * and {@link #setFire(double)}.
    *
    * @see #getTurnTimeout()
    */
@@ -502,13 +502,13 @@ public interface IBaseBot {
    * @see #getGunHeat()
    * @see #getGunCoolingRate()
    */
-  boolean setFirepower(double firepower);
+  boolean setFire(double firepower);
 
   /**
    * Returns the firepower.
    *
    * @return The firepower.
-   * @see #setFirepower(double)
+   * @see #setFire(double)
    */
   double getFirepower();
 

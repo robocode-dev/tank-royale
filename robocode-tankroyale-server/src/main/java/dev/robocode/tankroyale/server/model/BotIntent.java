@@ -34,6 +34,9 @@ public class BotIntent {
   /** Adjust radar for gun turn */
   Boolean adjustRadarForGunTurn;
 
+  /** Perform rescan */
+  Boolean scan;
+
   /** Body color */
   String bodyColor;
 
@@ -85,6 +88,9 @@ public class BotIntent {
     if (botIntent.adjustRadarForGunTurn != null) {
       builder.adjustRadarForGunTurn(botIntent.adjustRadarForGunTurn);
     }
+    if (botIntent.scan != null) {
+      builder.scan(botIntent.scan);
+    }
     if (botIntent.bodyColor != null) {
       builder.bodyColor(botIntent.bodyColor);
     }
@@ -122,6 +128,7 @@ public class BotIntent {
     builder.bulletPower(bulletPower == null ? 0 : bulletPower);
     builder.adjustGunForBodyTurn(adjustGunForBodyTurn != null && adjustGunForBodyTurn);
     builder.adjustRadarForGunTurn(adjustRadarForGunTurn != null && adjustRadarForGunTurn);
+    builder.scan(scan != null && scan);
     builder.bodyColor(bodyColor);
     builder.turretColor(turretColor);
     builder.radarColor(radarColor);

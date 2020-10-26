@@ -94,7 +94,7 @@ public class Walls extends Bot {
   /** onScannedBot: Fire! */
   @Override
   public void onScannedBot(ScannedBotEvent e) {
-    setFirepower(2);
+    setFire(2);
 
     if (peek) {
       stopMoving = true; // interrupt/stop turning the gun in the main loop in the run() method

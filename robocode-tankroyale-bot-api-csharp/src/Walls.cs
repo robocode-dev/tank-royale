@@ -16,7 +16,7 @@ namespace Robocode.TankRoyale.Sample.Bots
 
     bool stopMoving; // flag for stop moving temporarily
 
-    static void Main()
+    static void Main_Walls()
     {
       new Walls().Start();
     }
@@ -94,7 +94,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     /** OnScannedBot: Fire! */
     public override void OnScannedBot(ScannedBotEvent e)
     {
-      SetFirepower(2);
+      SetFire(2);
 
       if (peek)
       {

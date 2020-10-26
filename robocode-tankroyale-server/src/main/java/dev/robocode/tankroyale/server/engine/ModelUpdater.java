@@ -406,10 +406,15 @@ public class ModelUpdater {
 					// The radar sweep is the difference between the new and old radar direction
 					double spreadAngle = MathUtil.normalRelativeDegrees(radarDirection - botBuilder.getRadarDirection());
 
+					// Update the radar direction and spread angle, if the bot is not rescanning
+					boolean rescan = immuBotIntent.getScan();
+					if (!rescan) {
+						botBuilder.radarDirection(radarDirection);
+						botBuilder.radarSpreadAngle(spreadAngle);
+					}
+
 					botBuilder.direction(direction);
 					botBuilder.gunDirection(gunDirection);
-					botBuilder.radarDirection(radarDirection);
-					botBuilder.radarSpreadAngle(spreadAngle);
 					botBuilder.speed(speed);
 					botBuilder.turnRate(limitedTurnRate);
 					botBuilder.gunTurnRate(limitedGunTurnRate);

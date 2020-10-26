@@ -281,7 +281,7 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public bool SetFirepower(double firepower)
+    public bool SetFire(double firepower)
     {
       if (Double.IsNaN(firepower))
       {

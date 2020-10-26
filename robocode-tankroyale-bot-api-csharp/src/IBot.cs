@@ -656,12 +656,12 @@
     /// multiple commands in parallel, use <em>setter</em> methods instead of this blocking
     /// method.
     ///
-    /// This method will cancel the effect of prior calls to setting <see cref="IBaseBot.SetFirepower"/>.
+    /// This method will cancel the effect of prior calls to setting <see cref="IBaseBot.SetFire"/>.
     /// </summary>
     /// <param name="firepower">Is the amount of energy spent on firing the gun. You cannot spend
     /// more energy than available from the bot. The bullet power must be > MinFirepower.</param>
     /// <seealso cref="IBaseBot.OnBulletFired"/>
-    /// <seealso cref="IBaseBot.SetFirepower"/>
+    /// <seealso cref="IBaseBot.SetFire"/>
     /// <seealso cref="IBaseBot.GunHeat"/>
     /// <seealso cref="IBaseBot.GunCoolingRate"/>
     void Fire(double firepower);
@@ -686,6 +686,15 @@
     /// <seealso cref="GunTurnRemaining"/>
     /// <seealso cref="RadarTurnRemaining"/>
     void Resume();
+
+    /// <summary>
+    /// Scan (again) with the radar. This method is useful if the radar has not moved, and hence will
+    /// not automatically scan bots. This method is useful when the robot movement has stopped, e.g.
+    /// when <see cref="Stop"/> has been called. The last radar direction and sweep angle will be used for
+    /// scanning for bots.
+    /// </summary>
+    /// <seealso cref="Stop"/>
+    void Scan();
 
     /// <summary>
     /// Blocks until a condition is met, i.e. when a <see cref="Condition.Test"/> returns <c>true</c>.

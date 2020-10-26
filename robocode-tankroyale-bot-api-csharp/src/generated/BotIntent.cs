@@ -41,6 +41,10 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("adjustRadarForGunTurn", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool? AdjustRadarForGunTurn { get; set; }
     
+        /// <summary>Flag indicating if the bot should rescan with previous radar direction and scan sweep angle.</summary>
+        [Newtonsoft.Json.JsonProperty("scan", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Scan { get; set; }
+    
         /// <summary>New color of the body</summary>
         [Newtonsoft.Json.JsonProperty("bodyColor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [System.ComponentModel.DataAnnotations.RegularExpression(@"/^#[0-9A-F]{3,6}$/ig")]

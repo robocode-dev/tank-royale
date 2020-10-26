@@ -75,6 +75,7 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void forward(double distance) {
+    __botInternals.waitIfStopped();
     __botInternals.queueForward(distance);
     __botInternals.await();
   }
@@ -121,6 +122,7 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void turnLeft(double degrees) {
+    __botInternals.waitIfStopped();
     __botInternals.queueTurn(degrees);
     __botInternals.await();
   }
@@ -167,6 +169,7 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void turnGunLeft(double degrees) {
+    __botInternals.waitIfStopped();
     __botInternals.queueGunTurn(degrees);
     __botInternals.await();
   }
@@ -213,6 +216,7 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void turnRadarLeft(double degrees) {
+    __botInternals.waitIfStopped();
     __botInternals.queueRadarTurn(degrees);
     __botInternals.await();
   }
@@ -264,6 +268,13 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public void resume() {
     __botInternals.queueResume();
+    __botInternals.await();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void scan() {
+    __botInternals.queueScan();
     __botInternals.await();
   }
 

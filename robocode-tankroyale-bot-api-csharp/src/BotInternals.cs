@@ -31,10 +31,11 @@ namespace Robocode.TankRoyale.BotApi
       private TickEvent currentTick;
 
       internal Thread thread;
-      private readonly Object nextTurn = new Object();
+      private readonly Object nextTurnLock = new Object();
       private volatile bool isRunning;
+      private readonly Object isStoppedLock = new Object();
+      private volatile bool isStopped;
 
-      private bool isStopped;
       private double savedDistanceRemaining;
       private double savedTurnRemaining;
       private double savedGunTurnRemaining;
@@ -54,8 +55,6 @@ namespace Robocode.TankRoyale.BotApi
         this.maxGunTurnRate = bot.MaxGunTurnRate;
         this.maxRadarTurnRate = bot.MaxRadarTurnRate;
 
-        var internals = ((BaseBot)bot).__baseBotInternals;
-
         botEvents.onDisconnectedManager.Subscribe(OnDisconnected, 100);
         botEvents.onGameEndedManager.Subscribe(OnGameEnded, 100);
         botEvents.onHitBotManager.Subscribe(OnHitBot, 100);
@@ -67,11 +66,6 @@ namespace Robocode.TankRoyale.BotApi
       internal bool IsRunning
       {
         get => isRunning;
-      }
-
-      internal bool IsStopped
-      {
-        get => isStopped;
       }
 
       private void OnDisconnected(DisconnectedEvent evt)
@@ -137,13 +131,13 @@ namespace Robocode.TankRoyale.BotApi
           StartThread();
         }
 
-        lock (nextTurn)
+        lock (nextTurnLock)
         {
           // Let's go ;-)
           bot.Go();
 
-          // Unblock waiting methods waiting for the next turn
-          Monitor.PulseAll(nextTurn);
+          // Unblock methods waiting for the next turn
+          Monitor.PulseAll(nextTurnLock);
         }
       }
 
@@ -207,7 +201,7 @@ namespace Robocode.TankRoyale.BotApi
         bot.RadarTurnRate = radarTurnRemaining;
       }
 
-      // This is Nat Pavasants method described here:
+      // This is Nat Pavasant's method described here:
       // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
       private void UpdateMovement()
       {
@@ -322,40 +316,76 @@ namespace Robocode.TankRoyale.BotApi
 
       internal void Stop()
       {
-        if (!isStopped)
+        lock (isStoppedLock)
         {
-          savedDistanceRemaining = distanceRemaining;
-          savedTurnRemaining = turnRemaining;
-          savedGunTurnRemaining = gunTurnRemaining;
-          savedRadarTurnRemaining = radarTurnRemaining;
+          if (!isStopped)
+          {
+            savedDistanceRemaining = distanceRemaining;
+            savedTurnRemaining = turnRemaining;
+            savedGunTurnRemaining = gunTurnRemaining;
+            savedRadarTurnRemaining = radarTurnRemaining;
 
-          distanceRemaining = 0d;
-          turnRemaining = 0d;
-          gunTurnRemaining = 0d;
-          radarTurnRemaining = 0d;
+            distanceRemaining = 0d;
+            turnRemaining = 0d;
+            gunTurnRemaining = 0d;
+            radarTurnRemaining = 0d;
 
-          isStopped = true;
+            bot.TargetSpeed = 0;
+            bot.TurnRate = 0;
+            bot.GunTurnRate = 0;
+            bot.RadarTurnRate = 0;
+
+            isStopped = true;
+            Monitor.PulseAll(isStoppedLock);
+          }
         }
       }
 
       internal void Resume()
       {
-        if (isStopped)
+        lock (isStoppedLock)
         {
-          distanceRemaining = savedDistanceRemaining;
-          turnRemaining = savedTurnRemaining;
-          gunTurnRemaining = savedGunTurnRemaining;
-          radarTurnRemaining = savedRadarTurnRemaining;
+          if (isStopped)
+          {
+            distanceRemaining = savedDistanceRemaining;
+            turnRemaining = savedTurnRemaining;
+            gunTurnRemaining = savedGunTurnRemaining;
+            radarTurnRemaining = savedRadarTurnRemaining;
 
-          isStopped = false;
+            isStopped = false;
+            Monitor.PulseAll(isStoppedLock);
+          }
         }
+      }
+
+      private void SetScan(bool doScan)
+      {
+        ((BaseBot)bot).__baseBotInternals.botIntent.Scan = doScan;
       }
 
       private bool IsNearZero(double value) => Math.Abs(value) < .00001;
 
+      internal void WaitIfStopped()
+      {
+        lock (isStoppedLock)
+        {
+          while (isStopped)
+          {
+            try
+            {
+              Monitor.Wait(isStoppedLock);
+            }
+            catch (ThreadInterruptedException)
+            {
+              return;
+            }
+          }
+        }
+      }
+
       internal void Await()
       {
-        lock (nextTurn)
+        lock (nextTurnLock)
         {
           try
           {
@@ -375,6 +405,8 @@ namespace Robocode.TankRoyale.BotApi
                 if (cmd.IsRunning())
                 {
                   bot.Go();
+                  // Make sure to stop scanning
+                  SetScan(false);
                 }
               }
               // Loop while bot is running and command is not done yet
@@ -383,7 +415,7 @@ namespace Robocode.TankRoyale.BotApi
                 try
                 {
                   // Wait for next turn and fire events
-                  Monitor.Wait(nextTurn);
+                  Monitor.Wait(nextTurnLock);
                   botEvents.FireEvents(currentTick);
                 }
                 catch (ThreadInterruptedException)
@@ -435,6 +467,11 @@ namespace Robocode.TankRoyale.BotApi
       internal void QueueResume()
       {
         QueueCommand(new ResumeCommand(this));
+      }
+
+      internal void QueueScan()
+      {
+        QueueCommand(new ScanCommand(this));
       }
 
       internal void QueueCondition(Condition condition)
@@ -569,54 +606,12 @@ namespace Robocode.TankRoyale.BotApi
 
         internal override void Run()
         {
-          isRunning = outerInstance.bot.SetFirepower(firepower);
+          isRunning = outerInstance.bot.SetFire(firepower);
         }
 
         internal override bool IsDone()
         {
           return outerInstance.bot.GunHeat > 0;
-        }
-      }
-
-      private sealed class StopCommand : Command
-      {
-        readonly int turnNumber;
-
-        internal StopCommand(BotInternals outerInstance) : base(outerInstance)
-        {
-          this.turnNumber = outerInstance.bot.TurnNumber;
-        }
-
-        internal override void Run()
-        {
-          outerInstance.Stop();
-          isRunning = true;
-        }
-
-        internal override bool IsDone()
-        {
-          return outerInstance.currentTick.TurnNumber > turnNumber;
-        }
-      }
-
-      private sealed class ResumeCommand : Command
-      {
-        readonly int turnNumber;
-
-        internal ResumeCommand(BotInternals outerInstance) : base(outerInstance)
-        {
-          this.turnNumber = outerInstance.bot.TurnNumber;
-        }
-
-        internal override void Run()
-        {
-          outerInstance.Resume();
-          isRunning = true;
-        }
-
-        internal override bool IsDone()
-        {
-          return outerInstance.currentTick.TurnNumber > turnNumber;
         }
       }
 
@@ -637,6 +632,49 @@ namespace Robocode.TankRoyale.BotApi
         internal override bool IsDone()
         {
           return condition.Test();
+        }
+      }
+
+      private abstract class FireAndForgetCommand : Command
+      {
+        internal FireAndForgetCommand(BotInternals outerInstance) : base(outerInstance) { }
+
+        internal override bool IsDone()
+        {
+          return true;
+        }
+      }
+
+      private sealed class StopCommand : FireAndForgetCommand
+      {
+        internal StopCommand(BotInternals outerInstance) : base(outerInstance) { }
+
+        internal override void Run()
+        {
+          outerInstance.Stop();
+          isRunning = true;
+        }
+      }
+
+      private sealed class ResumeCommand : FireAndForgetCommand
+      {
+        internal ResumeCommand(BotInternals outerInstance) : base(outerInstance) { }
+
+        internal override void Run()
+        {
+          outerInstance.Resume();
+          isRunning = true;
+        }
+      }
+
+      private sealed class ScanCommand : FireAndForgetCommand
+      {
+        internal ScanCommand(BotInternals outerInstance) : base(outerInstance) { }
+
+        internal override void Run()
+        {
+          outerInstance.SetScan(false);
+          isRunning = true;
         }
       }
     }

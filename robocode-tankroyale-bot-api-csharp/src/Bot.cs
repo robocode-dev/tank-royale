@@ -68,6 +68,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void Forward(double distance)
     {
+      __botInternals.WaitIfStopped();
       __botInternals.QueueForward(distance);
       __botInternals.Await();
     }
@@ -115,6 +116,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void TurnLeft(double degrees)
     {
+      __botInternals.WaitIfStopped();
       __botInternals.QueueTurn(degrees);
       __botInternals.Await();
     }
@@ -162,6 +164,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void TurnGunLeft(double degrees)
     {
+      __botInternals.WaitIfStopped();
       __botInternals.QueueGunTurn(degrees);
       __botInternals.Await();
     }
@@ -209,6 +212,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void TurnRadarLeft(double degrees)
     {
+      __botInternals.WaitIfStopped();
       __botInternals.QueueRadarTurn(degrees);
       __botInternals.Await();
     }
@@ -252,29 +256,30 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void Stop()
     {
-      if (!__botInternals.IsStopped)
-      {
-        __botInternals.QueueStop();
-        __botInternals.Await();
-      }
+      __botInternals.QueueStop();
+      __botInternals.Await();
     }
 
     /// <inheritdoc/>
     public void Resume()
     {
-      if (__botInternals.IsStopped)
-      {
-        __botInternals.QueueResume();
-        __botInternals.Await();
-      }
+      __botInternals.QueueResume();
+      __botInternals.Await();
+    }
+
+    /// <inheritdoc/>
+    public void Scan()
+    {
+      __botInternals.QueueScan();
+      __botInternals.Await();
     }
 
     /// <inheritdoc/>
     public void WaitFor(Condition condition)
     {
-    __botInternals.QueueCondition(condition);
-    __botInternals.Await();
-    __botInternals.FireConditionMet(condition);
+      __botInternals.QueueCondition(condition);
+      __botInternals.Await();
+      __botInternals.FireConditionMet(condition);
     }
   }
 }

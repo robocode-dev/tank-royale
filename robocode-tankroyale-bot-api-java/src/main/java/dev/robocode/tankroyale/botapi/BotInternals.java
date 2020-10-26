@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.botapi.events.*;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -35,8 +36,8 @@ final class BotInternals {
   private Thread thread;
   private final Object nextTurn = new Object();
   volatile boolean isRunning;
+  volatile AtomicBoolean isStopped = new AtomicBoolean();
 
-  boolean isStopped;
   private double savedDistanceRemaining;
   private double savedTurnRemaining;
   private double savedGunTurnRemaining;
@@ -113,7 +114,7 @@ final class BotInternals {
       // Let's go ;-)
       bot.go();
 
-      // Unblock waiting methods waiting for the next turn
+      // Unblock methods waiting for the next turn
       nextTurn.notifyAll();
     }
   }
@@ -264,34 +265,61 @@ final class BotInternals {
   }
 
   void stop() {
-    if (!isStopped) {
-      savedDistanceRemaining = distanceRemaining;
-      savedTurnRemaining = turnRemaining;
-      savedGunTurnRemaining = gunTurnRemaining;
-      savedRadarTurnRemaining = radarTurnRemaining;
+    synchronized (isStopped) {
+      if (!isStopped.get()) {
+        savedDistanceRemaining = distanceRemaining;
+        savedTurnRemaining = turnRemaining;
+        savedGunTurnRemaining = gunTurnRemaining;
+        savedRadarTurnRemaining = radarTurnRemaining;
 
-      distanceRemaining = 0d;
-      turnRemaining = 0d;
-      gunTurnRemaining = 0d;
-      radarTurnRemaining = 0d;
+        distanceRemaining = 0d;
+        turnRemaining = 0d;
+        gunTurnRemaining = 0d;
+        radarTurnRemaining = 0d;
 
-      isStopped = true;
+        bot.setTargetSpeed(0);
+        bot.setTurnRate(0);
+        bot.setGunTurnRate(0);
+        bot.setRadarTurnRate(0);
+
+        isStopped.set(true);
+        isStopped.notifyAll();
+      }
     }
   }
 
   void resume() {
-    if (isStopped) {
-      distanceRemaining = savedDistanceRemaining;
-      turnRemaining = savedTurnRemaining;
-      gunTurnRemaining = savedGunTurnRemaining;
-      radarTurnRemaining = savedRadarTurnRemaining;
+    synchronized (isStopped) {
+      if (isStopped.get()) {
+        distanceRemaining = savedDistanceRemaining;
+        turnRemaining = savedTurnRemaining;
+        gunTurnRemaining = savedGunTurnRemaining;
+        radarTurnRemaining = savedRadarTurnRemaining;
 
-      isStopped = false;
+        isStopped.set(false);
+        isStopped.notifyAll();
+      }
     }
+  }
+
+  private void setScan(boolean doScan) {
+    bot.__baseBotInternals.botIntent.setScan(doScan);
   }
 
   private boolean isNearZero(double value) {
     return (Math.abs(value) < .00001);
+  }
+
+  void waitIfStopped() {
+    synchronized (isStopped) {
+      while (isStopped.get()) {
+        try {
+          isStopped.wait();
+        } catch (InterruptedException e) {
+          return;
+        }
+      }
+    }
   }
 
   void await() {
@@ -308,6 +336,8 @@ final class BotInternals {
           // Send the bot intend if the bot is now running
           if (cmd.isRunning()) {
             bot.go();
+            // Make sure to stop scanning
+            setScan(false);
           }
         }
         // Loop while bot is running and command is not done yet
@@ -346,6 +376,10 @@ final class BotInternals {
     queueCommand(new FireGunCommand(firepower));
   }
 
+  void queueCondition(Condition condition) {
+    queueCommand(new ConditionCommand(condition));
+  }
+
   void queueStop() {
     queueCommand(new StopCommand());
   }
@@ -354,8 +388,8 @@ final class BotInternals {
     queueCommand(new ResumeCommand());
   }
 
-  void queueCondition(Condition condition) {
-    queueCommand(new ConditionCommand(condition));
+  void queueScan() {
+    queueCommand(new ScanCommand());
   }
 
   void fireConditionMet(Condition condition) {
@@ -463,7 +497,7 @@ final class BotInternals {
 
     @Override
     public void run() {
-      isRunning = bot.setFirepower(firepower);
+      isRunning = bot.setFire(firepower);
     }
 
     @Override
@@ -472,45 +506,7 @@ final class BotInternals {
     }
   }
 
-  private final class StopCommand extends Command {
-    final int turnNumber;
-
-    StopCommand() {
-      this.turnNumber = bot.getTurnNumber();
-    }
-
-    @Override
-    public void run() {
-      stop();
-      isRunning = true;
-    }
-
-    @Override
-    public boolean isDone() {
-      return currentTick.getTurnNumber() > turnNumber;
-    }
-  }
-
-  private final class ResumeCommand extends Command {
-    final int turnNumber;
-
-    ResumeCommand() {
-      this.turnNumber = bot.getTurnNumber();
-    }
-
-    @Override
-    public void run() {
-      resume();
-      isRunning = true;
-    }
-
-    @Override
-    public boolean isDone() {
-      return currentTick.getTurnNumber() > turnNumber;
-    }
-  }
-
-  private final static class ConditionCommand extends Command {
+  private static final class ConditionCommand extends Command {
     final Condition condition;
 
     ConditionCommand(Condition condition) {
@@ -525,6 +521,37 @@ final class BotInternals {
     @Override
     public boolean isDone() {
       return condition.test();
+    }
+  }
+
+  private abstract static class FireAndForgetCommand extends Command {
+    @Override
+    public boolean isDone() {
+      return true;
+    }
+  }
+
+  private final class StopCommand extends FireAndForgetCommand {
+    @Override
+    public void run() {
+      stop();
+      isRunning = true;
+    }
+  }
+
+  private final class ResumeCommand extends FireAndForgetCommand {
+    @Override
+    public void run() {
+      resume();
+      isRunning = true;
+    }
+  }
+
+  private final class ScanCommand extends FireAndForgetCommand {
+    @Override
+    public void run() {
+      setScan(false);
+      isRunning = true;
     }
   }
 }
