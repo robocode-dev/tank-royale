@@ -296,6 +296,12 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
+    public void SetScan(bool doScan)
+    {
+      __baseBotInternals.botIntent.Scan = doScan;
+    }
+
+    /// <inheritdoc/>
     public bool DoAdjustGunForBodyTurn
     {
       set => __baseBotInternals.BotIntent.AdjustGunForBodyTurn = value;

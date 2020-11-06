@@ -85,7 +85,10 @@ namespace Robocode.TankRoyale.Sample.Bots
         // Call our custom firing method
         SmartFire(distance);
         // Rescan
-        Scan();
+        if (Scan())
+        {
+          return;
+        }
         // Resume movement
         Resume();
       }

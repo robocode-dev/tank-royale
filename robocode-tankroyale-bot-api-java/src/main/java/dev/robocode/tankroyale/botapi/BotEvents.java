@@ -129,7 +129,7 @@ class BotEvents {
 
     final void publish(T event) {
       subscriberEntries.sort(new EntryWithPriorityComparator());
-      for (EntryWithPriority entry : subscriberEntries) {
+      for (EntryWithPriority entry : new ArrayList<>(subscriberEntries)) {
         entry.subscriber.accept(event);
       }
     }

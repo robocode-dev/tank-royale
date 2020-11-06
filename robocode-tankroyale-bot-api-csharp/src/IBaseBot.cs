@@ -456,6 +456,15 @@ namespace Robocode.TankRoyale.BotApi
     bool SetFire(double firepower);
 
     /// <summary>
+    /// Sets the bot to rescan with the radar. This method is useful if the radar has not turned, and
+    /// hence will not automatically scan bots. The last radar direction and sweep angle will be used
+    /// for scanning for bots.
+    /// </summary>
+    /// <param name="doScan">true means that the radar must rescan using old radar direction and
+    /// sweep angle; false means that rescanning is disabled</param>
+    void SetScan(bool doScan);
+
+    /// <summary>
     /// Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun
     /// behaves like it is turning independent of the bot's turn.
     ///

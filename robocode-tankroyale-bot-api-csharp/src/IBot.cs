@@ -688,13 +688,13 @@
     void Resume();
 
     /// <summary>
-    /// Scan (again) with the radar. This method is useful if the radar has not moved, and hence will
+    /// Scan (again) with the radar. This method is useful if the radar has not turned, and hence will
     /// not automatically scan bots. This method is useful when the robot movement has stopped, e.g.
     /// when <see cref="Stop"/> has been called. The last radar direction and sweep angle will be used for
     /// scanning for bots.
     /// </summary>
     /// <seealso cref="Stop"/>
-    void Scan();
+    bool Scan();
 
     /// <summary>
     /// Blocks until a condition is met, i.e. when a <see cref="Condition.Test"/> returns <c>true</c>.

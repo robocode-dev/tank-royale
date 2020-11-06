@@ -405,8 +405,6 @@ namespace Robocode.TankRoyale.BotApi
                 if (cmd.IsRunning())
                 {
                   bot.Go();
-                  // Make sure to stop scanning
-                  SetScan(false);
                 }
               }
               // Loop while bot is running and command is not done yet
@@ -424,6 +422,7 @@ namespace Robocode.TankRoyale.BotApi
                 }
               }
               // Remove the command
+              cmd.BeforeDestroy();
               pendingCommands.Remove(entry.Key);
             }
           }
@@ -509,6 +508,8 @@ namespace Robocode.TankRoyale.BotApi
         internal abstract void Run(); // must set isRunning
 
         internal abstract bool IsDone();
+
+        internal virtual void BeforeDestroy() { }
       }
 
       private sealed class MoveCommand : Command
@@ -635,9 +636,14 @@ namespace Robocode.TankRoyale.BotApi
         }
       }
 
-      private abstract class FireAndForgetCommand : Command
+      private abstract class RunAndAwaitNextTurnCommand : Command
       {
-        internal FireAndForgetCommand(BotInternals outerInstance) : base(outerInstance) { }
+        private readonly int turnNumber;
+
+        internal RunAndAwaitNextTurnCommand(BotInternals outerInstance) : base(outerInstance)
+        {
+          this.turnNumber = outerInstance.bot.TurnNumber;
+        }
 
         internal override bool IsDone()
         {
@@ -645,7 +651,7 @@ namespace Robocode.TankRoyale.BotApi
         }
       }
 
-      private sealed class StopCommand : FireAndForgetCommand
+      private sealed class StopCommand : RunAndAwaitNextTurnCommand
       {
         internal StopCommand(BotInternals outerInstance) : base(outerInstance) { }
 
@@ -656,7 +662,7 @@ namespace Robocode.TankRoyale.BotApi
         }
       }
 
-      private sealed class ResumeCommand : FireAndForgetCommand
+      private sealed class ResumeCommand : RunAndAwaitNextTurnCommand
       {
         internal ResumeCommand(BotInternals outerInstance) : base(outerInstance) { }
 
@@ -667,7 +673,7 @@ namespace Robocode.TankRoyale.BotApi
         }
       }
 
-      private sealed class ScanCommand : FireAndForgetCommand
+      private sealed class ScanCommand : RunAndAwaitNextTurnCommand
       {
         internal ScanCommand(BotInternals outerInstance) : base(outerInstance) { }
 
@@ -675,6 +681,11 @@ namespace Robocode.TankRoyale.BotApi
         {
           outerInstance.SetScan(false);
           isRunning = true;
+        }
+
+        internal override void BeforeDestroy()
+        {
+          outerInstance.bot.SetScan(false);
         }
       }
     }

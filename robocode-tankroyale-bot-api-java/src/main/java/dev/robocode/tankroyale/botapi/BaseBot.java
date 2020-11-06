@@ -303,6 +303,12 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
+  public final void setScan(boolean doScan) {
+    __baseBotInternals.botIntent.setScan(doScan);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void setAdjustGunForBodyTurn(boolean adjust) {
     __baseBotInternals.botIntent.setAdjustGunForBodyTurn(adjust);
   }

@@ -2,9 +2,7 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.*;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.Math.max;
@@ -302,10 +300,6 @@ final class BotInternals {
     }
   }
 
-  private void setScan(boolean doScan) {
-    bot.__baseBotInternals.botIntent.setScan(doScan);
-  }
-
   private boolean isNearZero(double value) {
     return (Math.abs(value) < .00001);
   }
@@ -336,8 +330,6 @@ final class BotInternals {
           // Send the bot intend if the bot is now running
           if (cmd.isRunning()) {
             bot.go();
-            // Make sure to stop scanning
-            setScan(false);
           }
         }
         // Loop while bot is running and command is not done yet
@@ -351,7 +343,8 @@ final class BotInternals {
           }
         }
         // Remove the command
-        pendingCommands.entrySet().remove(entry);
+        cmd.beforeDestroy();
+        pendingCommands.remove(cmd);
       }
     }
   }
@@ -410,6 +403,8 @@ final class BotInternals {
     abstract void run(); // must set isRunning
 
     abstract boolean isDone();
+
+    void beforeDestroy() {}
   }
 
   private final class MoveCommand extends Command {
@@ -524,14 +519,21 @@ final class BotInternals {
     }
   }
 
-  private abstract static class FireAndForgetCommand extends Command {
+  private abstract class RunAndAwaitNextTurnCommand extends Command {
+
+    private final int turnNumber;
+
+    RunAndAwaitNextTurnCommand() {
+      this.turnNumber = bot.getTurnNumber();
+    }
+
     @Override
     public boolean isDone() {
-      return true;
+      return bot.getTurnNumber() > turnNumber;
     }
   }
 
-  private final class StopCommand extends FireAndForgetCommand {
+  private final class StopCommand extends RunAndAwaitNextTurnCommand {
     @Override
     public void run() {
       stop();
@@ -539,7 +541,7 @@ final class BotInternals {
     }
   }
 
-  private final class ResumeCommand extends FireAndForgetCommand {
+  private final class ResumeCommand extends RunAndAwaitNextTurnCommand {
     @Override
     public void run() {
       resume();
@@ -547,11 +549,16 @@ final class BotInternals {
     }
   }
 
-  private final class ScanCommand extends FireAndForgetCommand {
+  private final class ScanCommand extends RunAndAwaitNextTurnCommand {
     @Override
     public void run() {
-      setScan(false);
+      bot.setScan(true);
       isRunning = true;
+    }
+
+    @Override
+    public void beforeDestroy() {
+      bot.setScan(false);
     }
   }
 }

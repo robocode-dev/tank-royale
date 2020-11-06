@@ -1,3 +1,4 @@
+using System.Linq;
 using System;
 
 namespace Robocode.TankRoyale.BotApi
@@ -268,10 +269,12 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public void Scan()
+    public bool Scan()
     {
       __botInternals.QueueScan();
       __botInternals.Await();
+
+      return Events.Where(e => e is ScannedBotEvent).Any();
     }
 
     /// <inheritdoc/>

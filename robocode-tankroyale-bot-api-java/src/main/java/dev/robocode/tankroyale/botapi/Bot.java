@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.botapi;
 
+import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
+
 import java.net.URI;
 
 /**
@@ -24,7 +26,7 @@ public abstract class Bot extends BaseBot implements IBot {
    * BOT_VERSION=1.0<br>
    * BOT_AUTHOR=fnl<br>
    * BOT_DESCRIPTION=Sample bot<br>
-   * BOT_URL=https://mybot.somewhere.net
+   * BOT_URL=https://mybot.somewhere.net<br>
    * BOT_COUNTRY_CODE=DK<br>
    * BOT_GAME_TYPES=melee,1v1<br>
    * BOT_PLATFORM=Java<br>
@@ -273,9 +275,11 @@ public abstract class Bot extends BaseBot implements IBot {
 
   /** {@inheritDoc} */
   @Override
-  public void scan() {
+  public boolean scan() {
     __botInternals.queueScan();
     __botInternals.await();
+
+    return getEvents().stream().anyMatch(e -> e instanceof ScannedBotEvent);
   }
 
   /** {@inheritDoc} */
