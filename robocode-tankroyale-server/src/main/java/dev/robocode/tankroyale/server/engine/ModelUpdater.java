@@ -6,7 +6,6 @@ import dev.robocode.tankroyale.server.model.Bot.BotBuilder;
 import dev.robocode.tankroyale.server.model.Turn.TurnBuilder;
 import dev.robocode.tankroyale.server.util.MathUtil;
 
-import javax.sound.sampled.Line;
 import java.util.*;
 
 import static dev.robocode.tankroyale.server.model.RuleConstants.*;
@@ -406,12 +405,18 @@ public class ModelUpdater {
 					// The radar sweep is the difference between the new and old radar direction
 					double spreadAngle = MathUtil.normalRelativeDegrees(radarDirection - botBuilder.getRadarDirection());
 
-					// Update the radar direction and spread angle, if the bot is not rescanning
-					boolean rescan = immuBotIntent.getScan();
-					if (!rescan) {
-						botBuilder.radarDirection(radarDirection);
-						botBuilder.radarSpreadAngle(spreadAngle);
+					boolean scan = immuBotIntent.getScan();
+					if (scan) {
+						// If the
+						botBuilder.scanDirection(botBuilder.getRadarDirection());
+						botBuilder.scanSpreadAngle(botBuilder.getRadarSpreadAngle());
+					} else {
+						botBuilder.scanDirection(radarDirection);
+						botBuilder.scanSpreadAngle(spreadAngle);
 					}
+
+					botBuilder.radarDirection(radarDirection);
+					botBuilder.radarSpreadAngle(spreadAngle);
 
 					botBuilder.direction(direction);
 					botBuilder.gunDirection(gunDirection);
@@ -967,16 +972,16 @@ public class ModelUpdater {
 		for (int i = botArray.length - 1; i >= 0; i--) {
 			BotBuilder scanningBot = botArray[i];
 
-      		double spreadAngle = scanningBot.getRadarSpreadAngle();
+      		double spreadAngle = scanningBot.getScanSpreadAngle();
 
 			double arcStartAngle;
 			double arcEndAngle;
 
 			if (spreadAngle > 0) {
-				arcEndAngle = scanningBot.getRadarDirection();
+				arcEndAngle = scanningBot.getScanDirection();
 				arcStartAngle = normalAbsoluteDegrees(arcEndAngle - spreadAngle);
 			} else {
-				arcStartAngle = scanningBot.getRadarDirection();
+				arcStartAngle = scanningBot.getScanDirection();
 				arcEndAngle = normalAbsoluteDegrees(arcStartAngle - spreadAngle);
 			}
 

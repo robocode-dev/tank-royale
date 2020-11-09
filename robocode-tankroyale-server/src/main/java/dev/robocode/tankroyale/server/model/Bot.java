@@ -76,6 +76,12 @@ public class Bot {
 	/** Score record */
 	Score score;
 
+	/** Scan direction in degrees */
+	double scanDirection;
+
+	/** Scan angle in degrees */
+	double scanSpreadAngle;
+
 	@SuppressWarnings("WeakerAccess")
 	public static class BotBuilder {
 
@@ -138,7 +144,15 @@ public class Bot {
 		public double getRadarSpreadAngle() {
 			return radarSpreadAngle;
 		}
-		
+
+		public double getScanDirection() {
+			return scanDirection;
+		}
+
+		public double getScanSpreadAngle() {
+			return scanSpreadAngle;
+		}
+
 		public double getGunHeat() {
 			return gunHeat;
 		}

@@ -9,7 +9,7 @@ plugins {
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.6.29'
+version = '0.6.30'
 
 compileJava {
     sourceCompatibility = '1.8'
