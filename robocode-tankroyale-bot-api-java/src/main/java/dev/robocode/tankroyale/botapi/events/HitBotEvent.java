@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.botapi.events;
 
 /** Event occurring when a bot has collided with another bot. */
 @SuppressWarnings("unused")
-public final class BotHitBotEvent extends Event {
+public final class HitBotEvent extends BotEvent {
 
   /** ID of the other bot that your bot has collided with. */
   private final int victimId;
@@ -29,7 +29,7 @@ public final class BotHitBotEvent extends Event {
    * @param y is the Y coordinate of victim bot.
    * @param isRammed is the flag specifying, if the victim bot got rammed.
    */
-  public BotHitBotEvent(
+  public HitBotEvent(
       int turnNumber, int victimId, double energy, double x, double y, boolean isRammed) {
     super(turnNumber);
     this.victimId = victimId;

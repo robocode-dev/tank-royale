@@ -2,9 +2,6 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.*;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -13,7 +10,6 @@ final class BotInternals {
   private final double absDeceleration = Math.abs(IBot.DECELERATION);
 
   private final Bot bot;
-  private final BotEvents botEvents;
 
   double maxSpeed = IBot.MAX_SPEED;
   double maxTurnRate = IBot.MAX_TURN_RATE;
@@ -34,24 +30,21 @@ final class BotInternals {
   private Thread thread;
   private final Object nextTurn = new Object();
   volatile boolean isRunning;
-  volatile AtomicBoolean isStopped = new AtomicBoolean();
+  volatile boolean isStopped;
 
   private double savedDistanceRemaining;
   private double savedTurnRemaining;
   private double savedGunTurnRemaining;
   private double savedRadarTurnRemaining;
 
-  private final LinkedHashMap<Class<?>, Command> pendingCommands = new LinkedHashMap<>();
-
   BotInternals(Bot bot, BotEvents botEvents) {
     this.bot = bot;
-    this.botEvents = botEvents;
 
+    botEvents.onProcessTurn.subscribe(this::onProcessTurn, 100);
     botEvents.onDisconnected.subscribe(this::onDisconnected, 100);
     botEvents.onGameEnded.subscribe(this::onGameEnded, 100);
     botEvents.onHitBot.subscribe(this::onHitBot, 100);
     botEvents.onHitWall.subscribe(e -> onHitWall(), 100);
-    botEvents.onTick.subscribe(this::onTick, 100);
     botEvents.onBotDeath.subscribe(this::onDeath, 100);
   }
 
@@ -63,12 +56,12 @@ final class BotInternals {
     stopThread();
   }
 
-  private void onTick(TickEvent e) {
+  private void onProcessTurn(TickEvent e) {
     currentTick = e;
     processTurn();
   }
 
-  private void onHitBot(BotHitBotEvent e) {
+  private void onHitBot(HitBotEvent e) {
     if (e.isRammed()) {
       distanceRemaining = 0;
     }
@@ -80,7 +73,7 @@ final class BotInternals {
     isCollidingWithWall = true;
   }
 
-  private void onDeath(BotDeathEvent e) {
+  private void onDeath(DeathEvent e) {
     if (e.getVictimId() == bot.getMyId()) {
       stopThread();
     }
@@ -100,7 +93,7 @@ final class BotInternals {
     isCollidingWithBot = false;
 
     // If this is the first turn -> Call the run method on the Bot class
-    if (currentTick.getTurnNumber() == 1) {
+    if (currentTick.getTurnNumber() == 1) { // TODO: Use onNewRound event?
       if (isRunning) {
         stopThread();
       }
@@ -112,12 +105,19 @@ final class BotInternals {
       // Let's go ;-)
       bot.go();
 
+      bot.setScan(false);
+
       // Unblock methods waiting for the next turn
       nextTurn.notifyAll();
     }
   }
 
   private void startThread() {
+    System.out.println("p bodyRate:  " + bot.getTurnRate());
+    System.out.println("p radarRate: " + bot.getRadarTurnRate());
+    System.out.println("p gunRate:   " + bot.getGunTurnRate());
+
+
     thread = new Thread(bot::run);
     thread.start();
     isRunning = true;
@@ -262,41 +262,35 @@ final class BotInternals {
     return distance;
   }
 
-  void stop() {
-    synchronized (isStopped) {
-      if (!isStopped.get()) {
-        savedDistanceRemaining = distanceRemaining;
-        savedTurnRemaining = turnRemaining;
-        savedGunTurnRemaining = gunTurnRemaining;
-        savedRadarTurnRemaining = radarTurnRemaining;
+  void setStop() {
+    if (!isStopped) {
+      isStopped = true;
 
-        distanceRemaining = 0d;
-        turnRemaining = 0d;
-        gunTurnRemaining = 0d;
-        radarTurnRemaining = 0d;
-
-        bot.setTargetSpeed(0);
-        bot.setTurnRate(0);
-        bot.setGunTurnRate(0);
-        bot.setRadarTurnRate(0);
-
-        isStopped.set(true);
-        isStopped.notifyAll();
-      }
+      savedDistanceRemaining = distanceRemaining;
+      savedTurnRemaining = turnRemaining;
+      savedGunTurnRemaining = gunTurnRemaining;
+      savedRadarTurnRemaining = radarTurnRemaining;
     }
+
+    distanceRemaining = 0d;
+    turnRemaining = 0d;
+    gunTurnRemaining = 0d;
+    radarTurnRemaining = 0d;
+
+    bot.setTargetSpeed(0);
+    bot.setTurnRate(0);
+    bot.setGunTurnRate(0);
+    bot.setRadarTurnRate(0);
   }
 
-  void resume() {
-    synchronized (isStopped) {
-      if (isStopped.get()) {
-        distanceRemaining = savedDistanceRemaining;
-        turnRemaining = savedTurnRemaining;
-        gunTurnRemaining = savedGunTurnRemaining;
-        radarTurnRemaining = savedRadarTurnRemaining;
+  void setResume() {
+    if (isStopped) {
+      isStopped = false;
 
-        isStopped.set(false);
-        isStopped.notifyAll();
-      }
+      distanceRemaining = savedDistanceRemaining;
+      turnRemaining = savedTurnRemaining;
+      gunTurnRemaining = savedGunTurnRemaining;
+      radarTurnRemaining = savedRadarTurnRemaining;
     }
   }
 
@@ -304,261 +298,41 @@ final class BotInternals {
     return (Math.abs(value) < .00001);
   }
 
-  void waitIfStopped() {
-    synchronized (isStopped) {
-      while (isStopped.get()) {
-        try {
-          isStopped.wait();
-        } catch (InterruptedException e) {
-          return;
-        }
-      }
-    }
+  void awaitMovementComplete() {
+    await(() -> distanceRemaining == 0);
   }
 
-  void await() {
+  void awaitTurnComplete() {
+    await(() -> turnRemaining == 0);
+  }
+
+  void awaitGunTurnComplete() {
+    await(() -> gunTurnRemaining == 0);
+  }
+
+  void awaitRadarTurnComplete() {
+    await(() -> radarTurnRemaining == 0);
+  }
+
+  void awaitGunFired() {
+    await(() -> bot.getGunHeat() > 0);
+  }
+
+  void await(ICondition condition) {
     synchronized (nextTurn) {
-      while (isRunning && pendingCommands.entrySet().size() > 0) {
-        // Fetch next pending command
-        Iterator<Map.Entry<Class<?>, Command>> iterator = pendingCommands.entrySet().iterator();
-        Map.Entry<Class<?>, Command> entry = iterator.next();
-        Command cmd = entry.getValue();
-
-        // Run the command, if it is not running already
-        if (!cmd.isRunning()) {
-          cmd.run();
-          // Send the bot intend if the bot is now running
-          if (cmd.isRunning()) {
-            bot.go();
-          }
+      // Loop while bot is running and condition has not been met
+      while (isRunning && !condition.test()) {
+        try {
+          // Wait for next turn
+          nextTurn.wait();
+        } catch (InterruptedException e) {
+          isRunning = false;
         }
-        // Loop while bot is running and command is not done yet
-        while (isRunning && !cmd.isDone()) {
-          try {
-            // Wait for next turn and fire events
-            nextTurn.wait();
-            botEvents.fireEvents(currentTick);
-          } catch (InterruptedException e) {
-            isRunning = false;
-          }
-        }
-        // Remove the command
-        cmd.beforeDestroy();
-        pendingCommands.remove(cmd);
       }
     }
   }
 
-  void queueForward(double distance) {
-    queueCommand(new MoveCommand(distance));
-  }
-
-  void queueTurn(double degrees) {
-    queueCommand(new TurnCommand(degrees));
-  }
-
-  void queueGunTurn(double degrees) {
-    queueCommand(new GunTurnCommand(degrees));
-  }
-
-  void queueRadarTurn(double degrees) {
-    queueCommand(new RadarTurnCommand(degrees));
-  }
-
-  void queueFireGun(double firepower) {
-    queueCommand(new FireGunCommand(firepower));
-  }
-
-  void queueCondition(Condition condition) {
-    queueCommand(new ConditionCommand(condition));
-  }
-
-  void queueStop() {
-    queueCommand(new StopCommand());
-  }
-
-  void queueResume() {
-    queueCommand(new ResumeCommand());
-  }
-
-  void queueScan() {
-    queueCommand(new ScanCommand());
-  }
-
-  void fireConditionMet(Condition condition) {
-    botEvents.fireConditionMet(condition);
-  }
-
-  private void queueCommand(Command command) {
-    pendingCommands.put(command.getClass(), command);
-  }
-
-  private abstract static class Command {
-    boolean isRunning;
-
-    boolean isRunning() {
-      return isRunning;
-    }
-
-    abstract void run(); // must set isRunning
-
-    abstract boolean isDone();
-
-    void beforeDestroy() {}
-  }
-
-  private final class MoveCommand extends Command {
-    final double distance;
-
-    MoveCommand(double distance) {
-      this.distance = distance;
-    }
-
-    @Override
-    public void run() {
-      bot.setForward(distance);
-      isRunning = true;
-    }
-
-    @Override
-    public boolean isDone() {
-      return distanceRemaining == 0;
-    }
-  }
-
-  private final class TurnCommand extends Command {
-    final double degrees;
-
-    TurnCommand(double degrees) {
-      this.degrees = degrees;
-    }
-
-    @Override
-    public void run() {
-      bot.setTurnLeft(degrees);
-      isRunning = true;
-    }
-
-    @Override
-    public boolean isDone() {
-      return turnRemaining == 0;
-    }
-  }
-
-  private final class GunTurnCommand extends Command {
-    final double degrees;
-
-    GunTurnCommand(double degrees) {
-      this.degrees = degrees;
-    }
-
-    @Override
-    public void run() {
-      bot.setTurnGunLeft(degrees);
-      isRunning = true;
-    }
-
-    @Override
-    public boolean isDone() {
-      return gunTurnRemaining == 0;
-    }
-  }
-
-  private final class RadarTurnCommand extends Command {
-    final double degrees;
-
-    RadarTurnCommand(double degrees) {
-      this.degrees = degrees;
-    }
-
-    @Override
-    public void run() {
-      bot.setTurnRadarLeft(degrees);
-      isRunning = true;
-    }
-
-    @Override
-    public boolean isDone() {
-      return radarTurnRemaining == 0;
-    }
-  }
-
-  private final class FireGunCommand extends Command {
-    final double firepower;
-
-    FireGunCommand(double firepower) {
-      this.firepower = firepower;
-    }
-
-    @Override
-    public void run() {
-      isRunning = bot.setFire(firepower);
-    }
-
-    @Override
-    public boolean isDone() {
-      return bot.getGunHeat() > 0;
-    }
-  }
-
-  private static final class ConditionCommand extends Command {
-    final Condition condition;
-
-    ConditionCommand(Condition condition) {
-      this.condition = condition;
-    }
-
-    @Override
-    public void run() {
-      isRunning = true;
-    }
-
-    @Override
-    public boolean isDone() {
-      return condition.test();
-    }
-  }
-
-  private abstract class RunAndAwaitNextTurnCommand extends Command {
-
-    private final int turnNumber;
-
-    RunAndAwaitNextTurnCommand() {
-      this.turnNumber = bot.getTurnNumber();
-    }
-
-    @Override
-    public boolean isDone() {
-      return bot.getTurnNumber() > turnNumber;
-    }
-  }
-
-  private final class StopCommand extends RunAndAwaitNextTurnCommand {
-    @Override
-    public void run() {
-      stop();
-      isRunning = true;
-    }
-  }
-
-  private final class ResumeCommand extends RunAndAwaitNextTurnCommand {
-    @Override
-    public void run() {
-      resume();
-      isRunning = true;
-    }
-  }
-
-  private final class ScanCommand extends RunAndAwaitNextTurnCommand {
-    @Override
-    public void run() {
-      bot.setScan(true);
-      isRunning = true;
-    }
-
-    @Override
-    public void beforeDestroy() {
-      bot.setScan(false);
-    }
+  interface ICondition {
+    boolean test();
   }
 }

@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.botapi.events;
 
 /** Event occurring when a bot has scanned another bot. */
 @SuppressWarnings("unused")
-public final class ScannedBotEvent extends Event {
+public final class ScannedBotEvent extends BotEvent {
 
   /** ID of the bot did the scanning. */
   private final int scannedByBotId;

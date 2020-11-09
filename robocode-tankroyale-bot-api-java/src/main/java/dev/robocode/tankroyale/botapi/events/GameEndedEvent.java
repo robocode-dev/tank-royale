@@ -6,7 +6,7 @@ import java.util.List;
 
 /** Event occurring when game has just ended. */
 @SuppressWarnings("unused")
-public final class GameEndedEvent implements IMessage {
+public final class GameEndedEvent implements IEvent {
 
   /** Number of rounds played. */
   private final int numberOfRounds;

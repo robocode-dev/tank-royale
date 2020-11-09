@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.botapi.BulletState;
 
 /** Event occurring when a bullet has hit a bot. */
 @SuppressWarnings("unused")
-public final class BulletHitBotEvent extends Event {
+public final class BulletHitBotEvent extends BotEvent {
 
   /** ID of the victim bot that got hit. */
   private final int victimId;

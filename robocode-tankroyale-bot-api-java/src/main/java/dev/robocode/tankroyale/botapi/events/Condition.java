@@ -1,38 +1,7 @@
-package dev.robocode.tankroyale.botapi;
+package dev.robocode.tankroyale.botapi.events;
 
-/**
- * The Condition class is used for stopping program execution temporarily and wait for a specific
- * condition to be met before continuing the program execution. Program execution will be stopped by
- * the {@link Bot#waitFor(Condition)} method, which will wait until the condition is met. When the
- * condition is fulfilled, the {@link Bot#onCondition(Condition)} event handler will be triggered.
- *
- * <p>Here is an example of how to use the condition:
- *
- * <pre>
- *  public class MyBot extends Bot {
- *    public void run() {
- *      while (isRunning()) {
- *        ...
- *        setTurnRight(90);
- *        waitFor(new TurnCompleteCondition(this));
- *        ...
- *      }
- *    }
- *
- *    public class TurnCompleteCondition extends Condition {
- *      private final Bot bot;
- *
- *      public TurnCompleteCondition(Bot bot) {
- *        this.bot = bot;
- *      }
- *
- *      public boolean test() {
- *        return bot.getTurnRemaining() == 0;
- *      }
- *    }
- *  }
- * </pre>
- */
+import dev.robocode.tankroyale.botapi.Bot;
+
 public abstract class Condition {
   private final String name;
 

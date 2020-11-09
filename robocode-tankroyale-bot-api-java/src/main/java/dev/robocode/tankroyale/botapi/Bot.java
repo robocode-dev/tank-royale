@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.botapi;
 
+import dev.robocode.tankroyale.botapi.events.Condition;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 
 import java.net.URI;
@@ -77,9 +78,9 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void forward(double distance) {
-    __botInternals.waitIfStopped();
-    __botInternals.queueForward(distance);
-    __botInternals.await();
+    setForward(distance);
+    go();
+    __botInternals.awaitMovementComplete();
   }
 
   /** {@inheritDoc} */
@@ -124,9 +125,9 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void turnLeft(double degrees) {
-    __botInternals.waitIfStopped();
-    __botInternals.queueTurn(degrees);
-    __botInternals.await();
+    setTurnLeft(degrees);
+    go();
+    __botInternals.awaitTurnComplete();
   }
 
   /** {@inheritDoc} */
@@ -171,9 +172,9 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void turnGunLeft(double degrees) {
-    __botInternals.waitIfStopped();
-    __botInternals.queueGunTurn(degrees);
-    __botInternals.await();
+    setTurnGunLeft(degrees);
+    go();
+    __botInternals.awaitGunTurnComplete();
   }
 
   /** {@inheritDoc} */
@@ -218,9 +219,9 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void turnRadarLeft(double degrees) {
-    __botInternals.waitIfStopped();
-    __botInternals.queueRadarTurn(degrees);
-    __botInternals.await();
+    setTurnRadarLeft(degrees);
+    go();
+    __botInternals.awaitRadarTurnComplete();
   }
 
   /** {@inheritDoc} */
@@ -255,29 +256,43 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final void fire(double firepower) {
-    __botInternals.queueFireGun(firepower);
-    __botInternals.await();
+    if (setFire(firepower)) {
+      go();
+      __botInternals.awaitGunFired();
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setStop() {
+    __botInternals.setStop();
   }
 
   /** {@inheritDoc} */
   @Override
   public void stop() {
-    __botInternals.queueStop();
-    __botInternals.await();
+    __botInternals.setStop();
+    go();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setResume() {
+    __botInternals.setResume();
   }
 
   /** {@inheritDoc} */
   @Override
   public void resume() {
-    __botInternals.queueResume();
-    __botInternals.await();
+    __botInternals.setResume();
+    go();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean scan() {
-    __botInternals.queueScan();
-    __botInternals.await();
+    __baseBotInternals.botIntent.setScan(true);
+    go();
 
     return getEvents().stream().anyMatch(e -> e instanceof ScannedBotEvent);
   }
@@ -285,8 +300,8 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public void waitFor(Condition condition) {
-    __botInternals.queueCondition(condition);
-    __botInternals.await();
-    __botInternals.fireConditionMet(condition);
+    __botInternals.await(condition::test);
+    // TODO: Need to trigger onCustomEvent?
+    // TODO: Missing add(CustomEvent)?
   }
 }

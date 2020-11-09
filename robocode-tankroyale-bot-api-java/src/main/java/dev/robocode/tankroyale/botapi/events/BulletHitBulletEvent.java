@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.botapi.BulletState;
 
 /** Event occurring when a bullet has collided with another bullet. */
 @SuppressWarnings("unused")
-public final class BulletHitBulletEvent extends Event {
+public final class BulletHitBulletEvent extends BotEvent {
 
   /** Bullet that hit another bullet. */
   private final BulletState bullet;

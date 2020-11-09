@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.botapi.GameSetup;
 
 /** Event occurring when game has just started. */
 @SuppressWarnings("unused")
-public final class GameStartedEvent implements IMessage {
+public final class GameStartedEvent implements IEvent {
 
   /** The ID used for identifying your bot in the current battle. */
   private final int myId;

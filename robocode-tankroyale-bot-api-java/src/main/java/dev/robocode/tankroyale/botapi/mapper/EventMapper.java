@@ -20,13 +20,13 @@ public final class EventMapper {
         map(source.getEvents()));
   }
 
-  private static Set<Event> map(final Collection<? extends dev.robocode.tankroyale.schema.Event> source) {
-    Set<Event> gameEvents = new HashSet<>();
-    source.forEach(event -> gameEvents.add(map(event)));
-    return gameEvents;
+  private static Set<BotEvent> map(final Collection<? extends dev.robocode.tankroyale.schema.Event> source) {
+    Set<BotEvent> gameBotEvents = new HashSet<>();
+    source.forEach(event -> gameBotEvents.add(map(event)));
+    return gameBotEvents;
   }
 
-  public static Event map(final dev.robocode.tankroyale.schema.Event source) {
+  public static BotEvent map(final dev.robocode.tankroyale.schema.Event source) {
     if (source instanceof dev.robocode.tankroyale.schema.BotDeathEvent) {
       return map((dev.robocode.tankroyale.schema.BotDeathEvent) source);
     }
@@ -61,14 +61,14 @@ public final class EventMapper {
         "No mapping exists for event type: " + source.getClass().getSimpleName());
   }
 
-  private static BotDeathEvent map(final dev.robocode.tankroyale.schema.BotDeathEvent source) {
-    return new BotDeathEvent(
+  private static DeathEvent map(final dev.robocode.tankroyale.schema.BotDeathEvent source) {
+    return new DeathEvent(
         source.getTurnNumber(),
         source.getVictimId());
   }
 
-  private static BotHitBotEvent map(final dev.robocode.tankroyale.schema.BotHitBotEvent source) {
-    return new BotHitBotEvent(
+  private static HitBotEvent map(final dev.robocode.tankroyale.schema.BotHitBotEvent source) {
+    return new HitBotEvent(
         source.getTurnNumber(),
         source.getVictimId(),
         source.getEnergy(),
@@ -77,8 +77,8 @@ public final class EventMapper {
         source.getRammed());
   }
 
-  private static BotHitWallEvent map(final dev.robocode.tankroyale.schema.BotHitWallEvent source) {
-    return new BotHitWallEvent(source.getTurnNumber());
+  private static HitWallEvent map(final dev.robocode.tankroyale.schema.BotHitWallEvent source) {
+    return new HitWallEvent(source.getTurnNumber());
   }
 
   private static BulletFiredEvent map(final dev.robocode.tankroyale.schema.BulletFiredEvent source) {

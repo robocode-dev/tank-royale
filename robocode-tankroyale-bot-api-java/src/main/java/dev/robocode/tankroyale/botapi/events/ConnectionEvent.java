@@ -5,7 +5,7 @@ import java.net.URI;
 /**
  * Base class of all connection events.
  */
-abstract class ConnectionEvent {
+abstract class ConnectionEvent implements IEvent {
 
     /** URI of the server. */
     private final URI serverUri;

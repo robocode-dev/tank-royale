@@ -356,7 +356,7 @@ public interface IBaseBot {
    *
    * @return The game events received for the current turn.
    */
-  Collection<? extends Event> getEvents();
+  Collection<? extends BotEvent> getEvents();
 
   /**
    * Sets the turn rate of the bot, which can be positive and negative. The turn rate is measured in
@@ -835,9 +835,7 @@ public interface IBaseBot {
    *
    * @param gameStatedEvent is the event details from the game.
    */
-  default void onGameStarted(GameStartedEvent gameStatedEvent) {
-    System.out.println("Game started");
-  }
+  default void onGameStarted(GameStartedEvent gameStatedEvent) {}
 
   /**
    * The event handler triggered when the game has ended.
@@ -860,28 +858,28 @@ public interface IBaseBot {
    *
    * @param botDeathEvent is the event details from the game.
    */
-  default void onBotDeath(BotDeathEvent botDeathEvent) {}
+  default void onBotDeath(DeathEvent botDeathEvent) {}
 
   /**
    * The event handler triggered when this bot has died.
    *
    * @param botDeathEvent is the event details from the game.
    */
-  default void onDeath(BotDeathEvent botDeathEvent) {}
+  default void onDeath(DeathEvent botDeathEvent) {}
 
   /**
    * The event handler triggered when the bot has collided with another bot.
    *
    * @param botHitBotEvent is the event details from the game.
    */
-  default void onHitBot(BotHitBotEvent botHitBotEvent) {}
+  default void onHitBot(HitBotEvent botHitBotEvent) {}
 
   /**
    * The event handler triggered when the bot has hit a wall.
    *
    * @param botHitWallEvent is the event details from the game.
    */
-  default void onHitWall(BotHitWallEvent botHitWallEvent) {}
+  default void onHitWall(HitWallEvent botHitWallEvent) {}
 
   /**
    * The event handler triggered when the bot has fired a bullet.
@@ -950,12 +948,12 @@ public interface IBaseBot {
   default void onWonRound(WonRoundEvent wonRoundEvent) {}
 
   /**
-   * The event handler triggered when a condition has been met. Use the {@link Condition#getName()}
-   * of the condition if you need to differ between multiple conditions being met.
+   * The event handler triggered when some condition has been met. Use the {@link Condition#getName()}
+   * of the condition if you need to differ between different conditions in received custom events.
    *
-   * @param condition is the condition that has been met.
+   * @param customEvent is the event details from the game.
    */
-  default void onCondition(Condition condition) {}
+  default void onCustomEvent(CustomEvent customEvent) {}
 
   /**
    * Calculates the maximum turn rate for a specific speed.

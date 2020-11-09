@@ -57,10 +57,12 @@ final class BaseBotInternals {
     gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
   }
 
+  private final IBaseBot baseBot;
   private final BotInfo botInfo;
   final BotEvents botEvents;
+  final EventQueue eventQueue;
 
-  BotIntent botIntent = new BotIntent();
+  BotIntent botIntent = newBotIntent();
 
   // Server connection:
   private WebSocket socket;
@@ -69,15 +71,16 @@ final class BaseBotInternals {
   // Current game states:
   private Integer myId;
   private GameSetup gameSetup;
-  private TickEvent currentTick;
-  private Long ticksStartNanoTime;
-
-  private final boolean doDispatchEvents;
+  private TickEvent tickEvent;
+  private Long tickStartNanoTime;
 
   BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {
-    this.botEvents = new BotEvents(baseBot);
+    this.baseBot = baseBot;
     this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
-    this.doDispatchEvents = !(baseBot instanceof IBot);
+
+    this.botEvents = new BotEvents(baseBot);
+    this.eventQueue = new EventQueue(botEvents);
+
     init(serverUrl == null ? getServerUrlFromSetting() : serverUrl);
   }
 
@@ -88,9 +91,15 @@ final class BaseBotInternals {
       throw new BotException("Could not create socket for URL: " + serverUrl, ex);
     }
     socket.addListener(new WebSocketListener());
-    botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
 
+    botEvents.onNewRound.subscribe(this::handleNewRound);
     botEvents.onBulletFired.subscribe(this::handleBulletFired);
+  }
+
+  private BotIntent newBotIntent() {
+    BotIntent botIntent = new BotIntent();
+    botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
+    return botIntent;
   }
 
   void connect() {
@@ -115,7 +124,7 @@ final class BaseBotInternals {
 
   private void clearCurrentGameState() {
     // Clear setting that are only available during a running game
-    currentTick = null;
+    tickEvent = null;
     gameSetup = null;
     myId = null;
   }
@@ -160,17 +169,17 @@ final class BaseBotInternals {
   }
 
   TickEvent getCurrentTick() {
-    if (currentTick == null) {
+    if (tickEvent == null) {
       throw new BotException(TICK_NOT_AVAILABLE_MSG);
     }
-    return currentTick;
+    return tickEvent;
   }
 
   long getTicksStart() {
-    if (ticksStartNanoTime == null) {
+    if (tickStartNanoTime == null) {
       throw new BotException(TICK_NOT_AVAILABLE_MSG);
     }
-    return ticksStartNanoTime;
+    return tickStartNanoTime;
   }
 
   private final class WebSocketListener extends WebSocketAdapter {
@@ -286,14 +295,21 @@ final class BaseBotInternals {
 
   private void handleTickEvent(JsonObject jsonMsg) {
     TickEventForBot tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
-    currentTick = EventMapper.map(tickEventForBot);
+    tickEvent = EventMapper.map(tickEventForBot);
 
-    ticksStartNanoTime = System.nanoTime();
-    botEvents.onTick.publish(currentTick);
+    tickStartNanoTime = System.nanoTime();
 
-    if (doDispatchEvents) {
-      botEvents.fireEvents(currentTick);
+    eventQueue.addEventsFromTick(baseBot, tickEvent);
+
+    botEvents.onProcessTurn.publish(tickEvent);
+
+    if (tickEvent.getTurnNumber() == 1) {
+      botEvents.onNewRound.publish(tickEvent);
     }
+  }
+
+  private void handleNewRound(TickEvent e) {
+    botIntent = newBotIntent();
   }
 
   private void handleBulletFired(BulletFiredEvent e) {

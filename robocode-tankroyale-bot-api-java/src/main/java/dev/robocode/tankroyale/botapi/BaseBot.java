@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.botapi;
 
-import dev.robocode.tankroyale.botapi.events.Event;
+import dev.robocode.tankroyale.botapi.events.BotEvent;
 
 import java.net.URI;
 import java.util.Collection;
@@ -69,6 +69,9 @@ public abstract class BaseBot implements IBaseBot {
   public final void go() {
     // Send the bot intent to the server
     __baseBotInternals.sendIntent();
+
+    // Dispatch all bot events
+    __baseBotInternals.eventQueue.dispatchEvents(this, __baseBotInternals.getCurrentTick().getTurnNumber());
   }
 
   /** {@inheritDoc} */
@@ -218,7 +221,7 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
-  public final Collection<? extends Event> getEvents() {
+  public final Collection<? extends BotEvent> getEvents() {
     return __baseBotInternals.getCurrentTick().getEvents();
   }
 

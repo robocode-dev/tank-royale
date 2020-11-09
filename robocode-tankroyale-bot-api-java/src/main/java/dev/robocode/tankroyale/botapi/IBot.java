@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
+import dev.robocode.tankroyale.botapi.events.Condition;
 
 /**
  * Interface for a bot that extends the core API with convenient methods for movement, turning, and
@@ -684,6 +685,8 @@ public interface IBot extends IBaseBot {
    */
   void fire(double firepower);
 
+  void setStop(); // TODO: Javadoc
+
   /**
    * Stop all movement including turning the gun and radar. The remaining movement is saved for a
    * call to {@link #resume()}. This method has no effect, if it has already been called.
@@ -695,6 +698,8 @@ public interface IBot extends IBaseBot {
    * @see #getRadarTurnRemaining()
    */
   void stop();
+
+  void setResume(); // TODO: Javadoc
 
   /**
    * Resume the movement prior to calling the {@link #stop()} method. This method has no effect, if
