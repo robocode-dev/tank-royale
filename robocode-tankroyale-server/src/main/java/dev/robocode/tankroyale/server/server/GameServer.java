@@ -377,7 +377,7 @@ public final class GameServer {
                       skippedTurnEvent.setTurnNumber(modelUpdater.getTurnNumber());
                       send(conn, skippedTurnEvent);
 
-                      log.info("skipped turn: " + turn.getTurnNumber());
+                      log.info("skipped turn: " + modelUpdater.getTurnNumber());
                     }
                   });
         }
