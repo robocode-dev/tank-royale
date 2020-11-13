@@ -100,24 +100,13 @@ final class BotInternals {
       startThread();
     }
 
-    // Unblock waiting methods
+    // Unblock methods waiting for the next turn
     synchronized (nextTurn) {
-      // Let's go ;-)
-      bot.go();
-
-      bot.setScan(false);
-
-      // Unblock methods waiting for the next turn
       nextTurn.notifyAll();
     }
   }
 
   private void startThread() {
-    System.out.println("p bodyRate:  " + bot.getTurnRate());
-    System.out.println("p radarRate: " + bot.getRadarTurnRate());
-    System.out.println("p gunRate:   " + bot.getGunTurnRate());
-
-
     thread = new Thread(bot::run);
     thread.start();
     isRunning = true;
@@ -143,13 +132,11 @@ final class BotInternals {
   }
 
   private void updateTurnRemaining() {
-    if (isCollidingWithBot) {
-      return;
-    }
     if (bot.doAdjustGunForBodyTurn()) {
       gunTurnRemaining -= bot.getTurnRate();
     }
     turnRemaining -= bot.getTurnRate();
+
     bot.setTurnRate(turnRemaining);
   }
 
@@ -158,18 +145,20 @@ final class BotInternals {
       radarTurnRemaining -= bot.getGunTurnRate();
     }
     gunTurnRemaining -= bot.getGunTurnRate();
+
     bot.setGunTurnRate(gunTurnRemaining);
   }
 
   private void updateRadarTurnRemaining() {
     radarTurnRemaining -= bot.getRadarTurnRate();
+
     bot.setRadarTurnRate(radarTurnRemaining);
   }
 
   // This is Nat Pavasant's method described here:
   // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
   private void updateMovement() {
-    if (isCollidingWithWall) {
+    if (isCollidingWithWall) { // TODO: add check for collision with bot?
       return;
     }
 
@@ -318,17 +307,22 @@ final class BotInternals {
     await(() -> bot.getGunHeat() > 0);
   }
 
+  void awaitNextTurn() {
+    int turnNumber = bot.getTurnNumber();
+    await(() -> bot.getTurnNumber() > turnNumber);
+  }
+
   void await(ICondition condition) {
-    synchronized (nextTurn) {
-      // Loop while bot is running and condition has not been met
+    // Loop while bot is running and condition has not been met
+    try {
       while (isRunning && !condition.test()) {
-        try {
-          // Wait for next turn
+        bot.go();
+        synchronized (nextTurn) {
           nextTurn.wait();
-        } catch (InterruptedException e) {
-          isRunning = false;
         }
       }
+    } catch (InterruptedException e) {
+      isRunning = false;
     }
   }
 

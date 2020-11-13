@@ -79,7 +79,6 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void forward(double distance) {
     setForward(distance);
-    go();
     __botInternals.awaitMovementComplete();
   }
 
@@ -126,8 +125,8 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void turnLeft(double degrees) {
     setTurnLeft(degrees);
-    go();
     __botInternals.awaitTurnComplete();
+    setTurnLeft(0);
   }
 
   /** {@inheritDoc} */
@@ -173,8 +172,8 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void turnGunLeft(double degrees) {
     setTurnGunLeft(degrees);
-    go();
     __botInternals.awaitGunTurnComplete();
+    setTurnGunLeft(0);
   }
 
   /** {@inheritDoc} */
@@ -220,8 +219,8 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void turnRadarLeft(double degrees) {
     setTurnRadarLeft(degrees);
-    go();
     __botInternals.awaitRadarTurnComplete();
+    setTurnRadarLeft(0);
   }
 
   /** {@inheritDoc} */
@@ -257,7 +256,6 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final void fire(double firepower) {
     if (setFire(firepower)) {
-      go();
       __botInternals.awaitGunFired();
     }
   }
@@ -272,7 +270,7 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public void stop() {
     __botInternals.setStop();
-    go();
+    __botInternals.awaitNextTurn();
   }
 
   /** {@inheritDoc} */
@@ -285,14 +283,14 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public void resume() {
     __botInternals.setResume();
-    go();
+    __botInternals.awaitNextTurn();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean scan() {
     __baseBotInternals.botIntent.setScan(true);
-    go();
+    __botInternals.awaitNextTurn();
 
     return getEvents().stream().anyMatch(e -> e instanceof ScannedBotEvent);
   }

@@ -3,7 +3,10 @@ package dev.robocode.tankroyale.botapi;
 import dev.robocode.tankroyale.botapi.events.*;
 
 import java.util.Iterator;
-import java.util.TreeMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 class EventQueue {
 
@@ -11,7 +14,7 @@ class EventQueue {
 
   private final BotEvents botEvents;
 
-  private final TreeMap<Integer, BotEvent> eventMap = new TreeMap<>();
+  private final Map<Integer, BotEvent> eventMap = new ConcurrentHashMap<>();
 
   public EventQueue(BotEvents botEvents) {
     this.botEvents = botEvents;

@@ -32,10 +32,6 @@ public class Corners extends Bot {
   /** This method runs our bot program, where each command is executed one at a time in a loop. */
   @Override
   public void run() {
-    System.out.println("1 body:  " + getDirection());
-    System.out.println("1 radar: " + getRadarDirection());
-    System.out.println("1 gun:   " + getGunDirection());
-
     // Set colors
     setBodyColor("#F00"); // red
     setGunColor("#000"); // black
@@ -48,7 +44,6 @@ public class Corners extends Bot {
 
     // Move to a corner
     goCorner();
-    System.out.println("after goCorner()");
 
     // Initialize gun turn speed to 3
     int gunIncrement = 3;
@@ -69,11 +64,6 @@ public class Corners extends Bot {
     stopWhenSeeRobot = false;
     // Turn to face the wall towards our desired corner
     turnLeft(calcBearing(corner));
-
-    System.out.println("2 body:  " + getDirection());
-    System.out.println("2 radar: " + getRadarDirection());
-    System.out.println("2 gun:   " + getGunDirection());
-
     // Ok, now we don't want to crash into any robot in our way...
     stopWhenSeeRobot = true;
     // Move to that wall
@@ -90,7 +80,7 @@ public class Corners extends Bot {
   @Override
   public void onScannedBot(ScannedBotEvent e) {
     double distance = distanceTo(e.getX(), e.getY());
-/*
+
     // Should we stop, or just fire?
     if (stopWhenSeeRobot) {
       // Stop movement
@@ -105,9 +95,9 @@ public class Corners extends Bot {
       }
       // Resume movement
       resume();
-    } else {*/
-//      smartFire(distance);
-//    }
+    } else {
+      smartFire(distance);
+    }
   }
 
   /**

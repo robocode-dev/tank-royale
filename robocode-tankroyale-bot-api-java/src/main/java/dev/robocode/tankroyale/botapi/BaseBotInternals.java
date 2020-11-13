@@ -92,8 +92,8 @@ final class BaseBotInternals {
     }
     socket.addListener(new WebSocketListener());
 
-    botEvents.onNewRound.subscribe(this::handleNewRound);
-    botEvents.onBulletFired.subscribe(this::handleBulletFired);
+    botEvents.onNewRound.subscribe(this::handleNewRound, 100);
+    botEvents.onBulletFired.subscribe(this::handleBulletFired, 100);
   }
 
   private BotIntent newBotIntent() {
@@ -301,15 +301,17 @@ final class BaseBotInternals {
 
     eventQueue.addEventsFromTick(baseBot, tickEvent);
 
-    botEvents.onProcessTurn.publish(tickEvent);
-
     if (tickEvent.getTurnNumber() == 1) {
       botEvents.onNewRound.publish(tickEvent);
     }
+
+    botEvents.onProcessTurn.publish(tickEvent);
   }
 
   private void handleNewRound(TickEvent e) {
+    tickEvent = e; // use new bot coordinate, rates and directions etc.
     botIntent = newBotIntent();
+    eventQueue.clear();
   }
 
   private void handleBulletFired(BulletFiredEvent e) {

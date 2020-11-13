@@ -27,14 +27,14 @@ public abstract class BaseBot implements IBaseBot {
    * BOT_VERSION=1.0<br>
    * BOT_AUTHOR=fnl<br>
    * BOT_DESCRIPTION=Sample bot<br>
-   * BOT_URL=https://mybot.somewhere.net
+   * BOT_URL=https://mybot.somewhere.net<br>
    * BOT_COUNTRY_CODE=DK<br>
    * BOT_GAME_TYPES=melee,1v1<br>
    * BOT_PLATFORM=Java<br>
    * BOT_PROG_LANG=Java 8<br>
    */
   public BaseBot() {
-    __baseBotInternals = new BaseBotInternals(this,null, null);
+    __baseBotInternals = new BaseBotInternals(this, null, null);
   }
 
   /**
@@ -69,9 +69,14 @@ public abstract class BaseBot implements IBaseBot {
   public final void go() {
     // Send the bot intent to the server
     __baseBotInternals.sendIntent();
+    __baseBotInternals.botIntent.setScan(false);
 
     // Dispatch all bot events
-    __baseBotInternals.eventQueue.dispatchEvents(this, __baseBotInternals.getCurrentTick().getTurnNumber());
+    new Thread(
+            () ->
+                __baseBotInternals.eventQueue.dispatchEvents(
+                    this, __baseBotInternals.getCurrentTick().getTurnNumber()))
+        .start();
   }
 
   /** {@inheritDoc} */
