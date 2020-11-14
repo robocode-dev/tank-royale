@@ -262,21 +262,9 @@ public abstract class Bot extends BaseBot implements IBot {
 
   /** {@inheritDoc} */
   @Override
-  public void setStop() {
-    __botInternals.setStop();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public void stop() {
     __botInternals.setStop();
     __botInternals.awaitNextTurn();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setResume() {
-    __botInternals.setResume();
   }
 
   /** {@inheritDoc} */
@@ -289,7 +277,7 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public boolean scan() {
-    __baseBotInternals.botIntent.setScan(true);
+    setScan(true);
     __botInternals.awaitNextTurn();
 
     return getEvents().stream().anyMatch(e -> e instanceof ScannedBotEvent);
@@ -299,7 +287,5 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public void waitFor(Condition condition) {
     __botInternals.await(condition::test);
-    // TODO: Need to trigger onCustomEvent?
-    // TODO: Missing add(CustomEvent)?
   }
 }

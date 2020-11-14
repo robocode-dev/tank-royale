@@ -6,7 +6,7 @@ public final class DefaultEventPriority {
     static final int ON_SKIPPED_TURN = 20;
     static final int ON_TICK = 30;
     static final int ON_CONDITION = 40;
-//    static final int ON_TEAM_MESSAGE = 50; // Reserved for future
+//  static final int ON_TEAM_MESSAGE = 50; // Reserved for future
     static final int ON_BOT_DEATH = 60;
     static final int ON_BULLET_FIRED = 70;
     static final int ON_BULLET_HIT_WALL = 80;

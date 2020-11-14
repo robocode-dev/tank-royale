@@ -6,7 +6,7 @@ public final class EventPriority {
     public static int onSkippedTurn = DefaultEventPriority.ON_SKIPPED_TURN;
     public static int onTick = DefaultEventPriority.ON_TICK;
     public static int onCondition = DefaultEventPriority.ON_CONDITION;
-//    public static int onTeamMessage = DefaultEventPriority.ON_TEAM_MESSAGE;
+//  public static int onTeamMessage = DefaultEventPriority.ON_TEAM_MESSAGE;
     public static int onBotDeath = DefaultEventPriority.ON_BOT_DEATH;
     public static int onBulletFired = DefaultEventPriority.ON_BULLET_FIRED;
     public static int onBulletHitWall = DefaultEventPriority.ON_BULLET_HIT_WALL;

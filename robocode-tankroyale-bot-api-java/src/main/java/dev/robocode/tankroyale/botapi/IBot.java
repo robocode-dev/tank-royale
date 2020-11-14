@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
 import dev.robocode.tankroyale.botapi.events.Condition;
+import dev.robocode.tankroyale.botapi.events.CustomEvent;
 
 /**
  * Interface for a bot that extends the core API with convenient methods for movement, turning, and
@@ -685,8 +686,6 @@ public interface IBot extends IBaseBot {
    */
   void fire(double firepower);
 
-  void setStop(); // TODO: Javadoc
-
   /**
    * Stop all movement including turning the gun and radar. The remaining movement is saved for a
    * call to {@link #resume()}. This method has no effect, if it has already been called.
@@ -698,8 +697,6 @@ public interface IBot extends IBaseBot {
    * @see #getRadarTurnRemaining()
    */
   void stop();
-
-  void setResume(); // TODO: Javadoc
 
   /**
    * Resume the movement prior to calling the {@link #stop()} method. This method has no effect, if
@@ -714,10 +711,10 @@ public interface IBot extends IBaseBot {
   void resume();
 
   /**
-   * Scan (again) with the radar. This method is useful if the radar has not turned, and hence will
-   * not automatically scan bots. This method is useful when the robot movement has stopped, e.g.
-   * when {@link #stop()} has been called. The last radar direction and sweep angle will be used for
-   * scanning for bots.
+   * Scan (again) with the radar. This method is useful if the radar has not been turning and
+   * thereby will not be able to automatically scan bots. This method is useful when the robot
+   * movement has stopped, e.g. when {@link #stop()} has been called. The last radar direction and
+   * sweep angle will be used for rescanning for bots.
    *
    * @see #stop()
    */
@@ -728,17 +725,7 @@ public interface IBot extends IBaseBot {
    *
    * @param condition is the condition that must be met before this method will stop waiting.
    * @see Condition
-   * @see #onCondition(Condition)
+   * @see #onCustomEvent(CustomEvent)
    */
   void waitFor(Condition condition);
-
-  /**
-   * The event handler triggered when a condition has been met with the {@link #waitFor(Condition)}
-   * method. Use the {@link Condition#getName()} of the condition if you need to differ between
-   * multiple conditions being met.
-   *
-   * @param condition is the condition that has been met.
-   * @see #waitFor(Condition)
-   */
-  default void onCondition(Condition condition) {}
 }

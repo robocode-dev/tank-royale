@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.BotEvent;
+import dev.robocode.tankroyale.botapi.events.Condition;
 
 import java.net.URI;
 import java.util.Collection;
@@ -311,8 +312,8 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
-  public final void setScan(boolean doScan) {
-    __baseBotInternals.botIntent.setScan(doScan);
+  public final void setScan(boolean rescan) {
+    __baseBotInternals.botIntent.setScan(rescan);
   }
 
   /** {@inheritDoc} */
@@ -339,6 +340,18 @@ public abstract class BaseBot implements IBaseBot {
   public final boolean doAdjustRadarForGunTurn() {
     Boolean adjust = __baseBotInternals.botIntent.getAdjustRadarForGunTurn();
     return adjust != null && adjust;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void addCustomEvent(Condition condition) {
+    __baseBotInternals.addCondition(condition);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void removeCustomEvent(Condition condition) {
+    __baseBotInternals.removeCondition(condition);
   }
 
   /** {@inheritDoc} */

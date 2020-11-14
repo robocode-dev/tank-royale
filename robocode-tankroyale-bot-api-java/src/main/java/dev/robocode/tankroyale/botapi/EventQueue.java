@@ -5,18 +5,18 @@ import dev.robocode.tankroyale.botapi.events.*;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 class EventQueue {
 
   private final int MAX_EVENT_AGE = 2; // turns
 
+  private final BaseBotInternals baseBotInternals;
   private final BotEvents botEvents;
 
   private final Map<Integer, BotEvent> eventMap = new ConcurrentHashMap<>();
 
-  public EventQueue(BotEvents botEvents) {
+  public EventQueue(BaseBotInternals baseBotInternals, BotEvents botEvents) {
+    this.baseBotInternals = baseBotInternals;
     this.botEvents = botEvents;
   }
 
@@ -70,6 +70,19 @@ class EventQueue {
   public void addEventsFromTick(IBaseBot baseBot, TickEvent event) {
     addEvent(baseBot, event);
     event.getEvents().forEach(e -> addEvent(baseBot, e));
+
+    addCustomEvents(baseBot);
+  }
+
+  private void addCustomEvents(IBaseBot baseBot) {
+    baseBotInternals.conditions.forEach(
+        condition -> {
+          if (condition.test()) {
+            addEvent(
+                baseBot,
+                new CustomEvent(baseBotInternals.getCurrentTick().getTurnNumber(), condition));
+          }
+        });
   }
 
   public void dispatchEvents(IBaseBot baseBot, int currentTurnNumber) {

@@ -18,8 +18,10 @@ import dev.robocode.tankroyale.schema.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 final class BaseBotInternals {
   private static final String SERVER_URL_PROPERTY_KEY = "server.url";
@@ -61,6 +63,7 @@ final class BaseBotInternals {
   private final BotInfo botInfo;
   final BotEvents botEvents;
   final EventQueue eventQueue;
+  final Set<Condition> conditions = new HashSet<>();
 
   BotIntent botIntent = newBotIntent();
 
@@ -79,7 +82,7 @@ final class BaseBotInternals {
     this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
 
     this.botEvents = new BotEvents(baseBot);
-    this.eventQueue = new EventQueue(botEvents);
+    this.eventQueue = new EventQueue(this, botEvents);
 
     init(serverUrl == null ? getServerUrlFromSetting() : serverUrl);
   }
@@ -120,6 +123,14 @@ final class BaseBotInternals {
 
   void sendIntent() {
     socket.sendText(gson.toJson(botIntent));
+  }
+
+  void addCondition(Condition condition) {
+    conditions.add(condition);
+  }
+
+  void removeCondition(Condition condition) {
+    conditions.remove(condition);
   }
 
   private void clearCurrentGameState() {

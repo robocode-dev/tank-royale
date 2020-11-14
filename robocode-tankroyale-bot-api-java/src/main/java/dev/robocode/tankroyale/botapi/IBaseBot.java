@@ -517,10 +517,10 @@ public interface IBaseBot {
    * hence will not automatically scan bots. The last radar direction and sweep angle will be used
    * for scanning for bots.
    *
-   * @param doScan true means that the radar must rescan using old radar direction and sweep angle;
+   * @param rescan true means that the radar must rescan using old radar direction and sweep angle;
    *     false means that rescanning is disabled.
    */
-  void setScan(boolean doScan);
+  void setScan(boolean rescan);
 
   /**
    * Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun behaves
@@ -593,6 +593,24 @@ public interface IBaseBot {
    * @see #setAdjustRadarForGunTurn(boolean)
    */
   boolean doAdjustRadarForGunTurn();
+
+  /**
+   * Adds a event handler that will be automatically triggered {@link #onCustomEvent(CustomEvent)}
+   * when the {@link Condition#test()} returns true.
+   *
+   * @param condition is the condition that must be met to trigger the custom event.
+   * @see #removeCustomEvent(Condition)
+   */
+  void addCustomEvent(Condition condition);
+
+  /**
+   * Removes triggering an custom event handler for a specific condition that was previously added
+   * with {@link #addCustomEvent(Condition)}.
+   *
+   * @param condition is the condition that was previously added with {@link
+   *     #addCustomEvent(Condition)}
+   */
+  void removeCustomEvent(Condition condition);
 
   /**
    * Returns the RGB color code of the body. The color code is an integer in hexadecimal format
@@ -948,8 +966,9 @@ public interface IBaseBot {
   default void onWonRound(WonRoundEvent wonRoundEvent) {}
 
   /**
-   * The event handler triggered when some condition has been met. Use the {@link Condition#getName()}
-   * of the condition if you need to differ between different conditions in received custom events.
+   * The event handler triggered when some condition has been met. Use the {@link
+   * Condition#getName()} of the condition when you need to differentiate between different types of
+   * conditions received with this event handler.
    *
    * @param customEvent is the event details from the game.
    */

@@ -2,6 +2,9 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
