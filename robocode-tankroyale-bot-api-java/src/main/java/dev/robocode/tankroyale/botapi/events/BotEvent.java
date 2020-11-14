@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.botapi.events;
 
-/** Event occurring during a battle. */
+/** Bot event occurring during a battle. */
 public abstract class BotEvent implements IEvent {
 
   /** Turn number when the event occurred. */

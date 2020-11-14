@@ -8,8 +8,8 @@ import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 import java.io.IOException;
 
 /**
- * Walls - a sample bot, original version by Mathew Nelson for Robocode. Modified by Flemming N.
- * Larsen.
+ * Walls - a sample bot, original version by Mathew Nelson for Robocode.
+ * Modified by Flemming N. Larsen.
  *
  * <p>Moves around the outer edge with the gun facing in.
  */
