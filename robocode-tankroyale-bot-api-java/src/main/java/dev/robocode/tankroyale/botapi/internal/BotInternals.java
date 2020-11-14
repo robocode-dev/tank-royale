@@ -1,28 +1,27 @@
-package dev.robocode.tankroyale.botapi;
+package dev.robocode.tankroyale.botapi.internal;
 
+import dev.robocode.tankroyale.botapi.Bot;
+import dev.robocode.tankroyale.botapi.IBot;
 import dev.robocode.tankroyale.botapi.events.*;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-final class BotInternals {
+public final class BotInternals {
 
   private final double absDeceleration = Math.abs(IBot.DECELERATION);
 
   private final Bot bot;
 
-  double maxSpeed = IBot.MAX_SPEED;
-  double maxTurnRate = IBot.MAX_TURN_RATE;
-  double maxGunTurnRate = IBot.MAX_GUN_TURN_RATE;
-  double maxRadarTurnRate = IBot.MAX_RADAR_TURN_RATE;
+  public double maxSpeed = IBot.MAX_SPEED;
+  public double maxTurnRate = IBot.MAX_TURN_RATE;
+  public double maxGunTurnRate = IBot.MAX_GUN_TURN_RATE;
+  public double maxRadarTurnRate = IBot.MAX_RADAR_TURN_RATE;
 
-  double distanceRemaining;
-  double turnRemaining;
-  double gunTurnRemaining;
-  double radarTurnRemaining;
+  public double distanceRemaining;
+  public double turnRemaining;
+  public double gunTurnRemaining;
+  public double radarTurnRemaining;
 
   private boolean isCollidingWithWall;
   private boolean isCollidingWithBot;
@@ -32,7 +31,7 @@ final class BotInternals {
 
   private Thread thread;
   private final Object nextTurn = new Object();
-  volatile boolean isRunning;
+  public volatile boolean isRunning;
   volatile boolean isStopped;
 
   private double savedDistanceRemaining;
@@ -40,7 +39,7 @@ final class BotInternals {
   private double savedGunTurnRemaining;
   private double savedRadarTurnRemaining;
 
-  BotInternals(Bot bot, BotEvents botEvents) {
+  public BotInternals(Bot bot, BotEvents botEvents) {
     this.bot = bot;
 
     botEvents.onProcessTurn.subscribe(this::onProcessTurn, 100);
@@ -161,7 +160,7 @@ final class BotInternals {
   // This is Nat Pavasant's method described here:
   // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
   private void updateMovement() {
-    if (isCollidingWithWall) { // TODO: add check for collision with bot?
+    if (isCollidingWithWall/* || isCollidingWithBot*/) { // TODO: add check for collision with bot?
       return;
     }
 
@@ -198,7 +197,7 @@ final class BotInternals {
   // Credits for this algorithm goes to Patrick Cupka (aka Voidious),
   // Julian Kent (aka Skilgannon), and Positive:
   // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
-  double getNewSpeed(double speed, double distance) {
+  public double getNewSpeed(double speed, double distance) {
 
     if (distance < 0) {
       // If the distance is negative, then change it to be positive and change the sign of the
@@ -254,7 +253,7 @@ final class BotInternals {
     return distance;
   }
 
-  void setStop() {
+  public void setStop() {
     if (!isStopped) {
       isStopped = true;
 
@@ -275,7 +274,7 @@ final class BotInternals {
     bot.setRadarTurnRate(0);
   }
 
-  void setResume() {
+  public void setResume() {
     if (isStopped) {
       isStopped = false;
 
@@ -290,32 +289,32 @@ final class BotInternals {
     return (Math.abs(value) < .00001);
   }
 
-  void awaitMovementComplete() {
+  public void awaitMovementComplete() {
     await(() -> distanceRemaining == 0);
   }
 
-  void awaitTurnComplete() {
+  public void awaitTurnComplete() {
     await(() -> turnRemaining == 0);
   }
 
-  void awaitGunTurnComplete() {
+  public void awaitGunTurnComplete() {
     await(() -> gunTurnRemaining == 0);
   }
 
-  void awaitRadarTurnComplete() {
+  public void awaitRadarTurnComplete() {
     await(() -> radarTurnRemaining == 0);
   }
 
-  void awaitGunFired() {
+  public void awaitGunFired() {
     await(() -> bot.getGunHeat() > 0);
   }
 
-  void awaitNextTurn() {
+  public void awaitNextTurn() {
     int turnNumber = bot.getTurnNumber();
     await(() -> bot.getTurnNumber() > turnNumber);
   }
 
-  void await(ICondition condition) {
+  public void await(ICondition condition) {
     // Loop while bot is running and condition has not been met
     try {
       while (isRunning && !condition.test()) {
@@ -329,7 +328,7 @@ final class BotInternals {
     }
   }
 
-  interface ICondition {
+  public interface ICondition {
     boolean test();
   }
 }

@@ -1,12 +1,13 @@
-package dev.robocode.tankroyale.botapi;
+package dev.robocode.tankroyale.botapi.internal;
 
+import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-class EventQueue {
+public class EventQueue {
 
   private final int MAX_EVENT_AGE = 2; // turns
 

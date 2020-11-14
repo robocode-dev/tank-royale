@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 /** Utility class for reading environment variables. */
-final class EnvVars {
+public final class EnvVars {
 
   // Hide constructor
   private EnvVars() {}

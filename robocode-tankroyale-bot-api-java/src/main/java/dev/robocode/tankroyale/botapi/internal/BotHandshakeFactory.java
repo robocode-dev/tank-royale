@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.botapi.factory;
+package dev.robocode.tankroyale.botapi.internal;
 
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.schema.BotHandshake;

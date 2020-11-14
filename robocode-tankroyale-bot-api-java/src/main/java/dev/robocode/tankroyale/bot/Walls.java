@@ -18,8 +18,6 @@ public class Walls extends Bot {
   boolean peek; // Don't turn if there's a robot there
   double moveAmount; // How much to move
 
-  boolean stopMoving; // flag for stop moving temporarily
-
   /** Main method starts our bot */
   public static void main(String[] args) throws IOException {
     new Walls().start();

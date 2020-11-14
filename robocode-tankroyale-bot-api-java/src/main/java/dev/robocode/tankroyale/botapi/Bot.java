@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.Condition;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
+import dev.robocode.tankroyale.botapi.internal.BotInternals;
 
 import java.net.URI;
 

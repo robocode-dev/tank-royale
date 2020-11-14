@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.botapi;
+package dev.robocode.tankroyale.botapi.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,5 +1,6 @@
-package dev.robocode.tankroyale.botapi;
+package dev.robocode.tankroyale.botapi.internal;
 
+import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
 
 final class BotEvents {

@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.botapi;
+package dev.robocode.tankroyale.botapi.internal;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -6,10 +6,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.neovisionaries.ws.client.*;
+import dev.robocode.tankroyale.botapi.BotException;
+import dev.robocode.tankroyale.botapi.EnvVars;
+import dev.robocode.tankroyale.botapi.GameSetup;
+import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.botapi.events.*;
-import dev.robocode.tankroyale.botapi.factory.BotHandshakeFactory;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
 import dev.robocode.tankroyale.botapi.mapper.ResultsMapper;
@@ -23,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-final class BaseBotInternals {
+public final class BaseBotInternals {
   private static final String SERVER_URL_PROPERTY_KEY = "server.url";
 
   private static final String NOT_CONNECTED_TO_SERVER_MSG =
@@ -60,12 +63,12 @@ final class BaseBotInternals {
   }
 
   private final IBaseBot baseBot;
-  private final BotInfo botInfo;
-  final BotEvents botEvents;
-  final EventQueue eventQueue;
+  private final dev.robocode.tankroyale.botapi.BotInfo botInfo;
+  public final BotEvents botEvents;
+  public final EventQueue eventQueue;
   final Set<Condition> conditions = new HashSet<>();
 
-  BotIntent botIntent = newBotIntent();
+  public BotIntent botIntent = newBotIntent();
 
   // Server connection:
   private WebSocket socket;
@@ -73,11 +76,11 @@ final class BaseBotInternals {
 
   // Current game states:
   private Integer myId;
-  private GameSetup gameSetup;
+  private dev.robocode.tankroyale.botapi.GameSetup gameSetup;
   private TickEvent tickEvent;
   private Long tickStartNanoTime;
 
-  BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {
+  public BaseBotInternals(IBaseBot baseBot, dev.robocode.tankroyale.botapi.BotInfo botInfo, URI serverUrl) {
     this.baseBot = baseBot;
     this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
 
@@ -105,7 +108,7 @@ final class BaseBotInternals {
     return botIntent;
   }
 
-  void connect() {
+  public void connect() {
     if (!socket.isOpen()) {
       try {
         socket.connect();
@@ -121,15 +124,15 @@ final class BaseBotInternals {
     }
   }
 
-  void sendIntent() {
+  public void sendIntent() {
     socket.sendText(gson.toJson(botIntent));
   }
 
-  void addCondition(Condition condition) {
+  public void addCondition(Condition condition) {
     conditions.add(condition);
   }
 
-  void removeCondition(Condition condition) {
+  public void removeCondition(Condition condition) {
     conditions.remove(condition);
   }
 
@@ -158,35 +161,35 @@ final class BaseBotInternals {
     }
   }
 
-  ServerHandshake getServerHandshake() {
+  public ServerHandshake getServerHandshake() {
     if (serverHandshake == null) {
       throw new BotException(NOT_CONNECTED_TO_SERVER_MSG);
     }
     return serverHandshake;
   }
 
-  int getMyId() {
+  public int getMyId() {
     if (myId == null) {
       throw new BotException(GAME_NOT_RUNNING_MSG);
     }
     return myId;
   }
 
-  GameSetup getGameSetup() {
+  public GameSetup getGameSetup() {
     if (gameSetup == null) {
       throw new BotException(GAME_NOT_RUNNING_MSG);
     }
     return gameSetup;
   }
 
-  TickEvent getCurrentTick() {
+  public TickEvent getCurrentTick() {
     if (tickEvent == null) {
       throw new BotException(TICK_NOT_AVAILABLE_MSG);
     }
     return tickEvent;
   }
 
-  long getTicksStart() {
+  public long getTicksStart() {
     if (tickStartNanoTime == null) {
       throw new BotException(TICK_NOT_AVAILABLE_MSG);
     }
