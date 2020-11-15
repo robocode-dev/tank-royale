@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -340,7 +341,7 @@ namespace Robocode.TankRoyale.BotApi
     /// being called when each of these events occurs.
     /// </summary>
     /// <value>The game events received for the current turn.</value>
-    IEnumerable<Event> Events { get; }
+    IEnumerable<BotEvent> Events { get; }
 
     /// <summary>
     /// Set or get the turn rate of the bot, which can be positive and negative. The turn rate is
@@ -720,25 +721,25 @@ namespace Robocode.TankRoyale.BotApi
     /// The event handler triggered when another bot has died.
     /// </summary>
     /// <param name="botDeathEvent">Event details from the game.</param>
-    void OnBotDeath(BotDeathEvent botDeathEvent);
+    void OnBotDeath(DeathEvent botDeathEvent);
 
     /// <summary>
     /// The event handler triggered when this bot has died.
     /// </summary>
     /// <param name="botDeathEvent">Event details from the game.</param>
-    void OnDeath(BotDeathEvent botDeathEvent);
+    void OnDeath(DeathEvent botDeathEvent);
 
     /// <summary>
     /// The event handler triggered when the bot has collided with another bot.
     /// </summary>
     /// <param name="botHitBotEvent">Event details from the game.</param>
-    void OnHitBot(BotHitBotEvent botHitBotEvent);
+    void OnHitBot(HitBotEvent botHitBotEvent);
 
     /// <summary>
     /// The event handler triggered when the bot has hit a wall.
     /// </summary>
     /// <param name="botHitWallEvent">Event details from the game.</param>
-    void OnHitWall(BotHitWallEvent botHitWallEvent);
+    void OnHitWall(HitWallEvent botHitWallEvent);
 
     /// <summary>
     /// The event handler triggered when the bot has fired a bullet.
@@ -795,11 +796,12 @@ namespace Robocode.TankRoyale.BotApi
     void OnWonRound(WonRoundEvent wonRoundEvent);
 
     /// <summary>
-    /// The event handler triggered when a condition has been met. Use the <see cref="Condition.Name"/> of the
-    /// condition if you need to differ between multiple conditions being met.
+    /// The event handler triggered when some condition has been met. Use the <see cref="Condition.Name"/>
+    /// of the condition when you need to differentiate between different types of conditions received
+    /// with this event handler.
     /// </summary>
-    /// <param name="condition">Is the condition that has been met.</param>
-    void OnCondition(Condition condition);
+    /// <param name="customEvent">Is the event details from the game.</param>
+    void OnCustomEvent(CustomEvent customEvent);
 
     /// <summary>
     /// Calculates the maximum turn rate for a specific speed.

@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Events
 {
   /// <summary>
   /// Event occurring when bot gets disconnected from server.

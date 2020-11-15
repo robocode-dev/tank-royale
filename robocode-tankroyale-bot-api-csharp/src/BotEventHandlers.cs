@@ -1,9 +1,9 @@
 using System;
-using System.Collections.Generic;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi
 {
-  class BotEvents
+  class BotEventHandlers
   {
     readonly IBaseBot baseBot;
 
@@ -15,10 +15,10 @@ namespace Robocode.TankRoyale.BotApi
     public EventManager<GameEndedEvent> onGameEndedManager = new EventManager<GameEndedEvent>();
     public EventManager<TickEvent> onTickManager = new EventManager<TickEvent>();
     public EventManager<SkippedTurnEvent> onSkippedTurnManager = new EventManager<SkippedTurnEvent>();
-    public EventManager<BotDeathEvent> onDeathManager = new EventManager<BotDeathEvent>();
-    public EventManager<BotDeathEvent> onBotDeathManager = new EventManager<BotDeathEvent>();
-    public EventManager<BotHitBotEvent> onHitBotManager = new EventManager<BotHitBotEvent>();
-    public EventManager<BotHitWallEvent> onHitWallManager = new EventManager<BotHitWallEvent>();
+    public EventManager<DeathEvent> onDeathManager = new EventManager<DeathEvent>();
+    public EventManager<DeathEvent> onBotDeathManager = new EventManager<DeathEvent>();
+    public EventManager<HitBotEvent> onHitBotManager = new EventManager<HitBotEvent>();
+    public EventManager<HitWallEvent> onHitWallManager = new EventManager<HitWallEvent>();
     public EventManager<BulletFiredEvent> onBulletFiredManager = new EventManager<BulletFiredEvent>();
     public EventManager<BulletHitBotEvent> onHitByBulletManager = new EventManager<BulletHitBotEvent>();
     public EventManager<BulletHitBotEvent> onBulletHitManager = new EventManager<BulletHitBotEvent>();
@@ -26,7 +26,7 @@ namespace Robocode.TankRoyale.BotApi
     public EventManager<BulletHitWallEvent> onBulletHitWallManager = new EventManager<BulletHitWallEvent>();
     public EventManager<ScannedBotEvent> onScannedBotManager = new EventManager<ScannedBotEvent>();
     public EventManager<WonRoundEvent> onWonRoundManager = new EventManager<WonRoundEvent>();
-    public EventManager<Condition> onConditionManager = new EventManager<Condition>();
+    public EventManager<CustomEvent> onCustomEventManager = new EventManager<CustomEvent>();
 
     // Events
     private event EventManager<ConnectedEvent>.Subscriber OnConnected;
@@ -36,10 +36,10 @@ namespace Robocode.TankRoyale.BotApi
     private event EventManager<GameEndedEvent>.Subscriber OnGameEnded;
     private event EventManager<TickEvent>.Subscriber OnTick;
     private event EventManager<SkippedTurnEvent>.Subscriber OnSkippedTurn;
-    private event EventManager<BotDeathEvent>.Subscriber OnDeath;
-    private event EventManager<BotDeathEvent>.Subscriber OnBotDeath;
-    private event EventManager<BotHitBotEvent>.Subscriber OnHitBot;
-    private event EventManager<BotHitWallEvent>.Subscriber OnHitWall;
+    private event EventManager<DeathEvent>.Subscriber OnDeath;
+    private event EventManager<DeathEvent>.Subscriber OnBotDeath;
+    private event EventManager<HitBotEvent>.Subscriber OnHitBot;
+    private event EventManager<HitWallEvent>.Subscriber OnHitWall;
     private event EventManager<BulletFiredEvent>.Subscriber OnBulletFired;
     private event EventManager<BulletHitBotEvent>.Subscriber OnHitByBullet;
     private event EventManager<BulletHitBotEvent>.Subscriber OnBulletHit;
@@ -47,9 +47,9 @@ namespace Robocode.TankRoyale.BotApi
     private event EventManager<BulletHitWallEvent>.Subscriber OnBulletHitWall;
     private event EventManager<ScannedBotEvent>.Subscriber OnScannedBot;
     private event EventManager<WonRoundEvent>.Subscriber OnWonRound;
-    private event EventManager<Condition>.Subscriber OnCondition;
+    private event EventManager<CustomEvent>.Subscriber OnCustomEvent;
 
-    internal BotEvents(IBaseBot baseBot)
+    internal BotEventHandlers(IBaseBot baseBot)
     {
       this.baseBot = baseBot;
       init();
@@ -111,8 +111,8 @@ namespace Robocode.TankRoyale.BotApi
       onWonRoundManager.Subscribe(baseBot.OnWonRound);
       OnWonRound += onWonRoundManager.Publish;
 
-      onConditionManager.Subscribe(baseBot.OnCondition);
-      OnCondition += onConditionManager.Publish;
+      onCustomEventManager.Subscribe(baseBot.OnCustomEvent);
+      OnCustomEvent += onCustomEventManager.Publish;
     }
 
     public void FireConnectedEvent(ConnectedEvent evt)
@@ -156,18 +156,18 @@ namespace Robocode.TankRoyale.BotApi
       {
         switch (evt)
         {
-          case BotDeathEvent botDeathEvent:
+          case DeathEvent botDeathEvent:
             if (botDeathEvent.VictimId == baseBot.MyId)
               OnDeath(botDeathEvent);
             else
               OnBotDeath(botDeathEvent);
             break;
 
-          case BotHitBotEvent botHitBotEvent:
+          case HitBotEvent botHitBotEvent:
             OnHitBot(botHitBotEvent);
             break;
 
-          case BotHitWallEvent botHitWallEvent:
+          case HitWallEvent botHitWallEvent:
             OnHitWall(botHitWallEvent);
             break;
 
@@ -211,7 +211,7 @@ namespace Robocode.TankRoyale.BotApi
 
     public void FireConditionMet(Condition condition)
     {
-      OnCondition(condition);
+      OnCustomEvent(new CustomEvent(-1, condition));
     }
   }
 }

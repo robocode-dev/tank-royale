@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -219,7 +220,7 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public IEnumerable<Event> Events
+    public IEnumerable<BotEvent> Events
     {
       get => __baseBotInternals.CurrentTick.Events;
     }
@@ -416,16 +417,16 @@ namespace Robocode.TankRoyale.BotApi
     public virtual void OnTick(TickEvent tickEvent) { }
 
     /// <inheritdoc/>
-    public virtual void OnBotDeath(BotDeathEvent botDeathEvent) { }
+    public virtual void OnBotDeath(DeathEvent botDeathEvent) { }
 
     /// <inheritdoc/>
-    public virtual void OnDeath(BotDeathEvent botDeathEvent) { }
+    public virtual void OnDeath(DeathEvent botDeathEvent) { }
 
     /// <inheritdoc/>
-    public virtual void OnHitBot(BotHitBotEvent botHitBotEvent) { }
+    public virtual void OnHitBot(HitBotEvent botHitBotEvent) { }
 
     /// <inheritdoc/>
-    public virtual void OnHitWall(BotHitWallEvent botHitWallEvent) { }
+    public virtual void OnHitWall(HitWallEvent botHitWallEvent) { }
 
     /// <inheritdoc/>
     public virtual void OnBulletFired(BulletFiredEvent bulletFiredEvent) { }
@@ -452,6 +453,6 @@ namespace Robocode.TankRoyale.BotApi
     public virtual void OnWonRound(WonRoundEvent wonRoundEvent) { }
 
     /// <inheritdoc/>
-    public virtual void OnCondition(Condition condition) { }
+    public virtual void OnCustomEvent(CustomEvent customEvent) { }
   }
 }

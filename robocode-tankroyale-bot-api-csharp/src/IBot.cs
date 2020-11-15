@@ -1,4 +1,6 @@
-﻿namespace Robocode.TankRoyale.BotApi
+﻿using Robocode.TankRoyale.BotApi.Events;
+
+namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
   /// Interface for a bot that extends the core API with convenient methods for movement, turning,

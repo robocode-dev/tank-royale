@@ -1,9 +1,9 @@
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Events
 {
   /// <summary>
   /// Event occurring during a battle.
   /// </summary>
-  public abstract class Event : IMessage
+  public abstract class Event : IEvent
   {
     /// <summary>Turn number when the event occurred.</summary>
     public int TurnNumber { get; }

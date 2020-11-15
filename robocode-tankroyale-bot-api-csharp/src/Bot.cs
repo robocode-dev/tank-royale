@@ -1,5 +1,6 @@
-using System.Linq;
 using System;
+using System.Linq;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -33,19 +34,19 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     public Bot() : base()
     {
-      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
+      __botInternals = new BotInternals(this, base.__baseBotInternals.botEventHandlers);
     }
 
     /// <inheritdoc/>
     public Bot(BotInfo botInfo) : base(botInfo)
     {
-      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
+      __botInternals = new BotInternals(this, base.__baseBotInternals.botEventHandlers);
     }
 
     /// <inheritdoc/>
     public Bot(BotInfo botInfo, Uri serverUrl) : base(botInfo, serverUrl)
     {
-      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
+      __botInternals = new BotInternals(this, base.__baseBotInternals.botEventHandlers);
     }
 
     /// <inheritdoc/>

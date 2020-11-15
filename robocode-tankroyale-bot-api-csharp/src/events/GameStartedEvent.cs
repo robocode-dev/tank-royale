@@ -1,11 +1,11 @@
 using Newtonsoft.Json;
 
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Events
 {
   /// <summary>
   /// Event occurring when game has just started.
   /// </summary>
-  public sealed class GameStartedEvent : IMessage
+  public sealed class GameStartedEvent : IEvent
   {
     /// <summary>The ID used for identifying your bot in the current battle.</summary>
     public int MyId { get; }

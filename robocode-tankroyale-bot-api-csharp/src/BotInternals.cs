@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Collections.Specialized;
 using System.Collections;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -12,7 +13,7 @@ namespace Robocode.TankRoyale.BotApi
       private double absDeceleration;
 
       private readonly IBot bot;
-      private readonly BotEvents botEvents;
+      private readonly BotEventHandlers botEventHandlers;
 
       internal double maxSpeed;
       internal double maxTurnRate;
@@ -43,10 +44,10 @@ namespace Robocode.TankRoyale.BotApi
 
       private readonly OrderedDictionary pendingCommands = new OrderedDictionary();
 
-      public BotInternals(IBot bot, BotEvents botEvents)
+      public BotInternals(IBot bot, BotEventHandlers botEvents)
       {
         this.bot = bot;
-        this.botEvents = botEvents;
+        this.botEventHandlers = botEvents;
 
         this.absDeceleration = Math.Abs(bot.Deceleration);
 
@@ -84,7 +85,7 @@ namespace Robocode.TankRoyale.BotApi
         ProcessTurn();
       }
 
-      private void OnHitBot(BotHitBotEvent evt)
+      private void OnHitBot(HitBotEvent evt)
       {
         if (evt.IsRammed)
         {
@@ -93,13 +94,13 @@ namespace Robocode.TankRoyale.BotApi
         isCollidingWithBot = true;
       }
 
-      private void OnHitWall(BotHitWallEvent evt)
+      private void OnHitWall(HitWallEvent evt)
       {
         distanceRemaining = 0;
         isCollidingWithWall = true;
       }
 
-      private void OnDeath(BotDeathEvent evt)
+      private void OnDeath(DeathEvent evt)
       {
         if (evt.VictimId == bot.MyId)
         {
@@ -414,7 +415,7 @@ namespace Robocode.TankRoyale.BotApi
                 {
                   // Wait for next turn and fire events
                   Monitor.Wait(nextTurnLock);
-                  botEvents.FireEvents(currentTick);
+                  botEventHandlers.FireEvents(currentTick);
                 }
                 catch (ThreadInterruptedException)
                 {
@@ -480,7 +481,7 @@ namespace Robocode.TankRoyale.BotApi
 
       internal void FireConditionMet(Condition condition)
       {
-        botEvents.FireConditionMet(condition);
+        botEventHandlers.FireConditionMet(condition);
       }
 
       private void QueueCommand(Command command)

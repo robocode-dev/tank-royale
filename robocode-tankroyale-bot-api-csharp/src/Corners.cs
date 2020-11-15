@@ -1,5 +1,6 @@
 using System;
 using Robocode.TankRoyale.BotApi;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.Sample.Bots
 {
@@ -117,7 +118,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     }
 
     // We died. Figure out if we need to switch to another corner.
-    public override void OnDeath(BotDeathEvent e)
+    public override void OnDeath(DeathEvent e)
     {
       // Well, others should never be 0, but better safe than sorry.
       if (enemies == 0)

@@ -5,6 +5,7 @@ using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Robocode.TankRoyale.Schema;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -22,7 +23,7 @@ namespace Robocode.TankRoyale.BotApi
         "Game is not running or tick has not occurred yet. Make sure OnTick() event handler has been called first";
 
       private readonly BotInfo botInfo;
-      internal readonly BotEvents botEvents;
+      internal readonly BotEventHandlers botEventHandlers;
 
       internal BotIntent botIntent = new BotIntent();
 
@@ -42,7 +43,7 @@ namespace Robocode.TankRoyale.BotApi
 
       internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUri)
       {
-        this.botEvents = new BotEvents(baseBot);
+        this.botEventHandlers = new BotEventHandlers(baseBot);
         this.botInfo = (botInfo == null) ? EnvVars.GetBotInfo() : botInfo;
         this.doDispatchEvents = !(baseBot is IBot);
 
@@ -55,7 +56,7 @@ namespace Robocode.TankRoyale.BotApi
 
         botIntent.Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotIntent); // must be set
 
-        botEvents.onBulletFiredManager.Subscribe(HandleBulletFired);
+        botEventHandlers.onBulletFiredManager.Subscribe(HandleBulletFired);
       }
 
       internal void Connect()
@@ -202,17 +203,17 @@ namespace Robocode.TankRoyale.BotApi
 
       private void HandleConnected()
       {
-        botEvents.FireConnectedEvent(new ConnectedEvent(socket.ServerUri));
+        botEventHandlers.FireConnectedEvent(new ConnectedEvent(socket.ServerUri));
       }
 
       private void HandleDisconnected(bool remote)
       {
-        botEvents.FireDisconnectedEvent(new DisconnectedEvent(socket.ServerUri, remote));
+        botEventHandlers.FireDisconnectedEvent(new DisconnectedEvent(socket.ServerUri, remote));
       }
 
       private void HandleConnectionError(Exception cause)
       {
-        botEvents.FireConnectionErrorEvent(new ConnectionErrorEvent(socket.ServerUri, cause));
+        botEventHandlers.FireConnectionErrorEvent(new ConnectionErrorEvent(socket.ServerUri, cause));
       }
 
       private void HandleTextMessage(string json)
@@ -279,7 +280,7 @@ namespace Robocode.TankRoyale.BotApi
         var text = JsonConvert.SerializeObject(ready);
         socket.SendTextMessage(text);
 
-        botEvents.FireGameStartedEvent(new GameStartedEvent((int)myId, gameSetup));
+        botEventHandlers.FireGameStartedEvent(new GameStartedEvent((int)myId, gameSetup));
       }
 
       private void HandleGameEndedEvent(string json)
@@ -291,13 +292,13 @@ namespace Robocode.TankRoyale.BotApi
         var gameEndedEventForBot = JsonConvert.DeserializeObject<GameEndedEventForBot>(json);
         var results = ResultsMapper.Map(gameEndedEventForBot.Results);
 
-        botEvents.FireGameEndedEvent(new GameEndedEvent(gameEndedEventForBot.NumberOfRounds, results));
+        botEventHandlers.FireGameEndedEvent(new GameEndedEvent(gameEndedEventForBot.NumberOfRounds, results));
       }
 
       public void HandleSkippedTurnEvent(string json)
       {
         var skippedTurnEvent = JsonConvert.DeserializeObject<Schema.SkippedTurnEvent>(json);
-        botEvents.FireSkippedTurnEvent(EventMapper.Map(skippedTurnEvent));
+        botEventHandlers.FireSkippedTurnEvent(EventMapper.Map(skippedTurnEvent));
       }
 
       private void HandleTickEvent(string json)
@@ -306,15 +307,15 @@ namespace Robocode.TankRoyale.BotApi
         currentTick = EventMapper.Map(json);
 
         ticksStart = DateTime.Now.Ticks;
-        botEvents.FireTickEvent(currentTick);
+        botEventHandlers.FireTickEvent(currentTick);
 
         if (doDispatchEvents)
         {
-          botEvents.FireEvents(currentTick);
+          botEventHandlers.FireEvents(currentTick);
         }
       }
 
-      private void HandleBulletFired(BulletFiredEvent bulletFiredEvent)
+      private void HandleBulletFired(Robocode.TankRoyale.BotApi.Events.BulletFiredEvent bulletFiredEvent)
       {
         botIntent.Firepower = 0; // Reset firepower so the bot stops firing continuously
       }

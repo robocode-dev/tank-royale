@@ -1,5 +1,6 @@
 using System;
 using Robocode.TankRoyale.BotApi;
+using Robocode.TankRoyale.BotApi.Events;
 
 /// <summary>
 /// Walls - a sample bot, original version by Mathew Nelson for Robocode.
@@ -77,7 +78,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     }
 
     /** OnHitBot: Move away a bit. */
-    public override void OnHitBot(BotHitBotEvent e)
+    public override void OnHitBot(HitBotEvent e)
     {
       // If he's in front of us, set back up a bit.
       double bearing = BearingTo(e.X, e.Y);

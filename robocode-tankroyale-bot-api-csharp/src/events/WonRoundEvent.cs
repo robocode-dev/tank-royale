@@ -1,11 +1,11 @@
 using Newtonsoft.Json;
 
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Events
 {
   /// <summary>
   /// Event occurring when a bot has won the round.
   /// </summary>
-  public sealed class WonRoundEvent : Event
+  public sealed class WonRoundEvent : BotEvent
   {
     /// <summary>
     /// Initializes a new instance of the WonRoundEvent class.

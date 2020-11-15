@@ -1,16 +1,16 @@
 using Newtonsoft.Json;
 
-namespace Robocode.TankRoyale.BotApi {
+namespace Robocode.TankRoyale.BotApi.Events
+{
   /// <summary>
   /// Event occurring when a bot has scanned another bot.
   /// </summary>
-  public sealed class ScannedBotEvent : Event {
+  public sealed class ScannedBotEvent : BotEvent
+  {
     /// <summary>Id of the bot did the scanning.</summary>
-    [Newtonsoft.Json.JsonProperty ("scannedByBotId", Required = Newtonsoft.Json.Required.Always)]
     public int ScannedByBotId { get; }
 
     /// <summary>Id of the bot that was scanned.</summary>
-    [Newtonsoft.Json.JsonProperty ("scannedBotId", Required = Newtonsoft.Json.Required.Always)]
     public int ScannedBotId { get; }
 
     /// <summary>Energy level of the scanned bot.</summary>
@@ -40,8 +40,8 @@ namespace Robocode.TankRoyale.BotApi {
     /// <param name="direction">Direction in degrees of the scanned bot.</param>
     /// <param name="speed">Speed measured in units per turn of the scanned bot.</param>
     [JsonConstructor]
-    public ScannedBotEvent (int turnNumber, int scannedByBotId, int scannedBotId, double energy,
-        double x, double y, double direction, double speed) : base (turnNumber) =>
+    public ScannedBotEvent(int turnNumber, int scannedByBotId, int scannedBotId, double energy,
+        double x, double y, double direction, double speed) : base(turnNumber) =>
       (ScannedByBotId, ScannedBotId, Energy, X, Y, Direction, Speed) =
       (scannedByBotId, scannedBotId, energy, x, y, direction, speed);
   }
