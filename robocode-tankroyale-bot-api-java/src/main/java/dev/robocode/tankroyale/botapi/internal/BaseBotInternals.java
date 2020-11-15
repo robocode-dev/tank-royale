@@ -118,6 +118,14 @@ public final class BaseBotInternals {
     return botIntent;
   }
 
+  public BotEventHandlers getBotEventHandlers() {
+    return botEventHandlers;
+  }
+
+  public Set<Condition> getConditions() {
+    return conditions;
+  }
+
   public void connect() {
     if (!socket.isOpen()) {
       try {
@@ -132,22 +140,6 @@ public final class BaseBotInternals {
             ex);
       }
     }
-  }
-
-  public BotEventHandlers getBotEventHandlers() {
-    return botEventHandlers;
-  }
-
-  public Set<Condition> getConditions() {
-    return conditions;
-  }
-
-  public void addCondition(Condition condition) {
-    conditions.add(condition);
-  }
-
-  public void removeCondition(Condition condition) {
-    conditions.remove(condition);
   }
 
   public void execute() {
@@ -175,44 +167,12 @@ public final class BaseBotInternals {
     socket.sendText(gson.toJson(botIntent));
   }
 
-  private void clearCurrentGameState() {
-    // Clear setting that are only available during a running game
-    tickEvent = null;
-    gameSetup = null;
-    myId = null;
-  }
-
-  private URI getServerUrlFromSetting() {
-    String url = EnvVars.getServerUrl();
-    if (url == null) {
-      url = System.getProperty(SERVER_URL_PROPERTY_KEY);
-      if (url == null) {
-        url = EnvVars.getServerUrl();
-      }
-    }
-    if (url == null) {
-      url = "ws://localhost";
-    }
-    try {
-      return new URI(url);
-    } catch (URISyntaxException ex) {
-      throw new BotException("Incorrect syntax for server URL: " + url);
-    }
-  }
-
   public String getVariant() {
     return getServerHandshake().getVariant();
   }
 
   public String getVersion() {
     return getServerHandshake().getVersion();
-  }
-
-  private ServerHandshake getServerHandshake() {
-    if (serverHandshake == null) {
-      throw new BotException(NOT_CONNECTED_TO_SERVER_MSG);
-    }
-    return serverHandshake;
   }
 
   public int getMyId() {
@@ -365,6 +325,15 @@ public final class BaseBotInternals {
     return distance;
   }
 
+  public void addCondition(Condition condition) {
+    conditions.add(condition);
+  }
+
+  public void removeCondition(Condition condition) {
+    conditions.remove(condition);
+  }
+
+
   private final class WebSocketListener extends WebSocketAdapter {
 
     @Override
@@ -456,6 +425,31 @@ public final class BaseBotInternals {
     }
   }
 
+  private ServerHandshake getServerHandshake() {
+    if (serverHandshake == null) {
+      throw new BotException(NOT_CONNECTED_TO_SERVER_MSG);
+    }
+    return serverHandshake;
+  }
+
+  private URI getServerUrlFromSetting() {
+    String url = EnvVars.getServerUrl();
+    if (url == null) {
+      url = System.getProperty(SERVER_URL_PROPERTY_KEY);
+      if (url == null) {
+        url = EnvVars.getServerUrl();
+      }
+    }
+    if (url == null) {
+      url = "ws://localhost";
+    }
+    try {
+      return new URI(url);
+    } catch (URISyntaxException ex) {
+      throw new BotException("Incorrect syntax for server URL: " + url);
+    }
+  }
+
   private void handleGameEndedEvent(JsonObject jsonMsg) {
     // Clear current game state
     clearCurrentGameState();
@@ -501,5 +495,12 @@ public final class BaseBotInternals {
 
   private void handleBulletFired(BulletFiredEvent e) {
     botIntent.setFirepower(0d); // Reset firepower so the bot stops firing continuously
+  }
+
+  private void clearCurrentGameState() {
+    // Clear setting that are only available during a running game
+    tickEvent = null;
+    gameSetup = null;
+    myId = null;
   }
 }
