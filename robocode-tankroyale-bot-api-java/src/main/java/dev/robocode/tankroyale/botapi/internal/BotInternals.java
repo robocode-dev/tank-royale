@@ -13,41 +13,40 @@ public final class BotInternals {
 
   private final Bot bot;
 
-  public double maxSpeed = IBot.MAX_SPEED;
-  public double maxTurnRate = IBot.MAX_TURN_RATE;
-  public double maxGunTurnRate = IBot.MAX_GUN_TURN_RATE;
-  public double maxRadarTurnRate = IBot.MAX_RADAR_TURN_RATE;
+  private double maxSpeed = IBot.MAX_SPEED;
+  private double maxTurnRate = IBot.MAX_TURN_RATE;
+  private double maxGunTurnRate = IBot.MAX_GUN_TURN_RATE;
+  private double maxRadarTurnRate = IBot.MAX_RADAR_TURN_RATE;
 
-  public double distanceRemaining;
-  public double turnRemaining;
-  public double gunTurnRemaining;
-  public double radarTurnRemaining;
+  private double distanceRemaining;
+  private double turnRemaining;
+  private double gunTurnRemaining;
+  private double radarTurnRemaining;
 
   private boolean isCollidingWithWall;
-  private boolean isCollidingWithBot;
   private boolean isOverDriving;
 
   private TickEvent currentTick;
 
   private Thread thread;
   private final Object nextTurn = new Object();
-  public volatile boolean isRunning;
-  volatile boolean isStopped;
+  private volatile boolean isRunning;
+  private volatile boolean isStopped;
 
   private double savedDistanceRemaining;
   private double savedTurnRemaining;
   private double savedGunTurnRemaining;
   private double savedRadarTurnRemaining;
 
-  public BotInternals(Bot bot, BotEvents botEvents) {
+  public BotInternals(Bot bot, BotEventHandlers botEventHandlers) {
     this.bot = bot;
 
-    botEvents.onProcessTurn.subscribe(this::onProcessTurn, 100);
-    botEvents.onDisconnected.subscribe(this::onDisconnected, 100);
-    botEvents.onGameEnded.subscribe(this::onGameEnded, 100);
-    botEvents.onHitBot.subscribe(this::onHitBot, 100);
-    botEvents.onHitWall.subscribe(e -> onHitWall(), 100);
-    botEvents.onBotDeath.subscribe(this::onDeath, 100);
+    botEventHandlers.onProcessTurn.subscribe(this::onProcessTurn, 100);
+    botEventHandlers.onDisconnected.subscribe(this::onDisconnected, 100);
+    botEventHandlers.onGameEnded.subscribe(this::onGameEnded, 100);
+    botEventHandlers.onHitBot.subscribe(this::onHitBot, 100);
+    botEventHandlers.onHitWall.subscribe(e -> onHitWall(), 100);
+    botEventHandlers.onBotDeath.subscribe(this::onDeath, 100);
   }
 
   private void onDisconnected(DisconnectedEvent e) {
@@ -63,11 +62,134 @@ public final class BotInternals {
     processTurn();
   }
 
+  public boolean isRunning() {
+    return isRunning;
+  }
+
+  public double getDistanceRemaining() {
+    return distanceRemaining;
+  }
+
+  public double getTurnRemaining() {
+    return turnRemaining;
+  }
+
+  public double getGunTurnRemaining() {
+    return gunTurnRemaining;
+  }
+
+  public double getRadarTurnRemaining() {
+    return radarTurnRemaining;
+  }
+
+  public void setForward(double distance) {
+    if (Double.isNaN(distance)) {
+      throw new IllegalArgumentException("distance cannot be NaN");
+    }
+    distanceRemaining = distance;
+    double speed = getNewSpeed(bot.getSpeed(), distance);
+    bot.setTargetSpeed(speed);
+  }
+
+  public void forward(double distance) {
+    setForward(distance);
+    awaitMovementComplete();
+  }
+
+  public void setMaxSpeed(double maxSpeed) {
+    if (maxSpeed < 0) {
+      maxSpeed = 0;
+    } else if (maxSpeed > IBot.MAX_SPEED) {
+      maxSpeed = IBot.MAX_SPEED;
+    }
+    this.maxSpeed = maxSpeed;
+  }
+
+  public void setTurnLeft(double degrees) {
+    if (Double.isNaN(degrees)) {
+      throw new IllegalArgumentException("degrees cannot be NaN");
+    }
+    turnRemaining = degrees;
+    bot.setTurnRate(degrees);
+  }
+
+  public void turnLeft(double degrees) {
+    setTurnLeft(degrees);
+    awaitTurnComplete();
+    setTurnLeft(0);
+  }
+
+  public void setMaxTurnRate(double maxTurnRate) {
+    if (maxTurnRate < 0) {
+      maxTurnRate = 0;
+    } else if (maxTurnRate > IBot.MAX_TURN_RATE) {
+      maxTurnRate = IBot.MAX_TURN_RATE;
+    }
+    this.maxTurnRate = maxTurnRate;
+  }
+
+  public void setTurnGunLeft(double degrees) {
+    if (Double.isNaN(degrees)) {
+      throw new IllegalArgumentException("degrees cannot be NaN");
+    }
+    gunTurnRemaining = degrees;
+    bot.setGunTurnRate(degrees);
+  }
+
+  public void turnGunLeft(double degrees) {
+    setTurnGunLeft(degrees);
+    awaitGunTurnComplete();
+    setTurnGunLeft(0);
+  }
+
+  public void setMaxGunTurnRate(double maxGunTurnRate) {
+    if (maxGunTurnRate < 0) {
+      maxGunTurnRate = 0;
+    } else if (maxGunTurnRate > IBot.MAX_GUN_TURN_RATE) {
+      maxGunTurnRate = IBot.MAX_GUN_TURN_RATE;
+    }
+    this.maxGunTurnRate = maxGunTurnRate;
+  }
+
+  public void setTurnRadarLeft(double degrees) {
+    if (Double.isNaN(degrees)) {
+      throw new IllegalArgumentException("degrees cannot be NaN");
+    }
+    radarTurnRemaining = degrees;
+    bot.setRadarTurnRate(degrees);
+  }
+
+  public void turnRadarLeft(double degrees) {
+    setTurnRadarLeft(degrees);
+    awaitRadarTurnComplete();
+    setTurnRadarLeft(0);
+  }
+
+  public void setMaxRadarTurnRate(double maxRadarTurnRate) {
+    if (maxRadarTurnRate < 0) {
+      maxRadarTurnRate = 0;
+    } else if (maxRadarTurnRate > IBot.MAX_RADAR_TURN_RATE) {
+      maxRadarTurnRate = IBot.MAX_RADAR_TURN_RATE;
+    }
+    this.maxRadarTurnRate = maxRadarTurnRate;
+  }
+
+  public void fire(double firepower) {
+    if (bot.setFire(firepower)) {
+      awaitGunFired();
+    }
+  }
+
+  public boolean scan() {
+    bot.setScan(true);
+    awaitNextTurn();
+    return bot.getEvents().stream().anyMatch(e -> e instanceof ScannedBotEvent);
+  }
+
   private void onHitBot(HitBotEvent e) {
     if (e.isRammed()) {
       distanceRemaining = 0;
     }
-    isCollidingWithBot = true;
   }
 
   private void onHitWall() {
@@ -92,7 +214,6 @@ public final class BotInternals {
 
     // Reset collision flags after updating movement
     isCollidingWithWall = false;
-    isCollidingWithBot = false;
 
     // If this is the first turn -> Call the run method on the Bot class
     if (currentTick.getTurnNumber() == 1) { // TODO: Use onNewRound event?
@@ -197,7 +318,7 @@ public final class BotInternals {
   // Credits for this algorithm goes to Patrick Cupka (aka Voidious),
   // Julian Kent (aka Skilgannon), and Positive:
   // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
-  public double getNewSpeed(double speed, double distance) {
+  private double getNewSpeed(double speed, double distance) {
 
     if (distance < 0) {
       // If the distance is negative, then change it to be positive and change the sign of the
@@ -253,7 +374,17 @@ public final class BotInternals {
     return distance;
   }
 
-  public void setStop() {
+  public void stop() {
+    setStop();
+    awaitNextTurn();
+  }
+
+  public void resume() {
+    setResume();
+    awaitNextTurn();
+  }
+
+  private void setStop() {
     if (!isStopped) {
       isStopped = true;
 
@@ -274,7 +405,7 @@ public final class BotInternals {
     bot.setRadarTurnRate(0);
   }
 
-  public void setResume() {
+  private void setResume() {
     if (isStopped) {
       isStopped = false;
 
@@ -289,27 +420,27 @@ public final class BotInternals {
     return (Math.abs(value) < .00001);
   }
 
-  public void awaitMovementComplete() {
+  private void awaitMovementComplete() {
     await(() -> distanceRemaining == 0);
   }
 
-  public void awaitTurnComplete() {
+  private void awaitTurnComplete() {
     await(() -> turnRemaining == 0);
   }
 
-  public void awaitGunTurnComplete() {
+  private void awaitGunTurnComplete() {
     await(() -> gunTurnRemaining == 0);
   }
 
-  public void awaitRadarTurnComplete() {
+  private void awaitRadarTurnComplete() {
     await(() -> radarTurnRemaining == 0);
   }
 
-  public void awaitGunFired() {
+  private void awaitGunFired() {
     await(() -> bot.getGunHeat() > 0);
   }
 
-  public void awaitNextTurn() {
+  private void awaitNextTurn() {
     int turnNumber = bot.getTurnNumber();
     await(() -> bot.getTurnNumber() > turnNumber);
   }

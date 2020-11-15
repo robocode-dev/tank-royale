@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.Condition;
-import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 import dev.robocode.tankroyale.botapi.internal.BotInternals;
 
 import java.net.URI;
@@ -13,7 +12,7 @@ import java.net.URI;
 public abstract class Bot extends BaseBot implements IBot {
 
   private final BotInternals __botInternals =
-      new BotInternals(this, super.__baseBotInternals.botEvents);
+      new BotInternals(this, super.__baseBotInternals.getBotEventHandlers());
 
   /**
    * Constructor for initializing a new instance of the BaseBot class, which should be used when
@@ -62,25 +61,19 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final boolean isRunning() {
-    return __botInternals.isRunning;
+    return __botInternals.isRunning();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setForward(double distance) {
-    if (Double.isNaN(distance)) {
-      throw new IllegalArgumentException("distance cannot be NaN");
-    }
-    __botInternals.distanceRemaining = distance;
-    double speed = __botInternals.getNewSpeed(getSpeed(), distance);
-    setTargetSpeed(speed);
+    __botInternals.setForward(distance);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void forward(double distance) {
-    setForward(distance);
-    __botInternals.awaitMovementComplete();
+    __botInternals.forward(distance);
   }
 
   /** {@inheritDoc} */
@@ -98,36 +91,25 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final double getDistanceRemaining() {
-    return __botInternals.distanceRemaining;
+    return __botInternals.getDistanceRemaining();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setMaxSpeed(double maxSpeed) {
-    if (maxSpeed < 0) {
-      maxSpeed = 0;
-    } else if (maxSpeed > MAX_SPEED) {
-      maxSpeed = MAX_SPEED;
-    }
-    __botInternals.maxSpeed = maxSpeed;
+    __botInternals.setMaxSpeed(maxSpeed);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setTurnLeft(double degrees) {
-    if (Double.isNaN(degrees)) {
-      throw new IllegalArgumentException("degrees cannot be NaN");
-    }
-    __botInternals.turnRemaining = degrees;
-    setTurnRate(degrees);
+    __botInternals.setTurnLeft(degrees);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void turnLeft(double degrees) {
-    setTurnLeft(degrees);
-    __botInternals.awaitTurnComplete();
-    setTurnLeft(0);
+    __botInternals.turnLeft(degrees);
   }
 
   /** {@inheritDoc} */
@@ -145,36 +127,25 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final double getTurnRemaining() {
-    return __botInternals.turnRemaining;
+    return __botInternals.getTurnRemaining();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setMaxTurnRate(double maxTurnRate) {
-    if (maxTurnRate < 0) {
-      maxTurnRate = 0;
-    } else if (maxTurnRate > MAX_TURN_RATE) {
-      maxTurnRate = MAX_TURN_RATE;
-    }
-    __botInternals.maxTurnRate = maxTurnRate;
+    __botInternals.setMaxTurnRate(maxTurnRate);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setTurnGunLeft(double degrees) {
-    if (Double.isNaN(degrees)) {
-      throw new IllegalArgumentException("degrees cannot be NaN");
-    }
-    __botInternals.gunTurnRemaining = degrees;
-    setGunTurnRate(degrees);
+    __botInternals.setTurnGunLeft(degrees);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void turnGunLeft(double degrees) {
-    setTurnGunLeft(degrees);
-    __botInternals.awaitGunTurnComplete();
-    setTurnGunLeft(0);
+    __botInternals.turnGunLeft(degrees);
   }
 
   /** {@inheritDoc} */
@@ -192,36 +163,25 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final double getGunTurnRemaining() {
-    return __botInternals.gunTurnRemaining;
+    return __botInternals.getGunTurnRemaining();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setMaxGunTurnRate(double maxGunTurnRate) {
-    if (maxGunTurnRate < 0) {
-      maxGunTurnRate = 0;
-    } else if (maxGunTurnRate > MAX_GUN_TURN_RATE) {
-      maxGunTurnRate = MAX_GUN_TURN_RATE;
-    }
-    __botInternals.maxGunTurnRate = maxGunTurnRate;
+    __botInternals.setMaxGunTurnRate(maxGunTurnRate);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setTurnRadarLeft(double degrees) {
-    if (Double.isNaN(degrees)) {
-      throw new IllegalArgumentException("degrees cannot be NaN");
-    }
-    __botInternals.radarTurnRemaining = degrees;
-    setRadarTurnRate(degrees);
+    __botInternals.setTurnRadarLeft(degrees);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void turnRadarLeft(double degrees) {
-    setTurnRadarLeft(degrees);
-    __botInternals.awaitRadarTurnComplete();
-    setTurnRadarLeft(0);
+    __botInternals.turnRadarLeft(degrees);
   }
 
   /** {@inheritDoc} */
@@ -239,49 +199,37 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public final double getRadarTurnRemaining() {
-    return __botInternals.radarTurnRemaining;
+    return __botInternals.getRadarTurnRemaining();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setMaxRadarTurnRate(double maxRadarTurnRate) {
-    if (maxRadarTurnRate < 0) {
-      maxRadarTurnRate = 0;
-    } else if (maxRadarTurnRate > MAX_RADAR_TURN_RATE) {
-      maxRadarTurnRate = MAX_RADAR_TURN_RATE;
-    }
-    __botInternals.maxRadarTurnRate = maxRadarTurnRate;
+    __botInternals.setMaxRadarTurnRate(maxRadarTurnRate);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void fire(double firepower) {
-    if (setFire(firepower)) {
-      __botInternals.awaitGunFired();
-    }
+    __botInternals.fire(firepower);
   }
 
   /** {@inheritDoc} */
   @Override
   public void stop() {
-    __botInternals.setStop();
-    __botInternals.awaitNextTurn();
+    __botInternals.stop();
   }
 
   /** {@inheritDoc} */
   @Override
   public void resume() {
-    __botInternals.setResume();
-    __botInternals.awaitNextTurn();
+    __botInternals.resume();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean scan() {
-    setScan(true);
-    __botInternals.awaitNextTurn();
-
-    return getEvents().stream().anyMatch(e -> e instanceof ScannedBotEvent);
+    return __botInternals.scan();
   }
 
   /** {@inheritDoc} */

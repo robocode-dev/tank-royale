@@ -12,13 +12,13 @@ public class EventQueue {
   private final int MAX_EVENT_AGE = 2; // turns
 
   private final BaseBotInternals baseBotInternals;
-  private final BotEvents botEvents;
+  private final BotEventHandlers botEventHandlers;
 
   private final Map<Integer, BotEvent> eventMap = new ConcurrentHashMap<>();
 
-  public EventQueue(BaseBotInternals baseBotInternals, BotEvents botEvents) {
+  public EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers) {
     this.baseBotInternals = baseBotInternals;
-    this.botEvents = botEvents;
+    this.botEventHandlers = botEventHandlers;
   }
 
   public void clear() {
@@ -76,7 +76,7 @@ public class EventQueue {
   }
 
   private void addCustomEvents(IBaseBot baseBot) {
-    baseBotInternals.conditions.forEach(
+    baseBotInternals.getConditions().forEach(
         condition -> {
           if (condition.test()) {
             addEvent(
@@ -101,39 +101,39 @@ public class EventQueue {
 
   private void dispatch(IBaseBot baseBot, BotEvent event) {
     if (event instanceof TickEvent) {
-      botEvents.onTick.publish((TickEvent) event);
+      botEventHandlers.onTick.publish((TickEvent) event);
     } else if (event instanceof ScannedBotEvent) {
-      botEvents.onScannedBot.publish((ScannedBotEvent) event);
+      botEventHandlers.onScannedBot.publish((ScannedBotEvent) event);
     } else if (event instanceof SkippedTurnEvent) {
-      botEvents.onSkippedTurn.publish((SkippedTurnEvent) event);
+      botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) event);
     } else if (event instanceof HitBotEvent) {
-      botEvents.onHitBot.publish((HitBotEvent) event);
+      botEventHandlers.onHitBot.publish((HitBotEvent) event);
     } else if (event instanceof HitWallEvent) {
-      botEvents.onHitWall.publish((HitWallEvent) event);
+      botEventHandlers.onHitWall.publish((HitWallEvent) event);
     } else if (event instanceof BulletFiredEvent) {
-      botEvents.onBulletFired.publish((BulletFiredEvent) event);
+      botEventHandlers.onBulletFired.publish((BulletFiredEvent) event);
     } else if (event instanceof BulletHitWallEvent) {
-      botEvents.onBulletHitWall.publish((BulletHitWallEvent) event);
+      botEventHandlers.onBulletHitWall.publish((BulletHitWallEvent) event);
     } else if (event instanceof BulletHitBotEvent) {
       BulletHitBotEvent bulletEvent = (BulletHitBotEvent) event;
       if (bulletEvent.getVictimId() == baseBot.getMyId()) {
-        botEvents.onHitByBullet.publish((BulletHitBotEvent) event);
+        botEventHandlers.onHitByBullet.publish((BulletHitBotEvent) event);
       } else {
-        botEvents.onBulletHit.publish((BulletHitBotEvent) event);
+        botEventHandlers.onBulletHit.publish((BulletHitBotEvent) event);
       }
     } else if (event instanceof DeathEvent) {
       DeathEvent deathEvent = (DeathEvent) event;
       if (deathEvent.getVictimId() == baseBot.getMyId()) {
-        botEvents.onDeath.publish((DeathEvent) event);
+        botEventHandlers.onDeath.publish((DeathEvent) event);
       } else {
-        botEvents.onBotDeath.publish((DeathEvent) event);
+        botEventHandlers.onBotDeath.publish((DeathEvent) event);
       }
     } else if (event instanceof BulletHitBulletEvent) {
-      botEvents.onBulletHitBullet.publish((BulletHitBulletEvent) event);
+      botEventHandlers.onBulletHitBullet.publish((BulletHitBulletEvent) event);
     } else if (event instanceof WonRoundEvent) {
-      botEvents.onWonRound.publish((WonRoundEvent) event);
+      botEventHandlers.onWonRound.publish((WonRoundEvent) event);
     } else if (event instanceof CustomEvent) {
-      botEvents.onCustomEvent.publish((CustomEvent) event);
+      botEventHandlers.onCustomEvent.publish((CustomEvent) event);
     } else {
       throw new IllegalStateException("Unhandled event type: " + event);
     }

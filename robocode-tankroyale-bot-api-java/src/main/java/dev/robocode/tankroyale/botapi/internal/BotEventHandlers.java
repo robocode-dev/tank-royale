@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.botapi.internal;
 import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
 
-final class BotEvents {
+final class BotEventHandlers {
 
   final EventHandler<TickEvent> onProcessTurn = new EventHandler<>();
   final EventHandler<TickEvent> onNewRound = new EventHandler<>();
@@ -29,7 +29,7 @@ final class BotEvents {
   final EventHandler<WonRoundEvent> onWonRound = new EventHandler<>();
   final EventHandler<CustomEvent> onCustomEvent = new EventHandler<>();
 
-  BotEvents(IBaseBot baseBot) {
+  BotEventHandlers(IBaseBot baseBot) {
     onConnected.subscribe(baseBot::onConnected);
     onDisconnected.subscribe(baseBot::onDisconnected);
     onConnectionError.subscribe(baseBot::onConnectionError);
