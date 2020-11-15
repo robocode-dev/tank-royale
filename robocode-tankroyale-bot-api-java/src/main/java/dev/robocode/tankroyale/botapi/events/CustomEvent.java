@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.botapi.events;
 
+/** A custom event occurring when a condition has been met. */
 public final class CustomEvent extends BotEvent {
 
     /** Condition that was met to trigger this custom event. */

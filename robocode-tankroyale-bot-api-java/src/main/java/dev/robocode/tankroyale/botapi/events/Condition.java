@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.IBot;
 
 /**
- * The Condition class is used for test if a specific condition is met. For example, program
+ * The Condition class is used for testing if a specific condition is met. For example, program
  * execution can be blocked by using the {@link IBot#waitFor(Condition)} method, which will wait
  * until a condition is met. A condition can also used to trigger a custom event by adding a custom
  * event handler using the method {@link IBaseBot#addCustomEvent(Condition)} that will trigger

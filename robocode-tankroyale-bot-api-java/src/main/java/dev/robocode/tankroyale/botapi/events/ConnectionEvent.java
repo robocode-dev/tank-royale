@@ -2,9 +2,7 @@ package dev.robocode.tankroyale.botapi.events;
 
 import java.net.URI;
 
-/**
- * Base class of all connection events.
- */
+/** Base class of all connection events. */
 abstract class ConnectionEvent implements IEvent {
 
     /** URI of the server. */
