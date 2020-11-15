@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class EventQueue {
+final class EventQueue {
 
   private final int MAX_EVENT_AGE = 2; // turns
 

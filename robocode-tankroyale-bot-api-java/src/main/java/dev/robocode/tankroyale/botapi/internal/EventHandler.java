@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /** Event handler which events in the order they have been added to the handler. */
-class EventHandler<T> {
+final class EventHandler<T> {
     private final List<EntryWithPriority> subscriberEntries = Collections.synchronizedList(new ArrayList<>());
 
     final void subscribe(Consumer<T> subscriber, int priority) {

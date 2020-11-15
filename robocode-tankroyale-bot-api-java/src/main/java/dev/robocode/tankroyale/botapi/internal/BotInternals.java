@@ -1,22 +1,12 @@
 package dev.robocode.tankroyale.botapi.internal;
 
 import dev.robocode.tankroyale.botapi.Bot;
-import dev.robocode.tankroyale.botapi.IBot;
 import dev.robocode.tankroyale.botapi.events.*;
-
-import static java.lang.Math.max;
-import static java.lang.Math.min;
 
 public final class BotInternals {
 
-  private final double absDeceleration = Math.abs(IBot.DECELERATION);
-
+  private final BaseBotInternals baseBotInternals;
   private final Bot bot;
-
-  private double maxSpeed = IBot.MAX_SPEED;
-  private double maxTurnRate = IBot.MAX_TURN_RATE;
-  private double maxGunTurnRate = IBot.MAX_GUN_TURN_RATE;
-  private double maxRadarTurnRate = IBot.MAX_RADAR_TURN_RATE;
 
   private double distanceRemaining;
   private double turnRemaining;
@@ -38,8 +28,11 @@ public final class BotInternals {
   private double savedGunTurnRemaining;
   private double savedRadarTurnRemaining;
 
-  public BotInternals(Bot bot, BotEventHandlers botEventHandlers) {
+  public BotInternals(Bot bot, BaseBotInternals baseBotInternals) {
     this.bot = bot;
+    this.baseBotInternals = baseBotInternals;
+
+    BotEventHandlers botEventHandlers = baseBotInternals.getBotEventHandlers();
 
     botEventHandlers.onProcessTurn.subscribe(this::onProcessTurn, 100);
     botEventHandlers.onDisconnected.subscribe(this::onDisconnected, 100);
@@ -87,22 +80,13 @@ public final class BotInternals {
       throw new IllegalArgumentException("distance cannot be NaN");
     }
     distanceRemaining = distance;
-    double speed = getNewSpeed(bot.getSpeed(), distance);
+    double speed = baseBotInternals.getNewSpeed(bot.getSpeed(), distance);
     bot.setTargetSpeed(speed);
   }
 
   public void forward(double distance) {
     setForward(distance);
     awaitMovementComplete();
-  }
-
-  public void setMaxSpeed(double maxSpeed) {
-    if (maxSpeed < 0) {
-      maxSpeed = 0;
-    } else if (maxSpeed > IBot.MAX_SPEED) {
-      maxSpeed = IBot.MAX_SPEED;
-    }
-    this.maxSpeed = maxSpeed;
   }
 
   public void setTurnLeft(double degrees) {
@@ -119,15 +103,6 @@ public final class BotInternals {
     setTurnLeft(0);
   }
 
-  public void setMaxTurnRate(double maxTurnRate) {
-    if (maxTurnRate < 0) {
-      maxTurnRate = 0;
-    } else if (maxTurnRate > IBot.MAX_TURN_RATE) {
-      maxTurnRate = IBot.MAX_TURN_RATE;
-    }
-    this.maxTurnRate = maxTurnRate;
-  }
-
   public void setTurnGunLeft(double degrees) {
     if (Double.isNaN(degrees)) {
       throw new IllegalArgumentException("degrees cannot be NaN");
@@ -142,15 +117,6 @@ public final class BotInternals {
     setTurnGunLeft(0);
   }
 
-  public void setMaxGunTurnRate(double maxGunTurnRate) {
-    if (maxGunTurnRate < 0) {
-      maxGunTurnRate = 0;
-    } else if (maxGunTurnRate > IBot.MAX_GUN_TURN_RATE) {
-      maxGunTurnRate = IBot.MAX_GUN_TURN_RATE;
-    }
-    this.maxGunTurnRate = maxGunTurnRate;
-  }
-
   public void setTurnRadarLeft(double degrees) {
     if (Double.isNaN(degrees)) {
       throw new IllegalArgumentException("degrees cannot be NaN");
@@ -163,15 +129,6 @@ public final class BotInternals {
     setTurnRadarLeft(degrees);
     awaitRadarTurnComplete();
     setTurnRadarLeft(0);
-  }
-
-  public void setMaxRadarTurnRate(double maxRadarTurnRate) {
-    if (maxRadarTurnRate < 0) {
-      maxRadarTurnRate = 0;
-    } else if (maxRadarTurnRate > IBot.MAX_RADAR_TURN_RATE) {
-      maxRadarTurnRate = IBot.MAX_RADAR_TURN_RATE;
-    }
-    this.maxRadarTurnRate = maxRadarTurnRate;
   }
 
   public void fire(double firepower) {
@@ -281,7 +238,7 @@ public final class BotInternals {
   // This is Nat Pavasant's method described here:
   // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
   private void updateMovement() {
-    if (isCollidingWithWall/* || isCollidingWithBot*/) { // TODO: add check for collision with bot?
+    if (isCollidingWithWall) { // TODO: add check for collision with bot?
       return;
     }
 
@@ -289,7 +246,7 @@ public final class BotInternals {
     if (Double.isNaN(distance)) {
       distance = 0;
     }
-    double speed = getNewSpeed(bot.getSpeed(), distance);
+    double speed = baseBotInternals.getNewSpeed(bot.getSpeed(), distance);
     bot.setTargetSpeed(speed);
 
     // If we are over-driving our distance and we are now at velocity=0 then we stopped
@@ -302,76 +259,10 @@ public final class BotInternals {
     // If we are moving normally and the breaking distance is more than remaining distance, enable
     // the overdrive flag
     if (Math.signum(distance * speed) != -1) {
-      isOverDriving = getDistanceTraveledUntilStop(speed) > Math.abs(distance);
+      isOverDriving = baseBotInternals.getDistanceTraveledUntilStop(speed) > Math.abs(distance);
     }
 
     distanceRemaining = distance - speed;
-  }
-
-  /**
-   * Returns the new speed based on the current speed and distance to move.
-   *
-   * @param speed is the current speed
-   * @param distance is the distance to move
-   * @return The new speed
-   */
-  // Credits for this algorithm goes to Patrick Cupka (aka Voidious),
-  // Julian Kent (aka Skilgannon), and Positive:
-  // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
-  private double getNewSpeed(double speed, double distance) {
-
-    if (distance < 0) {
-      // If the distance is negative, then change it to be positive and change the sign of the
-      // input velocity and the result
-      return -getNewSpeed(-speed, -distance);
-    }
-
-    final double targetSpeed;
-    if (distance == Double.POSITIVE_INFINITY) {
-      targetSpeed = maxSpeed;
-    } else {
-      targetSpeed = min(getMaxSpeed(distance), maxSpeed);
-    }
-
-    if (speed >= 0) {
-      return max(speed - absDeceleration, min(targetSpeed, speed + IBot.ACCELERATION));
-    } // else
-    return max(speed - IBot.ACCELERATION, min(targetSpeed, speed + getMaxDeceleration(-speed)));
-  }
-
-  private double getMaxSpeed(double distance) {
-    double decelTime =
-        max(
-            1,
-            Math.ceil( // sum of 0... decelTime, solving for decelTime using quadratic formula
-                (Math.sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
-
-    if (decelTime == Double.POSITIVE_INFINITY) {
-      return IBot.MAX_SPEED;
-    }
-
-    double decelDist =
-        (decelTime / 2)
-            * (decelTime - 1) // sum of 0..(decelTime-1)
-            * absDeceleration;
-
-    return ((decelTime - 1) * absDeceleration) + ((distance - decelDist) / decelTime);
-  }
-
-  private double getMaxDeceleration(double speed) {
-    double decelTime = speed / absDeceleration;
-    double accelTime = (1 - decelTime);
-
-    return min(1, decelTime) * absDeceleration + max(0, accelTime) * IBot.ACCELERATION;
-  }
-
-  private double getDistanceTraveledUntilStop(double speed) {
-    speed = Math.abs(speed);
-    double distance = 0;
-    while (speed > 0) {
-      distance += (speed = getNewSpeed(speed, 0));
-    }
-    return distance;
   }
 
   public void stop() {

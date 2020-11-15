@@ -384,6 +384,30 @@ public interface IBaseBot {
   double getTurnRate();
 
   /**
+   * Sets the maximum turn rate which applies to turn the bot to the left or right. The maximum turn
+   * rate must be an absolute value from 0 to {@link #MAX_TURN_RATE}, both values are included. If
+   * the input turn rate is negative, the max turn rate will be cut to zero. If the input turn rate
+   * is above {@link #MAX_TURN_RATE}, the max turn rate will be set to {@link #MAX_TURN_RATE}.
+   *
+   * <p>If for example the max turn rate is set to 5, then the bot will be able to turn left or
+   * right with a turn rate down to -5 degrees per turn when turning right, and up to 5 degrees per
+   * turn when turning left.
+   *
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods after execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
+   *
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
+   *
+   * @param maxTurnRate is the new maximum turn rate
+   * @see #setTurnRate(double)
+   */
+  void setMaxTurnRate(double maxTurnRate);
+
+  /**
    * Sets the turn rate of the gun, which can be positive and negative. The gun turn rate is
    * measured in degrees per turn. The turn rate is added to the current turn direction of the gun.
    * But it is also added to the current direction of the radar. This is because the radar is
@@ -407,6 +431,31 @@ public interface IBaseBot {
    * @see #setGunTurnRate(double)
    */
   double getGunTurnRate();
+
+  /**
+   * Sets the maximum turn rate which applies to turn the gun to the left or right. The maximum turn
+   * rate must be an absolute value from 0 to {@link #MAX_GUN_TURN_RATE}, both values are included.
+   * If the input turn rate is negative, the max turn rate will be cut to zero. If the input turn
+   * rate is above {@link #MAX_GUN_TURN_RATE}, the max turn rate will be set to {@link
+   * #MAX_GUN_TURN_RATE}.
+   *
+   * <p>If for example the max gun turn rate is set to 5, then the gun will be able to turn left or
+   * right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees per
+   * turn when turning left.
+   *
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods after execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
+   *
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
+   *
+   * @param maxGunTurnRate is the new maximum gun turn rate
+   * @see #setGunTurnRate(double)
+   */
+  void setMaxGunTurnRate(double maxGunTurnRate);
 
   /**
    * Sets the turn rate of the radar, which can be positive and negative. The radar turn rate is
@@ -435,6 +484,31 @@ public interface IBaseBot {
   double getRadarTurnRate();
 
   /**
+   * Sets the maximum turn rate which applies to turn the radar to the left or right. The maximum
+   * turn rate must be an absolute value from 0 to {@link #MAX_RADAR_TURN_RATE}, both values are
+   * included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
+   * input turn rate is above {@link #MAX_RADAR_TURN_RATE}, the max turn rate will be set to {@link
+   * #MAX_RADAR_TURN_RATE}.
+   *
+   * <p>If for example the max radar turn rate is set to 5, then the radar will be able to turn left
+   * or right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees
+   * per turn when turning left.
+   *
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods after execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
+   *
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
+   *
+   * @param maxRadarTurnRate is the new maximum radar turn rate
+   * @see #setRadarTurnRate(double)
+   */
+  void setMaxRadarTurnRate(double maxRadarTurnRate);
+
+  /**
    * Sets the new target speed for the bot in units per turn. The target speed is the speed you want
    * to achieve eventually, which could take one to several turns depending on the current speed.
    * For example, if the bot is moving forward with max speed, and then must change to move backward
@@ -460,6 +534,28 @@ public interface IBaseBot {
    * @see #setTargetSpeed(double)
    */
   double getTargetSpeed();
+
+  /**
+   * Sets the maximum speed which applies when moving forward and backward. The maximum speed must
+   * be an absolute value from 0 to {@link #MAX_SPEED}, both values are included. If the input speed
+   * is negative, the max speed will be cut to zero. If the input speed is above {@link #MAX_SPEED},
+   * the max speed will be set to {@link #MAX_SPEED}.
+   *
+   * <p>If for example the maximum speed is set to 5, then the bot will be able to move backwards
+   * with a speed down to -5 units per turn and up to 5 units per turn when moving forward.
+   *
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods after execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
+   *
+   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+   * counts.
+   *
+   * @param maxSpeed is the new maximum speed
+   */
+  void setMaxSpeed(double maxSpeed);
 
   /**
    * Sets the gun to fire in the direction that the gun is pointing with the specified firepower.

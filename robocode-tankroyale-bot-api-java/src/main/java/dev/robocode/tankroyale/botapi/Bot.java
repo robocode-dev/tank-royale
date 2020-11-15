@@ -11,8 +11,7 @@ import java.net.URI;
  */
 public abstract class Bot extends BaseBot implements IBot {
 
-  private final BotInternals __botInternals =
-      new BotInternals(this, super.__baseBotInternals.getBotEventHandlers());
+  private final BotInternals __botInternals = new BotInternals(this, super.__baseBotInternals);
 
   /**
    * Constructor for initializing a new instance of the BaseBot class, which should be used when
@@ -96,12 +95,6 @@ public abstract class Bot extends BaseBot implements IBot {
 
   /** {@inheritDoc} */
   @Override
-  public final void setMaxSpeed(double maxSpeed) {
-    __botInternals.setMaxSpeed(maxSpeed);
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final void setTurnLeft(double degrees) {
     __botInternals.setTurnLeft(degrees);
   }
@@ -128,12 +121,6 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final double getTurnRemaining() {
     return __botInternals.getTurnRemaining();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void setMaxTurnRate(double maxTurnRate) {
-    __botInternals.setMaxTurnRate(maxTurnRate);
   }
 
   /** {@inheritDoc} */
@@ -168,12 +155,6 @@ public abstract class Bot extends BaseBot implements IBot {
 
   /** {@inheritDoc} */
   @Override
-  public final void setMaxGunTurnRate(double maxGunTurnRate) {
-    __botInternals.setMaxGunTurnRate(maxGunTurnRate);
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final void setTurnRadarLeft(double degrees) {
     __botInternals.setTurnRadarLeft(degrees);
   }
@@ -200,12 +181,6 @@ public abstract class Bot extends BaseBot implements IBot {
   @Override
   public final double getRadarTurnRemaining() {
     return __botInternals.getRadarTurnRemaining();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void setMaxRadarTurnRate(double maxRadarTurnRate) {
-    __botInternals.setMaxRadarTurnRate(maxRadarTurnRate);
   }
 
   /** {@inheritDoc} */
