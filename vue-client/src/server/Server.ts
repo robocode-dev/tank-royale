@@ -251,7 +251,7 @@ export class Server {
       JSON.stringify({
         type: MessageType.ControllerHandshake,
         clientKey: Server._clientKey,
-        name: "Robocode 2 Web UI",
+        name: "Robocode Tank Royale Web UI",
         version: "0.1.0",
         author: "Flemming N. Larsen <fnl@users.sourceforge.net>",
       }),
