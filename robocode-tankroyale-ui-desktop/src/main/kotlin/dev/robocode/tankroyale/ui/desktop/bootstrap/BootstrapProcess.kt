@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings
 import dev.robocode.tankroyale.ui.desktop.settings.MiscSettings.BOT_DIRS_SEPARATOR
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.util.ResourceUtil
-import kotlinx.serialization.parseList
+import kotlinx.serialization.decodeFromString
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -35,7 +35,7 @@ object BootstrapProcess {
         val process = builder.start()
         readErrorToStdError(process)
         val entries = readInputLines(process).joinToString()
-        return json.parseList(entries)
+        return json.decodeFromString(entries)
     }
 
     fun run(entries: List<String>) {

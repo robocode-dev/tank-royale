@@ -10,12 +10,12 @@ plugins {
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.6.2'
+version = '0.6.3'
 description = 'UI Desktop application for running Robocode Tank Royale'
 
 ext {
     server_version = '0.6.31'
-    bootstrap_version = '0.6.8'
+    bootstrap_version = '0.6.9'
 }
 
 repositories {
@@ -39,9 +39,12 @@ compileTestKotlin {
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.4.10'
     implementation 'org.jetbrains.kotlin:kotlin-reflect:1.4.10'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0-RC2'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0-RC2'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0'
+
     implementation 'org.java-websocket:Java-WebSocket:1.5.1'
+
     implementation 'com.miglayout:miglayout-swing:5.2'
 
     runtime ("dev.robocode.tankroyale:robocode-tankroyale-server:${server_version}") {
