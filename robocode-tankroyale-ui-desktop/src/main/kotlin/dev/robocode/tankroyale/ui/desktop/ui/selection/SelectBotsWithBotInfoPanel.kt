@@ -1,13 +1,9 @@
 package dev.robocode.tankroyale.ui.desktop.ui.selection
 
 import dev.robocode.tankroyale.ui.desktop.ui.extensions.JListExt.onSelection
-import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import javax.swing.JPanel
 
-@UnstableDefault
-@ImplicitReflectionSerializer
 class SelectBotsWithBotInfoPanel : JPanel(MigLayout("fill")) {
 
     private val selectBotsPanel = SelectBotsPanel()

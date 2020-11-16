@@ -12,8 +12,6 @@ import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.MESSAGES
 import dev.robocode.tankroyale.ui.desktop.ui.selection.GameTypeComboBox
 import dev.robocode.tankroyale.ui.desktop.ui.components.JLimitedTextField
 import dev.robocode.tankroyale.ui.desktop.util.Event
-import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.EventQueue
@@ -22,8 +20,6 @@ import javax.swing.JDialog
 import javax.swing.JPanel
 import javax.swing.UIManager
 
-@UnstableDefault
-@ImplicitReflectionSerializer
 object StartServerDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("start_server_dialog")) {
 
     init {
@@ -37,8 +33,6 @@ object StartServerDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("st
     }
 }
 
-@UnstableDefault
-@ImplicitReflectionSerializer
 private object StartServerPanel : JPanel(MigLayout("fill")) {
 
     // Private events
@@ -91,8 +85,6 @@ private object StartServerPanel : JPanel(MigLayout("fill")) {
     }
 }
 
-@UnstableDefault
-@ImplicitReflectionSerializer
 private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 

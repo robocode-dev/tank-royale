@@ -7,16 +7,12 @@ import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.MainWindow
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.util.Event
-import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.EventQueue
 import java.io.Closeable
 import javax.swing.*
 
-@UnstableDefault
-@ImplicitReflectionSerializer
 object SelectServerDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("select_server_dialog")) {
 
     init {
@@ -30,7 +26,6 @@ object SelectServerDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("s
     }
 }
 
-@ImplicitReflectionSerializer
 private object SelectServerPanel : JPanel(MigLayout("fill")) {
 
     // Private events
@@ -158,7 +153,6 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     }
 }
 
-@ImplicitReflectionSerializer
 private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 

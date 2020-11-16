@@ -13,6 +13,7 @@ object ResourceUtil {
 
     fun getResourceFile(resourceName: String): File? {
         var file: File? = null
+        val lal = javaClass.classLoader.getResource(".");
         val resource = javaClass.classLoader.getResource(resourceName)
             ?: throw FileNotFoundException("Could not find resource file: $resourceName")
         if (resource.toString().startsWith("jar:")) {

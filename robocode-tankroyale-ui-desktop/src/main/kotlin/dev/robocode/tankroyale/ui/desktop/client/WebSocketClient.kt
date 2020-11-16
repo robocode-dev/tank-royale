@@ -17,7 +17,7 @@ class WebSocketClient(private val uri: URI) : AutoCloseable {
 
     private var client = Client()
 
-    private val json = MessageConstants.Json
+    private val json = MessageConstants.json
 
     fun open() {
         client.connect()
@@ -30,7 +30,7 @@ class WebSocketClient(private val uri: URI) : AutoCloseable {
     fun isOpen() = client.isOpen
 
     fun send(data: Any) {
-        val msg = json.stringify(PolymorphicSerializer(Message::class), data as Message)
+        val msg = json.encodeToString(PolymorphicSerializer(Message::class), data as Message)
         client.send(msg)
     }
 

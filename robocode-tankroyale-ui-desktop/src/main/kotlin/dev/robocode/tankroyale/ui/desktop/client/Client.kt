@@ -52,7 +52,7 @@ object Client : AutoCloseable {
 
     private var websocket: WebSocketClient = WebSocketClient(URI(ServerSettings.defaultUrl))
 
-    private val json = MessageConstants.Json
+    private val json = MessageConstants.json
 
     private var gameTypes: Set<String> = HashSet()
 
@@ -118,7 +118,7 @@ object Client : AutoCloseable {
     }
 
     private fun onMessage(msg: String) {
-        when (val type = json.parse(PolymorphicSerializer(Message::class), msg)) {
+        when (val type = json.decodeFromString(PolymorphicSerializer(Message::class), msg)) {
             is TickEvent -> handleTickEvent(type)
             is ServerHandshake -> handleServerHandshake(type)
             is BotListUpdate -> handleBotListUpdate(type)

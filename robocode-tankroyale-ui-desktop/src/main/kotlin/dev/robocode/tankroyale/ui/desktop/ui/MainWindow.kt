@@ -12,17 +12,12 @@ import dev.robocode.tankroyale.ui.desktop.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.ui.desktop.ui.server.PrepareServerCommand
 import dev.robocode.tankroyale.ui.desktop.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.ui.desktop.ui.server.ServerLogWindow
-import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.UnstableDefault
 import java.awt.EventQueue
 import java.io.Closeable
 import javax.swing.ImageIcon
 import javax.swing.JFrame
 import javax.swing.UIManager
 
-
-@UnstableDefault
-@ImplicitReflectionSerializer
 object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCloseable {
 
     init {
@@ -93,8 +88,6 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
     }
 }
 
-@UnstableDefault
-@ImplicitReflectionSerializer
 private fun main() {
     Runtime.getRuntime().addShutdownHook(Thread {
         MainWindow.close()

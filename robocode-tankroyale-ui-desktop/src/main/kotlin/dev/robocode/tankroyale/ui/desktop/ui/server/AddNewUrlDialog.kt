@@ -7,7 +7,6 @@ import dev.robocode.tankroyale.ui.desktop.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.ui.server.AddNewUrlDialog.onComplete
 import dev.robocode.tankroyale.ui.desktop.util.Event
-import kotlinx.serialization.ImplicitReflectionSerializer
 import net.miginfocom.swing.MigLayout
 import java.awt.Color
 import java.awt.Dimension
@@ -16,7 +15,6 @@ import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
-@ImplicitReflectionSerializer
 object AddNewUrlDialog : JDialog(SelectServerDialog, ResourceBundles.UI_TITLES.get("add_new_url_dialog")) {
 
     val onComplete = Event<JButton>()
@@ -43,7 +41,6 @@ object AddNewUrlDialog : JDialog(SelectServerDialog, ResourceBundles.UI_TITLES.g
     }
 }
 
-@ImplicitReflectionSerializer
 private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
 
     // Private events
@@ -97,7 +94,6 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
     }
 }
 
-@ImplicitReflectionSerializer
 private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
