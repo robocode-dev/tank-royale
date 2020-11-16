@@ -93,49 +93,9 @@ final class EventQueue {
     // Publish all event in the order of the keys, i.e. event priority order
     Iterator<BotEvent> iterator = eventMap.values().iterator();
     while (iterator.hasNext()) {
-      BotEvent event = iterator.next();
+      BotEvent botEvent = iterator.next();
       iterator.remove();
-      dispatch(baseBot, event);
-    }
-  }
-
-  private void dispatch(IBaseBot baseBot, BotEvent event) {
-    if (event instanceof TickEvent) {
-      botEventHandlers.onTick.publish((TickEvent) event);
-    } else if (event instanceof ScannedBotEvent) {
-      botEventHandlers.onScannedBot.publish((ScannedBotEvent) event);
-    } else if (event instanceof SkippedTurnEvent) {
-      botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) event);
-    } else if (event instanceof HitBotEvent) {
-      botEventHandlers.onHitBot.publish((HitBotEvent) event);
-    } else if (event instanceof HitWallEvent) {
-      botEventHandlers.onHitWall.publish((HitWallEvent) event);
-    } else if (event instanceof BulletFiredEvent) {
-      botEventHandlers.onBulletFired.publish((BulletFiredEvent) event);
-    } else if (event instanceof BulletHitWallEvent) {
-      botEventHandlers.onBulletHitWall.publish((BulletHitWallEvent) event);
-    } else if (event instanceof BulletHitBotEvent) {
-      BulletHitBotEvent bulletEvent = (BulletHitBotEvent) event;
-      if (bulletEvent.getVictimId() == baseBot.getMyId()) {
-        botEventHandlers.onHitByBullet.publish((BulletHitBotEvent) event);
-      } else {
-        botEventHandlers.onBulletHit.publish((BulletHitBotEvent) event);
-      }
-    } else if (event instanceof DeathEvent) {
-      DeathEvent deathEvent = (DeathEvent) event;
-      if (deathEvent.getVictimId() == baseBot.getMyId()) {
-        botEventHandlers.onDeath.publish((DeathEvent) event);
-      } else {
-        botEventHandlers.onBotDeath.publish((DeathEvent) event);
-      }
-    } else if (event instanceof BulletHitBulletEvent) {
-      botEventHandlers.onBulletHitBullet.publish((BulletHitBulletEvent) event);
-    } else if (event instanceof WonRoundEvent) {
-      botEventHandlers.onWonRound.publish((WonRoundEvent) event);
-    } else if (event instanceof CustomEvent) {
-      botEventHandlers.onCustomEvent.publish((CustomEvent) event);
-    } else {
-      throw new IllegalStateException("Unhandled event type: " + event);
+      botEventHandlers.fire(botEvent);
     }
   }
 }

@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.botapi.events;
 
-/** Default event priorities. */
+/** Effective event priorities. */
 public final class EventPriority {
     public static int onWonRound = DefaultEventPriority.ON_WON_ROUND;
     public static int onSkippedTurn = DefaultEventPriority.ON_SKIPPED_TURN;

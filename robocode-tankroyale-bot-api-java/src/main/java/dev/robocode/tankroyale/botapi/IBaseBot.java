@@ -705,6 +705,7 @@ public interface IBaseBot {
    *
    * @param condition is the condition that was previously added with {@link
    *     #addCustomEvent(Condition)}
+   * @see #addCustomEvent(Condition)
    */
   void removeCustomEvent(Condition condition);
 

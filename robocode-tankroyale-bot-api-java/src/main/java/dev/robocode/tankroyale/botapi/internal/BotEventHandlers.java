@@ -5,6 +5,8 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 final class BotEventHandlers {
 
+  final IBaseBot baseBot;
+
   final EventHandler<TickEvent> onProcessTurn = new EventHandler<>();
   final EventHandler<TickEvent> onNewRound = new EventHandler<>();
 
@@ -30,6 +32,8 @@ final class BotEventHandlers {
   final EventHandler<CustomEvent> onCustomEvent = new EventHandler<>();
 
   BotEventHandlers(IBaseBot baseBot) {
+    this.baseBot = baseBot;
+
     onConnected.subscribe(baseBot::onConnected);
     onDisconnected.subscribe(baseBot::onDisconnected);
     onConnectionError.subscribe(baseBot::onConnectionError);
@@ -49,5 +53,45 @@ final class BotEventHandlers {
     onScannedBot.subscribe(baseBot::onScannedBot);
     onWonRound.subscribe(baseBot::onWonRound);
     onCustomEvent.subscribe(baseBot::onCustomEvent);
+  }
+
+  void fire(BotEvent event) {
+    if (event instanceof TickEvent) {
+      onTick.publish((TickEvent) event);
+    } else if (event instanceof ScannedBotEvent) {
+      onScannedBot.publish((ScannedBotEvent) event);
+    } else if (event instanceof SkippedTurnEvent) {
+      onSkippedTurn.publish((SkippedTurnEvent) event);
+    } else if (event instanceof HitBotEvent) {
+      onHitBot.publish((HitBotEvent) event);
+    } else if (event instanceof HitWallEvent) {
+      onHitWall.publish((HitWallEvent) event);
+    } else if (event instanceof BulletFiredEvent) {
+      onBulletFired.publish((BulletFiredEvent) event);
+    } else if (event instanceof BulletHitWallEvent) {
+      onBulletHitWall.publish((BulletHitWallEvent) event);
+    } else if (event instanceof BulletHitBotEvent) {
+      BulletHitBotEvent bulletEvent = (BulletHitBotEvent) event;
+      if (bulletEvent.getVictimId() == baseBot.getMyId()) {
+        onHitByBullet.publish((BulletHitBotEvent) event);
+      } else {
+        onBulletHit.publish((BulletHitBotEvent) event);
+      }
+    } else if (event instanceof DeathEvent) {
+      DeathEvent deathEvent = (DeathEvent) event;
+      if (deathEvent.getVictimId() == baseBot.getMyId()) {
+        onDeath.publish((DeathEvent) event);
+      } else {
+        onBotDeath.publish((DeathEvent) event);
+      }
+    } else if (event instanceof BulletHitBulletEvent) {
+      onBulletHitBullet.publish((BulletHitBulletEvent) event);
+    } else if (event instanceof WonRoundEvent) {
+      onWonRound.publish((WonRoundEvent) event);
+    } else if (event instanceof CustomEvent) {
+      onCustomEvent.publish((CustomEvent) event);
+    } else {
+      throw new IllegalStateException("Unhandled event type: " + event);
+    }
   }
 }
