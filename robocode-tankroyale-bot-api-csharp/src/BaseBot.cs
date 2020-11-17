@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Robocode.TankRoyale.BotApi.Events;
+using Robocode.TankRoyale.BotApi.Internal;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -9,7 +10,7 @@ namespace Robocode.TankRoyale.BotApi
   /// notifications through the event handlers. Most bots can inherit from this class to get access
   /// to basic methods.
   /// </summary>
-  public partial class BaseBot : IBaseBot
+  public class BaseBot : IBaseBot
   {
     internal readonly BaseBotInternals __baseBotInternals;
 
@@ -61,26 +62,25 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void Start()
     {
-      __baseBotInternals.Connect();
-      __baseBotInternals.exitEvent.WaitOne();
+      __baseBotInternals.Start();
     }
 
     /// <inheritdoc/>
     public void Go()
     {
-      __baseBotInternals.SendIntent();
+      __baseBotInternals.Execute();
     }
 
     /// <inheritdoc/>
-    public String Variant
+    public string Variant
     {
-      get => __baseBotInternals.ServerHandshake.Variant;
+      get => __baseBotInternals.Variant;
     }
 
     /// <inheritdoc/>
-    public String Version
+    public string Version
     {
-      get => __baseBotInternals.ServerHandshake.Version;
+      get => __baseBotInternals.Version;
     }
 
     /// <inheritdoc/>
@@ -90,7 +90,7 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public String GameType
+    public string GameType
     {
       get => __baseBotInternals.GameSetup.GameType;
     }
@@ -134,11 +134,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public int TimeLeft
     {
-      get
-      {
-        long passesMicroSeconds = (DateTime.Now.Ticks - __baseBotInternals.TicksStart) / 10;
-        return (int)(__baseBotInternals.GameSetup.TurnTimeout - passesMicroSeconds);
-      }
+      get => __baseBotInternals.TimeLeft;
     }
 
     /// <inheritdoc/>
@@ -242,15 +238,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void SetMaxTurnRate(double maxTurnRate)
     {
-      if (maxTurnRate < 0)
-      {
-        maxTurnRate = 0;
-      }
-      else if (maxTurnRate > ((IBot)this).MaxTurnRate)
-      {
-        maxTurnRate = ((IBot)this).MaxTurnRate;
-      }
-      __baseBotInternals.maxTurnRate = maxTurnRate;
+      __baseBotInternals.SetMaxTurnRate(maxTurnRate);
     }
 
     /// <inheritdoc/>
@@ -270,15 +258,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void SetMaxGunTurnRate(double maxGunTurnRate)
     {
-      if (maxGunTurnRate < 0)
-      {
-        maxGunTurnRate = 0;
-      }
-      else if (maxGunTurnRate > ((IBot)this).MaxGunTurnRate)
-      {
-        maxGunTurnRate = ((IBot)this).MaxGunTurnRate;
-      }
-      __botInternals.maxGunTurnRate = maxGunTurnRate;
+      __baseBotInternals.SetMaxGunTurnRate(maxGunTurnRate);
     }
 
     /// <inheritdoc/>
@@ -298,15 +278,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void SetMaxRadarTurnRate(double maxRadarTurnRate)
     {
-      if (maxRadarTurnRate < 0)
-      {
-        maxRadarTurnRate = 0;
-      }
-      else if (maxRadarTurnRate > ((IBot)this).MaxRadarTurnRate)
-      {
-        maxRadarTurnRate = ((IBot)this).MaxRadarTurnRate;
-      }
-      __botInternals.maxRadarTurnRate = maxRadarTurnRate;
+      __baseBotInternals.SetMaxRadarTurnRate(maxRadarTurnRate);
     }
 
     /// <inheritdoc/>
@@ -326,36 +298,19 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void SetMaxSpeed(double maxSpeed)
     {
-      if (maxSpeed < 0)
-      {
-        maxSpeed = 0;
-      }
-      else if (maxSpeed > ((IBot)this).MaxSpeed)
-      {
-        maxSpeed = ((IBot)this).MaxSpeed;
-      }
-      __botInternals.maxSpeed = maxSpeed;
+      __baseBotInternals.SetMaxSpeed(maxSpeed);
     }
 
     /// <inheritdoc/>
     public bool SetFire(double firepower)
     {
-      if (Double.IsNaN(firepower))
-      {
-        throw new ArgumentException("Firepower cannot be NaN");
-      }
-      if (GunHeat > 0)
-      {
-        return false; // cannot fire yet
-      }
-      __baseBotInternals.BotIntent.Firepower = firepower;
-      return true;
+      return __baseBotInternals.SetFire(firepower);
     }
 
     /// <inheritdoc/>
-    public void SetScan(bool doScan)
+    public void SetScan(bool rescan)
     {
-      __baseBotInternals.botIntent.Scan = doScan;
+      __baseBotInternals.BotIntent.Scan = rescan;
     }
 
     /// <inheritdoc/>
@@ -370,6 +325,18 @@ namespace Robocode.TankRoyale.BotApi
     {
       set => __baseBotInternals.BotIntent.AdjustRadarForGunTurn = value;
       get => __baseBotInternals.BotIntent.AdjustRadarForGunTurn ?? false;
+    }
+
+    /// <inheritdoc/>
+    public void AddCustomEvent(Condition condition)
+    {
+      __baseBotInternals.AddCondition(condition);
+    }
+
+    /// <inheritdoc/>
+    public void RemoveCustomEvent(Condition condition)
+    {
+      __baseBotInternals.RemoveCondition(condition);
     }
 
     /// <inheritdoc/>

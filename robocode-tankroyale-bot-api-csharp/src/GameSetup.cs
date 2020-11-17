@@ -1,8 +1,10 @@
-namespace Robocode.TankRoyale.BotApi {
+namespace Robocode.TankRoyale.BotApi
+{
   /// <summary>
   /// Game setup retrieved when game is started.
   /// </summary>
-  public sealed class GameSetup {
+  public sealed class GameSetup
+  {
     /// <summary>
     /// Game type, e.g. "melee".
     /// </summary>
@@ -44,8 +46,9 @@ namespace Robocode.TankRoyale.BotApi {
     /// </summary>
     public int ReadyTimeout { get; }
 
-    public GameSetup (string gameType, int arenaWidth, int arenaHeight, int numberOfRounds,
-      double gunCoolingRate, int? maxInactivityTurns, int turnTimeout, int readyTimeout) {
+    public GameSetup(string gameType, int arenaWidth, int arenaHeight, int numberOfRounds,
+      double gunCoolingRate, int? maxInactivityTurns, int turnTimeout, int readyTimeout)
+    {
       GameType = gameType;
       ArenaWidth = ArenaWidth;
       ArenaHeight = arenaHeight;

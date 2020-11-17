@@ -3,7 +3,7 @@ using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi.Internal
 {
-  internal class BotEventHandlers
+  internal sealed class BotEventHandlers
   {
     readonly IBaseBot baseBot;
 

@@ -8,7 +8,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 {
   public partial class Bot
   {
-    internal class BotInternals
+    internal sealed class BotInternals
     {
       private readonly IBot bot;
       private readonly BotEventHandlers botEventHandlers;

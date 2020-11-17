@@ -3,13 +3,13 @@ namespace Robocode.TankRoyale.BotApi.Events
   /// <summary>
   /// Effective event priorities. The lower value, the higher priority.
   /// </summary>
-  public class EventPriority
+  public sealed class EventPriority
   {
     public const int OnWonRound = DefaultEventPriority.OnWonRound;
     public const int OnSkippedTurn = DefaultEventPriority.OnSkippedTurn;
     public const int OnTick = DefaultEventPriority.OnTick;
     public const int OnCondition = DefaultEventPriority.OnCondition;
-    //  public const int OnTeamMessage = DefaultEventPriority.OnTeamMessage; // Reserved for future
+    // public const int OnTeamMessage = DefaultEventPriority.OnTeamMessage; // Reserved for future
     public const int OnBotDeath = DefaultEventPriority.OnBotDeath;
     public const int OnBulletFired = DefaultEventPriority.OnBulletFired;
     public const int OnBulletHitWall = DefaultEventPriority.OnBulletHitWall;

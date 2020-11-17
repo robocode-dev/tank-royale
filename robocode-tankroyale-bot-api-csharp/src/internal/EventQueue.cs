@@ -4,17 +4,16 @@ using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi.Internal
 {
-  internal class EventQueue
+  internal sealed class EventQueue
   {
-
     private const int MaxEventAge = 2; // turns
 
-    private readonly BaseBot.BaseBotInternals baseBotInternals;
+    private readonly BaseBotInternals baseBotInternals;
     private readonly BotEventHandlers botEventHandlers;
 
     private readonly ConcurrentDictionary<int, BotEvent> events = new ConcurrentDictionary<int, BotEvent>();
 
-    internal EventQueue(BaseBot.BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers)
+    internal EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers)
     {
       this.baseBotInternals = baseBotInternals;
       this.botEventHandlers = botEventHandlers;

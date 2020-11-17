@@ -3,7 +3,7 @@ namespace Robocode.TankRoyale.BotApi.Events
   /// <summary>
   /// Default event priorities. The lower value, the higher priority.
   /// </summary>
-  public class DefaultEventPriority
+  public sealed class DefaultEventPriority
   {
     public const int OnWonRound = 10;
     public const int OnSkippedTurn = 20;

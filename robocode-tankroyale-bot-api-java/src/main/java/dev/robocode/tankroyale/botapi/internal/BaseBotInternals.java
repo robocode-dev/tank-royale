@@ -126,7 +126,7 @@ public final class BaseBotInternals {
     return conditions;
   }
 
-  public void connect() {
+  public void start() {
     if (!socket.isOpen()) {
       try {
         socket.connect();

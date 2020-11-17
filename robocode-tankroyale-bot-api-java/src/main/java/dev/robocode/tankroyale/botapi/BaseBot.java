@@ -63,7 +63,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final void start() {
-    __baseBotInternals.connect();
+    __baseBotInternals.start();
   }
 
   /** {@inheritDoc} */
