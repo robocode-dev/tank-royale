@@ -384,13 +384,13 @@ namespace Robocode.TankRoyale.BotApi.Internal
       Await(() => bot.TurnNumber > turnNumber);
     }
 
-    private void Await(Condition condition)
+    internal void Await(Test test)
     {
       lock (nextTurnLock)
       {
         try
         {
-          while (isRunning && !condition.Invoke())
+          while (isRunning && !test.Invoke())
           {
             bot.Go();
             Monitor.Wait(nextTurnLock); // Wait for next turn
@@ -402,7 +402,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         }
       }
     }
-  }
 
-  internal delegate bool Condition();
+    internal delegate bool Test();
+  }
 }

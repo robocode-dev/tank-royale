@@ -10,7 +10,7 @@ namespace Robocode.TankRoyale.BotApi
   /// notifications through the event handlers. Most bots can inherit from this class to get access
   /// to basic methods.
   /// </summary>
-  public class BaseBot : IBaseBot
+  public abstract class BaseBot : IBaseBot
   {
     internal readonly BaseBotInternals __baseBotInternals;
 
