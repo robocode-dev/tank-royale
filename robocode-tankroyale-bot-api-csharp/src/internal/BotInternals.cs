@@ -4,14 +4,12 @@ using System.Collections.Specialized;
 using System.Collections;
 using Robocode.TankRoyale.BotApi.Events;
 
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Internal
 {
   public partial class Bot
   {
     internal class BotInternals
     {
-      private double absDeceleration;
-
       private readonly IBot bot;
       private readonly BotEventHandlers botEventHandlers;
 
@@ -49,19 +47,17 @@ namespace Robocode.TankRoyale.BotApi
         this.bot = bot;
         this.botEventHandlers = botEvents;
 
-        this.absDeceleration = Math.Abs(bot.Deceleration);
-
         this.maxSpeed = bot.MaxForwardSpeed;
         this.maxTurnRate = bot.MaxTurnRate;
         this.maxGunTurnRate = bot.MaxGunTurnRate;
         this.maxRadarTurnRate = bot.MaxRadarTurnRate;
 
-        botEvents.onDisconnectedManager.Subscribe(OnDisconnected, 100);
-        botEvents.onGameEndedManager.Subscribe(OnGameEnded, 100);
-        botEvents.onHitBotManager.Subscribe(OnHitBot, 100);
-        botEvents.onHitWallManager.Subscribe(OnHitWall, 100);
-        botEvents.onTickManager.Subscribe(OnTick, 100);
-        botEvents.onDeathManager.Subscribe(OnDeath, 100);
+        botEvents.onDisconnectedHandler.Subscribe(OnDisconnected, 100);
+        botEvents.onGameEndedHandler.Subscribe(OnGameEnded, 100);
+        botEvents.onHitBotHandler.Subscribe(OnHitBot, 100);
+        botEvents.onHitWallHandler.Subscribe(OnHitWall, 100);
+        botEvents.onTickHandler.Subscribe(OnTick, 100);
+        botEvents.onDeathHandler.Subscribe(OnDeath, 100);
       }
 
       internal bool IsRunning
@@ -238,83 +234,6 @@ namespace Robocode.TankRoyale.BotApi
         distanceRemaining = distance - speed;
       }
 
-      /// <summary>
-      /// Returns the new speed based on the current speed and distance to move.
-      ///
-      /// <param name="speed">Is the current speed</param>
-      /// <param name="distance">Is the distance to move</param>
-      /// <return>The new speed</return>
-      //
-      // Credits for this algorithm goes to Patrick Cupka (aka Voidious), Julian Kent (aka
-      // Skilgannon), and Positive:
-      // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
-      internal double GetNewSpeed(double speed, double distance)
-      {
-        if (distance < 0)
-        {
-          // If the distance is negative, then change it to be positive and change the sign of the
-          // input velocity and the result
-          return -GetNewSpeed(-speed, -distance);
-        }
-
-        double targetSpeed;
-        if (distance == Double.PositiveInfinity)
-        {
-          targetSpeed = maxSpeed;
-        }
-        else
-        {
-          targetSpeed = Math.Min(GetMaxSpeed(distance), maxSpeed);
-        }
-
-        if (speed >= 0)
-        {
-          return Math.Max(speed - absDeceleration, Math.Min(targetSpeed, speed + bot.Acceleration));
-        } // else
-        return Math.Max(speed - bot.Acceleration, Math.Min(targetSpeed, speed + GetMaxDeceleration(-speed)));
-      }
-
-      private double GetMaxSpeed(double distance)
-      {
-        var decelTime =
-          Math.Max(
-            1,
-            Math.Ceiling( // sum of 0... decelTime, solving for decelTime using quadratic formula
-              (Math.Sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
-
-        if (decelTime == Double.PositiveInfinity)
-        {
-          return bot.MaxSpeed;
-        }
-
-        var decelDist =
-          (decelTime / 2) *
-          (decelTime - 1) // sum of 0..(decelTime-1)
-          *
-          absDeceleration;
-
-        return ((decelTime - 1) * absDeceleration) + ((distance - decelDist) / decelTime);
-      }
-
-      private double GetMaxDeceleration(double speed)
-      {
-        var decelTime = speed / absDeceleration;
-        var accelTime = (1 - decelTime);
-
-        return Math.Min(1, decelTime) * absDeceleration + Math.Max(0, accelTime) * bot.Acceleration;
-      }
-
-      private double GetDistanceTraveledUntilStop(double speed)
-      {
-        speed = Math.Abs(speed);
-        double distance = 0;
-        while (speed > 0)
-        {
-          distance += (speed = GetNewSpeed(speed, 0));
-        }
-        return distance;
-      }
-
       internal void Stop()
       {
         lock (isStoppedLock)
@@ -477,11 +396,6 @@ namespace Robocode.TankRoyale.BotApi
       internal void QueueCondition(Condition condition)
       {
         QueueCommand(new ConditionCommand(this, condition));
-      }
-
-      internal void FireConditionMet(Condition condition)
-      {
-        botEventHandlers.FireConditionMet(condition);
       }
 
       private void QueueCommand(Command command)

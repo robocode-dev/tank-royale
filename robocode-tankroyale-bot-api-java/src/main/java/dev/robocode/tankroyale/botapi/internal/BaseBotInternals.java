@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.neovisionaries.ws.client.*;
 import dev.robocode.tankroyale.botapi.*;
+import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.GameSetup;
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
@@ -66,7 +67,7 @@ public final class BaseBotInternals {
   private final double absDeceleration = Math.abs(IBot.DECELERATION);
 
   private final IBaseBot baseBot;
-  private final dev.robocode.tankroyale.botapi.BotInfo botInfo;
+  private final BotInfo botInfo;
   private final BotEventHandlers botEventHandlers;
   private final EventQueue eventQueue;
   private final Set<Condition> conditions = new HashSet<>();
@@ -89,8 +90,7 @@ public final class BaseBotInternals {
   private double maxGunTurnRate = IBot.MAX_GUN_TURN_RATE;
   private double maxRadarTurnRate = IBot.MAX_RADAR_TURN_RATE;
 
-  public BaseBotInternals(
-      IBaseBot baseBot, dev.robocode.tankroyale.botapi.BotInfo botInfo, URI serverUrl) {
+  public BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {
     this.baseBot = baseBot;
     this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
 
@@ -112,17 +112,17 @@ public final class BaseBotInternals {
     botEventHandlers.onBulletFired.subscribe(this::handleBulletFired, 100);
   }
 
-  private BotIntent newBotIntent() {
+  private static BotIntent newBotIntent() {
     BotIntent botIntent = new BotIntent();
     botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
     return botIntent;
   }
 
-  public BotEventHandlers getBotEventHandlers() {
+  BotEventHandlers getBotEventHandlers() {
     return botEventHandlers;
   }
 
-  public Set<Condition> getConditions() {
+  Set<Condition> getConditions() {
     return conditions;
   }
 
@@ -145,10 +145,12 @@ public final class BaseBotInternals {
   public void execute() {
     // Send the bot intent to the server
     sendIntent();
+
+    // Clear rescanning
     botIntent.setScan(false);
 
     // Dispatch all bot events
-    new Thread(() -> eventQueue.dispatchEvents(baseBot, getCurrentTick().getTurnNumber())).start();
+    new Thread(() -> eventQueue.dispatchEvents(getCurrentTick().getTurnNumber())).start();
   }
 
   private void sendIntent() {
@@ -190,6 +192,9 @@ public final class BaseBotInternals {
   }
 
   public BotIntent getBotIntent() {
+    if (botIntent == null) {
+      throw new BotException(GAME_NOT_RUNNING_MSG);
+    }
     return botIntent;
   }
 
@@ -292,19 +297,19 @@ public final class BaseBotInternals {
 
   private double getMaxSpeed(double distance) {
     double decelTime =
-            max(
-                    1,
-                    Math.ceil( // sum of 0... decelTime, solving for decelTime using quadratic formula
-                            (Math.sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
+        max(
+            1,
+            Math.ceil( // sum of 0... decelTime, solving for decelTime using quadratic formula
+                (Math.sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
 
     if (decelTime == Double.POSITIVE_INFINITY) {
       return IBot.MAX_SPEED;
     }
 
     double decelDist =
-            (decelTime / 2)
-                    * (decelTime - 1) // sum of 0..(decelTime-1)
-                    * absDeceleration;
+        (decelTime / 2)
+            * (decelTime - 1) // sum of 0..(decelTime-1)
+            * absDeceleration;
 
     return ((decelTime - 1) * absDeceleration) + ((distance - decelDist) / decelTime);
   }
@@ -316,7 +321,7 @@ public final class BaseBotInternals {
     return min(1, decelTime) * absDeceleration + max(0, accelTime) * IBot.ACCELERATION;
   }
 
-  public double getDistanceTraveledUntilStop(double speed) {
+  double getDistanceTraveledUntilStop(double speed) {
     speed = Math.abs(speed);
     double distance = 0;
     while (speed > 0) {
@@ -333,6 +338,30 @@ public final class BaseBotInternals {
     conditions.remove(condition);
   }
 
+  private ServerHandshake getServerHandshake() {
+    if (serverHandshake == null) {
+      throw new BotException(NOT_CONNECTED_TO_SERVER_MSG);
+    }
+    return serverHandshake;
+  }
+
+  private URI getServerUrlFromSetting() {
+    String url = EnvVars.getServerUrl();
+    if (url == null) {
+      url = System.getProperty(SERVER_URL_PROPERTY_KEY);
+      if (url == null) {
+        url = EnvVars.getServerUrl();
+      }
+    }
+    if (url == null) {
+      url = "ws://localhost";
+    }
+    try {
+      return new URI(url);
+    } catch (URISyntaxException ex) {
+      throw new BotException("Incorrect syntax for server URL: " + url);
+    }
+  }
 
   private final class WebSocketListener extends WebSocketAdapter {
 
@@ -425,31 +454,6 @@ public final class BaseBotInternals {
     }
   }
 
-  private ServerHandshake getServerHandshake() {
-    if (serverHandshake == null) {
-      throw new BotException(NOT_CONNECTED_TO_SERVER_MSG);
-    }
-    return serverHandshake;
-  }
-
-  private URI getServerUrlFromSetting() {
-    String url = EnvVars.getServerUrl();
-    if (url == null) {
-      url = System.getProperty(SERVER_URL_PROPERTY_KEY);
-      if (url == null) {
-        url = EnvVars.getServerUrl();
-      }
-    }
-    if (url == null) {
-      url = "ws://localhost";
-    }
-    try {
-      return new URI(url);
-    } catch (URISyntaxException ex) {
-      throw new BotException("Incorrect syntax for server URL: " + url);
-    }
-  }
-
   private void handleGameEndedEvent(JsonObject jsonMsg) {
     // Clear current game state
     clearCurrentGameState();
@@ -480,10 +484,12 @@ public final class BaseBotInternals {
 
     eventQueue.addEventsFromTick(baseBot, tickEvent);
 
+    // Trigger new round
     if (tickEvent.getTurnNumber() == 1) {
       botEventHandlers.onNewRound.publish(tickEvent);
     }
 
+    // Trigger processing turn
     botEventHandlers.onProcessTurn.publish(tickEvent);
   }
 

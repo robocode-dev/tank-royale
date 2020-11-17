@@ -361,6 +361,30 @@ namespace Robocode.TankRoyale.BotApi
     double TurnRate { get; set; }
 
     /// <summary>
+    /// Sets the maximum turn rate which applies to turn the bot to the left or right. The maximum
+    /// turn rate must be an absolute value from 0 to <see cref="MaxTurnRate"/>, both values are
+    /// included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
+    /// input turn rate is above <see cref="MaxTurnRate"/>, the max turn rate will be set to
+    /// <see cref="MaxTurnRate"/>.
+    ///
+    /// If for example the max turn rate is set to 5, then the bot will be able to turn left or
+    /// right with a turn rate down to -5 degrees per turn when turning right, and up to 5 degrees per turn
+    /// when turning left.
+    ///
+    /// This method will first be executed when <see cref="Go"/> is called making it possible to
+    /// call other set methods before execution. This makes it possible to set the bot to move,
+    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
+    /// <see cref="Go"/>. But notice that this is only possible to execute multiple methods in
+    /// parallel by using <em>setter</em> methods only prior to calling <see cref="Go"/>.
+    ///
+    /// If this method is called multiple times, the last call before <see cref="Go"/> is executed,
+    /// counts.
+    /// </summary>
+    /// <param name="maxTurnRate">Is the new maximum turn rate.</param>
+    /// <seealso cref="TurnRate"/>
+    void SetMaxTurnRate(double maxTurnRate);
+
+    /// <summary>
     /// Set or get the turn rate of the gun, which can be positive and negative. The gun turn rate
     /// is measured in degrees per turn. The turn rate is added to the current turn direction of
     /// the gun. But it is also added to the current direction of the radar. This is because the
@@ -375,6 +399,30 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <value>The turn rate of the gun.</value>
     double GunTurnRate { get; set; }
+
+    /// <summary>
+    /// Sets the maximum turn rate which applies to turn the gun to the left or right. The maximum turn
+    /// rate must be an absolute value from 0 to <see cref="MaxGunTurnRate"/>, both values are
+    /// included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
+    /// input turn rate is above <see cref="MaxGunTurnRate"/>, the max turn rate will be set to
+    /// <see cref="MaxGunTurnRate"/>.
+    ///
+    /// If for example the max gun turn rate is set to 5, then the gun will be able to turn left or
+    /// right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees per
+    /// turn when turning left.
+    ///
+    /// This method will first be executed when <see cref="Go"/> is called making it possible to
+    /// call other set methods before execution. This makes it possible to set the bot to move,
+    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
+    /// <see cref="Go"/>. But notice that this is only possible to execute multiple methods in
+    /// parallel by using <em>setter</em> methods only prior to calling <see cref="Go"/>.
+    ///
+    /// If this method is called multiple times, the last call before <see cref="Go"/> is executed,
+    /// counts.
+    /// </summary>
+    /// <param name="maxGunTurnRate">Is the new maximum gun turn rate.</param>
+    /// <seealso cref="GunTurnRate"/>
+    void SetMaxGunTurnRate(double maxGunTurnRate);
 
     /// <summary>
     /// Set or get the turn rate of the radar, which can be positive and negative. The radar turn
@@ -394,6 +442,29 @@ namespace Robocode.TankRoyale.BotApi
     double RadarTurnRate { get; set; }
 
     /// <summary>
+    /// Sets the maximum turn rate which applies to turn the radar to the left or right. The maximum
+    /// turn rate must be an absolute value from 0 to MaxRadarTurnRate, both values are
+    /// included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
+    /// input turn rate is above MaxRadarTurnRate, the max turn rate will be set to MaxRadarTurnRate.
+    ///
+    /// If for example the max radar turn rate is set to 5, then the radar will be able to turn left
+    /// or right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees per turn
+    /// when turning left.
+    ///
+    /// This method will first be executed when <see cref="Go"/> is called making it possible to
+    /// call other set methods before execution. This makes it possible to set the bot to move,
+    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
+    /// <see cref="Go"/>. But notice that this is only possible to execute multiple methods in
+    /// parallel by using <em>setter</em> methods only prior to calling <see cref="Go"/>.
+    ///
+    /// If this method is called multiple times, the last call before <see cref="Go"/> is executed,
+    /// counts.
+    /// </summary>
+    /// <param name="maxRadarTurnRate">Is the new maximum radar turn rate.</param>
+    /// <seealso cref="RadarTurnRate"/>
+    void SetMaxRadarTurnRate(double maxRadarTurnRate);
+
+    /// <summary>
     /// Set or get the target speed for the bot in units per turn. The target speed is the speed
     /// you want to achieve eventually, which could take one to several turns depending on the
     /// current speed. For example, if the bot is moving forward with max speed, and then must
@@ -411,6 +482,27 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <value>The target speed.</value>
     double TargetSpeed { get; set; }
+
+    /// <summary>
+    /// Sets the maximum speed which applies when moving forward and backward. The maximum speed must
+    /// be an absolute value from 0 to MaxSpeed, both values are included. If the input
+    /// speed is negative, the max speed will be cut to zero. If the input speed is above
+    /// MaxSpeed, the max speed will be set to MaxSpeed.
+    ///
+    /// If for example the maximum speed is set to 5, then the bot will be able to move backwards
+    /// with a speed down to -5 units per turn and up to 5 units per turn when moving forward.
+    ///
+    /// This method will first be executed when <see cref="Go"/> is called making it possible to
+    /// call other set methods before execution. This makes it possible to set the bot to move,
+    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
+    /// <see cref="Go"/>. But notice that this is only possible to execute multiple methods in
+    /// parallel by using <em>setter</em> methods only prior to calling <see cref="Go"/>.
+    ///
+    /// If this method is called multiple times, the last call before <see cref="Go"/> is executed,
+    /// counts.
+    /// </summary>
+    /// <param name="maxSpeed">Is the new maximum speed.</param>
+    void SetMaxSpeed(double maxSpeed);
 
     /// <summary>
     /// Sets the gun to fire in the direction that the gun is pointing with the specified
@@ -461,9 +553,9 @@ namespace Robocode.TankRoyale.BotApi
     /// hence will not automatically scan bots. The last radar direction and sweep angle will be used
     /// for scanning for bots.
     /// </summary>
-    /// <param name="doScan">true means that the radar must rescan using old radar direction and
+    /// <param name="rescan">true means that the radar must rescan using old radar direction and
     /// sweep angle; false means that rescanning is disabled</param>
-    void SetScan(bool doScan);
+    void SetScan(bool rescan);
 
     /// <summary>
     /// Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun
@@ -504,6 +596,22 @@ namespace Robocode.TankRoyale.BotApi
     /// otherwise.</value>
     /// <seealso cref="DoAdjustGunForBodyTurn"/>
     bool DoAdjustRadarForGunTurn { get; set; }
+
+    /// <summary>
+    /// Adds a event handler that will be automatically triggered <see cref="OnCustomEvent(CustomEvent)"/>
+    /// when the <see cref="Condition.Test()"/> returns true.
+    /// </summary>
+    /// <param name="condition">Is the condition that must be met to trigger the custom event.</param>
+    /// <seealso cref="RemoveCustomEvent"/>
+    void AddCustomEvent(Condition condition);
+
+    /// <summary>
+    /// Removes triggering an custom event handler for a specific condition that was previously added
+    /// with <see cref="AddCustomEvent(CustomEvent)"/>.
+    /// </summary>
+    /// <param name="condition">is the condition that was previously added with <see cref="AddCustomEvent(CustomEvent)"/></param>
+    /// <seealso cref="AddCustomEvent"/>
+    void RemoveCustomEvent(Condition condition);
 
     /// <summary>
     /// Returns the RGB color code of the body. The color code is an integer in hexadecimal format

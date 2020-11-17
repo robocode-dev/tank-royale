@@ -91,20 +91,6 @@ namespace Robocode.TankRoyale.BotApi
     public double DistanceRemaining => __botInternals.distanceRemaining;
 
     /// <inheritdoc/>
-    public void SetMaxSpeed(double maxSpeed)
-    {
-      if (maxSpeed < 0)
-      {
-        maxSpeed = 0;
-      }
-      else if (maxSpeed > ((IBot)this).MaxSpeed)
-      {
-        maxSpeed = ((IBot)this).MaxSpeed;
-      }
-      __botInternals.maxSpeed = maxSpeed;
-    }
-
-    /// <inheritdoc/>
     public void SetTurnLeft(double degrees)
     {
       if (Double.IsNaN(degrees))
@@ -137,20 +123,6 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <inheritdoc/>
     public double TurnRemaining => __botInternals.turnRemaining;
-
-    /// <inheritdoc/>
-    public void SetMaxTurnRate(double maxTurnRate)
-    {
-      if (maxTurnRate < 0)
-      {
-        maxTurnRate = 0;
-      }
-      else if (maxTurnRate > ((IBot)this).MaxTurnRate)
-      {
-        maxTurnRate = ((IBot)this).MaxTurnRate;
-      }
-      __botInternals.maxTurnRate = maxTurnRate;
-    }
 
     /// <inheritdoc/>
     public void SetTurnGunLeft(double degrees)
@@ -187,20 +159,6 @@ namespace Robocode.TankRoyale.BotApi
     public double GunTurnRemaining => __botInternals.gunTurnRemaining;
 
     /// <inheritdoc/>
-    public void SetMaxGunTurnRate(double maxGunTurnRate)
-    {
-      if (maxGunTurnRate < 0)
-      {
-        maxGunTurnRate = 0;
-      }
-      else if (maxGunTurnRate > ((IBot)this).MaxGunTurnRate)
-      {
-        maxGunTurnRate = ((IBot)this).MaxGunTurnRate;
-      }
-      __botInternals.maxGunTurnRate = maxGunTurnRate;
-    }
-
-    /// <inheritdoc/>
     public void SetTurnRadarLeft(double degrees)
     {
       if (Double.IsNaN(degrees))
@@ -233,20 +191,6 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <inheritdoc/>
     public double RadarTurnRemaining => __botInternals.radarTurnRemaining;
-
-    /// <inheritdoc/>
-    public void SetMaxRadarTurnRate(double maxRadarTurnRate)
-    {
-      if (maxRadarTurnRate < 0)
-      {
-        maxRadarTurnRate = 0;
-      }
-      else if (maxRadarTurnRate > ((IBot)this).MaxRadarTurnRate)
-      {
-        maxRadarTurnRate = ((IBot)this).MaxRadarTurnRate;
-      }
-      __botInternals.maxRadarTurnRate = maxRadarTurnRate;
-    }
 
     /// <inheritdoc/>
     public void Fire(double firepower)

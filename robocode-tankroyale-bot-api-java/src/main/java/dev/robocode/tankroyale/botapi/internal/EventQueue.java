@@ -21,7 +21,7 @@ final class EventQueue {
     this.botEventHandlers = botEventHandlers;
   }
 
-  public void clear() {
+  void clear() {
     eventMap.clear();
   }
 
@@ -68,7 +68,7 @@ final class EventQueue {
     eventMap.put(priority, event);
   }
 
-  public void addEventsFromTick(IBaseBot baseBot, TickEvent event) {
+  void addEventsFromTick(IBaseBot baseBot, TickEvent event) {
     addEvent(baseBot, event);
     event.getEvents().forEach(e -> addEvent(baseBot, e));
 
@@ -86,7 +86,7 @@ final class EventQueue {
         });
   }
 
-  public void dispatchEvents(IBaseBot baseBot, int currentTurnNumber) {
+  void dispatchEvents(int currentTurnNumber) {
     // Remove all old entries
     eventMap.values().removeIf(event -> currentTurnNumber > event.getTurnNumber() + MAX_EVENT_AGE);
 

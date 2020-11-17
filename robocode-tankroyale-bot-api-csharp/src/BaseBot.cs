@@ -240,6 +240,20 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
+    public void SetMaxTurnRate(double maxTurnRate)
+    {
+      if (maxTurnRate < 0)
+      {
+        maxTurnRate = 0;
+      }
+      else if (maxTurnRate > ((IBot)this).MaxTurnRate)
+      {
+        maxTurnRate = ((IBot)this).MaxTurnRate;
+      }
+      __baseBotInternals.maxTurnRate = maxTurnRate;
+    }
+
+    /// <inheritdoc/>
     public double GunTurnRate
     {
       set
@@ -251,6 +265,20 @@ namespace Robocode.TankRoyale.BotApi
         __baseBotInternals.BotIntent.GunTurnRate = value;
       }
       get => __baseBotInternals.CurrentTick.BotState.GunTurnRate;
+    }
+
+    /// <inheritdoc/>
+    public void SetMaxGunTurnRate(double maxGunTurnRate)
+    {
+      if (maxGunTurnRate < 0)
+      {
+        maxGunTurnRate = 0;
+      }
+      else if (maxGunTurnRate > ((IBot)this).MaxGunTurnRate)
+      {
+        maxGunTurnRate = ((IBot)this).MaxGunTurnRate;
+      }
+      __botInternals.maxGunTurnRate = maxGunTurnRate;
     }
 
     /// <inheritdoc/>
@@ -268,6 +296,20 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
+    public void SetMaxRadarTurnRate(double maxRadarTurnRate)
+    {
+      if (maxRadarTurnRate < 0)
+      {
+        maxRadarTurnRate = 0;
+      }
+      else if (maxRadarTurnRate > ((IBot)this).MaxRadarTurnRate)
+      {
+        maxRadarTurnRate = ((IBot)this).MaxRadarTurnRate;
+      }
+      __botInternals.maxRadarTurnRate = maxRadarTurnRate;
+    }
+
+    /// <inheritdoc/>
     public double TargetSpeed
     {
       set
@@ -279,6 +321,20 @@ namespace Robocode.TankRoyale.BotApi
         __baseBotInternals.BotIntent.TargetSpeed = value;
       }
       get => __baseBotInternals.BotIntent.TargetSpeed ?? 0d;
+    }
+
+    /// <inheritdoc/>
+    public void SetMaxSpeed(double maxSpeed)
+    {
+      if (maxSpeed < 0)
+      {
+        maxSpeed = 0;
+      }
+      else if (maxSpeed > ((IBot)this).MaxSpeed)
+      {
+        maxSpeed = ((IBot)this).MaxSpeed;
+      }
+      __botInternals.maxSpeed = maxSpeed;
     }
 
     /// <inheritdoc/>

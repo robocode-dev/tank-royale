@@ -174,29 +174,6 @@ namespace Robocode.TankRoyale.BotApi
     double DistanceRemaining { get; }
 
     /// <summary>
-    /// Sets the maximum speed which applies when moving forward and backward. The maximum speed must
-    /// be an absolute value from 0 to MaxSpeed, both values are included. If the input
-    /// speed is negative, the max speed will be cut to zero. If the input speed is above
-    /// MaxSpeed, the max speed will be set to MaxSpeed.
-    ///
-    /// If for example the maximum speed is set to 5, then the bot will be able to move backwards
-    /// with a speed down to -5 units per turn and up to 5 units per turn when moving forward.
-    ///
-    /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
-    /// call other set methods before execution. This makes it possible to set the bot to move,
-    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
-    /// <see cref="IBaseBot.Go"/>. But notice that this is only possible to execute multiple methods in
-    /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
-    ///
-    /// If this method is called multiple times, the last call before <see cref="IBaseBot.Go"/> is executed,
-    /// counts.
-    /// </summary>
-    /// <param name="maxSpeed">Is the new maximum speed.</param>
-    /// <seealso cref="SetForward"/>
-    /// <seealso cref="SetBack"/>
-    void SetMaxSpeed(double maxSpeed);
-
-    /// <summary>
     /// Set the bot to turn to the left (following the increasing degrees of the <a
     /// href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
     /// amount of degrees. That is, when <see cref="TurnRemaining"/> is 0. The amount of degrees to
@@ -313,34 +290,6 @@ namespace Robocode.TankRoyale.BotApi
     double TurnRemaining { get; }
 
     /// <summary>
-    /// Sets the maximum turn rate which applies to turn the bot to the left or right. The maximum
-    /// turn rate must be an absolute value from 0 to <see cref="IBaseBot.MaxTurnRate"/>, both values are
-    /// included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
-    /// input turn rate is above <see cref="IBaseBot.MaxTurnRate"/>, the max turn rate will be set to
-    /// <see cref="IBaseBot.MaxTurnRate"/>.
-    ///
-    /// If for example the max turn rate is set to 5, then the bot will be able to turn left or
-    /// right with a turn rate down to -5 degrees per turn when turning right, and up to 5 degrees per turn
-    /// when turning left.
-    ///
-    /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
-    /// call other set methods before execution. This makes it possible to set the bot to move,
-    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
-    /// <see cref="IBaseBot.Go"/>. But notice that this is only possible to execute multiple methods in
-    /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
-    ///
-    /// If this method is called multiple times, the last call before <see cref="IBaseBot.Go"/> is executed,
-    /// counts.
-    /// </summary>
-    /// <param name="maxTurnRate">Is the new maximum turn rate.</param>
-    /// <seealso cref="IBaseBot.TurnRate"/>
-    /// <seealso cref="SetTurnLeft"/>
-    /// <seealso cref="SetTurnRight"/>
-    /// <seealso cref="TurnLeft"/>
-    /// <seealso cref="TurnRight"/>
-    void SetMaxTurnRate(double maxTurnRate);
-
-    /// <summary>
     /// Set the gun to turn to the left (following the increasing degrees of the <a
     /// href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
     /// amount of degrees. That is, when <see cref="GunTurnRemaining"/> is 0. The amount of degrees to
@@ -454,34 +403,6 @@ namespace Robocode.TankRoyale.BotApi
     /// <seealso cref="TurnGunLeft"/>
     /// <seealso cref="TurnGunRight"/>
     double GunTurnRemaining { get; }
-
-    /// <summary>
-    /// Sets the maximum turn rate which applies to turn the gun to the left or right. The maximum turn
-    /// rate must be an absolute value from 0 to <see cref="IBaseBot.MaxGunTurnRate"/>, both values are
-    /// included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
-    /// input turn rate is above <see cref="IBaseBot.MaxGunTurnRate"/>, the max turn rate will be set to
-    /// <see cref="IBaseBot.MaxGunTurnRate"/>.
-    ///
-    /// If for example the max gun turn rate is set to 5, then the gun will be able to turn left or
-    /// right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees per
-    /// turn when turning left.
-    ///
-    /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
-    /// call other set methods before execution. This makes it possible to set the bot to move,
-    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
-    /// <see cref="IBaseBot.Go"/>. But notice that this is only possible to execute multiple methods in
-    /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
-    ///
-    /// If this method is called multiple times, the last call before <see cref="IBaseBot.Go"/> is executed,
-    /// counts.
-    /// </summary>
-    /// <param name="maxGunTurnRate">Is the new maximum gun turn rate.</param>
-    /// <seealso cref="IBaseBot.GunTurnRate"/>
-    /// <seealso cref="SetTurnGunLeft"/>
-    /// <seealso cref="SetTurnGunRight"/>
-    /// <seealso cref="TurnGunLeft"/>
-    /// <seealso cref="TurnGunRight"/>
-    void SetMaxGunTurnRate(double maxGunTurnRate);
 
     /// <summary>
     /// Set the radar to turn to the left (following the increasing degrees of the <a
@@ -600,33 +521,6 @@ namespace Robocode.TankRoyale.BotApi
     double RadarTurnRemaining { get; }
 
     /// <summary>
-    /// Sets the maximum turn rate which applies to turn the radar to the left or right. The maximum
-    /// turn rate must be an absolute value from 0 to MaxRadarTurnRate, both values are
-    /// included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
-    /// input turn rate is above MaxRadarTurnRate, the max turn rate will be set to MaxRadarTurnRate.
-    ///
-    /// If for example the max radar turn rate is set to 5, then the radar will be able to turn left
-    /// or right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees per turn
-    /// when turning left.
-    ///
-    /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
-    /// call other set methods before execution. This makes it possible to set the bot to move,
-    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
-    /// <see cref="IBaseBot.Go"/>. But notice that this is only possible to execute multiple methods in
-    /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
-    ///
-    /// If this method is called multiple times, the last call before <see cref="IBaseBot.Go"/> is executed,
-    /// counts.
-    /// </summary>
-    /// <param name="maxRadarTurnRate">Is the new maximum radar turn rate.</param>
-    /// <seealso cref="IBaseBot.RadarTurnRate"/>
-    /// <seealso cref="SetTurnRadarLeft"/>
-    /// <seealso cref="SetTurnRadarRight"/>
-    /// <seealso cref="TurnRadarLeft"/>
-    /// <seealso cref="TurnRadarRight"/>
-    void SetMaxRadarTurnRate(double maxRadarTurnRate);
-
-    /// <summary>
     /// Fire the gun in the direction as the gun is pointing.
     ///
     /// Note that your bot is spending energy when firing a bullet, the amount of energy used for
@@ -690,10 +584,10 @@ namespace Robocode.TankRoyale.BotApi
     void Resume();
 
     /// <summary>
-    /// Scan (again) with the radar. This method is useful if the radar has not turned, and hence will
-    /// not automatically scan bots. This method is useful when the robot movement has stopped, e.g.
-    /// when <see cref="Stop"/> has been called. The last radar direction and sweep angle will be used for
-    /// scanning for bots.
+    /// Scan (again) with the radar. This method is useful if the radar has not been turning and
+    /// thereby will not be able to automatically scan bots. This method is useful when the robot
+    /// movement has stopped, e.g. when <see cref="Stop"/> has been called. The last radar direction and
+    /// sweep angle will be used for rescanning for bots.
     /// </summary>
     /// <seealso cref="Stop"/>
     bool Scan();
