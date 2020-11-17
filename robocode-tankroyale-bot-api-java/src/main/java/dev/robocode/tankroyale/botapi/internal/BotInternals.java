@@ -5,8 +5,8 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 public final class BotInternals {
 
-  private final BaseBotInternals baseBotInternals;
   private final Bot bot;
+  private final BaseBotInternals baseBotInternals;
 
   private double distanceRemaining;
   private double turnRemaining;
@@ -33,7 +33,6 @@ public final class BotInternals {
     this.baseBotInternals = baseBotInternals;
 
     BotEventHandlers botEventHandlers = baseBotInternals.getBotEventHandlers();
-
     botEventHandlers.onProcessTurn.subscribe(this::onProcessTurn, 100);
     botEventHandlers.onDisconnected.subscribe(this::onDisconnected, 100);
     botEventHandlers.onGameEnded.subscribe(this::onGameEnded, 100);
@@ -53,6 +52,23 @@ public final class BotInternals {
   private void onProcessTurn(TickEvent e) {
     currentTick = e;
     processTurn();
+  }
+
+  private void onHitBot(HitBotEvent e) {
+    if (e.isRammed()) {
+      distanceRemaining = 0;
+    }
+  }
+
+  private void onHitWall() {
+    distanceRemaining = 0;
+    isCollidingWithWall = true;
+  }
+
+  private void onDeath(DeathEvent e) {
+    if (e.getVictimId() == bot.getMyId()) {
+      stopThread();
+    }
   }
 
   public boolean isRunning() {
@@ -140,24 +156,9 @@ public final class BotInternals {
   public boolean scan() {
     bot.setScan(true);
     awaitNextTurn();
+
+    // If a ScannedBotEvent is put in the events, the bot scanned another bot
     return bot.getEvents().stream().anyMatch(e -> e instanceof ScannedBotEvent);
-  }
-
-  private void onHitBot(HitBotEvent e) {
-    if (e.isRammed()) {
-      distanceRemaining = 0;
-    }
-  }
-
-  private void onHitWall() {
-    distanceRemaining = 0;
-    isCollidingWithWall = true;
-  }
-
-  private void onDeath(DeathEvent e) {
-    if (e.getVictimId() == bot.getMyId()) {
-      stopThread();
-    }
   }
 
   private void processTurn() {
@@ -169,7 +170,7 @@ public final class BotInternals {
     updateHeadings();
     updateMovement();
 
-    // Reset collision flags after updating movement
+    // Reset collision flag after updating movement
     isCollidingWithWall = false;
 
     // If this is the first turn -> Call the run method on the Bot class
@@ -180,8 +181,8 @@ public final class BotInternals {
       startThread();
     }
 
-    // Unblock methods waiting for the next turn
     synchronized (nextTurn) {
+      // Unblock methods waiting for the next turn
       nextTurn.notifyAll();
     }
   }
@@ -246,6 +247,7 @@ public final class BotInternals {
     if (Double.isNaN(distance)) {
       distance = 0;
     }
+
     double speed = baseBotInternals.getNewSpeed(bot.getSpeed(), distance);
     bot.setTargetSpeed(speed);
 
@@ -338,18 +340,19 @@ public final class BotInternals {
 
   public void await(ICondition condition) {
     // Loop while bot is running and condition has not been met
-    try {
-      while (isRunning && !condition.test()) {
-        bot.go();
-        synchronized (nextTurn) {
-          nextTurn.wait();
+    synchronized (nextTurn) {
+      try {
+        while (isRunning && !condition.test()) {
+          bot.go();
+          nextTurn.wait(); // Wait for next turn
         }
+      } catch (InterruptedException e) {
+        isRunning = false;
       }
-    } catch (InterruptedException e) {
-      isRunning = false;
     }
   }
 
+  @FunctionalInterface
   public interface ICondition {
     boolean test();
   }

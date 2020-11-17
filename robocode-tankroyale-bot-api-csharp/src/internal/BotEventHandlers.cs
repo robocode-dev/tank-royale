@@ -8,29 +8,29 @@ namespace Robocode.TankRoyale.BotApi.Internal
     readonly IBaseBot baseBot;
 
     // Regular bot event handlers
-    internal EventHandler<ConnectedEvent> onConnectedHandler = new EventHandler<ConnectedEvent>();
-    internal EventHandler<DisconnectedEvent> onDisconnectedHandler = new EventHandler<DisconnectedEvent>();
-    internal EventHandler<ConnectionErrorEvent> onConnectionErrorHandler = new EventHandler<ConnectionErrorEvent>();
-    internal EventHandler<GameStartedEvent> onGameStartedHandler = new EventHandler<GameStartedEvent>();
-    internal EventHandler<GameEndedEvent> onGameEndedHandler = new EventHandler<GameEndedEvent>();
-    internal EventHandler<TickEvent> onTickHandler = new EventHandler<TickEvent>();
-    internal EventHandler<SkippedTurnEvent> onSkippedTurnHandler = new EventHandler<SkippedTurnEvent>();
-    internal EventHandler<DeathEvent> onDeathHandler = new EventHandler<DeathEvent>();
-    internal EventHandler<DeathEvent> onBotDeathHandler = new EventHandler<DeathEvent>();
-    internal EventHandler<HitBotEvent> onHitBotHandler = new EventHandler<HitBotEvent>();
-    internal EventHandler<HitWallEvent> onHitWallHandler = new EventHandler<HitWallEvent>();
-    internal EventHandler<BulletFiredEvent> onBulletFiredHandler = new EventHandler<BulletFiredEvent>();
-    internal EventHandler<BulletHitBotEvent> onHitByBulletHandler = new EventHandler<BulletHitBotEvent>();
-    internal EventHandler<BulletHitBotEvent> onBulletHitHandler = new EventHandler<BulletHitBotEvent>();
-    internal EventHandler<BulletHitBulletEvent> onBulletHitBulletHandler = new EventHandler<BulletHitBulletEvent>();
-    internal EventHandler<BulletHitWallEvent> onBulletHitWallHandler = new EventHandler<BulletHitWallEvent>();
-    internal EventHandler<ScannedBotEvent> onScannedBotHandler = new EventHandler<ScannedBotEvent>();
-    internal EventHandler<WonRoundEvent> onWonRoundHandler = new EventHandler<WonRoundEvent>();
-    internal EventHandler<CustomEvent> onCustomEventHandler = new EventHandler<CustomEvent>();
+    internal readonly EventHandler<ConnectedEvent> onConnected = new EventHandler<ConnectedEvent>();
+    internal readonly EventHandler<DisconnectedEvent> onDisconnected = new EventHandler<DisconnectedEvent>();
+    internal readonly EventHandler<ConnectionErrorEvent> onConnectionError = new EventHandler<ConnectionErrorEvent>();
+    internal readonly EventHandler<GameStartedEvent> onGameStarted = new EventHandler<GameStartedEvent>();
+    internal readonly EventHandler<GameEndedEvent> onGameEnded = new EventHandler<GameEndedEvent>();
+    internal readonly EventHandler<TickEvent> onTick = new EventHandler<TickEvent>();
+    internal readonly EventHandler<SkippedTurnEvent> onSkippedTurn = new EventHandler<SkippedTurnEvent>();
+    internal readonly EventHandler<DeathEvent> onDeath = new EventHandler<DeathEvent>();
+    internal readonly EventHandler<DeathEvent> onBotDeath = new EventHandler<DeathEvent>();
+    internal readonly EventHandler<HitBotEvent> onHitBot = new EventHandler<HitBotEvent>();
+    internal readonly EventHandler<HitWallEvent> onHitWall = new EventHandler<HitWallEvent>();
+    internal readonly EventHandler<BulletFiredEvent> onBulletFired = new EventHandler<BulletFiredEvent>();
+    internal readonly EventHandler<BulletHitBotEvent> onHitByBullet = new EventHandler<BulletHitBotEvent>();
+    internal readonly EventHandler<BulletHitBotEvent> onBulletHit = new EventHandler<BulletHitBotEvent>();
+    internal readonly EventHandler<BulletHitBulletEvent> onBulletHitBullet = new EventHandler<BulletHitBulletEvent>();
+    internal readonly EventHandler<BulletHitWallEvent> onBulletHitWall = new EventHandler<BulletHitWallEvent>();
+    internal readonly EventHandler<ScannedBotEvent> onScannedBot = new EventHandler<ScannedBotEvent>();
+    internal readonly EventHandler<WonRoundEvent> onWonRound = new EventHandler<WonRoundEvent>();
+    internal readonly EventHandler<CustomEvent> onCustomEvent = new EventHandler<CustomEvent>();
 
     // Convenient event handlers
-    internal EventHandler<TickEvent> onProcessTurnHandler = new EventHandler<TickEvent>();
-    internal EventHandler<TickEvent> onNewRoundHandler = new EventHandler<TickEvent>();
+    internal readonly EventHandler<TickEvent> onProcessTurn = new EventHandler<TickEvent>();
+    internal readonly EventHandler<TickEvent> onNewRound = new EventHandler<TickEvent>();
 
     // Events
     private event EventHandler<ConnectedEvent>.Subscriber OnConnected;
@@ -60,62 +60,62 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       this.baseBot = baseBot;
 
-      onConnectedHandler.Subscribe(baseBot.OnConnected);
-      OnConnected += onConnectedHandler.Publish;
+      onConnected.Subscribe(baseBot.OnConnected);
+      OnConnected += onConnected.Publish;
 
-      onDisconnectedHandler.Subscribe(baseBot.OnDisconnected);
-      OnDisconnected += onDisconnectedHandler.Publish;
+      onDisconnected.Subscribe(baseBot.OnDisconnected);
+      OnDisconnected += onDisconnected.Publish;
 
-      onConnectionErrorHandler.Subscribe(baseBot.OnConnectionError);
-      OnConnectionError += onConnectionErrorHandler.Publish;
+      onConnectionError.Subscribe(baseBot.OnConnectionError);
+      OnConnectionError += onConnectionError.Publish;
 
-      onGameStartedHandler.Subscribe(baseBot.OnGameStarted);
-      OnGameStarted += onGameStartedHandler.Publish;
+      onGameStarted.Subscribe(baseBot.OnGameStarted);
+      OnGameStarted += onGameStarted.Publish;
 
-      onGameEndedHandler.Subscribe(baseBot.OnGameEnded);
-      OnGameEnded += onGameEndedHandler.Publish;
+      onGameEnded.Subscribe(baseBot.OnGameEnded);
+      OnGameEnded += onGameEnded.Publish;
 
-      onTickHandler.Subscribe(baseBot.OnTick);
-      OnTick += onTickHandler.Publish;
+      onTick.Subscribe(baseBot.OnTick);
+      OnTick += onTick.Publish;
 
-      onSkippedTurnHandler.Subscribe(baseBot.OnSkippedTurn);
-      OnSkippedTurn += onSkippedTurnHandler.Publish;
+      onSkippedTurn.Subscribe(baseBot.OnSkippedTurn);
+      OnSkippedTurn += onSkippedTurn.Publish;
 
-      onDeathHandler.Subscribe(baseBot.OnDeath);
-      OnDeath += onDeathHandler.Publish;
+      onDeath.Subscribe(baseBot.OnDeath);
+      OnDeath += onDeath.Publish;
 
-      onBotDeathHandler.Subscribe(baseBot.OnBotDeath);
-      OnBotDeath += onBotDeathHandler.Publish;
+      onBotDeath.Subscribe(baseBot.OnBotDeath);
+      OnBotDeath += onBotDeath.Publish;
 
-      onHitBotHandler.Subscribe(baseBot.OnHitBot);
-      OnHitBot += onHitBotHandler.Publish;
+      onHitBot.Subscribe(baseBot.OnHitBot);
+      OnHitBot += onHitBot.Publish;
 
-      onHitWallHandler.Subscribe(baseBot.OnHitWall);
-      OnHitWall += onHitWallHandler.Publish;
+      onHitWall.Subscribe(baseBot.OnHitWall);
+      OnHitWall += onHitWall.Publish;
 
-      onBulletFiredHandler.Subscribe(baseBot.OnBulletFired);
-      OnBulletFired += onBulletFiredHandler.Publish;
+      onBulletFired.Subscribe(baseBot.OnBulletFired);
+      OnBulletFired += onBulletFired.Publish;
 
-      onHitByBulletHandler.Subscribe(baseBot.OnHitByBullet);
-      OnHitByBullet += onHitByBulletHandler.Publish;
+      onHitByBullet.Subscribe(baseBot.OnHitByBullet);
+      OnHitByBullet += onHitByBullet.Publish;
 
-      onBulletHitHandler.Subscribe(baseBot.OnBulletHit);
-      OnBulletHit += onBulletHitHandler.Publish;
+      onBulletHit.Subscribe(baseBot.OnBulletHit);
+      OnBulletHit += onBulletHit.Publish;
 
-      onBulletHitBulletHandler.Subscribe(baseBot.OnBulletHitBullet);
-      OnBulletHitBullet += onBulletHitBulletHandler.Publish;
+      onBulletHitBullet.Subscribe(baseBot.OnBulletHitBullet);
+      OnBulletHitBullet += onBulletHitBullet.Publish;
 
-      onBulletHitWallHandler.Subscribe(baseBot.OnBulletHitWall);
-      OnBulletHitWall += onBulletHitWallHandler.Publish;
+      onBulletHitWall.Subscribe(baseBot.OnBulletHitWall);
+      OnBulletHitWall += onBulletHitWall.Publish;
 
-      onScannedBotHandler.Subscribe(baseBot.OnScannedBot);
-      OnScannedBot += onScannedBotHandler.Publish;
+      onScannedBot.Subscribe(baseBot.OnScannedBot);
+      OnScannedBot += onScannedBot.Publish;
 
-      onWonRoundHandler.Subscribe(baseBot.OnWonRound);
-      OnWonRound += onWonRoundHandler.Publish;
+      onWonRound.Subscribe(baseBot.OnWonRound);
+      OnWonRound += onWonRound.Publish;
 
-      onCustomEventHandler.Subscribe(baseBot.OnCustomEvent);
-      OnCustomEvent += onCustomEventHandler.Publish;
+      onCustomEvent.Subscribe(baseBot.OnCustomEvent);
+      OnCustomEvent += onCustomEvent.Publish;
     }
 
     internal void FireConnectedEvent(ConnectedEvent evt)

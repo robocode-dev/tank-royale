@@ -328,13 +328,13 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public void AddCustomEvent(Condition condition)
+    public void AddCustomEvent(Events.Condition condition)
     {
       __baseBotInternals.AddCondition(condition);
     }
 
     /// <inheritdoc/>
-    public void RemoveCustomEvent(Condition condition)
+    public void RemoveCustomEvent(Events.Condition condition)
     {
       __baseBotInternals.RemoveCondition(condition);
     }

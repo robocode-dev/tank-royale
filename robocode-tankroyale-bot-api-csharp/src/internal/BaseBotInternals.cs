@@ -26,7 +26,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private readonly BotInfo botInfo;
     private readonly BotEventHandlers botEventHandlers;
     private readonly EventQueue eventQueue;
-    private readonly ISet<Condition> conditions = new HashSet<Condition>();
+    private readonly ISet<Events.Condition> conditions = new HashSet<Events.Condition>();
 
     private BotIntent botIntent = newBotIntent();
 
@@ -74,8 +74,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
       socket.OnError += new WebSocketClient.OnErrorHandler(HandleConnectionError);
       socket.OnTextMessage += new WebSocketClient.OnTextMessageHandler(HandleTextMessage);
 
-      botEventHandlers.onNewRoundHandler.Subscribe(HandleNewRound, 100);
-      botEventHandlers.onBulletFiredHandler.Subscribe(HandleBulletFired, 100);
+      botEventHandlers.onNewRound.Subscribe(HandleNewRound, 100);
+      botEventHandlers.onBulletFired.Subscribe(HandleBulletFired, 100);
     }
 
     private static BotIntent newBotIntent()
@@ -87,7 +87,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal BotEventHandlers BotEventHandlers { get => botEventHandlers; }
 
-    internal ISet<Condition> Conditions { get => conditions; }
+    internal ISet<Events.Condition> Conditions { get => conditions; }
 
     internal void Start()
     {
@@ -357,7 +357,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       return Math.Min(1, decelTime) * absDeceleration + Math.Max(0, accelTime) * baseBot.Acceleration;
     }
 
-    private double GetDistanceTraveledUntilStop(double speed)
+    internal double GetDistanceTraveledUntilStop(double speed)
     {
       speed = Math.Abs(speed);
       double distance = 0;
@@ -368,12 +368,12 @@ namespace Robocode.TankRoyale.BotApi.Internal
       return distance;
     }
 
-    internal void AddCondition(Condition condition)
+    internal void AddCondition(Events.Condition condition)
     {
       conditions.Add(condition);
     }
 
-    internal void RemoveCondition(Condition condition)
+    internal void RemoveCondition(Events.Condition condition)
     {
       conditions.Remove(condition);
     }

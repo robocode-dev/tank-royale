@@ -111,7 +111,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private void AddCustomEvents(IBaseBot baseBot)
     {
-      foreach (Condition condition in baseBotInternals.Conditions)
+      foreach (Events.Condition condition in baseBotInternals.Conditions)
       {
         if (condition.Test())
         {
