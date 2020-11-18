@@ -340,15 +340,15 @@ public final class BotInternals {
 
   public void await(ICondition condition) {
     // Loop while bot is running and condition has not been met
-    synchronized (nextTurn) {
-      try {
-        while (isRunning && !condition.test()) {
-          bot.go();
+    try {
+      while (isRunning && !condition.test()) {
+        bot.go();
+        synchronized (nextTurn) {
           nextTurn.wait(); // Wait for next turn
         }
-      } catch (InterruptedException e) {
-        isRunning = false;
       }
+    } catch (InterruptedException e) {
+      isRunning = false;
     }
   }
 

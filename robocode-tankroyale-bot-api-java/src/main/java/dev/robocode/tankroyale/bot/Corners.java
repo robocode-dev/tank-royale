@@ -25,7 +25,7 @@ public class Corners extends Bot {
   }
 
   /** Constructor, which loads the bot settings file */
-  protected Corners() throws IOException {
+  Corners() throws IOException {
     super(BotInfo.fromFile("corners.properties"));
   }
 
@@ -60,7 +60,6 @@ public class Corners extends Bot {
   /** A very inefficient way to get to a corner. Can you do better? */
   private void goCorner() {
     // We don't want to stop when we're just turning...
-    System.out.println("goCorner()");
     stopWhenSeeRobot = false;
     // Turn to face the wall towards our desired corner
     turnLeft(calcBearing(corner));
