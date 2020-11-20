@@ -386,20 +386,20 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal void Await(Test test)
     {
-      lock (nextTurnLock)
+      try
       {
-        try
+        while (isRunning && !test.Invoke())
         {
-          while (isRunning && !test.Invoke())
+          bot.Go();
+          lock (nextTurnLock)
           {
-            bot.Go();
             Monitor.Wait(nextTurnLock); // Wait for next turn
           }
         }
-        catch (Exception)
-        {
-          isRunning = false;
-        }
+      }
+      catch (Exception)
+      {
+        isRunning = false;
       }
     }
 

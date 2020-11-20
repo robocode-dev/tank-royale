@@ -328,13 +328,13 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public void AddCustomEvent(Events.Condition condition)
+    public void AddCustomEvent(Condition condition)
     {
       __baseBotInternals.AddCondition(condition);
     }
 
     /// <inheritdoc/>
-    public void RemoveCustomEvent(Events.Condition condition)
+    public void RemoveCustomEvent(Condition condition)
     {
       __baseBotInternals.RemoveCondition(condition);
     }
@@ -385,31 +385,31 @@ namespace Robocode.TankRoyale.BotApi
     public double CalcMaxTurnRate(double speed) => ((IBaseBot)this).MaxTurnRate - 0.75 * Math.Abs(speed);
 
     /// <inheritdoc/>
-    public double CalcBulletSpeed(double firepower) => 20 - 3 * firepower;
+    public virtual double CalcBulletSpeed(double firepower) => 20 - 3 * firepower;
 
     /// <inheritdoc/>
-    public double CalcGunHeat(double firepower) => 1 + (firepower / 5);
+    public virtual double CalcGunHeat(double firepower) => 1 + (firepower / 5);
 
     /// <inheritdoc/>
-    public double CalcBearing(double direction) => NormalizeRelativeDegrees(direction - Direction);
+    public virtual double CalcBearing(double direction) => NormalizeRelativeDegrees(direction - Direction);
 
     /// <inheritdoc/>
-    public double CalcGunBearing(double direction) => NormalizeRelativeDegrees(direction - GunDirection);
+    public virtual double CalcGunBearing(double direction) => NormalizeRelativeDegrees(direction - GunDirection);
 
     /// <inheritdoc/>
-    public double CalcRadarBearing(double direction) => NormalizeRelativeDegrees(direction - RadarDirection);
+    public virtual double CalcRadarBearing(double direction) => NormalizeRelativeDegrees(direction - RadarDirection);
 
     /// <inheritdoc/>
-    public double NormalizeAbsoluteDegrees(double angle) => (angle %= 360) >= 0 ? angle : (angle + 360);
+    public virtual double NormalizeAbsoluteDegrees(double angle) => (angle %= 360) >= 0 ? angle : (angle + 360);
 
     /// <inheritdoc/>
-    public double DirectionTo(double x, double y) => NormalizeAbsoluteDegrees(180 * Math.Atan2(y - Y, x - X) / Math.PI);
+    public virtual double DirectionTo(double x, double y) => NormalizeAbsoluteDegrees(180 * Math.Atan2(y - Y, x - X) / Math.PI);
 
     /// <inheritdoc/>
-    public double BearingTo(double x, double y) => NormalizeRelativeDegrees(DirectionTo(x, y) - Direction);
+    public virtual double BearingTo(double x, double y) => NormalizeRelativeDegrees(DirectionTo(x, y) - Direction);
 
     /// <inheritdoc/>
-    public double DistanceTo(double x, double y)
+    public virtual double DistanceTo(double x, double y)
     {
       var dx = x - X;
       var dy = y - Y;
@@ -417,7 +417,7 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public double NormalizeRelativeDegrees(double angle) => (angle %= 360) >= 0 ?
+    public virtual double NormalizeRelativeDegrees(double angle) => (angle %= 360) >= 0 ?
         ((angle < 180) ? angle : (angle - 360)) :
         ((angle >= -180) ? angle : (angle + 360));
 

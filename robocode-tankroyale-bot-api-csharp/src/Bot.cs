@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System;
 using Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Internal;
@@ -192,5 +193,27 @@ namespace Robocode.TankRoyale.BotApi
     {
       __botInternals.Await(condition.Test);
     }
+
+    // Preventing System.TypeLoadException: xxx does not have an implementation
+
+    public override double CalcBulletSpeed(double firepower) => base.CalcBulletSpeed(firepower);
+
+    public override double CalcGunHeat(double firepower) => base.CalcBulletSpeed(firepower);
+
+    public override double CalcBearing(double direction) => base.CalcBearing(direction);
+
+    public override double CalcGunBearing(double direction) => base.CalcGunBearing(direction);
+
+    public override double CalcRadarBearing(double direction) => base.CalcRadarBearing(direction);
+
+    public override double DirectionTo(double x, double y) => base.DirectionTo(x, y);
+
+    public override double BearingTo(double x, double y) => base.BearingTo(x, y);
+
+    public override double DistanceTo(double x, double y) => base.DirectionTo(x, y);
+
+    public override double NormalizeAbsoluteDegrees(double angle) => base.NormalizeAbsoluteDegrees(angle);
+
+    public override double NormalizeRelativeDegrees(double angle) => base.NormalizeRelativeDegrees(angle);
   }
 }

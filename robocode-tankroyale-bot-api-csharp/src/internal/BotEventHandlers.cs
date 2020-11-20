@@ -60,62 +60,51 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       this.baseBot = baseBot;
 
-      onConnected.Subscribe(baseBot.OnConnected);
+      // Regular handlers
       OnConnected += onConnected.Publish;
-
-      onDisconnected.Subscribe(baseBot.OnDisconnected);
       OnDisconnected += onDisconnected.Publish;
-
-      onConnectionError.Subscribe(baseBot.OnConnectionError);
       OnConnectionError += onConnectionError.Publish;
-
-      onGameStarted.Subscribe(baseBot.OnGameStarted);
       OnGameStarted += onGameStarted.Publish;
-
-      onGameEnded.Subscribe(baseBot.OnGameEnded);
       OnGameEnded += onGameEnded.Publish;
-
-      onTick.Subscribe(baseBot.OnTick);
       OnTick += onTick.Publish;
-
-      onSkippedTurn.Subscribe(baseBot.OnSkippedTurn);
       OnSkippedTurn += onSkippedTurn.Publish;
-
-      onDeath.Subscribe(baseBot.OnDeath);
       OnDeath += onDeath.Publish;
-
-      onBotDeath.Subscribe(baseBot.OnBotDeath);
       OnBotDeath += onBotDeath.Publish;
-
-      onHitBot.Subscribe(baseBot.OnHitBot);
       OnHitBot += onHitBot.Publish;
-
-      onHitWall.Subscribe(baseBot.OnHitWall);
       OnHitWall += onHitWall.Publish;
-
-      onBulletFired.Subscribe(baseBot.OnBulletFired);
       OnBulletFired += onBulletFired.Publish;
-
-      onHitByBullet.Subscribe(baseBot.OnHitByBullet);
       OnHitByBullet += onHitByBullet.Publish;
-
-      onBulletHit.Subscribe(baseBot.OnBulletHit);
       OnBulletHit += onBulletHit.Publish;
-
-      onBulletHitBullet.Subscribe(baseBot.OnBulletHitBullet);
       OnBulletHitBullet += onBulletHitBullet.Publish;
-
-      onBulletHitWall.Subscribe(baseBot.OnBulletHitWall);
       OnBulletHitWall += onBulletHitWall.Publish;
-
-      onScannedBot.Subscribe(baseBot.OnScannedBot);
       OnScannedBot += onScannedBot.Publish;
-
-      onWonRound.Subscribe(baseBot.OnWonRound);
       OnWonRound += onWonRound.Publish;
-
-      onCustomEvent.Subscribe(baseBot.OnCustomEvent);
       OnCustomEvent += onCustomEvent.Publish;
+
+      // Convenient handlers
+      OnProcessTurn += onProcessTurn.Publish;
+      OnNewRound += onNewRound.Publish;
+
+      // Subscribe to bot events
+      onConnected.Subscribe(baseBot.OnConnected);
+      onDisconnected.Subscribe(baseBot.OnDisconnected);
+      onConnectionError.Subscribe(baseBot.OnConnectionError);
+      onGameStarted.Subscribe(baseBot.OnGameStarted);
+      onGameEnded.Subscribe(baseBot.OnGameEnded);
+      onTick.Subscribe(baseBot.OnTick);
+      onSkippedTurn.Subscribe(baseBot.OnSkippedTurn);
+      onDeath.Subscribe(baseBot.OnDeath);
+      onBotDeath.Subscribe(baseBot.OnBotDeath);
+      onHitBot.Subscribe(baseBot.OnHitBot);
+      onHitWall.Subscribe(baseBot.OnHitWall);
+      onBulletFired.Subscribe(baseBot.OnBulletFired);
+      onHitByBullet.Subscribe(baseBot.OnHitByBullet);
+      onBulletHit.Subscribe(baseBot.OnBulletHit);
+      onBulletHitBullet.Subscribe(baseBot.OnBulletHitBullet);
+      onBulletHitWall.Subscribe(baseBot.OnBulletHitWall);
+      onScannedBot.Subscribe(baseBot.OnScannedBot);
+      onWonRound.Subscribe(baseBot.OnWonRound);
+      onCustomEvent.Subscribe(baseBot.OnCustomEvent);
     }
 
     internal void FireConnectedEvent(ConnectedEvent evt)
@@ -167,6 +156,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       switch (evt)
       {
+        case TickEvent tickEvent:
+          OnTick(tickEvent);
+          break;
+
         case DeathEvent botDeathEvent:
           if (botDeathEvent.VictimId == baseBot.MyId)
             OnDeath(botDeathEvent);
@@ -211,6 +204,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
         case WonRoundEvent wonRoundEvent:
           OnWonRound(wonRoundEvent);
+          break;
+
+        case CustomEvent customEvent:
+          OnCustomEvent(customEvent);
           break;
 
         default:

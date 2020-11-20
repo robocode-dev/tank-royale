@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi.Internal
@@ -11,7 +12,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private readonly BaseBotInternals baseBotInternals;
     private readonly BotEventHandlers botEventHandlers;
 
-    private readonly ConcurrentDictionary<int, BotEvent> events = new ConcurrentDictionary<int, BotEvent>();
+    private readonly IDictionary<int, BotEvent> events = new ConcurrentDictionary<int, BotEvent>();
 
     internal EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers)
     {
@@ -99,7 +100,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       events.TryAdd(priority, botEvent);
     }
 
-    public void AddEventsFromTick(IBaseBot baseBot, TickEvent tickEvent)
+    internal void AddEventsFromTick(IBaseBot baseBot, TickEvent tickEvent)
     {
       AddEvent(baseBot, tickEvent);
       foreach (BotEvent botEvent in tickEvent.Events)
@@ -120,21 +121,23 @@ namespace Robocode.TankRoyale.BotApi.Internal
       }
     }
 
-    public void DispatchEvents(int currentTurnNumber)
+    internal void DispatchEvents(int currentTurnNumber)
     {
       // Remove all old entries
-      foreach (BotEvent botEvent in events.Values)
+      foreach (var item in events)
       {
-        if (currentTurnNumber > botEvent.TurnNumber + MaxEventAge)
+        var botEvent = item.Value;
+        if (botEvent.TurnNumber < currentTurnNumber - MaxEventAge)
         {
-          events.Values.Remove(botEvent);
+          events.Remove(item.Key);
         }
       }
 
       // Publish all event in the order of the keys, i.e. event priority order
-      foreach (BotEvent botEvent in events.Values)
+      foreach (var item in events)
       {
-        events.Values.Remove(botEvent);
+        var botEvent = item.Value;
+        events.Remove(item.Key);
         botEventHandlers.Fire(botEvent);
       }
     }

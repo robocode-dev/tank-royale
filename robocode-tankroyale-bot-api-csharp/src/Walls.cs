@@ -15,8 +15,6 @@ namespace Robocode.TankRoyale.Sample.Bots
     bool peek; // Don't turn if there's a robot there
     double moveAmount; // How much to move
 
-    bool stopMoving; // flag for stop moving temporarily
-
     static void Main_Walls()
     {
       new Walls().Start();
@@ -49,35 +47,23 @@ namespace Robocode.TankRoyale.Sample.Bots
       TurnGunRight(90);
       TurnRight(90);
 
+      Console.WriteLine(CalcBulletSpeed(1));
+
       // Main loop
       while (IsRunning)
       {
-        if (stopMoving)
-        {
-          Go(); // Do nothing this turn, but let the turn pass
-        }
-        else
-        {
-          // Peek before we turn when forward() completes.
-          peek = true;
-          // Move up the wall
-          Forward(moveAmount);
-          // Don't peek now
-          peek = false;
-          // Turn to the next wall
-          TurnRight(90);
-        }
+        // Peek before we turn when forward() completes.
+        peek = true;
+        // Move up the wall
+        Forward(moveAmount);
+        // Don't peek now
+        peek = false;
+        // Turn to the next wall
+        TurnRight(90);
       }
     }
 
-    /** OnTick: Every new turn, reset/remove the interrupt */
-
-    public override void OnTick(TickEvent e)
-    {
-      stopMoving = false; // Reset the stopMoving flag automatically each turn. Only OnScannedBot() will set it
-    }
-
-    /** OnHitBot: Move away a bit. */
+    // OnHitBot: Move away a bit.
     public override void OnHitBot(HitBotEvent e)
     {
       // If he's in front of us, set back up a bit.
@@ -92,14 +78,16 @@ namespace Robocode.TankRoyale.Sample.Bots
       }
     }
 
-    /** OnScannedBot: Fire! */
+    // OnScannedBot: Fire!
     public override void OnScannedBot(ScannedBotEvent e)
     {
       SetFire(2);
-
+      // Note that scan is called automatically when the robot is turning.
+      // By calling it manually here, we make sure we generate another scan event if there's a robot
+      // on the next wall, so that we do not start moving up it until it's gone.
       if (peek)
       {
-        stopMoving = true; // interrupt/stop turning the gun in the main loop in the Run() method
+        Scan();
       }
     }
   }

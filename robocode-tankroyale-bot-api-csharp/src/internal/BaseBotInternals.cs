@@ -462,7 +462,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private void HandleServerHandshake(string json)
     {
-      var serverHandshake = JsonConvert.DeserializeObject<ServerHandshake>(json);
+      serverHandshake = JsonConvert.DeserializeObject<ServerHandshake>(json);
 
       // Reply by sending bot handshake
       var botHandshake = BotHandshakeFactory.Create(botInfo);
@@ -513,12 +513,13 @@ namespace Robocode.TankRoyale.BotApi.Internal
       tickEvent = EventMapper.Map(json);
 
       ticksStart = DateTime.Now.Ticks;
-      botEventHandlers.FireTickEvent(tickEvent);
+
+      eventQueue.AddEventsFromTick(baseBot, tickEvent);
 
       // Trigger new round
       if (tickEvent.TurnNumber == 1)
       {
-        botEventHandlers.FireTickEvent(tickEvent);
+        botEventHandlers.FireNewRound(tickEvent);
       }
 
       // Trigger processing turn

@@ -40,7 +40,7 @@ namespace Robocode.TankRoyale.BotApi
 
       switch (type)
       {
-        case "DeathEvent":
+        case "BotDeathEvent":
           return Map(evt.ToObject<Schema.BotDeathEvent>());
         case "BotHitBotEvent":
           return Map(evt.ToObject<Schema.BotHitBotEvent>());
