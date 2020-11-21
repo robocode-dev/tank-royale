@@ -607,10 +607,10 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <summary>
     /// Removes triggering an custom event handler for a specific condition that was previously added
-    /// with <see cref="AddCustomEvent(CustomEvent)"/>.
+    /// with <see cref="AddCustomEvent(Condition)"/>.
     /// </summary>
     /// <param name="condition">is the condition that was previously added with <see cref="AddCustomEvent(CustomEvent)"/></param>
-    /// <seealso cref="AddCustomEvent"/>
+    /// <seealso cref="AddCustomEvent(Condition)"/>
     void RemoveCustomEvent(Condition condition);
 
     /// <summary>

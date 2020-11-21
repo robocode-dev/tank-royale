@@ -63,7 +63,7 @@ public abstract class Condition {
    * Returns the name of this condition, if a name has been provided for it.
    *
    * @return The name of this condition or {@code null} if no name has been provided for it.
-   * @see IBaseBot#onCustomEvent(CustomEvent))
+   * @see IBaseBot#onCustomEvent(CustomEvent) 
    */
   public String getName() {
     return name;
