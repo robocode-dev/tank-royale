@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.botapi.events;
 
-/** Event occurring during a battle. */
-public abstract class Event implements IMessage {
+/** Bot event occurring during a battle. */
+public abstract class BotEvent implements IEvent {
 
   /** Turn number when the event occurred. */
   protected final int turnNumber;
@@ -11,7 +11,7 @@ public abstract class Event implements IMessage {
    *
    * @param turnNumber is the turn number when the event occurred.
    */
-  protected Event(int turnNumber) {
+  protected BotEvent(int turnNumber) {
     this.turnNumber = turnNumber;
   }
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -23,9 +24,9 @@ namespace Robocode.TankRoyale.BotApi
       );
     }
 
-    private static HashSet<Event> Map(JArray events)
+    private static HashSet<BotEvent> Map(JArray events)
     {
-      var gameEvents = new HashSet<Event>();
+      var gameEvents = new HashSet<BotEvent>();
       foreach (JObject evt in events)
       {
         gameEvents.Add(Map(evt));
@@ -33,7 +34,7 @@ namespace Robocode.TankRoyale.BotApi
       return gameEvents;
     }
 
-    public static Event Map(JObject evt)
+    public static BotEvent Map(JObject evt)
     {
       string type = evt.GetValue("$type").ToString();
 
@@ -64,17 +65,17 @@ namespace Robocode.TankRoyale.BotApi
       }
     }
 
-    private static BotDeathEvent Map(Schema.BotDeathEvent source)
+    private static DeathEvent Map(Schema.BotDeathEvent source)
     {
-      return new BotDeathEvent(
+      return new DeathEvent(
         source.TurnNumber,
         source.VictimId
       );
     }
 
-    private static BotHitBotEvent Map(Schema.BotHitBotEvent source)
+    private static HitBotEvent Map(Schema.BotHitBotEvent source)
     {
-      return new BotHitBotEvent(
+      return new HitBotEvent(
         source.TurnNumber,
         source.VictimId,
         source.Energy,
@@ -84,9 +85,9 @@ namespace Robocode.TankRoyale.BotApi
       );
     }
 
-    private static BotHitWallEvent Map(Schema.BotHitWallEvent source)
+    private static HitWallEvent Map(Schema.BotHitWallEvent source)
     {
-      return new BotHitWallEvent(source.TurnNumber);
+      return new HitWallEvent(source.TurnNumber);
     }
 
     private static BulletFiredEvent Map(Schema.BulletFiredEvent source)

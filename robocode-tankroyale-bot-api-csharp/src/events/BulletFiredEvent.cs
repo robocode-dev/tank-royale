@@ -1,11 +1,11 @@
 using Newtonsoft.Json;
 
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Events
 {
   /// <summary>
   /// Event occurring when a bullet has been fired from a bot.
   /// </summary>
-  public sealed class BulletFiredEvent : Event
+  public sealed class BulletFiredEvent : BotEvent
   {
     /// <summary>Bullet that was fired.</summary>
     public BulletState Bullet { get; }

@@ -9,7 +9,7 @@ properties:
     type: string
   variant:
     type: string
-    description: Game variant, e.g. 'Tank Royale' for Robocode 2 Tank Royale
+    description: Game variant, e.g. 'Tank Royale' for Robocode Tank Royale
   version:
     type: string
     description: Game version, e.g. '1.0.0' using Semantic Versioning (https://semver.org/)

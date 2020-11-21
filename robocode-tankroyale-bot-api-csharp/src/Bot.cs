@@ -1,5 +1,7 @@
-using System.Linq;
+using System.Runtime.CompilerServices;
 using System;
+using Robocode.TankRoyale.BotApi.Events;
+using Robocode.TankRoyale.BotApi.Internal;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -7,9 +9,9 @@ namespace Robocode.TankRoyale.BotApi
   /// Abstract bot class provides convenient methods for movement, turning, and firing the gun.
   /// Most bots should inherit from this class.
   /// </summary>
-  public partial class Bot : BaseBot, IBot
+  public abstract class Bot : BaseBot, IBot
   {
-    readonly BotInternals __botInternals;
+    private readonly BotInternals __botInternals;
 
     // <inheritdoc/> does not work with the default constructor?
     /// <summary>
@@ -33,19 +35,19 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     public Bot() : base()
     {
-      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
+      __botInternals = new BotInternals(this, base.__baseBotInternals);
     }
 
     /// <inheritdoc/>
     public Bot(BotInfo botInfo) : base(botInfo)
     {
-      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
+      __botInternals = new BotInternals(this, base.__baseBotInternals);
     }
 
     /// <inheritdoc/>
     public Bot(BotInfo botInfo, Uri serverUrl) : base(botInfo, serverUrl)
     {
-      __botInternals = new BotInternals(this, base.__baseBotInternals.botEvents);
+      __botInternals = new BotInternals(this, base.__baseBotInternals);
     }
 
     /// <inheritdoc/>
@@ -57,21 +59,13 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void SetForward(double distance)
     {
-      if (Double.IsNaN(distance))
-      {
-        throw new ArgumentException("distance cannot be NaN");
-      }
-      __botInternals.distanceRemaining = distance;
-      double speed = __botInternals.GetNewSpeed(Speed, distance);
-      TargetSpeed = speed;
+      __botInternals.SetForward(distance);
     }
 
     /// <inheritdoc/>
     public void Forward(double distance)
     {
-      __botInternals.WaitIfStopped();
-      __botInternals.QueueForward(distance);
-      __botInternals.Await();
+      __botInternals.Forward(distance);
     }
 
     /// <inheritdoc/>
@@ -87,39 +81,18 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public double DistanceRemaining => __botInternals.distanceRemaining;
-
-    /// <inheritdoc/>
-    public void SetMaxSpeed(double maxSpeed)
-    {
-      if (maxSpeed < 0)
-      {
-        maxSpeed = 0;
-      }
-      else if (maxSpeed > ((IBot)this).MaxSpeed)
-      {
-        maxSpeed = ((IBot)this).MaxSpeed;
-      }
-      __botInternals.maxSpeed = maxSpeed;
-    }
+    public double DistanceRemaining => __botInternals.DistanceRemaining;
 
     /// <inheritdoc/>
     public void SetTurnLeft(double degrees)
     {
-      if (Double.IsNaN(degrees))
-      {
-        throw new ArgumentException("degrees cannot be NaN");
-      }
-      __botInternals.turnRemaining = degrees;
-      TurnRate = degrees;
+      __botInternals.SetTurnLeft(degrees);
     }
 
     /// <inheritdoc/>
     public void TurnLeft(double degrees)
     {
-      __botInternals.WaitIfStopped();
-      __botInternals.QueueTurn(degrees);
-      __botInternals.Await();
+      __botInternals.TurnLeft(degrees);
     }
 
     /// <inheritdoc/>
@@ -135,39 +108,18 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public double TurnRemaining => __botInternals.turnRemaining;
-
-    /// <inheritdoc/>
-    public void SetMaxTurnRate(double maxTurnRate)
-    {
-      if (maxTurnRate < 0)
-      {
-        maxTurnRate = 0;
-      }
-      else if (maxTurnRate > ((IBot)this).MaxTurnRate)
-      {
-        maxTurnRate = ((IBot)this).MaxTurnRate;
-      }
-      __botInternals.maxTurnRate = maxTurnRate;
-    }
+    public double TurnRemaining => __botInternals.TurnRemaining;
 
     /// <inheritdoc/>
     public void SetTurnGunLeft(double degrees)
     {
-      if (Double.IsNaN(degrees))
-      {
-        throw new ArgumentException("degrees cannot be NaN");
-      }
-      __botInternals.gunTurnRemaining = degrees;
-      GunTurnRate = degrees;
+      __botInternals.SetTurnGunLeft(degrees);
     }
 
     /// <inheritdoc/>
     public void TurnGunLeft(double degrees)
     {
-      __botInternals.WaitIfStopped();
-      __botInternals.QueueGunTurn(degrees);
-      __botInternals.Await();
+      __botInternals.TurnGunLeft(degrees);
     }
 
     /// <inheritdoc/>
@@ -183,39 +135,18 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public double GunTurnRemaining => __botInternals.gunTurnRemaining;
-
-    /// <inheritdoc/>
-    public void SetMaxGunTurnRate(double maxGunTurnRate)
-    {
-      if (maxGunTurnRate < 0)
-      {
-        maxGunTurnRate = 0;
-      }
-      else if (maxGunTurnRate > ((IBot)this).MaxGunTurnRate)
-      {
-        maxGunTurnRate = ((IBot)this).MaxGunTurnRate;
-      }
-      __botInternals.maxGunTurnRate = maxGunTurnRate;
-    }
+    public double GunTurnRemaining => __botInternals.GunTurnRemaining;
 
     /// <inheritdoc/>
     public void SetTurnRadarLeft(double degrees)
     {
-      if (Double.IsNaN(degrees))
-      {
-        throw new ArgumentException("degrees cannot be NaN");
-      }
-      __botInternals.radarTurnRemaining = degrees;
-      RadarTurnRate = degrees;
+      __botInternals.SetTurnRadarLeft(degrees);
     }
 
     /// <inheritdoc/>
     public void TurnRadarLeft(double degrees)
     {
-      __botInternals.WaitIfStopped();
-      __botInternals.QueueRadarTurn(degrees);
-      __botInternals.Await();
+      __botInternals.TurnRadarLeft(degrees);
     }
 
     /// <inheritdoc/>
@@ -231,58 +162,58 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public double RadarTurnRemaining => __botInternals.radarTurnRemaining;
-
-    /// <inheritdoc/>
-    public void SetMaxRadarTurnRate(double maxRadarTurnRate)
-    {
-      if (maxRadarTurnRate < 0)
-      {
-        maxRadarTurnRate = 0;
-      }
-      else if (maxRadarTurnRate > ((IBot)this).MaxRadarTurnRate)
-      {
-        maxRadarTurnRate = ((IBot)this).MaxRadarTurnRate;
-      }
-      __botInternals.maxRadarTurnRate = maxRadarTurnRate;
-    }
+    public double RadarTurnRemaining => __botInternals.RadarTurnRemaining;
 
     /// <inheritdoc/>
     public void Fire(double firepower)
     {
-      __botInternals.QueueFireGun(firepower);
-      __botInternals.Await();
+      __botInternals.Fire(firepower);
     }
 
     /// <inheritdoc/>
     public void Stop()
     {
-      __botInternals.QueueStop();
-      __botInternals.Await();
+      __botInternals.Stop();
     }
 
     /// <inheritdoc/>
     public void Resume()
     {
-      __botInternals.QueueResume();
-      __botInternals.Await();
+      __botInternals.Resume();
     }
 
     /// <inheritdoc/>
     public bool Scan()
     {
-      __botInternals.QueueScan();
-      __botInternals.Await();
-
-      return Events.Where(e => e is ScannedBotEvent).Any();
+      return __botInternals.Scan();
     }
 
     /// <inheritdoc/>
     public void WaitFor(Condition condition)
     {
-      __botInternals.QueueCondition(condition);
-      __botInternals.Await();
-      __botInternals.FireConditionMet(condition);
+      __botInternals.Await(condition.Test);
     }
+
+    // Preventing System.TypeLoadException: xxx does not have an implementation
+
+    public override double CalcBulletSpeed(double firepower) => base.CalcBulletSpeed(firepower);
+
+    public override double CalcGunHeat(double firepower) => base.CalcBulletSpeed(firepower);
+
+    public override double CalcBearing(double direction) => base.CalcBearing(direction);
+
+    public override double CalcGunBearing(double direction) => base.CalcGunBearing(direction);
+
+    public override double CalcRadarBearing(double direction) => base.CalcRadarBearing(direction);
+
+    public override double DirectionTo(double x, double y) => base.DirectionTo(x, y);
+
+    public override double BearingTo(double x, double y) => base.BearingTo(x, y);
+
+    public override double DistanceTo(double x, double y) => base.DirectionTo(x, y);
+
+    public override double NormalizeAbsoluteDegrees(double angle) => base.NormalizeAbsoluteDegrees(angle);
+
+    public override double NormalizeRelativeDegrees(double angle) => base.NormalizeRelativeDegrees(angle);
   }
 }

@@ -2,9 +2,8 @@ package dev.robocode.tankroyale.bot;
 
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.BotInfo;
-import dev.robocode.tankroyale.botapi.events.BotHitBotEvent;
+import dev.robocode.tankroyale.botapi.events.HitBotEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
-import dev.robocode.tankroyale.botapi.events.TickEvent;
 
 import java.io.IOException;
 
@@ -19,19 +18,19 @@ public class Walls extends Bot {
   boolean peek; // Don't turn if there's a robot there
   double moveAmount; // How much to move
 
-  boolean stopMoving; // flag for stop moving temporarily
-
   /** Main method starts our bot */
   public static void main(String[] args) throws IOException {
     new Walls().start();
   }
 
   /** Constructor, which loads the bot settings file */
-  protected Walls() throws IOException {
+  Walls() throws IOException {
     super(BotInfo.fromFile("walls.properties"));
   }
 
-  /** run: This method runs our bot program, where each command is executed one at a time in a loop. */
+  /**
+   * run: This method runs our bot program, where each command is executed one at a time in a loop.
+   */
   @Override
   public void run() {
     // Set colors
@@ -58,30 +57,20 @@ public class Walls extends Bot {
 
     // Main loop
     while (isRunning()) {
-      if (stopMoving) {
-        go(); // Do nothing this turn, but let the turn pass
-      } else {
-        // Peek before we turn when forward() completes.
-        peek = true;
-        // Move up the wall
-        forward(moveAmount);
-        // Don't peek now
-        peek = false;
-        // Turn to the next wall
-        turnRight(90);
-      }
+      // Peek before we turn when forward() completes.
+      peek = true;
+      // Move up the wall
+      forward(moveAmount);
+      // Don't peek now
+      peek = false;
+      // Turn to the next wall
+      turnRight(90);
     }
-  }
-
-  /** onTick: Every new turn, reset/remove the interrupt */
-  @Override
-  public void onTick(TickEvent e) {
-    stopMoving = false; // Reset the stopMoving flag automatically each turn. Only onScannedBot() will set it
   }
 
   /** onHitBot: Move away a bit. */
   @Override
-  public void onHitBot(BotHitBotEvent e) {
+  public void onHitBot(HitBotEvent e) {
     // If he's in front of us, set back up a bit.
     double bearing = bearingTo(e.getX(), e.getY());
     if (bearing > -90 && bearing < 90) {
@@ -95,9 +84,11 @@ public class Walls extends Bot {
   @Override
   public void onScannedBot(ScannedBotEvent e) {
     setFire(2);
-
+    // Note that scan is called automatically when the robot is turning.
+    // By calling it manually here, we make sure we generate another scan event if there's a robot
+    // on the next wall, so that we do not start moving up it until it's gone.
     if (peek) {
-      stopMoving = true; // interrupt/stop turning the gun in the main loop in the run() method
+      scan();
     }
   }
 }

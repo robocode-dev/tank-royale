@@ -5,8 +5,6 @@ import dev.robocode.tankroyale.bootstrap.util.Env
 import dev.robocode.tankroyale.bootstrap.util.OSUtil
 import dev.robocode.tankroyale.bootstrap.util.OSUtil.OSType.MacOS
 import dev.robocode.tankroyale.bootstrap.util.OSUtil.OSType.Windows
-import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.UnstableDefault
 import java.io.IOException
 import java.lang.Thread.sleep
 import java.nio.file.Files
@@ -15,8 +13,6 @@ import java.nio.file.Path
 import java.util.function.Predicate
 import java.util.stream.Collectors.toList
 
-@UnstableDefault
-@ImplicitReflectionSerializer
 class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
 
     fun runBots(filenames: Array<String>) {

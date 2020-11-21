@@ -1,19 +1,17 @@
 package dev.robocode.tankroyale.ui.desktop.model
 
-import kotlinx.serialization.Polymorphic
-import kotlinx.serialization.PolymorphicSerializer
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 
 sealed class MessageConstants {
     companion object {
-        val Json = Json(
-            configuration = JsonConfiguration(classDiscriminator = "\$type"),
-            context = messageModule
-        )
+        val json = Json {
+            classDiscriminator = "\$type"
+            serializersModule = messageModule
+        }
     }
 }
 
@@ -28,7 +26,7 @@ sealed class Event : Message() {
 
 @Serializable
 @SerialName("BotDeathEvent")
-data class BotDeathEvent(
+class BotDeathEvent(
     override val turnNumber: Int,
     val victimId: Int
 ) : Event()
@@ -187,38 +185,38 @@ class ResumeGame : Message()
 
 val messageModule = SerializersModule {
     polymorphic(Message::class) {
-        BotDeathEvent::class with BotDeathEvent.serializer()
-        BotHitWallEvent::class with BotHitWallEvent.serializer()
-        BotHitBotEvent::class with BotHitBotEvent.serializer()
-        BotListUpdate::class with BotListUpdate.serializer()
-        BulletFiredEvent::class with BulletFiredEvent.serializer()
-        BulletHitBotEvent::class with BulletHitBotEvent.serializer()
-        BulletHitBulletEvent::class with BulletHitBulletEvent.serializer()
-        BulletHitWallEvent::class with BulletHitWallEvent.serializer()
-        ControllerHandshake::class with ControllerHandshake.serializer()
-        GameAbortedEvent::class with GameAbortedEvent.serializer()
-        GameEndedEvent::class with GameEndedEvent.serializer()
-        GamePausedEvent::class with GamePausedEvent.serializer()
-        GameResumedEvent::class with GameResumedEvent.serializer()
-        GameStartedEvent::class with GameStartedEvent.serializer()
-        HitByBulletEvent::class with HitByBulletEvent.serializer()
-        PauseGame::class with PauseGame.serializer()
-        ResumeGame::class with ResumeGame.serializer()
-        ScannedBotEvent::class with ScannedBotEvent.serializer()
-        ServerHandshake::class with ServerHandshake.serializer()
-        StartGame::class with StartGame.serializer()
-        StopGame::class with StopGame.serializer()
-        TickEvent::class with TickEvent.serializer()
+        subclass(BotDeathEvent::class)
+        subclass(BotDeathEvent::class)
+        subclass(BotHitWallEvent::class)
+        subclass(BotHitBotEvent::class)
+        subclass(BotListUpdate::class)
+        subclass(BulletFiredEvent::class)
+        subclass(BulletHitBotEvent::class)
+        subclass(BulletHitBulletEvent::class)
+        subclass(BulletHitWallEvent::class)
+        subclass(ControllerHandshake::class)
+        subclass(GameAbortedEvent::class)
+        subclass(GameEndedEvent::class)
+        subclass(GamePausedEvent::class)
+        subclass(GameResumedEvent::class)
+        subclass(GameStartedEvent::class)
+        subclass(HitByBulletEvent::class)
+        subclass(PauseGame::class)
+        subclass(ResumeGame::class)
+        subclass(ScannedBotEvent::class)
+        subclass(ServerHandshake::class)
+        subclass(StartGame::class)
+        subclass(StopGame::class)
+        subclass(TickEvent::class)
     }
 }
 
-
 fun main() {
-    val json= MessageConstants.Json;
+    val json= MessageConstants.json
 
-    val str = json.stringify(PolymorphicSerializer(Message::class), BotDeathEvent(1, 2))
+    val str = json.encodeToString(PolymorphicSerializer(Message::class), BotDeathEvent(1, 2))
     println(str)
 
-    val message = json.parse(PolymorphicSerializer(Message::class), str)
+    val message = json.decodeFromString(PolymorphicSerializer(Message::class), str)
     println(message)
 }

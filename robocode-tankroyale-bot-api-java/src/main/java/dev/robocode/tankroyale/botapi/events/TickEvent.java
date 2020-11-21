@@ -6,7 +6,7 @@ import dev.robocode.tankroyale.botapi.BulletState;
 import java.util.Collection;
 
 /** Event occurring whenever a new turn in a round has started. */
-public final class TickEvent extends Event {
+public final class TickEvent extends BotEvent {
 
   /** Current round number. */
   private final int roundNumber;
@@ -21,7 +21,7 @@ public final class TickEvent extends Event {
   private final Collection<BulletState> bulletStates;
 
   /** Events occurring in the turn relevant for this bot. */
-  private final Collection<? extends Event> events;
+  private final Collection<? extends BotEvent> events;
 
   /**
    * Initializes a new instance of the TickEvent class.
@@ -39,7 +39,7 @@ public final class TickEvent extends Event {
       int enemyCount,
       BotState botState,
       Collection<BulletState> bulletStates,
-      Collection<? extends Event> events) {
+      Collection<? extends BotEvent> events) {
     super(turnNumber);
     this.roundNumber = roundNumber;
     this.enemyCount = enemyCount;
@@ -89,7 +89,7 @@ public final class TickEvent extends Event {
    *
    * @return The events occurring in the turn relevant for this bot.
    */
-  public Collection<? extends Event> getEvents() {
+  public Collection<? extends BotEvent> getEvents() {
     return events;
   }
 }

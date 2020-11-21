@@ -1,14 +1,13 @@
 using Newtonsoft.Json;
 
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Events
 {
   /// <summary>
   /// Event occurring when a bot has collided with another bot.
   /// </summary>
-  public sealed class BotHitBotEvent : Event
+  public sealed class HitBotEvent : BotEvent
   {
     /// <summary>The ID of the other bot that your bot has collided with.</summary>
-    [Newtonsoft.Json.JsonProperty("victimId", Required = Newtonsoft.Json.Required.Always)]
     public int VictimId { get; }
 
     /// <summary>Remaining energy level of the victim bot.</summary>
@@ -33,7 +32,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="y">Y coordinate of victim bot.</param>
     /// <param name="isRammed">Flag specifying, if the victim bot got rammed.</param>
     [JsonConstructor]
-    public BotHitBotEvent(int turnNumber, int victimId, double energy, double x, double y, bool isRammed) : base(turnNumber) =>
+    public HitBotEvent(int turnNumber, int victimId, double energy, double x, double y, bool isRammed) : base(turnNumber) =>
       (VictimId, Energy, X, Y, IsRammed) = (victimId, energy, x, y, isRammed);
   }
 }

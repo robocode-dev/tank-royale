@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.botapi.events;
 
 /** Event occurring when a bot has won the round. */
-public final class WonRoundEvent extends Event {
+public final class WonRoundEvent extends BotEvent {
 
   /**
    * Initializes a new instance of the WonRoundEvent class.

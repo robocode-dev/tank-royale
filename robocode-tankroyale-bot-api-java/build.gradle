@@ -6,7 +6,7 @@ plugins {
 //    id "com.github.hierynomus.license" version "0.15.0"
 }
 group = 'dev.robocode.tankroyale'
-version = '0.6.36'
+version = '0.7.0'
 
 /*
 license {

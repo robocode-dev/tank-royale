@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Robocode.TankRoyale.BotApi.Events;
+using Robocode.TankRoyale.BotApi.Internal;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -8,7 +10,7 @@ namespace Robocode.TankRoyale.BotApi
   /// notifications through the event handlers. Most bots can inherit from this class to get access
   /// to basic methods.
   /// </summary>
-  public partial class BaseBot : IBaseBot
+  public abstract class BaseBot : IBaseBot
   {
     internal readonly BaseBotInternals __baseBotInternals;
 
@@ -60,26 +62,25 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void Start()
     {
-      __baseBotInternals.Connect();
-      __baseBotInternals.exitEvent.WaitOne();
+      __baseBotInternals.Start();
     }
 
     /// <inheritdoc/>
     public void Go()
     {
-      __baseBotInternals.SendIntent();
+      __baseBotInternals.Execute();
     }
 
     /// <inheritdoc/>
-    public String Variant
+    public string Variant
     {
-      get => __baseBotInternals.ServerHandshake.Variant;
+      get => __baseBotInternals.Variant;
     }
 
     /// <inheritdoc/>
-    public String Version
+    public string Version
     {
-      get => __baseBotInternals.ServerHandshake.Version;
+      get => __baseBotInternals.Version;
     }
 
     /// <inheritdoc/>
@@ -89,7 +90,7 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public String GameType
+    public string GameType
     {
       get => __baseBotInternals.GameSetup.GameType;
     }
@@ -133,11 +134,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public int TimeLeft
     {
-      get
-      {
-        long passesMicroSeconds = (DateTime.Now.Ticks - __baseBotInternals.TicksStart) / 10;
-        return (int)(__baseBotInternals.GameSetup.TurnTimeout - passesMicroSeconds);
-      }
+      get => __baseBotInternals.TimeLeft;
     }
 
     /// <inheritdoc/>
@@ -219,7 +216,7 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public IEnumerable<Event> Events
+    public IEnumerable<BotEvent> Events
     {
       get => __baseBotInternals.CurrentTick.Events;
     }
@@ -239,6 +236,12 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
+    public void SetMaxTurnRate(double maxTurnRate)
+    {
+      __baseBotInternals.SetMaxTurnRate(maxTurnRate);
+    }
+
+    /// <inheritdoc/>
     public double GunTurnRate
     {
       set
@@ -250,6 +253,12 @@ namespace Robocode.TankRoyale.BotApi
         __baseBotInternals.BotIntent.GunTurnRate = value;
       }
       get => __baseBotInternals.CurrentTick.BotState.GunTurnRate;
+    }
+
+    /// <inheritdoc/>
+    public void SetMaxGunTurnRate(double maxGunTurnRate)
+    {
+      __baseBotInternals.SetMaxGunTurnRate(maxGunTurnRate);
     }
 
     /// <inheritdoc/>
@@ -267,6 +276,12 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
+    public void SetMaxRadarTurnRate(double maxRadarTurnRate)
+    {
+      __baseBotInternals.SetMaxRadarTurnRate(maxRadarTurnRate);
+    }
+
+    /// <inheritdoc/>
     public double TargetSpeed
     {
       set
@@ -281,24 +296,21 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public bool SetFire(double firepower)
+    public void SetMaxSpeed(double maxSpeed)
     {
-      if (Double.IsNaN(firepower))
-      {
-        throw new ArgumentException("Firepower cannot be NaN");
-      }
-      if (GunHeat > 0)
-      {
-        return false; // cannot fire yet
-      }
-      __baseBotInternals.BotIntent.Firepower = firepower;
-      return true;
+      __baseBotInternals.SetMaxSpeed(maxSpeed);
     }
 
     /// <inheritdoc/>
-    public void SetScan(bool doScan)
+    public bool SetFire(double firepower)
     {
-      __baseBotInternals.botIntent.Scan = doScan;
+      return __baseBotInternals.SetFire(firepower);
+    }
+
+    /// <inheritdoc/>
+    public void SetScan(bool rescan)
+    {
+      __baseBotInternals.BotIntent.Scan = rescan;
     }
 
     /// <inheritdoc/>
@@ -313,6 +325,18 @@ namespace Robocode.TankRoyale.BotApi
     {
       set => __baseBotInternals.BotIntent.AdjustRadarForGunTurn = value;
       get => __baseBotInternals.BotIntent.AdjustRadarForGunTurn ?? false;
+    }
+
+    /// <inheritdoc/>
+    public void AddCustomEvent(Condition condition)
+    {
+      __baseBotInternals.AddCondition(condition);
+    }
+
+    /// <inheritdoc/>
+    public void RemoveCustomEvent(Condition condition)
+    {
+      __baseBotInternals.RemoveCondition(condition);
     }
 
     /// <inheritdoc/>
@@ -361,31 +385,31 @@ namespace Robocode.TankRoyale.BotApi
     public double CalcMaxTurnRate(double speed) => ((IBaseBot)this).MaxTurnRate - 0.75 * Math.Abs(speed);
 
     /// <inheritdoc/>
-    public double CalcBulletSpeed(double firepower) => 20 - 3 * firepower;
+    public virtual double CalcBulletSpeed(double firepower) => 20 - 3 * firepower;
 
     /// <inheritdoc/>
-    public double CalcGunHeat(double firepower) => 1 + (firepower / 5);
+    public virtual double CalcGunHeat(double firepower) => 1 + (firepower / 5);
 
     /// <inheritdoc/>
-    public double CalcBearing(double direction) => NormalizeRelativeDegrees(direction - Direction);
+    public virtual double CalcBearing(double direction) => NormalizeRelativeDegrees(direction - Direction);
 
     /// <inheritdoc/>
-    public double CalcGunBearing(double direction) => NormalizeRelativeDegrees(direction - GunDirection);
+    public virtual double CalcGunBearing(double direction) => NormalizeRelativeDegrees(direction - GunDirection);
 
     /// <inheritdoc/>
-    public double CalcRadarBearing(double direction) => NormalizeRelativeDegrees(direction - RadarDirection);
+    public virtual double CalcRadarBearing(double direction) => NormalizeRelativeDegrees(direction - RadarDirection);
 
     /// <inheritdoc/>
-    public double NormalizeAbsoluteDegrees(double angle) => (angle %= 360) >= 0 ? angle : (angle + 360);
+    public virtual double NormalizeAbsoluteDegrees(double angle) => (angle %= 360) >= 0 ? angle : (angle + 360);
 
     /// <inheritdoc/>
-    public double DirectionTo(double x, double y) => NormalizeAbsoluteDegrees(180 * Math.Atan2(y - Y, x - X) / Math.PI);
+    public virtual double DirectionTo(double x, double y) => NormalizeAbsoluteDegrees(180 * Math.Atan2(y - Y, x - X) / Math.PI);
 
     /// <inheritdoc/>
-    public double BearingTo(double x, double y) => NormalizeRelativeDegrees(DirectionTo(x, y) - Direction);
+    public virtual double BearingTo(double x, double y) => NormalizeRelativeDegrees(DirectionTo(x, y) - Direction);
 
     /// <inheritdoc/>
-    public double DistanceTo(double x, double y)
+    public virtual double DistanceTo(double x, double y)
     {
       var dx = x - X;
       var dy = y - Y;
@@ -393,7 +417,7 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public double NormalizeRelativeDegrees(double angle) => (angle %= 360) >= 0 ?
+    public virtual double NormalizeRelativeDegrees(double angle) => (angle %= 360) >= 0 ?
         ((angle < 180) ? angle : (angle - 360)) :
         ((angle >= -180) ? angle : (angle + 360));
 
@@ -416,16 +440,16 @@ namespace Robocode.TankRoyale.BotApi
     public virtual void OnTick(TickEvent tickEvent) { }
 
     /// <inheritdoc/>
-    public virtual void OnBotDeath(BotDeathEvent botDeathEvent) { }
+    public virtual void OnBotDeath(DeathEvent botDeathEvent) { }
 
     /// <inheritdoc/>
-    public virtual void OnDeath(BotDeathEvent botDeathEvent) { }
+    public virtual void OnDeath(DeathEvent botDeathEvent) { }
 
     /// <inheritdoc/>
-    public virtual void OnHitBot(BotHitBotEvent botHitBotEvent) { }
+    public virtual void OnHitBot(HitBotEvent botHitBotEvent) { }
 
     /// <inheritdoc/>
-    public virtual void OnHitWall(BotHitWallEvent botHitWallEvent) { }
+    public virtual void OnHitWall(HitWallEvent botHitWallEvent) { }
 
     /// <inheritdoc/>
     public virtual void OnBulletFired(BulletFiredEvent bulletFiredEvent) { }
@@ -452,6 +476,6 @@ namespace Robocode.TankRoyale.BotApi
     public virtual void OnWonRound(WonRoundEvent wonRoundEvent) { }
 
     /// <inheritdoc/>
-    public virtual void OnCondition(Condition condition) { }
+    public virtual void OnCustomEvent(CustomEvent customEvent) { }
   }
 }

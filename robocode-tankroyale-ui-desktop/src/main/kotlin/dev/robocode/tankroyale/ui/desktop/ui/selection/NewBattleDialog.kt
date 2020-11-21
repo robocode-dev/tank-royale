@@ -12,16 +12,11 @@ import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.ui.desktop.ui.extensions.JListExt.onChanged
 import dev.robocode.tankroyale.ui.desktop.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.ui.desktop.util.Event
-import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.EventQueue
 import javax.swing.*
 
-
-@UnstableDefault
-@ImplicitReflectionSerializer
 object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("select_bots_dialog")) {
 
     init {
@@ -45,8 +40,6 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
     }
 }
 
-@UnstableDefault
-@ImplicitReflectionSerializer
 class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
     // Private events
     private val onStartBattle = Event<JButton>()
@@ -120,8 +113,6 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
         }
     }
 
-    @ImplicitReflectionSerializer
-    @UnstableDefault
     private fun startGame() {
         isVisible = true
 
@@ -133,8 +124,6 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
     }
 }
 
-@UnstableDefault
-@ImplicitReflectionSerializer
 private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 

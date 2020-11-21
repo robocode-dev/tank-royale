@@ -5,16 +5,12 @@ import dev.robocode.tankroyale.ui.desktop.model.BotInfo
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.ui.desktop.util.Event
-import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.UnstableDefault
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
-@UnstableDefault
-@ImplicitReflectionSerializer
 class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
     val botsDirectoryListModel = DefaultListModel<BotInfo>()

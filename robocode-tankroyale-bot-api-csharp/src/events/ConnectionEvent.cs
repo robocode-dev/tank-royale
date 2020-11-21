@@ -1,11 +1,11 @@
 using System;
 
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Events
 {
   /// <summary>
   /// Base class of all connection events.
   /// </summary>
-  public abstract class ConnectionEvent
+  public abstract class ConnectionEvent : IEvent
   {
     /// <summary>URI of the server.</summary>
     public Uri ServerUri { get; }

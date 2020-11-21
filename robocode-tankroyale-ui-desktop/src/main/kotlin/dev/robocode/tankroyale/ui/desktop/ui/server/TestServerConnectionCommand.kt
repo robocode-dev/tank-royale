@@ -3,8 +3,6 @@ package dev.robocode.tankroyale.ui.desktop.ui.server
 import dev.robocode.tankroyale.ui.desktop.client.Client
 import dev.robocode.tankroyale.ui.desktop.util.Event
 import dev.robocode.tankroyale.ui.desktop.util.ICommand
-import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.UnstableDefault
 import java.io.Closeable
 
 class TestServerConnectionCommand(private val serverUrl: String) : ICommand {
@@ -14,8 +12,6 @@ class TestServerConnectionCommand(private val serverUrl: String) : ICommand {
 
     private val disposables = ArrayList<Closeable>()
 
-    @UnstableDefault
-    @ImplicitReflectionSerializer
     override fun execute() {
         dispose()
 

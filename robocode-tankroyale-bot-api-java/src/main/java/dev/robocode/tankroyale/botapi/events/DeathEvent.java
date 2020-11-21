@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.botapi.events;
 
 /** Event occurring when a bot has died. */
 @SuppressWarnings("unused")
-public final class BotDeathEvent extends Event {
+public final class DeathEvent extends BotEvent {
 
   /** ID of the bot that has died. */
   private final int victimId;
@@ -13,7 +13,7 @@ public final class BotDeathEvent extends Event {
    * @param turnNumber is the turn number when the bot died.
    * @param victimId is the ID of the bot that has died.
    */
-  public BotDeathEvent(int turnNumber, int victimId) {
+  public DeathEvent(int turnNumber, int victimId) {
     super(turnNumber);
     this.victimId = victimId;
   }

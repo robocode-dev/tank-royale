@@ -1,15 +1,11 @@
 package dev.robocode.tankroyale.bootstrap.commands
 
 import dev.robocode.tankroyale.bootstrap.model.BotEntry
-import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.UnstableDefault
 import java.nio.file.Files
 import java.nio.file.Files.list
 import java.nio.file.Path
 import java.util.function.Predicate
 
-@UnstableDefault
-@ImplicitReflectionSerializer
 class FilenamesCommand(private val botPaths: List<Path>): Command(botPaths) {
 
     fun listBotEntries(gameTypesCSV: String?): List<BotEntry> {

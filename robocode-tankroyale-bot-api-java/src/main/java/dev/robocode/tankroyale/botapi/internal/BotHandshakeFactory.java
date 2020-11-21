@@ -1,14 +1,14 @@
-package dev.robocode.tankroyale.botapi.factory;
+package dev.robocode.tankroyale.botapi.internal;
 
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.schema.BotHandshake;
 
 import java.util.ArrayList;
 
-/** Utility class used fro creating bot handshakes. */
-public final class BotHandshakeFactory {
+/** Utility class used for creating bot handshakes. */
+final class BotHandshakeFactory {
 
-  public static BotHandshake create(BotInfo botInfo) {
+  static BotHandshake create(BotInfo botInfo) {
     BotHandshake handshake = new BotHandshake();
     handshake.set$type(BotHandshake.$type.BOT_HANDSHAKE);
     handshake.setName(botInfo.getName());

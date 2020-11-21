@@ -1,13 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Events
 {
   /// <summary>
   /// Event occurring when game has just ended.
   /// </summary>
-  public sealed class GameEndedEvent : IMessage
+  public sealed class GameEndedEvent : IEvent
   {
     /// <summary>Number of rounds played.</summary>
     public int NumberOfRounds { get; }

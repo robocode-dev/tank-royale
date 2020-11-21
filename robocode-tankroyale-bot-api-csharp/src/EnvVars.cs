@@ -9,36 +9,36 @@ namespace Robocode.TankRoyale.BotApi
   public static class EnvVars
   {
     /// <summary>Name of environment variable for server URL.</summary>
-    public const string SERVER_URL = "ROBOCODE_SERVER_URL";
+    public const string ServerUrl = "ROBOCODE_SERVER_URL";
 
     /// <summary>Name of environment variable for bot name.</summary>
-    public const string BOT_NAME = "BOT_NAME";
+    public const string BotName = "BOT_NAME";
 
     /// <summary>Name of environment variable for bot version.</summary>
-    public const string BOT_VERSION = "BOT_VERSION";
+    public const string BotVersion = "BOT_VERSION";
 
     /// <summary>Name of environment variable for bot author.</summary>
-    public const string BOT_AUTHOR = "BOT_AUTHOR";
+    public const string BotAuthor = "BOT_AUTHOR";
 
     /// <summary>Name of environment variable for bot description.</summary>
-    public const string BOT_DESCRIPTION = "BOT_DESCRIPTION";
+    public const string BotDescription = "BOT_DESCRIPTION";
 
     /// <summary>Name of environment variable for bot url.</summary>
-    public const string BOT_URL = "BOT_URL";
+    public const string BotUrl = "BOT_URL";
 
     /// <summary>Name of environment variable for bot country code.</summary>
-    public const string BOT_COUNTRY_CODE = "BOT_COUNTRY_CODE";
+    public const string BotCountryCode = "BOT_COUNTRY_CODE";
 
     /// <summary>Name of environment variable for bot game types.</summary>
-    public const string BOT_GAME_TYPES = "BOT_GAME_TYPES";
+    public const string BotGameTypes = "BOT_GAME_TYPES";
 
     /// <summary>Name of environment variable for bot platform.</summary>
-    public const string BOT_PLATFORM = "BOT_PLATFORM";
+    public const string BotPlatform = "BOT_PLATFORM";
 
     /// <summary>Name of environment variable for bot programming language.</summary>
-    public const string BOT_PROG_LANG = "BOT_PROG_LANG";
+    public const string BotProgLang = "BOT_PROG_LANG";
 
-    private const string NO_ENV_VALUE = "No value for environment variable: ";
+    private const string NoEnvValue = "No value for environment variable: ";
 
     /// <summary>
     /// Gets the bot info from environment variables.
@@ -48,19 +48,19 @@ namespace Robocode.TankRoyale.BotApi
     {
       if (string.IsNullOrWhiteSpace(GetBotName()))
       {
-        throw new BotException(NO_ENV_VALUE + BOT_NAME);
+        throw new BotException(NoEnvValue + BotName);
       }
       if (string.IsNullOrWhiteSpace(GetBotVersion()))
       {
-        throw new BotException(NO_ENV_VALUE + BOT_VERSION);
+        throw new BotException(NoEnvValue + BotVersion);
       }
       if (string.IsNullOrWhiteSpace(GetBotAuthor()))
       {
-        throw new BotException(NO_ENV_VALUE + BOT_AUTHOR);
+        throw new BotException(NoEnvValue + BotAuthor);
       }
       if (GetBotGameTypes().Count == 0)
       {
-        throw new BotException(NO_ENV_VALUE + BOT_GAME_TYPES);
+        throw new BotException(NoEnvValue + BotGameTypes);
       }
       return new BotInfo(
         GetBotName(),
@@ -81,7 +81,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns>The server URL.</returns>
     public static string GetServerUrl()
     {
-      return Environment.GetEnvironmentVariable(SERVER_URL);
+      return Environment.GetEnvironmentVariable(ServerUrl);
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns>The bot name.</returns>
     public static string GetBotName()
     {
-      return Environment.GetEnvironmentVariable(BOT_NAME);
+      return Environment.GetEnvironmentVariable(BotName);
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns>The bot version.</returns>
     public static string GetBotVersion()
     {
-      return Environment.GetEnvironmentVariable(BOT_VERSION);
+      return Environment.GetEnvironmentVariable(BotVersion);
     }
 
     /// <summary>
@@ -108,7 +108,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns>The bot author.</returns>
     public static string GetBotAuthor()
     {
-      return Environment.GetEnvironmentVariable(BOT_AUTHOR);
+      return Environment.GetEnvironmentVariable(BotAuthor);
     }
 
     /// <summary>
@@ -117,7 +117,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns>The bot description.</returns>
     public static string GetBotDescription()
     {
-      return Environment.GetEnvironmentVariable(BOT_DESCRIPTION);
+      return Environment.GetEnvironmentVariable(BotDescription);
     }
 
     /// <summary>
@@ -126,7 +126,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns>The bot URL.</returns>
     public static string GetBotUrl()
     {
-      return Environment.GetEnvironmentVariable(BOT_URL);
+      return Environment.GetEnvironmentVariable(BotUrl);
     }
 
     /// <summary>
@@ -135,7 +135,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns>The bot country code.</returns>
     public static string GetBotCountryCode()
     {
-      return Environment.GetEnvironmentVariable(BOT_COUNTRY_CODE);
+      return Environment.GetEnvironmentVariable(BotCountryCode);
     }
 
     /// <summary>
@@ -144,7 +144,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns>The list of game types supported.</returns>
     public static ICollection<string> GetBotGameTypes()
     {
-      var gameTypes = Environment.GetEnvironmentVariable(BOT_GAME_TYPES);
+      var gameTypes = Environment.GetEnvironmentVariable(BotGameTypes);
       if (string.IsNullOrWhiteSpace(gameTypes))
       {
         return new List<string>();
@@ -158,7 +158,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns>The platform used for running the game.</returns>
     public static string GetBotPlatform()
     {
-      return Environment.GetEnvironmentVariable(BOT_PLATFORM);
+      return Environment.GetEnvironmentVariable(BotPlatform);
     }
 
     /// <summary>
@@ -167,7 +167,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns>The platform used for running the game.</returns>
     public static string GetBotProgrammingLang()
     {
-      return Environment.GetEnvironmentVariable(BOT_PROG_LANG);
+      return Environment.GetEnvironmentVariable(BotProgLang);
     }
   }
 }

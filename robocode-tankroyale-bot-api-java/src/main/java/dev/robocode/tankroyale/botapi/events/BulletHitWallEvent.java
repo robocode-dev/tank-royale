@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.botapi.BulletState;
 
 /** Event occurring when a bullet has hit a wall. */
 @SuppressWarnings("unused")
-public final class BulletHitWallEvent extends Event {
+public final class BulletHitWallEvent extends BotEvent {
 
   /** Bullet that has hit a wall. */
   private final BulletState bullet;

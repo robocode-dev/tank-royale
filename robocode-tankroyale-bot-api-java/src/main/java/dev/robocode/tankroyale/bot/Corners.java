@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.bot;
 
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.BotInfo;
-import dev.robocode.tankroyale.botapi.events.BotDeathEvent;
+import dev.robocode.tankroyale.botapi.events.DeathEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class Corners extends Bot {
   }
 
   /** Constructor, which loads the bot settings file */
-  protected Corners() throws IOException {
+  Corners() throws IOException {
     super(BotInfo.fromFile("corners.properties"));
   }
 
@@ -116,7 +116,7 @@ public class Corners extends Bot {
 
   /** We died. Figure out if we need to switch to another corner. */
   @Override
-  public void onDeath(BotDeathEvent e) {
+  public void onDeath(DeathEvent e) {
     // Well, others should never be 0, but better safe than sorry.
     if (enemies == 0) {
       return;

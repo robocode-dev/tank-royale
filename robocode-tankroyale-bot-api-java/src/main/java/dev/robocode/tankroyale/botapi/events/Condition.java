@@ -1,10 +1,14 @@
-package dev.robocode.tankroyale.botapi;
+package dev.robocode.tankroyale.botapi.events;
+
+import dev.robocode.tankroyale.botapi.IBaseBot;
+import dev.robocode.tankroyale.botapi.IBot;
 
 /**
- * The Condition class is used for stopping program execution temporarily and wait for a specific
- * condition to be met before continuing the program execution. Program execution will be stopped by
- * the {@link Bot#waitFor(Condition)} method, which will wait until the condition is met. When the
- * condition is fulfilled, the {@link Bot#onCondition(Condition)} event handler will be triggered.
+ * The Condition class is used for testing if a specific condition is met. For example, program
+ * execution can be blocked by using the {@link IBot#waitFor(Condition)} method, which will wait
+ * until a condition is met. A condition can also used to trigger a custom event by adding a custom
+ * event handler using the method {@link IBaseBot#addCustomEvent(Condition)} that will trigger
+ * {@link IBaseBot#onCustomEvent(CustomEvent)} when the condition is fulfilled.
  *
  * <p>Here is an example of how to use the condition:
  *
@@ -49,7 +53,7 @@ public abstract class Condition {
    * condition will be given a name of your choice.
    *
    * @param name is the name of the condition used for identifying a specific condition between
-   *     multiple conditions with the {@link Bot#onCondition(Condition)} event handler.
+   *     multiple conditions with the {@link IBaseBot#onCustomEvent(CustomEvent)} event handler.
    */
   public Condition(String name) {
     this.name = name;
@@ -59,7 +63,7 @@ public abstract class Condition {
    * Returns the name of this condition, if a name has been provided for it.
    *
    * @return The name of this condition or {@code null} if no name has been provided for it.
-   * @see Bot#onCondition(Condition)
+   * @see IBaseBot#onCustomEvent(CustomEvent) 
    */
   public String getName() {
     return name;

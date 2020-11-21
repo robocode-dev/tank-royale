@@ -182,6 +182,8 @@ public class ModelUpdater {
 
 		bullets.clear();
 
+		botBuilderMap.clear();
+		botIntentsMap.clear();
 		initializeBotStates();
 
 		scoreTracker.prepareRound();

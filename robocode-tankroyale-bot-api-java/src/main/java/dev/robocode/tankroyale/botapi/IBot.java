@@ -1,6 +1,8 @@
 package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
+import dev.robocode.tankroyale.botapi.events.Condition;
+import dev.robocode.tankroyale.botapi.events.CustomEvent;
 
 /**
  * Interface for a bot that extends the core API with convenient methods for movement, turning, and
@@ -176,30 +178,6 @@ public interface IBot extends IBaseBot {
   double getDistanceRemaining();
 
   /**
-   * Sets the maximum speed which applies when moving forward and backward. The maximum speed must
-   * be an absolute value from 0 to {@link #MAX_SPEED}, both values are included. If the input speed
-   * is negative, the max speed will be cut to zero. If the input speed is above {@link #MAX_SPEED},
-   * the max speed will be set to {@link #MAX_SPEED}.
-   *
-   * <p>If for example the maximum speed is set to 5, then the bot will be able to move backwards
-   * with a speed down to -5 units per turn and up to 5 units per turn when moving forward.
-   *
-   * <p>This method will first be executed when {@link #go()} is called making it possible to call
-   * other set methods after execution. This makes it possible to set the bot to move, turn the
-   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
-   * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
-   * <strong>setter</strong> methods only prior to calling {@link #go()}.
-   *
-   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
-   * counts.
-   *
-   * @param maxSpeed is the new maximum speed
-   * @see #setForward(double)
-   * @see #setBack(double)
-   */
-  void setMaxSpeed(double maxSpeed);
-
-  /**
    * Set the bot to turn to the left (following the increasing degrees of the <a
    * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
    * amount of degrees. That is, when {@link #getTurnRemaining()} is 0. The amount of degrees to
@@ -316,34 +294,6 @@ public interface IBot extends IBaseBot {
    * @see #turnRight(double)
    */
   double getTurnRemaining();
-
-  /**
-   * Sets the maximum turn rate which applies to turn the bot to the left or right. The maximum turn
-   * rate must be an absolute value from 0 to {@link #MAX_TURN_RATE}, both values are included. If
-   * the input turn rate is negative, the max turn rate will be cut to zero. If the input turn rate
-   * is above {@link #MAX_TURN_RATE}, the max turn rate will be set to {@link #MAX_TURN_RATE}.
-   *
-   * <p>If for example the max turn rate is set to 5, then the bot will be able to turn left or
-   * right with a turn rate down to -5 degrees per turn when turning right, and up to 5 degrees per
-   * turn when turning left.
-   *
-   * <p>This method will first be executed when {@link #go()} is called making it possible to call
-   * other set methods after execution. This makes it possible to set the bot to move, turn the
-   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
-   * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
-   * <strong>setter</strong> methods only prior to calling {@link #go()}.
-   *
-   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
-   * counts.
-   *
-   * @param maxTurnRate is the new maximum turn rate
-   * @see #setTurnRate(double)
-   * @see #setTurnLeft(double)
-   * @see #setTurnRight(double)
-   * @see #turnLeft(double)
-   * @see #turnRight(double)
-   */
-  void setMaxTurnRate(double maxTurnRate);
 
   /**
    * Set the gun to turn to the left (following the increasing degrees of the <a
@@ -463,35 +413,6 @@ public interface IBot extends IBaseBot {
    * @see #turnGunRight(double)
    */
   double getGunTurnRemaining();
-
-  /**
-   * Sets the maximum turn rate which applies to turn the gun to the left or right. The maximum turn
-   * rate must be an absolute value from 0 to {@link #MAX_GUN_TURN_RATE}, both values are included.
-   * If the input turn rate is negative, the max turn rate will be cut to zero. If the input turn
-   * rate is above {@link #MAX_GUN_TURN_RATE}, the max turn rate will be set to {@link
-   * #MAX_GUN_TURN_RATE}.
-   *
-   * <p>If for example the max gun turn rate is set to 5, then the gun will be able to turn left or
-   * right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees per
-   * turn when turning left.
-   *
-   * <p>This method will first be executed when {@link #go()} is called making it possible to call
-   * other set methods after execution. This makes it possible to set the bot to move, turn the
-   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
-   * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
-   * <strong>setter</strong> methods only prior to calling {@link #go()}.
-   *
-   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
-   * counts.
-   *
-   * @param maxGunTurnRate is the new maximum gun turn rate
-   * @see #setGunTurnRate(double)
-   * @see #setTurnGunLeft(double)
-   * @see #setTurnGunRight(double)
-   * @see #turnGunLeft(double)
-   * @see #turnGunRight(double)
-   */
-  void setMaxGunTurnRate(double maxGunTurnRate);
 
   /**
    * Set the radar to turn to the left (following the increasing degrees of the <a
@@ -614,35 +535,6 @@ public interface IBot extends IBaseBot {
   double getRadarTurnRemaining();
 
   /**
-   * Sets the maximum turn rate which applies to turn the radar to the left or right. The maximum
-   * turn rate must be an absolute value from 0 to {@link #MAX_RADAR_TURN_RATE}, both values are
-   * included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
-   * input turn rate is above {@link #MAX_RADAR_TURN_RATE}, the max turn rate will be set to {@link
-   * #MAX_RADAR_TURN_RATE}.
-   *
-   * <p>If for example the max radar turn rate is set to 5, then the radar will be able to turn left
-   * or right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees
-   * per turn when turning left.
-   *
-   * <p>This method will first be executed when {@link #go()} is called making it possible to call
-   * other set methods after execution. This makes it possible to set the bot to move, turn the
-   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
-   * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
-   * <strong>setter</strong> methods only prior to calling {@link #go()}.
-   *
-   * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
-   * counts.
-   *
-   * @param maxRadarTurnRate is the new maximum radar turn rate
-   * @see #setRadarTurnRate(double)
-   * @see #setTurnRadarLeft(double)
-   * @see #setTurnRadarRight(double)
-   * @see #turnRadarLeft(double)
-   * @see #turnRadarRight(double)
-   */
-  void setMaxRadarTurnRate(double maxRadarTurnRate);
-
-  /**
    * Fire the gun in the direction as the gun is pointing.
    *
    * <p>Note that your bot is spending energy when firing a bullet, the amount of energy used for
@@ -709,10 +601,10 @@ public interface IBot extends IBaseBot {
   void resume();
 
   /**
-   * Scan (again) with the radar. This method is useful if the radar has not turned, and hence will
-   * not automatically scan bots. This method is useful when the robot movement has stopped, e.g.
-   * when {@link #stop()} has been called. The last radar direction and sweep angle will be used for
-   * scanning for bots.
+   * Scan (again) with the radar. This method is useful if the radar has not been turning and
+   * thereby will not be able to automatically scan bots. This method is useful when the robot
+   * movement has stopped, e.g. when {@link #stop()} has been called. The last radar direction and
+   * sweep angle will be used for rescanning for bots.
    *
    * @see #stop()
    */
@@ -723,17 +615,7 @@ public interface IBot extends IBaseBot {
    *
    * @param condition is the condition that must be met before this method will stop waiting.
    * @see Condition
-   * @see #onCondition(Condition)
+   * @see #onCustomEvent(CustomEvent)
    */
   void waitFor(Condition condition);
-
-  /**
-   * The event handler triggered when a condition has been met with the {@link #waitFor(Condition)}
-   * method. Use the {@link Condition#getName()} of the condition if you need to differ between
-   * multiple conditions being met.
-   *
-   * @param condition is the condition that has been met.
-   * @see #waitFor(Condition)
-   */
-  default void onCondition(Condition condition) {}
 }

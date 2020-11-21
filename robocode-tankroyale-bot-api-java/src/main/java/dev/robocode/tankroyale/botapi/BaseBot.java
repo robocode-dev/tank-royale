@@ -1,6 +1,8 @@
 package dev.robocode.tankroyale.botapi;
 
-import dev.robocode.tankroyale.botapi.events.Event;
+import dev.robocode.tankroyale.botapi.events.BotEvent;
+import dev.robocode.tankroyale.botapi.events.Condition;
+import dev.robocode.tankroyale.botapi.internal.BaseBotInternals;
 
 import java.net.URI;
 import java.util.Collection;
@@ -27,14 +29,14 @@ public abstract class BaseBot implements IBaseBot {
    * BOT_VERSION=1.0<br>
    * BOT_AUTHOR=fnl<br>
    * BOT_DESCRIPTION=Sample bot<br>
-   * BOT_URL=https://mybot.somewhere.net
+   * BOT_URL=https://mybot.somewhere.net<br>
    * BOT_COUNTRY_CODE=DK<br>
    * BOT_GAME_TYPES=melee,1v1<br>
    * BOT_PLATFORM=Java<br>
    * BOT_PROG_LANG=Java 8<br>
    */
   public BaseBot() {
-    __baseBotInternals = new BaseBotInternals(this,null, null);
+    __baseBotInternals = new BaseBotInternals(this, null, null);
   }
 
   /**
@@ -61,26 +63,25 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final void start() {
-    __baseBotInternals.connect();
+    __baseBotInternals.start();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void go() {
-    // Send the bot intent to the server
-    __baseBotInternals.sendIntent();
+    __baseBotInternals.execute();
   }
 
   /** {@inheritDoc} */
   @Override
   public final String getVariant() {
-    return __baseBotInternals.getServerHandshake().getVariant();
+    return __baseBotInternals.getVariant();
   }
 
   /** {@inheritDoc} */
   @Override
   public final String getVersion() {
-    return __baseBotInternals.getServerHandshake().getVersion();
+    return __baseBotInternals.getVersion();
   }
 
   /** {@inheritDoc} */
@@ -134,8 +135,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final int getTimeLeft() {
-    long passesMicroSeconds = (System.nanoTime() - __baseBotInternals.getTicksStart()) / 1000;
-    return (int) (__baseBotInternals.getGameSetup().getTurnTimeout() - passesMicroSeconds);
+    return __baseBotInternals.getTimeLeft();
   }
 
   /** {@inheritDoc} */
@@ -218,7 +218,7 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
-  public final Collection<? extends Event> getEvents() {
+  public final Collection<? extends BotEvent> getEvents() {
     return __baseBotInternals.getCurrentTick().getEvents();
   }
 
@@ -228,7 +228,7 @@ public abstract class BaseBot implements IBaseBot {
     if (Double.isNaN(turnRate)) {
       throw new IllegalArgumentException("turnRate cannot be NaN");
     }
-    __baseBotInternals.botIntent.setTurnRate(turnRate);
+    __baseBotInternals.getBotIntent().setTurnRate(turnRate);
   }
 
   /** {@inheritDoc} */
@@ -239,11 +239,17 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
+  public final void setMaxTurnRate(double maxTurnRate) {
+    __baseBotInternals.setMaxTurnRate(maxTurnRate);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void setGunTurnRate(double gunTurnRate) {
     if (Double.isNaN(gunTurnRate)) {
       throw new IllegalArgumentException("gunTurnRate cannot be NaN");
     }
-    __baseBotInternals.botIntent.setGunTurnRate(gunTurnRate);
+    __baseBotInternals.getBotIntent().setGunTurnRate(gunTurnRate);
   }
 
   /** {@inheritDoc} */
@@ -254,11 +260,17 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
+  public final void setMaxGunTurnRate(double maxGunTurnRate) {
+    __baseBotInternals.setMaxGunTurnRate(maxGunTurnRate);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void setRadarTurnRate(double radarTurnRate) {
     if (Double.isNaN(radarTurnRate)) {
       throw new IllegalArgumentException("radarTurnRate cannot be NaN");
     }
-    __baseBotInternals.botIntent.setRadarTurnRate(radarTurnRate);
+    __baseBotInternals.getBotIntent().setRadarTurnRate(radarTurnRate);
   }
 
   /** {@inheritDoc} */
@@ -269,68 +281,85 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
+  public final void setMaxRadarTurnRate(double maxRadarTurnRate) {
+    __baseBotInternals.setMaxRadarTurnRate(maxRadarTurnRate);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void setTargetSpeed(double targetSpeed) {
     if (Double.isNaN(targetSpeed)) {
       throw new IllegalArgumentException("targetSpeed cannot be NaN");
     }
-    __baseBotInternals.botIntent.setTargetSpeed(targetSpeed);
+    __baseBotInternals.getBotIntent().setTargetSpeed(targetSpeed);
   }
 
   /** {@inheritDoc} */
   @Override
   public final double getTargetSpeed() {
-    return __baseBotInternals.botIntent.getTargetSpeed();
+    return __baseBotInternals.getBotIntent().getTargetSpeed();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setMaxSpeed(double maxSpeed) {
+    __baseBotInternals.setMaxSpeed(maxSpeed);
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean setFire(double firepower) {
-    if (Double.isNaN(firepower)) {
-      throw new IllegalArgumentException("firepower cannot be NaN");
-    }
-    if (getGunHeat() > 0) {
-      return false; // cannot fire yet
-    }
-    __baseBotInternals.botIntent.setFirepower(firepower);
-    return true;
+    return __baseBotInternals.setFire(firepower);
   }
 
   /** {@inheritDoc} */
   @Override
   public final double getFirepower() {
-    return __baseBotInternals.botIntent.getFirepower();
+    return __baseBotInternals.getBotIntent().getFirepower();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setScan(boolean doScan) {
-    __baseBotInternals.botIntent.setScan(doScan);
+  public final void setScan(boolean rescan) {
+    __baseBotInternals.getBotIntent().setScan(rescan);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setAdjustGunForBodyTurn(boolean adjust) {
-    __baseBotInternals.botIntent.setAdjustGunForBodyTurn(adjust);
+    __baseBotInternals.getBotIntent().setAdjustGunForBodyTurn(adjust);
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean doAdjustGunForBodyTurn() {
-    Boolean adjust = __baseBotInternals.botIntent.getAdjustGunForBodyTurn();
+    Boolean adjust = __baseBotInternals.getBotIntent().getAdjustGunForBodyTurn();
     return adjust != null && adjust;
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setAdjustRadarForGunTurn(boolean adjust) {
-    __baseBotInternals.botIntent.setAdjustRadarForGunTurn(adjust);
+    __baseBotInternals.getBotIntent().setAdjustRadarForGunTurn(adjust);
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean doAdjustRadarForGunTurn() {
-    Boolean adjust = __baseBotInternals.botIntent.getAdjustRadarForGunTurn();
+    Boolean adjust = __baseBotInternals.getBotIntent().getAdjustRadarForGunTurn();
     return adjust != null && adjust;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void addCustomEvent(Condition condition) {
+    __baseBotInternals.addCondition(condition);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void removeCustomEvent(Condition condition) {
+    __baseBotInternals.removeCondition(condition);
   }
 
   /** {@inheritDoc} */
@@ -342,7 +371,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final void setBodyColor(String bodyColor) {
-    __baseBotInternals.botIntent.setBodyColor(bodyColor);
+    __baseBotInternals.getBotIntent().setBodyColor(bodyColor);
   }
 
   /** {@inheritDoc} */
@@ -354,7 +383,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final void setTurretColor(String turretColor) {
-    __baseBotInternals.botIntent.setTurretColor(turretColor);
+    __baseBotInternals.getBotIntent().setTurretColor(turretColor);
   }
 
   /** {@inheritDoc} */
@@ -366,7 +395,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final void setRadarColor(String radarColor) {
-    __baseBotInternals.botIntent.setRadarColor(radarColor);
+    __baseBotInternals.getBotIntent().setRadarColor(radarColor);
   }
 
   /** {@inheritDoc} */
@@ -378,7 +407,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final void setBulletColor(String bulletColor) {
-    __baseBotInternals.botIntent.setBulletColor(bulletColor);
+    __baseBotInternals.getBotIntent().setBulletColor(bulletColor);
   }
 
   /** {@inheritDoc} */
@@ -390,7 +419,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final void setScanColor(String scanColor) {
-    __baseBotInternals.botIntent.setScanColor(scanColor);
+    __baseBotInternals.getBotIntent().setScanColor(scanColor);
   }
 
   /** {@inheritDoc} */
@@ -402,7 +431,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final void setTracksColor(String tracksColor) {
-    __baseBotInternals.botIntent.setTracksColor(tracksColor);
+    __baseBotInternals.getBotIntent().setTracksColor(tracksColor);
   }
 
   /** {@inheritDoc} */
@@ -414,7 +443,7 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final void setGunColor(String gunColor) {
-    __baseBotInternals.botIntent.setGunColor(gunColor);
+    __baseBotInternals.getBotIntent().setGunColor(gunColor);
   }
 
   /** {@inheritDoc} */

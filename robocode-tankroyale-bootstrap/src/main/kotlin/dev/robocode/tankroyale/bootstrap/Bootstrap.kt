@@ -2,11 +2,8 @@ package dev.robocode.tankroyale.bootstrap
 
 import dev.robocode.tankroyale.bootstrap.commands.FilenamesCommand
 import dev.robocode.tankroyale.bootstrap.commands.RunCommand
-import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.UnstableDefault
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import kotlinx.serialization.stringify
 import picocli.CommandLine
 import picocli.CommandLine.*
 import java.nio.file.Files
@@ -15,18 +12,12 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
-@UnstableDefault
-@ImplicitReflectionSerializer
 val cmdLine = CommandLine(Bootstrap())
 
-@UnstableDefault
-@ImplicitReflectionSerializer
 fun main(args: Array<String>) {
     exitProcess(cmdLine.execute(*args))
 }
 
-@UnstableDefault
-@ImplicitReflectionSerializer
 @Command(
     name = "bootstrap",
     versionProvider = VersionFileProvider::class,
@@ -72,7 +63,7 @@ class Bootstrap : Callable<Int> {
     ) {
         val entries = FilenamesCommand(getBotDirectories(botDirs))
             .listBotEntries(gameTypes)
-        println(Json(JsonConfiguration.Default).stringify(entries))
+        println(Json {}.encodeToString(entries))
     }
 
     @Command(

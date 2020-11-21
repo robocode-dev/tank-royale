@@ -4,15 +4,11 @@ import dev.robocode.tankroyale.ui.desktop.server.ServerProcess
 import dev.robocode.tankroyale.ui.desktop.settings.ServerSettings
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles
 import dev.robocode.tankroyale.ui.desktop.util.ICommand
-import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.UnstableDefault
 import javax.swing.JOptionPane
 import dev.robocode.tankroyale.ui.desktop.ui.ResourceBundles.STRINGS
 
-@UnstableDefault
 class PrepareServerCommand : ICommand {
 
-    @ImplicitReflectionSerializer
     override fun execute() {
         if (ServerProcess.isRunning()) {
             val options = arrayOf(

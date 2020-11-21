@@ -16,7 +16,7 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
     
-        /// <summary>Game variant, e.g. 'Tank Royale' for Robocode 2 Tank Royale</summary>
+        /// <summary>Game variant, e.g. 'Tank Royale' for Robocode Tank Royale</summary>
         [Newtonsoft.Json.JsonProperty("variant", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Variant { get; set; }

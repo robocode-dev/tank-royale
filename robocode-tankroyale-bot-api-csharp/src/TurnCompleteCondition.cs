@@ -1,4 +1,5 @@
 using Robocode.TankRoyale.BotApi;
+using Robocode.TankRoyale.BotApi.Events;
 
 public class TurnCompleteCondition : Condition
 {
