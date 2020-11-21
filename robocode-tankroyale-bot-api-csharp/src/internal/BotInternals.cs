@@ -105,6 +105,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal void Forward(double distance)
     {
+      BlockIfStopped();
       SetForward(distance);
       AwaitMovementComplete();
     }
@@ -121,6 +122,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal void TurnLeft(double degrees)
     {
+      BlockIfStopped();
       SetTurnLeft(degrees);
       AwaitTurnComplete();
       SetTurnLeft(0);
@@ -138,6 +140,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal void TurnGunLeft(double degrees)
     {
+      BlockIfStopped();
       SetTurnGunLeft(degrees);
       AwaitGunTurnComplete();
       SetTurnGunLeft(0);
@@ -155,6 +158,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal void TurnRadarLeft(double degrees)
     {
+      BlockIfStopped();
       SetTurnRadarLeft(degrees);
       AwaitRadarTurnComplete();
       SetTurnRadarLeft(0);
@@ -326,7 +330,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
         savedGunTurnRemaining = gunTurnRemaining;
         savedRadarTurnRemaining = radarTurnRemaining;
       }
-
       distanceRemaining = 0d;
       turnRemaining = 0d;
       gunTurnRemaining = 0d;
@@ -352,6 +355,14 @@ namespace Robocode.TankRoyale.BotApi.Internal
     }
 
     private bool IsNearZero(double value) => Math.Abs(value) < .00001;
+
+    private void BlockIfStopped()
+    {
+      if (isStopped)
+      {
+        Await(() => !isStopped);
+      }
+    }
 
     private void AwaitMovementComplete()
     {
@@ -386,20 +397,21 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal void Await(Test test)
     {
-      try
+      lock (nextTurnLock)
       {
-        while (isRunning && !test.Invoke())
+        try
         {
-          bot.Go();
-          lock (nextTurnLock)
+          while (isRunning && !test.Invoke())
           {
+            bot.Go();
             Monitor.Wait(nextTurnLock); // Wait for next turn
           }
         }
-      }
-      catch (Exception)
-      {
-        isRunning = false;
+        catch (Exception)
+        {
+          isRunning = false;
+          isStopped = false;
+        }
       }
     }
 

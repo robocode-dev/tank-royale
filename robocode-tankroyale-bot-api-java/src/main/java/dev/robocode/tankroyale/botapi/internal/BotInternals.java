@@ -101,6 +101,7 @@ public final class BotInternals {
   }
 
   public void forward(double distance) {
+    blockIfStopped();
     setForward(distance);
     awaitMovementComplete();
   }
@@ -114,6 +115,7 @@ public final class BotInternals {
   }
 
   public void turnLeft(double degrees) {
+    blockIfStopped();
     setTurnLeft(degrees);
     awaitTurnComplete();
     setTurnLeft(0);
@@ -128,6 +130,7 @@ public final class BotInternals {
   }
 
   public void turnGunLeft(double degrees) {
+    blockIfStopped();
     setTurnGunLeft(degrees);
     awaitGunTurnComplete();
     setTurnGunLeft(0);
@@ -142,6 +145,7 @@ public final class BotInternals {
   }
 
   public void turnRadarLeft(double degrees) {
+    blockIfStopped();
     setTurnRadarLeft(degrees);
     awaitRadarTurnComplete();
     setTurnRadarLeft(0);
@@ -286,7 +290,6 @@ public final class BotInternals {
       savedGunTurnRemaining = gunTurnRemaining;
       savedRadarTurnRemaining = radarTurnRemaining;
     }
-
     distanceRemaining = 0d;
     turnRemaining = 0d;
     gunTurnRemaining = 0d;
@@ -306,6 +309,12 @@ public final class BotInternals {
       turnRemaining = savedTurnRemaining;
       gunTurnRemaining = savedGunTurnRemaining;
       radarTurnRemaining = savedRadarTurnRemaining;
+    }
+  }
+
+  private void blockIfStopped() {
+    if (isStopped) {
+      await(() -> !isStopped);
     }
   }
 
@@ -340,15 +349,16 @@ public final class BotInternals {
 
   public void await(ICondition condition) {
     // Loop while bot is running and condition has not been met
-    try {
-      while (isRunning && !condition.test()) {
-        bot.go();
-        synchronized (nextTurn) {
+    synchronized (nextTurn) {
+      try {
+        while (isRunning && !condition.test()) {
+          bot.go();
           nextTurn.wait(); // Wait for next turn
         }
+      } catch (InterruptedException e) {
+        isRunning = false;
+        isStopped = false;
       }
-    } catch (InterruptedException e) {
-      isRunning = false;
     }
   }
 
