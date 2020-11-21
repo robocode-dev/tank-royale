@@ -72,6 +72,8 @@ public abstract class Condition {
   /**
    * Overriding this test method is the purpose of a Condition. The game will call your test()
    * function, and take action if it returns {@code true}.
+   *
+   * @return {@code true} if the condition is met; {@code false} otherwise.
    */
   public abstract boolean test();
 }

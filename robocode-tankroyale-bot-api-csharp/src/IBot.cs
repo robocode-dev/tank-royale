@@ -589,6 +589,7 @@ namespace Robocode.TankRoyale.BotApi
     /// movement has stopped, e.g. when <see cref="Stop"/> has been called. The last radar direction and
     /// sweep angle will be used for rescanning for bots.
     /// </summary>
+    /// <return><c>true</c> if the bot did scan a bot with the next turn; <c>false</c> otherwise.</return>
     /// <seealso cref="Stop"/>
     bool Scan();
 

@@ -72,6 +72,7 @@ namespace Robocode.TankRoyale.BotApi.Events
     /// Overriding the this test method is the purpose of a Condition. The game will call your <c>test()</c> function,
     /// and take action if it returns <c>true</c>.
     /// </summary>
+    /// <return><c>true</c> if the condition is met; <c>code</c> otherwise.
     public abstract bool Test();
   }
 }
