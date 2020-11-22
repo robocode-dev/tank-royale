@@ -4,7 +4,6 @@ import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.events.BulletHitBotEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
-import dev.robocode.tankroyale.botapi.events.TickEvent;
 
 import java.io.IOException;
 
@@ -17,8 +16,6 @@ import java.io.IOException;
 public class Fire extends Bot {
 
   int dist = 50; // Distance to move when we're hit, forward or back
-
-  boolean interrupt; // flag for stop turning the gun temporarily
 
   /** Main method starts our bot */
   public static void main(String[] args) throws IOException {
@@ -42,20 +39,8 @@ public class Fire extends Bot {
 
     // Spin the gun around slowly... forever
     while (isRunning()) {
-      if (interrupt) {
-        // Stop turning gun if interrupted
-        turnGunRight(0);
-      } else {
-        // Else turn gun 5 more degrees to the right
-        turnGunRight(5);
-      }
+      turnGunRight(5);
     }
-  }
-
-  /** onTick: Every new turn, reset/remove the interrupt */
-  @Override
-  public void onTick(TickEvent e) {
-    interrupt = false; // no interrupt means that the gun will turn 5 degrees to the right in the run() method
   }
 
   /** onScannedBot: Fire! */
@@ -69,28 +54,29 @@ public class Fire extends Bot {
       // Otherwise, only fire 1
       fire(1);
     }
-    interrupt = true; // interrupt/stop turning the gun in the main loop in the run() method
+    // Scan again, before we turn the gun
+    scan();
   }
 
   /** onHitByBullet: Turn perpendicular to the bullet, and move a bit. */
   @Override
   public void onHitByBullet(BulletHitBotEvent e) {
     // Turn perpendicular to the bullet direction
-    turnRight(normalizeRelativeDegrees(90 - (e.getBullet().getDirection() - getDirection())));
+    double bearingToBullet = bearingTo(e.getBullet().getX(), e.getBullet().getY());
+    turnRight(normalizeRelativeDegrees(90 - bearingToBullet));
 
     // Move forward or backward depending if the distance is positive or negative
     forward(dist);
     dist *= -1; // Change distance, meaning forward or backward direction
-
-    interrupt = true; // interrupt/stop turning the gun in the main loop in the run() method
+    scan();
   }
 
   /** onBulletHit: Aim at target (where bullet came from) and fire hard. */
   @Override
   public void onBulletHit(BulletHitBotEvent e) {
     // Turn gun to the bullet direction
-    double gunBearing = normalizeRelativeDegrees(e.getBullet().getDirection() - getGunDirection());
-    turnGunLeft(gunBearing);
+    double bearingToBullet = bearingTo(e.getBullet().getX(), e.getBullet().getY());
+    turnGunLeft(bearingToBullet);
 
     // Fire hard
     fire(3);

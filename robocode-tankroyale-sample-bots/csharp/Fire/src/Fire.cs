@@ -1,4 +1,5 @@
 using Robocode.TankRoyale.BotApi;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.Sample.Bots
 {
@@ -12,8 +13,6 @@ namespace Robocode.TankRoyale.Sample.Bots
   public class Fire : Bot
   {
     int dist = 50; // Distance to move when we're hit, forward or back
-
-    bool interrupt; // Flag for stop turning the gun temporarily
 
     // Main method starts our bot
     static void Main(string[] args)
@@ -37,23 +36,8 @@ namespace Robocode.TankRoyale.Sample.Bots
       // Spin the gun around slowly... forever
       while (IsRunning)
       {
-        if (interrupt)
-        {
-          // Stop turning gun if interrupted
-          TurnGunRight(0);
-        }
-        else
-        {
-          // Else turn gun 5 more degrees to the right
-          TurnGunRight(5);
-        }
+        TurnGunRight(5);
       }
-    }
-
-    // OnTick: Every new turn, reset/remove the interrupt
-    public override void OnTick(TickEvent e)
-    {
-      interrupt = false; // no interrupt means that the gun will turn 5 degrees to the right in the run() method
     }
 
     // OnScannedBot: Fire!
@@ -70,7 +54,8 @@ namespace Robocode.TankRoyale.Sample.Bots
         // Otherwise, only fire 1
         Fire(1);
       }
-      interrupt = true; // interrupt/stop turning the gun in the main loop in the run() method
+      // Scan again, before we turn the gun
+      Scan();
     }
 
     // OnHitByBullet: Turn perpendicular to the bullet, and move a bit.
@@ -82,8 +67,7 @@ namespace Robocode.TankRoyale.Sample.Bots
       // Move forward or backward depending if the distance is positive or negative
       Forward(dist);
       dist *= -1; // Change distance, meaning forward or backward direction
-
-      interrupt = true; // interrupt/stop turning the gun in the main loop in the run() method
+      Scan();
     }
 
     // OnBulletHit: Aim at target (where bullet came from) and fire hard.

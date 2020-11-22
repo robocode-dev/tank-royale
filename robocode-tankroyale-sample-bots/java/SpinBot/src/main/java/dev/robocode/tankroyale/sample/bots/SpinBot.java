@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.sample.bots;
 
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.BotInfo;
-import dev.robocode.tankroyale.botapi.events.BotHitBotEvent;
+import dev.robocode.tankroyale.botapi.events.HitBotEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 
 import java.io.IOException;
@@ -51,7 +51,7 @@ public class SpinBot extends Bot {
    * onHitBot: If it's our fault, we'll stop turning and moving, so we need to turn again to keep spinning.
    */
   @Override
-  public void onHitBot(BotHitBotEvent e) {
+  public void onHitBot(HitBotEvent e) {
     double direction = directionTo(e.getX(), e.getY());
     double bearing = calcBearing(direction);
     if (bearing > -10 && bearing < 10) {

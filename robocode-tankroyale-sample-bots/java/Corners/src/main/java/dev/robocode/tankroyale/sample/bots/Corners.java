@@ -1,8 +1,8 @@
-package dev.robocode.tankroyale.sample.bots;
+package dev.robocode.tankroyale.sample.bot;
 
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.BotInfo;
-import dev.robocode.tankroyale.botapi.events.BotDeathEvent;
+import dev.robocode.tankroyale.botapi.events.DeathEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class Corners extends Bot {
 
   int enemies; // Number of enemy robots in the game
   int corner = 0; // Which corner we are currently using
-  volatile boolean stopWhenSeeRobot = false; // See goCorner()
+  boolean stopWhenSeeRobot = false; // See goCorner()
 
   /** Main method starts our bot */
   public static void main(String[] args) throws IOException {
@@ -25,7 +25,7 @@ public class Corners extends Bot {
   }
 
   /** Constructor, which loads the bot settings file */
-  protected Corners() throws IOException {
+  Corners() throws IOException {
     super(BotInfo.fromFile("corners.properties"));
   }
 
@@ -61,8 +61,7 @@ public class Corners extends Bot {
   private void goCorner() {
     // We don't want to stop when we're just turning...
     stopWhenSeeRobot = false;
-
-    // turn to face the wall towards our desired corner.
+    // Turn to face the wall towards our desired corner
     turnLeft(calcBearing(corner));
     // Ok, now we don't want to crash into any robot in our way...
     stopWhenSeeRobot = true;
@@ -87,6 +86,12 @@ public class Corners extends Bot {
       stop();
       // Call our custom firing method
       smartFire(distance);
+      // Rescan
+      if (scan()) {
+        // Stop this event handler, if we saw a bot.
+        // The onScannedBot will be called again due to scan()
+        return;
+      }
       // Resume movement
       resume();
     } else {
@@ -111,7 +116,7 @@ public class Corners extends Bot {
 
   /** We died. Figure out if we need to switch to another corner. */
   @Override
-  public void onDeath(BotDeathEvent e) {
+  public void onDeath(DeathEvent e) {
     // Well, others should never be 0, but better safe than sorry.
     if (enemies == 0) {
       return;

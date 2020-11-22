@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.sample.bots;
 
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.BotInfo;
-import dev.robocode.tankroyale.botapi.events.BotHitBotEvent;
+import dev.robocode.tankroyale.botapi.events.HitBotEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 
 import java.io.IOException;
@@ -49,7 +49,7 @@ public class RamFire extends Bot {
 
   /** onBulletHit: Turn to face robot, fire hard, and ram him again! */
   @Override
-  public void onHitBot(BotHitBotEvent e) {
+  public void onHitBot(HitBotEvent e) {
     turnToFaceTarget(e.getX(), e.getY());
 
     // Determine a shot that won't kill the robot...

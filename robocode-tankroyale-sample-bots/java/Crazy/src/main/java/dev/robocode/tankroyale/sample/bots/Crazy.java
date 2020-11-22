@@ -2,8 +2,8 @@ package dev.robocode.tankroyale.sample.bots;
 
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.BotInfo;
-import dev.robocode.tankroyale.botapi.events.BotHitBotEvent;
-import dev.robocode.tankroyale.botapi.events.BotHitWallEvent;
+import dev.robocode.tankroyale.botapi.events.HitBotEvent;
+import dev.robocode.tankroyale.botapi.events.HitWallEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 
 import java.io.IOException;
@@ -66,7 +66,7 @@ public class Crazy extends Bot {
 
   /** onHitWall: Handle collision with wall. */
   @Override
-  public void onHitWall(BotHitWallEvent e) {
+  public void onHitWall(HitWallEvent e) {
     // Bounce off!
     reverseDirection();
   }
@@ -90,7 +90,7 @@ public class Crazy extends Bot {
 
   /** onHitRobot: Back up! */
   @Override
-  public void onHitBot(BotHitBotEvent e) {
+  public void onHitBot(HitBotEvent e) {
     // If we're moving into the other robot, reverse!
     if (e.isRammed()) {
       reverseDirection();

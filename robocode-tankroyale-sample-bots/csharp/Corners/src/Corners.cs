@@ -1,5 +1,6 @@
 using System;
 using Robocode.TankRoyale.BotApi;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.Sample.Bots
 {
@@ -58,7 +59,6 @@ namespace Robocode.TankRoyale.Sample.Bots
     {
       // We don't want to stop when we're just turning...
       stopWhenSeeRobot = false;
-
       // turn to face the wall towards our desired corner.
       TurnLeft(CalcBearing(corner));
       // Ok, now we don't want to crash into any robot in our way...
@@ -85,6 +85,11 @@ namespace Robocode.TankRoyale.Sample.Bots
         Stop();
         // Call our custom firing method
         SmartFire(distance);
+        // Rescan
+        if (Scan())
+        {
+          return;
+        }
         // Resume movement
         Resume();
       }
@@ -113,7 +118,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     }
 
     // We died. Figure out if we need to switch to another corner.
-    public override void OnDeath(BotDeathEvent e)
+    public override void OnDeath(DeathEvent e)
     {
       // Well, others should never be 0, but better safe than sorry.
       if (enemies == 0)

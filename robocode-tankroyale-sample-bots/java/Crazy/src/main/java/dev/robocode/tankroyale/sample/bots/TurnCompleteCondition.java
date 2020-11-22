@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.sample.bots;
 
-import dev.robocode.tankroyale.botapi.Condition;
 import dev.robocode.tankroyale.botapi.IBot;
+import dev.robocode.tankroyale.botapi.events.Condition;
 
 public class TurnCompleteCondition extends Condition {
 

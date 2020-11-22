@@ -1,4 +1,5 @@
 using Robocode.TankRoyale.BotApi;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.Sample.Bots
 {
@@ -45,7 +46,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     }
 
     /** OnBulletHit: Turn to face robot, fire hard, and ram him again! */
-    public override void OnHitBot(BotHitBotEvent e)
+    public override void OnHitBot(HitBotEvent e)
     {
       TurnToFaceTarget(e.X, e.Y);
 

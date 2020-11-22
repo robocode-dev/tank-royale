@@ -1,4 +1,5 @@
 using Robocode.TankRoyale.BotApi;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.Sample.Bots
 {
@@ -61,7 +62,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     }
 
     /** OnHitWall: Handle collision with wall. */
-    public override void OnHitWall(BotHitWallEvent e)
+    public override void OnHitWall(HitWallEvent e)
     {
       // Bounce off!
       ReverseDirection();
@@ -89,7 +90,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     }
 
     /** OnHitRobot: Back up! */
-    public override void OnHitBot(BotHitBotEvent e)
+    public override void OnHitBot(HitBotEvent e)
     {
       // If we're moving into the other robot, reverse!
       if (e.IsRammed)
