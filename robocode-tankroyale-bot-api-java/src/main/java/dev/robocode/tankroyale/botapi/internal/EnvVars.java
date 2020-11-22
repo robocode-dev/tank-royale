@@ -1,49 +1,52 @@
-package dev.robocode.tankroyale.botapi;
+package dev.robocode.tankroyale.botapi.internal;
+
+import dev.robocode.tankroyale.botapi.BotException;
+import dev.robocode.tankroyale.botapi.BotInfo;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
 /** Utility class for reading environment variables. */
-public final class EnvVars {
+final class EnvVars {
 
   // Hide constructor
-  private EnvVars() {}
+  EnvVars() {}
 
   /** Name of environment variable for server URI. */
-  public static final String SERVER_URL = "ROBOCODE_SERVER_URL";
+  static final String SERVER_URL = "ROBOCODE_SERVER_URL";
 
   /** Name of environment variable for bot name. */
-  public static final String BOT_NAME = "BOT_NAME";
+  static final String BOT_NAME = "BOT_NAME";
 
   /** Name of environment variable for bot version. */
-  public static final String BOT_VERSION = "BOT_VERSION";
+  static final String BOT_VERSION = "BOT_VERSION";
 
   /** Name of environment variable for bot author. */
-  public static final String BOT_AUTHOR = "BOT_AUTHOR";
+  static final String BOT_AUTHOR = "BOT_AUTHOR";
 
   /** Name of environment variable for bot description. */
-  public static final String BOT_DESCRIPTION = "BOT_DESCRIPTION";
+  static final String BOT_DESCRIPTION = "BOT_DESCRIPTION";
 
   /** Name of environment variable for bot URL. */
-  public static final String BOT_URL = "BOT_URL";
+  static final String BOT_URL = "BOT_URL";
 
   /** Name of environment variable for bot country code. */
-  public static final String BOT_COUNTRY_CODE = "BOT_COUNTRY_CODE";
+  static final String BOT_COUNTRY_CODE = "BOT_COUNTRY_CODE";
 
   /** Name of environment variable for bot game types. */
-  public static final String BOT_GAME_TYPES = "BOT_GAME_TYPES";
+  static final String BOT_GAME_TYPES = "BOT_GAME_TYPES";
 
   /** Name of environment variable for bot platform. */
-  public static final String BOT_PLATFORM = "BOT_PLATFORM";
+  static final String BOT_PLATFORM = "BOT_PLATFORM";
 
   /** Name of environment variable for bot programming language. */
-  public static final String BOT_PROG_LANG = "BOT_PROG_LANG";
+  static final String BOT_PROG_LANG = "BOT_PROG_LANG";
 
   private static final String NO_ENV_VALUE = "No value for environment variable: ";
 
   /** Bot Info */
-  public static BotInfo getBotInfo() {
+  static BotInfo getBotInfo() {
     if (isNullOrEmpty(getBotName())) {
       throw new BotException(NO_ENV_VALUE + BOT_NAME);
     }
@@ -69,42 +72,42 @@ public final class EnvVars {
   }
 
   /** Server URI */
-  public static String getServerUrl() {
+  static String getServerUrl() {
     return System.getenv(SERVER_URL);
   }
 
   /** Bot name */
-  public static String getBotName() {
+  static String getBotName() {
     return System.getenv(BOT_NAME);
   }
 
   /** Bot version */
-  public static String getBotVersion() {
+  static String getBotVersion() {
     return System.getenv(BOT_VERSION);
   }
 
   /** Bot author */
-  public static String getBotAuthor() {
+  static String getBotAuthor() {
     return System.getenv(BOT_AUTHOR);
   }
 
   /** Bot description */
-  public static String getBotDescription() {
+  static String getBotDescription() {
     return System.getenv(BOT_DESCRIPTION);
   }
 
   /** Bot URL */
-  public static String getBotUrl() {
+  static String getBotUrl() {
     return System.getenv(BOT_URL);
   }
 
   /** Bot country code */
-  public static String getBotCountryCode() {
+  static String getBotCountryCode() {
     return System.getenv(BOT_COUNTRY_CODE);
   }
 
   /** List of game types, which the bot supports */
-  public static Collection<String> getBotGameTypes() {
+  static Collection<String> getBotGameTypes() {
     String gameTypes = System.getenv(BOT_GAME_TYPES);
     if (gameTypes == null || gameTypes.trim().length() == 0) {
       return Collections.emptyList();
@@ -113,12 +116,12 @@ public final class EnvVars {
   }
 
   /** Platform used for running the bot */
-  public static String getBotPlatform() {
+  static String getBotPlatform() {
     return System.getenv(BOT_PLATFORM);
   }
 
   /** Language used for programming the bot */
-  public static String getBotProgrammingLang() {
+  static String getBotProgrammingLang() {
     return System.getenv(BOT_PROG_LANG);
   }
 

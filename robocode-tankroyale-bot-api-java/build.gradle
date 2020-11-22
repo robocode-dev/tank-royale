@@ -45,8 +45,10 @@ javadoc {
     classpath = configurations.compile
     options.memberLevel = JavadocMemberLevel.PUBLIC
     classpath = sourceSets.main.compileClasspath + sourceSets.main.output // avoid javadoc error
-    exclude "**/dev/robocode/tankroyale/botapi/factory/**",
-            "**/dev/robocode/tankroyale/botapi/mapper/**"
+    exclude "**/dev/robocode/tankroyale/botapi/events/**",
+            "**/dev/robocode/tankroyale/botapi/internal/**",
+            "**/dev/robocode/tankroyale/botapi/mapper/**",
+            "**/dev/robocode/tankroyale/bot/**"
 }
 
 task fatJar(type: Jar) {
