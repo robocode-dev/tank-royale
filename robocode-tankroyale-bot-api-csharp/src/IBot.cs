@@ -563,24 +563,67 @@ namespace Robocode.TankRoyale.BotApi
     void Fire(double firepower);
 
     /// <summary>
-    /// Stop all movement including turning the gun and radar. The remaining movement is saved for a call to <see cref="Resume"/>.
-    /// This method has no effect, if it has already been called.
+    /// Set the bot to stop all movement including turning the gun and radar. The remaining movement is
+    /// saved for a call to {@link #resume()}. This method has no effect, if it has already been
+    /// called.
+    ///
+    /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
+    /// call other set methods before execution. This makes it possible to set the bot to move,
+    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
+    /// <see cref="IBaseBot.Go"/>. But notice that this is only possible to execute multiple methods in
+    /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
     /// </summary>
+    /// <seealso cref="Stop"/>
+    /// <seealso cref="SetResume"/>
     /// <seealso cref="Resume"/>
-    /// <seealso cref="DistanceRemaining"/>
-    /// <seealso cref="TurnRemaining"/>
-    /// <seealso cref="GunTurnRemaining"/>
-    /// <seealso cref="RadarTurnRemaining"/>
+    void SetStop();
+
+    /// <summary>
+    /// Stop all movement including turning the gun and radar. The remaining movement is saved for a
+    /// call to <see cref="SetResume"/> or <see cref="Resume"/>. This method has no effect, if it has already
+    /// been called.
+    /// 
+    /// This call is executed immediately by calling <see cref="IBaseBot.Go"/> in the code behind. This
+    /// method will block until it has been completed, which can take one to several turns. New
+    /// commands will first take place after this method is completed. If you need to execute
+    /// multiple commands in parallel, use <em>setter</em> methods instead of this blocking
+    /// method.
+    /// </summary>
+    /// <seealso cref="SetStop"/>
+    /// <seealso cref="SetResume"/>
+    /// <seealso cref="Resume"/>
     void Stop();
 
     /// <summary>
-    /// Resume the movement prior to calling the <see cref="Stop"/> method. This method has no effect, if it has already been called.
+    /// Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
+    /// turning and thereby will not be able to automatically scan bots. This method is useful when the
+    /// robot movement has stopped, e.g. when <see cref="Stop"/> has been called. The last radar direction
+    /// and sweep angle will be used for rescanning for bots.
+    ///
+    /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
+    /// call other set methods before execution. This makes it possible to set the bot to move,
+    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
+    /// <see cref="IBaseBot.Go"/>. But notice that this is only possible to execute multiple methods in
+    /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
+    /// </summary>
+    /// <seealso cref="SetStop"/>
+    /// <seealso cref="Stop"/>
+    /// <seealso cref="Resume"/>
+    void SetResume();
+
+    /// <summary>
+    /// Resume the movement prior to calling the <see cref="SetStop"/> or <see cref="Stop"/> method. This
+    /// method has no effect, if it has already been called.
+    /// 
+    /// This call is executed immediately by calling <see cref="IBaseBot.Go"/> in the code behind. This
+    /// method will block until it has been completed, which can take one to several turns. New
+    /// commands will first take place after this method is completed. If you need to execute
+    /// multiple commands in parallel, use <em>setter</em> methods instead of this blocking
+    /// method.
     /// </summary>
     /// <seealso cref="Stop"/>
-    /// <seealso cref="DistanceRemaining"/>
-    /// <seealso cref="TurnRemaining"/>
-    /// <seealso cref="GunTurnRemaining"/>
-    /// <seealso cref="RadarTurnRemaining"/>
+    /// <seealso cref="SetResume"/>
+    /// <seealso cref="SetStop"/>
     void Resume();
 
     /// <summary>

@@ -10,7 +10,6 @@ import dev.robocode.tankroyale.botapi.events.CustomEvent;
  */
 @SuppressWarnings({"UnusedDeclaration"})
 public interface IBot extends IBaseBot {
-
   /**
    * The run() method is used for running a program for the bot like:
    *
@@ -577,26 +576,68 @@ public interface IBot extends IBaseBot {
   void fire(double firepower);
 
   /**
+   * Set the bot to stop all movement including turning the gun and radar. The remaining movement is
+   * saved for a call to {@link #resume()}. This method has no effect, if it has already been
+   * called.
+   *
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods before execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
+   *
+   * @see #stop()
+   * @see #setResume()
+   * @see #resume()
+   */
+  void setStop();
+
+  /**
    * Stop all movement including turning the gun and radar. The remaining movement is saved for a
-   * call to {@link #resume()}. This method has no effect, if it has already been called.
+   * call to {@link #setResume()} or {@link #resume()}. This method has no effect, if it has already
+   * been called.
+   *
+   * <p>This call is executed immediately by calling {@link #go()} in the code behind. This method
+   * will block until it has been completed, which can take one to several turns. New commands will
+   * first take place after this method is completed. If you need to execute multiple commands in
+   * parallel, use <strong>setter</strong> methods instead of this blocking method.
    *
    * @see #resume()
-   * @see #getDistanceRemaining()
-   * @see #getTurnRemaining()
-   * @see #getGunTurnRemaining()
-   * @see #getRadarTurnRemaining()
+   * @see #setResume()
+   * @see #setStop()
    */
   void stop();
 
   /**
-   * Resume the movement prior to calling the {@link #stop()} method. This method has no effect, if
-   * it has already been called.
+   * Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
+   * turning and thereby will not be able to automatically scan bots. This method is useful when the
+   * robot movement has stopped, e.g. when {@link #stop()} has been called. The last radar direction
+   * and sweep angle will be used for rescanning for bots.
+   *
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods before execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
+   *
+   * @see #setStop()
+   * @see #stop()
+   * @see #resume()
+   */
+  void setResume();
+
+  /**
+   * Resume the movement prior to calling the {@link #setStop()} or {@link #stop()} method. This
+   * method has no effect, if it has already been called.
+   *
+   * <p>This call is executed immediately by calling {@link #go()} in the code behind. This method
+   * will block until it has been completed, which can take one to several turns. New commands will
+   * first take place after this method is completed. If you need to execute multiple commands in
+   * parallel, use <strong>setter</strong> methods instead of this blocking method.
    *
    * @see #stop()
-   * @see #getDistanceRemaining()
-   * @see #getTurnRemaining()
-   * @see #getGunTurnRemaining()
-   * @see #getRadarTurnRemaining()
+   * @see #setStop()
+   * @see #setResume()
    */
   void resume();
 

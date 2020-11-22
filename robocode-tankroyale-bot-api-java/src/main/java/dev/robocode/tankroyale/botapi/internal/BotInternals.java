@@ -281,7 +281,7 @@ public final class BotInternals {
     awaitNextTurn();
   }
 
-  private void setStop() {
+  public void setStop() {
     if (!isStopped) {
       isStopped = true;
 
@@ -301,7 +301,7 @@ public final class BotInternals {
     bot.setRadarTurnRate(0);
   }
 
-  private void setResume() {
+  public void setResume() {
     if (isStopped) {
       isStopped = false;
 

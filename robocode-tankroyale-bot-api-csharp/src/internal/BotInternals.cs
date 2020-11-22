@@ -319,7 +319,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       AwaitNextTurn();
     }
 
-    private void SetStop()
+    internal void SetStop()
     {
       if (!isStopped)
       {
@@ -341,7 +341,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       bot.RadarTurnRate = 0;
     }
 
-    private void SetResume()
+    internal void SetResume()
     {
       if (isStopped)
       {

@@ -171,9 +171,21 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
+    public void SetStop()
+    {
+      __botInternals.SetStop();
+    }
+
+    /// <inheritdoc/>
     public void Stop()
     {
       __botInternals.Stop();
+    }
+
+    /// <inheritdoc/>
+    public void SetResume()
+    {
+      __botInternals.SetResume();
     }
 
     /// <inheritdoc/>
