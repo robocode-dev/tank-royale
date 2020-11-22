@@ -3,9 +3,9 @@ using Robocode.TankRoyale.Schema;
 
 namespace Robocode.TankRoyale.BotApi
 {
-  public class BotHandshakeFactory
+  internal sealed class BotHandshakeFactory
   {
-    public static BotHandshake Create(BotInfo botInfo)
+    internal static BotHandshake Create(BotInfo botInfo)
     {
       var handshake = new BotHandshake();
       handshake.Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotHandshake);
