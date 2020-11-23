@@ -47,8 +47,6 @@ namespace Robocode.TankRoyale.Sample.Bots
       TurnGunRight(90);
       TurnRight(90);
 
-      Console.WriteLine(CalcBulletSpeed(1));
-
       // Main loop
       while (IsRunning)
       {

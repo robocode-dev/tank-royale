@@ -308,9 +308,9 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public void SetScan(bool rescan)
+    public void SetScan()
     {
-      __baseBotInternals.BotIntent.Scan = rescan;
+      __baseBotInternals.BotIntent.Scan = true;
     }
 
     /// <inheritdoc/>
@@ -391,22 +391,19 @@ namespace Robocode.TankRoyale.BotApi
     public virtual double CalcGunHeat(double firepower) => 1 + (firepower / 5);
 
     /// <inheritdoc/>
-    public virtual double CalcBearing(double direction) => NormalizeRelativeDegrees(direction - Direction);
+    public virtual double CalcBearing(double direction) => NormalizeRelativeAngle(direction - Direction);
 
     /// <inheritdoc/>
-    public virtual double CalcGunBearing(double direction) => NormalizeRelativeDegrees(direction - GunDirection);
+    public virtual double CalcGunBearing(double direction) => NormalizeRelativeAngle(direction - GunDirection);
 
     /// <inheritdoc/>
-    public virtual double CalcRadarBearing(double direction) => NormalizeRelativeDegrees(direction - RadarDirection);
+    public virtual double CalcRadarBearing(double direction) => NormalizeRelativeAngle(direction - RadarDirection);
 
     /// <inheritdoc/>
-    public virtual double NormalizeAbsoluteDegrees(double angle) => (angle %= 360) >= 0 ? angle : (angle + 360);
+    public virtual double DirectionTo(double x, double y) => NormalizeAbsoluteAngle(180 * Math.Atan2(y - Y, x - X) / Math.PI);
 
     /// <inheritdoc/>
-    public virtual double DirectionTo(double x, double y) => NormalizeAbsoluteDegrees(180 * Math.Atan2(y - Y, x - X) / Math.PI);
-
-    /// <inheritdoc/>
-    public virtual double BearingTo(double x, double y) => NormalizeRelativeDegrees(DirectionTo(x, y) - Direction);
+    public virtual double BearingTo(double x, double y) => NormalizeRelativeAngle(DirectionTo(x, y) - Direction);
 
     /// <inheritdoc/>
     public virtual double DistanceTo(double x, double y)
@@ -417,7 +414,10 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public virtual double NormalizeRelativeDegrees(double angle) => (angle %= 360) >= 0 ?
+    public virtual double NormalizeAbsoluteAngle(double angle) => (angle %= 360) >= 0 ? angle : (angle + 360);
+
+    /// <inheritdoc/>
+    public virtual double NormalizeRelativeAngle(double angle) => (angle %= 360) >= 0 ?
         ((angle < 180) ? angle : (angle - 360)) :
         ((angle >= -180) ? angle : (angle + 360));
 

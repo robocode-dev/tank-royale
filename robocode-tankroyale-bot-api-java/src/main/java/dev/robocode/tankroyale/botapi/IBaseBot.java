@@ -612,11 +612,8 @@ public interface IBaseBot {
    * Sets the bot to rescan with the radar. This method is useful if the radar has not turned, and
    * hence will not automatically scan bots. The last radar direction and sweep angle will be used
    * for scanning for bots.
-   *
-   * @param rescan true means that the radar must rescan using old radar direction and sweep angle;
-   *     false means that rescanning is disabled.
    */
-  void setScan(boolean rescan);
+  void setScan();
 
   /**
    * Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun behaves
@@ -1106,10 +1103,10 @@ public interface IBaseBot {
    * @return A bearing (delta angle) between the input direction and the direction of this bot. The
    *     bearing is a normalized angle in the range [-180,180[
    * @see #getDirection
-   * @see #normalizeRelativeDegrees
+   * @see #normalizeRelativeAngle
    */
   default double calcBearing(double direction) {
-    return normalizeRelativeDegrees(direction - getDirection());
+    return normalizeRelativeAngle(direction - getDirection());
   }
 
   /**
@@ -1123,10 +1120,10 @@ public interface IBaseBot {
    * @return A bearing (delta angle) between the input direction and the direction of the gun. The
    *     bearing is a normalized angle in the range [-180,180[
    * @see #getGunDirection
-   * @see #normalizeRelativeDegrees
+   * @see #normalizeRelativeAngle
    */
   default double calcGunBearing(double direction) {
-    return normalizeRelativeDegrees(direction - getGunDirection());
+    return normalizeRelativeAngle(direction - getGunDirection());
   }
 
   /**
@@ -1141,10 +1138,10 @@ public interface IBaseBot {
    * @return A bearing (delta angle) between the input direction and the direction of the radar. The
    *     bearing is a normalized angle in the range [-180,180[
    * @see #getRadarDirection
-   * @see #normalizeRelativeDegrees
+   * @see #normalizeRelativeAngle
    */
   default double calcRadarBearing(double direction) {
-    return normalizeRelativeDegrees(direction - getRadarDirection());
+    return normalizeRelativeAngle(direction - getRadarDirection());
   }
 
   /**
@@ -1155,7 +1152,7 @@ public interface IBaseBot {
    * @return The direction to the point x,y in the range [0,360[
    */
   default double directionTo(double x, double y) {
-    return normalizeAbsoluteDegrees(Math.toDegrees(Math.atan2(y - getY(), x - getX())));
+    return normalizeAbsoluteAngle(Math.toDegrees(Math.atan2(y - getY(), x - getX())));
   }
 
   /**
@@ -1167,7 +1164,7 @@ public interface IBaseBot {
    * @return The bearing to the point x,y in the range [-180,180[
    */
   default double bearingTo(double x, double y) {
-    return normalizeRelativeDegrees(directionTo(x, y) - getDirection());
+    return normalizeRelativeAngle(directionTo(x, y) - getDirection());
   }
 
   /**
@@ -1187,7 +1184,7 @@ public interface IBaseBot {
    * @param angle is the angle to normalize.
    * @return The normalized absolute angle.
    */
-  default double normalizeAbsoluteDegrees(double angle) {
+  default double normalizeAbsoluteAngle(double angle) {
     return (angle %= 360) >= 0 ? angle : (angle + 360);
   }
 
@@ -1197,7 +1194,7 @@ public interface IBaseBot {
    * @param angle is the angle to normalize.
    * @return The normalized relative angle.
    */
-  default double normalizeRelativeDegrees(double angle) {
+  default double normalizeRelativeAngle(double angle) {
     return (angle %= 360) >= 0
         ? ((angle < 180) ? angle : (angle - 360))
         : ((angle >= -180) ? angle : (angle + 360));

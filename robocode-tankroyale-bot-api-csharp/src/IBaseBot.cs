@@ -553,9 +553,7 @@ namespace Robocode.TankRoyale.BotApi
     /// hence will not automatically scan bots. The last radar direction and sweep angle will be used
     /// for scanning for bots.
     /// </summary>
-    /// <param name="rescan">true means that the radar must rescan using old radar direction and
-    /// sweep angle; false means that rescanning is disabled</param>
-    void SetScan(bool rescan);
+    void SetScan();
 
     /// <summary>
     /// Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun
@@ -936,39 +934,39 @@ namespace Robocode.TankRoyale.BotApi
     /// Calculates the bearing (delta angle) between the input direction and the direction of this bot.
     /// </summary>
     /// <code>
-    /// bearing = CalcBearing(direction) = NormalizeRelativeDegrees(direction - this.Direction)
+    /// bearing = CalcBearing(direction) = NormalizeRelativeAngle(direction - this.Direction)
     /// </code>
     /// <param name="direction">Is the input direction to calculate the bearing from.</param>
     /// <returns>A bearing (delta angle) between the input direction and the direction of this bot.
     /// The bearing is a normalized angle in the range [-180,180[</returns>
     /// <seealso cref="Direction"/>
-    /// <seealso cref="NormalizeRelativeDegrees"/>
+    /// <seealso cref="NormalizeRelativeAngle"/>
     double CalcBearing(double direction);
 
     /// <summary>
     /// Calculates the bearing (delta angle) between the input direction and the direction of the gun.
     /// </summary>
     /// <code>
-    /// bearing = CalcGunBearing(direction) = NormalizeRelativeDegrees(direction - this.GunDirection)
+    /// bearing = CalcGunBearing(direction) = NormalizeRelativeAngle(direction - this.GunDirection)
     /// </code>
     /// <param name="direction">Is the input direction to calculate the bearing from.</param>
     /// <returns>A bearing (delta angle) between the input direction and the direction of the gun.
     /// The bearing is a normalized angle in the range [-180,180[</returns>
     /// <seealso cref="GunDirection"/>
-    /// <seealso cref="NormalizeRelativeDegrees"/>
+    /// <seealso cref="NormalizeRelativeAngle"/>
     double CalcGunBearing(double direction);
 
     /// <summary>
     /// Calculates the bearing (delta angle) between the input direction and the direction of the radar.
     /// </summary>
     /// <code>
-    /// bearing = CalcRadarBearing(direction) = NormalizeRelativeDegrees(direction - this.RadarDirection)
+    /// bearing = CalcRadarBearing(direction) = NormalizeRelativeAngle(direction - this.RadarDirection)
     /// </code>
     /// <param name="direction">Is the input direction to calculate the bearing from.</param>
     /// <returns>A bearing (delta angle) between the input direction and the direction of the radar.
     /// The bearing is a normalized angle in the range [-180,180[</returns>
     /// <seealso cref="RadarDirection"/>
-    /// <seealso cref="NormalizeRelativeDegrees"/>
+    /// <seealso cref="NormalizeRelativeAngle"/>
     double CalcRadarBearing(double direction);
 
     /// <summary>
@@ -1001,13 +999,13 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <param name="angle">Is the angle to normalize.</param>
     /// <returns>The normalized absolute angle.</returns>
-    double NormalizeAbsoluteDegrees(double angle);
+    double NormalizeAbsoluteAngle(double angle);
 
     /// <summary>
     /// Normalizes an angle to an relative angle into the range [-180,180[
     /// </summary>
     /// <param name="angle">Is the angle to normalize.</param>
     /// <returns>The normalized relative angle.</returns>
-    double NormalizeRelativeDegrees(double angle);
+    double NormalizeRelativeAngle(double angle);
   }
 }

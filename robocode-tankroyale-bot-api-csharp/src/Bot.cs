@@ -224,8 +224,8 @@ namespace Robocode.TankRoyale.BotApi
 
     public override double DistanceTo(double x, double y) => base.DirectionTo(x, y);
 
-    public override double NormalizeAbsoluteDegrees(double angle) => base.NormalizeAbsoluteDegrees(angle);
+    public override double NormalizeAbsoluteAngle(double angle) => base.NormalizeAbsoluteAngle(angle);
 
-    public override double NormalizeRelativeDegrees(double angle) => base.NormalizeRelativeDegrees(angle);
+    public override double NormalizeRelativeAngle(double angle) => base.NormalizeRelativeAngle(angle);
   }
 }

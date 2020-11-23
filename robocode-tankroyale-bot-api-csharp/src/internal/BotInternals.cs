@@ -174,7 +174,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal bool Scan()
     {
-      bot.SetScan(true);
+      bot.SetScan();
       AwaitNextTurn();
 
       // If a ScannedBotEvent is put in the events, the bot scanned another bot

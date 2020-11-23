@@ -46,6 +46,9 @@ public class Fire extends Bot {
   /** onScannedBot: Fire! */
   @Override
   public void onScannedBot(ScannedBotEvent e) {
+    // Set bot to stop movement (executed with next command - fire)
+    setStop();
+
     // If the other robot is close by, and we have plenty of life, fire hard!
     double distance = distanceTo(e.getX(), e.getY());
     if (distance < 50 && getEnergy() > 50) {
@@ -54,29 +57,40 @@ public class Fire extends Bot {
       // Otherwise, only fire 1
       fire(1);
     }
-    // Scan again, before we turn the gun
-    scan();
+    // Scan, and resume movement if we did not scan anything
+    if (!scan()) {
+      setResume();
+    }
   }
 
   /** onHitByBullet: Turn perpendicular to the bullet, and move a bit. */
   @Override
   public void onHitByBullet(BulletHitBotEvent e) {
+    // Set bot to resume movement, if it was stopped
+    setResume();
+
     // Turn perpendicular to the bullet direction
-    double bearingToBullet = bearingTo(e.getBullet().getX(), e.getBullet().getY());
-    turnRight(normalizeRelativeDegrees(90 - bearingToBullet));
+    double direction = directionTo(e.getBullet().getX(), e.getBullet().getY());
+    turnLeft(normalizeRelativeAngle(90 - (getDirection() - direction)));
 
     // Move forward or backward depending if the distance is positive or negative
     forward(dist);
     dist *= -1; // Change distance, meaning forward or backward direction
-    scan();
+
+    // Rescan
+    setScan();
   }
 
   /** onBulletHit: Aim at target (where bullet came from) and fire hard. */
   @Override
   public void onBulletHit(BulletHitBotEvent e) {
+    // Set bot to resume movement, if it was stopped
+    setResume();
+
     // Turn gun to the bullet direction
-    double bearingToBullet = bearingTo(e.getBullet().getX(), e.getBullet().getY());
-    turnGunLeft(bearingToBullet);
+    double bearing = bearingTo(e.getBullet().getX(), e.getBullet().getY());
+    double gunBearing = normalizeRelativeAngle(bearing + getDirection() - getGunDirection());
+    turnGunLeft(gunBearing);
 
     // Fire hard
     fire(3);

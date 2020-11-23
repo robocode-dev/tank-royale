@@ -158,7 +158,7 @@ public final class BotInternals {
   }
 
   public boolean scan() {
-    bot.setScan(true);
+    bot.setScan();
     awaitNextTurn();
 
     // If a ScannedBotEvent is put in the events, the bot scanned another bot

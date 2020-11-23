@@ -43,8 +43,11 @@ namespace Robocode.TankRoyale.Sample.Bots
     // OnScannedBot: Fire!
     public override void OnScannedBot(ScannedBotEvent e)
     {
+      // Set bot to stop movement (executed with next command - fire)
+      SetStop();
+
       // If the other robot is close by, and we have plenty of life, fire hard!
-      double distance = DistanceTo(e.X, e.Y);
+      var distance = DistanceTo(e.X, e.Y);
       if (distance < 50 && Energy > 50)
       {
         Fire(3);
@@ -54,27 +57,40 @@ namespace Robocode.TankRoyale.Sample.Bots
         // Otherwise, only fire 1
         Fire(1);
       }
-      // Scan again, before we turn the gun
-      Scan();
+      // Scan, and resume movement if we did not scan anything
+      if (!Scan())
+      {
+        SetResume();
+      }
     }
 
     // OnHitByBullet: Turn perpendicular to the bullet, and move a bit.
     public override void OnHitByBullet(BulletHitBotEvent e)
     {
+      // Set bot to resume movement, if it was stopped
+      SetResume();
+
       // Turn perpendicular to the bullet direction
-      TurnRight(NormalizeRelativeDegrees(90 - (e.Bullet.Direction - Direction)));
+      var direction = DirectionTo(e.Bullet.X, e.Bullet.Y);
+      TurnRight(NormalizeRelativeAngle(90 - (direction - Direction)));
 
       // Move forward or backward depending if the distance is positive or negative
       Forward(dist);
       dist *= -1; // Change distance, meaning forward or backward direction
-      Scan();
+
+      // Rescan
+      SetScan();
     }
 
     // OnBulletHit: Aim at target (where bullet came from) and fire hard.
     public override void OnBulletHit(BulletHitBotEvent e)
     {
+      // Set bot to resume movement, if it was stopped
+      SetResume();
+
       // Turn gun to the bullet direction
-      double gunBearing = NormalizeRelativeDegrees(e.Bullet.Direction - GunDirection);
+      var bearing = BearingTo(e.Bullet.X, e.Bullet.Y);
+      var gunBearing = NormalizeRelativeAngle(bearing + Direction - GunDirection);
       TurnGunLeft(gunBearing);
 
       // Fire hard
