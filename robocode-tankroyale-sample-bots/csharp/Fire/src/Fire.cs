@@ -30,7 +30,7 @@ namespace Robocode.TankRoyale.Sample.Bots
       SetBodyColor("#FA0"); // orange
       SetGunColor("##FA0"); // orange
       SetRadarColor("#F00"); // red
-      SetBulletColor("#F00"); // red
+      SetBulletColor("#08F"); // light blue
       SetScanColor("#F00"); // red
 
       // Spin the gun around slowly... forever
@@ -72,7 +72,7 @@ namespace Robocode.TankRoyale.Sample.Bots
 
       // Turn perpendicular to the bullet direction
       var direction = DirectionTo(e.Bullet.X, e.Bullet.Y);
-      TurnRight(NormalizeRelativeAngle(90 - (direction - Direction)));
+      TurnLeft(NormalizeRelativeAngle(90 - (Direction - direction)));
 
       // Move forward or backward depending if the distance is positive or negative
       Forward(dist);
@@ -89,8 +89,8 @@ namespace Robocode.TankRoyale.Sample.Bots
       SetResume();
 
       // Turn gun to the bullet direction
-      var bearing = BearingTo(e.Bullet.X, e.Bullet.Y);
-      var gunBearing = NormalizeRelativeAngle(bearing + Direction - GunDirection);
+      double direction = DirectionTo(e.Bullet.X, e.Bullet.Y);
+      double gunBearing = NormalizeRelativeAngle(direction - GunDirection);
       TurnGunLeft(gunBearing);
 
       // Fire hard

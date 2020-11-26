@@ -34,7 +34,7 @@ public class Fire extends Bot {
     setBodyColor("#FA0"); // orange
     setGunColor("##FA0"); // orange
     setRadarColor("#F00"); // red
-    setBulletColor("#F00"); // red
+    setBulletColor("#08F"); // light blue
     setScanColor("#F00"); // red
 
     // Spin the gun around slowly... forever
@@ -71,7 +71,7 @@ public class Fire extends Bot {
 
     // Turn perpendicular to the bullet direction
     double direction = directionTo(e.getBullet().getX(), e.getBullet().getY());
-    turnRight(normalizeRelativeAngle(90 - (getDirection() - direction)));
+    turnLeft(normalizeRelativeAngle(90 - (getDirection() - direction)));
 
     // Move forward or backward depending if the distance is positive or negative
     forward(dist);
@@ -88,8 +88,8 @@ public class Fire extends Bot {
     setResume();
 
     // Turn gun to the bullet direction
-    double bearing = bearingTo(e.getBullet().getX(), e.getBullet().getY());
-    double gunBearing = normalizeRelativeAngle(bearing + getDirection() - getGunDirection());
+    double direction = directionTo(e.getBullet().getX(), e.getBullet().getY());
+    double gunBearing = normalizeRelativeAngle(direction - getGunDirection());
     turnGunLeft(gunBearing);
 
     // Fire hard
