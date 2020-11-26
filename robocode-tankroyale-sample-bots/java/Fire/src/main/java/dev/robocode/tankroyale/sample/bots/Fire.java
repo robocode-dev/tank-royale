@@ -71,7 +71,7 @@ public class Fire extends Bot {
 
     // Turn perpendicular to the bullet direction
     double direction = directionTo(e.getBullet().getX(), e.getBullet().getY());
-    turnLeft(normalizeRelativeAngle(90 - (getDirection() - direction)));
+    turnRight(normalizeRelativeAngle(90 - (getDirection() - direction)));
 
     // Move forward or backward depending if the distance is positive or negative
     forward(dist);

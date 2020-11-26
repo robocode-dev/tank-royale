@@ -12,7 +12,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private readonly BaseBotInternals baseBotInternals;
     private readonly BotEventHandlers botEventHandlers;
 
-    private readonly IDictionary<int, BotEvent> events = new ConcurrentDictionary<int, BotEvent>();
+    private readonly IDictionary<int, ConcurrentQueue<BotEvent>> eventsDict = new ConcurrentDictionary<int, ConcurrentQueue<BotEvent>>();
 
     internal EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers)
     {
@@ -22,7 +22,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     public void Clear()
     {
-      events.Clear();
+      eventsDict.Clear();
     }
 
     private void AddEvent(IBaseBot baseBot, BotEvent botEvent)
@@ -97,14 +97,25 @@ namespace Robocode.TankRoyale.BotApi.Internal
       {
         throw new InvalidOperationException("Unhandled event type: " + botEvent);
       }
-      events.TryAdd(priority, botEvent);
+
+      ConcurrentQueue<BotEvent> events;
+      eventsDict.TryGetValue(priority, out events);
+      if (events == null)
+      {
+        events = new ConcurrentQueue<BotEvent>();
+        eventsDict.Add(priority, events);
+      }
+      events.Enqueue(botEvent);
     }
 
     internal void AddEventsFromTick(IBaseBot baseBot, TickEvent tickEvent)
     {
       AddEvent(baseBot, tickEvent);
-      foreach (BotEvent botEvent in tickEvent.Events)
+
+      IEnumerator<BotEvent> enumerator = tickEvent.Events.GetEnumerator();
+      while (enumerator.MoveNext())
       {
+        var botEvent = enumerator.Current;
         AddEvent(baseBot, botEvent);
       }
       AddCustomEvents(baseBot);
@@ -124,21 +135,32 @@ namespace Robocode.TankRoyale.BotApi.Internal
     internal void DispatchEvents(int currentTurnNumber)
     {
       // Remove all old entries
-      foreach (var item in events)
+      foreach (var item in eventsDict)
       {
-        var botEvent = item.Value;
-        if (botEvent.TurnNumber < currentTurnNumber - MaxEventAge)
+        var events = item.Value;
+        foreach (var botEvent in events)
         {
-          events.Remove(item.Key);
+          if (botEvent.TurnNumber < currentTurnNumber - MaxEventAge)
+          {
+            eventsDict.Remove(item.Key);
+          }
         }
       }
 
       // Publish all event in the order of the keys, i.e. event priority order
-      foreach (var item in events)
+      var sortedDict = new SortedDictionary<int, ConcurrentQueue<BotEvent>>(eventsDict);
+
+      foreach (var item in sortedDict)
       {
-        var botEvent = item.Value;
-        events.Remove(item.Key);
-        botEventHandlers.Fire(botEvent);
+        var events = item.Value;
+        for (int i = 0; i < events.Count; i++)
+        {
+          BotEvent botEvent;
+          if (events.TryDequeue(out botEvent))
+          {
+            botEventHandlers.Fire(botEvent);
+          }
+        }
       }
     }
   }

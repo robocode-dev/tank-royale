@@ -314,6 +314,12 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
+    public double Firepower
+    {
+      get => __baseBotInternals.BotIntent.Firepower ?? 0;
+    }
+
+    /// <inheritdoc/>
     public bool DoAdjustGunForBodyTurn
     {
       set => __baseBotInternals.BotIntent.AdjustGunForBodyTurn = value;

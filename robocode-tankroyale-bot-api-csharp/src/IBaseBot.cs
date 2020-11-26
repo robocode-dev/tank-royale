@@ -544,9 +544,17 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns><c>true</c> if the cannon can fire, i.e. if there no gun heat; <c>false</c>
     /// otherwise.</returns>
     /// <seealso cref="OnBulletFired"/>
+    /// <seealso cref="Firepower"/>
     /// <seealso cref="GunHeat"/>
     /// <seealso cref="GunCoolingRate"/>
     bool SetFire(double firepower);
+
+    /// <summary>
+    /// The firepower.
+    /// </summary>
+    /// <returns>The firepower</returns>
+    /// <see cref="SetFire"/>
+    double Firepower { get; }
 
     /// <summary>
     /// Sets the bot to rescan with the radar. This method is useful if the radar has not turned, and

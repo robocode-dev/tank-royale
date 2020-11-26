@@ -5,20 +5,20 @@ namespace Robocode.TankRoyale.BotApi.Events
   /// </summary>
   public sealed class DefaultEventPriority
   {
-    public const int OnWonRound = 10;
-    public const int OnSkippedTurn = 20;
-    public const int OnTick = 30;
-    public const int OnCondition = 40;
-    //  public const int OnTeamMessage = 50; // Reserved for future
-    public const int OnBotDeath = 60;
-    public const int OnBulletFired = 70;
-    public const int OnBulletHitWall = 80;
-    public const int OnBulletHitBullet = 90;
-    public const int OnBulletHit = 100;
-    public const int OnHitByBullet = 110;
-    public const int OnHitWall = 120;
-    public const int OnHitBot = 130;
-    public const int OnScannedBot = 140;
+    public const int OnScannedBot = 10;
+    public const int OnHitBot = 20;
+    public const int OnHitWall = 30;
+    public const int OnHitByBullet = 40;
+    public const int OnBulletHit = 50;
+    public const int OnBulletHitBullet = 60;
+    public const int OnBulletHitWall = 70;
+    public const int OnBulletFired = 80;
+    public const int OnBotDeath = 90;
+    //  public const int OnTeamMessage = 100; // Reserved for future
+    public const int OnCondition = 110;
+    public const int OnTick = 120;
+    public const int OnSkippedTurn = 130;
+    public const int OnWonRound = 140;
     public const int OnDeath = 150;
   }
 }

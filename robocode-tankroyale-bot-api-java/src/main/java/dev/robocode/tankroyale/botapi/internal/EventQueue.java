@@ -4,8 +4,11 @@ import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.SortedMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 final class EventQueue {
 
@@ -14,7 +17,7 @@ final class EventQueue {
   private final BaseBotInternals baseBotInternals;
   private final BotEventHandlers botEventHandlers;
 
-  private final Map<Integer, BotEvent> eventMap = new ConcurrentHashMap<>();
+  private final SortedMap<Integer, List<BotEvent>> eventMap = new ConcurrentSkipListMap<>();
 
   public EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers) {
     this.baseBotInternals = baseBotInternals;
@@ -65,7 +68,13 @@ final class EventQueue {
     } else {
       throw new IllegalStateException("Unhandled event type: " + event);
     }
-    eventMap.put(priority, event);
+
+    List<BotEvent> botEvents = eventMap.get(priority);
+    if (botEvents == null) {
+      botEvents = new CopyOnWriteArrayList<>();
+      eventMap.put(priority, botEvents);
+    }
+    botEvents.add(event);
   }
 
   void addEventsFromTick(IBaseBot baseBot, TickEvent event) {
@@ -76,26 +85,33 @@ final class EventQueue {
   }
 
   private void addCustomEvents(IBaseBot baseBot) {
-    baseBotInternals.getConditions().forEach(
-        condition -> {
-          if (condition.test()) {
-            addEvent(
-                baseBot,
-                new CustomEvent(baseBotInternals.getCurrentTick().getTurnNumber(), condition));
-          }
-        });
+    baseBotInternals
+        .getConditions()
+        .forEach(
+            condition -> {
+              if (condition.test()) {
+                addEvent(
+                    baseBot,
+                    new CustomEvent(baseBotInternals.getCurrentTick().getTurnNumber(), condition));
+              }
+            });
   }
 
   void dispatchEvents(int currentTurnNumber) {
     // Remove all old entries
-    eventMap.values().removeIf(event -> currentTurnNumber > event.getTurnNumber() + MAX_EVENT_AGE);
+    eventMap
+        .values()
+        .forEach(
+            list ->
+                list.removeIf(event -> currentTurnNumber > event.getTurnNumber() + MAX_EVENT_AGE));
 
     // Publish all event in the order of the keys, i.e. event priority order
-    Iterator<BotEvent> iterator = eventMap.values().iterator();
+    Iterator<Map.Entry<Integer, List<BotEvent>>> iterator = eventMap.entrySet().iterator();
     while (iterator.hasNext()) {
-      BotEvent botEvent = iterator.next();
+      List<BotEvent> events = iterator.next().getValue();
       iterator.remove();
-      botEventHandlers.fire(botEvent);
+
+      events.forEach(botEventHandlers::fire);
     }
   }
 }

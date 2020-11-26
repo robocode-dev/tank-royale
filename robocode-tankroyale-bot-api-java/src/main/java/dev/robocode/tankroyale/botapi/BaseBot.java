@@ -315,7 +315,8 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final double getFirepower() {
-    return __baseBotInternals.getBotIntent().getFirepower();
+    Double firepower = __baseBotInternals.getBotIntent().getFirepower();
+    return firepower == null ? 0 : firepower;
   }
 
   /** {@inheritDoc} */

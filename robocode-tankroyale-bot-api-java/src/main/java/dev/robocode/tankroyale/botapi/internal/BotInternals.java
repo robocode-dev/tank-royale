@@ -3,6 +3,8 @@ package dev.robocode.tankroyale.botapi.internal;
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.events.*;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public final class BotInternals {
 
   private final Bot bot;
@@ -152,9 +154,9 @@ public final class BotInternals {
   }
 
   public void fire(double firepower) {
-    if (bot.setFire(firepower)) {
-      awaitGunFired();
-    }
+      while (!bot.setFire(firepower)) {
+        awaitNextTurn();
+      }
   }
 
   public boolean scan() {
@@ -336,10 +338,6 @@ public final class BotInternals {
 
   private void awaitRadarTurnComplete() {
     await(() -> radarTurnRemaining == 0);
-  }
-
-  private void awaitGunFired() {
-    await(() -> bot.getGunHeat() > 0);
   }
 
   private void awaitNextTurn() {

@@ -127,19 +127,19 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal void SendIntent()
     {
-      if (botIntent.TargetSpeed > maxSpeed)
+      if (botIntent?.TargetSpeed > maxSpeed)
       {
         botIntent.TargetSpeed = maxSpeed;
       }
-      if (botIntent.TurnRate > maxTurnRate)
+      if (botIntent?.TurnRate > maxTurnRate)
       {
         botIntent.TurnRate = maxTurnRate;
       }
-      if (botIntent.GunTurnRate > maxGunTurnRate)
+      if (botIntent?.GunTurnRate > maxGunTurnRate)
       {
         botIntent.GunTurnRate = maxGunTurnRate;
       }
-      if (botIntent.RadarTurnRate > maxRadarTurnRate)
+      if (botIntent?.RadarTurnRate > maxRadarTurnRate)
       {
         botIntent.RadarTurnRate = maxRadarTurnRate;
       }
@@ -231,7 +231,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       {
         throw new ArgumentException("firepower cannot be NaN");
       }
-      if (CurrentTick.BotState.GunHeat > 0)
+      if (baseBot.Energy < firepower || CurrentTick.BotState.GunHeat > 0)
       {
         return false; // cannot fire yet
       }

@@ -154,16 +154,20 @@ public final class BaseBotInternals {
   }
 
   private void sendIntent() {
-    if (botIntent.getTargetSpeed() > maxSpeed) {
+    Double targetSpeed = botIntent.getTargetSpeed();
+    if (targetSpeed != null && targetSpeed > maxSpeed) {
       botIntent.setTargetSpeed(maxSpeed);
     }
-    if (botIntent.getTurnRate() > maxTurnRate) {
+    Double turnRate = botIntent.getTurnRate();
+    if (turnRate != null && turnRate > maxTurnRate) {
       botIntent.setTurnRate(maxTurnRate);
     }
-    if (botIntent.getGunTurnRate() > maxGunTurnRate) {
+    Double gunTurnRate = botIntent.getGunTurnRate();
+    if (gunTurnRate != null && gunTurnRate > maxGunTurnRate) {
       botIntent.setGunTurnRate(maxGunTurnRate);
     }
-    if (botIntent.getRadarTurnRate() > maxRadarTurnRate) {
+    Double radarTurnRate = botIntent.getRadarTurnRate();
+    if (radarTurnRate != null && radarTurnRate > maxRadarTurnRate) {
       botIntent.setRadarTurnRate(maxRadarTurnRate);
     }
     socket.sendText(gson.toJson(botIntent));
@@ -221,7 +225,7 @@ public final class BaseBotInternals {
     if (Double.isNaN(firepower)) {
       throw new IllegalArgumentException("firepower cannot be NaN");
     }
-    if (getCurrentTick().getBotState().getGunHeat() > 0) {
+    if (baseBot.getEnergy() < firepower || baseBot.getGunHeat() > 0) {
       return false; // cannot fire yet
     }
     botIntent.setFirepower(firepower);

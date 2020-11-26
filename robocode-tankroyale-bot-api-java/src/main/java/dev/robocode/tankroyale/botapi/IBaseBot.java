@@ -595,6 +595,7 @@ public interface IBaseBot {
    * @return {@code true} if the cannon can fire, i.e. if there no gun heat; {@code false}
    *     otherwise.
    * @see #onBulletFired(BulletFiredEvent)
+   * @see #getFirepower()
    * @see #getGunHeat()
    * @see #getGunCoolingRate()
    */
