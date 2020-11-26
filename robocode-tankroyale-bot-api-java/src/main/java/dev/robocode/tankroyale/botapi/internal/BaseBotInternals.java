@@ -486,7 +486,7 @@ public final class BaseBotInternals {
 
     tickStartNanoTime = System.nanoTime();
 
-    eventQueue.addEventsFromTick(baseBot, tickEvent);
+    eventQueue.addEventsFromTick(tickEvent, baseBot);
 
     // Trigger new round
     if (tickEvent.getTurnNumber() == 1) {

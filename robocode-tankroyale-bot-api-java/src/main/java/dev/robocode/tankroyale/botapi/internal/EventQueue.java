@@ -28,60 +28,34 @@ final class EventQueue {
     eventMap.clear();
   }
 
-  private void addEvent(IBaseBot baseBot, BotEvent event) {
-    int priority;
+  void addEventsFromTick(TickEvent event, IBaseBot baseBot) {
+    addEvent(event, baseBot);
+    event.getEvents().forEach(evt -> addEvent(evt, baseBot));
 
-    if (event instanceof TickEvent) {
-      priority = EventPriority.onTick;
-    } else if (event instanceof ScannedBotEvent) {
-      priority = EventPriority.onScannedBot;
-    } else if (event instanceof SkippedTurnEvent) {
-      priority = EventPriority.onSkippedTurn;
-    } else if (event instanceof HitBotEvent) {
-      priority = EventPriority.onHitBot;
-    } else if (event instanceof HitWallEvent) {
-      priority = EventPriority.onHitWall;
-    } else if (event instanceof BulletFiredEvent) {
-      priority = EventPriority.onBulletFired;
-    } else if (event instanceof BulletHitWallEvent) {
-      priority = EventPriority.onBulletHitWall;
-    } else if (event instanceof BulletHitBotEvent) {
-      BulletHitBotEvent bulletEvent = (BulletHitBotEvent) event;
-      if (bulletEvent.getVictimId() == baseBot.getMyId()) {
-        priority = EventPriority.onHitByBullet;
-      } else {
-        priority = EventPriority.onBulletHit;
-      }
-    } else if (event instanceof DeathEvent) {
-      DeathEvent deathEvent = (DeathEvent) event;
-      if (deathEvent.getVictimId() == baseBot.getMyId()) {
-        priority = EventPriority.onDeath;
-      } else {
-        priority = EventPriority.onBotDeath;
-      }
-    } else if (event instanceof BulletHitBulletEvent) {
-      priority = EventPriority.onBulletHitBullet;
-    } else if (event instanceof WonRoundEvent) {
-      priority = EventPriority.onWonRound;
-    } else if (event instanceof CustomEvent) {
-      priority = EventPriority.onCondition;
-    } else {
-      throw new IllegalStateException("Unhandled event type: " + event);
+    addCustomEvents(baseBot);
+  }
+
+  void dispatchEvents(int currentTurnNumber) {
+    removeOldEvents(currentTurnNumber);
+
+    // Publish all event in the order of the keys, i.e. event priority order
+    Iterator<Map.Entry<Integer, List<BotEvent>>> iterator = eventMap.entrySet().iterator();
+    while (iterator.hasNext()) {
+      List<BotEvent> events = iterator.next().getValue();
+      iterator.remove();
+
+      events.forEach(botEventHandlers::fire);
     }
+  }
 
-    List<BotEvent> botEvents = eventMap.get(priority);
+  private void addEvent(BotEvent event, IBaseBot baseBot) {
+    int priority = getPriority(event, baseBot);
+    List<BotEvent> botEvents = eventMap.get(getPriority(event, baseBot));
     if (botEvents == null) {
       botEvents = new CopyOnWriteArrayList<>();
       eventMap.put(priority, botEvents);
     }
     botEvents.add(event);
-  }
-
-  void addEventsFromTick(IBaseBot baseBot, TickEvent event) {
-    addEvent(baseBot, event);
-    event.getEvents().forEach(e -> addEvent(baseBot, e));
-
-    addCustomEvents(baseBot);
   }
 
   private void addCustomEvents(IBaseBot baseBot) {
@@ -91,27 +65,57 @@ final class EventQueue {
             condition -> {
               if (condition.test()) {
                 addEvent(
-                    baseBot,
-                    new CustomEvent(baseBotInternals.getCurrentTick().getTurnNumber(), condition));
+                    new CustomEvent(baseBotInternals.getCurrentTick().getTurnNumber(), condition),
+                    baseBot);
               }
             });
   }
 
-  void dispatchEvents(int currentTurnNumber) {
-    // Remove all old entries
+  private void removeOldEvents(int currentTurnNumber) {
     eventMap
         .values()
         .forEach(
             list ->
                 list.removeIf(event -> currentTurnNumber > event.getTurnNumber() + MAX_EVENT_AGE));
+  }
 
-    // Publish all event in the order of the keys, i.e. event priority order
-    Iterator<Map.Entry<Integer, List<BotEvent>>> iterator = eventMap.entrySet().iterator();
-    while (iterator.hasNext()) {
-      List<BotEvent> events = iterator.next().getValue();
-      iterator.remove();
-
-      events.forEach(botEventHandlers::fire);
+  private static int getPriority(BotEvent event, IBaseBot baseBot) {
+    if (event instanceof TickEvent) {
+      return EventPriority.onTick;
+    } else if (event instanceof ScannedBotEvent) {
+      return EventPriority.onScannedBot;
+    } else if (event instanceof HitBotEvent) {
+      return EventPriority.onHitBot;
+    } else if (event instanceof HitWallEvent) {
+      return EventPriority.onHitWall;
+    } else if (event instanceof BulletFiredEvent) {
+      return EventPriority.onBulletFired;
+    } else if (event instanceof BulletHitWallEvent) {
+      return EventPriority.onBulletHitWall;
+    } else if (event instanceof BulletHitBotEvent) {
+      BulletHitBotEvent bulletEvent = (BulletHitBotEvent) event;
+      if (bulletEvent.getVictimId() == baseBot.getMyId()) {
+        return EventPriority.onHitByBullet;
+      } else {
+        return EventPriority.onBulletHit;
+      }
+    } else if (event instanceof BulletHitBulletEvent) {
+      return EventPriority.onBulletHitBullet;
+    } else if (event instanceof DeathEvent) {
+      DeathEvent deathEvent = (DeathEvent) event;
+      if (deathEvent.getVictimId() == baseBot.getMyId()) {
+        return EventPriority.onDeath;
+      } else {
+        return EventPriority.onBotDeath;
+      }
+    } else if (event instanceof SkippedTurnEvent) {
+      return EventPriority.onSkippedTurn;
+    } else if (event instanceof CustomEvent) {
+      return EventPriority.onCondition;
+    } else if (event instanceof WonRoundEvent) {
+      return EventPriority.onWonRound;
+    } else {
+      throw new IllegalStateException("Unhandled event type: " + event);
     }
   }
 }

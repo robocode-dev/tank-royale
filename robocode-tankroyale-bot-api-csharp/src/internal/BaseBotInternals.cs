@@ -514,7 +514,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
       ticksStart = DateTime.Now.Ticks;
 
-      eventQueue.AddEventsFromTick(baseBot, tickEvent);
+      eventQueue.AddEventsFromTick(tickEvent, baseBot);
 
       // Trigger new round
       if (tickEvent.TurnNumber == 1)
