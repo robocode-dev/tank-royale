@@ -120,7 +120,6 @@ public final class BotInternals {
     blockIfStopped();
     setTurnLeft(degrees);
     awaitTurnComplete();
-    setTurnLeft(0);
   }
 
   public void setTurnGunLeft(double degrees) {
@@ -135,7 +134,6 @@ public final class BotInternals {
     blockIfStopped();
     setTurnGunLeft(degrees);
     awaitGunTurnComplete();
-    setTurnGunLeft(0);
   }
 
   public void setTurnRadarLeft(double degrees) {
@@ -150,7 +148,6 @@ public final class BotInternals {
     blockIfStopped();
     setTurnRadarLeft(degrees);
     awaitRadarTurnComplete();
-    setTurnRadarLeft(0);
   }
 
   public void fire(double firepower) {

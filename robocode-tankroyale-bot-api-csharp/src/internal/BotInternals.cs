@@ -125,7 +125,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
       BlockIfStopped();
       SetTurnLeft(degrees);
       AwaitTurnComplete();
-      SetTurnLeft(0);
     }
 
     internal void SetTurnGunLeft(double degrees)
@@ -143,7 +142,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
       BlockIfStopped();
       SetTurnGunLeft(degrees);
       AwaitGunTurnComplete();
-      SetTurnGunLeft(0);
     }
 
     internal void SetTurnRadarLeft(double degrees)
@@ -161,7 +159,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
       BlockIfStopped();
       SetTurnRadarLeft(degrees);
       AwaitRadarTurnComplete();
-      SetTurnRadarLeft(0);
     }
 
     internal void Fire(double firepower)
