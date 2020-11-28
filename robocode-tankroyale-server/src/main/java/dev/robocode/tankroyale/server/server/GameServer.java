@@ -376,8 +376,6 @@ public final class GameServer {
                       skippedTurnEvent.set$type(SkippedTurnEvent.$type.SKIPPED_TURN_EVENT);
                       skippedTurnEvent.setTurnNumber(modelUpdater.getTurnNumber());
                       send(conn, skippedTurnEvent);
-
-                      log.info("skipped turn: " + modelUpdater.getTurnNumber());
                     }
                   });
         }
@@ -392,9 +390,6 @@ public final class GameServer {
 
   private static void send(WebSocket conn, Message message) {
     String msg = gson.toJson(message);
-
-    log.debug("Sending to: " + conn.getRemoteSocketAddress() + ", message: " + msg);
-
     try {
       conn.send(msg);
     } catch (WebsocketNotConnectedException ignore) {
