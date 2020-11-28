@@ -1,12 +1,15 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
 import dev.robocode.tankroyale.gui.client.Client
+import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
 import dev.robocode.tankroyale.gui.util.Event
 import java.awt.BorderLayout
+import java.awt.EventQueue
 import javax.swing.JButton
 import javax.swing.JPanel
+import javax.swing.UIManager
 
 object ControlPanel : JPanel() {
 
@@ -20,12 +23,15 @@ object ControlPanel : JPanel() {
     init {
         val buttonPanel = JPanel().apply {
             addButton("battle.stop", onStop)
-            addButton("battle.restart",
+            addButton(
+                "battle.restart",
                 onRestart
             )
-            pauseResumeButton = addButton("battle.pause",
+            pauseResumeButton = addButton(
+                "battle.pause",
                 onPauseResume
             )
+            add(TpsSlider)
         }
 
         layout = BorderLayout()
@@ -55,4 +61,8 @@ object ControlPanel : JPanel() {
     private fun setResumedText() {
         pauseResumeButton.text = STRINGS.get("battle.resume")
     }
+}
+
+private fun main() {
+    ControlPanel.isVisible = true
 }
