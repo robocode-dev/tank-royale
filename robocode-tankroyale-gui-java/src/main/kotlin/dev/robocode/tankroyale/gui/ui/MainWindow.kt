@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.gui.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.server.ServerProcess
-import dev.robocode.tankroyale.gui.ui.arena.BattlePanel
+import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
 import dev.robocode.tankroyale.gui.ui.selection.*
 import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
@@ -66,7 +66,7 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
     private fun showLogo() {
         contentPane.apply {
-            remove(BattlePanel)
+            remove(ControlPanel)
             add(LogoPanel)
         }
         validate()
@@ -75,7 +75,7 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
     private fun showBattle() {
         contentPane.remove(LogoPanel)
-        contentPane.add(BattlePanel)
+        contentPane.add(ControlPanel)
 
         validate()
         repaint()

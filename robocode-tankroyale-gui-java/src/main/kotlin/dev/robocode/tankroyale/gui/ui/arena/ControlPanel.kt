@@ -8,7 +8,7 @@ import java.awt.BorderLayout
 import javax.swing.JButton
 import javax.swing.JPanel
 
-object BattlePanel : JPanel() {
+object ControlPanel : JPanel() {
 
     // Private events
     private val onStop = Event<JButton>()
