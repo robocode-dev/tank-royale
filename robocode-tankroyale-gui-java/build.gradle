@@ -81,7 +81,7 @@ processResources {
 
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'dev.robocode.tankroyale.ui.desktop.ui.MainWindowKt'
+        attributes 'Main-Class': 'dev.robocode.tankroyale.gui.ui.MainWindowKt'
     }
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
@@ -93,7 +93,7 @@ task fatJar(type: Jar) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'robocode-tankroyale-ui-desktop'
+            artifactId = 'robocode-tankroyale-gui'
             artifact fatJar
         }
     }
