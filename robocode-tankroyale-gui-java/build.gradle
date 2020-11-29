@@ -55,14 +55,14 @@ dependencies {
 
 task copyServerJar(type: Copy) {
     from configurations.runtime
-    into "$buildDir/resources/main"
+    into "$idea.module.outputDir"
     include("robocode-tankroyale-server-*.jar")
     rename '(.*)-[0-9]+\\..*.jar', '$1.jar'
 }
 
 task copyBootstrapJar(type: Copy) {
     from configurations.runtime
-    into "$buildDir/resources/main"
+    into "$idea.module.outputDir"
     include("robocode-tankroyale-bootstrap-*.jar")
     rename '(.*)-[0-9]+\\..*.jar', '$1.jar'
 }
