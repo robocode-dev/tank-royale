@@ -30,7 +30,7 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
         jMenuBar = MainWindowMenu
 
-        val iconUrl = javaClass.getResource("/gfx/Tank.png")
+        val iconUrl = javaClass.classLoader.getResource("gfx/Tank.png")
         val iconImage = ImageIcon(iconUrl)
         setIconImage(iconImage.image)
 

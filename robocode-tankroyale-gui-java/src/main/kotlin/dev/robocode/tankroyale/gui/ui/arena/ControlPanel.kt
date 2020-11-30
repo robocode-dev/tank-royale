@@ -1,15 +1,16 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
 import dev.robocode.tankroyale.gui.client.Client
-import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
+import dev.robocode.tankroyale.gui.ui.components.WrapLayout
+import dev.robocode.tankroyale.gui.ui.tps.TpsField
+import dev.robocode.tankroyale.gui.ui.tps.TpsSlider
 import dev.robocode.tankroyale.gui.util.Event
 import java.awt.BorderLayout
-import java.awt.EventQueue
 import javax.swing.JButton
+import javax.swing.JLabel
 import javax.swing.JPanel
-import javax.swing.UIManager
 
 object ControlPanel : JPanel() {
 
@@ -32,7 +33,14 @@ object ControlPanel : JPanel() {
                 onPauseResume
             )
             add(TpsSlider)
+
+            add(JPanel().apply {
+                add(JLabel("TPS:"))
+                add(TpsField)
+            })
         }
+
+        buttonPanel.layout = WrapLayout()
 
         layout = BorderLayout()
         add(ArenaPanel, BorderLayout.CENTER)
