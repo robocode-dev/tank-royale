@@ -7,6 +7,7 @@ plugins {
 }
 group = 'dev.robocode.tankroyale'
 version = '0.7.2'
+description = 'Robocode Tank Royale Bot API for Java'
 
 /*
 license {

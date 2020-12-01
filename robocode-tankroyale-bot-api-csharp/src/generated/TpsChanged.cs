@@ -8,7 +8,7 @@ namespace Robocode.TankRoyale.Schema
 {
     #pragma warning disable // Disable all warnings
 
-    public class TurnsPerSecondChanged : Message
+    public class TpsChanged : Message
     {
     }
 
