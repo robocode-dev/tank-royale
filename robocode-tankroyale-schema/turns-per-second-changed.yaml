@@ -1,6 +1,0 @@
-$id: #turns-per-second-changed.yaml
-$schema: http://json-schema.org/draft-07/schema#
-description: Event occuring when observer speed has changed, i.e. the number of turns per second to show wqhen trhe game is running seen from an observer/UI
-type: object
-extends:
-  $ref: message.yaml
