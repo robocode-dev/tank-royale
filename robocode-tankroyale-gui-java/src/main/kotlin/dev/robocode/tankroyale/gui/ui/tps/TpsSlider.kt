@@ -6,7 +6,6 @@ import java.lang.IllegalArgumentException
 import java.util.*
 import javax.swing.JLabel
 import javax.swing.JSlider
-import javax.swing.SwingUtilities.invokeLater
 import javax.swing.event.ChangeEvent
 import javax.swing.event.ChangeListener
 
@@ -37,7 +36,7 @@ object TpsSlider : JSlider() {
 
         addChangeListener(TpsChangeListener())
 
-        TpsEventChannel.onTpsChange.subscribe { tpsEvent ->
+        TpsChannel.onTpsChange.subscribe { tpsEvent ->
             if (tpsEvent.source != this) {
                 setTps(tpsEvent.tps)
             }
@@ -110,7 +109,7 @@ object TpsSlider : JSlider() {
             } else {
                 Client.resumeGame()
             }
-            TpsEventChannel.onTpsChange.publish(TpsEvent(this, getTps()))
+            TpsChannel.onTpsChange.publish(TpsEvent(this, getTps()))
         }
     }
 }

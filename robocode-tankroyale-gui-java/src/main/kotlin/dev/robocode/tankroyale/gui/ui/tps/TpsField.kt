@@ -15,7 +15,7 @@ object TpsField : JLimitedTextField(3) {
         setInputVerifier { tpsInputVerifier() }
         onChange { tpsInputVerifier() }
 
-        TpsEventChannel.onTpsChange.subscribe { tpsEvent ->
+        TpsChannel.onTpsChange.subscribe { tpsEvent ->
             if (tpsEvent.source != this) {
                 tps = tpsEvent.tps
                 invokeLater {
@@ -50,7 +50,7 @@ object TpsField : JLimitedTextField(3) {
         }
         if (valid) {
             this.tps = tps!!
-            TpsEventChannel.onTpsChange.publish(TpsEvent(this, tps))
+            TpsChannel.onTpsChange.publish(TpsEvent(this, tps))
         } else {
             showMessage(String.format(ResourceBundles.MESSAGES.get("tps_range")))
         }
