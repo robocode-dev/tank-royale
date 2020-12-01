@@ -1,0 +1,6 @@
+$id: #tps-changed.yaml
+$schema: http://json-schema.org/draft-07/schema#
+description: Event occuring when a controller changes the TPS, which is the number of turns shown for an observer (typically a UI). TPS is similar to FPS, where a frame is equal to a turn.
+type: object
+extends:
+  $ref: message.yaml
