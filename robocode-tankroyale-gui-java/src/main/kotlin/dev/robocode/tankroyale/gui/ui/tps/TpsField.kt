@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.tps
 
+import dev.robocode.tankroyale.gui.model.TpsChangedEvent
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.components.JLimitedTextField
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
@@ -9,19 +10,25 @@ import javax.swing.SwingUtilities.invokeLater
 
 object TpsField : JLimitedTextField(3) {
 
-    var tps: Int = 30
+    var tps: Int = 30 // FIXME: from settings
 
     init {
         setInputVerifier { tpsInputVerifier() }
         onChange { tpsInputVerifier() }
 
-        TpsChannel.onTpsChange.subscribe { tpsEvent ->
-            if (tpsEvent.source != this) {
-                tps = tpsEvent.tps
-                invokeLater {
-                    text = if (tps == Int.MAX_VALUE) "max" else tps.toString()
-                }
+        TpsEventChannel.onTpsChanged.subscribe {
+            if (it.tps != tps) {
+                tps = it.tps
+                updateText()
             }
+        }
+
+        updateText()
+    }
+
+    private fun updateText() {
+        invokeLater {
+            text = if (tps == -1) "max" else tps.toString()
         }
     }
 
@@ -36,7 +43,7 @@ object TpsField : JLimitedTextField(3) {
                 valid = true
             }
             "m", "ma", "max" -> {
-                tps = Int.MAX_VALUE
+                tps = -1
                 valid = true
             }
             else -> {
@@ -49,8 +56,10 @@ object TpsField : JLimitedTextField(3) {
             }
         }
         if (valid) {
-            this.tps = tps!!
-            TpsChannel.onTpsChange.publish(TpsEvent(this, tps))
+            if (tps != this.tps) {
+                this.tps = tps!!
+                TpsEventChannel.onTpsChanged.publish(TpsChangedEvent(tps))
+            }
         } else {
             showMessage(String.format(ResourceBundles.MESSAGES.get("tps_range")))
         }

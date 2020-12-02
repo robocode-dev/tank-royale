@@ -1,8 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.tps
 
-import dev.robocode.tankroyale.gui.client.Client
+import dev.robocode.tankroyale.gui.model.TpsChangedEvent
 import java.awt.Dimension
-import java.lang.IllegalArgumentException
 import java.util.*
 import javax.swing.JLabel
 import javax.swing.JSlider
@@ -36,11 +35,9 @@ object TpsSlider : JSlider() {
 
         addChangeListener(TpsChangeListener())
 
-        TpsChannel.onTpsChange.subscribe { tpsEvent ->
-            if (tpsEvent.source != this) {
-                setTps(tpsEvent.tps)
-            }
-        }
+        TpsEventChannel.onTpsChanged.subscribe { tpsEvent -> setTps(tpsEvent.tps) }
+
+        setTps(30) // FIXME: from settings
     }
 
     private fun getTps(): Int {
@@ -65,12 +62,12 @@ object TpsSlider : JSlider() {
         if (value <= 44) { // 500 - 800
             return 500 + (value - 40) * 100
         }
-        return Int.MAX_VALUE
+        return -1 // maximum
     }
 
     private fun setTps(tps: Int) {
-        if (!(tps in 0..999 || tps == Int.MAX_VALUE)) {
-            throw IllegalArgumentException("tps must be in the range 0..999 or Int.MAX_VALUE")
+        if (!(tps in -1..999)) {
+            throw IllegalArgumentException("tps must be in the range -1..999")
         }
         when {
             tps <= 15 -> { // 0 - 15
@@ -102,14 +99,9 @@ object TpsSlider : JSlider() {
 
     private class TpsChangeListener : ChangeListener {
         override fun stateChanged(e: ChangeEvent?) {
-            val value = TpsSlider.value
-
-            if (value == 0) {
-                Client.pauseGame()
-            } else {
-                Client.resumeGame()
+            if (!valueIsAdjusting) { // avoid events while dragging
+                TpsEventChannel.onTpsChanged.publish(TpsChangedEvent(getTps()))
             }
-            TpsChannel.onTpsChange.publish(TpsEvent(this, getTps()))
         }
     }
 }

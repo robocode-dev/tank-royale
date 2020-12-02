@@ -147,6 +147,12 @@ class GamePausedEvent : Message()
 class GameResumedEvent : Message()
 
 @Serializable
+@SerialName("TpsChangedEvent")
+data class TpsChangedEvent(
+    val tps: Int
+) : Message()
+
+@Serializable
 @SerialName("ControllerHandshake")
 data class ControllerHandshake(
     val name: String,
@@ -183,6 +189,12 @@ class PauseGame : Message()
 @SerialName("ResumeGame")
 class ResumeGame : Message()
 
+@Serializable
+@SerialName("ChangeTps")
+data class ChangeTps(
+    val tps: Int
+) : Message()
+
 val messageModule = SerializersModule {
     polymorphic(Message::class) {
         subclass(BotDeathEvent::class)
@@ -194,6 +206,7 @@ val messageModule = SerializersModule {
         subclass(BulletHitBotEvent::class)
         subclass(BulletHitBulletEvent::class)
         subclass(BulletHitWallEvent::class)
+        subclass(ChangeTps::class)
         subclass(ControllerHandshake::class)
         subclass(GameAbortedEvent::class)
         subclass(GameEndedEvent::class)
@@ -208,6 +221,7 @@ val messageModule = SerializersModule {
         subclass(StartGame::class)
         subclass(StopGame::class)
         subclass(TickEvent::class)
+        subclass(TpsChangedEvent::class)
     }
 }
 

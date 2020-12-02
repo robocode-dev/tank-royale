@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.client
 import dev.robocode.tankroyale.gui.model.*
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.settings.ServerSettings
+import dev.robocode.tankroyale.gui.ui.tps.TpsEventChannel
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocolCommand
 import dev.robocode.tankroyale.gui.util.Version
@@ -17,6 +18,8 @@ object Client : AutoCloseable {
 
     init {
         RegisterWsProtocolCommand().execute()
+
+        TpsEventChannel.onTpsChanged.subscribe { changeTps(it.tps) }
     }
 
     // public events
@@ -33,6 +36,7 @@ object Client : AutoCloseable {
     val onGameResumed = Event<GameResumedEvent>()
 
     val onTickEvent = Event<TickEvent>()
+
 
     var currentGameSetup: GameSetup? = null
 
@@ -60,6 +64,7 @@ object Client : AutoCloseable {
 
     private var lastStartGame: StartGame? = null
 
+    private var tps: Int? = null
 
     override fun close() {
         stopGame()
@@ -117,6 +122,13 @@ object Client : AutoCloseable {
         }
     }
 
+    fun changeTps(tps: Int) {
+        if (isGameRunning && tps != this.tps) {
+            this.tps = tps;
+            websocket.send(ChangeTps(tps))
+        }
+    }
+
     private fun onMessage(msg: String) {
         when (val type = json.decodeFromString(PolymorphicSerializer(Message::class), msg)) {
             is TickEvent -> handleTickEvent(type)
@@ -127,6 +139,7 @@ object Client : AutoCloseable {
             is GameAbortedEvent -> handleGameAborted(type)
             is GamePausedEvent -> handleGamePaused(type)
             is GameResumedEvent -> handleGameResumed(type)
+            is TpsChangedEvent -> handleTpsChanged(type)
             else -> throw IllegalArgumentException("Unknown content type: $type")
         }
     }
@@ -179,5 +192,9 @@ object Client : AutoCloseable {
 
     private fun handleTickEvent(tickEvent: TickEvent) {
         onTickEvent.publish(tickEvent)
+    }
+
+    private fun handleTpsChanged(tpsChangedEvent: TpsChangedEvent) {
+        TpsEventChannel.onTpsChanged.publish(tpsChangedEvent)
     }
 }
