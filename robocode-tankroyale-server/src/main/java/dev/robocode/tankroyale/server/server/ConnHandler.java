@@ -310,6 +310,12 @@ public final class ConnHandler {
                 executorService.submit(listener::onResumeGame);
                 break;
               }
+            case CHANGE_TPS:
+              {
+                ChangeTps changeTps = gson.fromJson(message, ChangeTps.class);
+                executorService.submit(() -> listener.onChangeTps(changeTps.getTps()));
+                break;
+              }
             default:
               notifyException(new IllegalStateException("Unhandled message type: " + $type));
           }

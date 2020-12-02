@@ -30,7 +30,7 @@ class Timer {
   void stop() {
     if (timer != null) {
       timer.cancel();
+      timer = null;
     }
-    timer = null;
   }
 }

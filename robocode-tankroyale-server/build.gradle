@@ -5,11 +5,11 @@ plugins {
     id 'maven-publish'
     id 'application'
     id 'idea'
-    id 'com.github.ben-manes.versions' version '0.28.0'
+    id 'com.github.ben-manes.versions' version '0.36.0'
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.6.31'
+version = '0.6.32'
 
 compileJava {
     sourceCompatibility = '1.8'
@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.8'
+    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.13'
     implementation 'org.danilopianini:gson-extras:0.2.2'
 
     implementation 'org.java-websocket:Java-WebSocket:1.5.1'

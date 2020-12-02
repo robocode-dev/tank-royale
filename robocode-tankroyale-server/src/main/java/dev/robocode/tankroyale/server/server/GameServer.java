@@ -38,12 +38,16 @@ public final class GameServer {
   private final Map<WebSocket, dev.robocode.tankroyale.server.model.BotIntent> botIntents =
       new ConcurrentHashMap<>();
 
+  private final Set<WebSocket> botsThatSentIntent = new HashSet<>();
+
   private Timer readyTimeoutTimer;
   private Timer turnTimeoutTimer;
 
+  private int tps = dev.robocode.tankroyale.server.model.GameSetup.DEFAULT_TURNS_PER_SECOND;
+
   private ModelUpdater modelUpdater;
 
-  private final static Gson gson = new Gson();
+  private static final Gson gson = new Gson();
 
   public GameServer(String gameTypes, String clientSecret) {
     if (gameTypes == null) {
@@ -149,20 +153,29 @@ public final class GameServer {
     }
 
     // Prepare model update
-
     modelUpdater = ModelUpdater.create(gameSetup, new HashSet<>(participantIds.values()));
 
-    val turnTimeout = gameSetup.getTurnTimeout();
-
     // Restart turn timeout timer
+    resetTimeoutTimer();
+  }
 
-    val tps = gameSetup.getDefaultTurnsPerSecond();
-    long timeout = 1_000_000 / tps;
-    if (turnTimeout > timeout) {
-      timeout = turnTimeout;
-    }
-    turnTimeoutTimer = new Timer(timeout, this::onNextTurn);
+  private void resetTimeoutTimer() {
+    turnTimeoutTimer = new Timer(calculateTurnTimeout(), this::onNextTurn);
     turnTimeoutTimer.start();
+  }
+
+  private long calculateTurnTimeout() {
+    long timeout;
+    if (tps < 0) {
+      timeout = 0;
+    } else {
+      timeout = 1_000_000 / tps;
+      val turnTimeout = gameSetup.getTurnTimeout();
+      if (turnTimeout > timeout) {
+        timeout = turnTimeout;
+      }
+    }
+    return timeout;
   }
 
   private void startGame(
@@ -263,26 +276,51 @@ public final class GameServer {
   private void pauseGame() {
     log.info("Pausing game");
 
-    turnTimeoutTimer.stop();
+    if (runningState == RunningState.GAME_RUNNING) {
+      runningState = RunningState.GAME_PAUSED;
 
-    GamePausedEventForObserver pausedEvent = new GamePausedEventForObserver();
-    pausedEvent.set$type(GamePausedEventForObserver.$type.GAME_PAUSED_EVENT_FOR_OBSERVER);
-    broadcastToObserverAndControllers(pausedEvent);
+      turnTimeoutTimer.stop();
 
-    runningState = RunningState.GAME_PAUSED;
+      GamePausedEventForObserver pausedEvent = new GamePausedEventForObserver();
+      pausedEvent.set$type(GamePausedEventForObserver.$type.GAME_PAUSED_EVENT_FOR_OBSERVER);
+      broadcastToObserverAndControllers(pausedEvent);
+    }
   }
 
   private void resumeGame() {
     log.info("Resuming game");
 
-    GameResumedEventForObserver resumedEvent = new GameResumedEventForObserver();
-    resumedEvent.set$type(GameResumedEventForObserver.$type.GAME_RESUMED_EVENT_FOR_OBSERVER);
-    broadcastToObserverAndControllers(resumedEvent);
-
     if (runningState == RunningState.GAME_PAUSED) {
       runningState = RunningState.GAME_RUNNING;
 
+      GameResumedEventForObserver resumedEvent = new GameResumedEventForObserver();
+      resumedEvent.set$type(GameResumedEventForObserver.$type.GAME_RESUMED_EVENT_FOR_OBSERVER);
+      broadcastToObserverAndControllers(resumedEvent);
+
       turnTimeoutTimer.start();
+    }
+  }
+
+  private void changeTps(int tps) {
+    log.info("Changing TPS: " + tps);
+
+    if (this.tps == tps) {
+      return;
+    }
+    this.tps = tps;
+
+    TpsChangedEvent tpsChangedEvent = new TpsChangedEvent();
+    tpsChangedEvent.set$type(TpsChangedEvent.$type.TPS_CHANGED_EVENT);
+    tpsChangedEvent.setTps(tps);
+    broadcastToObserverAndControllers(tpsChangedEvent);
+
+    if (tps == 0) {
+      pauseGame();
+    } else {
+      resetTimeoutTimer();
+      if (runningState == RunningState.GAME_PAUSED) {
+        resumeGame();
+      }
     }
   }
 
@@ -321,6 +359,7 @@ public final class GameServer {
 
     // Stop turn timeout timer
     turnTimeoutTimer.stop();
+    turnTimeoutTimer = null;
 
     if (runningState != RunningState.GAME_STOPPED) {
       // Update game state
@@ -369,7 +408,9 @@ public final class GameServer {
 
           // Send SkippedTurnEvents to all bots that skipped a turn, i.e. where the server did not
           // receive a bot intent before the turn ended.
-          participantIds.keySet().forEach(
+          participantIds
+              .keySet()
+              .forEach(
                   (conn) -> {
                     if (botIntents.get(conn) == null) {
                       SkippedTurnEvent skippedTurnEvent = new SkippedTurnEvent();
@@ -383,6 +424,7 @@ public final class GameServer {
         botIntents.clear();
 
         // Restart turn timeout timer
+        resetTimeoutTimer();
         turnTimeoutTimer.start();
       }
     }
@@ -407,6 +449,15 @@ public final class GameServer {
     }
     botIntent = botIntent.update(BotIntentToBotIntentMapper.map(intent));
     botIntents.put(conn, botIntent);
+
+    // If all bot intents have been received, we can start next turn
+
+    botsThatSentIntent.add(conn);
+    if (botIntents.size() == botsThatSentIntent.size()) {
+      botsThatSentIntent.clear();
+
+      onNextTurn();
+    }
   }
 
   private Message createBotListUpdateMessage() {
@@ -463,7 +514,8 @@ public final class GameServer {
       log.info("Bot left: " + getDisplayName(handshake));
 
       // If a bot leaves while in a game, make sure to reset all intent values to zeroes
-      botIntents.put(conn, dev.robocode.tankroyale.server.model.BotIntent.builder().build().zeroed());
+      botIntents.put(
+          conn, dev.robocode.tankroyale.server.model.BotIntent.builder().build().zeroed());
 
       sendBotListUpdateToObservers();
     }
@@ -524,6 +576,11 @@ public final class GameServer {
     @Override
     public void onResumeGame() {
       resumeGame();
+    }
+
+    @Override
+    public void onChangeTps(int tps) {
+      changeTps(tps);
     }
 
     private String getDisplayName(BotHandshake handshake) {

@@ -34,4 +34,6 @@ public interface ConnListener {
 	void onPauseGame();
 
 	void onResumeGame();
+
+	void onChangeTps(int tps);
 }
