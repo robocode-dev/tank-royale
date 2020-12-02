@@ -41,59 +41,29 @@ object TpsSlider : JSlider() {
     }
 
     private fun getTps(): Int {
-        if (value <= 15) { // 0 - 15
-            return value
-        }
-        if (value <= 20) { // 15 - 30
-            return 15 + (value - 15) * 3
-        }
-        if (value <= 25) { // 30 - 50
-            return 30 + (value - 20) * 4
-        }
-        if (value <= 30) { // 50 - 100
-            return 50 + (value - 25) * 10
-        }
-        if (value <= 35) { // 100 - 200
-            return 100 + (value - 30) * 20
-        }
-        if (value <= 40) { // 200 - 500
-            return 200 + (value - 35) * 60
-        }
-        if (value <= 44) { // 500 - 800
-            return 500 + (value - 40) * 100
-        }
+        if (value <= 15) return value // 0 - 15
+        if (value <= 20) return 15 + (value - 15) * 3 // 15 - 30
+        if (value <= 25) return 30 + (value - 20) * 4 // 30 - 50
+        if (value <= 30) return 50 + (value - 25) * 10 // 50 - 100
+        if (value <= 35) return 100 + (value - 30) * 20 // 100 - 200
+        if (value <= 40) return 200 + (value - 35) * 60 // 200 - 500
+        if (value <= 44) return 500 + (value - 40) * 100 // 500 - 800
         return -1 // maximum
     }
 
     private fun setTps(tps: Int) {
-        if (!(tps in -1..999)) {
+        if (tps !in -1..999) {
             throw IllegalArgumentException("tps must be in the range -1..999")
         }
         when {
-            tps <= 15 -> { // 0 - 15
-                value = tps
-            }
-            tps <= 30 -> { // 15 - 30
-                value = 15 + (tps - 15) / 3
-            }
-            tps <= 50 -> { // 30 - 50
-                value = 20 + (tps - 30) / 4
-            }
-            tps <= 100 -> { // 50 - 100
-                value = 25 + (tps - 50) / 10
-            }
-            tps <= 200 -> { // 100 - 200
-                value = 30 + (tps - 100) / 20
-            }
-            tps <= 500 -> { // 200 - 500
-                value = 35 + (tps - 200) / 60
-            }
-            tps <= 999 -> { // 500 - 999
-                value = 40 + (tps - 500) / 100
-            }
-            else -> {
-                value = maximum
-            }
+            tps < 0 -> value = maximum
+            tps <= 15 -> value = tps // 0 - 15
+            tps <= 30 -> value = 15 + (tps - 15) / 3 // 15 - 30
+            tps <= 50 -> value = 20 + (tps - 30) / 4 // 30 - 50
+            tps <= 100 -> value = 25 + (tps - 50) / 10 // 50 - 100
+            tps <= 200 -> value = 30 + (tps - 100) / 20 // 100 - 200
+            tps <= 500 -> value = 35 + (tps - 200) / 60 // 200 - 500
+            tps <= 999 -> value = 40 + (tps - 500) / 100 // 500 - 999
         }
     }
 

@@ -19,6 +19,7 @@ import java.awt.event.MouseMotionAdapter
 import java.awt.event.MouseWheelEvent
 import java.awt.geom.*
 import java.util.*
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.JPanel
 import kotlin.collections.HashSet
@@ -33,7 +34,7 @@ object ArenaPanel : JPanel() {
 
     private val circleShape = Area(Ellipse2D.Double(-0.5, -0.5, 1.0, 1.0))
 
-    private val explosions = Collections.synchronizedList(ArrayList<Animation>())
+    private val explosions =  CopyOnWriteArrayList<Animation>()
 
     private object State {
         var arenaWidth: Int = Client.currentGameSetup?.arenaWidth ?: 800
@@ -223,7 +224,8 @@ object ArenaPanel : JPanel() {
     }
 
     private fun drawExplosions(g: Graphics2D) {
-        with(explosions.iterator()) {
+        val list = ArrayList(explosions)
+        with(list.iterator()) {
             forEach { explosion ->
                 explosion.paint(g, State.time)
                 if (explosion.isFinished()) remove()
