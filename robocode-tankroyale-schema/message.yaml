@@ -21,6 +21,8 @@ properties:
       - GameStartedEventForBot
       - GameStartedEventForObserver
 
+      - TpsChangedEvent
+
       - BotDeathEvent
       - BotHitBotEvent
       - BotHitWallEvent
@@ -39,5 +41,7 @@ properties:
       - StopGame
       - PauseGame
       - ResumeGame
+
+      - ChangeTps
 required:
   - $type

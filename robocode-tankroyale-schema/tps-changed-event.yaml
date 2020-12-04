@@ -1,0 +1,10 @@
+$id: #tps-changed-event.yaml
+$schema: http://json-schema.org/draft-07/schema#
+description: Event occuring when a controller has changed the TPS (Turns Per Second), which is the number of turns displayed for an observer. TPS is similar to FPS, where a frame is equal to a turn.
+type: object
+extends:
+  $ref: message.yaml
+properties:
+  tps:
+    description: Turns per second (TPS). Typically a value from 0 to 999. -1 means maximum possible TPS speed.
+    type: integer

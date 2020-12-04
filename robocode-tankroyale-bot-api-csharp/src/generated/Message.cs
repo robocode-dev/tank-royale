@@ -66,56 +66,62 @@ namespace Robocode.TankRoyale.Schema
         [System.Runtime.Serialization.EnumMember(Value = @"GameStartedEventForObserver")]
         GameStartedEventForObserver = 14,
     
+        [System.Runtime.Serialization.EnumMember(Value = @"TpsChangedEvent")]
+        TpsChangedEvent = 15,
+    
         [System.Runtime.Serialization.EnumMember(Value = @"BotDeathEvent")]
-        BotDeathEvent = 15,
+        BotDeathEvent = 16,
     
         [System.Runtime.Serialization.EnumMember(Value = @"BotHitBotEvent")]
-        BotHitBotEvent = 16,
+        BotHitBotEvent = 17,
     
         [System.Runtime.Serialization.EnumMember(Value = @"BotHitWallEvent")]
-        BotHitWallEvent = 17,
+        BotHitWallEvent = 18,
     
         [System.Runtime.Serialization.EnumMember(Value = @"BulletFiredEvent")]
-        BulletFiredEvent = 18,
+        BulletFiredEvent = 19,
     
         [System.Runtime.Serialization.EnumMember(Value = @"BulletHitBotEvent")]
-        BulletHitBotEvent = 19,
+        BulletHitBotEvent = 20,
     
         [System.Runtime.Serialization.EnumMember(Value = @"BulletHitBulletEvent")]
-        BulletHitBulletEvent = 20,
+        BulletHitBulletEvent = 21,
     
         [System.Runtime.Serialization.EnumMember(Value = @"BulletHitWallEvent")]
-        BulletHitWallEvent = 21,
+        BulletHitWallEvent = 22,
     
         [System.Runtime.Serialization.EnumMember(Value = @"HitByBulletEvent")]
-        HitByBulletEvent = 22,
+        HitByBulletEvent = 23,
     
         [System.Runtime.Serialization.EnumMember(Value = @"ScannedBotEvent")]
-        ScannedBotEvent = 23,
+        ScannedBotEvent = 24,
     
         [System.Runtime.Serialization.EnumMember(Value = @"SkippedTurnEvent")]
-        SkippedTurnEvent = 24,
+        SkippedTurnEvent = 25,
     
         [System.Runtime.Serialization.EnumMember(Value = @"TickEventForBot")]
-        TickEventForBot = 25,
+        TickEventForBot = 26,
     
         [System.Runtime.Serialization.EnumMember(Value = @"TickEventForObserver")]
-        TickEventForObserver = 26,
+        TickEventForObserver = 27,
     
         [System.Runtime.Serialization.EnumMember(Value = @"WonRoundEvent")]
-        WonRoundEvent = 27,
+        WonRoundEvent = 28,
     
         [System.Runtime.Serialization.EnumMember(Value = @"StartGame")]
-        StartGame = 28,
+        StartGame = 29,
     
         [System.Runtime.Serialization.EnumMember(Value = @"StopGame")]
-        StopGame = 29,
+        StopGame = 30,
     
         [System.Runtime.Serialization.EnumMember(Value = @"PauseGame")]
-        PauseGame = 30,
+        PauseGame = 31,
     
         [System.Runtime.Serialization.EnumMember(Value = @"ResumeGame")]
-        ResumeGame = 31,
+        ResumeGame = 32,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"ChangeTps")]
+        ChangeTps = 33,
     
     }
 }

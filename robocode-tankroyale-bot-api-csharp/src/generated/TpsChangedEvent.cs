@@ -8,9 +8,9 @@ namespace Robocode.TankRoyale.Schema
 {
     #pragma warning disable // Disable all warnings
 
-    /// <summary>Event occuring when a controller changes the TPS, which is the number of turns shown for an observer (typically a UI). TPS is similar to FPS, where a frame is equal to a turn.</summary>
+    /// <summary>Event occuring when a controller has changed the TPS (Turns Per Second), which is the number of turns displayed for an observer. TPS is similar to FPS, where a frame is equal to a turn.</summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.2.0 (Newtonsoft.Json v9.0.0.0)")]
-    public class TpsChanged : Message 
+    public class TpsChangedEvent : Message 
     {
         /// <summary>Turns per second (TPS). Typically a value from 0 to 999. -1 means maximum possible TPS speed.</summary>
         [Newtonsoft.Json.JsonProperty("tps", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
