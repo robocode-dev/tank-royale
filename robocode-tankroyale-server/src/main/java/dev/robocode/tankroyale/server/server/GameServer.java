@@ -40,10 +40,10 @@ public final class GameServer {
 
   private final Set<WebSocket> botsThatSentIntent = new HashSet<>();
 
-  private Timer readyTimeoutTimer;
-  private Timer turnTimeoutTimer;
+  private NanoTimer readyTimeoutTimer;
+  private NanoTimer turnTimeoutTimer;
 
-  private int tps = dev.robocode.tankroyale.server.model.GameSetup.DEFAULT_TURNS_PER_SECOND;
+  private int tps = 30; // dev.robocode.tankroyale.server.model.GameSetup.DEFAULT_TURNS_PER_SECOND;
 
   private ModelUpdater modelUpdater;
 
@@ -116,7 +116,8 @@ public final class GameServer {
     readyParticipants = new HashSet<>();
 
     // Start 'bot-ready' timeout timer
-    readyTimeoutTimer = new Timer(gameSetup.getReadyTimeout(), this::onReadyTimeout);
+    readyTimeoutTimer =
+        new NanoTimer(gameSetup.getReadyTimeout() * 1_000_000L, this::onReadyTimeout);
     readyTimeoutTimer.start();
   }
 
@@ -159,21 +160,31 @@ public final class GameServer {
     resetTimeoutTimer();
   }
 
+  volatile long lastTurnTimeout;
+
   private void resetTimeoutTimer() {
-    turnTimeoutTimer = new Timer(calculateTurnTimeout(), this::onNextTurn);
-    turnTimeoutTimer.start();
+    long timeout = calculateTurnTimeout();
+    if (timeout != lastTurnTimeout) {
+      lastTurnTimeout = timeout;
+
+      if (turnTimeoutTimer != null) {
+        turnTimeoutTimer.stop();
+      }
+      turnTimeoutTimer = new NanoTimer(timeout, this::onNextTurn);
+      turnTimeoutTimer.start();
+    }
   }
 
   private long calculateTurnTimeout() {
     long timeout;
-    if (tps < 0) {
+    if (tps <= 0) {
       timeout = 0;
     } else {
-      timeout = 1_000_000 / tps;
-      val turnTimeout = gameSetup.getTurnTimeout();
-      if (turnTimeout > timeout) {
-        timeout = turnTimeout;
-      }
+      timeout = 1_000_000_000 / tps;
+    }
+    val turnTimeout = gameSetup.getTurnTimeout() * 1000;
+    if (turnTimeout > timeout) {
+      timeout = turnTimeout;
     }
     return timeout;
   }
@@ -279,7 +290,9 @@ public final class GameServer {
     if (runningState == RunningState.GAME_RUNNING) {
       runningState = RunningState.GAME_PAUSED;
 
-      turnTimeoutTimer.stop();
+      if (turnTimeoutTimer != null) {
+        turnTimeoutTimer.pause();
+      }
 
       GamePausedEventForObserver pausedEvent = new GamePausedEventForObserver();
       pausedEvent.set$type(GamePausedEventForObserver.$type.GAME_PAUSED_EVENT_FOR_OBSERVER);
@@ -297,7 +310,9 @@ public final class GameServer {
       resumedEvent.set$type(GameResumedEventForObserver.$type.GAME_RESUMED_EVENT_FOR_OBSERVER);
       broadcastToObserverAndControllers(resumedEvent);
 
-      turnTimeoutTimer.start();
+      if (turnTimeoutTimer != null) {
+        turnTimeoutTimer.resume();
+      }
     }
   }
 
@@ -356,10 +371,6 @@ public final class GameServer {
 
   private synchronized void onNextTurn() {
     log.debug("Next turn => updating game state");
-
-    // Stop turn timeout timer
-    turnTimeoutTimer.stop();
-    turnTimeoutTimer = null;
 
     if (runningState != RunningState.GAME_STOPPED) {
       // Update game state
@@ -422,10 +433,6 @@ public final class GameServer {
         }
         // Clear bot intents
         botIntents.clear();
-
-        // Restart turn timeout timer
-        resetTimeoutTimer();
-        turnTimeoutTimer.start();
       }
     }
   }
@@ -451,13 +458,15 @@ public final class GameServer {
     botIntents.put(conn, botIntent);
 
     // If all bot intents have been received, we can start next turn
-
+    /*
     botsThatSentIntent.add(conn);
     if (botIntents.size() == botsThatSentIntent.size()) {
       botsThatSentIntent.clear();
 
       onNextTurn();
+      turnTimeoutTimer.reset();
     }
+    */
   }
 
   private Message createBotListUpdateMessage() {
