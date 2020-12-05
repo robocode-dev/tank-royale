@@ -1,0 +1,86 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+//    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.10'
+    id 'maven-publish'
+    id 'application'
+    id 'idea'
+    id 'com.github.ben-manes.versions' version '0.36.0'
+}
+
+group = 'dev.robocode.tankroyale'
+version = '0.6.32'
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
+repositories {
+    jcenter()
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.4.10'
+//    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.4.10'
+
+//    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0'
+//    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0'
+
+    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.13'
+    implementation 'org.danilopianini:gson-extras:0.2.2'
+
+    implementation 'org.java-websocket:Java-WebSocket:1.5.1'
+
+    implementation 'info.picocli:picocli:4.3.2'
+
+    implementation 'org.fusesource.jansi:jansi:1.18'
+
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-core:1.2.3'
+    implementation 'org.slf4j:slf4j-api:1.7.26'
+
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'org.unitils:unitils-core:3.4.6'
+}
+
+idea {
+    module {
+        outputDir = file("$buildDir/classes/kotlin/main")
+    }
+}
+
+// Modify versions.txt using replacement of @version@ token
+processResources {
+    with copySpec {
+        from 'src/main/resources'
+        include 'version.txt'
+        filter(ReplaceTokens, tokens: [version: version])
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'dev.robocode.tankroyale.server.Server'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'robocode-tankroyale-server'
+            artifact fatJar
+        }
+    }
+}
