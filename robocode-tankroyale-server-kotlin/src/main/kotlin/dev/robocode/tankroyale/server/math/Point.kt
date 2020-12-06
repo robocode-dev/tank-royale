@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.server.model
+package dev.robocode.tankroyale.server.math
 
 /** Defines a 2D point */
 data class Point(
