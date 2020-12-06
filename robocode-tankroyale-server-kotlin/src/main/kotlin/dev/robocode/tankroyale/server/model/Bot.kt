@@ -9,7 +9,7 @@ import kotlin.math.sin
 /** Bot instance. */
 data class Bot(
     /** Bot id */
-    var id: Int,
+    var id: BotId,
 
     /** Energy level */
     var energy: Double = INITIAL_BOT_ENERGY,

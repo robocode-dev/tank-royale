@@ -1,15 +1,17 @@
 package dev.robocode.tankroyale.server.event
 
+import dev.robocode.tankroyale.server.model.BotId
+
 /** Event sent when a bot got scanned. */
 class ScannedBotEvent (
     /** Turn number when event occurred */
     override val turnNumber: Int,
 
     /** Bot id of the bot that scanned the bot */
-    val scannedByBotId: Int,
+    val scannedByBotId: BotId,
 
     /** Bot id of the bot that got scanned */
-    val scannedBotId: Int,
+    val scannedBotId: BotId,
 
     /** Energy level of the scanned bot */
     val energy: Double,
@@ -26,4 +28,4 @@ class ScannedBotEvent (
     /** Speed of the scanned bot */
     val speed: Double,
 
-) :  Event()
+    ) :  Event()

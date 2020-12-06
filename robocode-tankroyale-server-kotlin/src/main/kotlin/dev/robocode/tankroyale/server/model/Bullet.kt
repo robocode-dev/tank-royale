@@ -7,10 +7,10 @@ import kotlin.math.sin
 
 data class Bullet(
     /** Id of the bot that fired this bullet  */
-    var botId: Int,
+    var botId: BotId,
 
     /** Id of the bullet  */
-    var bulletId: Int,
+    var bulletId: BotId,
 
     /** Power of the bullet  */
     var power: Double,

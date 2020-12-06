@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.server.model
 /** Defines a score record to keep track of a bot's score. */
 data class Score(
     /** Bot ID */
-    var botId: Int,
+    var botId: BotId,
 
     /** Survival score gained whenever another bot is defeated */
     var survival: Double = 0.0,
@@ -30,7 +30,7 @@ data class Score(
     var secondPlaces: Int = 0,
 
     /** Number of 3rd places  */
-    var thirdPlaces: Int = 0
+    var thirdPlaces: Int = 0,
 ) {
     /** Total score */
     val totalScore: Double
