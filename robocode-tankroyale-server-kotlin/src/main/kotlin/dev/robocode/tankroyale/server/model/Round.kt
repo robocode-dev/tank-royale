@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.server.model
 /** State of a round in a battle. */
 data class Round(
     /** Round number */
-    var roundNumber: Int = 0,
+    var roundNumber: Int,
 
     /** List of turns */
     val turns: List<Turn> = ArrayList(),

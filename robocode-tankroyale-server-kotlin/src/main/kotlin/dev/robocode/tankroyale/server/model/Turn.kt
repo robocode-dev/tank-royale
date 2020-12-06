@@ -1,13 +1,13 @@
 package dev.robocode.tankroyale.server.model
 
-import dev.robocode.tankroyale.server.events.Event
+import dev.robocode.tankroyale.server.event.Event
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
 /** State of a game turn in a round. */
 class Turn(
     /** Turn number */
-    var turnNumber: Int = 0,
+    var turnNumber: Int,
 
     /** Bots */
     private val bots: MutableSet<Bot> = HashSet(),

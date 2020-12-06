@@ -9,25 +9,25 @@ import kotlin.math.sin
 /** Bot instance. */
 data class Bot(
     /** Bot id */
-    var id: Int = 0,
+    var id: Int,
 
     /** Energy level */
     var energy: Double = INITIAL_BOT_ENERGY,
 
     /** X coordinate on the arena */
-    var x: Double = 0.0,
+    var x: Double,
 
     /** Y coordinate on the arena */
-    var y: Double = 0.0,
+    var y: Double,
 
     /** Driving direction in degrees */
-    var direction: Double = 0.0,
+    var direction: Double,
 
     /** Gun direction in degrees */
-    var gunDirection: Double = 0.0,
+    var gunDirection: Double,
 
     /** Radar direction in degrees */
-    var radarDirection: Double = 0.0,
+    var radarDirection: Double,
 
     /** Radar spread angle in degrees */
     var radarSpreadAngle: Double = 0.0,
@@ -72,10 +72,10 @@ data class Bot(
     var score: Score?,
 
     /** Scan direction in degrees */
-    var scanDirection: Double = 0.0,
+    var scanDirection: Double,
 
     /** Scan angle in degrees */
-    var scanSpreadAngle: Double = 0.0,
+    var scanSpreadAngle: Double,
 ) {
     /** Check if bot is alive */
     inline val isAlive: Boolean get() = energy >= 0

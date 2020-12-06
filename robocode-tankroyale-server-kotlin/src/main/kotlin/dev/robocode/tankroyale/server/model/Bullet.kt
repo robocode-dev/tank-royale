@@ -1,51 +1,49 @@
 package dev.robocode.tankroyale.server.model
 
 import dev.robocode.tankroyale.server.math.Point
+import dev.robocode.tankroyale.server.rules.calcBulletSpeed
 import kotlin.math.cos
 import kotlin.math.sin
 
 data class Bullet(
     /** Id of the bot that fired this bullet  */
-    var botId: Int = 0,
+    var botId: Int,
 
     /** Id of the bullet  */
-    var bulletId: Int = 0,
+    var bulletId: Int,
 
     /** Power of the bullet  */
-    var power: Double = 0.0,
+    var power: Double,
 
     /** X coordinate of the position where the bullet was fired from  */
-    var startX: Double = 0.0,
+    var startX: Double,
+
     /** Y coordinate of the position where the bullet was fired from  */
-    var startY: Double = 0.0,
+    var startY: Double,
 
     /** Direction of the bullet in degrees  */
-    var direction: Double = 0.0,
+    var direction: Double,
 
     /** Tick, which is the number of turns since the bullet was fired  */
-    var tick: Int = 0,
+    var tick: Int,
 
     /** Color of the bullet  */
-    var color: Int? = null,
+    var color: Int?,
 ) {
     /** Speed of the bullet */
-    val speed: Double get() = RuleMath.calcBulletSpeed(power)
+    inline val speed: Double get() = calcBulletSpeed(power)
 
     /**
      * Calculates the current bullet position based on the fire position and current tick.
      * @return the calculated bullet position.
      */
-    fun calcPosition(): Point {
-        return calcPosition(startX, startY, direction, speed, tick)
-    }
+    fun calcPosition(): Point = calcPosition(startX, startY, direction, speed, tick)
 
     /**
      * Calculates the next bullet position based on the fire position and current tick.
      * @return the calculated bullet position.
      */
-    fun calcNextPosition(): Point {
-        return calcPosition(startX, startY, direction, speed, tick + 1)
-    }
+    fun calcNextPosition(): Point = calcPosition(startX, startY, direction, speed, tick + 1)
 
     /**
      * Calculates the position of a bullet.
