@@ -102,4 +102,13 @@ data class BotIntent(
             gunColor = botIntent.gunColor
         }
     }
+
+    /** Resets the target speed, turn rates, and bullet power. */
+    fun resetMovement() {
+        targetSpeed = 0.0
+        turnRate = 0.0
+        gunTurnRate = 0.0
+        radarTurnRate = 0.0
+        bulletPower = 0.0
+    }
 }

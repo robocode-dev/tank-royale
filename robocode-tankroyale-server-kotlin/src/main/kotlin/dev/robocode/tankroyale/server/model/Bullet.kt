@@ -10,7 +10,7 @@ data class Bullet(
     var botId: BotId,
 
     /** Id of the bullet  */
-    var bulletId: BotId,
+    var bulletId: Int,
 
     /** Power of the bullet  */
     var power: Double,
@@ -25,13 +25,16 @@ data class Bullet(
     var direction: Double,
 
     /** Tick, which is the number of turns since the bullet was fired  */
-    var tick: Int,
+    var tick: Int = 0,
 
     /** Color of the bullet  */
     var color: Int?,
 ) {
     /** Speed of the bullet */
     inline val speed: Double get() = calcBulletSpeed(power)
+
+    /** Increment the tick used for moving the bullet when calculating its position. */
+    fun tick() { tick++ }
 
     /**
      * Calculates the current bullet position based on the fire position and current tick.

@@ -6,6 +6,6 @@ data class BotHitWallEvent(
     override val turnNumber: Int,
 
     /** Bot id of the victim that has hit a wall */
-    val victimId: Int,
+    val victimId: BotId,
 
 ) : Event()

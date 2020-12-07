@@ -26,18 +26,17 @@ fun normalRelativeDegrees(angle: Double): Double =
         if (angle >= -180) angle else angle + 360
 
 /**
- * Tests if the two `double` values are nearly equal. It is recommended to use this method instead of testing
- * if the two doubles are equal using an expression like this: `value1 == value2`. The reason being, that this
- * expression might never become `true` due to the precision of double values. Whether or not, the specified
- * doubles are close enough to be considered as equal, is defined by the following expression:
+ * Tests if a `double` value is near to another 'double' value. It is recommended to use this method instead of testing
+ * if the two doubles are equal using an expression like this: `value1 == value2`. The reason is that this expression
+ * might never become `true` due to the precision of double values. Whether or not, the specified doubles are close
+ * enough to be considered as equal, is defined by the following expression:
  * `abs(value1 - value2) < epsilon`, where epsilon is defined to be 1E-6.
  *
- * @param value1 the first double value.
- * @param value2 the second double value.
- * @return `true` if the two doubles are near to each other; `false` otherwise.
+ * @param value the `double` value to compare to this double.
+ * @return `true` if the `double` value is near to this `double`; `false` otherwise.
  */
-fun nearlyEqual(value1: Double, value2: Double): Boolean {
-    return abs(value1 - value2) < 1E-6
+fun Double.isNearTo(value: Double): Boolean {
+    return abs(this - value) < 1E-6
 }
 
 /**
@@ -144,7 +143,7 @@ fun isPointOnLine(px: Double, py: Double, x1: Double, y1: Double, x2: Double, y2
     val cross = dxp * dyl - dyp * dxl
 
     // Point lies on the line, if and only if, cross-product is equal to zero.
-    if (!nearlyEqual(cross, 0.0)) {
+    if (!cross.isNearTo(0.0)) {
         return false
     }
 

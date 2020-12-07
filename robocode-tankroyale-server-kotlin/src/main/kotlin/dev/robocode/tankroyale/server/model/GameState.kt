@@ -9,7 +9,7 @@ data class GameState(
     val rounds: MutableList<Round> = ArrayList(),
 
     /** Flag specifying if game has ended yet */
-    var gameEnded: Boolean,
+    var gameEnded: Boolean = false,
 ) {
     /** Last round */
     val lastRound: Round? get() = if(rounds.isNotEmpty()) rounds[rounds.size - 1] else null

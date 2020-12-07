@@ -6,6 +6,6 @@ data class BotDeathEvent(
     override val turnNumber: Int,
 
     /** Bot id of the victim that got killed */
-    val victimId: Int,
+    val victimId: BotId,
 
 ) : Event()
