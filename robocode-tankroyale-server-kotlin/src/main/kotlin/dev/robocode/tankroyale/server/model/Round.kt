@@ -6,7 +6,7 @@ data class Round(
     var roundNumber: Int,
 
     /** List of turns */
-    val turns: List<Turn> = ArrayList(),
+    val turns: MutableList<Turn> = ArrayList(),
 
     /** Flag specifying if round has ended yet */
     var roundEnded: Boolean = false,

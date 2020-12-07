@@ -6,49 +6,49 @@ package dev.robocode.tankroyale.server.model
  */
 data class BotIntent(
     /** Desired speed */
-    var targetSpeed: Double?,
+    var targetSpeed: Double? = 0.0,
 
     /** Desired driving turn rate */
-    var turnRate: Double?,
+    var turnRate: Double? = 0.0,
 
     /** Desired gun turn rate */
-    var gunTurnRate: Double?,
+    var gunTurnRate: Double? = 0.0,
 
     /** Desired radar turn rate */
-    var radarTurnRate: Double?,
+    var radarTurnRate: Double? = 0.0,
 
     /** Desired bullet power */
-    var bulletPower: Double?,
+    var bulletPower: Double? = 0.0,
 
     /** Adjust gun for body turn */
-    var adjustGunForBodyTurn: Boolean?,
+    var adjustGunForBodyTurn: Boolean? = false,
 
     /** Adjust radar for gun turn */
-    var adjustRadarForGunTurn: Boolean?,
+    var adjustRadarForGunTurn: Boolean? = false,
 
     /** Perform rescan */
-    var scan: Boolean?,
+    var scan: Boolean? = false,
 
     /** Body color */
-    var bodyColor: String?,
+    var bodyColor: String? = null,
 
     /** Gun turret color */
-    var turretColor: String?,
+    var turretColor: String? = null,
 
     /** Radar color */
-    var radarColor: String?,
+    var radarColor: String? = null,
 
     /** Bullet color */
-    var bulletColor: String?,
+    var bulletColor: String? = null,
 
     /** Scan color */
-    var scanColor: String?,
+    var scanColor: String? = null,
 
     /** Tracks color */
-    var tracksColor: String?,
+    var tracksColor: String? = null,
 
     /** Gun color */
-    var gunColor: String?,
+    var gunColor: String? = null,
 ) {
     /**
      * Updates this BotIntent with adjustment values from another BotIntent.
@@ -101,14 +101,5 @@ data class BotIntent(
         if (botIntent.gunColor != null) {
             gunColor = botIntent.gunColor
         }
-    }
-
-    /** Sets all null values of target speed, turn rates, and bullet power to 0. */
-    fun nullsToZeros() {
-        targetSpeed = targetSpeed ?: 0.0
-        turnRate = turnRate ?: 0.0
-        gunTurnRate = gunTurnRate ?: 0.0
-        radarTurnRate = radarTurnRate ?: 0.0
-        bulletPower = bulletPower ?: 0.0
     }
 }

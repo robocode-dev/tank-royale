@@ -9,8 +9,8 @@ import kotlin.collections.HashSet
 /** Bot record that tracks damage and survival of a bot, and can calculate score. */
 internal class ScoreRecord {
 
-    private val _bulletDamage: MutableMap<BotId, Double> = HashMap()
-    private val _ramDamage: MutableMap<BotId, Double> = HashMap()
+    private val bulletDamage: MutableMap<BotId, Double> = HashMap()
+    private val ramDamage: MutableMap<BotId, Double> = HashMap()
     private val _bulletKillEnemyIds: MutableSet<BotId> = HashSet()
     private val _ramKillEnemyIds: MutableSet<BotId> = HashSet()
 
@@ -26,7 +26,7 @@ internal class ScoreRecord {
     val totalBulletDamage: Double
         get() {
             var sum = 0.0
-            _bulletDamage.keys.forEach { sum += getBulletDamage(it) }
+            bulletDamage.keys.forEach { sum += getBulletDamage(it) }
             return sum
         }
 
@@ -34,7 +34,7 @@ internal class ScoreRecord {
     val totalRamDamage: Double
         get() {
             var sum = 0.0
-            _ramDamage.keys.forEach { sum += getRamDamage(it) }
+            ramDamage.keys.forEach { sum += getRamDamage(it) }
             return sum
         }
 
@@ -51,14 +51,14 @@ internal class ScoreRecord {
      * @param enemyId  is the enemy bot to retrieve the damage for.
      * @return the bullet damage dealt to a specific bot.
      */
-    fun getBulletDamage(enemyId: BotId): Double = _bulletDamage[enemyId] ?: 0.0
+    fun getBulletDamage(enemyId: BotId): Double = bulletDamage[enemyId] ?: 0.0
 
     /**
      * Returns the ram damage dealt by this bot to specific bot.
      * @param enemyId is the enemy bot to retrieve the damage for.
      * @return the ram damage dealt to a specific bot.
      */
-    fun getRamDamage(enemyId: BotId): Double = _ramDamage[enemyId] ?: 0.0
+    fun getRamDamage(enemyId: BotId): Double = ramDamage[enemyId] ?: 0.0
 
     /**
      * Adds bullet damage to a specific enemy bot.
@@ -66,7 +66,7 @@ internal class ScoreRecord {
      * @param damage is the amount of damage that the enemy bot has received
      */
     fun addBulletDamage(enemyId: BotId, damage: Double) {
-        _bulletDamage[enemyId] = getBulletDamage(enemyId) + damage
+        bulletDamage[enemyId] = getBulletDamage(enemyId) + damage
     }
 
     /**
@@ -74,7 +74,7 @@ internal class ScoreRecord {
      * @param enemyId is the identifier of the enemy bot
      */
     fun addRamDamage(enemyId: BotId) {
-        _ramDamage[enemyId] = getRamDamage(enemyId) + RAM_DAMAGE
+        ramDamage[enemyId] = getRamDamage(enemyId) + RAM_DAMAGE
     }
 
     /** Increment the survival count, meaning that this bot has survived an additional round. */

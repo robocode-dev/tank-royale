@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.server.model
 import dev.robocode.tankroyale.server.math.Point
 import dev.robocode.tankroyale.server.math.nearlyEqual
 import dev.robocode.tankroyale.server.rules.INITIAL_BOT_ENERGY
+import dev.robocode.tankroyale.server.rules.INITIAL_GUN_HEAT
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -45,37 +46,37 @@ data class Bot(
     var radarTurnRate: Double = 0.0,
 
     /** Gun heat */
-    var gunHeat: Double = 0.0,
+    var gunHeat: Double = INITIAL_GUN_HEAT,
 
     /** Body color */
-    var bodyColor: Int?,
+    var bodyColor: Int? = null,
 
     /** Gun turret color */
-    var turretColor: Int?,
+    var turretColor: Int? = null,
 
     /** Radar color */
-    var radarColor: Int?,
+    var radarColor: Int? = null,
 
     /** Bullet color */
-    var bulletColor: Int?,
+    var bulletColor: Int? = null,
 
     /** Scan color */
-    var scanColor: Int?,
+    var scanColor: Int? = null,
 
     /** Tracks color */
-    var tracksColor: Int?,
+    var tracksColor: Int? = null,
 
     /** Gun color */
-    var gunColor: Int?,
+    var gunColor: Int? = null,
 
     /** Score record */
-    var score: Score?,
+    var score: Score,
 
     /** Scan direction in degrees */
-    var scanDirection: Double,
+    var scanDirection: Double = radarDirection,
 
     /** Scan angle in degrees */
-    var scanSpreadAngle: Double,
+    var scanSpreadAngle: Double = radarSpreadAngle,
 ) {
     /** Check if bot is alive */
     inline val isAlive: Boolean get() = energy >= 0
@@ -85,6 +86,9 @@ data class Bot(
 
     /** Check if bot is disabled (cannot move) */
     inline val isDisabled: Boolean get() = isAlive && nearlyEqual(energy, 0.0)
+
+    /** Check if bot is enabled (can move) */
+    val isEnabled: Boolean = !isDisabled
 
     /**
      * Adds damage to the bot.

@@ -5,15 +5,15 @@ import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
 /** State of a game turn in a round. */
-class Turn(
+data class Turn(
     /** Turn number */
     var turnNumber: Int,
 
     /** Bots */
-    private val bots: MutableSet<Bot> = HashSet(),
+    val bots: MutableSet<Bot> = HashSet(),
 
     /** Bullets */
-    private val bullets: MutableSet<Bullet> = HashSet(),
+    val bullets: MutableSet<Bullet> = HashSet(),
 
     /** Observer events  */
     private val observerEvents: MutableSet<Event> = HashSet(),

@@ -6,7 +6,7 @@ data class GameState(
     val arena: Arena,
 
     /** List of rounds */
-    val rounds: List<Round> = ArrayList(),
+    val rounds: MutableList<Round> = ArrayList(),
 
     /** Flag specifying if game has ended yet */
     var gameEnded: Boolean,
