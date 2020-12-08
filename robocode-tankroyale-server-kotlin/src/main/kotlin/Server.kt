@@ -1,8 +1,8 @@
 package dev.robocode.tankroyale.server
 
 import dev.robocode.tankroyale.server.Server.VersionFileProvider
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.GameServer
 import dev.robocode.tankroyale.server.rules.DEFAULT_GAME_TYPE
-import dev.robocode.tankroyale.server.server.GameServer
 import org.fusesource.jansi.AnsiConsole
 import picocli.CommandLine
 import picocli.CommandLine.Command
@@ -15,7 +15,7 @@ import java.io.InputStreamReader
 import java.util.*
 import kotlin.system.exitProcess
 
-private const val DEFAULT_PORT = 80
+private const val DEFAULT_PORT: Short = 80
 
 @Command(
     name = "Server",
@@ -35,37 +35,42 @@ private const val DEFAULT_PORT = 80
     descriptionHeading = "Description:%n",
     description = ["Runs a Robocode Tank Royale server"]
 )
-object Server : Runnable {
+class Server : Runnable {
 
-    @Option(names = ["-V", "--version"], description = ["Display version info"])
-    private val isVersionInfoRequested = false
+    companion object {
 
-    @Option(names = ["-h", "--help"], description = ["Display this help message"])
-    private val isUsageHelpRequested = false
+        @Option(names = ["-V", "--version"], description = ["Display version info"])
+        private var isVersionInfoRequested = false
 
-    @Option(
-        names = ["-p", "--port"],
-        type = [Int::class],
-        description = ["Port number (default: $DEFAULT_PORT)"]
-    )
-    val port = DEFAULT_PORT
+        @Option(names = ["-h", "--help"], description = ["Display this help message"])
+        private var isUsageHelpRequested = false
 
-    @Option(
-        names = ["-g", "--games"],
-        type = [String::class],
-        description = ["Comma-separated list of game types (default: $DEFAULT_GAME_TYPE)"]
-    )
-    private val gameTypes: String = DEFAULT_GAME_TYPE
+        @Option(
+            names = ["-p", "--port"],
+            type = [Short::class],
+            description = ["Port number (default: $DEFAULT_PORT)"]
+        )
+        var port: Short = DEFAULT_PORT
 
-    @Option(names = ["-s", "--secret"], description = ["Client secret used for access control"])
-    private val secret: String? = null
+        @Option(
+            names = ["-g", "--games"],
+            type = [String::class],
+            description = ["Comma-separated list of game types (default: $DEFAULT_GAME_TYPE)"]
+        )
+        private var gameTypes: String = DEFAULT_GAME_TYPE
+
+        @Option(names = ["-s", "--secret"], description = ["Client secret used for access control"])
+        private var secret: String? = null
+
+        val cmdLine = CommandLine(Server())
+    }
 
     @Spec
     private val spec: CommandSpec? = null
     private var gameServer: GameServer? = null
 
     override fun run() {
-        val cmdLine = CommandLine(Server)
+        val cmdLine = CommandLine(Server())
         when {
             isUsageHelpRequested -> {
                 cmdLine.usage(System.out)
@@ -133,5 +138,5 @@ object Server : Runnable {
 
 fun main(args: Array<String>) {
 //    System.setProperty("picocli.ansi", "true");
-    exitProcess(CommandLine(Server).execute(*args))
+    exitProcess(Server.cmdLine.execute(*args))
 }

@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core
 
 import com.google.gson.Gson
 import dev.robocode.tankroyale.schema.*
-import dev.robocode.tankroyale.server.Server.port
+import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.core.ModelUpdater
 import dev.robocode.tankroyale.server.core.NanoTimer
 import dev.robocode.tankroyale.server.core.RunningState
@@ -24,7 +24,7 @@ import kotlin.collections.HashSet
 import kotlin.math.roundToInt
 
 
-class GameServer(gameTypes: String, clientSecret: String) {
+class GameServer(gameTypes: String, clientSecret: String?) {
     private val gameTypes: String = gameTypes.replace("\\s".toRegex(), "")
     private val connHandler: ConnHandler
     private var runningState: RunningState
@@ -49,7 +49,7 @@ class GameServer(gameTypes: String, clientSecret: String) {
     }
 
     fun start() {
-        log.info("Starting server on port $port with game types: $gameTypes")
+        log.info("Starting server on port ${Server.port} with game types: $gameTypes")
         connHandler.start()
     }
 

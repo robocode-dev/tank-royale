@@ -84,3 +84,9 @@ publishing {
         }
     }
 }
+
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ["-Xinline-classes"]
+    }
+}

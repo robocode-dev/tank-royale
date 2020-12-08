@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import dev.robocode.tankroyale.schema.*
-import dev.robocode.tankroyale.server.Server.port
+import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.core.ServerSetup
 import dev.robocode.tankroyale.server.version.getVersion
 import org.java_websocket.WebSocket
@@ -27,7 +27,7 @@ class ConnHandler internal constructor(
 ) {
     private val clientSecret: String? = clientSecret?.trim()
     private val webSocketObserver: WebSocketObserver
-    private val connections = Collections.synchronizedSet(HashSet<WebSocket>())
+    private val allConnections = Collections.synchronizedSet(HashSet<WebSocket>())
     private val botConnections = Collections.synchronizedSet(HashSet<WebSocket>())
     private val observerConnections = Collections.synchronizedSet(HashSet<WebSocket>())
     private val controllerConnections = Collections.synchronizedSet(HashSet<WebSocket>())
@@ -39,7 +39,7 @@ class ConnHandler internal constructor(
     private val logger = LoggerFactory.getLogger(ConnHandler::class.java)
 
     init {
-        val address = InetSocketAddress("localhost", port)
+        val address = InetSocketAddress("localhost", Server.port.toInt())
         webSocketObserver = WebSocketObserver(address)
         webSocketObserver.connectionLostTimeout = 10 // TODO: Put this in a config file.
         executorService = Executors.newCachedThreadPool()
@@ -136,7 +136,7 @@ class ConnHandler internal constructor(
 
         override fun onOpen(conn: WebSocket, handshake: ClientHandshake) {
             logger.debug("onOpen(): " + conn.remoteSocketAddress)
-            connections.add(conn)
+            allConnections.add(conn)
             val hs = ServerHandshake()
             hs.`$type` = Message.`$type`.SERVER_HANDSHAKE
             hs.variant = "Tank Royale" // Robocode Tank Royale
@@ -148,7 +148,7 @@ class ConnHandler internal constructor(
 
         override fun onClose(conn: WebSocket, code: Int, reason: String, remote: Boolean) {
             logger.debug("onClose(): ${conn.remoteSocketAddress}, code: $code, reason: $reason, remote: $remote")
-            connections.remove(conn)
+            allConnections.remove(conn)
             when {
                 botConnections.remove(conn) -> {
                     val handshake = botHandshakes[conn]
