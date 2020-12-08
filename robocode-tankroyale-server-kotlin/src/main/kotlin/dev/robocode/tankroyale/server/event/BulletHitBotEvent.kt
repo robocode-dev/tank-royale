@@ -9,7 +9,7 @@ data class BulletHitBotEvent (
     override val turnNumber: Int,
 
     /** Bullet that hit the bot */
-    val bullet: Bullet?,
+    val bullet: Bullet,
 
     /** Bot id of the victim that was hit by the bullet */
     val victimId: BotId,

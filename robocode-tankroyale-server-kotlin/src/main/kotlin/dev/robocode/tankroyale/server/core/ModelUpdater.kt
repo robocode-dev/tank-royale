@@ -90,7 +90,7 @@ class ModelUpdater(
     }
 
     /** Calculates and sets placements for all bots, i.e. 1st, 2nd, and 3rd places. */
-    private fun calculatePlacements() {
+    fun calculatePlacements() {
         scoreTracker.calculatePlacements()
     }
 
@@ -610,7 +610,7 @@ class ModelUpdater(
 
     /** Checks if the bots are inactive collectively. That is when no bot have been hit by bullets for some time. */
     private fun checkInactivity() {
-        if (inactivityCounter++ > setup.inactivityTurns) {
+        if (inactivityCounter++ > setup.maxInactivityTurns) {
             botsMap.values.forEach { it.addDamage(INACTIVITY_DAMAGE) }
         }
     }
@@ -736,7 +736,7 @@ class ModelUpdater(
         if (botsMap.size <= 1) {
             roundEnded = true // Round ended
             if (roundNumber >= setup.numberOfRounds) {
-                gameState.gameEnded = true // Game over
+                gameState.isGameEnded = true // Game over
             }
         }
     }

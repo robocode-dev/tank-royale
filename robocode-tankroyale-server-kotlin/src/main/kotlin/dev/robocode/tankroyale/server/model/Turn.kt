@@ -16,7 +16,7 @@ data class Turn(
     val bullets: MutableSet<Bullet> = HashSet(),
 
     /** Observer events  */
-    private val observerEvents: MutableSet<Event> = HashSet(),
+    val observerEvents: MutableSet<Event> = HashSet(),
 
     /** Map over bot events  */
     private val botEventsMap: MutableMap<BotId, Set<Event>> = HashMap(),

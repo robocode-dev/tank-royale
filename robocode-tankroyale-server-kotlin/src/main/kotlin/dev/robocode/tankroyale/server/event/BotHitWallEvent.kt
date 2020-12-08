@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.server.event
 
+import dev.robocode.tankroyale.server.model.BotId
+
 /** Event sent when a bot has hit a wall. */
 data class BotHitWallEvent(
     /** Turn number when event occurred */

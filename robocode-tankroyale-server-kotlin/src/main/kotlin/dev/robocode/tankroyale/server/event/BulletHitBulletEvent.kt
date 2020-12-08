@@ -8,9 +8,9 @@ data class BulletHitBulletEvent(
     override val turnNumber: Int,
 
     /** Bullet that hit another bullet */
-    val bullet: Bullet?,
+    val bullet: Bullet,
 
     /** Bullet that got hit by the bullet */
-    val hitBullet: Bullet?,
+    val hitBullet: Bullet,
 
 ) : Event()

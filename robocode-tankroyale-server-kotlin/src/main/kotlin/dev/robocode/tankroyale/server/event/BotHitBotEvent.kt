@@ -23,6 +23,6 @@ data class BotHitBotEvent(
     val y: Double,
 
     /** Flag specifying if the victim was rammed */
-    val rammed: Boolean,
+    val isRammed: Boolean,
 
-) : Event()
+    ) : Event()

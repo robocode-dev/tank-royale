@@ -26,7 +26,7 @@ data class GameSetup(
     var gunCoolingRate: Double = DEFAULT_GUN_COOLING_RATE,
 
     /** Number of allowed inactivity turns */
-    var inactivityTurns: Int = DEFAULT_INACTIVITY_TURNS,
+    var maxInactivityTurns: Int = DEFAULT_INACTIVITY_TURNS,
 
     /** Turn timeout in milliseconds */
     var turnTimeout: Int = DEFAULT_TURN_TIMEOUT,
@@ -38,29 +38,29 @@ data class GameSetup(
     var defaultTurnsPerSecond: Int = DEFAULT_TURNS_PER_SECOND,
 
     /** Flag specifying if the arena width is locked */
-    var arenaWidthLocked: Boolean,
+    var isArenaWidthLocked: Boolean,
 
     /** Flag specifying if the arena height is locked */
-    var arenaHeightLocked: Boolean,
+    var isArenaHeightLocked: Boolean,
 
     /** Flag specifying if the minimum number of bot participants is locked */
-    var minNumberOfParticipantsLocked: Boolean,
+    var isMinNumberOfParticipantsLocked: Boolean,
 
     /** Flag specifying if the maximum number of bot participants is locked */
-    var maxNumberOfParticipantsLocked: Boolean,
+    var isMaxNumberOfParticipantsLocked: Boolean,
 
     /** Flag specifying if the number of rounds is locked */
-    var numberOfRoundsLocked: Boolean,
+    var isNumberOfRoundsLocked: Boolean,
 
     /** Flag specifying if the gun cooling rate is locked */
-    var gunCoolingRateLocked: Boolean,
+    var isGunCoolingRateLocked: Boolean,
 
     /** Flag specifying if the number of allowed inactivity turns is locked */
-    var maxInactivityTurnsLocked: Boolean,
+    var isMaxInactivityTurnsLocked: Boolean,
 
     /** Flag specifying if the turn timeout is locked */
-    var turnTimeoutLocked: Boolean,
+    var isTurnTimeoutLocked: Boolean,
 
     /** Flag specifying if the ready timeout is locked */
-    var readyTimeoutLocked: Boolean,
+    var isReadyTimeoutLocked: Boolean,
 )

@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.server.model
 
 import dev.robocode.tankroyale.server.math.Point
-import dev.robocode.tankroyale.server.math.nearlyEqual
+import dev.robocode.tankroyale.server.math.isNearTo
 import dev.robocode.tankroyale.server.rules.INITIAL_BOT_ENERGY
 import dev.robocode.tankroyale.server.rules.INITIAL_GUN_HEAT
 import kotlin.math.cos
@@ -85,7 +85,7 @@ data class Bot(
     inline val isDead: Boolean get() = energy < 0
 
     /** Check if bot is disabled (cannot move) */
-    inline val isDisabled: Boolean get() = isAlive && nearlyEqual(energy, 0.0)
+    inline val isDisabled: Boolean get() = isAlive && energy.isNearTo(0.0)
 
     /** Check if bot is enabled (can move) */
     val isEnabled: Boolean = !isDisabled
