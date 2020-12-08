@@ -61,12 +61,10 @@ class BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
         nameTextField.text = botInfo?.name
         versionTextField.text = botInfo?.version
         authorTextField.text = botInfo?.author
-        descriptionTextField.text =
-            if (botInfo != null) botInfo.description?.let { truncateDescriptionLines(it) } else ""
-        urlTextPane.text = if (botInfo != null) botInfo.url?.let { generateUrlHtml(botInfo.url) } else " "
+        descriptionTextField.text = botInfo?.description?.let { truncateDescriptionLines(it) } ?: ""
+        urlTextPane.text = botInfo?.url?.let { generateUrlHtml(botInfo.url) } ?: " "
         gameTypesTextField.text = if (botInfo != null) gameTypesToString(botInfo.gameTypes) else ""
-        countryCodeTextPane.text =
-            if (botInfo != null) botInfo.countryCode?.let { generateCountryHtml(botInfo.countryCode) } else ""
+        countryCodeTextPane.text = botInfo?.countryCode?.let { generateCountryHtml(botInfo.countryCode) } ?: ""
         platformTextField.text = botInfo?.platform
         programmingLangTextField.text = botInfo?.programmingLang
     }
@@ -93,9 +91,18 @@ class BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
     private fun generateCountryHtml(countryCode: String): String {
         val countryName = Locale("", countryCode).displayCountry
 
-        return """<html><body><table cellspacing='0' cellpadding='0' border='0'><tr><td style='font-family: sans-serif;
-        font-size: 10'>${countryName} (${countryCode})</td>&nbsp;<td><img width='20' height='15'
-        src='https://www.countryflags.io/${countryCode}/flat/16.png'></td></tr></table></body></html>"""
+        return """
+            <html>
+              <table cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="font-family: sans-serif; font-size: 10">${countryName} (${countryCode})</td>&nbsp;
+                  <td>
+                    <img width="20" height="15" src="https://www.countryflags.io/${countryCode}/flat/16.png">
+                  </td>
+                </tr>
+              </table>
+            </html>
+        """.trimIndent()
     }
 
     private class JNonEditableTextField : JTextField() {
