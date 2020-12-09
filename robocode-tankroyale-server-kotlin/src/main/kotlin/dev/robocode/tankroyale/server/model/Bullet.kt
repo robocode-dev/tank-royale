@@ -34,7 +34,7 @@ data class Bullet(
     inline val speed: Double get() = calcBulletSpeed(power)
 
     /** Increment the tick used for moving the bullet when calculating its position. */
-    fun tick() { tick++ }
+    fun incrementTick() { tick++ }
 
     /**
      * Calculates the current bullet position based on the fire position and current tick.

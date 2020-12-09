@@ -116,7 +116,7 @@ class ConnHandler internal constructor(
     }
 
     private fun send(conn: WebSocket, message: String) {
-        logger.debug("Sending to: " + conn.remoteSocketAddress + ", message: " + message)
+        logger.debug("Sending to: ${conn.remoteSocketAddress}, message: $message")
         conn.send(message)
     }
 
@@ -135,7 +135,7 @@ class ConnHandler internal constructor(
         override fun onStart() {}
 
         override fun onOpen(conn: WebSocket, handshake: ClientHandshake) {
-            logger.debug("onOpen(): " + conn.remoteSocketAddress)
+            logger.debug("onOpen(): ${conn.remoteSocketAddress}")
             allConnections.add(conn)
             val hs = ServerHandshake()
             hs.`$type` = Message.`$type`.SERVER_HANDSHAKE

@@ -51,31 +51,27 @@ fun distance(x1: Double, y1: Double, x2: Double, y2: Double): Double = hypot(x2 
 
 /**
  * Checks if a line segment defined by the two points (x1,y1) and (x2,y2) is intersecting the circle defined by the
- * center point (cx,cy) and radius, r.
+ * center point (cx,cy) and radius.
  *
- * The algorithm used in this method is based on Jeff Thompson's collision detection method for line/circle:<br></br>
+ * The algorithm used in this method is based on Jeff Thompson's collision detection method for line/circle:<br>
+ * <br>
  * http://www.jeffreythompson.org/collision-detection/line-circle.php
  *
- * @param x1 is the x coordinate of 1st point of the line segment.
- * @param y1 is the y coordinate of 1st point of the line segment.
- * @param x2 is the x coordinate of 2nd point of the line segment.
- * @param y2 is the y coordinate of 2nd point of the line segment.
- * @param cx is the x coordinate of the center point of the circle.
- * @param cy is the y coordinate of the center point of the circle.
- * @param r is the radius of the circle.
+ * @param line is line segment.
+ * @param center is center point.
+ * @param radius is the radius of the circle.
  * @return `true` if the line is intersecting the circle; `false` otherwise.
  */
-fun isLineIntersectingCircle(
-    x1: Double,
-    y1: Double,
-    x2: Double,
-    y2: Double,
-    cx: Double,
-    cy: Double,
-    r: Double
-): Boolean {
+fun isLineIntersectingCircle(line: Line, center: Point, radius: Double): Boolean {
+    val x1 = line.start.x
+    val y1 = line.start.y
+    val x2 = line.end.x
+    val y2 = line.end.y
+    val cx = center.x
+    val cy = center.y
+
     // Check if one of the line ends is within the circle
-    if (isPointInsideCircle(x1, y1, cx, cy, r) || isPointInsideCircle(x2, y2, cx, cy, r)) {
+    if (isPointInsideCircle(line.start, center, radius) || isPointInsideCircle(line.end, center, radius)) {
         return true
     }
 
@@ -88,11 +84,13 @@ fun isLineIntersectingCircle(
     val dot = ((cx - x1) * dx + (cy - y1) * dy) / len2
 
     // Find the closest point on the line from the circle
-    val closestX = x1 + dot * dx
-    val closestY = y1 + dot * dy
+    val closest = Point(
+        x1 + dot * dx,
+        y1 + dot * dy
+    )
 
     // Check that the closest point is on the line segment and inside the circle
-    return isPointOnLine(closestX, closestY, x1, y1, x2, y2) && isPointInsideCircle(closestX, closestY, cx, cy, r)
+    return isPointOnLine(closest, Line(x1, y1, x2, y2)) && isPointInsideCircle(closest, center, radius)
 }
 
 /**
@@ -101,19 +99,17 @@ fun isLineIntersectingCircle(
  * The algorithm used in this method is based on the Pythagorean Theorem:<br></br>
  * http://www.jeffreythompson.org/collision-detection/point-circle.php
  *
- * @param px is the x coordinate of the point.
- * @param py is the y coordinate of the point.
- * @param cx is the x coordinate of the center point of the circle.
- * @param cy is the y coordinate of the center point of the circle.
- * @param r is the radius of the circle.
+ * @param point is the point.
+ * @param center is center point of the circle.
+ * @param radius is the radius of the circle.
  * @return `true` if the point is inside or on the circle; `false` otherwise.
  */
-fun isPointInsideCircle(px: Double, py: Double, cx: Double, cy: Double, r: Double): Boolean {
-    val dx = px - cx
-    val dy = py - cy
+fun isPointInsideCircle(point: Point, center: Point, radius: Double): Boolean {
+    val dx = point.x - center.x
+    val dy = point.y - center.y
 
     // If the distance is less or equal than the circle's radius the point is considered to be inside the circle
-    return dx * dx + dy * dy <= r * r
+    return dx * dx + dy * dy <= radius * radius
 }
 
 /**
@@ -123,18 +119,23 @@ fun isPointInsideCircle(px: Double, py: Double, cx: Double, cy: Double, r: Doubl
  * is equal to 0. If true, the point lies on the line. Secondly, the algorithm makes sure that the point is points
  * of the line segment.
  *
- * The algorithm is described by AnT here:<br></br>
+ * The algorithm is described by AnT here:<br>
+ * <br>
  * https://stackoverflow.com/questions/11907947/how-to-check-if-a-point-lies-on-a-line-between-2-other-points/11908158#11908158
  *
- * @param px is the x coordinate of the point.
- * @param py is the y coordinate of the point.
- * @param x1 is the x coordinate of 1st point of the line segment.
- * @param y1 is the y coordinate of 1st point of the line segment.
- * @param x2 is the x coordinate of 2nd point of the line segment.
- * @param y2 is the y coordinate of 2nd point of the line segment.
+ * @param point is the point.
+ * @param line is the line segment.
  * @return `true` if the point is on the line segment; `false` otherwise.
  */
-fun isPointOnLine(px: Double, py: Double, x1: Double, y1: Double, x2: Double, y2: Double): Boolean {
+fun isPointOnLine(point: Point, line: Line): Boolean {
+    val px = point.x
+    val py = point.y
+
+    val x1 = line.start.x
+    val y1 = line.start.y
+    val x2 = line.end.x
+    val y2 = line.end.y
+
     // Calculate cross product of vectors
     val dxp = px - x1
     val dyp = py - y1
@@ -165,13 +166,15 @@ fun isPointOnLine(px: Double, py: Double, x1: Double, y1: Double, x2: Double, y2
  * His algorithm is based on based on Franklin Antonio's "Faster Line Segment Intersection" topic "in Graphics Gems
  * III". Keith Woodward added new code to optimize Franklin's original code.
  *
- * @param a1 is point a1, 1st point of line segment a.
- * @param a2 is point a2, 2nd point of line segment a.
- * @param b1 is point b1, 1st point of line segment b.
- * @param b2 is point b2, 2nd point of line segment b.
+ * @param line1 is the 1st line segment,
+ * @param line2 is the 2nd line segment,
  * @return `true` if the two lines are intersecting; `false` otherwise.
  */
-fun isLineIntersectingLine(a1: Point, a2: Point, b1: Point, b2: Point): Boolean {
+fun isLineIntersectingLine(line1: Line, line2: Line): Boolean {
+    val a1 = line1.start
+    val a2 = line1.end
+    val b1 = line2.start
+    val b2 = line2.end
 
     // Fastest method, based on Franklin Antonio's "Faster Line Segment Intersection" topic "in Graphics Gems III"
     // book (http://www.graphicsgems.org/)
@@ -228,25 +231,23 @@ fun isLineIntersectingLine(a1: Point, a2: Point, b1: Point, b2: Point): Boolean 
  * The algorithm used in this method is based on Oren Trutner algorithm:
  * http://stackoverflow.com/questions/13652518/efficiently-find-points-inside-a-circle-sector
  *
- * @param circleCenterX is the x coordinate of the center point of the circle.
- * @param circleCenterY is the y coordinate of the center point of the circle.
+ * @param circleCenter is center point of the circle.
  * @param circleRadius is the radius of the circle.
- * @param sectorCenterX is the x coordinate of the center point of the circle sector.
- * @param sectorCenterY is the y coordinate of the center point of the circle sector.
+ * @param sectorCenter is the center point of the circle sector.
  * @param sectorRadius is the radius of the circle sector.
  * @param arcStartAngle is the arc start angle in degrees.
  * @param arcEndAngle is the arc end angle in degrees.
  * @return `true` if the circle lines is intersecting/inside the circle segment; `false` otherwise.
  */
 fun isCircleIntersectingCircleSector(
-    circleCenterX: Double, circleCenterY: Double, circleRadius: Double,
-    sectorCenterX: Double, sectorCenterY: Double, sectorRadius: Double,
+    circleCenter: Point, circleRadius: Double,
+    sectorCenter: Point, sectorRadius: Double,
     arcStartAngle: Double, arcEndAngle: Double
 ): Boolean {
     assert(arcEndAngle > arcStartAngle)
     val maxRadiusToPoint = sectorRadius + circleRadius
-    val vx = circleCenterX - sectorCenterX
-    val vy = circleCenterY - sectorCenterY
+    val vx = circleCenter.x - sectorCenter.x
+    val vy = circleCenter.y - sectorCenter.y
 
     // Check if point is outside max radius to point
     if (vx * vx + vy * vy > maxRadiusToPoint * maxRadiusToPoint) {
@@ -267,11 +268,13 @@ fun isCircleIntersectingCircleSector(
     } else {
         // Check if circle is intersecting one of the arms
         isLineIntersectingCircle(
-            sectorCenterX, sectorCenterY, sectorCenterX + x,
-            sectorCenterY + y, circleCenterX, circleCenterY, circleRadius
+            Line(sectorCenter.x, sectorCenter.y, sectorCenter.x + x, sectorCenter.y + y),
+            circleCenter,
+            circleRadius
         ) || isLineIntersectingCircle(
-            sectorCenterX, sectorCenterY, sectorCenterX + x1,
-            sectorCenterY + y1, circleCenterX, circleCenterY, circleRadius
+            Line(sectorCenter.x, sectorCenter.y, sectorCenter.x + x1, sectorCenter.y + y1),
+            circleCenter,
+            circleRadius
         )
     }
 }

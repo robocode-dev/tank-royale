@@ -19,28 +19,28 @@ data class Turn(
     val observerEvents: MutableSet<Event> = HashSet(),
 
     /** Map over bot events  */
-    private val botEventsMap: MutableMap<BotId, Set<Event>> = HashMap(),
+    private val botEventsMap: MutableMap<BotId, MutableSet<Event>> = HashMap(),
 ) {
     /**
      * Returns a bot instance by id.
      * @param botId is the id of the bot.
      * @return the bot instance with the specified id or null if the bot was not found.
      */
-    fun botById(botId: BotId): Bot? = bots.find { it.id == botId }
+    fun getBot(botId: BotId): Bot? = bots.find { it.id == botId }
 
     /**
      * Returns the bullets fired by a specific bot.
      * @param botId is the id of the bot that fired the bullets.
      * @return a set of bullets.
      */
-    fun bulletsByBotId(botId: BotId): List<Bullet> = bullets.filter { it.botId == botId }
+    fun getBullets(botId: BotId): List<Bullet> = bullets.filter { it.botId == botId }
 
     /**
      * Returns the event for a specific bot.
      * @param botId is the id of the bot.
      * @return a set of bot events.
      */
-    fun eventsByBotId(botId: BotId): Set<Event>? = botEventsMap[botId]
+    fun getEvents(botId: BotId): Set<Event> = botEventsMap[botId] ?: HashSet()
 
     /**
      * Adds an observer event.
@@ -57,7 +57,9 @@ data class Turn(
      */
     fun addPrivateBotEvent(botId: BotId, event: Event) {
         // Only a specific bot retrieves the event, not any other bot
-        botEventsMap[botId] = (eventsByBotId(botId) ?: HashSet()) + event
+        val botEvents: MutableSet<Event> = botEventsMap[botId] ?: HashSet()
+        botEvents.add(event)
+        botEventsMap[botId] = botEvents
     }
 
     /**

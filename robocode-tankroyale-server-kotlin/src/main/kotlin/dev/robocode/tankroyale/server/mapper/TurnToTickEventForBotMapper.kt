@@ -11,7 +11,7 @@ import dev.robocode.tankroyale.server.model.Turn
 
 object TurnToTickEventForBotMapper {
     fun map(round: Round, turn: Turn, botId: BotId): TickEventForBot? {
-        val bot: Bot = turn.botById(botId) ?: return null
+        val bot: Bot = turn.getBot(botId) ?: return null
         val tick = TickEventForBot()
         tick.apply {
             `$type` = Message.`$type`.TICK_EVENT_FOR_BOT
@@ -20,7 +20,7 @@ object TurnToTickEventForBotMapper {
             enemyCount = turn.bots.size - 1
             botState = map(bot)
             bulletStates = map(turn.bullets)
-            events = EventsToEventsMapper.map(turn.eventsByBotId(botId)!!)
+            events = EventsToEventsMapper.map(turn.getEvents(botId)!!)
         }
         return tick
     }

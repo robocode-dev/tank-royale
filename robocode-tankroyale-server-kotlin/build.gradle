@@ -1,9 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.4.10'
-//    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.10'
     id 'maven-publish'
     id 'application'
     id 'idea'
@@ -25,10 +23,6 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.4.10'
-//    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.4.10'
-
-//    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0'
-//    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0'
 
     implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.13'
     implementation 'org.danilopianini:gson-extras:0.2.2'
@@ -42,9 +36,6 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'ch.qos.logback:logback-core:1.2.3'
     implementation 'org.slf4j:slf4j-api:1.7.26'
-
-    compileOnly 'org.projectlombok:lombok:1.18.16'
-    annotationProcessor 'org.projectlombok:lombok:1.18.16'
 
     testImplementation 'junit:junit:4.13'
     testImplementation 'org.unitils:unitils-core:3.4.6'

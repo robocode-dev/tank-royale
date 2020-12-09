@@ -200,12 +200,12 @@ class ModelUpdater(
      */
     private fun updateGameState(): GameState {
         round = round.copy()
-        round.turns + turn.copy()
+        round.turns.add(turn.copy())
 
         val rounds = ArrayList(gameState.rounds)
         val roundIndex = round.roundNumber - 1
         if (rounds.size == roundIndex) {
-            rounds + round
+            rounds.add(round)
         } else {
             rounds[roundIndex] = round
         }
@@ -334,66 +334,54 @@ class ModelUpdater(
 
     /** Check bullet hits */
     private fun checkBulletHits() {
-        val boundingLines: Array<Line?> = arrayOfNulls(bullets.size)
-        val bulletArray = bullets.toTypedArray()
-        for (i in boundingLines.indices.reversed()) {
-            val bullet = bulletArray[i]
-            val line = Line(
-                start = bullet.calcPosition(),
-                end = bullet.calcNextPosition()
-            )
-            boundingLines[i] = line
+        val bulletCount = this.bullets.size.also { size ->
+            if (size == 0) return
         }
-        for (i in boundingLines.indices.reversed()) {
 
-            // Check bullet-bullet collision
-            val line1 = boundingLines[i] ?: continue
-            val endPos1 = line1.end
-            for (j in i - 1 downTo 0) {
-                val line2 = boundingLines[j] ?: continue
-                val endPos2 = line2.end
+        // Two "arrays" that are both accessed with the same bullet index
+        val bullets = ArrayList<Bullet>(bulletCount)
+        val lines = ArrayList<Line>(bulletCount)
 
+        this.bullets.forEach { bullet ->
+            bullets.add(bullet)
+            // Create a line segment (from old to new point)
+            lines.add(Line(bullet.calcPosition(), bullet.calcNextPosition()))
+        }
+
+        for (i in 0 until bulletCount) {
+            for (j in 1 until bulletCount) {
                 // Check if the bullets bounding circles intersects (is fast) before checking if the bullets bounding
                 // lines intersect (is slower)
-                if (isBulletsMaxBoundingCirclesColliding(endPos1, endPos2) &&
-                    isLineIntersectingLine(
-                        boundingLines[i]!!.start, boundingLines[i]!!.end,
-                        boundingLines[j]!!.start, boundingLines[j]!!.end
-                    )
+                if (isBulletsMaxBoundingCirclesColliding(lines[i].end, lines[j].end) &&
+                    isLineIntersectingLine(lines[i], lines[j])
                 ) {
-                    val bullet1 = bulletArray[i]
-                    val bullet2 = bulletArray[j]
-                    val event1 = BulletHitBulletEvent(turnNumber, bullet1, bullet2)
-                    val event2 = BulletHitBulletEvent(turnNumber, bullet2, bullet1)
-                    turn.addPrivateBotEvent(bullet1.botId, event1)
-                    turn.addPrivateBotEvent(bullet2.botId, event2)
+
+                    val event1 = BulletHitBulletEvent(turnNumber, bullets[i], bullets[j])
+                    val event2 = BulletHitBulletEvent(turnNumber, bullets[j], bullets[i])
+                    turn.addPrivateBotEvent(bullets[i].botId, event1)
+                    turn.addPrivateBotEvent(bullets[j].botId, event2)
 
                     // Observers only need a single event
                     turn.addObserverEvent(event1)
 
                     // Remove bullets from the arena
-                    bullets.remove(bulletArray[i])
-                    bullets.remove(bulletArray[j])
+                    this.bullets.remove(bullets[i])
+                    this.bullets.remove(bullets[j])
                 }
             }
 
             // Check bullet-hit-bot collision (hit)
-            val startPos1 = boundingLines[i]!!.start
             botsMap.values.forEach { bot ->
                 run {
-                    val bullet = bulletArray[i]
+                    val bullet = bullets[i]
                     val botId = bullet.botId
                     val victimId = bot.id
                     if (botId == victimId) {
                         return // A bot cannot shot itself
                     }
                     if (isLineIntersectingCircle(
-                            startPos1.x,
-                            startPos1.y,
-                            endPos1.x,
-                            endPos1.y,
-                            bot.x,
-                            bot.y,
+                            lines[i],
+                            Point(bot.x, bot.y),
                             BOT_BOUNDING_CIRCLE_RADIUS.toDouble()
                         )
                     ) {
@@ -410,7 +398,7 @@ class ModelUpdater(
                         turn.addObserverEvent(bulletHitBotEvent)
 
                         // Remove bullet from the arena
-                        bullets.remove(bullet)
+                        this.bullets.remove(bullet)
                     }
                 }
             }
@@ -525,7 +513,7 @@ class ModelUpdater(
 
     /** Updates bullet positions */
     private fun updateBulletPositions() {
-        bullets.forEach { it.tick }
+        bullets.forEach { it.incrementTick() }
     }
 
     /** Checks collisions between bots and the walls. */
@@ -535,7 +523,7 @@ class ModelUpdater(
                 var x = bot.x
                 var y = bot.y
                 if (previousTurn != null) {
-                    val prevBotState: Bot = previousTurn!!.botById(bot.id) ?: return
+                    val prevBotState: Bot = previousTurn!!.getBot(bot.id) ?: return
                     val oldX = prevBotState.x
                     val oldY = prevBotState.y
                     val dx = x - oldX
@@ -575,7 +563,7 @@ class ModelUpdater(
                         bot.y = y
 
                         // Skip this check, if the bot hit the wall in the previous turn
-                        if (previousTurn!!.eventsByBotId(bot.id)!!.none { event -> event is BotHitWallEvent }) {
+                        if (previousTurn!!.getEvents(bot.id).none { event -> event is BotHitWallEvent }) {
                             val botHitWallEvent = BotHitWallEvent(turnNumber, bot.id)
                             turn.addPrivateBotEvent(bot.id, botHitWallEvent)
                             turn.addObserverEvent(botHitWallEvent)
@@ -714,8 +702,8 @@ class ModelUpdater(
                 if (i != j) {
                     val scannedBot = botArray[j]
                     if (isCircleIntersectingCircleSector(
-                            scannedBot.x, scannedBot.y, BOT_BOUNDING_CIRCLE_RADIUS.toDouble(),
-                            scanningBot.x, scanningBot.y, RADAR_RADIUS,
+                            Point(scannedBot.x, scannedBot.y), BOT_BOUNDING_CIRCLE_RADIUS.toDouble(),
+                            Point(scanningBot.x, scanningBot.y), RADAR_RADIUS,
                             arcStartAngle, arcEndAngle
                         )
                     ) {

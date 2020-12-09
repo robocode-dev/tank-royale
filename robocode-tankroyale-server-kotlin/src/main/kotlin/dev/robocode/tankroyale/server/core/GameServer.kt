@@ -178,7 +178,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
             val results: MutableList<BotResultsForBot> = ArrayList()
             modelUpdater?.results?.forEach { score ->
                 val result = BotResultsForBot()
-                results + result
+                results.add(result)
                 result.id = score.botId.value
                 result.survival = score.survival.roundToInt()
                 result.lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
@@ -200,7 +200,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
             val results: MutableList<BotResultsForObserver> = ArrayList()
             modelUpdater?.results?.forEach { score ->
                 val result = BotResultsForObserver()
-                results + result
+                results.add(result)
                 result.id = score.botId.value
                 result.survival = score.survival.roundToInt()
                 result.lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
@@ -360,6 +360,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         }
         val botIntent = botIntents[conn] ?: dev.robocode.tankroyale.server.model.BotIntent()
         botIntent.update(BotIntentToBotIntentMapper.map(intent))
+        botIntents[conn] = botIntent
 
         // If all bot intents have been received, we can start next turn
         /*
