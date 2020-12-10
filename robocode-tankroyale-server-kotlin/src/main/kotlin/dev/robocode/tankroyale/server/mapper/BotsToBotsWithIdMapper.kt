@@ -7,7 +7,7 @@ import java.util.ArrayList
 object BotsToBotsWithIdMapper {
     fun map(bots: Set<Bot>): List<BotStateWithId> {
         val botStates: MutableList<BotStateWithId> = ArrayList()
-        bots.forEach { botStates.add(BotToBotStateWithIdMapper.map(it)) }
+        bots.forEach { botStates += BotToBotStateWithIdMapper.map(it) }
         return botStates
     }
 }

@@ -106,7 +106,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
             p.gameTypes = h.gameTypes
             p.platform = h.platform
             p.programmingLang = h.programmingLang
-            participantList.add(p)
+            participantList += p
         }
 
         // Send GameStarted to all participant observers to get them started
@@ -178,7 +178,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
             val results: MutableList<BotResultsForBot> = ArrayList()
             modelUpdater?.results?.forEach { score ->
                 val result = BotResultsForBot()
-                results.add(result)
+                results += result
                 result.id = score.botId.value
                 result.survival = score.survival.roundToInt()
                 result.lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
@@ -200,7 +200,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
             val results: MutableList<BotResultsForObserver> = ArrayList()
             modelUpdater?.results?.forEach { score ->
                 val result = BotResultsForObserver()
-                results.add(result)
+                results += result
                 result.id = score.botId.value
                 result.survival = score.survival.roundToInt()
                 result.lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
@@ -364,12 +364,12 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
         // If all bot intents have been received, we can start next turn
         /*
-        botsThatSentIntent.add(conn);
+        botsThatSentIntent += conn
         if (botIntents.size() == botsThatSentIntent.size()) {
-            botsThatSentIntent.clear();
+            botsThatSentIntent.clear()
 
-            onNextTurn();
-            turnTimeoutTimer.reset();
+            onNextTurn()
+            turnTimeoutTimer.reset()
         }
         */
     }
@@ -385,7 +385,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
             val botInfo = BotHandshakeToBotInfoMapper.map(connHandler.getBotHandshakes()[conn]!!,
                 address.hostString, address.port
             )
-            bots.add(botInfo)
+            bots += botInfo
         }
         return botListUpdate
     }
@@ -453,7 +453,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
         override fun onBotReady(conn: WebSocket) {
             if (runningState === RunningState.WAIT_FOR_READY_PARTICIPANTS) {
-                readyParticipants!!.add(conn)
+                readyParticipants!! += conn
                 startGameIfParticipantsReady()
             }
         }

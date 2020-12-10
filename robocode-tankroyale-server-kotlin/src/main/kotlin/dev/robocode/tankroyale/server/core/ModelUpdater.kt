@@ -200,12 +200,12 @@ class ModelUpdater(
      */
     private fun updateGameState(): GameState {
         round = round.copy()
-        round.turns.add(turn.copy())
+        round.turns += turn.copy()
 
         val rounds = ArrayList(gameState.rounds)
         val roundIndex = round.roundNumber - 1
         if (rounds.size == roundIndex) {
-            rounds.add(round)
+            rounds += round
         } else {
             rounds[roundIndex] = round
         }
@@ -264,7 +264,7 @@ class ModelUpdater(
         while (true) {
             val cell = random.nextInt(cellCount)
             if (!occupiedCells.contains(cell)) {
-                occupiedCells.add(cell)
+                occupiedCells += cell
                 y = (cell / gridWidth).toDouble()
                 x = cell - y * gridWidth
                 x *= cellWidth.toDouble()
@@ -343,19 +343,18 @@ class ModelUpdater(
         val lines = ArrayList<Line>(bulletCount)
 
         this.bullets.forEach { bullet ->
-            bullets.add(bullet)
+            bullets += bullet
             // Create a line segment (from old to new point)
-            lines.add(Line(bullet.calcPosition(), bullet.calcNextPosition()))
+            lines += Line(bullet.calcPosition(), bullet.calcNextPosition())
         }
 
         for (i in 0 until bulletCount) {
             for (j in 1 until bulletCount) {
-                // Check if the bullets bounding circles intersects (is fast) before checking if the bullets bounding
-                // lines intersect (is slower)
+                // Check if the bullets bounding circles intersects (is fast) before
+                // checking if the bullets bounding lines intersect (is slower)
                 if (isBulletsMaxBoundingCirclesColliding(lines[i].end, lines[j].end) &&
                     isLineIntersectingLine(lines[i], lines[j])
                 ) {
-
                     val event1 = BulletHitBulletEvent(turnNumber, bullets[i], bullets[j])
                     val event2 = BulletHitBulletEvent(turnNumber, bullets[j], bullets[i])
                     turn.addPrivateBotEvent(bullets[i].botId, event1)
@@ -365,8 +364,8 @@ class ModelUpdater(
                     turn.addObserverEvent(event1)
 
                     // Remove bullets from the arena
-                    this.bullets.remove(bullets[i])
-                    this.bullets.remove(bullets[j])
+                    this.bullets -= bullets[i]
+                    this.bullets -= bullets[j]
                 }
             }
 
@@ -380,25 +379,26 @@ class ModelUpdater(
                         return // A bot cannot shot itself
                     }
                     if (isLineIntersectingCircle(
-                            lines[i],
-                            Point(bot.x, bot.y),
-                            BOT_BOUNDING_CIRCLE_RADIUS.toDouble()
+                            lines[i], Point(bot.x, bot.y), BOT_BOUNDING_CIRCLE_RADIUS.toDouble()
                         )
                     ) {
                         inactivityCounter = 0 // reset collective inactivity counter due to bot taking bullet damage
+
                         val damage = calcBulletDamage(bullet.power)
                         val isKilled = bot.addDamage(damage)
+
                         val energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.power
-                        val enemyBot = botsMap[botId]
-                        enemyBot?.changeEnergy(energyBonus)
+                        botsMap[botId]?.changeEnergy(energyBonus)
+
                         scoreTracker.registerBulletHit(botId, victimId, damage, isKilled)
+
                         val bulletHitBotEvent = BulletHitBotEvent(turnNumber, bullet, victimId, damage, bot.energy)
                         turn.addPrivateBotEvent(botId, bulletHitBotEvent) // Bot itself gets event
                         turn.addPrivateBotEvent(victimId, bulletHitBotEvent) // Victim bot gets event too
                         turn.addObserverEvent(bulletHitBotEvent)
 
                         // Remove bullet from the arena
-                        this.bullets.remove(bullet)
+                        this.bullets -= bullet
                     }
                 }
             }
@@ -674,7 +674,7 @@ class ModelUpdater(
             direction = bot.gunDirection,
             color = bot.bulletColor,
         )
-        bullets.add(bullet)
+        bullets += bullet
         val bulletFiredEvent = BulletFiredEvent(turnNumber, bullet)
         turn.addPrivateBotEvent(bot.id, bulletFiredEvent)
         turn.addObserverEvent(bulletFiredEvent)

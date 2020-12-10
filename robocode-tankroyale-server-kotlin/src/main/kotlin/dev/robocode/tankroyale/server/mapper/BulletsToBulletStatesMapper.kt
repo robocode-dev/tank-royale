@@ -7,7 +7,7 @@ import java.util.ArrayList
 object BulletsToBulletStatesMapper {
     fun map(bullets: Set<Bullet>): List<BulletState> {
         val bulletStates: MutableList<BulletState> = ArrayList()
-        bullets.forEach { bulletStates.add(BulletToBulletStateMapper.map(it)) }
+        bullets.forEach { bulletStates += BulletToBulletStateMapper.map(it) }
         return bulletStates
     }
 }

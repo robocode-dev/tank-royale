@@ -34,7 +34,7 @@ class ScoreTracker(botIds: Set<BotId>) {
 
     /** Prepare for new round. */
     fun prepareRound() {
-        botsAliveIds.addAll(botIds)
+        botsAliveIds += botIds
     }
 
     /**

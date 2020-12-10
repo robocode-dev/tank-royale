@@ -68,8 +68,8 @@ class ConnHandler internal constructor(
     val observerAndControllerConnections: Set<WebSocket>
         get() {
             val combined: MutableSet<WebSocket> = HashSet()
-            combined.addAll(observerConnections)
-            combined.addAll(controllerConnections)
+            combined += observerConnections
+            combined += controllerConnections
             return Collections.unmodifiableSet(combined)
         }
 
@@ -86,7 +86,7 @@ class ConnHandler internal constructor(
                 val hostname = addr.hostName
                 for (botAddr: BotAddress in botAddresses) {
                     if (botAddr.host == hostname && botAddr.port == port) {
-                        foundConnections.add(conn)
+                        foundConnections += conn
                         break
                     }
                 }
@@ -136,7 +136,7 @@ class ConnHandler internal constructor(
 
         override fun onOpen(conn: WebSocket, handshake: ClientHandshake) {
             logger.debug("onOpen(): ${conn.remoteSocketAddress}")
-            allConnections.add(conn)
+            allConnections += conn
             val hs = ServerHandshake()
             hs.`$type` = Message.`$type`.SERVER_HANDSHAKE
             hs.variant = "Tank Royale" // Robocode Tank Royale
@@ -148,22 +148,22 @@ class ConnHandler internal constructor(
 
         override fun onClose(conn: WebSocket, code: Int, reason: String, remote: Boolean) {
             logger.debug("onClose(): ${conn.remoteSocketAddress}, code: $code, reason: $reason, remote: $remote")
-            allConnections.remove(conn)
+            allConnections -= conn
             when {
                 botConnections.remove(conn) -> {
                     val handshake = botHandshakes[conn]
                     executorService.submit { listener.onBotLeft(conn, handshake!!) }
-                    botHandshakes.remove(conn)
+                    botHandshakes -= conn
                 }
                 observerConnections.remove(conn) -> {
                     val handshake = observerHandshakes[conn]
                     executorService.submit { listener.onObserverLeft(conn, handshake!!) }
-                    observerHandshakes.remove(conn)
+                    observerHandshakes -= conn
                 }
                 controllerConnections.remove(conn) -> {
                     val handshake = controllerHandshakes[conn]
                     executorService.submit { listener.onControllerLeft(conn, handshake!!) }
-                    controllerHandshakes.remove(conn)
+                    controllerHandshakes -= conn
                 }
             }
         }
@@ -186,7 +186,7 @@ class ConnHandler internal constructor(
                     when (type) {
                         Message.`$type`.BOT_HANDSHAKE -> {
                             val handshake = gson.fromJson(message, BotHandshake::class.java)
-                            botConnections.add(conn)
+                            botConnections += conn
                             botHandshakes[conn] = handshake
                             executorService.submit { listener.onBotJoined(conn, handshake) }
                         }
@@ -201,7 +201,7 @@ class ConnHandler internal constructor(
                                 logger.info("Ignoring observer using invalid secret. Name: ${handshake.name}, Version: ${handshake.version}")
                                 return  // Ignore client with wrong secret
                             }
-                            observerConnections.add(conn)
+                            observerConnections += conn
                             observerHandshakes[conn] = handshake
                             executorService.submit { listener.onObserverJoined(conn, handshake) }
                         }
@@ -213,7 +213,7 @@ class ConnHandler internal constructor(
                                 logger.info("Ignoring controller using invalid secret. Name: ${handshake.name}, Version: ${handshake.version}")
                                 return  // Ignore client with wrong secret
                             }
-                            controllerConnections.add(conn)
+                            controllerConnections += conn
                             controllerHandshakes[conn] = handshake
                             executorService.submit { listener.onControllerJoined(conn, handshake) }
                         }

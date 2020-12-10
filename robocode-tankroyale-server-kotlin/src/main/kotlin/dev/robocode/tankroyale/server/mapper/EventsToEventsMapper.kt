@@ -7,7 +7,7 @@ object EventsToEventsMapper {
     fun map(events: Set<dev.robocode.tankroyale.server.event.Event>): List<Event> {
         val mappedEvents: MutableList<Event> = ArrayList()
         for (event in events) {
-            mappedEvents.add(map(event))
+            mappedEvents += map(event)
         }
         return mappedEvents
     }

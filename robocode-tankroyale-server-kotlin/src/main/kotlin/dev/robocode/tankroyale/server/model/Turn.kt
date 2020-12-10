@@ -46,9 +46,7 @@ data class Turn(
      * Adds an observer event.
      * @param event is the observer event to add.
      */
-    fun addObserverEvent(event: Event) {
-        observerEvents + event
-    }
+    fun addObserverEvent(event: Event) { observerEvents += event }
 
     /**
      * Adds a private bot event.
@@ -57,9 +55,12 @@ data class Turn(
      */
     fun addPrivateBotEvent(botId: BotId, event: Event) {
         // Only a specific bot retrieves the event, not any other bot
-        val botEvents: MutableSet<Event> = botEventsMap[botId] ?: HashSet()
+        var botEvents: MutableSet<Event>? = botEventsMap[botId]
+        if (botEvents == null) {
+            botEvents = HashSet()
+            botEventsMap[botId] = botEvents
+        }
         botEvents.add(event)
-        botEventsMap[botId] = botEvents
     }
 
     /**
