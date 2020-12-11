@@ -357,11 +357,13 @@ class ModelUpdater(
                 ) {
                     val event1 = BulletHitBulletEvent(turnNumber, bullets[i], bullets[j])
                     val event2 = BulletHitBulletEvent(turnNumber, bullets[j], bullets[i])
-                    turn.addPrivateBotEvent(bullets[i].botId, event1)
-                    turn.addPrivateBotEvent(bullets[j].botId, event2)
 
-                    // Observers only need a single event
-                    turn.addObserverEvent(event1)
+                    turn.apply {
+                        addPrivateBotEvent(bullets[i].botId, event1)
+                        addPrivateBotEvent(bullets[j].botId, event2)
+                        // Observers only need a single event
+                        addObserverEvent(event1)
+                    }
 
                     // Remove bullets from the arena
                     this.bullets -= bullets[i]
@@ -375,12 +377,8 @@ class ModelUpdater(
                     val bullet = bullets[i]
                     val botId = bullet.botId
                     val victimId = bot.id
-                    if (botId == victimId) {
-                        return // A bot cannot shot itself
-                    }
-                    if (isLineIntersectingCircle(
-                            lines[i], Point(bot.x, bot.y), BOT_BOUNDING_CIRCLE_RADIUS.toDouble()
-                        )
+                    if (botId != victimId && // A bot cannot shot itself
+                        isLineIntersectingCircle(lines[i], Point(bot.x, bot.y), BOT_BOUNDING_CIRCLE_RADIUS.toDouble())
                     ) {
                         inactivityCounter = 0 // reset collective inactivity counter due to bot taking bullet damage
 
@@ -393,10 +391,11 @@ class ModelUpdater(
                         scoreTracker.registerBulletHit(botId, victimId, damage, isKilled)
 
                         val bulletHitBotEvent = BulletHitBotEvent(turnNumber, bullet, victimId, damage, bot.energy)
-                        turn.addPrivateBotEvent(botId, bulletHitBotEvent) // Bot itself gets event
-                        turn.addPrivateBotEvent(victimId, bulletHitBotEvent) // Victim bot gets event too
-                        turn.addObserverEvent(bulletHitBotEvent)
-
+                        turn.apply {
+                            addPrivateBotEvent(botId, bulletHitBotEvent) // Bot itself gets event
+                            addPrivateBotEvent(victimId, bulletHitBotEvent) // Victim bot gets event too
+                            addObserverEvent(bulletHitBotEvent)
+                        }
                         // Remove bullet from the arena
                         this.bullets -= bullet
                     }

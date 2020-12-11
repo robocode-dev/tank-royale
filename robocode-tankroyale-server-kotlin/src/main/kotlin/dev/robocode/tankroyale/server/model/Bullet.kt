@@ -30,6 +30,10 @@ data class Bullet(
     /** Color of the bullet  */
     var color: Int?,
 ) {
+    override fun hashCode(): Int {
+        return bulletId
+    }
+
     /** Speed of the bullet */
     inline val speed: Double get() = calcBulletSpeed(power)
 
