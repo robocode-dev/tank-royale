@@ -440,8 +440,6 @@ class ModelUpdater(
                         bot1.x = oldBot1X
                         bot1.y = oldBot1Y
                         bot2.bounceBack(bot1BounceDist /* remaining distance */)
-
-                        // FIXME: Add wall damage: abs(velocity) * 0.5 - 1 (never < 0).
                     }
                     if ((newBot2X < BOT_BOUNDING_CIRCLE_RADIUS) || (newBot2Y < BOT_BOUNDING_CIRCLE_RADIUS) || (
                                 newBot2X > (setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS)) || (
@@ -450,11 +448,13 @@ class ModelUpdater(
                         bot2.x = oldBot2X
                         bot2.y = oldBot2Y
                         bot1.bounceBack(bot2BounceDist /* remaining distance */)
-
-                        // FIXME: Add wall damage: abs(velocity) * 0.5 - 1 (never < 0).
                     }
-                    if (isBot1RammingBot2) { bot1.speed = 0.0 }
-                    if (isBot2RammingBot1) { bot2.speed = 0.0 }
+                    if (isBot1RammingBot2) {
+                        bot1.speed = 0.0
+                    }
+                    if (isBot2RammingBot1) {
+                        bot2.speed = 0.0
+                    }
                     val botHitBotEvent1 =
                         BotHitBotEvent(turnNumber, bot1.id, bot2.id, bot2.energy, bot2.x, bot2.y, isBot1RammingBot2)
                     val botHitBotEvent2 =
