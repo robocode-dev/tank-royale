@@ -29,8 +29,8 @@ class GameServer(gameTypes: String, clientSecret: String?) {
     private val connHandler: ConnHandler
     private var runningState: RunningState
     private var gameSetup: dev.robocode.tankroyale.server.model.GameSetup? = null
-    private var participants: Set<WebSocket>? = null
-    private var readyParticipants: MutableSet<WebSocket>? = null
+    private val participants: MutableSet<WebSocket> = HashSet()
+    private val readyParticipants: MutableSet<WebSocket> = HashSet()
     private val participantIds: MutableMap<WebSocket, BotId> = HashMap()
     private val botIntents: MutableMap<WebSocket, dev.robocode.tankroyale.server.model.BotIntent> = ConcurrentHashMap()
     private var readyTimeoutTimer: NanoTimer? = null
@@ -59,9 +59,9 @@ class GameServer(gameTypes: String, clientSecret: String?) {
     }
 
     private fun startGameIfParticipantsReady() {
-        if (readyParticipants!!.size == participants!!.size) {
+        if (readyParticipants.size == participants.size) {
             readyTimeoutTimer!!.stop()
-            readyParticipants!!.clear()
+            readyParticipants.clear()
             botIntents.clear()
             startGame()
         }
@@ -77,12 +77,12 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         gameStartedForBot.`$type` = Message.`$type`.GAME_STARTED_EVENT_FOR_BOT
         gameStartedForBot.gameSetup = GameSetupToGameSetupMapper.map(gameSetup!!)
         var id = 1
-        for (conn in participants!!) {
+        for (conn in participants) {
             participantIds[conn] = BotId(id)
             gameStartedForBot.myId = id++
             send(conn, gameStartedForBot)
         }
-        readyParticipants = HashSet()
+        readyParticipants.clear()
 
         // Start 'bot-ready' timeout timer
         readyTimeoutTimer = NanoTimer(gameSetup!!.readyTimeout * 1000000L) { onReadyTimeout() }
@@ -93,7 +93,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         log.info("Starting game")
         runningState = RunningState.GAME_RUNNING
         val participantList: MutableList<Participant> = ArrayList()
-        for (conn in participants!!) {
+        for (conn in participants) {
             val h = connHandler.getBotHandshakes()[conn]
             val p = Participant()
             p.id = participantIds[conn]!!.value
@@ -157,8 +157,9 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         gameSetup: GameSetup, botAddresses: Collection<BotAddress>
     ) {
         this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup)
-        participants = connHandler.getBotConnections(botAddresses)
-        if (participants!!.isNotEmpty()) {
+        participants.clear()
+        participants += connHandler.getBotConnections(botAddresses)
+        if (participants.isNotEmpty()) {
             prepareGame()
         }
     }
@@ -284,9 +285,10 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
     private fun onReadyTimeout() {
         log.debug("Ready timeout")
-        if (readyParticipants!!.size >= gameSetup!!.minNumberOfParticipants) {
+        if (readyParticipants.size >= gameSetup!!.minNumberOfParticipants) {
             // Start the game with the participants that are ready
-            participants = readyParticipants
+            participants.clear()
+            participants += readyParticipants
             startGame()
         } else {
             // Not enough participants -> prepare another game
@@ -325,7 +327,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
                     val turn = round.lastTurn
                     if (turn != null) {
                         // Send game state as 'game tick' to participants
-                        for (conn in participants!!) {
+                        for (conn in participants) {
                             val gameTickForBot = TurnToTickEventForBotMapper.map(
                                 round, turn, participantIds[conn]!!
                             )
@@ -355,7 +357,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
     }
 
     private fun updateBotIntent(conn: WebSocket, intent: BotIntent) {
-        if (!participants!!.contains(conn)) {
+        if (!participants.contains(conn)) {
             return
         }
         val botIntent = botIntents[conn] ?: dev.robocode.tankroyale.server.model.BotIntent()
@@ -453,7 +455,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
         override fun onBotReady(conn: WebSocket) {
             if (runningState === RunningState.WAIT_FOR_READY_PARTICIPANTS) {
-                readyParticipants!! += conn
+                readyParticipants += conn
                 startGameIfParticipantsReady()
             }
         }
