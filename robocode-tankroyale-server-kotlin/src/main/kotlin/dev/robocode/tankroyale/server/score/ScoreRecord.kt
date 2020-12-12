@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.server.score
 
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.rules.RAM_DAMAGE
-import java.util.Collections.unmodifiableSet
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
@@ -11,8 +10,8 @@ internal class ScoreRecord {
 
     private val bulletDamage: MutableMap<BotId, Double> = HashMap()
     private val ramDamage: MutableMap<BotId, Double> = HashMap()
-    private val _bulletKillEnemyIds: MutableSet<BotId> = HashSet()
-    private val _ramKillEnemyIds: MutableSet<BotId> = HashSet()
+    private val bulletKillEnemyIds: MutableSet<BotId> = HashSet()
+    private val ramKillEnemyIds: MutableSet<BotId> = HashSet()
 
     /** The survival count, which is the number of rounds where the bot has survived. */
     var survivalCount = 0
@@ -38,13 +37,15 @@ internal class ScoreRecord {
             return sum
         }
 
-    /** The set of identifiers of all enemy bot that this bot has killed by bullets. */
-    val bulletKillEnemyIds: Set<BotId>
-        get() = unmodifiableSet(_bulletKillEnemyIds)
+    /**
+     * Returns the bullet kill enemy ids.
+     */
+    fun getBulletKillEnemyIds(): Set<BotId> = bulletKillEnemyIds
 
-    /** The set of identifiers of all enemy bot that this bot has killed by ramming. */
-    val ramKillEnemyIds: Set<BotId>
-        get() = unmodifiableSet(_ramKillEnemyIds)
+    /**
+     * Returns the ram kill enemy ids.
+     */
+    fun getRamKillEnemyIds(): Set<BotId> = ramKillEnemyIds
 
     /**
      * Returns the bullet damage dealt by this bot to specific bot.
@@ -95,7 +96,7 @@ internal class ScoreRecord {
      * @param enemyId is the identifier of the enemy bot that was killed by this bot
      */
     fun addBulletKillEnemyId(enemyId: BotId) {
-        bulletKillEnemyIds + enemyId
+        bulletKillEnemyIds += enemyId
     }
 
     /**
@@ -103,6 +104,6 @@ internal class ScoreRecord {
      * @param enemyId is the identifier of the enemy bot that was killed by this bot
      */
     fun addRamKillEnemyId(enemyId: BotId) {
-        ramKillEnemyIds + enemyId
+        ramKillEnemyIds += enemyId
     }
 }

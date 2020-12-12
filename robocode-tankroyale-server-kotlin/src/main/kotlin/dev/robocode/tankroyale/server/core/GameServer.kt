@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core
 
 import com.google.gson.Gson
 import dev.robocode.tankroyale.schema.*
+import dev.robocode.tankroyale.schema.Message.*
 import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.core.ModelUpdater
 import dev.robocode.tankroyale.server.core.NanoTimer
@@ -72,7 +73,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
         // Send NewBattle to all participant bots to get them started
         val gameStartedForBot = GameStartedEventForBot()
-        gameStartedForBot.`$type` = Message.`$type`.GAME_STARTED_EVENT_FOR_BOT
+        gameStartedForBot.`$type` = `$type`.GAME_STARTED_EVENT_FOR_BOT
         gameStartedForBot.gameSetup = GameSetupToGameSetupMapper.map(gameSetup!!)
         var id = 1
         for (conn in participants) {
@@ -110,7 +111,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         // Send GameStarted to all participant observers to get them started
         if (connHandler.observerAndControllerConnections.isNotEmpty()) {
             val gameStartedForObserver = GameStartedEventForObserver()
-            gameStartedForObserver.`$type` = Message.`$type`.GAME_STARTED_EVENT_FOR_OBSERVER
+            gameStartedForObserver.`$type` = `$type`.GAME_STARTED_EVENT_FOR_OBSERVER
             gameStartedForObserver.gameSetup = GameSetupToGameSetupMapper.map(gameSetup!!)
             gameStartedForObserver.participants = participantList
             broadcastToObserverAndControllers(gameStartedForObserver)
@@ -138,22 +139,15 @@ class GameServer(gameTypes: String, clientSecret: String?) {
     }
 
     private fun calculateTurnTimeout(): Long {
-        var timeout: Long
-        timeout = if (tps <= 0) {
-            0
-        } else {
-            (1000000000 / tps).toLong()
-        }
-        val turnTimeout = gameSetup!!.turnTimeout * 1000
+        var timeout = if (tps <= 0) 0 else 1_000_000_000L / tps
+        val turnTimeout = gameSetup!!.turnTimeout * 1000L
         if (turnTimeout > timeout) {
-            timeout = turnTimeout.toLong()
+            timeout = turnTimeout
         }
         return timeout
     }
 
-    private fun startGame(
-        gameSetup: GameSetup, botAddresses: Collection<BotAddress>
-    ) {
+    private fun startGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
         this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup)
         participants.clear()
         participants += connHandler.getBotConnections(botAddresses)
@@ -166,7 +160,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         log.info("Aborting game")
         runningState = RunningState.GAME_STOPPED
         val abortedEvent = GameAbortedEventForObserver()
-        abortedEvent.`$type` = Message.`$type`.GAME_ABORTED_EVENT_FOR_OBSERVER
+        abortedEvent.`$type` = `$type`.GAME_ABORTED_EVENT_FOR_OBSERVER
         broadcastToObserverAndControllers(abortedEvent)
 
         // No score is generated for aborted games
@@ -199,19 +193,20 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         get() {
             val results: MutableList<BotResultsForObserver> = ArrayList()
             for (score in modelUpdater.results) {
-                val result = BotResultsForObserver()
-                result.id = score.botId.value
-                result.survival = score.survival.roundToInt()
-                result.lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
-                result.bulletDamage = score.bulletDamage.roundToInt()
-                result.bulletKillBonus = score.bulletKillBonus.toInt()
-                result.ramDamage = score.ramDamage.roundToInt()
-                result.ramKillBonus = score.ramKillBonus.roundToInt()
-                result.totalScore = score.totalScore.roundToInt()
-                result.firstPlaces = score.firstPlaces
-                result.secondPlaces = score.secondPlaces
-                result.thirdPlaces = score.thirdPlaces
-                results += result
+                val result = BotResultsForObserver().apply {
+                    id = score.botId.value
+                    survival = score.survival.roundToInt()
+                    lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
+                    bulletDamage = score.bulletDamage.roundToInt()
+                    bulletKillBonus = score.bulletKillBonus.toInt()
+                    ramDamage = score.ramDamage.roundToInt()
+                    ramKillBonus = score.ramKillBonus.roundToInt()
+                    totalScore = score.totalScore.roundToInt()
+                    firstPlaces = score.firstPlaces
+                    secondPlaces = score.secondPlaces
+                    thirdPlaces = score.thirdPlaces
+                    results += this
+                }
 
                 var conn: WebSocket? = null
                 for ((key, value) in participantIds) {
@@ -235,7 +230,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
             runningState = RunningState.GAME_PAUSED
             turnTimeoutTimer?.pause()
             val pausedEvent = GamePausedEventForObserver()
-            pausedEvent.`$type` = Message.`$type`.GAME_PAUSED_EVENT_FOR_OBSERVER
+            pausedEvent.`$type` = `$type`.GAME_PAUSED_EVENT_FOR_OBSERVER
             broadcastToObserverAndControllers(pausedEvent)
         }
     }
@@ -245,7 +240,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         if (runningState === RunningState.GAME_PAUSED) {
             runningState = RunningState.GAME_RUNNING
             val resumedEvent = GameResumedEventForObserver()
-            resumedEvent.`$type` = Message.`$type`.GAME_RESUMED_EVENT_FOR_OBSERVER
+            resumedEvent.`$type` = `$type`.GAME_RESUMED_EVENT_FOR_OBSERVER
             broadcastToObserverAndControllers(resumedEvent)
             if (turnTimeoutTimer != null) {
                 turnTimeoutTimer!!.resume()
@@ -259,9 +254,10 @@ class GameServer(gameTypes: String, clientSecret: String?) {
             return
         }
         this.tps = tps
-        val tpsChangedEvent = TpsChangedEvent()
-        tpsChangedEvent.`$type` = Message.`$type`.TPS_CHANGED_EVENT
-        tpsChangedEvent.tps = tps
+        val tpsChangedEvent = TpsChangedEvent().apply {
+            `$type` = Message.`$type`.TPS_CHANGED_EVENT
+            this.tps = tps
+        }
         broadcastToObserverAndControllers(tpsChangedEvent)
         if (tps == 0) {
             pauseGame()
@@ -295,7 +291,6 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         }
     }
 
-    @Synchronized
     private fun onNextTurn() {
         log.debug("Next turn => updating game state")
         if (runningState === RunningState.GAME_STOPPED) {
@@ -304,22 +299,24 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         // Update game state
         val gameState = updateGameState()
         if (gameState.isGameEnded) {
-            runningState = RunningState.GAME_STOPPED
             log.info("Game ended")
+            runningState = RunningState.GAME_STOPPED
             modelUpdater.calculatePlacements()
 
             // End game for bots
-            val endEventForBot = GameEndedEventForBot()
-            endEventForBot.`$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_BOT
-            endEventForBot.numberOfRounds = modelUpdater.numberOfRounds
-            endEventForBot.results = resultsForBots
+            val endEventForBot = GameEndedEventForBot().apply {
+                `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_BOT
+                numberOfRounds = modelUpdater.numberOfRounds
+                results = resultsForBots
+            }
             broadcastToBots(endEventForBot)
 
             // End game for observers
-            val endEventForObserver = GameEndedEventForObserver()
-            endEventForObserver.`$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_OBSERVER
-            endEventForObserver.numberOfRounds = modelUpdater.numberOfRounds
-            endEventForObserver.results = resultsForObservers // Use the stored score!
+            val endEventForObserver = GameEndedEventForObserver().apply {
+                `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_OBSERVER
+                numberOfRounds = modelUpdater.numberOfRounds
+                results = resultsForObservers // Use the stored score!
+            }
             broadcastToObserverAndControllers(endEventForObserver)
         } else {
             // Send tick
@@ -329,9 +326,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
                 if (turn != null) {
                     // Send game state as 'game tick' to participants
                     for (conn in participants) {
-                        val gameTickForBot = TurnToTickEventForBotMapper.map(
-                            round, turn, participantIds[conn]!!
-                        )
+                        val gameTickForBot = TurnToTickEventForBotMapper.map(round, turn, participantIds[conn]!!)
                         if (gameTickForBot != null) { // Bot alive?
                             send(conn, gameTickForBot)
                         }
@@ -344,9 +339,10 @@ class GameServer(gameTypes: String, clientSecret: String?) {
                 // receive a bot intent before the turn ended.
                 participantIds.keys.forEach { conn: WebSocket ->
                     if (botIntents[conn] == null) {
-                        val skippedTurnEvent = SkippedTurnEvent()
-                        skippedTurnEvent.`$type` = Message.`$type`.SKIPPED_TURN_EVENT
-                        skippedTurnEvent.turnNumber = modelUpdater.turnNumber
+                        val skippedTurnEvent = SkippedTurnEvent().apply {
+                            `$type` = Message.`$type`.SKIPPED_TURN_EVENT
+                            turnNumber = modelUpdater.turnNumber
+                        }
                         send(conn, skippedTurnEvent)
                     }
                 }
@@ -377,10 +373,11 @@ class GameServer(gameTypes: String, clientSecret: String?) {
     }
 
     private fun createBotListUpdateMessage(): Message {
-        val botListUpdate = BotListUpdate()
-        botListUpdate.`$type` = Message.`$type`.BOT_LIST_UPDATE
-        val bots: MutableList<BotInfo> = ArrayList()
-        botListUpdate.bots = bots
+        val botsList: MutableList<BotInfo> = ArrayList()
+        val botListUpdate = BotListUpdate().apply {
+            `$type` = Message.`$type`.BOT_LIST_UPDATE
+            bots = botsList
+        }
         val botConnections = connHandler.getBotConnections()
         for (conn in botConnections) {
             val address = conn.remoteSocketAddress
@@ -388,7 +385,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
                 connHandler.getBotHandshakes()[conn]!!,
                 address.hostString, address.port
             )
-            bots += botInfo
+            botsList += botInfo
         }
         return botListUpdate
     }
@@ -499,13 +496,15 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
         private fun getDisplayName(name: String, version: String): String {
             var displayName = ""
-            val trimmedName = name.trim()
-            if (trimmedName.isNotEmpty()) {
-                displayName = trimmedName
+            name.trim().apply {
+                if (isNotEmpty()) {
+                    displayName = this
+                }
             }
-            val trimmedVersion = version.trim()
-            if (trimmedVersion.isNotEmpty()) {
-                displayName += " $trimmedVersion"
+            version.trim().apply {
+                if (isNotEmpty()) {
+                    displayName += " $this"
+                }
             }
             return displayName
         }

@@ -19,13 +19,13 @@ class NanoTimer(
     fun start() {
         thread = Thread { run() }
         isRunning.set(true)
-        thread!!.start()
+        thread?.start()
     }
 
     /** Stops the timer. */
     fun stop() {
         isRunning.set(false)
-        thread!!.interrupt()
+        thread?.interrupt()
     }
 
     /** Pauses the timer. */

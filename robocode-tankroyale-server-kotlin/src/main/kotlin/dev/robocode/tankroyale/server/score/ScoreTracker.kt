@@ -98,17 +98,19 @@ class ScoreTracker(botIds: Set<BotId>) {
                 bulletDamage = totalBulletDamage * SCORE_PER_BULLET_DAMAGE,
                 ramDamage = totalRamDamage * SCORE_PER_RAM_DAMAGE,
             )
-            for (enemyId in bulletKillEnemyIds) {
+            for (enemyId in getBulletKillEnemyIds()) {
                 val totalDamage = getBulletDamage(enemyId) + getRamDamage(enemyId)
                 score.bulletKillBonus += totalDamage * BONUS_PER_BULLET_KILL
             }
-            for (enemyId in ramKillEnemyIds) {
+            for (enemyId in getRamKillEnemyIds()) {
                 val totalDamage = getBulletDamage(enemyId) + getRamDamage(enemyId)
                 score.ramKillBonus += totalDamage * BONUS_PER_RAM_KILL
             }
-            score.firstPlaces = place1st[botId] ?: 0
-            score.secondPlaces = place2nd[botId] ?: 0
-            score.thirdPlaces = place3rd[botId] ?: 0
+            score.apply {
+                firstPlaces = place1st[botId] ?: 0
+                secondPlaces = place2nd[botId] ?: 0
+                thirdPlaces = place3rd[botId] ?: 0
+            }
             return score
         }
     }
