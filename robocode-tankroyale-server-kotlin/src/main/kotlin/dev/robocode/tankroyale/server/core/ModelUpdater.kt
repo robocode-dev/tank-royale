@@ -90,7 +90,9 @@ class ModelUpdater(
     }
 
     /** Calculates and sets placements for all bots, i.e. 1st, 2nd, and 3rd places. */
-    fun calculatePlacements() { scoreTracker.calculatePlacements() }
+    fun calculatePlacements() {
+        scoreTracker.calculatePlacements()
+    }
 
     /** The current results ordered with highest total scores first. */
     val results: List<Score> get() = scoreTracker.results
@@ -451,12 +453,8 @@ class ModelUpdater(
 
                         // FIXME: Add wall damage: abs(velocity) * 0.5 - 1 (never < 0).
                     }
-                    if (isBot1RammingBot2) {
-                        bot1.speed = 0.0
-                    }
-                    if (isBot2RammingBot1) {
-                        bot2.speed = 0.0
-                    }
+                    if (isBot1RammingBot2) { bot1.speed = 0.0 }
+                    if (isBot2RammingBot1) { bot2.speed = 0.0 }
                     val botHitBotEvent1 =
                         BotHitBotEvent(turnNumber, bot1.id, bot2.id, bot2.energy, bot2.x, bot2.y, isBot1RammingBot2)
                     val botHitBotEvent2 =
@@ -565,11 +563,9 @@ class ModelUpdater(
 
     /** Check if the bots have been disabled (when energy is zero or close to zero). */
     private fun checkForDisabledBots() {
-        botsMap.values.forEach { bot ->
-            run {
-                if (bot.energy < 0.01 && bot.energy > 0.0) {
-                    bot.energy = 0.0
-                }
+        for (bot in botsMap.values) {
+            if (bot.energy < 0.01 && bot.energy > 0.0) {
+                bot.energy = 0.0
             }
             // If bot is disabled => Set then reset bot movement with the bot intent
             if (bot.energy == 0.0) {
@@ -580,36 +576,32 @@ class ModelUpdater(
 
     /** Checks if any bots have been defeated. */
     private fun checkForDefeatedBots() {
-        botsMap.values.forEach { bot ->
-            run {
-                if (bot.isDead) {
-                    val botDeathEvent = BotDeathEvent(turnNumber, bot.id)
-                    turn.addPublicBotEvent(botDeathEvent)
-                    turn.addObserverEvent(botDeathEvent)
-                    scoreTracker.registerBotDeath(bot.id)
-                }
+        for (bot in botsMap.values) {
+            if (bot.isDead) {
+                val botDeathEvent = BotDeathEvent(turnNumber, bot.id)
+                turn.addPublicBotEvent(botDeathEvent)
+                turn.addObserverEvent(botDeathEvent)
+                scoreTracker.registerBotDeath(bot.id)
             }
         }
     }
 
     /** Cool down and fire guns. */
     private fun coolDownAndFireGuns() {
-        botsMap.values.forEach { bot ->
-            run {
-                // If gun heat is zero and the bot is enabled, it is able to fire
-                if (bot.gunHeat == 0.0 && bot.isEnabled) {
-                    // Gun can fire => Check if intent is set to fire gun
-                    val botIntent = botIntentsMap[bot.id]
-                    if (botIntent != null) {
-                        val firepower = botIntent.bulletPower ?: 0.0
-                        if (firepower >= MIN_FIREPOWER && bot.energy > firepower) {
-                            fireBullet(bot, firepower)
-                        }
+        for (bot in botsMap.values) {
+            // If gun heat is zero and the bot is enabled, it is able to fire
+            if (bot.gunHeat == 0.0 && bot.isEnabled) {
+                // Gun can fire => Check if intent is set to fire gun
+                val botIntent = botIntentsMap[bot.id]
+                if (botIntent != null) {
+                    val firepower = botIntent.bulletPower ?: 0.0
+                    if (firepower >= MIN_FIREPOWER && bot.energy > firepower) {
+                        fireBullet(bot, firepower)
                     }
-                } else {
-                    // Gun is too hot => Cool down gun
-                    bot.gunHeat = (bot.gunHeat - setup.gunCoolingRate).coerceAtLeast(0.0)
                 }
+            } else {
+                // Gun is too hot => Cool down gun
+                bot.gunHeat = (bot.gunHeat - setup.gunCoolingRate).coerceAtLeast(0.0)
             }
         }
     }
@@ -645,9 +637,11 @@ class ModelUpdater(
 
     /** Checks the scan field for scanned bots. */
     private fun generateScanEvents() {
-        val botArray = botsMap.values.toTypedArray()
-        for (i in botArray.indices.reversed()) {
-            val scanningBot = botArray[i]
+        val bots = ArrayList<Bot>(botsMap.values.size)
+        botsMap.values.forEach { bots += it }
+
+        for (i in 0 until bots.size) {
+            val scanningBot = bots[i]
             val spreadAngle = scanningBot.scanSpreadAngle
             var arcStartAngle: Double
             var arcEndAngle: Double
@@ -658,9 +652,9 @@ class ModelUpdater(
                 arcStartAngle = scanningBot.scanDirection
                 arcEndAngle = normalAbsoluteDegrees(arcStartAngle - spreadAngle)
             }
-            for (j in botArray.indices.reversed()) {
+            for (j in 0 until bots.size) {
                 if (i != j) {
-                    val scannedBot = botArray[j]
+                    val scannedBot = bots[j]
                     if (isCircleIntersectingCircleSector(
                             Point(scannedBot.x, scannedBot.y), BOT_BOUNDING_CIRCLE_RADIUS.toDouble(),
                             Point(scanningBot.x, scanningBot.y), RADAR_RADIUS,

@@ -13,6 +13,7 @@ class NanoTimer(
     private var thread: Thread? = null
     private val isRunning = AtomicBoolean()
     private val isPaused = AtomicBoolean()
+    private var lastTime = System.nanoTime()
 
     /** Starts the timer. */
     fun start() {
@@ -37,7 +38,8 @@ class NanoTimer(
         isPaused.set(false)
     }
 
-    var lastTime = System.nanoTime()
+    /** Resets timer. */
+    fun reset() { lastTime = System.nanoTime() }
 
     private fun run() {
         while (isRunning.get() && !thread!!.isInterrupted) {

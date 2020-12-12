@@ -298,62 +298,65 @@ class GameServer(gameTypes: String, clientSecret: String?) {
     @Synchronized
     private fun onNextTurn() {
         log.debug("Next turn => updating game state")
-        if (runningState !== RunningState.GAME_STOPPED) {
-            // Update game state
-            val gameState = updateGameState()
-            if (gameState.isGameEnded) {
-                runningState = RunningState.GAME_STOPPED
-                log.info("Game ended")
-                modelUpdater.calculatePlacements()
+        if (runningState === RunningState.GAME_STOPPED) {
+            return
+        }
+        // Update game state
+        val gameState = updateGameState()
+        if (gameState.isGameEnded) {
+            runningState = RunningState.GAME_STOPPED
+            log.info("Game ended")
+            modelUpdater.calculatePlacements()
 
-                // End game for bots
-                val endEventForBot = GameEndedEventForBot()
-                endEventForBot.`$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_BOT
-                endEventForBot.numberOfRounds = modelUpdater.numberOfRounds
-                endEventForBot.results = resultsForBots
-                broadcastToBots(endEventForBot)
+            // End game for bots
+            val endEventForBot = GameEndedEventForBot()
+            endEventForBot.`$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_BOT
+            endEventForBot.numberOfRounds = modelUpdater.numberOfRounds
+            endEventForBot.results = resultsForBots
+            broadcastToBots(endEventForBot)
 
-                // End game for observers
-                val endEventForObserver = GameEndedEventForObserver()
-                endEventForObserver.`$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_OBSERVER
-                endEventForObserver.numberOfRounds = modelUpdater.numberOfRounds
-                endEventForObserver.results = resultsForObservers // Use the stored score!
-                broadcastToObserverAndControllers(endEventForObserver)
-            } else {
-                // Send tick
-                val round = gameState.lastRound
-                if (round != null) {
-                    val turn = round.lastTurn
-                    if (turn != null) {
-                        // Send game state as 'game tick' to participants
-                        for (conn in participants) {
-                            val gameTickForBot = TurnToTickEventForBotMapper.map(
-                                round, turn, participantIds[conn]!!
-                            )
-                            if (gameTickForBot != null) { // Bot alive?
-                                send(conn, gameTickForBot)
-                            }
+            // End game for observers
+            val endEventForObserver = GameEndedEventForObserver()
+            endEventForObserver.`$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_OBSERVER
+            endEventForObserver.numberOfRounds = modelUpdater.numberOfRounds
+            endEventForObserver.results = resultsForObservers // Use the stored score!
+            broadcastToObserverAndControllers(endEventForObserver)
+        } else {
+            // Send tick
+            val round = gameState.lastRound
+            if (round != null) {
+                val turn = round.lastTurn
+                if (turn != null) {
+                    // Send game state as 'game tick' to participants
+                    for (conn in participants) {
+                        val gameTickForBot = TurnToTickEventForBotMapper.map(
+                            round, turn, participantIds[conn]!!
+                        )
+                        if (gameTickForBot != null) { // Bot alive?
+                            send(conn, gameTickForBot)
                         }
-                        val gameTickForObserver = TurnToTickEventForObserverMapper.map(round, turn)
-                        broadcastToObserverAndControllers(gameTickForObserver)
                     }
+                    val gameTickForObserver = TurnToTickEventForObserverMapper.map(round, turn)
+                    broadcastToObserverAndControllers(gameTickForObserver)
+                }
 
-                    // Send SkippedTurnEvents to all bots that skipped a turn, i.e. where the server did not
-                    // receive a bot intent before the turn ended.
-                    participantIds.keys.forEach { conn: WebSocket ->
-                        if (botIntents[conn] == null) {
-                            val skippedTurnEvent = SkippedTurnEvent()
-                            skippedTurnEvent.`$type` = Message.`$type`.SKIPPED_TURN_EVENT
-                            skippedTurnEvent.turnNumber = modelUpdater.turnNumber
-                            send(conn, skippedTurnEvent)
-                        }
+                // Send SkippedTurnEvents to all bots that skipped a turn, i.e. where the server did not
+                // receive a bot intent before the turn ended.
+                participantIds.keys.forEach { conn: WebSocket ->
+                    if (botIntents[conn] == null) {
+                        val skippedTurnEvent = SkippedTurnEvent()
+                        skippedTurnEvent.`$type` = Message.`$type`.SKIPPED_TURN_EVENT
+                        skippedTurnEvent.turnNumber = modelUpdater.turnNumber
+                        send(conn, skippedTurnEvent)
                     }
                 }
-                // Clear bot intents
-                botIntents.clear()
             }
+            // Clear bot intents
+            botIntents.clear()
         }
     }
+
+    private val botsThatSentIntent = ArrayList<WebSocket>()
 
     private fun updateBotIntent(conn: WebSocket, intent: BotIntent) {
         if (!participants.contains(conn)) {
@@ -364,15 +367,13 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         botIntents[conn] = botIntent
 
         // If all bot intents have been received, we can start next turn
-        /*
         botsThatSentIntent += conn
-        if (botIntents.size() == botsThatSentIntent.size()) {
+        if (botIntents.size == botsThatSentIntent.size) {
             botsThatSentIntent.clear()
 
             onNextTurn()
-            turnTimeoutTimer.reset()
+            turnTimeoutTimer?.reset()
         }
-        */
     }
 
     private fun createBotListUpdateMessage(): Message {
