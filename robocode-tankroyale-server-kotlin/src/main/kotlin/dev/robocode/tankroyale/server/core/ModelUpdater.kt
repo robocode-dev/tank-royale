@@ -332,7 +332,7 @@ class ModelUpdater(
         }
 
         for (i in 0 until bulletCount) {
-            for (j in 1 until bulletCount) {
+            for (j in i + 1 until bulletCount) {
                 // Check if the bullets bounding circles intersects (is fast) before
                 // checking if the bullets bounding lines intersect (is slower)
                 if (isBulletsMaxBoundingCirclesColliding(lines[i].end, lines[j].end) &&
