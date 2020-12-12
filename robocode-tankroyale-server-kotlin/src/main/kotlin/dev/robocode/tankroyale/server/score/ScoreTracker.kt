@@ -41,17 +41,7 @@ class ScoreTracker(botIds: Set<BotId>) {
      * Returns the current results ordered with highest total scores first.
      * @return a list of scores.
      */
-    val results: List<Score>
-        get() {
-            for (i in botScores.indices) {
-                val score = botScores[i]
-                val botId = score.botId
-                score.firstPlaces = place1st[botId] ?: 0
-                score.secondPlaces = place2nd[botId] ?: 0
-                score.thirdPlaces = place3rd[botId] ?: 0
-            }
-            return botScores
-        }
+    val results: List<Score> get() = botScores
 
     /** Calculates 1st, 2nd, and 3rd places. */
     fun calculatePlacements() {
@@ -81,7 +71,9 @@ class ScoreTracker(botIds: Set<BotId>) {
     private val botScores: MutableList<Score>
         get() {
             val scores: MutableList<Score> = ArrayList()
-            botIds.forEach { botId -> scores + getScore(botId) }
+            for (botId in botIds) {
+                scores += getScore(botId)
+            }
             scores.sortByDescending { it.totalScore }
             return scores
         }
@@ -114,6 +106,9 @@ class ScoreTracker(botIds: Set<BotId>) {
                 val totalDamage = getBulletDamage(enemyId) + getRamDamage(enemyId)
                 score.ramKillBonus += totalDamage * BONUS_PER_RAM_KILL
             }
+            score.firstPlaces = place1st[botId] ?: 0
+            score.secondPlaces = place2nd[botId] ?: 0
+            score.thirdPlaces = place3rd[botId] ?: 0
             return score
         }
     }
