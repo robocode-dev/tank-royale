@@ -317,70 +317,85 @@ class ModelUpdater(
 
     /** Check bullet hits */
     private fun checkBulletHits() {
-        val bulletCount = this.bullets.size.also { size ->
-            if (size == 0) return
-        }
+        if (bullets.size > 0) {
 
-        // Two "arrays" that are both accessed with the same bullet index
-        val bullets = ArrayList<Bullet>(bulletCount)
-        val lines = ArrayList<Line>(bulletCount)
+            // Two "arrays" that are both accessed with the same bullet index
+            val bullets = ArrayList<Bullet>(bullets.size)
+            val lines = ArrayList<Line>(bullets.size)
 
-        for (bullet in this.bullets) {
-            bullets += bullet
-            // Create a line segment (from old to new point)
-            lines += Line(bullet.calcPosition(), bullet.calcNextPosition())
+            for (bullet in this.bullets) {
+                bullets += bullet
+                // Create a line segment (from old to new point)
+                lines += Line(bullet.calcPosition(), bullet.calcNextPosition())
+            }
+
+            checkBulletLineHits(bullets, lines)
         }
+    }
+
+    /** Check bullet line segments hit */
+    private fun checkBulletLineHits(bullets: List<Bullet>, bulletLines: List<Line>) {
+        val bulletCount = bullets.size
 
         for (i in 0 until bulletCount) {
             for (j in i + 1 until bulletCount) {
-                // Check if the bullets bounding circles intersects (is fast) before
-                // checking if the bullets bounding lines intersect (is slower)
-                if (isBulletsMaxBoundingCirclesColliding(lines[i].end, lines[j].end) &&
-                    isLineIntersectingLine(lines[i], lines[j])
-                ) {
-                    val event1 = BulletHitBulletEvent(turnNumber, bullets[i], bullets[j])
-                    val event2 = BulletHitBulletEvent(turnNumber, bullets[j], bullets[i])
-
-                    turn.apply {
-                        addPrivateBotEvent(bullets[i].botId, event1)
-                        addPrivateBotEvent(bullets[j].botId, event2)
-                        // Observers only need a single event
-                        addObserverEvent(event1)
-                    }
-                    // Remove bullets from the arena
-                    this.bullets -= bullets[i]
-                    this.bullets -= bullets[j]
-                }
+                checkBulletHitBullet(bullets[i], bulletLines[i], bullets[j], bulletLines[j])
             }
+            checkBulletHitBullet(bullets[i], bulletLines[i])
+        }
+    }
 
-            // Check bullet-hit-bot collision (hit)
-            for (bot in botsMap.values) {
-                val bullet = bullets[i]
-                val botId = bullet.botId
-                val victimId = bot.id
-                if (botId == victimId) {
-                    continue // A bot cannot shot itself
+    /** Checks if bullet hits bot */
+    private fun checkBulletHitBullet(bullet1: Bullet, bulletLine1: Line, bullet2: Bullet, bulletLine2: Line) {
+
+        // Check if the bullets bounding circles intersects (is fast) before
+        // checking if the bullets bounding lines intersect (is slower)
+        if (isBulletsMaxBoundingCirclesColliding(bulletLine1.end, bulletLine2.end) &&
+            isLineIntersectingLine(bulletLine1, bulletLine2)
+        ) {
+            val event1 = BulletHitBulletEvent(turnNumber, bullet1, bullet2)
+            val event2 = BulletHitBulletEvent(turnNumber, bullet2, bullet1)
+
+            turn.apply {
+                addPrivateBotEvent(bullet1.botId, event1)
+                addPrivateBotEvent(bullet2.botId, event2)
+                // Observers only need a single event
+                addObserverEvent(event1)
+            }
+            // Remove bullets from the arena
+            bullets -= bullet1
+            bullets -= bullet2
+        }
+    }
+
+    /** Checks if bullet hits bot */
+    private fun checkBulletHitBullet(bullet: Bullet, bulletLine: Line) {
+        // Check bullet-hit-bot collision (hit)
+        for (bot in botsMap.values) {
+            val botId = bullet.botId
+            val victimId = bot.id
+            if (botId == victimId) {
+                continue // A bot cannot shot itself
+            }
+            if (isLineIntersectingCircle(bulletLine, Point(bot.x, bot.y), BOT_BOUNDING_CIRCLE_RADIUS.toDouble())) {
+                inactivityCounter = 0 // reset collective inactivity counter due to bot taking bullet damage
+
+                val damage = calcBulletDamage(bullet.power)
+                val isKilled = bot.addDamage(damage)
+
+                val energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.power
+                botsMap[botId]?.changeEnergy(energyBonus)
+
+                scoreTracker.registerBulletHit(botId, victimId, damage, isKilled)
+
+                val bulletHitBotEvent = BulletHitBotEvent(turnNumber, bullet, victimId, damage, bot.energy)
+                turn.apply {
+                    addPrivateBotEvent(botId, bulletHitBotEvent) // Bot itself gets event
+                    addPrivateBotEvent(victimId, bulletHitBotEvent) // Victim bot gets event too
+                    addObserverEvent(bulletHitBotEvent)
                 }
-                if (isLineIntersectingCircle(lines[i], Point(bot.x, bot.y), BOT_BOUNDING_CIRCLE_RADIUS.toDouble())) {
-                    inactivityCounter = 0 // reset collective inactivity counter due to bot taking bullet damage
-
-                    val damage = calcBulletDamage(bullet.power)
-                    val isKilled = bot.addDamage(damage)
-
-                    val energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.power
-                    botsMap[botId]?.changeEnergy(energyBonus)
-
-                    scoreTracker.registerBulletHit(botId, victimId, damage, isKilled)
-
-                    val bulletHitBotEvent = BulletHitBotEvent(turnNumber, bullet, victimId, damage, bot.energy)
-                    turn.apply {
-                        addPrivateBotEvent(botId, bulletHitBotEvent) // Bot itself gets event
-                        addPrivateBotEvent(victimId, bulletHitBotEvent) // Victim bot gets event too
-                        addObserverEvent(bulletHitBotEvent)
-                    }
-                    // Remove bullet from the arena
-                    this.bullets -= bullet
-                }
+                // Remove bullet from the arena
+                bullets -= bullet
             }
         }
     }
