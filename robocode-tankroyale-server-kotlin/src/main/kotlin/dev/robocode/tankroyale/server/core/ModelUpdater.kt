@@ -177,10 +177,8 @@ class ModelUpdater(
         // Check if the round is over
         checkIfRoundOrGameOver()
 
-        // Store bot snapshots
+        // Store bot and bullet snapshots
         turn.copyBots(botsMap.values)
-
-        // Store bot snapshots into the turn
         turn.copyBullets(bullets)
     }
 
@@ -268,57 +266,70 @@ class ModelUpdater(
     private fun executeBotIntent(bot: Bot) {
         val intent = botIntentsMap[bot.id]
         intent?.apply {
-            val speed = calcNewBotSpeed(bot.speed, intent.targetSpeed ?: 0.0)
-            val limitedTurnRate = limitTurnRate(intent.turnRate ?: 0.0, speed)
-            val limitedGunTurnRate = limitGunTurnRate(intent.gunTurnRate ?: 0.0)
-            val limitedRadarTurnRate = limitRadarTurnRate(intent.radarTurnRate ?: 0.0)
+            bot.speed = calcNewBotSpeed(bot.speed, intent.targetSpeed ?: 0.0)
 
-            var totalTurnRate = limitedTurnRate
-            val direction: Double = normalAbsoluteDegrees(bot.direction + totalTurnRate)
+            updateBotTurnRatesAndDirections(bot, intent)
+            updateBotColors(bot, intent)
 
-            // Gun direction depends on the turn rate of both the body and the gun
-            totalTurnRate += limitedGunTurnRate
-            if (intent.adjustGunForBodyTurn == true) {
-                totalTurnRate -= limitedTurnRate
-            }
-            val gunDirection = normalAbsoluteDegrees(bot.gunDirection + totalTurnRate)
-
-            // Radar direction depends on the turn rate of the body, the gun, and the radar
-            totalTurnRate += limitedRadarTurnRate
-            if (intent.adjustRadarForGunTurn == true) {
-                totalTurnRate -= limitedGunTurnRate
-            }
-            val radarDirection: Double = normalAbsoluteDegrees(bot.radarDirection + totalTurnRate)
-
-            // The radar sweep is the difference between the new and old radar direction
-            val spreadAngle = normalRelativeDegrees(radarDirection - bot.radarDirection)
-            val scan = intent.scan ?: false
-            bot.scanDirection = if (scan) bot.radarDirection else radarDirection
-            bot.scanSpreadAngle = if (scan) bot.radarSpreadAngle else spreadAngle
-
-            bot.direction = direction
-            bot.gunDirection = gunDirection
-            bot.radarDirection = radarDirection
-            bot.radarSpreadAngle = spreadAngle
-            bot.speed = speed
-            bot.turnRate = limitedTurnRate
-            bot.gunTurnRate = limitedGunTurnRate
-            bot.radarTurnRate = limitedRadarTurnRate
             bot.moveToNewPosition()
-            bot.bodyColor = colorStringToRGB(intent.bodyColor)
-            bot.turretColor = colorStringToRGB(intent.turretColor)
-            bot.radarColor = colorStringToRGB(intent.radarColor)
-            bot.bulletColor = colorStringToRGB(intent.bulletColor)
-            bot.scanColor = colorStringToRGB(intent.scanColor)
-            bot.tracksColor = colorStringToRGB(intent.tracksColor)
-            bot.gunColor = colorStringToRGB(intent.gunColor)
         }
+    }
+
+    /** Update scan direction and scan spread */
+    private fun updateScanDirectionAndSpread(bot: Bot, intent: BotIntent, newRadarDirection: Double) {
+        // The radar sweep is the difference between the new and old radar direction
+        val newSpreadAngle = normalRelativeDegrees(newRadarDirection - bot.radarDirection)
+        val scan = intent.scan ?: false
+        bot.scanDirection = if (scan) bot.radarDirection else newRadarDirection
+        bot.scanSpreadAngle = if (scan) bot.radarSpreadAngle else newSpreadAngle
+        bot.radarDirection = newRadarDirection
+        bot.radarSpreadAngle = newSpreadAngle
+    }
+
+    /** Update bot turn rates and directions */
+    private fun updateBotTurnRatesAndDirections(bot: Bot, intent: BotIntent) {
+        val limitedTurnRate = limitTurnRate(intent.turnRate ?: 0.0, bot.speed)
+        val limitedGunTurnRate = limitGunTurnRate(intent.gunTurnRate ?: 0.0)
+        val limitedRadarTurnRate = limitRadarTurnRate(intent.radarTurnRate ?: 0.0)
+
+        var totalTurnRate = limitedTurnRate
+        bot.direction = normalAbsoluteDegrees(bot.direction + totalTurnRate)
+
+        // Gun direction depends on the turn rate of both the body and the gun
+        totalTurnRate += limitedGunTurnRate
+        if (intent.adjustGunForBodyTurn == true) {
+            totalTurnRate -= limitedTurnRate
+        }
+        bot.gunDirection = normalAbsoluteDegrees(bot.gunDirection + totalTurnRate)
+
+        // Radar direction depends on the turn rate of the body, the gun, and the radar
+        totalTurnRate += limitedRadarTurnRate
+        if (intent.adjustRadarForGunTurn == true) {
+            totalTurnRate -= limitedGunTurnRate
+        }
+        val radarDirection = normalAbsoluteDegrees(bot.radarDirection + totalTurnRate)
+
+        updateScanDirectionAndSpread(bot, intent, radarDirection)
+
+        bot.turnRate = limitedTurnRate
+        bot.gunTurnRate = limitedGunTurnRate
+        bot.radarTurnRate = limitedRadarTurnRate
+    }
+
+    /** Sets the bot colors */
+    private fun updateBotColors(bot: Bot, intent: BotIntent) {
+        bot.bodyColor = colorStringToRGB(intent.bodyColor)
+        bot.turretColor = colorStringToRGB(intent.turretColor)
+        bot.radarColor = colorStringToRGB(intent.radarColor)
+        bot.bulletColor = colorStringToRGB(intent.bulletColor)
+        bot.scanColor = colorStringToRGB(intent.scanColor)
+        bot.tracksColor = colorStringToRGB(intent.tracksColor)
+        bot.gunColor = colorStringToRGB(intent.gunColor)
     }
 
     /** Check bullet hits */
     private fun checkBulletHits() {
         if (bullets.size > 0) {
-
             // Two "arrays" that are both accessed with the same bullet index
             val bullets = ArrayList<Bullet>(bullets.size)
             val lines = ArrayList<Line>(bullets.size)
@@ -328,7 +339,6 @@ class ModelUpdater(
                 // Create a line segment (from old to new point)
                 lines += Line(bullet.calcPosition(), bullet.calcNextPosition())
             }
-
             checkBulletLineHits(bullets, lines)
         }
     }
