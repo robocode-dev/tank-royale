@@ -43,15 +43,14 @@ class ScoreTracker(botIds: Set<BotId>) {
      */
     val results: List<Score>
         get() {
-            val scores = botScores
-            for (i in scores.indices) {
-                val score = scores[i]
+            for (i in botScores.indices) {
+                val score = botScores[i]
                 val botId = score.botId
                 score.firstPlaces = place1st[botId] ?: 0
                 score.secondPlaces = place2nd[botId] ?: 0
                 score.thirdPlaces = place3rd[botId] ?: 0
             }
-            return scores
+            return botScores
         }
 
     /** Calculates 1st, 2nd, and 3rd places. */
@@ -97,7 +96,7 @@ class ScoreTracker(botIds: Set<BotId>) {
      * @param botId is the identifier of the bot.
      * @return a score record.
      */
-    fun getScore(botId: BotId): Score {
+    private fun getScore(botId: BotId): Score {
         val damageRecord = scoreRecords[botId] ?: throw IllegalStateException("No score record for botId: $botId")
         damageRecord.apply {
             val score = Score(
@@ -107,17 +106,13 @@ class ScoreTracker(botIds: Set<BotId>) {
                 bulletDamage = totalBulletDamage * SCORE_PER_BULLET_DAMAGE,
                 ramDamage = totalRamDamage * SCORE_PER_RAM_DAMAGE,
             )
-            bulletKillEnemyIds.forEach { enemyId ->
-                run {
-                    val totalDamage = getBulletDamage(enemyId) + getRamDamage(enemyId)
-                    score.bulletKillBonus += totalDamage * BONUS_PER_BULLET_KILL
-                }
+            for (enemyId in bulletKillEnemyIds) {
+                val totalDamage = getBulletDamage(enemyId) + getRamDamage(enemyId)
+                score.bulletKillBonus += totalDamage * BONUS_PER_BULLET_KILL
             }
-            ramKillEnemyIds.forEach { enemyId ->
-                run {
-                    val totalDamage = getBulletDamage(enemyId) + getRamDamage(enemyId)
-                    score.ramKillBonus += totalDamage * BONUS_PER_RAM_KILL
-                }
+            for (enemyId in ramKillEnemyIds) {
+                val totalDamage = getBulletDamage(enemyId) + getRamDamage(enemyId)
+                score.ramKillBonus += totalDamage * BONUS_PER_RAM_KILL
             }
             return score
         }

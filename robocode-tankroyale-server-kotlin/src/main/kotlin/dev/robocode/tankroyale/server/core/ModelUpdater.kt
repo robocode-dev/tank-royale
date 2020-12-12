@@ -90,17 +90,13 @@ class ModelUpdater(
     }
 
     /** Calculates and sets placements for all bots, i.e. 1st, 2nd, and 3rd places. */
-    fun calculatePlacements() {
-        scoreTracker.calculatePlacements()
-    }
+    fun calculatePlacements() { scoreTracker.calculatePlacements() }
 
     /** The current results ordered with highest total scores first. */
-    val results: List<Score>
-        get() = scoreTracker.results
+    val results: List<Score> get() = scoreTracker.results
 
     /** The number of rounds played so far. */
-    val numberOfRounds: Int
-        get() = gameState.rounds.size
+    val numberOfRounds: Int get() = gameState.rounds.size
 
     /**
      * Updates the current bot intents with the new bot intents.
@@ -389,19 +385,15 @@ class ModelUpdater(
 
     /** Check collisions between bots */
     private fun checkBotCollisions() {
-        val botArray = botsMap.values.toTypedArray()
-        for (i in botArray.indices.reversed()) {
-            val bot1x = botArray[i].x
-            val bot1y = botArray[i].y
-            for (j in i - 1 downTo 0) {
-                val bot2x = botArray[j].x
-                val bot2y = botArray[j].y
-                if (isBotsBoundingCirclesColliding(bot1x, bot1y, bot2x, bot2y)) {
-                    val overlapDist = BOT_BOUNDING_CIRCLE_DIAMETER - distance(bot1x, bot1y, bot2x, bot2y)
-                    val bot1 = botArray[i]
-                    val bot2 = botArray[j]
-                    val botId1 = bot1.id
-                    val botId2 = bot2.id
+        val bots = ArrayList<Bot>(botsMap.values.size)
+        botsMap.values.forEach { bots += it }
+
+        for (i in 0 until bots.size) {
+            for (j in i + 1 until bots.size) {
+                val bot1 = bots[i]
+                val bot2 = bots[j]
+                if (isBotsBoundingCirclesColliding(bot1.x, bot1.y, bot2.x, bot2.y)) {
+                    val overlapDist = BOT_BOUNDING_CIRCLE_DIAMETER - distance(bot1.x, bot1.y, bot2.x, bot2.y)
 
                     // Both bots takes damage when hitting each other
                     val bot1Killed = bot1.addDamage(RAM_DAMAGE)
@@ -409,10 +401,10 @@ class ModelUpdater(
                     val isBot1RammingBot2 = isRamming(bot1, bot2)
                     val isBot2RammingBot1 = isRamming(bot2, bot1)
                     if (isBot1RammingBot2) {
-                        scoreTracker.registerRamHit(botId2, botId1, bot1Killed)
+                        scoreTracker.registerRamHit(bot2.id, bot1.id, bot1Killed)
                     }
                     if (isBot2RammingBot1) {
-                        scoreTracker.registerRamHit(botId1, botId2, bot2Killed)
+                        scoreTracker.registerRamHit(bot1.id, bot2.id, bot2Killed)
                     }
                     val totalSpeed = bot1.speed + bot2.speed
                     var bot1BounceDist: Double
@@ -465,28 +457,16 @@ class ModelUpdater(
                     if (isBot2RammingBot1) {
                         bot2.speed = 0.0
                     }
-                    val botHitBotEvent1 = BotHitBotEvent(
-                        turnNumber,
-                        botId1,
-                        botId2,
-                        bot2.energy,
-                        bot2.x,
-                        bot2.y,
-                        isBot1RammingBot2
-                    )
-                    val botHitBotEvent2 = BotHitBotEvent(
-                        turnNumber,
-                        botId2,
-                        botId1,
-                        bot1.energy,
-                        bot1.x,
-                        bot1.y,
-                        isBot2RammingBot1
-                    )
-                    turn.addPrivateBotEvent(botId1, botHitBotEvent1)
-                    turn.addPrivateBotEvent(botId2, botHitBotEvent2)
-                    turn.addObserverEvent(botHitBotEvent1)
-                    turn.addObserverEvent(botHitBotEvent2)
+                    val botHitBotEvent1 =
+                        BotHitBotEvent(turnNumber, bot1.id, bot2.id, bot2.energy, bot2.x, bot2.y, isBot1RammingBot2)
+                    val botHitBotEvent2 =
+                        BotHitBotEvent(turnNumber, bot2.id, bot1.id, bot1.energy, bot1.x, bot1.y, isBot2RammingBot1)
+                    turn.apply {
+                        addPrivateBotEvent(bot1.id, botHitBotEvent1)
+                        addPrivateBotEvent(bot2.id, botHitBotEvent2)
+                        addObserverEvent(botHitBotEvent1)
+                        addObserverEvent(botHitBotEvent2)
+                    }
                     break
                 }
             }
@@ -500,62 +480,60 @@ class ModelUpdater(
 
     /** Checks collisions between bots and the walls. */
     private fun checkBotWallCollisions() {
-        botsMap.values.forEach { bot ->
-            run {
-                var x = bot.x
-                var y = bot.y
-                if (previousTurn != null) {
-                    val prevBotState: Bot = previousTurn!!.getBot(bot.id) ?: return
-                    val oldX = prevBotState.x
-                    val oldY = prevBotState.y
-                    val dx = x - oldX
-                    val dy = y - oldY
-                    var hitWall = false
-                    if (x - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
-                        hitWall = true
-                        x = BOT_BOUNDING_CIRCLE_RADIUS.toDouble()
-                        if (dx != 0.0) {
-                            val dxCut = x - oldX
-                            y = oldY + (dxCut * dy / dx)
-                        }
-                    } else if (x + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaWidth) {
-                        hitWall = true
-                        x = setup.arenaWidth.toDouble() - BOT_BOUNDING_CIRCLE_RADIUS
-                        if (dx != 0.0) {
-                            val dxCut = x - oldX
-                            y = oldY + (dxCut * dy / dx)
-                        }
-                    } else if (y - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
-                        hitWall = true
-                        y = BOT_BOUNDING_CIRCLE_RADIUS.toDouble()
-                        if (dy != 0.0) {
-                            val dyCut = y - oldY
-                            x = oldX + (dyCut * dx / dy)
-                        }
-                    } else if (y + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaHeight) {
-                        hitWall = true
-                        y = setup.arenaHeight.toDouble() - BOT_BOUNDING_CIRCLE_RADIUS
-                        if (dy != 0.0) {
-                            val dyCut = y - oldY
-                            x = oldX + (dyCut * dx / dy)
-                        }
+        for (bot in botsMap.values) {
+            var x = bot.x
+            var y = bot.y
+            if (previousTurn != null) {
+                val prevBotState: Bot = previousTurn!!.getBot(bot.id) ?: return
+                val oldX = prevBotState.x
+                val oldY = prevBotState.y
+                val dx = x - oldX
+                val dy = y - oldY
+                var hitWall = false
+                if (x - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
+                    hitWall = true
+                    x = BOT_BOUNDING_CIRCLE_RADIUS.toDouble()
+                    if (dx != 0.0) {
+                        val dxCut = x - oldX
+                        y = oldY + (dxCut * dy / dx)
                     }
-                    if (hitWall) {
-                        bot.x = x
-                        bot.y = y
-
-                        // Skip this check, if the bot hit the wall in the previous turn
-                        if (previousTurn!!.getEvents(bot.id).none { event -> event is BotHitWallEvent }) {
-                            val botHitWallEvent = BotHitWallEvent(turnNumber, bot.id)
-                            turn.addPrivateBotEvent(bot.id, botHitWallEvent)
-                            turn.addObserverEvent(botHitWallEvent)
-                            val damage = calcWallDamage(bot.speed)
-                            bot.addDamage(damage)
-                        }
-
-                        // Bot is stopped to zero speed regardless of its previous direction
-                        bot.speed = 0.0
+                } else if (x + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaWidth) {
+                    hitWall = true
+                    x = setup.arenaWidth.toDouble() - BOT_BOUNDING_CIRCLE_RADIUS
+                    if (dx != 0.0) {
+                        val dxCut = x - oldX
+                        y = oldY + (dxCut * dy / dx)
                     }
+                } else if (y - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
+                    hitWall = true
+                    y = BOT_BOUNDING_CIRCLE_RADIUS.toDouble()
+                    if (dy != 0.0) {
+                        val dyCut = y - oldY
+                        x = oldX + (dyCut * dx / dy)
+                    }
+                } else if (y + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaHeight) {
+                    hitWall = true
+                    y = setup.arenaHeight.toDouble() - BOT_BOUNDING_CIRCLE_RADIUS
+                    if (dy != 0.0) {
+                        val dyCut = y - oldY
+                        x = oldX + (dyCut * dx / dy)
+                    }
+                }
+                if (hitWall) {
+                    bot.x = x
+                    bot.y = y
+
+                    // Skip this check, if the bot hit the wall in the previous turn
+                    if (previousTurn!!.getEvents(bot.id).none { event -> event is BotHitWallEvent }) {
+                        val botHitWallEvent = BotHitWallEvent(turnNumber, bot.id)
+                        turn.addPrivateBotEvent(bot.id, botHitWallEvent)
+                        turn.addObserverEvent(botHitWallEvent)
+                        val damage = calcWallDamage(bot.speed)
+                        bot.addDamage(damage)
+                    }
+
+                    // Bot is stopped to zero speed regardless of its previous direction
+                    bot.speed = 0.0
                 }
             }
         }

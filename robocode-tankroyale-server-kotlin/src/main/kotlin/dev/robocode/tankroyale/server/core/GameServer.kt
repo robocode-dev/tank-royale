@@ -36,7 +36,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
     private lateinit var readyTimeoutTimer: NanoTimer
     private var turnTimeoutTimer: NanoTimer? = null
     private var tps = DEFAULT_TURNS_PER_SECOND
-    private var modelUpdater: ModelUpdater? = null
+    private lateinit var modelUpdater: ModelUpdater
 
     private val log = LoggerFactory.getLogger(GameServer::class.java)
     private val gson = Gson()
@@ -175,9 +175,8 @@ class GameServer(gameTypes: String, clientSecret: String?) {
     private val resultsForBots: List<BotResultsForBot>
         get() {
             val results: MutableList<BotResultsForBot> = ArrayList()
-            modelUpdater?.results?.forEach { score ->
+            for (score in modelUpdater.results) {
                 val result = BotResultsForBot()
-                results += result
                 result.id = score.botId.value
                 result.survival = score.survival.roundToInt()
                 result.lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
@@ -189,17 +188,18 @@ class GameServer(gameTypes: String, clientSecret: String?) {
                 result.firstPlaces = score.firstPlaces
                 result.secondPlaces = score.secondPlaces
                 result.thirdPlaces = score.thirdPlaces
+                results += result
             }
             var rank = 1
             results.forEach { it.rank = rank++ }
             return results
         }
+
     private val resultsForObservers: List<BotResultsForObserver>
         get() {
             val results: MutableList<BotResultsForObserver> = ArrayList()
-            modelUpdater?.results?.forEach { score ->
+            for (score in modelUpdater.results) {
                 val result = BotResultsForObserver()
-                results += result
                 result.id = score.botId.value
                 result.survival = score.survival.roundToInt()
                 result.lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
@@ -211,6 +211,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
                 result.firstPlaces = score.firstPlaces
                 result.secondPlaces = score.secondPlaces
                 result.thirdPlaces = score.thirdPlaces
+                results += result
 
                 var conn: WebSocket? = null
                 for ((key, value) in participantIds) {
@@ -278,7 +279,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
             val botId = participantIds[key]!!
             mappedBotIntents[botId] = value
         }
-        return modelUpdater!!.update(Collections.unmodifiableMap(mappedBotIntents))
+        return modelUpdater.update(Collections.unmodifiableMap(mappedBotIntents))
     }
 
     private fun onReadyTimeout() {
@@ -303,19 +304,19 @@ class GameServer(gameTypes: String, clientSecret: String?) {
             if (gameState.isGameEnded) {
                 runningState = RunningState.GAME_STOPPED
                 log.info("Game ended")
-                modelUpdater!!.calculatePlacements()
+                modelUpdater.calculatePlacements()
 
                 // End game for bots
                 val endEventForBot = GameEndedEventForBot()
                 endEventForBot.`$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_BOT
-                endEventForBot.numberOfRounds = modelUpdater!!.numberOfRounds
+                endEventForBot.numberOfRounds = modelUpdater.numberOfRounds
                 endEventForBot.results = resultsForBots
                 broadcastToBots(endEventForBot)
 
                 // End game for observers
                 val endEventForObserver = GameEndedEventForObserver()
                 endEventForObserver.`$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_OBSERVER
-                endEventForObserver.numberOfRounds = modelUpdater!!.numberOfRounds
+                endEventForObserver.numberOfRounds = modelUpdater.numberOfRounds
                 endEventForObserver.results = resultsForObservers // Use the stored score!
                 broadcastToObserverAndControllers(endEventForObserver)
             } else {
@@ -343,7 +344,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
                         if (botIntents[conn] == null) {
                             val skippedTurnEvent = SkippedTurnEvent()
                             skippedTurnEvent.`$type` = Message.`$type`.SKIPPED_TURN_EVENT
-                            skippedTurnEvent.turnNumber = modelUpdater!!.turnNumber
+                            skippedTurnEvent.turnNumber = modelUpdater.turnNumber
                             send(conn, skippedTurnEvent)
                         }
                     }
@@ -382,7 +383,8 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         val botConnections = connHandler.getBotConnections()
         for (conn in botConnections) {
             val address = conn.remoteSocketAddress
-            val botInfo = BotHandshakeToBotInfoMapper.map(connHandler.getBotHandshakes()[conn]!!,
+            val botInfo = BotHandshakeToBotInfoMapper.map(
+                connHandler.getBotHandshakes()[conn]!!,
                 address.hostString, address.port
             )
             bots += botInfo
