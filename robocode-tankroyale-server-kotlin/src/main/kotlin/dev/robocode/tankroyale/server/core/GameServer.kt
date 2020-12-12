@@ -27,13 +27,13 @@ import kotlin.math.roundToInt
 class GameServer(gameTypes: String, clientSecret: String?) {
     private val gameTypes: String = gameTypes.replace("\\s".toRegex(), "")
     private val connHandler: ConnHandler
-    private var runningState: RunningState
+    private var runningState: RunningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN
     private var gameSetup: dev.robocode.tankroyale.server.model.GameSetup? = null
     private val participants: MutableSet<WebSocket> = HashSet()
     private val readyParticipants: MutableSet<WebSocket> = HashSet()
     private val participantIds: MutableMap<WebSocket, BotId> = HashMap()
     private val botIntents: MutableMap<WebSocket, dev.robocode.tankroyale.server.model.BotIntent> = ConcurrentHashMap()
-    private var readyTimeoutTimer: NanoTimer? = null
+    private lateinit var readyTimeoutTimer: NanoTimer
     private var turnTimeoutTimer: NanoTimer? = null
     private var tps = DEFAULT_TURNS_PER_SECOND
     private var modelUpdater: ModelUpdater? = null
@@ -43,9 +43,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
     init {
         val serverSetup = ServerSetup(HashSet(listOf(*gameTypes.split(",").toTypedArray())))
-        val connListener = GameServerConnListener()
-        connHandler = ConnHandler(serverSetup, connListener, clientSecret)
-        runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN
+        connHandler = ConnHandler(serverSetup, GameServerConnListener(), clientSecret)
     }
 
     fun start() {
@@ -60,7 +58,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
     private fun startGameIfParticipantsReady() {
         if (readyParticipants.size == participants.size) {
-            readyTimeoutTimer!!.stop()
+            readyTimeoutTimer.stop()
             readyParticipants.clear()
             botIntents.clear()
             startGame()
@@ -86,7 +84,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
         // Start 'bot-ready' timeout timer
         readyTimeoutTimer = NanoTimer(gameSetup!!.readyTimeout * 1000000L) { onReadyTimeout() }
-        readyTimeoutTimer!!.start()
+        readyTimeoutTimer.start()
     }
 
     private fun startGame() {

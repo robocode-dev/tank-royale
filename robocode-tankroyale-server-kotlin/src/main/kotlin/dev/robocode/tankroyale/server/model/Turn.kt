@@ -22,6 +22,24 @@ data class Turn(
     private val botEventsMap: MutableMap<BotId, MutableSet<Event>> = HashMap(),
 ) {
     /**
+     * Replaces all bullets with a collection of bullet copies.
+     * @param srcBullets is the collection of bullets to copy.
+     */
+    fun copyBullets(srcBullets: Collection<Bullet>) {
+        bullets.clear()
+        srcBullets.forEach { bullets += it.copy() }
+    }
+
+    /**
+     * Replaces all bots with a collection of bot copies.
+     * @param srcBots is the collection of bots to copy.
+     */
+    fun copyBots(srcBots: Collection<Bot>) {
+        bots.clear()
+        srcBots.forEach { bots += it.copy() }
+    }
+
+    /**
      * Returns a bot instance by id.
      * @param botId is the id of the bot.
      * @return the bot instance with the specified id or null if the bot was not found.

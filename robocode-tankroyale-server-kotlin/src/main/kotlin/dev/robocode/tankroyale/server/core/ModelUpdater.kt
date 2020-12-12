@@ -72,7 +72,7 @@ class ModelUpdater(
     private var inactivityCounter = 0
 
     /**
-     * Updates game state
+     * Updates game state.
      *
      * @param botIntents is the bot intents, which gives instructions to the game from the individual bot.
      * @return new game state.
@@ -107,12 +107,10 @@ class ModelUpdater(
      * @param botIntents is the new bot intents.
      */
     private fun updateBotIntents(botIntents: Map<BotId, BotIntent>) {
-        botIntents.entries.forEach { (botId, updateIntent) ->
-            run {
-                val botIntent = botIntentsMap[botId] ?: BotIntent()
-                botIntent.update(updateIntent)
-                botIntentsMap[botId] = botIntent
-            }
+        for ((botId, updateIntent) in botIntents.entries) {
+            val botIntent = botIntentsMap[botId] ?: BotIntent()
+            botIntent.update(updateIntent)
+            botIntentsMap[botId] = botIntent
         }
     }
 
@@ -126,9 +124,9 @@ class ModelUpdater(
         bullets.clear()
         botsMap.clear()
         botIntentsMap.clear()
-        initializeBotStates()
         scoreTracker.prepareRound()
         inactivityCounter = 0
+        initializeBotStates()
     }
 
     /** Proceed with next turn. */
@@ -182,16 +180,10 @@ class ModelUpdater(
         checkIfRoundOrGameOver()
 
         // Store bot snapshots
-        turn.bots.apply {
-            clear()
-            botsMap.values.forEach { add(it.copy()) }
-        }
+        turn.copyBots(botsMap.values)
 
         // Store bot snapshots into the turn
-        turn.bullets.apply {
-            clear()
-            bullets.forEach { add(it.copy()) }
-        }
+        turn.copyBullets(bullets)
     }
 
     /**
@@ -202,17 +194,12 @@ class ModelUpdater(
         round = round.copy()
         round.turns += turn.copy()
 
-        val rounds = ArrayList(gameState.rounds)
         val roundIndex = round.roundNumber - 1
+        val rounds = gameState.rounds
         if (rounds.size == roundIndex) {
             rounds += round
         } else {
             rounds[roundIndex] = round
-        }
-        gameState = gameState.copy()
-        gameState.rounds.apply {
-            clear()
-            addAll(rounds)
         }
         return gameState
     }
@@ -233,12 +220,8 @@ class ModelUpdater(
                 score = Score(botId = id),
             )
         }
-
         // Store bot snapshots into the turn
-        turn.bots.apply {
-            clear()
-            botsMap.values.forEach { add(it.copy()) }
-        }
+        turn.copyBots(botsMap.values)
     }
 
     /**
@@ -279,7 +262,9 @@ class ModelUpdater(
 
     /** Execute bot intents for bots that are not disabled */
     private fun executeBotIntents() {
-        botsMap.forEach { (_, bot) -> if (bot.isEnabled) executeBotIntent(bot) }
+        for ((_, bot) in botsMap) {
+            if (bot.isEnabled) executeBotIntent(bot)
+        }
     }
 
     private fun executeBotIntent(bot: Bot) {
@@ -342,7 +327,7 @@ class ModelUpdater(
         val bullets = ArrayList<Bullet>(bulletCount)
         val lines = ArrayList<Line>(bulletCount)
 
-        this.bullets.forEach { bullet ->
+        for (bullet in this.bullets) {
             bullets += bullet
             // Create a line segment (from old to new point)
             lines += Line(bullet.calcPosition(), bullet.calcNextPosition())
@@ -364,7 +349,6 @@ class ModelUpdater(
                         // Observers only need a single event
                         addObserverEvent(event1)
                     }
-
                     // Remove bullets from the arena
                     this.bullets -= bullets[i]
                     this.bullets -= bullets[j]
@@ -372,33 +356,32 @@ class ModelUpdater(
             }
 
             // Check bullet-hit-bot collision (hit)
-            botsMap.values.forEach { bot ->
-                run {
-                    val bullet = bullets[i]
-                    val botId = bullet.botId
-                    val victimId = bot.id
-                    if (botId != victimId && // A bot cannot shot itself
-                        isLineIntersectingCircle(lines[i], Point(bot.x, bot.y), BOT_BOUNDING_CIRCLE_RADIUS.toDouble())
-                    ) {
-                        inactivityCounter = 0 // reset collective inactivity counter due to bot taking bullet damage
+            for (bot in botsMap.values) {
+                val bullet = bullets[i]
+                val botId = bullet.botId
+                val victimId = bot.id
+                if (botId == victimId) {
+                    continue // A bot cannot shot itself
+                }
+                if (isLineIntersectingCircle(lines[i], Point(bot.x, bot.y), BOT_BOUNDING_CIRCLE_RADIUS.toDouble())) {
+                    inactivityCounter = 0 // reset collective inactivity counter due to bot taking bullet damage
 
-                        val damage = calcBulletDamage(bullet.power)
-                        val isKilled = bot.addDamage(damage)
+                    val damage = calcBulletDamage(bullet.power)
+                    val isKilled = bot.addDamage(damage)
 
-                        val energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.power
-                        botsMap[botId]?.changeEnergy(energyBonus)
+                    val energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.power
+                    botsMap[botId]?.changeEnergy(energyBonus)
 
-                        scoreTracker.registerBulletHit(botId, victimId, damage, isKilled)
+                    scoreTracker.registerBulletHit(botId, victimId, damage, isKilled)
 
-                        val bulletHitBotEvent = BulletHitBotEvent(turnNumber, bullet, victimId, damage, bot.energy)
-                        turn.apply {
-                            addPrivateBotEvent(botId, bulletHitBotEvent) // Bot itself gets event
-                            addPrivateBotEvent(victimId, bulletHitBotEvent) // Victim bot gets event too
-                            addObserverEvent(bulletHitBotEvent)
-                        }
-                        // Remove bullet from the arena
-                        this.bullets -= bullet
+                    val bulletHitBotEvent = BulletHitBotEvent(turnNumber, bullet, victimId, damage, bot.energy)
+                    turn.apply {
+                        addPrivateBotEvent(botId, bulletHitBotEvent) // Bot itself gets event
+                        addPrivateBotEvent(victimId, bulletHitBotEvent) // Victim bot gets event too
+                        addObserverEvent(bulletHitBotEvent)
                     }
+                    // Remove bullet from the arena
+                    this.bullets -= bullet
                 }
             }
         }
