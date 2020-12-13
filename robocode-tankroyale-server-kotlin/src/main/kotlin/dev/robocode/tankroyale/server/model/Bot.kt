@@ -121,9 +121,7 @@ data class Bot(
      * Moves bot to the new (next turn) position based on the current position, the driving direction, and the speed.
      */
     fun moveToNewPosition() {
-        val (x, y) = calcNewPosition(direction, speed)
-        this.x = x
-        this.y = y
+        moveToNewPosition(speed)
     }
 
     /**
@@ -131,21 +129,16 @@ data class Bot(
      * @param distance is the distance to bounce back.
      */
     fun bounceBack(distance: Double) {
-        val (x, y) = calcNewPosition(direction, if (speed > 0) -distance else distance)
-        this.x = x
-        this.y = y
+        moveToNewPosition(if (speed > 0) -distance else distance)
     }
 
     /**
-     * Calculate the (next turn) position based on the current position, the driving direction, and the speed.
-     * @param direction is the new driving direction.
+     * Move to new position based on the current position, the driving direction, and distance to move.
      * @param distance is the distance to move.
-     * @return the calculated new position of the bot.
      */
-    private fun calcNewPosition(direction: Double, distance: Double): Point {
+    private fun moveToNewPosition(distance: Double) {
         val angle = Math.toRadians(direction)
-        val x: Double = this.x + cos(angle) * distance
-        val y: Double = this.y + sin(angle) * distance
-        return Point(x, y)
+        x += cos(angle) * distance
+        y += sin(angle) * distance
     }
 }

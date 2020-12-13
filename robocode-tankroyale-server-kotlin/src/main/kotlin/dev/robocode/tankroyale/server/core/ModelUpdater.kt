@@ -441,50 +441,15 @@ class ModelUpdater(
     private fun isBotsColliding(bot1: Bot, bot2: Bot): Boolean {
         if (isBotsBoundingCirclesColliding(bot1, bot2)) {
 
-            val oldBot1Position = bot1.position
-            val oldBot2Position = bot2.position
-
             val isBot1RammingBot2 = isRamming(bot1, bot2)
             val isBot2RammingBot1 = isRamming(bot2, bot1)
 
             // Both bots takes damage when hitting each other
             registerRamHit(bot1, bot2, isBot1RammingBot2, isBot2RammingBot1)
 
-            val overlapDist = BOT_BOUNDING_CIRCLE_DIAMETER - distance(bot1.x, bot1.y, bot2.x, bot2.y)
-            val totalSpeed = bot1.speed + bot2.speed
-            val bot1BounceDist: Double
-            val bot2BounceDist: Double
-            if (totalSpeed == 0.0) {
-                bot1BounceDist = overlapDist / 2
-                bot2BounceDist = overlapDist / 2
-            } else {
-                val t = overlapDist / totalSpeed
+            // Bounce back bots
+            bounceBack(bot1, bot2)
 
-                // The faster speed, the less bounce distance. Hence the speeds for the bots are swapped
-                bot1BounceDist = bot2.speed * t
-                bot2BounceDist = bot1.speed * t
-            }
-            bot1.bounceBack(bot1BounceDist)
-            bot2.bounceBack(bot2BounceDist)
-
-            val newBot1Position = bot1.position
-            val newBot2Position = bot2.position
-
-            // Check if one of the bot bounced into a wall
-            if ((newBot1Position.x < BOT_BOUNDING_CIRCLE_RADIUS) || (newBot1Position.y < BOT_BOUNDING_CIRCLE_RADIUS) || (
-                        newBot1Position.x > (setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS)) || (
-                        newBot1Position.y > (setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS))
-            ) {
-                bot1.position = oldBot1Position
-                bot2.bounceBack(bot1BounceDist /* remaining distance */)
-            }
-            if ((newBot2Position.x < BOT_BOUNDING_CIRCLE_RADIUS) || (newBot2Position.y < BOT_BOUNDING_CIRCLE_RADIUS) || (
-                        newBot2Position.x > (setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS)) || (
-                        newBot2Position.y > (setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS))
-            ) {
-                bot2.position = oldBot2Position
-                bot1.bounceBack(bot2BounceDist /* remaining distance */)
-            }
             if (isBot1RammingBot2) {
                 bot1.speed = 0.0
             }
@@ -504,6 +469,47 @@ class ModelUpdater(
             return true
         }
         return false
+    }
+
+    private fun bounceBack(bot1: Bot, bot2: Bot) {
+        val oldBot1Position = bot1.position
+        val oldBot2Position = bot2.position
+
+        val overlapDist = BOT_BOUNDING_CIRCLE_DIAMETER - distance(bot1.x, bot1.y, bot2.x, bot2.y)
+        val totalSpeed = bot1.speed + bot2.speed
+        val bot1BounceDist: Double
+        val bot2BounceDist: Double
+        if (totalSpeed == 0.0) {
+            bot1BounceDist = overlapDist / 2
+            bot2BounceDist = overlapDist / 2
+        } else {
+            val t = overlapDist / totalSpeed
+
+            // The faster speed, the less bounce distance. Hence the speeds for the bots are swapped
+            bot1BounceDist = bot2.speed * t
+            bot2BounceDist = bot1.speed * t
+        }
+        bot1.bounceBack(bot1BounceDist)
+        bot2.bounceBack(bot2BounceDist)
+
+        val newBot1Position = bot1.position
+        val newBot2Position = bot2.position
+
+        // Check if one of the bot bounced into a wall
+        if ((newBot1Position.x < BOT_BOUNDING_CIRCLE_RADIUS) || (newBot1Position.y < BOT_BOUNDING_CIRCLE_RADIUS) || (
+                    newBot1Position.x > (setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS)) || (
+                    newBot1Position.y > (setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS))
+        ) {
+            bot1.position = oldBot1Position
+            bot2.bounceBack(bot1BounceDist /* remaining distance */)
+        }
+        if ((newBot2Position.x < BOT_BOUNDING_CIRCLE_RADIUS) || (newBot2Position.y < BOT_BOUNDING_CIRCLE_RADIUS) || (
+                    newBot2Position.x > (setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS)) || (
+                    newBot2Position.y > (setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS))
+        ) {
+            bot2.position = oldBot2Position
+            bot1.bounceBack(bot2BounceDist /* remaining distance */)
+        }
     }
 
     private fun registerRamHit(bot1: Bot, bot2: Bot, isBot1RammingBot2: Boolean, isBot2RammingBot1: Boolean) {
