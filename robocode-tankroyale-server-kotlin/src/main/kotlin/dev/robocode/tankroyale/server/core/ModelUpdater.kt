@@ -237,23 +237,30 @@ class ModelUpdater(
         }
         val cellWidth = setup.arenaWidth / gridWidth
         val cellHeight = setup.arenaHeight / gridHeight
-        var x: Double
-        var y: Double
-        val random = Random()
+
+        return randomBotPoint(occupiedCells, cellCount, gridWidth, cellWidth, cellHeight)
+    }
+
+    private fun randomBotPoint(
+        occupiedCells: MutableSet<Int>,
+        cellCount: Int,
+        gridWidth: Int,
+        cellWidth: Int,
+        cellHeight: Int
+    ): Point {
         while (true) {
-            val cell = random.nextInt(cellCount)
+            val cell = Random().nextInt(cellCount)
             if (!occupiedCells.contains(cell)) {
                 occupiedCells += cell
-                y = (cell / gridWidth).toDouble()
-                x = cell - y * gridWidth
+                var y = (cell / gridWidth).toDouble()
+                var x = cell - y * gridWidth
                 x *= cellWidth.toDouble()
                 y *= cellHeight.toDouble()
                 x += BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (cellWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
                 y += BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (cellHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
-                break
+                return Point(x, y)
             }
         }
-        return Point(x, y)
     }
 
     /** Execute bot intents for bots that are not disabled */
