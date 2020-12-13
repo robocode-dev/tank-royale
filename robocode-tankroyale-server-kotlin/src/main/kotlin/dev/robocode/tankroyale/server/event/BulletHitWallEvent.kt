@@ -7,7 +7,7 @@ data class BulletHitWallEvent (
     /** Turn number when event occurred */
     override val turnNumber: Int,
 
-    /** Bullet that missed  */
+    /** Bullet that missed */
     val bullet: Bullet
 
 ) : Event()

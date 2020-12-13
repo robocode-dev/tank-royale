@@ -667,10 +667,9 @@ class ModelUpdater(
         val bullet = Bullet(
             botId = bot.id,
             bulletId = BulletId(++nextBulletId),
-            power = firepower,
-            startX = bot.x,
-            startY = bot.y,
+            startPosition = bot.position,
             direction = bot.gunDirection,
+            power = firepower,
             color = bot.bulletColor,
         )
         bullets += bullet

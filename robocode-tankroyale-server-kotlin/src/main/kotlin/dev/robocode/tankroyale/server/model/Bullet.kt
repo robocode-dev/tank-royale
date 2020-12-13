@@ -6,32 +6,33 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 data class Bullet(
-    /** Id of the bot that fired this bullet  */
+    /** Id of the bot that fired this bullet */
     var botId: BotId,
 
-    /** Id of the bullet  */
+    /** Id of the bullet */
     var bulletId: BulletId,
 
-    /** Power of the bullet  */
+    /** Power of the bullet */
     var power: Double,
 
-    /** X coordinate of the position where the bullet was fired from  */
-    var startX: Double,
+    /** Start position where the bullet was fired from */
+    var startPosition: Point,
 
-    /** Y coordinate of the position where the bullet was fired from  */
-    var startY: Double,
-
-    /** Direction of the bullet in degrees  */
+    /** Direction of the bullet in degrees */
     var direction: Double,
 
-    /** Tick, which is the number of turns since the bullet was fired  */
+    /** Tick, which is the number of turns since the bullet was fired */
     var tick: Int = 0,
 
-    /** Color of the bullet  */
+    /** Color of the bullet */
     var color: Color?,
 ) {
     override fun hashCode(): Int {
         return bulletId.value
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is Bullet && other.bulletId == bulletId
     }
 
     /** Speed of the bullet */
@@ -43,29 +44,28 @@ data class Bullet(
     /**
      * Calculates the current bullet position based on the fire position and current tick.
      * @return the calculated bullet position.
-     */
-    fun calcPosition(): Point = calcPosition(startX, startY, direction, speed, tick)
+    */
+    fun calcPosition(): Point = calcPosition(startPosition, direction, speed, tick)
 
     /**
      * Calculates the next bullet position based on the fire position and current tick.
      * @return the calculated bullet position.
-     */
-    fun calcNextPosition(): Point = calcPosition(startX, startY, direction, speed, tick + 1)
+    */
+    fun calcNextPosition(): Point = calcPosition(startPosition, direction, speed, tick + 1)
 
     /**
      * Calculates the position of a bullet.
-     * @param startX is the x coordinate of the position where the bullet was fired from.
-     * @param startY is the y coordinate of the position where the bullet was fired from.
+     * @param startPosition is the start position where the bullet was fired from.
      * @param direction is the direction of the bullet.
      * @param speed is the speed of the bullet.
      * @param tick is the number of turns since the bullet was fired.
      * @return the calculated bullet position.
-     */
-    private fun calcPosition(startX: Double, startY: Double, direction: Double, speed: Double, tick: Int): Point {
+    */
+    private fun calcPosition(startPosition: Point, direction: Double, speed: Double, tick: Int): Point {
         val angle = Math.toRadians(direction)
         val distance = speed * tick
-        val x = startX + cos(angle) * distance
-        val y = startY + sin(angle) * distance
+        val x = startPosition.x + cos(angle) * distance
+        val y = startPosition.y + sin(angle) * distance
         return Point(x, y)
     }
 }

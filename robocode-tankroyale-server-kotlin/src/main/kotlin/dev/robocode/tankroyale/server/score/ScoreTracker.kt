@@ -88,7 +88,7 @@ class ScoreTracker(botIds: Set<BotId>) {
      * @param botId is the identifier of the bot.
      * @return a score record.
      */
-    private fun getScore(botId: BotId): Score {
+    fun getScore(botId: BotId): Score {
         val damageRecord = scoreRecords[botId] ?: throw IllegalStateException("No score record for botId: $botId")
         damageRecord.apply {
             val score = Score(
