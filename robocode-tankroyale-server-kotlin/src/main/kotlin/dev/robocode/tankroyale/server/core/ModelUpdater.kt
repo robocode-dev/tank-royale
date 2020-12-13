@@ -436,33 +436,30 @@ class ModelUpdater(
 
         for (i in 0 until bots.size) {
             for (j in i + 1 until bots.size) {
-                if (isBotsColliding(bots[i], bots[j])) {
+                if (isBotsBoundingCirclesColliding(bots[i], bots[j])) {
+                    handleBotHitBot(bots[i], bots[j])
                     break
                 }
             }
         }
     }
 
-    private fun isBotsColliding(bot1: Bot, bot2: Bot): Boolean {
-        if (isBotsBoundingCirclesColliding(bot1, bot2)) {
-            val isBot1RammingBot2 = isRamming(bot1, bot2)
-            val isBot2RammingBot1 = isRamming(bot2, bot1)
+    private fun handleBotHitBot(bot1: Bot, bot2: Bot) {
+        val isBot1RammingBot2 = isRamming(bot1, bot2)
+        val isBot2RammingBot1 = isRamming(bot2, bot1)
 
-            // Both bots takes damage when hitting each other
-            registerRamHit(bot1, bot2, isBot1RammingBot2, isBot2RammingBot1)
+        // Both bots takes damage when hitting each other
+        registerRamHit(bot1, bot2, isBot1RammingBot2, isBot2RammingBot1)
 
-            // Bounce back bots
-            bounceBack(bot1, bot2)
+        // Bounce back bots
+        bounceBack(bot1, bot2)
 
-            // Stop bots by setting speed to 0
-            if (isBot1RammingBot2) bot1.speed = 0.0
-            if (isBot2RammingBot1) bot2.speed = 0.0
+        // Stop bots by setting speed to 0
+        if (isBot1RammingBot2) bot1.speed = 0.0
+        if (isBot2RammingBot1) bot2.speed = 0.0
 
-            // Create bot-hit-bot events
-            createAndBotHitBotEventsToTurn(bot1, bot2, isBot1RammingBot2, isBot2RammingBot1)
-            return true
-        }
-        return false
+        // Create bot-hit-bot events
+        createAndBotHitBotEventsToTurn(bot1, bot2, isBot1RammingBot2, isBot2RammingBot1)
     }
 
     private fun createAndBotHitBotEventsToTurn(
@@ -499,6 +496,22 @@ class ModelUpdater(
         val oldBot1Position = bot1.position
         val oldBot2Position = bot2.position
 
+        val (bot1BounceDist, bot2BounceDist) = calcBotBounceDistances(bot1, bot2)
+        bot1.bounceBack(bot1BounceDist)
+        bot2.bounceBack(bot2BounceDist)
+
+        // Check if one of the bot bounced into a wall
+        if (isBotPositionOutsideArena(bot1.position)) {
+            bot1.position = oldBot1Position
+            bot2.bounceBack(bot1BounceDist /* remaining distance */)
+        }
+        if (isBotPositionOutsideArena(bot2.position)) {
+            bot2.position = oldBot2Position
+            bot1.bounceBack(bot2BounceDist /* remaining distance */)
+        }
+    }
+
+    private fun calcBotBounceDistances(bot1: Bot, bot2: Bot): Pair<Double, Double> {
         val overlapDist = BOT_BOUNDING_CIRCLE_DIAMETER - distance(bot1.x, bot1.y, bot2.x, bot2.y)
         val totalSpeed = bot1.speed + bot2.speed
         val bot1BounceDist: Double
@@ -512,18 +525,7 @@ class ModelUpdater(
             bot1BounceDist = bot2.speed * t
             bot2BounceDist = bot1.speed * t
         }
-        bot1.bounceBack(bot1BounceDist)
-        bot2.bounceBack(bot2BounceDist)
-
-        // Check if one of the bot bounced into a wall
-        if (isBotPositionOutsideArena(bot1.position)) {
-            bot1.position = oldBot1Position
-            bot2.bounceBack(bot1BounceDist /* remaining distance */)
-        }
-        if (isBotPositionOutsideArena(bot2.position)) {
-            bot2.position = oldBot2Position
-            bot1.bounceBack(bot2BounceDist /* remaining distance */)
-        }
+        return Pair(bot1BounceDist, bot2BounceDist)
     }
 
     /** Checks if a point is outside the areana */
@@ -542,62 +544,63 @@ class ModelUpdater(
     /** Checks collisions between bots and the walls. */
     private fun checkBotWallCollisions() {
         for (bot in botsMap.values) {
-            var x = bot.x
-            var y = bot.y
-            if (previousTurn != null) {
-                val prevBotState: Bot = previousTurn!!.getBot(bot.id) ?: return
-                val oldX = prevBotState.x
-                val oldY = prevBotState.y
-                val dx = x - oldX
-                val dy = y - oldY
-                var hitWall = false
-                if (x - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
-                    hitWall = true
-                    x = BOT_BOUNDING_CIRCLE_RADIUS.toDouble()
-                    if (dx != 0.0) {
-                        val dxCut = x - oldX
-                        y = oldY + (dxCut * dy / dx)
-                    }
-                } else if (x + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaWidth) {
-                    hitWall = true
-                    x = setup.arenaWidth.toDouble() - BOT_BOUNDING_CIRCLE_RADIUS
-                    if (dx != 0.0) {
-                        val dxCut = x - oldX
-                        y = oldY + (dxCut * dy / dx)
-                    }
-                } else if (y - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
-                    hitWall = true
-                    y = BOT_BOUNDING_CIRCLE_RADIUS.toDouble()
-                    if (dy != 0.0) {
-                        val dyCut = y - oldY
-                        x = oldX + (dyCut * dx / dy)
-                    }
-                } else if (y + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaHeight) {
-                    hitWall = true
-                    y = setup.arenaHeight.toDouble() - BOT_BOUNDING_CIRCLE_RADIUS
-                    if (dy != 0.0) {
-                        val dyCut = y - oldY
-                        x = oldX + (dyCut * dx / dy)
-                    }
-                }
-                if (hitWall) {
-                    bot.x = x
-                    bot.y = y
+            val hitWall = adjustBotCoordinatesIfHitWall(bot)
+            if (hitWall) {
+                // Omit sending hit-wall-event if the bot hit the wall in the previous turn
+                if (previousTurn!!.getEvents(bot.id).none { event -> event is BotHitWallEvent }) {
 
-                    // Skip this check, if the bot hit the wall in the previous turn
-                    if (previousTurn!!.getEvents(bot.id).none { event -> event is BotHitWallEvent }) {
-                        val botHitWallEvent = BotHitWallEvent(turnNumber, bot.id)
-                        turn.addPrivateBotEvent(bot.id, botHitWallEvent)
-                        turn.addObserverEvent(botHitWallEvent)
-                        val damage = calcWallDamage(bot.speed)
-                        bot.addDamage(damage)
-                    }
+                    val botHitWallEvent = BotHitWallEvent(turnNumber, bot.id)
+                    turn.addPrivateBotEvent(bot.id, botHitWallEvent)
+                    turn.addObserverEvent(botHitWallEvent)
 
-                    // Bot is stopped to zero speed regardless of its previous direction
-                    bot.speed = 0.0
+                    bot.addDamage(calcWallDamage(bot.speed))
                 }
+                // Bot is stopped to zero speed regardless of its previous direction
+                bot.speed = 0.0
             }
         }
+    }
+
+    /**
+     * Adjust the coordinates of the bot, if it has hit the wall.
+     * If the (x,y) coordinate is adjusted, the direction of the bot is used for calculating the new (x,y).
+     */
+    private fun adjustBotCoordinatesIfHitWall(bot: Bot): Boolean {
+        var hitWall = false
+        var x = bot.x
+        var y = bot.y
+        if (previousTurn != null) {
+            val (oldX, oldY) = previousTurn?.getBot(bot.id)?.position ?: return hitWall
+            val dx = x - oldX
+            val dy = y - oldY
+            if (x - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
+                x = BOT_BOUNDING_CIRCLE_RADIUS.toDouble()
+                if (dx != 0.0) {
+                    y = oldY + ((x - oldX) * dy / dx)
+                }
+            } else if (x + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaWidth) {
+                x = setup.arenaWidth.toDouble() - BOT_BOUNDING_CIRCLE_RADIUS
+                if (dx != 0.0) {
+                    y = oldY + ((x - oldX) * dy / dx)
+                }
+            } else if (y - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
+                y = BOT_BOUNDING_CIRCLE_RADIUS.toDouble()
+                if (dy != 0.0) {
+                    x = oldX + ((y - oldY) * dx / dy)
+                }
+            } else if (y + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaHeight) {
+                y = setup.arenaHeight.toDouble() - BOT_BOUNDING_CIRCLE_RADIUS
+                if (dy != 0.0) {
+                    x = oldX + ((y - oldY) * dx / dy)
+                }
+            }
+            hitWall = oldX != x || oldY != y
+            if (hitWall) {
+                bot.x = x
+                bot.y = y
+            }
+        }
+        return hitWall
     }
 
     /** Checks collisions between the bullets and the walls. */
@@ -713,35 +716,58 @@ class ModelUpdater(
 
         for (i in 0 until bots.size) {
             val scanningBot = bots[i]
-            val spreadAngle = scanningBot.scanSpreadAngle
-            var arcStartAngle: Double
-            var arcEndAngle: Double
-            if (spreadAngle > 0) {
-                arcEndAngle = scanningBot.scanDirection
-                arcStartAngle = normalAbsoluteDegrees(arcEndAngle - spreadAngle)
-            } else {
-                arcStartAngle = scanningBot.scanDirection
-                arcEndAngle = normalAbsoluteDegrees(arcStartAngle - spreadAngle)
-            }
+            val (startAngle, endAngle) = getScanAngles(scanningBot)
+
             for (j in 0 until bots.size) {
                 if (i != j) {
-                    val scannedBot = bots[j]
-                    if (isCircleIntersectingCircleSector(
-                            scannedBot.position, BOT_BOUNDING_CIRCLE_RADIUS.toDouble(),
-                            scanningBot.position, RADAR_RADIUS,
-                            arcStartAngle, arcEndAngle
-                        )
-                    ) {
-                        val scannedBotEvent = ScannedBotEvent(
-                            turnNumber, scanningBot.id, scannedBot.id, scannedBot.energy, scannedBot.x, scannedBot.y,
-                            scannedBot.direction, scannedBot.speed
-                        )
-                        turn.addPrivateBotEvent(scanningBot.id, scannedBotEvent)
-                        turn.addObserverEvent(scannedBotEvent)
+                    val botBeingScanned = bots[j]
+                    if (isBotScanned(scanningBot, botBeingScanned, startAngle, endAngle)) {
+                        createAndAddScannedBotEventToTurn(scanningBot, botBeingScanned)
                     }
                 }
             }
         }
+    }
+
+    private fun isBotScanned(
+        scanningBot: Bot,
+        botBeingScanned: Bot,
+        startAngle: Double,
+        scanEndAngle: Double
+    ): Boolean =
+        isCircleIntersectingCircleSector(
+            botBeingScanned.position, BOT_BOUNDING_CIRCLE_RADIUS.toDouble(),
+            scanningBot.position, RADAR_RADIUS,
+            startAngle, scanEndAngle
+        )
+
+    private fun createAndAddScannedBotEventToTurn(scanningBot: Bot, botBeingScanned: Bot) {
+        val scannedBotEvent = ScannedBotEvent(
+            turnNumber,
+            scanningBot.id,
+            botBeingScanned.id,
+            botBeingScanned.energy,
+            botBeingScanned.x,
+            botBeingScanned.y,
+            botBeingScanned.direction,
+            botBeingScanned.speed
+        )
+        turn.addPrivateBotEvent(scanningBot.id, scannedBotEvent)
+        turn.addObserverEvent(scannedBotEvent)
+    }
+
+    private fun getScanAngles(bot: Bot): Pair<Double, Double> {
+        val spreadAngle = bot.scanSpreadAngle
+        val startAngle: Double
+        val endAngle: Double
+        if (spreadAngle > 0) {
+            endAngle = bot.scanDirection
+            startAngle = normalAbsoluteDegrees(endAngle - spreadAngle)
+        } else {
+            startAngle = bot.scanDirection
+            endAngle = normalAbsoluteDegrees(startAngle - spreadAngle)
+        }
+        return Pair(startAngle, endAngle)
     }
 
     /** Checks if the round is ended or game is over. */
@@ -758,7 +784,6 @@ class ModelUpdater(
         /**
          * Checks if the maximum bounding circles of two bullets are colliding.
          * This is a pre-check if two bullets might be colliding.
-         *
          * @param bullet1Position is the position of the 1st bullet.
          * @param bullet2Position is the position of the 2nd bullet.
          * @return `true` if the bounding circles are colliding; `false` otherwise.
@@ -775,7 +800,6 @@ class ModelUpdater(
 
         /**
          * Checks if the bounding circles of two bots are colliding.
-         *
          * @param bot1 is one of the bots.
          * @param bot2 is another bot.
          * @return `true` if the bounding circles are colliding; `false` otherwise.
@@ -793,7 +817,6 @@ class ModelUpdater(
 
         /**
          * Checks if a bot is ramming another bot.
-         *
          * @param bot is the bot the attempts ramming.
          * @param victim is the victim bot.
          * @return `true` if the bot is ramming; `false` otherwise.
