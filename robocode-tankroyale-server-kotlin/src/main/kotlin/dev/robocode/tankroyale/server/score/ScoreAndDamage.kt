@@ -6,7 +6,7 @@ import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
 /** Bot record that tracks damage and survival of a bot, and can calculate score. */
-internal class ScoreRecord {
+internal class ScoreAndDamage {
 
     private val bulletDamage: MutableMap<BotId, Double> = HashMap()
     private val ramDamage: MutableMap<BotId, Double> = HashMap()
@@ -37,14 +37,10 @@ internal class ScoreRecord {
             return sum
         }
 
-    /**
-     * Returns the bullet kill enemy ids.
-     */
+    /** Returns the bullet kill enemy ids. */
     fun getBulletKillEnemyIds(): Set<BotId> = bulletKillEnemyIds
 
-    /**
-     * Returns the ram kill enemy ids.
-     */
+    /** Returns the ram kill enemy ids. */
     fun getRamKillEnemyIds(): Set<BotId> = ramKillEnemyIds
 
     /**

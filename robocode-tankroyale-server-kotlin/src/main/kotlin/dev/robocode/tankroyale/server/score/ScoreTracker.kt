@@ -14,7 +14,7 @@ class ScoreTracker(botIds: Set<BotId>) {
     private val botIds: Set<BotId> = HashSet(botIds)
 
     /** Map from bot identifier to a bot record  */
-    private val scoreRecords: MutableMap<BotId, ScoreRecord> = HashMap()
+    private val scoreAndDamages: MutableMap<BotId, ScoreAndDamage> = HashMap()
 
     /** Set of identifiers of bots alive  */
     private val botsAliveIds: MutableSet<BotId> = HashSet(botIds)
@@ -32,16 +32,19 @@ class ScoreTracker(botIds: Set<BotId>) {
         initializeDamageAndSurvivals()
     }
 
-    /** Prepare for new round. */
-    fun prepareRound() {
-        botsAliveIds += botIds
+    /** Current results ordered with highest total scores first. */
+    val results: List<Score> get() = botScores
+
+    /** Initializes the map containing the BotRecord record for each bot. */
+    private fun initializeDamageAndSurvivals() {
+        botIds.forEach { botId -> scoreAndDamages[botId] = ScoreAndDamage() }
     }
 
-    /**
-     * Returns the current results ordered with highest total scores first.
-     * @return a list of scores.
-     */
-    val results: List<Score> get() = botScores
+    /** Prepare for new round. */
+    fun prepareRound() {
+        botsAliveIds.clear()
+        botsAliveIds += botIds
+    }
 
     /** Calculates 1st, 2nd, and 3rd places. */
     fun calculatePlacements() {
@@ -64,10 +67,7 @@ class ScoreTracker(botIds: Set<BotId>) {
         }
     }
 
-    /**
-     * Returns the current bot scores ordered with highest total scores first.
-     * @return a list of bot scores.
-     */
+    /** Current bot scores ordered with highest total scores first. */
     private val botScores: MutableList<Score>
         get() {
             val scores: MutableList<Score> = ArrayList()
@@ -78,18 +78,13 @@ class ScoreTracker(botIds: Set<BotId>) {
             return scores
         }
 
-    /** Initializes the map containing the BotRecord record for each bot. */
-    private fun initializeDamageAndSurvivals() {
-        botIds.forEach { scoreRecords[it] = ScoreRecord() }
-    }
-
     /**
-     * Returns the score record for a specific bot.
+     * Returns the score for a specific bot.
      * @param botId is the identifier of the bot.
      * @return a score record.
      */
     fun getScore(botId: BotId): Score {
-        val damageRecord = scoreRecords[botId] ?: throw IllegalStateException("No score record for botId: $botId")
+        val damageRecord = scoreAndDamages[botId] ?: throw IllegalStateException("No score record for botId: $botId")
         damageRecord.apply {
             val score = Score(
                 botId = botId,
@@ -123,7 +118,7 @@ class ScoreTracker(botIds: Set<BotId>) {
      * @param kill is a flag specifying, if the bot got killed by this bullet.
      */
     fun registerBulletHit(botId: BotId, victimBotId: BotId, damage: Double, kill: Boolean) {
-        val damageRecord = scoreRecords[botId] ?: throw IllegalStateException("No score record for botId: $botId")
+        val damageRecord = scoreAndDamages[botId] ?: throw IllegalStateException("No score record for botId: $botId")
         damageRecord.apply {
             addBulletDamage(victimBotId, damage)
             if (kill) {
@@ -139,7 +134,7 @@ class ScoreTracker(botIds: Set<BotId>) {
      * @param kill is a flag specifying, if the bot got killed by the ramming.
      */
     fun registerRamHit(botId: BotId, victimBotId: BotId, kill: Boolean) {
-        val damageRecord = scoreRecords[botId] ?: throw IllegalStateException("No score record for botId: $botId")
+        val damageRecord = scoreAndDamages[botId] ?: throw IllegalStateException("No score record for botId: $botId")
         damageRecord.apply {
             addRamDamage(victimBotId)
             if (kill) {
@@ -155,11 +150,11 @@ class ScoreTracker(botIds: Set<BotId>) {
     fun registerBotDeath(botId: BotId) {
         botsAliveIds.apply {
             remove(botId)
-            forEach { scoreRecords[it]?.incrementSurvivalCount() }
+            forEach { scoreAndDamages[it]?.incrementSurvivalCount() }
             if (size == 1) {
                 val survivorId = botsAliveIds.first()
-                val deadCount = scoreRecords.size - botsAliveIds.size
-                scoreRecords[survivorId]?.addLastSurvivorCount(deadCount)
+                val deadCount = scoreAndDamages.size - botsAliveIds.size
+                scoreAndDamages[survivorId]?.addLastSurvivorCount(deadCount)
             }
         }
     }

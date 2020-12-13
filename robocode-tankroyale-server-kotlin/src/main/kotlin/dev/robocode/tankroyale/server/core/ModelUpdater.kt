@@ -71,11 +71,16 @@ class ModelUpdater(
     /** Inactivity counter */
     private var inactivityCounter = 0
 
+    /** The current results ordered with highest total scores first */
+    val results: List<Score> get() = scoreTracker.results
+
+    /** The number of rounds played so far */
+    val numberOfRounds: Int get() = gameState.rounds.size
+
     /**
      * Updates game state.
-     *
-     * @param botIntents is the bot intents, which gives instructions to the game from the individual bot.
-     * @return new game state.
+     * @param botIntents is the bot intents, which gives instructions to the game from the individual bots.
+     * @return new game state when the game state has been updated.
      */
     fun update(botIntents: Map<BotId, BotIntent>): GameState {
         updateBotIntents(botIntents)
@@ -94,12 +99,6 @@ class ModelUpdater(
         scoreTracker.calculatePlacements()
     }
 
-    /** The current results ordered with highest total scores first. */
-    val results: List<Score> get() = scoreTracker.results
-
-    /** The number of rounds played so far. */
-    val numberOfRounds: Int get() = gameState.rounds.size
-
     /**
      * Updates the current bot intents with the new bot intents.
      * @param botIntents is the new bot intents.
@@ -112,22 +111,22 @@ class ModelUpdater(
         }
     }
 
-    /** Proceed with next round. */
+    /** Proceed with the next round. */
     private fun nextRound() {
-        roundNumber++
-        turnNumber = 0
         round = round.copy(roundNumber = roundNumber)
         roundEnded = false
+        roundNumber++
+        turnNumber = 0
         nextBulletId = 0
+        botIntentsMap.clear()
         bullets.clear()
         botsMap.clear()
-        botIntentsMap.clear()
         scoreTracker.prepareRound()
         inactivityCounter = 0
         initializeBotStates()
     }
 
-    /** Proceed with next turn. */
+    /** Proceed with the next turn. */
     private fun nextTurn() {
         previousTurn = round.lastTurn
 
@@ -163,7 +162,7 @@ class ModelUpdater(
         checkBulletWallCollisions()
 
         // Check bullet hits
-        checkBulletHits()
+        handleBulletHits()
 
         // Check for inactivity
         checkInactivity()
@@ -183,7 +182,7 @@ class ModelUpdater(
     }
 
     /**
-     * Update game state.
+     * Updates the game state.
      * @return new game state.
      */
     private fun updateGameState(): GameState {
@@ -200,7 +199,7 @@ class ModelUpdater(
         return gameState
     }
 
-    /** Initializes bot states */
+    /** Initializes bot states. */
     private fun initializeBotStates() {
         val occupiedCells: MutableSet<Int> = HashSet()
         for (id in participantIds) {
@@ -221,7 +220,7 @@ class ModelUpdater(
 
     /**
      * Calculates a random bot position.
-     * @param occupiedCells  is the occupied cells, where other bots are positioned.
+     * @param occupiedCells is the occupied cells, where other bots are already positioned.
      * @return a random bot position
      */
     private fun randomBotPosition(occupiedCells: MutableSet<Int>): Point {
@@ -240,13 +239,14 @@ class ModelUpdater(
         return randomBotPoint(occupiedCells, cellCount, gridWidth, cellWidth, cellHeight)
     }
 
-    /** Execute bot intents for bots that are not disabled */
+    /** Execute bot intents for all bots that are not disabled */
     private fun executeBotIntents() {
         for ((_, bot) in botsMap) {
             if (bot.isEnabled) executeBotIntent(bot)
         }
     }
 
+    /** Execute a single bot intent. */
     private fun executeBotIntent(bot: Bot) {
         val intent = botIntentsMap[bot.id]
         intent?.apply {
@@ -259,8 +259,8 @@ class ModelUpdater(
         }
     }
 
-    /** Check bullet hits */
-    private fun checkBulletHits() {
+    /** Handle bullet hits. */
+    private fun handleBulletHits() {
         if (bullets.size > 0) {
             // Two "arrays" that are both accessed with the same bullet index
             val bullets = ArrayList<Bullet>(bullets.size)
@@ -271,24 +271,28 @@ class ModelUpdater(
                 // Create a line segment (from old to new point)
                 lines += Line(bullet.calcPosition(), bullet.calcNextPosition())
             }
-            checkBulletLineHits(bullets, lines)
+            handleBulletHits(bullets, lines)
         }
     }
 
-    /** Check bullet line segments hit */
-    private fun checkBulletLineHits(bullets: List<Bullet>, bulletLines: List<Line>) {
+    /**
+     * Handle bullet hits.
+     * @param bullets is an array list of bullets that needs might have hit something.
+     * @param bulletLines is an array list of bullet line segments sharing the same indices as for the bullet list.
+     */
+    private fun handleBulletHits(bullets: List<Bullet>, bulletLines: List<Line>) {
         val bulletCount = bullets.size
 
         for (i in 0 until bulletCount) {
             for (j in i + 1 until bulletCount) {
-                checkBulletHitBots(bullets[i], bulletLines[i], bullets[j], bulletLines[j])
+                handleBulletHitBullet(bullets[i], bulletLines[i], bullets[j], bulletLines[j])
             }
-            checkBulletHitBots(bullets[i], bulletLines[i])
+            handleBulletHitBot(bullets[i], bulletLines[i])
         }
     }
 
     /** Checks if bullet hits bot */
-    private fun checkBulletHitBots(bullet1: Bullet, bulletLine1: Line, bullet2: Bullet, bulletLine2: Line) {
+    private fun handleBulletHitBullet(bullet1: Bullet, bulletLine1: Line, bullet2: Bullet, bulletLine2: Line) {
 
         // Check if the bullets bounding circles intersects (is fast) before
         // checking if the bullets bounding lines intersect (is slower)
@@ -311,7 +315,7 @@ class ModelUpdater(
     }
 
     /** Checks if bullet hits bot */
-    private fun checkBulletHitBots(bullet: Bullet, bulletLine: Line) {
+    private fun handleBulletHitBot(bullet: Bullet, bulletLine: Line) {
         // Check bullet-hit-bot collision (hit)
         for (bot in botsMap.values) {
             // A bot cannot shot itself
