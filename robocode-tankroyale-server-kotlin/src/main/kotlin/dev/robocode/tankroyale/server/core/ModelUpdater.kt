@@ -240,28 +240,6 @@ class ModelUpdater(
         return randomBotPoint(occupiedCells, cellCount, gridWidth, cellWidth, cellHeight)
     }
 
-    private fun randomBotPoint(
-        occupiedCells: MutableSet<Int>,
-        cellCount: Int,
-        gridWidth: Int,
-        cellWidth: Int,
-        cellHeight: Int
-    ): Point {
-        while (true) {
-            val cell = Random().nextInt(cellCount)
-            if (!occupiedCells.contains(cell)) {
-                occupiedCells += cell
-                var y = (cell / gridWidth).toDouble()
-                var x = cell - y * gridWidth
-                x *= cellWidth.toDouble()
-                y *= cellHeight.toDouble()
-                x += BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (cellWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
-                y += BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (cellHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
-                return Point(x, y)
-            }
-        }
-    }
-
     /** Execute bot intents for bots that are not disabled */
     private fun executeBotIntents() {
         for ((_, bot) in botsMap) {
@@ -279,58 +257,6 @@ class ModelUpdater(
 
             bot.moveToNewPosition()
         }
-    }
-
-    /** Update scan direction and scan spread */
-    private fun updateScanDirectionAndSpread(bot: Bot, intent: BotIntent, newRadarDirection: Double) {
-        // The radar sweep is the difference between the new and old radar direction
-        val newSpreadAngle = normalRelativeDegrees(newRadarDirection - bot.radarDirection)
-        val scan = intent.scan ?: false
-        bot.scanDirection = if (scan) bot.radarDirection else newRadarDirection
-        bot.scanSpreadAngle = if (scan) bot.radarSpreadAngle else newSpreadAngle
-        bot.radarDirection = newRadarDirection
-        bot.radarSpreadAngle = newSpreadAngle
-    }
-
-    /** Update bot turn rates and directions */
-    private fun updateBotTurnRatesAndDirections(bot: Bot, intent: BotIntent) {
-        val limitedTurnRate = limitTurnRate(intent.turnRate ?: 0.0, bot.speed)
-        val limitedGunTurnRate = limitGunTurnRate(intent.gunTurnRate ?: 0.0)
-        val limitedRadarTurnRate = limitRadarTurnRate(intent.radarTurnRate ?: 0.0)
-
-        var totalTurnRate = limitedTurnRate
-        bot.direction = normalAbsoluteDegrees(bot.direction + totalTurnRate)
-
-        // Gun direction depends on the turn rate of both the body and the gun
-        totalTurnRate += limitedGunTurnRate
-        if (intent.adjustGunForBodyTurn == true) {
-            totalTurnRate -= limitedTurnRate
-        }
-        bot.gunDirection = normalAbsoluteDegrees(bot.gunDirection + totalTurnRate)
-
-        // Radar direction depends on the turn rate of the body, the gun, and the radar
-        totalTurnRate += limitedRadarTurnRate
-        if (intent.adjustRadarForGunTurn == true) {
-            totalTurnRate -= limitedGunTurnRate
-        }
-        val radarDirection = normalAbsoluteDegrees(bot.radarDirection + totalTurnRate)
-
-        updateScanDirectionAndSpread(bot, intent, radarDirection)
-
-        bot.turnRate = limitedTurnRate
-        bot.gunTurnRate = limitedGunTurnRate
-        bot.radarTurnRate = limitedRadarTurnRate
-    }
-
-    /** Sets the bot colors */
-    private fun updateBotColors(bot: Bot, intent: BotIntent) {
-        bot.bodyColor = colorStringToRGB(intent.bodyColor)
-        bot.turretColor = colorStringToRGB(intent.turretColor)
-        bot.radarColor = colorStringToRGB(intent.radarColor)
-        bot.bulletColor = colorStringToRGB(intent.bulletColor)
-        bot.scanColor = colorStringToRGB(intent.scanColor)
-        bot.tracksColor = colorStringToRGB(intent.tracksColor)
-        bot.gunColor = colorStringToRGB(intent.gunColor)
     }
 
     /** Check bullet hits */
@@ -389,44 +315,38 @@ class ModelUpdater(
         // Check bullet-hit-bot collision (hit)
         for (bot in botsMap.values) {
             // A bot cannot shot itself
-            if (bullet.botId != bot.id && isBulletHittingBot(bullet, bulletLine, bot)) {
-                return
+            if (bullet.botId != bot.id && isBulletHittingBot(bot, bulletLine)) {
+                handleBulletHittingBot(bullet, bot)
             }
         }
     }
 
+    private fun isBulletHittingBot(bot: Bot, bulletLine: Line): Boolean =
+        isLineIntersectingCircle(bulletLine, bot.position, BOT_BOUNDING_CIRCLE_RADIUS.toDouble())
+
     /** Checks if a bullet is hitting a bot */
-    private fun isBulletHittingBot(bullet: Bullet, bulletLine: Line, bot: Bot): Boolean {
+    private fun handleBulletHittingBot(bullet: Bullet, hitBot: Bot) {
         val botId = bullet.botId
-        val victimId = bot.id
+        val victimId = hitBot.id
 
-        if (isLineIntersectingCircle(bulletLine, bot.position, BOT_BOUNDING_CIRCLE_RADIUS.toDouble())) {
-            inactivityCounter = 0 // reset collective inactivity counter due to bot taking bullet damage
+        inactivityCounter = 0 // reset collective inactivity counter due to bot taking bullet damage
 
-            val damage = calcBulletDamage(bullet.power)
-            val isKilled = bot.addDamage(damage)
+        val damage = calcBulletDamage(bullet.power)
+        val isKilled = hitBot.addDamage(damage)
 
-            val energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.power
-            botsMap[botId]?.changeEnergy(energyBonus)
+        val energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.power
+        botsMap[botId]?.changeEnergy(energyBonus)
 
-            scoreTracker.registerBulletHit(botId, victimId, damage, isKilled)
+        scoreTracker.registerBulletHit(botId, victimId, damage, isKilled)
 
-            val bulletHitBotEvent = BulletHitBotEvent(turnNumber, bullet, victimId, damage, bot.energy)
-            addBulletHitBotEventToTurn(bulletHitBotEvent)
-
-            // Remove bullet from the arena
-            bullets -= bullet
-            return true
-        }
-        return false
-    }
-
-    private fun addBulletHitBotEventToTurn(bulletHitBotEvent: BulletHitBotEvent) {
+        val bulletHitBotEvent = BulletHitBotEvent(turnNumber, bullet, victimId, damage, hitBot.energy)
         turn.apply {
             addPrivateBotEvent(bulletHitBotEvent.bullet.botId, bulletHitBotEvent) // Bot itself gets event
             addPrivateBotEvent(bulletHitBotEvent.victimId, bulletHitBotEvent) // Victim bot gets event too
             addObserverEvent(bulletHitBotEvent)
         }
+        // Remove bullet from the arena
+        bullets -= bullet
     }
 
     /** Check collisions between bots */
@@ -459,24 +379,13 @@ class ModelUpdater(
         if (isBot2RammingBot1) bot2.speed = 0.0
 
         // Create bot-hit-bot events
-        createAndBotHitBotEventsToTurn(bot1, bot2, isBot1RammingBot2, isBot2RammingBot1)
-    }
-
-    private fun createAndBotHitBotEventsToTurn(
-        bot1: Bot,
-        bot2: Bot,
-        isBot1RammingBot2: Boolean,
-        isBot2RammingBot1: Boolean
-    ) {
-        val botHitBotEvent1 =
-            BotHitBotEvent(turnNumber, bot1.id, bot2.id, bot2.energy, bot2.x, bot2.y, isBot1RammingBot2)
-        val botHitBotEvent2 =
-            BotHitBotEvent(turnNumber, bot2.id, bot1.id, bot1.energy, bot1.x, bot1.y, isBot2RammingBot1)
+        val event1 =  BotHitBotEvent(turnNumber, bot1.id, bot2.id, bot2.energy, bot2.x, bot2.y, isBot1RammingBot2)
+        val event2 =  BotHitBotEvent(turnNumber, bot2.id, bot1.id, bot1.energy, bot1.x, bot1.y, isBot2RammingBot1)
         turn.apply {
-            addPrivateBotEvent(bot1.id, botHitBotEvent1)
-            addPrivateBotEvent(bot2.id, botHitBotEvent2)
-            addObserverEvent(botHitBotEvent1)
-            addObserverEvent(botHitBotEvent2)
+            addPrivateBotEvent(bot1.id, event1)
+            addPrivateBotEvent(bot2.id, event2)
+            addObserverEvent(event1)
+            addObserverEvent(event2)
         }
     }
 
@@ -511,24 +420,7 @@ class ModelUpdater(
         }
     }
 
-    private fun calcBotBounceDistances(bot1: Bot, bot2: Bot): Pair<Double, Double> {
-        val overlapDist = BOT_BOUNDING_CIRCLE_DIAMETER - distance(bot1.x, bot1.y, bot2.x, bot2.y)
-        val totalSpeed = bot1.speed + bot2.speed
-        val bot1BounceDist: Double
-        val bot2BounceDist: Double
-        if (totalSpeed == 0.0) {
-            bot1BounceDist = overlapDist / 2
-            bot2BounceDist = overlapDist / 2
-        } else {
-            // The faster speed, the less bounce distance. Hence the speeds for the bots are swapped
-            val t = overlapDist / totalSpeed
-            bot1BounceDist = bot2.speed * t
-            bot2BounceDist = bot1.speed * t
-        }
-        return Pair(bot1BounceDist, bot2BounceDist)
-    }
-
-    /** Checks if a point is outside the areana */
+    /** Checks if a point is outside the arena */
     private fun isBotPositionOutsideArena(position: Point): Boolean {
         return position.x < BOT_BOUNDING_CIRCLE_RADIUS ||
                 position.y < BOT_BOUNDING_CIRCLE_RADIUS ||
@@ -815,12 +707,7 @@ class ModelUpdater(
                     ((dx * dx) + (dy * dy) <= BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED)
         }
 
-        /**
-         * Checks if a bot is ramming another bot.
-         * @param bot is the bot the attempts ramming.
-         * @param victim is the victim bot.
-         * @return `true` if the bot is ramming; `false` otherwise.
-         */
+        /** Checks if a bot is ramming another bot. */
         private fun isRamming(bot: Bot, victim: Bot): Boolean {
             val dx = victim.x - bot.x
             val dy = victim.y - bot.y
@@ -828,6 +715,97 @@ class ModelUpdater(
             val bearing = normalRelativeDegrees(Math.toDegrees(angle) - bot.direction)
             return (((bot.speed > 0 && (bearing > -90 && bearing < 90))
                     || (bot.speed < 0 && (bearing < -90 || bearing > 90))))
+        }
+
+        private fun randomBotPoint(
+            occupiedCells: MutableSet<Int>,
+            cellCount: Int,
+            gridWidth: Int,
+            cellWidth: Int,
+            cellHeight: Int
+        ): Point {
+            while (true) {
+                val cell = Random().nextInt(cellCount)
+                if (!occupiedCells.contains(cell)) {
+                    occupiedCells += cell
+                    var y = (cell / gridWidth).toDouble()
+                    var x = cell - y * gridWidth
+                    x *= cellWidth.toDouble()
+                    y *= cellHeight.toDouble()
+                    x += BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (cellWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
+                    y += BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (cellHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
+                    return Point(x, y)
+                }
+            }
+        }
+
+        /** Update scan direction and scan spread */
+        private fun updateScanDirectionAndSpread(bot: Bot, intent: BotIntent, newRadarDirection: Double) {
+            // The radar sweep is the difference between the new and old radar direction
+            val newSpreadAngle = normalRelativeDegrees(newRadarDirection - bot.radarDirection)
+            val scan = intent.scan ?: false
+            bot.scanDirection = if (scan) bot.radarDirection else newRadarDirection
+            bot.scanSpreadAngle = if (scan) bot.radarSpreadAngle else newSpreadAngle
+            bot.radarDirection = newRadarDirection
+            bot.radarSpreadAngle = newSpreadAngle
+        }
+
+        /** Update bot turn rates and directions */
+        private fun updateBotTurnRatesAndDirections(bot: Bot, intent: BotIntent) {
+            val limitedTurnRate = limitTurnRate(intent.turnRate ?: 0.0, bot.speed)
+            val limitedGunTurnRate = limitGunTurnRate(intent.gunTurnRate ?: 0.0)
+            val limitedRadarTurnRate = limitRadarTurnRate(intent.radarTurnRate ?: 0.0)
+
+            var totalTurnRate = limitedTurnRate
+            bot.direction = normalAbsoluteDegrees(bot.direction + totalTurnRate)
+
+            // Gun direction depends on the turn rate of both the body and the gun
+            totalTurnRate += limitedGunTurnRate
+            if (intent.adjustGunForBodyTurn == true) {
+                totalTurnRate -= limitedTurnRate
+            }
+            bot.gunDirection = normalAbsoluteDegrees(bot.gunDirection + totalTurnRate)
+
+            // Radar direction depends on the turn rate of the body, the gun, and the radar
+            totalTurnRate += limitedRadarTurnRate
+            if (intent.adjustRadarForGunTurn == true) {
+                totalTurnRate -= limitedGunTurnRate
+            }
+            val radarDirection = normalAbsoluteDegrees(bot.radarDirection + totalTurnRate)
+
+            updateScanDirectionAndSpread(bot, intent, radarDirection)
+
+            bot.turnRate = limitedTurnRate
+            bot.gunTurnRate = limitedGunTurnRate
+            bot.radarTurnRate = limitedRadarTurnRate
+        }
+
+        /** Sets the bot colors */
+        private fun updateBotColors(bot: Bot, intent: BotIntent) {
+            bot.bodyColor = colorStringToRGB(intent.bodyColor)
+            bot.turretColor = colorStringToRGB(intent.turretColor)
+            bot.radarColor = colorStringToRGB(intent.radarColor)
+            bot.bulletColor = colorStringToRGB(intent.bulletColor)
+            bot.scanColor = colorStringToRGB(intent.scanColor)
+            bot.tracksColor = colorStringToRGB(intent.tracksColor)
+            bot.gunColor = colorStringToRGB(intent.gunColor)
+        }
+
+        private fun calcBotBounceDistances(bot1: Bot, bot2: Bot): Pair<Double, Double> {
+            val overlapDist = BOT_BOUNDING_CIRCLE_DIAMETER - distance(bot1.x, bot1.y, bot2.x, bot2.y)
+            val totalSpeed = bot1.speed + bot2.speed
+            val bot1BounceDist: Double
+            val bot2BounceDist: Double
+            if (totalSpeed == 0.0) {
+                bot1BounceDist = overlapDist / 2
+                bot2BounceDist = overlapDist / 2
+            } else {
+                // The faster speed, the less bounce distance. Hence the speeds for the bots are swapped
+                val t = overlapDist / totalSpeed
+                bot1BounceDist = bot2.speed * t
+                bot2BounceDist = bot1.speed * t
+            }
+            return Pair(bot1BounceDist, bot2BounceDist)
         }
     }
 }
