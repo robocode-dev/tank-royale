@@ -10,7 +10,7 @@ object BulletToBulletStateMapper {
         bullet.apply {
             val (x, y) = calcPosition()
             bulletState.ownerId = botId.value
-            bulletState.bulletId = bulletId
+            bulletState.bulletId = bulletId.value
             bulletState.direction = normalAbsoluteDegrees(direction)
             bulletState.power = power
             bulletState.speed = speed

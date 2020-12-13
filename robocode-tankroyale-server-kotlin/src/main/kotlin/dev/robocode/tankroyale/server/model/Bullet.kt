@@ -10,7 +10,7 @@ data class Bullet(
     var botId: BotId,
 
     /** Id of the bullet  */
-    var bulletId: Int,
+    var bulletId: BulletId,
 
     /** Power of the bullet  */
     var power: Double,
@@ -31,7 +31,7 @@ data class Bullet(
     var color: Int?,
 ) {
     override fun hashCode(): Int {
-        return bulletId
+        return bulletId.value
     }
 
     /** Speed of the bullet */

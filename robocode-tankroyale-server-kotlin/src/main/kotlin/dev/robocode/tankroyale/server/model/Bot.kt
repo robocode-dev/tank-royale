@@ -15,11 +15,8 @@ data class Bot(
     /** Energy level */
     var energy: Double = INITIAL_BOT_ENERGY,
 
-    /** X coordinate on the arena */
-    var x: Double,
-
-    /** Y coordinate on the arena */
-    var y: Double,
+    /** Position (x, y) */
+    var position: Point,
 
     /** Driving direction in degrees */
     var direction: Double,
@@ -78,14 +75,24 @@ data class Bot(
     /** Scan angle in degrees */
     var scanSpreadAngle: Double = radarSpreadAngle,
 ) {
+    /** X coordinate */
+    inline var x: Double
+        get() = position.x
+        set(value) { position.x = value }
+
+    /** Y coordinate */
+    inline var y: Double
+        get() = position.y
+        set(value) { position.y = value }
+
     /** Check if bot is alive */
-    inline val isAlive: Boolean get() = energy >= 0
+    private inline val isAlive: Boolean get() = energy >= 0
 
     /** Check if bot is dead */
     inline val isDead: Boolean get() = energy < 0
 
     /** Check if bot is disabled (cannot move) */
-    inline val isDisabled: Boolean get() = isAlive && energy.isNearTo(0.0)
+    private inline val isDisabled: Boolean get() = isAlive && energy.isNearTo(0.0)
 
     /** Check if bot is enabled (can move) */
     val isEnabled: Boolean = !isDisabled
