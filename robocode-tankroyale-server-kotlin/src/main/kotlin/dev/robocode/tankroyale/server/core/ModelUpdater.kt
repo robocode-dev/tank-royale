@@ -412,16 +412,21 @@ class ModelUpdater(
             scoreTracker.registerBulletHit(botId, victimId, damage, isKilled)
 
             val bulletHitBotEvent = BulletHitBotEvent(turnNumber, bullet, victimId, damage, bot.energy)
-            turn.apply {
-                addPrivateBotEvent(botId, bulletHitBotEvent) // Bot itself gets event
-                addPrivateBotEvent(victimId, bulletHitBotEvent) // Victim bot gets event too
-                addObserverEvent(bulletHitBotEvent)
-            }
+            addBulletHitBotEventToTurn(bulletHitBotEvent)
+
             // Remove bullet from the arena
             bullets -= bullet
             return true
         }
         return false
+    }
+
+    private fun addBulletHitBotEventToTurn(bulletHitBotEvent: BulletHitBotEvent) {
+        turn.apply {
+            addPrivateBotEvent(bulletHitBotEvent.bullet.botId, bulletHitBotEvent) // Bot itself gets event
+            addPrivateBotEvent(bulletHitBotEvent.victimId, bulletHitBotEvent) // Victim bot gets event too
+            addObserverEvent(bulletHitBotEvent)
+        }
     }
 
     /** Check collisions between bots */
@@ -440,7 +445,6 @@ class ModelUpdater(
 
     private fun isBotsColliding(bot1: Bot, bot2: Bot): Boolean {
         if (isBotsBoundingCirclesColliding(bot1, bot2)) {
-
             val isBot1RammingBot2 = isRamming(bot1, bot2)
             val isBot2RammingBot1 = isRamming(bot2, bot1)
 
@@ -450,25 +454,45 @@ class ModelUpdater(
             // Bounce back bots
             bounceBack(bot1, bot2)
 
-            if (isBot1RammingBot2) {
-                bot1.speed = 0.0
-            }
-            if (isBot2RammingBot1) {
-                bot2.speed = 0.0
-            }
-            val botHitBotEvent1 =
-                BotHitBotEvent(turnNumber, bot1.id, bot2.id, bot2.energy, bot2.x, bot2.y, isBot1RammingBot2)
-            val botHitBotEvent2 =
-                BotHitBotEvent(turnNumber, bot2.id, bot1.id, bot1.energy, bot1.x, bot1.y, isBot2RammingBot1)
-            turn.apply {
-                addPrivateBotEvent(bot1.id, botHitBotEvent1)
-                addPrivateBotEvent(bot2.id, botHitBotEvent2)
-                addObserverEvent(botHitBotEvent1)
-                addObserverEvent(botHitBotEvent2)
-            }
+            // Stop bots by setting speed to 0
+            if (isBot1RammingBot2) bot1.speed = 0.0
+            if (isBot2RammingBot1) bot2.speed = 0.0
+
+            // Create bot-hit-bot events
+            createAndBotHitBotEventsToTurn(bot1, bot2, isBot1RammingBot2, isBot2RammingBot1)
             return true
         }
         return false
+    }
+
+    private fun createAndBotHitBotEventsToTurn(
+        bot1: Bot,
+        bot2: Bot,
+        isBot1RammingBot2: Boolean,
+        isBot2RammingBot1: Boolean
+    ) {
+        val botHitBotEvent1 =
+            BotHitBotEvent(turnNumber, bot1.id, bot2.id, bot2.energy, bot2.x, bot2.y, isBot1RammingBot2)
+        val botHitBotEvent2 =
+            BotHitBotEvent(turnNumber, bot2.id, bot1.id, bot1.energy, bot1.x, bot1.y, isBot2RammingBot1)
+        turn.apply {
+            addPrivateBotEvent(bot1.id, botHitBotEvent1)
+            addPrivateBotEvent(bot2.id, botHitBotEvent2)
+            addObserverEvent(botHitBotEvent1)
+            addObserverEvent(botHitBotEvent2)
+        }
+    }
+
+    private fun registerRamHit(bot1: Bot, bot2: Bot, isBot1RammingBot2: Boolean, isBot2RammingBot1: Boolean) {
+        // Both bots takes damage when hitting each other
+        val bot1Killed = bot1.addDamage(RAM_DAMAGE)
+        val bot2Killed = bot2.addDamage(RAM_DAMAGE)
+        if (isBot1RammingBot2) {
+            scoreTracker.registerRamHit(bot2.id, bot1.id, bot1Killed)
+        }
+        if (isBot2RammingBot1) {
+            scoreTracker.registerRamHit(bot1.id, bot2.id, bot2Killed)
+        }
     }
 
     private fun bounceBack(bot1: Bot, bot2: Bot) {
@@ -483,45 +507,31 @@ class ModelUpdater(
             bot1BounceDist = overlapDist / 2
             bot2BounceDist = overlapDist / 2
         } else {
-            val t = overlapDist / totalSpeed
-
             // The faster speed, the less bounce distance. Hence the speeds for the bots are swapped
+            val t = overlapDist / totalSpeed
             bot1BounceDist = bot2.speed * t
             bot2BounceDist = bot1.speed * t
         }
         bot1.bounceBack(bot1BounceDist)
         bot2.bounceBack(bot2BounceDist)
 
-        val newBot1Position = bot1.position
-        val newBot2Position = bot2.position
-
         // Check if one of the bot bounced into a wall
-        if ((newBot1Position.x < BOT_BOUNDING_CIRCLE_RADIUS) || (newBot1Position.y < BOT_BOUNDING_CIRCLE_RADIUS) || (
-                    newBot1Position.x > (setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS)) || (
-                    newBot1Position.y > (setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS))
-        ) {
+        if (isBotPositionOutsideArena(bot1.position)) {
             bot1.position = oldBot1Position
             bot2.bounceBack(bot1BounceDist /* remaining distance */)
         }
-        if ((newBot2Position.x < BOT_BOUNDING_CIRCLE_RADIUS) || (newBot2Position.y < BOT_BOUNDING_CIRCLE_RADIUS) || (
-                    newBot2Position.x > (setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS)) || (
-                    newBot2Position.y > (setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS))
-        ) {
+        if (isBotPositionOutsideArena(bot2.position)) {
             bot2.position = oldBot2Position
             bot1.bounceBack(bot2BounceDist /* remaining distance */)
         }
     }
 
-    private fun registerRamHit(bot1: Bot, bot2: Bot, isBot1RammingBot2: Boolean, isBot2RammingBot1: Boolean) {
-        // Both bots takes damage when hitting each other
-        val bot1Killed = bot1.addDamage(RAM_DAMAGE)
-        val bot2Killed = bot2.addDamage(RAM_DAMAGE)
-        if (isBot1RammingBot2) {
-            scoreTracker.registerRamHit(bot2.id, bot1.id, bot1Killed)
-        }
-        if (isBot2RammingBot1) {
-            scoreTracker.registerRamHit(bot1.id, bot2.id, bot2Killed)
-        }
+    /** Checks if a point is outside the areana */
+    private fun isBotPositionOutsideArena(position: Point): Boolean {
+        return position.x < BOT_BOUNDING_CIRCLE_RADIUS ||
+                position.y < BOT_BOUNDING_CIRCLE_RADIUS ||
+                position.x > (setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS) ||
+                position.y > (setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS)
     }
 
     /** Updates bullet positions */
@@ -596,15 +606,22 @@ class ModelUpdater(
         while (iterator.hasNext()) {
             val bullet = iterator.next()
             val position = bullet.calcPosition()
-            if (((position.x <= 0) || (position.x >= setup.arenaWidth) ||
-                        (position.y <= 0) || (position.y >= setup.arenaHeight))
-            ) {
-                iterator.remove() // remove bullet from arena
+            if (isBulletPositionOutsideArena(position)) {
+                // remove bullet from arena
+                iterator.remove()
+
                 val bulletHitWallEvent = BulletHitWallEvent(turnNumber, bullet)
                 turn.addPrivateBotEvent(bullet.botId, bulletHitWallEvent)
                 turn.addObserverEvent(bulletHitWallEvent)
             }
         }
+    }
+
+    private fun isBulletPositionOutsideArena(position: Point): Boolean {
+        return position.x <= 0 ||
+                position.y <= 0 ||
+                position.x >= setup.arenaWidth ||
+                position.y >= setup.arenaHeight
     }
 
     /** Checks if the bots are inactive collectively. That is when no bot have been hit by bullets for some time. */
@@ -643,32 +660,34 @@ class ModelUpdater(
     private fun coolDownAndFireGuns() {
         for (bot in botsMap.values) {
             // If gun heat is zero and the bot is enabled, it is able to fire
-            if (bot.gunHeat == 0.0 && bot.isEnabled) {
-                // Gun can fire => Check if intent is set to fire gun
-                val botIntent = botIntentsMap[bot.id]
-                if (botIntent != null) {
-                    val firepower = botIntent.bulletPower ?: 0.0
-                    if (firepower >= MIN_FIREPOWER && bot.energy > firepower) {
-                        fireBullet(bot, firepower)
-                    }
-                }
-            } else {
-                // Gun is too hot => Cool down gun
-                bot.gunHeat = (bot.gunHeat - setup.gunCoolingRate).coerceAtLeast(0.0)
+            if (bot.gunHeat == 0.0 && bot.isEnabled) { // Gun can fire
+                checkFireGun(bot)
+            } else {// Gun is too hot => Cool down gun
+                coolDownGun(bot)
             }
         }
     }
 
-    private fun fireBullet(bot: Bot, firepower: Double) {
-        handleFiredBullet(bot, firepower.coerceAtMost(MAX_FIREPOWER))
+    /** Checks if bot intent is set to fire gun, and fire gun if the firepower has been set. */
+    private fun checkFireGun(bot: Bot) {
+        val botIntent = botIntentsMap[bot.id]
+        if (botIntent != null) {
+            val firepower = botIntent.bulletPower ?: 0.0
+            if (firepower >= MIN_FIREPOWER && bot.energy > firepower) {
+                fireBullet(bot, firepower)
+            }
+        }
     }
 
-    /**
-     * Handle fired bullet
-     * @param bot is the bot firing the bullet.
-     * @param firepower is the firepower of the bullet.
-     */
-    private fun handleFiredBullet(bot: Bot, firepower: Double) {
+    /** Cools down gun. */
+    private fun coolDownGun(bot: Bot) {
+        bot.gunHeat = (bot.gunHeat - setup.gunCoolingRate).coerceAtLeast(0.0)
+    }
+
+    /** Fires a bullet. */
+    private fun fireBullet(bot: Bot, firepower: Double) {
+        firepower.coerceAtMost(MAX_FIREPOWER)
+
         bot.gunHeat = calcGunHeat(firepower)
         val bullet = Bullet(
             botId = bot.id,
