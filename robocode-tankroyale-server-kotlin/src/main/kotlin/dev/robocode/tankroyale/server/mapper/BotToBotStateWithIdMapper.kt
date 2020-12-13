@@ -21,13 +21,13 @@ object BotToBotStateWithIdMapper {
             botState.radarDirection = normalAbsoluteDegrees(radarDirection)
             botState.radarSweep = radarSpreadAngle
             botState.gunHeat = gunHeat
-            botState.bodyColor = bodyColor
-            botState.turretColor = turretColor
-            botState.radarColor = radarColor
-            botState.bulletColor = bulletColor
-            botState.scanColor = scanColor
-            botState.tracksColor = tracksColor
-            botState.gunColor = gunColor
+            botState.bodyColor = bodyColor?.value
+            botState.turretColor = turretColor?.value
+            botState.radarColor = radarColor?.value
+            botState.bulletColor = bulletColor?.value
+            botState.scanColor = scanColor?.value
+            botState.tracksColor = tracksColor?.value
+            botState.gunColor = gunColor?.value
             return botState
         }
     }

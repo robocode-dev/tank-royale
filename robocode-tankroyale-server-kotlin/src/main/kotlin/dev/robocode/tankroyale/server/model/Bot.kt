@@ -46,25 +46,25 @@ data class Bot(
     var gunHeat: Double = INITIAL_GUN_HEAT,
 
     /** Body color */
-    var bodyColor: Int? = null,
+    var bodyColor: Color? = null,
 
     /** Gun turret color */
-    var turretColor: Int? = null,
+    var turretColor: Color? = null,
 
     /** Radar color */
-    var radarColor: Int? = null,
+    var radarColor: Color? = null,
 
     /** Bullet color */
-    var bulletColor: Int? = null,
+    var bulletColor: Color? = null,
 
     /** Scan color */
-    var scanColor: Int? = null,
+    var scanColor: Color? = null,
 
     /** Tracks color */
-    var tracksColor: Int? = null,
+    var tracksColor: Color? = null,
 
     /** Gun color */
-    var gunColor: Int? = null,
+    var gunColor: Color? = null,
 
     /** Score record */
     var score: Score,

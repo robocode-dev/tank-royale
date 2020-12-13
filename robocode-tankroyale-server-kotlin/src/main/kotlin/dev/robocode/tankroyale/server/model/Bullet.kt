@@ -28,7 +28,7 @@ data class Bullet(
     var tick: Int = 0,
 
     /** Color of the bullet  */
-    var color: Int?,
+    var color: Color?,
 ) {
     override fun hashCode(): Int {
         return bulletId.value

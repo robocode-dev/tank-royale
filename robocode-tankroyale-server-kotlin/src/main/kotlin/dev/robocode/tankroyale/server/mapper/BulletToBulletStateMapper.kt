@@ -16,7 +16,7 @@ object BulletToBulletStateMapper {
             bulletState.speed = speed
             bulletState.x = x
             bulletState.y = y
-            bulletState.color = color
+            bulletState.color = color?.value
         }
         return bulletState
     }
