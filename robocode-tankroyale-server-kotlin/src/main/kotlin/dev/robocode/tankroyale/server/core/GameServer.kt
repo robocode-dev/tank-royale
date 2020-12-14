@@ -6,7 +6,7 @@ import dev.robocode.tankroyale.schema.Message.*
 import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.core.ModelUpdater
 import dev.robocode.tankroyale.server.core.NanoTimer
-import dev.robocode.tankroyale.server.core.RunningState
+import dev.robocode.tankroyale.server.core.ServerState
 import dev.robocode.tankroyale.server.core.ServerSetup
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.conn.ConnHandler
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.conn.ConnListener
@@ -28,7 +28,7 @@ import kotlin.math.roundToInt
 class GameServer(gameTypes: String, clientSecret: String?) {
     private val gameTypes: String = gameTypes.replace("\\s".toRegex(), "")
     private val connHandler: ConnHandler
-    private var runningState: RunningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN
+    private var serverState: ServerState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
     private var gameSetup: dev.robocode.tankroyale.server.model.GameSetup? = null
     private val participants: MutableSet<WebSocket> = HashSet()
     private val readyParticipants: MutableSet<WebSocket> = HashSet()
@@ -68,7 +68,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
     private fun prepareGame() {
         log.debug("Preparing game")
-        runningState = RunningState.WAIT_FOR_READY_PARTICIPANTS
+        serverState = ServerState.WAIT_FOR_READY_PARTICIPANTS
         participantIds.clear()
 
         // Send NewBattle to all participant bots to get them started
@@ -90,7 +90,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
     private fun startGame() {
         log.info("Starting game")
-        runningState = RunningState.GAME_RUNNING
+        serverState = ServerState.GAME_RUNNING
         val participantList: MutableList<Participant> = ArrayList()
         for (conn in participants) {
             val h = connHandler.getBotHandshakes()[conn]
@@ -158,7 +158,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
     private fun abortGame() {
         log.info("Aborting game")
-        runningState = RunningState.GAME_STOPPED
+        serverState = ServerState.GAME_STOPPED
         val abortedEvent = GameAbortedEventForObserver()
         abortedEvent.`$type` = `$type`.GAME_ABORTED_EVENT_FOR_OBSERVER
         broadcastToObserverAndControllers(abortedEvent)
@@ -226,8 +226,8 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
     private fun pauseGame() {
         log.info("Pausing game")
-        if (runningState === RunningState.GAME_RUNNING) {
-            runningState = RunningState.GAME_PAUSED
+        if (serverState === ServerState.GAME_RUNNING) {
+            serverState = ServerState.GAME_PAUSED
             turnTimeoutTimer?.pause()
             val pausedEvent = GamePausedEventForObserver()
             pausedEvent.`$type` = `$type`.GAME_PAUSED_EVENT_FOR_OBSERVER
@@ -237,8 +237,8 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
     private fun resumeGame() {
         log.info("Resuming game")
-        if (runningState === RunningState.GAME_PAUSED) {
-            runningState = RunningState.GAME_RUNNING
+        if (serverState === ServerState.GAME_PAUSED) {
+            serverState = ServerState.GAME_RUNNING
             val resumedEvent = GameResumedEventForObserver()
             resumedEvent.`$type` = `$type`.GAME_RESUMED_EVENT_FOR_OBSERVER
             broadcastToObserverAndControllers(resumedEvent)
@@ -263,7 +263,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
             pauseGame()
         } else {
             resetTimeoutTimer()
-            if (runningState === RunningState.GAME_PAUSED) {
+            if (serverState === ServerState.GAME_PAUSED) {
                 resumeGame()
             }
         }
@@ -287,20 +287,20 @@ class GameServer(gameTypes: String, clientSecret: String?) {
             startGame()
         } else {
             // Not enough participants -> prepare another game
-            runningState = RunningState.WAIT_FOR_PARTICIPANTS_TO_JOIN
+            serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
         }
     }
 
     private fun onNextTurn() {
         log.debug("Next turn => updating game state")
-        if (runningState === RunningState.GAME_STOPPED) {
+        if (serverState === ServerState.GAME_STOPPED) {
             return
         }
         // Update game state
         val gameState = updateGameState()
         if (gameState.isGameEnded) {
             log.info("Game ended")
-            runningState = RunningState.GAME_STOPPED
+            serverState = ServerState.GAME_STOPPED
             modelUpdater.calculatePlacements()
 
             // End game for bots
@@ -452,7 +452,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         }
 
         override fun onBotReady(conn: WebSocket) {
-            if (runningState === RunningState.WAIT_FOR_READY_PARTICIPANTS) {
+            if (serverState === ServerState.WAIT_FOR_READY_PARTICIPANTS) {
                 readyParticipants += conn
                 startGameIfParticipantsReady()
             }
