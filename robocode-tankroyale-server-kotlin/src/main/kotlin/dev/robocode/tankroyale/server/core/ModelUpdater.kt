@@ -85,10 +85,10 @@ class ModelUpdater(
      */
     fun update(botIntents: Map<BotId, BotIntent>): GameState {
         updateBotIntents(botIntents)
-        if (roundNumber == 0 && turnNumber == 0 || roundEnded) {
-            if (roundEnded) {
-                calculatePlacements()
-            }
+        if (roundEnded) {
+            calculatePlacements()
+            nextRound()
+        } else if (roundNumber == 0 && turnNumber == 0) {
             nextRound()
         }
         nextTurn()
@@ -139,42 +139,20 @@ class ModelUpdater(
         // Remove dead bots (cannot participate in new round)
         botsMap.values.removeIf(Bot::isDead)
 
-        // Cool down and fire gun
         // Note: Called here before updating headings as we need to sync firing the gun with the gun's direction.
         // That is if the gun was set to fire with the last turn, then it will fire in the correct gun heading now.
         coolDownAndFireGuns()
 
-        // Execute bot intents, which will update heading of body, gun and radar
         executeBotIntents()
-
-        // Generate scan events
         checkAndHandleScans()
-
-        // Check bot wall collisions
         checkAndHandleBotWallCollisions()
-
-        // Check bot to bot collisions
         checkAndHandleBotCollisions()
-
-        // Update bullet positions to new position
         updateBulletPositions()
-
-        // Check bullet wall collisions
         checkAndHandleBulletWallCollisions()
-
-        // Check bullet hits
         checkAndHandleBulletHits()
-
-        // Check for inactivity
         checkAndHandleInactivity()
-
-        // Check for disabled bots
         checkForAndHandleDisabledBots()
-
-        // Cleanup defeated bots (events)
         checkAndHandleDefeatedBots()
-
-        // Check if the round is over
         checkAndHandleRoundOrGameOver()
 
         // Store bot and bullet snapshots
