@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.server.core
 
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.BulletLine
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.BulletLine
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.math.*
 import dev.robocode.tankroyale.server.model.*
