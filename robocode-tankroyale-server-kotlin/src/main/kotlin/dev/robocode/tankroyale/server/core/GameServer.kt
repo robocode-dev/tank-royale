@@ -25,56 +25,92 @@ import kotlin.collections.HashSet
 import kotlin.math.roundToInt
 
 
-class GameServer(gameTypes: String, clientSecret: String?) {
+/** Game server. */
+class GameServer(
+    /** Supported game types (comma-separated list) */
+    gameTypes: String,
+    /** Optional client secret */
+    clientSecret: String?
+) {
+    /** Game types in a comma-separated list containing no white-spaces */
     private val gameTypes: String = gameTypes.replace("\\s".toRegex(), "")
+
+    /** Connection handler for observers and bots */
     private val connHandler: ConnHandler
+
+    /** Current server state */
     private var serverState: ServerState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
+
+    /** Current game setup */
     private var gameSetup: dev.robocode.tankroyale.server.model.GameSetup? = null
+
+    /** Game participants (bots connections) */
     private val participants: MutableSet<WebSocket> = HashSet()
+
+    /** Game participants that signalled 'ready' for battle */
     private val readyParticipants: MutableSet<WebSocket> = HashSet()
+
+    /** Map over participant ids: bot connection -> bot id */
     private val participantIds: MutableMap<WebSocket, BotId> = HashMap()
+
+    /** Map over bot intents: bot connection -> bot intent */
     private val botIntents: MutableMap<WebSocket, dev.robocode.tankroyale.server.model.BotIntent> = ConcurrentHashMap()
-    private lateinit var readyTimeoutTimer: NanoTimer
-    private var turnTimeoutTimer: NanoTimer? = null
-    private var tps = DEFAULT_TURNS_PER_SECOND
+
+    /** Model updater that keeps track of the game state/model */
     private lateinit var modelUpdater: ModelUpdater
 
+    /** Timer for 'ready' timeout */
+    private lateinit var readyTimeoutTimer: NanoTimer
+
+    /** Timer for 'turn' timeout */
+    private var turnTimeoutTimer: NanoTimer? = null
+
+    /** Current TPS setting (Turns Per Second) */
+    private var tps = DEFAULT_TURNS_PER_SECOND
+
+    /** Logger */
     private val log = LoggerFactory.getLogger(GameServer::class.java)
+
+    /** JSON handler */
     private val gson = Gson()
 
     init {
+        /** Initializes connection handler */
         val serverSetup = ServerSetup(HashSet(listOf(*gameTypes.split(",").toTypedArray())))
         connHandler = ConnHandler(serverSetup, GameServerConnListener(), clientSecret)
     }
 
+    /** Starts this server */
     fun start() {
         log.info("Starting server on port ${Server.port} with game types: $gameTypes")
         connHandler.start()
     }
 
+    /** Stops this server */
     fun stop() {
         log.info("Stopping server")
         connHandler.stop()
     }
 
+    /** Starts the game if all participants are ready */
     private fun startGameIfParticipantsReady() {
         if (readyParticipants.size == participants.size) {
             readyTimeoutTimer.stop()
             readyParticipants.clear()
             botIntents.clear()
+
             startGame()
         }
     }
 
+    /** Prepares the game and wait for participants to become 'ready' */
     private fun prepareGame() {
         log.debug("Preparing game")
         serverState = ServerState.WAIT_FOR_READY_PARTICIPANTS
         participantIds.clear()
 
-        // Send NewBattle to all participant bots to get them started
-        val gameStartedForBot = GameStartedEventForBot()
-        gameStartedForBot.`$type` = `$type`.GAME_STARTED_EVENT_FOR_BOT
-        gameStartedForBot.gameSetup = GameSetupToGameSetupMapper.map(gameSetup!!)
+        // Send game-started event to all participant bots to get them started
+        val gameStartedForBot = createGameStartedEventForBot()
         var id = 1
         for (conn in participants) {
             participantIds[conn] = BotId(id)
@@ -83,7 +119,20 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         }
         readyParticipants.clear()
 
-        // Start 'bot-ready' timeout timer
+        // Start 'ready' timeout timer
+        startReadyTimer()
+    }
+
+    /** Creates a GameStartedEventForBot with current game setup */
+    private fun createGameStartedEventForBot(): GameStartedEventForBot {
+        val gameStartedForBot = GameStartedEventForBot()
+        gameStartedForBot.`$type` = `$type`.GAME_STARTED_EVENT_FOR_BOT
+        gameStartedForBot.gameSetup = GameSetupToGameSetupMapper.map(gameSetup!!)
+        return gameStartedForBot
+    }
+
+    /** Starts the 'ready' timer */
+    private fun startReadyTimer() {
         readyTimeoutTimer = NanoTimer(gameSetup!!.readyTimeout * 1000000L) { onReadyTimeout() }
         readyTimeoutTimer.start()
     }
@@ -91,21 +140,23 @@ class GameServer(gameTypes: String, clientSecret: String?) {
     private fun startGame() {
         log.info("Starting game")
         serverState = ServerState.GAME_RUNNING
-        val participantList: MutableList<Participant> = ArrayList()
+
+        val participantList = mutableListOf<Participant>()
         for (conn in participants) {
-            val h = connHandler.getBotHandshakes()[conn]
-            val p = Participant()
-            p.id = participantIds[conn]!!.value
-            p.name = h!!.name
-            p.version = h.version
-            p.description = h.description
-            p.author = h.author
-            p.url = h.url
-            p.countryCode = h.countryCode
-            p.gameTypes = h.gameTypes
-            p.platform = h.platform
-            p.programmingLang = h.programmingLang
-            participantList += p
+            val handshake = connHandler.getBotHandshakes()[conn]
+            val participant = Participant().apply {
+                id = participantIds[conn]!!.value
+                name = handshake!!.name
+                version = handshake.version
+                description = handshake.description
+                author = handshake.author
+                url = handshake.url
+                countryCode = handshake.countryCode
+                gameTypes = handshake.gameTypes
+                platform = handshake.platform
+                programmingLang = handshake.programmingLang
+            }
+            participantList += participant
         }
 
         // Send GameStarted to all participant observers to get them started
@@ -168,7 +219,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
     private val resultsForBots: List<BotResultsForBot>
         get() {
-            val results: MutableList<BotResultsForBot> = ArrayList()
+            val results = mutableListOf<BotResultsForBot>()
             for (score in modelUpdater.results) {
                 val result = BotResultsForBot()
                 result.id = score.botId.value
@@ -191,7 +242,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
 
     private val resultsForObservers: List<BotResultsForObserver>
         get() {
-            val results: MutableList<BotResultsForObserver> = ArrayList()
+            val results = mutableListOf<BotResultsForObserver>()
             for (score in modelUpdater.results) {
                 val result = BotResultsForObserver().apply {
                     id = score.botId.value
@@ -352,7 +403,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
         }
     }
 
-    private val botsThatSentIntent = ArrayList<WebSocket>()
+    private val botsThatSentIntent = mutableListOf<WebSocket>()
 
     private fun updateBotIntent(conn: WebSocket, intent: BotIntent) {
         if (!participants.contains(conn)) {
@@ -373,7 +424,7 @@ class GameServer(gameTypes: String, clientSecret: String?) {
     }
 
     private fun createBotListUpdateMessage(): Message {
-        val botsList: MutableList<BotInfo> = ArrayList()
+        val botsList = mutableListOf<BotInfo>()
         val botListUpdate = BotListUpdate().apply {
             `$type` = Message.`$type`.BOT_LIST_UPDATE
             bots = botsList

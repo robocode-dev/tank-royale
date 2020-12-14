@@ -1,11 +1,10 @@
 package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.schema.*
-import java.util.ArrayList
 
 object EventsToEventsMapper {
     fun map(events: Set<dev.robocode.tankroyale.server.event.Event>): List<Event> {
-        val mappedEvents: MutableList<Event> = ArrayList()
+        val mappedEvents = mutableListOf<Event>()
         for (event in events) {
             mappedEvents += map(event)
         }

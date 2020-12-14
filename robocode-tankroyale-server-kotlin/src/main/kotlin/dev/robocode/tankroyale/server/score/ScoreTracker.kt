@@ -70,7 +70,7 @@ class ScoreTracker(botIds: Set<BotId>) {
     /** Current bot scores ordered with highest total scores first. */
     private val botScores: MutableList<Score>
         get() {
-            val scores: MutableList<Score> = ArrayList()
+            val scores = mutableListOf<Score>()
             for (botId in botIds) {
                 scores += getScore(botId)
             }

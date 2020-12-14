@@ -245,7 +245,7 @@ class ModelUpdater(
         val bulletCount = bullets.size
         if (bulletCount > 0) {
             // Create list of bullet line segments used for checking for bullet hits
-            val bulletLines = ArrayList<BulletLine>(bullets.size)
+            val bulletLines = mutableListOf<BulletLine>()
             for (bullet in this.bullets) {
                 bulletLines += BulletLine(bullet)
             }
@@ -347,7 +347,7 @@ class ModelUpdater(
 
     /** Check collisions between bots */
     private fun checkAndHandleBotCollisions() {
-        val bots = ArrayList<Bot>(botsMap.values.size)
+        val bots = mutableListOf<Bot>()
         botsMap.values.forEach { bots += it }
 
         for (i in 0 until bots.size) {
@@ -637,7 +637,7 @@ class ModelUpdater(
 
     /** Checks the scan field for scanned bots. */
     private fun checkAndHandleScans() {
-        val bots = ArrayList<Bot>(botsMap.values.size)
+        val bots = mutableListOf<Bot>()
         botsMap.values.forEach { bots += it }
 
         for (i in 0 until bots.size) {

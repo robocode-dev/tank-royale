@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.server.mapper.BotsToBotsWithIdMapper.map
 import dev.robocode.tankroyale.server.mapper.BulletsToBulletStatesMapper.map
 import dev.robocode.tankroyale.server.model.Round
 import dev.robocode.tankroyale.server.model.Turn
+import java.util.concurrent.CopyOnWriteArrayList
 
 object TurnToTickEventForObserverMapper {
     fun map(round: Round, turn: Turn): TickEventForObserver {
@@ -14,9 +15,9 @@ object TurnToTickEventForObserverMapper {
             `$type` = Message.`$type`.TICK_EVENT_FOR_OBSERVER
             roundNumber = round.roundNumber
             turnNumber = turn.turnNumber
-            botStates = map(turn.bots)
-            bulletStates = map(turn.bullets)
-            events = EventsToEventsMapper.map(turn.observerEvents)
+            botStates = CopyOnWriteArrayList(map(turn.bots))
+            bulletStates = CopyOnWriteArrayList(map(turn.bullets))
+            events = CopyOnWriteArrayList(EventsToEventsMapper.map(turn.observerEvents))
         }
         return tick
     }
