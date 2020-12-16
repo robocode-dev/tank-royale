@@ -18,7 +18,6 @@ import org.java_websocket.WebSocket
 import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.slf4j.LoggerFactory
 import java.lang.Exception
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
@@ -106,10 +105,18 @@ class GameServer(
     /** Prepares the game and wait for participants to become 'ready' */
     private fun prepareGame() {
         log.debug("Preparing game")
+
         serverState = ServerState.WAIT_FOR_READY_PARTICIPANTS
         participantIds.clear()
+        readyParticipants.clear()
 
-        // Send game-started event to all participant bots to get them started
+        sendGameStartedToParticipants()
+
+        startReadyTimer()
+    }
+
+    /** Send game-started event to all participant bots to get them started */
+    private fun sendGameStartedToParticipants() {
         val gameStartedForBot = createGameStartedEventForBot()
         var id = 1
         for (conn in participants) {
@@ -117,10 +124,6 @@ class GameServer(
             gameStartedForBot.myId = id++
             send(conn, gameStartedForBot)
         }
-        readyParticipants.clear()
-
-        // Start 'ready' timeout timer
-        startReadyTimer()
     }
 
     /** Creates a GameStartedEventForBot with current game setup */
@@ -137,10 +140,20 @@ class GameServer(
         readyTimeoutTimer.start()
     }
 
+    /** Starts a new game */
     private fun startGame() {
         log.info("Starting game")
+
         serverState = ServerState.GAME_RUNNING
 
+        sendGameStartedToObservers()
+        prepareModelUpdater()
+
+        resetTurnTimeout()
+    }
+
+    /** Creates a list of participants from the bot connection handshakes */
+    private fun createParticipantList(): List<Participant> {
         val participantList = mutableListOf<Participant>()
         for (conn in participants) {
             val handshake = connHandler.getBotHandshakes()[conn]
@@ -158,175 +171,240 @@ class GameServer(
             }
             participantList += participant
         }
+        return participantList
+    }
 
-        // Send GameStarted to all participant observers to get them started
+    /** Send GameStarted to all participant observers to get them started */
+    private fun sendGameStartedToObservers() {
         if (connHandler.observerAndControllerConnections.isNotEmpty()) {
             val gameStartedForObserver = GameStartedEventForObserver()
             gameStartedForObserver.`$type` = `$type`.GAME_STARTED_EVENT_FOR_OBSERVER
             gameStartedForObserver.gameSetup = GameSetupToGameSetupMapper.map(gameSetup!!)
-            gameStartedForObserver.participants = participantList
+            gameStartedForObserver.participants = createParticipantList()
             broadcastToObserverAndControllers(gameStartedForObserver)
         }
+    }
 
-        // Prepare model update
+    /** Prepares model-updater */
+    private fun prepareModelUpdater() {
         modelUpdater = ModelUpdater(gameSetup!!, HashSet(participantIds.values))
-
-        // Restart turn timeout timer
-        resetTimeoutTimer()
     }
 
-    @Volatile
-    var lastTurnTimeout: Long = 0
-    private fun resetTimeoutTimer() {
-        val timeout = calculateTurnTimeout()
-        if (timeout != lastTurnTimeout) {
-            lastTurnTimeout = timeout
-            if (turnTimeoutTimer != null) {
-                turnTimeoutTimer!!.stop()
-            }
-            turnTimeoutTimer = NanoTimer(timeout) { onNextTurn() }
-            turnTimeoutTimer!!.start()
+    /** Last reset turn timeout period */
+    @Volatile // FIXME: Remove?
+    var lastResetTurnTimeoutPeriod: Long = 0
+
+    /** Resets turn timeout timer */
+    private fun resetTurnTimeout() {
+        val period = calculateTurnTimeoutPeriod()
+
+        // New timer is only set, if the period is different from the last reset time
+        if (period != lastResetTurnTimeoutPeriod) {
+            lastResetTurnTimeoutPeriod = period
+
+            // Start new turn timeout timer to invoke onNextTurn()
+            turnTimeoutTimer?.stop()
+            turnTimeoutTimer = NanoTimer(period) { onNextTurn() }
+            turnTimeoutTimer?.start()
         }
     }
 
-    private fun calculateTurnTimeout(): Long {
-        var timeout = if (tps <= 0) 0 else 1_000_000_000L / tps
+    /** Calculates and returns a timeout turn period measured in nano-seconds based on current TPS */
+    private fun calculateTurnTimeoutPeriod(): Long {
+        var period = if (tps <= 0) 0 else 1_000_000_000L / tps
+
         val turnTimeout = gameSetup!!.turnTimeout * 1000L
-        if (turnTimeout > timeout) {
-            timeout = turnTimeout
+        if (turnTimeout > period) {
+            period = turnTimeout
         }
-        return timeout
+        return period
     }
 
+    /**
+     * Starts a new game with a new game setup and new participants.
+     * @param gameSetup is the new game setup.
+     * @param botAddresses is the addresses of the new participants.
+     */
     private fun startGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
         this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup)
         participants.clear()
         participants += connHandler.getBotConnections(botAddresses)
+
         if (participants.isNotEmpty()) {
             prepareGame()
         }
     }
 
+    /** Aborts current game */
     private fun abortGame() {
         log.info("Aborting game")
+
         serverState = ServerState.GAME_STOPPED
-        val abortedEvent = GameAbortedEventForObserver()
-        abortedEvent.`$type` = `$type`.GAME_ABORTED_EVENT_FOR_OBSERVER
-        broadcastToObserverAndControllers(abortedEvent)
+
+        broadcastGameAborted()
 
         // No score is generated for aborted games
     }
 
-    private val resultsForBots: List<BotResultsForBot>
-        get() {
-            val results = mutableListOf<BotResultsForBot>()
-            for (score in modelUpdater.results) {
-                val result = BotResultsForBot()
-                result.id = score.botId.value
-                result.survival = score.survival.roundToInt()
-                result.lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
-                result.bulletDamage = score.bulletDamage.roundToInt()
-                result.bulletKillBonus = score.bulletKillBonus.toInt()
-                result.ramDamage = score.ramDamage.roundToInt()
-                result.ramKillBonus = score.ramKillBonus.roundToInt()
-                result.totalScore = score.totalScore.roundToInt()
-                result.firstPlaces = score.firstPlaces
-                result.secondPlaces = score.secondPlaces
-                result.thirdPlaces = score.thirdPlaces
-                results += result
+    /** Broadcast game-aborted event to all observers and controllers */
+    private fun broadcastGameAborted() {
+        broadcastToObserverAndControllers(
+            GameAbortedEventForObserver().apply {
+                `$type` = Message.`$type`.GAME_ABORTED_EVENT_FOR_OBSERVER
+            })
+    }
+
+    /** Returns a list of bot results (for bots) ordered on the score ranks */
+    private fun getResultsForBots(): List<BotResultsForBot> {
+        val results = mutableListOf<BotResultsForBot>()
+
+        for (score in modelUpdater.results) {
+            BotResultsForBot().apply {
+                id = score.botId.value
+                survival = score.survival.roundToInt()
+                lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
+                bulletDamage = score.bulletDamage.roundToInt()
+                bulletKillBonus = score.bulletKillBonus.toInt()
+                ramDamage = score.ramDamage.roundToInt()
+                ramKillBonus = score.ramKillBonus.roundToInt()
+                totalScore = score.totalScore.roundToInt()
+                firstPlaces = score.firstPlaces
+                secondPlaces = score.secondPlaces
+                thirdPlaces = score.thirdPlaces
+
+                results += this
             }
-            var rank = 1
-            results.forEach { it.rank = rank++ }
-            return results
         }
+        var rank = 1
+        results.forEach { score -> score.rank = rank++ }
+        return results
+    }
 
-    private val resultsForObservers: List<BotResultsForObserver>
-        get() {
-            val results = mutableListOf<BotResultsForObserver>()
-            for (score in modelUpdater.results) {
-                val result = BotResultsForObserver().apply {
-                    id = score.botId.value
-                    survival = score.survival.roundToInt()
-                    lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
-                    bulletDamage = score.bulletDamage.roundToInt()
-                    bulletKillBonus = score.bulletKillBonus.toInt()
-                    ramDamage = score.ramDamage.roundToInt()
-                    ramKillBonus = score.ramKillBonus.roundToInt()
-                    totalScore = score.totalScore.roundToInt()
-                    firstPlaces = score.firstPlaces
-                    secondPlaces = score.secondPlaces
-                    thirdPlaces = score.thirdPlaces
-                    results += this
-                }
+    /** Returns a list of bot results (for observers and controllers) ordered on the score ranks */
+    private fun getResultsForObservers(): List<BotResultsForObserver> {
+        val results = mutableListOf<BotResultsForObserver>()
 
-                var conn: WebSocket? = null
-                for ((key, value) in participantIds) {
-                    if (value == score.botId) {
-                        conn = key
-                        break
-                    }
-                }
-                val botHandshake = connHandler.getBotHandshakes()[conn]
-                result.name = botHandshake!!.name
-                result.version = botHandshake.version
+        for (score in modelUpdater.results) {
+            val conn = getConnection(score.botId)
+            val botHandshake = connHandler.getBotHandshakes()[conn]
+
+            BotResultsForObserver().apply {
+                id = score.botId.value
+                name = botHandshake!!.name
+                version = botHandshake.version
+                survival = score.survival.roundToInt()
+                lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
+                bulletDamage = score.bulletDamage.roundToInt()
+                bulletKillBonus = score.bulletKillBonus.toInt()
+                ramDamage = score.ramDamage.roundToInt()
+                ramKillBonus = score.ramKillBonus.roundToInt()
+                totalScore = score.totalScore.roundToInt()
+                firstPlaces = score.firstPlaces
+                secondPlaces = score.secondPlaces
+                thirdPlaces = score.thirdPlaces
+
+                results += this
             }
-            var rank = 1
-            results.forEach { it.rank = rank++ }
-            return results
         }
+        var rank = 1
+        results.forEach { score -> score.rank = rank++ }
+        return results
+    }
 
+    /**
+     * Returns the connection for a bot.
+     * @param botId is the id of the bot.
+     * @return The connection for the bot or `null` if no connection was found for the bot id.
+     */
+    private fun getConnection(botId: BotId): WebSocket? {
+        for ((conn, id) in participantIds) {
+            if (id == botId) {
+                return conn
+            }
+        }
+        return null
+    }
+
+    /** Pauses current game */
     private fun pauseGame() {
         log.info("Pausing game")
+
         if (serverState === ServerState.GAME_RUNNING) {
             serverState = ServerState.GAME_PAUSED
+
             turnTimeoutTimer?.pause()
-            val pausedEvent = GamePausedEventForObserver()
-            pausedEvent.`$type` = `$type`.GAME_PAUSED_EVENT_FOR_OBSERVER
-            broadcastToObserverAndControllers(pausedEvent)
+
+            broadcastPauseEventToObservers()
         }
     }
 
+    /** Resumes current game */
     private fun resumeGame() {
         log.info("Resuming game")
+
         if (serverState === ServerState.GAME_PAUSED) {
             serverState = ServerState.GAME_RUNNING
-            val resumedEvent = GameResumedEventForObserver()
-            resumedEvent.`$type` = `$type`.GAME_RESUMED_EVENT_FOR_OBSERVER
-            broadcastToObserverAndControllers(resumedEvent)
-            if (turnTimeoutTimer != null) {
-                turnTimeoutTimer!!.resume()
-            }
+
+            turnTimeoutTimer?.resume()
+
+            broadcastResumeEventToObservers()
         }
     }
 
+    /** Broadcast pause event to all observers */
+    private fun broadcastPauseEventToObservers() {
+        broadcastToObserverAndControllers(
+            GamePausedEventForObserver().apply {
+                `$type` = Message.`$type`.GAME_PAUSED_EVENT_FOR_OBSERVER
+            })
+    }
+
+    /** Broadcast resume event to all observers */
+    private fun broadcastResumeEventToObservers() {
+        broadcastToObserverAndControllers(
+            GameResumedEventForObserver().apply {
+                `$type` = Message.`$type`.GAME_RESUMED_EVENT_FOR_OBSERVER
+            })
+    }
+
+    /**
+     * Changes the TPS.
+     * @param tps is the new TPS to change to.
+     */
     private fun changeTps(tps: Int) {
-        log.info("Changing TPS: $tps")
-        if (this.tps == tps) {
-            return
-        }
+        log.info("Changing TPS to $tps")
+
+        if (this.tps == tps) return
         this.tps = tps
-        val tpsChangedEvent = TpsChangedEvent().apply {
-            `$type` = Message.`$type`.TPS_CHANGED_EVENT
-            this.tps = tps
-        }
-        broadcastToObserverAndControllers(tpsChangedEvent)
+
+        broadcastTpsChangedToObservers()
+
         if (tps == 0) {
             pauseGame()
         } else {
-            resetTimeoutTimer()
             if (serverState === ServerState.GAME_PAUSED) {
                 resumeGame()
             }
+            resetTurnTimeout()
         }
     }
 
+    /** Broadcast TPS-changed event to all observers */
+    private fun broadcastTpsChangedToObservers() {
+        broadcastToObserverAndControllers(
+            TpsChangedEvent().apply {
+                `$type` = Message.`$type`.TPS_CHANGED_EVENT
+                this.tps = tps
+            })
+    }
+
     private fun updateGameState(): GameState {
-        val mappedBotIntents: MutableMap<BotId, dev.robocode.tankroyale.server.model.BotIntent> = HashMap()
+        val mappedBotIntents = mutableMapOf<BotId, dev.robocode.tankroyale.server.model.BotIntent>()
         for ((key, value) in botIntents) {
             val botId = participantIds[key]!!
             mappedBotIntents[botId] = value
         }
-        return modelUpdater.update(Collections.unmodifiableMap(mappedBotIntents))
+        return modelUpdater.update(mappedBotIntents.toMap())
     }
 
     private fun onReadyTimeout() {
@@ -358,7 +436,7 @@ class GameServer(
             val endEventForBot = GameEndedEventForBot().apply {
                 `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_BOT
                 numberOfRounds = modelUpdater.numberOfRounds
-                results = resultsForBots
+                results = getResultsForBots()
             }
             broadcastToBots(endEventForBot)
 
@@ -366,7 +444,7 @@ class GameServer(
             val endEventForObserver = GameEndedEventForObserver().apply {
                 `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_OBSERVER
                 numberOfRounds = modelUpdater.numberOfRounds
-                results = resultsForObservers // Use the stored score!
+                results = getResultsForObservers() // Use the stored score!
             }
             broadcastToObserverAndControllers(endEventForObserver)
         } else {

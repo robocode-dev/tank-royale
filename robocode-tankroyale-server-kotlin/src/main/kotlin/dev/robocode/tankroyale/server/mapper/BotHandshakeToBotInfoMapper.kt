@@ -14,7 +14,7 @@ object BotHandshakeToBotInfoMapper {
             botInfo.description = description
             botInfo.url = url
             botInfo.countryCode = countryCode
-            botInfo.gameTypes = Collections.unmodifiableList(gameTypes)
+            botInfo.gameTypes = gameTypes.toList()
             botInfo.platform = platform
             botInfo.programmingLang = programmingLang
             botInfo.host = hostName

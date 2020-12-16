@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.server.core
 
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.BulletLine
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.math.*
 import dev.robocode.tankroyale.server.model.*
@@ -185,7 +184,7 @@ class ModelUpdater(
             val direction = randomDirection() // body, gun, and radar starts in the same direction
             botsMap[id] = Bot(
                 id = id,
-                position = position,
+                position = position.toMutablePoint(),
                 direction = direction,
                 gunDirection = direction,
                 radarDirection = direction,
@@ -231,6 +230,8 @@ class ModelUpdater(
     private fun executeBotIntent(bot: Bot) {
         val intent = botIntentsMap[bot.id]
         intent?.apply {
+            println(intent)
+
             bot.speed = calcNewBotSpeed(bot.speed, intent.targetSpeed ?: 0.0)
 
             updateBotTurnRatesAndDirections(bot, intent)
@@ -267,8 +268,11 @@ class ModelUpdater(
      * @param bullet2 is the second bullet.
      */
     private fun handleBulletHitBullet(bullet1: Bullet, bullet2: Bullet) {
-        val event1 = BulletHitBulletEvent(turnNumber, bullet1, bullet2)
-        val event2 = BulletHitBulletEvent(turnNumber, bullet2, bullet1)
+        val b1 = bullet1.copy()
+        val b2 = bullet2.copy()
+
+        val event1 = BulletHitBulletEvent(turnNumber, b1, b2)
+        val event2 = BulletHitBulletEvent(turnNumber, b2, b1)
 
         turn.apply {
             addPrivateBotEvent(bullet1.botId, event1)
@@ -303,6 +307,9 @@ class ModelUpdater(
             }
             if (isBulletHittingBot(bulletLine, bot)) {
                 handleBulletHittingBot(bulletLine.bullet, bot)
+
+                // Remove bullet from the arena
+                bullets -= bulletLine.bullet
             }
         }
     }
@@ -335,14 +342,12 @@ class ModelUpdater(
 
         scoreTracker.registerBulletHit(botId, victimId, damage, isKilled)
 
-        val bulletHitBotEvent = BulletHitBotEvent(turnNumber, bullet, victimId, damage, bot.energy)
+        val bulletHitBotEvent = BulletHitBotEvent(turnNumber, bullet.copy(), victimId, damage, bot.energy)
         turn.apply {
             addPrivateBotEvent(bulletHitBotEvent.bullet.botId, bulletHitBotEvent) // Bot itself gets event
             addPrivateBotEvent(bulletHitBotEvent.victimId, bulletHitBotEvent) // Victim bot gets event too
             addObserverEvent(bulletHitBotEvent)
         }
-        // Remove bullet from the arena
-        bullets -= bullet
     }
 
     /** Check collisions between bots */
@@ -414,8 +419,8 @@ class ModelUpdater(
      * @param bot2 is the second bot.
      */
     private fun bounceBack(bot1: Bot, bot2: Bot) {
-        val oldBot1Position = bot1.position
-        val oldBot2Position = bot2.position
+        val bot1OldPosition = bot1.position.toPoint()
+        val bot2OldPosition = bot2.position.toPoint()
 
         val (bot1BounceDist, bot2BounceDist) = calcBotBounceDistances(bot1, bot2)
         bot1.bounceBack(bot1BounceDist)
@@ -423,11 +428,11 @@ class ModelUpdater(
 
         // Check if one of the bot bounced into a wall
         if (isBotPositionOutsideArena(bot1.position)) {
-            bot1.position = oldBot1Position
+            bot1.position = bot1OldPosition.toMutablePoint()
             bot2.bounceBack(bot1BounceDist /* remaining distance */)
         }
         if (isBotPositionOutsideArena(bot2.position)) {
-            bot2.position = oldBot2Position
+            bot2.position = bot2OldPosition.toMutablePoint()
             bot1.bounceBack(bot2BounceDist /* remaining distance */)
         }
     }
@@ -437,7 +442,7 @@ class ModelUpdater(
      * @param position is the bot position.
      * @return `true` if the bot position is outside; `false` otherwise.
      */
-    private fun isBotPositionOutsideArena(position: Point): Boolean {
+    private fun isBotPositionOutsideArena(position: IPoint): Boolean {
         return position.x < BOT_BOUNDING_CIRCLE_RADIUS ||
                 position.y < BOT_BOUNDING_CIRCLE_RADIUS ||
                 position.x > (setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS) ||
@@ -446,7 +451,7 @@ class ModelUpdater(
 
     /** Updates bullet positions */
     private fun updateBulletPositions() {
-        bullets.forEach { it.incrementTick() }
+        bullets.forEach { bullet -> bullet.incrementTick() }
     }
 
     /** Checks collisions between bots and the walls. */
@@ -516,12 +521,11 @@ class ModelUpdater(
         val iterator = bullets.iterator() // due to removal
         while (iterator.hasNext()) {
             val bullet = iterator.next()
-            val position = bullet.calcPosition()
-            if (isBulletPositionOutsideArena(position)) {
+            if (isBulletPositionOutsideArena(bullet.position)) {
                 // remove bullet from arena
                 iterator.remove()
 
-                val bulletHitWallEvent = BulletHitWallEvent(turnNumber, bullet)
+                val bulletHitWallEvent = BulletHitWallEvent(turnNumber, bullet.copy())
                 turn.addPrivateBotEvent(bullet.botId, bulletHitWallEvent)
                 turn.addObserverEvent(bulletHitWallEvent)
             }
@@ -533,7 +537,7 @@ class ModelUpdater(
      * @param position is the bullet position.
      * @return `true` if the bullet is outside the arena; `false` otherwise.
      */
-    private fun isBulletPositionOutsideArena(position: Point): Boolean {
+    private fun isBulletPositionOutsideArena(position: IPoint): Boolean {
         return position.x <= 0 ||
                 position.y <= 0 ||
                 position.x >= setup.arenaWidth ||
@@ -621,13 +625,13 @@ class ModelUpdater(
         val bullet = Bullet(
             botId = bot.id,
             bulletId = BulletId(++nextBulletId),
-            startPosition = bot.position,
+            startPosition = bot.position.toPoint(),
             direction = bot.gunDirection,
             power = firepower,
             color = bot.bulletColor,
         )
         bullets += bullet
-        val bulletFiredEvent = BulletFiredEvent(turnNumber, bullet)
+        val bulletFiredEvent = BulletFiredEvent(turnNumber, bullet.copy())
         turn.addPrivateBotEvent(bot.id, bulletFiredEvent)
         turn.addObserverEvent(bulletFiredEvent)
 
@@ -733,7 +737,7 @@ class ModelUpdater(
          * @param pos2 is the position of the 2nd bullet.
          * @return `true` if the bounding circles are colliding; `false` otherwise.
          */
-        private fun isBulletsMaxBoundingCirclesColliding(pos1: Point, pos2: Point): Boolean {
+        private fun isBulletsMaxBoundingCirclesColliding(pos1: IPoint, pos2: IPoint): Boolean {
             val dx = pos2.x - pos1.x
             if (abs(dx) > BULLET_MAX_BOUNDING_CIRCLE_DIAMETER) {
                 return false

@@ -27,7 +27,7 @@ data class Turn(
      */
     fun copyBullets(srcBullets: Collection<Bullet>) {
         bullets.clear()
-        srcBullets.forEach { bullets += it.copy() }
+        srcBullets.forEach { bullet -> bullets += bullet.copy() }
     }
 
     /**
@@ -36,7 +36,7 @@ data class Turn(
      */
     fun copyBots(srcBots: Collection<Bot>) {
         bots.clear()
-        srcBots.forEach { bots += it.copy() }
+        srcBots.forEach { bot -> bots += bot.copy() }
     }
 
     /**

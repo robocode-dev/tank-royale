@@ -6,18 +6,15 @@ import dev.robocode.tankroyale.server.model.Bullet
 
 object BulletToBulletStateMapper {
     fun map(bullet: Bullet): BulletState {
-        val bulletState = BulletState()
-        bullet.apply {
-            val (x, y) = calcPosition()
-            bulletState.ownerId = botId.value
-            bulletState.bulletId = bulletId.value
-            bulletState.direction = normalAbsoluteDegrees(direction)
-            bulletState.power = power
-            bulletState.speed = speed
-            bulletState.x = x
-            bulletState.y = y
-            bulletState.color = color?.value
+        return BulletState().apply {
+            ownerId = bullet.botId.value
+            bulletId = bullet.bulletId.value
+            direction = normalAbsoluteDegrees(bullet.direction)
+            power = bullet.power
+            speed = bullet.speed
+            x = bullet.position.x
+            y = bullet.position.y
+            color = bullet.color?.value
         }
-        return bulletState
     }
 }

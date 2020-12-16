@@ -1,9 +1,12 @@
 package dev.robocode.tankroyale.server.math
 
-/** Defines a 2D point */
+/** Defines an immutable 2D point */
 data class Point(
     /** x coordinate */
-    var x: Double,
+    override val x: Double,
     /** y coordinate */
-    var y: Double
-)
+    override val y: Double
+): IPoint {
+    /** Returns a mutable version of this point */
+    fun toMutablePoint() = MutablePoint(x, y)
+}

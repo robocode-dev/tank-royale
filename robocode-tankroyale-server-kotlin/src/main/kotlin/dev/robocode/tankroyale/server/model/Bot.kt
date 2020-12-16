@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.server.model
 
-import dev.robocode.tankroyale.server.math.Point
+import dev.robocode.tankroyale.server.math.MutablePoint
 import dev.robocode.tankroyale.server.math.isNearTo
 import dev.robocode.tankroyale.server.rules.INITIAL_BOT_ENERGY
 import dev.robocode.tankroyale.server.rules.INITIAL_GUN_HEAT
@@ -10,13 +10,13 @@ import kotlin.math.sin
 /** Bot instance. */
 data class Bot(
     /** Bot id */
-    var id: BotId,
+    val id: BotId,
 
     /** Energy level */
     var energy: Double = INITIAL_BOT_ENERGY,
 
     /** Position (x, y) */
-    var position: Point,
+    var position: MutablePoint,
 
     /** Driving direction in degrees */
     var direction: Double,
@@ -129,7 +129,8 @@ data class Bot(
      * @param distance is the distance to bounce back.
      */
     fun bounceBack(distance: Double) {
-        moveToNewPosition(if (speed > 0) -distance else distance)
+//        moveToNewPosition(if (speed > 0) -distance else distance) // TODO: <- bug?!
+        moveToNewPosition(distance) // TODO: <- correct?
     }
 
     /**

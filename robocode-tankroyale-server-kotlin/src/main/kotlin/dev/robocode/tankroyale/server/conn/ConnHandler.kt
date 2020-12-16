@@ -62,7 +62,7 @@ class ConnHandler internal constructor(
     }
 
     fun getBotConnections(): Set<WebSocket> {
-        return Collections.unmodifiableSet(botConnections)
+        return botConnections.toSet()
     }
 
     val observerAndControllerConnections: Set<WebSocket>
@@ -70,11 +70,11 @@ class ConnHandler internal constructor(
             val combined: MutableSet<WebSocket> = HashSet()
             combined += observerConnections
             combined += controllerConnections
-            return Collections.unmodifiableSet(combined)
+            return combined.toSet()
         }
 
     fun getBotHandshakes(): Map<WebSocket, BotHandshake> {
-        return Collections.unmodifiableMap(botHandshakes)
+        return botHandshakes.toMap()
     }
 
     fun getBotConnections(botAddresses: Collection<BotAddress>): Set<WebSocket> {
