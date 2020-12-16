@@ -230,8 +230,6 @@ class ModelUpdater(
     private fun executeBotIntent(bot: Bot) {
         val intent = botIntentsMap[bot.id]
         intent?.apply {
-            println(intent)
-
             bot.speed = calcNewBotSpeed(bot.speed, intent.targetSpeed ?: 0.0)
 
             updateBotTurnRatesAndDirections(bot, intent)
@@ -247,8 +245,8 @@ class ModelUpdater(
         if (bulletCount > 0) {
             // Create list of bullet line segments used for checking for bullet hits
             val bulletLines = mutableListOf<BulletLine>()
-            for (bullet in this.bullets) {
-                bulletLines += BulletLine(bullet)
+            for (bullet in bullets) {
+                bulletLines += BulletLine(bullet.copy()) // bullet need to be a copy/snapshot!
             }
             // Check for bullet hits
             for (i in 0 until bulletCount) {
@@ -521,7 +519,10 @@ class ModelUpdater(
         val iterator = bullets.iterator() // due to removal
         while (iterator.hasNext()) {
             val bullet = iterator.next()
-            if (isBulletPositionOutsideArena(bullet.position)) {
+            println(bullet.position())
+
+            if (isPointOutsideArena(bullet.position())) {
+
                 // remove bullet from arena
                 iterator.remove()
 
@@ -533,15 +534,15 @@ class ModelUpdater(
     }
 
     /**
-     * Checks if a bullet position is outside the arena.
-     * @param position is the bullet position.
-     * @return `true` if the bullet is outside the arena; `false` otherwise.
+     * Checks if a point is outside the arena.
+     * @param point is the point
+     * @return `true` if the point is outside the arena; `false` otherwise.
      */
-    private fun isBulletPositionOutsideArena(position: IPoint): Boolean {
-        return position.x <= 0 ||
-                position.y <= 0 ||
-                position.x >= setup.arenaWidth ||
-                position.y >= setup.arenaHeight
+    private fun isPointOutsideArena(point: IPoint): Boolean {
+        return point.x <= 0 ||
+                point.y <= 0 ||
+                point.x >= setup.arenaWidth ||
+                point.y >= setup.arenaHeight
     }
 
     /**

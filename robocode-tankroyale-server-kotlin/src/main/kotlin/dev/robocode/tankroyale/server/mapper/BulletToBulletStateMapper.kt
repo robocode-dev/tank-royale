@@ -12,8 +12,8 @@ object BulletToBulletStateMapper {
             direction = normalAbsoluteDegrees(bullet.direction)
             power = bullet.power
             speed = bullet.speed
-            x = bullet.position.x
-            y = bullet.position.y
+            x = bullet.position().x
+            y = bullet.position().y
             color = bullet.color?.value
         }
     }

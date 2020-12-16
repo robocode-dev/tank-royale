@@ -8,13 +8,11 @@ data class BulletLine(
     /** The bullet of the bullet line */
     val bullet: Bullet
 ) {
-    private val bulletCopy = bullet.copy()
-
     /** Start position of the bullet line */
-    private val start: Point by lazy { bulletCopy.position }
+    private val start: Point by lazy { bullet.position() }
 
     /** End position of the bullet line */
-    val end: Point by lazy { bulletCopy.nextPosition }
+    val end: Point by lazy { bullet.nextPosition() }
 
     /** The current bullet line */
     val line by lazy { Line(start, end) }

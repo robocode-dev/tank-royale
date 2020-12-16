@@ -19,7 +19,7 @@ data class Bullet(
     val direction: Double,
 
     /** Start position where the bullet was fired from */
-    private val startPosition: Point, // must be immutable!
+    private val startPosition: Point, // must be immutable as this point is used for calculating future positions
 
     /** Tick, which is the number of turns since the bullet was fired */
     private var tick: Int = 0,
@@ -36,10 +36,10 @@ data class Bullet(
     }
 
     /** Current position */
-    val position: Point = calcPosition()
+    fun position(): Point = calcPosition()
 
     /** Next position */
-    val nextPosition: Point = calcPosition(true)
+    fun nextPosition(): Point = calcPosition(true)
 
     /**
      * Calculates the position of a bullet.
