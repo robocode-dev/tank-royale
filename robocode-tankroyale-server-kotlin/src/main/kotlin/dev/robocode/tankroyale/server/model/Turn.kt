@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.server.model
 
 import dev.robocode.tankroyale.server.event.Event
-import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
 /** State of a game turn in a round. */
@@ -10,16 +9,16 @@ data class Turn(
     var turnNumber: Int,
 
     /** Bots */
-    val bots: MutableSet<Bot> = HashSet(),
+    val bots: MutableSet<Bot> = mutableSetOf(),
 
     /** Bullets */
-    val bullets: MutableSet<Bullet> = HashSet(),
+    val bullets: MutableSet<Bullet> = mutableSetOf(),
 
     /** Observer events  */
-    val observerEvents: MutableSet<Event> = HashSet(),
+    val observerEvents: MutableSet<Event> = mutableSetOf(),
 
     /** Map over bot events  */
-    private val botEventsMap: MutableMap<BotId, MutableSet<Event>> = HashMap(),
+    private val botEventsMap: MutableMap<BotId, MutableSet<Event>> = mutableMapOf(),
 ) {
     /**
      * Replaces all bullets with a collection of bullet copies.

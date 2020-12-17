@@ -2,12 +2,12 @@ package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core
 
 import com.google.gson.Gson
 import dev.robocode.tankroyale.schema.*
-import dev.robocode.tankroyale.schema.Message.*
+import dev.robocode.tankroyale.schema.Message.`$type`
 import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.core.ModelUpdater
 import dev.robocode.tankroyale.server.core.NanoTimer
-import dev.robocode.tankroyale.server.core.ServerState
 import dev.robocode.tankroyale.server.core.ServerSetup
+import dev.robocode.tankroyale.server.core.ServerState
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.conn.ConnHandler
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.conn.ConnListener
 import dev.robocode.tankroyale.server.mapper.*
@@ -17,10 +17,7 @@ import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND
 import org.java_websocket.WebSocket
 import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.slf4j.LoggerFactory
-import java.lang.Exception
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 import kotlin.math.roundToInt
 
 
@@ -44,13 +41,13 @@ class GameServer(
     private var gameSetup: dev.robocode.tankroyale.server.model.GameSetup? = null
 
     /** Game participants (bots connections) */
-    private val participants: MutableSet<WebSocket> = HashSet()
+    private val participants = mutableSetOf<WebSocket>()
 
     /** Game participants that signalled 'ready' for battle */
-    private val readyParticipants: MutableSet<WebSocket> = HashSet()
+    private val readyParticipants = mutableSetOf<WebSocket>()
 
     /** Map over participant ids: bot connection -> bot id */
-    private val participantIds: MutableMap<WebSocket, BotId> = HashMap()
+    private val participantIds = mutableMapOf<WebSocket, BotId>()
 
     /** Map over bot intents: bot connection -> bot intent */
     private val botIntents: MutableMap<WebSocket, dev.robocode.tankroyale.server.model.BotIntent> = ConcurrentHashMap()

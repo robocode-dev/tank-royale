@@ -67,7 +67,7 @@ class ConnHandler internal constructor(
 
     val observerAndControllerConnections: Set<WebSocket>
         get() {
-            val combined: MutableSet<WebSocket> = HashSet()
+            val combined = mutableSetOf<WebSocket>()
             combined += observerConnections
             combined += controllerConnections
             return combined.toSet()
@@ -78,7 +78,7 @@ class ConnHandler internal constructor(
     }
 
     fun getBotConnections(botAddresses: Collection<BotAddress>): Set<WebSocket> {
-        val foundConnections: MutableSet<WebSocket> = HashSet()
+        val foundConnections = mutableSetOf<WebSocket>()
         for (conn: WebSocket in botHandshakes.keys) {
             val addr = conn.remoteSocketAddress
             if (addr != null) {

@@ -2,16 +2,14 @@ package dev.robocode.tankroyale.server.score
 
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.rules.RAM_DAMAGE
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 /** Bot record that tracks damage and survival of a bot, and can calculate score. */
 internal class ScoreAndDamage {
 
-    private val bulletDamage: MutableMap<BotId, Double> = HashMap()
-    private val ramDamage: MutableMap<BotId, Double> = HashMap()
-    private val bulletKillEnemyIds: MutableSet<BotId> = HashSet()
-    private val ramKillEnemyIds: MutableSet<BotId> = HashSet()
+    private val bulletDamage = mutableMapOf<BotId, Double>()
+    private val ramDamage = mutableMapOf<BotId, Double>()
+    private val bulletKillEnemyIds = mutableSetOf<BotId>()
+    private val ramKillEnemyIds = mutableSetOf<BotId>()
 
     /** The survival count, which is the number of rounds where the bot has survived. */
     var survivalCount = 0

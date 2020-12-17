@@ -6,8 +6,6 @@ import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.rules.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
 import java.util.*
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 import kotlin.math.abs
 import kotlin.math.atan2
 
@@ -38,10 +36,10 @@ class ModelUpdater(
     private val botsMap = mutableMapOf<BotId, Bot>()
 
     /** Map over all bot intents */
-    private val botIntentsMap: MutableMap<BotId, BotIntent> = HashMap()
+    private val botIntentsMap = mutableMapOf<BotId, BotIntent>()
 
     /** Bullets */
-    private val bullets: MutableSet<Bullet> = HashSet()
+    private val bullets = mutableSetOf<Bullet>()
 
     /** Game state */
     private var gameState = GameState(Arena(setup.arenaWidth, setup.arenaHeight))
@@ -178,7 +176,7 @@ class ModelUpdater(
 
     /** Initializes bot states. */
     private fun initializeBotStates() {
-        val occupiedCells: MutableSet<Int> = HashSet()
+        val occupiedCells = mutableSetOf<Int>()
         for (id in participantIds) {
             val position = randomBotPosition(occupiedCells)
             val direction = randomDirection() // body, gun, and radar starts in the same direction

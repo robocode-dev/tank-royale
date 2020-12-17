@@ -3,9 +3,6 @@ package dev.robocode.tankroyale.server.score
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.Score
 import dev.robocode.tankroyale.server.rules.*
-import java.lang.IllegalStateException
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 /** Score utility class used for keeping track of the score for an individual bot in a game. */
 class ScoreTracker(botIds: Set<BotId>) {
@@ -14,19 +11,19 @@ class ScoreTracker(botIds: Set<BotId>) {
     private val botIds: Set<BotId> = HashSet(botIds)
 
     /** Map from bot identifier to a bot record  */
-    private val scoreAndDamages: MutableMap<BotId, ScoreAndDamage> = HashMap()
+    private val scoreAndDamages = mutableMapOf<BotId, ScoreAndDamage>()
 
     /** Set of identifiers of bots alive  */
-    private val botsAliveIds: MutableSet<BotId> = HashSet(botIds)
+    private val botsAliveIds = mutableSetOf<BotId>()
 
     /** 1st places  */
-    private val place1st: MutableMap<BotId, Int> = HashMap()
+    private val place1st = mutableMapOf<BotId, Int>()
 
     /** 2nd places  */
-    private val place2nd: MutableMap<BotId, Int> = HashMap()
+    private val place2nd = mutableMapOf<BotId, Int>()
 
     /** 3rd places  */
-    private val place3rd: MutableMap<BotId, Int> = HashMap()
+    private val place3rd = mutableMapOf<BotId, Int>()
 
     init {
         initializeDamageAndSurvivals()

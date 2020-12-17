@@ -58,7 +58,7 @@ object GameSetupToGameSetupMapper {
     }
 
     fun map(games: Set<GameSetup>): Set<dev.robocode.tankroyale.schema.GameSetup> {
-        val mappedGames: MutableSet<dev.robocode.tankroyale.schema.GameSetup> = HashSet()
+        val mappedGames = mutableSetOf<dev.robocode.tankroyale.schema.GameSetup>()
         games.forEach { mappedGames += map(it) }
         return mappedGames
     }
