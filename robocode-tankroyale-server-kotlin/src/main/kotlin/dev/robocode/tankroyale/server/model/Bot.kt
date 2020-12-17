@@ -66,9 +66,6 @@ data class Bot(
     /** Gun color */
     var gunColor: Color? = null,
 
-    /** Score record */
-    var score: Score,
-
     /** Scan direction in degrees */
     var scanDirection: Double = radarDirection,
 

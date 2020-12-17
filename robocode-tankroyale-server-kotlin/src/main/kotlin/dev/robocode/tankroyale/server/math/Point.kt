@@ -7,6 +7,6 @@ data class Point(
     /** y coordinate */
     override val y: Double
 ): IPoint {
-    /** Returns a mutable version of this point */
+    /** Returns a mutable copy of this point */
     fun toMutablePoint() = MutablePoint(x, y)
 }

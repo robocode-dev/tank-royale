@@ -35,7 +35,7 @@ class ModelUpdater(
     private val scoreTracker: ScoreTracker = ScoreTracker(participantIds)
 
     /** Map over all bots */
-    private val botsMap: MutableMap<BotId, Bot> = HashMap()
+    private val botsMap = mutableMapOf<BotId, Bot>()
 
     /** Map over all bot intents */
     private val botIntentsMap: MutableMap<BotId, BotIntent> = HashMap()
@@ -44,7 +44,7 @@ class ModelUpdater(
     private val bullets: MutableSet<Bullet> = HashSet()
 
     /** Game state */
-    private var gameState: GameState = GameState(Arena(setup.arenaWidth, setup.arenaHeight))
+    private var gameState = GameState(Arena(setup.arenaWidth, setup.arenaHeight))
 
     /** Current round number */
     private var roundNumber: Int = 0
@@ -54,10 +54,10 @@ class ModelUpdater(
         private set
 
     /** Round record */
-    private var round: Round = Round(roundNumber = roundNumber)
+    private var round = Round(roundNumber = roundNumber)
 
     /** Turn record */
-    private var turn: Turn = Turn(turnNumber = turnNumber)
+    private var turn = Turn(turnNumber = turnNumber)
 
     /** Flag specifying if the round has ended */
     private var roundEnded = false
@@ -188,7 +188,6 @@ class ModelUpdater(
                 direction = direction,
                 gunDirection = direction,
                 radarDirection = direction,
-                score = Score(botId = id),
             )
         }
         // Store bot snapshots into the turn
@@ -218,7 +217,7 @@ class ModelUpdater(
 
     /** Execute bot intents for all bots that are not disabled */
     private fun executeBotIntents() {
-        for ((_, bot) in botsMap) {
+        for (bot in botsMap.values) {
             if (bot.isEnabled) executeBotIntent(bot)
         }
     }
@@ -351,7 +350,7 @@ class ModelUpdater(
     /** Check collisions between bots */
     private fun checkAndHandleBotCollisions() {
         val bots = mutableListOf<Bot>()
-        botsMap.values.forEach { bots += it }
+        botsMap.values.forEach { bot -> bots += bot }
 
         for (i in 0 until bots.size) {
             for (j in i + 1 until bots.size) {
@@ -399,7 +398,12 @@ class ModelUpdater(
      * @param isBot1RammingBot2 is `true` if `bot1` has rammed `bot2`; `false` otherwise.
      * @param isBot2RammingBot1 is `true` if `bot2` has rammed `bot1`; `false` otherwise.
      */
-    private fun registerRamHit(bot1: Bot, bot2: Bot, isBot1RammingBot2: Boolean, isBot2RammingBot1: Boolean) {
+    private fun registerRamHit(
+        bot1: Bot,
+        bot2: Bot,
+        isBot1RammingBot2: Boolean,
+        isBot2RammingBot1: Boolean
+    ) {
         // Both bots takes damage when hitting each other
         val bot1Killed = bot1.addDamage(RAM_DAMAGE)
         val bot2Killed = bot2.addDamage(RAM_DAMAGE)
@@ -519,10 +523,7 @@ class ModelUpdater(
         val iterator = bullets.iterator() // due to removal
         while (iterator.hasNext()) {
             val bullet = iterator.next()
-            println(bullet.position())
-
             if (isPointOutsideArena(bullet.position())) {
-
                 // remove bullet from arena
                 iterator.remove()
 
@@ -643,7 +644,7 @@ class ModelUpdater(
     /** Checks the scan field for scanned bots. */
     private fun checkAndHandleScans() {
         val bots = mutableListOf<Bot>()
-        botsMap.values.forEach { bots += it }
+        botsMap.values.forEach { bot -> bots += bot }
 
         for (i in 0 until bots.size) {
             val scanningBot = bots[i]

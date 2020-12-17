@@ -40,6 +40,16 @@ fun Double.isNearTo(value: Double): Boolean {
 }
 
 /**
+ * Tests if a `double` value is not near to another 'double' value. See Double.isNearTo(Double).
+ *
+ * @param value the `double` value to compare to this double.
+ * @return `true` if the `double` value is not near to this `double`; `false` otherwise.
+ */
+fun Double.isNotNearTo(value: Double): Boolean {
+    return abs(this - value) < 1E-6
+}
+
+/**
  * Returns the shortest distance between two points: sqrt(dx*dx + dy*dy).
  * @param x1 is the x coordinate of the 1st point.
  * @param y1 is the y coordinate of the 1st point.
