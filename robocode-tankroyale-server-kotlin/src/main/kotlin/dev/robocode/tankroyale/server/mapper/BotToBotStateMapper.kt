@@ -2,10 +2,10 @@ package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.schema.BotState
 import dev.robocode.tankroyale.server.math.normalAbsoluteDegrees
-import dev.robocode.tankroyale.server.model.Bot
+import dev.robocode.tankroyale.server.model.IBot
 
 object BotToBotStateMapper {
-    fun map(bot: Bot): BotState {
+    fun map(bot: IBot): BotState {
         val botState = BotState()
         bot.apply {
             botState.energy = energy

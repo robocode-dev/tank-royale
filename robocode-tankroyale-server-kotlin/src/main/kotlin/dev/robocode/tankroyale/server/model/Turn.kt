@@ -9,7 +9,7 @@ data class Turn(
     var turnNumber: Int,
 
     /** Bots */
-    val bots: MutableSet<Bot> = mutableSetOf(),
+    val bots: MutableSet<IBot> = mutableSetOf(),
 
     /** Bullets */
     val bullets: MutableSet<IBullet> = mutableSetOf(),
@@ -33,9 +33,9 @@ data class Turn(
      * Replaces all bots with a collection of bot copies.
      * @param srcBots is the collection of bots to copy.
      */
-    fun copyBots(srcBots: Collection<Bot>) {
+    fun copyBots(srcBots: Collection<IBot>) {
         bots.clear()
-        srcBots.forEach { bot -> bots += bot.copy() }
+        srcBots.forEach { bot -> bots += bot }
     }
 
     /**
@@ -43,7 +43,7 @@ data class Turn(
      * @param botId is the id of the bot.
      * @return the bot instance with the specified id or null if the bot was not found.
      */
-    fun getBot(botId: BotId): Bot? = bots.find { it.id == botId }
+    fun getBot(botId: BotId): IBot? = bots.find { it.id == botId }
 
     /**
      * Returns the bullets fired by a specific bot.

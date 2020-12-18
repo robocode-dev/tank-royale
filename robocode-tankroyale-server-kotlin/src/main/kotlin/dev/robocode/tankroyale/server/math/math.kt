@@ -46,7 +46,7 @@ fun Double.isNearTo(value: Double): Boolean {
  * @return `true` if the `double` value is not near to this `double`; `false` otherwise.
  */
 fun Double.isNotNearTo(value: Double): Boolean {
-    return abs(this - value) < 1E-6
+    return !isNearTo(value)
 }
 
 /**
