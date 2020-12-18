@@ -12,7 +12,7 @@ fun getVersion(): String? {
         val inputStream = Server::class.java.classLoader.getResourceAsStream("version.txt")
         inputStream?.use {
             try {
-                val isr = InputStreamReader(inputStream);
+                val isr = InputStreamReader(inputStream)
                 isr.use {
                     BufferedReader(isr).use { reader -> version = reader.readLine().trim() }
                 }
