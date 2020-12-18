@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.server.event
 
-import dev.robocode.tankroyale.server.model.Bullet
+import dev.robocode.tankroyale.server.model.IBullet
 
 /** Event sent when a bullet hits another bullet. */
 data class BulletHitBulletEvent(
@@ -8,9 +8,9 @@ data class BulletHitBulletEvent(
     override val turnNumber: Int,
 
     /** Bullet that hit another bullet */
-    val bullet: Bullet,
+    val bullet: IBullet,
 
     /** Bullet that got hit by the bullet */
-    val hitBullet: Bullet,
+    val hitBullet: IBullet,
 
-) : Event()
+    ) : Event()

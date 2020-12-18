@@ -1,10 +1,11 @@
 package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.schema.BulletState
-import dev.robocode.tankroyale.server.model.Bullet
+import dev.robocode.tankroyale.server.model.IBullet
+import dev.robocode.tankroyale.server.model.MutableBullet
 
 object BulletsToBulletStatesMapper {
-    fun map(bullets: Set<Bullet>): List<BulletState> {
+    fun map(bullets: Set<IBullet>): List<BulletState> {
         val bulletStates = mutableListOf<BulletState>()
         bullets.forEach { bulletStates += BulletToBulletStateMapper.map(it) }
         return bulletStates

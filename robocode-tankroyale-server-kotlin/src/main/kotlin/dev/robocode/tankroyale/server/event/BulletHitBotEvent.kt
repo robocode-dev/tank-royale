@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.server.event
 
 import dev.robocode.tankroyale.server.model.BotId
-import dev.robocode.tankroyale.server.model.Bullet
+import dev.robocode.tankroyale.server.model.IBullet
 
 /** Event sent when a bullet hits a bot. */
 data class BulletHitBotEvent (
@@ -9,7 +9,7 @@ data class BulletHitBotEvent (
     override val turnNumber: Int,
 
     /** Bullet that hit the bot */
-    val bullet: Bullet,
+    val bullet: IBullet,
 
     /** Bot id of the victim that was hit by the bullet */
     val victimId: BotId,

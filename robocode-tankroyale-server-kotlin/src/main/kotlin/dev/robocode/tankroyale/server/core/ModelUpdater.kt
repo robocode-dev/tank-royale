@@ -39,7 +39,7 @@ class ModelUpdater(
     private val botIntentsMap = mutableMapOf<BotId, BotIntent>()
 
     /** Bullets */
-    private val bullets = mutableSetOf<Bullet>()
+    private val bullets = mutableSetOf<MutableBullet>()
 
     /** Game state */
     private var gameState = GameState(Arena(setup.arenaWidth, setup.arenaHeight))
@@ -243,7 +243,7 @@ class ModelUpdater(
             // Create list of bullet line segments used for checking for bullet hits
             val bulletLines = mutableListOf<BulletLine>()
             for (bullet in bullets) {
-                bulletLines += BulletLine(bullet.copy()) // bullet need to be a copy/snapshot!
+                bulletLines += BulletLine(bullet.toBullet())
             }
             // Check for bullet hits
             for (i in 0 until bulletCount) {
@@ -262,12 +262,9 @@ class ModelUpdater(
      * @param bullet1 is the first bullet.
      * @param bullet2 is the second bullet.
      */
-    private fun handleBulletHitBullet(bullet1: Bullet, bullet2: Bullet) {
-        val b1 = bullet1.copy()
-        val b2 = bullet2.copy()
-
-        val event1 = BulletHitBulletEvent(turnNumber, b1, b2)
-        val event2 = BulletHitBulletEvent(turnNumber, b2, b1)
+    private fun handleBulletHitBullet(bullet1: IBullet, bullet2: IBullet) {
+        val event1 = BulletHitBulletEvent(turnNumber, bullet1, bullet2)
+        val event2 = BulletHitBulletEvent(turnNumber, bullet2, bullet1)
 
         turn.apply {
             addPrivateBotEvent(bullet1.botId, event1)
@@ -276,8 +273,8 @@ class ModelUpdater(
             addObserverEvent(event1)
         }
         // Remove bullets from the arena
-        bullets -= bullet1
-        bullets -= bullet2
+        bullets -= (bullet1 as Bullet).toMutableBullet()
+        bullets -= (bullet2 as Bullet).toMutableBullet()
     }
 
     /**
@@ -304,7 +301,7 @@ class ModelUpdater(
                 handleBulletHittingBot(bulletLine.bullet, bot)
 
                 // Remove bullet from the arena
-                bullets -= bulletLine.bullet
+                bullets.removeIf { bullet -> bullet.bulletId == bulletLine.bullet.bulletId }
             }
         }
     }
@@ -323,7 +320,7 @@ class ModelUpdater(
      * @param bullet is the bullet that has hit.
      * @param bot is the bot that have been hit.
      */
-    private fun handleBulletHittingBot(bullet: Bullet, bot: Bot) {
+    private fun handleBulletHittingBot(bullet: IBullet, bot: Bot) {
         val botId = bullet.botId
         val victimId = bot.id
 
@@ -337,7 +334,7 @@ class ModelUpdater(
 
         scoreTracker.registerBulletHit(botId, victimId, damage, isKilled)
 
-        val bulletHitBotEvent = BulletHitBotEvent(turnNumber, bullet.copy(), victimId, damage, bot.energy)
+        val bulletHitBotEvent = BulletHitBotEvent(turnNumber, bullet, victimId, damage, bot.energy)
         turn.apply {
             addPrivateBotEvent(bulletHitBotEvent.bullet.botId, bulletHitBotEvent) // Bot itself gets event
             addPrivateBotEvent(bulletHitBotEvent.victimId, bulletHitBotEvent) // Victim bot gets event too
@@ -622,7 +619,7 @@ class ModelUpdater(
         firepower.coerceAtMost(MAX_FIREPOWER)
 
         bot.gunHeat = calcGunHeat(firepower)
-        val bullet = Bullet(
+        val bullet = MutableBullet(
             botId = bot.id,
             bulletId = BulletId(++nextBulletId),
             startPosition = bot.position.toPoint(),

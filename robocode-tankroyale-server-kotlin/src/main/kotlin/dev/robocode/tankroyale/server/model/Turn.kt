@@ -12,7 +12,7 @@ data class Turn(
     val bots: MutableSet<Bot> = mutableSetOf(),
 
     /** Bullets */
-    val bullets: MutableSet<Bullet> = mutableSetOf(),
+    val bullets: MutableSet<IBullet> = mutableSetOf(),
 
     /** Observer events  */
     val observerEvents: MutableSet<Event> = mutableSetOf(),
@@ -24,9 +24,9 @@ data class Turn(
      * Replaces all bullets with a collection of bullet copies.
      * @param srcBullets is the collection of bullets to copy.
      */
-    fun copyBullets(srcBullets: Collection<Bullet>) {
+    fun copyBullets(srcBullets: Collection<IBullet>) {
         bullets.clear()
-        srcBullets.forEach { bullet -> bullets += bullet.copy() }
+        srcBullets.forEach { bullet -> bullets += bullet }
     }
 
     /**
@@ -50,7 +50,7 @@ data class Turn(
      * @param botId is the id of the bot that fired the bullets.
      * @return a set of bullets.
      */
-    fun getBullets(botId: BotId): List<Bullet> = bullets.filter { it.botId == botId }
+    fun getBullets(botId: BotId): List<IBullet> = bullets.filter { it.botId == botId }
 
     /**
      * Returns the event for a specific bot.
