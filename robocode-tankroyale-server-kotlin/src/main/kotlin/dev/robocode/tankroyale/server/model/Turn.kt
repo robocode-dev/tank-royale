@@ -46,13 +46,6 @@ data class Turn(
     fun getBot(botId: BotId): IBot? = bots.find { it.id == botId }
 
     /**
-     * Returns the bullets fired by a specific bot.
-     * @param botId is the id of the bot that fired the bullets.
-     * @return a set of bullets.
-     */
-    fun getBullets(botId: BotId): List<IBullet> = bullets.filter { it.botId == botId }
-
-    /**
      * Returns the event for a specific bot.
      * @param botId is the id of the bot.
      * @return a set of bot events.

@@ -121,6 +121,7 @@ class ModelUpdater(
         botsMap.clear()
         scoreTracker.prepareRound()
         inactivityCounter = 0
+
         initializeBotStates()
     }
 
@@ -368,8 +369,9 @@ class ModelUpdater(
         // Both bots takes damage when hitting each other
         registerRamHit(bot1, bot2, isBot1RammingBot2, isBot2RammingBot1)
 
-        // Bounce back bots
-        bounceBack(bot1, bot2)
+        // Restore both bot's old position
+        bot1.restoreOldPosition()
+        bot2.restoreOldPosition()
 
         // Stop bots by setting speed to 0
         if (isBot1RammingBot2) bot1.speed = 0.0
@@ -407,30 +409,6 @@ class ModelUpdater(
         }
         if (isBot2RammingBot1) {
             scoreTracker.registerRamHit(bot1.id, bot2.id, bot2Killed)
-        }
-    }
-
-    /**
-     * Bounces back two colliding bots.
-     * @param bot1 is the first bot.
-     * @param bot2 is the second bot.
-     */
-    private fun bounceBack(bot1: MutableBot, bot2: MutableBot) {
-        val bot1OldPosition = bot1.position.toPoint()
-        val bot2OldPosition = bot2.position.toPoint()
-
-        val (bot1BounceDist, bot2BounceDist) = calcBotBounceDistances(bot1, bot2)
-        bot1.bounceBack(bot1BounceDist)
-        bot2.bounceBack(bot2BounceDist)
-
-        // Check if one of the bot bounced into a wall
-        if (isBotPositionOutsideArena(bot1.position)) {
-            bot1.position = bot1OldPosition.toMutablePoint()
-            bot2.bounceBack(bot1BounceDist /* remaining distance */)
-        }
-        if (isBotPositionOutsideArena(bot2.position)) {
-            bot2.position = bot2OldPosition.toMutablePoint()
-            bot1.bounceBack(bot2BounceDist /* remaining distance */)
         }
     }
 
@@ -877,29 +855,6 @@ class ModelUpdater(
             bot.scanColor = colorStringToRGB(intent.scanColor)
             bot.tracksColor = colorStringToRGB(intent.tracksColor)
             bot.gunColor = colorStringToRGB(intent.gunColor)
-        }
-
-        /**
-         * Calculates the bounce distances for two colliding bots.
-         * @param bot1 is the first bot.
-         * @param bot2 is the second bot.
-         * @return is a pair of doubles that contains the bounce distance for the first and second bot.
-         */
-        private fun calcBotBounceDistances(bot1: IBot, bot2: IBot): Pair<Double, Double> {
-            val overlapDist = BOT_BOUNDING_CIRCLE_DIAMETER - distance(bot1.x, bot1.y, bot2.x, bot2.y)
-            val totalSpeed = bot1.speed + bot2.speed
-            val bot1BounceDist: Double
-            val bot2BounceDist: Double
-            if (totalSpeed == 0.0) {
-                bot1BounceDist = overlapDist / 2
-                bot2BounceDist = overlapDist / 2
-            } else {
-                // The faster speed, the less bounce distance. Hence the speeds for the bots are swapped
-                val t = overlapDist / totalSpeed
-                bot1BounceDist = bot2.speed * t
-                bot2BounceDist = bot1.speed * t
-            }
-            return Pair(bot1BounceDist, bot2BounceDist)
         }
     }
 }
