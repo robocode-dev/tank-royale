@@ -32,10 +32,11 @@ public class Fire extends Bot {
   public void run() {
     // Set colors
     setBodyColor("#FA0"); // orange
-    setGunColor("##FA0"); // orange
+    setGunColor("#F70"); // dark orange
+    setTurretColor("#F70"); // dark orange
     setRadarColor("#F00"); // red
-    setBulletColor("#08F"); // light blue
     setScanColor("#F00"); // red
+    setBulletColor("#08F"); // light blue
 
     // Spin the gun around slowly... forever
     while (isRunning()) {

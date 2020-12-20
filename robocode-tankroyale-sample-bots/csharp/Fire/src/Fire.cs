@@ -28,10 +28,11 @@ namespace Robocode.TankRoyale.Sample.Bots
     {
       // Set colors
       SetBodyColor("#FA0"); // orange
-      SetGunColor("##FA0"); // orange
+      SetGunColor("#F70"); // dark orange
+      SetTurretColor("#F70"); // dark orange
       SetRadarColor("#F00"); // red
-      SetBulletColor("#08F"); // light blue
       SetScanColor("#F00"); // red
+      SetBulletColor("#08F"); // light blue
 
       // Spin the gun around slowly... forever
       while (IsRunning)
