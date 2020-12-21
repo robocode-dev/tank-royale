@@ -9,7 +9,7 @@ plugins {
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.6.32'
+version = '0.7.0'
 
 compileJava {
     sourceCompatibility = '1.8'
@@ -58,7 +58,7 @@ processResources {
 
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'dev.robocode.tankroyale.server.Server'
+        attributes 'Main-Class': 'dev.robocode.tankroyale.server.ServerKt'
     }
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }

@@ -294,12 +294,7 @@ class GameServer(
      * @return The connection for the bot or `null` if no connection was found for the bot id.
      */
     private fun getConnection(botId: BotId): WebSocket? {
-        for ((conn, id) in participantIds) {
-            if (id == botId) {
-                return conn
-            }
-        }
-        return null
+        return participantIds.entries.first { (_, id) -> botId == id }.key
     }
 
     /** Broadcast pause event to all observers */
