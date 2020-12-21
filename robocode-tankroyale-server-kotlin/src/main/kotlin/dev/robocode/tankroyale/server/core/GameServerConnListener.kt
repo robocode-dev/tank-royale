@@ -1,0 +1,105 @@
+package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core
+
+import dev.robocode.tankroyale.schema.*
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.conn.ConnListener
+import org.java_websocket.WebSocket
+import org.slf4j.LoggerFactory
+
+internal class GameServerConnListener(private val gameServer: GameServer) : ConnListener {
+
+    private val log = LoggerFactory.getLogger(GameServerConnListener::class.java)
+
+    override fun onException(exception: Exception) {
+        exception.printStackTrace()
+    }
+
+    override fun onBotJoined(conn: WebSocket, handshake: BotHandshake) {
+        log.info("Bot joined: ${getDisplayName(handshake)}")
+        gameServer.onBotJoined()
+    }
+
+    override fun onBotLeft(conn: WebSocket, handshake: BotHandshake) {
+        log.info("Bot left: ${getDisplayName(handshake)}")
+        gameServer.onBotLeft(conn)
+    }
+
+    override fun onBotReady(conn: WebSocket, handshake: BotHandshake) {
+        log.debug("Bot ready: ${getDisplayName(handshake)}")
+        gameServer.onBotReady(conn)
+    }
+
+    override fun onBotIntent(conn: WebSocket, handshake: BotHandshake, intent: BotIntent) {
+        log.debug("Bot intent: ${getDisplayName(handshake)}: $intent")
+        gameServer.onUpdateBotIntent(conn, intent)
+    }
+
+    override fun onObserverJoined(conn: WebSocket, handshake: ObserverHandshake) {
+        log.info("Observer joined: ${getDisplayName(handshake)}")
+        gameServer.sendBotListUpdate(conn)
+    }
+
+    override fun onObserverLeft(conn: WebSocket, handshake: ObserverHandshake) {
+        log.info("Observer left: ${getDisplayName(handshake)}")
+    }
+
+    override fun onControllerJoined(conn: WebSocket, handshake: ControllerHandshake) {
+        log.info("Controller joined: ${getDisplayName(handshake)}")
+        gameServer.sendBotListUpdate(conn)
+    }
+
+    override fun onControllerLeft(conn: WebSocket, handshake: ControllerHandshake) {
+        log.info("Controller left: ${getDisplayName(handshake)}")
+    }
+
+    override fun onStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
+        log.info("Starting game")
+        gameServer.onStartGame(gameSetup, botAddresses)
+    }
+
+    override fun onAbortGame() {
+        log.info("Aborting game")
+        gameServer.onAbortGame()
+    }
+
+    override fun onPauseGame() {
+        log.info("Pausing game")
+        gameServer.onPauseGame()
+    }
+
+    override fun onResumeGame() {
+        log.info("Resuming game")
+        gameServer.onResumeGame()
+    }
+
+    override fun onChangeTps(tps: Int) {
+        log.info("Changing TPS to $tps")
+        gameServer.onChangeTps(tps)
+    }
+
+    private fun getDisplayName(handshake: BotHandshake): String {
+        return getDisplayName(handshake.name, handshake.version)
+    }
+
+    private fun getDisplayName(handshake: ObserverHandshake): String {
+        return getDisplayName(handshake.name, handshake.version)
+    }
+
+    private fun getDisplayName(handshake: ControllerHandshake): String {
+        return getDisplayName(handshake.name, handshake.version)
+    }
+
+    private fun getDisplayName(name: String, version: String): String {
+        var displayName = ""
+        name.trim().apply {
+            if (isNotEmpty()) {
+                displayName = this
+            }
+        }
+        version.trim().apply {
+            if (isNotEmpty()) {
+                displayName += " $this"
+            }
+        }
+        return displayName
+    }
+}

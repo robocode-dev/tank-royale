@@ -9,7 +9,6 @@ import dev.robocode.tankroyale.server.core.NanoTimer
 import dev.robocode.tankroyale.server.core.ServerSetup
 import dev.robocode.tankroyale.server.core.ServerState
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.conn.ConnHandler
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.conn.ConnListener
 import dev.robocode.tankroyale.server.mapper.*
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.GameState
@@ -72,10 +71,15 @@ class GameServer(
     /** JSON handler */
     private val gson = Gson()
 
+    private var botListUpdateMessage = BotListUpdate().apply {
+        `$type` = Message.`$type`.BOT_LIST_UPDATE
+        bots = listOf<BotInfo>()
+    }
+
     init {
         /** Initializes connection handler */
         val serverSetup = ServerSetup(HashSet(listOf(*gameTypes.split(",").toTypedArray())))
-        connHandler = ConnHandler(serverSetup, GameServerConnListener(), clientSecret)
+        connHandler = ConnHandler(serverSetup, GameServerConnListener(this), clientSecret)
     }
 
     /** Starts this server */
@@ -219,32 +223,6 @@ class GameServer(
         return period
     }
 
-    /**
-     * Starts a new game with a new game setup and new participants.
-     * @param gameSetup is the new game setup.
-     * @param botAddresses is the addresses of the new participants.
-     */
-    private fun startGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
-        this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup)
-        participants.clear()
-        participants += connHandler.getBotConnections(botAddresses)
-
-        if (participants.isNotEmpty()) {
-            prepareGame()
-        }
-    }
-
-    /** Aborts current game */
-    private fun abortGame() {
-        log.info("Aborting game")
-
-        serverState = ServerState.GAME_STOPPED
-
-        broadcastGameAborted()
-
-        // No score is generated for aborted games
-    }
-
     /** Broadcast game-aborted event to all observers and controllers */
     private fun broadcastGameAborted() {
         broadcastToObserverAndControllers(
@@ -324,32 +302,6 @@ class GameServer(
         return null
     }
 
-    /** Pauses current game */
-    private fun pauseGame() {
-        log.info("Pausing game")
-
-        if (serverState === ServerState.GAME_RUNNING) {
-            serverState = ServerState.GAME_PAUSED
-
-            turnTimeoutTimer?.pause()
-
-            broadcastGamedPausedToObservers()
-        }
-    }
-
-    /** Resumes current game */
-    private fun resumeGame() {
-        log.info("Resuming game")
-
-        if (serverState === ServerState.GAME_PAUSED) {
-            serverState = ServerState.GAME_RUNNING
-
-            turnTimeoutTimer?.resume()
-
-            broadcastGameResumedToObservers()
-        }
-    }
-
     /** Broadcast pause event to all observers */
     private fun broadcastGamedPausedToObservers() {
         broadcastToObserverAndControllers(
@@ -364,28 +316,6 @@ class GameServer(
             GameResumedEventForObserver().apply {
                 `$type` = Message.`$type`.GAME_RESUMED_EVENT_FOR_OBSERVER
             })
-    }
-
-    /**
-     * Changes the TPS.
-     * @param tps is the new TPS to change to.
-     */
-    private fun changeTps(tps: Int) {
-        log.info("Changing TPS to $tps")
-
-        if (this.tps == tps) return
-        this.tps = tps
-
-        broadcastTpsChangedToObservers()
-
-        if (tps == 0) {
-            pauseGame()
-        } else {
-            if (serverState === ServerState.GAME_PAUSED) {
-                resumeGame()
-            }
-            resetTurnTimeout()
-        }
     }
 
     /** Broadcast TPS-changed event to all observers */
@@ -512,32 +442,13 @@ class GameServer(
 
     private val botsThatSentIntent = mutableListOf<WebSocket>()
 
-    private fun updateBotIntent(conn: WebSocket, intent: BotIntent) {
-        if (!participants.contains(conn)) {
-            return
-        }
-        val botIntent = botIntents[conn] ?: dev.robocode.tankroyale.server.model.BotIntent()
-        botIntent.update(BotIntentToBotIntentMapper.map(intent))
-        botIntents[conn] = botIntent
-
-        // If all bot intents have been received, we can start next turn
-        botsThatSentIntent += conn
-        if (botIntents.size == botsThatSentIntent.size) {
-            botsThatSentIntent.clear()
-
-            onNextTurn()
-            turnTimeoutTimer?.reset()
-        }
-    }
-
-    private fun createBotListUpdateMessage(): Message {
+    private fun updateBotListUpdateMessage() {
         val botsList = mutableListOf<BotInfo>()
-        val botListUpdate = BotListUpdate().apply {
+        botListUpdateMessage = BotListUpdate().apply {
             `$type` = Message.`$type`.BOT_LIST_UPDATE
             bots = botsList
         }
-        val botConnections = connHandler.getBotConnections()
-        for (conn in botConnections) {
+        for (conn in connHandler.getBotConnections()) {
             val address = conn.remoteSocketAddress
             val botInfo = BotHandshakeToBotInfoMapper.map(
                 connHandler.getBotHandshakes()[conn]!!,
@@ -545,7 +456,6 @@ class GameServer(
             )
             botsList += botInfo
         }
-        return botListUpdate
     }
 
     private fun send(conn: WebSocket, message: Message) {
@@ -568,103 +478,113 @@ class GameServer(
     }
 
     private fun sendBotListUpdateToObservers() {
-        broadcastToObserverAndControllers(createBotListUpdateMessage())
+        broadcastToObserverAndControllers(botListUpdateMessage)
     }
 
-    private inner class GameServerConnListener : ConnListener {
-        override fun onException(exception: Exception) {
-            exception.printStackTrace()
+    internal fun sendBotListUpdate(conn: WebSocket) {
+        send(conn, botListUpdateMessage)
+    }
+
+    internal fun onBotJoined() {
+        updateBotListUpdateMessage()
+        sendBotListUpdateToObservers()
+    }
+
+    internal fun onBotLeft(conn: WebSocket) {
+        // If a bot leaves while in a game, make sure to reset all intent values to zeroes
+        botIntents[conn]?.resetMovement()
+        updateBotListUpdateMessage()
+        sendBotListUpdateToObservers()
+    }
+
+    internal fun onBotReady(conn: WebSocket) {
+        if (serverState === ServerState.WAIT_FOR_READY_PARTICIPANTS) {
+            readyParticipants += conn
+            startGameIfParticipantsReady()
         }
+    }
 
-        override fun onBotJoined(conn: WebSocket, handshake: BotHandshake) {
-            log.info("Bot joined: ${getDisplayName(handshake)}")
-            sendBotListUpdateToObservers()
+    internal fun onUpdateBotIntent(conn: WebSocket, intent: BotIntent) {
+        if (!participants.contains(conn)) {
+            return
         }
+        val botIntent = botIntents[conn] ?: dev.robocode.tankroyale.server.model.BotIntent()
+        botIntent.update(BotIntentToBotIntentMapper.map(intent))
+        botIntents[conn] = botIntent
 
-        override fun onBotLeft(conn: WebSocket, handshake: BotHandshake) {
-            log.info("Bot left: ${getDisplayName(handshake)}")
+        // If all bot intents have been received, we can start next turn
+        botsThatSentIntent += conn
+        if (botIntents.size == botsThatSentIntent.size) {
+            botsThatSentIntent.clear()
 
-            // If a bot leaves while in a game, make sure to reset all intent values to zeroes
-            botIntents[conn]!!.resetMovement()
-            sendBotListUpdateToObservers()
+            onNextTurn()
+            turnTimeoutTimer?.reset()
         }
+    }
 
-        override fun onObserverJoined(conn: WebSocket, handshake: ObserverHandshake) {
-            log.info("Observer joined: ${getDisplayName(handshake)}")
-            val msg = createBotListUpdateMessage()
-            send(conn, msg)
+    /**
+     * Starts a new game with a new game setup and new participants.
+     * @param gameSetup is the new game setup.
+     * @param botAddresses is the addresses of the new participants.
+     */
+    internal fun onStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
+        this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup)
+        participants.clear()
+        participants += connHandler.getBotConnections(botAddresses)
+
+        if (participants.isNotEmpty()) {
+            prepareGame()
         }
+    }
 
-        override fun onObserverLeft(conn: WebSocket, handshake: ObserverHandshake) {
-            log.info("Observer left: ${getDisplayName(handshake)}")
+    /** Aborts current game */
+    internal fun onAbortGame() {
+        serverState = ServerState.GAME_STOPPED
+
+        broadcastGameAborted()
+
+        // No score is generated for aborted games
+    }
+
+    /** Pauses current game */
+    internal fun onPauseGame() {
+        if (serverState === ServerState.GAME_RUNNING) {
+            serverState = ServerState.GAME_PAUSED
+
+            turnTimeoutTimer?.pause()
+
+            broadcastGamedPausedToObservers()
         }
+    }
 
-        override fun onControllerJoined(conn: WebSocket, handshake: ControllerHandshake) {
-            log.info("Controller joined: ${getDisplayName(handshake)}")
-            val msg = createBotListUpdateMessage()
-            send(conn, msg)
+    /** Resumes current game */
+    internal fun onResumeGame() {
+        if (serverState === ServerState.GAME_PAUSED) {
+            serverState = ServerState.GAME_RUNNING
+
+            turnTimeoutTimer?.resume()
+
+            broadcastGameResumedToObservers()
         }
+    }
 
-        override fun onControllerLeft(conn: WebSocket, handshake: ControllerHandshake) {
-            log.info("Controller left: ${getDisplayName(handshake)}")
-        }
+    /**
+     * Changes the TPS.
+     * @param tps is the new TPS to change to.
+     */
+    internal fun onChangeTps(tps: Int) {
+        if (this.tps == tps) return
+        this.tps = tps
 
-        override fun onBotReady(conn: WebSocket) {
-            if (serverState === ServerState.WAIT_FOR_READY_PARTICIPANTS) {
-                readyParticipants += conn
-                startGameIfParticipantsReady()
+        broadcastTpsChangedToObservers()
+
+        if (tps == 0) {
+            onPauseGame()
+        } else {
+            if (serverState === ServerState.GAME_PAUSED) {
+                onResumeGame()
             }
-        }
-
-        override fun onBotIntent(conn: WebSocket, intent: BotIntent) {
-            updateBotIntent(conn, intent)
-        }
-
-        override fun onStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
-            startGame(gameSetup, botAddresses)
-        }
-
-        override fun onAbortGame() {
-            abortGame()
-        }
-
-        override fun onPauseGame() {
-            pauseGame()
-        }
-
-        override fun onResumeGame() {
-            resumeGame()
-        }
-
-        override fun onChangeTps(tps: Int) {
-            changeTps(tps)
-        }
-
-        private fun getDisplayName(handshake: BotHandshake): String {
-            return getDisplayName(handshake.name, handshake.version)
-        }
-
-        private fun getDisplayName(handshake: ObserverHandshake): String {
-            return getDisplayName(handshake.name, handshake.version)
-        }
-
-        private fun getDisplayName(handshake: ControllerHandshake): String {
-            return getDisplayName(handshake.name, handshake.version)
-        }
-
-        private fun getDisplayName(name: String, version: String): String {
-            var displayName = ""
-            name.trim().apply {
-                if (isNotEmpty()) {
-                    displayName = this
-                }
-            }
-            version.trim().apply {
-                if (isNotEmpty()) {
-                    displayName += " $this"
-                }
-            }
-            return displayName
+            resetTurnTimeout()
         }
     }
 }

@@ -214,11 +214,11 @@ class ConnHandler internal constructor(
                             executorService.submit { listener.onControllerJoined(conn, handshake) }
                         }
                         Message.`$type`.BOT_READY -> {
-                            executorService.submit { listener.onBotReady(conn) }
+                            executorService.submit { listener.onBotReady(conn, botHandshakes[conn]!!) }
                         }
                         Message.`$type`.BOT_INTENT -> {
                             val intent = gson.fromJson(message, BotIntent::class.java)
-                            executorService.submit { listener.onBotIntent(conn, intent) }
+                            executorService.submit { listener.onBotIntent(conn, botHandshakes[conn]!!, intent) }
                         }
                         Message.`$type`.START_GAME -> {
                             val startGame = gson.fromJson(message, StartGame::class.java)
