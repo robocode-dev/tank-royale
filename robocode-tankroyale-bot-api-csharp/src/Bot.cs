@@ -183,6 +183,9 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
+    public bool IsStopped => __botInternals.IsStopped;
+
+    /// <inheritdoc/>
     public void SetResume()
     {
       __botInternals.SetResume();

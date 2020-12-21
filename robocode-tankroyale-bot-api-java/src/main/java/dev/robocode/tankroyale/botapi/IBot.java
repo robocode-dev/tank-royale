@@ -609,6 +609,16 @@ public interface IBot extends IBaseBot {
   void stop();
 
   /**
+   * Checks if the movement has been stopped.
+   *
+   * @return true if the movement has been stopped by {@link #stop()} or {@link #setStop()}; false
+   *     otherwise.
+   * @see #stop()
+   * @see #setStop()
+   */
+  boolean isStopped();
+
+  /**
    * Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
    * turning and thereby will not be able to automatically scan bots. This method is useful when the
    * robot movement has stopped, e.g. when {@link #stop()} has been called. The last radar direction

@@ -191,6 +191,12 @@ public abstract class Bot extends BaseBot implements IBot {
 
   /** {@inheritDoc} */
   @Override
+  public boolean isStopped() {
+    return __botInternals.isStopped();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public void setStop() {
     __botInternals.setStop();
   }

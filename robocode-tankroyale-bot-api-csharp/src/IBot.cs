@@ -595,6 +595,15 @@ namespace Robocode.TankRoyale.BotApi
     void Stop();
 
     /// <summary>
+    /// Checks if the movement has been stopped.
+    /// </summary>
+    /// <value><em>true</em> if the movement has been stopped by by <see cref="Stop"/> or <see cref="SetStop"/>;
+    /// <em>false</em> otherwise.</value>
+    /// <seealso cref="Stop"/>
+    /// <seealso cref="SetStop"/>
+    bool IsStopped { get; }
+
+    /// <summary>
     /// Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
     /// turning and thereby will not be able to automatically scan bots. This method is useful when the
     /// robot movement has stopped, e.g. when <see cref="Stop"/> has been called. The last radar direction

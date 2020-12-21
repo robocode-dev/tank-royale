@@ -1,7 +1,7 @@
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
-namespace Robocode.TankRoyale.Sample.Bots
+namespace Robocode.TankRoyale.BotApi.Sample.Bots
 {
   /// <summary>
   /// Fire - a sample bot, original version by Mathew Nelson for Robocode.
@@ -94,8 +94,12 @@ namespace Robocode.TankRoyale.Sample.Bots
       double gunBearing = NormalizeRelativeAngle(direction - GunDirection);
       TurnGunLeft(gunBearing);
 
-      // Fire hard
-      Fire(3);
+      // Check that radar is locked (by stopping movement in OnScannedBot)
+      if (IsStopped)
+      {
+        // Fire hard
+        Fire(3);
+      }
     }
   }
 }

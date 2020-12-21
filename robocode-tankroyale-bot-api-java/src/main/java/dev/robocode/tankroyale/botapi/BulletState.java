@@ -119,7 +119,7 @@ public final class BulletState {
    * Returns the RGB color code of the bullet when fired. The color code is an integer in hexadecimal format
    * using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
    *
-   * @return The color code of the bullet or {@code null} if the bot uses the default bullet color code.
+   * @return The color code of the bullet or `null` if the bot uses the default bullet color code.
    * @see <a
    *     href="https://www.rapidtables.com/web/color/RGB_Color.html">https://www.rapidtables.com/web/color/RGB_Color.html</a>
    */

@@ -304,6 +304,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
       distanceRemaining = distance - speed;
     }
 
+    internal bool IsStopped { get => isStopped; }
+
     internal void Stop()
     {
       SetStop();

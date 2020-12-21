@@ -270,6 +270,10 @@ public final class BotInternals {
     distanceRemaining = distance - speed;
   }
 
+  public boolean isStopped() {
+    return isStopped;
+  }
+
   public void stop() {
     setStop();
     awaitNextTurn();

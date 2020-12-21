@@ -93,7 +93,10 @@ public class Fire extends Bot {
     double gunBearing = normalizeRelativeAngle(direction - getGunDirection());
     turnGunLeft(gunBearing);
 
-    // Fire hard
-    fire(3);
+    // Check that radar is locked (by stopping movement in onScannedBot)
+    if (isStopped()) {
+      // Fire hard
+      fire(3);
+    }
   }
 }
