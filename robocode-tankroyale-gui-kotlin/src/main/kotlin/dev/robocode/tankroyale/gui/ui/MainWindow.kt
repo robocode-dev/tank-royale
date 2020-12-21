@@ -74,9 +74,10 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
     }
 
     private fun showBattle() {
-        contentPane.remove(LogoPanel)
-        contentPane.add(ControlPanel)
-
+        contentPane.apply {
+            remove(LogoPanel)
+            add(ControlPanel)
+        }
         validate()
         repaint()
     }
