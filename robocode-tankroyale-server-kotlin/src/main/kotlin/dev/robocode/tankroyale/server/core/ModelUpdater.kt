@@ -412,18 +412,6 @@ class ModelUpdater(
         }
     }
 
-    /**
-     * Checks if a point is outside the arena.
-     * @param position is the bot position.
-     * @return `true` if the bot position is outside; `false` otherwise.
-     */
-    private fun isBotPositionOutsideArena(position: IPoint): Boolean {
-        return position.x < BOT_BOUNDING_CIRCLE_RADIUS ||
-                position.y < BOT_BOUNDING_CIRCLE_RADIUS ||
-                position.x > (setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS) ||
-                position.y > (setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS)
-    }
-
     /** Updates bullet positions */
     private fun updateBulletPositions() {
         bullets.forEach { bullet -> bullet.incrementTick() }
