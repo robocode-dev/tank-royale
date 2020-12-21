@@ -13,6 +13,8 @@ import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.conn.ConnLi
 import dev.robocode.tankroyale.server.mapper.*
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.GameState
+import dev.robocode.tankroyale.server.model.Round
+import dev.robocode.tankroyale.server.model.Turn
 import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND
 import org.java_websocket.WebSocket
 import org.java_websocket.exceptions.WebsocketNotConnectedException
@@ -149,6 +151,17 @@ class GameServer(
         resetTurnTimeout()
     }
 
+    /** Send GameStarted to all participant observers to get them started */
+    private fun sendGameStartedToObservers() {
+        if (connHandler.observerAndControllerConnections.isNotEmpty()) {
+            val gameStartedForObserver = GameStartedEventForObserver()
+            gameStartedForObserver.`$type` = `$type`.GAME_STARTED_EVENT_FOR_OBSERVER
+            gameStartedForObserver.gameSetup = GameSetupToGameSetupMapper.map(gameSetup!!)
+            gameStartedForObserver.participants = createParticipantList()
+            broadcastToObserverAndControllers(gameStartedForObserver)
+        }
+    }
+
     /** Creates a list of participants from the bot connection handshakes */
     private fun createParticipantList(): List<Participant> {
         val participantList = mutableListOf<Participant>()
@@ -169,17 +182,6 @@ class GameServer(
             participantList += participant
         }
         return participantList
-    }
-
-    /** Send GameStarted to all participant observers to get them started */
-    private fun sendGameStartedToObservers() {
-        if (connHandler.observerAndControllerConnections.isNotEmpty()) {
-            val gameStartedForObserver = GameStartedEventForObserver()
-            gameStartedForObserver.`$type` = `$type`.GAME_STARTED_EVENT_FOR_OBSERVER
-            gameStartedForObserver.gameSetup = GameSetupToGameSetupMapper.map(gameSetup!!)
-            gameStartedForObserver.participants = createParticipantList()
-            broadcastToObserverAndControllers(gameStartedForObserver)
-        }
     }
 
     /** Prepares model-updater */
@@ -331,7 +333,7 @@ class GameServer(
 
             turnTimeoutTimer?.pause()
 
-            broadcastPauseEventToObservers()
+            broadcastGamedPausedToObservers()
         }
     }
 
@@ -344,12 +346,12 @@ class GameServer(
 
             turnTimeoutTimer?.resume()
 
-            broadcastResumeEventToObservers()
+            broadcastGameResumedToObservers()
         }
     }
 
     /** Broadcast pause event to all observers */
-    private fun broadcastPauseEventToObservers() {
+    private fun broadcastGamedPausedToObservers() {
         broadcastToObserverAndControllers(
             GamePausedEventForObserver().apply {
                 `$type` = Message.`$type`.GAME_PAUSED_EVENT_FOR_OBSERVER
@@ -357,7 +359,7 @@ class GameServer(
     }
 
     /** Broadcast resume event to all observers */
-    private fun broadcastResumeEventToObservers() {
+    private fun broadcastGameResumedToObservers() {
         broadcastToObserverAndControllers(
             GameResumedEventForObserver().apply {
                 `$type` = Message.`$type`.GAME_RESUMED_EVENT_FOR_OBSERVER
@@ -425,57 +427,87 @@ class GameServer(
         // Update game state
         val gameState = updateGameState()
         if (gameState.isGameEnded) {
-            log.info("Game ended")
-            serverState = ServerState.GAME_STOPPED
-            modelUpdater.calculatePlacements()
+            onGameEnded()
+        } else {
+            onNextTick(gameState.lastRound)
+        }
+    }
 
-            // End game for bots
-            val endEventForBot = GameEndedEventForBot().apply {
+    private fun onGameEnded() {
+        log.info("Game ended")
+        serverState = ServerState.GAME_STOPPED
+        modelUpdater.calculatePlacements()
+
+        broadcastGameEndedToParticipants()
+        broadcastGameEndedToObservers()
+    }
+
+    private fun onNextTick(lastRound: Round?) {
+        // Send tick
+        if (lastRound != null) {
+            val turn = lastRound.lastTurn
+            if (turn != null) {
+                broadcastGameTickToParticipants(lastRound, turn)
+                broadcastGameTickToObservers(lastRound, turn)
+            }
+            broadcastSkippedTurnToParticipant()
+        }
+        // Clear bot intents
+        botIntents.clear()
+    }
+
+    private fun broadcastGameEndedToParticipants() {
+        broadcastToParticipants(
+            GameEndedEventForBot().apply {
                 `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_BOT
                 numberOfRounds = modelUpdater.numberOfRounds
                 results = getResultsForBots()
-            }
-            broadcastToBots(endEventForBot)
+            })
+    }
 
-            // End game for observers
-            val endEventForObserver = GameEndedEventForObserver().apply {
+    private fun broadcastGameEndedToObservers() {
+        broadcastToObserverAndControllers(
+            GameEndedEventForObserver().apply {
                 `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_OBSERVER
                 numberOfRounds = modelUpdater.numberOfRounds
                 results = getResultsForObservers() // Use the stored score!
-            }
-            broadcastToObserverAndControllers(endEventForObserver)
-        } else {
-            // Send tick
-            val round = gameState.lastRound
-            if (round != null) {
-                val turn = round.lastTurn
-                if (turn != null) {
-                    // Send game state as 'game tick' to participants
-                    for (conn in participants) {
-                        val gameTickForBot = TurnToTickEventForBotMapper.map(round, turn, participantIds[conn]!!)
-                        if (gameTickForBot != null) { // Bot alive?
-                            send(conn, gameTickForBot)
-                        }
-                    }
-                    val gameTickForObserver = TurnToTickEventForObserverMapper.map(round, turn)
-                    broadcastToObserverAndControllers(gameTickForObserver)
-                }
+            })
+    }
 
-                // Send SkippedTurnEvents to all bots that skipped a turn, i.e. where the server did not
-                // receive a bot intent before the turn ended.
-                participantIds.keys.forEach { conn: WebSocket ->
-                    if (botIntents[conn] == null) {
-                        val skippedTurnEvent = SkippedTurnEvent().apply {
-                            `$type` = Message.`$type`.SKIPPED_TURN_EVENT
-                            turnNumber = modelUpdater.turnNumber
-                        }
-                        send(conn, skippedTurnEvent)
-                    }
+    private fun broadcastGameTickToParticipants(round: Round, turn: Turn) {
+        for (conn in participants) {
+            val botId = participantIds[conn]
+            if (botId != null) {
+                val gameTickForBot = TurnToTickEventForBotMapper.map(round, turn, botId)
+                if (gameTickForBot != null) { // Bot alive?
+                    send(conn, gameTickForBot)
                 }
             }
-            // Clear bot intents
-            botIntents.clear()
         }
+    }
+
+    private fun broadcastGameTickToObservers(round: Round, turn: Turn) {
+        broadcastToObserverAndControllers(TurnToTickEventForObserverMapper.map(round, turn))
+    }
+
+    private fun broadcastSkippedTurnToParticipant() {
+        // Broadcast skipped turn event to the participant that skipped the turn
+        val skippedTurnEvent = SkippedTurnEvent().apply {
+            `$type` = Message.`$type`.SKIPPED_TURN_EVENT
+            turnNumber = modelUpdater.turnNumber
+        }
+        connHandler.broadcast(getParticipantsThatSkippedTurn(), gson.toJson(skippedTurnEvent))
+    }
+
+    private fun getParticipantsThatSkippedTurn(): Collection<WebSocket> {
+        val participantsThatSkippedTurn = mutableListOf<WebSocket>()
+        for (conn in participants) {
+            if (botIntents[conn] == null) {
+                // No intent was received from the participant during the turn
+                participantsThatSkippedTurn += conn
+            }
+        }
+        return participantsThatSkippedTurn
     }
 
     private val botsThatSentIntent = mutableListOf<WebSocket>()
@@ -525,9 +557,9 @@ class GameServer(
         }
     }
 
-    private fun broadcastToBots(msg: Message) {
+    private fun broadcastToParticipants(msg: Message) {
         requireNotNull(msg.`$type`) { "\$type is required on the message" }
-        connHandler.broadcastToBots(gson.toJson(msg))
+        connHandler.broadcast(participants, gson.toJson(msg))
     }
 
     private fun broadcastToObserverAndControllers(msg: Message) {

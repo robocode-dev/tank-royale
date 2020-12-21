@@ -67,7 +67,7 @@ class Server : Runnable {
 
     @Spec
     private val spec: CommandSpec? = null
-    private var gameServer: GameServer? = null
+    private lateinit var gameServer: GameServer
 
     override fun run() {
         val cmdLine = CommandLine(Server())
@@ -106,7 +106,7 @@ class Server : Runnable {
             while (sc.hasNextLine()) {
                 val line = sc.nextLine()
                 if (line.trim().equals("q", ignoreCase = true)) {
-                    gameServer!!.stop()
+                    gameServer.stop()
                     exitProcess(1)
                 }
             }
@@ -114,7 +114,7 @@ class Server : Runnable {
 
         // Start game server on main thread
         gameServer = GameServer(gameTypes, secret)
-        gameServer!!.start()
+        gameServer.start()
     }
 
     private fun printAnsiLine(s: String?) {

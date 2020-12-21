@@ -53,10 +53,6 @@ class ConnHandler internal constructor(
         shutdownAndAwaitTermination(executorService)
     }
 
-    fun broadcastToBots(message: String) {
-        broadcast(getBotConnections(), message)
-    }
-
     fun broadcastToObserverAndControllers(message: String) {
         broadcast(observerAndControllerConnections, message)
     }
@@ -120,7 +116,7 @@ class ConnHandler internal constructor(
         conn.send(message)
     }
 
-    private fun broadcast(clients: Collection<WebSocket>, message: String) {
+    fun broadcast(clients: Collection<WebSocket>, message: String) {
         logger.debug("Broadcast message: $message")
         webSocketObserver.broadcast(message, clients)
     }
