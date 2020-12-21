@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.server.model
 
-import dev.robocode.tankroyale.server.math.IPoint
 import dev.robocode.tankroyale.server.math.isNearTo
 import dev.robocode.tankroyale.server.math.isNotNearTo
 

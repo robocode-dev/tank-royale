@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.server.math
+package dev.robocode.tankroyale.server.model
 
 /** Interface of a 2D point with abstract values. */
 interface IPoint {

@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.server.model
 
-import dev.robocode.tankroyale.server.math.Point
 import dev.robocode.tankroyale.server.rules.INITIAL_BOT_ENERGY
 import dev.robocode.tankroyale.server.rules.INITIAL_GUN_HEAT
 
@@ -69,7 +68,7 @@ data class Bot(
     /** Scan angle in degrees */
     override val scanSpreadAngle: Double = radarSpreadAngle,
 
-) : IBot {
+    ) : IBot {
     /** X coordinate */
     override val x: Double
         get() = position.x

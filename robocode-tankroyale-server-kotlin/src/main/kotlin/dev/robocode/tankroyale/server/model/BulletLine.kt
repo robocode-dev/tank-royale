@@ -1,8 +1,5 @@
 package dev.robocode.tankroyale.server.model
 
-import dev.robocode.tankroyale.server.math.Line
-import dev.robocode.tankroyale.server.math.Point
-
 /** Convenient class to wrap a bullet to cache the current and next position of the bullet. */
 data class BulletLine(
     /** The bullet of the bullet line */

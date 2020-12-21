@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.server.model
 
-import dev.robocode.tankroyale.server.math.Point
 import dev.robocode.tankroyale.server.rules.calcBulletSpeed
 import kotlin.math.cos
 import kotlin.math.sin

@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.server.math
+package dev.robocode.tankroyale.server.model
 
 /** Defines an immutable 2D point */
 data class Point(

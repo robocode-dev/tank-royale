@@ -1,7 +1,5 @@
 package dev.robocode.tankroyale.server.model
 
-import dev.robocode.tankroyale.server.math.Point
-
 data class Bullet(
     /** Id of the bot that fired this bullet */
     override val botId: BotId,
@@ -24,7 +22,7 @@ data class Bullet(
     /** Tick, which is the number of turns since the bullet was fired */
     override val tick: Int = 0,
 
-) : IBullet {
+    ) : IBullet {
 
     /** Returns a mutable copy of this point */
     fun toMutableBullet() = MutableBullet(botId, bulletId, power, direction, color, startPosition, tick)

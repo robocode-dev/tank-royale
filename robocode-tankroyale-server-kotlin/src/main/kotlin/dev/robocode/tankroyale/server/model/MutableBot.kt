@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.server.model
 
-import dev.robocode.tankroyale.server.math.MutablePoint
 import dev.robocode.tankroyale.server.rules.INITIAL_BOT_ENERGY
 import dev.robocode.tankroyale.server.rules.INITIAL_GUN_HEAT
 import kotlin.math.cos
@@ -71,7 +70,7 @@ data class MutableBot(
     /** Scan angle in degrees */
     override var scanSpreadAngle: Double = radarSpreadAngle,
 
-): IBot {
+    ): IBot {
     // Holds to old position
     private val oldPosition = MutablePoint(0.0, 0.0)
 
