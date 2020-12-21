@@ -504,10 +504,10 @@ class GameServer(
         }
     }
 
-    internal fun onUpdateBotIntent(conn: WebSocket, intent: BotIntent) {
-        if (!participants.contains(conn)) {
-            return
-        }
+    internal fun onBotIntent(conn: WebSocket, intent: BotIntent) {
+        if (!participants.contains(conn)) return
+
+        // Update bot intent
         val botIntent = botIntents[conn] ?: dev.robocode.tankroyale.server.model.BotIntent()
         botIntent.update(BotIntentToBotIntentMapper.map(intent))
         botIntents[conn] = botIntent

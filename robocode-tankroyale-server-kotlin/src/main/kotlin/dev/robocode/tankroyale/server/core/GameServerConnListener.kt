@@ -30,7 +30,7 @@ internal class GameServerConnListener(private val gameServer: GameServer) : Conn
 
     override fun onBotIntent(conn: WebSocket, handshake: BotHandshake, intent: BotIntent) {
         log.debug("Bot intent: ${getDisplayName(handshake)}: $intent")
-        gameServer.onUpdateBotIntent(conn, intent)
+        gameServer.onBotIntent(conn, intent)
     }
 
     override fun onObserverJoined(conn: WebSocket, handshake: ObserverHandshake) {
