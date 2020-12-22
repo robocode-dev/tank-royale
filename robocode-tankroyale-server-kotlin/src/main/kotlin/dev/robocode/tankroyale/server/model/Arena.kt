@@ -1,9 +1,8 @@
 package dev.robocode.tankroyale.server.model
 
-/** Defines the arena, where bots battle each other. */
-data class Arena(
-    /** Width */
-    var width: Int,
-    /** Height */
-    var height: Int,
-)
+/**
+ * Defines an battle arena.
+ * @property width is the width of the arena.
+ * @property height is the height of the arena.
+ */
+data class Arena(val width: Int, val height: Int)

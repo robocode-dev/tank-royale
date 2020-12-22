@@ -1,7 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
     id 'maven-publish'
     id 'application'
     id 'idea'
@@ -11,9 +11,15 @@ plugins {
 group = 'dev.robocode.tankroyale'
 version = '0.7.0'
 
-compileJava {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 repositories {
@@ -21,8 +27,12 @@ repositories {
     mavenLocal()
 }
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.4.10'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.4.21'
 
     implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.13'
     implementation 'org.danilopianini:gson-extras:0.2.2'
@@ -37,8 +47,11 @@ dependencies {
     implementation 'ch.qos.logback:logback-core:1.2.3'
     implementation 'org.slf4j:slf4j-api:1.7.26'
 
-    testImplementation 'junit:junit:4.13'
-    testImplementation 'org.unitils:unitils-core:3.4.6'
+//    testImplementation 'junit:junit:4.13' // FIXME: Remove, replaced by kotest
+//    testImplementation 'org.unitils:unitils-core:3.4.6' // FIXME: Remove, replaced by kotest
+
+    testImplementation 'io.kotest:kotest-assertions-core-jvm:4.3.2' // optional, for kotest assertions
+    testImplementation 'io.kotest:kotest-runner-junit5-jvm:4.3.2' // required
 }
 
 idea {
@@ -73,11 +86,5 @@ publishing {
             artifactId = 'robocode-tankroyale-server'
             artifact fatJar
         }
-    }
-}
-
-compileKotlin {
-    kotlinOptions {
-        freeCompilerArgs = ["-Xinline-classes"]
     }
 }

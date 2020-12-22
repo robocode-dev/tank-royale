@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.server.model
 /** Game state */
 data class GameState(
     /** Arena */
-    val arena: Arena,
+    val arenaSize: Arena,
 
     /** List of rounds */
     val rounds: MutableList<Round> = mutableListOf(),
