@@ -1,37 +1,50 @@
 package dev.robocode.tankroyale.server.model
 
+/**
+ * An immutable bullet.
+ * The [startPosition] and [tick] defines the current position of the bullet.
+ * @property id Unique id of the bullet.
+ * @property botId Unique id of the bot that fired this bullet.
+ * @property power Power of the bullet.
+ * @property direction Direction of the bullet in degrees.
+ * @property color Color of the bullet. If set to `null`, the default bullet color will be used.
+ * @property startPosition Start position where the bullet was fired from.
+ * @property tick Tick, which is the number of turns since the bullet was fired.
+ */
 data class Bullet(
-    /** Id of the bot that fired this bullet */
+    override val id: BulletId,
     override val botId: BotId,
-
-    /** Id of the bullet */
-    override val bulletId: BulletId,
-
-    /** Power of the bullet */
     override val power: Double,
-
-    /** Direction of the bullet in degrees */
     override val direction: Double,
-
-    /** Color of the bullet */
     override val color: Color?,
-
-    /** Start position where the bullet was fired from */
     override val startPosition: Point, // must be immutable as this point is used for calculating future positions
-
-    /** Tick, which is the number of turns since the bullet was fired */
     override val tick: Int = 0,
 
     ) : IBullet {
 
-    /** Returns a mutable copy of this point */
-    fun toMutableBullet() = MutableBullet(botId, bulletId, power, direction, color, startPosition, tick)
+    /**
+     * Returns a mutable copy of this point.
+     * @return a [MutableBullet] instance that is a copy of this bullet.
+     */
+    fun toMutableBullet() = MutableBullet(id, botId, power, direction, color, startPosition, tick)
 
+    /**
+     * Returns a hash code that is the (unique) id of this bullet making this call fast.
+     * @return the (unique) id of this bullet.
+     * @see [Object.hashCode]
+     */
     override fun hashCode(): Int {
-        return bulletId.value
+        return id.value
     }
 
+    /**
+     * Compares this bullet another object by checking if the input object is a [IBullet] instance and share the same
+     * bullet id.
+     * @param other is any object.
+     * @return `true` if the two bullets are equal; `false` otherwise.
+     * @see [Object.equals]
+     */
     override fun equals(other: Any?): Boolean {
-        return other is IBullet && other.bulletId == bulletId
+        return other is IBullet && other.id == id
     }
 }

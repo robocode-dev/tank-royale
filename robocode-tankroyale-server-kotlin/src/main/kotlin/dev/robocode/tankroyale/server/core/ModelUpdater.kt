@@ -302,7 +302,7 @@ class ModelUpdater(
                 handleBulletHittingBot(bulletLine.bullet, bot)
 
                 // Remove bullet from the arena
-                bullets.removeIf { bullet -> bullet.bulletId == bulletLine.bullet.bulletId }
+                bullets.removeIf { bullet -> bullet.id == bulletLine.bullet.id }
             }
         }
     }
@@ -589,7 +589,7 @@ class ModelUpdater(
         bot.gunHeat = calcGunHeat(firepower)
         val bullet = MutableBullet(
             botId = bot.id,
-            bulletId = BulletId(++nextBulletId),
+            id = BulletId(++nextBulletId),
             startPosition = bot.position.toPoint(),
             direction = bot.gunDirection,
             power = firepower,

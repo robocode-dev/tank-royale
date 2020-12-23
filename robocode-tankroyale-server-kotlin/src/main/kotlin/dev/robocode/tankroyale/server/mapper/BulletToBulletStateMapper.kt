@@ -7,8 +7,8 @@ import dev.robocode.tankroyale.server.model.IBullet
 object BulletToBulletStateMapper {
     fun map(bullet: IBullet): BulletState {
         return BulletState().apply {
-            ownerId = bullet.botId.id
-            bulletId = bullet.bulletId.value
+            ownerId = bullet.botId.value
+            bulletId = bullet.id.value
             direction = normalAbsoluteDegrees(bullet.direction)
             power = bullet.power
             speed = bullet.speed()

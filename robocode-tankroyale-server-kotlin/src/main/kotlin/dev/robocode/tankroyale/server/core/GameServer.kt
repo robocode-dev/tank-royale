@@ -168,7 +168,7 @@ class GameServer(
         for (conn in participants) {
             val handshake = connHandler.getBotHandshakes()[conn]
             val participant = Participant().apply {
-                id = participantIds[conn]!!.id
+                id = participantIds[conn]!!.value
                 name = handshake!!.name
                 version = handshake.version
                 description = handshake.description
@@ -233,7 +233,7 @@ class GameServer(
 
         for (score in modelUpdater.results) {
             BotResultsForBot().apply {
-                id = score.botId.id
+                id = score.botId.value
                 survival = score.survival.roundToInt()
                 lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
                 bulletDamage = score.bulletDamage.roundToInt()
@@ -262,7 +262,7 @@ class GameServer(
             val botHandshake = connHandler.getBotHandshakes()[conn]
 
             BotResultsForObserver().apply {
-                id = score.botId.id
+                id = score.botId.value
                 name = botHandshake!!.name
                 version = botHandshake.version
                 survival = score.survival.roundToInt()

@@ -3,9 +3,11 @@ package model
 import dev.robocode.tankroyale.server.model.BotIntent
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import model.factory.BotUpdate
 
 
-class BotIntentTests : StringSpec({
+class BotIntentTest : StringSpec({
+
     "targetSpeed must be updated" {
         val botIntent = BotIntent(targetSpeed = 1.2)
 
@@ -223,5 +225,18 @@ class BotIntentTests : StringSpec({
 
         botIntent.update(BotUpdate(gunColor = ""))
         botIntent shouldBe BotIntent(gunColor = null)
+    }
+
+    "disableMovement() disables movement" {
+        val botIntent = BotIntent(
+            targetSpeed = 1.2,
+            turnRate = 2.3,
+            gunTurnRate = 3.4,
+            radarTurnRate = 4.5,
+            bulletPower = 5.6
+        )
+        botIntent.disableMovement()
+
+        botIntent shouldBe BotIntent()
     }
 })

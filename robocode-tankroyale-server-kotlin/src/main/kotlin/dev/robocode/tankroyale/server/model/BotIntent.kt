@@ -11,13 +11,13 @@ package dev.robocode.tankroyale.server.model
  * @property adjustGunForBodyTurn Current flag set for adjusting gun for body turn.
  * @property adjustRadarForGunTurn Current flag set for adjusting radar for gun turn.
  * @property scan Current flag set for performing rescan (reusing last scan direction and scan spread angle)
- * @property bodyColor Current body color.
- * @property turretColor Current gun turret color.
- * @property radarColor Current radar color.
- * @property bulletColor Current bullet color.
- * @property scanColor Current scan color.
- * @property tracksColor Current tracks color.
- * @property gunColor Current gun color.
+ * @property bodyColor Current body color string. If set to `null` the default body color will be used.
+ * @property turretColor Current gun turret color string. If set to `null` the default body color will be used.
+ * @property radarColor Current radar color string. If set to `null` the default body color will be used.
+ * @property bulletColor Current bullet color string. If set to `null` the default body color will be used.
+ * @property scanColor Current scan color string. If set to `null` the default body color will be used.
+ * @property tracksColor Current tracks color string. If set to `null` the default body color will be used.
+ * @property gunColor Current gun color string. If set to `null` the default body color will be used.
  */
 data class BotIntent(
     override var targetSpeed: Double? = 0.0,

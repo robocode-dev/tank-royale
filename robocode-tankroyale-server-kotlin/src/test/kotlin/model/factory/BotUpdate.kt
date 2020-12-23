@@ -1,4 +1,4 @@
-package model
+package model.factory
 
 import dev.robocode.tankroyale.server.model.IBotIntent
 

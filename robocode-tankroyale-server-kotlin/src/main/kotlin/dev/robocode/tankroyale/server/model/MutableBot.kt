@@ -71,6 +71,7 @@ data class MutableBot(
     override var scanSpreadAngle: Double = radarSpreadAngle,
 
     ): IBot {
+
     // Holds to old position
     private val oldPosition = MutablePoint(0.0, 0.0)
 

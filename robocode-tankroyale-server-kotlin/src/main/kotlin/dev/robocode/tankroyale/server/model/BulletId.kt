@@ -1,4 +1,8 @@
 package dev.robocode.tankroyale.server.model
 
-/** BulletId that is the id of a bullet */
+/**
+ * BulletId contains the id of a bullet. It is a inline class used to make it easy to differ between an Int and a
+ * BulletId.
+ * @property value ID value of the bullet.
+ */
 inline class BulletId(val value: Int)

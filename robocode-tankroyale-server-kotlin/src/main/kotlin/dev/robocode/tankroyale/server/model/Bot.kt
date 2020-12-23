@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.server.rules.INITIAL_GUN_HEAT
 
 /**
  * Immutable Bot instance.
- * @property id Bot id.
+ * @property id Unique id of this bot.
  * @property energy Energy level.
  * @property position Position (x, y).
  * @property direction Driving direction in degrees.
@@ -30,7 +30,7 @@ import dev.robocode.tankroyale.server.rules.INITIAL_GUN_HEAT
 data class Bot(
     override val id: BotId,
     override val energy: Double = INITIAL_BOT_ENERGY,
-    override val position: Point,
+    override val position: Point, // immutable point
     override val direction: Double,
     override val gunDirection: Double,
     override val radarDirection: Double,
@@ -52,11 +52,11 @@ data class Bot(
 
     ) : IBot {
 
-    /** X coordinate */
+    /** X coordinate which is a shortcut for `position.x`. */
     override val x: Double
         get() = position.x
 
-    /** Y coordinate */
+    /** Y coordinate which is a shortcut for `position.y`. */
     override val y: Double
         get() = position.y
 }

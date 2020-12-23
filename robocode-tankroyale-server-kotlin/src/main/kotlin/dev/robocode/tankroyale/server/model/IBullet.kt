@@ -4,44 +4,58 @@ import dev.robocode.tankroyale.server.rules.calcBulletSpeed
 import kotlin.math.cos
 import kotlin.math.sin
 
+/**
+ * A bullet interface.
+ * The [startPosition] and [tick] defines the current position of the bullet.
+ */
 interface IBullet {
-    /** Id of the bot that fired this bullet */
+    /** Unique id of the bullet. */
+    val id: BulletId
+
+    /** Unique id of the bot that fired this bullet. */
     val botId: BotId
 
-    /** Id of the bullet */
-    val bulletId: BulletId
-
-    /** Power of the bullet */
+    /** Power of the bullet. */
     val power: Double
 
-    /** Direction of the bullet in degrees */
+    /** Direction of the bullet in degrees. */
     val direction: Double
 
-    /** Color of the bullet */
+    /** Color of the bullet. */
     val color: Color?
 
-    /** Start position where the bullet was fired from */
+    /** Start position where the bullet was fired from. */
     val startPosition: Point // must be immutable as this point is used for calculating future positions
 
-    /** Tick, which is the number of turns since the bullet was fired */
+    /** Tick, which is the number of turns since the bullet was fired. */
     val tick: Int
 
-    /** Speed of the bullet */
+    /**
+     * Returns the speed of this bullet depending on the bullet power.
+     * @return the speed of this bullet based on [calcBulletSpeed].
+     * @see [calcBulletSpeed]
+     */
     fun speed(): Double = calcBulletSpeed(power)
 
-    /** Current position */
+    /**
+     * Returns the current position of this bullet based on [startPosition] and [tick].
+     * @return a [Point] with containing the current position.
+     */
     fun position(): Point = calcPosition()
 
-    /** Next position */
+    /**
+     * Returns the next position of this bullet based on [startPosition] and [tick] + 1.
+     * @return a [Point] with containing the next position.
+     */
     fun nextPosition(): Point = calcPosition(true)
 
     /**
-     * Calculates the position of a bullet.
-     * @param isNextPosition set to `true` to calc next position or `false` tp calc current position.
-     * @return the calculated bullet position.
+     * Calculates the current position of this bullet based on [startPosition] and [tick].
+     * @param calcNextPosition set to `true` to calc next position or `false` to calc current position.
+     * @return a [Point] with containing the current or next position.
      */
-    private fun calcPosition(isNextPosition: Boolean = false): Point {
-        val tick = if (isNextPosition) tick + 1 else tick
+    private fun calcPosition(calcNextPosition: Boolean = false): Point {
+        val tick = if (calcNextPosition) tick + 1 else tick
 
         val angle = Math.toRadians(direction)
         val distance = speed() * tick
