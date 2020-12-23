@@ -1,14 +1,10 @@
-package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core
+package dev.robocode.tankroyale.server.core
 
 import com.google.gson.Gson
 import dev.robocode.tankroyale.schema.*
 import dev.robocode.tankroyale.schema.Message.`$type`
 import dev.robocode.tankroyale.server.Server
-import dev.robocode.tankroyale.server.core.ModelUpdater
-import dev.robocode.tankroyale.server.core.NanoTimer
-import dev.robocode.tankroyale.server.core.ServerSetup
-import dev.robocode.tankroyale.server.core.ServerState
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.conn.ConnHandler
+import dev.robocode.tankroyale.server.conn.ConnHandler
 import dev.robocode.tankroyale.server.mapper.*
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.GameState
@@ -172,7 +168,7 @@ class GameServer(
         for (conn in participants) {
             val handshake = connHandler.getBotHandshakes()[conn]
             val participant = Participant().apply {
-                id = participantIds[conn]!!.value
+                id = participantIds[conn]!!.id
                 name = handshake!!.name
                 version = handshake.version
                 description = handshake.description
@@ -237,7 +233,7 @@ class GameServer(
 
         for (score in modelUpdater.results) {
             BotResultsForBot().apply {
-                id = score.botId.value
+                id = score.botId.id
                 survival = score.survival.roundToInt()
                 lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
                 bulletDamage = score.bulletDamage.roundToInt()
@@ -266,7 +262,7 @@ class GameServer(
             val botHandshake = connHandler.getBotHandshakes()[conn]
 
             BotResultsForObserver().apply {
-                id = score.botId.value
+                id = score.botId.id
                 name = botHandshake!!.name
                 version = botHandshake.version
                 survival = score.survival.roundToInt()
@@ -487,7 +483,7 @@ class GameServer(
 
     internal fun onBotLeft(conn: WebSocket) {
         // If a bot leaves while in a game, make sure to reset all intent values to zeroes
-        botIntents[conn]?.resetMovement()
+        botIntents[conn]?.disableMovement()
         updateBotListUpdateMessage()
         sendBotListUpdateToObservers()
     }

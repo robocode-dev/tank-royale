@@ -80,7 +80,7 @@ class ModelUpdater(
      * @param botIntents is the bot intents, which gives instructions to the game from the individual bots.
      * @return new game state when the game state has been updated.
      */
-    fun update(botIntents: Map<BotId, BotIntent>): GameState {
+    fun update(botIntents: Map<BotId, IBotIntent>): GameState {
         updateBotIntents(botIntents)
         if (roundEnded) {
             calculatePlacements()
@@ -101,7 +101,7 @@ class ModelUpdater(
      * Updates the current bot intents with the new bot intents.
      * @param botIntents is a map of new bot intents.
      */
-    private fun updateBotIntents(botIntents: Map<BotId, BotIntent>) {
+    private fun updateBotIntents(botIntents: Map<BotId, IBotIntent>) {
         for ((botId, updateIntent) in botIntents.entries) {
             val botIntent = botIntentsMap[botId] ?: BotIntent()
             botIntent.update(updateIntent)
@@ -527,7 +527,7 @@ class ModelUpdater(
             }
             // If bot is disabled => Set then reset bot movement with the bot intent
             if (bot.energy == 0.0) {
-                botIntentsMap[bot.id]?.resetMovement()
+                botIntentsMap[bot.id]?.disableMovement()
             }
         }
     }

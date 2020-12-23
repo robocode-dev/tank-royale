@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.server
 
 import dev.robocode.tankroyale.server.Server.VersionFileProvider
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.GameServer
+import dev.robocode.tankroyale.server.core.GameServer
 import dev.robocode.tankroyale.server.rules.DEFAULT_GAME_TYPE
 import org.fusesource.jansi.AnsiConsole
 import picocli.CommandLine

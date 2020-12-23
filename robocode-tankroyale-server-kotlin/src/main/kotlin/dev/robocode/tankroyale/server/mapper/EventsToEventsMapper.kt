@@ -29,7 +29,7 @@ object EventsToEventsMapper {
         event.`$type` = Message.`$type`.BOT_DEATH_EVENT
         botDeathEvent.apply {
             event.turnNumber = turnNumber
-            event.victimId = victimId.value
+            event.victimId = victimId.id
         }
         return event
     }
@@ -39,8 +39,8 @@ object EventsToEventsMapper {
         event.`$type` = Message.`$type`.BOT_HIT_BOT_EVENT
         botHitBotEvent.apply {
             event.turnNumber = turnNumber
-            event.botId = botId.value
-            event.victimId = victimId.value
+            event.botId = botId.id
+            event.victimId = victimId.id
             event.energy = energy
             event.x = x
             event.y = y
@@ -54,7 +54,7 @@ object EventsToEventsMapper {
         event.`$type` = Message.`$type`.BOT_HIT_WALL_EVENT
         botHitWallEvent.apply {
             event.turnNumber = turnNumber
-            event.victimId = victimId.value
+            event.victimId = victimId.id
         }
         return event
     }
@@ -75,7 +75,7 @@ object EventsToEventsMapper {
         bulletHitBotEvent.apply {
             event.turnNumber = turnNumber
             event.bullet = BulletToBulletStateMapper.map(bullet)
-            event.victimId = victimId.value
+            event.victimId = victimId.id
             event.damage = damage
             event.energy = energy
         }
@@ -108,8 +108,8 @@ object EventsToEventsMapper {
         event.`$type` = Message.`$type`.SCANNED_BOT_EVENT
         scannedBotEvent.apply {
             event.turnNumber = turnNumber
-            event.scannedByBotId = scannedByBotId.value
-            event.scannedBotId = scannedBotId.value
+            event.scannedByBotId = scannedByBotId.id
+            event.scannedBotId = scannedBotId.id
             event.energy = energy
             event.x = x
             event.y = y

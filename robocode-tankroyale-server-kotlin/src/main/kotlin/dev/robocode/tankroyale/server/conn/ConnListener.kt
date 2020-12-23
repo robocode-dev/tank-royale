@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.conn
+package dev.robocode.tankroyale.server.conn
 
 import dev.robocode.tankroyale.schema.*
 import org.java_websocket.WebSocket

@@ -1,110 +1,104 @@
 package dev.robocode.tankroyale.server.model
 
 /**
- * BotIntent is the intent sent from a bot between turns. The bot intent reflects the
- * bot's wishes/orders for new target speed, turn rates, bullet power etc.
+ * BotIntent is used to accumulate all bot orders sent to the server over time.
+ * Hence, the BotIntent contains the current state of the bot intent state.
+ * @property targetSpeed Current target speed.
+ * @property turnRate Current driving turn rate.
+ * @property gunTurnRate Current gun turn rate.
+ * @property radarTurnRate Current radar turn rate.
+ * @property bulletPower Current bullet power.
+ * @property adjustGunForBodyTurn Current flag set for adjusting gun for body turn.
+ * @property adjustRadarForGunTurn Current flag set for adjusting radar for gun turn.
+ * @property scan Current flag set for performing rescan (reusing last scan direction and scan spread angle)
+ * @property bodyColor Current body color.
+ * @property turretColor Current gun turret color.
+ * @property radarColor Current radar color.
+ * @property bulletColor Current bullet color.
+ * @property scanColor Current scan color.
+ * @property tracksColor Current tracks color.
+ * @property gunColor Current gun color.
  */
 data class BotIntent(
-    /** Desired speed */
-    var targetSpeed: Double? = 0.0,
+    override var targetSpeed: Double? = 0.0,
+    override var turnRate: Double? = 0.0,
+    override var gunTurnRate: Double? = 0.0,
+    override var radarTurnRate: Double? = 0.0,
+    override var bulletPower: Double? = 0.0,
+    override var adjustGunForBodyTurn: Boolean? = false,
+    override var adjustRadarForGunTurn: Boolean? = false,
+    override var scan: Boolean? = false,
+    override var bodyColor: String? = null,
+    override var turretColor: String? = null,
+    override var radarColor: String? = null,
+    override var bulletColor: String? = null,
+    override var scanColor: String? = null,
+    override var tracksColor: String? = null,
+    override var gunColor: String? = null,
 
-    /** Desired driving turn rate */
-    var turnRate: Double? = 0.0,
-
-    /** Desired gun turn rate */
-    var gunTurnRate: Double? = 0.0,
-
-    /** Desired radar turn rate */
-    var radarTurnRate: Double? = 0.0,
-
-    /** Desired bullet power */
-    var bulletPower: Double? = 0.0,
-
-    /** Adjust gun for body turn */
-    var adjustGunForBodyTurn: Boolean? = false,
-
-    /** Adjust radar for gun turn */
-    var adjustRadarForGunTurn: Boolean? = false,
-
-    /** Perform rescan */
-    var scan: Boolean? = false,
-
-    /** Body color */
-    var bodyColor: String? = null,
-
-    /** Gun turret color */
-    var turretColor: String? = null,
-
-    /** Radar color */
-    var radarColor: String? = null,
-
-    /** Bullet color */
-    var bulletColor: String? = null,
-
-    /** Scan color */
-    var scanColor: String? = null,
-
-    /** Tracks color */
-    var tracksColor: String? = null,
-
-    /** Gun color */
-    var gunColor: String? = null,
-) {
+    ) : IBotIntent {
     /**
-     * Updates this BotIntent with adjustment values from another BotIntent.
-     * @param botIntent is the adjustments for this intent. Fields that are null are being ignored, meaning
+     * Updates this [BotIntent] with new updated values from another [BotIntent].
+     * @param update contains the fields that must be updated. Fields that are `null` are being ignored, meaning
      * that the corresponding fields on this intent are left unchanged.
      */
-    fun update(botIntent: BotIntent) {
-        if (botIntent.targetSpeed != null) {
-            targetSpeed = botIntent.targetSpeed
+    fun update(update: IBotIntent) {
+        if (update.targetSpeed != null) {
+            targetSpeed = update.targetSpeed
         }
-        if (botIntent.turnRate != null) {
-            turnRate = botIntent.turnRate
+        if (update.turnRate != null) {
+            turnRate = update.turnRate
         }
-        if (botIntent.gunTurnRate != null) {
-            gunTurnRate = botIntent.gunTurnRate
+        if (update.gunTurnRate != null) {
+            gunTurnRate = update.gunTurnRate
         }
-        if (botIntent.radarTurnRate != null) {
-            radarTurnRate = botIntent.radarTurnRate
+        if (update.radarTurnRate != null) {
+            radarTurnRate = update.radarTurnRate
         }
-        if (botIntent.bulletPower != null) {
-            bulletPower = botIntent.bulletPower
+        if (update.bulletPower != null) {
+            bulletPower = update.bulletPower
         }
-        if (botIntent.adjustGunForBodyTurn != null) {
-            adjustGunForBodyTurn = botIntent.adjustGunForBodyTurn
+        if (update.adjustGunForBodyTurn != null) {
+            adjustGunForBodyTurn = update.adjustGunForBodyTurn
         }
-        if (botIntent.adjustRadarForGunTurn != null) {
-            adjustRadarForGunTurn = botIntent.adjustRadarForGunTurn
+        if (update.adjustRadarForGunTurn != null) {
+            adjustRadarForGunTurn = update.adjustRadarForGunTurn
         }
-        if (botIntent.scan != null) {
-            scan = botIntent.scan
+        if (update.scan != null) {
+            scan = update.scan
         }
-        if (botIntent.bodyColor != null) {
-            bodyColor = botIntent.bodyColor
+        if (update.bodyColor != null) {
+            bodyColor = if (update.bodyColor!!.isBlank()) null else update.bodyColor
         }
-        if (botIntent.turretColor != null) {
-            turretColor = botIntent.turretColor
+        if (update.turretColor != null) {
+            turretColor = if (update.turretColor!!.isBlank()) null else update.turretColor
         }
-        if (botIntent.radarColor != null) {
-            radarColor = botIntent.radarColor
+        if (update.radarColor != null) {
+            radarColor = if (update.radarColor!!.isBlank()) null else update.radarColor
         }
-        if (botIntent.bulletColor != null) {
-            bulletColor = botIntent.bulletColor
+        if (update.bulletColor != null) {
+            bulletColor = if (update.bulletColor!!.isBlank()) null else update.bulletColor
         }
-        if (botIntent.scanColor != null) {
-            scanColor = botIntent.scanColor
+        if (update.scanColor != null) {
+            scanColor = if (update.scanColor!!.isBlank()) null else update.scanColor
         }
-        if (botIntent.tracksColor != null) {
-            tracksColor = botIntent.tracksColor
+        if (update.tracksColor != null) {
+            tracksColor = if (update.tracksColor!!.isBlank()) null else update.tracksColor
         }
-        if (botIntent.gunColor != null) {
-            gunColor = botIntent.gunColor
+        if (update.gunColor != null) {
+            gunColor = if (update.gunColor!!.isBlank()) null else update.gunColor
         }
     }
 
-    /** Resets the target speed, turn rates, and bullet power. */
-    fun resetMovement() {
+    /**
+     * Disables movement by setting these values to zero:
+     *  * targetSpeed
+     *  * turnRates
+     *  * gunTurnRate
+     *  * radarTurnRate
+     *  * bulletPower
+     */
+    fun disableMovement() {
         targetSpeed = 0.0
         turnRate = 0.0
         gunTurnRate = 0.0

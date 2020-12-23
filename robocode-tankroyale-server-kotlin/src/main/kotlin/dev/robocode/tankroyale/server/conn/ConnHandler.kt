@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.conn
+package dev.robocode.tankroyale.server.conn
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
