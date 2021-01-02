@@ -42,7 +42,7 @@ fun colorStringToRGB(colorStr: String?): Color? {
  * @param colorStr is the string representation of a 24-bit RGB color, e.g. "#8B4513".
  * @return is a `Color` representing the RGB value in 24-format, e.g. 0x8B4513.
  */
-fun hexToRgb24bit(colorStr: String): Color {
+private fun hexToRgb24bit(colorStr: String): Color {
     val r = Integer.valueOf(colorStr.substring(1, 3), 16)
     val g = Integer.valueOf(colorStr.substring(3, 5), 16)
     val b = Integer.valueOf(colorStr.substring(5, 7), 16)
@@ -56,7 +56,7 @@ fun hexToRgb24bit(colorStr: String): Color {
  * @param colorStr is the string representation of a 12-bit RGB color, e.g. "#941".
  * @return is a `Color` representing the RGB value in 24-format, e.g. 0x994411.
  */
-fun hexToRgb12bit(colorStr: String): Color {
+private fun hexToRgb12bit(colorStr: String): Color {
     var r = Integer.valueOf(colorStr.substring(1, 2), 16)
     var g = Integer.valueOf(colorStr.substring(2, 3), 16)
     var b = Integer.valueOf(colorStr.substring(3, 4), 16)

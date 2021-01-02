@@ -6,47 +6,47 @@ package dev.robocode.tankroyale.server.model
  */
 interface IBotIntent {
     /** New target speed. */
-    var targetSpeed: Double?
+    val targetSpeed: Double?
 
     /** New driving turn rate. */
-    var turnRate: Double?
+    val turnRate: Double?
 
     /** New gun turn rate. */
-    var gunTurnRate: Double?
+    val gunTurnRate: Double?
 
     /** New radar turn rate. */
-    var radarTurnRate: Double?
+    val radarTurnRate: Double?
 
     /** New bullet power. */
-    var bulletPower: Double?
+    val bulletPower: Double?
 
     /** Flag set to adjusting gun for body turn. */
-    var adjustGunForBodyTurn: Boolean?
+    val adjustGunForBodyTurn: Boolean?
 
     /** Flag set to adjusting radar for gun turn. */
-    var adjustRadarForGunTurn: Boolean?
+    val adjustRadarForGunTurn: Boolean?
 
     /** Flag set to perform rescan (reusing last scan direction and scan spread angle) */
-    var scan: Boolean?
+    val scan: Boolean?
 
     /** New body color. */
-    var bodyColor: String?
+    val bodyColor: String?
 
     /** New gun turret color. */
-    var turretColor: String?
+    val turretColor: String?
 
     /** New radar color. */
-    var radarColor: String?
+    val radarColor: String?
 
     /** New bullet color. */
-    var bulletColor: String?
+    val bulletColor: String?
 
     /** New scan color. */
-    var scanColor: String?
+    val scanColor: String?
 
     /** New tracks color. */
-    var tracksColor: String?
+    val tracksColor: String?
 
     /** New gun color. */
-    var gunColor: String?
+    val gunColor: String?
 }
