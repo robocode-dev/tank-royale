@@ -1,0 +1,20 @@
+title: "Robocode Tank Royale Documentation"
+description: "Documentation for the Robocode Tank Royale programming game"
+port: 8080
+
+themeConfig:
+  sidebar:
+    - title: Introduction
+      path: /articles/intro
+    - title: Tank Royale
+      path: /articles/tank-royale
+    - title: Bot Anatomy
+      path: /articles/anatomy
+    - title: Coordinates and Angles
+      path: /articles/coordinates-and-angles
+    - title: Physics
+      path: /articles/physics
+    - title: Scoring
+      path: /articles/scoring
+    - title: History
+      path: /articles/history
