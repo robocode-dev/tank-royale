@@ -1,5 +1,5 @@
-title: "Robocode Tank Royale Documentation"
-description: "Documentation for the Robocode Tank Royale programming game"
+title: "Robocode Tank Royale"
+description: "Documentation for the programming game Robocode Tank Royale."
 port: 8080
 
 themeConfig:
@@ -18,3 +18,9 @@ themeConfig:
       path: /articles/scoring
     - title: History
       path: /articles/history
+
+plugins:
+  vuepress-plugin-mathjax:
+    target: svg
+    macros:
+      "*": ×
