@@ -1,37 +1,55 @@
-html, body, .sidebar, .navbar, .links, .search-box
-  color: #DDD
-  background-color: #222 !important
+font-size = 14px
 
-.navbar .site-name
-  color: #6F6 !important
+bg-color = #222
+input-color = #444
+text-color = #DDD
+green-color = #6F6
+purple-color = #A6F
+blue-color = #66F
+orange-color = #FA6
+light-orange-color = #FDC
 
-h1
-  color: #A6F
-
-h2
-  color: #6F6
-
-h3, h4, h5, h6
-  color: #FA6
-
-a
-  color: #66F
-
-.search-box input
-  background-color: #444 !important
-
-.search-box input:focus
-  border-color: #6F6 !important
-
-a.sidebar-link
-  color: #FA6 !important
-  font-size: 14px !important
-
-a.sidebar-link:active
-  color: #FDC !important
-
-.language-text
-  background-color: #333 !important
+link-color = blue-color
+console-color = input-color
 
 p
-  font-size: 14px
+  font-size: font-size
+
+html, body, .sidebar, .navbar, .links, .search-box
+  color: text-color
+  background-color: bg-color !important
+
+.navbar .site-name
+  color: green-color !important
+
+h1
+  color: purple-color
+
+h2
+  color: green-color
+
+h3, h4, h5, h6
+  color: orange-color
+
+a
+  color: link-color
+
+.search-box input
+  color: text-color !important
+  background-color: input-color !important
+
+.search-box input:focus
+  border-color: green-color !important
+
+a.sidebar-link
+  color: orange-color !important
+  font-size: font-size !important
+
+a.sidebar-link:active
+  color: orange-color !important
+
+a.active.sidebar-link
+  border-left-color: green-color !important
+
+.language-text
+  background-color: console-color !important
