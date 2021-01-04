@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Internal
 {
   /// <summary>
   /// Utility class for reading environment variables.

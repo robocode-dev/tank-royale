@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Util
 {
   /// <summary>
   /// Event handler that is able to invoke events in the sequence, which they were added to the handler.

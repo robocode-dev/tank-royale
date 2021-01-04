@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Robocode.TankRoyale.BotApi.Util;
 using Robocode.TankRoyale.Schema;
 
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Internal
 {
   internal sealed class BotHandshakeFactory
   {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Util
 {
   /// <summary>
   /// Client WebSocket class based on ClientWebSocket from System.Net.WebSockets which provides these delegate methods:
