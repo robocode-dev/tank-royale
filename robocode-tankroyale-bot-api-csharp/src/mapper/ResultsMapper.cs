@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Mapper
 {
   public sealed class ResultsMapper
   {

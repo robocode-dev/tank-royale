@@ -2,3 +2,15 @@ apiRules:
   - exclude:
       uidRegex: ^Robocode\.TankRoyale\.Schema$
       type: Namespace
+  - exclude:
+      uidRegex: ^Robocode\.TankRoyale\.BotApi\.Internal$
+      type: Namespace
+  - exclude:
+      uidRegex: ^Robocode\.TankRoyale\.BotApi\.Mapper$
+      type: Namespace
+  - exclude:
+      uidRegex: ^Robocode\.TankRoyale\.BotApi\.Util$
+      type: Namespace
+  - exclude:
+      uidRegex: ^Robocode\.TankRoyale\.BotApi\.Sample.*
+      type: Namespace

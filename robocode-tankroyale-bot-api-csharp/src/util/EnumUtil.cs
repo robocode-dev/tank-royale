@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Util
 {
   public sealed class EnumUtil
   {

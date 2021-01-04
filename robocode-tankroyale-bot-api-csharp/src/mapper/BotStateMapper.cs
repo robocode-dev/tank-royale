@@ -1,4 +1,4 @@
-namespace Robocode.TankRoyale.BotApi
+namespace Robocode.TankRoyale.BotApi.Mapper
 {
   public sealed class BotStateMapper
   {

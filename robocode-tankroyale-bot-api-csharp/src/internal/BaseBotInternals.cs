@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Robocode.TankRoyale.Schema;
 using Robocode.TankRoyale.BotApi.Events;
+using Robocode.TankRoyale.BotApi.Mapper;
+using Robocode.TankRoyale.BotApi.Util;
 
 namespace Robocode.TankRoyale.BotApi.Internal
 {
