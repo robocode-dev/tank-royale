@@ -1,5 +1,6 @@
 title: "Robocode Tank Royale"
 description: "Documentation for the programming game Robocode Tank Royale."
+base: /tankroyale/
 port: 8080
 
 themeConfig:
