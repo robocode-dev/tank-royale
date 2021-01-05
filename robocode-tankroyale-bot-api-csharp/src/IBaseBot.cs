@@ -37,8 +37,12 @@ namespace Robocode.TankRoyale.BotApi
     int ScanRadius => 1200;
 
     /// <summary>
-    /// This is the max. possible turn rate of the bot. Note that the speed of the bot has a direct
-    /// impact on the turn rate. The faster the speed the less turn rate.
+    /// This is the max. possible turn rate of the bot.
+    /// 
+    /// <note>
+    /// The speed of the bot has a direct impact on the turn rate. The faster the speed the less
+    /// turn rate.
+    /// </note>
     ///
     /// The formula for the max. possible turn rate at a given speed is:
     /// MaxTurnRate - 0.75 x abs(speed).
@@ -472,11 +476,14 @@ namespace Robocode.TankRoyale.BotApi
     /// positive speed (moving forward). When passing speed of zero, it will then have to
     /// accelerate back to achieve max negative speed.
     ///
-    /// Note that acceleration is 1 unit per turn and deceleration/braking is faster than
-    /// acceleration as it is -2 unit per turn. Deceleration is negative as it is added to the
-    /// speed and hence needs to be negative speed down.
-    ///
+    /// <note>
+    /// Acceleration is 1 unit per turn and deceleration/braking is faster than acceleration as it
+    /// is -2 unit per turn. Deceleration is negative as it is added to the speed and hence needs
+    /// to be negative when slowing down.
+    /// </note>
+    /// <note>
     /// The target speed is truncated to <see cref="MaxSpeed"/> if the target speed exceeds this value.
+    /// </note>
     ///
     /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
     /// </summary>
@@ -532,8 +539,10 @@ namespace Robocode.TankRoyale.BotApi
     /// amount of damage dealt by a bullet hitting another bot is 4x firepower, and if the
     /// firepower is greater than 1 it will do an additional 2 x (firepower - 1) damage.
     ///
-    /// Note that the gun will automatically keep firing at any turn when the gun heat reaches zero.
+    /// <note>
+    /// The gun will automatically keep firing at any turn as soon as the gun heat reaches zero.
     /// It is possible to disable the gun firing by setting the firepower to zero.
+    /// </note>
     ///
     /// The firepower is truncated to 0 and <see cref="MaxFirepower"/> if the firepower exceeds
     /// this value.
@@ -572,11 +581,13 @@ namespace Robocode.TankRoyale.BotApi
     /// top of the bot's body. To compensate for this, you can adjust the gun for the bot's turn.
     /// When this is set, the gun will turn independent from the bot's turn.
     ///
-    /// Note: This property is additive until you reach the maximum the gun can turn
-    /// <see cref="MaxGunTurnRate"/>. The "adjust" is added to the amount, you set for turning the
-    /// bot by the turn rate, then capped by the physics of the game.
+    /// <note>
+    /// This property is additive until you reach the maximum the gun can turn <see
+    /// cref="MaxGunTurnRate"/>. The "adjust" is added to the amount, you set for turning the bot
+    /// by the turn rate, then capped by the physics of the game.
     ///
-    /// Note: The gun compensating this way does count as "turning the gun".
+    /// The gun compensating this way does count as "turning the gun".
+    /// </note>
     /// </summary>
     /// <value><em>true</em> if the gun is set to adjust for the bot's turn; <em>false</em>
     /// otherwise.</value>
@@ -587,16 +598,18 @@ namespace Robocode.TankRoyale.BotApi
     /// Sets the radar to adjust for the gun's turn when setting the radar turn rate. So the radar
     /// behaves like it is turning independent of the gun's turn.
     ///
-    /// /// Ok, so this needs some explanation: The radar is mounted on the gun. So, normally, if the
+    /// Ok, so this needs some explanation: The radar is mounted on the gun. So, normally, if the
     /// gun turns 90 degrees to the right, then the radar will turn with it as it is mounted on top
     /// of the gun. To compensate for this, you can adjust the radar for the gun turn. When this is
     /// set, the radar will turn independent from the gun's turn.
     ///
-    /// Note: This property is additive until you reach the maximum the radar can turn
-    /// <see cref="MaxRadarTurnRate"/>. The "adjust" is added to the amount, you set for turning
-    /// the gun by the gun turn rate, then capped by the physics of the game.
+    /// <note>
+    /// This property is additive until you reach the maximum the radar can turn <see
+    /// cref="MaxRadarTurnRate"/>. The "adjust" is added to the amount, you set for turning the gun
+    /// by the gun turn rate, then capped by the physics of the game.
     ///
-    /// Note: The radar compensating this way does count as "turning the radar".
+    /// The radar compensating this way does count as "turning the radar".
+    /// </note>
     /// </summary>
     /// <value><em>true</em> if the radar is set to adjust for the bot's turn; <em>false</em>
     /// otherwise.</value>
@@ -632,11 +645,12 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <summary>
     /// Sets the color of the body. Colors can be changed each turn.
-    /// 
-    /// Note that currently only the number format using the number sign (#) is supported.
-    /// 
+    /// <note>
+    /// Currently only the number format using the number sign (#) is supported.
+
     /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
     /// https://en.wikipedia.org/wiki/Web_colors</a>
+    /// </note>
     /// </summary>
     /// <example>
     /// <code>
@@ -661,11 +675,12 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <summary>
     /// Sets the color of the gun turret. Colors can be changed each turn.
-    /// 
-    /// Note that currently only the number format using the number sign (#) is supported.
-    /// 
+    /// <note>
+    /// Currently only the number format using the number sign (#) is supported.
+    ///
     /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
     /// https://en.wikipedia.org/wiki/Web_colors</a>
+    /// </note>
     /// </summary>
     /// <example>
     /// <code>
@@ -690,11 +705,12 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <summary>
     /// Sets the color of the radar. Colors can be changed each turn.
-    /// 
-    /// Note that currently only the number format using the number sign (#) is supported.
+    /// <note>
+    /// Currently only the number format using the number sign (#) is supported.
     /// 
     /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
     /// https://en.wikipedia.org/wiki/Web_colors</a>
+    /// </note>
     /// </summary>
     /// <example>
     /// <code>
@@ -719,11 +735,12 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <summary>
     /// Sets the color of the bullet when fired. Colors can be changed each turn.
-    /// 
-    /// Note that currently only the number format using the number sign (#) is supported.
+    /// <note>
+    /// Currently only the number format using the number sign (#) is supported.
     /// 
     /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
     /// https://en.wikipedia.org/wiki/Web_colors</a>
+    /// </note>
     /// </summary>
     /// <example>
     /// <code>
@@ -748,11 +765,12 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <summary>
     /// Sets the color of the scan arc. Colors can be changed each turn.
-    /// 
-    /// Note that currently only the number format using the number sign (#) is supported.
+    /// <note>
+    /// Currently only the number format using the number sign (#) is supported.
     /// 
     /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
     /// https://en.wikipedia.org/wiki/Web_colors</a>
+    /// </note>
     /// </summary>
     /// <example>
     /// <code>
@@ -777,12 +795,13 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <summary>
     /// Sets the color of the tracks. Colors can be changed each turn.
-    /// 
-    /// Note that currently only the number format using the number sign (#) is supported.
+    /// <note>
+    /// Currently only the number format using the number sign (#) is supported.
     /// 
     /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
     /// https://en.wikipedia.org/wiki/Web_colors</a>
     /// </summary>
+    /// </note>
     /// <example>
     /// <code>
     /// SetTracksColor("#09C");
@@ -978,7 +997,7 @@ namespace Robocode.TankRoyale.BotApi
     double CalcRadarBearing(double direction);
 
     /// <summary>
-    /// Calculates the direction (angle) from the bot�s coordinates to a point x,y.
+    /// Calculates the direction (angle) from the bot's coordinates to a point x,y.
     /// </summary>
     /// <param name="x">Is the x coordinate of the point.</param>
     /// <param name="y">Is the y coordinate of the point.</param>

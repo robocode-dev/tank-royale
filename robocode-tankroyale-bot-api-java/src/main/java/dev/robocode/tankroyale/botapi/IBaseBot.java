@@ -517,7 +517,7 @@ public interface IBaseBot {
    *
    * <p>Note that acceleration is 1 unit per turn and deceleration/braking is faster than
    * acceleration as it is -2 unit per turn. Deceleration is negative as it is added to the speed
-   * and hence needs to be negative speed down.
+   * and hence needs to be negative when slowing down.
    *
    * <p>The target speed is truncated to {@link #MAX_SPEED} if the target speed exceeds this value.
    *
@@ -583,7 +583,7 @@ public interface IBaseBot {
    * amount of damage dealt by a bullet hitting another bot is 4x firepower, and if the firepower is
    * greater than 1 it will do an additional 2 x (firepower - 1) damage.
    *
-   * <p>Note that the gun will automatically keep firing at any turn when the gun heat reaches zero.
+   * <p>Note that the gun will automatically keep firing at any turn as soon as the gun heat reaches zero.
    * It is possible to disable the gun firing by setting the firepower to zero.
    *
    * <p>The firepower is truncated to 0 and {@link #MAX_FIREPOWER} if the firepower exceeds this

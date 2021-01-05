@@ -24,8 +24,9 @@ public interface IBot extends IBaseBot {
    * }
    * </pre>
    *
-   * <p>Note that the program runs in a loop in this example, meaning that it will start moving
-   * forward as soon as {@link #turnGunRight(double)} has executed.
+   * <p>Note that the program runs in a loop in this example (as long as the bot is running),
+   * meaning that it will start moving forward as soon as {@link #turnGunRight(double)} has
+   * executed.
    *
    * <p>When running a loop that could potentially run forever. The best practice is to check if the
    * bot is still running to stop and exit the loop. This gives the game a chance of stopping the

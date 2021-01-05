@@ -24,8 +24,10 @@ namespace Robocode.TankRoyale.BotApi
     /// }
     /// </code>
     ///
-    /// Note that the program runs in a loop in this example, meaning that it will start moving
-    /// forward as soon as TurnGunRight has executed.
+    /// <note>
+    /// The program runs in a loop in this example (as long as the bot is running),
+    /// meaning that it will start moving forward as soon as TurnGunRight has executed.
+    /// </note>
     ///
     /// When running a loop that could potentially run forever. The best practice is to check if
     /// the bot is still running to stop and exit the loop. This gives the game a chance of
@@ -523,8 +525,10 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// Fire the gun in the direction as the gun is pointing.
     ///
-    /// Note that your bot is spending energy when firing a bullet, the amount of energy used for
-    /// firing the bullet is taken from the bot. The amount of energy loss is equal to the firepower.
+    /// <note>
+    /// Your bot is spending energy when firing a bullet, the amount of energy used for firing the
+    /// bullet is taken from the bot. The amount of energy loss is equal to the firepower.
+    /// </note>
     ///
     /// If the bullet hits an opponent bot, you will gain energy from the bullet hit. When hitting
     /// another bot, your bot will be rewarded and retrieve an energy boost of 3x firepower.

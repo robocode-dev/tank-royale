@@ -62,7 +62,7 @@ namespace Robocode.TankRoyale.BotApi.Events
     /// given a name of your choice.
     /// </summary>
     /// <param name="name">Is the name of the condition used for identifying a specific condition between multiple
-    /// conditions with the <see cref="IBaseBot.OnCustomEvent(Condition)"/> event handler.</param>
+    /// conditions with the <see cref="IBaseBot.OnCustomEvent(CustomEvent)"/> event handler.</param>
     public Condition(string name)
     {
       this.Name = name;
@@ -72,7 +72,7 @@ namespace Robocode.TankRoyale.BotApi.Events
     /// Overriding the this test method is the purpose of a Condition. The game will call your <c>test()</c> function,
     /// and take action if it returns <c>true</c>.
     /// </summary>
-    /// <return><c>true</c> if the condition is met; <c>code</c> otherwise.
+    /// <return><c>true</c> if the condition is met; <c>code</c> otherwise.</return>
     public abstract bool Test();
   }
 }
