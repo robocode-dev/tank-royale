@@ -2,9 +2,8 @@ package dev.robocode.tankroyale.botapi;
 
 import com.neovisionaries.i18n.CountryCode;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /** Bot info contains the properties of a bot. */
@@ -112,15 +111,14 @@ public final class BotInfo {
    * gameTypes=melee,classic,1v1
    * programmingLang=Java 8
    * </pre>
-   * @param fileName is the filename of the file containing bot properties.
+   * @param filename is the filename of the file containing bot properties.
    * @return A BotInfo instance containing the bot properties read from the file.
    * @throws IOException if an error occurs when reading the file.
    */
-  public static BotInfo fromFile(String fileName) throws IOException {
-    File file = new File(Objects.requireNonNull(BotInfo.class.getClassLoader().getResource(fileName)).getFile());
-    try (FileInputStream fis = new FileInputStream(file)) {
+  public static BotInfo fromFile(String filename) throws IOException {
+    try (InputStream is = BotInfo.class.getResourceAsStream(filename)) {
       Properties prop = new Properties();
-      prop.load(fis);
+      prop.load(is);
       return new BotInfo(
           prop.getProperty("name"),
           prop.getProperty("version"),
