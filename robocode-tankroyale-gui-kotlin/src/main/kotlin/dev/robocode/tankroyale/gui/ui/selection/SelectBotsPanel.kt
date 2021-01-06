@@ -10,6 +10,8 @@ import java.awt.Dimension
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
+import javax.swing.event.ListDataEvent
+import javax.swing.event.ListDataListener
 
 class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
@@ -67,26 +69,62 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         }
         add(selectionPanel, "north")
 
-        bootButtonPanel.addButton("boot_arrow", onBoot)
+        val bootButton = bootButtonPanel.addButton("boot_arrow", onBoot)
+        bootButton.isEnabled = false
 
-        addPanel.apply {
-            addButton("add_arrow", onAdd, "cell 0 1")
-            addButton("add_all_arrow", onAddAll, "cell 0 2")
-        }
-        removePanel.apply {
-            addButton("arrow_remove", onRemove, "cell 0 3")
-            addButton("arrow_remove_all", onRemoveAll, "cell 0 4")
-        }
+        val addButton = addPanel.addButton("add_arrow", onAdd, "cell 0 1")
+        addButton.isEnabled = false
+
+        val addAllButton = addPanel.addButton("add_all_arrow", onAddAll, "cell 0 2")
+        addAllButton.isEnabled = false
+
+        val removeButton = removePanel.addButton("arrow_remove", onRemove, "cell 0 3")
+        removeButton.isEnabled = false
+
+        val removeAllButton = removePanel.addButton("arrow_remove_all", onRemoveAll, "cell 0 4")
+        removeAllButton.isEnabled = false
 
         botsDirectoryList.cellRenderer = BotInfoListCellRenderer()
         joinedBotList.cellRenderer = BotInfoListCellRenderer()
         selectedBotList.cellRenderer = BotInfoListCellRenderer()
 
-        onBoot.subscribe {
-            val files = ArrayList<String>()
-            botsDirectoryList.selectedIndices.forEach { files.add(botsDirectoryListModel.getElementAt(it).host) }
+        botsDirectoryList.addListSelectionListener {
+            bootButton.isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
+        }
 
-            BootstrapProcess.run(files)
+        joinedBotList.addListSelectionListener {
+            addButton.isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
+        }
+
+        joinedBotList.model.addListDataListener(object: ListDataListener {
+            override fun intervalAdded(e: ListDataEvent?) { update() }
+            override fun intervalRemoved(e: ListDataEvent?) { update() }
+            override fun contentsChanged(e: ListDataEvent?) { update() }
+            fun update() {
+                addAllButton.isEnabled = joinedBotList.model.size > 0
+            }
+        })
+
+        selectedBotList.addListSelectionListener {
+            removeButton.isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
+        }
+
+        selectedBotList.model.addListDataListener(object: ListDataListener {
+            override fun intervalAdded(e: ListDataEvent?) { update() }
+            override fun intervalRemoved(e: ListDataEvent?) { update() }
+            override fun contentsChanged(e: ListDataEvent?) { update() }
+            fun update() {
+                removeAllButton.isEnabled = selectedBotList.model.size > 0
+            }
+        })
+
+        onBoot.subscribe {
+            if (botsDirectoryList.selectedIndices.size > 1) { // sanity check to avoid error from Bootstrap
+                val files = ArrayList<String>()
+                botsDirectoryList.selectedIndices.forEach { files.add(botsDirectoryListModel.getElementAt(it).host) }
+
+                BootstrapProcess.run(files)
+            }
         }
 
         onAdd.subscribe {
@@ -112,6 +150,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         onRemoveAll.subscribe {
             selectedBotListModel.clear()
         }
+
         botsDirectoryList.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount > 1) {
