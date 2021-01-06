@@ -93,7 +93,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         }
 
         joinedBotList.addListSelectionListener {
-            addButton.isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
+            addButton.isEnabled = joinedBotList.selectedIndices.isNotEmpty()
         }
 
         joinedBotList.model.addListDataListener(object: ListDataListener {
@@ -106,7 +106,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         })
 
         selectedBotList.addListSelectionListener {
-            removeButton.isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
+            removeButton.isEnabled = selectedBotList.selectedIndices.isNotEmpty()
         }
 
         selectedBotList.model.addListDataListener(object: ListDataListener {
@@ -119,12 +119,10 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         })
 
         onBoot.subscribe {
-            if (botsDirectoryList.selectedIndices.size > 1) { // sanity check to avoid error from Bootstrap
-                val files = ArrayList<String>()
-                botsDirectoryList.selectedIndices.forEach { files.add(botsDirectoryListModel.getElementAt(it).host) }
+            val files = ArrayList<String>()
+            botsDirectoryList.selectedIndices.forEach { files.add(botsDirectoryListModel.getElementAt(it).host) }
 
-                BootstrapProcess.run(files)
-            }
+            BootstrapProcess.run(files)
         }
 
         onAdd.subscribe {
