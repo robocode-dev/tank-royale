@@ -85,6 +85,8 @@ public class Fire extends Bot {
   /** onBulletHit: Aim at target (where bullet came from) and fire hard. */
   @Override
   public void onBulletHit(BulletHitBotEvent e) {
+    System.out.println("onBulletHit: " + getTurnNumber());
+
     // Set bot to resume movement, if it was stopped
     setResume();
 

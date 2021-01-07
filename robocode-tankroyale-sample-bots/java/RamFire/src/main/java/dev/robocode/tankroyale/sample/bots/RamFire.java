@@ -23,7 +23,7 @@ public class RamFire extends Bot {
 
   /** Constructor, which loads the bot settings file */
   protected RamFire() throws IOException {
-    super(BotInfo.fromFile("ramfire.properties"));
+    super(BotInfo.fromFile("/ramfire.properties"));
   }
 
   /** run: Spin around looking for a target */
@@ -43,13 +43,15 @@ public class RamFire extends Bot {
   @Override
   public void onScannedBot(ScannedBotEvent e) {
     turnToFaceTarget(e.getX(), e.getY());
-
-    forward(distanceTo(e.getX(), e.getY()) + 5);
+    double distance = distanceTo(e.getX(), e.getY());
+    forward(distance + 5);
   }
 
-  /** onBulletHit: Turn to face robot, fire hard, and ram him again! */
+  /** onHitBot: Turn to face robot, fire hard, and ram him again! */
   @Override
   public void onHitBot(HitBotEvent e) {
+    System.out.println("onHitBot: " + getTurnNumber());
+
     turnToFaceTarget(e.getX(), e.getY());
 
     // Determine a shot that won't kill the robot...
