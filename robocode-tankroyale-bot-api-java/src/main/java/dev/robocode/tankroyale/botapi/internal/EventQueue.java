@@ -3,10 +3,7 @@ package dev.robocode.tankroyale.botapi.internal;
 import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -39,12 +36,11 @@ final class EventQueue {
     removeOldEvents(currentTurnNumber);
 
     // Publish all event in the order of the keys, i.e. event priority order
-    Iterator<Map.Entry<Integer, List<BotEvent>>> iterator = eventMap.entrySet().iterator();
-    while (iterator.hasNext()) {
-      List<BotEvent> events = iterator.next().getValue();
-      iterator.remove();
+    for (List<BotEvent> events : eventMap.values()) {
+      List<BotEvent> eventsCopy = new ArrayList<>(events); // Need a copy in order to clear the event map event list
+      events.clear(); // Needs to be cleared prior to handling events, which can take several turns to complete
 
-      events.forEach(botEventHandlers::fire);
+      eventsCopy.forEach(botEventHandlers::fire);
     }
   }
 
