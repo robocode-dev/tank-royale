@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.schema.BulletState
 import dev.robocode.tankroyale.server.model.IBullet
-import dev.robocode.tankroyale.server.model.MutableBullet
 
 object BulletsToBulletStatesMapper {
     fun map(bullets: Set<IBullet>): List<BulletState> {

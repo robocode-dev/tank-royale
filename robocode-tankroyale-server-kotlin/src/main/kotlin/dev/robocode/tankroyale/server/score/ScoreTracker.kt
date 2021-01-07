@@ -68,9 +68,7 @@ class ScoreTracker(botIds: Set<BotId>) {
     private val botScores: MutableList<Score>
         get() {
             val scores = mutableListOf<Score>()
-            for (botId in botIds) {
-                scores += getScore(botId)
-            }
+            botIds.forEach { scores += getScore(it) }
             scores.sortByDescending { it.totalScore }
             return scores
         }

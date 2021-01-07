@@ -5,9 +5,7 @@ import dev.robocode.tankroyale.schema.*
 object EventsToEventsMapper {
     fun map(events: Set<dev.robocode.tankroyale.server.event.Event>): List<Event> {
         val mappedEvents = mutableListOf<Event>()
-        for (event in events) {
-            mappedEvents += map(event)
-        }
+        events.forEach { mappedEvents += map(it) }
         return mappedEvents
     }
 

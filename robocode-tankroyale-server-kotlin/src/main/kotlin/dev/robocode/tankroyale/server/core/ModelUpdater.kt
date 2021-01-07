@@ -127,6 +127,8 @@ class ModelUpdater(
 
     /** Proceed with the next turn. */
     private fun nextTurn() {
+        println("nextTurn: $turnNumber")
+
         previousTurn = round.lastTurn
 
         // Reset events
@@ -243,9 +245,8 @@ class ModelUpdater(
         if (bulletCount > 0) {
             // Create list of bullet line segments used for checking for bullet hits
             val bulletLines = mutableListOf<BulletLine>()
-            for (bullet in bullets) {
-                bulletLines += BulletLine(bullet.toBullet())
-            }
+            bullets.forEach { bulletLines += BulletLine(it.toBullet()) }
+
             // Check for bullet hits
             for (i in 0 until bulletCount) {
                 for (j in i + 1 until bulletCount) {
@@ -345,10 +346,8 @@ class ModelUpdater(
 
     /** Check collisions between bots */
     private fun checkAndHandleBotCollisions() {
-        val bots = mutableListOf<MutableBot>()
-        botsMap.values.forEach { bot -> bots += bot }
-
-        for (i in 0 until bots.size) {
+        val bots = botsMap.values.toList()
+        for (i in bots.indices) {
             for (j in i + 1 until bots.size) {
                 if (isBotsBoundingCirclesColliding(bots[i], bots[j])) {
                     handleBotHitBot(bots[i], bots[j])
@@ -405,10 +404,10 @@ class ModelUpdater(
         val bot1Killed = bot1.addDamage(RAM_DAMAGE)
         val bot2Killed = bot2.addDamage(RAM_DAMAGE)
         if (isBot1RammingBot2) {
-            scoreTracker.registerRamHit(bot2.id, bot1.id, bot1Killed)
+            scoreTracker.registerRamHit(bot1.id, bot2.id, bot2Killed)
         }
         if (isBot2RammingBot1) {
-            scoreTracker.registerRamHit(bot1.id, bot2.id, bot2Killed)
+            scoreTracker.registerRamHit(bot2.id, bot1.id, bot1Killed)
         }
     }
 
@@ -606,14 +605,12 @@ class ModelUpdater(
 
     /** Checks the scan field for scanned bots. */
     private fun checkAndHandleScans() {
-        val bots = mutableListOf<MutableBot>()
-        botsMap.values.forEach { bot -> bots += bot }
-
-        for (i in 0 until bots.size) {
+        val bots = botsMap.values.toList()
+        for (i in bots.indices) {
             val scanningBot = bots[i]
             val (startAngle, endAngle) = getScanAngles(scanningBot)
 
-            for (j in 0 until bots.size) {
+            for (j in bots.indices) {
                 if (i != j) {
                     val botBeingScanned = bots[j]
                     if (isBotScanned(scanningBot, botBeingScanned, startAngle, endAngle)) {
