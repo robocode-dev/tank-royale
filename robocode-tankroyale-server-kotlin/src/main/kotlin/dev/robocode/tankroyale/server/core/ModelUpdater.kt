@@ -127,8 +127,6 @@ class ModelUpdater(
 
     /** Proceed with the next turn. */
     private fun nextTurn() {
-        println("nextTurn: $turnNumber")
-
         previousTurn = round.lastTurn
 
         // Reset events
