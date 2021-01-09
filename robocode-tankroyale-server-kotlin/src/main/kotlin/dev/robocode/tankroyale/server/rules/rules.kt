@@ -22,7 +22,7 @@ const val INITIAL_GUN_HEAT = 3.0
 const val BOT_BOUNDING_CIRCLE_DIAMETER = 36
 
 /** Bot bounding circle radius */
-const val BOT_BOUNDING_CIRCLE_RADIUS = BOT_BOUNDING_CIRCLE_DIAMETER / 2
+const val BOT_BOUNDING_CIRCLE_RADIUS = BOT_BOUNDING_CIRCLE_DIAMETER / 2.0
 
 /** Radar radius */
 const val RADAR_RADIUS = 1200.0

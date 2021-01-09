@@ -313,7 +313,7 @@ class ModelUpdater(
      * @return `true` if the bot has been hit; `false` otherwise.
      */
     private fun isBulletHittingBot(bulletLine: BulletLine, bot: IBot): Boolean =
-        isLineIntersectingCircle(bulletLine.line, bot.position, BOT_BOUNDING_CIRCLE_RADIUS.toDouble())
+        isLineIntersectingCircle(bulletLine.line, bot.position, BOT_BOUNDING_CIRCLE_RADIUS)
 
     /**
      * Handles when a bullet has hit a bot.
@@ -443,33 +443,21 @@ class ModelUpdater(
         var x = bot.x
         var y = bot.y
         if (previousTurn != null) {
-            val oldPosition = previousTurn?.getBot(bot.id)?.position ?: return hitWall
-            val oldX = oldPosition.x
-            val oldY = oldPosition.y
-            val dx = x - oldX
-            val dy = y - oldY
-            if (x - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
-                x = BOT_BOUNDING_CIRCLE_RADIUS.toDouble()
-                if (dx != 0.0) {
-                    y = oldY + ((x - oldX) * dy / dx)
+            when {
+                x - BOT_BOUNDING_CIRCLE_RADIUS < 0 -> {
+                    x = BOT_BOUNDING_CIRCLE_RADIUS
                 }
-            } else if (x + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaWidth) {
-                x = setup.arenaWidth.toDouble() - BOT_BOUNDING_CIRCLE_RADIUS
-                if (dx != 0.0) {
-                    y = oldY + ((x - oldX) * dy / dx)
+                x + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaWidth -> {
+                    x = setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS
                 }
-            } else if (y - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
-                y = BOT_BOUNDING_CIRCLE_RADIUS.toDouble()
-                if (dy != 0.0) {
-                    x = oldX + ((y - oldY) * dx / dy)
+                y - BOT_BOUNDING_CIRCLE_RADIUS < 0 -> {
+                    y = BOT_BOUNDING_CIRCLE_RADIUS
                 }
-            } else if (y + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaHeight) {
-                y = setup.arenaHeight.toDouble() - BOT_BOUNDING_CIRCLE_RADIUS
-                if (dy != 0.0) {
-                    x = oldX + ((y - oldY) * dx / dy)
+                y + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaHeight -> {
+                    y = setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS
                 }
             }
-            hitWall = oldX != x || oldY != y
+            hitWall = bot.x != x || bot.y != y
             if (hitWall) {
                 bot.x = x
                 bot.y = y
@@ -634,7 +622,7 @@ class ModelUpdater(
         scanEndAngle: Double
     ): Boolean =
         isCircleIntersectingCircleSector(
-            scannedBot.position, BOT_BOUNDING_CIRCLE_RADIUS.toDouble(),
+            scannedBot.position, BOT_BOUNDING_CIRCLE_RADIUS,
             scanningBot.position, RADAR_RADIUS,
             scanStartAngle, scanEndAngle
         )
