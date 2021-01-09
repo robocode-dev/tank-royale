@@ -310,7 +310,7 @@ class GameServer(
     }
 
     /** Broadcast TPS-changed event to all observers */
-    private fun broadcastTpsChangedToObservers() {
+    private fun broadcastTpsChangedToObservers(tps: Int) {
         broadcastToObserverAndControllers(
             TpsChangedEvent().apply {
                 `$type` = Message.`$type`.TPS_CHANGED_EVENT
@@ -567,7 +567,7 @@ class GameServer(
         if (this.tps == tps) return
         this.tps = tps
 
-        broadcastTpsChangedToObservers()
+        broadcastTpsChangedToObservers(tps)
 
         if (tps == 0) {
             onPauseGame()
