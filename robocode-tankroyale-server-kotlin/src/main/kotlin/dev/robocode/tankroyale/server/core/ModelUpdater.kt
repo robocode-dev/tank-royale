@@ -52,7 +52,7 @@ class ModelUpdater(
         private set
 
     /** Round record */
-    private var round = Round(roundNumber = roundNumber)
+    private var round = MutableRound(roundNumber = roundNumber)
 
     /** Turn record */
     private var turn = Turn(turnNumber = turnNumber)

@@ -2,14 +2,13 @@ package dev.robocode.tankroyale.server.core
 
 import com.google.gson.Gson
 import dev.robocode.tankroyale.schema.*
+import dev.robocode.tankroyale.schema.BotIntent
+import dev.robocode.tankroyale.schema.GameSetup
 import dev.robocode.tankroyale.schema.Message.`$type`
 import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.conn.ConnHandler
 import dev.robocode.tankroyale.server.mapper.*
-import dev.robocode.tankroyale.server.model.BotId
-import dev.robocode.tankroyale.server.model.GameState
-import dev.robocode.tankroyale.server.model.Round
-import dev.robocode.tankroyale.server.model.Turn
+import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND
 import org.java_websocket.WebSocket
 import org.java_websocket.exceptions.WebsocketNotConnectedException
@@ -363,7 +362,7 @@ class GameServer(
         broadcastGameEndedToObservers()
     }
 
-    private fun onNextTick(lastRound: Round?) {
+    private fun onNextTick(lastRound: IRound?) {
         // Send tick
         if (lastRound != null) {
             val turn = lastRound.lastTurn
@@ -395,7 +394,7 @@ class GameServer(
             })
     }
 
-    private fun broadcastGameTickToParticipants(round: Round, turn: Turn) {
+    private fun broadcastGameTickToParticipants(round: IRound, turn: Turn) {
         for (conn in participants) {
             val botId = participantIds[conn]
             if (botId != null) {
@@ -407,7 +406,7 @@ class GameServer(
         }
     }
 
-    private fun broadcastGameTickToObservers(round: Round, turn: Turn) {
+    private fun broadcastGameTickToObservers(round: IRound, turn: Turn) {
         broadcastToObserverAndControllers(TurnToTickEventForObserverMapper.map(round, turn))
     }
 
