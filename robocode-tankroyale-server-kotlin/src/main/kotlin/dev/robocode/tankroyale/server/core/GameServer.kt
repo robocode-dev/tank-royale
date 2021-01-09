@@ -394,7 +394,7 @@ class GameServer(
             })
     }
 
-    private fun broadcastGameTickToParticipants(round: IRound, turn: Turn) {
+    private fun broadcastGameTickToParticipants(round: IRound, turn: ITurn) {
         for (conn in participants) {
             val botId = participantIds[conn]
             if (botId != null) {
@@ -406,7 +406,7 @@ class GameServer(
         }
     }
 
-    private fun broadcastGameTickToObservers(round: IRound, turn: Turn) {
+    private fun broadcastGameTickToObservers(round: IRound, turn: ITurn) {
         broadcastToObserverAndControllers(TurnToTickEventForObserverMapper.map(round, turn))
     }
 

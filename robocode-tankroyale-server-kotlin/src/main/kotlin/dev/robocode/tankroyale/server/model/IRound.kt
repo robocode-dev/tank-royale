@@ -6,11 +6,11 @@ interface IRound {
     val roundNumber: Int
 
     /** List of turns */
-    val turns: List<Turn>
+    val turns: List<ITurn>
 
     /** Flag specifying if round has ended yet */
     val roundEnded: Boolean
 
     /** Last turn */
-    val lastTurn: Turn? get() = if (turns.isNotEmpty()) turns[turns.size - 1] else null
+    val lastTurn: ITurn? get() = if (turns.isNotEmpty()) turns[turns.size - 1] else null
 }

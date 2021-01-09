@@ -55,7 +55,7 @@ class ModelUpdater(
     private var round = MutableRound(roundNumber = roundNumber)
 
     /** Turn record */
-    private var turn = Turn(turnNumber = turnNumber)
+    private var turn = MutableTurn(turnNumber = turnNumber)
 
     /** Flag specifying if the round has ended */
     private var roundEnded = false
@@ -64,7 +64,7 @@ class ModelUpdater(
     private var nextBulletId = 0
 
     /** Previous turn */
-    private var previousTurn: Turn? = null
+    private var previousTurn: ITurn? = null
 
     /** Inactivity counter */
     private var inactivityCounter = 0

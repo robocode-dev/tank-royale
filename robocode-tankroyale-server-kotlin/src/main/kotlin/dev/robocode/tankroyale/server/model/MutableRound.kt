@@ -6,7 +6,7 @@ data class MutableRound(
     override var roundNumber: Int,
 
     /** List of turns */
-    override val turns: MutableList<Turn> = mutableListOf(),
+    override val turns: MutableList<MutableTurn> = mutableListOf(),
 
     /** Flag specifying if round has ended yet */
     override var roundEnded: Boolean = false,
@@ -14,5 +14,12 @@ data class MutableRound(
 ) : IRound {
 
     /** Returns an immutable copy of this round */
-    fun toRound() = Round(roundNumber, turns, roundEnded)
+    fun toRound() = Round(roundNumber, copyTurns(), roundEnded)
+
+    /** Returns a copy of the turns */
+    private fun copyTurns(): List<Turn> {
+        val turnsCopy = mutableListOf<Turn>()
+        turns.forEach { turn -> turnsCopy += turn.toTurn() }
+        return turnsCopy.toList()
+    }
 }
