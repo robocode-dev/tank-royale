@@ -70,20 +70,21 @@ data class MutableBot(
     /** Scan angle in degrees */
     override var scanSpreadAngle: Double = radarSpreadAngle,
 
-    ): IBot {
-
-    // Holds to old position
-    private val oldPosition = MutablePoint(0.0, 0.0)
+) : IBot {
 
     /** X coordinate */
     override var x: Double
         get() = position.x
-        set(value) { position.x = value }
+        set(value) {
+            position.x = value
+        }
 
     /** Y coordinate */
     override var y: Double
         get() = position.y
-        set(value) { position.y = value }
+        set(value) {
+            position.y = value
+        }
 
     /**
      * Adds damage to the bot.
@@ -109,21 +110,9 @@ data class MutableBot(
      * Moves bot to the new (next turn) position based on the current position, the driving direction, and the speed.
      */
     fun moveToNewPosition() {
-        // Remember old position
-        oldPosition.x = x
-        oldPosition.y = y
-
         // Move to new position
         val angle = Math.toRadians(direction)
         x += cos(angle) * speed
         y += sin(angle) * speed
-    }
-
-    /**
-     * Restores the old position when bot has collides with another bot.
-     */
-    fun restoreOldPosition() {
-        x = oldPosition.x
-        y = oldPosition.y
     }
 }

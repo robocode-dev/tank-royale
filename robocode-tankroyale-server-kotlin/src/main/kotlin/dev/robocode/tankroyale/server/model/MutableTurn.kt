@@ -23,7 +23,21 @@ data class MutableTurn(
 ) : ITurn {
 
     /** Returns an immutable copy of this turn */
-    fun toTurn() = Turn(turnNumber, bots.toSet(), bullets.toSet(), observerEvents.toSet(), copyBotEvents())
+    fun toTurn() = Turn(turnNumber, copyBots(), copyBullets(), observerEvents.toSet(), copyBotEvents())
+
+    /** Returns a deep copy of the bots */
+    private fun copyBots(): Set<IBot> {
+        val botsCopy = mutableSetOf<IBot>()
+        bots.forEach { bot -> botsCopy += copyBot(bot) }
+        return botsCopy.toSet()
+    }
+
+    /** Returns a deep copy of the bullets */
+    private fun copyBullets(): Set<IBullet> {
+        val bulletsCopy = mutableSetOf<IBullet>()
+        bullets.forEach { bullet -> bulletsCopy += copyBullet(bullet) }
+        return bulletsCopy.toSet()
+    }
 
     /** Returns a deep copy of the bot events */
     private fun copyBotEvents(): Map<BotId, Set<Event>> {
@@ -40,7 +54,7 @@ data class MutableTurn(
      */
     fun copyBullets(srcBullets: Collection<IBullet>) {
         bullets.clear()
-        srcBullets.forEach { bullet -> bullets += bullet }
+        srcBullets.forEach { bullet -> bullets += copyBullet(bullet) }
     }
 
     /**
@@ -49,7 +63,47 @@ data class MutableTurn(
      */
     fun copyBots(srcBots: Collection<IBot>) {
         bots.clear()
-        srcBots.forEach { bot -> bots += bot }
+        srcBots.forEach { bot -> bots += copyBot(bot) }
+    }
+
+    /** Deep copies a bot */
+    private fun copyBot(bot: IBot): IBot {
+        return Bot(
+            bot.id,
+            bot.energy,
+            Point(bot.position.x, bot.position.y),
+            bot.direction,
+            bot.gunDirection,
+            bot.scanDirection,
+            bot.radarSpreadAngle,
+            bot.speed,
+            bot.turnRate,
+            bot.gunTurnRate,
+            bot.radarTurnRate,
+            bot.gunHeat,
+            bot.bodyColor,
+            bot.turretColor,
+            bot.radarColor,
+            bot.bulletColor,
+            bot.scanColor,
+            bot.tracksColor,
+            bot.gunColor,
+            bot.scanDirection,
+            bot.scanSpreadAngle
+        )
+    }
+
+    /** Deep copies a bullet */
+    private fun copyBullet(bullet: IBullet): IBullet {
+        return Bullet(
+            bullet.id,
+            bullet.botId,
+            bullet.power,
+            bullet.direction,
+            bullet.color,
+            bullet.startPosition,
+            bullet.tick,
+        )
     }
 
     /**

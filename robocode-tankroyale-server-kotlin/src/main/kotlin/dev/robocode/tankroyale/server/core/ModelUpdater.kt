@@ -53,9 +53,6 @@ class ModelUpdater(
     /** Id for the next bullet that comes into existence */
     private var nextBulletId = 0
 
-    /** Previous turn */
-    private var previousTurn: ITurn? = null
-
     /** Inactivity counter */
     private var inactivityCounter = 0
 
@@ -119,8 +116,6 @@ class ModelUpdater(
 
     /** Proceed with the next turn. */
     private fun nextTurn() {
-        previousTurn = round.lastTurn
-
         // Reset events
         turn.turnNumber++
         turn.resetEvents()
@@ -351,8 +346,10 @@ class ModelUpdater(
         registerRamHit(bot1, bot2, isBot1RammingBot2, isBot2RammingBot1)
 
         // Restore both bot's old position
-        bot1.restoreOldPosition()
-        bot2.restoreOldPosition()
+        val oldPos1 = round.lastTurn?.getBot(bot1.id)!!.position
+        val oldPos2 = round.lastTurn?.getBot(bot2.id)!!.position
+        bot1.position = MutablePoint(oldPos1.x, oldPos1.y)
+        bot2.position = MutablePoint(oldPos2.x, oldPos2.y)
 
         // Stop bots by setting speed to 0
         if (isBot1RammingBot2) bot1.speed = 0.0
@@ -404,7 +401,7 @@ class ModelUpdater(
             val hitWall = adjustBotCoordinatesIfHitWall(bot)
             if (hitWall) {
                 // Omit sending hit-wall-event if the bot hit the wall in the previous turn
-                if (previousTurn!!.getEvents(bot.id).none { event -> event is BotHitWallEvent }) {
+                if (round.lastTurn!!.getEvents(bot.id).none { event -> event is BotHitWallEvent }) {
 
                     val botHitWallEvent = BotHitWallEvent(turn.turnNumber, bot.id)
                     turn.addPrivateBotEvent(bot.id, botHitWallEvent)
@@ -426,7 +423,7 @@ class ModelUpdater(
         var hitWall = false
         var x = bot.x
         var y = bot.y
-        if (previousTurn != null) {
+        if (round.lastTurn != null) {
             when {
                 x - BOT_BOUNDING_CIRCLE_RADIUS < 0 -> {
                     x = BOT_BOUNDING_CIRCLE_RADIUS
