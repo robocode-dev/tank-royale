@@ -11,8 +11,6 @@ import kotlinx.serialization.PolymorphicSerializer
 import java.io.Closeable
 import java.net.URI
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 
 object Client : AutoCloseable {
 
@@ -37,7 +35,6 @@ object Client : AutoCloseable {
 
     val onTickEvent = Event<TickEvent>()
 
-
     var currentGameSetup: GameSetup? = null
 
     private var isGameRunning: Boolean = false
@@ -47,7 +44,8 @@ object Client : AutoCloseable {
 
     private val isConnected: Boolean get() = websocket.isOpen()
 
-    private var bots: Set<BotInfo> = HashSet()
+    private var participants = listOf<Participant>()
+    private var bots = setOf<BotInfo>()
 
     val joinedBots: Set<BotInfo>
         get() {
@@ -58,9 +56,9 @@ object Client : AutoCloseable {
 
     private val json = MessageConstants.json
 
-    private var gameTypes: Set<String> = HashSet()
+    private var gameTypes = setOf<String>()
 
-    private val disposables = ArrayList<Closeable>()
+    private val disposables = mutableListOf<Closeable>()
 
     private var lastStartGame: StartGame? = null
 
@@ -122,9 +120,11 @@ object Client : AutoCloseable {
         }
     }
 
-    fun changeTps(tps: Int) {
+    fun getParticipant(id: Int): Participant = participants.first { participant -> participant.id == id }
+
+    private fun changeTps(tps: Int) {
         if (isGameRunning && tps != this.tps) {
-            this.tps = tps;
+            this.tps = tps
             websocket.send(ChangeTps(tps))
         }
     }
@@ -164,6 +164,7 @@ object Client : AutoCloseable {
     private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
         isGameRunning = true
         currentGameSetup = gameStartedEvent.gameSetup
+        participants = gameStartedEvent.participants
 
         onGameStarted.publish(gameStartedEvent)
     }

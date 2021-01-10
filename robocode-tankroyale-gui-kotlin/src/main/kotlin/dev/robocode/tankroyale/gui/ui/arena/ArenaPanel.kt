@@ -206,6 +206,7 @@ object ArenaPanel : JPanel() {
             Tank(bot).paint(g)
             drawScanArc(g, bot)
             drawEnergy(g, bot)
+            drawName(g, bot)
         }
     }
 
@@ -289,6 +290,20 @@ object ArenaPanel : JPanel() {
 
         g.scale(1.0, -1.0)
         g.drawString(text, bot.x.toFloat() - width / 2,  (-30 - bot.y).toFloat())
+
+        oldState.restore(g)
+    }
+
+    private fun drawName(g: Graphics2D, bot: BotState) {
+        val oldState = Graphics2DState(g)
+
+        g.color = Color.WHITE
+        val participant = Client.getParticipant(bot.id)
+        val text = participant.name
+        val width = g.fontMetrics.stringWidth(text)
+
+        g.scale(1.0, -1.0)
+        g.drawString(text, bot.x.toFloat() - width / 2,  (-bot.y + 36).toFloat())
 
         oldState.restore(g)
     }
