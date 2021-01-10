@@ -414,7 +414,7 @@ class GameServer(
         // Broadcast skipped turn event to the participant that skipped the turn
         val skippedTurnEvent = SkippedTurnEvent().apply {
             `$type` = Message.`$type`.SKIPPED_TURN_EVENT
-            turnNumber = modelUpdater.turnNumber
+            turnNumber = modelUpdater.turn.turnNumber
         }
         connHandler.broadcast(getParticipantsThatSkippedTurn(), gson.toJson(skippedTurnEvent))
     }

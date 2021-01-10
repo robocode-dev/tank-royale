@@ -6,7 +6,7 @@ data class Round(
     override val roundNumber: Int,
 
     /** List of turns */
-    override val turns: List<Turn>,
+    override val turns: List<ITurn>,
 
     /** Flag specifying if round has ended yet */
     override val roundEnded: Boolean,

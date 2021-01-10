@@ -44,21 +44,11 @@ class ModelUpdater(
     /** Game state */
     private var gameState = GameState(Arena(setup.arenaWidth, setup.arenaHeight))
 
-    /** Current round number */
-    private var roundNumber: Int = 0
-
-    /** Current turn number */
-    var turnNumber: Int = 0
-        private set
-
     /** Round record */
-    private var round = MutableRound(roundNumber = roundNumber)
+    private var round = MutableRound(0)
 
     /** Turn record */
-    private var turn = MutableTurn(turnNumber = turnNumber)
-
-    /** Flag specifying if the round has ended */
-    private var roundEnded = false
+    val turn = MutableTurn(0)
 
     /** Id for the next bullet that comes into existence */
     private var nextBulletId = 0
@@ -82,10 +72,10 @@ class ModelUpdater(
      */
     fun update(botIntents: Map<BotId, IBotIntent>): GameState {
         updateBotIntents(botIntents)
-        if (roundEnded) {
+        if (round.roundEnded) {
             calculatePlacements()
             nextRound()
-        } else if (roundNumber == 0 && turnNumber == 0) {
+        } else if (round.roundNumber == 0 && turn.turnNumber == 0) {
             nextRound()
         }
         nextTurn()
@@ -111,10 +101,12 @@ class ModelUpdater(
 
     /** Proceed with the next round. */
     private fun nextRound() {
-        round = round.copy(roundNumber = roundNumber)
-        roundEnded = false
-        roundNumber++
-        turnNumber = 0
+        round = round.copy(roundNumber = round.roundNumber)
+        round.roundEnded = false
+        round.roundNumber++
+
+        turn.turnNumber = 0
+
         nextBulletId = 0
         botIntentsMap.clear()
         bullets.clear()
@@ -130,9 +122,8 @@ class ModelUpdater(
         previousTurn = round.lastTurn
 
         // Reset events
-        turnNumber++
+        turn.turnNumber++
         turn.resetEvents()
-        turn.turnNumber = turnNumber
 
         // Remove dead bots (cannot participate in new round)
         botsMap.values.removeIf(IBot::isDead)
@@ -163,15 +154,8 @@ class ModelUpdater(
      * @return new game state.
      */
     private fun updateGameState(): GameState {
-        round = round.copy()
-        round.turns += turn.copy()
-
-        val rounds = gameState.rounds
-        if (rounds.size == round.roundNumber) {
-            rounds += round
-        } else {
-            rounds[round.roundNumber] = round
-        }
+        round.turns += turn.toTurn()
+        gameState.rounds += round.toRound()
         return gameState
     }
 
@@ -263,8 +247,8 @@ class ModelUpdater(
      * @param bullet2 is the second bullet.
      */
     private fun handleBulletHitBullet(bullet1: IBullet, bullet2: IBullet) {
-        val event1 = BulletHitBulletEvent(turnNumber, bullet1, bullet2)
-        val event2 = BulletHitBulletEvent(turnNumber, bullet2, bullet1)
+        val event1 = BulletHitBulletEvent(turn.turnNumber, bullet1, bullet2)
+        val event2 = BulletHitBulletEvent(turn.turnNumber, bullet2, bullet1)
 
         turn.apply {
             addPrivateBotEvent(bullet1.botId, event1)
@@ -334,7 +318,7 @@ class ModelUpdater(
 
         scoreTracker.registerBulletHit(botId, victimId, damage, isKilled)
 
-        val bulletHitBotEvent = BulletHitBotEvent(turnNumber, bullet, victimId, damage, bot.energy)
+        val bulletHitBotEvent = BulletHitBotEvent(turn.turnNumber, bullet, victimId, damage, bot.energy)
         turn.apply {
             addPrivateBotEvent(bulletHitBotEvent.bullet.botId, bulletHitBotEvent) // Bot itself gets event
             addPrivateBotEvent(bulletHitBotEvent.victimId, bulletHitBotEvent) // Victim bot gets event too
@@ -375,8 +359,8 @@ class ModelUpdater(
         if (isBot2RammingBot1) bot2.speed = 0.0
 
         // Create bot-hit-bot events
-        val event1 = BotHitBotEvent(turnNumber, bot1.id, bot2.id, bot2.energy, bot2.x, bot2.y, isBot1RammingBot2)
-        val event2 = BotHitBotEvent(turnNumber, bot2.id, bot1.id, bot1.energy, bot1.x, bot1.y, isBot2RammingBot1)
+        val event1 = BotHitBotEvent(turn.turnNumber, bot1.id, bot2.id, bot2.energy, bot2.x, bot2.y, isBot1RammingBot2)
+        val event2 = BotHitBotEvent(turn.turnNumber, bot2.id, bot1.id, bot1.energy, bot1.x, bot1.y, isBot2RammingBot1)
         turn.apply {
             addPrivateBotEvent(bot1.id, event1)
             addPrivateBotEvent(bot2.id, event2)
@@ -422,7 +406,7 @@ class ModelUpdater(
                 // Omit sending hit-wall-event if the bot hit the wall in the previous turn
                 if (previousTurn!!.getEvents(bot.id).none { event -> event is BotHitWallEvent }) {
 
-                    val botHitWallEvent = BotHitWallEvent(turnNumber, bot.id)
+                    val botHitWallEvent = BotHitWallEvent(turn.turnNumber, bot.id)
                     turn.addPrivateBotEvent(bot.id, botHitWallEvent)
                     turn.addObserverEvent(botHitWallEvent)
 
@@ -475,7 +459,7 @@ class ModelUpdater(
                 // remove bullet from arena
                 iterator.remove()
 
-                val bulletHitWallEvent = BulletHitWallEvent(turnNumber, bullet.copy())
+                val bulletHitWallEvent = BulletHitWallEvent(turn.turnNumber, bullet.copy())
                 turn.addPrivateBotEvent(bullet.botId, bulletHitWallEvent)
                 turn.addObserverEvent(bulletHitWallEvent)
             }
@@ -521,7 +505,7 @@ class ModelUpdater(
     private fun checkAndHandleDefeatedBots() {
         for (bot in botsMap.values) {
             if (bot.isDead) {
-                val botDeathEvent = BotDeathEvent(turnNumber, bot.id)
+                val botDeathEvent = BotDeathEvent(turn.turnNumber, bot.id)
                 turn.addPublicBotEvent(botDeathEvent)
                 turn.addObserverEvent(botDeathEvent)
                 scoreTracker.registerBotDeath(bot.id)
@@ -581,7 +565,7 @@ class ModelUpdater(
             color = bot.bulletColor,
         )
         bullets += bullet
-        val bulletFiredEvent = BulletFiredEvent(turnNumber, bullet.copy())
+        val bulletFiredEvent = BulletFiredEvent(turn.turnNumber, bullet.copy())
         turn.addPrivateBotEvent(bot.id, bulletFiredEvent)
         turn.addObserverEvent(bulletFiredEvent)
 
@@ -634,7 +618,7 @@ class ModelUpdater(
      */
     private fun createAndAddScannedBotEventToTurn(scanningBot: IBot, scannedBot: IBot) {
         val scannedBotEvent = ScannedBotEvent(
-            turnNumber,
+            turn.turnNumber,
             scanningBot.id,
             scannedBot.id,
             scannedBot.energy,
@@ -669,8 +653,8 @@ class ModelUpdater(
     /** Checks and handles if the round is ended or game is over. */
     private fun checkAndHandleRoundOrGameOver() {
         if (botsMap.size <= 1) {
-            roundEnded = true // Round ended
-            if (roundNumber >= setup.numberOfRounds) {
+            round.roundEnded = true // Round ended
+            if (round.roundNumber >= setup.numberOfRounds) {
                 gameState.isGameEnded = true // Game over
             }
         }
