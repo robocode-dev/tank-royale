@@ -35,7 +35,10 @@ public class RamFire extends Bot {
     setRadarColor("#666"); // dark gray
 
     while (isRunning()) {
-      turnLeft(5 * turnDirection);
+      // Turn the robot a bit if the robot is not moving
+      if (getDistanceRemaining() == 0) {
+        turnLeft(5 * turnDirection);
+      }
     }
   }
 
@@ -47,11 +50,9 @@ public class RamFire extends Bot {
     forward(distance + 5);
   }
 
-  /** onHitBot: Turn to face robot, fire hard, and ram him again! */
+  /** onHitBot: Turn to face robot, fire hard, and ram it again! */
   @Override
   public void onHitBot(HitBotEvent e) {
-    System.out.println("onHitBot: " + getTurnNumber());
-
     turnToFaceTarget(e.getX(), e.getY());
 
     // Determine a shot that won't kill the robot...
@@ -67,7 +68,7 @@ public class RamFire extends Bot {
     } else if (e.getEnergy() > .4) {
       fire(.1);
     }
-    forward(40); // Ram him again!
+    forward(40); // Ram it again!
   }
 
   /**

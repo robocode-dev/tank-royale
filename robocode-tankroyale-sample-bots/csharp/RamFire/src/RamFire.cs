@@ -33,7 +33,11 @@ namespace Robocode.TankRoyale.Sample.Bots
       // Spin the gun around slowly... forever
       while (IsRunning)
       {
-        TurnLeft(5 * turnDirection);
+        // Turn the robot a bit if the robot is not moving
+        if (DistanceRemaining == 0)
+        {
+          TurnLeft(5 * turnDirection);
+        }
       }
     }
 
@@ -41,11 +45,11 @@ namespace Robocode.TankRoyale.Sample.Bots
     public override void OnScannedBot(ScannedBotEvent e)
     {
       TurnToFaceTarget(e.X, e.Y);
-
-      Forward(DistanceTo(e.X, e.Y) + 5);
+      double distance = DistanceTo(e.X, e.Y);
+      Forward(distance + 5);
     }
 
-    /** OnBulletHit: Turn to face robot, fire hard, and ram him again! */
+    /** OnBulletHit: Turn to face robot, fire hard, and ram it again! */
     public override void OnHitBot(HitBotEvent e)
     {
       TurnToFaceTarget(e.X, e.Y);
@@ -72,7 +76,7 @@ namespace Robocode.TankRoyale.Sample.Bots
       {
         Fire(.1);
       }
-      Forward(40); // Ram him again!
+      Forward(40); // Ram it again!
     }
 
     /**
