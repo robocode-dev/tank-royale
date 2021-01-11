@@ -23,6 +23,7 @@ final class EventQueue {
 
   void clear() {
     eventMap.clear();
+    baseBotInternals.getConditions().clear(); // conditions are added in the bot's run() method each round
   }
 
   void addEventsFromTick(TickEvent event, IBaseBot baseBot) {

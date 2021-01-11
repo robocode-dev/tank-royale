@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.bot;
+package dev.robocode.tankroyale.sample.bots;
 
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.BotInfo;
