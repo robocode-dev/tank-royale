@@ -493,9 +493,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private void HandleGameEndedEvent(string json)
     {
-      // Clear current game state
-      ClearCurrentGameState();
-
       // Send the game ended event
       var gameEndedEventForBot = JsonConvert.DeserializeObject<GameEndedEventForBot>(json);
       var results = ResultsMapper.Map(gameEndedEventForBot.Results);
@@ -538,14 +535,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private void HandleBulletFired(Robocode.TankRoyale.BotApi.Events.BulletFiredEvent bulletFiredEvent)
     {
       botIntent.Firepower = 0; // Reset firepower so the bot stops firing continuously
-    }
-
-    private void ClearCurrentGameState()
-    {
-      // Clear setting that are only available during a running game
-      tickEvent = null;
-      gameSetup = null;
-      myId = null;
     }
   }
 }
