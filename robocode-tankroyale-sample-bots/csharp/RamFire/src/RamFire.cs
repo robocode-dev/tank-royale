@@ -33,11 +33,12 @@ namespace Robocode.TankRoyale.Sample.Bots
       // Spin the gun around slowly... forever
       while (IsRunning)
       {
-        // Turn the robot a bit if the robot is not moving
-        if (DistanceRemaining == 0)
+        // Turn the gun a bit if the bot if the target speed is 0
+        if (TargetSpeed == 0)
         {
-          TurnLeft(5 * turnDirection);
+          TurnGunRight(5);
         }
+        Go();
       }
     }
 
@@ -55,7 +56,7 @@ namespace Robocode.TankRoyale.Sample.Bots
       TurnToFaceTarget(e.X, e.Y);
 
       // Determine a shot that won't kill the robot...
-      // We want to ram him instead for bonus points
+      // We want to ram it instead for bonus points
       if (e.Energy > 16)
       {
         Fire(3);

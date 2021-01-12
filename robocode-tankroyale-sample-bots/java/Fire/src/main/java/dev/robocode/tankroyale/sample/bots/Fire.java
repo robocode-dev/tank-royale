@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.sample.bots;
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.events.BulletHitBotEvent;
+import dev.robocode.tankroyale.botapi.events.HitBotEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 
 import java.io.IOException;
@@ -40,7 +41,11 @@ public class Fire extends Bot {
 
     // Spin the gun around slowly... forever
     while (isRunning()) {
-      turnGunRight(5);
+      // Turn the gun a bit if the bot if the target speed is 0
+      if (getTargetSpeed() == 0) {
+        turnGunRight(5);
+      }
+      go();
     }
   }
 
@@ -71,27 +76,22 @@ public class Fire extends Bot {
     setResume();
 
     // Turn perpendicular to the bullet direction
-    double direction = directionTo(e.getBullet().getX(), e.getBullet().getY());
+    double direction = e.getBullet().getDirection();
     turnLeft(normalizeRelativeAngle(90 - (getDirection() - direction)));
 
     // Move forward or backward depending if the distance is positive or negative
     forward(dist);
     dist *= -1; // Change distance, meaning forward or backward direction
-
-    // Rescan
-    setScan();
   }
 
-  /** onBulletHit: Aim at target (where bullet came from) and fire hard. */
+  /** onHitBot: Aim at target and fire hard. */
   @Override
-  public void onBulletHit(BulletHitBotEvent e) {
-    System.out.println("onBulletHit: " + getTurnNumber());
-
+  public void onHitBot(HitBotEvent e) {
     // Set bot to resume movement, if it was stopped
     setResume();
 
     // Turn gun to the bullet direction
-    double direction = directionTo(e.getBullet().getX(), e.getBullet().getY());
+    double direction = directionTo(e.getX(), e.getY());
     double gunBearing = normalizeRelativeAngle(direction - getGunDirection());
     turnGunLeft(gunBearing);
 

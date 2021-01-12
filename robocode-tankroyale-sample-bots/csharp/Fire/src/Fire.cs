@@ -37,7 +37,12 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
       // Spin the gun around slowly... forever
       while (IsRunning)
       {
-        TurnGunRight(5);
+        // Turn the gun a bit if the bot if the target speed is 0
+        if (TargetSpeed == 0)
+        {
+          TurnGunRight(5);
+        }
+        Go();
       }
     }
 
@@ -83,14 +88,14 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
       SetScan();
     }
 
-    // OnBulletHit: Aim at target (where bullet came from) and fire hard.
-    public override void OnBulletHit(BulletHitBotEvent e)
+    // OnHitBot: Aim at target and fire hard.
+    public override void OnHitBot(HitBotEvent e)
     {
       // Set bot to resume movement, if it was stopped
       SetResume();
 
       // Turn gun to the bullet direction
-      double direction = DirectionTo(e.Bullet.X, e.Bullet.Y);
+      double direction = DirectionTo(e.X, e.Y);
       double gunBearing = NormalizeRelativeAngle(direction - GunDirection);
       TurnGunLeft(gunBearing);
 
