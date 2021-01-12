@@ -206,7 +206,7 @@ object ArenaPanel : JPanel() {
             Tank(bot).paint(g)
             drawScanArc(g, bot)
             drawEnergy(g, bot)
-            drawName(g, bot)
+            drawNameAndVersion(g, bot)
         }
     }
 
@@ -294,12 +294,12 @@ object ArenaPanel : JPanel() {
         oldState.restore(g)
     }
 
-    private fun drawName(g: Graphics2D, bot: BotState) {
+    private fun drawNameAndVersion(g: Graphics2D, bot: BotState) {
         val oldState = Graphics2DState(g)
 
         g.color = Color.WHITE
         val participant = Client.getParticipant(bot.id)
-        val text = participant.name
+        val text = "${participant.name} ${participant.version}"
         val width = g.fontMetrics.stringWidth(text)
 
         g.scale(1.0, -1.0)
