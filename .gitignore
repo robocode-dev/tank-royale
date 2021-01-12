@@ -10,3 +10,4 @@ gradle
 out
 bin
 obj
+*.iml
