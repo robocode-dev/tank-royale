@@ -297,7 +297,8 @@ public abstract class BaseBot implements IBaseBot {
   /** {@inheritDoc} */
   @Override
   public final double getTargetSpeed() {
-    return __baseBotInternals.getBotIntent().getTargetSpeed();
+    Double targetSpeed = __baseBotInternals.getBotIntent().getTargetSpeed();
+    return targetSpeed == null ? 0 : targetSpeed;
   }
 
   /** {@inheritDoc} */

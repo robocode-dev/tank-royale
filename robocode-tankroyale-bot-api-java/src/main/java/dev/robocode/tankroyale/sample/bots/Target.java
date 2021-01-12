@@ -45,8 +45,9 @@ public class Target extends Bot {
           }
         });
 
+    // While loop that prevents bot from exiting the run() method, which would stop the bot
     while (isRunning()) {
-      go();
+      go(); // just call go() to skip turn doing nothing
     }
   }
 

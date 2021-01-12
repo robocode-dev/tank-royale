@@ -41,7 +41,11 @@ public class Fire extends Bot {
 
     // Spin the gun around slowly... forever
     while (isRunning()) {
-      turnGunRight(5);
+      // Turn the gun a bit if the bot if the target speed is 0
+      if (getTargetSpeed() == 0) {
+        turnGunRight(5);
+      }
+      go();
     }
   }
 

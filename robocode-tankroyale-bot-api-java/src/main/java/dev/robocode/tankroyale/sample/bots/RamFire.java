@@ -35,9 +35,11 @@ public class RamFire extends Bot {
     setRadarColor("#666"); // dark gray
 
     while (isRunning()) {
-      if (getDistanceRemaining() == 0) {
+      // Turn the gun a bit if the bot if the target speed is 0
+      if (getTargetSpeed() == 0) {
         turnLeft(5 * turnDirection);
       }
+      go();
     }
   }
 

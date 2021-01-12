@@ -383,8 +383,6 @@ public final class BaseBotInternals {
 
       botEventHandlers.onDisconnected.publish(
           new DisconnectedEvent(websocket.getURI(), closedByServer));
-
-      clearCurrentGameState();
     }
 
     @Override
@@ -459,9 +457,6 @@ public final class BaseBotInternals {
   }
 
   private void handleGameEndedEvent(JsonObject jsonMsg) {
-    // Clear current game state
-    clearCurrentGameState();
-
     // Send the game ended event
     GameEndedEventForBot gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
 
@@ -505,12 +500,5 @@ public final class BaseBotInternals {
 
   private void handleBulletFired(BulletFiredEvent e) {
     botIntent.setFirepower(0d); // Reset firepower so the bot stops firing continuously
-  }
-
-  private void clearCurrentGameState() {
-    // Clear setting that are only available during a running game
-    tickEvent = null;
-    gameSetup = null;
-    myId = null;
   }
 }
