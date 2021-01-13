@@ -150,7 +150,15 @@ public final class BaseBotInternals {
     botIntent.setScan(false);
 
     // Dispatch all bot events
-    new Thread(() -> eventQueue.dispatchEvents(getCurrentTick().getTurnNumber())).start();
+    new Thread(() -> dispatchEvents()).start();
+  }
+
+  private void dispatchEvents() {
+    try {
+      eventQueue.dispatchEvents(getCurrentTick().getTurnNumber());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   private void sendIntent() {

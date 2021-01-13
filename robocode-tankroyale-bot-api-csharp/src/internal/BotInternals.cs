@@ -212,8 +212,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private void StartThread()
     {
       thread = new Thread(new ThreadStart(bot.Run));
+      isRunning = true; // Set this before the thread is starting as Run() needs it to be set
       thread.Start();
-      isRunning = true;
     }
 
     private void StopThread()

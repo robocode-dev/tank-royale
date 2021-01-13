@@ -192,8 +192,8 @@ public final class BotInternals {
 
   private void startThread() {
     thread = new Thread(bot::run);
+    isRunning = true; // Set this before the thread is starting as run() needs it to be set
     thread.start();
-    isRunning = true;
   }
 
   private void stopThread() {

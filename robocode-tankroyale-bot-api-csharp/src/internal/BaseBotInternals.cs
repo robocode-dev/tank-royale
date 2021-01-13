@@ -124,7 +124,14 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private void DispatchEvents()
     {
-      eventQueue.DispatchEvents(CurrentTick.TurnNumber);
+      try
+      {
+        eventQueue.DispatchEvents(CurrentTick.TurnNumber);
+      }
+      catch (Exception e)
+      {
+        Console.Error.WriteLine(e);
+      }
     }
 
     internal void SendIntent()
