@@ -38,7 +38,7 @@ public class TrackFire extends Bot {
 
     // Loop while running
     while (isRunning()) {
-      turnGunLeft(10); // Scans automatically
+      turnGunLeft(10); // Scans automatically as radar is mounted on gun
     }
   }
 

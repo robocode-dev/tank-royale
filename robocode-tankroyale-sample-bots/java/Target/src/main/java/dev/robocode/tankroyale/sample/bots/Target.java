@@ -37,7 +37,7 @@ public class Target extends Bot {
     // Initially, we'll move when energy passes 80
     trigger = 80;
 
-    // Add a custom event named "trigger hit",
+    // Add a custom event named "trigger-hit",
     addCustomEvent(
         new Condition("trigger-hit") {
           public boolean test() {
@@ -60,7 +60,7 @@ public class Target extends Bot {
       trigger -= 20;
 
       // Print out energy level
-      System.out.println("Ouch, down to " + (int) (getEnergy() + .5) + " energy. " + "R: " + getRoundNumber() + ", " + e.getTurnNumber() + "/" + getTurnNumber());
+      System.out.println("Ouch, down to " + (int) (getEnergy() + .5) + " energy.");
 
       // Move around a bit.
       turnLeft(65);
