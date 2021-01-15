@@ -15,6 +15,9 @@ import java.io.IOException;
  */
 public class TrackFire extends Bot {
 
+  // Last time we scanned
+  int lastScanTurn;
+
   /** Main method starts our bot */
   public static void main(String[] args) throws IOException {
     new TrackFire().start();
@@ -28,6 +31,8 @@ public class TrackFire extends Bot {
   /** TrackFire's run method */
   @Override
   public void run() {
+    lastScanTurn = -1; // Reset last scan turn
+
     // Set colors
     String pink = "#FF69B4";
     setBodyColor(pink);
@@ -38,13 +43,19 @@ public class TrackFire extends Bot {
 
     // Loop while running
     while (isRunning()) {
-      turnGunLeft(10); // Scans automatically as radar is mounted on gun
+      // Make sure we are at least one turn from last scanning turn before turning the gun
+      if (getTurnNumber() - lastScanTurn > 1) {
+        turnGunLeft(10); // Scans automatically as radar is mounted on gun
+      }
+      go(); // Skip next turn if we are doing nothing else (e.g. scanning)
     }
   }
 
   /** onScannedRobot: We have a target. Go get it. */
   @Override
   public void onScannedBot(ScannedBotEvent e) {
+    // Save the turn number of this scan
+    lastScanTurn = e.getTurnNumber();
 
     // Calculate direction of the scanned bot and bearing to it for the gun
     double direction = directionTo(e.getX(), e.getY());
