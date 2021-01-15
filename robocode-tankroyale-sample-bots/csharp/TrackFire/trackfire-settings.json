@@ -1,0 +1,13 @@
+{
+  "Bot": {
+    "Name": "TrackFire",
+    "Version": "1.0",
+    "Author": "Mathew Nelson & Flemming N. Larsen",
+    "Description": "Sits still. Tracks and fires at the nearest robot it sees.",
+    "Url": "",
+    "CountryCode": "us",
+    "GameTypes": "melee, classic, 1v1",
+    "Platform": ".Net Core 3.1",
+    "ProgrammingLang": "C# 8.0"
+  }
+}
