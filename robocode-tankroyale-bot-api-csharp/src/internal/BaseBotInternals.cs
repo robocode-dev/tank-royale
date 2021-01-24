@@ -136,21 +136,49 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal void SendIntent()
     {
-      if (botIntent?.TargetSpeed > maxSpeed)
+      if (botIntent.TargetSpeed != null)
       {
-        botIntent.TargetSpeed = maxSpeed;
+        if (botIntent.TargetSpeed > maxSpeed)
+        {
+          botIntent.TargetSpeed = maxSpeed;
+        }
+        else if (botIntent.TargetSpeed < -maxSpeed)
+        {
+          botIntent.TargetSpeed = -maxSpeed;
+        }
       }
-      if (botIntent?.TurnRate > maxTurnRate)
+      if (botIntent.TurnRate != null)
       {
-        botIntent.TurnRate = maxTurnRate;
+        if (botIntent.TurnRate > maxTurnRate)
+        {
+          botIntent.TurnRate = maxTurnRate;
+        }
+        else if (botIntent.TurnRate < -maxTurnRate)
+        {
+          botIntent.TurnRate = -maxTurnRate;
+        }
       }
-      if (botIntent?.GunTurnRate > maxGunTurnRate)
+      if (botIntent.GunTurnRate != null)
       {
-        botIntent.GunTurnRate = maxGunTurnRate;
+        if (botIntent.GunTurnRate > maxGunTurnRate)
+        {
+          botIntent.GunTurnRate = maxGunTurnRate;
+        }
+        else if (botIntent.GunTurnRate < -maxGunTurnRate)
+        {
+          botIntent.GunTurnRate = -maxGunTurnRate;
+        }
       }
-      if (botIntent?.RadarTurnRate > maxRadarTurnRate)
+      if (botIntent.RadarTurnRate != null)
       {
-        botIntent.RadarTurnRate = maxRadarTurnRate;
+        if (botIntent.RadarTurnRate > maxRadarTurnRate)
+        {
+          botIntent.RadarTurnRate = maxRadarTurnRate;
+        }
+        else if (botIntent.RadarTurnRate < -maxRadarTurnRate)
+        {
+          botIntent.RadarTurnRate = -maxRadarTurnRate;
+        }
       }
       socket.SendTextMessage(JsonConvert.SerializeObject(botIntent));
     }

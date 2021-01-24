@@ -25,8 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
+import static java.lang.Math.*;
 
 public final class BaseBotInternals {
   private static final String SERVER_URL_PROPERTY_KEY = "server.url";
@@ -64,7 +63,7 @@ public final class BaseBotInternals {
     gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
   }
 
-  private final double absDeceleration = Math.abs(IBot.DECELERATION);
+  private final double absDeceleration = abs(IBot.DECELERATION);
 
   private final IBaseBot baseBot;
   private final BotInfo botInfo;
@@ -150,7 +149,7 @@ public final class BaseBotInternals {
     botIntent.setScan(false);
 
     // Dispatch all bot events
-    new Thread(() -> dispatchEvents()).start();
+    new Thread(this::dispatchEvents).start();
   }
 
   private void dispatchEvents() {
@@ -163,20 +162,36 @@ public final class BaseBotInternals {
 
   private void sendIntent() {
     Double targetSpeed = botIntent.getTargetSpeed();
-    if (targetSpeed != null && targetSpeed > maxSpeed) {
-      botIntent.setTargetSpeed(maxSpeed);
+    if (targetSpeed != null) {
+      if (targetSpeed > maxSpeed) {
+        botIntent.setTargetSpeed(maxSpeed);
+      } else if (targetSpeed < -maxSpeed) {
+        botIntent.setTargetSpeed(-maxSpeed);
+      }
     }
     Double turnRate = botIntent.getTurnRate();
-    if (turnRate != null && turnRate > maxTurnRate) {
-      botIntent.setTurnRate(maxTurnRate);
+    if (turnRate != null) {
+      if (turnRate > maxTurnRate) {
+        botIntent.setTurnRate(maxTurnRate);
+      } else if (turnRate < -maxTurnRate) {
+        botIntent.setTurnRate(-maxTurnRate);
+      }
     }
     Double gunTurnRate = botIntent.getGunTurnRate();
-    if (gunTurnRate != null && gunTurnRate > maxGunTurnRate) {
-      botIntent.setGunTurnRate(maxGunTurnRate);
+    if (gunTurnRate != null) {
+      if (gunTurnRate > maxGunTurnRate) {
+        botIntent.setGunTurnRate(maxGunTurnRate);
+      } else if (gunTurnRate < -maxGunTurnRate) {
+        botIntent.setGunTurnRate(-maxGunTurnRate);
+      }
     }
     Double radarTurnRate = botIntent.getRadarTurnRate();
-    if (radarTurnRate != null && radarTurnRate > maxRadarTurnRate) {
-      botIntent.setRadarTurnRate(maxRadarTurnRate);
+    if (radarTurnRate != null) {
+      if (radarTurnRate > maxRadarTurnRate) {
+        botIntent.setRadarTurnRate(maxRadarTurnRate);
+      } else if (radarTurnRate < -maxRadarTurnRate) {
+        botIntent.setRadarTurnRate(-maxRadarTurnRate);
+      }
     }
     socket.sendText(gson.toJson(botIntent));
   }
@@ -334,7 +349,7 @@ public final class BaseBotInternals {
   }
 
   double getDistanceTraveledUntilStop(double speed) {
-    speed = Math.abs(speed);
+    speed = abs(speed);
     double distance = 0;
     while (speed > 0) {
       distance += (speed = getNewSpeed(speed, 0));
