@@ -3,8 +3,6 @@ package dev.robocode.tankroyale.botapi.internal;
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.events.*;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public final class BotInternals {
 
   private final Bot bot;
@@ -151,9 +149,9 @@ public final class BotInternals {
   }
 
   public void fire(double firepower) {
-      while (!bot.setFire(firepower)) {
-        awaitNextTurn();
-      }
+    while (!bot.setFire(firepower)) {
+      awaitNextTurn();
+    }
   }
 
   public boolean scan() {
@@ -216,27 +214,30 @@ public final class BotInternals {
   }
 
   private void updateTurnRemaining() {
-    if (bot.doAdjustGunForBodyTurn()) {
-      gunTurnRemaining -= bot.getTurnRate();
+    double turnRate = bot.getTurnRate();
+    if (Double.isFinite(turnRate)) {
+      if (bot.doAdjustGunForBodyTurn()) {
+        gunTurnRemaining -= turnRate;
+      }
+      turnRemaining -= turnRate;
     }
-    turnRemaining -= bot.getTurnRate();
-
-    bot.setTurnRate(turnRemaining);
   }
 
   private void updateGunTurnRemaining() {
-    if (bot.doAdjustRadarForGunTurn()) {
-      radarTurnRemaining -= bot.getGunTurnRate();
+    double gunTurnRate = bot.getGunTurnRate();
+    if (Double.isFinite(gunTurnRate)) {
+      if (bot.doAdjustRadarForGunTurn()) {
+        radarTurnRemaining -= gunTurnRate;
+      }
+      gunTurnRemaining -= gunTurnRate;
     }
-    gunTurnRemaining -= bot.getGunTurnRate();
-
-    bot.setGunTurnRate(gunTurnRemaining);
   }
 
   private void updateRadarTurnRemaining() {
-    radarTurnRemaining -= bot.getRadarTurnRate();
-
-    bot.setRadarTurnRate(radarTurnRemaining);
+    double radarTurnRate = bot.getGunTurnRate();
+    if (Double.isFinite(radarTurnRate)) {
+      radarTurnRemaining -= radarTurnRate;
+    }
   }
 
   // This is Nat Pavasant's method described here:
