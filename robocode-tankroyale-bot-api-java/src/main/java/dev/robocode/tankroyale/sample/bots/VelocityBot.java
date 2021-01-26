@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.events.BulletHitBotEvent;
 import dev.robocode.tankroyale.botapi.events.HitWallEvent;
+import dev.robocode.tankroyale.botapi.events.NextTurnCondition;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 
 import java.io.IOException;
@@ -47,7 +48,10 @@ public class VelocityBot extends Bot {
       }
       turnCounter++;
 
+      // Execute (send commands to server)
       go();
+      // Wait for the next turn before continuing the loop
+      waitFor(new NextTurnCondition(this));
     }
   }
 
