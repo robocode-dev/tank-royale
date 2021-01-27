@@ -241,34 +241,25 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private void UpdateTurnRemaining()
     {
-      if (Double.IsFinite(bot.TurnRate))
+      if (bot.DoAdjustGunForBodyTurn)
       {
-        if (bot.DoAdjustGunForBodyTurn)
-        {
-          gunTurnRemaining -= bot.TurnRate;
-        }
-        turnRemaining -= bot.TurnRate;
+        gunTurnRemaining -= bot.TurnRate;
       }
+      turnRemaining -= bot.TurnRate;
     }
 
     private void UpdateGunTurnRemaining()
     {
-      if (Double.IsFinite(bot.GunTurnRate))
+      if (bot.DoAdjustRadarForGunTurn)
       {
-        if (bot.DoAdjustRadarForGunTurn)
-        {
-          radarTurnRemaining -= bot.GunTurnRate;
-        }
-        gunTurnRemaining -= bot.GunTurnRate;
+        radarTurnRemaining -= bot.GunTurnRate;
       }
+      gunTurnRemaining -= bot.GunTurnRate;
     }
 
     private void UpdateRadarTurnRemaining()
     {
-      if (Double.IsFinite(bot.RadarTurnRate))
-      {
-        radarTurnRemaining -= bot.RadarTurnRate;
-      }
+      radarTurnRemaining -= bot.RadarTurnRate;
     }
 
     // This is Nat Pavasant's method described here:

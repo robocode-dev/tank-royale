@@ -168,7 +168,10 @@ public final class BotInternals {
       distanceRemaining = 0;
       turnRemaining = 0;
     }
-    updateHeadings();
+
+    updateTurnRemaining();
+    updateGunTurnRemaining();
+    updateRadarTurnRemaining();
     updateMovement();
 
     // Reset collision flag after updating movement
@@ -206,38 +209,22 @@ public final class BotInternals {
     }
   }
 
-  /** Updates the bot heading, gun heading, and radar heading. */
-  private void updateHeadings() {
-    updateTurnRemaining();
-    updateGunTurnRemaining();
-    updateRadarTurnRemaining();
-  }
-
   private void updateTurnRemaining() {
-    double turnRate = bot.getTurnRate();
-    if (Double.isFinite(turnRate)) {
-      if (bot.doAdjustGunForBodyTurn()) {
-        gunTurnRemaining -= turnRate;
-      }
-      turnRemaining -= turnRate;
+    if (bot.doAdjustGunForBodyTurn()) {
+      gunTurnRemaining -= bot.getTurnRate();
     }
+    turnRemaining -= bot.getTurnRate();
   }
 
   private void updateGunTurnRemaining() {
-    double gunTurnRate = bot.getGunTurnRate();
-    if (Double.isFinite(gunTurnRate)) {
-      if (bot.doAdjustRadarForGunTurn()) {
-        radarTurnRemaining -= gunTurnRate;
-      }
-      gunTurnRemaining -= gunTurnRate;
+    if (bot.doAdjustRadarForGunTurn()) {
+      radarTurnRemaining -= bot.getGunTurnRate();
     }
+    gunTurnRemaining -= bot.getGunTurnRate();
   }
 
   private void updateRadarTurnRemaining() {
-    double radarTurnRate = bot.getGunTurnRate();
-    if (Double.isFinite(radarTurnRate)) {
-      radarTurnRemaining -= radarTurnRate;
-    }
+    radarTurnRemaining -= bot.getGunTurnRate();
   }
 
   // This is Nat Pavasant's method described here:
