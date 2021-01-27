@@ -131,6 +131,7 @@ class ModelUpdater(
         checkAndHandleScans()
         checkAndHandleBotWallCollisions()
         checkAndHandleBotCollisions()
+        constrainBotPositions()
         updateBulletPositions()
         checkAndHandleBulletWallCollisions()
         checkAndHandleBulletHits()
@@ -333,6 +334,42 @@ class ModelUpdater(
         }
     }
 
+    /** Constrain all bot positions so they are kept inside the battle arena. */
+    private fun constrainBotPositions() {
+        botsMap.values.forEach { bot -> run {
+            val (x, y) = constrainBotPosition(bot.x, bot.y)
+            bot.x = x
+            bot.y = y
+        }}
+    }
+
+    /**
+     * Constrain the bot position so it is kept inside the battle arena.
+     *
+     * @param x is the current x coordinate of the bot position.
+     * @param y is the current y coordinate of the bot position.
+     * return new (x, y) coordinates that has been constrained.
+     */
+    private fun constrainBotPosition(x: Double, y: Double): Pair<Double, Double> {
+        var newX = x
+        var newY = y
+        when {
+            x - BOT_BOUNDING_CIRCLE_RADIUS < 0 -> {
+                newX = BOT_BOUNDING_CIRCLE_RADIUS
+            }
+            x + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaWidth -> {
+                newX = setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS
+            }
+            y - BOT_BOUNDING_CIRCLE_RADIUS < 0 -> {
+                newY = BOT_BOUNDING_CIRCLE_RADIUS
+            }
+            y + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaHeight -> {
+                newY = setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS
+            }
+        }
+        return Pair(newX, newY)
+    }
+
     /**
      * Handles when a bot and hit another bot.
      * @param bot1 is the first bot.
@@ -421,23 +458,8 @@ class ModelUpdater(
      */
     private fun adjustBotCoordinatesIfHitWall(bot: MutableBot): Boolean {
         var hitWall = false
-        var x = bot.x
-        var y = bot.y
         if (round.lastTurn != null) {
-            when {
-                x - BOT_BOUNDING_CIRCLE_RADIUS < 0 -> {
-                    x = BOT_BOUNDING_CIRCLE_RADIUS
-                }
-                x + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaWidth -> {
-                    x = setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS
-                }
-                y - BOT_BOUNDING_CIRCLE_RADIUS < 0 -> {
-                    y = BOT_BOUNDING_CIRCLE_RADIUS
-                }
-                y + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaHeight -> {
-                    y = setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS
-                }
-            }
+            val (x, y) = constrainBotPosition(bot.x, bot.y)
             hitWall = bot.x != x || bot.y != y
             if (hitWall) {
                 bot.x = x
