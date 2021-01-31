@@ -17,8 +17,6 @@ import java.io.IOException;
  */
 public class VelocityBot extends Bot {
 
-  int turnCounter;
-
   /** Main method starts our bot */
   public static void main(String[] args) throws IOException {
     new VelocityBot().start();
@@ -32,21 +30,19 @@ public class VelocityBot extends Bot {
   /** VelocityBot's run method */
   @Override
   public void run() {
-    turnCounter = 0;
     setGunTurnRate(15);
 
     while (isRunning()) {
-      if (turnCounter % 64 == 0) {
+      if (getTurnNumber() % 64 == 0) {
         // Straighten out, if we were hit by a bullet and are turning
         setTurnRate(0);
         // Go forward with a target speed of 4
         setTargetSpeed(4);
       }
-      if (turnCounter % 64 == 32) {
+      if (getTurnNumber() % 64 == 32) {
         // Go backwards, faster
         setTargetSpeed(-6);
       }
-      turnCounter++;
 
       // Execute (send commands to server)
       go();
