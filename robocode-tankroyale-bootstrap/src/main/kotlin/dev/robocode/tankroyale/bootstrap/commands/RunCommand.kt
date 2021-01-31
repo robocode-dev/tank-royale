@@ -15,10 +15,14 @@ import java.util.stream.Collectors.toList
 
 class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
 
+    private val processes = ArrayList<Process>()
+
     fun runBots(filenames: Array<String>) {
+        Runtime.getRuntime().addShutdownHook(Thread {
+            killProcesses(processes) // Kill all running processes before terminating
+        })
 
         // Start up the bots provided with the input list
-        val processes = ArrayList<Process>()
         filenames.forEach { filename -> addBotProcess(filename, processes) }
 
         // Add new bots from the stdin or terminate if blank line is provided
@@ -34,8 +38,7 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
             }
         } while (true)
 
-        // Kill all running processes before terminating
-        killProcesses(processes)
+        killProcesses(processes) // Kill all running processes before terminating
     }
 
     private fun addBotProcess(filename: String, processes: MutableList<Process>) {
