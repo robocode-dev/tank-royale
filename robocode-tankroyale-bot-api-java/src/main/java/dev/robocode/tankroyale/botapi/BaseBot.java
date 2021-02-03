@@ -287,7 +287,7 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
-  public final void setTargetSpeed(double targetSpeed) {
+  public void setTargetSpeed(double targetSpeed) {
     if (Double.isNaN(targetSpeed)) {
       throw new IllegalArgumentException("targetSpeed cannot be NaN");
     }

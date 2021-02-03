@@ -1,7 +1,9 @@
 package dev.robocode.tankroyale.botapi.internal;
 
 import dev.robocode.tankroyale.botapi.Bot;
+import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
+import dev.robocode.tankroyale.schema.BotIntent;
 
 public final class BotInternals {
 
@@ -13,7 +15,6 @@ public final class BotInternals {
   private double gunTurnRemaining;
   private double radarTurnRemaining;
 
-  private boolean isCollidingWithWall;
   private boolean isOverDriving;
 
   private TickEvent currentTick;
@@ -62,7 +63,6 @@ public final class BotInternals {
 
   private void onHitWall() {
     distanceRemaining = 0;
-    isCollidingWithWall = true;
   }
 
   private void onDeath(DeathEvent e) {
@@ -91,13 +91,27 @@ public final class BotInternals {
     return radarTurnRemaining;
   }
 
+  public void setTargetSpeed(double targetSpeed) {
+    if (Double.isNaN(targetSpeed)) {
+      throw new IllegalArgumentException("targetSpeed cannot be NaN");
+    }
+    if (targetSpeed > 0) {
+      distanceRemaining = Double.POSITIVE_INFINITY;
+    } else if (targetSpeed < 0) {
+      distanceRemaining = Double.NEGATIVE_INFINITY;
+    } else {
+      distanceRemaining = 0;
+    }
+    baseBotInternals.getBotIntent().setTargetSpeed(targetSpeed);
+  }
+
   public void setForward(double distance) {
     if (Double.isNaN(distance)) {
       throw new IllegalArgumentException("distance cannot be NaN");
     }
     distanceRemaining = distance;
     double speed = baseBotInternals.getNewSpeed(bot.getSpeed(), distance);
-    bot.setTargetSpeed(speed);
+    baseBotInternals.getBotIntent().setTargetSpeed(speed);
   }
 
   public void forward(double distance) {
@@ -111,7 +125,7 @@ public final class BotInternals {
       throw new IllegalArgumentException("degrees cannot be NaN");
     }
     turnRemaining = degrees;
-    bot.setTurnRate(degrees);
+    baseBotInternals.getBotIntent().setTurnRate(degrees);
   }
 
   public void turnLeft(double degrees) {
@@ -125,7 +139,7 @@ public final class BotInternals {
       throw new IllegalArgumentException("degrees cannot be NaN");
     }
     gunTurnRemaining = degrees;
-    bot.setGunTurnRate(degrees);
+    baseBotInternals.getBotIntent().setGunTurnRate(degrees);
   }
 
   public void turnGunLeft(double degrees) {
@@ -139,7 +153,7 @@ public final class BotInternals {
       throw new IllegalArgumentException("degrees cannot be NaN");
     }
     radarTurnRemaining = degrees;
-    bot.setRadarTurnRate(degrees);
+    baseBotInternals.getBotIntent().setRadarTurnRate(degrees);
   }
 
   public void turnRadarLeft(double degrees) {
@@ -167,15 +181,14 @@ public final class BotInternals {
     if (bot.isDisabled()) {
       distanceRemaining = 0;
       turnRemaining = 0;
+      gunTurnRemaining = 0;
+      radarTurnRemaining = 0;
     }
 
     updateTurnRemaining();
     updateGunTurnRemaining();
     updateRadarTurnRemaining();
     updateMovement();
-
-    // Reset collision flag after updating movement
-    isCollidingWithWall = false;
 
     // If this is the first turn -> Call the run method on the Bot class
     if (currentTick.getTurnNumber() == 1) { // TODO: Use onNewRound event?
@@ -227,35 +240,35 @@ public final class BotInternals {
     radarTurnRemaining -= bot.getGunTurnRate();
   }
 
-  // This is Nat Pavasant's method described here:
-  // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
   private void updateMovement() {
-    if (isCollidingWithWall) { // TODO: add check for collision with bot?
-      return;
+    if (Double.isInfinite(distanceRemaining)) {
+      if (distanceRemaining == Double.POSITIVE_INFINITY) {
+        baseBotInternals.getBotIntent().setTargetSpeed((double) IBaseBot.MAX_SPEED);
+      } else {
+        baseBotInternals.getBotIntent().setTargetSpeed((double) -IBaseBot.MAX_SPEED);
+      }
+    } else {
+      double distance = distanceRemaining;
+
+      // This is Nat Pavasant's method described here:
+      // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
+      double speed = baseBotInternals.getNewSpeed(bot.getSpeed(), distance);
+      baseBotInternals.getBotIntent().setTargetSpeed(speed);
+
+      // If we are over-driving our distance and we are now at velocity=0 then we stopped
+      if (isNearZero(speed) && isOverDriving) {
+        distanceRemaining = 0;
+        distance = 0;
+        isOverDriving = false;
+      }
+
+      // the overdrive flag
+      if (Math.signum(distance * speed) != -1) {
+        isOverDriving = baseBotInternals.getDistanceTraveledUntilStop(speed) > Math.abs(distance);
+      }
+
+      distanceRemaining = distance - speed;
     }
-
-    double distance = distanceRemaining;
-    if (Double.isNaN(distance)) {
-      distance = 0;
-    }
-
-    double speed = baseBotInternals.getNewSpeed(bot.getSpeed(), distance);
-    bot.setTargetSpeed(speed);
-
-    // If we are over-driving our distance and we are now at velocity=0 then we stopped
-    if (isNearZero(speed) && isOverDriving) {
-      distanceRemaining = 0;
-      distance = 0;
-      isOverDriving = false;
-    }
-
-    // If we are moving normally and the breaking distance is more than remaining distance, enable
-    // the overdrive flag
-    if (Math.signum(distance * speed) != -1) {
-      isOverDriving = baseBotInternals.getDistanceTraveledUntilStop(speed) > Math.abs(distance);
-    }
-
-    distanceRemaining = distance - speed;
   }
 
   public boolean isStopped() {
@@ -280,16 +293,18 @@ public final class BotInternals {
       savedTurnRemaining = turnRemaining;
       savedGunTurnRemaining = gunTurnRemaining;
       savedRadarTurnRemaining = radarTurnRemaining;
-    }
-    distanceRemaining = 0d;
-    turnRemaining = 0d;
-    gunTurnRemaining = 0d;
-    radarTurnRemaining = 0d;
 
-    bot.setTargetSpeed(0);
-    bot.setTurnRate(0);
-    bot.setGunTurnRate(0);
-    bot.setRadarTurnRate(0);
+      distanceRemaining = 0d;
+      turnRemaining = 0d;
+      gunTurnRemaining = 0d;
+      radarTurnRemaining = 0d;
+
+      BotIntent intent = baseBotInternals.getBotIntent();
+      intent.setTargetSpeed(0d);
+      intent.setTurnRate(0d);
+      intent.setGunTurnRate(0d);
+      intent.setRadarTurnRate(0d);
+    }
   }
 
   public void setResume() {

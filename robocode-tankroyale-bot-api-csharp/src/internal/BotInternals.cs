@@ -15,7 +15,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private double gunTurnRemaining;
     private double radarTurnRemaining;
 
-    private bool isCollidingWithWall;
     private bool isOverDriving;
 
     private TickEvent currentTick;
@@ -71,7 +70,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private void OnHitWall(HitWallEvent evt)
     {
       distanceRemaining = 0;
-      isCollidingWithWall = true;
     }
 
     private void OnDeath(DeathEvent evt)
@@ -92,6 +90,27 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal double RadarTurnRemaining { get => radarTurnRemaining; }
 
+    internal void SetTargetSpeed(double targetSpeed)
+    {
+      if (Double.IsNaN(targetSpeed))
+      {
+        throw new ArgumentException("targetSpeed cannot be NaN");
+      }
+      if (targetSpeed > 0)
+      {
+        distanceRemaining = Double.PositiveInfinity;
+      }
+      else if (targetSpeed < 0)
+      {
+        distanceRemaining = Double.NegativeInfinity;
+      }
+      else
+      {
+        distanceRemaining = 0;
+      }
+      baseBotInternals.BotIntent.TargetSpeed = targetSpeed;
+    }
+
     internal void SetForward(double distance)
     {
       if (Double.IsNaN(distance))
@@ -100,7 +119,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       }
       distanceRemaining = distance;
       double speed = baseBotInternals.GetNewSpeed(bot.Speed, distance);
-      bot.TargetSpeed = speed;
+      baseBotInternals.BotIntent.TargetSpeed = speed;
     }
 
     internal void Forward(double distance)
@@ -117,7 +136,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         throw new ArgumentException("degrees cannot be NaN");
       }
       turnRemaining = degrees;
-      bot.TurnRate = degrees;
+      baseBotInternals.BotIntent.TurnRate = degrees;
     }
 
     internal void TurnLeft(double degrees)
@@ -134,7 +153,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         throw new ArgumentException("degrees cannot be NaN");
       }
       gunTurnRemaining = degrees;
-      bot.GunTurnRate = degrees;
+      baseBotInternals.BotIntent.GunTurnRate = degrees;
     }
 
     internal void TurnGunLeft(double degrees)
@@ -151,7 +170,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         throw new ArgumentException("degrees cannot be NaN");
       }
       radarTurnRemaining = degrees;
-      bot.RadarTurnRate = degrees;
+      baseBotInternals.BotIntent.RadarTurnRate = degrees;
     }
 
     internal void TurnRadarLeft(double degrees)
@@ -185,12 +204,14 @@ namespace Robocode.TankRoyale.BotApi.Internal
       {
         distanceRemaining = 0;
         turnRemaining = 0;
+        gunTurnRemaining = 0;
+        radarTurnRemaining = 0;
       }
-      UpdateHeadings();
-      UpdateMovement();
 
-      // Reset collision flag after updating movement
-      isCollidingWithWall = false;
+      UpdateTurnRemaining();
+      UpdateGunTurnRemaining();
+      UpdateRadarTurnRemaining();
+      UpdateMovement();
 
       // If this is the first turn -> Call the run method on the Bot class
       if (currentTick.TurnNumber == 1) // TODO: Use onNewRound event?
@@ -231,14 +252,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
       }
     }
 
-    /** Updates the bot heading, gun heading, and radar heading. */
-    private void UpdateHeadings()
-    {
-      UpdateTurnRemaining();
-      UpdateGunTurnRemaining();
-      UpdateRadarTurnRemaining();
-    }
-
     private void UpdateTurnRemaining()
     {
       if (bot.DoAdjustGunForBodyTurn)
@@ -262,40 +275,44 @@ namespace Robocode.TankRoyale.BotApi.Internal
       radarTurnRemaining -= bot.RadarTurnRate;
     }
 
-    // This is Nat Pavasant's method described here:
-    // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
     private void UpdateMovement()
     {
-      if (isCollidingWithWall) // TODO: add check for collision with bot?
+      if (Double.IsInfinity(distanceRemaining))
       {
-        return;
+        if (distanceRemaining == Double.PositiveInfinity)
+        {
+          baseBotInternals.BotIntent.TargetSpeed = (double)((IBaseBot)bot).MaxSpeed;
+        }
+        else
+        {
+          baseBotInternals.BotIntent.TargetSpeed = -(double)((IBaseBot)bot).MaxSpeed;
+        }
       }
-
-      double distance = distanceRemaining;
-      if (Double.IsNaN(distance))
+      else
       {
-        distance = 0;
+        double distance = distanceRemaining;
+
+        // This is Nat Pavasant's method described here:
+        // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
+        double speed = baseBotInternals.GetNewSpeed(bot.Speed, distance);
+        baseBotInternals.BotIntent.TargetSpeed = speed;
+
+        // If we are over-driving our distance and we are now at velocity=0 then we stopped
+        if (IsNearZero(speed) && isOverDriving)
+        {
+          distanceRemaining = 0;
+          distance = 0;
+          isOverDriving = false;
+        }
+
+        // the overdrive flag
+        if (Math.Sign(distance * speed) != -1)
+        {
+          isOverDriving = baseBotInternals.GetDistanceTraveledUntilStop(speed) > Math.Abs(distance);
+        }
+
+        distanceRemaining = distance - speed;
       }
-
-      var speed = baseBotInternals.GetNewSpeed(bot.Speed, distance);
-      bot.TargetSpeed = speed;
-
-      // If we are over-driving our distance and we are now at velocity=0 then we stopped
-      if (IsNearZero(speed) && isOverDriving)
-      {
-        distanceRemaining = 0;
-        distance = 0;
-        isOverDriving = false;
-      }
-
-      // If we are moving normally and the breaking distance is more than remaining distance, enable
-      // the overdrive flag
-      if (Math.Sign(distance * speed) != -1)
-      {
-        isOverDriving = baseBotInternals.GetDistanceTraveledUntilStop(speed) > Math.Abs(distance);
-      }
-
-      distanceRemaining = distance - speed;
     }
 
     internal bool IsStopped { get => isStopped; }
@@ -322,16 +339,18 @@ namespace Robocode.TankRoyale.BotApi.Internal
         savedTurnRemaining = turnRemaining;
         savedGunTurnRemaining = gunTurnRemaining;
         savedRadarTurnRemaining = radarTurnRemaining;
-      }
-      distanceRemaining = 0d;
-      turnRemaining = 0d;
-      gunTurnRemaining = 0d;
-      radarTurnRemaining = 0d;
 
-      bot.TargetSpeed = 0;
-      bot.TurnRate = 0;
-      bot.GunTurnRate = 0;
-      bot.RadarTurnRate = 0;
+        distanceRemaining = 0d;
+        turnRemaining = 0d;
+        gunTurnRemaining = 0d;
+        radarTurnRemaining = 0d;
+
+        var intent = baseBotInternals.BotIntent;
+        intent.TargetSpeed = 0;
+        intent.TurnRate = 0;
+        intent.GunTurnRate = 0;
+        intent.RadarTurnRate = 0;
+      }
     }
 
     internal void SetResume()

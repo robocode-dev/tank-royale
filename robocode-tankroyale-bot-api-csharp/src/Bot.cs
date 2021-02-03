@@ -209,6 +209,12 @@ namespace Robocode.TankRoyale.BotApi
       __botInternals.Await(condition.Test);
     }
 
+    /// <inheritdoc/>
+    public void SetTargetSpeed(double targetSpeed)
+    {
+      __botInternals.SetTargetSpeed(targetSpeed);
+    }
+
     // Preventing System.TypeLoadException: xxx does not have an implementation
 
     /// <inheritdoc/>

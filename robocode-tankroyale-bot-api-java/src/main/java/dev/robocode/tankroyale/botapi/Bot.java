@@ -230,4 +230,10 @@ public abstract class Bot extends BaseBot implements IBot {
   public void waitFor(Condition condition) {
     __botInternals.await(condition::test);
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setTargetSpeed(double targetSpeed) {
+    __botInternals.setTargetSpeed(targetSpeed);
+  }
 }

@@ -1,6 +1,7 @@
 package model
 
 import dev.robocode.tankroyale.server.model.*
+import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -29,7 +30,7 @@ class BulletTest : StringSpec({
 
         bullet.hashCode() shouldBe bullet.id.value
     }
-
+/*
     "equals() must return true if the bullet is an IBullet instance and share same id" {
         val bullet = BulletFactory.createBullet()
 
@@ -54,5 +55,5 @@ class BulletTest : StringSpec({
         }
 
         bullet shouldNotBe alienType
-    }
+    }*/
 })

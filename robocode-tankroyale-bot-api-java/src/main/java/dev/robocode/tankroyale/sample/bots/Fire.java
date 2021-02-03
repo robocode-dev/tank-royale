@@ -9,8 +9,8 @@ import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 import java.io.IOException;
 
 /**
- * Fire - a sample bot, original version by Mathew Nelson for Robocode.
- * Modified by Flemming N. Larsen.
+ * Fire - a sample bot, original version by Mathew Nelson for Robocode. Modified by Flemming N.
+ * Larsen.
  *
  * <p>This bot sits still. Spins gun around. Moves when hit.
  */
@@ -42,10 +42,7 @@ public class Fire extends Bot {
     // Spin the gun around slowly... forever
     while (isRunning()) {
       // Turn the gun a bit if the bot if the target speed is 0
-      if (getTargetSpeed() == 0) {
-        turnGunRight(5);
-      }
-      go();
+      turnGunRight(5);
     }
   }
 
@@ -81,6 +78,9 @@ public class Fire extends Bot {
     // Move forward or backward depending if the distance is positive or negative
     forward(dist);
     dist *= -1; // Change distance, meaning forward or backward direction
+
+    // Rescan
+    setScan();
   }
 
   /** onHitBot: Aim at target and fire hard. */
