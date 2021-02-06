@@ -206,7 +206,17 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void WaitFor(Condition condition)
     {
-      __botInternals.Await(condition.Test);
+      __botInternals.Await(() =>
+      {
+        try
+        {
+          return condition.Test();
+        }
+        catch (Exception)
+        {
+          return false;
+        }
+      });
     }
 
     /// <inheritdoc/>

@@ -228,7 +228,13 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public void waitFor(Condition condition) {
-    __botInternals.await(condition::test);
+    __botInternals.await(() -> {
+      try {
+        return condition.test();
+      } catch (Exception e) {
+        return false;
+      }
+    });
   }
 
   /** {@inheritDoc} */

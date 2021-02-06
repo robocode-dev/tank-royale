@@ -6,7 +6,7 @@ plugins {
 //    id "com.github.hierynomus.license" version "0.15.0"
 }
 group = 'dev.robocode.tankroyale'
-version = '0.7.10'
+version = '0.7.11'
 description = 'Robocode Tank Royale Bot API for Java'
 
 /*
