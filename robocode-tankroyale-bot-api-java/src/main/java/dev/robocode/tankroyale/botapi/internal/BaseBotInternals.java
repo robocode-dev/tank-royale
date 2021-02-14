@@ -20,11 +20,9 @@ import dev.robocode.tankroyale.schema.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import static dev.robocode.tankroyale.botapi.IBaseBot.*;
 import static dev.robocode.tankroyale.botapi.internal.MathUtil.limitRange;
 import static java.lang.Math.*;
 
@@ -64,7 +62,7 @@ public final class BaseBotInternals {
     gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
   }
 
-  private final double absDeceleration = abs(IBot.DECELERATION);
+  private final double absDeceleration = abs(DECELERATION);
 
   private final IBaseBot baseBot;
   private final BotInfo botInfo;
@@ -85,10 +83,10 @@ public final class BaseBotInternals {
   private Long tickStartNanoTime;
 
   // Maximum speed and turn rates
-  private double maxSpeed = IBot.MAX_SPEED;
-  private double maxTurnRate = IBot.MAX_TURN_RATE;
-  private double maxGunTurnRate = IBot.MAX_GUN_TURN_RATE;
-  private double maxRadarTurnRate = IBot.MAX_RADAR_TURN_RATE;
+  private double maxSpeed = MAX_SPEED;
+  private double maxTurnRate = MAX_TURN_RATE;
+  private double maxGunTurnRate = MAX_GUN_TURN_RATE;
+  private double maxRadarTurnRate = MAX_RADAR_TURN_RATE;
 
   public BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {
     this.baseBot = baseBot;
@@ -245,39 +243,19 @@ public final class BaseBotInternals {
   }
 
   public void setMaxSpeed(double maxSpeed) {
-    if (maxSpeed < 0) {
-      maxSpeed = 0;
-    } else if (maxSpeed > IBot.MAX_SPEED) {
-      maxSpeed = IBot.MAX_SPEED;
-    }
-    this.maxSpeed = maxSpeed;
+    this.maxSpeed = limitRange(maxSpeed, 0, MAX_SPEED);
   }
 
   public void setMaxTurnRate(double maxTurnRate) {
-    if (maxTurnRate < 0) {
-      maxTurnRate = 0;
-    } else if (maxTurnRate > IBot.MAX_TURN_RATE) {
-      maxTurnRate = IBot.MAX_TURN_RATE;
-    }
-    this.maxTurnRate = maxTurnRate;
+    this.maxTurnRate = limitRange(maxTurnRate, 0, MAX_TURN_RATE);
   }
 
   public void setMaxGunTurnRate(double maxGunTurnRate) {
-    if (maxGunTurnRate < 0) {
-      maxGunTurnRate = 0;
-    } else if (maxGunTurnRate > IBot.MAX_GUN_TURN_RATE) {
-      maxGunTurnRate = IBot.MAX_GUN_TURN_RATE;
-    }
-    this.maxGunTurnRate = maxGunTurnRate;
+    this.maxGunTurnRate = limitRange(maxGunTurnRate, 0, MAX_GUN_TURN_RATE);
   }
 
   public void setMaxRadarTurnRate(double maxRadarTurnRate) {
-    if (maxRadarTurnRate < 0) {
-      maxRadarTurnRate = 0;
-    } else if (maxRadarTurnRate > IBot.MAX_RADAR_TURN_RATE) {
-      maxRadarTurnRate = IBot.MAX_RADAR_TURN_RATE;
-    }
-    this.maxRadarTurnRate = maxRadarTurnRate;
+    this.maxRadarTurnRate = limitRange(maxRadarTurnRate, 0, MAX_RADAR_TURN_RATE);
   }
 
   /**
@@ -291,10 +269,7 @@ public final class BaseBotInternals {
   // Julian Kent (aka Skilgannon), and Positive:
   // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
   public double getNewSpeed(double speed, double distance) {
-
     if (distance < 0) {
-      // If the distance is negative, then change it to be positive and change the sign of the
-      // input velocity and the result
       return -getNewSpeed(-speed, -distance);
     }
 
@@ -304,37 +279,28 @@ public final class BaseBotInternals {
     } else {
       targetSpeed = min(getMaxSpeed(distance), maxSpeed);
     }
-
     if (speed >= 0) {
-      return max(speed - absDeceleration, min(targetSpeed, speed + IBot.ACCELERATION));
-    } // else
-    return max(speed - IBot.ACCELERATION, min(targetSpeed, speed + getMaxDeceleration(-speed)));
+      return limitRange(targetSpeed, speed - absDeceleration, speed + ACCELERATION);
+    } else {
+      return limitRange(targetSpeed, speed - ACCELERATION, speed + getMaxDeceleration(-speed));
+    }
   }
 
   private double getMaxSpeed(double distance) {
     double decelTime =
-        max(
-            1,
-            Math.ceil( // sum of 0... decelTime, solving for decelTime using quadratic formula
-                (Math.sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
-
+            max(1, Math.ceil((Math.sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
     if (decelTime == Double.POSITIVE_INFINITY) {
-      return IBot.MAX_SPEED;
+      return MAX_SPEED;
     }
-
-    double decelDist =
-        (decelTime / 2)
-            * (decelTime - 1) // sum of 0..(decelTime-1)
-            * absDeceleration;
-
+    double decelDist = (decelTime / 2) * (decelTime - 1) * absDeceleration;
     return ((decelTime - 1) * absDeceleration) + ((distance - decelDist) / decelTime);
   }
 
   private double getMaxDeceleration(double speed) {
     double decelTime = speed / absDeceleration;
-    double accelTime = (1 - decelTime);
+    double accelTime = 1 - decelTime;
 
-    return min(1, decelTime) * absDeceleration + max(0, accelTime) * IBot.ACCELERATION;
+    return min(1, decelTime) * absDeceleration + max(0, accelTime) * ACCELERATION;
   }
 
   double getDistanceTraveledUntilStop(double speed) {
