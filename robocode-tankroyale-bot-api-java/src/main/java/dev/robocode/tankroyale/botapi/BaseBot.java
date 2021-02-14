@@ -366,6 +366,24 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
+  public void setStop() {
+    __baseBotInternals.setStop();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setResume() {
+    __baseBotInternals.setResume();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isStopped() {
+    return __baseBotInternals.isStopped();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final Integer getBodyColor() {
     return __baseBotInternals.getCurrentTick().getBotState().getBodyColor();
   }

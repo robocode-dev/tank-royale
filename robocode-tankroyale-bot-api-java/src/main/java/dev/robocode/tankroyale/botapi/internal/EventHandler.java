@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
-/** Event handler which events in the order they have been added to the handler. */
+/** Event handler which processes events in the order they have been added to the handler. */
 final class EventHandler<T> {
     private final List<EntryWithPriority> subscriberEntries = Collections.synchronizedList(new ArrayList<>());
 

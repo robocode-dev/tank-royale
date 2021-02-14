@@ -72,6 +72,8 @@ public final class BaseBotInternals {
 
   private BotIntent botIntent = newBotIntent();
 
+  private StopResumeListener stopResumeListener;
+
   // Server connection:
   private WebSocket socket;
   private ServerHandshake serverHandshake;
@@ -81,6 +83,7 @@ public final class BaseBotInternals {
   private dev.robocode.tankroyale.botapi.GameSetup gameSetup;
   private TickEvent tickEvent;
   private Long tickStartNanoTime;
+  private volatile boolean isStopped;
 
   // Maximum speed and turn rates
   private double maxSpeed = MAX_SPEED;
@@ -96,6 +99,10 @@ public final class BaseBotInternals {
     this.eventQueue = new EventQueue(this, botEventHandlers);
 
     init(serverUrl == null ? getServerUrlFromSetting() : serverUrl);
+  }
+
+  public void setStopResumeHandler(StopResumeListener listener) {
+    stopResumeListener = listener;
   }
 
   private void init(URI serverUrl) {
@@ -318,6 +325,35 @@ public final class BaseBotInternals {
 
   public void removeCondition(Condition condition) {
     conditions.remove(condition);
+  }
+
+  public void setStop() {
+    if (!isStopped) {
+      isStopped = true;
+
+      botIntent.setTargetSpeed(0d);
+      botIntent.setTurnRate(0d);
+      botIntent.setGunTurnRate(0d);
+      botIntent.setRadarTurnRate(0d);
+
+      if (stopResumeListener != null) {
+        stopResumeListener.onStop();
+      }
+    }
+  }
+
+  public void setResume() {
+    if (isStopped) {
+      isStopped = false;
+
+      if (stopResumeListener != null) {
+        stopResumeListener.onResume();
+      }
+    }
+  }
+
+  public boolean isStopped() {
+    return isStopped;
   }
 
   private ServerHandshake getServerHandshake() {

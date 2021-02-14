@@ -577,23 +577,6 @@ public interface IBot extends IBaseBot {
   void fire(double firepower);
 
   /**
-   * Set the bot to stop all movement including turning the gun and radar. The remaining movement is
-   * saved for a call to {@link #resume()}. This method has no effect, if it has already been
-   * called.
-   *
-   * <p>This method will first be executed when {@link #go()} is called making it possible to call
-   * other set methods before execution. This makes it possible to set the bot to move, turn the
-   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
-   * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
-   * <strong>setter</strong> methods only prior to calling {@link #go()}.
-   *
-   * @see #stop()
-   * @see #setResume()
-   * @see #resume()
-   */
-  void setStop();
-
-  /**
    * Stop all movement including turning the gun and radar. The remaining movement is saved for a
    * call to {@link #setResume()} or {@link #resume()}. This method has no effect, if it has already
    * been called.
@@ -608,34 +591,6 @@ public interface IBot extends IBaseBot {
    * @see #setStop()
    */
   void stop();
-
-  /**
-   * Checks if the movement has been stopped.
-   *
-   * @return true if the movement has been stopped by {@link #stop()} or {@link #setStop()}; false
-   *     otherwise.
-   * @see #stop()
-   * @see #setStop()
-   */
-  boolean isStopped();
-
-  /**
-   * Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
-   * turning and thereby will not be able to automatically scan bots. This method is useful when the
-   * robot movement has stopped, e.g. when {@link #stop()} has been called. The last radar direction
-   * and sweep angle will be used for rescanning for bots.
-   *
-   * <p>This method will first be executed when {@link #go()} is called making it possible to call
-   * other set methods before execution. This makes it possible to set the bot to move, turn the
-   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
-   * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
-   * <strong>setter</strong> methods only prior to calling {@link #go()}.
-   *
-   * @see #setStop()
-   * @see #stop()
-   * @see #resume()
-   */
-  void setResume();
 
   /**
    * Resume the movement prior to calling the {@link #setStop()} or {@link #stop()} method. This

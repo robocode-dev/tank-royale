@@ -59,12 +59,6 @@ public interface IBaseBot {
   /** The maximum absolute speed, which is 8 units per turn. */
   int MAX_SPEED = 8;
 
-  /** The maximum backward speed, which is -8 units per turn. */
-  int MAX_FORWARD_SPEED = MAX_SPEED;
-
-  /** The minimum forward speed, which is -8 units per turn. */
-  int MAX_BACKWARD_SPEED = -MAX_SPEED;
-
   /**
    * The minimum firepower, which is 0.1. The gun will not fire with a power that is less than the
    * minimum firepower, which is 0.1.
@@ -706,6 +700,46 @@ public interface IBaseBot {
    * @see #addCustomEvent(Condition)
    */
   void removeCustomEvent(Condition condition);
+
+  /**
+   * Set the bot to stop all movement including turning the gun and radar. The remaining movement is
+   * saved for a call to {@link #setResume()}. This method has no effect, if it has already been
+   * called.
+   *
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods before execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
+   *
+   * @see #setResume()
+   */
+  void setStop();
+
+  /**
+   * Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
+   * turning and thereby will not be able to automatically scan bots. This method is useful when the
+   * robot movement has stopped, e.g. when {@link #setStop()} has been called. The last radar direction
+   * and sweep angle will be used for rescanning for bots.
+   *
+   * <p>This method will first be executed when {@link #go()} is called making it possible to call
+   * other set methods before execution. This makes it possible to set the bot to move, turn the
+   * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+   * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
+   * <strong>setter</strong> methods only prior to calling {@link #go()}.
+   *
+   * @see #setStop()
+   */
+  void setResume();
+
+  /**
+   * Checks if the movement has been stopped.
+   *
+   * @return true if the movement has been stopped by {@link #setStop()}; false otherwise.
+   * @see #setResume()
+   * @see #setStop()
+   */
+  boolean isStopped();
 
   /**
    * Returns the RGB color code of the body. The color code is an integer in hexadecimal format

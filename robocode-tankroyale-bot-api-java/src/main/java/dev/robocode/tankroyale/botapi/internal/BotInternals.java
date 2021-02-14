@@ -1,11 +1,11 @@
 package dev.robocode.tankroyale.botapi.internal;
 
 import dev.robocode.tankroyale.botapi.Bot;
-import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
-import dev.robocode.tankroyale.schema.BotIntent;
 
-public final class BotInternals {
+import static dev.robocode.tankroyale.botapi.IBaseBot.MAX_SPEED;
+
+public final class BotInternals implements StopResumeListener {
 
   private final Bot bot;
   private final BaseBotInternals baseBotInternals;
@@ -22,7 +22,6 @@ public final class BotInternals {
   private Thread thread;
   private final Object nextTurn = new Object();
   private volatile boolean isRunning;
-  private volatile boolean isStopped;
 
   private double savedDistanceRemaining;
   private double savedTurnRemaining;
@@ -33,6 +32,8 @@ public final class BotInternals {
     this.bot = bot;
     this.baseBotInternals = baseBotInternals;
 
+    baseBotInternals.setStopResumeHandler(this);
+
     BotEventHandlers botEventHandlers = baseBotInternals.getBotEventHandlers();
     botEventHandlers.onProcessTurn.subscribe(this::onProcessTurn, 100);
     botEventHandlers.onDisconnected.subscribe(this::onDisconnected, 100);
@@ -40,6 +41,7 @@ public final class BotInternals {
     botEventHandlers.onHitBot.subscribe(this::onHitBot, 100);
     botEventHandlers.onHitWall.subscribe(e -> onHitWall(), 100);
     botEventHandlers.onBotDeath.subscribe(this::onDeath, 100);
+    botEventHandlers.onNewRound.subscribe(e -> onNewRound(), 100);
   }
 
   private void onDisconnected(DisconnectedEvent e) {
@@ -69,6 +71,13 @@ public final class BotInternals {
     if (e.getVictimId() == bot.getMyId()) {
       stopThread();
     }
+  }
+
+  private void onNewRound() {
+    distanceRemaining = 0d;
+    turnRemaining = 0d;
+    gunTurnRemaining = 0d;
+    radarTurnRemaining = 0d;
   }
 
   public boolean isRunning() {
@@ -223,30 +232,64 @@ public final class BotInternals {
   }
 
   private void updateTurnRemaining() {
+
     if (bot.doAdjustGunForBodyTurn()) {
+      double oldSign = Math.signum(gunTurnRemaining);
       gunTurnRemaining -= bot.getTurnRate();
+      double newSign = Math.signum(gunTurnRemaining);
+
+      if (oldSign != newSign) {
+        gunTurnRemaining = 0;
+      }
     }
+
+    double oldSign = Math.signum(turnRemaining);
     turnRemaining -= bot.getTurnRate();
+    double newSign = Math.signum(turnRemaining);
+
+    if (oldSign != newSign) {
+      turnRemaining = 0;
+    }
   }
 
   private void updateGunTurnRemaining() {
+
     if (bot.doAdjustRadarForGunTurn()) {
+      double oldSign = Math.signum(radarTurnRemaining);
       radarTurnRemaining -= bot.getGunTurnRate();
+      double newSign = Math.signum(radarTurnRemaining);
+
+      if (oldSign != newSign) {
+        radarTurnRemaining = 0;
+      }
     }
+
+    double oldSign = Math.signum(gunTurnRemaining);
     gunTurnRemaining -= bot.getGunTurnRate();
+    double newSign = Math.signum(gunTurnRemaining);
+
+    if (oldSign != newSign) {
+      gunTurnRemaining = 0;
+    }
   }
 
   private void updateRadarTurnRemaining() {
-    radarTurnRemaining -= bot.getGunTurnRate();
+    double oldSign = Math.signum(radarTurnRemaining);
+    radarTurnRemaining -= bot.getRadarTurnRate();
+    double newSign = Math.signum(radarTurnRemaining);
+
+    if (oldSign != newSign) {
+      radarTurnRemaining = 0;
+    }
   }
 
   private void updateMovement() {
     if (Double.isInfinite(distanceRemaining)) {
-      if (distanceRemaining == Double.POSITIVE_INFINITY) {
-        baseBotInternals.getBotIntent().setTargetSpeed((double) IBaseBot.MAX_SPEED);
-      } else {
-        baseBotInternals.getBotIntent().setTargetSpeed((double) -IBaseBot.MAX_SPEED);
-      }
+      baseBotInternals
+          .getBotIntent()
+          .setTargetSpeed(
+              (double) (distanceRemaining == Double.POSITIVE_INFINITY ? MAX_SPEED : -MAX_SPEED));
+
     } else {
       double distance = distanceRemaining;
 
@@ -271,56 +314,38 @@ public final class BotInternals {
     }
   }
 
-  public boolean isStopped() {
-    return isStopped;
-  }
-
   public void stop() {
-    setStop();
+    baseBotInternals.setStop();
     awaitNextTurn();
   }
 
   public void resume() {
-    setResume();
+    baseBotInternals.setResume();
     awaitNextTurn();
   }
 
-  public void setStop() {
-    if (!isStopped) {
-      isStopped = true;
+  public void onStop() {
+    savedDistanceRemaining = distanceRemaining;
+    savedTurnRemaining = turnRemaining;
+    savedGunTurnRemaining = gunTurnRemaining;
+    savedRadarTurnRemaining = radarTurnRemaining;
 
-      savedDistanceRemaining = distanceRemaining;
-      savedTurnRemaining = turnRemaining;
-      savedGunTurnRemaining = gunTurnRemaining;
-      savedRadarTurnRemaining = radarTurnRemaining;
-
-      distanceRemaining = 0d;
-      turnRemaining = 0d;
-      gunTurnRemaining = 0d;
-      radarTurnRemaining = 0d;
-
-      BotIntent intent = baseBotInternals.getBotIntent();
-      intent.setTargetSpeed(0d);
-      intent.setTurnRate(0d);
-      intent.setGunTurnRate(0d);
-      intent.setRadarTurnRate(0d);
-    }
+    distanceRemaining = 0d;
+    turnRemaining = 0d;
+    gunTurnRemaining = 0d;
+    radarTurnRemaining = 0d;
   }
 
-  public void setResume() {
-    if (isStopped) {
-      isStopped = false;
-
-      distanceRemaining = savedDistanceRemaining;
-      turnRemaining = savedTurnRemaining;
-      gunTurnRemaining = savedGunTurnRemaining;
-      radarTurnRemaining = savedRadarTurnRemaining;
-    }
+  public void onResume() {
+    distanceRemaining = savedDistanceRemaining;
+    turnRemaining = savedTurnRemaining;
+    gunTurnRemaining = savedGunTurnRemaining;
+    radarTurnRemaining = savedRadarTurnRemaining;
   }
 
   private void blockIfStopped() {
-    if (isStopped) {
-      await(() -> !isStopped);
+    if (baseBotInternals.isStopped()) {
+      await(() -> !baseBotInternals.isStopped());
     }
   }
 
@@ -359,7 +384,7 @@ public final class BotInternals {
         }
       } catch (InterruptedException e) {
         isRunning = false;
-        isStopped = false;
+        baseBotInternals.setResume();
       }
     }
   }
