@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static dev.robocode.tankroyale.botapi.internal.MathUtil.limitRange;
 import static java.lang.Math.*;
 
 public final class BaseBotInternals {
@@ -161,39 +162,27 @@ public final class BaseBotInternals {
   }
 
   private void sendIntent() {
+    limitTargetSpeedAndTurnRates();
+    socket.sendText(gson.toJson(botIntent));
+  }
+
+  private void limitTargetSpeedAndTurnRates() {
     Double targetSpeed = botIntent.getTargetSpeed();
     if (targetSpeed != null) {
-      if (targetSpeed > maxSpeed) {
-        botIntent.setTargetSpeed(maxSpeed);
-      } else if (targetSpeed < -maxSpeed) {
-        botIntent.setTargetSpeed(-maxSpeed);
-      }
+      botIntent.setTargetSpeed(limitRange(targetSpeed, -maxSpeed, maxSpeed));
     }
     Double turnRate = botIntent.getTurnRate();
     if (turnRate != null) {
-      if (turnRate > maxTurnRate) {
-        botIntent.setTurnRate(maxTurnRate);
-      } else if (turnRate < -maxTurnRate) {
-        botIntent.setTurnRate(-maxTurnRate);
-      }
+      botIntent.setTurnRate(limitRange(turnRate, -maxTurnRate, maxTurnRate));
     }
     Double gunTurnRate = botIntent.getGunTurnRate();
     if (gunTurnRate != null) {
-      if (gunTurnRate > maxGunTurnRate) {
-        botIntent.setGunTurnRate(maxGunTurnRate);
-      } else if (gunTurnRate < -maxGunTurnRate) {
-        botIntent.setGunTurnRate(-maxGunTurnRate);
-      }
+      botIntent.setGunTurnRate(limitRange(gunTurnRate, -maxGunTurnRate, maxGunTurnRate));
     }
     Double radarTurnRate = botIntent.getRadarTurnRate();
     if (radarTurnRate != null) {
-      if (radarTurnRate > maxRadarTurnRate) {
-        botIntent.setRadarTurnRate(maxRadarTurnRate);
-      } else if (radarTurnRate < -maxRadarTurnRate) {
-        botIntent.setRadarTurnRate(-maxRadarTurnRate);
-      }
+      botIntent.setRadarTurnRate(limitRange(radarTurnRate, -maxRadarTurnRate, maxRadarTurnRate));
     }
-    socket.sendText(gson.toJson(botIntent));
   }
 
   public String getVariant() {
