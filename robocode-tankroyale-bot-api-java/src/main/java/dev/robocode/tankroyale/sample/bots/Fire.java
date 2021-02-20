@@ -42,62 +42,57 @@ public class Fire extends Bot {
     // Spin the gun around slowly... forever
     while (isRunning()) {
       // Turn the gun a bit if the bot if the target speed is 0
-      turnGunRight(5);
+      System.out.println(getTurnNumber() + " run.turnGunLeft");
+      turnGunLeft(5);
     }
   }
 
   /** onScannedBot: Fire! */
   @Override
   public void onScannedBot(ScannedBotEvent e) {
-    // Set bot to stop movement (executed with next command - fire)
-    setStop();
-
     // If the other robot is close by, and we have plenty of life, fire hard!
     double distance = distanceTo(e.getX(), e.getY());
     if (distance < 50 && getEnergy() > 50) {
+      System.out.println(getTurnNumber() + " onScannedBot.fire(3)");
       fire(3);
     } else {
       // Otherwise, only fire 1
+      System.out.println(getTurnNumber() + " onScannedBot.fire(1)");
       fire(1);
     }
-    // Scan, and resume movement if we did not scan anything
-    if (!scan()) {
-      setResume();
-    }
+    // Rescan
+    System.out.println(getTurnNumber() + " onScannedBot.scan()");
+    scan();
   }
 
   /** onHitByBullet: Turn perpendicular to the bullet, and move a bit. */
   @Override
   public void onHitByBullet(BulletHitBotEvent e) {
-    // Set bot to resume movement, if it was stopped
-    setResume();
-
     // Turn perpendicular to the bullet direction
+    System.out.println(getTurnNumber() + " onHitByBullet.turnLeft()");
     turnLeft(normalizeRelativeAngle(90 - (getDirection() - e.getBullet().getDirection())));
 
     // Move forward or backward depending if the distance is positive or negative
+    System.out.println(getTurnNumber() + " onHitByBullet.forward()");
     forward(dist);
     dist *= -1; // Change distance, meaning forward or backward direction
 
     // Rescan
-    setScan();
+    System.out.println(getTurnNumber() + " onHitByBullet.scan()");
+    scan();
   }
 
   /** onHitBot: Aim at target and fire hard. */
   @Override
   public void onHitBot(HitBotEvent e) {
-    // Set bot to resume movement, if it was stopped
-    setResume();
-
     // Turn gun to the bullet direction
     double direction = directionTo(e.getX(), e.getY());
     double gunBearing = normalizeRelativeAngle(direction - getGunDirection());
+    System.out.println(getTurnNumber() + " onHitBot.turnGunLeft()");
     turnGunLeft(gunBearing);
 
-    // Check that radar is locked (by stopping movement in onScannedBot)
-    if (isStopped()) {
-      // Fire hard
-      fire(3);
-    }
+    // Fire hard
+    System.out.println(getTurnNumber() + " onHitBot.fire()");
+    fire(3);
   }
 }
