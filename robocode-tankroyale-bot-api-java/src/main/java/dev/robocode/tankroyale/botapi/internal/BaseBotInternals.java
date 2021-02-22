@@ -155,18 +155,20 @@ public final class BaseBotInternals {
     botIntent.setScan(false);
 
     // Dispatch all bot events
-    new Thread(this::dispatchEvents).start();
+    //    new Thread(this::dispatchEvents).start();
+    dispatchEvents();
   }
 
   private void dispatchEvents() {
     try {
       eventQueue.dispatchEvents(getCurrentTick().getTurnNumber());
+    } catch (RescanException ignore) {
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  private void sendIntent() {
+  public void sendIntent() {
     limitTargetSpeedAndTurnRates();
     socket.sendText(gson.toJson(botIntent));
   }
@@ -295,7 +297,7 @@ public final class BaseBotInternals {
 
   private double getMaxSpeed(double distance) {
     double decelTime =
-            max(1, Math.ceil((Math.sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
+        max(1, Math.ceil((Math.sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
     if (decelTime == Double.POSITIVE_INFINITY) {
       return MAX_SPEED;
     }

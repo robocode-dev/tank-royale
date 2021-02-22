@@ -613,10 +613,9 @@ public interface IBot extends IBaseBot {
    * movement has stopped, e.g. when {@link #stop()} has been called. The last radar direction and
    * sweep angle will be used for rescanning for bots.
    *
-   * @return {@code true} if the bot did scan a bot with the next turn; {@code false} otherwise.
    * @see #stop()
    */
-  boolean scan();
+  void scan();
 
   /**
    * Blocks until a condition is met, i.e. when a {@link Condition#test()} returns true.

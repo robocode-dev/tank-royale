@@ -3,7 +3,8 @@ package dev.robocode.tankroyale.botapi.internal;
 import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.SortedMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -38,11 +39,19 @@ final class EventQueue {
 
     // Publish all event in the order of the keys, i.e. event priority order
     for (List<BotEvent> events : eventMap.values()) {
-      List<BotEvent> eventsCopy = new ArrayList<>(events); // Need a copy in order to clear the event map event list
-      events.clear(); // Needs to be cleared prior to handling events, which can take several turns to complete
-
-      eventsCopy.forEach(botEventHandlers::fire);
+      for (BotEvent event : events) {
+        events.remove(event);
+        try {
+          botEventHandlers.fire(event);
+          removeOldEvents(currentTurnNumber);
+        } catch (RescanException e) {
+          System.out.println(baseBotInternals.getCurrentTick().getTurnNumber() + " ######");
+          baseBotInternals.setResume();
+          baseBotInternals.execute();
+        }
+      }
     }
+    eventMap.clear();
   }
 
   private void addEvent(BotEvent event, IBaseBot baseBot) {

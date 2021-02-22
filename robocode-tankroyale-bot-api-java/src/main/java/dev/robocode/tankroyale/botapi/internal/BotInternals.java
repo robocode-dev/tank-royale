@@ -171,18 +171,16 @@ public final class BotInternals implements StopResumeListener {
     awaitRadarTurnComplete();
   }
 
-  public void fire(double firepower) {
-    while (!bot.setFire(firepower)) {
-      awaitNextTurn();
-    }
+  public void fire(double firepower) { // TODO: Return boolean
+    bot.setFire(firepower);
+    awaitNextTurn();
   }
 
-  public boolean scan() {
+  public void scan() {
+    baseBotInternals.setStop();
     bot.setScan();
-    awaitNextTurn();
-
-    // If a ScannedBotEvent is put in the events, the bot scanned another bot
-    return bot.getEvents().stream().anyMatch(e -> e instanceof ScannedBotEvent);
+    baseBotInternals.sendIntent();
+    throw new RescanException();
   }
 
   private void processTurn() {

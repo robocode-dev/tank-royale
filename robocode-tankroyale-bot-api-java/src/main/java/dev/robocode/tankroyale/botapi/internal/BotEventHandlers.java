@@ -60,6 +60,7 @@ final class BotEventHandlers {
     if (event instanceof TickEvent) {
       onTick.publish((TickEvent) event);
     } else if (event instanceof ScannedBotEvent) {
+      System.out.println(baseBot.getTurnNumber() + " -> onScannedBot");
       onScannedBot.publish((ScannedBotEvent) event);
     } else if (event instanceof SkippedTurnEvent) {
       onSkippedTurn.publish((SkippedTurnEvent) event);
