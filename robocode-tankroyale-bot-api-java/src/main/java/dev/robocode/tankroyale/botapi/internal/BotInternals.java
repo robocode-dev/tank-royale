@@ -177,10 +177,10 @@ public final class BotInternals implements StopResumeListener {
   }
 
   public void scan() {
-    baseBotInternals.setStop();
+    bot.setStop();
     bot.setScan();
-    baseBotInternals.sendIntent();
-    throw new RescanException();
+    awaitNextTurn();
+    bot.setResume();
   }
 
   private void processTurn() {

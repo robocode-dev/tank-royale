@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.botapi.internal;
 import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -39,19 +40,10 @@ final class EventQueue {
 
     // Publish all event in the order of the keys, i.e. event priority order
     for (List<BotEvent> events : eventMap.values()) {
-      for (BotEvent event : events) {
-        events.remove(event);
-        try {
-          botEventHandlers.fire(event);
-          removeOldEvents(currentTurnNumber);
-        } catch (RescanException e) {
-          System.out.println(baseBotInternals.getCurrentTick().getTurnNumber() + " ######");
-          baseBotInternals.setResume();
-          baseBotInternals.execute();
-        }
-      }
+      ArrayList<BotEvent> eventsCopy = new ArrayList<>(events);
+      events.clear();
+      eventsCopy.forEach(botEventHandlers::fire);
     }
-    eventMap.clear();
   }
 
   private void addEvent(BotEvent event, IBaseBot baseBot) {
