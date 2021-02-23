@@ -113,8 +113,8 @@ public final class BaseBotInternals {
     }
     socket.addListener(new WebSocketListener());
 
-    botEventHandlers.onNewRound.subscribe(this::handleNewRound, 100);
-    botEventHandlers.onBulletFired.subscribe(this::handleBulletFired, 100);
+    botEventHandlers.onNewRound.subscribe(this::onNewRound, 100);
+    botEventHandlers.onBulletFired.subscribe(this::onBulletFired, 100);
   }
 
   private static BotIntent newBotIntent() {
@@ -508,13 +508,13 @@ public final class BaseBotInternals {
     botEventHandlers.onProcessTurn.publish(tickEvent);
   }
 
-  private void handleNewRound(TickEvent e) {
-    tickEvent = e; // use new bot coordinate, rates and directions etc.
+  private void onNewRound(TickEvent e) {
+    tickEvent = e; // use new bot coordinates, rates and directions etc.
     botIntent = newBotIntent();
     eventQueue.clear();
   }
 
-  private void handleBulletFired(BulletFiredEvent e) {
+  private void onBulletFired(BulletFiredEvent e) {
     botIntent.setFirepower(0d); // Reset firepower so the bot stops firing continuously
   }
 }

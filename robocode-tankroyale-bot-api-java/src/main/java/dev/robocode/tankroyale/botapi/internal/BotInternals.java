@@ -17,8 +17,6 @@ public final class BotInternals implements StopResumeListener {
 
   private boolean isOverDriving;
 
-  private TickEvent currentTick;
-
   private Thread thread;
   private final Object nextTurn = new Object();
   private volatile boolean isRunning;
@@ -35,13 +33,13 @@ public final class BotInternals implements StopResumeListener {
     baseBotInternals.setStopResumeHandler(this);
 
     BotEventHandlers botEventHandlers = baseBotInternals.getBotEventHandlers();
-    botEventHandlers.onProcessTurn.subscribe(this::onProcessTurn, 100);
-    botEventHandlers.onDisconnected.subscribe(this::onDisconnected, 100);
-    botEventHandlers.onGameEnded.subscribe(this::onGameEnded, 100);
-    botEventHandlers.onHitBot.subscribe(this::onHitBot, 100);
-    botEventHandlers.onHitWall.subscribe(e -> onHitWall(), 100);
-    botEventHandlers.onBotDeath.subscribe(this::onDeath, 100);
-    botEventHandlers.onNewRound.subscribe(e -> onNewRound(), 100);
+    botEventHandlers.onProcessTurn.subscribe(this::onProcessTurn, 90);
+    botEventHandlers.onDisconnected.subscribe(this::onDisconnected, 90);
+    botEventHandlers.onGameEnded.subscribe(this::onGameEnded, 90);
+    botEventHandlers.onHitBot.subscribe(this::onHitBot, 90);
+    botEventHandlers.onHitWall.subscribe(e -> onHitWall(), 90);
+    botEventHandlers.onBotDeath.subscribe(this::onDeath, 90);
+    botEventHandlers.onNewRound.subscribe(e -> onNewRound(), 90);
   }
 
   private void onDisconnected(DisconnectedEvent e) {
@@ -52,8 +50,17 @@ public final class BotInternals implements StopResumeListener {
     stopThread();
   }
 
+  private void onNewRound() {
+    distanceRemaining = 0d;
+    turnRemaining = 0d;
+    gunTurnRemaining = 0d;
+    radarTurnRemaining = 0d;
+
+    stopThread();
+    startThread();
+  }
+
   private void onProcessTurn(TickEvent e) {
-    currentTick = e;
     processTurn();
   }
 
@@ -71,13 +78,6 @@ public final class BotInternals implements StopResumeListener {
     if (e.getVictimId() == bot.getMyId()) {
       stopThread();
     }
-  }
-
-  private void onNewRound() {
-    distanceRemaining = 0d;
-    turnRemaining = 0d;
-    gunTurnRemaining = 0d;
-    radarTurnRemaining = 0d;
   }
 
   public boolean isRunning() {
@@ -198,14 +198,6 @@ public final class BotInternals implements StopResumeListener {
     updateRadarTurnRemaining();
     updateMovement();
 
-    // If this is the first turn -> Call the run method on the Bot class
-    if (currentTick.getTurnNumber() == 1) { // TODO: Use onNewRound event?
-      if (isRunning) {
-        stopThread();
-      }
-      startThread();
-    }
-
     synchronized (nextTurn) {
       // Unblock methods waiting for the next turn
       nextTurn.notifyAll();
@@ -219,11 +211,11 @@ public final class BotInternals implements StopResumeListener {
   }
 
   private void stopThread() {
+    isRunning = false;
     if (thread != null) {
-      isRunning = false;
       thread.interrupt();
       try {
-        thread.join();
+        thread.join(100, 0);
       } catch (InterruptedException ignored) {
       }
       thread = null;
