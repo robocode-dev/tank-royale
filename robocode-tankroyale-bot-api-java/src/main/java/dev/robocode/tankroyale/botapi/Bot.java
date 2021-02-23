@@ -203,8 +203,8 @@ public abstract class Bot extends BaseBot implements IBot {
 
   /** {@inheritDoc} */
   @Override
-  public void scan() {
-    __botInternals.scan();
+  public boolean scan() {
+    return __botInternals.scan();
   }
 
   /** {@inheritDoc} */

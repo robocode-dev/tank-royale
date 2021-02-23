@@ -176,11 +176,12 @@ public final class BotInternals implements StopResumeListener {
     awaitNextTurn();
   }
 
-  public void scan() {
-    bot.setStop();
+  public boolean scan() {
     bot.setScan();
     awaitNextTurn();
-    bot.setResume();
+
+    // If a ScannedBotEvent is put in the events, the bot scanned another bot
+    return bot.getEvents().stream().anyMatch(e -> e instanceof ScannedBotEvent);
   }
 
   private void processTurn() {
