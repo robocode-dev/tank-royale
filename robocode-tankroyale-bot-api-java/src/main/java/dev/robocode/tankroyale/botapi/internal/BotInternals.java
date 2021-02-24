@@ -205,8 +205,8 @@ public final class BotInternals implements StopResumeListener {
   }
 
   private void startThread() {
-    thread = new Thread(bot::run);
     isRunning = true; // Set this before the thread is starting as run() needs it to be set
+    thread = new Thread(bot::run);
     thread.start();
   }
 

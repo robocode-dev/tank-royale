@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static dev.robocode.tankroyale.botapi.IBaseBot.*;
 import static dev.robocode.tankroyale.botapi.internal.MathUtil.limitRange;
@@ -154,15 +156,15 @@ public final class BaseBotInternals {
     // Clear rescanning
     botIntent.setScan(false);
 
-    // Dispatch all bot events
-    //    new Thread(this::dispatchEvents).start();
-    dispatchEvents();
+    // Dispatch bot events
+    executorService.execute(this::dispatchEvents);
   }
+
+  ExecutorService executorService = Executors.newFixedThreadPool(2);
 
   private void dispatchEvents() {
     try {
       eventQueue.dispatchEvents(getCurrentTick().getTurnNumber());
-    } catch (RescanException ignore) {
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -497,12 +499,12 @@ public final class BaseBotInternals {
 
     tickStartNanoTime = System.nanoTime();
 
-    eventQueue.addEventsFromTick(tickEvent, baseBot);
-
     // Trigger new round
     if (tickEvent.getTurnNumber() == 1) {
       botEventHandlers.onNewRound.publish(tickEvent);
     }
+
+    eventQueue.addEventsFromTick(tickEvent, baseBot);
 
     // Trigger processing turn
     botEventHandlers.onProcessTurn.publish(tickEvent);
