@@ -44,11 +44,11 @@ class ModelUpdater(
     /** Game state */
     private var gameState = GameState(Arena(setup.arenaWidth, setup.arenaHeight))
 
-    /** Round record */
-    private var round = MutableRound(0)
-
     /** Turn record */
     val turn = MutableTurn(0)
+
+    /** Round record */
+    private var round = MutableRound(0, lastTurn = turn)
 
     /** Id for the next bullet that comes into existence */
     private var nextBulletId = 0

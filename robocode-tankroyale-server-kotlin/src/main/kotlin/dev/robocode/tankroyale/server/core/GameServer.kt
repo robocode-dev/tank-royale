@@ -401,6 +401,7 @@ class GameServer(
                 val gameTickForBot = TurnToTickEventForBotMapper.map(round, turn, botId)
                 if (gameTickForBot != null) { // Bot alive?
                     send(conn, gameTickForBot)
+                    log.info(gameTickForBot.toString())
                 }
             }
         }

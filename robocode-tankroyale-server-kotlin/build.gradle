@@ -1,7 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.30'
     id 'maven-publish'
     id 'application'
     id 'idea'
@@ -9,12 +9,13 @@ plugins {
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.7.5'
+version = '0.7.7'
 
 compileKotlin {
     kotlinOptions {
         jvmTarget = '1.8'
         freeCompilerArgs = ["-Xinline-classes"]
+        useIR = true // https://blog.jetbrains.com/kotlin/2021/02/the-jvm-backend-is-in-beta-let-s-make-it-stable-together/
     }
 }
 compileTestKotlin {
@@ -33,7 +34,7 @@ test {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.4.21'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.4.30'
 
     implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.13'
     implementation 'org.danilopianini:gson-extras:0.2.2'
