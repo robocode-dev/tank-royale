@@ -11,7 +11,4 @@ data class Round(
     /** Flag specifying if round has ended yet */
     override val roundEnded: Boolean,
 
-    /** Last turn */
-    override val lastTurn: ITurn? = if (turns.isNotEmpty()) turns.last() else null
-
 ) : IRound

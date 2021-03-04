@@ -66,6 +66,9 @@ class GameServer(
     /** JSON handler */
     private val gson = Gson()
 
+    /** Tick lock for onNextTurn() */
+    private val tickLock = Any()
+
     private var botListUpdateMessage = BotListUpdate().apply {
         `$type` = Message.`$type`.BOT_LIST_UPDATE
         bots = listOf<BotInfo>()
@@ -189,7 +192,7 @@ class GameServer(
     }
 
     /** Last reset turn timeout period */
-    @Volatile // FIXME: Remove?
+    @Volatile
     var lastResetTurnTimeoutPeriod: Long = 0
 
     /** Resets turn timeout timer */
@@ -341,15 +344,20 @@ class GameServer(
 
     private fun onNextTurn() {
         log.debug("Next turn => updating game state")
-        if (serverState === ServerState.GAME_STOPPED) {
-            return
-        }
-        // Update game state
-        val gameState = updateGameState()
-        if (gameState.isGameEnded) {
-            onGameEnded()
-        } else {
-            onNextTick(gameState.lastRound)
+
+        // Required as this method can be called again while already running.
+        // This would give a raise condition without the synchronized lock.
+        synchronized(tickLock) {
+            if (serverState === ServerState.GAME_STOPPED) {
+                return
+            }
+            // Update game state
+            val gameState = updateGameState()
+            if (gameState.isGameEnded) {
+                onGameEnded()
+            } else {
+                onNextTick(gameState.lastRound)
+            }
         }
     }
 
@@ -507,9 +515,9 @@ class GameServer(
         botsThatSentIntent += conn
         if (botIntents.size == botsThatSentIntent.size) {
             botsThatSentIntent.clear()
+            turnTimeoutTimer?.reset()
 
             onNextTurn()
-            turnTimeoutTimer?.reset()
         }
     }
 

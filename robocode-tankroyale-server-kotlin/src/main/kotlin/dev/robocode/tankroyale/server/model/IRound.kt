@@ -12,5 +12,5 @@ interface IRound {
     val roundEnded: Boolean
 
     /** Last turn */
-    val lastTurn: ITurn?
+    val lastTurn: ITurn? get() = if (turns.isNotEmpty()) turns[turns.size - 1] else null;
 }

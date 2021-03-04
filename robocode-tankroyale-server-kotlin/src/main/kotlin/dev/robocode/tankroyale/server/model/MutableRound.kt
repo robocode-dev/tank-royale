@@ -11,11 +11,9 @@ data class MutableRound(
     /** Flag specifying if round has ended yet */
     override var roundEnded: Boolean = false,
 
-    override val lastTurn: ITurn?
-
 ) : IRound {
 
     /** Returns an immutable copy of this round */
     fun toRound() =
-        Round(roundNumber, turns.toList(), roundEnded, if (turns.isNotEmpty()) turns[turns.size - 1] else null)
+        Round(roundNumber, turns.toList(), roundEnded)
 }
