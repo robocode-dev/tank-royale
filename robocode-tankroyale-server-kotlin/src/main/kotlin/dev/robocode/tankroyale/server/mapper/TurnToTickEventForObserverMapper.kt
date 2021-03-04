@@ -6,7 +6,6 @@ import dev.robocode.tankroyale.server.mapper.BotsToBotsWithIdMapper.map
 import dev.robocode.tankroyale.server.mapper.BulletsToBulletStatesMapper.map
 import dev.robocode.tankroyale.server.model.IRound
 import dev.robocode.tankroyale.server.model.ITurn
-import dev.robocode.tankroyale.server.model.MutableTurn
 import java.util.concurrent.CopyOnWriteArrayList
 
 object TurnToTickEventForObserverMapper {

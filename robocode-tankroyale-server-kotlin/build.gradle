@@ -9,7 +9,7 @@ plugins {
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.7.8'
+version = '0.7.9'
 
 compileKotlin {
     kotlinOptions {
@@ -49,8 +49,7 @@ dependencies {
     implementation 'ch.qos.logback:logback-core:1.2.3'
     implementation 'org.slf4j:slf4j-api:1.7.26'
 
-//    testImplementation 'io.kotest:kotest-assertions-core-jvm:4.3.2' // optional, for kotest assertions
-    testImplementation 'io.kotest:kotest-runner-junit5-jvm:4.3.2' // required
+    testImplementation 'io.kotest:kotest-runner-junit5-jvm:4.3.2'
     testImplementation 'io.mockk:mockk:1.10.3-jdk8'
 }
 

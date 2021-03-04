@@ -197,15 +197,15 @@ class ModelUpdater(
     /** Execute bot intents for all bots that are not disabled */
     private fun executeBotIntents() {
         for (bot in botsMap.values) {
-            if (bot.isEnabled) executeBotIntent(bot)
+            if (bot.isEnabled) updateBotStates(bot)
         }
     }
 
     /**
-     * Execute a single bot intent.
+     * Updates the bot states (position, speed, turn rates, angles, colors etc.)
      * @param bot it the bot top execute the bot intent for.
      */
-    private fun executeBotIntent(bot: MutableBot) {
+    private fun updateBotStates(bot: MutableBot) {
         val intent = botIntentsMap[bot.id]
         intent?.apply {
             bot.speed = calcNewBotSpeed(bot.speed, intent.targetSpeed ?: 0.0)
@@ -788,32 +788,30 @@ class ModelUpdater(
          * @param intent is the bot´s intent.
          */
         private fun updateBotTurnRatesAndDirections(bot: MutableBot, intent: BotIntent) {
-            val limitedTurnRate = limitTurnRate(intent.turnRate ?: 0.0, bot.speed)
-            val limitedGunTurnRate = limitGunTurnRate(intent.gunTurnRate ?: 0.0)
-            val limitedRadarTurnRate = limitRadarTurnRate(intent.radarTurnRate ?: 0.0)
+            val turnRate = limitTurnRate(intent.turnRate ?: 0.0, bot.speed)
+            val gunTurnRate = limitGunTurnRate(intent.gunTurnRate ?: 0.0)
+            val radarTurnRate = limitRadarTurnRate(intent.radarTurnRate ?: 0.0)
 
-            var totalTurnRate = limitedTurnRate
-            bot.direction = normalAbsoluteDegrees(bot.direction + totalTurnRate)
+            bot.direction = normalAbsoluteDegrees(bot.direction + turnRate)
 
             // Gun direction depends on the turn rate of both the body and the gun
-            totalTurnRate += limitedGunTurnRate
-            if (intent.adjustGunForBodyTurn == true) {
-                totalTurnRate -= limitedTurnRate
+            var totalTurnRate = gunTurnRate
+            if (intent.adjustGunForBodyTurn == false) {
+                totalTurnRate += turnRate
             }
             bot.gunDirection = normalAbsoluteDegrees(bot.gunDirection + totalTurnRate)
 
             // Radar direction depends on the turn rate of the body, the gun, and the radar
-            totalTurnRate += limitedRadarTurnRate
-            if (intent.adjustRadarForGunTurn == true) {
-                totalTurnRate -= limitedGunTurnRate
+            if (intent.adjustRadarForGunTurn == false) {
+                totalTurnRate += gunTurnRate
             }
             val radarDirection = normalAbsoluteDegrees(bot.radarDirection + totalTurnRate)
 
             updateScanDirectionAndSpread(bot, intent, radarDirection)
 
-            bot.turnRate = limitedTurnRate
-            bot.gunTurnRate = limitedGunTurnRate
-            bot.radarTurnRate = limitedRadarTurnRate
+            bot.turnRate = turnRate
+            bot.gunTurnRate = gunTurnRate
+            bot.radarTurnRate = radarTurnRate
         }
 
         /**
