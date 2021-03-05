@@ -516,6 +516,7 @@ class GameServer(
             botsThatSentIntent.clear()
             turnTimeoutTimer?.reset()
 
+            resetTurnTimeout();
             onNextTurn()
         }
     }

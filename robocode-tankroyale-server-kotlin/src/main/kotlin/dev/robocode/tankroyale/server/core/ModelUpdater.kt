@@ -792,20 +792,24 @@ class ModelUpdater(
             val gunTurnRate = limitGunTurnRate(intent.gunTurnRate ?: 0.0)
             val radarTurnRate = limitRadarTurnRate(intent.radarTurnRate ?: 0.0)
 
-            bot.direction = normalAbsoluteDegrees(bot.direction + turnRate)
+            var adjustmentRate = turnRate
+            bot.direction = normalAbsoluteDegrees(bot.direction + adjustmentRate)
 
             // Gun direction depends on the turn rate of both the body and the gun
-            var totalTurnRate = gunTurnRate
-            if (intent.adjustGunForBodyTurn == false) {
-                totalTurnRate += turnRate
+            adjustmentRate += gunTurnRate
+            if (intent.adjustGunForBodyTurn == true) {
+                adjustmentRate -= turnRate
             }
-            bot.gunDirection = normalAbsoluteDegrees(bot.gunDirection + totalTurnRate)
+            adjustmentRate = limitGunTurnRate(adjustmentRate)
+            bot.gunDirection = normalAbsoluteDegrees(bot.gunDirection + adjustmentRate)
 
             // Radar direction depends on the turn rate of the body, the gun, and the radar
-            if (intent.adjustRadarForGunTurn == false) {
-                totalTurnRate += gunTurnRate
+            adjustmentRate += radarTurnRate
+            if (intent.adjustRadarForGunTurn == true) {
+                adjustmentRate -= gunTurnRate
             }
-            val radarDirection = normalAbsoluteDegrees(bot.radarDirection + totalTurnRate)
+            adjustmentRate = limitRadarTurnRate(adjustmentRate)
+            val radarDirection = normalAbsoluteDegrees(bot.radarDirection + adjustmentRate)
 
             updateScanDirectionAndSpread(bot, intent, radarDirection)
 
