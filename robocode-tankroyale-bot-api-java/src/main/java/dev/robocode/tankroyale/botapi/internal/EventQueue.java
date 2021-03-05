@@ -11,8 +11,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 final class EventQueue {
 
-  private final int MAX_EVENT_AGE = 2; // turns
-
   private final BaseBotInternals baseBotInternals;
   private final BotEventHandlers botEventHandlers;
 
@@ -35,8 +33,7 @@ final class EventQueue {
     addCustomEvents(baseBot);
   }
 
-  void dispatchEvents(int currentTurnNumber) {
-    removeOldEvents(currentTurnNumber);
+  void dispatchEvents() {
 
     // Publish all event in the order of the keys, i.e. event priority order
     for (List<BotEvent> events : eventMap.values()) {
@@ -67,14 +64,6 @@ final class EventQueue {
                     baseBot);
               }
             });
-  }
-
-  private void removeOldEvents(int currentTurnNumber) {
-    eventMap
-        .values()
-        .forEach(
-            list ->
-                list.removeIf(event -> currentTurnNumber > event.getTurnNumber() + MAX_EVENT_AGE));
   }
 
   private static int getPriority(BotEvent event, IBaseBot baseBot) {

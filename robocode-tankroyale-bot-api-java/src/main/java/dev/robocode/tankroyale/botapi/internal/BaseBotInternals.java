@@ -93,6 +93,8 @@ public final class BaseBotInternals {
   private double maxGunTurnRate = MAX_GUN_TURN_RATE;
   private double maxRadarTurnRate = MAX_RADAR_TURN_RATE;
 
+  ExecutorService executorService = Executors.newFixedThreadPool(2);
+
   public BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {
     this.baseBot = baseBot;
     this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
@@ -160,11 +162,9 @@ public final class BaseBotInternals {
     executorService.execute(this::dispatchEvents);
   }
 
-  ExecutorService executorService = Executors.newFixedThreadPool(2);
-
   private void dispatchEvents() {
     try {
-      eventQueue.dispatchEvents(getCurrentTick().getTurnNumber());
+      eventQueue.dispatchEvents();
     } catch (Exception e) {
       e.printStackTrace();
     }
