@@ -39,7 +39,12 @@ final class EventQueue {
     for (List<BotEvent> events : eventMap.values()) {
       ArrayList<BotEvent> eventsCopy = new ArrayList<>(events);
       events.clear();
-      eventsCopy.forEach(botEventHandlers::fire);
+
+      for (BotEvent event : eventsCopy) {
+        try {
+          botEventHandlers.fire(event);
+        } catch (RescanException ignore) {}
+      }
     }
   }
 

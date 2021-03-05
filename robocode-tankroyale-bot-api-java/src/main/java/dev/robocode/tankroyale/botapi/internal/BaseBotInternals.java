@@ -155,6 +155,10 @@ public final class BaseBotInternals {
     // Send the bot intent to the server
     sendIntent();
 
+    // Auto resume, if we were rescanning the last turn
+    if (botIntent.getScan() != null && botIntent.getScan()) {
+      baseBot.setResume();
+    }
     // Clear rescanning
     botIntent.setScan(false);
 
@@ -165,6 +169,7 @@ public final class BaseBotInternals {
   private void dispatchEvents() {
     try {
       eventQueue.dispatchEvents();
+    } catch (RescanException ignore) {
     } catch (Exception e) {
       e.printStackTrace();
     }

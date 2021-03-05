@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.events.BulletHitBotEvent;
 import dev.robocode.tankroyale.botapi.events.HitBotEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
-import dev.robocode.tankroyale.botapi.events.TickEvent;
 
 import java.io.IOException;
 
@@ -43,27 +42,13 @@ public class Fire extends Bot {
     // Spin the gun around slowly... forever
     while (isRunning()) {
       // Turn the gun a bit if the bot if the target speed is 0
-      System.out.println(getTurnNumber() + " turnLeft(5)");
       turnGunLeft(5);
-    }
-  }
-
-  @Override
-  public void onTick(TickEvent e) {
-    String s = e.getTurnNumber() + ": body: " + getDirection() + ", gun: " + getGunDirection() + ", radar: " + getRadarDirection();
-    if (getGunDirection() != getRadarDirection()) {
-      System.err.println(s);
-    } else {
-      System.out.println(s);
     }
   }
 
   /** onScannedBot: Fire! */
   @Override
   public void onScannedBot(ScannedBotEvent e) {
-    // Set bot to stop movement (executed with next command - fire)
-    setStop();
-
     // If the other robot is close by, and we have plenty of life, fire hard!
     double distance = distanceTo(e.getX(), e.getY());
     if (distance < 50 && getEnergy() > 50) {
@@ -72,17 +57,13 @@ public class Fire extends Bot {
       // Otherwise, only fire 1
       fire(1);
     }
-    // Scan, and resume movement if we did not scan anything
-    setScan();
-    resume();
+    // Rescan
+    scan();
   }
 
   /** onHitByBullet: Turn perpendicular to the bullet, and move a bit. */
   @Override
   public void onHitByBullet(BulletHitBotEvent e) {
-    // Set bot to resume movement, if it was stopped
-    setResume();
-
     // Turn perpendicular to the bullet direction
     turnLeft(normalizeRelativeAngle(e.getBullet().getDirection() - getDirection() + 90));
 
@@ -97,18 +78,12 @@ public class Fire extends Bot {
   /** onHitBot: Aim at target and fire hard. */
   @Override
   public void onHitBot(HitBotEvent e) {
-    // Set bot to resume movement, if it was stopped
-    setResume();
-
     // Turn gun to the bullet direction
     double direction = directionTo(e.getX(), e.getY());
     double gunBearing = normalizeRelativeAngle(direction - getGunDirection());
     turnGunLeft(gunBearing);
 
-    // Check that radar is locked (by stopping movement in onScannedBot)
-    if (isStopped()) {
-      // Fire hard
-      fire(3);
-    }
+    // Fire hard
+    fire(3);
   }
 }
