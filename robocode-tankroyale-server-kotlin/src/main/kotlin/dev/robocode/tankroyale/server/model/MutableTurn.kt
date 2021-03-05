@@ -116,7 +116,7 @@ data class MutableTurn(
                 Point(bot.position.x, bot.position.y),
                 bot.direction,
                 bot.gunDirection,
-                bot.scanDirection,
+                bot.radarDirection,
                 bot.radarSpreadAngle,
                 bot.speed,
                 bot.turnRate,
