@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.server.model.Line
 import dev.robocode.tankroyale.server.model.Point
 import kotlin.math.abs
 import kotlin.math.cos
-import kotlin.math.hypot
 import kotlin.math.sin
 
 /**
@@ -13,7 +12,10 @@ import kotlin.math.sin
  * @param angle the angle to normalize.
  * @return the normalized absolute angle.
  */
-fun normalAbsoluteDegrees(angle: Double): Double = if ((angle % 360) >= 0) angle else angle + 360
+fun normalAbsoluteDegrees(angle: Double): Double {
+    val normalAngle = angle % 360
+    return if (normalAngle >= 0) normalAngle else normalAngle + 360
+}
 
 /**
  * Normalizes an angle to an relative angle into the range [-180,180[
@@ -22,11 +24,14 @@ fun normalAbsoluteDegrees(angle: Double): Double = if ((angle % 360) >= 0) angle
  * the angle to normalize
  * @return the normalized relative angle.
  */
-fun normalRelativeDegrees(angle: Double): Double =
-    if ((angle % 360) >= 0)
-        if (angle < 180) angle else angle - 360
-    else
-        if (angle >= -180) angle else angle + 360
+fun normalRelativeDegrees(angle: Double): Double {
+    val normalAngle = angle % 360
+    return if (normalAngle >= 0) {
+        if (normalAngle < 180) normalAngle else normalAngle - 360
+    } else {
+        if (normalAngle >= -180) normalAngle else normalAngle + 360
+    }
+}
 
 /**
  * Tests if a `double` value is near to another 'double' value. It is recommended to use this method instead of testing
@@ -51,16 +56,6 @@ fun Double.isNearTo(value: Double): Boolean {
 fun Double.isNotNearTo(value: Double): Boolean {
     return !isNearTo(value)
 }
-
-/**
- * Returns the shortest distance between two points: sqrt(dx*dx + dy*dy).
- * @param x1 is the x coordinate of the 1st point.
- * @param y1 is the y coordinate of the 1st point.
- * @param x2 is the x coordinate of the 2nd point.
- * @param y2 is the y coordinate of the 2nd point.
- * @return the distance between the two points
- */
-fun distance(x1: Double, y1: Double, x2: Double, y2: Double): Double = hypot(x2 - x1, y2 - y1)
 
 /**
  * Checks if a line segment defined by the two points (x1,y1) and (x2,y2) is intersecting the circle defined by the
