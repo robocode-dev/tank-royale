@@ -141,6 +141,7 @@ public final class BotInternals implements StopResumeListener {
     blockIfStopped();
     setTurnLeft(degrees);
     awaitTurnComplete();
+    baseBotInternals.getBotIntent().setTurnRate(0d);
   }
 
   public void setTurnGunLeft(double degrees) {
@@ -155,6 +156,7 @@ public final class BotInternals implements StopResumeListener {
     blockIfStopped();
     setTurnGunLeft(degrees);
     awaitGunTurnComplete();
+    baseBotInternals.getBotIntent().setGunTurnRate(0d);
   }
 
   public void setTurnRadarLeft(double degrees) {
@@ -163,6 +165,7 @@ public final class BotInternals implements StopResumeListener {
     }
     radarTurnRemaining = degrees;
     baseBotInternals.getBotIntent().setRadarTurnRate(degrees);
+    baseBotInternals.getBotIntent().setRadarTurnRate(0d);
   }
 
   public void turnRadarLeft(double degrees) {
@@ -223,7 +226,6 @@ public final class BotInternals implements StopResumeListener {
   }
 
   private void updateTurnRemaining() {
-
     if (bot.doAdjustGunForBodyTurn()) {
       double oldSign = Math.signum(gunTurnRemaining);
       gunTurnRemaining -= bot.getTurnRate();
@@ -244,7 +246,6 @@ public final class BotInternals implements StopResumeListener {
   }
 
   private void updateGunTurnRemaining() {
-
     if (bot.doAdjustRadarForGunTurn()) {
       double oldSign = Math.signum(radarTurnRemaining);
       radarTurnRemaining -= bot.getGunTurnRate();

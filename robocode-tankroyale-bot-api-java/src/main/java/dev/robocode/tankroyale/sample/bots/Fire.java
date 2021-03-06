@@ -65,7 +65,7 @@ public class Fire extends Bot {
   @Override
   public void onHitByBullet(BulletHitBotEvent e) {
     // Turn perpendicular to the bullet direction
-    turnLeft(normalizeRelativeAngle(e.getBullet().getDirection() - getDirection() + 90));
+    turnLeft(normalizeRelativeAngle(90 - (getDirection() - e.getBullet().getDirection())));
 
     // Move forward or backward depending if the distance is positive or negative
     forward(dist);

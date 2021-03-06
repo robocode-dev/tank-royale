@@ -327,6 +327,7 @@ public abstract class BaseBot implements IBaseBot {
     __baseBotInternals.getBotIntent().setScan(true);
     __baseBotInternals.setStop();
 
+    // Interrupt event handler by throwing exception
     throw new RescanException();
   }
 
