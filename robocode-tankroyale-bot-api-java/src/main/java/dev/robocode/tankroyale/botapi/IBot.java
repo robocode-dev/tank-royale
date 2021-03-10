@@ -615,7 +615,7 @@ public interface IBot extends IBaseBot {
    *
    * @see #stop()
    */
-  boolean scan();
+  void scan();
 
   /**
    * Blocks until a condition is met, i.e. when a {@link Condition#test()} returns true.
