@@ -225,6 +225,12 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
+  public final double getTurnRate() {
+    return __baseBotInternals.getCurrentTick().getBotState().getTurnRate();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void setTurnRate(double turnRate) {
     if (Double.isNaN(turnRate)) {
       throw new IllegalArgumentException("turnRate cannot be NaN");
@@ -234,14 +240,14 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
-  public final double getTurnRate() {
-    return __baseBotInternals.getCurrentTick().getBotState().getTurnRate();
+  public final void setMaxTurnRate(double maxTurnRate) {
+    __baseBotInternals.setMaxTurnRate(maxTurnRate);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setMaxTurnRate(double maxTurnRate) {
-    __baseBotInternals.setMaxTurnRate(maxTurnRate);
+  public final double getGunTurnRate() {
+    return __baseBotInternals.getCurrentTick().getBotState().getGunTurnRate();
   }
 
   /** {@inheritDoc} */
@@ -255,14 +261,14 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
-  public final double getGunTurnRate() {
-    return __baseBotInternals.getCurrentTick().getBotState().getGunTurnRate();
+  public final void setMaxGunTurnRate(double maxGunTurnRate) {
+    __baseBotInternals.setMaxGunTurnRate(maxGunTurnRate);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setMaxGunTurnRate(double maxGunTurnRate) {
-    __baseBotInternals.setMaxGunTurnRate(maxGunTurnRate);
+  public final double getRadarTurnRate() {
+    return __baseBotInternals.getCurrentTick().getBotState().getRadarTurnRate();
   }
 
   /** {@inheritDoc} */
@@ -276,14 +282,15 @@ public abstract class BaseBot implements IBaseBot {
 
   /** {@inheritDoc} */
   @Override
-  public final double getRadarTurnRate() {
-    return __baseBotInternals.getCurrentTick().getBotState().getRadarTurnRate();
+  public final void setMaxRadarTurnRate(double maxRadarTurnRate) {
+    __baseBotInternals.setMaxRadarTurnRate(maxRadarTurnRate);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setMaxRadarTurnRate(double maxRadarTurnRate) {
-    __baseBotInternals.setMaxRadarTurnRate(maxRadarTurnRate);
+  public final double getTargetSpeed() {
+    Double targetSpeed = __baseBotInternals.getBotIntent().getTargetSpeed();
+    return targetSpeed == null ? 0 : targetSpeed;
   }
 
   /** {@inheritDoc} */
@@ -293,13 +300,6 @@ public abstract class BaseBot implements IBaseBot {
       throw new IllegalArgumentException("targetSpeed cannot be NaN");
     }
     __baseBotInternals.getBotIntent().setTargetSpeed(targetSpeed);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final double getTargetSpeed() {
-    Double targetSpeed = __baseBotInternals.getBotIntent().getTargetSpeed();
-    return targetSpeed == null ? 0 : targetSpeed;
   }
 
   /** {@inheritDoc} */

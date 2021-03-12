@@ -43,6 +43,44 @@ public final class BaseBotInternals {
 
   private final Gson gson;
 
+  private final double absDeceleration = abs(DECELERATION);
+
+  private final IBaseBot baseBot;
+  private final BotInfo botInfo;
+  private final BotEventHandlers botEventHandlers;
+  private final EventQueue eventQueue;
+  private final Set<Condition> conditions = new HashSet<>();
+
+  private final AtomicBoolean isStopped = new AtomicBoolean();
+
+  private final ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+  private BotIntent botIntent = newBotIntent();
+
+  private StopResumeListener stopResumeListener;
+
+  // Server connection:
+  private WebSocket socket;
+  private ServerHandshake serverHandshake;
+
+  // Current game states:
+  private Integer myId;
+  private dev.robocode.tankroyale.botapi.GameSetup gameSetup;
+  private TickEvent tickEvent;
+  private Long tickStartNanoTime;
+
+  // Maximum speed and turn rates
+  private double maxSpeed = MAX_SPEED;
+  private double maxTurnRate = MAX_TURN_RATE;
+  private double maxGunTurnRate = MAX_GUN_TURN_RATE;
+  private double maxRadarTurnRate = MAX_RADAR_TURN_RATE;
+
+  // Storing movement when stopping bot
+  private Double savedTargetSpeed;
+  private Double savedTurnRate;
+  private Double savedGunTurnRate;
+  private Double savedRadarTurnRate;
+
   {
     RuntimeTypeAdapterFactory<dev.robocode.tankroyale.schema.Event> typeFactory =
         RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class, "$type")
@@ -65,42 +103,6 @@ public final class BaseBotInternals {
     gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
   }
 
-  private final double absDeceleration = abs(DECELERATION);
-
-  private final IBaseBot baseBot;
-  private final BotInfo botInfo;
-  private final BotEventHandlers botEventHandlers;
-  private final EventQueue eventQueue;
-  private final Set<Condition> conditions = new HashSet<>();
-
-  private BotIntent botIntent = newBotIntent();
-
-  private StopResumeListener stopResumeListener;
-
-  // Server connection:
-  private WebSocket socket;
-  private ServerHandshake serverHandshake;
-
-  // Current game states:
-  private Integer myId;
-  private dev.robocode.tankroyale.botapi.GameSetup gameSetup;
-  private TickEvent tickEvent;
-  private Long tickStartNanoTime;
-  private final AtomicBoolean isStopped = new AtomicBoolean();
-
-  // Maximum speed and turn rates
-  private double maxSpeed = MAX_SPEED;
-  private double maxTurnRate = MAX_TURN_RATE;
-  private double maxGunTurnRate = MAX_GUN_TURN_RATE;
-  private double maxRadarTurnRate = MAX_RADAR_TURN_RATE;
-
-  private Double savedTargetSpeed;
-  private Double savedTurnRate;
-  private Double savedGunTurnRate;
-  private Double savedRadarTurnRate;
-
-  private final ExecutorService executorService = Executors.newFixedThreadPool(2);
-
   public BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {
     this.baseBot = baseBot;
     this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
@@ -109,6 +111,12 @@ public final class BaseBotInternals {
     this.eventQueue = new EventQueue(this, botEventHandlers);
 
     init(serverUrl == null ? getServerUrlFromSetting() : serverUrl);
+  }
+
+  private static BotIntent newBotIntent() {
+    BotIntent botIntent = new BotIntent();
+    botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
+    return botIntent;
   }
 
   public void setStopResumeHandler(StopResumeListener listener) {
@@ -125,12 +133,6 @@ public final class BaseBotInternals {
 
     botEventHandlers.onNewRound.subscribe(this::onNewRound, 100);
     botEventHandlers.onBulletFired.subscribe(this::onBulletFired, 100);
-  }
-
-  private static BotIntent newBotIntent() {
-    BotIntent botIntent = new BotIntent();
-    botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
-    return botIntent;
   }
 
   BotEventHandlers getBotEventHandlers() {
@@ -415,6 +417,56 @@ public final class BaseBotInternals {
     }
   }
 
+  private void handleGameEndedEvent(JsonObject jsonMsg) {
+    // Send the game ended event
+    GameEndedEventForBot gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
+
+    GameEndedEvent gameEndedEvent =
+        new GameEndedEvent(
+            gameEndedEventForBot.getNumberOfRounds(),
+            ResultsMapper.map(gameEndedEventForBot.getResults()));
+
+    botEventHandlers.onGameEnded.publish(gameEndedEvent);
+  }
+
+  private void handleSkippedTurnEvent(JsonObject jsonMsg) {
+    dev.robocode.tankroyale.schema.SkippedTurnEvent skippedTurnEvent =
+        gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
+
+    botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
+  }
+
+  private void handleTickEvent(JsonObject jsonMsg) {
+    TickEventForBot tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
+    tickEvent = EventMapper.map(tickEventForBot);
+
+    tickStartNanoTime = System.nanoTime();
+
+    // Trigger new round
+    if (tickEvent.getTurnNumber() == 1) {
+      botEventHandlers.onNewRound.publish(tickEvent);
+    }
+
+    if (botIntent.getScan() != null && botIntent.getScan()) {
+      setScan(false);
+    }
+
+    eventQueue.addEventsFromTick(tickEvent, baseBot);
+
+    // Trigger processing turn
+    botEventHandlers.onProcessTurn.publish(tickEvent);
+  }
+
+  private void onNewRound(TickEvent e) {
+    tickEvent = e; // use new bot coordinates, rates and directions etc.
+    botIntent = newBotIntent();
+    eventQueue.clear();
+  }
+
+  private void onBulletFired(BulletFiredEvent e) {
+    botIntent.setFirepower(0d); // Reset firepower so the bot stops firing continuously
+  }
+
   private final class WebSocketListener extends WebSocketAdapter {
 
     @Override
@@ -502,55 +554,5 @@ public final class BaseBotInternals {
       botEventHandlers.onGameStarted.publish(
           new GameStartedEvent(gameStartedEventForBot.getMyId(), gameSetup));
     }
-  }
-
-  private void handleGameEndedEvent(JsonObject jsonMsg) {
-    // Send the game ended event
-    GameEndedEventForBot gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
-
-    GameEndedEvent gameEndedEvent =
-        new GameEndedEvent(
-            gameEndedEventForBot.getNumberOfRounds(),
-            ResultsMapper.map(gameEndedEventForBot.getResults()));
-
-    botEventHandlers.onGameEnded.publish(gameEndedEvent);
-  }
-
-  private void handleSkippedTurnEvent(JsonObject jsonMsg) {
-    dev.robocode.tankroyale.schema.SkippedTurnEvent skippedTurnEvent =
-        gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
-
-    botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
-  }
-
-  private void handleTickEvent(JsonObject jsonMsg) {
-    TickEventForBot tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
-    tickEvent = EventMapper.map(tickEventForBot);
-
-    tickStartNanoTime = System.nanoTime();
-
-    // Trigger new round
-    if (tickEvent.getTurnNumber() == 1) {
-      botEventHandlers.onNewRound.publish(tickEvent);
-    }
-
-    if (botIntent.getScan() != null && botIntent.getScan()) {
-      setScan(false);
-    }
-
-    eventQueue.addEventsFromTick(tickEvent, baseBot);
-
-    // Trigger processing turn
-    botEventHandlers.onProcessTurn.publish(tickEvent);
-  }
-
-  private void onNewRound(TickEvent e) {
-    tickEvent = e; // use new bot coordinates, rates and directions etc.
-    botIntent = newBotIntent();
-    eventQueue.clear();
-  }
-
-  private void onBulletFired(BulletFiredEvent e) {
-    botIntent.setFirepower(0d); // Reset firepower so the bot stops firing continuously
   }
 }

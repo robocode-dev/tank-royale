@@ -34,7 +34,6 @@ final class EventQueue {
   }
 
   void dispatchEvents() {
-
     // Publish all event in the order of the keys, i.e. event priority order
     for (List<BotEvent> events : eventMap.values()) {
       ArrayList<BotEvent> eventsCopy = new ArrayList<>(events);

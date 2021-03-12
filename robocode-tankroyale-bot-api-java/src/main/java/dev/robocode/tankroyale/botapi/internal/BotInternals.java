@@ -9,16 +9,14 @@ public final class BotInternals implements StopResumeListener {
 
   private final Bot bot;
   private final BaseBotInternals baseBotInternals;
+  private final Object nextTurn = new Object();
 
   private double distanceRemaining;
   private double turnRemaining;
   private double gunTurnRemaining;
   private double radarTurnRemaining;
-
   private boolean isOverDriving;
-
   private Thread thread;
-  private final Object nextTurn = new Object();
   private volatile boolean isRunning;
 
   private double savedDistanceRemaining;
