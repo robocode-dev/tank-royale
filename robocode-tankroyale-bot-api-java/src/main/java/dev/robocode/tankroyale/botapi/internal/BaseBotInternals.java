@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static dev.robocode.tankroyale.botapi.IBaseBot.*;
 import static dev.robocode.tankroyale.botapi.internal.MathUtil.limitRange;
@@ -85,7 +86,7 @@ public final class BaseBotInternals {
   private dev.robocode.tankroyale.botapi.GameSetup gameSetup;
   private TickEvent tickEvent;
   private Long tickStartNanoTime;
-  private volatile boolean isStopped;
+  private final AtomicBoolean isStopped = new AtomicBoolean();
 
   // Maximum speed and turn rates
   private double maxSpeed = MAX_SPEED;
@@ -93,7 +94,12 @@ public final class BaseBotInternals {
   private double maxGunTurnRate = MAX_GUN_TURN_RATE;
   private double maxRadarTurnRate = MAX_RADAR_TURN_RATE;
 
-  ExecutorService executorService = Executors.newFixedThreadPool(2);
+  private Double savedTargetSpeed;
+  private Double savedTurnRate;
+  private Double savedGunTurnRate;
+  private Double savedRadarTurnRate;
+
+  private final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
   public BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {
     this.baseBot = baseBot;
@@ -155,13 +161,6 @@ public final class BaseBotInternals {
     // Send the bot intent to the server
     sendIntent();
 
-    // Auto resume, if we were rescanning the last turn
-    if (botIntent.getScan() != null && botIntent.getScan()) {
-      baseBot.setResume();
-    }
-    // Clear rescanning
-    botIntent.setScan(false);
-
     // Dispatch bot events
     executorService.execute(this::dispatchEvents);
   }
@@ -169,7 +168,6 @@ public final class BaseBotInternals {
   private void dispatchEvents() {
     try {
       eventQueue.dispatchEvents();
-    } catch (RescanException ignore) {
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -336,33 +334,60 @@ public final class BaseBotInternals {
     conditions.remove(condition);
   }
 
+  public void setScan(boolean doScan) {
+    botIntent.setScan(doScan);
+
+    if (doScan) {
+      setStop();
+
+      // Interrupt event handler by throwing exception
+      throw new RescanException();
+
+    } else {
+      setResume();
+    }
+  }
+
   public void setStop() {
-    if (!isStopped) {
-      isStopped = true;
+    synchronized (isStopped) {
+      if (!isStopped.get()) {
+        isStopped.set(true); // first step
 
-      botIntent.setTargetSpeed(0d);
-      botIntent.setTurnRate(0d);
-      botIntent.setGunTurnRate(0d);
-      botIntent.setRadarTurnRate(0d);
+        savedTargetSpeed = botIntent.getTargetSpeed();
+        savedTurnRate = botIntent.getTurnRate();
+        savedGunTurnRate = botIntent.getGunTurnRate();
+        savedRadarTurnRate = botIntent.getRadarTurnRate();
 
-      if (stopResumeListener != null) {
-        stopResumeListener.onStop();
+        botIntent.setTargetSpeed(0d);
+        botIntent.setTurnRate(0d);
+        botIntent.setGunTurnRate(0d);
+        botIntent.setRadarTurnRate(0d);
+
+        if (stopResumeListener != null) {
+          stopResumeListener.onStop();
+        }
       }
     }
   }
 
   public void setResume() {
-    if (isStopped) {
-      isStopped = false;
+    synchronized (isStopped) {
+      if (isStopped.get()) {
+        botIntent.setTargetSpeed(savedTargetSpeed);
+        botIntent.setTurnRate(savedTurnRate);
+        botIntent.setGunTurnRate(savedGunTurnRate);
+        botIntent.setRadarTurnRate(savedRadarTurnRate);
 
-      if (stopResumeListener != null) {
-        stopResumeListener.onResume();
+        if (stopResumeListener != null) {
+          stopResumeListener.onResume();
+        }
+        isStopped.set(false); // last step
       }
     }
   }
 
   public boolean isStopped() {
-    return isStopped;
+    return isStopped.get();
   }
 
   private ServerHandshake getServerHandshake() {
@@ -507,6 +532,10 @@ public final class BaseBotInternals {
     // Trigger new round
     if (tickEvent.getTurnNumber() == 1) {
       botEventHandlers.onNewRound.publish(tickEvent);
+    }
+
+    if (botIntent.getScan() != null && botIntent.getScan()) {
+      setScan(false);
     }
 
     eventQueue.addEventsFromTick(tickEvent, baseBot);

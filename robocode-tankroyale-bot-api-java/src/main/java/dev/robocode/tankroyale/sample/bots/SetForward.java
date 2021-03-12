@@ -20,7 +20,6 @@ public class SetForward extends Bot {
 
     // Spin the gun around slowly... forever
     while (isRunning()) {
-      System.out.println("turn: " + getTurnNumber() + ", speed: " + getSpeed());
       setTargetSpeed(10);
 
       // Execute (send commands to server)

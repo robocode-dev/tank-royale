@@ -318,11 +318,6 @@ public final class BotInternals implements StopResumeListener {
     savedTurnRemaining = turnRemaining;
     savedGunTurnRemaining = gunTurnRemaining;
     savedRadarTurnRemaining = radarTurnRemaining;
-
-    distanceRemaining = 0d;
-    turnRemaining = 0d;
-    gunTurnRemaining = 0d;
-    radarTurnRemaining = 0d;
   }
 
   public void onResume() {
