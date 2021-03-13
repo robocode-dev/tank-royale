@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.events.*;
 
 import static dev.robocode.tankroyale.botapi.IBaseBot.MAX_SPEED;
+import static java.lang.Math.abs;
 
 public final class BotInternals implements StopResumeListener {
 
@@ -137,8 +138,12 @@ public final class BotInternals implements StopResumeListener {
 
   public void turnLeft(double degrees) {
     blockIfStopped();
+    System.out.println(bot.getTurnNumber() + " setTurnLeft(degrees)");
     setTurnLeft(degrees);
+    System.out.println(bot.getTurnNumber() + " awaitTurnComplete");
     awaitTurnComplete();
+    System.out.println(bot.getTurnNumber() + " gunDir: " + bot.getGunDirection());
+    System.out.println(bot.getTurnNumber() + " setTurnRate(0d)");
     baseBotInternals.getBotIntent().setTurnRate(0d);
   }
 
@@ -221,53 +226,33 @@ public final class BotInternals implements StopResumeListener {
   }
 
   private void updateTurnRemaining() {
+    double turnRate = bot.getTurnRate();
+    if (abs(turnRemaining) < abs(turnRate)) {
+      turnRate = turnRemaining;
+    }
     if (bot.doAdjustGunForBodyTurn()) {
-      double oldSign = Math.signum(gunTurnRemaining);
-      gunTurnRemaining -= bot.getTurnRate();
-      double newSign = Math.signum(gunTurnRemaining);
-
-      if (oldSign != newSign) {
-        gunTurnRemaining = 0;
-      }
+      gunTurnRemaining -= turnRate;
     }
-
-    double oldSign = Math.signum(turnRemaining);
-    turnRemaining -= bot.getTurnRate();
-    double newSign = Math.signum(turnRemaining);
-
-    if (oldSign != newSign) {
-      turnRemaining = 0;
-    }
+    turnRemaining -= turnRate;
   }
 
   private void updateGunTurnRemaining() {
+    double gunTurnRate = bot.getTurnRate();
+    if (abs(gunTurnRemaining) < abs(gunTurnRate)) {
+      gunTurnRate = gunTurnRemaining;
+    }
     if (bot.doAdjustRadarForGunTurn()) {
-      double oldSign = Math.signum(radarTurnRemaining);
-      radarTurnRemaining -= bot.getGunTurnRate();
-      double newSign = Math.signum(radarTurnRemaining);
-
-      if (oldSign != newSign) {
-        radarTurnRemaining = 0;
-      }
+      radarTurnRemaining -= gunTurnRate;
     }
-
-    double oldSign = Math.signum(gunTurnRemaining);
-    gunTurnRemaining -= bot.getGunTurnRate();
-    double newSign = Math.signum(gunTurnRemaining);
-
-    if (oldSign != newSign) {
-      gunTurnRemaining = 0;
-    }
+    gunTurnRemaining -= gunTurnRate;
   }
 
   private void updateRadarTurnRemaining() {
-    double oldSign = Math.signum(radarTurnRemaining);
-    radarTurnRemaining -= bot.getRadarTurnRate();
-    double newSign = Math.signum(radarTurnRemaining);
-
-    if (oldSign != newSign) {
-      radarTurnRemaining = 0;
+    double radarTurnRate = bot.getRadarTurnRate();
+    if (abs(radarTurnRemaining) < abs(radarTurnRate)) {
+      radarTurnRate = radarTurnRemaining;
     }
+    radarTurnRemaining -= radarTurnRate;
   }
 
   private void updateMovement() {
@@ -294,7 +279,7 @@ public final class BotInternals implements StopResumeListener {
 
       // the overdrive flag
       if (Math.signum(distance * speed) != -1) {
-        isOverDriving = baseBotInternals.getDistanceTraveledUntilStop(speed) > Math.abs(distance);
+        isOverDriving = baseBotInternals.getDistanceTraveledUntilStop(speed) > abs(distance);
       }
 
       distanceRemaining = distance - speed;
@@ -332,7 +317,7 @@ public final class BotInternals implements StopResumeListener {
   }
 
   private boolean isNearZero(double value) {
-    return (Math.abs(value) < .00001);
+    return (abs(value) < .00001);
   }
 
   private void awaitMovementComplete() {
