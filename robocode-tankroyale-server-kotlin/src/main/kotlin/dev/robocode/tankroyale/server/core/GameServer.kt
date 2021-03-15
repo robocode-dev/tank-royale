@@ -323,8 +323,10 @@ class GameServer(
     private fun updateGameState(): GameState {
         val mappedBotIntents = mutableMapOf<BotId, dev.robocode.tankroyale.server.model.BotIntent>()
         for ((key, value) in botIntents) {
-            val botId = participantIds[key]!!
-            mappedBotIntents[botId] = value
+            val botId = participantIds[key]
+            if (botId != null) {
+                mappedBotIntents[botId] = value
+            }
         }
         return modelUpdater.update(mappedBotIntents.toMap())
     }
