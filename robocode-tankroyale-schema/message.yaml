@@ -13,7 +13,7 @@ properties:
       - ObserverHandshake
       - ServerHandshake
 
-      - GameAbortedEventForObserver
+      - GameAbortedEvent
       - GameEndedEventForBot
       - GameEndedEventForObserver
       - GamePausedEventForObserver

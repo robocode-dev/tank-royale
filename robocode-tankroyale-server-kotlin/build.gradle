@@ -1,7 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.30'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.31'
     id 'maven-publish'
     id 'application'
     id 'idea'
@@ -9,7 +9,7 @@ plugins {
 }
 
 group = 'dev.robocode.tankroyale'
-version = '0.7.14'
+version = '0.7.15'
 
 compileKotlin {
     kotlinOptions {
@@ -34,9 +34,9 @@ test {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.4.30'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.4.31'
 
-    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.13'
+    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.14'
     implementation 'org.danilopianini:gson-extras:0.2.2'
 
     implementation 'org.java-websocket:Java-WebSocket:1.5.1'

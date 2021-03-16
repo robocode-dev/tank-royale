@@ -45,8 +45,8 @@ namespace Robocode.TankRoyale.Schema
         [System.Runtime.Serialization.EnumMember(Value = @"ServerHandshake")]
         ServerHandshake = 7,
     
-        [System.Runtime.Serialization.EnumMember(Value = @"GameAbortedEventForObserver")]
-        GameAbortedEventForObserver = 8,
+        [System.Runtime.Serialization.EnumMember(Value = @"GameAbortedEvent")]
+        GameAbortedEvent = 8,
     
         [System.Runtime.Serialization.EnumMember(Value = @"GameEndedEventForBot")]
         GameEndedEventForBot = 9,

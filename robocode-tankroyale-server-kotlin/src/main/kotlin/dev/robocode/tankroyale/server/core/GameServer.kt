@@ -223,9 +223,9 @@ class GameServer(
 
     /** Broadcast game-aborted event to all observers and controllers */
     private fun broadcastGameAborted() {
-        broadcastToObserverAndControllers(
-            GameAbortedEventForObserver().apply {
-                `$type` = Message.`$type`.GAME_ABORTED_EVENT_FOR_OBSERVER
+        broadcastToAll(
+            GameAbortedEvent().apply {
+                `$type` = Message.`$type`.GAME_ABORTED_EVENT
             })
     }
 
@@ -291,7 +291,7 @@ class GameServer(
      * @param botId is the id of the bot.
      * @return The connection for the bot or `null` if no connection was found for the bot id.
      */
-    private fun getConnection(botId: BotId): WebSocket? {
+    private fun getConnection(botId: BotId): WebSocket {
         return participantIds.entries.first { (_, id) -> botId == id }.key
     }
 
@@ -477,6 +477,12 @@ class GameServer(
         connHandler.broadcastToObserverAndControllers(gson.toJson(msg))
     }
 
+    private fun broadcastToAll(msg: Message) {
+        requireNotNull(msg.`$type`) { "\$type is required on the message" }
+        connHandler.broadcastToObserverAndControllers(gson.toJson(msg))
+        connHandler.broadcast(participants, gson.toJson(msg))
+    }
+
     private fun sendBotListUpdateToObservers() {
         broadcastToObserverAndControllers(botListUpdateMessage)
     }
@@ -518,7 +524,7 @@ class GameServer(
             botsThatSentIntent.clear()
             turnTimeoutTimer?.reset()
 
-            resetTurnTimeout();
+            resetTurnTimeout()
             onNextTurn()
         }
     }
