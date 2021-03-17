@@ -11,7 +11,8 @@ public final class BotInternals implements StopResumeListener {
   private final Bot bot;
   private final BaseBotInternals baseBotInternals;
 
-  private final Object nextTurn = new Object();
+  private final Object nextTurnMonitor = new Object();
+  private final Object threadMonitor = new Object();
 
   private double distanceRemaining;
   private double turnRemaining;
@@ -54,7 +55,6 @@ public final class BotInternals implements StopResumeListener {
 
   private void onTick(TickEvent e) {
     if (e.getTurnNumber() == 1) {
-      stopThread(); // sanity before starting a new thread
       startThread();
     }
     processTurn();
@@ -65,6 +65,8 @@ public final class BotInternals implements StopResumeListener {
     turnRemaining = 0d;
     gunTurnRemaining = 0d;
     radarTurnRemaining = 0d;
+
+    stopThread(); // sanity before starting a new thread (later)
   }
 
   private void onRoundEnded() {
@@ -209,27 +211,31 @@ public final class BotInternals implements StopResumeListener {
     updateRadarTurnRemaining();
     updateMovement();
 
-    synchronized (nextTurn) {
+    synchronized (nextTurnMonitor) {
       // Unblock methods waiting for the next turn
-      nextTurn.notifyAll();
+      nextTurnMonitor.notifyAll();
     }
   }
 
   private void startThread() {
-    isRunning = true; // Set this before the thread is starting as run() needs it to be set
-    thread = new Thread(bot::run);
-    thread.start();
+    synchronized (threadMonitor) {
+      isRunning = true; // Set this before the thread is starting as run() needs it to be set
+      thread = new Thread(bot::run);
+      thread.start();
+    }
   }
 
   private void stopThread() {
-    isRunning = false;
-    if (thread != null) {
-      thread.interrupt();
-      try {
-        thread.join(100, 0);
-      } catch (InterruptedException ignored) {
+    synchronized (threadMonitor) {
+      isRunning = false;
+      if (thread != null) {
+        thread.interrupt();
+        try {
+          thread.join(100, 0);
+        } catch (InterruptedException ignored) {
+        }
+        thread = null;
       }
-      thread = null;
     }
   }
 
@@ -351,11 +357,11 @@ public final class BotInternals implements StopResumeListener {
 
   public void await(ICondition condition) {
     // Loop while bot is running and condition has not been met
-    synchronized (nextTurn) {
+    synchronized (nextTurnMonitor) {
       try {
         while (isRunning && !condition.test()) {
           bot.go();
-          nextTurn.wait(); // Wait for next turn
+          nextTurnMonitor.wait(); // Wait for next turn
         }
       } catch (InterruptedException e) {
         isRunning = false;
