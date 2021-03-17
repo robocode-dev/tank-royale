@@ -6,7 +6,7 @@ plugins {
 //    id "com.github.hierynomus.license" version "0.15.0"
 }
 group = 'dev.robocode.tankroyale'
-version = '0.8.1'
+version = '0.8.2'
 description = 'Robocode Tank Royale Bot API for Java'
 
 /*
@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.8'
+    implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.6.16'
     implementation 'com.neovisionaries:nv-websocket-client:2.9'
     implementation 'com.neovisionaries:nv-i18n:1.27'
     implementation 'org.danilopianini:gson-extras:0.2.2'
@@ -53,9 +53,6 @@ javadoc {
 }
 
 task fatJar(type: Jar) {
-    manifest {
-        attributes 'Main-Class': 'dev.robocode.tankroyale.bot.TestBot2'
-    }
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }

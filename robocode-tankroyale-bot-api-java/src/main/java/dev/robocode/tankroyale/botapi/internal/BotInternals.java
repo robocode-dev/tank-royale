@@ -10,6 +10,7 @@ public final class BotInternals implements StopResumeListener {
 
   private final Bot bot;
   private final BaseBotInternals baseBotInternals;
+
   private final Object nextTurn = new Object();
 
   private double distanceRemaining;
@@ -17,6 +18,7 @@ public final class BotInternals implements StopResumeListener {
   private double gunTurnRemaining;
   private double radarTurnRemaining;
   private boolean isOverDriving;
+
   private Thread thread;
   private volatile boolean isRunning;
 
@@ -32,13 +34,14 @@ public final class BotInternals implements StopResumeListener {
     baseBotInternals.setStopResumeHandler(this);
 
     BotEventHandlers botEventHandlers = baseBotInternals.getBotEventHandlers();
-    botEventHandlers.onProcessTurn.subscribe(this::onProcessTurn, 90);
     botEventHandlers.onDisconnected.subscribe(this::onDisconnected, 90);
     botEventHandlers.onGameEnded.subscribe(this::onGameEnded, 90);
     botEventHandlers.onHitBot.subscribe(this::onHitBot, 90);
     botEventHandlers.onHitWall.subscribe(e -> onHitWall(), 90);
     botEventHandlers.onBotDeath.subscribe(this::onDeath, 90);
-    botEventHandlers.onNewRound.subscribe(e -> onNewRound(), 90);
+    botEventHandlers.onTick.subscribe(this::onTick, 90);
+    botEventHandlers.onRoundStarted.subscribe(e -> onRoundStarted(), 90);
+    botEventHandlers.onRoundStarted.subscribe(e -> onRoundEnded(), 90);
   }
 
   private void onDisconnected(DisconnectedEvent e) {
@@ -49,18 +52,23 @@ public final class BotInternals implements StopResumeListener {
     stopThread();
   }
 
-  private void onNewRound() {
+  private void onTick(TickEvent e) {
+    if (e.getTurnNumber() == 1) {
+      stopThread(); // sanity before starting a new thread
+      startThread();
+    }
+    processTurn();
+  }
+
+  private void onRoundStarted() {
     distanceRemaining = 0d;
     turnRemaining = 0d;
     gunTurnRemaining = 0d;
     radarTurnRemaining = 0d;
-
-    stopThread();
-    startThread();
   }
 
-  private void onProcessTurn(TickEvent e) {
-    processTurn();
+  private void onRoundEnded() {
+    stopThread();
   }
 
   private void onHitBot(HitBotEvent e) {
@@ -168,13 +176,13 @@ public final class BotInternals implements StopResumeListener {
     }
     radarTurnRemaining = degrees;
     baseBotInternals.getBotIntent().setRadarTurnRate(degrees);
-    baseBotInternals.getBotIntent().setRadarTurnRate(0d);
   }
 
   public void turnRadarLeft(double degrees) {
     blockIfStopped();
     setTurnRadarLeft(degrees);
     awaitRadarTurnComplete();
+    baseBotInternals.getBotIntent().setRadarTurnRate(0d);
   }
 
   public void fire(double firepower) { // TODO: Return boolean

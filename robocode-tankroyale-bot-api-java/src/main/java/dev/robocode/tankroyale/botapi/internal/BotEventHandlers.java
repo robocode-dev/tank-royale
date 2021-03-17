@@ -13,6 +13,8 @@ final class BotEventHandlers {
   final EventHandler<ConnectionErrorEvent> onConnectionError = new EventHandler<>();
   final EventHandler<GameStartedEvent> onGameStarted = new EventHandler<>();
   final EventHandler<GameEndedEvent> onGameEnded = new EventHandler<>();
+  final EventHandler<RoundStartedEvent> onRoundStarted = new EventHandler<>();
+  final EventHandler<RoundEndedEvent> onRoundEnded = new EventHandler<>();
   final EventHandler<TickEvent> onTick = new EventHandler<>();
   final EventHandler<SkippedTurnEvent> onSkippedTurn = new EventHandler<>();
   final EventHandler<DeathEvent> onDeath = new EventHandler<>();
@@ -27,10 +29,6 @@ final class BotEventHandlers {
   final EventHandler<ScannedBotEvent> onScannedBot = new EventHandler<>();
   final EventHandler<WonRoundEvent> onWonRound = new EventHandler<>();
   final EventHandler<CustomEvent> onCustomEvent = new EventHandler<>();
-
-  // Convenient event handlers
-  final EventHandler<TickEvent> onProcessTurn = new EventHandler<>();
-  final EventHandler<TickEvent> onNewRound = new EventHandler<>();
 
   BotEventHandlers(IBaseBot baseBot) {
     this.baseBot = baseBot;

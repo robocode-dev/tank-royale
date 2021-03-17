@@ -10,6 +10,8 @@ import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.GameSetup;
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
+import dev.robocode.tankroyale.botapi.events.RoundEndedEvent;
+import dev.robocode.tankroyale.botapi.events.RoundStartedEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
@@ -131,7 +133,7 @@ public final class BaseBotInternals {
     }
     socket.addListener(new WebSocketListener());
 
-    botEventHandlers.onNewRound.subscribe(this::onNewRound, 100);
+    botEventHandlers.onRoundStarted.subscribe(this::onRoundStarted, 100);
     botEventHandlers.onBulletFired.subscribe(this::onBulletFired, 100);
   }
 
@@ -417,48 +419,9 @@ public final class BaseBotInternals {
     }
   }
 
-  private void handleGameEndedEvent(JsonObject jsonMsg) {
-    // Send the game ended event
-    GameEndedEventForBot gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
+  private void onRoundStarted(RoundStartedEvent e) {
+    System.out.println("onRoundStarted");
 
-    GameEndedEvent gameEndedEvent =
-        new GameEndedEvent(
-            gameEndedEventForBot.getNumberOfRounds(),
-            ResultsMapper.map(gameEndedEventForBot.getResults()));
-
-    botEventHandlers.onGameEnded.publish(gameEndedEvent);
-  }
-
-  private void handleSkippedTurnEvent(JsonObject jsonMsg) {
-    dev.robocode.tankroyale.schema.SkippedTurnEvent skippedTurnEvent =
-        gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
-
-    botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
-  }
-
-  private void handleTickEvent(JsonObject jsonMsg) {
-    TickEventForBot tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
-    tickEvent = EventMapper.map(tickEventForBot);
-
-    tickStartNanoTime = System.nanoTime();
-
-    // Trigger new round
-    if (tickEvent.getTurnNumber() == 1) {
-      botEventHandlers.onNewRound.publish(tickEvent);
-    }
-
-    if (botIntent.getScan() != null && botIntent.getScan()) {
-      setScan(false);
-    }
-
-    eventQueue.addEventsFromTick(tickEvent, baseBot);
-
-    // Trigger processing turn
-    botEventHandlers.onProcessTurn.publish(tickEvent);
-  }
-
-  private void onNewRound(TickEvent e) {
-    tickEvent = e; // use new bot coordinates, rates and directions etc.
     botIntent = newBotIntent();
     eventQueue.clear();
   }
@@ -509,6 +472,12 @@ public final class BaseBotInternals {
           case TICK_EVENT_FOR_BOT:
             handleTickEvent(jsonMsg);
             break;
+          case ROUND_STARTED_EVENT:
+            handleRoundStartedEvent(jsonMsg);
+            break;
+          case ROUND_ENDED_EVENT:
+            handleRoundEndedEvent(jsonMsg);
+            break;
           case SERVER_HANDSHAKE:
             handleServerHandshake(jsonMsg);
             break;
@@ -527,14 +496,20 @@ public final class BaseBotInternals {
       }
     }
 
-    private void handleServerHandshake(JsonObject jsonMsg) {
-      serverHandshake = gson.fromJson(jsonMsg, ServerHandshake.class);
+    private void handleTickEvent(JsonObject jsonMsg) {
+      TickEventForBot tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
+      tickEvent = EventMapper.map(tickEventForBot);
 
-      // Reply by sending bot handshake
-      BotHandshake botHandshake = BotHandshakeFactory.create(botInfo);
-      String msg = gson.toJson(botHandshake);
+      tickStartNanoTime = System.nanoTime();
 
-      socket.sendText(msg);
+      if (botIntent.getScan() != null && botIntent.getScan()) {
+        setScan(false);
+      }
+
+      eventQueue.addEventsFromTick(tickEvent, baseBot);
+
+      // Trigger tick
+      botEventHandlers.onTick.publish(tickEvent);
     }
 
     private void handleGameStartedEvent(JsonObject jsonMsg) {
@@ -554,5 +529,48 @@ public final class BaseBotInternals {
       botEventHandlers.onGameStarted.publish(
           new GameStartedEvent(gameStartedEventForBot.getMyId(), gameSetup));
     }
+  }
+
+  private void handleGameEndedEvent(JsonObject jsonMsg) {
+    // Send the game ended event
+    GameEndedEventForBot gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
+
+    GameEndedEvent gameEndedEvent =
+            new GameEndedEvent(
+                    gameEndedEventForBot.getNumberOfRounds(),
+                    ResultsMapper.map(gameEndedEventForBot.getResults()));
+
+    botEventHandlers.onGameEnded.publish(gameEndedEvent);
+  }
+
+  private void handleRoundStartedEvent(JsonObject jsonMsg) {
+    dev.robocode.tankroyale.schema.RoundStartedEvent roundStartedEvent =
+            gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.RoundStartedEvent.class);
+
+    botEventHandlers.onRoundStarted.publish(new RoundStartedEvent(roundStartedEvent.getRoundNumber()));
+  }
+
+  private void handleRoundEndedEvent(JsonObject jsonMsg) {
+    dev.robocode.tankroyale.schema.RoundEndedEvent roundEndedEvent =
+            gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.RoundEndedEvent.class);
+
+    botEventHandlers.onRoundEnded.publish(new RoundEndedEvent(roundEndedEvent.getRoundNumber()));
+  }
+
+  private void handleServerHandshake(JsonObject jsonMsg) {
+    serverHandshake = gson.fromJson(jsonMsg, ServerHandshake.class);
+
+    // Reply by sending bot handshake
+    BotHandshake botHandshake = BotHandshakeFactory.create(botInfo);
+    String msg = gson.toJson(botHandshake);
+
+    socket.sendText(msg);
+  }
+
+  private void handleSkippedTurnEvent(JsonObject jsonMsg) {
+    dev.robocode.tankroyale.schema.SkippedTurnEvent skippedTurnEvent =
+            gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
+
+    botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
   }
 }
