@@ -223,10 +223,9 @@ class GameServer(
 
     /** Broadcast game-aborted event to all observers and controllers */
     private fun broadcastGameAborted() {
-        broadcastToAll(
-            GameAbortedEvent().apply {
-                `$type` = Message.`$type`.GAME_ABORTED_EVENT
-            })
+        val gameAborted = GameAbortedEvent()
+        gameAborted.`$type` = `$type`.GAME_ABORTED_EVENT
+        broadcastToAll(gameAborted)
     }
 
     /** Returns a list of bot results (for bots) ordered on the score ranks */
@@ -297,27 +296,24 @@ class GameServer(
 
     /** Broadcast pause event to all observers */
     private fun broadcastGamedPausedToObservers() {
-        broadcastToObserverAndControllers(
-            GamePausedEventForObserver().apply {
-                `$type` = Message.`$type`.GAME_PAUSED_EVENT_FOR_OBSERVER
-            })
+        val gamePaused = GamePausedEventForObserver()
+        gamePaused.`$type` = `$type`.GAME_PAUSED_EVENT_FOR_OBSERVER
+        broadcastToObserverAndControllers(gamePaused)
     }
 
     /** Broadcast resume event to all observers */
     private fun broadcastGameResumedToObservers() {
-        broadcastToObserverAndControllers(
-            GameResumedEventForObserver().apply {
-                `$type` = Message.`$type`.GAME_RESUMED_EVENT_FOR_OBSERVER
-            })
+        val gameResumed = GameResumedEventForObserver()
+        gameResumed.`$type` = `$type`.GAME_RESUMED_EVENT_FOR_OBSERVER
+        broadcastToObserverAndControllers(gameResumed)
     }
 
     /** Broadcast TPS-changed event to all observers */
     private fun broadcastTpsChangedToObservers(tps: Int) {
-        broadcastToObserverAndControllers(
-            TpsChangedEvent().apply {
-                `$type` = Message.`$type`.TPS_CHANGED_EVENT
-                this.tps = tps
-            })
+        val tpsChanged = TpsChangedEvent()
+        tpsChanged.`$type` = `$type`.TPS_CHANGED_EVENT
+        tpsChanged.tps = tps
+        broadcastToObserverAndControllers(tpsChanged)
     }
 
     private fun updateGameState(): GameState {
@@ -377,31 +373,50 @@ class GameServer(
         if (lastRound != null) {
             val turn = lastRound.lastTurn
             if (turn != null) {
+                if (turn.turnNumber == 1) {
+                    log.debug("Round started: " + lastRound.roundNumber)
+                    broadcastRoundStartedToAll(lastRound.roundNumber)
+                } else if (lastRound.roundEnded) {
+                    log.debug("Round ended: " + lastRound.roundNumber)
+                    broadcastRoundEndedToAll(lastRound.roundNumber)
+                }
                 broadcastGameTickToParticipants(lastRound, turn)
                 broadcastGameTickToObservers(lastRound, turn)
             }
-            broadcastSkippedTurnToParticipant()
+            broadcastSkippedTurnToParticipants()
         }
         // Clear bot intents
         botIntents.clear()
     }
 
     private fun broadcastGameEndedToParticipants() {
-        broadcastToParticipants(
-            GameEndedEventForBot().apply {
-                `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_BOT
-                numberOfRounds = modelUpdater.numberOfRounds
-                results = getResultsForBots()
-            })
+        val gameEnded = GameEndedEventForBot()
+        gameEnded.`$type` = `$type`.GAME_ENDED_EVENT_FOR_BOT
+        gameEnded.numberOfRounds = modelUpdater.numberOfRounds
+        gameEnded.results = getResultsForBots() // Use the stored score!
+        broadcastToParticipants(gameEnded)
     }
 
     private fun broadcastGameEndedToObservers() {
-        broadcastToObserverAndControllers(
-            GameEndedEventForObserver().apply {
-                `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_OBSERVER
-                numberOfRounds = modelUpdater.numberOfRounds
-                results = getResultsForObservers() // Use the stored score!
-            })
+        val gameEnded = GameEndedEventForObserver()
+        gameEnded.`$type` = `$type`.GAME_ENDED_EVENT_FOR_OBSERVER
+        gameEnded.numberOfRounds = modelUpdater.numberOfRounds
+        gameEnded.results = getResultsForObservers() // Use the stored score!
+        broadcastToObserverAndControllers(gameEnded)
+    }
+
+    private fun broadcastRoundStartedToAll(roundNumber: Int) {
+        val roundStarted = RoundStartedEvent()
+        roundStarted.`$type` = `$type`.ROUND_STARTED_EVENT
+        roundStarted.roundNumber = roundNumber
+        broadcastToAll(roundStarted)
+    }
+
+    private fun broadcastRoundEndedToAll(roundNumber: Int) {
+        val roundEnded = RoundEndedEvent()
+        roundEnded.`$type` = `$type`.ROUND_ENDED_EVENT
+        roundEnded.roundNumber = roundNumber
+        broadcastToAll(roundEnded)
     }
 
     private fun broadcastGameTickToParticipants(round: IRound, turn: ITurn) {
@@ -420,13 +435,11 @@ class GameServer(
         broadcastToObserverAndControllers(TurnToTickEventForObserverMapper.map(round, turn))
     }
 
-    private fun broadcastSkippedTurnToParticipant() {
-        // Broadcast skipped turn event to the participant that skipped the turn
-        val skippedTurnEvent = SkippedTurnEvent().apply {
-            `$type` = Message.`$type`.SKIPPED_TURN_EVENT
-            turnNumber = modelUpdater.turn.turnNumber
-        }
-        connHandler.broadcast(getParticipantsThatSkippedTurn(), gson.toJson(skippedTurnEvent))
+    private fun broadcastSkippedTurnToParticipants() {
+        val skippedTurn = SkippedTurnEvent()
+        skippedTurn.`$type` = `$type`.SKIPPED_TURN_EVENT
+        skippedTurn.turnNumber = modelUpdater.turn.turnNumber
+        connHandler.broadcast(getParticipantsThatSkippedTurn(), gson.toJson(skippedTurn))
     }
 
     private fun getParticipantsThatSkippedTurn(): Collection<WebSocket> {
@@ -444,10 +457,9 @@ class GameServer(
 
     private fun updateBotListUpdateMessage() {
         val botsList = mutableListOf<BotInfo>()
-        botListUpdateMessage = BotListUpdate().apply {
-            `$type` = Message.`$type`.BOT_LIST_UPDATE
-            bots = botsList
-        }
+
+        botListUpdateMessage.bots = botsList
+
         for (conn in connHandler.getBotConnections()) {
             val address = conn.remoteSocketAddress
             val botInfo = BotHandshakeToBotInfoMapper.map(

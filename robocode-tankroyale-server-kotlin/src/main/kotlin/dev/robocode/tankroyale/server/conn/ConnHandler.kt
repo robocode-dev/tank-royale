@@ -136,7 +136,7 @@ class ConnHandler internal constructor(
             val hs = ServerHandshake()
             hs.`$type` = Message.`$type`.SERVER_HANDSHAKE
             hs.variant = "Tank Royale" // Robocode Tank Royale
-            hs.version = getVersion()
+            hs.version = getVersion() ?: "?"
             hs.gameTypes = setup.gameTypes
             val msg = Gson().toJson(hs)
             send(conn, msg)
