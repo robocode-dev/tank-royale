@@ -128,7 +128,7 @@ data class GameStartedEvent(
 ) : Message()
 
 @Serializable
-@SerialName("GameAbortedEventForObserver")
+@SerialName("GameAbortedEvent")
 class GameAbortedEvent : Message()
 
 @Serializable
@@ -145,6 +145,18 @@ class GamePausedEvent : Message()
 @Serializable
 @SerialName("GameResumedEventForObserver")
 class GameResumedEvent : Message()
+
+@Serializable
+@SerialName("RoundStartedEvent")
+data class RoundStartedEvent(
+    val roundNumber: Int
+) : Message()
+
+@Serializable
+@SerialName("RoundEndedEvent")
+data class RoundEndedEvent(
+    val roundNumber: Int
+) : Message()
 
 @Serializable
 @SerialName("TpsChangedEvent")
@@ -216,6 +228,9 @@ val messageModule = SerializersModule {
         subclass(HitByBulletEvent::class)
         subclass(PauseGame::class)
         subclass(ResumeGame::class)
+        subclass(RoundEndedEvent::class)
+        subclass(RoundStartedEvent::class)
+        subclass(GamePausedEvent::class)
         subclass(ScannedBotEvent::class)
         subclass(ServerHandshake::class)
         subclass(StartGame::class)
