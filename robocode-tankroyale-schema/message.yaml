@@ -33,6 +33,8 @@ properties:
       - HitByBulletEvent
       - ScannedBotEvent
       - SkippedTurnEvent
+      - RoundStartedEvent
+      - RoundEndedEvent
       - TickEventForBot
       - TickEventForObserver
       - WonRoundEvent

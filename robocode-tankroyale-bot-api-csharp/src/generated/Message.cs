@@ -99,29 +99,35 @@ namespace Robocode.TankRoyale.Schema
         [System.Runtime.Serialization.EnumMember(Value = @"SkippedTurnEvent")]
         SkippedTurnEvent = 25,
     
+        [System.Runtime.Serialization.EnumMember(Value = @"RoundStartedEvent")]
+        RoundStartedEvent = 26,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"RoundEndedEvent")]
+        RoundEndedEvent = 27,
+    
         [System.Runtime.Serialization.EnumMember(Value = @"TickEventForBot")]
-        TickEventForBot = 26,
+        TickEventForBot = 28,
     
         [System.Runtime.Serialization.EnumMember(Value = @"TickEventForObserver")]
-        TickEventForObserver = 27,
+        TickEventForObserver = 29,
     
         [System.Runtime.Serialization.EnumMember(Value = @"WonRoundEvent")]
-        WonRoundEvent = 28,
+        WonRoundEvent = 30,
     
         [System.Runtime.Serialization.EnumMember(Value = @"StartGame")]
-        StartGame = 29,
+        StartGame = 31,
     
         [System.Runtime.Serialization.EnumMember(Value = @"StopGame")]
-        StopGame = 30,
+        StopGame = 32,
     
         [System.Runtime.Serialization.EnumMember(Value = @"PauseGame")]
-        PauseGame = 31,
+        PauseGame = 33,
     
         [System.Runtime.Serialization.EnumMember(Value = @"ResumeGame")]
-        ResumeGame = 32,
+        ResumeGame = 34,
     
         [System.Runtime.Serialization.EnumMember(Value = @"ChangeTps")]
-        ChangeTps = 33,
+        ChangeTps = 35,
     
     }
 }

@@ -1,0 +1,12 @@
+$id: #round-ended-event.yaml
+$schema: http://json-schema.org/draft-07/schema#
+description: Event occuring when a round has ended.
+type: object
+extends:
+  $ref: message.yaml
+properties:
+  roundNumber:
+    description: Round number
+    type: integer
+required:
+  - roundNumber
