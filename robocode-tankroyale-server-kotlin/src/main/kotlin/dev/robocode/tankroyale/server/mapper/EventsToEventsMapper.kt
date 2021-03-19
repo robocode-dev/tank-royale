@@ -19,6 +19,8 @@ object EventsToEventsMapper {
         if (event is dev.robocode.tankroyale.server.event.BulletHitWallEvent) return map(event)
         if (event is dev.robocode.tankroyale.server.event.ScannedBotEvent) return map(event)
         if (event is dev.robocode.tankroyale.server.event.SkippedTurnEvent) return map(event)
+        if (event is dev.robocode.tankroyale.server.event.RoundStartedEvent) return map(event)
+        if (event is dev.robocode.tankroyale.server.event.RoundEndedEvent) return map(event)
         throw IllegalStateException("Event type not handled: ${event.javaClass.canonicalName}")
     }
 
@@ -121,6 +123,22 @@ object EventsToEventsMapper {
         val event = SkippedTurnEvent()
         event.`$type` = Message.`$type`.SKIPPED_TURN_EVENT
         event.turnNumber = skippedTurnEvent.turnNumber
+        return event
+    }
+
+    private fun map(roundStartedEvent: dev.robocode.tankroyale.server.event.RoundStartedEvent): RoundStartedEvent {
+        val event = RoundStartedEvent()
+        event.`$type` = Message.`$type`.ROUND_STARTED_EVENT
+        event.roundNumber = roundStartedEvent.roundNumber
+        event.turnNumber = roundStartedEvent.turnNumber
+        return event
+    }
+
+    private fun map(roundEndedEvent: dev.robocode.tankroyale.server.event.RoundEndedEvent): RoundEndedEvent {
+        val event = RoundEndedEvent()
+        event.`$type` = Message.`$type`.ROUND_ENDED_EVENT
+        event.roundNumber = roundEndedEvent.roundNumber
+        event.turnNumber = roundEndedEvent.turnNumber
         return event
     }
 }

@@ -373,13 +373,6 @@ class GameServer(
         if (lastRound != null) {
             val turn = lastRound.lastTurn
             if (turn != null) {
-                if (turn.turnNumber == 1) {
-                    log.debug("Round started: " + lastRound.roundNumber)
-                    broadcastRoundStartedToAll(lastRound.roundNumber)
-                } else if (lastRound.roundEnded) {
-                    log.debug("Round ended: " + lastRound.roundNumber)
-                    broadcastRoundEndedToAll(lastRound.roundNumber)
-                }
                 broadcastGameTickToParticipants(lastRound, turn)
                 broadcastGameTickToObservers(lastRound, turn)
             }
@@ -403,20 +396,6 @@ class GameServer(
         gameEnded.numberOfRounds = modelUpdater.numberOfRounds
         gameEnded.results = getResultsForObservers() // Use the stored score!
         broadcastToObserverAndControllers(gameEnded)
-    }
-
-    private fun broadcastRoundStartedToAll(roundNumber: Int) {
-        val roundStarted = RoundStartedEvent()
-        roundStarted.`$type` = `$type`.ROUND_STARTED_EVENT
-        roundStarted.roundNumber = roundNumber
-        broadcastToAll(roundStarted)
-    }
-
-    private fun broadcastRoundEndedToAll(roundNumber: Int) {
-        val roundEnded = RoundEndedEvent()
-        roundEnded.`$type` = `$type`.ROUND_ENDED_EVENT
-        roundEnded.roundNumber = roundNumber
-        broadcastToAll(roundEnded)
     }
 
     private fun broadcastGameTickToParticipants(round: IRound, turn: ITurn) {
