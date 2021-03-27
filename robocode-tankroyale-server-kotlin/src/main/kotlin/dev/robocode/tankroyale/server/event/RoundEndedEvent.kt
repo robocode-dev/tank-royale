@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.server.event
 
 /** Event sent when a new round has started. */
-data class RoundEndedEvent(
+class RoundEndedEvent(
     /** Round number */
     val roundNumber: Int,
 

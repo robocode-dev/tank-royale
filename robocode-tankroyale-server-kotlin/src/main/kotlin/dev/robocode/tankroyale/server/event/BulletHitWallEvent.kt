@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.server.event
 import dev.robocode.tankroyale.server.model.IBullet
 
 /** Event sent when a bullet has hit the wall of the battle arena. */
-data class BulletHitWallEvent (
+class BulletHitWallEvent (
     /** Turn number when event occurred */
     override val turnNumber: Int,
 

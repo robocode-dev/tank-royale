@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.IBullet
 
 /** Event sent when a bullet hits a bot. */
-data class BulletHitBotEvent (
+class BulletHitBotEvent (
     /** Turn number when event occurred */
     override val turnNumber: Int,
 
