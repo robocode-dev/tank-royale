@@ -3,7 +3,7 @@ $schema: http://json-schema.org/draft-07/schema#
 description: Event occuring when a new round has started.
 type: object
 extends:
-  $ref: message.yaml
+  $ref: event.yaml
 properties:
   roundNumber:
     description: Round number
