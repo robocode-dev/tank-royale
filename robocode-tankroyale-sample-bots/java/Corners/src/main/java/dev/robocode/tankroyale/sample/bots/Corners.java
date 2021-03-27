@@ -16,7 +16,7 @@ import java.io.IOException;
 public class Corners extends Bot {
 
   int enemies; // Number of enemy robots in the game
-  int corner = 0; // Which corner we are currently using
+  static int corner = 0; // Which corner we are currently using
   boolean stopWhenSeeRobot = false; // See goCorner()
 
   /** Main method starts our bot */
@@ -86,13 +86,10 @@ public class Corners extends Bot {
       stop();
       // Call our custom firing method
       smartFire(distance);
-      // Rescan
-      if (scan()) {
-        // Stop this event handler, if we saw a bot.
-        // The onScannedBot will be called again due to scan()
-        return;
-      }
-      // Resume movement
+      // Rescan for another robot
+      scan();
+      // We won't get here if we saw another robot.
+      // Okay, we didn't see another robot... start moving or turning again.
       resume();
     } else {
       smartFire(distance);
@@ -124,9 +121,8 @@ public class Corners extends Bot {
 
     // If 75% of the robots are still alive when we die, we'll switch corners.
     if ((enemies - getEnemyCount()) / (double) enemies < .75) {
-      corner += 90;
-      if (corner == 270) {
-        corner = -90;
+      if (corner != 270) {
+        corner += 90;
       }
       System.out.println("I died and did poorly... switching corner to " + corner);
     } else {
