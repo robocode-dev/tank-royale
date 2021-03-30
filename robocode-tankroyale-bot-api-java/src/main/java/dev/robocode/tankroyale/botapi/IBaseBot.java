@@ -978,23 +978,36 @@ public interface IBaseBot {
   }
 
   /**
-   * The event handler triggered when the game has started.
+   * The event handler triggered when a game has started.
    *
    * @param gameStatedEvent is the event details from the game.
    */
   default void onGameStarted(GameStartedEvent gameStatedEvent) {}
 
   /**
-   * The event handler triggered when the game has ended.
+   * The event handler triggered when a game has ended.
    *
    * @param gameEndedEvent is the event details from the game.
    */
   default void onGameEnded(GameEndedEvent gameEndedEvent) {}
 
   /**
+   * The event handler triggered when a new round has started.
+   *
+   * @param roundStartedEvent is the event details from the game.
+   */
+  default void onRoundStarted(RoundStartedEvent roundStartedEvent) {}
+
+  /**
+   * The event handler triggered when a round has ended.
+   *
+   * @param roundEndedEvent is the event details from the game.
+   */
+  default void onRoundEnded(RoundEndedEvent roundEndedEvent) {}
+
+  /**
    * The event handler triggered when a game tick event occurs, i.e., when a new turn in a round has
-   * started. When this handler is triggered, your bot must figure out the next action to take and
-   * call Go() when it needs to commit the action to the server.
+   * started.
    *
    * @param tickEvent is the event details from the game.
    */

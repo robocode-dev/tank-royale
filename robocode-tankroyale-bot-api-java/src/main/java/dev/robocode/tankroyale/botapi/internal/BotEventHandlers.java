@@ -40,8 +40,8 @@ final class BotEventHandlers {
     onConnectionError.subscribe(baseBot::onConnectionError);
     onGameStarted.subscribe(baseBot::onGameStarted);
     onGameEnded.subscribe(baseBot::onGameEnded);
-//    onRoundStarted.subscribe(baseBot::onRoundStarted); // TODO
-//    onRoundEnded.subscribe(baseBot::onRoundEnded); // TODO
+    onRoundStarted.subscribe(baseBot::onRoundStarted);
+    onRoundEnded.subscribe(baseBot::onRoundEnded);
     onTick.subscribe(baseBot::onTick);
     onSkippedTurn.subscribe(baseBot::onSkippedTurn);
     onDeath.subscribe(baseBot::onDeath);
