@@ -8,9 +8,5 @@ properties:
   roundNumber:
     description: Round number
     type: integer
-  turnNumber:
-    description: Turn number
-    type: integer
 required:
   - roundNumber
-  - turnNumber

@@ -5,7 +5,7 @@
 
 	<groupId>dev.robocode.tankroyale</groupId>
 	<artifactId>robocode-tankroyale-schema</artifactId>
-	<version>0.6.18</version>
+	<version>0.6.19</version>
 	<packaging>jar</packaging>
 
 	<description>Robocode Tank Royale Schema</description>
