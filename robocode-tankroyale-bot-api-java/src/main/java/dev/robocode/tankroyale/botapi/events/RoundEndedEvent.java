@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.botapi.events;
 
 /** Event occurring when a round has just ended. */
 @SuppressWarnings("unused")
-public final class RoundEndedEvent implements IEvent {
+public final class RoundEndedEvent extends BotEvent {
 
   /** The round number. */
   private final int roundNumber;
@@ -11,8 +11,10 @@ public final class RoundEndedEvent implements IEvent {
    * Initializes a new instance of the RoundEndedEvent class.
    *
    * @param roundNumber is the round number.
+   * @param turnNumber is the turn number.
    */
-  public RoundEndedEvent(int roundNumber) {
+  public RoundEndedEvent(int roundNumber, int turnNumber) {
+    super(turnNumber);
     this.roundNumber = roundNumber;
   }
 

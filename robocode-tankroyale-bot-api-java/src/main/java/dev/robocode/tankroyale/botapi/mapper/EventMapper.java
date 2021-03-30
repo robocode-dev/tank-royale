@@ -51,6 +51,12 @@ public final class EventMapper {
     if (source instanceof dev.robocode.tankroyale.schema.ScannedBotEvent) {
       return map((dev.robocode.tankroyale.schema.ScannedBotEvent) source);
     }
+    if (source instanceof dev.robocode.tankroyale.schema.RoundStartedEvent) {
+      return map((dev.robocode.tankroyale.schema.RoundStartedEvent) source);
+    }
+    if (source instanceof dev.robocode.tankroyale.schema.RoundEndedEvent) {
+      return map((dev.robocode.tankroyale.schema.RoundEndedEvent) source);
+    }
     if (source instanceof dev.robocode.tankroyale.schema.SkippedTurnEvent) {
       return map((dev.robocode.tankroyale.schema.SkippedTurnEvent) source);
     }
@@ -119,6 +125,14 @@ public final class EventMapper {
         source.getY(),
         source.getDirection(),
         source.getSpeed());
+  }
+
+  private static RoundStartedEvent map(final dev.robocode.tankroyale.schema.RoundStartedEvent source) {
+    return new RoundStartedEvent(source.getRoundNumber(), source.getTurnNumber());
+  }
+
+  private static RoundEndedEvent map(final dev.robocode.tankroyale.schema.RoundEndedEvent source) {
+    return new RoundEndedEvent(source.getRoundNumber(), source.getTurnNumber());
   }
 
   private static SkippedTurnEvent map(final dev.robocode.tankroyale.schema.SkippedTurnEvent source) {

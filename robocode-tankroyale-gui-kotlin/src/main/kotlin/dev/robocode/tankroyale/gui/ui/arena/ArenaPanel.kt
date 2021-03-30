@@ -297,13 +297,15 @@ object ArenaPanel : JPanel() {
     private fun drawNameAndVersion(g: Graphics2D, bot: BotState) {
         val oldState = Graphics2DState(g)
 
-        g.color = Color.WHITE
-        val participant = Client.getParticipant(bot.id)
-        val text = "${participant.name} ${participant.version}"
-        val width = g.fontMetrics.stringWidth(text)
+        try {
+            val participant = Client.getParticipant(bot.id)
+            val text = "${participant.name} ${participant.version}"
+            val width = g.fontMetrics.stringWidth(text)
 
-        g.scale(1.0, -1.0)
-        g.drawString(text, bot.x.toFloat() - width / 2,  (-bot.y + 36).toFloat())
+            g.scale(1.0, -1.0)
+            g.color = Color.WHITE
+            g.drawString(text, bot.x.toFloat() - width / 2,  (-bot.y + 36).toFloat())
+        } catch (ignore: NoSuchElementException) {}
 
         oldState.restore(g)
     }

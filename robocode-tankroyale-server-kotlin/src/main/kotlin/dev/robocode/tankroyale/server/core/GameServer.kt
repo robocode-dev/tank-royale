@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.schema.BotIntent
 import dev.robocode.tankroyale.schema.GameSetup
 import dev.robocode.tankroyale.schema.Message.`$type`
 import dev.robocode.tankroyale.server.Server
+import dev.robocode.tankroyale.server.event.RoundStartedEvent
 import dev.robocode.tankroyale.server.conn.ConnHandler
 import dev.robocode.tankroyale.server.mapper.*
 import dev.robocode.tankroyale.server.model.*
@@ -111,6 +112,14 @@ class GameServer(
         participantIds.clear()
         readyParticipants.clear()
 
+        prepareModelUpdater()
+
+        println("  ## roundStarted: 1")
+        val roundStarted = RoundStartedEvent(1, 1)
+        val turn = modelUpdater.turn
+        turn.addPublicBotEvent(roundStarted)
+        turn.addObserverEvent(roundStarted)
+
         sendGameStartedToParticipants()
 
         startReadyTimer()
@@ -148,7 +157,7 @@ class GameServer(
         serverState = ServerState.GAME_RUNNING
 
         sendGameStartedToObservers()
-        prepareModelUpdater()
+        prepareModelUpdater() ///
 
         resetTurnTimeout()
     }
@@ -341,8 +350,6 @@ class GameServer(
     }
 
     private fun onNextTurn() {
-        log.debug("Next turn => updating game state")
-
         // Required as this method can be called again while already running.
         // This would give a raise condition without the synchronized lock.
         synchronized(tickLock) {

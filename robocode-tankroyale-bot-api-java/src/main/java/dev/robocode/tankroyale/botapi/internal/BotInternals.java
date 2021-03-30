@@ -36,25 +36,22 @@ public final class BotInternals implements StopResumeListener {
 
     BotEventHandlers botEventHandlers = baseBotInternals.getBotEventHandlers();
     botEventHandlers.onDisconnected.subscribe(this::onDisconnected, 90);
+    botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 90);
     botEventHandlers.onGameEnded.subscribe(this::onGameEnded, 90);
     botEventHandlers.onHitBot.subscribe(this::onHitBot, 90);
     botEventHandlers.onHitWall.subscribe(e -> onHitWall(), 90);
     botEventHandlers.onBotDeath.subscribe(this::onDeath, 90);
-    botEventHandlers.onTick.subscribe(this::onTick, 90);
     botEventHandlers.onRoundStarted.subscribe(e -> onRoundStarted(), 90);
-    botEventHandlers.onRoundStarted.subscribe(e -> onRoundEnded(), 90);
+    botEventHandlers.onRoundEnded.subscribe(e -> onRoundEnded(), 90);
   }
 
   private void onDisconnected(DisconnectedEvent e) {
     stopThread();
   }
 
-  private void onGameEnded(GameEndedEvent e) {
-    stopThread();
-  }
-
-  private void onTick(TickEvent e) {
+  private void onNextTurn(TickEvent e) {
     if (e.getTurnNumber() == 1) {
+      stopThread(); // sanity before starting a new thread (later)
       startThread();
     }
     processTurn();
@@ -65,11 +62,13 @@ public final class BotInternals implements StopResumeListener {
     turnRemaining = 0d;
     gunTurnRemaining = 0d;
     radarTurnRemaining = 0d;
-
-    stopThread(); // sanity before starting a new thread (later)
   }
 
   private void onRoundEnded() {
+    stopThread();
+  }
+
+  private void onGameEnded(GameEndedEvent e) {
     stopThread();
   }
 
@@ -148,12 +147,8 @@ public final class BotInternals implements StopResumeListener {
 
   public void turnLeft(double degrees) {
     blockIfStopped();
-    System.out.println(bot.getTurnNumber() + " setTurnLeft(degrees)");
     setTurnLeft(degrees);
-    System.out.println(bot.getTurnNumber() + " awaitTurnComplete");
     awaitTurnComplete();
-    System.out.println(bot.getTurnNumber() + " gunDir: " + bot.getGunDirection());
-    System.out.println(bot.getTurnNumber() + " setTurnRate(0d)");
     baseBotInternals.getBotIntent().setTurnRate(0d);
   }
 

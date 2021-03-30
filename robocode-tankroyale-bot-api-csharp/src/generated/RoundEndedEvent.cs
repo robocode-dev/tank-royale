@@ -16,10 +16,6 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("roundNumber", Required = Newtonsoft.Json.Required.Always)]
         public int RoundNumber { get; set; }
     
-        /// <summary>Turn number</summary>
-        [Newtonsoft.Json.JsonProperty("turnNumber", Required = Newtonsoft.Json.Required.Always)]
-        public int TurnNumber { get; set; }
-    
     
     }
 }

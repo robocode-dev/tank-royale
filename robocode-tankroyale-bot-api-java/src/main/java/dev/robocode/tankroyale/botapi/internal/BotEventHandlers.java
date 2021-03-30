@@ -30,6 +30,8 @@ final class BotEventHandlers {
   final EventHandler<WonRoundEvent> onWonRound = new EventHandler<>();
   final EventHandler<CustomEvent> onCustomEvent = new EventHandler<>();
 
+  final EventHandler<TickEvent> onNextTurn = new EventHandler<>();
+
   BotEventHandlers(IBaseBot baseBot) {
     this.baseBot = baseBot;
 
@@ -38,6 +40,8 @@ final class BotEventHandlers {
     onConnectionError.subscribe(baseBot::onConnectionError);
     onGameStarted.subscribe(baseBot::onGameStarted);
     onGameEnded.subscribe(baseBot::onGameEnded);
+//    onRoundStarted.subscribe(baseBot::onRoundStarted); // TODO
+//    onRoundEnded.subscribe(baseBot::onRoundEnded); // TODO
     onTick.subscribe(baseBot::onTick);
     onSkippedTurn.subscribe(baseBot::onSkippedTurn);
     onDeath.subscribe(baseBot::onDeath);
@@ -85,6 +89,10 @@ final class BotEventHandlers {
       }
     } else if (event instanceof BulletHitBulletEvent) {
       onBulletHitBullet.publish((BulletHitBulletEvent) event);
+    } else if (event instanceof RoundStartedEvent) {
+      onRoundStarted.publish((RoundStartedEvent) event);
+    } else if (event instanceof RoundEndedEvent) {
+      onRoundEnded.publish((RoundEndedEvent) event);
     } else if (event instanceof WonRoundEvent) {
       onWonRound.publish((WonRoundEvent) event);
     } else if (event instanceof CustomEvent) {

@@ -1,16 +1,12 @@
 package dev.robocode.tankroyale.botapi.internal;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.neovisionaries.ws.client.*;
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.GameSetup;
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
-import dev.robocode.tankroyale.botapi.events.RoundEndedEvent;
 import dev.robocode.tankroyale.botapi.events.RoundStartedEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.botapi.events.*;
@@ -88,18 +84,14 @@ public final class BaseBotInternals {
         RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class, "$type")
             .registerSubtype(dev.robocode.tankroyale.schema.BotDeathEvent.class, "BotDeathEvent")
             .registerSubtype(dev.robocode.tankroyale.schema.BotHitBotEvent.class, "BotHitBotEvent")
-            .registerSubtype(
-                dev.robocode.tankroyale.schema.BotHitWallEvent.class, "BotHitWallEvent")
-            .registerSubtype(
-                dev.robocode.tankroyale.schema.BulletFiredEvent.class, "BulletFiredEvent")
-            .registerSubtype(
-                dev.robocode.tankroyale.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
-            .registerSubtype(
-                dev.robocode.tankroyale.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
-            .registerSubtype(
-                dev.robocode.tankroyale.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
-            .registerSubtype(
-                dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.BotHitWallEvent.class, "BotHitWallEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.BulletFiredEvent.class, "BulletFiredEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.RoundStartedEvent.class, "RoundStartedEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.RoundEndedEvent.class, "RoundEndedEvent")
+            .registerSubtype(dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
             .registerSubtype(dev.robocode.tankroyale.schema.WonRoundEvent.class, "WonRoundEvent");
 
     gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
@@ -420,8 +412,6 @@ public final class BaseBotInternals {
   }
 
   private void onRoundStarted(RoundStartedEvent e) {
-    System.out.println("onRoundStarted");
-
     botIntent = newBotIntent();
     eventQueue.clear();
   }
@@ -472,12 +462,6 @@ public final class BaseBotInternals {
           case TICK_EVENT_FOR_BOT:
             handleTickEvent(jsonMsg);
             break;
-          case ROUND_STARTED_EVENT:
-            handleRoundStartedEvent(jsonMsg);
-            break;
-          case ROUND_ENDED_EVENT:
-            handleRoundEndedEvent(jsonMsg);
-            break;
           case SERVER_HANDSHAKE:
             handleServerHandshake(jsonMsg);
             break;
@@ -508,8 +492,8 @@ public final class BaseBotInternals {
 
       eventQueue.addEventsFromTick(tickEvent, baseBot);
 
-      // Trigger tick
-      botEventHandlers.onTick.publish(tickEvent);
+      // Trigger next turn (not tick-event!)
+      botEventHandlers.onNextTurn.publish(tickEvent);
     }
 
     private void handleGameStartedEvent(JsonObject jsonMsg) {
@@ -541,20 +525,6 @@ public final class BaseBotInternals {
                     ResultsMapper.map(gameEndedEventForBot.getResults()));
 
     botEventHandlers.onGameEnded.publish(gameEndedEvent);
-  }
-
-  private void handleRoundStartedEvent(JsonObject jsonMsg) {
-    dev.robocode.tankroyale.schema.RoundStartedEvent roundStartedEvent =
-            gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.RoundStartedEvent.class);
-
-    botEventHandlers.onRoundStarted.publish(new RoundStartedEvent(roundStartedEvent.getRoundNumber()));
-  }
-
-  private void handleRoundEndedEvent(JsonObject jsonMsg) {
-    dev.robocode.tankroyale.schema.RoundEndedEvent roundEndedEvent =
-            gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.RoundEndedEvent.class);
-
-    botEventHandlers.onRoundEnded.publish(new RoundEndedEvent(roundEndedEvent.getRoundNumber()));
   }
 
   private void handleServerHandshake(JsonObject jsonMsg) {
