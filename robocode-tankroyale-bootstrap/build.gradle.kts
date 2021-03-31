@@ -11,11 +11,10 @@ version = "0.7.0"
 
 plugins {
     `java-library`
-    `maven-publish`
     kotlin("jvm") version "1.5.0-M1"
     kotlin("plugin.serialization") version "1.5.0-M1"
+    `maven-publish`
     idea
-
     id("com.github.ben-manes.versions") version "0.28.0"
 }
 
@@ -77,6 +76,7 @@ tasks.named("build") {
 publishing {
     publications {
         create<MavenPublication>("maven") {
+            artifact(fatJar)
             groupId = group as String?
             artifactId
             version
