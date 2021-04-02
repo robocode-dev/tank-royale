@@ -10,9 +10,9 @@ namespace Robocode.TankRoyale.Schema
 
     /// <summary>Event occuring when a new round has started.</summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.2.0 (Newtonsoft.Json v9.0.0.0)")]
-    public class RoundStartedEvent : Event 
+    public class RoundStartedEvent : Message 
     {
-        /// <summary>Round number</summary>
+        /// <summary>The current round number in the battle when event occurred</summary>
         [Newtonsoft.Json.JsonProperty("roundNumber", Required = Newtonsoft.Json.Required.Always)]
         public int RoundNumber { get; set; }
     

@@ -51,7 +51,6 @@ public final class BotInternals implements StopResumeListener {
 
   private void onNextTurn(TickEvent e) {
     if (e.getTurnNumber() == 1) {
-      stopThread(); // sanity before starting a new thread (later)
       startThread();
     }
     processTurn();
@@ -62,6 +61,8 @@ public final class BotInternals implements StopResumeListener {
     turnRemaining = 0d;
     gunTurnRemaining = 0d;
     radarTurnRemaining = 0d;
+
+    stopThread(); // sanity before starting a new thread (later)
   }
 
   private void onRoundEnded() {

@@ -12,7 +12,7 @@ namespace Robocode.TankRoyale.Schema
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.2.0 (Newtonsoft.Json v9.0.0.0)")]
     public class TickEventForObserver : Event 
     {
-        /// <summary>Round number in a battle</summary>
+        /// <summary>The current round number in the battle when event occurred</summary>
         [Newtonsoft.Json.JsonProperty("roundNumber", Required = Newtonsoft.Json.Required.Always)]
         public int RoundNumber { get; set; }
     

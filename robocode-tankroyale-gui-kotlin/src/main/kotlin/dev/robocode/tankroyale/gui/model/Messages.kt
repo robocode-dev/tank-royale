@@ -149,16 +149,15 @@ class GameResumedEvent : Message()
 @Serializable
 @SerialName("RoundStartedEvent")
 class RoundStartedEvent(
-    val roundNumber: Int,
-    override val turnNumber: Int
-) : Event()
+    val roundNumber: Int
+) : Message()
 
 @Serializable
 @SerialName("RoundEndedEvent")
 class RoundEndedEvent(
     val roundNumber: Int,
-    override val turnNumber: Int
-) : Event()
+    val turnNumber: Int
+) : Message()
 
 @Serializable
 @SerialName("TpsChangedEvent")

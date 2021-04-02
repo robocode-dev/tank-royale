@@ -20,4 +20,4 @@ class BulletHitBotEvent (
     /** New energy level of the victim after damage */
     val energy: Double,
 
-    ) : Event()
+) : Event()

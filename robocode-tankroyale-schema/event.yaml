@@ -5,7 +5,7 @@ extends:
   $ref: message.yaml
 properties:
   turnNumber:
-    description: Round number in a battle when event occurred
+    description: The turn number in current round when event occurred
     type: integer
 required:
   - turnNumber

@@ -1,5 +1,8 @@
 package dev.robocode.tankroyale.server.core
 
+import dev.robocode.tankroyale.schema.Message
+import dev.robocode.tankroyale.schema.RoundEndedEvent
+import dev.robocode.tankroyale.schema.RoundStartedEvent
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.math.*
 import dev.robocode.tankroyale.server.model.*
@@ -70,29 +73,12 @@ class ModelUpdater(
     fun update(botIntents: Map<BotId, IBotIntent>): GameState {
         updateBotIntents(botIntents)
         if (round.roundEnded) {
-            roundEnded()
-            calculatePlacements()
             nextRound()
         } else if (round.roundNumber == 0 && turn.turnNumber == 0) {
             nextRound()
         }
         nextTurn()
-        if (turn.turnNumber == 1) {
-            roundStarted()
-        }
         return updateGameState()
-    }
-
-    private fun roundStarted() {
-        val roundStarted = RoundStartedEvent(round.roundNumber, 1)
-        turn.addPublicBotEvent(roundStarted)
-        turn.addObserverEvent(roundStarted)
-    }
-
-    private fun roundEnded() {
-        val roundEnded = RoundEndedEvent(round.roundNumber, turn.turnNumber)
-        turn.addPublicBotEvent(roundEnded)
-        turn.addObserverEvent(roundEnded)
     }
 
     /** Calculates and sets placements for all bots, i.e. 1st, 2nd, and 3rd places. */

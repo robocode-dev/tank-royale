@@ -3,10 +3,14 @@ $schema: http://json-schema.org/draft-07/schema#
 description: Event occuring when a round has ended.
 type: object
 extends:
-  $ref: event.yaml
+  $ref: message.yaml
 properties:
   roundNumber:
-    description: Round number
+    description: The current round number in the battle when event occurred
+    type: integer
+  turnNumber:
+    description: The current turn number in the round when event occurred
     type: integer
 required:
   - roundNumber
+  - turnNumber

@@ -6,7 +6,6 @@ import dev.robocode.tankroyale.schema.BotIntent
 import dev.robocode.tankroyale.schema.GameSetup
 import dev.robocode.tankroyale.schema.Message.`$type`
 import dev.robocode.tankroyale.server.Server
-import dev.robocode.tankroyale.server.event.RoundStartedEvent
 import dev.robocode.tankroyale.server.conn.ConnHandler
 import dev.robocode.tankroyale.server.mapper.*
 import dev.robocode.tankroyale.server.model.*
@@ -113,15 +112,7 @@ class GameServer(
         readyParticipants.clear()
 
         prepareModelUpdater()
-
-        println("  ## roundStarted: 1")
-        val roundStarted = RoundStartedEvent(1, 1)
-        val turn = modelUpdater.turn
-        turn.addPublicBotEvent(roundStarted)
-        turn.addObserverEvent(roundStarted)
-
         sendGameStartedToParticipants()
-
         startReadyTimer()
     }
 
@@ -157,8 +148,7 @@ class GameServer(
         serverState = ServerState.GAME_RUNNING
 
         sendGameStartedToObservers()
-        prepareModelUpdater() ///
-
+        prepareModelUpdater()
         resetTurnTimeout()
     }
 
@@ -380,6 +370,13 @@ class GameServer(
         if (lastRound != null) {
             val turn = lastRound.lastTurn
             if (turn != null) {
+                if (turn.turnNumber == 1) {
+                    log.debug("Round started: " + lastRound.roundNumber)
+                    broadcastRoundStartedToAll(lastRound.roundNumber)
+                } else if (lastRound.roundEnded) {
+                    log.debug("Round ended: " + lastRound.roundNumber)
+                    broadcastRoundEndedToAll(lastRound.roundNumber, turn.turnNumber)
+                }
                 broadcastGameTickToParticipants(lastRound, turn)
                 broadcastGameTickToObservers(lastRound, turn)
             }
@@ -403,6 +400,21 @@ class GameServer(
         gameEnded.numberOfRounds = modelUpdater.numberOfRounds
         gameEnded.results = getResultsForObservers() // Use the stored score!
         broadcastToObserverAndControllers(gameEnded)
+    }
+
+    private fun broadcastRoundStartedToAll(roundNumber: Int) {
+        val roundStarted = RoundStartedEvent()
+        roundStarted.`$type` = `$type`.ROUND_STARTED_EVENT
+        roundStarted.roundNumber = roundNumber
+        broadcastToAll(roundStarted)
+    }
+
+    private fun broadcastRoundEndedToAll(roundNumber: Int, turnNumber: Int) {
+        val roundEnded = RoundEndedEvent()
+        roundEnded.`$type` = `$type`.ROUND_ENDED_EVENT
+        roundEnded.roundNumber = roundNumber
+        roundEnded.turnNumber = turnNumber
+        broadcastToAll(roundEnded)
     }
 
     private fun broadcastGameTickToParticipants(round: IRound, turn: ITurn) {

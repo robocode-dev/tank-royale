@@ -28,4 +28,4 @@ class ScannedBotEvent (
     /** Speed of the scanned bot */
     val speed: Double,
 
-    ) :  Event()
+) :  Event()

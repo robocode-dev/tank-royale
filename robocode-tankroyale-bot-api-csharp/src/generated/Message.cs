@@ -24,110 +24,110 @@ namespace Robocode.TankRoyale.Schema
         [System.Runtime.Serialization.EnumMember(Value = @"BotHandshake")]
         BotHandshake = 0,
     
-        [System.Runtime.Serialization.EnumMember(Value = @"BotInfo")]
-        BotInfo = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"ControllerHandshake")]
+        ControllerHandshake = 1,
     
-        [System.Runtime.Serialization.EnumMember(Value = @"BotIntent")]
-        BotIntent = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"ObserverHandshake")]
+        ObserverHandshake = 2,
     
-        [System.Runtime.Serialization.EnumMember(Value = @"BotListUpdate")]
-        BotListUpdate = 3,
+        [System.Runtime.Serialization.EnumMember(Value = @"ServerHandshake")]
+        ServerHandshake = 3,
     
         [System.Runtime.Serialization.EnumMember(Value = @"BotReady")]
         BotReady = 4,
     
-        [System.Runtime.Serialization.EnumMember(Value = @"ControllerHandshake")]
-        ControllerHandshake = 5,
+        [System.Runtime.Serialization.EnumMember(Value = @"BotIntent")]
+        BotIntent = 5,
     
-        [System.Runtime.Serialization.EnumMember(Value = @"ObserverHandshake")]
-        ObserverHandshake = 6,
+        [System.Runtime.Serialization.EnumMember(Value = @"BotInfo")]
+        BotInfo = 6,
     
-        [System.Runtime.Serialization.EnumMember(Value = @"ServerHandshake")]
-        ServerHandshake = 7,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"GameAbortedEvent")]
-        GameAbortedEvent = 8,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"GameEndedEventForBot")]
-        GameEndedEventForBot = 9,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"GameEndedEventForObserver")]
-        GameEndedEventForObserver = 10,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"GamePausedEventForObserver")]
-        GamePausedEventForObserver = 11,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"GameResumedEventForObserver")]
-        GameResumedEventForObserver = 12,
+        [System.Runtime.Serialization.EnumMember(Value = @"BotListUpdate")]
+        BotListUpdate = 7,
     
         [System.Runtime.Serialization.EnumMember(Value = @"GameStartedEventForBot")]
-        GameStartedEventForBot = 13,
+        GameStartedEventForBot = 8,
     
         [System.Runtime.Serialization.EnumMember(Value = @"GameStartedEventForObserver")]
-        GameStartedEventForObserver = 14,
+        GameStartedEventForObserver = 9,
     
-        [System.Runtime.Serialization.EnumMember(Value = @"TpsChangedEvent")]
-        TpsChangedEvent = 15,
+        [System.Runtime.Serialization.EnumMember(Value = @"GameEndedEventForBot")]
+        GameEndedEventForBot = 10,
     
-        [System.Runtime.Serialization.EnumMember(Value = @"BotDeathEvent")]
-        BotDeathEvent = 16,
+        [System.Runtime.Serialization.EnumMember(Value = @"GameEndedEventForObserver")]
+        GameEndedEventForObserver = 11,
     
-        [System.Runtime.Serialization.EnumMember(Value = @"BotHitBotEvent")]
-        BotHitBotEvent = 17,
+        [System.Runtime.Serialization.EnumMember(Value = @"GameAbortedEvent")]
+        GameAbortedEvent = 12,
     
-        [System.Runtime.Serialization.EnumMember(Value = @"BotHitWallEvent")]
-        BotHitWallEvent = 18,
+        [System.Runtime.Serialization.EnumMember(Value = @"GamePausedEventForObserver")]
+        GamePausedEventForObserver = 13,
     
-        [System.Runtime.Serialization.EnumMember(Value = @"BulletFiredEvent")]
-        BulletFiredEvent = 19,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"BulletHitBotEvent")]
-        BulletHitBotEvent = 20,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"BulletHitBulletEvent")]
-        BulletHitBulletEvent = 21,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"BulletHitWallEvent")]
-        BulletHitWallEvent = 22,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"HitByBulletEvent")]
-        HitByBulletEvent = 23,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"ScannedBotEvent")]
-        ScannedBotEvent = 24,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"SkippedTurnEvent")]
-        SkippedTurnEvent = 25,
+        [System.Runtime.Serialization.EnumMember(Value = @"GameResumedEventForObserver")]
+        GameResumedEventForObserver = 14,
     
         [System.Runtime.Serialization.EnumMember(Value = @"RoundStartedEvent")]
-        RoundStartedEvent = 26,
+        RoundStartedEvent = 15,
     
         [System.Runtime.Serialization.EnumMember(Value = @"RoundEndedEvent")]
-        RoundEndedEvent = 27,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"TickEventForBot")]
-        TickEventForBot = 28,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"TickEventForObserver")]
-        TickEventForObserver = 29,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"WonRoundEvent")]
-        WonRoundEvent = 30,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"StartGame")]
-        StartGame = 31,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"StopGame")]
-        StopGame = 32,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"PauseGame")]
-        PauseGame = 33,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"ResumeGame")]
-        ResumeGame = 34,
+        RoundEndedEvent = 16,
     
         [System.Runtime.Serialization.EnumMember(Value = @"ChangeTps")]
-        ChangeTps = 35,
+        ChangeTps = 17,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"TpsChangedEvent")]
+        TpsChangedEvent = 18,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"BotDeathEvent")]
+        BotDeathEvent = 19,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"BotHitBotEvent")]
+        BotHitBotEvent = 20,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"BotHitWallEvent")]
+        BotHitWallEvent = 21,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"BulletFiredEvent")]
+        BulletFiredEvent = 22,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"BulletHitBotEvent")]
+        BulletHitBotEvent = 23,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"BulletHitBulletEvent")]
+        BulletHitBulletEvent = 24,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"BulletHitWallEvent")]
+        BulletHitWallEvent = 25,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"HitByBulletEvent")]
+        HitByBulletEvent = 26,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"ScannedBotEvent")]
+        ScannedBotEvent = 27,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"SkippedTurnEvent")]
+        SkippedTurnEvent = 28,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"TickEventForBot")]
+        TickEventForBot = 29,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"TickEventForObserver")]
+        TickEventForObserver = 30,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"WonRoundEvent")]
+        WonRoundEvent = 31,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"StartGame")]
+        StartGame = 32,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"StopGame")]
+        StopGame = 33,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"PauseGame")]
+        PauseGame = 34,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"ResumeGame")]
+        ResumeGame = 35,
     
     }
 }

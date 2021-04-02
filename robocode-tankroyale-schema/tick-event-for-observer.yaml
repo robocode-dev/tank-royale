@@ -5,7 +5,7 @@ extends:
   $ref: event.yaml
 properties:
   roundNumber:
-    description: Round number in a battle
+    description: The current round number in the battle when event occurred
     type: integer
   botStates:
     description: Current state of all bots

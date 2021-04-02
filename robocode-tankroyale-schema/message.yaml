@@ -5,22 +5,27 @@ properties:
   $type:
     enum:
       - BotHandshake
-      - BotInfo
-      - BotIntent
-      - BotListUpdate
-      - BotReady
       - ControllerHandshake
       - ObserverHandshake
       - ServerHandshake
 
-      - GameAbortedEvent
-      - GameEndedEventForBot
-      - GameEndedEventForObserver
-      - GamePausedEventForObserver
-      - GameResumedEventForObserver
+      - BotReady
+      - BotIntent
+      - BotInfo
+      - BotListUpdate
+
       - GameStartedEventForBot
       - GameStartedEventForObserver
+      - GameEndedEventForBot
+      - GameEndedEventForObserver
+      - GameAbortedEvent
+      - GamePausedEventForObserver
+      - GameResumedEventForObserver
 
+      - RoundStartedEvent
+      - RoundEndedEvent
+
+      - ChangeTps
       - TpsChangedEvent
 
       - BotDeathEvent
@@ -33,8 +38,6 @@ properties:
       - HitByBulletEvent
       - ScannedBotEvent
       - SkippedTurnEvent
-      - RoundStartedEvent
-      - RoundEndedEvent
       - TickEventForBot
       - TickEventForObserver
       - WonRoundEvent
@@ -43,7 +46,5 @@ properties:
       - StopGame
       - PauseGame
       - ResumeGame
-
-      - ChangeTps
 required:
   - $type

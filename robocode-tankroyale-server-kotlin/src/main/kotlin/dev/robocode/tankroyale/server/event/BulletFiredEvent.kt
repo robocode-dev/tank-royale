@@ -10,4 +10,4 @@ class BulletFiredEvent(
     /** Fired bullet */
     val bullet: IBullet,
 
-    ) : Event()
+) : Event()

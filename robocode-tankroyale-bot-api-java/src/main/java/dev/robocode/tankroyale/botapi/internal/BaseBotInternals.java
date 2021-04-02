@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.GameSetup;
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
+import dev.robocode.tankroyale.botapi.events.RoundEndedEvent;
 import dev.robocode.tankroyale.botapi.events.RoundStartedEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.botapi.events.*;
@@ -89,8 +90,6 @@ public final class BaseBotInternals {
             .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
             .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
             .registerSubtype(dev.robocode.tankroyale.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
-            .registerSubtype(dev.robocode.tankroyale.schema.RoundStartedEvent.class, "RoundStartedEvent")
-            .registerSubtype(dev.robocode.tankroyale.schema.RoundEndedEvent.class, "RoundEndedEvent")
             .registerSubtype(dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
             .registerSubtype(dev.robocode.tankroyale.schema.WonRoundEvent.class, "WonRoundEvent");
 
@@ -465,6 +464,12 @@ public final class BaseBotInternals {
           case SERVER_HANDSHAKE:
             handleServerHandshake(jsonMsg);
             break;
+          case ROUND_STARTED_EVENT:
+            handleRoundStartedEvent(jsonMsg);
+            break;
+          case ROUND_ENDED_EVENT:
+            handleRoundEndedEvent(jsonMsg);
+            break;
           case GAME_STARTED_EVENT_FOR_BOT:
             handleGameStartedEvent(jsonMsg);
             break;
@@ -494,6 +499,21 @@ public final class BaseBotInternals {
 
       // Trigger next turn (not tick-event!)
       botEventHandlers.onNextTurn.publish(tickEvent);
+    }
+
+    private void handleRoundStartedEvent(JsonObject jsonMsg) {
+      dev.robocode.tankroyale.schema.RoundStartedEvent roundStartedEvent =
+              gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.RoundStartedEvent.class);
+
+      botEventHandlers.onRoundStarted.publish(new RoundStartedEvent(roundStartedEvent.getRoundNumber()));
+    }
+
+    private void handleRoundEndedEvent(JsonObject jsonMsg) {
+      dev.robocode.tankroyale.schema.RoundEndedEvent roundEndedEvent =
+              gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.RoundEndedEvent.class);
+
+      botEventHandlers.onRoundEnded.publish(new RoundEndedEvent(
+              roundEndedEvent.getRoundNumber(), roundEndedEvent.getTurnNumber()));
     }
 
     private void handleGameStartedEvent(JsonObject jsonMsg) {

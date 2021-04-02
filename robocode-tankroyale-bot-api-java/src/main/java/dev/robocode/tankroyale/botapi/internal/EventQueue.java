@@ -99,10 +99,6 @@ final class EventQueue {
       }
     } else if (event instanceof SkippedTurnEvent) {
       return EventPriority.onSkippedTurn;
-    } else if (event instanceof RoundStartedEvent) {
-      return EventPriority.onRoundStarted;
-    } else if (event instanceof RoundEndedEvent) {
-      return EventPriority.onRoundEnded;
     } else if (event instanceof CustomEvent) {
       return EventPriority.onCondition;
     } else if (event instanceof WonRoundEvent) {

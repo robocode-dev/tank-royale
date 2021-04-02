@@ -89,10 +89,6 @@ final class BotEventHandlers {
       }
     } else if (event instanceof BulletHitBulletEvent) {
       onBulletHitBullet.publish((BulletHitBulletEvent) event);
-    } else if (event instanceof RoundStartedEvent) {
-      onRoundStarted.publish((RoundStartedEvent) event);
-    } else if (event instanceof RoundEndedEvent) {
-      onRoundEnded.publish((RoundEndedEvent) event);
     } else if (event instanceof WonRoundEvent) {
       onWonRound.publish((WonRoundEvent) event);
     } else if (event instanceof CustomEvent) {

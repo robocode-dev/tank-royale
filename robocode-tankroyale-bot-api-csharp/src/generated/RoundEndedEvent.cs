@@ -10,11 +10,15 @@ namespace Robocode.TankRoyale.Schema
 
     /// <summary>Event occuring when a round has ended.</summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.2.0 (Newtonsoft.Json v9.0.0.0)")]
-    public class RoundEndedEvent : Event 
+    public class RoundEndedEvent : Message 
     {
-        /// <summary>Round number</summary>
+        /// <summary>The current round number in the battle when event occurred</summary>
         [Newtonsoft.Json.JsonProperty("roundNumber", Required = Newtonsoft.Json.Required.Always)]
         public int RoundNumber { get; set; }
+    
+        /// <summary>The current turn number in the round when event occurred</summary>
+        [Newtonsoft.Json.JsonProperty("turnNumber", Required = Newtonsoft.Json.Required.Always)]
+        public int TurnNumber { get; set; }
     
     
     }

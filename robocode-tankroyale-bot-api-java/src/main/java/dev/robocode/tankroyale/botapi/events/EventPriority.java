@@ -2,8 +2,6 @@ package dev.robocode.tankroyale.botapi.events;
 
 /** Effective event priorities. */
 public final class EventPriority {
-    public static int onRoundStarted = DefaultEventPriority.ON_ROUND_STARTED;
-    public static int onRoundEnded = DefaultEventPriority.ON_ROUND_ENDED;
     public static int onScannedBot = DefaultEventPriority.ON_SCANNED_BOT;
     public static int onHitBot = DefaultEventPriority.ON_HIT_BOT;
     public static int onHitWall = DefaultEventPriority.ON_HIT_WALL;
