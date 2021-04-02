@@ -33,6 +33,9 @@ object Client : AutoCloseable {
     val onGamePaused = Event<GamePausedEvent>()
     val onGameResumed = Event<GameResumedEvent>()
 
+    private val onRoundStarted = Event<RoundStartedEvent>()
+    private val onRoundEnded = Event<RoundEndedEvent>()
+
     val onTickEvent = Event<TickEvent>()
 
     var currentGameSetup: GameSetup? = null
@@ -139,6 +142,8 @@ object Client : AutoCloseable {
             is GameAbortedEvent -> handleGameAborted(type)
             is GamePausedEvent -> handleGamePaused(type)
             is GameResumedEvent -> handleGameResumed(type)
+            is RoundStartedEvent -> handleRoundStarted(type)
+            is RoundEndedEvent -> handleRoundEnded(type)
             is TpsChangedEvent -> handleTpsChanged(type)
             else -> throw IllegalArgumentException("Unknown content type: $type")
         }
@@ -189,6 +194,14 @@ object Client : AutoCloseable {
     private fun handleGameResumed(gameResumedEvent: GameResumedEvent) {
         isGamePaused = false
         onGameResumed.publish(gameResumedEvent)
+    }
+
+    private fun handleRoundStarted(roundStartedEvent: RoundStartedEvent) {
+        onRoundStarted.publish(roundStartedEvent)
+    }
+
+    private fun handleRoundEnded(roundEndedEvent: RoundEndedEvent) {
+        onRoundEnded.publish(roundEndedEvent)
     }
 
     private fun handleTickEvent(tickEvent: TickEvent) {
