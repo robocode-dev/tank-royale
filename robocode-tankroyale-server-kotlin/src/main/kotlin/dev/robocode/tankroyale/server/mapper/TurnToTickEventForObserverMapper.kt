@@ -9,11 +9,11 @@ import dev.robocode.tankroyale.server.model.ITurn
 import java.util.concurrent.CopyOnWriteArrayList
 
 object TurnToTickEventForObserverMapper {
-    fun map(round: IRound, turn: ITurn): TickEventForObserver {
+    fun map(roundNumber: Int, turn: ITurn): TickEventForObserver {
         val tick = TickEventForObserver()
         tick.apply {
             `$type` = Message.`$type`.TICK_EVENT_FOR_OBSERVER
-            roundNumber = round.roundNumber
+            this.roundNumber = roundNumber
             turnNumber = turn.turnNumber
             botStates = CopyOnWriteArrayList(map(turn.bots))
             bulletStates = CopyOnWriteArrayList(map(turn.bullets))

@@ -368,17 +368,18 @@ class GameServer(
     private fun onNextTick(lastRound: IRound?) {
         // Send tick
         if (lastRound != null) {
+            val roundNumber = lastRound.roundNumber;
             val turn = lastRound.lastTurn
             if (turn != null) {
                 if (turn.turnNumber == 1) {
-                    log.debug("Round started: " + lastRound.roundNumber)
-                    broadcastRoundStartedToAll(lastRound.roundNumber)
+                    log.debug("Round started: $roundNumber")
+                    broadcastRoundStartedToAll(roundNumber)
                 } else if (lastRound.roundEnded) {
-                    log.debug("Round ended: " + lastRound.roundNumber)
-                    broadcastRoundEndedToAll(lastRound.roundNumber, turn.turnNumber)
+                    log.debug("Round ended: $roundNumber")
+                    broadcastRoundEndedToAll(roundNumber, turn.turnNumber)
                 }
-                broadcastGameTickToParticipants(lastRound, turn)
-                broadcastGameTickToObservers(lastRound, turn)
+                broadcastGameTickToParticipants(roundNumber, turn)
+                broadcastGameTickToObservers(roundNumber, turn)
             }
             broadcastSkippedTurnToParticipants()
         }
@@ -417,11 +418,11 @@ class GameServer(
         broadcastToAll(roundEnded)
     }
 
-    private fun broadcastGameTickToParticipants(round: IRound, turn: ITurn) {
+    private fun broadcastGameTickToParticipants(roundNumber: Int, turn: ITurn) {
         for (conn in participants) {
             val botId = participantIds[conn]
             if (botId != null) {
-                val gameTickForBot = TurnToTickEventForBotMapper.map(round, turn, botId)
+                val gameTickForBot = TurnToTickEventForBotMapper.map(roundNumber, turn, botId)
                 if (gameTickForBot != null) { // Bot alive?
                     send(conn, gameTickForBot)
                 }
@@ -429,8 +430,8 @@ class GameServer(
         }
     }
 
-    private fun broadcastGameTickToObservers(round: IRound, turn: ITurn) {
-        broadcastToObserverAndControllers(TurnToTickEventForObserverMapper.map(round, turn))
+    private fun broadcastGameTickToObservers(roundNumber: Int, turn: ITurn) {
+        broadcastToObserverAndControllers(TurnToTickEventForObserverMapper.map(roundNumber, turn))
     }
 
     private fun broadcastSkippedTurnToParticipants() {
