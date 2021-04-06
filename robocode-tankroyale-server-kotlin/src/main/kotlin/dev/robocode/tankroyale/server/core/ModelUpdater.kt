@@ -150,7 +150,9 @@ class ModelUpdater(
      */
     private fun updateGameState(): GameState {
         round.turns += turn.toTurn()
-        gameState.rounds += round.toRound()
+        if (gameState.rounds.size == 0 ||  gameState.rounds.last().roundNumber != round.roundNumber) {
+            gameState.rounds += round
+        }
         return gameState
     }
 
