@@ -9,7 +9,7 @@ import dev.robocode.tankroyale.server.model.IBotIntent
  * @property turnRate New driving turn rate.
  * @property gunTurnRate New gun turn rate.
  * @property radarTurnRate New radar turn rate.
- * @property bulletPower New bullet power.
+ * @property firepower New firepower.
  * @property adjustGunForBodyTurn Flag set to adjusting gun for body turn.
  * @property adjustRadarForGunTurn Flag set to adjusting radar for gun turn.
  * @property scan Flag set to perform rescan (reusing last scan direction and scan spread angle)
@@ -26,7 +26,7 @@ data class BotUpdate(
     override var turnRate: Double? = null,
     override var gunTurnRate: Double? = null,
     override var radarTurnRate: Double? = null,
-    override var bulletPower: Double? = null,
+    override var firepower: Double? = null,
     override var adjustGunForBodyTurn: Boolean? = null,
     override var adjustRadarForGunTurn: Boolean? = null,
     override var scan: Boolean? = null,

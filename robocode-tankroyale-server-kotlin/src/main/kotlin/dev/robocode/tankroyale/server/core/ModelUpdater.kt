@@ -1,8 +1,5 @@
 package dev.robocode.tankroyale.server.core
 
-import dev.robocode.tankroyale.schema.Message
-import dev.robocode.tankroyale.schema.RoundEndedEvent
-import dev.robocode.tankroyale.schema.RoundStartedEvent
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.math.*
 import dev.robocode.tankroyale.server.model.*
@@ -553,7 +550,7 @@ class ModelUpdater(
     private fun checkWhetherToFireGun(bot: MutableBot) {
         val botIntent = botIntentsMap[bot.id]
         if (botIntent != null) {
-            val firepower = botIntent.bulletPower ?: 0.0
+            val firepower = botIntent.firepower ?: 0.0
             if (firepower >= MIN_FIREPOWER && bot.energy > firepower) {
                 fireBullet(bot, firepower)
             }

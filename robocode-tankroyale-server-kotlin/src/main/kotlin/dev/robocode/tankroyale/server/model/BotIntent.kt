@@ -7,7 +7,7 @@ package dev.robocode.tankroyale.server.model
  * @property turnRate Current driving turn rate.
  * @property gunTurnRate Current gun turn rate.
  * @property radarTurnRate Current radar turn rate.
- * @property bulletPower Current bullet power.
+ * @property firepower Current firepower.
  * @property adjustGunForBodyTurn Current flag set for adjusting gun for body turn.
  * @property adjustRadarForGunTurn Current flag set for adjusting radar for gun turn.
  * @property scan Current flag set for performing rescan (reusing last scan direction and scan spread angle)
@@ -24,7 +24,7 @@ data class BotIntent(
     override var turnRate: Double? = 0.0,
     override var gunTurnRate: Double? = 0.0,
     override var radarTurnRate: Double? = 0.0,
-    override var bulletPower: Double? = 0.0,
+    override var firepower: Double? = 0.0,
     override var adjustGunForBodyTurn: Boolean? = false,
     override var adjustRadarForGunTurn: Boolean? = false,
     override var scan: Boolean? = false,
@@ -55,8 +55,8 @@ data class BotIntent(
         if (update.radarTurnRate != null) {
             radarTurnRate = update.radarTurnRate
         }
-        if (update.bulletPower != null) {
-            bulletPower = update.bulletPower
+        if (update.firepower != null) {
+            firepower = update.firepower
         }
         if (update.adjustGunForBodyTurn != null) {
             adjustGunForBodyTurn = update.adjustGunForBodyTurn
@@ -103,6 +103,6 @@ data class BotIntent(
         turnRate = 0.0
         gunTurnRate = 0.0
         radarTurnRate = 0.0
-        bulletPower = 0.0
+        firepower = 0.0
     }
 }

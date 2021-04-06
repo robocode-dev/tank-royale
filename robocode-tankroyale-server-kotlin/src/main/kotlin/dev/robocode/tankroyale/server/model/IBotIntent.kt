@@ -17,8 +17,8 @@ interface IBotIntent {
     /** New radar turn rate. */
     val radarTurnRate: Double?
 
-    /** New bullet power. */
-    val bulletPower: Double?
+    /** New firepower. */
+    val firepower: Double?
 
     /** Flag set to adjusting gun for body turn. */
     val adjustGunForBodyTurn: Boolean?

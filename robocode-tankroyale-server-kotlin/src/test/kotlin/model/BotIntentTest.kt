@@ -61,16 +61,16 @@ class BotIntentTest : StringSpec({
     }
 
     "bulletPower must be updated" {
-        val botIntent = BotIntent(bulletPower = 1.2)
+        val botIntent = BotIntent(firepower = 1.2)
 
-        botIntent.update(BotUpdate(bulletPower = null))
-        botIntent shouldBe BotIntent(bulletPower = 1.2)
+        botIntent.update(BotUpdate(firepower = null))
+        botIntent shouldBe BotIntent(firepower = 1.2)
 
-        botIntent.update(BotUpdate(bulletPower = 7.8))
-        botIntent shouldBe BotIntent(bulletPower = 7.8)
+        botIntent.update(BotUpdate(firepower = 7.8))
+        botIntent shouldBe BotIntent(firepower = 7.8)
 
-        botIntent.update(BotUpdate(bulletPower = null))
-        botIntent shouldBe BotIntent(bulletPower = 7.8)
+        botIntent.update(BotUpdate(firepower = null))
+        botIntent shouldBe BotIntent(firepower = 7.8)
     }
 
     "adjustGunForBodyTurn must be updated" {
@@ -233,7 +233,7 @@ class BotIntentTest : StringSpec({
             turnRate = 2.3,
             gunTurnRate = 3.4,
             radarTurnRate = 4.5,
-            bulletPower = 5.6
+            firepower = 5.6
         )
         botIntent.disableMovement()
 
