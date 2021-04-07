@@ -114,7 +114,12 @@ object ServerProcess {
         if (pathOpt.isPresent) {
             return pathOpt.get().toString()
         }
-        return ResourceUtil.getResourceFile("${JAR_FILE_NAME}.jar")?.absolutePath ?: ""
+        return try {
+            ResourceUtil.getResourceFile("${JAR_FILE_NAME}.jar")?.absolutePath ?: ""
+        } catch (ex: Exception) {
+            System.err.println(ex.message)
+            ""
+        }
     }
 
     private fun startLogThread() {
