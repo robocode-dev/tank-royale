@@ -368,7 +368,7 @@ class GameServer(
     private fun onNextTick(lastRound: IRound?) {
         // Send tick
         if (lastRound != null) {
-            val roundNumber = lastRound.roundNumber;
+            val roundNumber = lastRound.roundNumber
             val turn = lastRound.lastTurn
             if (turn != null) {
                 if (turn.turnNumber == 1) {
@@ -452,7 +452,7 @@ class GameServer(
         return participantsThatSkippedTurn
     }
 
-    private val botsThatSentIntent = mutableListOf<WebSocket>()
+    private val botsThatSentIntent = mutableSetOf<WebSocket>()
 
     private fun updateBotListUpdateMessage() {
         val botsList = mutableListOf<BotInfo>()
@@ -534,9 +534,9 @@ class GameServer(
         if (botIntents.size == botsThatSentIntent.size) {
             botsThatSentIntent.clear()
             turnTimeoutTimer?.reset()
-
             resetTurnTimeout()
-            onNextTurn()
+
+//            onNextTurn()
         }
     }
 

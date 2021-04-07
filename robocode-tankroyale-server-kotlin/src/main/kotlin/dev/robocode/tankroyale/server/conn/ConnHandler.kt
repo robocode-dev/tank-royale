@@ -180,6 +180,10 @@ class ConnHandler internal constructor(
                     }
                     logger.debug("Handling message: $type")
                     when (type) {
+                        Message.`$type`.BOT_INTENT -> {
+                            val intent = gson.fromJson(message, BotIntent::class.java)
+                            executorService.submit { listener.onBotIntent(conn, botHandshakes[conn]!!, intent) }
+                        }
                         Message.`$type`.BOT_HANDSHAKE -> {
                             val handshake = gson.fromJson(message, BotHandshake::class.java)
                             botConnections += conn
@@ -215,10 +219,6 @@ class ConnHandler internal constructor(
                         }
                         Message.`$type`.BOT_READY -> {
                             executorService.submit { listener.onBotReady(conn, botHandshakes[conn]!!) }
-                        }
-                        Message.`$type`.BOT_INTENT -> {
-                            val intent = gson.fromJson(message, BotIntent::class.java)
-                            executorService.submit { listener.onBotIntent(conn, botHandshakes[conn]!!, intent) }
                         }
                         Message.`$type`.START_GAME -> {
                             val startGame = gson.fromJson(message, StartGame::class.java)
