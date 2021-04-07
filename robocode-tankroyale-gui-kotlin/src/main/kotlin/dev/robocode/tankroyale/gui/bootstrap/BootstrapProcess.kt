@@ -35,6 +35,9 @@ object BootstrapProcess {
         val process = builder.start()
         readErrorToStdError(process)
         val entries = readInputLines(process).joinToString()
+        if (entries.isBlank()) {
+            return emptyList()
+        }
         return json.decodeFromString(entries)
     }
 
@@ -103,7 +106,12 @@ object BootstrapProcess {
         if (pathOpt.isPresent) {
             return pathOpt.get().toString()
         }
-        return ResourceUtil.getResourceFile("$JAR_FILE_NAME.jar")?.absolutePath ?: ""
+        return try {
+            ResourceUtil.getResourceFile("$JAR_FILE_NAME.jar")?.absolutePath ?: ""
+        } catch (ex: Exception) {
+            System.err.println(ex.localizedMessage)
+            ""
+        }
     }
 
     private fun getBotDirs(): String {
