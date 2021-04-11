@@ -239,30 +239,49 @@ public final class BotInternals implements StopResumeListener {
     double turnRate = bot.getTurnRate();
     if (abs(turnRemaining) < abs(turnRate)) {
       turnRate = turnRemaining;
+      bot.setTurnRate(turnRate);
     }
+
     if (bot.doAdjustGunForBodyTurn()) {
       gunTurnRemaining -= turnRate;
     }
+
     turnRemaining -= turnRate;
+    if (abs(turnRemaining) < abs(turnRate)) {
+      turnRate = turnRemaining;
+      bot.setTurnRate(turnRate);
+    }
   }
 
   private void updateGunTurnRemaining() {
     double gunTurnRate = bot.getTurnRate();
     if (abs(gunTurnRemaining) < abs(gunTurnRate)) {
       gunTurnRate = gunTurnRemaining;
+      bot.setGunTurnRate(gunTurnRate);
     }
     if (bot.doAdjustRadarForGunTurn()) {
       radarTurnRemaining -= gunTurnRate;
     }
+
     gunTurnRemaining -= gunTurnRate;
+    if (abs(gunTurnRemaining) < abs(gunTurnRate)) {
+      gunTurnRate = gunTurnRemaining;
+      bot.setGunTurnRate(gunTurnRate);
+    }
   }
 
   private void updateRadarTurnRemaining() {
     double radarTurnRate = bot.getRadarTurnRate();
     if (abs(radarTurnRemaining) < abs(radarTurnRate)) {
       radarTurnRate = radarTurnRemaining;
+      bot.setRadarTurnRate(radarTurnRate);
     }
+
     radarTurnRemaining -= radarTurnRate;
+    if (abs(radarTurnRemaining) < abs(radarTurnRate)) {
+      radarTurnRate = radarTurnRemaining;
+      bot.setRadarTurnRate(radarTurnRate);
+    }
   }
 
   private void updateMovement() {
