@@ -11,7 +11,6 @@ public final class BotInternals implements StopResumeListener {
   private final Bot bot;
   private final BaseBotInternals baseBotInternals;
 
-  private final Object nextTurnMonitor = new Object();
   private final Object threadMonitor = new Object();
 
   private double distanceRemaining;
@@ -133,9 +132,10 @@ public final class BotInternals implements StopResumeListener {
   }
 
   public void forward(double distance) {
-    blockIfStopped();
     setForward(distance);
-    awaitMovementComplete();
+    do {
+      bot.go();
+    } while (distanceRemaining != 0);
   }
 
   public void setTurnLeft(double degrees) {
@@ -147,10 +147,13 @@ public final class BotInternals implements StopResumeListener {
   }
 
   public void turnLeft(double degrees) {
-    blockIfStopped();
     setTurnLeft(degrees);
-    awaitTurnComplete();
-    baseBotInternals.getBotIntent().setTurnRate(0d);
+    do {
+      System.out.println("#1");
+      bot.go();
+      System.out.println("#2");
+    } while (turnRemaining != 0);
+    System.out.println("#3");
   }
 
   public void setTurnGunLeft(double degrees) {
@@ -162,10 +165,10 @@ public final class BotInternals implements StopResumeListener {
   }
 
   public void turnGunLeft(double degrees) {
-    blockIfStopped();
     setTurnGunLeft(degrees);
-    awaitGunTurnComplete();
-    baseBotInternals.getBotIntent().setGunTurnRate(0d);
+    do {
+      bot.go();
+    } while (gunTurnRemaining != 0);
   }
 
   public void setTurnRadarLeft(double degrees) {
@@ -177,20 +180,20 @@ public final class BotInternals implements StopResumeListener {
   }
 
   public void turnRadarLeft(double degrees) {
-    blockIfStopped();
     setTurnRadarLeft(degrees);
-    awaitRadarTurnComplete();
-    baseBotInternals.getBotIntent().setRadarTurnRate(0d);
+    do {
+      bot.go();
+    } while (radarTurnRemaining != 0);
   }
 
   public void fire(double firepower) { // TODO: Return boolean
     bot.setFire(firepower);
-    awaitNextTurn();
+    bot.go();
   }
 
   public void scan() {
     bot.setScan();
-    awaitNextTurn();
+    bot.go();
   }
 
   private void processTurn() {
@@ -200,17 +203,14 @@ public final class BotInternals implements StopResumeListener {
       turnRemaining = 0;
       gunTurnRemaining = 0;
       radarTurnRemaining = 0;
+
+      return;
     }
 
     updateTurnRemaining();
     updateGunTurnRemaining();
     updateRadarTurnRemaining();
     updateMovement();
-
-    synchronized (nextTurnMonitor) {
-      // Unblock methods waiting for the next turn
-      nextTurnMonitor.notifyAll();
-    }
   }
 
   private void startThread() {
@@ -298,12 +298,12 @@ public final class BotInternals implements StopResumeListener {
 
   public void stop() {
     baseBotInternals.setStop();
-    awaitNextTurn();
+    bot.go();
   }
 
   public void resume() {
     baseBotInternals.setResume();
-    awaitNextTurn();
+    bot.go();
   }
 
   public void onStop() {
@@ -320,54 +320,7 @@ public final class BotInternals implements StopResumeListener {
     radarTurnRemaining = savedRadarTurnRemaining;
   }
 
-  private void blockIfStopped() {
-    if (baseBotInternals.isStopped()) {
-      await(() -> !baseBotInternals.isStopped());
-    }
-  }
-
   private boolean isNearZero(double value) {
     return (abs(value) < .00001);
-  }
-
-  private void awaitMovementComplete() {
-    await(() -> distanceRemaining == 0);
-  }
-
-  private void awaitTurnComplete() {
-    await(() -> turnRemaining == 0);
-  }
-
-  private void awaitGunTurnComplete() {
-    await(() -> gunTurnRemaining == 0);
-  }
-
-  private void awaitRadarTurnComplete() {
-    await(() -> radarTurnRemaining == 0);
-  }
-
-  private void awaitNextTurn() {
-    int turnNumber = bot.getTurnNumber();
-    await(() -> bot.getTurnNumber() > turnNumber);
-  }
-
-  public void await(ICondition condition) {
-    // Loop while bot is running and condition has not been met
-    synchronized (nextTurnMonitor) {
-      try {
-        while (isRunning && !condition.test()) {
-          bot.go();
-          nextTurnMonitor.wait(); // Wait for next turn
-        }
-      } catch (InterruptedException e) {
-        isRunning = false;
-        baseBotInternals.setResume();
-      }
-    }
-  }
-
-  @FunctionalInterface
-  public interface ICondition {
-    boolean test();
   }
 }

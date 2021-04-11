@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static dev.robocode.tankroyale.botapi.IBaseBot.*;
@@ -50,9 +48,9 @@ public final class BaseBotInternals {
   private final EventQueue eventQueue;
   private final Set<Condition> conditions = new HashSet<>();
 
-  private final AtomicBoolean isStopped = new AtomicBoolean();
+  private final Object nextTurnMonitor = new Object();
 
-  private final ExecutorService executorService = Executors.newFixedThreadPool(2);
+  private final AtomicBoolean isStopped = new AtomicBoolean();
 
   private BotIntent botIntent = newBotIntent();
 
@@ -124,6 +122,7 @@ public final class BaseBotInternals {
     }
     socket.addListener(new WebSocketListener());
 
+    botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 100);
     botEventHandlers.onRoundStarted.subscribe(this::onRoundStarted, 100);
     botEventHandlers.onBulletFired.subscribe(this::onBulletFired, 100);
   }
@@ -153,11 +152,28 @@ public final class BaseBotInternals {
   }
 
   public void execute() {
-    // Send the bot intent to the server
     sendIntent();
+    waitForNextTurn();
+    dispatchEvents();
+  }
 
-    // Dispatch bot events
-    executorService.execute(this::dispatchEvents);
+  public void sendIntent() {
+    limitTargetSpeedAndTurnRates();
+    socket.sendText(gson.toJson(botIntent));
+  }
+
+  private void waitForNextTurn() {
+    int turnNumber = getCurrentTick().getTurnNumber();
+
+    synchronized (nextTurnMonitor) {
+      try {
+        while (turnNumber >= getCurrentTick().getTurnNumber()) {
+          nextTurnMonitor.wait(); // Wait for next turn
+        }
+      } catch (InterruptedException e) {
+        setResume();
+      }
+    }
   }
 
   private void dispatchEvents() {
@@ -166,11 +182,6 @@ public final class BaseBotInternals {
     } catch (Exception e) {
       e.printStackTrace();
     }
-  }
-
-  public void sendIntent() {
-    limitTargetSpeedAndTurnRates();
-    socket.sendText(gson.toJson(botIntent));
   }
 
   private void limitTargetSpeedAndTurnRates() {
@@ -407,6 +418,13 @@ public final class BaseBotInternals {
       return new URI(url);
     } catch (URISyntaxException ex) {
       throw new BotException("Incorrect syntax for server URL: " + url);
+    }
+  }
+
+  private void onNextTurn(TickEvent e) {
+    synchronized (nextTurnMonitor) {
+      // Unblock methods waiting for the next turn
+      nextTurnMonitor.notifyAll();
     }
   }
 

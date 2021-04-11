@@ -210,6 +210,8 @@ public abstract class Bot extends BaseBot implements IBot {
   /** {@inheritDoc} */
   @Override
   public void waitFor(Condition condition) {
+    // FIXME
+    /*
     __botInternals.await(() -> {
       try {
         return condition.test();
@@ -217,6 +219,7 @@ public abstract class Bot extends BaseBot implements IBot {
         return false;
       }
     });
+     */
   }
 
   /** {@inheritDoc} */
