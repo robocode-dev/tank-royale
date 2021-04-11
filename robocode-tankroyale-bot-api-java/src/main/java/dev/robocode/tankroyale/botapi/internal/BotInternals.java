@@ -149,11 +149,8 @@ public final class BotInternals implements StopResumeListener {
   public void turnLeft(double degrees) {
     setTurnLeft(degrees);
     do {
-      System.out.println("#1");
       bot.go();
-      System.out.println("#2");
     } while (turnRemaining != 0);
-    System.out.println("#3");
   }
 
   public void setTurnGunLeft(double degrees) {
@@ -317,12 +314,12 @@ public final class BotInternals implements StopResumeListener {
 
   public void stop() {
     baseBotInternals.setStop();
-    bot.go();
+//    bot.go();
   }
 
   public void resume() {
     baseBotInternals.setResume();
-    bot.go();
+//    bot.go();
   }
 
   public void onStop() {

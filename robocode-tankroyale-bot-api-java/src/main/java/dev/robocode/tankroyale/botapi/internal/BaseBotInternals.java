@@ -1,11 +1,15 @@
 package dev.robocode.tankroyale.botapi.internal;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.neovisionaries.ws.client.*;
-import dev.robocode.tankroyale.botapi.*;
+import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.GameSetup;
+import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
 import dev.robocode.tankroyale.botapi.events.RoundEndedEvent;
 import dev.robocode.tankroyale.botapi.events.RoundStartedEvent;
@@ -19,8 +23,10 @@ import dev.robocode.tankroyale.schema.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static dev.robocode.tankroyale.botapi.IBaseBot.*;
 import static dev.robocode.tankroyale.botapi.internal.MathUtil.limitRange;
@@ -50,7 +56,7 @@ public final class BaseBotInternals {
 
   private final Object nextTurnMonitor = new Object();
 
-  private final AtomicBoolean isStopped = new AtomicBoolean();
+  private boolean isStopped;
 
   private BotIntent botIntent = newBotIntent();
 
@@ -355,45 +361,41 @@ public final class BaseBotInternals {
   }
 
   public void setStop() {
-    synchronized (isStopped) {
-      if (!isStopped.get()) {
-        isStopped.set(true); // first step
+    if (!isStopped) {
+      isStopped = true; // must be first step
 
-        savedTargetSpeed = botIntent.getTargetSpeed();
-        savedTurnRate = botIntent.getTurnRate();
-        savedGunTurnRate = botIntent.getGunTurnRate();
-        savedRadarTurnRate = botIntent.getRadarTurnRate();
+      savedTargetSpeed = botIntent.getTargetSpeed();
+      savedTurnRate = botIntent.getTurnRate();
+      savedGunTurnRate = botIntent.getGunTurnRate();
+      savedRadarTurnRate = botIntent.getRadarTurnRate();
 
-        botIntent.setTargetSpeed(0d);
-        botIntent.setTurnRate(0d);
-        botIntent.setGunTurnRate(0d);
-        botIntent.setRadarTurnRate(0d);
+      botIntent.setTargetSpeed(0d);
+      botIntent.setTurnRate(0d);
+      botIntent.setGunTurnRate(0d);
+      botIntent.setRadarTurnRate(0d);
 
-        if (stopResumeListener != null) {
-          stopResumeListener.onStop();
-        }
+      if (stopResumeListener != null) {
+        stopResumeListener.onStop();
       }
     }
   }
 
   public void setResume() {
-    synchronized (isStopped) {
-      if (isStopped.get()) {
-        botIntent.setTargetSpeed(savedTargetSpeed);
-        botIntent.setTurnRate(savedTurnRate);
-        botIntent.setGunTurnRate(savedGunTurnRate);
-        botIntent.setRadarTurnRate(savedRadarTurnRate);
+    if (isStopped) {
+      botIntent.setTargetSpeed(savedTargetSpeed);
+      botIntent.setTurnRate(savedTurnRate);
+      botIntent.setGunTurnRate(savedGunTurnRate);
+      botIntent.setRadarTurnRate(savedRadarTurnRate);
 
-        if (stopResumeListener != null) {
-          stopResumeListener.onResume();
-        }
-        isStopped.set(false); // last step
+      if (stopResumeListener != null) {
+        stopResumeListener.onResume();
       }
+      isStopped = false; // must be last step
     }
   }
 
   public boolean isStopped() {
-    return isStopped.get();
+    return isStopped;
   }
 
   private ServerHandshake getServerHandshake() {
