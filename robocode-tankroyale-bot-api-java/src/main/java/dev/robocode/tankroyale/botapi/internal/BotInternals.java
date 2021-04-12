@@ -251,7 +251,7 @@ public final class BotInternals implements StopResumeListener {
   }
 
   private void updateGunTurnRemaining() {
-    double gunTurnRate = bot.getTurnRate();
+    double gunTurnRate = bot.getGunTurnRate();
     if (abs(gunTurnRemaining) < abs(gunTurnRate)) {
       gunTurnRate = gunTurnRemaining;
       bot.setGunTurnRate(gunTurnRate);
