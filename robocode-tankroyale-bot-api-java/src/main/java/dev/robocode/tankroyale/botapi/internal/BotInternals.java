@@ -20,7 +20,6 @@ public final class BotInternals implements StopResumeListener {
   private boolean isOverDriving;
 
   private Thread thread;
-  private volatile boolean isRunning;
 
   private double savedDistanceRemaining;
   private double savedTurnRemaining;
@@ -50,6 +49,7 @@ public final class BotInternals implements StopResumeListener {
 
   private void onNextTurn(TickEvent e) {
     if (e.getTurnNumber() == 1) {
+      stopThread(); // sanity before starting a new thread (later)
       startThread();
     }
     processTurn();
@@ -60,8 +60,6 @@ public final class BotInternals implements StopResumeListener {
     turnRemaining = 0d;
     gunTurnRemaining = 0d;
     radarTurnRemaining = 0d;
-
-    stopThread(); // sanity before starting a new thread (later)
   }
 
   private void onRoundEnded() {
@@ -89,7 +87,7 @@ public final class BotInternals implements StopResumeListener {
   }
 
   public boolean isRunning() {
-    return isRunning;
+    return thread != null;
   }
 
   public double getDistanceRemaining() {
@@ -190,7 +188,7 @@ public final class BotInternals implements StopResumeListener {
 
   public void scan() {
     bot.setScan();
-    bot.go();
+//    bot.go();
   }
 
   private void processTurn() {
@@ -212,21 +210,16 @@ public final class BotInternals implements StopResumeListener {
 
   private void startThread() {
     synchronized (threadMonitor) {
-      isRunning = true; // Set this before the thread is starting as run() needs it to be set
       thread = new Thread(bot::run);
       thread.start();
     }
   }
 
+  @SuppressWarnings("deprecation")
   private void stopThread() {
     synchronized (threadMonitor) {
-      isRunning = false;
       if (thread != null) {
-        thread.interrupt();
-        try {
-          thread.join(100, 0);
-        } catch (InterruptedException ignored) {
-        }
+        thread.stop(); // Only Thread.stop() is effective, Thread.interrupt() is not good enough
         thread = null;
       }
     }
