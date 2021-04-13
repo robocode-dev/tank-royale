@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.util;
+package dev.robocode.tankroyale.gui.util
 
 import java.net.InetAddress
 import java.net.UnknownHostException

@@ -23,7 +23,7 @@ object BotDirectoryConfigDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.
 
         contentPane.add(BotDirectoryConfigPanel)
 
-        onClosing() {
+        onClosing {
             MiscSettings.botsDirectories = BotDirectoryConfigPanel.listModel.elements().toList()
             MiscSettings.save()
         }

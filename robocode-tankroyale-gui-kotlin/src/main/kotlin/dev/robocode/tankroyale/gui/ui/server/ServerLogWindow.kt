@@ -24,7 +24,7 @@ object ServerLogWindow : JFrame(ResourceBundles.UI_TITLES.get("server_log_window
         }
         contentPane.add(scrollPane)
 
-        onActivated() {
+        onActivated {
             // Scroll to the bottom
             val scrollBar = scrollPane.verticalScrollBar
             scrollBar.value = scrollBar.maximum
