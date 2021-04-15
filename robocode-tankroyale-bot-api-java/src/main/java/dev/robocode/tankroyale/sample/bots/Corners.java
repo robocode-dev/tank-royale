@@ -51,7 +51,6 @@ public class Corners extends Bot {
     // Spin gun back and forth
     while (isRunning()) {
       for (int i = 0; i < 30; i++) {
-        System.out.println(getTurnNumber() + " run - turnGunRight");
         turnGunRight(gunIncrement);
       }
       gunIncrement *= -1;
@@ -84,20 +83,15 @@ public class Corners extends Bot {
     // Should we stop, or just fire?
     if (stopWhenSeeRobot) {
       // Stop movement
-      System.out.println(getTurnNumber() + " onScannedBot - stop");
-      stop();
+      setStop();
       // Call our custom firing method
-      System.out.println(getTurnNumber() + " onScannedBot - smartFire");
       smartFire(distance);
       // Rescan for another robot
-      System.out.println(getTurnNumber() + " onScannedBot - scan");
-      scan();
+      setScan();
       // We won't get here if we saw another robot.
       // Okay, we didn't see another robot... start moving or turning again.
-      System.out.println(getTurnNumber() + " onScannedBot - resume");
-      resume();
+      setResume();
     } else {
-      System.out.println(getTurnNumber() + " onScannedBot - else smartFire");
       smartFire(distance);
     }
   }
@@ -108,7 +102,6 @@ public class Corners extends Bot {
    * @param distance the distance to the robot to fire at
    */
   private void smartFire(double distance) {
-    System.out.println(getTurnNumber() + " smartFire");
     if (distance > 200 || getEnergy() < 15) {
       fire(1);
     } else if (distance > 50) {

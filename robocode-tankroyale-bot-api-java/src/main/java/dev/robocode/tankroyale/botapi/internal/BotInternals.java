@@ -188,7 +188,13 @@ public final class BotInternals implements StopResumeListener {
 
   public void scan() {
     bot.setScan();
-//    bot.go();
+    bot.go();
+  }
+
+  public void waitFor(Condition condition) {
+    while (!condition.test()) {
+      bot.go();
+    }
   }
 
   private void processTurn() {
@@ -307,12 +313,12 @@ public final class BotInternals implements StopResumeListener {
 
   public void stop() {
     baseBotInternals.setStop();
-//    bot.go();
+    bot.go();
   }
 
   public void resume() {
     baseBotInternals.setResume();
-//    bot.go();
+    bot.go();
   }
 
   public void onStop() {
