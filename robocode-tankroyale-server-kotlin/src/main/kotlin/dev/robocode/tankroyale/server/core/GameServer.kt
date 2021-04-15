@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import dev.robocode.tankroyale.schema.*
 import dev.robocode.tankroyale.schema.BotIntent
 import dev.robocode.tankroyale.schema.GameSetup
-import dev.robocode.tankroyale.schema.Message.`$type`
+import dev.robocode.tankroyale.schema.Message.*
 import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.conn.ConnHandler
 import dev.robocode.tankroyale.server.mapper.*
@@ -70,8 +70,8 @@ class GameServer(
     private val tickLock = Any()
 
     private var botListUpdateMessage = BotListUpdate().apply {
-        `$type` = Message.`$type`.BOT_LIST_UPDATE
-        bots = listOf<BotInfo>()
+        this.`$type` = Message.`$type`.BOT_LIST_UPDATE
+        this.bots = listOf<BotInfo>()
     }
 
     init {
@@ -105,7 +105,7 @@ class GameServer(
 
     /** Prepares the game and wait for participants to become 'ready' */
     private fun prepareGame() {
-        log.debug("Preparing game")
+        log.info("Preparing game")
 
         serverState = ServerState.WAIT_FOR_READY_PARTICIPANTS
         participantIds.clear()
@@ -332,6 +332,7 @@ class GameServer(
             // Start the game with the participants that are ready
             participants.clear()
             participants += readyParticipants
+
             startGame()
         } else {
             // Not enough participants -> prepare another game
@@ -340,12 +341,12 @@ class GameServer(
     }
 
     private fun onNextTurn() {
+        if (serverState !== ServerState.GAME_RUNNING) {
+            return
+        }
         // Required as this method can be called again while already running.
         // This would give a raise condition without the synchronized lock.
         synchronized(tickLock) {
-            if (serverState === ServerState.GAME_STOPPED) {
-                return
-            }
             // Update game state
             val gameState = updateGameState()
             if (gameState.isGameEnded) {
@@ -557,6 +558,8 @@ class GameServer(
 
     /** Aborts current game */
     internal fun onAbortGame() {
+        log.info("Aborting game")
+
         serverState = ServerState.GAME_STOPPED
 
         broadcastGameAborted()

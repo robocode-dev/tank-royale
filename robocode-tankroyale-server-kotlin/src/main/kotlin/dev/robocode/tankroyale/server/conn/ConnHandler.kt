@@ -36,7 +36,7 @@ class ConnHandler internal constructor(
     private val controllerHandshakes = Collections.synchronizedMap(HashMap<WebSocket, ControllerHandshake>())
     private val executorService: ExecutorService
 
-    private val logger = LoggerFactory.getLogger(ConnHandler::class.java)
+    private val log = LoggerFactory.getLogger(ConnHandler::class.java)
 
     init {
         val address = InetSocketAddress("localhost", Server.port.toInt())
@@ -100,7 +100,7 @@ class ConnHandler internal constructor(
                 pool.shutdownNow()
                 // Wait a while for tasks to respond to being cancelled
                 if (!pool.awaitTermination(5, TimeUnit.SECONDS)) {
-                    logger.warn("Pool did not terminate")
+                    log.warn("Pool did not terminate")
                 }
             }
         } catch (ie: InterruptedException) {
@@ -112,17 +112,17 @@ class ConnHandler internal constructor(
     }
 
     private fun send(conn: WebSocket, message: String) {
-        logger.debug("Sending to: ${conn.remoteSocketAddress}, message: $message")
+        log.debug("Sending to: ${conn.remoteSocketAddress}, message: $message")
         conn.send(message)
     }
 
     fun broadcast(clients: Collection<WebSocket>, message: String) {
-        logger.debug("Broadcast message: $message")
+        log.debug("Broadcast message: $message")
         webSocketObserver.broadcast(message, clients)
     }
 
     private fun notifyException(exception: Exception) {
-        logger.debug("Exception occurred: $exception")
+        log.error("Exception occurred: $exception")
         executorService.submit { listener.onException(exception) }
     }
 
@@ -131,7 +131,7 @@ class ConnHandler internal constructor(
         override fun onStart() {}
 
         override fun onOpen(conn: WebSocket, handshake: ClientHandshake) {
-            logger.debug("onOpen(): ${conn.remoteSocketAddress}")
+            log.debug("onOpen(): ${conn.remoteSocketAddress}")
             allConnections += conn
             val hs = ServerHandshake()
             hs.`$type` = Message.`$type`.SERVER_HANDSHAKE
@@ -143,7 +143,7 @@ class ConnHandler internal constructor(
         }
 
         override fun onClose(conn: WebSocket, code: Int, reason: String, remote: Boolean) {
-            logger.debug("onClose(): ${conn.remoteSocketAddress}, code: $code, reason: $reason, remote: $remote")
+            log.debug("onClose(): ${conn.remoteSocketAddress}, code: $code, reason: $reason, remote: $remote")
             allConnections -= conn
             when {
                 botConnections.remove(conn) -> {
@@ -165,7 +165,7 @@ class ConnHandler internal constructor(
         }
 
         override fun onMessage(conn: WebSocket, message: String) {
-            logger.debug("onMessage(): ${conn.remoteSocketAddress}, message: $message")
+            log.debug("onMessage(): ${conn.remoteSocketAddress}, message: $message")
             val gson = Gson()
             try {
                 val jsonObject = gson.fromJson(message, JsonObject::class.java)
@@ -178,7 +178,7 @@ class ConnHandler internal constructor(
                         notifyException(IllegalStateException("Unhandled message type: ${jsonType.asString}"))
                         return
                     }
-                    logger.debug("Handling message: $type")
+                    log.debug("Handling message: $type")
                     when (type) {
                         Message.`$type`.BOT_INTENT -> {
                             val intent = gson.fromJson(message, BotIntent::class.java)
@@ -198,7 +198,7 @@ class ConnHandler internal constructor(
 
                             // Validate client secret before continuing
                             if (clientSecret != null && clientSecret.isNotEmpty() && handshake.secret != clientSecret) {
-                                logger.info("Ignoring observer using invalid secret. Name: ${handshake.name}, Version: ${handshake.version}")
+                                log.info("Ignoring observer using invalid secret. Name: ${handshake.name}, Version: ${handshake.version}")
                                 return  // Ignore client with wrong secret
                             }
                             observerConnections += conn
@@ -210,7 +210,7 @@ class ConnHandler internal constructor(
 
                             // Validate client secret before continuing
                             if (clientSecret != null && clientSecret.isNotEmpty() && handshake.secret != clientSecret) {
-                                logger.info("Ignoring controller using invalid secret. Name: ${handshake.name}, Version: ${handshake.version}")
+                                log.info("Ignoring controller using invalid secret. Name: ${handshake.name}, Version: ${handshake.version}")
                                 return  // Ignore client with wrong secret
                             }
                             controllerConnections += conn
@@ -243,12 +243,12 @@ class ConnHandler internal constructor(
                     }
                 }
             } catch (e2: JsonSyntaxException) {
-                logger.error("Invalid message: $message", e2)
+                log.error("Invalid message: $message", e2)
             }
         }
 
-        override fun onError(conn: WebSocket, ex: Exception) {
-            notifyException(ex)
+        override fun onError(conn: WebSocket?, ex: Exception) {
+//            notifyException(ex)
         }
     }
 }

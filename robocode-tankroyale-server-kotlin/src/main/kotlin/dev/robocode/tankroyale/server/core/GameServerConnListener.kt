@@ -52,27 +52,27 @@ internal class GameServerConnListener(private val gameServer: GameServer) : Conn
     }
 
     override fun onStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
-        log.info("Starting game")
+        log.debug("Game is requested to start")
         gameServer.onStartGame(gameSetup, botAddresses)
     }
 
     override fun onAbortGame() {
-        log.info("Aborting game")
+        log.debug("Game is requested to abort")
         gameServer.onAbortGame()
     }
 
     override fun onPauseGame() {
-        log.info("Pausing game")
+        log.debug("Game is requested to pause")
         gameServer.onPauseGame()
     }
 
     override fun onResumeGame() {
-        log.info("Resuming game")
+        log.debug("Game is requested to resume")
         gameServer.onResumeGame()
     }
 
     override fun onChangeTps(tps: Int) {
-        log.info("Changing TPS to $tps")
+        log.info("TPS is requested to change to $tps")
         gameServer.onChangeTps(tps)
     }
 

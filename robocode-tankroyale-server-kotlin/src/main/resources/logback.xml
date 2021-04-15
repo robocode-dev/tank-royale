@@ -2,7 +2,7 @@
 <configuration>
 
     <!-- Stop output INFO at start -->
-    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <withJansi>true</withJansi>
@@ -10,6 +10,8 @@
             <pattern>%highlight(%-5level) %msg %n</pattern>
         </encoder>
     </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"/>
 
     <root level="info">
         <appender-ref ref="CONSOLE"/>
