@@ -44,12 +44,18 @@ public final class BaseBotInternals {
   private static final String TICK_NOT_AVAILABLE_MSG =
       "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first";
 
-  private final Gson gson;
-
-  private final double absDeceleration = abs(DECELERATION);
+  private WebSocket socket;
+  private ServerHandshake serverHandshake;
 
   private final IBaseBot baseBot;
   private final BotInfo botInfo;
+  private BotIntent botIntent = newBotIntent();
+
+  private Integer myId;
+  private dev.robocode.tankroyale.botapi.GameSetup gameSetup;
+  private TickEvent tickEvent;
+  private Long tickStartNanoTime;
+
   private final BotEventHandlers botEventHandlers;
   private final EventQueue eventQueue;
   private final Set<Condition> conditions = new HashSet<>();
@@ -57,32 +63,21 @@ public final class BaseBotInternals {
   private final Object nextTurnMonitor = new Object();
 
   private boolean isStopped;
-
-  private BotIntent botIntent = newBotIntent();
-
   private StopResumeListener stopResumeListener;
 
-  // Server connection:
-  private WebSocket socket;
-  private ServerHandshake serverHandshake;
-
-  // Current game states:
-  private Integer myId;
-  private dev.robocode.tankroyale.botapi.GameSetup gameSetup;
-  private TickEvent tickEvent;
-  private Long tickStartNanoTime;
-
-  // Maximum speed and turn rates
   private double maxSpeed = MAX_SPEED;
   private double maxTurnRate = MAX_TURN_RATE;
   private double maxGunTurnRate = MAX_GUN_TURN_RATE;
   private double maxRadarTurnRate = MAX_RADAR_TURN_RATE;
 
-  // Storing movement when stopping bot
   private Double savedTargetSpeed;
   private Double savedTurnRate;
   private Double savedGunTurnRate;
   private Double savedRadarTurnRate;
+
+  private final double absDeceleration = abs(DECELERATION);
+
+  private final Gson gson;
 
   {
     RuntimeTypeAdapterFactory<dev.robocode.tankroyale.schema.Event> typeFactory =
@@ -110,6 +105,19 @@ public final class BaseBotInternals {
     init(serverUrl == null ? getServerUrlFromSetting() : serverUrl);
   }
 
+  private void init(URI serverUrl) {
+    try {
+      socket = new WebSocketFactory().createSocket(serverUrl);
+    } catch (IOException ex) {
+      throw new BotException("Could not create socket for URL: " + serverUrl, ex);
+    }
+    socket.addListener(new WebSocketListener());
+
+    botEventHandlers.onRoundStarted.subscribe(this::onRoundStarted, 100);
+    botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 100);
+    botEventHandlers.onBulletFired.subscribe(this::onBulletFired, 100);
+  }
+
   private static BotIntent newBotIntent() {
     BotIntent botIntent = new BotIntent();
     botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
@@ -120,25 +128,28 @@ public final class BaseBotInternals {
     stopResumeListener = listener;
   }
 
-  private void init(URI serverUrl) {
-    try {
-      socket = new WebSocketFactory().createSocket(serverUrl);
-    } catch (IOException ex) {
-      throw new BotException("Could not create socket for URL: " + serverUrl, ex);
-    }
-    socket.addListener(new WebSocketListener());
-
-    botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 100);
-    botEventHandlers.onRoundStarted.subscribe(this::onRoundStarted, 100);
-    botEventHandlers.onBulletFired.subscribe(this::onBulletFired, 100);
-  }
-
   BotEventHandlers getBotEventHandlers() {
     return botEventHandlers;
   }
 
   Set<Condition> getConditions() {
     return conditions;
+  }
+
+  private void onRoundStarted(RoundStartedEvent e) {
+    botIntent = newBotIntent();
+    eventQueue.clear();
+  }
+
+  private void onNextTurn(TickEvent e) {
+    synchronized (nextTurnMonitor) {
+      // Unblock methods waiting for the next turn
+      nextTurnMonitor.notifyAll();
+    }
+  }
+
+  private void onBulletFired(BulletFiredEvent e) {
+    botIntent.setFirepower(0d); // Reset firepower so the bot stops firing continuously
   }
 
   public void start() {
@@ -421,22 +432,6 @@ public final class BaseBotInternals {
     } catch (URISyntaxException ex) {
       throw new BotException("Incorrect syntax for server URL: " + url);
     }
-  }
-
-  private void onNextTurn(TickEvent e) {
-    synchronized (nextTurnMonitor) {
-      // Unblock methods waiting for the next turn
-      nextTurnMonitor.notifyAll();
-    }
-  }
-
-  private void onRoundStarted(RoundStartedEvent e) {
-    botIntent = newBotIntent();
-    eventQueue.clear();
-  }
-
-  private void onBulletFired(BulletFiredEvent e) {
-    botIntent.setFirepower(0d); // Reset firepower so the bot stops firing continuously
   }
 
   private final class WebSocketListener extends WebSocketAdapter {

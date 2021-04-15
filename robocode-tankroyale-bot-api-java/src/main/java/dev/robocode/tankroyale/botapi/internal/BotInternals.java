@@ -11,15 +11,15 @@ public final class BotInternals implements StopResumeListener {
   private final Bot bot;
   private final BaseBotInternals baseBotInternals;
 
+  private Thread thread;
   private final Object threadMonitor = new Object();
 
   private double distanceRemaining;
   private double turnRemaining;
   private double gunTurnRemaining;
   private double radarTurnRemaining;
-  private boolean isOverDriving;
 
-  private Thread thread;
+  private boolean isOverDriving;
 
   private double savedDistanceRemaining;
   private double savedTurnRemaining;
@@ -33,26 +33,14 @@ public final class BotInternals implements StopResumeListener {
     baseBotInternals.setStopResumeHandler(this);
 
     BotEventHandlers botEventHandlers = baseBotInternals.getBotEventHandlers();
-    botEventHandlers.onDisconnected.subscribe(this::onDisconnected, 90);
-    botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 90);
-    botEventHandlers.onGameEnded.subscribe(this::onGameEnded, 90);
-    botEventHandlers.onHitBot.subscribe(this::onHitBot, 90);
-    botEventHandlers.onHitWall.subscribe(e -> onHitWall(), 90);
-    botEventHandlers.onBotDeath.subscribe(this::onDeath, 90);
     botEventHandlers.onRoundStarted.subscribe(e -> onRoundStarted(), 90);
     botEventHandlers.onRoundEnded.subscribe(e -> onRoundEnded(), 90);
-  }
-
-  private void onDisconnected(DisconnectedEvent e) {
-    stopThread();
-  }
-
-  private void onNextTurn(TickEvent e) {
-    if (e.getTurnNumber() == 1) {
-      stopThread(); // sanity before starting a new thread (later)
-      startThread();
-    }
-    processTurn();
+    botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 90);
+    botEventHandlers.onGameEnded.subscribe(this::onGameEnded, 90);
+    botEventHandlers.onDisconnected.subscribe(this::onDisconnected, 90);
+    botEventHandlers.onHitWall.subscribe(e -> onHitWall(), 90);
+    botEventHandlers.onHitBot.subscribe(this::onHitBot, 90);
+    botEventHandlers.onBotDeath.subscribe(this::onDeath, 90);
   }
 
   private void onRoundStarted() {
@@ -66,18 +54,64 @@ public final class BotInternals implements StopResumeListener {
     stopThread();
   }
 
+  private void onNextTurn(TickEvent e) {
+    if (e.getTurnNumber() == 1) {
+      stopThread(); // sanity before starting a new thread (later)
+      startThread();
+    }
+    processTurn();
+  }
+
   private void onGameEnded(GameEndedEvent e) {
     stopThread();
+  }
+
+  private void onDisconnected(DisconnectedEvent e) {
+    stopThread();
+  }
+
+  private void processTurn() {
+    // No movement is possible, when the bot has become disabled
+    if (bot.isDisabled()) {
+      distanceRemaining = 0;
+      turnRemaining = 0;
+      gunTurnRemaining = 0;
+      radarTurnRemaining = 0;
+
+      return;
+    }
+
+    updateTurnRemaining();
+    updateGunTurnRemaining();
+    updateRadarTurnRemaining();
+    updateMovement();
+  }
+
+  private void startThread() {
+    synchronized (threadMonitor) {
+      thread = new Thread(bot::run);
+      thread.start();
+    }
+  }
+
+  @SuppressWarnings("deprecation")
+  private void stopThread() {
+    synchronized (threadMonitor) {
+      if (thread != null) {
+        thread.stop(); // Only Thread.stop() is effective, Thread.interrupt() is not good enough
+        thread = null;
+      }
+    }
+  }
+
+  private void onHitWall() {
+    distanceRemaining = 0;
   }
 
   private void onHitBot(HitBotEvent e) {
     if (e.isRammed()) {
       distanceRemaining = 0;
     }
-  }
-
-  private void onHitWall() {
-    distanceRemaining = 0;
   }
 
   private void onDeath(DeathEvent e) {
@@ -181,7 +215,7 @@ public final class BotInternals implements StopResumeListener {
     } while (radarTurnRemaining != 0);
   }
 
-  public void fire(double firepower) { // TODO: Return boolean
+  public void fire(double firepower) {
     bot.setFire(firepower);
     bot.go();
   }
@@ -197,38 +231,28 @@ public final class BotInternals implements StopResumeListener {
     }
   }
 
-  private void processTurn() {
-    // No movement is possible, when the bot has become disabled
-    if (bot.isDisabled()) {
-      distanceRemaining = 0;
-      turnRemaining = 0;
-      gunTurnRemaining = 0;
-      radarTurnRemaining = 0;
-
-      return;
-    }
-
-    updateTurnRemaining();
-    updateGunTurnRemaining();
-    updateRadarTurnRemaining();
-    updateMovement();
+  public void stop() {
+    baseBotInternals.setStop();
+    bot.go();
   }
 
-  private void startThread() {
-    synchronized (threadMonitor) {
-      thread = new Thread(bot::run);
-      thread.start();
-    }
+  public void resume() {
+    baseBotInternals.setResume();
+    bot.go();
   }
 
-  @SuppressWarnings("deprecation")
-  private void stopThread() {
-    synchronized (threadMonitor) {
-      if (thread != null) {
-        thread.stop(); // Only Thread.stop() is effective, Thread.interrupt() is not good enough
-        thread = null;
-      }
-    }
+  public void onStop() {
+    savedDistanceRemaining = distanceRemaining;
+    savedTurnRemaining = turnRemaining;
+    savedGunTurnRemaining = gunTurnRemaining;
+    savedRadarTurnRemaining = radarTurnRemaining;
+  }
+
+  public void onResume() {
+    distanceRemaining = savedDistanceRemaining;
+    turnRemaining = savedTurnRemaining;
+    gunTurnRemaining = savedGunTurnRemaining;
+    radarTurnRemaining = savedRadarTurnRemaining;
   }
 
   private void updateTurnRemaining() {
@@ -309,30 +333,6 @@ public final class BotInternals implements StopResumeListener {
 
       distanceRemaining = distance - speed;
     }
-  }
-
-  public void stop() {
-    baseBotInternals.setStop();
-    bot.go();
-  }
-
-  public void resume() {
-    baseBotInternals.setResume();
-    bot.go();
-  }
-
-  public void onStop() {
-    savedDistanceRemaining = distanceRemaining;
-    savedTurnRemaining = turnRemaining;
-    savedGunTurnRemaining = gunTurnRemaining;
-    savedRadarTurnRemaining = radarTurnRemaining;
-  }
-
-  public void onResume() {
-    distanceRemaining = savedDistanceRemaining;
-    turnRemaining = savedTurnRemaining;
-    gunTurnRemaining = savedGunTurnRemaining;
-    radarTurnRemaining = savedRadarTurnRemaining;
   }
 
   private boolean isNearZero(double value) {
