@@ -14,6 +14,7 @@ import org.java_websocket.WebSocket
 import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArraySet
 import kotlin.math.roundToInt
 
 
@@ -40,7 +41,7 @@ class GameServer(
     private val participants = mutableSetOf<WebSocket>()
 
     /** Game participants that signalled 'ready' for battle */
-    private val readyParticipants = mutableSetOf<WebSocket>()
+    private val readyParticipants = CopyOnWriteArraySet<WebSocket>()
 
     /** Map over participant ids: bot connection -> bot id */
     private val participantIds = mutableMapOf<WebSocket, BotId>()
