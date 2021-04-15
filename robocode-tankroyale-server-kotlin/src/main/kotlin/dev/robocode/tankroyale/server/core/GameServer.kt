@@ -106,7 +106,7 @@ class GameServer(
 
     /** Prepares the game and wait for participants to become 'ready' */
     private fun prepareGame() {
-        log.info("Preparing game")
+        log.debug("Preparing game")
 
         serverState = ServerState.WAIT_FOR_READY_PARTICIPANTS
         participantIds.clear()
