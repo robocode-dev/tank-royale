@@ -25,7 +25,7 @@ public class Walls extends Bot {
 
   /** Constructor, which loads the bot settings file */
   Walls() throws IOException {
-    super(BotInfo.fromFile("walls.properties"));
+    super(BotInfo.fromFile("/walls.properties"));
   }
 
   /**
@@ -83,7 +83,7 @@ public class Walls extends Bot {
   /** onScannedBot: Fire! */
   @Override
   public void onScannedBot(ScannedBotEvent e) {
-    setFire(2);
+    fire(2);
     // Note that scan is called automatically when the robot is turning.
     // By calling it manually here, we make sure we generate another scan event if there's a robot
     // on the next wall, so that we do not start moving up it until it's gone.

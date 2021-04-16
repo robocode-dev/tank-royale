@@ -83,14 +83,14 @@ public class Corners extends Bot {
     // Should we stop, or just fire?
     if (stopWhenSeeRobot) {
       // Stop movement
-      stop();
+      setStop();
       // Call our custom firing method
       smartFire(distance);
       // Rescan for another robot
-      scan();
+      setScan();
       // We won't get here if we saw another robot.
       // Okay, we didn't see another robot... start moving or turning again.
-      resume();
+      setResume();
     } else {
       smartFire(distance);
     }

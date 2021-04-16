@@ -95,6 +95,7 @@ object Client : AutoCloseable {
         if (isConnected) {
             lastStartGame = StartGame(gameSetup.toGameSetup(), botAddresses)
             val startGame = lastStartGame
+
             websocket.send(startGame!!)
         }
     }

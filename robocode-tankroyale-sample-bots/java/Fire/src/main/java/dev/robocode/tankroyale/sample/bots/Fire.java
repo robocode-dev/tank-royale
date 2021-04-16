@@ -42,16 +42,13 @@ public class Fire extends Bot {
     // Spin the gun around slowly... forever
     while (isRunning()) {
       // Turn the gun a bit if the bot if the target speed is 0
-      turnGunRight(5);
+      turnGunLeft(5);
     }
   }
 
   /** onScannedBot: Fire! */
   @Override
   public void onScannedBot(ScannedBotEvent e) {
-    // Set bot to stop movement (executed with next command - fire)
-    setStop();
-
     // If the other robot is close by, and we have plenty of life, fire hard!
     double distance = distanceTo(e.getX(), e.getY());
     if (distance < 50 && getEnergy() > 50) {
@@ -60,18 +57,13 @@ public class Fire extends Bot {
       // Otherwise, only fire 1
       fire(1);
     }
-    // Scan, and resume movement if we did not scan anything
-    if (!scan()) {
-      setResume();
-    }
+    // Rescan
+    scan();
   }
 
   /** onHitByBullet: Turn perpendicular to the bullet, and move a bit. */
   @Override
   public void onHitByBullet(BulletHitBotEvent e) {
-    // Set bot to resume movement, if it was stopped
-    setResume();
-
     // Turn perpendicular to the bullet direction
     turnLeft(normalizeRelativeAngle(90 - (getDirection() - e.getBullet().getDirection())));
 
@@ -80,24 +72,18 @@ public class Fire extends Bot {
     dist *= -1; // Change distance, meaning forward or backward direction
 
     // Rescan
-    setScan();
+    scan();
   }
 
   /** onHitBot: Aim at target and fire hard. */
   @Override
   public void onHitBot(HitBotEvent e) {
-    // Set bot to resume movement, if it was stopped
-    setResume();
-
     // Turn gun to the bullet direction
     double direction = directionTo(e.getX(), e.getY());
     double gunBearing = normalizeRelativeAngle(direction - getGunDirection());
     turnGunLeft(gunBearing);
 
-    // Check that radar is locked (by stopping movement in onScannedBot)
-    if (isStopped()) {
-      // Fire hard
-      fire(3);
-    }
+    // Fire hard
+    fire(3);
   }
 }

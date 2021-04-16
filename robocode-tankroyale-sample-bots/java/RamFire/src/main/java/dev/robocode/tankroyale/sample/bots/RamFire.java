@@ -14,7 +14,7 @@ import java.io.IOException;
  * <p>Drives at robots trying to ram them. Fires when it hits them.
  */
 public class RamFire extends Bot {
-  int turnDirection = 1; // Clockwise (-1) or counterclockwise (1)
+  int turnDirection = 1; // counterclockwise (1) or clockwise (-1)
 
   /** Main method starts our bot */
   public static void main(String[] args) throws IOException {
@@ -35,11 +35,7 @@ public class RamFire extends Bot {
     setRadarColor("#666"); // dark gray
 
     while (isRunning()) {
-      // Turn the gun a bit if the bot if the target speed is 0
-      if (getTargetSpeed() == 0) {
-        turnLeft(5 * turnDirection);
-      }
-      go();
+      turnLeft(5 * turnDirection);
     }
   }
 
@@ -50,6 +46,8 @@ public class RamFire extends Bot {
 
     double distance = distanceTo(e.getX(), e.getY());
     forward(distance + 5);
+
+    scan(); // Might want to move forward again!
   }
 
   /** onHitBot: Turn to face robot, fire hard, and ram him again! */
@@ -84,6 +82,6 @@ public class RamFire extends Bot {
     } else {
       turnDirection = -1;
     }
-    turnLeft(bearing);
+    setTurnLeft(bearing);
   }
 }

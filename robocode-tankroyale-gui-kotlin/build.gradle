@@ -14,7 +14,7 @@ version = '0.6.20'
 description = 'UI Desktop application for running Robocode Tank Royale'
 
 ext {
-    server_version = '0.8.0'
+    server_version = '0.8.3'
     bootstrap_version = '0.7.0'
 }
 
