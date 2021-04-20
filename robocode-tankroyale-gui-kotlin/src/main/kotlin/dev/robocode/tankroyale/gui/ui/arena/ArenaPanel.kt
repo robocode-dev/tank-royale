@@ -299,7 +299,7 @@ object ArenaPanel : JPanel() {
 
         try {
             val participant = Client.getParticipant(bot.id)
-            val text = "${participant.name} ${participant.version}"
+            val text = "${participant.name} ${participant.version} (${participant.id})"
             val width = g.fontMetrics.stringWidth(text)
 
             g.scale(1.0, -1.0)
