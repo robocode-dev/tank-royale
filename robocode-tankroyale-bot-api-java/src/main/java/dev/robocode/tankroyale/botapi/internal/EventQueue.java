@@ -17,6 +17,8 @@ final class EventQueue {
 
   private final SortedMap<Integer, List<BotEvent>> eventMap = new ConcurrentSkipListMap<>();
 
+  private BotEvent currentEvent;
+
   public EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers) {
     this.baseBotInternals = baseBotInternals;
     this.botEventHandlers = botEventHandlers;
@@ -25,7 +27,7 @@ final class EventQueue {
   void clear() {
     eventMap.clear();
     baseBotInternals.getConditions().clear(); // conditions are added in the bot's run() method each round
-    isDispatching = 0;
+    currentEvent = null;
   }
 
   void addEventsFromTick(TickEvent event, IBaseBot baseBot) {
@@ -35,19 +37,23 @@ final class EventQueue {
     addCustomEvents(baseBot);
   }
 
-  int isDispatching;
-
   void dispatchEvents(int currentTurn) {
     removeOldEvents(currentTurn);
 
-    // Publish all event in the order of the keys, i.e. event priority order
+    // Handle events in the order of the keys, i.e. event priority order
     for (List<BotEvent> events : eventMap.values()) {
       for (BotEvent event : events) {
         try {
-
-          events.remove(event); // remove prior to handling!
+          // Exit if we are inside an event handler handling the current event being fired
+          if (currentEvent != null && event.getClass().equals(currentEvent.getClass())) {
+            return;
+          }
+          events.remove(event); // remove event prior to handling it
           botEventHandlers.fire(event);
-        } catch (RescanException ignore) {}
+        } catch (RescanException ignore) {
+        } finally {
+          currentEvent = event;
+        }
       }
     }
   }
