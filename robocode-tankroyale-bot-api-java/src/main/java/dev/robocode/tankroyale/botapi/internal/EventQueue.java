@@ -3,13 +3,14 @@ package dev.robocode.tankroyale.botapi.internal;
 import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
-import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.*;
 
 final class EventQueue {
+
+  private static final int MAX_QUEUE_SIZE = 256;
+  private static final int MAX_EVENT_AGE = 2;
 
   private final BaseBotInternals baseBotInternals;
   private final BotEventHandlers botEventHandlers;
@@ -24,6 +25,7 @@ final class EventQueue {
   void clear() {
     eventMap.clear();
     baseBotInternals.getConditions().clear(); // conditions are added in the bot's run() method each round
+    isDispatching = 0;
   }
 
   void addEventsFromTick(TickEvent event, IBaseBot baseBot) {
@@ -33,28 +35,54 @@ final class EventQueue {
     addCustomEvents(baseBot);
   }
 
-  void dispatchEvents() {
+  int isDispatching;
+
+  void dispatchEvents(int currentTurn) {
+    removeOldEvents(currentTurn);
+
     // Publish all event in the order of the keys, i.e. event priority order
     for (List<BotEvent> events : eventMap.values()) {
-      ArrayList<BotEvent> eventsCopy = new ArrayList<>(events);
-      events.clear();
-
-      for (BotEvent event : eventsCopy) {
+      for (BotEvent event : events) {
         try {
+
+          events.remove(event); // remove prior to handling!
           botEventHandlers.fire(event);
         } catch (RescanException ignore) {}
       }
     }
   }
 
-  private void addEvent(BotEvent event, IBaseBot baseBot) {
-    int priority = getPriority(event, baseBot);
-    List<BotEvent> botEvents = eventMap.get(getPriority(event, baseBot));
-    if (botEvents == null) {
-      botEvents = new CopyOnWriteArrayList<>();
-      eventMap.put(priority, botEvents);
+  private void removeOldEvents(int currentTurn) {
+    for (List<BotEvent> events : eventMap.values()) {
+      // Only remove old events that are not critical
+      events.removeIf(event -> !event.isCritical() && isOldEvent(event, currentTurn));
     }
-    botEvents.add(event);
+  }
+
+  private static boolean isOldEvent(BotEvent event, int currentTurn) {
+    return event.getTurnNumber() + MAX_EVENT_AGE < currentTurn;
+  }
+
+  private void addEvent(BotEvent event, IBaseBot baseBot) {
+    if (countEvents() > MAX_QUEUE_SIZE) {
+      System.err.println("Maximum event queue size has been reached: " + MAX_QUEUE_SIZE);
+    } else {
+      int priority = getPriority(event, baseBot);
+      List<BotEvent> botEvents = eventMap.get(priority);
+      if (botEvents == null) {
+        botEvents = new CopyOnWriteArrayList<>();
+        eventMap.put(priority, botEvents);
+      }
+      botEvents.add(event);
+    }
+  }
+
+  private int countEvents() {
+    int count = 0;
+    for (List<BotEvent> events : eventMap.values()) {
+      count += events.size();
+    }
+    return count;
   }
 
   private void addCustomEvents(IBaseBot baseBot) {

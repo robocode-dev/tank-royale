@@ -23,4 +23,12 @@ public abstract class BotEvent implements IEvent {
   public int getTurnNumber() {
     return turnNumber;
   }
+
+  /**
+   * Indicates if this event is critical, and hence should not be removed from event queue when it gets old.
+   * @return true if this event is critical; false otherwise. Default is false.
+   */
+  public boolean isCritical() {
+    return false;
+  }
 }

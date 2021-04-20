@@ -11,4 +11,9 @@ public final class WonRoundEvent extends BotEvent {
   public WonRoundEvent(int turnNumber) {
     super(turnNumber);
   }
+
+  /** {@inheritDoc} */
+  public boolean isCritical() {
+    return true;
+  }
 }

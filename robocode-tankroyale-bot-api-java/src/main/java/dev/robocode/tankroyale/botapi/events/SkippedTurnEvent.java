@@ -14,4 +14,9 @@ public final class SkippedTurnEvent extends BotEvent {
   public SkippedTurnEvent(int turnNumber) {
     super(turnNumber);
   }
+
+  /** {@inheritDoc} */
+  public boolean isCritical() {
+    return true;
+  }
 }

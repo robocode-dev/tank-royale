@@ -195,7 +195,7 @@ public final class BaseBotInternals {
 
   private void dispatchEvents() {
     try {
-      eventQueue.dispatchEvents();
+      eventQueue.dispatchEvents(getCurrentTick().getTurnNumber());
     } catch (Exception e) {
       e.printStackTrace();
     }
