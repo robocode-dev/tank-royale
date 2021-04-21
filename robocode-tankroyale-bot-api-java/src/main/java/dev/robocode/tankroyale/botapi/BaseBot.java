@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.botapi;
 import dev.robocode.tankroyale.botapi.events.BotEvent;
 import dev.robocode.tankroyale.botapi.events.Condition;
 import dev.robocode.tankroyale.botapi.internal.BaseBotInternals;
-import dev.robocode.tankroyale.botapi.internal.RescanException;
 
 import java.net.URI;
 import java.util.Collection;
