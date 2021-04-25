@@ -577,8 +577,8 @@ public interface IBaseBot {
    * amount of damage dealt by a bullet hitting another bot is 4x firepower, and if the firepower is
    * greater than 1 it will do an additional 2 x (firepower - 1) damage.
    *
-   * <p>Note that the gun will automatically keep firing at any turn as soon as the gun heat reaches zero.
-   * It is possible to disable the gun firing by setting the firepower to zero.
+   * <p>Note that the gun will automatically keep firing at any turn as soon as the gun heat reaches
+   * zero. It is possible to disable the gun firing by setting the firepower to zero.
    *
    * <p>The firepower is truncated to 0 and {@link #MAX_FIREPOWER} if the firepower exceeds this
    * value.
@@ -719,8 +719,8 @@ public interface IBaseBot {
   /**
    * Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
    * turning and thereby will not be able to automatically scan bots. This method is useful when the
-   * robot movement has stopped, e.g. when {@link #setStop()} has been called. The last radar direction
-   * and sweep angle will be used for rescanning for bots.
+   * robot movement has stopped, e.g. when {@link #setStop()} has been called. The last radar
+   * direction and sweep angle will be used for rescanning for bots.
    *
    * <p>This method will first be executed when {@link #go()} is called making it possible to call
    * other set methods before execution. This makes it possible to set the bot to move, turn the
@@ -1204,7 +1204,7 @@ public interface IBaseBot {
   }
 
   /**
-   * Calculates the bearing (delta angle) between the bot's coordinates and direction and the
+   * Calculates the bearing (delta angle) between the current direction of the bot's body and the
    * direction to the point x,y.
    *
    * @param x is the x coordinate of the point.
@@ -1213,6 +1213,30 @@ public interface IBaseBot {
    */
   default double bearingTo(double x, double y) {
     return normalizeRelativeAngle(directionTo(x, y) - getDirection());
+  }
+
+  /**
+   * Calculates the bearing (delta angle) between the current direction of the bot's gun and the
+   * direction to the point x,y.
+   *
+   * @param x is the x coordinate of the point.
+   * @param y is the y coordinate of the point.
+   * @return The bearing to the point x,y in the range [-180,180[
+   */
+  default double gunBearingTo(double x, double y) {
+    return normalizeRelativeAngle(directionTo(x, y) - getGunDirection());
+  }
+
+  /**
+   * Calculates the bearing (delta angle) between the current direction of the bot's radar and the
+   * direction to the point x,y.
+   *
+   * @param x is the x coordinate of the point.
+   * @param y is the y coordinate of the point.
+   * @return The bearing to the point x,y in the range [-180,180[
+   */
+  default double radarBearingTo(double x, double y) {
+    return normalizeRelativeAngle(directionTo(x, y) - getRadarDirection());
   }
 
   /**

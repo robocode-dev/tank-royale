@@ -216,8 +216,9 @@ public final class BotInternals implements StopResumeListener {
   }
 
   public void fire(double firepower) {
-    bot.setFire(firepower);
-    bot.go();
+    if (bot.setFire(firepower)) {
+      bot.go();
+    }
   }
 
   public void scan() {
