@@ -537,8 +537,6 @@ class GameServer(
             botsThatSentIntent.clear()
             turnTimeoutTimer?.reset()
             resetTurnTimeout()
-
-//            onNextTurn()
         }
     }
 
@@ -571,6 +569,8 @@ class GameServer(
     /** Pauses current game */
     internal fun onPauseGame() {
         if (serverState === ServerState.GAME_RUNNING) {
+            log.info("Pausing game");
+
             serverState = ServerState.GAME_PAUSED
 
             turnTimeoutTimer?.pause()
@@ -582,6 +582,8 @@ class GameServer(
     /** Resumes current game */
     internal fun onResumeGame() {
         if (serverState === ServerState.GAME_PAUSED) {
+            log.info("Resuming game");
+
             serverState = ServerState.GAME_RUNNING
 
             turnTimeoutTimer?.resume()

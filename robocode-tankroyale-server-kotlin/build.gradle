@@ -39,7 +39,7 @@ dependencies {
     implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.7.0'
     implementation 'org.danilopianini:gson-extras:0.2.2'
 
-    implementation 'org.java-websocket:Java-WebSocket:1.5.1'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.2'
 
     implementation 'info.picocli:picocli:4.3.2'
 
