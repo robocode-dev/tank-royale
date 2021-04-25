@@ -108,6 +108,7 @@ object Client : AutoCloseable {
     }
 
     fun restartGame() {
+        resumeGame()
         stopGame()
         websocket.send(lastStartGame!!)
     }
