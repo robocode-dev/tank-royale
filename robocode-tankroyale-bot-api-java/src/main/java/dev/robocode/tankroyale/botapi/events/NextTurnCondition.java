@@ -20,7 +20,9 @@ import dev.robocode.tankroyale.botapi.IBot;
  *      }
  *    }
  * }
+ * </pre>
  */
+@SuppressWarnings("unused")
 public final class NextTurnCondition extends Condition {
 
   private final IBaseBot baseBot;
