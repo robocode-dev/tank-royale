@@ -974,7 +974,7 @@ public interface IBaseBot {
         "Connection error with "
             + connectionErrorEvent.getServerUri()
             + ": "
-            + connectionErrorEvent.getException().getMessage());
+            + connectionErrorEvent.getError().getMessage());
   }
 
   /**

@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
-import com.neovisionaries.ws.client.*;
 import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.GameSetup;
@@ -20,17 +19,20 @@ import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
 import dev.robocode.tankroyale.botapi.mapper.ResultsMapper;
 import dev.robocode.tankroyale.schema.*;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.WebSocket;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CountDownLatch;
 
 import static dev.robocode.tankroyale.botapi.IBaseBot.*;
 import static dev.robocode.tankroyale.botapi.internal.MathUtil.limitRange;
 import static java.lang.Math.*;
+import static java.net.http.WebSocket.Builder;
+import static java.net.http.WebSocket.Listener;
 
 public final class BaseBotInternals {
   private static final String SERVER_URL_PROPERTY_KEY = "server.url";
@@ -44,8 +46,10 @@ public final class BaseBotInternals {
   private static final String TICK_NOT_AVAILABLE_MSG =
       "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first";
 
+  private final URI serverUrl;
   private WebSocket socket;
   private ServerHandshake serverHandshake;
+  private final CountDownLatch closedLatch = new CountDownLatch(1);
 
   private final IBaseBot baseBot;
   private final BotInfo botInfo;
@@ -53,6 +57,7 @@ public final class BaseBotInternals {
 
   private Integer myId;
   private dev.robocode.tankroyale.botapi.GameSetup gameSetup;
+
   private TickEvent tickEvent;
   private Long tickStartNanoTime;
 
@@ -102,17 +107,12 @@ public final class BaseBotInternals {
     this.botEventHandlers = new BotEventHandlers(baseBot);
     this.eventQueue = new EventQueue(this, botEventHandlers);
 
-    init(serverUrl == null ? getServerUrlFromSetting() : serverUrl);
+    this.serverUrl = serverUrl == null ? getServerUrlFromSetting() : serverUrl;
+
+    init();
   }
 
-  private void init(URI serverUrl) {
-    try {
-      socket = new WebSocketFactory().createSocket(serverUrl);
-    } catch (IOException ex) {
-      throw new BotException("Could not create socket for URL: " + serverUrl, ex);
-    }
-    socket.addListener(new WebSocketListener());
-
+  private void init() {
     botEventHandlers.onRoundStarted.subscribe(this::onRoundStarted, 100);
     botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 100);
     botEventHandlers.onBulletFired.subscribe(this::onBulletFired, 100);
@@ -153,18 +153,15 @@ public final class BaseBotInternals {
   }
 
   public void start() {
-    if (!socket.isOpen()) {
-      try {
-        socket.connect();
-      } catch (WebSocketException ex) {
-        throw new BotException(
-            "Could not connect to web socket: "
-                + socket.getURI()
-                + ". Setup "
-                + EnvVars.SERVER_URL
-                + " to point to a server that is up and running.",
-            ex);
-      }
+    try {
+      HttpClient httpClient = HttpClient.newBuilder().build();
+      Builder webSocketBuilder = httpClient.newWebSocketBuilder();
+      socket = webSocketBuilder.buildAsync(serverUrl, new WebSocketListener()).join();
+
+      closedLatch.await();
+
+    } catch (Exception ex) {
+      throw new BotException("Could not create socket for URL: " + serverUrl, ex);
     }
   }
 
@@ -176,7 +173,7 @@ public final class BaseBotInternals {
 
   public void sendIntent() {
     limitTargetSpeedAndTurnRates();
-    socket.sendText(gson.toJson(botIntent));
+    socket.sendText(gson.toJson(botIntent), true);
   }
 
   private void waitForNextTurn() {
@@ -434,70 +431,71 @@ public final class BaseBotInternals {
     }
   }
 
-  private final class WebSocketListener extends WebSocketAdapter {
+  private final class WebSocketListener implements Listener {
+
+    StringBuffer payload = new StringBuffer();
 
     @Override
-    public final void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
-      botEventHandlers.onConnected.publish(new ConnectedEvent(websocket.getURI()));
+    public final void onOpen(WebSocket websocket) {
+      botEventHandlers.onConnected.publish(new ConnectedEvent(serverUrl));
+      Listener.super.onOpen(websocket);
     }
 
     @Override
-    public final void onDisconnected(
-        WebSocket websocket,
-        WebSocketFrame serverCloseFrame,
-        WebSocketFrame clientCloseFrame,
-        boolean closedByServer) {
-
-      botEventHandlers.onDisconnected.publish(
-          new DisconnectedEvent(websocket.getURI(), closedByServer));
+    public final CompletionStage<?> onClose(WebSocket websocket, int statusCode, String reason) {
+      botEventHandlers.onDisconnected.publish(new DisconnectedEvent(serverUrl, true));
+      closedLatch.countDown();
+      return null;
     }
 
     @Override
-    public final void onError(WebSocket websocket, WebSocketException cause) {
-      botEventHandlers.onConnectionError.publish(
-          new ConnectionErrorEvent(websocket.getURI(), cause));
+    public final void onError(WebSocket websocket, Throwable error) {
+      botEventHandlers.onConnectionError.publish(new ConnectionErrorEvent(serverUrl, error));
+      closedLatch.countDown();
     }
 
     @Override
-    public void onPingFrame(WebSocket websocket, WebSocketFrame frame) {
-      // Make sure to send pong as reply to ping in order to stay connected to server
-      socket.sendPong();
-    }
+    public final CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
+      payload.append(data);
+      if (last) {
+        JsonObject jsonMsg = gson.fromJson(payload.toString(), JsonObject.class);
+        payload.delete(0, payload.length()); // clear payload buffer
 
-    @Override
-    public final void onTextMessage(WebSocket websocket, String json) {
-      JsonObject jsonMsg = gson.fromJson(json, JsonObject.class);
+        JsonElement jsonType = jsonMsg.get("$type");
+        if (jsonType != null) {
+          String type = jsonType.getAsString();
 
-      JsonElement jsonType = jsonMsg.get("$type");
-      if (jsonType != null) {
-        String type = jsonType.getAsString();
-
-        switch (dev.robocode.tankroyale.schema.Message.$type.fromValue(type)) {
-          case TICK_EVENT_FOR_BOT:
-            handleTickEvent(jsonMsg);
-            break;
-          case SERVER_HANDSHAKE:
-            handleServerHandshake(jsonMsg);
-            break;
-          case ROUND_STARTED_EVENT:
-            handleRoundStartedEvent(jsonMsg);
-            break;
-          case ROUND_ENDED_EVENT:
-            handleRoundEndedEvent(jsonMsg);
-            break;
-          case GAME_STARTED_EVENT_FOR_BOT:
-            handleGameStartedEvent(jsonMsg);
-            break;
-          case GAME_ENDED_EVENT_FOR_BOT:
-            handleGameEndedEvent(jsonMsg);
-            break;
-          case SKIPPED_TURN_EVENT:
-            handleSkippedTurnEvent(jsonMsg);
-            break;
-          default:
-            throw new BotException("Unsupported WebSocket message type: " + type);
+          switch (dev.robocode.tankroyale.schema.Message.$type.fromValue(type)) {
+            case TICK_EVENT_FOR_BOT:
+              handleTickEvent(jsonMsg);
+              break;
+            case SERVER_HANDSHAKE:
+              handleServerHandshake(jsonMsg);
+              break;
+            case ROUND_STARTED_EVENT:
+              handleRoundStartedEvent(jsonMsg);
+              break;
+            case ROUND_ENDED_EVENT:
+              handleRoundEndedEvent(jsonMsg);
+              break;
+            case GAME_STARTED_EVENT_FOR_BOT:
+              handleGameStartedEvent(jsonMsg);
+              break;
+            case GAME_ENDED_EVENT_FOR_BOT:
+              handleGameEndedEvent(jsonMsg);
+              break;
+            case SKIPPED_TURN_EVENT:
+              handleSkippedTurnEvent(jsonMsg);
+              break;
+            case GAME_ABORTED_EVENT:
+              closedLatch.countDown();
+              break;
+            default:
+              throw new BotException("Unsupported WebSocket message type: " + type);
+          }
         }
       }
+      return Listener.super.onText(webSocket, data, last);
     }
 
     private void handleTickEvent(JsonObject jsonMsg) {
@@ -543,7 +541,7 @@ public final class BaseBotInternals {
       ready.set$type(BotReady.$type.BOT_READY);
 
       String msg = gson.toJson(ready);
-      socket.sendText(msg);
+      socket.sendText(msg, true);
 
       botEventHandlers.onGameStarted.publish(
           new GameStartedEvent(gameStartedEventForBot.getMyId(), gameSetup));
@@ -569,7 +567,7 @@ public final class BaseBotInternals {
     BotHandshake botHandshake = BotHandshakeFactory.create(botInfo);
     String msg = gson.toJson(botHandshake);
 
-    socket.sendText(msg);
+    socket.sendText(msg, true);
   }
 
   private void handleSkippedTurnEvent(JsonObject jsonMsg) {

@@ -6,26 +6,26 @@ import java.net.URI;
 @SuppressWarnings("unused")
 public final class ConnectionErrorEvent extends ConnectionEvent {
 
-  /** The exception causing the error. */
-  private final Exception exception;
+  /** The error. */
+  private final Throwable error;
 
   /**
    * Initializes a new instance of the ConnectionErrorEvent class.
    *
    * @param serverUri is the URI of the server.
-   * @param exception is the exception causing the error.
+   * @param error is the error.
    */
-  public ConnectionErrorEvent(URI serverUri, Exception exception) {
+  public ConnectionErrorEvent(URI serverUri, Throwable error) {
     super(serverUri);
-    this.exception = exception;
+    this.error = error;
   }
 
   /**
-   * Returns the exception causing the error.
+   * Returns the error.
    *
-   * @return The exception causing the error.
+   * @return The error.
    */
-  public Exception getException() {
-    return exception;
+  public Throwable getError() {
+    return error;
   }
 }

@@ -2,39 +2,37 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'idea'
-    id 'com.github.ben-manes.versions' version '0.28.0'
-//    id "com.github.hierynomus.license" version "0.15.0"
+    id 'com.github.ben-manes.versions' version '0.38.0' // versions
 }
 group = 'dev.robocode.tankroyale'
 version = '0.8.9'
 description = 'Robocode Tank Royale Bot API for Java'
 
-/*
-license {
-    ext.year = Calendar.getInstance().get(Calendar.YEAR)
-    ext.name = 'Flemming Noernberg Larsen'
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
 }
-*/
 
 compileJava {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
+    sourceCompatibility = '11'
+    targetCompatibility = '11'
 }
 
 repositories {
-    jcenter()
     mavenLocal()
+    mavenCentral();
 }
 
 dependencies {
     implementation 'dev.robocode.tankroyale:robocode-tankroyale-schema:0.7.0'
-    implementation 'com.neovisionaries:nv-websocket-client:2.14'
-    implementation 'com.neovisionaries:nv-i18n:1.27'
+    implementation 'com.neovisionaries:nv-i18n:1.28'
+    implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.danilopianini:gson-extras:0.2.2'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.1'
-    testImplementation 'org.assertj:assertj-core:3.16.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0-M1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0-M1'
+    testImplementation 'org.assertj:assertj-core:3.19.0'
 }
 
 test {
