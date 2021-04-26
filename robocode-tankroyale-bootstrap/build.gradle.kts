@@ -1,7 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val title = "Robocode Royale Bootstrap"
+val title = "Robocode Tank Royale Bootstrap"
 description = "Bootstrap utility for booting up bots for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
@@ -15,7 +15,7 @@ plugins {
     kotlin("plugin.serialization") version "1.5.0-M1"
     `maven-publish`
     idea
-    id("com.github.ben-manes.versions") version "0.28.0"
+    id("com.github.ben-manes.versions") version "0.38.0"
 }
 
 tasks.withType<KotlinCompile> {
