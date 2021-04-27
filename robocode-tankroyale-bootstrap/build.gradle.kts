@@ -26,6 +26,7 @@ tasks.withType<KotlinCompile> {
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_9
+    targetCompatibility = JavaVersion.VERSION_1_9
 }
 
 idea {
