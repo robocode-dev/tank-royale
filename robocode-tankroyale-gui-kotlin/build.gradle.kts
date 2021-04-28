@@ -1,16 +1,16 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val title = "Robocode Tank GUI"
-description = "Desktop application for running Robocode Tank Royale"
+val title = "Robocode Tank Royale GUI"
+description = "Desktop application for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
 val artifactId = "robocode-tankroyale-gui"
-version = "0.6.21"
+version = "0.6.22"
 
 
 val serverVersion = "0.8.3"
-val bootstrapVersion = "0.7.0"
+val bootstrapVersion = "0.7.1"
 
 
 plugins {
@@ -23,14 +23,12 @@ plugins {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
+    sourceCompatibility = JavaVersion.VERSION_11.toString()
+    targetCompatibility = JavaVersion.VERSION_11.toString()
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 idea {
@@ -55,31 +53,32 @@ dependencies {
 
     implementation("com.miglayout:miglayout-swing:5.3")
 
-    runtimeOnly ("dev.robocode.tankroyale:robocode-tankroyale-server:${serverVersion}") {
+    runtimeOnly("dev.robocode.tankroyale:robocode-tankroyale-server:${serverVersion}") {
         exclude("ch.qos.logback")
     }
     runtimeOnly("dev.robocode.tankroyale:robocode-tankroyale-bootstrap:${bootstrapVersion}")
 }
 
 val copyServerJar = task<Copy>("copyServerJar") {
-    from(configurations.runtime)
-    into("$idea.module.outputDir")
+    from(configurations.runtimeClasspath)
+    into(idea.module.outputDir)
     include("robocode-tankroyale-server-*.jar")
     rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
 }
 
 val copyBootstrapJar = task<Copy>("copyBootstrapJar") {
-    from(configurations.runtime)
-    into("$idea.module.outputDir")
+    from(configurations.runtimeClasspath)
+    into(idea.module.outputDir)
     include("robocode-tankroyale-bootstrap-*.jar")
     rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
 }
 
 tasks.processResources {
     with(copySpec {
-        from("src/main/resources")
+        from("/src/main/resources")
         include("version.txt")
         filter(ReplaceTokens::class, "tokens" to mapOf("version" to version))
+        duplicatesStrategy = DuplicatesStrategy.WARN
     })
 }
 
@@ -90,15 +89,18 @@ val fatJar = task<Jar>("fatJar") {
         attributes["Main-Class"] = "dev.robocode.tankroyale.gui.ui.MainWindowKt"
     }
     from(
-        configurations.compile.get().filter { it.name.endsWith("jar") }.map { zipTree(it) },
-        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+        configurations.compileClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) },
+        configurations.runtimeClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) }
     )
+    exclude("*.kotlin_metadata")
     with(tasks["jar"] as CopySpec)
+    duplicatesStrategy = DuplicatesStrategy.WARN
 }
 
 tasks.named("build") {
     dependsOn(copyServerJar)
     dependsOn(copyBootstrapJar)
+//    dependsOn(fatJar)
 }
 
 publishing {
