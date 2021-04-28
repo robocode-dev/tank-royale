@@ -2,7 +2,8 @@ val title = "Robocode Tank Royale Bot API"
 description = "Bot API for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
-version = "0.9.0"
+version = "0.9.1"
+
 
 plugins {
     `java-library`

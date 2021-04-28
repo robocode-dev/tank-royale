@@ -451,7 +451,7 @@ public final class BaseBotInternals {
     @Override
     public final void onError(WebSocket websocket, Throwable error) {
       botEventHandlers.onConnectionError.publish(new ConnectionErrorEvent(serverUrl, error));
-      closedLatch.countDown();
+      System.err.println(error.getLocalizedMessage());
     }
 
     @Override
@@ -488,7 +488,6 @@ public final class BaseBotInternals {
               handleSkippedTurnEvent(jsonMsg);
               break;
             case GAME_ABORTED_EVENT:
-              closedLatch.countDown();
               break;
             default:
               throw new BotException("Unsupported WebSocket message type: " + type);
