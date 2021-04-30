@@ -88,7 +88,7 @@ public class Walls extends Bot {
     // By calling it manually here, we make sure we generate another scan event if there's a robot
     // on the next wall, so that we do not start moving up it until it's gone.
     if (peek) {
-//      scan();
+      scan();
     }
   }
 }
