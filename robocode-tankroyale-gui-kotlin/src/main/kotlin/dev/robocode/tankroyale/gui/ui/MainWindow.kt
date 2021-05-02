@@ -2,21 +2,23 @@ package dev.robocode.tankroyale.gui.ui
 
 import dev.robocode.tankroyale.gui.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.gui.client.Client
-import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
-import dev.robocode.tankroyale.gui.ui.selection.*
 import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
+import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
+import dev.robocode.tankroyale.gui.ui.selection.NewBattleDialog
 import dev.robocode.tankroyale.gui.ui.server.PrepareServerCommand
 import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
 import java.awt.EventQueue
 import java.io.Closeable
+import javax.imageio.ImageIO
 import javax.swing.ImageIcon
 import javax.swing.JFrame
 import javax.swing.UIManager
+
 
 object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCloseable {
 
@@ -30,8 +32,8 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
         jMenuBar = MainWindowMenu
 
-        val iconUrl = javaClass.classLoader.getResource("gfx/Tank.png")
-        val iconImage = ImageIcon(iconUrl)
+        val iconStream = javaClass.getResourceAsStream("/gfx/Tank.png")
+        val iconImage = ImageIcon(ImageIO.read(iconStream))
         setIconImage(iconImage.image)
 
         MainWindowMenu.apply {
