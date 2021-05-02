@@ -68,7 +68,7 @@ val fatJar = task<Jar>("fatJar") {
     )
     exclude("*.kotlin_metadata")
     with(tasks["jar"] as CopySpec)
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    duplicatesStrategy = DuplicatesStrategy.WARN
 }
 
 tasks.named("build") {
