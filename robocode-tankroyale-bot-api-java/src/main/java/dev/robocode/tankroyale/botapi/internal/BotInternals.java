@@ -164,10 +164,14 @@ public final class BotInternals implements StopResumeListener {
   }
 
   public void forward(double distance) {
-    setForward(distance);
-    do {
+    if (bot.isStopped()) {
       bot.go();
-    } while (distanceRemaining != 0);
+    } else {
+      setForward(distance);
+      do {
+        bot.go();
+      } while (distanceRemaining != 0);
+    }
   }
 
   public void setTurnLeft(double degrees) {
@@ -179,10 +183,14 @@ public final class BotInternals implements StopResumeListener {
   }
 
   public void turnLeft(double degrees) {
-    setTurnLeft(degrees);
-    do {
+    if (bot.isStopped()) {
       bot.go();
-    } while (turnRemaining != 0);
+    } else {
+      setTurnLeft(degrees);
+      do {
+        bot.go();
+      } while (turnRemaining != 0);
+    }
   }
 
   public void setTurnGunLeft(double degrees) {
@@ -194,10 +202,14 @@ public final class BotInternals implements StopResumeListener {
   }
 
   public void turnGunLeft(double degrees) {
-    setTurnGunLeft(degrees);
-    do {
+    if (bot.isStopped()) {
       bot.go();
-    } while (gunTurnRemaining != 0);
+    } else {
+      setTurnGunLeft(degrees);
+      do {
+        bot.go();
+      } while (gunTurnRemaining != 0);
+    }
   }
 
   public void setTurnRadarLeft(double degrees) {
@@ -209,10 +221,14 @@ public final class BotInternals implements StopResumeListener {
   }
 
   public void turnRadarLeft(double degrees) {
-    setTurnRadarLeft(degrees);
-    do {
+    if (bot.isStopped()) {
       bot.go();
-    } while (radarTurnRemaining != 0);
+    } else {
+      setTurnRadarLeft(degrees);
+      do {
+        bot.go();
+      } while (radarTurnRemaining != 0);
+    }
   }
 
   public void fire(double firepower) {
@@ -223,7 +239,12 @@ public final class BotInternals implements StopResumeListener {
 
   public void scan() {
     bot.setScan();
+    boolean scan = baseBotInternals.getBotIntent().getScan();
     bot.go();
+    if (scan && bot.getEvents().stream().anyMatch(e -> e instanceof ScannedBotEvent)) {
+      // Interrupt event handler by throwing exception
+      throw new RescanException();
+    }
   }
 
   public void waitFor(Condition condition) {
@@ -233,16 +254,21 @@ public final class BotInternals implements StopResumeListener {
   }
 
   public void stop() {
+    System.out.println("stop");
+
     baseBotInternals.setStop();
     bot.go();
   }
 
   public void resume() {
+    System.out.println("resume");
+
     baseBotInternals.setResume();
     bot.go();
   }
 
   public void onStop() {
+    System.out.println("onStop");
     savedDistanceRemaining = distanceRemaining;
     savedTurnRemaining = turnRemaining;
     savedGunTurnRemaining = gunTurnRemaining;
@@ -250,6 +276,7 @@ public final class BotInternals implements StopResumeListener {
   }
 
   public void onResume() {
+    System.out.println("onResume");
     distanceRemaining = savedDistanceRemaining;
     turnRemaining = savedTurnRemaining;
     gunTurnRemaining = savedGunTurnRemaining;

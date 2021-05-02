@@ -139,6 +139,7 @@ public final class BaseBotInternals {
   private void onRoundStarted(RoundStartedEvent e) {
     botIntent = newBotIntent();
     eventQueue.clear();
+    isStopped = false;
   }
 
   private void onNextTurn(TickEvent e) {
@@ -186,6 +187,7 @@ public final class BaseBotInternals {
         }
       } catch (InterruptedException e) {
         setResume();
+        Thread.currentThread().interrupt();
       }
     }
   }
@@ -193,6 +195,8 @@ public final class BaseBotInternals {
   private void dispatchEvents() {
     try {
       eventQueue.dispatchEvents(getCurrentTick().getTurnNumber());
+    } catch (RescanException e) {
+      // Do nothing
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -356,16 +360,6 @@ public final class BaseBotInternals {
 
   public void setScan(boolean doScan) {
     botIntent.setScan(doScan);
-
-    if (doScan) {
-      setStop();
-
-      // Interrupt event handler by throwing exception
-      throw new RescanException();
-
-    } else {
-      setResume();
-    }
   }
 
   public void setStop() {

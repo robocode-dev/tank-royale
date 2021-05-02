@@ -43,18 +43,22 @@ final class EventQueue {
     // Handle events in the order of the keys, i.e. event priority order
     for (List<BotEvent> events : eventMap.values()) {
       for (BotEvent event : events) {
-        try {
           // Exit if we are inside an event handler handling the current event being fired
           if (currentEvent != null && event.getClass().equals(currentEvent.getClass())) {
             return;
           }
-          events.remove(event); // remove event prior to handling it
-          botEventHandlers.fire(event);
-        } catch (RescanException ignore) {
-        } finally {
-          currentEvent = event;
+          try {
+            currentEvent = event;
+            events.remove(event); // remove event prior to handling it
+            botEventHandlers.fire(event);
+
+          } catch (RescanException e) {
+            currentEvent = null;
+          } catch (Exception e) {
+            currentEvent = null;
+            throw e;
+          }
         }
-      }
     }
   }
 
