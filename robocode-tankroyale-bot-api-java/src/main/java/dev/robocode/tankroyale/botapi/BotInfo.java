@@ -108,7 +108,7 @@ public final class BotInfo {
    * description=A short description
    * url=http://somewhere.net/MyBot
    * countryCode=us
-   * gameTypes=melee,classic,1v1
+   * gameTypes=melee,1v1
    * programmingLang=Java 8
    * </pre>
    * @param filename is the filename of the file containing bot properties.

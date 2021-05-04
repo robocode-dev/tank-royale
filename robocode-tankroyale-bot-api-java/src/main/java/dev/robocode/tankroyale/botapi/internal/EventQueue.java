@@ -26,7 +26,7 @@ final class EventQueue {
 
   void clear() {
     eventMap.clear();
-    baseBotInternals.getConditions().clear(); // conditions are added in the bot's run() method each round
+    baseBotInternals.getConditions().clear(); // conditions might be added in the bot's run() method each round
     currentEvent = null;
   }
 

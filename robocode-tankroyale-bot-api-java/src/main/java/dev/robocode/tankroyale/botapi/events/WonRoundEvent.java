@@ -12,7 +12,14 @@ public final class WonRoundEvent extends BotEvent {
     super(turnNumber);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   *
+   * <p>This event is critical.
+   *
+   * @return true
+   */
+  @Override
   public boolean isCritical() {
     return true;
   }

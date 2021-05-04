@@ -27,7 +27,14 @@ public final class DeathEvent extends BotEvent {
     return victimId;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   *
+   * <p>This event is critical.
+   *
+   * @return true
+   */
+  @Override
   public boolean isCritical() {
     return true;
   }

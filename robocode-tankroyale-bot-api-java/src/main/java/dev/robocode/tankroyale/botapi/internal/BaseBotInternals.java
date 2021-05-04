@@ -29,7 +29,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 
 import static dev.robocode.tankroyale.botapi.IBaseBot.*;
-import static dev.robocode.tankroyale.botapi.internal.MathUtil.limitRange;
+import static dev.robocode.tankroyale.botapi.internal.MathUtil.clamp;
 import static java.lang.Math.*;
 import static java.net.http.WebSocket.Builder;
 import static java.net.http.WebSocket.Listener;
@@ -205,19 +205,19 @@ public final class BaseBotInternals {
   private void limitTargetSpeedAndTurnRates() {
     Double targetSpeed = botIntent.getTargetSpeed();
     if (targetSpeed != null) {
-      botIntent.setTargetSpeed(limitRange(targetSpeed, -maxSpeed, maxSpeed));
+      botIntent.setTargetSpeed(clamp(targetSpeed, -maxSpeed, maxSpeed));
     }
     Double turnRate = botIntent.getTurnRate();
     if (turnRate != null) {
-      botIntent.setTurnRate(limitRange(turnRate, -maxTurnRate, maxTurnRate));
+      botIntent.setTurnRate(clamp(turnRate, -maxTurnRate, maxTurnRate));
     }
     Double gunTurnRate = botIntent.getGunTurnRate();
     if (gunTurnRate != null) {
-      botIntent.setGunTurnRate(limitRange(gunTurnRate, -maxGunTurnRate, maxGunTurnRate));
+      botIntent.setGunTurnRate(clamp(gunTurnRate, -maxGunTurnRate, maxGunTurnRate));
     }
     Double radarTurnRate = botIntent.getRadarTurnRate();
     if (radarTurnRate != null) {
-      botIntent.setRadarTurnRate(limitRange(radarTurnRate, -maxRadarTurnRate, maxRadarTurnRate));
+      botIntent.setRadarTurnRate(clamp(radarTurnRate, -maxRadarTurnRate, maxRadarTurnRate));
     }
   }
 
@@ -281,19 +281,19 @@ public final class BaseBotInternals {
   }
 
   public void setMaxSpeed(double maxSpeed) {
-    this.maxSpeed = limitRange(maxSpeed, 0, MAX_SPEED);
+    this.maxSpeed = clamp(maxSpeed, 0, MAX_SPEED);
   }
 
   public void setMaxTurnRate(double maxTurnRate) {
-    this.maxTurnRate = limitRange(maxTurnRate, 0, MAX_TURN_RATE);
+    this.maxTurnRate = clamp(maxTurnRate, 0, MAX_TURN_RATE);
   }
 
   public void setMaxGunTurnRate(double maxGunTurnRate) {
-    this.maxGunTurnRate = limitRange(maxGunTurnRate, 0, MAX_GUN_TURN_RATE);
+    this.maxGunTurnRate = clamp(maxGunTurnRate, 0, MAX_GUN_TURN_RATE);
   }
 
   public void setMaxRadarTurnRate(double maxRadarTurnRate) {
-    this.maxRadarTurnRate = limitRange(maxRadarTurnRate, 0, MAX_RADAR_TURN_RATE);
+    this.maxRadarTurnRate = clamp(maxRadarTurnRate, 0, MAX_RADAR_TURN_RATE);
   }
 
   /**
@@ -318,9 +318,9 @@ public final class BaseBotInternals {
       targetSpeed = min(getMaxSpeed(distance), maxSpeed);
     }
     if (speed >= 0) {
-      return limitRange(targetSpeed, speed - absDeceleration, speed + ACCELERATION);
+      return clamp(targetSpeed, speed - absDeceleration, speed + ACCELERATION);
     } else {
-      return limitRange(targetSpeed, speed - ACCELERATION, speed + getMaxDeceleration(-speed));
+      return clamp(targetSpeed, speed - ACCELERATION, speed + getMaxDeceleration(-speed));
     }
   }
 
