@@ -346,6 +346,21 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
+    public void SetStop()
+    {
+      __baseBotInternals.SetStop();
+    }
+
+    /// <inheritdoc/>
+    public void SetResume()
+    {
+      __baseBotInternals.SetResume();
+    }
+
+    /// <inheritdoc/>
+    public bool IsStopped => __baseBotInternals.IsStopped;
+
+    /// <inheritdoc/>
     public int? GetBodyColor() => __baseBotInternals.CurrentTick.BotState.BodyColor;
 
     /// <inheritdoc/>
@@ -412,6 +427,12 @@ namespace Robocode.TankRoyale.BotApi
     public virtual double BearingTo(double x, double y) => NormalizeRelativeAngle(DirectionTo(x, y) - Direction);
 
     /// <inheritdoc/>
+    public virtual double GunBearingTo(double x, double y) => NormalizeRelativeAngle(DirectionTo(x, y) - GunDirection);
+
+    /// <inheritdoc/>
+    public virtual double RadarBearingTo(double x, double y) => NormalizeRelativeAngle(DirectionTo(x, y) - RadarDirection);
+
+    /// <inheritdoc/>
     public virtual double DistanceTo(double x, double y)
     {
       var dx = x - X;
@@ -441,6 +462,12 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <inheritdoc/>
     public virtual void OnGameEnded(GameEndedEvent gameEndedEvent) { }
+
+    /// <inheritdoc/>
+    public virtual void OnRoundStarted(RoundStartedEvent roundStatedEvent) { }
+
+    /// <inheritdoc/>
+    public virtual void OnRoundEnded(RoundEndedEvent roundEndedEvent) { }
 
     /// <inheritdoc/>
     public virtual void OnTick(TickEvent tickEvent) { }

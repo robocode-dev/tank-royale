@@ -8,6 +8,13 @@ namespace Robocode.TankRoyale.BotApi.Events
   public sealed class WonRoundEvent : BotEvent
   {
     /// <summary>
+    /// Indicates if this event is critical, and hence should not be removed from event queue when it gets old.
+    /// This event is critical.
+    /// </summary>
+    /// <return><c>true</c></return>
+    public override bool IsCritical { get; } = true;
+
+    /// <summary>
     /// Initializes a new instance of the WonRoundEvent class.
     /// </summary>
     /// <param name="turnNumber">Turn number.</param>

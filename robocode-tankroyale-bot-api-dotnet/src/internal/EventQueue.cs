@@ -7,12 +7,15 @@ namespace Robocode.TankRoyale.BotApi.Internal
 {
   internal sealed class EventQueue
   {
-    private const int MaxEventAge = 2; // turns
+    private const int MaxQueueSize = 256;
+    private const int MaxEventAge = 2;
 
     private readonly BaseBotInternals baseBotInternals;
     private readonly BotEventHandlers botEventHandlers;
 
     private readonly IDictionary<int, ConcurrentQueue<BotEvent>> eventsDict = new ConcurrentDictionary<int, ConcurrentQueue<BotEvent>>();
+
+    private BotEvent currentEvent;
 
     internal EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers)
     {
@@ -23,55 +26,109 @@ namespace Robocode.TankRoyale.BotApi.Internal
     public void Clear()
     {
       eventsDict.Clear();
-      baseBotInternals.Conditions.Clear(); // conditions are added in the bot's Run() method each round
+      baseBotInternals.Conditions.Clear(); // conditions might be added in the bot's Run() method each round
+      currentEvent = null;
     }
 
     internal void AddEventsFromTick(TickEvent tickEvent, IBaseBot baseBot)
     {
       AddEvent(tickEvent, baseBot);
-
-      IEnumerator<BotEvent> enumerator = tickEvent.Events.GetEnumerator();
-      while (enumerator.MoveNext())
+      foreach (var botEvent in tickEvent.Events)
       {
-        var botEvent = enumerator.Current;
         AddEvent(botEvent, baseBot);
       }
       AddCustomEvents(baseBot);
     }
 
-    internal void DispatchEvents(int currentTurnNumber)
+    internal void DispatchEvents(int currentTurn)
     {
-      RemoveOldEvents(currentTurnNumber);
+      RemoveOldEvents(currentTurn);
 
-      // Publish all event in the order of the keys, i.e. event priority order
+      // Handle events in the order of the keys, i.e. event priority order
       var sortedDict = new SortedDictionary<int, ConcurrentQueue<BotEvent>>(eventsDict);
 
       foreach (var item in sortedDict)
       {
         var events = item.Value;
-        for (int i = 0; i < events.Count; i++)
+        foreach (var evt in events)
         {
-          BotEvent botEvent;
-          if (events.TryDequeue(out botEvent))
+          // Exit if we are inside an event handler handling the current event being fired
+          if (currentEvent != null && events.GetType().Equals(currentEvent.GetType()))
           {
-            botEventHandlers.Fire(botEvent);
+            return;
+          }
+
+          try
+          {
+            currentEvent = evt;
+            BotEvent botEvent;
+            if (events.TryDequeue(out botEvent))
+            {
+              botEventHandlers.Fire(botEvent);
+            }
+          }
+          catch (RescanException)
+          {
+            currentEvent = null;
+          }
+          catch (Exception)
+          {
+            currentEvent = null;
+            throw;
           }
         }
       }
     }
 
+    private void RemoveOldEvents(int currentTurn)
+    {
+      foreach (var item in eventsDict)
+      {
+        var events = item.Value;
+        foreach (var botEvent in events)
+        {
+          if (!botEvent.IsCritical && IsOldEvent(botEvent, currentTurn))
+          {
+            eventsDict.Remove(item.Key);
+          }
+        }
+      }
+    }
+
+    private static bool IsOldEvent(BotEvent botEvent, int currentTurn)
+    {
+      return botEvent.TurnNumber + MaxEventAge < currentTurn;
+    }
+
     private void AddEvent(BotEvent botEvent, IBaseBot baseBot)
     {
-      int priority = GetPriority(botEvent, baseBot);
-
-      ConcurrentQueue<BotEvent> events;
-      eventsDict.TryGetValue(priority, out events);
-      if (events == null)
+      if (CountEvents() > MaxQueueSize)
       {
-        events = new ConcurrentQueue<BotEvent>();
-        eventsDict.Add(priority, events);
+        Console.Error.WriteLine($"Maximum event queue size has been reached: ${MaxQueueSize}");
       }
-      events.Enqueue(botEvent);
+      else
+      {
+        int priority = GetPriority(botEvent, baseBot);
+
+        ConcurrentQueue<BotEvent> events;
+        eventsDict.TryGetValue(priority, out events);
+        if (events == null)
+        {
+          events = new ConcurrentQueue<BotEvent>();
+          eventsDict.Add(priority, events);
+        }
+        events.Enqueue(botEvent);
+      }
+    }
+
+    private int CountEvents()
+    {
+      int count = 0;
+      foreach (var events in eventsDict)
+      {
+        count += events.Value.Count;
+      }
+      return count;
     }
 
     private void AddCustomEvents(IBaseBot baseBot)
@@ -85,90 +142,42 @@ namespace Robocode.TankRoyale.BotApi.Internal
       }
     }
 
-    private void RemoveOldEvents(int currentTurnNumber)
-    {
-      foreach (var item in eventsDict)
-      {
-        var events = item.Value;
-        foreach (var botEvent in events)
-        {
-          if (botEvent.TurnNumber < currentTurnNumber - MaxEventAge)
-          {
-            eventsDict.Remove(item.Key);
-          }
-        }
-      }
-    }
-
     private static int GetPriority(BotEvent botEvent, IBaseBot baseBot)
     {
-      if (botEvent is TickEvent)
+      switch (botEvent)
       {
-        return EventPriority.OnTick;
-      }
-      else if (botEvent is ScannedBotEvent)
-      {
-        return EventPriority.OnScannedBot;
-      }
-      else if (botEvent is HitBotEvent)
-      {
-        return EventPriority.OnHitBot;
-      }
-      else if (botEvent is HitWallEvent)
-      {
-        return EventPriority.OnHitWall;
-      }
-      else if (botEvent is BulletFiredEvent)
-      {
-        return EventPriority.OnBulletFired;
-      }
-      else if (botEvent is BulletHitWallEvent)
-      {
-        return EventPriority.OnBulletHitWall;
-      }
-      else if (botEvent is BulletHitBotEvent)
-      {
-        BulletHitBotEvent bulletEvent = (BulletHitBotEvent)botEvent;
-        if (bulletEvent.VictimId == baseBot.MyId)
-        {
-          return EventPriority.OnHitByBullet;
-        }
-        else
-        {
-          return EventPriority.OnBulletHit;
-        }
-      }
-      else if (botEvent is BulletHitBulletEvent)
-      {
-        return EventPriority.OnBulletHitBullet;
-      }
-      else if (botEvent is DeathEvent)
-      {
-        DeathEvent deathEvent = (DeathEvent)botEvent;
-        if (deathEvent.VictimId == baseBot.MyId)
-        {
-          return EventPriority.OnDeath;
-        }
-        else
-        {
-          return EventPriority.OnBotDeath;
-        }
-      }
-      else if (botEvent is SkippedTurnEvent)
-      {
-        return EventPriority.OnSkippedTurn;
-      }
-      else if (botEvent is CustomEvent)
-      {
-        return EventPriority.OnCondition;
-      }
-      else if (botEvent is WonRoundEvent)
-      {
-        return EventPriority.OnWonRound;
-      }
-      else
-      {
-        throw new InvalidOperationException("Unhandled event type: " + botEvent);
+        case TickEvent tickEvent:
+          return EventPriority.OnTick;
+        case ScannedBotEvent scannedBotEvent:
+          return EventPriority.OnScannedBot;
+        case HitBotEvent hitBotEvent:
+          return EventPriority.OnHitBot;
+        case HitWallEvent hitWallEvent:
+          return EventPriority.OnHitWall;
+        case BulletFiredEvent bulletFiredEvent:
+          return EventPriority.OnBulletFired;
+        case BulletHitWallEvent bulletHitWallEvent:
+          return EventPriority.OnBulletHitWall;
+        case BulletHitBotEvent bulletHitBotEvent:
+          if (bulletHitBotEvent.VictimId == baseBot.MyId)
+            return EventPriority.OnHitByBullet;
+          else
+            return EventPriority.OnBulletHit;
+        case BulletHitBulletEvent bulletHitBulletEvent:
+          return EventPriority.OnBulletHitBullet;
+        case DeathEvent deathEvent:
+          if (deathEvent.VictimId == baseBot.MyId)
+            return EventPriority.OnDeath;
+          else
+            return EventPriority.OnBotDeath;
+        case SkippedTurnEvent skippedTurnEvent:
+          return EventPriority.OnSkippedTurn;
+        case CustomEvent customEvent:
+          return EventPriority.OnCondition;
+        case WonRoundEvent wonRoundEvent:
+          return EventPriority.OnWonRound;
+        default:
+          throw new InvalidOperationException("Unhandled event type: " + botEvent);
       }
     }
   }

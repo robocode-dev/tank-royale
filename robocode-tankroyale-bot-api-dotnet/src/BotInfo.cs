@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 namespace Robocode.TankRoyale.BotApi
 {
   /// <summary>
-  /// Required information about a bot.
+  /// Bot info contains the properties of a bot.
   /// </summary>
   public sealed class BotInfo
   {
@@ -194,7 +194,7 @@ namespace Robocode.TankRoyale.BotApi
     ///     "Description": "A short description",
     ///     "Url": "http://somewhere.net/MyBot",
     ///     "CountryCode": "us",
-    ///     "GameTypes": "melee,classic,1v1",
+    ///     "GameTypes": "melee,1v1",
     ///     "ProgrammingLang": "C# 8.0"
     ///   }
     /// }
@@ -232,7 +232,7 @@ namespace Robocode.TankRoyale.BotApi
     ///     "Description": "A short description",
     ///     "Url": "http://somewhere.net/MyBot",
     ///     "CountryCode": "us",
-    ///     "GameTypes": "melee,classic,1v1",
+    ///     "GameTypes": "melee,1v1",
     ///     "ProgrammingLang": "C# 8.0"
     ///   }
     /// }
@@ -261,7 +261,7 @@ namespace Robocode.TankRoyale.BotApi
     ///     "Description": "A short description",
     ///     "Url": "http://somewhere.net/MyBot",
     ///     "CountryCode": "us",
-    ///     "GameTypes": "melee,classic,1v1",
+    ///     "GameTypes": "melee,1v1",
     ///     "ProgrammingLang": "C# 8.0"
     ///   }
     /// }

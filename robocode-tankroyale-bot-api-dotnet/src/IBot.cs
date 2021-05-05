@@ -26,7 +26,8 @@ namespace Robocode.TankRoyale.BotApi
     ///
     /// <note>
     /// The program runs in a loop in this example (as long as the bot is running),
-    /// meaning that it will start moving forward as soon as TurnGunRight has executed.
+    /// meaning that it will start moving forward as soon as <see cref="TurnGunRight"/>
+    /// has executed.
     /// </note>
     ///
     /// When running a loop that could potentially run forever. The best practice is to check if
@@ -40,7 +41,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// Checks if this bot is running.
     /// </summary>
-    /// <value><em>true</em> when the bot is running, <em>false</em> otherwise.</value>
+    /// <value><c>true</c> when the bot is running, <c>false</c> otherwise.</value>
     bool IsRunning { get; }
 
     /// <summary>
@@ -567,22 +568,6 @@ namespace Robocode.TankRoyale.BotApi
     void Fire(double firepower);
 
     /// <summary>
-    /// Set the bot to stop all movement including turning the gun and radar. The remaining movement is
-    /// saved for a call to {@link #resume()}. This method has no effect, if it has already been
-    /// called.
-    ///
-    /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
-    /// call other set methods before execution. This makes it possible to set the bot to move,
-    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
-    /// <see cref="IBaseBot.Go"/>. But notice that this is only possible to execute multiple methods in
-    /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
-    /// </summary>
-    /// <seealso cref="Stop"/>
-    /// <seealso cref="SetResume"/>
-    /// <seealso cref="Resume"/>
-    void SetStop();
-
-    /// <summary>
     /// Stop all movement including turning the gun and radar. The remaining movement is saved for a
     /// call to <see cref="SetResume"/> or <see cref="Resume"/>. This method has no effect, if it has already
     /// been called.
@@ -597,32 +582,6 @@ namespace Robocode.TankRoyale.BotApi
     /// <seealso cref="SetResume"/>
     /// <seealso cref="Resume"/>
     void Stop();
-
-    /// <summary>
-    /// Checks if the movement has been stopped.
-    /// </summary>
-    /// <value><em>true</em> if the movement has been stopped by by <see cref="Stop"/> or <see cref="SetStop"/>;
-    /// <em>false</em> otherwise.</value>
-    /// <seealso cref="Stop"/>
-    /// <seealso cref="SetStop"/>
-    bool IsStopped { get; }
-
-    /// <summary>
-    /// Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
-    /// turning and thereby will not be able to automatically scan bots. This method is useful when the
-    /// robot movement has stopped, e.g. when <see cref="Stop"/> has been called. The last radar direction
-    /// and sweep angle will be used for rescanning for bots.
-    ///
-    /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
-    /// call other set methods before execution. This makes it possible to set the bot to move,
-    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
-    /// <see cref="IBaseBot.Go"/>. But notice that this is only possible to execute multiple methods in
-    /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
-    /// </summary>
-    /// <seealso cref="SetStop"/>
-    /// <seealso cref="Stop"/>
-    /// <seealso cref="Resume"/>
-    void SetResume();
 
     /// <summary>
     /// Resume the movement prior to calling the <see cref="SetStop"/> or <see cref="Stop"/> method. This
@@ -645,9 +604,8 @@ namespace Robocode.TankRoyale.BotApi
     /// movement has stopped, e.g. when <see cref="Stop"/> has been called. The last radar direction and
     /// sweep angle will be used for rescanning for bots.
     /// </summary>
-    /// <return><c>true</c> if the bot did scan a bot with the next turn; <c>false</c> otherwise.</return>
     /// <seealso cref="Stop"/>
-    bool Scan();
+    void Scan();
 
     /// <summary>
     /// Blocks until a condition is met, i.e. when a <see cref="Condition.Test"/> returns <c>true</c>.

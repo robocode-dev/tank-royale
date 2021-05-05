@@ -13,6 +13,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
     internal readonly EventHandler<ConnectionErrorEvent> onConnectionError = new EventHandler<ConnectionErrorEvent>();
     internal readonly EventHandler<GameStartedEvent> onGameStarted = new EventHandler<GameStartedEvent>();
     internal readonly EventHandler<GameEndedEvent> onGameEnded = new EventHandler<GameEndedEvent>();
+    internal readonly EventHandler<RoundStartedEvent> onRoundStarted = new EventHandler<RoundStartedEvent>();
+    internal readonly EventHandler<RoundEndedEvent> onRoundEnded = new EventHandler<RoundEndedEvent>();
     internal readonly EventHandler<TickEvent> onTick = new EventHandler<TickEvent>();
     internal readonly EventHandler<SkippedTurnEvent> onSkippedTurn = new EventHandler<SkippedTurnEvent>();
     internal readonly EventHandler<DeathEvent> onDeath = new EventHandler<DeathEvent>();
@@ -28,9 +30,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     internal readonly EventHandler<WonRoundEvent> onWonRound = new EventHandler<WonRoundEvent>();
     internal readonly EventHandler<CustomEvent> onCustomEvent = new EventHandler<CustomEvent>();
 
-    // Convenient event handlers
-    internal readonly EventHandler<TickEvent> onProcessTurn = new EventHandler<TickEvent>();
-    internal readonly EventHandler<TickEvent> onNewRound = new EventHandler<TickEvent>();
+    internal readonly EventHandler<TickEvent> onNextTurn = new EventHandler<TickEvent>();
 
     // Events
     private event EventHandler<ConnectedEvent>.Subscriber OnConnected;
@@ -38,6 +38,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private event EventHandler<ConnectionErrorEvent>.Subscriber OnConnectionError;
     private event EventHandler<GameStartedEvent>.Subscriber OnGameStarted;
     private event EventHandler<GameEndedEvent>.Subscriber OnGameEnded;
+    private event EventHandler<RoundStartedEvent>.Subscriber OnRoundStarted;
+    private event EventHandler<RoundEndedEvent>.Subscriber OnRoundEnded;
     private event EventHandler<TickEvent>.Subscriber OnTick;
     private event EventHandler<SkippedTurnEvent>.Subscriber OnSkippedTurn;
     private event EventHandler<DeathEvent>.Subscriber OnDeath;
@@ -53,8 +55,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private event EventHandler<WonRoundEvent>.Subscriber OnWonRound;
     private event EventHandler<CustomEvent>.Subscriber OnCustomEvent;
 
-    private event EventHandler<TickEvent>.Subscriber OnProcessTurn;
-    private event EventHandler<TickEvent>.Subscriber OnNewRound;
+    private event EventHandler<TickEvent>.Subscriber OnNextTurn;
 
     internal BotEventHandlers(IBaseBot baseBot)
     {
@@ -66,6 +67,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
       OnConnectionError += onConnectionError.Publish;
       OnGameStarted += onGameStarted.Publish;
       OnGameEnded += onGameEnded.Publish;
+      OnRoundStarted += onRoundStarted.Publish;
+      OnRoundEnded += onRoundEnded.Publish;
       OnTick += onTick.Publish;
       OnSkippedTurn += onSkippedTurn.Publish;
       OnDeath += onDeath.Publish;
@@ -81,9 +84,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       OnWonRound += onWonRound.Publish;
       OnCustomEvent += onCustomEvent.Publish;
 
-      // Convenient handlers
-      OnProcessTurn += onProcessTurn.Publish;
-      OnNewRound += onNewRound.Publish;
+      OnNextTurn += onNextTurn.Publish;
 
       // Subscribe to bot events
       onConnected.Subscribe(baseBot.OnConnected);
@@ -91,6 +92,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
       onConnectionError.Subscribe(baseBot.OnConnectionError);
       onGameStarted.Subscribe(baseBot.OnGameStarted);
       onGameEnded.Subscribe(baseBot.OnGameEnded);
+      onRoundStarted.Subscribe(baseBot.OnRoundStarted);
+      onRoundEnded.Subscribe(baseBot.OnRoundEnded);
       onTick.Subscribe(baseBot.OnTick);
       onSkippedTurn.Subscribe(baseBot.OnSkippedTurn);
       onDeath.Subscribe(baseBot.OnDeath);
@@ -132,9 +135,14 @@ namespace Robocode.TankRoyale.BotApi.Internal
       OnGameEnded(evt);
     }
 
-    internal void FireSkippedTurnEvent(SkippedTurnEvent evt)
+    internal void FireRoundStartedEvent(RoundStartedEvent evt)
     {
-      OnSkippedTurn(evt);
+      OnRoundStarted(evt);
+    }
+
+    internal void FireRoundEndedEvent(RoundEndedEvent evt)
+    {
+      OnRoundEnded(evt);
     }
 
     internal void FireTickEvent(TickEvent evt)
@@ -142,15 +150,16 @@ namespace Robocode.TankRoyale.BotApi.Internal
       OnTick(evt);
     }
 
-    internal void FireProcessTurn(TickEvent evt)
+    internal void FireSkippedTurnEvent(SkippedTurnEvent evt)
     {
-      OnProcessTurn(evt);
+      OnSkippedTurn(evt);
     }
 
-    internal void FireNewRound(TickEvent evt)
+    internal void FireNextTurn(TickEvent evt)
     {
-      OnNewRound(evt);
+      OnNextTurn(evt);
     }
+
 
     internal void Fire(BotEvent evt)
     {
@@ -159,60 +168,47 @@ namespace Robocode.TankRoyale.BotApi.Internal
         case TickEvent tickEvent:
           OnTick(tickEvent);
           break;
-
-        case DeathEvent botDeathEvent:
-          if (botDeathEvent.VictimId == baseBot.MyId)
-            OnDeath(botDeathEvent);
-          else
-            OnBotDeath(botDeathEvent);
+        case ScannedBotEvent scannedBotEvent:
+          OnScannedBot(scannedBotEvent);
           break;
-
+        case SkippedTurnEvent skippedTurnEvent:
+          OnSkippedTurn(skippedTurnEvent);
+          break;
         case HitBotEvent botHitBotEvent:
           OnHitBot(botHitBotEvent);
           break;
-
         case HitWallEvent botHitWallEvent:
           OnHitWall(botHitWallEvent);
           break;
-
         case BulletFiredEvent bulletFiredEvent:
           OnBulletFired(bulletFiredEvent);
           break;
-
+        case BulletHitWallEvent bulletHitWallEvent:
+          OnBulletHitWall(bulletHitWallEvent);
+          break;
         case BulletHitBotEvent bulletHitBotEvent:
           if (bulletHitBotEvent.VictimId == baseBot.MyId)
             OnHitByBullet(bulletHitBotEvent);
           else
             OnBulletHit(bulletHitBotEvent);
           break;
-
+        case DeathEvent botDeathEvent:
+          if (botDeathEvent.VictimId == baseBot.MyId)
+            OnDeath(botDeathEvent);
+          else
+            OnBotDeath(botDeathEvent);
+          break;
         case BulletHitBulletEvent bulletHitBulletEvent:
           OnBulletHitBullet(bulletHitBulletEvent);
           break;
-
-        case BulletHitWallEvent bulletHitWallEvent:
-          OnBulletHitWall(bulletHitWallEvent);
-          break;
-
-        case ScannedBotEvent scannedBotEvent:
-          OnScannedBot(scannedBotEvent);
-          break;
-
-        case SkippedTurnEvent skippedTurnEvent:
-          OnSkippedTurn(skippedTurnEvent);
-          break;
-
         case WonRoundEvent wonRoundEvent:
           OnWonRound(wonRoundEvent);
           break;
-
         case CustomEvent customEvent:
           OnCustomEvent(customEvent);
           break;
-
         default:
-          Console.Error.WriteLine("Unhandled event: " + evt);
-          break;
+          throw new Exception("Unhandled event: " + evt);
       }
     }
   }

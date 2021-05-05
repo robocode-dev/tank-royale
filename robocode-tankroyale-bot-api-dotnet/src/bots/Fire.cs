@@ -44,9 +44,6 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
     // OnScannedBot: Fire!
     public override void OnScannedBot(ScannedBotEvent e)
     {
-      // Set bot to stop movement (executed with next command - fire)
-      SetStop();
-
       // If the other robot is close by, and we have plenty of life, fire hard!
       var distance = DistanceTo(e.X, e.Y);
       if (distance < 50 && Energy > 50)
@@ -58,21 +55,14 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
         // Otherwise, only fire 1
         Fire(1);
       }
-      // Scan, and resume movement if we did not scan anything
-      if (!Scan())
-      {
-        SetResume();
-      }
+      // Rescan
+      Scan();
     }
 
     // OnHitByBullet: Turn perpendicular to the bullet, and move a bit.
     public override void OnHitByBullet(BulletHitBotEvent e)
     {
-      // Set bot to resume movement, if it was stopped
-      SetResume();
-
       // Turn perpendicular to the bullet direction
-      var direction = DirectionTo(e.Bullet.X, e.Bullet.Y);
       TurnLeft(NormalizeRelativeAngle(90 - (Direction - e.Bullet.Direction)));
 
       // Move forward or backward depending if the distance is positive or negative
@@ -80,26 +70,19 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
       dist *= -1; // Change distance, meaning forward or backward direction
 
       // Rescan
-      SetScan();
+      Scan();
     }
 
     // OnHitBot: Aim at target and fire hard.
     public override void OnHitBot(HitBotEvent e)
     {
-      // Set bot to resume movement, if it was stopped
-      SetResume();
-
       // Turn gun to the bullet direction
       double direction = DirectionTo(e.X, e.Y);
       double gunBearing = NormalizeRelativeAngle(direction - GunDirection);
       TurnGunLeft(gunBearing);
 
-      // Check that radar is locked (by stopping movement in OnScannedBot)
-      if (IsStopped)
-      {
-        // Fire hard
-        Fire(3);
-      }
+      // Fire hard
+      Fire(3);
     }
   }
 }

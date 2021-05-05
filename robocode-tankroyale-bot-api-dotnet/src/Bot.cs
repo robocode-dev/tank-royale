@@ -171,24 +171,9 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public void SetStop()
-    {
-      __botInternals.SetStop();
-    }
-
-    /// <inheritdoc/>
     public void Stop()
     {
       __botInternals.Stop();
-    }
-
-    /// <inheritdoc/>
-    public bool IsStopped => __botInternals.IsStopped;
-
-    /// <inheritdoc/>
-    public void SetResume()
-    {
-      __botInternals.SetResume();
     }
 
     /// <inheritdoc/>
@@ -198,25 +183,15 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public bool Scan()
+    public void Scan()
     {
-      return __botInternals.Scan();
+      __botInternals.Scan();
     }
 
     /// <inheritdoc/>
     public void WaitFor(Condition condition)
     {
-      __botInternals.Await(() =>
-      {
-        try
-        {
-          return condition.Test();
-        }
-        catch (Exception)
-        {
-          return false;
-        }
-      });
+      __botInternals.WaitFor(condition);
     }
 
     /// <inheritdoc/>
@@ -247,6 +222,12 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <inheritdoc/>
     public override double BearingTo(double x, double y) => base.BearingTo(x, y);
+
+    /// <inheritdoc/>
+    public override double GunBearingTo(double x, double y) => base.GunBearingTo(x, y);
+
+    /// <inheritdoc/>
+    public override double RadarBearingTo(double x, double y) => base.RadarBearingTo(x, y);
 
     /// <inheritdoc/>
     public override double DistanceTo(double x, double y) => base.DirectionTo(x, y);

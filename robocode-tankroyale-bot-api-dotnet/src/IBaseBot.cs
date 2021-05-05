@@ -633,6 +633,48 @@ namespace Robocode.TankRoyale.BotApi
     void RemoveCustomEvent(Condition condition);
 
     /// <summary>
+    /// Set the bot to stop all movement including turning the gun and radar. The remaining movement is
+    /// saved for a call to {@link #resume()}. This method has no effect, if it has already been
+    /// called.
+    ///
+    /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
+    /// call other set methods before execution. This makes it possible to set the bot to move,
+    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
+    /// <see cref="IBaseBot.Go"/>. But notice that this is only possible to execute multiple methods in
+    /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
+    /// </summary>
+    /// <seealso cref="Stop"/>
+    /// <seealso cref="SetResume"/>
+    /// <seealso cref="Resume"/>
+    void SetStop();
+
+    /// <summary>
+    /// Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
+    /// turning and thereby will not be able to automatically scan bots. This method is useful when the
+    /// robot movement has stopped, e.g. when <see cref="Stop"/> has been called. The last radar direction
+    /// and sweep angle will be used for rescanning for bots.
+    ///
+    /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
+    /// call other set methods before execution. This makes it possible to set the bot to move,
+    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
+    /// <see cref="IBaseBot.Go"/>. But notice that this is only possible to execute multiple methods in
+    /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
+    /// </summary>
+    /// <seealso cref="SetStop"/>
+    /// <seealso cref="Stop"/>
+    /// <seealso cref="Resume"/>
+    void SetResume();
+
+    /// <summary>
+    /// Checks if the movement has been stopped.
+    /// </summary>
+    /// <value><em>true</em> if the movement has been stopped by by <see cref="Stop"/> or <see cref="SetStop"/>;
+    /// <em>false</em> otherwise.</value>
+    /// <seealso cref="Stop"/>
+    /// <seealso cref="SetStop"/>
+    bool IsStopped { get; }
+
+    /// <summary>
     /// Returns the RGB color code of the body. The color code is an integer in hexadecimal format
     /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
     /// 
@@ -843,6 +885,18 @@ namespace Robocode.TankRoyale.BotApi
     void OnGameEnded(GameEndedEvent gameEndedEvent);
 
     /// <summary>
+    /// The event handler triggered when a new round has started.
+    /// </summary>
+    /// <param name="roundStartedEvent">Event details from the game.</param>
+    void OnRoundStarted(RoundStartedEvent roundStartedEvent);
+
+    /// <summary>
+    /// The event handler triggered when a round has ended.
+    /// </summary>
+    /// <param name="roundEndedEvent">Event details from the game.</param>
+    void OnRoundEnded(RoundEndedEvent roundEndedEvent);
+
+    /// <summary>
     /// The event handler triggered when a game tick event occurs, i.e., when a new turn in a round
     /// has started. When this handler is triggered, your bot must figure out the next action to
     /// take and call <see cref="Go"/> when it needs to commit the action to the server.
@@ -1012,6 +1066,24 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="y">Is the y coordinate of the point.</param>
     /// <returns>The bearing to the point x,y in the range [-180,180[</returns>
     double BearingTo(double x, double y);
+
+    /// <summary>
+    /// Calculates the bearing (delta angle) between the bot's gun and direction and the
+    /// direction to the point x,y.
+    /// </summary>
+    /// <param name="x">Is the x coordinate of the point.</param>
+    /// <param name="y">Is the y coordinate of the point.</param>
+    /// <returns>The bearing to the point x,y in the range [-180,180[</returns>
+    double GunBearingTo(double x, double y);
+
+    /// <summary>
+    /// Calculates the bearing (delta angle) between the bot's radar and direction and the
+    /// direction to the point x,y.
+    /// </summary>
+    /// <param name="x">Is the x coordinate of the point.</param>
+    /// <param name="y">Is the y coordinate of the point.</param>
+    /// <returns>The bearing to the point x,y in the range [-180,180[</returns>
+    double RadarBearingTo(double x, double y);
 
     /// <summary>
     /// Calculates the distance from the bot's coordinates to a point x,y.

@@ -18,7 +18,7 @@ namespace Robocode.TankRoyale.BotApi.Mapper
       );
     }
 
-    public static HashSet<BulletState> Map(IEnumerable<Schema.BulletState> source)
+    public static ISet<BulletState> Map(IEnumerable<Schema.BulletState> source)
     {
       var bulletStates = new HashSet<BulletState>();
       foreach (var bulletState in source)
