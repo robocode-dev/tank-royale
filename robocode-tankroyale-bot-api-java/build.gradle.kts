@@ -57,8 +57,8 @@ val fatJar = task<Jar>("fatJar") {
         attributes["Implementation-Version"] = archiveVersion
     }
     from(
-        configurations.compile.get().filter { it.name.endsWith("jar") }.map { zipTree(it) },
-        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+        configurations.compileClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) },
+        configurations.runtimeClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) }
     )
     with(tasks["jar"] as CopySpec)
 }

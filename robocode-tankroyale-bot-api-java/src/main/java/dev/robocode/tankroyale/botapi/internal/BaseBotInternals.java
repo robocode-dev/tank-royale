@@ -38,7 +38,7 @@ public final class BaseBotInternals {
   private static final String SERVER_URL_PROPERTY_KEY = "server.url";
 
   private static final String NOT_CONNECTED_TO_SERVER_MSG =
-      "Not connected to game server yes. Make sure onConnected() event handler has been called first";
+      "Not connected to a game server. Make sure onConnected() event handler has been called first";
 
   private static final String GAME_NOT_RUNNING_MSG =
       "Game is not running. Make sure onGameStarted() event handler has been called first";
@@ -68,7 +68,7 @@ public final class BaseBotInternals {
   private final Object nextTurnMonitor = new Object();
 
   private boolean isStopped;
-  private StopResumeListener stopResumeListener;
+  private IStopResumeListener stopResumeListener;
 
   private double maxSpeed = MAX_SPEED;
   private double maxTurnRate = MAX_TURN_RATE;
@@ -118,14 +118,14 @@ public final class BaseBotInternals {
     botEventHandlers.onBulletFired.subscribe(this::onBulletFired, 100);
   }
 
+  public void setStopResumeHandler(IStopResumeListener listener) {
+    stopResumeListener = listener;
+  }
+
   private static BotIntent newBotIntent() {
     BotIntent botIntent = new BotIntent();
     botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
     return botIntent;
-  }
-
-  public void setStopResumeHandler(StopResumeListener listener) {
-    stopResumeListener = listener;
   }
 
   BotEventHandlers getBotEventHandlers() {
@@ -154,13 +154,19 @@ public final class BaseBotInternals {
   }
 
   public void start() {
+    connect();
+    try {
+      closedLatch.await();
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
+  }
+
+  private void connect() {
     try {
       HttpClient httpClient = HttpClient.newBuilder().build();
       Builder webSocketBuilder = httpClient.newWebSocketBuilder();
       socket = webSocketBuilder.buildAsync(serverUrl, new WebSocketListener()).join();
-
-      closedLatch.await();
-
     } catch (Exception ex) {
       throw new BotException("Could not create socket for URL: " + serverUrl, ex);
     }
@@ -186,7 +192,6 @@ public final class BaseBotInternals {
           nextTurnMonitor.wait(); // Wait for next turn
         }
       } catch (InterruptedException e) {
-        setResume();
         Thread.currentThread().interrupt();
       }
     }
@@ -196,7 +201,7 @@ public final class BaseBotInternals {
     try {
       eventQueue.dispatchEvents(getCurrentTick().getTurnNumber());
     } catch (RescanException e) {
-      // Do nothing
+      // Do nothing (event handler was stopped by this exception)
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -319,9 +324,8 @@ public final class BaseBotInternals {
     }
     if (speed >= 0) {
       return clamp(targetSpeed, speed - absDeceleration, speed + ACCELERATION);
-    } else {
-      return clamp(targetSpeed, speed - ACCELERATION, speed + getMaxDeceleration(-speed));
     }
+    return clamp(targetSpeed, speed - ACCELERATION, speed + getMaxDeceleration(-speed));
   }
 
   private double getMaxSpeed(double distance) {
@@ -364,7 +368,7 @@ public final class BaseBotInternals {
 
   public void setStop() {
     if (!isStopped) {
-      isStopped = true; // must be first step
+      isStopped = true;
 
       savedTargetSpeed = botIntent.getTargetSpeed();
       savedTurnRate = botIntent.getTurnRate();

@@ -1,4 +1,4 @@
 package dev.robocode.tankroyale.botapi.internal;
 
-public class RescanException extends RuntimeException {
-}
+/** Exception used for interrupting onScannedBot event handlers when scan() is called. */
+public class RescanException extends RuntimeException {}

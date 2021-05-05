@@ -6,7 +6,7 @@ import dev.robocode.tankroyale.botapi.events.*;
 import static dev.robocode.tankroyale.botapi.IBaseBot.MAX_SPEED;
 import static java.lang.Math.abs;
 
-public final class BotInternals implements StopResumeListener {
+public final class BotInternals implements IStopResumeListener {
 
   private final Bot bot;
   private final BaseBotInternals baseBotInternals;
