@@ -33,25 +33,14 @@ public final class BotInternals implements IStopResumeListener {
     baseBotInternals.setStopResumeHandler(this);
 
     BotEventHandlers botEventHandlers = baseBotInternals.getBotEventHandlers();
+    botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 90);
     botEventHandlers.onRoundStarted.subscribe(e -> onRoundStarted(), 90);
     botEventHandlers.onRoundEnded.subscribe(e -> onRoundEnded(), 90);
-    botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 90);
     botEventHandlers.onGameEnded.subscribe(this::onGameEnded, 90);
     botEventHandlers.onDisconnected.subscribe(this::onDisconnected, 90);
     botEventHandlers.onHitWall.subscribe(e -> onHitWall(), 90);
     botEventHandlers.onHitBot.subscribe(this::onHitBot, 90);
     botEventHandlers.onBotDeath.subscribe(this::onDeath, 90);
-  }
-
-  private void onRoundStarted() {
-    distanceRemaining = 0d;
-    turnRemaining = 0d;
-    gunTurnRemaining = 0d;
-    radarTurnRemaining = 0d;
-  }
-
-  private void onRoundEnded() {
-    stopThread();
   }
 
   private void onNextTurn(TickEvent e) {
@@ -60,6 +49,21 @@ public final class BotInternals implements IStopResumeListener {
       startThread();
     }
     processTurn();
+  }
+
+  private void onRoundStarted() {
+    clearRemainings();
+  }
+
+  private void clearRemainings() {
+    distanceRemaining = 0d;
+    turnRemaining = 0d;
+    gunTurnRemaining = 0d;
+    radarTurnRemaining = 0d;
+  }
+
+  private void onRoundEnded() {
+    stopThread();
   }
 
   private void onGameEnded(GameEndedEvent e) {
@@ -73,18 +77,13 @@ public final class BotInternals implements IStopResumeListener {
   private void processTurn() {
     // No movement is possible, when the bot has become disabled
     if (bot.isDisabled()) {
-      distanceRemaining = 0;
-      turnRemaining = 0;
-      gunTurnRemaining = 0;
-      radarTurnRemaining = 0;
-
-      return;
+      clearRemainings();
+    } else {
+      updateTurnRemaining();
+      updateGunTurnRemaining();
+      updateRadarTurnRemaining();
+      updateMovement();
     }
-
-    updateTurnRemaining();
-    updateGunTurnRemaining();
-    updateRadarTurnRemaining();
-    updateMovement();
   }
 
   private void startThread() {
@@ -94,11 +93,10 @@ public final class BotInternals implements IStopResumeListener {
     }
   }
 
-  @SuppressWarnings("deprecation")
   private void stopThread() {
     synchronized (threadMonitor) {
       if (thread != null) {
-        thread.stop(); // Only Thread.stop() is effective, Thread.interrupt() is not good enough
+        thread.stop();
         thread = null;
       }
     }
@@ -254,21 +252,16 @@ public final class BotInternals implements IStopResumeListener {
   }
 
   public void stop() {
-    System.out.println("stop");
-
     baseBotInternals.setStop();
     bot.go();
   }
 
   public void resume() {
-    System.out.println("resume");
-
     baseBotInternals.setResume();
     bot.go();
   }
 
   public void onStop() {
-    System.out.println("onStop");
     savedDistanceRemaining = distanceRemaining;
     savedTurnRemaining = turnRemaining;
     savedGunTurnRemaining = gunTurnRemaining;
@@ -276,7 +269,6 @@ public final class BotInternals implements IStopResumeListener {
   }
 
   public void onResume() {
-    System.out.println("onResume");
     distanceRemaining = savedDistanceRemaining;
     turnRemaining = savedTurnRemaining;
     gunTurnRemaining = savedGunTurnRemaining;
