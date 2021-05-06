@@ -13,6 +13,7 @@ public final class BotInternals implements IStopResumeListener {
 
   private Thread thread;
   private final Object threadMonitor = new Object();
+  private boolean isRunning;
 
   private double distanceRemaining;
   private double turnRemaining;
@@ -89,6 +90,7 @@ public final class BotInternals implements IStopResumeListener {
   private void startThread() {
     synchronized (threadMonitor) {
       thread = new Thread(bot::run);
+      isRunning = true; // before starting thread!
       thread.start();
     }
   }
@@ -96,8 +98,14 @@ public final class BotInternals implements IStopResumeListener {
   private void stopThread() {
     synchronized (threadMonitor) {
       if (thread != null) {
-        thread.stop();
-        thread = null;
+        isRunning = false;
+        try {
+          thread.join(100);
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        } finally {
+          thread = null;
+        }
       }
     }
   }
@@ -119,7 +127,7 @@ public final class BotInternals implements IStopResumeListener {
   }
 
   public boolean isRunning() {
-    return thread != null;
+    return isRunning;
   }
 
   public double getDistanceRemaining() {

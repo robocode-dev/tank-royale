@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using System;
 using Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Internal;

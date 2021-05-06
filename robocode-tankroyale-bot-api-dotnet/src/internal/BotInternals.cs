@@ -12,6 +12,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private Thread thread;
     private readonly Object threadMonitor = new Object();
+    private bool isRunning;
 
     private double distanceRemaining;
     private double turnRemaining;
@@ -100,6 +101,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       lock (threadMonitor)
       {
         thread = new Thread(new ThreadStart(bot.Run));
+        isRunning = true; // before starting thread!
         thread.Start();
       }
     }
@@ -110,13 +112,15 @@ namespace Robocode.TankRoyale.BotApi.Internal
       {
         if (thread != null)
         {
-          thread.Interrupt();
+          isRunning = false;
           try
           {
-            thread.Join();
+            thread.Join(TimeSpan.FromMilliseconds(100));
           }
-          catch (ThreadInterruptedException) { }
-          thread = null;
+          finally
+          {
+            thread = null;
+          }
         }
       }
     }
@@ -138,7 +142,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         StopThread();
     }
 
-    internal bool IsRunning { get => thread != null; }
+    internal bool IsRunning { get => isRunning; }
 
     internal double DistanceRemaining { get => distanceRemaining; }
 

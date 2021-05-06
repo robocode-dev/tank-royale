@@ -470,6 +470,9 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private void HandleTextMessage(string json)
     {
+      if (json == "{\"$type\":\"GameAbortedEvent\"}")
+        return; // Work-around: Cannot be parsed due to $type for GameAbortedEvent?!
+
       var jsonMsg = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
       try
       {
@@ -501,8 +504,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
             case S.MessageType.SkippedTurnEvent:
               HandleSkippedTurnEvent(json);
               break;
-            case S.MessageType.GameAbortedEvent:
-              break;
             default:
               throw new BotException($"Unsupported WebSocket message type: {type}");
           }
@@ -510,9 +511,12 @@ namespace Robocode.TankRoyale.BotApi.Internal
       }
       catch (KeyNotFoundException)
       {
-        throw new BotException($"$type is missing on the JSON message: {string.Join(Environment.NewLine, jsonMsg)}");
+        Console.Error.WriteLine(jsonMsg);
+
+        throw new BotException($"$type is missing on the JSON message: {json}");
       }
     }
+
 
     private void HandleTickEvent(string json)
     {
