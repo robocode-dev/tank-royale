@@ -12,6 +12,7 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
   public class Fire : Bot
   {
     int dist = 50; // Distance to move when we're hit, forward or back
+    bool isScanning; // Flag indicating if onScannedBot() handler is running
 
     // Main method starts our bot
     static void Main(string[] args)
@@ -36,14 +37,24 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
       // Spin the gun around slowly... forever
       while (IsRunning)
       {
-        // Turn the gun a bit if the bot if the target speed is 0
-        TurnGunRight(5);
+        if (isScanning)
+        {
+          // Skip a turn if the onScannedBot handler is running
+          Go();
+        }
+        else
+        {
+          // Turn the gun a bit if the bot if the target speed is 0
+          TurnGunLeft(5);
+        }
       }
     }
 
     // OnScannedBot: Fire!
     public override void OnScannedBot(ScannedBotEvent e)
     {
+      isScanning = true;
+
       // If the other robot is close by, and we have plenty of life, fire hard!
       var distance = DistanceTo(e.X, e.Y);
       if (distance < 50 && Energy > 50)
@@ -57,6 +68,8 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
       }
       // Rescan
       Scan();
+
+      isScanning = false;
     }
 
     // OnHitByBullet: Turn perpendicular to the bullet, and move a bit.

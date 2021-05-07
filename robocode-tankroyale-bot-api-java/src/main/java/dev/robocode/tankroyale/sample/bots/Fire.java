@@ -17,6 +17,7 @@ import java.io.IOException;
 public class Fire extends Bot {
 
   int dist = 50; // Distance to move when we're hit, forward or back
+  boolean isScanning; // Flag indicating if onScannedBot() handler is running
 
   /** Main method starts our bot */
   public static void main(String[] args) throws IOException {
@@ -41,14 +42,21 @@ public class Fire extends Bot {
 
     // Spin the gun around slowly... forever
     while (isRunning()) {
-      // Turn the gun a bit if the bot if the target speed is 0
-      turnGunLeft(5);
+      if (isScanning) {
+        // Skip a turn if the onScannedBot handler is running
+        go();
+      } else {
+        // Turn the gun a bit if the bot if the target speed is 0
+        turnGunLeft(5);
+      }
     }
   }
 
   /** onScannedBot: Fire! */
   @Override
   public void onScannedBot(ScannedBotEvent e) {
+    isScanning = true;
+
     // If the other robot is close by, and we have plenty of life, fire hard!
     double distance = distanceTo(e.getX(), e.getY());
     if (distance < 50 && getEnergy() > 50) {
@@ -59,6 +67,8 @@ public class Fire extends Bot {
     }
     // Rescan
     scan();
+
+    isScanning = false;
   }
 
   /** onHitByBullet: Turn perpendicular to the bullet, and move a bit. */

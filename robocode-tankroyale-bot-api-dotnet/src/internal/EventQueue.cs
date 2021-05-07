@@ -104,7 +104,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       if (CountEvents() > MaxQueueSize)
       {
-        Console.Error.WriteLine($"Maximum event queue size has been reached: ${MaxQueueSize}");
+        Console.Error.WriteLine($"Maximum event queue size has been reached: {MaxQueueSize}");
       }
       else
       {
