@@ -5,18 +5,22 @@
   <groupId>dev.robocode.tankroyale.sample.bots</groupId>
   <artifactId>Corners</artifactId>
   <version>1.0</version>
- 
+  <packaging>jar</packaging>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+
+    <java.version>11</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
   </properties>
- 
+
   <dependencies>
     <dependency>
       <groupId>dev.robocode.tankroyale</groupId>
-      <artifactId>robocode-tankroyale-bot-api-java</artifactId>
-      <version>0.8.5</version>
+      <artifactId>robocode-tankroyale-bot-api</artifactId>
+      <version>0.9.4</version>
     </dependency>
   </dependencies>
+
 </project>
