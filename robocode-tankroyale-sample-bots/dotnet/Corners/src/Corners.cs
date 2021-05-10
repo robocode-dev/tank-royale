@@ -12,16 +12,17 @@ namespace Robocode.TankRoyale.Sample.Bots
   /// </summary>
   public class Corners : Bot
   {
-
     int enemies; // Number of enemy robots in the game
     int corner = 0; // Which corner we are currently using
     bool stopWhenSeeRobot = false; // See GoCorner()
 
+    // Main method starts our bot
     static void Main(string[] args)
     {
       new Corners().Start();
     }
 
+    // Constructor, which loads the bot settings file
     Corners() : base(BotInfo.FromJsonFile("corners-settings.json")) { }
 
     // This method runs our bot program, where each command is executed one at a time in a loop.
@@ -85,18 +86,13 @@ namespace Robocode.TankRoyale.Sample.Bots
         Stop();
         // Call our custom firing method
         SmartFire(distance);
-        // Rescan
-        if (Scan())
-        {
-          return;
-        }
+        // Rescan for another robot
+        Scan();
         // Resume movement
         Resume();
       }
       else
-      {
         SmartFire(distance);
-      }
     }
 
     // Custom fire method that determines firepower based on distance. 
@@ -104,42 +100,28 @@ namespace Robocode.TankRoyale.Sample.Bots
     private void SmartFire(double distance)
     {
       if (distance > 200 || Energy < 15)
-      {
         Fire(1);
-      }
       else if (distance > 50)
-      {
         Fire(2);
-      }
       else
-      {
         Fire(3);
-      }
     }
 
     // We died. Figure out if we need to switch to another corner.
     public override void OnDeath(DeathEvent e)
     {
       // Well, others should never be 0, but better safe than sorry.
-      if (enemies == 0)
-      {
-        return;
-      }
+      if (enemies == 0) return;
 
       // If 75% of the robots are still alive when we die, we'll switch corners.
       if ((enemies - EnemyCount) / (double)enemies < .75)
       {
-        corner += 90;
-        if (corner == 270)
-        {
-          corner = -90;
-        }
+        if (corner != 270) corner += 90;
+
         Console.WriteLine("I died and did poorly... switching corner to " + corner);
       }
       else
-      {
         Console.WriteLine("I died but did well. I will still use corner " + corner);
-      }
     }
   }
 }

@@ -32,6 +32,8 @@ public class Fire extends Bot {
   /** This method runs our bot program, where each command is executed one at a time in a loop. */
   @Override
   public void run() {
+    isScanning = false; // Clear scanning flag for each new turn
+
     // Set colors
     setBodyColor("#FA0"); // orange
     setGunColor("#F70"); // dark orange
@@ -55,7 +57,7 @@ public class Fire extends Bot {
   /** onScannedBot: Fire! */
   @Override
   public void onScannedBot(ScannedBotEvent e) {
-    isScanning = true;
+    isScanning = true; // We are now scanning
 
     // If the other robot is close by, and we have plenty of life, fire hard!
     double distance = distanceTo(e.getX(), e.getY());
@@ -68,7 +70,7 @@ public class Fire extends Bot {
     // Rescan
     scan();
 
-    isScanning = false;
+    isScanning = false; // We are not scanning any more
   }
 
   /** onHitByBullet: Turn perpendicular to the bullet, and move a bit. */
