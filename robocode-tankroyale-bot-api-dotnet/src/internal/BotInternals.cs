@@ -115,7 +115,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
           isRunning = false;
           try
           {
-            thread.Join(TimeSpan.FromMilliseconds(100));
+            thread.Join(0);
           }
           finally
           {

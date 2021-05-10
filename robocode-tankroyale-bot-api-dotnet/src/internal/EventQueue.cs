@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Robocode.TankRoyale.BotApi.Events;
@@ -13,7 +14,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private readonly BaseBotInternals baseBotInternals;
     private readonly BotEventHandlers botEventHandlers;
 
-    private readonly IDictionary<int, ConcurrentQueue<BotEvent>> eventsDict = new ConcurrentDictionary<int, ConcurrentQueue<BotEvent>>();
+    private readonly IDictionary<int, ArrayList> eventsDict = new ConcurrentDictionary<int, ArrayList>();
 
     private BotEvent currentEvent;
 
@@ -45,36 +46,39 @@ namespace Robocode.TankRoyale.BotApi.Internal
       RemoveOldEvents(currentTurn);
 
       // Handle events in the order of the keys, i.e. event priority order
-      var sortedDict = new SortedDictionary<int, ConcurrentQueue<BotEvent>>(eventsDict);
+      var sortedDict = new SortedDictionary<int, ArrayList>(eventsDict);
 
-      foreach (var item in sortedDict)
+      foreach (var events in sortedDict.Values)
       {
-        var events = item.Value;
-        foreach (var evt in events)
+        for (int i = events.Count - 1; i >= 0; i--)
         {
-          // Exit if we are inside an event handler handling the current event being fired
-          if (currentEvent != null && events.GetType().Equals(currentEvent.GetType()))
-          {
-            return;
-          }
-
           try
           {
-            currentEvent = evt;
-            BotEvent botEvent;
-            if (events.TryDequeue(out botEvent))
+            var evt = (BotEvent)events[i];
+
+            // Exit if we are inside an event handler handling the current event being fired
+            if (currentEvent != null && events.GetType().Equals(currentEvent.GetType()))
+              return;
+
+            try
             {
-              botEventHandlers.Fire(botEvent);
+              currentEvent = evt;
+              events.RemoveAt(i);
+              botEventHandlers.Fire(evt);
+            }
+            catch (RescanException)
+            {
+              currentEvent = null;
+            }
+            catch (Exception)
+            {
+              currentEvent = null;
+              throw;
             }
           }
-          catch (RescanException)
+          catch (System.ArgumentOutOfRangeException)
           {
-            currentEvent = null;
-          }
-          catch (Exception)
-          {
-            currentEvent = null;
-            throw;
+            continue;
           }
         }
       }
@@ -82,14 +86,19 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private void RemoveOldEvents(int currentTurn)
     {
-      foreach (var item in eventsDict)
+      foreach (var events in eventsDict.Values)
       {
-        var events = item.Value;
-        foreach (var botEvent in events)
+        for (int i = events.Count - 1; i >= 0; i--)
         {
-          if (!botEvent.IsCritical && IsOldEvent(botEvent, currentTurn))
+          try
           {
-            eventsDict.Remove(item.Key);
+            var evt = (BotEvent)events[i];
+            if (!evt.IsCritical && IsOldEvent(evt, currentTurn))
+              events.RemoveAt(i);
+          }
+          catch (System.ArgumentOutOfRangeException)
+          {
+            continue;
           }
         }
       }
@@ -110,23 +119,23 @@ namespace Robocode.TankRoyale.BotApi.Internal
       {
         int priority = GetPriority(botEvent, baseBot);
 
-        ConcurrentQueue<BotEvent> events;
+        ArrayList events;
         eventsDict.TryGetValue(priority, out events);
         if (events == null)
         {
-          events = new ConcurrentQueue<BotEvent>();
+          events = ArrayList.Synchronized(new ArrayList());
           eventsDict.Add(priority, events);
         }
-        events.Enqueue(botEvent);
+        events.Add(botEvent);
       }
     }
 
     private int CountEvents()
     {
       int count = 0;
-      foreach (var events in eventsDict)
+      foreach (var events in eventsDict.Values)
       {
-        count += events.Value.Count;
+        count += events.Count;
       }
       return count;
     }

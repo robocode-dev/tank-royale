@@ -26,6 +26,8 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
     // This method runs our bot program, where each command is executed one at a time in a loop.
     public override void Run()
     {
+      isScanning = false; // Clear scanning flag for each new turn
+
       // Set colors
       SetBodyColor("#FA0"); // orange
       SetGunColor("#F70"); // dark orange
@@ -37,13 +39,16 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
       // Spin the gun around slowly... forever
       while (IsRunning)
       {
+
         if (isScanning)
         {
+          System.Console.WriteLine(TurnNumber + " IsRunning");
           // Skip a turn if the onScannedBot handler is running
           Go();
         }
         else
         {
+          System.Console.WriteLine(TurnNumber + " TurnGunLeft");
           // Turn the gun a bit if the bot if the target speed is 0
           TurnGunLeft(5);
         }
@@ -53,7 +58,7 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
     // OnScannedBot: Fire!
     public override void OnScannedBot(ScannedBotEvent e)
     {
-      isScanning = true;
+      isScanning = true; // We are now scanning
 
       // If the other robot is close by, and we have plenty of life, fire hard!
       var distance = DistanceTo(e.X, e.Y);
@@ -69,7 +74,7 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
       // Rescan
       Scan();
 
-      isScanning = false;
+      isScanning = false; // We are not scanning any more
     }
 
     // OnHitByBullet: Turn perpendicular to the bullet, and move a bit.
