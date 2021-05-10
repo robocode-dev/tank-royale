@@ -1,6 +1,7 @@
+using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
-namespace Robocode.TankRoyale.BotApi.Sample.Bots
+namespace Robocode.TankRoyale.Sample.Bots
 {
   /// <summary>
   /// Fire - a sample bot, original version by Mathew Nelson for Robocode.

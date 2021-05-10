@@ -57,7 +57,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
             var evt = (BotEvent)events[i];
 
             // Exit if we are inside an event handler handling the current event being fired
-            if (currentEvent != null && events.GetType().Equals(currentEvent.GetType()))
+            if (currentEvent != null && evt.GetType().Equals(currentEvent.GetType()))
               return;
 
             try

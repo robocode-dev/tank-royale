@@ -1,6 +1,7 @@
+using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
-namespace Robocode.TankRoyale.BotApi.Sample.Bots
+namespace Robocode.TankRoyale.Sample.Bots
 {
   /// <summary>
   /// Fire - a sample bot, original version by Mathew Nelson for Robocode.
@@ -15,7 +16,7 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
     bool isScanning; // Flag indicating if onScannedBot() handler is running
 
     // Main method starts our bot
-    static void Main(string[] args)
+    static void Main_Fire(string[] args)
     {
       new Fire().Start();
     }

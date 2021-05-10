@@ -1,9 +1,8 @@
 using System;
-using System.Security.Permissions;
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
-namespace Robocode.TankRoyale.BotApi.Sample.Bots
+namespace Robocode.TankRoyale.Sample.Bots
 {
   /// <summary>
   /// Target - a sample robot by Mathew Nelson.
