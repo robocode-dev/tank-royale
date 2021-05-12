@@ -307,6 +307,7 @@ public final class BotInternals implements IStopResumeListener {
       gunTurnRate = gunTurnRemaining;
       bot.setGunTurnRate(gunTurnRate);
     }
+
     if (bot.doAdjustRadarForGunTurn()) {
       radarTurnRemaining -= gunTurnRate;
     }
