@@ -435,6 +435,8 @@ public final class BaseBotInternals {
 
     @Override
     public final void onOpen(WebSocket websocket) {
+      BaseBotInternals.this.socket = websocket; // To prevent null pointer exception
+
       botEventHandlers.onConnected.publish(new ConnectedEvent(serverUrl));
       Listener.super.onOpen(websocket);
     }
