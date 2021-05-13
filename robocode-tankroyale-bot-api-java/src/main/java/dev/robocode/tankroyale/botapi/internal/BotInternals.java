@@ -15,12 +15,20 @@ public final class BotInternals implements IStopResumeListener {
   private final Object threadMonitor = new Object();
   private boolean isRunning;
 
+  private double previousDirection;
+  private double previousGunDirection;
+  private double previousRadarDirection;
+
   private double distanceRemaining;
   private double turnRemaining;
   private double gunTurnRemaining;
   private double radarTurnRemaining;
 
   private boolean isOverDriving;
+
+  private double savedPreviousDirection;
+  private double savedPreviousGunDirection;
+  private double savedPreviousRadarDirection;
 
   private double savedDistanceRemaining;
   private double savedTurnRemaining;
@@ -35,7 +43,6 @@ public final class BotInternals implements IStopResumeListener {
 
     BotEventHandlers botEventHandlers = baseBotInternals.getBotEventHandlers();
     botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 90);
-    botEventHandlers.onRoundStarted.subscribe(e -> onRoundStarted(), 90);
     botEventHandlers.onRoundEnded.subscribe(e -> onRoundEnded(), 90);
     botEventHandlers.onGameEnded.subscribe(this::onGameEnded, 90);
     botEventHandlers.onDisconnected.subscribe(this::onDisconnected, 90);
@@ -46,13 +53,15 @@ public final class BotInternals implements IStopResumeListener {
 
   private void onNextTurn(TickEvent e) {
     if (e.getTurnNumber() == 1) {
-      stopThread(); // sanity before starting a new thread (later)
-      startThread();
+      onFirstTurn();
     }
     processTurn();
   }
 
-  private void onRoundStarted() {
+  private void onFirstTurn() {
+    stopThread(); // sanity before starting a new thread (later)
+    startThread();
+
     clearRemainings();
   }
 
@@ -61,6 +70,10 @@ public final class BotInternals implements IStopResumeListener {
     turnRemaining = 0d;
     gunTurnRemaining = 0d;
     radarTurnRemaining = 0d;
+
+    previousDirection = bot.getDirection();
+    previousGunDirection = bot.getGunDirection();
+    previousRadarDirection = bot.getRadarDirection();
   }
 
   private void onRoundEnded() {
@@ -270,6 +283,10 @@ public final class BotInternals implements IStopResumeListener {
   }
 
   public void onStop() {
+    savedPreviousDirection = previousDirection;
+    savedPreviousGunDirection = previousGunDirection;
+    savedPreviousRadarDirection = previousRadarDirection;
+
     savedDistanceRemaining = distanceRemaining;
     savedTurnRemaining = turnRemaining;
     savedGunTurnRemaining = gunTurnRemaining;
@@ -277,6 +294,10 @@ public final class BotInternals implements IStopResumeListener {
   }
 
   public void onResume() {
+    previousDirection = savedPreviousDirection;
+    previousGunDirection = savedPreviousGunDirection;
+    previousRadarDirection = savedPreviousRadarDirection;
+
     distanceRemaining = savedDistanceRemaining;
     turnRemaining = savedTurnRemaining;
     gunTurnRemaining = savedGunTurnRemaining;
@@ -284,53 +305,39 @@ public final class BotInternals implements IStopResumeListener {
   }
 
   private void updateTurnRemaining() {
-    double turnRate = bot.getTurnRate();
-    if (abs(turnRemaining) <= abs(turnRate)) {
-      turnRate = turnRemaining;
-      bot.setTurnRate(turnRate);
-    }
+    double delta = bot.calcDeltaAngle(bot.getDirection(), previousDirection);
+    previousDirection = bot.getDirection();
 
-    if (bot.doAdjustGunForBodyTurn()) {
-      gunTurnRemaining -= turnRate;
+    if (abs(turnRemaining) <= abs(delta)) {
+      turnRemaining = 0;
+    } else {
+      turnRemaining -= delta;
     }
-
-    turnRemaining -= turnRate;
-    if (abs(turnRemaining) <= abs(turnRate)) {
-      turnRate = turnRemaining;
-      bot.setTurnRate(turnRate);
-    }
+    bot.setTurnRate(turnRemaining);
   }
 
   private void updateGunTurnRemaining() {
-    double gunTurnRate = bot.getGunTurnRate();
-    if (abs(gunTurnRemaining) <= abs(gunTurnRate)) {
-      gunTurnRate = gunTurnRemaining;
-      bot.setGunTurnRate(gunTurnRate);
-    }
+    double delta = bot.calcDeltaAngle(bot.getGunDirection(), previousGunDirection);
+    previousGunDirection = bot.getGunDirection();
 
-    if (bot.doAdjustRadarForGunTurn()) {
-      radarTurnRemaining -= gunTurnRate;
+    if (abs(gunTurnRemaining) <= abs(delta)) {
+      gunTurnRemaining = 0;
+    } else {
+      gunTurnRemaining -= delta;
     }
-
-    gunTurnRemaining -= gunTurnRate;
-    if (abs(gunTurnRemaining) <= abs(gunTurnRate)) {
-      gunTurnRate = gunTurnRemaining;
-      bot.setGunTurnRate(gunTurnRate);
-    }
+    bot.setGunTurnRate(gunTurnRemaining);
   }
 
   private void updateRadarTurnRemaining() {
-    double radarTurnRate = bot.getRadarTurnRate();
-    if (abs(radarTurnRemaining) <= abs(radarTurnRate)) {
-      radarTurnRate = radarTurnRemaining;
-      bot.setRadarTurnRate(radarTurnRate);
-    }
+    double delta = bot.calcDeltaAngle(bot.getRadarDirection(), previousRadarDirection);
+    previousRadarDirection = bot.getRadarDirection();
 
-    radarTurnRemaining -= radarTurnRate;
-    if (abs(radarTurnRemaining) <= abs(radarTurnRate)) {
-      radarTurnRate = radarTurnRemaining;
-      bot.setRadarTurnRate(radarTurnRate);
+    if (abs(radarTurnRemaining) <= abs(delta)) {
+      radarTurnRemaining = 0;
+    } else {
+      radarTurnRemaining -= delta;
     }
+    bot.setRadarTurnRate(radarTurnRemaining);
   }
 
   private void updateMovement() {

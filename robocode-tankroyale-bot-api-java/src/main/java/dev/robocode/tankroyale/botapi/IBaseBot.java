@@ -1271,4 +1271,18 @@ public interface IBaseBot {
         ? ((angle < 180) ? angle : (angle - 360))
         : ((angle >= -180) ? angle : (angle + 360));
   }
+
+  /**
+   * Calculates the difference between two angles, i.e. the number of degrees from a source angle to a target angle.
+   * The delta angle will be in the range [-180,180]
+   *
+   * @param targetAngle is the target angle.
+   * @param sourceAngle is the source angle.
+   * @return The delta angle between a source angle and target angle.
+   */
+  default double calcDeltaAngle(double targetAngle, double sourceAngle) {
+    double angle = targetAngle - sourceAngle;
+    angle += (angle > 180) ? -360 : (angle <-180) ? 360 : 0;
+    return angle;
+  }
 }
