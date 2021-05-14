@@ -14,12 +14,20 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private readonly Object threadMonitor = new Object();
     private bool isRunning;
 
+    private double previousDirection;
+    private double previousGunDirection;
+    private double previousRadarDirection;
+
     private double distanceRemaining;
     private double turnRemaining;
     private double gunTurnRemaining;
     private double radarTurnRemaining;
 
     private bool isOverDriving;
+
+    private double savedPreviousDirection;
+    private double savedPreviousGunDirection;
+    private double savedPreviousRadarDirection;
 
     private double savedDistanceRemaining;
     private double savedTurnRemaining;
@@ -33,7 +41,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
       BotEventHandlers botEventHandlers = baseBotInternals.BotEventHandlers;
       botEventHandlers.onNextTurn.Subscribe(OnNextTurn, 100);
-      botEventHandlers.onRoundStarted.Subscribe(OnRoundStarted, 100);
       botEventHandlers.onRoundEnded.Subscribe(OnRoundEnded, 100);
       botEventHandlers.onGameEnded.Subscribe(OnGameEnded, 100);
       botEventHandlers.onDisconnected.Subscribe(OnDisconnected, 100);
@@ -45,15 +52,16 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private void OnNextTurn(TickEvent evt)
     {
       if (evt.TurnNumber == 1)
-      {
-        StopThread(); // sanity before starting a new thread (later)
-        StartThread();
-      }
+        OnFirstTurn();
+
       ProcessTurn();
     }
 
-    private void OnRoundStarted(RoundStartedEvent evt)
+    private void OnFirstTurn()
     {
+      StopThread(); // sanity before starting a new thread (later)
+      StartThread();
+
       ClearRemainings();
     }
 
@@ -63,6 +71,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
       turnRemaining = 0d;
       gunTurnRemaining = 0d;
       radarTurnRemaining = 0d;
+
+      previousDirection = bot.Direction;
+      previousGunDirection = bot.GunDirection;
+      previousRadarDirection = bot.RadarDirection;
     }
 
     private void OnRoundEnded(RoundEndedEvent evt)
@@ -292,6 +304,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     public void OnStop()
     {
+      savedPreviousDirection = previousDirection;
+      savedPreviousGunDirection = previousGunDirection;
+      savedPreviousRadarDirection = previousRadarDirection;
+
       savedDistanceRemaining = distanceRemaining;
       savedTurnRemaining = turnRemaining;
       savedGunTurnRemaining = gunTurnRemaining;
@@ -300,6 +316,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     public void OnResume()
     {
+      previousDirection = savedPreviousDirection;
+      previousGunDirection = savedPreviousGunDirection;
+      previousRadarDirection = savedPreviousRadarDirection;
+
       distanceRemaining = savedDistanceRemaining;
       turnRemaining = savedTurnRemaining;
       gunTurnRemaining = savedGunTurnRemaining;
@@ -308,57 +328,41 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private void UpdateTurnRemaining()
     {
-      double turnRate = bot.TurnRate;
-      if (Math.Abs(turnRemaining) <= Math.Abs(turnRate))
-      {
-        turnRate = turnRemaining;
-        bot.TurnRate = turnRate;
-      }
-      if (bot.DoAdjustGunForBodyTurn)
-        gunTurnRemaining -= turnRate;
+      double delta = bot.CalcDeltaAngle(bot.Direction, previousDirection);
+      previousDirection = bot.Direction;
 
-      turnRemaining -= turnRate;
-      if (Math.Abs(turnRemaining) <= Math.Abs(turnRate))
-      {
-        turnRate = turnRemaining;
-        bot.TurnRate = turnRate;
-      }
+      if (Math.Abs(turnRemaining) <= Math.Abs(delta))
+        turnRemaining = 0;
+      else
+        turnRemaining -= delta;
+
+      bot.TurnRate = turnRemaining;
     }
 
     private void UpdateGunTurnRemaining()
     {
-      double gunTurnRate = bot.GunTurnRate;
-      if (Math.Abs(gunTurnRemaining) <= Math.Abs(gunTurnRate))
-      {
-        gunTurnRate = gunTurnRemaining;
-        bot.GunTurnRate = gunTurnRate;
-      }
-      if (bot.DoAdjustRadarForGunTurn)
-        radarTurnRemaining -= gunTurnRate;
+      double delta = bot.CalcDeltaAngle(bot.GunDirection, previousGunDirection);
+      previousGunDirection = bot.GunDirection;
 
-      gunTurnRemaining -= gunTurnRate;
-      if (Math.Abs(gunTurnRemaining) <= Math.Abs(gunTurnRate))
-      {
-        gunTurnRate = gunTurnRemaining;
-        bot.GunTurnRate = gunTurnRate;
-      }
+      if (Math.Abs(gunTurnRemaining) <= Math.Abs(delta))
+        gunTurnRemaining = 0;
+      else
+        gunTurnRemaining -= delta;
+
+      bot.GunTurnRate = gunTurnRemaining;
     }
 
     private void UpdateRadarTurnRemaining()
     {
-      double radarTurnRate = bot.RadarTurnRate;
-      if (Math.Abs(radarTurnRemaining) <= Math.Abs(radarTurnRate))
-      {
-        radarTurnRate = radarTurnRemaining;
-        bot.RadarTurnRate = radarTurnRate;
-      }
+      double delta = bot.CalcDeltaAngle(bot.RadarDirection, previousRadarDirection);
+      previousRadarDirection = bot.RadarDirection;
 
-      radarTurnRemaining -= radarTurnRate;
-      if (Math.Abs(radarTurnRemaining) <= Math.Abs(radarTurnRate))
-      {
-        radarTurnRate = radarTurnRemaining;
-        bot.RadarTurnRate = radarTurnRate;
-      }
+      if (Math.Abs(radarTurnRemaining) <= Math.Abs(delta))
+        radarTurnRemaining = 0;
+      else
+        radarTurnRemaining -= delta;
+
+      bot.RadarTurnRate = radarTurnRemaining;
     }
 
     private void UpdateMovement()

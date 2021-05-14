@@ -16,7 +16,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     bool isScanning; // Flag indicating if onScannedBot() handler is running
 
     // Main method starts our bot
-    static void Main_Fire(string[] args)
+    static void Main(string[] args)
     {
       new Fire().Start();
     }
@@ -43,13 +43,11 @@ namespace Robocode.TankRoyale.Sample.Bots
 
         if (isScanning)
         {
-          System.Console.WriteLine(TurnNumber + " IsRunning");
           // Skip a turn if the onScannedBot handler is running
           Go();
         }
         else
         {
-          System.Console.WriteLine(TurnNumber + " TurnGunLeft");
           // Turn the gun a bit if the bot if the target speed is 0
           TurnGunLeft(5);
         }

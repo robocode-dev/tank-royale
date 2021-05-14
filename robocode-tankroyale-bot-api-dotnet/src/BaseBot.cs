@@ -449,6 +449,14 @@ namespace Robocode.TankRoyale.BotApi
         ((angle >= -180) ? angle : (angle + 360));
 
     /// <inheritdoc/>
+    public virtual double CalcDeltaAngle(double targetAngle, double sourceAngle)
+    {
+      double angle = targetAngle - sourceAngle;
+      angle += (angle > 180) ? -360 : (angle < -180) ? 360 : 0;
+      return angle;
+    }
+
+    /// <inheritdoc/>
     public virtual void OnConnected(ConnectedEvent connectedEvent) => Console.WriteLine($"Connected to: {connectedEvent.ServerUri}");
 
     /// <inheritdoc/>
