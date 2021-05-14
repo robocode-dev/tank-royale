@@ -17,7 +17,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     bool stopWhenSeeRobot = false; // See GoCorner()
 
     // Main method starts our bot
-    static void Main(string[] args)
+    static void Main_Corners(string[] args)
     {
       new Corners().Start();
     }

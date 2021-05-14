@@ -236,5 +236,8 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <inheritdoc/>
     public override double NormalizeRelativeAngle(double angle) => base.NormalizeRelativeAngle(angle);
+
+    /// <inheritdoc/>
+    public override double CalcDeltaAngle(double targetAngle, double sourceAngle) => base.CalcDeltaAngle(targetAngle, sourceAngle);
   }
 }

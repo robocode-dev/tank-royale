@@ -1106,5 +1106,14 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="angle">Is the angle to normalize.</param>
     /// <returns>The normalized relative angle.</returns>
     double NormalizeRelativeAngle(double angle);
+
+    /// <summary>
+    /// Calculates the difference between two angles, i.e. the number of degrees from a source
+    /// angle to a target angle. The delta angle will be in the range [-180,180]
+    /// </summary>
+    /// <param name="targetAngle">Is the target angle.</param>
+    /// <param name="sourceAngle">Is the source angle.</param>
+    /// <returns>The delta angle between a source angle and target angle.</returns>
+    double CalcDeltaAngle(double targetAngle, double sourceAngle);
   }
 }
