@@ -29,11 +29,11 @@ namespace Robocode.TankRoyale.Sample.Bots
       while (IsRunning)
       {
         // Tell the game that when we take move, we'll also want to turn right... a lot.
-        SetTurnRight(10000);
+        SetTurnLeft(10_000);
         // Limit our speed to 5
         SetMaxSpeed(5);
         // Start moving (and turning)
-        Forward(10000);
+        Forward(10_000);
       }
     }
 
@@ -46,14 +46,14 @@ namespace Robocode.TankRoyale.Sample.Bots
     // OnHitBot: If it's our fault, we'll stop turning and moving, so we need to turn again to keep spinning.
     public override void OnHitBot(HitBotEvent e)
     {
-      double bearing = BearingTo(e.X, e.Y);
+      var bearing = BearingTo(e.X, e.Y);
       if (bearing > -10 && bearing < 10)
       {
         Fire(3);
       }
       if (e.IsRammed)
       {
-        TurnRight(10);
+        TurnLeft(10);
       }
     }
   }

@@ -11,7 +11,7 @@ namespace Robocode.TankRoyale.Sample.Bots
   /// </summary>
   public class RamFire : Bot
   {
-    int turnDirection = 1; // Clockwise (-1) or counterclockwise (1)
+    int turnDirection = 1; // clockwise (-1) or counterclockwise (1)
 
     // Main method starts our bot
     static void Main(string[] args)
@@ -33,12 +33,7 @@ namespace Robocode.TankRoyale.Sample.Bots
       // Spin the gun around slowly... forever
       while (IsRunning)
       {
-        // Turn the gun a bit if the bot if the target speed is 0
-        if (TargetSpeed == 0)
-        {
-          TurnGunRight(5);
-        }
-        Go();
+        TurnLeft(5 * turnDirection);
       }
     }
 
@@ -46,8 +41,10 @@ namespace Robocode.TankRoyale.Sample.Bots
     public override void OnScannedBot(ScannedBotEvent e)
     {
       TurnToFaceTarget(e.X, e.Y);
-      double distance = DistanceTo(e.X, e.Y);
+      var distance = DistanceTo(e.X, e.Y);
       Forward(distance + 5);
+
+      Scan(); // Might want to move forward again!
     }
 
     /** OnBulletHit: Turn to face robot, fire hard, and ram it again! */
@@ -58,25 +55,16 @@ namespace Robocode.TankRoyale.Sample.Bots
       // Determine a shot that won't kill the robot...
       // We want to ram it instead for bonus points
       if (e.Energy > 16)
-      {
         Fire(3);
-      }
       else if (e.Energy > 10)
-      {
         Fire(2);
-      }
       else if (e.Energy > 4)
-      {
         Fire(1);
-      }
       else if (e.Energy > 2)
-      {
         Fire(.5);
-      }
       else if (e.Energy > .4)
-      {
         Fire(.1);
-      }
+
       Forward(40); // Ram it again!
     }
 
@@ -88,13 +76,10 @@ namespace Robocode.TankRoyale.Sample.Bots
     {
       double bearing = BearingTo(x, y);
       if (bearing >= 0)
-      {
         turnDirection = 1;
-      }
       else
-      {
         turnDirection = -1;
-      }
+
       TurnLeft(bearing);
     }
   }

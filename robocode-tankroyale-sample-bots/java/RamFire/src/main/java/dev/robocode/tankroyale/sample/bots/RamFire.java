@@ -14,7 +14,7 @@ import java.io.IOException;
  * <p>Drives at robots trying to ram them. Fires when it hits them.
  */
 public class RamFire extends Bot {
-  int turnDirection = 1; // counterclockwise (1) or clockwise (-1)
+  int turnDirection = 1; // clockwise (-1) or counterclockwise (1)
 
   /** Main method starts our bot */
   public static void main(String[] args) throws IOException {
@@ -82,6 +82,6 @@ public class RamFire extends Bot {
     } else {
       turnDirection = -1;
     }
-    setTurnLeft(bearing);
+    turnLeft(bearing);
   }
 }

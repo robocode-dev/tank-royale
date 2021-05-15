@@ -312,6 +312,9 @@ public final class BotInternals implements IStopResumeListener {
       turnRemaining = 0;
     } else {
       turnRemaining -= delta;
+      if (isNearZero(turnRemaining)) {
+        turnRemaining = 0;
+      }
     }
     bot.setTurnRate(turnRemaining);
   }
@@ -324,6 +327,9 @@ public final class BotInternals implements IStopResumeListener {
       gunTurnRemaining = 0;
     } else {
       gunTurnRemaining -= delta;
+      if (isNearZero(gunTurnRemaining)) {
+        gunTurnRemaining = 0;
+      }
     }
     bot.setGunTurnRate(gunTurnRemaining);
   }
@@ -336,6 +342,9 @@ public final class BotInternals implements IStopResumeListener {
       radarTurnRemaining = 0;
     } else {
       radarTurnRemaining -= delta;
+      if (isNearZero(radarTurnRemaining)) {
+        radarTurnRemaining = 0;
+      }
     }
     bot.setRadarTurnRate(radarTurnRemaining);
   }

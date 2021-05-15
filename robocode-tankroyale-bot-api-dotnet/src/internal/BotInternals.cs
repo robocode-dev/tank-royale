@@ -334,7 +334,11 @@ namespace Robocode.TankRoyale.BotApi.Internal
       if (Math.Abs(turnRemaining) <= Math.Abs(delta))
         turnRemaining = 0;
       else
+      {
         turnRemaining -= delta;
+        if (IsNearZero(turnRemaining))
+          turnRemaining = 0;
+      }
 
       bot.TurnRate = turnRemaining;
     }
@@ -347,7 +351,11 @@ namespace Robocode.TankRoyale.BotApi.Internal
       if (Math.Abs(gunTurnRemaining) <= Math.Abs(delta))
         gunTurnRemaining = 0;
       else
+      {
         gunTurnRemaining -= delta;
+        if (IsNearZero(gunTurnRemaining))
+          gunTurnRemaining = 0;
+      }
 
       bot.GunTurnRate = gunTurnRemaining;
     }
@@ -360,7 +368,11 @@ namespace Robocode.TankRoyale.BotApi.Internal
       if (Math.Abs(radarTurnRemaining) <= Math.Abs(delta))
         radarTurnRemaining = 0;
       else
+      {
         radarTurnRemaining -= delta;
+        if (IsNearZero(radarTurnRemaining))
+          radarTurnRemaining = 0;
+      }
 
       bot.RadarTurnRate = radarTurnRemaining;
     }

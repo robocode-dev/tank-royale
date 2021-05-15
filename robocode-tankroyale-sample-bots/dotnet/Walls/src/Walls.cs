@@ -65,7 +65,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     public override void OnHitBot(HitBotEvent e)
     {
       // If he's in front of us, set back up a bit.
-      double bearing = BearingTo(e.X, e.Y);
+      var bearing = BearingTo(e.X, e.Y);
       if (bearing > -90 && bearing < 90)
       {
         Back(100);
@@ -84,9 +84,7 @@ namespace Robocode.TankRoyale.Sample.Bots
       // By calling it manually here, we make sure we generate another scan event if there's a robot
       // on the next wall, so that we do not start moving up it until it's gone.
       if (peek)
-      {
         Scan();
-      }
     }
   }
 }

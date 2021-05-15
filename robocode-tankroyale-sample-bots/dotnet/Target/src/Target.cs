@@ -56,7 +56,7 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
         Console.WriteLine("Ouch, down to " + (int)(Energy + .5) + " energy.");
 
         // Move around a bit.
-        TurnLeft(65);
+        TurnRight(65);
         Forward(100);
       }
     }

@@ -19,7 +19,7 @@
     <dependency>
       <groupId>dev.robocode.tankroyale</groupId>
       <artifactId>robocode-tankroyale-bot-api</artifactId>
-      <version>0.9.4</version>
+      <version>0.9.5</version>
     </dependency>
   </dependencies>
 

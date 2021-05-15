@@ -11,8 +11,7 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
   /// </summary>
   public class TrackFire : Bot
   {
-    // Last time we scanned
-    int lastScanTurn;
+    bool isScanning; // flag set when scanning
 
     // Main method starts our bot
     static void Main(string[] args)
@@ -26,7 +25,7 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
     // TrackFire's run method
     public override void Run()
     {
-      lastScanTurn = -1; // Reset last scan turn
+      isScanning = false; // reset scanning flag
 
       // Set colors
       var pink = "#FF69B4";
@@ -39,52 +38,44 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
       // Loop while running
       while (IsRunning)
       {
-        // Make sure we are at least one turn from last scanning turn before turning the gun
-        if (TurnNumber - lastScanTurn > 1)
-        {
+        if (isScanning)
+          Go(); // skip turn if we a scanning
+        else
           TurnGunLeft(10); // Scans automatically as radar is mounted on gun
-        }
-        Go(); // Skip next turn if we are doing nothing else (e.g. scanning)
       }
     }
 
     // OnScannedRobot: We have a target. Go get it.
     public override void OnScannedBot(ScannedBotEvent e)
     {
-      // Save the turn number of this scan
-      lastScanTurn = e.TurnNumber;
+      isScanning = true; // we started scanning
 
       // Calculate direction of the scanned bot and bearing to it for the gun
-      double direction = DirectionTo(e.X, e.Y);
-      double bearingFromGun = NormalizeRelativeAngle(direction - GunDirection);
+      double bearingFromGun = GunBearingTo(e.X, e.Y);
 
       // Turn the gun toward the scanned bot
       TurnGunLeft(bearingFromGun);
 
       // If it is close enough, fire!
-      if (Math.Abs(bearingFromGun) <= 3)
+      if (Math.Abs(bearingFromGun) <= 3 && GunHeat == 0)
       {
-        // We check gun heat here, because calling Fire() uses a turn,
-        // which could cause us to lose track of the other bot.
-        if (GunHeat == 0)
-        {
-          Fire(Math.Min(3 - Math.Abs(bearingFromGun), Energy - .1));
-        }
+        Fire(Math.Min(3 - Math.Abs(bearingFromGun), Energy - .1));
       }
+
       // Generates another scan event if we see a robot.
-      // We only need to call this if the gun (and therefore radar) are not turning
-      // as the radar does not scan if it is not being turned.
-      if (bearingFromGun == 0)
-      {
+      // We only need to call this if the gun (and therefore radar)
+      // are not turning. Otherwise, scan is called automatically.
+      if (bearingFromGun < 5)
         Scan();
-      }
+
+      isScanning = false; // we stopped scanning
     }
 
     // OnWonRound: Do a victory dance!
     public override void OnWonRound(WonRoundEvent e)
     {
       // Victory dance turning right 360 degrees 100 times
-      TurnLeft(36000);
+      TurnLeft(36_000);
     }
   }
 }
