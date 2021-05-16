@@ -83,7 +83,7 @@ class GameServer(
 
     /** Starts this server */
     fun start() {
-        log.info("Starting server on port ${Server.port} with game types: $gameTypes")
+        log.info("Starting server on port ${Server.port} with game type(s): $gameTypes")
         connHandler.start()
     }
 
@@ -569,7 +569,7 @@ class GameServer(
     /** Pauses current game */
     internal fun onPauseGame() {
         if (serverState === ServerState.GAME_RUNNING) {
-            log.info("Pausing game");
+            log.info("Pausing game")
 
             serverState = ServerState.GAME_PAUSED
 
@@ -582,7 +582,7 @@ class GameServer(
     /** Resumes current game */
     internal fun onResumeGame() {
         if (serverState === ServerState.GAME_PAUSED) {
-            log.info("Resuming game");
+            log.info("Resuming game")
 
             serverState = ServerState.GAME_RUNNING
 

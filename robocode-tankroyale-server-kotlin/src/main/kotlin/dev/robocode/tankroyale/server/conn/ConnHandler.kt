@@ -41,7 +41,7 @@ class ConnHandler internal constructor(
     init {
         val address = InetSocketAddress("localhost", Server.port.toInt())
         webSocketObserver = WebSocketObserver(address)
-        webSocketObserver.connectionLostTimeout = 10 // TODO: Put this in a config file.
+        webSocketObserver.isTcpNoDelay = true
         executorService = Executors.newCachedThreadPool()
     }
 
@@ -122,8 +122,10 @@ class ConnHandler internal constructor(
     }
 
     private fun notifyException(exception: Exception) {
-        log.error("Exception occurred: $exception")
-        executorService.submit { listener.onException(exception) }
+        executorService.submit {
+            log.error("Exception occurred: $exception")
+            listener.onException(exception)
+        }
     }
 
     private inner class WebSocketObserver(address: InetSocketAddress) : WebSocketServer(address) {
@@ -146,19 +148,19 @@ class ConnHandler internal constructor(
             log.debug("onClose(): ${conn.remoteSocketAddress}, code: $code, reason: $reason, remote: $remote")
             allConnections -= conn
             when {
-                botConnections.remove(conn) -> {
+                botConnections.remove(conn) -> executorService.submit {
                     val handshake = botHandshakes[conn]
-                    executorService.submit { listener.onBotLeft(conn, handshake!!) }
+                    listener.onBotLeft(conn, handshake!!)
                     botHandshakes -= conn
                 }
-                observerConnections.remove(conn) -> {
-                    val handshake = observerHandshakes[conn]
-                    executorService.submit { listener.onObserverLeft(conn, handshake!!) }
+                observerConnections.remove(conn) -> executorService.submit {
+                val handshake = observerHandshakes[conn]
+                    listener.onObserverLeft(conn, handshake!!)
                     observerHandshakes -= conn
                 }
-                controllerConnections.remove(conn) -> {
+                controllerConnections.remove(conn) -> executorService.submit {
                     val handshake = controllerHandshakes[conn]
-                    executorService.submit { listener.onControllerLeft(conn, handshake!!) }
+                    listener.onControllerLeft(conn, handshake!!)
                     controllerHandshakes -= conn
                 }
             }
@@ -180,64 +182,63 @@ class ConnHandler internal constructor(
                     }
                     log.debug("Handling message: $type")
                     when (type) {
-                        Message.`$type`.BOT_INTENT -> {
-                            val intent = gson.fromJson(message, BotIntent::class.java)
-                            executorService.submit { listener.onBotIntent(conn, botHandshakes[conn]!!, intent) }
+                        Message.`$type`.BOT_INTENT -> executorService.submit {
+                        val intent = gson.fromJson(message, BotIntent::class.java)
+                            listener.onBotIntent(conn, botHandshakes[conn]!!, intent)
                         }
-                        Message.`$type`.BOT_HANDSHAKE -> {
+                        Message.`$type`.BOT_HANDSHAKE -> executorService.submit {
                             val handshake = gson.fromJson(message, BotHandshake::class.java)
                             botConnections += conn
                             botHandshakes[conn] = handshake
-                            executorService.submit { listener.onBotJoined(conn, handshake) }
+                            listener.onBotJoined(conn, handshake)
                         }
-                        Message.`$type`.OBSERVER_HANDSHAKE -> {
+                        Message.`$type`.OBSERVER_HANDSHAKE -> executorService.submit {
                             val handshake = gson.fromJson(
                                 message,
                                 ObserverHandshake::class.java
                             )
-
                             // Validate client secret before continuing
+                            var validClient = true
                             if (clientSecret != null && clientSecret.isNotEmpty() && handshake.secret != clientSecret) {
                                 log.info("Ignoring observer using invalid secret. Name: ${handshake.name}, Version: ${handshake.version}")
-                                return  // Ignore client with wrong secret
+                                validClient = false // Ignore client with wrong secret
                             }
-                            observerConnections += conn
-                            observerHandshakes[conn] = handshake
-                            executorService.submit { listener.onObserverJoined(conn, handshake) }
+                            if (validClient) {
+                                observerConnections += conn
+                                observerHandshakes[conn] = handshake
+                                listener.onObserverJoined(conn, handshake)
+                            }
                         }
-                        Message.`$type`.CONTROLLER_HANDSHAKE -> {
+                        Message.`$type`.CONTROLLER_HANDSHAKE -> executorService.submit {
                             val handshake = gson.fromJson(message, ControllerHandshake::class.java)
 
                             // Validate client secret before continuing
+                            var validClient = true
                             if (clientSecret != null && clientSecret.isNotEmpty() && handshake.secret != clientSecret) {
                                 log.info("Ignoring controller using invalid secret. Name: ${handshake.name}, Version: ${handshake.version}")
-                                return  // Ignore client with wrong secret
+                                validClient = false // Ignore client with wrong secret
                             }
-                            controllerConnections += conn
-                            controllerHandshakes[conn] = handshake
-                            executorService.submit { listener.onControllerJoined(conn, handshake) }
+                            if (validClient) {
+                                controllerConnections += conn
+                                controllerHandshakes[conn] = handshake
+                                listener.onControllerJoined(conn, handshake)
+                            }
                         }
-                        Message.`$type`.BOT_READY -> {
-                            executorService.submit { listener.onBotReady(conn, botHandshakes[conn]!!) }
+                        Message.`$type`.BOT_READY -> executorService.submit {
+                            listener.onBotReady(conn, botHandshakes[conn]!!)
                         }
-                        Message.`$type`.START_GAME -> {
-                            val startGame = gson.fromJson(message, StartGame::class.java)
+                        Message.`$type`.START_GAME -> executorService.submit {
+                        val startGame = gson.fromJson(message, StartGame::class.java)
                             val gameSetup = startGame.gameSetup
                             val botAddresses: Collection<BotAddress> = startGame.botAddresses
-                            executorService.submit { listener.onStartGame(gameSetup, botAddresses) }
+                            listener.onStartGame(gameSetup, botAddresses)
                         }
-                        Message.`$type`.STOP_GAME -> {
-                            executorService.submit(listener::onAbortGame)
-                        }
-                        Message.`$type`.PAUSE_GAME -> {
-                            executorService.submit(listener::onPauseGame)
-                        }
-                        Message.`$type`.RESUME_GAME -> {
-                            executorService.submit(listener::onResumeGame)
-                        }
-                        Message.`$type`.CHANGE_TPS -> {
+                        Message.`$type`.STOP_GAME -> executorService.submit(listener::onAbortGame)
+                        Message.`$type`.PAUSE_GAME -> executorService.submit(listener::onPauseGame)
+                        Message.`$type`.RESUME_GAME -> executorService.submit(listener::onResumeGame)
+                        Message.`$type`.CHANGE_TPS -> executorService.submit {
                             val changeTps = gson.fromJson(message, ChangeTps::class.java)
-                            executorService.submit { listener.onChangeTps(changeTps.tps) }
+                            listener.onChangeTps(changeTps.tps)
                         }
                         else -> notifyException(IllegalStateException("Unhandled message type: $type"))
                     }
