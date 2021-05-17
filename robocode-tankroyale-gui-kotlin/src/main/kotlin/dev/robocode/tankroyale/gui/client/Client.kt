@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.tps.TpsEventChannel
 import dev.robocode.tankroyale.gui.util.Event
-import dev.robocode.tankroyale.gui.util.RegisterWsProtocolCommand
 import dev.robocode.tankroyale.gui.util.Version
 import kotlinx.serialization.PolymorphicSerializer
 import java.io.Closeable
@@ -15,8 +14,6 @@ import java.util.*
 object Client : AutoCloseable {
 
     init {
-        RegisterWsProtocolCommand().execute()
-
         TpsEventChannel.onTpsChanged.subscribe { changeTps(it.tps) }
     }
 

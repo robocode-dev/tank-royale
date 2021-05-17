@@ -4,7 +4,7 @@ import java.awt.EventQueue
 import java.io.Closeable
 import java.util.*
 
-class Event<T> {
+open class Event<T> {
 
     private val subscribers = Collections.synchronizedList(ArrayList<(T) -> Unit>())
 

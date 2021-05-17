@@ -2,12 +2,17 @@ package dev.robocode.tankroyale.gui.ui.server
 
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.settings.ServerSettings
+import dev.robocode.tankroyale.gui.ui.MainWindowMenu
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.util.ICommand
 import javax.swing.JOptionPane
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
 
-class PrepareServerCommand : ICommand {
+object PrepareServerCommand : ICommand {
+
+    init {
+        MainWindowMenu.onStartServer.subscribe { execute() }
+    }
 
     override fun execute() {
         if (ServerProcess.isRunning()) {

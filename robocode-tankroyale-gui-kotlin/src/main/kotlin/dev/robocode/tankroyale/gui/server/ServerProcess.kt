@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.gui.server
 
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.ServerSettings
+import dev.robocode.tankroyale.gui.ui.MainWindowMenu
 import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
@@ -17,8 +18,8 @@ import kotlin.collections.ArrayList
 
 object ServerProcess {
 
-    private val onStarted = Event<Unit>()
-    private val onStopped = Event<Unit>()
+    val onStarted = Event<Unit>()
+    val onStopped = Event<Unit>()
 
     private const val JAR_FILE_NAME = "robocode-tankroyale-server"
 
@@ -35,6 +36,12 @@ object ServerProcess {
 
     var secret: String? = null
         private set
+
+    init {
+        MainWindowMenu.onStopServer.subscribe { stop() }
+        MainWindowMenu.onRestartServer.subscribe { restart() }
+    }
+
 
     fun isRunning(): Boolean {
         return isRunning.get()
@@ -91,6 +98,11 @@ object ServerProcess {
         logThread = null
 
         onStopped.publish(Unit)
+    }
+
+    fun restart() {
+        stop()
+        start(gameType, port)
     }
 
     private fun generateSecret(): String {

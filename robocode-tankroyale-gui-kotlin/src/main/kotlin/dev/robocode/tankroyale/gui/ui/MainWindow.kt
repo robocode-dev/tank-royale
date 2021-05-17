@@ -12,6 +12,7 @@ import dev.robocode.tankroyale.gui.ui.selection.NewBattleDialog
 import dev.robocode.tankroyale.gui.ui.server.PrepareServerCommand
 import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
+import dev.robocode.tankroyale.gui.util.RegisterWsProtocolCommand
 import java.awt.EventQueue
 import java.io.Closeable
 import javax.imageio.ImageIO
@@ -23,6 +24,9 @@ import javax.swing.UIManager
 object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCloseable {
 
     init {
+        RegisterWsProtocolCommand().execute()
+        PrepareServerCommand
+
         defaultCloseOperation = EXIT_ON_CLOSE
 
         setSize(880, 760)
@@ -37,7 +41,7 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
         setIconImage(iconImage.image)
 
         MainWindowMenu.apply {
-            onSelectBots.invokeLater { selectBots() }
+            onStartBattle.invokeLater { startBattle() }
             onSetupRules.invokeLater { SetupRulesDialog.isVisible = true }
             onShowServerLog.invokeLater { ServerLogWindow.isVisible = true }
             onServerConfig.invokeLater { SelectServerDialog.isVisible = true }
@@ -56,14 +60,14 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
         }
     }
 
-    private fun selectBots() {
+    private fun startBattle() {
         var disposable: Closeable? = null
         disposable = Client.onConnected.subscribe {
             NewBattleDialog.isVisible = true
             // Make sure to dispose. Otherwise the dialog will be shown when testing if the server is running
             disposable?.close()
         }
-        PrepareServerCommand().execute()
+        PrepareServerCommand.execute()
     }
 
     private fun showLogo() {
