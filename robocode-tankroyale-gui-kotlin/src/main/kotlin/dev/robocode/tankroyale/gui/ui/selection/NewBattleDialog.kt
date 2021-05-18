@@ -116,8 +116,7 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
     private fun startGame() {
         isVisible = true
 
-        val botAddresses = selectPanel.selectedBotListModel.toArray()
-            .map { b -> (b as BotInfo).botAddress }
+        val botAddresses = selectPanel.selectedBotListModel.toArray().map { b -> (b as BotInfo).botAddress }
         Client.startGame(GamesSettings.games[ServerProcess.gameType.displayName]!!, botAddresses.toSet())
 
         NewBattleDialog.dispose()

@@ -15,10 +15,12 @@ data class BotInfo(
     val programmingLang: String? = null,
     val host: String,
     val port: Int
-) {
+): Comparable<BotInfo> {
     val botAddress: BotAddress
         get() = BotAddress(host, port)
 
     val displayText: String
         get() = "$name $version"
+
+    override fun compareTo(other: BotInfo): Int = displayText.compareTo(other.displayText)
 }

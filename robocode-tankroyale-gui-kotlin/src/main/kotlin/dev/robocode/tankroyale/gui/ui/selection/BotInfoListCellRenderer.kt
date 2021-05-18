@@ -7,27 +7,33 @@ import javax.swing.JList
 import javax.swing.ListCellRenderer
 import javax.swing.border.EmptyBorder
 
-class BotInfoListCellRenderer : JLabel(), ListCellRenderer<BotInfo> {
+class BotInfoListCellRenderer : JLabel(), ListCellRenderer<Any> {
 
     init {
         isOpaque = true
     }
 
     override fun getListCellRendererComponent(
-        list: JList<out BotInfo>, value: BotInfo, index: Int, isSelected: Boolean, cellHasFocus: Boolean
+        list: JList<out Any>?,
+        value: Any?,
+        index: Int,
+        isSelected: Boolean,
+        cellHasFocus: Boolean
     ): Component {
 
-        text = value.displayText
+        text = (value as BotInfo).displayText
         border = EmptyBorder(1, 1, 1, 1)
 
-        if (isSelected) {
-            background = list.selectionBackground
-            foreground = list.selectionForeground
-        } else {
-            background = list.background
-            foreground = list.foreground
+        if (list != null) {
+            if (isSelected) {
+                background = list.selectionBackground
+                foreground = list.selectionForeground
+            } else {
+                background = list.background
+                foreground = list.foreground
+            }
+            font = list.font
         }
-        font = list.font
 
         return this
     }

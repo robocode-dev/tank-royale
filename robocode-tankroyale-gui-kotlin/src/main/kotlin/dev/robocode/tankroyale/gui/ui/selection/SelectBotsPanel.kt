@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.ui.selection
 import dev.robocode.tankroyale.gui.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.components.SortedListModel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
@@ -15,9 +16,9 @@ import javax.swing.event.ListDataListener
 
 class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
-    val botsDirectoryListModel = DefaultListModel<BotInfo>()
-    val joinedBotListModel = DefaultListModel<BotInfo>()
-    val selectedBotListModel = DefaultListModel<BotInfo>()
+    val botsDirectoryListModel = SortedListModel()
+    val joinedBotListModel = SortedListModel()
+    val selectedBotListModel = SortedListModel()
 
     val botsDirectoryList = JList(botsDirectoryListModel)
     val joinedBotList = JList(joinedBotListModel)
@@ -120,8 +121,9 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
         onBoot.subscribe {
             val files = ArrayList<String>()
-            botsDirectoryList.selectedIndices.forEach { files.add(botsDirectoryListModel.getElementAt(it).host) }
-
+            botsDirectoryList.selectedIndices.forEach {
+                files.add((botsDirectoryListModel[it] as BotInfo).host)
+            }
             BootstrapProcess.run(files)
         }
 
@@ -153,8 +155,8 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount > 1) {
                     val index = botsDirectoryList.locationToIndex(e.point)
-                    if (index >= 0 && index < botsDirectoryListModel.size()) {
-                        val botInfo = botsDirectoryListModel[index]
+                    if (index >= 0 && index < botsDirectoryListModel.size) {
+                        val botInfo = botsDirectoryListModel[index] as BotInfo
                         BootstrapProcess.run(listOf(botInfo.host))
                     }
                 }
@@ -164,7 +166,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount > 1) {
                     val index = joinedBotList.locationToIndex(e.point)
-                    if (index >= 0 && index < joinedBotListModel.size()) {
+                    if (index >= 0 && index < joinedBotListModel.size) {
                         val botInfo = joinedBotListModel[index]
                         if (!selectedBotListModel.contains(botInfo)) {
                             selectedBotListModel.addElement(botInfo)
@@ -177,7 +179,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount > 1) {
                     val index = selectedBotList.locationToIndex(e.point)
-                    if (index >= 0 && index < selectedBotListModel.size()) {
+                    if (index >= 0 && index < selectedBotListModel.size) {
                         selectedBotListModel.removeElement(selectedBotListModel[index])
                     }
                 }
