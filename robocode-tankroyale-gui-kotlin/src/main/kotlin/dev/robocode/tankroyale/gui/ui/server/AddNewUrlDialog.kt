@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.new_server.WsUrl
 import dev.robocode.tankroyale.gui.ui.server.AddNewUrlDialog.onComplete
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
@@ -54,7 +55,7 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
         AddNewUrlDialog.rootPane.defaultButton = okButton
 
         onComplete.subscribe {
-            if (isValidWsUrl()) {
+            if (isValidWsUrl) {
                 AddNewUrlDialog.newUrl = urlTextField.text
                 AddNewUrlDialog.dispose()
             } else {
@@ -80,18 +81,14 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
             }
 
             fun validate() {
-                val valid= isValidWsUrl()
+                val valid = isValidWsUrl
                 urlTextField.background = if (valid) lightGreen else lightRed
                 okButton.isEnabled = valid
             }
         })
     }
 
-    private fun isValidWsUrl(): Boolean {
-        val url = urlTextField.text.trim()
-        return url.isNotBlank() &&
-                url.matches(Regex("^(ws://)?(\\p{L})?(\\p{L}|\\.|[-])*(\\p{L})(:\\d{1,5})?$"))
-    }
+    private val isValidWsUrl get() = WsUrl.isValidWsUrl(urlTextField.text)
 }
 
 private fun main() {
