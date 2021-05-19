@@ -6,7 +6,7 @@ import dev.robocode.tankroyale.schema.BotIntent
 import dev.robocode.tankroyale.schema.GameSetup
 import dev.robocode.tankroyale.schema.Message.*
 import dev.robocode.tankroyale.server.Server
-import dev.robocode.tankroyale.server.conn.ConnHandler
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.ConnHandler
 import dev.robocode.tankroyale.server.mapper.*
 import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND

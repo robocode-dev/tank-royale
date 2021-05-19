@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.server.core
 
 import dev.robocode.tankroyale.schema.*
-import dev.robocode.tankroyale.server.conn.ConnListener
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.ConnListener
 import org.java_websocket.WebSocket
 import org.slf4j.LoggerFactory
 
