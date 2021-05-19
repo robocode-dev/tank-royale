@@ -69,7 +69,7 @@ val fatJar = task<Jar>("fatJar") {
     manifest {
         attributes["Implementation-Title"] = title
         attributes["Implementation-Version"] = archiveVersion
-        attributes["Main-Class"] = "dev.robocode.tankroyale.gui.ui.MainWindowKt"
+        attributes["Main-Class"] = "dev.robocode.tankroyale.server.ServerKt"
     }
     from(
         configurations.compileClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) },
