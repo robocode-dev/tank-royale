@@ -8,7 +8,8 @@ import java.net.URI
 object ServerSettings : PropertiesStore("Robocode Server Config", "server.properties") {
 
     const val DEFAULT_PORT = 80
-    const val DEFAULT_URL = "ws://localhost"
+    const val DEFAULT_SCHEME = "ws"
+    const val DEFAULT_URL = "$DEFAULT_SCHEME://localhost"
 
     private const val SERVER_URL_PROPERTY = "server.url"
     private const val USER_URLS_PROPERTY = "user.urls"

@@ -3,34 +3,34 @@ package dev.robocode.tankroyale.gui.ui.new_server
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import java.net.URI
 
-
+/**
+ * Convenient class for getting the origin url from a partial url like e.g. `localhost`, `ws://localhost`, and
+ * `localhost:80`, which are all interpreted as `ws://localhost:80`.
+ * If the scheme is missing,[ServerSettings.DEFAULT_SCHEME] is being used.
+ * If the port is missing,[ServerSettings.DEFAULT_PORT] is being used.
+ */
 class WsUrl(partialUrl: String) {
 
-    private val uri: URI
+    val uri: URI
 
     init {
-        // protocol + host + port, e.g. ws://localhost:80
-
-        var origin = partialUrl
-
-        // Make sure the url starts with "ws://"
-        if (!origin.startsWith("ws://", ignoreCase = true)) {
-            origin = "ws://$origin"
+        var uri = URI(partialUrl)
+        if (uri.scheme == null) {
+            uri = URI("${ServerSettings.DEFAULT_SCHEME}://$partialUrl")
         }
-        // Add a (default) port number, if it is not specified
-        if (!origin.contains(Regex(".*:\\d{1,5}$"))) {
-            origin = "$origin:${ServerSettings.DEFAULT_PORT}"
+        if (uri.port == -1) {
+            uri = URI("${uri.scheme}://${uri.host}:${ServerSettings.DEFAULT_PORT}")
         }
-        uri = URI(origin)
+        this.uri = uri
     }
 
+    // "origin" is a combination of a scheme/protocol, hostname, and port
     val origin: String get() = uri.toURL().toString()
+}
 
-//    val protocol: Int get() = uri.port
-
-//    val host: String get() = uri.host
-
-    val port: Int get() = uri.port
-
-//    val isLocalhost: Boolean get() = InetAddressUtil.isLocalAddress(host)
+fun main() {
+    val partialUrl = "localhost"
+    println(WsUrl(partialUrl).uri.scheme)
+    println(WsUrl(partialUrl).uri.host)
+    println(WsUrl(partialUrl).uri.port)
 }
