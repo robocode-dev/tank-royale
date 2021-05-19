@@ -134,7 +134,7 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
         botPaths.forEach { dirPath ->
             run {
                 list(dirPath).filter(IsBotFile(botName)).collect(toList()).forEach { path ->
-                    if (path.fileName.toString().toLowerCase() == botName.toLowerCase())
+                    if (path.fileName.toString().equals(botName, ignoreCase = true))
                         return path
                     if (readFirstLine(dirPath.resolve(path)).trim().startsWith("#!"))
                         return path
