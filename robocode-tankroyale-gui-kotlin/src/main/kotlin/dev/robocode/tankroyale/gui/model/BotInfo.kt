@@ -22,5 +22,5 @@ data class BotInfo(
     val displayText: String
         get() = "$name $version"
 
-    override fun compareTo(other: BotInfo): Int = displayText.compareTo(other.displayText)
+    override fun compareTo(other: BotInfo): Int = "$displayText $port".compareTo("${other.displayText} ${other.port}")
 }

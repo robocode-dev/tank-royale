@@ -20,7 +20,7 @@ object Client : AutoCloseable {
     // public events
     val onConnected = Event<Unit>()
     val onDisconnected = Event<Unit>()
-    val onError = Event<Exception>()
+    val onError = Event<Throwable>()
 
     val onBotListUpdate = Event<BotListUpdate>()
 

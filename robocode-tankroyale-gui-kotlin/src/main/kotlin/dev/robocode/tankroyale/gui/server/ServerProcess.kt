@@ -42,7 +42,6 @@ object ServerProcess {
         MainWindowMenu.onRestartServer.subscribe { restart() }
     }
 
-
     fun isRunning(): Boolean {
         return isRunning.get()
     }

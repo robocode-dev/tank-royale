@@ -6,7 +6,7 @@ description = "Desktop application for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
 val artifactId = "robocode-tankroyale-gui"
-version = "0.7.0"
+version = "0.7.1"
 
 
 val serverVersion = "0.8.5"
@@ -44,12 +44,9 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.0")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.0")
-
-    implementation("org.java-websocket:Java-WebSocket:1.5.2")
 
     implementation("com.miglayout:miglayout-swing:5.3")
 

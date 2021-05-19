@@ -16,9 +16,9 @@ import javax.swing.event.ListDataListener
 
 class SelectBotsPanel : JPanel(MigLayout("fill")) {
 
-    val botsDirectoryListModel = SortedListModel()
-    val joinedBotListModel = SortedListModel()
-    val selectedBotListModel = SortedListModel()
+    val botsDirectoryListModel = SortedListModel<BotInfo>()
+    val joinedBotListModel = SortedListModel<BotInfo>()
+    val selectedBotListModel = SortedListModel<BotInfo>()
 
     val botsDirectoryList = JList(botsDirectoryListModel)
     val joinedBotList = JList(joinedBotListModel)
@@ -122,7 +122,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         onBoot.subscribe {
             val files = ArrayList<String>()
             botsDirectoryList.selectedIndices.forEach {
-                files.add((botsDirectoryListModel[it] as BotInfo).host)
+                files.add(botsDirectoryListModel[it].host)
             }
             BootstrapProcess.run(files)
         }
@@ -156,7 +156,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
                 if (e.clickCount > 1) {
                     val index = botsDirectoryList.locationToIndex(e.point)
                     if (index >= 0 && index < botsDirectoryListModel.size) {
-                        val botInfo = botsDirectoryListModel[index] as BotInfo
+                        val botInfo = botsDirectoryListModel[index]
                         BootstrapProcess.run(listOf(botInfo.host))
                     }
                 }

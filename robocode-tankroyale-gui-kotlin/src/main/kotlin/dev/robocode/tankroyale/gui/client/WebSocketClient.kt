@@ -4,52 +4,73 @@ import dev.robocode.tankroyale.gui.model.Message
 import dev.robocode.tankroyale.gui.model.MessageConstants
 import dev.robocode.tankroyale.gui.util.Event
 import kotlinx.serialization.PolymorphicSerializer
-import org.java_websocket.client.WebSocketClient
-import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.WebSocket
+import java.util.concurrent.CompletionStage
 
 class WebSocketClient(private val uri: URI) : AutoCloseable {
 
     val onOpen = Event<Unit>()
     val onClose = Event<Unit>()
     val onMessage = Event<String>()
-    val onError = Event<Exception>()
-
-    private var client = Client()
+    val onError = Event<Throwable>()
 
     private val json = MessageConstants.json
 
+    private val listener = WebSocketListener()
+
     fun open() {
-        client.connect()
+        connect()
     }
 
+    private fun connect() {
+        try {
+            val httpClient = HttpClient.newBuilder().build()
+            val webSocketBuilder = httpClient.newWebSocketBuilder()
+            webSocketBuilder.buildAsync(uri, listener).join()
+        } catch (ex: Exception) {
+            throw RuntimeException("Could not create socket for URL: $uri", ex)
+        }
+    }
     override fun close() {
-        client.close()
+        listener.websocket?.abort()
     }
 
-    fun isOpen() = client.isOpen
+    fun isOpen() = listener.websocket != null
 
     fun send(data: Any) {
         val msg = json.encodeToString(PolymorphicSerializer(Message::class), data as Message)
-        client.send(msg)
+        listener.websocket?.sendText(msg, true)
     }
 
-    private inner class Client : WebSocketClient(uri) {
+    private inner class WebSocketListener : WebSocket.Listener {
+        var websocket: WebSocket? = null
+        private var payload = StringBuffer()
 
-        override fun onOpen(serverHandshake: ServerHandshake?) {
+        override fun onOpen(webSocket: WebSocket) {
+            this.websocket = webSocket
             onOpen.publish(Unit)
+            super.onOpen(webSocket)
         }
 
-        override fun onClose(code: Int, reason: String, remote: Boolean) {
+        override fun onClose(webSocket: WebSocket?, statusCode: Int, reason: String?): CompletionStage<*>? {
+            this.websocket = null
             onClose.publish(Unit)
+            return null
         }
 
-        override fun onMessage(message: String) {
-            onMessage.publish(message)
+        override fun onError(webSocket: WebSocket?, error: Throwable) {
+            onError.publish(error)
         }
 
-        override fun onError(ex: Exception) {
-            onError.publish(ex)
+        override fun onText(webSocket: WebSocket, data: CharSequence?, last: Boolean): CompletionStage<*>? {
+            payload.append(data)
+            if (last) {
+                onMessage.publish(payload.toString())
+                payload.delete(0, payload.length) // clear payload buffer
+            }
+            return super.onText(webSocket, data, last)
         }
     }
 }

@@ -1,48 +1,48 @@
 package dev.robocode.tankroyale.gui.ui.components
 
+import java.util.*
 import javax.swing.AbstractListModel
-import java.util.SortedSet
-import java.util.TreeSet
+import kotlin.collections.ArrayList
 
-class SortedListModel : AbstractListModel<Any>() {
-    private val model: SortedSet<Any> = TreeSet()
+class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
+    private val list: ArrayList<T> = ArrayList()
 
     override fun getSize(): Int {
-        return model.size
+        return list.size
     }
 
-    override fun getElementAt(index: Int): Any {
-        return model.toTypedArray()[index]
+    override fun getElementAt(index: Int): T {
+        return list[index]
     }
 
-    fun addElement(element: Any) {
-        if (model.add(element)) {
-            fireContentsChanged(this, 0, size)
-        }
-    }
-
-    fun clear() {
-        model.clear()
+    fun addElement(element: T) {
+        list.add(element)
+        list.sort()
         fireContentsChanged(this, 0, size)
     }
 
-    operator fun contains(element: Any): Boolean {
-        return model.contains(element)
+    fun clear() {
+        list.clear()
+        fireContentsChanged(this, 0, size)
     }
 
-    fun removeElement(element: Any): Boolean {
-        val removed = model.remove(element)
+    operator fun contains(element: T): Boolean {
+        return list.contains(element)
+    }
+
+    fun removeElement(element: T): Boolean {
+        val removed = list.remove(element)
         if (removed) {
             fireContentsChanged(this, 0, size)
         }
         return removed
     }
 
-    operator fun get(index: Int): Any {
+    operator fun get(index: Int): T {
         return getElementAt(index)
     }
 
-    fun toArray(): Array<Any> {
-        return model.toTypedArray()
+    fun list(): List<T> {
+        return Collections.unmodifiableList(list)
     }
 }
