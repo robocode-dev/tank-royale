@@ -52,7 +52,7 @@ object Client : AutoCloseable {
             return bots
         }
 
-    private var websocket: WebSocketClient = WebSocketClient(URI(ServerSettings.defaultUrl))
+    private var websocket: WebSocketClient = WebSocketClient(URI(ServerSettings.serverUrl))
 
     private val json = MessageConstants.json
 

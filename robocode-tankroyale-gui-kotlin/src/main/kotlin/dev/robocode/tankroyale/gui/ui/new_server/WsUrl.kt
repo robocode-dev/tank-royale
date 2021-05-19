@@ -1,10 +1,10 @@
-package dev.robocode.tankroyale.gui.util
+package dev.robocode.tankroyale.gui.ui.new_server
 
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import java.net.URI
 
 
-class WsUrl(private val partialUrl: String) {
+class WsUrl(partialUrl: String) {
 
     private val uri: URI
 
@@ -26,11 +26,11 @@ class WsUrl(private val partialUrl: String) {
 
     val origin: String get() = uri.toURL().toString()
 
-    val protocol: Int get() = uri.port
+//    val protocol: Int get() = uri.port
 
-    val host: String get() = uri.host
+//    val host: String get() = uri.host
 
     val port: Int get() = uri.port
 
-    val isLocalhost: Boolean get() = InetAddressUtil.isLocalAddress(host)
+//    val isLocalhost: Boolean get() = InetAddressUtil.isLocalAddress(host)
 }

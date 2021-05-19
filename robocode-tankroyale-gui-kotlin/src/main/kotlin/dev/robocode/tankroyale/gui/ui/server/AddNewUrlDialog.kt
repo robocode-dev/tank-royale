@@ -89,7 +89,7 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
 
     private fun isValidWsUrl(): Boolean {
         val url = urlTextField.text.trim()
-        return !url.isBlank() &&
+        return url.isNotBlank() &&
                 url.matches(Regex("^(ws://)?(\\p{L})?(\\p{L}|\\.|[-])*(\\p{L})(:\\d{1,5})?$"))
     }
 }

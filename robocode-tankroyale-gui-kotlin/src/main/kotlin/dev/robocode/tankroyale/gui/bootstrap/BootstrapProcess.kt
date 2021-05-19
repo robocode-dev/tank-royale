@@ -26,7 +26,7 @@ object BootstrapProcess {
     fun list(): List<BotEntry> {
         val builder = ProcessBuilder(
             "java",
-            "-Dserver.url=${ServerSettings.defaultUrl}",
+            "-Dserver.url=${ServerSettings.serverUrl}",
             "-jar",
             getBootstrapJar(),
             "list",
@@ -52,7 +52,7 @@ object BootstrapProcess {
     private fun startRunningBotProcess(entries: List<String>) {
         val args = mutableListOf(
             "java",
-            "-Dserver.url=${ServerSettings.defaultUrl}",
+            "-Dserver.url=${ServerSettings.serverUrl}",
             "-jar",
             getBootstrapJar(),
             "run",

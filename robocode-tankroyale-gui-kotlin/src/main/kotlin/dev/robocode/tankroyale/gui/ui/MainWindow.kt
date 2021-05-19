@@ -9,10 +9,8 @@ import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.ui.selection.NewBattleDialog
-import dev.robocode.tankroyale.gui.ui.server.PrepareServerCommand
-import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
-import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
-import dev.robocode.tankroyale.gui.util.RegisterWsProtocolCommand
+import dev.robocode.tankroyale.gui.ui.server.*
+import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import java.awt.EventQueue
 import java.io.Closeable
 import javax.imageio.ImageIO
@@ -24,7 +22,7 @@ import javax.swing.UIManager
 object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCloseable {
 
     init {
-        RegisterWsProtocolCommand().execute()
+        RegisterWsProtocol
         PrepareServerCommand
 
         defaultCloseOperation = EXIT_ON_CLOSE
@@ -67,7 +65,7 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
             // Make sure to dispose. Otherwise the dialog will be shown when testing if the server is running
             disposable?.close()
         }
-        PrepareServerCommand.execute()
+        StartServerCommand().execute()
     }
 
     private fun showLogo() {

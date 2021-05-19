@@ -6,11 +6,11 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.new_server.CheckWebSocketConnection
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.EventQueue
-import java.io.Closeable
 import javax.swing.*
 
 object SelectServerDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("select_server_dialog")) {
@@ -36,7 +36,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     private val onOk = Event<JButton>()
     private val onCancel = Event<JButton>()
 
-    private val urlComboBox = JComboBox(arrayOf(ServerSettings.DEFAULT_LOCALHOST_URL))
+    private val urlComboBox = JComboBox(arrayOf(ServerSettings.DEFAULT_URL))
     private val addButton = addButton("add", onAdd)
     private val removeButton = addButton("remove", onRemove)
     private val testButton = addButton("server_test", onTest)
@@ -66,7 +66,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
 
         AddNewUrlDialog.onComplete.subscribe {
             urlComboBox.addItem(AddNewUrlDialog.newUrl)
-            urlComboBox.selectedItem = AddNewUrlDialog.newUrl
+            selectedUri = AddNewUrlDialog.newUrl
 
             removeButton.isEnabled = true
             okButton.isEnabled = true
@@ -78,7 +78,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         }
 
         onRemove.subscribe {
-            urlComboBox.removeItem(urlComboBox.selectedItem)
+            urlComboBox.removeItem(selectedUri)
             if (urlComboBox.itemCount == 0) {
                 removeButton.isEnabled = false
                 okButton.isEnabled = false
@@ -100,32 +100,16 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         setFieldsToServerConfig()
     }
 
-    private var testConnectionRunning = false
+    private var selectedUri
+        get() = urlComboBox.selectedItem as String
+        set(value) { urlComboBox.selectedItem = value }
 
     private fun testServerConnection() {
-        if (testConnectionRunning)
-            return
-
-        val testServerCommand = TestServerConnectionCommand(urlComboBox.selectedItem as String)
-
-        var foundDisposable: Closeable? = null
-        foundDisposable = testServerCommand.onFound.subscribe {
+        if (CheckWebSocketConnection.isRunning(selectedUri)) {
             showMessage(ResourceBundles.STRINGS.get("server_is_running"))
-
-            testConnectionRunning = false
-            foundDisposable?.close()
-        }
-
-        var notFoundDisposable: Closeable? = null
-        notFoundDisposable = testServerCommand.onNotFound.subscribe {
+        } else {
             showMessage(ResourceBundles.STRINGS.get("server_not_found"))
-
-            testConnectionRunning = false
-            notFoundDisposable?.close()
         }
-
-        testServerCommand.execute()
-        testConnectionRunning = true
     }
 
     private fun setFieldsToServerConfig() {
@@ -134,13 +118,13 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         if (ServerSettings.userUrls.isNotEmpty()) {
             ServerSettings.userUrls.forEach { urlComboBox.addItem(it) }
         } else {
-            urlComboBox.addItem(ServerSettings.defaultUrl)
+            urlComboBox.addItem(ServerSettings.serverUrl)
         }
-        urlComboBox.selectedItem = ServerSettings.defaultUrl
+        selectedUri = ServerSettings.serverUrl
     }
 
     private fun saveServerConfig() {
-        ServerSettings.defaultUrl = urlComboBox.selectedItem as String
+        ServerSettings.serverUrl = selectedUri
 
         val userUrls = ArrayList<String>()
         val size = urlComboBox.itemCount

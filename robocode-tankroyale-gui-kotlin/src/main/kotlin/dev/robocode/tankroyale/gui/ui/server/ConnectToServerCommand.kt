@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.MESSAGES
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.UI_TITLES
 import dev.robocode.tankroyale.gui.util.ICommand
-import dev.robocode.tankroyale.gui.util.WsUrl
+import dev.robocode.tankroyale.gui.ui.new_server.WsUrl
 import java.awt.EventQueue
 import java.io.Closeable
 import java.net.ConnectException

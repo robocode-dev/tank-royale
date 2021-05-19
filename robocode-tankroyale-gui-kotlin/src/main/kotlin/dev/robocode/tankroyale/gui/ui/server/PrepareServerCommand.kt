@@ -7,7 +7,6 @@ import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.util.ICommand
 import javax.swing.JOptionPane
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
-import java.awt.EventQueue
 
 object PrepareServerCommand : ICommand {
 
@@ -40,11 +39,7 @@ object PrepareServerCommand : ICommand {
                 StartServerDialog.isVisible = true
                 return
             }
-            ConnectToServerCommand(ServerSettings.defaultUrl).execute()
-        } else {
-            EventQueue.invokeLater {
-                StartServerDialog.isVisible = true
-            }
         }
+        ConnectToServerCommand(ServerSettings.serverUrl).execute()
     }
 }

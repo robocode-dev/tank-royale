@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.util.ICommand
-import dev.robocode.tankroyale.gui.util.WsUrl
+import dev.robocode.tankroyale.gui.ui.new_server.WsUrl
 
 class StartServerCommand(
     private val port: Int = ServerSettings.DEFAULT_PORT,
@@ -14,6 +14,6 @@ class StartServerCommand(
     override fun execute() {
         ServerProcess.start(gameType, port)
         val url = WsUrl("localhost:${port}").origin
-        TestServerConnectionCommand(url).execute()
+//        TestServerConnectionCommand(url).execute() // FIXME
     }
 }

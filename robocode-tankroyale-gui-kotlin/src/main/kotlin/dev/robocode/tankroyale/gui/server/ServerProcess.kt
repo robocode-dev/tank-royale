@@ -31,7 +31,7 @@ object ServerProcess {
     var gameType: GameType = GameType.CLASSIC
         private set
 
-    var port: Int = ServerSettings.port
+    var port: Int = ServerSettings.serverPort
         private set
 
     var secret: String? = null
@@ -46,7 +46,7 @@ object ServerProcess {
         return isRunning.get()
     }
 
-    fun start(gameType: GameType, port: Int = ServerSettings.port) {
+    fun start(gameType: GameType, port: Int = ServerSettings.serverPort) {
         if (isRunning.get())
             return
 
