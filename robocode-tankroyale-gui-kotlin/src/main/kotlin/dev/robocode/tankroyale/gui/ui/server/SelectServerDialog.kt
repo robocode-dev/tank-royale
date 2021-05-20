@@ -6,7 +6,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
-import dev.robocode.tankroyale.gui.ui.new_server.CheckWebSocketConnection
+import dev.robocode.tankroyale.gui.ui.new_server.RemoteServer
 import dev.robocode.tankroyale.gui.ui.new_server.WsUrl
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
@@ -106,7 +106,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         set(value) { setSelectedItem(value) }
 
     private fun testServerConnection() {
-        if (CheckWebSocketConnection.isRunning(selectedUri)) {
+        if (RemoteServer.isRunning(selectedUri)) {
             showMessage(ResourceBundles.STRINGS.get("server_is_running"))
         } else {
             showMessage(ResourceBundles.STRINGS.get("server_not_found"))

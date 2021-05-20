@@ -1,14 +1,13 @@
 package dev.robocode.tankroyale.gui.ui.new_server
 
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.WebSocket
 import java.net.http.WebSocket.Listener
 import java.time.Duration
 
-object CheckWebSocketConnection {
+object RemoteServer {
 
     private val DEFAULT_CONNECTION_TIMEOUT = Duration.ofMillis(200)
 
@@ -32,6 +31,6 @@ object CheckWebSocketConnection {
 }
 
 fun main() {
-    val isRunning = CheckWebSocketConnection.isRunning(URI("ws://localhost:80"))
+    val isRunning = RemoteServer.isRunning(URI("ws://localhost:80"))
     println("isRunning: $isRunning")
 }

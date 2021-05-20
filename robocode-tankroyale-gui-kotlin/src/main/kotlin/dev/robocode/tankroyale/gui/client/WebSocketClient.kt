@@ -33,6 +33,7 @@ class WebSocketClient(private val uri: URI) : AutoCloseable {
             throw RuntimeException("Could not create socket for URL: $uri", ex)
         }
     }
+
     override fun close() {
         listener.websocket?.abort()
     }
