@@ -15,7 +15,7 @@ class WsUrl(partialUrl: String) {
 
     init {
         var uri = URI(partialUrl)
-        if (uri.scheme == null) {
+        if (!partialUrl.contains("://")) {
             uri = URI("${ServerSettings.DEFAULT_SCHEME}://$partialUrl")
         }
         if (uri.port == -1) {

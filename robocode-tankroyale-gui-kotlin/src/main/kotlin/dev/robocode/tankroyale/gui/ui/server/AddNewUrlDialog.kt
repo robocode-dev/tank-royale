@@ -90,11 +90,3 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
 
     private val isValidWsUrl get() = WsUrl.isValidWsUrl(urlTextField.text)
 }
-
-private fun main() {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
-    EventQueue.invokeLater {
-        AddNewUrlDialog.isVisible = true
-    }
-}
