@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.new_server.CheckWebSocketConnection
+import dev.robocode.tankroyale.gui.ui.new_server.WsUrl
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
@@ -102,7 +103,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
 
     private var selectedUri
         get() = urlComboBox.selectedItem as String
-        set(value) { urlComboBox.selectedItem = value }
+        set(value) { setSelectedItem(value) }
 
     private fun testServerConnection() {
         if (CheckWebSocketConnection.isRunning(selectedUri)) {
@@ -121,6 +122,17 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
             urlComboBox.addItem(ServerSettings.serverUrl)
         }
         selectedUri = ServerSettings.serverUrl
+    }
+
+    // This method is required as setSelectedItem() does not work as the url can be partial
+    private fun setSelectedItem(selectedItem: String) {
+        for (i in 0 until urlComboBox.itemCount) {
+            val item = urlComboBox.getItemAt(i)
+            if (WsUrl(item) == WsUrl(selectedItem)) {
+                urlComboBox.selectedIndex = i
+                return
+            }
+        }
     }
 
     private fun saveServerConfig() {

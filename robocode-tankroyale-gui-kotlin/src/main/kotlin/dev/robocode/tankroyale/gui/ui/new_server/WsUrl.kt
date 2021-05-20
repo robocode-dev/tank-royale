@@ -27,11 +27,13 @@ class WsUrl(partialUrl: String) {
     // "origin" is a combination of a scheme/protocol, hostname, and port
     val origin: String get() = uri.toURL().toString()
 
+    override fun equals(other: Any?): Boolean = (other is WsUrl && uri == other.uri)
+
     companion object {
         fun isValidWsUrl(url: String): Boolean {
             val str = url.trim()
             return str.isNotBlank() &&
-                    str.matches(Regex("^(ws://)?(\\p{L})?(\\p{L}|\\.|[-])*(\\p{L})(:\\d{1,5})?$"))
+                    str.matches(Regex("^(ws(s)://)?(\\p{L})?(\\p{L}|\\.|[-])*(\\p{L})(:\\d{1,5})?$"))
         }
     }
 }

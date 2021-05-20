@@ -18,7 +18,7 @@ object RegisterWsProtocol {
 
     private fun registerProtocol() {
         URL.setURLStreamHandlerFactory { protocol ->
-            if ("ws" == protocol)
+            if ("ws" == protocol || "wss" == protocol)
                 object : URLStreamHandler() {
                     @Throws(IOException::class)
                     override fun openConnection(url: URL): URLConnection {
