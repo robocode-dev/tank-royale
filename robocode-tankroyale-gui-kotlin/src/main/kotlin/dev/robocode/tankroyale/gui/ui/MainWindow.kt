@@ -8,6 +8,7 @@ import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
 import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
+import dev.robocode.tankroyale.gui.ui.new_server.ConnectToOrStartServerCommand
 import dev.robocode.tankroyale.gui.ui.selection.NewBattleDialog
 import dev.robocode.tankroyale.gui.ui.server.*
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
@@ -60,12 +61,11 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
     private fun startBattle() {
         var disposable: Closeable? = null
-        disposable = Client.onConnected.subscribe {
-            NewBattleDialog.isVisible = true
-            // Make sure to dispose. Otherwise the dialog will be shown when testing if the server is running
+        disposable = ConnectToOrStartServerCommand.onConnected.subscribe {
             disposable?.close()
+            NewBattleDialog.isVisible = true
         }
-        StartServerCommand().execute()
+        ConnectToOrStartServerCommand.run()
     }
 
     private fun showLogo() {

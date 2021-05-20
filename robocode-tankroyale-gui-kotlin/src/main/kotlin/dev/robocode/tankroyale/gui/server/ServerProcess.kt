@@ -46,7 +46,7 @@ object ServerProcess {
         return isRunning.get()
     }
 
-    fun start(gameType: GameType, port: Int = ServerSettings.serverPort) {
+    fun start(gameType: GameType = GameType.CLASSIC, port: Int = ServerSettings.serverPort) {
         if (isRunning.get())
             return
 
@@ -107,7 +107,7 @@ object ServerProcess {
     private fun generateSecret(): String {
         val secretKey = KeyGenerator.getInstance("AES").generateKey()
         val encodedKey = Base64.getEncoder().encodeToString(secretKey.encoded)
-        // Remove trailing "=="
+        // Remove trailing '=='
         return encodedKey.substring(0, encodedKey.length - 2)
     }
 
