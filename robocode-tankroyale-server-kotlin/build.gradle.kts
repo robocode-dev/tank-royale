@@ -5,7 +5,7 @@ val title = "Robocode Tank Royale Server"
 description = "Server for running Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
-version = "0.8.6"
+version = "0.8.7"
 
 
 plugins {
