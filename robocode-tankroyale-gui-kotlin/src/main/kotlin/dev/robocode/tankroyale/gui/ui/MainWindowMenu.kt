@@ -50,8 +50,10 @@ object MainWindowMenu : JMenuBar() {
             addNewMenuItem("item.bot_dir_config", onBotDirConfig)
         })
 
-        ServerProcess.onStarted.subscribe { updateServerState() }
-        ServerProcess.onStopped.subscribe { updateServerState() }
+        ServerProcess.apply {
+            onStarted.subscribe(this) { updateServerState() }
+            onStopped.subscribe(this) { updateServerState() }
+        }
     }
 
     private fun updateServerState() {

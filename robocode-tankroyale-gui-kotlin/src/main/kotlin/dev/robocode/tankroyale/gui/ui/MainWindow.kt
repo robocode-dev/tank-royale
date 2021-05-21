@@ -13,7 +13,6 @@ import dev.robocode.tankroyale.gui.ui.selection.NewBattleDialog
 import dev.robocode.tankroyale.gui.ui.server.*
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import java.awt.EventQueue
-import java.io.Closeable
 import javax.imageio.ImageIO
 import javax.swing.ImageIcon
 import javax.swing.JFrame
@@ -40,17 +39,17 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
         setIconImage(iconImage.image)
 
         MainWindowMenu.apply {
-            onStartBattle.invokeLater { startBattle() }
-            onSetupRules.invokeLater { SetupRulesDialog.isVisible = true }
-            onShowServerLog.invokeLater { ServerLogWindow.isVisible = true }
-            onServerConfig.invokeLater { SelectServerDialog.isVisible = true }
-            onBotDirConfig.invokeLater { BotDirectoryConfigDialog.isVisible = true }
+            onStartBattle.invokeLater(this) { startBattle() }
+            onSetupRules.invokeLater(this) { SetupRulesDialog.isVisible = true }
+            onShowServerLog.invokeLater(this) { ServerLogWindow.isVisible = true }
+            onServerConfig.invokeLater(this) { SelectServerDialog.isVisible = true }
+            onBotDirConfig.invokeLater(this) { BotDirectoryConfigDialog.isVisible = true }
         }
 
         Client.apply {
-            onGameStarted.subscribe { showBattle() }
-//            onGameEnded.subscribe { showLogo() }
-//            onGameAborted.subscribe { showLogo() }
+            onGameStarted.subscribe(this) { showBattle() }
+            onGameEnded.subscribe(this) { showLogo() }
+            onGameAborted.subscribe(this) { showLogo() }
         }
 
         onClosing {
@@ -60,12 +59,10 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
     }
 
     private fun startBattle() {
-        var disposable: Closeable? = null
-        disposable = ConnectToOrStartServerCommand.onConnected.subscribe {
-            disposable?.close()
-            NewBattleDialog.isVisible = true
+        ConnectToOrStartServerCommand.apply {
+            onConnected.subscribe(this) { NewBattleDialog.isVisible = true }
+            run()
         }
-        ConnectToOrStartServerCommand.run()
     }
 
     private fun showLogo() {

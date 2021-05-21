@@ -29,6 +29,8 @@ class WsUrl(partialUrl: String) {
 
     override fun equals(other: Any?): Boolean = (other is WsUrl && uri == other.uri)
 
+    override fun hashCode(): Int = uri.hashCode()
+
     companion object {
         fun isValidWsUrl(url: String): Boolean {
             val str = url.trim()

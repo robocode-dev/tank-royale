@@ -65,7 +65,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
 
         lowerPanel.add(buttonPanel, "center")
 
-        AddNewUrlDialog.onComplete.subscribe {
+        AddNewUrlDialog.onComplete.subscribe(this) {
             urlComboBox.addItem(AddNewUrlDialog.newUrl)
             selectedUri = AddNewUrlDialog.newUrl
 
@@ -74,11 +74,11 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
             testButton.isEnabled = true
         }
 
-        onAdd.subscribe {
+        onAdd.subscribe(this) {
             AddNewUrlDialog.isVisible = true
         }
 
-        onRemove.subscribe {
+        onRemove.subscribe(this) {
             urlComboBox.removeItem(selectedUri)
             if (urlComboBox.itemCount == 0) {
                 removeButton.isEnabled = false
@@ -87,13 +87,13 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
             }
         }
 
-        onTest.subscribe { testServerConnection() }
+        onTest.subscribe(this) { testServerConnection() }
 
-        onOk.subscribe {
+        onOk.subscribe(this) {
             saveServerConfig()
             SelectServerDialog.dispose()
         }
-        onCancel.subscribe {
+        onCancel.subscribe(this) {
             setFieldsToServerConfig()
             SelectServerDialog.dispose()
         }

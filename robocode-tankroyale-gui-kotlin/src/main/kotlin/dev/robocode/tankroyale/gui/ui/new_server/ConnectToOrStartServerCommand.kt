@@ -3,9 +3,7 @@ package dev.robocode.tankroyale.gui.ui.new_server
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.ui.server.ConnectToServerCommand
 import dev.robocode.tankroyale.gui.util.Event
-import java.io.Closeable
 
 object ConnectToOrStartServerCommand : Runnable {
 
@@ -17,7 +15,9 @@ object ConnectToOrStartServerCommand : Runnable {
             ServerProcess.start()
         }
 
-        Client.onConnected.subscribe { onConnected.publish(Unit) }
-        Client.connect(WsUrl(ServerSettings.serverUrl).origin)
+        Client.apply {
+            onConnected.subscribe(this) { ConnectToOrStartServerCommand.onConnected.fire(Unit) }
+            connect(WsUrl(ServerSettings.serverUrl).origin)
+        }
     }
 }

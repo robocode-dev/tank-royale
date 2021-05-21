@@ -119,7 +119,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             }
         })
 
-        onBoot.subscribe {
+        onBoot.subscribe(this) {
             val files = ArrayList<String>()
             botsDirectoryList.selectedIndices.forEach {
                 files.add(botsDirectoryListModel[it].host)
@@ -127,14 +127,14 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             BootstrapProcess.run(files)
         }
 
-        onAdd.subscribe {
+        onAdd.subscribe(this) {
             joinedBotList.selectedValuesList.forEach { botInfo ->
                 if (!selectedBotListModel.contains(botInfo)) {
                     selectedBotListModel.addElement(botInfo)
                 }
             }
         }
-        onAddAll.subscribe {
+        onAddAll.subscribe(this) {
             for (i in 0 until joinedBotListModel.size) {
                 val botInfo = joinedBotListModel[i]
                 if (!selectedBotListModel.contains(botInfo)) {
@@ -142,12 +142,12 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
                 }
             }
         }
-        onRemove.subscribe {
+        onRemove.subscribe(this) {
             selectedBotList.selectedValuesList.forEach {
                 selectedBotListModel.removeElement(it)
             }
         }
-        onRemoveAll.subscribe {
+        onRemoveAll.subscribe(this) {
             selectedBotListModel.clear()
         }
 

@@ -11,7 +11,6 @@ import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.Color
 import java.awt.Dimension
-import java.awt.EventQueue
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -32,8 +31,10 @@ object AddNewUrlDialog : JDialog(SelectServerDialog, ResourceBundles.UI_TITLES.g
         contentPane.add(AddNewUrlPanel)
 
         onActivated {
-            AddNewUrlPanel.urlTextField.text = ""
-            AddNewUrlPanel.urlTextField.background = AddNewUrlPanel.urlTextFieldDefaultBackground
+            AddNewUrlPanel.apply {
+                urlTextField.text = ""
+                urlTextField.background = urlTextFieldDefaultBackground
+            }
         }
 
         onClosing {
@@ -52,14 +53,17 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
     init {
         add(urlTextField)
         val okButton = addButton("ok", onComplete)
-        AddNewUrlDialog.rootPane.defaultButton = okButton
 
-        onComplete.subscribe {
-            if (isValidWsUrl) {
-                AddNewUrlDialog.newUrl = urlTextField.text
-                AddNewUrlDialog.dispose()
-            } else {
-                AddNewUrlDialog.newUrl = ""
+        AddNewUrlDialog.apply {
+            rootPane.defaultButton = okButton
+
+            onComplete.subscribe(this) {
+                if (isValidWsUrl) {
+                    newUrl = urlTextField.text
+                    dispose()
+                } else {
+                    newUrl = ""
+                }
             }
         }
 
@@ -71,15 +75,12 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
             override fun insertUpdate(e: DocumentEvent?) {
                 validate()
             }
-
             override fun removeUpdate(e: DocumentEvent?) {
                 validate()
             }
-
             override fun changedUpdate(e: DocumentEvent?) {
                 validate()
             }
-
             fun validate() {
                 val valid = isValidWsUrl
                 urlTextField.background = if (valid) lightGreen else lightRed

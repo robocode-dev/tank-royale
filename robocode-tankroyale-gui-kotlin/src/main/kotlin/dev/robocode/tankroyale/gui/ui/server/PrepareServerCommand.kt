@@ -11,7 +11,7 @@ import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
 object PrepareServerCommand : ICommand {
 
     init {
-        MainWindowMenu.onStartServer.subscribe { execute() }
+        MainWindowMenu.onStartServer.subscribe(this) { execute() }
     }
 
     override fun execute() {

@@ -14,7 +14,7 @@ import java.util.*
 object Client : AutoCloseable {
 
     init {
-        TpsEventChannel.onTpsChanged.subscribe { changeTps(it.tps) }
+        TpsEventChannel.onTpsChanged.subscribe(this) { changeTps(it.tps) }
     }
 
     // public events
@@ -26,7 +26,7 @@ object Client : AutoCloseable {
 
     val onGameStarted = Event<GameStartedEvent>()
     val onGameEnded = Event<GameEndedEvent>()
-    private val onGameAborted = Event<GameAbortedEvent>()
+    val onGameAborted = Event<GameAbortedEvent>()
     val onGamePaused = Event<GamePausedEvent>()
     val onGameResumed = Event<GameResumedEvent>()
 
@@ -69,20 +69,20 @@ object Client : AutoCloseable {
 
         if (isConnected) websocket.close()
 
-        onDisconnected.publish(Unit)
+        onDisconnected.fire(Unit)
     }
 
     fun connect(url: String) {
         disposables.forEach { it.close() }
 
-        websocket = WebSocketClient(URI(url))
+        websocket = WebSocketClient(URI(url)).apply {
+            onOpen.subscribe(websocket) { onConnected.fire(Unit) }
+            onClose.subscribe(websocket) { onDisconnected.fire(Unit) }
+            onMessage.subscribe(websocket) { onMessage(it) }
+            onError.subscribe(websocket) { onError.fire(it) }
 
-        disposables += websocket.onOpen.subscribe { onConnected.publish(Unit) }
-        disposables += websocket.onClose.subscribe { onDisconnected.publish(Unit) }
-        disposables += websocket.onMessage.subscribe { onMessage(it) }
-        disposables += websocket.onError.subscribe { onError.publish(it) }
-
-        websocket.open() // must be called after onOpen.subscribe()
+            open() // must be called after onOpen.subscribe()
+        }
     }
 
     fun startGame(gameSetup: IGameSetup, botAddresses: Set<BotAddress>) {
@@ -162,7 +162,7 @@ object Client : AutoCloseable {
 
     private fun handleBotListUpdate(botListUpdate: BotListUpdate) {
         bots = Collections.unmodifiableSet(botListUpdate.bots)
-        onBotListUpdate.publish(botListUpdate)
+        onBotListUpdate.fire(botListUpdate)
     }
 
     private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
@@ -170,44 +170,44 @@ object Client : AutoCloseable {
         currentGameSetup = gameStartedEvent.gameSetup
         participants = gameStartedEvent.participants
 
-        onGameStarted.publish(gameStartedEvent)
+        onGameStarted.fire(gameStartedEvent)
     }
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {
         isGameRunning = false
         isGamePaused = false
-        onGameEnded.publish(gameEndedEvent)
+        onGameEnded.fire(gameEndedEvent)
     }
 
     private fun handleGameAborted(gameAbortedEvent: GameAbortedEvent) {
         isGameRunning = false
         isGamePaused = false
-        onGameAborted.publish(gameAbortedEvent)
+        onGameAborted.fire(gameAbortedEvent)
     }
 
     private fun handleGamePaused(gamePausedEvent: GamePausedEvent) {
         isGamePaused = true
-        onGamePaused.publish(gamePausedEvent)
+        onGamePaused.fire(gamePausedEvent)
     }
 
     private fun handleGameResumed(gameResumedEvent: GameResumedEvent) {
         isGamePaused = false
-        onGameResumed.publish(gameResumedEvent)
+        onGameResumed.fire(gameResumedEvent)
     }
 
     private fun handleRoundStarted(roundStartedEvent: RoundStartedEvent) {
-        onRoundStarted.publish(roundStartedEvent)
+        onRoundStarted.fire(roundStartedEvent)
     }
 
     private fun handleRoundEnded(roundEndedEvent: RoundEndedEvent) {
-        onRoundEnded.publish(roundEndedEvent)
+        onRoundEnded.fire(roundEndedEvent)
     }
 
     private fun handleTickEvent(tickEvent: TickEvent) {
-        onTickEvent.publish(tickEvent)
+        onTickEvent.fire(tickEvent)
     }
 
     private fun handleTpsChanged(tpsChangedEvent: TpsChangedEvent) {
-        TpsEventChannel.onTpsChanged.publish(tpsChangedEvent)
+        TpsEventChannel.onTpsChanged.fire(tpsChangedEvent)
     }
 }

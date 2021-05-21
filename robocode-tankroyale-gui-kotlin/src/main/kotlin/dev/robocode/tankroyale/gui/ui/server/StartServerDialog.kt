@@ -57,9 +57,9 @@ private object StartServerPanel : JPanel(MigLayout("fill")) {
 
         portTextField.setInputVerifier { portVerifier() }
 
-        onCancel.subscribe { StartServerDialog.dispose() }
+        onCancel.subscribe(this) { StartServerDialog.dispose() }
 
-        onOk.subscribe {
+        onOk.subscribe(this) {
             StartServerCommand(
                 port = portTextField.text.toInt(),
                 gameType = GameType.values().first { it.displayName == gameTypeComboBox.selectedGameType }

@@ -70,11 +70,11 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
             startBattleButton.isEnabled = selectPanel.selectedBotListModel.size >= 2
         }
 
-        onStartBattle.subscribe { startGame() }
+        onStartBattle.subscribe(this) { startGame() }
 
-        onCancel.subscribe { NewBattleDialog.dispose() }
+        onCancel.subscribe(this) { NewBattleDialog.dispose() }
 
-        Client.onBotListUpdate.subscribe { updateJoinedBots() }
+        Client.onBotListUpdate.subscribe(this) { updateJoinedBots() }
         updateJoinedBots()
     }
 
@@ -107,9 +107,10 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
 
     fun updateJoinedBots() {
         SwingUtilities.invokeLater {
-            val joinedBotListModel = selectPanel.joinedBotListModel
-            joinedBotListModel.clear()
-            Client.joinedBots.forEach { joinedBotListModel.addElement(it) }
+           selectPanel.joinedBotListModel.apply {
+               clear()
+               Client.joinedBots.forEach { addElement(it) }
+           }
         }
     }
 

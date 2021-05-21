@@ -51,24 +51,24 @@ class WebSocketClient(private val uri: URI) : AutoCloseable {
 
         override fun onOpen(webSocket: WebSocket) {
             this.websocket = webSocket
-            onOpen.publish(Unit)
+            onOpen.fire(Unit)
             super.onOpen(webSocket)
         }
 
         override fun onClose(webSocket: WebSocket?, statusCode: Int, reason: String?): CompletionStage<*>? {
             this.websocket = null
-            onClose.publish(Unit)
+            onClose.fire(Unit)
             return null
         }
 
         override fun onError(webSocket: WebSocket?, error: Throwable) {
-            onError.publish(error)
+            onError.fire(error)
         }
 
         override fun onText(webSocket: WebSocket, data: CharSequence?, last: Boolean): CompletionStage<*>? {
             payload.append(data)
             if (last) {
-                onMessage.publish(payload.toString())
+                onMessage.fire(payload.toString())
                 payload.delete(0, payload.length) // clear payload buffer
             }
             return super.onText(webSocket, data, last)

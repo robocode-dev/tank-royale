@@ -17,7 +17,7 @@ object JComponentExt {
         stringResourceName: String, event: Event<JButton>, layoutConstraints: String? = null
     ): JButton {
         val button = JButton(STRINGS.get(stringResourceName))
-        button.addActionListener { event.publish(button) }
+        button.addActionListener { event.fire(button) }
         add(button, layoutConstraints)
         return button
     }

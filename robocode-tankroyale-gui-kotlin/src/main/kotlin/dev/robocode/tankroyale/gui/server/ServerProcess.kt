@@ -38,8 +38,10 @@ object ServerProcess {
         private set
 
     init {
-        MainWindowMenu.onStopServer.subscribe { stop() }
-        MainWindowMenu.onRestartServer.subscribe { restart() }
+        MainWindowMenu.apply {
+            onStopServer.subscribe(this) { stop() }
+            onRestartServer.subscribe(this) { restart() }
+        }
     }
 
     fun isRunning(): Boolean {
@@ -74,7 +76,7 @@ object ServerProcess {
 
         startLogThread()
 
-        onStarted.publish(Unit)
+        onStarted.fire(Unit)
     }
 
     fun stop() {
@@ -96,7 +98,7 @@ object ServerProcess {
         process = null
         logThread = null
 
-        onStopped.publish(Unit)
+        onStopped.fire(Unit)
     }
 
     fun restart() {

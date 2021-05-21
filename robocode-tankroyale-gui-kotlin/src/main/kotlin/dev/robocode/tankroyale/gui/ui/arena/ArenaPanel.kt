@@ -6,9 +6,6 @@ import dev.robocode.tankroyale.gui.ui.fx.CircleBurst
 import dev.robocode.tankroyale.gui.ui.fx.Explosion
 import dev.robocode.tankroyale.gui.model.*
 import dev.robocode.tankroyale.gui.ui.ResultsWindow
-import dev.robocode.tankroyale.gui.ui.arena.ArenaPanel.State.arenaHeight
-import dev.robocode.tankroyale.gui.ui.arena.ArenaPanel.State.arenaWidth
-import dev.robocode.tankroyale.gui.ui.arena.ArenaPanel.State.bots
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.lightness
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.toHsl
 import dev.robocode.tankroyale.gui.util.Graphics2DState
@@ -34,38 +31,36 @@ object ArenaPanel : JPanel() {
 
     private val circleShape = Area(Ellipse2D.Double(-0.5, -0.5, 1.0, 1.0))
 
-    private val explosions =  CopyOnWriteArrayList<Animation>()
+    private val explosions = CopyOnWriteArrayList<Animation>()
 
-    private object State {
-        var arenaWidth: Int = Client.currentGameSetup?.arenaWidth ?: 800
-        var arenaHeight: Int = Client.currentGameSetup?.arenaHeight ?: 600
+    private var arenaWidth: Int = Client.currentGameSetup?.arenaWidth ?: 800
+    private var arenaHeight: Int = Client.currentGameSetup?.arenaHeight ?: 600
 
-        var round: Int = 0
-        var time: Int = 0
-        var bots: Set<BotState> = HashSet()
-        var bullets: Set<BulletState> = HashSet()
-    }
-
-    private val state = State
+    private var round: Int = 0
+    private var time: Int = 0
+    private var bots: Set<BotState> = HashSet()
+    private var bullets: Set<BulletState> = HashSet()
 
     init {
         addMouseWheelListener { e -> if (e != null) onMouseWheel(e) }
 
-        addMouseMotionListener ( object : MouseMotionAdapter() {
+        addMouseMotionListener(object : MouseMotionAdapter() {
             override fun mouseDragged(e: MouseEvent) {
                 onMouseDragged(e)
             }
         })
 
-        Client.onGameStarted.subscribe { onGameStarted(it) }
-        Client.onGameEnded.subscribe { onGameEnded(it) }
-        Client.onTickEvent.subscribe { onTick(it) }
+        Client.apply {
+            onGameStarted.subscribe(this) { onGameStarted(it) }
+            onGameEnded.subscribe(this) { onGameEnded(it) }
+            onTickEvent.subscribe(this) { onTick(it) }
+        }
     }
 
     private fun onGameStarted(gameStartedEvent: GameStartedEvent) {
         val setup = gameStartedEvent.gameSetup
-        state.arenaWidth = setup.arenaWidth
-        state.arenaHeight = setup.arenaHeight
+        arenaWidth = setup.arenaWidth
+        arenaHeight = setup.arenaHeight
     }
 
     private fun onGameEnded(gameEndedEvent: GameEndedEvent) {
@@ -83,10 +78,10 @@ object ArenaPanel : JPanel() {
             explosions.clear()
         }
 
-        State.round = tickEvent.roundNumber
-        State.time = tickEvent.turnNumber
-        state.bots = tickEvent.botStates
-        State.bullets = tickEvent.bulletStates
+        round = tickEvent.roundNumber
+        time = tickEvent.turnNumber
+        bots = tickEvent.botStates
+        bullets = tickEvent.bulletStates
 
         tickEvent.events.forEach {
             when (it) {
@@ -94,6 +89,7 @@ object ArenaPanel : JPanel() {
                 is BulletHitBotEvent -> onBulletHitBot(it)
                 is BulletHitWallEvent -> onBulletHitWall(it)
                 is BulletHitBulletEvent -> onBulletHitBullet(it)
+                else -> { /* ignore other events */ }
             }
         }
 
@@ -104,9 +100,7 @@ object ArenaPanel : JPanel() {
 
     private fun onBotDeath(botDeathEvent: BotDeathEvent) {
         val bot = bots.first { bot -> bot.id == botDeathEvent.victimId }
-        val explosion = Explosion(bot.x, bot.y, 80, 50, 15,
-            State.time
-        )
+        val explosion = Explosion(bot.x, bot.y, 80, 50, 15, time)
         explosions.add(explosion)
     }
 
@@ -125,16 +119,14 @@ object ArenaPanel : JPanel() {
             4.0,
             40.0,
             25,
-            State.time
+            time
         )
         explosions.add(explosion)
     }
 
     private fun onBulletHitWall(bulletHitWallEvent: BulletHitWallEvent) {
         val bullet = bulletHitWallEvent.bullet
-        val explosion = CircleBurst(bullet.x, bullet.y, 4.0, 40.0, 25,
-            State.time
-        )
+        val explosion = CircleBurst(bullet.x, bullet.y, 4.0, 40.0, 25, time)
         explosions.add(explosion)
     }
 
@@ -145,9 +137,7 @@ object ArenaPanel : JPanel() {
         val x = (bullet1.x + bullet2.x) / 2
         val y = (bullet1.y + bullet2.y) / 2
 
-        val explosion = CircleBurst(x, y, 4.0, 40.0, 25,
-            State.time
-        )
+        val explosion = CircleBurst(x, y, 4.0, 40.0, 25, time)
         explosions.add(explosion)
     }
 
@@ -202,7 +192,7 @@ object ArenaPanel : JPanel() {
     }
 
     private fun drawBots(g: Graphics2D) {
-        state.bots.forEach { bot ->
+        bots.forEach { bot ->
             Tank(bot).paint(g)
             drawScanArc(g, bot)
             drawEnergy(g, bot)
@@ -211,7 +201,7 @@ object ArenaPanel : JPanel() {
     }
 
     private fun drawBullets(g: Graphics2D) {
-        State.bullets.forEach { drawBullet(g, it) }
+        bullets.forEach { drawBullet(g, it) }
     }
 
     private fun clearCanvas(g: Graphics) {
@@ -221,14 +211,14 @@ object ArenaPanel : JPanel() {
 
     private fun drawGround(g: Graphics) {
         g.color = Color.BLACK
-        g.fillRect(0, 0, state.arenaWidth, state.arenaHeight)
+        g.fillRect(0, 0, arenaWidth, arenaHeight)
     }
 
     private fun drawExplosions(g: Graphics2D) {
         val list = ArrayList(explosions)
         with(list.iterator()) {
             forEach { explosion ->
-                explosion.paint(g, State.time)
+                explosion.paint(g, time)
                 if (explosion.isFinished()) remove()
             }
         }
@@ -276,7 +266,7 @@ object ArenaPanel : JPanel() {
 
         g.scale(1.0, -1.0)
         g.color = Color.YELLOW
-        g.drawString("Round ${State.round}, Turn: ${State.time}", 10, 20 - arenaHeight)
+        g.drawString("Round $round, Turn: $time", 10, 20 - arenaHeight)
 
         oldState.restore(g)
     }
@@ -289,7 +279,7 @@ object ArenaPanel : JPanel() {
         val width = g.fontMetrics.stringWidth(text)
 
         g.scale(1.0, -1.0)
-        g.drawString(text, bot.x.toFloat() - width / 2,  (-30 - bot.y).toFloat())
+        g.drawString(text, bot.x.toFloat() - width / 2, (-30 - bot.y).toFloat())
 
         oldState.restore(g)
     }
@@ -304,8 +294,9 @@ object ArenaPanel : JPanel() {
 
             g.scale(1.0, -1.0)
             g.color = Color.WHITE
-            g.drawString(text, bot.x.toFloat() - width / 2,  (-bot.y + 36).toFloat())
-        } catch (ignore: NoSuchElementException) {}
+            g.drawString(text, bot.x.toFloat() - width / 2, (-bot.y + 36).toFloat())
+        } catch (ignore: NoSuchElementException) {
+        }
 
         oldState.restore(g)
     }

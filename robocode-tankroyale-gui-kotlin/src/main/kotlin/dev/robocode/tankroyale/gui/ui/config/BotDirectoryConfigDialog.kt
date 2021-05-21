@@ -52,7 +52,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
         MiscSettings.load()
         MiscSettings.botsDirectories.forEach { listModel.addElement(it) }
 
-        onAdd.subscribe {
+        onAdd.subscribe(this) {
             val chooser = JFileChooser()
             chooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
             val returnVal = chooser.showOpenDialog(this)
@@ -62,7 +62,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
             }
         }
 
-        onRemove.subscribe {
+        onRemove.subscribe(this) {
             list.selectedValuesList.forEach { listModel.removeElement(it) }
         }
     }

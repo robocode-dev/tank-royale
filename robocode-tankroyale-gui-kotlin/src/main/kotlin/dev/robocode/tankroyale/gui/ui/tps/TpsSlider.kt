@@ -35,7 +35,7 @@ object TpsSlider : JSlider() {
 
         addChangeListener(TpsChangeListener())
 
-        TpsEventChannel.onTpsChanged.subscribe { tpsEvent -> setTps(tpsEvent.tps) }
+        TpsEventChannel.onTpsChanged.subscribe(this) { tpsEvent -> setTps(tpsEvent.tps) }
 
         setTps(30) // FIXME: from settings
     }
@@ -70,7 +70,7 @@ object TpsSlider : JSlider() {
     private class TpsChangeListener : ChangeListener {
         override fun stateChanged(e: ChangeEvent?) {
             if (!valueIsAdjusting) { // avoid events while dragging
-                TpsEventChannel.onTpsChanged.publish(TpsChangedEvent(getTps()))
+                TpsEventChannel.onTpsChanged.fire(TpsChangedEvent(getTps()))
             }
         }
     }

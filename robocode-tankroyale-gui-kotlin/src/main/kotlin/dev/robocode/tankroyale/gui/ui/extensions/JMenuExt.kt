@@ -10,7 +10,7 @@ object JMenuExt {
     fun JMenu.addNewMenuItem(menuResourceName: String, event: Event<JMenuItem>): JMenuItem {
         val menuItem = JMenuItem(ResourceBundles.MENU.get(menuResourceName))
         add(menuItem)
-        menuItem.addActionListener { event.publish(menuItem) }
+        menuItem.addActionListener { event.fire(menuItem) }
         return menuItem
     }
 }

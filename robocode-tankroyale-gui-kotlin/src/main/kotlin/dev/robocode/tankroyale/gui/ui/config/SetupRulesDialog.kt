@@ -130,18 +130,18 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         readyTimeoutTextField.setInputVerifier { readyTimeoutVerifier() }
         turnTimeoutTextField.setInputVerifier { turnTimeoutVerifier() }
 
-        onOk.subscribe {
+        onOk.subscribe(this) {
             apply()
             SetupRulesDialog.dispose()
         }
-        onApply.subscribe {
+        onApply.subscribe(this) {
             apply()
         }
-        onCancel.subscribe {
+        onCancel.subscribe(this) {
             lastGameSetup = gameSetup
             SetupRulesDialog.dispose()
         }
-        onResetToDefault.subscribe {
+        onResetToDefault.subscribe(this) {
             val selectedGameType = gameTypeComboBox.selectedGameType
             val default: MutableGameSetup? = GamesSettings.defaultGameSetup[selectedGameType]?.toMutableGameSetup()
             if (default != null) {
