@@ -16,6 +16,7 @@ data class BotInfo(
     val host: String,
     val port: Int
 ): Comparable<BotInfo> {
+
     val botAddress: BotAddress
         get() = BotAddress(host, port)
 

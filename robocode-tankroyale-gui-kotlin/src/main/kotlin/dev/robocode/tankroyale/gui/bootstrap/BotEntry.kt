@@ -19,9 +19,4 @@ data class Info(
     val gameTypes: Set<String>,
     val programmingLang: String? = null,
     val platform: String? = null
-) {
-    val displayText: String
-        get() {
-            return if (author.isBlank()) "$name $version" else "$author: $name $version"
-        }
-}
+)
