@@ -7,7 +7,6 @@ import dev.robocode.tankroyale.gui.ui.tps.TpsEventChannel
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.Version
 import kotlinx.serialization.PolymorphicSerializer
-import java.io.Closeable
 import java.net.URI
 import java.util.*
 
@@ -37,7 +36,7 @@ object Client : AutoCloseable {
 
     var currentGameSetup: GameSetup? = null
 
-    private var isGameRunning: Boolean = false
+    var isGameRunning: Boolean = false
 
     var isGamePaused: Boolean = false
         private set
@@ -58,8 +57,6 @@ object Client : AutoCloseable {
 
     private var gameTypes = setOf<String>()
 
-    private val disposables = mutableListOf<Closeable>()
-
     private var lastStartGame: StartGame? = null
 
     private var tps: Int? = null
@@ -73,9 +70,8 @@ object Client : AutoCloseable {
     }
 
     fun connect(url: String) {
-        disposables.forEach { it.close() }
-
-        websocket = WebSocketClient(URI(url)).apply {
+        websocket = WebSocketClient(URI(url))
+        with (websocket) { // not apply() here, as new websocket is owner of the events below
             onOpen.subscribe(websocket) { onConnected.fire(Unit) }
             onClose.subscribe(websocket) { onDisconnected.fire(Unit) }
             onMessage.subscribe(websocket) { onMessage(it) }
