@@ -76,10 +76,10 @@ class ConnHandler internal constructor(
     fun getBotConnections(botAddresses: Collection<BotAddress>): Set<WebSocket> {
         val foundConnections = mutableSetOf<WebSocket>()
         for (conn: WebSocket in botHandshakes.keys) {
-            val addr = conn.remoteSocketAddress
-            if (addr != null) {
-                val port = addr.port
-                val hostname = addr.hostName
+            val address = conn.remoteSocketAddress
+            if (address != null) {
+                val port = address.port
+                val hostname = address.hostName
                 for (botAddr: BotAddress in botAddresses) {
                     if (botAddr.host == hostname && botAddr.port == port) {
                         foundConnections += conn
@@ -122,10 +122,8 @@ class ConnHandler internal constructor(
     }
 
     private fun notifyException(exception: Exception) {
-        executorService.submit {
-            log.error("Exception occurred: $exception")
-            listener.onException(exception)
-        }
+        log.error("Exception occurred: $exception")
+        listener.onException(exception)
     }
 
     private inner class WebSocketObserver(address: InetSocketAddress) : WebSocketServer(address) {
@@ -134,122 +132,131 @@ class ConnHandler internal constructor(
 
         override fun onOpen(conn: WebSocket, handshake: ClientHandshake) {
             log.debug("onOpen(): ${conn.remoteSocketAddress}")
-            allConnections += conn
-            val hs = ServerHandshake()
-            hs.`$type` = Message.`$type`.SERVER_HANDSHAKE
-            hs.variant = "Tank Royale" // Robocode Tank Royale
-            hs.version = getVersion() ?: "?"
-            hs.gameTypes = setup.gameTypes
-            val msg = Gson().toJson(hs)
-            send(conn, msg)
+
+            executorService.submit {
+                allConnections += conn
+                val hs = ServerHandshake()
+                hs.`$type` = Message.`$type`.SERVER_HANDSHAKE
+                hs.variant = "Tank Royale" // Robocode Tank Royale
+                hs.version = getVersion() ?: "?"
+                hs.gameTypes = setup.gameTypes
+                val msg = Gson().toJson(hs)
+                send(conn, msg)
+            }
         }
 
         override fun onClose(conn: WebSocket, code: Int, reason: String, remote: Boolean) {
             log.debug("onClose(): ${conn.remoteSocketAddress}, code: $code, reason: $reason, remote: $remote")
-            allConnections -= conn
-            when {
-                botConnections.remove(conn) -> executorService.submit {
-                    val handshake = botHandshakes[conn]
-                    listener.onBotLeft(conn, handshake!!)
-                    botHandshakes -= conn
-                }
-                observerConnections.remove(conn) -> executorService.submit {
-                val handshake = observerHandshakes[conn]
-                    listener.onObserverLeft(conn, handshake!!)
-                    observerHandshakes -= conn
-                }
-                controllerConnections.remove(conn) -> executorService.submit {
-                    val handshake = controllerHandshakes[conn]
-                    listener.onControllerLeft(conn, handshake!!)
-                    controllerHandshakes -= conn
+
+            executorService.submit {
+                allConnections -= conn
+                when {
+                    botConnections.remove(conn) -> {
+                        val handshake = botHandshakes[conn]
+                        listener.onBotLeft(conn, handshake!!)
+                        botHandshakes -= conn
+                    }
+                    observerConnections.remove(conn) -> {
+                        val handshake = observerHandshakes[conn]
+                        listener.onObserverLeft(conn, handshake!!)
+                        observerHandshakes -= conn
+                    }
+                    controllerConnections.remove(conn) -> {
+                        val handshake = controllerHandshakes[conn]
+                        listener.onControllerLeft(conn, handshake!!)
+                        controllerHandshakes -= conn
+                    }
                 }
             }
         }
 
         override fun onMessage(conn: WebSocket, message: String) {
             log.debug("onMessage(): ${conn.remoteSocketAddress}, message: $message")
-            val gson = Gson()
-            try {
-                val jsonObject = gson.fromJson(message, JsonObject::class.java)
-                val jsonType = jsonObject["\$type"]
-                if (jsonType != null) {
-                    val type: Message.`$type`
-                    try {
-                        type = Message.`$type`.fromValue(jsonType.asString)
-                    } catch (ex: IllegalArgumentException) {
-                        notifyException(IllegalStateException("Unhandled message type: ${jsonType.asString}"))
-                        return
-                    }
-                    log.debug("Handling message: $type")
-                    when (type) {
-                        Message.`$type`.BOT_INTENT -> executorService.submit {
-                        val intent = gson.fromJson(message, BotIntent::class.java)
-                            listener.onBotIntent(conn, botHandshakes[conn]!!, intent)
-                        }
-                        Message.`$type`.BOT_HANDSHAKE -> executorService.submit {
-                            val handshake = gson.fromJson(message, BotHandshake::class.java)
-                            botConnections += conn
-                            botHandshakes[conn] = handshake
-                            listener.onBotJoined(conn, handshake)
-                        }
-                        Message.`$type`.OBSERVER_HANDSHAKE -> executorService.submit {
-                            val handshake = gson.fromJson(
-                                message,
-                                ObserverHandshake::class.java
-                            )
-                            // Validate client secret before continuing
-                            var validClient = true
-                            if (clientSecret != null && clientSecret.isNotEmpty() && handshake.secret != clientSecret) {
-                                log.info("Ignoring observer using invalid secret. Name: ${handshake.name}, Version: ${handshake.version}")
-                                validClient = false // Ignore client with wrong secret
-                            }
-                            if (validClient) {
-                                observerConnections += conn
-                                observerHandshakes[conn] = handshake
-                                listener.onObserverJoined(conn, handshake)
-                            }
-                        }
-                        Message.`$type`.CONTROLLER_HANDSHAKE -> executorService.submit {
-                            val handshake = gson.fromJson(message, ControllerHandshake::class.java)
 
-                            // Validate client secret before continuing
-                            var validClient = true
-                            if (clientSecret != null && clientSecret.isNotEmpty() && handshake.secret != clientSecret) {
-                                log.info("Ignoring controller using invalid secret. Name: ${handshake.name}, Version: ${handshake.version}")
-                                validClient = false // Ignore client with wrong secret
+            executorService.submit {
+                val gson = Gson()
+                try {
+                    val jsonObject = gson.fromJson(message, JsonObject::class.java)
+                    val jsonType = jsonObject["\$type"]
+                    if (jsonType != null) {
+                        val type: Message.`$type`
+                        try {
+                            type = Message.`$type`.fromValue(jsonType.asString)
+
+                            log.debug("Handling message: $type")
+                            when (type) {
+                                Message.`$type`.BOT_INTENT -> {
+                                    val intent = gson.fromJson(message, BotIntent::class.java)
+                                    listener.onBotIntent(conn, botHandshakes[conn]!!, intent)
+                                }
+                                Message.`$type`.BOT_HANDSHAKE -> {
+                                    val handshake = gson.fromJson(message, BotHandshake::class.java)
+                                    botConnections += conn
+                                    botHandshakes[conn] = handshake
+                                    listener.onBotJoined(conn, handshake)
+                                }
+                                Message.`$type`.OBSERVER_HANDSHAKE ->  {
+                                    val handshake = gson.fromJson(
+                                        message,
+                                        ObserverHandshake::class.java
+                                    )
+                                    // Validate client secret before continuing
+                                    var validClient = true
+                                    if (clientSecret != null && clientSecret.isNotEmpty() && handshake.secret != clientSecret) {
+                                        log.info("Ignoring observer using invalid secret. Name: ${handshake.name}, Version: ${handshake.version}")
+                                        validClient = false // Ignore client with wrong secret
+                                    }
+                                    if (validClient) {
+                                        observerConnections += conn
+                                        observerHandshakes[conn] = handshake
+                                        listener.onObserverJoined(conn, handshake)
+                                    }
+                                }
+                                Message.`$type`.CONTROLLER_HANDSHAKE -> {
+                                    val handshake = gson.fromJson(message, ControllerHandshake::class.java)
+
+                                    // Validate client secret before continuing
+                                    var validClient = true
+                                    if (clientSecret != null && clientSecret.isNotEmpty() && handshake.secret != clientSecret) {
+                                        log.info("Ignoring controller using invalid secret. Name: ${handshake.name}, Version: ${handshake.version}")
+                                        validClient = false // Ignore client with wrong secret
+                                    }
+                                    if (validClient) {
+                                        controllerConnections += conn
+                                        controllerHandshakes[conn] = handshake
+                                        listener.onControllerJoined(conn, handshake)
+                                    }
+                                }
+                                Message.`$type`.BOT_READY -> {
+                                    listener.onBotReady(conn, botHandshakes[conn]!!)
+                                }
+                                Message.`$type`.START_GAME -> {
+                                    val startGame = gson.fromJson(message, StartGame::class.java)
+                                    val gameSetup = startGame.gameSetup
+                                    val botAddresses: Collection<BotAddress> = startGame.botAddresses
+                                    listener.onStartGame(gameSetup, botAddresses)
+                                }
+                                Message.`$type`.STOP_GAME -> executorService.submit(listener::onAbortGame)
+                                Message.`$type`.PAUSE_GAME -> executorService.submit(listener::onPauseGame)
+                                Message.`$type`.RESUME_GAME -> executorService.submit(listener::onResumeGame)
+                                Message.`$type`.CHANGE_TPS -> executorService.submit {
+                                    val changeTps = gson.fromJson(message, ChangeTps::class.java)
+                                    listener.onChangeTps(changeTps.tps)
+                                }
+                                else -> notifyException(IllegalStateException("Unhandled message type: $type"))
                             }
-                            if (validClient) {
-                                controllerConnections += conn
-                                controllerHandshakes[conn] = handshake
-                                listener.onControllerJoined(conn, handshake)
-                            }
+                        } catch (ex: IllegalArgumentException) {
+                            notifyException(IllegalStateException("Unhandled message type: ${jsonType.asString}"))
                         }
-                        Message.`$type`.BOT_READY -> executorService.submit {
-                            listener.onBotReady(conn, botHandshakes[conn]!!)
-                        }
-                        Message.`$type`.START_GAME -> executorService.submit {
-                        val startGame = gson.fromJson(message, StartGame::class.java)
-                            val gameSetup = startGame.gameSetup
-                            val botAddresses: Collection<BotAddress> = startGame.botAddresses
-                            listener.onStartGame(gameSetup, botAddresses)
-                        }
-                        Message.`$type`.STOP_GAME -> executorService.submit(listener::onAbortGame)
-                        Message.`$type`.PAUSE_GAME -> executorService.submit(listener::onPauseGame)
-                        Message.`$type`.RESUME_GAME -> executorService.submit(listener::onResumeGame)
-                        Message.`$type`.CHANGE_TPS -> executorService.submit {
-                            val changeTps = gson.fromJson(message, ChangeTps::class.java)
-                            listener.onChangeTps(changeTps.tps)
-                        }
-                        else -> notifyException(IllegalStateException("Unhandled message type: $type"))
                     }
+                } catch (e2: JsonSyntaxException) {
+                    log.error("Invalid message: $message", e2)
                 }
-            } catch (e2: JsonSyntaxException) {
-                log.error("Invalid message: $message", e2)
             }
         }
 
         override fun onError(conn: WebSocket?, ex: Exception) {
-//            notifyException(ex)
+            // Do noting
         }
     }
 }
