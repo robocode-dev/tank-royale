@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.settings
 
-import dev.robocode.tankroyale.gui.ui.new_server.WsUrl
+import dev.robocode.tankroyale.gui.ui.server.WsUrl
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import java.net.URI
 

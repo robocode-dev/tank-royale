@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.ui
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.extensions.JMenuExt.addNewMenuItem
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.MENU
+import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.util.Event
 import javax.swing.JMenu
 import javax.swing.JMenuBar
@@ -57,10 +58,9 @@ object MainWindowMenu : JMenuBar() {
     }
 
     private fun updateServerState() {
-        val isServerRunning = ServerProcess.isRunning()
-        startServerMenuItem?.isEnabled = !isServerRunning
-        restartServerMenuItem?.isEnabled = isServerRunning
-        stopServerMenuItem?.isEnabled = isServerRunning
+        startServerMenuItem?.isEnabled = !Server.isRunning()
+        restartServerMenuItem?.isEnabled = Server.isRunning()
+        stopServerMenuItem?.isEnabled = Server.isRunning()
     }
 }
 

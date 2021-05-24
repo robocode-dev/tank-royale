@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
 import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
-import dev.robocode.tankroyale.gui.ui.new_server.ConnectOrStartServerCommand
+import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.selection.NewBattleDialog
 import dev.robocode.tankroyale.gui.ui.server.*
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
@@ -23,7 +23,6 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
     init {
         RegisterWsProtocol
-        PrepareServerCommand
 
         defaultCloseOperation = EXIT_ON_CLOSE
 
@@ -59,9 +58,9 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
     }
 
     private fun startBattle() {
-        ConnectOrStartServerCommand.apply {
+        Server.apply {
             onConnected.subscribe(this) { NewBattleDialog.isVisible = true }
-            run()
+            connectOrStart()
         }
     }
 

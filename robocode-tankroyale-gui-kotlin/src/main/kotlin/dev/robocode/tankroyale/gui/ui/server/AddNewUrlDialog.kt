@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
-import dev.robocode.tankroyale.gui.ui.new_server.WsUrl
 import dev.robocode.tankroyale.gui.ui.server.AddNewUrlDialog.onComplete
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
