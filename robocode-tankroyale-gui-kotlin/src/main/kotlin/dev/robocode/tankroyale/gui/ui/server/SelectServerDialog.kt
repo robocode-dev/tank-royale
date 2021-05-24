@@ -100,7 +100,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     }
 
     private var selectedUri
-        get() = urlComboBox.selectedItem as String
+        get() = WsUrl(urlComboBox.selectedItem as String).origin
         set(value) { setSelectedItem(value) }
 
     private fun testServerConnection() {
