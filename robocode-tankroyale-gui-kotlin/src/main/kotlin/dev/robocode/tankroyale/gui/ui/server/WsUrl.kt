@@ -14,14 +14,19 @@ class WsUrl(partialUrl: String) {
     val uri: URI
 
     init {
-        var uri = URI(partialUrl)
-        if (!partialUrl.contains("://")) {
-            uri = URI("${ServerSettings.DEFAULT_SCHEME}://$partialUrl")
+        // protocol + host + port, e.g. ws://localhost:80
+
+        var origin = partialUrl
+
+        // Make sure the url starts with "ws://"
+        if (!origin.startsWith("ws://")) {
+            origin = "ws://$origin"
         }
-        if (uri.port == -1) {
-            uri = URI("${uri.scheme}://${uri.host}:${ServerSettings.DEFAULT_PORT}")
+        // Add a (default) port number, if it is not specified
+        if (!origin.contains(Regex(".*:\\d{1,5}$"))) {
+            origin = "$origin:${ServerSettings.DEFAULT_PORT}"
         }
-        this.uri = uri
+        uri = URI(origin)
     }
 
     // "origin" is a combination of a scheme/protocol, hostname, and port
@@ -35,7 +40,7 @@ class WsUrl(partialUrl: String) {
         fun isValidWsUrl(url: String): Boolean {
             val str = url.trim()
             return str.isNotBlank() &&
-                    str.matches(Regex("^(ws(s)://)?(\\p{L})?(\\p{L}|\\.|[-])*(\\p{L})(:\\d{1,5})?$"))
+                    str.matches(Regex("^(ws://)?(\\p{L})?(\\p{L}|\\.|[-])*(\\p{L})(:\\d{1,5})?$"))
         }
     }
 }

@@ -63,13 +63,15 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
 
         lowerPanel.add(buttonPanel, "center")
 
-        AddNewUrlDialog.onComplete.subscribe(SelectServerDialog) {
-            urlComboBox.addItem(AddNewUrlDialog.newUrl)
-            selectedUri = AddNewUrlDialog.newUrl
+        AddNewUrlDialog.apply {
+            onComplete.invokeLater(SelectServerDialog) {
+                urlComboBox.addItem(newUrl)
+                selectedUri = newUrl
 
-            removeButton.isEnabled = true
-            okButton.isEnabled = true
-            testButton.isEnabled = true
+                removeButton.isEnabled = true
+                okButton.isEnabled = true
+                testButton.isEnabled = true
+            }
         }
 
         onAdd.subscribe(SelectServerDialog) {
@@ -77,7 +79,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         }
 
         onRemove.subscribe(SelectServerDialog) {
-            urlComboBox.removeItem(selectedUri)
+            urlComboBox.removeItem(selectedItem)
             if (urlComboBox.itemCount == 0) {
                 removeButton.isEnabled = false
                 okButton.isEnabled = false
@@ -99,9 +101,14 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         setFieldsToServerConfig()
     }
 
+
     private var selectedUri
-        get() = WsUrl(urlComboBox.selectedItem as String).origin
-        set(value) { setSelectedItem(value) }
+        get() = WsUrl(selectedItem).origin
+        set(value) {
+            setSelectedItem(value)
+        }
+
+    private val selectedItem get() = urlComboBox.selectedItem as String
 
     private fun testServerConnection() {
         if (RemoteServer.isRunning(selectedUri)) {
