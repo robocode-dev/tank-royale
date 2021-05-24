@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.gui.server
 
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.ui.MainWindowMenu
+import dev.robocode.tankroyale.gui.ui.server.ServerEventChannel
 import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
@@ -38,7 +38,8 @@ object ServerProcess {
         private set
 
     init {
-        MainWindowMenu.apply {
+        ServerEventChannel.apply {
+            onStartServer.subscribe(this) { start() }
             onStopServer.subscribe(this) { stop() }
             onRestartServer.subscribe(this) { restart() }
         }

@@ -18,8 +18,6 @@ object Client : AutoCloseable {
 
     // public events
     val onConnected = Event<Unit>()
-    val onDisconnected = Event<Unit>()
-    val onError = Event<Throwable>()
 
     val onBotListUpdate = Event<BotListUpdate>()
 
@@ -65,15 +63,12 @@ object Client : AutoCloseable {
         stopGame()
 
         if (isConnected) websocket.close()
-
-        onDisconnected.fire(Unit)
     }
 
     fun connect(url: String) {
         websocket = WebSocketClient(URI(url))
         with (websocket) { // not apply() here, as new websocket is owner of the events below
             onOpen.subscribe(websocket) { onConnected.fire(Unit) }
-            onClose.subscribe(websocket) { onDisconnected.fire(Unit) }
             onMessage.subscribe(websocket) { onMessage(it) }
             onError.subscribe(websocket) { onError.fire(it) }
 

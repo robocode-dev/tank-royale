@@ -4,7 +4,10 @@ import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.extensions.JMenuExt.addNewMenuItem
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.MENU
 import dev.robocode.tankroyale.gui.ui.server.Server
+import dev.robocode.tankroyale.gui.ui.server.ServerEventChannel
 import dev.robocode.tankroyale.gui.util.Event
+import java.awt.event.FocusEvent
+import java.awt.event.FocusListener
 import javax.swing.JMenu
 import javax.swing.JMenuBar
 import javax.swing.JMenuItem
@@ -17,9 +20,10 @@ object MainWindowMenu : JMenuBar() {
     val onShowServerLog = MenuEvent()
     val onServerConfig = MenuEvent()
     val onBotDirConfig = MenuEvent()
-    val onStartServer = MenuEvent()
-    val onRestartServer = MenuEvent()
-    val onStopServer = MenuEvent()
+
+    private val onStartServer = MenuEvent()
+    private val onRestartServer = MenuEvent()
+    private val onStopServer = MenuEvent()
 
     var startServerMenuItem: JMenuItem? = null
     var restartServerMenuItem: JMenuItem? = null
@@ -31,7 +35,12 @@ object MainWindowMenu : JMenuBar() {
             addSeparator()
             addNewMenuItem("item.setup_rules", onSetupRules)
         })
-        add(JMenu(MENU.get("menu.server")).apply {
+
+        val serverMenu = JMenu(MENU.get("menu.server")).apply {
+            onStartServer.subscribe(this) { ServerEventChannel.onStartServer.fire(Unit) }
+            onRestartServer.subscribe(this) { ServerEventChannel.onRestartServer.fire(Unit) }
+            onStopServer.subscribe(this) { ServerEventChannel.onStopServer.fire(Unit) }
+
             startServerMenuItem = addNewMenuItem("item.start_server", onStartServer)
             restartServerMenuItem = addNewMenuItem("item.restart_server", onRestartServer)
             stopServerMenuItem = addNewMenuItem("item.stop_server", onStopServer)
@@ -46,7 +55,9 @@ object MainWindowMenu : JMenuBar() {
             add(stopServerMenuItem)
 
             updateServerState()
-        })
+        }
+        add(serverMenu)
+
         add(JMenu(MENU.get("menu.config")).apply {
             addNewMenuItem("item.bot_dir_config", onBotDirConfig)
         })
@@ -59,8 +70,8 @@ object MainWindowMenu : JMenuBar() {
 
     private fun updateServerState() {
         startServerMenuItem?.isEnabled = !Server.isRunning()
-        restartServerMenuItem?.isEnabled = Server.isRunning()
-        stopServerMenuItem?.isEnabled = Server.isRunning()
+        restartServerMenuItem?.isEnabled = ServerProcess.isRunning()
+        stopServerMenuItem?.isEnabled = ServerProcess.isRunning()
     }
 }
 

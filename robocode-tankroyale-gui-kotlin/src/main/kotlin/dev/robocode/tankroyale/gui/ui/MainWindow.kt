@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
 import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
+import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.selection.NewBattleDialog

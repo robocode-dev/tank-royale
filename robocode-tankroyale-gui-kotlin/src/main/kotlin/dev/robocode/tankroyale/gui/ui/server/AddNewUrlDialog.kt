@@ -1,9 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.server
 
-import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
-import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.server.AddNewUrlDialog.onComplete
 import dev.robocode.tankroyale.gui.util.Event
@@ -34,10 +32,6 @@ object AddNewUrlDialog : JDialog(SelectServerDialog, ResourceBundles.UI_TITLES.g
                 urlTextField.text = ""
                 urlTextField.background = urlTextFieldDefaultBackground
             }
-        }
-
-        onClosing {
-            Client.close()
         }
     }
 }

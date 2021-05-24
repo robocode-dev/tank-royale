@@ -10,6 +10,12 @@ object Server {
 
     val onConnected = Event<Unit>()
 
+    init {
+        ServerEventChannel.onStartServer.subscribe(this) {
+            startServerProcess()
+        }
+    }
+
     fun isRunning() = ServerProcess.isRunning() || RemoteServer.isRunning()
 
     fun connectOrStart() {
