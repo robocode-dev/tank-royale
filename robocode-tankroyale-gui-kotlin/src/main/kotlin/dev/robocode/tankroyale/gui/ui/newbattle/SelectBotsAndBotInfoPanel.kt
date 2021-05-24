@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onSelection
 import net.miginfocom.swing.MigLayout
 import javax.swing.JPanel
 
-class NewBattlePanel : JPanel(MigLayout("fill")) {
+class SelectBotsAndBotInfoPanel : JPanel(MigLayout("fill")) {
 
     private val selectBotsPanel = SelectBotsPanel()
     private val botInfoPanel = BotInfoPanel()

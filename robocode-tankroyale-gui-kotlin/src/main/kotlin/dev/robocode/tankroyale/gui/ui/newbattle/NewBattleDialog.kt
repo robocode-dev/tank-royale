@@ -26,7 +26,7 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
 
         setLocationRelativeTo(null) // center on screen
 
-        val selectBotsAndStartPanel = SelectBotsAndStartPanel()
+        val selectBotsAndStartPanel = NewBattlePanel()
 
         contentPane.add(selectBotsAndStartPanel)
 
@@ -40,12 +40,12 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
     }
 }
 
-class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
+class NewBattlePanel : JPanel(MigLayout("fill")) {
     // Private events
     private val onStartBattle = Event<JButton>()
     private val onCancel = Event<JButton>()
 
-    private val selectPanel = NewBattlePanel()
+    private val selectPanel = SelectBotsAndBotInfoPanel()
     val gameTypeComboBox = GameTypeComboBox()
 
     private val botsDirectoryEntries: List<BotEntry> by lazy { BootstrapProcess.list() }
