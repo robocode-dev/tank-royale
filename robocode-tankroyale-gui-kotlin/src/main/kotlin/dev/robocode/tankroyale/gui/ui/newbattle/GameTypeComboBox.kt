@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.ui.selection
+package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.GamesSettings

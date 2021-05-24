@@ -12,7 +12,7 @@ import dev.robocode.tankroyale.gui.settings.MutableGameSetup
 import dev.robocode.tankroyale.gui.ui.GameConstants
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
-import dev.robocode.tankroyale.gui.ui.selection.GameTypeComboBox
+import dev.robocode.tankroyale.gui.ui.newbattle.GameTypeComboBox
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension

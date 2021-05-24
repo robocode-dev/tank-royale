@@ -1,11 +1,11 @@
-package dev.robocode.tankroyale.gui.ui.selection
+package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onSelection
 import net.miginfocom.swing.MigLayout
 import javax.swing.JPanel
 
-class SelectBotsWithBotInfoPanel : JPanel(MigLayout("fill")) {
+class NewBattlePanel : JPanel(MigLayout("fill")) {
 
     private val selectBotsPanel = SelectBotsPanel()
     private val botInfoPanel = BotInfoPanel()
@@ -19,11 +19,10 @@ class SelectBotsWithBotInfoPanel : JPanel(MigLayout("fill")) {
     val selectedBotListModel = selectBotsPanel.selectedBotListModel
 
     init {
+        add(selectBotsPanel, "center")
+
         val groupPanel = JPanel(MigLayout("fill"))
         groupPanel.add(botInfoPanel, "grow")
-
-        add(selectBotsPanel, "north")
-
         add(groupPanel, "south")
 
         botsDirectoryList.onSelection { botInfo -> botInfoPanel.updateBotInfo(botInfo as BotInfo) }

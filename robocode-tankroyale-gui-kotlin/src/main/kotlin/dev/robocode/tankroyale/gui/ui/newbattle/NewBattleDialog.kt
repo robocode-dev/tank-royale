@@ -1,14 +1,14 @@
-package dev.robocode.tankroyale.gui.ui.selection
+package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.gui.bootstrap.BotEntry
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
-import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onChanged
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.util.Event
@@ -45,7 +45,8 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
     private val onStartBattle = Event<JButton>()
     private val onCancel = Event<JButton>()
 
-    private val selectPanel = SelectBotsWithBotInfoPanel()
+    private val selectPanel = NewBattlePanel()
+    val gameTypeComboBox = GameTypeComboBox()
 
     private val botsDirectoryEntries: List<BotEntry> by lazy { BootstrapProcess.list() }
 
@@ -61,8 +62,11 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
         val startBattleButton: JButton
 
         buttonPanel.apply {
-            startBattleButton = addButton("start_battle", onStartBattle, "tag ok")
-            addButton("cancel", onCancel, "tag cancel")
+            addLabel("game_type")
+            add(gameTypeComboBox)
+            add(JPanel())
+            startBattleButton = addButton("start_battle", onStartBattle)
+            addButton("cancel", onCancel)
         }
         startBattleButton.isEnabled = false
 
@@ -118,7 +122,7 @@ class SelectBotsAndStartPanel : JPanel(MigLayout("fill")) {
         isVisible = true
 
         val botAddresses = selectPanel.selectedBotListModel.list().map { b -> b.botAddress }
-        Client.startGame(GamesSettings.games[ServerProcess.gameType.displayName]!!, botAddresses.toSet())
+        Client.startGame(GamesSettings.games[gameTypeComboBox.selectedGameType]!!, botAddresses.toSet())
 
         NewBattleDialog.dispose()
     }
