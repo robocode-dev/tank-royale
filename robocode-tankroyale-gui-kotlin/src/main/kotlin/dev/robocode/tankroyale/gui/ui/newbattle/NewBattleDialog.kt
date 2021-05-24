@@ -4,7 +4,9 @@ import dev.robocode.tankroyale.gui.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.gui.bootstrap.BotEntry
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
+import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.GamesSettings
+import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
@@ -46,7 +48,7 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
     private val onCancel = Event<JButton>()
 
     private val selectPanel = SelectBotsAndBotInfoPanel()
-    val gameTypeComboBox = GameTypeComboBox()
+    private val gameTypeComboBox = GameTypeComboBox()
 
     private val botsDirectoryEntries: List<BotEntry> by lazy { BootstrapProcess.list() }
 
@@ -80,6 +82,13 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
 
         Client.onBotListUpdate.subscribe(this) { updateJoinedBots() }
         updateJoinedBots()
+
+        gameTypeComboBox.addActionListener {
+            ServerSettings.apply {
+                gameType = GameType.from(gameTypeComboBox.selectedGameType)
+                save()
+            }
+        }
     }
 
     fun clearSelectedBots() {

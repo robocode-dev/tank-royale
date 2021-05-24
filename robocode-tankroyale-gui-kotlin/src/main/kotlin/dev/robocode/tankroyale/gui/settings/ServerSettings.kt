@@ -13,6 +13,7 @@ object ServerSettings : PropertiesStore("Robocode Server Config", "server.proper
 
     private const val SERVER_URL_PROPERTY = "server.url"
     private const val USER_URLS_PROPERTY = "user.urls"
+    private const val GAME_TYPE = "game.type"
 
     init {
         RegisterWsProtocol // work-around for ws:// with URI class
@@ -42,6 +43,15 @@ object ServerSettings : PropertiesStore("Robocode Server Config", "server.proper
             val list = ArrayList(value)
             list.remove(DEFAULT_URL)
             properties.setProperty(USER_URLS_PROPERTY, list.joinToString(separator = ","))
+        }
+
+    var gameType: GameType
+        get() {
+            val displayName = properties.getProperty(GAME_TYPE, GameType.CLASSIC.displayName)
+            return GameType.from(displayName)
+        }
+        set(value) {
+            properties.setProperty(GAME_TYPE, value.displayName)
         }
 
     init {
