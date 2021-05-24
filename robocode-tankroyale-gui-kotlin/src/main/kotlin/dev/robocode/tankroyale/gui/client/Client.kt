@@ -2,7 +2,9 @@ package dev.robocode.tankroyale.gui.client
 
 import dev.robocode.tankroyale.gui.model.*
 import dev.robocode.tankroyale.gui.server.ServerProcess
+import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
+import dev.robocode.tankroyale.gui.ui.server.ServerEventChannel
 import dev.robocode.tankroyale.gui.ui.tps.TpsEventChannel
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.Version
@@ -13,7 +15,18 @@ import java.util.*
 object Client : AutoCloseable {
 
     init {
-        TpsEventChannel.onTpsChanged.subscribe(this) { changeTps(it.tps) }
+        TpsEventChannel.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
+
+        ServerEventChannel.apply {
+            onRestartServer.subscribe(Client) {
+                isGamePaused = false
+                isGameRunning = false
+            }
+            onStopServer.subscribe(Client) {
+                isGamePaused = false
+                isGameRunning = false
+            }
+        }
     }
 
     // public events
@@ -55,7 +68,7 @@ object Client : AutoCloseable {
 
     private var gameTypes = setOf<String>()
 
-    private var lastStartGame: StartGame? = null
+    private var lastStartGame: StartGame? = null // FIXME: Send real restart command
 
     private var tps: Int? = null
 
@@ -76,15 +89,16 @@ object Client : AutoCloseable {
         }
     }
 
-    fun startGame(gameSetup: IGameSetup, botAddresses: Set<BotAddress>) {
+    fun startGame(botAddresses: Set<BotAddress>) {
         if (isGameRunning) {
             stopGame()
         }
+
+        val gameSetup = GamesSettings.games[ServerSettings.gameType.displayName]!!
+
         if (isConnected) {
             lastStartGame = StartGame(gameSetup.toGameSetup(), botAddresses)
-            val startGame = lastStartGame
-
-            websocket.send(startGame!!)
+            websocket.send(lastStartGame!!)
         }
     }
 
@@ -96,7 +110,7 @@ object Client : AutoCloseable {
     }
 
     fun restartGame() {
-        resumeGame()
+        resumeGame() // FIXME: Send real restart command
         stopGame()
         websocket.send(lastStartGame!!)
     }

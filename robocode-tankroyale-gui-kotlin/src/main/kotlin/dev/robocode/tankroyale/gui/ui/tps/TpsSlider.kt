@@ -35,7 +35,7 @@ object TpsSlider : JSlider() {
 
         addChangeListener(TpsChangeListener())
 
-        TpsEventChannel.onTpsChanged.subscribe(this) { tpsEvent -> setTps(tpsEvent.tps) }
+        TpsEventChannel.onTpsChanged.subscribe(TpsSlider) { tpsEvent -> setTps(tpsEvent.tps) }
 
         setTps(30) // FIXME: from settings
     }

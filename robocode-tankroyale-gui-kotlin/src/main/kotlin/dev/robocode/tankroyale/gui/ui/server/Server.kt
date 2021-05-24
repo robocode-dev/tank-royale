@@ -5,13 +5,14 @@ import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.util.Event
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 object Server {
 
     val onConnected = Event<Unit>()
 
     init {
-        ServerEventChannel.onStartServer.subscribe(this) {
+        ServerEventChannel.onStartServer.subscribe(Server) {
             startServerProcess()
         }
     }
@@ -35,7 +36,7 @@ object Server {
             onStarted.subscribe(Server) { latch.countDown() }
             start()
         }
-        latch.await() // wait till server has started
+        latch.await(200, TimeUnit.MILLISECONDS) // wait till server has started
     }
 
     private fun connectToServer() {

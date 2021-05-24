@@ -56,7 +56,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private var changed = false
 
     private val gameSetup: MutableGameSetup
-        get() = GamesSettings.games[gameTypeComboBox.selectedGameType]!!
+        get() = GamesSettings.games[gameTypeComboBox.selectedGameType.displayName]!!
 
     private var lastGameSetup: IGameSetup = gameSetup.copy()
 
@@ -142,7 +142,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             SetupRulesDialog.dispose()
         }
         onResetToDefault.subscribe(this) {
-            val selectedGameType = gameTypeComboBox.selectedGameType
+            val selectedGameType = gameTypeComboBox.selectedGameType.displayName
             val default: MutableGameSetup? = GamesSettings.defaultGameSetup[selectedGameType]?.toMutableGameSetup()
             if (default != null) {
                 GamesSettings.games[selectedGameType]?.copy(default)

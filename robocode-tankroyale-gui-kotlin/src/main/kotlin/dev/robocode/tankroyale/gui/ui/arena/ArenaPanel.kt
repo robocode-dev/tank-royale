@@ -51,9 +51,9 @@ object ArenaPanel : JPanel() {
         })
 
         Client.apply {
-            onGameStarted.subscribe(this) { onGameStarted(it) }
-            onGameEnded.subscribe(this) { onGameEnded(it) }
-            onTickEvent.subscribe(this) { onTick(it) }
+            onGameStarted.subscribe(ArenaPanel) { onGameStarted(it) }
+            onGameEnded.subscribe(ArenaPanel) { onGameEnded(it) }
+            onTickEvent.subscribe(ArenaPanel) { onTick(it) }
         }
     }
 

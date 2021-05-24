@@ -76,16 +76,16 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
             startBattleButton.isEnabled = selectPanel.selectedBotListModel.size >= 2
         }
 
-        onStartBattle.subscribe(this) { startGame() }
+        onStartBattle.subscribe(NewBattleDialog) { startGame() }
 
-        onCancel.subscribe(this) { NewBattleDialog.dispose() }
+        onCancel.subscribe(NewBattleDialog) { NewBattleDialog.dispose() }
 
-        Client.onBotListUpdate.subscribe(this) { updateJoinedBots() }
+        Client.onBotListUpdate.subscribe(NewBattleDialog) { updateJoinedBots() }
         updateJoinedBots()
 
         gameTypeComboBox.addActionListener {
             ServerSettings.apply {
-                gameType = GameType.from(gameTypeComboBox.selectedGameType)
+                gameType = gameTypeComboBox.selectedGameType
                 save()
             }
         }
@@ -131,7 +131,7 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
         isVisible = true
 
         val botAddresses = selectPanel.selectedBotListModel.list().map { b -> b.botAddress }
-        Client.startGame(GamesSettings.games[gameTypeComboBox.selectedGameType]!!, botAddresses.toSet())
+        Client.startGame(botAddresses.toSet())
 
         NewBattleDialog.dispose()
     }

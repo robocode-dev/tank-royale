@@ -39,9 +39,9 @@ object ServerProcess {
 
     init {
         ServerEventChannel.apply {
-            onStartServer.subscribe(this) { start() }
-            onStopServer.subscribe(this) { stop() }
-            onRestartServer.subscribe(this) { restart() }
+            onStartServer.subscribe(ServerProcess) { start() }
+            onStopServer.subscribe(ServerProcess) { stop() }
+            onRestartServer.subscribe(ServerProcess) { restart() }
         }
     }
 
@@ -102,7 +102,7 @@ object ServerProcess {
         onStopped.fire(Unit)
     }
 
-    fun restart() {
+    private fun restart() {
         stop()
         start(gameType, port)
     }

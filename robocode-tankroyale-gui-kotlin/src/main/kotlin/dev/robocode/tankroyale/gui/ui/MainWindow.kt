@@ -38,17 +38,17 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
         setIconImage(iconImage.image)
 
         MainWindowMenu.apply {
-            onStartBattle.invokeLater(this) { startBattle() }
-            onSetupRules.invokeLater(this) { SetupRulesDialog.isVisible = true }
-            onShowServerLog.invokeLater(this) { ServerLogWindow.isVisible = true }
-            onServerConfig.invokeLater(this) { SelectServerDialog.isVisible = true }
-            onBotDirConfig.invokeLater(this) { BotDirectoryConfigDialog.isVisible = true }
+            onStartBattle.invokeLater(MainWindow) { startBattle() }
+            onSetupRules.invokeLater(MainWindow) { SetupRulesDialog.isVisible = true }
+            onShowServerLog.invokeLater(MainWindow) { ServerLogWindow.isVisible = true }
+            onServerConfig.invokeLater(MainWindow) { SelectServerDialog.isVisible = true }
+            onBotDirConfig.invokeLater(MainWindow) { BotDirectoryConfigDialog.isVisible = true }
         }
 
         Client.apply {
-            onGameStarted.subscribe(this) { showBattle() }
-            onGameEnded.subscribe(this) { showLogo() }
-            onGameAborted.subscribe(this) { showLogo() }
+            onGameStarted.subscribe(MainWindow) { showBattle() }
+            onGameEnded.subscribe(MainWindow) { showLogo() }
+            onGameAborted.subscribe(MainWindow) { showLogo() }
         }
 
         onClosing {
@@ -59,7 +59,7 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
 
     private fun startBattle() {
         Server.apply {
-            onConnected.subscribe(this) { NewBattleDialog.isVisible = true }
+            onConnected.subscribe(MainWindow) { NewBattleDialog.isVisible = true }
             connectOrStart()
         }
     }

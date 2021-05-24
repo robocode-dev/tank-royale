@@ -6,8 +6,6 @@ import dev.robocode.tankroyale.gui.ui.ResourceBundles.MENU
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEventChannel
 import dev.robocode.tankroyale.gui.util.Event
-import java.awt.event.FocusEvent
-import java.awt.event.FocusListener
 import javax.swing.JMenu
 import javax.swing.JMenuBar
 import javax.swing.JMenuItem
@@ -25,9 +23,9 @@ object MainWindowMenu : JMenuBar() {
     private val onRestartServer = MenuEvent()
     private val onStopServer = MenuEvent()
 
-    var startServerMenuItem: JMenuItem? = null
-    var restartServerMenuItem: JMenuItem? = null
-    var stopServerMenuItem: JMenuItem? = null
+    private var startServerMenuItem: JMenuItem? = null
+    private var restartServerMenuItem: JMenuItem? = null
+    private var stopServerMenuItem: JMenuItem? = null
 
     init {
         add(JMenu(MENU.get("menu.battle")).apply {
@@ -37,9 +35,9 @@ object MainWindowMenu : JMenuBar() {
         })
 
         val serverMenu = JMenu(MENU.get("menu.server")).apply {
-            onStartServer.subscribe(this) { ServerEventChannel.onStartServer.fire(Unit) }
-            onRestartServer.subscribe(this) { ServerEventChannel.onRestartServer.fire(Unit) }
-            onStopServer.subscribe(this) { ServerEventChannel.onStopServer.fire(Unit) }
+            onStartServer.invokeLater(this) { ServerEventChannel.onStartServer.fire(Unit) }
+            onRestartServer.invokeLater(this) { ServerEventChannel.onRestartServer.fire(Unit) }
+            onStopServer.invokeLater(this) { ServerEventChannel.onStopServer.fire(Unit) }
 
             startServerMenuItem = addNewMenuItem("item.start_server", onStartServer)
             restartServerMenuItem = addNewMenuItem("item.restart_server", onRestartServer)
@@ -63,8 +61,8 @@ object MainWindowMenu : JMenuBar() {
         })
 
         ServerProcess.apply {
-            onStarted.subscribe(this) { updateServerState() }
-            onStopped.subscribe(this) { updateServerState() }
+            onStarted.subscribe(MainWindowMenu) { updateServerState() }
+            onStopped.subscribe(MainWindowMenu) { updateServerState() }
         }
     }
 
