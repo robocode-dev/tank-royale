@@ -68,7 +68,7 @@ object Client : AutoCloseable {
 
     private var gameTypes = setOf<String>()
 
-    private var lastStartGame: StartGame? = null // FIXME: Send real restart command
+    private var lastStartGame: StartGame? = null
 
     private var tps: Int? = null
 
@@ -110,7 +110,7 @@ object Client : AutoCloseable {
     }
 
     fun restartGame() {
-        resumeGame() // FIXME: Send real restart command
+        resumeGame()
         stopGame()
         websocket.send(lastStartGame!!)
     }
