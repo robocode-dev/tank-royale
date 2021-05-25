@@ -3,9 +3,11 @@ package dev.robocode.tankroyale.gui.ui.server
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.settings.ServerSettings
+import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.util.Event
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import javax.swing.JOptionPane.*
 
 object Server {
 
@@ -21,8 +23,11 @@ object Server {
 
     fun connectOrStart() {
         if (Client.isGameRunning) {
-            throw UnsupportedOperationException(
-                "Game is still running. Show dialog to show if the user wants to abort the running game.")
+            if (showStopGameDialog() == NO_OPTION) {
+                return
+            } else {
+                Client.stopGame()
+            }
         }
         if (!isRunning()) {
             startServerProcess()
@@ -45,4 +50,10 @@ object Server {
             connect(WsUrl(ServerSettings.serverUrl).origin)
         }
     }
+
+    private fun showStopGameDialog(): Int = showConfirmDialog(null,
+        ResourceBundles.MESSAGES.get("stop_battle"),
+        ResourceBundles.UI_TITLES.get("warning"),
+        YES_NO_OPTION
+    )
 }
