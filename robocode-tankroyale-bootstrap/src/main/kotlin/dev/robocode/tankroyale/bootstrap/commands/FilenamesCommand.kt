@@ -4,7 +4,10 @@ import dev.robocode.tankroyale.bootstrap.model.BotEntry
 import java.nio.file.Files
 import java.nio.file.Files.list
 import java.nio.file.Path
+import java.util.*
 import java.util.function.Predicate
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 class FilenamesCommand(private val botPaths: List<Path>): Command(botPaths) {
 
@@ -40,7 +43,7 @@ private class HasFileExtensions(private val fileExtensions: Array<String>) : Pre
     override fun test(path: Path): Boolean {
         if (Files.isDirectory(path)) return false
         fileExtensions.forEach { ext ->
-            if (path.toString().toLowerCase().endsWith(".${ext.toLowerCase()}")) return true
+            if (path.toString().lowercase().endsWith(".${ext.lowercase()}")) return true
         }
         return false
     }

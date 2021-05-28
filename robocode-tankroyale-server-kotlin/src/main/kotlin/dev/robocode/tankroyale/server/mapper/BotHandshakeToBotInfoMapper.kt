@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.schema.BotHandshake
 import dev.robocode.tankroyale.schema.BotInfo
-import java.util.*
 
 object BotHandshakeToBotInfoMapper {
     fun map(botHandshake: BotHandshake, hostName: String, port: Int): BotInfo {
@@ -10,10 +9,10 @@ object BotHandshakeToBotInfoMapper {
         botHandshake.apply {
             botInfo.name = name
             botInfo.version = version
-            botInfo.author = author
+            botInfo.authors = authors.toList()
             botInfo.description = description
             botInfo.url = url
-            botInfo.countryCode = countryCode
+            botInfo.countryCodes = countryCodes.toList()
             botInfo.gameTypes = gameTypes.toList()
             botInfo.platform = platform
             botInfo.programmingLang = programmingLang

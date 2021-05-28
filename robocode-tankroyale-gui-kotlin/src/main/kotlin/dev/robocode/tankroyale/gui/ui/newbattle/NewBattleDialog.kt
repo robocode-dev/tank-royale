@@ -4,8 +4,6 @@ import dev.robocode.tankroyale.gui.bootstrap.BootstrapProcess
 import dev.robocode.tankroyale.gui.bootstrap.BotEntry
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
-import dev.robocode.tankroyale.gui.settings.GameType
-import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
@@ -104,10 +102,10 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
                 BotInfo(
                     info.name,
                     info.version,
-                    info.author,
+                    info.authors,
                     info.description,
                     info.url,
-                    info.countryCode,
+                    info.countryCodes,
                     info.gameTypes,
                     info.platform,
                     info.programmingLang,

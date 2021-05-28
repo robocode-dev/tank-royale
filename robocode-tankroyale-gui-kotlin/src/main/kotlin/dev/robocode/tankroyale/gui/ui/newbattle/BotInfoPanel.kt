@@ -11,10 +11,10 @@ class BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
 
     private val nameTextField = JNonEditableTextField()
     private val versionTextField = JNonEditableTextField()
-    private val authorTextField = JNonEditableTextField()
+    private val authorsTextField = JNonEditableTextField()
     private val descriptionTextField = JTextArea()
     private val urlTextPane = JNonEditableHtmlPane()
-    private val countryCodeTextPane = JNonEditableHtmlPane()
+    private val countryCodesTextPane = JNonEditableHtmlPane()
     private val gameTypesTextField = JNonEditableTextField()
     private val platformTextField = JNonEditableTextField()
     private val programmingLangTextField = JNonEditableTextField()
@@ -28,12 +28,12 @@ class BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
         addLabel("bot_info.version")
         add(versionTextField, "growx, wrap")
 
-        addLabel("bot_info.author")
-        add(authorTextField, "growx, wrap")
+        addLabel("bot_info.authors")
+        add(authorsTextField, "growx, wrap")
 
-        addLabel("bot_info.country_code")
-        add(countryCodeTextPane, "growx, wrap")
-        countryCodeTextPane.minimumSize = Dimension(100, 24)
+        addLabel("bot_info.country_codes")
+        add(countryCodesTextPane, "growx, wrap")
+        countryCodesTextPane.minimumSize = Dimension(100, 24)
 
         addLabel("bot_info.description")
         add(descriptionTextField, "growx, wrap")
@@ -60,11 +60,11 @@ class BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
     fun updateBotInfo(botInfo: BotInfo?) {
         nameTextField.text = botInfo?.name
         versionTextField.text = botInfo?.version
-        authorTextField.text = botInfo?.author
+        authorsTextField.text = botInfo?.authors?.joinToString(separator = ", ") ?: ""
         descriptionTextField.text = botInfo?.description?.let { truncateDescriptionLines(it) } ?: ""
-        urlTextPane.text = botInfo?.url?.let { generateUrlHtml(botInfo.url) } ?: " "
-        gameTypesTextField.text = if (botInfo != null) gameTypesToString(botInfo.gameTypes) else ""
-        countryCodeTextPane.text = botInfo?.countryCode?.let { generateCountryHtml(botInfo.countryCode) } ?: ""
+        urlTextPane.text = botInfo?.url?.let { generateUrlHtml(botInfo.url) } ?: ""
+        gameTypesTextField.text = botInfo?.gameTypes?.joinToString(separator = ", ") ?: ""
+        countryCodesTextPane.text = botInfo?.countryCodes?.let { generateCountryHtml(botInfo.countryCodes) } ?: ""
         platformTextField.text = botInfo?.platform
         programmingLangTextField.text = botInfo?.programmingLang
     }
@@ -83,25 +83,27 @@ class BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
         return desc
     }
 
-    private fun gameTypesToString(gameTypes: Set<String>): String = gameTypes.joinToString(separator = ", ")
-
     private fun generateUrlHtml(url: String): String =
         "<html><body style=\"font-family: sans-serif;font-size: ${font.size}\"><a href=\"${url}\">${url}</a></body></html>"
+
+    private fun generateCountryHtml(countryCodes: List<String>): String {
+        var html = """
+              <table cellspacing="0" cellpadding="0" border="0">
+                <tr>"""
+        countryCodes.forEach { html += generateCountryHtml(it) + " " }
+        html += """
+                </tr>
+              </table>
+            </html>""".trimIndent()
+        return html
+    }
 
     private fun generateCountryHtml(countryCode: String): String {
         val countryName = Locale("", countryCode).displayCountry
 
         return """
-            <html>
-              <table cellspacing="0" cellpadding="0" border="0">
-                <tr>
-                  <td style="font-family: sans-serif; font-size: 10">${countryName} (${countryCode})</td>&nbsp;
-                  <td>
-                    <img width="20" height="15" src="https://www.countryflags.io/${countryCode}/flat/16.png">
-                  </td>
-                </tr>
-              </table>
-            </html>
+            <td style="font-family: sans-serif; font-size: 10">${countryName} (${countryCode})&nbsp;</td>
+            <td><img width="20" height="15" src="https://www.countryflags.io/${countryCode}/flat/16.png">&nbsp;&nbsp;</td>
         """.trimIndent()
     }
 

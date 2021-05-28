@@ -5,12 +5,12 @@ val title = "Robocode Tank Royale Server"
 description = "Server for running Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
-version = "0.8.7"
+version = "0.8.8"
 
 
 plugins {
     application
-    kotlin("jvm") version "1.5.0"
+    kotlin("jvm") version "1.5.20-M1"
     `maven-publish`
     idea
     id("com.github.ben-manes.versions") version "0.38.0"
@@ -37,9 +37,9 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.20-M1")
 
-    implementation("dev.robocode.tankroyale:robocode-tankroyale-schema:0.7.0")
+    implementation("dev.robocode.tankroyale:robocode-tankroyale-schema:0.8.0")
     implementation("org.danilopianini:gson-extras:0.2.2")
 
     implementation("org.java-websocket:Java-WebSocket:1.5.2")
@@ -52,7 +52,7 @@ dependencies {
     implementation("ch.qos.logback:logback-core:1.3.0-alpha5")
     implementation("org.slf4j:slf4j-api:2.0.0-alpha1")
 
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:4.5.0.RC1")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:4.6.0")
     testImplementation("io.mockk:mockk:1.11.0")
 }
 
@@ -66,6 +66,7 @@ tasks.processResources {
 }
 
 val fatJar = task<Jar>("fatJar") {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes["Implementation-Title"] = title
         attributes["Implementation-Version"] = archiveVersion
@@ -77,7 +78,6 @@ val fatJar = task<Jar>("fatJar") {
     )
     exclude("*.kotlin_metadata")
     with(tasks["jar"] as CopySpec)
-    duplicatesStrategy = DuplicatesStrategy.WARN
 }
 
 publishing {

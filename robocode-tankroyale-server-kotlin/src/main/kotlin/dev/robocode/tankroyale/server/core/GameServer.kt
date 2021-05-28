@@ -175,9 +175,9 @@ class GameServer(
                 name = handshake!!.name
                 version = handshake.version
                 description = handshake.description
-                author = handshake.author
+                authors = handshake.authors
                 url = handshake.url
-                countryCode = handshake.countryCode
+                countryCodes = handshake.countryCodes
                 gameTypes = handshake.gameTypes
                 platform = handshake.platform
                 programmingLang = handshake.programmingLang

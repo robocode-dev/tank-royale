@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Robocode.TankRoyale.BotApi.Util;
 
 namespace Robocode.TankRoyale.BotApi.Internal
 {
@@ -17,8 +18,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
     /// <summary>Name of environment variable for bot version.</summary>
     internal const string BotVersion = "BOT_VERSION";
 
-    /// <summary>Name of environment variable for bot author.</summary>
-    internal const string BotAuthor = "BOT_AUTHOR";
+    /// <summary>Name of environment variable for bot author(s).</summary>
+    internal const string BotAuthors = "BOT_AUTHORS";
 
     /// <summary>Name of environment variable for bot description.</summary>
     internal const string BotDescription = "BOT_DESCRIPTION";
@@ -26,10 +27,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
     /// <summary>Name of environment variable for bot url.</summary>
     internal const string BotUrl = "BOT_URL";
 
-    /// <summary>Name of environment variable for bot country code.</summary>
-    internal const string BotCountryCode = "BOT_COUNTRY_CODE";
+    /// <summary>Name of environment variable for bot country code(s).</summary>
+    internal const string BotCountryCodes = "BOT_COUNTRY_CODES";
 
-    /// <summary>Name of environment variable for bot game types.</summary>
+    /// <summary>Name of environment variable for bot game type(s).</summary>
     internal const string BotGameTypes = "BOT_GAME_TYPES";
 
     /// <summary>Name of environment variable for bot platform.</summary>
@@ -38,7 +39,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     /// <summary>Name of environment variable for bot programming language.</summary>
     internal const string BotProgLang = "BOT_PROG_LANG";
 
-    internal const string NoEnvValue = "No value for environment variable: ";
+    internal const string IncorrectEnvValue = "Incorrect or missing value for environment variable: ";
 
     /// <summary>
     /// Gets the bot info from environment variables.
@@ -48,27 +49,27 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       if (string.IsNullOrWhiteSpace(GetBotName()))
       {
-        throw new BotException(NoEnvValue + BotName);
+        throw new BotException(IncorrectEnvValue + BotName);
       }
       if (string.IsNullOrWhiteSpace(GetBotVersion()))
       {
-        throw new BotException(NoEnvValue + BotVersion);
+        throw new BotException(IncorrectEnvValue + BotVersion);
       }
-      if (string.IsNullOrWhiteSpace(GetBotAuthor()))
+      if (GetBotAuthors().IsNullOrEmptyOrContainsBlanks())
       {
-        throw new BotException(NoEnvValue + BotAuthor);
+        throw new BotException(IncorrectEnvValue + BotAuthors);
       }
       if (GetBotGameTypes().Count == 0)
       {
-        throw new BotException(NoEnvValue + BotGameTypes);
+        throw new BotException(IncorrectEnvValue + BotGameTypes);
       }
       return new BotInfo(
         GetBotName(),
         GetBotVersion(),
-        GetBotAuthor(),
+        GetBotAuthors(),
         GetBotDescription(),
         GetBotUrl(),
-        GetBotCountryCode(),
+        GetBotCountryCodes(),
         GetBotGameTypes(),
         GetBotPlatform(),
         GetBotProgrammingLang()
@@ -103,12 +104,12 @@ namespace Robocode.TankRoyale.BotApi.Internal
     }
 
     /// <summary>
-    /// Gets the bot author from environment variable.
+    /// Gets the bot author(s) from environment variable.
     /// </summary>
-    /// <returns>The bot author.</returns>
-    internal static string GetBotAuthor()
+    /// <returns>The bot author(s).</returns>
+    internal static ICollection<string> GetBotAuthors()
     {
-      return Environment.GetEnvironmentVariable(BotAuthor);
+      return GetEnvVarAsList(BotAuthors);
     }
 
     /// <summary>
@@ -130,26 +131,21 @@ namespace Robocode.TankRoyale.BotApi.Internal
     }
 
     /// <summary>
-    /// Gets the bot country code from environment variable.
+    /// Gets the bot country code(s) from environment variable.
     /// </summary>
-    /// <returns>The bot country code.</returns>
-    internal static string GetBotCountryCode()
+    /// <returns>The bot country code(s).</returns>
+    internal static ICollection<string> GetBotCountryCodes()
     {
-      return Environment.GetEnvironmentVariable(BotCountryCode);
+      return GetEnvVarAsList(BotCountryCodes);
     }
 
     /// <summary>
-    /// Gets the list of game types supported by the bot from environment variable.
+    /// Gets the list of game type(s) supported by the bot from environment variable.
     /// </summary>
-    /// <returns>The list of game types supported.</returns>
+    /// <returns>The list of game type(s) supported.</returns>
     internal static ICollection<string> GetBotGameTypes()
     {
-      var gameTypes = Environment.GetEnvironmentVariable(BotGameTypes);
-      if (string.IsNullOrWhiteSpace(gameTypes))
-      {
-        return new List<string>();
-      }
-      return new List<string>(gameTypes.Split("\\s*,\\s*"));
+      return GetEnvVarAsList(BotGameTypes);
     }
 
     /// <summary>
@@ -168,6 +164,16 @@ namespace Robocode.TankRoyale.BotApi.Internal
     internal static string GetBotProgrammingLang()
     {
       return Environment.GetEnvironmentVariable(BotProgLang);
+    }
+
+    static ICollection<string> GetEnvVarAsList(string envVarName)
+    {
+      var value = Environment.GetEnvironmentVariable(BotGameTypes);
+      if (string.IsNullOrWhiteSpace(value))
+      {
+        return new List<string>();
+      }
+      return new List<string>(value.Split("\\s*,\\s*"));
     }
   }
 }

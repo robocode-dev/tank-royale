@@ -5,4 +5,5 @@ package dev.robocode.tankroyale.server.model
  * BulletId.
  * @property value ID value of the bullet.
  */
-inline class BulletId(val value: Int)
+@JvmInline
+value class BulletId(val value: Int)

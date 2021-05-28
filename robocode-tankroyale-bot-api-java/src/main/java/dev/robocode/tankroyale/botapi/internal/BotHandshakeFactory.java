@@ -13,10 +13,10 @@ final class BotHandshakeFactory {
     handshake.set$type(BotHandshake.$type.BOT_HANDSHAKE);
     handshake.setName(botInfo.getName());
     handshake.setVersion(botInfo.getVersion());
-    handshake.setAuthor(botInfo.getAuthor());
+    handshake.setAuthors(new ArrayList<>(botInfo.getAuthors()));
     handshake.setDescription(botInfo.getDescription());
     handshake.setUrl(botInfo.getUrl());
-    handshake.setCountryCode(botInfo.getCountryCode());
+    handshake.setCountryCodes(new ArrayList<>(botInfo.getCountryCodes()));
     handshake.setGameTypes(new ArrayList<>(botInfo.getGameTypes()));
     handshake.setPlatform(botInfo.getPlatform());
     handshake.setProgrammingLang(botInfo.getProgrammingLang());

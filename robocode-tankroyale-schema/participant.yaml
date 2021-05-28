@@ -11,29 +11,33 @@ properties:
   version:
     description: Bot version, e.g. 1.0
     type: string
-  author:
-    description: Author name, e.g. John Doe (john_doe@somewhere.net)
-    type: string
+  authors:
+    description: Name of authors, e.g. John Doe (john_doe@somewhere.net)
+    type: array
+    items:
+      type: string
   description:
     decription: Short description of the bot, preferable a one-liner
     type: string
   url:
     description: URL to a home page for the bot
     type: string
-  countryCode:
-    description: 2-letter country code defined by ISO 3166-1, e.g. "UK"
-    type: string
-    pattern: /^[a-z]{2}$/ig
+  countryCodes:
+    description: 2-letter country code(s) defined by ISO 3166-1, e.g. "UK"
+    type: array
+    items:
+      type: string
+      pattern: /^[a-z]{2}$/ig
   gameTypes:
-    description: Game types supported by this bot (defined elsewhere), e.g. "melee" and "1v1"
+    description: Game types supported by this bot (defined elsewhere), e.g. "classic", "melee" and "1v1"
     type: array
     items:
       type: string
   platform:
-    description: Platform used for running the bot, e.g. OpenJDK 11 or .NET Core 3
+    description: Platform used for running the bot, e.g. OpenJDK 16 or .NET 5
     type: string
   programmingLang:
-    description: Language used for programming the bot, e.g. Java or C#
+    description: Language used for programming the bot, e.g. Java 16 or C# 9.0
     type: string
 required:
   - name

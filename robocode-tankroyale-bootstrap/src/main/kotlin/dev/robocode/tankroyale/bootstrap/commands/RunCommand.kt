@@ -10,8 +10,10 @@ import java.lang.Thread.sleep
 import java.nio.file.Files
 import java.nio.file.Files.list
 import java.nio.file.Path
+import java.util.*
 import java.util.function.Predicate
 import java.util.stream.Collectors.toList
+import kotlin.collections.ArrayList
 
 class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
 
@@ -25,7 +27,7 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
         // Start up the bots provided with the input list
         filenames.forEach { filename -> addBotProcess(filename, processes) }
 
-        // Add new bots from the stdin or terminate if blank line is provided
+        // Add new bots from the std-in or terminate if blank line is provided
         do {
             val filename = readLine()?.trim()
             if (filename != null && filename.isBlank()) {
@@ -73,8 +75,7 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
     }
 
     private fun createProcessBuilder(command: String): ProcessBuilder {
-        val cmd = command.toLowerCase()
-
+        val cmd = command.lowercase()
         return when {
             cmd.endsWith(".bat") -> // handle Batch script
                 ProcessBuilder("cmd.exe", "/c \"$command\"")
@@ -153,10 +154,10 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
             setEnvVar(envMap, Env.SERVER_URL, System.getProperty("server.url"))
             setEnvVar(envMap, Env.BOT_NAME, botInfo.name)
             setEnvVar(envMap, Env.BOT_VERSION, botInfo.version)
-            setEnvVar(envMap, Env.BOT_AUTHOR, botInfo.author)
+            setEnvVar(envMap, Env.BOT_AUTHOR, botInfo.authors.joinToString())
             setEnvVar(envMap, Env.BOT_DESCRIPTION, botInfo.description)
             setEnvVar(envMap, Env.BOT_URL, botInfo.url)
-            setEnvVar(envMap, Env.BOT_COUNTRY_CODE, botInfo.countryCode)
+            setEnvVar(envMap, Env.BOT_COUNTRY_CODE, botInfo.countryCodes.joinToString())
             setEnvVar(envMap, Env.BOT_GAME_TYPES, botInfo.gameTypes.joinToString())
             setEnvVar(envMap, Env.BOT_PLATFORM, botInfo.platform)
             setEnvVar(envMap, Env.BOT_PROG_LANG, botInfo.programmingLang)
@@ -178,9 +179,9 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
 internal class IsBotFile(private val botName: String) : Predicate<Path> {
 
     override fun test(path: Path): Boolean {
-        val filenameLC = path.fileName.toString().toLowerCase()
-        val botNameLC = botName.toLowerCase()
+        val filename = path.fileName.toString().lowercase()
+        val botName = botName.lowercase()
 
-        return filenameLC == botNameLC || filenameLC.startsWith("$botNameLC.")
+        return filename == botName || filename.startsWith("$botName.")
     }
 }

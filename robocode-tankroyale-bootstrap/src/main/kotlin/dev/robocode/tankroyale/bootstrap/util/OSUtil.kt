@@ -12,7 +12,7 @@ object OSUtil {
 
     fun getOsType(): OSType {
         if (detectedOS == null) {
-            val os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH)
+            val os = System.getProperty("os.name", "generic").lowercase()
             detectedOS = if (os.indexOf("mac") >= 0 || os.indexOf("darwin") >= 0) {
                 OSType.MacOS
             } else if (os.indexOf("win") >= 0) {

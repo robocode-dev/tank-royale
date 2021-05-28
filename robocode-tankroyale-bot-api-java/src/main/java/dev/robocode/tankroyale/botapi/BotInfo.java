@@ -12,10 +12,10 @@ public final class BotInfo {
 
   private final String name; // required
   private final String version; // required
-  private final String author; // required
+  private final List<String> authors; // required
   private final String description; // optional
   private final String url; // optional
-  private final String countryCode; // optional
+  private final List<String> countryCodes; // optional
   private final Set<String> gameTypes; // required
   private final String platform; // optional
   private final String programmingLang; // optional
@@ -25,10 +25,10 @@ public final class BotInfo {
    *
    * @param name is the name of the bot (required).
    * @param version is the version of the bot (required).
-   * @param author is the author of the bot (required).
+   * @param authors is the author(s) of the bot (required).
    * @param description is a short description of the bot (optional).
    * @param url is the URL to a web page for the bot (optional).
-   * @param countryCode is the country code for the bot (optional).
+   * @param countryCodes is the country code(s) for the bot (optional).
    * @param gameTypes is the game types that this bot can handle (required).
    * @param platform is the platform used for running the bot (optional).
    * @param programmingLang is the programming language used for developing the bot (optional).
@@ -36,50 +36,52 @@ public final class BotInfo {
   public BotInfo(
       final String name,
       final String version,
-      final String author,
+      final List<String> authors,
       final String description,
       final String url,
-      final String countryCode,
+      final List<String> countryCodes,
       final Collection<String> gameTypes,
       final String platform,
       final String programmingLang) {
 
-    if (name == null || name.trim().isEmpty()) {
+    if (name == null || name.isBlank()) {
       throw new IllegalArgumentException("Name cannot be null, empty or blank");
     }
-    if (version == null || version.trim().isEmpty()) {
+    if (version == null || version.isBlank()) {
       throw new IllegalArgumentException("Version cannot be null, empty or blank");
     }
-    if (author == null || author.trim().isEmpty()) {
-      throw new IllegalArgumentException("Author cannot be null, empty or blank");
+    if (isNullOrEmptyOrContainsBlanks(authors)) {
+      throw new IllegalArgumentException("Authors cannot be null or empty or contain blanks");
     }
-    if (gameTypes == null || gameTypes.isEmpty()) {
-      throw new IllegalArgumentException("Game types cannot be null, empty or blank");
-    }
-    CountryCode code = null;
-    if (countryCode != null) {
-      // Get country code from input parameter
-      code = CountryCode.getByCodeIgnoreCase(countryCode);
-    }
-    if (code == null) {
-      // Get local country code
-      code = CountryCode.getByLocale(Locale.getDefault());
-    }
+    List<String> authors2 = new ArrayList<>();
+    authors.removeIf(String::isBlank);
+    authors.forEach(author -> authors2.add(author.trim()));
 
-    // Remove null, empty or blank game types
-    Set<String> trimmedGameTypes = new HashSet<>();
-    gameTypes
-        .iterator()
-        .forEachRemaining(
-            gameType -> {
-              if (gameType != null && !gameType.trim().isEmpty()) {
-                trimmedGameTypes.add(gameType.trim());
-              }
-            });
-
-    if (trimmedGameTypes.size() == 0) {
-      throw new IllegalArgumentException("Game types does not contain any game types");
+    if (isNullOrEmptyOrContainsBlanks(gameTypes)) {
+      throw new IllegalArgumentException("Game types cannot be null or empty or contain blanks");
     }
+    Set<String> gameTypes2 = new HashSet<>();
+    gameTypes.removeIf(String::isBlank);
+    gameTypes.forEach(gameType -> gameTypes2.add(gameType.trim()));
+
+    List<CountryCode> countryCodes2 = new ArrayList<>();
+    if (countryCodes != null) {
+      countryCodes.removeIf(String::isBlank);
+      countryCodes.forEach(code -> {
+        var cc = CountryCode.getByCodeIgnoreCase(code.trim());
+        if (cc != null && !countryCodes2.contains(cc)) {
+          countryCodes2.add(cc);
+        }
+      });
+    }
+    if (countryCodes2.isEmpty()) {
+      var cc = CountryCode.getByLocale(Locale.getDefault());
+      if (cc != null && !countryCodes2.contains(cc)) {
+        countryCodes2.add(cc);
+      }
+    }
+    List<String> countryCodes3 = new ArrayList<>();
+    countryCodes2.forEach(cc -> countryCodes3.add(cc.getAlpha2()));
 
     String platform2 = platform;
     if (platform2 == null || platform2.trim().length() == 0) {
@@ -88,11 +90,11 @@ public final class BotInfo {
 
     this.name = name;
     this.version = version;
-    this.author = author;
+    this.authors = authors2;
     this.description = description;
     this.url = url;
-    this.countryCode = (code == null) ? null : code.getAlpha2();
-    this.gameTypes = trimmedGameTypes;
+    this.countryCodes = countryCodes3;
+    this.gameTypes = gameTypes2;
     this.platform = platform2;
     this.programmingLang = programmingLang;
   }
@@ -104,12 +106,13 @@ public final class BotInfo {
    * <pre>
    * name=MyBot
    * version=1.0
-   * author=John Doe
+   * authors=John Doe
    * description=A short description
    * url=http://somewhere.net/MyBot
-   * countryCode=us
-   * gameTypes=melee,1v1
-   * programmingLang=Java 8
+   * countryCodes=us
+   * gameTypes=classic,melee,1v1
+   * platform: Java Runtime Environment (JRE) 11
+   * programmingLang=Java 11
    * </pre>
    * @param filename is the filename of the file containing bot properties.
    * @return A BotInfo instance containing the bot properties read from the file.
@@ -122,11 +125,11 @@ public final class BotInfo {
       return new BotInfo(
           prop.getProperty("name"),
           prop.getProperty("version"),
-          prop.getProperty("author"),
+          Arrays.asList(prop.getProperty("authors").split("\\s*,\\s*")),
           prop.getProperty("description"),
           prop.getProperty("url"),
-          prop.getProperty("countryCode"),
-          Arrays.asList(prop.getProperty("gameTypes").split("\\s*,\\s*")),
+          Arrays.asList(prop.getProperty("countryCodes").split("\\s*,\\s*")),
+          new HashSet<>(Arrays.asList(prop.getProperty("gameTypes").split("\\s*,\\s*"))),
           prop.getProperty("platform"),
           prop.getProperty("programmingLang"));
     }
@@ -151,13 +154,13 @@ public final class BotInfo {
   }
 
   /**
-   * Returns the author, e.g., "John Doe (johndoe@somewhere.io)". This field must always be provided
-   * with the bot info.
+   * Returns the list of authors of the bot, e.g., "John Doe (johndoe@somewhere.io)".
+   * At least one author must be provided.
    *
-   * @return The author of the bot.
+   * @return The author(s) of the bot.
    */
-  public String getAuthor() {
-    return author;
+  public List<String> getAuthors() {
+    return authors;
   }
 
   /**
@@ -179,29 +182,31 @@ public final class BotInfo {
   }
 
   /**
-   * Returns the country code defined by ISO 3166-1 alpha-2, e.g. "us":
-   * https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2. This field is optional. If no country code is
-   * provided, the locale of the system is being used instead.
+   * Returns a list of country code(s) defined by ISO 3166-1 alpha-2, e.g. "us":
+   * https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
+   * This field is optional.
+   * If no country codes are provided, the locale of the system is being used instead.
    *
-   * @return The country code for the bot.
+   * @return The country code(s) for the bot.
    */
-  public String getCountryCode() {
-    return countryCode;
+  public List<String> getCountryCodes() {
+    return countryCodes;
   }
 
   /**
-   * Returns the game types accepted by the bot, e.g., "melee", "1v1". This field must always be
-   * provided with the bot info. The game types define which game types the bot can participate in.
+   * Returns the game type(s) accepted by the bot, e.g., "classic", "melee", "1v1".
+   * At least one game type must be provided to indicate the type(s) of games that this bot can participate in.
+   * The game types define which game types the bot can participate in.
    * See {@link GameType} for using predefined game type.
    *
-   * @return The game types that this bot can handle.
+   * @return The game type(s) that this bot can handle.
    */
   public Set<String> getGameTypes() {
     return gameTypes;
   }
 
   /**
-   * Returns the platform used for running the bot, e.g., "Java Runtime Environment" or ".Net Core".
+   * Returns the platform used for running the bot, e.g., "Java Runtime Environment (JRE) 11" or ".Net 5.0".
    * This field is optional.
    *
    * @return The platform used for running the bot.
@@ -211,12 +216,16 @@ public final class BotInfo {
   }
 
   /**
-   * Returns the programming language used for developing the bot, e.g., "Java" or "C#". This field
-   * is optional.
+   * Returns the programming language used for developing the bot, e.g., "Java 8" or "C# 8.0".
+   * This field is optional.
    *
    * @return The programming language used for developing the bot.
    */
   public String getProgrammingLang() {
     return programmingLang;
+  }
+
+  private static boolean isNullOrEmptyOrContainsBlanks(Collection<String> collection) {
+    return (collection == null || collection.isEmpty() || collection.stream().allMatch(String::isBlank));
   }
 }

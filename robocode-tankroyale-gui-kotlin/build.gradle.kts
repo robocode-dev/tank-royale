@@ -6,17 +6,17 @@ description = "Desktop application for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
 val artifactId = "robocode-tankroyale-gui"
-version = "0.7.1"
+version = "0.8.0"
 
 
-val serverVersion = "0.8.5"
-val bootstrapVersion = "0.7.1"
+val serverVersion = "0.8.8"
+val bootstrapVersion = "0.8.0"
 
 
 plugins {
     `java-library`
-    kotlin("jvm") version "1.5.0"
-    kotlin("plugin.serialization") version "1.5.0"
+    kotlin("jvm") version "1.5.20-M1"
+    kotlin("plugin.serialization") version "1.5.20-M1"
     `maven-publish`
     idea
     id("com.github.ben-manes.versions") version "0.38.0"
@@ -43,10 +43,10 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.20-M1")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
     implementation("com.miglayout:miglayout-swing:5.3")
 
@@ -72,15 +72,16 @@ val copyBootstrapJar = task<Copy>("copyBootstrapJar") {
 
 tasks.processResources {
     with(copySpec {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
         from("/src/main/resources")
         include("version.txt")
         filter(ReplaceTokens::class, "tokens" to mapOf("version" to version))
-        duplicatesStrategy = DuplicatesStrategy.WARN
     })
 }
 
 val fatJar = task<Jar>("fatJar") {
     manifest {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         attributes["Implementation-Title"] = title
         attributes["Implementation-Version"] = archiveVersion
         attributes["Main-Class"] = "dev.robocode.tankroyale.gui.ui.MainWindowKt"

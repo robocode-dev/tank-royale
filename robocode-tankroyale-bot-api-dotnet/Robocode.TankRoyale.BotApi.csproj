@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <RootNamespace>Robocode.TankRoyale.BotApi</RootNamespace>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>8.0</LangVersion>
 
     <PackageId>Robocode.TankRoyale.BotApi</PackageId>
-    <Version>0.9.6</Version>
+    <Version>0.9.8</Version>
     <Authors>Flemming Noernberg Larsen</Authors>
   </PropertyGroup>
 

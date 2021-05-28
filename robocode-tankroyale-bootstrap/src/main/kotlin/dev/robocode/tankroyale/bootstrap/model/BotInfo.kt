@@ -6,11 +6,11 @@ import kotlinx.serialization.Serializable
 data class BotInfo(
         val name: String,
         val version: String,
-        val author: String,
-        val description: String? = null,
+        val authors: List<String>,
+        val description: String?,
         val url: String? = null,
-        val countryCode: String? = null,
+        val countryCodes: List<String>,
         val platform: String? = null,
         val programmingLang: String? = null,
-        val gameTypes: Set<String>
+        val gameTypes: List<String>
 )

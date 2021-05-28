@@ -33,7 +33,7 @@ object TpsField : JLimitedTextField(3) {
     }
 
     private fun tpsInputVerifier(): Boolean {
-        val tpsString = text.trim().toLowerCase()
+        val tpsString = text.trim().lowercase()
         val tps: Int?
         val valid: Boolean
 

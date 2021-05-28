@@ -2,7 +2,7 @@ val title = "Robocode Tank Royale Bot API"
 description = "Bot API for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
-version = "0.9.6"
+version = "0.9.8"
 
 
 plugins {
@@ -25,14 +25,10 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.robocode.tankroyale:robocode-tankroyale-schema:0.7.0")
+    implementation("dev.robocode.tankroyale:robocode-tankroyale-schema:0.8.0")
     implementation("com.neovisionaries:nv-i18n:1.28")
-    implementation("com.google.code.gson:gson:2.8.6")
+    implementation("com.google.code.gson:gson:2.8.7")
     implementation("org.danilopianini:gson-extras:0.2.2")
-
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.0-M1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.0-M1")
-    testImplementation("org.assertj:assertj-core:3.19.0")
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -52,6 +48,7 @@ tasks.withType<Javadoc> {
 }
 
 val fatJar = task<Jar>("fatJar") {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes["Implementation-Title"] = title
         attributes["Implementation-Version"] = archiveVersion

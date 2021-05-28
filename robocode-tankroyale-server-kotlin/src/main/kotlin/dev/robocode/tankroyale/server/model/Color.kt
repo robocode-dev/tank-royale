@@ -4,7 +4,8 @@ import java.util.regex.Pattern
 
 private val NUMERIC_RGB: Pattern = Pattern.compile("^#[0-9A-F]{3,6}$", Pattern.CASE_INSENSITIVE)
 
-inline class Color(val value: Int)
+@JvmInline
+value class Color(val value: Int)
 
 /**
  * Converts a string represented in a numeric format #<red><green><blue> into an integer presentation of the RGB color

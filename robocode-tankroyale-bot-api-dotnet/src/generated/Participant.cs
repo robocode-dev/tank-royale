@@ -26,10 +26,9 @@ namespace Robocode.TankRoyale.Schema
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Version { get; set; }
     
-        /// <summary>Author name, e.g. John Doe (john_doe@somewhere.net)</summary>
-        [Newtonsoft.Json.JsonProperty("author", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Author { get; set; }
+        /// <summary>Name of authors, e.g. John Doe (john_doe@somewhere.net)</summary>
+        [Newtonsoft.Json.JsonProperty("authors", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Authors { get; set; }
     
         [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Description { get; set; }
@@ -38,21 +37,20 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("url", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Url { get; set; }
     
-        /// <summary>2-letter country code defined by ISO 3166-1, e.g. "UK"</summary>
-        [Newtonsoft.Json.JsonProperty("countryCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.RegularExpression(@"/^[a-z]{2}$/ig")]
-        public string CountryCode { get; set; }
+        /// <summary>2-letter country code(s) defined by ISO 3166-1, e.g. "UK"</summary>
+        [Newtonsoft.Json.JsonProperty("countryCodes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> CountryCodes { get; set; }
     
-        /// <summary>Game types supported by this bot (defined elsewhere), e.g. "melee" and "1v1"</summary>
+        /// <summary>Game types supported by this bot (defined elsewhere), e.g. "classic", "melee" and "1v1"</summary>
         [Newtonsoft.Json.JsonProperty("gameTypes", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
         public System.Collections.Generic.ICollection<string> GameTypes { get; set; } = new System.Collections.ObjectModel.Collection<string>();
     
-        /// <summary>Platform used for running the bot, e.g. OpenJDK 11 or .NET Core 3</summary>
+        /// <summary>Platform used for running the bot, e.g. OpenJDK 16 or .NET 5</summary>
         [Newtonsoft.Json.JsonProperty("platform", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Platform { get; set; }
     
-        /// <summary>Language used for programming the bot, e.g. Java or C#</summary>
+        /// <summary>Language used for programming the bot, e.g. Java 16 or C# 9.0</summary>
         [Newtonsoft.Json.JsonProperty("programmingLang", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ProgrammingLang { get; set; }
     

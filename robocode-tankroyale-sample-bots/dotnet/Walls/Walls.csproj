@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Robocode.TankRoyale.BotApi" Version="0.9.6" />
+    <PackageReference Include="Robocode.TankRoyale.BotApi" Version="0.9.8" />
   </ItemGroup>
 
 </Project>

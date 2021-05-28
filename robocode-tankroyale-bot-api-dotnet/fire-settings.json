@@ -2,11 +2,12 @@
   "Bot": {
     "Name": "Fire",
     "Version": "1.0",
-    "Author": "Mathew Nelson & Flemming N. Larsen",
+    "Authors": "Mathew Nelson, Flemming N. Larsen",
     "Description": "This bot sits still. Spins gun around. Moves when hit.",
     "Url": "",
-    "CountryCode": "us",
+    "CountryCodes": "us, dk",
     "GameTypes": "melee, classic, 1v1",
+    "Platform": ".Net 5.0",
     "ProgrammingLang": "C# 8.0"
   }
 }
