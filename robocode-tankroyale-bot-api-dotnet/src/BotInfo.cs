@@ -292,32 +292,26 @@ namespace Robocode.TankRoyale.BotApi
       {
         throw new ArgumentException("Bot:Name is missing");
       }
-      Console.WriteLine("Bot name: " + name);
-
       var version = configuration["Bot:Version"];
       if (string.IsNullOrWhiteSpace(version))
       {
         throw new ArgumentException("Bot:Version is missing");
       }
-      Console.WriteLine("Bot version: " + version);
       var authors = configuration["Bot:Authors"];
       if (string.IsNullOrWhiteSpace(authors))
       {
         throw new ArgumentException("Bot:Authors is missing");
       }
-      Console.WriteLine("Bot authors: " + authors);
       var countryCodes = configuration["Bot:CountryCodes"];
       if (string.IsNullOrWhiteSpace(countryCodes))
       {
         countryCodes = "";
       }
-      Console.WriteLine("Bot country codes: " + countryCodes);
       var gameTypes = configuration["Bot:GameTypes"];
       if (string.IsNullOrWhiteSpace(gameTypes))
       {
         throw new ArgumentException("Bot:GameTypes is missing");
       }
-      Console.WriteLine("Bot gameTypes: " + gameTypes);
       return new BotInfo(
         name,
         version,
