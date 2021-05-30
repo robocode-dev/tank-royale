@@ -43,7 +43,9 @@ open class Event<T> {
      * @param event is the source event instance for the event handlers.
      */
     fun fire(event: T) {
-        eventHandlers.values.forEach { it.invoke(event) }
+        synchronized (eventHandlers) { // needs to be synchronized
+            eventHandlers.values.forEach { it.invoke(event) }
+        }
     }
 
     /**

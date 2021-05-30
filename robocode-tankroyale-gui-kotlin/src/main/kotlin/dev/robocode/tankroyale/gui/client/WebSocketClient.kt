@@ -62,6 +62,7 @@ class WebSocketClient(private val uri: URI) : AutoCloseable {
         }
 
         override fun onError(webSocket: WebSocket?, error: Throwable) {
+            error.printStackTrace()
             onError.fire(error)
         }
 
