@@ -50,12 +50,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.20-M1")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.20-M1")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
-
     implementation("info.picocli:picocli:4.6.1")
 }
 
