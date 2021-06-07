@@ -1,5 +1,6 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import proguard.gradle.ProGuardTask
 
 val title = "Robocode Tank Royale Bootstrap"
 description = "Bootstrap utility for booting up bots for Robocode Tank Royale"
@@ -8,6 +9,17 @@ group = "dev.robocode.tankroyale"
 val artifactId = "robocode-tankroyale-bootstrap"
 version = "0.8.0"
 
+val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
+
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.guardsquare:proguard-gradle:7.1.0-beta5")
+    }
+}
 
 plugins {
     `java-library`
@@ -69,16 +81,24 @@ val fatJar = task<Jar>("fatJar") {
     )
     exclude("*.kotlin_metadata")
     with(tasks["jar"] as CopySpec)
+    archiveFileName.set("fat.jar")
+}
+
+val proguard = task<ProGuardTask>("proguard") {
+    dependsOn(fatJar)
+    injars("$buildDir/libs/fat.jar")
+    outjars(archiveFileName)
+    configuration("proguard-rules.pro")
 }
 
 tasks.named("build") {
-    dependsOn(fatJar)
+    dependsOn(proguard)
 }
 
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            artifact(fatJar)
+            artifact(archiveFileName)
             groupId = group as String?
             artifactId
             version
