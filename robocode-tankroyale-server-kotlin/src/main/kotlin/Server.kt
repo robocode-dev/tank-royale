@@ -21,15 +21,15 @@ private const val DEFAULT_PORT: Short = 80
     name = "Server",
     versionProvider = VersionFileProvider::class,
     header = [
-        "               __________",
-        "              /          |DDD==============",
-        "    _________|___________|____________",
-        "  _/_ ______________________________ _\\_",
-        " / _ ) ___  ___  ___  ___  ___  ___ / __|",
-        " \\_\\_\\/ _ \\| __)/ _ \\/ __// _ \\| _ \\\\__|",
-        "      \\___/|___)\\___/\\___|\\___/|___/",
+        "@|fg(0;0;5)               __________                               |@",
+        "@|fg(0;0;5)              /          ||@@|fg(2;2;2) [[[¤¤¤¤¤¤¤¤¤¤¤¤ |@",
+        "@|fg(0;0;5)    _________|___________|____________                  |@",
+        "@|fg(2;2;2)  _|@@|fg(0;0;5) /|@@|fg(2;2;2) _|@@|fg(0;0;5) ________________________________|@@|fg(2;2;2) _|@@|fg(0;0;5) \\|@@|fg(2;2;2) _|@",
+        "@|fg(2;2;2) / _ ) ___  ___  ___  ___  ___  ___ / ,_|        |@",
+        "@|fg(2;2;2) \\_\\_\\/ _ \\| __)/ _ \\/ __// _ \\| _ \\\\__| |@",
+        "@|fg(2;2;2)      \\___/|___)\\___/\\___|\\___/|___/         |@",
         "",
-        "           Robocode Tank Royale",
+        "@|green,bold           Robocode Tank Royale |@",
         ""
     ],
     descriptionHeading = "Description:%n",
@@ -118,9 +118,7 @@ class Server : Runnable {
     }
 
     private fun printAnsiLine(s: String?) {
-        AnsiConsole.systemInstall()
         println(CommandLine.Help.Ansi.AUTO.string(s))
-        AnsiConsole.systemUninstall()
     }
 
     internal class VersionFileProvider : IVersionProvider {
@@ -137,6 +135,14 @@ class Server : Runnable {
 }
 
 fun main(args: Array<String>) {
-//    System.setProperty("picocli.ansi", "true");
-    exitProcess(Server.cmdLine.execute(*args))
+//    System.setProperty("picocli.ansi", "true")
+
+    AnsiConsole.systemInstall()
+    val exitCode: Int
+    try {
+        exitCode = Server.cmdLine.execute(*args)
+    } finally {
+        AnsiConsole.systemUninstall()
+    }
+    exitProcess(exitCode)
 }
