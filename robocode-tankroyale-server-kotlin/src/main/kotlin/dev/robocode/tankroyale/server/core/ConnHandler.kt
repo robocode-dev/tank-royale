@@ -245,12 +245,14 @@ class ConnHandler internal constructor(
                                 }
                                 else -> notifyException(IllegalStateException("Unhandled message type: $type"))
                             }
-                        } catch (ex: IllegalArgumentException) {
+                        } catch (iae: IllegalArgumentException) {
                             notifyException(IllegalStateException("Unhandled message type: ${jsonType.asString}"))
                         }
                     }
-                } catch (e2: JsonSyntaxException) {
-                    log.error("Invalid message: $message", e2)
+                } catch (jse: JsonSyntaxException) {
+                    log.error("Invalid message: $message", jse)
+                } catch (e: Exception) {
+                    log.error("Error when passing message: $message", e)
                 }
             }
         }
