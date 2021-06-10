@@ -1,13 +1,16 @@
-#-libraryjar <java.home>/jmods/java.base.jmod(!**.jar;!module-info.class)
 -libraryjars <java.home>/lib/rt.jar
 
 -dontshrink
 -dontoptimize
+-dontobfuscate
 
 -keepattributes AnnotationDefault,*Annotation*
 
--keep public class dev.robocode.tankroyale.server.ServerKt { *; }
--keepclassmembernames public class dev.robocode.tankroyale.server.** { *; }
--keepclassmembernames public class picocli.** { *; }
+# To avoid ClassCastException
+-keep @dev.robocode.tankroyale.schema.BotAddress public class *
+
+-keep class dev.robocode.** { *; }
+-keep public class picocli.** { *; }
 -keep public class org.fusesource.jansi.** { *; }
 -keep public class org.slf4j.** { *; }
+-keep public class org.java_websocket.** { *; }

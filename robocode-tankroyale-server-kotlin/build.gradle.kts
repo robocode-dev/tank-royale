@@ -61,7 +61,7 @@ dependencies {
 
 tasks.processResources {
     with(copySpec {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
         from("/src/main/resources")
         include("version.txt")
         filter(ReplaceTokens::class, "tokens" to mapOf("version" to version))
