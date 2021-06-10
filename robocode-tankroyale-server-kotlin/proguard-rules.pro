@@ -6,11 +6,8 @@
 
 -keepattributes AnnotationDefault,*Annotation*
 
-# To avoid ClassCastException
--keep @dev.robocode.tankroyale.schema.BotAddress public class *
-
--keep class dev.robocode.** { *; }
--keep public class picocli.** { *; }
--keep public class org.fusesource.jansi.** { *; }
--keep public class org.slf4j.** { *; }
--keep public class org.java_websocket.** { *; }
+-keep class dev.robocode.**
+-keep class picocli.**
+-keep class org.fusesource.jansi.*
+-keep class org.slf4j.*
+-keep class org.java_websocket.*
