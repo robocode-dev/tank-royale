@@ -6,10 +6,10 @@ description = "Desktop application for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
 val artifactId = "robocode-tankroyale-gui"
-version = "0.8.0"
+version = "0.8.1"
 
 
-val serverVersion = "0.8.8"
+val serverVersion = "0.8.9"
 val bootstrapVersion = "0.8.0"
 
 
@@ -27,7 +27,7 @@ tasks.withType<KotlinCompile> {
     targetCompatibility = JavaVersion.VERSION_11.toString()
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 }
 

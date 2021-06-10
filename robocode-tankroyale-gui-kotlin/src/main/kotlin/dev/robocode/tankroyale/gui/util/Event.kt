@@ -43,9 +43,9 @@ open class Event<T> {
      * @param event is the source event instance for the event handlers.
      */
     fun fire(event: T) {
-        synchronized (eventHandlers) { // needs to be synchronized
-            eventHandlers.values.forEach { it.invoke(event) }
-        }
+        // Work on a copy to prevent ConcurrentModificationException, even when using synchronizedMap()
+        val eventHandlerCopy = ArrayList(this.eventHandlers.values)
+        eventHandlerCopy.forEach { it.invoke(event) }
     }
 
     /**
