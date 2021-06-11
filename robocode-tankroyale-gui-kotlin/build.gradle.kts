@@ -6,20 +6,20 @@ description = "Desktop application for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
 val artifactId = "robocode-tankroyale-gui"
-version = "0.8.2"
+version = "0.8.3"
 
 
-val serverVersion = "0.8.9"
+val serverVersion = "0.8.10"
 val bootstrapVersion = "0.8.0"
 
 
 plugins {
     `java-library`
-    kotlin("jvm") version "1.5.20-M1"
-    kotlin("plugin.serialization") version "1.5.20-M1"
+    kotlin("jvm") version "1.5.20-RC"
+    kotlin("plugin.serialization") version "1.5.20-RC"
     `maven-publish`
     idea
-    id("com.github.ben-manes.versions") version "0.38.0"
+    id("com.github.ben-manes.versions") version "0.39.0"
 }
 
 tasks.withType<KotlinCompile> {
@@ -43,12 +43,12 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.20-M1")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.20-RC")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
-    implementation("com.miglayout:miglayout-swing:5.3")
+    implementation("com.miglayout:miglayout-swing:11.0")
 
     runtimeOnly("dev.robocode.tankroyale:robocode-tankroyale-server:${serverVersion}") {
         exclude("ch.qos.logback")
