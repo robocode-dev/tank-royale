@@ -7,7 +7,7 @@ description = "Server for running Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
 val artifactId = "robocode-tankroyale-server"
-version = "0.8.9"
+version = "0.8.11"
 
 val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
 
@@ -22,7 +22,7 @@ buildscript {
 
 plugins {
     application
-    kotlin("jvm") version "1.5.20-M1"
+    kotlin("jvm") version "1.5.20-RC"
     `maven-publish`
     idea
     id("com.github.ben-manes.versions") version "0.39.0"

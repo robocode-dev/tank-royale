@@ -14,7 +14,6 @@ import org.java_websocket.WebSocket
 import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CopyOnWriteArraySet
 import kotlin.math.roundToInt
 
 
@@ -38,16 +37,16 @@ class GameServer(
     private var gameSetup: dev.robocode.tankroyale.server.model.GameSetup? = null
 
     /** Game participants (bots connections) */
-    private val participants = mutableSetOf<WebSocket>()
+    private val participants = ConcurrentHashMap.newKeySet<WebSocket>() // concurrent set
 
     /** Game participants that signalled 'ready' for battle */
-    private val readyParticipants = CopyOnWriteArraySet<WebSocket>()
+    private val readyParticipants = ConcurrentHashMap.newKeySet<WebSocket>() // concurrent set
 
     /** Map over participant ids: bot connection -> bot id */
-    private val participantIds = mutableMapOf<WebSocket, BotId>()
+    private val participantIds = ConcurrentHashMap<WebSocket, BotId>()
 
     /** Map over bot intents: bot connection -> bot intent */
-    private val botIntents: MutableMap<WebSocket, dev.robocode.tankroyale.server.model.BotIntent> = ConcurrentHashMap()
+    private val botIntents = ConcurrentHashMap<WebSocket, dev.robocode.tankroyale.server.model.BotIntent>()
 
     /** Model updater that keeps track of the game state/model */
     private lateinit var modelUpdater: ModelUpdater
