@@ -1,14 +1,13 @@
 package dev.robocode.tankroyale.gui.ui.server
 
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
-import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import java.awt.Color
-import javax.swing.JFrame
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 
 
-object ServerLogWindow : JFrame(ResourceBundles.UI_TITLES.get("server_log_window")) {
+object ServerLogWindow : RcFrame("server_log_window") {
 
     private val textArea = JTextArea()
     private val scrollPane = JScrollPane(textArea)

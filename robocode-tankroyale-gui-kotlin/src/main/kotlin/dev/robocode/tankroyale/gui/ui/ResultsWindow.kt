@@ -3,13 +3,14 @@ package dev.robocode.tankroyale.gui.ui
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotResults
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
+import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import java.awt.EventQueue
 import javax.swing.*
 import javax.swing.table.DefaultTableCellRenderer
 import java.awt.Dimension
 
 
-class ResultsWindow(results: List<BotResults>) : JFrame(getWindowTitle()) {
+class ResultsWindow(results: List<BotResults>) : RcFrame(getWindowTitle()) {
 
     init {
         val table = JTable(getData(results), getColumns())

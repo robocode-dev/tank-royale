@@ -6,7 +6,7 @@ description = "Desktop application for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
 val artifactId = "robocode-tankroyale-gui"
-version = "0.8.1"
+version = "0.8.2"
 
 
 val serverVersion = "0.8.9"

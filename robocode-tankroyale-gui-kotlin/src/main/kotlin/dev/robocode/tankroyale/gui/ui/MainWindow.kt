@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
+import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
@@ -13,13 +14,10 @@ import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
 import dev.robocode.tankroyale.gui.ui.server.*
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import java.awt.EventQueue
-import javax.imageio.ImageIO
-import javax.swing.ImageIcon
-import javax.swing.JFrame
 import javax.swing.UIManager
 
 
-object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCloseable {
+object MainWindow : RcFrame("main_window"), AutoCloseable {
 
     init {
         RegisterWsProtocol
@@ -32,10 +30,6 @@ object MainWindow : JFrame(ResourceBundles.UI_TITLES.get("main_window")), AutoCl
         contentPane.add(LogoPanel)
 
         jMenuBar = MainWindowMenu
-
-        val iconStream = javaClass.getResourceAsStream("/gfx/Tank.png")
-        val iconImage = ImageIcon(ImageIO.read(iconStream))
-        setIconImage(iconImage.image)
 
         MainWindowMenu.apply {
             onStartBattle.invokeLater(MainWindow) { startBattle() }
