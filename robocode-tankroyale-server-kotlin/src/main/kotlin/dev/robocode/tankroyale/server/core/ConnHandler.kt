@@ -13,12 +13,10 @@ import org.java_websocket.server.WebSocketServer
 import org.slf4j.LoggerFactory
 import java.lang.Exception
 import java.net.InetSocketAddress
-import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 class ConnHandler internal constructor(
     private val setup: ServerSetup,
@@ -27,13 +25,13 @@ class ConnHandler internal constructor(
 ) {
     private val clientSecret: String? = clientSecret?.trim()
     private val webSocketObserver: WebSocketObserver
-    private val allConnections = Collections.synchronizedSet(HashSet<WebSocket>())
-    private val botConnections = Collections.synchronizedSet(HashSet<WebSocket>())
-    private val observerConnections = Collections.synchronizedSet(HashSet<WebSocket>())
-    private val controllerConnections = Collections.synchronizedSet(HashSet<WebSocket>())
-    private val botHandshakes = Collections.synchronizedMap(HashMap<WebSocket, BotHandshake>())
-    private val observerHandshakes = Collections.synchronizedMap(HashMap<WebSocket, ObserverHandshake>())
-    private val controllerHandshakes = Collections.synchronizedMap(HashMap<WebSocket, ControllerHandshake>())
+    private val allConnections = ConcurrentHashMap.newKeySet<WebSocket>()
+    private val botConnections = ConcurrentHashMap.newKeySet<WebSocket>()
+    private val observerConnections = ConcurrentHashMap.newKeySet<WebSocket>()
+    private val controllerConnections = ConcurrentHashMap.newKeySet<WebSocket>()
+    private val botHandshakes = ConcurrentHashMap<WebSocket, BotHandshake>()
+    private val observerHandshakes = ConcurrentHashMap<WebSocket, ObserverHandshake>()
+    private val controllerHandshakes = ConcurrentHashMap<WebSocket, ControllerHandshake>()
     private val executorService: ExecutorService
 
     private val log = LoggerFactory.getLogger(ConnHandler::class.java)
