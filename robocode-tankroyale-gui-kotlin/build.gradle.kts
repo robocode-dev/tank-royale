@@ -1,5 +1,6 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import proguard.gradle.ProGuardTask
 
 val title = "Robocode Tank Royale GUI"
 description = "Desktop application for Robocode Tank Royale"
@@ -8,10 +9,21 @@ group = "dev.robocode.tankroyale"
 val artifactId = "robocode-tankroyale-gui"
 version = "0.8.3"
 
+val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
 
-val serverVersion = "0.8.10"
+
+val serverVersion = "0.8.12"
 val bootstrapVersion = "0.8.0"
 
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.guardsquare:proguard-gradle:7.1.0-beta5")
+    }
+}
 
 plugins {
     `java-library`
@@ -43,16 +55,11 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.20-RC")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
     implementation("com.miglayout:miglayout-swing:11.0")
 
-    runtimeOnly("dev.robocode.tankroyale:robocode-tankroyale-server:${serverVersion}") {
-        exclude("ch.qos.logback")
-    }
+    runtimeOnly("dev.robocode.tankroyale:robocode-tankroyale-server:${serverVersion}")
     runtimeOnly("dev.robocode.tankroyale:robocode-tankroyale-bootstrap:${bootstrapVersion}")
 }
 
@@ -80,8 +87,8 @@ tasks.processResources {
 }
 
 val fatJar = task<Jar>("fatJar") {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         attributes["Implementation-Title"] = title
         attributes["Implementation-Version"] = archiveVersion
         attributes["Main-Class"] = "dev.robocode.tankroyale.gui.ui.MainWindowKt"
@@ -92,13 +99,18 @@ val fatJar = task<Jar>("fatJar") {
     )
     exclude("*.kotlin_metadata")
     with(tasks["jar"] as CopySpec)
-    duplicatesStrategy = DuplicatesStrategy.WARN
+    archiveFileName.set("fat.jar")
+}
+
+val proguard = task<ProGuardTask>("proguard") {
+    dependsOn(fatJar)
+    injars("$buildDir/libs/fat.jar")
+    outjars(archiveFileName)
+    configuration("proguard-rules.pro")
 }
 
 tasks.named("build") {
-    dependsOn(copyServerJar)
-    dependsOn(copyBootstrapJar)
-//    dependsOn(fatJar)
+    dependsOn(proguard)
 }
 
 publishing {
@@ -111,4 +123,3 @@ publishing {
         }
     }
 }
-
