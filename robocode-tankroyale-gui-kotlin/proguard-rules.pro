@@ -4,6 +4,5 @@
 -libraryjar <java.home>/jmods/java.sql.jmod(!**.jar;!module-info.class)
 
 -dontwarn
--keepattributes
 
--keep public class dev.robocode.** { *; }
+-keep class dev.robocode.** { *; }
