@@ -87,6 +87,9 @@ tasks.processResources {
 }
 
 val fatJar = task<Jar>("fatJar") {
+    dependsOn(copyServerJar)
+    dependsOn(copyBootstrapJar)
+
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes["Implementation-Title"] = title

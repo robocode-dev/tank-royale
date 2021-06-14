@@ -3,6 +3,7 @@
 -libraryjar <java.home>/jmods/java.net.http.jmod(!**.jar;!module-info.class)
 -libraryjar <java.home>/jmods/java.sql.jmod(!**.jar;!module-info.class)
 
--dontwarn picocli.*
+-dontwarn
+-keepattributes
 
--keep class dev.robocode.** { *; }
+-keep public class dev.robocode.** { *; }
