@@ -30,7 +30,7 @@ class WebSocketClient(private val uri: URI) : AutoCloseable {
             val webSocketBuilder = httpClient.newWebSocketBuilder()
             webSocketBuilder.buildAsync(uri, listener).join()
         } catch (ex: Exception) {
-            throw RuntimeException("Could not create socket for URL: $uri", ex)
+            throw RuntimeException("Could not connect to server: $uri", ex)
         }
     }
 
@@ -62,7 +62,7 @@ class WebSocketClient(private val uri: URI) : AutoCloseable {
         }
 
         override fun onError(webSocket: WebSocket?, error: Throwable) {
-            error.printStackTrace()
+            System.err.println(error.message)
             onError.fire(error)
         }
 

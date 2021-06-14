@@ -54,7 +54,11 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
     private fun startBattle() {
         Server.apply {
             onConnected.subscribe(MainWindow) { NewBattleDialog.isVisible = true }
-            connectOrStart()
+            try {
+                connectOrStart()
+            } catch (e: Exception) {
+                System.err.println(e.message)
+            }
         }
     }
 
