@@ -11,13 +11,13 @@
   <defs>
     <symbol id="robocode-logo">
       <!-- Turret -->
-      <polygon fill="#006" stroke-width="10" stroke="#00C" points="225,120 225,80 325,20 500,20 500,120"/>
+      <polygon fill="#006" stroke-width="10" stroke="#009" points="225,120 225,80 325,20 500,20 500,120"/>
       <!-- Cannon -->
       <polygon fill="#333" stroke-width="10" stroke="#666" points="515,105 515,45 600,45 600,105"/>
       <polygon fill="#333" stroke-width="10" stroke="#666" points="615,90 615,60 850,60 850,90"/>
 
       <!-- Over Wheels -->
-      <polygon fill="#006" stroke-width="10" stroke="#00C" points="95,135 70,160 170,210 630,210 730,160 705,135"/>
+      <polygon fill="#006" stroke-width="10" stroke="#009" points="95,135 70,160 170,210 630,210 730,160 705,135"/>
 
       <!-- Wheels / letters -->
       <use transform="translate(10, 170)" xlink:href="#letter-r"/>
