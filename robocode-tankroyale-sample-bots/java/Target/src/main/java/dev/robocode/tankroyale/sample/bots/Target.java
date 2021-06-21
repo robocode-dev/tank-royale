@@ -23,7 +23,7 @@ public class Target extends Bot {
 
   /** Constructor, which loads the bot settings file */
   protected Target() throws IOException {
-    super(BotInfo.fromFile("/target.properties"));
+    super(BotInfo.fromFile("/Target.json"));
   }
 
   /** Run method */

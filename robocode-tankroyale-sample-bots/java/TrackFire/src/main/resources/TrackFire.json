@@ -1,0 +1,11 @@
+{
+  "name": "TrackFire",
+  "version": "1.0",
+  "gameTypes": "melee, classic, 1v1",
+  "authors": "Mathew Nelson, Flemming N. Larsen",
+  "description": "Sits still. Tracks and fires at the nearest robot it sees.",
+  "url": "",
+  "countryCodes": "us, dk",
+  "platform": "Java 8",
+  "programmingLang": "Java 8"
+}
