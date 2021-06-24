@@ -1,0 +1,1 @@
+rootProject.name = "robocode-tankroyale-sample-bots-java"

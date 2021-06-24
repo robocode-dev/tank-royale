@@ -41,5 +41,5 @@ properties:
 required:
   - name
   - version
-  - author
+  - authors
   - gameTypes

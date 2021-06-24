@@ -1,9 +1,13 @@
 package dev.robocode.tankroyale.botapi;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import com.neovisionaries.i18n.CountryCode;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /** Bot info contains the properties of a bot. */
@@ -67,12 +71,13 @@ public final class BotInfo {
     List<CountryCode> countryCodes2 = new ArrayList<>();
     if (countryCodes != null) {
       countryCodes.removeIf(String::isBlank);
-      countryCodes.forEach(code -> {
-        var cc = CountryCode.getByCodeIgnoreCase(code.trim());
-        if (cc != null && !countryCodes2.contains(cc)) {
-          countryCodes2.add(cc);
-        }
-      });
+      countryCodes.forEach(
+          code -> {
+            var cc = CountryCode.getByCodeIgnoreCase(code.trim());
+            if (cc != null && !countryCodes2.contains(cc)) {
+              countryCodes2.add(cc);
+            }
+          });
     }
     if (countryCodes2.isEmpty()) {
       var cc = CountryCode.getByLocale(Locale.getDefault());
@@ -100,38 +105,73 @@ public final class BotInfo {
   }
 
   /**
-   * Reads the bot info from a file.<br>
+   * Reads the bot info from a JSON file (.json).<br>
    * <br>
    * Example file:<br>
+   *
    * <pre>
-   * name=MyBot
-   * version=1.0
-   * authors=John Doe
-   * description=A short description
-   * url=http://somewhere.net/MyBot
-   * countryCodes=us
-   * gameTypes=classic,melee,1v1
-   * platform: Java Runtime Environment (JRE) 11
-   * programmingLang=Java 11
+   * {
+   *   name: "MyBot",
+   *   version: "1.0",
+   *   authors: "John Doe",
+   *   description: "A short description",
+   *   url: "http://somewhere.net/MyBot",
+   *   countryCodes: "us",
+   *   gameTypes: "classic, melee, 1v1",
+   *   platform: "Java 11",
+   *   programmingLang: "Java 11"
+   * }
    * </pre>
+   * Note that these fields are required:
+   * <ul>
+   *     <li>name</li>
+   *     <li>version</li>
+   *     <li>authors</li>
+   *     <li>gameTypes</li>
+   * </ul>
+   * And these value can take multiple values separated by a comma:
+   * <ul>
+   *     <li>authors, e.g. "John Doe, Jane Doe"</li>
+   *     <li>countryCodes, e.g. "se, no, dk"</li>
+   *     <li>gameTypes, e.g. "classic, melee, 1v1"</li>
+   * </ul>
+   *
    * @param filename is the filename of the file containing bot properties.
    * @return A BotInfo instance containing the bot properties read from the file.
    * @throws IOException if an error occurs when reading the file.
    */
-  public static BotInfo fromFile(String filename) throws IOException {
+  public static BotInfo fromJsonFile(String filename) throws IOException {
     try (InputStream is = BotInfo.class.getResourceAsStream(filename)) {
-      Properties prop = new Properties();
-      prop.load(is);
+      if (is == null) {
+        throw new BotException("Could not read the JSON file: " + filename);
+      }
+      Gson gson = new Gson();
+      JsonReader reader = new JsonReader(new InputStreamReader(is));
+      JsonProperties data = gson.fromJson(reader, JsonProperties.class);
+
+      if (data.name == null || data.name.isBlank()) {
+        throw new BotException("The JSON field 'name' is missing or blank");
+      }
+      if (data.version == null || data.version.isBlank()) {
+        throw new BotException("The JSON field 'version' is missing or blank");
+      }
+      if (data.authors == null || data.authors.isBlank()) {
+        throw new BotException("The JSON field 'authors' is missing or blank");
+      }
+      if (data.gameTypes == null || data.gameTypes.isBlank()) {
+        throw new BotException("The JSON field 'gameTypes' is missing or blank");
+      }
+
       return new BotInfo(
-          prop.getProperty("name"),
-          prop.getProperty("version"),
-          Arrays.asList(prop.getProperty("authors").split("\\s*,\\s*")),
-          prop.getProperty("description"),
-          prop.getProperty("url"),
-          Arrays.asList(prop.getProperty("countryCodes").split("\\s*,\\s*")),
-          new HashSet<>(Arrays.asList(prop.getProperty("gameTypes").split("\\s*,\\s*"))),
-          prop.getProperty("platform"),
-          prop.getProperty("programmingLang"));
+          data.name,
+          data.version,
+          Arrays.asList(data.authors.split("\\s*,\\s*")),
+          data.description,
+          data.url,
+          Arrays.asList(data.countryCodes.split("\\s*,\\s*")),
+          new HashSet<>(Arrays.asList(data.gameTypes.split("\\s*,\\s*"))),
+          data.platform,
+          data.programmingLang);
     }
   }
 
@@ -154,8 +194,8 @@ public final class BotInfo {
   }
 
   /**
-   * Returns the list of authors of the bot, e.g., "John Doe (johndoe@somewhere.io)".
-   * At least one author must be provided.
+   * Returns the list of authors of the bot, e.g., "John Doe (johndoe@somewhere.io)". At least one
+   * author must be provided.
    *
    * @return The author(s) of the bot.
    */
@@ -183,9 +223,8 @@ public final class BotInfo {
 
   /**
    * Returns a list of country code(s) defined by ISO 3166-1 alpha-2, e.g. "us":
-   * https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
-   * This field is optional.
-   * If no country codes are provided, the locale of the system is being used instead.
+   * https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2. This field is optional. If no country codes
+   * are provided, the locale of the system is being used instead.
    *
    * @return The country code(s) for the bot.
    */
@@ -194,10 +233,10 @@ public final class BotInfo {
   }
 
   /**
-   * Returns the game type(s) accepted by the bot, e.g., "classic", "melee", "1v1".
-   * At least one game type must be provided to indicate the type(s) of games that this bot can participate in.
-   * The game types define which game types the bot can participate in.
-   * See {@link GameType} for using predefined game type.
+   * Returns the game type(s) accepted by the bot, e.g., "classic", "melee", "1v1". At least one
+   * game type must be provided to indicate the type(s) of games that this bot can participate in.
+   * The game types define which game types the bot can participate in. See {@link GameType} for
+   * using predefined game type.
    *
    * @return The game type(s) that this bot can handle.
    */
@@ -206,8 +245,8 @@ public final class BotInfo {
   }
 
   /**
-   * Returns the platform used for running the bot, e.g., "Java Runtime Environment (JRE) 11" or ".Net 5.0".
-   * This field is optional.
+   * Returns the platform used for running the bot, e.g., "Java Runtime Environment (JRE) 11" or
+   * ".Net 5.0". This field is optional.
    *
    * @return The platform used for running the bot.
    */
@@ -216,8 +255,8 @@ public final class BotInfo {
   }
 
   /**
-   * Returns the programming language used for developing the bot, e.g., "Java 8" or "C# 8.0".
-   * This field is optional.
+   * Returns the programming language used for developing the bot, e.g., "Java 8" or "C# 8.0". This
+   * field is optional.
    *
    * @return The programming language used for developing the bot.
    */
@@ -226,6 +265,20 @@ public final class BotInfo {
   }
 
   private static boolean isNullOrEmptyOrContainsBlanks(Collection<String> collection) {
-    return (collection == null || collection.isEmpty() || collection.stream().allMatch(String::isBlank));
+    return (collection == null
+        || collection.isEmpty()
+        || collection.stream().allMatch(String::isBlank));
+  }
+
+  private class JsonProperties {
+    String name;
+    String version;
+    String authors;
+    String description;
+    String url;
+    String countryCodes;
+    String gameTypes;
+    String platform;
+    String programmingLang;
   }
 }
