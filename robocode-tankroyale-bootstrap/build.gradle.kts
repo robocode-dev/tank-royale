@@ -7,7 +7,7 @@ description = "Bootstrap utility for booting up bots for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
 val artifactId = "robocode-tankroyale-bootstrap"
-version = "0.8.0"
+version = "0.8.1"
 
 val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
 
@@ -23,11 +23,11 @@ buildscript {
 
 plugins {
     `java-library`
-    kotlin("jvm") version "1.5.20-M1"
-    kotlin("plugin.serialization") version "1.5.20-M1"
+    kotlin("jvm") version "1.5.20"
+    kotlin("plugin.serialization") version "1.5.20"
     `maven-publish`
     idea
-    id("com.github.ben-manes.versions") version "0.38.0"
+    id("com.github.ben-manes.versions") version "0.39.0"
 }
 
 tasks.withType<KotlinCompile> {

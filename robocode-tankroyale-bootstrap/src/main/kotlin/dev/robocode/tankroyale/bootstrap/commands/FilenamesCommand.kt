@@ -9,7 +9,7 @@ import java.util.function.Predicate
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
-class FilenamesCommand(private val botPaths: List<Path>): Command(botPaths) {
+class FilenamesCommand(private val botPaths: List<Path>) : Command(botPaths) {
 
     fun listBotEntries(gameTypesCSV: String?): List<BotEntry> {
         val gameTypes: List<String>? = gameTypesCSV?.split(",")?.map { it.trim() }
@@ -19,7 +19,7 @@ class FilenamesCommand(private val botPaths: List<Path>): Command(botPaths) {
         botNames.forEach { botName ->
             try {
                 val botInfo = getBotInfo(botName)
-                if (botInfo != null && (gameTypes == null || botInfo.gameTypes.containsAll(gameTypes)))
+                if (botInfo != null && (gameTypes == null || botInfo.gameTypes.split(",").containsAll(gameTypes)))
                     botEntries.add(BotEntry(botName, botInfo))
             } catch (ex: Exception) {
                 System.err.println("ERROR: ${ex.message}")
