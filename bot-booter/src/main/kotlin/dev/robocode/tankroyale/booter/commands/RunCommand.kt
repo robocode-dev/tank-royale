@@ -1,10 +1,10 @@
-package dev.robocode.tankroyale.bootstrap.commands
+package dev.robocode.tankroyale.booter.commands
 
-import dev.robocode.tankroyale.bootstrap.model.BotInfo
-import dev.robocode.tankroyale.bootstrap.util.Env
-import dev.robocode.tankroyale.bootstrap.util.OSUtil
-import dev.robocode.tankroyale.bootstrap.util.OSUtil.OSType.MacOS
-import dev.robocode.tankroyale.bootstrap.util.OSUtil.OSType.Windows
+import dev.robocode.tankroyale.booter.model.BotInfo
+import dev.robocode.tankroyale.booter.util.Env
+import dev.robocode.tankroyale.booter.util.OSUtil
+import dev.robocode.tankroyale.booter.util.OSUtil.OSType.MacOS
+import dev.robocode.tankroyale.booter.util.OSUtil.OSType.Windows
 import java.io.IOException
 import java.lang.Thread.sleep
 import java.nio.file.Files

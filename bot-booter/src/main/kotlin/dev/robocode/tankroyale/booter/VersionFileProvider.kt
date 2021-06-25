@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.bootstrap
+package dev.robocode.tankroyale.booter
 
 import picocli.CommandLine
 import java.io.BufferedReader
@@ -13,6 +13,6 @@ internal class VersionFileProvider : CommandLine.IVersionProvider {
             BufferedReader(InputStreamReader(inputStream))
                 .use { br -> version = br.readLine() }
         }
-        return arrayOf("Robocode Tank Royale Bootstrap $version")
+        return arrayOf("Robocode Tank Royale Bot Booter $version")
     }
 }

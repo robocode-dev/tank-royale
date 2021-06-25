@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.bootstrap.util
+package dev.robocode.tankroyale.booter.util
 
 enum class Env {
     SERVER_URL,

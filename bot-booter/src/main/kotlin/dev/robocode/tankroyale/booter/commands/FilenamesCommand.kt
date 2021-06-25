@@ -1,10 +1,9 @@
-package dev.robocode.tankroyale.bootstrap.commands
+package dev.robocode.tankroyale.booter.commands
 
-import dev.robocode.tankroyale.bootstrap.model.BotEntry
+import dev.robocode.tankroyale.booter.model.BotEntry
 import java.nio.file.Files
 import java.nio.file.Files.list
 import java.nio.file.Path
-import java.util.*
 import java.util.function.Predicate
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet

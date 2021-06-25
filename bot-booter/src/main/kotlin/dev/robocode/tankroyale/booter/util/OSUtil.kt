@@ -1,6 +1,4 @@
-package dev.robocode.tankroyale.bootstrap.util
-
-import java.util.*
+package dev.robocode.tankroyale.booter.util
 
 object OSUtil {
 

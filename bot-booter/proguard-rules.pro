@@ -5,6 +5,6 @@
 
 -keepattributes AnnotationDefault,*Annotation*
 
--keep public class dev.robocode.tankroyale.bootstrap.BootstrapKt { *; }
--keepclassmembernames public class dev.robocode.tankroyale.bootstrap.** { *; }
+-keep public class dev.robocode.tankroyale.booter.BooterKt { *; }
+-keepclassmembernames public class dev.robocode.tankroyale.booter.** { *; }
 -keepclassmembernames public class picocli.** { *; }

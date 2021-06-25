@@ -1,6 +1,6 @@
-package dev.robocode.tankroyale.bootstrap.commands
+package dev.robocode.tankroyale.booter.commands
 
-import dev.robocode.tankroyale.bootstrap.model.BotInfo
+import dev.robocode.tankroyale.booter.model.BotInfo
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.nio.file.Files

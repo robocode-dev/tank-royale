@@ -1,7 +1,7 @@
-package dev.robocode.tankroyale.bootstrap
+package dev.robocode.tankroyale.booter
 
-import dev.robocode.tankroyale.bootstrap.commands.FilenamesCommand
-import dev.robocode.tankroyale.bootstrap.commands.RunCommand
+import dev.robocode.tankroyale.booter.commands.FilenamesCommand
+import dev.robocode.tankroyale.booter.commands.RunCommand
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import picocli.CommandLine
@@ -12,19 +12,19 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
-val cmdLine = CommandLine(Bootstrap())
+val cmdLine = CommandLine(Booter())
 
 fun main(args: Array<String>) {
     exitProcess(cmdLine.execute(*args))
 }
 
 @Command(
-    name = "bootstrap",
+    name = "booter",
     versionProvider = VersionFileProvider::class,
     description = ["Tool for booting up Robocode bots"],
     mixinStandardHelpOptions = true
 )
-class Bootstrap : Callable<Int> {
+class Booter : Callable<Int> {
 
     override fun call(): Int {
         when {

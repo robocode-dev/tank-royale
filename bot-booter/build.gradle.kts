@@ -2,11 +2,11 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import proguard.gradle.ProGuardTask
 
-val title = "Robocode Tank Royale Bootstrap"
-description = "Bootstrap utility for booting up bots for Robocode Tank Royale"
+val title = "Robocode Tank Royale Bot Booter"
+description = "Utility app for booting up bots from locale storage onto websocket"
 
 group = "dev.robocode.tankroyale"
-val artifactId = "robocode-tankroyale-bootstrap"
+val artifactId = "robocode-tankroyale-booter"
 version = "0.8.1"
 
 val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
@@ -68,7 +68,7 @@ val fatJar = task<Jar>("fatJar") {
     manifest {
         attributes["Implementation-Title"] = title
         attributes["Implementation-Version"] = archiveVersion
-        attributes["Main-Class"] = "dev.robocode.tankroyale.bootstrap.BootstrapKt"
+        attributes["Main-Class"] = "dev.robocode.tankroyale.booter.BooterKt"
     }
     from(
         configurations.compileClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) },
