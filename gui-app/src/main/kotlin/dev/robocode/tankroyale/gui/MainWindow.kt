@@ -1,6 +1,6 @@
-package dev.robocode.tankroyale.gui.ui
+package dev.robocode.tankroyale.gui
 
-import dev.robocode.tankroyale.gui.bootstrap.BootstrapProcess
+import dev.robocode.tankroyale.gui.booter.BooterProcess
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
@@ -46,7 +46,7 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
         }
 
         onClosing {
-            BootstrapProcess.stopRunning()
+            BooterProcess.stopRunning()
             close()
         }
     }
@@ -82,7 +82,7 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
 
     override fun close() {
         Client.close()
-        BootstrapProcess.stopRunning()
+        BooterProcess.stopRunning()
         ServerProcess.stop()
     }
 }

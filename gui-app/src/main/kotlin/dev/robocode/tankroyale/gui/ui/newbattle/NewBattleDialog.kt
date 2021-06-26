@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
-import dev.robocode.tankroyale.gui.bootstrap.BootstrapProcess
-import dev.robocode.tankroyale.gui.bootstrap.BotEntry
+import dev.robocode.tankroyale.gui.booter.BooterProcess
+import dev.robocode.tankroyale.gui.booter.BotEntry
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.settings.ServerSettings
@@ -48,7 +48,7 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
     private val selectPanel = SelectBotsAndBotInfoPanel()
     private val gameTypeComboBox = GameTypeComboBox()
 
-    private val botsDirectoryEntries: List<BotEntry> by lazy { BootstrapProcess.list() }
+    private val botsDirectoryEntries: List<BotEntry> by lazy { BooterProcess.list() }
 
     init {
         val buttonPanel = JPanel(MigLayout("center, insets 0"))

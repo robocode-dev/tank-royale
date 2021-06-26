@@ -2,8 +2,8 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import proguard.gradle.ProGuardTask
 
-val title = "Robocode Tank Royale GUI"
-description = "Desktop application for Robocode Tank Royale"
+val title = "Robocode Tank Royale GUI Application"
+description = "GUI application for starting battles for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
 val artifactId = "robocode-tankroyale-gui"
@@ -27,8 +27,8 @@ buildscript {
 
 plugins {
     `java-library`
-    kotlin("jvm") version "1.5.20-RC"
-    kotlin("plugin.serialization") version "1.5.20-RC"
+    kotlin("jvm") version "1.5.20"
+    kotlin("plugin.serialization") version "1.5.20"
     `maven-publish`
     idea
     id("com.github.ben-manes.versions") version "0.39.0"
@@ -60,7 +60,7 @@ dependencies {
     implementation("com.miglayout:miglayout-swing:11.0")
 
     runtimeOnly("dev.robocode.tankroyale:robocode-tankroyale-server:${serverVersion}")
-    runtimeOnly("dev.robocode.tankroyale:robocode-tankroyale-bootstrap:${bootstrapVersion}")
+    runtimeOnly("dev.robocode.tankroyale:robocode-tankroyale-booter:${bootstrapVersion}")
 }
 
 val copyServerJar = task<Copy>("copyServerJar") {
@@ -73,7 +73,7 @@ val copyServerJar = task<Copy>("copyServerJar") {
 val copyBootstrapJar = task<Copy>("copyBootstrapJar") {
     from(configurations.runtimeClasspath)
     into(idea.module.outputDir)
-    include("robocode-tankroyale-bootstrap-*.jar")
+    include("robocode-tankroyale-booter-*.jar")
     rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
 }
 
@@ -94,7 +94,7 @@ val fatJar = task<Jar>("fatJar") {
     manifest {
         attributes["Implementation-Title"] = title
         attributes["Implementation-Version"] = archiveVersion
-        attributes["Main-Class"] = "dev.robocode.tankroyale.gui.ui.MainWindowKt"
+        attributes["Main-Class"] = "dev.robocode.tankroyale.gui.MainWindowKt"
     }
     from(
         configurations.compileClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) },

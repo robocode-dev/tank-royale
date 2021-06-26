@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.bootstrap
+package dev.robocode.tankroyale.gui.booter
 
 import kotlinx.serialization.Serializable
 

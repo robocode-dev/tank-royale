@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
-import dev.robocode.tankroyale.gui.bootstrap.BootstrapProcess
+import dev.robocode.tankroyale.gui.booter.BooterProcess
 import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.components.SortedListModel
@@ -124,7 +124,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             botsDirectoryList.selectedIndices.forEach {
                 files.add(botsDirectoryListModel[it].host)
             }
-            BootstrapProcess.run(files)
+            BooterProcess.run(files)
         }
 
         onAdd.subscribe(this) {
@@ -157,7 +157,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
                     val index = botsDirectoryList.locationToIndex(e.point)
                     if (index >= 0 && index < botsDirectoryListModel.size) {
                         val botInfo = botsDirectoryListModel[index]
-                        BootstrapProcess.run(listOf(botInfo.host))
+                        BooterProcess.run(listOf(botInfo.host))
                     }
                 }
             }

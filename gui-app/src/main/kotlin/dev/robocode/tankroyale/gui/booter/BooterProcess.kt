@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.bootstrap
+package dev.robocode.tankroyale.gui.booter
 
 import dev.robocode.tankroyale.gui.model.MessageConstants
 import dev.robocode.tankroyale.gui.settings.MiscSettings
@@ -11,9 +11,9 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicBoolean
 
-object BootstrapProcess {
+object BooterProcess {
 
-    private const val JAR_FILE_NAME = "robocode-tankroyale-bootstrap"
+    private const val JAR_FILE_NAME = "robocode-tankroyale-booter"
 
     private val isRunning = AtomicBoolean(false)
     private var runProcess: Process? = null

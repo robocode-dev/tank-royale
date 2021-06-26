@@ -1,4 +1,5 @@
--libraryjars <java.home>/lib/rt.jar
+-libraryjar <java.home>/jmods/java.base.jmod(!**.jar;!module-info.class)
+-libraryjar <java.home>/jmods/java.sql.jmod(!**.jar;!module-info.class)
 
 -dontshrink
 -dontoptimize

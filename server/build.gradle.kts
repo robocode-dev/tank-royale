@@ -6,8 +6,8 @@ val title = "Robocode Tank Royale Server"
 description = "Server for running Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
-val artifactId = "robocode-tankroyale-server"
-version = "0.8.12"
+val artifactId = "server"
+version = "0.8.13"
 
 val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
 
@@ -22,18 +22,18 @@ buildscript {
 
 plugins {
     application
-    kotlin("jvm") version "1.5.20-RC"
+    kotlin("jvm") version "1.5.20"
     `maven-publish`
     idea
     id("com.github.ben-manes.versions") version "0.39.0"
 }
 
 tasks.withType<KotlinCompile> {
-    sourceCompatibility = JavaVersion.VERSION_1_8.toString()
-    targetCompatibility = JavaVersion.VERSION_1_8.toString()
+    sourceCompatibility = JavaVersion.VERSION_11.toString()
+    targetCompatibility = JavaVersion.VERSION_11.toString()
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 }
 
