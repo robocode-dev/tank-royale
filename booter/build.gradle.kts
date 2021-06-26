@@ -23,11 +23,10 @@ buildscript {
 
 plugins {
     `java-library`
-    kotlin("jvm") version "1.5.20"
-    kotlin("plugin.serialization") version "1.5.20"
-    `maven-publish`
     idea
-    id("com.github.ben-manes.versions") version "0.39.0"
+    `maven-publish`
+    kotlin("jvm")
+    kotlin("plugin.serialization")
 }
 
 tasks.withType<KotlinCompile> {

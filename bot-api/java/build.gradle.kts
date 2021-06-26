@@ -9,7 +9,6 @@ plugins {
     `java-library`
     `maven-publish`
     idea
-    id("com.github.ben-manes.versions") version "0.38.0"
 }
 
 java {

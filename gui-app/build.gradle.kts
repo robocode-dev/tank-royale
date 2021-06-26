@@ -12,8 +12,8 @@ version = "0.8.3"
 val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
 
 
-val serverVersion = "0.8.12"
-val bootstrapVersion = "0.8.0"
+//val serverVersion = "0.8.12"
+//val bootstrapVersion = "0.8.0"
 
 
 buildscript {
@@ -27,11 +27,8 @@ buildscript {
 
 plugins {
     `java-library`
-    kotlin("jvm") version "1.5.20"
-    kotlin("plugin.serialization") version "1.5.20"
     `maven-publish`
     idea
-    id("com.github.ben-manes.versions") version "0.39.0"
 }
 
 tasks.withType<KotlinCompile> {
@@ -59,8 +56,8 @@ dependencies {
 
     implementation("com.miglayout:miglayout-swing:11.0")
 
-    runtimeOnly("dev.robocode.tankroyale:robocode-tankroyale-server:${serverVersion}")
-    runtimeOnly("dev.robocode.tankroyale:robocode-tankroyale-booter:${bootstrapVersion}")
+    runtimeOnly(project(":server"))
+    runtimeOnly(project(":booter"))
 }
 
 val copyServerJar = task<Copy>("copyServerJar") {
