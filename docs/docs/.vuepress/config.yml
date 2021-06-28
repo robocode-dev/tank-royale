@@ -8,7 +8,7 @@ themeConfig:
     - title: Introduction
       path: /articles/intro
     - title: Tank Royale
-      path: /articles/tank-royale
+      path: /articles/tankroyale
     - title: Bot Anatomy
       path: /articles/anatomy
     - title: Coordinates and Angles

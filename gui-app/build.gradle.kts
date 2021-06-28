@@ -27,6 +27,8 @@ buildscript {
 
 plugins {
     `java-library`
+    kotlin("jvm")
+    kotlin("plugin.serialization")
     `maven-publish`
     idea
 }
@@ -61,14 +63,14 @@ dependencies {
 }
 
 val copyServerJar = task<Copy>("copyServerJar") {
-    from(configurations.runtimeClasspath)
+    from(project(":server").file("/build/libs"))
     into(idea.module.outputDir)
     include("robocode-tankroyale-server-*.jar")
     rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
 }
 
-val copyBootstrapJar = task<Copy>("copyBootstrapJar") {
-    from(configurations.runtimeClasspath)
+val copyBooterJar = task<Copy>("copyBooterJar") {
+    from(project(":booter").file("/build/libs"))
     into(idea.module.outputDir)
     include("robocode-tankroyale-booter-*.jar")
     rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
@@ -84,8 +86,8 @@ tasks.processResources {
 }
 
 val fatJar = task<Jar>("fatJar") {
-    dependsOn(copyServerJar)
-    dependsOn(copyBootstrapJar)
+//    dependsOn(copyServerJar)
+//    dependsOn(copyBootstrapJar)
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {

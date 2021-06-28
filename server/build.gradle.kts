@@ -6,10 +6,9 @@ val title = "Robocode Tank Royale Server"
 description = "Server for running Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
-val artifactId = "server"
 version = "0.8.13"
 
-val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
+val archiveFileName = "$buildDir/libs/robocode-tankroyale-server-$version.jar"
 
 buildscript {
     repositories {
@@ -22,10 +21,10 @@ buildscript {
 
 plugins {
     application
-    `maven-publish`
-    idea
     kotlin("jvm")
     kotlin("plugin.serialization")
+    `maven-publish`
+    idea
 }
 
 tasks.withType<KotlinCompile> {

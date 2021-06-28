@@ -1,10 +1,10 @@
 package dev.robocode.tankroyale.gui.ui.config
 
+import dev.robocode.tankroyale.gui.MainWindow
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.settings.MiscSettings
-import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout

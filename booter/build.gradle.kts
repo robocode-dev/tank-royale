@@ -6,10 +6,9 @@ val title = "Robocode Tank Royale Bot Booter"
 description = "Utility app for booting up bots from locale storage onto websocket"
 
 group = "dev.robocode.tankroyale"
-val artifactId = "robocode-tankroyale-booter"
 version = "0.8.1"
 
-val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
+val archiveFileName = "$buildDir/libs/robocode-tankroyale-booter-$version.jar"
 
 
 buildscript {
@@ -23,10 +22,10 @@ buildscript {
 
 plugins {
     `java-library`
-    idea
-    `maven-publish`
     kotlin("jvm")
     kotlin("plugin.serialization")
+    idea
+    `maven-publish`
 }
 
 tasks.withType<KotlinCompile> {
