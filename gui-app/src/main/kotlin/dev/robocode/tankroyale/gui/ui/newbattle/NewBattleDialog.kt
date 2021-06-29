@@ -102,11 +102,11 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
                 BotInfo(
                     info.name,
                     info.version,
-                    info.authors,
+                    info.authors.split(","),
                     info.description,
                     info.url,
-                    info.countryCodes,
-                    info.gameTypes,
+                    info.countryCodes.split(","),
+                    info.gameTypes.split(",").toSet(),
                     info.platform,
                     info.programmingLang,
                     host = botEntry.filename, // host serves as filename here

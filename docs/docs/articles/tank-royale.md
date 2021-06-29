@@ -24,7 +24,7 @@ The game has been split into separate components:
 
 - Server, which is used for running games and enforce the rules.
 - Graphical User Interface (UI) for starting, viewing, and controlling battles.
-- Bootstrap for booting up bots from a local machine.
+- Booter for booting up bots from a local machine.
 
 Currently, these components have been developed using Kotlin and Java as programming languages and do require Java to be installed. But it is possible to develop these components in other programming languages and platforms. So the ones provided with Tank Royale serves as a [reference implementation](https://en.wikipedia.org/wiki/Reference_implementation). Other developers may create their own variant of one or more components, as long as they stay compatible with the original Tank Royale game.
 

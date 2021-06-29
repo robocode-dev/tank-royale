@@ -12,10 +12,6 @@ version = "0.8.3"
 val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
 
 
-//val serverVersion = "0.8.12"
-//val bootstrapVersion = "0.8.0"
-
-
 buildscript {
     repositories {
         mavenCentral()
@@ -86,8 +82,8 @@ tasks.processResources {
 }
 
 val fatJar = task<Jar>("fatJar") {
-//    dependsOn(copyServerJar)
-//    dependsOn(copyBootstrapJar)
+    dependsOn(copyServerJar)
+    dependsOn(copyBooterJar)
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {

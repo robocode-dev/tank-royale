@@ -12,11 +12,11 @@ data class BotEntry(
 data class Info(
     val name: String,
     val version: String,
-    val authors: List<String>,
+    val authors: String,
     val description: String? = null,
     val url: String? = null,
-    val countryCodes: List<String>,
-    val gameTypes: Set<String>,
+    val countryCodes: String,
+    val gameTypes: String,
     val programmingLang: String? = null,
     val platform: String? = null
 )

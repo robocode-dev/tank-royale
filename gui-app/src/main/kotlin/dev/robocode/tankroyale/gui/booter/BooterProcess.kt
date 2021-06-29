@@ -26,9 +26,8 @@ object BooterProcess {
     fun list(): List<BotEntry> {
         val builder = ProcessBuilder(
             "java",
-            "-Dserver.url=${ServerSettings.serverUrl}",
             "-jar",
-            getBootstrapJar(),
+            getBooterJar(),
             "list",
             "--bot-dirs=${getBotDirs()}"
         )
@@ -54,7 +53,7 @@ object BooterProcess {
             "java",
             "-Dserver.url=${ServerSettings.serverUrl}",
             "-jar",
-            getBootstrapJar(),
+            getBooterJar(),
             "run",
             "--bot-dirs=${getBotDirs()}"
         )
@@ -92,8 +91,8 @@ object BooterProcess {
         runProcess = null
     }
 
-    private fun getBootstrapJar(): String {
-        val propertyValue = System.getProperty("bootstrapJar")
+    private fun getBooterJar(): String {
+        val propertyValue = System.getProperty("booterJar")
         if (propertyValue != null) {
             val path = Paths.get(propertyValue)
             if (!Files.exists(path)) {

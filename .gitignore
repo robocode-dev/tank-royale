@@ -12,3 +12,6 @@ bin/
 obj/
 
 *.iml
+/games.properties
+/misc.properties
+/server.properties

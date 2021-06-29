@@ -16,8 +16,8 @@ public abstract class Bot extends BaseBot implements IBot {
   /**
    * Constructor for initializing a new instance of the BaseBot class, which should be used when
    * both BotInfo and server URL is provided through environment variables, i.e., when starting up
-   * the bot using a bootstrap. These environment variables must be set to provide the server URL
-   * and bot information, and are automatically set by the bootstrap tool for Robocode.
+   * the bot using a booter. These environment variables must be set to provide the server URL
+   * and bot information, and are automatically set by the booter tool for Robocode.
    *
    * <p><b>Example of how to set the predefined environment variables:</b>
    *
