@@ -26,7 +26,7 @@ public class Fire extends Bot {
 
   /** Constructor, which loads the bot settings file */
   protected Fire() throws IOException {
-    super(BotInfo.fromJsonFile("/fire.json"));
+    super(BotInfo.fromFile("/fire.json"));
   }
 
   /** This method runs our bot program, where each command is executed one at a time in a loop. */

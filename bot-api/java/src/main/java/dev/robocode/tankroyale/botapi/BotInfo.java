@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.neovisionaries.i18n.CountryCode;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -140,7 +139,7 @@ public final class BotInfo {
    * @return A BotInfo instance containing the bot properties read from the file.
    * @throws IOException if an error occurs when reading the file.
    */
-  public static BotInfo fromJsonFile(String filename) throws IOException {
+  public static BotInfo fromFile(String filename) throws IOException {
     try (InputStream is = BotInfo.class.getResourceAsStream(filename)) {
       if (is == null) {
         throw new BotException("Could not read the JSON file: " + filename);
@@ -270,7 +269,7 @@ public final class BotInfo {
         || collection.stream().allMatch(String::isBlank));
   }
 
-  private class JsonProperties {
+  private static class JsonProperties {
     String name;
     String version;
     String authors;

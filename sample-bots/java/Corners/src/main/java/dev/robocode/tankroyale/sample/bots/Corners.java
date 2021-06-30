@@ -26,7 +26,7 @@ public class Corners extends Bot {
 
   /** Constructor, which loads the bot settings file */
   Corners() throws IOException {
-    super(BotInfo.fromJsonFile("/Corners.json"));
+    super(BotInfo.fromFile("/Corners.json"));
   }
 
   /** This method runs our bot program, where each command is executed one at a time in a loop. */

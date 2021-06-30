@@ -1,6 +1,0 @@
-rootProject.name = 'robocode-tankroyale'
-include 'booter'
-include 'bot-api:java'
-include 'gui-app'
-include 'schema-gen:java'
-include 'server'
