@@ -25,3 +25,5 @@ include("sample-bots:java:SpinBot")
 include("sample-bots:java:Target")
 include("sample-bots:java:TrackFire")
 include("sample-bots:java:Walls")
+
+include("sample-bots:java")
