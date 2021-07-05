@@ -8,7 +8,9 @@ abstract class BaseTask : DefaultTask() {
     @Internal
     protected val buildDir: Path = cwd.resolve("build")
     @Internal
-    protected val libsDir: Path = buildDir.resolve("libs")
+    protected val archiveDir: Path = buildDir.resolve("archive")
+    @Internal
+    protected val libsDir: Path = archiveDir.resolve("libs")
 
     protected fun createDir(path: Path) {
         if (!Files.exists(path)) {
@@ -37,6 +39,7 @@ abstract class JavaSampleBotsTask : BaseTask() {
     @TaskAction
     fun build() {
         createDir(buildDir)
+        createDir(archiveDir)
         createDir(libsDir)
 
         Files.list(cwd).forEach { projectDir -> run {
@@ -65,10 +68,10 @@ abstract class JavaSampleBotsTask : BaseTask() {
     }
 
     private fun getBotJarArchiveFilename(projectDir: Path): Path? {
-        val buildDir: Path = projectDir.resolve("build/libs")
-        for (dir in Files.list(buildDir)) {
+        val archiveDir: Path = projectDir.resolve("build/libs")
+        for (dir in Files.list(archiveDir)) {
             if (dir.startsWith(projectDir)) {
-                return buildDir.resolve(dir)
+                return archiveDir.resolve(dir)
             }
         }
         System.err.println("Could not find jar archive in dir: $projectDir")
@@ -78,12 +81,12 @@ abstract class JavaSampleBotsTask : BaseTask() {
     private fun copyBotJsonFile(projectDir: Path) {
         val filename = projectDir.fileName.toString() + ".json"
         val jsonFilePath = projectDir.resolve("src/main/resources/$filename")
-        Files.copy(jsonFilePath, buildDir.resolve(filename))
+        Files.copy(jsonFilePath, archiveDir.resolve(filename))
     }
 
     private fun createCmdFile(projectDir: Path) {
         val filename = projectDir.fileName.toString() + ".cmd"
-        val printWriter = object : java.io.PrintWriter(buildDir.resolve(filename).toFile()) {
+        val printWriter = object : java.io.PrintWriter(archiveDir.resolve(filename).toFile()) {
             override fun println() {
                 write("\r\n") // Windows Carriage Return + New-line
             }
@@ -99,7 +102,7 @@ abstract class JavaSampleBotsTask : BaseTask() {
 
     private fun createShFile(projectDir: Path) {
         val filename = projectDir.fileName.toString() + ".sh"
-        val printWriter = object : java.io.PrintWriter(buildDir.resolve(filename).toFile()) {
+        val printWriter = object : java.io.PrintWriter(archiveDir.resolve(filename).toFile()) {
             override fun println() {
                 write("\n") // Unix New-line
             }
@@ -115,7 +118,7 @@ abstract class JavaSampleBotsTask : BaseTask() {
 
     private fun createCommandFile(projectDir: Path) {
         val filename = projectDir.fileName.toString() + ".command"
-        val printWriter = object : java.io.PrintWriter(buildDir.resolve(filename).toFile()) {
+        val printWriter = object : java.io.PrintWriter(archiveDir.resolve(filename).toFile()) {
             override fun println() {
                 write("\n") // OS-X New-line
             }
@@ -132,7 +135,7 @@ abstract class JavaSampleBotsTask : BaseTask() {
     }
 
     private fun copyIcon() {
-        Files.copy(cwd.resolve("../../gfx/Tank/Tank.ico"), buildDir.resolve("robocode.ico"))
+        Files.copy(cwd.resolve("../../gfx/Tank/Tank.ico"), archiveDir.resolve("robocode.ico"))
     }
 }
 
@@ -152,12 +155,21 @@ task<Copy>("copyBotApiJar") {
     dependsOn("copyBotsToArchiveDir")
 
     from(project(":bot-api:java").file("build/libs/robocode-tankroyale-bot-api-0.9.8.jar"))
-    into(Paths.get(System.getProperty("user.dir")).resolve("build/libs"))
+    into(Paths.get(System.getProperty("user.dir")).resolve("build/archive/libs"))
+}
+
+task<Zip>("zipSampleBots") {
+    dependsOn("copyBotApiJar")
+
+    archiveFileName.set("robocode-tankoyale-sample-bots.zip")
+    destinationDirectory.set(Paths.get(System.getProperty("user.dir")).resolve("build").toFile())
+
+    from(Paths.get(System.getProperty("user.dir")).resolve("build/archive").toFile())
 }
 
 task<Clean>("clean")
 
 tasks.register("build") {
     dependsOn("clean")
-    dependsOn("copyBotApiJar")
+    dependsOn("zipSampleBots")
 }
