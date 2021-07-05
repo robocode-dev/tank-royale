@@ -41,12 +41,15 @@ abstract class JavaSampleBotsTask : BaseTask() {
 
         Files.list(cwd).forEach { projectDir -> run {
             if (Files.isDirectory(projectDir) && isBotProjectDir(projectDir)) {
-                copyBotJarArchive(projectDir, libsDir)
-                copyBotJsonFile(projectDir, buildDir)
-                createCmdFile(projectDir, buildDir)
-                createShFile(projectDir, buildDir)
+                copyBotJarArchive(projectDir)
+                copyBotJsonFile(projectDir)
+                createCmdFile(projectDir)
+                createShFile(projectDir)
+                createCommandFile(projectDir)
             }
         }}
+
+        copyIcon()
     }
 
     private fun isBotProjectDir(dir: Path): Boolean {
@@ -54,10 +57,10 @@ abstract class JavaSampleBotsTask : BaseTask() {
         return !filename.startsWith(".") && filename != "build"
     }
 
-    private fun copyBotJarArchive(projectDir: Path, destDir: Path) {
+    private fun copyBotJarArchive(projectDir: Path) {
         val jarFilename = getBotJarArchiveFilename(projectDir)
         if (jarFilename != null) {
-            Files.copy(jarFilename, destDir.resolve(jarFilename.fileName))
+            Files.copy(jarFilename, libsDir.resolve(jarFilename.fileName))
         }
     }
 
@@ -72,15 +75,15 @@ abstract class JavaSampleBotsTask : BaseTask() {
         return null
     }
 
-    private fun copyBotJsonFile(projectDir: Path, destDir: Path) {
+    private fun copyBotJsonFile(projectDir: Path) {
         val filename = projectDir.fileName.toString() + ".json"
         val jsonFilePath = projectDir.resolve("src/main/resources/$filename")
-        Files.copy(jsonFilePath, destDir.resolve(filename))
+        Files.copy(jsonFilePath, buildDir.resolve(filename))
     }
 
-    private fun createCmdFile(projectDir: Path, destDir: Path) {
+    private fun createCmdFile(projectDir: Path) {
         val filename = projectDir.fileName.toString() + ".cmd"
-        val printWriter = object : java.io.PrintWriter(destDir.resolve(filename).toFile()) {
+        val printWriter = object : java.io.PrintWriter(buildDir.resolve(filename).toFile()) {
             override fun println() {
                 write("\r\n") // Windows Carriage Return + New-line
             }
@@ -94,9 +97,9 @@ abstract class JavaSampleBotsTask : BaseTask() {
         }
     }
 
-    private fun createShFile(projectDir: Path, destDir: Path) {
+    private fun createShFile(projectDir: Path) {
         val filename = projectDir.fileName.toString() + ".sh"
-        val printWriter = object : java.io.PrintWriter(destDir.resolve(filename).toFile()) {
+        val printWriter = object : java.io.PrintWriter(buildDir.resolve(filename).toFile()) {
             override fun println() {
                 write("\n") // Unix New-line
             }
@@ -108,6 +111,28 @@ abstract class JavaSampleBotsTask : BaseTask() {
             it.println("java -cp libs/$jarFilename:libs/robocode-tankroyale-bot-api-0.9.8.jar $className")
             it.close()
         }
+    }
+
+    private fun createCommandFile(projectDir: Path) {
+        val filename = projectDir.fileName.toString() + ".command"
+        val printWriter = object : java.io.PrintWriter(buildDir.resolve(filename).toFile()) {
+            override fun println() {
+                write("\n") // OS-X New-line
+            }
+        }
+        printWriter.use {
+            it.println("#!/bin/sh")
+            val jarFilename = getBotJarArchiveFilename(projectDir)!!.fileName
+            val name = projectDir.fileName.toString()
+            val className = "dev.robocode.tankroyale.sample.bots.$name"
+            val xdockIconAndName = "-Xdock:icon=robocode.ico -Xdock:name=$name"
+            it.println("java $xdockIconAndName -cp libs/$jarFilename:libs/robocode-tankroyale-bot-api-0.9.8.jar $className")
+            it.close()
+        }
+    }
+
+    private fun copyIcon() {
+        Files.copy(cwd.resolve("../../gfx/Tank/Tank.ico"), buildDir.resolve("robocode.ico"))
     }
 }
 
