@@ -44,7 +44,7 @@ abstract class JavaSampleBotsTask : BaseTask() {
 
         Files.list(cwd).forEach { projectDir -> run {
             if (Files.isDirectory(projectDir) && isBotProjectDir(projectDir)) {
-                copyBotJarArchive(projectDir)
+                copyBotJar(projectDir)
                 copyBotJsonFile(projectDir)
                 createCmdFile(projectDir)
                 createShFile(projectDir)
@@ -60,22 +60,19 @@ abstract class JavaSampleBotsTask : BaseTask() {
         return !filename.startsWith(".") && filename != "build"
     }
 
-    private fun copyBotJarArchive(projectDir: Path) {
-        val jarFilename = getBotJarArchiveFilename(projectDir)
-        if (jarFilename != null) {
-            Files.copy(jarFilename, libsDir.resolve(jarFilename.fileName))
-        }
+    private fun copyBotJar(projectDir: Path) {
+        val jarFilename = getBotJarPath(projectDir)
+        Files.copy(jarFilename, libsDir.resolve(jarFilename.fileName))
     }
 
-    private fun getBotJarArchiveFilename(projectDir: Path): Path? {
+    private fun getBotJarPath(projectDir: Path): Path {
         val archiveDir: Path = projectDir.resolve("build/libs")
         for (dir in Files.list(archiveDir)) {
             if (dir.startsWith(projectDir)) {
                 return archiveDir.resolve(dir)
             }
         }
-        System.err.println("Could not find jar archive in dir: $projectDir")
-        return null
+        throw IllegalStateException("Could not find jar archive in dir: $projectDir")
     }
 
     private fun copyBotJsonFile(projectDir: Path) {
@@ -93,7 +90,7 @@ abstract class JavaSampleBotsTask : BaseTask() {
         }
 
         printWriter.use {
-            val jarFilename = getBotJarArchiveFilename(projectDir)!!.fileName
+            val jarFilename = getBotJarPath(projectDir).fileName
             val className = "dev.robocode.tankroyale.sample.bots." + projectDir.fileName.toString()
             it.println("java -cp libs/$jarFilename;libs/robocode-tankroyale-bot-api-0.9.8.jar $className")
             it.close()
@@ -109,7 +106,7 @@ abstract class JavaSampleBotsTask : BaseTask() {
         }
         printWriter.use {
             it.println("#!/bin/sh")
-            val jarFilename = getBotJarArchiveFilename(projectDir)!!.fileName
+            val jarFilename = getBotJarPath(projectDir).fileName
             val className = "dev.robocode.tankroyale.sample.bots." + projectDir.fileName.toString()
             it.println("java -cp libs/$jarFilename:libs/robocode-tankroyale-bot-api-0.9.8.jar $className")
             it.close()
@@ -125,7 +122,7 @@ abstract class JavaSampleBotsTask : BaseTask() {
         }
         printWriter.use {
             it.println("#!/bin/sh")
-            val jarFilename = getBotJarArchiveFilename(projectDir)!!.fileName
+            val jarFilename = getBotJarPath(projectDir).fileName
             val name = projectDir.fileName.toString()
             val className = "dev.robocode.tankroyale.sample.bots.$name"
             val xdockIconAndName = "-Xdock:icon=robocode.ico -Xdock:name=$name"
