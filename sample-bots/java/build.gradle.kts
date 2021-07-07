@@ -151,8 +151,10 @@ task<JavaSampleBotsTask>("copyBotsToArchiveDir") {
 task<Copy>("copyBotApiJar") {
     dependsOn("copyBotsToArchiveDir")
 
-    from(project(":bot-api:java").file("build/libs/robocode-tankroyale-bot-api-0.9.8.jar"))
+    from(project(":bot-api:java").file("build/libs"))
     into(Paths.get(System.getProperty("user.dir")).resolve("build/archive/libs"))
+    include("robocode-tankroyale-bot-api-*.jar")
+    exclude("*javadoc*")
 }
 
 task<Zip>("zipSampleBots") {
