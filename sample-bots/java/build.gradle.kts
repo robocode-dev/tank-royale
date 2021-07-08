@@ -4,6 +4,7 @@ import java.nio.file.Files
 
 
 abstract class BaseTask : DefaultTask() {
+
     @Internal
     protected val cwd: Path = Paths.get(System.getProperty("user.dir"))
 
@@ -12,9 +13,6 @@ abstract class BaseTask : DefaultTask() {
 
     @Internal
     protected val libsDir: Path = archiveDir.resolve("libs")
-
-    @Internal
-    protected lateinit var botApiJarFilename: String
 
     protected fun createDir(path: Path) {
         if (!Files.exists(path)) {
@@ -91,7 +89,7 @@ abstract class JavaSampleBotsTask : BaseTask() {
         printWriter.use {
             val jarFilename = getBotJarPath(projectDir).fileName
             val className = "dev.robocode.tankroyale.sample.bots." + projectDir.fileName.toString()
-            it.println("java -cp libs/$jarFilename;libs/robocode-tankroyale-bot-api-0.9.8.jar $className")
+            it.println("java -cp libs/$jarFilename;libs/${project.extra["botApiJarFilename"]} $className")
             it.close()
         }
     }
@@ -107,7 +105,7 @@ abstract class JavaSampleBotsTask : BaseTask() {
             it.println("#!/bin/sh")
             val jarFilename = getBotJarPath(projectDir).fileName
             val className = "dev.robocode.tankroyale.sample.bots." + projectDir.fileName.toString()
-            it.println("java -cp libs/$jarFilename:libs/robocode-tankroyale-bot-api-0.9.8.jar $className")
+            it.println("java -cp libs/$jarFilename:libs/${project.extra["botApiJarFilename"]} $className")
             it.close()
         }
     }
@@ -125,7 +123,7 @@ abstract class JavaSampleBotsTask : BaseTask() {
             val name = projectDir.fileName.toString()
             val className = "dev.robocode.tankroyale.sample.bots.$name"
             val xdockIconAndName = "-Xdock:icon=robocode.ico -Xdock:name=$name"
-            it.println("java $xdockIconAndName -cp libs/$jarFilename:libs/robocode-tankroyale-bot-api-0.9.8.jar $className")
+            it.println("java $xdockIconAndName -cp libs/$jarFilename:libs/${project.extra["botApiJarFilename"]} $className")
             it.close()
         }
     }
@@ -147,7 +145,7 @@ abstract class CreateDirsTask : BaseTask() {
 abstract class PrepareBotApiJarFilenameTask : BaseTask() {
     @TaskAction
     fun build() {
-        botApiJarFilename =
+        project.extra["botApiJarFilename"] =
             Files.list(libsDir).filter { path ->
                 path.fileName.toString().startsWith("robocode-tankroyale-bot-api")
             }.findFirst().get().fileName.toString()
