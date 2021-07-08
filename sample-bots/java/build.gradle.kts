@@ -2,15 +2,22 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.Files
 
+
 abstract class BaseTask : DefaultTask() {
     @Internal
     protected val cwd: Path = Paths.get(System.getProperty("user.dir"))
+
     @Internal
     protected val buildDir: Path = cwd.resolve("build")
+
     @Internal
     protected val archiveDir: Path = buildDir.resolve("archive")
+
     @Internal
     protected val libsDir: Path = archiveDir.resolve("libs")
+
+    @Internal
+    protected lateinit var botApiJarFilename: String
 
     protected fun createDir(path: Path) {
         if (!Files.exists(path)) {
@@ -38,19 +45,17 @@ abstract class Clean : BaseTask() {
 abstract class JavaSampleBotsTask : BaseTask() {
     @TaskAction
     fun build() {
-        createDir(buildDir)
-        createDir(archiveDir)
-        createDir(libsDir)
-
-        Files.list(cwd).forEach { projectDir -> run {
-            if (Files.isDirectory(projectDir) && isBotProjectDir(projectDir)) {
-                copyBotJar(projectDir)
-                copyBotJsonFile(projectDir)
-                createCmdFile(projectDir)
-                createShFile(projectDir)
-                createCommandFile(projectDir)
+        Files.list(cwd).forEach { projectDir ->
+            run {
+                if (Files.isDirectory(projectDir) && isBotProjectDir(projectDir)) {
+                    copyBotJar(projectDir)
+                    copyBotJsonFile(projectDir)
+                    createCmdFile(projectDir)
+                    createShFile(projectDir)
+                    createCommandFile(projectDir)
+                }
             }
-        }}
+        }
 
         copyIcon()
     }
@@ -136,7 +141,43 @@ abstract class JavaSampleBotsTask : BaseTask() {
     }
 }
 
+abstract class CreateDirsTask : BaseTask() {
+    @TaskAction
+    fun build() {
+        createDir(buildDir)
+        createDir(archiveDir)
+        createDir(libsDir)
+    }
+}
+
+abstract class PrepareBotApiJarFilenameTask : BaseTask() {
+    @TaskAction
+    fun build() {
+        botApiJarFilename =
+            Files.list(libsDir).filter { path ->
+                path.fileName.toString().startsWith("robocode-tankroyale-bot-api")
+            }.findFirst().get().fileName.toString()
+    }
+}
+
+task<CreateDirsTask>("createDirs") {}
+
+task<Copy>("copyBotApiJar") {
+    dependsOn("createDirs")
+
+    from(project(":bot-api:java").file("build/libs"))
+    into(Paths.get(System.getProperty("user.dir")).resolve("build/archive/libs"))
+    include("robocode-tankroyale-bot-api-*.jar")
+    exclude("*javadoc*")
+}
+
+task<PrepareBotApiJarFilenameTask>("prepareBotApiJarFilenameTask") {
+    dependsOn("copyBotApiJar")
+}
+
 task<JavaSampleBotsTask>("copyBotsToArchiveDir") {
+    dependsOn("prepareBotApiJarFilenameTask")
+
     dependsOn(":sample-bots:java:Corners:build")
     dependsOn(":sample-bots:java:Crazy:build")
     dependsOn(":sample-bots:java:Fire:build")
@@ -148,17 +189,8 @@ task<JavaSampleBotsTask>("copyBotsToArchiveDir") {
     dependsOn(":sample-bots:java:Walls:build")
 }
 
-task<Copy>("copyBotApiJar") {
-    dependsOn("copyBotsToArchiveDir")
-
-    from(project(":bot-api:java").file("build/libs"))
-    into(Paths.get(System.getProperty("user.dir")).resolve("build/archive/libs"))
-    include("robocode-tankroyale-bot-api-*.jar")
-    exclude("*javadoc*")
-}
-
 task<Zip>("zipSampleBots") {
-    dependsOn("copyBotApiJar")
+    dependsOn("copyBotsToArchiveDir")
 
     archiveFileName.set("robocode-tankoyale-sample-bots.zip")
     destinationDirectory.set(Paths.get(System.getProperty("user.dir")).resolve("build").toFile())
