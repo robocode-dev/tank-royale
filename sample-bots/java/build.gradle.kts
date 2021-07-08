@@ -8,10 +8,7 @@ abstract class BaseTask : DefaultTask() {
     protected val cwd: Path = Paths.get(System.getProperty("user.dir"))
 
     @Internal
-    protected val buildDir: Path = cwd.resolve("build")
-
-    @Internal
-    protected val archiveDir: Path = buildDir.resolve("archive")
+    protected val archiveDir: Path = project.buildDir.toPath().resolve("archive")
 
     @Internal
     protected val libsDir: Path = archiveDir.resolve("libs")
@@ -35,11 +32,8 @@ abstract class BaseTask : DefaultTask() {
     }
 }
 
-abstract class Clean : BaseTask() {
-    @TaskAction
-    fun clean() {
-        deleteDir(buildDir)
-    }
+val clean = tasks.register<Delete>("clean") {
+    delete(project.buildDir)
 }
 
 abstract class JavaSampleBotsTask : BaseTask() {
@@ -144,7 +138,7 @@ abstract class JavaSampleBotsTask : BaseTask() {
 abstract class CreateDirsTask : BaseTask() {
     @TaskAction
     fun build() {
-        createDir(buildDir)
+        createDir(project.buildDir.toPath())
         createDir(archiveDir)
         createDir(libsDir)
     }
@@ -198,9 +192,7 @@ task<Zip>("zipSampleBots") {
     from(Paths.get(System.getProperty("user.dir")).resolve("build/archive").toFile())
 }
 
-task<Clean>("clean")
-
 tasks.register("build") {
-    dependsOn("clean")
+    dependsOn(clean)
     dependsOn("zipSampleBots")
 }
