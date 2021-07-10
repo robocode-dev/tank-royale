@@ -59,6 +59,8 @@ dependencies {
 }
 
 val copyServerJar = task<Copy>("copyServerJar") {
+    dependsOn(":server:proguard")
+
     from(project(":server").file("/build/libs"))
     into(idea.module.outputDir)
     include("robocode-tankroyale-server-*.jar")
@@ -66,6 +68,8 @@ val copyServerJar = task<Copy>("copyServerJar") {
 }
 
 val copyBooterJar = task<Copy>("copyBooterJar") {
+    dependsOn(":booter:proguard")
+
     from(project(":booter").file("/build/libs"))
     into(idea.module.outputDir)
     include("robocode-tankroyale-booter-*.jar")
@@ -81,9 +85,21 @@ tasks.processResources {
     })
 }
 
-val fatJar = task<Jar>("fatJar") {
+tasks.jar {
     dependsOn(copyServerJar)
     dependsOn(copyBooterJar)
+}
+
+tasks.inspectClassesForKotlinIC {
+    dependsOn(copyServerJar)
+    dependsOn(copyBooterJar)
+}
+
+val fatJar = task<Jar>("fatJar") {
+    dependsOn("copyServerJar")
+    dependsOn("copyBooterJar")
+    dependsOn(":server:jar")
+    dependsOn(":booter:jar")
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
