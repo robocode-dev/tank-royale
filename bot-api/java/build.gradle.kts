@@ -36,6 +36,7 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 tasks.withType<Javadoc> {
+    title = "Robocode Tank Royale Bot API for Java $version"
     source(sourceSets.main.get().allJava)
     options.memberLevel = JavadocMemberLevel.PUBLIC
     exclude(
