@@ -2,15 +2,18 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.Files
 
+defaultTasks("clean", "build")
 
 val clean = tasks.register<Delete>("clean") {
     delete(project.buildDir)
 }
 
-abstract class BaseTask : DefaultTask() {
+tasks.register("build") {
+    dependsOn(clean)
+    dependsOn(zipSampleBots)
+}
 
-    @Internal
-    protected val cwd: Path = Paths.get(System.getProperty("user.dir"))
+abstract class BaseTask : DefaultTask() {
 
     @Internal
     protected val archiveDir: Path = project.buildDir.toPath().resolve("archive")
@@ -46,12 +49,14 @@ abstract class CreateDirs : BaseTask() {
 val createDirs = task<CreateDirs>("createDirs") {}
 
 val copyBotApiJar = task<Copy>("copyBotApiJar") {
+    dependsOn(":bot-api:java:jar")
     dependsOn(createDirs)
 
     from(project(":bot-api:java").file("build/libs"))
-    into(Paths.get(System.getProperty("user.dir")).resolve("build/archive/libs"))
-    include("robocode-tankroyale-bot-api-*.jar")
+    into(project.buildDir.resolve("archive/libs"))
+    include("java-*.jar")
     exclude("*javadoc*")
+    rename("^.*(\\d\\.\\d\\.\\d)\\.jar", "robocode-tankroyale-bot-api-$1.jar")
 }
 
 abstract class FindBotApiJarFilename : BaseTask() {
@@ -71,7 +76,7 @@ val findBotApiJarFilename = task<FindBotApiJarFilename>("findBotApiJarFilename")
 abstract class CopyBotFiles : BaseTask() {
     @TaskAction
     fun prepareBotFiles() {
-        Files.list(cwd).forEach { projectDir ->
+        Files.list(project.projectDir.toPath()).forEach { projectDir ->
             run {
                 if (Files.isDirectory(projectDir) && isBotProjectDir(projectDir)) {
                     copyBotJar(projectDir)
@@ -159,7 +164,7 @@ val copyBotFiles = task<CopyBotFiles>("copyBotFiles") {
 abstract class CopyRobocodeIcon : BaseTask() {
     @TaskAction
     fun copyIcon() {
-        Files.copy(cwd.resolve("../../gfx/Tank/Tank.ico"), archiveDir.resolve("robocode.ico"))
+        Files.copy(project.projectDir.toPath().resolve("../../gfx/Tank/Tank.ico"), archiveDir.resolve("robocode.ico"))
     }
 }
 
@@ -173,9 +178,4 @@ val zipSampleBots = task<Zip>("zipSampleBots") {
     destinationDirectory.set(Paths.get(System.getProperty("user.dir")).resolve("build").toFile())
 
     from(Paths.get(System.getProperty("user.dir")).resolve("build/archive").toFile())
-}
-
-tasks.register("build") {
-    dependsOn(clean)
-    dependsOn(zipSampleBots)
 }
