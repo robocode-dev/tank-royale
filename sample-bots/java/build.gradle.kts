@@ -50,6 +50,7 @@ val createDirs = task<CreateDirs>("createDirs") {}
 
 val copyBotApiJar = task<Copy>("copyBotApiJar") {
     dependsOn(":bot-api:java:jar")
+    dependsOn(":bot-api:java:fatJar")
     dependsOn(createDirs)
 
     from(project(":bot-api:java").file("build/libs"))
