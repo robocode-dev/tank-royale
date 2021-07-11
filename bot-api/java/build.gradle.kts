@@ -4,7 +4,6 @@ description = "Bot API for Robocode Tank Royale"
 group = "dev.robocode.tankroyale"
 version = "0.9.8"
 
-
 plugins {
     `java-library`
     `maven-publish`

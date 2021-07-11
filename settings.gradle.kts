@@ -1,5 +1,3 @@
-rootProject.name = "robocode-tankroyale"
-
 // Schema Generator
 include("schema-gen:java")
 
