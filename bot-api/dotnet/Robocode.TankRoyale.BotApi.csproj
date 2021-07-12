@@ -11,15 +11,19 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
     <PackageId>Robocode.TankRoyale.BotApi</PackageId>
-    <Version>0.9.8</Version>
     <Authors>Flemming N&#248;rnberg Larsen (robocode.dev)</Authors>
     <Copyright>Copyright © 2021 Flemming N&#248;rnberg Larsen. All rights Reserved</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- for Bot API -->
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+
+    <!-- for com.itiviti.dotnet plugin -->
+    <PackageReference Include="Microsoft.Build" Version="16.8.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Locator" Version="1.4.1" />
   </ItemGroup>
 
 </Project>
