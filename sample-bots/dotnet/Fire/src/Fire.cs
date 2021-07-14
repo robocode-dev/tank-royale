@@ -22,7 +22,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     }
 
     // Constructor, which loads the bot settings file
-    Fire() : base(BotInfo.FromJsonFile("fire-settings.json")) { }
+    Fire() : base(BotInfo.FromFile("Fire.json")) { }
 
     // This method runs our bot program, where each command is executed one at a time in a loop.
     public override void Run()

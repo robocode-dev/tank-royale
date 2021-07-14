@@ -19,7 +19,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     }
 
     /// Constructor, which loads the bot settings file
-    MyFirstBot() : base(BotInfo.FromJsonFile("myfirstbot-settings.json")) { }
+    MyFirstBot() : base(BotInfo.FromFile("MyFirstBot.json")) { }
 
     /// This method runs our bot program, where each command is executed one at a time in a loop.
     public override void Run()

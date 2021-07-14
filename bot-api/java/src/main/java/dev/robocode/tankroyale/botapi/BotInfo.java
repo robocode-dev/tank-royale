@@ -160,14 +160,17 @@ public final class BotInfo {
       if (data.gameTypes == null || data.gameTypes.isBlank()) {
         throw new BotException("The JSON field 'gameTypes' is missing or blank");
       }
-
+      String countryCodes = data.countryCodes;
+      if (countryCodes == null) {
+        countryCodes = "";
+      }
       return new BotInfo(
           data.name,
           data.version,
           Arrays.asList(data.authors.split("\\s*,\\s*")),
           data.description,
           data.url,
-          Arrays.asList(data.countryCodes.split("\\s*,\\s*")),
+          Arrays.asList(countryCodes.split("\\s*,\\s*")),
           new HashSet<>(Arrays.asList(data.gameTypes.split("\\s*,\\s*"))),
           data.platform,
           data.programmingLang);

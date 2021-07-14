@@ -15,7 +15,7 @@ namespace Robocode.TankRoyale.Sample.Bots
       new SpinBot().Start();
     }
 
-    SpinBot() : base(BotInfo.FromJsonFile("spinbot-settings.json")) { }
+    SpinBot() : base(BotInfo.FromFile("SpinBot.json")) { }
 
     // This method runs our bot program, where each command is executed one at a time
     public override void Run()

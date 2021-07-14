@@ -20,7 +20,7 @@ namespace Robocode.TankRoyale.Sample.Bots
       new Walls().Start();
     }
 
-    Walls() : base(BotInfo.FromJsonFile("walls-settings.json")) { }
+    Walls() : base(BotInfo.FromFile("Walls.json")) { }
 
     // Run: This method runs our bot program, where each command is executed one at a time in a loop.
     public override void Run()

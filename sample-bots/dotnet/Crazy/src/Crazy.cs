@@ -18,7 +18,7 @@ namespace Robocode.TankRoyale.Sample.Bots
       new Crazy().Start();
     }
 
-    private Crazy() : base(BotInfo.FromJsonFile("crazy-settings.json")) { }
+    private Crazy() : base(BotInfo.FromFile("Crazy.json")) { }
 
     /** Run: Crazy's main run function */
     public override void Run()

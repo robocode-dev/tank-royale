@@ -20,7 +20,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     }
 
     // Constructor, which loads the bot settings file
-    RamFire() : base(BotInfo.FromJsonFile("ramfire-settings.json")) { }
+    RamFire() : base(BotInfo.FromFile("RamFire.json")) { }
 
     // Run: Spin around looking for a target.
     public override void Run()

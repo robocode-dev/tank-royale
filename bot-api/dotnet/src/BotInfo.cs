@@ -220,7 +220,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="basePath">Is the base path, e.g. Directory.GetCurrentDirectory().
     /// If null, the current directory will automatically be used as base path</param>
     /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
-    public static BotInfo FromJsonFile(string filePath, string basePath)
+    public static BotInfo FromFile(string filePath, string basePath)
     {
       if (basePath == null)
       {
@@ -257,9 +257,9 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="basePath">Is the base path, e.g. Directory.GetCurrentDirectory().
     /// If null, the current directory will automatically be used as base path</param>
     /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
-    public static BotInfo FromJsonFile(string filePath)
+    public static BotInfo FromFile(string filePath)
     {
-      return FromJsonFile(filePath, null);
+      return FromFile(filePath, null);
     }
 
     /// <summary>
@@ -287,41 +287,41 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
     public static BotInfo FromConfiguration(IConfiguration configuration)
     {
-      var name = configuration["Bot:Name"];
+      var name = configuration["name"];
       if (string.IsNullOrWhiteSpace(name))
       {
-        throw new ArgumentException("Bot:Name is missing");
+        throw new ArgumentException("The JSON field 'name' is missing or blank");
       }
-      var version = configuration["Bot:Version"];
+      var version = configuration["version"];
       if (string.IsNullOrWhiteSpace(version))
       {
-        throw new ArgumentException("Bot:Version is missing");
+        throw new ArgumentException("The JSON field 'version' is missing or blank");
       }
-      var authors = configuration["Bot:Authors"];
+      var authors = configuration["authors"];
       if (string.IsNullOrWhiteSpace(authors))
       {
-        throw new ArgumentException("Bot:Authors is missing");
+        throw new ArgumentException("The JSON field 'authors' is missing or blank");
       }
-      var countryCodes = configuration["Bot:CountryCodes"];
-      if (string.IsNullOrWhiteSpace(countryCodes))
-      {
-        countryCodes = "";
-      }
-      var gameTypes = configuration["Bot:GameTypes"];
+      var gameTypes = configuration["gameTypes"];
       if (string.IsNullOrWhiteSpace(gameTypes))
       {
-        throw new ArgumentException("Bot:GameTypes is missing");
+        throw new ArgumentException("The JSON field 'gameTypes' is missing or blank");
+      }
+      var countryCodes = configuration["countryCodes"];
+      if (countryCodes == null)
+      {
+        countryCodes = "";
       }
       return new BotInfo(
         name,
         version,
         Regex.Split(authors, @"\s*,\s*"),
-        configuration["Bot:Description"],
-        configuration["Bot:Url"],
+        configuration["description"],
+        configuration["url"],
         Regex.Split(countryCodes, @"\s*,\s*"),
         Regex.Split(gameTypes, @"\s*,\s*"),
-        configuration["Bot:Platform"],
-        configuration["Bot:ProgrammingLang"]
+        configuration["platform"],
+        configuration["programmingLang"]
       );
     }
   }

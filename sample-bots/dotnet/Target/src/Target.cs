@@ -20,7 +20,7 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
     }
 
     // Constructor, which loads the bot settings file
-    Target() : base(BotInfo.FromJsonFile("target-settings.json")) { }
+    Target() : base(BotInfo.FromFile("Target.json")) { }
 
     // Run method
     public override void Run()

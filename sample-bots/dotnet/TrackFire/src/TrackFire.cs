@@ -20,7 +20,7 @@ namespace Robocode.TankRoyale.BotApi.Sample.Bots
     }
 
     // Constructor, which loads the bot settings file
-    TrackFire() : base(BotInfo.FromJsonFile("trackfire-settings.json")) { }
+    TrackFire() : base(BotInfo.FromFile("TrackFire.json")) { }
 
     // TrackFire's run method
     public override void Run()

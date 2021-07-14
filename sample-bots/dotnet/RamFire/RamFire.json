@@ -1,0 +1,11 @@
+{
+  "name": "RamFire",
+  "version": "1.0",
+  "gameTypes": "melee, classic, 1v1",
+  "authors": "Mathew Nelson, Flemming N. Larsen",
+  "description": "Drives at robots trying to ram them. Fires when it hits them.",
+  "url": "",
+  "countryCodes": "us, dk",
+  "platform": ".Net 5.0",
+  "programmingLang": "C# 8.0"
+}
