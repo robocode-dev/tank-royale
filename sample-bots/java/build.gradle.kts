@@ -113,9 +113,8 @@ abstract class CopyBotFiles : BaseTask() {
                 write("\r\n") // Windows Carriage Return + New-line
             }
         }
-
         printWriter.use {
-            it.println("java -cp lib/${project.extra["botApiJarFilename"]} $filename.java")
+            it.println("java -cp lib/* $filename.java")
             it.close()
         }
     }
@@ -129,7 +128,7 @@ abstract class CopyBotFiles : BaseTask() {
         }
         printWriter.use {
             it.println("#!/bin/sh")
-            it.println("java -cp lib/${project.extra["botApiJarFilename"]} $filename.java")
+            it.println("java -cp lib/* $filename.java")
             it.close()
         }
     }
