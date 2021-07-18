@@ -19,7 +19,7 @@ abstract class BaseTask : DefaultTask() {
     protected val archiveDir: Path = project.buildDir.toPath().resolve("archive")
 
     @Internal
-    protected val libsDir: Path = archiveDir.resolve("libs")
+    protected val libDir: Path = archiveDir.resolve("lib")
 
     protected fun createDir(path: Path) {
         if (!Files.exists(path)) {
@@ -42,19 +42,18 @@ abstract class CreateDirs : BaseTask() {
     fun build() {
         createDir(project.buildDir.toPath())
         createDir(archiveDir)
-        createDir(libsDir)
+        createDir(libDir)
     }
 }
 
 val createDirs = task<CreateDirs>("createDirs") {}
 
 val copyBotApiJar = task<Copy>("copyBotApiJar") {
-    dependsOn(":bot-api:java:jar")
     dependsOn(":bot-api:java:fatJar")
     dependsOn(createDirs)
 
     from(project(":bot-api:java").file("build/libs"))
-    into(project.buildDir.resolve("archive/libs"))
+    into(project.buildDir.resolve("archive/lib"))
     include("java-*.jar")
     exclude("*javadoc*")
     rename("^.*(\\d\\.\\d\\.\\d)\\.jar", "robocode-tankroyale-bot-api-$1.jar")
@@ -64,7 +63,7 @@ abstract class FindBotApiJarFilename : BaseTask() {
     @TaskAction
     fun build() {
         project.extra["botApiJarFilename"] =
-            Files.list(libsDir).filter { path ->
+            Files.list(libDir).filter { path ->
                 path.fileName.toString().startsWith("robocode-tankroyale-bot-api")
             }.findFirst().get().fileName.toString()
     }
@@ -80,7 +79,7 @@ abstract class CopyBotFiles : BaseTask() {
         Files.list(project.projectDir.toPath()).forEach { projectDir ->
             run {
                 if (Files.isDirectory(projectDir) && isBotProjectDir(projectDir)) {
-                    copyBotJar(projectDir)
+                    copyBotJavaFiles(projectDir)
                     copyBotJsonFile(projectDir)
                     createCmdFile(projectDir)
                     createShFile(projectDir)
@@ -94,19 +93,11 @@ abstract class CopyBotFiles : BaseTask() {
         return !filename.startsWith(".") && filename != "build"
     }
 
-    private fun copyBotJar(projectDir: Path) {
-        val jarFilename = getBotJarPath(projectDir)
-        Files.copy(jarFilename, libsDir.resolve(jarFilename.fileName))
-    }
-
-    private fun getBotJarPath(projectDir: Path): Path {
-        val archiveDir: Path = projectDir.resolve("build/libs")
-        for (dir in Files.list(archiveDir)) {
-            if (dir.startsWith(projectDir)) {
-                return archiveDir.resolve(dir)
-            }
+    private fun copyBotJavaFiles(projectDir: Path) {
+        val srcRoot = projectDir.resolve("src/main/java")
+        for (file in Files.list(srcRoot)) {
+            Files.copy(file, archiveDir.resolve(file.fileName))
         }
-        throw IllegalStateException("Could not find jar archive in dir: $projectDir")
     }
 
     private fun copyBotJsonFile(projectDir: Path) {
@@ -116,33 +107,29 @@ abstract class CopyBotFiles : BaseTask() {
     }
 
     private fun createCmdFile(projectDir: Path) {
-        val filename = projectDir.fileName.toString() + ".cmd"
-        val printWriter = object : java.io.PrintWriter(archiveDir.resolve(filename).toFile()) {
+        val filename = projectDir.fileName.toString()
+        val printWriter = object : java.io.PrintWriter(archiveDir.resolve("$filename.cmd").toFile()) {
             override fun println() {
                 write("\r\n") // Windows Carriage Return + New-line
             }
         }
 
         printWriter.use {
-            val jarFilename = getBotJarPath(projectDir).fileName
-            val className = "dev.robocode.tankroyale.sample.bots." + projectDir.fileName.toString()
-            it.println("java -cp libs/$jarFilename;libs/${project.extra["botApiJarFilename"]} $className")
+            it.println("java -cp lib/${project.extra["botApiJarFilename"]} $filename.java")
             it.close()
         }
     }
 
     private fun createShFile(projectDir: Path) {
-        val filename = projectDir.fileName.toString() + ".sh"
-        val printWriter = object : java.io.PrintWriter(archiveDir.resolve(filename).toFile()) {
+        val filename = projectDir.fileName.toString()
+        val printWriter = object : java.io.PrintWriter(archiveDir.resolve("$filename.sh").toFile()) {
             override fun println() {
                 write("\n") // Unix New-line
             }
         }
         printWriter.use {
             it.println("#!/bin/sh")
-            val jarFilename = getBotJarPath(projectDir).fileName
-            val className = "dev.robocode.tankroyale.sample.bots." + projectDir.fileName.toString()
-            it.println("java -cp libs/$jarFilename:libs/${project.extra["botApiJarFilename"]} $className")
+            it.println("java -cp lib/${project.extra["botApiJarFilename"]} $filename.java")
             it.close()
         }
     }
@@ -150,16 +137,6 @@ abstract class CopyBotFiles : BaseTask() {
 
 val copyBotFiles = task<CopyBotFiles>("copyBotFiles") {
     dependsOn(findBotApiJarFilename)
-
-    dependsOn(":sample-bots:java:Corners:build")
-    dependsOn(":sample-bots:java:Crazy:build")
-    dependsOn(":sample-bots:java:Fire:build")
-    dependsOn(":sample-bots:java:MyFirstBot:build")
-    dependsOn(":sample-bots:java:RamFire:build")
-    dependsOn(":sample-bots:java:SpinBot:build")
-    dependsOn(":sample-bots:java:Target:build")
-    dependsOn(":sample-bots:java:TrackFire:build")
-    dependsOn(":sample-bots:java:Walls:build")
 }
 
 abstract class CopyRobocodeIcon : BaseTask() {

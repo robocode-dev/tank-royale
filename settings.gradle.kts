@@ -14,15 +14,5 @@ include("gui-app")
 include("bot-api:java")
 include("bot-api:dotnet")
 
-// Sample Bots
-include("sample-bots:java:Corners")
-include("sample-bots:java:Crazy")
-include("sample-bots:java:Fire")
-include("sample-bots:java:MyFirstBot")
-include("sample-bots:java:RamFire")
-include("sample-bots:java:SpinBot")
-include("sample-bots:java:Target")
-include("sample-bots:java:TrackFire")
-include("sample-bots:java:Walls")
-
+// Sample Bots archive
 include("sample-bots:java")

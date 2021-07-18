@@ -1,7 +1,7 @@
-package dev.robocode.tankroyale.sample.bots;
-
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.BotInfo;
+import dev.robocode.tankroyale.botapi.IBot;
+import dev.robocode.tankroyale.botapi.events.Condition;
 import dev.robocode.tankroyale.botapi.events.HitBotEvent;
 import dev.robocode.tankroyale.botapi.events.HitWallEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
@@ -94,6 +94,23 @@ public class Crazy extends Bot {
     // If we're moving into the other robot, reverse!
     if (e.isRammed()) {
       reverseDirection();
+    }
+  }
+
+  /**
+   * Condition that is triggered when the bot's turn is complete.
+   */
+  public static class TurnCompleteCondition extends Condition {
+
+    private final IBot bot;
+
+    public TurnCompleteCondition(IBot bot) {
+      this.bot = bot;
+    }
+
+    @Override
+    public boolean test() {
+      return bot.getTurnRemaining() == 0; // turn is complete when the remainder of the turn is zero
     }
   }
 }

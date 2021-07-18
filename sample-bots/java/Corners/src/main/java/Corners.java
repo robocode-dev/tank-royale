@@ -1,5 +1,3 @@
-package dev.robocode.tankroyale.sample.bots;
-
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.events.DeathEvent;
