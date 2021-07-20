@@ -99,4 +99,22 @@ namespace Robocode.TankRoyale.Sample.Bots
       }
     }
   }
+
+  /// <summary>
+  /// Condition that is triggered when the bot's turn is complete.
+  /// </summary>
+  public class TurnCompleteCondition : Condition
+  {
+    private readonly Bot bot;
+
+    public TurnCompleteCondition(Bot bot)
+    {
+      this.bot = bot;
+    }
+
+    public override bool Test()
+    {
+      return bot.TurnRemaining == 0; // turn is complete when the remainder of the turn is zero
+    }
+  }
 }
