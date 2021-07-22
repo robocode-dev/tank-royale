@@ -1,14 +1,14 @@
 package dev.robocode.tankroyale.booter.commands
 
 import dev.robocode.tankroyale.booter.model.BotEntry
-import java.nio.file.Files
+import java.nio.file.Files.exists
 import java.nio.file.Files.list
 import java.nio.file.Path
-import java.util.function.Predicate
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
+import kotlin.io.path.isDirectory
 
-class FilenamesCommand(private val botPaths: List<Path>) : Command(botPaths) {
+class FilenamesCommand(private val botsDirPaths: List<Path>) : Command(botsDirPaths) {
 
     fun listBotEntries(gameTypesCSV: String?): List<BotEntry> {
         val gameTypes: List<String>? = gameTypesCSV?.split(",")?.map { it.trim() }
@@ -28,22 +28,20 @@ class FilenamesCommand(private val botPaths: List<Path>) : Command(botPaths) {
     }
 
     private fun listBotNames(): Set<String> {
-        val names = HashSet<String>()
-        botPaths.forEach { dirPath ->
-            val files = list(dirPath).filter(HasFileExtensions(arrayOf("json")))
-            files?.forEach { path -> names += path.toFile().nameWithoutExtension }
-        }
-        return names
-    }
-}
+        val botNames = HashSet<String>()
 
-private class HasFileExtensions(private val fileExtensions: Array<String>) : Predicate<Path> {
-
-    override fun test(path: Path): Boolean {
-        if (Files.isDirectory(path)) return false
-        fileExtensions.forEach { ext ->
-            if (path.toString().lowercase().endsWith(".${ext.lowercase()}")) return true
+        botsDirPaths.forEach { dirPath ->
+            list(dirPath).forEach { botDirPath ->
+                run {
+                    if (botDirPath.isDirectory()) {
+                        val botName = botDirPath.fileName.toString()
+                        if (exists(botDirPath.resolve("$botName.json"))) {
+                            botNames += botName
+                        }
+                    }
+                }
+            }
         }
-        return false
+        return botNames
     }
 }
