@@ -12,7 +12,7 @@ abstract class Command(private val botPaths: List<Path>) {
         var path: Path?
         botPaths.forEach { dirPath ->
             run {
-                path = resolveFullBotPath(dirPath, "$botName.json")?.toAbsolutePath()
+                path = resolveFullBotPath(dirPath, botName, "$botName.json")?.toAbsolutePath()
                 if (path != null) {
                     val content = path!!.toFile().readText(Charsets.UTF_8)
                     return Json.decodeFromString(content)
@@ -22,8 +22,8 @@ abstract class Command(private val botPaths: List<Path>) {
         return null // not found
     }
 
-    protected fun resolveFullBotPath(botDirPath: Path, botPath: String): Path? {
-        val path = botDirPath.resolve(botPath)
+    protected fun resolveFullBotPath(botDirPath: Path, botName: String, botPath: String): Path? {
+        val path = botDirPath.resolve(botName).resolve(botPath)
         return if (Files.exists(path)) path else null
     }
 }

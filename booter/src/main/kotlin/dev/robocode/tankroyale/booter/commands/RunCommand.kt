@@ -18,53 +18,55 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
 
     private val processes = ArrayList<Process>()
 
-    fun runBots(filenames: Array<String>) {
+    fun runBots(botNames: Array<String>) {
         Runtime.getRuntime().addShutdownHook(Thread {
             killProcesses(processes) // Kill all running processes before terminating
         })
 
         // Start up the bots provided with the input list
-        filenames.forEach { filename -> addBotProcess(filename, processes) }
+        botNames.forEach { botName -> processes.createBotProcess(botName) }
 
         // Add new bots from the std-in or terminate if blank line is provided
         do {
-            val filename = readLine()?.trim()
-            if (filename != null && filename.isBlank()) {
+            val botName = readLine()?.trim()
+            if (botName != null && botName.isBlank()) {
                 break
             }
-            if (filename != null) {
-                addBotProcess(filename, processes)
+            if (botName != null) {
+                processes.createBotProcess(botName)
             } else {
-                sleep(500)
+                sleep(500) // TODO: Necessary?
             }
         } while (true)
 
         killProcesses(processes) // Kill all running processes before terminating
     }
 
-    private fun addBotProcess(filename: String, processes: MutableList<Process>) {
+    private fun MutableList<Process>.createBotProcess(filename: String) {
         val process = startBotProcess(filename)
         if (process != null) {
-            processes.add(process)
+            add(process)
         }
     }
 
-    private fun startBotProcess(filename: String): Process? {
+    private fun startBotProcess(botName: String): Process? {
         try {
-            val scriptPath = findOsScript(filename)
+            val scriptPath = findOsScript(botName)
             if (scriptPath == null) {
-                System.err.println("ERROR: No script found for the bot: $filename")
+                System.err.println("ERROR: No script found for the bot: $botName")
                 return null
             }
 
-            val command = scriptPath.toString()
-            val processBuilder = createProcessBuilder(command)
+            val processBuilder = createProcessBuilder(scriptPath.toString())
+            processBuilder.directory(scriptPath.parent.toFile()) // set working directory
+
             val process = processBuilder.start()
+
             val env = processBuilder.environment()
 
-            setEnvVars(env, getBotInfo(filename)!!)
+            setEnvVars(env, getBotInfo(botName)!!)
 
-            println("${process.pid()}:$filename")
+            println("${process.pid()}:$botName")
             return process
 
         } catch (ex: IOException) {
@@ -97,13 +99,13 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
         var path: Path?
         botPaths.forEach { dirPath ->
             run {
-                path = resolveFullBotPath(dirPath, "$botName.bat")
+                path = resolveFullBotPath(dirPath, botName, "$botName.bat")
                 if (path != null) return path
 
-                path = resolveFullBotPath(dirPath, "$botName.cmd")
+                path = resolveFullBotPath(dirPath, botName, "$botName.cmd")
                 if (path != null) return path
 
-                path = resolveFullBotPath(dirPath, "$botName.psi")
+                path = resolveFullBotPath(dirPath, botName, "$botName.psi")
                 if (path != null) return path
             }
         }
@@ -114,7 +116,7 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
         var path: Path?
         botPaths.forEach { dirPath ->
             run {
-                path = resolveFullBotPath(dirPath, "$botName.command")
+                path = resolveFullBotPath(dirPath, botName, "$botName.command")
                 if (path != null) return path
             }
         }
@@ -125,7 +127,7 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
         var path: Path?
         botPaths.forEach { dirPath ->
             run {
-                path = resolveFullBotPath(dirPath, "$botName.sh")
+                path = resolveFullBotPath(dirPath, botName, "$botName.sh")
                 if (path != null) return path
             }
         }
