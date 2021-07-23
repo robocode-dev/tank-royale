@@ -628,7 +628,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Removes triggering an custom event handler for a specific condition that was previously added
     /// with <see cref="AddCustomEvent(Condition)"/>.
     /// </summary>
-    /// <param name="condition">is the condition that was previously added with <see cref="AddCustomEvent(CustomEvent)"/></param>
+    /// <param name="condition">is the condition that was previously added with <see cref="AddCustomEvent(Condition)"/></param>
     /// <seealso cref="AddCustomEvent(Condition)"/>
     void RemoveCustomEvent(Condition condition);
 
@@ -643,9 +643,9 @@ namespace Robocode.TankRoyale.BotApi
     /// <see cref="IBaseBot.Go"/>. But notice that this is only possible to execute multiple methods in
     /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
     /// </summary>
-    /// <seealso cref="Stop"/>
+    /// <seealso cref="IBot.Stop"/>
     /// <seealso cref="SetResume"/>
-    /// <seealso cref="Resume"/>
+    /// <seealso cref="IBot.Resume"/>
     void SetStop();
 
     /// <summary>
@@ -661,8 +661,8 @@ namespace Robocode.TankRoyale.BotApi
     /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
     /// </summary>
     /// <seealso cref="SetStop"/>
-    /// <seealso cref="Stop"/>
-    /// <seealso cref="Resume"/>
+    /// <seealso cref="IBot.Stop"/>
+    /// <seealso cref="IBot.Resume"/>
     void SetResume();
 
     /// <summary>
@@ -670,7 +670,7 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <value><em>true</em> if the movement has been stopped by by <see cref="Stop"/> or <see cref="SetStop"/>;
     /// <em>false</em> otherwise.</value>
-    /// <seealso cref="Stop"/>
+    /// <seealso cref="IBot.Stop"/>
     /// <seealso cref="SetStop"/>
     bool IsStopped { get; }
 
