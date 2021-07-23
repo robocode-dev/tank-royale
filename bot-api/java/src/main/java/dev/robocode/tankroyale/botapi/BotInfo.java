@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.neovisionaries.i18n.CountryCode;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -104,9 +105,47 @@ public final class BotInfo {
   }
 
   /**
-   * Reads the bot info from a JSON file (.json).<br>
+   * Reads the bot info from a resource file, e.g. when the file is located in a jar file or resource path in IDE.<br>
+   * The file is assumed to be in JSON format.<br>
    * <br>
-   * Example file:<br>
+   * See the {@link #fromInputStream(InputStream)} to see the required JSON format for the file.
+   *
+   * @param filename is the filename of the file containing bot properties.
+   * @return A BotInfo instance containing the bot properties read from the file.
+   * @throws IOException if an error occurs when reading the file.
+   * @throws BotException if some of the fields read from the file is invalid.
+   */
+  public static BotInfo fromResourceFile(String filename) throws IOException {
+    try (InputStream is = BotInfo.class.getResourceAsStream(filename)) {
+      if (is == null) {
+        throw new BotException("Could not read the resource file: " + filename);
+      }
+      return fromInputStream(is);
+    }
+  }
+
+  /**
+   * Reads the bot info from a local file on a file system.<br>
+   * The file is assumed to be in JSON format.<br>
+   * <br>
+   * See the {@link #fromInputStream(InputStream)} to see the required JSON format for the file.
+   *
+   * @param filename is the filename of the file containing bot properties.
+   * @return A BotInfo instance containing the bot properties read from the file.
+   * @throws IOException if an error occurs when reading the file.
+   * @throws BotException if some of the fields read from the file is invalid.
+   */
+  public static BotInfo fromFile(String filename) throws IOException {
+    try (InputStream is = new FileInputStream(filename)) {
+      return fromInputStream(is);
+    }
+  }
+
+  /**
+   * Reads the bot info from an input stream.<br>
+   * The file is assumed to be in JSON format.<br>
+   * <br>
+   * Example file in JSON format:<br>
    *
    * <pre>
    * {
@@ -135,17 +174,13 @@ public final class BotInfo {
    *     <li>gameTypes, e.g. "classic, melee, 1v1"</li>
    * </ul>
    *
-   * @param filename is the filename of the file containing bot properties.
-   * @return A BotInfo instance containing the bot properties read from the file.
-   * @throws IOException if an error occurs when reading the file.
+   * @param inputStream is the input stream providing the bot properties.
+   * @return A BotInfo instance containing the bot properties read from the stream.
+   * @throws BotException if some of the fields read from the stream is invalid.
    */
-  public static BotInfo fromFile(String filename) throws IOException {
-    try (InputStream is = BotInfo.class.getResourceAsStream(filename)) {
-      if (is == null) {
-        throw new BotException("Could not read the JSON file: " + filename);
-      }
+  public static BotInfo fromInputStream(InputStream inputStream) {
       Gson gson = new Gson();
-      JsonReader reader = new JsonReader(new InputStreamReader(is));
+      JsonReader reader = new JsonReader(new InputStreamReader(inputStream));
       JsonProperties data = gson.fromJson(reader, JsonProperties.class);
 
       if (data.name == null || data.name.isBlank()) {
@@ -165,16 +200,15 @@ public final class BotInfo {
         countryCodes = "";
       }
       return new BotInfo(
-          data.name,
-          data.version,
-          Arrays.asList(data.authors.split("\\s*,\\s*")),
-          data.description,
-          data.url,
-          Arrays.asList(countryCodes.split("\\s*,\\s*")),
-          new HashSet<>(Arrays.asList(data.gameTypes.split("\\s*,\\s*"))),
-          data.platform,
-          data.programmingLang);
-    }
+              data.name,
+              data.version,
+              Arrays.asList(data.authors.split("\\s*,\\s*")),
+              data.description,
+              data.url,
+              Arrays.asList(countryCodes.split("\\s*,\\s*")),
+              new HashSet<>(Arrays.asList(data.gameTypes.split("\\s*,\\s*"))),
+              data.platform,
+              data.programmingLang);
   }
 
   /**
