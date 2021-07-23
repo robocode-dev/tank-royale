@@ -196,28 +196,40 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <summary>
-    /// Reads the bot info from a JSON file in the specified base path.
+    /// Reads the bot info from a file at the specified base path.
+    /// The file is assumed to be in JSON format.
     /// </summary>
     /// <example>
-    /// Using a appsettings.json file:
+    /// Example file in JSON format:
     /// <code>
     /// {
-    ///   "Bot": {
-    ///     "Name": "MyBot",
-    ///     "Version": "1.0",
-    ///     "Authors": "John Doe",
-    ///     "Description": "A short description",
-    ///     "Url": "http://somewhere.net/MyBot",
-    ///     "CountryCodes": "us",
-    ///     "GameTypes": "classic, melee, 1v1",
-    ///     "Platform": ".Net 5.0",
-    ///     "ProgrammingLang": "C# 8.0"
-    ///   }
+    ///   name: "MyBot",
+    ///   version: "1.0",
+    ///   authors: "John Doe",
+    ///   description: "A short description",
+    ///   url: "http://somewhere.net/MyBot",
+    ///   countryCodes: "us",
+    ///   gameTypes: "classic, melee, 1v1",
+    ///   platform: ".Net 5.0",
+    ///   programmingLang: "C# 8.0"
     /// }
     /// </code>
+    /// Note that these fields are required:
+    /// <ul>
+    ///   <li>name</li>
+    ///   <li>version</li>
+    ///   <li>authors</li>
+    ///   <li>gameTypes</li>
+    /// </ul>
+    /// And these value can take multiple values separated by a comma:
+    /// <ul>
+    ///   <li>authors, e.g. "John Doe, Jane Doe"</li>
+    ///   <li>countryCodes, e.g. "se, no, dk"</li>
+    ///   <li>gameTypes, e.g. "classic, melee, 1v1"</li>
+    /// </ul>
     /// </example>
     /// <param name="filePath">Is the file path, e.g. "bot-settings.json</param>
-    /// <param name="basePath">Is the base path, e.g. Directory.GetCurrentDirectory().
+    /// <param name="basePath">Is the base path, e.g. <c>Directory.GetCurrentDirectory()</c>.
     /// If null, the current directory will automatically be used as base path</param>
     /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
     public static BotInfo FromFile(string filePath, string basePath)
@@ -233,30 +245,12 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <summary>
-    /// Reads the bot info from a JSON file from the current directory.
+    /// Reads the bot info from a file at the current working dir
+    /// The file is assumed to be in JSON format.
+    ///
+    /// See <see cref="FromFile(String, String)"/> for an example file.
     /// </summary>
-    /// <example>
-    /// Using a appsettings.json file:
-    /// <code>
-    /// {
-    ///   "Bot": {
-    ///     "Name": "MyBot",
-    ///     "Version": "1.0",
-    ///     "Authors": "John Doe",
-    ///     "Description": "A short description",
-    ///     "Url": "http://somewhere.net/MyBot",
-    ///     "CountryCodes": "us",
-    ///     "GameTypes": "classic, melee, 1v1",
-    ///     "Platform: ".Net 5.0",
-    ///     "ProgrammingLang": "C# 8.0"
-    ///   }
-    /// }
-    /// </code>
-    /// </example>
     /// <param name="filePath">Is the file path, e.g. "bot-settings.json</param>
-    /// <param name="basePath">Is the base path, e.g. Directory.GetCurrentDirectory().
-    /// If null, the current directory will automatically be used as base path</param>
-    /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
     public static BotInfo FromFile(string filePath)
     {
       return FromFile(filePath, null);
@@ -264,25 +258,9 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <summary>
     /// Reads the bot info from a configuration.
+    ///
+    /// See <see cref="FromFile(String, String)"/> for an example file.
     /// </summary>
-    /// <example>
-    /// Using a appsettings.json file:
-    /// <code>
-    /// {
-    ///   "Bot": {
-    ///     "Name": "MyBot",
-    ///     "Version": "1.0",
-    ///     "Authors": "John Doe",
-    ///     "Description": "A short description",
-    ///     "Url": "http://somewhere.net/MyBot",
-    ///     "CountryCodes": "us",
-    ///     "GameTypes": "classic, melee, 1v1",
-    ///     "Platform": ".Net 5.0",
-    ///     "ProgrammingLang": "C# 8.0"
-    ///   }
-    /// }
-    /// </code>
-    /// </example>
     /// <param name="configuration">Is the configuration</param>
     /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
     public static BotInfo FromConfiguration(IConfiguration configuration)

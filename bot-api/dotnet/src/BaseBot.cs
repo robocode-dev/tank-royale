@@ -22,16 +22,16 @@ namespace Robocode.TankRoyale.BotApi
     ///
     /// Example of how to set the predefined environment variables:
     ///
-    /// ROBOCODE_SERVER_URI=ws://localhost<br/>
+    /// ROBOCODE_SERVER_URL=ws://localhost<br/>
     /// BOT_NAME=MyBot<br/>
     /// BOT_VERSION=1.0<br/>
-    /// BOT_AUTHOR=fnl<br/>
-    /// BOT_DESCRIPTION=Sample bot<br/>
-    /// BOT_URL=https://mybot.somewhere.net<br/>
-    /// BOT_COUNTRY_CODE=DK<br/>
-    /// BOT_GAME_TYPES=melee,1v1<br/>
-    /// BOT_PROG_PLATFORM=.Net Core 3.1<br/>
-    /// BOT_PROG_LANG=C# 8<br/>
+    /// BOT_AUTHORS=John Doe<br/>
+    /// BOT_DESCRIPTION=A short description<br/>
+    /// BOT_URL=http://somewhere.net/MyBot<br/>
+    /// BOT_COUNTRY_CODES=us<br/>
+    /// BOT_GAME_TYPES=classic, melee, 1v1<br/>
+    /// BOT_PROG_PLATFORM=.Net 5.0<br/>
+    /// BOT_PROG_LANG=C# 8.0<br/>
     /// </summary>
     public BaseBot()
     {
