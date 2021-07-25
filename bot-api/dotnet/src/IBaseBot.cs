@@ -651,7 +651,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
     /// turning and thereby will not be able to automatically scan bots. This method is useful when the
-    /// robot movement has stopped, e.g. when <see cref="Stop"/> has been called. The last radar direction
+    /// robot movement has stopped, e.g. when <see cref="IBot.Stop"/> has been called. The last radar direction
     /// and sweep angle will be used for rescanning for bots.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
@@ -668,7 +668,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// Checks if the movement has been stopped.
     /// </summary>
-    /// <value><em>true</em> if the movement has been stopped by by <see cref="Stop"/> or <see cref="SetStop"/>;
+    /// <value><em>true</em> if the movement has been stopped by by <see cref="IBot.Stop"/> or <see cref="SetStop"/>;
     /// <em>false</em> otherwise.</value>
     /// <seealso cref="IBot.Stop"/>
     /// <seealso cref="SetStop"/>
@@ -689,7 +689,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Sets the color of the body. Colors can be changed each turn.
     /// <note>
     /// Currently only the number format using the number sign (#) is supported.
-
+    ///
     /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
     /// https://en.wikipedia.org/wiki/Web_colors</a>
     /// </note>
@@ -842,8 +842,8 @@ namespace Robocode.TankRoyale.BotApi
     /// 
     /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
     /// https://en.wikipedia.org/wiki/Web_colors</a>
-    /// </summary>
     /// </note>
+    /// </summary>
     /// <example>
     /// <code>
     /// SetTracksColor("#09C");

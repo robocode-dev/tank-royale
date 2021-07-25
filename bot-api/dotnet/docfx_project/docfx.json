@@ -30,7 +30,7 @@
     "overwrite": [
       {
         "files": ["apidoc/**.md"],
-        "exclude": ["obj/**", "_site/**"]
+        "exclude": ["obj/**", "bin/**", "_site/**", "build/**"]
       }
     ],
     "dest": "_site",

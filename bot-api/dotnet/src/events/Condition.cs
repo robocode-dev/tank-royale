@@ -5,7 +5,7 @@ namespace Robocode.TankRoyale.BotApi.Events
   /// execution can be blocked by using the <see cref="IBot.WaitFor(Condition)"/> method, which will wait
   /// until a condition is met. A condition can also used to trigger a custom event by adding a custom
   /// event handler using the method <see cref="IBaseBot.AddCustomEvent(Condition)"/> that will trigger
-  /// <see cref="IBaseBot.OnCustomEvent(Condition)"/> when the condition is fulfilled.
+  /// <see cref="IBaseBot.OnCustomEvent(CustomEvent)"/> when the condition is fulfilled.
   /// </summary>
   /// <example>
   /// <code>
@@ -45,7 +45,7 @@ namespace Robocode.TankRoyale.BotApi.Events
     /// Returns the name of this condition, if a name has been provided for it.
     /// </summary>
     /// <value>The name of this condition or <c>null</c> if no name has been provided for it.</value>
-    /// <seealso cref="IBaseBot.OnCustomEvent(Condition)"/>
+    /// <seealso cref="IBaseBot.OnCustomEvent(CustomEvent)"/>
     public string Name { get; }
 
     /// <summary>
