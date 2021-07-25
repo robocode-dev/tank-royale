@@ -114,6 +114,8 @@ public final class BotInfo {
    * @return A BotInfo instance containing the bot properties read from the file.
    * @throws IOException if an error occurs when reading the file.
    * @throws BotException if some of the fields read from the file is invalid.
+   * @see #fromFile(String)
+   * @see #fromInputStream(InputStream)
    */
   public static BotInfo fromResourceFile(String filename) throws IOException {
     try (InputStream is = BotInfo.class.getResourceAsStream(filename)) {
@@ -134,6 +136,8 @@ public final class BotInfo {
    * @return A BotInfo instance containing the bot properties read from the file.
    * @throws IOException if an error occurs when reading the file.
    * @throws BotException if some of the fields read from the file is invalid.
+   * @see #fromResourceFile(String)
+   * @see #fromInputStream(InputStream)
    */
   public static BotInfo fromFile(String filename) throws IOException {
     try (InputStream is = new FileInputStream(filename)) {
@@ -177,6 +181,8 @@ public final class BotInfo {
    * @param inputStream is the input stream providing the bot properties.
    * @return A BotInfo instance containing the bot properties read from the stream.
    * @throws BotException if some of the fields read from the stream is invalid.
+   * @see #fromFile(String) 
+   * @see #fromResourceFile(String)
    */
   public static BotInfo fromInputStream(InputStream inputStream) {
       Gson gson = new Gson();
