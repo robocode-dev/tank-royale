@@ -59,6 +59,8 @@ dependencies {
 }
 
 val copyServerJar = task<Copy>("copyServerJar") {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
     dependsOn(":server:proguard")
 
     from(project(":server").file("/build/libs"))
@@ -68,6 +70,8 @@ val copyServerJar = task<Copy>("copyServerJar") {
 }
 
 val copyBooterJar = task<Copy>("copyBooterJar") {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
     dependsOn(":booter:proguard")
 
     from(project(":booter").file("/build/libs"))

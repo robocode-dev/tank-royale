@@ -12,7 +12,8 @@ include("gui-app")
 
 // Bot API
 include("bot-api:java")
-include("bot-api:dotnet")
+//include("bot-api:dotnet")
 
-// Sample Bots archive
+// Sample Bots archives
 include("sample-bots:java")
+include("sample-bots:dotnet")
