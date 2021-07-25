@@ -22,7 +22,7 @@ public class TrackFire extends Bot {
 
   /** Constructor, which loads the bot settings file */
   protected TrackFire() throws IOException {
-    super(BotInfo.fromFile("/TrackFire.json"));
+    super(BotInfo.fromFile("TrackFire.json"));
   }
 
   /** TrackFire's run method */

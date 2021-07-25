@@ -24,7 +24,7 @@ public class Crazy extends Bot {
 
   /** Constructor, which loads the bot settings file */
   protected Crazy() throws IOException {
-    super(BotInfo.fromFile("/Crazy.json"));
+    super(BotInfo.fromFile("Crazy.json"));
   }
 
   /** run: Crazy's main run function */

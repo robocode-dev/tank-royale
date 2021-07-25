@@ -21,7 +21,7 @@ public class RamFire extends Bot {
 
   /** Constructor, which loads the bot settings file */
   protected RamFire() throws IOException {
-    super(BotInfo.fromFile("/RamFire.json"));
+    super(BotInfo.fromFile("RamFire.json"));
   }
 
   /** run: Spin around looking for a target */

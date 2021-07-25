@@ -23,7 +23,7 @@ public class Walls extends Bot {
 
   /** Constructor, which loads the bot settings file */
   Walls() throws IOException {
-    super(BotInfo.fromFile("/Walls.json"));
+    super(BotInfo.fromFile("Walls.json"));
   }
 
   /**

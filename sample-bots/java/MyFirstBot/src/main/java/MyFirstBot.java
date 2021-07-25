@@ -21,7 +21,7 @@ public class MyFirstBot extends Bot {
 
   /** Constructor, which loads the bot settings file */
   protected MyFirstBot() throws IOException {
-    super(BotInfo.fromFile("/MyFirstBot.json"));
+    super(BotInfo.fromFile("MyFirstBot.json"));
   }
 
   /** This method runs our bot program, where each command is executed one at a time in a loop. */
