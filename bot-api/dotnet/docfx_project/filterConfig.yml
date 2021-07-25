@@ -1,5 +1,8 @@
 apiRules:
   - exclude:
+      uidRegex: ProjectFileParser
+      type: Namespace
+  - exclude:
       uidRegex: ^Robocode\.TankRoyale\.Schema$
       type: Namespace
   - exclude:

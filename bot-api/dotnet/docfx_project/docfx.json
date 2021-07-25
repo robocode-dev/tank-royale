@@ -4,7 +4,8 @@
       "src": [
         {
           "src": "..",
-          "files": ["**.csproj"]
+          "files": ["**.csproj"],
+          "exclude": ["**/obj/**", "**/bin/**", "**/build/**"]
         }
       ],
       "dest": "api",
@@ -30,7 +31,7 @@
     "overwrite": [
       {
         "files": ["apidoc/**.md"],
-        "exclude": ["obj/**", "bin/**", "_site/**", "build/**"]
+        "exclude": ["obj/**", "_site/**"]
       }
     ],
     "dest": "_site",
