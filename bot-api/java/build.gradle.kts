@@ -4,6 +4,8 @@ description = "Bot API for Robocode Tank Royale"
 group = "dev.robocode.tankroyale"
 version = "0.9.9"
 
+val artifactBaseName = "robocode-tankroyale-bot-api"
+
 plugins {
     `java-library`
     `maven-publish`
@@ -13,8 +15,6 @@ plugins {
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
-
-    withJavadocJar()
 }
 
 repositories {
@@ -35,7 +35,7 @@ tasks.withType<JavaCompile>().configureEach {
     })
 }
 
-tasks.withType<Javadoc> {
+val javadoc = tasks.withType<Javadoc> {
     title = "Robocode Tank Royale Bot API for Java $version"
     source(sourceSets.main.get().allJava)
     options.memberLevel = JavadocMemberLevel.PUBLIC
@@ -47,6 +47,7 @@ tasks.withType<Javadoc> {
 }
 
 val fatJar = task<Jar>("fatJar") {
+    archiveBaseName.set(artifactBaseName)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes["Implementation-Title"] = title
@@ -61,6 +62,27 @@ val fatJar = task<Jar>("fatJar") {
 
 tasks.named("build") {
     dependsOn(fatJar)
+}
+
+tasks {
+    val sourcesJar by creating(Jar::class) {
+        dependsOn(JavaPlugin.CLASSES_TASK_NAME)
+        archiveBaseName.set(artifactBaseName)
+        archiveClassifier.set("sources")
+        from(sourceSets["main"].allSource)
+    }
+
+    val javadocJar by creating(Jar::class) {
+        dependsOn(JavaPlugin.JAVADOC_TASK_NAME)
+        archiveBaseName.set(artifactBaseName)
+        archiveClassifier.set("javadoc")
+        from(javadoc)
+    }
+
+    artifacts {
+        add("archives", sourcesJar)
+        add("archives", javadocJar)
+    }
 }
 
 publishing {
