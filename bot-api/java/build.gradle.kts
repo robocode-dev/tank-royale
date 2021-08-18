@@ -113,8 +113,6 @@ val sshServer = remotes.create("sshServer") {
 val uploadJavadoc by tasks.registering {
     dependsOn(javadoc)
 
-    println(tasks.findByName("javadocJar"))
-
     doLast {
         ssh.run (delegateClosureOf<RunHandler> {
             session(sshServer, delegateClosureOf<SessionHandler> {
@@ -129,6 +127,7 @@ val uploadJavadoc by tasks.registering {
 
                 execute("unzip ~/tmp/$filename -d ~/public_html/tankroyale/api/java_new")
 
+                execute("mkdir -p ~/public_html/tankroyale/api/java")
                 execute("mv ~/public_html/tankroyale/api/java ~/public_html/tankroyale/api/java_old")
                 execute("mv ~/public_html/tankroyale/api/java_new ~/public_html/tankroyale/api/java")
                 execute("rm -f ~/tmp/$filename")
