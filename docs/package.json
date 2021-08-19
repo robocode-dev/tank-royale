@@ -1,16 +1,16 @@
 {
   "name": "robocode-tankroyale-docs",
-  "version": "0.1.0",
+  "version": "0.9.9",
   "description": "Documentation for Robocode Tank Royale",
   "main": "index.js",
   "scripts": {
     "dev": "vuepress dev docs",
     "build": "vuepress build docs"
   },
-  "author": "Flemming N. Larsen",
+  "author": "Flemming Nørnberg Larsen",
   "license": "Apache-2.0",
   "devDependencies": {
-    "vuepress": "^1.7.1",
+    "vuepress": "^1.8.2",
     "vuepress-plugin-mathjax": "^1.2.8"
   }
 }
