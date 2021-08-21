@@ -17,7 +17,7 @@ dotnet {
     }
 }
 
-tasks.register("docfx") {
+val docfx = tasks.register("docfx") {
     exec {
         workingDir("docfx_project")
         executable("docfx")
@@ -25,7 +25,7 @@ tasks.register("docfx") {
 }
 
 val zipApi = tasks.register<Zip>("zipApi") {
-    dependsOn("docfx")
+    dependsOn(docfx)
 
     archiveFileName.set("docfx.zip")
     destinationDirectory.set(layout.buildDirectory.dir("tmp"))

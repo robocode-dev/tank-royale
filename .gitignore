@@ -2,6 +2,7 @@
 .recommenders/
 .sonarlint/
 .idea/
+.vscode/
 .gradle/
 
 target/

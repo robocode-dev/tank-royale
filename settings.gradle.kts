@@ -17,3 +17,6 @@ include("bot-api:dotnet")
 // Sample Bots archives
 include("sample-bots:java")
 include("sample-bots:dotnet")
+
+// Docs
+include("docs")
