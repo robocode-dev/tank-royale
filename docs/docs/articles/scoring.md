@@ -4,7 +4,7 @@
 
 ### Bullet Damage
 
-bots score 1 point for each point of damage they do to enemies.
+Bots score 1 point for each point of damage they do to enemies.
 
 ### Bullet Damage Bonus
 
@@ -12,11 +12,11 @@ When a bot kills an enemy, it scores an additional 20% of all the damage it did 
 
 ### Survival Score
 
-Each bot that's still alive scores 50 points every time another bot dies.
+Each bot that survives a round scores 50 points every time another bot dies.
 
 ### Last Survivor Bonus
 
-The last bot alive scores 10 additional points for each bot that died before it.
+The last bot alive scores 10 additional points for each opponent bot that has died.
 
 ### Ram Damage
 
@@ -28,12 +28,15 @@ When a bot kills an enemy by ramming, it scores an additional 30% of all the dam
 
 ### Total score
 
-This is everything else added up and determines each bot's rank in this battle.
+The total score is everything else added up and determines each bot's rank in this battle.
 
 ### 1sts, 2nds, 3rds
 
-These do not actually contribute to scoring but are there to show how long the bot survived, i.e. the number of rounds the bot was placed 1st, 2nd, and 3rd.
+These do not contribute to the scoring but are the number of rounds a bot is being placed 1st, 2nd, and 3rd.
 
-## Score vs lone survivor
+## Score versus lone survivor
 
-A bot will not necessarily win, just by being the last bot left on the arena, i.e. the last survivor. A bot that does not fire much, but "just" saves its energy is getting a lesser score than a bot that hits other bots with a lot of bullets. So, do not save your bullets forever just to survive. Make sure you hit with as many of your bullets as possible. The better your bot is at hitting other bots, the better your score will become.
+A bot will not necessarily win, just by being the last bot left on the arena as the last survivor. A bot that does not
+fire much but "just" saves the energy is getting a lesser score than a bot that hits other bots with lots of bullets.
+So, do not save your bullets too long as an attempt to survive. But make sure you hit with as many of your bullets as
+possible. The better your bot is at hitting other bots, the better your score will become.

@@ -5,8 +5,8 @@
   <rect x="0" y="0" width="100%" height="100%" fill="grey" />
 
   <g>
-    <use xlink:href="#tank1" />
-    <use xlink:href="#tank2" />
+    <use xlink:href="#tank1" transform="translate(350,350) scale(0.3,0.3)" />
+    <use xlink:href="#tank2" transform="translate(900,900) scale(0.3,0.3)" />
     <use xlink:href="#radar-sweep" transform="rotate(50,500,500)" />
     <use xlink:href="#radar-sweep" transform="translate(800,800) rotate(230,500,500)" />
   </g>

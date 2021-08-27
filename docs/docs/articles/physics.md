@@ -4,7 +4,11 @@
 
 ### Time measurement
 
-Robocode is turn-based, and hence time is measured in turns. With each turn, each bot receives new information and events about what is going on in the arena, and the bot sends new commands to the server. A battle can take several rounds, for example, 10 rounds. Turns and rounds are measured are provided as a number. Rounds start at round number 1, and each round start with turn number 1.
+Robocode is turn-based, and hence time is measured in turns. With each turn, each bot receives new information and
+events about what is going on in the arena. And with each turn, the bot needs to send new commands to the server.
+
+A battle has one or more rounds, for example, 10 rounds. Turns and rounds are measured are provided as a number.
+Rounds start at round number 1, and each round starts with turn number 1.
 
 ### Distance measurement
 
@@ -14,7 +18,9 @@ Distance in Robocode is measured as _units_ which are floating-point numbers usi
 
 ### Acceleration (a)
 
-Bots accelerate at the rate of 1 unit per turn but decelerate at the rate of 2 units per turn. Hence, the bot is twice as fast at braking than gaining speed. Robocode determines acceleration for your bot, based on the speed or distance that is set as target for the bot.
+Bots accelerate at the rate of 1 unit per turn but decelerate at the rate of 2 units per turn. Hence, the bot is twice
+as fast at braking than gaining speed. Robocode determines acceleration for your bot, based on the speed or distance
+that is set as target for the bot.
 
 ### Speed / velocity (v)
 
@@ -24,7 +30,8 @@ $$v = a * t$$
 
 Hence speed = acceleration × time, or deceleration × time.
 
-The speed can never exceed 8 units per turn. Note that technically, velocity is a vector, but in Robocode we simply assume the direction of the vector to be the bot's heading.
+The speed can never exceed 8 units per turn. Note that technically, velocity is a vector, but in Robocode we simply
+assume the direction of the vector to be the bot's heading.
 
 ### Distance (d)
 
@@ -32,7 +39,7 @@ The distance formula is:
 
 $$d = vt$$
 
-Hence distance = speed × time.
+Hence, distance = speed × time.
 
 ## Rotation
 
@@ -80,7 +87,8 @@ The bullet speed is constant and depends on the firepower used for firing the gu
 
 $$20 - 3 × firepower$$
 
-This means that the maximum bullet speed is 19.7 units/turn with the minimum bullet power 0.1, and the minim bullet speed is 11 units/turn with the maximum bullet power of 3.
+This means that the maximum bullet speed is 19.7 units/turn with the minimum bullet power of 0.1, and the minimum bullet
+speed is 11 units/turn with the maximum bullet power of 3.
 
 ### Gun heat
 
@@ -98,7 +106,8 @@ $$3 × firepower$$
 
 ## Collisions
 
-When a bot collides with another bot or a wall, it is stopped. The exception is a bot being hit by another bot, which it is moving away from. In this case, the bot is not stopped.
+When a bot collides with another bot or a wall, it is stopped. The exception is a bot being hit by another bot, which it
+is moving away from. In this case, the bot is not stopped.
 
 ### Collision between bots
 
@@ -106,7 +115,9 @@ Each robot takes 0.6 damage when colliding.
 
 ### Ramming
 
-If a bot is hitting another bot by moving forward, this counts as _ramming_, meaning that the bot is deliberately trying to hit the other bot. Both bots take damage, but a ramming bot will get a ramming kill bonus. (see more under [Scoring](scoring.md)).
+If a bot is hitting another bot by moving forward, this counts as _ramming_, meaning that the bot is deliberately trying
+to hit the other bot. Both bots take damage, but a ramming bot will get a ramming kill bonus. (see more under
+[Scoring](scoring.md)).
 
 ### Collision with a wall
 

@@ -5,7 +5,7 @@ port: 8080
 
 themeConfig:
   sidebar:
-    - title: Introduction
+    - title: What is Robocode?
       path: /articles/intro
     - title: Tank Royale
       path: /articles/tank-royale
