@@ -1,4 +1,4 @@
-title: "Robocode Tank Royale"
+title: "Robocode Tank Royale Docs"
 description: "Documentation for the programming game Robocode Tank Royale."
 base: /tankroyale/docs/
 port: 8080
@@ -7,8 +7,8 @@ themeConfig:
   sidebar:
     - title: What is Robocode?
       path: /articles/intro
-    - title: Tank Royale
-      path: /articles/tank-royale
+    - title: API Documentation
+      path: /api/apis
     - title: Bot Anatomy
       path: /articles/anatomy
     - title: Coordinates and Angles
@@ -17,7 +17,9 @@ themeConfig:
       path: /articles/physics
     - title: Scoring
       path: /articles/scoring
-    - title: History
+    - title: Tank Royale vs orig. Robocode
+      path: /articles/tank-royale
+    - title: Robocode history
       path: /articles/history
 
 plugins:
