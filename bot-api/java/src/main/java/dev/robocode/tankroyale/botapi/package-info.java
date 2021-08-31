@@ -1,4 +1,4 @@
 /**
- * Contains all public classes and interfaces for the Robocode Tank Royale Bot API.
+ * Contains all public classes and interfaces for the Bot API for Robocode Tank Royale.
  */
 package dev.robocode.tankroyale.botapi;

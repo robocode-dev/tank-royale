@@ -1,6 +1,6 @@
 import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
-
+import java.nio.file.*
 
 val title = "Robocode Tank Royale Bot API"
 description = "Bot API for Robocode Tank Royale"
@@ -41,14 +41,20 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 val javadoc = tasks.withType<Javadoc> {
-    title = "Robocode Tank Royale Bot API for Java $version"
+    title = "Java Bot API for Robocode Tank Royale $version"
     source(sourceSets.main.get().allJava)
     options.memberLevel = JavadocMemberLevel.PUBLIC
+    options.overview = "src/main/javadoc/overview.html"
+    (options as StandardJavadocDocletOptions).addFileOption("-add-stylesheet", File(projectDir, "src/main/javadoc/themes/prism.css"))
+    (options as StandardJavadocDocletOptions).addBooleanOption("-allow-script-in-comments", true)
     exclude(
         "**/dev/robocode/tankroyale/botapi/internal/**",
         "**/dev/robocode/tankroyale/botapi/mapper/**",
         "**/dev/robocode/tankroyale/sample/**"
     )
+    doLast {
+        Files.copy(Paths.get("$projectDir/src/main/javadoc/prism.js"), Paths.get("$buildDir/docs/javadoc/prism.js"))
+    }
 }
 
 val fatJar = task<Jar>("fatJar") {
