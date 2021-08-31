@@ -75,6 +75,8 @@ tasks.named("build") {
     dependsOn(fatJar)
 }
 
+lateinit var javadocJar: Any
+
 tasks {
     val sourcesJar by creating(Jar::class) {
         dependsOn(JavaPlugin.CLASSES_TASK_NAME)
@@ -83,7 +85,7 @@ tasks {
         from(sourceSets["main"].allSource)
     }
 
-    val javadocJar by creating(Jar::class) {
+    val javadocJarLocal by creating(Jar::class) {
         dependsOn(JavaPlugin.JAVADOC_TASK_NAME)
         archiveBaseName.set(artifactBaseName)
         archiveClassifier.set("javadoc")
@@ -92,8 +94,10 @@ tasks {
 
     artifacts {
         add("archives", sourcesJar)
-        add("archives", javadocJar)
+        add("archives", javadocJarLocal)
     }
+
+    javadocJar = javadocJarLocal
 }
 
 publishing {
@@ -117,7 +121,7 @@ val sshServer = remotes.create("sshServer") {
 }
 
 val uploadJavadoc by tasks.registering {
-    dependsOn(javadoc)
+    dependsOn(javadocJar)
 
     doLast {
         ssh.run (delegateClosureOf<RunHandler> {
