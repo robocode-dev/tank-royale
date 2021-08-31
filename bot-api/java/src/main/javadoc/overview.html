@@ -10,9 +10,9 @@
 
     <p>This API is used when creating bots for the Robocode Tank Royale programming game. The API is handling
         communication with a game server behind the scene, so you can focus on the fun part controlling the bot.</p>
-    <p>A good way get started with Robocode Tank Royale is to head over to the
-        <a href="https://robocode.dev/tankroyale/docs/">general documentation</a> for Tank Royale to learn about the
-        basics first</p>
+    <p>A good way get started with Robocode Tank Royale is to head over to the general documentation for Tank Royale
+        to learn about the basics first:</p>
+    <ul><li><a href="https://robocode.dev/tankroyale/docs/">Robocode Tank Royale Docs</a></li></ul>
     <p>The first primary class that you know about first is the {@link dev.robocode.tankroyale.botapi.Bot Bot} class
         and perhaps the {@link dev.robocode.tankroyale.botapi.BaseBot BaseBot}.
         The {@link dev.robocode.tankroyale.botapi.BaseBot BaseBot} class provides all the base and minimum functionality
@@ -22,6 +22,8 @@
 
     <h2>Example</h2>
     <p>Here is an example of a simple bot using the Bot API and which is run as a regular application.</p>
+
+    <p>MyFirstBot.java:</p>
     <pre><code class="language-java">
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
@@ -57,6 +59,20 @@ public class MyFirstBot extends Bot {
     double bearing = calcBearing(e.getBullet().getDirection());
     turnLeft(90 - bearing);
   }
+}
+    </code></pre>
+    <p>MyFirstBot.json:</p>
+    <pre><code class="language-java">
+{
+  "name": "MyFirstBot",
+  "version": "1.0",
+  "gameTypes": "melee, classic, 1v1",
+  "authors": "Mathew Nelson, Flemming N. Larsen",
+  "description": "A sample bot that is probably the first bot you will learn about.",
+  "url": "",
+  "countryCodes": "us, dk",
+  "platform": "Java 8",
+  "programmingLang": "Java 8"
 }
     </code></pre>
 </body>
