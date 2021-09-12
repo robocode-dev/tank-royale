@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Test</title>
-    <link rel="stylesheet" href="themes/prism.css"/>
 </head>
 <body>
     <script src="prism.js"></script>
+
+    <h1>Overview</h1>
 
     <p>This API is used when creating bots for the Robocode Tank Royale programming game. The API is handling
         communication with a game server behind the scene, so you can focus on the fun part controlling the bot.</p>
@@ -20,7 +21,8 @@
         The {@link dev.robocode.tankroyale.botapi.Bot Bot} class is based on BaseBot, but provides more convenient
         methods like e.g. blocking methods for moving and turning the bot, and firing the gun.</p>
 
-    <h2>Example</h2>
+    <h2>Code example</h2>
+
     <p>Here is an example of a simple bot using the Bot API and which is run as a regular application.</p>
 
     <p>MyFirstBot.java:</p>
@@ -61,6 +63,21 @@ public class MyFirstBot extends Bot {
   }
 }
     </code></pre>
+
+    <p>The above code describes the behavior of the robot, where the {@link dev.robocode.tankroyale.botapi.IBot#run()
+        run()} method is the main function/method of the bot, where the bot starts its execution.<br>
+        <br>
+        The on-methods (e.g. <em>onScannedBot</em> and <em>onHitByBullet</em>) are event handlers with code that is
+        called when a specific type of event occurs.
+        For example, the event handler {@link dev.robocode.tankroyale.botapi.BaseBot#onScannedBot(ScannedBotEvent)
+        onScannedBot(ScannedBotEvent)} is called whenever an opponent bot is scanned by the radar, and the {@link
+        dev.robocode.tankroyale.botapi.events.ScannedBotEvent ScannedBotEvent} contains the event data for the scanned
+        bot.</p>
+
+    <h2>JSON config file</h2>
+
+    <p>The code in this example is accompanied by a <em>MyFirstBot.json</em>, which is a
+        <a href="https://fileinfo.com/extension/json">JSON</a> file containing the metadata for the bot.</p>
     <p>MyFirstBot.json:</p>
     <pre><code class="language-java">
 {
@@ -75,5 +92,60 @@ public class MyFirstBot extends Bot {
   "programmingLang": "Java 8"
 }
     </code></pre>
+
+    <p>These fields are required:</p>
+    <ul>
+        <li>name</li>
+        <li>version</li>
+        <li>gameTypes</li>
+        <li>authors</li>
+    </ul>
+    <p>The remaining fields are all optional, but recommended.</p>
+
+    <p>Meaning of each field in the JSON file:</p>
+    <ul>
+        <li><b>name:</b> is the (display) name of the bot.</li>
+        <li><b>version:</b> is the version of the bot. <a href="https://semver.org/">SEMVER</a> is the recommended format.</li>
+        <li><b>gameTypes:</b> is a comma-separated list of the game type(s) the bot supports (see below).</li>
+        <li><b>authors:</b> is a comma-separated list with the name of the bot author(s).</li>
+        <li><b>description:</b> is a brief description of the bot.</li>
+        <li><b>url:</b> is the URL (link) to a web page for the bot.</li>
+        <li><b>countryCodes:</b> is a comma-separated list of <a href="https://www.iban.com/country-codes">Alpha-2
+            country codes</a> the matches the country of the authors.</li>
+        <li><b>platform:</b> is the platform required for running the bot, e.g. Java or .Net.</li>
+        <li><b>programmingLang:</b> is the programming language used for programming the bot, e.g. C# or Kotlin.</li>
+    </ul>
+
+    <h2>Game types</h2>
+
+    <p>Standard game types are:</p>
+    <table style="table, th, td { border: 1px solid black; }">
+        <tr>
+            <th>Game type</th>
+            <th>Arena size</th>
+            <th>Min. participants</th>
+            <th>Max. participants</th>
+        </tr>
+        <tr>
+            <td>classic</td>
+            <td>800 x 600</td>
+            <td>2</td>
+            <td>(unlimited)</td>
+        </tr>
+        <tr>
+            <td>melee</td>
+            <td>1000 x 1000</td>
+            <td>10</td>
+            <td>(unlimited)</td>
+        </tr>
+        <tr>
+            <td>1v1</td>
+            <td>1000 x 1000</td>
+            <td>2</td>
+            <td>2</td>
+        </tr>
+    </table>
+    <p>In the future, more game types might arrive. And it is also possible to use custom game types.</p>
+
 </body>
 </html>

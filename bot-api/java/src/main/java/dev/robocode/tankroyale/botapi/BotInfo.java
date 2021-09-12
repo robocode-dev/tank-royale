@@ -10,7 +10,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
 
-/** Bot info contains the properties of a bot. */
+/**
+ * Bot info contains the properties of a bot.
+ *
+ * <script src="../../../../../prism.js"></script>
+ */
 @SuppressWarnings("unused")
 public final class BotInfo {
 
@@ -151,7 +155,7 @@ public final class BotInfo {
    * <br>
    * Example file in JSON format:<br>
    *
-   * <pre>
+   * <pre><code class="language-java">
    * {
    *   name: "MyBot",
    *   version: "1.0",
@@ -163,7 +167,7 @@ public final class BotInfo {
    *   platform: "Java 11",
    *   programmingLang: "Java 11"
    * }
-   * </pre>
+   * </code></pre>
    * Note that these fields are required:
    * <ul>
    *     <li>name</li>

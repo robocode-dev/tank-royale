@@ -4,7 +4,11 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 import java.util.Collection;
 
-/** Interface containing the core API for a bot. */
+/**
+ * Interface containing the core API for a bot.
+ *
+ * <script src="../../../../prism.js"></script>
+ */
 @SuppressWarnings({"UnusedDeclaration", "EmptyMethod"})
 public interface IBaseBot {
 
@@ -107,14 +111,13 @@ public interface IBaseBot {
    * similar.
    *
    * <p>Example:
-   *
-   * <pre>{@code
+   * <pre><code class="language-java">
    * public void main(String[] args) {
    *     // create myBot
    *     ...
    *     myBot.start();
    * }
-   * }</pre>
+   * </code></pre>
    */
   void start();
 
@@ -756,10 +759,10 @@ public interface IBaseBot {
    *
    * <p>Example:
    *
-   * <pre>
+   * <pre><code class="language-java">
    *     setBodyColor("#09C");
    *     setBodyColor("#0099CC"); // same color as above
-   * </pre>
+   * </code></pre>
    *
    * Note that currently only the number format using the number sign (#) is supported.
    *
@@ -786,10 +789,10 @@ public interface IBaseBot {
    *
    * <p>Example:
    *
-   * <pre>
+   * <pre><code class="language-java">
    *     setTurretColor("#09C");
    *     setTurretColor("#0099CC"); // same color as above
-   * </pre>
+   * </code></pre>
    *
    * Note that currently only the number format using the number sign (#) is supported.
    *
@@ -815,10 +818,10 @@ public interface IBaseBot {
    *
    * <p>Example:
    *
-   * <pre>
+   * <pre><code class="language-java">
    *     setRadarColor("#09C");
    *     setRadarColor("#0099CC"); // same color as above
-   * </pre>
+   * </code></pre>
    *
    * Note that currently only the number format using the number sign (#) is supported.
    *
@@ -845,10 +848,10 @@ public interface IBaseBot {
    *
    * <p>Example:
    *
-   * <pre>
+   * <pre><code class="language-java">
    *     setBulletColor("#09C");
-   *     setBulletColor("#0099CC"); // same color as above
-   * </pre>
+   *     setBulletColor("#0099CC"); // same color as #09C
+   * </code></pre>
    *
    * Note that currently only the number format using the number sign (#) is supported.
    *
@@ -874,10 +877,10 @@ public interface IBaseBot {
    *
    * <p>Example:
    *
-   * <pre>
+   * <pre><code class="language-java">
    *     setScanColor("#09C");
-   *     setScanColor("#0099CC"); // same color as above
-   * </pre>
+   *     setScanColor("#0099CC"); // same color as #09C
+   * </code></pre>
    *
    * Note that currently only the number format using the number sign (#) is supported.
    *
@@ -903,10 +906,10 @@ public interface IBaseBot {
    *
    * <p>Example:
    *
-   * <pre>
+   * <pre><code class="language-java">
    *     setTrackColor("#09C");
-   *     setTrackColor("#0099CC"); // same color as above
-   * </pre>
+   *     setTrackColor("#0099CC"); // same color as #09C
+   * </code></pre>
    *
    * Note that currently only the number format using the number sign (#) is supported.
    *
@@ -932,10 +935,10 @@ public interface IBaseBot {
    *
    * <p>Example:
    *
-   * <pre>
+   * <pre><code class="language-java">
    *     setGunColor("#09C");
-   *     setGunColor("#0099CC"); // same color as above
-   * </pre>
+   *     setGunColor("#0099CC"); // same color as #09C
+   * </code></pre>
    *
    * Note that currently only the number format using the number sign (#) is supported.
    *
@@ -1143,9 +1146,9 @@ public interface IBaseBot {
   /**
    * Calculates the bearing (delta angle) between the input direction and the direction of this bot.
    *
-   * <pre>
+   * <pre><code class="language-java">
    * bearing = calcBearing(direction) = normalizeRelativeDegrees(direction - getDirection())
-   * </pre>
+   * </code></pre>
    *
    * @param direction is the input direction to calculate the bearing from.
    * @return A bearing (delta angle) between the input direction and the direction of this bot. The
@@ -1160,9 +1163,9 @@ public interface IBaseBot {
   /**
    * Calculates the bearing (delta angle) between the input direction and the direction of the gun.
    *
-   * <pre>
+   * <pre><code class="language-java">
    * bearing = calcGunBearing(direction) = normalizeRelativeDegrees(direction - getGunDirection())
-   * </pre>
+   * </code></pre>
    *
    * @param direction is the input direction to calculate the bearing from.
    * @return A bearing (delta angle) between the input direction and the direction of the gun. The
@@ -1178,9 +1181,9 @@ public interface IBaseBot {
    * Calculates the bearing (delta angle) between the input direction and the direction of the
    * radar.
    *
-   * <pre>
+   * <pre><code class="language-java">
    * bearing = calcRadarBearing(direction) = normalizeRelativeDegrees(direction - getRadarDirection())
-   * </pre>
+   * </code></pre>
    *
    * @param direction is the input direction to calculate the bearing from.
    * @return A bearing (delta angle) between the input direction and the direction of the radar. The

@@ -9,7 +9,8 @@ import dev.robocode.tankroyale.botapi.IBot;
  *
  * <p>Here is an example of how to use this condition:
  *
- * <pre>
+ *  <script src="../../../../../prism.js"></script>
+ *  <pre><code class="language-java">
  *  public class MyBot extends Bot {
  *    public void run() {
  *      while (isRunning()) {
@@ -20,7 +21,7 @@ import dev.robocode.tankroyale.botapi.IBot;
  *      }
  *    }
  * }
- * </pre>
+ * </code></pre>
  */
 @SuppressWarnings("unused")
 public final class NextTurnCondition extends Condition {

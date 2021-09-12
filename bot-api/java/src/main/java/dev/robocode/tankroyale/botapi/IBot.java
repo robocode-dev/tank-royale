@@ -7,13 +7,15 @@ import dev.robocode.tankroyale.botapi.events.CustomEvent;
 /**
  * Interface for a bot that extends the core API with convenient methods for movement, turning, and
  * firing the gun.
+ *
+ * <script src="../../../../prism.js"></script>
  */
 @SuppressWarnings({"UnusedDeclaration"})
 public interface IBot extends IBaseBot {
   /**
    * The run() method is used for running a program for the bot like:
    *
-   * <pre>
+   * <pre><code class="language-java">
    * public void run() {
    *   while (isRunning()) {
    *     forward(100);
@@ -22,7 +24,7 @@ public interface IBot extends IBaseBot {
    *     turnGunRight(360);
    *   }
    * }
-   * </pre>
+   * </code></pre>
    *
    * <p>Note that the program runs in a loop in this example (as long as the bot is running),
    * meaning that it will start moving forward as soon as {@link #turnGunRight(double)} has

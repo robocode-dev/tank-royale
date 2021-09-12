@@ -47,6 +47,7 @@ val javadoc = tasks.withType<Javadoc> {
     options.overview = "src/main/javadoc/overview.html"
     (options as StandardJavadocDocletOptions).addFileOption("-add-stylesheet", File(projectDir, "src/main/javadoc/themes/prism.css"))
     (options as StandardJavadocDocletOptions).addBooleanOption("-allow-script-in-comments", true)
+    (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
     exclude(
         "**/dev/robocode/tankroyale/botapi/internal/**",
         "**/dev/robocode/tankroyale/botapi/mapper/**",

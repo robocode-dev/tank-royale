@@ -69,7 +69,8 @@ The maximum rate of rotation is 45° per turn. This is added to the current rate
 
 ### Firepower
 
-The maximum firepower is 3 and the minimum firepower is 0.1.
+The maximum firepower is 3 and the minimum firepower is 0.1. The amount of energy used on the firepower is subtracted
+from the bot's energy.
 
 ### Bullet damage
 
