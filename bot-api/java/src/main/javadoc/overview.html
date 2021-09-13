@@ -9,21 +9,28 @@
 
     <h1>Overview</h1>
 
-    <p>This API is used when creating bots for the Robocode Tank Royale programming game. The API is handling
-        communication with a game server behind the scene, so you can focus on the fun part controlling the bot.</p>
-    <p>A good way get started with Robocode Tank Royale is to head over to the general documentation for Tank Royale
+    <p>This API is used when creating bots for the Robocode Tank Royale programming game. The API handles communication
+        with a game server behind the scene so you can focus on the fun part of controlling the bot.<br>
+        <br>
+        A good way to get started with Robocode Tank Royale is to head over to the general documentation for Tank Royale
         to learn about the basics first:</p>
-    <ul><li><a href="https://robocode.dev/tankroyale/docs/">Robocode Tank Royale Docs</a></li></ul>
+    <ul>
+        <li><a href="https://robocode.dev/tankroyale/docs/">Robocode Tank Royale Docs</a></li>
+    </ul>
+    <p>Another good way to get started is to look at the source files for the sample bots.</p>
+
+    <h2>The bot classes</h2>
+
     <p>The first primary class that you know about first is the {@link dev.robocode.tankroyale.botapi.Bot Bot} class
         and perhaps the {@link dev.robocode.tankroyale.botapi.BaseBot BaseBot}.
         The {@link dev.robocode.tankroyale.botapi.BaseBot BaseBot} class provides all the base and minimum functionality
-        of a bot, and deals with the communication with the server.
+        of a bot and deals with the communication with the server.
         The {@link dev.robocode.tankroyale.botapi.Bot Bot} class is based on BaseBot, but provides more convenient
         methods like e.g. blocking methods for moving and turning the bot, and firing the gun.</p>
 
-    <h2>Code example</h2>
+    <h3>Code example</h3>
 
-    <p>Here is an example of a simple bot using the Bot API and which is run as a regular application.</p>
+    <p>Here is an example of a simple bot using the Bot API and should run as a regular application.</p>
 
     <p>MyFirstBot.java:</p>
     <pre><code class="language-java">
@@ -32,10 +39,12 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 public class MyFirstBot extends Bot {
 
+  // Main entry used for starting the bot
   public static void main(String[] args) throws java.io.IOException {
     new MyFirstBot().start();
   }
 
+  // Constructor, which loads the bot settings file
   protected MyFirstBot() throws java.io.IOException {
     super(BotInfo.fromFile("MyFirstBot.json"));
   }
@@ -64,13 +73,22 @@ public class MyFirstBot extends Bot {
 }
     </code></pre>
 
-    <p>The above code describes the behavior of the robot, where the {@link dev.robocode.tankroyale.botapi.IBot#run()
-        run()} method is the main function/method of the bot, where the bot starts its execution.<br>
+    <p>The above code describes the behavior of the robot. The main() is the main entry point for all Java applications
+        to start running the program. Using the bot API, we need to start the robot by calling the
+        {@link dev.robocode.tankroyale.botapi.IBot#start() start()} method of the bot API, which will tell the server
+        that this bot wants to join the battle and also provide the server with the required bot info.<br>
         <br>
-        The on-methods (e.g. <em>onScannedBot</em> and <em>onHitByBullet</em>) are event handlers with code that is
-        called when a specific type of event occurs.
+        With the bot's constructor (<em>MyFirstBot()</em>) we call the
+        {@link dev.robocode.tankroyale.botapi.BotInfo#fromFile(String) BotInfo.fromFile(String)} method provides the bot
+        info for the server, like e.g. the name of the bot, and its author, etc.<br>
+        <br>
+        The {@link dev.robocode.tankroyale.botapi.IBot#run()} method is called when the bot need to start its real
+        execution to send instructions to the server.<br>
+        <br>
+        The on-methods (for example, <em>onScannedBot</em> and <em>onHitByBullet</em>) are event handlers with code that
+        triggers when a specific type of event occurs.
         For example, the event handler {@link dev.robocode.tankroyale.botapi.BaseBot#onScannedBot(ScannedBotEvent)
-        onScannedBot(ScannedBotEvent)} is called whenever an opponent bot is scanned by the radar, and the {@link
+        onScannedBot(ScannedBotEvent)} triggers whenever an opponent bot is scanned by the radar. The {@link
         dev.robocode.tankroyale.botapi.events.ScannedBotEvent ScannedBotEvent} contains the event data for the scanned
         bot.</p>
 
@@ -105,7 +123,8 @@ public class MyFirstBot extends Bot {
     <p>Meaning of each field in the JSON file:</p>
     <ul>
         <li><b>name:</b> is the (display) name of the bot.</li>
-        <li><b>version:</b> is the version of the bot. <a href="https://semver.org/">SEMVER</a> is the recommended format.</li>
+        <li><b>version:</b> is the version of the bot. <a href="https://semver.org/">SEMVER</a> is the recommended
+            format.</li>
         <li><b>gameTypes:</b> is a comma-separated list of the game type(s) the bot supports (see below).</li>
         <li><b>authors:</b> is a comma-separated list with the name of the bot author(s).</li>
         <li><b>description:</b> is a brief description of the bot.</li>
