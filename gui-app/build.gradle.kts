@@ -7,7 +7,7 @@ description = "GUI application for starting battles for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
 val artifactId = "robocode-tankroyale-gui"
-version = "0.8.3"
+version = "0.8.4"
 
 val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
 
@@ -17,7 +17,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.guardsquare:proguard-gradle:7.1.0-beta5")
+        classpath("com.guardsquare:proguard-gradle:7.1.1")
     }
 }
 
@@ -50,7 +50,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0-RC")
 
     implementation("com.miglayout:miglayout-swing:11.0")
 

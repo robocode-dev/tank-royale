@@ -6,7 +6,7 @@ val title = "Robocode Tank Royale Bot Booter"
 description = "Utility app for booting up bots from locale storage onto websocket"
 
 group = "dev.robocode.tankroyale"
-version = "0.8.1"
+version = "0.8.2"
 
 val archiveFileName = "$buildDir/libs/robocode-tankroyale-booter-$version.jar"
 
@@ -16,7 +16,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.guardsquare:proguard-gradle:7.1.0-beta5")
+        classpath("com.guardsquare:proguard-gradle:7.1.1")
     }
 }
 
@@ -48,7 +48,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0-RC")
     implementation("info.picocli:picocli:4.6.1")
 }
 
