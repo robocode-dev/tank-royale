@@ -6,4 +6,4 @@
 
 ## .Net API (DocFX)
 - [Overview](https://robocode.dev/tankroyale/api/dotnet/)
-- [Bot API](https://robocode.dev/tankroyale/api/dotnet/api/index.html) 
+- [Bot API](https://robocode.dev/tankroyale/api/dotnet/api/Robocode.TankRoyale.BotApi.html) 
