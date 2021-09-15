@@ -1,7 +1,19 @@
-title: "Robocode Tank Royale Docs"
-description: "Documentation for the programming game Robocode Tank Royale."
+title: Robocode Tank Royale Docs
+description: Documentation for the programming game Robocode Tank Royale.
 base: /tankroyale/docs/
 port: 8080
+
+dest: build/docs
+
+#head:
+#  - link:
+#      rel: icon
+#      href: /image/tank.ico
+#      type: image/x-icon
+#  - link:
+#      rel: shortcut icon
+#      href: /image/tank.ico
+#      type: image/x-icon
 
 themeConfig:
   sidebar:

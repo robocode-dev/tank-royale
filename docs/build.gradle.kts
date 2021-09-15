@@ -27,7 +27,7 @@ val zipDocs = tasks.register<Zip>("zipDocs") {
     archiveFileName.set("docs.zip")
     destinationDirectory.set(File("build"))
 
-    from(file("docs/.vuepress/dist"))
+    from(file("build/docs"))
 }
 
 val sshServer = remotes.create("sshServer") {
