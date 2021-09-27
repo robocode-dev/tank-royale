@@ -5,15 +5,11 @@ port: 8080
 
 dest: build/docs
 
-#head:
-#  - link:
-#      rel: icon
-#      href: /image/tank.ico
-#      type: image/x-icon
-#  - link:
-#      rel: shortcut icon
-#      href: /image/tank.ico
-#      type: image/x-icon
+head:
+- - link
+  - rel: icon
+    href: /favicon.ico
+    type: image/x-icon
 
 themeConfig:
   sidebar:
