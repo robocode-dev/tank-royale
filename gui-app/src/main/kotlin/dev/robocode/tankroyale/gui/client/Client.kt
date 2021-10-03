@@ -158,7 +158,7 @@ object Client : AutoCloseable {
 
         val handshake = ControllerHandshake(
             name = "Robocode Tank Royale UI",
-            version = "${Version.getVersion()}",
+            version = "${Version.version}",
             author = "Flemming N. Larsen",
             secret = ServerProcess.secret
         )

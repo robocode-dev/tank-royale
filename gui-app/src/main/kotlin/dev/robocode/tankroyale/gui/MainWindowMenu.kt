@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.ui
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.extensions.JMenuExt.addNewMenuItem
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.MENU
+import dev.robocode.tankroyale.gui.ui.about.AboutBox
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEventChannel
 import dev.robocode.tankroyale.gui.util.Event
@@ -22,6 +23,8 @@ object MainWindowMenu : JMenuBar() {
     private val onStartServer = MenuEvent()
     private val onRestartServer = MenuEvent()
     private val onStopServer = MenuEvent()
+
+    private val onAbout = MenuEvent()
 
     private var startServerMenuItem: JMenuItem? = null
     private var restartServerMenuItem: JMenuItem? = null
@@ -59,6 +62,12 @@ object MainWindowMenu : JMenuBar() {
         add(JMenu(MENU.get("menu.config")).apply {
             addNewMenuItem("item.bot_dir_config", onBotDirConfig)
         })
+
+        add(JMenu(MENU.get("menu.help")).apply {
+            addNewMenuItem("item.about", onAbout)
+        })
+
+        onAbout.invokeLater(this) { AboutBox.isVisible = true }
 
         ServerProcess.apply {
             onStarted.subscribe(MainWindowMenu) { updateServerState() }

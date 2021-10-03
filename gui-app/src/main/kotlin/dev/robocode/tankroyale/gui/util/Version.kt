@@ -6,22 +6,18 @@ import java.io.InputStreamReader
 
 object Version {
 
-    private var version: String? = null
+    val version: String? by lazy { fetchVersion() }
 
-    fun getVersion(): String? {
-        if (version == null) {
-            val inputStream = Version::class.java.classLoader.getResourceAsStream("version.txt")
-            if (inputStream != null) {
+    private fun fetchVersion(): String? {
+        Version::class.java.classLoader.getResourceAsStream("version.txt").use {
+            inputStream ->
                 try {
                     BufferedReader(InputStreamReader(inputStream)).use { reader ->
-                        version = reader.readLine().trim { it <= ' ' }
-                        inputStream.close()
+                        return reader.readLine().trim { it <= ' ' }
                     }
                 } catch (e: IOException) {
                     throw IllegalStateException("Cannot read version")
                 }
-            }
         }
-        return version
     }
 }
