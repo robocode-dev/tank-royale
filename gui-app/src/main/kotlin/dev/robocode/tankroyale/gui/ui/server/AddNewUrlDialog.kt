@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.server
 
+import dev.robocode.tankroyale.gui.MainWindow
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
@@ -23,7 +24,7 @@ object AddNewUrlDialog : JDialog(SelectServerDialog, ResourceBundles.UI_TITLES.g
 
         size = Dimension(300, 100)
 
-        setLocationRelativeTo(null) // center on screen
+        setLocationRelativeTo(MainWindow) // center on main window
 
         contentPane.add(AddNewUrlPanel)
 

@@ -19,7 +19,7 @@ object BotDirectoryConfigDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.
 
         size = Dimension(500, 200)
 
-        setLocationRelativeTo(null) // center on screen
+        setLocationRelativeTo(MainWindow) // center on main window
 
         contentPane.add(BotDirectoryConfigPanel)
 

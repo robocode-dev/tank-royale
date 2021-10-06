@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui
 
+import dev.robocode.tankroyale.gui.MainWindow
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotResults
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
@@ -41,7 +42,7 @@ class ResultsWindow(results: List<BotResults>) : RcFrame(getWindowTitle()) {
         contentPane.add(scrollPane)
 
         pack()
-        setLocationRelativeTo(null) // center on screen
+        setLocationRelativeTo(MainWindow) // center on main window
     }
 
     private fun getData(results: List<BotResults>): Array<Array<String>> {

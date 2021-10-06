@@ -20,7 +20,7 @@ object AboutBox : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("about_dialo
 
     init {
         size = Dimension(500, 190)
-        setLocationRelativeTo(null) // center on screen
+        setLocationRelativeTo(MainWindow) // center on main window
 
         contentPane = htmlPane()
     }

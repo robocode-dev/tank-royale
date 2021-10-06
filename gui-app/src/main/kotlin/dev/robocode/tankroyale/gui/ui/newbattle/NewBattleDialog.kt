@@ -24,7 +24,7 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
 
         size = Dimension(750, 600)
 
-        setLocationRelativeTo(null) // center on screen
+        setLocationRelativeTo(MainWindow) // center on main window
 
         val selectBotsAndStartPanel = NewBattlePanel()
 

@@ -28,7 +28,7 @@ object SetupRulesDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("set
 
         size = Dimension(400, 350)
 
-        setLocationRelativeTo(null) // center on screen
+        setLocationRelativeTo(MainWindow) // center on main window
 
         contentPane.add(setupRulesPanel)
     }

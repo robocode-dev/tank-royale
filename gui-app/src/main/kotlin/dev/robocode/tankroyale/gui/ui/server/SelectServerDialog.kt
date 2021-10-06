@@ -19,7 +19,7 @@ object SelectServerDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("s
 
         size = Dimension(500, 150)
 
-        setLocationRelativeTo(null) // center on screen
+        setLocationRelativeTo(MainWindow) // center on main window
 
         contentPane.add(SelectServerPanel)
     }

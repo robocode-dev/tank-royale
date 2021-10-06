@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.server
 
+import dev.robocode.tankroyale.gui.MainWindow
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import java.awt.Color
@@ -14,7 +15,7 @@ object ServerLogWindow : RcFrame("server_log_window") {
 
     init {
         setSize(700, 550)
-        setLocationRelativeTo(null) // center on screen
+        setLocationRelativeTo(MainWindow) // center on main window
 
         textArea.apply {
             isEditable = false
