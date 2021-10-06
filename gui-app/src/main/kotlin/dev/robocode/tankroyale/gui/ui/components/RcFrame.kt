@@ -5,6 +5,6 @@ import javax.swing.JFrame
 
 open class RcFrame(titlePropertyName: String) : JFrame(ResourceBundles.UI_TITLES.get(titlePropertyName)) {
     init {
-        iconImage = Icons.robocodeImageIcon
+        iconImage = Images.tankImage
     }
 }
