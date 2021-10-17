@@ -3,6 +3,8 @@ import java.nio.file.Paths
 import java.nio.file.Files.*
 import java.io.PrintWriter
 
+version = project(":bot-api:dotnet").version
+
 defaultTasks("clean", "build")
 
 val clean = tasks.register<Delete>("clean") {
@@ -10,8 +12,7 @@ val clean = tasks.register<Delete>("clean") {
 }
 
 tasks.register("build") {
-    dependsOn(clean)
-    dependsOn(zipSampleBots)
+    dependsOn(clean, zipSampleBots)
 }
 
 abstract class BaseTask : DefaultTask() {
@@ -98,8 +99,8 @@ val copyBotFiles = task<CopyBotFiles>("copyBotFiles") {
 val zipSampleBots = task<Zip>("zipSampleBots") {
     dependsOn(copyBotFiles)
 
-    archiveFileName.set("robocode-tankoyale-dotnet-sample-bots.zip")
-    destinationDirectory.set(Paths.get(System.getProperty("user.dir")).resolve("build").toFile())
+    archiveFileName.set("robocode-tankoyale-sample-bots-dotnet-${project.version}.zip")
+    destinationDirectory.set(buildDir)
 
-    from(Paths.get(System.getProperty("user.dir")).resolve("build/archive").toFile())
+    from(File(buildDir, "archive"))
 }

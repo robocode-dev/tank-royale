@@ -22,7 +22,7 @@ subprojects {
         exclude("**/*.png")
         exclude("**/*.txt")
 
-        var ext = this as ExtensionAware
+        val ext = this as ExtensionAware
         with (ext) {
             extra["year"] = Year.now()
             extra["name"] = "Flemming Nørnberg Larsen"
