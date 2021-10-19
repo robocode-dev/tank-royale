@@ -1,23 +1,23 @@
-Sample bots for .Net depends on the bot-api for .Net.
+# Internal ReadMe
 
+Note that sample bots for .Net depends on the bot-api for .Net, i.e. the NuGet package.
 
-Do this once
-------------
+## Do this once
 
 Update this file:
-%appdata%\NuGet\NuGet.Config
+
+    %appdata%\NuGet\NuGet.Config
 
 Add this key inside <packageSources> section:
 
-<add key="local" value="%USERPROFILE%\.nuget\packages"/>
+    <add key="local" value="%USERPROFILE%\.nuget\packages"/>
 
-Build bot-api
--------------
-gradle build
+## Build bot-api
 
-cd bin\Release
+    gradle build
 
-Push Robocode.TankRoyale.BotApi to local
-----------------------------------------
+    cd bin\Release
 
-dotnet nuget push *.nupkg -s local
+## Push Robocode.TankRoyale.BotApi to local
+
+    dotnet nuget push *.nupkg -s local

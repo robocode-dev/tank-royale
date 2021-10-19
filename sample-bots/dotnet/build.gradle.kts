@@ -1,5 +1,4 @@
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.nio.file.Files.*
 import java.io.PrintWriter
 
@@ -16,7 +15,6 @@ tasks.register("build") {
 }
 
 abstract class BaseTask : DefaultTask() {
-
     @Internal
     protected val archiveDir: Path = project.buildDir.toPath().resolve("archive")
 
@@ -49,17 +47,18 @@ val createDirs = task<CreateDirs>("createDirs") {}
 abstract class CopyBotFiles : BaseTask() {
     @TaskAction
     fun prepareBotFiles() {
-        list(project.projectDir.toPath()).forEach { projectDir ->
+        list(project.projectDir.toPath()).forEach { botDir ->
             run {
-                if (isDirectory(projectDir) && isBotProjectDir(projectDir)) {
-                    val botArchivePath: Path = archiveDir.resolve(projectDir.botName())
+                if (isDirectory(botDir) && isBotProjectDir(botDir)) {
+                    val botArchivePath: Path = archiveDir.resolve(botDir.botName())
 
                     createDir(botArchivePath)
-                    copyBotFiles(projectDir, botArchivePath)
-                    createCmdFile(projectDir, botArchivePath)
+                    copyBotFiles(botDir, botArchivePath)
+                    createCmdFile(botDir, botArchivePath)
                 }
             }
         }
+        copyReadMeFile(project.projectDir, archiveDir)
     }
 
     private fun Path.botName(): String {
@@ -68,13 +67,18 @@ abstract class CopyBotFiles : BaseTask() {
 
     private fun isBotProjectDir(dir: Path): Boolean {
         val botName = dir.botName()
-        return !botName.startsWith(".") && botName != "build"
+        return !botName.startsWith(".") && botName !in listOf("build", "assets")
     }
 
     private fun copyBotFiles(projectDir: Path, botArchivePath: Path) {
         for (file in list(projectDir)) {
             copy(file, botArchivePath.resolve(file.fileName))
         }
+    }
+
+    private fun copyReadMeFile(projectDir: File, archivePath: Path) {
+        var filename = "ReadMe.md"
+        copy(File(projectDir, "assets/$filename").toPath(), archivePath.resolve(filename))
     }
 
     private fun createCmdFile(projectDir: Path, botArchivePath: Path) {
@@ -99,7 +103,7 @@ val copyBotFiles = task<CopyBotFiles>("copyBotFiles") {
 val zipSampleBots = task<Zip>("zipSampleBots") {
     dependsOn(copyBotFiles)
 
-    archiveFileName.set("robocode-tankoyale-sample-bots-dotnet-${project.version}.zip")
+    archiveFileName.set("sample-bots-dotnet-${project.version}.zip")
     destinationDirectory.set(buildDir)
 
     from(File(buildDir, "archive"))
