@@ -57,9 +57,9 @@ val copyBotApiJar = task<Copy>("copyBotApiJar") {
 
     from(project(":bot-api:java").file("build/libs"))
     into(project.buildDir.resolve("archive/lib"))
-    include("java-*.jar")
-    exclude("*javadoc*")
-    rename("^.*(\\d\\.\\d\\.\\d)\\.jar", "robocode-tankroyale-bot-api-$1.jar")
+    exclude("*-javadoc.jar")
+    exclude("*-sources.jar")
+    exclude("java-*.jar")
 }
 
 abstract class FindBotApiJarFilename : BaseTask() {
