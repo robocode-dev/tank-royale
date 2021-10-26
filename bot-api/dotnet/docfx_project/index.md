@@ -103,10 +103,10 @@ MyFirstBot.json:
   "gameTypes": "melee, classic, 1v1",
   "authors": "Mathew Nelson, Flemming N. Larsen",
   "description": "A sample bot that is probably the first bot you will learn about.",
-  "url": "",
+  "homepage": "",
   "countryCodes": "us, dk",
-  "platform": "Java 8",
-  "programmingLang": "Java 8"
+  "platform": ".Net 5",
+  "programmingLang": "C# 8.0"
 }
 ```
 These fields are required:
@@ -125,7 +125,7 @@ Meaning of each field in the JSON file:
 *   **gameTypes:** is a comma-separated list of the game type(s) the bot supports (see below).
 *   **authors:** is a comma-separated list with the name of the bot author(s).
 *   **description:** is a brief description of the bot.
-*   **url:** is the URL (link) to a web page for the bot.
+*   **homepage:** is the URL (link) to a web page for the bot.
 *   **countryCodes:** is a comma-separated list of [Alpha-2 country codes](https://www.iban.com/country-codes) the matches the country of the authors.
 *   **platform:** is the platform required for running the bot, e.g. Java or .Net.
 *   **programmingLang:** is the programming language used for programming the bot, e.g. C# or Kotlin.

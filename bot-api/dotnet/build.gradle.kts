@@ -13,10 +13,6 @@ dotnet {
         version = project.version as String
         packageVersion = version
     }
-
-    nugetPush {
-        source = "local"
-    }
 }
 
 val docfx = tasks.register("docfx") {
