@@ -15,7 +15,7 @@ final class BotHandshakeFactory {
     handshake.setVersion(botInfo.getVersion());
     handshake.setAuthors(new ArrayList<>(botInfo.getAuthors()));
     handshake.setDescription(botInfo.getDescription());
-    handshake.setUrl(botInfo.getUrl());
+    handshake.setHomepage(botInfo.getHomepage());
     handshake.setCountryCodes(new ArrayList<>(botInfo.getCountryCodes()));
     handshake.setGameTypes(new ArrayList<>(botInfo.getGameTypes()));
     handshake.setPlatform(botInfo.getPlatform());

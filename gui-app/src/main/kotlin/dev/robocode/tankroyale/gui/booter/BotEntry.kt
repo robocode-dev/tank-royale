@@ -14,7 +14,7 @@ data class Info(
     val version: String,
     val authors: String,
     val description: String? = null,
-    val url: String? = null,
+    val homepage: String? = null,
     val countryCodes: String,
     val gameTypes: String,
     val programmingLang: String? = null,

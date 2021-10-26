@@ -48,7 +48,7 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.robocode.tankroyale:robocode-tankroyale-schema:0.8.0")
+    implementation("dev.robocode.tankroyale:robocode-tankroyale-schema:0.8.1")
     implementation("org.java-websocket:Java-WebSocket:1.5.2")
     implementation("org.slf4j:slf4j-simple:2.0.0-alpha5")
     implementation("info.picocli:picocli:4.6.1")

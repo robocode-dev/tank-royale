@@ -14,7 +14,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       handshake.Version = botInfo.Version;
       handshake.Authors = new List<string>(botInfo.Authors);
       handshake.Description = botInfo.Description;
-      handshake.Url = botInfo.Url;
+      handshake.Homepage = botInfo.Homepage;
       handshake.CountryCodes = botInfo.CountryCodes != null ? new List<string>(botInfo.CountryCodes) : new List<string>();
       handshake.GameTypes = botInfo.GameTypes != null ? new HashSet<string>(botInfo.GameTypes) : new HashSet<string>();
       handshake.Platform = botInfo.Platform;

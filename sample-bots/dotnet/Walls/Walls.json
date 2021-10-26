@@ -4,7 +4,7 @@
   "gameTypes": "melee, classic, 1v1",
   "authors": "Mathew Nelson, Flemming N. Larsen",
   "description": "Moves around the outer edge with the gun facing in.",
-  "url": "",
+  "homepage": "",
   "countryCodes": "us, dk",
   "platform": ".Net 5.0",
   "programmingLang": "C# 8.0"

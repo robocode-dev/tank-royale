@@ -13,7 +13,7 @@ class BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
     private val versionTextField = JNonEditableTextField()
     private val authorsTextField = JNonEditableTextField()
     private val descriptionTextField = JTextArea()
-    private val urlTextPane = JNonEditableHtmlPane()
+    private val homepageTextPane = JNonEditableHtmlPane()
     private val countryCodesTextPane = JNonEditableHtmlPane()
     private val gameTypesTextField = JNonEditableTextField()
     private val platformTextField = JNonEditableTextField()
@@ -41,9 +41,9 @@ class BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
         descriptionTextField.background = background
         descriptionTextField.font = font
 
-        addLabel("bot_info.url")
-        add(urlTextPane, "growx, wrap")
-        urlTextPane.minimumSize = descriptionTextField.minimumSize
+        addLabel("bot_info.homepage")
+        add(homepageTextPane, "growx, wrap")
+        homepageTextPane.minimumSize = descriptionTextField.minimumSize
 
         addLabel("bot_info.game_types")
         add(gameTypesTextField, "growx, wrap")
@@ -62,7 +62,7 @@ class BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
         versionTextField.text = botInfo?.version
         authorsTextField.text = botInfo?.authors?.joinToString(separator = ", ") ?: ""
         descriptionTextField.text = botInfo?.description?.let { truncateDescriptionLines(it) } ?: ""
-        urlTextPane.text = botInfo?.url?.let { generateUrlHtml(botInfo.url) } ?: ""
+        homepageTextPane.text = botInfo?.homepage?.let { generateUrlHtml(botInfo.homepage) } ?: ""
         gameTypesTextField.text = botInfo?.gameTypes?.joinToString(separator = ", ") ?: ""
         countryCodesTextPane.text = botInfo?.countryCodes?.let { generateCountryHtml(botInfo.countryCodes) } ?: ""
         platformTextField.text = botInfo?.platform

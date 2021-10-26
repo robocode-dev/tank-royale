@@ -80,7 +80,7 @@ namespace Robocode.TankRoyale.BotApi
     /// The URL of a web page for the bot. This field is optional.
     /// </summary>
     /// <value>The URL of a web page for the bot.</value>
-    public string Url { get; private set; }
+    public string Homepage { get; private set; }
 
     /// <summary>
     /// The country code(s) defined by ISO 3166-1 alpha-2, e.g. "us":
@@ -178,7 +178,7 @@ namespace Robocode.TankRoyale.BotApi
       string version,
       IEnumerable<string> authors,
       string description,
-      string url,
+      string homepage,
       IEnumerable<string> countryCodes,
       IEnumerable<string> gameTypes,
       string platform,
@@ -188,7 +188,7 @@ namespace Robocode.TankRoyale.BotApi
       Version = version;
       Authors = authors;
       Description = description;
-      Url = url;
+      Homepage = homepage;
       CountryCodes = countryCodes;
       GameTypes = gameTypes;
       Platform = platform;

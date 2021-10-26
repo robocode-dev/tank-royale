@@ -6,7 +6,7 @@ val title = "Robocode Tank Royale Bot API"
 description = "Bot API for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
-version = "0.9.9"
+version = "0.9.10"
 
 val artifactBaseName = "robocode-tankroyale-bot-api"
 
@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.robocode.tankroyale:robocode-tankroyale-schema:0.8.0")
+    implementation("dev.robocode.tankroyale:robocode-tankroyale-schema:0.8.1")
     implementation("com.neovisionaries:nv-i18n:1.28")
     implementation("com.google.code.gson:gson:2.8.7")
     implementation("org.danilopianini:gson-extras:0.2.2")

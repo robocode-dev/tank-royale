@@ -104,7 +104,7 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
                     info.version,
                     info.authors.split(","),
                     info.description,
-                    info.url,
+                    info.homepage,
                     info.countryCodes.split(","),
                     info.gameTypes.split(",").toSet(),
                     info.platform,

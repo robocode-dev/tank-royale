@@ -54,7 +54,9 @@ abstract class CopyBotFiles : BaseTask() {
 
                     createDir(botArchivePath)
                     copyBotFiles(botDir, botArchivePath)
-                    createCmdFile(botDir, botArchivePath)
+                    createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
+                    createScriptFile(botDir, botArchivePath, "ps1", "\r\n")
+                    createScriptFile(botDir, botArchivePath, "sh", "\n")
                 }
             }
         }
@@ -81,15 +83,18 @@ abstract class CopyBotFiles : BaseTask() {
         copy(File(projectDir, "assets/$filename").toPath(), archivePath.resolve(filename))
     }
 
-    private fun createCmdFile(projectDir: Path, botArchivePath: Path) {
+    private fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
         val botName = projectDir.botName()
-        val file = botArchivePath.resolve("$botName.cmd").toFile()
+        val file = botArchivePath.resolve("$botName.$fileExt").toFile()
         val printWriter = object : PrintWriter(file) {
             override fun println() {
-                write("\r\n") // Windows Carriage Return + New-line
+                write(newLine)
             }
         }
         printWriter.use {
+            if (fileExt == "sh") {
+                it.println("#!/bin/sh")
+            }
             it.println("dotnet run")
             it.close()
         }

@@ -22,7 +22,7 @@ public final class BotInfo {
   private final String version; // required
   private final List<String> authors; // required
   private final String description; // optional
-  private final String url; // optional
+  private final String homepage; // optional
   private final List<String> countryCodes; // optional
   private final Set<String> gameTypes; // required
   private final String platform; // optional
@@ -35,7 +35,7 @@ public final class BotInfo {
    * @param version is the version of the bot (required).
    * @param authors is the author(s) of the bot (required).
    * @param description is a short description of the bot (optional).
-   * @param url is the URL to a web page for the bot (optional).
+   * @param homepage is the URL to a web page for the bot (optional).
    * @param countryCodes is the country code(s) for the bot (optional).
    * @param gameTypes is the game types that this bot can handle (required).
    * @param platform is the platform used for running the bot (optional).
@@ -46,7 +46,7 @@ public final class BotInfo {
       final String version,
       final List<String> authors,
       final String description,
-      final String url,
+      final String homepage,
       final List<String> countryCodes,
       final Collection<String> gameTypes,
       final String platform,
@@ -101,7 +101,7 @@ public final class BotInfo {
     this.version = version;
     this.authors = authors2;
     this.description = description;
-    this.url = url;
+    this.homepage = homepage;
     this.countryCodes = countryCodes3;
     this.gameTypes = gameTypes2;
     this.platform = platform2;
@@ -161,7 +161,7 @@ public final class BotInfo {
    *   version: "1.0",
    *   authors: "John Doe",
    *   description: "A short description",
-   *   url: "http://somewhere.net/MyBot",
+   *   homepage: "http://somewhere.net/MyBot",
    *   countryCodes: "us",
    *   gameTypes: "classic, melee, 1v1",
    *   platform: "Java 11",
@@ -214,7 +214,7 @@ public final class BotInfo {
               data.version,
               Arrays.asList(data.authors.split("\\s*,\\s*")),
               data.description,
-              data.url,
+              data.homepage,
               Arrays.asList(countryCodes.split("\\s*,\\s*")),
               new HashSet<>(Arrays.asList(data.gameTypes.split("\\s*,\\s*"))),
               data.platform,
@@ -263,8 +263,8 @@ public final class BotInfo {
    *
    * @return The URL of a web page for the bot.
    */
-  public String getUrl() {
-    return url;
+  public String getHomepage() {
+    return homepage;
   }
 
   /**
@@ -321,7 +321,7 @@ public final class BotInfo {
     String version;
     String authors;
     String description;
-    String url;
+    String homepage;
     String countryCodes;
     String gameTypes;
     String platform;

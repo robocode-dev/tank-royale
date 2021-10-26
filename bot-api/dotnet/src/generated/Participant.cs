@@ -34,8 +34,8 @@ namespace Robocode.TankRoyale.Schema
         public string Description { get; set; }
     
         /// <summary>URL to a home page for the bot</summary>
-        [Newtonsoft.Json.JsonProperty("url", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Url { get; set; }
+        [Newtonsoft.Json.JsonProperty("homepage", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Homepage { get; set; }
     
         /// <summary>2-letter country code(s) defined by ISO 3166-1, e.g. "UK"</summary>
         [Newtonsoft.Json.JsonProperty("countryCodes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]

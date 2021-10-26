@@ -11,7 +11,7 @@ object BotHandshakeToBotInfoMapper {
             botInfo.version = version
             botInfo.authors = authors.toList()
             botInfo.description = description
-            botInfo.url = url
+            botInfo.homepage = homepage
             botInfo.countryCodes = countryCodes.toList()
             botInfo.gameTypes = gameTypes.toList()
             botInfo.platform = platform

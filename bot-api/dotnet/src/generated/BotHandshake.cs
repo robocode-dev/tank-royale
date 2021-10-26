@@ -23,15 +23,16 @@ namespace Robocode.TankRoyale.Schema
         public string Version { get; set; }
     
         /// <summary>Name of authors, e.g. John Doe (john_doe@somewhere.net)</summary>
-        [Newtonsoft.Json.JsonProperty("authors", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<string> Authors { get; set; }
+        [Newtonsoft.Json.JsonProperty("authors", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.Collections.Generic.ICollection<string> Authors { get; set; } = new System.Collections.ObjectModel.Collection<string>();
     
         [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Description { get; set; }
     
         /// <summary>URL to a home page for the bot</summary>
-        [Newtonsoft.Json.JsonProperty("url", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Url { get; set; }
+        [Newtonsoft.Json.JsonProperty("homepage", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Homepage { get; set; }
     
         /// <summary>2-letter country code(s) defined by ISO 3166-1, e.g. "UK"</summary>
         [Newtonsoft.Json.JsonProperty("countryCodes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]

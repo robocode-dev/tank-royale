@@ -18,7 +18,7 @@ properties:
   description:
     decription: Short description of the bot, preferable a one-liner
     type: string
-  url:
+  homepage:
     description: URL to a home page for the bot
     type: string
   countryCodes:

@@ -4,7 +4,7 @@
   "gameTypes": "melee, classic, 1v1",
   "authors": "Mathew Nelson, Flemming N. Larsen",
   "description": "This bot moves around in a crazy pattern.",
-  "url": "",
+  "homepage": "",
   "countryCodes": "us, dk",
   "platform": "Java 8",
   "programmingLang": "Java 8"

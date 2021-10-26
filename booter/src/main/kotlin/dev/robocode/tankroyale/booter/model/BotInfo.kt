@@ -9,7 +9,7 @@ data class BotInfo(
         val gameTypes: String,
         val authors: String,
         val description: String?,
-        val url: String? = null,
+        val homepage: String? = null,
         val countryCodes: String,
         val platform: String? = null,
         val programmingLang: String? = null,

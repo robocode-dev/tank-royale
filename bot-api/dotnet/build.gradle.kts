@@ -1,7 +1,7 @@
 import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
 
-version = "0.9.9"
+version = "0.9.10"
 
 plugins {
     id("com.itiviti.dotnet") version "1.7.2"

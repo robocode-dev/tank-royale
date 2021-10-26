@@ -157,7 +157,7 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
             setEnvVar(envMap, Env.BOT_VERSION, botInfo.version)
             setEnvVar(envMap, Env.BOT_AUTHORS, botInfo.authors)
             setEnvVar(envMap, Env.BOT_DESCRIPTION, botInfo.description)
-            setEnvVar(envMap, Env.BOT_URL, botInfo.url)
+            setEnvVar(envMap, Env.BOT_HOMEPAGE, botInfo.homepage)
             setEnvVar(envMap, Env.BOT_COUNTRY_CODES, botInfo.countryCodes)
             setEnvVar(envMap, Env.BOT_GAME_TYPES, botInfo.gameTypes)
             setEnvVar(envMap, Env.BOT_PLATFORM, botInfo.platform)

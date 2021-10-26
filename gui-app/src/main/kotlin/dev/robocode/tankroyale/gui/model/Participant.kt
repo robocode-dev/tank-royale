@@ -9,7 +9,7 @@ data class Participant(
     val version: String,
     val authors: List<String>,
     val description: String? = null,
-    val url: String? = null,
+    val homepage: String? = null,
     val countryCodes: List<String>,
     val gameTypes: Set<String>? = HashSet(),
     val platform: String? = null,
