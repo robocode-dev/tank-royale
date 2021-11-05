@@ -5,12 +5,12 @@
 .vscode/
 .gradle/
 
-target/
-build/
-gradle/
-out/
-bin/
-obj/
+/target/
+/build/
+/gradle/
+/out/
+/bin/
+/obj/
 
 *.iml
 /games.properties
