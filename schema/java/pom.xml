@@ -82,7 +82,7 @@
 				<version>1.1.1</version>
 				<configuration>
 					<sourceType>yamlschema</sourceType>
-					<sourceDirectory>${project.basedir}/../../schema</sourceDirectory>
+					<sourceDirectory>${project.basedir}/../schemas</sourceDirectory>
 					<targetPackage>dev.robocode.tankroyale.schema</targetPackage>
 					<annotationStyle>gson</annotationStyle>
 				</configuration>

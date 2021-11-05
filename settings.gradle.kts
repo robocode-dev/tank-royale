@@ -1,5 +1,5 @@
 // Schema Generator
-include("schema-gen:java")
+include("schema:java")
 
 // Booter
 include("booter")
