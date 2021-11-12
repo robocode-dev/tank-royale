@@ -1,5 +1,6 @@
 // Schema Generator
 include("schema:java")
+include("schema:dotnet")
 
 // Booter
 include("booter")
