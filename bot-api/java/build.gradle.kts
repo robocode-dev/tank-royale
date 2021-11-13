@@ -124,27 +124,25 @@ val sshServer = remotes.create("sshServer") {
 val uploadJavadoc by tasks.registering {
     dependsOn(javadocJar)
 
-    doLast {
-        ssh.run (delegateClosureOf<RunHandler> {
-            session(sshServer, delegateClosureOf<SessionHandler> {
-                print("Uploading Javadoc...")
+    ssh.run (delegateClosureOf<RunHandler> {
+        session(sshServer, delegateClosureOf<SessionHandler> {
+            print("Uploading Javadoc...")
 
-                val filename = "$artifactBaseName-$version-javadoc.jar"
+            val filename = "$artifactBaseName-$version-javadoc.jar"
 
-                put(hashMapOf("from" to "${project.projectDir}/build/libs/$filename", "into" to "tmp"))
+            put(hashMapOf("from" to "${project.projectDir}/build/libs/$filename", "into" to "tmp"))
 
-                execute("rm -rf ~/public_html/tankroyale/api/java_new")
-                execute("rm -rf ~/public_html/tankroyale/api/java_old")
+            execute("rm -rf ~/public_html/tankroyale/api/java_new")
+            execute("rm -rf ~/public_html/tankroyale/api/java_old")
 
-                execute("unzip ~/tmp/$filename -d ~/public_html/tankroyale/api/java_new")
+            execute("unzip ~/tmp/$filename -d ~/public_html/tankroyale/api/java_new")
 
-                execute("mkdir -p ~/public_html/tankroyale/api/java")
-                execute("mv ~/public_html/tankroyale/api/java ~/public_html/tankroyale/api/java_old")
-                execute("mv ~/public_html/tankroyale/api/java_new ~/public_html/tankroyale/api/java")
-                execute("rm -f ~/tmp/$filename")
+            execute("mkdir -p ~/public_html/tankroyale/api/java")
+            execute("mv ~/public_html/tankroyale/api/java ~/public_html/tankroyale/api/java_old")
+            execute("mv ~/public_html/tankroyale/api/java_new ~/public_html/tankroyale/api/java")
+            execute("rm -f ~/tmp/$filename")
 
-                println("done")
-            })
+            println("done")
         })
-    }
+    })
 }

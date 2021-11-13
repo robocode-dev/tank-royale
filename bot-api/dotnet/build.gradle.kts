@@ -43,27 +43,25 @@ val sshServer = remotes.create("sshServer") {
 val uploadDoc by tasks.registering {
     dependsOn(zipApi)
 
-    doLast {
-        ssh.run (delegateClosureOf<RunHandler> {
-            session(sshServer, delegateClosureOf<SessionHandler> {
-                print("Uploading doc...")
+    ssh.run (delegateClosureOf<RunHandler> {
+        session(sshServer, delegateClosureOf<SessionHandler> {
+            print("Uploading doc...")
 
-                val filename = "docfx.zip"
+            val filename = "docfx.zip"
 
-                put(hashMapOf("from" to "${project.projectDir}/build/tmp/$filename", "into" to "tmp"))
+            put(hashMapOf("from" to "${project.projectDir}/build/tmp/$filename", "into" to "tmp"))
 
-                execute("rm -rf ~/public_html/tankroyale/api/dotnet_new")
-                execute("rm -rf ~/public_html/tankroyale/api/dotnet_old")
+            execute("rm -rf ~/public_html/tankroyale/api/dotnet_new")
+            execute("rm -rf ~/public_html/tankroyale/api/dotnet_old")
 
-                execute("unzip ~/tmp/$filename -d ~/public_html/tankroyale/api/dotnet_new")
+            execute("unzip ~/tmp/$filename -d ~/public_html/tankroyale/api/dotnet_new")
 
-                execute("mkdir -p ~/public_html/tankroyale/api/dotnet")
-                execute("mv ~/public_html/tankroyale/api/dotnet ~/public_html/tankroyale/api/dotnet_old")
-                execute("mv ~/public_html/tankroyale/api/dotnet_new ~/public_html/tankroyale/api/dotnet")
-                execute("rm -f ~/tmp/$filename")
+            execute("mkdir -p ~/public_html/tankroyale/api/dotnet")
+            execute("mv ~/public_html/tankroyale/api/dotnet ~/public_html/tankroyale/api/dotnet_old")
+            execute("mv ~/public_html/tankroyale/api/dotnet_new ~/public_html/tankroyale/api/dotnet")
+            execute("rm -f ~/tmp/$filename")
 
-                println("done")
-            })
+            println("done")
         })
-    }
+    })
 }

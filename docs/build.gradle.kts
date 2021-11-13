@@ -42,27 +42,25 @@ val sshServer = remotes.create("sshServer") {
 val uploadDocs by tasks.registering {
     dependsOn(zipDocs)
 
-    doLast {
-        ssh.run (delegateClosureOf<RunHandler> {
-            session(sshServer, delegateClosureOf<SessionHandler> {
-                print("Uploading docs...")
+    ssh.run (delegateClosureOf<RunHandler> {
+        session(sshServer, delegateClosureOf<SessionHandler> {
+            print("Uploading docs...")
 
-                val filename = "docs.zip"
+            val filename = "docs.zip"
 
-                put(hashMapOf("from" to "${project.projectDir}/build/$filename", "into" to "tmp"))
+            put(hashMapOf("from" to "${project.projectDir}/build/$filename", "into" to "tmp"))
 
-                execute("rm -rf ~/public_html/tankroyale/docs_new")
-                execute("rm -rf ~/public_html/tankroyale/docs_old")
+            execute("rm -rf ~/public_html/tankroyale/docs_new")
+            execute("rm -rf ~/public_html/tankroyale/docs_old")
 
-                execute("unzip ~/tmp/$filename -d ~/public_html/tankroyale/docs_new")
+            execute("unzip ~/tmp/$filename -d ~/public_html/tankroyale/docs_new")
 
-                execute("mkdir -p ~/public_html/tankroyale/docs")
-                execute("mv ~/public_html/tankroyale/docs ~/public_html/tankroyale/docs_old")
-                execute("mv ~/public_html/tankroyale/docs_new ~/public_html/tankroyale/docs")
-                execute("rm -f ~/tmp/$filename")
+            execute("mkdir -p ~/public_html/tankroyale/docs")
+            execute("mv ~/public_html/tankroyale/docs ~/public_html/tankroyale/docs_old")
+            execute("mv ~/public_html/tankroyale/docs_new ~/public_html/tankroyale/docs")
+            execute("rm -f ~/tmp/$filename")
 
-                println("done")
-            })
+            println("done")
         })
-    }
+    })
 }
