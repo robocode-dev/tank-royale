@@ -40,7 +40,7 @@ val sshServer = remotes.create("sshServer") {
     }
 }
 
-val uploadDoc by tasks.registering {
+val uploadDoc = tasks.registering {
     dependsOn(zipApi)
 
     ssh.run (delegateClosureOf<RunHandler> {

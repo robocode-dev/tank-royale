@@ -121,7 +121,7 @@ val sshServer = remotes.create("sshServer") {
     }
 }
 
-val uploadJavadoc by tasks.registering {
+val uploadJavadoc = tasks.registering {
     dependsOn(javadocJar)
 
     ssh.run (delegateClosureOf<RunHandler> {
