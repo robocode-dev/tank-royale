@@ -1,6 +1,4 @@
-# Internal ReadMe
-
-Note that sample bots for .Net depends on the bot-api for .Net, i.e. the NuGet package.
+# ReadMe - Nuget Packaging
 
 ## Do this once
 
