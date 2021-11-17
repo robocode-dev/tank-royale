@@ -169,7 +169,7 @@ val sshServer = remotes.create("sshServer") {
     }
 }
 
-val uploadSampleBots = tasks.registering {
+val uploadSampleBots = tasks.register("uploadSampleBots") {
     dependsOn(build)
     dependsOn(zipSampleBots)
 

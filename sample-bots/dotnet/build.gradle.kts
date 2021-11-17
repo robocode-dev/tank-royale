@@ -1,8 +1,14 @@
+import org.hidetake.groovy.ssh.core.RunHandler
+import org.hidetake.groovy.ssh.session.SessionHandler
 import java.nio.file.Path
 import java.nio.file.Files.*
 import java.io.PrintWriter
 
 version = project(":bot-api:dotnet").version
+
+plugins {
+    id("org.hidetake.ssh") version "2.10.1"
+}
 
 defaultTasks("clean", "build")
 
@@ -10,7 +16,7 @@ val clean = tasks.register<Delete>("clean") {
     delete(project.buildDir)
 }
 
-tasks.register("build") {
+val build = tasks.register("build") {
     dependsOn(clean, zipSampleBots)
 }
 
@@ -112,4 +118,36 @@ val zipSampleBots = task<Zip>("zipSampleBots") {
     destinationDirectory.set(buildDir)
 
     from(File(buildDir, "archive"))
+}
+
+val sshServer = remotes.create("sshServer") {
+    withGroovyBuilder {
+        setProperty("host", project.properties["tankroyale.ssh.host"])
+        setProperty("port", (project.properties["tankroyale.ssh.port"] as String).toInt())
+        setProperty("user", project.properties["tankroyale.ssh.user"])
+        setProperty("password", project.properties["tankroyale.ssh.pass"])
+    }
+}
+
+val uploadSampleBots = tasks.register("uploadSampleBots") {
+    dependsOn(build)
+    dependsOn(zipSampleBots)
+
+    ssh.run (delegateClosureOf<RunHandler> {
+        session(sshServer, delegateClosureOf<SessionHandler> {
+            print("Uploading sample bots...")
+
+            val filename = "sample-bots-dotnet-${project.version}.zip"
+
+            val destDir = "public_html/tankroyale/sample-bots/${project.version}"
+            val destFile = "$destDir/$filename"
+
+            execute("rm -f $destFile")
+            execute("mkdir -p ~/$destDir")
+
+            put(hashMapOf("from" to "${project.projectDir}/build/$filename", "into" to "$destDir"))
+
+            println("done")
+        })
+    })
 }
