@@ -1,8 +1,10 @@
 import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
 import java.nio.file.Path
+import java.nio.file.Paths
 import java.nio.file.Files.*
 import java.io.PrintWriter
+import dev.robocode.tankroyale.csproj.generateBotCsprojFile
 
 version = project(":bot-api:dotnet").version
 
@@ -56,13 +58,17 @@ abstract class CopyBotFiles : BaseTask() {
         list(project.projectDir.toPath()).forEach { botDir ->
             run {
                 if (isDirectory(botDir) && isBotProjectDir(botDir)) {
-                    val botArchivePath: Path = archiveDir.resolve(botDir.botName())
+                    val botName = botDir.botName();
+
+                    val botArchivePath: Path = archiveDir.resolve(botName)
 
                     createDir(botArchivePath)
                     copyBotFiles(botDir, botArchivePath)
                     createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
                     createScriptFile(botDir, botArchivePath, "ps1", "\r\n")
                     createScriptFile(botDir, botArchivePath, "sh", "\n")
+
+                    generateBotCsprojFile(botArchivePath.resolve("$botName.csproj"), botName, "${project.version}")
                 }
             }
         }

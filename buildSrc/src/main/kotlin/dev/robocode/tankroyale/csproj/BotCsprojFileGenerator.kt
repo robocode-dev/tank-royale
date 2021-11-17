@@ -13,12 +13,6 @@ import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
-fun generateBotCsprojTempFile(botName: String, botApiVersion: String): Path {
-    val path = Files.createTempFile(botName, ".csproj")
-    generateBotCsprojFile(path, botName, botApiVersion)
-    return path
-}
-
 fun generateBotCsprojFile(outputFilePath: Path, botName: String, botApiVersion: String) {
     writePrettyXml(outputFilePath, botName, botApiVersion)
 }
@@ -79,8 +73,4 @@ private fun formatXML(xml: String): String {
     return output.toString()
 }
 
-fun main() {
-//    generateBotCsprojFile(Paths.get("C:\\Windows\\Temp\\test.xml"), "Corners", "0.9.10")
-
-    println(generateBotCsprojTempFile("Corners", "0.9.10"))
-}
+// fun main() = generateBotCsprojFile(Paths.get("C:\\Windows\\Temp\\test.xml"), "Corners", "0.9.10")
