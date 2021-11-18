@@ -9,7 +9,7 @@ import dev.robocode.tankroyale.csproj.generateBotCsprojFile
 version = project(":bot-api:dotnet").version
 
 plugins {
-    id("org.hidetake.ssh") version "2.10.1"
+    alias(libs.plugins.hidetake.ssh)
 }
 
 defaultTasks("clean", "build")

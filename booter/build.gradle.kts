@@ -14,7 +14,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.guardsquare:proguard-gradle:7.1.1")
+        classpath(libs.proguard.gradle)
     }
 }
 
@@ -22,8 +22,8 @@ plugins {
     `java-library`
     kotlin("jvm")
     kotlin("plugin.serialization")
-    idea
     `maven-publish`
+    idea
 }
 
 idea {
@@ -37,8 +37,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0-RC")
-    implementation("info.picocli:picocli:4.6.1")
+    implementation(libs.serialization.json)
+    implementation(libs.picocli)
 }
 
 tasks.processResources {

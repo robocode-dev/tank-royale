@@ -3,12 +3,12 @@ import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
 
 plugins {
-    id("com.github.node-gradle.node") version "3.1.0"
-    id("org.hidetake.ssh") version "2.10.1"
+    alias(libs.plugins.node.gradle)
+    alias(libs.plugins.hidetake.ssh)
 }
 
 node {
-    version.set("15.5.1")
+    version.set(libs.versions.node.version)
 }
 
 val npmBuild = tasks.register<NpmTask>("npmBuild") {

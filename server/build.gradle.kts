@@ -15,7 +15,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.guardsquare:proguard-gradle:7.1.1")
+        classpath(libs.proguard.gradle)
     }
 }
 
@@ -49,13 +49,13 @@ repositories {
 
 dependencies {
     implementation("dev.robocode.tankroyale:robocode-tankroyale-schema:0.8.1")
-    implementation("org.java-websocket:Java-WebSocket:1.5.2")
-    implementation("org.slf4j:slf4j-simple:2.0.0-alpha5")
-    implementation("info.picocli:picocli:4.6.1")
-    implementation("org.fusesource.jansi:jansi:2.3.4")
+    implementation(libs.java.websocket)
+    implementation(libs.slf4j.simple)
+    implementation(libs.picocli)
+    implementation(libs.jansi)
 
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.0.0.M1")
-    testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation(libs.kotest.junit5)
+    testImplementation(libs.mockk)
 }
 
 tasks.processResources {

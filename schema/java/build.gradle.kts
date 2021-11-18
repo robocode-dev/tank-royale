@@ -18,7 +18,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.1.1")
+        classpath(libs.jsonschema2pojo)
     }
 }
 
@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.google.code.gson:gson:2.8.7")
+    implementation(libs.gson)
 }
 
 apply(plugin = "java")

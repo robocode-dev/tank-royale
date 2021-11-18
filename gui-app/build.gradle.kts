@@ -17,7 +17,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.guardsquare:proguard-gradle:7.1.1")
+        classpath(libs.proguard.gradle)
     }
 }
 
@@ -50,9 +50,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0-RC")
-
-    implementation("com.miglayout:miglayout-swing:11.0")
+    implementation(libs.serialization.json)
+    implementation(libs.miglayout.swing)
 
     runtimeOnly(project(":server"))
     runtimeOnly(project(":booter"))

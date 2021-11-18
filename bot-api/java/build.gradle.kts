@@ -14,7 +14,7 @@ plugins {
     `java-library`
     `maven-publish`
     idea
-    id("org.hidetake.ssh") version "2.10.1"
+    alias(libs.plugins.hidetake.ssh)
 }
 
 java {
@@ -29,9 +29,9 @@ repositories {
 
 dependencies {
     implementation("dev.robocode.tankroyale:robocode-tankroyale-schema:0.8.1")
-    implementation("com.neovisionaries:nv-i18n:1.28")
-    implementation("com.google.code.gson:gson:2.8.7")
-    implementation("org.danilopianini:gson-extras:0.2.2")
+    implementation(libs.gson)
+    implementation(libs.gson.extras)
+    implementation(libs.nv.i18n)
 }
 
 val javadoc = tasks.withType<Javadoc> {

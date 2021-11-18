@@ -8,7 +8,7 @@ import java.io.PrintWriter
 version = project(":bot-api:java").version
 
 plugins {
-    id("org.hidetake.ssh") version "2.10.1"
+    alias(libs.plugins.hidetake.ssh)
 }
 
 defaultTasks("clean", "build")
