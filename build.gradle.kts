@@ -1,5 +1,6 @@
 import java.time.Year
 import com.hierynomus.gradle.license.tasks.LicenseFormat
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.5.30"
@@ -14,7 +15,6 @@ subprojects {
     license {
         header = rootProject.file("LICENSE.header")
         encoding = "UTF-8"
-//        skipExistingHeaders = true
         mapping("java", "SLASHSTAR_STYLE")
         mapping("kt", "SLASHSTAR_STYLE")
         mapping("svg", "XML_STYLE")
@@ -32,4 +32,12 @@ subprojects {
 
 tasks.named("assemble") {
     dependsOn("licenseFormatMain")
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(JavaVersion.VERSION_11.toString()))
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
 }

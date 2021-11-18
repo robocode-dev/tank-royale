@@ -1,5 +1,4 @@
 import org.apache.tools.ant.filters.ReplaceTokens
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import proguard.gradle.ProGuardTask
 
 val title = "Robocode Tank Royale Bot Booter"
@@ -9,7 +8,6 @@ group = "dev.robocode.tankroyale"
 version = "0.8.3"
 
 val archiveFileName = "$buildDir/libs/robocode-tankroyale-booter-$version.jar"
-
 
 buildscript {
     repositories {
@@ -26,15 +24,6 @@ plugins {
     kotlin("plugin.serialization")
     idea
     `maven-publish`
-}
-
-tasks.withType<KotlinCompile> {
-    sourceCompatibility = JavaVersion.VERSION_11.toString()
-    targetCompatibility = JavaVersion.VERSION_11.toString()
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
-    }
 }
 
 idea {

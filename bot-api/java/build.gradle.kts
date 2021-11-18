@@ -34,12 +34,6 @@ dependencies {
     implementation("org.danilopianini:gson-extras:0.2.2")
 }
 
-tasks.withType<JavaCompile>().configureEach {
-    javaCompiler.set(javaToolchains.compilerFor {
-        languageVersion.set(JavaLanguageVersion.of(11))
-    })
-}
-
 val javadoc = tasks.withType<Javadoc> {
     title = "Java Bot API for Robocode Tank Royale $version"
     source(sourceSets.main.get().allJava)
