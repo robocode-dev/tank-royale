@@ -11,7 +11,6 @@ version = "0.8.4"
 
 val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
 
-
 buildscript {
     repositories {
         mavenCentral()
@@ -129,6 +128,8 @@ val proguard = task<ProGuardTask>("proguard") {
 tasks.named("build") {
     dependsOn(proguard)
 }
+
+tasks.register("prepareKotlinBuildScriptModel") {} // prevent warning
 
 publishing {
     publications {

@@ -8,7 +8,7 @@
 target/
 !sample-bots/dotnet/Target
 build/
-gradle/wrapper/
+gradle/
 out/
 bin/
 obj/

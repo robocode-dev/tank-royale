@@ -1,7 +1,6 @@
 import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.nio.file.Files.*
 import java.io.PrintWriter
 import dev.robocode.tankroyale.csproj.generateBotCsprojFile

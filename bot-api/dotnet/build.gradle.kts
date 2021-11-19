@@ -9,9 +9,16 @@ plugins {
 }
 
 dotnet {
+    projectName = "Robocode.TankRoyale.BotApi"
+
     build {
         version = project.version as String
         packageVersion = version
+    }
+
+    nugetPush {
+        apiKey = "" as String?
+        source = "" as String?
     }
 }
 
