@@ -7,7 +7,7 @@ import javax.swing.ImageIcon
 object Images {
 
     val tankImage: Image = readImage("/gfx/Tank.png")
-    val logoImage: Image = readImage("/gfx/Logo.png")
+    val logoImage: Image = readImage("/gfx/Robocode-logo.png")
 
     private fun readImage(filePath: String): Image {
         val inputStream = javaClass.getResourceAsStream(filePath)
