@@ -20,6 +20,10 @@ slf4j-simple = "org.slf4j:slf4j-simple:2.0.0-alpha5"
 
 [plugins]
 
+kotlin-jvm = "org.jetbrains.kotlin.jvm:1.5.30"
+kotlin-plugin-serialization = "org.jetbrains.kotlin.plugin.serialization:1.5.30"
+benmanes-versioning = "com.github.ben-manes.versions:0.39.0"
+hierynomus-license-base = "com.github.hierynomus.license-base:0.16.1"
 hidetake-ssh = "org.hidetake.ssh:2.10.1"
 itiviti-dotnet = "com.itiviti.dotnet:1.8.2"
 node-gradle = "com.github.node-gradle.node:3.1.0"

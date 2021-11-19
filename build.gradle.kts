@@ -3,10 +3,10 @@ import com.hierynomus.gradle.license.tasks.LicenseFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.5.30"
-    kotlin("plugin.serialization") version "1.5.30"
-    id("com.github.ben-manes.versions") version "0.39.0"
-    id("com.github.hierynomus.license-base") version "0.16.1"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.plugin.serialization)
+    alias(libs.plugins.benmanes.versioning)
+    alias(libs.plugins.hierynomus.license.base)
 }
 
 subprojects {
