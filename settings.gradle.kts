@@ -41,12 +41,12 @@ dependencyResolutionManagement {
             alias("miglayout-swing").to("com.miglayout:miglayout-swing:11.0")
             alias("mockk").to("io.mockk:mockk:1.12.0")
             alias("nv-i18n").to("com.neovisionaries:nv-i18n:1.28")
-            alias("serialization-json").to("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0-RC")
+            alias("serialization-json").to("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
             alias("slf4j-simple").to("org.slf4j:slf4j-simple:2.0.0-alpha5")
 
             // Plugins
-            alias("kotlin-jvm").toPluginId("org.jetbrains.kotlin.jvm").version("1.5.30")
-            alias("kotlin-plugin-serialization").toPluginId("org.jetbrains.kotlin.plugin.serialization").version("1.5.30")
+            alias("kotlin-jvm").toPluginId("org.jetbrains.kotlin.jvm").version("1.6.0")
+            alias("kotlin-plugin-serialization").toPluginId("org.jetbrains.kotlin.plugin.serialization").version("1.6.0")
             alias("benmanes-versioning").toPluginId("com.github.ben-manes.versions").version("0.39.0")
             alias("hierynomus-license-base").toPluginId("com.github.hierynomus.license-base").version("0.16.1")
             alias("hidetake-ssh").toPluginId("org.hidetake.ssh").version("2.10.1")
