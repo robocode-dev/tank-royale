@@ -3,18 +3,16 @@ package dev.robocode.tankroyale.gui.settings
 object MiscSettings : PropertiesStore("Robocode Misc Config", "misc.properties") {
 
     private const val BOT_DIRECTORIES_PROPERTY = "bot.directories"
-    private const val DEFAULT_BOT_DIRECTORIES = "bots"
 
     const val BOT_DIRS_SEPARATOR = ","
 
-    init {
+    fun getBotDirectories(): List<String> {
         load()
+        return properties.getProperty(BOT_DIRECTORIES_PROPERTY, "").split(BOT_DIRS_SEPARATOR)
     }
 
-    var botsDirectories: List<String>
-        get() =
-            properties.getProperty(BOT_DIRECTORIES_PROPERTY, DEFAULT_BOT_DIRECTORIES).split(BOT_DIRS_SEPARATOR)
-        set(value) {
-            properties.setProperty(BOT_DIRECTORIES_PROPERTY, value.joinToString(separator = BOT_DIRS_SEPARATOR))
-        }
+    fun setBotDirectories(botDirs: List<String>) {
+        properties.setProperty(BOT_DIRECTORIES_PROPERTY, botDirs.joinToString(separator = BOT_DIRS_SEPARATOR))
+        save()
+    }
 }

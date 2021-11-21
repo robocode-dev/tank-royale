@@ -24,8 +24,7 @@ object BotDirectoryConfigDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.
         contentPane.add(BotDirectoryConfigPanel)
 
         onClosing {
-            MiscSettings.botsDirectories = BotDirectoryConfigPanel.listModel.elements().toList()
-            MiscSettings.save()
+            MiscSettings.setBotDirectories(BotDirectoryConfigPanel.listModel.elements().toList())
         }
     }
 }
@@ -50,7 +49,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
         add(buttonPanel)
 
         MiscSettings.load()
-        MiscSettings.botsDirectories.forEach { listModel.addElement(it) }
+        MiscSettings.getBotDirectories().forEach { listModel.addElement(it) }
 
         onAdd.subscribe(BotDirectoryConfigDialog) {
             val chooser = JFileChooser()

@@ -114,15 +114,8 @@ object BooterProcess {
     }
 
     private fun getBotDirs(): String {
-        // Use 'bots' dir from current and parent directory
-        var dirs = System.getProperty("botDir", "")
-        if (dirs.isNotBlank()) {
-            dirs += BOT_DIRS_SEPARATOR
-        }
-
-        // Add bot directories from settings
-        dirs += MiscSettings.botsDirectories.joinToString(separator = BOT_DIRS_SEPARATOR)
-        return dirs.trim()
+        val botDirs = MiscSettings.getBotDirectories().joinToString(separator = BOT_DIRS_SEPARATOR).trim()
+        return botDirs
     }
 
     private fun readErrorToStdError(process: Process) {

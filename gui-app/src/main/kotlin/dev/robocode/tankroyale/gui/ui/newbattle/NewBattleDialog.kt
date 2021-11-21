@@ -48,8 +48,6 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
     private val selectPanel = SelectBotsAndBotInfoPanel()
     private val gameTypeComboBox = GameTypeComboBox()
 
-    private val botsDirectoryEntries: List<BotEntry> by lazy { BooterProcess.list() }
-
     init {
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
 
@@ -96,7 +94,7 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
     fun updateBotsDirectoryBots() {
         selectPanel.botsDirectoryListModel.clear()
 
-        botsDirectoryEntries.forEach { botEntry ->
+        getBotsDirectoryEntries().forEach { botEntry ->
             val info = botEntry.info
             selectPanel.botsDirectoryListModel.addElement(
                 BotInfo(
@@ -115,6 +113,8 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
             )
         }
     }
+
+    private fun getBotsDirectoryEntries(): List<BotEntry> = BooterProcess.list()
 
     fun updateJoinedBots() {
         SwingUtilities.invokeLater {
