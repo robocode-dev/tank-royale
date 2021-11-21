@@ -17,7 +17,7 @@ object BotDirectoryConfigDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
-        size = Dimension(500, 200)
+        size = Dimension(500, 250)
 
         setLocationRelativeTo(MainWindow) // center on main window
 
@@ -37,7 +37,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
     private val onRemove = Event<JButton>()
 
     val listModel = DefaultListModel<String>()
-    val list = JList<String>(listModel)
+    val list = JList(listModel)
     val scrollPane = JScrollPane(list)
 
     init {
