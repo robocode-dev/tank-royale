@@ -5,12 +5,17 @@ import dev.robocode.tankroyale.gui.booter.BooterProcess
 import dev.robocode.tankroyale.gui.booter.BotEntry
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
+import dev.robocode.tankroyale.gui.settings.MiscSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showError
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onChanged
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
+import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosed
+import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onOpened
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
@@ -19,14 +24,14 @@ import javax.swing.*
 
 object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("select_bots_dialog")) {
 
+    private val selectBotsAndStartPanel = NewBattlePanel()
+
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
         size = Dimension(750, 600)
 
         setLocationRelativeTo(MainWindow) // center on main window
-
-        val selectBotsAndStartPanel = NewBattlePanel()
 
         contentPane.add(selectBotsAndStartPanel)
 
@@ -37,6 +42,22 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
                 clearSelectedBots()
             }
         }
+
+        onOpened {
+            makeSureBotDirIsConfigured()
+        }
+    }
+
+    private fun makeSureBotDirIsConfigured() {
+        if (MiscSettings.getBotDirectories().isEmpty()) {
+            selectBotsAndStartPanel.showError(ResourceBundles.MESSAGES.get("no_bot_dir"))
+
+            BotDirectoryConfigDialog.onClosed {
+                makeSureBotDirIsConfigured()
+            }
+            BotDirectoryConfigDialog.isVisible = true
+        }
+        selectBotsAndStartPanel.updateBotsDirectoryBots()
     }
 }
 
@@ -118,10 +139,10 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
 
     fun updateJoinedBots() {
         SwingUtilities.invokeLater {
-           selectPanel.joinedBotListModel.apply {
-               clear()
-               Client.joinedBots.forEach { addElement(it) }
-           }
+            selectPanel.joinedBotListModel.apply {
+                clear()
+                Client.joinedBots.forEach { addElement(it) }
+            }
         }
     }
 

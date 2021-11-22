@@ -26,15 +26,7 @@ object JComponentExt {
         JOptionPane.showMessageDialog(this, msg, UI_TITLES.get("message"), JOptionPane.INFORMATION_MESSAGE)
     }
 
-    fun JComponent.showQuestion(msg: String) {
-        JOptionPane.showMessageDialog(this, msg, UI_TITLES.get("question"), JOptionPane.QUESTION_MESSAGE)
-    }
-
-    fun JComponent.showWarning(msg: String) {
-        JOptionPane.showMessageDialog(this, msg, UI_TITLES.get("warning"),JOptionPane.WARNING_MESSAGE)
-    }
-
     fun JComponent.showError(msg: String) {
-        JOptionPane.showMessageDialog(this, msg, UI_TITLES.get("error"),JOptionPane.ERROR_MESSAGE)
+        JOptionPane.showMessageDialog(this, msg, UI_TITLES.get("error"), JOptionPane.ERROR_MESSAGE)
     }
 }

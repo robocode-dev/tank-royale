@@ -6,6 +6,14 @@ import java.awt.event.WindowEvent
 
 object WindowExt {
 
+    fun Window.onOpened(handler: ((WindowEvent?) -> Unit)) {
+        addWindowListener(object : WindowAdapter() {
+            override fun windowOpened(e: WindowEvent?) {
+                handler.invoke(e)
+            }
+        })
+    }
+
     fun Window.onClosing(handler: ((WindowEvent) -> Unit)) {
         addWindowListener(object : WindowAdapter() {
             override fun windowClosing(e: WindowEvent) {
@@ -14,17 +22,17 @@ object WindowExt {
         })
     }
 
-    fun Window.onActivated(handler: ((WindowEvent) -> Unit)) {
+    fun Window.onClosed(handler: ((WindowEvent) -> Unit)) {
         addWindowListener(object : WindowAdapter() {
-            override fun windowActivated(e: WindowEvent) {
+            override fun windowClosed(e: WindowEvent) {
                 handler.invoke(e)
             }
         })
     }
 
-    fun Window.onDeactivated(handler: ((WindowEvent) -> Unit)) {
+    fun Window.onActivated(handler: ((WindowEvent) -> Unit)) {
         addWindowListener(object : WindowAdapter() {
-            override fun windowDeactivated(e: WindowEvent) {
+            override fun windowActivated(e: WindowEvent) {
                 handler.invoke(e)
             }
         })

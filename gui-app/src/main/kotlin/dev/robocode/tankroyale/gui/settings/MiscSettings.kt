@@ -8,11 +8,15 @@ object MiscSettings : PropertiesStore("Robocode Misc Config", "misc.properties")
 
     fun getBotDirectories(): List<String> {
         load()
-        return properties.getProperty(BOT_DIRECTORIES_PROPERTY, "").split(BOT_DIRS_SEPARATOR)
+        return properties.getProperty(BOT_DIRECTORIES_PROPERTY, "")
+            .split(BOT_DIRS_SEPARATOR)
+            .filter { it.isNotBlank() }
     }
 
     fun setBotDirectories(botDirs: List<String>) {
-        properties.setProperty(BOT_DIRECTORIES_PROPERTY, botDirs.joinToString(separator = BOT_DIRS_SEPARATOR))
+        properties.setProperty(BOT_DIRECTORIES_PROPERTY, botDirs
+            .filter { it.isNotBlank() }
+            .joinToString(separator = BOT_DIRS_SEPARATOR))
         save()
     }
 }

@@ -181,7 +181,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         widthTextField.text != gameSetup.arenaWidth.toString() ||
                 heightTextField.text != gameSetup.arenaHeight.toString() ||
                 minNumParticipantsTextField.text != gameSetup.minNumberOfParticipants.toString() ||
-                maxNumParticipantsTextField.text != gameSetup.maxNumberOfParticipants?.toString() ?: "" ||
+                maxNumParticipantsTextField.text != (gameSetup.maxNumberOfParticipants?.toString() ?: "") ||
                 numberOfRoundsTextField.text != gameSetup.numberOfRounds.toString() ||
                 inactivityTurnsTextField.text != gameSetup.maxInactivityTurns.toString() ||
                 gunCoolingRateTextField.text != gameSetup.gunCoolingRate.toString() ||
