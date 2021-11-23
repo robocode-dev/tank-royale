@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.gui.model.IGameSetup
 import java.util.*
 import kotlin.collections.HashMap
 
-object GamesSettings : PropertiesStore("Robocode Games Config", "games.properties") {
+object GamesSettings : PropertiesStore("Robocode Games Settings", "games.properties") {
 
     val defaultGameSetup: Map<String, GameSetup>
         get() = mapOf(

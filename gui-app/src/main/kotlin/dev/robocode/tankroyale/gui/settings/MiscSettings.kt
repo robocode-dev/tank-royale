@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.settings
 
-object MiscSettings : PropertiesStore("Robocode Misc Config", "misc.properties") {
+object MiscSettings : PropertiesStore("Robocode Misc Settings", "misc.properties") {
 
     private const val BOT_DIRECTORIES_PROPERTY = "bot.directories"
 

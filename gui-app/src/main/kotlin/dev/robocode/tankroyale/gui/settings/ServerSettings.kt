@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import java.net.URI
 
 
-object ServerSettings : PropertiesStore("Robocode Server Config", "server.properties") {
+object ServerSettings : PropertiesStore("Robocode Server Settings", "server.properties") {
 
     const val DEFAULT_PORT = 80
     const val DEFAULT_SCHEME = "ws"
