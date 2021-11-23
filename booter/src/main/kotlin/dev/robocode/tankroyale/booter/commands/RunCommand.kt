@@ -34,8 +34,6 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
             }
             if (botName != null) {
                 processes.createBotProcess(botName)
-            } else {
-                sleep(500) // TODO: Necessary?
             }
         } while (true)
 
