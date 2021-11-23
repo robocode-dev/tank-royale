@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.tps
 
 import dev.robocode.tankroyale.gui.model.TpsChangedEvent
+import dev.robocode.tankroyale.gui.settings.MiscSettings
 import java.awt.Dimension
 import java.util.*
 import javax.swing.JLabel
@@ -35,9 +36,12 @@ object TpsSlider : JSlider() {
 
         addChangeListener(TpsChangeListener())
 
-        TpsEventChannel.onTpsChanged.subscribe(TpsSlider) { tpsEvent -> setTps(tpsEvent.tps) }
+        TpsEventChannel.onTpsChanged.subscribe(TpsSlider) {
+            tpsEvent -> setTps(tpsEvent.tps)
+            MiscSettings.setTps(tpsEvent.tps)
+        }
 
-        setTps(30) // FIXME: from settings
+        setTps(MiscSettings.getTps())
     }
 
     private fun getTps(): Int {

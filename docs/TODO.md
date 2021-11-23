@@ -1,6 +1,5 @@
 TODO
 ====
-- HUSK: Turn time limit på 'Tank Royale vs orig. Robocode' artikel og fjern Husk i toppen!
 
 - Get started
   - Download and installation 
