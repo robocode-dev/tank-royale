@@ -33,10 +33,10 @@ properties:
     items:
       type: string
   platform:
-    description: Platform used for running the bot, e.g. OpenJDK 16 or .NET 5
+    description: Platform used for running the bot, e.g. Java 17 or .NET 5
     type: string
   programmingLang:
-    description: Language used for programming the bot, e.g. Java 16 or C# 9.0
+    description: Language used for programming the bot, e.g. Java 17 or C# 9.0
     type: string
 required:
   - name
