@@ -53,10 +53,10 @@ final class EventQueue {
             botEventHandlers.fire(event);
 
           } catch (RescanException e) {
-            currentEvent = null;
           } catch (Exception e) {
-            currentEvent = null;
             throw e;
+          } finally {
+            currentEvent = null;
           }
         }
     }

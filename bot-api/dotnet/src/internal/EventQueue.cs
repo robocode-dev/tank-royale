@@ -68,12 +68,14 @@ namespace Robocode.TankRoyale.BotApi.Internal
             }
             catch (RescanException)
             {
-              currentEvent = null;
             }
             catch (Exception)
             {
-              currentEvent = null;
               throw;
+            }
+            finally
+            {
+              currentEvent = null;
             }
           }
           catch (System.ArgumentOutOfRangeException)
