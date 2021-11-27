@@ -434,7 +434,7 @@ public final class BaseBotInternals {
     StringBuffer payload = new StringBuffer();
 
     @Override
-    public final void onOpen(WebSocket websocket) {
+    public void onOpen(WebSocket websocket) {
       BaseBotInternals.this.socket = websocket; // To prevent null pointer exception
 
       botEventHandlers.onConnected.publish(new ConnectedEvent(serverUrl));
@@ -442,20 +442,20 @@ public final class BaseBotInternals {
     }
 
     @Override
-    public final CompletionStage<?> onClose(WebSocket websocket, int statusCode, String reason) {
+    public CompletionStage<?> onClose(WebSocket websocket, int statusCode, String reason) {
       botEventHandlers.onDisconnected.publish(new DisconnectedEvent(serverUrl, true));
       closedLatch.countDown();
       return null;
     }
 
     @Override
-    public final void onError(WebSocket websocket, Throwable error) {
+    public void onError(WebSocket websocket, Throwable error) {
       botEventHandlers.onConnectionError.publish(new ConnectionErrorEvent(serverUrl, error));
       System.err.println(error.getLocalizedMessage());
     }
 
     @Override
-    public final CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
+    public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
       payload.append(data);
       if (last) {
         JsonObject jsonMsg = gson.fromJson(payload.toString(), JsonObject.class);
