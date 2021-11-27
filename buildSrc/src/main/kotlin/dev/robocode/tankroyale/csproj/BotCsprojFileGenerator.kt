@@ -34,7 +34,7 @@ private fun writeXml(out: OutputStream, botName: String, botApiVersion: String) 
         OutputStreamWriter(out, StandardCharsets.UTF_8)
     )
     writer.document {
-        element("project") {
+        element("Project") {
             attribute("Sdk", "Microsoft.NET.Sdk")
             element("PropertyGroup") {
                 element("RootNamespace", botName)
