@@ -99,11 +99,11 @@ class BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
     }
 
     private fun generateCountryHtml(countryCode: String): String {
-        val countryName = Locale("", countryCode).displayCountry
-
+        val name = Locale("", countryCode).displayCountry
+        val cc = countryCode.trim()
         return """
-            <td style="font-family: sans-serif; font-size: 10">${countryName} (${countryCode})&nbsp;</td>
-            <td><img width="20" height="15" src="https://www.countryflags.io/${countryCode}/flat/16.png">&nbsp;&nbsp;</td>
+            <td style="font-family: sans-serif; font-size: 10">${name} (${cc})&nbsp;</td>
+            <td><img width="20" height="15" src="https://www.countryflags.io/${cc}/flat/16.png">&nbsp;&nbsp;</td>
         """.trimIndent()
     }
 
