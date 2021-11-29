@@ -31,7 +31,7 @@ class GameServer(
     private val connHandler: ConnHandler
 
     /** Current server state */
-    private var serverState: ServerState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
+    private var serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
 
     /** Current game setup */
     private var gameSetup: dev.robocode.tankroyale.server.model.GameSetup? = null
@@ -558,9 +558,7 @@ class GameServer(
     /** Aborts current game */
     internal fun onAbortGame() {
         log.info("Aborting game")
-
         serverState = ServerState.GAME_STOPPED
-
         broadcastGameAborted()
 
         // No score is generated for aborted games
@@ -570,11 +568,8 @@ class GameServer(
     internal fun onPauseGame() {
         if (serverState === ServerState.GAME_RUNNING) {
             log.info("Pausing game")
-
             serverState = ServerState.GAME_PAUSED
-
             turnTimeoutTimer?.pause()
-
             broadcastGamedPausedToObservers()
         }
     }
@@ -583,11 +578,8 @@ class GameServer(
     internal fun onResumeGame() {
         if (serverState === ServerState.GAME_PAUSED) {
             log.info("Resuming game")
-
             serverState = ServerState.GAME_RUNNING
-
             turnTimeoutTimer?.resume()
-
             broadcastGameResumedToObservers()
         }
     }
