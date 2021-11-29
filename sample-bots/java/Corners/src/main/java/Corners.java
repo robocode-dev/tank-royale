@@ -118,7 +118,7 @@ public class Corners extends Bot {
     }
 
     // If 75% of the robots are still alive when we die, we'll switch corners.
-    if ((enemies - getEnemyCount()) / (double) enemies < .75) {
+    if (getEnemyCount() / (double) enemies >= .75) {
       if (corner != 270) {
         corner += 90;
       }

@@ -114,7 +114,7 @@ namespace Robocode.TankRoyale.Sample.Bots
       if (enemies == 0) return;
 
       // If 75% of the robots are still alive when we die, we'll switch corners.
-      if ((enemies - EnemyCount) / (double)enemies < .75)
+      if (EnemyCount / (double)enemies >= .75)
       {
         if (corner != 270) corner += 90;
 
