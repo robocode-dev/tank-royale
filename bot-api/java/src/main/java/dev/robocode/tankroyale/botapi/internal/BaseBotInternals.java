@@ -157,8 +157,7 @@ public final class BaseBotInternals {
     connect();
     try {
       closedLatch.await();
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
+    } catch (InterruptedException ignore) {
     }
   }
 
@@ -191,8 +190,7 @@ public final class BaseBotInternals {
         while (turnNumber >= getCurrentTick().getTurnNumber()) {
           nextTurnMonitor.wait(); // Wait for next turn
         }
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
+      } catch (InterruptedException ignore) {
       }
     }
   }
