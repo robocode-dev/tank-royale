@@ -120,8 +120,11 @@ object BooterProcess {
 
     private fun readErrorToStdError(process: Process) {
         val reader = BufferedReader(InputStreamReader(process.errorStream!!))
-        var line: String? = null
-        while ({ line = reader.readLine(); line }() != null) {
+        var line: String?
+        while (run {
+                line = reader.readLine()
+                line
+            } != null) {
             System.err.println(line)
         }
     }
@@ -129,8 +132,11 @@ object BooterProcess {
     private fun readInputLines(process: Process): List<String> {
         val list = ArrayList<String>()
         val reader = BufferedReader(InputStreamReader(process.inputStream!!))
-        var line: String? = null
-        while ({ line = reader.readLine(); line }() != null) {
+        var line: String?
+        while (run {
+                line = reader.readLine()
+                line
+            } != null) {
             list += line!!
         }
         return list
