@@ -60,12 +60,11 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private void OnFirstTurn()
     {
       StopThread(); // sanity before starting a new thread (later)
+      ClearRemaining();
       StartThread();
-
-      ClearRemainings();
     }
 
-    private void ClearRemainings()
+    private void ClearRemaining()
     {
       distanceRemaining = 0d;
       turnRemaining = 0d;
@@ -97,7 +96,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       // No movement is possible, when the bot has become disabled
       if (bot.IsDisabled)
       {
-        ClearRemainings();
+        ClearRemaining();
       }
       else
       {
