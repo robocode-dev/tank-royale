@@ -60,12 +60,11 @@ public final class BotInternals implements IStopResumeListener {
 
   private void onFirstTurn() {
     stopThread(); // sanity before starting a new thread (later)
+    clearRemaining();
     startThread();
-
-    clearRemainings();
   }
 
-  private void clearRemainings() {
+  private void clearRemaining() {
     distanceRemaining = 0d;
     turnRemaining = 0d;
     gunTurnRemaining = 0d;
@@ -91,7 +90,7 @@ public final class BotInternals implements IStopResumeListener {
   private void processTurn() {
     // No movement is possible, when the bot has become disabled
     if (bot.isDisabled()) {
-      clearRemainings();
+      clearRemaining();
     } else {
       updateTurnRemaining();
       updateGunTurnRemaining();
