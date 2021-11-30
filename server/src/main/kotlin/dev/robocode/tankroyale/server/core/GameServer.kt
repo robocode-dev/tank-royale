@@ -93,17 +93,6 @@ class GameServer(
         connHandler.stop()
     }
 
-    /** Starts the game if all participants are ready */
-    private fun startGameIfParticipantsReady() {
-        if (readyParticipants.size == participants.size) {
-            readyTimeoutTimer.stop()
-            readyParticipants.clear()
-            botIntents.clear()
-
-            startGame()
-        }
-    }
-
     /** Prepares the game and wait for participants to become 'ready' */
     private fun prepareGame() {
         log.debug("Preparing game")
@@ -115,6 +104,17 @@ class GameServer(
         prepareModelUpdater()
         sendGameStartedToParticipants()
         startReadyTimer()
+    }
+
+    /** Starts the game if all participants are ready */
+    private fun startGameIfParticipantsReady() {
+        if (readyParticipants.size == participants.size) {
+            readyTimeoutTimer.stop()
+            readyParticipants.clear()
+            botIntents.clear()
+
+            startGame()
+        }
     }
 
     /** Send game-started event to all participant bots to get them started */
