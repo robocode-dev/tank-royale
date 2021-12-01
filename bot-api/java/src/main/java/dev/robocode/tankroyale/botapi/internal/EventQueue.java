@@ -52,9 +52,7 @@ final class EventQueue {
             events.remove(event); // remove event prior to handling it
             botEventHandlers.fire(event);
 
-          } catch (RescanException e) {
-          } catch (Exception e) {
-            throw e;
+          } catch (RescanException ignore) {
           } finally {
             currentEvent = null;
           }
