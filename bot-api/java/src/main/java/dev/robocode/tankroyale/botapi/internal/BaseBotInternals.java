@@ -167,7 +167,7 @@ public final class BaseBotInternals {
       Builder webSocketBuilder = httpClient.newWebSocketBuilder();
       socket = webSocketBuilder.buildAsync(serverUrl, new WebSocketListener()).join();
     } catch (Exception ex) {
-      throw new BotException("Could not create socket for URL: " + serverUrl, ex);
+      throw new BotException("Could not create web socket for URL: " + serverUrl, ex);
     }
   }
 
