@@ -1,6 +1,6 @@
 # ReadMe - Nuget Packaging
 
-## Do this once
+### Do this once
 
 Update this file:
 
@@ -10,12 +10,11 @@ Add this key inside <packageSources> section:
 
     <add key="local" value="%USERPROFILE%\.nuget\packages"/>
 
-## Build bot-api
+### Build bot-api
 
     gradle build
 
+### Push Robocode.TankRoyale.BotApi to local
+
     cd bin\Release
-
-## Push Robocode.TankRoyale.BotApi to local
-
     dotnet nuget push *.nupkg -s local
