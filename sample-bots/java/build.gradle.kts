@@ -1,7 +1,6 @@
 import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.nio.file.Files.*
 import java.io.PrintWriter
 
@@ -94,7 +93,6 @@ abstract class CopyBotFiles : BaseTask() {
                     copyBotJavaFiles(botDir, botArchivePath)
                     copyBotJsonFile(botDir, botArchivePath)
                     createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
-                    createScriptFile(botDir, botArchivePath, "ps1", "\r\n")
                     createScriptFile(botDir, botArchivePath, "sh", "\n")
                 }
             }
@@ -125,7 +123,7 @@ abstract class CopyBotFiles : BaseTask() {
     }
 
     private fun copyReadMeFile(projectDir: File, archivePath: Path) {
-        var filename = "ReadMe.md"
+        val filename = "ReadMe.md"
         copy(File(projectDir, "assets/$filename").toPath(), archivePath.resolve(filename))
     }
 
@@ -137,12 +135,14 @@ abstract class CopyBotFiles : BaseTask() {
                 write(newLine)
             }
         }
+        // Important: It seems that we need to add the `>nul` redirection to avoid the cmd processes to halt!?
+        val redirect = if (fileExt == "cmd") ">nul" else ""
+
         printWriter.use {
             if (fileExt == "sh") {
                 it.println("#!/bin/sh")
             }
-            it.println("java -cp ../lib/* $botName.java")
-            it.close()
+            it.println("java -cp ../lib/* $botName.java $redirect")
         }
     }
 }
@@ -185,7 +185,7 @@ val uploadSampleBots = tasks.register("uploadSampleBots") {
             execute("rm -f $destFile")
             execute("mkdir -p ~/$destDir")
 
-            put(hashMapOf("from" to "${project.projectDir}/build/$filename", "into" to "$destDir"))
+            put(hashMapOf("from" to "${project.projectDir}/build/$filename", "into" to destDir))
 
             println("done")
         })

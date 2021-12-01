@@ -57,14 +57,13 @@ abstract class CopyBotFiles : BaseTask() {
         list(project.projectDir.toPath()).forEach { botDir ->
             run {
                 if (isDirectory(botDir) && isBotProjectDir(botDir)) {
-                    val botName = botDir.botName();
+                    val botName = botDir.botName()
 
                     val botArchivePath: Path = archiveDir.resolve(botName)
 
                     createDir(botArchivePath)
                     copyBotFiles(botDir, botArchivePath)
                     createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
-                    createScriptFile(botDir, botArchivePath, "ps1", "\r\n")
                     createScriptFile(botDir, botArchivePath, "sh", "\n")
 
                     generateBotCsprojFile(botArchivePath.resolve("$botName.csproj"), botName, "${project.version}")
@@ -90,7 +89,7 @@ abstract class CopyBotFiles : BaseTask() {
     }
 
     private fun copyReadMeFile(projectDir: File, archivePath: Path) {
-        var filename = "ReadMe.md"
+        val filename = "ReadMe.md"
         copy(File(projectDir, "assets/$filename").toPath(), archivePath.resolve(filename))
     }
 
@@ -150,7 +149,7 @@ val uploadSampleBots = tasks.register("uploadSampleBots") {
             execute("rm -f $destFile")
             execute("mkdir -p ~/$destDir")
 
-            put(hashMapOf("from" to "${project.projectDir}/build/$filename", "into" to "$destDir"))
+            put(hashMapOf("from" to "${project.projectDir}/build/$filename", "into" to destDir))
 
             println("done")
         })

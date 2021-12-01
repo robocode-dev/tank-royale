@@ -12,7 +12,7 @@ This directory contains sample bots for Robocode Tankroyale for Java 11 and newe
 Each bot has its own subdirectory (bot directory) that contains:
 * A Java source file (.java) that provides the program logic of the bot.
 * A JSON file (.json) that provides information about the bot.
-* Script files (.cmd, .ps1, .sh) used for starting the bot.
+* Script files (.cmd and .sh) used for starting the bot.
 
 ## Bot filename convention
 

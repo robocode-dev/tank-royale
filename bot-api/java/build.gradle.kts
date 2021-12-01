@@ -6,7 +6,7 @@ val title = "Robocode Tank Royale Bot API"
 description = "Bot API for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
-version = "0.9.10"
+version = "0.9.11"
 
 val artifactBaseName = "robocode-tankroyale-bot-api"
 

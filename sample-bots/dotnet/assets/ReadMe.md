@@ -14,7 +14,7 @@ Each bot has its own subdirectory (bot directory) that contains:
 * A C-sharp source file (.cs) that provides the program logic of the bot.
 * A JSON file (.json) that provides information about the bot.
 * A C-sharp programming project file (.csproj) used for running the bot with the `dotnet` command.
-* Script files (.cmd, .ps1, .sh) used for starting the bot.
+* Script files (.cmd and .sh) used for starting the bot.
 
 ## Bot filename convention
 

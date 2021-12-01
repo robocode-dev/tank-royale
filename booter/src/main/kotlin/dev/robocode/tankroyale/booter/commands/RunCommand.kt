@@ -78,10 +78,8 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
         return when {
             cmd.endsWith(".bat") -> // handle Batch script
                 ProcessBuilder("cmd.exe", "/c \"$command\"")
-            cmd.endsWith(".ps1") -> // handle PowerShell script
-                ProcessBuilder("powershell.exe", "-ExecutionPolicy ByPass", "-File \"$command\"")
             cmd.endsWith(".sh") -> // handle Bash Shell script
-                ProcessBuilder("bash.exe", "-c \"$command\"")
+                ProcessBuilder("bash", "-c \"$command\"")
             else -> // handle regular command
                 ProcessBuilder(command)
         }
