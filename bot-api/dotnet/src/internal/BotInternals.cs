@@ -12,7 +12,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private Thread thread;
     private readonly Object threadMonitor = new Object();
-    private bool isRunning;
+    private bool isInterrupted;
 
     private double previousDirection;
     private double previousGunDirection;
@@ -38,6 +38,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       this.bot = bot;
       this.baseBotInternals = baseBotInternals;
+
+      baseBotInternals.SetStopResumeHandler(this);
 
       BotEventHandlers botEventHandlers = baseBotInternals.BotEventHandlers;
       botEventHandlers.onNextTurn.Subscribe(OnNextTurn, 100);
@@ -112,7 +114,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       lock (threadMonitor)
       {
         thread = new Thread(new ThreadStart(bot.Run));
-        isRunning = true; // before starting thread!
+        isInterrupted = true; // before starting thread!
         thread.Start();
       }
     }
@@ -123,8 +125,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
       {
         if (thread != null)
         {
-          isRunning = false;
-          thread.Interrupt();
+          isInterrupted = false;
+          thread.Join(0);
           thread = null;
         }
       }
@@ -147,7 +149,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         StopThread();
     }
 
-    internal bool IsRunning { get => isRunning; }
+    internal bool IsRunning { get => isInterrupted; }
 
     internal double DistanceRemaining { get => distanceRemaining; }
 
@@ -332,7 +334,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
         if (IsNearZero(turnRemaining))
           turnRemaining = 0;
       }
-
       bot.TurnRate = turnRemaining;
     }
 
@@ -349,7 +350,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
         if (IsNearZero(gunTurnRemaining))
           gunTurnRemaining = 0;
       }
-
       bot.GunTurnRate = gunTurnRemaining;
     }
 
@@ -366,7 +366,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
         if (IsNearZero(radarTurnRemaining))
           radarTurnRemaining = 0;
       }
-
       bot.RadarTurnRate = radarTurnRemaining;
     }
 
