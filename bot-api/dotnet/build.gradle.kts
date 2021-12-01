@@ -17,8 +17,8 @@ dotnet {
     }
 
     nugetPush {
-        apiKey = "" as String?
-        source = "" as String?
+        apiKey = ""
+        source = ""
     }
 }
 
