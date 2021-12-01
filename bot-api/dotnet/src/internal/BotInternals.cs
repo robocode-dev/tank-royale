@@ -124,14 +124,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
         if (thread != null)
         {
           isRunning = false;
-          try
-          {
-            thread.Join(0);
-          }
-          finally
-          {
-            thread = null;
-          }
+          thread.Interrupt();
+          thread = null;
         }
       }
     }
@@ -197,7 +191,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         SetForward(distance);
         do
           bot.Go();
-        while (distanceRemaining != 0);
+        while (IsRunning && distanceRemaining != 0);
       }
     }
 
@@ -219,7 +213,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         SetTurnLeft(degrees);
         do
           bot.Go();
-        while (turnRemaining != 0);
+        while (IsRunning && turnRemaining != 0);
       }
     }
 
@@ -241,7 +235,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         SetTurnGunLeft(degrees);
         do
           bot.Go();
-        while (gunTurnRemaining != 0);
+        while (IsRunning && gunTurnRemaining != 0);
       }
     }
 
@@ -263,7 +257,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         SetTurnRadarLeft(degrees);
         do
           bot.Go();
-        while (radarTurnRemaining != 0);
+        while (IsRunning && radarTurnRemaining != 0);
       }
     }
 
@@ -285,7 +279,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal void WaitFor(Condition condition)
     {
-      while (!condition.Test())
+      while (IsRunning && !condition.Test())
         bot.Go();
     }
 
