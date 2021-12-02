@@ -19,10 +19,10 @@ namespace Robocode.TankRoyale.BotApi.Util
     /// <summary>Event called when the web socket got disconnected.</summary>
     public event OnDisconnectedHandler OnDisconnected;
 
-    /// <summary>Event called when an error occured.</summary>
+    /// <summary>Event called when an error occurred.</summary>
     public event OnErrorHandler OnError;
 
-    /// <summary>Event called when a text message has been recieved.</summary>
+    /// <summary>Event called when a text message has been received.</summary>
     public event OnTextMessageHandler OnTextMessage;
 
     /// <summary>Event handler for OnConnected events</summary>
@@ -37,7 +37,7 @@ namespace Robocode.TankRoyale.BotApi.Util
     public delegate void OnErrorHandler(Exception error);
 
     /// <summary>Event handler for OnTextMessage events</summary>
-    /// <param name="text">Is the recieved text message</param>
+    /// <param name="text">Is the received text message</param>
     public delegate void OnTextMessageHandler(string text);
 
     private ClientWebSocket socket = new ClientWebSocket();
