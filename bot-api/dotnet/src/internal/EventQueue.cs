@@ -50,7 +50,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
       foreach (var events in sortedDict.Values)
       {
-        for (int i = events.Count - 1; i >= 0; i--)
+        for (int i = 0; i < events.Count; i++)
         {
           try
           {
@@ -90,7 +90,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       foreach (var events in eventsDict.Values)
       {
-        for (int i = events.Count - 1; i >= 0; i--)
+        for (int i = 0; i < events.Count; i++)
         {
           try
           {

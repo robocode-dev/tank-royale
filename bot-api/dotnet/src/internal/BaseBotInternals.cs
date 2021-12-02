@@ -524,7 +524,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
       ticksStart = DateTime.Now.Ticks;
 
-      if (botIntent?.Scan == true) SetScan(false);
+      if (botIntent?.Scan == true)
+        SetScan(false);
 
       eventQueue.AddEventsFromTick(tickEvent, baseBot);
 

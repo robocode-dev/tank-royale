@@ -11,7 +11,7 @@ plugins {
 }
 
 dotnet {
-    this.projectName = artifactName
+    projectName = artifactName
 
     build {
         version = project.version as String
