@@ -1,6 +1,8 @@
 import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 
+val artifactName = "Robocode.TankRoyale.BotApi"
 version = "0.9.11"
 
 plugins {
@@ -9,7 +11,7 @@ plugins {
 }
 
 dotnet {
-    projectName = "Robocode.TankRoyale.BotApi"
+    this.projectName = artifactName
 
     build {
         version = project.version as String
@@ -25,7 +27,7 @@ dotnet {
 val docfx = tasks.register("docfx") {
     exec {
         workingDir("docfx_project")
-        executable("docfx")
+        commandLine("docfx")
     }
 }
 
@@ -71,4 +73,15 @@ val uploadDoc = tasks.registering {
             println("done")
         })
     })
+}
+
+val pushLocal = tasks.register("pushLocal") {
+    dependsOn("build")
+
+    val userprofile = System.getenv("USERPROFILE")
+    delete("$userprofile/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
+    exec {
+        workingDir("bin/Release")
+        commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "-s", "local")
+    }
 }
