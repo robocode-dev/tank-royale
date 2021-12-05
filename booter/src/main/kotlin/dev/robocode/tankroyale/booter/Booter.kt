@@ -63,7 +63,7 @@ class Booter : Callable<Int> {
     ) {
         val entries = FilenamesCommand(getBotDirectories(botDirs))
             .listBotEntries(gameTypes)
-        println(Json {}.encodeToString(entries))
+        println(Json.encodeToString(entries))
     }
 
     @Command(
