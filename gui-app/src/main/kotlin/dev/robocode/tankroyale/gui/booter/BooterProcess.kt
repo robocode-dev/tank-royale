@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.gui.model.MessageConstants
 import dev.robocode.tankroyale.gui.settings.MiscSettings
 import dev.robocode.tankroyale.gui.settings.MiscSettings.BOT_DIRS_SEPARATOR
 import dev.robocode.tankroyale.gui.settings.ServerSettings
+import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
 import kotlinx.serialization.decodeFromString
 import java.io.*
@@ -13,15 +14,19 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 object BooterProcess {
 
+    val onBoot = Event<BotProcessId>()
+    val onUnboot = Event<BotProcessId>()
+
     private const val JAR_FILE_NAME = "robocode-tankroyale-booter"
 
     private val isRunning = AtomicBoolean(false)
     private var runProcess: Process? = null
 
-    private var errorThread: Thread? = null
-    private val errorThreadRunning = AtomicBoolean(false)
+    private var thread: Thread? = null
 
     private val json = MessageConstants.json
+
+    private val botProcessIds = HashMap<Int, String>()
 
     fun list(): List<BotEntry> {
         val builder = ProcessBuilder(
@@ -62,13 +67,12 @@ object BooterProcess {
         runProcess = ProcessBuilder(args).start()
 
         isRunning.set(true)
-        startErrorThread()
+        startThread()
     }
 
-    private fun addBotsToRunningBotProcess(entries: List<String>) {
+    private fun addBotsToRunningBotProcess(filenames: List<String>) {
         val printStream = PrintStream(runProcess?.outputStream!!)
-        entries.forEach {
-                filename -> printStream.println(filename) }
+        filenames.forEach { filename -> printStream.println(filename) }
         printStream.flush()
     }
 
@@ -76,9 +80,15 @@ object BooterProcess {
         if (!isRunning.get())
             return
 
-        stopErrorThread()
+        stopThread()
         isRunning.set(false)
 
+        stopProcess()
+
+        notifyUnbootBotProcesses()
+    }
+
+    private fun stopProcess() {
         val p = runProcess
         if (p != null && p.isAlive) {
 
@@ -87,8 +97,12 @@ object BooterProcess {
             out.write("\n".toByteArray())
             out.flush()
         }
-
         runProcess = null
+    }
+
+    private fun notifyUnbootBotProcesses() {
+        botProcessIds.forEach { entry -> onUnboot.fire(BotProcessId(entry.key, entry.value)) }
+        botProcessIds.clear()
     }
 
     private fun getBooterJar(): String {
@@ -114,8 +128,18 @@ object BooterProcess {
     }
 
     private fun getBotDirs(): String {
-        val botDirs = MiscSettings.getBotDirectories().joinToString(separator = BOT_DIRS_SEPARATOR).trim()
-        return botDirs
+        return MiscSettings.getBotDirectories().joinToString(separator = BOT_DIRS_SEPARATOR).trim()
+    }
+
+    private fun readInputToProcessIds(process: Process) {
+        val reader = BufferedReader(InputStreamReader(process.inputStream!!))
+        var line: String?
+        while (run {
+                line = reader.readLine()
+                line
+            } != null) {
+            addProcessId(line!!)
+        }
     }
 
     private fun readErrorToStdError(process: Process) {
@@ -142,23 +166,33 @@ object BooterProcess {
         return list
     }
 
-    private fun startErrorThread() {
-        errorThread = Thread {
-            errorThreadRunning.set(true)
-
-            while (errorThreadRunning.get()) {
+    private fun startThread() {
+        thread = Thread {
+            while (thread?.isInterrupted == false) {
                 try {
-                    readErrorToStdError(runProcess!!)
+                    val process = runProcess!!
+                    readInputToProcessIds(process)
+                    readErrorToStdError(process)
                 } catch (e: InterruptedException) {
-                    Thread.currentThread().interrupt()
+                    break
                 }
             }
         }
-        errorThread?.start()
+        thread?.start()
     }
 
-    private fun stopErrorThread() {
-        errorThreadRunning.set(false)
-        errorThread?.interrupt()
+    private fun stopThread() {
+        thread?.interrupt()
+    }
+
+    private fun addProcessId(line: String) {
+        val pidAndName = line.split(":", limit = 2)
+        if (pidAndName.size == 2) {
+            val pid = pidAndName[0].toInt()
+            val name = pidAndName[1]
+            botProcessIds[pid] = name
+
+            onBoot.fire(BotProcessId(pid, name))
+        }
     }
 }

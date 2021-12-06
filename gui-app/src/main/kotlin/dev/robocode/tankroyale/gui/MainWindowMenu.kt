@@ -26,9 +26,9 @@ object MainWindowMenu : JMenuBar() {
 
     private val onAbout = MenuEvent()
 
-    private var startServerMenuItem: JMenuItem? = null
-    private var restartServerMenuItem: JMenuItem? = null
-    private var stopServerMenuItem: JMenuItem? = null
+    private var startServerMenuItem: JMenuItem?
+    private var restartServerMenuItem: JMenuItem?
+    private var stopServerMenuItem: JMenuItem?
 
     init {
         add(JMenu(MENU.get("menu.battle")).apply {

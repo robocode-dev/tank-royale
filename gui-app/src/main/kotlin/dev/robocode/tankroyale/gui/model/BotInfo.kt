@@ -14,7 +14,8 @@ data class BotInfo(
     val platform: String? = null,
     val programmingLang: String? = null,
     val host: String,
-    val port: Int
+    val port: Int = -1,
+    var pid: Int? = null
 ): Comparable<BotInfo> {
 
     val botAddress: BotAddress

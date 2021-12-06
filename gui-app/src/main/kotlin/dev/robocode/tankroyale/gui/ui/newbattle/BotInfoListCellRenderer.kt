@@ -21,7 +21,14 @@ class BotInfoListCellRenderer : JLabel(), ListCellRenderer<Any> {
         cellHasFocus: Boolean
     ): Component {
 
-        text = (value as BotInfo).displayText
+        val botInfo = value as BotInfo
+        val pid = botInfo.pid
+
+        text = botInfo.displayText
+        if (pid != null) {
+            text += ":$pid"
+        }
+
         border = EmptyBorder(1, 1, 1, 1)
 
         if (list != null) {
@@ -34,7 +41,6 @@ class BotInfoListCellRenderer : JLabel(), ListCellRenderer<Any> {
             }
             font = list.font
         }
-
         return this
     }
 }

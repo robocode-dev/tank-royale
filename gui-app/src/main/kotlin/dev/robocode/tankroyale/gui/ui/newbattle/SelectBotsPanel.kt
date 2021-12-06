@@ -25,6 +25,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
     val selectedBotList = JList(selectedBotListModel)
 
     private val onBoot = Event<JButton>()
+    private val onUnboot = Event<JButton>()
 
     private val onAdd = Event<JButton>()
     private val onAddAll = Event<JButton>()
@@ -70,8 +71,11 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         }
         add(selectionPanel, "north")
 
-        val bootButton = bootButtonPanel.addButton("boot_arrow", onBoot)
+        val bootButton = bootButtonPanel.addButton("boot_arrow", onBoot, "cell 0 1")
         bootButton.isEnabled = false
+
+        val unbootButton = bootButtonPanel.addButton("unboot_arrow", onUnboot, "cell 0 2")
+        unbootButton.isEnabled = false
 
         val addButton = addPanel.addButton("add_arrow", onAdd, "cell 0 1")
         addButton.isEnabled = false
@@ -94,7 +98,9 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         }
 
         joinedBotList.addListSelectionListener {
-            addButton.isEnabled = joinedBotList.selectedIndices.isNotEmpty()
+            val isNonEmpty = joinedBotList.selectedIndices.isNotEmpty()
+            addButton.isEnabled = isNonEmpty
+            unbootButton.isEnabled = isNonEmpty
         }
 
         joinedBotList.model.addListDataListener(object: ListDataListener {
@@ -185,5 +191,15 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
                 }
             }
         })
+
+        BooterProcess.onBoot.subscribe(this) {
+            for (i in 0 until joinedBotListModel.size) {
+                val botInfo = joinedBotListModel[i]
+                if (botInfo.name == it.name && botInfo.pid == null) {
+                    botInfo.pid = it.processId
+                    break
+                }
+            }
+        }
     }
 }

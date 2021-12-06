@@ -129,7 +129,6 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
                     info.platform,
                     info.programmingLang,
                     host = botEntry.filename, // host serves as filename here
-                    port = -1
                 )
             )
         }
