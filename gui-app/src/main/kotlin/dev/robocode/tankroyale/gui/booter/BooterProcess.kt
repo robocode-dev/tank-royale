@@ -4,7 +4,6 @@ import dev.robocode.tankroyale.gui.model.MessageConstants
 import dev.robocode.tankroyale.gui.settings.MiscSettings
 import dev.robocode.tankroyale.gui.settings.MiscSettings.BOT_DIRS_SEPARATOR
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
 import kotlinx.serialization.decodeFromString
 import java.io.*
@@ -13,9 +12,6 @@ import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicBoolean
 
 object BooterProcess {
-
-    val onBoot = Event<BotProcessId>()
-    val onUnboot = Event<BotProcessId>()
 
     private const val JAR_FILE_NAME = "robocode-tankroyale-booter"
 
@@ -85,7 +81,7 @@ object BooterProcess {
 
         stopProcess()
 
-        notifyUnbootBotProcesses()
+        botProcessIds.clear()
     }
 
     private fun stopProcess() {
@@ -98,11 +94,6 @@ object BooterProcess {
             out.flush()
         }
         runProcess = null
-    }
-
-    private fun notifyUnbootBotProcesses() {
-        botProcessIds.forEach { entry -> onUnboot.fire(BotProcessId(entry.key, entry.value)) }
-        botProcessIds.clear()
     }
 
     private fun getBooterJar(): String {
@@ -191,8 +182,6 @@ object BooterProcess {
             val pid = pidAndName[0].toInt()
             val name = pidAndName[1]
             botProcessIds[pid] = name
-
-            onBoot.fire(BotProcessId(pid, name))
         }
     }
 }

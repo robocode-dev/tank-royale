@@ -90,8 +90,8 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         removeAllButton.isEnabled = false
 
         botsDirectoryList.cellRenderer = BotInfoListCellRenderer()
-        joinedBotList.cellRenderer = BotInfoListCellRenderer()
-        selectedBotList.cellRenderer = BotInfoListCellRenderer()
+        joinedBotList.cellRenderer = BotInfoListCellRenderer(withIcon = true)
+        selectedBotList.cellRenderer = BotInfoListCellRenderer(withIcon = true)
 
         botsDirectoryList.addListSelectionListener {
             bootButton.isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
@@ -191,15 +191,5 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
                 }
             }
         })
-
-        BooterProcess.onBoot.subscribe(this) {
-            for (i in 0 until joinedBotListModel.size) {
-                val botInfo = joinedBotListModel[i]
-                if (botInfo.name == it.name && botInfo.pid == null) {
-                    botInfo.pid = it.processId
-                    break
-                }
-            }
-        }
     }
 }
