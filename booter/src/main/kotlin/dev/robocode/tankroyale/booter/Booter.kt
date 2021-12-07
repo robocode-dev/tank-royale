@@ -68,8 +68,13 @@ class Booter : Callable<Int> {
 
     @Command(
         name = "run", description = [
-            "Start running the specified bots in individual processes.",
-            "Press enter key to stop all started bots and quit this tool."
+            "Starts running the specified bots in individual processes. Press the Enter key",
+            "to stop all started bots and quit this tool. Information about each started",
+            "process is written to standard out with a line per process in the following format:",
+            "<process id>:<hash code>:<bot name>",
+            "- `process id` is used for identifying the process",
+            "- `hash code` is used for (uniquely) identifying the bot",
+            "- `bot name` is the filename of the bot",
         ]
     )
     private fun run(
