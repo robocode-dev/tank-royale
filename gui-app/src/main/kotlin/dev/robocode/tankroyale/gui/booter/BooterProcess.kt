@@ -68,7 +68,7 @@ object BooterProcess {
         runProcess = ProcessBuilder(args).start()
 
         isRunning.set(true)
-        startThread()
+        startThread(runProcess!!)
     }
 
     private fun addBotsToRunningBotProcess(filenames: List<String>) {
@@ -166,7 +166,6 @@ object BooterProcess {
         thread = Thread {
             while (thread?.isInterrupted == false) {
                 try {
-                    val process = runProcess!!
                     readInputToProcessIds(process)
                     readErrorToStdError(process)
                 } catch (e: InterruptedException) {

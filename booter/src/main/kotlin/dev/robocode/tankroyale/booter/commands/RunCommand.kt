@@ -6,7 +6,6 @@ import dev.robocode.tankroyale.booter.util.OSUtil
 import dev.robocode.tankroyale.booter.util.OSUtil.OSType.MacOS
 import dev.robocode.tankroyale.booter.util.OSUtil.OSType.Windows
 import java.io.IOException
-import java.lang.Thread.sleep
 import java.nio.file.Files
 import java.nio.file.Files.list
 import java.nio.file.Path
@@ -60,11 +59,12 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
 
             val process = processBuilder.start()
             val env = processBuilder.environment()
-            val botInfo = getBotInfo(botName)!!
 
-            setEnvVars(env, botInfo)
+            getBotInfoList(botName).forEach {
+                botInfo -> setEnvVars(env, botInfo)
+                println("${process.pid()}:${botInfo.hash}:$botName")
+            }
 
-            println("${process.pid()}:${botInfo.hash}:$botName")
             return process
 
         } catch (ex: IOException) {
