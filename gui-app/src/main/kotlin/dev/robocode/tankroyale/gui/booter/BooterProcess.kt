@@ -33,12 +33,17 @@ object BooterProcess {
             "--bot-dirs=${getBotDirs()}"
         )
         val process = builder.start()
-        readErrorToStdError(process)
-        val entries = readInputLines(process).joinToString()
-        if (entries.isBlank()) {
-            return emptyList()
+        startThread(process)
+        try {
+            val entries = readInputLines(process).joinToString()
+            if (entries.isBlank()) {
+                return emptyList()
+            }
+            return json.decodeFromString(entries)
+
+        } finally {
+            stopThread()
         }
-        return json.decodeFromString(entries)
     }
 
     fun run(entries: List<String>) {
@@ -157,7 +162,7 @@ object BooterProcess {
         return list
     }
 
-    private fun startThread() {
+    private fun startThread(process: Process) {
         thread = Thread {
             while (thread?.isInterrupted == false) {
                 try {

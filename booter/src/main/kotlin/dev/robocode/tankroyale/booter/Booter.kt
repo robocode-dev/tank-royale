@@ -47,7 +47,7 @@ class Booter : Callable<Int> {
         ) gameTypes: String?
     ) {
         FilenamesCommand(getBotDirectories(botDirs))
-            .listBotEntries(gameTypes).forEach { entry -> println(entry.filename) }
+            .listBotNames(gameTypes).forEach { println(it) }
     }
 
     @Command(name = "list", description = ["List available bot entries"])
