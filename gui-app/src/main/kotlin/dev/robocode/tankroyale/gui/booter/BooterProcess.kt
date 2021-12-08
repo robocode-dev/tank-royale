@@ -32,12 +32,18 @@ object BooterProcess {
             "--bot-dirs=${getBotDirs()}"
         )
         val process = builder.start()
-        readErrorToStdError(process)
-        val entries = readInputLines(process).joinToString()
-        if (entries.isBlank()) {
-            return emptyList()
+
+        startErrorThread(process)
+        try {
+            val entries = readInputLines(process).joinToString()
+            if (entries.isBlank()) {
+                return emptyList()
+            }
+            return json.decodeFromString(entries)
+
+        } finally {
+            stopErrorThread()
         }
-        return json.decodeFromString(entries)
     }
 
     fun run(entries: List<String>) {
@@ -62,7 +68,7 @@ object BooterProcess {
         runProcess = ProcessBuilder(args).start()
 
         isRunning.set(true)
-        startErrorThread()
+        startErrorThread(runProcess!!)
     }
 
     private fun addBotsToRunningBotProcess(entries: List<String>) {
@@ -114,8 +120,7 @@ object BooterProcess {
     }
 
     private fun getBotDirs(): String {
-        val botDirs = MiscSettings.getBotDirectories().joinToString(separator = BOT_DIRS_SEPARATOR).trim()
-        return botDirs
+        return MiscSettings.getBotDirectories().joinToString(separator = BOT_DIRS_SEPARATOR).trim()
     }
 
     private fun readErrorToStdError(process: Process) {
@@ -142,13 +147,13 @@ object BooterProcess {
         return list
     }
 
-    private fun startErrorThread() {
+    private fun startErrorThread(process: Process) {
         errorThread = Thread {
             errorThreadRunning.set(true)
 
             while (errorThreadRunning.get()) {
                 try {
-                    readErrorToStdError(runProcess!!)
+                    readErrorToStdError(process)
                 } catch (e: InterruptedException) {
                     Thread.currentThread().interrupt()
                 }

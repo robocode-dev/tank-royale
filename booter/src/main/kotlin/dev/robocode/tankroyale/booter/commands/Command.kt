@@ -8,18 +8,18 @@ import java.nio.file.Path
 
 abstract class Command(private val botPaths: List<Path>) {
 
-    protected fun getBotInfo(botName: String): BotInfo? {
-        var path: Path?
+    protected fun getBotInfoList(botName: String): List<BotInfo> {
+        val list = ArrayList<BotInfo>()
         botPaths.forEach { dirPath ->
             run {
-                path = resolveFullBotPath(dirPath, botName, "$botName.json")?.toAbsolutePath()
+                val path = resolveFullBotPath(dirPath, botName, "$botName.json")?.toAbsolutePath()
                 if (path != null) {
-                    val content = path!!.toFile().readText(Charsets.UTF_8)
-                    return Json.decodeFromString(content)
+                    val content = path.toFile().readText(Charsets.UTF_8)
+                    list.add(Json.decodeFromString(content))
                 }
             }
         }
-        return null // not found
+        return list
     }
 
     protected fun resolveFullBotPath(botDirPath: Path, botName: String, botPath: String): Path? {

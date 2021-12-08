@@ -17,14 +17,22 @@ class FilenamesCommand(private val botsDirPaths: List<Path>) : Command(botsDirPa
         val botEntries = ArrayList<BotEntry>()
         botNames.forEach { botName ->
             try {
-                val botInfo = getBotInfo(botName)
-                if (botInfo != null && (gameTypes == null || botInfo.gameTypes.split(",").containsAll(gameTypes)))
-                    botEntries.add(BotEntry(botName, botInfo))
+                getBotInfoList(botName).forEach { botInfo ->
+                    if (gameTypes == null || botInfo.gameTypes.split(",").containsAll(gameTypes)) {
+                        botEntries.add(BotEntry(botName, botInfo))
+                    }
+                }
             } catch (ex: Exception) {
                 System.err.println("ERROR: ${ex.message}")
             }
         }
         return botEntries
+    }
+
+    fun listBotNames(gameTypesCSV: String?): Set<String> {
+        val botNames = HashSet<String>()
+        listBotEntries(gameTypesCSV).forEach { entry -> botNames.add(entry.filename) }
+        return botNames
     }
 
     private fun listBotNames(): Set<String> {
