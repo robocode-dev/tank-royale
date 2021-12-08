@@ -7,6 +7,8 @@ import dev.robocode.tankroyale.csproj.generateBotCsprojFile
 
 version = project(":bot-api:dotnet").version
 
+val archiveFilename = "sample-bots-csharp-${project.version}.zip"
+
 plugins {
     alias(libs.plugins.hidetake.ssh)
 }
@@ -121,7 +123,7 @@ val copyBotFiles = task<CopyBotFiles>("copyBotFiles") {
 val zipSampleBots = task<Zip>("zipSampleBots") {
     dependsOn(copyBotFiles)
 
-    archiveFileName.set("sample-bots-dotnet-${project.version}.zip")
+    archiveFileName.set(archiveFilename)
     destinationDirectory.set(buildDir)
 
     from(File(buildDir, "archive"))
@@ -144,15 +146,13 @@ val uploadSampleBots = tasks.register("uploadSampleBots") {
         session(sshServer, delegateClosureOf<SessionHandler> {
             print("Uploading sample bots...")
 
-            val filename = "sample-bots-dotnet-${project.version}.zip"
-
             val destDir = "public_html/tankroyale/sample-bots/${project.version}"
-            val destFile = "$destDir/$filename"
+            val destFile = "$destDir/$archiveFilename"
 
             execute("rm -f $destFile")
             execute("mkdir -p ~/$destDir")
 
-            put(hashMapOf("from" to "${project.projectDir}/build/$filename", "into" to destDir))
+            put(hashMapOf("from" to "${project.projectDir}/build/$archiveFilename", "into" to destDir))
 
             println("done")
         })

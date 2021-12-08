@@ -6,7 +6,8 @@
 .gradle/
 
 target/
-!sample-bots/dotnet/Target
+!sample-bots/java/Target
+!sample-bots/csharp/Target
 build/
 gradle/
 out/
