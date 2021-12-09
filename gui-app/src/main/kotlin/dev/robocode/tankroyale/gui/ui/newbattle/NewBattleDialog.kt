@@ -128,13 +128,13 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
                     info.gameTypes.split(",").toSet(),
                     info.platform,
                     info.programmingLang,
-                    host = botEntry.filename, // host serves as filename here
+                    host = botEntry.dir, // host serves as filename here
                 )
             )
         }
     }
 
-    private fun getBotsDirectoryEntries(): List<BotEntry> = BooterProcess.list()
+    private fun getBotsDirectoryEntries(): List<BotEntry> = BooterProcess.info()
 
     fun updateJoinedBots() {
         SwingUtilities.invokeLater {

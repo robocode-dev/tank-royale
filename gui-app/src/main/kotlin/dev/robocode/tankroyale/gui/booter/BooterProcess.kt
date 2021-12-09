@@ -24,13 +24,13 @@ object BooterProcess {
 
     private val botProcessIds = HashMap<Int, String>()
 
-    fun list(): List<BotEntry> {
+    fun info(): List<BotEntry> {
         val builder = ProcessBuilder(
             "java",
             "-jar",
             getBooterJar(),
-            "list",
-            "--bot-dirs=${getBotDirs()}"
+            "info",
+            "--dirs=${getBotDirs()}"
         )
         val process = builder.start()
         startThread(process)
@@ -61,7 +61,7 @@ object BooterProcess {
             "-jar",
             getBooterJar(),
             "run",
-            "--bot-dirs=${getBotDirs()}"
+            "--dirs=${getBotDirs()}"
         )
         entries.forEach { args += it }
 

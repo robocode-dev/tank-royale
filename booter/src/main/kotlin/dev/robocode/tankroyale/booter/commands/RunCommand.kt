@@ -12,45 +12,53 @@ import java.nio.file.Path
 import java.util.function.Predicate
 import java.util.stream.Collectors.toList
 import kotlin.collections.ArrayList
+import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
+import kotlin.io.path.exists
 
-class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
+class RunCommand(botPaths: List<Path>): Command(botPaths) {
 
     private val processes = ArrayList<Process>()
 
-    fun runBots(botNames: Array<String>) {
+    fun runBots(botDirNames: Array<String>) {
+        val botDirs = botDirNames.map { dirName -> Path(dirName) }.toSet()
+        runBots(botDirs)
+    }
+
+    private fun runBots(botDirectories: Set<Path>) {
         Runtime.getRuntime().addShutdownHook(Thread {
             killProcesses(processes) // Kill all running processes before terminating
         })
 
         // Start up the bots provided with the input list
-        botNames.forEach { botName -> processes.createBotProcess(botName) }
+        botDirectories.forEach { processes.createBotProcess(it) }
 
         // Add new bots from the std-in or terminate if blank line is provided
         do {
-            val botName = readLine()?.trim()
-            if (botName != null && botName.isBlank()) {
+            val botDirName = readLine()?.trim()
+            if (botDirName != null && botDirName.isBlank()) {
                 break
             }
-            if (botName != null) {
-                processes.createBotProcess(botName)
+            if (botDirName != null) {
+                processes.createBotProcess(Path(botDirName))
             }
         } while (true)
 
         killProcesses(processes) // Kill all running processes before terminating
     }
 
-    private fun MutableList<Process>.createBotProcess(filename: String) {
-        val process = startBotProcess(filename)
+    private fun MutableList<Process>.createBotProcess(botDir: Path) {
+        val process = startBotProcess(botDir)
         if (process != null) {
             add(process)
         }
     }
 
-    private fun startBotProcess(botName: String): Process? {
+    private fun startBotProcess(botDir: Path): Process? {
         try {
-            val scriptPath = findOsScript(botName)
+            val scriptPath = findOsScript(botDir)
             if (scriptPath == null) {
-                System.err.println("ERROR: No script found for the bot: $botName")
+                System.err.println("ERROR: No script found for the bot: $botDir")
                 return null
             }
 
@@ -60,11 +68,11 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
             val process = processBuilder.start()
             val env = processBuilder.environment()
 
-            getBotInfoList(botName).forEach {
-                botInfo -> setEnvVars(env, botInfo)
-                println("${process.pid()}:${botInfo.hash}:$botName")
+            val botInfo = getBotInfo(botDir)
+            if (botInfo != null) {
+                setEnvVars(env, botInfo)
+                println("${process.pid()}:${botDir.absolutePathString()}")
             }
-
             return process
 
         } catch (ex: IOException) {
@@ -85,59 +93,46 @@ class RunCommand(private val botPaths: List<Path>): Command(botPaths) {
         }
     }
 
-    private fun findOsScript(botName: String): Path? = when (OSUtil.getOsType()) {
-        Windows -> findWindowsScript(botName)
-        MacOS -> findMacOsScript(botName)
-        else -> findFirstUnixScript(botName)
+    private fun findOsScript(botDir: Path): Path? = when (OSUtil.getOsType()) {
+        Windows -> findWindowsScript(botDir)
+        MacOS -> findMacOsScript(botDir)
+        else -> findFirstUnixScript(botDir)
     }
 
-    private fun findWindowsScript(botName: String): Path? {
-        var path: Path?
-        botPaths.forEach { dirPath ->
-            run {
-                path = resolveFullBotPath(dirPath, botName, "$botName.bat")
-                if (path != null) return path
+    private fun findWindowsScript(botDir: Path): Path? {
+        val botName = botDir.fileName.toString()
 
-                path = resolveFullBotPath(dirPath, botName, "$botName.cmd")
-                if (path != null) return path
+        var path = botDir.resolve("$botName.bat")
+        if (path.exists()) return path
 
-                path = resolveFullBotPath(dirPath, botName, "$botName.psi")
-                if (path != null) return path
-            }
-        }
-        return findFirstUnixScript(botName)
+        path = botDir.resolve("$botName.cmd")
+        if (path.exists()) return path
+
+        return findFirstUnixScript(botDir)
     }
 
-    private fun findMacOsScript(botName: String): Path? {
-        var path: Path?
-        botPaths.forEach { dirPath ->
-            run {
-                path = resolveFullBotPath(dirPath, botName, "$botName.command")
-                if (path != null) return path
-            }
-        }
-        return findFirstUnixScript(botName)
+    private fun findMacOsScript(botDir: Path): Path? {
+        val botName = botDir.fileName.toString()
+
+        val path = botDir.resolve("$botName.command")
+        if (path.exists()) return path
+
+        return findFirstUnixScript(botDir)
     }
 
-    private fun findFirstUnixScript(botName: String): Path? {
-        var path: Path?
-        botPaths.forEach { dirPath ->
-            run {
-                path = resolveFullBotPath(dirPath, botName, "$botName.sh")
-                if (path != null) return path
-            }
-        }
+    private fun findFirstUnixScript(botDir: Path): Path? {
+        val botName = botDir.fileName.toString()
+
+        val path = botDir.resolve("$botName.sh")
+        if (path.exists()) return path
 
         // Look for any file with no file extension or where the file containing the '#!' characters, i.e. a script
-        botPaths.forEach { dirPath ->
-            run {
-                list(dirPath).filter(IsBotFile(botName)).collect(toList()).forEach { path ->
-                    if (path.fileName.toString().equals(botName, ignoreCase = true))
-                        return path
-                    if (readFirstLine(dirPath.resolve(path)).trim().startsWith("#!"))
-                        return path
-                }
-            }
+
+        list(botDir).filter(IsBotFile(botName)).collect(toList()).forEach { filePath ->
+            if (filePath.fileName.toString().equals(botName, ignoreCase = true))
+                return filePath
+            if (readFirstLine(botDir.resolve(filePath)).trim().startsWith("#!"))
+                return filePath
         }
         return null // No path found
     }

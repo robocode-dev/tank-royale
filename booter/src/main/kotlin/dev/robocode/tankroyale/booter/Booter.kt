@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.booter
 
-import dev.robocode.tankroyale.booter.commands.FilenamesCommand
+import dev.robocode.tankroyale.booter.commands.DirCommand
 import dev.robocode.tankroyale.booter.commands.RunCommand
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -35,42 +35,41 @@ class Booter : Callable<Int> {
         return 0
     }
 
-    @Command(name = "filenames", description = ["List filenames of available bots"])
+    @Command(name = "dir", description = ["List directories of all available bots."])
     private fun filenames(
         @Option(
-            names = ["--bot-dirs", "-D"], paramLabel = "BOT_DIR",
-            description = ["Comma-separated string of file paths to directories containing bots"]
+            names = ["--bot-dirs", "-D"], paramLabel = "BOT_DIRS",
+            description = ["Comma-separated string of file paths to directories containing bots."]
         ) botDirs: String?,
         @Option(
             names = ["--game-types", "-T"], paramLabel = "GAME_TYPES",
             description = ["Comma-separated string of game types that the bot entries must support in order to be included in the list"]
         ) gameTypes: String?
     ) {
-        FilenamesCommand(getBotDirectories(botDirs))
-            .listBotNames(gameTypes).forEach { println(it) }
+        DirCommand(getBotDirectories(botDirs)).listBotDirectories(gameTypes).forEach { println(it) }
     }
 
-    @Command(name = "list", description = ["List available bot entries"])
+    @Command(name = "info", description = ["List info for all available bots in JSON format."])
     private fun list(
         @Option(
-            names = ["--bot-dirs", "-D"], paramLabel = "BOT_DIR",
-            description = ["Comma-separated string of file paths to directories containing bots"]
+            names = ["--dirs", "-D"], paramLabel = "BOT_DIRS",
+            description = ["Comma-separated list of absolute file paths to bot root directories."]
         ) botDirs: String?,
         @Option(
             names = ["--game-types", "-T"], paramLabel = "GAME_TYPES",
-            description = ["Comma-separated string of game types that the bot entries must support in order to be included in the list"]
+            description = ["Comma-separated list of game types that the bot entries must support in order to be included in the list."]
         ) gameTypes: String?
     ) {
-        val entries = FilenamesCommand(getBotDirectories(botDirs))
-            .listBotEntries(gameTypes)
+        val entries = DirCommand(getBotDirectories(botDirs)).listBotEntries(gameTypes)
         println(Json.encodeToString(entries))
     }
 
     @Command(
         name = "run", description = [
-            "Starts running the specified bots in individual processes. Press the Enter key",
-            "to stop all started bots and quit this tool. Information about each started",
-            "process is written to standard out with a line per process in the following format:",
+            "Starts running the bots in individual processes.",
+            "Press the Enter key to stop all started bots and quit this tool.",
+            "Information about each started process is written to standard out",
+            "with a line per process in the following format:",
             "<process id>:<hash code>:<bot name>",
             "- `process id` is used for identifying the process",
             "- `hash code` is used for (uniquely) identifying the bot",
@@ -79,12 +78,12 @@ class Booter : Callable<Int> {
     )
     private fun run(
         @Option(
-            names = ["--bot-dirs", "-D"], paramLabel = "BOT_DIR",
-            description = ["Comma-separated string of file paths to directories containing bots"]
+            names = ["--dirs", "-D"], paramLabel = "BOT_DIRS",
+            description = ["Comma-separated list of absolute file paths to bot root directories."]
         ) botDirs: String?,
         @Parameters(
-            arity = "1..*", paramLabel = "FILE",
-            description = ["Filenames of the bots to start without file extensions"]
+            arity = "1..*", paramLabel = "DIR",
+            description = ["Absolute file paths, where each path is a bot directory."]
         ) filenames: Array<String>
     ) {
         RunCommand(getBotDirectories(botDirs)).runBots(filenames)

@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.booter.model
 
 import kotlinx.serialization.Serializable
-import java.util.*
 
 @Serializable
 data class BotInfo(
@@ -14,6 +13,4 @@ data class BotInfo(
     val countryCodes: String,
     val platform: String? = null,
     val programmingLang: String? = null,
-) {
-    val hash: Int get() = Objects.hash(name, version, platform, programmingLang)
-}
+)

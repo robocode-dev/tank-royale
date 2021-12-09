@@ -19,8 +19,6 @@ data class BotInfo(
     var pid: Int? = null
 ): Comparable<BotInfo> {
 
-    val hash: Int get() = Objects.hash(name, version, platform, programmingLang)
-
     val botAddress: BotAddress
         get() = BotAddress(host, port)
 

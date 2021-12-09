@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BotEntry(
-    val filename: String,
+    val dir: String,
     val info: Info
 )
 
