@@ -29,7 +29,7 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
-        size = Dimension(750, 600)
+        size = Dimension(900, 600)
 
         setLocationRelativeTo(MainWindow) // center on main window
 

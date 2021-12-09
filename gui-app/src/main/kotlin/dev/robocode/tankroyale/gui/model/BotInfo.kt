@@ -14,7 +14,7 @@ data class BotInfo(
     val gameTypes: Set<String>,
     val platform: String? = null,
     val programmingLang: String? = null,
-    val host: String,
+    val host: String, // bot directory name, when running locally
     val port: Int = -1,
     var pid: Int? = null
 ): Comparable<BotInfo> {

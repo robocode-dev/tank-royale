@@ -36,7 +36,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         val botsDirectoryPanel = JPanel(MigLayout("fill")).apply {
             add(JScrollPane(botsDirectoryList), "grow")
             preferredSize = Dimension(1000, 1000)
-            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("bot_directory"))
+            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("bot_directories"))
         }
 
         val joinedBotsPanel = JPanel(MigLayout("fill")).apply {
@@ -89,9 +89,9 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         val removeAllButton = removePanel.addButton("arrow_remove_all", onRemoveAll, "cell 0 4")
         removeAllButton.isEnabled = false
 
-        botsDirectoryList.cellRenderer = BotInfoListCellRenderer()
-        joinedBotList.cellRenderer = BotInfoListCellRenderer(withIcon = true)
-        selectedBotList.cellRenderer = BotInfoListCellRenderer(withIcon = true)
+        botsDirectoryList.cellRenderer = BotDirectoriesListCellRenderer()
+        joinedBotList.cellRenderer = BotInfoListCellRenderer()
+        selectedBotList.cellRenderer = BotInfoListCellRenderer()
 
         botsDirectoryList.addListSelectionListener {
             bootButton.isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()

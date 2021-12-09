@@ -7,8 +7,7 @@ import javax.swing.JList
 import javax.swing.ListCellRenderer
 import javax.swing.border.EmptyBorder
 
-class BotInfoListCellRenderer : JLabel(), ListCellRenderer<Any> {
-
+class BotDirectoriesListCellRenderer : JLabel(), ListCellRenderer<Any> {
     init {
         isOpaque = true
     }
@@ -22,14 +21,7 @@ class BotInfoListCellRenderer : JLabel(), ListCellRenderer<Any> {
     ): Component {
 
         val botInfo = value as BotInfo
-        val pid = botInfo.pid
-
-        text = botInfo.displayText
-
-        // Rocket for boot: 🚀 (D83D DE80)
-        // Global for Internet: 🌐 (D83C DF10)
-        val icon = if (pid == null) "\uD83C\uDF10" else "\uD83D\uDE80"
-        text = "$icon $text"
+        text = botInfo.host
 
         border = EmptyBorder(1, 1, 1, 1)
 
