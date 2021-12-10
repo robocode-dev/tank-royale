@@ -9,48 +9,70 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Files.list
 import java.nio.file.Path
+import java.util.*
 import java.util.function.Predicate
 import java.util.stream.Collectors.toList
-import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
 
-class RunCommand(botPaths: List<Path>): Command(botPaths) {
+class RunCommand: Command() {
 
-    private val processes = ArrayList<Process>()
+    private val processes = HashMap<Long, Process>() // pid, process
 
-    fun runBots(botDirNames: Array<String>) {
-        val botDirs = botDirNames.map { dirName -> Path(dirName) }.toSet()
+    fun runBots(botDirNames: Array<String>?) {
+        val botDirs = botDirNames?.map { dirName -> Path(dirName) }?.toSet() ?: emptySet()
         runBots(botDirs)
     }
 
     private fun runBots(botDirectories: Set<Path>) {
         Runtime.getRuntime().addShutdownHook(Thread {
-            killProcesses(processes) // Kill all running processes before terminating
+            killAllProcesses() // Kill all running processes before terminating
         })
 
         // Start up the bots provided with the input list
-        botDirectories.forEach { processes.createBotProcess(it) }
+        botDirectories.forEach { createBotProcess(it) }
 
         // Add new bots from the std-in or terminate if blank line is provided
         do {
-            val botDirName = readLine()?.trim()
-            if (botDirName != null && botDirName.isBlank()) {
+            val line = readLine()?.trim()
+            if (line?.isBlank() == true) { // stop executing, if blank line has been sent
                 break
             }
-            if (botDirName != null) {
-                processes.createBotProcess(Path(botDirName))
+            val commandAndArgument = line?.split("\\s+".toRegex())
+            if (commandAndArgument?.size == 2) {
+                val command = commandAndArgument[0].lowercase(Locale.getDefault())
+                val arg = commandAndArgument[1]
+
+                when (command) {
+                    "boot" -> {
+                        val botDir = Path(arg)
+                        createBotProcess(botDir)
+                    }
+                    "kill" -> {
+                        val pid = arg.toLong()
+                        killBotProcess(pid)
+                    }
+                }
             }
         } while (true)
 
-        killProcesses(processes) // Kill all running processes before terminating
+        killAllProcesses() // Kill all running processes before terminating
     }
 
-    private fun MutableList<Process>.createBotProcess(botDir: Path) {
+    private fun createBotProcess(botDir: Path) {
         val process = startBotProcess(botDir)
         if (process != null) {
-            add(process)
+            processes[process.pid()] = process
+        }
+    }
+
+    private fun killBotProcess(pid: Long) {
+        val process = processes[pid]
+        if (process != null) {
+            killProcess(process)
+            processes.remove(pid)
         }
     }
 
@@ -79,6 +101,19 @@ class RunCommand(botPaths: List<Path>): Command(botPaths) {
             System.err.println("ERROR: ${ex.message}")
             return null
         }
+    }
+
+    private fun killAllProcesses() {
+        processes.values.parallelStream().forEach { killProcess(it) }
+    }
+
+    private fun killProcess(process: Process) {
+        val pid = process.pid()
+
+        process.descendants().forEach { it.destroyForcibly() }
+        process.destroyForcibly().waitFor()
+
+        println("killed $pid")
     }
 
     private fun createProcessBuilder(command: String): ProcessBuilder {
@@ -157,13 +192,6 @@ class RunCommand(botPaths: List<Path>): Command(botPaths) {
 
         private fun setEnvVar(envMap: MutableMap<String,String>, env: Env, value: Any?) {
             if (value != null) envMap[env.name] = value.toString()
-        }
-
-        private fun killProcesses(processes: List<Process>) {
-            processes.parallelStream().forEach { p ->
-                p.descendants().forEach { d -> d.destroyForcibly() }
-                p.destroyForcibly().waitFor()
-            }
         }
     }
 }

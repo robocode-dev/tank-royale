@@ -10,7 +10,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.io.path.isDirectory
 
-class DirCommand(private val botRootPaths: List<Path>) : Command(botRootPaths) {
+class DirCommand(private val botRootPaths: List<Path>) : Command() {
 
     fun listBotEntries(gameTypesCSV: String?): List<BotEntry> {
         val gameTypes: List<String> = gameTypesCSV?.split(",")?.map { it.trim() } ?: emptyList()

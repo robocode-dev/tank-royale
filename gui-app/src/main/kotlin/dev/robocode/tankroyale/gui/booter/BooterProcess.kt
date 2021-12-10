@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.gui.model.MessageConstants
 import dev.robocode.tankroyale.gui.settings.MiscSettings
 import dev.robocode.tankroyale.gui.settings.MiscSettings.BOT_DIRS_SEPARATOR
 import dev.robocode.tankroyale.gui.settings.ServerSettings
+import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
 import kotlinx.serialization.decodeFromString
 import java.io.*
@@ -12,6 +13,9 @@ import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicBoolean
 
 object BooterProcess {
+
+    val onBoot = Event<PidAndDir>()
+    val onUnboot = Event<PidAndDir>()
 
     private const val JAR_FILE_NAME = "robocode-tankroyale-booter"
 
@@ -22,7 +26,7 @@ object BooterProcess {
 
     private val json = MessageConstants.json
 
-    private val botDirPids = HashMap<String, Long>() // botDir, pid
+    private val pidAndDirs = HashMap<Long, String>() // pid, dir
 
     fun info(): List<BotEntry> {
         val builder = ProcessBuilder(
@@ -48,20 +52,14 @@ object BooterProcess {
 
     fun run(botDirNames: List<String>) {
         if (isRunning.get()) {
-            addBotsToRunningBotProcess(botDirNames)
+            bootBotsWithRunningBotProcess(botDirNames)
         } else {
             startRunningBotProcess(botDirNames)
         }
     }
 
-    fun kill(botDirNames: List<String>) {
-        val pids = botDirNames.map { botDirPids[it] }
-
-        ProcessHandle.allProcesses().forEach { processHandle ->
-            if (pids.contains(processHandle.pid())) {
-                processHandle.destroyForcibly()
-            }
-        }
+    fun kill(pids: List<Long?>) {
+        killBotsWithRunningBotProcess(pids)
     }
 
     private fun startRunningBotProcess(botDirNames: List<String>) {
@@ -70,8 +68,7 @@ object BooterProcess {
             "-Dserver.url=${ServerSettings.serverUrl}",
             "-jar",
             getBooterJar(),
-            "run",
-            "--dirs=${getBotDirs()}"
+            "run"
         )
         botDirNames.forEach { args += it }
 
@@ -81,9 +78,15 @@ object BooterProcess {
         startThread(runProcess!!)
     }
 
-    private fun addBotsToRunningBotProcess(botDirNames: List<String>) {
+    private fun bootBotsWithRunningBotProcess(botDirNames: List<String>) {
         val printStream = PrintStream(runProcess?.outputStream!!)
-        botDirNames.forEach { filename -> printStream.println(filename) }
+        botDirNames.forEach { printStream.println("boot $it") }
+        printStream.flush()
+    }
+
+    private fun killBotsWithRunningBotProcess(pids: List<Long?>) {
+        val printStream = PrintStream(runProcess?.outputStream!!)
+        pids.forEach { printStream.println("kill $it") }
         printStream.flush()
     }
 
@@ -95,6 +98,8 @@ object BooterProcess {
         isRunning.set(false)
 
         stopProcess()
+
+        notifyUnbootBotProcesses()
     }
 
     private fun stopProcess() {
@@ -107,6 +112,10 @@ object BooterProcess {
             out.flush()
         }
         runProcess = null
+    }
+
+    private fun notifyUnbootBotProcesses() {
+        pidAndDirs.forEach { onUnboot.fire(PidAndDir(it.key, it.value)) }
     }
 
     private fun getBooterJar(): String {
@@ -193,7 +202,10 @@ object BooterProcess {
         if (pidAndDir.size == 2) {
             val pid = pidAndDir[0].toLong()
             val dir = pidAndDir[1]
-            botDirPids[dir] = pid
+
+            pidAndDirs[pid] = dir
+
+            onBoot.fire(PidAndDir(pid, dir))
         }
     }
 }

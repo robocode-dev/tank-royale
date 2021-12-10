@@ -125,14 +125,6 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             }
         })
 
-        onBoot.subscribe(this) {
-            BooterProcess.run(selectedBotDirNames())
-        }
-
-        onUnboot.subscribe(this) {
-            BooterProcess.kill(selectedBotDirNames())
-        }
-
         onAdd.subscribe(this) {
             joinedBotList.selectedValuesList.forEach { botInfo ->
                 if (!selectedBotListModel.contains(botInfo)) {
@@ -191,8 +183,21 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
                 }
             }
         })
-    }
 
-    private fun selectedBotDirNames() =
-        botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].host }
+        onBoot.subscribe(this) {
+            val botDirs = botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].host }
+            BooterProcess.run(botDirs)
+        }
+
+        onUnboot.subscribe(this) {
+            val pids = joinedBotList.selectedIndices.map { joinedBotListModel[it].pid }
+            BooterProcess.kill(pids)
+        }
+
+        val botsBooting = HashMap<String, Long>() // botDir, pid
+
+        BooterProcess.onBoot.subscribe(this) {
+            botsBooting[it.dir] = it.pid
+        }
+    }
 }

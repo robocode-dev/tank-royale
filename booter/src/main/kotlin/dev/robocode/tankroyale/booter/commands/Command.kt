@@ -7,7 +7,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
 
-abstract class Command(private val botRootPaths: List<Path>) {
+abstract class Command {
 
     protected fun getBotInfo(botDirPath: Path): BotInfo? {
         val jsonPath = botDirPath.resolve("${botDirPath.fileName}.json")

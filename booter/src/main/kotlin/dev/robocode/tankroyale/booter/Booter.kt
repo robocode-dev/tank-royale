@@ -77,16 +77,12 @@ class Booter : Callable<Int> {
         ]
     )
     private fun run(
-        @Option(
-            names = ["--dirs", "-D"], paramLabel = "BOT_DIRS",
-            description = ["Comma-separated list of absolute file paths to bot root directories."]
-        ) botDirs: String?,
         @Parameters(
-            arity = "1..*", paramLabel = "DIR",
+            arity = "0..*", paramLabel = "BOT_DIR",
             description = ["Absolute file paths, where each path is a bot directory."]
-        ) filenames: Array<String>
+        ) botDirs: Array<String>
     ) {
-        RunCommand(getBotDirectories(botDirs)).runBots(filenames)
+        RunCommand().runBots(botDirs)
     }
 
     companion object {
