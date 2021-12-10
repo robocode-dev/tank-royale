@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.booter.model
 
 import kotlinx.serialization.Serializable
-import java.nio.file.Path
 
 @Serializable
 data class BotEntry(

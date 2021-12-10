@@ -126,11 +126,11 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
         })
 
         onBoot.subscribe(this) {
-            val files = ArrayList<String>()
-            botsDirectoryList.selectedIndices.forEach {
-                files.add(botsDirectoryListModel[it].host)
-            }
-            BooterProcess.run(files)
+            BooterProcess.run(selectedBotDirNames())
+        }
+
+        onUnboot.subscribe(this) {
+            BooterProcess.kill(selectedBotDirNames())
         }
 
         onAdd.subscribe(this) {
@@ -192,4 +192,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
             }
         })
     }
+
+    private fun selectedBotDirNames() =
+        botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].host }
 }

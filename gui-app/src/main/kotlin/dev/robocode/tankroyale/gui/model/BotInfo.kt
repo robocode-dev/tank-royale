@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.gui.model
 
 import kotlinx.serialization.Serializable
-import java.util.*
 
 @Serializable
 data class BotInfo(
@@ -16,7 +15,7 @@ data class BotInfo(
     val programmingLang: String? = null,
     val host: String, // bot directory name, when running locally
     val port: Int = -1,
-    var pid: Int? = null
+    var pid: Long? = null
 ): Comparable<BotInfo> {
 
     val botAddress: BotAddress

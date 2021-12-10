@@ -22,7 +22,7 @@ object BooterProcess {
 
     private val json = MessageConstants.json
 
-    private val botProcessIds = HashMap<Int, String>()
+    private val botDirPids = HashMap<String, Long>() // botDir, pid
 
     fun info(): List<BotEntry> {
         val builder = ProcessBuilder(
@@ -46,15 +46,25 @@ object BooterProcess {
         }
     }
 
-    fun run(entries: List<String>) {
+    fun run(botDirNames: List<String>) {
         if (isRunning.get()) {
-            addBotsToRunningBotProcess(entries)
+            addBotsToRunningBotProcess(botDirNames)
         } else {
-            startRunningBotProcess(entries)
+            startRunningBotProcess(botDirNames)
         }
     }
 
-    private fun startRunningBotProcess(entries: List<String>) {
+    fun kill(botDirNames: List<String>) {
+        val pids = botDirNames.map { botDirPids[it] }
+
+        ProcessHandle.allProcesses().forEach { processHandle ->
+            if (pids.contains(processHandle.pid())) {
+                processHandle.destroyForcibly()
+            }
+        }
+    }
+
+    private fun startRunningBotProcess(botDirNames: List<String>) {
         val args = mutableListOf(
             "java",
             "-Dserver.url=${ServerSettings.serverUrl}",
@@ -63,7 +73,7 @@ object BooterProcess {
             "run",
             "--dirs=${getBotDirs()}"
         )
-        entries.forEach { args += it }
+        botDirNames.forEach { args += it }
 
         runProcess = ProcessBuilder(args).start()
 
@@ -71,9 +81,9 @@ object BooterProcess {
         startThread(runProcess!!)
     }
 
-    private fun addBotsToRunningBotProcess(filenames: List<String>) {
+    private fun addBotsToRunningBotProcess(botDirNames: List<String>) {
         val printStream = PrintStream(runProcess?.outputStream!!)
-        filenames.forEach { filename -> printStream.println(filename) }
+        botDirNames.forEach { filename -> printStream.println(filename) }
         printStream.flush()
     }
 
@@ -85,8 +95,6 @@ object BooterProcess {
         isRunning.set(false)
 
         stopProcess()
-
-        botProcessIds.clear()
     }
 
     private fun stopProcess() {
@@ -181,11 +189,11 @@ object BooterProcess {
     }
 
     private fun addProcessId(line: String) {
-        val pidAndName = line.split(":", limit = 2)
-        if (pidAndName.size == 2) {
-            val pid = pidAndName[0].toInt()
-            val name = pidAndName[1]
-            botProcessIds[pid] = name
+        val pidAndDir = line.split(":", limit = 2)
+        if (pidAndDir.size == 2) {
+            val pid = pidAndDir[0].toLong()
+            val dir = pidAndDir[1]
+            botDirPids[dir] = pid
         }
     }
 }
