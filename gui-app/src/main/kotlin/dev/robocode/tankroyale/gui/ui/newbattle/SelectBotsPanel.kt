@@ -10,6 +10,7 @@ import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showError
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onChanged
+import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onMultiClickedAtIndex
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onSelection
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosed
 import dev.robocode.tankroyale.gui.util.Event
@@ -17,8 +18,6 @@ import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
 import javax.swing.*
 
 object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
@@ -122,40 +121,31 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
             selectedBotListModel.clear()
         }
 
-        botsDirectoryList.addMouseListener(object : MouseAdapter() {
-            override fun mouseClicked(e: MouseEvent) {
-                if (e.clickCount > 1) {
-                    val index = botsDirectoryList.locationToIndex(e.point)
-                    if (index >= 0 && index < botsDirectoryListModel.size) {
-                        val botInfo = botsDirectoryListModel[index]
-                        BooterProcess.run(listOf(botInfo.host))
-                    }
+        botsDirectoryList.onMultiClickedAtIndex { index ->
+            if (index >= 0 && index < botsDirectoryListModel.size) {
+                val botInfo = botsDirectoryListModel[index]
+                BooterProcess.run(listOf(botInfo.host))
+            }
+        }
+        botsDirectoryList.onMultiClickedAtIndex { index ->
+            if (index >= 0 && index < botsDirectoryListModel.size) {
+                val botInfo = botsDirectoryListModel[index]
+                BooterProcess.run(listOf(botInfo.host))
+            }
+        }
+        joinedBotList.onMultiClickedAtIndex { index ->
+            if (index >= 0 && index < joinedBotListModel.size) {
+                val botInfo = joinedBotListModel[index]
+                if (!selectedBotListModel.contains(botInfo)) {
+                    selectedBotListModel.addElement(botInfo)
                 }
             }
-        })
-        joinedBotList.addMouseListener(object : MouseAdapter() {
-            override fun mouseClicked(e: MouseEvent) {
-                if (e.clickCount > 1) {
-                    val index = joinedBotList.locationToIndex(e.point)
-                    if (index >= 0 && index < joinedBotListModel.size) {
-                        val botInfo = joinedBotListModel[index]
-                        if (!selectedBotListModel.contains(botInfo)) {
-                            selectedBotListModel.addElement(botInfo)
-                        }
-                    }
-                }
+        }
+        selectedBotList.onMultiClickedAtIndex { index ->
+            if (index >= 0 && index < selectedBotListModel.size) {
+                selectedBotListModel.removeElement(selectedBotListModel[index])
             }
-        })
-        selectedBotList.addMouseListener(object : MouseAdapter() {
-            override fun mouseClicked(e: MouseEvent) {
-                if (e.clickCount > 1) {
-                    val index = selectedBotList.locationToIndex(e.point)
-                    if (index >= 0 && index < selectedBotListModel.size) {
-                        selectedBotListModel.removeElement(selectedBotListModel[index])
-                    }
-                }
-            }
-        })
+        }
 
         Client.onBotListUpdate.subscribe(NewBattleDialog) { updateJoinedBots() }
 
