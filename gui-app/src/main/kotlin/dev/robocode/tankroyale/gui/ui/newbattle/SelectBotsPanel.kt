@@ -21,7 +21,7 @@ import javax.swing.*
 import javax.swing.event.ListDataEvent
 import javax.swing.event.ListDataListener
 
-class SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
+object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
     val botsDirectoryListModel = SortedListModel<BotInfo>()
     val joinedBotListModel = SortedListModel<BotInfo>()

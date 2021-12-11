@@ -33,7 +33,6 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
     private val onStartBattle = Event<JButton>()
     private val onCancel = Event<JButton>()
 
-    private val selectPanel = SelectBotsAndBotInfoPanel()
     private val gameTypeComboBox = GameTypeComboBox()
 
     private var selectedBots = emptyList<BotInfo>()
@@ -42,7 +41,7 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
 
         val lowerPanel = JPanel(MigLayout("insets 10, fill")).apply {
-            add(selectPanel, "north")
+            add(SelectBotsAndBotInfoPanel, "north")
             add(buttonPanel, "center")
         }
         add(lowerPanel, "south")
