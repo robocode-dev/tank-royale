@@ -8,13 +8,11 @@ import javax.swing.JPanel
 
 object SelectBotsAndBotInfoPanel : JPanel(MigLayout("fill")) {
 
-    private val botInfoPanel = BotInfoPanel()
-
     init {
         add(SelectBotsPanel, "center")
 
         val groupPanel = JPanel(MigLayout("fill"))
-        groupPanel.add(botInfoPanel, "grow")
+        groupPanel.add(BotInfoPanel, "grow")
         add(groupPanel, "south")
 
         SelectBotsPanel.botsDirectoryList.onSelection { updateBotInfo(it) }
@@ -30,6 +28,6 @@ object SelectBotsAndBotInfoPanel : JPanel(MigLayout("fill")) {
     }
 
     private fun updateBotInfo(botInfo: BotInfo) {
-        botInfoPanel.updateBotInfo(botInfo)
+        BotInfoPanel.updateBotInfo(botInfo)
     }
 }

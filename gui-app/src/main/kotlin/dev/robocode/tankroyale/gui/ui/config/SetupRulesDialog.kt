@@ -42,7 +42,6 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private val onResetToDefault = Event<JButton>()
     private val onApply = Event<JButton>()
 
-    private val gameTypeComboBox = GameTypeComboBox()
     private val widthTextField = JTextField(6)
     private val heightTextField = JTextField(6)
     private val minNumParticipantsTextField = JTextField(6)
@@ -56,7 +55,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private var changed = false
 
     private val gameSetup: MutableGameSetup
-        get() = GamesSettings.games[gameTypeComboBox.selectedGameType.displayName]!!
+        get() = GamesSettings.games[GameTypeComboBox.selectedGameType.displayName]!!
 
     private var lastGameSetup: IGameSetup = gameSetup.copy()
 
@@ -66,7 +65,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     init {
         val commonPanel = JPanel(MigLayout()).apply {
             addLabel("game_type")
-            add(gameTypeComboBox, "wrap")
+            add(GameTypeComboBox, "wrap")
 
             addLabel("min_num_of_participants")
             add(minNumParticipantsTextField, "wrap")
@@ -109,10 +108,10 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         }
         SetupRulesDialog.rootPane.defaultButton = okButton
 
-        gameTypeComboBox.addItemListener {
+        GameTypeComboBox.addItemListener {
             updateFieldsForGameType()
         }
-        gameTypeComboBox.setSelectedGameType(GameType.CLASSIC)
+        GameTypeComboBox.setSelectedGameType(GameType.CLASSIC)
         updateFieldsForGameType()
 
         applyButton.isVisible = false
@@ -142,7 +141,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             SetupRulesDialog.dispose()
         }
         onResetToDefault.subscribe(this) {
-            val selectedGameType = gameTypeComboBox.selectedGameType.displayName
+            val selectedGameType = GameTypeComboBox.selectedGameType.displayName
             val default: MutableGameSetup? = GamesSettings.defaultGameSetup[selectedGameType]?.toMutableGameSetup()
             if (default != null) {
                 GamesSettings.games[selectedGameType]?.copy(default)
