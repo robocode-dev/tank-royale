@@ -20,8 +20,6 @@ import java.awt.event.FocusListener
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
-import javax.swing.event.ListDataEvent
-import javax.swing.event.ListDataListener
 
 object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
@@ -55,58 +53,42 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         addFocusListener(this)
         isFocusable = true
 
-        val selectionPanel = createSelectionPanel()
+        add(createSelectionPanel(), "north")
 
-        add(selectionPanel, "north")
-
-        val bootButton = bootButtonPanel.addButton("boot_arrow", onBoot)
-        bootButton.isEnabled = false
-
-        val addButton = addPanel.addButton("add_arrow", onAdd, "cell 0 1")
-        addButton.isEnabled = false
-
-        val addAllButton = addPanel.addButton("add_all_arrow", onAddAll, "cell 0 2")
-        addAllButton.isEnabled = false
-
-        val removeButton = removePanel.addButton("arrow_remove", onRemove, "cell 0 3")
-        removeButton.isEnabled = false
-
-        val removeAllButton = removePanel.addButton("arrow_remove_all", onRemoveAll, "cell 0 4")
-        removeAllButton.isEnabled = false
+        bootButtonPanel.addButton("boot_arrow", onBoot).apply {
+            isEnabled = false
+            botsDirectoryList.onSelection {
+                isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
+            }
+        }
+        addPanel.addButton("add_arrow", onAdd, "cell 0 1").apply {
+            isEnabled = false
+            joinedBotList.onSelection {
+                isEnabled = joinedBotList.selectedIndices.isNotEmpty()
+            }
+        }
+        addPanel.addButton("add_all_arrow", onAddAll, "cell 0 2").apply {
+            isEnabled = false
+            joinedBotList.onChanged {
+                isEnabled = joinedBotList.model.size > 0
+            }
+        }
+        removePanel.addButton("arrow_remove", onRemove, "cell 0 3").apply {
+            isEnabled = false
+            selectedBotList.onSelection {
+                isEnabled = selectedBotList.selectedIndices.isNotEmpty()
+            }
+        }
+        removePanel.addButton("arrow_remove_all", onRemoveAll, "cell 0 4").apply {
+            isEnabled = false
+            selectedBotList.onChanged {
+                isEnabled = selectedBotList.model.size > 0
+            }
+        }
 
         botsDirectoryList.cellRenderer = BotInfoListCellRenderer()
         joinedBotList.cellRenderer = BotInfoListCellRenderer()
         selectedBotList.cellRenderer = BotInfoListCellRenderer()
-
-        botsDirectoryList.addListSelectionListener {
-            bootButton.isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
-        }
-
-        joinedBotList.addListSelectionListener {
-            addButton.isEnabled = joinedBotList.selectedIndices.isNotEmpty()
-        }
-
-        joinedBotList.model.addListDataListener(object: ListDataListener {
-            override fun intervalAdded(e: ListDataEvent?) { update() }
-            override fun intervalRemoved(e: ListDataEvent?) { update() }
-            override fun contentsChanged(e: ListDataEvent?) { update() }
-            fun update() {
-                addAllButton.isEnabled = joinedBotList.model.size > 0
-            }
-        })
-
-        selectedBotList.addListSelectionListener {
-            removeButton.isEnabled = selectedBotList.selectedIndices.isNotEmpty()
-        }
-
-        selectedBotList.model.addListDataListener(object: ListDataListener {
-            override fun intervalAdded(e: ListDataEvent?) { update() }
-            override fun intervalRemoved(e: ListDataEvent?) { update() }
-            override fun contentsChanged(e: ListDataEvent?) { update() }
-            fun update() {
-                removeAllButton.isEnabled = selectedBotList.model.size > 0
-            }
-        })
 
         onBoot.subscribe(this) {
             val files = ArrayList<String>()
