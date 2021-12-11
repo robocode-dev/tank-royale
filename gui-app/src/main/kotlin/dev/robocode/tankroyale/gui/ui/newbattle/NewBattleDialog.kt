@@ -9,7 +9,6 @@ import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showError
-import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onChanged
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosed
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onOpened
@@ -84,8 +83,8 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
         }
         startBattleButton.isEnabled = false
 
-        selectPanel.selectedBotList.onChanged {
-            startBattleButton.isEnabled = selectPanel.selectedBotListModel.size >= 2
+        BotSelectionChannel.onBotsSelected.subscribe(this) {
+            startBattleButton.isEnabled = it.size >= 2
         }
 
         onStartBattle.subscribe(NewBattleDialog) { startGame() }
