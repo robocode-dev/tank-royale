@@ -49,23 +49,14 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     private val middlePanel = JPanel(MigLayout("fill"))
     private val removePanel = JPanel(MigLayout("fill", "[fill]"))
 
+    private val addRemoveButtonsPanel = createAddRemoveButtonsPanel()
+
     init {
         addFocusListener(this)
         isFocusable = true
 
+        val selectionPanel = createSelectionPanel()
 
-        val addRemoveButtonsPanel = JPanel(MigLayout()).apply {
-            add(addPanel, "north")
-            add(middlePanel, "h 300")
-            add(removePanel, "south")
-        }
-        val selectionPanel = JPanel(MigLayout("", "[grow][grow][][grow]")).apply {
-            add(botsDirectoryPanel, "grow")
-            add(bootButtonPanel, "")
-            add(joinedBotsPanel, "grow")
-            add(addRemoveButtonsPanel, "")
-            add(selectBotsPanel, "grow")
-        }
         add(selectionPanel, "north")
 
         val bootButton = bootButtonPanel.addButton("boot_arrow", onBoot)
@@ -192,6 +183,22 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
         selectedBotList.onChanged { BotSelectionChannel.onSelectedBotListUpdated.fire(selectedBotListModel.list()) }
     }
+
+    private fun createSelectionPanel() =
+        JPanel(MigLayout("", "[grow][grow][][grow]")).apply {
+            add(botsDirectoryPanel, "grow")
+            add(bootButtonPanel, "")
+            add(joinedBotsPanel, "grow")
+            add(addRemoveButtonsPanel, "")
+            add(selectBotsPanel, "grow")
+        }
+
+    private fun createAddRemoveButtonsPanel() =
+        JPanel(MigLayout()).apply {
+            add(addPanel, "north")
+            add(middlePanel, "h 300")
+            add(removePanel, "south")
+        }
 
     private fun createSelectBotsPanel() =
         JPanel(MigLayout("fill")).apply {
