@@ -6,13 +6,13 @@ import javax.swing.JPanel
 
 object LogoPanel : JPanel() {
 
-    const val robocodeText = "Robocode Tank Royale"
-    const val robocodeTextSize = 40
+    private const val robocodeText = "Robocode Tank Royale"
+    private const val robocodeTextSize = 40
 
-    const val mottoText = "Build the best - destroy the rest!"
-    const val mottoTextSize = 20
+    private const val mottoText = "Build the best - destroy the rest!"
+    private const val mottoTextSize = 20
 
-    const val textSpacing = 10
+    private const val textSpacing = 10
 
     init {
         background = Color(0x28, 0x28, 0x28)

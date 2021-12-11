@@ -5,13 +5,13 @@ import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import javax.swing.JComboBox
 
-class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray()) {
+object GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray()) {
 
     init {
         setSelectedGameType(ServerSettings.gameType)
     }
 
-    val selectedGameType: GameType get() =
+    fun getSelectedGameType(): GameType =
         if (model.selectedItem == null) {
             GameType.CLASSIC
         } else {

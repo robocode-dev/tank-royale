@@ -14,45 +14,22 @@ import javax.swing.JPanel
 
 object ControlPanel : JPanel() {
 
-    // Private events
     private val onStop = Event<JButton>()
     private val onRestart = Event<JButton>()
     private val onPauseResume = Event<JButton>()
 
-    private var pauseResumeButton: JButton
-
     init {
-        val buttonPanel = JPanel().apply {
-            addButton("battle.stop", onStop)
-            addButton(
-                "battle.restart",
-                onRestart
-            )
-            pauseResumeButton = addButton(
-                "battle.pause",
-                onPauseResume
-            )
-            add(TpsSlider)
-
-            add(JPanel().apply {
-                add(JLabel("TPS:"))
-                add(TpsField)
-            })
-        }
-
-        buttonPanel.layout = WrapLayout()
-
         layout = BorderLayout()
         add(ArenaPanel, BorderLayout.CENTER)
-        add(buttonPanel, BorderLayout.SOUTH)
+        add(ButtonPanel, BorderLayout.SOUTH)
 
         Client.apply {
-            onGamePaused.subscribe(ControlPanel) { setResumedText() }
-            onGameResumed.subscribe(ControlPanel) { setPausedText() }
-            onGameStarted.subscribe(ControlPanel) { setPausedText() }
+            onGamePaused.subscribe(ControlPanel) { ButtonPanel.setResumedText() }
+            onGameResumed.subscribe(ControlPanel) { ButtonPanel.setPausedText() }
+            onGameStarted.subscribe(ControlPanel) { ButtonPanel.setPausedText() }
         }
 
-        onStop.subscribe(ControlPanel) { Client.stopGame(); setPausedText() }
+        onStop.subscribe(ControlPanel) { Client.stopGame(); ButtonPanel.setPausedText() }
         onRestart.subscribe(ControlPanel) { Client.restartGame() }
 
         onPauseResume.subscribe(ControlPanel) {
@@ -66,15 +43,28 @@ object ControlPanel : JPanel() {
         }
     }
 
-    private fun setPausedText() {
-        pauseResumeButton.text = STRINGS.get("battle.pause")
-    }
+    private object ButtonPanel : JPanel() {
+        val pauseResumeButton = addButton("battle.pause", onPauseResume)
 
-    private fun setResumedText() {
-        pauseResumeButton.text = STRINGS.get("battle.resume")
-    }
-}
+        init {
+            layout = WrapLayout()
 
-private fun main() {
-    ControlPanel.isVisible = true
+            addButton("battle.stop", onStop)
+            addButton("battle.restart", onRestart)
+            add(TpsSlider)
+
+            add(JPanel().apply {
+                add(JLabel("TPS:"))
+                add(TpsField)
+            })
+        }
+
+        fun setPausedText() {
+            pauseResumeButton.text = STRINGS.get("battle.pause")
+        }
+
+        fun setResumedText() {
+            pauseResumeButton.text = STRINGS.get("battle.resume")
+        }
+    }
 }

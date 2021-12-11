@@ -1,18 +1,12 @@
 package dev.robocode.tankroyale.gui.ui.extensions
 
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import javax.swing.JList
 import javax.swing.event.ListDataEvent
 import javax.swing.event.ListDataListener
 
 object JListExt {
-    fun <T> JList<T>.toList(): List<T> {
-        val list = ArrayList<T>()
-        for (i in 0 until model.size) {
-            list.add(model.getElementAt(i))
-        }
-        return list
-    }
-
     fun <T> JList<T>.onChanged(handler: () -> Unit) {
         model.addListDataListener(object : ListDataListener {
             override fun contentsChanged(e: ListDataEvent?) {
@@ -33,9 +27,18 @@ object JListExt {
         addListSelectionListener {
             val index = selectedIndex
             if (index >= 0) {
-                val element = model.getElementAt(index)
-                handler.invoke(element)
+                handler.invoke(model.getElementAt(index))
             }
         }
+    }
+
+    fun <T> JList<T>.onMultiClickedAtIndex(handler: (Int) -> Unit) {
+        addMouseListener(object : MouseAdapter() {
+            override fun mouseClicked(e: MouseEvent) {
+                if (e.clickCount > 1) {
+                    handler.invoke(locationToIndex(e.point))
+                }
+            }
+        })
     }
 }
