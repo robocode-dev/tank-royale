@@ -33,9 +33,9 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     private val joinedBotListModel = SortedListModel<BotInfo>()
     private val selectedBotListModel = SortedListModel<BotInfo>()
 
-    private val botsDirectoryList = JList(botsDirectoryListModel)
-    private val joinedBotList = JList(joinedBotListModel)
-    private val selectedBotList = JList(selectedBotListModel)
+    private val botsDirectoryList = createBotInfoList(botsDirectoryListModel)
+    private val joinedBotList = createBotInfoList(joinedBotListModel)
+    private val selectedBotList = createBotInfoList(selectedBotListModel)
 
     private val botsDirectoryPanel = createBotsDirectoryPanel()
     private val joinedBotsPanel = createJoinedBotsPanel()
@@ -59,10 +59,6 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         addAllButton()
         addRemoveButton()
         addRemoveAll()
-
-        botsDirectoryList.cellRenderer = BotInfoListCellRenderer()
-        joinedBotList.cellRenderer = BotInfoListCellRenderer()
-        selectedBotList.cellRenderer = BotInfoListCellRenderer()
 
         onBoot.subscribe(this) {
             val files = ArrayList<String>()
@@ -130,6 +126,11 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
         selectedBotList.onChanged { BotSelectionChannel.onSelectedBotListUpdated.fire(selectedBotListModel.list()) }
     }
+
+    private fun createBotInfoList(model: SortedListModel<BotInfo>) =
+        JList(model).apply {
+            cellRenderer = BotInfoListCellRenderer()
+        }
 
     private fun addBootButton() {
         bootButtonPanel.addButton("boot_arrow", onBoot).apply {
