@@ -66,31 +66,9 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         onRemove.subscribe(this) { handleRemove() }
         onRemoveAll.subscribe(this) { handleRemoveAll() }
 
-        botsDirectoryList.onMultiClickedAtIndex { index ->
-            if (index >= 0 && index < botsDirectoryListModel.size) {
-                val botInfo = botsDirectoryListModel[index]
-                BooterProcess.run(listOf(botInfo.host))
-            }
-        }
-        botsDirectoryList.onMultiClickedAtIndex { index ->
-            if (index >= 0 && index < botsDirectoryListModel.size) {
-                val botInfo = botsDirectoryListModel[index]
-                BooterProcess.run(listOf(botInfo.host))
-            }
-        }
-        joinedBotList.onMultiClickedAtIndex { index ->
-            if (index >= 0 && index < joinedBotListModel.size) {
-                val botInfo = joinedBotListModel[index]
-                if (!selectedBotListModel.contains(botInfo)) {
-                    selectedBotListModel.addElement(botInfo)
-                }
-            }
-        }
-        selectedBotList.onMultiClickedAtIndex { index ->
-            if (index >= 0 && index < selectedBotListModel.size) {
-                selectedBotListModel.removeElement(selectedBotListModel[index])
-            }
-        }
+        botsDirectoryList.onMultiClickedAtIndex { bootFromBotDirectoryAtIndex(it) }
+        joinedBotList.onMultiClickedAtIndex { addSelectedBotFromJoinedListAt(it) }
+        selectedBotList.onMultiClickedAtIndex { removeSelectedBotAt(it) }
 
         Client.onBotListUpdate.subscribe(NewBattleDialog) { updateJoinedBots() }
 
@@ -99,6 +77,28 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         selectedBotList.onSelection { BotSelectionChannel.onBotSelected.fire(it) }
 
         selectedBotList.onChanged { BotSelectionChannel.onSelectedBotListUpdated.fire(selectedBotListModel.list()) }
+    }
+
+    private fun removeSelectedBotAt(index: Int) {
+        if (index >= 0 && index < selectedBotListModel.size) {
+            selectedBotListModel.removeElement(selectedBotListModel[index])
+        }
+    }
+
+    private fun addSelectedBotFromJoinedListAt(index: Int) {
+        if (index >= 0 && index < joinedBotListModel.size) {
+            val botInfo = joinedBotListModel[index]
+            if (!selectedBotListModel.contains(botInfo)) {
+                selectedBotListModel.addElement(botInfo)
+            }
+        }
+    }
+
+    private fun bootFromBotDirectoryAtIndex(index: Int) {
+        if (index >= 0 && index < botsDirectoryListModel.size) {
+            val botInfo = botsDirectoryListModel[index]
+            BooterProcess.run(listOf(botInfo.host))
+        }
     }
 
     private fun createBotInfoList(model: SortedListModel<BotInfo>) =
