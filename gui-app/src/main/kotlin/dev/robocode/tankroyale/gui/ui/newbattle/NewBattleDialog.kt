@@ -33,7 +33,6 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
 
         onActivated {
             selectBotsAndStartPanel.apply {
-                updateJoinedBots()
                 clearSelectedBots()
             }
         }
@@ -91,9 +90,6 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
 
         onCancel.subscribe(NewBattleDialog) { NewBattleDialog.dispose() }
 
-        Client.onBotListUpdate.subscribe(NewBattleDialog) { updateJoinedBots() }
-        updateJoinedBots()
-
         gameTypeComboBox.addActionListener {
             ServerSettings.apply {
                 gameType = gameTypeComboBox.selectedGameType
@@ -104,15 +100,6 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
 
     fun clearSelectedBots() {
         selectPanel.selectedBotListModel.clear()
-    }
-
-    fun updateJoinedBots() {
-        SwingUtilities.invokeLater {
-            selectPanel.joinedBotListModel.apply {
-                clear()
-                Client.joinedBots.forEach { addElement(it) }
-            }
-        }
     }
 
     private fun startGame() {

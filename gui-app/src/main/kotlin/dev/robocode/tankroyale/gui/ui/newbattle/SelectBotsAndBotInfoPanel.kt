@@ -15,7 +15,6 @@ class SelectBotsAndBotInfoPanel : JPanel(MigLayout("fill")) {
     private val joinedBotList = selectBotsPanel.joinedBotList
     private val selectedBotList = selectBotsPanel.selectedBotList
 
-    val joinedBotListModel = selectBotsPanel.joinedBotListModel // FIXME: Remove access!
     val selectedBotListModel = selectBotsPanel.selectedBotListModel // FIXME: Remove access!
 
     init {

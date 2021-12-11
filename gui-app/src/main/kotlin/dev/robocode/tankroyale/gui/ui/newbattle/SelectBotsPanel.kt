@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.booter.BooterProcess
+import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.settings.MiscSettings
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
@@ -194,11 +195,14 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
                 }
             }
         })
+
+        Client.onBotListUpdate.subscribe(NewBattleDialog) { updateJoinedBots() }
     }
 
     override fun focusGained(e: FocusEvent?) {
         enforceBotDirIsConfigured()
         updateBotsDirectoryBots()
+        updateJoinedBots()
     }
 
     override fun focusLost(e: FocusEvent?) {}
@@ -234,6 +238,15 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
                 requestFocus() // onFocus() will be called
             }
             BotDirectoryConfigDialog.isVisible = true
+        }
+    }
+
+    private fun updateJoinedBots() {
+        SwingUtilities.invokeLater {
+            joinedBotListModel.apply {
+                clear()
+                Client.joinedBots.forEach { addElement(it) }
+            }
         }
     }
 }
