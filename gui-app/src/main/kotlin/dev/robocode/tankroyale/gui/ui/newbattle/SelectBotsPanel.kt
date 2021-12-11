@@ -25,6 +25,13 @@ import javax.swing.event.ListDataListener
 
 object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
+    private val onBoot = Event<JButton>()
+
+    private val onAdd = Event<JButton>()
+    private val onAddAll = Event<JButton>()
+    private val onRemove = Event<JButton>()
+    private val onRemoveAll = Event<JButton>()
+
     private val botsDirectoryListModel = SortedListModel<BotInfo>()
     private val joinedBotListModel = SortedListModel<BotInfo>()
     private val selectedBotListModel = SortedListModel<BotInfo>()
@@ -33,40 +40,19 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     private val joinedBotList = JList(joinedBotListModel)
     private val selectedBotList = JList(selectedBotListModel)
 
-    private val onBoot = Event<JButton>()
+    private val botsDirectoryPanel = createBotsDirectoryPanel()
+    private val joinedBotsPanel = createJoinedBotsPanel()
+    private val selectBotsPanel = createSelectBotsPanel()
 
-    private val onAdd = Event<JButton>()
-    private val onAddAll = Event<JButton>()
-    private val onRemove = Event<JButton>()
-    private val onRemoveAll = Event<JButton>()
+    private val bootButtonPanel = JPanel(MigLayout("fill", "[fill]"))
+    private val addPanel = JPanel(MigLayout("fill", "[fill]"))
+    private val middlePanel = JPanel(MigLayout("fill"))
+    private val removePanel = JPanel(MigLayout("fill", "[fill]"))
 
     init {
         addFocusListener(this)
         isFocusable = true
 
-        val botsDirectoryPanel = JPanel(MigLayout("fill")).apply {
-            add(JScrollPane(botsDirectoryList), "grow")
-            preferredSize = Dimension(1000, 1000)
-            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("bot_directory"))
-        }
-
-        val joinedBotsPanel = JPanel(MigLayout("fill")).apply {
-            add(JScrollPane(joinedBotList), "grow")
-            preferredSize = Dimension(1000, 1000)
-            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("joined_bots"))
-        }
-
-        val selectBotsPanel = JPanel(MigLayout("fill")).apply {
-            add(JScrollPane(selectedBotList), "grow")
-            preferredSize = Dimension(1000, 1000)
-            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("selected_bots"))
-        }
-
-        val bootButtonPanel = JPanel(MigLayout("fill", "[fill]"))
-
-        val addPanel = JPanel(MigLayout("fill", "[fill]"))
-        val middlePanel = JPanel(MigLayout("fill"))
-        val removePanel = JPanel(MigLayout("fill", "[fill]"))
 
         val addRemoveButtonsPanel = JPanel(MigLayout()).apply {
             add(addPanel, "north")
@@ -206,6 +192,27 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
         selectedBotList.onChanged { BotSelectionChannel.onSelectedBotListUpdated.fire(selectedBotListModel.list()) }
     }
+
+    private fun createSelectBotsPanel() =
+        JPanel(MigLayout("fill")).apply {
+            add(JScrollPane(selectedBotList), "grow")
+            preferredSize = Dimension(1000, 1000)
+            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("selected_bots"))
+        }
+
+    private fun createJoinedBotsPanel() =
+        JPanel(MigLayout("fill")).apply {
+            add(JScrollPane(joinedBotList), "grow")
+            preferredSize = Dimension(1000, 1000)
+            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("joined_bots"))
+        }
+
+    private fun createBotsDirectoryPanel() =
+        JPanel(MigLayout("fill")).apply {
+            add(JScrollPane(botsDirectoryList), "grow")
+            preferredSize = Dimension(1000, 1000)
+            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("bot_directory"))
+        }
 
     override fun focusGained(e: FocusEvent?) {
         updateBotsDirectoryBots()
