@@ -60,37 +60,11 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         addRemoveButton()
         addRemoveAll()
 
-        onBoot.subscribe(this) {
-            val files = ArrayList<String>()
-            botsDirectoryList.selectedIndices.forEach {
-                files.add(botsDirectoryListModel[it].host)
-            }
-            BooterProcess.run(files)
-        }
-
-        onAdd.subscribe(this) {
-            joinedBotList.selectedValuesList.forEach { botInfo ->
-                if (!selectedBotListModel.contains(botInfo)) {
-                    selectedBotListModel.addElement(botInfo)
-                }
-            }
-        }
-        onAddAll.subscribe(this) {
-            for (i in 0 until joinedBotListModel.size) {
-                val botInfo = joinedBotListModel[i]
-                if (!selectedBotListModel.contains(botInfo)) {
-                    selectedBotListModel.addElement(botInfo)
-                }
-            }
-        }
-        onRemove.subscribe(this) {
-            selectedBotList.selectedValuesList.forEach {
-                selectedBotListModel.removeElement(it)
-            }
-        }
-        onRemoveAll.subscribe(this) {
-            selectedBotListModel.clear()
-        }
+        onBoot.subscribe(this) { handleBoot() }
+        onAdd.subscribe(this) { handleAdd() }
+        onAddAll.subscribe(this) { handleAddAll() }
+        onRemove.subscribe(this) { handleRemove() }
+        onRemoveAll.subscribe(this) { handleRemoveAll() }
 
         botsDirectoryList.onMultiClickedAtIndex { index ->
             if (index >= 0 && index < botsDirectoryListModel.size) {
@@ -131,6 +105,40 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         JList(model).apply {
             cellRenderer = BotInfoListCellRenderer()
         }
+
+    private fun handleBoot() {
+        val files = ArrayList<String>()
+        botsDirectoryList.selectedIndices.forEach {
+            files.add(botsDirectoryListModel[it].host)
+        }
+        BooterProcess.run(files)
+    }
+
+    private fun handleAdd() {
+        joinedBotList.selectedValuesList.forEach { botInfo ->
+            if (!selectedBotListModel.contains(botInfo)) {
+                selectedBotListModel.addElement(botInfo)
+            }
+        }
+    }
+
+    private fun handleAddAll() {
+        for (i in 0 until joinedBotListModel.size) {
+            val botInfo = joinedBotListModel[i]
+            if (!selectedBotListModel.contains(botInfo)) {
+                selectedBotListModel.addElement(botInfo)
+            }
+        }
+    }
+
+    private fun handleRemove() {
+        selectedBotList.selectedValuesList.forEach {
+            selectedBotListModel.removeElement(it)
+        }
+    }
+    private fun handleRemoveAll() {
+        selectedBotListModel.clear()
+    }
 
     private fun addBootButton() {
         bootButtonPanel.addButton("boot_arrow", onBoot).apply {
