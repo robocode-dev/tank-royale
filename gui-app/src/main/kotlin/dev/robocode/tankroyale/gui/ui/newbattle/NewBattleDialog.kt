@@ -29,7 +29,7 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
 }
 
 class NewBattlePanel : JPanel(MigLayout("fill")) {
-    // Private events
+
     private val onStartBattle = Event<JButton>()
     private val onCancel = Event<JButton>()
 
@@ -66,7 +66,7 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
 
         GameTypeComboBox.addActionListener {
             ServerSettings.apply {
-                gameType = GameTypeComboBox.selectedGameType
+                gameType = GameTypeComboBox.getSelectedGameType()
                 save()
             }
         }

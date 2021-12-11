@@ -11,7 +11,7 @@ object GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArra
         setSelectedGameType(ServerSettings.gameType)
     }
 
-    val selectedGameType: GameType get() =
+    fun getSelectedGameType(): GameType =
         if (model.selectedItem == null) {
             GameType.CLASSIC
         } else {
