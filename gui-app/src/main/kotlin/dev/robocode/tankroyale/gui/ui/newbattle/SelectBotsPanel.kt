@@ -200,9 +200,11 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     }
 
     override fun focusGained(e: FocusEvent?) {
-        enforceBotDirIsConfigured()
         updateBotsDirectoryBots()
         updateJoinedBots()
+        selectedBotListModel.clear()
+
+        enforceBotDirIsConfigured()
     }
 
     override fun focusLost(e: FocusEvent?) {}
@@ -235,7 +237,7 @@ class SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
             showError(ResourceBundles.MESSAGES.get("no_bot_dir"))
 
             BotDirectoryConfigDialog.onClosed {
-                requestFocus() // onFocus() will be called
+                requestFocus() // focusGained() will be called
             }
             BotDirectoryConfigDialog.isVisible = true
         }

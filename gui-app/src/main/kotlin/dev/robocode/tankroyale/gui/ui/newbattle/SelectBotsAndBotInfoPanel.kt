@@ -11,12 +11,6 @@ class SelectBotsAndBotInfoPanel : JPanel(MigLayout("fill")) {
     private val selectBotsPanel = SelectBotsPanel()
     private val botInfoPanel = BotInfoPanel()
 
-    private val botsDirectoryList = selectBotsPanel.botsDirectoryList
-    private val joinedBotList = selectBotsPanel.joinedBotList
-    private val selectedBotList = selectBotsPanel.selectedBotList
-
-    val selectedBotListModel = selectBotsPanel.selectedBotListModel // FIXME: Remove access!
-
     init {
         add(selectBotsPanel, "center")
 
@@ -24,12 +18,15 @@ class SelectBotsAndBotInfoPanel : JPanel(MigLayout("fill")) {
         groupPanel.add(botInfoPanel, "grow")
         add(groupPanel, "south")
 
-        botsDirectoryList.onSelection { updateBotInfo(it) }
-        joinedBotList.onSelection { updateBotInfo(it) }
-        selectedBotList.onSelection { updateBotInfo(it) }
+        selectBotsPanel.botsDirectoryList.onSelection { updateBotInfo(it) }
+        selectBotsPanel.joinedBotList.onSelection { updateBotInfo(it) }
 
-        selectedBotList.onChanged {
-            BotSelectionChannel.onBotsSelected.fire(selectedBotListModel.list())
+        with (selectBotsPanel.selectedBotList) {
+            onSelection { updateBotInfo(it) }
+
+            onChanged {
+                BotSelectionChannel.onBotsSelected.fire(selectBotsPanel.selectedBotListModel.list())
+            }
         }
     }
 

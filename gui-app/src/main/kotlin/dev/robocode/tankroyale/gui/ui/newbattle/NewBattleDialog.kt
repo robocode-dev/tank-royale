@@ -2,16 +2,11 @@ package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.MainWindow
 import dev.robocode.tankroyale.gui.client.Client
-import dev.robocode.tankroyale.gui.settings.MiscSettings
+import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
-import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showError
-import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
-import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosed
-import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onOpened
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
@@ -30,27 +25,6 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
         setLocationRelativeTo(MainWindow) // center on main window
 
         contentPane.add(selectBotsAndStartPanel)
-
-        onActivated {
-            selectBotsAndStartPanel.apply {
-                clearSelectedBots()
-            }
-        }
-
-        onOpened {
-            makeSureBotDirIsConfigured()
-        }
-    }
-
-    private fun makeSureBotDirIsConfigured() {
-        if (MiscSettings.getBotDirectories().isEmpty()) {
-            selectBotsAndStartPanel.showError(ResourceBundles.MESSAGES.get("no_bot_dir"))
-
-            BotDirectoryConfigDialog.onClosed {
-                makeSureBotDirIsConfigured()
-            }
-            BotDirectoryConfigDialog.isVisible = true
-        }
     }
 }
 
@@ -61,6 +35,8 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
 
     private val selectPanel = SelectBotsAndBotInfoPanel()
     private val gameTypeComboBox = GameTypeComboBox()
+
+    private var selectedBots = emptyList<BotInfo>()
 
     init {
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
@@ -83,7 +59,8 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
         startBattleButton.isEnabled = false
 
         BotSelectionChannel.onBotsSelected.subscribe(this) {
-            startBattleButton.isEnabled = it.size >= 2
+            selectedBots = it
+            startBattleButton.isEnabled = selectedBots.size >= 2
         }
 
         onStartBattle.subscribe(NewBattleDialog) { startGame() }
@@ -98,14 +75,10 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
         }
     }
 
-    fun clearSelectedBots() {
-        selectPanel.selectedBotListModel.clear()
-    }
-
     private fun startGame() {
         isVisible = true
 
-        val botAddresses = selectPanel.selectedBotListModel.list().map { b -> b.botAddress }
+        val botAddresses = selectedBots.map { it.botAddress }
         Client.startGame(botAddresses.toSet())
 
         NewBattleDialog.dispose()
