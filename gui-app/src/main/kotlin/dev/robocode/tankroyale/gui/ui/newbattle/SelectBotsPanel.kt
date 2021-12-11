@@ -54,36 +54,11 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
         add(createSelectionPanel(), "north")
 
-        bootButtonPanel.addButton("boot_arrow", onBoot).apply {
-            isEnabled = false
-            botsDirectoryList.onSelection {
-                isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
-            }
-        }
-        addPanel.addButton("add_arrow", onAdd, "cell 0 1").apply {
-            isEnabled = false
-            joinedBotList.onSelection {
-                isEnabled = joinedBotList.selectedIndices.isNotEmpty()
-            }
-        }
-        addPanel.addButton("add_all_arrow", onAddAll, "cell 0 2").apply {
-            isEnabled = false
-            joinedBotList.onChanged {
-                isEnabled = joinedBotList.model.size > 0
-            }
-        }
-        removePanel.addButton("arrow_remove", onRemove, "cell 0 3").apply {
-            isEnabled = false
-            selectedBotList.onSelection {
-                isEnabled = selectedBotList.selectedIndices.isNotEmpty()
-            }
-        }
-        removePanel.addButton("arrow_remove_all", onRemoveAll, "cell 0 4").apply {
-            isEnabled = false
-            selectedBotList.onChanged {
-                isEnabled = selectedBotList.model.size > 0
-            }
-        }
+        addBootButton()
+        addAddButton()
+        addAllButton()
+        addRemoveButton()
+        addRemoveAll()
 
         botsDirectoryList.cellRenderer = BotInfoListCellRenderer()
         joinedBotList.cellRenderer = BotInfoListCellRenderer()
@@ -154,6 +129,51 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         selectedBotList.onSelection { BotSelectionChannel.onBotSelected.fire(it) }
 
         selectedBotList.onChanged { BotSelectionChannel.onSelectedBotListUpdated.fire(selectedBotListModel.list()) }
+    }
+
+    private fun addBootButton() {
+        bootButtonPanel.addButton("boot_arrow", onBoot).apply {
+            isEnabled = false
+            botsDirectoryList.onSelection {
+                isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
+            }
+        }
+    }
+
+    private fun addAddButton() {
+        addPanel.addButton("add_arrow", onAdd, "cell 0 1").apply {
+            isEnabled = false
+            joinedBotList.onSelection {
+                isEnabled = joinedBotList.selectedIndices.isNotEmpty()
+            }
+        }
+    }
+
+    private fun addAllButton() {
+        addPanel.addButton("add_all_arrow", onAddAll, "cell 0 2").apply {
+            isEnabled = false
+            joinedBotList.onChanged {
+                isEnabled = joinedBotList.model.size > 0
+            }
+        }
+    }
+
+    private fun addRemoveButton() {
+        removePanel.addButton("arrow_remove", onRemove, "cell 0 3").apply {
+            isEnabled = false
+            selectedBotList.onSelection {
+                isEnabled = selectedBotList.selectedIndices.isNotEmpty()
+            }
+        }
+    }
+
+    private fun addRemoveAll() {
+        removePanel.addButton("arrow_remove_all", onRemoveAll, "cell 0 4").apply {
+            isEnabled = false
+            selectedBotList.onChanged {
+                isEnabled = selectedBotList.model.size > 0
+            }
+        }
     }
 
     private fun createSelectionPanel() =
