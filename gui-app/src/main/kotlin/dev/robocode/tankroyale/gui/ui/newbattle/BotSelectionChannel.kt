@@ -5,5 +5,9 @@ import dev.robocode.tankroyale.gui.util.Event
 
 object BotSelectionChannel {
 
-    val onBotsSelected = Event<List<BotInfo>>()
+    val onBotDirectorySelected = Event<BotInfo>()
+    val onJoinedBotSelected = Event<BotInfo>()
+    val onBotSelected = Event<BotInfo>()
+
+    val onSelectedBotListUpdated = Event<List<BotInfo>>()
 }

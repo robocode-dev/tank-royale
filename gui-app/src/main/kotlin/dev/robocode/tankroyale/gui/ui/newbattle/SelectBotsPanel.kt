@@ -9,6 +9,8 @@ import dev.robocode.tankroyale.gui.ui.components.SortedListModel
 import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showError
+import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onChanged
+import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onSelection
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosed
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
@@ -23,13 +25,13 @@ import javax.swing.event.ListDataListener
 
 object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
-    val botsDirectoryListModel = SortedListModel<BotInfo>()
-    val joinedBotListModel = SortedListModel<BotInfo>()
-    val selectedBotListModel = SortedListModel<BotInfo>()
+    private val botsDirectoryListModel = SortedListModel<BotInfo>()
+    private val joinedBotListModel = SortedListModel<BotInfo>()
+    private val selectedBotListModel = SortedListModel<BotInfo>()
 
-    val botsDirectoryList = JList(botsDirectoryListModel)
-    val joinedBotList = JList(joinedBotListModel)
-    val selectedBotList = JList(selectedBotListModel)
+    private val botsDirectoryList = JList(botsDirectoryListModel)
+    private val joinedBotList = JList(joinedBotListModel)
+    private val selectedBotList = JList(selectedBotListModel)
 
     private val onBoot = Event<JButton>()
 
@@ -197,6 +199,12 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         })
 
         Client.onBotListUpdate.subscribe(NewBattleDialog) { updateJoinedBots() }
+
+        botsDirectoryList.onSelection { BotSelectionChannel.onBotDirectorySelected.fire(it) }
+        joinedBotList.onSelection { BotSelectionChannel.onJoinedBotSelected.fire(it) }
+        selectedBotList.onSelection { BotSelectionChannel.onBotSelected.fire(it) }
+
+        selectedBotList.onChanged { BotSelectionChannel.onSelectedBotListUpdated.fire(selectedBotListModel.list()) }
     }
 
     override fun focusGained(e: FocusEvent?) {

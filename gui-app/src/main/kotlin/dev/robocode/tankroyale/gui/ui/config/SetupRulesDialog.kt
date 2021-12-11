@@ -108,10 +108,12 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         }
         SetupRulesDialog.rootPane.defaultButton = okButton
 
-        GameTypeComboBox.addItemListener {
-            updateFieldsForGameType()
+        with (GameTypeComboBox) {
+            addItemListener {
+                updateFieldsForGameType()
+            }
+            setSelectedGameType(GameType.CLASSIC)
         }
-        GameTypeComboBox.setSelectedGameType(GameType.CLASSIC)
         updateFieldsForGameType()
 
         applyButton.isVisible = false

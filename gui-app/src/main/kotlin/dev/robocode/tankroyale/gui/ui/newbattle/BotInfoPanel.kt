@@ -55,9 +55,15 @@ object BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
         add(programmingLangTextField, "growx, wrap")
 
         updateBotInfo(null)
+
+        with (BotSelectionChannel) {
+            onBotDirectorySelected.subscribe(this) { updateBotInfo(it) }
+            onJoinedBotSelected.subscribe(this) { updateBotInfo(it) }
+            onBotSelected.subscribe(this) { updateBotInfo(it) }
+        }
     }
 
-    fun updateBotInfo(botInfo: BotInfo?) {
+    private fun updateBotInfo(botInfo: BotInfo?) {
         nameTextField.text = botInfo?.name
         versionTextField.text = botInfo?.version
         authorsTextField.text = botInfo?.authors?.joinToString(separator = ", ") ?: ""
