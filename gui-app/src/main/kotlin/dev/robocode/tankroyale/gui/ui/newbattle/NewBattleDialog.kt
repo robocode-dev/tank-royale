@@ -1,10 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.MainWindow
-import dev.robocode.tankroyale.gui.booter.BooterProcess
-import dev.robocode.tankroyale.gui.booter.BotEntry
 import dev.robocode.tankroyale.gui.client.Client
-import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.settings.MiscSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
@@ -37,7 +34,6 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
 
         onActivated {
             selectBotsAndStartPanel.apply {
-                updateBotsDirectoryBots()
                 updateJoinedBots()
                 clearSelectedBots()
             }
@@ -57,7 +53,6 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
             }
             BotDirectoryConfigDialog.isVisible = true
         }
-        selectBotsAndStartPanel.updateBotsDirectoryBots()
     }
 }
 
@@ -111,31 +106,6 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
     fun clearSelectedBots() {
         selectPanel.selectedBotListModel.clear()
     }
-
-    fun updateBotsDirectoryBots() {
-        selectPanel.botsDirectoryListModel.clear()
-
-        getBotsDirectoryEntries().forEach { botEntry ->
-            val info = botEntry.info
-            selectPanel.botsDirectoryListModel.addElement(
-                BotInfo(
-                    info.name,
-                    info.version,
-                    info.authors.split(","),
-                    info.description,
-                    info.homepage,
-                    info.countryCodes.split(","),
-                    info.gameTypes.split(",").toSet(),
-                    info.platform,
-                    info.programmingLang,
-                    host = botEntry.filename, // host serves as filename here
-                    port = -1
-                )
-            )
-        }
-    }
-
-    private fun getBotsDirectoryEntries(): List<BotEntry> = BooterProcess.list()
 
     fun updateJoinedBots() {
         SwingUtilities.invokeLater {

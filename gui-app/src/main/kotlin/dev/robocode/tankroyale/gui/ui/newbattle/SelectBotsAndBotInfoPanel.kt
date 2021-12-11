@@ -12,11 +12,11 @@ class SelectBotsAndBotInfoPanel : JPanel(MigLayout("fill")) {
 
     private val botsDirectoryList = selectBotsPanel.botsDirectoryList
     private val joinedBotList = selectBotsPanel.joinedBotList
-    val selectedBotList = selectBotsPanel.selectedBotList
+    val selectedBotList = selectBotsPanel.selectedBotList // FIXME: Remove access!
 
-    val botsDirectoryListModel = selectBotsPanel.botsDirectoryListModel
-    val joinedBotListModel = selectBotsPanel.joinedBotListModel
-    val selectedBotListModel = selectBotsPanel.selectedBotListModel
+    private val botsDirectoryListModel = selectBotsPanel.botsDirectoryListModel
+    val joinedBotListModel = selectBotsPanel.joinedBotListModel // FIXME: Remove access!
+    val selectedBotListModel = selectBotsPanel.selectedBotListModel // FIXME: Remove access!
 
     init {
         add(selectBotsPanel, "center")

@@ -2,19 +2,25 @@ package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.booter.BooterProcess
 import dev.robocode.tankroyale.gui.model.BotInfo
+import dev.robocode.tankroyale.gui.settings.MiscSettings
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.components.SortedListModel
+import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showError
+import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosed
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
+import java.awt.event.FocusEvent
+import java.awt.event.FocusListener
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 import javax.swing.event.ListDataEvent
 import javax.swing.event.ListDataListener
 
-class SelectBotsPanel : JPanel(MigLayout("fill")) {
+class SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
     val botsDirectoryListModel = SortedListModel<BotInfo>()
     val joinedBotListModel = SortedListModel<BotInfo>()
@@ -32,6 +38,9 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
     private val onRemoveAll = Event<JButton>()
 
     init {
+        addFocusListener(this)
+        isFocusable = true
+
         val botsDirectoryPanel = JPanel(MigLayout("fill")).apply {
             add(JScrollPane(botsDirectoryList), "grow")
             preferredSize = Dimension(1000, 1000)
@@ -185,5 +194,46 @@ class SelectBotsPanel : JPanel(MigLayout("fill")) {
                 }
             }
         })
+    }
+
+    override fun focusGained(e: FocusEvent?) {
+        enforceBotDirIsConfigured()
+        updateBotsDirectoryBots()
+    }
+
+    override fun focusLost(e: FocusEvent?) {}
+
+    private fun updateBotsDirectoryBots() {
+        botsDirectoryListModel.clear()
+
+        BooterProcess.list().forEach { botEntry ->
+            val info = botEntry.info
+            botsDirectoryListModel.addElement(
+                BotInfo(
+                    info.name,
+                    info.version,
+                    info.authors.split(","),
+                    info.description,
+                    info.homepage,
+                    info.countryCodes.split(","),
+                    info.gameTypes.split(",").toSet(),
+                    info.platform,
+                    info.programmingLang,
+                    host = botEntry.filename, // host serves as filename here
+                    port = -1
+                )
+            )
+        }
+    }
+
+    private fun enforceBotDirIsConfigured() {
+        if (MiscSettings.getBotDirectories().isEmpty()) {
+            showError(ResourceBundles.MESSAGES.get("no_bot_dir"))
+
+            BotDirectoryConfigDialog.onClosed {
+                requestFocus() // onFocus() will be called
+            }
+            BotDirectoryConfigDialog.isVisible = true
+        }
     }
 }
