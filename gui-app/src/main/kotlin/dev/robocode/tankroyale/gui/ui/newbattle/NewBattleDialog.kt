@@ -81,7 +81,7 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
         NewBattleDialog.dispose()
     }
 
-    companion object SelectBotsAndBotInfoPanel : JPanel(MigLayout("fill")) {
+    private companion object SelectBotsAndBotInfoPanel : JPanel(MigLayout("fill")) {
         init {
             add(SelectBotsPanel, "center")
 
