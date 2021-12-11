@@ -23,6 +23,7 @@ import javax.swing.*
 object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
     private val onBoot = Event<JButton>()
+    private val onUnboot = Event<JButton>()
 
     private val onAdd = Event<JButton>()
     private val onAddAll = Event<JButton>()
@@ -33,7 +34,7 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     private val joinedBotListModel = SortedListModel<BotInfo>()
     private val selectedBotListModel = SortedListModel<BotInfo>()
 
-    private val botsDirectoryList = createBotInfoList(botsDirectoryListModel)
+    private val botsDirectoryList = createBotDirectoryList()
     private val joinedBotList = createBotInfoList(joinedBotListModel)
     private val selectedBotList = createBotInfoList(selectedBotListModel)
 
@@ -55,12 +56,16 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         add(createSelectionPanel(), "north")
 
         addBootButton()
+        addUnbootButton()
+
         addAddButton()
         addAllButton()
         addRemoveButton()
         addRemoveAll()
 
         onBoot.subscribe(this) { handleBoot() }
+        onUnboot.subscribe(this) { handleUnboot() }
+
         onAdd.subscribe(this) { handleAdd() }
         onAddAll.subscribe(this) { handleAddAll() }
         onRemove.subscribe(this) { handleRemove() }
@@ -101,17 +106,24 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         }
     }
 
+    private fun createBotDirectoryList() =
+        JList(botsDirectoryListModel).apply {
+            cellRenderer = BotDirectoriesListCellRenderer()
+        }
+
     private fun createBotInfoList(model: SortedListModel<BotInfo>) =
         JList(model).apply {
             cellRenderer = BotInfoListCellRenderer()
         }
 
     private fun handleBoot() {
-        val files = ArrayList<String>()
-        botsDirectoryList.selectedIndices.forEach {
-            files.add(botsDirectoryListModel[it].host)
-        }
-        BooterProcess.run(files)
+        val botDirs = botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].host }
+        BooterProcess.run(botDirs)
+    }
+
+    private fun handleUnboot() {
+        val pids = botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].pid }
+        BooterProcess.kill(pids)
     }
 
     private fun handleAdd() {
@@ -141,10 +153,19 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     }
 
     private fun addBootButton() {
-        bootButtonPanel.addButton("boot_arrow", onBoot).apply {
+        bootButtonPanel.addButton("boot_arrow", onBoot, "cell 0 1").apply {
             isEnabled = false
             botsDirectoryList.onSelection {
                 isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
+            }
+        }
+    }
+
+    private fun addUnbootButton() {
+        bootButtonPanel.addButton("unboot_arrow", onUnboot, "cell 0 2").apply {
+            isEnabled = false
+            botsDirectoryList.onSelection {
+                isEnabled = joinedBotList.selectedIndices.isNotEmpty()
             }
         }
     }
@@ -234,7 +255,7 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     private fun updateBotsDirectoryBots() {
         botsDirectoryListModel.clear()
 
-        BooterProcess.list().forEach { botEntry ->
+        BooterProcess.info().forEach { botEntry ->
             val info = botEntry.info
             botsDirectoryListModel.addElement(
                 BotInfo(
@@ -247,7 +268,7 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
                     info.gameTypes.split(",").toSet(),
                     info.platform,
                     info.programmingLang,
-                    host = botEntry.filename, // host serves as filename here
+                    host = botEntry.dir, // host serves as filename here
                     port = -1
                 )
             )
