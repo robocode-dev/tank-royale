@@ -210,7 +210,6 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     override fun focusGained(e: FocusEvent?) {
         updateBotsDirectoryBots()
         updateJoinedBots()
-        selectedBotListModel.clear()
 
         enforceBotDirIsConfigured()
     }

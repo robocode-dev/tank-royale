@@ -80,6 +80,16 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
 
         NewBattleDialog.dispose()
     }
+
+    companion object SelectBotsAndBotInfoPanel : JPanel(MigLayout("fill")) {
+        init {
+            add(SelectBotsPanel, "center")
+
+            val groupPanel = JPanel(MigLayout("fill"))
+            groupPanel.add(BotInfoPanel, "grow")
+            add(groupPanel, "south")
+        }
+    }
 }
 
 private fun main() {
