@@ -29,14 +29,15 @@ object BooterProcess {
     private val pidAndDirs = HashMap<Long, String>() // pid, dir
 
     fun info(): List<BotEntry> {
-        val builder = ProcessBuilder(
+        val args = mutableListOf(
             "java",
             "-jar",
             getBooterJar(),
             "info",
-            "--dirs=${getBotDirs()}"
         )
-        val process = builder.start()
+        getBotDirs().forEach { args += it }
+
+        val process = ProcessBuilder(args).start()
         startThread(process)
         try {
             val entries = readInputLines(process).joinToString()
@@ -79,15 +80,17 @@ object BooterProcess {
     }
 
     private fun bootBotsWithRunningBotProcess(botDirNames: List<String>) {
-        val printStream = PrintStream(runProcess?.outputStream!!)
-        botDirNames.forEach { printStream.println("boot $it") }
-        printStream.flush()
+        PrintStream(runProcess?.outputStream!!).use { printStream ->
+            botDirNames.forEach { printStream.println("boot $it") }
+            printStream.flush()
+        }
     }
 
     private fun killBotsWithRunningBotProcess(pids: List<Long?>) {
-        val printStream = PrintStream(runProcess?.outputStream!!)
-        pids.forEach { printStream.println("kill $it") }
-        printStream.flush()
+        PrintStream(runProcess?.outputStream!!).use { printStream ->
+            pids.forEach { printStream.println("kill $it") }
+            printStream.flush()
+        }
     }
 
     fun stopRunning() {
@@ -103,13 +106,12 @@ object BooterProcess {
     }
 
     private fun stopProcess() {
-        val p = runProcess
-        if (p != null && p.isAlive) {
-
+        if (runProcess?.isAlive == true) {
             // Send quit signal to server
-            val out = p.outputStream
-            out.write("\n".toByteArray())
-            out.flush()
+            PrintStream(runProcess?.outputStream!!).use { printStream ->
+                printStream.println("quit")
+                printStream.flush()
+            }
         }
         runProcess = null
     }
@@ -140,8 +142,8 @@ object BooterProcess {
         }
     }
 
-    private fun getBotDirs(): String {
-        return MiscSettings.getBotDirectories().joinToString(separator = BOT_DIRS_SEPARATOR).trim()
+    private fun getBotDirs(): List<String> {
+        return MiscSettings.getBotDirectories()
     }
 
     private fun readInputToProcessIds(process: Process) {
@@ -198,7 +200,7 @@ object BooterProcess {
     }
 
     private fun addProcessId(line: String) {
-        val pidAndDir = line.split(":", limit = 2)
+        val pidAndDir = line.split(";", limit = 2)
         if (pidAndDir.size == 2) {
             val pid = pidAndDir[0].toLong()
             val dir = pidAndDir[1]

@@ -35,54 +35,65 @@ class Booter : Callable<Int> {
         return 0
     }
 
-    @Command(name = "dir", description = ["List directories of all available bots."])
-    private fun filenames(
-        @Option(
-            names = ["--bot-dirs", "-D"], paramLabel = "BOT_DIRS",
-            description = ["Comma-separated string of file paths to directories containing bots."]
-        ) botDirs: String?,
+    @Command(name = "dir", description = ["List all available bot directories."])
+    private fun dir(
+        @Parameters(
+            arity = "1..*", paramLabel = "BOT_ROOT_DIRS",
+            description = ["Absolute file paths, where each path is a root directory containing bot entries"]
+        ) botRootDirs: Array<String>,
         @Option(
             names = ["--game-types", "-T"], paramLabel = "GAME_TYPES",
             description = ["Comma-separated string of game types that the bot entries must support in order to be included in the list"]
         ) gameTypes: String?
     ) {
-        DirCommand(getBotDirectories(botDirs)).listBotDirectories(gameTypes).forEach { println(it) }
+        DirCommand(toPaths(botRootDirs)).listBotDirectories(gameTypes).forEach { println(it) }
     }
 
     @Command(name = "info", description = ["List info for all available bots in JSON format."])
-    private fun list(
-        @Option(
-            names = ["--dirs", "-D"], paramLabel = "BOT_DIRS",
-            description = ["Comma-separated list of absolute file paths to bot root directories."]
-        ) botDirs: String?,
+    private fun info(
+        @Parameters(
+            arity = "1..*", paramLabel = "BOT_ROOT_DIRS",
+            description = ["Absolute file paths, where each path is a root directory containing bot entries"]
+        ) botRootDirs: Array<String>,
         @Option(
             names = ["--game-types", "-T"], paramLabel = "GAME_TYPES",
             description = ["Comma-separated list of game types that the bot entries must support in order to be included in the list."]
         ) gameTypes: String?
     ) {
-        val entries = DirCommand(getBotDirectories(botDirs)).listBotEntries(gameTypes)
+        val entries = DirCommand(toPaths(botRootDirs)).listBotEntries(gameTypes)
         println(Json.encodeToString(entries))
     }
 
     @Command(
         name = "run", description = [
             "Starts running the bots in individual processes.",
-            "Press the Enter key to stop all started bots and quit this tool.",
-            "Information about each started process is written to standard out",
-            "with a line per process in the following format:",
-            "<process id>:<hash code>:<bot name>",
-            "- `process id` is used for identifying the process",
-            "- `hash code` is used for (uniquely) identifying the bot",
-            "- `bot name` is the filename of the bot",
+            "",
+            "Information about each started process is written to standard out with a line per process in " +
+                    "one of the following formats, depending if a unique identifier was provided when booting a bot:",
+            "{pid};{dir}",
+            "{pid};{dir};{uid}",
+            "where",
+            "  {pid} is the process id",
+            "  {dir} is the bot directory",
+            "  {uid} is a unique identifier provided via boot command",
+            "",
+            "The following commands can be given via standard in:",
+            "  quit              Terminates this command, and stops all running processes",
+            "  boot {dir}        Boots the bot from the specified bot directory with no unique id",
+            "  boot {dir};{uid}  Boots the bot from the specified bot directory with an unique id",
+            "  kill {pid}        Kills the bot running with the specific process id",
         ]
     )
     private fun run(
         @Parameters(
-            arity = "0..*", paramLabel = "BOT_DIR",
-            description = ["Absolute file paths, where each path is a bot directory."]
-        ) botDirs: Array<String>
+            arity = "0..*", paramLabel = "BOT_DIRS",
+            description = [
+                "Absolute file paths, where each path is a bot directory.",
+                "Each file path might be followed with a semicolon and uid used for identifying the individual bot."
+            ]
+        ) botDirsWithUids: Array<String>,
     ) {
-        RunCommand().runBots(botDirs)
+        RunCommand().runBots(botDirsWithUids)
     }
 
     companion object {
@@ -90,18 +101,10 @@ class Booter : Callable<Int> {
          * Returns file paths to specified bot directoriesCSV (semicolon separated list).
          * If no file paths are provided, the file path of current working directory is returned
          */
-        private fun getBotDirectories(directoriesCSV: String?): List<Path> {
-            if (directoriesCSV == null)
-                return listOf(Paths.get("").toAbsolutePath())
-
-            val paths = ArrayList<Path>()
-            directoriesCSV.split(",").forEach {
+        private fun toPaths(botRootDirs: Array<String>?): List<Path> =
+            botRootDirs?.toSet()?.map {
                 val path = Paths.get(it.trim())
-                if (Files.exists(path)) {
-                    paths.add(path)
-                }
-            }
-            return paths
-        }
+                if (Files.exists(path)) path else null
+            }?.mapNotNull { it } ?: emptyList()
     }
 }

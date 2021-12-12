@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.booter.BooterProcess
+import dev.robocode.tankroyale.gui.booter.PidAndDir
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.settings.MiscSettings
@@ -75,13 +76,16 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         joinedBotList.onMultiClickedAtIndex { addSelectedBotFromJoinedListAt(it) }
         selectedBotList.onMultiClickedAtIndex { removeSelectedBotAt(it) }
 
-        Client.onBotListUpdate.subscribe(NewBattleDialog) { updateJoinedBots() }
-
         botsDirectoryList.onSelection { BotSelectionChannel.onBotDirectorySelected.fire(it) }
         joinedBotList.onSelection { BotSelectionChannel.onJoinedBotSelected.fire(it) }
         selectedBotList.onSelection { BotSelectionChannel.onBotSelected.fire(it) }
 
         selectedBotList.onChanged { BotSelectionChannel.onSelectedBotListUpdated.fire(selectedBotListModel.list()) }
+
+        Client.onBotListUpdate.subscribe(this) { updateJoinedBots() }
+
+        BooterProcess.onBoot.subscribe(this) { updatedBootedBot(it) }
+        BooterProcess.onUnboot.subscribe(this) { updatedUnbootedBot(it) }
     }
 
     private fun removeSelectedBotAt(index: Int) {
@@ -290,8 +294,23 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         SwingUtilities.invokeLater {
             joinedBotListModel.apply {
                 clear()
-                Client.joinedBots.forEach { addElement(it) }
+                Client.joinedBots.forEach { botInfo ->
+                    val dir = botInfo.host
+                    if (incomingBootings.containsKey(dir)) {
+                        botInfo.pid = incomingBootings[dir]
+                    }
+                    addElement(botInfo)
+                }
             }
         }
+    }
+
+    val incomingBootings = HashMap<String, Long>() // dir, pid
+
+    private fun updatedBootedBot(pidAndDir: PidAndDir) {
+        incomingBootings[pidAndDir.dir] = pidAndDir.pid
+    }
+
+    private fun updatedUnbootedBot(pidAndDir: PidAndDir) {
     }
 }

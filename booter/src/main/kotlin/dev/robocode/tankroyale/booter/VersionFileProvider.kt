@@ -13,6 +13,6 @@ internal class VersionFileProvider : CommandLine.IVersionProvider {
             BufferedReader(InputStreamReader(inputStream))
                 .use { br -> version = br.readLine() }
         }
-        return arrayOf("Robocode Tank Royale Bot Booter $version")
+        return arrayOf("Robocode Tank Royale Booter $version")
     }
 }

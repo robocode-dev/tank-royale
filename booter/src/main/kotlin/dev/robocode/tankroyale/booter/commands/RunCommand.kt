@@ -21,38 +21,44 @@ class RunCommand: Command() {
 
     private val processes = HashMap<Long, Process>() // pid, process
 
-    fun runBots(botDirNames: Array<String>?) {
-        val botDirs = botDirNames?.map { dirName -> Path(dirName) }?.toSet() ?: emptySet()
-        runBots(botDirs)
-    }
-
-    private fun runBots(botDirectories: Set<Path>) {
+    fun runBots(botPaths: Array<String>?) {
         Runtime.getRuntime().addShutdownHook(Thread {
             killAllProcesses() // Kill all running processes before terminating
         })
 
         // Start up the bots provided with the input list
-        botDirectories.forEach { createBotProcess(it) }
+        botPaths?.forEach {
+            val dirAndUid = it.split(";", limit = 2)
+            if (dirAndUid.isNotEmpty()) {
+                val dir = Path(dirAndUid[0])
+                val uid = if (dirAndUid.size > 1) dirAndUid[1] else null
+
+                createBotProcess(dir, uid)
+            }
+        }
 
         // Add new bots from the std-in or terminate if blank line is provided
         do {
             val line = readLine()?.trim()
-            if (line?.isBlank() == true) { // stop executing, if blank line has been sent
-                break
-            }
-            val commandAndArgument = line?.split("\\s+".toRegex())
-            if (commandAndArgument?.size == 2) {
-                val command = commandAndArgument[0].lowercase(Locale.getDefault())
-                val arg = commandAndArgument[1]
+            val cmdAndArgs = line?.split("\\s+".toRegex(), limit = 2)
+            if (cmdAndArgs != null && cmdAndArgs.isNotEmpty()) {
+                val command = cmdAndArgs[0].lowercase(Locale.getDefault()).trim()
+                if (command == "quit") {
+                    break // terminate running bots
+                }
+                if (cmdAndArgs.size >= 2) {
+                    val args = cmdAndArgs[1].split(";")
 
-                when (command) {
-                    "boot" -> {
-                        val botDir = Path(arg)
-                        createBotProcess(botDir)
-                    }
-                    "kill" -> {
-                        val pid = arg.toLong()
-                        killBotProcess(pid)
+                    when (command) {
+                        "boot" -> {
+                            val dir = Path(args[0])
+                            val uid = if (args.size > 1) args[1] else null
+                            createBotProcess(dir, uid)
+                        }
+                        "kill" -> {
+                            val pid = args[0].toLong()
+                            killBotProcess(pid)
+                        }
                     }
                 }
             }
@@ -61,8 +67,8 @@ class RunCommand: Command() {
         killAllProcesses() // Kill all running processes before terminating
     }
 
-    private fun createBotProcess(botDir: Path) {
-        val process = startBotProcess(botDir)
+    private fun createBotProcess(botDir: Path, uid: String?) {
+        val process = startBotProcess(botDir, uid)
         if (process != null) {
             processes[process.pid()] = process
         }
@@ -76,7 +82,7 @@ class RunCommand: Command() {
         }
     }
 
-    private fun startBotProcess(botDir: Path): Process? {
+    private fun startBotProcess(botDir: Path, uid: String?): Process? {
         try {
             val scriptPath = findOsScript(botDir)
             if (scriptPath == null) {
@@ -92,8 +98,10 @@ class RunCommand: Command() {
 
             val botInfo = getBotInfo(botDir)
             if (botInfo != null) {
-                setEnvVars(env, botInfo)
-                println("${process.pid()}:${botDir.absolutePathString()}")
+                setEnvVars(env, botInfo) // important to transfer env. variables for bot to the process
+
+                val optionalUid = if (uid != null) ";$uid" else ""
+                println("${process.pid()};${botDir.absolutePathString()}$optionalUid")
             }
             return process
 

@@ -6,6 +6,7 @@ import java.nio.file.Files.exists
 import java.nio.file.Files.list
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.io.path.isDirectory
@@ -53,5 +54,10 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
     }
 
     private fun botInfoContainsGameTypes(botInfo: BotInfo?, gameTypes: List<String>) =
-        botInfo != null && (gameTypes.isEmpty() || botInfo.gameTypes.split(",").containsAll(gameTypes))
+        botInfo != null && (gameTypes.isEmpty() ||
+                botInfo.gameTypes
+                    .replace("\\s+".toRegex(), "") // remove all white spaces
+                    .lowercase(Locale.getDefault()).split(",") // lowercase for comparing
+                    .containsAll(gameTypes
+                        .map { it.lowercase(Locale.getDefault()).trim() })) // lowercase for comparing
 }
