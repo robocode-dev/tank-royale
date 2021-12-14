@@ -71,16 +71,13 @@ class Booter : Callable<Int> {
             "Information about each started process is written to standard out with a line per process in " +
                     "one of the following formats, depending if a unique identifier was provided when booting a bot:",
             "{pid};{dir}",
-            "{pid};{dir};{uid}",
             "where",
             "  {pid} is the process id",
             "  {dir} is the bot directory",
-            "  {uid} is a unique identifier provided via boot command",
             "",
             "The following commands can be given via standard in:",
             "  quit              Terminates this command, and stops all running processes",
-            "  boot {dir}        Boots the bot from the specified bot directory with no unique id",
-            "  boot {dir};{uid}  Boots the bot from the specified bot directory with an unique id",
+            "  boot {dir}        Boots the bot from the specified bot directory",
             "  kill {pid}        Kills the bot running with the specific process id",
         ]
     )
@@ -89,11 +86,10 @@ class Booter : Callable<Int> {
             arity = "0..*", paramLabel = "BOT_DIRS",
             description = [
                 "Absolute file paths, where each path is a bot directory.",
-                "Each file path might be followed with a semicolon and uid used for identifying the individual bot."
             ]
-        ) botDirsWithUids: Array<String>,
+        ) botDirs: Array<String>,
     ) {
-        RunCommand().runBots(botDirsWithUids)
+        RunCommand().runBots(botDirs)
     }
 
     companion object {

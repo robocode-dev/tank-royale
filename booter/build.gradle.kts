@@ -5,7 +5,7 @@ val title = "Robocode Tank Royale Booter"
 description = "Utility app for booting up bots from locale storage onto websocket"
 
 group = "dev.robocode.tankroyale"
-version = "0.9.2"
+version = "0.9.3"
 
 val archiveFileName = "$buildDir/libs/robocode-tankroyale-booter-$version.jar"
 
