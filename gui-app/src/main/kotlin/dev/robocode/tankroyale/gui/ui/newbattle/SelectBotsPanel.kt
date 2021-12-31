@@ -134,7 +134,7 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     }
 
     private fun handleStopBots() {
-        val pidList = botsDirectoryList.selectedIndices.map { runningBotListModel[it].pid }
+        val pidList = runningBotList.selectedIndices.map { runningBotListModel[it].pid }
         BooterProcess.stop(pidList)
     }
 
@@ -180,7 +180,8 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
                 isEnabled = runningBotList.selectedIndices.isNotEmpty()
             }
             runningBotList.onChanged {
-                isEnabled = runningBotList.selectedIndices.isNotEmpty()
+                runningBotList.clearSelection()
+                isEnabled = false
             }
         }
     }
