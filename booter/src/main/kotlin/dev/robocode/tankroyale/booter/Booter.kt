@@ -77,8 +77,8 @@ class Booter : Callable<Int> {
             "",
             "The following commands can be given via standard in:",
             "  quit              Terminates this command, and stops all running processes",
-            "  boot {dir}        Boots the bot from the specified bot directory",
-            "  kill {pid}        Kills the bot running with the specific process id",
+            "  run {dir}         Runs the bot from the specified bot directory",
+            "  stop {pid}        Stops the bot running with the specific process id",
         ]
     )
     private fun run(

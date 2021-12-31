@@ -44,13 +44,13 @@ class RunCommand: Command() {
                     val arg = cmdAndArgs[1]
 
                     when (command) {
-                        "boot" -> {
+                        "run" -> {
                             val dir = Path(arg)
                             createBotProcess(dir)
                         }
-                        "kill" -> {
+                        "stop" -> {
                             val pid = arg.toLong()
-                            killBotProcess(pid)
+                            stopBotProcess(pid)
                         }
                     }
                 }
@@ -67,10 +67,10 @@ class RunCommand: Command() {
         }
     }
 
-    private fun killBotProcess(pid: Long) {
+    private fun stopBotProcess(pid: Long) {
         val process = processes[pid]
         if (process != null) {
-            killProcess(process)
+            stopProcess(process)
             processes.remove(pid)
         }
     }
@@ -104,16 +104,17 @@ class RunCommand: Command() {
     }
 
     private fun killAllProcesses() {
-        processes.values.parallelStream().forEach { killProcess(it) }
+        processes.values.parallelStream().forEach { stopProcess(it) }
     }
 
-    private fun killProcess(process: Process) {
+    private fun stopProcess(process: Process) {
         val pid = process.pid()
 
         process.descendants().forEach { it.destroyForcibly() }
+        process.onExit().thenAccept {
+            println("stopped $pid")
+        }
         process.destroyForcibly().waitFor()
-
-        println("killed $pid")
     }
 
     private fun createProcessBuilder(command: String): ProcessBuilder {

@@ -23,8 +23,8 @@ import javax.swing.*
 
 object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
-    private val onBoot = Event<JButton>()
-    private val onUnboot = Event<JButton>()
+    private val onRunBots = Event<JButton>()
+    private val onStopBots = Event<JButton>()
 
     private val onAdd = Event<JButton>()
     private val onAddAll = Event<JButton>()
@@ -64,8 +64,8 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         addRemoveButton()
         addRemoveAll()
 
-        onBoot.subscribe(this) { handleBoot() }
-        onUnboot.subscribe(this) { handleUnboot() }
+        onRunBots.subscribe(this) { handleRunBots() }
+        onStopBots.subscribe(this) { handleStopBots() }
 
         onAdd.subscribe(this) { handleAdd() }
         onAddAll.subscribe(this) { handleAddAll() }
@@ -120,14 +120,14 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
             cellRenderer = BotInfoListCellRenderer()
         }
 
-    private fun handleBoot() {
+    private fun handleRunBots() {
         val botDirs = botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].host }
         BooterProcess.run(botDirs)
     }
 
-    private fun handleUnboot() {
+    private fun handleStopBots() {
         val pids = botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].pid }
-        BooterProcess.kill(pids)
+        BooterProcess.stop(pids)
     }
 
     private fun handleAdd() {
@@ -157,7 +157,7 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     }
 
     private fun addBootButton() {
-        bootButtonPanel.addButton("boot_arrow", onBoot, "cell 0 1").apply {
+        bootButtonPanel.addButton("boot_arrow", onRunBots, "cell 0 1").apply {
             isEnabled = false
             botsDirectoryList.onSelection {
                 isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
@@ -166,7 +166,7 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     }
 
     private fun addUnbootButton() {
-        bootButtonPanel.addButton("unboot_arrow", onUnboot, "cell 0 2").apply {
+        bootButtonPanel.addButton("unboot_arrow", onStopBots, "cell 0 2").apply {
             isEnabled = false
             botsDirectoryList.onSelection {
                 isEnabled = joinedBotList.selectedIndices.isNotEmpty()

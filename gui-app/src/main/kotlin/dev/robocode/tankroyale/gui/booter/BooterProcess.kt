@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.gui.booter
 
 import dev.robocode.tankroyale.gui.model.MessageConstants
 import dev.robocode.tankroyale.gui.settings.MiscSettings
-import dev.robocode.tankroyale.gui.settings.MiscSettings.BOT_DIRS_SEPARATOR
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
@@ -53,14 +52,14 @@ object BooterProcess {
 
     fun run(botDirNames: List<String>) {
         if (isRunning.get()) {
-            bootBotsWithRunningBotProcess(botDirNames)
+            runBotsWithRunningBotProcess(botDirNames)
         } else {
             startRunningBotProcess(botDirNames)
         }
     }
 
-    fun kill(pids: List<Long?>) {
-        killBotsWithRunningBotProcess(pids)
+    fun stop(pids: List<Long?>) {
+        stopBotsWithRunningBotProcess(pids)
     }
 
     private fun startRunningBotProcess(botDirNames: List<String>) {
@@ -79,16 +78,16 @@ object BooterProcess {
         startThread(runProcess!!)
     }
 
-    private fun bootBotsWithRunningBotProcess(botDirNames: List<String>) {
+    private fun runBotsWithRunningBotProcess(botDirNames: List<String>) {
         PrintStream(runProcess?.outputStream!!).use { printStream ->
-            botDirNames.forEach { printStream.println("boot $it") }
+            botDirNames.forEach { printStream.println("run $it") }
             printStream.flush()
         }
     }
 
-    private fun killBotsWithRunningBotProcess(pids: List<Long?>) {
+    private fun stopBotsWithRunningBotProcess(pids: List<Long?>) {
         PrintStream(runProcess?.outputStream!!).use { printStream ->
-            pids.forEach { printStream.println("kill $it") }
+            pids.forEach { printStream.println("stop $it") }
             printStream.flush()
         }
     }
