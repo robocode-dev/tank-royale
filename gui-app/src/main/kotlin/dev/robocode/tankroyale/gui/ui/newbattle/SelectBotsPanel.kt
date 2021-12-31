@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.booter.BooterProcess
-import dev.robocode.tankroyale.gui.booter.PidAndDir
+import dev.robocode.tankroyale.gui.booter.DirAndPid
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.settings.MiscSettings
@@ -32,18 +32,21 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     private val onRemoveAll = Event<JButton>()
 
     private val botsDirectoryListModel = SortedListModel<BotInfo>()
+    private val runningBotListModel = SortedListModel<DirAndPid>()
     private val joinedBotListModel = SortedListModel<BotInfo>()
     private val selectedBotListModel = SortedListModel<BotInfo>()
 
     private val botsDirectoryList = createBotDirectoryList()
+    private val runningBotList = createRunningBotList()
     private val joinedBotList = createBotInfoList(joinedBotListModel)
     private val selectedBotList = createBotInfoList(selectedBotListModel)
 
     private val botsDirectoryPanel = createBotsDirectoryPanel()
+    private val runningBotsPanel = createRunningBotsPanel()
     private val joinedBotsPanel = createJoinedBotsPanel()
     private val selectBotsPanel = createSelectBotsPanel()
 
-    private val bootButtonPanel = JPanel(MigLayout("fill", "[fill]"))
+    private val runButtonPanel = JPanel(MigLayout("fill", "[fill]"))
     private val addPanel = JPanel(MigLayout("fill", "[fill]"))
     private val middlePanel = JPanel(MigLayout("fill"))
     private val removePanel = JPanel(MigLayout("fill", "[fill]"))
@@ -56,8 +59,8 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
         add(createSelectionPanel(), "north")
 
-        addBootButton()
-        addUnbootButton()
+        addRunButton()
+        addStopButton()
 
         addAddButton()
         addAllButton()
@@ -84,8 +87,8 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
         Client.onBotListUpdate.subscribe(this) { updateJoinedBots() }
 
-        BooterProcess.onBoot.subscribe(this) { updatedBootedBot(it) }
-        BooterProcess.onUnboot.subscribe(this) { updatedUnbootedBot(it) }
+        BooterProcess.onRunBot.subscribe(this) { updateRunningBot(it) }
+        BooterProcess.onStopBot.subscribe(this) { updateStoppingBot(it) }
     }
 
     private fun removeSelectedBotAt(index: Int) {
@@ -112,7 +115,12 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
     private fun createBotDirectoryList() =
         JList(botsDirectoryListModel).apply {
-            cellRenderer = BotDirectoriesListCellRenderer()
+            cellRenderer = BotDirectoryListCellRenderer()
+        }
+
+    private fun createRunningBotList() =
+        JList(runningBotListModel).apply {
+            cellRenderer = BootedBotCellRenderer()
         }
 
     private fun createBotInfoList(model: SortedListModel<BotInfo>) =
@@ -126,7 +134,7 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     }
 
     private fun handleStopBots() {
-        val pids = botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].pid }
+        val pids = botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].pid }.mapNotNull { it }
         BooterProcess.stop(pids)
     }
 
@@ -156,8 +164,8 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         selectedBotListModel.clear()
     }
 
-    private fun addBootButton() {
-        bootButtonPanel.addButton("boot_arrow", onRunBots, "cell 0 1").apply {
+    private fun addRunButton() {
+        runButtonPanel.addButton("run_arrow", onRunBots, "cell 0 1").apply {
             isEnabled = false
             botsDirectoryList.onSelection {
                 isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
@@ -165,11 +173,14 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         }
     }
 
-    private fun addUnbootButton() {
-        bootButtonPanel.addButton("unboot_arrow", onStopBots, "cell 0 2").apply {
+    private fun addStopButton() {
+        runButtonPanel.addButton("stop_arrow", onStopBots, "cell 0 2").apply {
             isEnabled = false
-            botsDirectoryList.onSelection {
-                isEnabled = joinedBotList.selectedIndices.isNotEmpty()
+            runningBotList.onSelection {
+                isEnabled = runningBotList.selectedIndices.isNotEmpty()
+            }
+            runningBotList.onChanged {
+                isEnabled = runningBotList.selectedIndices.isNotEmpty()
             }
         }
     }
@@ -213,7 +224,8 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     private fun createSelectionPanel() =
         JPanel(MigLayout("", "[grow][grow][][grow]")).apply {
             add(botsDirectoryPanel, "grow")
-            add(bootButtonPanel, "")
+            add(runButtonPanel, "")
+            add(runningBotsPanel, "grow")
             add(joinedBotsPanel, "grow")
             add(addRemoveButtonsPanel, "")
             add(selectBotsPanel, "grow")
@@ -231,6 +243,13 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
             add(JScrollPane(selectedBotList), "grow")
             preferredSize = Dimension(1000, 1000)
             border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("selected_bots"))
+        }
+
+    private fun createRunningBotsPanel() =
+        JPanel(MigLayout("fill")).apply {
+            add(JScrollPane(runningBotList), "grow")
+            preferredSize = Dimension(1000, 1000)
+            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("running_bots"))
         }
 
     private fun createJoinedBotsPanel() =
@@ -295,22 +314,17 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
             joinedBotListModel.apply {
                 clear()
                 Client.joinedBots.forEach { botInfo ->
-                    val dir = botInfo.host
-                    if (incomingBootings.containsKey(dir)) {
-                        botInfo.pid = incomingBootings[dir]
-                    }
                     addElement(botInfo)
                 }
             }
         }
     }
 
-    val incomingBootings = HashMap<String, Long>() // dir, pid
-
-    private fun updatedBootedBot(pidAndDir: PidAndDir) {
-        incomingBootings[pidAndDir.dir] = pidAndDir.pid
+    private fun updateRunningBot(dirAndPid: DirAndPid) {
+        runningBotListModel.addElement(dirAndPid)
     }
 
-    private fun updatedUnbootedBot(pidAndDir: PidAndDir) {
+    private fun updateStoppingBot(dirAndPid: DirAndPid) {
+        runningBotListModel.removeElement(dirAndPid)
     }
 }

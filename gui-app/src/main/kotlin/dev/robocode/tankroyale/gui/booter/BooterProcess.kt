@@ -13,8 +13,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 object BooterProcess {
 
-    val onBoot = Event<PidAndDir>()
-    val onUnboot = Event<PidAndDir>()
+    val onRunBot = Event<DirAndPid>()
+    val onStopBot = Event<DirAndPid>()
 
     private const val JAR_FILE_NAME = "robocode-tankroyale-booter"
 
@@ -116,7 +116,7 @@ object BooterProcess {
     }
 
     private fun notifyUnbootBotProcesses() {
-        pidAndDirs.forEach { onUnboot.fire(PidAndDir(it.key, it.value)) }
+        pidAndDirs.forEach { onStopBot.fire(DirAndPid(it.value, it.key)) }
     }
 
     private fun getBooterJar(): String {
@@ -206,7 +206,7 @@ object BooterProcess {
 
             pidAndDirs[pid] = dir
 
-            onBoot.fire(PidAndDir(pid, dir))
+            onRunBot.fire(DirAndPid(dir, pid))
         }
     }
 }
