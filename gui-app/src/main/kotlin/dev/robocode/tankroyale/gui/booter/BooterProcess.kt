@@ -39,11 +39,11 @@ object BooterProcess {
         val process = ProcessBuilder(args).start()
         startThread(process)
         try {
-            val entries = readInputLines(process).joinToString()
-            if (entries.isBlank()) {
+            val lines = readInputLines(process).joinToString()
+            if (lines.isBlank()) {
                 return emptyList()
             }
-            return json.decodeFromString(entries)
+            return json.decodeFromString(lines)
 
         } finally {
             stopThread()
