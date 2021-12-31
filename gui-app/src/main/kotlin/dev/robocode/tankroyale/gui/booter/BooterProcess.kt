@@ -79,14 +79,14 @@ object BooterProcess {
     }
 
     private fun runBotsWithRunningBotProcess(botDirNames: List<String>) {
-        PrintStream(runProcess?.outputStream!!).use { printStream ->
+        PrintStream(runProcess?.outputStream!!).also { printStream ->
             botDirNames.forEach { printStream.println("run $it") }
             printStream.flush()
         }
     }
 
     private fun stopBotsWithRunningBotProcess(pids: List<Long?>) {
-        PrintStream(runProcess?.outputStream!!).use { printStream ->
+        PrintStream(runProcess?.outputStream!!).also { printStream ->
             pids.forEach { printStream.println("stop $it") }
             printStream.flush()
         }
@@ -148,11 +148,15 @@ object BooterProcess {
     private fun readInputToProcessIds(process: Process) {
         val reader = BufferedReader(InputStreamReader(process.inputStream!!))
         var line: String?
-        while (run {
-                line = reader.readLine()
-                line
-            } != null) {
-            addProcessId(line!!)
+        while (thread?.isInterrupted == false) {
+            line = reader.readLine()
+            if (line != null && line.isNotBlank()) {
+                if (line.startsWith("stopped ")) {
+                    removeProcessId(line)
+                } else {
+                    addProcessId(line)
+                }
+            }
         }
     }
 
@@ -207,6 +211,20 @@ object BooterProcess {
             pidAndDirs[pid] = dir
 
             onRunBot.fire(DirAndPid(dir, pid))
+        }
+    }
+
+    private fun removeProcessId(line: String) {
+        val cmdAndPid = line.split(" ", limit = 2)
+        if (cmdAndPid.size == 2) {
+            val pid = cmdAndPid[1].toLong()
+            val dir = pidAndDirs[pid]
+
+            pidAndDirs.remove(pid)
+
+            if (dir != null) {
+                onStopBot.fire(DirAndPid(dir, pid))
+            }
         }
     }
 }
