@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
-import dev.robocode.tankroyale.gui.booter.BooterProcess
+import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.booter.DirAndPid
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
@@ -75,7 +75,7 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         onRemove.subscribe(this) { handleRemove() }
         onRemoveAll.subscribe(this) { handleRemoveAll() }
 
-        botsDirectoryList.onMultiClickedAtIndex { bootFromBotDirectoryAtIndex(it) }
+        botsDirectoryList.onMultiClickedAtIndex { runFromBotDirectoryAtIndex(it) }
         joinedBotList.onMultiClickedAtIndex { addSelectedBotFromJoinedListAt(it) }
         selectedBotList.onMultiClickedAtIndex { removeSelectedBotAt(it) }
 
@@ -87,8 +87,8 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
         Client.onBotListUpdate.subscribe(this) { updateJoinedBots() }
 
-        BooterProcess.onRunBot.subscribe(this) { updateRunningBot(it) }
-        BooterProcess.onStopBot.subscribe(this) { updateStoppingBot(it) }
+        BootProcess.onRunBot.subscribe(this) { updateRunningBot(it) }
+        BootProcess.onStopBot.subscribe(this) { updateStoppingBot(it) }
     }
 
     private fun removeSelectedBotAt(index: Int) {
@@ -106,10 +106,10 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
         }
     }
 
-    private fun bootFromBotDirectoryAtIndex(index: Int) {
+    private fun runFromBotDirectoryAtIndex(index: Int) {
         if (index >= 0 && index < botsDirectoryListModel.size) {
             val botInfo = botsDirectoryListModel[index]
-            BooterProcess.run(listOf(botInfo.host))
+            BootProcess.run(listOf(botInfo.host))
         }
     }
 
@@ -130,12 +130,12 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
     private fun handleRunBots() {
         val botDirs = botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].host }
-        BooterProcess.run(botDirs)
+        BootProcess.run(botDirs)
     }
 
     private fun handleStopBots() {
         val pidList = runningBotList.selectedIndices.map { runningBotListModel[it].pid }
-        BooterProcess.stop(pidList)
+        BootProcess.stop(pidList)
     }
 
     private fun handleAdd() {
@@ -210,6 +210,10 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
             selectedBotList.onSelection {
                 isEnabled = selectedBotList.selectedIndices.isNotEmpty()
             }
+            runningBotList.onChanged {
+                selectedBotList.clearSelection()
+                isEnabled = false
+            }
         }
     }
 
@@ -279,7 +283,7 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
     private fun updateBotsDirectoryBots() {
         botsDirectoryListModel.clear()
 
-        BooterProcess.info().forEach { botEntry ->
+        BootProcess.info().forEach { botEntry ->
             val info = botEntry.info
             botsDirectoryListModel.addElement(
                 BotInfo(

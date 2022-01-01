@@ -16,7 +16,8 @@ data class BotInfo(
     val host: String, // bot directory name, when running locally
     val port: Int = -1,
     var pid: Long? = null
-): Comparable<BotInfo> {
+
+) : Comparable<BotInfo> {
 
     val botAddress: BotAddress
         get() = BotAddress(host, port)
@@ -24,5 +25,8 @@ data class BotInfo(
     val displayText: String
         get() = "$name $version"
 
-    override fun compareTo(other: BotInfo): Int = "$displayText $port".compareTo("${other.displayText} ${other.port}")
+    override fun compareTo(other: BotInfo): Int {
+        val cmp = "$host$port".compareTo("${other.host}${other.port}")
+        return if (cmp != 0) cmp else displayText.compareTo(other.displayText)
+    }
 }
