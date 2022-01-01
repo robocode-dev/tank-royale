@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.gui.ui.components
 
 import java.util.*
 import javax.swing.AbstractListModel
+import javax.swing.SwingUtilities
 import kotlin.collections.ArrayList
 
 class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
@@ -18,12 +19,12 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
     fun addElement(element: T) {
         list.add(element)
         list.sort()
-        fireContentsChanged(this, 0, size)
+        notifyChanged()
     }
 
     fun clear() {
         list.clear()
-        fireContentsChanged(this, 0, size)
+        notifyChanged()
     }
 
     operator fun contains(element: T): Boolean {
@@ -33,7 +34,7 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
     fun removeElement(element: T): Boolean {
         val removed = list.remove(element)
         if (removed) {
-            fireContentsChanged(this, 0, size)
+            notifyChanged()
         }
         return removed
     }
@@ -44,5 +45,11 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
 
     fun list(): List<T> {
         return Collections.unmodifiableList(list)
+    }
+
+    private fun notifyChanged() {
+        SwingUtilities.invokeLater { // if omitted, the JList might not update correctly?!
+            fireContentsChanged(this, 0, size)
+        }
     }
 }
