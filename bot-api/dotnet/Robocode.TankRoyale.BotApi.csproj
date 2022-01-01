@@ -12,7 +12,7 @@
 
     <PackageId>Robocode.TankRoyale.BotApi</PackageId>
     <Authors>Flemming N&#248;rnberg Larsen (robocode.dev)</Authors>
-    <Copyright>Copyright 2021 Flemming N&#248;rnberg Larsen</Copyright>
+    <Copyright>Copyright 2022 Flemming N&#248;rnberg Larsen</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

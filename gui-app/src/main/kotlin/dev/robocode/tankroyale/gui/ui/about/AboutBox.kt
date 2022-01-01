@@ -39,7 +39,7 @@ object AboutBox : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("about_dialo
                     <br>
                     Version: $version<br>
                     <br>
-                    Copyright © 2021 Flemming N&oslash;rnberg Larsen<br>
+                    Copyright © 2022 Flemming N&oslash;rnberg Larsen<br>
                     <br>
                     Running on <strong>Java $javaVersion ($javaWordSize)</strong> by $javaVendor
                  </span></td>
