@@ -120,7 +120,7 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
 
     private fun createRunningBotList() =
         JList(runningBotListModel).apply {
-            cellRenderer = BootedBotCellRenderer()
+            cellRenderer = RunningBotCellRenderer()
         }
 
     private fun createBotInfoList(model: SortedListModel<BotInfo>) =
@@ -210,7 +210,7 @@ object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
             selectedBotList.onSelection {
                 isEnabled = selectedBotList.selectedIndices.isNotEmpty()
             }
-            runningBotList.onChanged {
+            selectedBotList.onChanged {
                 selectedBotList.clearSelection()
                 isEnabled = false
             }

@@ -8,7 +8,7 @@ class DirAndPid(
 
     override fun compareTo(other: DirAndPid): Int {
         val cmp = dir.compareTo(other.dir)
-        return if (cmp == 0) (pid - other.pid).toInt() else cmp
+        return if (cmp != 0) cmp else (pid - other.pid).toInt()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -27,5 +27,9 @@ class DirAndPid(
         var result = dir.hashCode()
         result = 31 * result + pid.hashCode()
         return result
+    }
+
+    override fun toString(): String {
+        return "$dir $pid"
     }
 }

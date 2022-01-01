@@ -5,7 +5,7 @@ import javax.swing.AbstractListModel
 import kotlin.collections.ArrayList
 
 class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
-    private val list: ArrayList<T> = ArrayList()
+    private val list = ArrayList<T>()
 
     override fun getSize(): Int {
         return list.size

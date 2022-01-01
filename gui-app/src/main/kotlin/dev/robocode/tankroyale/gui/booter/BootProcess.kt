@@ -147,9 +147,8 @@ object BootProcess {
 
     private fun readInputToProcessIds(process: Process) {
         val reader = BufferedReader(InputStreamReader(process.inputStream!!))
-        var line: String?
         while (thread?.isInterrupted == false) {
-            line = reader.readLine()
+            val line = reader.readLine()
             if (line != null && line.isNotBlank()) {
                 if (line.startsWith("stopped ")) {
                     removeProcessId(line)
