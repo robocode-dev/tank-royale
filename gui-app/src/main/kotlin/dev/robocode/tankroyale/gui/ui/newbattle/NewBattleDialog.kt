@@ -83,7 +83,7 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
 
     private companion object SelectBotsAndBotInfoPanel : JPanel(MigLayout("fill")) {
         init {
-            add(SelectBotsPanel, "center")
+            add(BotSelectionPanel, "center")
 
             val groupPanel = JPanel(MigLayout("fill"))
             groupPanel.add(BotInfoPanel, "grow")

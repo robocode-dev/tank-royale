@@ -21,7 +21,7 @@ import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
 import javax.swing.*
 
-object SelectBotsPanel : JPanel(MigLayout("fill")), FocusListener {
+object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
 
     private val onRunBots = Event<JButton>()
     private val onStopBots = Event<JButton>()
