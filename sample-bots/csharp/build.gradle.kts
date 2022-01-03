@@ -1,9 +1,11 @@
+import dev.robocode.tankroyale.csproj.generateBotCsprojFile
 import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
-import java.nio.file.Path
-import java.nio.file.Files.*
 import java.io.PrintWriter
-import dev.robocode.tankroyale.csproj.generateBotCsprojFile
+import java.nio.file.Files.*
+import java.nio.file.Path
+import java.nio.file.attribute.PosixFilePermission
+
 
 version = project(":bot-api:dotnet").version
 
@@ -125,6 +127,7 @@ val zipSampleBots = task<Zip>("zipSampleBots") {
 
     archiveFileName.set(archiveFilename)
     destinationDirectory.set(buildDir)
+    fileMode = "111101101".toInt(2) // 0755
 
     from(File(buildDir, "archive"))
 }
