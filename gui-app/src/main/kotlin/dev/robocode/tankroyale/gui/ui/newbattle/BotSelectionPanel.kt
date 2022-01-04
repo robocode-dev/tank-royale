@@ -41,6 +41,8 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
     private val joinedBotList = createBotInfoList(joinedBotListModel)
     private val selectedBotList = createBotInfoList(selectedBotListModel)
 
+    private val botsDirectoryScrollPane = JScrollPane(botsDirectoryList)
+
     private val botsDirectoryPanel = createBotsDirectoryPanel()
     private val runningBotsPanel = createRunningBotsPanel()
     private val joinedBotsPanel = createJoinedBotsPanel()
@@ -245,7 +247,7 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
 
     private fun createBotsDirectoryPanel() =
         JPanel(MigLayout("fill")).apply {
-            add(JScrollPane(botsDirectoryList), "grow")
+            add(botsDirectoryScrollPane, "grow")
             preferredSize = Dimension(1000, 1000)
             border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("bot_directory"))
         }
@@ -300,6 +302,12 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
                     port = -1
                 )
             )
+
+            SwingUtilities.invokeLater {
+                with (botsDirectoryScrollPane.horizontalScrollBar) {
+                    value = maximum
+                }
+            }
         }
     }
 
