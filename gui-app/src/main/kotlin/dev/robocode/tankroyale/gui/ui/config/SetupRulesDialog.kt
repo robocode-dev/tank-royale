@@ -55,7 +55,10 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private var changed = false
 
     private val gameSetup: MutableGameSetup
-        get() = GamesSettings.games[GameTypeComboBox.getSelectedGameType().displayName]!!
+        get() {
+            val displayName = GameTypeComboBox.getSelectedGameType().displayName
+            return GamesSettings.games[displayName]!!
+        }
 
     private var lastGameSetup: IGameSetup = gameSetup.copy()
 
@@ -108,7 +111,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         }
         SetupRulesDialog.rootPane.defaultButton = okButton
 
-        with (GameTypeComboBox) {
+        with(GameTypeComboBox) {
             addItemListener {
                 updateFieldsForGameType()
             }
