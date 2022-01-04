@@ -243,11 +243,11 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
             add(removePanel, "south")
         }
 
-    private fun createSelectBotsPanel() =
+    private fun createBotsDirectoryPanel() =
         JPanel(MigLayout("fill")).apply {
-            add(JScrollPane(selectedBotList), "grow")
+            add(JScrollPane(botsDirectoryList), "grow")
             preferredSize = Dimension(1000, 1000)
-            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("selected_bots"))
+            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("bot_directory"))
         }
 
     private fun createRunningBotsPanel() =
@@ -264,11 +264,11 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
             border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("joined_bots"))
         }
 
-    private fun createBotsDirectoryPanel() =
+    private fun createSelectBotsPanel() =
         JPanel(MigLayout("fill")).apply {
-            add(JScrollPane(botsDirectoryList), "grow")
+            add(JScrollPane(selectedBotList), "grow")
             preferredSize = Dimension(1000, 1000)
-            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("bot_directory"))
+            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("selected_bots"))
         }
 
     override fun focusGained(e: FocusEvent?) {
