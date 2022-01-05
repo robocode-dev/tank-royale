@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import javax.swing.JComboBox
 
-object GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray()) {
+class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray()) {
 
     init {
         setSelectedGameType(ServerSettings.gameType)

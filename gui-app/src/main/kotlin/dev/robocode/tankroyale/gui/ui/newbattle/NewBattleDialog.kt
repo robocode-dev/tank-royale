@@ -33,6 +33,8 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
     private val onStartBattle = Event<JButton>()
     private val onCancel = Event<JButton>()
 
+    private val gameTypeComboBox = GameTypeComboBox()
+
     private var selectedBots = emptyList<BotInfo>()
 
     init {
@@ -48,7 +50,7 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
 
         buttonPanel.apply {
             addLabel("game_type")
-            add(GameTypeComboBox)
+            add(gameTypeComboBox)
             add(JPanel())
             startBattleButton = addButton("start_battle", onStartBattle)
             addButton("cancel", onCancel)
@@ -64,9 +66,9 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
 
         onCancel.subscribe(NewBattleDialog) { NewBattleDialog.dispose() }
 
-        GameTypeComboBox.addActionListener {
+        gameTypeComboBox.addActionListener {
             ServerSettings.apply {
-                gameType = GameTypeComboBox.getSelectedGameType()
+                gameType = gameTypeComboBox.getSelectedGameType()
                 save()
             }
         }

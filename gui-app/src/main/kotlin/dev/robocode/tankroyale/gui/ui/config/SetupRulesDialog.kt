@@ -42,6 +42,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private val onResetToDefault = Event<JButton>()
     private val onApply = Event<JButton>()
 
+    private val gameTypeComboBox = GameTypeComboBox()
     private val widthTextField = JTextField(6)
     private val heightTextField = JTextField(6)
     private val minNumParticipantsTextField = JTextField(6)
@@ -56,7 +57,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
 
     private val gameSetup: MutableGameSetup
         get() {
-            val displayName = GameTypeComboBox.getSelectedGameType().displayName
+            val displayName = gameTypeComboBox.getSelectedGameType().displayName
             return GamesSettings.games[displayName]!!
         }
 
@@ -68,7 +69,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     init {
         val commonPanel = JPanel(MigLayout()).apply {
             addLabel("game_type")
-            add(GameTypeComboBox, "wrap")
+            add(gameTypeComboBox, "wrap")
 
             addLabel("min_num_of_participants")
             add(minNumParticipantsTextField, "wrap")
@@ -111,7 +112,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         }
         SetupRulesDialog.rootPane.defaultButton = okButton
 
-        with(GameTypeComboBox) {
+        with(gameTypeComboBox) {
             addItemListener {
                 updateFieldsForGameType()
             }
@@ -146,7 +147,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             SetupRulesDialog.dispose()
         }
         onResetToDefault.subscribe(this) {
-            val selectedGameType = GameTypeComboBox.getSelectedGameType().displayName
+            val selectedGameType = gameTypeComboBox.getSelectedGameType().displayName
             val default: MutableGameSetup? = GamesSettings.defaultGameSetup[selectedGameType]?.toMutableGameSetup()
             if (default != null) {
                 GamesSettings.games[selectedGameType]?.copy(default)
