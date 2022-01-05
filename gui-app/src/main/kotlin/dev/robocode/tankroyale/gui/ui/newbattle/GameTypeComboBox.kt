@@ -18,11 +18,7 @@ class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray
             GameType.from(model.selectedItem as String)
         }
 
-    private fun setSelectedGameType(displayName: String) {
-        model.selectedItem = displayName
-    }
-
     fun setSelectedGameType(gameType: GameType) {
-        setSelectedGameType(gameType.displayName)
+        model.selectedItem = gameType.displayName
     }
 }

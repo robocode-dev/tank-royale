@@ -11,6 +11,7 @@ import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.EventQueue
+import java.awt.event.ItemEvent
 import javax.swing.*
 
 object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("select_bots_dialog")) {
@@ -38,20 +39,23 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
     private var selectedBots = emptyList<BotInfo>()
 
     init {
+        val topPanel = JPanel(MigLayout("left, insets 10")).apply {
+            addLabel("game_type")
+            add(gameTypeComboBox)
+        }
+
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
 
         val lowerPanel = JPanel(MigLayout("insets 10, fill")).apply {
             add(SelectBotsAndBotInfoPanel, "north")
             add(buttonPanel, "center")
         }
+        add(topPanel, "north")
         add(lowerPanel, "south")
 
         val startBattleButton: JButton
 
         buttonPanel.apply {
-            addLabel("game_type")
-            add(gameTypeComboBox)
-            add(JPanel())
             startBattleButton = addButton("start_battle", onStartBattle)
             addButton("cancel", onCancel)
         }
@@ -66,12 +70,24 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
 
         onCancel.subscribe(NewBattleDialog) { NewBattleDialog.dispose() }
 
-        gameTypeComboBox.addActionListener {
-            ServerSettings.apply {
-                gameType = gameTypeComboBox.getSelectedGameType()
-                save()
+        with (gameTypeComboBox) {
+            addActionListener {
+                ServerSettings.apply {
+                    gameType = gameTypeComboBox.getSelectedGameType()
+                    save()
+                }
+            }
+
+            addItemListener {
+                if (it.stateChange == ItemEvent.SELECTED) {
+                    SwingUtilities.invokeLater {
+                        BotSelectionPanel.update()
+                    }
+                }
             }
         }
+
+        BotSelectionPanel.update()
     }
 
     private fun startGame() {
