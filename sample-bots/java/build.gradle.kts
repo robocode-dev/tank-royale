@@ -158,7 +158,7 @@ val zipSampleBots = task<Zip>("zipSampleBots") {
 
     archiveFileName.set(archiveFilename)
     destinationDirectory.set(buildDir)
-    fileMode = "111101101".toInt(2) // 0755
+    fileMode = "101101101".toInt(2) // 0555 - read & execute for everybody
 
     from(File(buildDir, "archive"))
 }
