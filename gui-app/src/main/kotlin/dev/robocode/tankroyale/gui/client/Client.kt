@@ -95,7 +95,8 @@ object Client : AutoCloseable {
             stopGame()
         }
 
-        val gameSetup = GamesSettings.games[ServerSettings.gameType.displayName]!!
+        val displayName = ServerSettings.gameType.displayName
+        val gameSetup = GamesSettings.games[displayName]!!
 
         if (isConnected) {
             lastStartGame = StartGame(gameSetup.toGameSetup(), botAddresses)
