@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.gui.MainWindow
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import java.awt.Color
+import java.awt.Font
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 
@@ -21,6 +22,8 @@ object ServerLogWindow : RcFrame("server_log_window") {
             isEditable = false
             foreground = Color.WHITE
             background = Color(0x28, 0x28, 0x28)
+
+            font = Font(Font.MONOSPACED, Font.BOLD, 12)
         }
         contentPane.add(scrollPane)
 
