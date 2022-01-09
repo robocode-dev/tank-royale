@@ -109,7 +109,7 @@ object BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
         val cc = countryCode.trim()
         return """
             <td style="font-family: sans-serif; font-size: 10">${name} (${cc})&nbsp;</td>
-            <td><img width="20" height="15" src="https://www.countryflags.io/${cc}/flat/16.png">&nbsp;&nbsp;</td>
+            <td><img width="16" height="12" src="https://flagcdn.com/w20/${cc}.png">&nbsp;&nbsp;</td>
         """.trimIndent()
     }
 
