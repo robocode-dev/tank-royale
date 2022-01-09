@@ -13,6 +13,7 @@ import org.java_websocket.server.WebSocketServer
 import org.slf4j.LoggerFactory
 import java.lang.Exception
 import java.net.InetSocketAddress
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -77,9 +78,9 @@ class ConnHandler internal constructor(
             val address = conn.remoteSocketAddress
             if (address != null) {
                 val port = address.port
-                val hostname = address.hostName
+                val hostname = toIpAddress(address.hostName)
                 for (botAddr: BotAddress in botAddresses) {
-                    if (botAddr.host == hostname && botAddr.port == port) {
+                    if (toIpAddress(botAddr.host) == hostname && botAddr.port == port) {
                         foundConnections += conn
                         break
                     }
@@ -88,6 +89,9 @@ class ConnHandler internal constructor(
         }
         return foundConnections
     }
+
+    private fun toIpAddress(host: String): String =
+        if (host.lowercase(Locale.getDefault()) == "localhost") "127.0.0.1" else host
 
     private fun shutdownAndAwaitTermination(pool: ExecutorService) {
         pool.shutdown() // Disable new tasks from being submitted
@@ -230,9 +234,7 @@ class ConnHandler internal constructor(
                                 }
                                 Message.`$type`.START_GAME -> {
                                     val startGame = gson.fromJson(message, StartGame::class.java)
-                                    val gameSetup = startGame.gameSetup
-                                    val botAddresses: Collection<BotAddress> = startGame.botAddresses
-                                    listener.onStartGame(gameSetup, botAddresses)
+                                    listener.onStartGame(startGame.gameSetup, startGame.botAddresses)
                                 }
                                 Message.`$type`.STOP_GAME -> executorService.submit(listener::onAbortGame)
                                 Message.`$type`.PAUSE_GAME -> executorService.submit(listener::onPauseGame)

@@ -6,7 +6,7 @@ val title = "Robocode Tank Royale Server"
 description = "Server for running Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
-version = "0.8.14"
+version = "0.8.15"
 
 val archiveFileName = "$buildDir/libs/robocode-tankroyale-server-$version.jar"
 
