@@ -7,7 +7,7 @@ description = "GUI application for starting battles for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
 val artifactId = "robocode-tankroyale-gui"
-version = "0.9.1"
+version = "0.9.2"
 
 val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
 
