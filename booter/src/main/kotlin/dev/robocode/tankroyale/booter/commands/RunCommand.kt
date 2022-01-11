@@ -85,6 +85,7 @@ class RunCommand: Command() {
 
             val processBuilder = createProcessBuilder(scriptPath.toString())
             processBuilder.directory(scriptPath.parent.toFile()) // set working directory
+//            processBuilder.inheritIO()
 
             val process = processBuilder.start()
             val env = processBuilder.environment()
@@ -110,10 +111,10 @@ class RunCommand: Command() {
     private fun stopProcess(process: Process) {
         val pid = process.pid()
 
-        process.descendants().forEach { it.destroyForcibly() }
         process.onExit().thenAccept {
             println("stopped $pid")
         }
+        process.descendants().forEach { it.destroyForcibly() }
         process.destroyForcibly().waitFor()
     }
 
@@ -123,7 +124,7 @@ class RunCommand: Command() {
             cmd.endsWith(".bat") -> // handle Batch script
                 ProcessBuilder("cmd.exe", "/c \"$command\"")
             cmd.endsWith(".sh") -> // handle Bash Shell script
-                ProcessBuilder("bash", "-c \"$command\"")
+                ProcessBuilder("bash", "-c", command)
             else -> // handle regular command
                 ProcessBuilder(command)
         }
