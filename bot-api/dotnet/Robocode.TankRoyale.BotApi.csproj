@@ -11,8 +11,16 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
     <PackageId>Robocode.TankRoyale.BotApi</PackageId>
+    <Description>API for developing bots for Robocode Tank Royale</Description>
+
     <Authors>Flemming N&#248;rnberg Larsen (robocode.dev)</Authors>
     <Copyright>Copyright 2022 Flemming N&#248;rnberg Larsen</Copyright>
+
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageProjectUrl>https://robocode.dev/tankroyale/docs/</PackageProjectUrl>
+
+    <PackageTags>Robocode,TankRoyale,Tank,Royale,Bot</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +32,9 @@
     <!-- for com.itiviti.dotnet plugin -->
     <PackageReference Include="Microsoft.Build" Version="16.8.0" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.4.1" />
+
+    <!-- Icon -->
+    <None Include="icon.png" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
 </Project>
