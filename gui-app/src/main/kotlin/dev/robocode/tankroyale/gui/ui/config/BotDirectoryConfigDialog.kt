@@ -12,7 +12,7 @@ import java.awt.Dimension
 import java.awt.EventQueue
 import javax.swing.*
 
-object BotDirectoryConfigDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("bot_directory_config_dialog")) {
+object BotDirectoryConfigDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("bot_root_directories_config_dialog")) {
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
@@ -40,7 +40,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
     val scrollPane = JScrollPane(list)
 
     init {
-        addLabel("bot_directories", "wrap")
+        addLabel("bot_root_dirs", "wrap")
         add(scrollPane, "span 2, grow, wrap")
 
         val buttonPanel = JPanel()

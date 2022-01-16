@@ -60,7 +60,7 @@ object MainWindowMenu : JMenuBar() {
         add(serverMenu)
 
         add(JMenu(MENU.get("menu.config")).apply {
-            addNewMenuItem("item.bot_dir_config", onBotDirConfig)
+            addNewMenuItem("item.bot_root_dirs_config", onBotDirConfig)
         })
 
         add(JMenu(MENU.get("menu.help")).apply {

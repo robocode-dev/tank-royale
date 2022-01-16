@@ -249,7 +249,7 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
         JPanel(MigLayout("fill")).apply {
             add(botsDirectoryScrollPane, "grow")
             preferredSize = Dimension(1000, 1000)
-            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("bot_directory"))
+            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("bot_directories"))
         }
 
     private fun createRunningBotsPanel() =

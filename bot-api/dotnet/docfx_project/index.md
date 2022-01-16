@@ -19,7 +19,7 @@ and deals with the communication with the server. The [Bot](./api/Robocode.TankR
 BaseBot, but provides more convenient methods like e.g. blocking methods for moving and turning the bot, and firing the
 gun.
 
-### Code example
+## Code example
 
 Here is an example of a simple bot using the Bot API written in C# and should run as a regular application.
 
