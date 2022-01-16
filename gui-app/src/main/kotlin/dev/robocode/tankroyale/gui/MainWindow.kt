@@ -25,7 +25,7 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
 
         defaultCloseOperation = EXIT_ON_CLOSE
 
-        setSize(880, 760)
+        setSize(1000, 950)
         setLocationRelativeTo(null) // center on screen
 
         contentPane.add(LogoPanel)

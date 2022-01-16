@@ -26,7 +26,7 @@ object SetupRulesDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("set
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
-        size = Dimension(400, 350)
+        size = Dimension(600, 500)
 
         setLocationRelativeTo(MainWindow) // center on main window
 
