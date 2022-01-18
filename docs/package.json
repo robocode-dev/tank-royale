@@ -1,6 +1,6 @@
 {
   "name": "robocode-tank-royale-docs",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "description": "Documentation for the programming game Robocode Tank Royale.",
   "main": "index.js",
   "scripts": {

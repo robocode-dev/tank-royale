@@ -93,51 +93,20 @@ triggers whenever an opponent bot is scanned by the radar. The [ScannedBotEvent]
 ## JSON config file
 
 The code in this example is accompanied by a _MyFirstBot.json_, which is a [JSON](https://fileinfo.com/extension/json)
-file containing the metadata for the bot.
+file containing the config file for the bot, and is used by the **booter** to start up the bot on a local machine.
 
 MyFirstBot.json:
 ```json
 {
-  "name": "MyFirstBot",
+  "name": "My First Bot",
   "version": "1.0",
   "gameTypes": "melee, classic, 1v1",
   "authors": "Mathew Nelson, Flemming N. Larsen",
   "description": "A sample bot that is probably the first bot you will learn about.",
   "homepage": "",
   "countryCodes": "us, dk",
-  "platform": ".Net 5",
+  "platform": ".Net 5.0",
   "programmingLang": "C# 8.0"
 }
 ```
-These fields are required:
-
-*   name
-*   version
-*   gameTypes
-*   authors
-
-The remaining fields are all optional, but recommended.
-
-Meaning of each field in the JSON file:
-
-*   **name:** is the (display) name of the bot.
-*   **version:** is the version of the bot. [SEMVER](https://semver.org/) is the recommended format.
-*   **gameTypes:** is a comma-separated list of the game type(s) the bot supports (see below).
-*   **authors:** is a comma-separated list with the name of the bot author(s).
-*   **description:** is a brief description of the bot.
-*   **homepage:** is the URL (link) to a web page for the bot.
-*   **countryCodes:** is a comma-separated list of [Alpha-2 country codes](https://www.iban.com/country-codes) the matches the country of the authors.
-*   **platform:** is the platform required for running the bot, e.g. Java or .Net.
-*   **programmingLang:** is the programming language used for programming the bot, e.g. C# or Kotlin.
-
-## Game types
-
-Standard game types are:
-
-| Game type | Arena size  | Min. participants | Max. participants |
-|:----------|:-----------:|:-----------------:|:-----------------:|
-| classic   | 800 x 600   | 2                 |    (unlimited)    |
-| melee     | 1000 x 1000 | 10                |   (unlimited)     |
-| 1v1       | 1000 x 1000 | 2                 |         2         |
-
-In the future, more game types might arrive. And it is also possible to use custom game types.
+You can read more details about the format of this JSON file [here](https://robocode.dev/tankroyale/docs/booter/json-config.html).

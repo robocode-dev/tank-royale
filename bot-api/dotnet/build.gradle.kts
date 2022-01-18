@@ -49,12 +49,12 @@ val sshServer = remotes.create("sshServer") {
     }
 }
 
-val uploadDoc = tasks.registering {
+tasks.register("uploadDocs") {
     dependsOn(zipApi)
 
     ssh.run (delegateClosureOf<RunHandler> {
         session(sshServer, delegateClosureOf<SessionHandler> {
-            print("Uploading doc...")
+            print("Uploading docs...")
 
             val filename = "docfx.zip"
 

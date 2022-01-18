@@ -95,11 +95,13 @@ public class MyFirstBot extends Bot {
     <h2>JSON config file</h2>
 
     <p>The code in this example is accompanied by a <em>MyFirstBot.json</em>, which is a
-        <a href="https://fileinfo.com/extension/json">JSON</a> file containing the metadata for the bot.</p>
+        <a href="https://fileinfo.com/extension/json">JSON</a> file containing the config file for the bot, and is used
+        by the <strong>booter</strong> to start up the bot on a local machine.</p>
+
     <p>MyFirstBot.json:</p>
     <pre><code class="language-java">
 {
-  "name": "MyFirstBot",
+  "name": "My First Bot",
   "version": "1.0",
   "gameTypes": "melee, classic, 1v1",
   "authors": "Mathew Nelson, Flemming N. Larsen",
@@ -111,60 +113,7 @@ public class MyFirstBot extends Bot {
 }
     </code></pre>
 
-    <p>These fields are required:</p>
-    <ul>
-        <li>name</li>
-        <li>version</li>
-        <li>gameTypes</li>
-        <li>authors</li>
-    </ul>
-    <p>The remaining fields are all optional, but recommended.</p>
-
-    <p>Meaning of each field in the JSON file:</p>
-    <ul>
-        <li><b>name:</b> is the (display) name of the bot.</li>
-        <li><b>version:</b> is the version of the bot. <a href="https://semver.org/">SEMVER</a> is the recommended
-            format.</li>
-        <li><b>gameTypes:</b> is a comma-separated list of the game type(s) the bot supports (see below).</li>
-        <li><b>authors:</b> is a comma-separated list with the name of the bot author(s).</li>
-        <li><b>description:</b> is a brief description of the bot.</li>
-        <li><b>homepage:</b> is the URL (link) to a web page for the bot.</li>
-        <li><b>countryCodes:</b> is a comma-separated list of <a href="https://www.iban.com/country-codes">Alpha-2
-            country codes</a> the matches the country of the authors.</li>
-        <li><b>platform:</b> is the platform required for running the bot, e.g. Java or .Net.</li>
-        <li><b>programmingLang:</b> is the programming language used for programming the bot, e.g. C# or Kotlin.</li>
-    </ul>
-
-    <h2>Game types</h2>
-
-    <p>Standard game types are:</p>
-    <table style="table, th, td { border: 1px solid black; }">
-        <tr>
-            <th>Game type</th>
-            <th>Arena size</th>
-            <th>Min. participants</th>
-            <th>Max. participants</th>
-        </tr>
-        <tr>
-            <td>classic</td>
-            <td>800 x 600</td>
-            <td>2</td>
-            <td>(unlimited)</td>
-        </tr>
-        <tr>
-            <td>melee</td>
-            <td>1000 x 1000</td>
-            <td>10</td>
-            <td>(unlimited)</td>
-        </tr>
-        <tr>
-            <td>1v1</td>
-            <td>1000 x 1000</td>
-            <td>2</td>
-            <td>2</td>
-        </tr>
-    </table>
-    <p>In the future, more game types might arrive. And it is also possible to use custom game types.</p>
-
+    <p>You can read more details about the format of this JSON file
+        <a href="https://robocode.dev/tankroyale/docs/booter/json-config.html">here</a>.</p>
 </body>
 </html>
