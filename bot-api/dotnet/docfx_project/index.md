@@ -109,4 +109,5 @@ MyFirstBot.json:
   "programmingLang": "C# 8.0"
 }
 ```
-You can read more details about the format of this JSON file [here](https://robocode.dev/tankroyale/docs/booter/json-config.html).
+You can read more details about the format of this JSON file
+[here](https://robocode.dev/tankroyale/docs/articles/booter.html#json-config-file.html).

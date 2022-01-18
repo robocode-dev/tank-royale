@@ -17,6 +17,8 @@ themeConfig:
       path: /articles/intro
     - title: API Documentation
       path: /api/apis
+    - title: Booter
+      path: /articles/booter
     - title: Bot Anatomy
       path: /articles/anatomy
     - title: Coordinates and Angles
