@@ -14,3 +14,7 @@ in a fast-running real-time game.
 Robocode's battles take place on a battlefield, where small automated tank robots fight it out until only one is left.
 Please notice that Robocode contains no gore, no blood, no people, and no politics. The battles are simply for the
 excitement of the competition that we love so much.
+
+### Screenshot of a Robocode battle
+
+![Battle screenshot](../images/battle-screenshot.png)
