@@ -24,22 +24,6 @@ dotnet {
     }
 }
 
-val docfx = tasks.register("docfx") {
-    exec {
-        workingDir("docfx_project")
-        commandLine("docfx", "build")
-    }
-}
-
-val zipDocs = tasks.register<Zip>("zipDocs") {
-    dependsOn(docfx)
-
-    archiveFileName.set("docfx.zip")
-    destinationDirectory.set(layout.buildDirectory.dir("tmp"))
-
-    from(file("docfx_project/_site"))
-}
-
 val sshServer = remotes.create("sshServer") {
     withGroovyBuilder {
         setProperty("host", project.properties["tankroyale.ssh.host"])
@@ -49,39 +33,72 @@ val sshServer = remotes.create("sshServer") {
     }
 }
 
-tasks.register("uploadDocs") {
-    dependsOn(zipDocs)
+tasks {
+    val docfx = register("docfx") {
+        dependsOn(clean)
 
-    ssh.run (delegateClosureOf<RunHandler> {
-        session(sshServer, delegateClosureOf<SessionHandler> {
-            print("Uploading docs...")
+        doFirst {
+            delete("docfx_project/_site")
+            delete("docfx_project/obj")
+        }
 
-            val filename = "docfx.zip"
+        doLast {
+            exec {
+                workingDir("docfx_project")
+                commandLine("docfx", "build")
+            }
+        }
+    }
 
-            put(hashMapOf("from" to "${project.projectDir}/build/tmp/$filename", "into" to "tmp"))
+    val zip = register<Zip>("zip") {
+        dependsOn(docfx)
 
-            execute("rm -rf ~/public_html/tankroyale/api/dotnet_new")
-            execute("rm -rf ~/public_html/tankroyale/api/dotnet_old")
+        doLast {
+            archiveFileName.set("docfx.zip")
+            destinationDirectory.set(layout.buildDirectory.dir("tmp"))
 
-            execute("unzip ~/tmp/$filename -d ~/public_html/tankroyale/api/dotnet_new")
+            from(file("docfx_project/_site"))
+        }
+    }
 
-            execute("mkdir -p ~/public_html/tankroyale/api/dotnet")
-            execute("mv ~/public_html/tankroyale/api/dotnet ~/public_html/tankroyale/api/dotnet_old")
-            execute("mv ~/public_html/tankroyale/api/dotnet_new ~/public_html/tankroyale/api/dotnet")
-            execute("rm -f ~/tmp/$filename")
+    register("uploadDocs") {
+        dependsOn(zip)
 
-            println("done")
-        })
-    })
-}
+        doLast {
+            ssh.run(delegateClosureOf<RunHandler> {
+                session(sshServer, delegateClosureOf<SessionHandler> {
+                    print("Uploading docs...")
 
-val pushLocal = tasks.register("pushLocal") {
-    dependsOn("build")
+                    val filename = "docfx.zip"
 
-    val userprofile = System.getenv("USERPROFILE")
-    delete("$userprofile/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
-    exec {
-        workingDir("bin/Release")
-        commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "-s", "local")
+                    put(hashMapOf("from" to "${project.projectDir}/build/tmp/$filename", "into" to "tmp"))
+
+                    execute("rm -rf ~/public_html/tankroyale/api/dotnet_new")
+                    execute("rm -rf ~/public_html/tankroyale/api/dotnet_old")
+
+                    execute("unzip ~/tmp/$filename -d ~/public_html/tankroyale/api/dotnet_new")
+
+                    execute("mkdir -p ~/public_html/tankroyale/api/dotnet")
+                    execute("mv ~/public_html/tankroyale/api/dotnet ~/public_html/tankroyale/api/dotnet_old")
+                    execute("mv ~/public_html/tankroyale/api/dotnet_new ~/public_html/tankroyale/api/dotnet")
+                    execute("rm -f ~/tmp/$filename")
+
+                    println("done")
+                })
+            })
+        }
+    }
+
+    register("pushLocal") {
+        dependsOn(build)
+
+        doLast {
+            val userprofile = System.getenv("USERPROFILE")
+            delete("$userprofile/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
+            exec {
+                workingDir("bin/Release")
+                commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "-s", "local")
+            }
+        }
     }
 }
