@@ -27,11 +27,11 @@ dotnet {
 val docfx = tasks.register("docfx") {
     exec {
         workingDir("docfx_project")
-        commandLine("docfx")
+        commandLine("docfx", "build")
     }
 }
 
-val zipApi = tasks.register<Zip>("zipApi") {
+val zipDocs = tasks.register<Zip>("zipDocs") {
     dependsOn(docfx)
 
     archiveFileName.set("docfx.zip")
@@ -50,7 +50,7 @@ val sshServer = remotes.create("sshServer") {
 }
 
 tasks.register("uploadDocs") {
-    dependsOn(zipApi)
+    dependsOn(zipDocs)
 
     ssh.run (delegateClosureOf<RunHandler> {
         session(sshServer, delegateClosureOf<SessionHandler> {
