@@ -144,13 +144,13 @@ val sshServer = remotes.create("sshServer") {
     }
 }
 
-tasks.register("upload") {
+tasks.register("uploadBots") {
     dependsOn(build)
     dependsOn(zipSampleBots)
 
     ssh.run (delegateClosureOf<RunHandler> {
         session(sshServer, delegateClosureOf<SessionHandler> {
-            print("Uploading sample bots...")
+            print("Uploading C# sample bots...")
 
             val destDir = homepageSampleBotsReleasePath + "/" + project.version
             val destFile = "$destDir/$archiveFilename"
