@@ -1,6 +1,12 @@
 import java.time.Year
-import com.hierynomus.gradle.license.tasks.LicenseFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+// Constants
+
+val homepageReleasePath by extra("public_html/tankroyale/releases")
+val homepageSampleBotsReleasePath by extra("$homepageReleasePath/sample-bots")
+val homepageGuiReleasePath by extra("$homepageReleasePath/gui")
+
 
 plugins {
     alias(libs.plugins.kotlin.jvm)

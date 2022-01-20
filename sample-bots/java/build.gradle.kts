@@ -8,6 +8,10 @@ version = project(":bot-api:java").version
 
 val archiveFilename = "sample-bots-java-${project.version}.zip"
 
+
+val homepageSampleBotsReleasePath: String by rootProject.extra
+
+
 plugins {
     alias(libs.plugins.hidetake.ssh)
 }
@@ -172,7 +176,7 @@ val sshServer = remotes.create("sshServer") {
     }
 }
 
-val uploadSampleBots = tasks.register("uploadSampleBots") {
+tasks.register("upload") {
     dependsOn(build)
     dependsOn(zipSampleBots)
 
@@ -180,7 +184,7 @@ val uploadSampleBots = tasks.register("uploadSampleBots") {
         session(sshServer, delegateClosureOf<SessionHandler> {
             print("Uploading sample bots...")
 
-            val destDir = "public_html/tankroyale/sample-bots/${project.version}"
+            val destDir = homepageSampleBotsReleasePath + "/" + project.version
             val destFile = "$destDir/$archiveFilename"
 
             execute("rm -f $destFile")
