@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 
 apply(from = "../../groovy.gradle")
 
+
 val artifactName = "Robocode.TankRoyale.BotApi"
 version = "0.9.11"
 
@@ -37,7 +38,7 @@ dotnet {
 }
 
 tasks {
-    val docfx = register("docfx") {
+    val docfx by register("docfx") {
         dependsOn(clean, build)
 
         doLast {
@@ -51,7 +52,7 @@ tasks {
         }
     }
 
-    val zip = register<Zip>("zip") {
+    val zip by register<Zip>("zip") {
         dependsOn(docfx)
 
         archiveFileName.set("docfx.zip")
