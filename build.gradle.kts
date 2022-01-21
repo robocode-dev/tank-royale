@@ -7,7 +7,7 @@ val releasesPath by extra("public_html/tankroyale/releases")
 val sampleBotsReleasePath by extra("$releasesPath/sample-bots")
 val guiReleasePath by extra("$releasesPath/gui")
 
-val apiPath by extra("~/public_html/tankroyale/api/")
+val apiPath by extra("~/public_html/tankroyale/api")
 
 
 plugins {

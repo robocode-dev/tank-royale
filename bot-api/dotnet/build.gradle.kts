@@ -8,6 +8,7 @@ apply(from = "../../groovy.gradle")
 val artifactName = "Robocode.TankRoyale.BotApi"
 version = "0.9.11"
 
+val docfxArchiveFilename = "docfx.zip"
 
 val buildArchiveDirProvider: Provider<Directory> = layout.buildDirectory.dir("archive")
 val buildArchivePath = buildArchiveDirProvider.get().toString()
@@ -38,7 +39,7 @@ dotnet {
 }
 
 tasks {
-    val docfx by register("docfx") {
+    val docfx by registering {
         dependsOn(clean, build)
 
         doLast {
@@ -52,10 +53,10 @@ tasks {
         }
     }
 
-    val zip by register<Zip>("zip") {
+    val zip by registering(Zip::class) {
         dependsOn(docfx)
 
-        archiveFileName.set("docfx.zip")
+        archiveFileName.set(docfxArchiveFilename)
         destinationDirectory.set(buildArchiveDirProvider)
 
         from(file("docfx_project/_site"))
@@ -69,19 +70,16 @@ tasks {
                 session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
                     print("Uploading docs...")
 
-                    val filename = "docfx.zip"
-
-                    put(hashMapOf("from" to "${buildArchivePath}/$filename", "into" to "tmp"))
+                    put(hashMapOf("from" to "${buildArchivePath}/$docfxArchiveFilename", "into" to "tmp"))
 
                     execute("rm -rf $newDotnetApiPath")
                     execute("rm -rf $oldDotnetApiPath")
 
-                    execute("unzip ~/tmp/$filename -d $newDotnetApiPath")
+                    execute("unzip ~/tmp/$docfxArchiveFilename -d $newDotnetApiPath")
 
-                    execute("mkdir -p ~/public_html/tankroyale/api/dotnet")
                     execute("mv $dotnetApiPath $oldDotnetApiPath")
                     execute("mv $newDotnetApiPath $dotnetApiPath")
-                    execute("rm -f ~/tmp/$filename")
+                    execute("rm -f ~/tmp/$docfxArchiveFilename")
 
                     println("done")
                 })

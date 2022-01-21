@@ -12,6 +12,15 @@ group = "dev.robocode.tankroyale"
 version = "0.9.11"
 
 val artifactBaseName = "robocode-tankroyale-bot-api"
+val javadocArchiveFilename = "$artifactBaseName-$version-javadoc.jar"
+
+val buildArchiveDirProvider: Provider<Directory> = layout.buildDirectory.dir("libs")
+val buildArchivePath = buildArchiveDirProvider.get().toString()
+
+val apiPath: String by rootProject.extra
+val javaApiPath = "$apiPath/java"
+val oldJavaApiPath = javaApiPath + "_old"
+val newJavaApiPath = javaApiPath + "_new"
 
 
 plugins {
@@ -111,19 +120,16 @@ tasks {
                 session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
                     print("Uploading Javadoc...")
 
-                    val filename = "$artifactBaseName-$version-javadoc.jar"
+                    put(hashMapOf("from" to "$buildArchivePath/$javadocArchiveFilename", "into" to "tmp"))
 
-                    put(hashMapOf("from" to "${project.projectDir}/build/libs/$filename", "into" to "tmp"))
+                    execute("rm -rf $newJavaApiPath")
+                    execute("rm -rf $oldJavaApiPath")
 
-                    execute("rm -rf ~/public_html/tankroyale/api/java_new")
-                    execute("rm -rf ~/public_html/tankroyale/api/java_old")
+                    execute("unzip ~/tmp/$javadocArchiveFilename -d $newJavaApiPath")
 
-                    execute("unzip ~/tmp/$filename -d ~/public_html/tankroyale/api/java_new")
-
-                    execute("mkdir -p ~/public_html/tankroyale/api/java")
-                    execute("mv ~/public_html/tankroyale/api/java ~/public_html/tankroyale/api/java_old")
-                    execute("mv ~/public_html/tankroyale/api/java_new ~/public_html/tankroyale/api/java")
-                    execute("rm -f ~/tmp/$filename")
+                    execute("mv $javaApiPath $oldJavaApiPath")
+                    execute("mv $newJavaApiPath $javaApiPath")
+                    execute("rm -f ~/tmp/$javadocArchiveFilename")
 
                     println("done")
                 })
