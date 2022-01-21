@@ -3,9 +3,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 // Constants
 
-val homepageReleasePath by extra("public_html/tankroyale/releases")
-val homepageSampleBotsReleasePath by extra("$homepageReleasePath/sample-bots")
-val homepageGuiReleasePath by extra("$homepageReleasePath/gui")
+val releasesPath by extra("public_html/tankroyale/releases")
+val sampleBotsReleasePath by extra("$releasesPath/sample-bots")
+val guiReleasePath by extra("$releasesPath/gui")
+
+val apiPath by extra("~/public_html/tankroyale/api/")
 
 
 plugins {

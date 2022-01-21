@@ -1,0 +1,8 @@
+remotes {
+    sshServer {
+        host = project.properties['tankroyale.ssh.host']
+        port = project.properties['tankroyale.ssh.port'] as String as int
+        user = project.properties['tankroyale.ssh.user']
+        password = project.properties['tankroyale.ssh.pass']
+    }
+}

@@ -2,8 +2,20 @@ import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 
+apply(from = "../../groovy.gradle")
+
 val artifactName = "Robocode.TankRoyale.BotApi"
 version = "0.9.11"
+
+
+val buildArchiveDirProvider: Provider<Directory> = layout.buildDirectory.dir("archive")
+val buildArchivePath = buildArchiveDirProvider.get().toString()
+
+val apiPath: String by rootProject.extra
+val dotnetApiPath = "$apiPath/dotnet"
+val oldDotnetApiPath = dotnetApiPath + "_old"
+val newDotnetApiPath = dotnetApiPath + "_new"
+
 
 plugins {
     alias(libs.plugins.itiviti.dotnet)
@@ -24,25 +36,14 @@ dotnet {
     }
 }
 
-val sshServer = remotes.create("sshServer") {
-    withGroovyBuilder {
-        setProperty("host", project.properties["tankroyale.ssh.host"])
-        setProperty("port", (project.properties["tankroyale.ssh.port"] as String).toInt())
-        setProperty("user", project.properties["tankroyale.ssh.user"])
-        setProperty("password", project.properties["tankroyale.ssh.pass"])
-    }
-}
-
 tasks {
     val docfx = register("docfx") {
-        dependsOn(clean)
-
-        doFirst {
-            delete("docfx_project/_site")
-            delete("docfx_project/obj")
-        }
+        dependsOn(clean, build)
 
         doLast {
+            delete("docfx_project/_site")
+            delete("docfx_project/obj")
+
             exec {
                 workingDir("docfx_project")
                 commandLine("docfx", "build")
@@ -53,12 +54,10 @@ tasks {
     val zip = register<Zip>("zip") {
         dependsOn(docfx)
 
-        doLast {
-            archiveFileName.set("docfx.zip")
-            destinationDirectory.set(layout.buildDirectory.dir("tmp"))
+        archiveFileName.set("docfx.zip")
+        destinationDirectory.set(buildArchiveDirProvider)
 
-            from(file("docfx_project/_site"))
-        }
+        from(file("docfx_project/_site"))
     }
 
     register("uploadDocs") {
@@ -66,21 +65,21 @@ tasks {
 
         doLast {
             ssh.run(delegateClosureOf<RunHandler> {
-                session(sshServer, delegateClosureOf<SessionHandler> {
+                session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
                     print("Uploading docs...")
 
                     val filename = "docfx.zip"
 
-                    put(hashMapOf("from" to "${project.projectDir}/build/tmp/$filename", "into" to "tmp"))
+                    put(hashMapOf("from" to "${buildArchivePath}/$filename", "into" to "tmp"))
 
-                    execute("rm -rf ~/public_html/tankroyale/api/dotnet_new")
-                    execute("rm -rf ~/public_html/tankroyale/api/dotnet_old")
+                    execute("rm -rf $newDotnetApiPath")
+                    execute("rm -rf $oldDotnetApiPath")
 
-                    execute("unzip ~/tmp/$filename -d ~/public_html/tankroyale/api/dotnet_new")
+                    execute("unzip ~/tmp/$filename -d $newDotnetApiPath")
 
                     execute("mkdir -p ~/public_html/tankroyale/api/dotnet")
-                    execute("mv ~/public_html/tankroyale/api/dotnet ~/public_html/tankroyale/api/dotnet_old")
-                    execute("mv ~/public_html/tankroyale/api/dotnet_new ~/public_html/tankroyale/api/dotnet")
+                    execute("mv $dotnetApiPath $oldDotnetApiPath")
+                    execute("mv $newDotnetApiPath $dotnetApiPath")
                     execute("rm -f ~/tmp/$filename")
 
                     println("done")
