@@ -10,9 +10,6 @@ version = "0.8.15"
 val archiveFileName = "$buildDir/libs/robocode-tankroyale-server-$version.jar"
 
 buildscript {
-    repositories {
-        mavenCentral()
-    }
     dependencies {
         classpath(libs.proguard.gradle)
     }
@@ -39,11 +36,6 @@ idea {
     module {
         outputDir = file("$buildDir/classes/kotlin/main")
     }
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
 }
 
 dependencies {

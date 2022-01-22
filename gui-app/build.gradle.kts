@@ -11,9 +11,6 @@ version = "0.9.2"
 val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
 
 buildscript {
-    repositories {
-        mavenCentral()
-    }
     dependencies {
         classpath(libs.proguard.gradle)
     }
@@ -40,11 +37,6 @@ idea {
     module {
         outputDir = file("$buildDir/classes/kotlin/main")
     }
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
 }
 
 dependencies {

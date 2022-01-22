@@ -35,11 +35,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
-
 dependencies {
     implementation("dev.robocode.tankroyale:robocode-tankroyale-schema:0.8.1")
     implementation(libs.gson)

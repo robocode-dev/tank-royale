@@ -20,6 +20,11 @@ plugins {
 
 subprojects {
 
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
     // Make sure to replace ${version} token when processing resources, for example for the version.txt file
     tasks.withType(ProcessResources::class) {
         doFirst { // must be done prior to copying the resources for this to work

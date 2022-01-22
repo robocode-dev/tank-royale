@@ -13,10 +13,6 @@ version = "0.8.1"
 val artifactBaseName = "robocode-tankroyale-schema"
 
 buildscript {
-    repositories {
-        mavenCentral()
-    }
-
     dependencies {
         classpath(libs.jsonschema2pojo)
     }
@@ -25,11 +21,6 @@ buildscript {
 plugins {
     `java-library`
     idea
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
 }
 
 dependencies {
