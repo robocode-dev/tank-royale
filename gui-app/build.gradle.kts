@@ -1,4 +1,3 @@
-import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import proguard.gradle.ProGuardTask
 
@@ -76,15 +75,6 @@ val copyBooterJar = task<Copy>("copyBooterJar") {
     into(idea.module.outputDir)
     include("robocode-tankroyale-booter-*.jar")
     rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
-}
-
-tasks.processResources {
-    with(copySpec {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        from("/src/main/resources")
-        include("version.txt")
-        filter(ReplaceTokens::class, "tokens" to mapOf("version" to version))
-    })
 }
 
 tasks.jar {

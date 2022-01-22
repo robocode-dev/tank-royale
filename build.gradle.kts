@@ -1,5 +1,6 @@
 import java.time.Year
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.apache.tools.ant.filters.ReplaceTokens
 
 // Constants
 
@@ -18,6 +19,17 @@ plugins {
 }
 
 subprojects {
+
+    // Make sure to replace ${version} token when processing resources, for example for the version.txt file
+    tasks.withType(ProcessResources::class) {
+        doFirst { // must be done prior to copying the resources for this to work
+            duplicatesStrategy = DuplicatesStrategy.INCLUDE
+            from("/src/main/resources")
+            include("version.txt")
+            filter(ReplaceTokens::class, "tokens" to mapOf("version" to version))
+        }
+    }
+
     apply(plugin = "com.github.hierynomus.license-base")
 
     license {

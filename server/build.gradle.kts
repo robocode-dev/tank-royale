@@ -1,4 +1,3 @@
-import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import proguard.gradle.ProGuardTask
 
@@ -56,15 +55,6 @@ dependencies {
 
     testImplementation(libs.kotest.junit5)
     testImplementation(libs.mockk)
-}
-
-tasks.processResources {
-    with(copySpec {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        from("/src/main/resources")
-        include("version.txt")
-        filter(ReplaceTokens::class, "tokens" to mapOf("version" to version))
-    })
 }
 
 val fatJar = task<Jar>("fatJar") {

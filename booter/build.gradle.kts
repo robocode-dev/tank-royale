@@ -1,4 +1,3 @@
-import org.apache.tools.ant.filters.ReplaceTokens
 import proguard.gradle.ProGuardTask
 
 val title = "Robocode Tank Royale Booter"
@@ -39,15 +38,6 @@ repositories {
 dependencies {
     implementation(libs.serialization.json)
     implementation(libs.picocli)
-}
-
-tasks.processResources {
-    with(copySpec {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        from("/src/main/resources")
-        include("version.txt")
-        filter(ReplaceTokens::class, "tokens" to mapOf("version" to version))
-    })
 }
 
 val fatJar = task<Jar>("fatJar") {
