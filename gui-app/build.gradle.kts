@@ -1,6 +1,7 @@
 import proguard.gradle.ProGuardTask
+import dev.robocode.tankroyale.archive.FatJar
 
-val title = "Robocode Tank Royale GUI Application"
+val archiveTitle = "Robocode Tank Royale GUI Application"
 description = "GUI application for starting battles for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
@@ -23,11 +24,7 @@ plugins {
     idea
 }
 
-idea {
-    module {
-        outputDir = file("$buildDir/classes/kotlin/main")
-    }
-}
+idea.module.outputDir = file("$buildDir/classes/kotlin/main")
 
 dependencies {
     implementation(libs.serialization.json)
@@ -37,76 +34,53 @@ dependencies {
     runtimeOnly(project(":booter"))
 }
 
-val copyServerJar = task<Copy>("copyServerJar") {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+tasks {
 
-    dependsOn(":server:proguard")
+    val copyServerJar by registering(Copy::class) {
+        dependsOn(":server:archive")
 
-    from(project(":server").file("/build/libs"))
-    into(idea.module.outputDir)
-    include("robocode-tankroyale-server-*.jar")
-    rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
-}
-
-val copyBooterJar = task<Copy>("copyBooterJar") {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-
-    dependsOn(":booter:proguard")
-
-    from(project(":booter").file("/build/libs"))
-    into(idea.module.outputDir)
-    include("robocode-tankroyale-booter-*.jar")
-    rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
-}
-
-tasks.jar {
-    dependsOn(copyServerJar)
-    dependsOn(copyBooterJar)
-}
-
-tasks.inspectClassesForKotlinIC {
-    dependsOn(copyServerJar)
-    dependsOn(copyBooterJar)
-}
-
-val fatJar = task<Jar>("fatJar") {
-    dependsOn("copyServerJar")
-    dependsOn("copyBooterJar")
-    dependsOn(":server:jar")
-    dependsOn(":booter:jar")
-
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes["Implementation-Title"] = title
-        attributes["Implementation-Version"] = archiveVersion
-        attributes["Main-Class"] = "dev.robocode.tankroyale.gui.MainWindowKt"
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        from(project(":server").file("/build/libs"))
+        into(project.idea.module.outputDir)
+        include("robocode-tankroyale-server-*.jar")
+        rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
     }
-    from(
-        configurations.compileClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) },
-        configurations.runtimeClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) }
-    )
-    exclude("*.kotlin_metadata")
-    with(tasks["jar"] as CopySpec)
-    archiveFileName.set("fat.jar")
+
+    val copyBooterJar by registering(Copy::class) {
+        dependsOn(":booter:archive")
+
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        from(project(":booter").file("/build/libs"))
+        into(project.idea.module.outputDir)
+        include("robocode-tankroyale-booter-*.jar")
+        rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
+    }
+
+    val fatJar by registering(FatJar::class) {
+        dependsOn(copyServerJar, copyBooterJar)
+
+        title.set(archiveTitle)
+        mainClass.set("dev.robocode.tankroyale.gui.MainWindowKt")
+    }
+
+    val proguard by registering(ProGuardTask::class) {
+        dependsOn(fatJar)
+        injars("${project.name}-$version.jar")
+        outjars(archiveFileName)
+        configuration("proguard-rules.pro")
+    }
+
+    register("archive") {
+        dependsOn(proguard)
+    }
 }
 
-val proguard = task<ProGuardTask>("proguard") {
-    dependsOn(fatJar)
-    injars("$buildDir/libs/fat.jar")
-    outjars(archiveFileName)
-    configuration("proguard-rules.pro")
-}
-/*
-tasks.named("build") {
-    dependsOn(proguard)
-}
-*/
 tasks.register("prepareKotlinBuildScriptModel") {} // prevent warning
 
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            artifact(fatJar)
+            artifact(archiveFileName)
             groupId = group as String?
             artifactId
             version

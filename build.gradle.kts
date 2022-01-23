@@ -18,10 +18,6 @@ plugins {
     alias(libs.plugins.hierynomus.license.base)
 }
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(JavaVersion.VERSION_11.toString()))
-}
-
 subprojects {
 
     repositories {
@@ -29,22 +25,21 @@ subprojects {
         mavenCentral()
     }
 
-    tasks.withType<KotlinCompile> {
-        sourceCompatibility = JavaVersion.VERSION_11.toString()
-        targetCompatibility = JavaVersion.VERSION_11.toString()
+    tasks {
+        withType<KotlinCompile> {
+            sourceCompatibility = JavaVersion.VERSION_11.toString()
+            targetCompatibility = JavaVersion.VERSION_11.toString()
 
-        kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_11.toString()
+            kotlinOptions {
+                jvmTarget = JavaVersion.VERSION_11.toString()
+            }
         }
-    }
 
-    // Make sure to replace ${version} token when processing resources, for example for the version.txt file
-    tasks.withType<ProcessResources> {
-        doFirst { // must be done prior to copying the resources for this to work
-            duplicatesStrategy = DuplicatesStrategy.INCLUDE
-            from("/src/main/resources")
-            include("version.txt")
-            filter(ReplaceTokens::class, "tokens" to mapOf("version" to version))
+        // Make sure to replace $version token in version.txt when processing the resources
+        withType<ProcessResources> {
+            filesMatching("version.txt") {
+                expand(mapOf("version" to version))
+            }
         }
     }
 
