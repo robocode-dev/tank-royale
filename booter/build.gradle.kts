@@ -1,7 +1,8 @@
 import proguard.gradle.ProGuardTask
+import dev.robocode.tankroyale.archive.FatJar
 
-val title = "Robocode Tank Royale Booter"
-description = "Utility app for booting up bots from locale storage onto websocket"
+val archiveTitle = "Robocode Tank Royale Booter"
+description = "Application used for booting up Robocode Tank Royale bots"
 
 group = "dev.robocode.tankroyale"
 version = "0.9.5"
@@ -34,26 +35,16 @@ dependencies {
 }
 
 tasks {
+    val fatJar by registering(FatJar::class) {
+        dependsOn(clean, build)
 
-    val fatJar by registering(Jar::class) {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        manifest {
-            attributes["Implementation-Title"] = title
-            attributes["Implementation-Version"] = archiveVersion
-            attributes["Main-Class"] = "dev.robocode.tankroyale.booter.BooterKt"
-        }
-        from(
-            configurations.compileClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) },
-            configurations.runtimeClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) }
-        )
-        exclude("*.kotlin_metadata")
-        with(getAt("jar") as CopySpec)
-        archiveFileName.set("fat.jar")
+        title.set(archiveTitle)
+        mainClass.set("dev.robocode.tankroyale.booter.BooterKt")
     }
 
     val proguard by registering(ProGuardTask::class) {
         dependsOn(fatJar)
-        injars("$buildDir/libs/fat.jar")
+        injars("$buildDir/libs/${project.name}-$version.jar")
         outjars(archiveFileName)
         configuration("proguard-rules.pro")
     }
