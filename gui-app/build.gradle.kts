@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import proguard.gradle.ProGuardTask
 
 val title = "Robocode Tank Royale GUI Application"
@@ -22,15 +21,6 @@ plugins {
     kotlin("plugin.serialization")
     `maven-publish`
     idea
-}
-
-tasks.withType<KotlinCompile> {
-    sourceCompatibility = JavaVersion.VERSION_11.toString()
-    targetCompatibility = JavaVersion.VERSION_11.toString()
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
-    }
 }
 
 idea {
@@ -106,11 +96,11 @@ val proguard = task<ProGuardTask>("proguard") {
     outjars(archiveFileName)
     configuration("proguard-rules.pro")
 }
-
+/*
 tasks.named("build") {
     dependsOn(proguard)
 }
-
+*/
 tasks.register("prepareKotlinBuildScriptModel") {} // prevent warning
 
 publishing {
