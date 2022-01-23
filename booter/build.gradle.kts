@@ -33,31 +33,34 @@ dependencies {
     implementation(libs.picocli)
 }
 
-val fatJar = task<Jar>("fatJar") {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes["Implementation-Title"] = title
-        attributes["Implementation-Version"] = archiveVersion
-        attributes["Main-Class"] = "dev.robocode.tankroyale.booter.BooterKt"
+tasks {
+
+    val fatJar by registering(Jar::class) {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        manifest {
+            attributes["Implementation-Title"] = title
+            attributes["Implementation-Version"] = archiveVersion
+            attributes["Main-Class"] = "dev.robocode.tankroyale.booter.BooterKt"
+        }
+        from(
+            configurations.compileClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) },
+            configurations.runtimeClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) }
+        )
+        exclude("*.kotlin_metadata")
+        with(getAt("jar") as CopySpec)
+        archiveFileName.set("fat.jar")
     }
-    from(
-        configurations.compileClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) },
-        configurations.runtimeClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) }
-    )
-    exclude("*.kotlin_metadata")
-    with(tasks["jar"] as CopySpec)
-    archiveFileName.set("fat.jar")
-}
 
-val proguard = task<ProGuardTask>("proguard") {
-    dependsOn(fatJar)
-    injars("$buildDir/libs/fat.jar")
-    outjars(archiveFileName)
-    configuration("proguard-rules.pro")
-}
+    val proguard by registering(ProGuardTask::class) {
+        dependsOn(fatJar)
+        injars("$buildDir/libs/fat.jar")
+        outjars(archiveFileName)
+        configuration("proguard-rules.pro")
+    }
 
-tasks.named("build") {
-    dependsOn(proguard)
+    register("archive") {
+        dependsOn(proguard)
+    }
 }
 
 publishing {
