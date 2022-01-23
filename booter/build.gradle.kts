@@ -23,11 +23,7 @@ plugins {
     idea
 }
 
-idea {
-    module {
-        outputDir = file("$buildDir/classes/kotlin/main")
-    }
-}
+idea.module.outputDir = file("$buildDir/classes/kotlin/main")
 
 dependencies {
     implementation(libs.serialization.json)

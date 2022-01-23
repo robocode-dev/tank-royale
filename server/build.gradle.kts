@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import proguard.gradle.ProGuardTask
 
-val title = "Robocode Tank Royale Server"
+val archiveTitle = "Robocode Tank Royale Server"
 description = "Server for running Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
@@ -23,20 +23,7 @@ plugins {
     idea
 }
 
-tasks.withType<KotlinCompile> {
-    sourceCompatibility = JavaVersion.VERSION_11.toString()
-    targetCompatibility = JavaVersion.VERSION_11.toString()
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
-    }
-}
-
-idea {
-    module {
-        outputDir = file("$buildDir/classes/kotlin/main")
-    }
-}
+idea.module.outputDir = file("$buildDir/classes/kotlin/main")
 
 dependencies {
     implementation("dev.robocode.tankroyale:robocode-tankroyale-schema:0.8.1")
@@ -49,31 +36,25 @@ dependencies {
     testImplementation(libs.mockk)
 }
 
-val fatJar = task<Jar>("fatJar") {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes["Implementation-Title"] = title
-        attributes["Implementation-Version"] = archiveVersion
-        attributes["Main-Class"] = "dev.robocode.tankroyale.server.ServerKt"
+tasks {
+
+    val fatJar by registering(dev.robocode.tankroyale.archive.FatJar::class) {
+        dependsOn(clean, build)
+
+        title.set(archiveTitle)
+        mainClass.set("dev.robocode.tankroyale.server.ServerKt")
     }
-    from(
-        configurations.compileClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) },
-        configurations.runtimeClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) }
-    )
-    exclude("*.kotlin_metadata")
-    with(tasks["jar"] as CopySpec)
-    archiveFileName.set("fat.jar")
-}
 
-val proguard = task<ProGuardTask>("proguard") {
-    dependsOn(fatJar)
-    injars("$buildDir/libs/fat.jar")
-    outjars(archiveFileName)
-    configuration("proguard-rules.pro")
-}
+    val proguard by registering(ProGuardTask::class) {
+        dependsOn(fatJar)
+        injars("$buildDir/libs/${project.name}-$version.jar")
+        outjars(archiveFileName)
+        configuration("proguard-rules.pro")
+    }
 
-tasks.named("build") {
-    dependsOn(proguard)
+    register("archive") {
+        dependsOn(proguard)
+    }
 }
 
 publishing {
