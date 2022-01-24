@@ -36,16 +36,6 @@ dependencies {
 
 tasks {
 
-    val copyServerJar by registering(Copy::class) {
-        dependsOn(":server:archive")
-
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        from(project(":server").file("/build/libs"))
-        into(project.idea.module.outputDir)
-        include("robocode-tankroyale-server-*.jar")
-        rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
-    }
-
     val copyBooterJar by registering(Copy::class) {
         dependsOn(":booter:archive")
 
@@ -53,6 +43,16 @@ tasks {
         from(project(":booter").file("/build/libs"))
         into(project.idea.module.outputDir)
         include("robocode-tankroyale-booter-*.jar")
+        rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
+    }
+
+    val copyServerJar by registering(Copy::class) {
+        dependsOn(":server:archive")
+
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        from(project(":server").file("/build/libs"))
+        into(project.idea.module.outputDir)
+        include("robocode-tankroyale-server-*.jar")
         rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
     }
 
@@ -70,12 +70,14 @@ tasks {
         configuration("proguard-rules.pro")
     }
 
+    register("copyJars") {
+        dependsOn(copyBooterJar, copyServerJar)
+    }
+
     register("archive") {
         dependsOn(proguard)
     }
 }
-
-tasks.register("prepareKotlinBuildScriptModel") {} // prevent warning
 
 publishing {
     publications {

@@ -1,6 +1,5 @@
 import java.time.Year
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.apache.tools.ant.filters.ReplaceTokens
 
 // Constants
 
@@ -55,8 +54,7 @@ subprojects {
         exclude("**/*.png")
         exclude("**/*.txt")
 
-        val ext = this as ExtensionAware
-        with (ext) {
+        with (this as ExtensionAware) {
             extra["year"] = Year.now()
             extra["name"] = "Flemming Nørnberg Larsen"
         }
