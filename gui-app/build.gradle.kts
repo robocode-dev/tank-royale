@@ -1,14 +1,14 @@
 import proguard.gradle.ProGuardTask
 import dev.robocode.tankroyale.archive.FatJar
 
-val archiveTitle = "Robocode Tank Royale GUI Application"
-description = "GUI application for starting battles for Robocode Tank Royale"
-
 group = "dev.robocode.tankroyale"
-val artifactId = "robocode-tankroyale-gui"
 version = "0.9.2"
+description = "Graphical user interface for Robocode Tank Royale"
 
-val archiveFileName = "$buildDir/libs/$artifactId-$version.jar"
+val jarManifestTitle = "Robocode Tank Royale GUI"
+val jarManifestMainClass = "dev.robocode.tankroyale.gui.MainWindowKt"
+
+val archiveFileName = "$buildDir/libs/robocode-tankroyale-gui-$version.jar"
 
 buildscript {
     dependencies {
@@ -17,14 +17,13 @@ buildscript {
 }
 
 plugins {
-    `java-library`
     kotlin("jvm")
     kotlin("plugin.serialization")
     `maven-publish`
     idea
 }
 
-idea.module.outputDir = file("$buildDir/classes/kotlin/main")
+idea.module.outputDir = file("$buildDir/classes/kotlin/main") // needed?
 
 dependencies {
     implementation(libs.serialization.json)
@@ -32,9 +31,8 @@ dependencies {
 }
 
 tasks {
-
     val copyBooterJar by registering(Copy::class) {
-        dependsOn(":booter:archive")
+        dependsOn(inspectClassesForKotlinIC, ":booter:proguard")
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":booter").file("/build/libs"))
@@ -44,7 +42,7 @@ tasks {
     }
 
     val copyServerJar by registering(Copy::class) {
-        dependsOn(":server:archive")
+        dependsOn(inspectClassesForKotlinIC, ":server:proguard")
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":server").file("/build/libs"))
@@ -54,11 +52,10 @@ tasks {
     }
 
     val fatJar by registering(FatJar::class) {
-        dependsOn(clean, build, copyBooterJar, copyServerJar)
-        findByName(build.name)?.mustRunAfter(findByName(clean.name))
+        dependsOn(classes, copyBooterJar, copyServerJar)
 
-        title.set(archiveTitle)
-        mainClass.set("dev.robocode.tankroyale.gui.MainWindowKt")
+        title.set(jarManifestTitle)
+        mainClass.set(jarManifestMainClass)
     }
 
     val proguard by registering(ProGuardTask::class) {
@@ -69,12 +66,13 @@ tasks {
         configuration("proguard-rules.pro")
     }
 
-    register("copyJars") {
-        dependsOn(copyBooterJar, copyServerJar)
+    jar { // Replace jar task
+        actions = emptyList()
+        finalizedBy(proguard)
     }
 
-    register("archive") {
-        dependsOn(proguard)
+    register("copyJars") {
+        dependsOn(copyBooterJar, copyServerJar)
     }
 }
 

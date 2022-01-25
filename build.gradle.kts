@@ -40,6 +40,10 @@ subprojects {
                 expand(mapOf("version" to version))
             }
         }
+
+        withType(Assemble::class) {
+            dependsOn("licenseFormatMain")
+        }
     }
 
     apply(plugin = "com.github.hierynomus.license-base")
@@ -58,11 +62,5 @@ subprojects {
             extra["year"] = Year.now()
             extra["name"] = "Flemming Nørnberg Larsen"
         }
-    }
-}
-
-allprojects {
-    tasks.registering(Assemble::class) {
-        dependsOn("licenseFormatMain")
     }
 }

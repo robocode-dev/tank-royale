@@ -1,11 +1,12 @@
-import proguard.gradle.ProGuardTask
 import dev.robocode.tankroyale.archive.FatJar
-
-val archiveTitle = "Robocode Tank Royale Booter"
-description = "Application used for booting up Robocode Tank Royale bots"
+import proguard.gradle.ProGuardTask
 
 group = "dev.robocode.tankroyale"
 version = "0.9.5"
+description = "Application used for booting up Robocode Tank Royale bots"
+
+val jarManifestTitle = "Robocode Tank Royale Booter"
+val jarManifestMainClass = "dev.robocode.tankroyale.booter.BooterKt"
 
 val archiveFileName = "$buildDir/libs/robocode-tankroyale-booter-$version.jar"
 
@@ -16,14 +17,13 @@ buildscript {
 }
 
 plugins {
-    `java-library`
     kotlin("jvm")
     kotlin("plugin.serialization")
     `maven-publish`
     idea
 }
 
-idea.module.outputDir = file("$buildDir/classes/kotlin/main")
+idea.module.outputDir = file("$buildDir/classes/kotlin/main") // needed?
 
 dependencies {
     implementation(libs.serialization.json)
@@ -32,11 +32,10 @@ dependencies {
 
 tasks {
     val fatJar by registering(FatJar::class) {
-        dependsOn(clean, build)
-        findByName("build")?.mustRunAfter(findByName("clean"))
+        dependsOn(classes)
 
-        title.set(archiveTitle)
-        mainClass.set("dev.robocode.tankroyale.booter.BooterKt")
+        title.set(jarManifestTitle)
+        mainClass.set(jarManifestMainClass)
     }
 
     val proguard by registering(ProGuardTask::class) {
@@ -47,8 +46,9 @@ tasks {
         configuration("proguard-rules.pro")
     }
 
-    register("archive") {
-        dependsOn(proguard)
+    jar { // Replace jar task
+        actions = emptyList()
+        finalizedBy(proguard)
     }
 }
 

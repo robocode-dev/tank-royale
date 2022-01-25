@@ -9,6 +9,8 @@ import org.gradle.api.tasks.bundling.Jar
 import java.io.File
 
 abstract class FatJar : Jar() {
+    private val jarManifestVendor = "robocode.dev"
+
     @get:Input
     abstract val title: Property<String>
 
@@ -33,6 +35,7 @@ abstract class FatJar : Jar() {
         manifest {
             it.attributes["Implementation-Title"] = title.get()
             it.attributes["Implementation-Version"] = archiveVersion
+            it.attributes["Implementation-Vendor"] = jarManifestVendor
             it.attributes["Main-Class"] = mainClass.get()
         }
         from(
