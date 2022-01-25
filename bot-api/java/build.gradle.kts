@@ -1,17 +1,20 @@
+import dev.robocode.tankroyale.archive.FatJar
 import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
 import java.nio.file.*
 
 apply(from = "../../groovy.gradle")
 
-
-val javadocTitle = "Robocode Tank Royale Bot API"
-description = "Bot API for Robocode Tank Royale"
-
 group = "dev.robocode.tankroyale"
 version = "0.9.11"
+description = "Bot API for Robocode Tank Royale"
+
+val javadocTitle = "Robocode Tank Royale Bot API"
 
 val artifactBaseName = "robocode-tankroyale-bot-api"
+
+val archiveFileName = "$buildDir/libs/${artifactBaseName}-$version.jar"
+
 val javadocArchiveFilename = "$artifactBaseName-$version-javadoc.jar"
 
 val buildArchiveDirProvider: Provider<Directory> = layout.buildDirectory.dir("libs")
@@ -67,29 +70,22 @@ val javadoc = tasks.withType<Javadoc> {
     }
 }
 
-
-val fatJar = task<Jar>("fatJar") {
-    archiveBaseName.set(artifactBaseName)
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes["Implementation-Title"] = javadocTitle
-        attributes["Implementation-Version"] = archiveVersion
-    }
-    from(
-        configurations.compileClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) },
-        configurations.runtimeClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) }
-    )
-    with(tasks["jar"] as CopySpec)
-}
-
 tasks {
+    val fatJar by registering(FatJar::class) {
+        dependsOn(classes)
 
-    named("build") {
-        dependsOn(fatJar)
+        title.set(javadocTitle)
+        outputFilename.set("${artifactBaseName}-${project.version}.jar")
+    }
+
+    jar { // Replace jar task
+        actions = emptyList()
+        finalizedBy(fatJar)
     }
 
     val sourcesJar by creating(Jar::class) {
         dependsOn(JavaPlugin.CLASSES_TASK_NAME)
+
         archiveBaseName.set(artifactBaseName)
         archiveClassifier.set("sources")
         from(sourceSets["main"].allSource)
@@ -97,6 +93,7 @@ tasks {
 
     val javadocJar by creating(Jar::class) {
         dependsOn(JavaPlugin.JAVADOC_TASK_NAME)
+
         archiveBaseName.set(artifactBaseName)
         archiveClassifier.set("javadoc")
         from(javadoc)
@@ -136,7 +133,7 @@ tasks {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            artifact(fatJar)
+            artifact(archiveFileName)
             groupId = group as String?
             artifactId = rootProject.name
             version

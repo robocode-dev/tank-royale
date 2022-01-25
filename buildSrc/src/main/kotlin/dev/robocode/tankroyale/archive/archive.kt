@@ -15,6 +15,7 @@ abstract class FatJar : Jar() {
     abstract val title: Property<String>
 
     @get:Input
+    @get:Optional
     abstract val mainClass: Property<String>
 
     @get:Input
@@ -36,7 +37,9 @@ abstract class FatJar : Jar() {
             it.attributes["Implementation-Title"] = title.get()
             it.attributes["Implementation-Version"] = archiveVersion
             it.attributes["Implementation-Vendor"] = jarManifestVendor
-            it.attributes["Main-Class"] = mainClass.get()
+            if (mainClass.isPresent) {
+                it.attributes["Main-Class"] = mainClass.get()
+            }
         }
         from(
             File("build/classes/kotlin/main"),

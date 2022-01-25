@@ -40,7 +40,7 @@ dotnet {
 
 tasks {
     val docfx by registering {
-        dependsOn(clean, build)
+        dependsOn(assemble)
 
         doLast {
             delete("docfx_project/_site")
