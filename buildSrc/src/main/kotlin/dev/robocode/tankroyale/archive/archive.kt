@@ -6,9 +6,9 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.bundling.Jar
+import java.io.File
 
 abstract class FatJar : Jar() {
-
     @get:Input
     abstract val title: Property<String>
 
@@ -22,13 +22,13 @@ abstract class FatJar : Jar() {
     private val compileClasspath = project.configurations.getByName("compileClasspath").resolve()
     private val runtimeClasspath = project.configurations.getByName("runtimeClasspath").resolve()
 
-    init {
-        outputFilename.set(archiveFileName)
-    }
-
     @TaskAction
     fun action() {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+        if (outputFilename.isPresent) {
+            archiveFileName.set(outputFilename)
+        }
 
         manifest {
             it.attributes["Implementation-Title"] = title.get()
@@ -36,6 +36,8 @@ abstract class FatJar : Jar() {
             it.attributes["Main-Class"] = mainClass.get()
         }
         from(
+            File("build/classes/kotlin/main"),
+            File("build/resources/main"),
             compileClasspath.filter { it.name.endsWith(".jar") }.map { project.zipTree(it) },
             runtimeClasspath.filter { it.name.endsWith(".jar") }.map { project.zipTree(it) }
         )

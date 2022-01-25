@@ -33,6 +33,7 @@ dependencies {
 tasks {
     val fatJar by registering(FatJar::class) {
         dependsOn(clean, build)
+        findByName("build")?.mustRunAfter(findByName("clean"))
 
         title.set(archiveTitle)
         mainClass.set("dev.robocode.tankroyale.booter.BooterKt")
@@ -40,6 +41,7 @@ tasks {
 
     val proguard by registering(ProGuardTask::class) {
         dependsOn(fatJar)
+
         injars("$buildDir/libs/${project.name}-$version.jar")
         outjars(archiveFileName)
         configuration("proguard-rules.pro")

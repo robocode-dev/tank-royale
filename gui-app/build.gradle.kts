@@ -29,9 +29,6 @@ idea.module.outputDir = file("$buildDir/classes/kotlin/main")
 dependencies {
     implementation(libs.serialization.json)
     implementation(libs.miglayout.swing)
-
-    runtimeOnly(project(":server"))
-    runtimeOnly(project(":booter"))
 }
 
 tasks {
@@ -39,7 +36,7 @@ tasks {
     val copyBooterJar by registering(Copy::class) {
         dependsOn(":booter:archive")
 
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":booter").file("/build/libs"))
         into(project.idea.module.outputDir)
         include("robocode-tankroyale-booter-*.jar")
@@ -49,7 +46,7 @@ tasks {
     val copyServerJar by registering(Copy::class) {
         dependsOn(":server:archive")
 
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":server").file("/build/libs"))
         into(project.idea.module.outputDir)
         include("robocode-tankroyale-server-*.jar")
@@ -57,7 +54,8 @@ tasks {
     }
 
     val fatJar by registering(FatJar::class) {
-        dependsOn(copyServerJar, copyBooterJar)
+        dependsOn(clean, build, copyBooterJar, copyServerJar)
+        findByName(build.name)?.mustRunAfter(findByName(clean.name))
 
         title.set(archiveTitle)
         mainClass.set("dev.robocode.tankroyale.gui.MainWindowKt")
@@ -65,7 +63,8 @@ tasks {
 
     val proguard by registering(ProGuardTask::class) {
         dependsOn(fatJar)
-        injars("${project.name}-$version.jar")
+
+        injars("$buildDir/libs/${project.name}-$version.jar")
         outjars(archiveFileName)
         configuration("proguard-rules.pro")
     }

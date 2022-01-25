@@ -36,9 +36,9 @@ dependencies {
 }
 
 tasks {
-
     val fatJar by registering(dev.robocode.tankroyale.archive.FatJar::class) {
         dependsOn(clean, build)
+        findByName("build")?.mustRunAfter(findByName("clean"))
 
         title.set(archiveTitle)
         mainClass.set("dev.robocode.tankroyale.server.ServerKt")
