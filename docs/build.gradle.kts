@@ -20,44 +20,46 @@ node {
     version.set(libs.versions.node.version)
 }
 
-val npmBuild = tasks.register<NpmTask>("npmBuild") {
-    dependsOn(tasks.npmInstall)
+tasks {
+    val npmBuild by registering(NpmTask::class) {
+        dependsOn(npmInstall)
 
-    args.set(listOf("run", "build"))
-}
+        args.set(listOf("run", "build"))
+    }
 
-tasks.register("build") {
-    dependsOn(npmBuild)
-}
+    register("build") {
+        dependsOn(npmBuild)
+    }
 
-val zipDocs = tasks.register<Zip>("zipDocs") {
-    dependsOn(npmBuild)
+    val zipDocs by registering(Zip::class) {
+        dependsOn(npmBuild)
 
-    archiveFileName.set(archiveFilename)
-    destinationDirectory.set(File("build"))
+        archiveFileName.set(archiveFilename)
+        destinationDirectory.set(File("build"))
 
-    from(file("build/docs"))
-}
+        from(file("build/docs"))
+    }
 
-tasks.register("uploadDocs") {
-    dependsOn(zipDocs)
+    register("uploadDocs") {
+        dependsOn(zipDocs)
 
-    ssh.run (delegateClosureOf<RunHandler> {
-        session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
-            print("Uploading docs...")
+        ssh.run(delegateClosureOf<RunHandler> {
+            session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
+                print("Uploading docs...")
 
-            put(hashMapOf("from" to "$buildArchivePath/$archiveFilename", "into" to "tmp"))
+                put(hashMapOf("from" to "$buildArchivePath/$archiveFilename", "into" to "tmp"))
 
-            val oldDocsPath = docsPath + "_old_" + System.currentTimeMillis()
-            val tmpDocsPath = docsPath + "_tmp"
+                val oldDocsPath = docsPath + "_old_" + System.currentTimeMillis()
+                val tmpDocsPath = docsPath + "_tmp"
 
-            execute("unzip ~/tmp/$archiveFilename -d $tmpDocsPath")
-            execute("rm -f ~/tmp/$archiveFilename")
+                execute("unzip ~/tmp/$archiveFilename -d $tmpDocsPath")
+                execute("rm -f ~/tmp/$archiveFilename")
 
-            execute("mv $docsPath $oldDocsPath")
-            execute("mv $tmpDocsPath $docsPath")
+                execute("mv $docsPath $oldDocsPath")
+                execute("mv $tmpDocsPath $docsPath")
 
-            println("done")
+                println("done")
+            })
         })
-    })
+    }
 }
