@@ -1,4 +1,4 @@
-import dev.robocode.tankroyale.archive.FatJar
+import dev.robocode.tankroyale.tasks.FatJar
 import proguard.gradle.ProGuardTask
 
 group = "dev.robocode.tankroyale"

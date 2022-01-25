@@ -1,4 +1,4 @@
-import dev.robocode.tankroyale.archive.FatJar
+import dev.robocode.tankroyale.tasks.FatJar
 import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
 import java.nio.file.*

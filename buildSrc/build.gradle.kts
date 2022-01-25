@@ -15,17 +15,20 @@ plugins {
     idea
 }
 
-idea {
-    module {
-        outputDir = file("$buildDir/classes/kotlin/main")
-    }
-}
+idea.module.outputDir = file("$buildDir/classes/kotlin/main")
 
 repositories {
     mavenLocal()
     mavenCentral()
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
+tasks {
+    withType<KotlinCompile> {
+        sourceCompatibility = JavaVersion.VERSION_11.toString()
+        targetCompatibility = JavaVersion.VERSION_11.toString()
+
+        kotlinOptions {
+            jvmTarget = JavaVersion.VERSION_11.toString()
+        }
+    }
 }

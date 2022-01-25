@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.archive
+package dev.robocode.tankroyale.tasks
 
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.provider.Property
@@ -26,7 +26,7 @@ abstract class FatJar : Jar() {
     private val runtimeClasspath = project.configurations.getByName("runtimeClasspath").resolve()
 
     @TaskAction
-    fun action() {
+    fun taskAction() {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         if (outputFilename.isPresent) {
