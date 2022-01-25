@@ -22,8 +22,6 @@ val buildArchivePath = buildArchiveDirProvider.get().toString()
 
 val apiPath: String by rootProject.extra
 val javaApiPath = "$apiPath/java"
-val oldJavaApiPath = javaApiPath + "_old"
-val newJavaApiPath = javaApiPath + "_new"
 
 
 plugins {
@@ -114,14 +112,14 @@ tasks {
 
                     put(hashMapOf("from" to "$buildArchivePath/$javadocArchiveFilename", "into" to "tmp"))
 
-                    execute("rm -rf $newJavaApiPath")
-                    execute("rm -rf $oldJavaApiPath")
+                    val oldJavaApiPath = javaApiPath + "_old_" + System.currentTimeMillis()
+                    val tmpJavaApiPath = javaApiPath + "_tmp"
 
-                    execute("unzip ~/tmp/$javadocArchiveFilename -d $newJavaApiPath")
+                    execute("unzip ~/tmp/$javadocArchiveFilename -d $tmpJavaApiPath")
+                    execute("rm -f ~/tmp/$javadocArchiveFilename")
 
                     execute("mv $javaApiPath $oldJavaApiPath")
-                    execute("mv $newJavaApiPath $javaApiPath")
-                    execute("rm -f ~/tmp/$javadocArchiveFilename")
+                    execute("mv $tmpJavaApiPath $javaApiPath")
 
                     println("done")
                 })
