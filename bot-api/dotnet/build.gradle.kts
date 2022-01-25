@@ -15,8 +15,6 @@ val buildArchivePath = buildArchiveDirProvider.get().toString()
 
 val apiPath: String by rootProject.extra
 val dotnetApiPath = "$apiPath/dotnet"
-val oldDotnetApiPath = dotnetApiPath + "_old"
-val newDotnetApiPath = dotnetApiPath + "_new"
 
 
 plugins {
@@ -72,14 +70,14 @@ tasks {
 
                     put(hashMapOf("from" to "${buildArchivePath}/$docfxArchiveFilename", "into" to "tmp"))
 
-                    execute("rm -rf $newDotnetApiPath")
-                    execute("rm -rf $oldDotnetApiPath")
+                    val oldDotnetApiPath = dotnetApiPath + "_old_" + System.currentTimeMillis()
+                    val tmpDotnetApiPath = dotnetApiPath + "_tmp"
 
-                    execute("unzip ~/tmp/$docfxArchiveFilename -d $newDotnetApiPath")
+                    execute("unzip ~/tmp/$docfxArchiveFilename -d $tmpDotnetApiPath")
+                    execute("rm -f ~/tmp/$docfxArchiveFilename")
 
                     execute("mv $dotnetApiPath $oldDotnetApiPath")
-                    execute("mv $newDotnetApiPath $dotnetApiPath")
-                    execute("rm -f ~/tmp/$docfxArchiveFilename")
+                    execute("mv $tmpDotnetApiPath $dotnetApiPath")
 
                     println("done")
                 })

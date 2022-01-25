@@ -7,8 +7,8 @@ val releasesPath by extra("public_html/tankroyale/releases")
 val sampleBotsReleasePath by extra("$releasesPath/sample-bots")
 val guiReleasePath by extra("$releasesPath/gui")
 
-val apiPath by extra("~/public_html/tankroyale/api")
-
+val htmlRoot by extra("~/public_html/tankroyale")
+val apiPath by extra("$htmlRoot/api")
 
 plugins {
     alias(libs.plugins.kotlin.jvm)

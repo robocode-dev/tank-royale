@@ -2,6 +2,15 @@ import com.github.gradle.node.npm.task.NpmTask
 import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
 
+apply(from = "../groovy.gradle")
+
+val buildArchiveDirProvider: Provider<Directory> = layout.buildDirectory
+val buildArchivePath = buildArchiveDirProvider.get().toString()
+
+val htmlRoot: String by rootProject.extra
+val docsPath = "$htmlRoot/docs"
+val archiveFilename = "docs.zip"
+
 plugins {
     alias(libs.plugins.node.gradle)
     alias(libs.plugins.hidetake.ssh)
@@ -24,41 +33,29 @@ tasks.register("build") {
 val zipDocs = tasks.register<Zip>("zipDocs") {
     dependsOn(npmBuild)
 
-    archiveFileName.set("docs.zip")
+    archiveFileName.set(archiveFilename)
     destinationDirectory.set(File("build"))
 
     from(file("build/docs"))
-}
-
-val sshServer = remotes.create("sshServer") {
-    withGroovyBuilder {
-        setProperty("host", project.properties["tankroyale.ssh.host"])
-        setProperty("port", (project.properties["tankroyale.ssh.port"] as String).toInt())
-        setProperty("user", project.properties["tankroyale.ssh.user"])
-        setProperty("password", project.properties["tankroyale.ssh.pass"])
-    }
 }
 
 tasks.register("uploadDocs") {
     dependsOn(zipDocs)
 
     ssh.run (delegateClosureOf<RunHandler> {
-        session(sshServer, delegateClosureOf<SessionHandler> {
+        session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
             print("Uploading docs...")
 
-            val filename = "docs.zip"
+            put(hashMapOf("from" to "$buildArchivePath/$archiveFilename", "into" to "tmp"))
 
-            put(hashMapOf("from" to "${project.projectDir}/build/$filename", "into" to "tmp"))
+            val oldDocsPath = docsPath + "_old_" + System.currentTimeMillis()
+            val tmpDocsPath = docsPath + "_tmp"
 
-            execute("rm -rf ~/public_html/tankroyale/docs_new")
-            execute("rm -rf ~/public_html/tankroyale/docs_old")
+            execute("unzip ~/tmp/$archiveFilename -d $tmpDocsPath")
+            execute("rm -f ~/tmp/$archiveFilename")
 
-            execute("unzip ~/tmp/$filename -d ~/public_html/tankroyale/docs_new")
-
-            execute("mkdir -p ~/public_html/tankroyale/docs")
-            execute("mv ~/public_html/tankroyale/docs ~/public_html/tankroyale/docs_old")
-            execute("mv ~/public_html/tankroyale/docs_new ~/public_html/tankroyale/docs")
-            execute("rm -f ~/tmp/$filename")
+            execute("mv $docsPath $oldDocsPath")
+            execute("mv $tmpDocsPath $docsPath")
 
             println("done")
         })
