@@ -2,7 +2,7 @@ import proguard.gradle.ProGuardTask
 import dev.robocode.tankroyale.tasks.FatJar
 
 group = "dev.robocode.tankroyale"
-version = "0.9.2"
+version = "0.9.3"
 description = "Graphical user interface for Robocode Tank Royale"
 
 val jarManifestTitle = "Robocode Tank Royale GUI"

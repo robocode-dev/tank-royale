@@ -308,7 +308,7 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
             )
 
             SwingUtilities.invokeLater {
-                with (botsDirectoryScrollPane.horizontalScrollBar) {
+                with(botsDirectoryScrollPane.horizontalScrollBar) {
                     value = maximum
                 }
             }
@@ -317,11 +317,13 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
 
     private fun enforceBotDirIsConfigured() {
         if (MiscSettings.getBotDirectories().isEmpty()) {
-            showError(ResourceBundles.MESSAGES.get("no_bot_dir"))
+            SwingUtilities.invokeLater {
+                showError(ResourceBundles.MESSAGES.get("no_bot_dir"))
 
-            with (BotDirectoryConfigDialog) {
-                onClosed { update() }
-                isVisible = true
+                with(BotDirectoryConfigDialog) {
+                    onClosed { update() }
+                    isVisible = true
+                }
             }
         }
     }

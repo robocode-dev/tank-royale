@@ -34,7 +34,11 @@ object BootProcess {
             getBooterJar(),
             "info",
         )
-        getBotDirs().forEach { args += it }
+        val botDirs = getBotDirs()
+        if (botDirs.isEmpty()) {
+            return emptyList()
+        }
+        botDirs.forEach { args += it }
 
         val process = ProcessBuilder(args).start()
         startThread(process)
