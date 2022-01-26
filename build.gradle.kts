@@ -14,7 +14,6 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.plugin.serialization)
     alias(libs.plugins.benmanes.versioning)
-    alias(libs.plugins.hierynomus.license.base)
 }
 
 subprojects {
@@ -43,24 +42,6 @@ subprojects {
 
         withType(Assemble::class) {
             dependsOn("licenseFormatMain")
-        }
-    }
-
-    apply(plugin = "com.github.hierynomus.license-base")
-
-    license {
-        header = rootProject.file("LICENSE.header")
-        encoding = "UTF-8"
-        mapping("java", "SLASHSTAR_STYLE")
-        mapping("kt", "SLASHSTAR_STYLE")
-        mapping("svg", "XML_STYLE")
-        exclude("**/META-INF/**")
-        exclude("**/*.png")
-        exclude("**/*.txt")
-
-        with (this as ExtensionAware) {
-            extra["year"] = Year.now()
-            extra["name"] = "Flemming Nørnberg Larsen"
         }
     }
 }
