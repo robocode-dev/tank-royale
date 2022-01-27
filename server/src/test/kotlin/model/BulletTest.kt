@@ -1,12 +1,7 @@
 package model
 
-import dev.robocode.tankroyale.server.model.*
-import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
-import io.mockk.every
-import io.mockk.mockk
 import model.factory.BulletFactory
 
 

@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.booter.DirAndPid
-import dev.robocode.tankroyale.gui.model.BotInfo
 import javax.swing.JList
 
 class RunningBotCellRenderer : AbstractListCellRenderer() {

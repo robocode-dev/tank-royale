@@ -50,7 +50,7 @@ data class Bot(
     override val scanDirection: Double = radarDirection,
     override val scanSpreadAngle: Double = radarSpreadAngle,
 
-) : IBot {
+    ) : IBot {
 
     /** X coordinate which is a shortcut for `position.x`. */
     override val x: Double

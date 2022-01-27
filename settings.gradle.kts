@@ -46,7 +46,8 @@ dependencyResolutionManagement {
 
             // Plugins
             alias("kotlin-jvm").toPluginId("org.jetbrains.kotlin.jvm").version("1.6.10")
-            alias("kotlin-plugin-serialization").toPluginId("org.jetbrains.kotlin.plugin.serialization").version("1.6.10")
+            alias("kotlin-plugin-serialization").toPluginId("org.jetbrains.kotlin.plugin.serialization")
+                .version("1.6.10")
             alias("benmanes-versioning").toPluginId("com.github.ben-manes.versions").version("0.40.0")
             alias("hierynomus-license-base").toPluginId("com.github.hierynomus.license-base").version("0.16.1")
             alias("hidetake-ssh").toPluginId("org.hidetake.ssh").version("2.10.1")

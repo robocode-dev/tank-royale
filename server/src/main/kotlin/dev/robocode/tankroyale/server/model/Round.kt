@@ -11,4 +11,4 @@ data class Round(
     /** Flag specifying if round has ended yet */
     override val roundEnded: Boolean,
 
-) : IRound
+    ) : IRound

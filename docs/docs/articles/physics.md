@@ -7,8 +7,8 @@
 Robocode is turn-based, and hence time is measured in turns. With each turn, each bot receives new information and
 events about what is going on in the arena. And with each turn, the bot needs to send new commands to the server.
 
-A battle has one or more rounds, for example, 10 rounds. Turns and rounds are measured are provided as a number.
-Rounds start at round number 1, and each round starts with turn number 1.
+A battle has one or more rounds, for example, 10 rounds. Turns and rounds are measured are provided as a number. Rounds
+start at round number 1, and each round starts with turn number 1.
 
 ### Distance measurement
 

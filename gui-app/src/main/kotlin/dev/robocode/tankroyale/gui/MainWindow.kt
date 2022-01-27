@@ -10,9 +10,10 @@ import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
-import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
-import dev.robocode.tankroyale.gui.ui.server.*
+import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
+import dev.robocode.tankroyale.gui.ui.server.Server
+import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import java.awt.EventQueue
 import javax.swing.UIManager

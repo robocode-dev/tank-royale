@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.gui.settings
 import dev.robocode.tankroyale.gui.model.GameSetup
 import dev.robocode.tankroyale.gui.model.IGameSetup
 import java.util.*
-import kotlin.collections.HashMap
 
 object GamesSettings : PropertiesStore("Robocode Games Settings", "games.properties") {
 

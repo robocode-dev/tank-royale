@@ -1,9 +1,9 @@
 package dev.robocode.tankroyale.gui.ui
 
 import dev.robocode.tankroyale.gui.server.ServerProcess
-import dev.robocode.tankroyale.gui.ui.extensions.JMenuExt.addNewMenuItem
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.MENU
 import dev.robocode.tankroyale.gui.ui.about.AboutBox
+import dev.robocode.tankroyale.gui.ui.extensions.JMenuExt.addNewMenuItem
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEventChannel
 import dev.robocode.tankroyale.gui.util.Event

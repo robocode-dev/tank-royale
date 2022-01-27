@@ -31,7 +31,7 @@ class BulletFactory {
             color: Color? = Color(0x112233),
             startPosition: Point = Point(221.34, 643.23),
             tick: Int = 27
-        ) = object: IBullet {
+        ) = object : IBullet {
             override val power = power
             override val id = id
             override val botId = botId

@@ -2,13 +2,13 @@
 
 A **booter** is provided to boot up bots on a local machine. It comes built-in with the GUI for Robocode Tank Royale.
 
-For the booter to be able to boot up bots written for any programming language, it is looking for script files
-used for running the bots. Hence, the booter makes use of filename conventions to locate bot files on a local machine.
+For the booter to be able to boot up bots written for any programming language, it is looking for script files used for
+running the bots. Hence, the booter makes use of filename conventions to locate bot files on a local machine.
 
 ## Root directories
 
-A bot **root directory** is top-level directory which is a collection of **bot directories**.
-For example, the sample bots is a collection of bot directories containing directories like:
+A bot **root directory** is top-level directory which is a collection of **bot directories**. For example, the sample
+bots is a collection of bot directories containing directories like:
 
 - Corners
 - Crazy
@@ -32,6 +32,7 @@ As minimum these files _must_ be available in a bot directory:
 - [JSON config file](json-config.md) that describes the bot, and specify which game types it can handle.
 
 ### Base filename
+
 All bot files in a bot directory must share the same common base filename, which _must_ match the filename of the
 (parent) bot directory. Otherwise, the game will not be able to locate the bot file(s) as it is looking for filenames
 matching the filename of the bot directory. All other files are ignored by the game.
@@ -60,12 +61,13 @@ script for a bot if other people should be able to run the bot on their system.
 
 ## JSON config file
 
-All bot directories must contain a [JSON](https://fileinfo.com/extension/json) file, which is basically a description
-of the bot.
+All bot directories must contain a [JSON](https://fileinfo.com/extension/json) file, which is basically a description of
+the bot.
 
 For example, the bot MyFirstBot is accompanied by a _MyFirstBot.json_ file.
 
 MyFirstBot.json for .Net:
+
 ```json
 {
   "name": "My First Bot",
@@ -79,12 +81,13 @@ MyFirstBot.json for .Net:
   "programmingLang": "C# 8.0"
 }
 ```
+
 These fields are required:
 
-*   name
-*   version
-*   gameTypes
-*   authors
+* name
+* version
+* gameTypes
+* authors
 
 The remaining fields are all optional, but recommended.
 
@@ -97,8 +100,8 @@ Meaning of each field in the JSON file:
 * **authors:** is a comma-separated list with the name of the bot author(s).
 * **description:** is a brief description of the bot.
 * **homepage:** is a link to a web page for the bot.
-* **countryCodes:** is a comma-separated list of [Alpha-2](https://www.iban.com/country-codes) country codes for the
-  bot author(s).
+* **countryCodes:** is a comma-separated list of [Alpha-2](https://www.iban.com/country-codes) country codes for the bot
+  author(s).
 * **platform:** is the platform required for running the bot, e.g. Java 17 or .Net 5.0.
 * **programmingLang:** is the programming language used for programming the bot, e.g. C# or Kotlin.
 

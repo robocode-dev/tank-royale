@@ -12,12 +12,11 @@ import java.nio.file.Path
 import java.util.*
 import java.util.function.Predicate
 import java.util.stream.Collectors.toList
-import kotlin.collections.HashMap
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
 
-class RunCommand: Command() {
+class RunCommand : Command() {
 
     private val processes = HashMap<Long, Process>() // pid, process
 
@@ -179,7 +178,7 @@ class RunCommand: Command() {
             return Files.newInputStream(path).bufferedReader().readLine() ?: ""
         }
 
-        private fun setEnvVars(envMap: MutableMap<String,String>, botInfo: BotInfo) {
+        private fun setEnvVars(envMap: MutableMap<String, String>, botInfo: BotInfo) {
             setEnvVar(envMap, Env.SERVER_URL, System.getProperty("server.url"))
             setEnvVar(envMap, Env.BOT_NAME, botInfo.name)
             setEnvVar(envMap, Env.BOT_VERSION, botInfo.version)
@@ -192,7 +191,7 @@ class RunCommand: Command() {
             setEnvVar(envMap, Env.BOT_PROG_LANG, botInfo.programmingLang)
         }
 
-        private fun setEnvVar(envMap: MutableMap<String,String>, env: Env, value: Any?) {
+        private fun setEnvVar(envMap: MutableMap<String, String>, env: Env, value: Any?) {
             if (value != null) envMap[env.name] = value.toString()
         }
     }

@@ -1,6 +1,7 @@
 # Anatomy
 
 A bot consists of three individual parts:
+
 - Body
 - Gun
 - Radar
@@ -10,7 +11,7 @@ A bot consists of three individual parts:
 ## Center
 
 The x,y coordinate of the bot is in the exact center of the robot. All parts of the bot is rotated around the center,
-which  is the local coordinate (0,0) seen from the bot´s perspective.
+which is the local coordinate (0,0) seen from the bot´s perspective.
 
 ## Body
 
@@ -23,9 +24,9 @@ The gun is mounted on the body and is firing energy bullets. The gun can turn le
 
 ## Radar
 
-The radar is mounted on top of the gun and is scanning for other bots when turned. The radar can turn left or right.
-The radar is only scanning and detecting bots when while turning. And it is only able to scan bots that are within the
-radar sweep.
+The radar is mounted on top of the gun and is scanning for other bots when turned. The radar can turn left or right. The
+radar is only scanning and detecting bots when while turning. And it is only able to scan bots that are within the radar
+sweep.
 
 ![Radar sweep](../images/radar-sweep.svg)
 
@@ -33,8 +34,8 @@ radar sweep.
 
 The radar sweep is a pie shape that starts from the center of the bot and has a fixed radius of 1200 units.
 
-Two angles
-define the sides of the pie shape of the radar:
+Two angles define the sides of the pie shape of the radar:
+
 - **Start angle**: The current angle of the radar.
 - **End angle**: The angle of the radar from the previous turn.
 
@@ -42,13 +43,13 @@ define the sides of the pie shape of the radar:
 
 The shape of the entire bot is a square with that span 36x36 units.
 
-The center of the bot is at the x,y coordinate (18,18) compared to any of the bots "corners". 
+The center of the bot is at the x,y coordinate (18,18) compared to any of the bots "corners".
 
 ## Bounding circle
 
 A **bounding circle** is being using for collision detection between a bot and another object like e.g. the wall, a
-bullet, or another bot. The center of the bounding circle is the center of the bot at (18,18) having a radius that is
-18 units in length.
+bullet, or another bot. The center of the bounding circle is the center of the bot at (18,18) having a radius that is 18
+units in length.
 
 ## Collision detection
 
@@ -56,7 +57,7 @@ Using a bounding circle makes it easy to check if e.g. a bullet has hit a bot, a
 between the bullet coordinate (x<sub>b</sub>, y<sub>b</sub>) and the x,y coordinate of the center of the bot
 (x<sub>c</sub>, y<sub>c</sub>):
 
-$$d = distance (hypotenuse) = \sqrt{\Delta{x}^2 + \Delta{y}^2}$$ 
+$$d = distance (hypotenuse) = \sqrt{\Delta{x}^2 + \Delta{y}^2}$$
 
 Here Δx and Δy is the difference between the two coordinates i.e, the bot center and the bullet coordinate, on the x-
 and y-axis, where Δx = |x<sub>c</sub> - x<sub>b</sub>|, and Δy = |y<sub>c</sub> - y<sub>b</sub>|.
@@ -67,12 +68,12 @@ the bullet.
 > With the original Robocode a bounding square of 36x36 units is being used for detection if a bot is hit or not.  
 > However, this bounding square is not being rotation with the rotation of the body.
 > Hence, with Tank Royale a bounding circle is being used instead, which does not need to be rotated with the bot
-> rotation. 
+> rotation.
 
 ### Quicker collision detection
 
-So with the formula above we can determine if a point is within 18 units of the center of the bot.
-We can rewrite the formula to get rid of the square root:
+So with the formula above we can determine if a point is within 18 units of the center of the bot. We can rewrite the
+formula to get rid of the square root:
 
 $$d^2 = \Delta{x}^2 + \Delta{y}^2$$
 

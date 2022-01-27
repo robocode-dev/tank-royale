@@ -47,7 +47,9 @@ internal class RoundGradientContext(
 ) : PaintContext {
     override fun dispose() {}
 
-    override fun getColorModel(): ColorModel { return ColorModel.getRGBdefault() }
+    override fun getColorModel(): ColorModel {
+        return ColorModel.getRGBdefault()
+    }
 
     override fun getRaster(x: Int, y: Int, w: Int, h: Int): Raster {
         val raster = colorModel.createCompatibleWritableRaster(w, h)

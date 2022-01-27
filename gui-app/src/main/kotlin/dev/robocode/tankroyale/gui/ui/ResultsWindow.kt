@@ -5,10 +5,13 @@ import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotResults
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
-import java.awt.EventQueue
-import javax.swing.*
-import javax.swing.table.DefaultTableCellRenderer
 import java.awt.Dimension
+import java.awt.EventQueue
+import javax.swing.JLabel
+import javax.swing.JScrollPane
+import javax.swing.JTable
+import javax.swing.UIManager
+import javax.swing.table.DefaultTableCellRenderer
 
 
 class ResultsWindow(results: List<BotResults>) : RcFrame(getWindowTitle()) {

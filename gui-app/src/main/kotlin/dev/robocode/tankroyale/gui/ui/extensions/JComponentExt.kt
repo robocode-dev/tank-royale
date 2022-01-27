@@ -1,9 +1,12 @@
 package dev.robocode.tankroyale.gui.ui.extensions
 
-import dev.robocode.tankroyale.gui.ui.ResourceBundles.UI_TITLES
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
+import dev.robocode.tankroyale.gui.ui.ResourceBundles.UI_TITLES
 import dev.robocode.tankroyale.gui.util.Event
-import javax.swing.*
+import javax.swing.JButton
+import javax.swing.JComponent
+import javax.swing.JLabel
+import javax.swing.JOptionPane
 
 object JComponentExt {
 

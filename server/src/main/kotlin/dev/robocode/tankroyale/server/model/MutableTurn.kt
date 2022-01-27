@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.server.model
 
 import dev.robocode.tankroyale.server.event.Event
-import kotlin.collections.HashSet
 
 /** Mutable state of a game turn in a round. */
 data class MutableTurn(
@@ -20,7 +19,7 @@ data class MutableTurn(
     /** Map over bot events  */
     override val botEvents: MutableMap<BotId, MutableSet<Event>> = mutableMapOf(),
 
-) : ITurn {
+    ) : ITurn {
 
     /** Returns an immutable copy of this turn */
     fun toTurn() = Turn(turnNumber, copyBots(), copyBullets(), observerEvents.toSet(), copyBotEvents())

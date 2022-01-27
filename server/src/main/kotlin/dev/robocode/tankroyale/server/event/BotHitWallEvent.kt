@@ -10,4 +10,4 @@ class BotHitWallEvent(
     /** Bot id of the victim that has hit a wall */
     val victimId: BotId,
 
-) : Event()
+    ) : Event()

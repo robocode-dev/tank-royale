@@ -6,7 +6,7 @@ game server behind the scene, so you can focus on the fun part of controlling th
 A good way to get started with Robocode Tank Royale is to head over to the general documentation for Tank Royale to
 learn about the basics first:
 
-*   [Robocode Tank Royale Docs](https://robocode.dev/tankroyale/docs/)
+* [Robocode Tank Royale Docs](https://robocode.dev/tankroyale/docs/)
 
 Another good way to get started is to look at the source files for the sample bots.
 
@@ -71,8 +71,8 @@ namespace Robocode.TankRoyale.Sample.Bots
 }
 ```
 
-The above code describes the behavior of the robot. The Main() is the main entry point for all C#
-applications to start running the program. Using the bot API, we need to start the robot by calling the
+The above code describes the behavior of the robot. The Main() is the main entry point for all C# applications to start
+running the program. Using the bot API, we need to start the robot by calling the
 [IBaseBot.Start()](./api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Start) method of
 the bot API, which will tell the server that this bot wants to join the battle and also provide the server with the
 required bot info.
@@ -81,8 +81,8 @@ With the bot's constructor (_MyFirstBot()_) we call the [BotInfo.fromFile(string
 ./api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromFile_System_String_)
 method provides the bot info for the server, like e.g. the name of the bot, and its author, etc.
 
-The [Run()](./api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Run) method is called
-when the bot need to start its real execution to send instructions to the server.
+The [Run()](./api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Run) method is called when the
+bot need to start its real execution to send instructions to the server.
 
 The on-methods (for example, _onScannedBot_ and _onHitByBullet_) are event handlers with code that triggers when a
 specific type of event occurs. For example, the event handler [BaseBot.OnScannedBot(ScannedBotEvent)](
@@ -96,6 +96,7 @@ The code in this example is accompanied by a _MyFirstBot.json_, which is a [JSON
 file containing the config file for the bot, and is used by the **booter** to start up the bot on a local machine.
 
 MyFirstBot.json:
+
 ```json
 {
   "name": "My First Bot",
@@ -109,5 +110,6 @@ MyFirstBot.json:
   "programmingLang": "C# 8.0"
 }
 ```
+
 You can read more details about the format of this JSON file
 [here](https://robocode.dev/tankroyale/docs/articles/booter.html#json-config-file.html).

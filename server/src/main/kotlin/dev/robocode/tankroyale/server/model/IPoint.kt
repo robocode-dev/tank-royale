@@ -4,6 +4,7 @@ package dev.robocode.tankroyale.server.model
 interface IPoint {
     /** x coordinate */
     val x: Double
+
     /** y coordinate */
     val y: Double
 }

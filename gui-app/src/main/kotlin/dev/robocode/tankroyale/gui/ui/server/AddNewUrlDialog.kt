@@ -1,15 +1,18 @@
 package dev.robocode.tankroyale.gui.ui.server
 
 import dev.robocode.tankroyale.gui.MainWindow
+import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
-import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.server.AddNewUrlDialog.onComplete
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.Color
 import java.awt.Dimension
-import javax.swing.*
+import javax.swing.JButton
+import javax.swing.JDialog
+import javax.swing.JPanel
+import javax.swing.JTextField
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
@@ -69,12 +72,15 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
             override fun insertUpdate(e: DocumentEvent?) {
                 validate()
             }
+
             override fun removeUpdate(e: DocumentEvent?) {
                 validate()
             }
+
             override fun changedUpdate(e: DocumentEvent?) {
                 validate()
             }
+
             fun validate() {
                 val valid = isValidWsUrl
                 urlTextField.background = if (valid) lightGreen else lightRed

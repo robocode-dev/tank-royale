@@ -1,7 +1,8 @@
 import dev.robocode.tankroyale.tasks.FatJar
 import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
-import java.nio.file.*
+import java.nio.file.Files
+import java.nio.file.Paths
 
 apply(from = "../../groovy.gradle")
 
@@ -64,7 +65,8 @@ val javadoc = tasks.withType<Javadoc> {
     doLast {
         Files.copy(
             Paths.get("$projectDir/src/main/javadoc/prism.js"),
-            Paths.get("$buildDir/docs/javadoc/prism.js"))
+            Paths.get("$buildDir/docs/javadoc/prism.js")
+        )
     }
 }
 
@@ -106,7 +108,7 @@ tasks {
         dependsOn(javadocJar)
 
         doLast {
-            ssh.run (delegateClosureOf<RunHandler> {
+            ssh.run(delegateClosureOf<RunHandler> {
                 session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
                     print("Uploading Javadoc...")
 

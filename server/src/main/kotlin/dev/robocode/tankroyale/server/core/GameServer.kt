@@ -2,13 +2,14 @@ package dev.robocode.tankroyale.server.core
 
 import com.google.gson.Gson
 import dev.robocode.tankroyale.schema.*
-import dev.robocode.tankroyale.schema.BotIntent
-import dev.robocode.tankroyale.schema.GameSetup
-import dev.robocode.tankroyale.schema.Message.*
+import dev.robocode.tankroyale.schema.Message.`$type`
 import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.ConnHandler
 import dev.robocode.tankroyale.server.mapper.*
-import dev.robocode.tankroyale.server.model.*
+import dev.robocode.tankroyale.server.model.BotId
+import dev.robocode.tankroyale.server.model.GameState
+import dev.robocode.tankroyale.server.model.IRound
+import dev.robocode.tankroyale.server.model.ITurn
 import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND
 import org.java_websocket.WebSocket
 import org.java_websocket.exceptions.WebsocketNotConnectedException

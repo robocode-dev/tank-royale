@@ -20,7 +20,7 @@ data class Bullet(
     override val startPosition: Point, // must be immutable as this point is used for calculating future positions
     override val tick: Int = 0,
 
-) : IBullet {
+    ) : IBullet {
 
     /**
      * Returns a mutable copy of this point.

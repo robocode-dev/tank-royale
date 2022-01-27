@@ -3,9 +3,9 @@ package dev.robocode.tankroyale.gui.ui.arena
 import dev.robocode.tankroyale.gui.model.BotState
 import dev.robocode.tankroyale.gui.ui.arena.ColorConstant.DEFAULT_BODY_COLOR
 import dev.robocode.tankroyale.gui.ui.arena.ColorConstant.DEFAULT_GUN_COLOR
-import dev.robocode.tankroyale.gui.ui.arena.ColorConstant.DEFAULT_TURRET_COLOR
 import dev.robocode.tankroyale.gui.ui.arena.ColorConstant.DEFAULT_RADAR_COLOR
 import dev.robocode.tankroyale.gui.ui.arena.ColorConstant.DEFAULT_TRACKS_COLOR
+import dev.robocode.tankroyale.gui.ui.arena.ColorConstant.DEFAULT_TURRET_COLOR
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.lightness
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.toHsl
 import java.awt.BasicStroke

@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.booter.commands
 import dev.robocode.tankroyale.booter.model.BotInfo
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
 

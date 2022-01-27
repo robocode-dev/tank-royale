@@ -9,8 +9,8 @@ import dev.robocode.tankroyale.botapi.IBot;
  *
  * <p>Here is an example of how to use this condition:
  *
- *  <script src="../../../../../prism.js"></script>
- *  <pre><code class="language-java">
+ * <script src="../../../../../prism.js"></script>
+ * <pre><code class="language-java">
  *  public class MyBot extends Bot {
  *    public void run() {
  *      while (isRunning()) {
@@ -26,30 +26,30 @@ import dev.robocode.tankroyale.botapi.IBot;
 @SuppressWarnings("unused")
 public final class NextTurnCondition extends Condition {
 
-  private final IBaseBot baseBot;
-  private final int creationTime;
+    private final IBaseBot baseBot;
+    private final int creationTime;
 
-  /**
-   * Constructor for initializing a new instance of the NextTurnCondition class.
-   *
-   * @param baseBot is your bot instance, typically <code>this</code> instance, used for determining
-   *     the current turn of the battle with the {@link #test()} method.
-   */
-  public NextTurnCondition(IBaseBot baseBot) {
-    super("NextTurnCondition");
+    /**
+     * Constructor for initializing a new instance of the NextTurnCondition class.
+     *
+     * @param baseBot is your bot instance, typically <code>this</code> instance, used for determining
+     *                the current turn of the battle with the {@link #test()} method.
+     */
+    public NextTurnCondition(IBaseBot baseBot) {
+        super("NextTurnCondition");
 
-    this.baseBot = baseBot;
-    this.creationTime = baseBot.getTurnNumber();
-  }
+        this.baseBot = baseBot;
+        this.creationTime = baseBot.getTurnNumber();
+    }
 
-  /**
-   * This method tests if the turn number has changed since we created this condition.
-   *
-   * @return <code>true</code> if the current turn number is greater than the initial turn number,
-   *     when this condition was created; <code>false</code> otherwise.
-   */
-  @Override
-  public boolean test() {
-    return baseBot.getTurnNumber() > creationTime;
-  }
+    /**
+     * This method tests if the turn number has changed since we created this condition.
+     *
+     * @return <code>true</code> if the current turn number is greater than the initial turn number,
+     * when this condition was created; <code>false</code> otherwise.
+     */
+    @Override
+    public boolean test() {
+        return baseBot.getTurnNumber() > creationTime;
+    }
 }

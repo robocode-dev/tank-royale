@@ -7,8 +7,6 @@ import java.nio.file.Files.list
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 import kotlin.io.path.isDirectory
 
 class DirCommand(private val botRootPaths: List<Path>) : Command() {

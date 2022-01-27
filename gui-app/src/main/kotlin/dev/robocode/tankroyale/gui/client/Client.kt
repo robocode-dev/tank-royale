@@ -81,7 +81,7 @@ object Client : AutoCloseable {
 
     fun connect(url: String) {
         websocket = WebSocketClient(URI(url))
-        with (websocket) { // not apply() here, as new websocket is owner of the events below
+        with(websocket) { // not apply() here, as new websocket is owner of the events below
             onOpen.subscribe(websocket) { onConnected.fire(Unit) }
             onMessage.subscribe(websocket) { onMessage(it) }
             onError.subscribe(websocket) { onError.fire(it) }

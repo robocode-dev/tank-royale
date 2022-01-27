@@ -10,4 +10,4 @@ class BotDeathEvent(
     /** Bot id of the victim that got killed */
     val victimId: BotId,
 
-) : Event()
+    ) : Event()

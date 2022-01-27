@@ -70,7 +70,7 @@ data class MutableBot(
     /** Scan angle in degrees */
     override var scanSpreadAngle: Double = radarSpreadAngle,
 
-) : IBot {
+    ) : IBot {
 
     /** X coordinate */
     override var x: Double

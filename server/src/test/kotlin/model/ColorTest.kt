@@ -10,7 +10,7 @@ import io.kotest.matchers.shouldBe
 class ColorTest : StringSpec({
 
     "colorStringToRGB() tests" {
-        forAll (
+        forAll(
             row(null, null),
             row("#000000", Color(0x000000)),
             row("#112233", Color(0x112233)),

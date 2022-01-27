@@ -1,8 +1,8 @@
 package dev.robocode.tankroyale.gui.ui.server
 
 import dev.robocode.tankroyale.gui.MainWindow
-import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
+import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import java.awt.Color
 import java.awt.Font
 import javax.swing.JScrollPane

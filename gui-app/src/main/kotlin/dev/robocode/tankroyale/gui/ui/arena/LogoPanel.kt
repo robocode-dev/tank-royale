@@ -32,8 +32,10 @@ object LogoPanel : JPanel() {
         val logoY = (height - logoHeight2) / 2
 
         g2.setRenderingHints(
-            RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
-            RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
+            RenderingHints(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+            )
         )
 
         g2.color = background

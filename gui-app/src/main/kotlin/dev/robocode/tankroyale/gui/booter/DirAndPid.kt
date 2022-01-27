@@ -4,7 +4,7 @@ class DirAndPid(
     val dir: String,
     val pid: Long
 
-    ) : Comparable<DirAndPid> {
+) : Comparable<DirAndPid> {
 
     override fun compareTo(other: DirAndPid): Int {
         val cmp = dir.compareTo(other.dir)

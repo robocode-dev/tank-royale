@@ -39,7 +39,9 @@ data class MutableBullet(
     fun toBullet() = Bullet(id, botId, power, direction, color, startPosition, tick)
 
     /** Increment the tick used for moving the bullet when calculating its position. */
-    fun incrementTick() { tick++ }
+    fun incrementTick() {
+        tick++
+    }
 
     override fun hashCode(): Int {
         return id.value

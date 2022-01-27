@@ -6,19 +6,21 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
-/** Event handler which processes events in the order they have been added to the handler. */
+/**
+ * Event handler which processes events in the order they have been added to the handler.
+ */
 final class EventHandler<T> {
     private final List<EntryWithPriority> subscriberEntries = Collections.synchronizedList(new ArrayList<>());
 
-    final void subscribe(Consumer<T> subscriber, int priority) {
+    void subscribe(Consumer<T> subscriber, int priority) {
         subscriberEntries.add(new EntryWithPriority(subscriber, priority));
     }
 
-    final void subscribe(Consumer<T> subscriber) {
+    void subscribe(Consumer<T> subscriber) {
         subscribe(subscriber, 1);
     }
 
-    final void publish(T event) {
+    void publish(T event) {
         subscriberEntries.sort(new EntryWithPriorityComparator());
         for (EntryWithPriority entry : new ArrayList<>(subscriberEntries)) {
             entry.subscriber.accept(event);

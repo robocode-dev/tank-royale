@@ -6,9 +6,9 @@ description: |
   See https://www.rapidtables.com/web/color/RGB_Color.html
 type: integer
 examples: [
-  0,        // black
-  16777215, // white
-  65280,    // lime
-  16752762, // light salmon
-  10040012  // dark orchid
+    0,        // black
+                16777215, // white
+                            65280,    // lime
+                                        16752762, // light salmon
+                                                    10040012  // dark orchid
 ]

@@ -1,7 +1,5 @@
 package dev.robocode.tankroyale.gui.settings
 
-import java.lang.IllegalArgumentException
-
 enum class GameType(val displayName: String) {
     CUSTOM("custom"),
     CLASSIC("classic"),

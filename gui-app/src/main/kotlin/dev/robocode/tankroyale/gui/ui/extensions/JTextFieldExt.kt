@@ -19,13 +19,15 @@ object JTextFieldExt {
     }
 
     fun JTextField.onChange(handler: () -> Unit) {
-        document.addDocumentListener(object: DocumentListener {
+        document.addDocumentListener(object : DocumentListener {
             override fun insertUpdate(e: DocumentEvent?) {
                 handler.invoke()
             }
+
             override fun removeUpdate(e: DocumentEvent?) {
                 handler.invoke()
             }
+
             override fun changedUpdate(e: DocumentEvent?) {
                 handler.invoke()
             }

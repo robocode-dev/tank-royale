@@ -1,5 +1,5 @@
-import proguard.gradle.ProGuardTask
 import dev.robocode.tankroyale.tasks.FatJar
+import proguard.gradle.ProGuardTask
 
 group = "dev.robocode.tankroyale"
 version = "0.9.3"

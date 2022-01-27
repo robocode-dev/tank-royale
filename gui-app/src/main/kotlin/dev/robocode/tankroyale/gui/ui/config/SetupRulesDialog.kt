@@ -1,17 +1,17 @@
 package dev.robocode.tankroyale.gui.ui.config
 
 import dev.robocode.tankroyale.gui.MainWindow
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
-import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.onChange
-import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.setInputVerifier
 import dev.robocode.tankroyale.gui.model.IGameSetup
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.MutableGameSetup
 import dev.robocode.tankroyale.gui.ui.GameConstants
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
+import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.onChange
+import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.setInputVerifier
 import dev.robocode.tankroyale.gui.ui.newbattle.GameTypeComboBox
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout

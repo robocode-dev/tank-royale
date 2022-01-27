@@ -8,12 +8,13 @@ import java.awt.geom.GeneralPath
 import java.awt.geom.Rectangle2D
 
 
-class Tank (
+class Tank(
     private val x: Double,
     private val y: Double,
     private val direction: Double,
     private val gunDirection: Double,
-    private val radarDirection: Double) {
+    private val radarDirection: Double
+) {
 
     fun paint(g: Graphics2D) {
         val gfxState = Graphics2DState(g)
@@ -54,7 +55,7 @@ class Tank (
         // Body border
         g.paint = BLACK
         g.stroke = BasicStroke(20f)
-        g.drawRoundRect(-210,-160,420, 320, 20, 20)
+        g.drawRoundRect(-210, -160, 420, 320, 20, 20)
 
         gfxState.restore(g)
     }
@@ -176,10 +177,10 @@ class Tank (
         // Cannon thick part
         val x1 = -160f
         val y1 = -40f
-        g.paint = GradientPaint(x1, y1+10, Color(0x333333), x1, y1+40, Color(0xCCCCCC))
+        g.paint = GradientPaint(x1, y1 + 10, Color(0x333333), x1, y1 + 40, Color(0xCCCCCC))
         g.fill(Rectangle2D.Float(x1, y1, 80f, 40f))
-        g.paint = GradientPaint(x1, y1+40, Color(0xCCCCCC), x1, y1+80-10, Color(0x333333))
-        g.fill(Rectangle2D.Float(x1, y1+40, 80f, 40f))
+        g.paint = GradientPaint(x1, y1 + 40, Color(0xCCCCCC), x1, y1 + 80 - 10, Color(0x333333))
+        g.fill(Rectangle2D.Float(x1, y1 + 40, 80f, 40f))
 
         g.color = BLACK
         g.drawRect(x1.toInt(), y1.toInt(), 80, 80)
@@ -187,10 +188,10 @@ class Tank (
         // Cannon long part
         val x2 = -330f
         val y2 = -25f
-        g.paint = GradientPaint(x2, y2+10, Color(0x333333), x2, y2+25, Color(0xCCCCCC))
+        g.paint = GradientPaint(x2, y2 + 10, Color(0x333333), x2, y2 + 25, Color(0xCCCCCC))
         g.fill(Rectangle2D.Float(x2, y2, 170f, 25f))
-        g.paint = GradientPaint(x2, y2+25, Color(0xCCCCCC), x2, y2+50-10, Color(0x333333))
-        g.fill(Rectangle2D.Float(x2, y2+25, 170f, 25f))
+        g.paint = GradientPaint(x2, y2 + 25, Color(0xCCCCCC), x2, y2 + 50 - 10, Color(0x333333))
+        g.fill(Rectangle2D.Float(x2, y2 + 25, 170f, 25f))
 
         g.color = BLACK
         g.drawRect(x2.toInt(), y2.toInt(), 170, 50)
@@ -212,7 +213,7 @@ class Tank (
         g.rotate(Math.toRadians(radarDirection + 90))
         val path = GeneralPath()
         path.moveTo(20.0, -110.0)
-        path.quadTo(120.0,0.0, 20.0,110.0)
+        path.quadTo(120.0, 0.0, 20.0, 110.0)
         path.closePath()
 
         g.color = color

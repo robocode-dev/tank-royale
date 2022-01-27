@@ -5,11 +5,8 @@ import dev.robocode.tankroyale.server.core.GameServer
 import dev.robocode.tankroyale.server.rules.DEFAULT_GAME_TYPE
 import org.fusesource.jansi.AnsiConsole
 import picocli.CommandLine
-import picocli.CommandLine.Command
-import picocli.CommandLine.IVersionProvider
+import picocli.CommandLine.*
 import picocli.CommandLine.Model.CommandSpec
-import picocli.CommandLine.Option
-import picocli.CommandLine.Spec
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.*

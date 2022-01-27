@@ -162,6 +162,7 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
             selectedBotListModel.removeElement(it)
         }
     }
+
     private fun handleRemoveAll() {
         selectedBotListModel.clear()
     }

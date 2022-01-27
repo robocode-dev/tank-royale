@@ -7,7 +7,8 @@ import dev.robocode.tankroyale.gui.util.Version
 import java.awt.Container
 import java.awt.Dimension
 import java.net.URL
-import javax.swing.*
+import javax.swing.JDialog
+import javax.swing.JEditorPane
 
 
 object AboutBox : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("about_dialog")) {

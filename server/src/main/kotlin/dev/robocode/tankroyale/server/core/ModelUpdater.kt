@@ -150,7 +150,7 @@ class ModelUpdater(
      */
     private fun updateGameState(): GameState {
         round.turns += turn.toTurn()
-        if (gameState.rounds.size == 0 ||  gameState.rounds.last().roundNumber != round.roundNumber) {
+        if (gameState.rounds.size == 0 || gameState.rounds.last().roundNumber != round.roundNumber) {
             gameState.rounds += round
         }
         return gameState
@@ -337,11 +337,13 @@ class ModelUpdater(
 
     /** Constrain all bot positions so they are kept inside the battle arena. */
     private fun constrainBotPositions() {
-        botsMap.values.forEach { bot -> run {
-            val (x, y) = constrainBotPosition(bot.x, bot.y)
-            bot.x = x
-            bot.y = y
-        }}
+        botsMap.values.forEach { bot ->
+            run {
+                val (x, y) = constrainBotPosition(bot.x, bot.y)
+                bot.x = x
+                bot.y = y
+            }
+        }
     }
 
     /**

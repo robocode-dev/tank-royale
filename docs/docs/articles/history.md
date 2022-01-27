@@ -8,8 +8,8 @@ the Java programming language for the API.
 
 ## IBM AlphaWork
 
-Robocode became a professional game when he brought it to IBM, in the form of an AlphaWorks download in July 2001.
-IBM AlphaWork promoted Robocode, as well as the Java programming language, with a great series of articles named
+Robocode became a professional game when he brought it to IBM, in the form of an AlphaWorks download in July 2001. IBM
+AlphaWork promoted Robocode, as well as the Java programming language, with a great series of articles named
 "Rock 'em, sock 'em Robocode!" and "Secrets from the Robocode masters" which made Robocode popular.
 
 ## Robocode was Open Sourced
@@ -21,8 +21,8 @@ Source with Robocode version 1.0.7. At this point, the development of Robocode h
 ## Community-driven
 
 People from the community of Robocode, mainly driven by the [RoboWiki](https://robowiki.net/), began to develop their
-own versions of Robocode to get rid of various bugs and put new features into Robocode, the Contributions for
-Open Source Robocode and later on the RobocodeNG project by Flemming N. Larsen.
+own versions of Robocode to get rid of various bugs and put new features into Robocode, the Contributions for Open
+Source Robocode and later on the RobocodeNG project by Flemming N. Larsen.
 
 Flemming continued the Open Source project and tool over from Mathew in July 2006. The Robocode forks, named RobocodeNG
 and Robocode 2006, contained a lot of contributions from the Robocode community and were merged into the official

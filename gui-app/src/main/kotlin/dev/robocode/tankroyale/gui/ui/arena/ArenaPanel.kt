@@ -1,25 +1,26 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
 import dev.robocode.tankroyale.gui.client.Client
-import dev.robocode.tankroyale.gui.ui.fx.Animation
-import dev.robocode.tankroyale.gui.ui.fx.CircleBurst
-import dev.robocode.tankroyale.gui.ui.fx.Explosion
 import dev.robocode.tankroyale.gui.model.*
 import dev.robocode.tankroyale.gui.ui.ResultsWindow
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.lightness
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.toHsl
+import dev.robocode.tankroyale.gui.ui.fx.Animation
+import dev.robocode.tankroyale.gui.ui.fx.CircleBurst
+import dev.robocode.tankroyale.gui.ui.fx.Explosion
 import dev.robocode.tankroyale.gui.util.Graphics2DState
 import dev.robocode.tankroyale.gui.util.HslColor
 import java.awt.*
 import java.awt.event.MouseEvent
 import java.awt.event.MouseMotionAdapter
 import java.awt.event.MouseWheelEvent
-import java.awt.geom.*
-import java.util.*
+import java.awt.geom.AffineTransform
+import java.awt.geom.Arc2D
+import java.awt.geom.Area
+import java.awt.geom.Ellipse2D
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.JPanel
-import kotlin.collections.HashSet
 import kotlin.math.sqrt
 
 
@@ -89,7 +90,9 @@ object ArenaPanel : JPanel() {
                 is BulletHitBotEvent -> onBulletHitBot(it)
                 is BulletHitWallEvent -> onBulletHitWall(it)
                 is BulletHitBulletEvent -> onBulletHitBullet(it)
-                else -> { /* ignore other events */ }
+                else -> {
+                    // ignore other events
+                }
             }
         }
 

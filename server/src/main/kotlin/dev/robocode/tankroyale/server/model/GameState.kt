@@ -12,5 +12,5 @@ data class GameState(
     var isGameEnded: Boolean = false,
 ) {
     /** Last round */
-    val lastRound: IRound? get() = if(rounds.isNotEmpty()) rounds[rounds.size - 1] else null
+    val lastRound: IRound? get() = if (rounds.isNotEmpty()) rounds[rounds.size - 1] else null
 }

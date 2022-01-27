@@ -25,4 +25,4 @@ class BotHitBotEvent(
     /** Flag specifying if the victim was rammed */
     val isRammed: Boolean,
 
-) : Event()
+    ) : Event()

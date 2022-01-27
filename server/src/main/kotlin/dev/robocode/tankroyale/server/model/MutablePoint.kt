@@ -6,7 +6,7 @@ data class MutablePoint(
     override var x: Double,
     /** y coordinate */
     override var y: Double
-): IPoint {
+) : IPoint {
     /** Returns an immutable copy of this point */
     fun toPoint() = Point(x, y)
 }

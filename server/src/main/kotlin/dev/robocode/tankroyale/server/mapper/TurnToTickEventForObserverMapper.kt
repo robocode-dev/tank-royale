@@ -4,7 +4,6 @@ import dev.robocode.tankroyale.schema.Message
 import dev.robocode.tankroyale.schema.TickEventForObserver
 import dev.robocode.tankroyale.server.mapper.BotsToBotsWithIdMapper.map
 import dev.robocode.tankroyale.server.mapper.BulletsToBulletStatesMapper.map
-import dev.robocode.tankroyale.server.model.IRound
 import dev.robocode.tankroyale.server.model.ITurn
 import java.util.concurrent.CopyOnWriteArrayList
 

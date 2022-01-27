@@ -1,9 +1,9 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
 import dev.robocode.tankroyale.gui.client.Client
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
 import dev.robocode.tankroyale.gui.ui.components.WrapLayout
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.tps.TpsField
 import dev.robocode.tankroyale.gui.ui.tps.TpsSlider
 import dev.robocode.tankroyale.gui.util.Event

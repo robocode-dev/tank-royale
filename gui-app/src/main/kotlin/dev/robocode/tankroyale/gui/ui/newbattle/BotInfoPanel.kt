@@ -56,7 +56,7 @@ object BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
 
         updateBotInfo(null)
 
-        with (BotSelectionChannel) {
+        with(BotSelectionChannel) {
             onBotDirectorySelected.subscribe(this) { updateBotInfo(it) }
             onJoinedBotSelected.subscribe(this) { updateBotInfo(it) }
             onBotSelected.subscribe(this) { updateBotInfo(it) }

@@ -67,7 +67,8 @@ object Server {
         }
     }
 
-    private fun showStopGameDialog(): Int = showConfirmDialog(null,
+    private fun showStopGameDialog(): Int = showConfirmDialog(
+        null,
         ResourceBundles.MESSAGES.get("stop_battle"),
         ResourceBundles.UI_TITLES.get("warning"),
         YES_NO_OPTION

@@ -39,7 +39,9 @@ class NanoTimer(
     }
 
     /** Resets timer. */
-    fun reset() { lastTime = System.nanoTime() }
+    fun reset() {
+        lastTime = System.nanoTime()
+    }
 
     private fun run() {
         while (isRunning.get() && !thread!!.isInterrupted) {

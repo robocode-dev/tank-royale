@@ -1,6 +1,9 @@
 package dev.robocode.tankroyale.gui.model
 
-import kotlinx.serialization.*
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.PolymorphicSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -242,7 +245,7 @@ val messageModule = SerializersModule {
 }
 
 fun main() {
-    val json= MessageConstants.json
+    val json = MessageConstants.json
 
     val str = json.encodeToString(PolymorphicSerializer(Message::class), BotDeathEvent(1, 2))
     println(str)

@@ -148,7 +148,7 @@ tasks.register("uploadBots") {
     dependsOn(build)
     dependsOn(zipSampleBots)
 
-    ssh.run (delegateClosureOf<RunHandler> {
+    ssh.run(delegateClosureOf<RunHandler> {
         session(sshServer, delegateClosureOf<SessionHandler> {
             print("Uploading C# sample bots...")
 

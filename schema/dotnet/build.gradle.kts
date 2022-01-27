@@ -7,7 +7,8 @@ val dotnetBuild = task<Exec>("dotnetBuild") {
 }
 
 val generateCode = task<Exec>("generateCode") {
-    commandLine("$projectDir/bin/Release/net5.0/CodeGeneratorApp",
+    commandLine(
+        "$projectDir/bin/Release/net5.0/CodeGeneratorApp",
         "${project(":schema").file("schemas")}",
         "${project(":bot-api:dotnet").file("src/generated")}"
     )

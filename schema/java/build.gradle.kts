@@ -1,8 +1,7 @@
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.SourceType
-import java.util.Collections.singletonList
 import org.jsonschema2pojo.gradle.JsonSchemaExtension
-import java.lang.reflect.Field
+import java.util.Collections.singletonList
 
 val title = "Robocode Tank Royale Schema"
 description = "Schema for Robocode Tank Royale"

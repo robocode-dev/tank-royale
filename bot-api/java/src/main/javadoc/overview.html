@@ -5,35 +5,35 @@
     <title>Test</title>
 </head>
 <body>
-    <script src="prism.js"></script>
+<script src="prism.js"></script>
 
-    <h1>Overview</h1>
+<h1>Overview</h1>
 
-    <p>This API is used when creating bots for the Robocode Tank Royale programming game. The API handles communication
-        with a game server behind the scene, so you can focus on the fun part of controlling the bot.<br>
-        <br>
-        A good way to get started with Robocode Tank Royale is to head over to the general documentation for Tank Royale
-        to learn about the basics first:</p>
-    <ul>
-        <li><a href="https://robocode.dev/tankroyale/docs/">Robocode Tank Royale Docs</a></li>
-    </ul>
-    <p>Another good way to get started is to look at the source files for the sample bots.</p>
+<p>This API is used when creating bots for the Robocode Tank Royale programming game. The API handles communication
+    with a game server behind the scene, so you can focus on the fun part of controlling the bot.<br>
+    <br>
+    A good way to get started with Robocode Tank Royale is to head over to the general documentation for Tank Royale
+    to learn about the basics first:</p>
+<ul>
+    <li><a href="https://robocode.dev/tankroyale/docs/">Robocode Tank Royale Docs</a></li>
+</ul>
+<p>Another good way to get started is to look at the source files for the sample bots.</p>
 
-    <h2>The bot classes</h2>
+<h2>The bot classes</h2>
 
-    <p>The first primary class that you know about first is the {@link dev.robocode.tankroyale.botapi.Bot Bot} class
-        and perhaps the {@link dev.robocode.tankroyale.botapi.BaseBot BaseBot}.
-        The {@link dev.robocode.tankroyale.botapi.BaseBot BaseBot} class provides all the base and minimum functionality
-        of a bot and deals with the communication with the server.
-        The {@link dev.robocode.tankroyale.botapi.Bot Bot} class is based on BaseBot, but provides more convenient
-        methods like e.g. blocking methods for moving and turning the bot, and firing the gun.</p>
+<p>The first primary class that you know about first is the {@link dev.robocode.tankroyale.botapi.Bot Bot} class
+    and perhaps the {@link dev.robocode.tankroyale.botapi.BaseBot BaseBot}.
+    The {@link dev.robocode.tankroyale.botapi.BaseBot BaseBot} class provides all the base and minimum functionality
+    of a bot and deals with the communication with the server.
+    The {@link dev.robocode.tankroyale.botapi.Bot Bot} class is based on BaseBot, but provides more convenient
+    methods like e.g. blocking methods for moving and turning the bot, and firing the gun.</p>
 
-    <h2>Code example</h2>
+<h2>Code example</h2>
 
-    <p>Here is an example of a simple bot using the Bot API and should run as a regular application.</p>
+<p>Here is an example of a simple bot using the Bot API and should run as a regular application.</p>
 
-    <p>MyFirstBot.java:</p>
-    <pre><code class="language-java">
+<p>MyFirstBot.java:</p>
+<pre><code class="language-java">
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
 
@@ -73,33 +73,33 @@ public class MyFirstBot extends Bot {
 }
     </code></pre>
 
-    <p>The above code describes the behavior of the robot. The main() is the main entry point for all Java applications
-        to start running the program. Using the bot API, we need to start the robot by calling the
-        {@link dev.robocode.tankroyale.botapi.IBot#start() start()} method of the bot API, which will tell the server
-        that this bot wants to join the battle and also provide the server with the required bot info.<br>
-        <br>
-        With the bot's constructor (<em>MyFirstBot()</em>) we call the
-        {@link dev.robocode.tankroyale.botapi.BotInfo#fromFile(String) BotInfo.fromFile(String)} method provides the bot
-        info for the server, like e.g. the name of the bot, and its author, etc.<br>
-        <br>
-        The {@link dev.robocode.tankroyale.botapi.IBot#run()} method is called when the bot need to start its real
-        execution to send instructions to the server.<br>
-        <br>
-        The on-methods (for example, <em>onScannedBot</em> and <em>onHitByBullet</em>) are event handlers with code that
-        triggers when a specific type of event occurs.
-        For example, the event handler {@link dev.robocode.tankroyale.botapi.BaseBot#onScannedBot(ScannedBotEvent)
-        onScannedBot(ScannedBotEvent)} triggers whenever an opponent bot is scanned by the radar. The {@link
-        dev.robocode.tankroyale.botapi.events.ScannedBotEvent ScannedBotEvent} contains the event data for the scanned
-        bot.</p>
+<p>The above code describes the behavior of the robot. The main() is the main entry point for all Java applications
+    to start running the program. Using the bot API, we need to start the robot by calling the
+    {@link dev.robocode.tankroyale.botapi.IBot#start() start()} method of the bot API, which will tell the server
+    that this bot wants to join the battle and also provide the server with the required bot info.<br>
+    <br>
+    With the bot's constructor (<em>MyFirstBot()</em>) we call the
+    {@link dev.robocode.tankroyale.botapi.BotInfo#fromFile(String) BotInfo.fromFile(String)} method provides the bot
+    info for the server, like e.g. the name of the bot, and its author, etc.<br>
+    <br>
+    The {@link dev.robocode.tankroyale.botapi.IBot#run()} method is called when the bot need to start its real
+    execution to send instructions to the server.<br>
+    <br>
+    The on-methods (for example, <em>onScannedBot</em> and <em>onHitByBullet</em>) are event handlers with code that
+    triggers when a specific type of event occurs.
+    For example, the event handler {@link dev.robocode.tankroyale.botapi.BaseBot#onScannedBot(ScannedBotEvent)
+    onScannedBot(ScannedBotEvent)} triggers whenever an opponent bot is scanned by the radar. The {@link
+    dev.robocode.tankroyale.botapi.events.ScannedBotEvent ScannedBotEvent} contains the event data for the scanned
+    bot.</p>
 
-    <h2>JSON config file</h2>
+<h2>JSON config file</h2>
 
-    <p>The code in this example is accompanied by a <em>MyFirstBot.json</em>, which is a
-        <a href="https://fileinfo.com/extension/json">JSON</a> file containing the config file for the bot, and is used
-        by the <strong>booter</strong> to start up the bot on a local machine.</p>
+<p>The code in this example is accompanied by a <em>MyFirstBot.json</em>, which is a
+    <a href="https://fileinfo.com/extension/json">JSON</a> file containing the config file for the bot, and is used
+    by the <strong>booter</strong> to start up the bot on a local machine.</p>
 
-    <p>MyFirstBot.json:</p>
-    <pre><code class="language-java">
+<p>MyFirstBot.json:</p>
+<pre><code class="language-java">
 {
   "name": "My First Bot",
   "version": "1.0",
@@ -113,7 +113,7 @@ public class MyFirstBot extends Bot {
 }
     </code></pre>
 
-    <p>You can read more details about the format of this JSON file
-        <a href="https://robocode.dev/tankroyale/docs/articles/booter.html#json-config-file.html">here</a>.</p>
+<p>You can read more details about the format of this JSON file
+    <a href="https://robocode.dev/tankroyale/docs/articles/booter.html#json-config-file.html">here</a>.</p>
 </body>
 </html>

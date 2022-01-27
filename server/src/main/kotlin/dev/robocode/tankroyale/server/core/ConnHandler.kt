@@ -11,7 +11,6 @@ import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
 import org.slf4j.LoggerFactory
-import java.lang.Exception
 import java.net.InetSocketAddress
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -197,7 +196,7 @@ class ConnHandler internal constructor(
                                     botHandshakes[conn] = handshake
                                     listener.onBotJoined(conn, handshake)
                                 }
-                                Message.`$type`.OBSERVER_HANDSHAKE ->  {
+                                Message.`$type`.OBSERVER_HANDSHAKE -> {
                                     val handshake = gson.fromJson(
                                         message,
                                         ObserverHandshake::class.java

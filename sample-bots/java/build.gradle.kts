@@ -1,8 +1,8 @@
 import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
-import java.nio.file.Path
-import java.nio.file.Files.*
 import java.io.PrintWriter
+import java.nio.file.Files.*
+import java.nio.file.Path
 
 version = project(":bot-api:java").version
 
@@ -180,7 +180,7 @@ tasks.register("uploadBots") {
     dependsOn(build)
     dependsOn(zipSampleBots)
 
-    ssh.run (delegateClosureOf<RunHandler> {
+    ssh.run(delegateClosureOf<RunHandler> {
         session(sshServer, delegateClosureOf<SessionHandler> {
             print("Uploading Java sample bots...")
 

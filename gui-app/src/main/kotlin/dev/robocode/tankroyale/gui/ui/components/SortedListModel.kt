@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.gui.ui.components
 import java.util.*
 import javax.swing.AbstractListModel
 import javax.swing.SwingUtilities
-import kotlin.collections.ArrayList
 
 class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
     private val list = ArrayList<T>()

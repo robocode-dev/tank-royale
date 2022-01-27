@@ -70,7 +70,7 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
 
         onCancel.subscribe(NewBattleDialog) { NewBattleDialog.dispose() }
 
-        with (gameTypeComboBox) {
+        with(gameTypeComboBox) {
             addActionListener {
                 ServerSettings.apply {
                     gameType = gameTypeComboBox.getSelectedGameType()
