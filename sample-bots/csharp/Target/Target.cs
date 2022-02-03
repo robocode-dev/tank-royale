@@ -1,26 +1,29 @@
 using System;
 using Robocode.TankRoyale.BotApi.Events;
 
-/// <summary>
-/// Target - a sample robot by Mathew Nelson.
-/// Modified by Flemming N. Larsen.
-///
-/// Sits still. Moves every time energy drops by 20. This Robot demonstrates custom events.
-/// </summary>
+// ------------------------------------------------------------------
+// Target
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// Sits still. Moves every time energy drops by 20.
+// This Robot demonstrates custom events.
+// ------------------------------------------------------------------
 public class Target : Bot
 {
     internal int trigger; // Keeps track of when to move
 
-    // Main method starts our bot
+    // The main method starts our bot
     static void Main(string[] args)
     {
         new Target().Start();
     }
 
-    // Constructor, which loads the bot settings file
+    // Constructor, which loads the bot config file
     Target() : base(BotInfo.FromFile("Target.json")) { }
 
-    // Run method
+    // Called when a new round is started -> initialize and do movement
     public override void Run()
     {
         // Set colors
@@ -41,10 +44,10 @@ public class Target : Bot
         }
     }
 
-    // OnCustomEvent handler
+    // A custom event occurred
     public override void OnCustomEvent(CustomEvent evt)
     {
-        // If our custom event "trigger-hit" went off,
+        // Check if our custom event "trigger-hit" went off
         if (evt.Condition.Name == "trigger-hit")
         {
             // Adjust the trigger value, or else the event will fire again and again and again...
@@ -53,7 +56,7 @@ public class Target : Bot
             // Print out energy level
             Console.WriteLine("Ouch, down to " + (int)(Energy + .5) + " energy.");
 
-            // Move around a bit.
+            // Move around a bit
             TurnRight(65);
             Forward(100);
         }

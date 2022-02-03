@@ -3,34 +3,30 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 import java.io.IOException;
 
-/**
- * Walls - a sample bot, original version by Mathew Nelson for Robocode.
- * Modified by Flemming N. Larsen.
- *
- * <p>Moves around the outer edge with the gun facing in.
- */
+// ------------------------------------------------------------------
+// Walls
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// Moves around the outer edge with the gun facing in.
+// ------------------------------------------------------------------
 public class Walls extends Bot {
 
     boolean peek; // Don't turn if there's a robot there
     double moveAmount; // How much to move
 
-    /**
-     * Main method starts our bot
-     */
+    // The main method starts our bot
     public static void main(String[] args) throws IOException {
         new Walls().start();
     }
 
-    /**
-     * Constructor, which loads the bot settings file
-     */
+    // Constructor, which loads the bot config file
     Walls() throws IOException {
         super(BotInfo.fromFile("Walls.json"));
     }
 
-    /**
-     * run: This method runs our bot program, where each command is executed one at a time in a loop.
-     */
+    // Called when a new round is started -> initialize and do movement
     @Override
     public void run() {
         // Set colors
@@ -46,7 +42,7 @@ public class Walls extends Bot {
         peek = false;
 
         // turn to face a wall.
-        // 'getDirection() % 90' means the remainder of getDirection() divided by 90.
+        // `getDirection() % 90` means the remainder of getDirection() divided by 90.
         turnRight(getDirection() % 90);
         forward(moveAmount);
 
@@ -68,9 +64,7 @@ public class Walls extends Bot {
         }
     }
 
-    /**
-     * onHitBot: Move away a bit.
-     */
+    // We hit another bot -> move away a bit
     @Override
     public void onHitBot(HitBotEvent e) {
         // If he's in front of us, set back up a bit.
@@ -82,9 +76,7 @@ public class Walls extends Bot {
         }
     }
 
-    /**
-     * onScannedBot: Fire!
-     */
+    // We scanned another bot -> fire!
     @Override
     public void onScannedBot(ScannedBotEvent e) {
         fire(2);

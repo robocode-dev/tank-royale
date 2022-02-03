@@ -3,33 +3,29 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 import java.io.IOException;
 
-/**
- * TrackFire - a sample bot, original version by Mathew Nelson for Robocode.
- * Modified by Flemming N. Larsen.
- *
- * <p>Sits still. Tracks and fires at the nearest robot it sees.
- */
+// ------------------------------------------------------------------
+// TrackFire
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// Sits still. Tracks and fires at the nearest robot it sees.
+// ------------------------------------------------------------------
 public class TrackFire extends Bot {
 
     boolean isScanning; // flag set when scanning
 
-    /**
-     * Main method starts our bot
-     */
+    // The main method starts our bot
     public static void main(String[] args) throws IOException {
         new TrackFire().start();
     }
 
-    /**
-     * Constructor, which loads the bot settings file
-     */
+    // Constructor, which loads the bot config file
     protected TrackFire() throws IOException {
         super(BotInfo.fromFile("TrackFire.json"));
     }
 
-    /**
-     * TrackFire's run method
-     */
+    // Called when a new round is started -> initialize and do movement
     @Override
     public void run() {
         isScanning = false; // reset scanning flag
@@ -52,9 +48,7 @@ public class TrackFire extends Bot {
         }
     }
 
-    /**
-     * onScannedBot: We have a target. Go get it.
-     */
+    // We scanned another bot -> we have a target, so go get it
     @Override
     public void onScannedBot(ScannedBotEvent e) {
         isScanning = true; // we started scanning
@@ -80,9 +74,7 @@ public class TrackFire extends Bot {
         isScanning = false; // we stopped scanning
     }
 
-    /**
-     * onWonRound: Do a victory dance!
-     */
+    // We won the round -> do a victory dance!
     @Override
     public void onWonRound(WonRoundEvent e) {
         // Victory dance turning right 360 degrees 100 times

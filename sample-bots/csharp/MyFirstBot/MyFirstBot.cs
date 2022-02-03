@@ -1,25 +1,27 @@
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
-/// <summary>
-/// MyFirstBot - a sample bot, original version by Mathew Nelson for Robocode.
-///
-/// Probably the first bot you will learn about.
-///
-/// Moves in a seesaw motion, and spins the gun around at each end.
-/// </summary>
+// ------------------------------------------------------------------
+// MyFirstBot
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// Probably the first bot you will learn about.
+// Moves in a seesaw motion, and spins the gun around at each end.
+// ------------------------------------------------------------------
 public class MyFirstBot : Bot
 {
-    /// Main method starts our bot
+    // The main method starts our bot
     static void Main(string[] args)
     {
         new MyFirstBot().Start();
     }
 
-    /// Constructor, which loads the bot settings file
+    // Constructor, which loads the bot config file
     MyFirstBot() : base(BotInfo.FromFile("MyFirstBot.json")) { }
 
-    /// This method runs our bot program, where each command is executed one at a time in a loop.
+    // Called when a new round is started -> initialize and do movement
     public override void Run()
     {
         // Repeat while the bot is running
@@ -32,13 +34,13 @@ public class MyFirstBot : Bot
         }
     }
 
-    /// Our bot scanned another bot. Fire when we see another bot!
+    // We saw another bot -> fire!
     public override void OnScannedBot(ScannedBotEvent evt)
     {
         Fire(1);
     }
 
-    /// Our bot has been hit by a bullet. Turn perpendicular to the bullet so our seesaw might avoid a future shot.
+    // We were hit by a bullet -> turn perpendicular to the bullet
     public override void OnHitByBullet(BulletHitBotEvent evt)
     {
         // Calculate the bearing to the direction of the bullet

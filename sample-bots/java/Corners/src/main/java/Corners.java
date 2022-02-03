@@ -3,35 +3,32 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 import java.io.IOException;
 
-/**
- * Corners - a sample bot, original version by Mathew Nelson for Robocode.
- *
- * <p>This bot moves to a corner, then swings the gun back and forth. If it dies, it tries a new
- * corner in the next round.
- */
+// ------------------------------------------------------------------
+// Corners
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// This bot moves to a corner, then swings the gun back and forth.
+// If it dies, it tries a new corner in the next round.
+// ------------------------------------------------------------------
 public class Corners extends Bot {
 
-    static int corner = 0; // Which corner we are currently using
     int enemies; // Number of enemy robots in the game
+    int corner = 0; // Which corner we are currently using
     boolean stopWhenSeeRobot = false; // See goCorner()
 
-    /**
-     * Constructor, which loads the bot settings file
-     */
-    Corners() throws IOException {
-        super(BotInfo.fromFile("Corners.json"));
-    }
-
-    /**
-     * Main method starts our bot
-     */
+    // The main method starts our bot
     public static void main(String[] args) throws IOException {
         new Corners().start();
     }
 
-    /**
-     * This method runs our bot program, where each command is executed one at a time in a loop.
-     */
+    // Constructor, which loads the bot config file
+    Corners() throws IOException {
+        super(BotInfo.fromFile("Corners.json"));
+    }
+
+    // Called when a new round is started -> initialize and do movement
     @Override
     public void run() {
         // Set colors
@@ -59,9 +56,8 @@ public class Corners extends Bot {
         }
     }
 
-    /**
-     * A very inefficient way to get to a corner. Can you do better?
-     */
+    // A very inefficient way to get to a corner.
+    // Can you do better as an home exercise? :)
     private void goCorner() {
         // We don't want to stop when we're just turning...
         stopWhenSeeRobot = false;
@@ -79,9 +75,7 @@ public class Corners extends Bot {
         turnGunRight(90);
     }
 
-    /**
-     * We saw another bot. Stop and fire!
-     */
+    // We saw another bot -> stop and fire!
     @Override
     public void onScannedBot(ScannedBotEvent e) {
         double distance = distanceTo(e.getX(), e.getY());
@@ -102,11 +96,8 @@ public class Corners extends Bot {
         }
     }
 
-    /**
-     * Custom fire method that determines firepower based on distance.
-     *
-     * @param distance the distance to the robot to fire at
-     */
+    // Custom fire method that determines firepower based on distance.
+    // distance: The distance to the robot to fire at.
     private void smartFire(double distance) {
         if (distance > 200 || getEnergy() < 15) {
             fire(1);
@@ -117,9 +108,7 @@ public class Corners extends Bot {
         }
     }
 
-    /**
-     * We died. Figure out if we need to switch to another corner.
-     */
+    // We died -> figure out if we need to switch to another corner
     @Override
     public void onDeath(DeathEvent e) {
         // Well, others should never be 0, but better safe than sorry.

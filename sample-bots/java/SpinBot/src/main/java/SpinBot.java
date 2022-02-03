@@ -3,24 +3,27 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 import java.io.IOException;
 
-/**
- * SpinBot - a sample bot, original version by Mathew Nelson for Robocode.
- *
- * <p>Moves in a circle, firing hard when an enemy is detected.
- */
+// ------------------------------------------------------------------
+// SpinBot
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// Moves in a circle, firing hard when an enemy is detected.
+// ------------------------------------------------------------------
 public class SpinBot extends Bot {
 
+    // The main method starts our bot
     public static void main(String[] args) throws IOException {
         new SpinBot().start();
     }
 
+    // Constructor, which loads the bot config file
     protected SpinBot() throws IOException {
         super(BotInfo.fromFile("SpinBot.json"));
     }
 
-    /**
-     * SpinBot's run method - Move in a circle
-     */
+    // Called when a new round is started -> initialize and do movement
     @Override
     public void run() {
         setBodyColor("#00F"); // blue
@@ -30,7 +33,7 @@ public class SpinBot extends Bot {
 
         // Repeat while the bot is running
         while (isRunning()) {
-            // Tell the game that when we take move, we'll also want to turn right... a lot.
+            // Tell the game that when we take move, we'll also want to turn right... a lot
             setTurnLeft(10_000);
             // Limit our speed to 5
             setMaxSpeed(5);
@@ -39,17 +42,14 @@ public class SpinBot extends Bot {
         }
     }
 
-    /**
-     * onScannedBot: Fire hard when scanning another bot!
-     */
+    // We scanned another bot -> fire hard!
     @Override
     public void onScannedBot(ScannedBotEvent e) {
-        fire(3); // Fire the cannon!
+        fire(3);
     }
 
-    /**
-     * onHitBot: If it's our fault, we'll stop turning and moving, so we need to turn again to keep spinning.
-     */
+    // We hit another bot -> if it's our fault, we'll stop turning and moving,
+    // so we need to turn again to keep spinning.
     @Override
     public void onHitBot(HitBotEvent e) {
         double direction = directionTo(e.getX(), e.getY());

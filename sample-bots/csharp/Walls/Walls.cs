@@ -2,25 +2,29 @@ using System;
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
-/// <summary>
-/// Walls - a sample bot, original version by Mathew Nelson for Robocode.
-/// Modified by Flemming N. Larsen.
-///
-/// Moves around the outer edge with the gun facing in.
-/// </summary>
+// ------------------------------------------------------------------
+// Walls
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// Moves around the outer edge with the gun facing in.
+// ------------------------------------------------------------------
 public class Walls : Bot
 {
     bool peek; // Don't turn if there's a robot there
     double moveAmount; // How much to move
 
+    // The main method starts our bot
     static void Main()
     {
         new Walls().Start();
     }
 
+    // Constructor, which loads the bot config file
     Walls() : base(BotInfo.FromFile("Walls.json")) { }
 
-    // Run: This method runs our bot program, where each command is executed one at a time in a loop.
+    // Called when a new round is started -> initialize and do movement
     public override void Run()
     {
         // Set colors
@@ -36,7 +40,7 @@ public class Walls : Bot
         peek = false;
 
         // turn to face a wall.
-        // 'Direction % 90' means the remainder of Direction divided by 90.
+        // `Direction % 90` means the remainder of Direction divided by 90.
         TurnRight(Direction % 90);
         Forward(moveAmount);
 
@@ -59,7 +63,7 @@ public class Walls : Bot
         }
     }
 
-    // OnHitBot: Move away a bit.
+    // We hit another bot -> move away a bit
     public override void OnHitBot(HitBotEvent e)
     {
         // If he's in front of us, set back up a bit.
@@ -74,7 +78,7 @@ public class Walls : Bot
         }
     }
 
-    // OnScannedBot: Fire!
+    // We scanned another bot -> fire!
     public override void OnScannedBot(ScannedBotEvent e)
     {
         SetFire(2);

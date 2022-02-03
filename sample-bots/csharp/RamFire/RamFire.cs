@@ -1,17 +1,19 @@
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
-/// <summary>
-/// RamFire - a sample bot, original version by Mathew Nelson for Robocode.
-/// Modified by Flemming N. Larsen.
-/// 
-/// Drives at robots trying to ram them. Fires when it hits them.
-/// </summary>
+// ------------------------------------------------------------------
+// RamFire
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// Drives at robots trying to ram them. Fires when it hits them.
+// ------------------------------------------------------------------
 public class RamFire : Bot
 {
     int turnDirection = 1; // clockwise (-1) or counterclockwise (1)
 
-    // Main method starts our bot
+    // The main method starts our bot
     static void Main(string[] args)
     {
         new RamFire().Start();
@@ -20,7 +22,7 @@ public class RamFire : Bot
     // Constructor, which loads the bot settings file
     RamFire() : base(BotInfo.FromFile("RamFire.json")) { }
 
-    // Run: Spin around looking for a target.
+    // Called when a new round is started -> initialize and do movement
     public override void Run()
     {
         // Set colors
@@ -35,7 +37,7 @@ public class RamFire : Bot
         }
     }
 
-    /** OnScannedRobot: We have a target. Go ram it. */
+    // We scanned another bot -> go ram it
     public override void OnScannedBot(ScannedBotEvent e)
     {
         TurnToFaceTarget(e.X, e.Y);
@@ -45,7 +47,7 @@ public class RamFire : Bot
         Scan(); // Might want to move forward again!
     }
 
-    /** OnBulletHit: Turn to face robot, fire hard, and ram it again! */
+    // We have hit another bot -> turn to face robot, fire hard, and ram it again!
     public override void OnHitBot(HitBotEvent e)
     {
         TurnToFaceTarget(e.X, e.Y);
@@ -66,10 +68,8 @@ public class RamFire : Bot
         Forward(40); // Ram it again!
     }
 
-    /**
-     * TurnToFaceTarget: Method that turns the bot to face the target at coordinate x,y, but also sets
-     * the default turn direction used if no bot is being scanned within in the run() method.
-     */
+    // Method that turns the bot to face the target at coordinate x,y, but also sets the
+    // default turn direction used if no bot is being scanned within in the Run() method.
     private void TurnToFaceTarget(double x, double y)
     {
         double bearing = BearingTo(x, y);

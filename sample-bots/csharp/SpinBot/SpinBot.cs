@@ -1,21 +1,26 @@
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
-/// <summary>
-/// SpinBot - a sample bot, original version by Mathew Nelson for Robocode.
-///
-/// Moves in a circle, firing hard when an enemy is detected.
-/// </summary>
+// ------------------------------------------------------------------
+// SpinBot
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// Moves in a circle, firing hard when an enemy is detected.
+// ------------------------------------------------------------------
 public class SpinBot : Bot
 {
+    // The main method starts our bot
     static void Main(string[] args)
     {
         new SpinBot().Start();
     }
 
+    // Constructor, which loads the bot config file
     SpinBot() : base(BotInfo.FromFile("SpinBot.json")) { }
 
-    // This method runs our bot program, where each command is executed one at a time
+    // Called when a new round is started -> initialize and do movement
     public override void Run()
     {
         SetBodyColor("#00F"); // blue
@@ -26,7 +31,7 @@ public class SpinBot : Bot
         // Repeat while the bot is running
         while (IsRunning)
         {
-            // Tell the game that when we take move, we'll also want to turn right... a lot.
+            // Tell the game that when we take move, we'll also want to turn right... a lot
             SetTurnLeft(10_000);
             // Limit our speed to 5
             SetMaxSpeed(5);
@@ -35,13 +40,14 @@ public class SpinBot : Bot
         }
     }
 
-    // OnScannedBot: Fire hard when scanning another bot!
+    // We scanned another bot -> fire hard!
     public override void OnScannedBot(ScannedBotEvent evt)
     {
-        Fire(3); // Fire the cannon!
+        Fire(3);
     }
 
-    // OnHitBot: If it's our fault, we'll stop turning and moving, so we need to turn again to keep spinning.
+    // We hit another bot -> if it's our fault, we'll stop turning and moving,
+    // so we need to turn again to keep spinning.
     public override void OnHitBot(HitBotEvent e)
     {
         var bearing = BearingTo(e.X, e.Y);

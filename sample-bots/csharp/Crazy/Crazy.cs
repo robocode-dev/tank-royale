@@ -1,24 +1,28 @@
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
-/// <summary>
-/// Crazy - a sample bot, original version by Mathew Nelson for Robocode.
-///
-/// This robot moves around in a crazy pattern.
-/// </summary>
+// ------------------------------------------------------------------
+// Crazy
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// This robot moves around in a crazy pattern.
+// ------------------------------------------------------------------
 public class Crazy : Bot
 {
     bool movingForward;
 
-    /** Main method starts our bot */
+    // The main method starts our bot
     static void Main()
     {
         new Crazy().Start();
     }
 
+    // Constructor, which loads the bot config file
     private Crazy() : base(BotInfo.FromFile("Crazy.json")) { }
 
-    /** Run: Crazy's main run function */
+    // Called when a new round is started -> initialize and do movement
     public override void Run()
     {
         // Set colors
@@ -39,14 +43,14 @@ public class Crazy : Bot
             // Tell the game we will want to turn right 90
             SetTurnRight(90);
             // At this point, we have indicated to the game that *when we do something*,
-            // we will want to move ahead and turn right. That's what "set" means.
+            // we will want to move ahead and turn right. That's what "Set" means.
             // It is important to realize we have not done anything yet!
             // In order to actually move, we'll want to call a method that takes real time, such as
-            // waitFor.
-            // waitFor actually starts the action -- we start moving and turning.
+            // WaitFor.
+            // WaitFor actually starts the action -- we start moving and turning.
             // It will not return until we have finished turning.
             WaitFor(new TurnCompleteCondition(this));
-            // Note:  We are still moving ahead now, but the turn is complete.
+            // Note: We are still moving ahead now, but the turn is complete.
             // Now we'll turn the other way...
             SetTurnLeft(180);
             // ... and wait for the turn to finish ...
@@ -55,18 +59,18 @@ public class Crazy : Bot
             SetTurnRight(180);
             // ... and wait for that turn to finish.
             WaitFor(new TurnCompleteCondition(this));
-            // then back to the top to do it all again
+            // then back to the top to do it all again.
         }
     }
 
-    /** OnHitWall: Handle collision with wall. */
+    // We collided with a wall -> reverse the direction
     public override void OnHitWall(HitWallEvent e)
     {
         // Bounce off!
         ReverseDirection();
     }
 
-    /** ReverseDirection: Switch from ahead to back & vice versa */
+    // ReverseDirection: Switch from ahead to back & vice versa
     public void ReverseDirection()
     {
         if (movingForward)
@@ -81,13 +85,13 @@ public class Crazy : Bot
         }
     }
 
-    /** OnScannedBot: Fire! */
+    // We scanned another bot -> fire!
     public override void OnScannedBot(ScannedBotEvent e)
     {
         Fire(1);
     }
 
-    /** OnHitRobot: Back up! */
+    // We hit another bot -> back up!
     public override void OnHitBot(HitBotEvent e)
     {
         // If we're moving into the other robot, reverse!
@@ -98,9 +102,7 @@ public class Crazy : Bot
     }
 }
 
-/// <summary>
-/// Condition that is triggered when the bot's turn is complete.
-/// </summary>
+// Condition that is triggered when the bot´s turn is complete
 public class TurnCompleteCondition : Condition
 {
     private readonly Bot bot;
@@ -112,6 +114,7 @@ public class TurnCompleteCondition : Condition
 
     public override bool Test()
     {
-        return bot.TurnRemaining == 0; // turn is complete when the remainder of the turn is zero
+        // turn is complete when the remainder of the turn is zero
+        return bot.TurnRemaining == 0;
     }
 }

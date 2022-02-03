@@ -1,19 +1,21 @@
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
-/// <summary>
-/// Fire - a sample bot, original version by Mathew Nelson for Robocode.
-/// Modified by Flemming N. Larsen.
-/// 
-/// This bot moves to a corner, then swings the gun back and forth. If it dies, it tries a new
-/// corner in the next round.
-/// </summary>
+// ------------------------------------------------------------------
+// Fire
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// This bot moves to a corner, then swings the gun back and forth.
+// If it dies, it tries a new corner in the next round.
+// ------------------------------------------------------------------
 public class Fire : Bot
 {
     int dist = 50; // Distance to move when we're hit, forward or back
-    bool isScanning; // Flag indicating if onScannedBot() handler is running
+    bool isScanning; // Flag indicating if OnScannedBot() handler is running
 
-    // Main method starts our bot
+    // The main method starts our bot
     static void Main(string[] args)
     {
         new Fire().Start();
@@ -22,7 +24,7 @@ public class Fire : Bot
     // Constructor, which loads the bot settings file
     Fire() : base(BotInfo.FromFile("Fire.json")) { }
 
-    // This method runs our bot program, where each command is executed one at a time in a loop.
+    // Called when a new round is started -> initialize and do movement
     public override void Run()
     {
         isScanning = false; // Clear scanning flag for each new turn
@@ -52,7 +54,7 @@ public class Fire : Bot
         }
     }
 
-    // OnScannedBot: Fire!
+    // We scanned another bot -> fire!
     public override void OnScannedBot(ScannedBotEvent e)
     {
         isScanning = true; // We are now scanning
@@ -74,7 +76,7 @@ public class Fire : Bot
         isScanning = false; // We are not scanning any more
     }
 
-    // OnHitByBullet: Turn perpendicular to the bullet, and move a bit.
+    // We were hit by a bullet -> turn perpendicular to the bullet, and move a bit
     public override void OnHitByBullet(BulletHitBotEvent e)
     {
         // Turn perpendicular to the bullet direction
@@ -88,7 +90,7 @@ public class Fire : Bot
         Scan();
     }
 
-    // OnHitBot: Aim at target and fire hard.
+    // We have hit another bot -> aim at it and fire hard!
     public override void OnHitBot(HitBotEvent e)
     {
         // Turn gun to the bullet direction

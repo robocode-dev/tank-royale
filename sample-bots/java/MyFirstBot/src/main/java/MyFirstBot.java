@@ -3,32 +3,28 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 import java.io.IOException;
 
-/**
- * MyFirstBot - a sample bot, original version by Mathew Nelson for Robocode.
- *
- * <p>Probably the first bot you will learn about.
- *
- * <p>Moves in a seesaw motion, and spins the gun around at each end.
- */
+// ------------------------------------------------------------------
+// MyFirstBot
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// Probably the first bot you will learn about.
+// Moves in a seesaw motion, and spins the gun around at each end.
+// ------------------------------------------------------------------
 public class MyFirstBot extends Bot {
 
-    /**
-     * Main method starts our bot
-     */
+    // The main method starts our bot
     public static void main(String[] args) throws IOException {
         new MyFirstBot().start();
     }
 
-    /**
-     * Constructor, which loads the bot settings file
-     */
+    // Constructor, which loads the bot config file
     protected MyFirstBot() throws IOException {
         super(BotInfo.fromFile("MyFirstBot.json"));
     }
 
-    /**
-     * This method runs our bot program, where each command is executed one at a time in a loop.
-     */
+    // Called when a new round is started -> initialize and do movement
     @Override
     public void run() {
         // Repeat while the bot is running
@@ -40,18 +36,13 @@ public class MyFirstBot extends Bot {
         }
     }
 
-    /**
-     * Our bot scanned another bot. Fire when we see another bot!
-     */
+    // We saw another bot -> fire!
     @Override
     public void onScannedBot(ScannedBotEvent e) {
         fire(1);
     }
 
-    /**
-     * Our bot has been hit by a bullet. Turn perpendicular to the bullet so our seesaw might avoid a
-     * future shot.
-     */
+    // We were hit by a bullet -> turn perpendicular to the bullet
     @Override
     public void onHitByBullet(BulletHitBotEvent e) {
         // Calculate the bearing to the direction of the bullet

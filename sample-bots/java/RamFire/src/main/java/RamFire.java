@@ -3,32 +3,29 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 import java.io.IOException;
 
-/**
- * RamFire - a sample bot, original version by Mathew Nelson for Robocode.
- * Modified by Flemming N. Larsen.
- *
- * <p>Drives at robots trying to ram them. Fires when it hits them.
- */
+// ------------------------------------------------------------------
+// RamFire
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// Drives at robots trying to ram them. Fires when it hits them.
+// ------------------------------------------------------------------
 public class RamFire extends Bot {
+
     int turnDirection = 1; // clockwise (-1) or counterclockwise (1)
 
-    /**
-     * Main method starts our bot
-     */
+    // The main method starts our bot
     public static void main(String[] args) throws IOException {
         new RamFire().start();
     }
 
-    /**
-     * Constructor, which loads the bot settings file
-     */
+    // Constructor, which loads the bot config file
     protected RamFire() throws IOException {
         super(BotInfo.fromFile("RamFire.json"));
     }
 
-    /**
-     * run: Spin around looking for a target
-     */
+    // Called when a new round is started -> initialize and do movement
     @Override
     public void run() {
         // Set colors
@@ -41,9 +38,7 @@ public class RamFire extends Bot {
         }
     }
 
-    /**
-     * onScannedRobot: We have a target. Go ram it.
-     */
+    // We scanned another bot -> go ram it
     @Override
     public void onScannedBot(ScannedBotEvent e) {
         turnToFaceTarget(e.getX(), e.getY());
@@ -54,9 +49,7 @@ public class RamFire extends Bot {
         scan(); // Might want to move forward again!
     }
 
-    /**
-     * onHitBot: Turn to face robot, fire hard, and ram him again!
-     */
+    // We have hit another bot -> turn to face robot, fire hard, and ram it again!
     @Override
     public void onHitBot(HitBotEvent e) {
         turnToFaceTarget(e.getX(), e.getY());
@@ -77,10 +70,8 @@ public class RamFire extends Bot {
         forward(40); // Ram him again!
     }
 
-    /**
-     * turnToFaceTarget: Method that turns the bot to face the target at coordinate x,y, but also sets
-     * the default turn direction used if no bot is being scanned within in the run() method.
-     */
+    // Method that turns the bot to face the target at coordinate x,y, but also sets the
+    // default turn direction used if no bot is being scanned within in the run() method.
     private void turnToFaceTarget(double x, double y) {
         double bearing = bearingTo(x, y);
         if (bearing >= 0) {

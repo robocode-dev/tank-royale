@@ -3,34 +3,31 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 import java.io.IOException;
 
-/**
- * Fire - a sample bot, original version by Mathew Nelson for Robocode. Modified by Flemming N.
- * Larsen.
- *
- * <p>This bot sits still. Spins gun around. Moves when hit.
- */
+// ------------------------------------------------------------------
+// Fire
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// This bot moves to a corner, then swings the gun back and forth.
+// If it dies, it tries a new corner in the next round.
+// ------------------------------------------------------------------
 public class Fire extends Bot {
 
     int dist = 50; // Distance to move when we're hit, forward or back
     boolean isScanning; // Flag indicating if onScannedBot() handler is running
 
-    /**
-     * Constructor, which loads the bot settings file
-     */
-    protected Fire() throws IOException {
-        super(BotInfo.fromFile("Fire.json"));
-    }
-
-    /**
-     * Main method starts our bot
-     */
+    // The main method starts our bot
     public static void main(String[] args) throws IOException {
         new Fire().start();
     }
 
-    /**
-     * This method runs our bot program, where each command is executed one at a time in a loop.
-     */
+    // Constructor, which loads the bot settings file
+    protected Fire() throws IOException {
+        super(BotInfo.fromFile("Fire.json"));
+    }
+
+    // Called when a new round is started -> initialize and do movement
     @Override
     public void run() {
         isScanning = false; // Clear scanning flag for each new turn
@@ -55,9 +52,7 @@ public class Fire extends Bot {
         }
     }
 
-    /**
-     * onScannedBot: Fire!
-     */
+    // We scanned another bot -> fire!
     @Override
     public void onScannedBot(ScannedBotEvent e) {
         isScanning = true; // We are now scanning
@@ -76,9 +71,7 @@ public class Fire extends Bot {
         isScanning = false; // We are not scanning any more
     }
 
-    /**
-     * onHitByBullet: Turn perpendicular to the bullet, and move a bit.
-     */
+    // We were hit by a bullet -> turn perpendicular to the bullet, and move a bit
     @Override
     public void onHitByBullet(BulletHitBotEvent e) {
         // Turn perpendicular to the bullet direction
@@ -92,9 +85,7 @@ public class Fire extends Bot {
         scan();
     }
 
-    /**
-     * onHitBot: Aim at target and fire hard.
-     */
+    // We have hit another bot -> aim at it and fire hard!
     @Override
     public void onHitBot(HitBotEvent e) {
         // Turn gun to the bullet direction

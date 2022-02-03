@@ -1,26 +1,28 @@
 using System;
 using Robocode.TankRoyale.BotApi.Events;
 
-/// <summary>
-/// TrackFire - a sample bot, original version by Mathew Nelson for Robocode.
-/// Modified by Flemming N. Larsen.
-/// 
-/// Sits still. Tracks and fires at the nearest robot it sees.
-/// </summary>
+// ------------------------------------------------------------------
+// TrackFire
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// Sits still. Tracks and fires at the nearest robot it sees.
+// ------------------------------------------------------------------
 public class TrackFire : Bot
 {
     bool isScanning; // flag set when scanning
 
-    // Main method starts our bot
+    // The main method starts our bot
     static void Main(string[] args)
     {
         new TrackFire().Start();
     }
 
-    // Constructor, which loads the bot settings file
+    // Constructor, which loads the bot config file
     TrackFire() : base(BotInfo.FromFile("TrackFire.json")) { }
 
-    // TrackFire's run method
+    // Called when a new round is started -> initialize and do movement
     public override void Run()
     {
         isScanning = false; // reset scanning flag
@@ -43,7 +45,7 @@ public class TrackFire : Bot
         }
     }
 
-    // OnScannedRobot: We have a target. Go get it.
+    // We scanned another bot -> we have a target, so go get it
     public override void OnScannedBot(ScannedBotEvent e)
     {
         isScanning = true; // we started scanning
@@ -69,7 +71,7 @@ public class TrackFire : Bot
         isScanning = false; // we stopped scanning
     }
 
-    // OnWonRound: Do a victory dance!
+    // We won the round -> do a victory dance!
     public override void OnWonRound(WonRoundEvent e)
     {
         // Victory dance turning right 360 degrees 100 times

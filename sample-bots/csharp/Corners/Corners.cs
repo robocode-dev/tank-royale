@@ -2,28 +2,31 @@ using System;
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
-/// <summary>
-/// Corners - a sample bot, original version by Mathew Nelson for Robocode.
-/// 
-/// This bot moves to a corner, then swings the gun back and forth. If it dies, it tries a new
-/// corner in the next round.
-/// </summary>
+// ------------------------------------------------------------------
+// Corners
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// This bot moves to a corner, then swings the gun back and forth.
+// If it dies, it tries a new corner in the next round.
+// ------------------------------------------------------------------
 public class Corners : Bot
 {
     int enemies; // Number of enemy robots in the game
     int corner = 0; // Which corner we are currently using
     bool stopWhenSeeRobot = false; // See GoCorner()
 
-    // Main method starts our bot
+    // The main method starts our bot
     static void Main(string[] args)
     {
         new Corners().Start();
     }
 
-    // Constructor, which loads the bot settings file
+    // Constructor, which loads the bot config file
     Corners() : base(BotInfo.FromFile("Corners.json")) { }
 
-    // This method runs our bot program, where each command is executed one at a time in a loop.
+    // Called when a new round is started -> initialize and do movement
     public override void Run()
     {
         // Set colors
@@ -53,12 +56,13 @@ public class Corners : Bot
         }
     }
 
-    /** A very inefficient way to get to a corner. Can you do better? */
+    // A very inefficient way to get to a corner.
+    // Can you do better as an home exercise? :)
     private void GoCorner()
     {
         // We don't want to stop when we're just turning...
         stopWhenSeeRobot = false;
-        // turn to face the wall towards our desired corner.
+        // Turn to face the wall towards our desired corner
         TurnLeft(CalcBearing(corner));
         // Ok, now we don't want to crash into any robot in our way...
         stopWhenSeeRobot = true;
@@ -72,7 +76,7 @@ public class Corners : Bot
         TurnGunRight(90);
     }
 
-    /** We saw another bot. Stop and fire! */
+    // We saw another bot -> stop and fire!
     public override void OnScannedBot(ScannedBotEvent e)
     {
         var distance = DistanceTo(e.X, e.Y);
@@ -105,16 +109,18 @@ public class Corners : Bot
             Fire(3);
     }
 
-    // We died. Figure out if we need to switch to another corner.
+    // We died -> figure out if we need to switch to another corner
     public override void OnDeath(DeathEvent e)
     {
         // Well, others should never be 0, but better safe than sorry.
-        if (enemies == 0) return;
+        if (enemies == 0)
+            return;
 
         // If 75% of the robots are still alive when we die, we'll switch corners.
         if (EnemyCount / (double)enemies >= .75)
         {
-            if (corner != 270) corner += 90;
+            if (corner != 270)
+                corner += 90;
 
             Console.WriteLine("I died and did poorly... switching corner to " + corner);
         }
