@@ -15,17 +15,17 @@ public class Walls extends Bot {
     double moveAmount; // How much to move
 
     /**
-     * Constructor, which loads the bot settings file
-     */
-    Walls() throws IOException {
-        super(BotInfo.fromFile("Walls.json"));
-    }
-
-    /**
      * Main method starts our bot
      */
     public static void main(String[] args) throws IOException {
         new Walls().start();
+    }
+
+    /**
+     * Constructor, which loads the bot settings file
+     */
+    Walls() throws IOException {
+        super(BotInfo.fromFile("Walls.json"));
     }
 
     /**

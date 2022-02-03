@@ -13,17 +13,17 @@ public class Target extends Bot {
     int trigger; // Keeps track of when to move
 
     /**
-     * Constructor, which loads the bot settings file
-     */
-    protected Target() throws IOException {
-        super(BotInfo.fromFile("/Target.json"));
-    }
-
-    /**
      * Main method starts our bot
      */
     public static void main(String[] args) throws IOException {
         new Target().start();
+    }
+
+    /**
+     * Constructor, which loads the bot settings file
+     */
+    protected Target() throws IOException {
+        super(BotInfo.fromFile("/Target.json"));
     }
 
     /**

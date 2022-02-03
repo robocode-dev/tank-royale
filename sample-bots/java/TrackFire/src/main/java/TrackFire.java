@@ -14,17 +14,17 @@ public class TrackFire extends Bot {
     boolean isScanning; // flag set when scanning
 
     /**
-     * Constructor, which loads the bot settings file
-     */
-    protected TrackFire() throws IOException {
-        super(BotInfo.fromFile("TrackFire.json"));
-    }
-
-    /**
      * Main method starts our bot
      */
     public static void main(String[] args) throws IOException {
         new TrackFire().start();
+    }
+
+    /**
+     * Constructor, which loads the bot settings file
+     */
+    protected TrackFire() throws IOException {
+        super(BotInfo.fromFile("TrackFire.json"));
     }
 
     /**

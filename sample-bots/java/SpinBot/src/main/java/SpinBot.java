@@ -10,12 +10,12 @@ import java.io.IOException;
  */
 public class SpinBot extends Bot {
 
-    protected SpinBot() throws IOException {
-        super(BotInfo.fromFile("SpinBot.json"));
-    }
-
     public static void main(String[] args) throws IOException {
         new SpinBot().start();
+    }
+
+    protected SpinBot() throws IOException {
+        super(BotInfo.fromFile("SpinBot.json"));
     }
 
     /**

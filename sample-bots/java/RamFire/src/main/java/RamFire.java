@@ -13,17 +13,17 @@ public class RamFire extends Bot {
     int turnDirection = 1; // clockwise (-1) or counterclockwise (1)
 
     /**
-     * Constructor, which loads the bot settings file
-     */
-    protected RamFire() throws IOException {
-        super(BotInfo.fromFile("RamFire.json"));
-    }
-
-    /**
      * Main method starts our bot
      */
     public static void main(String[] args) throws IOException {
         new RamFire().start();
+    }
+
+    /**
+     * Constructor, which loads the bot settings file
+     */
+    protected RamFire() throws IOException {
+        super(BotInfo.fromFile("RamFire.json"));
     }
 
     /**

@@ -13,17 +13,17 @@ import java.io.IOException;
 public class MyFirstBot extends Bot {
 
     /**
-     * Constructor, which loads the bot settings file
-     */
-    protected MyFirstBot() throws IOException {
-        super(BotInfo.fromFile("MyFirstBot.json"));
-    }
-
-    /**
      * Main method starts our bot
      */
     public static void main(String[] args) throws IOException {
         new MyFirstBot().start();
+    }
+
+    /**
+     * Constructor, which loads the bot settings file
+     */
+    protected MyFirstBot() throws IOException {
+        super(BotInfo.fromFile("MyFirstBot.json"));
     }
 
     /**
