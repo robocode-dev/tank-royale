@@ -6,6 +6,6 @@
   "description": "Drives at robots trying to ram them. Fires when it hits them.",
   "homepage": "",
   "countryCodes": "us, dk",
-  "platform": "Java 8",
+  "platform": "JVM",
   "programmingLang": "Java 8"
 }

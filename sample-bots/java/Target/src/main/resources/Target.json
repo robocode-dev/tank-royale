@@ -6,6 +6,6 @@
   "description": "Sits still. Moves every time energy drops by 20. This Robot demonstrates custom events.",
   "homepage": "",
   "countryCodes": "us, dk",
-  "platform": "Java 8",
+  "platform": "JVM",
   "programmingLang": "Java 8"
 }

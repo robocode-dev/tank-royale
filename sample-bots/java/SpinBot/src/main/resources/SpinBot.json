@@ -6,6 +6,6 @@
   "description": "A sample bot that spins in a circles, firing hard when an enemy is detected.",
   "homepage": "",
   "countryCodes": "us, dk",
-  "platform": "Java 8",
+  "platform": "JVM",
   "programmingLang": "Java 8"
 }

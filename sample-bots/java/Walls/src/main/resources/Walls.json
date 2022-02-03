@@ -6,6 +6,6 @@
   "description": "Moves around the outer edge with the gun facing in.",
   "homepage": "",
   "countryCodes": "us, dk",
-  "platform": "Java 8",
+  "platform": "JVM",
   "programmingLang": "Java 8"
 }

@@ -6,6 +6,6 @@
   "description": "Sits still. Tracks and fires at the nearest robot it sees.",
   "homepage": "",
   "countryCodes": "us, dk",
-  "platform": "Java 8",
+  "platform": "JVM",
   "programmingLang": "Java 8"
 }

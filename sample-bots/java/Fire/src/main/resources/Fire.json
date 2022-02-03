@@ -6,6 +6,6 @@
   "description": "This bot sits still. Spins gun around. Moves when hit.",
   "homepage": "",
   "countryCodes": "us, dk",
-  "platform": "Java 8",
+  "platform": "JVM",
   "programmingLang": "Java 8"
 }
