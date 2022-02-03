@@ -1,9 +1,5 @@
-package dev.robocode.tankroyale.sample.bots;
-
-import dev.robocode.tankroyale.botapi.Bot;
-import dev.robocode.tankroyale.botapi.BotInfo;
-import dev.robocode.tankroyale.botapi.events.Condition;
-import dev.robocode.tankroyale.botapi.events.CustomEvent;
+import dev.robocode.tankroyale.botapi.*;
+import dev.robocode.tankroyale.botapi.events.*;
 
 import java.io.IOException;
 

@@ -1,8 +1,5 @@
-import dev.robocode.tankroyale.botapi.Bot;
-import dev.robocode.tankroyale.botapi.BotInfo;
-import dev.robocode.tankroyale.botapi.events.BulletHitBotEvent;
-import dev.robocode.tankroyale.botapi.events.HitBotEvent;
-import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
+import dev.robocode.tankroyale.botapi.*;
+import dev.robocode.tankroyale.botapi.events.*;
 
 import java.io.IOException;
 
