@@ -33,7 +33,7 @@ public class MyFirstBot extends Bot {
      */
     @Override
     public void run() {
-        // Repeat while bot is running
+        // Repeat while the bot is running
         while (isRunning()) {
             forward(100);
             turnGunRight(360);

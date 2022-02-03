@@ -25,7 +25,7 @@ namespace Robocode.TankRoyale.Sample.Bots
       SetRadarColor("#000"); // black
       SetScanColor("#FF0"); // yellow
 
-      // Repeat while bot is running
+      // Repeat while the bot is running
       while (IsRunning)
       {
         // Tell the game that when we take move, we'll also want to turn right... a lot.

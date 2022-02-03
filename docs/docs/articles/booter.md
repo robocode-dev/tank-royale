@@ -29,7 +29,7 @@ etc. for the bot.
 As minimum these files _must_ be available in a bot directory:
 
 - Script for running the bot, i.e. a **sh** file (macOS and Linux) or **cmd** (Windows) file.
-- [JSON config file](json-config.md) that describes the bot, and specify which game types it can handle.
+- [JSON config file](#json-config-file) that describes the bot, and specify which game types it can handle.
 
 ### Base filename
 
@@ -52,8 +52,8 @@ The booter will look for script files and look for some that match the OS it is 
 booter will try to locate a shell script file (.sh file) with the name _BotName_.sh and with Windows the booter will try
 to locate a command script file (.cmd file) with the name _BotName_.cmd.
 
-The script should contain the necessary command for running a bot. For Java-based bots, the `java` command can be used
-for running a bot, and for a .Net-based bot the `dotnet` command can be used for running the bot.
+The script should contain the necessary command for running a bot. For Java-based bots, the *java* command can be used
+for running a bot, and for a .Net-based bot the *dotnet* command can be used for running the bot.
 
 The assumption here is the command(s) used within the scripts are available on the local machine running the bots.
 Hence, it is a good idea to provide a ReadMe file that describes the required commands that must be installed to run the
@@ -92,18 +92,18 @@ These fields are required:
 The remaining fields are all optional, but recommended.
 
 Meaning of each field in the JSON file:
-
-* **name:** is the display name of the bot.
-* **version:** is the version of the bot, where [SEMVER](https://semver.org/) is the recommended format, but not a
+* *name*: is the display name of the bot.
+* *version*: is the version of the bot, where [SEMVER](https://semver.org/) is the recommended format, but not a
   requirement.
-* **gameTypes:** is a comma-separated list of the game types that bot supports (see below).
-* **authors:** is a comma-separated list with the name of the bot author(s).
-* **description:** is a brief description of the bot.
-* **homepage:** is a link to a web page for the bot.
-* **countryCodes:** is a comma-separated list of [Alpha-2](https://www.iban.com/country-codes) country codes for the bot
+* *gameTypes*: is a comma-separated list of the game types that bot supports (see below).
+* *authors*: is a comma-separated list with the (full) name of the bot author(s). The name could be a nickname or
+  handle. 
+* *description*: is a brief description of the bot.
+* *homepage*: is a link to a web page for the bot.
+* *countryCodes*: is a comma-separated list of [Alpha-2](https://www.iban.com/country-codes) country codes for the bot
   author(s).
-* **platform:** is the platform required for running the bot, e.g. Java 17 or .Net 5.0.
-* **programmingLang:** is the programming language used for programming the bot, e.g. C# or Kotlin.
+* *platform*: is the platform required for running the bot, e.g. Java 17 or .Net 5.0.
+* *programmingLang*: is the programming language used for programming the bot, e.g. C# or Kotlin.
 
 ### Game types
 

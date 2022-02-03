@@ -30,7 +30,7 @@ public class SpinBot extends Bot {
         setRadarColor("#000"); // black
         setScanColor("#FF0"); // yellow
 
-        // Repeat while bot is running
+        // Repeat while the bot is running
         while (isRunning()) {
             // Tell the game that when we take move, we'll also want to turn right... a lot.
             setTurnLeft(10_000);

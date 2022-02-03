@@ -24,7 +24,7 @@ namespace Robocode.TankRoyale.Sample.Bots
     /// This method runs our bot program, where each command is executed one at a time in a loop.
     public override void Run()
     {
-      // Repeat while bot is running
+      // Repeat while the bot is running
       while (IsRunning)
       {
         Forward(100);
