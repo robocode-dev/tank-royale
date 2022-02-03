@@ -9,7 +9,7 @@ version = project(":bot-api:java").version
 val archiveFilename = "sample-bots-java-${project.version}.zip"
 
 
-val homepageSampleBotsReleasePath: String by rootProject.extra
+val sampleBotsReleasePath: String by rootProject.extra
 
 
 plugins {
@@ -184,7 +184,7 @@ tasks.register("uploadBots") {
         session(sshServer, delegateClosureOf<SessionHandler> {
             print("Uploading Java sample bots...")
 
-            val destDir = homepageSampleBotsReleasePath + "/" + project.version
+            val destDir = sampleBotsReleasePath + "/" + project.version
             val destFile = "$destDir/$archiveFilename"
 
             execute("rm -f $destFile")
