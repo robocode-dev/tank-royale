@@ -23,7 +23,7 @@ public class Target extends Bot {
 
     // Constructor, which loads the bot config file
     protected Target() throws IOException {
-        super(BotInfo.fromFile("/Target.json"));
+        super(BotInfo.fromFile("Target.json"));
     }
 
     // Called when a new round is started -> initialize and do movement

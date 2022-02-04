@@ -177,7 +177,6 @@ val sshServer = remotes.create("sshServer") {
 }
 
 tasks.register("uploadBots") {
-    dependsOn(build)
     dependsOn(zipSampleBots)
 
     ssh.run(delegateClosureOf<RunHandler> {

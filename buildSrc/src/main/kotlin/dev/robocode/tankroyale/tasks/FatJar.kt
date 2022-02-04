@@ -43,6 +43,7 @@ abstract class FatJar : Jar() {
         }
         from(
             File("build/classes/kotlin/main"),
+            File("build/classes/java/main"), // Bot API is written in Java
             File("build/resources/main"),
             compileClasspath.filter { it.name.endsWith(".jar") }.map { project.zipTree(it) },
             runtimeClasspath.filter { it.name.endsWith(".jar") }.map { project.zipTree(it) }

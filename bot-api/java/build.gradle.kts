@@ -135,7 +135,7 @@ publishing {
         create<MavenPublication>("maven") {
             artifact(archiveFileName)
             groupId = group as String?
-            artifactId = rootProject.name
+            artifactId
             version
         }
     }
