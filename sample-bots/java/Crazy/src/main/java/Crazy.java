@@ -95,7 +95,7 @@ public class Crazy extends Bot {
         }
     }
 
-    // Condition that is triggered when the bot´s turn is complete
+    // Condition that is triggered when the turning is complete
     public static class TurnCompleteCondition extends Condition {
 
         private final IBot bot;

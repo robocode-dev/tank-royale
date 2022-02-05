@@ -102,7 +102,7 @@ public class Crazy : Bot
     }
 }
 
-// Condition that is triggered when the bot´s turn is complete
+// Condition that is triggered when the turning is complete
 public class TurnCompleteCondition : Condition
 {
     private readonly Bot bot;
