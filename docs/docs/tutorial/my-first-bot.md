@@ -67,5 +67,5 @@ This concludes the common part of the tutorial.
 
 The rest of the tutorial is split up based on the available APIs for different platforms:
 
-- [.Net](dotnet/my-first-bot.md)
-- [Java](java/my-first-bot.md)
+- [.Net](dotnet/my-first-bot-for-dotnet.md)
+- [Java / JVM](jvm/my-first-bot-for-jvm.md)

@@ -1,6 +1,6 @@
 # API Documentation
 
-## Java
+## Java (JVM)
 
 - [API overview](https://robocode.dev/tankroyale/api/java/)
 - [Bot API](https://robocode.dev/tankroyale/api/java/dev/robocode/tankroyale/botapi/package-summary.html)
