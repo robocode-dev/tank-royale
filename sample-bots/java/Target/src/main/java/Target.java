@@ -17,16 +17,16 @@ public class Target extends Bot {
     int trigger; // Keeps track of when to move
 
     // The main method starts our bot
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new Target().start();
     }
 
     // Constructor, which loads the bot config file
-    protected Target() throws IOException {
+    Target() {
         super(BotInfo.fromFile("Target.json"));
     }
 
-    // Called when a new round is started -> initialize and do movement
+    // Called when a new round is started -> initialize and do some movement
     @Override
     public void run() {
         // Set colors

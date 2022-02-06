@@ -18,16 +18,16 @@ public class Fire extends Bot {
     boolean isScanning; // Flag indicating if onScannedBot() handler is running
 
     // The main method starts our bot
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new Fire().start();
     }
 
     // Constructor, which loads the bot settings file
-    protected Fire() throws IOException {
+    Fire() {
         super(BotInfo.fromFile("Fire.json"));
     }
 
-    // Called when a new round is started -> initialize and do movement
+    // Called when a new round is started -> initialize and do some movement
     @Override
     public void run() {
         isScanning = false; // Clear scanning flag for each new turn

@@ -116,17 +116,18 @@ public final class BotInfo {
      *
      * @param filename is the filename of the file containing bot properties.
      * @return A BotInfo instance containing the bot properties read from the file.
-     * @throws IOException  if an error occurs when reading the file.
-     * @throws BotException if some of the fields read from the file is invalid.
+     * @throws BotException if the resource file could not be read, or if some field read from the file is invalid.
      * @see #fromFile(String)
      * @see #fromInputStream(InputStream)
      */
-    public static BotInfo fromResourceFile(String filename) throws IOException {
+    public static BotInfo fromResourceFile(String filename) {
         try (InputStream is = BotInfo.class.getResourceAsStream(filename)) {
             if (is == null) {
                 throw new BotException("Could not read the resource file: " + filename);
             }
             return fromInputStream(is);
+        } catch (IOException ioe) {
+            throw new BotException("Could not read the resource file: " + filename, ioe);
         }
     }
 
@@ -138,14 +139,15 @@ public final class BotInfo {
      *
      * @param filename is the filename of the file containing bot properties.
      * @return A BotInfo instance containing the bot properties read from the file.
-     * @throws IOException  if an error occurs when reading the file.
-     * @throws BotException if some of the fields read from the file is invalid.
+     * @throws BotException if the file could not be read, or if some field read from the file is invalid.
      * @see #fromResourceFile(String)
      * @see #fromInputStream(InputStream)
      */
-    public static BotInfo fromFile(String filename) throws IOException {
+    public static BotInfo fromFile(String filename) {
         try (InputStream is = new FileInputStream(filename)) {
             return fromInputStream(is);
+        } catch (IOException ioe) {
+            throw new BotException("Could not read the file: " + filename, ioe);
         }
     }
 
@@ -184,7 +186,7 @@ public final class BotInfo {
      *
      * @param inputStream is the input stream providing the bot properties.
      * @return A BotInfo instance containing the bot properties read from the stream.
-     * @throws BotException if some of the fields read from the stream is invalid.
+     * @throws BotException if some fields read from the stream is invalid.
      * @see #fromFile(String)
      * @see #fromResourceFile(String)
      */

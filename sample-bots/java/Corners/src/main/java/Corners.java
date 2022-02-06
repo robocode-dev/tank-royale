@@ -19,16 +19,16 @@ public class Corners extends Bot {
     boolean stopWhenSeeRobot = false; // See goCorner()
 
     // The main method starts our bot
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new Corners().start();
     }
 
     // Constructor, which loads the bot config file
-    Corners() throws IOException {
+    Corners() {
         super(BotInfo.fromFile("Corners.json"));
     }
 
-    // Called when a new round is started -> initialize and do movement
+    // Called when a new round is started -> initialize and do some movement
     @Override
     public void run() {
         // Set colors

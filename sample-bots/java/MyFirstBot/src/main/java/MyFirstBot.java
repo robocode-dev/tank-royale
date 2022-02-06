@@ -15,16 +15,16 @@ import java.io.IOException;
 public class MyFirstBot extends Bot {
 
     // The main method starts our bot
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new MyFirstBot().start();
     }
 
     // Constructor, which loads the bot config file
-    protected MyFirstBot() throws IOException {
+    MyFirstBot() {
         super(BotInfo.fromFile("MyFirstBot.json"));
     }
 
-    // Called when a new round is started -> initialize and do movement
+    // Called when a new round is started -> initialize and do some movement
     @Override
     public void run() {
         // Repeat while the bot is running

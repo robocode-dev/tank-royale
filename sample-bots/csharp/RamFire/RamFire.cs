@@ -22,7 +22,7 @@ public class RamFire : Bot
     // Constructor, which loads the bot settings file
     RamFire() : base(BotInfo.FromFile("RamFire.json")) { }
 
-    // Called when a new round is started -> initialize and do movement
+    // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
         // Set colors

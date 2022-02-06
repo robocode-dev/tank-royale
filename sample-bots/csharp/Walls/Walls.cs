@@ -24,7 +24,7 @@ public class Walls : Bot
     // Constructor, which loads the bot config file
     Walls() : base(BotInfo.FromFile("Walls.json")) { }
 
-    // Called when a new round is started -> initialize and do movement
+    // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
         // Set colors

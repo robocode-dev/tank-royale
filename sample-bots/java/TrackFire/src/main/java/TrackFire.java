@@ -16,16 +16,16 @@ public class TrackFire extends Bot {
     boolean isScanning; // flag set when scanning
 
     // The main method starts our bot
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new TrackFire().start();
     }
 
     // Constructor, which loads the bot config file
-    protected TrackFire() throws IOException {
+    TrackFire() {
         super(BotInfo.fromFile("TrackFire.json"));
     }
 
-    // Called when a new round is started -> initialize and do movement
+    // Called when a new round is started -> initialize and do some movement
     @Override
     public void run() {
         isScanning = false; // reset scanning flag

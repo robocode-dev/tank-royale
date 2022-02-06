@@ -21,7 +21,7 @@ public class MyFirstBot : Bot
     // Constructor, which loads the bot config file
     MyFirstBot() : base(BotInfo.FromFile("MyFirstBot.json")) { }
 
-    // Called when a new round is started -> initialize and do movement
+    // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
         // Repeat while the bot is running

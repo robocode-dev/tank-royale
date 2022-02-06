@@ -24,7 +24,7 @@ public class Fire : Bot
     // Constructor, which loads the bot settings file
     Fire() : base(BotInfo.FromFile("Fire.json")) { }
 
-    // Called when a new round is started -> initialize and do movement
+    // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
         isScanning = false; // Clear scanning flag for each new turn

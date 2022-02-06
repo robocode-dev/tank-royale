@@ -20,7 +20,7 @@ public class SpinBot : Bot
     // Constructor, which loads the bot config file
     SpinBot() : base(BotInfo.FromFile("SpinBot.json")) { }
 
-    // Called when a new round is started -> initialize and do movement
+    // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
         SetBodyColor("#00F"); // blue

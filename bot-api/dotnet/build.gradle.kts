@@ -6,7 +6,7 @@ apply(from = "../../groovy.gradle")
 
 
 val artifactName = "Robocode.TankRoyale.BotApi"
-version = "0.9.11"
+version = "0.9.12"
 
 val docfxArchiveFilename = "docfx.zip"
 

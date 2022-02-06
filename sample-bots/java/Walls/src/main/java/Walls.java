@@ -17,16 +17,16 @@ public class Walls extends Bot {
     double moveAmount; // How much to move
 
     // The main method starts our bot
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new Walls().start();
     }
 
     // Constructor, which loads the bot config file
-    Walls() throws IOException {
+    Walls() {
         super(BotInfo.fromFile("Walls.json"));
     }
 
-    // Called when a new round is started -> initialize and do movement
+    // Called when a new round is started -> initialize and do some movement
     @Override
     public void run() {
         // Set colors

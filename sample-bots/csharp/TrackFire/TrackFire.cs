@@ -22,7 +22,7 @@ public class TrackFire : Bot
     // Constructor, which loads the bot config file
     TrackFire() : base(BotInfo.FromFile("TrackFire.json")) { }
 
-    // Called when a new round is started -> initialize and do movement
+    // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
         isScanning = false; // reset scanning flag

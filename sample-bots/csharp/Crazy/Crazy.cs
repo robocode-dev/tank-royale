@@ -20,9 +20,9 @@ public class Crazy : Bot
     }
 
     // Constructor, which loads the bot config file
-    private Crazy() : base(BotInfo.FromFile("Crazy.json")) { }
+    Crazy() : base(BotInfo.FromFile("Crazy.json")) { }
 
-    // Called when a new round is started -> initialize and do movement
+    // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
         // Set colors

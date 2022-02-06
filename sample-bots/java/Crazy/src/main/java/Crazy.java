@@ -16,16 +16,16 @@ public class Crazy extends Bot {
     boolean movingForward;
 
     // The main method starts our bot
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new Crazy().start();
     }
 
     // Constructor, which loads the bot config file
-    protected Crazy() throws IOException {
+    Crazy() {
         super(BotInfo.fromFile("Crazy.json"));
     }
 
-    // Called when a new round is started -> initialize and do movement
+    // Called when a new round is started -> initialize and do some movement
     public void run() {
         // Set colors
         setBodyColor("#00C800");
