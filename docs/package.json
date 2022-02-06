@@ -11,6 +11,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "vuepress": "^1.8.2",
-    "vuepress-plugin-mathjax": "^1.2.8"
+    "vuepress-plugin-mathjax": "^1.2.8",
+    "vuepress-plugin-md-enhance": "^1.27.1"
   }
 }
