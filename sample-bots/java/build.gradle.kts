@@ -50,15 +50,14 @@ tasks {
     }
 
     fun copyBotJavaFiles(projectDir: Path, botArchivePath: Path) {
-        val srcRoot = projectDir.resolve("src/main/java")
-        for (file in list(srcRoot)) {
+        for (file in list(projectDir)) {
             copy(file, botArchivePath.resolve(botArchivePath.botName() + ".java"), REPLACE_EXISTING)
         }
     }
 
     fun copyBotJsonFile(projectDir: Path, botArchivePath: Path) {
         val filename = "${projectDir.botName()}.json"
-        val jsonFilePath = projectDir.resolve("src/main/resources/$filename")
+        val jsonFilePath = projectDir.resolve(filename)
         copy(jsonFilePath, botArchivePath.resolve(filename), REPLACE_EXISTING)
     }
 
