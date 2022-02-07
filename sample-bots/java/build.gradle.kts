@@ -49,16 +49,10 @@ tasks {
         return !botName.startsWith(".") && botName !in listOf("build", "assets")
     }
 
-    fun copyBotJavaFiles(projectDir: Path, botArchivePath: Path) {
+    fun copyBotFiles(projectDir: Path, botArchivePath: Path) {
         for (file in list(projectDir)) {
-            copy(file, botArchivePath.resolve(botArchivePath.botName() + ".java"), REPLACE_EXISTING)
+            copy(file, botArchivePath.resolve(file.fileName), REPLACE_EXISTING)
         }
-    }
-
-    fun copyBotJsonFile(projectDir: Path, botArchivePath: Path) {
-        val filename = "${projectDir.botName()}.json"
-        val jsonFilePath = projectDir.resolve(filename)
-        copy(jsonFilePath, botArchivePath.resolve(filename), REPLACE_EXISTING)
     }
 
     fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
@@ -87,8 +81,7 @@ tasks {
                     val botArchivePath: Path = archiveDir.resolve(botDir.botName())
 
                     mkdir(botArchivePath)
-                    copyBotJavaFiles(botDir, botArchivePath)
-                    copyBotJsonFile(botDir, botArchivePath)
+                    copyBotFiles(botDir, botArchivePath)
                     createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
                     createScriptFile(botDir, botArchivePath, "sh", "\n")
                 }
@@ -123,20 +116,22 @@ tasks {
     register("upload") {
         dependsOn(zip)
 
-        ssh.run(delegateClosureOf<RunHandler> {
-            session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
-                print("Uploading Java sample bots...")
+        doLast {
+            ssh.run(delegateClosureOf<RunHandler> {
+                session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
+                    print("Uploading Java sample bots...")
 
-                val destDir = sampleBotsReleasePath + "/" + project.version
-                val destFile = "$destDir/$archiveFilename"
+                    val destDir = sampleBotsReleasePath + "/" + project.version
+                    val destFile = "$destDir/$archiveFilename"
 
-                execute("rm -f $destFile")
-                execute("mkdir -p ~/$destDir")
+                    execute("rm -f $destFile")
+                    execute("mkdir -p ~/$destDir")
 
-                put(hashMapOf("from" to "${project.projectDir}/build/$archiveFilename", "into" to destDir))
+                    put(hashMapOf("from" to "${project.projectDir}/build/$archiveFilename", "into" to destDir))
 
-                println("done")
+                    println("done")
+                })
             })
-        })
+        }
     }
 }

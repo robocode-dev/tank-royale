@@ -4,7 +4,9 @@ import org.hidetake.groovy.ssh.session.SessionHandler
 import java.io.PrintWriter
 import java.nio.file.Files.*
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 
+apply(from = "../../groovy.gradle")
 
 version = project(":bot-api:dotnet").version
 
@@ -18,89 +20,27 @@ plugins {
     alias(libs.plugins.hidetake.ssh)
 }
 
-defaultTasks("clean", "build")
+tasks {
+    val archiveDir = project.buildDir.resolve("archive").toPath()
 
-val clean = tasks.register<Delete>("clean") {
-    delete(project.buildDir)
-}
-
-val build = tasks.register("build") {
-    dependsOn(clean, zipSampleBots)
-}
-
-abstract class BaseTask : DefaultTask() {
-    @Internal
-    protected val archiveDir: Path = project.buildDir.toPath().resolve("archive")
-
-    protected fun createDir(path: Path) {
-        if (!exists(path)) {
-            createDirectory(path)
-        }
+    register("clean") {
+        delete(project.buildDir)
     }
 
-    protected fun deleteDir(path: Path) {
-        if (exists(path)) {
-            walk(path)
-                .sorted(Comparator.reverseOrder())
-                .map(({ obj: Path -> obj.toFile() }))
-                .forEach(({ obj: File -> obj.delete() }))
-        }
-    }
-}
+    fun Path.botName() = fileName.toString()
 
-abstract class CreateDirs : BaseTask() {
-    @TaskAction
-    fun build() {
-        createDir(project.buildDir.toPath())
-        createDir(archiveDir)
-    }
-}
-
-val createDirs = task<CreateDirs>("createDirs") {}
-
-abstract class CopyBotFiles : BaseTask() {
-    @TaskAction
-    fun prepareBotFiles() {
-        list(project.projectDir.toPath()).forEach { botDir ->
-            run {
-                if (isDirectory(botDir) && isBotProjectDir(botDir)) {
-                    val botName = botDir.botName()
-
-                    val botArchivePath: Path = archiveDir.resolve(botName)
-
-                    createDir(botArchivePath)
-                    copyBotFiles(botDir, botArchivePath)
-                    createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
-                    createScriptFile(botDir, botArchivePath, "sh", "\n")
-
-                    generateBotCsprojFile(botArchivePath.resolve("$botName.csproj"), botName, "${project.version}")
-                }
-            }
-        }
-        copyReadMeFile(project.projectDir, archiveDir)
-    }
-
-    private fun Path.botName(): String {
-        return fileName.toString()
-    }
-
-    private fun isBotProjectDir(dir: Path): Boolean {
+    fun isBotProjectDir(dir: Path): Boolean {
         val botName = dir.botName()
         return !botName.startsWith(".") && botName !in listOf("build", "assets")
     }
 
-    private fun copyBotFiles(projectDir: Path, botArchivePath: Path) {
+    fun copyBotFiles(projectDir: Path, botArchivePath: Path) {
         for (file in list(projectDir)) {
-            copy(file, botArchivePath.resolve(file.fileName))
+            copy(file, botArchivePath.resolve(file.fileName), REPLACE_EXISTING)
         }
     }
 
-    private fun copyReadMeFile(projectDir: File, archivePath: Path) {
-        val filename = "ReadMe.md"
-        copy(File(projectDir, "assets/$filename").toPath(), archivePath.resolve(filename))
-    }
-
-    private fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
+    fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
         val botName = projectDir.botName()
         val file = botArchivePath.resolve("$botName.$fileExt").toFile()
         val printWriter = object : PrintWriter(file) {
@@ -116,51 +56,66 @@ abstract class CopyBotFiles : BaseTask() {
                 it.println("#!/bin/sh")
             }
             it.println("dotnet run $redirect")
-            it.close()
         }
     }
-}
 
-val copyBotFiles = task<CopyBotFiles>("copyBotFiles") {
-    dependsOn(createDirs)
-}
+    fun prepareBotFiles() {
+        list(project.projectDir.toPath()).forEach { botDir ->
+            run {
+                if (isDirectory(botDir) && isBotProjectDir(botDir)) {
+                    val botName = botDir.botName()
+                    val botArchivePath: Path = archiveDir.resolve(botName)
 
-val zipSampleBots = task<Zip>("zipSampleBots") {
-    dependsOn(copyBotFiles)
+                    mkdir(botArchivePath)
+                    copyBotFiles(botDir, botArchivePath)
+                    createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
+                    createScriptFile(botDir, botArchivePath, "sh", "\n")
 
-    archiveFileName.set(archiveFilename)
-    destinationDirectory.set(buildDir)
-    fileMode = "101101101".toInt(2) // 0555 - read & execute for everybody
-
-    from(File(buildDir, "archive"))
-}
-
-val sshServer = remotes.create("sshServer") {
-    withGroovyBuilder {
-        setProperty("host", project.properties["tankroyale.ssh.host"])
-        setProperty("port", (project.properties["tankroyale.ssh.port"] as String).toInt())
-        setProperty("user", project.properties["tankroyale.ssh.user"])
-        setProperty("password", project.properties["tankroyale.ssh.pass"])
+                    generateBotCsprojFile(botArchivePath.resolve("$botName.csproj"), botName, "${project.version}")
+                }
+            }
+        }
     }
-}
 
-tasks.register("uploadBots") {
-    dependsOn(build)
-    dependsOn(zipSampleBots)
+    fun copyReadMeFile(projectDir: File, archivePath: Path) {
+        val filename = "ReadMe.md"
+        copy(File(projectDir, "assets/$filename").toPath(), archivePath.resolve(filename), REPLACE_EXISTING)
+    }
 
-    ssh.run(delegateClosureOf<RunHandler> {
-        session(sshServer, delegateClosureOf<SessionHandler> {
-            print("Uploading C# sample bots...")
+    val build by registering {
+        prepareBotFiles()
+        copyReadMeFile(project.projectDir, archiveDir)
+    }
 
-            val destDir = sampleBotsReleasePath + "/" + project.version
-            val destFile = "$destDir/$archiveFilename"
+    val zip by registering(Zip::class) {
+        dependsOn(build)
 
-            execute("rm -f $destFile")
-            execute("mkdir -p ~/$destDir")
+        archiveFileName.set(archiveFilename)
+        destinationDirectory.set(buildDir)
+        fileMode = "101101101".toInt(2) // 0555 - read & execute for everybody
 
-            put(hashMapOf("from" to "${project.projectDir}/build/$archiveFilename", "into" to destDir))
+        from(File(buildDir, "archive"))
+    }
 
-            println("done")
-        })
-    })
+    register("upload") {
+        dependsOn(zip)
+
+        doLast {
+            ssh.run(delegateClosureOf<RunHandler> {
+                session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
+                    print("Uploading C# sample bots...")
+
+                    val destDir = sampleBotsReleasePath + "/" + project.version
+                    val destFile = "$destDir/$archiveFilename"
+
+                    execute("rm -f $destFile")
+                    execute("mkdir -p ~/$destDir")
+
+                    put(hashMapOf("from" to "${project.projectDir}/build/$archiveFilename", "into" to destDir))
+
+                    println("done")
+                })
+            })
+        }
+    }
 }
