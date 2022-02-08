@@ -6,7 +6,7 @@ A bot consists of three individual parts:
 - Gun
 - Radar
 
-![Bot anatomy](../images/bot-anatomy.svg)
+![Bot anatomy](../images/anatomy.svg)
 
 ## Center
 
