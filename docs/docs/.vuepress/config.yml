@@ -13,7 +13,7 @@ head:
 
 themeConfig:
   logo:
-    /Tank.png
+    /Tank-logo.svg
   sidebar:
     - title: What is Robocode?
       path: /articles/intro
