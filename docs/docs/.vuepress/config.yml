@@ -12,6 +12,8 @@ head:
       type: image/x-icon
 
 themeConfig:
+  logo:
+    /Tank.png
   sidebar:
     - title: What is Robocode?
       path: /articles/intro
