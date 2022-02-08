@@ -88,7 +88,7 @@
     <symbol id="radar">
       <circle cx="300" cy="345" r="30" fill="#AAF" stroke="black" stroke-width="20" />
       <path d="M 190 365 q 110 100 220 0 z" fill="#AAF" stroke="black" stroke-width="20" />
-      <!--<path d="M 300 345 L 100, -300 q 200 -100 400 0 z" fill="grey" opacity="0.5" />-->
+      <!--<path d="M 300 340 l -150, -800 q 150 -50 300 0 z" fill="grey" fill-opacity="0.75" />-->
     </symbol>
 
     <symbol id="tank">

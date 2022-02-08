@@ -88,13 +88,13 @@
     <symbol id="radar">
       <circle cx="400" cy="400" r="30" fill="#AAF" stroke="black" stroke-width="20" />
       <path d="M 290 420 q 110 100 220 0 z" fill="#AAF" stroke="black" stroke-width="20" />
-      <!-- path d="M 150 200 L 50, -300 q 200 -100 400 0 z" fill="grey" opacity="0.5" /> -->
+      <path d="M 400 400 l -150, -800 q 150 -50 300 0 z" fill="grey" fill-opacity="0.75" />
     </symbol>
 
     <symbol id="tank">
       <use xlink:href="#body" transform="rotate(45,400,400)" />
       <use xlink:href="#turret" transform="rotate(65,400,400)" />
-      <use xlink:href="#radar" transform="rotate(75,400,400)" />
+      <use xlink:href="#radar" transform="rotate(0,400,400)" />
       <!--<circle cx="400" cy="400" r="10" fill="yellow" opacity="1" />-->
       <!--<use xlink:href="#bounding-sphere" />-->
     </symbol>

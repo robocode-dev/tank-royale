@@ -8,19 +8,18 @@ A bot consists of three individual parts:
 
 ![Bot anatomy](../images/anatomy.svg)
 
-## Center
-
-The x,y coordinate of the bot is in the exact center of the robot. All parts of the bot is rotated around the center,
-which is the local coordinate (0,0) seen from the bot´s perspective.
-
 ## Body
 
 The body carries the gun with the radar on top. The body is moving the bot forward and back, as well as turning left or
-right.
+right. The body uses its tracks to move around.
+
+![Bot anatomy](../images/body.svg)
 
 ## Gun
 
 The gun is mounted on the body and is firing energy bullets. The gun can turn left or right.
+
+![Radar sweep](../images/gun.svg)
 
 ## Radar
 
@@ -28,9 +27,9 @@ The radar is mounted on top of the gun and is scanning for other bots when turne
 radar is only scanning and detecting bots when while turning. And it is only able to scan bots that are within the radar
 sweep.
 
-![Radar sweep](../images/radar-sweep.svg)
+![Bot anatomy](../images/radar.svg)
 
-## Radar sweep
+### Radar sweep
 
 The radar sweep is a pie shape that starts from the center of the bot and has a fixed radius of 1200 units.
 
@@ -38,6 +37,22 @@ Two angles define the sides of the pie shape of the radar:
 
 - **Start angle**: The current angle of the radar.
 - **End angle**: The angle of the radar from the previous turn.
+
+So the radar sweep is the delta angle going from the angle of the radar from the previous turn to the current turn.
+Hence, if the current angle of the radar and the angle from the last turn is the same, then there is no radar sweep
+being visualized as a line instead of a pie shape.
+
+![Bot anatomy](../images/radar-no-sweep.svg)
+
+Beware! If the radar is not moving (meaning no radar sweep), the radar will not be scanning opponent bots, so make sure
+the radar is kept busy.
+
+## Center
+
+The x,y coordinate of the bot is in the exact center of the robot. All parts of the bot is rotated around the center,
+which is the local coordinate (0,0) seen from the bot´s perspective.
+
+![Bot anatomy](../images/center.svg)
 
 ## Bot dimensions
 
@@ -50,6 +65,8 @@ The center of the bot is at the x,y coordinate (18,18) compared to any of the bo
 A **bounding circle** is being using for collision detection between a bot and another object like e.g. the wall, a
 bullet, or another bot. The center of the bounding circle is the center of the bot at (18,18) having a radius that is 18
 units in length.
+
+![Bot anatomy](../images/bounding-circle.svg)
 
 ## Collision detection
 
