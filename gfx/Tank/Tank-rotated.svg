@@ -92,12 +92,13 @@
     </symbol>
 
     <symbol id="tank">
-      <use xlink:href="#body" />
-      <use xlink:href="#turret" />
-      <use xlink:href="#radar" />
+      <use xlink:href="#body" transform="rotate(45,500,500)" />
+      <use xlink:href="#turret" transform="rotate(65,500,500)" />
+      <use xlink:href="#radar" transform="rotate(75,500,500)" />
       <!--<circle cx="500" cy="500" r="10" fill="yellow" opacity="1" />-->
       <!--<use xlink:href="#bounding-sphere" />-->
     </symbol>
+
     <!--
     <symbol id="bounding-sphere">
       <circle cx="500" cy="500" r="250" fill="red" opacity="0.35" />

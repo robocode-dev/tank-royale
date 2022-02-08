@@ -44,33 +44,33 @@ dependencies {
     implementation(libs.nv.i18n)
 }
 
-val javadoc = tasks.withType<Javadoc> {
-    title = "$javadocTitle $version"
-    source(sourceSets.main.get().allJava)
-
-    (options as StandardJavadocDocletOptions).apply {
-        memberLevel = JavadocMemberLevel.PUBLIC
-        overview = "src/main/javadoc/overview.html"
-
-        addFileOption("-add-stylesheet", File(projectDir, "src/main/javadoc/themes/prism.css"))
-        addBooleanOption("-allow-script-in-comments", true)
-        addStringOption("Xdoclint:none", "-quiet")
-    }
-
-    exclude(
-        "**/dev/robocode/tankroyale/botapi/internal/**",
-        "**/dev/robocode/tankroyale/botapi/mapper/**",
-        "**/dev/robocode/tankroyale/sample/**"
-    )
-    doLast {
-        Files.copy(
-            Paths.get("$projectDir/src/main/javadoc/prism.js"),
-            Paths.get("$buildDir/docs/javadoc/prism.js")
-        )
-    }
-}
-
 tasks {
+    withType<Javadoc> {
+        title = "$javadocTitle $version"
+        source(sourceSets.main.get().allJava)
+
+        (options as StandardJavadocDocletOptions).apply {
+            memberLevel = JavadocMemberLevel.PUBLIC
+            overview = "src/main/javadoc/overview.html"
+
+            addFileOption("-add-stylesheet", File(projectDir, "src/main/javadoc/themes/prism.css"))
+            addBooleanOption("-allow-script-in-comments", true)
+            addStringOption("Xdoclint:none", "-quiet")
+        }
+
+        exclude(
+            "**/dev/robocode/tankroyale/botapi/internal/**",
+            "**/dev/robocode/tankroyale/botapi/mapper/**",
+            "**/dev/robocode/tankroyale/sample/**"
+        )
+        doLast {
+            Files.copy(
+                Paths.get("$projectDir/src/main/javadoc/prism.js"),
+                Paths.get("$buildDir/docs/javadoc/prism.js")
+            )
+        }
+    }
+
     val fatJar by registering(FatJar::class) {
         dependsOn(classes)
 
