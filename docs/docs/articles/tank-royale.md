@@ -36,7 +36,9 @@ The game has been split into separate components:
 Bots can be run from anywhere as long as they have access to a [WebSocket](https://en.wikipedia.org/wiki/WebSocket) and
 a server. Note that bots are not running on the server like with the original Robocode game. The server is only taking
 care of hosting the game and its state. The server receives **intents** from bots and sends out the current game state
-for bots, observers, and controllers. Each bot is running in a process somewhere else besides the server. This could be
+for bots, observers, and controllers.
+
+Each bot is running in a process somewhere else besides the server. This could be
 on the same local machine, but it could also be running within a browser session, a cloud server, or another user's
 machine or device.
 
@@ -45,9 +47,11 @@ machine or device.
 Tank Royale is turn-based like the original version of Robocode. However, each turn in Tank Royale is deterministic due
 to the fact, that bots are no longer running in independent threads inside a Java VM, where commands from different
 robots for a turn was executed at "random". Instead, Tank Royale evaluates the commands (intents) from all bots for a
-specific turn and outputs a new game state. Hence, the game is stateful and deterministic, and no bot will get an
-advantage over other bots if a bot thread gets more CPU or memory resources than its competitors on Java VM serving the
-bot. This also makes the test more stable if robots behave in a truly deterministic manner for every turn.
+specific turn and outputs a new game state.
+
+Hence, the game is stateful and deterministic, and no bot will get an advantage over other bots if a bot thread gets
+more CPU or memory resources than its competitors on Java VM serving the bot. This also makes the test more stable if
+robots behave in a truly deterministic manner for every turn.
 
 ## Bot intents
 
@@ -80,15 +84,17 @@ sending its intent to the server.
 
 ## Cannot limit bot resources
 
-Since bots are running in their processes independent of the server, the Tank Royale game will not be able to constrain
-how much CPU, RAM, disk space, etc. the bot is allowed to use. This was somewhat possible to some extent with the
-original Robocode game, as all bots were running within the same Java VM.
+Since bots are running in their own processes independent of the server, the Tank Royale game will not be able to
+constrain how much CPU, RAM, disk space, etc. the bot is allowed to use. This was somewhat possible to some extent with
+the original Robocode game, as all bots were running within the same Java VM sharing the same resources.
 
 ## No Robot Packager is available
 
-The original Robocode provided a Robot Packager, where Java robots could be packaged into robot Java archive files as
-"Robot Packages" and .Net bots could be packaged into DLL files. This does not make sense the same way for Tank Royale,
-as bots could be written for practically any language, platform, OS, etc.
+The original Robocode provided a Robot Packager, where Java robots are packaged into robot Java archive files as
+_Robot Packages_ and .Net bots were packaged into DLL files.
 
-If you need to package your bot into a package, consider using to use containerization with a container technology. This
-is out of scope for Tank Royale.
+With Robocode Tank Royale, you should consider packaging all required files for a bot into a zipped file and provide
+script for starting up your bot. You can read more about this with the [booter](../articles/booter.md).
+
+You should also consider using to use containerization with a container technology if the setup for your bot(s)
+is complex. But this is out of scope for Tank Royale.
