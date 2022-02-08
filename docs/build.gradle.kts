@@ -21,6 +21,10 @@ node {
 }
 
 tasks {
+    register("clean") {
+        delete(project.buildDir)
+    }
+
     val npmBuild by registering(NpmTask::class) {
         dependsOn(npmInstall)
 
@@ -31,7 +35,7 @@ tasks {
         dependsOn(npmBuild)
     }
 
-    val zipDocs by registering(Zip::class) {
+    val zip by registering(Zip::class) {
         dependsOn(npmBuild)
 
         archiveFileName.set(archiveFilename)
@@ -41,25 +45,27 @@ tasks {
     }
 
     register("uploadDocs") {
-        dependsOn(zipDocs)
+        dependsOn(zip)
 
-        ssh.run(delegateClosureOf<RunHandler> {
-            session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
-                print("Uploading docs...")
+        doLast {
+            ssh.run(delegateClosureOf<RunHandler> {
+                session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
+                    print("Uploading docs...")
 
-                put(hashMapOf("from" to "$buildArchivePath/$archiveFilename", "into" to "tmp"))
+                    put(hashMapOf("from" to "$buildArchivePath/$archiveFilename", "into" to "tmp"))
 
-                val oldDocsPath = docsPath + "_old_" + System.currentTimeMillis()
-                val tmpDocsPath = docsPath + "_tmp"
+                    val oldDocsPath = docsPath + "_old_" + System.currentTimeMillis()
+                    val tmpDocsPath = docsPath + "_tmp"
 
-                execute("unzip ~/tmp/$archiveFilename -d $tmpDocsPath")
-                execute("rm -f ~/tmp/$archiveFilename")
+                    execute("unzip ~/tmp/$archiveFilename -d $tmpDocsPath")
+                    execute("rm -f ~/tmp/$archiveFilename")
 
-                execute("mv $docsPath $oldDocsPath")
-                execute("mv $tmpDocsPath $docsPath")
+                    execute("mv $docsPath $oldDocsPath")
+                    execute("mv $tmpDocsPath $docsPath")
 
-                println("done")
+                    println("done")
+                })
             })
-        })
+        }
     }
 }
