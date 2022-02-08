@@ -21,8 +21,6 @@ themeConfig:
       path: /tutorial/my-first-bot
     - title: API Documentation
       path: /api/apis
-    - title: Booter
-      path: /articles/booter
     - title: Bot Anatomy
       path: /articles/anatomy
     - title: Coordinates and Angles
@@ -31,6 +29,8 @@ themeConfig:
       path: /articles/physics
     - title: Scoring
       path: /articles/scoring
+    - title: Booter
+      path: /articles/booter
     - title: Tank Royale vs orig. Robocode
       path: /articles/tank-royale
     - title: Robocode history
