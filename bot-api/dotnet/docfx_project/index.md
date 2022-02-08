@@ -29,45 +29,45 @@ MyFirstBot.cs:
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
-namespace Robocode.TankRoyale.Sample.Bots
+public class MyFirstBot : Bot
 {
-  public class MyFirstBot : Bot
-  {
-    // Main entry used for starting the bot
+    // The main method starts our bot
     static void Main(string[] args)
     {
-      new MyFirstBot().Start();
+        new MyFirstBot().Start();
     }
 
-    // Constructor, which loads the bot settings file
+    // Constructor, which loads the bot config file
     MyFirstBot() : base(BotInfo.FromFile("MyFirstBot.json")) { }
 
-    // This method runs our bot program, where each command is executed one at a time in a loop.
+    // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
-      // Repeat while bot is running
-      while (IsRunning)
-      {
-        Forward(100);
-        TurnGunRight(360);
-        Back(100);
-        TurnGunRight(360);
-      }
+        // Repeat while the bot is running
+        while (IsRunning)
+        {
+            Forward(100);
+            TurnGunRight(360);
+            Back(100);
+            TurnGunRight(360);
+        }
     }
 
-    // Our bot scanned another bot. Fire when we see another bot!
+    // We saw another bot -> fire!
     public override void OnScannedBot(ScannedBotEvent evt)
     {
-      Fire(1);
+        Fire(1);
     }
 
-    // Our bot has been hit by a bullet. Turn perpendicular to the bullet so our seesaw might avoid a future shot.
+    // We were hit by a bullet -> turn perpendicular to the bullet
     public override void OnHitByBullet(BulletHitBotEvent evt)
     {
-      double bearing = CalcBearing(evt.Bullet.Direction);
-      TurnLeft(90 - bearing);
+        // Calculate the bearing to the direction of the bullet
+        double bearing = CalcBearing(evt.Bullet.Direction);
+
+        // Turn 90 degrees to the bullet direction based on the bearing
+        TurnLeft(90 - bearing);
     }
-  }
 }
 ```
 
