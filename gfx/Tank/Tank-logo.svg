@@ -1,5 +1,5 @@
-<svg version="1.1" width="500" height="500" viewBox="0 0 1000 1000"
-  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg version="1.1" width="500" height="500" viewBox="0 0 600 600"
+     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 
   <!--<rect x="0" y="0" width="100%" height="100%" fill="grey" />-->
 
@@ -40,7 +40,7 @@
       <use xlink:href="#link0" x="0" y="380" />
       <use xlink:href="#link30" x="0" y="448" />
     </symbol>
-
+    <!--
     <symbol id="track2">
       <use xlink:href="#main-track" x="0" y="0" />
       <use xlink:href="#link60" x="0" y="0" />
@@ -62,21 +62,21 @@
       <use xlink:href="#link0" x="0" y="407" />
       <use xlink:href="#link60" x="0" y="470" />
     </symbol>
-
+    -->
     <symbol id="body">
-      <use xlink:href="#track2" x="250" y="200" />
-      <use xlink:href="#track3" x="615" y="200" />
+      <use xlink:href="#track1" x="50" y="45" />
+      <use xlink:href="#track1" x="415" y="45" />
 
-      <rect x="340" y="290" width="320" height="420" fill="#019" stroke="black" stroke-width="20" rx="10" ry="10" />
-      <rect x="350" y="620" width="300" height="80" fill="black" opacity="0.5" />
+      <rect x="140" y="135" width="320" height="420" fill="#019" stroke="black" stroke-width="20" rx="10" ry="10" />
+      <rect x="150" y="465" width="300" height="80" fill="black" opacity="0.5" />
     </symbol>
 
     <symbol id="turret">
-      <rect x="400" y="420" width="200" height="200" fill="#06C" stroke="black" stroke-width="20" rx="10" ry="10" />
-      <rect x="410" y="560" width="180" height="50" fill="black" opacity="0.5" />
+      <rect x="200" y="265" width="200" height="200" fill="#06C" stroke="black" stroke-width="20" rx="10" ry="10" />
+      <rect x="210" y="405" width="180" height="50" fill="black" opacity="0.5" />
 
-      <rect x="460" y="340" width="80" height="80" fill="url(#cannon-grad)" stroke="black" stroke-width="20" />
-      <rect x="475" y="170" width="50" height="170" fill="url(#cannon-grad)" stroke="black" stroke-width="20" />
+      <rect x="260" y="185" width="80" height="80" fill="url(#cannon-grad)" stroke="black" stroke-width="20" />
+      <rect x="275" y="15" width="50" height="170" fill="url(#cannon-grad)" stroke="black" stroke-width="20" />
 
       <linearGradient id="cannon-grad" x1="0%" y1="0%" x2="100%" y2="0%">
         <stop offset="0%" stop-color="#333" />
@@ -86,21 +86,22 @@
     </symbol>
 
     <symbol id="radar">
-      <circle cx="500" cy="500" r="30" fill="#AAF" stroke="black" stroke-width="20" />
-      <path d="M 390 520 q 110 100 220 0 z" fill="#AAF" stroke="black" stroke-width="20" />
-      <!-- path d="M 250 300 L 50, -300 q 200 -100 400 0 z" fill="grey" opacity="0.5" /> -->
+      <circle cx="300" cy="345" r="30" fill="#AAF" stroke="black" stroke-width="20" />
+      <path d="M 190 365 q 110 100 220 0 z" fill="#AAF" stroke="black" stroke-width="20" />
+      <!--<path d="M 300 345 L 100, -300 q 200 -100 400 0 z" fill="grey" opacity="0.5" />-->
     </symbol>
 
     <symbol id="tank">
-      <use xlink:href="#body" />
-      <use xlink:href="#turret" />
-      <use xlink:href="#radar" />
-      <!--<circle cx="500" cy="500" r="10" fill="yellow" opacity="1" />-->
+      <use xlink:href="#body"/>
+      <use xlink:href="#turret"/>
+      <use xlink:href="#radar"/>
+      <!--<circle cx="300" cy="345" r="10" fill="yellow" opacity="1" />--> <!-- center -->
       <!--<use xlink:href="#bounding-sphere" />-->
     </symbol>
+
     <!--
     <symbol id="bounding-sphere">
-      <circle cx="500" cy="500" r="250" fill="red" opacity="0.35" />
+      <circle cx="300" cy="345" r="250" fill="red" opacity="0.35" />
     </symbol>
     -->
   </defs>
