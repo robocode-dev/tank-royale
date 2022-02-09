@@ -11,6 +11,8 @@ val htmlRoot: String by rootProject.extra
 val docsPath = "$htmlRoot/docs"
 val archiveFilename = "docs.zip"
 
+
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.node.gradle)
     alias(libs.plugins.hidetake.ssh)

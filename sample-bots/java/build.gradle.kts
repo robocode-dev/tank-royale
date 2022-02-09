@@ -15,6 +15,7 @@ val archiveFilename = "sample-bots-java-${project.version}.zip"
 val sampleBotsReleasePath: String by rootProject.extra
 
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.hidetake.ssh)
 }

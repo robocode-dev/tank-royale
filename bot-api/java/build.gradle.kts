@@ -25,6 +25,7 @@ val apiPath: String by rootProject.extra
 val javaApiPath = "$apiPath/java"
 
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     `java-library`
     `maven-publish`

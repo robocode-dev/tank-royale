@@ -9,6 +9,8 @@ val guiReleasePath by extra("$releasesPath/gui")
 val htmlRoot by extra("~/public_html/tankroyale")
 val apiPath by extra("$htmlRoot/api")
 
+
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.plugin.serialization)
