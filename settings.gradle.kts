@@ -22,7 +22,6 @@ include("sample-bots:csharp")
 // Docs
 include("docs")
 
-enableFeaturePreview("VERSION_CATALOGS")
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
