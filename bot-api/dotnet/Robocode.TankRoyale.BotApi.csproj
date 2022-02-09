@@ -3,7 +3,7 @@
   <PropertyGroup>
     <PackageId>Robocode.TankRoyale.BotApi</PackageId>
 
-    <AssemblyTitle>Robocode Tankroyale Bot API</AssemblyTitle>
+    <AssemblyTitle>Bot API for Robocode Tank Royale</AssemblyTitle>
     <RootNamespace>Robocode.TankRoyale.BotApi</RootNamespace>
     <OutputType>Library</OutputType>
     <TargetFramework>net5.0</TargetFramework>
@@ -12,8 +12,8 @@
     <IsPackable>true</IsPackable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
-    <Title>Robocode Tank Royale Bot API for .Net</Title>
-    <Description>API for developing bots for Robocode Tank Royale for .Net</Description>
+    <Title>Bot API for Robocode Tank Royale</Title>
+    <Description>.Net API for developing bots for Robocode Tank Royale</Description>
 
     <Authors>Flemming N&#248;rnberg Larsen</Authors>
     <Copyright>Copyright 2022 Flemming N&#248;rnberg Larsen</Copyright>

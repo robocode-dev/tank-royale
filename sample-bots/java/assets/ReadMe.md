@@ -1,14 +1,15 @@
-# Robocode Tankroyale sample bots for Java
+# Sample bots for Robocode Tank Royale for the Java platform
 
-This directory contains sample bots for Robocode Tankroyale for Java 11 and newer.
+This directory contains sample bots for Robocode Tank Royale developed for Java 11 and newer.
 
-## Requirements for running the .Net sample bots
+## Requirements for running the sample bots
 
 1. You need to unpack the archive or copy the directories in the root of your `bots` directory to run these with
    Robocode.
-2. Java 11 (or newer) must be installed on your system. You can download it from
-   here:https://www.oracle.com/java/technologies/downloads/. Note that you should download the JDK (Java Developer Kit)
-   if you want to develop bots of your own.
+2. Java 11 (or newer) must be installed on your system. You can download it from here:
+   https://www.oracle.com/java/technologies/downloads/.
+
+Note that you need the JDK (Java Development Kit) if you want to develop your own bot.
 
 ## Bot directories
 
@@ -17,12 +18,6 @@ Each bot has its own subdirectory (bot directory) that contains:
 * A Java source file (.java) that provides the program logic of the bot.
 * A JSON file (.json) that provides information about the bot.
 * Script files (.cmd and .sh) used for starting the bot.
-
-## Bot filename convention
-
-All filenames in a bot directory must share the same name as the directory containing the files, i.e. the filename
-without the file extension. Robocode scans for specific file types sharing the same filenames to check if the directory
-contains a bot or not, and to figure out how to run it, but also to provide information about the bot.
 
 ## Running a bot
 
