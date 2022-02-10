@@ -49,7 +49,6 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
         buttonPanel.addButton("remove", onRemove)
         add(buttonPanel)
 
-        MiscSettings.load()
         MiscSettings.getBotDirectories().forEach { listModel.addElement(it) }
 
         onAdd.subscribe(BotDirectoryConfigDialog) {
@@ -59,12 +58,18 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 val path = chooser.selectedFile.toPath()
                 listModel.addElement(path.toString())
+                updateSettings()
             }
         }
 
         onRemove.subscribe(BotDirectoryConfigDialog) {
             list.selectedValuesList.forEach { listModel.removeElement(it) }
+            updateSettings()
         }
+    }
+
+    fun updateSettings() {
+        MiscSettings.setBotDirectories(listModel.elements().toList())
     }
 }
 

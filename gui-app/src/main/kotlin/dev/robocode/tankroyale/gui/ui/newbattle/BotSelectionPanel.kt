@@ -13,7 +13,6 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showError
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onChanged
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onMultiClickedAtIndex
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onSelection
-import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosed
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
@@ -91,6 +90,8 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
 
         BootProcess.onRunBot.subscribe(this) { updateRunningBot(it) }
         BootProcess.onStopBot.subscribe(this) { updateStoppingBot(it) }
+
+        MiscSettings.onSaved.subscribe(this) { updateBotsDirectoryBots() }
     }
 
     private fun removeSelectedBotAt(index: Int) {
@@ -319,11 +320,14 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
     private fun enforceBotDirIsConfigured() {
         if (MiscSettings.getBotDirectories().isEmpty()) {
             SwingUtilities.invokeLater {
-                showError(ResourceBundles.MESSAGES.get("no_bot_dir"))
-
                 with(BotDirectoryConfigDialog) {
-                    onClosed { update() }
-                    isVisible = true
+                    if (!isVisible) {
+                        showError(ResourceBundles.MESSAGES.get("no_bot_dir"))
+//                        onClosed {
+//                            update()
+//                        }
+                        isVisible = true
+                    }
                 }
             }
         }
