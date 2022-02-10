@@ -19,16 +19,15 @@
     <Copyright>Copyright 2022 Flemming N&#248;rnberg Larsen</Copyright>
 
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+
     <PackageIcon>icon.png</PackageIcon>
-    <PackageProjectUrl>https://robocode.dev/tankroyale/docs/</PackageProjectUrl>
+    <PackageReadmeFile>ReadMe.md</PackageReadmeFile>
 
     <PackageTags>Robocode,TankRoyale,Tank,Royale,Bot</PackageTags>
 
-    <!-- Update me! -->
-    <PackageReleaseNotes>
-    This is an initial alpha version.
-    Expect that the API might change before the real release.
-    </PackageReleaseNotes>
+    <PackageProjectUrl>https://robocode.dev/tankroyale/docs/</PackageProjectUrl>
+
+    <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/docs/Release-notes.txt"))</PackageReleaseNotes>
 
   </PropertyGroup>
 
@@ -44,6 +43,7 @@
 
     <!-- Icon -->
     <None Include="icon.png" Pack="true" PackagePath="\"/>
+    <None Include="docs/ReadMe.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
 </Project>
