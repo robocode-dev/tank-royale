@@ -32,6 +32,7 @@ dotnet {
     }
 
     nugetPush {
+        // api key is set by `nuget setApiKey <key>`
         source = "nuget.org"
     }
 }
