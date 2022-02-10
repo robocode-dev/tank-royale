@@ -25,7 +25,8 @@ include("docs")
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("node-version", "15.5.1")
+            version("tankroyale", "0.9.12")
+            version("node", "15.5.1")
 
             library("gson", "com.google.code.gson:gson:2.8.9")
             library("gson-extras", "org.danilopianini:gson-extras:0.2.2")

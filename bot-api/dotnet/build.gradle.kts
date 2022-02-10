@@ -6,7 +6,7 @@ apply(from = "../../groovy.gradle")
 
 
 val artifactName = "Robocode.TankRoyale.BotApi"
-version = "0.9.12"
+version = libs.versions.tankroyale.get()
 
 val docfxArchiveFilename = "docfx.zip"
 
@@ -27,7 +27,7 @@ dotnet {
     projectName = artifactName
 
     build {
-        version = project.version as String
+        version = libs.versions.tankroyale.get()
         packageVersion = version
     }
 

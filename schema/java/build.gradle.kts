@@ -7,7 +7,7 @@ val title = "Robocode Tank Royale Schema"
 description = "Schema for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
-version = "0.8.1"
+version = libs.versions.tankroyale.get()
 
 val artifactBaseName = "robocode-tankroyale-schema"
 

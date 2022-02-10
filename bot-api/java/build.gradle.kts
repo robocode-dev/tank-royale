@@ -7,7 +7,7 @@ import java.nio.file.Paths
 apply(from = "../../groovy.gradle")
 
 group = "dev.robocode.tankroyale"
-version = "0.9.12"
+version = libs.versions.tankroyale.get()
 description = "Bot API for Robocode Tank Royale"
 
 val javadocTitle = "Robocode Tank Royale Bot API"

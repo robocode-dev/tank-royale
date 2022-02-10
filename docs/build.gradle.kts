@@ -19,7 +19,7 @@ plugins {
 }
 
 node {
-    version.set(libs.versions.node.version)
+    version.set(libs.versions.node)
 }
 
 tasks {

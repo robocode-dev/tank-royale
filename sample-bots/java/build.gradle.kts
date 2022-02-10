@@ -7,7 +7,7 @@ import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 
 apply(from = "../../groovy.gradle")
 
-version = project(":bot-api:java").version
+version = libs.versions.tankroyale.get()
 
 val archiveFilename = "sample-bots-java-${project.version}.zip"
 

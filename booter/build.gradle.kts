@@ -2,7 +2,7 @@ import dev.robocode.tankroyale.tasks.FatJar
 import proguard.gradle.ProGuardTask
 
 group = "dev.robocode.tankroyale"
-version = "0.9.5"
+version = libs.versions.tankroyale.get()
 description = "Application used for booting up Robocode Tank Royale bots"
 
 val jarManifestTitle = "Robocode Tank Royale Booter"
