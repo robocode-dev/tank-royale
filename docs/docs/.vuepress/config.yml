@@ -17,6 +17,8 @@ themeConfig:
   sidebar:
     - title: What is Robocode?
       path: /articles/intro
+    - title: Installation
+      path: /articles/installation
     - title: My First Bot
       path: /tutorial/my-first-bot
     - title: API Documentation
