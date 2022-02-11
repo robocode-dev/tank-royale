@@ -1,4 +1,10 @@
-# What is Robocode?
+# Robocode Tank Royale
+
+<img src="gfx/Logo/Robocode-logo.svg" width="220">
+
+**Build the best - destroy the rest!**
+
+## About
 
 Robocode is a [programming game](https://en.wikipedia.org/wiki/Programming_game) where the goal is to code a bot in the
 form of a virtual tank to compete against other bots in a virtual battle arena. The player is the programmer of the bot,
@@ -18,6 +24,18 @@ like a Battle Royale Game. Hence the name _Tank Royale_.
 Please notice that Robocode contains no gore, no blood, no people, and no politics. The battles are simply for the
 excitement of the competition that we love so much.
 
-### Example of a Robocode battle
+## Documentation
 
-![Battle screenshot](../images/robocode-battle-anim.gif)
+[Robocode Tank Royale Docs](https://robocode.dev/tankroyale/docs/)
+
+## Example of a battle
+
+<img src="docs/docs/images/robocode-battle-anim.gif">
+
+## Maintainer
+
+[@flemming-n-larsen](https://github.com/flemming-n-larsen)
+
+## License
+
+[Apache License 2.0](LICENSE) © [Flemming N. Larsen](https://github.com/flemming-n-larsen)
