@@ -32,6 +32,44 @@ excitement of the competition that we love so much.
 
 <img src="docs/docs/images/robocode-battle-anim.gif">
 
+## Supported platforms
+
+The Robocode game itself needs Java 11 or newer for running, and has been tested to run on:
+
+- Windows
+- macOS
+- Linux.
+
+Bots can (in theory) be written for _any_ platform and programming language, as long as they have access to a
+[WebSocket](https://en.wikipedia.org/wiki/WebSocket) API.
+
+However, to handle all the trivial communication between a bot and the server, Bot APIs are provided for:
+
+- Java (JVM) platform and
+- Microsoft .Net platform
+
+Both implementations are first class citizens within Tank Royale.
+
+Next platform to support will be:
+
+- Web platform (JavaScript or WebAssembly)
+
+## Supported programming languages
+
+Due to the current bot APIs for the JVM and .Net, Robocode is currently able to support these programming languages with
+the current Bot APIs:
+
+Java (JVM) platform:
+
+- [Java], [Groovy], [Kotlin], [Scala], and [Clojure]
+
+.Net platform:
+
+- [C#], [F#], and [Visual Basic]
+
+Note that sample bots are only provided for Java and C# for now. But sample bots for other programming languages might
+arrive in the future.
+
 ## Maintainer
 
 [@flemming-n-larsen](https://github.com/flemming-n-larsen)
@@ -39,3 +77,20 @@ excitement of the competition that we love so much.
 ## License
 
 [Apache License 2.0](LICENSE) © [Flemming N. Larsen](https://github.com/flemming-n-larsen)
+
+
+[Java]: https://docs.oracle.com/javase/tutorial/java/, "The Java Tutorials"
+
+[Groovy]: https://groovy-lang.org/ "Groovy programming language"
+
+[Kotlin]: https://kotlinlang.org/ "Kotlin programming language"
+
+[Scala]: https://www.scala-lang.org/ "Scala programming language"
+
+[Clojure]: https://clojure.org/ "Clojure programming language"
+
+[C#]: https://docs.microsoft.com/en-us/dotnet/csharp/ "C# documentation"
+
+[F#]: https://docs.microsoft.com/en-us/dotnet/fsharp/ "F# documentation"
+
+[Visual Basic]: https://docs.microsoft.com/en-us/dotnet/visual-basic/ "Visual Basic documentation"
