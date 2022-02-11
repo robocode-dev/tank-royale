@@ -24,13 +24,13 @@ like a Battle Royale Game. Hence the name _Tank Royale_.
 Please notice that Robocode contains no gore, no blood, no people, and no politics. The battles are simply for the
 excitement of the competition that we love so much.
 
-## Documentation
-
-[Robocode Tank Royale Docs](https://robocode.dev/tankroyale/docs/)
-
 ## Example of a battle
 
 <img src="docs/docs/images/robocode-battle-anim.gif">
+
+## Documentation
+
+[Robocode Tank Royale Docs](https://robocode.dev/tankroyale/docs/)
 
 ## Supported platforms
 
