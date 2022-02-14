@@ -4,12 +4,11 @@ import org.jsonschema2pojo.SourceType
 import org.jsonschema2pojo.gradle.JsonSchemaExtension
 import java.util.Collections.singletonList
 
-val jarManifestTitle = "Robocode Tank Royale Schema"
-description = "Schema for Robocode Tank Royale"
-
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
+description = "Schema for Robocode Tank Royale"
 
+val jarManifestTitle = "Robocode Tank Royale Schema"
 
 val artifactBaseName = "robocode-tankroyale-schema"
 val archiveFileName = "$buildDir/libs/$artifactBaseName-$version.jar"
@@ -61,7 +60,7 @@ publishing {
         create<MavenPublication>("maven") {
             artifact(archiveFileName)
             groupId = group as String?
-            artifactId
+            artifactId = artifactBaseName
             version
         }
     }
