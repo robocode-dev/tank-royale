@@ -15,7 +15,6 @@ import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.setInputVerifier
 import dev.robocode.tankroyale.gui.ui.newbattle.GameTypeComboBox
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
-import java.awt.Dimension
 import java.awt.EventQueue
 import javax.swing.*
 
@@ -26,11 +25,9 @@ object SetupRulesDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("set
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
-        size = Dimension(600, 500)
-
-        setLocationRelativeTo(MainWindow) // center on main window
-
         contentPane.add(setupRulesPanel)
+        pack()
+        setLocationRelativeTo(MainWindow) // center on main window
     }
 }
 
