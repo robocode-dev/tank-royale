@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.util.JavaVersion
 import dev.robocode.tankroyale.gui.util.Version
 import java.awt.Container
-import java.awt.Dimension
 import java.net.URL
 import javax.swing.JDialog
 import javax.swing.JEditorPane
@@ -20,10 +19,9 @@ object AboutBox : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("about_dialo
     private val javaWordSize = JavaVersion.wordSize
 
     init {
-        size = Dimension(550, 250)
-        setLocationRelativeTo(MainWindow) // center on main window
-
         contentPane = htmlPane()
+        pack()
+        setLocationRelativeTo(MainWindow) // center on main window
     }
 
     private fun htmlPane(): Container =

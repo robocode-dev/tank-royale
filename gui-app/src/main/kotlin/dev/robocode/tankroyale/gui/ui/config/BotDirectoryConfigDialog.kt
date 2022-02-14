@@ -8,7 +8,6 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
-import java.awt.Dimension
 import java.awt.EventQueue
 import javax.swing.*
 
@@ -18,11 +17,9 @@ object BotDirectoryConfigDialog :
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
-        size = Dimension(500, 250)
-
-        setLocationRelativeTo(MainWindow) // center on main window
-
         contentPane.add(BotDirectoryConfigPanel)
+        pack()
+        setLocationRelativeTo(MainWindow) // center on main window
 
         onClosing {
             MiscSettings.setBotDirectories(BotDirectoryConfigPanel.listModel.elements().toList())

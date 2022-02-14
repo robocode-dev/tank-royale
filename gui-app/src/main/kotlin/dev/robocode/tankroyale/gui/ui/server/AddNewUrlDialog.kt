@@ -8,7 +8,6 @@ import dev.robocode.tankroyale.gui.ui.server.AddNewUrlDialog.onComplete
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.Color
-import java.awt.Dimension
 import javax.swing.JButton
 import javax.swing.JDialog
 import javax.swing.JPanel
@@ -25,11 +24,9 @@ object AddNewUrlDialog : JDialog(SelectServerDialog, ResourceBundles.UI_TITLES.g
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
-        size = Dimension(300, 100)
-
-        setLocationRelativeTo(MainWindow) // center on main window
-
         contentPane.add(AddNewUrlPanel)
+        pack()
+        setLocationRelativeTo(MainWindow) // center on main window
 
         onActivated {
             AddNewUrlPanel.apply {
@@ -43,7 +40,7 @@ object AddNewUrlDialog : JDialog(SelectServerDialog, ResourceBundles.UI_TITLES.g
 private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
 
     // Private events
-    val urlTextField = JTextField(50)
+    val urlTextField = JTextField(30)
 
     val urlTextFieldDefaultBackground: Color = urlTextField.background
 
