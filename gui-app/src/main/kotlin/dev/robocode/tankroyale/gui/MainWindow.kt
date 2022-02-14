@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.MainWindowMenu
 import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
+import dev.robocode.tankroyale.gui.ui.components.Images
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
@@ -16,6 +17,7 @@ import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import java.awt.EventQueue
+import java.awt.Taskbar
 import javax.swing.UIManager
 
 
@@ -93,6 +95,8 @@ private fun main() {
     Runtime.getRuntime().addShutdownHook(Thread {
         MainWindow.close()
     })
+
+    Taskbar.getTaskbar().iconImage = Images.tankImage // for macOS
 
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
