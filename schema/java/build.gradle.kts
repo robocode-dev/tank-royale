@@ -1,15 +1,19 @@
+import dev.robocode.tankroyale.tasks.FatJar
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.SourceType
 import org.jsonschema2pojo.gradle.JsonSchemaExtension
 import java.util.Collections.singletonList
 
-val title = "Robocode Tank Royale Schema"
+val jarManifestTitle = "Robocode Tank Royale Schema"
 description = "Schema for Robocode Tank Royale"
 
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
+
 val artifactBaseName = "robocode-tankroyale-schema"
+val archiveFileName = "$buildDir/libs/$artifactBaseName-$version.jar"
+
 
 buildscript {
     dependencies {
@@ -19,6 +23,7 @@ buildscript {
 
 plugins {
     `java-library`
+    `maven-publish`
     idea
 }
 
@@ -37,20 +42,27 @@ configure<JsonSchemaExtension> {
     targetPackage = "dev.robocode.tankroyale.schema"
 }
 
-val fatJar = task<Jar>("fatJar") {
-    archiveBaseName.set(artifactBaseName)
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes["Implementation-Title"] = title
-        attributes["Implementation-Version"] = archiveVersion
+tasks {
+    val fatJar by registering(FatJar::class) {
+        dependsOn(classes)
+
+        title.set(jarManifestTitle)
+        outputFilename.set(archiveFileName)
     }
-    from(
-        configurations.compileClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) },
-        configurations.runtimeClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) }
-    )
-    with(tasks["jar"] as CopySpec)
+
+    jar { // Replace jar task
+        actions = emptyList()
+        finalizedBy(fatJar)
+    }
 }
 
-tasks.named("build") {
-    dependsOn(fatJar)
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            artifact(archiveFileName)
+            groupId = group as String?
+            artifactId
+            version
+        }
+    }
 }
