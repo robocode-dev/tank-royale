@@ -7,7 +7,7 @@ import java.awt.Dimension
 import java.util.*
 import javax.swing.*
 
-object BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
+object BotInfoPanel : JPanel(MigLayout("fillx", "[min][sg fields,grow][min][sg fields,grow]")) {
 
     private val nameTextField = JNonEditableTextField()
     private val versionTextField = JNonEditableTextField()
@@ -23,36 +23,36 @@ object BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
         border = BorderFactory.createTitledBorder("Bot Info")
 
         addLabel("bot_info.name")
-        add(nameTextField, "growx, wrap")
+        add(nameTextField, "growx")
+
+        addLabel("bot_info.platform")
+        add(platformTextField, "growx, wrap")
 
         addLabel("bot_info.version")
-        add(versionTextField, "growx, wrap")
+        add(versionTextField, "growx")
+
+        addLabel("bot_info.programming_lang")
+        add(programmingLangTextField, "growx, wrap")
 
         addLabel("bot_info.authors")
-        add(authorsTextField, "growx, wrap")
+        add(authorsTextField, "growx")
+
+        addLabel("bot_info.game_types")
+        add(gameTypesTextField, "growx, wrap")
+
+        addLabel("bot_info.homepage")
+        add(homepageTextPane, "growx")
+        homepageTextPane.minimumSize = nameTextField.minimumSize
 
         addLabel("bot_info.country_codes")
         add(countryCodesTextPane, "growx, wrap")
         countryCodesTextPane.minimumSize = Dimension(100, 24)
 
         addLabel("bot_info.description")
-        add(descriptionTextField, "growx, wrap")
+        add(descriptionTextField, "growx, span 3")
         descriptionTextField.border = nameTextField.border
         descriptionTextField.background = background
         descriptionTextField.font = font
-
-        addLabel("bot_info.homepage")
-        add(homepageTextPane, "growx, wrap")
-        homepageTextPane.minimumSize = descriptionTextField.minimumSize
-
-        addLabel("bot_info.game_types")
-        add(gameTypesTextField, "growx, wrap")
-
-        addLabel("bot_info.platform")
-        add(platformTextField, "growx, wrap")
-
-        addLabel("bot_info.programming_lang")
-        add(programmingLangTextField, "growx, wrap")
 
         updateBotInfo(null)
 
@@ -84,17 +84,17 @@ object BotInfoPanel : JPanel(MigLayout("fillx", "[][grow]")) {
         }
         var desc = lines.joinToString(separator = "\n")
         if (truncated) { // Add 3 dots if text got truncated
-            desc += "\n..."
+            desc += " …"
         }
         return desc
     }
 
     private fun generateUrlHtml(url: String): String =
-        "<html><body style=\"font-family: sans-serif;font-size: ${font.size}\"><a href=\"${url}\">${url}</a></body></html>"
+        "<html><body style=\"font-family: sans-serif; font-size:${font.size}\"><a href=\"${url}\">${url}</a></body></html>"
 
     private fun generateCountryHtml(countryCodes: List<String>): String {
         var html = """
-              <table cellspacing="0" cellpadding="0" border="0">
+              <table cellspacing="0" cellpadding="0">
                 <tr>"""
         countryCodes.forEach { html += generateCountryHtml(it) + " " }
         html += """
