@@ -15,7 +15,6 @@ import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onMultiClickedAtIndex
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onSelection
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
-import java.awt.Dimension
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
 import javax.swing.*
@@ -51,7 +50,6 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
 
     private val runButtonPanel = JPanel(MigLayout("fill", "[fill]"))
     private val addPanel = JPanel(MigLayout("fill", "[fill]"))
-    private val middlePanel = JPanel(MigLayout("fill"))
     private val removePanel = JPanel(MigLayout("fill", "[fill]"))
 
     private val addRemoveButtonsPanel = createAddRemoveButtonsPanel()
@@ -233,47 +231,43 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
     }
 
     private fun createSelectionPanel() =
-        JPanel(MigLayout("", "[grow][grow][][grow]")).apply {
+        JPanel(MigLayout("", "[][center][]","[][]")).apply {
             add(botsDirectoryPanel, "grow")
-            add(runButtonPanel, "")
-            add(runningBotsPanel, "grow")
+            add(runButtonPanel)
+            add(runningBotsPanel, "grow, wrap")
+
             add(joinedBotsPanel, "grow")
-            add(addRemoveButtonsPanel, "")
+            add(addRemoveButtonsPanel)
             add(selectBotsPanel, "grow")
         }
 
     private fun createAddRemoveButtonsPanel() =
         JPanel(MigLayout()).apply {
             add(addPanel, "north")
-            add(middlePanel, "h 300")
             add(removePanel, "south")
         }
 
     private fun createBotsDirectoryPanel() =
         JPanel(MigLayout("fill")).apply {
             add(botsDirectoryScrollPane, "grow")
-            preferredSize = Dimension(1000, 1000)
             border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("bot_directories"))
         }
 
     private fun createRunningBotsPanel() =
         JPanel(MigLayout("fill")).apply {
             add(runningScrollPane, "grow")
-            preferredSize = Dimension(1000, 1000)
             border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("running_bots"))
         }
 
     private fun createJoinedBotsPanel() =
         JPanel(MigLayout("fill")).apply {
             add(joinedBotsScrollPane, "grow")
-            preferredSize = Dimension(1000, 1000)
             border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("joined_bots"))
         }
 
     private fun createSelectBotsPanel() =
         JPanel(MigLayout("fill")).apply {
             add(JScrollPane(selectedBotList), "grow")
-            preferredSize = Dimension(1000, 1000)
             border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("selected_bots"))
         }
 
@@ -325,9 +319,6 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
                 with(BotDirectoryConfigDialog) {
                     if (!isVisible) {
                         showError(ResourceBundles.MESSAGES.get("no_bot_dir"))
-//                        onClosed {
-//                            update()
-//                        }
                         isVisible = true
                     }
                 }
