@@ -96,11 +96,9 @@ private fun main() {
         MainWindow.close()
     })
 
-    with(Taskbar.getTaskbar()) {
-        if (isSupported(Taskbar.Feature.ICON_IMAGE)) {
-            Taskbar.getTaskbar().iconImage = Images.tankImage // for macOS
-        }
-    }
+    try {
+        Taskbar.getTaskbar().iconImage = Images.tankImage // for macOS
+    } catch (ignore: UnsupportedOperationException) {}
 
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
