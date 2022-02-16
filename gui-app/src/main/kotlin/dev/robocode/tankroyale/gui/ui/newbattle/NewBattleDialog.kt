@@ -43,12 +43,10 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
 
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
 
-        val lowerPanel = JPanel(MigLayout("insets 10, fill")).apply {
-            add(SelectBotsAndBotInfoPanel, "north")
-            add(buttonPanel, "center")
-        }
-        add(topPanel, "north")
-        add(lowerPanel, "south")
+        add(topPanel, "cell 0 0")
+        add(BotSelectionPanel, "cell 0 1, center")
+        add(BotInfoPanel, "cell 0 3, grow")
+        add(buttonPanel, "cell 0 4, center")
 
         val startBattleButton: JButton
 
@@ -94,16 +92,6 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
         Client.startGame(botAddresses.toSet())
 
         NewBattleDialog.dispose()
-    }
-
-    private companion object SelectBotsAndBotInfoPanel : JPanel(MigLayout("fill")) {
-        init {
-            add(BotSelectionPanel)
-
-            val groupPanel = JPanel(MigLayout("fill"))
-            groupPanel.add(BotInfoPanel, "grow")
-            add(groupPanel, "south")
-        }
     }
 }
 
