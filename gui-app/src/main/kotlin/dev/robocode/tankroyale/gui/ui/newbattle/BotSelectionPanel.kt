@@ -231,7 +231,7 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
     }
 
     private fun createSelectionPanel() =
-        JPanel(MigLayout("", "[][center][]","[][]")).apply {
+        JPanel(MigLayout("fill", "[][center][]","[][]")).apply {
             add(botsDirectoryPanel, "grow")
             add(runButtonPanel)
             add(runningBotsPanel, "grow, wrap")
