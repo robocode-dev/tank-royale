@@ -26,7 +26,7 @@ object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("sele
     }
 }
 
-class NewBattlePanel : JPanel(MigLayout("fill")) {
+class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
 
     private val onStartBattle = Event<JButton>()
     private val onCancel = Event<JButton>()
@@ -43,10 +43,10 @@ class NewBattlePanel : JPanel(MigLayout("fill")) {
 
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
 
-        add(topPanel, "cell 0 0")
-        add(BotSelectionPanel, "cell 0 1, center")
-        add(BotInfoPanel, "cell 0 3, grow")
-        add(buttonPanel, "cell 0 4, center")
+        add(topPanel, "wrap")
+        add(BotSelectionPanel, "grow, wrap")
+        add(BotInfoPanel, "grow, wrap")
+        add(buttonPanel, "center")
 
         val startBattleButton: JButton
 

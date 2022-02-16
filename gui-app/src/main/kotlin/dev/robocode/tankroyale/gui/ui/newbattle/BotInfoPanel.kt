@@ -7,7 +7,7 @@ import java.awt.Dimension
 import java.util.*
 import javax.swing.*
 
-object BotInfoPanel : JPanel(MigLayout("", "[][sg a,grow][10][][sg a,grow]")) {
+object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
 
     private val nameTextField = JNonEditableTextField()
     private val versionTextField = JNonEditableTextField()

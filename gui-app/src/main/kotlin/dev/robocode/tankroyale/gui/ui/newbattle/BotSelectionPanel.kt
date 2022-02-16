@@ -19,7 +19,7 @@ import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
 import javax.swing.*
 
-object BotSelectionPanel : JPanel(MigLayout("","[][center][]","[][]")), FocusListener {
+object BotSelectionPanel : JPanel(MigLayout("","[grow][center][grow]","[grow][grow]")), FocusListener {
 
     private val onRunBots = Event<JButton>()
     private val onStopBots = Event<JButton>()
@@ -48,9 +48,9 @@ object BotSelectionPanel : JPanel(MigLayout("","[][center][]","[][]")), FocusLis
     private val joinedBotsPanel = createJoinedBotsPanel()
     private val selectBotsPanel = createSelectBotsPanel()
 
-    private val runButtonPanel = JPanel(MigLayout("fill", "[fill]"))
-    private val addPanel = JPanel(MigLayout("fill", "[fill]"))
-    private val removePanel = JPanel(MigLayout("fill", "[fill]"))
+    private val runButtonPanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
+    private val addPanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
+    private val removePanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
 
     private val addRemoveButtonsPanel = createAddRemoveButtonsPanel()
 
@@ -197,7 +197,7 @@ object BotSelectionPanel : JPanel(MigLayout("","[][center][]","[][]")), FocusLis
     }
 
     private fun addAddButton() {
-        addPanel.addButton("add_arrow", onAdd, "cell 0 1").apply {
+        addPanel.addButton("add_arrow", onAdd, "cell 0 0").apply {
             isEnabled = false
             joinedBotList.onSelection {
                 isEnabled = joinedBotList.selectedIndices.isNotEmpty()
@@ -206,7 +206,7 @@ object BotSelectionPanel : JPanel(MigLayout("","[][center][]","[][]")), FocusLis
     }
 
     private fun addAllButton() {
-        addPanel.addButton("add_all_arrow", onAddAll, "cell 0 2").apply {
+        addPanel.addButton("add_all_arrow", onAddAll, "cell 0 1").apply {
             isEnabled = false
             joinedBotList.onChanged {
                 isEnabled = joinedBotList.model.size > 0
@@ -215,7 +215,7 @@ object BotSelectionPanel : JPanel(MigLayout("","[][center][]","[][]")), FocusLis
     }
 
     private fun addRemoveButton() {
-        removePanel.addButton("arrow_remove", onRemove, "cell 0 3").apply {
+        removePanel.addButton("arrow_remove", onRemove, "cell 0 0").apply {
             isEnabled = false
             selectedBotList.onSelection {
                 isEnabled = selectedBotList.selectedIndices.isNotEmpty()
@@ -228,7 +228,7 @@ object BotSelectionPanel : JPanel(MigLayout("","[][center][]","[][]")), FocusLis
     }
 
     private fun addRemoveAll() {
-        removePanel.addButton("arrow_remove_all", onRemoveAll, "cell 0 4").apply {
+        removePanel.addButton("arrow_remove_all", onRemoveAll, "cell 0 1").apply {
             isEnabled = false
             selectedBotList.onChanged {
                 isEnabled = selectedBotList.model.size > 0
@@ -237,9 +237,9 @@ object BotSelectionPanel : JPanel(MigLayout("","[][center][]","[][]")), FocusLis
     }
 
     private fun createAddRemoveButtonsPanel() =
-        JPanel(MigLayout()).apply {
-            add(addPanel, "north")
-            add(removePanel, "south")
+        JPanel(MigLayout("", "[fill]", "[][5][]")).apply {
+            add(addPanel, "cell 0 0")
+            add(removePanel, "cell 0 2")
         }
 
     private fun createBotsDirectoryPanel() =
