@@ -18,7 +18,7 @@ class ResultsWindow(results: List<BotResults>) : RcFrame(getWindowTitle()) {
 
     init {
         val table = JTable(getData(results), getColumns())
-        val tableSize = Dimension(700, table.model.rowCount * table.rowHeight)
+        val tableSize = Dimension(800, table.model.rowCount * table.rowHeight)
 
         table.apply {
             preferredScrollableViewportSize = tableSize
@@ -42,8 +42,8 @@ class ResultsWindow(results: List<BotResults>) : RcFrame(getWindowTitle()) {
         }
 
         val scrollPane = JScrollPane(table)
-        contentPane.add(scrollPane)
 
+        contentPane.add(scrollPane)
         pack()
         setLocationRelativeTo(MainWindow) // center on main window
     }
