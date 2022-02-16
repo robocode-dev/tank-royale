@@ -19,7 +19,7 @@ import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
 import javax.swing.*
 
-object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
+object BotSelectionPanel : JPanel(MigLayout("","[][center][]","[][]")), FocusListener {
 
     private val onRunBots = Event<JButton>()
     private val onStopBots = Event<JButton>()
@@ -58,7 +58,13 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
         addFocusListener(this)
         isFocusable = true
 
-        add(createSelectionPanel(), "north")
+        add(botsDirectoryPanel, "grow")
+        add(runButtonPanel)
+        add(runningBotsPanel, "grow, wrap")
+
+        add(joinedBotsPanel, "grow")
+        add(addRemoveButtonsPanel)
+        add(selectBotsPanel, "grow")
 
         addRunButton()
         addStopButton()
@@ -229,17 +235,6 @@ object BotSelectionPanel : JPanel(MigLayout("fill")), FocusListener {
             }
         }
     }
-
-    private fun createSelectionPanel() =
-        JPanel(MigLayout("fill", "[][center][]","[][]")).apply {
-            add(botsDirectoryPanel, "grow")
-            add(runButtonPanel)
-            add(runningBotsPanel, "grow, wrap")
-
-            add(joinedBotsPanel, "grow")
-            add(addRemoveButtonsPanel)
-            add(selectBotsPanel, "grow")
-        }
 
     private fun createAddRemoveButtonsPanel() =
         JPanel(MigLayout()).apply {
