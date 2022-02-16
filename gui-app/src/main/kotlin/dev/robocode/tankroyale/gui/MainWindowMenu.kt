@@ -7,9 +7,11 @@ import dev.robocode.tankroyale.gui.ui.extensions.JMenuExt.addNewMenuItem
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEventChannel
 import dev.robocode.tankroyale.gui.util.Event
+import java.awt.event.KeyEvent
 import javax.swing.JMenu
 import javax.swing.JMenuBar
 import javax.swing.JMenuItem
+import javax.swing.KeyStroke
 
 object MainWindowMenu : JMenuBar() {
 
@@ -32,12 +34,22 @@ object MainWindowMenu : JMenuBar() {
 
     init {
         add(JMenu(MENU.get("menu.battle")).apply {
-            addNewMenuItem("item.start_battle", onStartBattle)
+            mnemonic = KeyEvent.VK_B
+
+            addNewMenuItem("item.start_battle", onStartBattle).apply {
+                mnemonic = KeyEvent.VK_B
+                accelerator = ctrlDown(mnemonic)
+            }
             addSeparator()
-            addNewMenuItem("item.setup_rules", onSetupRules)
+            addNewMenuItem("item.setup_rules", onSetupRules).apply {
+                mnemonic = KeyEvent.VK_R
+                accelerator = ctrlDown(mnemonic)
+            }
         })
 
         val serverMenu = JMenu(MENU.get("menu.server")).apply {
+            mnemonic = KeyEvent.VK_S
+
             onStartServer.invokeLater(this) { ServerEventChannel.onStartServer.fire(Unit) }
             onRestartServer.invokeLater(this) { ServerEventChannel.onRestartServer.fire(Unit) }
             onStopServer.invokeLater(this) { ServerEventChannel.onStopServer.fire(Unit) }
@@ -46,25 +58,46 @@ object MainWindowMenu : JMenuBar() {
             restartServerMenuItem = addNewMenuItem("item.restart_server", onRestartServer)
             stopServerMenuItem = addNewMenuItem("item.stop_server", onStopServer)
 
-            addNewMenuItem("item.show_server_log", onShowServerLog)
+            addNewMenuItem("item.show_server_log", onShowServerLog).apply {
+                mnemonic = KeyEvent.VK_L
+                accelerator = ctrlDown(mnemonic)
+            }
             addSeparator()
-            addNewMenuItem("item.select_server", onServerConfig)
+            addNewMenuItem("item.select_server", onServerConfig).apply {
+                mnemonic = KeyEvent.VK_E
+            }
             addSeparator()
 
-            add(startServerMenuItem)
-            add(restartServerMenuItem)
-            add(stopServerMenuItem)
+            add(startServerMenuItem).apply {
+                mnemonic = KeyEvent.VK_S
+                accelerator = ctrlDown(mnemonic)
+            }
+            add(restartServerMenuItem).apply {
+                mnemonic = KeyEvent.VK_R
+            }
+            add(stopServerMenuItem).apply {
+                mnemonic = KeyEvent.VK_T
+            }
 
             updateServerState()
         }
         add(serverMenu)
 
         add(JMenu(MENU.get("menu.config")).apply {
-            addNewMenuItem("item.bot_root_dirs_config", onBotDirConfig)
+            mnemonic = KeyEvent.VK_C
+
+            addNewMenuItem("item.bot_root_dirs_config", onBotDirConfig).apply {
+                mnemonic = KeyEvent.VK_D
+                accelerator = ctrlDown(mnemonic)
+            }
         })
 
         add(JMenu(MENU.get("menu.help")).apply {
-            addNewMenuItem("item.about", onAbout)
+            mnemonic = KeyEvent.VK_H
+
+            addNewMenuItem("item.about", onAbout).apply {
+                mnemonic = KeyEvent.VK_A
+            }
         })
 
         onAbout.invokeLater(this) { AboutBox.isVisible = true }
@@ -80,6 +113,8 @@ object MainWindowMenu : JMenuBar() {
         restartServerMenuItem?.isEnabled = ServerProcess.isRunning()
         stopServerMenuItem?.isEnabled = ServerProcess.isRunning()
     }
+
+    private fun ctrlDown(keyEvent: Int) = KeyStroke.getKeyStroke(keyEvent, KeyEvent.CTRL_DOWN_MASK)
 }
 
 class MenuEvent : Event<JMenuItem>()
