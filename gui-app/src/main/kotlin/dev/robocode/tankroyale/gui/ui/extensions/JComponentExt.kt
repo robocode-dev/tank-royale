@@ -3,10 +3,7 @@ package dev.robocode.tankroyale.gui.ui.extensions
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.UI_TITLES
 import dev.robocode.tankroyale.gui.util.Event
-import javax.swing.JButton
-import javax.swing.JComponent
-import javax.swing.JLabel
-import javax.swing.JOptionPane
+import javax.swing.*
 
 object JComponentExt {
 
@@ -23,6 +20,15 @@ object JComponentExt {
         button.addActionListener { event.fire(button) }
         add(button, layoutConstraints)
         return button
+    }
+
+    fun JComponent.setDefaultButton(button: JButton) {
+        SwingUtilities.invokeLater { // to avoid rootPane to be null, if called too early
+            if (rootPane != null) {
+                rootPane.defaultButton = button
+            }
+            button.requestFocus() // set the focus on the button
+        }
     }
 
     fun JComponent.showMessage(msg: String) {

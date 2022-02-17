@@ -7,7 +7,7 @@ import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.settings.MiscSettings
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.components.SortedListModel
-import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
+import dev.robocode.tankroyale.gui.ui.config.BotRootDirectoriesConfigDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showError
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onChanged
@@ -311,7 +311,7 @@ object BotSelectionPanel : JPanel(MigLayout("","[grow][center][grow]","[grow][gr
     private fun enforceBotDirIsConfigured() {
         if (MiscSettings.getBotDirectories().isEmpty()) {
             SwingUtilities.invokeLater {
-                with(BotDirectoryConfigDialog) {
+                with(BotRootDirectoriesConfigDialog) {
                     if (!isVisible) {
                         showError(ResourceBundles.MESSAGES.get("no_bot_dir"))
                         isVisible = true

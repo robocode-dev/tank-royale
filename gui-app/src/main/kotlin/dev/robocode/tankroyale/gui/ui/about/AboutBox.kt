@@ -3,6 +3,8 @@ package dev.robocode.tankroyale.gui.ui.about
 import dev.robocode.tankroyale.gui.MainWindow
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
+import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.JavaVersion
 import dev.robocode.tankroyale.gui.util.Version
@@ -29,8 +31,8 @@ object AboutBox : RcDialog(MainWindow, "about_dialog") {
         contentPane.add(panel)
         pack()
 
-        panel.addButton("ok", onOk).apply {
-            requestFocus()
+        val okButton = panel.addButton("ok", onOk).apply {
+            setDefaultButton(this)
         }
         pack()
         setLocationRelativeTo(MainWindow) // center on main window
@@ -39,6 +41,10 @@ object AboutBox : RcDialog(MainWindow, "about_dialog") {
 
         onOk.subscribe(this) {
             dispose()
+        }
+
+        onActivated {
+            okButton.requestFocus()
         }
     }
 

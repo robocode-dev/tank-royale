@@ -7,7 +7,7 @@ import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
 import dev.robocode.tankroyale.gui.ui.components.Images
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
-import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigDialog
+import dev.robocode.tankroyale.gui.ui.config.BotRootDirectoriesConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
@@ -39,7 +39,7 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
             onSetupRules.invokeLater(MainWindow) { SetupRulesDialog.isVisible = true }
             onShowServerLog.invokeLater(MainWindow) { ServerLogWindow.isVisible = true }
             onServerConfig.invokeLater(MainWindow) { SelectServerDialog.isVisible = true }
-            onBotDirConfig.invokeLater(MainWindow) { BotDirectoryConfigDialog.isVisible = true }
+            onBotDirConfig.invokeLater(MainWindow) { BotRootDirectoriesConfigDialog.isVisible = true }
         }
 
         Client.apply {

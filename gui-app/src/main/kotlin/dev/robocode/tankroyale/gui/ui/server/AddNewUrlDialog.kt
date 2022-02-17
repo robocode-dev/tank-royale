@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.ui.server
 import dev.robocode.tankroyale.gui.MainWindow
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.server.AddNewUrlDialog.onComplete
 import dev.robocode.tankroyale.gui.util.Event
@@ -46,7 +47,7 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
         val okButton = addButton("ok", onComplete)
 
         AddNewUrlDialog.apply {
-            rootPane.defaultButton = okButton
+            setDefaultButton(okButton)
 
             onComplete.subscribe(AddNewUrlDialog) {
                 if (isValidWsUrl) {
@@ -55,6 +56,10 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
                 } else {
                     newUrl = ""
                 }
+            }
+
+            onActivated {
+                okButton.requestFocus()
             }
         }
 

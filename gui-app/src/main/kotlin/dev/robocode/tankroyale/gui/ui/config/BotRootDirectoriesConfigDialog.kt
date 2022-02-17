@@ -5,13 +5,15 @@ import dev.robocode.tankroyale.gui.settings.MiscSettings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
+import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.EventQueue
 import javax.swing.*
 
-object BotDirectoryConfigDialog : RcDialog(MainWindow, "bot_root_directories_config_dialog") {
+object BotRootDirectoriesConfigDialog : RcDialog(MainWindow, "bot_root_directories_config_dialog") {
 
     init {
         contentPane.add(BotDirectoryConfigPanel)
@@ -26,9 +28,9 @@ object BotDirectoryConfigDialog : RcDialog(MainWindow, "bot_root_directories_con
 
 private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
 
-    // Private events
     private val onAdd = Event<JButton>()
     private val onRemove = Event<JButton>()
+    private val onDismiss = Event<JButton>()
 
     val listModel = DefaultListModel<String>()
     val list = JList(listModel)
@@ -38,14 +40,17 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
         addLabel("bot_root_dirs", "wrap")
         add(scrollPane, "span 2, grow, wrap")
 
-        val buttonPanel = JPanel()
+        val buttonPanel = JPanel(MigLayout("", "[][][5][]"))
         buttonPanel.addButton("add", onAdd)
         buttonPanel.addButton("remove", onRemove)
+        val dismissButton = buttonPanel.addButton("dismiss", onDismiss, "skip").apply {
+            setDefaultButton(this)
+        }
         add(buttonPanel)
 
         MiscSettings.getBotDirectories().forEach { listModel.addElement(it) }
 
-        onAdd.subscribe(BotDirectoryConfigDialog) {
+        onAdd.subscribe(BotRootDirectoriesConfigDialog) {
             val chooser = JFileChooser()
             chooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
             val returnVal = chooser.showOpenDialog(this)
@@ -56,9 +61,17 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
             }
         }
 
-        onRemove.subscribe(BotDirectoryConfigDialog) {
+        onRemove.subscribe(BotRootDirectoriesConfigDialog) {
             list.selectedValuesList.forEach { listModel.removeElement(it) }
             updateSettings()
+        }
+
+        onDismiss.subscribe(BotRootDirectoriesConfigDialog) {
+            BotRootDirectoriesConfigDialog.dispose()
+        }
+
+        BotRootDirectoriesConfigDialog.onActivated {
+            dismissButton.requestFocus()
         }
     }
 
@@ -71,6 +84,6 @@ private fun main() {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     EventQueue.invokeLater {
-        BotDirectoryConfigDialog.isVisible = true
+        BotRootDirectoriesConfigDialog.isVisible = true
     }
 }

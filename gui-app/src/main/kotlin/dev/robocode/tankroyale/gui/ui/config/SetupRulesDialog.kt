@@ -10,9 +10,11 @@ import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.onChange
 import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.setInputVerifier
+import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.newbattle.GameTypeComboBox
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
@@ -32,7 +34,6 @@ object SetupRulesDialog : RcDialog(MainWindow, "setup_rules_dialog") {
 
 class SetupRulesPanel : JPanel(MigLayout("fill")) {
 
-    // Private events
     private val onOk = Event<JButton>()
     private val onCancel = Event<JButton>()
     private val onResetToDefault = Event<JButton>()
@@ -100,13 +101,17 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             add(commonPanel, "west")
             add(arenaPanel, "east")
         }
-        val lowerPanel = JPanel(MigLayout()).apply {
-            okButton = addButton("ok", onOk, "tag ok")
+        val buttonPanel = JPanel(MigLayout("fill", "[][][10][][]")).apply {
+            okButton = addButton("ok", onOk, "tag ok").apply {
+                setDefaultButton(this)
+            }
             addButton("cancel", onCancel, "tag cancel")
-            addButton("reset_to_default", onResetToDefault, "")
+            addButton("reset_to_default", onResetToDefault, "skip")
             applyButton = addButton("apply", onApply, "tag apply")
         }
-        SetupRulesDialog.rootPane.defaultButton = okButton
+        SetupRulesDialog.onActivated {
+            okButton.requestFocus()
+        }
 
         with(gameTypeComboBox) {
             addItemListener {
@@ -119,7 +124,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         applyButton.isVisible = false
 
         add(upperPanel, "center, wrap")
-        add(lowerPanel, "center")
+        add(buttonPanel, "center")
 
         widthTextField.setInputVerifier { widthVerifier() }
         heightTextField.setInputVerifier { heightVerifier() }
