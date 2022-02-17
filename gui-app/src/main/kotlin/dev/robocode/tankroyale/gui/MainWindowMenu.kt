@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.gui.ui.about.AboutBox
 import dev.robocode.tankroyale.gui.ui.extensions.JMenuExt.addNewMenuItem
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEventChannel
+import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
 import dev.robocode.tankroyale.gui.util.Event
 import java.awt.event.KeyEvent
 import javax.swing.JMenu
@@ -50,9 +51,18 @@ object MainWindowMenu : JMenuBar() {
         val serverMenu = JMenu(MENU.get("menu.server")).apply {
             mnemonic = KeyEvent.VK_S
 
-            onStartServer.invokeLater(this) { ServerEventChannel.onStartServer.fire(Unit) }
-            onRestartServer.invokeLater(this) { ServerEventChannel.onRestartServer.fire(Unit) }
-            onStopServer.invokeLater(this) { ServerEventChannel.onStopServer.fire(Unit) }
+            onStartServer.invokeLater(this) {
+                ServerLogWindow.isVisible = true
+                ServerEventChannel.onStartServer.fire(Unit)
+            }
+            onRestartServer.invokeLater(this) {
+                ServerLogWindow.isVisible = true
+                ServerEventChannel.onRestartServer.fire(Unit)
+            }
+            onStopServer.invokeLater(this) {
+                ServerLogWindow.isVisible = false
+                ServerEventChannel.onStopServer.fire(Unit)
+            }
 
             startServerMenuItem = addNewMenuItem("item.start_server", onStartServer)
             restartServerMenuItem = addNewMenuItem("item.restart_server", onRestartServer)
