@@ -70,6 +70,11 @@ Java (JVM) platform:
 Note that sample bots are only provided for Java and C# for now. But sample bots for other programming languages might
 arrive in the future.
 
+## Build tool used
+
+[Gradle] is being used as build tool for building all artifacts and documentation of Tank Royale, which is a
+multi-module project.
+
 ## Maintainer
 
 [@flemming-n-larsen](https://github.com/flemming-n-larsen)
@@ -94,3 +99,5 @@ arrive in the future.
 [F#]: https://docs.microsoft.com/en-us/dotnet/fsharp/ "F# documentation"
 
 [Visual Basic]: https://docs.microsoft.com/en-us/dotnet/visual-basic/ "Visual Basic documentation"
+
+[Gradle]: https://gradle.org/ "Gradle Build Tool"

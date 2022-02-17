@@ -38,6 +38,10 @@ dotnet {
 }
 
 tasks {
+    clean {
+        delete("bin", "build", "obj", "docfx_project/_site", "docfx_project/obj")
+    }
+
     val docfx by registering {
         dependsOn(assemble)
 
