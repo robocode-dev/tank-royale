@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.server
 
 import dev.robocode.tankroyale.gui.MainWindow
-import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.server.AddNewUrlDialog.onComplete
@@ -9,21 +9,18 @@ import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.Color
 import javax.swing.JButton
-import javax.swing.JDialog
 import javax.swing.JPanel
 import javax.swing.JTextField
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
-object AddNewUrlDialog : JDialog(SelectServerDialog, ResourceBundles.UI_TITLES.get("add_new_url_dialog")) {
+object AddNewUrlDialog : RcDialog(SelectServerDialog, "add_new_url_dialog") {
 
     val onComplete = Event<JButton>()
 
     var newUrl: String = ""
 
     init {
-        defaultCloseOperation = DISPOSE_ON_CLOSE
-
         contentPane.add(AddNewUrlPanel)
         pack()
         setLocationRelativeTo(MainWindow) // center on main window

@@ -15,6 +15,8 @@ object ServerLogWindow : RcFrame("server_log_window") {
     private val scrollPane = JScrollPane(textArea)
 
     init {
+        setDisposeOnEnterKeyPressed()
+
         setSize(700, 550)
         setLocationRelativeTo(MainWindow) // center on main window
 

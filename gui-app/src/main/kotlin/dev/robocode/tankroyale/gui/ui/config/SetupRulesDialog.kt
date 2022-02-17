@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.MutableGameSetup
 import dev.robocode.tankroyale.gui.ui.GameConstants
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
@@ -18,13 +19,11 @@ import net.miginfocom.swing.MigLayout
 import java.awt.EventQueue
 import javax.swing.*
 
-object SetupRulesDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("setup_rules_dialog")) {
+object SetupRulesDialog : RcDialog(MainWindow, "setup_rules_dialog") {
 
     private val setupRulesPanel = SetupRulesPanel()
 
     init {
-        defaultCloseOperation = DISPOSE_ON_CLOSE
-
         contentPane.add(setupRulesPanel)
         pack()
         setLocationRelativeTo(MainWindow) // center on main window

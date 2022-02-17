@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.gui.MainWindow
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.util.Event
@@ -13,13 +13,11 @@ import java.awt.EventQueue
 import java.awt.event.ItemEvent
 import javax.swing.*
 
-object NewBattleDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("select_bots_dialog")) {
+object NewBattleDialog : RcDialog(MainWindow, "select_bots_dialog") {
 
     private val selectBotsAndStartPanel = NewBattlePanel()
 
     init {
-        defaultCloseOperation = DISPOSE_ON_CLOSE
-
         contentPane.add(selectBotsAndStartPanel)
         pack()
         setLocationRelativeTo(MainWindow) // center on main window

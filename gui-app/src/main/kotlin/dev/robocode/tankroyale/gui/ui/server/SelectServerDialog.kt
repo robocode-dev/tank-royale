@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.ui.server
 import dev.robocode.tankroyale.gui.MainWindow
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
@@ -11,11 +12,9 @@ import net.miginfocom.swing.MigLayout
 import java.awt.EventQueue
 import javax.swing.*
 
-object SelectServerDialog : JDialog(MainWindow, ResourceBundles.UI_TITLES.get("select_server_dialog")) {
+object SelectServerDialog : RcDialog(MainWindow, "select_server_dialog") {
 
     init {
-        defaultCloseOperation = DISPOSE_ON_CLOSE
-
         contentPane.add(SelectServerPanel)
         pack()
         setLocationRelativeTo(MainWindow) // center on main window
@@ -53,10 +52,11 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         val okButton: JButton
 
         val buttonPanel = JPanel(MigLayout()).apply {
-            okButton = addButton("ok", onOk, "tag ok")
+            okButton = addButton("ok", onOk, "tag ok").apply {
+                SelectServerDialog.rootPane.defaultButton = this
+            }
             addButton("cancel", onCancel, "tag cancel")
         }
-        SelectServerDialog.rootPane.defaultButton = okButton
 
         lowerPanel.add(buttonPanel, "center")
 
@@ -108,22 +108,26 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     private val selectedItem get() = urlComboBox.selectedItem as String
 
     private fun testServerConnection() {
-        if (RemoteServer.isRunning(selectedUri)) {
-            showMessage(ResourceBundles.STRINGS.get("server_is_running"))
-        } else {
-            showMessage(ResourceBundles.STRINGS.get("server_not_found"))
+        with (ResourceBundles.STRINGS) {
+            if (RemoteServer.isRunning(selectedUri)) {
+                showMessage(get("server_is_running"))
+            } else {
+                showMessage(get("server_not_found"))
+            }
         }
     }
 
     private fun setFieldsToServerConfig() {
         urlComboBox.removeAllItems()
 
-        if (ServerSettings.userUrls.isNotEmpty()) {
-            ServerSettings.userUrls.forEach { urlComboBox.addItem(it) }
-        } else {
-            urlComboBox.addItem(ServerSettings.serverUrl)
+        with(ServerSettings) {
+            if (userUrls.isNotEmpty()) {
+                userUrls.forEach { urlComboBox.addItem(it) }
+            } else {
+                urlComboBox.addItem(serverUrl)
+            }
+            selectedUri = serverUrl
         }
-        selectedUri = ServerSettings.serverUrl
     }
 
     // This method is required as setSelectedItem() does not work as the url can be partial
@@ -145,9 +149,10 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         for (i in 0 until size) {
             userUrls.add(urlComboBox.getItemAt(i))
         }
-        ServerSettings.userUrls = userUrls
-
-        ServerSettings.save()
+        with (ServerSettings) {
+            this.userUrls = userUrls
+            save()
+        }
     }
 }
 
