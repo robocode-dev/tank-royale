@@ -75,6 +75,7 @@ object ServerProcess {
         isRunning.set(true)
 
         startLogThread()
+        ServerLogWindow.isVisible = true
 
         onStarted.fire(Unit)
     }
@@ -104,6 +105,7 @@ object ServerProcess {
     private fun restart() {
         stop()
         start(gameType, port)
+        ServerLogWindow.isVisible = true
     }
 
     private fun generateSecret(): String {

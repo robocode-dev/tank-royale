@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.ui
+package dev.robocode.tankroyale.gui
 
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.MENU

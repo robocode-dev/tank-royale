@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.gui.ui.config
 
 import dev.robocode.tankroyale.gui.MainWindow
 import dev.robocode.tankroyale.gui.settings.MiscSettings
-import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
@@ -11,12 +11,9 @@ import net.miginfocom.swing.MigLayout
 import java.awt.EventQueue
 import javax.swing.*
 
-object BotDirectoryConfigDialog :
-    JDialog(MainWindow, ResourceBundles.UI_TITLES.get("bot_root_directories_config_dialog")) {
+object BotDirectoryConfigDialog : RcDialog(MainWindow, "bot_root_directories_config_dialog") {
 
     init {
-        defaultCloseOperation = DISPOSE_ON_CLOSE
-
         contentPane.add(BotDirectoryConfigPanel)
         pack()
         setLocationRelativeTo(MainWindow) // center on main window
