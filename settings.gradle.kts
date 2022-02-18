@@ -1,3 +1,5 @@
+val version = "0.9.12"
+
 // Schema Generator
 include("schema:java")
 include("schema:dotnet")
@@ -25,9 +27,10 @@ include("docs")
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("tankroyale", "0.9.12")
+            version("tankroyale", version)
             version("node", "15.5.1")
 
+            library("tankroyale-schema", "dev.robocode.tankroyale:robocode-tankroyale-schema:$version")
             library("gson", "com.google.code.gson:gson:2.8.9")
             library("gson-extras", "org.danilopianini:gson-extras:0.2.2")
             library("jansi", "org.fusesource.jansi:jansi:2.4.0")
@@ -42,6 +45,7 @@ dependencyResolutionManagement {
             library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
             library("slf4j-simple", "org.slf4j:slf4j-simple:2.0.0-alpha5")
 
+            plugin("shadow-jar","com.github.johnrengelman.shadow").version("7.1.2")
             plugin("kotlin-jvm", "org.jetbrains.kotlin.jvm").version("1.6.10")
             plugin("kotlin-plugin-serialization", "org.jetbrains.kotlin.plugin.serialization").version("1.6.10")
             plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.40.0")

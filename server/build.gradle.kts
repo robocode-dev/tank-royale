@@ -26,7 +26,7 @@ plugins {
 idea.module.outputDir = file("$buildDir/classes/kotlin/main") // needed?
 
 dependencies {
-    implementation("dev.robocode.tankroyale:robocode-tankroyale-schema:0.8.1")
+    implementation(libs.tankroyale.schema)
     implementation(libs.java.websocket)
     implementation(libs.slf4j.simple)
     implementation(libs.picocli)
