@@ -37,8 +37,8 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":booter").file("/build/libs"))
         into(project.idea.module.outputDir)
-        include("robocode-tankroyale-booter-*.jar")
-        rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
+        include("booter-*-proguard.jar")
+        rename(".*", "robocode-tankroyale-booter.jar")
     }
 
     val copyServerJar by registering(Copy::class) {
@@ -47,12 +47,16 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":server").file("/build/libs"))
         into(project.idea.module.outputDir)
-        include("robocode-tankroyale-server-*.jar")
-        rename("(.*)-[0-9]+\\..*.jar", "\$1.jar")
+        include("server-*-proguard.jar")
+        rename(".*", "robocode-tankroyale-server.jar")
+    }
+
+    val copyJars = register("copyJars") {
+        dependsOn(copyBooterJar, copyServerJar)
     }
 
     val fatJar by registering(FatJar::class) {
-        dependsOn(classes, copyBooterJar, copyServerJar)
+        dependsOn(classes, copyJars)
 
         title.set(jarManifestTitle)
         mainClass.set(jarManifestMainClass)
@@ -69,10 +73,6 @@ tasks {
     jar { // Replace jar task
         actions = emptyList()
         finalizedBy(proguard)
-    }
-
-    register("copyJars") {
-        dependsOn(copyBooterJar, copyServerJar)
     }
 }
 
