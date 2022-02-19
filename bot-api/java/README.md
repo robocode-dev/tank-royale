@@ -2,7 +2,7 @@
 
 This directory contains the Bot API for developing bots for Robocode Tank Royale with the Java (JVM) platform.
 
-The Bot API is provided as a JAR archive and build for [Java 11].
+The Bot API is provided as a JAR archive and built for [Java 11].
 
 ## Build commands
 
@@ -23,11 +23,11 @@ Compiled files are output to the `/build` directory:
   - `robocode-tankrayale-bot-api-x.y.z-javadoc.jar` archive contains all javadoc files.
   - `robocode-tankrayale-bot-api-x.y.z-sources.jar` archive contains all source files.
 
-The javadoc can be view in a browser by opening this file with a browser:
+The javadoc can be viewed in a browser by opening this file with a browser:
 
     /build/docs/javadoc/index.html
 
-#### Publish artifact to local Maven repository
+#### Publish artifact to the local Maven repository
 
     gradle publishToMavenLocal
 

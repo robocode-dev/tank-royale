@@ -5,6 +5,9 @@ directories.
 
 The booter is a command-line Java application that can be run independently of the Robocode GUI.
 
+The booter is running on the [Java 11] platform and the [Kotlin] programming language (typically the newest
+available version).
+
 ## Starting up bots
 
 The booter does not know how to start up a specific bot for a specific platform and programming language, and hence
@@ -164,6 +167,10 @@ are being stopped in parallel and terminated in a different time/order.
 The `quit` is used for quitting booter (obviously), which will terminate and automatically stop all running bot
 processes.
 
+
+[Java 11]: https://docs.oracle.com/en/java/javase/11/ "Java 11 documentation"
+
+[Kotlin]: https://kotlinlang.org/ "Kotlin programming language"
 
 [stdin]: https://en.wikipedia.org/wiki/Standard_streams#Standard_input_(stdin) "Standard input (stdin)"
 
