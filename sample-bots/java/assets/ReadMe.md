@@ -1,6 +1,7 @@
-# Sample bots for Robocode Tank Royale for the Java platform
+# Sample bots for Robocode Tank Royale for Java / JVM
 
-This directory contains sample bots for Robocode Tank Royale developed for Java 11 and newer.
+This directory contains sample bots for Robocode Tank Royale developed for the Java programming language and JVM
+platform.
 
 ## Requirements for running the sample bots
 

@@ -1,6 +1,6 @@
-# Sample bots for Robocode Tank Royale for the .Net platform
+# Sample bots for Robocode Tank Royale for C# / .Net
 
-This directory contains sample bots for Robocode Tank Royale developed for .Net 5 and newer.
+This directory contains sample bots for Robocode Tank Royale developed for C# programming language and .Net platform.
 
 ## Requirements for running the sample bots
 

@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val kotlinVersion = "1.6.10"
-
 buildscript {
+    val kotlinVersion = "1.6.10"
+
     repositories {
         mavenCentral()
     }
