@@ -1,4 +1,3 @@
-import dev.robocode.tankroyale.tasks.FatJar
 import proguard.gradle.ProGuardTask
 
 group = "dev.robocode.tankroyale"
@@ -8,7 +7,8 @@ description = "Server for running Robocode Tank Royale"
 val jarManifestTitle = "Robocode Tank Royale Server"
 val jarManifestMainClass = "dev.robocode.tankroyale.server.ServerKt"
 
-val archiveFileName = "$buildDir/libs/robocode-tankroyale-server-$version.jar"
+val artifactBaseName = "robocode-tankroyale-server"
+val artifactBaseFilename = "${buildDir}/libs/${project.name}-${project.version}"
 
 buildscript {
     dependencies {
@@ -16,14 +16,13 @@ buildscript {
     }
 }
 
+@Suppress("DSL_SCOPE_VIOLATION") // remove later
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
+    alias(libs.plugins.shadow.jar)
     `maven-publish`
-    idea
 }
-
-idea.module.outputDir = file("$buildDir/classes/kotlin/main") // needed?
 
 dependencies {
     implementation(libs.tankroyale.schema)
@@ -37,34 +36,32 @@ dependencies {
 }
 
 tasks {
-    val fatJar by registering(FatJar::class) {
-        dependsOn(classes)
-
-        title.set(jarManifestTitle)
-        mainClass.set(jarManifestMainClass)
+    jar {
+        manifest {
+            attributes["Main-Class"] = jarManifestMainClass
+            attributes["Implementation-Title"] = jarManifestTitle
+            attributes["Implementation-Version"] = archiveVersion
+            attributes["Implementation-Vendor"] = "robocode.dev"
+        }
     }
 
-    val proguard by registering(ProGuardTask::class) {
-        dependsOn(fatJar)
-
-        injars("$buildDir/libs/${project.name}-$version.jar")
-        outjars(archiveFileName)
+    val proguard by registering(ProGuardTask::class) { // used for compacting and code-shaking
+        dependsOn(shadowJar)
+        injars("${artifactBaseFilename}-all.jar")
+        outjars("${artifactBaseFilename}-proguard.jar")
         configuration("proguard-rules.pro")
     }
 
-    jar { // Replace jar task
-        actions = emptyList()
-        finalizedBy(proguard)
-    }
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            artifact(archiveFileName)
-            groupId = group as String?
-            artifactId
-            version
+    publishing {
+        publications {
+            create<MavenPublication>("mavenJava") {
+                artifact(proguard.get().outJarFiles[0]) {
+                    builtBy(proguard)
+                }
+                groupId = group as String?
+                artifactId = artifactBaseName
+                version
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ import proguard.gradle.ProGuardTask
 
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
-description = "Application used for booting up Robocode Tank Royale bots"
+description = "Booter for booting up Robocode Tank Royale bots"
 
 val jarManifestTitle = "Robocode Tank Royale Booter"
 val jarManifestMainClass = "dev.robocode.tankroyale.booter.BooterKt"
@@ -48,7 +48,6 @@ tasks {
 
     publishing {
         publications {
-            // https://docs.gradle.org/current/userguide/publishing_maven.html
             create<MavenPublication>("mavenJava") {
                 artifact(proguard.get().outJarFiles[0]) {
                     builtBy(proguard)
