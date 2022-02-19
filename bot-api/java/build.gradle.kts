@@ -46,7 +46,6 @@ tasks {
             addBooleanOption("-allow-script-in-comments", true)
             addStringOption("Xdoclint:none", "-quiet")
         }
-
         exclude(
             "**/dev/robocode/tankroyale/botapi/internal/**",
             "**/dev/robocode/tankroyale/botapi/mapper/**",
@@ -63,7 +62,6 @@ tasks {
 
 publishing {
     publications {
-        // https://docs.gradle.org/current/userguide/publishing_maven.html
         create<MavenPublication>("mavenJava") {
             groupId = group as String?
             artifactId = artifactBaseName
