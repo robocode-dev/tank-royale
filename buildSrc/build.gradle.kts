@@ -1,21 +1,19 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+val kotlinVersion = "1.6.10"
+
 buildscript {
-    val kotlin_version = "1.6.10"
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath(kotlin("gradle-plugin", kotlin_version))
+        classpath(kotlin("gradle-plugin", kotlinVersion))
     }
 }
 
 plugins {
-    kotlin("jvm") version "1.6.10"
-    idea
+    kotlin("jvm").version("1.6.10")
 }
-
-idea.module.outputDir = file("$buildDir/classes/kotlin/main")
 
 repositories {
     mavenLocal()
