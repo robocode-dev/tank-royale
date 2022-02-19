@@ -15,7 +15,6 @@ plugins {
     `maven-publish`
     alias(libs.plugins.shadow.jar)
     alias(libs.plugins.hidetake.ssh)
-    idea
 }
 
 java {

@@ -1,4 +1,3 @@
-import dev.robocode.tankroyale.tasks.FatJar
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.SourceType
 import org.jsonschema2pojo.gradle.JsonSchemaExtension
@@ -9,10 +8,8 @@ version = libs.versions.tankroyale.get()
 description = "Schema for Robocode Tank Royale"
 
 val jarManifestTitle = "Robocode Tank Royale Schema"
-
 val artifactBaseName = "robocode-tankroyale-schema"
 val archiveFileName = "$buildDir/libs/$artifactBaseName-$version.jar"
-
 
 buildscript {
     dependencies {
@@ -20,10 +17,11 @@ buildscript {
     }
 }
 
+@Suppress("DSL_SCOPE_VIOLATION") // remove later when IntelliJ supports the `libs.` DSL
 plugins {
     `java-library`
     `maven-publish`
-    idea
+    alias(libs.plugins.shadow.jar)
 }
 
 dependencies {
@@ -42,26 +40,24 @@ configure<JsonSchemaExtension> {
 }
 
 tasks {
-    val fatJar by registering(FatJar::class) {
-        dependsOn(classes)
-
-        title.set(jarManifestTitle)
-        outputFilename.set(archiveFileName)
+    jar {
+        manifest {
+            attributes["Implementation-Title"] = jarManifestTitle
+            attributes["Implementation-Version"] = archiveVersion
+            attributes["Implementation-Vendor"] = "robocode.dev"
+        }
     }
 
-    jar { // Replace jar task
-        actions = emptyList()
-        finalizedBy(fatJar)
-    }
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            artifact(archiveFileName)
-            groupId = group as String?
-            artifactId = artifactBaseName
-            version
+    publishing {
+        publications {
+            create<MavenPublication>("mavenJava") {
+                artifact("${buildDir}/libs/java-$version-all.jar") {
+                    builtBy(shadowJar)
+                }
+                groupId = group as String?
+                artifactId = artifactBaseName
+                version
+            }
         }
     }
 }
