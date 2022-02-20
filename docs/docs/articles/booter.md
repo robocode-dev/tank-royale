@@ -29,7 +29,7 @@ etc. for the bot.
 As minimum these files _must_ be available in a bot directory:
 
 - Script for running the bot, i.e. a **sh** file (macOS and Linux) or **cmd** (Windows) file.
-- [JSON config file](#json-config-file) that describes the bot, and specify which game types it can handle.
+- [JSON config file] that describes the bot, and specify which game types it can handle.
 
 ### Base filename
 
@@ -61,8 +61,7 @@ script for a bot if other people should be able to run the bot on their system.
 
 ## JSON config file
 
-All bot directories must contain a [JSON](https://fileinfo.com/extension/json) file, which is basically a description of
-the bot.
+All bot directories must contain a [JSON] file, which is basically a description of the bot.
 
 For example, the bot MyFirstBot is accompanied by a _MyFirstBot.json_ file.
 
@@ -92,27 +91,25 @@ These fields are required:
 The remaining fields are all optional, but recommended.
 
 Meaning of each field in the JSON file:
+
 * *name*: is the display name of the bot.
-* *version*: is the version of the bot, where [SEMVER](https://semver.org/) is the recommended format, but not a
-  requirement.
+* *version*: is the version of the bot, where [SEMVER] is the recommended format, but not a requirement.
 * *gameTypes*: is a comma-separated list of the game types that bot supports (see below).
 * *authors*: is a comma-separated list with the (full) name of the bot author(s). The name could be a nickname or
-  handle. 
+  handle.
 * *description*: is a brief description of the bot.
 * *homepage*: is a link to a web page for the bot.
-* *countryCodes*: is a comma-separated list of [Alpha-2](https://www.iban.com/country-codes) country codes for the bot
-  author(s).
+* *countryCodes*: is a comma-separated list of [Alpha-2] country codes for the bot author(s).
 * *platform*: is the platform required for running the bot, e.g. Java 17 or .Net 5.0.
 * *programmingLang*: is the programming language used for programming the bot, e.g. C# or Kotlin.
 
-### Game types
+The game types are described [here](game_types.md).
 
-Current standard game types are:
+[JSON config file]: #json-config-file
 
-| Game type | Arena size  | Min. participants | Max. participants |
-|:----------|:-----------:|:-----------------:|:-----------------:|
-| classic   |  800 x 600  |         2         |    (unlimited)    |
-| melee     | 1000 x 1000 |        10         |    (unlimited)    |
-| 1v1       | 1000 x 1000 |         2         |         2         |
+[JSON]: https://fileinfo.com/extension/json
 
-In the future, more game types might arrive. And it is also possible to define custom game types.
+[SEMVER]: https://semver.org/
+
+[Alpha-2]: https://www.iban.com/country-codes
+
