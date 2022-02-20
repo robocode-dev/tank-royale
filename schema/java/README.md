@@ -1,6 +1,6 @@
 # Schema code generator for Java
 
-This directory contains a code generator that takes the schemas in YAML format as input and produces Java classes as
+This module contains a code generator that takes the schemas in YAML format as input and produces Java classes as
 output.
 
 The generator is outputs a Maven artifact, `robocode-tankroyale-schema-0.x.y.z`, that can be pushed to the local or
@@ -12,7 +12,6 @@ and [Bot API for Java] are both using the generated artifact from this generator
 #### Publish to the local Maven repository
 
     gradle publishToMavenLocal
-
 
 [server]: ../../server/README.md
 

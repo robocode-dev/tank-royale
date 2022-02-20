@@ -1,6 +1,6 @@
 # GUI Application
 
-This directory contains the GUI application used for letting a user boot up bots on a local or remote server, and then
+This module contains the GUI application used for letting a user boot up bots on a local or remote server, and then
 watch the battles.
 
 The [booter] and [server] are built into the GUI application.

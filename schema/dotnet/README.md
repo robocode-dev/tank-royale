@@ -1,7 +1,7 @@
 # Schema code generator for .Net
 
-This directory contains a code generator that takes the schemas in YAML format as input and produces C# classes for .Net
-as output.
+This module contains a code generator that takes the schemas in YAML format as input and produces C# classes for .Net as
+output.
 
 The code generator is "homemade" in lack of a code generator that can produce C# classes based on YAML schemas. If such
 generator exists or arrives someday, this generator should be replaced.

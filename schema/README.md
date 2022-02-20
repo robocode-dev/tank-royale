@@ -1,6 +1,6 @@
 # Schema used for the network communication protocol
 
-This directory contains the schema of the protocol used by Robocode Tank Royale for network communication between:
+This module contains the schema of the protocol used by Robocode Tank Royale for network communication between:
 
 - server
 - bots

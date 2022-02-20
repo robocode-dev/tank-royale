@@ -1,6 +1,6 @@
 # Sample bots
 
-This directory contains sample bots for various programming languages and platforms, which have been put into separate
+This module contains sample bots for various programming languages and platforms, which have been put into separate
 directories.
 
 The purpose of the sample bots is to provide the bot developers with some examples of bots that have been developed for

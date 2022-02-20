@@ -1,7 +1,6 @@
 # Sample bots for Java / JVM
 
-This directory contains sample bots for Robocode Tank Royale developed for the Java programming language and JVM
-platform.
+This module contains sample bots for Robocode Tank Royale developed for the Java programming language and JVM platform.
 
 ## Build commands
 
