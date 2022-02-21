@@ -38,10 +38,10 @@ class GameServer(
     private var gameSetup: dev.robocode.tankroyale.server.model.GameSetup? = null
 
     /** Game participants (bots connections) */
-    private val participants = ConcurrentHashMap.newKeySet<WebSocket>() // concurrent set
+    private val participants = ConcurrentHashMap.newKeySet<WebSocket>()
 
     /** Game participants that signalled 'ready' for battle */
-    private val readyParticipants = ConcurrentHashMap.newKeySet<WebSocket>() // concurrent set
+    private val readyParticipants = ConcurrentHashMap.newKeySet<WebSocket>()
 
     /** Map over participant ids: bot connection -> bot id */
     private val participantIds = ConcurrentHashMap<WebSocket, BotId>()
