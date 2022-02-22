@@ -2,7 +2,7 @@
 
 This directory contains the schema of the protocol used by Robocode Tank Royale for network communication.
 
-## Handshakes
+## Joining and leaving server
 
 Handshakes are used between a client (bot, observer, controller) and the server to exchange metadata about the clients
 and server and to notify the server when a client wants to join the server.
@@ -11,7 +11,9 @@ Basically, when a client opens a WebSocket connection with the server, the serve
 message to the client with information about the server. Then, if the client wants to join the server, it must send a
 handshake to the server. The handshake from the client depends on the client type.
 
-### Bot Handshake
+### Bot joining
+
+The bot handshake must be sent by a bot to join the server.
 
 - [server-handshake.yaml]()
 - [bot-handshake.yaml]()
@@ -28,28 +30,44 @@ sequenceDiagram
     Server->>Controller: bot-list-update
 ```
 
-### Observer Handshake
+### Bot leaving
+
+A bot will be leaving a server when it closes its connection to the server. 
+
+- [bot-list-update.yaml]()
+
+```mermaid
+sequenceDiagram
+    Bot->>Server: <<event>> disconnected
+    Note over Server: Produces: <<event>> Bot left
+    Server->>Observer: bot-list-update
+    Server->>Controller: bot-list-update
+```
+
+### Observer joining
+
+The observer handshake must be sent by an observer to join the server.
 
 - [server-handshake.yaml]()
 - [observer-handshake.yaml]()
 
 ```mermaid
 sequenceDiagram
-    Note over Observer: WebSocket connection is opened
     Observer->>Server: <<event>> connection established
     Server->>Observer: server-handshake
     Observer->>Server: observer-handshake
     Note over Server: Produces: <<event>> Observer joined
 ```
 
-### Controller Handshake
+### Controller joining
+
+The controller handshake must be sent by a controller to join the server.
 
 - [server-handshake.yaml]()
 - [controller-handshake.yaml]()
 
 ```mermaid
 sequenceDiagram
-    Note over Controller: WebSocket connection is opened
     Controller->>Server: <<event>> connection established
     Server->>Controller: server-handshake
     Controller->>Server: controller-handshake
@@ -91,6 +109,7 @@ sequenceDiagram
             Server->>Observer: game-started-event-for-observer
             Server->>Controller: game-started-event-for-observer
         end
+        Note over Server: Start turn timeout timer
     else else Ready timer time-out
         Server->>Server: <<event>> Ready timer time-out
         Note over Server: Bot will not participate
@@ -98,9 +117,49 @@ sequenceDiagram
             Note over Server: Server state = GAME_RUNNING
             Server->>Observer: game-started-event-for-observer
             Server->>Controller: game-started-event-for-observer
+            Note over Server: Start turn timeout timer
         else else the game is not started
             Note over Server: Server state = WAIT_FOR_PARTICIPANTS_TO_JOIN            
         end
+    end
+```
+
+## Running next turn
+
+Running the next turn is the main loop in the game. The server sends _tick events_ for all clients which contains the
+current game state for the observers, and the bot state for the bots.
+
+This is the crucial part for the bots, and these need to sent their _bot intent_ before the turn timeout occurs.
+
+- [round-started-event.yaml]()
+- [round-ended-event.yaml]()
+- [tick-event-for-bot.yaml]()
+- [tick-event-for-observer.yaml]()
+- [bot-intent.yaml]()
+- [skipped-turn-event.yaml]()
+
+```mermaid
+sequenceDiagram
+    Note over Server: Server state = GAME_RUNNING
+    Server->>Server: <<event>> next turn
+    Note over Server: Reset turn timer
+    alt if first round
+        Server->>Bot: round-started-event
+        Server->>Observer: round-started-event
+        Server->>Controller: round-started-event
+    else if previous round has ended
+        Server->>Bot: round-ended-event
+        Server->>Observer: round-ended-event
+        Server->>Controller: round-ended-event
+    end
+    Server->>Bot: tick-event-for-bot
+    Server->>Observer: tick-event-for-observer
+    Server->>Controller: tick-event-for-observer
+    Bot->>Server: bot-intent
+    Note over Server: Bot will not skip this turn
+    Server->>Server: Turn timeout
+    opt if bot did not send intent before turn timeout
+        Server->>Bot: skipped-turn-event
     end
 ```
 
@@ -111,11 +170,15 @@ results of the game.
 
 - [game-ended-event-for-bot.yaml]()
 - [game-ended-event-for-observer.yaml]()
+- [won-round-event.yaml]()
 
 ```mermaid
 sequenceDiagram
     Note over Server: Server state = GAME_RUNNING
     Server->>Server: <<event>> game ended
+    opt if bot won round
+        Server->>Bot: won-round-event
+    end
     Server->>Bot: game-ended-event-for-bot
     Server->>Observer: game-ended-event-for-observer
     Server->>Controller: game-ended-event-for-observer
@@ -171,3 +234,19 @@ sequenceDiagram
     Server->>Controller: game-resumed-event-for-observers
     Note over Server: Server state = GAME_RUNNING
 ```
+
+## Changing the TPS
+
+A controller can change the [TPS] (Turns Per Second) for a battle.
+
+- [change-tps.yaml]()
+- [tps-changed-event.yaml]()
+
+```mermaid
+sequenceDiagram
+    Controller->>Server: change-tps
+    Server->>Observer: tps-changed-event
+    Server->>Controller: tps-changed-event
+```
+
+[TPS]: ../../docs/docs/articles/tps.md "TPS (Turns Per Second)"
