@@ -33,11 +33,10 @@ tasks {
 
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
-        dependsOn(":bot-api:java:shadowJar")
+        dependsOn(":bot-api:java:jar")
 
-        from(project(":bot-api:java").file("build/libs/java-${project.version}-all.jar"))
+        from(project(":bot-api:java").file("build/libs/robocode-tankroyale-bot-api-${project.version}.jar"))
         into(libDir)
-        rename("java-${project.version}-all.jar", "robocode-tankroyale-bot-api-${project.version}.jar")
     }
 
     fun Path.botName() = fileName.toString()
