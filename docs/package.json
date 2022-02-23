@@ -1,6 +1,6 @@
 {
   "name": "robocode-tank-royale-docs",
-  "version": "0.9.10",
+  "version": "0.9.12",
   "description": "Documentation for the programming game Robocode Tank Royale.",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,6 @@
   "devDependencies": {
     "vuepress": "^1.8.2",
     "vuepress-plugin-mathjax": "^1.2.8",
-    "vuepress-plugin-md-enhance": "^1.27.1"
+    "vuepress-plugin-md-enhance": "^1.28.0"
   }
 }
