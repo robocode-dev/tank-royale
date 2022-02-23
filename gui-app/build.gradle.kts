@@ -8,7 +8,8 @@ description = "Graphical user interface for Robocode Tank Royale"
 val jarManifestTitle = "Robocode Tank Royale GUI"
 val jarManifestMainClass = "dev.robocode.tankroyale.gui.MainWindowKt"
 
-val archiveFileName = "$buildDir/libs/robocode-tankroyale-gui-$version.jar"
+val archiveBaseName = "robocode-tankroyale-gui"
+val archiveFileName = "$buildDir/libs/$archiveBaseName-$version.jar"
 
 buildscript {
     dependencies {
@@ -60,6 +61,8 @@ tasks {
 
         title.set(jarManifestTitle)
         mainClass.set(jarManifestMainClass)
+
+        outputFilename.set(archiveFileName)
     }
 
     val proguard by registering(ProGuardTask::class) {
@@ -70,18 +73,20 @@ tasks {
         configuration("proguard-rules.pro")
     }
 
-    jar { // Replace jar task
-        actions = emptyList()
-        finalizedBy(proguard)
+    jar {
+        enabled = false
+        dependsOn(
+            proguard
+        )
     }
 }
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("mavenJava") {
             artifact(archiveFileName)
             groupId = group as String?
-            artifactId
+            artifactId = archiveBaseName
             version
         }
     }
