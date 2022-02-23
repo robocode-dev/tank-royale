@@ -33,6 +33,18 @@ dependencies {
 }
 
 tasks {
+    jar {
+        enabled = false
+        dependsOn(
+            shadowJar
+        )
+    }
+
+    shadowJar.configure {
+        archiveBaseName.set(artifactBaseName)
+        archiveClassifier.set(null as String?) // get rid of "-all" classifier
+    }
+
     withType<Javadoc> {
         title = "$javadocTitle $version"
         source(sourceSets.main.get().allJava)
