@@ -8,7 +8,7 @@ val jarManifestTitle = "Robocode Tank Royale Booter"
 val jarManifestMainClass = "dev.robocode.tankroyale.booter.BooterKt"
 
 val artifactBaseName = "robocode-tankroyale-booter"
-val artifactBaseFilename = "${buildDir}/libs/${project.name}-${project.version}"
+val artifactBaseFilename = "${buildDir}/libs/${artifactBaseName}-${project.version}"
 
 buildscript {
     dependencies {
@@ -39,9 +39,15 @@ tasks {
         }
     }
 
+    shadowJar.configure {
+        dependsOn(jar)
+        archiveBaseName.set(artifactBaseName)
+        archiveClassifier.set(null as String?) // get rid of "-all" classifier
+    }
+
     val proguard by registering(ProGuardTask::class) { // used for compacting and code-shaking
         dependsOn(shadowJar)
-        injars("${artifactBaseFilename}-all.jar")
+        injars("${artifactBaseFilename}.jar")
         outjars("${artifactBaseFilename}-proguard.jar")
         configuration("proguard-rules.pro")
     }

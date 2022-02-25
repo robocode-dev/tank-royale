@@ -38,7 +38,7 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":booter").file("/build/libs"))
         into(project.idea.module.outputDir)
-        include("booter-*-proguard.jar")
+        include("robocode-tankroyale-booter-*-proguard.jar")
         rename(".*", "robocode-tankroyale-booter.jar")
     }
 
@@ -48,7 +48,7 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":server").file("/build/libs"))
         into(project.idea.module.outputDir)
-        include("server-*-proguard.jar")
+        include("robocode-tankroyale-server-*-proguard.jar")
         rename(".*", "robocode-tankroyale-server.jar")
     }
 
