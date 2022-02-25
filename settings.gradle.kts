@@ -22,7 +22,7 @@ include("sample-bots:java")
 include("sample-bots:csharp")
 
 // Docs
-include("docs")
+include("buildDocs")
 
 dependencyResolutionManagement {
     versionCatalogs {
