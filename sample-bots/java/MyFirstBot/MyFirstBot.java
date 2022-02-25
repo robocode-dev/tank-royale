@@ -1,8 +1,7 @@
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
 
-
-/ ------------------------------------------------------------------
+// ------------------------------------------------------------------
 // MyFirstBot
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Mathew Nelson.
