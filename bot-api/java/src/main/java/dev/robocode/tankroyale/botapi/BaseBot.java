@@ -24,7 +24,7 @@ public abstract class BaseBot implements IBaseBot {
      *
      * <p><b>Example of how to set the predefined environment variables:</b>
      *
-     * <p>ROBOCODE_SERVER_URL=ws://localhost<br>
+     * <p>ROBOCODE_SERVER_URL=ws://localhost:7654<br>
      * BOT_NAME=MyBot<br>
      * BOT_VERSION=1.0<br>
      * BOT_AUTHOR=fnl<br>

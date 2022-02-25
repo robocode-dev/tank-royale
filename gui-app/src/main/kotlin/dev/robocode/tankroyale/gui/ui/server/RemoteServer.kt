@@ -31,6 +31,6 @@ object RemoteServer {
 }
 
 fun main() {
-    val isRunning = RemoteServer.isRunning(URI("ws://localhost:80"))
+    val isRunning = RemoteServer.isRunning(URI("ws://localhost:7654"))
     println("isRunning: $isRunning")
 }

@@ -12,7 +12,7 @@ import java.io.InputStreamReader
 import java.util.*
 import kotlin.system.exitProcess
 
-private const val DEFAULT_PORT: Short = 80
+private const val DEFAULT_PORT: Short = 7654
 
 @Command(
     name = "Server",
@@ -91,7 +91,7 @@ class Server : Runnable {
             System.err.println(
                 """
                     Port must not be lower than 1 or bigger than 65535.
-                    Default port is 80 used for http.
+                    Default port is $DEFAULT_PORT used for http.
                 """.trimIndent()
             )
             exitProcess(-1)
@@ -115,7 +115,7 @@ class Server : Runnable {
     }
 
     private fun printAnsiLine(s: String?) {
-        println(CommandLine.Help.Ansi.AUTO.string(s))
+        println(Help.Ansi.AUTO.string(s))
     }
 
     internal class VersionFileProvider : IVersionProvider {

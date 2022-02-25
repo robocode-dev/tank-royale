@@ -408,7 +408,7 @@ public final class BaseBotInternals {
             }
         }
         if (url == null) {
-            url = "ws://localhost";
+            url = "ws://localhost:7654";
         }
         try {
             return new URI(url);
