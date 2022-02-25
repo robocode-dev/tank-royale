@@ -6,7 +6,7 @@ game server behind the scene, so you can focus on the fun part of controlling th
 A good way to get started with Robocode Tank Royale is to head over to the general documentation for Tank Royale to
 learn about the basics first:
 
-* [Robocode Tank Royale Docs](https://robocode.dev/tankroyale/docs/)
+* [Robocode Tank Royale Docs](https://robocode-dev.github.io/tank-royale/docs/)
 
 Another good way to get started is to look at the source files for the sample bots.
 
@@ -112,4 +112,4 @@ MyFirstBot.json:
 ```
 
 You can read more details about the format of this JSON file
-[here](https://robocode.dev/tankroyale/docs/articles/booter.html#json-config-file.html).
+[here](https://robocode-dev.github.io/tank-royale/docs/articles/booter.html#json-config-file.html).

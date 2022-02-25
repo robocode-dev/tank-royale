@@ -314,29 +314,29 @@ inside the Robocode booter."
 
 [Visual Studio]: https://visualstudio.microsoft.com/ "Visual Studio homepage"
 
-[Bot]: https://robocode.dev/tankroyale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html "Bot class"
+[Bot]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html "Bot class"
 
 [Main]: https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/program-structure/main-command-line "Main() method"
 
-[Start]: https://robocode.dev/tankroyale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_Start "Start() method"
+[Start]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_Start "Start() method"
 
-[BotInfo]: https://robocode.dev/tankroyale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html "BotInfo class"
+[BotInfo]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html "BotInfo class"
 
-[FromFile]: https://robocode.dev/tankroyale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromFile_System_String_ "BotInfo.FromFile() method"
+[FromFile]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromFile_System_String_ "BotInfo.FromFile() method"
 
-[Run]: https://robocode.dev/tankroyale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_Run "Bot.Run() method"
+[Run]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_Run "Bot.Run() method"
 
-[IsRunning]: https://robocode.dev/tankroyale/api/dotnet/api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_IsRunning "IBot.IsRunning property/flag"
+[IsRunning]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_IsRunning "IBot.IsRunning property/flag"
 
-[Bot API]: https://robocode.dev/tankroyale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html "Bot API"
+[Bot API]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html "Bot API"
 
-[IBot]: https://robocode.dev/tankroyale/api/dotnet/api/Robocode.TankRoyale.BotApi.IBot.html "IBot interface"
+[IBot]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.IBot.html "IBot interface"
 
-[OnScannedBot]: https://robocode.dev/tankroyale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnScannedBot_Robocode_TankRoyale_BotApi_Events_ScannedBotEvent_ "BaseBot.OnScannedBot(ScannedBotEvent) event handler"
+[OnScannedBot]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnScannedBot_Robocode_TankRoyale_BotApi_Events_ScannedBotEvent_ "BaseBot.OnScannedBot(ScannedBotEvent) event handler"
 
-[OnHitByBullet]: https://robocode.dev/tankroyale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnHitByBullet_Robocode_TankRoyale_BotApi_Events_BulletHitBotEvent_ "BaseBot.OnHitByBullet(BulletHitBotEvent) event handler"
+[OnHitByBullet]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnHitByBullet_Robocode_TankRoyale_BotApi_Events_BulletHitBotEvent_ "BaseBot.OnHitByBullet(BulletHitBotEvent) event handler"
 
-[CalcBearing]: https://robocode.dev/tankroyale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_CalcBearing_System_Double_ "Bot.CalcBearing(Double) method"
+[CalcBearing]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_CalcBearing_System_Double_ "Bot.CalcBearing(Double) method"
 
 [dotnet]: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet "dotnet command"
 

@@ -4,7 +4,7 @@
 
 This package contains the Bot API for developing bots for Robocode Tank Royale with the .Net platform.
 
-You can get more information about the Bot API [here](https://robocode.dev/tankroyale/api/dotnet/)
+You can get more information about the Bot API [here](https://robocode-dev.github.io/tank-royale/api/dotnet/)
 
 ## How to use
 
@@ -17,5 +17,5 @@ by adding the `--version` option with the specific version:
 
     dotnet add package Robocode.TankRoyale.BotApi --version 0.9.12
 
-The [My First Bot](https://robocode.dev/tankroyale/docs/tutorial/dotnet/my-first-bot-for-dotnet.html) tutorial shows how
+The [My First Bot](https://robocode-dev.github.io/tank-royale/tutorial/dotnet/my-first-bot-for-dotnet.html) tutorial shows how
 to create a bot and how this package is being used.

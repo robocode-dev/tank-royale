@@ -68,6 +68,6 @@ macOS and Linux:
 
 [dotnet]: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet "dotnet command"
 
-[API documentation]: https://robocode.dev/tankroyale/api/dotnet/ "API documentation"
+[API documentation]: https://robocode-dev.github.io/tank-royale/api/dotnet/ "API documentation"
 
 [NuGet.config]: https://docs.microsoft.com/en-us/nuget/consume-packages/configuring-nuget-behavior "NuGet configuration"

@@ -30,7 +30,7 @@ excitement of the competition that we love so much.
 
 ## Documentation
 
-[Robocode Tank Royale Docs](https://robocode.dev/tankroyale/docs/)
+[Robocode Tank Royale Docs](https://robocode-dev.github.io/tank-royale/)
 
 ## Supported platforms
 

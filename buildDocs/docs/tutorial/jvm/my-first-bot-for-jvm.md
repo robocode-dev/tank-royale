@@ -282,29 +282,29 @@ inside the Robocode booter."
 
 [Visual Studio Code]: https://code.visualstudio.com/ "Visual Studio Code homepage"
 
-[Bot]: https://robocode.dev/tankroyale/api/java/dev/robocode/tankroyale/botapi/Bot.html "Bot class"
+[Bot]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/Bot.html "Bot class"
 
 [main]: https://docs.oracle.com/javase/tutorial/getStarted/application/index.html "main() method"
 
-[start]: https://robocode.dev/tankroyale/api/java/dev/robocode/tankroyale/botapi/BaseBot.html#start() "BaseBot.start()"
+[start]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/BaseBot.html#start() "BaseBot.start()"
 
-[BotInfo]: https://robocode.dev/tankroyale/api/java/dev/robocode/tankroyale/botapi/BotInfo.html "BotInfo class"
+[BotInfo]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/BotInfo.html "BotInfo class"
 
-[fromFile]: https://robocode.dev/tankroyale/api/java/dev/robocode/tankroyale/botapi/BotInfo.html#fromFile(java.lang.String) "BotInfo.fromFile() method"
+[fromFile]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/BotInfo.html#fromFile(java.lang.String) "BotInfo.fromFile() method"
 
-[run]: https://robocode.dev/tankroyale/api/java/dev/robocode/tankroyale/botapi/IBot.html#run() "IBot.run() method"
+[run]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/IBot.html#run() "IBot.run() method"
 
-[isRunning]: https://robocode.dev/tankroyale/api/java/dev/robocode/tankroyale/botapi/IBot.html#isRunning() "IBot.isRunning() method"
+[isRunning]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/IBot.html#isRunning() "IBot.isRunning() method"
 
-[Bot API]: https://robocode.dev/tankroyale/api/java/dev/robocode/tankroyale/botapi/Bot.html "Bot API"
+[Bot API]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/Bot.html "Bot API"
 
-[IBaseBot]: https://robocode.dev/tankroyale/api/java/dev/robocode/tankroyale/botapi/IBaseBot.html "IBaseBot interface"
+[IBaseBot]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/IBaseBot.html "IBaseBot interface"
 
-[onScannedBot]: https://robocode.dev/tankroyale/api/java/dev/robocode/tankroyale/botapi/IBaseBot.html#onScannedBot(dev.robocode.tankroyale.botapi.events.ScannedBotEvent) "IBaseBot.onScannedBot(ScannedBotEvent) event handler"
+[onScannedBot]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/IBaseBot.html#onScannedBot(dev.robocode.tankroyale.botapi.events.ScannedBotEvent) "IBaseBot.onScannedBot(ScannedBotEvent) event handler"
 
-[onHitByBullet]: https://robocode.dev/tankroyale/api/java/dev/robocode/tankroyale/botapi/IBaseBot.html#onHitByBullet(dev.robocode.tankroyale.botapi.events.BulletHitBotEvent) "IBaseBot.onHitByBullet(BulletHitBotEvent) event handler"
+[onHitByBullet]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/IBaseBot.html#onHitByBullet(dev.robocode.tankroyale.botapi.events.BulletHitBotEvent) "IBaseBot.onHitByBullet(BulletHitBotEvent) event handler"
 
-[calcBearing]: https://robocode.dev/tankroyale/api/java/dev/robocode/tankroyale/botapi/IBaseBot.html#calcBearing(double) "IBaseBot.calcBearing(double) method"
+[calcBearing]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/IBaseBot.html#calcBearing(double) "IBaseBot.calcBearing(double) method"
 
 [java]: https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html "java command"
 
