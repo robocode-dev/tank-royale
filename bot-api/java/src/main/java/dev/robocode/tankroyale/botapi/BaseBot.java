@@ -17,14 +17,16 @@ public abstract class BaseBot implements IBaseBot {
     final BaseBotInternals __baseBotInternals;
 
     /**
-     * Constructor for initializing a new instance of the BaseBot class, which should be used when
-     * both BotInfo and server URL is provided through environment variables, i.e., when starting up
-     * the bot using a booter. These environment variables must be set to provide the server URL
-     * and bot information, and are automatically set by the booter tool for Robocode.
+     * Constructor for initializing a new instance of the BaseBot class.
+     * This constructor should be used when  both BotInfo and server URL is provided through
+     * environment variables, i.e., when starting up the bot using a booter. These environment
+     * variables must be set to provide the server URL and bot information, and are automatically
+     * set by the booter tool for Robocode.
      *
-     * <p><b>Example of how to set the predefined environment variables:</b>
-     *
-     * <p>ROBOCODE_SERVER_URL=ws://localhost:7654<br>
+     * <p><b>Example of how to set the predefined environment variables:</b><br>
+     * <br>
+     * ROBOCODE_SERVER_URL=ws://localhost:7654<br>
+     * ROBOCODE_SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ
      * BOT_NAME=MyBot<br>
      * BOT_VERSION=1.0<br>
      * BOT_AUTHOR=fnl<br>
@@ -34,30 +36,42 @@ public abstract class BaseBot implements IBaseBot {
      * BOT_GAME_TYPES=melee,1v1<br>
      * BOT_PLATFORM=Java<br>
      * BOT_PROG_LANG=Java 8<br>
+     * </p>
      */
     public BaseBot() {
-        __baseBotInternals = new BaseBotInternals(this, null, null);
+        __baseBotInternals = new BaseBotInternals(this, null, null, null);
     }
 
     /**
-     * Constructor for initializing a new instance of the BaseBot class, which should be used when
-     * server URL is provided through the environment variable ROBOCODE_SERVER_URL.
+     * Constructor for initializing a new instance of the BaseBot class.
+     * This constructor assumes the server URL and secret is provided by the environment
+     * variables ROBOCODE_SERVER_URL and ROBOCODE_SERVER_SECRET.
      *
      * @param botInfo is the bot info containing information about your bot.
      */
     public BaseBot(final BotInfo botInfo) {
-        __baseBotInternals = new BaseBotInternals(this, botInfo, null);
+        __baseBotInternals = new BaseBotInternals(this, botInfo, null, null);
     }
 
     /**
-     * Constructor for initializing a new instance of the BaseBot class, which should be used
-     * providing both the bot information and server URL for your bot.
+     * Constructor for initializing a new instance of the BaseBot class.
      *
      * @param botInfo   is the bot info containing information about your bot.
      * @param serverUrl is the server URL
      */
     public BaseBot(final BotInfo botInfo, URI serverUrl) {
-        __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl);
+        __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, null);
+    }
+
+    /**
+     * Constructor for initializing a new instance of the BaseBot class.
+     *
+     * @param botInfo      is the bot info containing information about your bot.
+     * @param serverUrl    is the server URL
+     * @param serverSecret is the server secret
+     */
+    public BaseBot(final BotInfo botInfo, URI serverUrl, String serverSecret) {
+        __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, serverSecret);
     }
 
     /**

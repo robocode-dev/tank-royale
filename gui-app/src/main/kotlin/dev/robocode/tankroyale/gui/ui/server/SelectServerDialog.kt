@@ -135,7 +135,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         }
     }
 
-    // This method is required as setSelectedItem() does not work as the url can be partial
+    // This method is required as setSelectedItem() does not work as the URL can be partial
     private fun setSelectedItem(selectedItem: String) {
         for (i in 0 until urlComboBox.itemCount) {
             val item = urlComboBox.getItemAt(i)

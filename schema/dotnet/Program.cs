@@ -78,7 +78,7 @@ namespace Robocode.TankRoyale.SchemaCodeGenerator
                     text = text.Remove(firstClassStartIndex + 1, count);
                 }
 
-                // Repare replacement string for providing the correct class name (instead of "Yaml")
+                // Prepare replacement string for providing the correct class name (instead of "Yaml")
                 string replacement = "public class " + className;
 
                 // Add extension class to the class replacement string, of the schema contains an "extends" attribute
@@ -103,7 +103,8 @@ namespace Robocode.TankRoyale.SchemaCodeGenerator
 
                 // Write the source file to the destination folder
                 var outputFilename = destDir + '/' + className + ".cs";
-                File.WriteAllText(outputFilename, text);
+
+                File.WriteAllText(outputFilename, text.Replace("\n", "\r\n"));
             }
         }
 

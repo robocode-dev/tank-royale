@@ -6,7 +6,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 {
   internal sealed class BotHandshakeFactory
   {
-    internal static BotHandshake Create(BotInfo botInfo)
+    internal static BotHandshake Create(BotInfo botInfo, string serverSecret)
     {
       var handshake = new BotHandshake();
       handshake.Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotHandshake);
@@ -19,6 +19,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       handshake.GameTypes = botInfo.GameTypes != null ? new HashSet<string>(botInfo.GameTypes) : new HashSet<string>();
       handshake.Platform = botInfo.Platform;
       handshake.ProgrammingLang = botInfo.ProgrammingLang;
+      handshake.Secret = serverSecret;
       return handshake;
     }
   }

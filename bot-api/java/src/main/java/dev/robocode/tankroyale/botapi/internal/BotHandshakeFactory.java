@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 final class BotHandshakeFactory {
 
-    static BotHandshake create(BotInfo botInfo) {
+    static BotHandshake create(BotInfo botInfo, String secret) {
         BotHandshake handshake = new BotHandshake();
         handshake.set$type(BotHandshake.$type.BOT_HANDSHAKE);
         handshake.setName(botInfo.getName());
@@ -22,6 +22,7 @@ final class BotHandshakeFactory {
         handshake.setGameTypes(new ArrayList<>(botInfo.getGameTypes()));
         handshake.setPlatform(botInfo.getPlatform());
         handshake.setProgrammingLang(botInfo.getProgrammingLang());
+        handshake.setSecret(secret);
         return handshake;
     }
 }

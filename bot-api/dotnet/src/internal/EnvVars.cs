@@ -12,6 +12,9 @@ namespace Robocode.TankRoyale.BotApi.Internal
     /// <summary>Name of environment variable for server URL.</summary>
     internal const string ServerUrl = "ROBOCODE_SERVER_URL";
 
+    /// <summary>Name of environment variable for server secret.</summary>
+    internal const string ServerSecret = "ROBOCODE_SERVER_SECRET";
+
     /// <summary>Name of environment variable for bot name.</summary>
     internal const string BotName = "BOT_NAME";
 
@@ -24,7 +27,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     /// <summary>Name of environment variable for bot description.</summary>
     internal const string BotDescription = "BOT_DESCRIPTION";
 
-    /// <summary>Name of environment variable for bot url.</summary>
+    /// <summary>Name of environment variable for bot URL.</summary>
     internal const string BotUrl = "BOT_URL";
 
     /// <summary>Name of environment variable for bot country code(s).</summary>
@@ -83,6 +86,15 @@ namespace Robocode.TankRoyale.BotApi.Internal
     internal static string GetServerUrl()
     {
       return Environment.GetEnvironmentVariable(ServerUrl);
+    }
+
+    /// <summary>
+    /// Gets the server secret from environment variables.
+    /// </summary>
+    /// <returns>The server secret.</returns>
+    internal static string GetServerSecret()
+    {
+      return Environment.GetEnvironmentVariable(ServerSecret);
     }
 
     /// <summary>

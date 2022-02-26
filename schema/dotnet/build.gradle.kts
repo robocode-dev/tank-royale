@@ -1,21 +1,20 @@
-val dotnetClean = task<Exec>("dotnetClean") {
-    commandLine("dotnet", "clean")
-}
 
-val dotnetBuild = task<Exec>("dotnetBuild") {
-    commandLine("dotnet", "build", "--configuration", "Release")
-}
+tasks {
+    register<Exec>("clean") {
+        commandLine("dotnet", "clean")
+    }
 
-val generateCode = task<Exec>("generateCode") {
-    commandLine(
-        "$projectDir/bin/Release/net5.0/CodeGeneratorApp",
-        "${project(":schema").file("schemas")}",
-        "${project(":bot-api:dotnet").file("src/generated")}"
-    )
-}
+    val dotnetBuild by registering(Exec::class) {
+        commandLine("dotnet", "build", "--configuration", "Release")
+    }
 
-tasks.register("build") {
-    dependsOn(dotnetClean)
-    dependsOn(dotnetBuild)
-    dependsOn(generateCode)
+    register<Exec>("build") {
+        dependsOn(dotnetBuild)
+
+        commandLine(
+            "$projectDir/bin/Release/net5.0/CodeGeneratorApp",
+            "${project(":schema").file("schemas")}",
+            "${project(":bot-api:dotnet").file("src/generated")}"
+        )
+    }
 }

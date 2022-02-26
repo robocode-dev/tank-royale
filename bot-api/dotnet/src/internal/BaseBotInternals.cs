@@ -22,6 +22,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private const string TickNotAvailableMsg =
       "Game is not running or tick has not occurred yet. Make sure OnTick() event handler has been called first";
 
+    private readonly string serverSecret;
     private WebSocketClient socket;
     private S.ServerHandshake serverHandshake;
     private readonly EventWaitHandle closedEvent = new ManualResetEvent(false);
@@ -58,7 +59,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private readonly double absDeceleration;
 
 
-    internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUri)
+    internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUrl, String serverSecret)
     {
       this.baseBot = baseBot;
       this.botInfo = (botInfo == null) ? EnvVars.GetBotInfo() : botInfo;
@@ -73,14 +74,15 @@ namespace Robocode.TankRoyale.BotApi.Internal
       this.maxGunTurnRate = baseBot.MaxGunTurnRate;
       this.maxRadarTurnRate = baseBot.MaxRadarTurnRate;
 
-      serverUri = serverUri == null ? ServerUriFromSetting : serverUri;
+      serverUrl = serverUrl == null ? ServerUrlFromSetting : serverUrl;
+      this.serverSecret = serverSecret == null ? ServerSecretFromSetting : serverSecret;
 
-      Init(serverUri);
+      Init(serverUrl);
     }
 
-    private void Init(Uri serverUri)
+    private void Init(Uri serverUrl)
     {
-      socket = new WebSocketClient(serverUri);
+      socket = new WebSocketClient(serverUrl);
       socket.OnConnected += new WebSocketClient.OnConnectedHandler(HandleConnected);
       socket.OnDisconnected += new WebSocketClient.OnDisconnectedHandler(HandleDisconnected);
       socket.OnError += new WebSocketClient.OnErrorHandler(HandleConnectionError);
@@ -435,7 +437,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       }
     }
 
-    private Uri ServerUriFromSetting
+    private Uri ServerUrlFromSetting
     {
       get
       {
@@ -449,6 +451,14 @@ namespace Robocode.TankRoyale.BotApi.Internal
           throw new BotException("Incorrect syntax for server uri: " + uri);
         }
         return new Uri(uri);
+      }
+    }
+
+    private string ServerSecretFromSetting
+    {
+      get
+      {
+        return EnvVars.GetServerSecret();
       }
     }
 
@@ -576,7 +586,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       serverHandshake = JsonConvert.DeserializeObject<S.ServerHandshake>(json);
 
       // Reply by sending bot handshake
-      var botHandshake = BotHandshakeFactory.Create(botInfo);
+      var botHandshake = BotHandshakeFactory.Create(botInfo, serverSecret);
       botHandshake.Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotHandshake);
       var text = JsonConvert.SerializeObject(botHandshake);
 

@@ -36,6 +36,7 @@ import static java.net.http.WebSocket.Listener;
 
 public final class BaseBotInternals {
     private static final String SERVER_URL_PROPERTY_KEY = "server.url";
+    private static final String SERVER_SECRET_PROPERTY_KEY = "server.secret";
 
     private static final String NOT_CONNECTED_TO_SERVER_MSG =
             "Not connected to a game server. Make sure onConnected() event handler has been called first";
@@ -47,6 +48,7 @@ public final class BaseBotInternals {
             "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first";
 
     private final URI serverUrl;
+    private final String serverSecret;
     private final CountDownLatch closedLatch = new CountDownLatch(1);
     private final IBaseBot baseBot;
     private final BotInfo botInfo;
@@ -90,7 +92,7 @@ public final class BaseBotInternals {
         gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
     }
 
-    public BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl) {
+    public BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl, String serverSecret) {
         this.baseBot = baseBot;
         this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
 
@@ -98,6 +100,7 @@ public final class BaseBotInternals {
         this.eventQueue = new EventQueue(this, botEventHandlers);
 
         this.serverUrl = serverUrl == null ? getServerUrlFromSetting() : serverUrl;
+        this.serverSecret = serverSecret == null ? getServerSecretFromSetting() : serverSecret;
 
         init();
     }
@@ -417,6 +420,17 @@ public final class BaseBotInternals {
         }
     }
 
+    private String getServerSecretFromSetting() {
+        String secret = EnvVars.getServerSecret();
+        if (secret == null) {
+            secret = System.getProperty(SERVER_SECRET_PROPERTY_KEY);
+            if (secret == null) {
+                secret = EnvVars.getServerSecret();
+            }
+        }
+        return secret;
+    }
+
     private void handleGameEndedEvent(JsonObject jsonMsg) {
         // Send the game ended event
         GameEndedEventForBot gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
@@ -433,7 +447,7 @@ public final class BaseBotInternals {
         serverHandshake = gson.fromJson(jsonMsg, ServerHandshake.class);
 
         // Reply by sending bot handshake
-        BotHandshake botHandshake = BotHandshakeFactory.create(botInfo);
+        BotHandshake botHandshake = BotHandshakeFactory.create(botInfo, serverSecret);
         String msg = gson.toJson(botHandshake);
 
         socket.sendText(msg, true);

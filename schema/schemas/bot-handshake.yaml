@@ -38,6 +38,9 @@ properties:
   programmingLang:
     description: Language used for programming the bot, e.g. Java 17 or C# 9.0
     type: string
+  secret:
+    description: Secret used for access control with the server
+    type: string
 required:
   - name
   - version

@@ -18,6 +18,10 @@ final class EnvVars {
      */
     static final String SERVER_URL = "ROBOCODE_SERVER_URL";
     /**
+     * Name of environment variable for server URI.
+     */
+    static final String SERVER_SECRET = "ROBOCODE_SERVER_SECRET";
+    /**
      * Name of environment variable for bot name.
      */
     static final String BOT_NAME = "BOT_NAME";
@@ -88,10 +92,17 @@ final class EnvVars {
     }
 
     /**
-     * Server URI
+     * Server URL
      */
     static String getServerUrl() {
         return System.getenv(SERVER_URL);
+    }
+
+    /**
+     * Server secret
+     */
+    static String getServerSecret() {
+        return System.getenv(SERVER_SECRET);
     }
 
     /**

@@ -51,6 +51,10 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("programmingLang", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ProgrammingLang { get; set; }
     
+        /// <summary>Secret used for access control with the server</summary>
+        [Newtonsoft.Json.JsonProperty("secret", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Secret { get; set; }
+    
     
     }
 }

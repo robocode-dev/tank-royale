@@ -15,14 +15,16 @@ namespace Robocode.TankRoyale.BotApi
     internal readonly BaseBotInternals __baseBotInternals;
 
     /// <summary>
-    /// Constructor for initializing a new instance of the BaseBot class, which should be used when
-    /// both BotInfo and server URI is provided through environment variables, i.e., when starting
-    /// up the bot using a booter. These environment variables must be set to provide the server
-    /// URL and bot information, and are automatically set by the booter tool for Robocode.
+    /// Constructor for initializing a new instance of the BaseBot class.
+    /// This constructor should be used when  both BotInfo and server URL is provided through
+    /// environment variables, i.e., when starting up the bot using a booter. These environment
+    /// variables must be set to provide the server URL and bot information, and are automatically
+    /// set by the booter tool for Robocode.
     ///
     /// Example of how to set the predefined environment variables:
     ///
     /// ROBOCODE_SERVER_URL=ws://localhost<br/>
+    /// ROBOCODE_SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ
     /// BOT_NAME=MyBot<br/>
     /// BOT_VERSION=1.0<br/>
     /// BOT_AUTHORS=John Doe<br/>
@@ -35,28 +37,39 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     public BaseBot()
     {
-      __baseBotInternals = new BaseBotInternals(this, null, null);
+      __baseBotInternals = new BaseBotInternals(this, null, null, null);
     }
 
     /// <summary>
-    /// Constructor for initializing a new instance of the BaseBot class, which should be used when
-    /// server URI is provided through the environment variable ROBOCODE_SERVER_URL.
+    /// Constructor for initializing a new instance of the BaseBot class.
+    /// This constructor assumes the server URL and secret is provided by the environment
+    /// variables ROBOCODE_SERVER_URL and ROBOCODE_SERVER_SECRET.
     /// </summary>
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
     public BaseBot(BotInfo botInfo)
     {
-      __baseBotInternals = new BaseBotInternals(this, botInfo, null);
+      __baseBotInternals = new BaseBotInternals(this, botInfo, null, null);
     }
 
     /// <summary>
-    /// Constructor for initializing a new instance of the BaseBot class, which should be used providing
-    /// both the bot information and server URL for your bot.
+    /// Constructor for initializing a new instance of the BaseBot class.
     /// </summary>
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
-    /// <param name="serverUrl">Is the server URI</param>
+    /// <param name="serverUrl">Is the server URL</param>
     public BaseBot(BotInfo botInfo, Uri serverUrl)
     {
-      __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl);
+      __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, null);
+    }
+
+    /// <summary>
+    /// Constructor for initializing a new instance of the BaseBot class.
+    /// </summary>
+    /// <param name="botInfo">Is the bot info containing information about your bot.</param>
+    /// <param name="serverUrl">Is the server URL</param>
+    /// <param name="serverSecret">Is the server secret</param>
+    public BaseBot(BotInfo botInfo, Uri serverUrl, string serverSecret)
+    {
+      __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, serverSecret);
     }
 
     /// <inheritdoc/>

@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.gui.settings.ServerSettings
 import java.net.URI
 
 /**
- * Convenient class for getting the origin url from a partial url like e.g. `localhost`, `ws://localhost`, and
+ * Convenient class for getting the origin URL from a partial URL like e.g. `localhost`, `ws://localhost`, and
  * `localhost:80`, which are all interpreted as `ws://localhost:80`.
  * If the scheme is missing,[ServerSettings.DEFAULT_SCHEME] is being used.
  * If the port is missing,[ServerSettings.DEFAULT_PORT] is being used.
@@ -18,7 +18,7 @@ class WsUrl(partialUrl: String) {
 
         var origin = partialUrl
 
-        // Make sure the url starts with "ws://"
+        // Make sure the URL starts with "ws://"
         if (!origin.startsWith("ws://")) {
             origin = "ws://$origin"
         }
