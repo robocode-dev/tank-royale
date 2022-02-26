@@ -39,19 +39,22 @@ dotnet {
 
 tasks {
     clean {
-        delete("bin", "build", "obj", "docfx_project/_site", "docfx_project/obj")
+        delete("bin", "build", "obj", "docfx_project/_site", "docfx_project/api", "docfx_project/obj")
     }
 
     val docfx by registering {
         dependsOn(assemble)
 
-        doLast {
-            delete("docfx_project/_site")
-            delete("docfx_project/obj")
-
+        doFirst {
             exec {
                 workingDir("docfx_project")
-                commandLine("docfx", "build")
+                commandLine("docfx", "metadata") // build /api before building the _site
+            }
+        }
+        doLast {
+            exec {
+                workingDir("docfx_project")
+                commandLine("docfx", "build")    // build /_site
             }
         }
     }
