@@ -1,8 +1,4 @@
-import org.hidetake.groovy.ssh.core.RunHandler
-import org.hidetake.groovy.ssh.session.SessionHandler
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
-
-apply(from = "../../groovy.gradle")
 
 
 val artifactName = "Robocode.TankRoyale.BotApi"
@@ -59,38 +55,18 @@ tasks {
         }
     }
 
-    val zip by registering(Zip::class) {
+    register<Copy>("uploadDocs") {
         dependsOn(docfx)
 
-        archiveFileName.set(docfxArchiveFilename)
-        destinationDirectory.set(buildArchiveDirProvider)
+        val dotnetApiDir = "../../docs/api/dotnet"
 
-        from(file("docfx_project/_site"))
-    }
+        delete(dotnetApiDir)
+        mkdir(dotnetApiDir)
 
-    register("uploadDocs") {
-        dependsOn(zip)
+        duplicatesStrategy = DuplicatesStrategy.FAIL
 
-        doLast {
-            ssh.run(delegateClosureOf<RunHandler> {
-                session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
-                    print("Uploading docs...")
-
-                    put(hashMapOf("from" to "${buildArchivePath}/$docfxArchiveFilename", "into" to "tmp"))
-
-                    val oldDotnetApiPath = dotnetApiPath + "_old_" + System.currentTimeMillis()
-                    val tmpDotnetApiPath = dotnetApiPath + "_tmp"
-
-                    execute("unzip ~/tmp/$docfxArchiveFilename -d $tmpDotnetApiPath")
-                    execute("rm -f ~/tmp/$docfxArchiveFilename")
-
-                    execute("mv $dotnetApiPath $oldDotnetApiPath")
-                    execute("mv $tmpDotnetApiPath $dotnetApiPath")
-
-                    println("done")
-                })
-            })
-        }
+        from("docfx_project/_site")
+        into(dotnetApiDir)
     }
 
     register("pushLocal") {
