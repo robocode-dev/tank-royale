@@ -7,5 +7,5 @@
 
 ## .Net
 
-- [API overview](https://robocode-dev.github.io/tank-royale/api/dotnet/)
+- [API overview](https://robocode-dev.github.io/tank-royale/api/dotnet/index.html)
 - [Bot API](https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.html) 

@@ -45,7 +45,7 @@ tasks {
         archiveClassifier.set(null as String?) // get rid of "-all" classifier
     }
 
-    withType<Javadoc> {
+    val javadoc = withType<Javadoc> {
         title = "$javadocTitle $version"
         source(sourceSets.main.get().allJava)
 
@@ -68,6 +68,20 @@ tasks {
                 Paths.get("$buildDir/docs/javadoc/prism.js")
             )
         }
+    }
+
+    register<Copy>("uploadDocs") {
+        dependsOn(javadoc)
+
+        val javadocDir = "../../docs/api/java"
+
+        delete(javadocDir)
+        mkdir(javadocDir)
+
+        duplicatesStrategy = DuplicatesStrategy.FAIL
+
+        from("build/docs/javadoc")
+        into(javadocDir)
     }
 }
 
