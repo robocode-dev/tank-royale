@@ -2,8 +2,6 @@ import com.github.gradle.node.npm.task.NpmTask
 import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
 
-apply(from = "../groovy.gradle")
-
 val buildArchiveDirProvider: Provider<Directory> = layout.buildDirectory
 val buildArchivePath = buildArchiveDirProvider.get().toString()
 
@@ -33,41 +31,22 @@ tasks {
         args.set(listOf("run", "build"))
     }
 
-    register("build") {
+    val build by register("build") {
         dependsOn(npmBuild)
     }
 
-    val zip by registering(Zip::class) {
-        dependsOn(npmBuild)
+    register<Copy>("uploadDocs") {
+//        dependsOn(build)
 
-        archiveFileName.set(archiveFilename)
-        destinationDirectory.set(File("build"))
+        val dotnetApiDir = "../docs"
 
-        from(file("build/docs"))
-    }
+        delete(fileTree(dotnetApiDir).matching {
+            exclude("api/**")
+        })
 
-    register("uploadDocs") {
-        dependsOn(zip)
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
-        doLast {
-            ssh.run(delegateClosureOf<RunHandler> {
-                session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
-                    print("Uploading docs...")
-
-                    put(hashMapOf("from" to "$buildArchivePath/$archiveFilename", "into" to "tmp"))
-
-                    val oldDocsPath = docsPath + "_old_" + System.currentTimeMillis()
-                    val tmpDocsPath = docsPath + "_tmp"
-
-                    execute("unzip ~/tmp/$archiveFilename -d $tmpDocsPath")
-                    execute("rm -f ~/tmp/$archiveFilename")
-
-                    execute("mv $docsPath $oldDocsPath")
-                    execute("mv $tmpDocsPath $docsPath")
-
-                    println("done")
-                })
-            })
-        }
+        from("build/docs")
+        into(dotnetApiDir)
     }
 }
