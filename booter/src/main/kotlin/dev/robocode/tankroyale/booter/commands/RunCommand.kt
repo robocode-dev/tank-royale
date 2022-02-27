@@ -86,14 +86,16 @@ class RunCommand : Command() {
             processBuilder.directory(scriptPath.parent.toFile()) // set working directory
 //            processBuilder.inheritIO()
 
-            val process = processBuilder.start()
-            val env = processBuilder.environment()
+            var process: Process? = null
 
             val botInfo = getBotInfo(botDir)
             if (botInfo != null) {
-                setEnvVars(env, botInfo) // important to transfer env. variables for bot to the process
+                setEnvVars(processBuilder.environment(), botInfo) // important to transfer env. variables for bot to the process
 
-                println("${process.pid()};${botDir.absolutePathString()}")
+                process = processBuilder.start()
+                if (process != null) {
+                    println("${process.pid()};${botDir.absolutePathString()}")
+                }
             }
             return process
 
@@ -178,22 +180,18 @@ class RunCommand : Command() {
             return Files.newInputStream(path).bufferedReader().readLine() ?: ""
         }
 
-        private fun setEnvVars(envMap: MutableMap<String, String>, botInfo: BotInfo) {
-            setEnvVar(envMap, Env.SERVER_URL, System.getProperty("server.url"))
-            setEnvVar(envMap, Env.SERVER_SECRET, System.getProperty("server.secret"))
-            setEnvVar(envMap, Env.BOT_NAME, botInfo.name)
-            setEnvVar(envMap, Env.BOT_VERSION, botInfo.version)
-            setEnvVar(envMap, Env.BOT_AUTHORS, botInfo.authors)
-            setEnvVar(envMap, Env.BOT_DESCRIPTION, botInfo.description)
-            setEnvVar(envMap, Env.BOT_HOMEPAGE, botInfo.homepage)
-            setEnvVar(envMap, Env.BOT_COUNTRY_CODES, botInfo.countryCodes)
-            setEnvVar(envMap, Env.BOT_GAME_TYPES, botInfo.gameTypes)
-            setEnvVar(envMap, Env.BOT_PLATFORM, botInfo.platform)
-            setEnvVar(envMap, Env.BOT_PROG_LANG, botInfo.programmingLang)
-        }
-
-        private fun setEnvVar(envMap: MutableMap<String, String>, env: Env, value: Any?) {
-            if (value != null) envMap[env.name] = value.toString()
+        private fun setEnvVars(envMap: MutableMap<String, String?>, botInfo: BotInfo) {
+            envMap[Env.SERVER_URL.name] = System.getProperty("server.url")
+            envMap[Env.SERVER_SECRET.name] = System.getProperty("server.secret")
+            envMap[Env.BOT_NAME.name] = botInfo.name
+            envMap[Env.BOT_VERSION.name] = botInfo.version
+            envMap[Env.BOT_AUTHORS.name] = botInfo.authors
+            envMap[Env.BOT_DESCRIPTION.name] = botInfo.description
+            envMap[Env.BOT_HOMEPAGE.name] = botInfo.homepage
+            envMap[Env.BOT_COUNTRY_CODES.name] = botInfo.countryCodes
+            envMap[Env.BOT_GAME_TYPES.name] = botInfo.gameTypes
+            envMap[Env.BOT_PLATFORM.name] = botInfo.gameTypes
+            envMap[Env.BOT_PROG_LANG.name] = botInfo.gameTypes
         }
     }
 }

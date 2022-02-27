@@ -21,9 +21,9 @@ import java.util.concurrent.TimeUnit
 class ConnHandler internal constructor(
     private val setup: ServerSetup,
     private val listener: ConnListener,
-    clientSecret: String?
+    private val controllerSecrets: Set<String>,
+    private val botSecrets: Set<String>
 ) {
-    private val clientSecret: String? = clientSecret?.trim()
     private val webSocketObserver: WebSocketObserver
     private val allConnections = ConcurrentHashMap.newKeySet<WebSocket>()
     private val botConnections = ConcurrentHashMap.newKeySet<WebSocket>()
@@ -192,22 +192,25 @@ class ConnHandler internal constructor(
                                 }
                                 Message.`$type`.BOT_HANDSHAKE -> {
                                     val handshake = gson.fromJson(message, BotHandshake::class.java)
-                                    botConnections += conn
-                                    botHandshakes[conn] = handshake
-                                    listener.onBotJoined(conn, handshake)
+
+                                    // Validate client secret before continuing
+                                    if (botSecrets.isNotEmpty() && !botSecrets.contains(handshake.secret)) {
+                                        log.info("Ignoring bot using invalid secret: name: ${handshake.name}, version: ${handshake.version}")
+                                        conn.close(StatusCode.POLICY_VIOLATION.value, "Wrong secret")
+                                    } else {
+                                        botConnections += conn
+                                        botHandshakes[conn] = handshake
+                                        listener.onBotJoined(conn, handshake)
+                                    }
                                 }
                                 Message.`$type`.OBSERVER_HANDSHAKE -> {
-                                    val handshake = gson.fromJson(
-                                        message,
-                                        ObserverHandshake::class.java
-                                    )
+                                    val handshake = gson.fromJson(message, ObserverHandshake::class.java)
+
                                     // Validate client secret before continuing
-                                    var validClient = true
-                                    if (clientSecret != null && clientSecret.isNotEmpty() && handshake.secret != clientSecret) {
-                                        log.info("Ignoring observer using invalid secret. Name: ${handshake.name}, Version: ${handshake.version}")
-                                        validClient = false // Ignore client with wrong secret
-                                    }
-                                    if (validClient) {
+                                    if (controllerSecrets.isNotEmpty() && !controllerSecrets.contains(handshake.secret)) {
+                                        log.info("Ignoring observer using invalid secret: name: ${handshake.name}, version: ${handshake.version}")
+                                        conn.close(StatusCode.POLICY_VIOLATION.value, "Wrong secret")
+                                    } else {
                                         observerConnections += conn
                                         observerHandshakes[conn] = handshake
                                         listener.onObserverJoined(conn, handshake)
@@ -217,12 +220,10 @@ class ConnHandler internal constructor(
                                     val handshake = gson.fromJson(message, ControllerHandshake::class.java)
 
                                     // Validate client secret before continuing
-                                    var validClient = true
-                                    if (clientSecret != null && clientSecret.isNotEmpty() && handshake.secret != clientSecret) {
-                                        log.info("Ignoring controller using invalid secret. Name: ${handshake.name}, Version: ${handshake.version}")
-                                        validClient = false // Ignore client with wrong secret
-                                    }
-                                    if (validClient) {
+                                    if (controllerSecrets.isNotEmpty() && !controllerSecrets.contains(handshake.secret)) {
+                                        log.info("Ignoring controller using invalid secret: name: ${handshake.name}, version: ${handshake.version}")
+                                        conn.close(StatusCode.POLICY_VIOLATION.value, "Wrong secret")
+                                    } else {
                                         controllerConnections += conn
                                         controllerHandshakes[conn] = handshake
                                         listener.onControllerJoined(conn, handshake)

@@ -30,7 +30,9 @@ namespace Robocode.TankRoyale.BotApi.Util
 
     /// <summary>Event handler for OnDisconnected events</summary>
     /// <param name="remove">true if the web socket was disconnected remotely by the server; false otherwise</param>
-    public delegate void OnDisconnectedHandler(bool remote);
+    /// <param name="statusCode">Is a status code that indicates the reason for closing the connection.</param>
+    /// <param name="reason">Is a message with the reason for closing the connection.</param>
+    public delegate void OnDisconnectedHandler(bool remote, int? statusCode, string reason);
 
     /// <summary>Event handler for OnError events</summary>
     /// <param name="error">Is the error/exception that occurred</param>
@@ -63,7 +65,7 @@ namespace Robocode.TankRoyale.BotApi.Util
     {
       cancelSource.Cancel(); // signal that ReceiveAsync() should cancel
       socket.CloseOutputAsync(WebSocketCloseStatus.Empty, null /* when empty */ , CancellationToken.None);
-      OnDisconnected(false /* not remote */ );
+      OnDisconnected(false, (int) WebSocketCloseStatus.NormalClosure, "Bot disconnected");
     }
 
     /// <summary>Sends a text message to the server.</summary>
@@ -87,7 +89,15 @@ namespace Robocode.TankRoyale.BotApi.Util
             do
             {
               result = socket.ReceiveAsync(buffer, cancelSource.Token).GetAwaiter().GetResult();
-              ms.Write(buffer.Array, buffer.Offset, result.Count);
+              if (result.MessageType == WebSocketMessageType.Close)
+              {
+                OnDisconnected(true /* caused by remote */, (int) socket.CloseStatus, socket.CloseStatusDescription);
+                return; // Cannot handle more messages when disconnected
+              }
+              else
+              {
+                ms.Write(buffer.Array, buffer.Offset, result.Count);
+              }
             }
             while (!result.EndOfMessage);
 

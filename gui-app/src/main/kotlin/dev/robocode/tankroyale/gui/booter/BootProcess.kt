@@ -73,6 +73,7 @@ object BootProcess {
         val args = mutableListOf(
             "java",
             "-Dserver.url=${ServerSettings.serverUrl}",
+            "-Dserver.secret=${ServerSettings.botSecrets.first()}",
             "-jar",
             getBooterJar(),
             "run"

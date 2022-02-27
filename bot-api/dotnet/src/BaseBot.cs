@@ -470,10 +470,20 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public virtual void OnConnected(ConnectedEvent connectedEvent) => Console.WriteLine($"Connected to: {connectedEvent.ServerUri}");
+    public virtual void OnConnected(ConnectedEvent connectedEvent) => Console.WriteLine($"Connected to {connectedEvent.ServerUri}");
 
     /// <inheritdoc/>
-    public virtual void OnDisconnected(DisconnectedEvent disconnectedEvent) => Console.WriteLine($"Disconnected from: {disconnectedEvent.ServerUri}");
+    public virtual void OnDisconnected(DisconnectedEvent disconnectedEvent)
+    {
+        string msg = $"Disconnected from {disconnectedEvent.ServerUri}";
+        if (disconnectedEvent.StatusCode != null) {
+          msg += $", status code: {disconnectedEvent.StatusCode}";
+        }
+        if (disconnectedEvent.Reason != null) {
+          msg += $", reason: {disconnectedEvent.Reason}";
+        }
+        Console.WriteLine(msg);
+    }
 
     /// <inheritdoc/>
     public virtual void OnConnectionError(ConnectionErrorEvent connectionErrorEvent) => Console.Error.WriteLine($"Connection error with {connectionErrorEvent.ServerUri}: " + connectionErrorEvent.Exception.Message);

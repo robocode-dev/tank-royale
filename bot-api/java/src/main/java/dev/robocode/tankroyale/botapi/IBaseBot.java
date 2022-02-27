@@ -970,7 +970,14 @@ public interface IBaseBot {
      * @param disconnectedEvent is the event details from the game.
      */
     default void onDisconnected(DisconnectedEvent disconnectedEvent) {
-        System.out.println("Disconnected from: " + disconnectedEvent.getServerUri());
+        StringBuilder msg = new StringBuilder("Disconnected from: " + disconnectedEvent.getServerUri());
+        if (disconnectedEvent.getStatusCode().isPresent()) {
+            msg.append(", status code: ").append(disconnectedEvent.getStatusCode().get());
+        }
+        if (disconnectedEvent.getReason().isPresent()) {
+            msg.append(", reason: ").append(disconnectedEvent.getReason().get());
+        }
+        System.out.println(msg);
     }
 
     /**

@@ -56,8 +56,17 @@ class Server : Runnable {
         )
         private var gameTypes: String = DEFAULT_GAME_TYPE
 
-        @Option(names = ["-s", "--secret"], description = ["Client secret used for access control"])
-        private var secret: String? = null
+        @Option(
+            names = ["-C", "--controllerSecrets"],
+            type = [String::class],
+            description = ["Comma-separated list of controller secrets used for access control"])
+        private var controllerSecrets: String? = null
+
+        @Option(
+            names = ["-B", "--botSecrets"],
+            type = [String::class],
+            description = ["Comma-separated list of bot secrets used for access control"])
+        private var botSecrets: String? = null
 
         val cmdLine = CommandLine(Server())
     }
@@ -110,12 +119,19 @@ class Server : Runnable {
         }.start()
 
         // Start game server on main thread
-        gameServer = GameServer(gameTypes, secret)
+        gameServer = GameServer(
+            gameTypes.toSetOfTrimmedStrings(),
+            controllerSecrets.toSetOfTrimmedStrings(),
+            botSecrets.toSetOfTrimmedStrings())
+
         gameServer.start()
     }
 
-    private fun printAnsiLine(s: String?) {
-        println(Help.Ansi.AUTO.string(s))
+    private fun String?.toSetOfTrimmedStrings(): Set<String> =
+        HashSet(this?.replace("\\s".toRegex(), "")?.split(",")?.filter { it.isNotBlank() }.orEmpty())
+
+    private fun printAnsiLine(line: String?) {
+        println(Help.Ansi.AUTO.string(line))
     }
 
     internal class VersionFileProvider : IVersionProvider {

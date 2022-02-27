@@ -21,13 +21,12 @@ import kotlin.math.roundToInt
 /** Game server. */
 class GameServer(
     /** Supported game types (comma-separated list) */
-    gameTypes: String,
-    /** Optional client secret */
-    clientSecret: String?
+    private val gameTypes: Set<String>,
+    /** Optional controller secrets */
+    controllerSecrets: Set<String>,
+    /** Optional bot secrets (comma-separated list) */
+    botSecrets: Set<String>
 ) {
-    /** Game types in a comma-separated list containing no white-spaces */
-    private val gameTypes: String = gameTypes.replace("\\s".toRegex(), "")
-
     /** Connection handler for observers and bots */
     private val connHandler: ConnHandler
 
@@ -78,8 +77,8 @@ class GameServer(
 
     init {
         /** Initializes connection handler */
-        val serverSetup = ServerSetup(HashSet(listOf(*gameTypes.split(",").toTypedArray())))
-        connHandler = ConnHandler(serverSetup, GameServerConnListener(this), clientSecret)
+        val serverSetup = ServerSetup(gameTypes)
+        connHandler = ConnHandler(serverSetup, GameServerConnListener(this), controllerSecrets, botSecrets)
     }
 
     /** Starts this server */

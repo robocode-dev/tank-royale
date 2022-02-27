@@ -22,7 +22,9 @@ The server has these options:
 - `-V` or `--version` to show the version information.
 - `-g` or `--games=<gameTypes>` to provide a comma-separated list of game types.
 - `-p` or `--port=<port>` to specify the port number of the server.
-- `-s` or `--secret=<secret>` to set a client secret for simple access control.
+- `-C` or `--controllersecrets=<secrets>` to provide a comma-separated list of observer/controller secrets for simple
+  access control.
+- `-B` or `--botsecrets=<secrets>` to provide a comma-separated list of bot secrets for simple access control.
 
 The options and commands are provided after the `java -jar robocode-tankroyale-server-x.y.z.jar` part like this:
 
@@ -31,7 +33,7 @@ The options and commands are provided after the `java -jar robocode-tankroyale-s
 ### Game types
 
 The `--games=<gameTypes>` is used for defining which game types the server will support when running. The game types are
-described [here](../docs/docs/articles/game_types.md).
+described [here](../docs/articles/game_types.html).
 
 Example:
 
@@ -51,16 +53,26 @@ Example:
 
 If no port number is specified, the server will run on port number 80 per default.
 
-### Secret
+### Secrets
 
-The `--secret=<secret>` is used for only allowing clients (observers, controllers) to join the server if they provide
-the same secret as specified with this option.
+#### controllerSecrets
+
+The `--controllerSecrets=<secret>` is used for only allowing controllers and observers to join the server if they
+provide a secret that is listed with this option.
 
 Example:
 
-        java -jar robocode-tankroyale-server-x.y.z.jar --secret=pyptsRs2eako3G3xa8xBYE1SH0uMrsjI
+        java -jar robocode-tankroyale-server-x.y.z.jar --controllerSecret=yFTFllMU8fX8kaxlgQnV1g
 
-If no secret is specified, no secret is being used, and any client can join the server.
+If no secret is specified (default) any controller and observer may join the server.
 
-Hence, if you specify a secret, make sure to provide the secret to the people that need the secret to join with their
-clients.
+#### botSecrets
+
+The `--botSecrets=<secret>` is used for only allowing bots to join the server if they provide  if they
+provide a secret that is listed with this option.
+
+Example:
+
+        java -jar robocode-tankroyale-server-x.y.z.jar --botSecrets=yijjEugA0zLcgGCO382gCA,7VPOzQaOnQ8HV9d2URHXOw
+
+If no secret is specified (default) any bot may join the server.

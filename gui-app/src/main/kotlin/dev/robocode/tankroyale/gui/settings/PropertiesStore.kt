@@ -44,4 +44,11 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
         }
         onSaved.fire(Unit)
     }
+
+    protected fun getPropertyAsSet(propertyName: String): Set<String> =
+        HashSet(properties.getProperty(propertyName, "").split(",").filter { it.isNotBlank() })
+
+    protected fun setPropertyBySet(propertyName: String, value: Set<String>) {
+        properties.setProperty(propertyName, value.filter { it.isNotBlank() }.joinToString(","))
+    }
 }

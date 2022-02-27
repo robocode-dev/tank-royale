@@ -143,9 +143,9 @@ namespace Robocode.TankRoyale.BotApi.Internal
       {
         socket.Connect();
       }
-      catch (Exception ex)
+      catch (Exception)
       {
-        throw new BotException($"Could not connect to web socket for URL: {socket.ServerUri}", ex);
+        throw new BotException($"Could not connect to web socket for URL: {socket.ServerUri}");
       }
     }
 
@@ -444,7 +444,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         var uri = EnvVars.GetServerUrl();
         if (uri == null)
         {
-          uri = "ws://localhost";
+          uri = "ws://localhost:7654";
         }
         if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
         {
@@ -467,14 +467,14 @@ namespace Robocode.TankRoyale.BotApi.Internal
       botEventHandlers.FireConnectedEvent(new E.ConnectedEvent(socket.ServerUri));
     }
 
-    private void HandleDisconnected(bool remote)
+    private void HandleDisconnected(bool remote, int? statusCode, string reason)
     {
-      botEventHandlers.FireDisconnectedEvent(new E.DisconnectedEvent(socket.ServerUri, remote));
+      botEventHandlers.FireDisconnectedEvent(new E.DisconnectedEvent(socket.ServerUri, remote, statusCode, reason));
     }
 
     private void HandleConnectionError(Exception cause)
     {
-      botEventHandlers.FireConnectionErrorEvent(new E.ConnectionErrorEvent(socket.ServerUri, cause));
+      botEventHandlers.FireConnectionErrorEvent(new E.ConnectionErrorEvent(socket.ServerUri, new Exception(cause.Message)));
     }
 
     private void HandleTextMessage(string json)

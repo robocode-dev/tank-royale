@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.gui.client
 
 import dev.robocode.tankroyale.gui.model.*
-import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.server.ServerEventChannel
@@ -164,7 +163,7 @@ object Client : AutoCloseable {
             name = "Robocode Tank Royale UI",
             version = "${Version.version}",
             author = "Flemming N. Larsen",
-            secret = ServerProcess.secret
+            secret = ServerSettings.controllerSecrets.first()
         )
         websocket.send(handshake)
     }

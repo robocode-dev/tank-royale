@@ -13,7 +13,6 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-import javax.crypto.KeyGenerator
 
 object ServerProcess {
 
@@ -31,9 +30,6 @@ object ServerProcess {
         private set
 
     var port: Int = ServerSettings.serverPort
-        private set
-
-    var secret: String? = null
         private set
 
     init {
@@ -57,15 +53,14 @@ object ServerProcess {
 
         ServerLogWindow.clear()
 
-        secret = generateSecret()
-
         val command = ArrayList<String>()
         command += "java"
         command += "-jar"
         command += getServerJar()
         command += "--port=$port"
-        command += "--secret=$secret"
         command += "--games=$gameType"
+        command += "--controllerSecrets=${ServerSettings.controllerSecrets.joinToString(",")}"
+        command += "--botSecrets=${ServerSettings.botSecrets.joinToString(",")}"
 
         val builder = ProcessBuilder(command)
 
@@ -104,13 +99,6 @@ object ServerProcess {
     private fun restart() {
         stop()
         start(gameType, port)
-    }
-
-    private fun generateSecret(): String {
-        val secretKey = KeyGenerator.getInstance("AES").generateKey()
-        val encodedKey = Base64.getEncoder().encodeToString(secretKey.encoded)
-        // Remove trailing '=='
-        return encodedKey.substring(0, encodedKey.length - 2)
     }
 
     private fun getServerJar(): String {

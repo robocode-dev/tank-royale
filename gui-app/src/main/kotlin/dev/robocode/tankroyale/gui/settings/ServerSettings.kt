@@ -3,6 +3,9 @@ package dev.robocode.tankroyale.gui.settings
 import dev.robocode.tankroyale.gui.ui.server.WsUrl
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import java.net.URI
+import java.util.*
+import javax.crypto.KeyGenerator
+import kotlin.collections.ArrayList
 
 
 object ServerSettings : PropertiesStore("Robocode Server Settings", "server.properties") {
@@ -12,6 +15,8 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
     const val DEFAULT_URL = "$DEFAULT_SCHEME://localhost"
 
     private const val SERVER_URL = "server-url"
+    private const val CONTROLLER_SECRETS = "controllers-secrets"
+    private const val BOT_SECRETS = "bots-secrets"
     private const val USER_URLS = "user-urls"
     private const val GAME_TYPE = "game-type"
 
@@ -30,6 +35,33 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
 
     val serverPort: Int get() = URI(serverUrl).port
 
+    var controllerSecrets: Set<String>
+        get() = getPropertyAsSet(CONTROLLER_SECRETS).ifEmpty {
+            controllerSecrets = setOf(generateSecret())
+            controllerSecrets
+        }
+        set(value) {
+            setPropertyBySet(CONTROLLER_SECRETS, value)
+            save()
+        }
+
+    var botSecrets: Set<String>
+        get() = getPropertyAsSet(BOT_SECRETS).ifEmpty {
+            botSecrets = setOf(generateSecret())
+            botSecrets
+        }
+        set(value) {
+            setPropertyBySet(BOT_SECRETS, value)
+            save()
+        }
+
+    private fun generateSecret(): String {
+        val secretKey = KeyGenerator.getInstance("AES").generateKey()
+        val encodedKey = Base64.getEncoder().encodeToString(secretKey.encoded)
+        // Remove trailing '=='
+        return encodedKey.substring(0, encodedKey.length - 2)
+    }
+
     var userUrls: List<String>
         get() {
             val urls = properties.getProperty(USER_URLS, "")
@@ -42,7 +74,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         set(value) {
             val list = ArrayList(value)
             list.remove(DEFAULT_URL)
-            properties.setProperty(USER_URLS, list.joinToString(separator = ","))
+            properties.setProperty(USER_URLS, list.joinToString(","))
         }
 
     var gameType: GameType
@@ -64,13 +96,15 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         userUrls = emptyList()
     }
 }
-
+/*
 fun main() {
     with(ServerSettings) {
         println("serverUrl: $serverUrl")
         println("port: $serverPort")
         println("userUrls: $userUrls")
+        println("generateSecret: ${generateSecret()}")
 
         userUrls = listOf("ws://1.2.3.4:90", "wss://localhost:900")
     }
 }
+*/

@@ -160,7 +160,7 @@ public final class BaseBotInternals {
             Builder webSocketBuilder = httpClient.newWebSocketBuilder();
             socket = webSocketBuilder.buildAsync(serverUrl, new WebSocketListener()).join();
         } catch (Exception ex) {
-            throw new BotException("Could not create web socket for URL: " + serverUrl, ex);
+            throw new BotException("Could not create web socket for URL: " + serverUrl);
         }
     }
 
@@ -403,12 +403,9 @@ public final class BaseBotInternals {
     }
 
     private URI getServerUrlFromSetting() {
-        String url = EnvVars.getServerUrl();
+        String url = System.getProperty(SERVER_URL_PROPERTY_KEY);
         if (url == null) {
-            url = System.getProperty(SERVER_URL_PROPERTY_KEY);
-            if (url == null) {
-                url = EnvVars.getServerUrl();
-            }
+            url = EnvVars.getServerUrl();
         }
         if (url == null) {
             url = "ws://localhost:7654";
@@ -421,12 +418,9 @@ public final class BaseBotInternals {
     }
 
     private String getServerSecretFromSetting() {
-        String secret = EnvVars.getServerSecret();
+        String secret = System.getProperty(SERVER_SECRET_PROPERTY_KEY);
         if (secret == null) {
-            secret = System.getProperty(SERVER_SECRET_PROPERTY_KEY);
-            if (secret == null) {
-                secret = EnvVars.getServerSecret();
-            }
+            secret = EnvVars.getServerSecret();
         }
         return secret;
     }
@@ -474,7 +468,7 @@ public final class BaseBotInternals {
 
         @Override
         public CompletionStage<?> onClose(WebSocket websocket, int statusCode, String reason) {
-            botEventHandlers.onDisconnected.publish(new DisconnectedEvent(serverUrl, true));
+            botEventHandlers.onDisconnected.publish(new DisconnectedEvent(serverUrl, true, statusCode, reason));
             closedLatch.countDown();
             return null;
         }
