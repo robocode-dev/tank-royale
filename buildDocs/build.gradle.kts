@@ -1,6 +1,4 @@
 import com.github.gradle.node.npm.task.NpmTask
-import org.hidetake.groovy.ssh.core.RunHandler
-import org.hidetake.groovy.ssh.session.SessionHandler
 
 val buildArchiveDirProvider: Provider<Directory> = layout.buildDirectory
 val buildArchivePath = buildArchiveDirProvider.get().toString()
@@ -13,7 +11,6 @@ val archiveFilename = "docs.zip"
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.node.gradle)
-    alias(libs.plugins.hidetake.ssh)
 }
 
 node {
@@ -31,7 +28,7 @@ tasks {
         args.set(listOf("run", "build"))
     }
 
-    val build by register("build") {
+    register("build") {
         dependsOn(npmBuild)
     }
 

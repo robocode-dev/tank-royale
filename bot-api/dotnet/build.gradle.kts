@@ -16,7 +16,6 @@ val dotnetApiPath = "$apiPath/dotnet"
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.itiviti.dotnet)
-    alias(libs.plugins.hidetake.ssh)
 }
 
 dotnet {
