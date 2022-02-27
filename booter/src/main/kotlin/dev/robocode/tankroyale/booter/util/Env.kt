@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.booter.util
 
 enum class Env {
     SERVER_URL,
+    SERVER_SECRET,
     BOT_NAME,
     BOT_VERSION,
     BOT_AUTHORS,

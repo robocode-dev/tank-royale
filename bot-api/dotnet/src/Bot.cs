@@ -14,14 +14,15 @@ namespace Robocode.TankRoyale.BotApi
 
     // <inheritdoc/> does not work with the default constructor?
     /// <summary>
-    /// Constructor for initializing a new instance of the BaseBot class, which should be used when
+    /// Constructor for initializing a new instance of the Bot class, which should be used when
     /// both BotInfo and server URI is provided through environment variables, i.e., when starting
     /// up the bot using a booter. These environment variables must be set to provide the server
     /// URL and bot information, and are automatically set by the booter tool for Robocode.
     ///
     /// Example of how to set the predefined environment variables:
     ///
-    /// ROBOCODE_SERVER_URI=ws://localhost<br/>
+    /// SERVER_URL=ws://localhost<br/>
+    /// SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ<br>
     /// BOT_NAME=MyBot<br/>
     /// BOT_VERSION=1.0<br/>
     /// BOT_AUTHOR=fnl<br/>
@@ -29,7 +30,7 @@ namespace Robocode.TankRoyale.BotApi
     /// BOT_URL=https://mybot.somewhere.net<br/>
     /// BOT_COUNTRY_CODE=DK<br/>
     /// BOT_GAME_TYPES=melee,1v1<br/>
-    /// BOT_PROG_PLATFORM=.Net Core 3.1<br/>
+    /// BOT_PLATFORM=.Net Core 3.1<br/>
     /// BOT_PROG_LANG=C# 8<br/>
     /// </summary>
     public Bot() : base()

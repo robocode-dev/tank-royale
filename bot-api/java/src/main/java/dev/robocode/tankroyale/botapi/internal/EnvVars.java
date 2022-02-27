@@ -16,11 +16,11 @@ final class EnvVars {
     /**
      * Name of environment variable for server URI.
      */
-    static final String SERVER_URL = "ROBOCODE_SERVER_URL";
+    static final String SERVER_URL = "SERVER_URL";
     /**
      * Name of environment variable for server URI.
      */
-    static final String SERVER_SECRET = "ROBOCODE_SERVER_SECRET";
+    static final String SERVER_SECRET = "SERVER_SECRET";
     /**
      * Name of environment variable for bot name.
      */

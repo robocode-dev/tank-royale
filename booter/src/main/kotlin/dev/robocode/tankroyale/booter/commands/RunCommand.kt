@@ -180,6 +180,7 @@ class RunCommand : Command() {
 
         private fun setEnvVars(envMap: MutableMap<String, String>, botInfo: BotInfo) {
             setEnvVar(envMap, Env.SERVER_URL, System.getProperty("server.url"))
+            setEnvVar(envMap, Env.SERVER_SECRET, System.getProperty("server.secret"))
             setEnvVar(envMap, Env.BOT_NAME, botInfo.name)
             setEnvVar(envMap, Env.BOT_VERSION, botInfo.version)
             setEnvVar(envMap, Env.BOT_AUTHORS, botInfo.authors)

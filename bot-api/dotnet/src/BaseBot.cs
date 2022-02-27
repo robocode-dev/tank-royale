@@ -23,8 +23,8 @@ namespace Robocode.TankRoyale.BotApi
     ///
     /// Example of how to set the predefined environment variables:
     ///
-    /// ROBOCODE_SERVER_URL=ws://localhost<br/>
-    /// ROBOCODE_SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ
+    /// SERVER_URL=ws://localhost<br/>
+    /// SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ<br>
     /// BOT_NAME=MyBot<br/>
     /// BOT_VERSION=1.0<br/>
     /// BOT_AUTHORS=John Doe<br/>
@@ -32,7 +32,7 @@ namespace Robocode.TankRoyale.BotApi
     /// BOT_URL=http://somewhere.net/MyBot<br/>
     /// BOT_COUNTRY_CODES=us<br/>
     /// BOT_GAME_TYPES=classic, melee, 1v1<br/>
-    /// BOT_PROG_PLATFORM=.Net 5.0<br/>
+    /// BOT_PLATFORM=.Net 5.0<br/>
     /// BOT_PROG_LANG=C# 8.0<br/>
     /// </summary>
     public BaseBot()
@@ -43,7 +43,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// Constructor for initializing a new instance of the BaseBot class.
     /// This constructor assumes the server URL and secret is provided by the environment
-    /// variables ROBOCODE_SERVER_URL and ROBOCODE_SERVER_SECRET.
+    /// variables SERVER_URL and SERVER_SECRET.
     /// </summary>
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
     public BaseBot(BotInfo botInfo)

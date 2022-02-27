@@ -23,10 +23,11 @@ public abstract class BaseBot implements IBaseBot {
      * variables must be set to provide the server URL and bot information, and are automatically
      * set by the booter tool for Robocode.
      *
-     * <p><b>Example of how to set the predefined environment variables:</b><br>
+     * <p>
+     * <b>Example of how to set the predefined environment variables:</b><br>
      * <br>
-     * ROBOCODE_SERVER_URL=ws://localhost:7654<br>
-     * ROBOCODE_SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ
+     * SERVER_URL=ws://localhost:7654<br>
+     * SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ<br>
      * BOT_NAME=MyBot<br>
      * BOT_VERSION=1.0<br>
      * BOT_AUTHOR=fnl<br>
@@ -45,7 +46,7 @@ public abstract class BaseBot implements IBaseBot {
     /**
      * Constructor for initializing a new instance of the BaseBot class.
      * This constructor assumes the server URL and secret is provided by the environment
-     * variables ROBOCODE_SERVER_URL and ROBOCODE_SERVER_SECRET.
+     * variables SERVER_URL and SERVER_SECRET.
      *
      * @param botInfo is the bot info containing information about your bot.
      */

@@ -10,10 +10,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
   internal static class EnvVars
   {
     /// <summary>Name of environment variable for server URL.</summary>
-    internal const string ServerUrl = "ROBOCODE_SERVER_URL";
+    internal const string ServerUrl = "SERVER_URL";
 
     /// <summary>Name of environment variable for server secret.</summary>
-    internal const string ServerSecret = "ROBOCODE_SERVER_SECRET";
+    internal const string ServerSecret = "SERVER_SECRET";
 
     /// <summary>Name of environment variable for bot name.</summary>
     internal const string BotName = "BOT_NAME";
