@@ -3,7 +3,7 @@ name: Bug report
 about: Create a report to help us improve
 title: ''
 labels: ''
-assignees: ''
+assignees: flemming-n-larsen
 
 ---
 
@@ -17,6 +17,9 @@ Steps to reproduce the behavior:
 3. Scroll down to '....'
 4. See error
 
+**Error info**
+If an error is shown then please insert the error details here. Make sure to add the essential parts of a stack trace of the error, if it has been provided to locate the issue even faster.
+
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
@@ -24,15 +27,11 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+ - OS name and version: [e.g. macOS 12.0.1, Ubuntu 20.04, or Windows 11]
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+**Java info:**
+ - Version: [can be found by writing `java -version` from the command-line]
+- Vendor: [e.g. Oracle, OpenJDK, or Adoption]
 
 **Additional context**
 Add any other context about the problem here.
