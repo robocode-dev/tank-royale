@@ -140,6 +140,10 @@ But it is okay to build another server (in a separate repository) that builds on
 server that works as a "controller" selecting the bots that should battle each other, analyze scores, and store results,
 make ranking, etc. As long the alternative server it builds on top of the official Robocode server.
 
+## Tools used for building all modules of Robocode
+
+[Here](buildDocs/docs/dev/tools.md) you can find a list of all the tools required for building all parts of Robocode.
+
 [programming game]: https://www.makeuseof.com/tag/best-programming-games/
 
 [LiteRumble]: https://literumble.appspot.com/
