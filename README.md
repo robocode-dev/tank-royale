@@ -26,7 +26,7 @@ excitement of the competition that we love so much.
 
 ## Example of a battle
 
-<img src="docs/docs/images/robocode-battle-anim.gif">
+<img src="buildDocs/docs/images/robocode-battle-anim.gif">
 
 ## Documentation
 
@@ -38,7 +38,7 @@ The Robocode game itself needs Java 11 or newer for running, and has been tested
 
 - Windows
 - macOS
-- Linux.
+- Linux
 
 Bots can (in theory) be written for _any_ platform and programming language, as long as they have access to a
 [WebSocket](https://en.wikipedia.org/wiki/WebSocket) API.
