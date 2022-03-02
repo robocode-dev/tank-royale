@@ -5,7 +5,7 @@ group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 description = "Bot API for Robocode Tank Royale"
 
-val javadocTitle = "Robocode Tank Royale Bot API"
+val title = "Robocode Tank Royale Bot API"
 val artifactBaseName = "robocode-tankroyale-bot-api"
 
 
@@ -45,7 +45,7 @@ tasks {
     }
 
     val javadoc = withType<Javadoc> {
-        title = "$javadocTitle $version"
+        title
         source(sourceSets.main.get().allJava)
 
         (options as StandardJavadocDocletOptions).apply {
@@ -87,10 +87,35 @@ tasks {
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
+            from(components["java"])
+
             groupId = group as String?
             artifactId = artifactBaseName
             version
-            from(components["java"])
+
+            pom {
+                name.set(title)
+                description
+                url.set("https://robocode.dev")
+
+                scm {
+                    connection.set("scm:git:git@github.com:robocode-dev/tank-royale.git")
+                    developerConnection.set("scm:git:ssh://git@github.com:robocode-dev/tank-royale.git")
+                    url.set("https://github.com/robocode-dev/tank-royale")
+                }
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("fnl")
+                        name.set("Flemming Nørnberg Larsen")
+                    }
+                }
+            }
         }
     }
 }
