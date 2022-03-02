@@ -13,6 +13,7 @@ val artifactBaseName = "robocode-tankroyale-bot-api"
 plugins {
     `java-library`
     `maven-publish`
+    signing
     alias(libs.plugins.shadow.jar)
 }
 
@@ -118,4 +119,8 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign(publishing.publications["mavenJava"])
 }
