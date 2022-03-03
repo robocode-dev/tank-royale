@@ -11,7 +11,7 @@ description = "Schema for Robocode Tank Royale"
 val artifactBaseName = "robocode-tankroyale-schema"
 val archiveFileName = "$buildDir/libs/$artifactBaseName-$version.jar"
 
-val targetPackage = "dev.robocode.tankroyale.schema"
+val `package` = "dev.robocode.tankroyale.schema"
 
 buildscript {
     dependencies {
@@ -38,7 +38,7 @@ configure<JsonSchemaExtension> {
     setSourceType(SourceType.YAMLSCHEMA.toString())
     setSource(singletonList(File("$projectDir/../schemas")))
     setAnnotationStyle(AnnotationStyle.GSON.toString())
-    targetPackage
+    targetPackage = `package`
 }
 
 tasks {
@@ -47,7 +47,7 @@ tasks {
             attributes["Implementation-Title"] = title
             attributes["Implementation-Version"] = archiveVersion
             attributes["Implementation-Vendor"] = "robocode.dev"
-            attributes["Package"] = targetPackage
+            attributes["Package"] = `package`
         }
     }
 
