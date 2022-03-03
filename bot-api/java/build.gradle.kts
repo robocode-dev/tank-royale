@@ -40,6 +40,14 @@ tasks {
         )
     }
 
+    shadowJar {
+        manifest {
+            attributes["Implementation-Title"] = title
+            attributes["Implementation-Version"] = project.version
+            attributes["Package"] = project.group
+            attributes["Created-By"] = "robocode.dev"
+        }
+    }
     shadowJar.configure {
         archiveBaseName.set(artifactBaseName)
         archiveClassifier.set(null as String?) // get rid of "-all" classifier
@@ -97,24 +105,26 @@ publishing {
             pom {
                 name.set(title)
                 description
-                url.set("https://robocode.dev")
+                url.set("https://github.com/robocode-dev/tank-royale")
 
-                scm {
-                    connection.set("scm:git:git@github.com:robocode-dev/tank-royale.git")
-                    developerConnection.set("scm:git:ssh://git@github.com:robocode-dev/tank-royale.git")
-                    url.set("https://github.com/robocode-dev/tank-royale")
-                }
                 licenses {
                     license {
                         name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
                     }
                 }
                 developers {
                     developer {
                         id.set("fnl")
                         name.set("Flemming Nørnberg Larsen")
+                        organization.set("flemming-n-larsen")
+                        organizationUrl.set("https://github.com/flemming-n-larsen")
                     }
+                }
+                scm {
+                    connection.set("scm:git:git://github.com/robocode-dev/tank-royale.git")
+                    developerConnection.set("scm:git:ssh://github.com:robocode-dev/tank-royale.git")
+                    url.set("https://github.com/robocode-dev/tank-royale/tree/master")
                 }
             }
         }
