@@ -1,10 +1,10 @@
 import proguard.gradle.ProGuardTask
 
+val title = "Robocode Tank Royale Server"
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 description = "Server for running Robocode Tank Royale"
 
-val jarManifestTitle = "Robocode Tank Royale Server"
 val jarManifestMainClass = "dev.robocode.tankroyale.server.ServerKt"
 
 val artifactBaseName = "robocode-tankroyale-server"
@@ -22,6 +22,7 @@ plugins {
     kotlin("plugin.serialization")
     alias(libs.plugins.shadow.jar)
     `maven-publish`
+    signing
 }
 
 dependencies {
@@ -39,9 +40,10 @@ tasks {
     jar {
         manifest {
             attributes["Main-Class"] = jarManifestMainClass
-            attributes["Implementation-Title"] = jarManifestTitle
+            attributes["Implementation-Title"] = title
             attributes["Implementation-Version"] = archiveVersion
             attributes["Implementation-Vendor"] = "robocode.dev"
+            attributes["Package"] = project.group
         }
     }
 
@@ -67,7 +69,36 @@ tasks {
                 groupId = group as String?
                 artifactId = artifactBaseName
                 version
+                pom {
+                    name.set(title)
+                    description
+                    url.set("https://github.com/robocode-dev/tank-royale")
+
+                    licenses {
+                        license {
+                            name.set("The Apache License, Version 2.0")
+                            url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                        }
+                    }
+                    developers {
+                        developer {
+                            id.set("fnl")
+                            name.set("Flemming Nørnberg Larsen")
+                            organization.set("flemming-n-larsen")
+                            organizationUrl.set("https://github.com/flemming-n-larsen")
+                        }
+                    }
+                    scm {
+                        connection.set("scm:git:git://github.com/robocode-dev/tank-royale.git")
+                        developerConnection.set("scm:git:ssh://github.com:robocode-dev/tank-royale.git")
+                        url.set("https://github.com/robocode-dev/tank-royale/tree/master")
+                    }
+                }
             }
         }
     }
+}
+
+signing {
+    sign(publishing.publications["mavenJava"])
 }

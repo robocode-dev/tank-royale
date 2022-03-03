@@ -1,20 +1,19 @@
 import java.nio.file.Files
 import java.nio.file.Paths
 
+val title = "Robocode Tank Royale Bot API"
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
-description = "Bot API for Robocode Tank Royale"
+description = "Java API library for developing bots for Robocode Tank Royale"
 
-val title = "Robocode Tank Royale Bot API"
 val artifactBaseName = "robocode-tankroyale-bot-api"
-
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     `java-library`
+    alias(libs.plugins.shadow.jar)
     `maven-publish`
     signing
-    alias(libs.plugins.shadow.jar)
 }
 
 java {
@@ -44,8 +43,8 @@ tasks {
         manifest {
             attributes["Implementation-Title"] = title
             attributes["Implementation-Version"] = project.version
+            attributes["Implementation-Vendor"] = "robocode.dev"
             attributes["Package"] = project.group
-            attributes["Created-By"] = "robocode.dev"
         }
     }
     shadowJar.configure {

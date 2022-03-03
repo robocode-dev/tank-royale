@@ -35,7 +35,7 @@ this application for observing how your bot(s) perform in the battle arena again
 You can download the application from the [Robocode releases].
 
 You need a file named `robocode-tankroyale-gui-x.y.z.jar`, where x.y.z is the specific version number of Robocode, e.g.
-version 0.9.12.
+version 0.9.13.
 
 You might be able to simply start the application by (double)clicking it, depending on the OS and Java version you have.
 If you cannot start the Robocode application by clicking it, you should start it from the command line like this. You

@@ -13,7 +13,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
     <Title>Bot API for Robocode Tank Royale</Title>
-    <Description>.Net API for developing bots for Robocode Tank Royale</Description>
+    <Description>.Net API library for developing bots for Robocode Tank Royale</Description>
 
     <Authors>Flemming N&#248;rnberg Larsen</Authors>
     <Copyright>Copyright 2022 Flemming N&#248;rnberg Larsen</Copyright>

@@ -1,11 +1,11 @@
 import dev.robocode.tankroyale.tasks.FatJar
 import proguard.gradle.ProGuardTask
 
+val archiveTitle = "Robocode Tank Royale GUI"
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
-description = "Graphical user interface for Robocode Tank Royale"
+description = "Graphical user interface (GUI) for Robocode Tank Royale"
 
-val jarManifestTitle = "Robocode Tank Royale GUI"
 val jarManifestMainClass = "dev.robocode.tankroyale.gui.MainWindowKt"
 
 val archiveBaseName = "robocode-tankroyale-gui"
@@ -21,10 +21,8 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     `maven-publish`
-    idea
+    signing
 }
-
-idea.module.outputDir = file("$buildDir/classes/kotlin/main") // needed?
 
 dependencies {
     implementation(libs.serialization.json)
@@ -37,7 +35,7 @@ tasks {
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":booter").file("/build/libs"))
-        into(project.idea.module.outputDir)
+        into(file("/build/classes/kotlin/main"))
         include("robocode-tankroyale-booter-*-proguard.jar")
         rename(".*", "robocode-tankroyale-booter.jar")
     }
@@ -47,7 +45,7 @@ tasks {
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":server").file("/build/libs"))
-        into(project.idea.module.outputDir)
+        into(file("/build/classes/kotlin/main"))
         include("robocode-tankroyale-server-*-proguard.jar")
         rename(".*", "robocode-tankroyale-server.jar")
     }
@@ -59,7 +57,7 @@ tasks {
     val fatJar by registering(FatJar::class) {
         dependsOn(classes, copyJars)
 
-        title.set(jarManifestTitle)
+        title.set(archiveTitle)
         mainClass.set(jarManifestMainClass)
 
         outputFilename.set(archiveFileName)
@@ -79,15 +77,50 @@ tasks {
             proguard
         )
     }
+
+    withType<AbstractPublishToMaven>() {
+        dependsOn(jar)
+    }
 }
 
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             artifact(archiveFileName)
+
             groupId = group as String?
             artifactId = archiveBaseName
             version
+
+            pom {
+                name.set(archiveTitle)
+                description
+                url.set("https://github.com/robocode-dev/tank-royale")
+
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("fnl")
+                        name.set("Flemming Nørnberg Larsen")
+                        organization.set("flemming-n-larsen")
+                        organizationUrl.set("https://github.com/flemming-n-larsen")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:git://github.com/robocode-dev/tank-royale.git")
+                    developerConnection.set("scm:git:ssh://github.com:robocode-dev/tank-royale.git")
+                    url.set("https://github.com/robocode-dev/tank-royale/tree/master")
+                }
+            }
         }
     }
+}
+
+signing {
+    sign(publishing.publications["mavenJava"])
 }
