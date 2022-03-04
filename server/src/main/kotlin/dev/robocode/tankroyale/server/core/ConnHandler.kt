@@ -12,7 +12,6 @@ import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
 import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -77,9 +76,9 @@ class ConnHandler internal constructor(
             val address = conn.remoteSocketAddress
             if (address != null) {
                 val port = address.port
-                val hostname = toIpAddress(address.hostName)
+                val ip = toIpAddress(address)
                 for (botAddr: BotAddress in botAddresses) {
-                    if (toIpAddress(botAddr.host) == hostname && botAddr.port == port) {
+                    if (toIpAddress(address) == ip && botAddr.port == port) {
                         foundConnections += conn
                         break
                     }
@@ -89,8 +88,10 @@ class ConnHandler internal constructor(
         return foundConnections
     }
 
-    private fun toIpAddress(host: String): String =
-        if (host.lowercase(Locale.getDefault()) == "localhost") "127.0.0.1" else host
+    private fun toIpAddress(address: InetSocketAddress): String {
+        val ip = address.toString().split("/")[1]
+        return if (ip.equals("localhost", true)) "127.0.0.1" else ip
+    }
 
     private fun shutdownAndAwaitTermination(pool: ExecutorService) {
         pool.shutdown() // Disable new tasks from being submitted
