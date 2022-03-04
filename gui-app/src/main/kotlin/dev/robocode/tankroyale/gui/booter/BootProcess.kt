@@ -37,8 +37,7 @@ object BootProcess {
             getBooterJar(),
             "info",
         )
-        val botDirs = getBotDirs()
-        if (botDirs.isEmpty()) {
+        val botDirs = getBotDirs().ifEmpty {
             return emptyList()
         }
         botDirs.forEach { args += it }
@@ -46,8 +45,7 @@ object BootProcess {
         val process = ProcessBuilder(args).start()
         startThread(process)
         try {
-            val lines = readInputLines(process).joinToString()
-            if (lines.isBlank()) {
+            val lines = readInputLines(process).joinToString().ifBlank {
                 return emptyList()
             }
             return json.decodeFromString(lines)
