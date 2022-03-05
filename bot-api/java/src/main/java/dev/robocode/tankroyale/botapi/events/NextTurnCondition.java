@@ -27,7 +27,7 @@ import dev.robocode.tankroyale.botapi.IBot;
 public final class NextTurnCondition extends Condition {
 
     private final IBaseBot baseBot;
-    private final int creationTime;
+    private final int creationTurnNumber;
 
     /**
      * Constructor for initializing a new instance of the NextTurnCondition class.
@@ -39,7 +39,7 @@ public final class NextTurnCondition extends Condition {
         super("NextTurnCondition");
 
         this.baseBot = baseBot;
-        this.creationTime = baseBot.getTurnNumber();
+        this.creationTurnNumber = baseBot.getTurnNumber();
     }
 
     /**
@@ -50,6 +50,6 @@ public final class NextTurnCondition extends Condition {
      */
     @Override
     public boolean test() {
-        return baseBot.getTurnNumber() > creationTime;
+        return baseBot.getTurnNumber() > creationTurnNumber;
     }
 }
