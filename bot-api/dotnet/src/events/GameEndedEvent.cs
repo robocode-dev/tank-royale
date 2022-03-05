@@ -17,10 +17,10 @@ namespace Robocode.TankRoyale.BotApi.Events
     /// <summary>
     /// Initializes a new instance of the GameEndedEvent class.
     /// </summary>
-    /// <param name="turnNumber">Turn number.</param>
-    /// <param name="victimId">Id of the bot that has died.</param>
+    /// <param name="numberOfRounds">Number of rounds played.</param>
+    /// <param name="results">Results of the battle.</param>
     [JsonConstructor]
-    public GameEndedEvent(int numberOfRounds, IEnumerable<BotResults> results) : base() =>
+    public GameEndedEvent(int numberOfRounds, IEnumerable<BotResults> results) =>
       (NumberOfRounds, Results) = (numberOfRounds, results);
   }
 }
