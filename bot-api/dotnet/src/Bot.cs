@@ -199,46 +199,5 @@ namespace Robocode.TankRoyale.BotApi
     {
       __botInternals.SetTargetSpeed(targetSpeed);
     }
-
-    // Preventing System.TypeLoadException: xxx does not have an implementation
-
-    /// <inheritdoc/>
-    public override double CalcBulletSpeed(double firepower) => base.CalcBulletSpeed(firepower);
-
-    /// <inheritdoc/>
-    public override double CalcGunHeat(double firepower) => base.CalcBulletSpeed(firepower);
-
-    /// <inheritdoc/>
-    public override double CalcBearing(double direction) => base.CalcBearing(direction);
-
-    /// <inheritdoc/>
-    public override double CalcGunBearing(double direction) => base.CalcGunBearing(direction);
-
-    /// <inheritdoc/>
-    public override double CalcRadarBearing(double direction) => base.CalcRadarBearing(direction);
-
-    /// <inheritdoc/>
-    public override double DirectionTo(double x, double y) => base.DirectionTo(x, y);
-
-    /// <inheritdoc/>
-    public override double BearingTo(double x, double y) => base.BearingTo(x, y);
-
-    /// <inheritdoc/>
-    public override double GunBearingTo(double x, double y) => base.GunBearingTo(x, y);
-
-    /// <inheritdoc/>
-    public override double RadarBearingTo(double x, double y) => base.RadarBearingTo(x, y);
-
-    /// <inheritdoc/>
-    public override double DistanceTo(double x, double y) => base.DirectionTo(x, y);
-
-    /// <inheritdoc/>
-    public override double NormalizeAbsoluteAngle(double angle) => base.NormalizeAbsoluteAngle(angle);
-
-    /// <inheritdoc/>
-    public override double NormalizeRelativeAngle(double angle) => base.NormalizeRelativeAngle(angle);
-
-    /// <inheritdoc/>
-    public override double CalcDeltaAngle(double targetAngle, double sourceAngle) => base.CalcDeltaAngle(targetAngle, sourceAngle);
   }
 }
