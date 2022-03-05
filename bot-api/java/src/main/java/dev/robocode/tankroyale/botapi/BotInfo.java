@@ -191,8 +191,8 @@ public final class BotInfo {
      * @see #fromResourceFile(String)
      */
     public static BotInfo fromInputStream(InputStream inputStream) {
-        Gson gson = new Gson();
-        JsonReader reader = new JsonReader(new InputStreamReader(inputStream));
+        var gson = new Gson();
+        var reader = new JsonReader(new InputStreamReader(inputStream));
         JsonProperties data = gson.fromJson(reader, JsonProperties.class);
 
         if (data.name == null || data.name.isBlank()) {
