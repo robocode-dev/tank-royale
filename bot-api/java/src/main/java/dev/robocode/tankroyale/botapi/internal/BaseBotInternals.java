@@ -320,20 +320,20 @@ public final class BaseBotInternals {
     }
 
     private double getMaxSpeed(double distance) {
-        double decelTime =
+        double decelerationTime =
                 max(1, Math.ceil((Math.sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
-        if (decelTime == Double.POSITIVE_INFINITY) {
+        if (decelerationTime == Double.POSITIVE_INFINITY) {
             return MAX_SPEED;
         }
-        double decelDist = (decelTime / 2) * (decelTime - 1) * absDeceleration;
-        return ((decelTime - 1) * absDeceleration) + ((distance - decelDist) / decelTime);
+        double decelerationDistance = (decelerationTime / 2) * (decelerationTime - 1) * absDeceleration;
+        return ((decelerationTime - 1) * absDeceleration) + ((distance - decelerationDistance) / decelerationTime);
     }
 
     private double getMaxDeceleration(double speed) {
-        double decelTime = speed / absDeceleration;
-        double accelTime = 1 - decelTime;
+        double decelerationTime = speed / absDeceleration;
+        double accelerationTime = 1 - decelerationTime;
 
-        return min(1, decelTime) * absDeceleration + max(0, accelTime) * ACCELERATION;
+        return min(1, decelerationTime) * absDeceleration + max(0, accelerationTime) * ACCELERATION;
     }
 
     double getDistanceTraveledUntilStop(double speed) {
