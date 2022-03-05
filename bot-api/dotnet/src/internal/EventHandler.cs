@@ -14,7 +14,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     /// <param name="eventData"></param>
     public delegate void Subscriber(T eventData);
 
-    private List<EntryWithPriority> subscriberEntries = new List<EntryWithPriority>();
+    private readonly List<EntryWithPriority> subscriberEntries = new List<EntryWithPriority>();
 
     /// <summary>
     /// Subscribe to events on the event handler.
@@ -41,27 +41,27 @@ namespace Robocode.TankRoyale.BotApi.Internal
     /// <param name="eventData">Is the data for the event.</param>
     public void Publish(T eventData)
     {
-      subscriberEntries.Sort(compareByPriority);
+      subscriberEntries.Sort(CompareByPriority);
       foreach (var entry in new List<EntryWithPriority>(subscriberEntries))
       {
-        entry.subscriber.Invoke(eventData);
+        entry.Subscriber.Invoke(eventData);
       }
     }
 
-    static int compareByPriority(EntryWithPriority e1, EntryWithPriority e2)
+    private static int CompareByPriority(EntryWithPriority e1, EntryWithPriority e2)
     {
-      return e2.priority - e1.priority;
+      return e2.Priority - e1.Priority;
     }
 
-    class EntryWithPriority
+    private class EntryWithPriority
     {
-      public readonly int priority; // Lower values means lower priority
-      public readonly Subscriber subscriber;
+      public int Priority { get; }
+      public Subscriber Subscriber { get; } // Lower values means lower priority
 
       public EntryWithPriority(Subscriber subscriber, int priority)
       {
-        this.subscriber = subscriber;
-        this.priority = priority;
+        Priority = priority;
+        Subscriber = subscriber;
       }
     }
   }
