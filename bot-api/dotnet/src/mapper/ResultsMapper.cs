@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Robocode.TankRoyale.BotApi.Mapper
 {
@@ -6,12 +7,7 @@ namespace Robocode.TankRoyale.BotApi.Mapper
   {
     public static IEnumerable<BotResults> Map(IEnumerable<Schema.BotResultsForBot> source)
     {
-      var botResultsList = new List<BotResults>();
-      foreach (var botResults in source)
-      {
-        botResultsList.Add(Map(botResults));
-      }
-      return botResultsList;
+      return source.Select(Map).ToList();
     }
 
     private static BotResults Map(Schema.BotResultsForBot source)
