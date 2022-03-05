@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using S = Robocode.TankRoyale.Schema;
 using E = Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Mapper;
 using Robocode.TankRoyale.BotApi.Util;
+using static System.Double;
 
 namespace Robocode.TankRoyale.BotApi.Internal
 {
@@ -29,7 +28,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private readonly IBaseBot baseBot;
     private readonly BotInfo botInfo;
-    private S.BotIntent botIntent = newBotIntent();
+    private S.BotIntent botIntent = NewBotIntent();
 
     private int? myId;
     private GameSetup gameSetup;
@@ -37,13 +36,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private E.TickEvent tickEvent;
     private long? ticksStart;
 
-    private readonly BotEventHandlers botEventHandlers;
     private readonly EventQueue eventQueue;
-    private readonly ISet<Events.Condition> conditions = new HashSet<Events.Condition>();
 
-    private readonly Object nextTurnMonitor = new Object();
+    private readonly object nextTurnMonitor = new object();
 
-    private bool isStopped;
     private IStopResumeListener stopResumeListener;
 
     private double maxSpeed;
@@ -59,38 +55,37 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private readonly double absDeceleration;
 
 
-    internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUrl, String serverSecret)
+    internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUrl, string serverSecret)
     {
       this.baseBot = baseBot;
-      this.botInfo = (botInfo == null) ? EnvVars.GetBotInfo() : botInfo;
+      this.botInfo = botInfo ?? EnvVars.GetBotInfo();
 
-      this.botEventHandlers = new BotEventHandlers(baseBot);
-      this.eventQueue = new EventQueue(this, botEventHandlers);
+      BotEventHandlers = new BotEventHandlers(baseBot);
+      eventQueue = new EventQueue(this, BotEventHandlers);
 
-      this.absDeceleration = Math.Abs(baseBot.Deceleration);
+      absDeceleration = Math.Abs(baseBot.Deceleration);
 
-      this.maxSpeed = baseBot.MaxSpeed;
-      this.maxTurnRate = baseBot.MaxTurnRate;
-      this.maxGunTurnRate = baseBot.MaxGunTurnRate;
-      this.maxRadarTurnRate = baseBot.MaxRadarTurnRate;
+      maxSpeed = baseBot.MaxSpeed;
+      maxTurnRate = baseBot.MaxTurnRate;
+      maxGunTurnRate = baseBot.MaxGunTurnRate;
+      maxRadarTurnRate = baseBot.MaxRadarTurnRate;
 
-      serverUrl = serverUrl == null ? ServerUrlFromSetting : serverUrl;
-      this.serverSecret = serverSecret == null ? ServerSecretFromSetting : serverSecret;
+      this.serverSecret = serverSecret ?? ServerSecretFromSetting;
 
-      Init(serverUrl);
+      Init(serverUrl ?? ServerUrlFromSetting);
     }
 
     private void Init(Uri serverUrl)
     {
       socket = new WebSocketClient(serverUrl);
-      socket.OnConnected += new WebSocketClient.OnConnectedHandler(HandleConnected);
-      socket.OnDisconnected += new WebSocketClient.OnDisconnectedHandler(HandleDisconnected);
-      socket.OnError += new WebSocketClient.OnErrorHandler(HandleConnectionError);
-      socket.OnTextMessage += new WebSocketClient.OnTextMessageHandler(HandleTextMessage);
+      socket.OnConnected += HandleConnected;
+      socket.OnDisconnected += HandleDisconnected;
+      socket.OnError += HandleConnectionError;
+      socket.OnTextMessage += HandleTextMessage;
 
-      botEventHandlers.onRoundStarted.Subscribe(OnRoundStarted, 100);
-      botEventHandlers.onNextTurn.Subscribe(OnNextTurn, 100);
-      botEventHandlers.onBulletFired.Subscribe(OnBulletFired, 100);
+      BotEventHandlers.onRoundStarted.Subscribe(OnRoundStarted, 100);
+      BotEventHandlers.onNextTurn.Subscribe(OnNextTurn, 100);
+      BotEventHandlers.onBulletFired.Subscribe(OnBulletFired, 100);
     }
 
     public void SetStopResumeHandler(IStopResumeListener listener)
@@ -98,22 +93,24 @@ namespace Robocode.TankRoyale.BotApi.Internal
       stopResumeListener = listener;
     }
 
-    private static S.BotIntent newBotIntent()
+    private static S.BotIntent NewBotIntent()
     {
-      var botIntent = new S.BotIntent();
-      botIntent.Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotIntent); // must be set
+      var botIntent = new S.BotIntent
+      {
+        Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotIntent) // must be set
+      };
       return botIntent;
     }
 
-    internal BotEventHandlers BotEventHandlers { get => botEventHandlers; }
+    internal BotEventHandlers BotEventHandlers { get; }
 
-    internal ISet<Events.Condition> Conditions { get => conditions; }
+    internal ISet<Events.Condition> Conditions { get; } = new HashSet<Events.Condition>();
 
     private void OnRoundStarted(E.RoundStartedEvent e)
     {
-      botIntent = newBotIntent();
+      botIntent = NewBotIntent();
       eventQueue.Clear();
-      isStopped = false;
+      IsStopped = false;
     }
 
     private void OnNextTurn(E.TickEvent e)
@@ -164,7 +161,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private void WaitForNextTurn()
     {
-      int turnNumber = CurrentTick.TurnNumber;
+      var turnNumber = CurrentTick.TurnNumber;
 
       lock (nextTurnMonitor)
       {
@@ -208,23 +205,15 @@ namespace Robocode.TankRoyale.BotApi.Internal
         botIntent.RadarTurnRate = Math.Clamp((double)radarTurnRate, -maxRadarTurnRate, maxRadarTurnRate);
     }
 
-    internal string Variant
-    {
-      get => ServerHandshake.Variant;
-    }
+    internal string Variant => ServerHandshake.Variant;
 
-    internal string Version
-    {
-      get => ServerHandshake.Version;
-    }
+    internal string Version => ServerHandshake.Version;
 
     internal int MyId
     {
       get
       {
-        if (myId == null)
-          throw new BotException(GameNotRunningMsg);
-
+        if (myId == null) throw new BotException(GameNotRunningMsg);
         return (int)myId;
       }
     }
@@ -233,9 +222,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       get
       {
-        if (gameSetup == null)
-          throw new BotException(GameNotRunningMsg);
-
+        if (gameSetup == null) throw new BotException(GameNotRunningMsg);
         return gameSetup;
       }
     }
@@ -244,9 +231,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       get
       {
-        if (botIntent == null)
-          throw new BotException(GameNotRunningMsg);
-
+        if (botIntent == null) throw new BotException(GameNotRunningMsg);
         return botIntent;
       }
     }
@@ -255,9 +240,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       get
       {
-        if (tickEvent == null)
-          throw new BotException(TickNotAvailableMsg);
-
+        if (tickEvent == null) throw new BotException(TickNotAvailableMsg);
         return tickEvent;
       }
     }
@@ -266,9 +249,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       get
       {
-        if (ticksStart == null)
-          throw new BotException(TickNotAvailableMsg);
-
+        if (ticksStart == null) throw new BotException(TickNotAvailableMsg);
         return (long)ticksStart;
       }
     }
@@ -277,15 +258,14 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       get
       {
-        long passesMicroSeconds = (DateTime.Now.Ticks - TicksStart) / 10;
+        var passesMicroSeconds = (DateTime.Now.Ticks - TicksStart) / 10;
         return (int)(gameSetup.TurnTimeout - passesMicroSeconds);
       }
     }
 
     internal bool SetFire(double firepower)
     {
-      if (Double.IsNaN(firepower))
-        throw new ArgumentException("firepower cannot be NaN");
+      if (IsNaN(firepower)) throw new ArgumentException("firepower cannot be NaN");
 
       if (baseBot.Energy < firepower || CurrentTick.BotState.GunHeat > 0)
         return false; // cannot fire yet
@@ -293,24 +273,24 @@ namespace Robocode.TankRoyale.BotApi.Internal
       return true;
     }
 
-    internal void SetMaxSpeed(double maxSpeed)
+    internal void SetMaxSpeed(double newMaxSpeed)
     {
-      this.maxSpeed = Math.Clamp(maxSpeed, 0, baseBot.MaxSpeed);
+      maxSpeed = Math.Clamp(newMaxSpeed, 0, baseBot.MaxSpeed);
     }
 
-    internal void SetMaxTurnRate(double maxTurnRate)
+    internal void SetMaxTurnRate(double newMaxTurnRate)
     {
-      this.maxTurnRate = Math.Clamp(maxTurnRate, 0, baseBot.MaxTurnRate);
+      maxTurnRate = Math.Clamp(newMaxTurnRate, 0, baseBot.MaxTurnRate);
     }
 
-    internal void SetMaxGunTurnRate(double maxGunTurnRate)
+    internal void SetMaxGunTurnRate(double newMaxGunTurnRate)
     {
-      this.maxGunTurnRate = Math.Clamp(maxGunTurnRate, 0, baseBot.MaxGunTurnRate);
+      maxGunTurnRate = Math.Clamp(newMaxGunTurnRate, 0, baseBot.MaxGunTurnRate);
     }
 
-    internal void SetMaxRadarTurnRate(double maxRadarTurnRate)
+    internal void SetMaxRadarTurnRate(double newMaxRadarTurnRate)
     {
-      this.maxRadarTurnRate = Math.Clamp(maxRadarTurnRate, 0, baseBot.MaxRadarTurnRate);
+      maxRadarTurnRate = Math.Clamp(newMaxRadarTurnRate, 0, baseBot.MaxRadarTurnRate);
     }
 
     /// <summary>
@@ -333,32 +313,30 @@ namespace Robocode.TankRoyale.BotApi.Internal
         return -GetNewSpeed(-speed, -distance);
       }
 
-      double targetSpeed;
-      if (distance == Double.PositiveInfinity)
-        targetSpeed = maxSpeed;
-      else
-        targetSpeed = Math.Min(GetMaxSpeed(distance), maxSpeed);
-      if (speed >= 0)
-        return Math.Clamp(targetSpeed, speed - absDeceleration, speed + baseBot.Acceleration);
-      return Math.Clamp(targetSpeed, speed - baseBot.Acceleration, speed + absDeceleration);
+      var targetSpeed = IsPositiveInfinity(distance) ?
+        maxSpeed :
+        Math.Min(GetMaxSpeed(distance), maxSpeed);
+      return speed >= 0 ?
+        Math.Clamp(targetSpeed, speed - absDeceleration, speed + baseBot.Acceleration) :
+        Math.Clamp(targetSpeed, speed - baseBot.Acceleration, speed + absDeceleration);
     }
 
     private double GetMaxSpeed(double distance)
     {
-      var decelTime = Math.Max(1, Math.Ceiling((Math.Sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
-      if (decelTime == Double.PositiveInfinity)
+      var decelerationTime = Math.Max(1, Math.Ceiling((Math.Sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
+      if (IsPositiveInfinity(decelerationTime))
         return baseBot.MaxSpeed;
 
-      var decelDist = (decelTime / 2) * (decelTime - 1) * absDeceleration;
-      return ((decelTime - 1) * absDeceleration) + ((distance - decelDist) / decelTime);
+      var decelerationDistance = (decelerationTime / 2) * (decelerationTime - 1) * absDeceleration;
+      return ((decelerationTime - 1) * absDeceleration) + ((distance - decelerationDistance) / decelerationTime);
     }
 
     private double GetMaxDeceleration(double speed)
     {
-      var decelTime = speed / absDeceleration;
-      var accelTime = 1 - decelTime;
+      var decelerationTime = speed / absDeceleration;
+      var accelerationTime = 1 - decelerationTime;
 
-      return Math.Min(1, decelTime) * absDeceleration + Math.Max(0, accelTime) * baseBot.Acceleration;
+      return Math.Min(1, decelerationTime) * absDeceleration + Math.Max(0, accelerationTime) * baseBot.Acceleration;
     }
 
     internal double GetDistanceTraveledUntilStop(double speed)
@@ -373,12 +351,12 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal void AddCondition(Events.Condition condition)
     {
-      conditions.Add(condition);
+      Conditions.Add(condition);
     }
 
     internal void RemoveCondition(Events.Condition condition)
     {
-      conditions.Remove(condition);
+      Conditions.Remove(condition);
     }
 
     internal void SetScan(bool doScan)
@@ -388,42 +366,37 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal void SetStop()
     {
-      if (!isStopped)
-      {
-        isStopped = true;
+      if (IsStopped) return;
 
-        savedTargetSpeed = botIntent.TargetSpeed;
-        savedTurnRate = botIntent.TurnRate;
-        savedGunTurnRate = botIntent.GunTurnRate;
-        savedRadarTurnRate = botIntent.RadarTurnRate;
+      IsStopped = true;
 
-        botIntent.TargetSpeed = 0;
-        botIntent.TurnRate = 0;
-        botIntent.GunTurnRate = 0;
-        botIntent.RadarTurnRate = 0;
+      savedTargetSpeed = botIntent.TargetSpeed;
+      savedTurnRate = botIntent.TurnRate;
+      savedGunTurnRate = botIntent.GunTurnRate;
+      savedRadarTurnRate = botIntent.RadarTurnRate;
 
-        stopResumeListener?.OnStop();
-      }
+      botIntent.TargetSpeed = 0;
+      botIntent.TurnRate = 0;
+      botIntent.GunTurnRate = 0;
+      botIntent.RadarTurnRate = 0;
+
+      stopResumeListener?.OnStop();
     }
 
     internal void SetResume()
     {
-      if (isStopped)
-      {
-        botIntent.TargetSpeed = savedTargetSpeed;
-        botIntent.TurnRate = savedTurnRate;
-        botIntent.GunTurnRate = savedGunTurnRate;
-        botIntent.RadarTurnRate = savedRadarTurnRate;
+      if (!IsStopped) return;
 
-        stopResumeListener?.OnResume();
-        isStopped = false; // must be last step
-      }
+      botIntent.TargetSpeed = savedTargetSpeed;
+      botIntent.TurnRate = savedTurnRate;
+      botIntent.GunTurnRate = savedGunTurnRate;
+      botIntent.RadarTurnRate = savedRadarTurnRate;
+
+      stopResumeListener?.OnResume();
+      IsStopped = false; // must be last step
     }
 
-    internal bool IsStopped
-    {
-      get { return isStopped; }
-    }
+    internal bool IsStopped { get; private set; }
 
     internal S.ServerHandshake ServerHandshake
     {
@@ -437,15 +410,11 @@ namespace Robocode.TankRoyale.BotApi.Internal
       }
     }
 
-    private Uri ServerUrlFromSetting
+    private static Uri ServerUrlFromSetting
     {
       get
       {
-        var uri = EnvVars.GetServerUrl();
-        if (uri == null)
-        {
-          uri = "ws://localhost:7654";
-        }
+        var uri = EnvVars.GetServerUrl() ?? "ws://localhost:7654";
         if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
         {
           throw new BotException("Incorrect syntax for server uri: " + uri);
@@ -454,27 +423,21 @@ namespace Robocode.TankRoyale.BotApi.Internal
       }
     }
 
-    private string ServerSecretFromSetting
-    {
-      get
-      {
-        return EnvVars.GetServerSecret();
-      }
-    }
+    private static string ServerSecretFromSetting => EnvVars.GetServerSecret();
 
     private void HandleConnected()
     {
-      botEventHandlers.FireConnectedEvent(new E.ConnectedEvent(socket.ServerUri));
+      BotEventHandlers.FireConnectedEvent(new E.ConnectedEvent(socket.ServerUri));
     }
 
     private void HandleDisconnected(bool remote, int? statusCode, string reason)
     {
-      botEventHandlers.FireDisconnectedEvent(new E.DisconnectedEvent(socket.ServerUri, remote, statusCode, reason));
+      BotEventHandlers.FireDisconnectedEvent(new E.DisconnectedEvent(socket.ServerUri, remote, statusCode, reason));
     }
 
     private void HandleConnectionError(Exception cause)
     {
-      botEventHandlers.FireConnectionErrorEvent(new E.ConnectionErrorEvent(socket.ServerUri, new Exception(cause.Message)));
+      BotEventHandlers.FireConnectionErrorEvent(new E.ConnectionErrorEvent(socket.ServerUri, new Exception(cause.Message)));
     }
 
     private void HandleTextMessage(string json)
@@ -485,37 +448,35 @@ namespace Robocode.TankRoyale.BotApi.Internal
       var jsonMsg = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
       try
       {
-        var type = (string)jsonMsg["$type"];
+        var type = (string)jsonMsg?["$type"];
+        if (string.IsNullOrWhiteSpace(type)) return;
 
-        if (!string.IsNullOrWhiteSpace(type))
+        var msgType = (S.MessageType)Enum.Parse(typeof(S.MessageType), type);
+        switch (msgType)
         {
-          var msgType = (S.MessageType)Enum.Parse(typeof(S.MessageType), type);
-          switch (msgType)
-          {
-            case S.MessageType.TickEventForBot:
-              HandleTickEvent(json);
-              break;
-            case S.MessageType.ServerHandshake:
-              HandleServerHandshake(json);
-              break;
-            case S.MessageType.RoundStartedEvent:
-              HandleRoundStartedEvent(json);
-              break;
-            case S.MessageType.RoundEndedEvent:
-              HandleRoundEndedEvent(json);
-              break;
-            case S.MessageType.GameStartedEventForBot:
-              HandleGameStartedEvent(json);
-              break;
-            case S.MessageType.GameEndedEventForBot:
-              HandleGameEndedEvent(json);
-              break;
-            case S.MessageType.SkippedTurnEvent:
-              HandleSkippedTurnEvent(json);
-              break;
-            default:
-              throw new BotException($"Unsupported WebSocket message type: {type}");
-          }
+          case S.MessageType.TickEventForBot:
+            HandleTickEvent(json);
+            break;
+          case S.MessageType.ServerHandshake:
+            HandleServerHandshake(json);
+            break;
+          case S.MessageType.RoundStartedEvent:
+            HandleRoundStartedEvent(json);
+            break;
+          case S.MessageType.RoundEndedEvent:
+            HandleRoundEndedEvent(json);
+            break;
+          case S.MessageType.GameStartedEventForBot:
+            HandleGameStartedEvent(json);
+            break;
+          case S.MessageType.GameEndedEventForBot:
+            HandleGameEndedEvent(json);
+            break;
+          case S.MessageType.SkippedTurnEvent:
+            HandleSkippedTurnEvent(json);
+            break;
+          default:
+            throw new BotException($"Unsupported WebSocket message type: {type}");
         }
       }
       catch (KeyNotFoundException)
@@ -526,10 +487,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
       }
     }
 
-
     private void HandleTickEvent(string json)
     {
-      var tickEventForBot = JsonConvert.DeserializeObject<Schema.TickEventForBot>(json);
       tickEvent = EventMapper.Map(json);
 
       ticksStart = DateTime.Now.Ticks;
@@ -540,45 +499,57 @@ namespace Robocode.TankRoyale.BotApi.Internal
       eventQueue.AddEventsFromTick(tickEvent, baseBot);
 
       // Trigger next turn (not tick-event!)
-      botEventHandlers.onNextTurn.Publish(tickEvent);
+      BotEventHandlers.onNextTurn.Publish(tickEvent);
     }
 
     private void HandleRoundStartedEvent(string json)
     {
       var roundStartedEvent = JsonConvert.DeserializeObject<S.RoundStartedEvent>(json);
-      botEventHandlers.FireRoundStartedEvent(new E.RoundStartedEvent(roundStartedEvent.RoundNumber));
+      if (roundStartedEvent == null)
+        throw new BotException("RoundStartedEvent is missing in JSON message from server");
+
+      BotEventHandlers.FireRoundStartedEvent(new E.RoundStartedEvent(roundStartedEvent.RoundNumber));
     }
 
     private void HandleRoundEndedEvent(string json)
     {
       var roundEndedEvent = JsonConvert.DeserializeObject<S.RoundEndedEvent>(json);
-      botEventHandlers.FireRoundEndedEvent(new E.RoundEndedEvent(roundEndedEvent.RoundNumber, roundEndedEvent.TurnNumber));
+      if (roundEndedEvent == null)
+        throw new BotException("RoundEndedEvent is missing in JSON message from server");
+
+      BotEventHandlers.FireRoundEndedEvent(new E.RoundEndedEvent(roundEndedEvent.RoundNumber, roundEndedEvent.TurnNumber));
     }
 
     private void HandleGameStartedEvent(string json)
     {
       var gameStartedEventForBot = JsonConvert.DeserializeObject<S.GameStartedEventForBot>(json);
+      if (gameStartedEventForBot == null)
+        throw new BotException("GameStartedEventForBot is missing in JSON message from server");
 
       myId = gameStartedEventForBot.MyId;
       gameSetup = GameSetupMapper.Map(gameStartedEventForBot.GameSetup);
 
       // Send ready signal
-      S.BotReady ready = new S.BotReady();
-      ready.Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotReady);
+      var ready = new S.BotReady
+      {
+        Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotReady)
+      };
 
       var msg = JsonConvert.SerializeObject(ready);
       socket.SendTextMessage(msg);
 
-      botEventHandlers.FireGameStartedEvent(new E.GameStartedEvent((int)myId, gameSetup));
+      BotEventHandlers.FireGameStartedEvent(new E.GameStartedEvent((int)myId, gameSetup));
     }
 
     private void HandleGameEndedEvent(string json)
     {
       // Send the game ended event
       var gameEndedEventForBot = JsonConvert.DeserializeObject<S.GameEndedEventForBot>(json);
-      var results = ResultsMapper.Map(gameEndedEventForBot.Results);
+      if (gameEndedEventForBot == null)
+        throw new BotException("GameEndedEventForBot is missing in JSON message from server");
 
-      botEventHandlers.FireGameEndedEvent(new E.GameEndedEvent(gameEndedEventForBot.NumberOfRounds, results));
+      var results = ResultsMapper.Map(gameEndedEventForBot.Results);
+      BotEventHandlers.FireGameEndedEvent(new E.GameEndedEvent(gameEndedEventForBot.NumberOfRounds, results));
     }
 
     private void HandleServerHandshake(string json)
@@ -596,23 +567,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     public void HandleSkippedTurnEvent(string json)
     {
       var skippedTurnEvent = JsonConvert.DeserializeObject<Schema.SkippedTurnEvent>(json);
-      botEventHandlers.FireSkippedTurnEvent(EventMapper.Map(skippedTurnEvent));
+      BotEventHandlers.FireSkippedTurnEvent(EventMapper.Map(skippedTurnEvent));
     }
-  }
-}
-
-public class KnownTypesBinder : ISerializationBinder
-{
-  private IList<Type> KnownTypes { get; set; }
-
-  public Type BindToType(string assemblyName, string typeName)
-  {
-    return KnownTypes.SingleOrDefault(t => t.Name == typeName);
-  }
-
-  public void BindToName(Type serializedType, out string assemblyName, out string typeName)
-  {
-    assemblyName = null;
-    typeName = serializedType.Name;
   }
 }
