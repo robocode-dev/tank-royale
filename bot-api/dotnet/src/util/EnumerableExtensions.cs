@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Robocode.TankRoyale.BotApi.Util
 {
-  public static class IEnumerableExtensions
+  public static class EnumerableExtensions
   {
     /// <summary>
     /// Checks if a IEnumerable is null, empty or contains only blank lines.
@@ -11,17 +12,7 @@ namespace Robocode.TankRoyale.BotApi.Util
     /// <returns>true if the IEnumerable is null, empty or contains only blank lines; false otherwise.</returns>
     public static bool IsNullOrEmptyOrContainsBlanks(this IEnumerable<string> source)
     {
-      if (source != null)
-      {
-        foreach (string str in source)
-        {
-          if (!string.IsNullOrEmpty(str))
-          {
-            return false;
-          }
-        }
-      }
-      return true;
+      return source == null || source.All(string.IsNullOrEmpty);
     }
 
     /// <summary>
@@ -31,19 +22,9 @@ namespace Robocode.TankRoyale.BotApi.Util
     /// <returns>List of string with no blank strings.</returns>
     public static List<string> ToListWithNoBlanks(this IEnumerable<string> source)
     {
-      if (source == null)
-      {
-        return new List<string>();
-      }
-      var list = new List<string>();
-      foreach (string str in source)
-      {
-        if (str.Trim().Length > 0)
-        {
-          list.Add(str.Trim());
-        }
-      }
-      return list;
+      return source == null ?
+        new List<string>() :
+        (from str in source where str.Trim().Length > 0 select str.Trim()).ToList();
     }
   }
 }
