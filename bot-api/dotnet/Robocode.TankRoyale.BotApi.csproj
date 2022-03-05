@@ -15,8 +15,8 @@
     <Title>Bot API for Robocode Tank Royale</Title>
     <Description>.Net API library for developing bots for Robocode Tank Royale</Description>
 
-    <Authors>Flemming N&#248;rnberg Larsen</Authors>
-    <Copyright>Copyright 2022 Flemming N&#248;rnberg Larsen</Copyright>
+    <Authors>Flemming Nørnberg Larsen</Authors>
+    <Copyright>Copyright 2022 Flemming Nørnberg Larsen</Copyright>
 
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
@@ -42,8 +42,8 @@
     <PackageReference Include="Microsoft.Build.Locator" Version="1.4.1" />
 
     <!-- Icon -->
-    <None Include="icon.png" Pack="true" PackagePath="\"/>
-    <None Include="docs/ReadMe.md" Pack="true" PackagePath="\"/>
+    <None Include="icon.png" Pack="true" PackagePath="\" />
+    <None Include="docs/ReadMe.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
