@@ -77,7 +77,7 @@ running the program. Using the bot API, we need to start the robot by calling th
 the bot API, which will tell the server that this bot wants to join the battle and also provide the server with the
 required bot info.
 
-With the bot's constructor (_MyFirstBot()_) we call the [BotInfo.fromFile(string)](
+With the bots constructor (_MyFirstBot()_) we call the [BotInfo.fromFile(string)](
 ./api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromFile_System_String_)
 method provides the bot info for the server, like e.g. the name of the bot, and its author, etc.
 
