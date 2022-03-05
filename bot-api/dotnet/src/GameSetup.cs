@@ -50,7 +50,7 @@ namespace Robocode.TankRoyale.BotApi
       double gunCoolingRate, int? maxInactivityTurns, int turnTimeout, int readyTimeout)
     {
       GameType = gameType;
-      ArenaWidth = ArenaWidth;
+      ArenaWidth = arenaWidth;
       ArenaHeight = arenaHeight;
       NumberOfRounds = numberOfRounds;
       GunCoolingRate = gunCoolingRate;
