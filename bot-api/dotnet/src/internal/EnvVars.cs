@@ -40,7 +40,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     internal const string BotPlatform = "BOT_PLATFORM";
 
     /// <summary>Name of environment variable for bot programming language.</summary>
-    internal const string BotProgLang = "BOT_PROG_LANG";
+    internal const string BotProgrammingLang = "BOT_PROG_LANG";
 
     internal const string IncorrectEnvValue = "Incorrect or missing value for environment variable: ";
 
@@ -71,7 +71,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         GetBotVersion(),
         GetBotAuthors(),
         GetBotDescription(),
-        GetBotUrl(),
+        GetBotHomepage(),
         GetBotCountryCodes(),
         GetBotGameTypes(),
         GetBotPlatform(),
@@ -134,10 +134,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
     }
 
     /// <summary>
-    /// Gets the bot URL from environment variable.
+    /// Gets the bot homepage URL from environment variable.
     /// </summary>
-    /// <returns>The bot URL.</returns>
-    internal static string GetBotUrl()
+    /// <returns>The bot homepage URL.</returns>
+    internal static string GetBotHomepage()
     {
       return Environment.GetEnvironmentVariable(BotUrl);
     }
@@ -175,17 +175,15 @@ namespace Robocode.TankRoyale.BotApi.Internal
     /// <returns>The platform used for running the game.</returns>
     internal static string GetBotProgrammingLang()
     {
-      return Environment.GetEnvironmentVariable(BotProgLang);
+      return Environment.GetEnvironmentVariable(BotProgrammingLang);
     }
 
-    static ICollection<string> GetEnvVarAsList(string envVarName)
+    private static ICollection<string> GetEnvVarAsList(string envVarName)
     {
-      var value = Environment.GetEnvironmentVariable(BotGameTypes);
-      if (string.IsNullOrWhiteSpace(value))
-      {
-        return new List<string>();
-      }
-      return new List<string>(value.Split("\\s*,\\s*"));
+      var value = Environment.GetEnvironmentVariable(envVarName);
+      return string.IsNullOrWhiteSpace(value) ?
+        new List<string>() :
+        new List<string>(value.Split("\\s*,\\s*"));
     }
   }
 }
