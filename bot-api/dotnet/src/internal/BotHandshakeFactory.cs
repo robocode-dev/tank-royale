@@ -8,18 +8,20 @@ namespace Robocode.TankRoyale.BotApi.Internal
   {
     internal static BotHandshake Create(BotInfo botInfo, string serverSecret)
     {
-      var handshake = new BotHandshake();
-      handshake.Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotHandshake);
-      handshake.Name = botInfo.Name;
-      handshake.Version = botInfo.Version;
-      handshake.Authors = new List<string>(botInfo.Authors);
-      handshake.Description = botInfo.Description;
-      handshake.Homepage = botInfo.Homepage;
-      handshake.CountryCodes = botInfo.CountryCodes != null ? new List<string>(botInfo.CountryCodes) : new List<string>();
-      handshake.GameTypes = botInfo.GameTypes != null ? new HashSet<string>(botInfo.GameTypes) : new HashSet<string>();
-      handshake.Platform = botInfo.Platform;
-      handshake.ProgrammingLang = botInfo.ProgrammingLang;
-      handshake.Secret = serverSecret;
+      var handshake = new BotHandshake
+      {
+        Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotHandshake),
+        Name = botInfo.Name,
+        Version = botInfo.Version,
+        Authors = new List<string>(botInfo.Authors),
+        Description = botInfo.Description,
+        Homepage = botInfo.Homepage,
+        CountryCodes = botInfo.CountryCodes != null ? new List<string>(botInfo.CountryCodes) : new List<string>(),
+        GameTypes = botInfo.GameTypes != null ? new HashSet<string>(botInfo.GameTypes) : new HashSet<string>(),
+        Platform = botInfo.Platform,
+        ProgrammingLang = botInfo.ProgrammingLang,
+        Secret = serverSecret
+      };
       return handshake;
     }
   }
