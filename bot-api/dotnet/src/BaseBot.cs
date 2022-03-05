@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Internal;
+using static System.Double;
 
 namespace Robocode.TankRoyale.BotApi
 {
@@ -85,161 +86,86 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public string Variant
-    {
-      get => __baseBotInternals.Variant;
-    }
+    public string Variant => __baseBotInternals.Variant;
 
     /// <inheritdoc/>
-    public string Version
-    {
-      get => __baseBotInternals.Version;
-    }
+    public string Version => __baseBotInternals.Version;
 
     /// <inheritdoc/>
-    public int MyId
-    {
-      get => __baseBotInternals.MyId;
-    }
+    public int MyId => __baseBotInternals.MyId;
 
     /// <inheritdoc/>
-    public string GameType
-    {
-      get => __baseBotInternals.GameSetup.GameType;
-    }
+    public string GameType => __baseBotInternals.GameSetup.GameType;
 
     /// <inheritdoc/>
-    public int ArenaWidth
-    {
-      get => __baseBotInternals.GameSetup.ArenaWidth;
-    }
+    public int ArenaWidth => __baseBotInternals.GameSetup.ArenaWidth;
 
     /// <inheritdoc/>
-    public int ArenaHeight
-    {
-      get => __baseBotInternals.GameSetup.ArenaHeight;
-    }
+    public int ArenaHeight => __baseBotInternals.GameSetup.ArenaHeight;
 
     /// <inheritdoc/>
-    public int NumberOfRounds
-    {
-      get => __baseBotInternals.GameSetup.NumberOfRounds;
-    }
+    public int NumberOfRounds => __baseBotInternals.GameSetup.NumberOfRounds;
 
     /// <inheritdoc/>
-    public double GunCoolingRate
-    {
-      get => __baseBotInternals.GameSetup.GunCoolingRate;
-    }
+    public double GunCoolingRate => __baseBotInternals.GameSetup.GunCoolingRate;
 
     /// <inheritdoc/>
-    public int? MaxInactivityTurns
-    {
-      get => __baseBotInternals.GameSetup.MaxInactivityTurns;
-    }
+    public int? MaxInactivityTurns => __baseBotInternals.GameSetup.MaxInactivityTurns;
 
     /// <inheritdoc/>
-    public int TurnTimeout
-    {
-      get => __baseBotInternals.GameSetup.TurnTimeout;
-    }
+    public int TurnTimeout => __baseBotInternals.GameSetup.TurnTimeout;
 
     /// <inheritdoc/>
-    public int TimeLeft
-    {
-      get => __baseBotInternals.TimeLeft;
-    }
+    public int TimeLeft => __baseBotInternals.TimeLeft;
 
     /// <inheritdoc/>
-    public int RoundNumber
-    {
-      get => __baseBotInternals.CurrentTick.RoundNumber;
-    }
+    public int RoundNumber => __baseBotInternals.CurrentTick.RoundNumber;
 
     /// <inheritdoc/>
-    public int TurnNumber
-    {
-      get => __baseBotInternals.CurrentTick.TurnNumber;
-    }
+    public int TurnNumber => __baseBotInternals.CurrentTick.TurnNumber;
 
     /// <inheritdoc/>
-    public int EnemyCount
-    {
-      get => __baseBotInternals.CurrentTick.EnemyCount;
-    }
+    public int EnemyCount => __baseBotInternals.CurrentTick.EnemyCount;
 
     /// <inheritdoc/>
-    public double Energy
-    {
-      get => __baseBotInternals.CurrentTick.BotState.Energy;
-    }
+    public double Energy => __baseBotInternals.CurrentTick.BotState.Energy;
 
     /// <inheritdoc/>
-    public bool IsDisabled
-    {
-      get => Energy == 0;
-    }
+    public bool IsDisabled => Energy == 0;
 
     /// <inheritdoc/>
-    public double X
-    {
-      get => __baseBotInternals.CurrentTick.BotState.X;
-    }
+    public double X => __baseBotInternals.CurrentTick.BotState.X;
 
     /// <inheritdoc/>
-    public double Y
-    {
-      get => __baseBotInternals.CurrentTick.BotState.Y;
-    }
+    public double Y => __baseBotInternals.CurrentTick.BotState.Y;
 
     /// <inheritdoc/>
-    public double Direction
-    {
-      get => __baseBotInternals.CurrentTick.BotState.Direction;
-    }
+    public double Direction => __baseBotInternals.CurrentTick.BotState.Direction;
 
     /// <inheritdoc/>
-    public double GunDirection
-    {
-      get => __baseBotInternals.CurrentTick.BotState.GunDirection;
-    }
+    public double GunDirection => __baseBotInternals.CurrentTick.BotState.GunDirection;
 
     /// <inheritdoc/>
-    public double RadarDirection
-    {
-      get => __baseBotInternals.CurrentTick.BotState.RadarDirection;
-    }
+    public double RadarDirection => __baseBotInternals.CurrentTick.BotState.RadarDirection;
 
     /// <inheritdoc/>
-    public double Speed
-    {
-      get => __baseBotInternals.CurrentTick.BotState.Speed;
-    }
+    public double Speed => __baseBotInternals.CurrentTick.BotState.Speed;
 
     /// <inheritdoc/>
-    public double GunHeat
-    {
-      get => __baseBotInternals.CurrentTick.BotState.GunHeat;
-    }
+    public double GunHeat => __baseBotInternals.CurrentTick.BotState.GunHeat;
 
     /// <inheritdoc/>
-    public IEnumerable<BulletState> BulletStates
-    {
-      get => __baseBotInternals.CurrentTick.BulletStates;
-    }
+    public IEnumerable<BulletState> BulletStates => __baseBotInternals.CurrentTick.BulletStates;
 
     /// <inheritdoc/>
-    public IEnumerable<BotEvent> Events
-    {
-      get => __baseBotInternals.CurrentTick.Events;
-    }
+    public IEnumerable<BotEvent> Events => __baseBotInternals.CurrentTick.Events;
 
     /// <inheritdoc/>
     public double TurnRate
     {
       set
       {
-        if (Double.IsNaN(value))
+        if (IsNaN(value))
         {
           throw new ArgumentException("TurnRate cannot be NaN");
         }
@@ -259,7 +185,7 @@ namespace Robocode.TankRoyale.BotApi
     {
       set
       {
-        if (Double.IsNaN(value))
+        if (IsNaN(value))
         {
           throw new ArgumentException("GunTurnRate cannot be NaN");
         }
@@ -279,7 +205,7 @@ namespace Robocode.TankRoyale.BotApi
     {
       set
       {
-        if (Double.IsNaN(value))
+        if (IsNaN(value))
         {
           throw new ArgumentException("RadarTurnRate cannot be NaN");
         }
@@ -299,7 +225,7 @@ namespace Robocode.TankRoyale.BotApi
     {
       set
       {
-        if (Double.IsNaN(value))
+        if (IsNaN(value))
         {
           throw new ArgumentException("TargetSpeed cannot be NaN");
         }
@@ -327,10 +253,7 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public double Firepower
-    {
-      get => __baseBotInternals.BotIntent.Firepower ?? 0;
-    }
+    public double Firepower => __baseBotInternals.BotIntent.Firepower ?? 0;
 
     /// <inheritdoc/>
     public bool DoAdjustGunForBodyTurn
@@ -475,7 +398,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public virtual void OnDisconnected(DisconnectedEvent disconnectedEvent)
     {
-        string msg = $"Disconnected from {disconnectedEvent.ServerUri}";
+        var msg = $"Disconnected from {disconnectedEvent.ServerUri}";
         if (disconnectedEvent.StatusCode != null) {
           msg += $", status code: {disconnectedEvent.StatusCode}";
         }
