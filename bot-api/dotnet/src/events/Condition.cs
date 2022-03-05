@@ -54,7 +54,7 @@ namespace Robocode.TankRoyale.BotApi.Events
     /// </summary>
     public Condition()
     {
-      this.Name = null;
+      Name = null;
     }
 
     /// <summary>
@@ -65,7 +65,7 @@ namespace Robocode.TankRoyale.BotApi.Events
     /// conditions with the <see cref="IBaseBot.OnCustomEvent(CustomEvent)"/> event handler.</param>
     public Condition(string name)
     {
-      this.Name = name;
+      Name = name;
     }
 
     /// <summary>
