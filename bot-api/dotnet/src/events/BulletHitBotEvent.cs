@@ -23,6 +23,7 @@ namespace Robocode.TankRoyale.BotApi.Events
     /// Initializes a new instance of the BulletHitBotEvent class.
     /// </summary>
     /// <param name="turnNumber">Turn number.</param>
+    /// <param name="victimId">ID of the victim bot that got hit.</param>
     /// <param name="bullet">Bullet that hit the bot.</param>
     /// <param name="damage">Damage inflicted by the bullet.</param>
     /// <param name="energy">Remaining energy level of the bot that got hit.</param>
