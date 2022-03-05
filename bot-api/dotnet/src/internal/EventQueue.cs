@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi.Internal
@@ -27,7 +28,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     public void Clear()
     {
       eventsDict.Clear();
-      baseBotInternals.Conditions.Clear(); // conditions might be added in the bot's Run() method each round
+      baseBotInternals.Conditions.Clear(); // conditions might be added in the bots Run() method each round
       currentEvent = null;
     }
 
@@ -50,14 +51,14 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
       foreach (var events in sortedDict.Values)
       {
-        for (int i = 0; i < events.Count; i++)
+        for (var i = 0; i < events.Count; i++)
         {
           try
           {
             var evt = (BotEvent)events[i];
 
             // Exit if we are inside an event handler handling the current event being fired
-            if (currentEvent != null && evt.GetType().Equals(currentEvent.GetType()))
+            if (currentEvent != null && evt?.GetType() == currentEvent.GetType())
               return;
 
             try
@@ -69,18 +70,13 @@ namespace Robocode.TankRoyale.BotApi.Internal
             catch (RescanException)
             {
             }
-            catch (Exception)
-            {
-              throw;
-            }
             finally
             {
               currentEvent = null;
             }
           }
-          catch (System.ArgumentOutOfRangeException)
+          catch (ArgumentOutOfRangeException)
           {
-            continue;
           }
         }
       }
@@ -90,17 +86,16 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       foreach (var events in eventsDict.Values)
       {
-        for (int i = 0; i < events.Count; i++)
+        for (var i = 0; i < events.Count; i++)
         {
           try
           {
             var evt = (BotEvent)events[i];
-            if (!evt.IsCritical && IsOldEvent(evt, currentTurn))
+            if (evt is {IsCritical: false} && IsOldEvent(evt, currentTurn))
               events.RemoveAt(i);
           }
-          catch (System.ArgumentOutOfRangeException)
+          catch (ArgumentOutOfRangeException)
           {
-            continue;
           }
         }
       }
@@ -119,10 +114,9 @@ namespace Robocode.TankRoyale.BotApi.Internal
       }
       else
       {
-        int priority = GetPriority(botEvent, baseBot);
+        var priority = GetPriority(botEvent, baseBot);
 
-        ArrayList events;
-        eventsDict.TryGetValue(priority, out events);
+        eventsDict.TryGetValue(priority, out var events);
         if (events == null)
         {
           events = ArrayList.Synchronized(new ArrayList());
@@ -134,62 +128,37 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private int CountEvents()
     {
-      int count = 0;
-      foreach (var events in eventsDict.Values)
-      {
-        count += events.Count;
-      }
-      return count;
+      return eventsDict.Values.Sum(events => events.Count);
     }
 
     private void AddCustomEvents(IBaseBot baseBot)
     {
-      foreach (Events.Condition condition in baseBotInternals.Conditions)
+      foreach (var condition in baseBotInternals.Conditions.Where(condition => condition.Test()))
       {
-        if (condition.Test())
-        {
-          AddEvent(new CustomEvent(baseBotInternals.CurrentTick.TurnNumber, condition), baseBot);
-        }
+        AddEvent(new CustomEvent(baseBotInternals.CurrentTick.TurnNumber, condition), baseBot);
       }
     }
 
     private static int GetPriority(BotEvent botEvent, IBaseBot baseBot)
     {
-      switch (botEvent)
+      return botEvent switch
       {
-        case TickEvent tickEvent:
-          return EventPriority.OnTick;
-        case ScannedBotEvent scannedBotEvent:
-          return EventPriority.OnScannedBot;
-        case HitBotEvent hitBotEvent:
-          return EventPriority.OnHitBot;
-        case HitWallEvent hitWallEvent:
-          return EventPriority.OnHitWall;
-        case BulletFiredEvent bulletFiredEvent:
-          return EventPriority.OnBulletFired;
-        case BulletHitWallEvent bulletHitWallEvent:
-          return EventPriority.OnBulletHitWall;
-        case BulletHitBotEvent bulletHitBotEvent:
-          if (bulletHitBotEvent.VictimId == baseBot.MyId)
-            return EventPriority.OnHitByBullet;
-          else
-            return EventPriority.OnBulletHit;
-        case BulletHitBulletEvent bulletHitBulletEvent:
-          return EventPriority.OnBulletHitBullet;
-        case DeathEvent deathEvent:
-          if (deathEvent.VictimId == baseBot.MyId)
-            return EventPriority.OnDeath;
-          else
-            return EventPriority.OnBotDeath;
-        case SkippedTurnEvent skippedTurnEvent:
-          return EventPriority.OnSkippedTurn;
-        case CustomEvent customEvent:
-          return EventPriority.OnCondition;
-        case WonRoundEvent wonRoundEvent:
-          return EventPriority.OnWonRound;
-        default:
-          throw new InvalidOperationException("Unhandled event type: " + botEvent);
-      }
+        TickEvent _ => EventPriority.OnTick,
+        ScannedBotEvent _ => EventPriority.OnScannedBot,
+        HitBotEvent _ => EventPriority.OnHitBot,
+        HitWallEvent _ => EventPriority.OnHitWall,
+        BulletFiredEvent _ => EventPriority.OnBulletFired,
+        BulletHitWallEvent _ => EventPriority.OnBulletHitWall,
+        BulletHitBotEvent bulletHitBotEvent => bulletHitBotEvent.VictimId == baseBot.MyId
+          ? EventPriority.OnHitByBullet
+          : EventPriority.OnBulletHit,
+        BulletHitBulletEvent _ => EventPriority.OnBulletHitBullet,
+        DeathEvent deathEvent => deathEvent.VictimId == baseBot.MyId ? EventPriority.OnDeath : EventPriority.OnBotDeath,
+        SkippedTurnEvent _ => EventPriority.OnSkippedTurn,
+        CustomEvent _ => EventPriority.OnCondition,
+        WonRoundEvent _ => EventPriority.OnWonRound,
+        _ => throw new InvalidOperationException("Unhandled event type: " + botEvent)
+      };
     }
   }
 }
