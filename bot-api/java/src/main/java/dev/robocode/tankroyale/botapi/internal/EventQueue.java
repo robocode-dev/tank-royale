@@ -71,7 +71,7 @@ final class EventQueue {
 
     void clear() {
         eventMap.clear();
-        baseBotInternals.getConditions().clear(); // conditions might be added in the bot's run() method each round
+        baseBotInternals.getConditions().clear(); // conditions might be added in the bots run() method each round
         currentEvent = null;
     }
 
@@ -85,31 +85,27 @@ final class EventQueue {
     void dispatchEvents(int currentTurn) {
         removeOldEvents(currentTurn);
 
-        // Handle events in the order of the keys, i.e. event priority order
-        for (List<BotEvent> events : eventMap.values()) {
-            for (BotEvent event : events) {
-                // Exit if we are inside an event handler handling the current event being fired
-                if (currentEvent != null && event.getClass().equals(currentEvent.getClass())) {
-                    return;
-                }
-                try {
-                    currentEvent = event;
-                    events.remove(event); // remove event prior to handling it
-                    botEventHandlers.fire(event);
-
-                } catch (RescanException ignore) {
-                } finally {
-                    currentEvent = null;
-                }
+        eventMap.values().forEach(eventList -> eventList.forEach(event -> {
+            // Exit if we are inside an event handler handling the current event being fired
+            if (currentEvent != null && event.getClass().equals(currentEvent.getClass())) {
+                return;
             }
-        }
+            try {
+                currentEvent = event;
+                eventList.remove(event); // remove event prior to handling it
+                botEventHandlers.fire(event);
+
+            } catch (RescanException ignore) {
+            } finally {
+                currentEvent = null;
+            }
+        }));
     }
 
     private void removeOldEvents(int currentTurn) {
-        for (List<BotEvent> events : eventMap.values()) {
-            // Only remove old events that are not critical
-            events.removeIf(event -> !event.isCritical() && isOldEvent(event, currentTurn));
-        }
+        // Only remove old events that are not critical
+        eventMap.values().forEach(eventList ->
+                eventList.removeIf(event -> !event.isCritical() && isOldEvent(event, currentTurn)));
     }
 
     private void addEvent(BotEvent event, IBaseBot baseBot) {
@@ -117,7 +113,7 @@ final class EventQueue {
             System.err.println("Maximum event queue size has been reached: " + MAX_QUEUE_SIZE);
         } else {
             int priority = getPriority(event, baseBot);
-            List<BotEvent> botEvents = eventMap.get(priority);
+            var botEvents = eventMap.get(priority);
             if (botEvents == null) {
                 botEvents = new CopyOnWriteArrayList<>();
                 eventMap.put(priority, botEvents);
@@ -127,21 +123,12 @@ final class EventQueue {
     }
 
     private int countEvents() {
-        int count = 0;
-        for (List<BotEvent> events : eventMap.values()) {
-            count += events.size();
-        }
-        return count;
+        return eventMap.values().stream().mapToInt(List::size).sum();
     }
 
     private void addCustomEvents(IBaseBot baseBot) {
-        baseBotInternals
-                .getConditions()
-                .forEach(
-                        condition -> {
-                            if (condition.test()) {
-                                addEvent(new CustomEvent(baseBotInternals.getCurrentTick().getTurnNumber(), condition), baseBot);
-                            }
-                        });
+        baseBotInternals.getConditions().stream().filter(Condition::test).forEach(condition ->
+                addEvent(new CustomEvent(baseBotInternals.getCurrentTick().getTurnNumber(), condition), baseBot)
+        );
     }
 }
