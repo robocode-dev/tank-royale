@@ -56,7 +56,7 @@ final class EnvVars {
     /**
      * Name of environment variable for bot programming language.
      */
-    static final String BOT_PROG_LANG = "BOT_PROG_LANG";
+    static final String BOT_PROGRAMMING_LANG = "BOT_PROG_LANG";
     private static final String NO_ENV_VALUE = "No value for environment variable: ";
 
     // Hide constructor
@@ -84,7 +84,7 @@ final class EnvVars {
                 getBotVersion(),
                 getBotAuthors(),
                 getBotDescription(),
-                getBotUrl(),
+                getBotHomepage(),
                 getBotCountryCodes(),
                 getBotGameTypes(),
                 getBotPlatform(),
@@ -134,9 +134,9 @@ final class EnvVars {
     }
 
     /**
-     * Bot URL
+     * Bot homepage URL.
      */
-    static String getBotUrl() {
+    static String getBotHomepage() {
         return System.getenv(BOT_URL);
     }
 
@@ -165,7 +165,7 @@ final class EnvVars {
      * Language used for programming the bot
      */
     static String getBotProgrammingLang() {
-        return System.getenv(BOT_PROG_LANG);
+        return System.getenv(BOT_PROGRAMMING_LANG);
     }
 
     private static boolean isNullOrEmpty(String s) {
