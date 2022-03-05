@@ -20,7 +20,7 @@ namespace Robocode.TankRoyale.BotApi
     private string name;
     private string version;
     private IEnumerable<string> authors;
-    private IEnumerable<string> contryCodes;
+    private IEnumerable<string> countryCodes;
     private IEnumerable<string> gameTypes;
     private string platform;
 
@@ -90,34 +90,32 @@ namespace Robocode.TankRoyale.BotApi
     /// <value>The country code(s) for the bot.</value>
     public IEnumerable<string> CountryCodes
     {
-      get => contryCodes;
+      get => countryCodes;
       private set
       {
-        contryCodes = value.ToListWithNoBlanks();
+        countryCodes = value.ToListWithNoBlanks();
 
-        foreach (string countryCode in contryCodes)
+        foreach (var countryCode in countryCodes)
         {
-          if (!string.IsNullOrWhiteSpace(countryCode))
+          if (string.IsNullOrWhiteSpace(countryCode)) continue;
+          try
           {
-            try
-            {
-              // Check country code by passing it as input parameter to RegionInfo
-              new RegionInfo(countryCode.Trim());
-            }
-            catch (ArgumentException)
-            {
-              throw new ArgumentException($"Country Code is not valid: '{countryCode}'");
-            }
+            // Check country code by passing it as input parameter to RegionInfo
+            new RegionInfo(countryCode.Trim());
+          }
+          catch (ArgumentException)
+          {
+            throw new ArgumentException($"Country Code is not valid: '{countryCode}'");
           }
         }
 
-        if (!CountryCodes.Any())
+        if (CountryCodes.Any()) return;
+        var list = new List<string>
         {
-          var list = new List<string>();
           // Get local country code
-          list.Add(Thread.CurrentThread.CurrentCulture.Name);
-          contryCodes = list;
-        }
+          Thread.CurrentThread.CurrentCulture.Name
+        };
+        countryCodes = list;
       }
     }
 
@@ -168,7 +166,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="version">The version of the bot (required).</param>
     /// <param name="authors">The author(s) of the bot (required).</param>
     /// <param name="description">A short description of the bot (optional).</param>
-    /// <param name="url">The URL to a web page for the bot (optional).</param>
+    /// <param name="homepage">The URL to a web page for the bot (optional).</param>
     /// <param name="countryCodes">The country code(s) for the bot (optional).</param>
     /// <param name="gameTypes">The game type(s) that this bot can handle (required).</param>
     /// <param name="platform">The platform used for running the bot (optional).</param>
@@ -234,14 +232,11 @@ namespace Robocode.TankRoyale.BotApi
     /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
     public static BotInfo FromFile(string filePath, string basePath)
     {
-      if (basePath == null)
-      {
-        basePath = Directory.GetCurrentDirectory();
-      }
+      basePath ??= Directory.GetCurrentDirectory();
       var configBuilder = new ConfigurationBuilder().SetBasePath(basePath).AddJsonFile(filePath);
       var config = configBuilder.Build();
 
-      return BotInfo.FromConfiguration(config);
+      return FromConfiguration(config);
     }
 
     /// <summary>
@@ -285,11 +280,7 @@ namespace Robocode.TankRoyale.BotApi
       {
         throw new ArgumentException("The JSON field 'gameTypes' is missing or blank");
       }
-      var countryCodes = configuration["countryCodes"];
-      if (countryCodes == null)
-      {
-        countryCodes = "";
-      }
+      var countryCodes = configuration["countryCodes"] ?? "";
       return new BotInfo(
         name,
         version,
