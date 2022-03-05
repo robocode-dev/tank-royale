@@ -535,7 +535,7 @@ namespace Robocode.TankRoyale.BotApi
     /// used the longer it takes to cool down the gun. The gun cooling rate can be read by calling
     /// <see cref="GunCoolingRate"/>.
     ///
-    /// The amount of energy used for firing the gun is subtracted from the bots' total energy. The
+    /// The amount of energy used for firing the gun is subtracted from the bot's total energy. The
     /// amount of damage dealt by a bullet hitting another bot is 4x firepower, and if the
     /// firepower is greater than 1 it will do an additional 2 x (firepower - 1) damage.
     ///
@@ -573,13 +573,13 @@ namespace Robocode.TankRoyale.BotApi
     void SetScan();
 
     /// <summary>
-    /// Sets the gun to adjust for the bots turn when setting the gun turn rate. So the gun
-    /// behaves like it is turning independent of the bots turn.
+    /// Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun
+    /// behaves like it is turning independent of the bot's turn.
     ///
-    /// Ok, so this needs some explanation: The gun is mounted on the bots body. So, normally, if
+    /// Ok, so this needs some explanation: The gun is mounted on the bot's body. So, normally, if
     /// the bot turns 90 degrees to the right, then the gun will turn with it as it is mounted on
-    /// top of the bots body. To compensate for this, you can adjust the gun for the bots turn.
-    /// When this is set, the gun will turn independent from the bots turn.
+    /// top of the bot's body. To compensate for this, you can adjust the gun for the bot's turn.
+    /// When this is set, the gun will turn independent from the bot's turn.
     ///
     /// <note>
     /// This property is additive until you reach the maximum the gun can turn <see
@@ -589,7 +589,7 @@ namespace Robocode.TankRoyale.BotApi
     /// The gun compensating this way does count as "turning the gun".
     /// </note>
     /// </summary>
-    /// <value><em>true</em> if the gun is set to adjust for the bots turn; <em>false</em>
+    /// <value><em>true</em> if the gun is set to adjust for the bot's turn; <em>false</em>
     /// otherwise.</value>
     /// <seealso cref="DoAdjustRadarForGunTurn"/>
     bool DoAdjustGunForBodyTurn { get; set; }
@@ -611,7 +611,7 @@ namespace Robocode.TankRoyale.BotApi
     /// The radar compensating this way does count as "turning the radar".
     /// </note>
     /// </summary>
-    /// <value><em>true</em> if the radar is set to adjust for the bots turn; <em>false</em>
+    /// <value><em>true</em> if the radar is set to adjust for the bot's turn; <em>false</em>
     /// otherwise.</value>
     /// <seealso cref="DoAdjustGunForBodyTurn"/>
     bool DoAdjustRadarForGunTurn { get; set; }
@@ -1081,7 +1081,7 @@ namespace Robocode.TankRoyale.BotApi
     double CalcRadarBearing(double direction);
 
     /// <summary>
-    /// Calculates the direction (angle) from the bots coordinates to a point x,y.
+    /// Calculates the direction (angle) from the bot's coordinates to a point x,y.
     /// </summary>
     /// <param name="x">Is the x coordinate of the point.</param>
     /// <param name="y">Is the y coordinate of the point.</param>
@@ -1089,7 +1089,7 @@ namespace Robocode.TankRoyale.BotApi
     double DirectionTo(double x, double y);
 
     /// <summary>
-    /// Calculates the bearing (delta angle) between the bots coordinates and direction and the
+    /// Calculates the bearing (delta angle) between the bot's coordinates and direction and the
     /// direction to the point x,y.
     /// </summary>
     /// <param name="x">Is the x coordinate of the point.</param>
@@ -1098,7 +1098,7 @@ namespace Robocode.TankRoyale.BotApi
     double BearingTo(double x, double y);
 
     /// <summary>
-    /// Calculates the bearing (delta angle) between the bots gun and direction and the
+    /// Calculates the bearing (delta angle) between the bot's gun and direction and the
     /// direction to the point x,y.
     /// </summary>
     /// <param name="x">Is the x coordinate of the point.</param>
@@ -1107,7 +1107,7 @@ namespace Robocode.TankRoyale.BotApi
     double GunBearingTo(double x, double y);
 
     /// <summary>
-    /// Calculates the bearing (delta angle) between the bots radar and direction and the
+    /// Calculates the bearing (delta angle) between the bot's radar and direction and the
     /// direction to the point x,y.
     /// </summary>
     /// <param name="x">Is the x coordinate of the point.</param>
@@ -1116,7 +1116,7 @@ namespace Robocode.TankRoyale.BotApi
     double RadarBearingTo(double x, double y);
 
     /// <summary>
-    /// Calculates the distance from the bots coordinates to a point x,y.
+    /// Calculates the distance from the bot's coordinates to a point x,y.
     /// </summary>
     /// <param name="x">Is the x coordinate of the point.</param>
     /// <param name="y">Is the y coordinate of the point.</param>

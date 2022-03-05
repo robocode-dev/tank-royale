@@ -28,7 +28,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     public void Clear()
     {
       eventsDict.Clear();
-      baseBotInternals.Conditions.Clear(); // conditions might be added in the bots Run() method each round
+      baseBotInternals.Conditions.Clear(); // conditions might be added in the bot's Run() method each round
       currentEvent = null;
     }
 
