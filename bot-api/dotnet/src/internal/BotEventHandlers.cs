@@ -5,7 +5,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 {
   internal sealed class BotEventHandlers
   {
-    readonly IBaseBot baseBot;
+    private readonly IBaseBot baseBot;
 
     // Regular bot event handlers
     internal readonly EventHandler<ConnectedEvent> onConnected = new EventHandler<ConnectedEvent>();
@@ -112,52 +112,52 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal void FireConnectedEvent(ConnectedEvent evt)
     {
-      OnConnected(evt);
+      OnConnected?.Invoke(evt);
     }
 
     internal void FireDisconnectedEvent(DisconnectedEvent evt)
     {
-      OnDisconnected(evt);
+      OnDisconnected?.Invoke(evt);
     }
 
     internal void FireConnectionErrorEvent(ConnectionErrorEvent evt)
     {
-      OnConnectionError(evt);
+      OnConnectionError?.Invoke(evt);
     }
 
     internal void FireGameStartedEvent(GameStartedEvent evt)
     {
-      OnGameStarted(evt);
+      OnGameStarted?.Invoke(evt);
     }
 
     internal void FireGameEndedEvent(GameEndedEvent evt)
     {
-      OnGameEnded(evt);
+      OnGameEnded?.Invoke(evt);
     }
 
     internal void FireRoundStartedEvent(RoundStartedEvent evt)
     {
-      OnRoundStarted(evt);
+      OnRoundStarted?.Invoke(evt);
     }
 
     internal void FireRoundEndedEvent(RoundEndedEvent evt)
     {
-      OnRoundEnded(evt);
+      OnRoundEnded?.Invoke(evt);
     }
 
     internal void FireTickEvent(TickEvent evt)
     {
-      OnTick(evt);
+      OnTick?.Invoke(evt);
     }
 
     internal void FireSkippedTurnEvent(SkippedTurnEvent evt)
     {
-      OnSkippedTurn(evt);
+      OnSkippedTurn?.Invoke(evt);
     }
 
     internal void FireNextTurn(TickEvent evt)
     {
-      OnNextTurn(evt);
+      OnNextTurn?.Invoke(evt);
     }
 
 
@@ -166,46 +166,46 @@ namespace Robocode.TankRoyale.BotApi.Internal
       switch (evt)
       {
         case TickEvent tickEvent:
-          OnTick(tickEvent);
+          OnTick?.Invoke(tickEvent);
           break;
         case ScannedBotEvent scannedBotEvent:
-          OnScannedBot(scannedBotEvent);
+          OnScannedBot?.Invoke(scannedBotEvent);
           break;
         case SkippedTurnEvent skippedTurnEvent:
-          OnSkippedTurn(skippedTurnEvent);
+          OnSkippedTurn?.Invoke(skippedTurnEvent);
           break;
         case HitBotEvent botHitBotEvent:
-          OnHitBot(botHitBotEvent);
+          OnHitBot?.Invoke(botHitBotEvent);
           break;
         case HitWallEvent botHitWallEvent:
-          OnHitWall(botHitWallEvent);
+          OnHitWall?.Invoke(botHitWallEvent);
           break;
         case BulletFiredEvent bulletFiredEvent:
-          OnBulletFired(bulletFiredEvent);
+          OnBulletFired?.Invoke(bulletFiredEvent);
           break;
         case BulletHitWallEvent bulletHitWallEvent:
-          OnBulletHitWall(bulletHitWallEvent);
+          OnBulletHitWall?.Invoke(bulletHitWallEvent);
           break;
         case BulletHitBotEvent bulletHitBotEvent:
           if (bulletHitBotEvent.VictimId == baseBot.MyId)
-            OnHitByBullet(bulletHitBotEvent);
+            OnHitByBullet?.Invoke(bulletHitBotEvent);
           else
-            OnBulletHit(bulletHitBotEvent);
+            OnBulletHit?.Invoke(bulletHitBotEvent);
           break;
         case DeathEvent botDeathEvent:
           if (botDeathEvent.VictimId == baseBot.MyId)
-            OnDeath(botDeathEvent);
+            OnDeath?.Invoke(botDeathEvent);
           else
-            OnBotDeath(botDeathEvent);
+            OnBotDeath?.Invoke(botDeathEvent);
           break;
         case BulletHitBulletEvent bulletHitBulletEvent:
-          OnBulletHitBullet(bulletHitBulletEvent);
+          OnBulletHitBullet?.Invoke(bulletHitBulletEvent);
           break;
         case WonRoundEvent wonRoundEvent:
-          OnWonRound(wonRoundEvent);
+          OnWonRound?.Invoke(wonRoundEvent);
           break;
         case CustomEvent customEvent:
-          OnCustomEvent(customEvent);
+          OnCustomEvent?.Invoke(customEvent);
           break;
         default:
           throw new Exception("Unhandled event: " + evt);
