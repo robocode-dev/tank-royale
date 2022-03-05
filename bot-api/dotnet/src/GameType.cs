@@ -3,11 +3,8 @@ namespace Robocode.TankRoyale.BotApi
   /// <summary>
   /// Predefined game types.
   /// </summary>
-  public sealed class GameType
+  public static class GameType
   {
-    // Hide constuctor.
-    private GameType() { }
-
     /// <summary>Melee battle with every bot against every other bot.</summary>
     public const string Melee = "melee";
 
