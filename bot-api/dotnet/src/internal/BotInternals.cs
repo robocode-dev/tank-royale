@@ -2,6 +2,7 @@ using System.Linq;
 using System;
 using System.Threading;
 using Robocode.TankRoyale.BotApi.Events;
+using static System.Double;
 
 namespace Robocode.TankRoyale.BotApi.Internal
 {
@@ -11,17 +12,11 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private readonly BaseBotInternals baseBotInternals;
 
     private Thread thread;
-    private readonly Object threadMonitor = new Object();
-    private bool isInterrupted;
+    private readonly object threadMonitor = new object();
 
     private double previousDirection;
     private double previousGunDirection;
     private double previousRadarDirection;
-
-    private double distanceRemaining;
-    private double turnRemaining;
-    private double gunTurnRemaining;
-    private double radarTurnRemaining;
 
     private bool isOverDriving;
 
@@ -68,10 +63,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private void ClearRemaining()
     {
-      distanceRemaining = 0d;
-      turnRemaining = 0d;
-      gunTurnRemaining = 0d;
-      radarTurnRemaining = 0d;
+      DistanceRemaining = 0d;
+      TurnRemaining = 0d;
+      GunTurnRemaining = 0d;
+      RadarTurnRemaining = 0d;
 
       previousDirection = bot.Direction;
       previousGunDirection = bot.GunDirection;
@@ -113,8 +108,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       lock (threadMonitor)
       {
-        thread = new Thread(new ThreadStart(bot.Run));
-        isInterrupted = true; // before starting thread!
+        thread = new Thread(bot.Run);
+        IsRunning = true; // before starting thread!
         thread.Start();
       }
     }
@@ -123,24 +118,23 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       lock (threadMonitor)
       {
-        if (thread != null)
-        {
-          isInterrupted = false;
-          thread.Join(0);
-          thread = null;
-        }
+        if (thread == null) return;
+
+        IsRunning = false;
+        thread.Join(0);
+        thread = null;
       }
     }
 
     private void OnHitWall(HitWallEvent evt)
     {
-      distanceRemaining = 0;
+      DistanceRemaining = 0;
     }
 
     private void OnHitBot(HitBotEvent evt)
     {
       if (evt.IsRammed)
-        distanceRemaining = 0;
+        DistanceRemaining = 0;
     }
 
     private void OnDeath(DeathEvent evt)
@@ -149,38 +143,38 @@ namespace Robocode.TankRoyale.BotApi.Internal
         StopThread();
     }
 
-    internal bool IsRunning { get => isInterrupted; }
+    internal bool IsRunning { get; private set; }
 
-    internal double DistanceRemaining { get => distanceRemaining; }
+    internal double DistanceRemaining { get; private set; }
 
-    internal double TurnRemaining { get => turnRemaining; }
+    internal double TurnRemaining { get; private set; }
 
-    internal double GunTurnRemaining { get => gunTurnRemaining; }
+    internal double GunTurnRemaining { get; private set; }
 
-    internal double RadarTurnRemaining { get => radarTurnRemaining; }
+    internal double RadarTurnRemaining { get; private set; }
 
     internal void SetTargetSpeed(double targetSpeed)
     {
-      if (Double.IsNaN(targetSpeed))
+      if (IsNaN(targetSpeed))
         throw new ArgumentException("targetSpeed cannot be NaN");
 
       if (targetSpeed > 0)
-        distanceRemaining = Double.PositiveInfinity;
+        DistanceRemaining = PositiveInfinity;
       else if (targetSpeed < 0)
-        distanceRemaining = Double.NegativeInfinity;
+        DistanceRemaining = NegativeInfinity;
       else
-        distanceRemaining = 0;
+        DistanceRemaining = 0;
 
       baseBotInternals.BotIntent.TargetSpeed = targetSpeed;
     }
 
     internal void SetForward(double distance)
     {
-      if (Double.IsNaN(distance))
+      if (IsNaN(distance))
         throw new ArgumentException("distance cannot be NaN");
 
-      distanceRemaining = distance;
-      double speed = baseBotInternals.GetNewSpeed(bot.Speed, distance);
+      DistanceRemaining = distance;
+      var speed = baseBotInternals.GetNewSpeed(bot.Speed, distance);
       baseBotInternals.BotIntent.TargetSpeed = speed;
     }
 
@@ -193,16 +187,16 @@ namespace Robocode.TankRoyale.BotApi.Internal
         SetForward(distance);
         do
           bot.Go();
-        while (IsRunning && distanceRemaining != 0);
+        while (IsRunning && DistanceRemaining != 0);
       }
     }
 
     internal void SetTurnLeft(double degrees)
     {
-      if (Double.IsNaN(degrees))
+      if (IsNaN(degrees))
         throw new ArgumentException("degrees cannot be NaN");
 
-      turnRemaining = degrees;
+      TurnRemaining = degrees;
       baseBotInternals.BotIntent.TurnRate = degrees;
     }
 
@@ -215,16 +209,16 @@ namespace Robocode.TankRoyale.BotApi.Internal
         SetTurnLeft(degrees);
         do
           bot.Go();
-        while (IsRunning && turnRemaining != 0);
+        while (IsRunning && TurnRemaining != 0);
       }
     }
 
     internal void SetTurnGunLeft(double degrees)
     {
-      if (Double.IsNaN(degrees))
+      if (IsNaN(degrees))
         throw new ArgumentException("degrees cannot be NaN");
 
-      gunTurnRemaining = degrees;
+      GunTurnRemaining = degrees;
       baseBotInternals.BotIntent.GunTurnRate = degrees;
     }
 
@@ -237,16 +231,16 @@ namespace Robocode.TankRoyale.BotApi.Internal
         SetTurnGunLeft(degrees);
         do
           bot.Go();
-        while (IsRunning && gunTurnRemaining != 0);
+        while (IsRunning && GunTurnRemaining != 0);
       }
     }
 
     internal void SetTurnRadarLeft(double degrees)
     {
-      if (Double.IsNaN(degrees))
+      if (IsNaN(degrees))
         throw new ArgumentException("degrees cannot be NaN");
 
-      radarTurnRemaining = degrees;
+      RadarTurnRemaining = degrees;
       baseBotInternals.BotIntent.RadarTurnRate = degrees;
     }
 
@@ -259,7 +253,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         SetTurnRadarLeft(degrees);
         do
           bot.Go();
-        while (IsRunning && radarTurnRemaining != 0);
+        while (IsRunning && RadarTurnRemaining != 0);
       }
     }
 
@@ -272,7 +266,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     internal void Scan()
     {
       bot.SetScan();
-      bool scan = baseBotInternals.BotIntent.Scan == true;
+      var scan = baseBotInternals.BotIntent.Scan == true;
       bot.Go();
 
       if (scan && bot.Events.Any(e => e is ScannedBotEvent))
@@ -303,10 +297,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
       savedPreviousGunDirection = previousGunDirection;
       savedPreviousRadarDirection = previousRadarDirection;
 
-      savedDistanceRemaining = distanceRemaining;
-      savedTurnRemaining = turnRemaining;
-      savedGunTurnRemaining = gunTurnRemaining;
-      savedRadarTurnRemaining = radarTurnRemaining;
+      savedDistanceRemaining = DistanceRemaining;
+      savedTurnRemaining = TurnRemaining;
+      savedGunTurnRemaining = GunTurnRemaining;
+      savedRadarTurnRemaining = RadarTurnRemaining;
     }
 
     public void OnResume()
@@ -315,82 +309,80 @@ namespace Robocode.TankRoyale.BotApi.Internal
       previousGunDirection = savedPreviousGunDirection;
       previousRadarDirection = savedPreviousRadarDirection;
 
-      distanceRemaining = savedDistanceRemaining;
-      turnRemaining = savedTurnRemaining;
-      gunTurnRemaining = savedGunTurnRemaining;
-      radarTurnRemaining = savedRadarTurnRemaining;
+      DistanceRemaining = savedDistanceRemaining;
+      TurnRemaining = savedTurnRemaining;
+      GunTurnRemaining = savedGunTurnRemaining;
+      RadarTurnRemaining = savedRadarTurnRemaining;
     }
 
     private void UpdateTurnRemaining()
     {
-      double delta = bot.CalcDeltaAngle(bot.Direction, previousDirection);
+      var delta = bot.CalcDeltaAngle(bot.Direction, previousDirection);
       previousDirection = bot.Direction;
 
-      if (Math.Abs(turnRemaining) <= Math.Abs(delta))
-        turnRemaining = 0;
+      if (Math.Abs(TurnRemaining) <= Math.Abs(delta))
+        TurnRemaining = 0;
       else
       {
-        turnRemaining -= delta;
-        if (IsNearZero(turnRemaining))
-          turnRemaining = 0;
+        TurnRemaining -= delta;
+        if (IsNearZero(TurnRemaining))
+          TurnRemaining = 0;
       }
-      bot.TurnRate = turnRemaining;
+      bot.TurnRate = TurnRemaining;
     }
 
     private void UpdateGunTurnRemaining()
     {
-      double delta = bot.CalcDeltaAngle(bot.GunDirection, previousGunDirection);
+      var delta = bot.CalcDeltaAngle(bot.GunDirection, previousGunDirection);
       previousGunDirection = bot.GunDirection;
 
-      if (Math.Abs(gunTurnRemaining) <= Math.Abs(delta))
-        gunTurnRemaining = 0;
+      if (Math.Abs(GunTurnRemaining) <= Math.Abs(delta))
+        GunTurnRemaining = 0;
       else
       {
-        gunTurnRemaining -= delta;
-        if (IsNearZero(gunTurnRemaining))
-          gunTurnRemaining = 0;
+        GunTurnRemaining -= delta;
+        if (IsNearZero(GunTurnRemaining))
+          GunTurnRemaining = 0;
       }
-      bot.GunTurnRate = gunTurnRemaining;
+      bot.GunTurnRate = GunTurnRemaining;
     }
 
     private void UpdateRadarTurnRemaining()
     {
-      double delta = bot.CalcDeltaAngle(bot.RadarDirection, previousRadarDirection);
+      var delta = bot.CalcDeltaAngle(bot.RadarDirection, previousRadarDirection);
       previousRadarDirection = bot.RadarDirection;
 
-      if (Math.Abs(radarTurnRemaining) <= Math.Abs(delta))
-        radarTurnRemaining = 0;
+      if (Math.Abs(RadarTurnRemaining) <= Math.Abs(delta))
+        RadarTurnRemaining = 0;
       else
       {
-        radarTurnRemaining -= delta;
-        if (IsNearZero(radarTurnRemaining))
-          radarTurnRemaining = 0;
+        RadarTurnRemaining -= delta;
+        if (IsNearZero(RadarTurnRemaining))
+          RadarTurnRemaining = 0;
       }
-      bot.RadarTurnRate = radarTurnRemaining;
+      bot.RadarTurnRate = RadarTurnRemaining;
     }
 
     private void UpdateMovement()
     {
-      if (Double.IsInfinity(distanceRemaining))
+      if (IsInfinity(DistanceRemaining))
       {
         baseBotInternals.BotIntent.TargetSpeed =
-          (distanceRemaining == Double.PositiveInfinity) ?
-            (double)((IBaseBot)bot).MaxSpeed :
-            -(double)((IBaseBot)bot).MaxSpeed;
+          IsPositiveInfinity(DistanceRemaining) ? bot.MaxSpeed : -bot.MaxSpeed;
       }
       else
       {
-        double distance = distanceRemaining;
+        var distance = DistanceRemaining;
 
         // This is Nat Pavasant's method described here:
         // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
-        double speed = baseBotInternals.GetNewSpeed(bot.Speed, distance);
+        var speed = baseBotInternals.GetNewSpeed(bot.Speed, distance);
         baseBotInternals.BotIntent.TargetSpeed = speed;
 
         // If we are over-driving our distance and we are now at velocity=0 then we stopped
         if (IsNearZero(speed) && isOverDriving)
         {
-          distanceRemaining = 0;
+          DistanceRemaining = 0;
           distance = 0;
           isOverDriving = false;
         }
@@ -399,10 +391,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
         if (Math.Sign(distance * speed) != -1)
           isOverDriving = baseBotInternals.GetDistanceTraveledUntilStop(speed) > Math.Abs(distance);
 
-        distanceRemaining = distance - speed;
+        DistanceRemaining = distance - speed;
       }
     }
 
-    private bool IsNearZero(double value) => Math.Abs(value) < .00001;
+    private static bool IsNearZero(double value) => Math.Abs(value) < .00001;
   }
 }
