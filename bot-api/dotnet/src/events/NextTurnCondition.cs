@@ -24,7 +24,7 @@ namespace Robocode.TankRoyale.BotApi.Events
   public sealed class NextTurnCondition : Condition
   {
     private readonly IBaseBot baseBot;
-    private readonly int creationTime;
+    private readonly int creationTurnNumber;
 
     /// <summary>
     /// Constructor for initializing a new instance of the NextTurnCondition class.
@@ -34,7 +34,7 @@ namespace Robocode.TankRoyale.BotApi.Events
     public NextTurnCondition(IBaseBot baseBot) : base("NextTurnCondition")
     {
       this.baseBot = baseBot;
-      this.creationTime = baseBot.TurnNumber;
+      creationTurnNumber = baseBot.TurnNumber;
     }
 
     /// <summary>
@@ -44,7 +44,7 @@ namespace Robocode.TankRoyale.BotApi.Events
     /// when this condition was created; <code>false</code> otherwise.</returns>
     public override bool Test()
     {
-      return baseBot.TurnNumber > creationTime;
+      return baseBot.TurnNumber > creationTurnNumber;
     }
   }
 }
