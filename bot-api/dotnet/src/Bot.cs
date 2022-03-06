@@ -158,7 +158,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <inheritdoc/>
     public void TurnRadarRight(double degrees)
     {
-      TurnRadarRight(-degrees);
+      __botInternals.TurnRadarLeft(-degrees);
     }
 
     /// <inheritdoc/>
