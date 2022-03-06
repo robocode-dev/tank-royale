@@ -5,6 +5,10 @@ package dev.robocode.tankroyale.botapi;
  */
 public final class GameType {
 
+    // Hide constructor
+    private GameType() {
+    }
+
     /**
      * Melee battle with every bot against every other bot.
      */
@@ -13,8 +17,4 @@ public final class GameType {
      * One versus one (1-vs-1) battle.
      */
     public final static String ONE_VS_ONE = "1v1";
-
-    // Hide constructor
-    private GameType() {
-    }
 }

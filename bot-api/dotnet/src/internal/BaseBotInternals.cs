@@ -63,12 +63,12 @@ namespace Robocode.TankRoyale.BotApi.Internal
       BotEventHandlers = new BotEventHandlers(baseBot);
       eventQueue = new EventQueue(this, BotEventHandlers);
 
-      absDeceleration = Math.Abs(baseBot.Deceleration);
+      absDeceleration = Math.Abs(Constants.Deceleration);
 
-      maxSpeed = baseBot.MaxSpeed;
-      maxTurnRate = baseBot.MaxTurnRate;
-      maxGunTurnRate = baseBot.MaxGunTurnRate;
-      maxRadarTurnRate = baseBot.MaxRadarTurnRate;
+      maxSpeed = Constants.MaxSpeed;
+      maxTurnRate = Constants.MaxTurnRate;
+      maxGunTurnRate = Constants.MaxGunTurnRate;
+      maxRadarTurnRate = Constants.MaxRadarTurnRate;
 
       this.serverSecret = serverSecret ?? ServerSecretFromSetting;
 
@@ -275,22 +275,22 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     internal void SetMaxSpeed(double newMaxSpeed)
     {
-      maxSpeed = Math.Clamp(newMaxSpeed, 0, baseBot.MaxSpeed);
+      maxSpeed = Math.Clamp(newMaxSpeed, 0, Constants.MaxSpeed);
     }
 
     internal void SetMaxTurnRate(double newMaxTurnRate)
     {
-      maxTurnRate = Math.Clamp(newMaxTurnRate, 0, baseBot.MaxTurnRate);
+      maxTurnRate = Math.Clamp(newMaxTurnRate, 0, Constants.MaxTurnRate);
     }
 
     internal void SetMaxGunTurnRate(double newMaxGunTurnRate)
     {
-      maxGunTurnRate = Math.Clamp(newMaxGunTurnRate, 0, baseBot.MaxGunTurnRate);
+      maxGunTurnRate = Math.Clamp(newMaxGunTurnRate, 0, Constants.MaxGunTurnRate);
     }
 
     internal void SetMaxRadarTurnRate(double newMaxRadarTurnRate)
     {
-      maxRadarTurnRate = Math.Clamp(newMaxRadarTurnRate, 0, baseBot.MaxRadarTurnRate);
+      maxRadarTurnRate = Math.Clamp(newMaxRadarTurnRate, 0, Constants.MaxRadarTurnRate);
     }
 
     /// <summary>
@@ -317,15 +317,15 @@ namespace Robocode.TankRoyale.BotApi.Internal
         maxSpeed :
         Math.Min(GetMaxSpeed(distance), maxSpeed);
       return speed >= 0 ?
-        Math.Clamp(targetSpeed, speed - absDeceleration, speed + baseBot.Acceleration) :
-        Math.Clamp(targetSpeed, speed - baseBot.Acceleration, speed + absDeceleration);
+        Math.Clamp(targetSpeed, speed - absDeceleration, speed + Constants.Acceleration) :
+        Math.Clamp(targetSpeed, speed - Constants.Acceleration, speed + absDeceleration);
     }
 
     private double GetMaxSpeed(double distance)
     {
       var decelerationTime = Math.Max(1, Math.Ceiling((Math.Sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
       if (IsPositiveInfinity(decelerationTime))
-        return baseBot.MaxSpeed;
+        return Constants.MaxSpeed;
 
       var decelerationDistance = (decelerationTime / 2) * (decelerationTime - 1) * absDeceleration;
       return ((decelerationTime - 1) * absDeceleration) + ((distance - decelerationDistance) / decelerationTime);
@@ -336,7 +336,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       var decelerationTime = speed / absDeceleration;
       var accelerationTime = 1 - decelerationTime;
 
-      return Math.Min(1, decelerationTime) * absDeceleration + Math.Max(0, accelerationTime) * baseBot.Acceleration;
+      return Math.Min(1, decelerationTime) * absDeceleration + Math.Max(0, accelerationTime) * Constants.Acceleration;
     }
 
     internal double GetDistanceTraveledUntilStop(double speed)

@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.botapi.internal;
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.events.*;
 
-import static dev.robocode.tankroyale.botapi.IBaseBot.MAX_SPEED;
+import static dev.robocode.tankroyale.botapi.Constants.MAX_SPEED;
 import static java.lang.Math.abs;
 
 public final class BotInternals implements IStopResumeListener {

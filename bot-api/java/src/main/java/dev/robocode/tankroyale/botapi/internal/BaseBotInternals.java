@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 
-import static dev.robocode.tankroyale.botapi.IBaseBot.*;
+import static dev.robocode.tankroyale.botapi.Constants.*;
 import static dev.robocode.tankroyale.botapi.internal.MathUtil.clamp;
 import static java.lang.Math.*;
 import static java.net.http.WebSocket.Builder;
@@ -308,8 +308,8 @@ public final class BaseBotInternals {
         }
 
         final double targetSpeed = (distance == Double.POSITIVE_INFINITY) ?
-            maxSpeed :
-            min(getMaxSpeed(distance), maxSpeed);
+                maxSpeed :
+                min(getMaxSpeed(distance), maxSpeed);
 
         if (speed >= 0) {
             return clamp(targetSpeed, speed - absDeceleration, speed + ACCELERATION);

@@ -339,7 +339,7 @@ namespace Robocode.TankRoyale.BotApi
     public void SetGunColor(string gunColor) => __baseBotInternals.BotIntent.GunColor = gunColor;
 
     /// <inheritdoc/>
-    public double CalcMaxTurnRate(double speed) => ((IBaseBot)this).MaxTurnRate - 0.75 * Math.Abs(speed);
+    public double CalcMaxTurnRate(double speed) => Constants.MaxTurnRate - 0.75 * Math.Abs(speed);
 
     /// <inheritdoc/>
     public virtual double CalcBulletSpeed(double firepower) => 20 - 3 * firepower;

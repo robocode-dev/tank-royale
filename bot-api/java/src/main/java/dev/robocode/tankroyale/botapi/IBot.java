@@ -52,9 +52,9 @@ public interface IBot extends IBaseBot {
      * position, or it is moving into an obstacle. The speed is limited by {@link
      * #setMaxSpeed(double)}.
      *
-     * <p>When the bot is moving forward, the {@link #ACCELERATION} determines the acceleration of the
+     * <p>When the bot is moving forward, the {@link Constants#ACCELERATION} determines the acceleration of the
      * bot that adds 1 additional unit to the speed per turn while accelerating. However, the bot is
-     * faster at braking. The {@link #DECELERATION} determines the deceleration of the bot that
+     * faster at braking. The {@link Constants#DECELERATION} determines the deceleration of the bot that
      * subtracts 2 units from the speed per turn.
      *
      * <p>This method will first be executed when {@link #go()} is called making it possible to call
@@ -83,9 +83,9 @@ public interface IBot extends IBaseBot {
      * Moves the bot forward until it has traveled a specific distance from its current position, or
      * it is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
      *
-     * <p>When the bot is moving forward, the {@link #ACCELERATION} determine the acceleration of the
+     * <p>When the bot is moving forward, the {@link Constants#ACCELERATION} determine the acceleration of the
      * bot that adds 1 additional unit to the speed per turn while accelerating. However, the bot is
-     * faster at braking. The {@link #DECELERATION} determines the deceleration of the bot that
+     * faster at braking. The {@link Constants#DECELERATION} determines the deceleration of the bot that
      * subtracts 2 units from the speed per turn.
      *
      * <p>This call is executed immediately by calling {@link #go()} in the code behind. This method
@@ -110,9 +110,9 @@ public interface IBot extends IBaseBot {
      * position, or it is moving into an obstacle. The speed is limited by {@link
      * #setMaxSpeed(double)}.
      *
-     * <p>When the bot is moving forward, the {@link #ACCELERATION} determines the acceleration of the
+     * <p>When the bot is moving forward, the {@link Constants#ACCELERATION} determines the acceleration of the
      * bot that adds 1 additional unit to the speed per turn while accelerating. However, the bot is
-     * faster at braking. The {@link #DECELERATION} determines the deceleration of the bot that
+     * faster at braking. The {@link Constants#DECELERATION} determines the deceleration of the bot that
      * subtracts 2 units from the speed per turn.
      *
      * <p>This method will first be executed when {@link #go()} is called making it possible to call
@@ -141,9 +141,9 @@ public interface IBot extends IBaseBot {
      * Moves the bot backward until it has traveled a specific distance from its current position, or
      * it is moving into an obstacle. The speed is limited by {@link #setMaxSpeed(double)}.
      *
-     * <p>When the bot is moving forward, the {@link #ACCELERATION} determine the acceleration of the
+     * <p>When the bot is moving forward, the {@link Constants#ACCELERATION} determine the acceleration of the
      * bot that adds 1 additional unit to the speed per turn while accelerating. However, the bot is
-     * faster at braking. The {@link #DECELERATION} determine the deceleration of the bot that
+     * faster at braking. The {@link Constants#DECELERATION} determine the deceleration of the bot that
      * subtracts 2 units from the speed per turn.
      *
      * <p>This call is executed immediately by calling {@link #go()} in the code behind. This method
@@ -546,8 +546,8 @@ public interface IBot extends IBaseBot {
      * <p>If the bullet hits an opponent bot, you will gain energy from the bullet hit. When hitting
      * another bot, your bot will be rewarded and retrieve an energy boost of 3x firepower.
      *
-     * <p>The gun will only fire when the firepower is at {@link #MIN_FIREPOWER} or higher. If the
-     * firepower is more than {@link #MAX_FIREPOWER}, the power will be truncated to the max
+     * <p>The gun will only fire when the firepower is at {@link Constants#MIN_FIREPOWER} or higher. If the
+     * firepower is more than {@link Constants#MAX_FIREPOWER}, the power will be truncated to the max
      * firepower.
      *
      * <p>Whenever the gun is fired, the gun is heated and needs to cool down before it can fire
@@ -560,7 +560,7 @@ public interface IBot extends IBaseBot {
      * amount of damage dealt by a bullet hitting another bot is 4x firepower, and if the firepower is
      * greater than 1 it will do an additional 2 x (firepower - 1) damage.
      *
-     * <p>The firepower is truncated to {@link #MIN_FIREPOWER} and {@link #MAX_FIREPOWER} if the
+     * <p>The firepower is truncated to {@link Constants#MIN_FIREPOWER} and {@link Constants#MAX_FIREPOWER} if the
      * firepower exceeds these values.
      *
      * <p>This call is executed immediately by calling {@link #go()} in the code behind. This method
@@ -571,7 +571,7 @@ public interface IBot extends IBaseBot {
      * <p>This method will cancel the effect of prior calls to {@link #setFire(double)}.
      *
      * @param firepower is the amount of energy spent on firing the gun. You cannot spend more energy
-     *                  than available from the bot. The bullet power must be greater than {@link #MIN_FIREPOWER}.
+     *                  than available from the bot. The bullet power must be greater than {@link Constants#MIN_FIREPOWER}.
      * @see #onBulletFired(BulletFiredEvent)
      * @see #setFire(double)
      * @see #getGunHeat()

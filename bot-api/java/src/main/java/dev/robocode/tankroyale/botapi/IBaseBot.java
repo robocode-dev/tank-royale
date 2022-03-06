@@ -13,106 +13,6 @@ import java.util.Collection;
 public interface IBaseBot {
 
     /**
-     * The radius of the bounding circle of the bot, which is a constant of {@value} units.
-     *
-     * <p>The bounding circle of a bot is a circle going from the center of the bot with a radius so
-     * that the circle covers most of the bot. The bounding circle is used for determining when a bot
-     * is hit by a bullet.
-     *
-     * <p>A bot gets hit by a bullet when the bullet gets inside the bounding circle, i.e. the
-     * distance between the bullet and the center of the bounding circle is less than the radius of
-     * the bounding circle.
-     */
-    int BOUNDING_CIRCLE_RADIUS = 18;
-
-    /**
-     * The radius of the radar's scan beam, which is a constant of {@value} units.
-     *
-     * <p>The radar is used for scanning the battlefield for opponent bots. The shape of the scan beam
-     * of the radar is a circle arc ("pizza slice") starting from the center of the bot. Opponent bots
-     * that get inside the scan arc will be detected by the radar.
-     *
-     * <p>The radius of the arc is a constant of {@value} units. This means that that the radar will
-     * not be able to detect bots that are more than {@value} units away from the bot.
-     *
-     * <p>The radar needs to be turned (left or right) to scan opponent bots. So make sure the radar
-     * is always turned. The more the radar is turned, the larger the area of the scan arc becomes,
-     * and the bigger the chance is that the radar detects an opponent. If the radar is not turning,
-     * the scan arc becomes a thin line, unable to scan and detect anything.
-     */
-    int SCAN_RADIUS = 1200;
-
-    /**
-     * The maximum possible driving turn rate, which is max. {@value} degrees per turn.
-     *
-     * <p>This is the max. possible turn rate of the bot. Note that the speed of the bot has a direct
-     * impact on the turn rate. The faster the speed the less turn rate.
-     *
-     * <p>The formula for the max. possible turn rate at a given speed is: MaxTurnRate - 0.75 x
-     * abs(speed). Hence, the turn rate is at max. 10 degrees/turn when the speed is zero, and down to
-     * only 4 degrees per turn when the bot is at max speed (which is 8 units per turn).
-     */
-    int MAX_TURN_RATE = 10;
-
-    /**
-     * The maximum gun turn rate, which is a constant of 20 degrees per turn.
-     */
-    int MAX_GUN_TURN_RATE = 20;
-
-    /**
-     * The maximum radar turn rate, which is a constant of 45 degrees per turn.
-     */
-    int MAX_RADAR_TURN_RATE = 45;
-
-    /**
-     * The maximum absolute speed, which is 8 units per turn.
-     */
-    int MAX_SPEED = 8;
-
-    /**
-     * The minimum firepower, which is 0.1. The gun will not fire with a power that is less than the
-     * minimum firepower, which is 0.1.
-     */
-    double MIN_FIREPOWER = 0.1;
-
-    /**
-     * The maximum firepower, which is 3. The gun will fire up to this power, even if the firepower is
-     * set to a higher value.
-     */
-    double MAX_FIREPOWER = 3;
-
-    /**
-     * The minimum bullet speed is 11 units per turn.
-     *
-     * <p>The minimum bullet speed is the slowest possible speed that a bullet can travel and is
-     * defined by the maximum firepower: 20 - 3 x max. firepower, i.e. 20 - 3 x 3 = 11. The more
-     * power, the slower the bullet speed will be.
-     */
-    double MIN_BULLET_SPEED = 20 - 3 * MAX_FIREPOWER;
-
-    /**
-     * The maximum bullet speed is 19.7 units per turn.
-     *
-     * <p>The maximum bullet speed is the fastest possible speed that a bullet can travel and is
-     * defined by the minimum firepower. Max. bullet speed = 20 - 3 x min. firepower, i.e. 20 - 3 x
-     * 0.1 = 19.7. The lesser power, the faster the bullet speed will be.
-     */
-    double MAX_BULLET_SPEED = 20 - 3 * MIN_FIREPOWER;
-
-    /**
-     * Acceleration is the increase in speed per turn, which adds 1 unit to the speed per turn when
-     * the bot is increasing its speed moving forward.
-     */
-    int ACCELERATION = 1;
-
-    /**
-     * Deceleration is the decrease in speed per turn, which subtracts 2 units to the speed per turn
-     * when the bot is decreasing its speed moving backward. This means that a bot is faster at
-     * braking than accelerating forward.
-     */
-    int DECELERATION = -2;
-
-    /**
      * The method used to start running the bot. You should call this method from the main method or
      * similar.
      *
@@ -378,7 +278,7 @@ public interface IBaseBot {
      * from the turn rate of the gun and radar. But be aware that the turn limits defined for the gun
      * and radar cannot be exceeded.
      *
-     * <p>The turn rate is truncated to {@link #MAX_TURN_RATE} if the turn rate exceeds this value.
+     * <p>The turn rate is truncated to {@link Constants#MAX_TURN_RATE} if the turn rate exceeds this value.
      *
      * <p>If this property is set multiple times, the last value set before {@link #go()} counts.
      *
@@ -388,9 +288,9 @@ public interface IBaseBot {
 
     /**
      * Sets the maximum turn rate which applies to turn the bot to the left or right. The maximum turn
-     * rate must be an absolute value from 0 to {@link #MAX_TURN_RATE}, both values are included. If
+     * rate must be an absolute value from 0 to {@link Constants#MAX_TURN_RATE}, both values are included. If
      * the input turn rate is negative, the max turn rate will be cut to zero. If the input turn rate
-     * is above {@link #MAX_TURN_RATE}, the max turn rate will be set to {@link #MAX_TURN_RATE}.
+     * is above {@link Constants#MAX_TURN_RATE}, the max turn rate will be set to {@link Constants#MAX_TURN_RATE}.
      *
      * <p>If for example the max turn rate is set to 5, then the bot will be able to turn left or
      * right with a turn rate down to -5 degrees per turn when turning right, and up to 5 degrees per
@@ -426,7 +326,7 @@ public interface IBaseBot {
      * gun by subtracting the turn rate of the gun from the turn rate of the radar. But be aware that
      * the turn limits defined for the radar cannot be exceeded.
      *
-     * <p>The gun turn rate is truncated to {@link #MAX_GUN_TURN_RATE} if the gun turn rate exceeds
+     * <p>The gun turn rate is truncated to {@link Constants#MAX_GUN_TURN_RATE} if the gun turn rate exceeds
      * this value.
      *
      * <p>If this property is set multiple times, the last value set before {@link #go()} counts.
@@ -437,10 +337,10 @@ public interface IBaseBot {
 
     /**
      * Sets the maximum turn rate which applies to turn the gun to the left or right. The maximum turn
-     * rate must be an absolute value from 0 to {@link #MAX_GUN_TURN_RATE}, both values are included.
+     * rate must be an absolute value from 0 to {@link Constants#MAX_GUN_TURN_RATE}, both values are included.
      * If the input turn rate is negative, the max turn rate will be cut to zero. If the input turn
-     * rate is above {@link #MAX_GUN_TURN_RATE}, the max turn rate will be set to {@link
-     * #MAX_GUN_TURN_RATE}.
+     * rate is above {@link Constants#MAX_GUN_TURN_RATE}, the max turn rate will be set to {@link
+     * Constants#MAX_GUN_TURN_RATE}.
      *
      * <p>If for example the max gun turn rate is set to 5, then the gun will be able to turn left or
      * right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees per
@@ -477,7 +377,7 @@ public interface IBaseBot {
      * the bot and gun from the turn rate of the radar. But be aware that the turn limits defined for
      * the radar cannot be exceeded.
      *
-     * <p>The radar turn rate is truncated to {@link #MAX_RADAR_TURN_RATE} if the radar turn rate
+     * <p>The radar turn rate is truncated to {@link Constants#MAX_RADAR_TURN_RATE} if the radar turn rate
      * exceeds this value.
      *
      * <p>If this property is set multiple times, the last value set before {@link #go()} counts.
@@ -488,10 +388,10 @@ public interface IBaseBot {
 
     /**
      * Sets the maximum turn rate which applies to turn the radar to the left or right. The maximum
-     * turn rate must be an absolute value from 0 to {@link #MAX_RADAR_TURN_RATE}, both values are
+     * turn rate must be an absolute value from 0 to {@link Constants#MAX_RADAR_TURN_RATE}, both values are
      * included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
-     * input turn rate is above {@link #MAX_RADAR_TURN_RATE}, the max turn rate will be set to {@link
-     * #MAX_RADAR_TURN_RATE}.
+     * input turn rate is above {@link Constants#MAX_RADAR_TURN_RATE}, the max turn rate will be set to {@link
+     * Constants#MAX_RADAR_TURN_RATE}.
      *
      * <p>If for example the max radar turn rate is set to 5, then the radar will be able to turn left
      * or right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees
@@ -530,7 +430,7 @@ public interface IBaseBot {
      * acceleration as it is -2 unit per turn. Deceleration is negative as it is added to the speed
      * and hence needs to be negative when slowing down.
      *
-     * <p>The target speed is truncated to {@link #MAX_SPEED} if the target speed exceeds this value.
+     * <p>The target speed is truncated to {@link Constants#MAX_SPEED} if the target speed exceeds this value.
      *
      * <p>If this property is set multiple times, the last value set before {@link #go()} counts.
      *
@@ -540,9 +440,9 @@ public interface IBaseBot {
 
     /**
      * Sets the maximum speed which applies when moving forward and backward. The maximum speed must
-     * be an absolute value from 0 to {@link #MAX_SPEED}, both values are included. If the input speed
-     * is negative, the max speed will be cut to zero. If the input speed is above {@link #MAX_SPEED},
-     * the max speed will be set to {@link #MAX_SPEED}.
+     * be an absolute value from 0 to {@link Constants#MAX_SPEED}, both values are included. If the input speed
+     * is negative, the max speed will be cut to zero. If the input speed is above {@link Constants#MAX_SPEED},
+     * the max speed will be set to {@link Constants#MAX_SPEED}.
      *
      * <p>If for example the maximum speed is set to 5, then the bot will be able to move backwards
      * with a speed down to -5 units per turn and up to 5 units per turn when moving forward.
@@ -567,14 +467,14 @@ public interface IBaseBot {
      * bot will lose power on firing the gun where the energy loss is equal to the firepower. You
      * cannot spend more energy than available from your bot.
      *
-     * <p>The bullet power must be greater than {@link #MIN_FIREPOWER} and the gun heat zero before
+     * <p>The bullet power must be greater than {@link Constants#MIN_FIREPOWER} and the gun heat zero before
      * the gun can fire.
      *
      * <p>If the bullet hits an opponent bot, you will gain energy from the bullet hit. When hitting
      * another bot, your bot will be rewarded and retrieve an energy boost of 3x firepower.
      *
-     * <p>The gun will only fire when the firepower is at {@link #MIN_FIREPOWER} or higher. If the
-     * firepower is more than {@link #MAX_FIREPOWER} the power will be truncated to the max firepower.
+     * <p>The gun will only fire when the firepower is at {@link Constants#MIN_FIREPOWER} or higher. If the
+     * firepower is more than {@link Constants#MAX_FIREPOWER} the power will be truncated to the max firepower.
      *
      * <p>Whenever the gun is fired, the gun is heated and needs to cool down before it can fire
      * again. The gun heat must be zero before the gun is able to fire (see {@link #getGunHeat()}).
@@ -589,7 +489,7 @@ public interface IBaseBot {
      * <p>Note that the gun will automatically keep firing at any turn as soon as the gun heat reaches
      * zero. It is possible to disable the gun firing by setting the firepower to zero.
      *
-     * <p>The firepower is truncated to 0 and {@link #MAX_FIREPOWER} if the firepower exceeds this
+     * <p>The firepower is truncated to 0 and {@link Constants#MAX_FIREPOWER} if the firepower exceeds this
      * value.
      *
      * <p>If this property is set multiple times, the last value set before go() counts.
@@ -629,7 +529,7 @@ public interface IBaseBot {
      * is set, the gun will turn independent from the bot's turn.
      *
      * <p>Note: This property is additive until you reach the maximum the gun can turn {@link
-     * #MAX_GUN_TURN_RATE}. The "adjust" is added to the amount, you set for turning the bot by the
+     * Constants#MAX_GUN_TURN_RATE}. The "adjust" is added to the amount, you set for turning the bot by the
      * turn rate, then capped by the physics of the game.
      *
      * <p>Note: The gun compensating this way does count as "turning the gun".
@@ -665,7 +565,7 @@ public interface IBaseBot {
      * the radar will turn independent from the gun's turn.
      *
      * <p>Note: This property is additive until you reach the maximum the radar can turn ({@link
-     * #MAX_RADAR_TURN_RATE}). The "adjust" is added to the amount, you set for turning the gun by the
+     * Constants#MAX_RADAR_TURN_RATE}). The "adjust" is added to the amount, you set for turning the gun by the
      * gun turn rate, then capped by the physics of the game.
      *
      * <p>Note: The radar compensating this way does count as "turning the radar".

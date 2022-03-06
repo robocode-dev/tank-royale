@@ -49,9 +49,9 @@ namespace Robocode.TankRoyale.BotApi
     /// position, or it is moving into an obstacle. The speed is limited by <see
     /// cref="IBaseBot.SetMaxSpeed"/>.
     ///
-    /// When the bot is moving forward, the <see cref="IBaseBot.Acceleration"/> determines the acceleration
+    /// When the bot is moving forward, the <see cref="Constants.Acceleration"/> determines the acceleration
     /// of the bot that adds 1 additional unit to the speed per turn while accelerating. However,
-    /// the bot is faster at braking. The <see cref="IBaseBot.Deceleration"/> determines the deceleration of
+    /// the bot is faster at braking. The <see cref="Constants.Deceleration"/> determines the deceleration of
     /// the bot that subtracts 2 units from the speed per turn.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
@@ -80,9 +80,9 @@ namespace Robocode.TankRoyale.BotApi
     /// Moves the bot forward until it has traveled a specific distance from its current position,
     /// or it is moving into an obstacle. The speed is limited by <see cref="IBaseBot.SetMaxSpeed"/>.
     ///
-    /// When the bot is moving forward, the <see cref="IBaseBot.Acceleration"/> determine the acceleration
+    /// When the bot is moving forward, the <see cref="Constants.Acceleration"/> determine the acceleration
     /// of the bot that adds 1 additional unit to the speed per turn while accelerating. However,
-    /// the bot is faster at braking. The <see cref="IBaseBot.Deceleration"/> determines the deceleration of
+    /// the bot is faster at braking. The <see cref="Constants.Deceleration"/> determines the deceleration of
     /// the bot that subtracts 2 units from the speed per turn.
     ///
     /// This call is executed immediately by calling <see cref="IBaseBot.Go"/> in the code behind. This
@@ -107,9 +107,9 @@ namespace Robocode.TankRoyale.BotApi
     /// Set the bot to move backward until it has traveled a specific distance from its current
     /// position, or it is moving into an obstacle. The speed is limited by <see cref="IBaseBot.SetMaxSpeed"/>
     ///
-    /// When the bot is moving forward, the <see cref="IBaseBot.Acceleration"/> determines the acceleration of
+    /// When the bot is moving forward, the <see cref="Constants.Acceleration"/> determines the acceleration of
     /// the bot that adds 1 additional unit to the speed per turn while accelerating. However, the bot
-    /// is faster at braking. The <see cref="IBaseBot.Deceleration"/> determines the deceleration of the bot that
+    /// is faster at braking. The <see cref="Constants.Deceleration"/> determines the deceleration of the bot that
     /// subtracts 2 units from the speed per turn.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
@@ -138,9 +138,9 @@ namespace Robocode.TankRoyale.BotApi
     /// Moves the bot backward until it has traveled a specific distance from its current position, or
     /// it is moving into an obstacle. The speed is limited by <see cref="IBaseBot.SetMaxSpeed"/>.
     ///
-    /// When the bot is moving forward, the <see cref="IBaseBot.Acceleration"/> determines the acceleration of
+    /// When the bot is moving forward, the <see cref="Constants.Acceleration"/> determines the acceleration of
     /// the bot that adds 1 additional unit to the speed per turn while accelerating. However, the bot
-    /// is faster at braking. The <see cref="IBaseBot.Deceleration"/> determines the deceleration of the bot that
+    /// is faster at braking. The <see cref="Constants.Deceleration"/> determines the deceleration of the bot that
     /// subtracts 2 units from the speed per turn.
     ///
     /// This call is executed immediately by calling <see cref="IBaseBot.Go"/> in the code behind. This
@@ -296,7 +296,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Set the gun to turn to the left (following the increasing degrees of the <a
     /// href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
     /// amount of degrees. That is, when <see cref="GunTurnRemaining"/> is 0. The amount of degrees to
-    /// turn each turn is limited by <see cref="IBaseBot.MaxGunTurnRate"/>.
+    /// turn each turn is limited by <see cref="Constants.MaxGunTurnRate"/>.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
     /// call other set methods before execution. This makes it possible to set the bot to move,
@@ -322,7 +322,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Turn the gun to the left (following the increasing degrees of the <a
     /// href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
     /// amount of degrees. That is, when <see cref="GunTurnRemaining"/> is 0. The amount of degrees to
-    /// turn each turn is limited by <see cref="IBaseBot.MaxGunTurnRate"/>.
+    /// turn each turn is limited by <see cref="Constants.MaxGunTurnRate"/>.
     ///
     /// This call is executed immediately by calling <see cref="IBaseBot.Go"/> in the code behind. This
     /// method will block until it has been completed, which can take one to several turns. New
@@ -346,7 +346,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Set the gun to turn to the right (following the decreasing degrees of the <a
     /// href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
     /// amount of degrees. That is, when <see cref="GunTurnRemaining"/> is 0. The amount of degrees to
-    /// turn each turn is limited by <see cref="IBaseBot.MaxGunTurnRate"/>.
+    /// turn each turn is limited by <see cref="Constants.MaxGunTurnRate"/>.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
     /// call other set methods before execution. This makes it possible to set the bot to move,
@@ -372,7 +372,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Turn the gun to the right (following the decreasing degrees of the <a
     /// href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
     /// amount of degrees. That is, when <see cref="GunTurnRemaining"/> is 0. The amount of degrees to
-    /// turn each turn is limited by <see cref="IBaseBot.MaxGunTurnRate"/>.
+    /// turn each turn is limited by <see cref="Constants.MaxGunTurnRate"/>.
     ///
     /// This call is executed immediately by calling <see cref="IBaseBot.Go"/> in the code behind. This
     /// method will block until it has been completed, which can take one to several turns. New
@@ -534,9 +534,9 @@ namespace Robocode.TankRoyale.BotApi
     /// If the bullet hits an opponent bot, you will gain energy from the bullet hit. When hitting
     /// another bot, your bot will be rewarded and retrieve an energy boost of 3x firepower.
     ///
-    /// The gun will only fire when the firepower is at <see cref="IBaseBot.MinFirepower"/> or higher. If
-    /// the firepower is more than <see cref="IBaseBot.MaxFirepower"/>, the power will be truncated to the
-    /// <see cref="IBaseBot.MaxFirepower"/>.
+    /// The gun will only fire when the firepower is at <see cref="Constants.MinFirepower"/> or higher. If
+    /// the firepower is more than <see cref="Constants.MaxFirepower"/>, the power will be truncated to the
+    /// <see cref="Constants.MaxFirepower"/>.
     ///
     /// Whenever the gun is fired, the gun is heated and needs to cool down before it can fire
     /// again. The gun heat must be zero before the gun can fire (see <see cref="IBaseBot.GunHeat"/>.
@@ -548,8 +548,8 @@ namespace Robocode.TankRoyale.BotApi
     /// amount of damage dealt by a bullet hitting another bot is 4x firepower, and if the firepower is
     /// greater than 1 it will do an additional 2 x (firepower - 1) damage.
     ///
-    /// The firepower is truncated to <see cref="IBaseBot.MinFirepower"/> and <see cref="IBaseBot.MaxFirepower"/> if
-    /// the firepower exceeds these values.
+    /// The firepower is truncated to <see cref="Constants.MinFirepower"/> and
+    /// <see cref="Constants.MaxFirepower"/> if the firepower exceeds these values.
     ///
     /// This call is executed immediately by calling <see cref="IBaseBot.Go"/> in the code behind. This
     /// method will block until it has been completed, which can take one to several turns. New

@@ -7,6 +7,8 @@ import dev.robocode.tankroyale.botapi.internal.BaseBotInternals;
 import java.net.URI;
 import java.util.Collection;
 
+import static dev.robocode.tankroyale.botapi.Constants.MAX_TURN_RATE;
+
 /**
  * Abstract bot class that takes care of communication between the bot and the server, and sends
  * notifications through the event handlers. Most bots can inherit from this class to get access to

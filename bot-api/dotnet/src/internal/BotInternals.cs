@@ -368,7 +368,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       if (IsInfinity(DistanceRemaining))
       {
         baseBotInternals.BotIntent.TargetSpeed =
-          IsPositiveInfinity(DistanceRemaining) ? bot.MaxSpeed : -bot.MaxSpeed;
+          IsPositiveInfinity(DistanceRemaining) ? Constants.MaxSpeed : -Constants.MaxSpeed;
       }
       else
       {
