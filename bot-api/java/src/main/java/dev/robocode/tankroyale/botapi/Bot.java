@@ -83,6 +83,14 @@ public abstract class Bot extends BaseBot implements IBot {
      * {@inheritDoc}
      */
     @Override
+    public void setTargetSpeed(double targetSpeed) {
+        __botInternals.setTargetSpeed(targetSpeed);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final void setForward(double distance) {
         __botInternals.setForward(distance);
     }
@@ -277,13 +285,5 @@ public abstract class Bot extends BaseBot implements IBot {
     @Override
     public void waitFor(Condition condition) {
         __botInternals.waitFor(condition);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setTargetSpeed(double targetSpeed) {
-        __botInternals.setTargetSpeed(targetSpeed);
     }
 }
