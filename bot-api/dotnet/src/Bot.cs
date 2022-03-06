@@ -193,11 +193,5 @@ namespace Robocode.TankRoyale.BotApi
     {
       __botInternals.WaitFor(condition);
     }
-
-    /// <inheritdoc/>
-    public void SetTargetSpeed(double targetSpeed)
-    {
-      __botInternals.SetTargetSpeed(targetSpeed);
-    }
   }
 }

@@ -244,7 +244,7 @@ namespace Robocode.TankRoyale.BotApi
     /// the turn rate of the bot from the turn rate of the gun and radar. But be aware that the
     /// turn limits defined for the gun and radar cannot be exceeded.
     ///
-    /// The turn rate is truncated to <see cref="MaxTurnRate"/> if the turn rate exceeds this
+    /// The turn rate is truncated to <see cref="Constants.MaxTurnRate"/> if the turn rate exceeds this
     /// value.
     /// 
     /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
@@ -254,10 +254,10 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <summary>
     /// Sets the maximum turn rate which applies to turn the bot to the left or right. The maximum
-    /// turn rate must be an absolute value from 0 to <see cref="MaxTurnRate"/>, both values are
+    /// turn rate must be an absolute value from 0 to <see cref="Constants.MaxTurnRate"/>, both values are
     /// included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
-    /// input turn rate is above <see cref="MaxTurnRate"/>, the max turn rate will be set to
-    /// <see cref="MaxTurnRate"/>.
+    /// input turn rate is above <see cref="Constants.MaxTurnRate"/>, the max turn rate will be set to
+    /// <see cref="Constants.MaxTurnRate"/>.
     ///
     /// If for example the max turn rate is set to 5, then the bot will be able to turn left or
     /// right with a turn rate down to -5 degrees per turn when turning right, and up to 5 degrees per turn
@@ -284,7 +284,7 @@ namespace Robocode.TankRoyale.BotApi
     /// rate of the gun by subtracting the turn rate of the gun from the turn rate of the radar.
     /// But be aware that the turn limits defined for the radar cannot be exceeded.
     ///
-    /// The gun turn rate is truncated to <see cref="MaxGunTurnRate"/> if the gun turn rate exceeds
+    /// The gun turn rate is truncated to <see cref="Constants.MaxGunTurnRate"/> if the gun turn rate exceeds
     /// this value.
     ///
     /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
@@ -294,10 +294,10 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <summary>
     /// Sets the maximum turn rate which applies to turn the gun to the left or right. The maximum turn
-    /// rate must be an absolute value from 0 to <see cref="MaxGunTurnRate"/>, both values are
+    /// rate must be an absolute value from 0 to <see cref="Constants.MaxGunTurnRate"/>, both values are
     /// included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
-    /// input turn rate is above <see cref="MaxGunTurnRate"/>, the max turn rate will be set to
-    /// <see cref="MaxGunTurnRate"/>.
+    /// input turn rate is above <see cref="Constants.MaxGunTurnRate"/>, the max turn rate will be set to
+    /// <see cref="Constants.MaxGunTurnRate"/>.
     ///
     /// If for example the max gun turn rate is set to 5, then the gun will be able to turn left or
     /// right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees per
@@ -325,7 +325,7 @@ namespace Robocode.TankRoyale.BotApi
     /// subtracting the turn rate of the bot and gun from the turn rate of the radar. But be aware
     /// that the turn limits defined for the radar cannot be exceeded.
     ///
-    /// The radar turn rate is truncated to <see cref="MaxRadarTurnRate"/> if the radar turn rate
+    /// The radar turn rate is truncated to <see cref="Constants.MaxRadarTurnRate"/> if the radar turn rate
     /// exceeds this value.
     ///
     /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
@@ -370,7 +370,7 @@ namespace Robocode.TankRoyale.BotApi
     /// to be negative when slowing down.
     /// </note>
     /// <note>
-    /// The target speed is truncated to <see cref="MaxSpeed"/> if the target speed exceeds this value.
+    /// The target speed is truncated to <see cref="Constants.MaxSpeed"/> if the target speed exceeds this value.
     /// </note>
     ///
     /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
@@ -407,14 +407,14 @@ namespace Robocode.TankRoyale.BotApi
     /// the bot will lose power on firing the gun where the energy loss is equal to the firepower.
     /// You cannot spend more energy than available from your bot. 
     ///
-    /// The bullet power must be greater than <see cref="MinFirepower"/> and the gun heat zero
+    /// The bullet power must be greater than <see cref="Constants.MinFirepower"/> and the gun heat zero
     /// before the gun can fire.
     ///
     /// If the bullet hits an opponent bot, you will gain energy from the bullet hit.When hitting
     /// another bot, your bot will be rewarded and retrieve an energy boost of 3x firepower.
     ///
-    /// The gun will only fire when the firepower is at <see cref="MinFirepower"/> or higher. If
-    /// the firepower is more than<see cref="MaxFirepower"/> the power will be truncated to the
+    /// The gun will only fire when the firepower is at <see cref="Constants.MinFirepower"/> or higher. If
+    /// the firepower is more than<see cref="Constants.MaxFirepower"/> the power will be truncated to the
     /// max firepower.
     ///
     /// Whenever the gun is fired, the gun is heated and needs to cool down before it can fire
@@ -432,7 +432,7 @@ namespace Robocode.TankRoyale.BotApi
     /// It is possible to disable the gun firing by setting the firepower to zero.
     /// </note>
     ///
-    /// The firepower is truncated to 0 and <see cref="MaxFirepower"/> if the firepower exceeds
+    /// The firepower is truncated to 0 and <see cref="Constants.MaxFirepower"/> if the firepower exceeds
     /// this value.
     ///
     /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
@@ -471,7 +471,7 @@ namespace Robocode.TankRoyale.BotApi
     ///
     /// <note>
     /// This property is additive until you reach the maximum the gun can turn <see
-    /// cref="MaxGunTurnRate"/>. The "adjust" is added to the amount, you set for turning the bot
+    /// cref="Constants.MaxGunTurnRate"/>. The "adjust" is added to the amount, you set for turning the bot
     /// by the turn rate, then capped by the physics of the game.
     ///
     /// The gun compensating this way does count as "turning the gun".
@@ -493,7 +493,7 @@ namespace Robocode.TankRoyale.BotApi
     ///
     /// <note>
     /// This property is additive until you reach the maximum the radar can turn <see
-    /// cref="MaxRadarTurnRate"/>. The "adjust" is added to the amount, you set for turning the gun
+    /// cref="Constants.MaxRadarTurnRate"/>. The "adjust" is added to the amount, you set for turning the gun
     /// by the gun turn rate, then capped by the physics of the game.
     ///
     /// The radar compensating this way does count as "turning the radar".

@@ -25,7 +25,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Example of how to set the predefined environment variables:
     ///
     /// SERVER_URL=ws://localhost<br/>
-    /// SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ<br>
+    /// SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ<br/>
     /// BOT_NAME=MyBot<br/>
     /// BOT_VERSION=1.0<br/>
     /// BOT_AUTHORS=John Doe<br/>
