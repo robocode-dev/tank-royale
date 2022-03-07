@@ -250,10 +250,11 @@ namespace Robocode.TankRoyale.BotApi
     /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
     /// </summary>
     /// <value>The turn rate of the bot</value>
+    /// <seealso cref="MaxTurnRate"/>
     double TurnRate { get; set; }
 
     /// <summary>
-    /// Sets the maximum turn rate which applies to turn the bot to the left or right. The maximum
+    /// Sets or gets the maximum turn rate which applies to turn the bot to the left or right. The maximum
     /// turn rate must be an absolute value from 0 to <see cref="Constants.MaxTurnRate"/>, both values are
     /// included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
     /// input turn rate is above <see cref="Constants.MaxTurnRate"/>, the max turn rate will be set to
@@ -272,9 +273,9 @@ namespace Robocode.TankRoyale.BotApi
     /// If this method is called multiple times, the last call before <see cref="Go"/> is executed,
     /// counts.
     /// </summary>
-    /// <param name="maxTurnRate">Is the new maximum turn rate.</param>
+    /// <value>The maximum turn rate of the bot.</value>
     /// <seealso cref="TurnRate"/>
-    void SetMaxTurnRate(double maxTurnRate);
+    double MaxTurnRate { get; set; }
 
     /// <summary>
     /// Set or get the turn rate of the gun, which can be positive and negative. The gun turn rate
@@ -290,10 +291,11 @@ namespace Robocode.TankRoyale.BotApi
     /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
     /// </summary>
     /// <value>The turn rate of the gun.</value>
+    /// <seealso cref="MaxGunTurnRate"/>
     double GunTurnRate { get; set; }
 
     /// <summary>
-    /// Sets the maximum turn rate which applies to turn the gun to the left or right. The maximum turn
+    /// Sets or gets the maximum turn rate which applies to turn the gun to the left or right. The maximum turn
     /// rate must be an absolute value from 0 to <see cref="Constants.MaxGunTurnRate"/>, both values are
     /// included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
     /// input turn rate is above <see cref="Constants.MaxGunTurnRate"/>, the max turn rate will be set to
@@ -312,9 +314,9 @@ namespace Robocode.TankRoyale.BotApi
     /// If this method is called multiple times, the last call before <see cref="Go"/> is executed,
     /// counts.
     /// </summary>
-    /// <param name="maxGunTurnRate">Is the new maximum gun turn rate.</param>
+    /// <value>The maximum turn rate of the gun.</value>
     /// <seealso cref="GunTurnRate"/>
-    void SetMaxGunTurnRate(double maxGunTurnRate);
+    double MaxGunTurnRate { get; set; }
 
     /// <summary>
     /// Set or get the turn rate of the radar, which can be positive and negative. The radar turn
@@ -331,10 +333,11 @@ namespace Robocode.TankRoyale.BotApi
     /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
     /// </summary>
     /// <value>The turn rate of the radar.</value>
+    /// <seealso cref="MaxRadarTurnRate"/>
     double RadarTurnRate { get; set; }
 
     /// <summary>
-    /// Sets the maximum turn rate which applies to turn the radar to the left or right. The maximum
+    /// Sets or gets the maximum turn rate which applies to turn the radar to the left or right. The maximum
     /// turn rate must be an absolute value from 0 to MaxRadarTurnRate, both values are
     /// included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
     /// input turn rate is above MaxRadarTurnRate, the max turn rate will be set to MaxRadarTurnRate.
@@ -352,9 +355,9 @@ namespace Robocode.TankRoyale.BotApi
     /// If this method is called multiple times, the last call before <see cref="Go"/> is executed,
     /// counts.
     /// </summary>
-    /// <param name="maxRadarTurnRate">Is the new maximum radar turn rate.</param>
+    /// <value>The maximum turn rate of the radar.</value>
     /// <seealso cref="RadarTurnRate"/>
-    void SetMaxRadarTurnRate(double maxRadarTurnRate);
+    double MaxRadarTurnRate { get; set; }
 
     /// <summary>
     /// Set or get the target speed for the bot in units per turn. The target speed is the speed
@@ -376,10 +379,11 @@ namespace Robocode.TankRoyale.BotApi
     /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
     /// </summary>
     /// <value>The target speed.</value>
+    /// <see cref="MaxSpeed"/>
     double TargetSpeed { get; set; }
 
     /// <summary>
-    /// Sets the maximum speed which applies when moving forward and backward. The maximum speed must
+    /// Sets or gets the maximum speed which applies when moving forward and backward. The maximum speed must
     /// be an absolute value from 0 to MaxSpeed, both values are included. If the input
     /// speed is negative, the max speed will be cut to zero. If the input speed is above
     /// MaxSpeed, the max speed will be set to MaxSpeed.
@@ -396,8 +400,9 @@ namespace Robocode.TankRoyale.BotApi
     /// If this method is called multiple times, the last call before <see cref="Go"/> is executed,
     /// counts.
     /// </summary>
-    /// <param name="maxSpeed">Is the new maximum speed.</param>
-    void SetMaxSpeed(double maxSpeed);
+    /// <value>The maximum speed.</value>
+    /// <see cref="TargetSpeed"/>
+    double MaxSpeed { get; set; }
 
     /// <summary>
     /// Sets the gun to fire in the direction that the gun is pointing with the specified
@@ -479,8 +484,8 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <value><em>true</em> if the gun is set to adjust for the bot's turn; <em>false</em>
     /// otherwise.</value>
-    /// <seealso cref="DoAdjustRadarForGunTurn"/>
-    bool DoAdjustGunForBodyTurn { get; set; }
+    /// <seealso cref="AdjustRadarForGunTurn"/>
+    bool AdjustGunForBodyTurn { get; set; }
 
     /// <summary>
     /// Sets the radar to adjust for the gun's turn when setting the radar turn rate. So the radar
@@ -501,8 +506,8 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <value><em>true</em> if the radar is set to adjust for the bot's turn; <em>false</em>
     /// otherwise.</value>
-    /// <seealso cref="DoAdjustGunForBodyTurn"/>
-    bool DoAdjustRadarForGunTurn { get; set; }
+    /// <seealso cref="AdjustGunForBodyTurn"/>
+    bool AdjustRadarForGunTurn { get; set; }
 
     /// <summary>
     /// Adds a event handler that will be automatically triggered <see cref="OnCustomEvent(CustomEvent)"/>
@@ -588,7 +593,7 @@ namespace Robocode.TankRoyale.BotApi
     /// SetBodyColor("#0099CC"); // same color as above
     /// </code>
     /// </example>
-    /// <param name="bodyColor">Is the new body color of the bot. Currently hexadecimal number
+    /// <param name="bodyColor">Is the new body color of the bot. Currently, hexadecimal number
     /// format is being used.</param>
     void SetBodyColor(string bodyColor);
 
@@ -618,7 +623,7 @@ namespace Robocode.TankRoyale.BotApi
     /// SetTurretColor("#0099CC"); // same color as above
     /// </code>
     /// </example>
-    /// <param name="turretColor">Is the new gun turret color of the bot. Currently hexadecimal number
+    /// <param name="turretColor">Is the new gun turret color of the bot. Currently, hexadecimal number
     /// format is being used.</param>
     void SetTurretColor(string turretColor);
 
@@ -648,7 +653,7 @@ namespace Robocode.TankRoyale.BotApi
     /// SetRadarColor("#0099CC"); // same color as above
     /// </code>
     /// </example>
-    /// <param name="radarColor">Is the new radar color of the bot. Currently hexadecimal number
+    /// <param name="radarColor">Is the new radar color of the bot. Currently, hexadecimal number
     /// format is being used.</param>
     void SetRadarColor(string radarColor);
 
@@ -678,7 +683,7 @@ namespace Robocode.TankRoyale.BotApi
     /// SetBulletColor("#0099CC"); // same color as above
     /// </code>
     /// </example>
-    /// <param name="bulletColor">Is the new bullets color of the bot. Currently hexadecimal number
+    /// <param name="bulletColor">Is the new bullets color of the bot. Currently, hexadecimal number
     /// format is being used.</param>
     void SetBulletColor(string bulletColor);
 
@@ -708,7 +713,7 @@ namespace Robocode.TankRoyale.BotApi
     /// SetScanColor("#0099CC"); // same color as above
     /// </code>
     /// </example>
-    /// <param name="scanColor">Is the new scan arc color of the bot. Currently hexadecimal number
+    /// <param name="scanColor">Is the new scan arc color of the bot. Currently, hexadecimal number
     /// format is being used.</param>
     void SetScanColor(string scanColor);
 
@@ -738,7 +743,7 @@ namespace Robocode.TankRoyale.BotApi
     /// SetTracksColor("#0099CC"); // same color as above
     /// </code>
     /// </example>
-    /// <param name="tracksColor">Is the new tracks color of the bot. Currently hexadecimal number
+    /// <param name="tracksColor">Is the new tracks color of the bot. Currently, hexadecimal number
     /// format is being used.</param>
     void SetTracksColor(string tracksColor);
 
@@ -768,7 +773,7 @@ namespace Robocode.TankRoyale.BotApi
     /// SetGunColor("#0099CC"); // same color as above
     /// </code>
     /// </example>
-    /// <param name="gunColor">Is the new gun color of the bot. Currently hexadecimal number
+    /// <param name="gunColor">Is the new gun color of the bot. Currently, hexadecimal number
     /// format is being used.</param>
     void SetGunColor(string gunColor);
 

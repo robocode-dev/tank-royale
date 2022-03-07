@@ -262,7 +262,7 @@ public interface IBaseBot {
     Collection<? extends BotEvent> getEvents();
 
     /**
-     * Returns the turn rate of th bot in degrees per turn.
+     * Returns the turn rate of the bot in degrees per turn.
      *
      * @return The turn rate of the bot.
      * @see #setTurnRate(double)
@@ -285,6 +285,14 @@ public interface IBaseBot {
      * @param turnRate is the new turn rate of the bot in degrees per turn.
      */
     void setTurnRate(double turnRate);
+
+    /**
+     * Returns the maximum turn rate of the bot in degrees per turn.
+     *
+     * @return The maximum turn rate of the bot.
+     * @see #setMaxTurnRate(double)
+     */
+    double getMaxTurnRate();
 
     /**
      * Sets the maximum turn rate which applies to turn the bot to the left or right. The maximum turn
@@ -334,6 +342,14 @@ public interface IBaseBot {
      * @param gunTurnRate is the new turn rate of the gun in degrees per turn.
      */
     void setGunTurnRate(double gunTurnRate);
+
+    /**
+     * Returns the maximum gun turn rate in degrees per turn.
+     *
+     * @return The maximum turn rate of the gun.
+     * @see #setMaxGunTurnRate(double)
+     */
+    double getMaxGunTurnRate();
 
     /**
      * Sets the maximum turn rate which applies to turn the gun to the left or right. The maximum turn
@@ -387,6 +403,14 @@ public interface IBaseBot {
     void setRadarTurnRate(double gunRadarTurnRate);
 
     /**
+     * Returns the maximum radar turn rate in degrees per turn.
+     *
+     * @return The maimim turn rate of the radar.
+     * @see #setMaxRadarTurnRate(double)
+     */
+    double getMaxRadarTurnRate();
+
+    /**
      * Sets the maximum turn rate which applies to turn the radar to the left or right. The maximum
      * turn rate must be an absolute value from 0 to {@link Constants#MAX_RADAR_TURN_RATE}, both values are
      * included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
@@ -437,6 +461,14 @@ public interface IBaseBot {
      * @param targetSpeed is the new target speed in units per turn.
      */
     void setTargetSpeed(double targetSpeed);
+
+    /**
+     * Returns the maximum speed in units per turn.
+     *
+     * @return The maximum speed.
+     * @see #setMaxSpeed(double)
+     */
+    double getMaxSpeed();
 
     /**
      * Sets the maximum speed which applies when moving forward and backward. The maximum speed must
@@ -537,7 +569,7 @@ public interface IBaseBot {
      * @param adjust {@code true} if the gun must adjust/compensate for the bot's turn; {@code false}
      *               if the gun must turn with the bot's turn.
      * @see #setAdjustRadarForGunTurn(boolean)
-     * @see #doAdjustGunForBodyTurn()
+     * @see #isAdjustGunForBodyTurn()
      */
     void setAdjustGunForBodyTurn(boolean adjust);
 
@@ -553,7 +585,7 @@ public interface IBaseBot {
      * the gun is set to turn with the bot turning.
      * @see #setAdjustGunForBodyTurn(boolean)
      */
-    boolean doAdjustGunForBodyTurn();
+    boolean isAdjustGunForBodyTurn();
 
     /**
      * Sets the radar to adjust for the gun's turn when setting the radar turn rate. So the radar
@@ -573,7 +605,7 @@ public interface IBaseBot {
      * @param adjust {@code true} if the radar must adjust/compensate for the gun's turn; {@code
      *               false} if the radar must turn with the gun's turn.
      * @see #setAdjustGunForBodyTurn(boolean)
-     * @see #doAdjustRadarForGunTurn()
+     * @see #isAdjustRadarForGunTurn()
      */
     void setAdjustRadarForGunTurn(boolean adjust);
 
@@ -589,7 +621,7 @@ public interface IBaseBot {
      * if the radar is set to turn with the gun turning.
      * @see #setAdjustRadarForGunTurn(boolean)
      */
-    boolean doAdjustRadarForGunTurn();
+    boolean isAdjustRadarForGunTurn();
 
     /**
      * Adds a event handler that will be automatically triggered {@link #onCustomEvent(CustomEvent)}
@@ -672,7 +704,7 @@ public interface IBaseBot {
      * <p>
      * Note that currently only the number format using the number sign (#) is supported.
      *
-     * @param bodyColor is the new body color of the bot. Currently hexadecimal number format is being
+     * @param bodyColor is the new body color of the bot. Currently, hexadecimal number format is being
      *                  used.
      * @see <a
      * href="https://en.wikipedia.org/wiki/Web_colors">https://en.wikipedia.org/wiki/Web_colors</a>
@@ -702,7 +734,7 @@ public interface IBaseBot {
      * <p>
      * Note that currently only the number format using the number sign (#) is supported.
      *
-     * @param turretColor is the new gun turret color of the bot. Currently hexadecimal number format
+     * @param turretColor is the new gun turret color of the bot. Currently, hexadecimal number format
      *                    is being used.
      * @see <a
      * href="https://en.wikipedia.org/wiki/Web_colors">https://en.wikipedia.org/wiki/Web_colors</a>
@@ -731,7 +763,7 @@ public interface IBaseBot {
      * <p>
      * Note that currently only the number format using the number sign (#) is supported.
      *
-     * @param radarColor is the new radar color of the bot. Currently hexadecimal number format is
+     * @param radarColor is the new radar color of the bot. Currently, hexadecimal number format is
      *                   being used.
      * @see <a
      * href="https://en.wikipedia.org/wiki/Web_colors">https://en.wikipedia.org/wiki/Web_colors</a>
@@ -761,7 +793,7 @@ public interface IBaseBot {
      * <p>
      * Note that currently only the number format using the number sign (#) is supported.
      *
-     * @param bulletColor is the new bullet color of fired bullets. Currently hexadecimal number
+     * @param bulletColor is the new bullet color of fired bullets. Currently, hexadecimal number
      *                    format is being used.
      * @see <a
      * href="https://en.wikipedia.org/wiki/Web_colors">https://en.wikipedia.org/wiki/Web_colors</a>
@@ -790,7 +822,7 @@ public interface IBaseBot {
      * <p>
      * Note that currently only the number format using the number sign (#) is supported.
      *
-     * @param scanColor is the new scan arc color of the bot. Currently hexadecimal number format is
+     * @param scanColor is the new scan arc color of the bot. Currently, hexadecimal number format is
      *                  being used.
      * @see <a
      * href="https://en.wikipedia.org/wiki/Web_colors">https://en.wikipedia.org/wiki/Web_colors</a>
@@ -819,7 +851,7 @@ public interface IBaseBot {
      * <p>
      * Note that currently only the number format using the number sign (#) is supported.
      *
-     * @param tracksColor is the new tracks color of the bot. Currently hexadecimal number format is
+     * @param tracksColor is the new tracks color of the bot. Currently, hexadecimal number format is
      *                    being used.
      * @see <a
      * href="https://en.wikipedia.org/wiki/Web_colors">https://en.wikipedia.org/wiki/Web_colors</a>
@@ -848,7 +880,7 @@ public interface IBaseBot {
      * <p>
      * Note that currently only the number format using the number sign (#) is supported.
      *
-     * @param gunColor is the new gun color of the bot. Currently hexadecimal number format is being
+     * @param gunColor is the new gun color of the bot. Currently, hexadecimal number format is being
      *                 used.
      * @see <a
      * href="https://en.wikipedia.org/wiki/Web_colors">https://en.wikipedia.org/wiki/Web_colors</a>

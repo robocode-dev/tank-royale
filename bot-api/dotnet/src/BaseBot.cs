@@ -175,9 +175,17 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public void SetMaxTurnRate(double maxTurnRate)
+    public double MaxTurnRate
     {
-      __baseBotInternals.SetMaxTurnRate(maxTurnRate);
+      set
+      {
+        if (IsNaN(value))
+        {
+          throw new ArgumentException("MaxTurnRate cannot be NaN");
+        }
+        __baseBotInternals.MaxTurnRate = value;
+      }
+      get => __baseBotInternals.MaxTurnRate;
     }
 
     /// <inheritdoc/>
@@ -195,9 +203,17 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public void SetMaxGunTurnRate(double maxGunTurnRate)
+    public double MaxGunTurnRate
     {
-      __baseBotInternals.SetMaxGunTurnRate(maxGunTurnRate);
+      set
+      {
+        if (IsNaN(value))
+        {
+          throw new ArgumentException("MaxGunTurnRate cannot be NaN");
+        }
+        __baseBotInternals.MaxGunTurnRate = value;
+      }
+      get => __baseBotInternals.MaxGunTurnRate;
     }
 
     /// <inheritdoc/>
@@ -215,9 +231,17 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public void SetMaxRadarTurnRate(double maxRadarTurnRate)
+    public double MaxRadarTurnRate
     {
-      __baseBotInternals.SetMaxRadarTurnRate(maxRadarTurnRate);
+      set
+      {
+        if (IsNaN(value))
+        {
+          throw new ArgumentException("MaxRadarTurnRate cannot be NaN");
+        }
+        __baseBotInternals.MaxRadarTurnRate = value;
+      }
+      get => __baseBotInternals.MaxRadarTurnRate;
     }
 
     /// <inheritdoc/>
@@ -235,9 +259,17 @@ namespace Robocode.TankRoyale.BotApi
     }
 
     /// <inheritdoc/>
-    public void SetMaxSpeed(double maxSpeed)
+    public double MaxSpeed
     {
-      __baseBotInternals.SetMaxSpeed(maxSpeed);
+      set
+      {
+        if (IsNaN(value))
+        {
+          throw new ArgumentException("MaxSpeed cannot be NaN");
+        }
+        __baseBotInternals.MaxSpeed = value;
+      }
+      get => __baseBotInternals.MaxSpeed;
     }
 
     /// <inheritdoc/>
@@ -256,14 +288,14 @@ namespace Robocode.TankRoyale.BotApi
     public double Firepower => __baseBotInternals.BotIntent.Firepower ?? 0;
 
     /// <inheritdoc/>
-    public bool DoAdjustGunForBodyTurn
+    public bool AdjustGunForBodyTurn
     {
       set => __baseBotInternals.BotIntent.AdjustGunForBodyTurn = value;
       get => __baseBotInternals.BotIntent.AdjustGunForBodyTurn ?? false;
     }
 
     /// <inheritdoc/>
-    public bool DoAdjustRadarForGunTurn
+    public bool AdjustRadarForGunTurn
     {
       set => __baseBotInternals.BotIntent.AdjustRadarForGunTurn = value;
       get => __baseBotInternals.BotIntent.AdjustRadarForGunTurn ?? false;

@@ -276,16 +276,32 @@ public final class BaseBotInternals {
         return true;
     }
 
+    public double getMaxSpeed() {
+        return maxSpeed;
+    }
+
     public void setMaxSpeed(double maxSpeed) {
         this.maxSpeed = clamp(maxSpeed, 0, MAX_SPEED);
+    }
+
+    public double getMaxTurnRate() {
+        return maxTurnRate;
     }
 
     public void setMaxTurnRate(double maxTurnRate) {
         this.maxTurnRate = clamp(maxTurnRate, 0, MAX_TURN_RATE);
     }
 
+    public double getMaxGunTurnRate() {
+        return maxGunTurnRate;
+    }
+
     public void setMaxGunTurnRate(double maxGunTurnRate) {
         this.maxGunTurnRate = clamp(maxGunTurnRate, 0, MAX_GUN_TURN_RATE);
+    }
+
+    public double getMaxRadarTurnRate() {
+        return maxRadarTurnRate;
     }
 
     public void setMaxRadarTurnRate(double maxRadarTurnRate) {

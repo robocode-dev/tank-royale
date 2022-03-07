@@ -316,6 +316,14 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
+    public final double getMaxTurnRate() {
+        return __baseBotInternals.getMaxTurnRate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final void setMaxTurnRate(double maxTurnRate) {
         __baseBotInternals.setMaxTurnRate(maxTurnRate);
     }
@@ -343,16 +351,14 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final void setMaxGunTurnRate(double maxGunTurnRate) {
-        __baseBotInternals.setMaxGunTurnRate(maxGunTurnRate);
-    }
+    public final double getMaxGunTurnRate() { return __baseBotInternals.getMaxGunTurnRate(); }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final double getRadarTurnRate() {
-        return __baseBotInternals.getCurrentTick().getBotState().getRadarTurnRate();
+    public final void setMaxGunTurnRate(double maxGunTurnRate) {
+        __baseBotInternals.setMaxGunTurnRate(maxGunTurnRate);
     }
 
     /**
@@ -364,6 +370,14 @@ public abstract class BaseBot implements IBaseBot {
             throw new IllegalArgumentException("radarTurnRate cannot be NaN");
         }
         __baseBotInternals.getBotIntent().setRadarTurnRate(radarTurnRate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final double getMaxRadarTurnRate() {
+        return __baseBotInternals.getMaxRadarTurnRate();
     }
 
     /**
@@ -392,6 +406,14 @@ public abstract class BaseBot implements IBaseBot {
             throw new IllegalArgumentException("targetSpeed cannot be NaN");
         }
         __baseBotInternals.getBotIntent().setTargetSpeed(targetSpeed);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final double getMaxSpeed() {
+        return __baseBotInternals.getMaxSpeed();
     }
 
     /**
@@ -439,7 +461,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final boolean doAdjustGunForBodyTurn() {
+    public final boolean isAdjustGunForBodyTurn() {
         Boolean adjust = __baseBotInternals.getBotIntent().getAdjustGunForBodyTurn();
         return adjust != null && adjust;
     }
@@ -456,7 +478,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final boolean doAdjustRadarForGunTurn() {
+    public final boolean isAdjustRadarForGunTurn() {
         Boolean adjust = __baseBotInternals.getBotIntent().getAdjustRadarForGunTurn();
         return adjust != null && adjust;
     }

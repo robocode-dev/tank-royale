@@ -273,24 +273,28 @@ namespace Robocode.TankRoyale.BotApi.Internal
       return true;
     }
 
-    internal void SetMaxSpeed(double newMaxSpeed)
+    internal double MaxSpeed
     {
-      maxSpeed = Math.Clamp(newMaxSpeed, 0, Constants.MaxSpeed);
+      get => maxSpeed;
+      set => Math.Clamp(value, 0, Constants.MaxSpeed);
     }
 
-    internal void SetMaxTurnRate(double newMaxTurnRate)
+    internal double MaxTurnRate
     {
-      maxTurnRate = Math.Clamp(newMaxTurnRate, 0, Constants.MaxTurnRate);
+      get => maxTurnRate;
+      set => Math.Clamp(value, 0, Constants.MaxTurnRate);
     }
 
-    internal void SetMaxGunTurnRate(double newMaxGunTurnRate)
+    internal double MaxGunTurnRate
     {
-      maxGunTurnRate = Math.Clamp(newMaxGunTurnRate, 0, Constants.MaxGunTurnRate);
+      get => maxGunTurnRate;
+      set => Math.Clamp(value, 0, Constants.MaxGunTurnRate);
     }
 
-    internal void SetMaxRadarTurnRate(double newMaxRadarTurnRate)
+    internal double MaxRadarTurnRate
     {
-      maxRadarTurnRate = Math.Clamp(newMaxRadarTurnRate, 0, Constants.MaxRadarTurnRate);
+      get => maxRadarTurnRate;
+      set => Math.Clamp(value, 0, Constants.MaxRadarTurnRate);
     }
 
     /// <summary>
