@@ -365,6 +365,14 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
+    public final double getRadarTurnRate() {
+        return __baseBotInternals.getCurrentTick().getBotState().getRadarTurnRate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final void setRadarTurnRate(double radarTurnRate) {
         if (Double.isNaN(radarTurnRate)) {
             throw new IllegalArgumentException("radarTurnRate cannot be NaN");
