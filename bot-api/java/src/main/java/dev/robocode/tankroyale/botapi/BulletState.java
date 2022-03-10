@@ -42,9 +42,9 @@ public final class BulletState {
     private final double speed;
 
     /**
-     * Color code of the bullet.
+     * Color of the bullet.
      */
-    private final Integer color;
+    private final Color color;
 
     /**
      * Initializes a new instance of the BulletState class.
@@ -56,10 +56,10 @@ public final class BulletState {
      * @param y         is the Y coordinate of the bullet.
      * @param direction is the direction in degrees.
      * @param speed     is the speed measured in units per turn.
-     * @param color     is the color code of the bullet.
+     * @param color     is the color of the bullet.
      */
     public BulletState(
-            int bulletId, int ownerId, double power, double x, double y, double direction, double speed, Integer color) {
+            int bulletId, int ownerId, double power, double x, double y, double direction, double speed, Color color) {
         this.bulletId = bulletId;
         this.ownerId = ownerId;
         this.power = power;
@@ -134,14 +134,11 @@ public final class BulletState {
     }
 
     /**
-     * Returns the RGB color code of the bullet when fired. The color code is an integer in hexadecimal format
-     * using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
+     * Returns the color of the bullet.
      *
-     * @return The color code of the bullet or `null` if the bot uses the default bullet color code.
-     * @see <a
-     * href="https://www.rapidtables.com/web/color/RGB_Color.html">https://www.rapidtables.com/web/color/RGB_Color.html</a>
+     * @return The color of the bullet.
      */
-    public Integer getColor() {
+    public Color getColor() {
         return color;
     }
 }

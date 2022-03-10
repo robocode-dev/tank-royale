@@ -56,46 +56,46 @@ namespace Robocode.TankRoyale.BotApi
     public double GunHeat { get; }
 
     /// <summary>
-    /// Body color code.
+    /// Body color.
     /// </summary>
-    /// <value>The body color code.</value>
-    public int? BodyColor { get; }
+    /// <value>The body color.</value>
+    public Color BodyColor { get; }
 
     /// <summary>
-    /// Gun turret color code.
+    /// Gun turret color.
     /// </summary>
-    /// <value>The gun turret color code.</value>
-    public int? TurretColor { get; }
+    /// <value>The gun turret color.</value>
+    public Color TurretColor { get; }
 
     /// <summary>
-    /// Radar color code.
+    /// Radar color.
     /// </summary>
-    /// <value>The radar color code.</value>
-    public int? RadarColor { get; }
+    /// <value>The radar color.</value>
+    public Color RadarColor { get; }
 
     /// <summary>
-    /// Bullet color code.
+    /// Bullet color.
     /// </summary>
-    /// <value>The bullet color code.</value>
-    public int? BulletColor { get; }
+    /// <value>The bullet color.</value>
+    public Color BulletColor { get; }
 
     /// <summary>
-    /// Scan arc color code.
+    /// Scan arc color.
     /// </summary>
-    /// <value>The scan arc color code.</value>
-    public int? ScanColor { get; }
+    /// <value>The scan arc color.</value>
+    public Color ScanColor { get; }
 
     /// <summary>
-    /// Tracks color code.
+    /// Tracks color.
     /// </summary>
-    /// <value>The tracks color code.</value>
-    public int? TracksColor { get; }
+    /// <value>The tracks color.</value>
+    public Color TracksColor { get; }
 
     /// <summary>
-    /// Gun color code.
+    /// Gun color.
     /// </summary>
-    /// <value>The gun color code.</value>
-    public int? GunColor { get; }
+    /// <value>The gun color.</value>
+    public Color GunColor { get; }
 
     /// <summary>
     /// Initializes a new instance of the BotState class.
@@ -112,19 +112,19 @@ namespace Robocode.TankRoyale.BotApi
     /// <param name="gunTurnRate">Turn rate of the gun in degrees per turn.</param>
     /// <param name="radarTurnRate">Turn rate of the radar in degrees per turn.</param>
     /// <param name="gunHeat">Gun heat.</param>
-    /// <param name="bodyColor">Body color code.</param>
-    /// <param name="turretColor">Gun turret color code.</param>
-    /// <param name="radarColor">Radar color code.</param>
-    /// <param name="bulletColor">Bullet color code.</param>
-    /// <param name="scanColor">Scan arc color code.</param>
-    /// <param name="tracksColor">Tracks color code.</param>
-    /// <param name="gunColor">Gun color code.</param>
+    /// <param name="bodyColor">Body color.</param>
+    /// <param name="turretColor">Gun turret color.</param>
+    /// <param name="radarColor">Radar color.</param>
+    /// <param name="bulletColor">Bullet color.</param>
+    /// <param name="scanColor">Scan arc color.</param>
+    /// <param name="tracksColor">Tracks color.</param>
+    /// <param name="gunColor">Gun color.</param>
     [JsonConstructor]
     public BotState(double energy, double x, double y, double direction, double gunDirection,
       double radarDirection, double radarSweep,
       double speed, double turnRate, double gunTurnRate, double radarTurnRate, double gunHeat,
-      int? bodyColor, int? turretColor, int? radarColor, int? bulletColor, int? scanColor, int? tracksColor,
-      int? gunColor)
+      Color bodyColor, Color turretColor, Color radarColor, Color bulletColor, Color scanColor, Color tracksColor,
+      Color gunColor)
     {
       Energy = energy;
       X = x;

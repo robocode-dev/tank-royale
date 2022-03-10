@@ -23,10 +23,10 @@ public class SpinBot : Bot
     // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
-        SetBodyColor("#00F"); // blue
-        SetTurretColor("#00F"); // blue
-        SetRadarColor("#000"); // black
-        SetScanColor("#FF0"); // yellow
+        SetBodyColor(Color.Blue);
+        SetTurretColor(Color.Blue);
+        SetRadarColor(Color.Black);
+        SetScanColor(Color.Yellow);
 
         // Repeat while the bot is running
         while (IsRunning)

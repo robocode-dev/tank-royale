@@ -24,10 +24,10 @@ public class SpinBot extends Bot {
     // Called when a new round is started -> initialize and do some movement
     @Override
     public void run() {
-        setBodyColor("#00F"); // blue
-        setTurretColor("#00F"); // blue
-        setRadarColor("#000"); // black
-        setScanColor("#FF0"); // yellow
+        setBodyColor(Color.BLUE);
+        setTurretColor(Color.BLUE);
+        setRadarColor(Color.BLACK);
+        setScanColor(Color.YELLOW);
 
         // Repeat while the bot is running
         while (isRunning()) {

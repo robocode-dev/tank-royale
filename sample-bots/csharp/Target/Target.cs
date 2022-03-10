@@ -28,9 +28,9 @@ public class Target : Bot
     public override void Run()
     {
         // Set colors
-        SetBodyColor("#FFF"); // white
-        SetTurretColor("#FFF"); // white
-        SetRadarColor("#FFF"); // white
+        SetBodyColor(Color.White);
+        SetTurretColor(Color.White);
+        SetRadarColor(Color.White);
 
         // Initially, we'll move when energy passes 80
         trigger = 80;

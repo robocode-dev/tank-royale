@@ -53,7 +53,7 @@ tasks {
             }
         }
     }
-
+/*
     register<Copy>("uploadDocs") {
         dependsOn(docfx)
 
@@ -67,7 +67,7 @@ tasks {
         from("docfx_project/_site")
         into(dotnetApiDir)
     }
-
+*/
     register("pushLocal") {
         dependsOn(build)
 

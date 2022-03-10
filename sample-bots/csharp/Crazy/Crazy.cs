@@ -25,12 +25,11 @@ public class Crazy : Bot
     // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
-        // Set colors
-        SetBodyColor("#00C800");
-        SetGunColor("#009632");
-        SetRadarColor("#006464");
-        SetBulletColor("#FFFF64");
-        SetScanColor("#FFC8C8");
+        SetBodyColor(Color.FromRgbInt(0x00C800));   // lime
+        SetGunColor(Color.FromRgbInt(0x009632));    // green
+        SetRadarColor(Color.FromRgbInt(0x006464));  // dark cyan
+        SetBulletColor(Color.FromRgbInt(0xFFFF64)); // yellow
+        SetScanColor(Color.FromRgbInt(0xFFC8C8));   // light red
 
         movingForward = true;
 
@@ -39,10 +38,10 @@ public class Crazy : Bot
         {
             // Tell the game we will want to move ahead 40000 -- some large number
             SetForward(40000);
-            SetBodyColor("#00F");
+            movingForward = true;
             // Tell the game we will want to turn right 90
             SetTurnRight(90);
-            // At this point, we have indicated to the game that *when we do something*,
+e            // At this point, we have indicated to the game that *when we do something*,
             // we will want to move ahead and turn right. That's what "Set" means.
             // It is important to realize we have not done anything yet!
             // In order to actually move, we'll want to call a method that takes real time, such as

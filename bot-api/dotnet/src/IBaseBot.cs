@@ -568,15 +568,15 @@ namespace Robocode.TankRoyale.BotApi
     bool IsStopped { get; }
 
     /// <summary>
-    /// Returns the RGB color code of the body. The color code is an integer in hexadecimal format
+    /// Returns the RGB color of the body. The color is an integer in hexadecimal format
     /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
     /// 
     /// See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
     /// https://www.rapidtables.com/web/color/RGB_Color.html</a>
     /// </summary>
-    /// <returns>The color code of the body or <c>null</c> if the bot uses the default
-    /// color code.</returns>
-    int? GetBodyColor();
+    /// <returns>The color of the body or <c>null</c> if the bot uses the default
+    /// color.</returns>
+    Color GetBodyColor();
 
     /// <summary>
     /// Sets the color of the body. Colors can be changed each turn.
@@ -595,18 +595,18 @@ namespace Robocode.TankRoyale.BotApi
     /// </example>
     /// <param name="bodyColor">Is the new body color of the bot. Currently, hexadecimal number
     /// format is being used.</param>
-    void SetBodyColor(string bodyColor);
+    void SetBodyColor(Color bodyColor);
 
     /// <summary>
-    /// Returns the RGB color code of the gun turret. The color code is an integer in hexadecimal format
+    /// Returns the RGB color of the gun turret. The color is an integer in hexadecimal format
     /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
     /// 
     /// See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
     /// https://www.rapidtables.com/web/color/RGB_Color.html</a>
     /// </summary>
-    /// <returns>The color code of the gun turret or <c>null</c> if the bot uses the default
-    /// color code.</returns>
-    int? GetTurretColor();
+    /// <returns>The color of the gun turret or <c>null</c> if the bot uses the default
+    /// color.</returns>
+    Color GetTurretColor();
 
     /// <summary>
     /// Sets the color of the gun turret. Colors can be changed each turn.
@@ -625,18 +625,18 @@ namespace Robocode.TankRoyale.BotApi
     /// </example>
     /// <param name="turretColor">Is the new gun turret color of the bot. Currently, hexadecimal number
     /// format is being used.</param>
-    void SetTurretColor(string turretColor);
+    void SetTurretColor(Color turretColor);
 
     /// <summary>
-    /// Returns the RGB color code of the radar. The color code is an integer in hexadecimal format
+    /// Returns the RGB color of the radar. The color is an integer in hexadecimal format
     /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
     /// 
     /// See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
     /// https://www.rapidtables.com/web/color/RGB_Color.html</a>
     /// </summary>
-    /// <returns>The color code of the radar or <c>null</c> if the bot uses the default
-    /// color code.</returns>
-    int? GetRadarColor();
+    /// <returns>The color of the radar or <c>null</c> if the bot uses the default
+    /// color.</returns>
+    Color GetRadarColor();
 
     /// <summary>
     /// Sets the color of the radar. Colors can be changed each turn.
@@ -655,18 +655,18 @@ namespace Robocode.TankRoyale.BotApi
     /// </example>
     /// <param name="radarColor">Is the new radar color of the bot. Currently, hexadecimal number
     /// format is being used.</param>
-    void SetRadarColor(string radarColor);
+    void SetRadarColor(Color radarColor);
 
     /// <summary>
-    /// Returns the RGB color code of the bullets when fired. The color code is an integer in hexadecimal format
+    /// Returns the RGB color of the bullets when fired. The color is an integer in hexadecimal format
     /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
     /// 
     /// See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
     /// https://www.rapidtables.com/web/color/RGB_Color.html</a>
     /// </summary>
-    /// <returns>The color code of the bullets or <c>null</c> if the bot uses the default
-    /// color code.</returns>
-    int? GetBulletColor();
+    /// <returns>The color of the bullets or <c>null</c> if the bot uses the default
+    /// color.</returns>
+    Color GetBulletColor();
 
     /// <summary>
     /// Sets the color of the bullet when fired. Colors can be changed each turn.
@@ -685,18 +685,18 @@ namespace Robocode.TankRoyale.BotApi
     /// </example>
     /// <param name="bulletColor">Is the new bullets color of the bot. Currently, hexadecimal number
     /// format is being used.</param>
-    void SetBulletColor(string bulletColor);
+    void SetBulletColor(Color bulletColor);
 
     /// <summary>
-    /// Returns the RGB color code of the scan arc. The color code is an integer in hexadecimal format
+    /// Returns the RGB color of the scan arc. The color is an integer in hexadecimal format
     /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
     /// 
     /// See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
     /// https://www.rapidtables.com/web/color/RGB_Color.html</a>
     /// </summary>
-    /// <returns>The color code of the scan arc or <c>null</c> if the bot uses the default
-    /// color code.</returns>
-    int? GetScanColor();
+    /// <returns>The color of the scan arc or <c>null</c> if the bot uses the default
+    /// color.</returns>
+    Color GetScanColor();
 
     /// <summary>
     /// Sets the color of the scan arc. Colors can be changed each turn.
@@ -715,18 +715,18 @@ namespace Robocode.TankRoyale.BotApi
     /// </example>
     /// <param name="scanColor">Is the new scan arc color of the bot. Currently, hexadecimal number
     /// format is being used.</param>
-    void SetScanColor(string scanColor);
+    void SetScanColor(Color scanColor);
 
     /// <summary>
-    /// Returns the RGB color code of the tracks. The color code is an integer in hexadecimal format
+    /// Returns the RGB color of the tracks. The color is an integer in hexadecimal format
     /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
     /// 
     /// See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
     /// https://www.rapidtables.com/web/color/RGB_Color.html</a>
     /// </summary>
-    /// <returns>The color code of the tracks or <c>null</c> if the bot uses the default
-    /// color code.</returns>
-    int? GetTracksColor();
+    /// <returns>The color of the tracks or <c>null</c> if the bot uses the default
+    /// color.</returns>
+    Color GetTracksColor();
 
     /// <summary>
     /// Sets the color of the tracks. Colors can be changed each turn.
@@ -745,18 +745,18 @@ namespace Robocode.TankRoyale.BotApi
     /// </example>
     /// <param name="tracksColor">Is the new tracks color of the bot. Currently, hexadecimal number
     /// format is being used.</param>
-    void SetTracksColor(string tracksColor);
+    void SetTracksColor(Color tracksColor);
 
     /// <summary>
-    /// Returns the RGB color code of the gun. The color code is an integer in hexadecimal format
+    /// Returns the RGB color of the gun. The color is an integer in hexadecimal format
     /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
     /// 
     /// See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
     /// https://www.rapidtables.com/web/color/RGB_Color.html</a>
     /// </summary>
-    /// <returns>The color code of the gun or <c>null</c> if the bot uses the default
-    /// color code.</returns>
-    int? GetGunColor();
+    /// <returns>The color of the gun or <c>null</c> if the bot uses the default
+    /// color.</returns>
+    Color GetGunColor();
 
     /// <summary>
     /// Sets the color of the gun. Colors can be changed each turn.
@@ -775,7 +775,7 @@ namespace Robocode.TankRoyale.BotApi
     /// </example>
     /// <param name="gunColor">Is the new gun color of the bot. Currently, hexadecimal number
     /// format is being used.</param>
-    void SetGunColor(string gunColor);
+    void SetGunColor(Color gunColor);
 
     /// <summary>
     /// The event handler triggered when connected to the server.

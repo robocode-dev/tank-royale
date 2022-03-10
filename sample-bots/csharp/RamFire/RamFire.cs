@@ -26,9 +26,9 @@ public class RamFire : Bot
     public override void Run()
     {
         // Set colors
-        SetBodyColor("#999"); // gray
-        SetTurretColor("#888"); // gray
-        SetRadarColor("#666"); // dark gray
+        SetBodyColor(Color.FromHexTriplet("999"));  // lighter gray
+        SetTurretColor(Color.FromHexTriplet("888"); // gray
+        SetRadarColor(Color.FromHexTriplet("666");  // dark gray
 
         // Spin the gun around slowly... forever
         while (IsRunning)

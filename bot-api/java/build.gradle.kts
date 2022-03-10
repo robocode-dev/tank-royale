@@ -29,9 +29,19 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.gson.extras)
     implementation(libs.nv.i18n)
+
+    testImplementation(libs.junit.api)
+    testImplementation(libs.junit.params)
+    testRuntimeOnly(libs.junit.engine)
+    testImplementation(libs.assertj)
 }
 
 tasks {
+
+    withType<Test> {
+        useJUnitPlatform()
+    }
+
     jar {
         enabled = false
         dependsOn(
@@ -76,7 +86,7 @@ tasks {
             )
         }
     }
-
+/*
     register<Copy>("uploadDocs") {
         dependsOn(javadoc)
 
@@ -90,6 +100,7 @@ tasks {
         from("build/docs/javadoc")
         into(javadocDir)
     }
+*/
 }
 
 publishing {

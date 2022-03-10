@@ -30,11 +30,11 @@ public class Corners : Bot
     public override void Run()
     {
         // Set colors
-        SetBodyColor("#F00"); // red
-        SetGunColor("#000"); // black
-        SetRadarColor("#FF0"); // yellow
-        SetBulletColor("#0F0"); // green
-        SetScanColor("#0F0"); // green
+        SetBodyColor(Color.Red);
+        SetGunColor(Color.Black);
+        SetRadarColor(Color.Yellow);
+        SetBulletColor(Color.Green);
+        SetScanColor(Color.Green);
 
         // Save # of other bots
         enemies = EnemyCount;

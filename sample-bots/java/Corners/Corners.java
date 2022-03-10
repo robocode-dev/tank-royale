@@ -30,11 +30,11 @@ public class Corners extends Bot {
     @Override
     public void run() {
         // Set colors
-        setBodyColor("#F00"); // red
-        setGunColor("#000"); // black
-        setRadarColor("#FF0"); // yellow
-        setBulletColor("#0F0"); // green
-        setScanColor("#0F0"); // green
+        setBodyColor(Color.RED);
+        setGunColor(Color.BLACK);
+        setRadarColor(Color.YELLOW);
+        setBulletColor(Color.GREEN);
+        setScanColor(Color.GREEN);
 
         // Save # of other bots
         enemies = getEnemyCount();

@@ -535,7 +535,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final Integer getBodyColor() {
+    public final Color getBodyColor() {
         return __baseBotInternals.getCurrentTick().getBotState().getBodyColor();
     }
 
@@ -543,15 +543,15 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final void setBodyColor(String bodyColor) {
-        __baseBotInternals.getBotIntent().setBodyColor(bodyColor);
+    public final void setBodyColor(Color bodyColor) {
+        __baseBotInternals.getBotIntent().setBodyColor(toIntentColor(bodyColor));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final Integer getTurretColor() {
+    public final Color getTurretColor() {
         return __baseBotInternals.getCurrentTick().getBotState().getTurretColor();
     }
 
@@ -559,15 +559,15 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final void setTurretColor(String turretColor) {
-        __baseBotInternals.getBotIntent().setTurretColor(turretColor);
+    public final void setTurretColor(Color turretColor) {
+        __baseBotInternals.getBotIntent().setTurretColor(toIntentColor(turretColor));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final Integer getRadarColor() {
+    public final Color getRadarColor() {
         return __baseBotInternals.getCurrentTick().getBotState().getRadarColor();
     }
 
@@ -575,15 +575,15 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final void setRadarColor(String radarColor) {
-        __baseBotInternals.getBotIntent().setRadarColor(radarColor);
+    public final void setRadarColor(Color radarColor) {
+        __baseBotInternals.getBotIntent().setRadarColor(toIntentColor(radarColor));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final Integer getBulletColor() {
+    public final Color getBulletColor() {
         return __baseBotInternals.getCurrentTick().getBotState().getBulletColor();
     }
 
@@ -591,15 +591,15 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final void setBulletColor(String bulletColor) {
-        __baseBotInternals.getBotIntent().setBulletColor(bulletColor);
+    public final void setBulletColor(Color bulletColor) {
+        __baseBotInternals.getBotIntent().setBulletColor(toIntentColor(bulletColor));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final Integer getScanColor() {
+    public final Color getScanColor() {
         return __baseBotInternals.getCurrentTick().getBotState().getScanColor();
     }
 
@@ -607,15 +607,15 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final void setScanColor(String scanColor) {
-        __baseBotInternals.getBotIntent().setScanColor(scanColor);
+    public final void setScanColor(Color scanColor) {
+        __baseBotInternals.getBotIntent().setScanColor(toIntentColor(scanColor));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final Integer getTracksColor() {
+    public final Color getTracksColor() {
         return __baseBotInternals.getCurrentTick().getBotState().getTracksColor();
     }
 
@@ -623,15 +623,15 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final void setTracksColor(String tracksColor) {
-        __baseBotInternals.getBotIntent().setTracksColor(tracksColor);
+    public final void setTracksColor(Color tracksColor) {
+        __baseBotInternals.getBotIntent().setTracksColor(toIntentColor(tracksColor));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final Integer getGunColor() {
+    public final Color getGunColor() {
         return __baseBotInternals.getCurrentTick().getBotState().getGunColor();
     }
 
@@ -639,8 +639,8 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final void setGunColor(String gunColor) {
-        __baseBotInternals.getBotIntent().setGunColor(gunColor);
+    public final void setGunColor(Color gunColor) {
+        __baseBotInternals.getBotIntent().setGunColor(toIntentColor(gunColor));
     }
 
     /**
@@ -665,5 +665,9 @@ public abstract class BaseBot implements IBaseBot {
     @Override
     public final double calcGunHeat(double firepower) {
         return 1 + (firepower / 5);
+    }
+
+    private static String toIntentColor(Color color) {
+        return color == null ? null : "#" + color.toHexTriplet();
     }
 }

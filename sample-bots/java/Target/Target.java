@@ -28,9 +28,9 @@ public class Target extends Bot {
     @Override
     public void run() {
         // Set colors
-        setBodyColor("#FFF"); // white
-        setTurretColor("#FFF"); // white
-        setRadarColor("#FFF"); // white
+        setBodyColor(Color.WHITE);
+        setTurretColor(Color.WHITE);
+        setRadarColor(Color.WHITE);
 
         // Initially, we'll move when energy passes 80
         trigger = 80;

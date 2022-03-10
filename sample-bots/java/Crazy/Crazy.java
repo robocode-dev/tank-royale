@@ -26,11 +26,11 @@ public class Crazy extends Bot {
     // Called when a new round is started -> initialize and do some movement
     public void run() {
         // Set colors
-        setBodyColor("#00C800");
-        setGunColor("#009632");
-        setRadarColor("#006464");
-        setBulletColor("#FFFF64");
-        setScanColor("#FFC8C8");
+        setBodyColor(Color.fromRgbInt(0x00C800));   // lime
+        setGunColor(Color.fromRgbInt(0x009632));    // green
+        setRadarColor(Color.fromRgbInt(0x006464));  // dark cyan
+        setBulletColor(Color.fromRgbInt(0xFFFF64)); // yellow
+        setScanColor(Color.fromRgbInt(0xFFC8C8));   // light red
 
         // Loop while as long as the bot is running
         while (isRunning()) {

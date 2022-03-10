@@ -28,11 +28,11 @@ public class Walls extends Bot {
     @Override
     public void run() {
         // Set colors
-        setBodyColor("#000"); // black
-        setGunColor("#000"); // black
-        setRadarColor("#F90"); // orange
-        setTurretColor("#F90"); // orange
-        setBulletColor("#0FF"); // cyan
+        setBodyColor(Color.BLACK);
+        setGunColor(Color.BLACK);
+        setRadarColor(Color.ORANGE);
+        setTurretColor(Color.ORANGE);
+        setBulletColor(Color.CYAN);
 
         // Initialize moveAmount to the maximum possible for the arena
         moveAmount = Math.max(getArenaWidth(), getArenaHeight());

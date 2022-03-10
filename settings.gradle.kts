@@ -1,4 +1,4 @@
-val version = "0.9.13"
+val version = "0.10.0"
 
 // Schema Generator
 include("schema:java")
@@ -24,6 +24,8 @@ include("sample-bots:csharp")
 // Docs
 include("buildDocs")
 
+val junitVersion = "5.8.2"
+
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
@@ -36,14 +38,20 @@ dependencyResolutionManagement {
             library("jansi", "org.fusesource.jansi:jansi:2.4.0")
             library("java-websocket", "org.java-websocket:Java-WebSocket:1.5.2")
             library("jsonschema2pojo", "org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.1.1")
-            library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:5.1.0")
             library("picocli", "info.picocli:picocli:4.6.3")
             library("proguard-gradle", "com.guardsquare:proguard-gradle:7.2.1")
             library("miglayout-swing", "com.miglayout:miglayout-swing:11.0")
-            library("mockk", "io.mockk:mockk:1.12.3")
             library("nv-i18n", "com.neovisionaries:nv-i18n:1.29")
             library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
             library("slf4j-simple", "org.slf4j:slf4j-simple:2.0.0-alpha6")
+
+            // test
+            library("junit-api", "org.junit.jupiter:junit-jupiter-api:$junitVersion")
+            library("junit-engine", "org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+            library("junit-params", "org.junit.jupiter:junit-jupiter-params:$junitVersion")
+            library("assertj", "org.assertj:assertj-core:3.22.0")
+            library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:5.1.0")
+            library("mockk", "io.mockk:mockk:1.12.3")
 
             plugin("shadow-jar","com.github.johnrengelman.shadow").version("7.1.2")
             plugin("kotlin-jvm", "org.jetbrains.kotlin.jvm").version("1.6.20-RC")

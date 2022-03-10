@@ -29,7 +29,7 @@ public class TrackFire extends Bot {
         isScanning = false; // reset scanning flag
 
         // Set colors
-        String pink = "#FF69B4";
+        Color pink = Color.fromRgbInt(0xFF69B4);
         setBodyColor(pink);
         setTurretColor(pink);
         setRadarColor(pink);
