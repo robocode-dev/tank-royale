@@ -28,11 +28,11 @@ public class Walls : Bot
     public override void Run()
     {
         // Set colors
-        SetBodyColor(Color.Black);
-        SetGunColor(Color.Black);
-        SetRadarColor(Color.Orange);
-        SetTurretColor(Color.Orange);
-        SetBulletColor(Color.Cyan);
+        BodyColor = Color.Black;
+        GunColor = Color.Black;
+        RadarColor = Color.Orange;
+        TurretColor = Color.Orange;
+        BulletColor = Color.Cyan;
 
         // Initialize moveAmount to the maximum possible for the arena
         moveAmount = Math.Max(ArenaWidth, ArenaHeight);

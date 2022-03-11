@@ -22,13 +22,13 @@ public final class BotStateMapper {
                 source.getGunTurnRate(),
                 source.getRadarTurnRate(),
                 source.getGunHeat(),
-                Color.fromRgbInt(source.getBodyColor()),
-                Color.fromRgbInt(source.getTurretColor()),
-                Color.fromRgbInt(source.getRadarColor()),
-                Color.fromRgbInt(source.getBulletColor()),
-                Color.fromRgbInt(source.getScanColor()),
-                Color.fromRgbInt(source.getTracksColor()),
-                Color.fromRgbInt(source.getGunColor())
+                Color.fromRgb(source.getBodyColor()),
+                Color.fromRgb(source.getTurretColor()),
+                Color.fromRgb(source.getRadarColor()),
+                Color.fromRgb(source.getBulletColor()),
+                Color.fromRgb(source.getScanColor()),
+                Color.fromRgb(source.getTracksColor()),
+                Color.fromRgb(source.getGunColor())
         );
     }
 }

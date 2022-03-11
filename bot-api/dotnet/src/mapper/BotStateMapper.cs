@@ -17,13 +17,13 @@ namespace Robocode.TankRoyale.BotApi.Mapper
         source.GunTurnRate,
         source.RadarTurnRate,
         source.GunHeat,
-        Color.FromRgbInt(source.BodyColor),
-        Color.FromRgbInt(source.TurretColor),
-        Color.FromRgbInt(source.RadarColor),
-        Color.FromRgbInt(source.BulletColor),
-        Color.FromRgbInt(source.ScanColor),
-        Color.FromRgbInt(source.TracksColor),
-        Color.FromRgbInt(source.GunColor)
+        Color.FromRgb(source.BodyColor),
+        Color.FromRgb(source.TurretColor),
+        Color.FromRgb(source.RadarColor),
+        Color.FromRgb(source.BulletColor),
+        Color.FromRgb(source.ScanColor),
+        Color.FromRgb(source.TracksColor),
+        Color.FromRgb(source.GunColor)
       );
     }
   }

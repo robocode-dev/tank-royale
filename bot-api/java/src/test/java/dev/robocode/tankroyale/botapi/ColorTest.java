@@ -59,7 +59,7 @@ class ColorTest {
                 "0x139aF7, 0x13, 0x9A, 0xF7"
         })
         void fromRgbInt_ShouldWork(String input, String expectedRed, String expectedGreen, String expectedBlue) {
-            var color = Color.fromRgbInt(Integer.decode(input));
+            var color = Color.fromRgb(Integer.decode(input));
 
             var redValue = Integer.decode(expectedRed);
             var greenValue = Integer.decode(expectedGreen);
@@ -72,7 +72,7 @@ class ColorTest {
 
         @Test
         void fromRegInt_shouldReturnNullWhenInputIsNull() {
-            assertThat(Color.fromRgbInt(null)).isNull();
+            assertThat(Color.fromRgb(null)).isNull();
         }
     }
 
@@ -92,7 +92,7 @@ class ColorTest {
                 "AbC\t, 0xAA, 0xBB, 0xCC"     // White space
         })
         void fromHexTriplet_ShouldWork(String hexTriplet, String expectedRed, String expectedGreen, String expectedBlue) {
-            var color = Color.fromHexTriplet(hexTriplet);
+            var color = Color.fromHex(hexTriplet);
 
             var redValue = Integer.decode(expectedRed);
             var greenValue = Integer.decode(expectedGreen);
@@ -113,7 +113,7 @@ class ColorTest {
         })
         void fromHexTriplet_ShouldThrowException(String hexTriplet) {
             assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-                    () -> Color.fromHexTriplet(hexTriplet)
+                    () -> Color.fromHex(hexTriplet)
             );
         }
     }
@@ -138,13 +138,13 @@ class ColorTest {
     class HashTests {
         @Test
         void hashCode_ShouldBeEqual() {
-            assertThat(Color.fromRgbInt(0x102030).hashCode()).isEqualTo(new Color(0x10, 0x20, 0x30).hashCode());
-            assertThat(Color.fromRgbInt(0x112233).hashCode()).isEqualTo(new Color(0x11, 0x22, 0x33).hashCode());
+            assertThat(Color.fromRgb(0x102030).hashCode()).isEqualTo(new Color(0x10, 0x20, 0x30).hashCode());
+            assertThat(Color.fromRgb(0x112233).hashCode()).isEqualTo(new Color(0x11, 0x22, 0x33).hashCode());
         }
 
         @Test
         void hashCode_ShouldNotBeEqual() {
-            assertThat(new Color(10, 20, 30).hashCode()).isNotEqualTo(Color.fromRgbInt(0x123456).hashCode());
+            assertThat(new Color(10, 20, 30).hashCode()).isNotEqualTo(Color.fromRgb(0x123456).hashCode());
         }
     }
 
@@ -152,7 +152,7 @@ class ColorTest {
     class ToStringTests {
         @Test
         void toString_ShouldBeEqual() {
-            assertThat(Color.fromHexTriplet("FDB975").toString()).isEqualToIgnoringCase("FDB975");
+            assertThat(Color.fromHex("FDB975").toString()).isEqualToIgnoringCase("FDB975");
         }
     }
 

@@ -12,23 +12,23 @@ namespace Robocode.TankRoyale.BotApi
         private const string ThreeHexDigits = "^[0-9a-fA-F]{3}$";
         private const string SixHexDigits = "^[0-9a-fA-F]{6}$";
 
-        public static readonly Color White = FromHexTriplet("FFFFFF");
-        public static readonly Color Silver = FromHexTriplet("C0C0C0");
-        public static readonly Color Gray = FromHexTriplet("808080");
-        public static readonly Color Black = FromHexTriplet("000000");
-        public static readonly Color Red = FromHexTriplet("FF0000");
-        public static readonly Color Maroon = FromHexTriplet("800000");
-        public static readonly Color Yellow = FromHexTriplet("FFFF00");
-        public static readonly Color Olive = FromHexTriplet("808000");
-        public static readonly Color Lime = FromHexTriplet("00FF00");
-        public static readonly Color Green = FromHexTriplet("008000");
-        public static readonly Color Cyan = FromHexTriplet("00FFFF");
-        public static readonly Color Teal = FromHexTriplet("008080");
-        public static readonly Color Blue = FromHexTriplet("0000FF");
-        public static readonly Color Navy = FromHexTriplet("000080");
-        public static readonly Color Fuchsia = FromHexTriplet("FF00FF");
-        public static readonly Color Purple = FromHexTriplet("800080");
-        public static readonly Color Orange = FromHexTriplet("FF8000");
+        public static readonly Color White = FromHex("FFFFFF");
+        public static readonly Color Silver = FromHex("C0C0C0");
+        public static readonly Color Gray = FromHex("808080");
+        public static readonly Color Black = FromHex("000000");
+        public static readonly Color Red = FromHex("FF0000");
+        public static readonly Color Maroon = FromHex("800000");
+        public static readonly Color Yellow = FromHex("FFFF00");
+        public static readonly Color Olive = FromHex("808000");
+        public static readonly Color Lime = FromHex("00FF00");
+        public static readonly Color Green = FromHex("008000");
+        public static readonly Color Cyan = FromHex("00FFFF");
+        public static readonly Color Teal = FromHex("008080");
+        public static readonly Color Blue = FromHex("0000FF");
+        public static readonly Color Navy = FromHex("000080");
+        public static readonly Color Fuchsia = FromHex("FF00FF");
+        public static readonly Color Purple = FromHex("800080");
+        public static readonly Color Orange = FromHex("FF8000");
         
         /// <summary>
         /// Creates a Color from RGB values.
@@ -94,7 +94,7 @@ namespace Robocode.TankRoyale.BotApi
         /// </summary>
         /// <param name="rgb">RGB value, where bit 0-7 is blue, bit 8-15 is green, and bit 16-23 is red</param>
         /// <returns>The created Color.</returns>
-        public static Color FromRgbInt(int? rgb)
+        public static Color FromRgb(int? rgb)
         {
             if (rgb == null)
                 return null;
@@ -117,7 +117,7 @@ namespace Robocode.TankRoyale.BotApi
         /// <exception cref="ArgumentException"/>
         /// <see href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</see>
         /// <see href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</see>
-        public static Color FromHexTriplet(string hexTriplet) {
+        public static Color FromHex(string hexTriplet) {
             if (Regex.Match(hexTriplet, ThreeHexDigits).Success)
             {
                 return FromThreeHexDigits(hexTriplet);

@@ -13,23 +13,23 @@ public class Color {
     private static final Pattern threeHexDigits = Pattern.compile("^[0-9a-fA-F]{3}$");
     private static final Pattern sixHexDigits = Pattern.compile("^[0-9a-fA-F]{6}$");
 
-    public static final Color WHITE = fromHexTriplet("FFFFFF");
-    public static final Color SILVER = fromHexTriplet("C0C0C0");
-    public static final Color GRAY = fromHexTriplet("808080");
-    public static final Color BLACK = fromHexTriplet("000000");
-    public static final Color RED = fromHexTriplet("FF0000");
-    public static final Color MAROON = fromHexTriplet("800000");
-    public static final Color YELLOW = fromHexTriplet("FFFF00");
-    public static final Color OLIVE = fromHexTriplet("808000");
-    public static final Color LIME = fromHexTriplet("00FF00");
-    public static final Color GREEN = fromHexTriplet("008000");
-    public static final Color CYAN = fromHexTriplet("00FFFF");
-    public static final Color TEAL = fromHexTriplet("008080");
-    public static final Color BLUE = fromHexTriplet("0000FF");
-    public static final Color NAVY = fromHexTriplet("000080");
-    public static final Color FUCHSIA = fromHexTriplet("FF00FF");
-    public static final Color PURPLE = fromHexTriplet("800080");
-    public static final Color ORANGE = fromHexTriplet("FF8000");
+    public static final Color WHITE = fromHex("FFFFFF");
+    public static final Color SILVER = fromHex("C0C0C0");
+    public static final Color GRAY = fromHex("808080");
+    public static final Color BLACK = fromHex("000000");
+    public static final Color RED = fromHex("FF0000");
+    public static final Color MAROON = fromHex("800000");
+    public static final Color YELLOW = fromHex("FFFF00");
+    public static final Color OLIVE = fromHex("808000");
+    public static final Color LIME = fromHex("00FF00");
+    public static final Color GREEN = fromHex("008000");
+    public static final Color CYAN = fromHex("00FFFF");
+    public static final Color TEAL = fromHex("008080");
+    public static final Color BLUE = fromHex("0000FF");
+    public static final Color NAVY = fromHex("000080");
+    public static final Color FUCHSIA = fromHex("FF00FF");
+    public static final Color PURPLE = fromHex("800080");
+    public static final Color ORANGE = fromHex("FF8000");
 
     private final int red; // [0-255];
     private final int green; // [0-255];
@@ -104,7 +104,7 @@ public class Color {
      * @param rgb RGB value, where bit 0-7 is blue, bit 8-15 is green, and bit 16-23 is red.
      * @return the created Color or <code>null</code> if the input value is <code>null</code>.
      */
-    public static Color fromRgbInt(Integer rgb) {
+    public static Color fromRgb(Integer rgb) {
         if (rgb == null) {
             return null;
         }
@@ -124,7 +124,7 @@ public class Color {
      * @see <a href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</a>
      * @see <a href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</a>
      */
-    public static Color fromHexTriplet(String hexTriplet) {
+    public static Color fromHex(String hexTriplet) {
         if (threeHexDigits.matcher(hexTriplet).matches()) {
             return fromThreeHexDigits(hexTriplet);
         }

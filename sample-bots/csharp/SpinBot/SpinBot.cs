@@ -23,10 +23,10 @@ public class SpinBot : Bot
     // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
-        SetBodyColor(Color.Blue);
-        SetTurretColor(Color.Blue);
-        SetRadarColor(Color.Black);
-        SetScanColor(Color.Yellow);
+        BodyColor = Color.Blue;
+        TurretColor = Color.Blue;
+        RadarColor = Color.Black;
+        ScanColor = Color.Yellow;
 
         // Repeat while the bot is running
         while (IsRunning)
@@ -34,7 +34,7 @@ public class SpinBot : Bot
             // Tell the game that when we take move, we'll also want to turn right... a lot
             SetTurnLeft(10_000);
             // Limit our speed to 5
-            SetMaxSpeed(5);
+            MaxSpeed = 5;
             // Start moving (and turning)
             Forward(10_000);
         }

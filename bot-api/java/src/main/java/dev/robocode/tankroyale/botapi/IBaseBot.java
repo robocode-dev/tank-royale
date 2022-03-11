@@ -684,6 +684,7 @@ public interface IBaseBot {
 
     /**
      * Returns the color of the body.
+     *
      * @return The color of the body.
      */
     Color getBodyColor();
@@ -699,12 +700,13 @@ public interface IBaseBot {
      *     setBodyColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
-     * @param bodyColor is the new body color of the bot.
+     * @param color is the color of the body or {@code null} if the bot uses the default color.
      */
-    void setBodyColor(Color bodyColor);
+    void setBodyColor(Color color);
 
     /**
      * Returns the color of the gun turret.
+     *
      * @return The color of the gun turret.
      */
     Color getTurretColor();
@@ -720,12 +722,13 @@ public interface IBaseBot {
      *     setTurretColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
-     * @param turretColor is the new gun turret color of the bot.
+     * @param color is the color of the gun turret or {@code null} if the bot uses the default color.
      */
-    void setTurretColor(Color turretColor);
+    void setTurretColor(Color color);
 
     /**
      * Returns the color of the radar.
+     *
      * @return The color of the radar.
      */
     Color getRadarColor();
@@ -741,18 +744,22 @@ public interface IBaseBot {
      *     setRadarColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
-     * @param radarColor is the new radar color of the bot.
+     * @param color is the color of the radar or {@code null} if the bot uses the default color.
      */
-    void setRadarColor(Color radarColor);
+    void setRadarColor(Color color);
 
     /**
-     * Returns the color of the bullets when fired.
-     * @return The color of the bullets when fired.
+     * Returns the color of the fired bullets.
+     *
+     * @return The color of the fired bullets.
      */
     Color getBulletColor();
 
     /**
-     * Sets the color of the bullets when fired. Colors can (only) be changed each turn.
+     * Sets the color of the fired bullets. Colors can (only) be changed each turn.<br>
+     * <br>
+     * Note that a fired bullet will not change is color when it has been fired. But new bullets fired
+     * after setting the bullet color will get the new color.
      *
      * <p>Example:
      *
@@ -762,12 +769,13 @@ public interface IBaseBot {
      *     setBulletColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
-     * @param bulletColor is the new bullet color of fired bullets.
+     * @param color is the color of the fired bullets or {@code null} if the bot uses the default color.
      */
-    void setBulletColor(Color bulletColor);
+    void setBulletColor(Color color);
 
     /**
      * Returns the color of the scan arc.
+     *
      * @return The color of the scan arc.
      */
     Color getScanColor();
@@ -783,12 +791,13 @@ public interface IBaseBot {
      *     setScanColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
-     * @param scanColor is the new scan arc color of the bot.
+     * @param color is the color of the scan arc or {@code null} if the bot uses the default color.
      */
-    void setScanColor(Color scanColor);
+    void setScanColor(Color color);
 
     /**
      * Returns the color of the tracks.
+     *
      * @return The color of the tracks.
      */
     Color getTracksColor();
@@ -804,12 +813,13 @@ public interface IBaseBot {
      *     setTracksColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
-     * @param tracksColor is the new tracks color of the bot.
+     * @param color is the color of the tracks or {@code null} if the bot uses the default color.
      */
-    void setTracksColor(Color tracksColor);
+    void setTracksColor(Color color);
 
     /**
      * Returns the color of the gun.
+     *
      * @return The color of the gun.
      */
     Color getGunColor();
@@ -825,9 +835,9 @@ public interface IBaseBot {
      *     setGunColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
-     * @param gunColor is the new gun color of the bot.
+     * @param color is the color of the gun or {@code null} if the bot uses the default color.
      */
-    void setGunColor(Color gunColor);
+    void setGunColor(Color color);
 
     /**
      * The event handler triggered when connected to the server.

@@ -329,46 +329,53 @@ namespace Robocode.TankRoyale.BotApi
     public bool IsStopped => __baseBotInternals.IsStopped;
 
     /// <inheritdoc/>
-    public Color GetBodyColor() => __baseBotInternals.CurrentTick.BotState.BodyColor;
+    public Color BodyColor
+    {
+      get => __baseBotInternals.CurrentTick.BotState.BodyColor;
+      set => __baseBotInternals.BotIntent.BodyColor = ToIntentColor(value);
+    }
 
     /// <inheritdoc/>
-    public void SetBodyColor(Color bodyColor) => __baseBotInternals.BotIntent.BodyColor = ToIntentColor(bodyColor);
+    public Color TurretColor
+    {
+      get => __baseBotInternals.CurrentTick.BotState.TurretColor;
+      set => __baseBotInternals.BotIntent.TurretColor = ToIntentColor(value);
+    }
 
     /// <inheritdoc/>
-    public Color GetTurretColor() => __baseBotInternals.CurrentTick.BotState.TurretColor;
+    public Color RadarColor
+    {
+      get => __baseBotInternals.CurrentTick.BotState.RadarColor;
+      set => __baseBotInternals.BotIntent.RadarColor = ToIntentColor(value);
+    }
 
     /// <inheritdoc/>
-    public void SetTurretColor(Color turretColor) => __baseBotInternals.BotIntent.TurretColor = ToIntentColor(turretColor);
+    public Color BulletColor
+    {
+      get => __baseBotInternals.CurrentTick.BotState.BulletColor;
+      set => __baseBotInternals.BotIntent.BulletColor = ToIntentColor(value);
+    }
 
     /// <inheritdoc/>
-    public Color GetRadarColor() => __baseBotInternals.CurrentTick.BotState.RadarColor;
+    public Color ScanColor
+    {
+      get => __baseBotInternals.CurrentTick.BotState.ScanColor;
+      set => __baseBotInternals.BotIntent.ScanColor = ToIntentColor(value);
+    }
 
     /// <inheritdoc/>
-    public void SetRadarColor(Color radarColor) => __baseBotInternals.BotIntent.RadarColor = ToIntentColor(radarColor);
+    public Color TracksColor
+    {
+      get => __baseBotInternals.CurrentTick.BotState.TracksColor;
+      set => __baseBotInternals.BotIntent.TracksColor = ToIntentColor(value);
+    }
 
     /// <inheritdoc/>
-    public Color GetBulletColor() => __baseBotInternals.CurrentTick.BotState.BulletColor;
-
-    /// <inheritdoc/>
-    public void SetBulletColor(Color bulletColor) => __baseBotInternals.BotIntent.BulletColor = ToIntentColor(bulletColor);
-
-    /// <inheritdoc/>
-    public Color GetScanColor() => __baseBotInternals.CurrentTick.BotState.ScanColor;
-
-    /// <inheritdoc/>
-    public void SetScanColor(Color scanColor) => __baseBotInternals.BotIntent.ScanColor = ToIntentColor(scanColor);
-
-    /// <inheritdoc/>
-    public Color GetTracksColor() => __baseBotInternals.CurrentTick.BotState.TracksColor;
-
-    /// <inheritdoc/>
-    public void SetTracksColor(Color tracksColor) => __baseBotInternals.BotIntent.TracksColor = ToIntentColor(tracksColor);
-
-    /// <inheritdoc/>
-    public Color GetGunColor() => __baseBotInternals.CurrentTick.BotState.GunColor;
-
-    /// <inheritdoc/>
-    public void SetGunColor(Color gunColor) => __baseBotInternals.BotIntent.GunColor = ToIntentColor(gunColor);
+    public Color GunColor
+    {
+      get => __baseBotInternals.CurrentTick.BotState.GunColor;
+      set => __baseBotInternals.BotIntent.GunColor = ToIntentColor(value);
+    }
 
     /// <inheritdoc/>
     public double CalcMaxTurnRate(double speed) => Constants.MaxTurnRate - 0.75 * Math.Abs(speed);

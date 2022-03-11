@@ -21,7 +21,7 @@ public final class BulletStateMapper {
                 source.getY(),
                 source.getDirection(),
                 source.getSpeed(),
-                Color.fromRgbInt(source.getColor()));
+                Color.fromRgb(source.getColor()));
     }
 
     public static Set<BulletState> map(final Collection<dev.robocode.tankroyale.schema.BulletState> source) {

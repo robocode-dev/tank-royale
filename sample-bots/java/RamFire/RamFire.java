@@ -27,9 +27,9 @@ public class RamFire extends Bot {
     @Override
     public void run() {
         // Set colors
-        setBodyColor(Color.fromHexTriplet("999"));   // lighter gray
-        setTurretColor(Color.fromHexTriplet("888")); // gray
-        setRadarColor(Color.fromHexTriplet("666"));  // dark gray
+        setBodyColor(Color.fromHex("999"));   // lighter gray
+        setTurretColor(Color.fromHex("888")); // gray
+        setRadarColor(Color.fromHex("666"));  // dark gray
 
         while (isRunning()) {
             turnLeft(5 * turnDirection);

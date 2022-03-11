@@ -31,12 +31,12 @@ public class Fire extends Bot {
         isScanning = false; // Clear scanning flag for each new turn
 
         // Set colors
-        setBodyColor(Color.fromHexTriplet("FA0")); // orange
-        setGunColor(Color.fromHexTriplet("F70")); // dark orange
-        setTurretColor(Color.fromHexTriplet("F70")); // dark orange
-        setRadarColor(Color.fromHexTriplet("F00")); // red
-        setScanColor(Color.fromHexTriplet("F00")); // red
-        setBulletColor(Color.fromHexTriplet("08F")); // light blue
+        setBodyColor(Color.fromHex("FA0"));   // orange
+        setGunColor(Color.fromHex("F70"));    // dark orange
+        setTurretColor(Color.fromHex("F70")); // dark orange
+        setRadarColor(Color.fromHex("F00"));  // red
+        setScanColor(Color.fromHex("F00"));   // red
+        setBulletColor(Color.fromHex("08F")); // light blue
 
         // Spin the gun around slowly... forever
         while (isRunning()) {

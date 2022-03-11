@@ -14,7 +14,7 @@ namespace Robocode.TankRoyale.BotApi.Mapper
         source.Y,
         source.Direction,
         source.Speed,
-        Color.FromRgbInt(source.Color)
+        Color.FromRgb(source.Color)
       );
     }
 

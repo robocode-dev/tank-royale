@@ -568,214 +568,84 @@ namespace Robocode.TankRoyale.BotApi
     bool IsStopped { get; }
 
     /// <summary>
-    /// Returns the RGB color of the body. The color is an integer in hexadecimal format
-    /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
-    /// 
-    /// See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
-    /// https://www.rapidtables.com/web/color/RGB_Color.html</a>
+    /// The color of the body. Colors can (only) be changed each turn.
     /// </summary>
-    /// <returns>The color of the body or <c>null</c> if the bot uses the default
-    /// color.</returns>
-    Color GetBodyColor();
+    /// <example>
+    /// BodyColor = Color.RED; // the red color
+    /// BodyColor = new Color(255, 0, 0); // also the red color
+    /// BodyColor = Color.fromHexTriplet("F00"); // and also the red color
+    /// </example>
+    /// <value>Is the color of the body or <c>null</c> if the bot uses the default color.</value>
+    Color BodyColor { get; set; }
 
     /// <summary>
-    /// Sets the color of the body. Colors can be changed each turn.
-    /// <note>
-    /// Currently only the number format using the number sign (#) is supported.
+    /// The color of the gun turret. Colors can (only) be changed each turn.
+    /// </summary>
+    /// <example>
+    /// TurretColor = Color.RED; // the red color
+    /// TurretColor = new Color(255, 0, 0); // also the red color
+    /// TurretColor = Color.fromHexTriplet("F00"); // and also the red color
+    /// </example>
+    /// <value>Is the color of the gun turret or <c>null</c> if the bot uses the default color.</value>
+    Color TurretColor { get; set; }
+
+    /// <summary>
+    /// The color of the radar. Colors can (only) be changed each turn.
+    /// </summary>
+    /// <example>
+    /// RadarColor = Color.RED; // the red color
+    /// RadarColor = new Color(255, 0, 0); // also the red color
+    /// RadarColor = Color.fromHexTriplet("F00"); // and also the red color
+    /// </example>
+    /// <value>Is the color of the radar or <c>null</c> if the bot uses the default color.</value>
+    Color RadarColor { get; set; }
+
+    /// <summary>
+    /// The color of the fired bullets. Colors can (only) be changed each turn.
     ///
-    /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
-    /// https://en.wikipedia.org/wiki/Web_colors</a>
-    /// </note>
+    /// Note that a fired bullet will not change is color when it has been fired. But new bullets fired
+    /// after setting the bullet color will get the new color.
     /// </summary>
     /// <example>
-    /// <code>
-    /// SetBodyColor("#09C");
-    /// SetBodyColor("#0099CC"); // same color as above
-    /// </code>
+    /// BulletColor = Color.RED; // the red color
+    /// BulletColor = new Color(255, 0, 0); // also the red color
+    /// BulletColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
-    /// <param name="bodyColor">Is the new body color of the bot. Currently, hexadecimal number
-    /// format is being used.</param>
-    void SetBodyColor(Color bodyColor);
+    /// <value>Is the color of the fired bullets or <c>null</c> if the bot uses the default color.</value>
+    Color BulletColor { get; set; }
 
     /// <summary>
-    /// Returns the RGB color of the gun turret. The color is an integer in hexadecimal format
-    /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
-    /// 
-    /// See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
-    /// https://www.rapidtables.com/web/color/RGB_Color.html</a>
-    /// </summary>
-    /// <returns>The color of the gun turret or <c>null</c> if the bot uses the default
-    /// color.</returns>
-    Color GetTurretColor();
-
-    /// <summary>
-    /// Sets the color of the gun turret. Colors can be changed each turn.
-    /// <note>
-    /// Currently only the number format using the number sign (#) is supported.
-    ///
-    /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
-    /// https://en.wikipedia.org/wiki/Web_colors</a>
-    /// </note>
+    /// The color of the scan arc. Colors can (only) be changed each turn.
     /// </summary>
     /// <example>
-    /// <code>
-    /// SetTurretColor("#09C");
-    /// SetTurretColor("#0099CC"); // same color as above
-    /// </code>
+    /// ScanColor = Color.RED; // the red color
+    /// ScanColor = new Color(255, 0, 0); // also the red color
+    /// ScanColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
-    /// <param name="turretColor">Is the new gun turret color of the bot. Currently, hexadecimal number
-    /// format is being used.</param>
-    void SetTurretColor(Color turretColor);
+    /// <value>Is the color of the scan arc or <c>null</c> if the bot uses the default color.</value>
+    Color ScanColor { get; set; }
 
     /// <summary>
-    /// Returns the RGB color of the radar. The color is an integer in hexadecimal format
-    /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
-    /// 
-    /// See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
-    /// https://www.rapidtables.com/web/color/RGB_Color.html</a>
-    /// </summary>
-    /// <returns>The color of the radar or <c>null</c> if the bot uses the default
-    /// color.</returns>
-    Color GetRadarColor();
-
-    /// <summary>
-    /// Sets the color of the radar. Colors can be changed each turn.
-    /// <note>
-    /// Currently only the number format using the number sign (#) is supported.
-    /// 
-    /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
-    /// https://en.wikipedia.org/wiki/Web_colors</a>
-    /// </note>
+    /// The color of the tracks. Colors can (only) be changed each turn.
     /// </summary>
     /// <example>
-    /// <code>
-    /// SetRadarColor("#09C");
-    /// SetRadarColor("#0099CC"); // same color as above
-    /// </code>
+    /// TracksColor = Color.RED; // the red color
+    /// TracksColor = new Color(255, 0, 0); // also the red color
+    /// TracksColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
-    /// <param name="radarColor">Is the new radar color of the bot. Currently, hexadecimal number
-    /// format is being used.</param>
-    void SetRadarColor(Color radarColor);
+    /// <value>Is the color of the tracks or <c>null</c> if the bot uses the default color.</value>
+    Color TracksColor { get; set; }
 
     /// <summary>
-    /// Returns the RGB color of the bullets when fired. The color is an integer in hexadecimal format
-    /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
-    /// 
-    /// See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
-    /// https://www.rapidtables.com/web/color/RGB_Color.html</a>
-    /// </summary>
-    /// <returns>The color of the bullets or <c>null</c> if the bot uses the default
-    /// color.</returns>
-    Color GetBulletColor();
-
-    /// <summary>
-    /// Sets the color of the bullet when fired. Colors can be changed each turn.
-    /// <note>
-    /// Currently only the number format using the number sign (#) is supported.
-    /// 
-    /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
-    /// https://en.wikipedia.org/wiki/Web_colors</a>
-    /// </note>
+    /// The color of the gun. Colors can (only) be changed each turn.
     /// </summary>
     /// <example>
-    /// <code>
-    /// SetBulletColor("#09C");
-    /// SetBulletColor("#0099CC"); // same color as above
-    /// </code>
+    /// GunColor = Color.RED; // the red color
+    /// GunColor = new Color(255, 0, 0); // also the red color
+    /// GunColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
-    /// <param name="bulletColor">Is the new bullets color of the bot. Currently, hexadecimal number
-    /// format is being used.</param>
-    void SetBulletColor(Color bulletColor);
-
-    /// <summary>
-    /// Returns the RGB color of the scan arc. The color is an integer in hexadecimal format
-    /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
-    /// 
-    /// See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
-    /// https://www.rapidtables.com/web/color/RGB_Color.html</a>
-    /// </summary>
-    /// <returns>The color of the scan arc or <c>null</c> if the bot uses the default
-    /// color.</returns>
-    Color GetScanColor();
-
-    /// <summary>
-    /// Sets the color of the scan arc. Colors can be changed each turn.
-    /// <note>
-    /// Currently only the number format using the number sign (#) is supported.
-    /// 
-    /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
-    /// https://en.wikipedia.org/wiki/Web_colors</a>
-    /// </note>
-    /// </summary>
-    /// <example>
-    /// <code>
-    /// SetScanColor("#09C");
-    /// SetScanColor("#0099CC"); // same color as above
-    /// </code>
-    /// </example>
-    /// <param name="scanColor">Is the new scan arc color of the bot. Currently, hexadecimal number
-    /// format is being used.</param>
-    void SetScanColor(Color scanColor);
-
-    /// <summary>
-    /// Returns the RGB color of the tracks. The color is an integer in hexadecimal format
-    /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
-    /// 
-    /// See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
-    /// https://www.rapidtables.com/web/color/RGB_Color.html</a>
-    /// </summary>
-    /// <returns>The color of the tracks or <c>null</c> if the bot uses the default
-    /// color.</returns>
-    Color GetTracksColor();
-
-    /// <summary>
-    /// Sets the color of the tracks. Colors can be changed each turn.
-    /// <note>
-    /// Currently only the number format using the number sign (#) is supported.
-    /// 
-    /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
-    /// https://en.wikipedia.org/wiki/Web_colors</a>
-    /// </note>
-    /// </summary>
-    /// <example>
-    /// <code>
-    /// SetTracksColor("#09C");
-    /// SetTracksColor("#0099CC"); // same color as above
-    /// </code>
-    /// </example>
-    /// <param name="tracksColor">Is the new tracks color of the bot. Currently, hexadecimal number
-    /// format is being used.</param>
-    void SetTracksColor(Color tracksColor);
-
-    /// <summary>
-    /// Returns the RGB color of the gun. The color is an integer in hexadecimal format
-    /// using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.
-    /// 
-    /// See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
-    /// https://www.rapidtables.com/web/color/RGB_Color.html</a>
-    /// </summary>
-    /// <returns>The color of the gun or <c>null</c> if the bot uses the default
-    /// color.</returns>
-    Color GetGunColor();
-
-    /// <summary>
-    /// Sets the color of the gun. Colors can be changed each turn.
-    /// <note>
-    /// Currently only the number format using the number sign (#) is supported.
-    /// 
-    /// See <a href="https://en.wikipedia.org/wiki/Web_colors">
-    /// https://en.wikipedia.org/wiki/Web_colors</a>
-    /// </note>
-    /// </summary>
-    /// <example>
-    /// <code>
-    /// SetGunColor("#09C");
-    /// SetGunColor("#0099CC"); // same color as above
-    /// </code>
-    /// </example>
-    /// <param name="gunColor">Is the new gun color of the bot. Currently, hexadecimal number
-    /// format is being used.</param>
-    void SetGunColor(Color gunColor);
+    /// <value>Is the color of the gun or <c>null</c> if the bot uses the default color.</value>
+    Color GunColor { get; set; }
 
     /// <summary>
     /// The event handler triggered when connected to the server.

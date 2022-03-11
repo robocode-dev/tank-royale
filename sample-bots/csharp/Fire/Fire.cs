@@ -30,12 +30,12 @@ public class Fire : Bot
         isScanning = false; // Clear scanning flag for each new turn
 
         // Set colors
-        SetBodyColor(Color.FromHexTriplet("FA0"));   // orange
-        SetGunColor(Color.FromHexTriplet("F70"));    // dark orange
-        SetTurretColor(Color.FromHexTriplet("F70")); // dark orange
-        SetRadarColor(Color.FromHexTriplet("F00"));  // red
-        SetScanColor(Color.FromHexTriplet("F00"));   // red
-        SetBulletColor(Color.FromHexTriplet("08F")); // light blue
+        BodyColor = Color.FromHex("FA0");   // orange
+        GunColor = Color.FromHex("F70");    // dark orange
+        TurretColor = Color.FromHex("F70"); // dark orange
+        RadarColor = Color.FromHex("F00");  // red
+        ScanColor = Color.FromHex("F00");   // red
+        BulletColor = Color.FromHex("08F"); // light blue
 
         // Spin the gun around slowly... forever
         while (IsRunning)
