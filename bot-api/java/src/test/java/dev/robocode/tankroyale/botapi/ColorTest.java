@@ -19,15 +19,12 @@ class ColorTest {
                 "0xFF, 0xFF, 0xFF",
                 "0x13, 0x9A, 0xF7"
         })
-        void constructor_ShouldWork(String red, String green, String blue) {
-            var redValue = Integer.decode(red);
-            var greenValue = Integer.decode(green);
-            var blueValue = Integer.decode(blue);
-            var color = new Color(redValue, greenValue, blueValue);
+        void constructor_ShouldWork(int red, int green, int blue) {
+            var color = new Color(red, green, blue);
 
-            assertThat(color.getRed()).isEqualTo(redValue);
-            assertThat(color.getGreen()).isEqualTo(greenValue);
-            assertThat(color.getBlue()).isEqualTo(blueValue);
+            assertThat(color.getRed()).isEqualTo(red);
+            assertThat(color.getGreen()).isEqualTo(green);
+            assertThat(color.getBlue()).isEqualTo(blue);
         }
 
         @ParameterizedTest
@@ -39,45 +36,37 @@ class ColorTest {
                 "255, 1000, 0",     // number too big  (2nd param)
                 "50, 100, 300",     // number too big  (3rd param)
         })
-        void constructor_ShouldThrowException(String red, String green, String blue) {
-            var redValue = Integer.decode(red);
-            var greenValue = Integer.decode(green);
-            var blueValue = Integer.decode(blue);
-
+        void constructor_ShouldThrowException(int red, int green, int blue) {
             assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-                    () -> new Color(redValue, greenValue, blueValue)
+                    () -> new Color(red, green, blue)
             );
         }
     }
 
     @Nested
-    class FromRgbIntTests {
+    class FromRgbTests {
         @ParameterizedTest
         @CsvSource({
                 "0x000000, 0x00, 0x00, 0x00",
                 "0xfFfFfF, 0xFF, 0xFF, 0xFF",
                 "0x139aF7, 0x13, 0x9A, 0xF7"
         })
-        void fromRgbInt_ShouldWork(String input, String expectedRed, String expectedGreen, String expectedBlue) {
+        void fromRgb_ShouldWork(String input, int expectedRed, int expectedGreen, int expectedBlue) {
             var color = Color.fromRgb(Integer.decode(input));
 
-            var redValue = Integer.decode(expectedRed);
-            var greenValue = Integer.decode(expectedGreen);
-            var blueValue = Integer.decode(expectedBlue);
-
-            assertThat(color.getRed()).isEqualTo(redValue);
-            assertThat(color.getGreen()).isEqualTo(greenValue);
-            assertThat(color.getBlue()).isEqualTo(blueValue);
+            assertThat(color.getRed()).isEqualTo(expectedRed);
+            assertThat(color.getGreen()).isEqualTo(expectedGreen);
+            assertThat(color.getBlue()).isEqualTo(expectedBlue);
         }
 
         @Test
-        void fromRegInt_shouldReturnNullWhenInputIsNull() {
+        void fromReg_shouldReturnNullWhenInputIsNull() {
             assertThat(Color.fromRgb(null)).isNull();
         }
     }
 
     @Nested
-    class FromHexTripletTests {
+    class FromHexTests {
         @ParameterizedTest
         @CsvSource({
                 "000000, 0x00, 0x00, 0x00",
@@ -91,16 +80,12 @@ class ColorTest {
                 "  123, 0x11, 0x22, 0x33",    // White spaces
                 "AbC\t, 0xAA, 0xBB, 0xCC"     // White space
         })
-        void fromHexTriplet_ShouldWork(String hexTriplet, String expectedRed, String expectedGreen, String expectedBlue) {
-            var color = Color.fromHex(hexTriplet);
+        void fromHex_ShouldWork(String hex, int expectedRed, int expectedGreen, int expectedBlue) {
+            var color = Color.fromHex(hex);
 
-            var redValue = Integer.decode(expectedRed);
-            var greenValue = Integer.decode(expectedGreen);
-            var blueValue = Integer.decode(expectedBlue);
-
-            assertThat(color.getRed()).isEqualTo(redValue);
-            assertThat(color.getGreen()).isEqualTo(greenValue);
-            assertThat(color.getBlue()).isEqualTo(blueValue);
+            assertThat(color.getRed()).isEqualTo(expectedRed);
+            assertThat(color.getGreen()).isEqualTo(expectedGreen);
+            assertThat(color.getBlue()).isEqualTo(expectedBlue);
         }
 
         @ParameterizedTest
@@ -111,9 +96,9 @@ class ColorTest {
                 "xxxxxx",   // Wrong letters
                 "abcdeG",   // Wrong letter
         })
-        void fromHexTriplet_ShouldThrowException(String hexTriplet) {
+        void fromHex_ShouldThrowException(String hex) {
             assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-                    () -> Color.fromHex(hexTriplet)
+                    () -> Color.fromHex(hex)
             );
         }
     }
