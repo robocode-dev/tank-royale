@@ -14,7 +14,7 @@ tasks {
         commandLine(
             "$projectDir/bin/Release/net5.0/CodeGeneratorApp",
             "${project(":schema").file("schemas")}",
-            "${project(":bot-api:dotnet").file("src/generated")}"
+            "${project(":bot-api:dotnet").file("bot-api/src/generated")}"
         )
     }
 }

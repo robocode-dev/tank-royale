@@ -27,7 +27,7 @@
 
     <PackageProjectUrl>https://robocode-dev.github.io/tank-royale/docs/</PackageProjectUrl>
 
-    <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/docs/Release-notes.txt"))</PackageReleaseNotes>
+    <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../docs/Release-notes.txt"))</PackageReleaseNotes>
 
   </PropertyGroup>
 
@@ -43,7 +43,7 @@
 
     <!-- Icon -->
     <None Include="icon.png" Pack="true" PackagePath="\" />
-    <None Include="docs/ReadMe.md" Pack="true" PackagePath="\" />
+    <None Include="../docs/ReadMe.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

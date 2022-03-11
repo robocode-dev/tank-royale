@@ -19,11 +19,17 @@ plugins {
 }
 
 dotnet {
+    solution = "bot-api/bot-api.csproj"
+
     projectName = artifactName
 
     build {
         version = libs.versions.tankroyale.get()
         packageVersion = version
+    }
+
+    test {
+        solution = "bot-api.tests/bot-api.tests.csproj"
     }
 
     nugetPush {
@@ -34,7 +40,18 @@ dotnet {
 
 tasks {
     clean {
-        delete("bin", "build", "obj", "docfx_project/_site", "docfx_project/api", "docfx_project/obj")
+        doLast {
+            delete(
+                "build",
+                "bot-api/obj",
+                "bot-api/bin",
+                "bot-api.tests/obj",
+                "bot-api.tests/bin",
+                "docfx_project/_site",
+                "docfx_project/api",
+                "docfx_project/obj"
+            )
+        }
     }
 
     val docfx by registering {
