@@ -90,7 +90,7 @@ public class Color {
      *
      * @return the color as a hex triplet of six hexadecimal digits representing an RGB color, e.g. "0099CC".
      */
-    public String toHexTriplet() {
+    public String toHex() {
         return toHex(red) + toHex(green) + toHex(blue);
     }
 
@@ -125,6 +125,7 @@ public class Color {
      * @see <a href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</a>
      */
     public static Color fromHex(String hexTriplet) {
+        hexTriplet = hexTriplet.trim();
         if (threeHexDigits.matcher(hexTriplet).matches()) {
             return fromThreeHexDigits(hexTriplet);
         }
@@ -169,6 +170,6 @@ public class Color {
 
     @Override
     public String toString() {
-        return toHexTriplet();
+        return toHex();
     }
 }

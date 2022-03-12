@@ -29,12 +29,12 @@ class ColorTest {
 
         @ParameterizedTest
         @CsvSource({
-                "-1, 70, 100",      // negative number (1st param)
-                "50, -100, 100",    // negative number (2nd param)
-                "50, 70, -1000",    // negative number (3rd param)
-                "256, 255, 255",    // number too big  (1st param)
-                "255, 1000, 0",     // number too big  (2nd param)
-                "50, 100, 300",     // number too big  (3rd param)
+                "-1, 70, 100",    // negative number (1st param)
+                "50, -100, 100",  // negative number (2nd param)
+                "50, 70, -1000",  // negative number (3rd param)
+                "256, 255, 255",  // number too big  (1st param)
+                "255, 1000, 0",   // number too big  (2nd param)
+                "50, 100, 300",   // number too big  (3rd param)
         })
         void constructor_ShouldThrowException(int red, int green, int blue) {
             assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
@@ -51,8 +51,8 @@ class ColorTest {
                 "0xfFfFfF, 0xFF, 0xFF, 0xFF",
                 "0x139aF7, 0x13, 0x9A, 0xF7"
         })
-        void fromRgb_ShouldWork(String input, int expectedRed, int expectedGreen, int expectedBlue) {
-            var color = Color.fromRgb(Integer.decode(input));
+        void fromRgb_ShouldWork(int rgb, int expectedRed, int expectedGreen, int expectedBlue) {
+            var color = Color.fromRgb(rgb);
 
             assertThat(color.getRed()).isEqualTo(expectedRed);
             assertThat(color.getGreen()).isEqualTo(expectedGreen);
@@ -60,7 +60,7 @@ class ColorTest {
         }
 
         @Test
-        void fromReg_shouldReturnNullWhenInputIsNull() {
+        void fromRgb_shouldReturnNullWhenInputIsNull() {
             assertThat(Color.fromRgb(null)).isNull();
         }
     }
@@ -68,19 +68,21 @@ class ColorTest {
     @Nested
     class FromHexTests {
         @ParameterizedTest
-        @CsvSource({
-                "000000, 0x00, 0x00, 0x00",
-                "000, 0x00, 0x00, 0x00",
-                "FfFfFf, 0xFF, 0xFF, 0xFF",
-                "fFF, 0xFF, 0xFF, 0xFF",
-                "1199cC, 0x11, 0x99, 0xCC",
-                "19C, 0x11, 0x99, 0xCC",
-                "  123456, 0x12, 0x34, 0x56", // White spaces
-                "789aBc\t, 0x78, 0x9A, 0xBC", // White space
-                "  123, 0x11, 0x22, 0x33",    // White spaces
-                "AbC\t, 0xAA, 0xBB, 0xCC"     // White space
+        @CsvSource(ignoreLeadingAndTrailingWhitespace = false, value = {
+                "000000,0x00,0x00,0x00",
+                "000,0x00,0x00,0x00",
+                "FfFfFf,0xFF,0xFF,0xFF",
+                "fFF,0xFF,0xFF,0xFF",
+                "1199cC,0x11,0x99,0xCC",
+                "19C,0x11,0x99,0xCC",
+                "  123456,0x12,0x34,0x56", // White spaces
+                "789aBc\t,0x78,0x9A,0xBC", // White space
+                "  123,0x11,0x22,0x33",    // White spaces
+                "AbC\t,0xAA,0xBB,0xCC"     // White space
         })
         void fromHex_ShouldWork(String hex, int expectedRed, int expectedGreen, int expectedBlue) {
+            System.out.println("\"" + hex + "\"");
+
             var color = Color.fromHex(hex);
 
             assertThat(color.getRed()).isEqualTo(expectedRed);
@@ -100,6 +102,20 @@ class ColorTest {
             assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
                     () -> Color.fromHex(hex)
             );
+        }
+    }
+
+    @Nested
+    class ToHexTests {
+        @ParameterizedTest
+        @CsvSource({
+                "000000",
+                "FEDCBA",
+                "123456"
+        })
+        void toHex_ShouldWork(String hex) {
+            var color = Color.fromHex(hex);
+            assertThat(color.toHex()).isEqualToIgnoringCase(hex);
         }
     }
 

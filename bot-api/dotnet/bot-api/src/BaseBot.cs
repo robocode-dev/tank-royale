@@ -505,7 +505,7 @@ namespace Robocode.TankRoyale.BotApi
     public virtual void OnCustomEvent(CustomEvent customEvent) { }
 
     private static string ToIntentColor(Color color) {
-      return color == null ? null : "#" + color.ToHexTriplet();
+      return color == null ? null : "#" + color.ToHex();
     }
   }
 }

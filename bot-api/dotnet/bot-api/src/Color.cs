@@ -79,7 +79,7 @@ namespace Robocode.TankRoyale.BotApi
         /// Returns the color as a hex triplet of six hexadecimal digits representing an RGB color, e.g. "0099CC".
         /// </summary>
         /// <returns>The color as a hex triplet of six hexadecimal digits representing an RGB color, e.g. "0099CC".</returns>
-        public string ToHexTriplet()
+        public string ToHex()
         {
             return ToHex(RedValue) + ToHex(GreenValue) + ToHex(BlueValue);
         }
@@ -112,19 +112,21 @@ namespace Robocode.TankRoyale.BotApi
         ///
         /// An example of a hex triplet is "09C" or "0099CC", which both represents the same color.
         /// </summary>
-        /// <param name="hexTriplet">A string containing either a three or six hexadecimal numbers like "09C" or "0099CC".</param>
+        /// <param name="hex">A string containing either a three or six hexadecimal numbers like "09C" or "0099CC".</param>
         /// <returns>The created Color.</returns>
         /// <exception cref="ArgumentException"/>
         /// <see href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</see>
         /// <see href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</see>
-        public static Color FromHex(string hexTriplet) {
-            if (Regex.Match(hexTriplet, ThreeHexDigits).Success)
+        public static Color FromHex(string hex)
+        {
+            hex = hex.Trim();
+            if (Regex.Match(hex, ThreeHexDigits).Success)
             {
-                return FromThreeHexDigits(hexTriplet);
+                return FromThreeHexDigits(hex);
             }
-            if (Regex.Match(hexTriplet, SixHexDigits).Success)
+            if (Regex.Match(hex, SixHexDigits).Success)
             {
-                return FromSixHexDigits(hexTriplet);
+                return FromSixHexDigits(hex);
             }
             throw new ArgumentException("You must supply 3 or 6 hex digits [0-9a-fA-F]");
         }
@@ -165,7 +167,7 @@ namespace Robocode.TankRoyale.BotApi
 
         public override string ToString()
         {
-            return ToHexTriplet();
+            return ToHex();
         }
     }
 }

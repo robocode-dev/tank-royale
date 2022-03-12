@@ -668,6 +668,6 @@ public abstract class BaseBot implements IBaseBot {
     }
 
     private static String toIntentColor(Color color) {
-        return color == null ? null : "#" + color.toHexTriplet();
+        return color == null ? null : "#" + color.toHex();
     }
 }
