@@ -15,11 +15,12 @@ import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onMultiClickedAtIndex
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onSelection
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
+import java.awt.EventQueue
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
 import javax.swing.*
 
-object BotSelectionPanel : JPanel(MigLayout("","[sg,grow][center][sg,grow]","[grow][grow]")), FocusListener {
+object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[grow][grow]")), FocusListener {
 
     private val onRunBots = Event<JButton>()
     private val onStopBots = Event<JButton>()
@@ -323,13 +324,22 @@ object BotSelectionPanel : JPanel(MigLayout("","[sg,grow][center][sg,grow]","[gr
 
     private fun updateJoinedBots() {
         SwingUtilities.invokeLater {
+            // Reset the list of joined bots to it matches the joined bots from the client
             joinedBotListModel.apply {
                 clear()
                 Client.joinedBots.forEach { botInfo ->
-                    addElement(botInfo)
+                    EventQueue.invokeLater { addElement(botInfo) }
                 }
             }
-            with (joinedBotsScrollPane.horizontalScrollBar) {
+            // Remove selected bots, if the bots are not on the joined bots from the client
+            selectedBotListModel.apply {
+                list().forEach { botInfo ->
+                    if (!Client.joinedBots.contains(botInfo)) {
+                        EventQueue.invokeLater { removeElement(botInfo) }
+                    }
+                }
+            }
+            with(joinedBotsScrollPane.horizontalScrollBar) {
                 value = maximum
             }
         }
@@ -339,7 +349,7 @@ object BotSelectionPanel : JPanel(MigLayout("","[sg,grow][center][sg,grow]","[gr
         runningBotListModel.addElement(dirAndPid)
 
         SwingUtilities.invokeLater {
-            with (runningScrollPane.horizontalScrollBar) {
+            with(runningScrollPane.horizontalScrollBar) {
                 value = maximum
             }
         }
