@@ -47,7 +47,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// Set the bot to move forward until it has traveled a specific distance from its current
     /// position, or it is moving into an obstacle. The speed is limited by <see
-    /// cref="IBaseBot.SetMaxSpeed"/>.
+    /// cref="IBaseBot.MaxSpeed"/>.
     ///
     /// When the bot is moving forward, the <see cref="Constants.Acceleration"/> determines the acceleration
     /// of the bot that adds 1 additional unit to the speed per turn while accelerating. However,
@@ -78,7 +78,7 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <summary>
     /// Moves the bot forward until it has traveled a specific distance from its current position,
-    /// or it is moving into an obstacle. The speed is limited by <see cref="IBaseBot.SetMaxSpeed"/>.
+    /// or it is moving into an obstacle. The speed is limited by <see cref="IBaseBot.MaxSpeed"/>.
     ///
     /// When the bot is moving forward, the <see cref="Constants.Acceleration"/> determine the acceleration
     /// of the bot that adds 1 additional unit to the speed per turn while accelerating. However,
@@ -105,7 +105,7 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <summary>
     /// Set the bot to move backward until it has traveled a specific distance from its current
-    /// position, or it is moving into an obstacle. The speed is limited by <see cref="IBaseBot.SetMaxSpeed"/>
+    /// position, or it is moving into an obstacle. The speed is limited by <see cref="IBaseBot.MaxSpeed"/>
     ///
     /// When the bot is moving forward, the <see cref="Constants.Acceleration"/> determines the acceleration of
     /// the bot that adds 1 additional unit to the speed per turn while accelerating. However, the bot
@@ -136,7 +136,7 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <summary>
     /// Moves the bot backward until it has traveled a specific distance from its current position, or
-    /// it is moving into an obstacle. The speed is limited by <see cref="IBaseBot.SetMaxSpeed"/>.
+    /// it is moving into an obstacle. The speed is limited by <see cref="IBaseBot.MaxSpeed"/>.
     ///
     /// When the bot is moving forward, the <see cref="Constants.Acceleration"/> determines the acceleration of
     /// the bot that adds 1 additional unit to the speed per turn while accelerating. However, the bot
@@ -180,7 +180,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Set the bot to turn to the left (following the increasing degrees of the <a
     /// href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
     /// amount of degrees. That is, when <see cref="TurnRemaining"/> is 0. The amount of degrees to
-    /// turn each turn is limited by <see cref="IBaseBot.SetMaxTurnRate"/>.
+    /// turn each turn is limited by <see cref="IBaseBot.MaxTurnRate"/>.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
     /// call other set methods before execution. This makes it possible to set the bot to move,
@@ -206,7 +206,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Turn the bot to the left (following the increasing degrees of the <a
     /// href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
     /// amount of degrees. That is, when <see cref="TurnRemaining"/> is 0. The amount of degrees to
-    /// turn each turn is limited by <see cref="IBaseBot.SetMaxTurnRate"/>.
+    /// turn each turn is limited by <see cref="IBaseBot.MaxTurnRate"/>.
     ///
     /// This call is executed immediately by calling <see cref="IBaseBot.Go"/> in the code behind. This
     /// method will block until it has been completed, which can take one to several turns. New
@@ -230,7 +230,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Set the bot to turn to the right (following the decreasing degrees of the <a
     /// href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
     /// amount of degrees. That is, when <see cref="TurnRemaining"/> is 0. The amount of degrees to
-    /// turn each turn is limited by <see cref="IBaseBot.SetMaxTurnRate"/>.
+    /// turn each turn is limited by <see cref="IBaseBot.MaxTurnRate"/>.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
     /// call other set methods before execution. This makes it possible to set the bot to move,
@@ -256,7 +256,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Turn the bot to the right (following the increasing degrees of the <a
     /// href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
     /// amount of degrees. That is, when <see cref="TurnRemaining"/> is 0. The amount of degrees to
-    /// turn each turn is limited by <see cref="IBaseBot.SetMaxTurnRate"/>.
+    /// turn each turn is limited by <see cref="IBaseBot.MaxTurnRate"/>.
     ///
     /// This call is executed immediately by calling <see cref="IBaseBot.Go"/> in the code behind. This
     /// method will block until it has been completed, which can take one to several turns. New
@@ -411,7 +411,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Set the radar to turn to the left (following the increasing degrees of the <a
     /// href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
     /// amount of degrees. That is, when <see cref="RadarTurnRemaining"/> is 0. The amount of degrees
-    /// to turn each turn is limited by <see cref="IBaseBot.SetMaxRadarTurnRate"/>.
+    /// to turn each turn is limited by <see cref="IBaseBot.MaxRadarTurnRate"/>.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
     /// call other set methods before execution. This makes it possible to set the bot to move,
@@ -437,7 +437,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Turn the radar to the left (following the increasing degrees of the <a
     /// href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
     /// amount of degrees. That is, when <see cref="RadarTurnRemaining"/> is 0. The amount of degrees
-    /// to turn each turn is limited by <see cref="IBaseBot.SetMaxRadarTurnRate"/>.
+    /// to turn each turn is limited by <see cref="IBaseBot.MaxRadarTurnRate"/>.
     ///
     /// This call is executed immediately by calling <see cref="IBaseBot.Go"/> in the code behind. This
     /// method will block until it has been completed, which can take one to several turns. New
@@ -461,7 +461,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Turn the radar to the right (following the decreasing degrees of the <a
     /// href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
     /// amount of degrees. That is, when <see cref="RadarTurnRemaining"/> is 0. The amount of degrees
-    /// to turn each turn is limited by <see cref="IBaseBot.SetMaxRadarTurnRate"/>.
+    /// to turn each turn is limited by <see cref="IBaseBot.MaxRadarTurnRate"/>.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
     /// call other set methods before execution. This makes it possible to set the bot to move,
@@ -488,7 +488,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Turn the radar to the right (following the increasing degrees of the <a
     /// href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
     /// amount of degrees. That is, when <see cref="RadarTurnRemaining"/> is 0. The amount of degrees
-    /// to turn each turn is limited by <see cref="IBaseBot.SetMaxRadarTurnRate"/>.
+    /// to turn each turn is limited by <see cref="IBaseBot.MaxRadarTurnRate"/>.
     ///
     /// This call is executed immediately by calling <see cref="IBaseBot.Go"/> in the code behind. This
     /// method will block until it has been completed, which can take one to several turns. New

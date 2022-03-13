@@ -22,7 +22,7 @@ namespace Robocode.TankRoyale.BotApi
     /// Example of how to set the predefined environment variables:
     ///
     /// SERVER_URL=ws://localhost<br/>
-    /// SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ<br>
+    /// SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ<br/>
     /// BOT_NAME=MyBot<br/>
     /// BOT_VERSION=1.0<br/>
     /// BOT_AUTHOR=fnl<br/>
@@ -33,7 +33,7 @@ namespace Robocode.TankRoyale.BotApi
     /// BOT_PLATFORM=.Net Core 3.1<br/>
     /// BOT_PROG_LANG=C# 8<br/>
     /// </summary>
-    public Bot() : base()
+    public Bot()
     {
       __botInternals = new BotInternals(this, base.__baseBotInternals);
     }

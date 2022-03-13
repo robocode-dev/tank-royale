@@ -70,7 +70,7 @@ tasks {
             }
         }
     }
-/*
+
     register<Copy>("uploadDocs") {
         dependsOn(docfx)
 
@@ -84,7 +84,7 @@ tasks {
         from("docfx_project/_site")
         into(dotnetApiDir)
     }
-*/
+
     register("pushLocal") {
         dependsOn(build)
 
@@ -92,7 +92,7 @@ tasks {
             val userprofile = System.getenv("USERPROFILE")
             delete("$userprofile/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
             exec {
-                workingDir("bin/Release")
+                workingDir("bot-api/bin/Release")
                 commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "-s", "local")
             }
         }

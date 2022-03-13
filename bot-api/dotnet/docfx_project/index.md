@@ -6,18 +6,16 @@ game server behind the scene, so you can focus on the fun part of controlling th
 A good way to get started with Robocode Tank Royale is to head over to the general documentation for Tank Royale to
 learn about the basics first:
 
-* [Robocode Tank Royale Docs](https://robocode-dev.github.io/tank-royale/docs/)
+* [Robocode Tank Royale Docs]
 
 Another good way to get started is to look at the source files for the sample bots.
 
 ## The bot classes
 
-The first primary class that you know about first is the [Bot](./api/Robocode.TankRoyale.BotApi.Bot.html) class and
-perhaps the [BaseBot](./api/Robocode.TankRoyale.BotApi.BaseBot.html). The
-[BaseBot](./api/Robocode.TankRoyale.BotApi.BaseBot.html) class provides all the base and minimum functionality of a bot
-and deals with the communication with the server. The [Bot](./api/Robocode.TankRoyale.BotApi.Bot.html) class is based on
-BaseBot, but provides more convenient methods like e.g. blocking methods for moving and turning the bot, and firing the
-gun.
+The first primary class that you know about first is the [Bot] class and perhaps the [BaseBot]. The [BaseBot] class
+provides all the base and minimum functionality of a bot and deals with the communication with the server. The [Bot]
+class is based on BaseBot, but provides more convenient methods like e.g. blocking methods for moving and turning the
+bot, and firing the gun.
 
 ## Code example
 
@@ -73,27 +71,23 @@ public class MyFirstBot : Bot
 
 The above code describes the behavior of the robot. The Main() is the main entry point for all C# applications to start
 running the program. Using the bot API, we need to start the robot by calling the
-[IBaseBot.Start()](./api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Start) method of
-the bot API, which will tell the server that this bot wants to join the battle and also provide the server with the
-required bot info.
+[IBaseBot.Start()] method of the bot API, which will tell the server that this bot wants to join the battle and also
+provide the server with the required bot info.
 
-With the bot's constructor (_MyFirstBot()_) we call the [BotInfo.fromFile(string)](
-./api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromFile_System_String_)
-method provides the bot info for the server, like e.g. the name of the bot, and its author, etc.
+With the bot's constructor (_MyFirstBot()_) we call the [BotInfo.fromFile(string)] method provides the bot info for the
+server, like e.g. the name of the bot, and its author, etc.
 
-The [Run()](./api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Run) method is called when the
-bot need to start its real execution to send instructions to the server.
+The [Run()] method is called when the bot need to start its real execution to send instructions to the server.
 
 The on-methods (for example, _onScannedBot_ and _onHitByBullet_) are event handlers with code that triggers when a
-specific type of event occurs. For example, the event handler [BaseBot.OnScannedBot(ScannedBotEvent)](
-./api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnScannedBot_Robocode_TankRoyale_BotApi_Events_ScannedBotEvent_)
-triggers whenever an opponent bot is scanned by the radar. The [ScannedBotEvent](
-./api/Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.html) contains the event data for the scanned bot.
+specific type of event occurs. For example, the event handler [BaseBot.OnScannedBot(ScannedBotEvent)]
+triggers whenever an opponent bot is scanned by the radar. The [ScannedBotEvent] contains the event data for the scanned
+bot.
 
 ## JSON config file
 
-The code in this example is accompanied by a _MyFirstBot.json_, which is a [JSON](https://fileinfo.com/extension/json)
-file containing the config file for the bot, and is used by the **booter** to start up the bot on a local machine.
+The code in this example is accompanied by a _MyFirstBot.json_, which is a [JSON] file containing the config file for
+the bot, and is used by the **booter** to start up the bot on a local machine.
 
 MyFirstBot.json:
 
@@ -111,5 +105,24 @@ MyFirstBot.json:
 }
 ```
 
-You can read more details about the format of this JSON file
-[here](https://robocode-dev.github.io/tank-royale/docs/articles/booter.html#json-config-file.html).
+You can read more details about the format of this JSON
+file [here](https://robocode-dev.github.io/tank-royale/docs/articles/booter.html#json-config-file.html).
+
+
+[Robocode Tank Royale Docs]: https://robocode-dev.github.io/tank-royale/docs/
+
+[Bot]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html
+
+[BaseBot]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html
+
+[IBaseBot.Start()]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Start
+
+[BotInfo.FromFile(string)]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromFile_System_String_
+
+[Run()]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Run
+
+[BaseBot.OnScannedBot(ScannedBotEvent)]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnScannedBot_Robocode_TankRoyale_BotApi_Events_ScannedBotEvent_
+
+[ScannedBotEvent]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.html
+
+[JSON]: https://fileinfo.com/extension/json

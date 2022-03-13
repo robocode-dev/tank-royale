@@ -86,7 +86,7 @@ tasks {
             )
         }
     }
-/*
+
     register<Copy>("uploadDocs") {
         dependsOn(javadoc)
 
@@ -100,7 +100,6 @@ tasks {
         from("build/docs/javadoc")
         into(javadocDir)
     }
-*/
 }
 
 publishing {
