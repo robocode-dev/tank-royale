@@ -41,19 +41,9 @@ You might be able to simply start the application by (double)clicking it, depend
 If you cannot start the Robocode application by clicking it, you should start it from the command line like this. You
 need to stand in the directory containing the .jar file of course.
 
-On Windows:
-
 ```
 java -jar robocode-tankroyale-gui-x.y.z.jar
 ```
-
-On macOS and Linux:
-
-```
-sudo java -jar robocode-tankroyale-gui-x.y.z.jar
-```
-
-Note: The `sudo` is necessary to allow Robocode to start up and run bots within their own processes.
 
 ## Sample bots
 
