@@ -77,7 +77,7 @@
 </div>
   <div class="markdown level0 conceptual"></div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Robocode.TankRoyale.BotApi.html">Robocode.TankRoyale.BotApi</a></h6>
-  <h6><strong>Assembly</strong>: Robocode.TankRoyale.BotApi.dll</h6>
+  <h6><strong>Assembly</strong>: bot-api.dll</h6>
   <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public interface IBaseBot</code></pre>
@@ -86,20 +86,29 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_Acceleration.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.Acceleration%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_AdjustGunForBodyTurn.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.AdjustGunForBodyTurn%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L113">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L488">View Source</a>
   </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_Acceleration_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Acceleration*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_Acceleration" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Acceleration">Acceleration</h4>
-  <div class="markdown level1 summary"><p>Acceleration is the increase in speed per turn, which adds 1 unit to the speed per turn
-when the bot is increasing its speed moving forward.</p>
+  <a id="Robocode_TankRoyale_BotApi_IBaseBot_AdjustGunForBodyTurn_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.AdjustGunForBodyTurn*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_AdjustGunForBodyTurn" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.AdjustGunForBodyTurn">AdjustGunForBodyTurn</h4>
+  <div class="markdown level1 summary"><p>Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun
+behaves like it is turning independent of the bot's turn.</p>
+<p>Ok, so this needs some explanation: The gun is mounted on the bot's body. So, normally, if
+the bot turns 90 degrees to the right, then the gun will turn with it as it is mounted on
+top of the bot's body. To compensate for this, you can adjust the gun for the bot's turn.
+When this is set, the gun will turn independent from the bot's turn.</p>
+<div class="NOTE"><h5>note</h5><p>
+This property is additive until you reach the maximum the gun can turn <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxGunTurnRate">MaxGunTurnRate</a>. The &quot;adjust&quot; is added to the amount, you set for turning the bot
+by the turn rate, then capped by the physics of the game.
+<p>The gun compensating this way does count as &quot;turning the gun&quot;.</p>
+</p></div>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual int Acceleration { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">bool AdjustGunForBodyTurn { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -111,18 +120,70 @@ when the bot is increasing its speed moving forward.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td><p>The acceleration is 1 additional unit per turn.</p>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><em>true</em> if the gun is set to adjust for the bot's turn; <em>false</em>
+otherwise.</p>
 </td>
       </tr>
     </tbody>
   </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_AdjustGunForBodyTurn_seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_AdjustRadarForGunTurn">AdjustRadarForGunTurn</a></div>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_AdjustRadarForGunTurn.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.AdjustRadarForGunTurn%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L510">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_IBaseBot_AdjustRadarForGunTurn_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.AdjustRadarForGunTurn*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_AdjustRadarForGunTurn" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.AdjustRadarForGunTurn">AdjustRadarForGunTurn</h4>
+  <div class="markdown level1 summary"><p>Sets the radar to adjust for the gun's turn when setting the radar turn rate. So the radar
+behaves like it is turning independent of the gun's turn.</p>
+<p>Ok, so this needs some explanation: The radar is mounted on the gun. So, normally, if the
+gun turns 90 degrees to the right, then the radar will turn with it as it is mounted on top
+of the gun. To compensate for this, you can adjust the radar for the gun turn. When this is
+set, the radar will turn independent from the gun's turn.</p>
+<div class="NOTE"><h5>note</h5><p>
+This property is additive until you reach the maximum the radar can turn <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxRadarTurnRate">MaxRadarTurnRate</a>. The &quot;adjust&quot; is added to the amount, you set for turning the gun
+by the gun turn rate, then capped by the physics of the game.
+<p>The radar compensating this way does count as &quot;turning the radar&quot;.</p>
+</p></div>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool AdjustRadarForGunTurn { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><em>true</em> if the radar is set to adjust for the bot's turn; <em>false</em>
+otherwise.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_AdjustRadarForGunTurn_seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_AdjustGunForBodyTurn">AdjustGunForBodyTurn</a></div>
+  </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_ArenaHeight.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.ArenaHeight%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L200">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L88">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_ArenaHeight_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.ArenaHeight*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_ArenaHeight" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.ArenaHeight">ArenaHeight</h4>
@@ -155,7 +216,7 @@ when the bot is increasing its speed moving forward.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_ArenaWidth.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.ArenaWidth%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L192">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L80">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_ArenaWidth_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.ArenaWidth*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_ArenaWidth" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.ArenaWidth">ArenaWidth</h4>
@@ -185,24 +246,19 @@ when the bot is increasing its speed moving forward.</p>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_BoundingCircleRadius.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.BoundingCircleRadius%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_BodyColor.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.BodyColor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L21">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L579">View Source</a>
   </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_BoundingCircleRadius_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.BoundingCircleRadius*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_BoundingCircleRadius" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.BoundingCircleRadius">BoundingCircleRadius</h4>
-  <div class="markdown level1 summary"><p>The bounding circle of a bot is a circle going from the center of the bot with a radius so
-that the circle covers most of the bot. The bounding circle is used for determining when a
-bot is hit by a bullet.</p>
-<p>A bot gets hit by a bullet when the bullet gets inside the bounding circle, i.e. the
-distance between the bullet and the center of the bounding circle is less than the radius
-of the bounding circle.</p>
+  <a id="Robocode_TankRoyale_BotApi_IBaseBot_BodyColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.BodyColor*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_BodyColor" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.BodyColor">BodyColor</h4>
+  <div class="markdown level1 summary"><p>The color of the body. Colors can (only) be changed each turn.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual int BoundingCircleRadius { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">Color BodyColor { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -214,18 +270,62 @@ of the bounding circle.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td><p>The radius of the bounding circle of the bot, which is a constant of 18 units.</p>
+        <td><a class="xref" href="Robocode.TankRoyale.BotApi.Color.html">Color</a></td>
+        <td><p>Is the color of the body or <code>null</code> if the bot uses the default color.</p>
 </td>
       </tr>
     </tbody>
   </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_BodyColor_examples">Examples</h5>
+  <p>BodyColor = Color.RED; // the red color
+BodyColor = new Color(255, 0, 0); // also the red color
+BodyColor = Color.fromHexTriplet(&quot;F00&quot;); // and also the red color</p>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_BulletColor.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.BulletColor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L615">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_IBaseBot_BulletColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.BulletColor*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_BulletColor" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.BulletColor">BulletColor</h4>
+  <div class="markdown level1 summary"><p>The color of the fired bullets. Colors can (only) be changed each turn.</p>
+<p>Note that a fired bullet will not change is color when it has been fired. But new bullets fired
+after setting the bullet color will get the new color.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Color BulletColor { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Robocode.TankRoyale.BotApi.Color.html">Color</a></td>
+        <td><p>Is the color of the fired bullets or <code>null</code> if the bot uses the default color.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_BulletColor_examples">Examples</h5>
+  <p>BulletColor = Color.RED; // the red color
+BulletColor = new Color(255, 0, 0); // also the red color
+BulletColor = Color.fromHexTriplet(&quot;F00&quot;); // and also the red color</p>
+
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_BulletStates.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.BulletStates%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L341">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L229">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_BulletStates_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.BulletStates*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_BulletStates" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.BulletStates">BulletStates</h4>
@@ -255,44 +355,10 @@ active on the arena.</p>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_Deceleration.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.Deceleration%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L121">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_Deceleration_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Deceleration*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_Deceleration" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Deceleration">Deceleration</h4>
-  <div class="markdown level1 summary"><p>Deceleration is the decrease in speed per turn, which subtracts 2 units to the speed
-per turn when the bot is decreasing its speed moving backward. This means that a bot
-is faster at braking than accelerating forward.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual int Deceleration { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td><p>The deceleration is 2 units less per turn.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_Direction.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.Direction%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L303">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L191">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_Direction_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Direction*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_Direction" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Direction">Direction</h4>
@@ -321,104 +387,10 @@ is faster at braking than accelerating forward.</p>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_DoAdjustGunForBodyTurn.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.DoAdjustGunForBodyTurn%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L595">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_DoAdjustGunForBodyTurn_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.DoAdjustGunForBodyTurn*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_DoAdjustGunForBodyTurn" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.DoAdjustGunForBodyTurn">DoAdjustGunForBodyTurn</h4>
-  <div class="markdown level1 summary"><p>Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun
-behaves like it is turning independent of the bot's turn.</p>
-<p>Ok, so this needs some explanation: The gun is mounted on the bot's body. So, normally, if
-the bot turns 90 degrees to the right, then the gun will turn with it as it is mounted on
-top of the bot's body. To compensate for this, you can adjust the gun for the bot's turn.
-When this is set, the gun will turn independent from the bot's turn.</p>
-<div class="NOTE"><h5>note</h5><p>
-This property is additive until you reach the maximum the gun can turn <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxGunTurnRate">MaxGunTurnRate</a>. The &quot;adjust&quot; is added to the amount, you set for turning the bot
-by the turn rate, then capped by the physics of the game.
-<p>The gun compensating this way does count as &quot;turning the gun&quot;.</p>
-</p></div>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">bool DoAdjustGunForBodyTurn { get; set; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><p><em>true</em> if the gun is set to adjust for the bot's turn; <em>false</em>
-otherwise.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_DoAdjustGunForBodyTurn_seealso">See Also</h5>
-  <div class="seealso">
-      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_DoAdjustRadarForGunTurn">DoAdjustRadarForGunTurn</a></div>
-  </div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_DoAdjustRadarForGunTurn.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.DoAdjustRadarForGunTurn%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L617">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_DoAdjustRadarForGunTurn_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.DoAdjustRadarForGunTurn*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_DoAdjustRadarForGunTurn" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.DoAdjustRadarForGunTurn">DoAdjustRadarForGunTurn</h4>
-  <div class="markdown level1 summary"><p>Sets the radar to adjust for the gun's turn when setting the radar turn rate. So the radar
-behaves like it is turning independent of the gun's turn.</p>
-<p>Ok, so this needs some explanation: The radar is mounted on the gun. So, normally, if the
-gun turns 90 degrees to the right, then the radar will turn with it as it is mounted on top
-of the gun. To compensate for this, you can adjust the radar for the gun turn. When this is
-set, the radar will turn independent from the gun's turn.</p>
-<div class="NOTE"><h5>note</h5><p>
-This property is additive until you reach the maximum the radar can turn <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxRadarTurnRate">MaxRadarTurnRate</a>. The &quot;adjust&quot; is added to the amount, you set for turning the gun
-by the gun turn rate, then capped by the physics of the game.
-<p>The radar compensating this way does count as &quot;turning the radar&quot;.</p>
-</p></div>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">bool DoAdjustRadarForGunTurn { get; set; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><p><em>true</em> if the radar is set to adjust for the bot's turn; <em>false</em>
-otherwise.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_DoAdjustRadarForGunTurn_seealso">See Also</h5>
-  <div class="seealso">
-      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_DoAdjustGunForBodyTurn">DoAdjustGunForBodyTurn</a></div>
-  </div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_EnemyCount.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.EnemyCount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L270">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L158">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_EnemyCount_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.EnemyCount*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_EnemyCount" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.EnemyCount">EnemyCount</h4>
@@ -449,7 +421,7 @@ otherwise.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_Energy.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.Energy%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L278">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L166">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_Energy_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Energy*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_Energy" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Energy">Energy</h4>
@@ -483,7 +455,7 @@ will not be able to move or take any action. If negative, the bot has been defea
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_Events.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.Events%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L348">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L236">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_Events_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Events*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_Events" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Events">Events</h4>
@@ -516,7 +488,7 @@ being called when each of these events occurs.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_Firepower.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.Firepower%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L566">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L459">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_Firepower_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Firepower*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_Firepower" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Firepower">Firepower</h4>
@@ -548,7 +520,7 @@ being called when each of these events occurs.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_GameType.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.GameType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L184">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L72">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_GameType_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GameType*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_GameType" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GameType">GameType</h4>
@@ -578,10 +550,47 @@ being called when each of these events occurs.</p>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_GunColor.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.GunColor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L648">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_IBaseBot_GunColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GunColor*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_GunColor" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GunColor">GunColor</h4>
+  <div class="markdown level1 summary"><p>The color of the gun. Colors can (only) be changed each turn.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Color GunColor { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Robocode.TankRoyale.BotApi.Color.html">Color</a></td>
+        <td><p>Is the color of the gun or <code>null</code> if the bot uses the default color.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_GunColor_examples">Examples</h5>
+  <p>GunColor = Color.RED; // the red color
+GunColor = new Color(255, 0, 0); // also the red color
+GunColor = Color.fromHexTriplet(&quot;F00&quot;); // and also the red color</p>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_GunCoolingRate.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.GunCoolingRate%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L219">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L107">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_GunCoolingRate_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GunCoolingRate*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_GunCoolingRate" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GunCoolingRate">GunCoolingRate</h4>
@@ -620,7 +629,7 @@ is subtracted from the gun heat each turn until the gun heat reaches zero.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_GunDirection.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.GunDirection%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L309">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L197">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_GunDirection_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GunDirection*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_GunDirection" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GunDirection">GunDirection</h4>
@@ -652,7 +661,7 @@ is subtracted from the gun heat each turn until the gun heat reaches zero.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_GunHeat.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.GunHeat%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L334">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L222">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_GunHeat_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GunHeat*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_GunHeat" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GunHeat">GunHeat</h4>
@@ -691,7 +700,7 @@ by the gun cooling rate.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_GunTurnRate.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.GunTurnRate%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L405">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L295">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_GunTurnRate_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GunTurnRate*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_GunTurnRate" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GunTurnRate">GunTurnRate</h4>
@@ -701,7 +710,7 @@ the gun. But it is also added to the current direction of the radar. This is bec
 radar is mounted on the gun, and hence moves with the gun. You can compensate for the turn
 rate of the gun by subtracting the turn rate of the gun from the turn rate of the radar.
 But be aware that the turn limits defined for the radar cannot be exceeded.</p>
-<p>The gun turn rate is truncated to <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxGunTurnRate">MaxGunTurnRate</a> if the gun turn rate exceeds
+<p>The gun turn rate is truncated to <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxGunTurnRate">MaxGunTurnRate</a> if the gun turn rate exceeds
 this value.</p>
 <p>If this property is set multiple times, the last value set before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> counts.</p>
 </div>
@@ -726,12 +735,16 @@ this value.</p>
       </tr>
     </tbody>
   </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_GunTurnRate_seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxGunTurnRate">MaxGunTurnRate</a></div>
+  </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_IsDisabled.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.IsDisabled%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L285">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L173">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_IsDisabled_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.IsDisabled*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_IsDisabled" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.IsDisabled">IsDisabled</h4>
@@ -764,7 +777,7 @@ it is not able to take any action like movement, turning, and firing.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_IsStopped.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.IsStopped%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L675">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L568">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_IsStopped_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.IsStopped*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_IsStopped" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.IsStopped">IsStopped</h4>
@@ -799,147 +812,33 @@ it is not able to take any action like movement, turning, and firing.</p>
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_MaxBackwardSpeed.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.MaxBackwardSpeed%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L78">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_MaxBackwardSpeed_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxBackwardSpeed*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_MaxBackwardSpeed" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxBackwardSpeed">MaxBackwardSpeed</h4>
-  <div class="markdown level1 summary"><p>The maximum backward speed, which is -8 units per turn.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual int MaxBackwardSpeed { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_MaxBulletSpeed.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.MaxBulletSpeed%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L106">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_MaxBulletSpeed_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxBulletSpeed*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_MaxBulletSpeed" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxBulletSpeed">MaxBulletSpeed</h4>
-  <div class="markdown level1 summary"><p>The maximum bullet speed is the fastest possible speed that a bullet can travel and is
-defined by the minimum firepower. Max. bullet speed = 20 - 3 x min. firepower, i.e.
-20 - 3 x 0.1 = 19.7. The lesser power, the faster the bullet speed will be.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual double MaxBulletSpeed { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Double</span></td>
-        <td><p>The maximum bullet speed is 19.7 units per turn.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_MaxFirepower.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.MaxFirepower%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L90">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_MaxFirepower_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxFirepower*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_MaxFirepower" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxFirepower">MaxFirepower</h4>
-  <div class="markdown level1 summary"><p>The gun will fire up to this power only if the firepower is set to a higher value.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual double MaxFirepower { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Double</span></td>
-        <td><p>The maximum firepower, which is 3.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_MaxForwardSpeed.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.MaxForwardSpeed%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L73">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_MaxForwardSpeed_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxForwardSpeed*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_MaxForwardSpeed" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxForwardSpeed">MaxForwardSpeed</h4>
-  <div class="markdown level1 summary"><p>The maximum forward speed, which is 8 units per turn.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual int MaxForwardSpeed { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_MaxGunTurnRate.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.MaxGunTurnRate%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L58">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L319">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_MaxGunTurnRate_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxGunTurnRate*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_MaxGunTurnRate" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxGunTurnRate">MaxGunTurnRate</h4>
-  <div class="markdown level1 summary"><p>The maximum gun turn rate, which is a constant of 20 degrees per turn.</p>
+  <div class="markdown level1 summary"><p>Sets or gets the maximum turn rate which applies to turn the gun to the left or right. The maximum turn
+rate must be an absolute value from 0 to <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxGunTurnRate">MaxGunTurnRate</a>, both values are
+included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
+input turn rate is above <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxGunTurnRate">MaxGunTurnRate</a>, the max turn rate will be set to
+<a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxGunTurnRate">MaxGunTurnRate</a>.</p>
+<p>If for example the max gun turn rate is set to 5, then the gun will be able to turn left or
+right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees per
+turn when turning left.</p>
+<p>This method will first be executed when <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is called making it possible to
+call other set methods before execution. This makes it possible to set the bot to move,
+turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
+<a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>. But notice that this is only possible to execute multiple methods in
+parallel by using <em>setter</em> methods only prior to calling <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>.</p>
+<p>If this method is called multiple times, the last call before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is executed,
+counts.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual int MaxGunTurnRate { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">double MaxGunTurnRate { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -951,17 +850,22 @@ defined by the minimum firepower. Max. bullet speed = 20 - 3 x min. firepower, i
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td></td>
+        <td><span class="xref">System.Double</span></td>
+        <td><p>The maximum turn rate of the gun.</p>
+</td>
       </tr>
     </tbody>
   </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_MaxGunTurnRate_seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_GunTurnRate">GunTurnRate</a></div>
+  </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_MaxInactivityTurns.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.MaxInactivityTurns%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L228">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L116">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_MaxInactivityTurns_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxInactivityTurns*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_MaxInactivityTurns" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxInactivityTurns">MaxInactivityTurns</h4>
@@ -995,16 +899,29 @@ being inactive. Inactive means that the bot has taken no action in several turns
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_MaxRadarTurnRate.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.MaxRadarTurnRate%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L63">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L360">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_MaxRadarTurnRate_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxRadarTurnRate*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_MaxRadarTurnRate" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxRadarTurnRate">MaxRadarTurnRate</h4>
-  <div class="markdown level1 summary"><p>The maximum radar turn rate, which is a constant of 45 degrees per turn.</p>
+  <div class="markdown level1 summary"><p>Sets or gets the maximum turn rate which applies to turn the radar to the left or right. The maximum
+turn rate must be an absolute value from 0 to MaxRadarTurnRate, both values are
+included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
+input turn rate is above MaxRadarTurnRate, the max turn rate will be set to MaxRadarTurnRate.</p>
+<p>If for example the max radar turn rate is set to 5, then the radar will be able to turn left
+or right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees per turn
+when turning left.</p>
+<p>This method will first be executed when <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is called making it possible to
+call other set methods before execution. This makes it possible to set the bot to move,
+turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
+<a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>. But notice that this is only possible to execute multiple methods in
+parallel by using <em>setter</em> methods only prior to calling <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>.</p>
+<p>If this method is called multiple times, the last call before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is executed,
+counts.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual int MaxRadarTurnRate { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">double MaxRadarTurnRate { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1016,26 +933,43 @@ being inactive. Inactive means that the bot has taken no action in several turns
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td></td>
+        <td><span class="xref">System.Double</span></td>
+        <td><p>The maximum turn rate of the radar.</p>
+</td>
       </tr>
     </tbody>
   </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_MaxRadarTurnRate_seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_RadarTurnRate">RadarTurnRate</a></div>
+  </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_MaxSpeed.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.MaxSpeed%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L68">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L405">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_MaxSpeed_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxSpeed*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_MaxSpeed" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxSpeed">MaxSpeed</h4>
-  <div class="markdown level1 summary"><p>The maximum absolute speed, which is 8 units per turn.</p>
+  <div class="markdown level1 summary"><p>Sets or gets the maximum speed which applies when moving forward and backward. The maximum speed must
+be an absolute value from 0 to MaxSpeed, both values are included. If the input
+speed is negative, the max speed will be cut to zero. If the input speed is above
+MaxSpeed, the max speed will be set to MaxSpeed.</p>
+<p>If for example the maximum speed is set to 5, then the bot will be able to move backwards
+with a speed down to -5 units per turn and up to 5 units per turn when moving forward.</p>
+<p>This method will first be executed when <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is called making it possible to
+call other set methods before execution. This makes it possible to set the bot to move,
+turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
+<a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>. But notice that this is only possible to execute multiple methods in
+parallel by using <em>setter</em> methods only prior to calling <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>.</p>
+<p>If this method is called multiple times, the last call before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is executed,
+counts.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual int MaxSpeed { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">double MaxSpeed { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1047,8 +981,9 @@ being inactive. Inactive means that the bot has taken no action in several turns
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td></td>
+        <td><span class="xref">System.Double</span></td>
+        <td><p>The maximum speed.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -1057,58 +992,30 @@ being inactive. Inactive means that the bot has taken no action in several turns
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_MaxTurnRate.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.MaxTurnRate%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L53">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L278">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_MaxTurnRate_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxTurnRate*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_MaxTurnRate" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MaxTurnRate">MaxTurnRate</h4>
-  <div class="markdown level1 summary"><p>This is the max. possible turn rate of the bot.</p>
-<div class="NOTE"><h5>note</h5><p>
-The speed of the bot has a direct impact on the turn rate. The faster the speed the less
-turn rate.
-</p></div>
-<p>The formula for the max. possible turn rate at a given speed is:
-MaxTurnRate - 0.75 x abs(speed).
-Hence, the turn rate is at max. 10 degrees/turn when the speed is zero, and down to only 4
-degrees per turn when the bot is at max speed (which is 8 units per turn).</p>
+  <div class="markdown level1 summary"><p>Sets or gets the maximum turn rate which applies to turn the bot to the left or right. The maximum
+turn rate must be an absolute value from 0 to <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxTurnRate">MaxTurnRate</a>, both values are
+included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
+input turn rate is above <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxTurnRate">MaxTurnRate</a>, the max turn rate will be set to
+<a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxTurnRate">MaxTurnRate</a>.</p>
+<p>If for example the max turn rate is set to 5, then the bot will be able to turn left or
+right with a turn rate down to -5 degrees per turn when turning right, and up to 5 degrees per turn
+when turning left.</p>
+<p>This method will first be executed when <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is called making it possible to
+call other set methods before execution. This makes it possible to set the bot to move,
+turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
+<a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>. But notice that this is only possible to execute multiple methods in
+parallel by using <em>setter</em> methods only prior to calling <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>.</p>
+<p>If this method is called multiple times, the last call before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is executed,
+counts.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual int MaxTurnRate { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td><p>The maximum possible driving turn rate, which is max. 10 degrees per turn.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_MinBulletSpeed.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.MinBulletSpeed%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L98">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_MinBulletSpeed_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MinBulletSpeed*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_MinBulletSpeed" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MinBulletSpeed">MinBulletSpeed</h4>
-  <div class="markdown level1 summary"><p>The minimum bullet speed is the slowest possible speed that a bullet can travel and is
-defined by the maximum firepower. Min. bullet speed = 20 - 3 x max. firepower, i.e.
-20 - 3 x 3 = 11. The more power, the slower the bullet speed will be.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual double MinBulletSpeed { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">double MaxTurnRate { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1121,49 +1028,21 @@ defined by the maximum firepower. Min. bullet speed = 20 - 3 x max. firepower, i
     <tbody>
       <tr>
         <td><span class="xref">System.Double</span></td>
-        <td><p>The minimum bullet speed is 11 units per turn.</p>
+        <td><p>The maximum turn rate of the bot.</p>
 </td>
       </tr>
     </tbody>
   </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_MinFirepower.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.MinFirepower%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L84">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_MinFirepower_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MinFirepower*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_MinFirepower" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MinFirepower">MinFirepower</h4>
-  <div class="markdown level1 summary"><p>The gun will not fire with a power that is less than the minimum firepower, which is 0.1.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual double MinFirepower { get; }</code></pre>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_MaxTurnRate_seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_TurnRate">TurnRate</a></div>
   </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Double</span></td>
-        <td><p>The minimum firepower, which is 0.1.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_MyId.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.MyId%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L164">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L52">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_MyId_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MyId*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_MyId" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.MyId">MyId</h4>
@@ -1195,7 +1074,7 @@ defined by the maximum firepower. Min. bullet speed = 20 - 3 x max. firepower, i
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_NumberOfRounds.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.NumberOfRounds%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L208">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L96">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_NumberOfRounds_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.NumberOfRounds*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_NumberOfRounds" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.NumberOfRounds">NumberOfRounds</h4>
@@ -1225,10 +1104,47 @@ defined by the maximum firepower. Min. bullet speed = 20 - 3 x max. firepower, i
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_RadarColor.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.RadarColor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L601">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_IBaseBot_RadarColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.RadarColor*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_RadarColor" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.RadarColor">RadarColor</h4>
+  <div class="markdown level1 summary"><p>The color of the radar. Colors can (only) be changed each turn.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Color RadarColor { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Robocode.TankRoyale.BotApi.Color.html">Color</a></td>
+        <td><p>Is the color of the radar or <code>null</code> if the bot uses the default color.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_RadarColor_examples">Examples</h5>
+  <p>RadarColor = Color.RED; // the red color
+RadarColor = new Color(255, 0, 0); // also the red color
+RadarColor = Color.fromHexTriplet(&quot;F00&quot;); // and also the red color</p>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_RadarDirection.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.RadarDirection%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L315">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L203">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_RadarDirection_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.RadarDirection*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_RadarDirection" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.RadarDirection">RadarDirection</h4>
@@ -1260,7 +1176,7 @@ defined by the maximum firepower. Min. bullet speed = 20 - 3 x max. firepower, i
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_RadarTurnRate.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.RadarTurnRate%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L446">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L337">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_RadarTurnRate_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.RadarTurnRate*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_RadarTurnRate" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.RadarTurnRate">RadarTurnRate</h4>
@@ -1271,7 +1187,7 @@ are also added to the radar direction, as the radar moves with the gun, which is
 the gun that moves with the body. You can compensate for the turn rate of the gun by
 subtracting the turn rate of the bot and gun from the turn rate of the radar. But be aware
 that the turn limits defined for the radar cannot be exceeded.</p>
-<p>The radar turn rate is truncated to <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxRadarTurnRate">MaxRadarTurnRate</a> if the radar turn rate
+<p>The radar turn rate is truncated to <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxRadarTurnRate">MaxRadarTurnRate</a> if the radar turn rate
 exceeds this value.</p>
 <p>If this property is set multiple times, the last value set before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> counts.</p>
 </div>
@@ -1296,12 +1212,16 @@ exceeds this value.</p>
       </tr>
     </tbody>
   </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_RadarTurnRate_seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxRadarTurnRate">MaxRadarTurnRate</a></div>
+  </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_RoundNumber.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.RoundNumber%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L258">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L146">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_RoundNumber_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.RoundNumber*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_RoundNumber" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.RoundNumber">RoundNumber</h4>
@@ -1330,27 +1250,19 @@ exceeds this value.</p>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_ScanRadius.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.ScanRadius%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_ScanColor.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.ScanColor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L37">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L626">View Source</a>
   </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_ScanRadius_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.ScanRadius*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_ScanRadius" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.ScanRadius">ScanRadius</h4>
-  <div class="markdown level1 summary"><p>The radar is used for scanning the battlefield for opponent bots. The shape of the scan
-beam of the radar is a circle arc (&quot;pizza slice&quot;) starting from the center of the bot.
-Opponent bots that get inside the scan arc will be detected by the radar.</p>
-<p>The radius of the arc is a constant of 1200 units. This means that that the radar will not
-be able to detect bots that are more than 1200 units away from the bot.</p>
-<p>The radar needs to be turned (left or right) to scan opponent bots. So make sure the radar
-is always turned. The more the radar is turned, the larger the area of the scan arc
-becomes, and the bigger the chance is that the radar detects an opponent. If the radar is
-not turning, the scan arc becomes a thin line, unable to scan and detect anything.</p>
+  <a id="Robocode_TankRoyale_BotApi_IBaseBot_ScanColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.ScanColor*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_ScanColor" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.ScanColor">ScanColor</h4>
+  <div class="markdown level1 summary"><p>The color of the scan arc. Colors can (only) be changed each turn.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual int ScanRadius { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">Color ScanColor { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1362,18 +1274,23 @@ not turning, the scan arc becomes a thin line, unable to scan and detect anythin
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td><p>The radius of the radar's scan beam, which is a constant of 1200 units.</p>
+        <td><a class="xref" href="Robocode.TankRoyale.BotApi.Color.html">Color</a></td>
+        <td><p>Is the color of the scan arc or <code>null</code> if the bot uses the default color.</p>
 </td>
       </tr>
     </tbody>
   </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_ScanColor_examples">Examples</h5>
+  <p>ScanColor = Color.RED; // the red color
+ScanColor = new Color(255, 0, 0); // also the red color
+ScanColor = Color.fromHexTriplet(&quot;F00&quot;); // and also the red color</p>
+
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_Speed.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.Speed%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L323">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L211">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_Speed_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Speed*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_Speed" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Speed">Speed</h4>
@@ -1407,7 +1324,7 @@ from its current position.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_TargetSpeed.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.TargetSpeed%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L491">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L383">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_TargetSpeed_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.TargetSpeed*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_TargetSpeed" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.TargetSpeed">TargetSpeed</h4>
@@ -1423,7 +1340,7 @@ is -2 unit per turn. Deceleration is negative as it is added to the speed and he
 to be negative when slowing down.
 </p></div>
 <div class="NOTE"><h5>note</h5><p>
-The target speed is truncated to <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxSpeed">MaxSpeed</a> if the target speed exceeds this value.
+The target speed is truncated to <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxSpeed">MaxSpeed</a> if the target speed exceeds this value.
 </p></div>
 <p>If this property is set multiple times, the last value set before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> counts.</p>
 </div>
@@ -1453,7 +1370,7 @@ The target speed is truncated to <a class="xref" href="Robocode.TankRoyale.BotAp
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_TimeLeft.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.TimeLeft%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L252">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L140">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_TimeLeft_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.TimeLeft*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_TimeLeft" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.TimeLeft">TimeLeft</h4>
@@ -1488,10 +1405,47 @@ to call <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_TracksColor.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.TracksColor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L637">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_IBaseBot_TracksColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.TracksColor*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_TracksColor" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.TracksColor">TracksColor</h4>
+  <div class="markdown level1 summary"><p>The color of the tracks. Colors can (only) be changed each turn.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Color TracksColor { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Robocode.TankRoyale.BotApi.Color.html">Color</a></td>
+        <td><p>Is the color of the tracks or <code>null</code> if the bot uses the default color.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_TracksColor_examples">Examples</h5>
+  <p>TracksColor = Color.RED; // the red color
+TracksColor = new Color(255, 0, 0); // also the red color
+TracksColor = Color.fromHexTriplet(&quot;F00&quot;); // and also the red color</p>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_TurnNumber.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.TurnNumber%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L264">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L152">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_TurnNumber_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.TurnNumber*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_TurnNumber" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.TurnNumber">TurnNumber</h4>
@@ -1523,7 +1477,7 @@ to call <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_TurnRate.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.TurnRate%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L365">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L254">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_TurnRate_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.TurnRate*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_TurnRate" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.TurnRate">TurnRate</h4>
@@ -1534,7 +1488,7 @@ is mounted on the body, and hence turns with the body. The radar is mounted on t
 hence moves with the gun. You can compensate for the turn rate of the bot by subtracting
 the turn rate of the bot from the turn rate of the gun and radar. But be aware that the
 turn limits defined for the gun and radar cannot be exceeded.</p>
-<p>The turn rate is truncated to <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxTurnRate">MaxTurnRate</a> if the turn rate exceeds this
+<p>The turn rate is truncated to <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxTurnRate">MaxTurnRate</a> if the turn rate exceeds this
 value.</p>
 <p>If this property is set multiple times, the last value set before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> counts.</p>
 </div>
@@ -1559,12 +1513,16 @@ value.</p>
       </tr>
     </tbody>
   </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_TurnRate_seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxTurnRate">MaxTurnRate</a></div>
+  </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_TurnTimeout.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.TurnTimeout%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L243">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L131">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_TurnTimeout_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.TurnTimeout*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_TurnTimeout" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.TurnTimeout">TurnTimeout</h4>
@@ -1604,10 +1562,47 @@ your bot will skip a turn and receive a <a class="xref" href="Robocode.TankRoyal
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_TurretColor.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.TurretColor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L590">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_IBaseBot_TurretColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.TurretColor*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_TurretColor" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.TurretColor">TurretColor</h4>
+  <div class="markdown level1 summary"><p>The color of the gun turret. Colors can (only) be changed each turn.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Color TurretColor { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Robocode.TankRoyale.BotApi.Color.html">Color</a></td>
+        <td><p>Is the color of the gun turret or <code>null</code> if the bot uses the default color.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_TurretColor_examples">Examples</h5>
+  <p>TurretColor = Color.RED; // the red color
+TurretColor = new Color(255, 0, 0); // also the red color
+TurretColor = Color.fromHexTriplet(&quot;F00&quot;); // and also the red color</p>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_Variant.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.Variant%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L170">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L58">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_Variant_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Variant*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_Variant" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Variant">Variant</h4>
@@ -1639,7 +1634,7 @@ your bot will skip a turn and receive a <a class="xref" href="Robocode.TankRoyal
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_Version.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.Version%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L176">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L64">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_Version_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Version*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_Version" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Version">Version</h4>
@@ -1671,7 +1666,7 @@ your bot will skip a turn and receive a <a class="xref" href="Robocode.TankRoyal
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_X.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.X%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L291">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L179">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_X_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.X*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_X" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.X">X</h4>
@@ -1703,7 +1698,7 @@ your bot will skip a turn and receive a <a class="xref" href="Robocode.TankRoyal
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_Y.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.Y%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L297">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L185">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_Y_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Y*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_Y" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Y">Y</h4>
@@ -1737,7 +1732,7 @@ your bot will skip a turn and receive a <a class="xref" href="Robocode.TankRoyal
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_AddCustomEvent_Robocode_TankRoyale_BotApi_Events_Condition_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.AddCustomEvent(Robocode.TankRoyale.BotApi.Events.Condition)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L625">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L518">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_AddCustomEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.AddCustomEvent*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_AddCustomEvent_Robocode_TankRoyale_BotApi_Events_Condition_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.AddCustomEvent(Robocode.TankRoyale.BotApi.Events.Condition)">AddCustomEvent(Condition)</h4>
@@ -1776,7 +1771,7 @@ when the <a class="xref" href="Robocode.TankRoyale.BotApi.Events.Condition.html#
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_BearingTo_System_Double_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.BearingTo(System.Double%2CSystem.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L1068">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L861">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_BearingTo_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.BearingTo*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_BearingTo_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.BearingTo(System.Double,System.Double)">BearingTo(Double, Double)</h4>
@@ -1833,7 +1828,7 @@ direction to the point x,y.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_CalcBearing_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.CalcBearing(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L1025">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L818">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_CalcBearing_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.CalcBearing*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_CalcBearing_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.CalcBearing(System.Double)">CalcBearing(Double)</h4>
@@ -1889,7 +1884,7 @@ The bearing is a normalized angle in the range [-180,180[</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_CalcBulletSpeed_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.CalcBulletSpeed(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L1005">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L798">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_CalcBulletSpeed_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.CalcBulletSpeed*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_CalcBulletSpeed_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.CalcBulletSpeed(System.Double)">CalcBulletSpeed(Double)</h4>
@@ -1939,7 +1934,7 @@ The bearing is a normalized angle in the range [-180,180[</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_CalcDeltaAngle_System_Double_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.CalcDeltaAngle(System.Double%2CSystem.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L1117">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L910">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_CalcDeltaAngle_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.CalcDeltaAngle*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_CalcDeltaAngle_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.CalcDeltaAngle(System.Double,System.Double)">CalcDeltaAngle(Double, Double)</h4>
@@ -1996,7 +1991,7 @@ angle to a target angle. The delta angle will be in the range [-180,180]</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_CalcGunBearing_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.CalcGunBearing(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L1038">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L831">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_CalcGunBearing_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.CalcGunBearing*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_CalcGunBearing_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.CalcGunBearing(System.Double)">CalcGunBearing(Double)</h4>
@@ -2052,7 +2047,7 @@ The bearing is a normalized angle in the range [-180,180[</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_CalcGunHeat_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.CalcGunHeat(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L1012">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L805">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_CalcGunHeat_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.CalcGunHeat*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_CalcGunHeat_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.CalcGunHeat(System.Double)">CalcGunHeat(Double)</h4>
@@ -2102,7 +2097,7 @@ The bearing is a normalized angle in the range [-180,180[</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_CalcMaxTurnRate_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.CalcMaxTurnRate(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L998">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L791">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_CalcMaxTurnRate_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.CalcMaxTurnRate*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_CalcMaxTurnRate_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.CalcMaxTurnRate(System.Double)">CalcMaxTurnRate(Double)</h4>
@@ -2152,7 +2147,7 @@ The bearing is a normalized angle in the range [-180,180[</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_CalcRadarBearing_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.CalcRadarBearing(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L1051">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L844">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_CalcRadarBearing_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.CalcRadarBearing*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_CalcRadarBearing_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.CalcRadarBearing(System.Double)">CalcRadarBearing(Double)</h4>
@@ -2208,7 +2203,7 @@ The bearing is a normalized angle in the range [-180,180[</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_DirectionTo_System_Double_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.DirectionTo(System.Double%2CSystem.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L1059">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L852">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_DirectionTo_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.DirectionTo*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_DirectionTo_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.DirectionTo(System.Double,System.Double)">DirectionTo(Double, Double)</h4>
@@ -2264,7 +2259,7 @@ The bearing is a normalized angle in the range [-180,180[</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_DistanceTo_System_Double_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.DistanceTo(System.Double%2CSystem.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L1094">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L887">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_DistanceTo_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.DistanceTo*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_DistanceTo_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.DistanceTo(System.Double,System.Double)">DistanceTo(Double, Double)</h4>
@@ -2317,226 +2312,10 @@ The bearing is a normalized angle in the range [-180,180[</p>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_GetBodyColor.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.GetBodyColor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L686">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_GetBodyColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GetBodyColor*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_GetBodyColor" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GetBodyColor">GetBodyColor()</h4>
-  <div class="markdown level1 summary"><p>Returns the RGB color code of the body. The color code is an integer in hexadecimal format
-using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.</p>
-<p>See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
-https://www.rapidtables.com/web/color/RGB_Color.html</a></p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">int? GetBodyColor()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
-        <td><p>The color code of the body or <code>null</code> if the bot uses the default
-color code.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_GetBulletColor.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.GetBulletColor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L776">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_GetBulletColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GetBulletColor*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_GetBulletColor" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GetBulletColor">GetBulletColor()</h4>
-  <div class="markdown level1 summary"><p>Returns the RGB color code of the bullets when fired. The color code is an integer in hexadecimal format
-using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.</p>
-<p>See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
-https://www.rapidtables.com/web/color/RGB_Color.html</a></p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">int? GetBulletColor()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
-        <td><p>The color code of the bullets or <code>null</code> if the bot uses the default
-color code.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_GetRadarColor.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.GetRadarColor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L746">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_GetRadarColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GetRadarColor*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_GetRadarColor" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GetRadarColor">GetRadarColor()</h4>
-  <div class="markdown level1 summary"><p>Returns the RGB color code of the radar. The color code is an integer in hexadecimal format
-using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.</p>
-<p>See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
-https://www.rapidtables.com/web/color/RGB_Color.html</a></p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">int? GetRadarColor()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
-        <td><p>The color code of the radar or <code>null</code> if the bot uses the default
-color code.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_GetScanColor.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.GetScanColor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L806">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_GetScanColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GetScanColor*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_GetScanColor" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GetScanColor">GetScanColor()</h4>
-  <div class="markdown level1 summary"><p>Returns the RGB color code of the scan arc. The color code is an integer in hexadecimal format
-using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.</p>
-<p>See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
-https://www.rapidtables.com/web/color/RGB_Color.html</a></p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">int? GetScanColor()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
-        <td><p>The color code of the scan arc or <code>null</code> if the bot uses the default
-color code.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_GetTracksColor.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.GetTracksColor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L836">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_GetTracksColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GetTracksColor*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_GetTracksColor" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GetTracksColor">GetTracksColor()</h4>
-  <div class="markdown level1 summary"><p>Returns the RGB color code of the tracks. The color code is an integer in hexadecimal format
-using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.</p>
-<p>See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
-https://www.rapidtables.com/web/color/RGB_Color.html</a></p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">int? GetTracksColor()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
-        <td><p>The color code of the tracks or <code>null</code> if the bot uses the default
-color code.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_GetTurretColor.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.GetTurretColor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L716">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_GetTurretColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GetTurretColor*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_GetTurretColor" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GetTurretColor">GetTurretColor()</h4>
-  <div class="markdown level1 summary"><p>Returns the RGB color code of the gun turret. The color code is an integer in hexadecimal format
-using bits 0 - 23 using an 8-bit channel for each color component; red, green, and blue.</p>
-<p>See <a href="https://www.rapidtables.com/web/color/RGB_Color.html">
-https://www.rapidtables.com/web/color/RGB_Color.html</a></p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">int? GetTurretColor()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
-        <td><p>The color code of the gun turret or <code>null</code> if the bot uses the default
-color code.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_Go.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.Go%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L158">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L46">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_Go_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Go*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_Go" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Go">Go()</h4>
@@ -2565,7 +2344,7 @@ prior to calling the <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.h
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_GunBearingTo_System_Double_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.GunBearingTo(System.Double%2CSystem.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L1077">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L870">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_GunBearingTo_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GunBearingTo*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_GunBearingTo_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GunBearingTo(System.Double,System.Double)">GunBearingTo(Double, Double)</h4>
@@ -2622,7 +2401,7 @@ direction to the point x,y.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_NormalizeAbsoluteAngle_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.NormalizeAbsoluteAngle(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L1101">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L894">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_NormalizeAbsoluteAngle_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.NormalizeAbsoluteAngle*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_NormalizeAbsoluteAngle_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.NormalizeAbsoluteAngle(System.Double)">NormalizeAbsoluteAngle(Double)</h4>
@@ -2672,7 +2451,7 @@ direction to the point x,y.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_NormalizeRelativeAngle_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.NormalizeRelativeAngle(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L1108">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L901">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_NormalizeRelativeAngle_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.NormalizeRelativeAngle*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_NormalizeRelativeAngle_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.NormalizeRelativeAngle(System.Double)">NormalizeRelativeAngle(Double)</h4>
@@ -2722,7 +2501,7 @@ direction to the point x,y.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnBotDeath_Robocode_TankRoyale_BotApi_Events_DeathEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnBotDeath(Robocode.TankRoyale.BotApi.Events.DeathEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L911">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L704">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnBotDeath_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnBotDeath*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnBotDeath_Robocode_TankRoyale_BotApi_Events_DeathEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnBotDeath(Robocode.TankRoyale.BotApi.Events.DeathEvent)">OnBotDeath(DeathEvent)</h4>
@@ -2756,7 +2535,7 @@ direction to the point x,y.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnBulletFired_Robocode_TankRoyale_BotApi_Events_BulletFiredEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnBulletFired(Robocode.TankRoyale.BotApi.Events.BulletFiredEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L935">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L728">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnBulletFired_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnBulletFired*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnBulletFired_Robocode_TankRoyale_BotApi_Events_BulletFiredEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnBulletFired(Robocode.TankRoyale.BotApi.Events.BulletFiredEvent)">OnBulletFired(BulletFiredEvent)</h4>
@@ -2790,7 +2569,7 @@ direction to the point x,y.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnBulletHit_Robocode_TankRoyale_BotApi_Events_BulletHitBotEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnBulletHit(Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L947">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L740">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnBulletHit_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnBulletHit*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnBulletHit_Robocode_TankRoyale_BotApi_Events_BulletHitBotEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnBulletHit(Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent)">OnBulletHit(BulletHitBotEvent)</h4>
@@ -2824,7 +2603,7 @@ direction to the point x,y.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnBulletHitBullet_Robocode_TankRoyale_BotApi_Events_BulletHitBulletEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnBulletHitBullet(Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L953">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L746">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnBulletHitBullet_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnBulletHitBullet*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnBulletHitBullet_Robocode_TankRoyale_BotApi_Events_BulletHitBulletEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnBulletHitBullet(Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent)">OnBulletHitBullet(BulletHitBulletEvent)</h4>
@@ -2858,7 +2637,7 @@ direction to the point x,y.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnBulletHitWall_Robocode_TankRoyale_BotApi_Events_BulletHitWallEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnBulletHitWall(Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L959">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L752">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnBulletHitWall_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnBulletHitWall*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnBulletHitWall_Robocode_TankRoyale_BotApi_Events_BulletHitWallEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnBulletHitWall(Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent)">OnBulletHitWall(BulletHitWallEvent)</h4>
@@ -2892,7 +2671,7 @@ direction to the point x,y.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnConnected_Robocode_TankRoyale_BotApi_Events_ConnectedEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnConnected(Robocode.TankRoyale.BotApi.Events.ConnectedEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L861">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L654">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnConnected_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnConnected*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnConnected_Robocode_TankRoyale_BotApi_Events_ConnectedEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnConnected(Robocode.TankRoyale.BotApi.Events.ConnectedEvent)">OnConnected(ConnectedEvent)</h4>
@@ -2926,7 +2705,7 @@ direction to the point x,y.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnConnectionError_Robocode_TankRoyale_BotApi_Events_ConnectionErrorEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnConnectionError(Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L873">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L666">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnConnectionError_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnConnectionError*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnConnectionError_Robocode_TankRoyale_BotApi_Events_ConnectionErrorEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnConnectionError(Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent)">OnConnectionError(ConnectionErrorEvent)</h4>
@@ -2960,7 +2739,7 @@ direction to the point x,y.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnCustomEvent_Robocode_TankRoyale_BotApi_Events_CustomEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnCustomEvent(Robocode.TankRoyale.BotApi.Events.CustomEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L991">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L784">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnCustomEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnCustomEvent*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnCustomEvent_Robocode_TankRoyale_BotApi_Events_CustomEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnCustomEvent(Robocode.TankRoyale.BotApi.Events.CustomEvent)">OnCustomEvent(CustomEvent)</h4>
@@ -2996,7 +2775,7 @@ with this event handler.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnDeath_Robocode_TankRoyale_BotApi_Events_DeathEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnDeath(Robocode.TankRoyale.BotApi.Events.DeathEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L917">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L710">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnDeath_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnDeath*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnDeath_Robocode_TankRoyale_BotApi_Events_DeathEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnDeath(Robocode.TankRoyale.BotApi.Events.DeathEvent)">OnDeath(DeathEvent)</h4>
@@ -3030,7 +2809,7 @@ with this event handler.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnDisconnected_Robocode_TankRoyale_BotApi_Events_DisconnectedEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnDisconnected(Robocode.TankRoyale.BotApi.Events.DisconnectedEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L867">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L660">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnDisconnected_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnDisconnected*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnDisconnected_Robocode_TankRoyale_BotApi_Events_DisconnectedEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnDisconnected(Robocode.TankRoyale.BotApi.Events.DisconnectedEvent)">OnDisconnected(DisconnectedEvent)</h4>
@@ -3064,7 +2843,7 @@ with this event handler.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnGameEnded_Robocode_TankRoyale_BotApi_Events_GameEndedEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnGameEnded(Robocode.TankRoyale.BotApi.Events.GameEndedEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L885">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L678">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnGameEnded_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnGameEnded*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnGameEnded_Robocode_TankRoyale_BotApi_Events_GameEndedEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnGameEnded(Robocode.TankRoyale.BotApi.Events.GameEndedEvent)">OnGameEnded(GameEndedEvent)</h4>
@@ -3098,7 +2877,7 @@ with this event handler.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnGameStarted_Robocode_TankRoyale_BotApi_Events_GameStartedEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnGameStarted(Robocode.TankRoyale.BotApi.Events.GameStartedEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L879">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L672">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnGameStarted_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnGameStarted*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnGameStarted_Robocode_TankRoyale_BotApi_Events_GameStartedEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnGameStarted(Robocode.TankRoyale.BotApi.Events.GameStartedEvent)">OnGameStarted(GameStartedEvent)</h4>
@@ -3132,7 +2911,7 @@ with this event handler.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnHitBot_Robocode_TankRoyale_BotApi_Events_HitBotEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnHitBot(Robocode.TankRoyale.BotApi.Events.HitBotEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L923">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L716">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnHitBot_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnHitBot*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnHitBot_Robocode_TankRoyale_BotApi_Events_HitBotEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnHitBot(Robocode.TankRoyale.BotApi.Events.HitBotEvent)">OnHitBot(HitBotEvent)</h4>
@@ -3166,7 +2945,7 @@ with this event handler.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnHitByBullet_Robocode_TankRoyale_BotApi_Events_BulletHitBotEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnHitByBullet(Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L941">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L734">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnHitByBullet_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnHitByBullet*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnHitByBullet_Robocode_TankRoyale_BotApi_Events_BulletHitBotEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnHitByBullet(Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent)">OnHitByBullet(BulletHitBotEvent)</h4>
@@ -3200,7 +2979,7 @@ with this event handler.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnHitWall_Robocode_TankRoyale_BotApi_Events_HitWallEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnHitWall(Robocode.TankRoyale.BotApi.Events.HitWallEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L929">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L722">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnHitWall_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnHitWall*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnHitWall_Robocode_TankRoyale_BotApi_Events_HitWallEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnHitWall(Robocode.TankRoyale.BotApi.Events.HitWallEvent)">OnHitWall(HitWallEvent)</h4>
@@ -3234,7 +3013,7 @@ with this event handler.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnRoundEnded_Robocode_TankRoyale_BotApi_Events_RoundEndedEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnRoundEnded(Robocode.TankRoyale.BotApi.Events.RoundEndedEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L897">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L690">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnRoundEnded_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnRoundEnded*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnRoundEnded_Robocode_TankRoyale_BotApi_Events_RoundEndedEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnRoundEnded(Robocode.TankRoyale.BotApi.Events.RoundEndedEvent)">OnRoundEnded(RoundEndedEvent)</h4>
@@ -3268,7 +3047,7 @@ with this event handler.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnRoundStarted_Robocode_TankRoyale_BotApi_Events_RoundStartedEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnRoundStarted(Robocode.TankRoyale.BotApi.Events.RoundStartedEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L891">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L684">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnRoundStarted_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnRoundStarted*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnRoundStarted_Robocode_TankRoyale_BotApi_Events_RoundStartedEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnRoundStarted(Robocode.TankRoyale.BotApi.Events.RoundStartedEvent)">OnRoundStarted(RoundStartedEvent)</h4>
@@ -3302,7 +3081,7 @@ with this event handler.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnScannedBot_Robocode_TankRoyale_BotApi_Events_ScannedBotEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnScannedBot(Robocode.TankRoyale.BotApi.Events.ScannedBotEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L965">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L758">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnScannedBot_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnScannedBot*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnScannedBot_Robocode_TankRoyale_BotApi_Events_ScannedBotEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnScannedBot(Robocode.TankRoyale.BotApi.Events.ScannedBotEvent)">OnScannedBot(ScannedBotEvent)</h4>
@@ -3336,7 +3115,7 @@ with this event handler.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnSkippedTurn_Robocode_TankRoyale_BotApi_Events_SkippedTurnEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnSkippedTurn(Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L977">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L770">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnSkippedTurn_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnSkippedTurn*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnSkippedTurn_Robocode_TankRoyale_BotApi_Events_SkippedTurnEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnSkippedTurn(Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent)">OnSkippedTurn(SkippedTurnEvent)</h4>
@@ -3376,7 +3155,7 @@ rates, firing, etc.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnTick_Robocode_TankRoyale_BotApi_Events_TickEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnTick(Robocode.TankRoyale.BotApi.Events.TickEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L905">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L698">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnTick_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnTick*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnTick_Robocode_TankRoyale_BotApi_Events_TickEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnTick(Robocode.TankRoyale.BotApi.Events.TickEvent)">OnTick(TickEvent)</h4>
@@ -3412,7 +3191,7 @@ take and call <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Rob
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_OnWonRound_Robocode_TankRoyale_BotApi_Events_WonRoundEvent_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.OnWonRound(Robocode.TankRoyale.BotApi.Events.WonRoundEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L983">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L776">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_OnWonRound_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnWonRound*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_OnWonRound_Robocode_TankRoyale_BotApi_Events_WonRoundEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.OnWonRound(Robocode.TankRoyale.BotApi.Events.WonRoundEvent)">OnWonRound(WonRoundEvent)</h4>
@@ -3446,7 +3225,7 @@ take and call <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Rob
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_RadarBearingTo_System_Double_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.RadarBearingTo(System.Double%2CSystem.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L1086">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L879">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_RadarBearingTo_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.RadarBearingTo*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_RadarBearingTo_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.RadarBearingTo(System.Double,System.Double)">RadarBearingTo(Double, Double)</h4>
@@ -3503,7 +3282,7 @@ direction to the point x,y.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_RemoveCustomEvent_Robocode_TankRoyale_BotApi_Events_Condition_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.RemoveCustomEvent(Robocode.TankRoyale.BotApi.Events.Condition)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L633">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L526">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_RemoveCustomEvent_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.RemoveCustomEvent*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_RemoveCustomEvent_Robocode_TankRoyale_BotApi_Events_Condition_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.RemoveCustomEvent(Robocode.TankRoyale.BotApi.Events.Condition)">RemoveCustomEvent(Condition)</h4>
@@ -3539,98 +3318,10 @@ with <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_Tan
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_SetBodyColor_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.SetBodyColor(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L705">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_SetBodyColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetBodyColor*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_SetBodyColor_System_String_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetBodyColor(System.String)">SetBodyColor(String)</h4>
-  <div class="markdown level1 summary"><p>Sets the color of the body. Colors can be changed each turn.</p>
-<div class="NOTE"><h5>note</h5><p>
-Currently only the number format using the number sign (#) is supported.
-<p>See <a href="https://en.wikipedia.org/wiki/Web_colors">
-https://en.wikipedia.org/wiki/Web_colors</a></p>
-</p></div>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void SetBodyColor(string bodyColor)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">bodyColor</span></td>
-        <td><p>Is the new body color of the bot. Currently, hexadecimal number
-format is being used.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_SetBodyColor_System_String__examples">Examples</h5>
-  <pre><code>SetBodyColor(&quot;#09C&quot;);
-SetBodyColor(&quot;#0099CC&quot;); // same color as above</code></pre>
-
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_SetBulletColor_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.SetBulletColor(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L795">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_SetBulletColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetBulletColor*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_SetBulletColor_System_String_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetBulletColor(System.String)">SetBulletColor(String)</h4>
-  <div class="markdown level1 summary"><p>Sets the color of the bullet when fired. Colors can be changed each turn.</p>
-<div class="NOTE"><h5>note</h5><p>
-Currently only the number format using the number sign (#) is supported.
-<p>See <a href="https://en.wikipedia.org/wiki/Web_colors">
-https://en.wikipedia.org/wiki/Web_colors</a></p>
-</p></div>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void SetBulletColor(string bulletColor)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">bulletColor</span></td>
-        <td><p>Is the new bullets color of the bot. Currently, hexadecimal number
-format is being used.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_SetBulletColor_System_String__examples">Examples</h5>
-  <pre><code>SetBulletColor(&quot;#09C&quot;);
-SetBulletColor(&quot;#0099CC&quot;); // same color as above</code></pre>
-
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_SetFire_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.SetFire(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L559">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L452">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_SetFire_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetFire*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_SetFire_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetFire(System.Double)">SetFire(Double)</h4>
@@ -3639,26 +3330,26 @@ firepower.</p>
 <p>Firepower is the amount of energy your bot will spend on firing the gun. This means that
 the bot will lose power on firing the gun where the energy loss is equal to the firepower.
 You cannot spend more energy than available from your bot.</p>
-<p>The bullet power must be greater than <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MinFirepower">MinFirepower</a> and the gun heat zero
+<p>The bullet power must be greater than <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MinFirepower">MinFirepower</a> and the gun heat zero
 before the gun can fire.</p>
 <p>If the bullet hits an opponent bot, you will gain energy from the bullet hit.When hitting
 another bot, your bot will be rewarded and retrieve an energy boost of 3x firepower.</p>
-<p>The gun will only fire when the firepower is at <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MinFirepower">MinFirepower</a> or higher. If
-the firepower is more than<a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxFirepower">MaxFirepower</a> the power will be truncated to the
+<p>The gun will only fire when the firepower is at <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MinFirepower">MinFirepower</a> or higher. If
+the firepower is more than<a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxFirepower">MaxFirepower</a> the power will be truncated to the
 max firepower.</p>
 <p>Whenever the gun is fired, the gun is heated and needs to cool down before it can fire
 again. The gun heat must be zero before the gun is able to fire (see <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_GunHeat">GunHeat</a>.
 The gun heat generated by firing the gun is 1 + (firepower / 5). Hence, the more firepower
 used the longer it takes to cool down the gun. The gun cooling rate can be read by calling
 <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_GunCoolingRate">GunCoolingRate</a>.</p>
-<p>The amount of energy used for firing the gun is subtracted from the bots' total energy. The
+<p>The amount of energy used for firing the gun is subtracted from the bot's total energy. The
 amount of damage dealt by a bullet hitting another bot is 4x firepower, and if the
 firepower is greater than 1 it will do an additional 2 x (firepower - 1) damage.</p>
 <div class="NOTE"><h5>note</h5><p>
 The gun will automatically keep firing at any turn as soon as the gun heat reaches zero.
 It is possible to disable the gun firing by setting the firepower to zero.
 </p></div>
-<p>The firepower is truncated to 0 and <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxFirepower">MaxFirepower</a> if the firepower exceeds
+<p>The firepower is truncated to 0 and <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxFirepower">MaxFirepower</a> if the firepower exceeds
 this value.</p>
 <p>If this property is set multiple times, the last value set before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> counts.</p>
 </div>
@@ -3711,255 +3402,10 @@ otherwise.</p>
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_SetMaxGunTurnRate_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.SetMaxGunTurnRate(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L429">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_SetMaxGunTurnRate_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetMaxGunTurnRate*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_SetMaxGunTurnRate_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetMaxGunTurnRate(System.Double)">SetMaxGunTurnRate(Double)</h4>
-  <div class="markdown level1 summary"><p>Sets the maximum turn rate which applies to turn the gun to the left or right. The maximum turn
-rate must be an absolute value from 0 to <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxGunTurnRate">MaxGunTurnRate</a>, both values are
-included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
-input turn rate is above <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxGunTurnRate">MaxGunTurnRate</a>, the max turn rate will be set to
-<a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxGunTurnRate">MaxGunTurnRate</a>.</p>
-<p>If for example the max gun turn rate is set to 5, then the gun will be able to turn left or
-right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees per
-turn when turning left.</p>
-<p>This method will first be executed when <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is called making it possible to
-call other set methods before execution. This makes it possible to set the bot to move,
-turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
-<a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>. But notice that this is only possible to execute multiple methods in
-parallel by using <em>setter</em> methods only prior to calling <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>.</p>
-<p>If this method is called multiple times, the last call before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is executed,
-counts.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void SetMaxGunTurnRate(double maxGunTurnRate)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Double</span></td>
-        <td><span class="parametername">maxGunTurnRate</span></td>
-        <td><p>Is the new maximum gun turn rate.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_SetMaxGunTurnRate_System_Double__seealso">See Also</h5>
-  <div class="seealso">
-      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_GunTurnRate">GunTurnRate</a></div>
-  </div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_SetMaxRadarTurnRate_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.SetMaxRadarTurnRate(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L469">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_SetMaxRadarTurnRate_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetMaxRadarTurnRate*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_SetMaxRadarTurnRate_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetMaxRadarTurnRate(System.Double)">SetMaxRadarTurnRate(Double)</h4>
-  <div class="markdown level1 summary"><p>Sets the maximum turn rate which applies to turn the radar to the left or right. The maximum
-turn rate must be an absolute value from 0 to MaxRadarTurnRate, both values are
-included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
-input turn rate is above MaxRadarTurnRate, the max turn rate will be set to MaxRadarTurnRate.</p>
-<p>If for example the max radar turn rate is set to 5, then the radar will be able to turn left
-or right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees per turn
-when turning left.</p>
-<p>This method will first be executed when <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is called making it possible to
-call other set methods before execution. This makes it possible to set the bot to move,
-turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
-<a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>. But notice that this is only possible to execute multiple methods in
-parallel by using <em>setter</em> methods only prior to calling <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>.</p>
-<p>If this method is called multiple times, the last call before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is executed,
-counts.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void SetMaxRadarTurnRate(double maxRadarTurnRate)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Double</span></td>
-        <td><span class="parametername">maxRadarTurnRate</span></td>
-        <td><p>Is the new maximum radar turn rate.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_SetMaxRadarTurnRate_System_Double__seealso">See Also</h5>
-  <div class="seealso">
-      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_RadarTurnRate">RadarTurnRate</a></div>
-  </div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_SetMaxSpeed_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.SetMaxSpeed(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L512">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_SetMaxSpeed_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetMaxSpeed*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_SetMaxSpeed_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetMaxSpeed(System.Double)">SetMaxSpeed(Double)</h4>
-  <div class="markdown level1 summary"><p>Sets the maximum speed which applies when moving forward and backward. The maximum speed must
-be an absolute value from 0 to MaxSpeed, both values are included. If the input
-speed is negative, the max speed will be cut to zero. If the input speed is above
-MaxSpeed, the max speed will be set to MaxSpeed.</p>
-<p>If for example the maximum speed is set to 5, then the bot will be able to move backwards
-with a speed down to -5 units per turn and up to 5 units per turn when moving forward.</p>
-<p>This method will first be executed when <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is called making it possible to
-call other set methods before execution. This makes it possible to set the bot to move,
-turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
-<a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>. But notice that this is only possible to execute multiple methods in
-parallel by using <em>setter</em> methods only prior to calling <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>.</p>
-<p>If this method is called multiple times, the last call before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is executed,
-counts.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void SetMaxSpeed(double maxSpeed)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Double</span></td>
-        <td><span class="parametername">maxSpeed</span></td>
-        <td><p>Is the new maximum speed.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_SetMaxTurnRate_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.SetMaxTurnRate(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L389">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_SetMaxTurnRate_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetMaxTurnRate*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_SetMaxTurnRate_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetMaxTurnRate(System.Double)">SetMaxTurnRate(Double)</h4>
-  <div class="markdown level1 summary"><p>Sets the maximum turn rate which applies to turn the bot to the left or right. The maximum
-turn rate must be an absolute value from 0 to <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxTurnRate">MaxTurnRate</a>, both values are
-included. If the input turn rate is negative, the max turn rate will be cut to zero. If the
-input turn rate is above <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxTurnRate">MaxTurnRate</a>, the max turn rate will be set to
-<a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxTurnRate">MaxTurnRate</a>.</p>
-<p>If for example the max turn rate is set to 5, then the bot will be able to turn left or
-right with a turn rate down to -5 degrees per turn when turning right, and up to 5 degrees per turn
-when turning left.</p>
-<p>This method will first be executed when <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is called making it possible to
-call other set methods before execution. This makes it possible to set the bot to move,
-turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
-<a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>. But notice that this is only possible to execute multiple methods in
-parallel by using <em>setter</em> methods only prior to calling <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a>.</p>
-<p>If this method is called multiple times, the last call before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> is executed,
-counts.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void SetMaxTurnRate(double maxTurnRate)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Double</span></td>
-        <td><span class="parametername">maxTurnRate</span></td>
-        <td><p>Is the new maximum turn rate.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_SetMaxTurnRate_System_Double__seealso">See Also</h5>
-  <div class="seealso">
-      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_TurnRate">TurnRate</a></div>
-  </div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_SetRadarColor_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.SetRadarColor(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L765">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_SetRadarColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetRadarColor*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_SetRadarColor_System_String_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetRadarColor(System.String)">SetRadarColor(String)</h4>
-  <div class="markdown level1 summary"><p>Sets the color of the radar. Colors can be changed each turn.</p>
-<div class="NOTE"><h5>note</h5><p>
-Currently only the number format using the number sign (#) is supported.
-<p>See <a href="https://en.wikipedia.org/wiki/Web_colors">
-https://en.wikipedia.org/wiki/Web_colors</a></p>
-</p></div>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void SetRadarColor(string radarColor)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">radarColor</span></td>
-        <td><p>Is the new radar color of the bot. Currently, hexadecimal number
-format is being used.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_SetRadarColor_System_String__examples">Examples</h5>
-  <pre><code>SetRadarColor(&quot;#09C&quot;);
-SetRadarColor(&quot;#0099CC&quot;); // same color as above</code></pre>
-
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_SetResume.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.SetResume%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L666">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L559">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_SetResume_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetResume*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_SetResume" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetResume">SetResume()</h4>
@@ -3989,7 +3435,7 @@ parallel by using <em>setter</em> methods only prior to calling <a class="xref" 
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_SetScan.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.SetScan%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L573">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L466">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_SetScan_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetScan*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_SetScan" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetScan">SetScan()</h4>
@@ -4004,54 +3450,10 @@ for scanning for bots.</p>
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_SetScanColor_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.SetScanColor(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L825">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_SetScanColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetScanColor*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_SetScanColor_System_String_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetScanColor(System.String)">SetScanColor(String)</h4>
-  <div class="markdown level1 summary"><p>Sets the color of the scan arc. Colors can be changed each turn.</p>
-<div class="NOTE"><h5>note</h5><p>
-Currently only the number format using the number sign (#) is supported.
-<p>See <a href="https://en.wikipedia.org/wiki/Web_colors">
-https://en.wikipedia.org/wiki/Web_colors</a></p>
-</p></div>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void SetScanColor(string scanColor)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">scanColor</span></td>
-        <td><p>Is the new scan arc color of the bot. Currently, hexadecimal number
-format is being used.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_SetScanColor_System_String__examples">Examples</h5>
-  <pre><code>SetScanColor(&quot;#09C&quot;);
-SetScanColor(&quot;#0099CC&quot;); // same color as above</code></pre>
-
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_SetStop.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.SetStop%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L649">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L542">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_SetStop_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetStop*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_SetStop" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetStop">SetStop()</h4>
@@ -4077,98 +3479,10 @@ parallel by using <em>setter</em> methods only prior to calling <a class="xref" 
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_SetTracksColor_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.SetTracksColor(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L855">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_SetTracksColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetTracksColor*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_SetTracksColor_System_String_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetTracksColor(System.String)">SetTracksColor(String)</h4>
-  <div class="markdown level1 summary"><p>Sets the color of the tracks. Colors can be changed each turn.</p>
-<div class="NOTE"><h5>note</h5><p>
-Currently only the number format using the number sign (#) is supported.
-<p>See <a href="https://en.wikipedia.org/wiki/Web_colors">
-https://en.wikipedia.org/wiki/Web_colors</a></p>
-</p></div>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void SetTracksColor(string tracksColor)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">tracksColor</span></td>
-        <td><p>Is the new tracks color of the bot. Currently, hexadecimal number
-format is being used.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_SetTracksColor_System_String__examples">Examples</h5>
-  <pre><code>SetTracksColor(&quot;#09C&quot;);
-SetTracksColor(&quot;#0099CC&quot;); // same color as above</code></pre>
-
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_SetTurretColor_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.SetTurretColor(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L735">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBaseBot_SetTurretColor_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetTurretColor*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_SetTurretColor_System_String_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.SetTurretColor(System.String)">SetTurretColor(String)</h4>
-  <div class="markdown level1 summary"><p>Sets the color of the gun turret. Colors can be changed each turn.</p>
-<div class="NOTE"><h5>note</h5><p>
-Currently only the number format using the number sign (#) is supported.
-<p>See <a href="https://en.wikipedia.org/wiki/Web_colors">
-https://en.wikipedia.org/wiki/Web_colors</a></p>
-</p></div>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void SetTurretColor(string turretColor)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">turretColor</span></td>
-        <td><p>Is the new gun turret color of the bot. Currently, hexadecimal number
-format is being used.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Robocode_TankRoyale_BotApi_IBaseBot_SetTurretColor_System_String__examples">Examples</h5>
-  <pre><code>SetTurretColor(&quot;#09C&quot;);
-SetTurretColor(&quot;#0099CC&quot;); // same color as above</code></pre>
-
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot_Start.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot.Start%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L138">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L26">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_Start_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Start*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_Start" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.Start">Start()</h4>
@@ -4200,7 +3514,7 @@ method or similar.</p>
                     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBaseBot.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBaseBot%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/src/IBaseBot.cs/#L9" class="contribution-link">View Source</a>
+                    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/bot-api/src/IBaseBot.cs/#L9" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

@@ -71,12 +71,10 @@ learn about the basics first:</p>
 </ul>
 <p>Another good way to get started is to look at the source files for the sample bots.</p>
 <h2 id="the-bot-classes">The bot classes</h2>
-<p>The first primary class that you know about first is the <a href="./api/Robocode.TankRoyale.BotApi.Bot.html">Bot</a> class and
-perhaps the <a href="./api/Robocode.TankRoyale.BotApi.BaseBot.html">BaseBot</a>. The
-<a href="./api/Robocode.TankRoyale.BotApi.BaseBot.html">BaseBot</a> class provides all the base and minimum functionality of a bot
-and deals with the communication with the server. The <a href="./api/Robocode.TankRoyale.BotApi.Bot.html">Bot</a> class is based on
-BaseBot, but provides more convenient methods like e.g. blocking methods for moving and turning the bot, and firing the
-gun.</p>
+<p>The first primary class that you know about first is the <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html">Bot</a> class and perhaps the <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html">BaseBot</a>. The <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html">BaseBot</a> class
+provides all the base and minimum functionality of a bot and deals with the communication with the server. The <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html">Bot</a>
+class is based on BaseBot, but provides more convenient methods like e.g. blocking methods for moving and turning the
+bot, and firing the gun.</p>
 <h2 id="code-example">Code example</h2>
 <p>Here is an example of a simple bot using the Bot API written in C# and should run as a regular application.</p>
 <p>MyFirstBot.cs:</p>
@@ -126,19 +124,18 @@ public class MyFirstBot : Bot
 </code></pre>
 <p>The above code describes the behavior of the robot. The Main() is the main entry point for all C# applications to start
 running the program. Using the bot API, we need to start the robot by calling the
-<a href="./api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Start">IBaseBot.Start()</a> method of
-the bot API, which will tell the server that this bot wants to join the battle and also provide the server with the
-required bot info.</p>
-<p>With the bot's constructor (<em>MyFirstBot()</em>) we call the <a href="./api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromFile_System_String_">BotInfo.fromFile(string)</a>
-method provides the bot info for the server, like e.g. the name of the bot, and its author, etc.</p>
-<p>The <a href="./api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Run">Run()</a> method is called when the
-bot need to start its real execution to send instructions to the server.</p>
+<a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Start">IBaseBot.Start()</a> method of the bot API, which will tell the server that this bot wants to join the battle and also
+provide the server with the required bot info.</p>
+<p>With the bot's constructor (<em>MyFirstBot()</em>) we call the <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromFile_System_String_">BotInfo.fromFile(string)</a> method provides the bot info for the
+server, like e.g. the name of the bot, and its author, etc.</p>
+<p>The <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Run">Run()</a> method is called when the bot need to start its real execution to send instructions to the server.</p>
 <p>The on-methods (for example, <em>onScannedBot</em> and <em>onHitByBullet</em>) are event handlers with code that triggers when a
-specific type of event occurs. For example, the event handler <a href="./api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnScannedBot_Robocode_TankRoyale_BotApi_Events_ScannedBotEvent_">BaseBot.OnScannedBot(ScannedBotEvent)</a>
-triggers whenever an opponent bot is scanned by the radar. The <a href="./api/Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.html">ScannedBotEvent</a> contains the event data for the scanned bot.</p>
+specific type of event occurs. For example, the event handler <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnScannedBot_Robocode_TankRoyale_BotApi_Events_ScannedBotEvent_">BaseBot.OnScannedBot(ScannedBotEvent)</a>
+triggers whenever an opponent bot is scanned by the radar. The <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.html">ScannedBotEvent</a> contains the event data for the scanned
+bot.</p>
 <h2 id="json-config-file">JSON config file</h2>
-<p>The code in this example is accompanied by a <em>MyFirstBot.json</em>, which is a <a href="https://fileinfo.com/extension/json">JSON</a>
-file containing the config file for the bot, and is used by the <strong>booter</strong> to start up the bot on a local machine.</p>
+<p>The code in this example is accompanied by a <em>MyFirstBot.json</em>, which is a <a href="https://fileinfo.com/extension/json">JSON</a> file containing the config file for
+the bot, and is used by the <strong>booter</strong> to start up the bot on a local machine.</p>
 <p>MyFirstBot.json:</p>
 <pre><code class="lang-json">{
   &quot;name&quot;: &quot;My First Bot&quot;,
@@ -152,8 +149,8 @@ file containing the config file for the bot, and is used by the <strong>booter</
   &quot;programmingLang&quot;: &quot;C# 8.0&quot;
 }
 </code></pre>
-<p>You can read more details about the format of this JSON file
-<a href="https://robocode-dev.github.io/tank-royale/docs/articles/booter.html#json-config-file.html">here</a>.</p>
+<p>You can read more details about the format of this JSON
+file <a href="https://robocode-dev.github.io/tank-royale/docs/articles/booter.html#json-config-file.html">here</a>.</p>
 </article>
           </div>
           
