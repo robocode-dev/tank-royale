@@ -94,7 +94,7 @@ publishing {
 
             pom {
                 name.set(archiveTitle)
-                description
+                description.set(project.description)
                 url.set("https://github.com/robocode-dev/tank-royale")
 
                 licenses {

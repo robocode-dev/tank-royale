@@ -63,7 +63,7 @@ tasks {
 
                 pom {
                     name.set(title)
-                    description
+                    description.set(project.description)
                     url.set("https://github.com/robocode-dev/tank-royale")
 
                     licenses {

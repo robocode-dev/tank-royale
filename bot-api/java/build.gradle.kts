@@ -8,6 +8,9 @@ description = "Java API library for developing bots for Robocode Tank Royale"
 
 val artifactBaseName = "robocode-tankroyale-bot-api"
 
+val robocodeDevOssrhUsername: String by project
+val robocodeDevOssrhPassword: String by project
+
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     `java-library`
@@ -113,8 +116,31 @@ publishing {
 
             pom {
                 name.set(title)
-                description
+                description.set(project.description)
                 url.set("https://github.com/robocode-dev/tank-royale")
+
+                repositories {
+                    maven {
+                        setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+                        mavenContent {
+                            releasesOnly()
+                        }
+                        credentials {
+                            username = robocodeDevOssrhUsername
+                            password = robocodeDevOssrhPassword
+                        }
+                    }
+                    maven {
+                        setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+                        mavenContent {
+                            snapshotsOnly()
+                        }
+                        credentials {
+                            username = robocodeDevOssrhUsername
+                            password = robocodeDevOssrhPassword
+                        }
+                    }
+                }
 
                 licenses {
                     license {
