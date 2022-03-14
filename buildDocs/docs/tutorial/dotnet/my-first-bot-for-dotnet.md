@@ -205,7 +205,7 @@ So we need to create a `MyFirstBot.csproj` file with the following content:
         <LangVersion>8.0</LangVersion>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Robocode.TankRoyale.BotApi" Version="0.9.11"/>
+        <PackageReference Include="Robocode.TankRoyale.BotApi" Version="0.10.0"/>
     </ItemGroup>
 </Project>
 ```
@@ -236,7 +236,7 @@ This installs the newest available version of the Bot API for Robocode Tank Roya
 by adding the `--version` option with the specific version:
 
 ```
-dotnet add package Robocode.TankRoyale.BotApi --version 0.9.11
+dotnet add package Robocode.TankRoyale.BotApi --version 0.10.0
 ```
 
 ### Scripts for starting the bot

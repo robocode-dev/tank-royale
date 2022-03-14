@@ -13,7 +13,7 @@ available version).
 The booter does not know how to start up a specific bot for a specific platform and programming language, and hence
 depends on the scripts for starting up a bot.
 
-Read more details about the conventions for the bot directories [here](../docs/docs/articles/booter.md).
+Read more details about the conventions for the bot directories [here](../docs/articles/booter.html).
 
 When a bot is started up, it will be joining a server via WebSockets. If the server is not running, the boot procedure
 will fail.
@@ -112,7 +112,7 @@ it automatically stops all running processes and hence stops running all booted 
 
 The `run` command is used like this to run bots:
 
-    java -jar .\robocode-tankroyale-booter-0.9.12.jar run c:\bots-java\Corners c:\bots-java\Target
+    java -jar .\robocode-tankroyale-booter-0.10.0.jar run c:\bots-java\Corners c:\bots-java\Target
 
 This will run the two bots located in `c:\bots-java\Corners` and `c:\bots-java\Target`, and write something like this
 to [stdout]:
