@@ -12,9 +12,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../bot-api/bot-api.csproj" />
-
-        <!--<PackageReference Include="Robocode.TankRoyale.BotApi" Version="0.10.0" />-->
+        <ProjectReference Include="../Robocode.TankRoyale.BotApi/Robocode.TankRoyale.BotApi.csproj" />
 
         <!-- for testing -->
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />

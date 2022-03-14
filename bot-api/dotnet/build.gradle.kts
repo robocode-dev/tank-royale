@@ -19,7 +19,7 @@ plugins {
 }
 
 dotnet {
-    solution = "bot-api/bot-api.csproj"
+    solution = "Robocode.TankRoyale.BotApi/Robocode.TankRoyale.BotApi.csproj"
 
     projectName = artifactName
 
@@ -29,7 +29,7 @@ dotnet {
     }
 
     test {
-        solution = "bot-api.tests/bot-api.tests.csproj"
+        solution = "Robocode.TankRoyale.BotApi.Tests/Robocode.TankRoyale.BotApi.Tests.csproj"
     }
 
     nugetPush {
