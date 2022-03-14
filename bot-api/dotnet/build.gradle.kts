@@ -33,6 +33,8 @@ dotnet {
     }
 
     nugetPush {
+        solution = "Robocode.TankRoyale.BotApi/Robocode.TankRoyale.BotApi.csproj"
+
         // api key is set by `nuget setApiKey <key>`
         source = "nuget.org"
     }
@@ -43,10 +45,10 @@ tasks {
         doLast {
             delete(
                 "build",
-                "bot-api/obj",
-                "bot-api/bin",
-                "bot-api.tests/obj",
-                "bot-api.tests/bin",
+                "Robocode.TankRoyale.BotApi/obj",
+                "Robocode.TankRoyale.BotApi/bin",
+                "Robocode.TankRoyale.BotApi.Tests/obj",
+                "Robocode.TankRoyale.BotApi.Tests/bin",
                 "docfx_project/_site",
                 "docfx_project/api",
                 "docfx_project/obj"
@@ -92,7 +94,7 @@ tasks {
             val userprofile = System.getenv("USERPROFILE")
             delete("$userprofile/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
             exec {
-                workingDir("bot-api/bin/Release")
+                workingDir("Robocode.TankRoyale.BotApi/bin/Release")
                 commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "-s", "local")
             }
         }
