@@ -12,6 +12,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
 {
   public sealed class BaseBotInternals
   {
+    private const string DefaultServerUrl = "ws://localhost:7654";
+
     private const string NotConnectedToServerMsg =
       "Not connected to a game server. Make sure OnConnected() event handler has been called first";
 
@@ -418,10 +420,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       get
       {
-        var uri = EnvVars.GetServerUrl() ?? "ws://localhost:7654";
+        var uri = EnvVars.GetServerUrl() ?? DefaultServerUrl;
         if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
         {
-          throw new BotException("Incorrect syntax for server uri: " + uri);
+          throw new BotException("Incorrect syntax for server uri: " + uri + ". Default is: " + DefaultServerUrl);
         }
         return new Uri(uri);
       }

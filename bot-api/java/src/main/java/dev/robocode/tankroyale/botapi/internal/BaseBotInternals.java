@@ -35,6 +35,8 @@ import static java.net.http.WebSocket.Builder;
 import static java.net.http.WebSocket.Listener;
 
 public final class BaseBotInternals {
+    private static final String DEFAULT_SERVER_URL = "ws://localhost:7654";
+
     private static final String SERVER_URL_PROPERTY_KEY = "server.url";
     private static final String SERVER_SECRET_PROPERTY_KEY = "server.secret";
 
@@ -49,32 +51,44 @@ public final class BaseBotInternals {
 
     private final URI serverUrl;
     private final String serverSecret;
-    private final CountDownLatch closedLatch = new CountDownLatch(1);
-    private final IBaseBot baseBot;
-    private final BotInfo botInfo;
-    private final BotEventHandlers botEventHandlers;
-    private final EventQueue eventQueue;
-    private final Set<Condition> conditions = new HashSet<>();
-    private final Object nextTurnMonitor = new Object();
-    private final double absDeceleration = abs(DECELERATION);
-    private final Gson gson;
     private WebSocket socket;
     private ServerHandshake serverHandshake;
+    private final CountDownLatch closedLatch = new CountDownLatch(1);
+
+    private final IBaseBot baseBot;
+    private final BotInfo botInfo;
     private BotIntent botIntent = newBotIntent();
+
     private Integer myId;
     private dev.robocode.tankroyale.botapi.GameSetup gameSetup;
+
     private TickEvent tickEvent;
     private Long tickStartNanoTime;
+
+    private final EventQueue eventQueue;
+
+    private final BotEventHandlers botEventHandlers;
+    private final Set<Condition> conditions = new HashSet<>();
+
+    private final Object nextTurnMonitor = new Object();
+
     private boolean isStopped;
+
     private IStopResumeListener stopResumeListener;
+
     private double maxSpeed = MAX_SPEED;
     private double maxTurnRate = MAX_TURN_RATE;
     private double maxGunTurnRate = MAX_GUN_TURN_RATE;
     private double maxRadarTurnRate = MAX_RADAR_TURN_RATE;
+
     private Double savedTargetSpeed;
     private Double savedTurnRate;
     private Double savedGunTurnRate;
     private Double savedRadarTurnRate;
+
+    private final double absDeceleration = abs(DECELERATION);
+
+    private final Gson gson;
 
     {
         RuntimeTypeAdapterFactory<dev.robocode.tankroyale.schema.Event> typeFactory =
@@ -422,12 +436,12 @@ public final class BaseBotInternals {
             url = EnvVars.getServerUrl();
         }
         if (url == null) {
-            url = "ws://localhost:7654";
+            url = DEFAULT_SERVER_URL;
         }
         try {
             return new URI(url);
         } catch (URISyntaxException ex) {
-            throw new BotException("Incorrect syntax for server URL: " + url);
+            throw new BotException("Incorrect syntax for server URL: " + url + ". Default is: " + DEFAULT_SERVER_URL);
         }
     }
 
