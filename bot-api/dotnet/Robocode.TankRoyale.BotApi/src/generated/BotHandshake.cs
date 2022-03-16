@@ -55,6 +55,13 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("secret", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Secret { get; set; }
     
+        /// <summary>Initial start position of the bot used for debugging as a comma-separated format taking the x and y coordinates
+        /// and starting angle/heading, e.g. "50, 70" meaning start at coordinate (50, 70) with random angle, or "50, 70, 270"
+        /// meaning start at coordinate (50, 70) with heading at the angle 270°.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("initialPosition", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object InitialPosition { get; set; }
+    
     
     }
 }
