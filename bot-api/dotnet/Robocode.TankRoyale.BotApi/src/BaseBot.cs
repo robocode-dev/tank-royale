@@ -17,24 +17,42 @@ namespace Robocode.TankRoyale.BotApi
 
     /// <summary>
     /// Constructor for initializing a new instance of the BaseBot class.
-    /// This constructor should be used when  both BotInfo and server URL is provided through
+    /// This constructor should be used when both <see cref="BotInfo"/> and server URL is provided through
     /// environment variables, i.e., when starting up the bot using a booter. These environment
     /// variables must be set to provide the server URL and bot information, and are automatically
     /// set by the booter tool for Robocode.
     ///
-    /// Example of how to set the predefined environment variables:
+    /// Example of how to set the predefined environment variables used for connecting to the server:
+    /// <ul>
+    /// <li>SERVER_URL=ws://localhost:7654</li>
+    /// <li>SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ</li>
+    /// </ul>
     ///
-    /// SERVER_URL=ws://localhost<br/>
-    /// SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ<br/>
-    /// BOT_NAME=MyBot<br/>
-    /// BOT_VERSION=1.0<br/>
-    /// BOT_AUTHORS=John Doe<br/>
-    /// BOT_DESCRIPTION=A short description<br/>
-    /// BOT_URL=http://somewhere.net/MyBot<br/>
-    /// BOT_COUNTRY_CODES=us<br/>
-    /// BOT_GAME_TYPES=classic, melee, 1v1<br/>
-    /// BOT_PLATFORM=.Net 5.0<br/>
-    /// BOT_PROG_LANG=C# 8.0<br/>
+    /// Example of how to set the environment variables that covers the <see cref="BotInfo"/>:
+    /// <ul>
+    /// <li>BOT_NAME=MyBot</li>
+    /// <li>BOT_VERSION=1.0</li>
+    /// <li>BOT_AUTHORS=John Doe</li>
+    /// <li>BOT_DESCRIPTION=Short description</li>
+    /// <li>BOT_HOMEPAGE=https://somewhere.net/MyBot</li>
+    /// <li>BOT_COUNTRY_CODES=us</li>
+    /// <li>BOT_GAME_TYPES=melee,1v1</li>
+    /// <li>BOT_PLATFORM=.Net 5.0</li>
+    /// <li>BOT_PROG_LANG=C# 8.0</li>
+    /// </ul>
+    ///
+    /// These environment variables <em>must</em> be set prior to using this constructor:
+    /// <ul>
+    /// <li>BOT_NAME</li>
+    /// <li>BOT_VERSION</li>
+    /// <li>BOT_AUTHOR</li>
+    /// <li>BOT_GAME_TYPES</li>
+    /// </ul>
+    /// The SERVER_SECRET must be set if the server requires a server secret for the bots trying
+    /// to connect. Otherwise, the bot will be disconnected as soon as it attempts to connect to
+    /// the server.
+    ///
+    /// If the SERVER_URL is not set, then this default URL is used: ws://localhost:7654
     /// </summary>
     public BaseBot()
     {
@@ -67,7 +85,7 @@ namespace Robocode.TankRoyale.BotApi
     /// </summary>
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
     /// <param name="serverUrl">Is the server URL</param>
-    /// <param name="serverSecret">Is the server secret</param>
+    /// <param name="serverSecret">Is the server secret for bots</param>
     public BaseBot(BotInfo botInfo, Uri serverUrl, string serverSecret)
     {
       __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, serverSecret);

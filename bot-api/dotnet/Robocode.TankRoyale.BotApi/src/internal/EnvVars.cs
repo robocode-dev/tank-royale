@@ -27,8 +27,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
     /// <summary>Name of environment variable for bot description.</summary>
     internal const string BotDescription = "BOT_DESCRIPTION";
 
-    /// <summary>Name of environment variable for bot URL.</summary>
-    internal const string BotUrl = "BOT_URL";
+    /// <summary>Name of environment variable for bot homepage URL.</summary>
+    internal const string BotHomepage = "BOT_HOMEPAGE";
 
     /// <summary>Name of environment variable for bot country code(s).</summary>
     internal const string BotCountryCodes = "BOT_COUNTRY_CODES";
@@ -139,7 +139,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     /// <returns>The bot homepage URL.</returns>
     internal static string GetBotHomepage()
     {
-      return Environment.GetEnvironmentVariable(BotUrl);
+      return Environment.GetEnvironmentVariable(BotHomepage);
     }
 
     /// <summary>

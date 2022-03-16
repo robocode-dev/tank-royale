@@ -14,58 +14,28 @@ public abstract class Bot extends BaseBot implements IBot {
     private final BotInternals __botInternals = new BotInternals(this, super.__baseBotInternals);
 
     /**
-     * Constructor for initializing a new instance of the Bot class, which should be used when
-     * both BotInfo and server URL is provided through environment variables, i.e., when starting up
-     * the bot using a booter. These environment variables must be set to provide the server URL
-     * and bot information, and are automatically set by the booter tool for Robocode.
-     *
-     * <p>
-     * <b>Example of how to set the predefined environment variables:</b><br>
-     * <br>
-     * SERVER_URL=ws://localhost:7654<br>
-     * SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ<br>
-     * BOT_NAME=MyBot<br>
-     * BOT_VERSION=1.0<br>
-     * BOT_AUTHOR=fnl<br>
-     * BOT_DESCRIPTION=Sample bot<br>
-     * BOT_URL=https://mybot.somewhere.net<br>
-     * BOT_COUNTRY_CODE=DK<br>
-     * BOT_GAME_TYPES=melee,1v1<br>
-     * BOT_PLATFORM=Java<br>
-     * BOT_PROG_LANG=Java 8<br>
-     * </p>
+     * @see BaseBot#BaseBot()
      */
     public Bot() {
         super();
     }
 
     /**
-     * Constructor for initializing a new instance of the Bot class.
-     * This constructor assumes the server URL and secret is provided by the environment
-     * variables SERVER_URL and SERVER_SECRET.
-     *
-     * @param botInfo is the bot info containing information about your bot.
+     * @see BaseBot#BaseBot(BotInfo)
      */
     public Bot(final BotInfo botInfo) {
         super(botInfo);
     }
 
     /**
-     * Constructor for initializing a new instance of the Bot class.
-     *
-     * @param botInfo   is the bot info containing information about your bot.
-     * @param serverUrl is the server URL
+     * @see BaseBot#BaseBot(BotInfo, URI)
      */
     public Bot(final BotInfo botInfo, URI serverUrl) {
         super(botInfo, serverUrl);
     }
 
     /**
-     * Constructor for initializing a new instance of the Bot class.
-     *
-     * @param botInfo      is the bot info containing information about your bot.
-     * @param serverUrl    is the server URL
-     * @param serverSecret is the server secret
+     * @see BaseBot#BaseBot(BotInfo, URI, String)
      */
     public Bot(final BotInfo botInfo, URI serverUrl, String serverSecret) {
         super(botInfo, serverUrl, serverSecret);

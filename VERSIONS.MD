@@ -1,6 +1,13 @@
 # Versions
 
-## 0.10.0 - Bot API improvements
+## In progress
+
+#### Bugfixes
+
+- Bot API: Replaced the environment variable BOT_URL (deprecated) with BOT_HOMEPAGE.
+- Bot API for .Net: Added missing public Bot(BotInfo, Uri, string serverSecret) constructor.
+
+## 0.10.0 - Bot API improvements - 24-Mar-2022
 
 #### Bug fixes:
 

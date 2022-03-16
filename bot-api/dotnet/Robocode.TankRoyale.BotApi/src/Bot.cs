@@ -12,40 +12,26 @@ namespace Robocode.TankRoyale.BotApi
   {
     private readonly BotInternals __botInternals;
 
-    // <inheritdoc/> does not work with the default constructor?
-    /// <summary>
-    /// Constructor for initializing a new instance of the Bot class, which should be used when
-    /// both BotInfo and server URI is provided through environment variables, i.e., when starting
-    /// up the bot using a booter. These environment variables must be set to provide the server
-    /// URL and bot information, and are automatically set by the booter tool for Robocode.
-    ///
-    /// Example of how to set the predefined environment variables:
-    ///
-    /// SERVER_URL=ws://localhost<br/>
-    /// SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ<br/>
-    /// BOT_NAME=MyBot<br/>
-    /// BOT_VERSION=1.0<br/>
-    /// BOT_AUTHOR=fnl<br/>
-    /// BOT_DESCRIPTION=Sample bot<br/>
-    /// BOT_URL=https://mybot.somewhere.net<br/>
-    /// BOT_COUNTRY_CODE=DK<br/>
-    /// BOT_GAME_TYPES=melee,1v1<br/>
-    /// BOT_PLATFORM=.Net Core 3.1<br/>
-    /// BOT_PROG_LANG=C# 8<br/>
-    /// </summary>
+    /// <see cref="BaseBot()"/>
     public Bot()
     {
       __botInternals = new BotInternals(this, base.__baseBotInternals);
     }
 
-    /// <inheritdoc/>
+    /// <see cref="BaseBot(BotInfo)"/>
     public Bot(BotInfo botInfo) : base(botInfo)
     {
       __botInternals = new BotInternals(this, base.__baseBotInternals);
     }
 
-    /// <inheritdoc/>
+    /// <see cref="BaseBot(BotInfo, Uri)"/>
     public Bot(BotInfo botInfo, Uri serverUrl) : base(botInfo, serverUrl)
+    {
+      __botInternals = new BotInternals(this, base.__baseBotInternals);
+    }
+
+    /// <see cref="BaseBot(BotInfo, Uri, string)"/>
+    public Bot(BotInfo botInfo, Uri serverUrl, string serverSecret) : base(botInfo, serverUrl, serverSecret)
     {
       __botInternals = new BotInternals(this, base.__baseBotInternals);
     }

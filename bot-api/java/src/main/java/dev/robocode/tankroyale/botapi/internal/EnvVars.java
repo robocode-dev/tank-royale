@@ -38,9 +38,9 @@ final class EnvVars {
      */
     static final String BOT_DESCRIPTION = "BOT_DESCRIPTION";
     /**
-     * Name of environment variable for bot URL.
+     * Name of environment variable for bot homepage URL.
      */
-    static final String BOT_URL = "BOT_URL";
+    static final String BOT_HOMEPAGE = "BOT_HOMEPAGE";
     /**
      * Name of environment variable for bot country code(s).
      */
@@ -137,7 +137,7 @@ final class EnvVars {
      * Bot homepage URL.
      */
     static String getBotHomepage() {
-        return System.getenv(BOT_URL);
+        return System.getenv(BOT_HOMEPAGE);
     }
 
     /**

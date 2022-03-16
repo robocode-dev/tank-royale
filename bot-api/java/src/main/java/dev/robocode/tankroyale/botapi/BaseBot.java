@@ -20,26 +20,42 @@ public abstract class BaseBot implements IBaseBot {
 
     /**
      * Constructor for initializing a new instance of the BaseBot class.
-     * This constructor should be used when  both BotInfo and server URL is provided through
+     * This constructor should be used when both {@link BotInfo} and server URL is provided through
      * environment variables, i.e., when starting up the bot using a booter. These environment
      * variables must be set to provide the server URL and bot information, and are automatically
      * set by the booter tool for Robocode.
+     * <p><br>
+     * Example of how to set the predefined environment variables used for connecting to the server:
+     * <ul>
+     * <li>SERVER_URL=ws://localhost:7654</li>
+     * <li>SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ</li>
+     * </ul>
      *
-     * <p>
-     * <b>Example of how to set the predefined environment variables:</b><br>
-     * <br>
-     * SERVER_URL=ws://localhost:7654<br>
-     * SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ<br>
-     * BOT_NAME=MyBot<br>
-     * BOT_VERSION=1.0<br>
-     * BOT_AUTHOR=fnl<br>
-     * BOT_DESCRIPTION=Sample bot<br>
-     * BOT_HOMEPAGE=https://mybot.somewhere.net<br>
-     * BOT_COUNTRY_CODE=DK<br>
-     * BOT_GAME_TYPES=melee,1v1<br>
-     * BOT_PLATFORM=Java<br>
-     * BOT_PROG_LANG=Java 8<br>
+     * Example of how to set the environment variables that covers the {@link BotInfo}:
+     * <ul>
+     * <li>BOT_NAME=MyBot</li>
+     * <li>BOT_VERSION=1.0</li>
+     * <li>BOT_AUTHOR=John Doe</li>
+     * <li>BOT_DESCRIPTION=Short description</li>
+     * <li>BOT_HOMEPAGE=https://somewhere.net/MyBot</li>
+     * <li>BOT_COUNTRY_CODES=us</li>
+     * <li>BOT_GAME_TYPES=melee,1v1</li>
+     * <li>BOT_PLATFORM=Java</li>
+     * <li>BOT_PROG_LANG=Java 8</li>
+     * </ul>
+     * These environment variables <em>must</em> be set prior to using this constructor:
      * </p>
+     * <ul>
+     * <li>BOT_NAME</li>
+     * <li>BOT_VERSION</li>
+     * <li>BOT_AUTHOR</li>
+     * <li>BOT_GAME_TYPES</li>
+     * </ul>
+     * The SERVER_SECRET must be set if the server requires a server secret for the bots trying
+     * to connect. Otherwise, the bot will be disconnected as soon as it attempts to connect to
+     * the server.
+     * <p>
+     * If the SERVER_URL is not set, then this default URL is used: ws://localhost:7654
      */
     public BaseBot() {
         __baseBotInternals = new BaseBotInternals(this, null, null, null);
@@ -71,7 +87,7 @@ public abstract class BaseBot implements IBaseBot {
      *
      * @param botInfo      is the bot info containing information about your bot.
      * @param serverUrl    is the server URL
-     * @param serverSecret is the server secret
+     * @param serverSecret is the server secret for bots
      */
     public BaseBot(final BotInfo botInfo, URI serverUrl, String serverSecret) {
         __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, serverSecret);
@@ -351,7 +367,9 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final double getMaxGunTurnRate() { return __baseBotInternals.getMaxGunTurnRate(); }
+    public final double getMaxGunTurnRate() {
+        return __baseBotInternals.getMaxGunTurnRate();
+    }
 
     /**
      * {@inheritDoc}
