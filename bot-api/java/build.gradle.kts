@@ -37,6 +37,10 @@ dependencies {
     testImplementation(libs.junit.params)
     testRuntimeOnly(libs.junit.engine)
     testImplementation(libs.assertj)
+
+    testImplementation("uk.org.webcompere:system-stubs-jupiter:1.1.0")
+
+    testImplementation("org.java-websocket:Java-WebSocket:1.5.2")
 }
 
 tasks {
