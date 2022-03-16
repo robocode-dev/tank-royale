@@ -269,7 +269,7 @@ Here are the events that a bot receives under a game:
 | [tick-event-for-bot]      | When a new turn is about to begin                                           |
 | [won-round-event]         | When our bot won the round                                                  |
 
-[TPS]: ../../docs/docs/articles/tps.md "TPS (Turns Per Second)"
+[TPS]: ../../docs/articles/tps.html "TPS (Turns Per Second)"
 
 [server-handshake]: server-handshake.yaml
 
