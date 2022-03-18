@@ -8,15 +8,14 @@ description = "Java API library for developing bots for Robocode Tank Royale"
 
 val artifactBaseName = "robocode-tankroyale-bot-api"
 
-val robocodeDevOssrhUsername: String by project
-val robocodeDevOssrhPassword: String by project
+//val robocodeDevOssrhUsername: String by project
+//val robocodeDevOssrhPassword: String by project
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     `java-library`
     alias(libs.plugins.shadow.jar)
     `maven-publish`
-    signing
 }
 
 java {
@@ -107,7 +106,7 @@ tasks {
 
 publishing {
     publications {
-        create<MavenPublication>("mavenJava") {
+        create<MavenPublication>("bot-api") {
             from(components["java"])
 
             groupId = group as String?
@@ -118,7 +117,7 @@ publishing {
                 name.set(title)
                 description.set(project.description)
                 url.set("https://github.com/robocode-dev/tank-royale")
-
+/*
                 repositories {
                     maven {
                         setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
@@ -141,7 +140,7 @@ publishing {
                         }
                     }
                 }
-
+*/
                 licenses {
                     license {
                         name.set("The Apache License, Version 2.0")
@@ -166,6 +165,6 @@ publishing {
     }
 }
 
-signing {
-    sign(publishing.publications["mavenJava"])
+tasks.withType<GenerateModuleMetadata> {
+    enabled = false
 }
