@@ -16,7 +16,6 @@ plugins {
     `java-library`
     alias(libs.plugins.shadow.jar)
     `maven-publish`
-    signing
 }
 
 java {
@@ -107,7 +106,7 @@ tasks {
 
 publishing {
     publications {
-        create<MavenPublication>("mavenJava") {
+        create<MavenPublication>("bot-api") {
             from(components["java"])
 
             groupId = group as String?
@@ -166,6 +165,6 @@ publishing {
     }
 }
 
-signing {
-    sign(publishing.publications["mavenJava"])
+tasks.withType<GenerateModuleMetadata> {
+    enabled = false
 }

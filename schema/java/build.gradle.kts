@@ -24,7 +24,6 @@ plugins {
     `java-library`
     alias(libs.plugins.shadow.jar)
     `maven-publish`
-    signing
 }
 
 apply(plugin = "jsonschema2pojo")
@@ -53,7 +52,7 @@ tasks {
 
     publishing {
         publications {
-            create<MavenPublication>("mavenJava") {
+            create<MavenPublication>("schema") {
                 artifact("${buildDir}/libs/java-$version-all.jar") {
                     builtBy(shadowJar)
                 }
@@ -89,8 +88,4 @@ tasks {
             }
         }
     }
-}
-
-signing {
-    sign(publishing.publications["mavenJava"])
 }

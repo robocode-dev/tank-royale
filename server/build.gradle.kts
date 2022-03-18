@@ -22,7 +22,6 @@ plugins {
     kotlin("plugin.serialization")
     alias(libs.plugins.shadow.jar)
     `maven-publish`
-    signing
 }
 
 dependencies {
@@ -62,7 +61,7 @@ tasks {
 
     publishing {
         publications {
-            create<MavenPublication>("mavenJava") {
+            create<MavenPublication>("server") {
                 artifact(proguard.get().outJarFiles[0]) {
                     builtBy(proguard)
                 }
@@ -97,8 +96,4 @@ tasks {
             }
         }
     }
-}
-
-signing {
-    sign(publishing.publications["mavenJava"])
 }

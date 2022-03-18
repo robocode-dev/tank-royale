@@ -21,7 +21,6 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     `maven-publish`
-    signing
 }
 
 dependencies {
@@ -85,7 +84,7 @@ tasks {
 
 publishing {
     publications {
-        create<MavenPublication>("mavenJava") {
+        create<MavenPublication>("gui-app") {
             artifact(archiveFileName)
 
             groupId = group as String?
@@ -119,8 +118,4 @@ publishing {
             }
         }
     }
-}
-
-signing {
-    sign(publishing.publications["mavenJava"])
 }
