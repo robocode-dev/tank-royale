@@ -4,6 +4,7 @@
 .idea/
 .vscode/
 .gradle/
+Folder.DotSettings.user
 
 target/
 !sample-bots/java/Target/
@@ -15,6 +16,7 @@ bin/
 obj/
 
 *.iml
+
 /games.properties
 /misc.properties
 /server.properties
