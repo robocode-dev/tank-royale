@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Robocode.TankRoyale.BotApi.Util;
 
 namespace Robocode.TankRoyale.BotApi.Internal
@@ -42,7 +43,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
     /// <summary>Name of environment variable for bot programming language.</summary>
     internal const string BotProgrammingLang = "BOT_PROG_LANG";
 
-    internal const string IncorrectEnvValue = "Incorrect or missing value for environment variable: ";
+    /// <summary>Name of environment variable for bot initial position.</summary>
+    internal const string BotInitialPosition = "BOT_INITIAL_POS";
+
+    internal const string MissingEnvValue = "Missing environment variable: ";
 
     /// <summary>
     /// Gets the bot info from environment variables.
@@ -52,19 +56,19 @@ namespace Robocode.TankRoyale.BotApi.Internal
     {
       if (string.IsNullOrWhiteSpace(GetBotName()))
       {
-        throw new BotException(IncorrectEnvValue + BotName);
+        throw new BotException(MissingEnvValue + BotName);
       }
       if (string.IsNullOrWhiteSpace(GetBotVersion()))
       {
-        throw new BotException(IncorrectEnvValue + BotVersion);
+        throw new BotException(MissingEnvValue + BotVersion);
       }
       if (GetBotAuthors().IsNullOrEmptyOrContainsBlanks())
       {
-        throw new BotException(IncorrectEnvValue + BotAuthors);
+        throw new BotException(MissingEnvValue + BotAuthors);
       }
       if (GetBotGameTypes().Count == 0)
       {
-        throw new BotException(IncorrectEnvValue + BotGameTypes);
+        throw new BotException(MissingEnvValue + BotGameTypes);
       }
       return new BotInfo(
         GetBotName(),
@@ -75,7 +79,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
         GetBotCountryCodes(),
         GetBotGameTypes(),
         GetBotPlatform(),
-        GetBotProgrammingLang()
+        GetBotProgrammingLang(),
+        GetBotInitialPosition()
       );
     }
 
@@ -178,12 +183,21 @@ namespace Robocode.TankRoyale.BotApi.Internal
       return Environment.GetEnvironmentVariable(BotProgrammingLang);
     }
 
+    /// <summary>
+    /// Gets the initial starting position for the bot used for debugging from environment variable.
+    /// </summary>
+    /// <returns>The initial starting position for the bot used for debugging.</returns>
+    internal static InitialPosition GetBotInitialPosition()
+    {
+      return InitialPosition.FromString(Environment.GetEnvironmentVariable(BotInitialPosition));
+    }
+
     private static ICollection<string> GetEnvVarAsList(string envVarName)
     {
       var value = Environment.GetEnvironmentVariable(envVarName);
       return string.IsNullOrWhiteSpace(value) ?
         new List<string>() :
-        new List<string>(value.Split("\\s*,\\s*"));
+        new List<string>(Regex.Split(value, @"\s*,\s*"));
     }
   }
 }

@@ -13,5 +13,5 @@ data class BotInfo(
     val countryCodes: String,
     val platform: String? = null,
     val programmingLang: String? = null,
-    val initialPositions: String? = null,
+    val initialPosition: String? = null,
 )

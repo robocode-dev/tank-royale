@@ -45,7 +45,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         /// <inheritdoc/>
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0},{1},{2}", X, Y, Angle);
+            return $"{X},{Y},{Angle}";
         }
 
         public static InitialPosition FromString(string initialPosition)

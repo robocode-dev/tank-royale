@@ -192,6 +192,7 @@ class RunCommand : Command() {
             envMap[Env.BOT_GAME_TYPES.name] = botInfo.gameTypes
             envMap[Env.BOT_PLATFORM.name] = botInfo.platform
             envMap[Env.BOT_PROG_LANG.name] = botInfo.programmingLang
+            envMap[Env.BOT_INITIAL_POS.name] = botInfo.initialPosition
         }
     }
 }
