@@ -25,7 +25,7 @@
 
     <PackageTags>Robocode,TankRoyale,Tank,Royale,Bot</PackageTags>
 
-    <PackageProjectUrl>https://robocode-dev.github.io/tank-royale/docs/</PackageProjectUrl>
+    <PackageProjectUrl>https://robocode-dev.github.io/tank-royale/</PackageProjectUrl>
 
     <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../docs/Release-notes.txt"))</PackageReleaseNotes>
 

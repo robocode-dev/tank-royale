@@ -190,8 +190,8 @@ class RunCommand : Command() {
             envMap[Env.BOT_HOMEPAGE.name] = botInfo.homepage
             envMap[Env.BOT_COUNTRY_CODES.name] = botInfo.countryCodes
             envMap[Env.BOT_GAME_TYPES.name] = botInfo.gameTypes
-            envMap[Env.BOT_PLATFORM.name] = botInfo.gameTypes
-            envMap[Env.BOT_PROG_LANG.name] = botInfo.gameTypes
+            envMap[Env.BOT_PLATFORM.name] = botInfo.platform
+            envMap[Env.BOT_PROG_LANG.name] = botInfo.programmingLang
         }
     }
 }

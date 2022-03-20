@@ -1,6 +1,10 @@
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
+using System.IO;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
+
 // ------------------------------------------------------------------
 // SpinBot
 // ------------------------------------------------------------------
@@ -14,11 +18,21 @@ public class SpinBot : Bot
     // The main method starts our bot
     static void Main(string[] args)
     {
-        new SpinBot().Start();
+        // Read configuration file from current directory
+        var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("SpinBot.json");
+
+        // Read the configuration into a BotInfo instance
+        var config = builder.Build();
+        var botInfo = BotInfo.FromConfiguration(config);
+
+        // Create and start our bot based on the bot info
+        new SpinBot(botInfo).Start();
     }
 
-    // Constructor, which loads the bot config file
-    SpinBot() : base(BotInfo.FromFile("SpinBot.json")) { }
+    // Constructor taking a BotInfo that is forwarded to the base class
+    private SpinBot(BotInfo botInfo) : base(botInfo) {}
 
     // Called when a new round is started -> initialize and do some movement
     public override void Run()

@@ -13,9 +13,9 @@ using Robocode.TankRoyale.BotApi.Events;
 // ------------------------------------------------------------------
 public class Corners : Bot
 {
-    int enemies; // Number of enemy robots in the game
+    int enemies; // Number of enemy bots in the game
     int corner = 0; // Which corner we are currently using
-    bool stopWhenSeeRobot = false; // See GoCorner()
+    bool stopWhenSeeEnemy = false; // See GoCorner()
 
     // The main method starts our bot
     static void Main(string[] args)
@@ -61,11 +61,11 @@ public class Corners : Bot
     private void GoCorner()
     {
         // We don't want to stop when we're just turning...
-        stopWhenSeeRobot = false;
+        stopWhenSeeEnemy = false;
         // Turn to face the wall towards our desired corner
         TurnLeft(CalcBearing(corner));
-        // Ok, now we don't want to crash into any robot in our way...
-        stopWhenSeeRobot = true;
+        // Ok, now we don't want to crash into any bot in our way...
+        stopWhenSeeEnemy = true;
         // Move to that wall
         Forward(5000);
         // Turn to face the corner
@@ -82,13 +82,13 @@ public class Corners : Bot
         var distance = DistanceTo(e.X, e.Y);
 
         // Should we stop, or just fire?
-        if (stopWhenSeeRobot)
+        if (stopWhenSeeEnemy)
         {
             // Stop movement
             Stop();
             // Call our custom firing method
             SmartFire(distance);
-            // Rescan for another robot
+            // Rescan for another bot
             Scan();
             // Resume movement
             Resume();
@@ -98,7 +98,7 @@ public class Corners : Bot
     }
 
     // Custom fire method that determines firepower based on distance. 
-    // distance: The distance to the robot to fire at.
+    // distance: The distance to the bot to fire at.
     private void SmartFire(double distance)
     {
         if (distance > 200 || Energy < 15)
@@ -116,7 +116,7 @@ public class Corners : Bot
         if (enemies == 0)
             return;
 
-        // If 75% of the robots are still alive when we die, we'll switch corners.
+        // If 75% of the bots are still alive when we die, we'll switch corners.
         if (EnemyCount / (double)enemies >= .75)
         {
             if (corner != 270)

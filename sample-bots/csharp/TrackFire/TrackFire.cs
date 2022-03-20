@@ -8,7 +8,7 @@ using Robocode.TankRoyale.BotApi.Events;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-// Sits still. Tracks and fires at the nearest robot it sees.
+// Sits still. Tracks and fires at the nearest bot it sees.
 // ------------------------------------------------------------------
 public class TrackFire : Bot
 {
@@ -63,7 +63,7 @@ public class TrackFire : Bot
             Fire(Math.Min(3 - Math.Abs(bearingFromGun), Energy - .1));
         }
 
-        // Generates another scan event if we see a robot.
+        // Generates another scan event if we see a bot.
         // We only need to call this if the gun (and therefore radar)
         // are not turning. Otherwise, scan is called automatically.
         if (bearingFromGun < 5)

@@ -12,7 +12,7 @@ using Robocode.TankRoyale.BotApi.Events;
 // ------------------------------------------------------------------
 public class Walls : Bot
 {
-    bool peek; // Don't turn if there's a robot there
+    bool peek; // Don't turn if there's a bot there
     double moveAmount; // How much to move
 
     // The main method starts our bot
@@ -82,8 +82,8 @@ public class Walls : Bot
     public override void OnScannedBot(ScannedBotEvent e)
     {
         SetFire(2);
-        // Note that scan is called automatically when the robot is turning.
-        // By calling it manually here, we make sure we generate another scan event if there's a robot
+        // Note that scan is called automatically when the bot is turning.
+        // By calling it manually here, we make sure we generate another scan event if there's a bot
         // on the next wall, so that we do not start moving up it until it's gone.
         if (peek)
             Scan();

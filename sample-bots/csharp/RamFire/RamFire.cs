@@ -7,7 +7,7 @@ using Robocode.TankRoyale.BotApi.Events;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-// Drives at robots trying to ram them. Fires when it hits them.
+// Drives at bots trying to ram them. Fires when it hits them.
 // ------------------------------------------------------------------
 public class RamFire : Bot
 {
@@ -47,12 +47,12 @@ public class RamFire : Bot
         Scan(); // Might want to move forward again!
     }
 
-    // We have hit another bot -> turn to face robot, fire hard, and ram it again!
+    // We have hit another bot -> turn to face bot, fire hard, and ram it again!
     public override void OnHitBot(HitBotEvent e)
     {
         TurnToFaceTarget(e.X, e.Y);
 
-        // Determine a shot that won't kill the robot...
+        // Determine a shot that won't kill the bot...
         // We want to ram it instead for bonus points
         if (e.Energy > 16)
             Fire(3);

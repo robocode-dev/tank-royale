@@ -544,7 +544,7 @@ namespace Robocode.TankRoyale.BotApi
     /// <summary>
     /// Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
     /// turning and thereby will not be able to automatically scan bots. This method is useful when the
-    /// robot movement has stopped, e.g. when <see cref="IBot.Stop"/> has been called. The last radar direction
+    /// bot movement has stopped, e.g. when <see cref="IBot.Stop"/> has been called. The last radar direction
     /// and sweep angle will be used for rescanning for bots.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to

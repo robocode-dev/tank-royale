@@ -112,7 +112,7 @@ is moving away from. In this case, the bot is not stopped.
 
 ### Collision between bots
 
-Each robot takes 0.6 damage when colliding.
+Each bot takes 0.6 damage when colliding.
 
 ### Ramming
 
