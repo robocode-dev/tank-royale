@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.botapi.internal;
 
 import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.BotInfo;
+import dev.robocode.tankroyale.botapi.InitialPosition;
 
 import java.util.Arrays;
 import java.util.Collection;

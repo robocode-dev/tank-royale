@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.botapi.internal;
+package dev.robocode.tankroyale.botapi;
 
 /**
  * Initial starting position containing a start coordinate (x,y) and angle.
@@ -18,7 +18,7 @@ public final class InitialPosition {
      * @param y     is the y coordinate, where {@code null} means it is random.
      * @param angle is the angle, where {@code null} means it is random.
      */
-    InitialPosition(Double x, Double y, Double angle) {
+    private InitialPosition(Double x, Double y, Double angle) {
         this.x = x;
         this.y = y;
         this.angle = angle;

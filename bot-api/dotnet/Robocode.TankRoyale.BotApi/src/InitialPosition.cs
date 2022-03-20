@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
-namespace Robocode.TankRoyale.BotApi.Internal
+[assembly: InternalsVisibleTo("Robocode.TankRoyale.BotApi.Tests")]
+namespace Robocode.TankRoyale.BotApi
 {
     /// <summary>
     /// Initial starting position containing a start coordinate (x,y) and angle.
@@ -45,7 +47,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"{X},{Y},{Angle}";
+            return string.Format(CultureInfo.InvariantCulture, "{0},{1},{2}", X, Y, Angle);
         }
 
         public static InitialPosition FromString(string initialPosition)

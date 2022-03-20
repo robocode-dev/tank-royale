@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Robocode.TankRoyale.BotApi.Util;
 
+[assembly: InternalsVisibleTo("Robocode.TankRoyale.BotApi.Tests")]
 namespace Robocode.TankRoyale.BotApi.Internal
 {
   /// <summary>

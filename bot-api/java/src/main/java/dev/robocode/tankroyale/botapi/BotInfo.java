@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.botapi;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.neovisionaries.i18n.CountryCode;
-import dev.robocode.tankroyale.botapi.internal.InitialPosition;
 
 import java.io.FileInputStream;
 import java.io.IOException;

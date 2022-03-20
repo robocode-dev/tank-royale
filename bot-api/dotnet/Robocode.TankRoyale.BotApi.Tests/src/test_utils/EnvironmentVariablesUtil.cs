@@ -11,7 +11,7 @@ namespace Robocode.TankRoyale.BotApi.Tests.Test_utils
             SetVar(BotName, "MyBot");
             SetVar(BotVersion, "MyBot");
             SetVar(BotAuthors, "Author1, Author2");
-            SetVar(BotGameTypes, "classic, melee, 1v1");
+            SetVar(BotGameTypes, "1v1, classic, melee");
             SetVar(BotDescription, "Short description");
             SetVar(BotHomepage, "https://somewhere.net/MyBot");
             SetVar(BotCountryCodes, "uk, us");

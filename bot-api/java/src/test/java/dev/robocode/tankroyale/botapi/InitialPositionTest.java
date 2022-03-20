@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.botapi.internal;
+package dev.robocode.tankroyale.botapi;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
