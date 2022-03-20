@@ -21,7 +21,8 @@ namespace Robocode.TankRoyale.BotApi
     /// environment variables, i.e., when starting up the bot using a booter. These environment
     /// variables must be set to provide the server URL and bot information, and are automatically
     /// set by the booter tool for Robocode.
-    ///
+    /// </summary>
+    /// <example>
     /// Example of how to set the predefined environment variables used for connecting to the server:
     /// <ul>
     /// <li>SERVER_URL=ws://localhost:7654</li>
@@ -39,21 +40,30 @@ namespace Robocode.TankRoyale.BotApi
     /// <li>BOT_GAME_TYPES=melee,1v1</li>
     /// <li>BOT_PLATFORM=.Net 5.0</li>
     /// <li>BOT_PROG_LANG=C# 8.0</li>
+    /// <li>BOT_INITIAL_POS=50,70, 270</li>
     /// </ul>
     ///
     /// These environment variables <em>must</em> be set prior to using this constructor:
     /// <ul>
     /// <li>BOT_NAME</li>
     /// <li>BOT_VERSION</li>
-    /// <li>BOT_AUTHOR</li>
+    /// <li>BOT_AUTHORS</li>
     /// <li>BOT_GAME_TYPES</li>
     /// </ul>
+    /// These value can take multiple values separated by a comma:
+    /// <ul>
+    /// <li>BOT_AUTHORS, e.g. "John Doe, Jane Doe"</li>
+    /// <li>BOT_COUNTRY_CODES, e.g. "se, no, dk"</li>
+    /// <li>BOT_GAME_TYPES, e.g. "classic, melee, 1v1"</li>
+    /// </ul>
+    /// The <c>BOT_INITIAL_POS</c> variable is optional and should <em>only</em> be used for debugging.
+    ///
     /// The SERVER_SECRET must be set if the server requires a server secret for the bots trying
     /// to connect. Otherwise, the bot will be disconnected as soon as it attempts to connect to
     /// the server.
     ///
     /// If the SERVER_URL is not set, then this default URL is used: ws://localhost:7654
-    /// </summary>
+    /// </example>
     public BaseBot()
     {
       __baseBotInternals = new BaseBotInternals(this, null, null, null);

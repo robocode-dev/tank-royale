@@ -35,22 +35,31 @@ public abstract class BaseBot implements IBaseBot {
      * <ul>
      * <li>BOT_NAME=MyBot</li>
      * <li>BOT_VERSION=1.0</li>
-     * <li>BOT_AUTHOR=John Doe</li>
+     * <li>BOT_AUTHORS=John Doe</li>
      * <li>BOT_DESCRIPTION=Short description</li>
      * <li>BOT_HOMEPAGE=https://somewhere.net/MyBot</li>
      * <li>BOT_COUNTRY_CODES=us</li>
-     * <li>BOT_GAME_TYPES=melee,1v1</li>
-     * <li>BOT_PLATFORM=Java</li>
-     * <li>BOT_PROG_LANG=Java 8</li>
+     * <li>BOT_GAME_TYPES=classic, melee, 1v1</li>
+     * <li>BOT_PLATFORM=JVM</li>
+     * <li>BOT_PROG_LANG=Java 11</li>
+     * <li>BOT_INITIAL_POS=50,70, 270</li>
      * </ul>
      * These environment variables <em>must</em> be set prior to using this constructor:
      * </p>
      * <ul>
      * <li>BOT_NAME</li>
      * <li>BOT_VERSION</li>
-     * <li>BOT_AUTHOR</li>
+     * <li>BOT_AUTHORS</li>
      * <li>BOT_GAME_TYPES</li>
      * </ul>
+     * These value can take multiple values separated by a comma:
+     * <ul>
+     * <li>BOT_AUTHORS, e.g. "John Doe, Jane Doe"</li>
+     * <li>BOT_COUNTRY_CODES, e.g. "se, no, dk"</li>
+     * <li>BOT_GAME_TYPES, e.g. "classic, melee, 1v1"</li>
+     * </ul>
+     * The {@code BOT_INITIAL_POS} variable is optional and should <em>only</em> be used for debugging.
+     * <p>
      * The SERVER_SECRET must be set if the server requires a server secret for the bots trying
      * to connect. Otherwise, the bot will be disconnected as soon as it attempts to connect to
      * the server.
