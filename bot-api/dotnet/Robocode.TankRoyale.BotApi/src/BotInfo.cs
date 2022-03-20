@@ -277,7 +277,7 @@ namespace Robocode.TankRoyale.BotApi
     ///    // Constructor taking a BotInfo that is forwarded to the base class
     ///    private MyBot(BotInfo botInfo) : base(botInfo) {}
     /// </code>
-    /// You can also have a look at the SpinBot.cs file provided for the SpinBot sample bot for C#.
+    /// You can also have a look at the <c>SpinBot.cs</c> file provided for the SpinBot sample bot for C#.
     /// </example>
     /// <param name="configuration">Is the configuration</param>
     /// <returns>A BotInfo instance containing the bot properties read from the configuration.</returns>
