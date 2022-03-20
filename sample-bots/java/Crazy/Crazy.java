@@ -7,7 +7,7 @@ import dev.robocode.tankroyale.botapi.events.*;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-// This robot moves around in a crazy pattern.
+// This bot moves around in a crazy pattern.
 // ------------------------------------------------------------------
 public class Crazy extends Bot {
 
@@ -87,7 +87,7 @@ public class Crazy extends Bot {
     // We hit another bot -> back up!
     @Override
     public void onHitBot(HitBotEvent e) {
-        // If we're moving into the other robot, reverse!
+        // If we're moving into the other bot, reverse!
         if (e.isRammed()) {
             reverseDirection();
         }

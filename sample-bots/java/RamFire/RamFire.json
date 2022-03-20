@@ -3,7 +3,7 @@
   "version": "1.0",
   "gameTypes": "melee, classic, 1v1",
   "authors": "Mathew Nelson, Flemming N. Larsen",
-  "description": "Drives at robots trying to ram them. Fires when it hits them.",
+  "description": "Drives at bots trying to ram them. Fires when it hits them.",
   "homepage": "",
   "countryCodes": "us, dk",
   "platform": "JVM",

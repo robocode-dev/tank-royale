@@ -18,7 +18,7 @@ The game is designed to help you learn how to program and improve your programmi
 Robocode is also useful when studying or improving [machine learning](https://en.wikipedia.org/wiki/Machine_learning)
 in a fast-running real-time game.
 
-Robocode's battles take place on a battlefield, where small automated tank robots fight it out until only one is left
+Robocode's battles take place on a battlefield, where small automated tank bots fight it out until only one is left
 like a Battle Royale Game. Hence the name _Tank Royale_.
 
 Please notice that Robocode contains no gore, no blood, no people, and no politics. The battles are simply for the
