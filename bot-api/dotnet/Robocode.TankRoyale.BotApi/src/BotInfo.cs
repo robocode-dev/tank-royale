@@ -256,8 +256,31 @@ namespace Robocode.TankRoyale.BotApi
     ///
     /// See <see cref="FromFile(String, String)"/> for an example file.
     /// </summary>
+    /// <example>
+    /// Here is an example of how to use the <c>FromConfiguration</c> method when starting a bot:
+    /// <code>
+    ///    static void Main(string[] args)
+    ///    {
+    ///      // Read configuration file from current directory
+    ///      var builder = new ConfigurationBuilder()
+    ///        .SetBasePath(Directory.GetCurrentDirectory())
+    ///        .AddJsonFile("MyBot.json");
+    ///
+    ///      // Read the configuration into a BotInfo instance
+    ///      var config = builder.Build();
+    ///      var botInfo = BotInfo.FromConfiguration(config);
+    ///
+    ///      // Create and start our bot based on the bot info
+    ///      new MyBot(botInfo).Start();
+    ///    }
+    ///
+    ///    // Constructor taking a BotInfo that is forwarded to the base class
+    ///    private MyBot(BotInfo botInfo) : base(botInfo) {}
+    /// </code>
+    /// You can also have a look at the SpinBot.cs file provided for the SpinBot sample bot for C#.
+    /// </example>
     /// <param name="configuration">Is the configuration</param>
-    /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
+    /// <returns>A BotInfo instance containing the bot properties read from the configuration.</returns>
     public static BotInfo FromConfiguration(IConfiguration configuration)
     {
       var name = configuration["name"];
