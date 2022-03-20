@@ -59,7 +59,7 @@ public class Fire : Bot
     {
         isScanning = true; // We are now scanning
 
-        // If the other robot is close by, and we have plenty of life, fire hard!
+        // If the other bot is close by, and we have plenty of life, fire hard!
         var distance = DistanceTo(e.X, e.Y);
         if (distance < 50 && Energy > 50)
         {

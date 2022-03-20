@@ -12,9 +12,9 @@ import dev.robocode.tankroyale.botapi.events.*;
 // ------------------------------------------------------------------
 public class Corners extends Bot {
 
-    int enemies; // Number of enemy robots in the game
+    int enemies; // Number of enemy bots in the game
     int corner = 0; // Which corner we are currently using
-    boolean stopWhenSeeRobot = false; // See goCorner()
+    boolean stopWhenSeeEnemy = false; // See goCorner()
 
     // The main method starts our bot
     public static void main(String[] args) {
@@ -58,11 +58,11 @@ public class Corners extends Bot {
     // Can you do better as an home exercise? :)
     private void goCorner() {
         // We don't want to stop when we're just turning...
-        stopWhenSeeRobot = false;
+        stopWhenSeeEnemy = false;
         // Turn to face the wall towards our desired corner
         turnLeft(calcBearing(corner));
-        // Ok, now we don't want to crash into any robot in our way...
-        stopWhenSeeRobot = true;
+        // Ok, now we don't want to crash into any bot in our way...
+        stopWhenSeeEnemy = true;
         // Move to that wall
         forward(5000);
         // Turn to face the corner
@@ -79,15 +79,15 @@ public class Corners extends Bot {
         double distance = distanceTo(e.getX(), e.getY());
 
         // Should we stop, or just fire?
-        if (stopWhenSeeRobot) {
+        if (stopWhenSeeEnemy) {
             // Stop movement
             stop();
             // Call our custom firing method
             smartFire(distance);
-            // Rescan for another robot
+            // Rescan for another bot
             scan();
-            // We won't get here if we saw another robot.
-            // Okay, we didn't see another robot... start moving or turning again.
+            // We won't get here if we saw another bot.
+            // Okay, we didn't see another bot... start moving or turning again.
             resume();
         } else {
             smartFire(distance);
@@ -95,7 +95,7 @@ public class Corners extends Bot {
     }
 
     // Custom fire method that determines firepower based on distance.
-    // distance: The distance to the robot to fire at.
+    // distance: The distance to the bot to fire at.
     private void smartFire(double distance) {
         if (distance > 200 || getEnergy() < 15) {
             fire(1);
@@ -114,7 +114,7 @@ public class Corners extends Bot {
             return;
         }
 
-        // If 75% of the robots are still alive when we die, we'll switch corners.
+        // If 75% of the bots are still alive when we die, we'll switch corners.
         if (getEnemyCount() / (double) enemies >= .75) {
             if (corner != 270) {
                 corner += 90;

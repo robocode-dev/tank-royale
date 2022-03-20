@@ -13,7 +13,7 @@ programming language can be used as long as it can use
 
 Tank Royale is written from scratch as it is based on an entirely different architecture and technology stack. The game
 is now using a protocol on top of [WebSocket](https://en.wikipedia.org/wiki/WebSocket) for communication between a
-server, the robots, and observers/controllers like e.g. a UI for displaying and controlling battles.
+server, the bots, and observers/controllers like e.g. a UI for displaying and controlling battles.
 
 ## Modularized
 
@@ -52,12 +52,12 @@ could also be running within a browser session, a cloud server, or another user'
 
 Tank Royale is turn-based like the original version of Robocode. However, each turn in Tank Royale is deterministic due
 to the fact, that bots are no longer running in independent threads inside a Java VM, where commands from different
-robots for a turn were executed at "random". Instead, Tank Royale evaluates the commands (intents) from all bots for a
+bots for a turn were executed at "random". Instead, Tank Royale evaluates the commands (intents) from all bots for a
 specific turn and outputs a new game state.
 
 Hence, the game is stateful and deterministic, and no bot will get an advantage over other bots if a bot thread gets
 more CPU or memory resources than its competitors on Java VM serving the bot. This also makes the test more stable if
-robots behave in a truly deterministic manner for every turn.
+bots behave in a truly deterministic manner for every turn.
 
 ## Bot intents
 

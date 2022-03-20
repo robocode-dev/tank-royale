@@ -22,7 +22,7 @@ or [Visual Studio Code].
 
 ### Initial code
 
-The initial skeleton of your robot could look like this:
+The initial skeleton of your bot could look like this:
 
 ```java
 import dev.robocode.tankroyale.botapi.*;
@@ -52,7 +52,7 @@ and hence the [main] method is the entry point of the bot.
     }
 ```
 
-The [main] method in this example simply calls the [start] method of the bot, which will let the robot startup reading
+The [main] method in this example simply calls the [start] method of the bot, which will let the bot startup reading
 configuration and start communicating with the server.
 
 The bot will attempt to _join_ the server and wait for a signal to engage in a new battle, where one or multiple
@@ -68,7 +68,7 @@ Note that it is also possible to provide all the necessary configuration fields 
 ### The Run method
 
 When the bot is started by the game, the [run] method will be called. Hence, your bot should override this method to
-provide the logic for the robot when the game is started. The [run] method should do all required initializing. After
+provide the logic for the bot when the game is started. The [run] method should do all required initializing. After
 that, it should enter a loop that runs until the game is ended.
 
 ```java

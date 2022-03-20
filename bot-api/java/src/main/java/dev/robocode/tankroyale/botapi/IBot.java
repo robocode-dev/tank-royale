@@ -612,7 +612,7 @@ public interface IBot extends IBaseBot {
 
     /**
      * Scan (again) with the radar. This method is useful if the radar has not been turning and
-     * thereby will not be able to automatically scan bots. This method is useful when the robot
+     * thereby will not be able to automatically scan bots. This method is useful when the bot
      * movement has stopped, e.g. when {@link #stop()} has been called. The last radar direction and
      * sweep angle will be used for rescanning for bots.
      *

@@ -9,7 +9,7 @@ using Robocode.TankRoyale.BotApi.Events;
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // Sits still. Moves every time energy drops by 20.
-// This Robot demonstrates custom events.
+// This bot demonstrates custom events.
 // ------------------------------------------------------------------
 public class Target : Bot
 {

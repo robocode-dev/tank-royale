@@ -6,6 +6,11 @@
 
 - Bot API: Replaced the environment variable BOT_URL (deprecated) with BOT_HOMEPAGE.
 - Bot API for .Net: Added missing public Bot(BotInfo, Uri, string serverSecret) constructor.
+- Fixes for building Java artifacts that must/can be deployed to Maven artifactory.
+
+#### Changes
+
+- Updated the SpinBot sample bot for C# to demonstrate the use of [BotInfo.FromConfiguration(IConfiguration)].
 
 ## 0.10.0 - Bot API improvements - 24-Mar-2022
 
@@ -38,3 +43,5 @@
 ## 0.9.12 - 23-Jan-2022
 
 - First alpha version was released! :)
+
+[BotInfo.FromConfiguration(IConfiguration)]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_Microsoft_Extensions_Configuration_IConfiguration_

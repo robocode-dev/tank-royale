@@ -55,7 +55,7 @@ public class Fire extends Bot {
     public void onScannedBot(ScannedBotEvent e) {
         isScanning = true; // We are now scanning
 
-        // If the other robot is close by, and we have plenty of life, fire hard!
+        // If the other bot is close by, and we have plenty of life, fire hard!
         double distance = distanceTo(e.getX(), e.getY());
         if (distance < 50 && getEnergy() > 50) {
             fire(3);

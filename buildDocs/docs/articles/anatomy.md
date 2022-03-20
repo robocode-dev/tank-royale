@@ -49,7 +49,7 @@ the radar is kept busy.
 
 ## Center
 
-The x,y coordinate of the bot is in the exact center of the robot. All parts of the bot is rotated around the center,
+The x,y coordinate of the bot is in the exact center of the bot. All parts of the bot is rotated around the center,
 which is the local coordinate (0,0) seen from the bot´s perspective.
 
 ![Bot anatomy](../images/center.svg)

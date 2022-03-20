@@ -21,7 +21,7 @@ that file using a text editor of your choice, or an [IDE] like e.g. [Visual Stud
 
 ### Initial code
 
-The initial skeleton of your robot could look like this:
+The initial skeleton of your bot could look like this:
 
 ```csharp
 using Robocode.TankRoyale.BotApi;
@@ -51,7 +51,7 @@ and hence the [Main] method is the entry point of the bot.
     MyFirstBot() : base(BotInfo.FromFile("MyFirstBot.json")) { }
 ```
 
-The [Main] method in this example simply calls the [Start] method of the bot, which will let the robot startup reading
+The [Main] method in this example simply calls the [Start] method of the bot, which will let the bot startup reading
 configuration and start communicating with the server.
 
 The bot will attempt to _join_ the server and wait for a signal to engage in a new battle, where one or multiple
@@ -67,7 +67,7 @@ Note that it is also possible to provide all the necessary configuration fields 
 ### The Run method
 
 When the bot is started by the game, the [Run] method will be called. Hence, your bot should override this method to
-provide the logic for the robot when the game is started. The [Run] method should do all required initializing. After
+provide the logic for the bot when the game is started. The [Run] method should do all required initializing. After
 that, it should enter a loop that runs until the game is ended.
 
 ```csharp

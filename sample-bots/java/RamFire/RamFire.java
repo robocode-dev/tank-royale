@@ -7,7 +7,7 @@ import dev.robocode.tankroyale.botapi.events.*;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-// Drives at robots trying to ram them. Fires when it hits them.
+// Drives at bots trying to ram them. Fires when it hits them.
 // ------------------------------------------------------------------
 public class RamFire extends Bot {
 
@@ -47,12 +47,12 @@ public class RamFire extends Bot {
         scan(); // Might want to move forward again!
     }
 
-    // We have hit another bot -> turn to face robot, fire hard, and ram it again!
+    // We have hit another bot -> turn to face bot, fire hard, and ram it again!
     @Override
     public void onHitBot(HitBotEvent e) {
         turnToFaceTarget(e.getX(), e.getY());
 
-        // Determine a shot that won't kill the robot...
+        // Determine a shot that won't kill the bot...
         // We want to ram him instead for bonus points
         if (e.getEnergy() > 16) {
             fire(3);
