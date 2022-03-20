@@ -28,12 +28,12 @@ tasks {
         args.set(listOf("run", "build"))
     }
 
-    register("build") {
+    val build by register("build") {
         dependsOn(npmBuild)
     }
 
     register<Copy>("uploadDocs") {
-//        dependsOn(build)
+        dependsOn(build)
 
         val dotnetApiDir = "../docs"
 

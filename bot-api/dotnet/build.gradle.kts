@@ -49,9 +49,6 @@ tasks {
                 "Robocode.TankRoyale.BotApi/bin",
                 "Robocode.TankRoyale.BotApi.Tests/obj",
                 "Robocode.TankRoyale.BotApi.Tests/bin",
-                "docfx_project/_site",
-                "docfx_project/api",
-                "docfx_project/obj"
             )
         }
     }
@@ -68,6 +65,7 @@ tasks {
         doLast {
             exec {
                 workingDir("docfx_project")
+                delete("_site", "api", "obj")
                 commandLine("docfx", "build")    // build /_site
             }
         }
