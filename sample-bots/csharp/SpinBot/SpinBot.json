@@ -1,6 +1,6 @@
 {
   "name": "Spin Bot",
-  "version": "1.0",
+  "version": "1.0.1",
   "gameTypes": "melee, classic, 1v1",
   "authors": "Mathew Nelson, Flemming N. Larsen",
   "description": "A sample bot that spins in a circles, firing hard when an enemy is detected.",
