@@ -106,10 +106,10 @@ MyFirstBot.json:
 ```
 
 You can read more details about the format of this JSON
-file [here](https://robocode-dev.github.io/tank-royale/docs/articles/booter.html#json-config-file.html).
+file [here](https://robocode-dev.github.io/tank-royale/articles/booter.html#json-config-file.html).
 
 
-[Robocode Tank Royale Docs]: https://robocode-dev.github.io/tank-royale/docs/
+[Robocode Tank Royale Docs]: https://robocode-dev.github.io/tank-royale/
 
 [Bot]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html
 
