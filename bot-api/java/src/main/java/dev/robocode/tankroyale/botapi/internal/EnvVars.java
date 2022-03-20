@@ -57,6 +57,7 @@ final class EnvVars {
      * Name of environment variable for bot programming language.
      */
     static final String BOT_PROGRAMMING_LANG = "BOT_PROG_LANG";
+
     private static final String NO_ENV_VALUE = "No value for environment variable: ";
 
     // Hide constructor

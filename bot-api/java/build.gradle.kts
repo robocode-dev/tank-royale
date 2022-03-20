@@ -36,6 +36,7 @@ dependencies {
     testImplementation(libs.junit.params)
     testRuntimeOnly(libs.junit.engine)
     testImplementation(libs.assertj)
+    testImplementation(libs.system.stubs)
 }
 
 tasks {

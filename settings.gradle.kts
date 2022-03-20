@@ -45,11 +45,14 @@ dependencyResolutionManagement {
             library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
             library("slf4j-simple", "org.slf4j:slf4j-simple:2.0.0-alpha6")
 
-            // test
+            // Java testing
             library("junit-api", "org.junit.jupiter:junit-jupiter-api:$junitVersion")
             library("junit-engine", "org.junit.jupiter:junit-jupiter-engine:$junitVersion")
             library("junit-params", "org.junit.jupiter:junit-jupiter-params:$junitVersion")
             library("assertj", "org.assertj:assertj-core:3.22.0")
+            library("system-stubs", "uk.org.webcompere:system-stubs-jupiter:1.1.0")
+
+            // Kotlin testing
             library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:5.1.0")
             library("mockk", "io.mockk:mockk:1.12.3")
 
