@@ -132,22 +132,11 @@ namespace Robocode.TankRoyale.BotApi
             get => _countryCodes;
             private set
             {
-                _countryCodes = value.ToListWithNoBlanks();
+                _countryCodes = value.ToListWithNoBlanks().ConvertAll(cc => cc.ToUpper());
 
                 foreach (var countryCode in _countryCodes)
-                {
-                    if (string.IsNullOrWhiteSpace(countryCode)) continue;
-                    try
-                    {
-                        // Check country code by passing it as input parameter to RegionInfo
-                        // ReSharper disable once ObjectCreationAsStatement
-                        new RegionInfo(countryCode.Trim());
-                    }
-                    catch (ArgumentException)
-                    {
+                    if (!CountryCode.IsCountryCodeValid(countryCode))
                         throw new ArgumentException($"Country Code is not valid: '{countryCode}'");
-                    }
-                }
 
                 if (CountryCodes.Any()) return;
                 var list = new List<string>
