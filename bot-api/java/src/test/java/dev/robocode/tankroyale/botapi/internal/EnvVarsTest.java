@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.botapi.internal;
 
 import com.neovisionaries.i18n.CountryCode;
 import dev.robocode.tankroyale.botapi.BotException;
+import dev.robocode.tankroyale.botapi.InitialPosition;
 import dev.robocode.tankroyale.botapi.test_utils.EnvironmentVariablesBuilder;
 import dev.robocode.tankroyale.botapi.test_utils.EnvironmentVariablesConstants;
 import org.junit.jupiter.api.Test;
@@ -36,9 +37,7 @@ public class EnvVarsTest {
             assertThat(info.getCountryCodes()).containsAll(List.of("UK", "US"));
             assertThat(info.getPlatform()).isEqualTo("JVM");
             assertThat(info.getProgrammingLang()).isEqualTo("Java 11");
-            assertThat(info.getInitialPosition().getX()).isEqualTo(50.0);
-            assertThat(info.getInitialPosition().getY()).isEqualTo(70.0);
-            assertThat(info.getInitialPosition().getAngle()).isEqualTo(270.0);
+            assertThat(info.getInitialPosition()).isEqualTo(InitialPosition.fromString("50,70,270"));
         });
     }
 
