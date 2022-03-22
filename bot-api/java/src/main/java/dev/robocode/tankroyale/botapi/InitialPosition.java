@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.botapi;
 
+import java.util.Objects;
+
 /**
  * Initial starting position containing a start coordinate (x,y) and angle.
  * <p>
@@ -22,6 +24,25 @@ public final class InitialPosition {
         this.x = x;
         this.y = y;
         this.angle = angle;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InitialPosition that = (InitialPosition) o;
+        return Objects.equals(x, that.x) && Objects.equals(y, that.y) && Objects.equals(angle, that.angle);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, angle);
     }
 
     /**

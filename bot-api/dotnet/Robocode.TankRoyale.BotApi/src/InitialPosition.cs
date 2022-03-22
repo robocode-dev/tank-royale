@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
@@ -27,6 +26,21 @@ namespace Robocode.TankRoyale.BotApi
             X = x;
             Y = y;
             Angle = angle;
+        }
+
+        private bool Equals(InitialPosition other)
+        {
+            return Nullable.Equals(X, other.X) && Nullable.Equals(Y, other.Y) && Nullable.Equals(Angle, other.Angle);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return ReferenceEquals(this, obj) || obj is InitialPosition other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y, Angle);
         }
 
         /// <summary>
