@@ -2,8 +2,8 @@ package dev.robocode.tankroyale.server.model
 
 /**
  * Defines an immutable 2D point.
- * @property x x coordinate.
- * @property y y coordinate.
+ * @param x x coordinate.
+ * @param y y coordinate.
  */
 data class Point(override val x: Double, override val y: Double) : IPoint {
     /**
