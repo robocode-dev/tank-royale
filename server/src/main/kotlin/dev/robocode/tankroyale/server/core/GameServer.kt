@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.schema.*
 import dev.robocode.tankroyale.schema.Message.`$type`
 import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.ConnHandler
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
 import dev.robocode.tankroyale.server.mapper.*
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.GameState
@@ -47,6 +48,9 @@ class GameServer(
 
     /** Map over bot intents: bot connection -> bot intent */
     private val botIntents = ConcurrentHashMap<WebSocket, dev.robocode.tankroyale.server.model.BotIntent>()
+
+    /** Map over participants sent to clients */
+    private val participantMap = mutableMapOf<BotId, Participant>()
 
     /** Model updater that keeps track of the game state/model */
     private lateinit var modelUpdater: ModelUpdater
@@ -101,6 +105,10 @@ class GameServer(
         participantIds.clear()
         readyParticipants.clear()
 
+        participantMap.apply {
+            clear()
+            putAll(createParticipantMap())
+        }
         prepareModelUpdater()
         sendGameStartedToParticipants()
         startReadyTimer()
@@ -159,14 +167,14 @@ class GameServer(
             val gameStartedForObserver = GameStartedEventForObserver()
             gameStartedForObserver.`$type` = `$type`.GAME_STARTED_EVENT_FOR_OBSERVER
             gameStartedForObserver.gameSetup = GameSetupToGameSetupMapper.map(gameSetup!!)
-            gameStartedForObserver.participants = createParticipantList()
+            gameStartedForObserver.participants = participantMap.values.toList()
             broadcastToObserverAndControllers(gameStartedForObserver)
         }
     }
 
-    /** Creates a list of participants from the bot connection handshakes */
-    private fun createParticipantList(): List<Participant> {
-        val participantList = mutableListOf<Participant>()
+    /** Creates a map over participants from the bot connection handshakes */
+    private fun createParticipantMap(): Map<BotId, Participant> {
+        val participantMap = mutableMapOf<BotId, Participant>()
         for (conn in participants) {
             val handshake = connHandler.getBotHandshakes()[conn]
             val participant = Participant().apply {
@@ -180,15 +188,20 @@ class GameServer(
                 gameTypes = handshake.gameTypes
                 platform = handshake.platform
                 programmingLang = handshake.programmingLang
+                initialPosition = handshake.initialPosition
             }
-            participantList += participant
+            participantMap[BotId(participant.id)] = participant
         }
-        return participantList
+        return participantMap
     }
 
     /** Prepares model-updater */
     private fun prepareModelUpdater() {
-        modelUpdater = ModelUpdater(gameSetup!!, HashSet(participantIds.values))
+        val initialPositions = participantMap.filter { it.value.initialPosition != null }.mapValues {
+            val p = it.value.initialPosition
+            InitialPosition(p.x, p.y, p.angle)
+        }
+        modelUpdater = ModelUpdater(gameSetup!!, HashSet(participantIds.values), initialPositions)
     }
 
     /** Last reset turn timeout period */

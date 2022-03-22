@@ -16,6 +16,7 @@ object BotHandshakeToBotInfoMapper {
             botInfo.gameTypes = gameTypes.toList()
             botInfo.platform = platform
             botInfo.programmingLang = programmingLang
+            botInfo.initialPosition = initialPosition
             botInfo.host = hostName
             botInfo.port = port
         }

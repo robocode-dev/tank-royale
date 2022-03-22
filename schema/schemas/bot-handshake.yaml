@@ -33,19 +33,17 @@ properties:
     items:
       type: string
   platform:
-    description: Platform used for running the bot, e.g. Java 17 or .NET 5
+    description: Platform used for running the bot, e.g. JVM 17 or .NET 5
     type: string
   programmingLang:
-    description: Language used for programming the bot, e.g. Java 17 or C# 9.0
+    description: Language used for programming the bot, e.g. Java 17 or C# 10
     type: string
+  initialPosition:
+    description: Initial start position of the bot used for debugging.
+    $ref: initial-position.yaml
   secret:
     description: Secret used for access control with the server
     type: string
-  initialPosition:
-    description: |
-      Initial start position of the bot used for debugging as a comma-separated format taking the x and y coordinates
-      and starting angle/heading, e.g. "50, 70" meaning start at coordinate (50, 70) with random angle, or "50, 70, 270"
-      meaning start at coordinate (50, 70) with heading at the angle 270°.
 required:
   - name
   - version

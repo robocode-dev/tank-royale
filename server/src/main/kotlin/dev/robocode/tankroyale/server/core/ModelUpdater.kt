@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.server.core
 
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.math.*
 import dev.robocode.tankroyale.server.model.*
@@ -27,7 +28,9 @@ class ModelUpdater(
     /** Game setup */
     private val setup: GameSetup,
     /** Participant ids */
-    private val participantIds: Set<BotId>
+    private val participantIds: Set<BotId>,
+    /** Initial positions */
+    private val initialPositions: Map<BotId, InitialPosition>
 ) {
     /** Score keeper */
     private val scoreTracker: ScoreTracker = ScoreTracker(participantIds)
@@ -56,7 +59,7 @@ class ModelUpdater(
     /** Inactivity counter */
     private var inactivityCounter = 0
 
-    /** The current results ordered with highest total scores first */
+    /** The current results ordered with higher total scores first */
     val results: List<Score> get() = scoreTracker.results
 
     /** The number of rounds played so far */
@@ -160,8 +163,11 @@ class ModelUpdater(
     private fun initializeBotStates() {
         val occupiedCells = mutableSetOf<Int>()
         for (id in participantIds) {
-            val position = randomBotPosition(occupiedCells)
-            val direction = randomDirection() // body, gun, and radar starts in the same direction
+            val randomPosition = randomBotPosition(occupiedCells)
+            val position = adjustForInitialPosition(id, randomPosition)
+            // note: body, gun, and radar starts in the same direction
+            val randomDirection = randomDirection()
+            val direction = adjustForInitialAngle(id, randomDirection)
             botsMap[id] = MutableBot(
                 id = id,
                 position = position.toMutablePoint(),
@@ -172,6 +178,32 @@ class ModelUpdater(
         }
         // Store bot snapshots into the turn
         turn.copyBots(botsMap.values)
+    }
+
+    // TODO: Only if enabled by server
+    private fun adjustForInitialPosition(botId: BotId, point: Point): Point {
+        val initialPosition = initialPositions[botId]
+        return if (initialPosition == null) {
+            point
+        } else {
+            val x = clamp(initialPosition.x ?: point.x, setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS)
+            val y = clamp(initialPosition.y ?: point.y, setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS)
+            Point(x, y)
+        }
+    }
+
+    // TODO: Only if enabled by server
+    private fun adjustForInitialAngle(botId: BotId, direction: Double): Double {
+        val initialPosition = initialPositions[botId]
+        return if (initialPosition == null) {
+            direction
+        } else {
+            initialPosition.angle ?: direction
+        }
+    }
+
+    private fun clamp(value: Double, max: Double): Double {
+        return max.coerceAtMost(BOT_BOUNDING_CIRCLE_RADIUS.coerceAtLeast(value))
     }
 
     /**
