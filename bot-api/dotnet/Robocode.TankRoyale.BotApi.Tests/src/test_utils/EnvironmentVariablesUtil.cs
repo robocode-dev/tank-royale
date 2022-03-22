@@ -9,7 +9,7 @@ namespace Robocode.TankRoyale.BotApi.Tests.Test_utils
         {
             SetVar(ServerUrl, "ws://localhost:7654");
             SetVar(BotName, "MyBot");
-            SetVar(BotVersion, "MyBot");
+            SetVar(BotVersion, "1.0");
             SetVar(BotAuthors, "Author1, Author2");
             SetVar(BotGameTypes, "1v1, classic, melee");
             SetVar(BotDescription, "Short description");

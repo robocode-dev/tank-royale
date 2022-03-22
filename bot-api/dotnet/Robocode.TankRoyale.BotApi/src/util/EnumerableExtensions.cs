@@ -12,7 +12,7 @@ namespace Robocode.TankRoyale.BotApi.Util
     /// <returns>true if the IEnumerable is null, empty or contains only blank lines; false otherwise.</returns>
     public static bool IsNullOrEmptyOrContainsBlanks(this IEnumerable<string> source)
     {
-      return source == null || source.All(string.IsNullOrEmpty);
+      return source == null || source.All(string.IsNullOrWhiteSpace);
     }
 
     /// <summary>
