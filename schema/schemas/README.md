@@ -255,19 +255,19 @@ sequenceDiagram
 
 Here are the events that a bot receives under a game:
 
-| Event                     | Description                                                                 |
-|---------------------------|-----------------------------------------------------------------------------|
-| [bot-death-event]         | When a bot dies                                                             |
-| [bot-hit-bot-event]       | When our bot collides with another bot                                      |
-| [bot-hit-wall-event]      | When our bot collides with a wall                                           |
-| [bullet-fired-event]      | When our bot fires a bullet                                                 |
-| [bullet-hit-bullet-event] | When our bullet collided with another bullet                                |
-| [bullet-hit-wall-event]   | When our bullet has hit the wall                                            |
-| [hit-by-bullet-event]     | When our bot has been hit by a bullet                                       |
-| [scanned-bot-event]       | When our bot has scanned another bot                                        |
+| Event                     | Description                                                                     |
+|---------------------------|---------------------------------------------------------------------------------|
+| [bot-death-event]         | When a bot dies                                                                 |
+| [bot-hit-bot-event]       | When our bot collides with another bot                                          |
+| [bot-hit-wall-event]      | When our bot collides with a wall                                               |
+| [bullet-fired-event]      | When our bot fires a bullet                                                     |
+| [bullet-hit-bullet-event] | When our bullet collided with another bullet                                    |
+| [bullet-hit-wall-event]   | When our bullet has hit the wall                                                |
+| [hit-by-bullet-event]     | When our bot has been hit by a bullet                                           |
+| [scanned-bot-event]       | When our bot has scanned another bot                                            |
 | [skipped-turn-event]      | When our bot skipped a turn (the intent was not received at the server in time) |
-| [tick-event-for-bot]      | When a new turn is about to begin                                           |
-| [won-round-event]         | When our bot won the round                                                  |
+| [tick-event-for-bot]      | When a new turn is about to begin                                               |
+| [won-round-event]         | When our bot won the round                                                      |
 
 [TPS]: ../../docs/articles/tps.html "TPS (Turns Per Second)"
 
