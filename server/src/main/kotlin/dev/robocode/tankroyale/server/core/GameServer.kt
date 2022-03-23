@@ -21,11 +21,11 @@ import kotlin.math.roundToInt
 
 /** Game server. */
 class GameServer(
-    /** Supported game types (comma-separated list) */
+    /** Supported game types */
     private val gameTypes: Set<String>,
     /** Optional controller secrets */
     controllerSecrets: Set<String>,
-    /** Optional bot secrets (comma-separated list) */
+    /** Optional bot secrets */
     botSecrets: Set<String>
 ) {
     /** Connection handler for observers and bots */
@@ -56,7 +56,7 @@ class GameServer(
     private lateinit var modelUpdater: ModelUpdater
 
     /** Timer for 'ready' timeout */
-    private lateinit var readyTimeoutTimer: NanoTimer
+    private var readyTimeoutTimer = NanoTimer(0) {} // dummy
 
     /** Timer for 'turn' timeout */
     private var turnTimeoutTimer: NanoTimer? = null
@@ -105,10 +105,6 @@ class GameServer(
         participantIds.clear()
         readyParticipants.clear()
 
-        participantMap.apply {
-            clear()
-            putAll(createParticipantMap())
-        }
         prepareModelUpdater()
         sendGameStartedToParticipants()
         startReadyTimer()
@@ -117,6 +113,11 @@ class GameServer(
     /** Starts the game if all participants are ready */
     private fun startGameIfParticipantsReady() {
         if (readyParticipants.size == participants.size) {
+            participantMap.apply {
+                clear()
+                putAll(createParticipantMap())
+            }
+
             readyTimeoutTimer.stop()
             readyParticipants.clear()
             botIntents.clear()
@@ -177,8 +178,9 @@ class GameServer(
         val participantMap = mutableMapOf<BotId, Participant>()
         for (conn in participants) {
             val handshake = connHandler.getBotHandshakes()[conn]
+            val botId = participantIds[conn] ?: continue
             val participant = Participant().apply {
-                id = participantIds[conn]!!.value
+                id = botId.value
                 name = handshake!!.name
                 version = handshake.version
                 description = handshake.description
@@ -190,7 +192,7 @@ class GameServer(
                 programmingLang = handshake.programmingLang
                 initialPosition = handshake.initialPosition
             }
-            participantMap[BotId(participant.id)] = participant
+            participantMap[botId] = participant
         }
         return participantMap
     }

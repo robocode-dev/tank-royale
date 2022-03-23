@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.botapi.internal;
 
 import dev.robocode.tankroyale.botapi.BotInfo;
+import dev.robocode.tankroyale.botapi.mapper.InitialPositionMapper;
 import dev.robocode.tankroyale.schema.BotHandshake;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ final class BotHandshakeFactory {
         handshake.setGameTypes(new ArrayList<>(botInfo.getGameTypes()));
         handshake.setPlatform(botInfo.getPlatform());
         handshake.setProgrammingLang(botInfo.getProgrammingLang());
+        handshake.setInitialPosition(InitialPositionMapper.map(botInfo.getInitialPosition()));
         handshake.setSecret(secret);
         return handshake;
     }

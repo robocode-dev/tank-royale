@@ -20,6 +20,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         GameTypes = botInfo.GameTypes != null ? new HashSet<string>(botInfo.GameTypes) : new HashSet<string>(),
         Platform = botInfo.Platform,
         ProgrammingLang = botInfo.ProgrammingLang,
+        InitialPosition = InitialPositionMapper.map(botInfo.InitialPosition),
         Secret = serverSecret
       };
       return handshake;
