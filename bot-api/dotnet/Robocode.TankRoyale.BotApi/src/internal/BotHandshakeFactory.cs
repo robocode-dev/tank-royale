@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Robocode.TankRoyale.BotApi.Mapper;
 using Robocode.TankRoyale.BotApi.Util;
 using Robocode.TankRoyale.Schema;
 
@@ -20,6 +21,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         GameTypes = botInfo.GameTypes != null ? new HashSet<string>(botInfo.GameTypes) : new HashSet<string>(),
         Platform = botInfo.Platform,
         ProgrammingLang = botInfo.ProgrammingLang,
+        InitialPosition = InitialPositionMapper.Map(botInfo.InitialPosition),
         Secret = serverSecret
       };
       return handshake;

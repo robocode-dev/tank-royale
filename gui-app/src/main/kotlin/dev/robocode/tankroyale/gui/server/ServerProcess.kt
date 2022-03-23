@@ -63,7 +63,6 @@ object ServerProcess {
         command += "--botSecrets=${ServerSettings.botSecrets.joinToString(",")}"
 
         val builder = ProcessBuilder(command)
-
         builder.redirectErrorStream(true)
         process = builder.start()
 

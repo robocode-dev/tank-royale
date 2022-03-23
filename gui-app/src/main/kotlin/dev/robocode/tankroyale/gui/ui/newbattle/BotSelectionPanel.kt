@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.booter.DirAndPid
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
+import dev.robocode.tankroyale.gui.model.InitialPosition
 import dev.robocode.tankroyale.gui.settings.MiscSettings
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.components.SortedListModel
@@ -296,6 +297,7 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
                     info.gameTypes.split(",").toSet(),
                     info.platform,
                     info.programmingLang,
+                    InitialPosition.fromString(info.initialPosition),
                     host = botEntry.dir, // host serves as filename here
                     port = -1
                 )

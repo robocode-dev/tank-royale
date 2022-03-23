@@ -13,5 +13,6 @@ data class Participant(
     val countryCodes: List<String>,
     val gameTypes: Set<String>? = HashSet(),
     val platform: String? = null,
-    val programmingLang: String? = null
+    val programmingLang: String? = null,
+    val initialPosition: InitialPosition? = null
 )

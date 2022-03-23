@@ -18,5 +18,6 @@ data class Info(
     val countryCodes: String,
     val gameTypes: String,
     val programmingLang: String? = null,
-    val platform: String? = null
+    val platform: String? = null,
+    val initialPosition: String? = null
 )
