@@ -17,7 +17,7 @@ namespace Robocode.TankRoyale.BotApi.Tests.Test_utils
             SetVar(BotCountryCodes, "uk, us");
             SetVar(BotPlatform, ".Net 5");
             SetVar(BotProgrammingLang, "C# 8");
-            SetVar(BotInitialPosition, "50,70, 270");
+            SetVar(BotInitialPosition, "50,50, 90");
         }
 
         private static void SetVar(string name, string value)

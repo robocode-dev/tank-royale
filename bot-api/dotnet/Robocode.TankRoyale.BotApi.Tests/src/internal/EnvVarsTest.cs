@@ -21,7 +21,7 @@ namespace Robocode.TankRoyale.BotApi.Tests.Internal
             Assert.That(info.CountryCodes, Is.SupersetOf(new[] {"US", "UK"}));
             Assert.That(info.Platform, Is.EqualTo(".Net 5"));
             Assert.That(info.ProgrammingLang, Is.EqualTo("C# 8"));
-            Assert.That(info.InitialPosition, Is.EqualTo(InitialPosition.FromString("50, 70, 270")));
+            Assert.That(info.InitialPosition, Is.EqualTo(InitialPosition.FromString("50,50, 90")));
         }
     }
 }

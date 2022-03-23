@@ -211,7 +211,7 @@ namespace Robocode.TankRoyale.BotApi
         ///   "gameTypes": "classic, melee, 1v1",
         ///   "platform": ".Net 5.0",
         ///   "programmingLang": "C# 8.0",
-        ///   "initialPosition": "50,70, 270"
+        ///   "initialPosition": "50,50, 90"
         /// }
         /// </code>
         /// Note that these fields are required:

@@ -8,5 +8,5 @@
   "countryCodes": "us, dk",
   "platform": ".Net 5.0",
   "programmingLang": "C# 8.0",
-  "initialPosition": "50,70, 270"
+  "initialPosition": "50,50, 90"
 }

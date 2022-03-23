@@ -37,7 +37,7 @@ public class EnvVarsTest {
             assertThat(info.getCountryCodes()).containsAll(List.of("UK", "US"));
             assertThat(info.getPlatform()).isEqualTo("JVM");
             assertThat(info.getProgrammingLang()).isEqualTo("Java 11");
-            assertThat(info.getInitialPosition()).isEqualTo(InitialPosition.fromString("50,70,270"));
+            assertThat(info.getInitialPosition()).isEqualTo(InitialPosition.fromString("50,50,90"));
         });
     }
 

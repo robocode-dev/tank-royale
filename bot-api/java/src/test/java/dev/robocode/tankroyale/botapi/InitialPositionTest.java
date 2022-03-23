@@ -47,7 +47,7 @@ class InitialPositionTest {
 
     static Stream<Arguments> fromStringProvider() {
         return Stream.of(
-                arguments("50, 50, 270", 50.0, 50.0, 270.0),
+                arguments("50,50, 90", 50.0, 50.0, 90.0),
                 arguments("12.23, -123.3, 45.5", 12.23, -123.3, 45.5),
                 arguments(" 50 ", 50.0, null, null),
                 arguments(" 50.1  70.2 ", 50.1, 70.2, null),
@@ -61,7 +61,7 @@ class InitialPositionTest {
 
     static Stream<Arguments> toStringProvider() {
         return Stream.of(
-                arguments("50, 50, 270", "50.0,50.0,270.0"),
+                arguments("50, 50, 90", "50.0,50.0,90.0"),
                 arguments("12.23, -123.3, 45.5", "12.23,-123.3,45.5"),
                 arguments(" 50 ", "50.0,,"),
                 arguments(" 50.1  70.2 ", "50.1,70.2,"),

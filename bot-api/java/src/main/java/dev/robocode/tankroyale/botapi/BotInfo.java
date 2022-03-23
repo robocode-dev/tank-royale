@@ -273,7 +273,7 @@ public final class BotInfo {
      *   "gameTypes": "classic, melee, 1v1",
      *   "platform": "JVM",
      *   "programmingLang": "Java 11",
-     *   "initialPosition": "50,70, 270"
+     *   "initialPosition": "50,50, 90"
      * }
      * </code></pre>
      * Note that these fields are required:

@@ -8,7 +8,7 @@ namespace Robocode.TankRoyale.BotApi.Tests
         private const double Tolerance = 0.000000000000005;
 
         [Test]
-        [TestCase("50, 50, 270", 50.0, 50.0, 270.0)]
+        [TestCase("50, 50, 90", 50.0, 50.0, 90.0)]
         [TestCase("12.23, -123.3, 45.5", 12.23, -123.3, 45.5)]
         [TestCase(" 50 ", 50.0, null, null)]
         [TestCase(" 50.1  70.2 ", 50.1, 70.2, null)]
@@ -38,7 +38,7 @@ namespace Robocode.TankRoyale.BotApi.Tests
         }
         
         [Test]
-        [TestCase("50, 50, 270", "50,50,270")]
+        [TestCase("50,50, 90", "50,50,90")]
         [TestCase("12.23, -123.3, 45.5", "12.23,-123.3,45.5")]
         [TestCase(" 50 ", "50,,")]
         [TestCase(" 50.1  70.2 ", "50.1,70.2,")]

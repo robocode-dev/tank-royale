@@ -18,6 +18,6 @@ public class EnvironmentVariablesBuilder {
                 .set(BOT_COUNTRY_CODES, "uk, us")
                 .set(BOT_PLATFORM, "JVM")
                 .set(BOT_PROG_LANG, "Java 11")
-                .set(BOT_INITIAL_POS, "50,70, 270");
+                .set(BOT_INITIAL_POS, "50,50, 90");
     }
 }
