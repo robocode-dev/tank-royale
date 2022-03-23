@@ -328,16 +328,16 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
         SwingUtilities.invokeLater {
             // Reset the list of joined bots to it matches the joined bots from the client
             joinedBotListModel.apply {
-                clear()
-                Client.joinedBots.forEach { botInfo ->
-                    EventQueue.invokeLater { addElement(botInfo) }
+                EventQueue.invokeLater {
+                    clear()
+                    Client.joinedBots.forEach { addElement(it) }
                 }
             }
             // Remove selected bots, if the bots are not on the joined bots from the client
             selectedBotListModel.apply {
-                list().forEach { botInfo ->
-                    if (!Client.joinedBots.contains(botInfo)) {
-                        EventQueue.invokeLater { removeElement(botInfo) }
+                list().forEach {
+                    EventQueue.invokeLater {
+                        if (!Client.joinedBots.contains(it)) { removeElement(it) }
                     }
                 }
             }
