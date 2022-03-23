@@ -14,7 +14,7 @@ import javax.swing.JMenuBar
 import javax.swing.JMenuItem
 import javax.swing.KeyStroke
 
-object MainWindowMenu : JMenuBar() {
+object Menu : JMenuBar() {
 
     // Public events
     val onStartBattle = MenuEvent()
@@ -29,11 +29,25 @@ object MainWindowMenu : JMenuBar() {
 
     private val onAbout = MenuEvent()
 
-    private var startServerMenuItem: JMenuItem?
-    private var restartServerMenuItem: JMenuItem?
-    private var stopServerMenuItem: JMenuItem?
+    private lateinit var startServerMenuItem: JMenuItem
+    private lateinit var restartServerMenuItem: JMenuItem
+    private lateinit var stopServerMenuItem: JMenuItem
 
     init {
+        setupBattleMenu()
+        setupServerMenu()
+        setupConfigMenu()
+        setupHelpMenu()
+
+        onAbout.invokeLater(this) { AboutBox.isVisible = true }
+
+        ServerProcess.apply {
+            onStarted.subscribe(Menu) { updateServerState() }
+            onStopped.subscribe(Menu) { updateServerState() }
+        }
+    }
+
+    private fun setupBattleMenu() {
         add(JMenu(MENU.get("menu.battle")).apply {
             mnemonic = KeyEvent.VK_B
 
@@ -47,7 +61,9 @@ object MainWindowMenu : JMenuBar() {
                 accelerator = ctrlDown(mnemonic)
             }
         })
+    }
 
+    private fun setupServerMenu() {
         val serverMenu = JMenu(MENU.get("menu.server")).apply {
             mnemonic = KeyEvent.VK_S
 
@@ -92,7 +108,9 @@ object MainWindowMenu : JMenuBar() {
             updateServerState()
         }
         add(serverMenu)
+    }
 
+    private fun setupConfigMenu() {
         add(JMenu(MENU.get("menu.config")).apply {
             mnemonic = KeyEvent.VK_C
 
@@ -101,7 +119,9 @@ object MainWindowMenu : JMenuBar() {
                 accelerator = ctrlDown(mnemonic)
             }
         })
+    }
 
+    private fun setupHelpMenu() {
         add(JMenu(MENU.get("menu.help")).apply {
             mnemonic = KeyEvent.VK_H
 
@@ -109,19 +129,12 @@ object MainWindowMenu : JMenuBar() {
                 mnemonic = KeyEvent.VK_A
             }
         })
-
-        onAbout.invokeLater(this) { AboutBox.isVisible = true }
-
-        ServerProcess.apply {
-            onStarted.subscribe(MainWindowMenu) { updateServerState() }
-            onStopped.subscribe(MainWindowMenu) { updateServerState() }
-        }
     }
 
     private fun updateServerState() {
-        startServerMenuItem?.isEnabled = !Server.isRunning()
-        restartServerMenuItem?.isEnabled = ServerProcess.isRunning()
-        stopServerMenuItem?.isEnabled = ServerProcess.isRunning()
+        startServerMenuItem.isEnabled = !Server.isRunning()
+        restartServerMenuItem.isEnabled = ServerProcess.isRunning()
+        stopServerMenuItem.isEnabled = ServerProcess.isRunning()
     }
 
     private fun ctrlDown(keyEvent: Int) = KeyStroke.getKeyStroke(keyEvent, KeyEvent.CTRL_DOWN_MASK)

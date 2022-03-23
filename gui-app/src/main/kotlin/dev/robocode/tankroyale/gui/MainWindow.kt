@@ -32,9 +32,9 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
 
         contentPane.add(LogoPanel)
 
-        jMenuBar = MainWindowMenu
+        jMenuBar = Menu
 
-        MainWindowMenu.apply {
+        Menu.apply {
             onStartBattle.invokeLater(MainWindow) { startBattle() }
             onSetupRules.invokeLater(MainWindow) { SetupRulesDialog.isVisible = true }
             onShowServerLog.invokeLater(MainWindow) { ServerLogWindow.isVisible = true }
