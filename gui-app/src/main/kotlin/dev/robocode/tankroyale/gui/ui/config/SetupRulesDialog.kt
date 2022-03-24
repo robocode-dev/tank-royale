@@ -151,7 +151,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             val selectedGameType = gameTypeComboBox.getSelectedGameType().displayName
             val default: MutableGameSetup? = GamesSettings.defaultGameSetup[selectedGameType]?.toMutableGameSetup()
             if (default != null) {
-                GamesSettings.games[selectedGameType]?.copy(default)
+                GamesSettings.games[selectedGameType]?.copyFields(default)
                 updateFieldsForGameType()
             }
         }
