@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.about
 
-import dev.robocode.tankroyale.gui.MainWindow
+import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton

@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui
+package dev.robocode.tankroyale.gui.ui
 
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.client.Client
@@ -7,15 +7,11 @@ import dev.robocode.tankroyale.gui.ui.menu.MenuEvents
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
-import dev.robocode.tankroyale.gui.ui.components.Images
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
-import java.awt.EventQueue
-import java.awt.Taskbar
-import javax.swing.UIManager
 
 
 object MainWindow : RcFrame("main_window"), AutoCloseable {
@@ -79,21 +75,5 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
         Client.close()
         BootProcess.stopRunning()
         ServerProcess.stop()
-    }
-}
-
-private fun main() {
-    Runtime.getRuntime().addShutdownHook(Thread {
-        MainWindow.close()
-    })
-
-    try {
-        Taskbar.getTaskbar().iconImage = Images.tankImage // for macOS
-    } catch (ignore: UnsupportedOperationException) {}
-
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
-    EventQueue.invokeLater {
-        MainWindow.isVisible = true
     }
 }

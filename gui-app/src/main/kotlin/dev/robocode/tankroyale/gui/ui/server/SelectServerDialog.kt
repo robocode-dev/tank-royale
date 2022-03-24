@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.server
 
-import dev.robocode.tankroyale.gui.MainWindow
+import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
