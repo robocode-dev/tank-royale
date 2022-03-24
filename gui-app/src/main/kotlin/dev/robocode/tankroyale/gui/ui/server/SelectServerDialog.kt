@@ -66,7 +66,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         lowerPanel.add(buttonPanel, "center")
 
         AddNewUrlDialog.apply {
-            onComplete.invokeLater(SelectServerDialog) {
+            onComplete.invokeLater(this) {
                 urlComboBox.addItem(newUrl)
                 selectedUri = newUrl
 

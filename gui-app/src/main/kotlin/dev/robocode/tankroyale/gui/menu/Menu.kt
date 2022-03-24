@@ -1,5 +1,11 @@
-package dev.robocode.tankroyale.gui
+package dev.robocode.tankroyale.gui.menu
 
+import dev.robocode.tankroyale.gui.menu.MenuEvents.onBotDirConfig
+import dev.robocode.tankroyale.gui.menu.MenuEvents.onDebugConfig
+import dev.robocode.tankroyale.gui.menu.MenuEvents.onServerConfig
+import dev.robocode.tankroyale.gui.menu.MenuEvents.onSetupRules
+import dev.robocode.tankroyale.gui.menu.MenuEvents.onShowServerLog
+import dev.robocode.tankroyale.gui.menu.MenuEvents.onStartBattle
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.MENU
 import dev.robocode.tankroyale.gui.ui.about.AboutBox
@@ -17,11 +23,7 @@ import javax.swing.KeyStroke
 object Menu : JMenuBar() {
 
     // Public events
-    val onStartBattle = MenuEvent()
-    val onSetupRules = MenuEvent()
-    val onShowServerLog = MenuEvent()
-    val onServerConfig = MenuEvent()
-    val onBotDirConfig = MenuEvent()
+
 
     private val onStartServer = MenuEvent()
     private val onRestartServer = MenuEvent()
@@ -34,6 +36,8 @@ object Menu : JMenuBar() {
     private lateinit var stopServerMenuItem: JMenuItem
 
     init {
+        MenuActions
+
         setupBattleMenu()
         setupServerMenu()
         setupConfigMenu()
@@ -117,6 +121,10 @@ object Menu : JMenuBar() {
             addNewMenuItem("item.bot_root_dirs_config", onBotDirConfig).apply {
                 mnemonic = KeyEvent.VK_D
                 accelerator = ctrlDown(mnemonic)
+            }
+
+            addNewMenuItem("item.debug_config", onDebugConfig).apply {
+                mnemonic = KeyEvent.VK_C
             }
         })
     }

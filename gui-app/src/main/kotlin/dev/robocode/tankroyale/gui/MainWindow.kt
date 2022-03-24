@@ -2,18 +2,16 @@ package dev.robocode.tankroyale.gui
 
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.client.Client
+import dev.robocode.tankroyale.gui.menu.Menu
+import dev.robocode.tankroyale.gui.menu.MenuEvents
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
 import dev.robocode.tankroyale.gui.ui.components.Images
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
-import dev.robocode.tankroyale.gui.ui.config.BotRootDirectoriesConfigDialog
-import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
-import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.gui.ui.server.Server
-import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import java.awt.EventQueue
 import java.awt.Taskbar
@@ -34,13 +32,7 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
 
         jMenuBar = Menu
 
-        Menu.apply {
-            onStartBattle.invokeLater(MainWindow) { startBattle() }
-            onSetupRules.invokeLater(MainWindow) { SetupRulesDialog.isVisible = true }
-            onShowServerLog.invokeLater(MainWindow) { ServerLogWindow.isVisible = true }
-            onServerConfig.invokeLater(MainWindow) { SelectServerDialog.isVisible = true }
-            onBotDirConfig.invokeLater(MainWindow) { BotRootDirectoriesConfigDialog.isVisible = true }
-        }
+        MenuEvents.onStartBattle.invokeLater(this) { startBattle() }
 
         Client.apply {
             onGameStarted.subscribe(MainWindow) { showBattle() }
