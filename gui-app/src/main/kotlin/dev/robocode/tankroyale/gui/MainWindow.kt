@@ -2,8 +2,8 @@ package dev.robocode.tankroyale.gui
 
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.client.Client
-import dev.robocode.tankroyale.gui.menu.Menu
-import dev.robocode.tankroyale.gui.menu.MenuEvents
+import dev.robocode.tankroyale.gui.ui.menu.Menu
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel

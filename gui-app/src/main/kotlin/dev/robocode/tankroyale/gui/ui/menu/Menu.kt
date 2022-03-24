@@ -1,18 +1,19 @@
-package dev.robocode.tankroyale.gui.menu
+package dev.robocode.tankroyale.gui.ui.menu
 
-import dev.robocode.tankroyale.gui.menu.MenuEvents.onBotDirConfig
-import dev.robocode.tankroyale.gui.menu.MenuEvents.onDebugConfig
-import dev.robocode.tankroyale.gui.menu.MenuEvents.onServerConfig
-import dev.robocode.tankroyale.gui.menu.MenuEvents.onSetupRules
-import dev.robocode.tankroyale.gui.menu.MenuEvents.onShowServerLog
-import dev.robocode.tankroyale.gui.menu.MenuEvents.onStartBattle
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onBotDirConfig
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onDebugConfig
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onServerConfig
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onSetupRules
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onShowServerLog
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onStartBattle
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.MENU
-import dev.robocode.tankroyale.gui.ui.about.AboutBox
 import dev.robocode.tankroyale.gui.ui.extensions.JMenuExt.addNewMenuItem
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onAbout
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onRestartServer
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onStartServer
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onStopServer
 import dev.robocode.tankroyale.gui.ui.server.Server
-import dev.robocode.tankroyale.gui.ui.server.ServerEventChannel
-import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
 import dev.robocode.tankroyale.gui.util.Event
 import java.awt.event.KeyEvent
 import javax.swing.JMenu
@@ -21,15 +22,6 @@ import javax.swing.JMenuItem
 import javax.swing.KeyStroke
 
 object Menu : JMenuBar() {
-
-    // Public events
-
-
-    private val onStartServer = MenuEvent()
-    private val onRestartServer = MenuEvent()
-    private val onStopServer = MenuEvent()
-
-    private val onAbout = MenuEvent()
 
     private lateinit var startServerMenuItem: JMenuItem
     private lateinit var restartServerMenuItem: JMenuItem
@@ -42,8 +34,6 @@ object Menu : JMenuBar() {
         setupServerMenu()
         setupConfigMenu()
         setupHelpMenu()
-
-        onAbout.invokeLater(this) { AboutBox.isVisible = true }
 
         ServerProcess.apply {
             onStarted.subscribe(Menu) { updateServerState() }
@@ -70,19 +60,6 @@ object Menu : JMenuBar() {
     private fun setupServerMenu() {
         val serverMenu = JMenu(MENU.get("menu.server")).apply {
             mnemonic = KeyEvent.VK_S
-
-            onStartServer.invokeLater(this) {
-                ServerLogWindow.isVisible = true
-                ServerEventChannel.onStartServer.fire(Unit)
-            }
-            onRestartServer.invokeLater(this) {
-                ServerLogWindow.isVisible = true
-                ServerEventChannel.onRestartServer.fire(Unit)
-            }
-            onStopServer.invokeLater(this) {
-                ServerLogWindow.isVisible = false
-                ServerEventChannel.onStopServer.fire(Unit)
-            }
 
             startServerMenuItem = addNewMenuItem("item.start_server", onStartServer)
             restartServerMenuItem = addNewMenuItem("item.restart_server", onRestartServer)
