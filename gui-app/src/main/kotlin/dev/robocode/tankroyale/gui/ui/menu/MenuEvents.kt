@@ -1,5 +1,8 @@
 package dev.robocode.tankroyale.gui.ui.menu
 
+import dev.robocode.tankroyale.gui.util.Event
+import javax.swing.JMenuItem
+
 object MenuEvents {
     val onStartBattle = MenuEvent()
     val onSetupRules = MenuEvent()
@@ -12,3 +15,5 @@ object MenuEvents {
     val onDebugConfig = MenuEvent()
     val onAbout = MenuEvent()
 }
+
+class MenuEvent : Event<JMenuItem>()

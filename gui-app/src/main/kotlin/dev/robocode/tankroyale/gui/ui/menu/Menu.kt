@@ -14,7 +14,6 @@ import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onRestartServer
 import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onStartServer
 import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onStopServer
 import dev.robocode.tankroyale.gui.ui.server.Server
-import dev.robocode.tankroyale.gui.util.Event
 import java.awt.event.KeyEvent
 import javax.swing.JMenu
 import javax.swing.JMenuBar
@@ -124,5 +123,3 @@ object Menu : JMenuBar() {
 
     private fun ctrlDown(keyEvent: Int) = KeyStroke.getKeyStroke(keyEvent, KeyEvent.CTRL_DOWN_MASK)
 }
-
-class MenuEvent : Event<JMenuItem>()
