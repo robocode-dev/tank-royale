@@ -7,21 +7,22 @@ import java.util.*
 import javax.crypto.KeyGenerator
 import kotlin.collections.ArrayList
 
-
 object ServerSettings : PropertiesStore("Robocode Server Settings", "server.properties") {
 
-    const val DEFAULT_PORT = 7654
     const val DEFAULT_SCHEME = "ws"
+    const val DEFAULT_PORT = 7654
     const val DEFAULT_URL = "$DEFAULT_SCHEME://localhost"
 
     private const val SERVER_URL = "server-url"
+    private const val GAME_TYPE = "game-type"
+    private const val USER_URLS = "user-urls"
     private const val CONTROLLER_SECRETS = "controllers-secrets"
     private const val BOT_SECRETS = "bots-secrets"
-    private const val USER_URLS = "user-urls"
-    private const val GAME_TYPE = "game-type"
+    private const val INITIAL_POSITION_ENABLED = "initial-position-enabled"
 
     init {
         RegisterWsProtocol // work-around for ws:// with URI class
+        load()
     }
 
     var serverUrl: String
@@ -34,6 +35,30 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         }
 
     val serverPort: Int get() = URI(serverUrl).port
+
+    var gameType: GameType
+        get() {
+            val displayName = properties.getProperty(GAME_TYPE, GameType.CLASSIC.displayName)
+            return GameType.from(displayName)
+        }
+        set(value) {
+            properties.setProperty(GAME_TYPE, value.displayName)
+        }
+
+    var userUrls: List<String>
+        get() {
+            val urls = properties.getProperty(USER_URLS, "")
+            return if (urls.isBlank()) {
+                listOf(serverUrl)
+            } else {
+                urls.split(",")
+            }
+        }
+        set(value) {
+            val list = ArrayList(value)
+            list.remove(DEFAULT_URL)
+            properties.setProperty(USER_URLS, list.joinToString(","))
+        }
 
     var controllerSecrets: Set<String>
         get() = getPropertyAsSet(CONTROLLER_SECRETS).ifEmpty {
@@ -62,49 +87,13 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         return encodedKey.substring(0, encodedKey.length - 2)
     }
 
-    var userUrls: List<String>
+    var initialPositionsEnabled: Boolean
         get() {
-            val urls = properties.getProperty(USER_URLS, "")
-            return if (urls.isBlank()) {
-                listOf(serverUrl)
-            } else {
-                urls.split(",")
-            }
+            load()
+            return properties.getProperty(INITIAL_POSITION_ENABLED, "false").toBoolean()
         }
         set(value) {
-            val list = ArrayList(value)
-            list.remove(DEFAULT_URL)
-            properties.setProperty(USER_URLS, list.joinToString(","))
+            properties.setProperty(INITIAL_POSITION_ENABLED, value.toString())
+            save()
         }
-
-    var gameType: GameType
-        get() {
-            val displayName = properties.getProperty(GAME_TYPE, GameType.CLASSIC.displayName)
-            return GameType.from(displayName)
-        }
-        set(value) {
-            properties.setProperty(GAME_TYPE, value.displayName)
-        }
-
-    init {
-        resetToDefault()
-        load()
-    }
-
-    private fun resetToDefault() {
-        serverUrl = DEFAULT_URL
-        userUrls = emptyList()
-    }
 }
-/*
-fun main() {
-    with(ServerSettings) {
-        println("serverUrl: $serverUrl")
-        println("port: $serverPort")
-        println("userUrls: $userUrls")
-        println("generateSecret: ${generateSecret()}")
-
-        userUrls = listOf("ws://1.2.3.4:90", "wss://localhost:900")
-    }
-}
-*/

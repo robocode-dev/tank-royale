@@ -5,8 +5,6 @@ import dev.robocode.tankroyale.gui.booter.DirAndPid
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
-import dev.robocode.tankroyale.gui.model.InitialPosition
-import dev.robocode.tankroyale.gui.settings.MiscSettings
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.components.SortedListModel
 import dev.robocode.tankroyale.gui.ui.config.BotRootDirectoriesConfigDialog
@@ -312,7 +310,7 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
     }
 
     private fun enforceBotDirIsConfigured() {
-        if (MiscSettings.getBotDirectories().isEmpty()) {
+        if (ConfigSettings.getBotDirectories().isEmpty()) {
             SwingUtilities.invokeLater {
                 with(BotRootDirectoriesConfigDialog) {
                     if (!isVisible) {

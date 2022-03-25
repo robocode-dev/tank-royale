@@ -15,7 +15,7 @@ object Server {
     val onConnected = Event<Unit>()
 
     init {
-        ServerEventChannel.onStartServer.subscribe(Server) {
+        ServerEvents.onStartServer.subscribe(Server) {
             startServerProcess()
         }
     }

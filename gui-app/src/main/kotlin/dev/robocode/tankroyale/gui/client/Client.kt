@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.gui.client
 import dev.robocode.tankroyale.gui.model.*
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.ui.server.ServerEventChannel
+import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.ui.tps.TpsEventChannel
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.Version
@@ -17,7 +17,7 @@ object Client : AutoCloseable {
     init {
         TpsEventChannel.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
 
-        ServerEventChannel.apply {
+        ServerEvents.apply {
             onRestartServer.subscribe(Client) {
                 isGamePaused = false
                 isGameRunning = false

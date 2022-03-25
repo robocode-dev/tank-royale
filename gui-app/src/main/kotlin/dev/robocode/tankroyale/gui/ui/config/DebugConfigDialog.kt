@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.gui.settings.ConfigSettings
+import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
@@ -27,11 +27,11 @@ object DebugConfigDialog : RcDialog(MainWindow, "debug_config_dialog") {
 object Panel : JPanel(MigLayout("fill, insets 20", "", "[]20[]")) {
 
     init {
-        val selected = ConfigSettings.isInitialPositionsEnabled()
+        val selected = ServerSettings.initialPositionsEnabled
         val checkbox = JCheckBox(ResourceBundles.STRINGS.get("option.enable_initial_position.text"), selected).apply {
             toolTipText = ResourceBundles.STRINGS.get("option.enable_initial_position.hint")
             addChangeListener {
-                ConfigSettings.setInitialPositionsEnabled(isSelected)
+                ServerSettings.initialPositionsEnabled = isSelected
             }
         }
         add(checkbox, "cell 0 0")

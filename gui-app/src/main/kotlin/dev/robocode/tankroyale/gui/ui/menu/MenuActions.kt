@@ -14,7 +14,7 @@ import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onShowServerLog
 import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onStartServer
 import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onStopServer
 import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
-import dev.robocode.tankroyale.gui.ui.server.ServerEventChannel
+import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
 
 object MenuActions {
@@ -36,15 +36,15 @@ object MenuActions {
         }
         onStartServer.invokeLater(this) {
             ServerLogWindow.isVisible = true
-            ServerEventChannel.onStartServer.fire(Unit)
+            ServerEvents.onStartServer.fire(Unit)
         }
         onRestartServer.invokeLater(this) {
             ServerLogWindow.isVisible = true
-            ServerEventChannel.onRestartServer.fire(Unit)
+            ServerEvents.onRestartServer.fire(Unit)
         }
         onStopServer.invokeLater(this) {
             ServerLogWindow.isVisible = false
-            ServerEventChannel.onStopServer.fire(Unit)
+            ServerEvents.onStopServer.fire(Unit)
         }
         onDebugConfig.invokeLater(this) {
             DebugConfigDialog.isVisible = true

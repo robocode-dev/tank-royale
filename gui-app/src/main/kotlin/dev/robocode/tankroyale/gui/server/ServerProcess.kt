@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.gui.server
 
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.ui.server.ServerEventChannel
+import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
@@ -11,7 +11,6 @@ import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 object ServerProcess {
@@ -33,16 +32,14 @@ object ServerProcess {
         private set
 
     init {
-        ServerEventChannel.apply {
+        ServerEvents.apply {
             onStartServer.subscribe(ServerProcess) { start() }
             onStopServer.subscribe(ServerProcess) { stop() }
             onRestartServer.subscribe(ServerProcess) { restart() }
         }
     }
 
-    fun isRunning(): Boolean {
-        return isRunning.get()
-    }
+    fun isRunning(): Boolean = isRunning.get()
 
     fun start(gameType: GameType = GameType.CLASSIC, port: Int = ServerSettings.serverPort) {
         if (isRunning.get())
@@ -53,15 +50,21 @@ object ServerProcess {
 
         ServerLogWindow.clear()
 
-        val command = ArrayList<String>()
-        command += "java"
-        command += "-jar"
-        command += getServerJar()
-        command += "--port=$port"
-        command += "--games=$gameType"
-        command += "--controllerSecrets=${ServerSettings.controllerSecrets.joinToString(",")}"
-        command += "--botSecrets=${ServerSettings.botSecrets.joinToString(",")}"
-
+        var command: MutableList<String>
+        with(ServerSettings) {
+            command = mutableListOf(
+                "java",
+                "-jar",
+                getServerJar(),
+                "--port=$port",
+                "--games=$gameType",
+                "--controllerSecrets=${controllerSecrets.joinToString(",")}",
+                "--botSecrets=${botSecrets.joinToString(",")}"
+            )
+            if (initialPositionsEnabled) {
+                command += "--enable-initial-position"
+            }
+        }
         val builder = ProcessBuilder(command)
         builder.redirectErrorStream(true)
         process = builder.start()
