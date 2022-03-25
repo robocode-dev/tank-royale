@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.ui.newbattle
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.booter.DirAndPid
 import dev.robocode.tankroyale.gui.client.Client
+import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
@@ -87,13 +88,13 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
         joinedBotList.onMultiClickedAtIndex { addSelectedBotFromJoinedListAt(it) }
         selectedBotList.onMultiClickedAtIndex { removeSelectedBotAt(it) }
 
-        botsDirectoryList.onSelection { BotSelectionChannel.onBotDirectorySelected.fire(it) }
-        joinedBotList.onSelection { BotSelectionChannel.onJoinedBotSelected.fire(it) }
-        selectedBotList.onSelection { BotSelectionChannel.onBotSelected.fire(it) }
+        botsDirectoryList.onSelection { BotSelectionEvents.onBotDirectorySelected.fire(it) }
+        joinedBotList.onSelection { BotSelectionEvents.onJoinedBotSelected.fire(it) }
+        selectedBotList.onSelection { BotSelectionEvents.onBotSelected.fire(it) }
 
-        selectedBotList.onChanged { BotSelectionChannel.onSelectedBotListUpdated.fire(selectedBotListModel.list()) }
+        selectedBotList.onChanged { BotSelectionEvents.onSelectedBotListUpdated.fire(selectedBotListModel.list()) }
 
-        Client.onBotListUpdate.subscribe(this) { updateJoinedBots() }
+        ClientEvents.onBotListUpdate.subscribe(this) { updateJoinedBots() }
 
         BootProcess.onRunBot.subscribe(this) { updateRunningBot(it) }
         BootProcess.onStopBot.subscribe(this) { updateStoppingBot(it) }

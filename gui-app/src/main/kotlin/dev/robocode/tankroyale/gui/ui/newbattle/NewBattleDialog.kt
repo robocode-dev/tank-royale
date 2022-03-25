@@ -54,7 +54,7 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
         }
         startBattleButton.isEnabled = false
 
-        BotSelectionChannel.onSelectedBotListUpdated.subscribe(this) {
+        BotSelectionEvents.onSelectedBotListUpdated.subscribe(this) {
             selectedBots = it
             startBattleButton.isEnabled = selectedBots.size >= 2
         }

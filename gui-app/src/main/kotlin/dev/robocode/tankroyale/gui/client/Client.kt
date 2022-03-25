@@ -1,11 +1,20 @@
 package dev.robocode.tankroyale.gui.client
 
+import dev.robocode.tankroyale.gui.client.ClientEvents.onBotListUpdate
+import dev.robocode.tankroyale.gui.client.ClientEvents.onConnected
+import dev.robocode.tankroyale.gui.client.ClientEvents.onGameAborted
+import dev.robocode.tankroyale.gui.client.ClientEvents.onGameEnded
+import dev.robocode.tankroyale.gui.client.ClientEvents.onGamePaused
+import dev.robocode.tankroyale.gui.client.ClientEvents.onGameResumed
+import dev.robocode.tankroyale.gui.client.ClientEvents.onGameStarted
+import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundEnded
+import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundStarted
+import dev.robocode.tankroyale.gui.client.ClientEvents.onTickEvent
 import dev.robocode.tankroyale.gui.model.*
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
-import dev.robocode.tankroyale.gui.ui.tps.TpsEventChannel
-import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
 import dev.robocode.tankroyale.gui.util.Version
 import kotlinx.serialization.PolymorphicSerializer
 import java.lang.Thread.sleep
@@ -15,7 +24,7 @@ import java.util.*
 object Client : AutoCloseable {
 
     init {
-        TpsEventChannel.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
+        TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
 
         ServerEvents.apply {
             onRestartServer.subscribe(Client) {
@@ -28,22 +37,6 @@ object Client : AutoCloseable {
             }
         }
     }
-
-    // public events
-    val onConnected = Event<Unit>()
-
-    val onBotListUpdate = Event<BotListUpdate>()
-
-    val onGameStarted = Event<GameStartedEvent>()
-    val onGameEnded = Event<GameEndedEvent>()
-    val onGameAborted = Event<GameAbortedEvent>()
-    val onGamePaused = Event<GamePausedEvent>()
-    val onGameResumed = Event<GameResumedEvent>()
-
-    private val onRoundStarted = Event<RoundStartedEvent>()
-    private val onRoundEnded = Event<RoundEndedEvent>()
-
-    val onTickEvent = Event<TickEvent>()
 
     var currentGameSetup: GameSetup? = null
 
@@ -80,12 +73,12 @@ object Client : AutoCloseable {
 
     fun connect(url: String) {
         websocket = WebSocketClient(URI(url))
-        with(websocket) { // not apply() here, as new websocket is owner of the events below
+        with(WebSocketClientEvents) { // not apply() here, as new websocket is owner of the events below
             onOpen.subscribe(websocket) { onConnected.fire(Unit) }
             onMessage.subscribe(websocket) { onMessage(it) }
             onError.subscribe(websocket) { onError.fire(it) }
 
-            open() // must be called after onOpen.subscribe()
+            websocket.open() // must be called after onOpen.subscribe()
         }
     }
 
@@ -216,6 +209,6 @@ object Client : AutoCloseable {
     }
 
     private fun handleTpsChanged(tpsChangedEvent: TpsChangedEvent) {
-        TpsEventChannel.onTpsChanged.fire(tpsChangedEvent)
+        TpsEvents.onTpsChanged.fire(tpsChangedEvent)
     }
 }

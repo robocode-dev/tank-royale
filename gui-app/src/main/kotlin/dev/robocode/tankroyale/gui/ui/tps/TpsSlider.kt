@@ -36,7 +36,7 @@ object TpsSlider : JSlider() {
 
         addChangeListener(TpsChangeListener())
 
-        TpsEventChannel.onTpsChanged.subscribe(TpsSlider) { tpsEvent ->
+        TpsEvents.onTpsChanged.subscribe(TpsSlider) { tpsEvent ->
             setTps(tpsEvent.tps)
             ConfigSettings.setTps(tpsEvent.tps)
         }
@@ -74,7 +74,7 @@ object TpsSlider : JSlider() {
     private class TpsChangeListener : ChangeListener {
         override fun stateChanged(e: ChangeEvent?) {
             if (!valueIsAdjusting) { // avoid events while dragging
-                TpsEventChannel.onTpsChanged.fire(TpsChangedEvent(getTps()))
+                TpsEvents.onTpsChanged.fire(TpsChangedEvent(getTps()))
             }
         }
     }

@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
 import dev.robocode.tankroyale.gui.client.Client
+import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
 import dev.robocode.tankroyale.gui.ui.components.WrapLayout
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
@@ -23,7 +24,7 @@ object ControlPanel : JPanel() {
         add(ArenaPanel, BorderLayout.CENTER)
         add(ButtonPanel, BorderLayout.SOUTH)
 
-        Client.apply {
+        ClientEvents.apply {
             onGamePaused.subscribe(ControlPanel) { ButtonPanel.setResumedText() }
             onGameResumed.subscribe(ControlPanel) { ButtonPanel.setPausedText() }
             onGameStarted.subscribe(ControlPanel) { ButtonPanel.setPausedText() }

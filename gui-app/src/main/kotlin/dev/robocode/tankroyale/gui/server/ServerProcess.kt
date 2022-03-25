@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.gui.server
 
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.ui.server.ServerEvents
+import dev.robocode.tankroyale.gui.ui.server.ServerActions
 import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
@@ -32,11 +32,7 @@ object ServerProcess {
         private set
 
     init {
-        ServerEvents.apply {
-            onStartServer.subscribe(ServerProcess) { start() }
-            onStopServer.subscribe(ServerProcess) { stop() }
-            onRestartServer.subscribe(ServerProcess) { restart() }
-        }
+        ServerActions
     }
 
     fun isRunning(): Boolean = isRunning.get()
@@ -98,7 +94,7 @@ object ServerProcess {
         onStopped.fire(Unit)
     }
 
-    private fun restart() {
+    fun restart() {
         stop()
         start(gameType, port)
     }
