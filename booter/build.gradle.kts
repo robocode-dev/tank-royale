@@ -27,6 +27,7 @@ plugins {
 dependencies {
     implementation(libs.serialization.json)
     implementation(libs.picocli)
+    implementation(libs.jansi)
 }
 
 tasks {

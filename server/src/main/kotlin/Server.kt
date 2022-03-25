@@ -14,6 +14,19 @@ import kotlin.system.exitProcess
 
 private const val DEFAULT_PORT: Short = 7654
 
+fun main(args: Array<String>) {
+    System.setProperty("jansi.force", "true")
+    AnsiConsole.systemInstall()
+
+    val exitCode: Int
+    try {
+        exitCode = Server.cmdLine.execute(*args)
+    } finally {
+        AnsiConsole.systemUninstall()
+    }
+    exitProcess(exitCode)
+}
+
 @Command(
     name = "Server",
     versionProvider = VersionFileProvider::class,
@@ -145,17 +158,4 @@ class Server : Runnable {
             return arrayOf("Robocode Tank Royale Server $version")
         }
     }
-}
-
-fun main(args: Array<String>) {
-//    System.setProperty("picocli.ansi", "true")
-
-    AnsiConsole.systemInstall()
-    val exitCode: Int
-    try {
-        exitCode = Server.cmdLine.execute(*args)
-    } finally {
-        AnsiConsole.systemUninstall()
-    }
-    exitProcess(exitCode)
 }

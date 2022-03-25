@@ -18,5 +18,5 @@ obj/
 *.iml
 
 /games.properties
-/misc.properties
 /server.properties
+/config.properties
