@@ -33,9 +33,9 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
         MenuEvents.onStartBattle.invokeLater(this) { startBattle() }
 
         ClientEvents.apply {
-            onGameStarted.subscribe(this) { showBattle() }
-            onGameEnded.subscribe(this) { showLogo() }
-            onGameAborted.subscribe(this) { showLogo() }
+            onGameStarted.subscribe(MainWindow) { showBattle() }
+            onGameEnded.subscribe(MainWindow) { showLogo() }
+            onGameAborted.subscribe(MainWindow) { showLogo() }
         }
 
         onClosing {
@@ -45,7 +45,7 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
     }
 
     private fun startBattle() {
-        ServerEvents.onConnected.subscribe(this) { NewBattleDialog.isVisible = true }
+        ServerEvents.onConnected.subscribe(MainWindow) { NewBattleDialog.isVisible = true }
         try {
             Server.connectOrStart()
         } catch (e: Exception) {

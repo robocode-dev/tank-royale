@@ -14,7 +14,7 @@ import javax.swing.JOptionPane.*
 object Server {
 
     init {
-        ServerEvents.onStartServer.subscribe(this) {
+        ServerEvents.onStartServer.subscribe(Server) {
             startServerProcess()
         }
     }
@@ -38,7 +38,7 @@ object Server {
     private fun startServerProcess() {
         val latch = CountDownLatch(1)
         ServerProcess.apply {
-            onStarted.subscribe(this) {
+            onStarted.subscribe(Server) {
                 latch.countDown()
             }
             start()
@@ -48,7 +48,7 @@ object Server {
 
     private fun connectToServer() {
         var connected = false
-        ClientEvents.onConnected.subscribe(this) {
+        ClientEvents.onConnected.subscribe(Server) {
             ServerEvents.onConnected.fire(Unit)
             connected = true
         }

@@ -59,9 +59,9 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
             startBattleButton.isEnabled = selectedBots.size >= 2
         }
 
-        onStartBattle.subscribe(this) { startGame() }
+        onStartBattle.subscribe(NewBattleDialog) { startGame() }
 
-        onCancel.subscribe(this) { NewBattleDialog.dispose() }
+        onCancel.subscribe(NewBattleDialog) { NewBattleDialog.dispose() }
 
         with(gameTypeComboBox) {
             addActionListener {
