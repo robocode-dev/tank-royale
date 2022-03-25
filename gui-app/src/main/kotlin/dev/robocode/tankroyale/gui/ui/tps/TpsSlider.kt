@@ -38,10 +38,10 @@ object TpsSlider : JSlider() {
 
         TpsEvents.onTpsChanged.subscribe(TpsSlider) { tpsEvent ->
             setTps(tpsEvent.tps)
-            ConfigSettings.setTps(tpsEvent.tps)
+            ConfigSettings.tps = tpsEvent.tps
         }
 
-        setTps(ConfigSettings.getTps())
+        setTps(ConfigSettings.tps)
     }
 
     private fun getTps(): Int {

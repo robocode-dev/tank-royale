@@ -11,7 +11,7 @@ import javax.swing.SwingUtilities.invokeLater
 
 object TpsField : JLimitedTextField(3) {
 
-    var tps: Int = ConfigSettings.getTps()
+    var tps: Int = ConfigSettings.tps
 
     init {
         setInputVerifier { tpsInputVerifier() }

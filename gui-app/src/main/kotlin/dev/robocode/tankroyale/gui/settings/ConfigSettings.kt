@@ -8,33 +8,33 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.proper
 
     private const val BOT_DIRS_SEPARATOR = ","
 
-    fun getBotDirectories(): List<String> {
-        load()
-        return properties.getProperty(BOT_DIRECTORIES, "")
-            .split(BOT_DIRS_SEPARATOR)
-            .filter { it.isNotBlank() }
-    }
-
-    fun setBotDirectories(botDirs: List<String>) {
-        properties.setProperty(BOT_DIRECTORIES, botDirs
-            .filter { it.isNotBlank() }
-            .joinToString(separator = BOT_DIRS_SEPARATOR))
-        save()
-    }
-
-    fun getTps(): Int { // FIXME: Not used? +get/set properties: See ServerSettings
-        load()
-        var tps = try {
-            properties.getProperty(TPS, DEFAULT_TPS.toString()).toInt()
-        } catch (e: NumberFormatException) {
-            DEFAULT_TPS
+    var botDirectories: List<String>
+        get() {
+            load()
+            return properties.getProperty(BOT_DIRECTORIES, "")
+                .split(BOT_DIRS_SEPARATOR)
+                .filter { it.isNotBlank() }
         }
-        if (tps < 0) tps = DEFAULT_TPS
-        return tps
-    }
+        set(value) {
+            properties.setProperty(BOT_DIRECTORIES, value
+                .filter { it.isNotBlank() }
+                .joinToString(separator = BOT_DIRS_SEPARATOR))
+            save()
+        }
 
-    fun setTps(tps: Int) {
-        properties.setProperty(TPS, tps.toString())
-        save()
-    }
+    var tps: Int
+        get() {
+            load()
+            var tps = try {
+                properties.getProperty(TPS, DEFAULT_TPS.toString()).toInt()
+            } catch (e: NumberFormatException) {
+                DEFAULT_TPS
+            }
+            if (tps < 0) tps = DEFAULT_TPS
+            return tps
+        }
+        set(value) {
+            properties.setProperty(TPS, value.toString())
+            save()
+        }
 }

@@ -311,7 +311,7 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
     }
 
     private fun enforceBotDirIsConfigured() {
-        if (ConfigSettings.getBotDirectories().isEmpty()) {
+        if (ConfigSettings.botDirectories.isEmpty()) {
             SwingUtilities.invokeLater {
                 with(BotRootDirectoriesConfigDialog) {
                     if (!isVisible) {

@@ -148,7 +148,7 @@ object BootProcess {
     }
 
     private fun getBotDirs(): List<String> {
-        return ConfigSettings.getBotDirectories()
+        return ConfigSettings.botDirectories
     }
 
     private fun readInputToProcessIds(process: Process) {

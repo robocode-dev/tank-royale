@@ -21,7 +21,7 @@ object BotRootDirectoriesConfigDialog : RcDialog(MainWindow, "bot_root_directori
         setLocationRelativeTo(MainWindow) // center on main window
 
         onClosing {
-            ConfigSettings.setBotDirectories(BotDirectoryConfigPanel.listModel.elements().toList())
+            ConfigSettings.botDirectories = BotDirectoryConfigPanel.listModel.elements().toList()
         }
     }
 }
@@ -48,7 +48,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
         }
         add(buttonPanel)
 
-        ConfigSettings.getBotDirectories().forEach { listModel.addElement(it) }
+        ConfigSettings.botDirectories.forEach { listModel.addElement(it) }
 
         onAdd.subscribe(BotRootDirectoriesConfigDialog) {
             val chooser = JFileChooser()
@@ -76,7 +76,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
     }
 
     fun updateSettings() {
-        ConfigSettings.setBotDirectories(listModel.elements().toList())
+        ConfigSettings.botDirectories = listModel.elements().toList()
     }
 }
 
