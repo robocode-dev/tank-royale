@@ -24,14 +24,14 @@ import java.util.*
 object Client : AutoCloseable {
 
     init {
-        TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
+        TpsEvents.onTpsChanged.subscribe(this) { changeTps(it.tps) }
 
         ServerEvents.apply {
-            onRestartServer.subscribe(Client) {
+            onRestartServer.subscribe(this) {
                 isGamePaused = false
                 isGameRunning = false
             }
-            onStopServer.subscribe(Client) {
+            onStopServer.subscribe(this) {
                 isGamePaused = false
                 isGameRunning = false
             }

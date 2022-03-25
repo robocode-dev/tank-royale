@@ -36,7 +36,7 @@ object TpsSlider : JSlider() {
 
         addChangeListener(TpsChangeListener())
 
-        TpsEvents.onTpsChanged.subscribe(TpsSlider) { tpsEvent ->
+        TpsEvents.onTpsChanged.subscribe(this) { tpsEvent ->
             setTps(tpsEvent.tps)
             ConfigSettings.tps = tpsEvent.tps
         }

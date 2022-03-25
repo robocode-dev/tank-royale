@@ -78,11 +78,11 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
             }
         }
 
-        onAdd.subscribe(SelectServerDialog) {
+        onAdd.subscribe(this) {
             AddNewUrlDialog.isVisible = true
         }
 
-        onRemove.subscribe(SelectServerDialog) {
+        onRemove.subscribe(this) {
             urlComboBox.removeItem(selectedItem)
             if (urlComboBox.itemCount == 0) {
                 removeButton.isEnabled = false
@@ -91,13 +91,13 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
             }
         }
 
-        onTest.subscribe(SelectServerDialog) { testServerConnection() }
+        onTest.subscribe(this) { testServerConnection() }
 
-        onOk.subscribe(SelectServerDialog) {
+        onOk.subscribe(this) {
             saveServerConfig()
             SelectServerDialog.dispose()
         }
-        onCancel.subscribe(SelectServerDialog) {
+        onCancel.subscribe(this) {
             setFieldsToServerConfig()
             SelectServerDialog.dispose()
         }

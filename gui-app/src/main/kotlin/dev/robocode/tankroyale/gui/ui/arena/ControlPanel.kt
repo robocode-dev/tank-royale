@@ -25,15 +25,15 @@ object ControlPanel : JPanel() {
         add(ButtonPanel, BorderLayout.SOUTH)
 
         ClientEvents.apply {
-            onGamePaused.subscribe(ControlPanel) { ButtonPanel.setResumedText() }
-            onGameResumed.subscribe(ControlPanel) { ButtonPanel.setPausedText() }
-            onGameStarted.subscribe(ControlPanel) { ButtonPanel.setPausedText() }
+            onGamePaused.subscribe(this) { ButtonPanel.setResumedText() }
+            onGameResumed.subscribe(this) { ButtonPanel.setPausedText() }
+            onGameStarted.subscribe(this) { ButtonPanel.setPausedText() }
         }
 
-        onStop.subscribe(ControlPanel) { Client.stopGame(); ButtonPanel.setPausedText() }
-        onRestart.subscribe(ControlPanel) { Client.restartGame() }
+        onStop.subscribe(this) { Client.stopGame(); ButtonPanel.setPausedText() }
+        onRestart.subscribe(this) { Client.restartGame() }
 
-        onPauseResume.subscribe(ControlPanel) {
+        onPauseResume.subscribe(this) {
             Client.apply {
                 if (isGamePaused) {
                     resumeGame()

@@ -50,7 +50,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
 
         ConfigSettings.botDirectories.forEach { listModel.addElement(it) }
 
-        onAdd.subscribe(BotRootDirectoriesConfigDialog) {
+        onAdd.subscribe(this) {
             val chooser = JFileChooser()
             chooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
             val returnVal = chooser.showOpenDialog(this)
@@ -61,12 +61,12 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
             }
         }
 
-        onRemove.subscribe(BotRootDirectoriesConfigDialog) {
+        onRemove.subscribe(this) {
             list.selectedValuesList.forEach { listModel.removeElement(it) }
             updateSettings()
         }
 
-        onDismiss.subscribe(BotRootDirectoriesConfigDialog) {
+        onDismiss.subscribe(this) {
             BotRootDirectoriesConfigDialog.dispose()
         }
 

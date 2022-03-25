@@ -17,7 +17,7 @@ object TpsField : JLimitedTextField(3) {
         setInputVerifier { tpsInputVerifier() }
         onChange { tpsInputVerifier() }
 
-        TpsEvents.onTpsChanged.subscribe(TpsField) {
+        TpsEvents.onTpsChanged.subscribe(this) {
             if (it.tps != tps) {
                 tps = it.tps
                 updateText()
