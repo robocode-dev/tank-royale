@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.booter
 
 import dev.robocode.tankroyale.gui.model.MessageConstants
-import dev.robocode.tankroyale.gui.settings.MiscSettings
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
@@ -148,7 +148,7 @@ object BootProcess {
     }
 
     private fun getBotDirs(): List<String> {
-        return MiscSettings.getBotDirectories()
+        return ConfigSettings.getBotDirectories()
     }
 
     private fun readInputToProcessIds(process: Process) {

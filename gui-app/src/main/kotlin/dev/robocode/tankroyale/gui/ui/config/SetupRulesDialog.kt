@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.gui.MainWindow
+import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.model.IGameSetup
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.GamesSettings
@@ -151,7 +151,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             val selectedGameType = gameTypeComboBox.getSelectedGameType().displayName
             val default: MutableGameSetup? = GamesSettings.defaultGameSetup[selectedGameType]?.toMutableGameSetup()
             if (default != null) {
-                GamesSettings.games[selectedGameType]?.copy(default)
+                GamesSettings.games[selectedGameType]?.copyFields(default)
                 updateFieldsForGameType()
             }
         }

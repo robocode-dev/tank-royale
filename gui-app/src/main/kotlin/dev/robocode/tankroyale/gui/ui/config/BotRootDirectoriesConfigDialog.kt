@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.gui.MainWindow
-import dev.robocode.tankroyale.gui.settings.MiscSettings
+import dev.robocode.tankroyale.gui.ui.MainWindow
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
@@ -21,7 +21,7 @@ object BotRootDirectoriesConfigDialog : RcDialog(MainWindow, "bot_root_directori
         setLocationRelativeTo(MainWindow) // center on main window
 
         onClosing {
-            MiscSettings.setBotDirectories(BotDirectoryConfigPanel.listModel.elements().toList())
+            ConfigSettings.setBotDirectories(BotDirectoryConfigPanel.listModel.elements().toList())
         }
     }
 }
@@ -48,7 +48,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
         }
         add(buttonPanel)
 
-        MiscSettings.getBotDirectories().forEach { listModel.addElement(it) }
+        ConfigSettings.getBotDirectories().forEach { listModel.addElement(it) }
 
         onAdd.subscribe(BotRootDirectoriesConfigDialog) {
             val chooser = JFileChooser()
@@ -76,7 +76,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
     }
 
     fun updateSettings() {
-        MiscSettings.setBotDirectories(listModel.elements().toList())
+        ConfigSettings.setBotDirectories(listModel.elements().toList())
     }
 }
 

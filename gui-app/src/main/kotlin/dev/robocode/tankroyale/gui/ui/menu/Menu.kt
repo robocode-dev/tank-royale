@@ -1,39 +1,46 @@
-package dev.robocode.tankroyale.gui
+package dev.robocode.tankroyale.gui.ui.menu
 
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onBotDirConfig
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onDebugConfig
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onServerConfig
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onSetupRules
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onShowServerLog
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onStartBattle
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.MENU
-import dev.robocode.tankroyale.gui.ui.about.AboutBox
 import dev.robocode.tankroyale.gui.ui.extensions.JMenuExt.addNewMenuItem
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onAbout
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onRestartServer
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onStartServer
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onStopServer
 import dev.robocode.tankroyale.gui.ui.server.Server
-import dev.robocode.tankroyale.gui.ui.server.ServerEventChannel
-import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
-import dev.robocode.tankroyale.gui.util.Event
 import java.awt.event.KeyEvent
 import javax.swing.JMenu
 import javax.swing.JMenuBar
 import javax.swing.JMenuItem
 import javax.swing.KeyStroke
 
-object MainWindowMenu : JMenuBar() {
+object Menu : JMenuBar() {
 
-    // Public events
-    val onStartBattle = MenuEvent()
-    val onSetupRules = MenuEvent()
-    val onShowServerLog = MenuEvent()
-    val onServerConfig = MenuEvent()
-    val onBotDirConfig = MenuEvent()
-
-    private val onStartServer = MenuEvent()
-    private val onRestartServer = MenuEvent()
-    private val onStopServer = MenuEvent()
-
-    private val onAbout = MenuEvent()
-
-    private var startServerMenuItem: JMenuItem?
-    private var restartServerMenuItem: JMenuItem?
-    private var stopServerMenuItem: JMenuItem?
+    private lateinit var startServerMenuItem: JMenuItem
+    private lateinit var restartServerMenuItem: JMenuItem
+    private lateinit var stopServerMenuItem: JMenuItem
 
     init {
+        MenuActions
+
+        setupBattleMenu()
+        setupServerMenu()
+        setupConfigMenu()
+        setupHelpMenu()
+
+        ServerProcess.apply {
+            onStarted.subscribe(Menu) { updateServerState() }
+            onStopped.subscribe(Menu) { updateServerState() }
+        }
+    }
+
+    private fun setupBattleMenu() {
         add(JMenu(MENU.get("menu.battle")).apply {
             mnemonic = KeyEvent.VK_B
 
@@ -47,22 +54,11 @@ object MainWindowMenu : JMenuBar() {
                 accelerator = ctrlDown(mnemonic)
             }
         })
+    }
 
+    private fun setupServerMenu() {
         val serverMenu = JMenu(MENU.get("menu.server")).apply {
             mnemonic = KeyEvent.VK_S
-
-            onStartServer.invokeLater(this) {
-                ServerLogWindow.isVisible = true
-                ServerEventChannel.onStartServer.fire(Unit)
-            }
-            onRestartServer.invokeLater(this) {
-                ServerLogWindow.isVisible = true
-                ServerEventChannel.onRestartServer.fire(Unit)
-            }
-            onStopServer.invokeLater(this) {
-                ServerLogWindow.isVisible = false
-                ServerEventChannel.onStopServer.fire(Unit)
-            }
 
             startServerMenuItem = addNewMenuItem("item.start_server", onStartServer)
             restartServerMenuItem = addNewMenuItem("item.restart_server", onRestartServer)
@@ -92,7 +88,9 @@ object MainWindowMenu : JMenuBar() {
             updateServerState()
         }
         add(serverMenu)
+    }
 
+    private fun setupConfigMenu() {
         add(JMenu(MENU.get("menu.config")).apply {
             mnemonic = KeyEvent.VK_C
 
@@ -100,8 +98,14 @@ object MainWindowMenu : JMenuBar() {
                 mnemonic = KeyEvent.VK_D
                 accelerator = ctrlDown(mnemonic)
             }
-        })
 
+            addNewMenuItem("item.debug_config", onDebugConfig).apply {
+                mnemonic = KeyEvent.VK_C
+            }
+        })
+    }
+
+    private fun setupHelpMenu() {
         add(JMenu(MENU.get("menu.help")).apply {
             mnemonic = KeyEvent.VK_H
 
@@ -109,22 +113,13 @@ object MainWindowMenu : JMenuBar() {
                 mnemonic = KeyEvent.VK_A
             }
         })
-
-        onAbout.invokeLater(this) { AboutBox.isVisible = true }
-
-        ServerProcess.apply {
-            onStarted.subscribe(MainWindowMenu) { updateServerState() }
-            onStopped.subscribe(MainWindowMenu) { updateServerState() }
-        }
     }
 
     private fun updateServerState() {
-        startServerMenuItem?.isEnabled = !Server.isRunning()
-        restartServerMenuItem?.isEnabled = ServerProcess.isRunning()
-        stopServerMenuItem?.isEnabled = ServerProcess.isRunning()
+        startServerMenuItem.isEnabled = !Server.isRunning()
+        restartServerMenuItem.isEnabled = ServerProcess.isRunning()
+        stopServerMenuItem.isEnabled = ServerProcess.isRunning()
     }
 
     private fun ctrlDown(keyEvent: Int) = KeyStroke.getKeyStroke(keyEvent, KeyEvent.CTRL_DOWN_MASK)
 }
-
-class MenuEvent : Event<JMenuItem>()

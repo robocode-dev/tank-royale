@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui
 
-import dev.robocode.tankroyale.gui.MainWindow
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotResults
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS

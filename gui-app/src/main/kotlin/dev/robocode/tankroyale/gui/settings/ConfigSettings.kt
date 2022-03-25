@@ -1,13 +1,13 @@
 package dev.robocode.tankroyale.gui.settings
 
-object MiscSettings : PropertiesStore("Robocode Misc Settings", "misc.properties") {
+object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.properties") {
 
     private const val BOT_DIRECTORIES = "bot-directories"
     private const val TPS = "tps"
+    private const val DEFAULT_TPS = 30
+    private const val INITIAL_POSITION_ENABLED = "initial-position-enabled"
 
     private const val BOT_DIRS_SEPARATOR = ","
-
-    private const val DEFAULT_TPS = 30
 
     fun getBotDirectories(): List<String> {
         load()
@@ -36,6 +36,16 @@ object MiscSettings : PropertiesStore("Robocode Misc Settings", "misc.properties
 
     fun setTps(tps: Int) {
         properties.setProperty(TPS, tps.toString())
+        save()
+    }
+
+    fun isInitialPositionsEnabled(): Boolean {
+        load()
+        return properties.getProperty(INITIAL_POSITION_ENABLED, "false").toBoolean()
+    }
+
+    fun setInitialPositionsEnabled(enabled: Boolean) {
+        properties.setProperty(INITIAL_POSITION_ENABLED, enabled.toString())
         save()
     }
 }

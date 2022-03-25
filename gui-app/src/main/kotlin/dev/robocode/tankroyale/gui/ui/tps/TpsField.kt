@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.tps
 
 import dev.robocode.tankroyale.gui.model.TpsChangedEvent
-import dev.robocode.tankroyale.gui.settings.MiscSettings
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import dev.robocode.tankroyale.gui.ui.components.JLimitedTextField
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
@@ -11,7 +11,7 @@ import javax.swing.SwingUtilities.invokeLater
 
 object TpsField : JLimitedTextField(3) {
 
-    var tps: Int = MiscSettings.getTps()
+    var tps: Int = ConfigSettings.getTps()
 
     init {
         setInputVerifier { tpsInputVerifier() }

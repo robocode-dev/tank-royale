@@ -1,23 +1,17 @@
-package dev.robocode.tankroyale.gui
+package dev.robocode.tankroyale.gui.ui
 
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.client.Client
+import dev.robocode.tankroyale.gui.ui.menu.Menu
+import dev.robocode.tankroyale.gui.ui.menu.MenuEvents
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
-import dev.robocode.tankroyale.gui.ui.components.Images
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
-import dev.robocode.tankroyale.gui.ui.config.BotRootDirectoriesConfigDialog
-import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
-import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.gui.ui.server.Server
-import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
-import java.awt.EventQueue
-import java.awt.Taskbar
-import javax.swing.UIManager
 
 
 object MainWindow : RcFrame("main_window"), AutoCloseable {
@@ -32,15 +26,9 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
 
         contentPane.add(LogoPanel)
 
-        jMenuBar = MainWindowMenu
+        jMenuBar = Menu
 
-        MainWindowMenu.apply {
-            onStartBattle.invokeLater(MainWindow) { startBattle() }
-            onSetupRules.invokeLater(MainWindow) { SetupRulesDialog.isVisible = true }
-            onShowServerLog.invokeLater(MainWindow) { ServerLogWindow.isVisible = true }
-            onServerConfig.invokeLater(MainWindow) { SelectServerDialog.isVisible = true }
-            onBotDirConfig.invokeLater(MainWindow) { BotRootDirectoriesConfigDialog.isVisible = true }
-        }
+        MenuEvents.onStartBattle.invokeLater(this) { startBattle() }
 
         Client.apply {
             onGameStarted.subscribe(MainWindow) { showBattle() }
@@ -87,21 +75,5 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
         Client.close()
         BootProcess.stopRunning()
         ServerProcess.stop()
-    }
-}
-
-private fun main() {
-    Runtime.getRuntime().addShutdownHook(Thread {
-        MainWindow.close()
-    })
-
-    try {
-        Taskbar.getTaskbar().iconImage = Images.tankImage // for macOS
-    } catch (ignore: UnsupportedOperationException) {}
-
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
-    EventQueue.invokeLater {
-        MainWindow.isVisible = true
     }
 }

@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.booter.DirAndPid
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.model.InitialPosition
 import dev.robocode.tankroyale.gui.settings.MiscSettings
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
@@ -99,7 +100,7 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
         BootProcess.onRunBot.subscribe(this) { updateRunningBot(it) }
         BootProcess.onStopBot.subscribe(this) { updateStoppingBot(it) }
 
-        MiscSettings.onSaved.subscribe(this) { updateBotsDirectoryBots() }
+        ConfigSettings.onSaved.subscribe(this) { updateBotsDirectoryBots() }
     }
 
     private fun removeSelectedBotAt(index: Int) {
@@ -297,7 +298,6 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
                     info.gameTypes.split(",").toSet(),
                     info.platform,
                     info.programmingLang,
-                    InitialPosition.fromString(info.initialPosition),
                     host = botEntry.dir, // host serves as filename here
                     port = -1
                 )
@@ -328,16 +328,16 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
         SwingUtilities.invokeLater {
             // Reset the list of joined bots to it matches the joined bots from the client
             joinedBotListModel.apply {
-                EventQueue.invokeLater {
-                    clear()
-                    Client.joinedBots.forEach { addElement(it) }
+                clear()
+                Client.joinedBots.forEach { botInfo ->
+                    EventQueue.invokeLater { addElement(botInfo) }
                 }
             }
             // Remove selected bots, if the bots are not on the joined bots from the client
             selectedBotListModel.apply {
-                list().forEach {
-                    EventQueue.invokeLater {
-                        if (!Client.joinedBots.contains(it)) { removeElement(it) }
+                list().forEach { botInfo ->
+                    if (!Client.joinedBots.contains(botInfo)) {
+                        EventQueue.invokeLater { removeElement(botInfo) }
                     }
                 }
             }
