@@ -20,13 +20,13 @@ class RunCommand : Command() {
 
     private val processes = HashMap<Long, Process>() // pid, process
 
-    fun runBots(botPaths: Array<String>?) {
+    fun runBots(botPaths: Array<String>) {
         Runtime.getRuntime().addShutdownHook(Thread {
             killAllProcesses() // Kill all running processes before terminating
         })
 
         // Start up the bots provided with the input list
-        botPaths?.forEach {
+        botPaths.forEach {
             createBotProcess(Path(it))
         }
 
