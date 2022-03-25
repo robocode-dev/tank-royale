@@ -26,12 +26,16 @@ object DebugConfigDialog : RcDialog(MainWindow, "debug_config_dialog") {
 
 object Panel : JPanel(MigLayout("fill, insets 20", "", "[]20[]")) {
 
+    var selected = ServerSettings.initialPositionsEnabled
+
     init {
-        val selected = ServerSettings.initialPositionsEnabled
         val checkbox = JCheckBox(ResourceBundles.STRINGS.get("option.enable_initial_position.text"), selected).apply {
             toolTipText = ResourceBundles.STRINGS.get("option.enable_initial_position.hint")
             addChangeListener {
-                ServerSettings.initialPositionsEnabled = isSelected
+                if (isSelected != selected) {
+                    selected = isSelected
+                    ServerSettings.initialPositionsEnabled = selected
+                }
             }
         }
         add(checkbox, "cell 0 0")

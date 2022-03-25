@@ -27,16 +27,16 @@ object MenuActions {
                 AboutBox.isVisible = true
             }
             onStartServer.invokeLater(this) {
-                ServerLogWindow.isVisible = true
                 ServerEvents.onStartServer.fire(Unit)
+                ServerLogWindow.isVisible = true
             }
             onRestartServer.invokeLater(this) {
-                ServerLogWindow.isVisible = true
                 ServerEvents.onRestartServer.fire(Unit)
+                ServerLogWindow.isVisible = true
             }
             onStopServer.invokeLater(this) {
-                ServerLogWindow.isVisible = false
                 ServerEvents.onStopServer.fire(Unit)
+                ServerLogWindow.isVisible = false
             }
             onDebugConfig.invokeLater(this) {
                 DebugConfigDialog.isVisible = true

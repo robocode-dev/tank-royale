@@ -51,7 +51,7 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
         AddNewUrlDialog.apply {
             setDefaultButton(okButton)
 
-            onComplete.subscribe(AddNewUrlDialog) {
+            onComplete.subscribe(AddNewUrlPanel) {
                 if (isValidWsUrl) {
                     newUrl = urlTextField.text
                     dispose()
