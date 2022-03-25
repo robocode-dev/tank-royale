@@ -78,8 +78,15 @@ class Server : Runnable {
         @Option(
             names = ["-B", "--botSecrets"],
             type = [String::class],
-            description = ["Comma-separated list of bot secrets used for access control"])
+            description = ["Comma-separated list of bot secrets used for access control"]
+        )
         private var botSecrets: String? = null
+
+        @Option(
+            names = ["-I", "--enable-initial-position"],
+            description = ["Enable initial position for bots (default: false)"]
+        )
+        var initialPositionEnabled = false
 
         val cmdLine = CommandLine(Server())
     }

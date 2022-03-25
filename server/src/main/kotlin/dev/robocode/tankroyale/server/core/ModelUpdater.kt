@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.server.core
 
+import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.math.*
@@ -180,8 +181,8 @@ class ModelUpdater(
         turn.copyBots(botsMap.values)
     }
 
-    // TODO: Only if enabled by server
     private fun adjustForInitialPosition(botId: BotId, point: Point): Point {
+        if (!Server.initialPositionEnabled) return point
         val initialPosition = initialPositions[botId]
         return if (initialPosition == null) {
             point
@@ -192,8 +193,8 @@ class ModelUpdater(
         }
     }
 
-    // TODO: Only if enabled by server
     private fun adjustForInitialAngle(botId: BotId, direction: Double): Double {
+        if (!Server.initialPositionEnabled) return direction
         val initialPosition = initialPositions[botId]
         return if (initialPosition == null) {
             direction

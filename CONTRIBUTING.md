@@ -89,8 +89,8 @@ possible to run the code to try it out to review it.
 
 Make sure to provide a sufficient description for the pull request. For example, a link to the bug or feature this pull
 request addresses. But also how to try out the new feature. Also, make sure to put relevant comments on code, where some
-choices were made that might not be obvious, and put a TODO or FIXME if something still needs to be done and not
-forgotten about.
+choices were made that might not be obvious, and put a `// TODO:` or `// FIXME:` if something still needs to be done and
+not forgotten about.
 
 ### Prefer small pull requests
 
