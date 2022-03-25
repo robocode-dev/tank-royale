@@ -1,12 +1,14 @@
-package dev.robocode.tankroyale.gui.ui.server
+package dev.robocode.tankroyale.gui.ui.config
 
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
-import dev.robocode.tankroyale.gui.ui.server.AddNewUrlDialog.onComplete
+import dev.robocode.tankroyale.gui.ui.config.AddNewUrlDialog.onComplete
+import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.gui.util.WsUrl
 import net.miginfocom.swing.MigLayout
 import java.awt.Color
 import javax.swing.JButton

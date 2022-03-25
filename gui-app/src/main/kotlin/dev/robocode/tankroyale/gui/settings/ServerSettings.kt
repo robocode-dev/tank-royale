@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.settings
 
-import dev.robocode.tankroyale.gui.ui.server.WsUrl
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
+import dev.robocode.tankroyale.gui.util.WsUrl
 import java.net.URI
 import java.util.*
 import javax.crypto.KeyGenerator

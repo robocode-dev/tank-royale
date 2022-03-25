@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.ui.server
+package dev.robocode.tankroyale.gui.util
 
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import java.net.URI
