@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.gui
 
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.components.Images
-import java.awt.EventQueue
 import java.awt.Taskbar
 import javax.swing.UIManager
 
@@ -17,7 +16,5 @@ fun main() {
 
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
-    EventQueue.invokeLater {
-        MainWindow.isVisible = true
-    }
+    MainWindow.isVisible = true
 }

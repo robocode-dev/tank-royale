@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.ui.extensions
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.UI_TITLES
 import dev.robocode.tankroyale.gui.util.Event
+import java.awt.EventQueue.invokeLater
 import javax.swing.*
 
 object JComponentExt {
@@ -23,7 +24,7 @@ object JComponentExt {
     }
 
     fun JComponent.setDefaultButton(button: JButton) {
-        SwingUtilities.invokeLater { // to avoid rootPane to be null, if called too early
+        invokeLater { // to avoid rootPane to be null, if called too early
             if (rootPane != null) {
                 rootPane.defaultButton = button
             }

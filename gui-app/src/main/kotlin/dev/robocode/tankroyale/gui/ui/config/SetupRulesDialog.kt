@@ -18,7 +18,6 @@ import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.newbattle.GameTypeComboBox
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
-import java.awt.EventQueue
 import javax.swing.*
 
 object SetupRulesDialog : RcDialog(MainWindow, "setup_rules_dialog") {
@@ -413,13 +412,5 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             turnTimeoutTextField.text = "" + gameSetup.turnTimeout
         }
         return valid
-    }
-}
-
-private fun main() {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
-    EventQueue.invokeLater {
-        SetupRulesDialog.isVisible = true
     }
 }

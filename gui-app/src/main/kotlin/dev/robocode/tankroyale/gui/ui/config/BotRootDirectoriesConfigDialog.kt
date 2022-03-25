@@ -10,7 +10,6 @@ import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
-import java.awt.EventQueue
 import javax.swing.*
 
 object BotRootDirectoriesConfigDialog : RcDialog(MainWindow, "bot_root_directories_config_dialog") {
@@ -77,13 +76,5 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
 
     fun updateSettings() {
         ConfigSettings.botDirectories = listModel.elements().toList()
-    }
-}
-
-private fun main() {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
-    EventQueue.invokeLater {
-        BotRootDirectoriesConfigDialog.isVisible = true
     }
 }

@@ -9,7 +9,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
-import java.awt.EventQueue
+import java.awt.EventQueue.invokeLater
 import java.awt.event.ItemEvent
 import javax.swing.*
 
@@ -73,7 +73,7 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
 
             addItemListener {
                 if (it.stateChange == ItemEvent.SELECTED) {
-                    SwingUtilities.invokeLater {
+                    invokeLater {
                         BotSelectionPanel.update()
                     }
                 }
@@ -90,13 +90,5 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
         Client.startGame(botAddresses.toSet())
 
         NewBattleDialog.dispose()
-    }
-}
-
-private fun main() {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
-    EventQueue.invokeLater {
-        NewBattleDialog.isVisible = true
     }
 }

@@ -13,7 +13,6 @@ import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.WsUrl
 import net.miginfocom.swing.MigLayout
-import java.awt.EventQueue
 import javax.swing.*
 
 object SelectServerDialog : RcDialog(MainWindow, "select_server_dialog") {
@@ -160,13 +159,5 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
             this.userUrls = userUrls
             save()
         }
-    }
-}
-
-private fun main() {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
-    EventQueue.invokeLater {
-        SelectServerDialog.isVisible = true
     }
 }

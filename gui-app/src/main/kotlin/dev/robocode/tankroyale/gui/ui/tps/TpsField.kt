@@ -7,7 +7,7 @@ import dev.robocode.tankroyale.gui.ui.components.JLimitedTextField
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.onChange
 import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.setInputVerifier
-import javax.swing.SwingUtilities.invokeLater
+import java.awt.EventQueue.invokeLater
 
 object TpsField : JLimitedTextField(3) {
 
