@@ -17,7 +17,6 @@ import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
 import dev.robocode.tankroyale.gui.util.Version
 import kotlinx.serialization.PolymorphicSerializer
-import java.lang.Thread.sleep
 import java.net.URI
 import java.util.*
 
@@ -99,9 +98,7 @@ object Client : AutoCloseable {
 
     fun restartGame() {
         resumeGame()
-        sleep(10) // let resume take effect
         stopGame()
-        sleep(10) // let stop take effect
         websocket.send(lastStartGame!!)
     }
 
