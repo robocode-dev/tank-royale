@@ -44,10 +44,3 @@ class WsUrl(partialUrl: String) {
         }
     }
 }
-
-fun main() {
-    val partialUrl = "localhost"
-    println(WsUrl(partialUrl).uri.scheme)
-    println(WsUrl(partialUrl).uri.host)
-    println(WsUrl(partialUrl).uri.port)
-}

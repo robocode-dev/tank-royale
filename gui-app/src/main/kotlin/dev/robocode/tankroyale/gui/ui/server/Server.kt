@@ -13,12 +13,6 @@ import javax.swing.JOptionPane.*
 
 object Server {
 
-    init {
-        ServerEvents.onStartServer.subscribe(Server) {
-            startServerProcess()
-        }
-    }
-
     fun isRunning() = ServerProcess.isRunning() || RemoteServer.isRunning()
 
     fun connectOrStart() {
@@ -30,20 +24,9 @@ object Server {
             }
         }
         if (!isRunning()) {
-            startServerProcess()
-        }
-        connectToServer()
-    }
-
-    private fun startServerProcess() {
-        val latch = CountDownLatch(1)
-        ServerProcess.apply {
-            onStarted.subscribe(Server) {
-                latch.countDown()
-            }
             start()
         }
-        latch.await(1000, TimeUnit.MILLISECONDS) // wait till server has started
+        connectToServer()
     }
 
     private fun connectToServer() {
@@ -62,6 +45,23 @@ object Server {
             }
             sleep(500)
         }
+    }
+
+    fun start() {
+        val latch = CountDownLatch(1)
+        ServerEvents.onStarted.subscribe(Server) {
+            latch.countDown()
+        }
+        ServerProcess.start()
+        latch.await(1000, TimeUnit.MILLISECONDS) // wait till server has started
+    }
+
+    fun stop() {
+        ServerProcess.stop()
+    }
+
+    fun restart() {
+        ServerProcess.restart()
     }
 
     private fun showStopGameDialog(): Int = showConfirmDialog(

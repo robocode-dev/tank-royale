@@ -1,19 +1,20 @@
 package dev.robocode.tankroyale.gui.ui.menu
 
-import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onBotDirConfig
-import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onDebugConfig
-import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onServerConfig
-import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onSetupRules
-import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onShowServerLog
-import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onStartBattle
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onBotDirConfig
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onDebugConfig
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onServerConfig
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onSetupRules
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onShowServerLog
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStartBattle
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.MENU
 import dev.robocode.tankroyale.gui.ui.extensions.JMenuExt.addNewMenuItem
-import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onAbout
-import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onRestartServer
-import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onStartServer
-import dev.robocode.tankroyale.gui.ui.menu.MenuEvents.onStopServer
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onAbout
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRestartServer
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStartServer
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStopServer
 import dev.robocode.tankroyale.gui.ui.server.Server
+import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import java.awt.event.KeyEvent
 import javax.swing.JMenu
 import javax.swing.JMenuBar
@@ -27,14 +28,14 @@ object Menu : JMenuBar() {
     private lateinit var stopServerMenuItem: JMenuItem
 
     init {
-        MenuActions
+        MenuEventHandlers
 
         setupBattleMenu()
         setupServerMenu()
         setupConfigMenu()
         setupHelpMenu()
 
-        ServerProcess.apply {
+        with(ServerEvents) {
             onStarted.subscribe(Menu) { updateServerState() }
             onStopped.subscribe(Menu) { updateServerState() }
         }

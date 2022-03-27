@@ -3,8 +3,8 @@ package dev.robocode.tankroyale.gui.server
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.server.ServerActions
+import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
-import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
 import java.io.BufferedReader
 import java.io.FileNotFoundException
@@ -14,9 +14,6 @@ import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicBoolean
 
 object ServerProcess {
-
-    val onStarted = Event<Unit>()
-    val onStopped = Event<Unit>()
 
     private const val JAR_FILE_NAME = "robocode-tankroyale-server"
 
@@ -69,7 +66,7 @@ object ServerProcess {
 
         startLogThread()
 
-        onStarted.fire(Unit)
+        ServerEvents.onStarted.fire(Unit)
     }
 
     fun stop() {
@@ -91,7 +88,7 @@ object ServerProcess {
         process = null
         logThread = null
 
-        onStopped.fire(Unit)
+        ServerEvents.onStopped.fire(Unit)
     }
 
     fun restart() {

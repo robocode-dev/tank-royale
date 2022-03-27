@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.ui.menu.Menu
-import dev.robocode.tankroyale.gui.ui.menu.MenuEvents
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
@@ -30,7 +30,7 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
 
         jMenuBar = Menu
 
-        MenuEvents.onStartBattle.invokeLater(this) { startBattle() }
+        MenuEventTriggers.onStartBattle.invokeLater(this) { startBattle() }
 
         ClientEvents.apply {
             onGameStarted.subscribe(MainWindow) { showBattle() }

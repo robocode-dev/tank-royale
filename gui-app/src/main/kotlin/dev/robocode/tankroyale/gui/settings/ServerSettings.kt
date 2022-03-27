@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.settings
 
-import dev.robocode.tankroyale.gui.ui.server.ServerEvents
+import dev.robocode.tankroyale.gui.ui.server.ServerEventTriggers
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import dev.robocode.tankroyale.gui.util.WsUrl
 import java.net.URI
@@ -25,7 +25,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         RegisterWsProtocol // work-around for ws:// with URI class
         load()
 
-        onSaved.subscribe(this) { ServerEvents.onRestartServer.fire(Unit) }
+        onSaved.subscribe(this) { ServerEventTriggers.onRestartServer.fire(Unit) }
     }
 
     var serverUrl: String

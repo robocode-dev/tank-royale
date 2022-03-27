@@ -14,6 +14,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showError
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onChanged
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onMultiClickedAtIndex
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onSelection
+import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.EventQueue.invokeLater
@@ -100,6 +101,13 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
         BootProcess.onStopBot.subscribe(this) { updateStoppingBot(it) }
 
         ConfigSettings.onSaved.subscribe(this) { updateBotsDirectoryBots() }
+
+        ServerEvents.onStopped.subscribe(this) { reset() }
+    }
+
+    private fun reset() {
+        selectedBotListModel.clear()
+        update()
     }
 
     private fun removeSelectedBotAt(index: Int) {
@@ -276,6 +284,7 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
 
     fun update() {
         updateBotsDirectoryBots()
+        updateRunningBots()
         updateJoinedBots()
 
         enforceBotDirIsConfigured()
@@ -319,6 +328,15 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
                         isVisible = true
                     }
                 }
+            }
+        }
+    }
+
+    private fun updateRunningBots() {
+        invokeLater {
+            runningBotListModel.apply {
+                clear()
+                BootProcess.runningBots.forEach { updateRunningBot(it) }
             }
         }
     }

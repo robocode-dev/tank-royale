@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.gui.ui.menu
 import dev.robocode.tankroyale.gui.util.Event
 import javax.swing.JMenuItem
 
-object MenuEvents {
+object MenuEventTriggers {
     val onStartBattle = MenuEvent()
     val onSetupRules = MenuEvent()
     val onShowServerLog = MenuEvent()

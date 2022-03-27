@@ -23,12 +23,13 @@ object BootProcess {
 
     private val isRunning = AtomicBoolean(false)
     private var runProcess: Process? = null
-
     private var thread: Thread? = null
 
     private val json = MessageConstants.json
 
     private val pidAndDirs = HashMap<Long, String>() // pid, dir
+
+    private val runningBotsList = mutableListOf<DirAndPid>()
 
     fun info(): List<BotEntry> {
         val args = mutableListOf(
@@ -66,6 +67,14 @@ object BootProcess {
     fun stop(pids: List<Long?>) {
         stopBotsWithRunningBotProcess(pids)
     }
+
+    fun stopRunningBots() {
+        stop(runningBotsList.map { it.pid })
+        runningBotsList.clear()
+    }
+
+    val runningBots: List<DirAndPid>
+        get() { return runningBotsList }
 
     private fun startRunningBotProcess(botDirNames: List<String>) {
         val args = mutableListOf(
@@ -108,6 +117,8 @@ object BootProcess {
         stopProcess()
 
         notifyUnbootBotProcesses()
+
+        runningBotsList
     }
 
     private fun stopProcess() {
@@ -215,7 +226,10 @@ object BootProcess {
 
             pidAndDirs[pid] = dir
 
-            onRunBot.fire(DirAndPid(dir, pid))
+            val dirAndPid = DirAndPid(dir, pid)
+            runningBotsList.add(dirAndPid)
+
+            onRunBot.fire(dirAndPid)
         }
     }
 
@@ -228,7 +242,10 @@ object BootProcess {
             pidAndDirs.remove(pid)
 
             if (dir != null) {
-                onStopBot.fire(DirAndPid(dir, pid))
+                val dirAndPid = DirAndPid(dir, pid)
+                runningBotsList.remove(dirAndPid)
+
+                onStopBot.fire(dirAndPid)
             }
         }
     }

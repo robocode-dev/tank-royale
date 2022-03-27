@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.server
 
-import dev.robocode.tankroyale.gui.server.ServerProcess
+import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
 import java.util.concurrent.atomic.AtomicBoolean
@@ -8,12 +8,13 @@ import javax.swing.JOptionPane
 
 object ServerActions {
     init {
-        with(ServerEvents) {
+        with(ServerEventTriggers) {
             onStartServer.subscribe(this) {
-                ServerProcess.start()
+                Server.start()
             }
             onStopServer.subscribe(this) {
-                ServerProcess.stop()
+                Server.stop()
+                BootProcess.stopRunningBots()
             }
             onRestartServer.subscribe(this) {
                 handleRestart()
@@ -38,7 +39,8 @@ object ServerActions {
                 JOptionPane.YES_NO_OPTION
             )
         ) {
-            ServerProcess.restart()
+            BootProcess.stopRunningBots()
+            Server.restart()
         }
         isRestarting.set(false)
     }

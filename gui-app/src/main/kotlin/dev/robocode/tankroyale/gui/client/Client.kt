@@ -26,15 +26,11 @@ object Client : AutoCloseable {
     init {
         TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
 
-        ServerEvents.apply {
-            onRestartServer.subscribe(Client) {
-                isGamePaused = false
-                isGameRunning = false
-            }
-            onStopServer.subscribe(Client) {
-                isGamePaused = false
-                isGameRunning = false
-            }
+        ServerEvents.onStopped.subscribe(Client) {
+            isGamePaused = false
+            isGameRunning = false
+
+            bots.clear()
         }
     }
 
@@ -48,12 +44,10 @@ object Client : AutoCloseable {
     private val isConnected: Boolean get() = websocket.isOpen()
 
     private var participants = listOf<Participant>()
-    private var bots = setOf<BotInfo>()
+    private var bots = HashSet<BotInfo>()
 
     val joinedBots: Set<BotInfo>
-        get() {
-            return bots
-        }
+        get() { return bots }
 
     private var websocket: WebSocketClient = WebSocketClient(URI(ServerSettings.serverUrl))
 
@@ -162,7 +156,7 @@ object Client : AutoCloseable {
     }
 
     private fun handleBotListUpdate(botListUpdate: BotListUpdate) {
-        bots = Collections.unmodifiableSet(botListUpdate.bots)
+        bots = HashSet(botListUpdate.bots)
         onBotListUpdate.fire(botListUpdate)
     }
 
