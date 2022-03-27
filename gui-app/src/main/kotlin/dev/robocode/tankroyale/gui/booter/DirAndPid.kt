@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.gui.booter
 
+import java.util.*
+
 class DirAndPid(
     val dir: String,
     val pid: Long
@@ -24,9 +26,7 @@ class DirAndPid(
     }
 
     override fun hashCode(): Int {
-        var result = dir.hashCode()
-        result = 31 * result + pid.hashCode()
-        return result
+        return Objects.hash(dir, pid)
     }
 
     override fun toString(): String {

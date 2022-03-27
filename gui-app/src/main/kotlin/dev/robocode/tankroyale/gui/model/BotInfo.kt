@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.model
 
 import kotlinx.serialization.Serializable
+import java.util.Objects
 
 @Serializable
 data class BotInfo(
@@ -29,5 +30,21 @@ data class BotInfo(
     override fun compareTo(other: BotInfo): Int {
         val cmp = "$host$port".compareTo("${other.host}${other.port}")
         return if (cmp != 0) cmp else displayText.compareTo(other.displayText)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as BotInfo
+
+        if (host != other.host) return false
+        if (port != other.port) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(host, port)
     }
 }
