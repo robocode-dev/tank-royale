@@ -11,6 +11,7 @@ import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
 object ServerProcess {
@@ -41,8 +42,6 @@ object ServerProcess {
         this.gameType = gameType
         this.port = port
 
-        ServerLogWindow.clear()
-
         var command: MutableList<String>
         with(ServerSettings) {
             command = mutableListOf(
@@ -72,17 +71,18 @@ object ServerProcess {
     fun stop() {
         if (!isRunning.get())
             return
-
-        stopLogThread()
         isRunning.set(false)
 
-        val p = process
-        if (p != null && p.isAlive) {
+        stopLogThread()
 
-            // Send quit signal to server
-            val out = p.outputStream
-            out.write("q\n".toByteArray())
-            out.flush()
+        process?.let { process ->
+            if (process.isAlive) {
+                process.outputStream.apply {
+                    write("quit\n".toByteArray())
+                    flush()
+                }
+                process.waitFor(1, TimeUnit.SECONDS)
+            }
         }
 
         process = null

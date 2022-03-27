@@ -68,11 +68,6 @@ object BootProcess {
         stopBotsWithRunningBotProcess(pids)
     }
 
-    fun stopRunningBots() {
-        stop(runningBotsList.map { it.pid })
-        runningBotsList.clear()
-    }
-
     val runningBots: List<DirAndPid>
         get() { return runningBotsList }
 
@@ -118,7 +113,7 @@ object BootProcess {
 
         notifyUnbootBotProcesses()
 
-        runningBotsList
+        runningBotsList.clear()
     }
 
     private fun stopProcess() {

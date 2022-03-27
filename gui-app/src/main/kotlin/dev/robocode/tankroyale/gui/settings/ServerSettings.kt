@@ -25,7 +25,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         RegisterWsProtocol // work-around for ws:// with URI class
         load()
 
-        onSaved.subscribe(this) { ServerEventTriggers.onRestartServer.fire(Unit) }
+        onSaved.subscribe(this) { ServerEventTriggers.onRebootServer.fire(Unit) }
     }
 
     var serverUrl: String

@@ -1,33 +1,36 @@
 package dev.robocode.tankroyale.gui.ui.server
 
 import dev.robocode.tankroyale.gui.booter.BootProcess
+import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
-import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.JOptionPane
 
 object ServerActions {
     init {
-        with(ServerEventTriggers) {
+        ServerEventTriggers.apply {
             onStartServer.subscribe(this) {
                 Server.start()
             }
             onStopServer.subscribe(this) {
                 Server.stop()
-                BootProcess.stopRunningBots()
+                BootProcess.stopRunning()
             }
             onRestartServer.subscribe(this) {
-                handleRestart()
+                Server.restart()
             }
+            onRebootServer.subscribe(this) {
+                handleReboot()
+            }
+        }
+
+        ServerEvents.onStarted.subscribe(this) {
+            ServerLogWindow.clear()
         }
     }
 
-    private val isRestarting = AtomicBoolean()
-
-    private fun handleRestart() {
-        if (!Server.isRunning() || isRestarting.get()) return
-
-        isRestarting.set(true)
+    private fun handleReboot() {
+        if (!ServerProcess.isRunning()) return
 
         val title = ResourceBundles.UI_TITLES.get("question")
         val question = ResourceBundles.STRINGS.get("restart_server_confirmation")
@@ -39,9 +42,8 @@ object ServerActions {
                 JOptionPane.YES_NO_OPTION
             )
         ) {
-            BootProcess.stopRunningBots()
-            Server.restart()
+            BootProcess.stopRunning()
+            ServerEventTriggers.onRestartServer.fire(Unit)
         }
-        isRestarting.set(false)
     }
 }

@@ -6,4 +6,5 @@ object ServerEventTriggers {
     val onStartServer = Event<Unit>()
     val onStopServer = Event<Unit>()
     val onRestartServer = Event<Unit>()
+    val onRebootServer = Event<Unit>()
 }
