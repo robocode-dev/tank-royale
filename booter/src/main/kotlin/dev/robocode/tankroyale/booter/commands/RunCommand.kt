@@ -10,6 +10,7 @@ import java.nio.file.Files
 import java.nio.file.Files.list
 import java.nio.file.Path
 import java.util.*
+import java.util.concurrent.ConcurrentSkipListMap
 import java.util.function.Predicate
 import java.util.stream.Collectors.toList
 import kotlin.io.path.Path
@@ -18,7 +19,7 @@ import kotlin.io.path.exists
 
 class RunCommand : Command() {
 
-    private val processes = HashMap<Long, Process>() // pid, process
+    private val processes = ConcurrentSkipListMap<Long, Process>() // pid, process
 
     fun runBots(botPaths: Array<String>) {
         Runtime.getRuntime().addShutdownHook(Thread {
@@ -26,9 +27,7 @@ class RunCommand : Command() {
         })
 
         // Start up the bots provided with the input list
-        botPaths.forEach {
-            createBotProcess(Path(it))
-        }
+        botPaths.forEach { createBotProcess(Path(it)) }
 
         // Add new bots from the std-in or terminate if blank line is provided
         do {
@@ -60,18 +59,11 @@ class RunCommand : Command() {
     }
 
     private fun createBotProcess(botDir: Path) {
-        val process = startBotProcess(botDir)
-        if (process != null) {
-            processes[process.pid()] = process
-        }
+        startBotProcess(botDir)?.let { processes[it.pid()] = it }
     }
 
     private fun stopBotProcess(pid: Long) {
-        val process = processes[pid]
-        if (process != null) {
-            stopProcess(process)
-            processes.remove(pid)
-        }
+        processes[pid]?.let { stopProcess(it) }
     }
 
     private fun startBotProcess(botDir: Path): Process? {
@@ -88,13 +80,11 @@ class RunCommand : Command() {
 
             var process: Process? = null
 
-            val botInfo = getBotInfo(botDir)
-            if (botInfo != null) {
+            getBotInfo(botDir)?.let { botInfo ->
                 setEnvVars(processBuilder.environment(), botInfo) // important to transfer env. variables for bot to the process
 
-                process = processBuilder.start()
-                if (process != null) {
-                    println("${process.pid()};${botDir.absolutePathString()}")
+                process = processBuilder.start().also {
+                    println("${it.pid()};${botDir.absolutePathString()}")
                 }
             }
             return process
@@ -110,13 +100,15 @@ class RunCommand : Command() {
     }
 
     private fun stopProcess(process: Process) {
-        val pid = process.pid()
-
-        process.onExit().thenAccept {
-            println("stopped $pid")
+        process.apply {
+            val pid = pid()
+            onExit().thenAccept {
+                processes.remove(pid)
+                println("stopped $pid")
+            }
+            descendants().forEach { it.destroyForcibly() }
+            destroyForcibly()
         }
-        process.descendants().forEach { it.destroyForcibly() }
-        process.destroyForcibly().waitFor()
     }
 
     private fun createProcessBuilder(command: String): ProcessBuilder {

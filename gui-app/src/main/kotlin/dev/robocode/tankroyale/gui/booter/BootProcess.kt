@@ -117,11 +117,12 @@ object BootProcess {
     }
 
     private fun stopProcess() {
-        if (runProcess?.isAlive == true) {
-            // Send quit signal to server
-            PrintStream(runProcess?.outputStream!!).use { printStream ->
-                printStream.println("quit")
-                printStream.flush()
+        runProcess?.let { process ->
+            if (process.isAlive) {
+                PrintStream(process.outputStream).apply {
+                    println("quit")
+                    flush()
+                }
             }
         }
         runProcess = null
