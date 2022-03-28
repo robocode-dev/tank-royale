@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import java.awt.EventQueue.invokeLater
 import javax.swing.JOptionPane
 
 object ServerActions {
@@ -35,15 +36,17 @@ object ServerActions {
         val title = ResourceBundles.UI_TITLES.get("question")
         val question = ResourceBundles.STRINGS.get("restart_server_confirmation")
 
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
-                MainWindow,
-                question,
-                title,
-                JOptionPane.YES_NO_OPTION
-            )
-        ) {
-            BootProcess.stopRunning()
-            ServerEventTriggers.onRestartServer.fire(Unit)
+        invokeLater {
+            if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
+                    MainWindow,
+                    question,
+                    title,
+                    JOptionPane.YES_NO_OPTION
+                )
+            ) {
+                BootProcess.stopRunning()
+                ServerProcess.restart()
+            }
         }
     }
 }
