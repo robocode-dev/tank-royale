@@ -9,9 +9,9 @@ import dev.robocode.tankroyale.gui.util.ResourceUtil
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
+import java.io.PrintStream
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
 object ServerProcess {
@@ -69,22 +69,19 @@ object ServerProcess {
     }
 
     fun stop() {
-        if (!isRunning.get())
-            return
+        if (!isRunning.get()) return
         isRunning.set(false)
 
         stopLogThread()
 
         process?.let { process ->
             if (process.isAlive) {
-                process.outputStream.apply {
-                    write("quit\n".toByteArray())
+                PrintStream(process.outputStream).apply {
+                    println("q")
                     flush()
                 }
-                process.waitFor(1, TimeUnit.SECONDS)
             }
         }
-
         process = null
         logThread = null
 
