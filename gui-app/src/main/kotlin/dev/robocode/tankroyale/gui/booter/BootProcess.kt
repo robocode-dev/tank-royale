@@ -69,7 +69,9 @@ object BootProcess {
     }
 
     val runningBots: List<DirAndPid>
-        get() { return runningBotsList }
+        get() {
+            return runningBotsList
+        }
 
     private fun startRunningBotProcess(botDirNames: List<String>) {
         val args = mutableListOf(
@@ -117,9 +119,9 @@ object BootProcess {
     }
 
     private fun stopProcess() {
-        runProcess?.let { process ->
-            if (process.isAlive) {
-                PrintStream(process.outputStream).apply {
+        runProcess?.apply {
+            if (isAlive) {
+                PrintStream(outputStream).apply {
                     println("quit")
                     flush()
                 }
@@ -133,23 +135,25 @@ object BootProcess {
     }
 
     private fun getBooterJar(): String {
-        val propertyValue = System.getProperty("booterJar")
-        if (propertyValue != null) {
-            val path = Paths.get(propertyValue)
-            if (!Files.exists(path)) {
-                throw FileNotFoundException(path.toString())
+        System.getProperty("booterJar")?.let {
+            Paths.get(it).apply {
+                if (Files.exists(this)) {
+                    throw FileNotFoundException(toString())
+                }
+                return toString()
             }
-            return path.toString()
         }
-        val cwd = Paths.get("")
-        val pathOpt = Files.list(cwd).filter { it.startsWith(JAR_FILE_NAME) && it.endsWith(".jar") }.findFirst()
-        if (pathOpt.isPresent) {
-            return pathOpt.get().toString()
+        Paths.get("").apply {
+            Files.list(this).filter { it.startsWith(JAR_FILE_NAME) && it.endsWith(".jar") }.findFirst().apply {
+                if (isPresent) {
+                    return get().toString()
+                }
+            }
         }
         return try {
-            ResourceUtil.getResourceFile("$JAR_FILE_NAME.jar")?.absolutePath ?: ""
+            ResourceUtil.getResourceFile("${JAR_FILE_NAME}.jar")?.absolutePath ?: ""
         } catch (ex: Exception) {
-            System.err.println(ex.localizedMessage)
+            System.err.println(ex.message)
             ""
         }
     }
@@ -206,8 +210,7 @@ object BootProcess {
                     break
                 }
             }
-        }
-        thread?.start()
+        }.apply { start() }
     }
 
     private fun stopThread() {

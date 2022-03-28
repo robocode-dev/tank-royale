@@ -18,7 +18,6 @@ val cmdLine = CommandLine(Booter())
 fun main(args: Array<String>) {
     System.setProperty("jansi.force", "true")
     AnsiConsole.systemInstall()
-
     exitProcess(cmdLine.execute(*args))
 }
 
@@ -31,10 +30,12 @@ fun main(args: Array<String>) {
 class Booter : Callable<Int> {
 
     override fun call(): Int {
-        when {
-            cmdLine.isUsageHelpRequested -> cmdLine.usage(System.out)
-            cmdLine.isVersionHelpRequested -> cmdLine.printVersionHelp(System.out)
-            else -> cmdLine.usage(System.out)
+        cmdLine.apply {
+            when {
+                isUsageHelpRequested -> usage(System.out)
+                isVersionHelpRequested -> printVersionHelp(System.out)
+                else -> usage(System.out)
+            }
         }
         return 0
     }

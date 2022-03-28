@@ -73,9 +73,9 @@ object ServerProcess {
 
         stopLogThread()
 
-        process?.let { process ->
-            if (process.isAlive) {
-                PrintStream(process.outputStream).apply {
+        process?.apply {
+            if (isAlive) {
+                PrintStream(outputStream).apply {
                     println("q")
                     flush()
                 }
@@ -131,9 +131,7 @@ object ServerProcess {
                     }
                 }
             }
-        }.apply {
-            start()
-        }
+        }.apply { start() }
     }
 
     private fun stopLogThread() {

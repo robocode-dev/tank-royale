@@ -17,14 +17,7 @@ private const val DEFAULT_PORT: Short = 7654
 fun main(args: Array<String>) {
     System.setProperty("jansi.force", "true")
     AnsiConsole.systemInstall()
-
-    val exitCode: Int
-    try {
-        exitCode = Server.cmdLine.execute(*args)
-    } finally {
-        AnsiConsole.systemUninstall()
-    }
-    exitProcess(exitCode)
+    exitProcess(Server.cmdLine.execute(*args))
 }
 
 @Command(
@@ -72,7 +65,8 @@ class Server : Runnable {
         @Option(
             names = ["-C", "--controllerSecrets"],
             type = [String::class],
-            description = ["Comma-separated list of controller secrets used for access control"])
+            description = ["Comma-separated list of controller secrets used for access control"]
+        )
         private var controllerSecrets: String? = null
 
         @Option(
@@ -128,12 +122,14 @@ class Server : Runnable {
 
         // Run thread that checks standard input (stdin) for an exit signal ("q")
         Thread {
-            val sc = Scanner(System.`in`)
-            while (sc.hasNextLine()) {
-                val line = sc.nextLine()
-                if (line.trim().equals("q", ignoreCase = true)) {
-                    gameServer.stop()
-                    exitProcess(1)
+            Scanner(System.`in`).apply {
+                while (hasNextLine()) {
+                    nextLine().apply {
+                        if (trim().equals("q", ignoreCase = true)) {
+                            gameServer.stop()
+                            exitProcess(1)
+                        }
+                    }
                 }
             }
         }.start()
@@ -142,8 +138,8 @@ class Server : Runnable {
         gameServer = GameServer(
             gameTypes.toSetOfTrimmedStrings(),
             controllerSecrets.toSetOfTrimmedStrings(),
-            botSecrets.toSetOfTrimmedStrings())
-
+            botSecrets.toSetOfTrimmedStrings()
+        )
         gameServer.start()
     }
 
