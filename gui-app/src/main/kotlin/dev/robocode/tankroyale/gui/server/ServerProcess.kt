@@ -36,14 +36,13 @@ object ServerProcess {
     fun isRunning(): Boolean = isRunning.get()
 
     fun start(gameType: GameType = GameType.CLASSIC, port: Int = ServerSettings.serverPort) {
-        if (isRunning.get())
-            return
+        if (isRunning.get()) return
 
         this.gameType = gameType
         this.port = port
 
         var command: MutableList<String>
-        with(ServerSettings) {
+        ServerSettings.apply {
             command = mutableListOf(
                 "java",
                 "-jar",
@@ -57,10 +56,10 @@ object ServerProcess {
                 command += "--enable-initial-position"
             }
         }
-        val builder = ProcessBuilder(command)
-        builder.redirectErrorStream(true)
-        process = builder.start()
-
+        ProcessBuilder(command).apply {
+            redirectErrorStream(true)
+            process = start()
+        }
         isRunning.set(true)
 
         startLogThread()
@@ -94,18 +93,20 @@ object ServerProcess {
     }
 
     private fun getServerJar(): String {
-        val propertyValue = System.getProperty("serverJar")
-        if (propertyValue != null) {
-            val path = Paths.get(propertyValue)
-            if (!Files.exists(path)) {
-                throw FileNotFoundException(path.toString())
+        System.getProperty("serverJar")?.let {
+            Paths.get(it).apply {
+                if (Files.exists(this)) {
+                    throw FileNotFoundException(toString())
+                }
+                return toString()
             }
-            return path.toString()
         }
-        val cwd = Paths.get("")
-        val pathOpt = Files.list(cwd).filter { it.startsWith(JAR_FILE_NAME) && it.endsWith(".jar") }.findFirst()
-        if (pathOpt.isPresent) {
-            return pathOpt.get().toString()
+        Paths.get("").apply {
+            Files.list(this).filter { it.startsWith(JAR_FILE_NAME) && it.endsWith(".jar") }.findFirst().apply {
+                if (isPresent) {
+                    return get().toString()
+                }
+            }
         }
         return try {
             ResourceUtil.getResourceFile("${JAR_FILE_NAME}.jar")?.absolutePath ?: ""
@@ -119,19 +120,20 @@ object ServerProcess {
         logThread = Thread {
             logThreadRunning.set(true)
 
-            val br = BufferedReader(InputStreamReader(process?.inputStream!!))
-            while (logThreadRunning.get()) {
-                try {
-                    for (line in br.lines()) {
-                        ServerLogWindow.append(line + "\n")
+            BufferedReader(InputStreamReader(process?.inputStream!!)).use {
+                while (logThreadRunning.get()) {
+                    try {
+                        it.lines().forEach() { line ->
+                            ServerLogWindow.append(line + "\n")
+                        }
+                    } catch (e: InterruptedException) {
+                        logThreadRunning.set(false)
                     }
-                } catch (e: InterruptedException) {
-                    Thread.currentThread().interrupt()
                 }
             }
-            br.close()
+        }.apply {
+            start()
         }
-        logThread?.start()
     }
 
     private fun stopLogThread() {
