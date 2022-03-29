@@ -16,7 +16,7 @@ import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 
 
-object MainWindow : RcFrame("main_window"), AutoCloseable {
+object MainWindow : RcFrame("main_window") {
 
     init {
         RegisterWsProtocol
@@ -38,10 +38,14 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
             onGameAborted.subscribe(MainWindow) { showLogo() }
         }
 
-        onClosing {
-            BootProcess.stopRunning()
-            close()
-        }
+        onClosing { close() }
+        Runtime.getRuntime().addShutdownHook(Thread { close() })
+    }
+
+    private fun close() {
+        Client.close()
+        BootProcess.stopRunning()
+        ServerProcess.stop()
     }
 
     private fun startBattle() {
@@ -69,11 +73,5 @@ object MainWindow : RcFrame("main_window"), AutoCloseable {
         }
         validate()
         repaint()
-    }
-
-    override fun close() {
-        Client.close()
-        BootProcess.stopRunning()
-        ServerProcess.stop()
     }
 }

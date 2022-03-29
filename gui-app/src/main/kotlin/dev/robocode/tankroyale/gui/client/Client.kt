@@ -20,7 +20,7 @@ import kotlinx.serialization.PolymorphicSerializer
 import java.net.URI
 import java.util.*
 
-object Client : AutoCloseable {
+object Client {
 
     init {
         TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
@@ -58,12 +58,6 @@ object Client : AutoCloseable {
 
     private var tps: Int? = null
 
-    override fun close() {
-        stopGame()
-
-        if (isConnected) websocket.close()
-    }
-
     fun connect(url: String) {
         websocket = WebSocketClient(URI(url))
         WebSocketClientEvents.apply {
@@ -73,6 +67,12 @@ object Client : AutoCloseable {
 
             websocket.open() // must be called after onOpen.subscribe()
         }
+    }
+
+    fun close() {
+        stopGame()
+
+        if (isConnected) websocket.close()
     }
 
     fun startGame(botAddresses: Set<BotAddress>) {

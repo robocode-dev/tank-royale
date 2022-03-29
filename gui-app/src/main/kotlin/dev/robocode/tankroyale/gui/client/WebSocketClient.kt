@@ -8,7 +8,7 @@ import java.net.http.HttpClient
 import java.net.http.WebSocket
 import java.util.concurrent.CompletionStage
 
-class WebSocketClient(private val uri: URI) : AutoCloseable {
+class WebSocketClient(private val uri: URI) {
 
     private val json = MessageConstants.json
 
@@ -28,7 +28,7 @@ class WebSocketClient(private val uri: URI) : AutoCloseable {
         }
     }
 
-    override fun close() {
+    fun close() {
         listener.websocket?.abort()
     }
 

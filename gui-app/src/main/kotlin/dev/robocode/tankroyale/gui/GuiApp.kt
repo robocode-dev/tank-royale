@@ -6,10 +6,6 @@ import java.awt.Taskbar
 import javax.swing.UIManager
 
 fun main() {
-    Runtime.getRuntime().addShutdownHook(Thread {
-        MainWindow.close()
-    })
-
     try {
         Taskbar.getTaskbar().iconImage = Images.tankImage // for macOS
     } catch (ignore: UnsupportedOperationException) {}
