@@ -69,7 +69,6 @@ object ServerProcess {
 
     fun stop() {
         if (!isRunning.get()) return
-        isRunning.set(false)
 
         stopLogThread()
 
@@ -80,6 +79,8 @@ object ServerProcess {
                     flush()
                 }
             }
+            waitFor()
+            isRunning.set(false)
         }
         process = null
         logThread = null
