@@ -40,7 +40,7 @@ object Client {
     var isGamePaused: Boolean = false
         private set
 
-    private val isConnected: Boolean get() = websocket.isOpen()
+    private val isConnected: Boolean get() = websocket?.isOpen() ?: false
 
     private var participants = listOf<Participant>()
     private var bots = HashSet<BotInfo>()
@@ -48,7 +48,7 @@ object Client {
     val joinedBots: Set<BotInfo>
         get() { return bots }
 
-    private var websocket: WebSocketClient = WebSocketClient(URI(ServerSettings.serverUrl))
+    private var websocket: WebSocketClient? = null
 
     private val json = MessageConstants.json
 
@@ -58,8 +58,13 @@ object Client {
 
     private var tps: Int? = null
 
-    fun connect(url: String) {
-        websocket = WebSocketClient(URI(url))
+    fun connect() {
+        if (isConnected) {
+            throw IllegalStateException("Websocket is already connected")
+        }
+        val websocket = WebSocketClient(URI(ServerSettings.serverUrl))
+        this.websocket = websocket
+
         WebSocketClientEvents.apply {
             onOpen.subscribe(websocket) { onConnected.fire(Unit) }
             onMessage.subscribe(websocket) { onMessage(it) }
@@ -72,7 +77,10 @@ object Client {
     fun close() {
         stopGame()
 
-        if (isConnected) websocket.close()
+        if (isConnected) {
+            websocket?.close()
+            websocket = null
+        }
     }
 
     fun startGame(botAddresses: Set<BotAddress>) {
@@ -83,15 +91,13 @@ object Client {
         val displayName = ServerSettings.gameType.displayName
         val gameSetup = GamesSettings.games[displayName]!!
 
-        if (isConnected) {
-            lastStartGame = StartGame(gameSetup.toGameSetup(), botAddresses)
-            websocket.send(lastStartGame!!)
-        }
+        lastStartGame = StartGame(gameSetup.toGameSetup(), botAddresses)
+        send(lastStartGame!!)
     }
 
     fun stopGame() {
-        if (isGameRunning && websocket.isOpen()) {
-            websocket.send(StopGame())
+        if (isGameRunning) {
+            send(StopGame())
         }
         isGamePaused = false
     }
@@ -99,27 +105,33 @@ object Client {
     fun restartGame() {
         resumeGame()
         stopGame()
-        websocket.send(lastStartGame!!)
+
+        send(lastStartGame!!)
     }
 
     fun pauseGame() {
         if (isGameRunning && !isGamePaused) {
-            websocket.send(PauseGame())
+            send(PauseGame())
         }
     }
 
     fun resumeGame() {
         if (isGameRunning && isGamePaused) {
-            websocket.send(ResumeGame())
+            send(ResumeGame())
         }
     }
 
     fun getParticipant(id: Int): Participant = participants.first { participant -> participant.id == id }
 
+    private fun send(message: Message) {
+        if (!isConnected) throw IllegalStateException("Websocket is not connected")
+        websocket!!.send(message)
+    }
+
     private fun changeTps(tps: Int) {
         if (isGameRunning && tps != this.tps) {
             this.tps = tps
-            websocket.send(ChangeTps(tps))
+            send(ChangeTps(tps))
         }
     }
 
@@ -149,7 +161,7 @@ object Client {
             author = "Flemming N. Larsen",
             secret = ServerSettings.controllerSecrets.first()
         )
-        websocket.send(handshake)
+        send(handshake)
     }
 
     private fun handleBotListUpdate(botListUpdate: BotListUpdate) {
