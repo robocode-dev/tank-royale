@@ -45,7 +45,7 @@ object ServerActions {
                 )
             ) {
                 BootProcess.stopRunning()
-                ServerProcess.restart()
+                Server.restart()
             }
         }
     }

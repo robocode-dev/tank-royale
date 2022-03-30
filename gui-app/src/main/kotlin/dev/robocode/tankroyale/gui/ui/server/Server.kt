@@ -3,9 +3,7 @@ package dev.robocode.tankroyale.gui.ui.server
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.server.ServerProcess
-import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.ResourceBundles
-import dev.robocode.tankroyale.gui.util.WsUrl
 import java.lang.Thread.sleep
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -31,7 +29,7 @@ object Server {
 
     private fun connectToServer() {
         var connected = false
-        ClientEvents.onConnected.subscribe(Server) {
+        ClientEvents.onConnected.subscribe(this) {
             ServerEvents.onConnected.fire(Unit)
             connected = true
         }
@@ -40,7 +38,7 @@ object Server {
         var attempts = 5
         while (!connected && attempts-- > 0) {
             try {
-                Client.connect(WsUrl(ServerSettings.serverUrl).origin)
+                Client.connect()
             } catch (ignore: Exception) {
             }
             sleep(500)
@@ -49,7 +47,7 @@ object Server {
 
     fun start() {
         val latch = CountDownLatch(1)
-        ServerEvents.onStarted.subscribe(Server) {
+        ServerEvents.onStarted.subscribe(this) {
             latch.countDown()
         }
         ServerProcess.start()
@@ -57,11 +55,14 @@ object Server {
     }
 
     fun stop() {
+        Client.close()
         ServerProcess.stop()
     }
 
     fun restart() {
+        Client.close()
         ServerProcess.restart()
+        connectToServer()
     }
 
     private fun showStopGameDialog(): Int = showConfirmDialog(
