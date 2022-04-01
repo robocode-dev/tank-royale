@@ -58,7 +58,6 @@ namespace Robocode.TankRoyale.BotApi
         /// </summary>
         public double? Angle { get; }
 
-        /// <inheritdoc/>
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "{0},{1},{2}", X, Y, Angle);
