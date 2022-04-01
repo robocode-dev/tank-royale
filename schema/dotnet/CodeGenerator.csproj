@@ -4,8 +4,8 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>CodeGeneratorApp</AssemblyName>
-    <RootNamespace>Robocode.TankRoyale.Schema.Generator</RootNamespace>
-    <StartupObject>Robocode.TankRoyale.SchemaCodeGenerator.Program</StartupObject>
+    <RootNamespace>Robocode.TankRoyale.Schema.CodeGenerator</RootNamespace>
+    <StartupObject>Robocode.TankRoyale.Schema.CodeGenerator.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
