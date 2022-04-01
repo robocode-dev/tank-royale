@@ -56,13 +56,11 @@ tasks {
     val docfx by registering {
         dependsOn(assemble)
 
-        doFirst {
+        doLast {
             exec {
                 workingDir("docfx_project")
                 commandLine("docfx", "metadata") // build /api before building the _site
             }
-        }
-        doLast {
             exec {
                 workingDir("docfx_project")
                 delete("_site", "api", "obj")

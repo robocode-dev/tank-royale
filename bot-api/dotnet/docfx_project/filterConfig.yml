@@ -14,6 +14,3 @@ apiRules:
   - exclude:
       uidRegex: ^Robocode\.TankRoyale\.BotApi\.Util$
       type: Namespace
-  - exclude:
-      uidRegex: ^Robocode\.TankRoyale\.BotApi\.Sample.*
-      type: Namespace
