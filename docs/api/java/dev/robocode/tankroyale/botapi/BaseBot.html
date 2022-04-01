@@ -765,42 +765,46 @@ implements <a href="IBaseBot.html" title="interface in dev.robocode.tankroyale.b
  <p><br>
  Example of how to set the predefined environment variables used for connecting to the server:
  <ul>
- <li>SERVER_URL=ws://localhost:7654</li>
- <li>SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ</li>
+ <li><code>SERVER_URL=ws://localhost:7654</code></li>
+ <li><code>SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ</code></li>
  </ul>
+ <p>
  Example of how to set the environment variables that covers the <a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi"><code>BotInfo</code></a>:
  <ul>
- <li>BOT_NAME=MyBot</li>
- <li>BOT_VERSION=1.0</li>
- <li>BOT_AUTHORS=John Doe</li>
- <li>BOT_DESCRIPTION=Short description</li>
- <li>BOT_HOMEPAGE=https://somewhere.net/MyBot</li>
- <li>BOT_COUNTRY_CODES=us</li>
- <li>BOT_GAME_TYPES=classic, melee, 1v1</li>
- <li>BOT_PLATFORM=JVM</li>
- <li>BOT_PROG_LANG=Java 11</li>
- <li>BOT_INITIAL_POS=50,70, 270</li>
+ <li><code>BOT_NAME=MyBot</code></li>
+ <li><code>BOT_VERSION=1.0</code></li>
+ <li><code>BOT_AUTHORS=John Doe</code></li>
+ <li><code>BOT_DESCRIPTION=Short description</code></li>
+ <li><code>BOT_HOMEPAGE=https://somewhere.net/MyBot</code></li>
+ <li><code>BOT_COUNTRY_CODES=us</code></li>
+ <li><code>BOT_GAME_TYPES=classic, melee, 1v1</code></li>
+ <li><code>BOT_PLATFORM=JVM</code></li>
+ <li><code>BOT_PROG_LANG=Java 11</code></li>
+ <li><code>BOT_INITIAL_POS=50,70, 270</code></li>
  </ul>
+ <p>
  These environment variables <em>must</em> be set prior to using this constructor:
  <ul>
- <li>BOT_NAME</li>
- <li>BOT_VERSION</li>
- <li>BOT_AUTHORS</li>
- <li>BOT_GAME_TYPES</li>
+ <li><code>BOT_NAME</code></li>
+ <li><code>BOT_VERSION</code></li>
+ <li><code>BOT_AUTHORS</code></li>
+ <li><code>BOT_GAME_TYPES</code></li>
  </ul>
+ <p>
  These value can take multiple values separated by a comma:
  <ul>
- <li>BOT_AUTHORS, e.g. "John Doe, Jane Doe"</li>
- <li>BOT_COUNTRY_CODES, e.g. "se, no, dk"</li>
- <li>BOT_GAME_TYPES, e.g. "classic, melee, 1v1"</li>
+ <li><code>BOT_AUTHORS, e.g. "John Doe, Jane Doe"</code></li>
+ <li><code>BOT_COUNTRY_CODES, e.g. "se, no, dk"</code></li>
+ <li><code>BOT_GAME_TYPES, e.g. "classic, melee, 1v1"</code></li>
  </ul>
+ <p>
  The <code>BOT_INITIAL_POS</code> variable is optional and should <em>only</em> be used for debugging.
  <p>
- The SERVER_SECRET must be set if the server requires a server secret for the bots trying
+ The <code>SERVER_SECRET</code> must be set if the server requires a server secret for the bots trying
  to connect. Otherwise, the bot will be disconnected as soon as it attempts to connect to
  the server.
  <p>
- If the SERVER_URL is not set, then this default URL is used: ws://localhost:7654</div>
+ If the <code>SERVER_URL</code> is not set, then this default URL is used: ws://localhost:7654</div>
 </li>
 </ul>
 <a id="&lt;init&gt;(dev.robocode.tankroyale.botapi.BotInfo)">
