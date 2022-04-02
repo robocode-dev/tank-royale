@@ -4,7 +4,7 @@
 
 #### Bugfixes
 
-- Fixes for building Java artifacts that must/can be deployed to Maven artifactory.
+- Fixes for building Java artifacts to deploy to Maven artifactory.
 - Bot API: Replaced the environment variable BOT_URL (deprecated) with BOT_HOMEPAGE.
 - Bot API for .Net: Added missing public Bot(BotInfo, Uri, string serverSecret) constructor.
 
@@ -17,7 +17,7 @@
       the server. If initial position is not enabled, the bot will start at a random position.
     - Initial positions can be set from the menu with Config → Debug Options → Enable initial start position.
     - The Target.json file of the Target sample has been updated with an `initialPosition` to demonstrate this feature.
-- Updated the SpinBot sample bot for C# to demonstrate the use of [BotInfo.FromConfiguration(IConfiguration)].
+- Updated the SpinBot sample bot for C# to demonstrate the use of `BotInfo.FromConfiguration(IConfiguration)`.
 - The config file named `misc.properties` has been renamed into `config.properties` and the `server-url` setting was
   moved to the `server.properties` file.
 - When the server settings are changed on the GUI, the user will be asked if the server should be rebooted to let the
