@@ -4,7 +4,7 @@
 
 #### Bugfixes
 
-- Fixes for building Java artifacts that must/can be deployed to Maven artifactory.
+- Fixes for building Java artifacts to deploy to Maven artifactory.
 - Bot API: Replaced the environment variable BOT_URL (deprecated) with BOT_HOMEPAGE.
 - Bot API for .Net: Added missing public Bot(BotInfo, Uri, string serverSecret) constructor.
 
