@@ -40,25 +40,25 @@ properties:
     type: number
   bodyColor:
     description: Current RGB color of the body
-    $ref: rgb-color.yaml
+    $ref: color.yaml
   turretColor:
     description: New color of the gun turret
-    $ref: rgb-color.yaml
+    $ref: color.yaml
   radarColor:
     description: New color of the radar
-    $ref: rgb-color.yaml
+    $ref: color.yaml
   bulletColor:
     description: New color of the bullet. Note. This will be the color of a bullet when it is fired
-    $ref: rgb-color.yaml
+    $ref: color.yaml
   scanColor:
     description: New color of the scan arc
-    $ref: rgb-color.yaml
+    $ref: color.yaml
   tracksColor:
     description: New color of the tracks
-    $ref: rgb-color.yaml
+    $ref: color.yaml
   gunColor:
     description: New color of gun
-    $ref: rgb-color.yaml
+    $ref: color.yaml
 required:
   - energy
   - x

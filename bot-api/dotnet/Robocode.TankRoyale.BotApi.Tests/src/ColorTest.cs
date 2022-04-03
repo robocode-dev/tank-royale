@@ -33,13 +33,22 @@ namespace Robocode.TankRoyale.BotApi.Tests
             }
         }
 
-        public class FromRgbTests
+        public class FromStringTests
         {
             [Test]
-            [TestCase(0x000000, 0x00, 0x00, 0x00)]
-            public void FromRgb_ShouldWork(int rgb, int expectedRed, int expectedGreen, int expectedBlue)
+            [TestCase("#000000", 0x00, 0x00, 0x00)]
+            [TestCase("#000", 0x00, 0x00, 0x00)]
+            [TestCase("#FfFfFf", 0xFF, 0xFF, 0xFF)]
+            [TestCase("#fFF", 0xFF, 0xFF, 0xFF)]
+            [TestCase("#1199cC", 0x11, 0x99, 0xCC)]
+            [TestCase("#19C", 0x11, 0x99, 0xCC)]
+            [TestCase("  #123456", 0x12, 0x34, 0x56)] // White spaces
+            [TestCase("#789aBc\t", 0x78, 0x9A, 0xBC)] // White space
+            [TestCase(" #123\t", 0x11, 0x22, 0x33)]   // White spaces
+            [TestCase("#AbC\t", 0xAA, 0xBB, 0xCC)]    // White space
+            public void FromString_ShouldWork(string str, int expectedRed, int expectedGreen, int expectedBlue)
             {
-                var color = Color.FromRgb(rgb);
+                var color = Color.FromString(str);
 
                 Assert.That(color.RedValue, Is.EqualTo(expectedRed));
                 Assert.That(color.GreenValue, Is.EqualTo(expectedGreen));
@@ -47,9 +56,15 @@ namespace Robocode.TankRoyale.BotApi.Tests
             }
 
             [Test]
-            public void FromRgb_ShouldReturnNullWhenInputIsNull()
+            [TestCase("#00000")] // Too short
+            [TestCase("#0000000")] // Too long
+            [TestCase("#0000 00")] // White space
+            [TestCase("#xxxxxx")] // Wrong letters
+            [TestCase("#abcdeG")] // Wrong letter
+            [TestCase("000000")] // Missing hashing sign
+            public void FromString_ShouldThrowException(string str)
             {
-                Assert.That(Color.FromRgb(null), Is.Null);
+                Assert.Throws<ArgumentException>(() => Color.FromString(str));
             }
         }
 
@@ -123,16 +138,16 @@ namespace Robocode.TankRoyale.BotApi.Tests
             [Test]
             public void GetHashCode_ShouldBeEqual()
             {
-                Assert.That(Color.FromRgb(0x102030).GetHashCode(),
+                Assert.That(Color.FromString("#102030").GetHashCode(),
                     Is.EqualTo(new Color(0x10, 0x20, 0x30).GetHashCode()));
-                Assert.That(Color.FromRgb(0x112233).GetHashCode(),
+                Assert.That(Color.FromString("#112233").GetHashCode(),
                     Is.EqualTo(new Color(0x11, 0x22, 0x33).GetHashCode()));
             }
 
             [Test]
             public void GetHashCode_ShouldNotBeEqual()
             {
-                Assert.That(new Color(10, 20, 30).GetHashCode(), !Is.EqualTo(Color.FromRgb(0x123456).GetHashCode()));
+                Assert.That(new Color(10, 20, 30).GetHashCode(), !Is.EqualTo(Color.FromString("#123456").GetHashCode()));
             }
         }
 

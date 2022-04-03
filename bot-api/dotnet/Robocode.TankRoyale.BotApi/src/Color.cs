@@ -9,6 +9,8 @@ namespace Robocode.TankRoyale.BotApi
     /// <see href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</see>
     public class Color
     {
+        private const string NumericRgb = "^#[0-9a-fA-F]{3,6}$";
+
         private const string ThreeHexDigits = "^[0-9a-fA-F]{3}$";
         private const string SixHexDigits = "^[0-9a-fA-F]{6}$";
 
@@ -29,7 +31,7 @@ namespace Robocode.TankRoyale.BotApi
         public static readonly Color Fuchsia = FromHex("FF00FF");
         public static readonly Color Purple = FromHex("800080");
         public static readonly Color Orange = FromHex("FF8000");
-        
+
         /// <summary>
         /// Creates a Color from RGB values.
         /// </summary>
@@ -44,14 +46,17 @@ namespace Robocode.TankRoyale.BotApi
             {
                 throw new ArgumentException("The 'red' color component must be in the range 0 - 255");
             }
+
             if (green < 0 || green > 255)
             {
                 throw new ArgumentException("The 'green' color component must be in the range 0 - 255");
             }
+
             if (blue < 0 || blue > 255)
             {
                 throw new ArgumentException("The 'blue' color component must be in the range 0 - 255");
             }
+
             RedValue = red;
             GreenValue = green;
             BlueValue = blue;
@@ -88,22 +93,29 @@ namespace Robocode.TankRoyale.BotApi
         {
             return "" + (value >> 4).ToString("X") + (value & 0xF).ToString("X");
         }
-        
-        /// <summary>
-        /// Creates a Color from an RGB integer value.
-        /// </summary>
-        /// <param name="rgb">RGB value, where bit 0-7 is blue, bit 8-15 is green, and bit 16-23 is red</param>
-        /// <returns>The created Color.</returns>
-        public static Color FromRgb(int? rgb)
-        {
-            if (rgb == null)
-                return null;
 
-            var value = (int) rgb;
-            var r = (value & 0xFF0000) >> 16;
-            var g = (value & 0x00FF00) >> 8;
-            var b = value & 0x0000FF;
-            return new Color(r, g, b);
+        /// <summary>
+        /// Creates a color from a string. Currently, only numeric RGB values are supported.
+        /// This method works the same was as {@link #fromHex} except that is required as hash sign before the hex value.
+        ///
+        /// An example of a numeric RGB value is "#09C" or "#0099CC", which both represents the same color.
+        /// </summary>
+        /// <param name="str">A string containing either a three or six hexadecimal RGB values like "#09C" or "#0099CC".
+        /// </param>
+        /// <returns>The created Color.</returns>
+        /// <exception cref="ArgumentException"/>
+        /// <see href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</see>
+        /// <see href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</see>
+        public static Color FromString(string str)
+        {
+            str = str.Trim();
+            if (Regex.Match(str, NumericRgb).Success)
+            {
+                return FromHex(str[1..]);
+            }
+
+            throw new ArgumentException(
+                "You must supply the string in numeric RGB format #[0-9a-fA-F], e.g. \"#09C\" or \"#0099CC\"");
         }
 
         /// <summary>
@@ -124,14 +136,17 @@ namespace Robocode.TankRoyale.BotApi
             {
                 return FromThreeHexDigits(hex);
             }
+
             if (Regex.Match(hex, SixHexDigits).Success)
             {
                 return FromSixHexDigits(hex);
             }
+
             throw new ArgumentException("You must supply 3 or 6 hex digits [0-9a-fA-F]");
         }
-        
-        private static Color FromThreeHexDigits(string threeHexDigits) {
+
+        private static Color FromThreeHexDigits(string threeHexDigits)
+        {
             var r = int.Parse(threeHexDigits[..1], System.Globalization.NumberStyles.HexNumber);
             var g = int.Parse(threeHexDigits[1..2], System.Globalization.NumberStyles.HexNumber);
             var b = int.Parse(threeHexDigits[2..3], System.Globalization.NumberStyles.HexNumber);
@@ -140,8 +155,9 @@ namespace Robocode.TankRoyale.BotApi
             b = b << 4 | b;
             return new Color(r, g, b);
         }
-        
-        private static Color FromSixHexDigits(string sixHexDigits) {
+
+        private static Color FromSixHexDigits(string sixHexDigits)
+        {
             var r = int.Parse(sixHexDigits[..2], System.Globalization.NumberStyles.HexNumber);
             var g = int.Parse(sixHexDigits[2..4], System.Globalization.NumberStyles.HexNumber);
             var b = int.Parse(sixHexDigits[4..6], System.Globalization.NumberStyles.HexNumber);

@@ -5,12 +5,12 @@ import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.Initi
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.math.*
 import dev.robocode.tankroyale.server.model.*
+import dev.robocode.tankroyale.server.model.Color.Companion.fromString
 import dev.robocode.tankroyale.server.rules.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.atan2
-
 
 /** Maximum bounding circle diameter of a bullet moving with max speed */
 private val BULLET_MAX_BOUNDING_CIRCLE_DIAMETER: Double = 2 * MAX_BULLET_SPEED
@@ -868,13 +868,13 @@ class ModelUpdater(
          * @param intent is the bot´s intent.
          */
         private fun updateBotColors(bot: MutableBot, intent: BotIntent) {
-            bot.bodyColor = colorStringToRGB(intent.bodyColor)
-            bot.turretColor = colorStringToRGB(intent.turretColor)
-            bot.radarColor = colorStringToRGB(intent.radarColor)
-            bot.bulletColor = colorStringToRGB(intent.bulletColor)
-            bot.scanColor = colorStringToRGB(intent.scanColor)
-            bot.tracksColor = colorStringToRGB(intent.tracksColor)
-            bot.gunColor = colorStringToRGB(intent.gunColor)
+            bot.bodyColor = fromString(intent.bodyColor)
+            bot.turretColor = fromString(intent.turretColor)
+            bot.radarColor = fromString(intent.radarColor)
+            bot.bulletColor = fromString(intent.bulletColor)
+            bot.scanColor = fromString(intent.scanColor)
+            bot.tracksColor = fromString(intent.tracksColor)
+            bot.gunColor = fromString(intent.gunColor)
         }
     }
 }

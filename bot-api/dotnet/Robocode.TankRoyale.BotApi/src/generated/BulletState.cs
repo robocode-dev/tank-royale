@@ -42,7 +42,8 @@ namespace Robocode.TankRoyale.Schema
     
         /// <summary>Color of the bullet</summary>
         [Newtonsoft.Json.JsonProperty("color", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int? Color { get; set; }
+        [System.ComponentModel.DataAnnotations.RegularExpression(@"/^#[0-9A-F]{3,6}$/ig")]
+        public string Color { get; set; }
     
     
     }

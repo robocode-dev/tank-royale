@@ -10,8 +10,10 @@ import java.util.regex.Pattern;
  */
 public class Color {
 
-    private static final Pattern threeHexDigits = Pattern.compile("^[0-9a-fA-F]{3}$");
-    private static final Pattern sixHexDigits = Pattern.compile("^[0-9a-fA-F]{6}$");
+    private static final Pattern NUMERIC_RGB = Pattern.compile("^#[0-9a-fA-F]{3,6}$");
+
+    private static final Pattern THREE_HEX_DIGITS = Pattern.compile("^[0-9a-fA-F]{3}$");
+    private static final Pattern SIX_HEX_DIGITS = Pattern.compile("^[0-9a-fA-F]{6}$");
 
     public static final Color WHITE = fromHex("FFFFFF");
     public static final Color SILVER = fromHex("C0C0C0");
@@ -99,25 +101,27 @@ public class Color {
     }
 
     /**
-     * Creates a Color from an RGB integer value.
+     * Creates a color from a string. Currently, only numeric RGB values are supported.
+     * This method works the same was as {@link #fromHex} except that is required as hash sign before the hex value.
+     * An example of a numeric RGB value is "#09C" or "#0099CC", which both represents the same color.
      *
-     * @param rgb RGB value, where bit 0-7 is blue, bit 8-15 is green, and bit 16-23 is red.
-     * @return the created Color or <code>null</code> if the input value is <code>null</code>.
+     * @param str is a string containing either a three or six hexadecimal RGB values like "#09C" or "#0099CC".
+     * @return the created Color.
+     * @see <a href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</a>
+     * @see <a href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</a>
      */
-    public static Color fromRgb(Integer rgb) {
-        if (rgb == null) {
-            return null;
+    public static Color fromString(String str) {
+        str = str.trim();
+        if (NUMERIC_RGB.matcher(str).matches()) {
+            return fromHex(str.substring(1));
         }
-        int r = (rgb & 0xFF0000) >> 16;
-        int g = (rgb & 0x00FF00) >> 8;
-        int b = rgb & 0x0000FF;
-        return new Color(r, g, b);
+        throw new IllegalArgumentException("You must supply the string in numeric RGB format #[0-9a-fA-F], e.g. \"#09C\" or \"#0099CC\"");
     }
 
     /**
      * Creates a color from a hex triplet. A hex triplet is either three or six hexadecimal digits that represents an
      * RGB Color.<br>
-     * An example of a hex triplet is "09C" or "0099CC", which both represents the same color.<br>
+     * An example of a hex triplet is "09C" or "0099CC", which both represents the same color.
      *
      * @param hexTriplet is a string containing either a three or six hexadecimal numbers like "09C" or "0099CC".
      * @return the created Color.
@@ -126,10 +130,10 @@ public class Color {
      */
     public static Color fromHex(String hexTriplet) {
         hexTriplet = hexTriplet.trim();
-        if (threeHexDigits.matcher(hexTriplet).matches()) {
+        if (THREE_HEX_DIGITS.matcher(hexTriplet).matches()) {
             return fromThreeHexDigits(hexTriplet);
         }
-        if (sixHexDigits.matcher(hexTriplet).matches()) {
+        if (SIX_HEX_DIGITS.matcher(hexTriplet).matches()) {
             return fromSixHexDigits(hexTriplet);
         }
         throw new IllegalArgumentException("You must supply 3 or 6 hex digits [0-9a-fA-F], e.g. \"09C\" or \"0099CC\"");

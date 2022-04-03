@@ -1,6 +1,13 @@
 # Versions
 
-## 0.11.0 - Initial position feature
+## In progress
+
+#### Changes
+- Schema:
+  - Removal of rgb-color.yaml (color.yaml is used everywhere).
+  - Updated Color class of Bot API to reflect this change by removing `fromRgb(int)` and introducing `fromString(string)`.
+
+## 0.11.0 - Initial position feature (03-04-2022)
 
 #### Bugfixes
 

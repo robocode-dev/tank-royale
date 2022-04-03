@@ -1,3 +1,5 @@
+using static Robocode.TankRoyale.BotApi.Color;
+
 namespace Robocode.TankRoyale.BotApi.Mapper
 {
   public sealed class BotStateMapper
@@ -17,13 +19,13 @@ namespace Robocode.TankRoyale.BotApi.Mapper
         source.GunTurnRate,
         source.RadarTurnRate,
         source.GunHeat,
-        Color.FromRgb(source.BodyColor),
-        Color.FromRgb(source.TurretColor),
-        Color.FromRgb(source.RadarColor),
-        Color.FromRgb(source.BulletColor),
-        Color.FromRgb(source.ScanColor),
-        Color.FromRgb(source.TracksColor),
-        Color.FromRgb(source.GunColor)
+        FromString(source.BodyColor),
+        FromString(source.TurretColor),
+        FromString(source.RadarColor),
+        FromString(source.BulletColor),
+        FromString(source.ScanColor),
+        FromString(source.TracksColor),
+        FromString(source.GunColor)
       );
     }
   }
