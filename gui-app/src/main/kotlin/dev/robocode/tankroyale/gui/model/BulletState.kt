@@ -11,5 +11,5 @@ data class BulletState(
     val y: Double,
     val direction: Double,
     val speed: Double,
-    val color: Int? = null
+    val color: String? = null
 )
