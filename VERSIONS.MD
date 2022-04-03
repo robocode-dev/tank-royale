@@ -2,6 +2,9 @@
 
 ## In progress
 
+#### Bugfixes
+- ConcurrentModificationException could occur for `BotSelectionPanel.updateJoinedBots()`.
+
 #### Changes
 - Schema:
   - Removal of rgb-color.yaml (color.yaml is used everywhere).

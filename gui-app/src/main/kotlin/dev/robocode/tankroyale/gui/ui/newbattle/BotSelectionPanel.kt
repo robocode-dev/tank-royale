@@ -342,25 +342,25 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
     }
 
     private fun updateJoinedBots() {
-        synchronized(joinedBotListModel) {
-            invokeLater {
-                // Reset the list of joined bots to it matches the joined bots from the client
-                joinedBotListModel.apply {
-                    clear()
-                    Client.joinedBots.forEach { botInfo ->
-                        addElement(botInfo)
-                    }
+        invokeLater {
+            // Reset the list of joined bots to it matches the joined bots from the client
+            joinedBotListModel.apply {
+                clear()
+                Client.joinedBots.forEach { botInfo ->
+                    addElement(botInfo)
                 }
-                // Remove selected bots, if the bots are not on the joined bots from the client
-                selectedBotListModel.apply {
-                    list().forEach { botInfo ->
-                        if (!Client.joinedBots.contains(botInfo)) {
-                            removeElement(botInfo)
-                        }
+            }
+            with(joinedBotsScrollPane.horizontalScrollBar) {
+                value = maximum
+            }
+        }
+        invokeLater {
+            // Remove selected bots, if the bots are not on the joined bots from the client
+            selectedBotListModel.apply {
+                ArrayList(list()).forEach { botInfo -> // ArrayList is used for preventing ConcurrentModificationException
+                    if (!Client.joinedBots.contains(botInfo)) {
+                        removeElement(botInfo)
                     }
-                }
-                with(joinedBotsScrollPane.horizontalScrollBar) {
-                    value = maximum
                 }
             }
         }
