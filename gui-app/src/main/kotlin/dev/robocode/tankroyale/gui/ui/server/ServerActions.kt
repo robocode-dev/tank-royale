@@ -17,11 +17,8 @@ object ServerActions {
                 Server.stop()
                 BootProcess.stopRunning()
             }
-            onRestartServer.subscribe(this) {
-                Server.restart()
-            }
             onRebootServer.subscribe(this) {
-                handleReboot()
+                handleReboot(it)
             }
         }
 
@@ -30,22 +27,26 @@ object ServerActions {
         }
     }
 
-    private fun handleReboot() {
+    private fun handleReboot(dueToSetting: Boolean) {
         if (!ServerProcess.isRunning()) return
 
         val title = ResourceBundles.UI_TITLES.get("question")
-        val question = ResourceBundles.STRINGS.get("restart_server_confirmation")
+        val resource =
+            if (dueToSetting)
+                "reboot_server_confirmation_settings"
+            else
+                "reboot_server_confirmation"
 
         invokeLater {
             if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
                     MainWindow,
-                    question,
+                    ResourceBundles.MESSAGES.get(resource),
                     title,
                     JOptionPane.YES_NO_OPTION
                 )
             ) {
                 BootProcess.stopRunning()
-                Server.restart()
+                Server.reboot()
             }
         }
     }

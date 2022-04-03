@@ -59,9 +59,9 @@ object Server {
         ServerProcess.stop()
     }
 
-    fun restart() {
+    fun reboot() {
         Client.close()
-        ServerProcess.restart()
+        ServerProcess.reboot()
         connectToServer()
     }
 

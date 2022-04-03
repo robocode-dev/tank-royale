@@ -3,7 +3,14 @@
 ## 0.11.1
 
 #### Bugfixes
+
 - ConcurrentModificationException could occur for `BotSelectionPanel.updateJoinedBots()`. Could not create a new battle.
+
+#### Changes
+
+- "Restart server" has been renamed into "Reboot Server", and the server and battle is fully stopped, and bots are
+  disconnected. Confirmation dialog for rebooting now differ between the reboot is a user action or due to a changed
+  server setting.
 
 ## 0.11.0 - Initial position feature
 

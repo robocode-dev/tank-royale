@@ -30,13 +30,12 @@ object MenuEventHandlers {
                 ServerEventTriggers.onStartServer.fire(Unit)
                 ServerLogWindow.isVisible = true
             }
-            onRestartServer.invokeLater(this) {
-                ServerEventTriggers.onRestartServer.fire(Unit)
-                ServerLogWindow.isVisible = true
-            }
             onStopServer.invokeLater(this) {
                 ServerEventTriggers.onStopServer.fire(Unit)
                 ServerLogWindow.isVisible = false
+            }
+            onRebootServer.invokeLater(this) {
+                ServerEventTriggers.onRebootServer.fire(false /* user initiated */)
             }
             onDebugConfig.invokeLater(this) {
                 DebugConfigDialog.isVisible = true

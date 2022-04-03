@@ -6,7 +6,6 @@ import dev.robocode.tankroyale.gui.util.WsUrl
 import java.net.URI
 import java.util.*
 import javax.crypto.KeyGenerator
-import kotlin.collections.ArrayList
 
 object ServerSettings : PropertiesStore("Robocode Server Settings", "server.properties") {
 
@@ -25,7 +24,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         RegisterWsProtocol // work-around for ws:// with URI class
         load()
 
-        onSaved.subscribe(this) { ServerEventTriggers.onRebootServer.fire(Unit) }
+        onSaved.subscribe(this) { ServerEventTriggers.onRebootServer.fire(true /* setting changed */) }
     }
 
     var serverUrl: String
