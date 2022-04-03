@@ -1,5 +1,10 @@
 # Versions
 
+## 0.11.1
+
+#### Bugfixes
+- ConcurrentModificationException could occur for `BotSelectionPanel.updateJoinedBots()`. Could not create a new battle.
+
 ## 0.11.0 - Initial position feature
 
 #### Bugfixes
