@@ -4,17 +4,12 @@ import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.ui.menu.Menu
-import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
-import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
-import dev.robocode.tankroyale.gui.ui.server.Server
-import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
-
 
 object MainWindow : RcFrame("main_window") {
 
@@ -30,8 +25,6 @@ object MainWindow : RcFrame("main_window") {
 
         jMenuBar = Menu
 
-        MenuEventTriggers.onStartBattle.invokeLater(this) { startBattle() }
-
         ClientEvents.apply {
             onGameStarted.subscribe(MainWindow) { showBattle() }
             onGameEnded.subscribe(MainWindow) { showLogo() }
@@ -46,15 +39,6 @@ object MainWindow : RcFrame("main_window") {
         Client.close()
         BootProcess.stopRunning()
         ServerProcess.stop()
-    }
-
-    private fun startBattle() {
-        ServerEvents.onConnected.subscribe(MainWindow) { NewBattleDialog.isVisible = true }
-        try {
-            Server.connectOrStart()
-        } catch (e: Exception) {
-            System.err.println(e.message)
-        }
     }
 
     private fun showLogo() {

@@ -5,6 +5,7 @@
 #### Bugfixes
 
 - ConcurrentModificationException could occur for `BotSelectionPanel.updateJoinedBots()`. Could not create a new battle.
+- Fixed issue with starting a new battle from the menu with Battle → 'Start Battle' a second time. 
 
 #### Changes
 
