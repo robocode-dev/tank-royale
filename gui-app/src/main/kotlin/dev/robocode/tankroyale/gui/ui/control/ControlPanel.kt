@@ -1,25 +1,21 @@
-package dev.robocode.tankroyale.gui.ui.arena
+package dev.robocode.tankroyale.gui.ui.control
 
-import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
+import dev.robocode.tankroyale.gui.ui.arena.ArenaPanel
 import dev.robocode.tankroyale.gui.ui.components.WrapLayout
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.tps.TpsField
 import dev.robocode.tankroyale.gui.ui.tps.TpsSlider
-import dev.robocode.tankroyale.gui.util.Event
 import java.awt.BorderLayout
-import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
 
 object ControlPanel : JPanel() {
 
-    private val onStop = Event<JButton>()
-    private val onRestart = Event<JButton>()
-    private val onPauseResume = Event<JButton>()
-
     init {
+        ControlEventHandlers
+
         layout = BorderLayout()
         add(ArenaPanel, BorderLayout.CENTER)
         add(ButtonPanel, BorderLayout.SOUTH)
@@ -29,29 +25,16 @@ object ControlPanel : JPanel() {
             onGameResumed.subscribe(ControlPanel) { ButtonPanel.setPausedText() }
             onGameStarted.subscribe(ControlPanel) { ButtonPanel.setPausedText() }
         }
-
-        onStop.subscribe(ControlPanel) { Client.stopGame(); ButtonPanel.setPausedText() }
-        onRestart.subscribe(ControlPanel) { Client.restartGame() }
-
-        onPauseResume.subscribe(ControlPanel) {
-            Client.apply {
-                if (isGamePaused) {
-                    resumeGame()
-                } else {
-                    pauseGame()
-                }
-            }
-        }
     }
 
     private object ButtonPanel : JPanel() {
-        val pauseResumeButton = addButton("battle.pause", onPauseResume)
+        val pauseResumeButton = addButton("battle.pause", ControlEvents.onPauseResume)
 
         init {
             layout = WrapLayout()
 
-            addButton("battle.stop", onStop)
-            addButton("battle.restart", onRestart)
+            addButton("battle.stop", ControlEvents.onStop)
+            addButton("battle.restart", ControlEvents.onRestart)
             add(TpsSlider)
 
             add(JPanel().apply {

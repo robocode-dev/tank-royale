@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.ui.menu.Menu
 import dev.robocode.tankroyale.gui.server.ServerProcess
-import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
+import dev.robocode.tankroyale.gui.ui.control.ControlPanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
