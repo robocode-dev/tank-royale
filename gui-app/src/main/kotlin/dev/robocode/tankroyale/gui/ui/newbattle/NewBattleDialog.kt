@@ -8,8 +8,8 @@ import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 import net.miginfocom.swing.MigLayout
-import java.awt.EventQueue.invokeLater
 import java.awt.event.ItemEvent
 import javax.swing.*
 
@@ -73,7 +73,7 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
 
             addItemListener {
                 if (it.stateChange == ItemEvent.SELECTED) {
-                    invokeLater {
+                    enqueue {
                         BotSelectionPanel.update()
                     }
                 }

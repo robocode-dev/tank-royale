@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.components
 
-import java.awt.EventQueue.invokeLater
+import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 import java.util.*
 import javax.swing.AbstractListModel
 
@@ -47,7 +47,7 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
     }
 
     private fun notifyChanged() {
-        invokeLater { // if omitted, the JList might not update correctly?!
+        enqueue { // if omitted, the JList might not update correctly?!
             fireContentsChanged(this, 0, size)
         }
     }

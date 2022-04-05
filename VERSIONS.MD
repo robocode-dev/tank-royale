@@ -12,6 +12,7 @@
 - "Restart server" has been renamed into "Reboot Server", and the server and battle is fully stopped, and bots are
   disconnected. Confirmation dialog for rebooting now differ between the reboot is a user action or due to a changed
   server setting.
+- A busy cursor is now (automatically) shown when an operation takes some time to perform.
 
 ## 0.11.0 - Initial position feature
 

@@ -9,7 +9,7 @@ import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEventTriggers
 import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
-import java.awt.EventQueue
+import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 
 object MenuEventHandlers {
     init {
@@ -18,7 +18,7 @@ object MenuEventHandlers {
                 SetupRulesDialog.isVisible = true
             }
             onStartBattle.subscribe(this) {
-                EventQueue.invokeLater {
+                enqueue {
                     NewBattleDialog.isVisible = true
                 }
                 Server.connectOrStart()

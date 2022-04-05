@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.util
 
-import java.awt.EventQueue
 import java.util.*
 
 /**
@@ -57,16 +56,16 @@ open class Event<T> {
     }
 
     /**
-     * Convenient method for create an event handler that make use of the [EventQueue.invokeLater] method.
+     * Enqueues a task on the Event Queue that must be invoked later.
      *
      * Example of usage:
      * ```
-     * onEvent.invokeLater { myDialog.isVisible = true }
+     * onEvent.enqueue { myDialog.isVisible = true }
      * ```
      * @param owner is the owner of the event handler, typically `this` instance.
      * @param runnable is used for providing the event handler function.
      */
-    fun invokeLater(owner: Any, runnable: () -> Unit) {
-        subscribe(owner) { EventQueue.invokeLater { runnable.invoke() } }
+    fun enqueue(owner: Any, runnable: () -> Unit) {
+        subscribe(owner) { GuiTask.enqueue { runnable.invoke() } }
     }
 }
