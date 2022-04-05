@@ -96,6 +96,7 @@ object Client {
     }
 
     fun stopGame() {
+        resumeGame()
         if (isGameRunning) {
             send(StopGame())
         }
@@ -103,7 +104,6 @@ object Client {
     }
 
     fun restartGame() {
-        resumeGame()
         stopGame()
 
         send(lastStartGame!!)

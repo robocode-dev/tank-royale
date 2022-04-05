@@ -57,8 +57,8 @@ dependencyResolutionManagement {
             library("mockk", "io.mockk:mockk:1.12.3")
 
             plugin("shadow-jar","com.github.johnrengelman.shadow").version("7.1.2")
-            plugin("kotlin-jvm", "org.jetbrains.kotlin.jvm").version("1.6.20-RC")
-            plugin("kotlin-plugin-serialization", "org.jetbrains.kotlin.plugin.serialization").version("1.6.20-RC")
+            plugin("kotlin-jvm", "org.jetbrains.kotlin.jvm").version("1.6.20")
+            plugin("kotlin-plugin-serialization", "org.jetbrains.kotlin.plugin.serialization").version("1.6.20")
             plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.42.0")
             plugin("hidetake-ssh", "org.hidetake.ssh").version("2.10.1")
             plugin("itiviti-dotnet", "com.itiviti.dotnet").version("1.9.2")

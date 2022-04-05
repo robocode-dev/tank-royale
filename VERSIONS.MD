@@ -5,13 +5,15 @@
 #### Bugfixes
 
 - ConcurrentModificationException could occur for `BotSelectionPanel.updateJoinedBots()`. Could not create a new battle.
-- Fixed issue with starting a new battle from the menu with Battle → 'Start Battle' a second time. 
+- Fixed issue with starting a new battle from the menu with Battle → 'Start Battle' a second time.
 
 #### Changes
 
 - "Restart server" has been renamed into "Reboot Server", and the server and battle is fully stopped, and bots are
   disconnected. Confirmation dialog for rebooting now differ between the reboot is a user action or due to a changed
   server setting.
+- Control panel (Pause/Resume, Stop, Restart, TPS) is now always shown when first battle has been started. Various
+  improvements were done to the control panel.
 - A busy cursor is now (automatically) shown when an operation takes some time to perform.
 
 ## 0.11.0 - Initial position feature

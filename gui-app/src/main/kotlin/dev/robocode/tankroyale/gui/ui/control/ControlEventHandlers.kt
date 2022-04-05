@@ -6,15 +6,15 @@ object ControlEventHandlers {
     init {
         ControlEvents.apply {
 
-            onStop.enqueue(ControlPanel) {
+            onStop.enqueue(this) {
                 Client.stopGame()
             }
 
-            onRestart.enqueue(ControlPanel) {
+            onRestart.enqueue(this) {
                 Client.restartGame()
             }
 
-            onPauseResume.enqueue(ControlPanel) {
+            onPauseResume.enqueue(this) {
                 Client.apply {
                     if (isGamePaused) {
                         resumeGame()
