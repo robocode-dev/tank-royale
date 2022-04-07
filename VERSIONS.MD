@@ -1,6 +1,6 @@
 # Versions
 
-## 0.11.1
+## 0.11.1 - Patch for the GUI
 
 #### Bugfixes
 
