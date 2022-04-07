@@ -8,14 +8,15 @@ description = "Java API library for developing bots for Robocode Tank Royale"
 
 val artifactBaseName = "robocode-tankroyale-bot-api"
 
-//val robocodeDevOssrhUsername: String by project
-//val robocodeDevOssrhPassword: String by project
+val ossrhUsername: String by project
+val ossrhPassword: String by project
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     `java-library`
     alias(libs.plugins.shadow.jar)
     `maven-publish`
+    signing
 }
 
 java {
@@ -59,10 +60,9 @@ tasks {
             attributes["Implementation-Vendor"] = "robocode.dev"
             attributes["Package"] = project.group
         }
-    }
-    shadowJar.configure {
+        minimize()
         archiveBaseName.set(artifactBaseName)
-        archiveClassifier.set(null as String?) // get rid of "-all" classifier
+        archiveClassifier.set("")
     }
 
     val javadoc = withType<Javadoc> {
@@ -108,7 +108,9 @@ tasks {
 publishing {
     publications {
         create<MavenPublication>("bot-api") {
-            from(components["java"])
+            artifact(tasks["shadowJar"])
+            artifact(tasks["javadocJar"])
+            artifact(tasks["sourcesJar"])
 
             groupId = group as String?
             artifactId = artifactBaseName
@@ -118,30 +120,31 @@ publishing {
                 name.set(title)
                 description.set(project.description)
                 url.set("https://github.com/robocode-dev/tank-royale")
-/*
+
                 repositories {
                     maven {
-                        setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+                        setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
                         mavenContent {
                             releasesOnly()
                         }
                         credentials {
-                            username = robocodeDevOssrhUsername
-                            password = robocodeDevOssrhPassword
+                            username = ossrhUsername
+                            password = ossrhPassword
                         }
                     }
+                    /*
                     maven {
                         setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots/")
                         mavenContent {
                             snapshotsOnly()
                         }
                         credentials {
-                            username = robocodeDevOssrhUsername
-                            password = robocodeDevOssrhPassword
+                            username = ossrhUsername
+                            password = ossrhPassword
                         }
-                    }
+                    }*/
                 }
-*/
+
                 licenses {
                     license {
                         name.set("The Apache License, Version 2.0")
@@ -166,6 +169,6 @@ publishing {
     }
 }
 
-tasks.withType<GenerateModuleMetadata> {
-    enabled = false
+signing {
+    sign(publishing.publications["bot-api"])
 }
