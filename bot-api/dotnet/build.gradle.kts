@@ -84,7 +84,7 @@ tasks {
     }
 
     register("pushLocal") {
-        dependsOn(build)
+        dependsOn(dotnetBuild)
 
         doLast {
             val userprofile = System.getenv("USERPROFILE")
