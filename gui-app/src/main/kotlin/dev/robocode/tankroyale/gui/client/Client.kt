@@ -53,7 +53,7 @@ object Client {
 
     private var gameTypes = setOf<String>()
 
-    private var lastStartGame: StartGame? = null
+    private lateinit var lastStartGame: StartGame
 
     private var tps: Int? = null
 
@@ -94,7 +94,7 @@ object Client {
         val gameSetup = GamesSettings.games[displayName]!!
 
         lastStartGame = StartGame(gameSetup.toGameSetup(), botAddresses)
-        send(lastStartGame!!)
+        send(lastStartGame)
     }
 
     fun stopGame() {
@@ -107,7 +107,7 @@ object Client {
     fun restartGame() {
         stopGame()
 
-        send(lastStartGame!!)
+        send(lastStartGame)
     }
 
     fun pauseGame() {

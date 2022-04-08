@@ -53,6 +53,10 @@ tasks {
         }
     }
 
+    build {
+        enabled = false
+    }
+
     val docfx by registering {
         dependsOn(assemble)
 
