@@ -16,7 +16,7 @@ object ControlEventHandlers {
 
             onPauseResume.enqueue(this) {
                 Client.apply {
-                    if (isGamePaused) {
+                    if (isGamePaused()) {
                         resumeGame()
                     } else {
                         pauseGame()

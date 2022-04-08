@@ -15,7 +15,7 @@ object Server {
 
     fun connectOrStart() {
         try {
-            if (Client.isGameRunning) {
+            if (Client.isGameRunning()) {
                 if (showStopGameDialog() == NO_OPTION) {
                     return
                 } else {

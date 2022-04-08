@@ -19,6 +19,7 @@ import dev.robocode.tankroyale.gui.util.Version
 import kotlinx.serialization.PolymorphicSerializer
 import java.net.URI
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 
 object Client {
 
@@ -26,8 +27,8 @@ object Client {
         TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
 
         ServerEvents.onStopped.subscribe(Client) {
-            isGamePaused = false
-            isGameRunning = false
+            isPaused.set(false)
+            isRunning.set(false)
 
             bots.clear()
         }
@@ -35,10 +36,8 @@ object Client {
 
     var currentGameSetup: GameSetup? = null
 
-    var isGameRunning: Boolean = false
-
-    var isGamePaused: Boolean = false
-        private set
+    private val isRunning = AtomicBoolean(false)
+    private val isPaused = AtomicBoolean(false)
 
     private val isConnected: Boolean get() = websocket?.isOpen() ?: false
 
@@ -74,6 +73,9 @@ object Client {
         }
     }
 
+    fun isGameRunning(): Boolean = isRunning.get()
+    fun isGamePaused(): Boolean = isPaused.get()
+
     fun close() {
         stopGame()
 
@@ -84,7 +86,7 @@ object Client {
     }
 
     fun startGame(botAddresses: Set<BotAddress>) {
-        if (isGameRunning) {
+        if (isRunning.get()) {
             stopGame()
         }
 
@@ -97,10 +99,9 @@ object Client {
 
     fun stopGame() {
         resumeGame()
-        if (isGameRunning) {
+        if (isRunning.get()) {
             send(StopGame())
         }
-        isGamePaused = false
     }
 
     fun restartGame() {
@@ -110,13 +111,13 @@ object Client {
     }
 
     fun pauseGame() {
-        if (isGameRunning && !isGamePaused) {
+        if (isRunning.get() && !isPaused.get()) {
             send(PauseGame())
         }
     }
 
     fun resumeGame() {
-        if (isGameRunning && isGamePaused) {
+        if (isRunning.get() && isPaused.get()) {
             send(ResumeGame())
         }
     }
@@ -129,7 +130,7 @@ object Client {
     }
 
     private fun changeTps(tps: Int) {
-        if (isGameRunning && tps != this.tps) {
+        if (isRunning.get() && tps != this.tps) {
             this.tps = tps
             send(ChangeTps(tps))
         }
@@ -170,7 +171,7 @@ object Client {
     }
 
     private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
-        isGameRunning = true
+        isRunning.set(true)
         currentGameSetup = gameStartedEvent.gameSetup
         participants = gameStartedEvent.participants
 
@@ -178,24 +179,25 @@ object Client {
     }
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {
-        isGameRunning = false
-        isGamePaused = false
+        isRunning.set(false)
+        isPaused.set(false)
         onGameEnded.fire(gameEndedEvent)
     }
 
     private fun handleGameAborted(gameAbortedEvent: GameAbortedEvent) {
-        isGameRunning = false
-        isGamePaused = false
+        isRunning.set(false)
+        isPaused.set(false)
         onGameAborted.fire(gameAbortedEvent)
     }
 
     private fun handleGamePaused(gamePausedEvent: GamePausedEvent) {
-        isGamePaused = true
+        isPaused.set(true)
+
         onGamePaused.fire(gamePausedEvent)
     }
 
     private fun handleGameResumed(gameResumedEvent: GameResumedEvent) {
-        isGamePaused = false
+        isPaused.set(false)
         onGameResumed.fire(gameResumedEvent)
     }
 
