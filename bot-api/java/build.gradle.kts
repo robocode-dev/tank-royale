@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -41,6 +42,9 @@ dependencies {
 }
 
 tasks {
+    withType<KotlinCompile> {
+        dependsOn(":schema:java:publishToMavenLocal")
+    }
 
     withType<Test> {
         useJUnitPlatform()
@@ -103,66 +107,69 @@ tasks {
         from("build/docs/javadoc")
         into(javadocDir)
     }
-}
 
-publishing {
-    publications {
-        create<MavenPublication>("bot-api") {
-            artifact(tasks["shadowJar"])
-            artifact(tasks["javadocJar"])
-            artifact(tasks["sourcesJar"])
+    val  javadocJar = named("javadocJar")
+    val  sourcesJar = named("sourcesJar")
 
-            groupId = group as String?
-            artifactId = artifactBaseName
-            version
+    publishing {
+        publications {
+            create<MavenPublication>("bot-api") {
+                artifact(shadowJar)
+                artifact(javadocJar)
+                artifact(sourcesJar)
 
-            pom {
-                name.set(title)
-                description.set(project.description)
-                url.set("https://github.com/robocode-dev/tank-royale")
+                groupId = group as String?
+                artifactId = artifactBaseName
+                version
 
-                repositories {
-                    maven {
-                        setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
-                        mavenContent {
-                            releasesOnly()
+                pom {
+                    name.set(title)
+                    description.set(project.description)
+                    url.set("https://github.com/robocode-dev/tank-royale")
+
+                    repositories {
+                        maven {
+                            setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
+                            mavenContent {
+                                releasesOnly()
+                            }
+                            credentials {
+                                username = ossrhUsername
+                                password = ossrhPassword
+                            }
                         }
-                        credentials {
-                            username = ossrhUsername
-                            password = ossrhPassword
+                        /*
+                        maven {
+                            setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+                            mavenContent {
+                                snapshotsOnly()
+                            }
+                            credentials {
+                                username = ossrhUsername
+                                password = ossrhPassword
+                            }
+                        }*/
+                    }
+
+                    licenses {
+                        license {
+                            name.set("The Apache License, Version 2.0")
+                            url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
                         }
                     }
-                    /*
-                    maven {
-                        setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-                        mavenContent {
-                            snapshotsOnly()
+                    developers {
+                        developer {
+                            id.set("fnl")
+                            name.set("Flemming Nørnberg Larsen")
+                            organization.set("flemming-n-larsen")
+                            organizationUrl.set("https://github.com/flemming-n-larsen")
                         }
-                        credentials {
-                            username = ossrhUsername
-                            password = ossrhPassword
-                        }
-                    }*/
-                }
-
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
                     }
-                }
-                developers {
-                    developer {
-                        id.set("fnl")
-                        name.set("Flemming Nørnberg Larsen")
-                        organization.set("flemming-n-larsen")
-                        organizationUrl.set("https://github.com/flemming-n-larsen")
+                    scm {
+                        connection.set("scm:git:git://github.com/robocode-dev/tank-royale.git")
+                        developerConnection.set("scm:git:ssh://github.com:robocode-dev/tank-royale.git")
+                        url.set("https://github.com/robocode-dev/tank-royale/tree/master")
                     }
-                }
-                scm {
-                    connection.set("scm:git:git://github.com/robocode-dev/tank-royale.git")
-                    developerConnection.set("scm:git:ssh://github.com:robocode-dev/tank-royale.git")
-                    url.set("https://github.com/robocode-dev/tank-royale/tree/master")
                 }
             }
         }
