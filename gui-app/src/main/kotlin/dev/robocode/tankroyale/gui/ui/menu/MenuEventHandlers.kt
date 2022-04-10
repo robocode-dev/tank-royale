@@ -13,7 +13,7 @@ import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 
 object MenuEventHandlers {
     init {
-        with(MenuEventTriggers) {
+        MenuEventTriggers.apply {
             onSetupRules.subscribe(this) {
                 SetupRulesDialog.isVisible = true
             }
