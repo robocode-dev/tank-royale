@@ -13,6 +13,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     internal readonly EventHandler<ConnectionErrorEvent> onConnectionError = new EventHandler<ConnectionErrorEvent>();
     internal readonly EventHandler<GameStartedEvent> onGameStarted = new EventHandler<GameStartedEvent>();
     internal readonly EventHandler<GameEndedEvent> onGameEnded = new EventHandler<GameEndedEvent>();
+    internal readonly EventHandler<object> onGameAborted = new EventHandler<object>();
     internal readonly EventHandler<RoundStartedEvent> onRoundStarted = new EventHandler<RoundStartedEvent>();
     internal readonly EventHandler<RoundEndedEvent> onRoundEnded = new EventHandler<RoundEndedEvent>();
     internal readonly EventHandler<TickEvent> onTick = new EventHandler<TickEvent>();
@@ -38,6 +39,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     private event EventHandler<ConnectionErrorEvent>.Subscriber OnConnectionError;
     private event EventHandler<GameStartedEvent>.Subscriber OnGameStarted;
     private event EventHandler<GameEndedEvent>.Subscriber OnGameEnded;
+    private event EventHandler<object>.Subscriber OnGameAborted;
     private event EventHandler<RoundStartedEvent>.Subscriber OnRoundStarted;
     private event EventHandler<RoundEndedEvent>.Subscriber OnRoundEnded;
     private event EventHandler<TickEvent>.Subscriber OnTick;
@@ -67,6 +69,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       OnConnectionError += onConnectionError.Publish;
       OnGameStarted += onGameStarted.Publish;
       OnGameEnded += onGameEnded.Publish;
+      OnGameAborted += onGameAborted.Publish;
       OnRoundStarted += onRoundStarted.Publish;
       OnRoundEnded += onRoundEnded.Publish;
       OnTick += onTick.Publish;
@@ -135,6 +138,11 @@ namespace Robocode.TankRoyale.BotApi.Internal
       OnGameEnded?.Invoke(evt);
     }
 
+    internal void FireGameAbortedEvent()
+    {
+      OnGameAborted?.Invoke(null);
+    }
+    
     internal void FireRoundStartedEvent(RoundStartedEvent evt)
     {
       OnRoundStarted?.Invoke(evt);
@@ -143,11 +151,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
     internal void FireRoundEndedEvent(RoundEndedEvent evt)
     {
       OnRoundEnded?.Invoke(evt);
-    }
-
-    internal void FireTickEvent(TickEvent evt)
-    {
-      OnTick?.Invoke(evt);
     }
 
     internal void FireSkippedTurnEvent(SkippedTurnEvent evt)

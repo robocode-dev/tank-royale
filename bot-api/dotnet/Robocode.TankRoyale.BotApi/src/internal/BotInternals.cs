@@ -37,13 +37,14 @@ namespace Robocode.TankRoyale.BotApi.Internal
       baseBotInternals.SetStopResumeHandler(this);
 
       BotEventHandlers botEventHandlers = baseBotInternals.BotEventHandlers;
-      botEventHandlers.onNextTurn.Subscribe(OnNextTurn, 100);
-      botEventHandlers.onRoundEnded.Subscribe(OnRoundEnded, 100);
-      botEventHandlers.onGameEnded.Subscribe(OnGameEnded, 100);
-      botEventHandlers.onDisconnected.Subscribe(OnDisconnected, 100);
-      botEventHandlers.onHitWall.Subscribe(OnHitWall, 100);
-      botEventHandlers.onHitBot.Subscribe(OnHitBot, 100);
-      botEventHandlers.onDeath.Subscribe(OnDeath, 100);
+      botEventHandlers.onGameAborted.Subscribe(OnGameAborted, 100);
+      botEventHandlers.onNextTurn.Subscribe(OnNextTurn, 90);
+      botEventHandlers.onRoundEnded.Subscribe(OnRoundEnded, 90);
+      botEventHandlers.onGameEnded.Subscribe(OnGameEnded, 90);
+      botEventHandlers.onDisconnected.Subscribe(OnDisconnected, 90);
+      botEventHandlers.onHitWall.Subscribe(OnHitWall, 90);
+      botEventHandlers.onHitBot.Subscribe(OnHitBot, 90);
+      botEventHandlers.onDeath.Subscribe(OnDeath, 90);
     }
 
     private void OnNextTurn(TickEvent evt)
@@ -71,6 +72,11 @@ namespace Robocode.TankRoyale.BotApi.Internal
       previousDirection = bot.Direction;
       previousGunDirection = bot.GunDirection;
       previousRadarDirection = bot.RadarDirection;
+    }
+
+    private void OnGameAborted(object dummy)
+    {
+      StopThread();
     }
 
     private void OnRoundEnded(RoundEndedEvent evt)

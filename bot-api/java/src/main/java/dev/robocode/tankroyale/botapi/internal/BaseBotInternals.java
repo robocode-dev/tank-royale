@@ -341,10 +341,9 @@ public final class BaseBotInternals {
                 maxSpeed :
                 min(getMaxSpeed(distance), maxSpeed);
 
-        if (speed >= 0) {
-            return clamp(targetSpeed, speed - absDeceleration, speed + ACCELERATION);
-        }
-        return clamp(targetSpeed, speed - ACCELERATION, speed + getMaxDeceleration(-speed));
+        return (speed >= 0) ?
+            clamp(targetSpeed, speed - absDeceleration, speed + ACCELERATION) :
+            clamp(targetSpeed, speed - ACCELERATION, speed + getMaxDeceleration(-speed));
     }
 
     private double getMaxSpeed(double distance) {
@@ -512,7 +511,7 @@ public final class BaseBotInternals {
                             handleServerHandshake(jsonMsg);
                             break;
                         case GAME_ABORTED_EVENT:
-                            handleGameAborted(jsonMsg);
+                            handleGameAborted();
                             break;
                         default:
                             throw new BotException("Unsupported WebSocket message type: " + type);
@@ -539,13 +538,13 @@ public final class BaseBotInternals {
         }
 
         private void handleRoundStarted(JsonObject jsonMsg) {
-            var roundStartedEvent = gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.RoundStartedEvent.class);
+            var roundStartedEvent = gson.fromJson(jsonMsg, RoundStartedEvent.class);
 
             botEventHandlers.onRoundStarted.publish(new RoundStartedEvent(roundStartedEvent.getRoundNumber()));
         }
 
         private void handleRoundEnded(JsonObject jsonMsg) {
-            var roundEndedEvent = gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.RoundEndedEvent.class);
+            var roundEndedEvent = gson.fromJson(jsonMsg, RoundEndedEvent.class);
 
             botEventHandlers.onRoundEnded.publish(new RoundEndedEvent(
                     roundEndedEvent.getRoundNumber(), roundEndedEvent.getTurnNumber()));
@@ -572,16 +571,15 @@ public final class BaseBotInternals {
             // Send the game ended event
             var gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
 
-            GameEndedEvent gameEndedEvent =
-                    new GameEndedEvent(
-                            gameEndedEventForBot.getNumberOfRounds(),
-                            ResultsMapper.map(gameEndedEventForBot.getResults()));
+            GameEndedEvent gameEndedEvent = new GameEndedEvent(
+                    gameEndedEventForBot.getNumberOfRounds(),
+                    ResultsMapper.map(gameEndedEventForBot.getResults()));
 
             botEventHandlers.onGameEnded.publish(gameEndedEvent);
         }
 
-        private void handleGameAborted(JsonObject jsonMsg) {
-            // TODO
+        private void handleGameAborted() {
+            botEventHandlers.onGameAborted.publish(null);
         }
 
         private void handleSkippedTurn(JsonObject jsonMsg) {

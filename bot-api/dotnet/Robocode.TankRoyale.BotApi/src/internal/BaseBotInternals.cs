@@ -44,10 +44,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
     private IStopResumeListener stopResumeListener;
 
-    private double maxSpeed;
-    private double maxTurnRate;
-    private double maxGunTurnRate;
-    private double maxRadarTurnRate;
+    private readonly double maxSpeed;
+    private readonly double maxTurnRate;
+    private readonly double maxGunTurnRate;
+    private readonly double maxRadarTurnRate;
 
     private double? savedTargetSpeed;
     private double? savedTurnRate;
@@ -324,7 +324,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         Math.Min(GetMaxSpeed(distance), maxSpeed);
       return speed >= 0 ?
         Math.Clamp(targetSpeed, speed - absDeceleration, speed + Constants.Acceleration) :
-        Math.Clamp(targetSpeed, speed - Constants.Acceleration, speed + absDeceleration);
+        Math.Clamp(targetSpeed, speed - Constants.Acceleration, speed + GetMaxDeceleration(-speed));
     }
 
     private double GetMaxSpeed(double distance)
@@ -482,7 +482,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
             HandleServerHandshake(json);
             break;
           case S.MessageType.GameAbortedEvent:
-            HandleGameAborted(json);
+            HandleGameAborted();
             break;
           default:
             throw new BotException($"Unsupported WebSocket message type: {type}");
@@ -508,7 +508,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       eventQueue.AddEventsFromTick(tickEvent, baseBot);
 
       // Trigger next turn (not tick-event!)
-      BotEventHandlers.onNextTurn.Publish(tickEvent);
+      BotEventHandlers.FireNextTurn(tickEvent);
     }
 
     private void HandleRoundStarted(string json)
@@ -561,9 +561,9 @@ namespace Robocode.TankRoyale.BotApi.Internal
       BotEventHandlers.FireGameEndedEvent(new E.GameEndedEvent(gameEndedEventForBot.NumberOfRounds, results));
     }
 
-    private void HandleGameAborted(string json)
+    private void HandleGameAborted()
     {
-      // TODO
+      BotEventHandlers.FireGameAbortedEvent();
     }
 
     private void HandleServerHandshake(string json)
