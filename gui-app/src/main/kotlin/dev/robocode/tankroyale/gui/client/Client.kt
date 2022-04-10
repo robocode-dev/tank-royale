@@ -27,8 +27,8 @@ object Client {
         TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
 
         ServerEvents.onStopped.subscribe(Client) {
-            isPaused.set(false)
             isRunning.set(false)
+            isPaused.set(false)
 
             bots.clear()
         }
@@ -105,9 +105,14 @@ object Client {
     }
 
     fun restartGame() {
+        val eventOwner = Object()
+        onGameAborted.subscribe(eventOwner, true) {
+            startWithLastGameSetup()
+        }
+        onGameEnded.subscribe(eventOwner, true) {
+            startWithLastGameSetup()
+        }
         stopGame()
-
-        send(lastStartGame)
     }
 
     fun pauseGame() {
@@ -124,9 +129,15 @@ object Client {
 
     fun getParticipant(id: Int): Participant = participants.first { participant -> participant.id == id }
 
+    private fun startWithLastGameSetup() {
+        send(lastStartGame)
+    }
+
     private fun send(message: Message) {
         if (!isConnected) throw IllegalStateException("Websocket is not connected")
-        websocket!!.send(message)
+        websocket?.send(message)
+
+        println("send: $message")
     }
 
     private fun changeTps(tps: Int) {
@@ -171,6 +182,7 @@ object Client {
     }
 
     private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
+        println("->game started")
         isRunning.set(true)
         currentGameSetup = gameStartedEvent.gameSetup
         participants = gameStartedEvent.participants
@@ -179,12 +191,14 @@ object Client {
     }
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {
+        println("->game ended")
         isRunning.set(false)
         isPaused.set(false)
         onGameEnded.fire(gameEndedEvent)
     }
 
     private fun handleGameAborted(gameAbortedEvent: GameAbortedEvent) {
+        println("->game aborted")
         isRunning.set(false)
         isPaused.set(false)
         onGameAborted.fire(gameAbortedEvent)
