@@ -463,23 +463,26 @@ namespace Robocode.TankRoyale.BotApi.Internal
           case S.MessageType.TickEventForBot:
             HandleTickEvent(json);
             break;
+          case S.MessageType.RoundStartedEvent:
+            HandleRoundStarted(json);
+            break;
+          case S.MessageType.RoundEndedEvent:
+            HandleRoundEnded(json);
+            break;
+          case S.MessageType.GameStartedEventForBot:
+            HandleGameStarted(json);
+            break;
+          case S.MessageType.GameEndedEventForBot:
+            HandleGameEnded(json);
+            break;
+          case S.MessageType.SkippedTurnEvent:
+            HandleSkippedTurn(json);
+            break;
           case S.MessageType.ServerHandshake:
             HandleServerHandshake(json);
             break;
-          case S.MessageType.RoundStartedEvent:
-            HandleRoundStartedEvent(json);
-            break;
-          case S.MessageType.RoundEndedEvent:
-            HandleRoundEndedEvent(json);
-            break;
-          case S.MessageType.GameStartedEventForBot:
-            HandleGameStartedEvent(json);
-            break;
-          case S.MessageType.GameEndedEventForBot:
-            HandleGameEndedEvent(json);
-            break;
-          case S.MessageType.SkippedTurnEvent:
-            HandleSkippedTurnEvent(json);
+          case S.MessageType.GameAbortedEvent:
+            HandleGameAborted(json);
             break;
           default:
             throw new BotException($"Unsupported WebSocket message type: {type}");
@@ -508,7 +511,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       BotEventHandlers.onNextTurn.Publish(tickEvent);
     }
 
-    private void HandleRoundStartedEvent(string json)
+    private void HandleRoundStarted(string json)
     {
       var roundStartedEvent = JsonConvert.DeserializeObject<S.RoundStartedEvent>(json);
       if (roundStartedEvent == null)
@@ -517,7 +520,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       BotEventHandlers.FireRoundStartedEvent(new E.RoundStartedEvent(roundStartedEvent.RoundNumber));
     }
 
-    private void HandleRoundEndedEvent(string json)
+    private void HandleRoundEnded(string json)
     {
       var roundEndedEvent = JsonConvert.DeserializeObject<S.RoundEndedEvent>(json);
       if (roundEndedEvent == null)
@@ -526,7 +529,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       BotEventHandlers.FireRoundEndedEvent(new E.RoundEndedEvent(roundEndedEvent.RoundNumber, roundEndedEvent.TurnNumber));
     }
 
-    private void HandleGameStartedEvent(string json)
+    private void HandleGameStarted(string json)
     {
       var gameStartedEventForBot = JsonConvert.DeserializeObject<S.GameStartedEventForBot>(json);
       if (gameStartedEventForBot == null)
@@ -547,7 +550,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       BotEventHandlers.FireGameStartedEvent(new E.GameStartedEvent((int)myId, gameSetup));
     }
 
-    private void HandleGameEndedEvent(string json)
+    private void HandleGameEnded(string json)
     {
       // Send the game ended event
       var gameEndedEventForBot = JsonConvert.DeserializeObject<S.GameEndedEventForBot>(json);
@@ -556,6 +559,11 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
       var results = ResultsMapper.Map(gameEndedEventForBot.Results);
       BotEventHandlers.FireGameEndedEvent(new E.GameEndedEvent(gameEndedEventForBot.NumberOfRounds, results));
+    }
+
+    private void HandleGameAborted(string json)
+    {
+      // TODO
     }
 
     private void HandleServerHandshake(string json)
@@ -570,7 +578,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
       socket.SendTextMessage(text);
     }
 
-    public void HandleSkippedTurnEvent(string json)
+    public void HandleSkippedTurn(string json)
     {
       var skippedTurnEvent = JsonConvert.DeserializeObject<Schema.SkippedTurnEvent>(json);
       BotEventHandlers.FireSkippedTurnEvent(EventMapper.Map(skippedTurnEvent));
