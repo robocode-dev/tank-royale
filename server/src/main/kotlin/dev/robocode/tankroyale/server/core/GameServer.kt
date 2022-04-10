@@ -35,7 +35,7 @@ class GameServer(
     private var serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
 
     /** Current game setup */
-    private var gameSetup: dev.robocode.tankroyale.server.model.GameSetup? = null
+    private lateinit var gameSetup: dev.robocode.tankroyale.server.model.GameSetup
 
     /** Game participants (bots connections) */
     private val participants = ConcurrentHashMap.newKeySet<WebSocket>()
@@ -141,13 +141,13 @@ class GameServer(
     private fun createGameStartedEventForBot(): GameStartedEventForBot {
         val gameStartedForBot = GameStartedEventForBot()
         gameStartedForBot.`$type` = `$type`.GAME_STARTED_EVENT_FOR_BOT
-        gameStartedForBot.gameSetup = GameSetupToGameSetupMapper.map(gameSetup!!)
+        gameStartedForBot.gameSetup = GameSetupToGameSetupMapper.map(gameSetup)
         return gameStartedForBot
     }
 
     /** Starts the 'ready' timer */
     private fun startReadyTimer() {
-        readyTimeoutTimer = NanoTimer(gameSetup!!.readyTimeout * 1000000L) { onReadyTimeout() }
+        readyTimeoutTimer = NanoTimer(gameSetup.readyTimeout * 1000000L) { onReadyTimeout() }
         readyTimeoutTimer.start()
     }
 
@@ -167,7 +167,7 @@ class GameServer(
         if (connHandler.observerAndControllerConnections.isNotEmpty()) {
             val gameStartedForObserver = GameStartedEventForObserver()
             gameStartedForObserver.`$type` = `$type`.GAME_STARTED_EVENT_FOR_OBSERVER
-            gameStartedForObserver.gameSetup = GameSetupToGameSetupMapper.map(gameSetup!!)
+            gameStartedForObserver.gameSetup = GameSetupToGameSetupMapper.map(gameSetup)
             gameStartedForObserver.participants = participantMap.values.toList()
             broadcastToObserverAndControllers(gameStartedForObserver)
         }
@@ -203,7 +203,7 @@ class GameServer(
             val p = it.value.initialPosition
             InitialPosition(p.x, p.y, p.angle)
         }
-        modelUpdater = ModelUpdater(gameSetup!!, HashSet(participantIds.values), initialPositions)
+        modelUpdater = ModelUpdater(gameSetup, HashSet(participantIds.values), initialPositions)
     }
 
     /** Last reset turn timeout period */
@@ -229,7 +229,7 @@ class GameServer(
     private fun calculateTurnTimeoutPeriod(): Long {
         var period = if (tps <= 0) 0 else 1_000_000_000L / tps
 
-        val turnTimeout = gameSetup!!.turnTimeout * 1000L
+        val turnTimeout = gameSetup.turnTimeout * 1000L
         if (turnTimeout > period) {
             period = turnTimeout
         }
@@ -344,7 +344,7 @@ class GameServer(
 
     private fun onReadyTimeout() {
         log.debug("Ready timeout")
-        if (readyParticipants.size >= gameSetup!!.minNumberOfParticipants) {
+        if (readyParticipants.size >= gameSetup.minNumberOfParticipants) {
             // Start the game with the participants that are ready
             participants.clear()
             participants += readyParticipants
