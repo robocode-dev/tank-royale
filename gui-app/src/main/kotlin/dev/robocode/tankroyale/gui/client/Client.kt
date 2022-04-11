@@ -105,14 +105,19 @@ object Client {
     }
 
     fun restartGame() {
-        val eventOwner = Object()
-        onGameAborted.subscribe(eventOwner, true) {
+        if (isRunning.get()) {
+            val eventOwner = Object()
+            onGameAborted.subscribe(eventOwner, true) {
+                startWithLastGameSetup()
+            }
+            onGameEnded.subscribe(eventOwner, true) {
+                startWithLastGameSetup()
+            }
+            stopGame()
+
+        } else {
             startWithLastGameSetup()
         }
-        onGameEnded.subscribe(eventOwner, true) {
-            startWithLastGameSetup()
-        }
-        stopGame()
     }
 
     fun pauseGame() {
