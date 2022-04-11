@@ -141,8 +141,6 @@ object Client {
     private fun send(message: Message) {
         if (!isConnected) throw IllegalStateException("Websocket is not connected")
         websocket?.send(message)
-
-        println("send: $message")
     }
 
     private fun changeTps(tps: Int) {
@@ -187,7 +185,6 @@ object Client {
     }
 
     private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
-        println("->game started")
         isRunning.set(true)
         currentGameSetup = gameStartedEvent.gameSetup
         participants = gameStartedEvent.participants
@@ -196,14 +193,12 @@ object Client {
     }
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {
-        println("->game ended")
         isRunning.set(false)
         isPaused.set(false)
         onGameEnded.fire(gameEndedEvent)
     }
 
     private fun handleGameAborted(gameAbortedEvent: GameAbortedEvent) {
-        println("->game aborted")
         isRunning.set(false)
         isPaused.set(false)
         onGameAborted.fire(gameAbortedEvent)

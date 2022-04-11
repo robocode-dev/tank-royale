@@ -1,5 +1,13 @@
 # Versions
 
+## 0.11.2 - Fix restart issue
+
+#### Bugfix
+
+- Battle does not restart ([#10](https://github.com/robocode-dev/tank-royale/issues/10)).
+- Bot API did not stop thread when GameAbortedEvent occurred (when restarting).
+- When restarting, a two or more games could be started on the server.
+
 ## 0.11.1 - Patch for the GUI
 
 #### Bugfixes

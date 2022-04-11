@@ -109,18 +109,23 @@ class GameServer(
     }
 
     /** Starts the game if all participants are ready */
+
+    private val startGameLock = Any()
+
     private fun startGameIfParticipantsReady() {
-        if (readyParticipants.size == participants.size) {
-            participantMap.apply {
-                clear()
-                putAll(createParticipantMap())
+        synchronized(startGameLock) {
+            if (readyParticipants.size == participants.size) {
+                participantMap.apply {
+                    clear()
+                    putAll(createParticipantMap())
+                }
+
+                readyTimeoutTimer.stop()
+                readyParticipants.clear()
+                botIntents.clear()
+
+                startGame()
             }
-
-            readyTimeoutTimer.stop()
-            readyParticipants.clear()
-            botIntents.clear()
-
-            startGame()
         }
     }
 
