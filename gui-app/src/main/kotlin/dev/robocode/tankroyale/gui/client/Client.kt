@@ -19,6 +19,7 @@ import dev.robocode.tankroyale.gui.util.Version
 import kotlinx.serialization.PolymorphicSerializer
 import java.net.URI
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 
 object Client {
 
@@ -26,8 +27,8 @@ object Client {
         TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
 
         ServerEvents.onStopped.subscribe(Client) {
-            isGamePaused = false
-            isGameRunning = false
+            isRunning.set(false)
+            isPaused.set(false)
 
             bots.clear()
         }
@@ -35,10 +36,8 @@ object Client {
 
     var currentGameSetup: GameSetup? = null
 
-    var isGameRunning: Boolean = false
-
-    var isGamePaused: Boolean = false
-        private set
+    private val isRunning = AtomicBoolean(false)
+    private val isPaused = AtomicBoolean(false)
 
     private val isConnected: Boolean get() = websocket?.isOpen() ?: false
 
@@ -54,7 +53,7 @@ object Client {
 
     private var gameTypes = setOf<String>()
 
-    private var lastStartGame: StartGame? = null
+    private lateinit var lastStartGame: StartGame
 
     private var tps: Int? = null
 
@@ -74,6 +73,9 @@ object Client {
         }
     }
 
+    fun isGameRunning(): Boolean = isRunning.get()
+    fun isGamePaused(): Boolean = isPaused.get()
+
     fun close() {
         stopGame()
 
@@ -84,7 +86,7 @@ object Client {
     }
 
     fun startGame(botAddresses: Set<BotAddress>) {
-        if (isGameRunning) {
+        if (isRunning.get()) {
             stopGame()
         }
 
@@ -92,44 +94,57 @@ object Client {
         val gameSetup = GamesSettings.games[displayName]!!
 
         lastStartGame = StartGame(gameSetup.toGameSetup(), botAddresses)
-        send(lastStartGame!!)
+        send(lastStartGame)
     }
 
     fun stopGame() {
-        if (isGameRunning) {
+        resumeGame()
+        if (isRunning.get()) {
             send(StopGame())
         }
-        isGamePaused = false
     }
 
     fun restartGame() {
-        resumeGame()
-        stopGame()
+        if (isRunning.get()) {
+            val eventOwner = Object()
+            onGameAborted.subscribe(eventOwner, true) {
+                startWithLastGameSetup()
+            }
+            onGameEnded.subscribe(eventOwner, true) {
+                startWithLastGameSetup()
+            }
+            stopGame()
 
-        send(lastStartGame!!)
+        } else {
+            startWithLastGameSetup()
+        }
     }
 
     fun pauseGame() {
-        if (isGameRunning && !isGamePaused) {
+        if (isRunning.get() && !isPaused.get()) {
             send(PauseGame())
         }
     }
 
     fun resumeGame() {
-        if (isGameRunning && isGamePaused) {
+        if (isRunning.get() && isPaused.get()) {
             send(ResumeGame())
         }
     }
 
     fun getParticipant(id: Int): Participant = participants.first { participant -> participant.id == id }
 
+    private fun startWithLastGameSetup() {
+        send(lastStartGame)
+    }
+
     private fun send(message: Message) {
         if (!isConnected) throw IllegalStateException("Websocket is not connected")
-        websocket!!.send(message)
+        websocket?.send(message)
     }
 
     private fun changeTps(tps: Int) {
-        if (isGameRunning && tps != this.tps) {
+        if (isRunning.get() && tps != this.tps) {
             this.tps = tps
             send(ChangeTps(tps))
         }
@@ -170,7 +185,7 @@ object Client {
     }
 
     private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
-        isGameRunning = true
+        isRunning.set(true)
         currentGameSetup = gameStartedEvent.gameSetup
         participants = gameStartedEvent.participants
 
@@ -178,24 +193,25 @@ object Client {
     }
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {
-        isGameRunning = false
-        isGamePaused = false
+        isRunning.set(false)
+        isPaused.set(false)
         onGameEnded.fire(gameEndedEvent)
     }
 
     private fun handleGameAborted(gameAbortedEvent: GameAbortedEvent) {
-        isGameRunning = false
-        isGamePaused = false
+        isRunning.set(false)
+        isPaused.set(false)
         onGameAborted.fire(gameAbortedEvent)
     }
 
     private fun handleGamePaused(gamePausedEvent: GamePausedEvent) {
-        isGamePaused = true
+        isPaused.set(true)
+
         onGamePaused.fire(gamePausedEvent)
     }
 
     private fun handleGameResumed(gameResumedEvent: GameResumedEvent) {
-        isGamePaused = false
+        isPaused.set(false)
         onGameResumed.fire(gameResumedEvent)
     }
 

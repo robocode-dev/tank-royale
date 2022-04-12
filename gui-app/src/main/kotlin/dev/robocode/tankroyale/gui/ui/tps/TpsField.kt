@@ -7,7 +7,7 @@ import dev.robocode.tankroyale.gui.ui.components.JLimitedTextField
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.onChange
 import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.setInputVerifier
-import java.awt.EventQueue.invokeLater
+import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 
 object TpsField : JLimitedTextField(3) {
 
@@ -28,7 +28,7 @@ object TpsField : JLimitedTextField(3) {
     }
 
     private fun updateText() {
-        invokeLater {
+        enqueue {
             text = if (tps == -1) "max" else tps.toString()
         }
     }

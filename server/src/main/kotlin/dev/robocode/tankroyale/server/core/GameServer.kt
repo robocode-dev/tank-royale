@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.server.core
 
 import com.google.gson.Gson
 import dev.robocode.tankroyale.schema.*
-import dev.robocode.tankroyale.schema.Message.`$type`
 import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.ConnHandler
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
@@ -35,7 +34,7 @@ class GameServer(
     private var serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
 
     /** Current game setup */
-    private var gameSetup: dev.robocode.tankroyale.server.model.GameSetup? = null
+    private lateinit var gameSetup: dev.robocode.tankroyale.server.model.GameSetup
 
     /** Game participants (bots connections) */
     private val participants = ConcurrentHashMap.newKeySet<WebSocket>()
@@ -81,8 +80,7 @@ class GameServer(
 
     init {
         /** Initializes connection handler */
-        val serverSetup = ServerSetup(gameTypes)
-        connHandler = ConnHandler(serverSetup, GameServerConnListener(this), controllerSecrets, botSecrets)
+        connHandler = ConnHandler(ServerSetup(gameTypes), GameServerConnListener(this), controllerSecrets, botSecrets)
     }
 
     /** Starts this server */
@@ -111,18 +109,23 @@ class GameServer(
     }
 
     /** Starts the game if all participants are ready */
+
+    private val startGameLock = Any()
+
     private fun startGameIfParticipantsReady() {
-        if (readyParticipants.size == participants.size) {
-            participantMap.apply {
-                clear()
-                putAll(createParticipantMap())
+        synchronized(startGameLock) {
+            if (readyParticipants.size == participants.size) {
+                participantMap.apply {
+                    clear()
+                    putAll(createParticipantMap())
+                }
+
+                readyTimeoutTimer.stop()
+                readyParticipants.clear()
+                botIntents.clear()
+
+                startGame()
             }
-
-            readyTimeoutTimer.stop()
-            readyParticipants.clear()
-            botIntents.clear()
-
-            startGame()
         }
     }
 
@@ -139,16 +142,15 @@ class GameServer(
 
     /** Creates a GameStartedEventForBot with current game setup */
     private fun createGameStartedEventForBot(): GameStartedEventForBot {
-        val gameStartedForBot = GameStartedEventForBot()
-        gameStartedForBot.`$type` = `$type`.GAME_STARTED_EVENT_FOR_BOT
-        gameStartedForBot.gameSetup = GameSetupToGameSetupMapper.map(gameSetup!!)
-        return gameStartedForBot
+        return GameStartedEventForBot().apply {
+            `$type` = Message.`$type`.GAME_STARTED_EVENT_FOR_BOT
+            gameSetup = GameSetupToGameSetupMapper.map(this@GameServer.gameSetup)
+        }
     }
 
     /** Starts the 'ready' timer */
     private fun startReadyTimer() {
-        readyTimeoutTimer = NanoTimer(gameSetup!!.readyTimeout * 1000000L) { onReadyTimeout() }
-        readyTimeoutTimer.start()
+        readyTimeoutTimer = NanoTimer(gameSetup.readyTimeout * 1_000_000L) { onReadyTimeout() }.apply { start() }
     }
 
     /** Starts a new game */
@@ -165,11 +167,11 @@ class GameServer(
     /** Send GameStarted to all participant observers to get them started */
     private fun sendGameStartedToObservers() {
         if (connHandler.observerAndControllerConnections.isNotEmpty()) {
-            val gameStartedForObserver = GameStartedEventForObserver()
-            gameStartedForObserver.`$type` = `$type`.GAME_STARTED_EVENT_FOR_OBSERVER
-            gameStartedForObserver.gameSetup = GameSetupToGameSetupMapper.map(gameSetup!!)
-            gameStartedForObserver.participants = participantMap.values.toList()
-            broadcastToObserverAndControllers(gameStartedForObserver)
+            broadcastToObserverAndControllers(GameStartedEventForObserver().apply {
+                `$type` = Message.`$type`.GAME_STARTED_EVENT_FOR_OBSERVER
+                gameSetup = GameSetupToGameSetupMapper.map(this@GameServer.gameSetup)
+                participants = participantMap.values.toList()
+            })
         }
     }
 
@@ -203,7 +205,7 @@ class GameServer(
             val p = it.value.initialPosition
             InitialPosition(p.x, p.y, p.angle)
         }
-        modelUpdater = ModelUpdater(gameSetup!!, HashSet(participantIds.values), initialPositions)
+        modelUpdater = ModelUpdater(gameSetup, HashSet(participantIds.values), initialPositions)
     }
 
     /** Last reset turn timeout period */
@@ -220,8 +222,7 @@ class GameServer(
 
             // Start new turn timeout timer to invoke onNextTurn()
             turnTimeoutTimer?.stop()
-            turnTimeoutTimer = NanoTimer(period) { onNextTurn() }
-            turnTimeoutTimer?.start()
+            turnTimeoutTimer = NanoTimer(period) { onNextTurn() }.apply { start() }
         }
     }
 
@@ -229,7 +230,7 @@ class GameServer(
     private fun calculateTurnTimeoutPeriod(): Long {
         var period = if (tps <= 0) 0 else 1_000_000_000L / tps
 
-        val turnTimeout = gameSetup!!.turnTimeout * 1000L
+        val turnTimeout = gameSetup.turnTimeout * 1000L
         if (turnTimeout > period) {
             period = turnTimeout
         }
@@ -238,9 +239,9 @@ class GameServer(
 
     /** Broadcast game-aborted event to all observers and controllers */
     private fun broadcastGameAborted() {
-        val gameAborted = GameAbortedEvent()
-        gameAborted.`$type` = `$type`.GAME_ABORTED_EVENT
-        broadcastToAll(gameAborted)
+        broadcastToAll(GameAbortedEvent().apply {
+            `$type` = Message.`$type`.GAME_ABORTED_EVENT
+        })
     }
 
     /** Returns a list of bot results (for bots) ordered on the score ranks */
@@ -311,29 +312,29 @@ class GameServer(
 
     /** Broadcast pause event to all observers */
     private fun broadcastGamedPausedToObservers() {
-        val gamePaused = GamePausedEventForObserver()
-        gamePaused.`$type` = `$type`.GAME_PAUSED_EVENT_FOR_OBSERVER
-        broadcastToObserverAndControllers(gamePaused)
+        broadcastToObserverAndControllers(GamePausedEventForObserver().apply {
+            `$type` = Message.`$type`.GAME_PAUSED_EVENT_FOR_OBSERVER
+        })
     }
 
     /** Broadcast resume event to all observers */
     private fun broadcastGameResumedToObservers() {
-        val gameResumed = GameResumedEventForObserver()
-        gameResumed.`$type` = `$type`.GAME_RESUMED_EVENT_FOR_OBSERVER
-        broadcastToObserverAndControllers(gameResumed)
+        broadcastToObserverAndControllers(GameResumedEventForObserver().apply {
+            `$type` = Message.`$type`.GAME_RESUMED_EVENT_FOR_OBSERVER
+        })
     }
 
     /** Broadcast TPS-changed event to all observers */
     private fun broadcastTpsChangedToObservers(tps: Int) {
-        val tpsChanged = TpsChangedEvent()
-        tpsChanged.`$type` = `$type`.TPS_CHANGED_EVENT
-        tpsChanged.tps = tps
-        broadcastToObserverAndControllers(tpsChanged)
+        broadcastToObserverAndControllers(TpsChangedEvent().apply {
+            `$type` = Message.`$type`.TPS_CHANGED_EVENT
+            this.tps = tps
+        })
     }
 
     private fun updateGameState(): GameState {
         val mappedBotIntents = mutableMapOf<BotId, dev.robocode.tankroyale.server.model.BotIntent>()
-        for ((key, value) in botIntents) {
+        botIntents.forEach { (key, value) ->
             val botId = participantIds[key]
             if (botId != null) {
                 mappedBotIntents[botId] = value
@@ -344,11 +345,12 @@ class GameServer(
 
     private fun onReadyTimeout() {
         log.debug("Ready timeout")
-        if (readyParticipants.size >= gameSetup!!.minNumberOfParticipants) {
+        if (readyParticipants.size >= gameSetup.minNumberOfParticipants) {
             // Start the game with the participants that are ready
-            participants.clear()
-            participants += readyParticipants
-
+            participants.apply {
+                clear()
+                addAll(readyParticipants)
+            }
             startGame()
         } else {
             // Not enough participants -> prepare another game
@@ -357,18 +359,18 @@ class GameServer(
     }
 
     private fun onNextTurn() {
-        if (serverState !== ServerState.GAME_RUNNING) {
-            return
-        }
+        if (serverState !== ServerState.GAME_RUNNING) return
+
         // Required as this method can be called again while already running.
         // This would give a raise condition without the synchronized lock.
         synchronized(tickLock) {
             // Update game state
-            val gameState = updateGameState()
-            if (gameState.isGameEnded) {
-                onGameEnded()
-            } else {
-                onNextTick(gameState.lastRound)
+            updateGameState().apply {
+                if (isGameEnded) {
+                    onGameEnded()
+                } else {
+                    onNextTick(lastRound)
+                }
             }
         }
     }
@@ -386,17 +388,16 @@ class GameServer(
         // Send tick
         if (lastRound != null) {
             val roundNumber = lastRound.roundNumber
-            val turn = lastRound.lastTurn
-            if (turn != null) {
-                if (turn.turnNumber == 1) {
+            lastRound.lastTurn?.apply {
+                if (turnNumber == 1) {
                     log.debug("Round started: $roundNumber")
                     broadcastRoundStartedToAll(roundNumber)
                 } else if (lastRound.roundEnded) {
                     log.debug("Round ended: $roundNumber")
-                    broadcastRoundEndedToAll(roundNumber, turn.turnNumber)
+                    broadcastRoundEndedToAll(roundNumber, turnNumber)
                 }
-                broadcastGameTickToParticipants(roundNumber, turn)
-                broadcastGameTickToObservers(roundNumber, turn)
+                broadcastGameTickToParticipants(roundNumber, this)
+                broadcastGameTickToObservers(roundNumber, this)
             }
             broadcastSkippedTurnToParticipants()
         }
@@ -405,43 +406,41 @@ class GameServer(
     }
 
     private fun broadcastGameEndedToParticipants() {
-        val gameEnded = GameEndedEventForBot()
-        gameEnded.`$type` = `$type`.GAME_ENDED_EVENT_FOR_BOT
-        gameEnded.numberOfRounds = modelUpdater.numberOfRounds
-        gameEnded.results = getResultsForBots() // Use the stored score!
-        broadcastToParticipants(gameEnded)
+        broadcastToParticipants(GameEndedEventForBot().apply {
+            `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_BOT
+            numberOfRounds = modelUpdater.numberOfRounds
+            results = getResultsForBots() // Use the stored score!
+        })
     }
 
     private fun broadcastGameEndedToObservers() {
-        val gameEnded = GameEndedEventForObserver()
-        gameEnded.`$type` = `$type`.GAME_ENDED_EVENT_FOR_OBSERVER
-        gameEnded.numberOfRounds = modelUpdater.numberOfRounds
-        gameEnded.results = getResultsForObservers() // Use the stored score!
-        broadcastToObserverAndControllers(gameEnded)
+        broadcastToObserverAndControllers(GameEndedEventForObserver().apply {
+            `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_OBSERVER
+            numberOfRounds = modelUpdater.numberOfRounds
+            results = getResultsForObservers() // Use the stored score!
+        })
     }
 
     private fun broadcastRoundStartedToAll(roundNumber: Int) {
-        val roundStarted = RoundStartedEvent()
-        roundStarted.`$type` = `$type`.ROUND_STARTED_EVENT
-        roundStarted.roundNumber = roundNumber
-        broadcastToAll(roundStarted)
+        broadcastToAll(RoundStartedEvent().apply {
+            `$type` = Message.`$type`.ROUND_STARTED_EVENT
+            this.roundNumber = roundNumber
+        })
     }
 
     private fun broadcastRoundEndedToAll(roundNumber: Int, turnNumber: Int) {
-        val roundEnded = RoundEndedEvent()
-        roundEnded.`$type` = `$type`.ROUND_ENDED_EVENT
-        roundEnded.roundNumber = roundNumber
-        roundEnded.turnNumber = turnNumber
-        broadcastToAll(roundEnded)
+        broadcastToAll(RoundEndedEvent().apply {
+            `$type` = Message.`$type`.ROUND_ENDED_EVENT
+            this.roundNumber = roundNumber
+            this.turnNumber = turnNumber
+        })
     }
 
     private fun broadcastGameTickToParticipants(roundNumber: Int, turn: ITurn) {
-        for (conn in participants) {
-            val botId = participantIds[conn]
-            if (botId != null) {
-                val gameTickForBot = TurnToTickEventForBotMapper.map(roundNumber, turn, botId)
-                if (gameTickForBot != null) { // Bot alive?
-                    send(conn, gameTickForBot)
+        participants.forEach { conn ->
+            participantIds[conn]?.apply {
+                TurnToTickEventForBotMapper.map(roundNumber, turn, this)?.apply {
+                    send(conn, this)
                 }
             }
         }
@@ -452,18 +451,19 @@ class GameServer(
     }
 
     private fun broadcastSkippedTurnToParticipants() {
-        val skippedTurn = SkippedTurnEvent()
-        skippedTurn.`$type` = `$type`.SKIPPED_TURN_EVENT
-        skippedTurn.turnNumber = modelUpdater.turn.turnNumber
+        val skippedTurn = SkippedTurnEvent().apply {
+            `$type` = Message.`$type`.SKIPPED_TURN_EVENT
+            turnNumber = modelUpdater.turn.turnNumber
+        }
         connHandler.broadcast(getParticipantsThatSkippedTurn(), gson.toJson(skippedTurn))
     }
 
     private fun getParticipantsThatSkippedTurn(): Collection<WebSocket> {
         val participantsThatSkippedTurn = mutableListOf<WebSocket>()
-        for (conn in participants) {
-            if (botIntents[conn] == null) {
+        participants.forEach {
+            if (botIntents[it] == null) {
                 // No intent was received from the participant during the turn
-                participantsThatSkippedTurn += conn
+                participantsThatSkippedTurn += it
             }
         }
         return participantsThatSkippedTurn
@@ -476,13 +476,12 @@ class GameServer(
 
         botListUpdateMessage.bots = botsList
 
-        for (conn in connHandler.getBotConnections()) {
+        connHandler.getBotConnections().forEach { conn ->
             val address = conn.remoteSocketAddress
-            val botInfo = BotHandshakeToBotInfoMapper.map(
+            botsList += BotHandshakeToBotInfoMapper.map(
                 connHandler.getBotHandshakes()[conn]!!,
                 address.hostString, address.port
             )
-            botsList += botInfo
         }
     }
 

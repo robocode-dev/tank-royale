@@ -14,17 +14,22 @@ object Server {
     fun isRunning() = ServerProcess.isRunning() || RemoteServer.isRunning()
 
     fun connectOrStart() {
-        if (Client.isGameRunning) {
-            if (showStopGameDialog() == NO_OPTION) {
-                return
-            } else {
-                Client.stopGame()
+        try {
+            if (Client.isGameRunning()) {
+                if (showStopGameDialog() == NO_OPTION) {
+                    return
+                } else {
+                    Client.stopGame()
+                }
             }
+            if (!isRunning()) {
+                start()
+            }
+            connectToServer()
+
+        } catch (e: Exception) {
+            System.err.println(e.message)
         }
-        if (!isRunning()) {
-            start()
-        }
-        connectToServer()
     }
 
     private fun connectToServer() {
@@ -51,7 +56,7 @@ object Server {
             latch.countDown()
         }
         ServerProcess.start()
-        latch.await(1000, TimeUnit.MILLISECONDS) // wait till server has started
+        latch.await(1, TimeUnit.SECONDS) // wait till server has started
     }
 
     fun stop() {
@@ -59,9 +64,9 @@ object Server {
         ServerProcess.stop()
     }
 
-    fun restart() {
+    fun reboot() {
         Client.close()
-        ServerProcess.restart()
+        ServerProcess.reboot()
         connectToServer()
     }
 

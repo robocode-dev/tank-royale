@@ -12,6 +12,6 @@
                 Y = source.Y,
                 Angle = source.Angle
             };
-        }        
+        }
     }
 }

@@ -88,7 +88,7 @@ object ServerProcess {
         ServerEvents.onStopped.fire(Unit)
     }
 
-    fun restart() {
+    fun reboot() {
         stop()
         start(gameType, port)
     }

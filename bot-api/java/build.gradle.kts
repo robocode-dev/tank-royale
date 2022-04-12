@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -8,14 +9,15 @@ description = "Java API library for developing bots for Robocode Tank Royale"
 
 val artifactBaseName = "robocode-tankroyale-bot-api"
 
-//val robocodeDevOssrhUsername: String by project
-//val robocodeDevOssrhPassword: String by project
+val ossrhUsername: String by project
+val ossrhPassword: String by project
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     `java-library`
     alias(libs.plugins.shadow.jar)
     `maven-publish`
+    signing
 }
 
 java {
@@ -40,6 +42,9 @@ dependencies {
 }
 
 tasks {
+    withType<KotlinCompile> {
+        dependsOn(":schema:java:publishToMavenLocal")
+    }
 
     withType<Test> {
         useJUnitPlatform()
@@ -59,10 +64,9 @@ tasks {
             attributes["Implementation-Vendor"] = "robocode.dev"
             attributes["Package"] = project.group
         }
-    }
-    shadowJar.configure {
+        minimize()
         archiveBaseName.set(artifactBaseName)
-        archiveClassifier.set(null as String?) // get rid of "-all" classifier
+        archiveClassifier.set("")
     }
 
     val javadoc = withType<Javadoc> {
@@ -103,69 +107,75 @@ tasks {
         from("build/docs/javadoc")
         into(javadocDir)
     }
-}
 
-publishing {
-    publications {
-        create<MavenPublication>("bot-api") {
-            from(components["java"])
+    val  javadocJar = named("javadocJar")
+    val  sourcesJar = named("sourcesJar")
 
-            groupId = group as String?
-            artifactId = artifactBaseName
-            version
+    publishing {
+        publications {
+            create<MavenPublication>("bot-api") {
+                artifact(shadowJar)
+                artifact(javadocJar)
+                artifact(sourcesJar)
 
-            pom {
-                name.set(title)
-                description.set(project.description)
-                url.set("https://github.com/robocode-dev/tank-royale")
-/*
-                repositories {
-                    maven {
-                        setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-                        mavenContent {
-                            releasesOnly()
+                groupId = group as String?
+                artifactId = artifactBaseName
+                version
+
+                pom {
+                    name.set(title)
+                    description.set(project.description)
+                    url.set("https://github.com/robocode-dev/tank-royale")
+
+                    repositories {
+                        maven {
+                            setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
+                            mavenContent {
+                                releasesOnly()
+                            }
+                            credentials {
+                                username = ossrhUsername
+                                password = ossrhPassword
+                            }
                         }
-                        credentials {
-                            username = robocodeDevOssrhUsername
-                            password = robocodeDevOssrhPassword
+                        /*
+                        maven {
+                            setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+                            mavenContent {
+                                snapshotsOnly()
+                            }
+                            credentials {
+                                username = ossrhUsername
+                                password = ossrhPassword
+                            }
+                        }*/
+                    }
+
+                    licenses {
+                        license {
+                            name.set("The Apache License, Version 2.0")
+                            url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
                         }
                     }
-                    maven {
-                        setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-                        mavenContent {
-                            snapshotsOnly()
-                        }
-                        credentials {
-                            username = robocodeDevOssrhUsername
-                            password = robocodeDevOssrhPassword
+                    developers {
+                        developer {
+                            id.set("fnl")
+                            name.set("Flemming Nørnberg Larsen")
+                            organization.set("flemming-n-larsen")
+                            organizationUrl.set("https://github.com/flemming-n-larsen")
                         }
                     }
-                }
-*/
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                    scm {
+                        connection.set("scm:git:git://github.com/robocode-dev/tank-royale.git")
+                        developerConnection.set("scm:git:ssh://github.com:robocode-dev/tank-royale.git")
+                        url.set("https://github.com/robocode-dev/tank-royale/tree/master")
                     }
-                }
-                developers {
-                    developer {
-                        id.set("fnl")
-                        name.set("Flemming Nørnberg Larsen")
-                        organization.set("flemming-n-larsen")
-                        organizationUrl.set("https://github.com/flemming-n-larsen")
-                    }
-                }
-                scm {
-                    connection.set("scm:git:git://github.com/robocode-dev/tank-royale.git")
-                    developerConnection.set("scm:git:ssh://github.com:robocode-dev/tank-royale.git")
-                    url.set("https://github.com/robocode-dev/tank-royale/tree/master")
                 }
             }
         }
     }
 }
 
-tasks.withType<GenerateModuleMetadata> {
-    enabled = false
+signing {
+    sign(publishing.publications["bot-api"])
 }

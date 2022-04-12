@@ -4,38 +4,32 @@ import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.ui.menu.Menu
-import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers
 import dev.robocode.tankroyale.gui.server.ServerProcess
-import dev.robocode.tankroyale.gui.ui.arena.ControlPanel
+import dev.robocode.tankroyale.gui.ui.arena.ArenaPanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
+import dev.robocode.tankroyale.gui.ui.control.ControlEventHandlers
+import dev.robocode.tankroyale.gui.ui.control.ControlPanel
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
-import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
-import dev.robocode.tankroyale.gui.ui.server.Server
-import dev.robocode.tankroyale.gui.ui.server.ServerEvents
-import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
-
+import java.awt.BorderLayout
+import javax.swing.JPanel
 
 object MainWindow : RcFrame("main_window") {
 
     init {
-        RegisterWsProtocol
-
         defaultCloseOperation = EXIT_ON_CLOSE
 
         setSize(900, 800)
         setLocationRelativeTo(null) // center on screen
 
-        contentPane.add(LogoPanel)
+        contentPane.add(MainPanel)
 
         jMenuBar = Menu
 
-        MenuEventTriggers.onStartBattle.invokeLater(this) { startBattle() }
-
         ClientEvents.apply {
-            onGameStarted.subscribe(MainWindow) { showBattle() }
-            onGameEnded.subscribe(MainWindow) { showLogo() }
-            onGameAborted.subscribe(MainWindow) { showLogo() }
+            onGameStarted.subscribe(MainWindow) { MainPanel.showArena() }
+            onGameEnded.subscribe(MainWindow) { MainPanel.showLogo() }
+            onGameAborted.subscribe(MainWindow) { MainPanel.showLogo() }
         }
 
         onClosing { close() }
@@ -48,30 +42,35 @@ object MainWindow : RcFrame("main_window") {
         ServerProcess.stop()
     }
 
-    private fun startBattle() {
-        ServerEvents.onConnected.subscribe(MainWindow) { NewBattleDialog.isVisible = true }
-        try {
-            Server.connectOrStart()
-        } catch (e: Exception) {
-            System.err.println(e.message)
-        }
-    }
+    private object MainPanel : JPanel() {
+        init {
+            ControlEventHandlers
 
-    private fun showLogo() {
-        contentPane.apply {
-            remove(ControlPanel)
-            add(LogoPanel)
-        }
-        validate()
-        repaint()
-    }
+            layout = BorderLayout()
+            add(LogoPanel, BorderLayout.CENTER)
+            add(ControlPanel, BorderLayout.SOUTH)
 
-    private fun showBattle() {
-        contentPane.apply {
+            ControlPanel.isVisible = false
+        }
+
+        fun showLogo() {
+            remove(ArenaPanel)
+            add(LogoPanel, BorderLayout.CENTER)
+
+            refresh()
+        }
+
+        fun showArena() {
             remove(LogoPanel)
-            add(ControlPanel)
+            add(ArenaPanel, BorderLayout.CENTER)
+
+            refresh()
         }
-        validate()
-        repaint()
+
+        private fun refresh() {
+            ControlPanel.isVisible = true
+            validate()
+            repaint()
+        }
     }
 }

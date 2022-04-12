@@ -53,6 +53,10 @@ tasks {
         }
     }
 
+    build {
+        enabled = false
+    }
+
     val docfx by registering {
         dependsOn(assemble)
 
@@ -84,7 +88,7 @@ tasks {
     }
 
     register("pushLocal") {
-        dependsOn(build)
+        dependsOn(dotnetBuild)
 
         doLast {
             val userprofile = System.getenv("USERPROFILE")

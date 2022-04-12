@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 [assembly: InternalsVisibleTo("Robocode.TankRoyale.BotApi.Tests")]
+
 namespace Robocode.TankRoyale.BotApi
 {
     /// <summary>
@@ -79,6 +80,7 @@ namespace Robocode.TankRoyale.BotApi
             {
                 return new InitialPosition(x, null, null);
             }
+
             var y = ParseDouble(values[1]);
             double? angle = null;
             if (values.Length >= 3)
@@ -87,7 +89,7 @@ namespace Robocode.TankRoyale.BotApi
             }
 
             if (x == null && y == null && angle == null) return null;
-            
+
             return new InitialPosition(x, y, angle);
         }
 

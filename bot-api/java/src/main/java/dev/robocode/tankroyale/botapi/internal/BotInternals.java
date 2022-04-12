@@ -39,6 +39,7 @@ public final class BotInternals implements IStopResumeListener {
         baseBotInternals.setStopResumeHandler(this);
 
         BotEventHandlers botEventHandlers = baseBotInternals.getBotEventHandlers();
+        botEventHandlers.onGameAborted.subscribe(e -> onGameAborted(), 100);
         botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 90);
         botEventHandlers.onRoundEnded.subscribe(e -> onRoundEnded(), 90);
         botEventHandlers.onGameEnded.subscribe(this::onGameEnded, 90);
@@ -70,6 +71,10 @@ public final class BotInternals implements IStopResumeListener {
         previousDirection = bot.getDirection();
         previousGunDirection = bot.getGunDirection();
         previousRadarDirection = bot.getRadarDirection();
+    }
+
+    private void onGameAborted() {
+        stopThread();
     }
 
     private void onRoundEnded() {

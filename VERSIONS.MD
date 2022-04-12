@@ -1,16 +1,30 @@
 # Versions
 
-## In progress
+## 0.11.2 - Fix restart issue - 12-Apr-2022
 
 #### Bugfixes
-- ConcurrentModificationException could occur for `BotSelectionPanel.updateJoinedBots()`.
+
+- Battle does not restart ([#10](https://github.com/robocode-dev/tank-royale/issues/10)).
+- Bot API did not stop thread when GameAbortedEvent occurred (when restarting).
+- When restarting, a two or more games could be started on the server.
+
+## 0.11.1 - Patch for the GUI - 07-Apr-2022
+
+#### Bugfixes
+
+- ConcurrentModificationException could occur for `BotSelectionPanel.updateJoinedBots()`. Could not create a new battle.
+- Fixed issue with starting a new battle from the menu with Battle → 'Start Battle' a second time.
 
 #### Changes
-- Schema:
-  - Removal of rgb-color.yaml (color.yaml is used everywhere).
-  - Updated Color class of Bot API to reflect this change by removing `fromRgb(int)` and introducing `fromString(string)`.
 
-## 0.11.0 - Initial position feature (03-04-2022)
+- "Restart server" has been renamed into "Reboot Server", and the server and battle is fully stopped, and bots are
+  disconnected. Confirmation dialog for rebooting now differ between the reboot is a user action or due to a changed
+  server setting.
+- Control panel (Pause/Resume, Stop, Restart, TPS) is now always shown when first battle has been started. Various
+  improvements were done to the control panel.
+- A busy cursor is now (automatically) shown when an operation takes some time to perform.
+
+## 0.11.0 - Initial position feature - 02-Apr-2022
 
 #### Bugfixes
 

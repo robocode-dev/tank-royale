@@ -16,8 +16,8 @@ import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onMultiClickedAtIndex
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onSelection
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 import net.miginfocom.swing.MigLayout
-import java.awt.EventQueue.invokeLater
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
 import javax.swing.*
@@ -311,7 +311,7 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
                 )
             )
 
-            invokeLater {
+            enqueue {
                 with(botsDirectoryScrollPane.horizontalScrollBar) {
                     value = maximum
                 }
@@ -321,7 +321,7 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
 
     private fun enforceBotDirIsConfigured() {
         if (ConfigSettings.botDirectories.isEmpty()) {
-            invokeLater {
+            enqueue {
                 with(BotRootDirectoriesConfigDialog) {
                     if (!isVisible) {
                         showError(ResourceBundles.MESSAGES.get("no_bot_dir"))
@@ -333,7 +333,7 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
     }
 
     private fun updateRunningBots() {
-        invokeLater {
+        enqueue {
             runningBotListModel.apply {
                 clear()
                 BootProcess.runningBots.forEach { updateRunningBot(it) }
@@ -342,7 +342,7 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
     }
 
     private fun updateJoinedBots() {
-        invokeLater {
+        enqueue {
             // Reset the list of joined bots to it matches the joined bots from the client
             joinedBotListModel.apply {
                 clear()
@@ -354,7 +354,7 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
                 value = maximum
             }
         }
-        invokeLater {
+        enqueue {
             // Remove selected bots, if the bots are not on the joined bots from the client
             selectedBotListModel.apply {
                 ArrayList(list()).forEach { botInfo -> // ArrayList is used for preventing ConcurrentModificationException
@@ -369,7 +369,7 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
     private fun updateRunningBot(dirAndPid: DirAndPid) {
         runningBotListModel.addElement(dirAndPid)
 
-        invokeLater {
+        enqueue {
             with(runningScrollPane.horizontalScrollBar) {
                 value = maximum
             }
