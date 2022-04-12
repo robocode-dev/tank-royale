@@ -1,3 +1,4 @@
+import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 
 
@@ -45,6 +46,7 @@ tasks {
         doLast {
             delete(
                 "build",
+                "docs",
                 "Robocode.TankRoyale.BotApi/obj",
                 "Robocode.TankRoyale.BotApi/bin",
                 "Robocode.TankRoyale.BotApi.Tests/obj",
@@ -87,8 +89,17 @@ tasks {
         into(dotnetApiDir)
     }
 
-    register("pushLocal") {
+    val prepareNugetDocs by registering(Copy::class) {
         dependsOn(dotnetBuild)
+
+        from("nuget_docs") {
+            filter<ReplaceTokens>("tokens" to mapOf("VERSION" to version))
+        }
+        into("docs")
+    }
+
+    register("pushLocal") {
+        dependsOn(prepareNugetDocs)
 
         doLast {
             val userprofile = System.getenv("USERPROFILE")
