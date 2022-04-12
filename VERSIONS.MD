@@ -1,14 +1,14 @@
 # Versions
 
-## 0.11.2 - Fix restart issue
+## 0.11.2 - Fix restart issue - 12-Apr-2022
 
-#### Bugfix
+#### Bugfixes
 
 - Battle does not restart ([#10](https://github.com/robocode-dev/tank-royale/issues/10)).
 - Bot API did not stop thread when GameAbortedEvent occurred (when restarting).
 - When restarting, a two or more games could be started on the server.
 
-## 0.11.1 - Patch for the GUI
+## 0.11.1 - Patch for the GUI - 07-Apr-2022
 
 #### Bugfixes
 
@@ -24,7 +24,7 @@
   improvements were done to the control panel.
 - A busy cursor is now (automatically) shown when an operation takes some time to perform.
 
-## 0.11.0 - Initial position feature
+## 0.11.0 - Initial position feature - 02-Apr-2022
 
 #### Bugfixes
 
