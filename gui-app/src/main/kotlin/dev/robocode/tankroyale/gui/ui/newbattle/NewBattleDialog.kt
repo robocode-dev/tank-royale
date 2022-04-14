@@ -4,9 +4,12 @@ import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.settings.ServerSettings
+import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
+import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
+import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 import net.miginfocom.swing.MigLayout
@@ -28,14 +31,23 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
 
     private val onStartBattle = Event<JButton>()
     private val onCancel = Event<JButton>()
-
-    private val gameTypeComboBox = GameTypeComboBox()
+    private val onSetupRules = Event<JButton>()
 
     private var selectedBots = emptyList<BotInfo>()
+    private var gameTypeComboBox = GameTypeComboBox()
 
     init {
-        val topPanel = JPanel(MigLayout("left, insets 10")).apply {
-            addLabel("game_type")
+        val topPanel = JPanel(MigLayout("left, insets 5")).apply {
+            border = BorderFactory.createTitledBorder(Strings.get("set_game_rules_and_type"))
+
+            val hint = Hints.get("new_battle.game_type")
+
+            addButton("setup_rules", onSetupRules)
+
+            addLabel("game_type").apply {
+                toolTipText = hint
+            }
+            gameTypeComboBox.toolTipText = hint
             add(gameTypeComboBox)
         }
 
@@ -59,11 +71,11 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
             startBattleButton.isEnabled = selectedBots.size >= 2
         }
 
-        onStartBattle.subscribe(NewBattleDialog) { startGame() }
+        onStartBattle.subscribe(this) { startGame() }
+        onCancel.subscribe(this) { NewBattleDialog.dispose() }
+        onSetupRules.subscribe(this) { SetupRulesDialog.isVisible = true }
 
-        onCancel.subscribe(NewBattleDialog) { NewBattleDialog.dispose() }
-
-        with(gameTypeComboBox) {
+        gameTypeComboBox.apply {
             addActionListener {
                 ServerSettings.apply {
                     gameType = gameTypeComboBox.getSelectedGameType()

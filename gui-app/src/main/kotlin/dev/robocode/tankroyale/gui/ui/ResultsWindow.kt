@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.gui.ui
 
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotResults
-import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import java.awt.Dimension
 import javax.swing.JLabel
@@ -69,7 +68,7 @@ class ResultsWindow(results: List<BotResults>) : RcFrame(getWindowTitle()) {
     }
 
     private fun getColumns(): Array<String> {
-        STRINGS.apply {
+        Strings.apply {
             return arrayOf(
                 get("results.rank"),
                 get("results.bot_name"),
@@ -90,5 +89,5 @@ class ResultsWindow(results: List<BotResults>) : RcFrame(getWindowTitle()) {
 
 private fun getWindowTitle(): String {
     val numberOfRounds: Int = Client.currentGameSetup?.numberOfRounds ?: 0
-    return ResourceBundles.UI_TITLES.get("results_window").replace("$1", "$numberOfRounds")
+    return UiTitles.get("results_window").replace("$1", "$numberOfRounds")
 }

@@ -4,6 +4,7 @@
 .idea/
 .vscode/
 .gradle/
+.vs/
 Folder.DotSettings.user
 
 target/

@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.gui.ui.tps
 
 import dev.robocode.tankroyale.gui.model.TpsChangedEvent
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
-import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.components.JLimitedTextField
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.onChange
@@ -62,7 +62,7 @@ object TpsField : JLimitedTextField(3) {
                 TpsEvents.onTpsChanged.fire(TpsChangedEvent(tps))
             }
         } else {
-            showMessage(String.format(ResourceBundles.MESSAGES.get("tps_range")))
+            showMessage(String.format(Messages.get("tps_range")))
         }
         return valid
     }

@@ -62,7 +62,7 @@ private fun formatXML(xml: String): String {
     val source = StreamSource(StringReader(xml))
     val output = StringWriter()
 
-    with(transformer) {
+    transformer.apply {
         setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
         setOutputProperty(OutputKeys.INDENT, "yes")
         setOutputProperty(OutputKeys.STANDALONE, "yes")

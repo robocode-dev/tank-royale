@@ -7,6 +7,9 @@ This guide describes how to install and run Robocode Tank Royale.
 Robocode is running on a Java Runtime Environment (JRE) and needs Java 11 as a minimum. If you want to develop bots for
 Robocode in the Java programming language, then you need a JDK (Java Development Kit).
 
+> Note that you do not need to run and old version 11 of Robocode to run the GUI, booter and server, or your Java/JVM
+based bot. But you cannot use Java versions older than version 11. 
+
 Numerous Java distributions are available:
 
 - [Oracle JDK](https://www.oracle.com/java/technologies/javase/)

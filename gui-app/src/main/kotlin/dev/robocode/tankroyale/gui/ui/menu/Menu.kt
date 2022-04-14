@@ -7,7 +7,7 @@ import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onSetupRules
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onShowServerLog
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStartBattle
 import dev.robocode.tankroyale.gui.server.ServerProcess
-import dev.robocode.tankroyale.gui.ui.ResourceBundles.MENU
+import dev.robocode.tankroyale.gui.ui.MenuTitles
 import dev.robocode.tankroyale.gui.ui.extensions.JMenuExt.addNewMenuItem
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onAbout
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRebootServer
@@ -35,14 +35,14 @@ object Menu : JMenuBar() {
         setupConfigMenu()
         setupHelpMenu()
 
-        with(ServerEvents) {
+        ServerEvents.apply {
             onStarted.subscribe(Menu) { updateServerState() }
             onStopped.subscribe(Menu) { updateServerState() }
         }
     }
 
     private fun setupBattleMenu() {
-        add(JMenu(MENU.get("menu.battle")).apply {
+        add(JMenu(MenuTitles.get("menu.battle")).apply {
             mnemonic = KeyEvent.VK_B
 
             addNewMenuItem("item.start_battle", onStartBattle).apply {
@@ -58,7 +58,7 @@ object Menu : JMenuBar() {
     }
 
     private fun setupServerMenu() {
-        val serverMenu = JMenu(MENU.get("menu.server")).apply {
+        val serverMenu = JMenu(MenuTitles.get("menu.server")).apply {
             mnemonic = KeyEvent.VK_S
 
             startServerMenuItem = addNewMenuItem("item.start_server", onStartServer)
@@ -92,7 +92,7 @@ object Menu : JMenuBar() {
     }
 
     private fun setupConfigMenu() {
-        add(JMenu(MENU.get("menu.config")).apply {
+        add(JMenu(MenuTitles.get("menu.config")).apply {
             mnemonic = KeyEvent.VK_C
 
             addNewMenuItem("item.bot_root_dirs_config", onBotDirConfig).apply {
@@ -107,7 +107,7 @@ object Menu : JMenuBar() {
     }
 
     private fun setupHelpMenu() {
-        add(JMenu(MENU.get("menu.help")).apply {
+        add(JMenu(MenuTitles.get("menu.help")).apply {
             mnemonic = KeyEvent.VK_H
 
             addNewMenuItem("item.about", onAbout).apply {
