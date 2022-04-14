@@ -126,7 +126,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     private fun setFieldsToServerConfig() {
         urlComboBox.removeAllItems()
 
-        with(ServerSettings) {
+        ServerSettings.apply {
             if (userUrls.isNotEmpty()) {
                 userUrls.forEach { urlComboBox.addItem(it) }
             } else {
@@ -155,7 +155,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         for (i in 0 until size) {
             userUrls.add(urlComboBox.getItemAt(i))
         }
-        with (ServerSettings) {
+        ServerSettings.apply {
             this.userUrls = userUrls
             save()
         }

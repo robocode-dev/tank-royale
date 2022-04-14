@@ -35,7 +35,7 @@ object Menu : JMenuBar() {
         setupConfigMenu()
         setupHelpMenu()
 
-        with(ServerEvents) {
+        ServerEvents.apply {
             onStarted.subscribe(Menu) { updateServerState() }
             onStopped.subscribe(Menu) { updateServerState() }
         }

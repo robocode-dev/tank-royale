@@ -110,7 +110,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             okButton.requestFocus()
         }
 
-        with(gameTypeComboBox) {
+        gameTypeComboBox.apply {
             addItemListener {
                 updateFieldsForGameType()
             }

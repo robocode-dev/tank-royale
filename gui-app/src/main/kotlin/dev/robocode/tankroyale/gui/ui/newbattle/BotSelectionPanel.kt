@@ -316,7 +316,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
             )
 
             enqueue {
-                with(botsDirectoryScrollPane.horizontalScrollBar) {
+                botsDirectoryScrollPane.horizontalScrollBar.apply {
                     value = maximum
                 }
             }
@@ -354,7 +354,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
                     addElement(botInfo)
                 }
             }
-            with(joinedBotsScrollPane.horizontalScrollBar) {
+            joinedBotsScrollPane.horizontalScrollBar.apply {
                 value = maximum
             }
         }
@@ -374,7 +374,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         bootedBotListModel.addElement(dirAndPid)
 
         enqueue {
-            with(bootedScrollPane.horizontalScrollBar) {
+            bootedScrollPane.horizontalScrollBar.apply {
                 value = maximum
             }
         }
