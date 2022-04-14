@@ -2,7 +2,9 @@
 
 ## In progress
 
-- Improved titles on the lists for dialog for selecting bots for a new battle.
+- Improvements to the battle dialog for selecting game type and bots for a new battle.
+  - Added button for setting up rules.
+  - Added tooltip texts.
 
 ## 0.11.2 - Fix restart issue - 12-Apr-2022
 

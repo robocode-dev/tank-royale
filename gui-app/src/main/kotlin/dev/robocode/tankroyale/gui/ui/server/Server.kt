@@ -3,7 +3,8 @@ package dev.robocode.tankroyale.gui.ui.server
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.server.ServerProcess
-import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.Messages
+import dev.robocode.tankroyale.gui.ui.UiTitles
 import java.lang.Thread.sleep
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -72,8 +73,8 @@ object Server {
 
     private fun showStopGameDialog(): Int = showConfirmDialog(
         null,
-        ResourceBundles.MESSAGES.get("stop_battle"),
-        ResourceBundles.UI_TITLES.get("warning"),
+        Messages.get("stop_battle"),
+        UiTitles.get("warning"),
         YES_NO_OPTION
     )
 }

@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.components
 
-import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.UiTitles
 import java.awt.Window
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
@@ -10,7 +10,7 @@ import javax.swing.JPanel
 import javax.swing.KeyStroke
 
 open class RcDialog(owner: Window? = null, titlePropertyName: String) :
-    JDialog(owner, ResourceBundles.UI_TITLES.get(titlePropertyName)) {
+    JDialog(owner, UiTitles.get(titlePropertyName)) {
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE

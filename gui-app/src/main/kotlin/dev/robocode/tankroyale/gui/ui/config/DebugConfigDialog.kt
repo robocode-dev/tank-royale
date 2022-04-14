@@ -1,8 +1,9 @@
 package dev.robocode.tankroyale.gui.ui.config
 
 import dev.robocode.tankroyale.gui.settings.ServerSettings
+import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.MainWindow
-import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.config.DebugConfigDialog.onDismiss
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
@@ -29,8 +30,8 @@ object Panel : JPanel(MigLayout("fill, insets 20", "", "[]20[]")) {
     var selected = ServerSettings.initialPositionsEnabled
 
     init {
-        val checkbox = JCheckBox(ResourceBundles.STRINGS.get("option.enable_initial_position.text"), selected).apply {
-            toolTipText = ResourceBundles.STRINGS.get("option.enable_initial_position.hint")
+        val checkbox = JCheckBox(Strings.get("option.enable_initial_position.text"), selected).apply {
+            toolTipText = Hints.get("option.enable_initial_position")
             addChangeListener {
                 if (isSelected != selected) {
                     selected = isSelected

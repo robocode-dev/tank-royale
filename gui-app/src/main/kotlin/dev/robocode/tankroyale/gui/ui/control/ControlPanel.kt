@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.control
 
 import dev.robocode.tankroyale.gui.client.ClientEvents
-import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.WrapLayout
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
@@ -12,9 +12,9 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 
 object ControlPanel : JPanel() {
-    private val pauseResumeButton = addButton("battle.pause", ControlEvents.onPauseResume)
-    private val stopButton = addButton("battle.stop", ControlEvents.onStop)
-    private val restartButton = addButton("battle.restart", ControlEvents.onRestart)
+    private val pauseResumeButton = addButton("pause", ControlEvents.onPauseResume)
+    private val stopButton = addButton("stop", ControlEvents.onStop)
+    private val restartButton = addButton("restart", ControlEvents.onRestart)
 
     init {
         RegisterWsProtocol
@@ -48,10 +48,10 @@ object ControlPanel : JPanel() {
     }
 
     private fun setPausedText() {
-        pauseResumeButton.text = ResourceBundles.STRINGS.get("battle.pause")
+        pauseResumeButton.text = Strings.get("pause")
     }
 
     private fun setResumedText() {
-        pauseResumeButton.text = ResourceBundles.STRINGS.get("battle.resume")
+        pauseResumeButton.text = Strings.get("resume")
     }
 }
