@@ -50,10 +50,10 @@ defining the value of your `SERVER_SECRET` variable, e.g.:
 export SERVER_SECRET=s0m3R0bOc0dEs3crEt
 ```
 
-#### Windows command line:
+#### Windows command prompt:
 
 ```bash
-SERVER_SECRET=s0m3R0bOc0dEs3crEt
+set SERVER_SECRET=s0m3R0bOc0dEs3crEt
 ```
 
 You can put this into a script used for running your bot.
