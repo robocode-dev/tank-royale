@@ -1,5 +1,9 @@
 # Versions
 
+## In progress
+
+- Improved titles on the lists for dialog for selecting bots for a new battle.
+
 ## 0.11.2 - Fix restart issue - 12-Apr-2022
 
 #### Bugfixes
