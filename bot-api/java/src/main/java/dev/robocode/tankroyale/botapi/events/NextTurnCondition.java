@@ -32,7 +32,7 @@ public final class NextTurnCondition extends Condition {
     /**
      * Constructor for initializing a new instance of the NextTurnCondition class.
      *
-     * @param baseBot is your bot instance, typically <code>this</code> instance, used for determining
+     * @param baseBot is your bot instance, typically {@code this} instance, used for determining
      *                the current turn of the battle with the {@link #test()} method.
      */
     public NextTurnCondition(IBaseBot baseBot) {
@@ -45,8 +45,8 @@ public final class NextTurnCondition extends Condition {
     /**
      * This method tests if the turn number has changed since we created this condition.
      *
-     * @return <code>true</code> if the current turn number is greater than the initial turn number,
-     * when this condition was created; <code>false</code> otherwise.
+     * @return {@code true} if the current turn number is greater than the initial turn number,
+     * when this condition was created; {@code false} otherwise.
      */
     @Override
     public boolean test() {
