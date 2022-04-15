@@ -492,8 +492,16 @@ namespace Robocode.TankRoyale.BotApi
         }
 
         /// <inheritdoc/>
-        public virtual void OnConnectionError(ConnectionErrorEvent connectionErrorEvent) => Console.Error.WriteLine(
-            $"Connection error with {connectionErrorEvent.ServerUri}: " + connectionErrorEvent.Exception.Message);
+        public virtual void OnConnectionError(ConnectionErrorEvent connectionErrorEvent)
+        {
+            Console.Error.WriteLine($"Connection error with {connectionErrorEvent.ServerUri}");
+
+            var exception = connectionErrorEvent.Exception;
+            if (exception != null)
+            {
+                Console.Error.WriteLine(exception.StackTrace);
+            }
+        }
 
         /// <inheritdoc/>
         public virtual void OnGameStarted(GameStartedEvent gameStatedEvent)

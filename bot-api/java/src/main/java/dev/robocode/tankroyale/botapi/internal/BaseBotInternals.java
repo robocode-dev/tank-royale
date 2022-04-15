@@ -474,7 +474,10 @@ public final class BaseBotInternals {
         @Override
         public void onError(WebSocket websocket, Throwable error) {
             botEventHandlers.onConnectionError.publish(new ConnectionErrorEvent(serverUrl, error));
-            System.err.println(error.getLocalizedMessage());
+
+            // Terminate
+            System.out.println("Exiting");
+            System.exit(1);
         }
 
         @Override

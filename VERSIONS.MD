@@ -1,10 +1,18 @@
 # Versions
 
-## In progress
+## 0.12.0 - Removal of RGB value from protocol
+
+#### Changes
 
 - Improvements to the battle dialog for selecting game type and bots for a new battle.
-  - Added button for setting up rules.
-  - Added tooltip texts.
+    - Added button for setting up rules.
+    - Added tooltip texts.
+- Removal of rgb-value type from protocol of Bot APIs.
+
+#### Bugfixes
+
+- Make sure bot terminates (system exit) upon a connection error to prevent dangling bot processes, which is usually
+  occurring when terminating the UI, which closes the bot connections.
 
 ## 0.11.2 - Fix restart issue - 12-Apr-2022
 

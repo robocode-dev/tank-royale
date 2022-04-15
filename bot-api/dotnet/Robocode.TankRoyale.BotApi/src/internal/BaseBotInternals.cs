@@ -449,6 +449,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
         {
             BotEventHandlers.FireConnectionErrorEvent(new E.ConnectionErrorEvent(socket.ServerUri,
                 new Exception(cause.Message)));
+            
+            // Terminate
+            Console.WriteLine("Exiting");
+            Environment.Exit(1);
         }
 
         private void HandleTextMessage(string json)
