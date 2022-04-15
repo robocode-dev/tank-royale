@@ -4,10 +4,11 @@
 
 #### Changes
 
-- Improvements to the battle dialog for selecting game type and bots for a new battle.
+- GUI: Improvements to the battle dialog for selecting game type and bots for a new battle.
     - Added button for setting up rules.
     - Added tooltip texts.
-- Removal of rgb-value type from protocol of Bot APIs.
+- Protocol: Removal of rgb-value type from protocol of Bot APIs.
+- Bot API: The Color.fromRgb() has been replaced by Color.fromString()
 
 #### Bugfixes
 

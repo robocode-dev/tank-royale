@@ -25,11 +25,11 @@ public class Crazy : Bot
     // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
-        BodyColor = Color.FromRgb(0x00C800);   // lime
-        GunColor = Color.FromRgb(0x009632);    // green
-        RadarColor = Color.FromRgb(0x006464);  // dark cyan
-        BulletColor = Color.FromRgb(0xFFFF64); // yellow
-        ScanColor = Color.FromRgb(0xFFC8C8);   // light red
+        BodyColor = Color.FromString("#00C800");   // lime
+        GunColor = Color.FromString("#009632");    // green
+        RadarColor = Color.FromString("#006464");  // dark cyan
+        BulletColor = Color.FromString("#FFFF64"); // yellow
+        ScanColor = Color.FromString("#FFC8C8");   // light red
 
         movingForward = true;
 
