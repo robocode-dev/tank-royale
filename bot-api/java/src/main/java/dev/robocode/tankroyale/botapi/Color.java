@@ -106,11 +106,12 @@ public class Color {
      * An example of a numeric RGB value is "#09C" or "#0099CC", which both represents the same color.
      *
      * @param str is a string containing either a three or six hexadecimal RGB values like "#09C" or "#0099CC".
-     * @return the created Color.
+     * @return the created Color; {@code null} if the input parameter is {@code null}.
      * @see <a href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</a>
      * @see <a href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</a>
      */
     public static Color fromString(String str) {
+        if (str == null) return null;
         str = str.trim();
         if (NUMERIC_RGB.matcher(str).matches()) {
             return fromHex(str.substring(1));

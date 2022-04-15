@@ -102,12 +102,13 @@ namespace Robocode.TankRoyale.BotApi
         /// </summary>
         /// <param name="str">A string containing either a three or six hexadecimal RGB values like "#09C" or "#0099CC".
         /// </param>
-        /// <returns>The created Color.</returns>
+        /// <returns>The created Color; <c>null</c> if the input parameter is <c>null</c>.</returns>
         /// <exception cref="ArgumentException"/>
         /// <see href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</see>
         /// <see href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</see>
         public static Color FromString(string str)
         {
+            if (str == null) return null;
             str = str.Trim();
             if (Regex.Match(str, NumericRgb).Success)
             {
