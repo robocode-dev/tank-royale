@@ -6,7 +6,7 @@ group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 description = "Graphical user interface (GUI) for Robocode Tank Royale"
 
-val jarManifestMainClass = "dev.robocode.tankroyale.gui.MainWindowKt"
+val jarManifestMainClass = "dev.robocode.tankroyale.gui.GuiAppKt"
 
 val archiveBaseName = "robocode-tankroyale-gui"
 val archiveFileName = "$buildDir/libs/$archiveBaseName-$version.jar"

@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.botapi.internal;
 
 import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.BotInfo;
+import dev.robocode.tankroyale.botapi.InitialPosition;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -56,8 +57,13 @@ final class EnvVars {
     /**
      * Name of environment variable for bot programming language.
      */
-    static final String BOT_PROGRAMMING_LANG = "BOT_PROG_LANG";
-    private static final String NO_ENV_VALUE = "No value for environment variable: ";
+    static final String BOT_PROG_LANG = "BOT_PROG_LANG";
+    /**
+     * Name of environment variable for bot initial position.
+     */
+    static final String BOT_INITIAL_POS = "BOT_INITIAL_POS";
+
+    private static final String MISSING_ENV_VALUE = "Missing environment variable: ";
 
     // Hide constructor
     EnvVars() {
@@ -67,17 +73,17 @@ final class EnvVars {
      * Bot Info
      */
     static BotInfo getBotInfo() {
-        if (isNullOrEmpty(getBotName())) {
-            throw new BotException(NO_ENV_VALUE + BOT_NAME);
+        if (isBlank(getBotName())) {
+            throw new BotException(MISSING_ENV_VALUE + BOT_NAME);
         }
-        if (isNullOrEmpty(getBotVersion())) {
-            throw new BotException(NO_ENV_VALUE + BOT_VERSION);
+        if (isBlank(getBotVersion())) {
+            throw new BotException(MISSING_ENV_VALUE + BOT_VERSION);
         }
-        if (isNullOrEmpty(getBotAuthors())) {
-            throw new BotException(NO_ENV_VALUE + BOT_AUTHORS);
+        if (isBlank(getBotAuthors())) {
+            throw new BotException(MISSING_ENV_VALUE + BOT_AUTHORS);
         }
-        if (isNullOrEmpty(getBotGameTypes())) {
-            throw new BotException(NO_ENV_VALUE + BOT_GAME_TYPES);
+        if (isBlank(getBotGameTypes())) {
+            throw new BotException(MISSING_ENV_VALUE + BOT_GAME_TYPES);
         }
         return new BotInfo(
                 getBotName(),
@@ -88,7 +94,8 @@ final class EnvVars {
                 getBotCountryCodes(),
                 getBotGameTypes(),
                 getBotPlatform(),
-                getBotProgrammingLang());
+                getBotProgrammingLang(),
+                getBotInitialPosition());
     }
 
     /**
@@ -165,14 +172,21 @@ final class EnvVars {
      * Language used for programming the bot
      */
     static String getBotProgrammingLang() {
-        return System.getenv(BOT_PROGRAMMING_LANG);
+        return System.getenv(BOT_PROG_LANG);
     }
 
-    private static boolean isNullOrEmpty(String s) {
+    /**
+     * Initial starting position used for debugging the bot
+     */
+    static InitialPosition getBotInitialPosition() {
+        return InitialPosition.fromString(System.getenv(BOT_INITIAL_POS));
+    }
+
+    private static boolean isBlank(String s) {
         return s == null || s.trim().isEmpty();
     }
 
-    private static boolean isNullOrEmpty(Collection<?> c) {
+    private static boolean isBlank(Collection<?> c) {
         return c == null || c.isEmpty();
     }
 

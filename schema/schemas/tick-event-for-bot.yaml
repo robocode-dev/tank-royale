@@ -1,5 +1,5 @@
 $id: #tick-event-for-bot.yaml
-$schema: http://json-schema.org/draft-07/schema#
+$schema: http://json-schema.org/2020-12/schema#
 description: Event occuring for before each new turn in the battle. Gives internal bot details.
 extends:
   $ref: event.yaml

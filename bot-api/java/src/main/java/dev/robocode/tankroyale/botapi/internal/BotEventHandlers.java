@@ -13,6 +13,7 @@ final class BotEventHandlers {
     final EventHandler<ConnectionErrorEvent> onConnectionError = new EventHandler<>();
     final EventHandler<GameStartedEvent> onGameStarted = new EventHandler<>();
     final EventHandler<GameEndedEvent> onGameEnded = new EventHandler<>();
+    final EventHandler<Void> onGameAborted = new EventHandler<>();
     final EventHandler<RoundStartedEvent> onRoundStarted = new EventHandler<>();
     final EventHandler<RoundEndedEvent> onRoundEnded = new EventHandler<>();
     final EventHandler<TickEvent> onTick = new EventHandler<>();

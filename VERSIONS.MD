@@ -2,15 +2,56 @@
 
 ## In progress
 
+- Improvements to the battle dialog for selecting game type and bots for a new battle.
+  - Added button for setting up rules.
+  - Added tooltip texts.
+
+## 0.11.2 - Fix restart issue - 12-Apr-2022
+
 #### Bugfixes
 
-- Bot API: Replaced the environment variable BOT_URL (deprecated) with BOT_HOMEPAGE.
-- Bot API for .Net: Added missing public Bot(BotInfo, Uri, string serverSecret) constructor.
-- Fixes for building Java artifacts that must/can be deployed to Maven artifactory.
+- Battle does not restart ([#10](https://github.com/robocode-dev/tank-royale/issues/10)).
+- Bot API did not stop thread when GameAbortedEvent occurred (when restarting).
+- When restarting, a two or more games could be started on the server.
+
+## 0.11.1 - Patch for the GUI - 07-Apr-2022
+
+#### Bugfixes
+
+- ConcurrentModificationException could occur for `BotSelectionPanel.updateJoinedBots()`. Could not create a new battle.
+- Fixed issue with starting a new battle from the menu with Battle → 'Start Battle' a second time.
 
 #### Changes
 
-- Updated the SpinBot sample bot for C# to demonstrate the use of [BotInfo.FromConfiguration(IConfiguration)].
+- "Restart server" has been renamed into "Reboot Server", and the server and battle is fully stopped, and bots are
+  disconnected. Confirmation dialog for rebooting now differ between the reboot is a user action or due to a changed
+  server setting.
+- Control panel (Pause/Resume, Stop, Restart, TPS) is now always shown when first battle has been started. Various
+  improvements were done to the control panel.
+- A busy cursor is now (automatically) shown when an operation takes some time to perform.
+
+## 0.11.0 - Initial position feature - 02-Apr-2022
+
+#### Bugfixes
+
+- Fixes for building Java artifacts to deploy to Maven artifactory.
+- Bot API: Replaced the environment variable BOT_URL (deprecated) with BOT_HOMEPAGE.
+- Bot API for .Net: Added missing public Bot(BotInfo, Uri, string serverSecret) constructor.
+
+#### Changes
+
+- Implemented initial position feature:
+    - Add an `initialPosition` field in the JSON file for your bot with a value like `50,50,90` to request a starting
+      coordinate at (50,50) with the bot heading toward 90°.
+    - A `--enable-initial-position` (or the short version `-I`) must be set to enable the initial positions feature on
+      the server. If initial position is not enabled, the bot will start at a random position.
+    - Initial positions can be set from the menu with Config → Debug Options → Enable initial start position.
+    - The Target.json file of the Target sample has been updated with an `initialPosition` to demonstrate this feature.
+- Updated the SpinBot sample bot for C# to demonstrate the use of `BotInfo.FromConfiguration(IConfiguration)`.
+- The config file named `misc.properties` has been renamed into `config.properties` and the `server-url` setting was
+  moved to the `server.properties` file.
+- When the server settings are changed on the GUI, the user will be asked if the server should be rebooted to let the
+  changes take effect.
 
 ## 0.10.0 - Bot API improvements - 24-Mar-2022
 

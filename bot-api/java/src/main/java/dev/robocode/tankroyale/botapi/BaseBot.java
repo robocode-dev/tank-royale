@@ -27,35 +27,46 @@ public abstract class BaseBot implements IBaseBot {
      * <p><br>
      * Example of how to set the predefined environment variables used for connecting to the server:
      * <ul>
-     * <li>SERVER_URL=ws://localhost:7654</li>
-     * <li>SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ</li>
+     * <li>{@code SERVER_URL=ws://localhost:7654}</li>
+     * <li>{@code SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ}</li>
      * </ul>
-     *
+     * <p>
      * Example of how to set the environment variables that covers the {@link BotInfo}:
      * <ul>
-     * <li>BOT_NAME=MyBot</li>
-     * <li>BOT_VERSION=1.0</li>
-     * <li>BOT_AUTHOR=John Doe</li>
-     * <li>BOT_DESCRIPTION=Short description</li>
-     * <li>BOT_HOMEPAGE=https://somewhere.net/MyBot</li>
-     * <li>BOT_COUNTRY_CODES=us</li>
-     * <li>BOT_GAME_TYPES=melee,1v1</li>
-     * <li>BOT_PLATFORM=Java</li>
-     * <li>BOT_PROG_LANG=Java 8</li>
+     * <li>{@code BOT_NAME=MyBot}</li>
+     * <li>{@code BOT_VERSION=1.0}</li>
+     * <li>{@code BOT_AUTHORS=John Doe}</li>
+     * <li>{@code BOT_DESCRIPTION=Short description}</li>
+     * <li>{@code BOT_HOMEPAGE=https://somewhere.net/MyBot}</li>
+     * <li>{@code BOT_COUNTRY_CODES=us}</li>
+     * <li>{@code BOT_GAME_TYPES=classic, melee, 1v1}</li>
+     * <li>{@code BOT_PLATFORM=JVM}</li>
+     * <li>{@code BOT_PROG_LANG=Java 11}</li>
+     * <li>{@code BOT_INITIAL_POS=50,70, 270}</li>
      * </ul>
+     * <p>
      * These environment variables <em>must</em> be set prior to using this constructor:
-     * </p>
      * <ul>
-     * <li>BOT_NAME</li>
-     * <li>BOT_VERSION</li>
-     * <li>BOT_AUTHOR</li>
-     * <li>BOT_GAME_TYPES</li>
+     * <li>{@code BOT_NAME}</li>
+     * <li>{@code BOT_VERSION}</li>
+     * <li>{@code BOT_AUTHORS}</li>
+     * <li>{@code BOT_GAME_TYPES}</li>
      * </ul>
-     * The SERVER_SECRET must be set if the server requires a server secret for the bots trying
+     * <p>
+     * These value can take multiple values separated by a comma:
+     * <ul>
+     * <li>{@code BOT_AUTHORS, e.g. "John Doe, Jane Doe"}</li>
+     * <li>{@code BOT_COUNTRY_CODES, e.g. "se, no, dk"}</li>
+     * <li>{@code BOT_GAME_TYPES, e.g. "classic, melee, 1v1"}</li>
+     * </ul>
+     * <p>
+     * The {@code BOT_INITIAL_POS} variable is optional and should <em>only</em> be used for debugging.
+     * <p>
+     * The {@code SERVER_SECRET} must be set if the server requires a server secret for the bots trying
      * to connect. Otherwise, the bot will be disconnected as soon as it attempts to connect to
      * the server.
      * <p>
-     * If the SERVER_URL is not set, then this default URL is used: ws://localhost:7654
+     * If the {@code SERVER_URL} is not set, then this default URL is used: ws://localhost:7654
      */
     public BaseBot() {
         __baseBotInternals = new BaseBotInternals(this, null, null, null);

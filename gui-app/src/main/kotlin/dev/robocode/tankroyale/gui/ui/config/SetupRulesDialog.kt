@@ -1,12 +1,10 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.gui.MainWindow
 import dev.robocode.tankroyale.gui.model.IGameSetup
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.MutableGameSetup
-import dev.robocode.tankroyale.gui.ui.GameConstants
-import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.ui.*
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
@@ -18,7 +16,6 @@ import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.newbattle.GameTypeComboBox
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
-import java.awt.EventQueue
 import javax.swing.*
 
 object SetupRulesDialog : RcDialog(MainWindow, "setup_rules_dialog") {
@@ -90,7 +87,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             add(turnTimeoutTextField, "wrap")
         }
         val arenaPanel = JPanel(MigLayout()).apply {
-            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("arena_size"))
+            border = BorderFactory.createTitledBorder(Strings.get("arena_size"))
 
             addLabel("width")
             add(widthTextField, "wrap")
@@ -113,7 +110,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             okButton.requestFocus()
         }
 
-        with(gameTypeComboBox) {
+        gameTypeComboBox.apply {
             addItemListener {
                 updateFieldsForGameType()
             }
@@ -151,7 +148,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             val selectedGameType = gameTypeComboBox.getSelectedGameType().displayName
             val default: MutableGameSetup? = GamesSettings.defaultGameSetup[selectedGameType]?.toMutableGameSetup()
             if (default != null) {
-                GamesSettings.games[selectedGameType]?.copy(default)
+                GamesSettings.games[selectedGameType]?.copyFields(default)
                 updateFieldsForGameType()
             }
         }
@@ -218,7 +215,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         } else {
             showMessage(
                 String.format(
-                    ResourceBundles.MESSAGES.get("arena_size_range"),
+                    Messages.get("arena_size_range"),
                     GameConstants.MIN_ARENA_SIZE,
                     GameConstants.MAX_ARENA_SIZE
                 )
@@ -241,7 +238,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         } else {
             showMessage(
                 String.format(
-                    ResourceBundles.MESSAGES.get("arena_size_range"),
+                    Messages.get("arena_size_range"),
                     GameConstants.MIN_ARENA_SIZE,
                     GameConstants.MAX_ARENA_SIZE
                 )
@@ -264,7 +261,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         } else {
             showMessage(
                 String.format(
-                    ResourceBundles.MESSAGES.get("min_num_participants"),
+                    Messages.get("min_num_participants"),
                     GameConstants.MIN_NUM_PARTICIPANTS
                 )
             )
@@ -297,12 +294,12 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             if (maxNum == null || maxNum > GameConstants.MAX_NUM_PARTICIPANTS) {
                 showMessage(
                     String.format(
-                        ResourceBundles.MESSAGES.get("max_num_participants"),
+                        Messages.get("max_num_participants"),
                         GameConstants.MAX_NUM_PARTICIPANTS
                     )
                 )
             } else {
-                showMessage(ResourceBundles.MESSAGES.get("max_num_participants_too_small"))
+                showMessage(Messages.get("max_num_participants_too_small"))
             }
             maxNumParticipantsTextField.text =
                 if (gameSetup.maxNumberOfParticipants == null) "" else "${gameSetup.maxNumberOfParticipants}"
@@ -320,7 +317,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         if (valid && numRounds != null) {
             gameSetup.numberOfRounds = numRounds
         } else {
-            showMessage(String.format(ResourceBundles.MESSAGES.get("num_rounds_range"), GameConstants.MAX_NUM_ROUNDS))
+            showMessage(String.format(Messages.get("num_rounds_range"), GameConstants.MAX_NUM_ROUNDS))
 
             maxNumParticipantsTextField.text = "" + gameSetup.numberOfRounds
         }
@@ -339,7 +336,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         } else {
             showMessage(
                 String.format(
-                    ResourceBundles.MESSAGES.get("gun_cooling_range"),
+                    Messages.get("gun_cooling_range"),
                     "" + GameConstants.MAX_GUN_COOLING
                 )
             )
@@ -361,7 +358,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         } else {
             showMessage(
                 String.format(
-                    ResourceBundles.MESSAGES.get("num_inactivity_turns_range"),
+                    Messages.get("num_inactivity_turns_range"),
                     GameConstants.MAX_INACTIVITY_TURNS
                 )
             )
@@ -383,7 +380,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         } else {
             showMessage(
                 String.format(
-                    ResourceBundles.MESSAGES.get("ready_timeout_range"),
+                    Messages.get("ready_timeout_range"),
                     GameConstants.MAX_READY_TIMEOUT
                 )
             )
@@ -405,7 +402,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         } else {
             showMessage(
                 String.format(
-                    ResourceBundles.MESSAGES.get("turn_timeout_range"),
+                    Messages.get("turn_timeout_range"),
                     GameConstants.MAX_TURN_TIMEOUT
                 )
             )
@@ -413,13 +410,5 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             turnTimeoutTextField.text = "" + gameSetup.turnTimeout
         }
         return valid
-    }
-}
-
-private fun main() {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
-    EventQueue.invokeLater {
-        SetupRulesDialog.isVisible = true
     }
 }

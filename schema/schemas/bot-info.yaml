@@ -1,5 +1,5 @@
 $id: #bot-info.yaml
-$schema: http://json-schema.org/draft-07/schema#
+$schema: http://json-schema.org/2020-12/schema#
 description: Bot info
 type: object
 extends:

@@ -152,14 +152,14 @@ class GameResumedEvent : Message()
 @Serializable
 @SerialName("RoundStartedEvent")
 class RoundStartedEvent(
-    val roundNumber: Int
+    val roundNumber: Int // must be present for serialization
 ) : Message()
 
 @Serializable
 @SerialName("RoundEndedEvent")
 class RoundEndedEvent(
-    val roundNumber: Int,
-    val turnNumber: Int
+    val roundNumber: Int, // must be present for serialization
+    val turnNumber: Int // must be present for serialization
 ) : Message()
 
 @Serializable
@@ -180,7 +180,6 @@ data class ControllerHandshake(
 @Serializable
 @SerialName("ServerHandshake")
 data class ServerHandshake(
-//    val name: String?,
     val variant: String,
     val version: String,
     val gameTypes: Set<String>

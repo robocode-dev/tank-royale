@@ -3,9 +3,12 @@ package dev.robocode.tankroyale.gui.ui.newbattle
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.booter.DirAndPid
 import dev.robocode.tankroyale.gui.client.Client
+import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.BotInfo
-import dev.robocode.tankroyale.gui.settings.MiscSettings
-import dev.robocode.tankroyale.gui.ui.ResourceBundles
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
+import dev.robocode.tankroyale.gui.ui.Hints
+import dev.robocode.tankroyale.gui.ui.Messages
+import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.SortedListModel
 import dev.robocode.tankroyale.gui.ui.config.BotRootDirectoriesConfigDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
@@ -13,17 +16,18 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showError
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onChanged
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onMultiClickedAtIndex
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onSelection
+import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 import net.miginfocom.swing.MigLayout
-import java.awt.EventQueue
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
 import javax.swing.*
 
-object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[grow][grow]")), FocusListener {
+object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,grow]", "[grow][grow]")), FocusListener {
 
-    private val onRunBots = Event<JButton>()
-    private val onStopBots = Event<JButton>()
+    private val onBootBots = Event<JButton>()
+    private val onUnbootBots = Event<JButton>()
 
     private val onAdd = Event<JButton>()
     private val onAddAll = Event<JButton>()
@@ -31,25 +35,25 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
     private val onRemoveAll = Event<JButton>()
 
     private val botsDirectoryListModel = SortedListModel<BotInfo>()
-    private val runningBotListModel = SortedListModel<DirAndPid>()
+    private val bootedBotListModel = SortedListModel<DirAndPid>()
     private val joinedBotListModel = SortedListModel<BotInfo>()
     private val selectedBotListModel = SortedListModel<BotInfo>()
 
     private val botsDirectoryList = createBotDirectoryList()
-    private val runningBotList = createRunningBotList()
+    private val bootedBotList = createRunningBotList()
     private val joinedBotList = createBotInfoList(joinedBotListModel)
     private val selectedBotList = createBotInfoList(selectedBotListModel)
 
     private val botsDirectoryScrollPane = JScrollPane(botsDirectoryList)
-    private val runningScrollPane = JScrollPane(runningBotList)
+    private val bootedScrollPane = JScrollPane(bootedBotList)
     private val joinedBotsScrollPane = JScrollPane(joinedBotList)
 
     private val botsDirectoryPanel = createBotsDirectoryPanel()
-    private val runningBotsPanel = createRunningBotsPanel()
+    private val bootedBotsPanel = createRunningBotsPanel()
     private val joinedBotsPanel = createJoinedBotsPanel()
     private val selectBotsPanel = createSelectBotsPanel()
 
-    private val runButtonPanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
+    private val bootButtonPanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
     private val addPanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
     private val removePanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
 
@@ -60,23 +64,25 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
         isFocusable = true
 
         add(botsDirectoryPanel, "grow")
-        add(runButtonPanel)
-        add(runningBotsPanel, "grow, wrap")
+        add(bootButtonPanel)
+        add(bootedBotsPanel, "grow, wrap")
 
         add(joinedBotsPanel, "grow")
         add(addRemoveButtonsPanel)
         add(selectBotsPanel, "grow")
 
-        addRunButton()
-        addStopButton()
+        addBootButton()
+        addUnbootButton()
 
         addAddButton()
         addAllButton()
         addRemoveButton()
         addRemoveAll()
 
-        onRunBots.subscribe(this) { handleRunBots() }
-        onStopBots.subscribe(this) { handleStopBots() }
+        addToolTips()
+
+        onBootBots.subscribe(this) { handleBootBots() }
+        onUnbootBots.subscribe(this) { handleUnbootBots() }
 
         onAdd.subscribe(this) { handleAdd() }
         onAddAll.subscribe(this) { handleAddAll() }
@@ -87,18 +93,25 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
         joinedBotList.onMultiClickedAtIndex { addSelectedBotFromJoinedListAt(it) }
         selectedBotList.onMultiClickedAtIndex { removeSelectedBotAt(it) }
 
-        botsDirectoryList.onSelection { BotSelectionChannel.onBotDirectorySelected.fire(it) }
-        joinedBotList.onSelection { BotSelectionChannel.onJoinedBotSelected.fire(it) }
-        selectedBotList.onSelection { BotSelectionChannel.onBotSelected.fire(it) }
+        botsDirectoryList.onSelection { BotSelectionEvents.onBotDirectorySelected.fire(it) }
+        joinedBotList.onSelection { BotSelectionEvents.onJoinedBotSelected.fire(it) }
+        selectedBotList.onSelection { BotSelectionEvents.onBotSelected.fire(it) }
 
-        selectedBotList.onChanged { BotSelectionChannel.onSelectedBotListUpdated.fire(selectedBotListModel.list()) }
+        selectedBotList.onChanged { BotSelectionEvents.onSelectedBotListUpdated.fire(selectedBotListModel.list()) }
 
-        Client.onBotListUpdate.subscribe(this) { updateJoinedBots() }
+        ClientEvents.onBotListUpdate.subscribe(this) { updateJoinedBots() }
 
-        BootProcess.onRunBot.subscribe(this) { updateRunningBot(it) }
-        BootProcess.onStopBot.subscribe(this) { updateStoppingBot(it) }
+        BootProcess.onBootBot.subscribe(this) { updateBootingBot(it) }
+        BootProcess.onUnbootBot.subscribe(this) { updateUnbootingBot(it) }
 
-        MiscSettings.onSaved.subscribe(this) { updateBotsDirectoryBots() }
+        ConfigSettings.onSaved.subscribe(this) { updateBotsDirectoryBots() }
+
+        ServerEvents.onStopped.subscribe(this) { reset() }
+    }
+
+    private fun reset() {
+        selectedBotListModel.clear()
+        update()
     }
 
     private fun removeSelectedBotAt(index: Int) {
@@ -129,7 +142,7 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
         }
 
     private fun createRunningBotList() =
-        JList(runningBotListModel).apply {
+        JList(bootedBotListModel).apply {
             cellRenderer = RunningBotCellRenderer()
         }
 
@@ -138,13 +151,13 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
             cellRenderer = BotInfoListCellRenderer()
         }
 
-    private fun handleRunBots() {
+    private fun handleBootBots() {
         val botDirs = botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].host }
         BootProcess.run(botDirs)
     }
 
-    private fun handleStopBots() {
-        val pidList = runningBotList.selectedIndices.map { runningBotListModel[it].pid }
+    private fun handleUnbootBots() {
+        val pidList = bootedBotList.selectedIndices.map { bootedBotListModel[it].pid }
         BootProcess.stop(pidList)
     }
 
@@ -175,8 +188,8 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
         selectedBotListModel.clear()
     }
 
-    private fun addRunButton() {
-        runButtonPanel.addButton("run_arrow", onRunBots, "cell 0 1").apply {
+    private fun addBootButton() {
+        bootButtonPanel.addButton("boot_arrow", onBootBots, "cell 0 1").apply {
             isEnabled = false
             botsDirectoryList.onSelection {
                 isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
@@ -184,14 +197,14 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
         }
     }
 
-    private fun addStopButton() {
-        runButtonPanel.addButton("stop_arrow", onStopBots, "cell 0 2").apply {
+    private fun addUnbootButton() {
+        bootButtonPanel.addButton("unboot_arrow", onUnbootBots, "cell 0 2").apply {
             isEnabled = false
-            runningBotList.onSelection {
-                isEnabled = runningBotList.selectedIndices.isNotEmpty()
+            bootedBotList.onSelection {
+                isEnabled = bootedBotList.selectedIndices.isNotEmpty()
             }
-            runningBotList.onChanged {
-                runningBotList.clearSelection()
+            bootedBotList.onChanged {
+                bootedBotList.clearSelection()
                 isEnabled = false
             }
         }
@@ -246,25 +259,25 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
     private fun createBotsDirectoryPanel() =
         JPanel(MigLayout("fill")).apply {
             add(botsDirectoryScrollPane, "grow")
-            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("bot_directories"))
+            border = BorderFactory.createTitledBorder(Strings.get("bot_directories"))
         }
 
     private fun createRunningBotsPanel() =
         JPanel(MigLayout("fill")).apply {
-            add(runningScrollPane, "grow")
-            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("running_bots"))
+            add(bootedScrollPane, "grow")
+            border = BorderFactory.createTitledBorder(Strings.get("running_bots"))
         }
 
     private fun createJoinedBotsPanel() =
         JPanel(MigLayout("fill")).apply {
             add(joinedBotsScrollPane, "grow")
-            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("joined_bots"))
+            border = BorderFactory.createTitledBorder(Strings.get("joined_bots"))
         }
 
     private fun createSelectBotsPanel() =
         JPanel(MigLayout("fill")).apply {
             add(JScrollPane(selectedBotList), "grow")
-            border = BorderFactory.createTitledBorder(ResourceBundles.STRINGS.get("selected_bots"))
+            border = BorderFactory.createTitledBorder(Strings.get("selected_bots"))
         }
 
     override fun focusGained(e: FocusEvent?) {
@@ -275,6 +288,7 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
 
     fun update() {
         updateBotsDirectoryBots()
+        updateRunningBots()
         updateJoinedBots()
 
         enforceBotDirIsConfigured()
@@ -301,8 +315,8 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
                 )
             )
 
-            SwingUtilities.invokeLater {
-                with(botsDirectoryScrollPane.horizontalScrollBar) {
+            enqueue {
+                botsDirectoryScrollPane.horizontalScrollBar.apply {
                     value = maximum
                 }
             }
@@ -310,11 +324,11 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
     }
 
     private fun enforceBotDirIsConfigured() {
-        if (MiscSettings.getBotDirectories().isEmpty()) {
-            SwingUtilities.invokeLater {
+        if (ConfigSettings.botDirectories.isEmpty()) {
+            enqueue {
                 with(BotRootDirectoriesConfigDialog) {
                     if (!isVisible) {
-                        showError(ResourceBundles.MESSAGES.get("no_bot_dir"))
+                        showError(Messages.get("no_bot_dir"))
                         isVisible = true
                     }
                 }
@@ -322,40 +336,63 @@ object BotSelectionPanel : JPanel(MigLayout("", "[sg,grow][center][sg,grow]", "[
         }
     }
 
+    private fun updateRunningBots() {
+        enqueue {
+            bootedBotListModel.apply {
+                clear()
+                BootProcess.runningBots.forEach { updateBootingBot(it) }
+            }
+        }
+    }
+
     private fun updateJoinedBots() {
-        SwingUtilities.invokeLater {
+        enqueue {
             // Reset the list of joined bots to it matches the joined bots from the client
             joinedBotListModel.apply {
                 clear()
                 Client.joinedBots.forEach { botInfo ->
-                    EventQueue.invokeLater { addElement(botInfo) }
+                    addElement(botInfo)
                 }
             }
+            joinedBotsScrollPane.horizontalScrollBar.apply {
+                value = maximum
+            }
+        }
+        enqueue {
             // Remove selected bots, if the bots are not on the joined bots from the client
             selectedBotListModel.apply {
-                list().forEach { botInfo ->
+                ArrayList(list()).forEach { botInfo -> // ArrayList is used for preventing ConcurrentModificationException
                     if (!Client.joinedBots.contains(botInfo)) {
-                        EventQueue.invokeLater { removeElement(botInfo) }
+                        removeElement(botInfo)
                     }
                 }
             }
-            with(joinedBotsScrollPane.horizontalScrollBar) {
+        }
+    }
+
+    private fun updateBootingBot(dirAndPid: DirAndPid) {
+        bootedBotListModel.addElement(dirAndPid)
+
+        enqueue {
+            bootedScrollPane.horizontalScrollBar.apply {
                 value = maximum
             }
         }
     }
 
-    private fun updateRunningBot(dirAndPid: DirAndPid) {
-        runningBotListModel.addElement(dirAndPid)
-
-        SwingUtilities.invokeLater {
-            with(runningScrollPane.horizontalScrollBar) {
-                value = maximum
-            }
-        }
+    private fun updateUnbootingBot(dirAndPid: DirAndPid) {
+        bootedBotListModel.removeElement(dirAndPid)
     }
 
-    private fun updateStoppingBot(dirAndPid: DirAndPid) {
-        runningBotListModel.removeElement(dirAndPid)
+    private fun addToolTips() {
+        botsDirectoryList.toolTipText = Hints.get("new_battle.bot_directories")
+        bootedBotList.toolTipText = Hints.get("new_battle.booted_bots")
+        joinedBotList.toolTipText = Hints.get("new_battle.joined_bots")
+        selectedBotList.toolTipText = Hints.get("new_battle.selected_bots")
+
+        botsDirectoryPanel.toolTipText = botsDirectoryList.toolTipText
+        bootedBotsPanel.toolTipText = bootedBotList.toolTipText
+        joinedBotsPanel.toolTipText = joinedBotList.toolTipText
+        selectBotsPanel.toolTipText = selectedBotList.toolTipText
     }
 }

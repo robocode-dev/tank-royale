@@ -1,14 +1,15 @@
 package dev.robocode.tankroyale.gui.ui.extensions
 
-import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
-import dev.robocode.tankroyale.gui.ui.ResourceBundles.UI_TITLES
+import dev.robocode.tankroyale.gui.ui.Strings
+import dev.robocode.tankroyale.gui.ui.UiTitles
 import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 import javax.swing.*
 
 object JComponentExt {
 
     fun JComponent.addLabel(stringResourceName: String, layoutConstraints: String? = null): JLabel {
-        val label = JLabel(STRINGS.get(stringResourceName) + ':')
+        val label = JLabel(Strings.get(stringResourceName) + ':')
         add(label, layoutConstraints)
         return label
     }
@@ -16,14 +17,14 @@ object JComponentExt {
     fun JComponent.addButton(
         stringResourceName: String, event: Event<JButton>, layoutConstraints: String? = null
     ): JButton {
-        val button = JButton(STRINGS.get(stringResourceName))
+        val button = JButton(Strings.get(stringResourceName))
         button.addActionListener { event.fire(button) }
         add(button, layoutConstraints)
         return button
     }
 
     fun JComponent.setDefaultButton(button: JButton) {
-        SwingUtilities.invokeLater { // to avoid rootPane to be null, if called too early
+        enqueue { // to avoid rootPane to be null, if called too early
             if (rootPane != null) {
                 rootPane.defaultButton = button
             }
@@ -32,10 +33,10 @@ object JComponentExt {
     }
 
     fun JComponent.showMessage(msg: String) {
-        JOptionPane.showMessageDialog(this, msg, UI_TITLES.get("message"), JOptionPane.INFORMATION_MESSAGE)
+        JOptionPane.showMessageDialog(this, msg, UiTitles.get("message"), JOptionPane.INFORMATION_MESSAGE)
     }
 
     fun JComponent.showError(msg: String) {
-        JOptionPane.showMessageDialog(this, msg, UI_TITLES.get("error"), JOptionPane.ERROR_MESSAGE)
+        JOptionPane.showMessageDialog(this, msg, UiTitles.get("error"), JOptionPane.ERROR_MESSAGE)
     }
 }

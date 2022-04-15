@@ -5,21 +5,21 @@ import dev.robocode.tankroyale.server.model.IBotIntent
 /**
  * BotUpdate is a bot intent sent from a bot between turns.
  * A bot intent reflects the bot's orders for setting a new target speed, turn rates, bullet power etc.
- * @property targetSpeed New target speed.
- * @property turnRate New driving turn rate.
- * @property gunTurnRate New gun turn rate.
- * @property radarTurnRate New radar turn rate.
- * @property firepower New firepower.
- * @property adjustGunForBodyTurn Flag set to adjusting gun for body turn.
- * @property adjustRadarForGunTurn Flag set to adjusting radar for gun turn.
- * @property scan Flag set to perform rescan (reusing last scan direction and scan spread angle)
- * @property bodyColor New body color.
- * @property turretColor New gun turret color.
- * @property radarColor New radar color.
- * @property bulletColor New bullet color.
- * @property scanColor New scan color.
- * @property tracksColor New tracks color.
- * @property gunColor New gun color.
+ * @param targetSpeed New target speed.
+ * @param turnRate New driving turn rate.
+ * @param gunTurnRate New gun turn rate.
+ * @param radarTurnRate New radar turn rate.
+ * @param firepower New firepower.
+ * @param adjustGunForBodyTurn Flag set to adjusting gun for body turn.
+ * @param adjustRadarForGunTurn Flag set to adjusting radar for gun turn.
+ * @param scan Flag set to perform rescan (reusing last scan direction and scan spread angle)
+ * @param bodyColor New body color.
+ * @param turretColor New gun turret color.
+ * @param radarColor New radar color.
+ * @param bulletColor New bullet color.
+ * @param scanColor New scan color.
+ * @param tracksColor New tracks color.
+ * @param gunColor New gun color.
  */
 data class BotUpdate(
     override var targetSpeed: Double? = null,

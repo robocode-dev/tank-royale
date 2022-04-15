@@ -1,0 +1,54 @@
+package dev.robocode.tankroyale.gui.ui.server
+
+import dev.robocode.tankroyale.gui.booter.BootProcess
+import dev.robocode.tankroyale.gui.server.ServerProcess
+import dev.robocode.tankroyale.gui.ui.MainWindow
+import dev.robocode.tankroyale.gui.ui.Messages
+import dev.robocode.tankroyale.gui.ui.UiTitles
+import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
+import javax.swing.JOptionPane
+
+object ServerActions {
+    init {
+        ServerEventTriggers.apply {
+            onStartServer.subscribe(this) {
+                Server.start()
+            }
+            onStopServer.subscribe(this) {
+                Server.stop()
+                BootProcess.stopRunning()
+            }
+            onRebootServer.subscribe(this) {
+                handleReboot(it)
+            }
+        }
+
+        ServerEvents.onStarted.subscribe(this) {
+            ServerLogWindow.clear()
+        }
+    }
+
+    private fun handleReboot(dueToSetting: Boolean) {
+        if (!ServerProcess.isRunning()) return
+
+        val title = UiTitles.get("question")
+        val resource =
+            if (dueToSetting)
+                "reboot_server_confirmation_settings"
+            else
+                "reboot_server_confirmation"
+
+        enqueue {
+            if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
+                    MainWindow,
+                    Messages.get(resource),
+                    title,
+                    JOptionPane.YES_NO_OPTION
+                )
+            ) {
+                BootProcess.stopRunning()
+                Server.reboot()
+            }
+        }
+    }
+}

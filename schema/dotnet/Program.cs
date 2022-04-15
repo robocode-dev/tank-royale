@@ -7,24 +7,26 @@ using NJsonSchema;
 using NJsonSchema.CodeGeneration.CSharp;
 using NJsonSchema.Yaml;
 
-namespace Robocode.TankRoyale.SchemaCodeGenerator
+namespace Robocode.TankRoyale.Schema.CodeGenerator
 {
     /// <summary>
     /// CLI program for generating C# source files from the Robocode Tank Royale JSON Schema files.
     /// </summary>
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             // The program needs 2 arguments: the source path for the location of the JSON Schema files, and the
             // destination path for storing the generated source files.
             if (args.Length < 2)
             {
-                string appName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+                var appName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
 
-                Console.WriteLine("Generates C# source files from the Robocode Tank Royale JSON schema files.");
-                Console.WriteLine();
-                Console.WriteLine(appName + " [src path] [dest path]");
+                Console.WriteLine($@"
+                    Generates C# source files from the Robocode Tank Royale JSON schema files.
+
+                    {appName} [src path] [dest path])"
+                );
 
                 Environment.Exit(1);
             }
@@ -40,7 +42,7 @@ namespace Robocode.TankRoyale.SchemaCodeGenerator
                     continue;
 
                 // Write information about which schema file is being parsed
-                Console.WriteLine("Parsing file: " + filename);
+                Console.WriteLine($"Parsing file: {filename}");
 
                 // Get the class name from the filename
                 var className = ToClassName(filename);
@@ -48,7 +50,7 @@ namespace Robocode.TankRoyale.SchemaCodeGenerator
                 // Read the JSON Schema from the file
                 var schema = JsonSchemaYaml.FromFileAsync(filename).Result;
 
-                // Disble allowAdditionalProperties attribute as it is not provided in the schemas (currently)
+                // Disable allowAdditionalProperties attribute as it is not provided in the schemas (currently)
                 schema.AllowAdditionalProperties = false;
 
                 // Prepare a C# code generator with our settings
@@ -70,8 +72,8 @@ namespace Robocode.TankRoyale.SchemaCodeGenerator
 
                 // Remove embedded classes in the generated source file.
                 // All files are put in individual schema files instead of all in a single big file.
-                int firstClassStartIndex = text.IndexOf("\n    /// <summary>");
-                int lastClassStartIndex = text.LastIndexOf("\n    /// <summary>");
+                var firstClassStartIndex = text.IndexOf("\n    /// <summary>", StringComparison.Ordinal);
+                var lastClassStartIndex = text.LastIndexOf("\n    /// <summary>", StringComparison.Ordinal);
                 if (firstClassStartIndex > 0 && lastClassStartIndex > firstClassStartIndex)
                 {
                     var count = lastClassStartIndex - firstClassStartIndex;
@@ -79,13 +81,13 @@ namespace Robocode.TankRoyale.SchemaCodeGenerator
                 }
 
                 // Prepare replacement string for providing the correct class name (instead of "Yaml")
-                string replacement = "public class " + className;
+                var replacement = "public class " + className;
 
                 // Add extension class to the class replacement string, of the schema contains an "extends" attribute
                 try
                 {
                     var extends = (IDictionary<string, object>) schema.ExtensionData["extends"];
-                    string referencePath = (string) extends["__referencePath"];
+                    var referencePath = (string) extends["__referencePath"];
                     replacement += " : " + ToClassName(referencePath);
                 } catch (KeyNotFoundException) {}
 
@@ -94,7 +96,7 @@ namespace Robocode.TankRoyale.SchemaCodeGenerator
                 text = text.Replace("public partial class Yaml", replacement);
 
                 // Replace the "YamlType" with <class mame>Type
-                string classNameType = className + "Type";
+                var classNameType = className + "Type";
                 text = text.Replace("public enum YamlType", "public enum " + classNameType)
                     .Replace("public YamlType Type", "public " + classNameType + " Type");
 
@@ -120,11 +122,11 @@ namespace Robocode.TankRoyale.SchemaCodeGenerator
             var strList = Path.GetFileNameWithoutExtension(filename).Split('-');
 
             // The starting letter and letters after a dash must be converted to upper case, and the dashes must be removed
-            StringBuilder sb = new StringBuilder();
-            foreach (string str in strList)
+            var sb = new StringBuilder();
+            foreach (var str in strList)
             {
                 sb.Append(str.First().ToString().ToUpper());
-                sb.Append(str.Substring(1).ToLower());
+                sb.Append(str[1..].ToLower());
             }
             return sb.ToString();
         }

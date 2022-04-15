@@ -23,6 +23,8 @@ themeConfig:
       path: /tutorial/my-first-bot
     - title: API Documentation
       path: /api/apis
+    - title: Debugging
+      path: /articles/debug
     - title: Bot Anatomy
       path: /articles/anatomy
     - title: Coordinates and Angles

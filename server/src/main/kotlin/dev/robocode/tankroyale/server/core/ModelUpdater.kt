@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.server.core
 
+import dev.robocode.tankroyale.server.Server
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.math.*
 import dev.robocode.tankroyale.server.model.*
@@ -27,7 +29,9 @@ class ModelUpdater(
     /** Game setup */
     private val setup: GameSetup,
     /** Participant ids */
-    private val participantIds: Set<BotId>
+    private val participantIds: Set<BotId>,
+    /** Initial positions */
+    private val initialPositions: Map<BotId, InitialPosition>
 ) {
     /** Score keeper */
     private val scoreTracker: ScoreTracker = ScoreTracker(participantIds)
@@ -50,13 +54,13 @@ class ModelUpdater(
     /** Turn record */
     val turn = MutableTurn(0)
 
-    /** Id for the next bullet that comes into existence */
+    /** The id for the next bullet that comes into existence */
     private var nextBulletId = 0
 
     /** Inactivity counter */
     private var inactivityCounter = 0
 
-    /** The current results ordered with highest total scores first */
+    /** The current results ordered with higher total scores first */
     val results: List<Score> get() = scoreTracker.results
 
     /** The number of rounds played so far */
@@ -160,8 +164,11 @@ class ModelUpdater(
     private fun initializeBotStates() {
         val occupiedCells = mutableSetOf<Int>()
         for (id in participantIds) {
-            val position = randomBotPosition(occupiedCells)
-            val direction = randomDirection() // body, gun, and radar starts in the same direction
+            val randomPosition = randomBotPosition(occupiedCells)
+            val position = adjustForInitialPosition(id, randomPosition)
+            // note: body, gun, and radar starts in the same direction
+            val randomDirection = randomDirection()
+            val direction = adjustForInitialAngle(id, randomDirection)
             botsMap[id] = MutableBot(
                 id = id,
                 position = position.toMutablePoint(),
@@ -172,6 +179,32 @@ class ModelUpdater(
         }
         // Store bot snapshots into the turn
         turn.copyBots(botsMap.values)
+    }
+
+    private fun adjustForInitialPosition(botId: BotId, point: Point): Point {
+        if (!Server.initialPositionEnabled) return point
+        val initialPosition = initialPositions[botId]
+        return if (initialPosition == null) {
+            point
+        } else {
+            val x = clamp(initialPosition.x ?: point.x, setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS)
+            val y = clamp(initialPosition.y ?: point.y, setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS)
+            Point(x, y)
+        }
+    }
+
+    private fun adjustForInitialAngle(botId: BotId, direction: Double): Double {
+        if (!Server.initialPositionEnabled) return direction
+        val initialPosition = initialPositions[botId]
+        return if (initialPosition == null) {
+            direction
+        } else {
+            initialPosition.angle ?: direction
+        }
+    }
+
+    private fun clamp(value: Double, max: Double): Double {
+        return max.coerceAtMost(BOT_BOUNDING_CIRCLE_RADIUS.coerceAtLeast(value))
     }
 
     /**
@@ -204,7 +237,7 @@ class ModelUpdater(
 
     /**
      * Updates the bot states (position, speed, turn rates, angles, colors etc.)
-     * @param bot it the bot top execute the bot intent for.
+     * @param bot is the bot top execute the bot intent for.
      */
     private fun updateBotStates(bot: MutableBot) {
         val intent = botIntentsMap[bot.id]
@@ -276,7 +309,7 @@ class ModelUpdater(
         // Check bullet-hit-bot collision (hit)
         for (bot in botsMap.values) {
             if (bulletLine.bullet.botId == bot.id) {
-                continue // A bot cannot shot itself
+                continue // A bot cannot shoot itself
             }
             if (isBulletHittingBot(bulletLine, bot)) {
                 handleBulletHittingBot(bulletLine.bullet, bot)
@@ -335,7 +368,7 @@ class ModelUpdater(
         }
     }
 
-    /** Constrain all bot positions so they are kept inside the battle arena. */
+    /** Constrain all bot positions, so they are kept inside the battle arena. */
     private fun constrainBotPositions() {
         botsMap.values.forEach { bot ->
             run {
@@ -347,7 +380,7 @@ class ModelUpdater(
     }
 
     /**
-     * Constrain the bot position so it is kept inside the battle arena.
+     * Constrain the bot position, so it is kept inside the battle arena.
      *
      * @param x is the current x coordinate of the bot position.
      * @param y is the current y coordinate of the bot position.
@@ -382,14 +415,22 @@ class ModelUpdater(
         val isBot1RammingBot2 = isRamming(bot1, bot2)
         val isBot2RammingBot1 = isRamming(bot2, bot1)
 
-        // Both bots takes damage when hitting each other
+        // Both bots take damage when hitting each other
         registerRamHit(bot1, bot2, isBot1RammingBot2, isBot2RammingBot1)
 
-        // Restore both bot's old position
-        val oldPos1 = round.lastTurn?.getBot(bot1.id)!!.position
-        val oldPos2 = round.lastTurn?.getBot(bot2.id)!!.position
-        bot1.position = MutablePoint(oldPos1.x, oldPos1.y)
-        bot2.position = MutablePoint(oldPos2.x, oldPos2.y)
+        // Restore both bot´s old position
+        val lastTurn = round.lastTurn
+        if (lastTurn == null) {
+            // Same position on first turn? => Move the second bot to a random position
+            val x = BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (setup.arenaWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
+            val y = BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (setup.arenaHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
+            bot2.position = MutablePoint(x, y)
+        } else {
+            val oldPos1 = lastTurn.getBot(bot1.id)!!.position
+            val oldPos2 = lastTurn.getBot(bot2.id)!!.position
+            bot1.position = MutablePoint(oldPos1.x, oldPos1.y)
+            bot2.position = MutablePoint(oldPos2.x, oldPos2.y)
+        }
 
         // Stop bots by setting speed to 0
         if (isBot1RammingBot2) bot1.speed = 0.0
@@ -419,7 +460,7 @@ class ModelUpdater(
         isBot1RammingBot2: Boolean,
         isBot2RammingBot1: Boolean
     ) {
-        // Both bots takes damage when hitting each other
+        // Both bots take damage when hitting each other
         val bot1Killed = bot1.addDamage(RAM_DAMAGE)
         val bot2Killed = bot2.addDamage(RAM_DAMAGE)
         if (isBot1RammingBot2) {
@@ -734,7 +775,7 @@ class ModelUpdater(
         }
 
         /**
-         * Returns a random point for a arena of split into x * y virtual and big square cells larger than the bot size.
+         * Returns a random point for an arena of split into x * y virtual and big square cells larger than the bot size.
          * The idea is that only one bot can occupy a specific cell. So the number of cells limits how many bots that
          * can be placed on the arena. Hence, the lesser the sizes of the cells are, the more bots can be placed on the
          * arena.

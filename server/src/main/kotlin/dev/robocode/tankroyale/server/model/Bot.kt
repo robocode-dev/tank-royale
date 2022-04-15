@@ -5,27 +5,27 @@ import dev.robocode.tankroyale.server.rules.INITIAL_GUN_HEAT
 
 /**
  * Immutable Bot instance.
- * @property id Unique id of this bot.
- * @property energy Energy level.
- * @property position Position (x, y).
- * @property direction Driving direction in degrees.
- * @property gunDirection Gun direction in degrees.
- * @property radarDirection Radar direction in degrees.
- * @property radarSpreadAngle Radar spread angle in degrees.
- * @property speed Speed.
- * @property turnRate Bot turn rate.
- * @property gunTurnRate Gun turn rate.
- * @property radarTurnRate Radar turn rate.
- * @property gunHeat Gun heat.
- * @property bodyColor Body color.
- * @property turretColor Gun turret color.
- * @property radarColor Radar color.
- * @property bulletColor Bullet color.
- * @property scanColor Scan arc color.
- * @property tracksColor Tracks color.
- * @property gunColor Gun color.
- * @property scanDirection Scan direction in degrees.
- * @property scanSpreadAngle Scan angle in degrees.
+ * @param id Unique id of this bot.
+ * @param energy Energy level.
+ * @param position Position (x, y).
+ * @param direction Driving direction in degrees.
+ * @param gunDirection Gun direction in degrees.
+ * @param radarDirection Radar direction in degrees.
+ * @param radarSpreadAngle Radar spread angle in degrees.
+ * @param speed Speed.
+ * @param turnRate Bot turn rate.
+ * @param gunTurnRate Gun turn rate.
+ * @param radarTurnRate Radar turn rate.
+ * @param gunHeat Gun heat.
+ * @param bodyColor Body color.
+ * @param turretColor Gun turret color.
+ * @param radarColor Radar color.
+ * @param bulletColor Bullet color.
+ * @param scanColor Scan arc color.
+ * @param tracksColor Tracks color.
+ * @param gunColor Gun color.
+ * @param scanDirection Scan direction in degrees.
+ * @param scanSpreadAngle Scan angle in degrees.
  */
 data class Bot(
     override val id: BotId,

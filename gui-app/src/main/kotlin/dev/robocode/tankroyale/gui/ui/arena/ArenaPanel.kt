@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
 import dev.robocode.tankroyale.gui.client.Client
+import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.*
 import dev.robocode.tankroyale.gui.ui.ResultsWindow
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.lightness
@@ -51,7 +52,7 @@ object ArenaPanel : JPanel() {
             }
         })
 
-        Client.apply {
+        ClientEvents.apply {
             onGameStarted.subscribe(ArenaPanel) { onGameStarted(it) }
             onGameEnded.subscribe(ArenaPanel) { onGameEnded(it) }
             onTickEvent.subscribe(ArenaPanel) { onTick(it) }

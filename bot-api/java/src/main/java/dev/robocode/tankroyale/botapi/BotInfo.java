@@ -27,6 +27,7 @@ public final class BotInfo {
     private final Set<String> gameTypes; // required
     private final String platform; // optional
     private final String programmingLang; // optional
+    private final InitialPosition initialPosition; // optional
 
     /**
      * Initializes a new instance of the BotInfo class.
@@ -40,6 +41,7 @@ public final class BotInfo {
      * @param gameTypes       is the game types that this bot can handle (required).
      * @param platform        is the platform used for running the bot (optional).
      * @param programmingLang is the programming language used for developing the bot (optional).
+     * @param initialPosition is the initial position with starting coordinate and angle (optional).
      */
     public BotInfo(
             final String name,
@@ -50,7 +52,8 @@ public final class BotInfo {
             final List<String> countryCodes,
             final Collection<String> gameTypes,
             final String platform,
-            final String programmingLang) {
+            final String programmingLang,
+            final InitialPosition initialPosition) {
 
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Name cannot be null, empty or blank");
@@ -106,6 +109,108 @@ public final class BotInfo {
         this.gameTypes = gameTypes2;
         this.platform = platform2;
         this.programmingLang = programmingLang;
+        this.initialPosition = initialPosition;
+    }
+
+    /**
+     * Returns the name, e.g., "MyBot". This field must always be provided with the bot info.
+     *
+     * @return The name of the bot.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the version, e.g., "1.0". This field must always be provided with the bot info.
+     *
+     * @return The version of the bot.
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * Returns the list of authors of the bot, e.g., "John Doe (johndoe@somewhere.io)". At least one
+     * author must be provided.
+     *
+     * @return The author(s) of the bot.
+     */
+    public List<String> getAuthors() {
+        return authors;
+    }
+
+    /**
+     * Returns a short description of the bot, preferably a one-liner.<br>
+     * This field is optional.
+     *
+     * @return a short description of the bot.
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Returns the URL of a web page for the bot.<br>
+     * This field is optional.
+     *
+     * @return The URL of a web page for the bot.
+     */
+    public String getHomepage() {
+        return homepage;
+    }
+
+    /**
+     * Returns a list of country code(s) defined by ISO 3166-1 alpha-2, e.g. "us":
+     * https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2. This field is optional. If no country codes
+     * are provided, the locale of the system is being used instead.
+     *
+     * @return The country code(s) for the bot.
+     */
+    public List<String> getCountryCodes() {
+        return countryCodes;
+    }
+
+    /**
+     * Returns the game type(s) accepted by the bot, e.g., "classic", "melee", "1v1". At least one
+     * game type must be provided to indicate the type(s) of games that this bot can participate in.
+     * The game types define which game types the bot can participate in. See {@link GameType} for
+     * using predefined game type.
+     *
+     * @return The game type(s) that this bot can handle.
+     */
+    public Set<String> getGameTypes() {
+        return gameTypes;
+    }
+
+    /**
+     * Returns the platform used for running the bot, e.g., "Java Runtime Environment (JRE) 11".<br>
+     * This field is optional.
+     *
+     * @return The platform used for running the bot.
+     */
+    public String getPlatform() {
+        return platform;
+    }
+
+    /**
+     * Returns the programming language used for developing the bot, e.g., "Java 8" or "Kotlin 1.6.20".<br>
+     * This field is optional.
+     *
+     * @return The programming language used for developing the bot.
+     */
+    public String getProgrammingLang() {
+        return programmingLang;
+    }
+
+    /**
+     * Returns the initial starting position used for debugging only, which must be enabled at the server.<br>
+     * This field is optional.
+     *
+     * @return The initial starting position used for debugging only.
+     */
+    public InitialPosition getInitialPosition() {
+        return initialPosition;
     }
 
     /**
@@ -159,15 +264,16 @@ public final class BotInfo {
      *
      * <pre><code class="language-java">
      * {
-     *   name: "MyBot",
-     *   version: "1.0",
-     *   authors: "John Doe",
-     *   description: "A short description",
-     *   homepage: "http://somewhere.net/MyBot",
-     *   countryCodes: "us",
-     *   gameTypes: "classic, melee, 1v1",
-     *   platform: "Java 11",
-     *   programmingLang: "Java 11"
+     *   "name": "MyBot",
+     *   "version": "1.0",
+     *   "authors": "John Doe",
+     *   "description": "Short description",
+     *   "homepage": "https://somewhere.net/MyBot",
+     *   "countryCodes": "us",
+     *   "gameTypes": "classic, melee, 1v1",
+     *   "platform": "JVM",
+     *   "programmingLang": "Java 11",
+     *   "initialPosition": "50,50, 90"
      * }
      * </code></pre>
      * Note that these fields are required:
@@ -177,12 +283,13 @@ public final class BotInfo {
      *     <li>authors</li>
      *     <li>gameTypes</li>
      * </ul>
-     * And these value can take multiple values separated by a comma:
+     * These value can take multiple values separated by a comma:
      * <ul>
      *     <li>authors, e.g. "John Doe, Jane Doe"</li>
      *     <li>countryCodes, e.g. "se, no, dk"</li>
      *     <li>gameTypes, e.g. "classic, melee, 1v1"</li>
      * </ul>
+     * The {@code initialPosition} variable is optional and should <em>only</em> be used for debugging.
      *
      * @param inputStream is the input stream providing the bot properties.
      * @return A BotInfo instance containing the bot properties read from the stream.
@@ -195,18 +302,11 @@ public final class BotInfo {
         var reader = new JsonReader(new InputStreamReader(inputStream));
         JsonProperties data = gson.fromJson(reader, JsonProperties.class);
 
-        if (data.name == null || data.name.isBlank()) {
-            throw new BotException("The JSON field 'name' is missing or blank");
-        }
-        if (data.version == null || data.version.isBlank()) {
-            throw new BotException("The JSON field 'version' is missing or blank");
-        }
-        if (data.authors == null || data.authors.isBlank()) {
-            throw new BotException("The JSON field 'authors' is missing or blank");
-        }
-        if (data.gameTypes == null || data.gameTypes.isBlank()) {
-            throw new BotException("The JSON field 'gameTypes' is missing or blank");
-        }
+        throwExceptionIfJsonFieldIsBlank(data.name);
+        throwExceptionIfJsonFieldIsBlank(data.version);
+        throwExceptionIfJsonFieldIsBlank(data.authors);
+        throwExceptionIfJsonFieldIsBlank(data.gameTypes);
+
         String countryCodes = data.countryCodes;
         if (countryCodes == null) {
             countryCodes = "";
@@ -220,102 +320,20 @@ public final class BotInfo {
                 Arrays.asList(countryCodes.split("\\s*,\\s*")),
                 new HashSet<>(Arrays.asList(data.gameTypes.split("\\s*,\\s*"))),
                 data.platform,
-                data.programmingLang);
+                data.programmingLang,
+                InitialPosition.fromString(data.initialPosition));
+    }
+
+    private static void throwExceptionIfJsonFieldIsBlank(String fieldName) {
+        if (fieldName == null || fieldName.isBlank()) {
+            throw new IllegalArgumentException("The required field '" + fieldName + "' is missing or blank");
+        }
     }
 
     private static boolean isNullOrEmptyOrContainsBlanks(Collection<String> collection) {
         return (collection == null
                 || collection.isEmpty()
                 || collection.stream().allMatch(String::isBlank));
-    }
-
-    /**
-     * Returns the name, e.g., "MyBot". This field must always be provided with the bot info.
-     *
-     * @return The name of the bot.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns the version, e.g., "1.0". This field must always be provided with the bot info.
-     *
-     * @return The version of the bot.
-     */
-    public String getVersion() {
-        return version;
-    }
-
-    /**
-     * Returns the list of authors of the bot, e.g., "John Doe (johndoe@somewhere.io)". At least one
-     * author must be provided.
-     *
-     * @return The author(s) of the bot.
-     */
-    public List<String> getAuthors() {
-        return authors;
-    }
-
-    /**
-     * Returns a short description of the bot, preferably a one-liner. This field is optional.
-     *
-     * @return a short description of the bot.
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Returns the URL of a web page for the bot. This field is optional.
-     *
-     * @return The URL of a web page for the bot.
-     */
-    public String getHomepage() {
-        return homepage;
-    }
-
-    /**
-     * Returns a list of country code(s) defined by ISO 3166-1 alpha-2, e.g. "us":
-     * https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2. This field is optional. If no country codes
-     * are provided, the locale of the system is being used instead.
-     *
-     * @return The country code(s) for the bot.
-     */
-    public List<String> getCountryCodes() {
-        return countryCodes;
-    }
-
-    /**
-     * Returns the game type(s) accepted by the bot, e.g., "classic", "melee", "1v1". At least one
-     * game type must be provided to indicate the type(s) of games that this bot can participate in.
-     * The game types define which game types the bot can participate in. See {@link GameType} for
-     * using predefined game type.
-     *
-     * @return The game type(s) that this bot can handle.
-     */
-    public Set<String> getGameTypes() {
-        return gameTypes;
-    }
-
-    /**
-     * Returns the platform used for running the bot, e.g., "Java Runtime Environment (JRE) 11" or
-     * ".Net 5.0". This field is optional.
-     *
-     * @return The platform used for running the bot.
-     */
-    public String getPlatform() {
-        return platform;
-    }
-
-    /**
-     * Returns the programming language used for developing the bot, e.g., "Java 8" or "C# 8.0". This
-     * field is optional.
-     *
-     * @return The programming language used for developing the bot.
-     */
-    public String getProgrammingLang() {
-        return programmingLang;
     }
 
     private static class JsonProperties {
@@ -328,5 +346,6 @@ public final class BotInfo {
         String gameTypes;
         String platform;
         String programmingLang;
+        String initialPosition;
     }
 }

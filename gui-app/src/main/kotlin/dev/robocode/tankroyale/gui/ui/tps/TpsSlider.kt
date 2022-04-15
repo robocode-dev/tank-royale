@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.tps
 
 import dev.robocode.tankroyale.gui.model.TpsChangedEvent
-import dev.robocode.tankroyale.gui.settings.MiscSettings
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import java.awt.Dimension
 import java.util.*
 import javax.swing.JLabel
@@ -36,12 +36,12 @@ object TpsSlider : JSlider() {
 
         addChangeListener(TpsChangeListener())
 
-        TpsEventChannel.onTpsChanged.subscribe(TpsSlider) { tpsEvent ->
+        TpsEvents.onTpsChanged.subscribe(TpsSlider) { tpsEvent ->
             setTps(tpsEvent.tps)
-            MiscSettings.setTps(tpsEvent.tps)
+            ConfigSettings.tps = tpsEvent.tps
         }
 
-        setTps(MiscSettings.getTps())
+        setTps(ConfigSettings.tps)
     }
 
     private fun getTps(): Int {
@@ -59,22 +59,22 @@ object TpsSlider : JSlider() {
         if (tps !in -1..999) {
             throw IllegalArgumentException("tps must be in the range -1..999")
         }
-        when {
-            tps < 0 -> value = maximum
-            tps <= 15 -> value = tps // 0 - 15
-            tps <= 30 -> value = 15 + (tps - 15) / 3 // 15 - 30
-            tps <= 50 -> value = 20 + (tps - 30) / 4 // 30 - 50
-            tps <= 100 -> value = 25 + (tps - 50) / 10 // 50 - 100
-            tps <= 200 -> value = 30 + (tps - 100) / 20 // 100 - 200
-            tps <= 500 -> value = 35 + (tps - 200) / 60 // 200 - 500
-            tps <= 999 -> value = 40 + (tps - 500) / 100 // 500 - 999
+        value = when {
+            tps < 0 -> maximum
+            tps <= 15 -> tps // 0 - 15
+            tps <= 30 -> 15 + (tps - 15) / 3 // 15 - 30
+            tps <= 50 -> 20 + (tps - 30) / 4 // 30 - 50
+            tps <= 100 -> 25 + (tps - 50) / 10 // 50 - 100
+            tps <= 200 -> 30 + (tps - 100) / 20 // 100 - 200
+            tps <= 500 -> 35 + (tps - 200) / 60 // 200 - 500
+            else -> 40 + (tps - 500) / 100 // 500 - 999
         }
     }
 
     private class TpsChangeListener : ChangeListener {
         override fun stateChanged(e: ChangeEvent?) {
             if (!valueIsAdjusting) { // avoid events while dragging
-                TpsEventChannel.onTpsChanged.fire(TpsChangedEvent(getTps()))
+                TpsEvents.onTpsChanged.fire(TpsChangedEvent(getTps()))
             }
         }
     }

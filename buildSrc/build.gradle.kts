@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
-    val kotlinVersion = "1.6.10"
+    val kotlinVersion = "1.6.20"
 
     repositories {
         mavenCentral()
@@ -12,7 +12,7 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm").version("1.6.10")
+    kotlin("jvm").version("1.6.20")
 }
 
 repositories {

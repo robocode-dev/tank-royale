@@ -3,12 +3,33 @@ package dev.robocode.tankroyale.gui.ui
 import java.util.*
 
 
-enum class ResourceBundles(private val resourceName: String) {
+object MenuTitles {
+    fun get(propertyName: String): String = ResourceBundles.MENU.get(propertyName)
+}
+
+object UiTitles {
+    fun get(propertyName: String): String = ResourceBundles.UI_TITLES.get(propertyName)
+}
+
+object Strings {
+    fun get(propertyName: String): String = ResourceBundles.STRINGS.get(propertyName)
+}
+
+object Messages {
+    fun get(propertyName: String): String = ResourceBundles.MESSAGES.get(propertyName)
+}
+
+object Hints {
+    fun get(propertyName: String): String = "<html>${ResourceBundles.HINTS.get(propertyName)}</html>"
+}
+
+private enum class ResourceBundles(private val resourceName: String) {
 
     UI_TITLES("UI titles"),
     STRINGS("Strings"),
     MESSAGES("Messages"),
-    MENU("Menu");
+    MENU("Menu"),
+    HINTS("Hints");
 
     private val supportedLocales = listOf(Locale.ENGLISH)
 

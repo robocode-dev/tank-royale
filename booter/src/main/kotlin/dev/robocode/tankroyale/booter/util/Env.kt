@@ -11,5 +11,6 @@ enum class Env {
     BOT_COUNTRY_CODES,
     BOT_GAME_TYPES,
     BOT_PLATFORM,
-    BOT_PROG_LANG
+    BOT_PROG_LANG,
+    BOT_INITIAL_POS,
 }

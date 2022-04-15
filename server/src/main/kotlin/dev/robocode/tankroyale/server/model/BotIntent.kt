@@ -3,21 +3,21 @@ package dev.robocode.tankroyale.server.model
 /**
  * BotIntent is used to accumulate all bot orders sent to the server over time.
  * Hence, the BotIntent contains the current state of the bot intent state.
- * @property targetSpeed Current target speed.
- * @property turnRate Current driving turn rate.
- * @property gunTurnRate Current gun turn rate.
- * @property radarTurnRate Current radar turn rate.
- * @property firepower Current firepower.
- * @property adjustGunForBodyTurn Current flag set for adjusting gun for body turn.
- * @property adjustRadarForGunTurn Current flag set for adjusting radar for gun turn.
- * @property scan Current flag set for performing rescan (reusing last scan direction and scan spread angle)
- * @property bodyColor Current body color string. If set to `null` the default body color will be used.
- * @property turretColor Current gun turret color string. If set to `null` the default body color will be used.
- * @property radarColor Current radar color string. If set to `null` the default body color will be used.
- * @property bulletColor Current bullet color string. If set to `null` the default body color will be used.
- * @property scanColor Current scan color string. If set to `null` the default body color will be used.
- * @property tracksColor Current tracks color string. If set to `null` the default body color will be used.
- * @property gunColor Current gun color string. If set to `null` the default body color will be used.
+ * @param targetSpeed Current target speed.
+ * @param turnRate Current driving turn rate.
+ * @param gunTurnRate Current gun turn rate.
+ * @param radarTurnRate Current radar turn rate.
+ * @param firepower Current firepower.
+ * @param adjustGunForBodyTurn Current flag set for adjusting gun for body turn.
+ * @param adjustRadarForGunTurn Current flag set for adjusting radar for gun turn.
+ * @param scan Current flag set for performing rescan (reusing last scan direction and scan spread angle)
+ * @param bodyColor Current body color string. If set to `null` the default body color will be used.
+ * @param turretColor Current gun turret color string. If set to `null` the default body color will be used.
+ * @param radarColor Current radar color string. If set to `null` the default body color will be used.
+ * @param bulletColor Current bullet color string. If set to `null` the default body color will be used.
+ * @param scanColor Current scan color string. If set to `null` the default body color will be used.
+ * @param tracksColor Current tracks color string. If set to `null` the default body color will be used.
+ * @param gunColor Current gun color string. If set to `null` the default body color will be used.
  */
 data class BotIntent(
     override var targetSpeed: Double? = 0.0,

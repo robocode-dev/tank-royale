@@ -1,5 +1,5 @@
 $id: #bot-handshake.yaml
-$schema: http://json-schema.org/draft-07/schema#
+$schema: http://json-schema.org/2020-12/schema#
 description: Bot handshake
 extends:
   $ref: message.yaml
@@ -33,11 +33,14 @@ properties:
     items:
       type: string
   platform:
-    description: Platform used for running the bot, e.g. Java 17 or .NET 5
+    description: Platform used for running the bot, e.g. JVM 17 or .NET 5
     type: string
   programmingLang:
-    description: Language used for programming the bot, e.g. Java 17 or C# 9.0
+    description: Language used for programming the bot, e.g. Java 17 or C# 10
     type: string
+  initialPosition:
+    description: Initial start position of the bot used for debugging.
+    $ref: initial-position.yaml
   secret:
     description: Secret used for access control with the server
     type: string

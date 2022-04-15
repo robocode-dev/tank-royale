@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.booter.commands.DirCommand
 import dev.robocode.tankroyale.booter.commands.RunCommand
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.fusesource.jansi.AnsiConsole
 import picocli.CommandLine
 import picocli.CommandLine.*
 import java.nio.file.Files
@@ -15,6 +16,8 @@ import kotlin.system.exitProcess
 val cmdLine = CommandLine(Booter())
 
 fun main(args: Array<String>) {
+    System.setProperty("jansi.force", "true")
+    AnsiConsole.systemInstall()
     exitProcess(cmdLine.execute(*args))
 }
 
@@ -27,10 +30,12 @@ fun main(args: Array<String>) {
 class Booter : Callable<Int> {
 
     override fun call(): Int {
-        when {
-            cmdLine.isUsageHelpRequested -> cmdLine.usage(System.out)
-            cmdLine.isVersionHelpRequested -> cmdLine.printVersionHelp(System.out)
-            else -> cmdLine.usage(System.out)
+        cmdLine.apply {
+            when {
+                isUsageHelpRequested -> usage(System.out)
+                isVersionHelpRequested -> printVersionHelp(System.out)
+                else -> usage(System.out)
+            }
         }
         return 0
     }
@@ -40,11 +45,14 @@ class Booter : Callable<Int> {
         @Parameters(
             arity = "1..*", paramLabel = "BOT_ROOT_DIRS",
             description = ["Absolute file paths, where each path is a root directory containing bot entries"]
-        ) botRootDirs: Array<String>,
+        )
+        botRootDirs: Array<String>,
+
         @Option(
             names = ["--game-types", "-T"], paramLabel = "GAME_TYPES",
             description = ["Comma-separated string of game types that the bot entries must support in order to be included in the list"]
-        ) gameTypes: String?
+        )
+        gameTypes: String?
     ) {
         DirCommand(toPaths(botRootDirs)).listBotDirectories(gameTypes).forEach { println(it) }
     }
@@ -54,11 +62,14 @@ class Booter : Callable<Int> {
         @Parameters(
             arity = "1..*", paramLabel = "BOT_ROOT_DIRS",
             description = ["Absolute file paths, where each path is a root directory containing bot entries"]
-        ) botRootDirs: Array<String>,
+        )
+        botRootDirs: Array<String>,
+
         @Option(
             names = ["--game-types", "-T"], paramLabel = "GAME_TYPES",
             description = ["Comma-separated list of game types that the bot entries must support in order to be included in the list."]
-        ) gameTypes: String?
+        )
+        gameTypes: String?
     ) {
         val entries = DirCommand(toPaths(botRootDirs)).listBotEntries(gameTypes)
         println(Json.encodeToString(entries))
@@ -76,9 +87,9 @@ class Booter : Callable<Int> {
             "  {dir} is the bot directory",
             "",
             "The following commands can be given via standard in:",
-            "  quit              Terminates this command, and stops all running processes",
-            "  run {dir}         Runs the bot from the specified bot directory",
-            "  stop {pid}        Stops the bot running with the specific process id",
+            "  quit        Terminates this command, and stops all running processes",
+            "  run {dir}   Runs the bot from the specified bot directory",
+            "  stop {pid}  Stops the bot running with the specific process id",
         ]
     )
     private fun run(
@@ -87,7 +98,8 @@ class Booter : Callable<Int> {
             description = [
                 "Absolute file paths, where each path is a bot directory.",
             ]
-        ) botDirs: Array<String>,
+        )
+        botDirs: Array<String>
     ) {
         RunCommand().runBots(botDirs)
     }

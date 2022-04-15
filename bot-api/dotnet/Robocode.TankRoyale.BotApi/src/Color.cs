@@ -29,7 +29,7 @@ namespace Robocode.TankRoyale.BotApi
         public static readonly Color Fuchsia = FromHex("FF00FF");
         public static readonly Color Purple = FromHex("800080");
         public static readonly Color Orange = FromHex("FF8000");
-        
+
         /// <summary>
         /// Creates a Color from RGB values.
         /// </summary>
@@ -44,14 +44,17 @@ namespace Robocode.TankRoyale.BotApi
             {
                 throw new ArgumentException("The 'red' color component must be in the range 0 - 255");
             }
+
             if (green < 0 || green > 255)
             {
                 throw new ArgumentException("The 'green' color component must be in the range 0 - 255");
             }
+
             if (blue < 0 || blue > 255)
             {
                 throw new ArgumentException("The 'blue' color component must be in the range 0 - 255");
             }
+
             RedValue = red;
             GreenValue = green;
             BlueValue = blue;
@@ -88,7 +91,7 @@ namespace Robocode.TankRoyale.BotApi
         {
             return "" + (value >> 4).ToString("X") + (value & 0xF).ToString("X");
         }
-        
+
         /// <summary>
         /// Creates a Color from an RGB integer value.
         /// </summary>
@@ -124,14 +127,17 @@ namespace Robocode.TankRoyale.BotApi
             {
                 return FromThreeHexDigits(hex);
             }
+
             if (Regex.Match(hex, SixHexDigits).Success)
             {
                 return FromSixHexDigits(hex);
             }
+
             throw new ArgumentException("You must supply 3 or 6 hex digits [0-9a-fA-F]");
         }
-        
-        private static Color FromThreeHexDigits(string threeHexDigits) {
+
+        private static Color FromThreeHexDigits(string threeHexDigits)
+        {
             var r = int.Parse(threeHexDigits[..1], System.Globalization.NumberStyles.HexNumber);
             var g = int.Parse(threeHexDigits[1..2], System.Globalization.NumberStyles.HexNumber);
             var b = int.Parse(threeHexDigits[2..3], System.Globalization.NumberStyles.HexNumber);
@@ -140,8 +146,9 @@ namespace Robocode.TankRoyale.BotApi
             b = b << 4 | b;
             return new Color(r, g, b);
         }
-        
-        private static Color FromSixHexDigits(string sixHexDigits) {
+
+        private static Color FromSixHexDigits(string sixHexDigits)
+        {
             var r = int.Parse(sixHexDigits[..2], System.Globalization.NumberStyles.HexNumber);
             var g = int.Parse(sixHexDigits[2..4], System.Globalization.NumberStyles.HexNumber);
             var b = int.Parse(sixHexDigits[4..6], System.Globalization.NumberStyles.HexNumber);

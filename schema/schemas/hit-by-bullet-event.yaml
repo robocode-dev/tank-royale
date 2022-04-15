@@ -1,5 +1,5 @@
 $id: #hit-by-bullet-event.yaml
-$schema: http://json-schema.org/draft-07/schema#
+$schema: http://json-schema.org/2020-12/schema#
 description: Event occurring when a bot has been hit by a bullet.
 extends:
   $ref: event.yaml

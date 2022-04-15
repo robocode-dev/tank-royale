@@ -41,21 +41,22 @@ configure<JsonSchemaExtension> {
 }
 
 tasks {
-    jar {
+    shadowJar {
         manifest {
             attributes["Implementation-Title"] = title
             attributes["Implementation-Version"] = archiveVersion
             attributes["Implementation-Vendor"] = "robocode.dev"
             attributes["Package"] = schemaPackage
         }
+        archiveBaseName.set(artifactBaseName)
+        archiveClassifier.set("")
     }
 
     publishing {
         publications {
             create<MavenPublication>("schema") {
-                artifact("${buildDir}/libs/java-$version-all.jar") {
-                    builtBy(shadowJar)
-                }
+                artifact(shadowJar)
+
                 groupId = group as String?
                 artifactId = artifactBaseName
                 version

@@ -25,7 +25,7 @@ data class MutableGameSetup(
     override var defaultTurnsPerSecond: Int
 ) : IGameSetup {
 
-    fun copy(other: IGameSetup) {
+    fun copyFields(other: IGameSetup) {
         gameType = other.gameType
         arenaWidth = other.arenaWidth
         isArenaWidthLocked = other.isArenaWidthLocked

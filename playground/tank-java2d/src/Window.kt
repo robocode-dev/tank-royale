@@ -16,7 +16,5 @@ object Window : JFrame() {
 }
 
 private fun main() {
-    EventQueue.invokeLater {
-        Window.isVisible = true
-    }
+    Window.isVisible = true
 }

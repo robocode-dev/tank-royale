@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.booter
 
 import dev.robocode.tankroyale.gui.model.MessageConstants
-import dev.robocode.tankroyale.gui.settings.MiscSettings
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
@@ -16,19 +16,20 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 object BootProcess {
 
-    val onRunBot = Event<DirAndPid>()
-    val onStopBot = Event<DirAndPid>()
+    val onBootBot = Event<DirAndPid>()
+    val onUnbootBot = Event<DirAndPid>()
 
     private const val JAR_FILE_NAME = "robocode-tankroyale-booter"
 
     private val isRunning = AtomicBoolean(false)
     private var runProcess: Process? = null
-
     private var thread: Thread? = null
 
     private val json = MessageConstants.json
 
     private val pidAndDirs = HashMap<Long, String>() // pid, dir
+
+    private val runningBotsList = mutableListOf<DirAndPid>()
 
     fun info(): List<BotEntry> {
         val args = mutableListOf(
@@ -66,6 +67,11 @@ object BootProcess {
     fun stop(pids: List<Long?>) {
         stopBotsWithRunningBotProcess(pids)
     }
+
+    val runningBots: List<DirAndPid>
+        get() {
+            return runningBotsList
+        }
 
     private fun startRunningBotProcess(botDirNames: List<String>) {
         val args = mutableListOf(
@@ -108,47 +114,52 @@ object BootProcess {
         stopProcess()
 
         notifyUnbootBotProcesses()
+
+        runningBotsList.clear()
     }
 
     private fun stopProcess() {
-        if (runProcess?.isAlive == true) {
-            // Send quit signal to server
-            PrintStream(runProcess?.outputStream!!).use { printStream ->
-                printStream.println("quit")
-                printStream.flush()
+        runProcess?.apply {
+            if (isAlive) {
+                PrintStream(outputStream).apply {
+                    println("quit")
+                    flush()
+                }
             }
         }
         runProcess = null
     }
 
     private fun notifyUnbootBotProcesses() {
-        pidAndDirs.forEach { onStopBot.fire(DirAndPid(it.value, it.key)) }
+        pidAndDirs.forEach { onUnbootBot.fire(DirAndPid(it.value, it.key)) }
     }
 
     private fun getBooterJar(): String {
-        val propertyValue = System.getProperty("booterJar")
-        if (propertyValue != null) {
-            val path = Paths.get(propertyValue)
-            if (!Files.exists(path)) {
-                throw FileNotFoundException(path.toString())
+        System.getProperty("booterJar")?.let {
+            Paths.get(it).apply {
+                if (Files.exists(this)) {
+                    throw FileNotFoundException(toString())
+                }
+                return toString()
             }
-            return path.toString()
         }
-        val cwd = Paths.get("")
-        val pathOpt = Files.list(cwd).filter { it.startsWith(JAR_FILE_NAME) && it.endsWith(".jar") }.findFirst()
-        if (pathOpt.isPresent) {
-            return pathOpt.get().toString()
+        Paths.get("").apply {
+            Files.list(this).filter { it.startsWith(JAR_FILE_NAME) && it.endsWith(".jar") }.findFirst().apply {
+                if (isPresent) {
+                    return get().toString()
+                }
+            }
         }
         return try {
-            ResourceUtil.getResourceFile("$JAR_FILE_NAME.jar")?.absolutePath ?: ""
+            ResourceUtil.getResourceFile("${JAR_FILE_NAME}.jar")?.absolutePath ?: ""
         } catch (ex: Exception) {
-            System.err.println(ex.localizedMessage)
+            System.err.println(ex.message)
             ""
         }
     }
 
     private fun getBotDirs(): List<String> {
-        return MiscSettings.getBotDirectories()
+        return ConfigSettings.botDirectories
     }
 
     private fun readInputToProcessIds(process: Process) {
@@ -199,8 +210,7 @@ object BootProcess {
                     break
                 }
             }
-        }
-        thread?.start()
+        }.apply { start() }
     }
 
     private fun stopThread() {
@@ -215,7 +225,10 @@ object BootProcess {
 
             pidAndDirs[pid] = dir
 
-            onRunBot.fire(DirAndPid(dir, pid))
+            val dirAndPid = DirAndPid(dir, pid)
+            runningBotsList.add(dirAndPid)
+
+            onBootBot.fire(dirAndPid)
         }
     }
 
@@ -228,7 +241,10 @@ object BootProcess {
             pidAndDirs.remove(pid)
 
             if (dir != null) {
-                onStopBot.fire(DirAndPid(dir, pid))
+                val dirAndPid = DirAndPid(dir, pid)
+                runningBotsList.remove(dirAndPid)
+
+                onUnbootBot.fire(dirAndPid)
             }
         }
     }

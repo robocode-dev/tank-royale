@@ -1,18 +1,13 @@
 package dev.robocode.tankroyale.gui.ui
 
-import dev.robocode.tankroyale.gui.MainWindow
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotResults
-import dev.robocode.tankroyale.gui.ui.ResourceBundles.STRINGS
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import java.awt.Dimension
-import java.awt.EventQueue
 import javax.swing.JLabel
 import javax.swing.JScrollPane
 import javax.swing.JTable
-import javax.swing.UIManager
 import javax.swing.table.DefaultTableCellRenderer
-
 
 class ResultsWindow(results: List<BotResults>) : RcFrame(getWindowTitle()) {
 
@@ -73,7 +68,7 @@ class ResultsWindow(results: List<BotResults>) : RcFrame(getWindowTitle()) {
     }
 
     private fun getColumns(): Array<String> {
-        STRINGS.apply {
+        Strings.apply {
             return arrayOf(
                 get("results.rank"),
                 get("results.bot_name"),
@@ -94,48 +89,5 @@ class ResultsWindow(results: List<BotResults>) : RcFrame(getWindowTitle()) {
 
 private fun getWindowTitle(): String {
     val numberOfRounds: Int = Client.currentGameSetup?.numberOfRounds ?: 0
-    return ResourceBundles.UI_TITLES.get("results_window").replace("$1", "$numberOfRounds")
-}
-
-private fun main() {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
-    val results: List<BotResults> = listOf(
-        BotResults(
-            name = "Rampage",
-            version = "1.0",
-            id = 1,
-            rank = 1,
-            totalScore = 2204,
-            survival = 250,
-            lastSurvivorBonus = 50,
-            bulletDamage = 1724,
-            bulletKillBonus = 180,
-            ramDamage = 10,
-            ramKillBonus = 20,
-            firstPlaces = 5,
-            secondPlaces = 6,
-            thirdPlaces = 7
-        ),
-        BotResults(
-            name = "Master",
-            version = "0.0.2",
-            rank = 2,
-            id = 2,
-            totalScore = 2108,
-            survival = 245,
-            lastSurvivorBonus = 40,
-            bulletDamage = 797,
-            bulletKillBonus = 21,
-            ramDamage = 0,
-            ramKillBonus = 0,
-            firstPlaces = 3,
-            secondPlaces = 1,
-            thirdPlaces = 9
-        )
-    )
-
-    EventQueue.invokeLater {
-        ResultsWindow(results).isVisible = true
-    }
+    return UiTitles.get("results_window").replace("$1", "$numberOfRounds")
 }

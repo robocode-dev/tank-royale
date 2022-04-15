@@ -122,8 +122,8 @@ public class MyFirstBot : Bot
     }
 }
 </code></pre>
-<p>The above code describes the behavior of the robot. The Main() is the main entry point for all C# applications to start
-running the program. Using the bot API, we need to start the robot by calling the
+<p>The above code describes the behavior of the bot. The Main() is the main entry point for all C# applications to start
+running the program. Using the bot API, we need to start the bot by calling the
 <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Start">IBaseBot.Start()</a> method of the bot API, which will tell the server that this bot wants to join the battle and also
 provide the server with the required bot info.</p>
 <p>With the bot's constructor (<em>MyFirstBot()</em>) we call the <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromFile_System_String_">BotInfo.fromFile(string)</a> method provides the bot info for the

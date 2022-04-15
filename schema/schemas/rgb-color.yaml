@@ -1,14 +1,14 @@
 $id: #rgb-color.yaml
-$schema: http://json-schema.org/draft-07/schema#
+$schema: http://json-schema.org/2020-12/schema#
 description: |
   Represents a RGB color code as an integer in hexadecimal format using bits 0 - 23 using an 8-bit channel for each
   color component; red, green, and blue.
   See https://www.rapidtables.com/web/color/RGB_Color.html
 type: integer
 examples: [
-    0,        // black
-                16777215, // white
-                            65280,    // lime
-                                        16752762, // light salmon
-                                                    10040012  // dark orchid
+    0, // black
+    16777215, // white
+    65280,    // lime
+    16752762, // light salmon
+    10040012  // dark orchid
 ]

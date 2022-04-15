@@ -1,3 +1,4 @@
+import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 
 
@@ -45,29 +46,30 @@ tasks {
         doLast {
             delete(
                 "build",
+                "docs",
                 "Robocode.TankRoyale.BotApi/obj",
                 "Robocode.TankRoyale.BotApi/bin",
                 "Robocode.TankRoyale.BotApi.Tests/obj",
                 "Robocode.TankRoyale.BotApi.Tests/bin",
-                "docfx_project/_site",
-                "docfx_project/api",
-                "docfx_project/obj"
             )
         }
+    }
+
+    build {
+        enabled = false
     }
 
     val docfx by registering {
         dependsOn(assemble)
 
-        doFirst {
+        doLast {
             exec {
                 workingDir("docfx_project")
                 commandLine("docfx", "metadata") // build /api before building the _site
             }
-        }
-        doLast {
             exec {
                 workingDir("docfx_project")
+                delete("_site", "api", "obj")
                 commandLine("docfx", "build")    // build /_site
             }
         }
@@ -87,8 +89,17 @@ tasks {
         into(dotnetApiDir)
     }
 
+    val prepareNugetDocs by registering(Copy::class) {
+        dependsOn(dotnetBuild)
+
+        from("nuget_docs") {
+            filter<ReplaceTokens>("tokens" to mapOf("VERSION" to version))
+        }
+        into("docs")
+    }
+
     register("pushLocal") {
-        dependsOn(build)
+        dependsOn(prepareNugetDocs)
 
         doLast {
             val userprofile = System.getenv("USERPROFILE")
