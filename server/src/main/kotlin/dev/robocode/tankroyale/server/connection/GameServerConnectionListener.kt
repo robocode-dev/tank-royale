@@ -1,13 +1,13 @@
-package dev.robocode.tankroyale.server.core
+package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection
 
 import dev.robocode.tankroyale.schema.*
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.ConnListener
+import dev.robocode.tankroyale.server.core.GameServer
 import org.java_websocket.WebSocket
 import org.slf4j.LoggerFactory
 
-internal class GameServerConnListener(private val gameServer: GameServer) : ConnListener {
+class GameServerConnectionListener(private val gameServer: GameServer) : IConnectionListener {
 
-    private val log = LoggerFactory.getLogger(GameServerConnListener::class.java)
+    private val log = LoggerFactory.getLogger(GameServerConnectionListener::class.java)
 
     override fun onException(exception: Exception) {
         exception.printStackTrace()

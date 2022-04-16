@@ -1,10 +1,10 @@
-package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core
+package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection
 
 import dev.robocode.tankroyale.schema.*
 import org.java_websocket.WebSocket
 
 /** Connection listener interface. */
-interface ConnListener {
+interface IConnectionListener {
     fun onException(exception: Exception)
     fun onBotJoined(conn: WebSocket, handshake: BotHandshake)
     fun onBotLeft(conn: WebSocket, handshake: BotHandshake)

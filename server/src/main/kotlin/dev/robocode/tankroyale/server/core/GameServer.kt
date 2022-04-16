@@ -3,7 +3,8 @@ package dev.robocode.tankroyale.server.core
 import com.google.gson.Gson
 import dev.robocode.tankroyale.schema.*
 import dev.robocode.tankroyale.server.Server
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.ConnHandler
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.ConnectionHandler
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.GameServerConnectionListener
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
 import dev.robocode.tankroyale.server.mapper.*
 import dev.robocode.tankroyale.server.model.BotId
@@ -28,7 +29,7 @@ class GameServer(
     botSecrets: Set<String>
 ) {
     /** Connection handler for observers and bots */
-    private val connHandler: ConnHandler
+    private val connectionHandler: ConnectionHandler
 
     /** Current server state */
     private var serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
@@ -80,19 +81,19 @@ class GameServer(
 
     init {
         /** Initializes connection handler */
-        connHandler = ConnHandler(ServerSetup(gameTypes), GameServerConnListener(this), controllerSecrets, botSecrets)
+        connectionHandler = ConnectionHandler(ServerSetup(gameTypes), GameServerConnectionListener(this), controllerSecrets, botSecrets)
     }
 
     /** Starts this server */
     fun start() {
         log.info("Starting server on port ${Server.port} with game type(s): $gameTypes")
-        connHandler.start()
+        connectionHandler.start()
     }
 
     /** Stops this server */
     fun stop() {
         log.info("Stopping server")
-        connHandler.stop()
+        connectionHandler.stop()
     }
 
     /** Prepares the game and wait for participants to become 'ready' */
@@ -166,7 +167,7 @@ class GameServer(
 
     /** Send GameStarted to all participant observers to get them started */
     private fun sendGameStartedToObservers() {
-        if (connHandler.observerAndControllerConnections.isNotEmpty()) {
+        if (connectionHandler.observerAndControllerConnections.isNotEmpty()) {
             broadcastToObserverAndControllers(GameStartedEventForObserver().apply {
                 `$type` = Message.`$type`.GAME_STARTED_EVENT_FOR_OBSERVER
                 gameSetup = GameSetupToGameSetupMapper.map(this@GameServer.gameSetup)
@@ -179,7 +180,7 @@ class GameServer(
     private fun createParticipantMap(): Map<BotId, Participant> {
         val participantMap = mutableMapOf<BotId, Participant>()
         for (conn in participants) {
-            val handshake = connHandler.getBotHandshakes()[conn]
+            val handshake = connectionHandler.getBotHandshakes()[conn]
             val botId = participantIds[conn] ?: continue
             val participant = Participant().apply {
                 id = botId.value
@@ -276,7 +277,7 @@ class GameServer(
 
         for (score in modelUpdater.results) {
             val conn = getConnection(score.botId)
-            val botHandshake = connHandler.getBotHandshakes()[conn]
+            val botHandshake = connectionHandler.getBotHandshakes()[conn]
 
             BotResultsForObserver().apply {
                 id = score.botId.value
@@ -455,7 +456,7 @@ class GameServer(
             `$type` = Message.`$type`.SKIPPED_TURN_EVENT
             turnNumber = modelUpdater.turn.turnNumber
         }
-        connHandler.broadcast(getParticipantsThatSkippedTurn(), gson.toJson(skippedTurn))
+        connectionHandler.broadcast(getParticipantsThatSkippedTurn(), gson.toJson(skippedTurn))
     }
 
     private fun getParticipantsThatSkippedTurn(): Collection<WebSocket> {
@@ -476,10 +477,10 @@ class GameServer(
 
         botListUpdateMessage.bots = botsList
 
-        connHandler.getBotConnections().forEach { conn ->
+        connectionHandler.getBotConnections().forEach { conn ->
             val address = conn.remoteSocketAddress
             botsList += BotHandshakeToBotInfoMapper.map(
-                connHandler.getBotHandshakes()[conn]!!,
+                connectionHandler.getBotHandshakes()[conn]!!,
                 address.hostString, address.port
             )
         }
@@ -496,18 +497,18 @@ class GameServer(
 
     private fun broadcastToParticipants(msg: Message) {
         requireNotNull(msg.`$type`) { "\$type is required on the message" }
-        connHandler.broadcast(participants, gson.toJson(msg))
+        connectionHandler.broadcast(participants, gson.toJson(msg))
     }
 
     private fun broadcastToObserverAndControllers(msg: Message) {
         requireNotNull(msg.`$type`) { "\$type is required on the message" }
-        connHandler.broadcastToObserverAndControllers(gson.toJson(msg))
+        connectionHandler.broadcastToObserverAndControllers(gson.toJson(msg))
     }
 
     private fun broadcastToAll(msg: Message) {
         requireNotNull(msg.`$type`) { "\$type is required on the message" }
-        connHandler.broadcastToObserverAndControllers(gson.toJson(msg))
-        connHandler.broadcast(participants, gson.toJson(msg))
+        connectionHandler.broadcastToObserverAndControllers(gson.toJson(msg))
+        connectionHandler.broadcast(participants, gson.toJson(msg))
     }
 
     private fun sendBotListUpdateToObservers() {
@@ -562,7 +563,7 @@ class GameServer(
     internal fun onStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
         this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup)
         participants.clear()
-        participants += connHandler.getBotConnections(botAddresses)
+        participants += connectionHandler.getBotConnections(botAddresses)
 
         if (participants.isNotEmpty()) {
             prepareGame()
