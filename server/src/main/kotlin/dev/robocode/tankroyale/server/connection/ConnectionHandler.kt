@@ -287,7 +287,7 @@ class ConnectionHandler(
     }
 
     private fun handleResumeGame() {
-        executorService.submit(listener::onPauseGame)
+        executorService.submit(listener::onResumeGame)
     }
 
     private fun handleChangeTps(message: String) {
