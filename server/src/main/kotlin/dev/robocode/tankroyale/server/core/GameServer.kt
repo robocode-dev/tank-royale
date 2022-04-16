@@ -81,7 +81,8 @@ class GameServer(
 
     init {
         /** Initializes connection handler */
-        connectionHandler = ConnectionHandler(ServerSetup(gameTypes), GameServerConnectionListener(this), controllerSecrets, botSecrets)
+        connectionHandler =
+            ConnectionHandler(ServerSetup(gameTypes), GameServerConnectionListener(this), controllerSecrets, botSecrets)
     }
 
     /** Starts this server */
@@ -229,13 +230,9 @@ class GameServer(
 
     /** Calculates and returns a timeout turn period measured in nano-seconds based on current TPS */
     private fun calculateTurnTimeoutPeriod(): Long {
-        var period = if (tps <= 0) 0 else 1_000_000_000L / tps
-
+        val period = if (tps <= 0) 0 else 1_000_000_000L / tps
         val turnTimeout = gameSetup.turnTimeout * 1000L
-        if (turnTimeout > period) {
-            period = turnTimeout
-        }
-        return period
+        return if (turnTimeout > period) turnTimeout else period
     }
 
     /** Broadcast game-aborted event to all observers and controllers */
@@ -246,61 +243,57 @@ class GameServer(
     }
 
     /** Returns a list of bot results (for bots) ordered on the score ranks */
-    private fun getResultsForBots(): List<BotResultsForBot> {
-        val results = mutableListOf<BotResultsForBot>()
+    private fun getResultsForBots(): List<BotResultsForBot> =
+        mutableListOf<BotResultsForBot>().also { results ->
+            modelUpdater.results.forEach { score ->
+                BotResultsForBot().apply {
+                    id = score.botId.value
+                    survival = score.survival.roundToInt()
+                    lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
+                    bulletDamage = score.bulletDamage.roundToInt()
+                    bulletKillBonus = score.bulletKillBonus.toInt()
+                    ramDamage = score.ramDamage.roundToInt()
+                    ramKillBonus = score.ramKillBonus.roundToInt()
+                    totalScore = score.totalScore.roundToInt()
+                    firstPlaces = score.firstPlaces
+                    secondPlaces = score.secondPlaces
+                    thirdPlaces = score.thirdPlaces
 
-        for (score in modelUpdater.results) {
-            BotResultsForBot().apply {
-                id = score.botId.value
-                survival = score.survival.roundToInt()
-                lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
-                bulletDamage = score.bulletDamage.roundToInt()
-                bulletKillBonus = score.bulletKillBonus.toInt()
-                ramDamage = score.ramDamage.roundToInt()
-                ramKillBonus = score.ramKillBonus.roundToInt()
-                totalScore = score.totalScore.roundToInt()
-                firstPlaces = score.firstPlaces
-                secondPlaces = score.secondPlaces
-                thirdPlaces = score.thirdPlaces
-
-                results += this
+                    results += this
+                }
             }
+            var rank = 1
+            results.forEach { it.rank = rank++ }
         }
-        var rank = 1
-        results.forEach { score -> score.rank = rank++ }
-        return results
-    }
 
     /** Returns a list of bot results (for observers and controllers) ordered on the score ranks */
-    private fun getResultsForObservers(): List<BotResultsForObserver> {
-        val results = mutableListOf<BotResultsForObserver>()
+    private fun getResultsForObservers(): List<BotResultsForObserver> =
+        mutableListOf<BotResultsForObserver>().also { results ->
+            modelUpdater.results.forEach { score ->
+                val conn = getConnection(score.botId)
+                val botHandshake = connectionHandler.getBotHandshakes()[conn]
 
-        for (score in modelUpdater.results) {
-            val conn = getConnection(score.botId)
-            val botHandshake = connectionHandler.getBotHandshakes()[conn]
+                BotResultsForObserver().apply {
+                    id = score.botId.value
+                    name = botHandshake!!.name
+                    version = botHandshake.version
+                    survival = score.survival.roundToInt()
+                    lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
+                    bulletDamage = score.bulletDamage.roundToInt()
+                    bulletKillBonus = score.bulletKillBonus.toInt()
+                    ramDamage = score.ramDamage.roundToInt()
+                    ramKillBonus = score.ramKillBonus.roundToInt()
+                    totalScore = score.totalScore.roundToInt()
+                    firstPlaces = score.firstPlaces
+                    secondPlaces = score.secondPlaces
+                    thirdPlaces = score.thirdPlaces
 
-            BotResultsForObserver().apply {
-                id = score.botId.value
-                name = botHandshake!!.name
-                version = botHandshake.version
-                survival = score.survival.roundToInt()
-                lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
-                bulletDamage = score.bulletDamage.roundToInt()
-                bulletKillBonus = score.bulletKillBonus.toInt()
-                ramDamage = score.ramDamage.roundToInt()
-                ramKillBonus = score.ramKillBonus.roundToInt()
-                totalScore = score.totalScore.roundToInt()
-                firstPlaces = score.firstPlaces
-                secondPlaces = score.secondPlaces
-                thirdPlaces = score.thirdPlaces
-
-                results += this
+                    results += this
+                }
             }
+            var rank = 1
+            results.forEach { it.rank = rank++ }
         }
-        var rank = 1
-        results.forEach { score -> score.rank = rank++ }
-        return results
-    }
 
     /**
      * Returns the connection for a bot.
@@ -386,14 +379,12 @@ class GameServer(
     }
 
     private fun onNextTick(lastRound: IRound?) {
-        // Send tick
-        if (lastRound != null) {
-            val roundNumber = lastRound.roundNumber
-            lastRound.lastTurn?.apply {
+        lastRound?.apply {
+            lastTurn?.apply {
                 if (turnNumber == 1) {
                     log.debug("Round started: $roundNumber")
                     broadcastRoundStartedToAll(roundNumber)
-                } else if (lastRound.roundEnded) {
+                } else if (roundEnded) {
                     log.debug("Round ended: $roundNumber")
                     broadcastRoundEndedToAll(roundNumber, turnNumber)
                 }
@@ -402,7 +393,6 @@ class GameServer(
             }
             broadcastSkippedTurnToParticipants()
         }
-        // Clear bot intents
         botIntents.clear()
     }
 
@@ -423,17 +413,17 @@ class GameServer(
     }
 
     private fun broadcastRoundStartedToAll(roundNumber: Int) {
-        broadcastToAll(RoundStartedEvent().apply {
-            `$type` = Message.`$type`.ROUND_STARTED_EVENT
-            this.roundNumber = roundNumber
+        broadcastToAll(RoundStartedEvent().also {
+            it.`$type` = Message.`$type`.ROUND_STARTED_EVENT
+            it.roundNumber = roundNumber
         })
     }
 
     private fun broadcastRoundEndedToAll(roundNumber: Int, turnNumber: Int) {
-        broadcastToAll(RoundEndedEvent().apply {
-            `$type` = Message.`$type`.ROUND_ENDED_EVENT
-            this.roundNumber = roundNumber
-            this.turnNumber = turnNumber
+        broadcastToAll(RoundEndedEvent().also {
+            it.`$type` = Message.`$type`.ROUND_ENDED_EVENT
+            it.roundNumber = roundNumber
+            it.turnNumber = turnNumber
         })
     }
 
@@ -459,39 +449,41 @@ class GameServer(
         connectionHandler.broadcast(getParticipantsThatSkippedTurn(), gson.toJson(skippedTurn))
     }
 
-    private fun getParticipantsThatSkippedTurn(): Collection<WebSocket> {
-        val participantsThatSkippedTurn = mutableListOf<WebSocket>()
-        participants.forEach {
-            if (botIntents[it] == null) {
-                // No intent was received from the participant during the turn
-                participantsThatSkippedTurn += it
+    private fun getParticipantsThatSkippedTurn(): Collection<WebSocket> =
+        mutableListOf<WebSocket>().apply {
+            participants.forEach {
+                if (botIntents[it] == null) {
+                    // No intent was received from the participant during the turn
+                    this += it
+                }
             }
         }
-        return participantsThatSkippedTurn
-    }
 
     private val botsThatSentIntent = mutableSetOf<WebSocket>()
 
     private fun updateBotListUpdateMessage() {
-        val botsList = mutableListOf<BotInfo>()
+        mutableListOf<BotInfo>().also { bots ->
+            botListUpdateMessage.bots = bots
 
-        botListUpdateMessage.bots = botsList
-
-        connectionHandler.getBotConnections().forEach { conn ->
-            val address = conn.remoteSocketAddress
-            botsList += BotHandshakeToBotInfoMapper.map(
-                connectionHandler.getBotHandshakes()[conn]!!,
-                address.hostString, address.port
-            )
+            connectionHandler.apply {
+                getBotConnections().forEach { conn ->
+                    getBotHandshakes()[conn]?.let { botHandshake ->
+                        conn.remoteSocketAddress.apply {
+                            bots += BotHandshakeToBotInfoMapper.map(botHandshake, hostString, port)
+                        }
+                    }
+                }
+            }
         }
     }
 
     private fun send(conn: WebSocket, message: Message) {
-        val msg = gson.toJson(message)
-        try {
-            conn.send(msg)
-        } catch (ignore: WebsocketNotConnectedException) {
-            // Bot cannot receive events and send new intents.
+        gson.toJson(message).also {
+            try {
+                conn.send(it)
+            } catch (ignore: WebsocketNotConnectedException) {
+                // Bot cannot receive events and send new intents.
+            }
         }
     }
 
@@ -542,9 +534,10 @@ class GameServer(
         if (!participants.contains(conn)) return
 
         // Update bot intent
-        val botIntent = botIntents[conn] ?: dev.robocode.tankroyale.server.model.BotIntent()
-        botIntent.update(BotIntentToBotIntentMapper.map(intent))
-        botIntents[conn] = botIntent
+        (botIntents[conn] ?: dev.robocode.tankroyale.server.model.BotIntent()).apply {
+            update(BotIntentToBotIntentMapper.map(intent))
+            botIntents[conn] = this
+        }
 
         // If all bot intents have been received, we can start next turn
         botsThatSentIntent += conn
@@ -562,11 +555,14 @@ class GameServer(
      */
     internal fun onStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
         this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup)
-        participants.clear()
-        participants += connectionHandler.getBotConnections(botAddresses)
 
-        if (participants.isNotEmpty()) {
-            prepareGame()
+        participants.apply {
+            clear()
+            this += connectionHandler.getBotConnections(botAddresses)
+
+            if (isNotEmpty()) {
+                prepareGame()
+            }
         }
     }
 
