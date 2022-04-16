@@ -29,7 +29,7 @@ public class TrackFire : Bot
         isScanning = false; // reset scanning flag
 
         // Set colors
-        var pink = Color.FromRgb(0xFF69B4);
+        var pink = Color.FromString("#FF69B4");
         BodyColor = pink;
         TurretColor = pink;
         RadarColor = pink;
