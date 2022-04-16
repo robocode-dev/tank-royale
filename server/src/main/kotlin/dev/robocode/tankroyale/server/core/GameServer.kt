@@ -511,26 +511,26 @@ class GameServer(
         send(conn, botListUpdateMessage)
     }
 
-    internal fun onBotJoined() {
+    internal fun handleBotJoined() {
         updateBotListUpdateMessage()
         sendBotListUpdateToObservers()
     }
 
-    internal fun onBotLeft(conn: WebSocket) {
+    internal fun handleBotLeft(conn: WebSocket) {
         // If a bot leaves while in a game, make sure to reset all intent values to zeroes
         botIntents[conn]?.disableMovement()
         updateBotListUpdateMessage()
         sendBotListUpdateToObservers()
     }
 
-    internal fun onBotReady(conn: WebSocket) {
+    internal fun handleBotReady(conn: WebSocket) {
         if (serverState === ServerState.WAIT_FOR_READY_PARTICIPANTS) {
             readyParticipants += conn
             startGameIfParticipantsReady()
         }
     }
 
-    internal fun onBotIntent(conn: WebSocket, intent: BotIntent) {
+    internal fun handleBotIntent(conn: WebSocket, intent: BotIntent) {
         if (!participants.contains(conn)) return
 
         // Update bot intent
@@ -548,12 +548,7 @@ class GameServer(
         }
     }
 
-    /**
-     * Starts a new game with a new game setup and new participants.
-     * @param gameSetup is the new game setup.
-     * @param botAddresses is the addresses of the new participants.
-     */
-    internal fun onStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
+    internal fun handleStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
         this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup)
 
         participants.apply {
@@ -566,8 +561,7 @@ class GameServer(
         }
     }
 
-    /** Aborts current game */
-    internal fun onAbortGame() {
+    internal fun handleAbortGame() {
         log.info("Aborting game")
         serverState = ServerState.GAME_STOPPED
         broadcastGameAborted()
@@ -575,8 +569,7 @@ class GameServer(
         // No score is generated for aborted games
     }
 
-    /** Pauses current game */
-    internal fun onPauseGame() {
+    internal fun handlePauseGame() {
         if (serverState === ServerState.GAME_RUNNING) {
             log.info("Pausing game")
             serverState = ServerState.GAME_PAUSED
@@ -585,8 +578,7 @@ class GameServer(
         }
     }
 
-    /** Resumes current game */
-    internal fun onResumeGame() {
+    internal fun handleResumeGame() {
         if (serverState === ServerState.GAME_PAUSED) {
             log.info("Resuming game")
             serverState = ServerState.GAME_RUNNING
@@ -595,21 +587,21 @@ class GameServer(
         }
     }
 
-    /**
-     * Changes the TPS.
-     * @param tps is the new TPS to change to.
-     */
-    internal fun onChangeTps(tps: Int) {
-        if (this.tps == tps) return
-        this.tps = tps
+    internal fun handleNextTurn() {
 
-        broadcastTpsChangedToObservers(tps)
+    }
+
+    internal fun handleChangeTps(newTps: Int) {
+        if (tps == newTps) return
+        tps = newTps
+
+        broadcastTpsChangedToObservers(newTps)
 
         if (tps == 0) {
-            onPauseGame()
+            handlePauseGame()
         } else {
             if (serverState === ServerState.GAME_PAUSED) {
-                onResumeGame()
+                handleResumeGame()
             }
             resetTurnTimeout()
         }

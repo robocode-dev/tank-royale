@@ -15,22 +15,22 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
 
     override fun onBotJoined(conn: WebSocket, handshake: BotHandshake) {
         log.info("Bot joined: ${getDisplayName(handshake)}")
-        gameServer.onBotJoined()
+        gameServer.handleBotJoined()
     }
 
     override fun onBotLeft(conn: WebSocket, handshake: BotHandshake) {
         log.info("Bot left: ${getDisplayName(handshake)}")
-        gameServer.onBotLeft(conn)
+        gameServer.handleBotLeft(conn)
     }
 
     override fun onBotReady(conn: WebSocket, handshake: BotHandshake) {
         log.debug("Bot ready: ${getDisplayName(handshake)}")
-        gameServer.onBotReady(conn)
+        gameServer.handleBotReady(conn)
     }
 
     override fun onBotIntent(conn: WebSocket, handshake: BotHandshake, intent: BotIntent) {
         log.debug("Bot intent: ${getDisplayName(handshake)}: $intent")
-        gameServer.onBotIntent(conn, intent)
+        gameServer.handleBotIntent(conn, intent)
     }
 
     override fun onObserverJoined(conn: WebSocket, handshake: ObserverHandshake) {
@@ -53,40 +53,42 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
 
     override fun onStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
         log.debug("Game is requested to start")
-        gameServer.onStartGame(gameSetup, botAddresses)
+        gameServer.handleStartGame(gameSetup, botAddresses)
     }
 
     override fun onAbortGame() {
         log.debug("Game is requested to abort")
-        gameServer.onAbortGame()
+        gameServer.handleAbortGame()
     }
 
     override fun onPauseGame() {
         log.debug("Game is requested to pause")
-        gameServer.onPauseGame()
+        gameServer.handlePauseGame()
     }
 
     override fun onResumeGame() {
         log.debug("Game is requested to resume")
-        gameServer.onResumeGame()
+        gameServer.handleResumeGame()
+    }
+
+    override fun onNextTurn() {
+        log.debug("Game is requested to do next turn")
+        gameServer.handleNextTurn()
     }
 
     override fun onChangeTps(tps: Int) {
         log.info("TPS is requested to change to $tps")
-        gameServer.onChangeTps(tps)
+        gameServer.handleChangeTps(tps)
     }
 
-    private fun getDisplayName(handshake: BotHandshake): String {
-        return getDisplayName(handshake.name, handshake.version)
-    }
+    private fun getDisplayName(handshake: BotHandshake): String =
+        getDisplayName(handshake.name, handshake.version)
 
-    private fun getDisplayName(handshake: ObserverHandshake): String {
-        return getDisplayName(handshake.name, handshake.version)
-    }
+    private fun getDisplayName(handshake: ObserverHandshake): String =
+        getDisplayName(handshake.name, handshake.version)
 
-    private fun getDisplayName(handshake: ControllerHandshake): String {
-        return getDisplayName(handshake.name, handshake.version)
-    }
+    private fun getDisplayName(handshake: ControllerHandshake): String =
+        getDisplayName(handshake.name, handshake.version)
 
     private fun getDisplayName(name: String, version: String): String {
         var displayName = ""
