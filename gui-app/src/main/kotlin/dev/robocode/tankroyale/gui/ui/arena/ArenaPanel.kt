@@ -162,6 +162,7 @@ object ArenaPanel : JPanel() {
     private fun onMouseDragged(e: MouseEvent) {
         offsetX = e.point.x.toDouble()
         offsetY = e.point.y.toDouble()
+        repaint()
     }
 
     override fun paintComponent(g: Graphics) {
