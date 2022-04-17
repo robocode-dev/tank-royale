@@ -46,5 +46,6 @@ properties:
       - StopGame
       - PauseGame
       - ResumeGame
+      - NextTurn
 required:
   - $type

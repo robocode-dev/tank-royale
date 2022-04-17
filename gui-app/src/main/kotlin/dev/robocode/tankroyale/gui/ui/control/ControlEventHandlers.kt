@@ -23,6 +23,10 @@ object ControlEventHandlers {
                     }
                 }
             }
+
+            onNextTurn.enqueue(this) {
+                Client.doNextTurn()
+            }
         }
     }
 }

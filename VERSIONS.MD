@@ -1,12 +1,15 @@
 # Versions
 
-## 0.12.0 - Removal of RGB value from protocol
+## 0.12.0 - Single stepping battle
 
 #### Changes
 
-- GUI: Improvements to the battle dialog for selecting game type and bots for a new battle.
-    - Added button for setting up rules.
-    - Added tooltip texts.
+- GUI: 
+  - Added 'Next turn' button beside the pause button in with the control panel to useful for single stepping a
+    battle, e.g. when debugging your bot.
+  - Improvements to the battle dialog for selecting game type and bots for a new battle.
+      - Added button for setting up rules.
+      - Added tooltip texts.
 - Protocol: Removal of rgb-value type from protocol of Bot APIs.
 - Bot API: The Color.fromRgb() has been replaced by Color.fromString()
 

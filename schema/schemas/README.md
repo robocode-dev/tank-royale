@@ -88,7 +88,8 @@ and the game will check if there are enough participants to start the game.
 When there are enough participants to start the battle, the server sends a `game-started-for-observer` message to all
 observers and controllers and the game will be in _running_ state.
 
-If there are not enough participants for the battle, the _Ready timer_ will time out, and the server returns to the state
+If there are not enough participants for the battle, the _Ready timer_ will time out, and the server returns to the
+state
 where it waits for more bots to join the battle, and a controller will need to make a new attempt to start a game.
 
 - [start-game]
@@ -189,7 +190,7 @@ sequenceDiagram
 
 ### Aborting a game
 
-A controller is stopping the game while it is running. No results will be available when the game was aborted.
+A controller can stop the game while it is running. No results will be available when the game was aborted.
 
 - [stop-game]
 - [game-aborted-event]
@@ -206,7 +207,7 @@ sequenceDiagram
 
 ### Pausing a game
 
-A controller is pausing the game while it is running. The game will need to be resumed to continue. Note that the bots
+A controller can pause the game while it is running. The game will need to be resumed to continue. Note that the bots
 are not being notified that the game is paused, but should see the game as running and the next turn to occur as usual.
 
 - [pause-game]
@@ -221,9 +222,26 @@ sequenceDiagram
     Note over Server: Server state = GAME_PAUSED
 ```
 
+### Step to the next turn while being paused
+
+A controller can tell the game to make the next turn while being paused. That is the next turn will be played as normal,
+but the game will immediately be paused again after playing the next turn. This is used for single stepping while
+debugging a bot, or just observe the game one turn/step at a time.
+
+- [next-turn]
+
+```mermaid
+sequenceDiagram
+    Note over Server: Server state = GAME_RUNNING
+    Controller->>Server: pause-game
+    Server->>Observer: game-paused-event-for-observers
+    Server->>Controller: game-paused-event-for-observers
+    Note over Server: Server state = GAME_PAUSED
+```
+
 ### Resuming a paused game
 
-A controller is resuming the game from being paused.
+A controller is can resume the game from being paused.
 
 - [resume-game]
 - [game-resumed-event-for-observer]
@@ -310,6 +328,8 @@ Here are the events that a bot receives under a game:
 [game-aborted-event]: game-aborted-event.yaml
 
 [pause-game]: pause-game.yaml
+
+[next-turn]: next-turn.yaml
 
 [game-paused-event-for-observer]: game-paused-event-for-observer.yaml
 

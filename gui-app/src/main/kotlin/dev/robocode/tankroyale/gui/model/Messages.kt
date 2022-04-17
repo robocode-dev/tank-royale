@@ -205,6 +205,10 @@ class PauseGame : Message()
 class ResumeGame : Message()
 
 @Serializable
+@SerialName("NextTurn")
+class NextTurn : Message()
+
+@Serializable
 @SerialName("ChangeTps")
 data class ChangeTps(
     val tps: Int
@@ -231,6 +235,7 @@ val messageModule = SerializersModule {
         subclass(HitByBulletEvent::class)
         subclass(PauseGame::class)
         subclass(ResumeGame::class)
+        subclass(NextTurn::class)
         subclass(RoundEndedEvent::class)
         subclass(RoundStartedEvent::class)
         subclass(GamePausedEvent::class)

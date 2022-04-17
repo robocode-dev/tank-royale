@@ -132,6 +132,12 @@ object Client {
         }
     }
 
+    fun doNextTurn() {
+        if (isRunning.get() && isPaused.get()) {
+            send(NextTurn())
+        }
+    }
+
     fun getParticipant(id: Int): Participant = participants.first { participant -> participant.id == id }
 
     private fun startWithLastGameSetup() {

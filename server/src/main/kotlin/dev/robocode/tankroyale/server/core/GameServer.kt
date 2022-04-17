@@ -588,7 +588,11 @@ class GameServer(
     }
 
     internal fun handleNextTurn() {
-
+        if (serverState === ServerState.GAME_PAUSED) {
+            handleResumeGame()
+            onNextTurn()
+            handlePauseGame()
+        }
     }
 
     internal fun handleChangeTps(newTps: Int) {

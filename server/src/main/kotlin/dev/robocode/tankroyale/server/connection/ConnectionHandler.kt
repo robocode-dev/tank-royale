@@ -201,6 +201,7 @@ class ConnectionHandler(
                                 Message.`$type`.STOP_GAME -> handleStopGame()
                                 Message.`$type`.PAUSE_GAME -> handlePauseGame()
                                 Message.`$type`.RESUME_GAME -> handleResumeGame()
+                                Message.`$type`.NEXT_TURN -> handleNextTurn()
                                 Message.`$type`.CHANGE_TPS -> handleChangeTps(message)
                                 else -> notifyException(IllegalStateException("Unhandled message type: $type"))
                             }
@@ -288,6 +289,10 @@ class ConnectionHandler(
 
     private fun handleResumeGame() {
         executorService.submit(listener::onResumeGame)
+    }
+
+    private fun handleNextTurn() {
+        executorService.submit(listener::onNextTurn)
     }
 
     private fun handleChangeTps(message: String) {

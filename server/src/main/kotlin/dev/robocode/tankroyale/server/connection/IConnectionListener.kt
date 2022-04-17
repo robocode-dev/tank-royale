@@ -18,5 +18,6 @@ interface IConnectionListener {
     fun onAbortGame()
     fun onPauseGame()
     fun onResumeGame()
+    fun onNextTurn()
     fun onChangeTps(tps: Int)
 }

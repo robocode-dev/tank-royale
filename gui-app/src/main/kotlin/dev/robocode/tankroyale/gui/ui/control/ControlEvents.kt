@@ -7,4 +7,5 @@ object ControlEvents {
     val onStop = Event<JButton>()
     val onRestart = Event<JButton>()
     val onPauseResume = Event<JButton>()
+    val onNextTurn = Event<JButton>()
 }
