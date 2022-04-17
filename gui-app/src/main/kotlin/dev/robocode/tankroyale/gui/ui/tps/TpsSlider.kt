@@ -19,26 +19,26 @@ object TpsSlider : JSlider() {
         paintTicks = true
         majorTickSpacing = 5
 
-        val labels = Hashtable<Int, JLabel>()
-        labels[0] = JLabel("0")
-        labels[5] = JLabel("5")
-        labels[10] = JLabel("10")
-        labels[15] = JLabel("15")
-        labels[20] = JLabel("30")
-        labels[25] = JLabel("50")
-        labels[30] = JLabel("100")
-        labels[35] = JLabel("200")
-        labels[40] = JLabel("500")
-        labels[45] = JLabel("max")
-        labelTable = labels
+        labelTable= Hashtable<Int, JLabel>().apply {
+            this[0] = JLabel("0")
+            this[5] = JLabel("5")
+            this[10] = JLabel("10")
+            this[15] = JLabel("15")
+            this[20] = JLabel("30")
+            this[25] = JLabel("50")
+            this[30] = JLabel("100")
+            this[35] = JLabel("200")
+            this[40] = JLabel("500")
+            this[45] = JLabel("max")
+        }
 
         preferredSize = Dimension(300, 50)
 
         addChangeListener(TpsChangeListener())
 
-        TpsEvents.onTpsChanged.subscribe(TpsSlider) { tpsEvent ->
-            setTps(tpsEvent.tps)
-            ConfigSettings.tps = tpsEvent.tps
+        TpsEvents.onTpsChanged.subscribe(TpsSlider) {
+            setTps(it.tps)
+            ConfigSettings.tps = it.tps
         }
 
         setTps(ConfigSettings.tps)
