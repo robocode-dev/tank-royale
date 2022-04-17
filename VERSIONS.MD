@@ -1,23 +1,23 @@
 # Versions
 
-## 0.12.0 - Single stepping battle
+## 0.12.0 - Single stepping battle - 17-Apr-2022
 
 #### Changes
 
 - GUI:
-    - Added 'Next turn' button beside the pause button in with the control panel to useful for single stepping a
+    - Added 'Next turn' button beside the pause button in with the control panel to useful for single-stepping a
       battle, e.g. when debugging your bot.
     - Improvements to the battle dialog for selecting game type and bots for a new battle.
         - Added button for setting up rules.
         - Added tooltip texts.
-- Protocol: Removal of rgb-value type from protocol of Bot APIs.
+- Protocol: Removal of rgb-value type from the protocol of Bot APIs.
 - Bot API: The `Color.fromRgb()` has been replaced by `Color.fromString()`.
 
 #### Bugfixes
 
-- Bot API: Make sure bot terminates (system exit) upon a connection error to prevent dangling bot processes, which is
+- Bot API: Make sure the bot terminates (system exit) upon a connection error to prevent dangling bot processes, which is
   usually occurring when terminating the UI, which closes the bot connections.
-- GUI: When dragging the battle arena, the graphics was not updated while dragging.
+- GUI: When dragging the battle arena, the graphics were not updated while dragging.
 
 ## 0.11.2 - Fix restart issue - 12-Apr-2022
 
