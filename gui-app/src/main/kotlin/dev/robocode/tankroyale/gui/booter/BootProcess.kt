@@ -12,6 +12,7 @@ import java.io.InputStreamReader
 import java.io.PrintStream
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
 object BootProcess {
@@ -27,7 +28,7 @@ object BootProcess {
 
     private val json = MessageConstants.json
 
-    private val pidAndDirs = HashMap<Long, String>() // pid, dir
+    private val pidAndDirs = ConcurrentHashMap<Long, String>() // pid, dir
 
     private val runningBotsList = mutableListOf<DirAndPid>()
 
