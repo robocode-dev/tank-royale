@@ -129,5 +129,8 @@ namespace Robocode.TankRoyale.Schema
         [System.Runtime.Serialization.EnumMember(Value = @"ResumeGame")]
         ResumeGame = 35,
     
+        [System.Runtime.Serialization.EnumMember(Value = @"NextTurn")]
+        NextTurn = 36,
+    
     }
 }

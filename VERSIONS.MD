@@ -11,7 +11,7 @@
       - Added button for setting up rules.
       - Added tooltip texts.
 - Protocol: Removal of rgb-value type from protocol of Bot APIs.
-- Bot API: The Color.fromRgb() has been replaced by Color.fromString()
+- Bot API: The `Color.fromRgb()` has been replaced by `Color.fromString()`.
 
 #### Bugfixes
 
