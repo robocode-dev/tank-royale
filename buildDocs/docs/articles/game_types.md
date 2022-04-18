@@ -8,4 +8,8 @@ Current standard game types are:
 | melee     | 1000 x 1000 |        10         |    (unlimited)    |
 | 1v1       | 1000 x 1000 |         2         |         2         |
 
-In the future, more game types might arrive. And it is also possible to define custom game types.
+In the future, more game types might arrive. And it is also possible to define _custom_ game types with your own
+settings for battles.
+
+The current game types are mainly defined based on the arena size and the number of participants for the battle.
+For example, 1v1 is meant for two bots exactly battling each other on a 1000 x 1000 sized arena.
