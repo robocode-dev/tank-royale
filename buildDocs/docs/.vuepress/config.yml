@@ -19,6 +19,8 @@ themeConfig:
       path: /articles/intro
     - title: Installation
       path: /articles/installation
+    - title: GUI Application
+      path: /articles/gui
     - title: My First Bot
       path: /tutorial/my-first-bot
     - title: API Documentation

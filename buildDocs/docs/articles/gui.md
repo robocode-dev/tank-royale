@@ -129,9 +129,9 @@ It is possible to change which server the GUI is connecting to from the menu:
 You can add URLs to multiple Robocode servers. The current selected URL will be the server that the GUI will use. And
 you can test if the server is running with the Test button.
 
+[^skip-turn]: ? "When a bot is skipping a turn, it is unable to change its speed or turning rates, and will continue
+using the speed and turn rates from the last commands successfully sent to the server."
+
 [game type]: game_types.md
 
 [booter]: booter.md
-
-[^skip-turn]: ? "When a bot is skipping a turn, it is unable to change its speed or turning rates, and will continue
-using the speed and turn rates from the last commands successfully sent to the server.
