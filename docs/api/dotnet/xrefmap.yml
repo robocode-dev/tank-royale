@@ -2418,22 +2418,19 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.Color.FromHex
   nameWithType: Color.FromHex
-- uid: Robocode.TankRoyale.BotApi.Color.FromRgb(System.Nullable{System.Int32})
-  name: FromRgb(Nullable<Int32>)
-  href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color_FromRgb_System_Nullable_System_Int32__
-  commentId: M:Robocode.TankRoyale.BotApi.Color.FromRgb(System.Nullable{System.Int32})
-  name.vb: FromRgb(Nullable(Of Int32))
-  fullName: Robocode.TankRoyale.BotApi.Color.FromRgb(System.Nullable<System.Int32>)
-  fullName.vb: Robocode.TankRoyale.BotApi.Color.FromRgb(System.Nullable(Of System.Int32))
-  nameWithType: Color.FromRgb(Nullable<Int32>)
-  nameWithType.vb: Color.FromRgb(Nullable(Of Int32))
-- uid: Robocode.TankRoyale.BotApi.Color.FromRgb*
-  name: FromRgb
-  href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color_FromRgb_
-  commentId: Overload:Robocode.TankRoyale.BotApi.Color.FromRgb
+- uid: Robocode.TankRoyale.BotApi.Color.FromString(System.String)
+  name: FromString(String)
+  href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color_FromString_System_String_
+  commentId: M:Robocode.TankRoyale.BotApi.Color.FromString(System.String)
+  fullName: Robocode.TankRoyale.BotApi.Color.FromString(System.String)
+  nameWithType: Color.FromString(String)
+- uid: Robocode.TankRoyale.BotApi.Color.FromString*
+  name: FromString
+  href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color_FromString_
+  commentId: Overload:Robocode.TankRoyale.BotApi.Color.FromString
   isSpec: "True"
-  fullName: Robocode.TankRoyale.BotApi.Color.FromRgb
-  nameWithType: Color.FromRgb
+  fullName: Robocode.TankRoyale.BotApi.Color.FromString
+  nameWithType: Color.FromString
 - uid: Robocode.TankRoyale.BotApi.Color.Fuchsia
   name: Fuchsia
   href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color_Fuchsia
