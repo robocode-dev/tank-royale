@@ -63,10 +63,10 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     private void clearRemaining() {
-        distanceRemaining = 0d;
-        turnRemaining = 0d;
-        gunTurnRemaining = 0d;
-        radarTurnRemaining = 0d;
+        distanceRemaining = 0;
+        turnRemaining = 0;
+        gunTurnRemaining = 0;
+        radarTurnRemaining = 0;
 
         previousDirection = bot.getDirection();
         previousGunDirection = bot.getGunDirection();

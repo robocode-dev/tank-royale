@@ -65,10 +65,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
         private void ClearRemaining()
         {
-            DistanceRemaining = 0d;
-            TurnRemaining = 0d;
-            GunTurnRemaining = 0d;
-            RadarTurnRemaining = 0d;
+            DistanceRemaining = 0;
+            TurnRemaining = 0;
+            GunTurnRemaining = 0;
+            RadarTurnRemaining = 0;
 
             previousDirection = bot.Direction;
             previousGunDirection = bot.GunDirection;
