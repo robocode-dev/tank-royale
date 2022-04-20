@@ -5,7 +5,7 @@ import java.util.*
 import javax.swing.AbstractListModel
 
 class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
-    private val list = ArrayList<T>()
+    private val list = Collections.synchronizedList(ArrayList<T>())
 
     override fun getSize(): Int {
         return list.size
