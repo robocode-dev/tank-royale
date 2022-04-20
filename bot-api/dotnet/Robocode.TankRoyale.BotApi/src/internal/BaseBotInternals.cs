@@ -106,6 +106,11 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
         internal BotEventHandlers BotEventHandlers { get; }
 
+        internal void DisableEventQueue()
+        {
+            eventQueue.Disable();
+        }
+
         internal ISet<Events.Condition> Conditions { get; } = new HashSet<Events.Condition>();
 
         private void OnRoundStarted(E.RoundStartedEvent e)

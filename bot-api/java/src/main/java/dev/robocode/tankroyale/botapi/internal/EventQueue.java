@@ -20,6 +20,8 @@ final class EventQueue {
 
     private BotEvent currentEvent;
 
+    private boolean isDisabled;
+
     public EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers) {
         this.baseBotInternals = baseBotInternals;
         this.botEventHandlers = botEventHandlers;
@@ -73,9 +75,16 @@ final class EventQueue {
         eventMap.clear();
         baseBotInternals.getConditions().clear(); // conditions might be added in the bots run() method each round
         currentEvent = null;
+        isDisabled = false;
+    }
+
+    void disable() {
+        isDisabled = true;
     }
 
     void addEventsFromTick(TickEvent event, IBaseBot baseBot) {
+        if (isDisabled) return;
+
         addEvent(event, baseBot);
         event.getEvents().forEach(evt -> addEvent(evt, baseBot));
 

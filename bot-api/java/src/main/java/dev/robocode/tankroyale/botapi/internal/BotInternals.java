@@ -103,18 +103,21 @@ public final class BotInternals implements IStopResumeListener {
 
     private void startThread() {
         synchronized (threadMonitor) {
-            thread = new Thread(bot::run);
+            thread = new Thread(() -> {
+                bot.run();
+                baseBotInternals.disableEventQueue();
+            });
             thread.start();
         }
     }
 
     private void stopThread() {
         synchronized (threadMonitor) {
-            if (thread != null) {
-                thread.interrupt();
-                thread = null;
-            }
+            if (thread == null) return;
+            thread.interrupt();
+            thread = null;
         }
+        baseBotInternals.disableEventQueue();
     }
 
     private void onHitWall() {

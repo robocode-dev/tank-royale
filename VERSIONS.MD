@@ -4,7 +4,9 @@
 
 #### Bugfixes
 
-- Blocking bot functions do not stop bot after finishing ([#17](https://github.com/robocode-dev/tank-royale/issues/17)).
+- Bot API:
+  - Blocking bot functions do not stop bot after finishing ([#17](https://github.com/robocode-dev/tank-royale/issues/17)).
+  - Fixed issue where event queue would overflow with unhandled events when a Bot´s `run()` method has ended. 
 
 ## 0.12.0 - Single stepping battle - 17-Apr-2022
 

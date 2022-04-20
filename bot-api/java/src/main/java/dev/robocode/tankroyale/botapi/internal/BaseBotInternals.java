@@ -139,6 +139,10 @@ public final class BaseBotInternals {
         return botEventHandlers;
     }
 
+    void disableEventQueue() {
+        eventQueue.disable();
+    }
+
     Set<Condition> getConditions() {
         return conditions;
     }

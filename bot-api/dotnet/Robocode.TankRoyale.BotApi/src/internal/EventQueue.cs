@@ -19,6 +19,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
         private BotEvent currentEvent;
 
+        private bool isDisabled;
+
         internal EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers)
         {
             this.baseBotInternals = baseBotInternals;
@@ -30,10 +32,18 @@ namespace Robocode.TankRoyale.BotApi.Internal
             eventsDict.Clear();
             baseBotInternals.Conditions.Clear(); // conditions might be added in the bot's Run() method each round
             currentEvent = null;
+            isDisabled = false;
+        }
+
+        public void Disable()
+        {
+            isDisabled = true;
         }
 
         internal void AddEventsFromTick(TickEvent tickEvent, IBaseBot baseBot)
         {
+            if (isDisabled) return;
+        
             AddEvent(tickEvent, baseBot);
             foreach (var botEvent in tickEvent.Events)
             {

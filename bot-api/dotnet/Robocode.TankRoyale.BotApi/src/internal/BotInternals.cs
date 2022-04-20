@@ -115,8 +115,11 @@ namespace Robocode.TankRoyale.BotApi.Internal
         {
             lock (threadMonitor)
             {
-                thread = new Thread(bot.Run);
-                IsRunning = true; // before starting thread!
+                thread = new Thread(() =>
+                {
+                    bot.Run();
+                    baseBotInternals.DisableEventQueue();
+                });
                 thread.Start();
             }
         }
@@ -126,11 +129,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
             lock (threadMonitor)
             {
                 if (thread == null) return;
-
-                IsRunning = false;
                 thread.Join(0);
                 thread = null;
             }
+            baseBotInternals.DisableEventQueue();
         }
 
         private void OnHitWall(HitWallEvent evt)
@@ -150,7 +152,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
                 StopThread();
         }
 
-        internal bool IsRunning { get; private set; }
+        internal bool IsRunning { get { return thread != null; } }
 
         internal double DistanceRemaining { get; private set; }
 
