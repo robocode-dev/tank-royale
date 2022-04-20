@@ -1,5 +1,11 @@
 # Versions
 
+## In progress
+
+#### Bugfixes
+
+- Blocking bot functions do not stop bot after finishing ([#17](https://github.com/robocode-dev/tank-royale/issues/17)).
+
 ## 0.12.0 - Single stepping battle - 17-Apr-2022
 
 #### Changes

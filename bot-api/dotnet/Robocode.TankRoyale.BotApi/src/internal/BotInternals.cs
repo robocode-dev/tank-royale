@@ -3,6 +3,7 @@ using System;
 using System.Threading;
 using Robocode.TankRoyale.BotApi.Events;
 using static System.Double;
+using static System.Math;
 
 namespace Robocode.TankRoyale.BotApi.Internal
 {
@@ -193,7 +194,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
                 SetForward(distance);
                 do
                     bot.Go();
-                while (IsRunning && DistanceRemaining != 0);
+                while (IsRunning && (Abs(DistanceRemaining) > 0 || Abs(bot.Speed) > 0));
             }
         }
 
@@ -215,7 +216,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
                 SetTurnLeft(degrees);
                 do
                     bot.Go();
-                while (IsRunning && TurnRemaining != 0);
+                while (IsRunning && Abs(TurnRemaining) > 0);
             }
         }
 
@@ -237,7 +238,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
                 SetTurnGunLeft(degrees);
                 do
                     bot.Go();
-                while (IsRunning && GunTurnRemaining != 0);
+                while (IsRunning && Abs(GunTurnRemaining) > 0);
             }
         }
 
@@ -259,7 +260,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
                 SetTurnRadarLeft(degrees);
                 do
                     bot.Go();
-                while (IsRunning && RadarTurnRemaining != 0);
+                while (IsRunning && Abs(RadarTurnRemaining) > 0);
             }
         }
 

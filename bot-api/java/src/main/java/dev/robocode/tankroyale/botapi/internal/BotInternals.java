@@ -183,7 +183,7 @@ public final class BotInternals implements IStopResumeListener {
             setForward(distance);
             do {
                 bot.go();
-            } while (isRunning() && distanceRemaining != 0);
+            } while (isRunning() && abs(distanceRemaining) > 0 || abs(bot.getSpeed()) > 0);
         }
     }
 
@@ -202,7 +202,7 @@ public final class BotInternals implements IStopResumeListener {
             setTurnLeft(degrees);
             do {
                 bot.go();
-            } while (isRunning() && turnRemaining != 0);
+            } while (isRunning() && abs(turnRemaining) > 0);
         }
     }
 
@@ -221,7 +221,7 @@ public final class BotInternals implements IStopResumeListener {
             setTurnGunLeft(degrees);
             do {
                 bot.go();
-            } while (isRunning() && gunTurnRemaining != 0);
+            } while (isRunning() && abs(gunTurnRemaining) > 0);
         }
     }
 
@@ -240,7 +240,7 @@ public final class BotInternals implements IStopResumeListener {
             setTurnRadarLeft(degrees);
             do {
                 bot.go();
-            } while (isRunning() && radarTurnRemaining != 0);
+            } while (isRunning() && abs(radarTurnRemaining) > 0);
         }
     }
 
