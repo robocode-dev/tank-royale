@@ -35,8 +35,7 @@
 
 #### Bugfixes
 
-- Bot API: Make sure the bot terminates (system exit) upon a connection error to prevent dangling bot processes, which
-  is
+- Bot API: Make sure the bot terminates (system exit) upon a connection error to prevent dangling bot processes, which is
   usually occurring when terminating the UI, which closes the bot connections.
 - GUI: When dragging the battle arena, the graphics were not updated while dragging.
 
