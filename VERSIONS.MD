@@ -8,10 +8,12 @@
     - Blocking bot functions do not stop bot after
       finishing ([#17](https://github.com/robocode-dev/tank-royale/issues/17)).
     - Fixed issue where event queue would overflow with unhandled events when a Bot´s `run()` method has ended.
-- GUI:
-    - The 'Start game' button is now disabled when the minimum or maximum number of participants is not met.
-    - A tooltip text has been added to the 'Start button' that shows the minimum or maximum number of participants
-      required for starting the battle.
+- GUI: The 'Start game' button is now disabled when the minimum or maximum number of participants is not met.
+
+#### Improvements
+
+- GUI: A tooltip text has been added to the 'Start button' that shows the minimum or maximum number of participants
+  required for starting the battle.
 
 ## 0.12.0 - Single stepping battle - 17-Apr-2022
 
