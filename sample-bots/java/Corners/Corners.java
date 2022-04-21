@@ -76,7 +76,7 @@ public class Corners extends Bot {
     // We saw another bot -> stop and fire!
     @Override
     public void onScannedBot(ScannedBotEvent e) {
-        double distance = distanceTo(e.getX(), e.getY());
+        var distance = distanceTo(e.getX(), e.getY());
 
         // Should we stop, or just fire?
         if (stopWhenSeeEnemy) {

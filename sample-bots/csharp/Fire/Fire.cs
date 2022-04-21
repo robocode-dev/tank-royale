@@ -94,8 +94,8 @@ public class Fire : Bot
     public override void OnHitBot(HitBotEvent e)
     {
         // Turn gun to the bullet direction
-        double direction = DirectionTo(e.X, e.Y);
-        double gunBearing = NormalizeRelativeAngle(direction - GunDirection);
+        var direction = DirectionTo(e.X, e.Y);
+        var gunBearing = NormalizeRelativeAngle(direction - GunDirection);
         TurnGunLeft(gunBearing);
 
         // Fire hard

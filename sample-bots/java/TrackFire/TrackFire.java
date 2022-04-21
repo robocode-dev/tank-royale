@@ -52,7 +52,7 @@ public class TrackFire extends Bot {
         isScanning = true; // we started scanning
 
         // Calculate direction of the scanned bot and bearing to it for the gun
-        double bearingFromGun = gunBearingTo(e.getX(), e.getY());
+        var bearingFromGun = gunBearingTo(e.getX(), e.getY());
 
         // Turn the gun toward the scanned bot
         turnGunLeft(bearingFromGun);

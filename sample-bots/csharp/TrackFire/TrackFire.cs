@@ -52,7 +52,7 @@ public class TrackFire : Bot
         isScanning = true; // we started scanning
 
         // Calculate direction of the scanned bot and bearing to it for the gun
-        double bearingFromGun = GunBearingTo(e.X, e.Y);
+        var bearingFromGun = GunBearingTo(e.X, e.Y);
 
         // Turn the gun toward the scanned bot
         TurnGunLeft(bearingFromGun);

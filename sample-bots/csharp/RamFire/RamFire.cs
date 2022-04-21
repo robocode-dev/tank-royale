@@ -72,7 +72,7 @@ public class RamFire : Bot
     // default turn direction used if no bot is being scanned within in the Run() method.
     private void TurnToFaceTarget(double x, double y)
     {
-        double bearing = BearingTo(x, y);
+        var bearing = BearingTo(x, y);
         if (bearing >= 0)
             turnDirection = 1;
         else

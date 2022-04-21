@@ -50,8 +50,8 @@ public class SpinBot extends Bot {
     // so we need to turn again to keep spinning.
     @Override
     public void onHitBot(HitBotEvent e) {
-        double direction = directionTo(e.getX(), e.getY());
-        double bearing = calcBearing(direction);
+        var direction = directionTo(e.getX(), e.getY());
+        var bearing = calcBearing(direction);
         if (bearing > -10 && bearing < 10) {
             fire(3);
         }

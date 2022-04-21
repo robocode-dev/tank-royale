@@ -44,7 +44,7 @@ public class MyFirstBot extends Bot {
     @Override
     public void onHitByBullet(BulletHitBotEvent e) {
         // Calculate the bearing to the direction of the bullet
-        double bearing = calcBearing(e.getBullet().getDirection());
+        var bearing = calcBearing(e.getBullet().getDirection());
 
         // Turn 90 degrees to the bullet direction based on the bearing
         turnLeft(90 - bearing);

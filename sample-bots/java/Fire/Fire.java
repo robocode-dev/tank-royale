@@ -56,7 +56,7 @@ public class Fire extends Bot {
         isScanning = true; // We are now scanning
 
         // If the other bot is close by, and we have plenty of life, fire hard!
-        double distance = distanceTo(e.getX(), e.getY());
+        var distance = distanceTo(e.getX(), e.getY());
         if (distance < 50 && getEnergy() > 50) {
             fire(3);
         } else {
@@ -87,8 +87,8 @@ public class Fire extends Bot {
     @Override
     public void onHitBot(HitBotEvent e) {
         // Turn gun to the bullet direction
-        double direction = directionTo(e.getX(), e.getY());
-        double gunBearing = normalizeRelativeAngle(direction - getGunDirection());
+        var direction = directionTo(e.getX(), e.getY());
+        var gunBearing = normalizeRelativeAngle(direction - getGunDirection());
         turnGunLeft(gunBearing);
 
         // Fire hard
