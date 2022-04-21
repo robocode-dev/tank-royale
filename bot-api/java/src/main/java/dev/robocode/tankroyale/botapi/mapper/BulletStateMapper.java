@@ -20,7 +20,6 @@ public final class BulletStateMapper {
                 source.getX(),
                 source.getY(),
                 source.getDirection(),
-                source.getSpeed(),
                 Color.fromString(source.getColor()));
     }
 

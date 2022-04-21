@@ -33,7 +33,7 @@ namespace Robocode.TankRoyale.BotApi
 
         /// <summary>Speed measured of the bullet in units per turn.</summary>
         /// <value>The speed measured of the bullet in units per turn.</value>
-        public double Speed { get; }
+        public double Speed { get => 20 - 3 * Power; }
 
         /// <summary>
         /// color of the bullet.
@@ -50,10 +50,8 @@ namespace Robocode.TankRoyale.BotApi
         /// <param name="x">X coordinate of the bullet.</param>
         /// <param name="y">Y coordinate of the bullet.</param>
         /// <param name="direction">Direction in degrees.</param>
-        /// <param name="speed">Speed measured in units per turn.</param>
         /// <param name="color">color of the bullet.</param>
-        public BulletState(int bulletId, int ownerId, double power, double x, double y, double direction, double speed,
-            Color color)
+        public BulletState(int bulletId, int ownerId, double power, double x, double y, double direction, Color color)
         {
             BulletId = bulletId;
             OwnerId = ownerId;
@@ -61,7 +59,6 @@ namespace Robocode.TankRoyale.BotApi
             X = x;
             Y = y;
             Direction = direction;
-            Speed = speed;
             Color = color;
         }
     }

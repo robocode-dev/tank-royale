@@ -15,6 +15,11 @@
 - GUI: A tooltip text has been added to the 'Start button' that shows the minimum or maximum number of participants
   required for starting the battle.
 
+#### Changes
+
+- Protocol: Removal of the `speed` field of the `bullet-state` as the speed can be calculated as: `20 - 3 x power`.
+  Hence, there is no need to transfer this information over the network.
+
 ## 0.12.0 - Single stepping battle - 17-Apr-2022
 
 #### Changes
