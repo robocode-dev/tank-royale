@@ -8,7 +8,7 @@ namespace Robocode.TankRoyale.Schema
 {
     #pragma warning disable // Disable all warnings
 
-    /// <summary>Event occuring for before each new turn in the battle. Gives internal bot details.</summary>
+    /// <summary>Event occurring for before each new turn in the battle. Gives internal bot details.</summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.2.0 (Newtonsoft.Json v9.0.0.0)")]
     public class TickEventForBot : Event 
     {

@@ -8,7 +8,7 @@ namespace Robocode.TankRoyale.Schema
 {
     #pragma warning disable // Disable all warnings
 
-    /// <summary>Event occuring when a round has ended.</summary>
+    /// <summary>Event occurring when a round has ended.</summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.2.0 (Newtonsoft.Json v9.0.0.0)")]
     public class RoundEndedEvent : Message 
     {

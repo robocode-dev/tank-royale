@@ -1,6 +1,6 @@
 $id: #round-started-event.yaml
 $schema: http://json-schema.org/2020-12/schema#
-description: Event occuring when a new round has started.
+description: Event occurring when a new round has started.
 type: object
 extends:
   $ref: message.yaml

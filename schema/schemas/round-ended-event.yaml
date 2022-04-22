@@ -1,6 +1,6 @@
 $id: #round-ended-event.yaml
 $schema: http://json-schema.org/2020-12/schema#
-description: Event occuring when a round has ended.
+description: Event occurring when a round has ended.
 type: object
 extends:
   $ref: message.yaml
