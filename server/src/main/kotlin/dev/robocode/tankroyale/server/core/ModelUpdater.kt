@@ -93,18 +93,19 @@ class ModelUpdater(
      */
     private fun updateBotIntents(botIntents: Map<BotId, IBotIntent>) {
         for ((botId, updateIntent) in botIntents.entries) {
-            val botIntent = botIntentsMap[botId] ?: BotIntent()
-            botIntent.update(updateIntent)
-            botIntentsMap[botId] = botIntent
+            (botIntentsMap[botId] ?: BotIntent()).apply {
+                update(updateIntent)
+                botIntentsMap[botId] = this
+            }
         }
     }
 
     /** Proceed with the next round. */
     private fun nextRound() {
-        round = round.copy(roundNumber = round.roundNumber)
-        round.roundEnded = false
-        round.roundNumber++
-
+        round = round.copy(roundNumber = round.roundNumber).apply {
+            roundEnded = false
+            roundNumber++
+        }
         turn.turnNumber = 0
 
         nextBulletId = 0
@@ -240,12 +241,11 @@ class ModelUpdater(
      * @param bot is the bot top execute the bot intent for.
      */
     private fun updateBotStates(bot: MutableBot) {
-        val intent = botIntentsMap[bot.id]
-        intent?.apply {
-            bot.speed = calcNewBotSpeed(bot.speed, intent.targetSpeed ?: 0.0)
+        botIntentsMap[bot.id]?.apply {
+            bot.speed = calcNewBotSpeed(bot.speed, targetSpeed ?: 0.0)
 
-            updateBotTurnRatesAndDirections(bot, intent)
-            updateBotColors(bot, intent)
+            updateBotTurnRatesAndDirections(bot, this)
+            updateBotColors(bot, this)
 
             bot.moveToNewPosition()
         }
@@ -593,9 +593,8 @@ class ModelUpdater(
      * @param bot is the bot.
      */
     private fun checkWhetherToFireGun(bot: MutableBot) {
-        val botIntent = botIntentsMap[bot.id]
-        if (botIntent != null) {
-            val firepower = botIntent.firepower ?: 0.0
+        botIntentsMap[bot.id]?.let {
+            val firepower = it.firepower ?: 0.0
             if (firepower >= MIN_FIREPOWER && bot.energy > firepower) {
                 fireBullet(bot, firepower)
             }
@@ -868,13 +867,15 @@ class ModelUpdater(
          * @param intent is the bot´s intent.
          */
         private fun updateBotColors(bot: MutableBot, intent: BotIntent) {
-            bot.bodyColor = fromString(intent.bodyColor)
-            bot.turretColor = fromString(intent.turretColor)
-            bot.radarColor = fromString(intent.radarColor)
-            bot.bulletColor = fromString(intent.bulletColor)
-            bot.scanColor = fromString(intent.scanColor)
-            bot.tracksColor = fromString(intent.tracksColor)
-            bot.gunColor = fromString(intent.gunColor)
+            bot.apply {
+                bodyColor = fromString(intent.bodyColor)
+                turretColor = fromString(intent.turretColor)
+                radarColor = fromString(intent.radarColor)
+                bulletColor = fromString(intent.bulletColor)
+                scanColor = fromString(intent.scanColor)
+                tracksColor = fromString(intent.tracksColor)
+                gunColor = fromString(intent.gunColor)
+            }
         }
     }
 }
