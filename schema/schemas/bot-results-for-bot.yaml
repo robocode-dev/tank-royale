@@ -31,16 +31,15 @@ properties:
     description: Total score
     type: integer
   firstPlaces:
-    desctiption: Number of 1st places
+    description: Number of 1st places
     type: integer
   secondPlaces:
-    desctiption: Number of 2nd places
+    description: Number of 2nd places
     type: integer
   thirdPlaces:
-    desctiption: Number of 3rd places
+    description: Number of 3rd places
     type: integer
 required:
-  - id
   - rank
   - survival
   - lastSurvivorBonus

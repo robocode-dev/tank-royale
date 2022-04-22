@@ -8,10 +8,10 @@ properties:
     description: Game setup
     $ref: game-setup.yaml
   botAddresses:
-    description: List of bot addressses
+    description: List of bot addresses
     type: array
     items:
-      decription: Bot address
+      description: Bot address
       $ref: bot-address.yaml
 required:
   - botAddresses
