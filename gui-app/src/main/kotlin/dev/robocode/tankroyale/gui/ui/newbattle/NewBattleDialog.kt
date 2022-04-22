@@ -74,7 +74,7 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
             val maxParticipants = maxNumberOfParticipants()
 
             startBattleButton.isEnabled = selectedBots.size >= minNumberOfParticipants() &&
-                    (maxParticipants != null && selectedBots.size <= maxParticipants)
+                    (maxParticipants == null || selectedBots.size <= maxParticipants)
         }
 
         onStartBattle.subscribe(this) { startGame() }
