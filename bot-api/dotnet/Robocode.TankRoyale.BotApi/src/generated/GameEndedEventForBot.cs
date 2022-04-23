@@ -16,10 +16,9 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("numberOfRounds", Required = Newtonsoft.Json.Required.Always)]
         public int NumberOfRounds { get; set; }
     
-        /// <summary>Results of the battle</summary>
+        /// <summary>Bot results of the battle</summary>
         [Newtonsoft.Json.JsonProperty("results", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public System.Collections.Generic.ICollection<BotResultsForBot> Results { get; set; } = new System.Collections.ObjectModel.Collection<BotResultsForBot>();
+        public BotResultsForBot Results { get; set; }
     
     
     }

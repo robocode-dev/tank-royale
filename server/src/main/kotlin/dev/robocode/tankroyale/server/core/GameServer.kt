@@ -243,11 +243,12 @@ class GameServer(
     }
 
     /** Returns a list of bot results (for bots) ordered on the score ranks */
-    private fun getResultsForBots(): List<BotResultsForBot> =
-        mutableListOf<BotResultsForBot>().also { results ->
-            modelUpdater.results.forEach { score ->
-                BotResultsForBot().apply {
-                    id = score.botId.value
+    private fun getResultsForBot(botId: BotId): BotResultsForBot {
+        var rank = 1
+        modelUpdater.results.forEach { score ->
+            if (score.botId == botId) {
+                return BotResultsForBot().apply {
+                    this.rank = rank
                     survival = score.survival.roundToInt()
                     lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
                     bulletDamage = score.bulletDamage.roundToInt()
@@ -258,13 +259,12 @@ class GameServer(
                     firstPlaces = score.firstPlaces
                     secondPlaces = score.secondPlaces
                     thirdPlaces = score.thirdPlaces
-
-                    results += this
                 }
             }
-            var rank = 1
-            results.forEach { it.rank = rank++ }
+            rank++
         }
+        throw IllegalStateException("botId was not found in results: $botId")
+    }
 
     /** Returns a list of bot results (for observers and controllers) ordered on the score ranks */
     private fun getResultsForObservers(): List<BotResultsForObserver> =
@@ -397,11 +397,17 @@ class GameServer(
     }
 
     private fun broadcastGameEndedToParticipants() {
-        broadcastToParticipants(GameEndedEventForBot().apply {
-            `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_BOT
-            numberOfRounds = modelUpdater.numberOfRounds
-            results = getResultsForBots() // Use the stored score!
-        })
+        participants.forEach {conn ->
+            participantIds[conn]?.let { botId ->
+                GameEndedEventForBot().apply {
+                    `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_BOT
+                    numberOfRounds = modelUpdater.numberOfRounds
+                    results = getResultsForBot(botId)
+
+                    send(conn, this)
+                }
+            }
+        }
     }
 
     private fun broadcastGameEndedToObservers() {
@@ -485,11 +491,6 @@ class GameServer(
                 // Bot cannot receive events and send new intents.
             }
         }
-    }
-
-    private fun broadcastToParticipants(msg: Message) {
-        requireNotNull(msg.`$type`) { "\$type is required on the message" }
-        connectionHandler.broadcast(participants, gson.toJson(msg))
     }
 
     private fun broadcastToObserverAndControllers(msg: Message) {

@@ -16,7 +16,7 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("gameSetup", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public GameSetup GameSetup { get; set; }
     
-        /// <summary>List of bot addressses</summary>
+        /// <summary>List of bot addresses</summary>
         [Newtonsoft.Json.JsonProperty("botAddresses", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
         public System.Collections.Generic.ICollection<BotAddress> BotAddresses { get; set; } = new System.Collections.ObjectModel.Collection<BotAddress>();

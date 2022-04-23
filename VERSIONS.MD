@@ -17,8 +17,12 @@
 
 #### Changes
 
-- Protocol: Removal of the `speed` field of the `bullet-state` as the speed can be calculated as: `20 - 3 x power`.
-  Hence, there is no need to transfer this information over the network.
+- Protocol:
+    - Removal of the `speed` field of the `bullet-state` as the speed can be calculated as: `20 - 3 x power`.
+      Hence, there is no need to transfer this information over the network.
+    - Moved id from `bot-results-for-bot` to `bot-results-for-observer`.
+- Bot API: The id was removed from `BotResults`, and `GameEndedEvent` will only return a single `BotResult` containing
+  the battle results for the bot (instead of a list containing results from all bots).
 
 ## 0.12.0 - Single stepping battle - 17-Apr-2022
 
@@ -35,7 +39,8 @@
 
 #### Bugfixes
 
-- Bot API: Make sure the bot terminates (system exit) upon a connection error to prevent dangling bot processes, which is
+- Bot API: Make sure the bot terminates (system exit) upon a connection error to prevent dangling bot processes, which
+  is
   usually occurring when terminating the UI, which closes the bot connections.
 - GUI: When dragging the battle arena, the graphics were not updated while dragging.
 

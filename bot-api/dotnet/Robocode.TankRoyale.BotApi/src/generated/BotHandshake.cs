@@ -27,6 +27,7 @@ namespace Robocode.TankRoyale.Schema
         [System.ComponentModel.DataAnnotations.Required]
         public System.Collections.Generic.ICollection<string> Authors { get; set; } = new System.Collections.ObjectModel.Collection<string>();
     
+        /// <summary>Short description of the bot, preferable a one-liner</summary>
         [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Description { get; set; }
     

@@ -16,7 +16,6 @@ import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
-import dev.robocode.tankroyale.botapi.mapper.ResultsMapper;
 import dev.robocode.tankroyale.schema.*;
 
 import java.net.URI;
@@ -30,6 +29,7 @@ import java.util.concurrent.CountDownLatch;
 
 import static dev.robocode.tankroyale.botapi.Constants.*;
 import static dev.robocode.tankroyale.botapi.internal.MathUtil.clamp;
+import static dev.robocode.tankroyale.botapi.mapper.ResultsMapper.map;
 import static java.lang.Math.*;
 import static java.net.http.WebSocket.Builder;
 import static java.net.http.WebSocket.Listener;
@@ -580,7 +580,7 @@ public final class BaseBotInternals {
 
             GameEndedEvent gameEndedEvent = new GameEndedEvent(
                     gameEndedEventForBot.getNumberOfRounds(),
-                    ResultsMapper.map(gameEndedEventForBot.getResults()));
+                    map(gameEndedEventForBot.getResults()));
 
             botEventHandlers.onGameEnded.publish(gameEndedEvent);
         }

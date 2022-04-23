@@ -12,10 +12,6 @@ namespace Robocode.TankRoyale.Schema
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.2.0 (Newtonsoft.Json v9.0.0.0)")]
     public class BotResultsForBot 
     {
-        /// <summary>Identifier of the bot used in this battle</summary>
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
-        public int Id { get; set; }
-    
         /// <summary>Rank/placement of the bot, where 1 is 1st place, 4 is 4th place etc.</summary>
         [Newtonsoft.Json.JsonProperty("rank", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Range(1, int.MaxValue)]
@@ -49,12 +45,15 @@ namespace Robocode.TankRoyale.Schema
         [Newtonsoft.Json.JsonProperty("totalScore", Required = Newtonsoft.Json.Required.Always)]
         public int TotalScore { get; set; }
     
+        /// <summary>Number of 1st places</summary>
         [Newtonsoft.Json.JsonProperty("firstPlaces", Required = Newtonsoft.Json.Required.Always)]
         public int FirstPlaces { get; set; }
     
+        /// <summary>Number of 2nd places</summary>
         [Newtonsoft.Json.JsonProperty("secondPlaces", Required = Newtonsoft.Json.Required.Always)]
         public int SecondPlaces { get; set; }
     
+        /// <summary>Number of 3rd places</summary>
         [Newtonsoft.Json.JsonProperty("thirdPlaces", Required = Newtonsoft.Json.Required.Always)]
         public int ThirdPlaces { get; set; }
     

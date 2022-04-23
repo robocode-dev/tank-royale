@@ -12,7 +12,7 @@ namespace Robocode.TankRoyale.BotApi.Events
         public int NumberOfRounds { get; }
 
         /// <summary>Results of the battle.</summary>
-        public IEnumerable<BotResults> Results { get; }
+        public BotResults Results { get; }
 
         /// <summary>
         /// Initializes a new instance of the GameEndedEvent class.
@@ -20,7 +20,7 @@ namespace Robocode.TankRoyale.BotApi.Events
         /// <param name="numberOfRounds">Number of rounds played.</param>
         /// <param name="results">Results of the battle.</param>
         [JsonConstructor]
-        public GameEndedEvent(int numberOfRounds, IEnumerable<BotResults> results) =>
+        public GameEndedEvent(int numberOfRounds, BotResults results) =>
             (NumberOfRounds, Results) = (numberOfRounds, results);
     }
 }

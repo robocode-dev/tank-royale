@@ -5,15 +5,9 @@ namespace Robocode.TankRoyale.BotApi.Mapper
 {
     public sealed class ResultsMapper
     {
-        public static IEnumerable<BotResults> Map(IEnumerable<Schema.BotResultsForBot> source)
-        {
-            return source.Select(Map).ToList();
-        }
-
-        private static BotResults Map(Schema.BotResultsForBot source)
+        public static BotResults Map(Schema.BotResultsForBot source)
         {
             return new BotResults(
-                source.Id,
                 source.Rank,
                 source.Survival,
                 source.LastSurvivorBonus,

@@ -8,10 +8,14 @@ namespace Robocode.TankRoyale.Schema
 {
     #pragma warning disable // Disable all warnings
 
-    /// <summary>Individual bot results visible for an observer. Name and version is available.</summary>
+    /// <summary>Individual bot results visible for an observer. Id, name, and version is available as well.</summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.2.0 (Newtonsoft.Json v9.0.0.0)")]
     public class BotResultsForObserver : BotResultsForBot 
     {
+        /// <summary>Identifier of the bot used in this battle</summary>
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
+        public int Id { get; set; }
+    
         /// <summary>Name of bot, e.g. Killer Bee</summary>
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]

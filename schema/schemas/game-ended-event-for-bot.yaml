@@ -8,10 +8,8 @@ properties:
     description: Number of rounds played
     type: integer
   results:
-    description: Results of the battle
-    type: array
-    items:
-      $ref: bot-results-for-bot.yaml
+    description: Bot results of the battle
+    $ref: bot-results-for-bot.yaml
 required:
   - numberOfRounds
   - results
