@@ -527,7 +527,7 @@ public interface IBaseBot {
      * <p>If this property is set multiple times, the last value set before go() counts.
      *
      * @param firepower is the new firepower
-     * @return {@code true} if the cannon can fire, i.e. if there no gun heat; {@code false}
+     * @return {@code true} if the cannon can fire, i.e. if there is no gun heat; {@code false}
      * otherwise.
      * @see #onBulletFired(BulletFiredEvent)
      * @see #getFirepower()
@@ -558,7 +558,7 @@ public interface IBaseBot {
      * <p>Ok, so this needs some explanation: The gun is mounted on the bot's body. So, normally, if
      * the bot turns 90 degrees to the right, then the gun will turn with it as it is mounted on top
      * of the bot's body. To compensate for this, you can adjust the gun for the bot's turn. When this
-     * is set, the gun will turn independent from the bot's turn.
+     * is set, the gun will turn independent of the bot's turn.
      *
      * <p>Note: This property is additive until you reach the maximum the gun can turn {@link
      * Constants#MAX_GUN_TURN_RATE}. The "adjust" is added to the amount, you set for turning the bot by the
@@ -574,7 +574,7 @@ public interface IBaseBot {
     void setAdjustGunForBodyTurn(boolean adjust);
 
     /**
-     * Checks if the gun is set to adjust for the bot turning, i.e. to turn independent from the bot's
+     * Checks if the gun is set to adjust for the bot turning, i.e. to turn independent of the bot's
      * body turn.
      *
      * <p>This call returns {@code true} if the gun is set to turn independent of the turn of the
@@ -594,7 +594,7 @@ public interface IBaseBot {
      * <p>Ok, so this needs some explanation: The radar is mounted on the gun. So, normally, if the
      * gun turns 90 degrees to the right, then the radar will turn with it as it is mounted on top of
      * the gun. To compensate for this, you can adjust the radar for the gun turn. When this is set,
-     * the radar will turn independent from the gun's turn.
+     * the radar will turn independent of the gun's turn.
      *
      * <p>Note: This property is additive until you reach the maximum the radar can turn ({@link
      * Constants#MAX_RADAR_TURN_RATE}). The "adjust" is added to the amount, you set for turning the gun by the
@@ -610,7 +610,7 @@ public interface IBaseBot {
     void setAdjustRadarForGunTurn(boolean adjust);
 
     /**
-     * Checks if the radar is set to adjust for the gun turning, i.e. to turn independent from the
+     * Checks if the radar is set to adjust for the gun turning, i.e. to turn independent of the
      * gun's turn.
      *
      * <p>This call returns {@code true} if the radar is set to turn independent of the turn of the

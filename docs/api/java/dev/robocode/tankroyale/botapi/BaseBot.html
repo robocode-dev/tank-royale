@@ -531,7 +531,7 @@ implements <a href="IBaseBot.html" title="interface in dev.robocode.tankroyale.b
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAdjustGunForBodyTurn()">isAdjustGunForBodyTurn</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Checks if the gun is set to adjust for the bot turning, i.e. to turn independent from the bot's
+<div class="block">Checks if the gun is set to adjust for the bot turning, i.e. to turn independent of the bot's
  body turn.</div>
 </td>
 </tr>
@@ -539,7 +539,7 @@ implements <a href="IBaseBot.html" title="interface in dev.robocode.tankroyale.b
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAdjustRadarForGunTurn()">isAdjustRadarForGunTurn</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Checks if the radar is set to adjust for the gun turning, i.e. to turn independent from the
+<div class="block">Checks if the radar is set to adjust for the gun turning, i.e. to turn independent of the
  gun's turn.</div>
 </td>
 </tr>
@@ -1783,7 +1783,7 @@ implements <a href="IBaseBot.html" title="interface in dev.robocode.tankroyale.b
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>firepower</code> - is the new firepower</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd><code>true</code> if the cannon can fire, i.e. if there no gun heat; <code>false</code>
+<dd><code>true</code> if the cannon can fire, i.e. if there is no gun heat; <code>false</code>
  otherwise.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="IBaseBot.html#onBulletFired(dev.robocode.tankroyale.botapi.events.BulletFiredEvent)"><code>IBaseBot.onBulletFired(BulletFiredEvent)</code></a>, 
@@ -1840,7 +1840,7 @@ implements <a href="IBaseBot.html" title="interface in dev.robocode.tankroyale.b
  <p>Ok, so this needs some explanation: The gun is mounted on the bot's body. So, normally, if
  the bot turns 90 degrees to the right, then the gun will turn with it as it is mounted on top
  of the bot's body. To compensate for this, you can adjust the gun for the bot's turn. When this
- is set, the gun will turn independent from the bot's turn.
+ is set, the gun will turn independent of the bot's turn.
 
  <p>Note: This property is additive until you reach the maximum the gun can turn <a href="Constants.html#MAX_GUN_TURN_RATE"><code>Constants.MAX_GUN_TURN_RATE</code></a>. The "adjust" is added to the amount, you set for turning the bot by the
  turn rate, then capped by the physics of the game.
@@ -1865,7 +1865,7 @@ implements <a href="IBaseBot.html" title="interface in dev.robocode.tankroyale.b
 <li class="blockList">
 <h4>isAdjustGunForBodyTurn</h4>
 <pre class="methodSignature">public final&nbsp;boolean&nbsp;isAdjustGunForBodyTurn()</pre>
-<div class="block">Checks if the gun is set to adjust for the bot turning, i.e. to turn independent from the bot's
+<div class="block">Checks if the gun is set to adjust for the bot turning, i.e. to turn independent of the bot's
  body turn.
 
  <p>This call returns <code>true</code> if the gun is set to turn independent of the turn of the
@@ -1895,7 +1895,7 @@ implements <a href="IBaseBot.html" title="interface in dev.robocode.tankroyale.b
  <p>Ok, so this needs some explanation: The radar is mounted on the gun. So, normally, if the
  gun turns 90 degrees to the right, then the radar will turn with it as it is mounted on top of
  the gun. To compensate for this, you can adjust the radar for the gun turn. When this is set,
- the radar will turn independent from the gun's turn.
+ the radar will turn independent of the gun's turn.
 
  <p>Note: This property is additive until you reach the maximum the radar can turn (<a href="Constants.html#MAX_RADAR_TURN_RATE"><code>Constants.MAX_RADAR_TURN_RATE</code></a>). The "adjust" is added to the amount, you set for turning the gun by the
  gun turn rate, then capped by the physics of the game.
@@ -1920,7 +1920,7 @@ implements <a href="IBaseBot.html" title="interface in dev.robocode.tankroyale.b
 <li class="blockList">
 <h4>isAdjustRadarForGunTurn</h4>
 <pre class="methodSignature">public final&nbsp;boolean&nbsp;isAdjustRadarForGunTurn()</pre>
-<div class="block">Checks if the radar is set to adjust for the gun turning, i.e. to turn independent from the
+<div class="block">Checks if the radar is set to adjust for the gun turning, i.e. to turn independent of the
  gun's turn.
 
  <p>This call returns <code>true</code> if the radar is set to turn independent of the turn of the

@@ -316,7 +316,7 @@ behaves like it is turning independent of the bot's turn.</p>
 <p>Ok, so this needs some explanation: The gun is mounted on the bot's body. So, normally, if
 the bot turns 90 degrees to the right, then the gun will turn with it as it is mounted on
 top of the bot's body. To compensate for this, you can adjust the gun for the bot's turn.
-When this is set, the gun will turn independent from the bot's turn.</p>
+When this is set, the gun will turn independent of the bot's turn.</p>
 <div class="NOTE"><h5>note</h5><p>
 This property is additive until you reach the maximum the gun can turn <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxGunTurnRate">MaxGunTurnRate</a>. The &quot;adjust&quot; is added to the amount, you set for turning the bot
 by the turn rate, then capped by the physics of the game.
@@ -363,7 +363,7 @@ behaves like it is turning independent of the gun's turn.</p>
 <p>Ok, so this needs some explanation: The radar is mounted on the gun. So, normally, if the
 gun turns 90 degrees to the right, then the radar will turn with it as it is mounted on top
 of the gun. To compensate for this, you can adjust the radar for the gun turn. When this is
-set, the radar will turn independent from the gun's turn.</p>
+set, the radar will turn independent of the gun's turn.</p>
 <div class="NOTE"><h5>note</h5><p>
 This property is additive until you reach the maximum the radar can turn <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxRadarTurnRate">MaxRadarTurnRate</a>. The &quot;adjust&quot; is added to the amount, you set for turning the gun
 by the gun turn rate, then capped by the physics of the game.
@@ -3569,7 +3569,7 @@ this value.</p>
     <tbody>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
-        <td><p><code>true</code> if the cannon can fire, i.e. if there no gun heat; <code>false</code>
+        <td><p><code>true</code> if the cannon can fire, i.e. if there is no gun heat; <code>false</code>
 otherwise.</p>
 </td>
       </tr>

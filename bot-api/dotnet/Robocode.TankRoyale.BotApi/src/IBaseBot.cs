@@ -443,7 +443,7 @@ namespace Robocode.TankRoyale.BotApi
         /// If this property is set multiple times, the last value set before <see cref="Go"/> counts.
         /// </summary>
         /// <param name="firepower">The new firepower.</param>
-        /// <returns><c>true</c> if the cannon can fire, i.e. if there no gun heat; <c>false</c>
+        /// <returns><c>true</c> if the cannon can fire, i.e. if there is no gun heat; <c>false</c>
         /// otherwise.</returns>
         /// <seealso cref="OnBulletFired"/>
         /// <seealso cref="Firepower"/>
@@ -472,7 +472,7 @@ namespace Robocode.TankRoyale.BotApi
         /// Ok, so this needs some explanation: The gun is mounted on the bot's body. So, normally, if
         /// the bot turns 90 degrees to the right, then the gun will turn with it as it is mounted on
         /// top of the bot's body. To compensate for this, you can adjust the gun for the bot's turn.
-        /// When this is set, the gun will turn independent from the bot's turn.
+        /// When this is set, the gun will turn independent of the bot's turn.
         ///
         /// <note>
         /// This property is additive until you reach the maximum the gun can turn <see
@@ -494,7 +494,7 @@ namespace Robocode.TankRoyale.BotApi
         /// Ok, so this needs some explanation: The radar is mounted on the gun. So, normally, if the
         /// gun turns 90 degrees to the right, then the radar will turn with it as it is mounted on top
         /// of the gun. To compensate for this, you can adjust the radar for the gun turn. When this is
-        /// set, the radar will turn independent from the gun's turn.
+        /// set, the radar will turn independent of the gun's turn.
         ///
         /// <note>
         /// This property is additive until you reach the maximum the radar can turn <see
