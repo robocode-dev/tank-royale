@@ -169,7 +169,7 @@ namespace Robocode.TankRoyale.BotApi
         /// Specifies if the bot is disabled, i.e., when the energy is zero. When the bot is disabled,
         /// it is not able to take any action like movement, turning, and firing.
         /// </summary>
-        /// <value><em>true</em> if the bot is disabled; <em>false</em> otherwise</value>
+        /// <value><c>true</c> if the bot is disabled; <c>false</c> otherwise</value>
         bool IsDisabled { get; }
 
         /// <summary>
@@ -471,8 +471,8 @@ namespace Robocode.TankRoyale.BotApi
         ///
         /// Ok, so this needs some explanation: The gun is mounted on the bot's body. So, normally, if
         /// the bot turns 90 degrees to the right, then the gun will turn with it as it is mounted on
-        /// top of the bot's body. To compensate for this, you can adjust the gun for the bot's turn.
-        /// When this is set, the gun will turn independent of the bot's turn.
+        /// top of the bot's body. To compensate for this, you can adjust the gun for the body turning.
+        /// When this is set, the gun will turn independent of the body turning.
         ///
         /// <note>
         /// This property is additive until you reach the maximum the gun can turn <see
@@ -482,11 +482,36 @@ namespace Robocode.TankRoyale.BotApi
         /// The gun compensating this way does count as "turning the gun".
         /// </note>
         /// </summary>
-        /// <value><em>true</em> if the gun is set to adjust for the bot's turn; <em>false</em>
-        /// otherwise.</value>
+        /// <value><c>true</c> if the gun is set to adjust for the body turning; <c>false</c>
+        /// otherwise (default).</value>
+        /// <seealso cref="AdjustRadarForBodyTurn"/>
         /// <seealso cref="AdjustRadarForGunTurn"/>
         bool AdjustGunForBodyTurn { get; set; }
 
+        /// <summary>
+        /// Sets the radar to adjust for the body's turn when setting the radar turn rate. So the radar
+        /// behaves like it is turning independent of the body's turn.
+        ///
+        /// Ok, so this needs some explanation: The radar is mounted on the gun, and the gun is mounted on the bot's body.
+        /// So, normally, if the bot turns 90 degrees to the right, the gun turns, as does the radar. Hence, if the bot
+        /// turns 90 degrees to the right, then the gun and radar will turn with it as the radar is mounted on top of the
+        /// gun. To compensate for this, you can adjust the radar for the body turn. When this is set, the radar will turn
+        /// independent of the body's turn.
+        ///
+        /// <note>
+        /// This property is additive until you reach the maximum the radar can turn <see
+        /// cref="Constants.MaxRadarTurnRate"/>. The "adjust" is added to the amount, you set for turning the body
+        /// by the body turn rate, then capped by the physics of the game.
+        ///
+        /// The radar compensating this way does count as "turning the radar".
+        /// </note>
+        /// </summary>
+        /// <value><c>true</c> if the radar is set to adjust for the body turning; <c>false</c>
+        /// otherwise (default).</value>
+        /// <seealso cref="AdjustGunForBodyTurn"/>
+        /// <seealso cref="AdjustRadarForGunTurn"/>
+        bool AdjustRadarForBodyTurn { get; set; }
+        
         /// <summary>
         /// Sets the radar to adjust for the gun's turn when setting the radar turn rate. So the radar
         /// behaves like it is turning independent of the gun's turn.
@@ -494,7 +519,7 @@ namespace Robocode.TankRoyale.BotApi
         /// Ok, so this needs some explanation: The radar is mounted on the gun. So, normally, if the
         /// gun turns 90 degrees to the right, then the radar will turn with it as it is mounted on top
         /// of the gun. To compensate for this, you can adjust the radar for the gun turn. When this is
-        /// set, the radar will turn independent of the gun's turn.
+        /// set, the radar will turn independent of the gun turning.
         ///
         /// <note>
         /// This property is additive until you reach the maximum the radar can turn <see
@@ -504,9 +529,10 @@ namespace Robocode.TankRoyale.BotApi
         /// The radar compensating this way does count as "turning the radar".
         /// </note>
         /// </summary>
-        /// <value><em>true</em> if the radar is set to adjust for the bot's turn; <em>false</em>
-        /// otherwise.</value>
+        /// <value><c>true</c> if the radar is set to adjust for the gun turning; <c>false</c>
+        /// otherwise (default).</value>
         /// <seealso cref="AdjustGunForBodyTurn"/>
+        /// <seealso cref="AdjustRadarForBodyTurn"/>
         bool AdjustRadarForGunTurn { get; set; }
 
         /// <summary>
@@ -561,8 +587,8 @@ namespace Robocode.TankRoyale.BotApi
         /// <summary>
         /// Checks if the movement has been stopped.
         /// </summary>
-        /// <value><em>true</em> if the movement has been stopped by by <see cref="IBot.Stop"/> or <see cref="SetStop"/>;
-        /// <em>false</em> otherwise.</value>
+        /// <value><c>true</c> if the movement has been stopped by by <see cref="IBot.Stop"/> or <see cref="SetStop"/>;
+        /// <c>false</c> otherwise.</value>
         /// <seealso cref="IBot.Stop"/>
         /// <seealso cref="SetStop"/>
         bool IsStopped { get; }

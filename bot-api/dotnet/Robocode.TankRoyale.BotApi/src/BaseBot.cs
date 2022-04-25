@@ -331,6 +331,13 @@ namespace Robocode.TankRoyale.BotApi
         }
 
         /// <inheritdoc/>
+        public bool AdjustRadarForBodyTurn
+        {
+            set => __baseBotInternals.BotIntent.AdjustRadarForBodyTurn = value;
+            get => __baseBotInternals.BotIntent.AdjustRadarForBodyTurn ?? false;
+        }
+
+        /// <inheritdoc/>
         public bool AdjustRadarForGunTurn
         {
             set => __baseBotInternals.BotIntent.AdjustRadarForGunTurn = value;

@@ -566,10 +566,13 @@ public interface IBaseBot {
      *
      * <p>Note: The gun compensating this way does count as "turning the gun".
      *
-     * @param adjust {@code true} if the gun must adjust/compensate for the bot's turn; {@code false}
-     *               if the gun must turn with the bot's turn.
+     * @param adjust {@code true} if the gun must adjust/compensate for the body turning; {@code false}
+     *               if the gun must turn with the body turning (default).
+     * @see #setAdjustRadarForBodyTurn(boolean)
      * @see #setAdjustRadarForGunTurn(boolean)
      * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForBodyTurn()
+     * @see #isAdjustRadarForGunTurn()
      */
     void setAdjustGunForBodyTurn(boolean adjust);
 
@@ -581,11 +584,58 @@ public interface IBaseBot {
      * bot's body. Otherwise, {@code false} is returned, meaning that the gun is set to turn with the
      * bot's body turn.
      *
-     * @return {@code true} if the gun is set to turn independent of the bot turning; {@code false} if
-     * the gun is set to turn with the bot turning.
+     * @return {@code true} if the gun is set to turn independent of the body turning; {@code false} if
+     * the gun is set to turn with the body turning (default).
      * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForBodyTurn(boolean)
+     * @see #setAdjustRadarForGunTurn(boolean)
+     * @see #isAdjustRadarForBodyTurn()
+     * @see #isAdjustRadarForGunTurn()
      */
     boolean isAdjustGunForBodyTurn();
+
+    /**
+     * Sets the radar to adjust for the body's turn when setting the radar turn rate. So the radar
+     * behaves like it is turning independent of the body's turn.
+     *
+     * <p>Ok, so this needs some explanation: The radar is mounted on the gun, and the gun is mounted on the bot's body.
+     * So, normally, if the bot turns 90 degrees to the right, the gun turns, as does the radar. Hence, if the bot
+     * turns 90 degrees to the right, then the gun and radar will turn with it as the radar is mounted on top of the
+     * gun. To compensate for this, you can adjust the radar for the body turn. When this is set, the radar will turn
+     * independent of the body's turn.
+     *
+     * <p>Note: This property is additive until you reach the maximum the radar can turn ({@link
+     * Constants#MAX_RADAR_TURN_RATE}). The "adjust" is added to the amount, you set for turning the body by the
+     * body turn rate, then capped by the physics of the game.
+     *
+     * <p>Note: The radar compensating this way does count as "turning the radar".
+     *
+     * @param adjust {@code true} if the radar must adjust/compensate for the body's turn; {@code
+     *               false} if the radar must turn with the body turning (default).
+     * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForGunTurn(boolean)
+     * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForBodyTurn()
+     * @see #isAdjustRadarForGunTurn()
+     */
+    void setAdjustRadarForBodyTurn(boolean adjust);
+
+    /**
+     * Checks if the radar is set to adjust for the body turning, i.e. to turn independent of the
+     * body's turn.
+     *
+     * <p>This call returns {@code true} if the radar is set to turn independent of the turn of the
+     * body. Otherwise, {@code false} is returned, meaning that the radar is set to turn with the body turning.
+     *
+     * @return {@code true} if the radar is set to turn independent of the body turning; {@code false}
+     * if the radar is set to turn with the body turning (default).
+     * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForBodyTurn(boolean)
+     * @see #setAdjustRadarForGunTurn(boolean)
+     * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForGunTurn()
+     */
+    boolean isAdjustRadarForBodyTurn();
 
     /**
      * Sets the radar to adjust for the gun's turn when setting the radar turn rate. So the radar
@@ -602,9 +652,12 @@ public interface IBaseBot {
      *
      * <p>Note: The radar compensating this way does count as "turning the radar".
      *
-     * @param adjust {@code true} if the radar must adjust/compensate for the gun's turn; {@code
-     *               false} if the radar must turn with the gun's turn.
+     * @param adjust {@code true} if the radar must adjust/compensate for the gun turning; {@code
+     *               false} if the radar must turn with the gun turning (default).
      * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForBodyTurn(boolean)
+     * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForBodyTurn()
      * @see #isAdjustRadarForGunTurn()
      */
     void setAdjustRadarForGunTurn(boolean adjust);
@@ -618,8 +671,12 @@ public interface IBaseBot {
      * turn.
      *
      * @return {@code true} if the radar is set to turn independent of the gun turning; {@code false}
-     * if the radar is set to turn with the gun turning.
+     * if the radar is set to turn with the gun turning (default).
+     * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForBodyTurn(boolean)
      * @see #setAdjustRadarForGunTurn(boolean)
+     * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForBodyTurn()
      */
     boolean isAdjustRadarForGunTurn();
 

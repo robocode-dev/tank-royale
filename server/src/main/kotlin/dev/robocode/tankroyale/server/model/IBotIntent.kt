@@ -23,6 +23,9 @@ interface IBotIntent {
     /** Flag set to adjusting gun for body turn. */
     val adjustGunForBodyTurn: Boolean?
 
+    /** Flag set to adjusting radar for body turn. */
+    val adjustRadarForBodyTurn: Boolean?
+
     /** Flag set to adjusting radar for gun turn. */
     val adjustRadarForGunTurn: Boolean?
 

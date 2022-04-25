@@ -21,8 +21,10 @@
     - Removal of the `speed` field of the `bullet-state` as the speed can be calculated as: `20 - 3 x power`.
       Hence, there is no need to transfer this information over the network.
     - Moved id from `bot-results-for-bot` to `bot-results-for-observer`.
-- Bot API: The id was removed from `BotResults`, and `GameEndedEvent` will only return a single `BotResult` containing
-  the battle results for the bot (instead of a list containing results from all bots).
+- Bot API:
+  - The id was removed from `BotResults`, and `GameEndedEvent` will only return a single `BotResult` containing
+    the battle results for the bot (instead of a list containing results from all bots).
+  - Added setting and getting 'adjusting radar for body turn'.
 
 ## 0.12.0 - Single stepping battle - 17-Apr-2022
 

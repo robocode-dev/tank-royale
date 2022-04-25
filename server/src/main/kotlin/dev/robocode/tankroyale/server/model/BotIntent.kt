@@ -26,6 +26,7 @@ data class BotIntent(
     override var radarTurnRate: Double? = 0.0,
     override var firepower: Double? = 0.0,
     override var adjustGunForBodyTurn: Boolean? = false,
+    override var adjustRadarForBodyTurn: Boolean? = false,
     override var adjustRadarForGunTurn: Boolean? = false,
     override var scan: Boolean? = false,
     override var bodyColor: String? = null,
@@ -60,6 +61,9 @@ data class BotIntent(
         }
         if (update.adjustGunForBodyTurn != null) {
             adjustGunForBodyTurn = update.adjustGunForBodyTurn
+        }
+        if (update.adjustRadarForBodyTurn != null) {
+            adjustRadarForBodyTurn = update.adjustRadarForBodyTurn
         }
         if (update.adjustRadarForGunTurn != null) {
             adjustRadarForGunTurn = update.adjustRadarForGunTurn

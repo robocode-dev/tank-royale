@@ -23,10 +23,13 @@ properties:
     maximum: 3.0
     exclusiveMinimum: true
   adjustGunForBodyTurn:
-    description: Flag indicating if the gun must be adjusted to compensate for the body turn.
+    description: Flag indicating if the gun must be adjusted to compensate for the body turn. Default is false.
+    type: boolean
+  adjustRadarForBodyTurn:
+    description: Flag indicating if the radar must be adjusted to compensate for the body turn. Default is false.
     type: boolean
   adjustRadarForGunTurn:
-    description: Flag indicating if the radar must be adjusted to compensate for the gun turn.
+    description: Flag indicating if the radar must be adjusted to compensate for the gun turn. Default is false.
     type: boolean
   scan:
     description: Flag indicating if the bot should rescan with previous radar direction and scan sweep angle.

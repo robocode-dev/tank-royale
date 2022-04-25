@@ -507,6 +507,23 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
+    public final void setAdjustRadarForBodyTurn(boolean adjust) {
+        __baseBotInternals.getBotIntent().setAdjustRadarForBodyTurn(adjust);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final boolean isAdjustRadarForBodyTurn() {
+        Boolean adjust = __baseBotInternals.getBotIntent().getAdjustRadarForBodyTurn();
+        return adjust != null && adjust;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final void setAdjustRadarForGunTurn(boolean adjust) {
         __baseBotInternals.getBotIntent().setAdjustRadarForGunTurn(adjust);
     }

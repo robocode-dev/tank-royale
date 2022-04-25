@@ -33,11 +33,15 @@ namespace Robocode.TankRoyale.Schema
         [System.ComponentModel.DataAnnotations.Range(0.0D, 3.0D)]
         public double? Firepower { get; set; }
     
-        /// <summary>Flag indicating if the gun must be adjusted to compensate for the body turn.</summary>
+        /// <summary>Flag indicating if the gun must be adjusted to compensate for the body turn. Default is false.</summary>
         [Newtonsoft.Json.JsonProperty("adjustGunForBodyTurn", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool? AdjustGunForBodyTurn { get; set; }
     
-        /// <summary>Flag indicating if the radar must be adjusted to compensate for the gun turn.</summary>
+        /// <summary>Flag indicating if the radar must be adjusted to compensate for the body turn. Default is false.</summary>
+        [Newtonsoft.Json.JsonProperty("adjustRadarForBodyTurn", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? AdjustRadarForBodyTurn { get; set; }
+    
+        /// <summary>Flag indicating if the radar must be adjusted to compensate for the gun turn. Default is false.</summary>
         [Newtonsoft.Json.JsonProperty("adjustRadarForGunTurn", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool? AdjustRadarForGunTurn { get; set; }
     
