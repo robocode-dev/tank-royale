@@ -4,7 +4,7 @@ bg-color = #111117
 input-color = #22282F
 text-color = #CCC
 main-color = #6ef76e
-secondary-color = #690
+secondary-color = #003300
 link-color = #6AF
 
 console-color = input-color
@@ -79,6 +79,16 @@ a.sidebar-link:active
 
 a.active.sidebar-link
   border-left-color: main-color !important
+
+.sidebar-sub-headers a.sidebar-link.active {
+  color: secondary-color !important;
+  background: main-color !important;
+  width: fit-content;
+  padding-inline: 10px;
+  margin-inline-start: 10px;
+  border-radius: 5px;
+  font-weight: 500;
+}
 
 .language-text
   background-color: console-color !important
