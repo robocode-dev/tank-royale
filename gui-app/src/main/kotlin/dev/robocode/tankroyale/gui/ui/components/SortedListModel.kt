@@ -2,10 +2,11 @@ package dev.robocode.tankroyale.gui.ui.components
 
 import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 import java.util.*
+import java.util.concurrent.CopyOnWriteArrayList
 import javax.swing.AbstractListModel
 
 class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
-    private val list = Collections.synchronizedList(ArrayList<T>())
+    private val list = CopyOnWriteArrayList<T>()
 
     override fun getSize(): Int {
         return list.size
