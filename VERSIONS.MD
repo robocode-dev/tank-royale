@@ -22,9 +22,11 @@
       Hence, there is no need to transfer this information over the network.
     - Moved id from `bot-results-for-bot` to `bot-results-for-observer`.
 - Bot API:
-  - The id was removed from `BotResults`, and `GameEndedEvent` will only return a single `BotResult` containing
-    the battle results for the bot (instead of a list containing results from all bots).
-  - Added setting and getting 'adjusting radar for body turn'.
+    - The id was removed from `BotResults`, and `GameEndedEvent` will only return a single `BotResult` containing
+      the battle results for the bot (instead of a list containing results from all bots).
+    - Added setting and getting `setAdjustRadarForBodyTurn(boolean adjust)`.
+    - Added `setInterruptible(boolean interruptible)` / `Interruptable = [bool]` to allow restarting an event handler
+      while it is processing an earlier event.
 
 ## 0.12.0 - Single stepping battle - 17-Apr-2022
 

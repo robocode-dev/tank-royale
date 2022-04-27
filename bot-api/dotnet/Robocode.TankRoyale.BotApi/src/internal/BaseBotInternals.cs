@@ -111,6 +111,15 @@ namespace Robocode.TankRoyale.BotApi.Internal
             eventQueue.Disable();
         }
 
+        internal void SetInterruptable(bool interruptible)
+        {
+            eventQueue.SetInterruptible(interruptible);
+        }
+
+        internal void SetInterruptible(Type eventType, bool interruptible) {
+            eventQueue.SetInterruptible(eventType, interruptible);
+        }
+
         internal ISet<Events.Condition> Conditions { get; } = new HashSet<Events.Condition>();
 
         private void OnRoundStarted(E.RoundStartedEvent e)
@@ -183,7 +192,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
             {
                 eventQueue.DispatchEvents(CurrentTick.TurnNumber);
             }
-            catch (RescanException)
+            catch (InterruptEventHandlerException)
             {
                 // Do nothing (event handler was stopped by this exception)
             }

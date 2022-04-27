@@ -321,6 +321,12 @@ namespace Robocode.TankRoyale.BotApi
         }
 
         /// <inheritdoc/>
+        public bool Interruptible
+        {
+            set => __baseBotInternals.SetInterruptable(value);
+        }
+
+        /// <inheritdoc/>
         public double Firepower => __baseBotInternals.BotIntent.Firepower ?? 0;
 
         /// <inheritdoc/>

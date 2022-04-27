@@ -143,6 +143,14 @@ public final class BaseBotInternals {
         eventQueue.disable();
     }
 
+    public void setInterruptible(boolean interruptible) {
+        eventQueue.setInterruptible(interruptible);
+    }
+
+    public void setInterruptible(Class<? extends BotEvent> eventClass, boolean interruptible) {
+        eventQueue.setInterruptible(eventClass, interruptible);
+    }
+
     Set<Condition> getConditions() {
         return conditions;
     }
@@ -209,7 +217,7 @@ public final class BaseBotInternals {
     private void dispatchEvents() {
         try {
             eventQueue.dispatchEvents(getCurrentTick().getTurnNumber());
-        } catch (RescanException e) {
+        } catch (InterruptEventHandlerException e) {
             // Do nothing (event handler was stopped by this exception)
         } catch (Exception e) {
             e.printStackTrace();

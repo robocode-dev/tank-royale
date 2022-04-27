@@ -466,6 +466,30 @@ namespace Robocode.TankRoyale.BotApi
         void SetScan();
 
         /// <summary>
+        /// Set this property during an event handler to control continuing or restarting the event handler,
+        /// when a new event occurs again for the same event handler while processing an earlier event.
+        /// </summary>
+        /// <example>
+        /// Example:
+        /// <code>
+        /// public void OnScannedBot(ScannedBotEvent e)
+        /// {
+        ///     Fire(1);
+        ///     <b>Interruptible = true;</b>
+        ///     Forward(100); // When a new bot is scanned while moving forward this handler will restart
+        ///                   // from the top as this event handler has been set to be interruptible
+        ///                   // right after firing. Without <c>Interruptible = true</c>, new scan events
+        ///                   // would not be triggered while moving forward.
+        ///     // We'll only get here if we do not see a robot during the move.
+        ///     Console.WriteLine("No bots were scanned");
+        /// }
+        /// </code></example>
+        /// <value><c>true</c> if the event handler should be interrupted and hence restart when a new
+        /// event of the same event type occurs again; <c>false</c> otherwise where the event handler
+        /// will continue processing.</value>
+        bool Interruptible { set; }
+
+        /// <summary>
         /// Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun
         /// behaves like it is turning independent of the bot's turn.
         ///
@@ -511,7 +535,7 @@ namespace Robocode.TankRoyale.BotApi
         /// <seealso cref="AdjustGunForBodyTurn"/>
         /// <seealso cref="AdjustRadarForGunTurn"/>
         bool AdjustRadarForBodyTurn { get; set; }
-        
+
         /// <summary>
         /// Sets the radar to adjust for the gun's turn when setting the radar turn rate. So the radar
         /// behaves like it is turning independent of the gun's turn.

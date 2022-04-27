@@ -274,12 +274,9 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
         internal void Scan()
         {
+            baseBotInternals.SetInterruptible(typeof(ScannedBotEvent), true);
             bot.SetScan();
-            var scan = baseBotInternals.BotIntent.Scan == true;
             bot.Go();
-
-            if (scan && bot.Events.Any(e => e is ScannedBotEvent))
-                throw new RescanException();
         }
 
         internal void WaitFor(Condition condition)

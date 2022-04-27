@@ -3,8 +3,7 @@ package dev.robocode.tankroyale.botapi.internal;
 import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
 
-import java.util.List;
-import java.util.SortedMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -19,6 +18,8 @@ final class EventQueue {
     private final SortedMap<Integer, List<BotEvent>> eventMap = new ConcurrentSkipListMap<>();
 
     private BotEvent currentEvent;
+
+    private final Set<Class<? extends BotEvent>> interruptibles = new HashSet<>();
 
     private boolean isDisabled;
 
@@ -91,20 +92,46 @@ final class EventQueue {
         addCustomEvents(baseBot);
     }
 
+    void setInterruptible(boolean interruptible) {
+        Class<? extends BotEvent> eventClass = currentEvent.getClass();
+        setInterruptible(eventClass, interruptible);
+    }
+
+    void setInterruptible(Class<? extends BotEvent> eventClass, boolean interruptible) {
+        if (interruptible) {
+            interruptibles.add(eventClass);
+        } else {
+            interruptibles.remove(eventClass);
+        }
+    }
+
+    private boolean isInterruptible() {
+        return interruptibles.contains(currentEvent.getClass());
+    }
+
     void dispatchEvents(int currentTurn) {
         removeOldEvents(currentTurn);
 
         eventMap.values().forEach(eventList -> eventList.forEach(event -> {
-            // Exit if we are inside an event handler handling the current event being fired
+
+            // Inside same event handler?
             if (currentEvent != null && event.getClass().equals(currentEvent.getClass())) {
-                return;
+                if (isInterruptible()) {
+                    setInterruptible(event.getClass(), false);
+                    throw new InterruptEventHandlerException();
+                }
+                return; // ignore same event occurring again, when not interruptible
             }
+
+            // Dispatch event
             try {
                 currentEvent = event;
                 eventList.remove(event); // remove event prior to handling it
                 botEventHandlers.fire(event);
 
-            } catch (RescanException ignore) {
+                setInterruptible(event.getClass(), false);
+
+            } catch (InterruptEventHandlerException ignore) {
             } finally {
                 currentEvent = null;
             }

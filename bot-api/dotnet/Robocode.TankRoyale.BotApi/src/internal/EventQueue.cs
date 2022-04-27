@@ -19,6 +19,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
         private BotEvent currentEvent;
 
+        private ISet<Type> interruptibles = new HashSet<Type>();
+
         private bool isDisabled;
 
         internal EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers)
@@ -40,10 +42,25 @@ namespace Robocode.TankRoyale.BotApi.Internal
             isDisabled = true;
         }
 
+        public void SetInterruptible(bool interruptable)
+        {
+            SetInterruptible(currentEvent.GetType(), interruptable);
+        }
+
+        public void SetInterruptible(Type eventType, bool interruptable)
+        {
+            if (interruptable)
+                interruptibles.Add(eventType);
+            else
+                interruptibles.Remove(eventType);
+        }
+
+        private bool IsInterruptible => interruptibles.Contains(currentEvent.GetType());
+
         internal void AddEventsFromTick(TickEvent tickEvent, IBaseBot baseBot)
         {
             if (isDisabled) return;
-        
+
             AddEvent(tickEvent, baseBot);
             foreach (var botEvent in tickEvent.Events)
             {
@@ -66,19 +83,30 @@ namespace Robocode.TankRoyale.BotApi.Internal
                 {
                     try
                     {
-                        var evt = (BotEvent) events[i];
+                        var evt = (BotEvent)events[i];
 
-                        // Exit if we are inside an event handler handling the current event being fired
+                        // Inside same event handler?
                         if (currentEvent != null && evt?.GetType() == currentEvent.GetType())
-                            return;
+                        {
+                            if (IsInterruptible)
+                            {
+                                SetInterruptible(evt.GetType(), false);
+                                throw new InterruptEventHandlerException();
+                            }
 
+                            return; // ignore same event occurring again, when not interruptible
+                        }
+
+                        // Dispatch event
                         try
                         {
                             currentEvent = evt;
-                            events.RemoveAt(i);
+                            events.RemoveAt(i); // remove event prior to handling it
                             botEventHandlers.Fire(evt);
+
+                            SetInterruptible(evt?.GetType(), false);
                         }
-                        catch (RescanException)
+                        catch (InterruptEventHandlerException)
                         {
                         }
                         finally
@@ -101,8 +129,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
                 {
                     try
                     {
-                        var evt = (BotEvent) events[i];
-                        if (evt is {IsCritical: false} && IsOldEvent(evt, currentTurn))
+                        var evt = (BotEvent)events[i];
+                        if (evt is { IsCritical: false } && IsOldEvent(evt, currentTurn))
                             events.RemoveAt(i);
                     }
                     catch (ArgumentOutOfRangeException)

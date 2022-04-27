@@ -490,6 +490,14 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
+    public final void setInterruptible(boolean interruptible) {
+        __baseBotInternals.setInterruptible(interruptible);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final void setAdjustGunForBodyTurn(boolean adjust) {
         __baseBotInternals.getBotIntent().setAdjustGunForBodyTurn(adjust);
     }
