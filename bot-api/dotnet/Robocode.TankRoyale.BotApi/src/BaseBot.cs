@@ -315,9 +315,9 @@ namespace Robocode.TankRoyale.BotApi
         }
 
         /// <inheritdoc/>
-        public void SetScan()
+        public void SetRescan()
         {
-            __baseBotInternals.BotIntent.Scan = true;
+            __baseBotInternals.BotIntent.Rescan = true;
         }
 
         /// <inheritdoc/>

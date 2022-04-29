@@ -30,7 +30,7 @@ interface IBotIntent {
     val adjustRadarForGunTurn: Boolean?
 
     /** Flag set to perform rescan (reusing last scan direction and scan spread angle) */
-    val scan: Boolean?
+    val rescan: Boolean?
 
     /** New body color. */
     val bodyColor: String?

@@ -370,9 +370,9 @@ namespace Robocode.TankRoyale.BotApi.Internal
             Conditions.Remove(condition);
         }
 
-        internal void SetScan(bool doScan)
+        internal void SetRescan(bool rescan)
         {
-            botIntent.Scan = doScan;
+            botIntent.Rescan = rescan;
         }
 
         internal void SetStop()
@@ -516,8 +516,8 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
             ticksStart = DateTime.Now.Ticks;
 
-            if (botIntent?.Scan == true)
-                SetScan(false);
+            if (botIntent?.Rescan == true)
+                SetRescan(false);
 
             eventQueue.AddEventsFromTick(tickEvent, baseBot);
 

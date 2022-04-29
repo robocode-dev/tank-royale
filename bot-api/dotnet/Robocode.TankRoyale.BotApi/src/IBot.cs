@@ -607,7 +607,7 @@ namespace Robocode.TankRoyale.BotApi
         /// sweep angle will be used for rescanning for bots.
         /// </summary>
         /// <seealso cref="Stop"/>
-        void Scan();
+        void Rescan();
 
         /// <summary>
         /// Blocks until a condition is met, i.e. when a <see cref="Condition.Test"/> returns <c>true</c>.

@@ -272,13 +272,13 @@ namespace Robocode.TankRoyale.BotApi.Internal
                 bot.Go();
         }
 
-        internal void Scan()
+        internal void Rescan()
         {
-            bot.SetScan();
-            var scan = baseBotInternals.BotIntent.Scan == true;
+            bot.SetRescan();
+            var rescan = baseBotInternals.BotIntent.Rescan == true;
             bot.Go();
 
-            if (scan && bot.Events.Any(e => e is ScannedBotEvent))
+            if (rescan && bot.Events.Any(e => e is ScannedBotEvent))
                 throw new RescanException();
         }
 

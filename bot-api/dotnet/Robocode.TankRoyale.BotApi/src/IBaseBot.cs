@@ -463,7 +463,7 @@ namespace Robocode.TankRoyale.BotApi
         /// hence will not automatically scan bots. The last radar direction and sweep angle will be used
         /// for scanning for bots.
         /// </summary>
-        void SetScan();
+        void SetRescan();
 
         /// <summary>
         /// Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun

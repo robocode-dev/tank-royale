@@ -67,7 +67,7 @@ public class TrackFire : Bot
         // We only need to call this if the gun (and therefore radar)
         // are not turning. Otherwise, scan is called automatically.
         if (bearingFromGun < 5)
-            Scan();
+            Rescan();
 
         isScanning = false; // we stopped scanning
     }

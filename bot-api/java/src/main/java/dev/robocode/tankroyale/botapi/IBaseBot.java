@@ -549,7 +549,7 @@ public interface IBaseBot {
      * hence will not automatically scan bots. The last radar direction and sweep angle will be used
      * for scanning for bots.
      */
-    void setScan();
+    void setRescan();
 
     /**
      * Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun behaves

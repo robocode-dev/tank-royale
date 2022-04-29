@@ -89,7 +89,7 @@ public class Corners : Bot
             // Call our custom firing method
             SmartFire(distance);
             // Rescan for another bot
-            Scan();
+            Rescan();
             // Resume movement
             Resume();
         }

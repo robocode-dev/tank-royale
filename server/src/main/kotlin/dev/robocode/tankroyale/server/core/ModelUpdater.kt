@@ -818,9 +818,9 @@ class ModelUpdater(
         private fun updateScanDirectionAndSpread(bot: MutableBot, intent: BotIntent, newRadarDirection: Double) {
             // The radar sweep is the difference between the new and old radar direction
             val newSpreadAngle = normalRelativeDegrees(newRadarDirection - bot.radarDirection)
-            val scan = intent.scan ?: false
-            bot.scanDirection = if (scan) bot.radarDirection else newRadarDirection
-            bot.scanSpreadAngle = if (scan) bot.radarSpreadAngle else newSpreadAngle
+            val rescan = intent.rescan ?: false
+            bot.scanDirection = if (rescan) bot.radarDirection else newRadarDirection
+            bot.scanSpreadAngle = if (rescan) bot.radarSpreadAngle else newSpreadAngle
             bot.radarDirection = newRadarDirection
             bot.radarSpreadAngle = newSpreadAngle
         }

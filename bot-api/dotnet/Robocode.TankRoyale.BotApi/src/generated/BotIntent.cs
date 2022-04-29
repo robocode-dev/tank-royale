@@ -46,8 +46,8 @@ namespace Robocode.TankRoyale.Schema
         public bool? AdjustRadarForGunTurn { get; set; }
     
         /// <summary>Flag indicating if the bot should rescan with previous radar direction and scan sweep angle.</summary>
-        [Newtonsoft.Json.JsonProperty("scan", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? Scan { get; set; }
+        [Newtonsoft.Json.JsonProperty("rescan", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Rescan { get; set; }
     
         /// <summary>New color of the body</summary>
         [Newtonsoft.Json.JsonProperty("bodyColor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]

@@ -384,8 +384,8 @@ public final class BaseBotInternals {
         conditions.remove(condition);
     }
 
-    public void setScan(boolean doScan) {
-        botIntent.setScan(doScan);
+    public void setRescan(boolean rescan) {
+        botIntent.setRescan(rescan);
     }
 
     public void setStop() {
@@ -534,8 +534,8 @@ public final class BaseBotInternals {
 
             tickStartNanoTime = System.nanoTime();
 
-            if (botIntent.getScan() != null && botIntent.getScan()) {
-                setScan(false);
+            if (botIntent.getRescan() != null && botIntent.getRescan()) {
+                setRescan(false);
             }
 
             eventQueue.addEventsFromTick(tickEvent, baseBot);

@@ -44,7 +44,7 @@ public class RamFire : Bot
         var distance = DistanceTo(e.X, e.Y);
         Forward(distance + 5);
 
-        Scan(); // Might want to move forward again!
+        Rescan(); // Might want to move forward again!
     }
 
     // We have hit another bot -> turn to face bot, fire hard, and ram it again!
