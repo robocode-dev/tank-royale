@@ -111,13 +111,14 @@ namespace Robocode.TankRoyale.BotApi.Internal
             eventQueue.Disable();
         }
 
-        internal void SetInterruptable(bool interruptible)
+        internal void SetInterruptible(bool interruptible)
         {
             eventQueue.SetInterruptible(interruptible);
         }
 
-        internal void SetInterruptible(Type eventType, bool interruptible) {
-            eventQueue.SetInterruptible(eventType, interruptible);
+        internal void SetInterruptible(Type eventType)
+        {
+            eventQueue.SetInterruptible(eventType, true);
         }
 
         internal ISet<Events.Condition> Conditions { get; } = new HashSet<Events.Condition>();
@@ -169,7 +170,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
             DispatchEvents();
         }
 
-        internal void SendIntent()
+        private void SendIntent()
         {
             LimitTargetSpeedAndTurnRates();
             socket.SendTextMessage(JsonConvert.SerializeObject(botIntent));
@@ -206,19 +207,19 @@ namespace Robocode.TankRoyale.BotApi.Internal
         {
             var targetSpeed = botIntent.TargetSpeed;
             if (targetSpeed != null)
-                botIntent.TargetSpeed = Math.Clamp((double) targetSpeed, -maxSpeed, maxSpeed);
+                botIntent.TargetSpeed = Math.Clamp((double)targetSpeed, -maxSpeed, maxSpeed);
 
             var turnRate = botIntent.TurnRate;
             if (turnRate != null)
-                botIntent.TurnRate = Math.Clamp((double) turnRate, -maxTurnRate, maxTurnRate);
+                botIntent.TurnRate = Math.Clamp((double)turnRate, -maxTurnRate, maxTurnRate);
 
             var gunTurnRate = botIntent.GunTurnRate;
             if (gunTurnRate != null)
-                botIntent.GunTurnRate = Math.Clamp((double) gunTurnRate, -maxGunTurnRate, maxGunTurnRate);
+                botIntent.GunTurnRate = Math.Clamp((double)gunTurnRate, -maxGunTurnRate, maxGunTurnRate);
 
             var radarTurnRate = botIntent.RadarTurnRate;
             if (radarTurnRate != null)
-                botIntent.RadarTurnRate = Math.Clamp((double) radarTurnRate, -maxRadarTurnRate, maxRadarTurnRate);
+                botIntent.RadarTurnRate = Math.Clamp((double)radarTurnRate, -maxRadarTurnRate, maxRadarTurnRate);
         }
 
         internal string Variant => ServerHandshake.Variant;
@@ -230,7 +231,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
             get
             {
                 if (myId == null) throw new BotException(GameNotRunningMsg);
-                return (int) myId;
+                return (int)myId;
             }
         }
 
@@ -261,12 +262,12 @@ namespace Robocode.TankRoyale.BotApi.Internal
             }
         }
 
-        internal long TicksStart
+        private long TicksStart
         {
             get
             {
                 if (ticksStart == null) throw new BotException(TickNotAvailableMsg);
-                return (long) ticksStart;
+                return (long)ticksStart;
             }
         }
 
@@ -275,7 +276,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
             get
             {
                 var passesMicroSeconds = (DateTime.Now.Ticks - TicksStart) / 10;
-                return (int) (gameSetup.TurnTimeout - passesMicroSeconds);
+                return (int)(gameSetup.TurnTimeout - passesMicroSeconds);
             }
         }
 
@@ -334,6 +335,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
             }
 
             var targetSpeed = IsPositiveInfinity(distance) ? maxSpeed : Math.Min(GetMaxSpeed(distance), maxSpeed);
+
             return speed >= 0
                 ? Math.Clamp(targetSpeed, speed - absDeceleration, speed + Constants.Acceleration)
                 : Math.Clamp(targetSpeed, speed - Constants.Acceleration, speed + GetMaxDeceleration(-speed));
@@ -379,11 +381,6 @@ namespace Robocode.TankRoyale.BotApi.Internal
             Conditions.Remove(condition);
         }
 
-        internal void SetRescan(bool rescan)
-        {
-            botIntent.Rescan = rescan;
-        }
-
         internal void SetStop()
         {
             if (IsStopped) return;
@@ -418,7 +415,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
         internal bool IsStopped { get; private set; }
 
-        internal S.ServerHandshake ServerHandshake
+        private S.ServerHandshake ServerHandshake
         {
             get
             {
@@ -463,7 +460,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         {
             BotEventHandlers.FireConnectionErrorEvent(new E.ConnectionErrorEvent(socket.ServerUri,
                 new Exception(cause.Message)));
-            
+
             // Terminate
             Console.WriteLine("Exiting");
             Environment.Exit(1);
@@ -477,10 +474,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
             var jsonMsg = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
             try
             {
-                var type = (string) jsonMsg?["$type"];
+                var type = (string)jsonMsg?["$type"];
                 if (string.IsNullOrWhiteSpace(type)) return;
 
-                var msgType = (S.MessageType) Enum.Parse(typeof(S.MessageType), type);
+                var msgType = (S.MessageType)Enum.Parse(typeof(S.MessageType), type);
                 switch (msgType)
                 {
                     case S.MessageType.TickEventForBot:
@@ -526,7 +523,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
             ticksStart = DateTime.Now.Ticks;
 
             if (botIntent.Rescan == true)
-                SetRescan(false);
+                botIntent.Rescan = false;
 
             eventQueue.AddEventsFromTick(tickEvent, baseBot);
 
@@ -571,7 +568,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
             var msg = JsonConvert.SerializeObject(ready);
             socket.SendTextMessage(msg);
 
-            BotEventHandlers.FireGameStartedEvent(new E.GameStartedEvent((int) myId, gameSetup));
+            BotEventHandlers.FireGameStartedEvent(new E.GameStartedEvent((int)myId, gameSetup));
         }
 
         private void HandleGameEnded(string json)
@@ -602,7 +599,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
             socket.SendTextMessage(text);
         }
 
-        public void HandleSkippedTurn(string json)
+        private void HandleSkippedTurn(string json)
         {
             var skippedTurnEvent = JsonConvert.DeserializeObject<Schema.SkippedTurnEvent>(json);
             BotEventHandlers.FireSkippedTurnEvent(EventMapper.Map(skippedTurnEvent));

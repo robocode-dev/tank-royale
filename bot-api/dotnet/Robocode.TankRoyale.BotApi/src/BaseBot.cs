@@ -323,7 +323,7 @@ namespace Robocode.TankRoyale.BotApi
         /// <inheritdoc/>
         public bool Interruptible
         {
-            set => __baseBotInternals.SetInterruptable(value);
+            set => __baseBotInternals.SetInterruptible(value);
         }
 
         /// <inheritdoc/>

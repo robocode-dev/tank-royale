@@ -483,7 +483,7 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final void setRescan() {
-        __baseBotInternals.setRescan(true);
+        __baseBotInternals.getBotIntent().setRescan(true);
     }
 
     /**
