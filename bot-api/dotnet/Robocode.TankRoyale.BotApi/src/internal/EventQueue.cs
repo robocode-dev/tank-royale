@@ -15,7 +15,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
         private readonly BaseBotInternals baseBotInternals;
         private readonly BotEventHandlers botEventHandlers;
 
-        private readonly IDictionary<int, ArrayList> eventsDict = new ConcurrentDictionary<int, ArrayList>();
+        private readonly IDictionary<int, ArrayList> eventDict = new ConcurrentDictionary<int, ArrayList>();
 
         private BotEvent currentEvent;
 
@@ -31,7 +31,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
         public void Clear()
         {
-            eventsDict.Clear();
+            eventDict.Clear();
             baseBotInternals.Conditions.Clear(); // conditions might be added in the bot's Run() method each round
             currentEvent = null;
             isDisabled = false;
@@ -75,8 +75,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
             RemoveOldEvents(currentTurn);
 
             // Handle events in the order of the keys, i.e. event priority order
-            var sortedDict = new SortedDictionary<int, ArrayList>(eventsDict);
-
+            var sortedDict = new SortedDictionary<int, ArrayList>(eventDict);
             foreach (var events in sortedDict.Values)
             {
                 for (var i = 0; i < events.Count; i++)
@@ -108,6 +107,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
                         }
                         catch (InterruptEventHandlerException)
                         {
+                            // Expected
                         }
                         finally
                         {
@@ -123,19 +123,13 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
         private void RemoveOldEvents(int currentTurn)
         {
-            foreach (var events in eventsDict.Values)
+            foreach (var events in eventDict.Values)
             {
                 for (var i = 0; i < events.Count; i++)
                 {
-                    try
-                    {
-                        var evt = (BotEvent)events[i];
-                        if (evt is { IsCritical: false } && IsOldEvent(evt, currentTurn))
-                            events.RemoveAt(i);
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                    }
+                    var evt = (BotEvent)events[i];
+                    if (evt is { IsCritical: false } && IsOldEvent(evt, currentTurn))
+                        events.RemoveAt(i);
                 }
             }
         }
@@ -155,20 +149,19 @@ namespace Robocode.TankRoyale.BotApi.Internal
             {
                 var priority = GetPriority(botEvent, baseBot);
 
-                eventsDict.TryGetValue(priority, out var events);
+                eventDict.TryGetValue(priority, out var events);
                 if (events == null)
                 {
                     events = ArrayList.Synchronized(new ArrayList());
-                    eventsDict.Add(priority, events);
+                    eventDict.Add(priority, events);
                 }
-
                 events.Add(botEvent);
             }
         }
 
         private int CountEvents()
         {
-            return eventsDict.Values.Sum(events => events.Count);
+            return eventDict.Values.Sum(events => events.Count);
         }
 
         private void AddCustomEvents(IBaseBot baseBot)
