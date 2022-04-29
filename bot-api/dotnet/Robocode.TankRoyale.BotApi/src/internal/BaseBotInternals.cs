@@ -484,7 +484,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
                 switch (msgType)
                 {
                     case S.MessageType.TickEventForBot:
-                        HandleTickEvent(json);
+                        HandleTick(json);
                         break;
                     case S.MessageType.RoundStartedEvent:
                         HandleRoundStarted(json);
@@ -519,13 +519,13 @@ namespace Robocode.TankRoyale.BotApi.Internal
             }
         }
 
-        private void HandleTickEvent(string json)
+        private void HandleTick(string json)
         {
             tickEvent = EventMapper.Map(json);
 
             ticksStart = DateTime.Now.Ticks;
 
-            if (botIntent?.Rescan == true)
+            if (botIntent.Rescan == true)
                 SetRescan(false);
 
             eventQueue.AddEventsFromTick(tickEvent, baseBot);
