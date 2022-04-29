@@ -102,17 +102,17 @@ class BotIntentTest : StringSpec({
     }
 
     "scan must be updated" {
-        val botIntent = BotIntent(scan = true)
+        val botIntent = BotIntent(rescan = true)
 
-        botIntent.update(BotUpdate(scan = null))
-        botIntent shouldBe BotIntent(scan = true)
+        botIntent.update(BotUpdate(rescan = null))
+        botIntent shouldBe BotIntent(rescan = true)
 
-        botIntent.update(BotUpdate(scan = false))
-        botIntent shouldBe BotIntent(scan = false)
+        botIntent.update(BotUpdate(rescan = false))
+        botIntent shouldBe BotIntent(rescan = false)
 
-        botIntent.update(BotUpdate(scan = true))
-        botIntent.update(BotUpdate(scan = null))
-        botIntent shouldBe BotIntent(scan = true)
+        botIntent.update(BotUpdate(rescan = true))
+        botIntent.update(BotUpdate(rescan = null))
+        botIntent shouldBe BotIntent(rescan = true)
     }
 
     "bodyColor must be updated" {

@@ -171,9 +171,9 @@ namespace Robocode.TankRoyale.BotApi
         }
 
         /// <inheritdoc/>
-        public void Scan()
+        public void Rescan()
         {
-            __botInternals.Scan();
+            __botInternals.Rescan();
         }
 
         /// <inheritdoc/>

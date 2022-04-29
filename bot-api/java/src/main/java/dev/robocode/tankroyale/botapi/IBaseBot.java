@@ -549,7 +549,7 @@ public interface IBaseBot {
      * hence will not automatically scan bots. The last radar direction and sweep angle will be used
      * for scanning for bots.
      */
-    void setScan();
+    void setRescan();
 
     /**
      * Call this method during an event handler to control continuing or restarting the event handler,

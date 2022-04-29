@@ -272,10 +272,10 @@ namespace Robocode.TankRoyale.BotApi.Internal
                 bot.Go();
         }
 
-        internal void Scan()
+        internal void Rescan()
         {
             baseBotInternals.SetInterruptible(typeof(ScannedBotEvent), true);
-            bot.SetScan();
+            bot.SetRescan();
             bot.Go();
         }
 

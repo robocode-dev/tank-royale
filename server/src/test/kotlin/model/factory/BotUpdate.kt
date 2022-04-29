@@ -13,7 +13,7 @@ import dev.robocode.tankroyale.server.model.IBotIntent
  * @param adjustGunForBodyTurn Flag set to adjusting gun for the body turn.
  * @param adjustRadarForBodyTurn Flag set to adjusting radar for the body turn.
  * @param adjustRadarForGunTurn Flag set to adjusting radar for the gun turn.
- * @param scan Flag set to perform rescan (reusing last scan direction and scan spread angle)
+ * @param rescan Flag set to perform rescan (reusing last scan direction and scan spread angle)
  * @param bodyColor New body color.
  * @param turretColor New gun turret color.
  * @param radarColor New radar color.
@@ -31,7 +31,7 @@ data class BotUpdate(
     override var adjustGunForBodyTurn: Boolean? = null,
     override var adjustRadarForBodyTurn: Boolean? = null,
     override var adjustRadarForGunTurn: Boolean? = null,
-    override var scan: Boolean? = null,
+    override var rescan: Boolean? = null,
     override var bodyColor: String? = null,
     override var turretColor: String? = null,
     override var radarColor: String? = null,

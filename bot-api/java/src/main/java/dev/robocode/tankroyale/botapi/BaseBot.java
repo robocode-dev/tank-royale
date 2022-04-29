@@ -482,8 +482,8 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final void setScan() {
-        __baseBotInternals.setScan(true);
+    public final void setRescan() {
+        __baseBotInternals.setRescan(true);
     }
 
     /**

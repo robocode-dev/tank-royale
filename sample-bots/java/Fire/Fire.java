@@ -64,7 +64,7 @@ public class Fire extends Bot {
             fire(1);
         }
         // Rescan
-        scan();
+        rescan();
 
         isScanning = false; // We are not scanning any more
     }
@@ -80,7 +80,7 @@ public class Fire extends Bot {
         dist *= -1; // Change distance, meaning forward or backward direction
 
         // Rescan
-        scan();
+        rescan();
     }
 
     // We have hit another bot -> aim at it and fire hard!

@@ -463,7 +463,7 @@ namespace Robocode.TankRoyale.BotApi
         /// hence will not automatically scan bots. The last radar direction and sweep angle will be used
         /// for scanning for bots.
         /// </summary>
-        void SetScan();
+        void SetRescan();
 
         /// <summary>
         /// Set this property during an event handler to control continuing or restarting the event handler,

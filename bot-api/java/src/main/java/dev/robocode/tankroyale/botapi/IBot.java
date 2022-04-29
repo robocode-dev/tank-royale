@@ -181,8 +181,8 @@ public interface IBot extends IBaseBot {
     double getDistanceRemaining();
 
     /**
-     * Set the bot to turn to the left (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Set the bot to turn to the left (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxTurnRate(double)}.
      *
@@ -208,8 +208,8 @@ public interface IBot extends IBaseBot {
     void setTurnLeft(double degrees);
 
     /**
-     * Turn the bot to the left (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Turn the bot to the left (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxTurnRate(double)}.
      *
@@ -232,8 +232,8 @@ public interface IBot extends IBaseBot {
     void turnLeft(double degrees);
 
     /**
-     * Set the bot to turn to the right (following the decreasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Set the bot to turn to the right (following the decreasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxTurnRate(double)}.
      *
@@ -258,8 +258,8 @@ public interface IBot extends IBaseBot {
     void setTurnRight(double degrees);
 
     /**
-     * Turn the bot to the right (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Turn the bot to the right (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxTurnRate(double)}.
      *
@@ -299,8 +299,8 @@ public interface IBot extends IBaseBot {
     double getTurnRemaining();
 
     /**
-     * Set the gun to turn to the left (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Set the gun to turn to the left (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getGunTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
      *
@@ -326,8 +326,8 @@ public interface IBot extends IBaseBot {
     void setTurnGunLeft(double degrees);
 
     /**
-     * Turn the gun to the left (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Turn the gun to the left (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getGunTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
      *
@@ -350,8 +350,8 @@ public interface IBot extends IBaseBot {
     void turnGunLeft(double degrees);
 
     /**
-     * Set the gun to turn to the right (following the decreasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Set the gun to turn to the right (following the decreasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getGunTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
      *
@@ -377,8 +377,8 @@ public interface IBot extends IBaseBot {
     void setTurnGunRight(double degrees);
 
     /**
-     * Turn the gun to the right (following the decreasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Turn the gun to the right (following the decreasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getGunTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
      *
@@ -418,8 +418,8 @@ public interface IBot extends IBaseBot {
     double getGunTurnRemaining();
 
     /**
-     * Set the radar to turn to the left (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Set the radar to turn to the left (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getRadarTurnRemaining()} is 0. The amount of degrees
      * to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
      *
@@ -445,8 +445,8 @@ public interface IBot extends IBaseBot {
     void setTurnRadarLeft(double degrees);
 
     /**
-     * Turn the radar to the left (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Turn the radar to the left (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getRadarTurnRemaining()} is 0. The amount of degrees
      * to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
      *
@@ -469,8 +469,8 @@ public interface IBot extends IBaseBot {
     void turnRadarLeft(double degrees);
 
     /**
-     * Set the radar to turn to the right (following the decreasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Set the radar to turn to the right (following the decreasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getRadarTurnRemaining()} is 0. The amount of degrees
      * to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
      *
@@ -497,8 +497,8 @@ public interface IBot extends IBaseBot {
     void setTurnRadarRight(double degrees);
 
     /**
-     * Turn the radar to the right (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Turn the radar to the right (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getRadarTurnRemaining()} is 0. The amount of degrees
      * to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
      *
@@ -618,7 +618,7 @@ public interface IBot extends IBaseBot {
      *
      * @see #stop()
      */
-    void scan();
+    void rescan();
 
     /**
      * Blocks until a condition is met, i.e. when a {@link Condition#test()} returns true.
