@@ -90,7 +90,8 @@ public class Corners : Bot
             SmartFire(distance);
             // Rescan for another bot
             Rescan();
-            // Resume movement
+            // This line will not be reached when scanning another bot.
+            // So we did not scan another bot -> resume movement
             Resume();
         }
         else
