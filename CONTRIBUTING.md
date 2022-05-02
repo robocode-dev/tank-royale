@@ -4,7 +4,7 @@ Thank you for taking the time to read this guide for how to contribute to Roboco
 
 ### Motivation behind Robocode
 
-Robocode is a spare time and non-profit project, which have the following drivers:
+Robocode is a spare time and non-profit project with the following drivers:
 
 - First and foremost, Robocode is about providing a [programming game] that aims to let its users to having fun while
   developing both their programming and AI skills. Robocode can be quite entertaining.
@@ -68,7 +68,7 @@ project, not a profession.
       feature. If it is a good idea, it should be implemented eventually. If it is a bad idea, it will properly never
       get implemented, or rejected.
     - Don't expect an ETA for when a feature is implemented, when, or if it gets accepted. If you want the feature to be
-      implemented sometime soon, you are welcome to make an [pull request] by yourself and/or get assistance from other
+      implemented sometime soon, you are welcome to make a [pull request] by yourself and/or get assistance from other
       developers.
 - **Implementing a feature request**:
     - If you want to implement a feature request, you need to make sure it is accepted as a feature that should go into
@@ -83,7 +83,7 @@ project, not a profession.
 ### Must be stable
 
 When doing a pull request, make sure it is always in a stable state meaning that it can compile, and that it is also
-possible to run the code to try it out to review it.
+possible to run the code to try it out to review it. And it should not break existing features.
 
 ### Documentation
 
