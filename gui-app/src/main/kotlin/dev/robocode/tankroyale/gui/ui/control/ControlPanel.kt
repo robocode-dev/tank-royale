@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
+import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.ui.tps.TpsField
 import dev.robocode.tankroyale.gui.ui.tps.TpsSlider
 import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
@@ -54,6 +55,11 @@ object ControlPanel : JPanel() {
                 pauseResumeButton.isVisible = true
                 stopButton.isEnabled = true
             }
+        }
+
+        ServerEvents.onStarted.subscribe(ControlPanel) {
+            pauseResumeButton.isEnabled = true
+            stopButton.isEnabled = true
         }
 
         enqueue {

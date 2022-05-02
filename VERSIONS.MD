@@ -8,7 +8,9 @@
     - Blocking bot functions do not stop bot after
       finishing ([#17](https://github.com/robocode-dev/tank-royale/issues/17)).
     - Fixed issue where event queue would overflow with unhandled events when a Bot´s `run()` method has ended.
-- GUI: The 'Start game' button is now disabled when the minimum or maximum number of participants is not met.
+- GUI:
+    - The 'Start game' button is now disabled when the minimum or maximum number of participants is not met.
+    - The Pause/resume and Stop button on the Control Panel were kept disabled when the server was rebooted.
 
 #### Improvements
 
