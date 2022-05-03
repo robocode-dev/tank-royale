@@ -164,7 +164,7 @@ public sealed class BotInfo
     }
 
     /// <summary>
-    /// The platform used for running the bot, e.g., ".Net 5.0".
+    /// The platform used for running the bot, e.g., ".Net 6.0".
     /// This field is optional.
     /// </summary>
     /// <value>The platform used for running the bot.</value>
@@ -207,8 +207,8 @@ public sealed class BotInfo
     ///   "url": "https://somewhere.net/MyBot",
     ///   "countryCodes": "us",
     ///   "gameTypes": "classic, melee, 1v1",
-    ///   "platform": ".Net 5.0",
-    ///   "programmingLang": "C# 8.0",
+    ///   "platform": ".Net 6.0",
+    ///   "programmingLang": "C# 10.0",
     ///   "initialPosition": "50,50, 90"
     /// }
     /// </code>
