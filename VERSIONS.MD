@@ -12,8 +12,9 @@
     - The `scan()` and `setScan()` methods were renamed to `rescan()` and `setRescan()`.
     - Added `setInterruptible(boolean interruptible)` / `Interruptable = [bool]` to allow restarting an event handler
       while it is processing an earlier event.
-- GUI: A tooltip text has been added to the 'Start button' that shows the minimum or maximum number of participants
-  required for starting the battle.
+- GUI:
+    - A tooltip text has been added to the 'Start button' that shows the minimum or maximum number of participants
+      required for starting the battle.
 - Protocol:
     - Removal of the `speed` field of the `bullet-state` as the speed can be calculated as: `20 - 3 x power`.
       Hence, there is no need to transfer this information over the network.
@@ -26,7 +27,8 @@
     - Blocking bot functions do not stop bot after
       finishing ([#17](https://github.com/robocode-dev/tank-royale/issues/17)).
     - Fixed issue where event queue would overflow with unhandled events when a Bot´s `run()` method has ended.
-- GUI: The 'Start game' button is now disabled when the minimum or maximum number of participants is not met.
+- GUI:
+    - The 'Start game' button is now disabled when the minimum or maximum number of participants is not met.
 
 ## 0.12.0 - Single stepping battle - 17-Apr-2022
 
@@ -38,15 +40,18 @@
     - Improvements to the battle dialog for selecting game type and bots for a new battle.
         - Added button for setting up rules.
         - Added tooltip texts.
-- Protocol: Removal of rgb-value type from the protocol of Bot APIs.
-- Bot API: The `Color.fromRgb()` has been replaced by `Color.fromString()`.
+- Protocol:
+    - Removal of rgb-value type from the protocol of Bot APIs.
+- Bot API:
+    - The `Color.fromRgb()` has been replaced by `Color.fromString()`.
 
 #### Bugfixes
 
-- Bot API: Make sure the bot terminates (system exit) upon a connection error to prevent dangling bot processes, which
-  is
-  usually occurring when terminating the UI, which closes the bot connections.
-- GUI: When dragging the battle arena, the graphics were not updated while dragging.
+- Bot API:
+    - Make sure the bot terminates (system exit) upon a connection error to prevent dangling bot processes, which
+      is usually occurring when terminating the UI, which closes the bot connections.
+- GUI:
+    - When dragging the battle arena, the graphics were not updated while dragging.
 
 ## 0.11.2 - Fix restart issue - 12-Apr-2022
 
@@ -77,8 +82,10 @@
 #### Bugfixes
 
 - Fixes for building Java artifacts to deploy to Maven artifactory.
-- Bot API: Replaced the environment variable BOT_URL (deprecated) with BOT_HOMEPAGE.
-- Bot API for .Net: Added missing public Bot(BotInfo, Uri, string serverSecret) constructor.
+- Bot API:
+    - Replaced the environment variable BOT_URL (deprecated) with BOT_HOMEPAGE.
+- Bot API for .Net:
+    - Added missing public Bot(BotInfo, Uri, string serverSecret) constructor.
 
 #### Changes
 
