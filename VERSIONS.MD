@@ -1,6 +1,6 @@
 # Versions
 
-## In progress
+## 0.13.0 - Bot API for .Net 6 - 03-May-2022
 
 #### Changes
 

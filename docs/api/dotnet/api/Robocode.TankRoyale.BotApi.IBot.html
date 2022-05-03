@@ -191,10 +191,16 @@ and firing the gun.</p>
       <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Firepower">IBaseBot.Firepower</a>
     </div>
     <div>
-      <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetScan">IBaseBot.SetScan()</a>
+      <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetRescan">IBaseBot.SetRescan()</a>
+    </div>
+    <div>
+      <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Interruptible">IBaseBot.Interruptible</a>
     </div>
     <div>
       <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_AdjustGunForBodyTurn">IBaseBot.AdjustGunForBodyTurn</a>
+    </div>
+    <div>
+      <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_AdjustRadarForBodyTurn">IBaseBot.AdjustRadarForBodyTurn</a>
     </div>
     <div>
       <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_AdjustRadarForGunTurn">IBaseBot.AdjustRadarForGunTurn</a>
@@ -732,6 +738,29 @@ backward.</p>
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_Rescan.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.Rescan%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L610">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_IBot_Rescan_" data-uid="Robocode.TankRoyale.BotApi.IBot.Rescan*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_IBot_Rescan" data-uid="Robocode.TankRoyale.BotApi.IBot.Rescan">Rescan()</h4>
+  <div class="markdown level1 summary"><p>Scan (again) with the radar. This method is useful if the radar has not been turning and
+thereby will not be able to automatically scan bots. This method is useful when the bot
+movement has stopped, e.g. when <a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Stop">Stop()</a> has been called. The last radar direction and
+sweep angle will be used for rescanning for bots.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Rescan()</code></pre>
+  </div>
+  <h5 id="Robocode_TankRoyale_BotApi_IBot_Rescan_seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Stop">Stop()</a></div>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_Resume.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.Resume%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
@@ -796,29 +825,6 @@ correctly, the bot may behave strangely in new rounds.</p>
   <h5 id="Robocode_TankRoyale_BotApi_IBot_Run_seealso">See Also</h5>
   <div class="seealso">
       <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_IsRunning">IsRunning</a></div>
-  </div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_Scan.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.Scan%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L610">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBot_Scan_" data-uid="Robocode.TankRoyale.BotApi.IBot.Scan*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBot_Scan" data-uid="Robocode.TankRoyale.BotApi.IBot.Scan">Scan()</h4>
-  <div class="markdown level1 summary"><p>Scan (again) with the radar. This method is useful if the radar has not been turning and
-thereby will not be able to automatically scan bots. This method is useful when the bot
-movement has stopped, e.g. when <a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Stop">Stop()</a> has been called. The last radar direction and
-sweep angle will be used for rescanning for bots.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void Scan()</code></pre>
-  </div>
-  <h5 id="Robocode_TankRoyale_BotApi_IBot_Scan_seealso">See Also</h5>
-  <div class="seealso">
-      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Stop">Stop()</a></div>
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
