@@ -2,6 +2,24 @@
 
 ## In progress
 
+#### Changes
+
+- Bot API:
+    - Upgraded the .Net version of the bot API for .Net 6.0 as .Net 5.0 is soon EOL.
+    - The id was removed from `BotResults`, and `GameEndedEvent` will only return a single `BotResult` containing
+      the battle results for the bot (instead of a list containing results from all bots).
+    - Added setting and getting 'adjusting radar for body turn'.
+    - The `scan()` and `setScan()` methods were renamed to `rescan()` and `setRescan()`.
+    - Added `setInterruptible(boolean interruptible)` / `Interruptable = [bool]` to allow restarting an event handler
+      while it is processing an earlier event.
+- GUI: A tooltip text has been added to the 'Start button' that shows the minimum or maximum number of participants
+  required for starting the battle.
+- Protocol:
+    - Removal of the `speed` field of the `bullet-state` as the speed can be calculated as: `20 - 3 x power`.
+      Hence, there is no need to transfer this information over the network.
+    - Moved id from `bot-results-for-bot` to `bot-results-for-observer`.
+    - The `scan` field on `bot-intent` was renamed to `rescan`.
+
 #### Bugfixes
 
 - Bot API:
@@ -9,26 +27,6 @@
       finishing ([#17](https://github.com/robocode-dev/tank-royale/issues/17)).
     - Fixed issue where event queue would overflow with unhandled events when a Bot´s `run()` method has ended.
 - GUI: The 'Start game' button is now disabled when the minimum or maximum number of participants is not met.
-
-#### Improvements
-
-- GUI: A tooltip text has been added to the 'Start button' that shows the minimum or maximum number of participants
-  required for starting the battle.
-
-#### Changes
-
-- Protocol:
-    - Removal of the `speed` field of the `bullet-state` as the speed can be calculated as: `20 - 3 x power`.
-      Hence, there is no need to transfer this information over the network.
-    - Moved id from `bot-results-for-bot` to `bot-results-for-observer`.
-    - The `scan` field on `bot-intent` was renamed to `rescan`.
-- Bot API:
-    - The id was removed from `BotResults`, and `GameEndedEvent` will only return a single `BotResult` containing
-      the battle results for the bot (instead of a list containing results from all bots).
-    - Added setting and getting 'adjusting radar for body turn'.
-    - The `scan()` and `setScan()` methods were renamed to `rescan()` and `setRescan()`.
-    - Added `setInterruptible(boolean interruptible)` / `Interruptable = [bool]` to allow restarting an event handler
-      while it is processing an earlier event.
 
 ## 0.12.0 - Single stepping battle - 17-Apr-2022
 

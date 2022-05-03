@@ -6,6 +6,6 @@
   "description": "Moves to a corner, then swings the gun back and forth. If it dies, it tries a new corner in the next round.",
   "homepage": "",
   "countryCodes": "us, dk",
-  "platform": ".Net 5.0",
-  "programmingLang": "C# 8.0"
+  "platform": ".Net 6.0",
+  "programmingLang": "C# 10.0"
 }

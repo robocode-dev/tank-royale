@@ -1,31 +1,30 @@
 using System.Collections.Generic;
 
-namespace Robocode.TankRoyale.BotApi.Mapper
+namespace Robocode.TankRoyale.BotApi.Mapper;
+
+public sealed class BulletStateMapper
 {
-    public sealed class BulletStateMapper
+    public static BulletState Map(Schema.BulletState source)
     {
-        public static BulletState Map(Schema.BulletState source)
+        return new BulletState(
+            source.BulletId,
+            source.OwnerId,
+            source.Power,
+            source.X,
+            source.Y,
+            source.Direction,
+            Color.FromString(source.Color)
+        );
+    }
+
+    public static ISet<BulletState> Map(IEnumerable<Schema.BulletState> source)
+    {
+        var bulletStates = new HashSet<BulletState>();
+        foreach (var bulletState in source)
         {
-            return new BulletState(
-                source.BulletId,
-                source.OwnerId,
-                source.Power,
-                source.X,
-                source.Y,
-                source.Direction,
-                Color.FromString(source.Color)
-            );
+            bulletStates.Add(Map(bulletState));
         }
 
-        public static ISet<BulletState> Map(IEnumerable<Schema.BulletState> source)
-        {
-            var bulletStates = new HashSet<BulletState>();
-            foreach (var bulletState in source)
-            {
-                bulletStates.Add(Map(bulletState));
-            }
-
-            return bulletStates;
-        }
+        return bulletStates;
     }
 }

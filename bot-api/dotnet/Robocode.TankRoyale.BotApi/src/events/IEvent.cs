@@ -1,9 +1,8 @@
-namespace Robocode.TankRoyale.BotApi.Events
+namespace Robocode.TankRoyale.BotApi.Events;
+
+/// <summary>
+/// Interface for an event.
+/// </summary>
+public interface IEvent
 {
-    /// <summary>
-    /// Interface for an event.
-    /// </summary>
-    public interface IEvent
-    {
-    }
 }
