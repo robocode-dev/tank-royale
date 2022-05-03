@@ -2,7 +2,7 @@
 
 This directory contains the Bot API for developing bots for Robocode Tank Royale with the .Net platform.
 
-The Bot API is provided as a [Nuget] package and build for [.Net 5.0].
+The Bot API is provided as a [Nuget] package and build for [.Net 6.0].
 
 ## Directory structure
 
@@ -58,7 +58,7 @@ macOS and Linux:
     <add key="local" value="~/.nuget/packages"/>
 
 
-[.Net 5.0]: https://dotnet.microsoft.com/en-us/download/dotnet/5.0 "Download .NET 5.0"
+[.Net 6.0]: https://dotnet.microsoft.com/en-us/download/dotnet/6.0 "Download .NET 6.0"
 
 [Nuget]: https://www.nuget.org/ "Nuget homepage"
 

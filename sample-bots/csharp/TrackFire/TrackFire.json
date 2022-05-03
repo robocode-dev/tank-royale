@@ -6,6 +6,6 @@
   "description": "Sits still. Tracks and fires at the nearest bot it sees.",
   "homepage": "",
   "countryCodes": "us, dk",
-  "platform": ".Net 5.0",
-  "programmingLang": "C# 8.0"
+  "platform": ".Net 6.0",
+  "programmingLang": "C# 10.0"
 }

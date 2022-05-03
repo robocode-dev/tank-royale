@@ -6,7 +6,7 @@
   "description": "Sits still. Moves every time energy drops by 20. This bot demonstrates custom events.",
   "homepage": "",
   "countryCodes": "us, dk",
-  "platform": ".Net 5.0",
-  "programmingLang": "C# 8.0",
+  "platform": ".Net 6.0",
+  "programmingLang": "C# 10.0",
   "initialPosition": "50,50, 90"
 }

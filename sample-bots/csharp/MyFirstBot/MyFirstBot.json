@@ -6,6 +6,6 @@
   "description": "A sample bot that is probably the first bot you will learn about.",
   "homepage": "",
   "countryCodes": "us, dk",
-  "platform": ".Net 5.0",
-  "programmingLang": "C# 8.0"
+  "platform": ".Net 6.0",
+  "programmingLang": "C# 10.0"
 }

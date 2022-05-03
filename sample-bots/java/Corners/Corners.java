@@ -86,8 +86,8 @@ public class Corners extends Bot {
             smartFire(distance);
             // Rescan for another bot
             rescan();
-            // We won't get here if we saw another bot.
-            // Okay, we didn't see another bot... start moving or turning again.
+            // This line will not be reached when scanning another bot.
+            // So we did not scan another bot -> resume movement
             resume();
         } else {
             smartFire(distance);

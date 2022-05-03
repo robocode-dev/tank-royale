@@ -76,8 +76,8 @@ MyFirstBot.json for .Net:
   "description": "A sample bot that is probably the first bot you will learn about.",
   "homepage": "",
   "countryCodes": "us, dk",
-  "platform": ".Net 5.0",
-  "programmingLang": "C# 8.0"
+  "platform": ".Net 6.0",
+  "programmingLang": "C# 10.0"
 }
 ```
 
@@ -100,7 +100,7 @@ Meaning of each field in the JSON file:
 * *description*: is a brief description of the bot.
 * *homepage*: is a link to a web page for the bot.
 * *countryCodes*: is a comma-separated list of [Alpha-2] country codes for the bot author(s).
-* *platform*: is the platform required for running the bot, e.g. Java 17 or .Net 5.0.
+* *platform*: is the platform required for running the bot, e.g. Java 17 or .Net 6.0.
 * *programmingLang*: is the programming language used for programming the bot, e.g. C# or Kotlin.
 
 The game types are described [here](game_types.md).

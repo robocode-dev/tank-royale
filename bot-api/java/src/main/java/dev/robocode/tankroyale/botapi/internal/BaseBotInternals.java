@@ -119,12 +119,6 @@ public final class BaseBotInternals {
         init();
     }
 
-    private static BotIntent newBotIntent() {
-        var botIntent = new BotIntent();
-        botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
-        return botIntent;
-    }
-
     private void init() {
         botEventHandlers.onRoundStarted.subscribe(this::onRoundStarted, 100);
         botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 100);
@@ -135,12 +129,26 @@ public final class BaseBotInternals {
         stopResumeListener = listener;
     }
 
+    private static BotIntent newBotIntent() {
+        var botIntent = new BotIntent();
+        botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
+        return botIntent;
+    }
+
     BotEventHandlers getBotEventHandlers() {
         return botEventHandlers;
     }
 
     void disableEventQueue() {
         eventQueue.disable();
+    }
+
+    public void setInterruptible(boolean interruptible) {
+        eventQueue.setInterruptible(interruptible);
+    }
+
+    void setInterruptible(Class<? extends BotEvent> eventClass) {
+        eventQueue.setInterruptible(eventClass, true);
     }
 
     Set<Condition> getConditions() {
@@ -188,7 +196,7 @@ public final class BaseBotInternals {
         dispatchEvents();
     }
 
-    public void sendIntent() {
+    private void sendIntent() {
         limitTargetSpeedAndTurnRates();
         socket.sendText(gson.toJson(botIntent), true);
     }
@@ -209,7 +217,7 @@ public final class BaseBotInternals {
     private void dispatchEvents() {
         try {
             eventQueue.dispatchEvents(getCurrentTick().getTurnNumber());
-        } catch (RescanException e) {
+        } catch (InterruptEventHandlerException e) {
             // Do nothing (event handler was stopped by this exception)
         } catch (Exception e) {
             e.printStackTrace();
@@ -336,7 +344,7 @@ public final class BaseBotInternals {
     // Credits for this algorithm goes to Patrick Cupka (aka Voidious),
     // Julian Kent (aka Skilgannon), and Positive:
     // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
-    public double getNewSpeed(double speed, double distance) {
+    double getNewSpeed(double speed, double distance) {
         if (distance < 0) {
             return -getNewSpeed(-speed, -distance);
         }
@@ -384,42 +392,38 @@ public final class BaseBotInternals {
         conditions.remove(condition);
     }
 
-    public void setRescan(boolean rescan) {
-        botIntent.setRescan(rescan);
-    }
-
     public void setStop() {
-        if (!isStopped) {
-            isStopped = true;
+        if (isStopped) return;
 
-            savedTargetSpeed = botIntent.getTargetSpeed();
-            savedTurnRate = botIntent.getTurnRate();
-            savedGunTurnRate = botIntent.getGunTurnRate();
-            savedRadarTurnRate = botIntent.getRadarTurnRate();
+        isStopped = true;
 
-            botIntent.setTargetSpeed(0d);
-            botIntent.setTurnRate(0d);
-            botIntent.setGunTurnRate(0d);
-            botIntent.setRadarTurnRate(0d);
+        savedTargetSpeed = botIntent.getTargetSpeed();
+        savedTurnRate = botIntent.getTurnRate();
+        savedGunTurnRate = botIntent.getGunTurnRate();
+        savedRadarTurnRate = botIntent.getRadarTurnRate();
 
-            if (stopResumeListener != null) {
-                stopResumeListener.onStop();
-            }
+        botIntent.setTargetSpeed(0d);
+        botIntent.setTurnRate(0d);
+        botIntent.setGunTurnRate(0d);
+        botIntent.setRadarTurnRate(0d);
+
+        if (stopResumeListener != null) {
+            stopResumeListener.onStop();
         }
     }
 
     public void setResume() {
-        if (isStopped) {
-            botIntent.setTargetSpeed(savedTargetSpeed);
-            botIntent.setTurnRate(savedTurnRate);
-            botIntent.setGunTurnRate(savedGunTurnRate);
-            botIntent.setRadarTurnRate(savedRadarTurnRate);
+        if (!isStopped) return;
 
-            if (stopResumeListener != null) {
-                stopResumeListener.onResume();
-            }
-            isStopped = false; // must be last step
+        botIntent.setTargetSpeed(savedTargetSpeed);
+        botIntent.setTurnRate(savedTurnRate);
+        botIntent.setGunTurnRate(savedGunTurnRate);
+        botIntent.setRadarTurnRate(savedRadarTurnRate);
+
+        if (stopResumeListener != null) {
+            stopResumeListener.onResume();
         }
+        isStopped = false; // must be last step
     }
 
     public boolean isStopped() {
@@ -535,7 +539,7 @@ public final class BaseBotInternals {
             tickStartNanoTime = System.nanoTime();
 
             if (botIntent.getRescan() != null && botIntent.getRescan()) {
-                setRescan(false);
+                botIntent.setRescan(false);
             }
 
             eventQueue.addEventsFromTick(tickEvent, baseBot);

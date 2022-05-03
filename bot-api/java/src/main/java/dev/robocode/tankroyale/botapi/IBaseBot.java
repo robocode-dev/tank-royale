@@ -552,6 +552,30 @@ public interface IBaseBot {
     void setRescan();
 
     /**
+     * Call this method during an event handler to control continuing or restarting the event handler,
+     * when a new event occurs again for the same event handler while processing an earlier event.
+     *
+     * <p>Example:
+     * <pre><code class="language-java">
+     *    public void onScannedBot(ScannedBotEvent e) {
+     *        fire(1);
+     *        <b>setInterruptible(true);</b>
+     *        forward(100); // When a new bot is scanned while moving forward this handler will restart
+     *                      // from the top as this event handler has been set to be interruptible
+     *                      // right after firing. Without {@code setInterruptible(true)}, new scan events
+     *                      // would not be triggered while moving forward.
+     *        // We'll only get here if we do not see a robot during the move.
+     *        System.out.println("No bots were scanned");
+     *    }
+     * </code></pre>
+     *
+     * @param interruptible {@code true} if the event handler should be interrupted and hence restart when a new
+     *                      event of the same event type occurs again; {@code false} otherwise where the event handler
+     *                      will continue processing.
+     */
+    void setInterruptible(boolean interruptible);
+
+    /**
      * Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun behaves
      * like it is turning independent of the bot's turn.
      *

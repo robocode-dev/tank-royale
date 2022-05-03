@@ -254,13 +254,9 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     public void rescan() {
+        baseBotInternals.setInterruptible(ScannedBotEvent.class);
         bot.setRescan();
-        boolean rescan = baseBotInternals.getBotIntent().getRescan();
         bot.go();
-        if (rescan && bot.getEvents().stream().anyMatch(e -> e instanceof ScannedBotEvent)) {
-            // Interrupt event handler by throwing exception
-            throw new RescanException();
-        }
     }
 
     public void waitFor(Condition condition) {

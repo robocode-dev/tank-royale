@@ -39,8 +39,8 @@ private fun writeXml(out: OutputStream, botName: String, botApiVersion: String) 
             element("PropertyGroup") {
                 element("RootNamespace", botName)
                 element("OutputType", "Exe")
-                element("TargetFramework", "net5.0")
-                element("LangVersion", "8.0")
+                element("TargetFramework", "net6.0")
+                element("LangVersion", "10.0")
             }
             element("ItemGroup") {
                 element("PackageReference") {

@@ -6,8 +6,8 @@
     <AssemblyTitle>Bot API for Robocode Tank Royale</AssemblyTitle>
     <RootNamespace>Robocode.TankRoyale.BotApi</RootNamespace>
     <OutputType>Library</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-    <LangVersion>8.0</LangVersion>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>10.0</LangVersion>
 
     <IsPackable>true</IsPackable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -33,12 +33,12 @@
 
   <ItemGroup>
     <!-- for Bot API -->
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 
     <!-- for com.itiviti.dotnet plugin -->
-    <PackageReference Include="Microsoft.Build" Version="16.8.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build" Version="17.1.0" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.4.1" />
 
     <!-- Icon -->
