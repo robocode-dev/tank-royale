@@ -5,8 +5,6 @@ import java.nio.file.Files.*
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 
-apply(from = "../../groovy.gradle")
-
 version = libs.versions.tankroyale.get()
 
 val archiveFilename = "sample-bots-java-${project.version}.zip"
