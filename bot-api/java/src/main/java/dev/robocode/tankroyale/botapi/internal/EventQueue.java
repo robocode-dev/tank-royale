@@ -82,6 +82,7 @@ final class EventQueue {
             try {
                 currentEvent = event;
                 eventList.remove(event); // remove event prior to handling it
+
                 botEventHandlers.fire(event);
 
                 setInterruptible(event.getClass(), false);
@@ -97,11 +98,13 @@ final class EventQueue {
     private void removeOldEvents(int currentTurn) {
         // Only remove old events that are not critical
         eventMap.values().forEach(eventList ->
-                eventList.removeIf(event -> !event.isCritical() && isOldEvent(event, currentTurn)));
+                eventList.removeIf(event -> isOldAndNonCriticalEvent(event, currentTurn)));
     }
 
-    private static boolean isOldEvent(BotEvent event, int currentTurn) {
-        return event.getTurnNumber() + MAX_EVENT_AGE < currentTurn;
+    private static boolean isOldAndNonCriticalEvent(BotEvent event, int currentTurn) {
+        var isOld = event.getTurnNumber() + MAX_EVENT_AGE < currentTurn;
+        var isNonCritical = !event.isCritical();
+        return isOld && isNonCritical;
     }
 
     private void addEvent(BotEvent event, IBaseBot baseBot) {

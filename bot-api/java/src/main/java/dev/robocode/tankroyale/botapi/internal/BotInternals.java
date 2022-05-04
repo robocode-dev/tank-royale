@@ -174,9 +174,10 @@ public final class BotInternals implements IStopResumeListener {
         if (Double.isNaN(distance)) {
             throw new IllegalArgumentException("distance cannot be NaN");
         }
-        distanceRemaining = distance;
         double speed = baseBotInternals.getNewSpeed(bot.getSpeed(), distance);
         baseBotInternals.getBotIntent().setTargetSpeed(speed);
+
+        distanceRemaining = distance;
     }
 
     public void forward(double distance) {

@@ -185,9 +185,10 @@ internal sealed class BotInternals : IStopResumeListener
         if (IsNaN(distance))
             throw new ArgumentException("distance cannot be NaN");
 
-        DistanceRemaining = distance;
         var speed = baseBotInternals.GetNewSpeed(bot.Speed, distance);
         baseBotInternals.BotIntent.TargetSpeed = speed;
+
+        DistanceRemaining = distance;
     }
 
     internal void Forward(double distance)
