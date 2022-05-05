@@ -4,6 +4,9 @@
 
 #### Bugfixes
 
+- Bot APIs:
+    - Fixed issue with turning the body, gun, and radar as first and only
+      thing ([#23](https://github.com/robocode-dev/tank-royale/issues/23)).
 - Bot API for .Net:
     - Fixed issue with country codes (on macOS) which also caused boot up problems for .Net based bots running under
       macOS ([#20](https://github.com/robocode-dev/tank-royale/discussions/20)).

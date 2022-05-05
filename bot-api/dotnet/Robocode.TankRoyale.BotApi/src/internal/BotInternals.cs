@@ -222,7 +222,7 @@ internal sealed class BotInternals : IStopResumeListener
             SetTurnLeft(degrees);
             do
                 bot.Go();
-            while (IsRunning && Abs(TurnRemaining) > 0);
+            while (IsRunning && Abs(TurnRemaining) > 0 || Abs(bot.TurnRate) > 0);
         }
     }
 
@@ -244,7 +244,7 @@ internal sealed class BotInternals : IStopResumeListener
             SetTurnGunLeft(degrees);
             do
                 bot.Go();
-            while (IsRunning && Abs(GunTurnRemaining) > 0);
+            while (IsRunning && Abs(GunTurnRemaining) > 0 || Abs(bot.GunTurnRate) > 0);
         }
     }
 
@@ -266,7 +266,7 @@ internal sealed class BotInternals : IStopResumeListener
             SetTurnRadarLeft(degrees);
             do
                 bot.Go();
-            while (IsRunning && Abs(RadarTurnRemaining) > 0);
+            while (IsRunning && Abs(RadarTurnRemaining) > 0 || Abs(bot.RadarTurnRate) > 0);
         }
     }
 
