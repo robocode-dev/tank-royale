@@ -15,7 +15,7 @@ public sealed class EventPriority
     public const int OnBotDeath = DefaultEventPriority.OnBotDeath;
     public const int OnBulletFired = DefaultEventPriority.OnBulletFired;
     public const int OnBulletHitWall = DefaultEventPriority.OnBulletHitWall;
-    public const int OnBulletHitBullet = DefaultEventPriority.OnHitByBullet;
+    public const int OnBulletHitBullet = DefaultEventPriority.OnBulletHitBullet;
     public const int OnBulletHit = DefaultEventPriority.OnBulletHit;
     public const int OnHitByBullet = DefaultEventPriority.OnHitByBullet;
     public const int OnHitWall = DefaultEventPriority.OnHitWall;

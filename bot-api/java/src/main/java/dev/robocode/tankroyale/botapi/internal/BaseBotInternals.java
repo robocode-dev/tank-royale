@@ -12,6 +12,7 @@ import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
 import dev.robocode.tankroyale.botapi.events.RoundEndedEvent;
 import dev.robocode.tankroyale.botapi.events.RoundStartedEvent;
+import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
@@ -147,8 +148,8 @@ public final class BaseBotInternals {
         eventQueue.setInterruptible(interruptible);
     }
 
-    void setInterruptible(Class<? extends BotEvent> eventClass) {
-        eventQueue.setInterruptible(eventClass, true);
+    void setScannedBotEventInterruptible() {
+        eventQueue.setInterruptible(ScannedBotEvent.class, true);
     }
 
     Set<Condition> getConditions() {
@@ -542,7 +543,7 @@ public final class BaseBotInternals {
                 botIntent.setRescan(false);
             }
 
-            eventQueue.addEventsFromTick(tickEvent, baseBot);
+            eventQueue.addEventsFromTick(tickEvent);
 
             // Trigger next turn (not tick-event!)
             botEventHandlers.onNextTurn.publish(tickEvent);

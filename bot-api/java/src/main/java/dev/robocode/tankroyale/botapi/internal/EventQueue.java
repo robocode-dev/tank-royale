@@ -1,11 +1,11 @@
 package dev.robocode.tankroyale.botapi.internal;
 
-import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static java.lang.Integer.MIN_VALUE;
 
 final class EventQueue {
 
@@ -15,9 +15,10 @@ final class EventQueue {
     private final BaseBotInternals baseBotInternals;
     private final BotEventHandlers botEventHandlers;
 
-    private final SortedMap<Integer, List<BotEvent>> eventMap = new ConcurrentSkipListMap<>();
+    private final List<BotEvent> events = Collections.synchronizedList(new ArrayList<>());
 
-    private BotEvent currentEvent;
+    private BotEvent currentTopEvent;
+    private int currentTopEventPriority;
 
     private final Set<Class<? extends BotEvent>> interruptibles = new HashSet<>();
 
@@ -29,9 +30,10 @@ final class EventQueue {
     }
 
     void clear() {
-        eventMap.clear();
+        events.clear();
         baseBotInternals.getConditions().clear(); // conditions might be added in the bots run() method each round
-        currentEvent = null;
+        currentTopEvent = null;
+        currentTopEventPriority = MIN_VALUE;
         isDisabled = false;
     }
 
@@ -40,7 +42,7 @@ final class EventQueue {
     }
 
     void setInterruptible(boolean interruptible) {
-        setInterruptible(currentEvent.getClass(), interruptible);
+        setInterruptible(currentTopEvent.getClass(), interruptible);
     }
 
     void setInterruptible(Class<? extends BotEvent> eventClass, boolean interruptible) {
@@ -52,53 +54,81 @@ final class EventQueue {
     }
 
     private boolean isInterruptible() {
-        return interruptibles.contains(currentEvent.getClass());
+        return interruptibles.contains(currentTopEvent.getClass());
     }
 
-    void addEventsFromTick(TickEvent event, IBaseBot baseBot) {
+    void addEventsFromTick(TickEvent event) {
         if (isDisabled) return;
 
-        addEvent(event, baseBot);
-        event.getEvents().forEach(evt -> addEvent(evt, baseBot));
+        addEvent(event);
+        event.getEvents().forEach(this::addEvent);
 
-        addCustomEvents(baseBot);
+        addCustomEvents();
     }
 
     void dispatchEvents(int currentTurn) {
         removeOldEvents(currentTurn);
 
-        eventMap.values().forEach(eventList -> eventList.forEach(event -> {
+        sortEvents();
 
-            // Inside same event handler?
-            if (currentEvent != null && event.getClass().equals(currentEvent.getClass())) {
-                if (isInterruptible()) {
-                    setInterruptible(event.getClass(), false);
-                    throw new InterruptEventHandlerException();
-                }
-                return; // ignore same event occurring again, when not interruptible
+        while (events.size() > 0) {
+            var event = events.get(0);
+            var eventPriority = getPriority(event);
+
+            if (eventPriority < currentTopEventPriority) {
+                return; // Exit when event priority is lower than the current event being processed
             }
 
-            // Dispatch event
+            // Same event?
+            if (eventPriority == currentTopEventPriority) {
+                if (!isInterruptible()) {
+                    // Ignore same event occurring again, when not interruptible
+                    return;
+                }
+                setInterruptible(event.getClass(), false);
+                // The current event handler must be interrupted (by throwing an InterruptEventHandlerException)
+                throw new InterruptEventHandlerException();
+            }
+
+            int oldTopEventPriority = currentTopEventPriority;
+
+            currentTopEventPriority = eventPriority;
+            currentTopEvent = event;
+
+            events.remove(event);
+
             try {
-                currentEvent = event;
-                eventList.remove(event); // remove event prior to handling it
-
-                botEventHandlers.fire(event);
-
+                if (isNotOldOrCriticalEvent(event, currentTurn)) {
+                    botEventHandlers.fire(event);
+                }
                 setInterruptible(event.getClass(), false);
 
             } catch (InterruptEventHandlerException ignore) {
-                // Expected
+                // Expected when event handler is being interrupted
             } finally {
-                currentEvent = null;
+                currentTopEventPriority = oldTopEventPriority;
             }
-        }));
+        }
     }
 
     private void removeOldEvents(int currentTurn) {
-        // Only remove old events that are not critical
-        eventMap.values().forEach(eventList ->
-                eventList.removeIf(event -> isOldAndNonCriticalEvent(event, currentTurn)));
+        events.removeIf(event -> isOldAndNonCriticalEvent(event, currentTurn));
+    }
+
+    private void sortEvents() {
+        events.sort((e1, e2) -> {
+            int timeDiff = e2.getTurnNumber() - e1.getTurnNumber();
+            if (timeDiff != 0) {
+                return timeDiff;
+            }
+            return getPriority(e1) - getPriority(e2);
+        });
+    }
+
+    private static boolean isNotOldOrCriticalEvent(BotEvent event, int currentTurn) {
+        var isNotOld = event.getTurnNumber() + MAX_EVENT_AGE >= currentTurn;
+        var isCritical = event.isCritical();
+        return isNotOld || isCritical;
     }
 
     private static boolean isOldAndNonCriticalEvent(BotEvent event, int currentTurn) {
@@ -107,31 +137,21 @@ final class EventQueue {
         return isOld && isNonCritical;
     }
 
-    private void addEvent(BotEvent event, IBaseBot baseBot) {
-        if (countEvents() > MAX_QUEUE_SIZE) {
+    private void addEvent(BotEvent event) {
+        if (events.size() > MAX_QUEUE_SIZE) {
             System.err.println("Maximum event queue size has been reached: " + MAX_QUEUE_SIZE);
         } else {
-            int priority = getPriority(event, baseBot);
-            var events = eventMap.get(priority);
-            if (events == null) {
-                events = new CopyOnWriteArrayList<>();
-                eventMap.put(priority, events);
-            }
             events.add(event);
         }
     }
 
-    private int countEvents() {
-        return eventMap.values().stream().mapToInt(List::size).sum();
-    }
-
-    private void addCustomEvents(IBaseBot baseBot) {
+    private void addCustomEvents() {
         baseBotInternals.getConditions().stream().filter(Condition::test).forEach(condition ->
-                addEvent(new CustomEvent(baseBotInternals.getCurrentTick().getTurnNumber(), condition), baseBot)
+                addEvent(new CustomEvent(baseBotInternals.getCurrentTick().getTurnNumber(), condition))
         );
     }
 
-    private static int getPriority(BotEvent event, IBaseBot baseBot) {
+    private int getPriority(BotEvent event) {
         if (event instanceof TickEvent) {
             return EventPriority.onTick;
         } else if (event instanceof ScannedBotEvent) {
@@ -146,14 +166,14 @@ final class EventQueue {
             return EventPriority.onBulletHitWall;
         } else if (event instanceof BulletHitBotEvent) {
             BulletHitBotEvent bulletEvent = (BulletHitBotEvent) event;
-            return (bulletEvent.getVictimId() == baseBot.getMyId()) ?
+            return (bulletEvent.getVictimId() == baseBotInternals.getMyId()) ?
                 EventPriority.onHitByBullet :
                 EventPriority.onBulletHit;
         } else if (event instanceof BulletHitBulletEvent) {
             return EventPriority.onBulletHitBullet;
         } else if (event instanceof DeathEvent) {
             DeathEvent deathEvent = (DeathEvent) event;
-            return (deathEvent.getVictimId() == baseBot.getMyId()) ?
+            return (deathEvent.getVictimId() == baseBotInternals.getMyId()) ?
                 EventPriority.onDeath :
                 EventPriority.onBotDeath;
         } else if (event instanceof SkippedTurnEvent) {

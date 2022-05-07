@@ -116,9 +116,9 @@ public sealed class BaseBotInternals
         eventQueue.SetInterruptible(interruptible);
     }
 
-    internal void SetInterruptible(Type eventType)
+    internal void SetScannedBotEventInterruptible()
     {
-        eventQueue.SetInterruptible(eventType, true);
+        eventQueue.SetInterruptible(typeof(E.ScannedBotEvent), true);
     }
 
     internal ISet<Events.Condition> Conditions { get; } = new HashSet<Events.Condition>();
@@ -525,7 +525,7 @@ public sealed class BaseBotInternals
         if (botIntent.Rescan == true)
             botIntent.Rescan = false;
 
-        eventQueue.AddEventsFromTick(tickEvent, baseBot);
+        eventQueue.AddEventsFromTick(tickEvent);
 
         // Trigger next turn (not tick-event!)
         BotEventHandlers.FireNextTurn(tickEvent);
