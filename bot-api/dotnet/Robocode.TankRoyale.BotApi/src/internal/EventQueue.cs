@@ -1,13 +1,13 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Robocode.TankRoyale.BotApi.Events;
 using static System.Int32;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
 
-internal sealed class EventQueue : IComparer
+internal sealed class EventQueue : IComparer<BotEvent>
 {
     private const int MaxQueueSize = 256;
     private const int MaxEventAge = 2;
@@ -15,7 +15,7 @@ internal sealed class EventQueue : IComparer
     private readonly BaseBotInternals baseBotInternals;
     private readonly BotEventHandlers botEventHandlers;
 
-    private readonly ArrayList events = ArrayList.Synchronized(new ArrayList());
+    private ImmutableList<BotEvent> events = ImmutableList<BotEvent>.Empty;
 
     private BotEvent currentTopEvent;
     private int currentTopEventPriority;
@@ -32,7 +32,7 @@ internal sealed class EventQueue : IComparer
 
     public void Clear()
     {
-        events.Clear();
+        events = events.Clear();
         baseBotInternals.Conditions.Clear(); // conditions might be added in the bots Run() method each round
         currentTopEvent = null;
         currentTopEventPriority = MinValue;
@@ -80,7 +80,7 @@ internal sealed class EventQueue : IComparer
 
         while (events.Count > 0)
         {
-            BotEvent botEvent = (BotEvent)events[0];
+            var botEvent = events[0];
             var eventPriority = GetPriority(botEvent);
 
             Console.WriteLine(currentTurn + ": " + botEvent.GetType());
@@ -105,7 +105,7 @@ internal sealed class EventQueue : IComparer
             currentTopEventPriority = eventPriority;
             currentTopEvent = botEvent;
 
-            events.Remove(botEvent);
+            events = events.Remove(botEvent);
 
             try
             {
@@ -127,23 +127,19 @@ internal sealed class EventQueue : IComparer
 
     private void RemoveOldEvents(int currentTurn)
     {
-        foreach (var botEvent in events.Cast<BotEvent>())
+        foreach (var botEvent in events.Where(botEvent => IsOldAndNonCriticalEvent(botEvent, currentTurn)))
         {
-            if (IsOldAndNonCriticalEvent(botEvent, currentTurn))
-                events.Remove(botEvent);
+            events = events.Remove(botEvent);
         }
     }
 
     private void SortEvents()
     {
-        events.Sort(this);
+        events = events.Sort(this);
     }
 
-    public int Compare(Object x, Object y)
+    public int Compare(BotEvent e1, BotEvent e2)
     {
-        BotEvent e1 = (BotEvent)x;
-        BotEvent e2 = (BotEvent)y;
-        
         var timeDiff = e2.TurnNumber - e1.TurnNumber;
         if (timeDiff != 0)
         {
@@ -175,7 +171,7 @@ internal sealed class EventQueue : IComparer
         }
         else
         {
-            events.Add(botEvent);
+            events = events.Add(botEvent);
         }
     }
 

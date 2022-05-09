@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.botapi.internal;
 import dev.robocode.tankroyale.botapi.events.*;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import static java.lang.Integer.MIN_VALUE;
 
