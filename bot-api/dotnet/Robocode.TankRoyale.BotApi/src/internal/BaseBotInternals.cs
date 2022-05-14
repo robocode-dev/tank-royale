@@ -127,11 +127,6 @@ public sealed class BaseBotInternals
 
     internal BotEventHandlers BotEventHandlers { get; }
 
-    internal void DisableEventQueue()
-    {
-        eventQueue.Disable();
-    }
-
     internal void SetInterruptible(bool interruptible)
     {
         eventQueue.SetInterruptible(interruptible);

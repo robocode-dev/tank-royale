@@ -106,7 +106,6 @@ public final class BotInternals implements IStopResumeListener {
         thread = new Thread(() -> {
             baseBotInternals.setRunning(true);
             bot.run();
-            baseBotInternals.disableEventQueue();
         });
         thread.start();
     }
@@ -119,9 +118,12 @@ public final class BotInternals implements IStopResumeListener {
 
         if (thread != null) {
             thread.interrupt();
+            try {
+                thread.join(10);
+            } catch (InterruptedException ignore) {
+            }
             thread = null;
         }
-        baseBotInternals.disableEventQueue();
     }
 
     private void onHitWall() {

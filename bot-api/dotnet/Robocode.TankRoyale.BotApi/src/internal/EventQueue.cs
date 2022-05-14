@@ -22,8 +22,6 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
     private ISet<Type> interruptibles = new HashSet<Type>();
 
-    private bool isDisabled;
-
     internal EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers)
     {
         this.baseBotInternals = baseBotInternals;
@@ -36,12 +34,6 @@ internal sealed class EventQueue : IComparer<BotEvent>
         baseBotInternals.Conditions.Clear(); // conditions might be added in the bots Run() method each round
         currentTopEvent = null;
         currentTopEventPriority = MinValue;
-        isDisabled = false;
-    }
-
-    public void Disable()
-    {
-        isDisabled = true;
     }
 
     public void SetInterruptible(bool interruptible)
@@ -61,8 +53,6 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
     internal void AddEventsFromTick(TickEvent tickEvent)
     {
-        if (isDisabled) return;
-
         AddEvent(tickEvent);
         foreach (var botEvent in tickEvent.Events)
         {
@@ -82,8 +72,6 @@ internal sealed class EventQueue : IComparer<BotEvent>
         {
             var botEvent = events[0];
             var eventPriority = GetPriority(botEvent);
-
-            Console.WriteLine(currentTurn + ": " + botEvent.GetType());
 
             if (eventPriority < currentTopEventPriority)
                 return; // Exit when event priority is lower than the current event being processed

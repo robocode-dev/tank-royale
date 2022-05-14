@@ -150,10 +150,6 @@ public final class BaseBotInternals {
         return botEventHandlers;
     }
 
-    void disableEventQueue() {
-        eventQueue.disable();
-    }
-
     public void setInterruptible(boolean interruptible) {
         eventQueue.setInterruptible(interruptible);
     }
@@ -223,7 +219,7 @@ public final class BaseBotInternals {
                 try {
                     nextTurnMonitor.wait(); // Wait for next turn
                 } catch (InterruptedException ex) {
-                    return;
+                    return; // stop waiting, thread has been interrupted (stopped)
                 }
             }
         }

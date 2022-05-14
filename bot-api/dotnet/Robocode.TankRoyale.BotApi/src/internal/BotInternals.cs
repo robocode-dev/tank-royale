@@ -115,7 +115,6 @@ internal sealed class BotInternals : IStopResumeListener
         {
             baseBotInternals.IsRunning = true;
             bot.Run();
-            baseBotInternals.DisableEventQueue();
         });
         thread.Start();
     }
@@ -124,15 +123,15 @@ internal sealed class BotInternals : IStopResumeListener
     {
         if (!IsRunning)
             return;
-            
+
         baseBotInternals.IsRunning = false;
     
         if (thread != null)
         {
             thread.Interrupt();
+            thread.Join();
             thread = null;
         }
-        baseBotInternals.DisableEventQueue();
     }
 
     private void OnHitWall(HitWallEvent evt)

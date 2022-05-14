@@ -22,8 +22,6 @@ final class EventQueue {
 
     private final Set<Class<? extends BotEvent>> interruptibles = new HashSet<>();
 
-    private boolean isDisabled;
-
     public EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers) {
         this.baseBotInternals = baseBotInternals;
         this.botEventHandlers = botEventHandlers;
@@ -34,11 +32,6 @@ final class EventQueue {
         baseBotInternals.getConditions().clear(); // conditions might be added in the bots run() method each round
         currentTopEvent = null;
         currentTopEventPriority = MIN_VALUE;
-        isDisabled = false;
-    }
-
-    void disable() {
-        isDisabled = true;
     }
 
     void setInterruptible(boolean interruptible) {
@@ -58,8 +51,6 @@ final class EventQueue {
     }
 
     void addEventsFromTick(TickEvent event) {
-        if (isDisabled) return;
-
         addEvent(event);
         event.getEvents().forEach(this::addEvent);
 
