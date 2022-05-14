@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.botapi.internal;
 import dev.robocode.tankroyale.botapi.events.*;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static java.lang.Integer.MIN_VALUE;
 
@@ -14,7 +15,7 @@ final class EventQueue {
     private final BaseBotInternals baseBotInternals;
     private final BotEventHandlers botEventHandlers;
 
-    private final List<BotEvent> events = Collections.synchronizedList(new ArrayList<>());
+    private final List<BotEvent> events = new CopyOnWriteArrayList<>();
 
     private BotEvent currentTopEvent;
     private int currentTopEventPriority;
@@ -70,7 +71,7 @@ final class EventQueue {
 
         sortEvents();
 
-        while (events.size() > 0) {
+        while (baseBotInternals.isRunning() && events.size() > 0) {
             var event = events.get(0);
             var eventPriority = getPriority(event);
 

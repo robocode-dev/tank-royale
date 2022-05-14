@@ -12,7 +12,6 @@ internal sealed class BotInternals : IStopResumeListener
     private readonly BaseBotInternals baseBotInternals;
 
     private Thread thread;
-    private readonly object threadMonitor = new object();
 
     private double previousDirection;
     private double previousGunDirection;
@@ -112,26 +111,27 @@ internal sealed class BotInternals : IStopResumeListener
 
     private void StartThread()
     {
-        lock (threadMonitor)
+        thread = new Thread(() =>
         {
-            thread = new Thread(() =>
-            {
-                bot.Run();
-                baseBotInternals.DisableEventQueue();
-            });
-            thread.Start();
-        }
+            baseBotInternals.IsRunning = true;
+            bot.Run();
+            baseBotInternals.DisableEventQueue();
+        });
+        thread.Start();
     }
 
     private void StopThread()
     {
-        lock (threadMonitor)
+        if (!IsRunning)
+            return;
+            
+        baseBotInternals.IsRunning = false;
+    
+        if (thread != null)
         {
-            if (thread == null) return;
-            thread.Join(0);
+            thread.Interrupt();
             thread = null;
         }
-
         baseBotInternals.DisableEventQueue();
     }
 
@@ -154,7 +154,7 @@ internal sealed class BotInternals : IStopResumeListener
 
     internal bool IsRunning
     {
-        get { return thread != null; }
+        get => baseBotInternals.IsRunning;
     }
 
     internal double DistanceRemaining { get; private set; }

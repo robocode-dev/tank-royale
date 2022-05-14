@@ -10,8 +10,9 @@ public final class BotInternals implements IStopResumeListener {
 
     private final Bot bot;
     private final BaseBotInternals baseBotInternals;
-    private final Object threadMonitor = new Object();
+
     private Thread thread;
+
     private double previousDirection;
     private double previousGunDirection;
     private double previousRadarDirection;
@@ -102,18 +103,21 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     private void startThread() {
-        synchronized (threadMonitor) {
-            thread = new Thread(() -> {
-                bot.run();
-                baseBotInternals.disableEventQueue();
-            });
-            thread.start();
-        }
+        thread = new Thread(() -> {
+            baseBotInternals.setRunning(true);
+            bot.run();
+            baseBotInternals.disableEventQueue();
+        });
+        thread.start();
     }
 
     private void stopThread() {
-        synchronized (threadMonitor) {
-            if (thread == null) return;
+        if (!isRunning())
+            return;
+
+        baseBotInternals.setRunning(false);
+
+        if (thread != null) {
             thread.interrupt();
             thread = null;
         }
@@ -137,7 +141,7 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     public boolean isRunning() {
-        return thread != null && !thread.isInterrupted();
+        return baseBotInternals.isRunning();
     }
 
     public double getDistanceRemaining() {

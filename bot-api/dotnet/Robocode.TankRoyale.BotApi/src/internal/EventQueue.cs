@@ -78,7 +78,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
         SortEvents();
 
-        while (events.Count > 0)
+        while (baseBotInternals.IsRunning && events.Count > 0)
         {
             var botEvent = events[0];
             var eventPriority = GetPriority(botEvent);

@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static dev.robocode.tankroyale.botapi.Constants.*;
 import static dev.robocode.tankroyale.botapi.internal.MathUtil.clamp;
@@ -73,6 +74,7 @@ public final class BaseBotInternals {
 
     private final Object nextTurnMonitor = new Object();
 
+    private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private boolean isStopped;
 
     private IStopResumeListener stopResumeListener;
@@ -124,6 +126,14 @@ public final class BaseBotInternals {
         botEventHandlers.onRoundStarted.subscribe(this::onRoundStarted, 100);
         botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 100);
         botEventHandlers.onBulletFired.subscribe(this::onBulletFired, 100);
+    }
+
+    public void setRunning(boolean isRunning) {
+        this.isRunning.set(isRunning);
+    }
+
+    public boolean isRunning() {
+        return isRunning.get();
     }
 
     public void setStopResumeHandler(IStopResumeListener listener) {
@@ -192,6 +202,9 @@ public final class BaseBotInternals {
     }
 
     public void execute() {
+        if (!isRunning())
+            return;
+
         sendIntent();
         waitForNextTurn();
         dispatchEvents();
@@ -206,11 +219,12 @@ public final class BaseBotInternals {
         int turnNumber = getCurrentTick().getTurnNumber();
 
         synchronized (nextTurnMonitor) {
-            try {
-                while (turnNumber >= getCurrentTick().getTurnNumber()) {
+            while (isRunning() && turnNumber >= getCurrentTick().getTurnNumber()) {
+                try {
                     nextTurnMonitor.wait(); // Wait for next turn
+                } catch (InterruptedException ex) {
+                    return;
                 }
-            } catch (InterruptedException ignore) {
             }
         }
     }

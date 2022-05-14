@@ -42,6 +42,9 @@ public sealed class BaseBotInternals
 
     private readonly object nextTurnMonitor = new object();
 
+    private bool isRunning;
+    private object isRunningLock = new();
+
     private IStopResumeListener stopResumeListener;
 
     private readonly double maxSpeed;
@@ -88,6 +91,24 @@ public sealed class BaseBotInternals
         BotEventHandlers.onRoundStarted.Subscribe(OnRoundStarted, 100);
         BotEventHandlers.onNextTurn.Subscribe(OnNextTurn, 100);
         BotEventHandlers.onBulletFired.Subscribe(OnBulletFired, 100);
+    }
+
+    public bool IsRunning
+    {
+        get
+        {
+            lock (isRunningLock)
+            {
+                return isRunning;
+            }
+        }
+        set
+        {
+            lock (isRunningLock)
+            {
+                isRunning = value;
+            }
+        }
     }
 
     public void SetStopResumeHandler(IStopResumeListener listener)
@@ -165,6 +186,9 @@ public sealed class BaseBotInternals
 
     internal void Execute()
     {
+        if (!IsRunning)
+            return;
+
         SendIntent();
         WaitForNextTurn();
         DispatchEvents();
@@ -182,7 +206,7 @@ public sealed class BaseBotInternals
 
         lock (nextTurnMonitor)
         {
-            while (turnNumber >= CurrentTick.TurnNumber)
+            while (IsRunning && turnNumber >= CurrentTick.TurnNumber)
                 Monitor.Wait(nextTurnMonitor);
         }
     }
