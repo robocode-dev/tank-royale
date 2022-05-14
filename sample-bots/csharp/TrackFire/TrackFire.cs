@@ -55,7 +55,7 @@ public class TrackFire : Bot
         // Generates another scan event if we see a bot.
         // We only need to call this if the gun (and therefore radar)
         // are not turning. Otherwise, scan is called automatically.
-        if (bearingFromGun == 0) {
+        if (bearingFromGun == 0)
             Rescan();
     }
 
