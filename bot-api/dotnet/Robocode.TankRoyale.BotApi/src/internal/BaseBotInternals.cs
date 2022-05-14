@@ -207,7 +207,16 @@ public sealed class BaseBotInternals
         lock (nextTurnMonitor)
         {
             while (IsRunning && turnNumber >= CurrentTick.TurnNumber)
-                Monitor.Wait(nextTurnMonitor);
+            {
+                try
+                {
+                    Monitor.Wait(nextTurnMonitor);
+                }
+                catch (ThreadInterruptedException)
+                {
+                    return; // stop waiting, thread has been interrupted (stopped)
+                }
+            }
         }
     }
 
