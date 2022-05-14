@@ -9,8 +9,8 @@ description = "Java API library for developing bots for Robocode Tank Royale"
 
 val artifactBaseName = "robocode-tankroyale-bot-api"
 
-val ossrhUsername: String by project
-val ossrhPassword: String by project
+val ossrhUsername: String? by project
+val ossrhPassword: String? by project
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
