@@ -13,6 +13,11 @@
     - Fixed issue with country codes (on macOS) which also caused boot up problems for .Net based bots running under
       macOS ([#20](https://github.com/robocode-dev/tank-royale/discussions/20)).
 
+#### Changes
+
+- Sample bots:
+    - Optimized TrackFire after fixing rescanning issue.
+
 ## 0.13.0 - Bot API for .Net 6 - 03-May-2022
 
 #### Changes
