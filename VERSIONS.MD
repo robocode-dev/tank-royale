@@ -15,6 +15,8 @@
 
 #### Changes
 
+- Bot API:
+    - Order of priorities was changed, so higher priority values gives higher priority.
 - Sample bots:
     - Optimized TrackFire after fixing rescanning issue.
 
