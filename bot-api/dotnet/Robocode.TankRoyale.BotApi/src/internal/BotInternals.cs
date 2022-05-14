@@ -152,10 +152,7 @@ internal sealed class BotInternals : IStopResumeListener
             StopThread();
     }
 
-    internal bool IsRunning
-    {
-        get => baseBotInternals.IsRunning;
-    }
+    internal bool IsRunning => baseBotInternals.IsRunning;
 
     internal double DistanceRemaining { get; private set; }
 
@@ -167,15 +164,13 @@ internal sealed class BotInternals : IStopResumeListener
 
     internal void SetTargetSpeed(double targetSpeed)
     {
-        if (IsNaN(targetSpeed))
-            throw new ArgumentException("targetSpeed cannot be NaN");
-
-        if (targetSpeed > 0)
-            DistanceRemaining = PositiveInfinity;
-        else if (targetSpeed < 0)
-            DistanceRemaining = NegativeInfinity;
-        else
-            DistanceRemaining = 0;
+        DistanceRemaining = targetSpeed switch
+        {
+            NaN => throw new ArgumentException("targetSpeed cannot be NaN"),
+            > 0 => PositiveInfinity,
+            < 0 => NegativeInfinity,
+            _ => 0
+        };
 
         baseBotInternals.BotIntent.TargetSpeed = targetSpeed;
     }

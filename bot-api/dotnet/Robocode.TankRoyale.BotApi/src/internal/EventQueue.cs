@@ -140,7 +140,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
     public int Compare(BotEvent e1, BotEvent e2)
     {
-        var timeDiff = e2.TurnNumber - e1.TurnNumber;
+        var timeDiff = e2!.TurnNumber - e1!.TurnNumber;
         if (timeDiff != 0)
         {
             return timeDiff;
