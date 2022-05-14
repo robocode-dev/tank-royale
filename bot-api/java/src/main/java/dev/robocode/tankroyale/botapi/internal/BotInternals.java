@@ -10,8 +10,9 @@ public final class BotInternals implements IStopResumeListener {
 
     private final Bot bot;
     private final BaseBotInternals baseBotInternals;
-    private final Object threadMonitor = new Object();
+
     private Thread thread;
+
     private double previousDirection;
     private double previousGunDirection;
     private double previousRadarDirection;
@@ -102,22 +103,27 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     private void startThread() {
-        synchronized (threadMonitor) {
-            thread = new Thread(() -> {
-                bot.run();
-                baseBotInternals.disableEventQueue();
-            });
-            thread.start();
-        }
+        thread = new Thread(() -> {
+            baseBotInternals.setRunning(true);
+            bot.run();
+        });
+        thread.start();
     }
 
     private void stopThread() {
-        synchronized (threadMonitor) {
-            if (thread == null) return;
+        if (!isRunning())
+            return;
+
+        baseBotInternals.setRunning(false);
+
+        if (thread != null) {
             thread.interrupt();
+            try {
+                thread.join();
+            } catch (InterruptedException ignore) {
+            }
             thread = null;
         }
-        baseBotInternals.disableEventQueue();
     }
 
     private void onHitWall() {
@@ -137,7 +143,7 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     public boolean isRunning() {
-        return thread != null && !thread.isInterrupted();
+        return baseBotInternals.isRunning();
     }
 
     public double getDistanceRemaining() {
@@ -187,7 +193,7 @@ public final class BotInternals implements IStopResumeListener {
             setForward(distance);
             do {
                 bot.go();
-            } while (isRunning() && abs(distanceRemaining) > 0 || abs(bot.getSpeed()) > 0);
+            } while (isRunning() && distanceRemaining != 0);
         }
     }
 
@@ -206,7 +212,7 @@ public final class BotInternals implements IStopResumeListener {
             setTurnLeft(degrees);
             do {
                 bot.go();
-            } while (isRunning() && abs(turnRemaining) > 0 || abs(bot.getTurnRate()) > 0);
+            } while (isRunning() && turnRemaining != 0);
         }
     }
 
@@ -225,7 +231,7 @@ public final class BotInternals implements IStopResumeListener {
             setTurnGunLeft(degrees);
             do {
                 bot.go();
-            } while (isRunning() && abs(gunTurnRemaining) > 0 || abs(bot.getGunTurnRate()) > 0);
+            } while (isRunning() && gunTurnRemaining != 0);
         }
     }
 
@@ -244,7 +250,7 @@ public final class BotInternals implements IStopResumeListener {
             setTurnRadarLeft(degrees);
             do {
                 bot.go();
-            } while (isRunning() && abs(radarTurnRemaining) > 0 || abs(bot.getRadarTurnRate()) > 0);
+            } while (isRunning() && radarTurnRemaining != 0);
         }
     }
 
@@ -255,7 +261,7 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     public void rescan() {
-        baseBotInternals.setInterruptible(ScannedBotEvent.class);
+        baseBotInternals.setScannedBotEventInterruptible();
         bot.setRescan();
         bot.go();
     }

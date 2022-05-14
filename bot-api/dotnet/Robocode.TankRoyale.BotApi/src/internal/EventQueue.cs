@@ -1,13 +1,13 @@
 using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Robocode.TankRoyale.BotApi.Events;
+using static System.Int32;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
 
-internal sealed class EventQueue
+internal sealed class EventQueue : IComparer<BotEvent>
 {
     private const int MaxQueueSize = 256;
     private const int MaxEventAge = 2;
@@ -15,13 +15,12 @@ internal sealed class EventQueue
     private readonly BaseBotInternals baseBotInternals;
     private readonly BotEventHandlers botEventHandlers;
 
-    private readonly IDictionary<int, ArrayList> eventDict = new ConcurrentDictionary<int, ArrayList>();
+    private ImmutableList<BotEvent> events = ImmutableList<BotEvent>.Empty;
 
-    private BotEvent currentEvent;
+    private BotEvent currentTopEvent;
+    private int currentTopEventPriority;
 
     private ISet<Type> interruptibles = new HashSet<Type>();
-
-    private bool isDisabled;
 
     internal EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers)
     {
@@ -31,149 +30,148 @@ internal sealed class EventQueue
 
     public void Clear()
     {
-        eventDict.Clear();
-        baseBotInternals.Conditions.Clear(); // conditions might be added in the bot's Run() method each round
-        currentEvent = null;
-        isDisabled = false;
+        events = events.Clear();
+        baseBotInternals.Conditions.Clear(); // conditions might be added in the bots Run() method each round
+        currentTopEvent = null;
+        currentTopEventPriority = MinValue;
     }
 
-    public void Disable()
+    public void SetInterruptible(bool interruptible)
     {
-        isDisabled = true;
+        SetInterruptible(currentTopEvent.GetType(), interruptible);
     }
 
-    public void SetInterruptible(bool interruptable)
+    public void SetInterruptible(Type eventType, bool interruptible)
     {
-        SetInterruptible(currentEvent.GetType(), interruptable);
-    }
-
-    public void SetInterruptible(Type eventType, bool interruptable)
-    {
-        if (interruptable)
+        if (interruptible)
             interruptibles.Add(eventType);
         else
             interruptibles.Remove(eventType);
     }
 
-    private bool IsInterruptible => interruptibles.Contains(currentEvent.GetType());
+    private bool IsInterruptible => interruptibles.Contains(currentTopEvent.GetType());
 
-    internal void AddEventsFromTick(TickEvent tickEvent, IBaseBot baseBot)
+    internal void AddEventsFromTick(TickEvent tickEvent)
     {
-        if (isDisabled) return;
-
-        AddEvent(tickEvent, baseBot);
+        AddEvent(tickEvent);
         foreach (var botEvent in tickEvent.Events)
         {
-            AddEvent(botEvent, baseBot);
+            AddEvent(botEvent);
         }
 
-        AddCustomEvents(baseBot);
+        AddCustomEvents();
     }
 
     internal void DispatchEvents(int currentTurn)
     {
         RemoveOldEvents(currentTurn);
 
-        // Handle events in the order of the keys, i.e. event priority order
-        var sortedDict = new SortedDictionary<int, ArrayList>(eventDict);
-        foreach (var events in sortedDict.Values)
+        SortEvents();
+
+        while (baseBotInternals.IsRunning && events.Count > 0)
         {
-            for (var i = 0; i < events.Count; i++)
+            var botEvent = events[0];
+            var eventPriority = GetPriority(botEvent);
+
+            if (eventPriority < currentTopEventPriority)
+                return; // Exit when event priority is lower than the current event being processed
+
+            // Same event?
+            if (eventPriority == currentTopEventPriority)
             {
-                try
-                {
-                    var evt = (BotEvent)events[i];
+                if (!IsInterruptible)
+                    // Ignore same event occurring again, when not interruptible
+                    return;
 
-                    // Inside same event handler?
-                    if (currentEvent != null && evt?.GetType() == currentEvent.GetType())
-                    {
-                        if (IsInterruptible)
-                        {
-                            SetInterruptible(evt.GetType(), false);
-                            throw new InterruptEventHandlerException();
-                        }
+                SetInterruptible(botEvent.GetType(), false);
+                // The current event handler must be interrupted (by throwing an InterruptEventHandlerException)
+                throw new InterruptEventHandlerException();
+            }
 
-                        return; // ignore same event occurring again, when not interruptible
-                    }
+            var oldTopEventPriority = currentTopEventPriority;
 
-                    // Dispatch event
-                    try
-                    {
-                        currentEvent = evt;
-                        events.RemoveAt(i); // remove event prior to handling it
-                        botEventHandlers.Fire(evt);
+            currentTopEventPriority = eventPriority;
+            currentTopEvent = botEvent;
 
-                        SetInterruptible(evt?.GetType(), false);
-                    }
-                    catch (InterruptEventHandlerException)
-                    {
-                        // Expected
-                    }
-                    finally
-                    {
-                        currentEvent = null;
-                    }
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                }
+            events = events.Remove(botEvent);
+
+            try
+            {
+                if (IsNotOldOrCriticalEvent(botEvent, currentTurn))
+                    botEventHandlers.Fire(botEvent);
+
+                SetInterruptible(botEvent.GetType(), false);
+            }
+            catch (InterruptEventHandlerException)
+            {
+                // Expected when event handler is being interrupted
+            }
+            finally
+            {
+                currentTopEventPriority = oldTopEventPriority;
             }
         }
     }
 
     private void RemoveOldEvents(int currentTurn)
     {
-        foreach (var events in eventDict.Values)
+        foreach (var botEvent in events.Where(botEvent => IsOldAndNonCriticalEvent(botEvent, currentTurn)))
         {
-            for (var i = 0; i < events.Count; i++)
-            {
-                var evt = (BotEvent)events[i];
-                if (evt is { IsCritical: false } && IsOldEvent(evt, currentTurn))
-                    events.RemoveAt(i);
-            }
+            events = events.Remove(botEvent);
         }
     }
 
-    private static bool IsOldEvent(BotEvent botEvent, int currentTurn)
+    private void SortEvents()
     {
-        return botEvent.TurnNumber + MaxEventAge < currentTurn;
+        events = events.Sort(this);
     }
 
-    private void AddEvent(BotEvent botEvent, IBaseBot baseBot)
+    public int Compare(BotEvent e1, BotEvent e2)
     {
-        if (CountEvents() > MaxQueueSize)
+        var timeDiff = e2!.TurnNumber - e1!.TurnNumber;
+        if (timeDiff != 0)
         {
-            Console.Error.WriteLine($"Maximum event queue size has been reached: {MaxQueueSize}");
+            return timeDiff;
+        }
+
+        return GetPriority(e1) - GetPriority(e2);
+    }
+
+    private static bool IsNotOldOrCriticalEvent(BotEvent botEvent, int currentTurn)
+    {
+        var isNotOld = botEvent.TurnNumber + MaxEventAge >= currentTurn;
+        var isCritical = botEvent.IsCritical;
+        return isNotOld || isCritical;
+    }
+
+    private static bool IsOldAndNonCriticalEvent(BotEvent botEvent, int currentTurn)
+    {
+        var isOld = botEvent.TurnNumber + MaxEventAge < currentTurn;
+        var isNonCritical = !botEvent.IsCritical;
+        return isOld && isNonCritical;
+    }
+
+    private void AddEvent(BotEvent botEvent)
+    {
+        if (events.Count > MaxQueueSize)
+        {
+            Console.Error.WriteLine("Maximum event queue size has been reached: " + MaxQueueSize);
         }
         else
         {
-            var priority = GetPriority(botEvent, baseBot);
-
-            eventDict.TryGetValue(priority, out var events);
-            if (events == null)
-            {
-                events = ArrayList.Synchronized(new ArrayList());
-                eventDict.Add(priority, events);
-            }
-
-            events.Add(botEvent);
+            events = events.Add(botEvent);
         }
     }
 
-    private int CountEvents()
-    {
-        return eventDict.Values.Sum(events => events.Count);
-    }
-
-    private void AddCustomEvents(IBaseBot baseBot)
+    private void AddCustomEvents()
     {
         foreach (var condition in baseBotInternals.Conditions.Where(condition => condition.Test()))
         {
-            AddEvent(new CustomEvent(baseBotInternals.CurrentTick.TurnNumber, condition), baseBot);
+            AddEvent(new CustomEvent(baseBotInternals.CurrentTick.TurnNumber, condition));
         }
     }
 
-    private static int GetPriority(BotEvent botEvent, IBaseBot baseBot)
+    private int GetPriority(BotEvent botEvent)
     {
         return botEvent switch
         {
@@ -183,11 +181,11 @@ internal sealed class EventQueue
             HitWallEvent _ => EventPriority.OnHitWall,
             BulletFiredEvent _ => EventPriority.OnBulletFired,
             BulletHitWallEvent _ => EventPriority.OnBulletHitWall,
-            BulletHitBotEvent bulletHitBotEvent => bulletHitBotEvent.VictimId == baseBot.MyId
+            BulletHitBotEvent bulletHitBotEvent => bulletHitBotEvent.VictimId == baseBotInternals.MyId
                 ? EventPriority.OnHitByBullet
                 : EventPriority.OnBulletHit,
             BulletHitBulletEvent _ => EventPriority.OnBulletHitBullet,
-            DeathEvent deathEvent => deathEvent.VictimId == baseBot.MyId
+            DeathEvent deathEvent => deathEvent.VictimId == baseBotInternals.MyId
                 ? EventPriority.OnDeath
                 : EventPriority.OnBotDeath,
             SkippedTurnEvent _ => EventPriority.OnSkippedTurn,

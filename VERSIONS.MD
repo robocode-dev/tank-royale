@@ -7,9 +7,20 @@
 - Bot APIs:
     - Fixed issue with turning the body, gun, and radar as first and only
       thing ([#23](https://github.com/robocode-dev/tank-royale/issues/23)).
+    - Fixed issue with rescanning and interrupting current event handler. Redesigned the event queue.
+    - Fixed issue with dangling threads not been stopped (interrupted) correctly.
 - Bot API for .Net:
     - Fixed issue with country codes (on macOS) which also caused boot up problems for .Net based bots running under
       macOS ([#20](https://github.com/robocode-dev/tank-royale/discussions/20)).
+    - Fixed issue with bots stopping doing actions when battle is restarted. E.g. the Corners sample bot was affected by
+      this issue.
+
+#### Changes
+
+- Bot API:
+    - Order of priorities was changed, so higher priority values gives higher priority.
+- Sample bots:
+    - Optimized TrackFire after fixing rescanning issue.
 
 ## 0.13.0 - Bot API for .Net 6 - 03-May-2022
 

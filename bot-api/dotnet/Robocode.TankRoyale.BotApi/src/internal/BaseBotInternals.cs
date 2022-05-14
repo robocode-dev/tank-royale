@@ -40,7 +40,10 @@ public sealed class BaseBotInternals
 
     private readonly EventQueue eventQueue;
 
-    private readonly object nextTurnMonitor = new object();
+    private readonly object nextTurnMonitor = new();
+
+    private bool isRunning;
+    private readonly object isRunningLock = new();
 
     private IStopResumeListener stopResumeListener;
 
@@ -90,6 +93,24 @@ public sealed class BaseBotInternals
         BotEventHandlers.onBulletFired.Subscribe(OnBulletFired, 100);
     }
 
+    public bool IsRunning
+    {
+        get
+        {
+            lock (isRunningLock)
+            {
+                return isRunning;
+            }
+        }
+        set
+        {
+            lock (isRunningLock)
+            {
+                isRunning = value;
+            }
+        }
+    }
+
     public void SetStopResumeHandler(IStopResumeListener listener)
     {
         stopResumeListener = listener;
@@ -106,19 +127,14 @@ public sealed class BaseBotInternals
 
     internal BotEventHandlers BotEventHandlers { get; }
 
-    internal void DisableEventQueue()
-    {
-        eventQueue.Disable();
-    }
-
     internal void SetInterruptible(bool interruptible)
     {
         eventQueue.SetInterruptible(interruptible);
     }
 
-    internal void SetInterruptible(Type eventType)
+    internal void SetScannedBotEventInterruptible()
     {
-        eventQueue.SetInterruptible(eventType, true);
+        eventQueue.SetInterruptible(typeof(E.ScannedBotEvent), true);
     }
 
     internal ISet<Events.Condition> Conditions { get; } = new HashSet<Events.Condition>();
@@ -165,6 +181,9 @@ public sealed class BaseBotInternals
 
     internal void Execute()
     {
+        if (!IsRunning)
+            return;
+
         SendIntent();
         WaitForNextTurn();
         DispatchEvents();
@@ -182,8 +201,17 @@ public sealed class BaseBotInternals
 
         lock (nextTurnMonitor)
         {
-            while (turnNumber >= CurrentTick.TurnNumber)
-                Monitor.Wait(nextTurnMonitor);
+            while (IsRunning && turnNumber >= CurrentTick.TurnNumber)
+            {
+                try
+                {
+                    Monitor.Wait(nextTurnMonitor);
+                }
+                catch (ThreadInterruptedException)
+                {
+                    return; // stop waiting, thread has been interrupted (stopped)
+                }
+            }
         }
     }
 
@@ -525,7 +553,7 @@ public sealed class BaseBotInternals
         if (botIntent.Rescan == true)
             botIntent.Rescan = false;
 
-        eventQueue.AddEventsFromTick(tickEvent, baseBot);
+        eventQueue.AddEventsFromTick(tickEvent);
 
         // Trigger next turn (not tick-event!)
         BotEventHandlers.FireNextTurn(tickEvent);

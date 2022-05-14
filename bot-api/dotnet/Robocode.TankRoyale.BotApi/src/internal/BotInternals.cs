@@ -12,7 +12,6 @@ internal sealed class BotInternals : IStopResumeListener
     private readonly BaseBotInternals baseBotInternals;
 
     private Thread thread;
-    private readonly object threadMonitor = new object();
 
     private double previousDirection;
     private double previousGunDirection;
@@ -112,27 +111,27 @@ internal sealed class BotInternals : IStopResumeListener
 
     private void StartThread()
     {
-        lock (threadMonitor)
+        thread = new Thread(() =>
         {
-            thread = new Thread(() =>
-            {
-                bot.Run();
-                baseBotInternals.DisableEventQueue();
-            });
-            thread.Start();
-        }
+            baseBotInternals.IsRunning = true;
+            bot.Run();
+        });
+        thread.Start();
     }
 
     private void StopThread()
     {
-        lock (threadMonitor)
+        if (!IsRunning)
+            return;
+
+        baseBotInternals.IsRunning = false;
+    
+        if (thread != null)
         {
-            if (thread == null) return;
-            thread.Join(0);
+            thread.Interrupt();
+            thread.Join();
             thread = null;
         }
-
-        baseBotInternals.DisableEventQueue();
     }
 
     private void OnHitWall(HitWallEvent evt)
@@ -152,10 +151,7 @@ internal sealed class BotInternals : IStopResumeListener
             StopThread();
     }
 
-    internal bool IsRunning
-    {
-        get { return thread != null; }
-    }
+    internal bool IsRunning => baseBotInternals.IsRunning;
 
     internal double DistanceRemaining { get; private set; }
 
@@ -167,15 +163,13 @@ internal sealed class BotInternals : IStopResumeListener
 
     internal void SetTargetSpeed(double targetSpeed)
     {
-        if (IsNaN(targetSpeed))
-            throw new ArgumentException("targetSpeed cannot be NaN");
-
-        if (targetSpeed > 0)
-            DistanceRemaining = PositiveInfinity;
-        else if (targetSpeed < 0)
-            DistanceRemaining = NegativeInfinity;
-        else
-            DistanceRemaining = 0;
+        DistanceRemaining = targetSpeed switch
+        {
+            NaN => throw new ArgumentException("targetSpeed cannot be NaN"),
+            > 0 => PositiveInfinity,
+            < 0 => NegativeInfinity,
+            _ => 0
+        };
 
         baseBotInternals.BotIntent.TargetSpeed = targetSpeed;
     }
@@ -200,7 +194,7 @@ internal sealed class BotInternals : IStopResumeListener
             SetForward(distance);
             do
                 bot.Go();
-            while (IsRunning && (Abs(DistanceRemaining) > 0 || Abs(bot.Speed) > 0));
+            while (IsRunning && DistanceRemaining != 0);
         }
     }
 
@@ -222,7 +216,7 @@ internal sealed class BotInternals : IStopResumeListener
             SetTurnLeft(degrees);
             do
                 bot.Go();
-            while (IsRunning && Abs(TurnRemaining) > 0 || Abs(bot.TurnRate) > 0);
+            while (IsRunning && TurnRemaining != 0);
         }
     }
 
@@ -244,7 +238,7 @@ internal sealed class BotInternals : IStopResumeListener
             SetTurnGunLeft(degrees);
             do
                 bot.Go();
-            while (IsRunning && Abs(GunTurnRemaining) > 0 || Abs(bot.GunTurnRate) > 0);
+            while (IsRunning && GunTurnRemaining != 0);
         }
     }
 
@@ -266,7 +260,7 @@ internal sealed class BotInternals : IStopResumeListener
             SetTurnRadarLeft(degrees);
             do
                 bot.Go();
-            while (IsRunning && Abs(RadarTurnRemaining) > 0 || Abs(bot.RadarTurnRate) > 0);
+            while (IsRunning && RadarTurnRemaining != 0);
         }
     }
 
@@ -278,7 +272,7 @@ internal sealed class BotInternals : IStopResumeListener
 
     internal void Rescan()
     {
-        baseBotInternals.SetInterruptible(typeof(ScannedBotEvent));
+        baseBotInternals.SetScannedBotEventInterruptible();
         bot.SetRescan();
         bot.Go();
     }

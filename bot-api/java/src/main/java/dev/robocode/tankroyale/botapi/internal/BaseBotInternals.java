@@ -12,6 +12,7 @@ import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
 import dev.robocode.tankroyale.botapi.events.RoundEndedEvent;
 import dev.robocode.tankroyale.botapi.events.RoundStartedEvent;
+import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
@@ -26,6 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static dev.robocode.tankroyale.botapi.Constants.*;
 import static dev.robocode.tankroyale.botapi.internal.MathUtil.clamp;
@@ -72,6 +74,7 @@ public final class BaseBotInternals {
 
     private final Object nextTurnMonitor = new Object();
 
+    private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private boolean isStopped;
 
     private IStopResumeListener stopResumeListener;
@@ -125,6 +128,14 @@ public final class BaseBotInternals {
         botEventHandlers.onBulletFired.subscribe(this::onBulletFired, 100);
     }
 
+    public void setRunning(boolean isRunning) {
+        this.isRunning.set(isRunning);
+    }
+
+    public boolean isRunning() {
+        return isRunning.get();
+    }
+
     public void setStopResumeHandler(IStopResumeListener listener) {
         stopResumeListener = listener;
     }
@@ -139,16 +150,12 @@ public final class BaseBotInternals {
         return botEventHandlers;
     }
 
-    void disableEventQueue() {
-        eventQueue.disable();
-    }
-
     public void setInterruptible(boolean interruptible) {
         eventQueue.setInterruptible(interruptible);
     }
 
-    void setInterruptible(Class<? extends BotEvent> eventClass) {
-        eventQueue.setInterruptible(eventClass, true);
+    void setScannedBotEventInterruptible() {
+        eventQueue.setInterruptible(ScannedBotEvent.class, true);
     }
 
     Set<Condition> getConditions() {
@@ -191,6 +198,9 @@ public final class BaseBotInternals {
     }
 
     public void execute() {
+        if (!isRunning())
+            return;
+
         sendIntent();
         waitForNextTurn();
         dispatchEvents();
@@ -205,11 +215,12 @@ public final class BaseBotInternals {
         int turnNumber = getCurrentTick().getTurnNumber();
 
         synchronized (nextTurnMonitor) {
-            try {
-                while (turnNumber >= getCurrentTick().getTurnNumber()) {
+            while (isRunning() && turnNumber >= getCurrentTick().getTurnNumber()) {
+                try {
                     nextTurnMonitor.wait(); // Wait for next turn
+                } catch (InterruptedException ex) {
+                    return; // stop waiting, thread has been interrupted (stopped)
                 }
-            } catch (InterruptedException ignore) {
             }
         }
     }
@@ -542,7 +553,7 @@ public final class BaseBotInternals {
                 botIntent.setRescan(false);
             }
 
-            eventQueue.addEventsFromTick(tickEvent, baseBot);
+            eventQueue.addEventsFromTick(tickEvent);
 
             // Trigger next turn (not tick-event!)
             botEventHandlers.onNextTurn.publish(tickEvent);
