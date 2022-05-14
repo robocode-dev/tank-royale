@@ -40,10 +40,10 @@ public sealed class BaseBotInternals
 
     private readonly EventQueue eventQueue;
 
-    private readonly object nextTurnMonitor = new object();
+    private readonly object nextTurnMonitor = new();
 
     private bool isRunning;
-    private object isRunningLock = new();
+    private readonly object isRunningLock = new();
 
     private IStopResumeListener stopResumeListener;
 
