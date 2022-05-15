@@ -1,6 +1,6 @@
 namespace Robocode.TankRoyale.BotApi.Mapper;
 
-public sealed class ResultsMapper
+public static class ResultsMapper
 {
     public static BotResults Map(Schema.BotResultsForBot source)
     {

@@ -14,7 +14,7 @@ public abstract class BotEvent : IEvent
     /// <return>
     /// <c>true</c> if this event is critical; <c>false</c> otherwise. Default is <c>false</c>.
     /// </return>
-    public virtual bool IsCritical { get; } = false;
+    public virtual bool IsCritical => false;
 
     ///<summary>
     /// Initializes a new instance of the Event class.

@@ -5,7 +5,7 @@ using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi.Mapper;
 
-public sealed class EventMapper
+public static class EventMapper
 {
     public static TickEvent Map(string json)
     {
@@ -40,7 +40,7 @@ public sealed class EventMapper
         return gameEvents;
     }
 
-    public static BotEvent Map(JObject evt)
+    private static BotEvent Map(JObject evt)
     {
         var type = evt.GetValue("$type")?.ToString();
 

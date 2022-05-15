@@ -33,10 +33,7 @@ public sealed class BulletState
 
     /// <summary>Speed measured of the bullet in units per turn.</summary>
     /// <value>The speed measured of the bullet in units per turn.</value>
-    public double Speed
-    {
-        get => 20 - 3 * Power;
-    }
+    public double Speed => 20 - 3 * Power;
 
     /// <summary>
     /// color of the bullet.

@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using Robocode.TankRoyale.BotApi.Events;
 using static System.Double;
-using static System.Math;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
 

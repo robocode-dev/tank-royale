@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace Robocode.TankRoyale.BotApi.Util;
 
-public sealed class EnumUtil
+public static class EnumUtil
 {
     public static string GetEnumMemberAttrValue<T>(T enumVal)
     {

@@ -22,7 +22,7 @@ public sealed class InitialPosition
     /// <param name="x">The x coordinate, where <c>null</c> means it is random.</param>
     /// <param name="y">The x coordinate, where <c>null</c> means it is random.</param>
     /// <param name="angle">The angle, where <c>null</c> means it is random.</param>
-    internal InitialPosition(double? x, double? y, double? angle)
+    private InitialPosition(double? x, double? y, double? angle)
     {
         X = x;
         Y = y;

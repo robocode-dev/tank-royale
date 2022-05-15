@@ -42,17 +42,17 @@ public class Color
     /// <see href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</see>
     public Color(int red, int green, int blue)
     {
-        if (red < 0 || red > 255)
+        if (red is < 0 or > 255)
         {
             throw new ArgumentException("The 'red' color component must be in the range 0 - 255");
         }
 
-        if (green < 0 || green > 255)
+        if (green is < 0 or > 255)
         {
             throw new ArgumentException("The 'green' color component must be in the range 0 - 255");
         }
 
-        if (blue < 0 || blue > 255)
+        if (blue is < 0 or > 255)
         {
             throw new ArgumentException("The 'blue' color component must be in the range 0 - 255");
         }
@@ -165,7 +165,7 @@ public class Color
         return new Color(r, g, b);
     }
 
-    protected bool Equals(Color other)
+    private bool Equals(Color other)
     {
         return RedValue == other.RedValue && GreenValue == other.GreenValue && BlueValue == other.BlueValue;
     }

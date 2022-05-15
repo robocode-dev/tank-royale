@@ -2,7 +2,7 @@ using static Robocode.TankRoyale.BotApi.Color;
 
 namespace Robocode.TankRoyale.BotApi.Mapper;
 
-public sealed class BotStateMapper
+internal static class BotStateMapper
 {
     public static BotState Map(Schema.BotState source)
     {

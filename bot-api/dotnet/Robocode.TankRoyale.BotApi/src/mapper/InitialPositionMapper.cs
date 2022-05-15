@@ -1,6 +1,6 @@
 ﻿namespace Robocode.TankRoyale.BotApi.Mapper;
 
-public sealed class InitialPositionMapper
+public static class InitialPositionMapper
 {
     public static Schema.InitialPosition Map(InitialPosition source)
     {

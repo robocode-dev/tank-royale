@@ -16,12 +16,12 @@ namespace Robocode.TankRoyale.BotApi;
 /// </summary>
 public sealed class BotInfo
 {
-    private string _name;
-    private string _version;
-    private IEnumerable<string> _authors;
-    private IEnumerable<string> _countryCodes;
-    private IEnumerable<string> _gameTypes;
-    private string _platform;
+    private readonly string name;
+    private readonly string version;
+    private readonly IEnumerable<string> authors;
+    private readonly IEnumerable<string> countryCodes;
+    private readonly IEnumerable<string> gameTypes;
+    private readonly string platform;
 
     /// <summary>
     /// Initializes a new instance of the BotInfo class.
@@ -35,6 +35,7 @@ public sealed class BotInfo
     /// <param name="gameTypes">The game type(s) that this bot can handle (required).</param>
     /// <param name="platform">The platform used for running the bot (optional).</param>
     /// <param name="programmingLang">The programming language used for developing the bot (optional).</param>
+    /// <param name="initialPosition">The initial position with starting coordinate and angle (optional).</param>
     public BotInfo(
         string name,
         string version,
@@ -65,12 +66,12 @@ public sealed class BotInfo
     /// <value>The name of the bot.</value>
     public string Name
     {
-        get => _name;
-        private set
+        get => name;
+        private init
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Name cannot be null, empty or blank");
-            _name = value;
+            name = value;
         }
     }
 
@@ -80,12 +81,12 @@ public sealed class BotInfo
     /// <value>The version of the bot.</value>
     public string Version
     {
-        get => _version;
-        private set
+        get => version;
+        private init
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new NullReferenceException("Version cannot be null, empty or blank");
-            _version = value;
+            version = value;
         }
     }
 
@@ -96,12 +97,12 @@ public sealed class BotInfo
     /// <value>The author(s) of the bot.</value>
     public IEnumerable<string> Authors
     {
-        get => _authors;
-        private set
+        get => authors;
+        private init
         {
             if (value.IsNullOrEmptyOrContainsBlanks())
                 throw new ArgumentException("Authors cannot be null or empty or contain blanks");
-            _authors = value.ToListWithNoBlanks();
+            authors = value.ToListWithNoBlanks();
         }
     }
 
@@ -127,12 +128,12 @@ public sealed class BotInfo
     /// <value>The country code(s) for the bot.</value>
     public IEnumerable<string> CountryCodes
     {
-        get => _countryCodes;
-        private set
+        get => countryCodes;
+        private init
         {
-            _countryCodes = value.ToListWithNoBlanks().ConvertAll(cc => cc.ToUpper());
+            countryCodes = value.ToListWithNoBlanks().ConvertAll(cc => cc.ToUpper());
 
-            foreach (var countryCode in _countryCodes)
+            foreach (var countryCode in countryCodes)
                 if (!CountryCode.IsCountryCodeValid(countryCode))
                     throw new ArgumentException($"Country Code is not valid: '{countryCode}'");
 
@@ -142,7 +143,7 @@ public sealed class BotInfo
                 // Get local country code
                 Thread.CurrentThread.CurrentCulture.Name
             };
-            _countryCodes = list;
+            countryCodes = list;
         }
     }
 
@@ -154,12 +155,12 @@ public sealed class BotInfo
     /// <value>The game type(s) that this bot can handle.</value>
     public IEnumerable<string> GameTypes
     {
-        get => _gameTypes;
-        private set
+        get => gameTypes;
+        private init
         {
             if (value.IsNullOrEmptyOrContainsBlanks())
                 throw new ArgumentException("Game types cannot be null or empty or contain blanks");
-            _gameTypes = value.ToListWithNoBlanks().Distinct().ToHashSet();
+            gameTypes = value.ToListWithNoBlanks().Distinct().ToHashSet();
         }
     }
 
@@ -170,12 +171,12 @@ public sealed class BotInfo
     /// <value>The platform used for running the bot.</value>
     public string Platform
     {
-        get => _platform;
-        private set
+        get => platform;
+        private init
         {
             if (string.IsNullOrWhiteSpace(value))
                 value = Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
-            _platform = value;
+            platform = value;
         }
     }
 
@@ -231,25 +232,13 @@ public sealed class BotInfo
     /// <param name="basePath">Is the base path, e.g. <c>Directory.GetCurrentDirectory()</c>.
     /// If null, the current directory will automatically be used as base path</param>
     /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
-    public static BotInfo FromFile(string filePath, string basePath)
+    public static BotInfo FromFile(string filePath, string basePath = null)
     {
         basePath ??= Directory.GetCurrentDirectory();
         var configBuilder = new ConfigurationBuilder().SetBasePath(basePath).AddJsonFile(filePath);
         var config = configBuilder.Build();
 
         return FromConfiguration(config);
-    }
-
-    /// <summary>
-    /// Reads the bot info from a file at the current working dir
-    /// The file is assumed to be in JSON format.
-    ///
-    /// See <see cref="FromFile(String, String)"/> for an example file.
-    /// </summary>
-    /// <param name="filePath">Is the file path, e.g. "bot-settings.json</param>
-    public static BotInfo FromFile(string filePath)
-    {
-        return FromFile(filePath, null);
     }
 
     /// <summary>

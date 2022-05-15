@@ -14,42 +14,42 @@ namespace Robocode.TankRoyale.BotApi.Internal;
 internal static class EnvVars
 {
     /// <summary>Name of environment variable for server URL.</summary>
-    internal const string ServerUrl = "SERVER_URL";
+    private const string ServerUrl = "SERVER_URL";
 
     /// <summary>Name of environment variable for server secret.</summary>
-    internal const string ServerSecret = "SERVER_SECRET";
+    private const string ServerSecret = "SERVER_SECRET";
 
     /// <summary>Name of environment variable for bot name.</summary>
-    internal const string BotName = "BOT_NAME";
+    private const string BotName = "BOT_NAME";
 
     /// <summary>Name of environment variable for bot version.</summary>
-    internal const string BotVersion = "BOT_VERSION";
+    private const string BotVersion = "BOT_VERSION";
 
     /// <summary>Name of environment variable for bot author(s).</summary>
-    internal const string BotAuthors = "BOT_AUTHORS";
+    private const string BotAuthors = "BOT_AUTHORS";
 
     /// <summary>Name of environment variable for bot description.</summary>
-    internal const string BotDescription = "BOT_DESCRIPTION";
+    private const string BotDescription = "BOT_DESCRIPTION";
 
     /// <summary>Name of environment variable for bot homepage URL.</summary>
-    internal const string BotHomepage = "BOT_HOMEPAGE";
+    private const string BotHomepage = "BOT_HOMEPAGE";
 
     /// <summary>Name of environment variable for bot country code(s).</summary>
-    internal const string BotCountryCodes = "BOT_COUNTRY_CODES";
+    private const string BotCountryCodes = "BOT_COUNTRY_CODES";
 
     /// <summary>Name of environment variable for bot game type(s).</summary>
-    internal const string BotGameTypes = "BOT_GAME_TYPES";
+    private const string BotGameTypes = "BOT_GAME_TYPES";
 
     /// <summary>Name of environment variable for bot platform.</summary>
-    internal const string BotPlatform = "BOT_PLATFORM";
+    private const string BotPlatform = "BOT_PLATFORM";
 
     /// <summary>Name of environment variable for bot programming language.</summary>
-    internal const string BotProgrammingLang = "BOT_PROG_LANG";
+    private const string BotProgrammingLang = "BOT_PROG_LANG";
 
     /// <summary>Name of environment variable for bot initial position.</summary>
-    internal const string BotInitialPosition = "BOT_INITIAL_POS";
+    private const string BotInitialPosition = "BOT_INITIAL_POS";
 
-    internal const string MissingEnvValue = "Missing environment variable: ";
+    private const string MissingEnvValue = "Missing environment variable: ";
 
     /// <summary>
     /// Gets the bot info from environment variables.
@@ -113,7 +113,7 @@ internal static class EnvVars
     /// Gets the bot name from environment variable.
     /// </summary>
     /// <returns>The bot name.</returns>
-    internal static string GetBotName()
+    private static string GetBotName()
     {
         return Environment.GetEnvironmentVariable(BotName);
     }
@@ -122,7 +122,7 @@ internal static class EnvVars
     /// Gets the bot version from environment variable.
     /// </summary>
     /// <returns>The bot version.</returns>
-    internal static string GetBotVersion()
+    private static string GetBotVersion()
     {
         return Environment.GetEnvironmentVariable(BotVersion);
     }
@@ -131,7 +131,7 @@ internal static class EnvVars
     /// Gets the bot author(s) from environment variable.
     /// </summary>
     /// <returns>The bot author(s).</returns>
-    internal static ICollection<string> GetBotAuthors()
+    private static ICollection<string> GetBotAuthors()
     {
         return GetEnvVarAsList(BotAuthors);
     }
@@ -140,7 +140,7 @@ internal static class EnvVars
     /// Gets the bot description from environment variable.
     /// </summary>
     /// <returns>The bot description.</returns>
-    internal static string GetBotDescription()
+    private static string GetBotDescription()
     {
         return Environment.GetEnvironmentVariable(BotDescription);
     }
@@ -149,7 +149,7 @@ internal static class EnvVars
     /// Gets the bot homepage URL from environment variable.
     /// </summary>
     /// <returns>The bot homepage URL.</returns>
-    internal static string GetBotHomepage()
+    private static string GetBotHomepage()
     {
         return Environment.GetEnvironmentVariable(BotHomepage);
     }
@@ -158,7 +158,7 @@ internal static class EnvVars
     /// Gets the bot country code(s) from environment variable.
     /// </summary>
     /// <returns>The bot country code(s).</returns>
-    internal static ICollection<string> GetBotCountryCodes()
+    private static ICollection<string> GetBotCountryCodes()
     {
         return GetEnvVarAsList(BotCountryCodes);
     }
@@ -167,7 +167,7 @@ internal static class EnvVars
     /// Gets the list of game type(s) supported by the bot from environment variable.
     /// </summary>
     /// <returns>The list of game type(s) supported.</returns>
-    internal static ICollection<string> GetBotGameTypes()
+    private static ICollection<string> GetBotGameTypes()
     {
         return GetEnvVarAsList(BotGameTypes);
     }
@@ -176,7 +176,7 @@ internal static class EnvVars
     /// Gets the platform used for running the game from environment variable.
     /// </summary>
     /// <returns>The platform used for running the game.</returns>
-    internal static string GetBotPlatform()
+    private static string GetBotPlatform()
     {
         return Environment.GetEnvironmentVariable(BotPlatform);
     }
@@ -185,7 +185,7 @@ internal static class EnvVars
     /// Gets the programming language used for running the game from environment variable.
     /// </summary>
     /// <returns>The platform used for running the game.</returns>
-    internal static string GetBotProgrammingLang()
+    private static string GetBotProgrammingLang()
     {
         return Environment.GetEnvironmentVariable(BotProgrammingLang);
     }
@@ -194,7 +194,7 @@ internal static class EnvVars
     /// Gets the initial starting position for the bot used for debugging from environment variable.
     /// </summary>
     /// <returns>The initial starting position for the bot used for debugging.</returns>
-    internal static InitialPosition GetBotInitialPosition()
+    private static InitialPosition GetBotInitialPosition()
     {
         return InitialPosition.FromString(Environment.GetEnvironmentVariable(BotInitialPosition));
     }

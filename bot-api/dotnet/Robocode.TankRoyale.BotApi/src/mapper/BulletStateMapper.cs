@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Robocode.TankRoyale.BotApi.Mapper;
 
-public sealed class BulletStateMapper
+internal static class BulletStateMapper
 {
     public static BulletState Map(Schema.BulletState source)
     {
