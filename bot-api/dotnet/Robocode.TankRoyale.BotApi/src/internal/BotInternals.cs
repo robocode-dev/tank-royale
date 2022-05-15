@@ -35,14 +35,14 @@ internal sealed class BotInternals : IStopResumeListener
         baseBotInternals.SetStopResumeHandler(this);
 
         BotEventHandlers botEventHandlers = baseBotInternals.BotEventHandlers;
-        botEventHandlers.onGameAborted.Subscribe(OnGameAborted, 100);
-        botEventHandlers.onNextTurn.Subscribe(OnNextTurn, 90);
-        botEventHandlers.onRoundEnded.Subscribe(OnRoundEnded, 90);
-        botEventHandlers.onGameEnded.Subscribe(OnGameEnded, 90);
-        botEventHandlers.onDisconnected.Subscribe(OnDisconnected, 90);
-        botEventHandlers.onHitWall.Subscribe(OnHitWall, 90);
-        botEventHandlers.onHitBot.Subscribe(OnHitBot, 90);
-        botEventHandlers.onDeath.Subscribe(OnDeath, 90);
+        botEventHandlers.OnGameAborted.Subscribe(OnGameAborted, 100);
+        botEventHandlers.OnNextTurn.Subscribe(OnNextTurn, 90);
+        botEventHandlers.OnRoundEnded.Subscribe(OnRoundEnded, 90);
+        botEventHandlers.OnGameEnded.Subscribe(OnGameEnded, 90);
+        botEventHandlers.OnDisconnected.Subscribe(OnDisconnected, 90);
+        botEventHandlers.OnHitWall.Subscribe(OnHitWall, 90);
+        botEventHandlers.OnHitBot.Subscribe(OnHitBot, 90);
+        botEventHandlers.OnDeath.Subscribe(OnDeath, 90);
     }
 
     private void OnNextTurn(TickEvent evt)

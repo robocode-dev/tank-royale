@@ -88,9 +88,9 @@ public sealed class BaseBotInternals
         socket.OnError += HandleConnectionError;
         socket.OnTextMessage += HandleTextMessage;
 
-        BotEventHandlers.onRoundStarted.Subscribe(OnRoundStarted, 100);
-        BotEventHandlers.onNextTurn.Subscribe(OnNextTurn, 100);
-        BotEventHandlers.onBulletFired.Subscribe(OnBulletFired, 100);
+        BotEventHandlers.OnRoundStarted.Subscribe(OnRoundStarted, 100);
+        BotEventHandlers.OnNextTurn.Subscribe(OnNextTurn, 100);
+        BotEventHandlers.OnBulletFired.Subscribe(OnBulletFired, 100);
     }
 
     public bool IsRunning
