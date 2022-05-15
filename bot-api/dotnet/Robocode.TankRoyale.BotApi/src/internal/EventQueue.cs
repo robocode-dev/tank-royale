@@ -20,7 +20,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
     private BotEvent currentTopEvent;
     private int currentTopEventPriority;
 
-    private ISet<Type> interruptibles = new HashSet<Type>();
+    private readonly ISet<Type> interruptibles = new HashSet<Type>();
 
     internal EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers)
     {
