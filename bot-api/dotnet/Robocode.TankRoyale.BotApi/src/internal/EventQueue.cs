@@ -128,13 +128,14 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
     public int Compare(BotEvent e1, BotEvent e2)
     {
-        var timeDiff = e2!.TurnNumber - e1!.TurnNumber;
+        // Lower (older) turn number gives negative delta -> becomes first
+        var timeDiff = e1!.TurnNumber - e2!.TurnNumber;
         if (timeDiff != 0)
         {
             return timeDiff;
         }
-
-        return GetPriority(e1) - GetPriority(e2);
+        // Higher priority gives negative delta -> becomes first
+        return GetPriority(e2) - GetPriority(e1);
     }
 
     private static bool IsNotOldOrCriticalEvent(BotEvent botEvent, int currentTurn)

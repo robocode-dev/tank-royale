@@ -108,11 +108,13 @@ final class EventQueue {
 
     private void sortEvents() {
         events.sort((e1, e2) -> {
-            int timeDiff = e2.getTurnNumber() - e1.getTurnNumber();
+            // Lower (older) turn number gives negative delta -> becomes first
+            int timeDiff = e1.getTurnNumber() - e2.getTurnNumber();
             if (timeDiff != 0) {
                 return timeDiff;
             }
-            return getPriority(e1) - getPriority(e2);
+            // Higher priority gives negative delta -> becomes first
+            return getPriority(e2) - getPriority(e1);
         });
     }
 
