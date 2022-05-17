@@ -43,7 +43,7 @@ dotnet {
 
 tasks {
     clean {
-        doLast {
+        doFirst {
             delete(
                 "build",
                 "docs",
