@@ -1,7 +1,7 @@
 val version = "0.13.1"
 
 // Schema Generator
-include("schema:java")
+include("schema:jvm")
 include("schema:dotnet")
 
 // Booter
@@ -32,7 +32,6 @@ dependencyResolutionManagement {
             version("tankroyale", version)
             version("node", "15.5.1")
 
-            library("tankroyale-schema", "dev.robocode.tankroyale:robocode-tankroyale-schema:$version")
             library("gson", "com.google.code.gson:gson:2.9.0")
             library("gson-extras", "org.danilopianini:gson-extras:0.4.0")
             library("jansi", "org.fusesource.jansi:jansi:2.4.0")

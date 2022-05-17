@@ -25,11 +25,12 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.tankroyale.schema)
+    implementation(project(":schema:jvm"))
     implementation(libs.java.websocket)
     implementation(libs.slf4j.simple)
     implementation(libs.picocli)
     implementation(libs.jansi)
+    implementation(libs.gson)
 
     testImplementation(libs.kotest.junit5)
     testImplementation(libs.mockk)

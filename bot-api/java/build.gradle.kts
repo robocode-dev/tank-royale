@@ -28,7 +28,7 @@ java {
 }
 
 dependencies {
-    implementation(libs.tankroyale.schema)
+    implementation(project(":schema:jvm"))
     implementation(libs.gson)
     implementation(libs.gson.extras)
     implementation(libs.nv.i18n)
