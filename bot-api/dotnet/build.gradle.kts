@@ -46,7 +46,6 @@ tasks {
         doFirst {
             delete(
                 "build",
-                "docs",
                 "Robocode.TankRoyale.BotApi/obj",
                 "Robocode.TankRoyale.BotApi/bin",
                 "Robocode.TankRoyale.BotApi.Tests/obj",
@@ -56,7 +55,12 @@ tasks {
     }
 
     build {
-        enabled = false
+        doFirst {
+            copy {
+                from("nuget_docs")
+                into("docs")
+            }
+        }
     }
 
     val docfx by registering {
