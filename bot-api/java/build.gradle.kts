@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -42,10 +41,6 @@ dependencies {
 }
 
 tasks {
-    withType<KotlinCompile> {
-        dependsOn(":schema:java:publishToMavenLocal")
-    }
-
     withType<Test> {
         useJUnitPlatform()
     }

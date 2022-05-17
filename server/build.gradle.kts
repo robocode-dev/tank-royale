@@ -1,5 +1,4 @@
 import proguard.gradle.ProGuardTask
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val title = "Robocode Tank Royale Server"
 group = "dev.robocode.tankroyale"
@@ -37,10 +36,6 @@ dependencies {
 }
 
 tasks {
-    withType<KotlinCompile> {
-        dependsOn(":schema:java:publishToMavenLocal")
-    }
-
     jar {
         manifest {
             attributes["Main-Class"] = jarManifestMainClass
