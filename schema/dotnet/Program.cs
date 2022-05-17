@@ -87,8 +87,8 @@ public class Program
             try
             {
                 var extends = (IDictionary<string, object>)schema.ExtensionData["extends"];
-                var referencePath = (string)extends["__referencePath"];
-                replacement += " : " + ToClassName(referencePath);
+                var refPath = (string)extends["$ref"];
+                replacement += " : " + ToClassName(refPath);
             }
             catch (KeyNotFoundException)
             {
