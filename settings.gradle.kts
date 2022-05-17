@@ -24,7 +24,7 @@ include("sample-bots:csharp")
 // Docs
 include("buildDocs")
 
-val junitVersion = "5.8.2"
+val junitVersion = "5.9.0-M1"
 
 dependencyResolutionManagement {
     versionCatalogs {
@@ -33,27 +33,27 @@ dependencyResolutionManagement {
             version("node", "15.5.1")
 
             library("gson", "com.google.code.gson:gson:2.9.0")
-            library("gson-extras", "org.danilopianini:gson-extras:0.4.0")
+            library("gson-extras", "org.danilopianini:gson-extras:0.6.0")
             library("jansi", "org.fusesource.jansi:jansi:2.4.0")
-            library("java-websocket", "org.java-websocket:Java-WebSocket:1.5.2")
-            library("jsonschema2pojo", "org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.1.1")
+            library("java-websocket", "org.java-websocket:Java-WebSocket:1.5.3")
+            library("jsonschema2pojo", "org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.1.2")
             library("picocli", "info.picocli:picocli:4.6.3")
             library("proguard-gradle", "com.guardsquare:proguard-gradle:7.2.1")
             library("miglayout-swing", "com.miglayout:miglayout-swing:11.0")
             library("nv-i18n", "com.neovisionaries:nv-i18n:1.29")
-            library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
-            library("slf4j-simple", "org.slf4j:slf4j-simple:2.0.0-alpha6")
+            library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+            library("slf4j-simple", "org.slf4j:slf4j-simple:2.0.0-alpha7")
 
             // Java testing
             library("junit-api", "org.junit.jupiter:junit-jupiter-api:$junitVersion")
             library("junit-engine", "org.junit.jupiter:junit-jupiter-engine:$junitVersion")
             library("junit-params", "org.junit.jupiter:junit-jupiter-params:$junitVersion")
             library("assertj", "org.assertj:assertj-core:3.22.0")
-            library("system-stubs", "uk.org.webcompere:system-stubs-jupiter:1.1.0")
+            library("system-stubs", "uk.org.webcompere:system-stubs-jupiter:2.0.1")
 
             // Kotlin testing
-            library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:5.1.0")
-            library("mockk", "io.mockk:mockk:1.12.3")
+            library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:5.3.0")
+            library("mockk", "io.mockk:mockk:1.12.4")
 
             plugin("shadow-jar","com.github.johnrengelman.shadow").version("7.1.2")
             plugin("kotlin-jvm", "org.jetbrains.kotlin.jvm").version("1.6.20")
