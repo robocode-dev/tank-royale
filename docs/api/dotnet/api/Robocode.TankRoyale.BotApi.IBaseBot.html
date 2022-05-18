@@ -93,11 +93,11 @@
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_AdjustGunForBodyTurn_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.AdjustGunForBodyTurn*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_AdjustGunForBodyTurn" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.AdjustGunForBodyTurn">AdjustGunForBodyTurn</h4>
-  <div class="markdown level1 summary"><p>Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun
-behaves like it is turning independent of the bot's turn.</p>
-<p>Ok, so this needs some explanation: The gun is mounted on the bot's body. So, normally, if
+  <div class="markdown level1 summary"><p>Sets the gun to adjust for the bot´s turn when setting the gun turn rate. So the gun
+behaves like it is turning independent of the bot´s turn.</p>
+<p>Ok, so this needs some explanation: The gun is mounted on the bot´s body. So, normally, if
 the bot turns 90 degrees to the right, then the gun will turn with it as it is mounted on
-top of the bot's body. To compensate for this, you can adjust the gun for the body turning.
+top of the bot´s body. To compensate for this, you can adjust the gun for the body turning.
 When this is set, the gun will turn independent of the body turning.</p>
 <div class="NOTE"><h5>note</h5><p>
 This property is additive until you reach the maximum the gun can turn <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxGunTurnRate">MaxGunTurnRate</a>. The &quot;adjust&quot; is added to the amount, you set for turning the bot
@@ -143,7 +143,7 @@ otherwise (default).</p>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_AdjustRadarForBodyTurn" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.AdjustRadarForBodyTurn">AdjustRadarForBodyTurn</h4>
   <div class="markdown level1 summary"><p>Sets the radar to adjust for the body's turn when setting the radar turn rate. So the radar
 behaves like it is turning independent of the body's turn.</p>
-<p>Ok, so this needs some explanation: The radar is mounted on the gun, and the gun is mounted on the bot's body.
+<p>Ok, so this needs some explanation: The radar is mounted on the gun, and the gun is mounted on the bot´s body.
 So, normally, if the bot turns 90 degrees to the right, the gun turns, as does the radar. Hence, if the bot
 turns 90 degrees to the right, then the gun and radar will turn with it as the radar is mounted on top of the
 gun. To compensate for this, you can adjust the radar for the body turn. When this is set, the radar will turn
@@ -1876,7 +1876,7 @@ when the <a class="xref" href="Robocode.TankRoyale.BotApi.Events.Condition.html#
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_BearingTo_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.BearingTo*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_BearingTo_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.BearingTo(System.Double,System.Double)">BearingTo(Double, Double)</h4>
-  <div class="markdown level1 summary"><p>Calculates the bearing (delta angle) between the bot's coordinates and direction and the
+  <div class="markdown level1 summary"><p>Calculates the bearing (delta angle) between the bot´s coordinates and direction and the
 direction to the point x,y.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -2308,7 +2308,7 @@ The bearing is a normalized angle in the range [-180,180[</p>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_DirectionTo_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.DirectionTo*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_DirectionTo_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.DirectionTo(System.Double,System.Double)">DirectionTo(Double, Double)</h4>
-  <div class="markdown level1 summary"><p>Calculates the direction (angle) from the bot's coordinates to a point x,y.</p>
+  <div class="markdown level1 summary"><p>Calculates the direction (angle) from the bot´s coordinates to a point x,y.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -2364,7 +2364,7 @@ The bearing is a normalized angle in the range [-180,180[</p>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_DistanceTo_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.DistanceTo*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_DistanceTo_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.DistanceTo(System.Double,System.Double)">DistanceTo(Double, Double)</h4>
-  <div class="markdown level1 summary"><p>Calculates the distance from the bot's coordinates to a point x,y.</p>
+  <div class="markdown level1 summary"><p>Calculates the distance from the bot´s coordinates to a point x,y.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -2449,7 +2449,7 @@ prior to calling the <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.h
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_GunBearingTo_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GunBearingTo*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_GunBearingTo_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.GunBearingTo(System.Double,System.Double)">GunBearingTo(Double, Double)</h4>
-  <div class="markdown level1 summary"><p>Calculates the bearing (delta angle) between the bot's gun and direction and the
+  <div class="markdown level1 summary"><p>Calculates the bearing (delta angle) between the bot´s gun and direction and the
 direction to the point x,y.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -3330,7 +3330,7 @@ take and call <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Rob
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBaseBot_RadarBearingTo_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.RadarBearingTo*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBaseBot_RadarBearingTo_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBaseBot.RadarBearingTo(System.Double,System.Double)">RadarBearingTo(Double, Double)</h4>
-  <div class="markdown level1 summary"><p>Calculates the bearing (delta angle) between the bot's radar and direction and the
+  <div class="markdown level1 summary"><p>Calculates the bearing (delta angle) between the bot´s radar and direction and the
 direction to the point x,y.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -3443,7 +3443,7 @@ again. The gun heat must be zero before the gun is able to fire (see <a class="x
 The gun heat generated by firing the gun is 1 + (firepower / 5). Hence, the more firepower
 used the longer it takes to cool down the gun. The gun cooling rate can be read by calling
 <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_GunCoolingRate">GunCoolingRate</a>.</p>
-<p>The amount of energy used for firing the gun is subtracted from the bot's total energy. The
+<p>The amount of energy used for firing the gun is subtracted from the bot´s total energy. The
 amount of damage dealt by a bullet hitting another bot is 4x firepower, and if the
 firepower is greater than 1 it will do an additional 2 x (firepower - 1) damage.</p>
 <div class="NOTE"><h5>note</h5><p>

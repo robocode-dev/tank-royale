@@ -1485,6 +1485,19 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.Bot.Stop
   nameWithType: Bot.Stop
+- uid: Robocode.TankRoyale.BotApi.Bot.TargetSpeed
+  name: TargetSpeed
+  href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TargetSpeed
+  commentId: P:Robocode.TankRoyale.BotApi.Bot.TargetSpeed
+  fullName: Robocode.TankRoyale.BotApi.Bot.TargetSpeed
+  nameWithType: Bot.TargetSpeed
+- uid: Robocode.TankRoyale.BotApi.Bot.TargetSpeed*
+  name: TargetSpeed
+  href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TargetSpeed_
+  commentId: Overload:Robocode.TankRoyale.BotApi.Bot.TargetSpeed
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.Bot.TargetSpeed
+  nameWithType: Bot.TargetSpeed
 - uid: Robocode.TankRoyale.BotApi.Bot.TurnGunLeft(System.Double)
   name: TurnGunLeft(Double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnGunLeft_System_Double_
@@ -1688,12 +1701,6 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.BotInfo.FromConfiguration
   nameWithType: BotInfo.FromConfiguration
-- uid: Robocode.TankRoyale.BotApi.BotInfo.FromFile(System.String)
-  name: FromFile(String)
-  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromFile_System_String_
-  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.FromFile(System.String)
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.FromFile(System.String)
-  nameWithType: BotInfo.FromFile(String)
 - uid: Robocode.TankRoyale.BotApi.BotInfo.FromFile(System.String,System.String)
   name: FromFile(String, String)
   href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromFile_System_String_System_String_
@@ -2399,12 +2406,6 @@ references:
   commentId: F:Robocode.TankRoyale.BotApi.Color.Cyan
   fullName: Robocode.TankRoyale.BotApi.Color.Cyan
   nameWithType: Color.Cyan
-- uid: Robocode.TankRoyale.BotApi.Color.Equals(Robocode.TankRoyale.BotApi.Color)
-  name: Equals(Color)
-  href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color_Equals_Robocode_TankRoyale_BotApi_Color_
-  commentId: M:Robocode.TankRoyale.BotApi.Color.Equals(Robocode.TankRoyale.BotApi.Color)
-  fullName: Robocode.TankRoyale.BotApi.Color.Equals(Robocode.TankRoyale.BotApi.Color)
-  nameWithType: Color.Equals(Color)
 - uid: Robocode.TankRoyale.BotApi.Color.Equals(System.Object)
   name: Equals(Object)
   href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color_Equals_System_Object_
