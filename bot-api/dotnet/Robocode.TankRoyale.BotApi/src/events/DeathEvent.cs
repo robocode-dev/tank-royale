@@ -15,7 +15,7 @@ public sealed class DeathEvent : BotEvent
     /// This event is critical.
     /// </summary>
     /// <return><c>true</c></return>
-    public override bool IsCritical { get; } = true;
+    public override bool IsCritical => true;
 
     /// <summary>Initializes a new instance of the DeathEvent class.</summary>
     /// <param name="turnNumber">Turn number.</param>

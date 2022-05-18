@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
@@ -71,19 +72,19 @@ public sealed class InitialPosition
         return ParseInitialPosition(values);
     }
 
-    private static InitialPosition ParseInitialPosition(string[] values)
+    private static InitialPosition ParseInitialPosition(IReadOnlyList<string> values)
     {
-        if (values.Length < 1) return null;
+        if (values.Count < 1) return null;
 
         var x = ParseDouble(values[0]);
-        if (values.Length < 2)
+        if (values.Count < 2)
         {
             return new InitialPosition(x, null, null);
         }
 
         var y = ParseDouble(values[1]);
         double? angle = null;
-        if (values.Length >= 3)
+        if (values.Count >= 3)
         {
             angle = ParseDouble(values[2]);
         }

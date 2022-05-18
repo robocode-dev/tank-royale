@@ -42,11 +42,11 @@ public class WebSocketClient
     /// <param name="text">Is the received text message</param>
     public delegate void HandleTextMessage(string text);
 
-    private readonly ClientWebSocket socket = new ClientWebSocket();
+    private readonly ClientWebSocket socket = new();
 
     public Uri ServerUri { get; }
 
-    private readonly CancellationTokenSource cancelSource = new CancellationTokenSource();
+    private readonly CancellationTokenSource cancelSource = new();
 
     /// <summary>Constructor.</summary>
     /// <param name="serverUri">Is the server URI</param>

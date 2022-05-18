@@ -262,6 +262,6 @@ public static class CountryCode
         "YT",
         "ZA",
         "ZM",
-        "ZW",
+        "ZW"
     };
 }

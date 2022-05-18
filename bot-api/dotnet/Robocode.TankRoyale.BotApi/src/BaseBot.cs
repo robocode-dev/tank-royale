@@ -478,7 +478,7 @@ public abstract class BaseBot : IBaseBot
     /// <inheritdoc/>
     public virtual double CalcDeltaAngle(double targetAngle, double sourceAngle)
     {
-        double angle = targetAngle - sourceAngle;
+        var angle = targetAngle - sourceAngle;
         angle += (angle > 180) ? -360 : (angle < -180) ? 360 : 0;
         return angle;
     }

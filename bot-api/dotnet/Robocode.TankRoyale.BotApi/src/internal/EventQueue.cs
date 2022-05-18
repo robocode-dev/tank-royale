@@ -176,22 +176,22 @@ internal sealed class EventQueue : IComparer<BotEvent>
     {
         return botEvent switch
         {
-            TickEvent _ => EventPriority.OnTick,
-            ScannedBotEvent _ => EventPriority.OnScannedBot,
-            HitBotEvent _ => EventPriority.OnHitBot,
-            HitWallEvent _ => EventPriority.OnHitWall,
-            BulletFiredEvent _ => EventPriority.OnBulletFired,
-            BulletHitWallEvent _ => EventPriority.OnBulletHitWall,
+            TickEvent => EventPriority.OnTick,
+            ScannedBotEvent => EventPriority.OnScannedBot,
+            HitBotEvent => EventPriority.OnHitBot,
+            HitWallEvent => EventPriority.OnHitWall,
+            BulletFiredEvent => EventPriority.OnBulletFired,
+            BulletHitWallEvent => EventPriority.OnBulletHitWall,
             BulletHitBotEvent bulletHitBotEvent => bulletHitBotEvent.VictimId == baseBotInternals.MyId
                 ? EventPriority.OnHitByBullet
                 : EventPriority.OnBulletHit,
-            BulletHitBulletEvent _ => EventPriority.OnBulletHitBullet,
+            BulletHitBulletEvent => EventPriority.OnBulletHitBullet,
             DeathEvent deathEvent => deathEvent.VictimId == baseBotInternals.MyId
                 ? EventPriority.OnDeath
                 : EventPriority.OnBotDeath,
-            SkippedTurnEvent _ => EventPriority.OnSkippedTurn,
-            CustomEvent _ => EventPriority.OnCondition,
-            WonRoundEvent _ => EventPriority.OnWonRound,
+            SkippedTurnEvent => EventPriority.OnSkippedTurn,
+            CustomEvent => EventPriority.OnCondition,
+            WonRoundEvent => EventPriority.OnWonRound,
             _ => throw new InvalidOperationException("Unhandled event type: " + botEvent)
         };
     }

@@ -32,7 +32,7 @@ internal sealed class BotEventHandlers
     internal readonly EventHandler<WonRoundEvent> OnWonRound = new();
     internal readonly EventHandler<CustomEvent> OnCustomEvent = new();
 
-    internal readonly EventHandler<TickEvent> OnNextTurn = new EventHandler<TickEvent>();
+    internal readonly EventHandler<TickEvent> OnNextTurn = new();
 
     // Events
     private event EventHandler<ConnectedEvent>.Subscriber ConnectedEvent;

@@ -34,7 +34,7 @@ internal sealed class BotInternals : IStopResumeListener
 
         baseBotInternals.SetStopResumeHandler(this);
 
-        BotEventHandlers botEventHandlers = baseBotInternals.BotEventHandlers;
+        var botEventHandlers = baseBotInternals.BotEventHandlers;
         botEventHandlers.OnGameAborted.Subscribe(OnGameAborted, 100);
         botEventHandlers.OnNextTurn.Subscribe(OnNextTurn, 90);
         botEventHandlers.OnRoundEnded.Subscribe(OnRoundEnded, 90);
@@ -120,17 +120,15 @@ internal sealed class BotInternals : IStopResumeListener
 
     private void StopThread()
     {
-        if (!IsRunning)
-            return;
+        if (!IsRunning) return;
 
         baseBotInternals.IsRunning = false;
-    
-        if (thread != null)
-        {
-            thread.Interrupt();
-            thread.Join();
-            thread = null;
-        }
+
+        if (thread == null) return;
+
+        thread.Interrupt();
+        thread.Join();
+        thread = null;
     }
 
     private void OnHitWall(HitWallEvent evt)

@@ -14,25 +14,16 @@ public class EventHandler<T>
     /// <param name="eventData"></param>
     public delegate void Subscriber(T eventData);
 
-    private readonly List<EntryWithPriority> subscriberEntries = new List<EntryWithPriority>();
+    private readonly List<EntryWithPriority> subscriberEntries = new();
 
     /// <summary>
     /// Subscribe to events on the event handler.
     /// </summary>
     /// <param name="subscriber">Is the subscriber that receives notifications when an event is triggered.</param>
     /// <param name="priority">Is the priority of the event, where higher values means higher priorities.</param>
-    public void Subscribe(Subscriber subscriber, int priority)
+    public void Subscribe(Subscriber subscriber, int priority = 1)
     {
         subscriberEntries.Add(new EntryWithPriority(subscriber, priority));
-    }
-
-    /// <summary>
-    /// Subscribe to events on the event handler.
-    /// </summary>
-    /// <param name="subscriber">Is the subscriber that receives notifications when an event is triggered.</param>
-    public void Subscribe(Subscriber subscriber)
-    {
-        Subscribe(subscriber, 1);
     }
 
     /// <summary>

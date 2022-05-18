@@ -15,5 +15,5 @@ public sealed class RoundStartedEvent : IEvent
     /// </summary>
     /// <param name="roundNumber">The round number</param>
     [JsonConstructor]
-    public RoundStartedEvent(int roundNumber) : base() => RoundNumber = roundNumber;
+    public RoundStartedEvent(int roundNumber) => RoundNumber = roundNumber;
 }

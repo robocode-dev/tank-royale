@@ -12,7 +12,7 @@ public sealed class WonRoundEvent : BotEvent
     /// This event is critical.
     /// </summary>
     /// <return><c>true</c></return>
-    public override bool IsCritical { get; } = true;
+    public override bool IsCritical => true;
 
     /// <summary>
     /// Initializes a new instance of the WonRoundEvent class.

@@ -19,6 +19,6 @@ public sealed class GameStartedEvent : IEvent
     /// <param name="myId">ID used for identifying your bot in the current battle.</param>
     /// <param name="gameSetup">Game setup for the battle just started.</param>
     [JsonConstructor]
-    public GameStartedEvent(int myId, GameSetup gameSetup) : base() =>
+    public GameStartedEvent(int myId, GameSetup gameSetup) =>
         (MyId, GameSetup) = (myId, gameSetup);
 }

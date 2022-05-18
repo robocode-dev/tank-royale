@@ -131,7 +131,7 @@ internal static class EnvVars
     /// Gets the bot author(s) from environment variable.
     /// </summary>
     /// <returns>The bot author(s).</returns>
-    private static ICollection<string> GetBotAuthors()
+    private static IEnumerable<string> GetBotAuthors()
     {
         return GetEnvVarAsList(BotAuthors);
     }
@@ -158,7 +158,7 @@ internal static class EnvVars
     /// Gets the bot country code(s) from environment variable.
     /// </summary>
     /// <returns>The bot country code(s).</returns>
-    private static ICollection<string> GetBotCountryCodes()
+    private static IEnumerable<string> GetBotCountryCodes()
     {
         return GetEnvVarAsList(BotCountryCodes);
     }

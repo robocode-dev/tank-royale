@@ -428,7 +428,7 @@ public interface IBaseBot
     /// used the longer it takes to cool down the gun. The gun cooling rate can be read by calling
     /// <see cref="GunCoolingRate"/>.
     ///
-    /// The amount of energy used for firing the gun is subtracted from the bot's total energy. The
+    /// The amount of energy used for firing the gun is subtracted from the bot´s total energy. The
     /// amount of damage dealt by a bullet hitting another bot is 4x firepower, and if the
     /// firepower is greater than 1 it will do an additional 2 x (firepower - 1) damage.
     ///
@@ -490,12 +490,12 @@ public interface IBaseBot
     bool Interruptible { set; }
 
     /// <summary>
-    /// Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun
-    /// behaves like it is turning independent of the bot's turn.
+    /// Sets the gun to adjust for the bot´s turn when setting the gun turn rate. So the gun
+    /// behaves like it is turning independent of the bot´s turn.
     ///
-    /// Ok, so this needs some explanation: The gun is mounted on the bot's body. So, normally, if
+    /// Ok, so this needs some explanation: The gun is mounted on the bot´s body. So, normally, if
     /// the bot turns 90 degrees to the right, then the gun will turn with it as it is mounted on
-    /// top of the bot's body. To compensate for this, you can adjust the gun for the body turning.
+    /// top of the bot´s body. To compensate for this, you can adjust the gun for the body turning.
     /// When this is set, the gun will turn independent of the body turning.
     ///
     /// <note>
@@ -516,7 +516,7 @@ public interface IBaseBot
     /// Sets the radar to adjust for the body's turn when setting the radar turn rate. So the radar
     /// behaves like it is turning independent of the body's turn.
     ///
-    /// Ok, so this needs some explanation: The radar is mounted on the gun, and the gun is mounted on the bot's body.
+    /// Ok, so this needs some explanation: The radar is mounted on the gun, and the gun is mounted on the bot´s body.
     /// So, normally, if the bot turns 90 degrees to the right, the gun turns, as does the radar. Hence, if the bot
     /// turns 90 degrees to the right, then the gun and radar will turn with it as the radar is mounted on top of the
     /// gun. To compensate for this, you can adjust the radar for the body turn. When this is set, the radar will turn
@@ -894,7 +894,7 @@ public interface IBaseBot
     double CalcRadarBearing(double direction);
 
     /// <summary>
-    /// Calculates the direction (angle) from the bot's coordinates to a point x,y.
+    /// Calculates the direction (angle) from the bot´s coordinates to a point x,y.
     /// </summary>
     /// <param name="x">Is the x coordinate of the point.</param>
     /// <param name="y">Is the y coordinate of the point.</param>
@@ -902,7 +902,7 @@ public interface IBaseBot
     double DirectionTo(double x, double y);
 
     /// <summary>
-    /// Calculates the bearing (delta angle) between the bot's coordinates and direction and the
+    /// Calculates the bearing (delta angle) between the bot´s coordinates and direction and the
     /// direction to the point x,y.
     /// </summary>
     /// <param name="x">Is the x coordinate of the point.</param>
@@ -911,7 +911,7 @@ public interface IBaseBot
     double BearingTo(double x, double y);
 
     /// <summary>
-    /// Calculates the bearing (delta angle) between the bot's gun and direction and the
+    /// Calculates the bearing (delta angle) between the bot´s gun and direction and the
     /// direction to the point x,y.
     /// </summary>
     /// <param name="x">Is the x coordinate of the point.</param>
@@ -920,7 +920,7 @@ public interface IBaseBot
     double GunBearingTo(double x, double y);
 
     /// <summary>
-    /// Calculates the bearing (delta angle) between the bot's radar and direction and the
+    /// Calculates the bearing (delta angle) between the bot´s radar and direction and the
     /// direction to the point x,y.
     /// </summary>
     /// <param name="x">Is the x coordinate of the point.</param>
@@ -929,7 +929,7 @@ public interface IBaseBot
     double RadarBearingTo(double x, double y);
 
     /// <summary>
-    /// Calculates the distance from the bot's coordinates to a point x,y.
+    /// Calculates the distance from the bot´s coordinates to a point x,y.
     /// </summary>
     /// <param name="x">Is the x coordinate of the point.</param>
     /// <param name="y">Is the y coordinate of the point.</param>

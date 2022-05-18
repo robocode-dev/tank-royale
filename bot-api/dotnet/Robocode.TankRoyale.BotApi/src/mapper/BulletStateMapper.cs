@@ -17,7 +17,7 @@ internal static class BulletStateMapper
         );
     }
 
-    public static ISet<BulletState> Map(IEnumerable<Schema.BulletState> source)
+    public static IEnumerable<BulletState> Map(IEnumerable<Schema.BulletState> source)
     {
         var bulletStates = new HashSet<BulletState>();
         foreach (var bulletState in source)

@@ -546,7 +546,7 @@ public interface IBot : IBaseBot
     /// used the longer it takes to cool down the gun. The gun cooling rate can be read from <see
     /// cref="IBaseBot.GunCoolingRate"/>.
     ///
-    /// The amount of energy used for firing the gun is subtracted from the bot's total energy. The
+    /// The amount of energy used for firing the gun is subtracted from the bot´s total energy. The
     /// amount of damage dealt by a bullet hitting another bot is 4x firepower, and if the firepower is
     /// greater than 1 it will do an additional 2 x (firepower - 1) damage.
     ///
