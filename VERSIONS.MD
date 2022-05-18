@@ -6,6 +6,8 @@
 
 - Bot API for .Net:
     - Setting Bot.TargetSpeed did not set the distance to travel.
+- Bot APIs:
+    - Added missing documentation about using positive and negative infinity values when moving and turning.
 
 ## 0.13.1 - Fixing event queue + country codes
 

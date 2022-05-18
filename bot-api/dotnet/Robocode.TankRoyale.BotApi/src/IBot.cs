@@ -69,8 +69,10 @@ public interface IBot : IBaseBot
     /// <see cref="SetForward"/> and <see cref="SetBack"/> methods sets the <see cref="IBaseBot.TargetSpeed"/>
     /// for each turn until <see cref="DistanceRemaining"/> reaches 0.
     /// </summary>
-    /// <param name="distance">Is the distance to move forward. If negative, the bot will move
-    /// backward.</param>
+    /// <param name="distance">Is the distance to move forward. If negative, the bot will move backward.
+    /// If <see cref="double.PositiveInfinity"/> the bot will move forward infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the bot will move backward infinitely.
+    /// </param>
     /// <seealso cref="Forward"/>
     /// <seealso cref="SetBack"/>
     /// <seealso cref="Back"/>
@@ -96,8 +98,10 @@ public interface IBot : IBaseBot
     /// This method will cancel the effect of prior calls to <see cref="IBaseBot.TargetSpeed"/>, <see
     /// cref="SetForward"/>, and <see cref="SetBack"/> methods.
     /// </summary>
-    /// <param name="distance">Is the distance to move forward. If negative, the bot will move
-    /// backward.</param>
+    /// <param name="distance">Is the distance to move forward. If negative, the bot will move backward.
+    /// If <see cref="double.PositiveInfinity"/> the bot will move forward infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the bot will move backward infinitely.
+    /// </param>
     /// <seealso cref="SetForward"/>
     /// <seealso cref="SetBack"/>
     /// <seealso cref="Back"/>
@@ -127,8 +131,10 @@ public interface IBot : IBaseBot
     /// <see cref="SetForward"/> and <see cref="SetBack"/> methods sets the <see cref="IBaseBot.TargetSpeed"/>
     /// for each turn until <see cref="DistanceRemaining"/> reaches 0.
     /// </summary>
-    /// <param name="distance">Is the distance to move backward. If negative, the bot will move
-    /// forward.</param>
+    /// <param name="distance">Is the distance to move backward. If negative, the bot will move forward.
+    /// If <see cref="double.PositiveInfinity"/> the bot will move backward infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the bot will move forward infinitely.
+    /// </param>
     /// <seealso cref="Back"/>
     /// <seealso cref="SetForward"/>
     /// <seealso cref="Forward"/>
@@ -154,8 +160,10 @@ public interface IBot : IBaseBot
     /// This method will cancel the effect of prior calls to <see cref="IBaseBot.TargetSpeed"/>, <see
     /// cref="SetForward"/>, and <see cref="SetBack"/> methods.
     /// </summary>
-    /// <param name="distance">Is the distance to move backward. If negative, the bot will move
-    /// forward.</param>
+    /// <param name="distance">Is the distance to move backward. If negative, the bot will move forward.
+    /// If <see cref="double.PositiveInfinity"/> the bot will move backward infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the bot will move forward infinitely.
+    /// </param>
     /// <seealso cref="SetForward"/>
     /// <seealso cref="SetBack"/>
     /// <seealso cref="Forward"/>
@@ -171,7 +179,10 @@ public interface IBot : IBaseBot
     /// When the distance remaining is positive, the bot is moving forward. When the distance
     /// remaining is negative, the bot is moving backward.
     /// </summary>
-    /// <value>The remaining distance to move before its current movement is completed.</value>
+    /// <value>The remaining distance to move before its current movement is completed.
+    /// If <see cref="double.PositiveInfinity"/> the bot will move forward infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the bot will move backward infinitely.
+    /// </value>
     /// <seealso cref="SetForward"/>
     /// <seealso cref="SetBack"/>
     /// <seealso cref="Forward"/>
@@ -195,8 +206,10 @@ public interface IBot : IBaseBot
     ///
     /// This method will cancel the effect of prior calls to <see cref="SetTurnRight"/>.
     /// </summary>
-    /// <param name="degrees">Is the amount of degrees to turn left. If negative, the bot will turn
-    /// right.</param>
+    /// <param name="degrees">Is the amount of degrees to turn left. If negative, the bot will turn right.
+    /// If <see cref="double.PositiveInfinity"/> the bot will turn left infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the bot will turn right infinitely.
+    /// </param>
     /// <seealso cref="SetTurnRight"/>
     /// <seealso cref="TurnRight"/>
     /// <seealso cref="TurnLeft"/>
@@ -219,8 +232,10 @@ public interface IBot : IBaseBot
     /// This method will cancel the effect of prior calls to <see cref="SetTurnLeft"/> and
     /// <see cref="SetTurnRight"/>
     /// </summary>
-    /// <param name="degrees">Is the amount of degrees to turn left. If negative, the bot will turn
-    /// right.</param>
+    /// <param name="degrees">Is the amount of degrees to turn left. If negative, the bot will turn right.
+    /// If <see cref="double.PositiveInfinity"/> the bot will turn left infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the bot will turn right infinitely.
+    /// </param>
     /// <seealso cref="SetTurnLeft"/>
     /// <seealso cref="SetTurnRight"/>
     /// <seealso cref="TurnRight"/>
@@ -245,8 +260,10 @@ public interface IBot : IBaseBot
     ///
     /// This method will cancel the effect of prior calls to <see cref="SetTurnLeft"/>.
     /// </summary>
-    /// <param name="degrees">Is the amount of degrees to turn right. If negative, the bot will
-    /// turn left.</param>
+    /// <param name="degrees">Is the amount of degrees to turn right. If negative, the bot will turn left.
+    /// If <see cref="double.PositiveInfinity"/> the bot will turn right infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the bot will turn left infinitely.
+    /// </param>
     /// <seealso cref="SetTurnLeft"/>
     /// <seealso cref="TurnRight"/>
     /// <seealso cref="TurnLeft"/>
@@ -269,8 +286,10 @@ public interface IBot : IBaseBot
     /// This method will cancel the effect of prior calls to <see cref="SetTurnLeft"/> and
     /// <see cref="SetTurnRight"/>
     /// </summary>
-    /// <param name="degrees">Is the amount of degrees to turn right. If negative, the bot will
-    /// turn left.</param>
+    /// <param name="degrees">Is the amount of degrees to turn right. If negative, the bot will turn left.
+    /// If <see cref="double.PositiveInfinity"/> the bot will turn right infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the bot will turn left infinitely.
+    /// </param>
     /// <seealso cref="SetTurnLeft"/>
     /// <seealso cref="SetTurnRight"/>
     /// <seealso cref="TurnLeft"/>
@@ -287,7 +306,10 @@ public interface IBot : IBaseBot
     /// When the turn remaining is positive, the bot is turning to the left (along the unit circle).
     /// When the turn remaining is negative, the bot is turning to the right.
     /// </summary>
-    /// <value>The remaining degrees to turn before its current turning is completed.</value>
+    /// <value>The remaining degrees to turn before its current turning is completed.
+    /// If <see cref="double.PositiveInfinity"/> the bot will turn left infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the bot will turn right infinitely.
+    /// </value>
     /// <seealso cref="SetTurnLeft"/>
     /// <seealso cref="SetTurnRight"/>
     /// <seealso cref="TurnLeft"/>
@@ -311,8 +333,10 @@ public interface IBot : IBaseBot
     ///
     /// This method will cancel the effect of prior calls to <see cref="SetTurnGunRight"/>.
     /// </summary>
-    /// <param name="degrees">Is the amount of degrees to turn left. If negative, the gun will turn
-    /// right.</param>
+    /// <param name="degrees">Is the amount of degrees to turn left. If negative, the gun will turn right.
+    /// If <see cref="double.PositiveInfinity"/> the gun will turn left infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the gun will turn right infinitely.
+    /// </param>
     /// <seealso cref="SetTurnGunRight"/>
     /// <seealso cref="TurnGunRight"/>
     /// <seealso cref="SetTurnRight"/>
@@ -335,8 +359,10 @@ public interface IBot : IBaseBot
     /// This method will cancel the effect of prior calls to <see cref="SetTurnGunLeft"/> and
     /// <see cref="SetTurnGunRight"/>
     /// </summary>
-    /// <param name="degrees">Is the amount of degrees to turn left. If negative, the gun will turn
-    /// right.</param>
+    /// <param name="degrees">Is the amount of degrees to turn left. If negative, the gun will turn right.
+    /// If <see cref="double.PositiveInfinity"/> the gun will turn left infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the gun will turn right infinitely.
+    /// </param>
     /// <seealso cref="SetTurnGunLeft"/>
     /// <seealso cref="SetTurnGunRight"/>
     /// <seealso cref="TurnGunRight"/>
@@ -361,8 +387,10 @@ public interface IBot : IBaseBot
     ///
     /// This method will cancel the effect of prior calls to <see cref="SetTurnGunLeft"/>.
     /// </summary>
-    /// <param name="degrees">Is the amount of degrees to turn right. If negative, the gun will
-    /// turn left.</param>
+    /// <param name="degrees">Is the amount of degrees to turn right. If negative, the gun will turn left.
+    /// If <see cref="double.PositiveInfinity"/> the gun will turn right infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the gun will turn left infinitely.
+    /// </param>
     /// <seealso cref="SetTurnGunLeft"/>
     /// <seealso cref="TurnGunRight"/>
     /// <seealso cref="TurnGunLeft"/>
@@ -385,8 +413,10 @@ public interface IBot : IBaseBot
     /// This method will cancel the effect of prior calls to <see cref="SetTurnGunLeft"/> and
     /// <see cref="SetTurnGunRight"/>.
     /// </summary>
-    /// <param name="degrees">Is the amount of degrees to turn right. If negative, the gun will
-    /// turn left.</param>
+    /// <param name="degrees">Is the amount of degrees to turn right. If negative, the gun will turn left.
+    /// If <see cref="double.PositiveInfinity"/> the gun will turn right infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the gun will turn left infinitely.
+    /// </param>
     /// <seealso cref="SetTurnGunLeft"/>
     /// <seealso cref="SetTurnGunRight"/>
     /// <seealso cref="TurnGunLeft"/>
@@ -402,7 +432,10 @@ public interface IBot : IBaseBot
     /// When the turn remaining is positive, the bot is turning to the left (along the unit circle).
     /// When the turn remaining is negative, the bot is turning to the right.
     /// </summary>
-    /// <value>The remaining degrees to turn the gun before its current turning is completed.</value>
+    /// <value>The remaining degrees to turn the gun before its current turning is completed.
+    /// If <see cref="double.PositiveInfinity"/> the gun will turn left infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the gun will turn right infinitely.
+    /// </value>
     /// <seealso cref="SetTurnGunLeft"/>
     /// <seealso cref="SetTurnGunRight"/>
     /// <seealso cref="TurnGunLeft"/>
@@ -426,8 +459,10 @@ public interface IBot : IBaseBot
     ///
     /// This method will cancel the effect of prior calls to <see cref="SetTurnRadarRight"/>.
     /// </summary>
-    /// <param name="degrees">Is the amount of degrees to turn left. If negative, the radar will
-    /// turn right.</param>
+    /// <param name="degrees">Is the amount of degrees to turn left. If negative, the radar will turn right.
+    /// If <see cref="double.PositiveInfinity"/> the radar will turn left infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the radar will turn right infinitely.
+    /// </param>
     /// <seealso cref="SetTurnRadarRight"/>
     /// <seealso cref="TurnRadarRight"/>
     /// <seealso cref="TurnRadarLeft"/>
@@ -450,8 +485,10 @@ public interface IBot : IBaseBot
     /// This method will cancel the effect of prior calls to <see cref="SetTurnRadarLeft"/> and
     /// <see cref="SetTurnRadarRight"/>.
     /// </summary>
-    /// <param name="degrees">Is the amount of degrees to turn left. If negative, the radar will
-    /// turn right.</param>
+    /// <param name="degrees">Is the amount of degrees to turn left. If negative, the radar will turn right.
+    /// If <see cref="double.PositiveInfinity"/> the radar will turn left infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the radar will turn right infinitely.
+    /// </param>
     /// <seealso cref="SetTurnRadarLeft"/>
     /// <seealso cref="SetTurnRadarRight"/>
     /// <seealso cref="TurnRadarLeft"/>
@@ -477,8 +514,10 @@ public interface IBot : IBaseBot
     /// This method will cancel the effect of prior calls to <see cref="SetTurnRadarLeft"/> and
     /// <see cref="SetTurnRadarRight"/>.
     /// </summary>
-    /// <param name="degrees">Is the amount of degrees to turn right. If negative, the radar will
-    /// turn left.</param>
+    /// <param name="degrees">Is the amount of degrees to turn right. If negative, the radar will turn left.
+    /// If <see cref="double.PositiveInfinity"/> the radar will turn right infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the radar will turn left infinitely.
+    /// </param>
     /// <seealso cref="SetTurnRadarLeft"/>
     /// <seealso cref="TurnRadarLeft"/>
     /// <seealso cref="TurnRadarRight"/>
@@ -501,8 +540,10 @@ public interface IBot : IBaseBot
     /// This method will cancel the effect of prior calls to <see cref="SetTurnRadarLeft"/> and
     /// <see cref="SetTurnRadarRight"/>.
     /// </summary>
-    /// <param name="degrees">Is the amount of degrees to turn right. If negative, the radar will
-    /// turn left.</param>
+    /// <param name="degrees">Is the amount of degrees to turn right. If negative, the radar will turn left.
+    /// If <see cref="double.PositiveInfinity"/> the radar will turn right infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the radar will turn left infinitely.
+    /// </param>
     /// <seealso cref="SetTurnRadarLeft"/>
     /// <seealso cref="SetTurnRadarRight"/>
     /// <seealso cref="TurnRadarRight"/>
@@ -518,7 +559,10 @@ public interface IBot : IBaseBot
     /// When the turn remaining is positive, the bot is turning to the left (along the unit circle).
     /// When the turn remaining is negative, the bot is turning to the right.
     /// </summary>
-    /// <value>The remaining degrees to turn the radar before its current turning is completed.</value>
+    /// <value>The remaining degrees to turn the radar before its current turning is completed.
+    /// If <see cref="double.PositiveInfinity"/> the radar will turn left infinitely.
+    /// If <see cref="double.NegativeInfinity"/> the radar will turn right infinitely.
+    /// </value>
     /// <seealso cref="SetTurnRadarLeft"/>
     /// <seealso cref="SetTurnRadarRight"/>
     /// <seealso cref="TurnRadarLeft"/>
