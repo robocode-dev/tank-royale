@@ -15,30 +15,37 @@ public abstract class Bot : BaseBot, IBot
     /// <see cref="BaseBot()"/>
     public Bot()
     {
-        __botInternals = new BotInternals(this, base.__baseBotInternals);
+        __botInternals = new BotInternals(this, __baseBotInternals);
     }
 
     /// <see cref="BaseBot(BotInfo)"/>
     public Bot(BotInfo botInfo) : base(botInfo)
     {
-        __botInternals = new BotInternals(this, base.__baseBotInternals);
+        __botInternals = new BotInternals(this, __baseBotInternals);
     }
 
     /// <see cref="BaseBot(BotInfo, Uri)"/>
     public Bot(BotInfo botInfo, Uri serverUrl) : base(botInfo, serverUrl)
     {
-        __botInternals = new BotInternals(this, base.__baseBotInternals);
+        __botInternals = new BotInternals(this, __baseBotInternals);
     }
 
     /// <see cref="BaseBot(BotInfo, Uri, string)"/>
     public Bot(BotInfo botInfo, Uri serverUrl, string serverSecret) : base(botInfo, serverUrl, serverSecret)
     {
-        __botInternals = new BotInternals(this, base.__baseBotInternals);
+        __botInternals = new BotInternals(this, __baseBotInternals);
     }
 
     /// <inheritdoc/>
     public virtual void Run()
     {
+    }
+    
+    /// <inheritdoc/>
+    public new double TargetSpeed
+    {
+        set => __botInternals.SetTargetSpeed(value);
+        get => __baseBotInternals.BotIntent.TargetSpeed ?? 0d;
     }
 
     /// <inheritdoc/>
