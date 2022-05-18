@@ -1,5 +1,12 @@
 # Versions
 
+## In progress
+
+#### Bugfixes
+
+- Bot API for .Net:
+    - Setting Bot.TargetSpeed did not set the distance to travel.
+
 ## 0.13.1 - Fixing event queue + country codes
 
 #### Bugfixes
