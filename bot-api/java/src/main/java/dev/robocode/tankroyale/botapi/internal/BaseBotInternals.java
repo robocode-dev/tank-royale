@@ -93,6 +93,8 @@ public final class BaseBotInternals {
 
     private final Gson gson;
 
+    private boolean eventHandlingDisabled;
+
     {
         RuntimeTypeAdapterFactory<dev.robocode.tankroyale.schema.Event> typeFactory =
                 RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class, "$type")
@@ -134,6 +136,10 @@ public final class BaseBotInternals {
 
     public boolean isRunning() {
         return isRunning.get();
+    }
+
+    public void enableEventHandling(boolean enable) {
+        eventHandlingDisabled = !enable;
     }
 
     public void setStopResumeHandler(IStopResumeListener listener) {
@@ -544,6 +550,8 @@ public final class BaseBotInternals {
         }
 
         private void handleTick(JsonObject jsonMsg) {
+            if (eventHandlingDisabled) return;
+
             var tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
             tickEvent = EventMapper.map(tickEventForBot);
 

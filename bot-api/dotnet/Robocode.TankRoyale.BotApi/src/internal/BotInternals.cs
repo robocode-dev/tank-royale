@@ -112,8 +112,10 @@ internal sealed class BotInternals : IStopResumeListener
     {
         thread = new Thread(() =>
         {
+            baseBotInternals.EnableEventHandling(true);
             baseBotInternals.IsRunning = true;
             bot.Run();
+            baseBotInternals.EnableEventHandling(false); // prevent event queue max limit to be reached
         });
         thread.Start();
     }

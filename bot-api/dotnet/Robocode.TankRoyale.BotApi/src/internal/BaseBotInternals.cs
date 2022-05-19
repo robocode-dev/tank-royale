@@ -59,6 +59,7 @@ public sealed class BaseBotInternals
 
     private readonly double absDeceleration;
 
+    private readonly bool eventHandlingDisabled;
 
     internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUrl, string serverSecret)
     {
@@ -111,6 +112,11 @@ public sealed class BaseBotInternals
         }
     }
 
+    public void EnableEventHandling(bool enable)
+    {
+        eventHandlingDisabled = !enable;
+    }
+    
     public void SetStopResumeHandler(IStopResumeListener listener)
     {
         stopResumeListener = listener;
@@ -546,6 +552,8 @@ public sealed class BaseBotInternals
 
     private void HandleTick(string json)
     {
+        if (eventHandlingDisabled) return;
+        
         tickEvent = EventMapper.Map(json);
 
         ticksStart = DateTime.Now.Ticks;
