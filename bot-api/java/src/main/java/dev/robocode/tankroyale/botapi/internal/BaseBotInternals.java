@@ -138,8 +138,8 @@ public final class BaseBotInternals {
         return isRunning.get();
     }
 
-    public void enableEventHandling(boolean enable) {
-        eventHandlingDisabled = !enable;
+    public void disableEventHandling() {
+        eventHandlingDisabled = true;
     }
 
     public void setStopResumeHandler(IStopResumeListener listener) {
@@ -172,6 +172,7 @@ public final class BaseBotInternals {
         botIntent = newBotIntent();
         eventQueue.clear();
         isStopped = false;
+        eventHandlingDisabled = false;
     }
 
     private void onNextTurn(TickEvent e) {

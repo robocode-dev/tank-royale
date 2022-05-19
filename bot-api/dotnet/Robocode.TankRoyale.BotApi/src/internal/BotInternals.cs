@@ -112,10 +112,9 @@ internal sealed class BotInternals : IStopResumeListener
     {
         thread = new Thread(() =>
         {
-            baseBotInternals.EnableEventHandling(true);
             baseBotInternals.IsRunning = true;
             bot.Run();
-            baseBotInternals.EnableEventHandling(false); // prevent event queue max limit to be reached
+            baseBotInternals.DisableEventHandling(); // prevent event queue max limit to be reached
         });
         thread.Start();
     }
@@ -192,8 +191,9 @@ internal sealed class BotInternals : IStopResumeListener
         {
             SetForward(distance);
             do
+            {
                 bot.Go();
-            while (IsRunning && DistanceRemaining != 0);
+            } while (IsRunning && (DistanceRemaining != 0 || bot.Speed != 0));
         }
     }
 
@@ -214,8 +214,9 @@ internal sealed class BotInternals : IStopResumeListener
         {
             SetTurnLeft(degrees);
             do
+            {
                 bot.Go();
-            while (IsRunning && TurnRemaining != 0);
+            } while (IsRunning && (TurnRemaining != 0 || bot.TurnRate != 0));
         }
     }
 
@@ -236,8 +237,9 @@ internal sealed class BotInternals : IStopResumeListener
         {
             SetTurnGunLeft(degrees);
             do
+            {
                 bot.Go();
-            while (IsRunning && GunTurnRemaining != 0);
+            } while (IsRunning && (GunTurnRemaining != 0 || bot.GunTurnRate != 0));
         }
     }
 
@@ -258,8 +260,9 @@ internal sealed class BotInternals : IStopResumeListener
         {
             SetTurnRadarLeft(degrees);
             do
+            {
                 bot.Go();
-            while (IsRunning && RadarTurnRemaining != 0);
+            } while (IsRunning && (RadarTurnRemaining != 0 || bot.RadarTurnRate != 0));
         }
     }
 

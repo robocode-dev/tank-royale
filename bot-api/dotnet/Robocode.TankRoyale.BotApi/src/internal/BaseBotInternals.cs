@@ -59,7 +59,7 @@ public sealed class BaseBotInternals
 
     private readonly double absDeceleration;
 
-    private readonly bool eventHandlingDisabled;
+    private bool eventHandlingDisabled;
 
     internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUrl, string serverSecret)
     {
@@ -112,9 +112,9 @@ public sealed class BaseBotInternals
         }
     }
 
-    public void EnableEventHandling(bool enable)
+    public void DisableEventHandling()
     {
-        eventHandlingDisabled = !enable;
+        eventHandlingDisabled = true;
     }
     
     public void SetStopResumeHandler(IStopResumeListener listener)
@@ -150,6 +150,7 @@ public sealed class BaseBotInternals
         botIntent = NewBotIntent();
         eventQueue.Clear();
         IsStopped = false;
+        eventHandlingDisabled = false;
     }
 
     private void OnNextTurn(E.TickEvent e)

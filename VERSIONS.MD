@@ -1,21 +1,25 @@
 # Versions
 
-## In progress
+## 0.13.2 - Fixing issue #23 - 19-05-2022
 
 #### Bugfixes
 
 - Bot API for .Net:
     - Setting Bot.TargetSpeed did not set the distance to travel.
+    - Fixed issue with turning the body, gun, and radar as first and only
+      thing ([#23](https://github.com/robocode-dev/tank-royale/issues/23)).
+    - Fixed issue with event queue reaching max after bot has terminated execution
+      ([#23](https://github.com/robocode-dev/tank-royale/issues/23)).
 - Bot APIs:
     - Added missing documentation about using positive and negative infinity values when moving and turning.
 
-## 0.13.1 - Fixing event queue + country codes
+## 0.13.1 - Fixing event queue + country codes - 18-05-2022
 
 #### Bugfixes
 
 - Bot APIs:
-    - Fixed issue with turning the body, gun, and radar as first and only
-      thing ([#23](https://github.com/robocode-dev/tank-royale/issues/23)).
+    - ~~Fixed issue with turning the body, gun, and radar as first and only
+      thing ([#23](https://github.com/robocode-dev/tank-royale/issues/23)).~~
     - Fixed issue with rescanning and interrupting current event handler. Redesigned the event queue.
     - Fixed issue with dangling threads not been stopped (interrupted) correctly.
 - Bot API for .Net:

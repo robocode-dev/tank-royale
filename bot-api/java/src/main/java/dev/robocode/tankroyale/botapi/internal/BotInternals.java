@@ -104,10 +104,9 @@ public final class BotInternals implements IStopResumeListener {
 
     private void startThread() {
         thread = new Thread(() -> {
-            baseBotInternals.enableEventHandling(true);
             baseBotInternals.setRunning(true);
             bot.run();
-            baseBotInternals.enableEventHandling(false); // prevent event queue max limit to be reached
+            baseBotInternals.disableEventHandling(); // prevent event queue max limit to be reached
         });
         thread.start();
     }
@@ -195,7 +194,7 @@ public final class BotInternals implements IStopResumeListener {
             setForward(distance);
             do {
                 bot.go();
-            } while (isRunning() && distanceRemaining != 0);
+            } while (isRunning() && (distanceRemaining != 0 || bot.getSpeed() != 0));
         }
     }
 
@@ -214,7 +213,7 @@ public final class BotInternals implements IStopResumeListener {
             setTurnLeft(degrees);
             do {
                 bot.go();
-            } while (isRunning() && turnRemaining != 0);
+            } while (isRunning() && (turnRemaining != 0 || bot.getTurnRate() != 0));
         }
     }
 
@@ -233,7 +232,7 @@ public final class BotInternals implements IStopResumeListener {
             setTurnGunLeft(degrees);
             do {
                 bot.go();
-            } while (isRunning() && gunTurnRemaining != 0);
+            } while (isRunning() && (gunTurnRemaining != 0 || bot.getGunTurnRate() != 0));
         }
     }
 
@@ -252,7 +251,7 @@ public final class BotInternals implements IStopResumeListener {
             setTurnRadarLeft(degrees);
             do {
                 bot.go();
-            } while (isRunning() && radarTurnRemaining != 0);
+            } while (isRunning() && (radarTurnRemaining != 0 || bot.getRadarTurnRate() != 0));
         }
     }
 
