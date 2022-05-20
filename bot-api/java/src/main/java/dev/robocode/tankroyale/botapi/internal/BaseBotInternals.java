@@ -108,7 +108,10 @@ public final class BaseBotInternals {
                         .registerSubtype(dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
                         .registerSubtype(dev.robocode.tankroyale.schema.WonRoundEvent.class, "WonRoundEvent");
 
-        gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
+        gson = new GsonBuilder()
+                .registerTypeAdapterFactory(typeFactory)
+                .serializeSpecialFloatingPointValues() // to avoid IllegalArgumentException: -Infinity is not a valid double value as per JSON specification
+                .create();
     }
 
     public BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl, String serverSecret) {
