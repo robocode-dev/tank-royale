@@ -7,6 +7,8 @@
       reach its max limit of unprocessed 256 events.
 - Bot API for Java:
     - Fixed IllegalArgumentException: -Infinity is not a valid double value as per JSON specification
+- GUI:
+    - When stopping a battle and starting a new one, the Pause/Resume and Stop buttons were disabled.
 
 ## 0.13.2 - Fixing issue #23 - 19-05-2022
 

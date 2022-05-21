@@ -1,10 +1,10 @@
 package dev.robocode.tankroyale.gui.ui.control
 
 import dev.robocode.tankroyale.gui.client.ClientEvents
+import dev.robocode.tankroyale.gui.client.ClientEvents.onGameStarted
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
-import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.ui.tps.TpsField
 import dev.robocode.tankroyale.gui.ui.tps.TpsSlider
 import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
@@ -48,23 +48,24 @@ object ControlPanel : JPanel() {
 
         ControlEvents.apply {
             onStop.subscribe(ControlPanel) {
-                pauseResumeButton.isEnabled = false
-                stopButton.isEnabled = false
+                enablePauseResumeAndStopButtons()
             }
             onRestart.subscribe(ControlPanel) {
-                pauseResumeButton.isVisible = true
-                stopButton.isEnabled = true
+                enablePauseResumeAndStopButtons()
             }
-        }
-
-        ServerEvents.onStarted.subscribe(ControlPanel) {
-            pauseResumeButton.isEnabled = true
-            stopButton.isEnabled = true
+            onGameStarted.subscribe(ControlPanel) {
+                enablePauseResumeAndStopButtons()
+            }
         }
 
         enqueue {
             setDefaultButton(pauseResumeButton)
         }
+    }
+
+    private fun enablePauseResumeAndStopButtons() {
+        pauseResumeButton.isEnabled = true
+        stopButton.isEnabled = true
     }
 
     private fun setPausedText() {
