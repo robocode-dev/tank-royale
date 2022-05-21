@@ -1,5 +1,13 @@
 # Versions
 
+## In progress
+
+- Bot API:
+    - Fixed issue where the event queue was not disabled if run() method threw an exception, causing the event queue to
+      reach its max limit of unprocessed 256 events.
+- Bot API for Java:
+    - Fixed IllegalArgumentException: -Infinity is not a valid double value as per JSON specification
+
 ## 0.13.2 - Fixing issue #23 - 19-05-2022
 
 #### Bugfixes
