@@ -173,8 +173,8 @@ class RunCommand : Command() {
         }
 
         private fun setEnvVars(envMap: MutableMap<String, String?>, botInfo: BotInfo) {
-            envMap[Env.SERVER_URL.name] = System.getProperty("server.url")
-            envMap[Env.SERVER_SECRET.name] = System.getProperty("server.secret")
+            System.getProperty("server.url")?.let { envMap[Env.SERVER_URL.name] = it }
+            System.getProperty("server.secret")?.let { envMap[Env.SERVER_SECRET.name] = it }
             envMap[Env.BOT_NAME.name] = botInfo.name
             envMap[Env.BOT_VERSION.name] = botInfo.version
             envMap[Env.BOT_AUTHORS.name] = botInfo.authors
