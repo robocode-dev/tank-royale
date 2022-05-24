@@ -112,9 +112,9 @@ public sealed class BaseBotInternals
         }
     }
 
-    public void DisableEventHandling()
+    public void EnableEventHandling(bool enable)
     {
-        eventHandlingDisabled = true;
+        eventHandlingDisabled = !enable;
     }
     
     public void SetStopResumeHandler(IStopResumeListener listener)

@@ -106,9 +106,10 @@ public final class BotInternals implements IStopResumeListener {
         thread = new Thread(() -> {
             baseBotInternals.setRunning(true);
             try {
+                baseBotInternals.enableEventHandling(true);
                 bot.run();
             } finally {
-                baseBotInternals.disableEventHandling(); // prevent event queue max limit to be reached
+                baseBotInternals.enableEventHandling(false); // prevent event queue max limit to be reached
             }
         });
         thread.start();

@@ -141,8 +141,8 @@ public final class BaseBotInternals {
         return isRunning.get();
     }
 
-    public void disableEventHandling() {
-        eventHandlingDisabled = true;
+    public void enableEventHandling(boolean enable) {
+        eventHandlingDisabled = !enable;
     }
 
     public void setStopResumeHandler(IStopResumeListener listener) {
