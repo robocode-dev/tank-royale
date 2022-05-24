@@ -33,7 +33,7 @@ class RunCommand : Command() {
         do {
             val line = readLine()?.trim()
             val cmdAndArgs = line?.split("\\s+".toRegex(), limit = 2)
-            if (cmdAndArgs != null && cmdAndArgs.isNotEmpty()) {
+            if (cmdAndArgs?.isNotEmpty() == true) {
                 val command = cmdAndArgs[0].lowercase(Locale.getDefault()).trim()
                 if (command == "quit") {
                     break // terminate running bots
@@ -113,14 +113,15 @@ class RunCommand : Command() {
 
     private fun createProcessBuilder(command: String): ProcessBuilder {
         val cmd = command.lowercase()
-        return when {
+        val args = when {
             cmd.endsWith(".bat") -> // handle Batch script
-                ProcessBuilder("cmd.exe", "/c \"$command\"")
+                listOf("cmd.exe", "/c \"$command\"")
             cmd.endsWith(".sh") -> // handle Bash Shell script
-                ProcessBuilder("bash", "-c", command)
+                listOf("bash", "-c", command)
             else -> // handle regular command
-                ProcessBuilder(command)
+                listOf(command)
         }
+        return ProcessBuilder(args)
     }
 
     private fun findOsScript(botDir: Path): Path? = when (OSUtil.getOsType()) {
