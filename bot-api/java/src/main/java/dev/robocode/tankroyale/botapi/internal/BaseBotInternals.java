@@ -363,16 +363,16 @@ public final class BaseBotInternals {
      * @return The new speed
      */
     // Credits for this algorithm goes to Patrick Cupka (aka Voidious),
-    // Julian Kent (aka Skilgannon), and Positive:
+    // Julian Kent (aka Skilgannon), and Positive for the original version:
     // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
-    double getNewSpeed(double speed, double distance) {
+    double getNewTargetSpeed(double speed, double distance) {
         if (distance < 0) {
-            return -getNewSpeed(-speed, -distance);
+            return -getNewTargetSpeed(-speed, -distance);
         }
-
-        final double targetSpeed = (distance == Double.POSITIVE_INFINITY) ?
-                maxSpeed :
-                min(getMaxSpeed(distance), maxSpeed);
+        if (distance == Double.POSITIVE_INFINITY) {
+            return maxSpeed;
+        }
+        var targetSpeed = min(getMaxSpeed(distance), maxSpeed);
 
         return (speed >= 0) ?
             clamp(targetSpeed, speed - absDeceleration, speed + ACCELERATION) :
@@ -400,7 +400,7 @@ public final class BaseBotInternals {
         speed = abs(speed);
         double distance = 0;
         while (speed > 0) {
-            distance += (speed = getNewSpeed(speed, 0));
+            distance += (speed = getNewTargetSpeed(speed, 0));
         }
         return distance;
     }

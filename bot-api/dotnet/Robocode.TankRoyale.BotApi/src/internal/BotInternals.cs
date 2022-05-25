@@ -183,7 +183,7 @@ internal sealed class BotInternals : IStopResumeListener
         if (IsNaN(distance))
             throw new ArgumentException("distance cannot be NaN");
 
-        var speed = baseBotInternals.GetNewSpeed(bot.Speed, distance);
+        var speed = baseBotInternals.GetNewTargetSpeed(bot.Speed, distance);
         baseBotInternals.BotIntent.TargetSpeed = speed;
 
         DistanceRemaining = distance;
@@ -391,7 +391,7 @@ internal sealed class BotInternals : IStopResumeListener
 
             // This is Nat Pavasant's method described here:
             // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
-            var speed = baseBotInternals.GetNewSpeed(bot.Speed, distance);
+            var speed = baseBotInternals.GetNewTargetSpeed(bot.Speed, distance);
             baseBotInternals.BotIntent.TargetSpeed = speed;
 
             // If we are over-driving our distance and we are now at velocity=0 then we stopped

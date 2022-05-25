@@ -358,19 +358,18 @@ public sealed class BaseBotInternals
     /// </summary>
 
     // Credits for this algorithm goes to Patrick Cupka (aka Voidious),
-    // Julian Kent (aka Skilgannon), and Positive:
+    // Julian Kent (aka Skilgannon), and Positive for the original version:
     // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
-    internal double GetNewSpeed(double speed, double distance)
+    internal double GetNewTargetSpeed(double speed, double distance)
     {
         if (distance < 0)
-        {
-            // If the distance is negative, then change it to be positive and change the sign of the
-            // input velocity and the result
-            return -GetNewSpeed(-speed, -distance);
-        }
+            return -GetNewTargetSpeed(-speed, -distance);
 
-        var targetSpeed = IsPositiveInfinity(distance) ? maxSpeed : Math.Min(GetMaxSpeed(distance), maxSpeed);
+        if (IsPositiveInfinity(distance))
+            return maxSpeed;
 
+        var targetSpeed = Math.Min(GetMaxSpeed(distance), maxSpeed);
+        
         return speed >= 0
             ? Math.Clamp(targetSpeed, speed - absDeceleration, speed + Constants.Acceleration)
             : Math.Clamp(targetSpeed, speed - Constants.Acceleration, speed + GetMaxDeceleration(-speed));
@@ -401,7 +400,7 @@ public sealed class BaseBotInternals
         speed = Math.Abs(speed);
         double distance = 0;
         while (speed > 0)
-            distance += (speed = GetNewSpeed(speed, 0));
+            distance += (speed = GetNewTargetSpeed(speed, 0));
 
         return distance;
     }

@@ -185,7 +185,7 @@ public final class BotInternals implements IStopResumeListener {
         if (Double.isNaN(distance)) {
             throw new IllegalArgumentException("distance cannot be NaN");
         }
-        double speed = baseBotInternals.getNewSpeed(bot.getSpeed(), distance);
+        double speed = baseBotInternals.getNewTargetSpeed(bot.getSpeed(), distance);
         baseBotInternals.getBotIntent().setTargetSpeed(speed);
 
         distanceRemaining = distance;
@@ -364,7 +364,7 @@ public final class BotInternals implements IStopResumeListener {
 
             // This is Nat Pavasant's method described here:
             // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
-            double speed = baseBotInternals.getNewSpeed(bot.getSpeed(), distance);
+            double speed = baseBotInternals.getNewTargetSpeed(bot.getSpeed(), distance);
             baseBotInternals.getBotIntent().setTargetSpeed(speed);
 
             // If we are over-driving our distance and we are now at velocity=0 then we stopped
