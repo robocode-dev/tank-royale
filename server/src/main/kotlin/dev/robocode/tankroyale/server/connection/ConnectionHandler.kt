@@ -231,7 +231,7 @@ class ConnectionHandler(
         gson.fromJson(message, BotHandshake::class.java).apply {
             // Validate client secret before continuing
             if (botSecrets.isNotEmpty() && !botSecrets.contains(secret)) {
-                log.info("Ignoring bot using invalid secret: name: $name, version: $version")
+                log.info("Ignoring bot using invalid secret: $name, version: $version")
                 conn.close(StatusCode.POLICY_VIOLATION.value, "Wrong secret")
             } else {
                 botConnections += conn
