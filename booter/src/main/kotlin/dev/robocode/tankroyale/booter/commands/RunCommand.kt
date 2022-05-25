@@ -30,7 +30,7 @@ class RunCommand : Command() {
         botPaths.forEach { createBotProcess(Path(it)) }
 
         // Add new bots from the std-in or terminate if blank line is provided
-        do {
+        while (true) {
             val line = readLine()?.trim()
             val cmdAndArgs = line?.split("\\s+".toRegex(), limit = 2)
             if (cmdAndArgs?.isNotEmpty() == true) {
@@ -53,7 +53,7 @@ class RunCommand : Command() {
                     }
                 }
             }
-        } while (true)
+        }
 
         killAllProcesses() // Kill all running processes before terminating
     }
@@ -113,15 +113,14 @@ class RunCommand : Command() {
 
     private fun createProcessBuilder(command: String): ProcessBuilder {
         val cmd = command.lowercase()
-        val args = when {
+        return when {
             cmd.endsWith(".bat") -> // handle Batch script
-                listOf("cmd.exe", "/c \"$command\"")
+                ProcessBuilder("cmd.exe", "/c \"$command\"")
             cmd.endsWith(".sh") -> // handle Bash Shell script
-                listOf("bash", "-c", command)
+                ProcessBuilder("bash", "-c", "\"$command\"")
             else -> // handle regular command
-                listOf(command)
+                ProcessBuilder(command)
         }
-        return ProcessBuilder(args)
     }
 
     private fun findOsScript(botDir: Path): Path? = when (OSUtil.getOsType()) {
