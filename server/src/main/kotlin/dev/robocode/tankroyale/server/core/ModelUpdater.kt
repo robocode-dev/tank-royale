@@ -73,9 +73,7 @@ class ModelUpdater(
      */
     fun update(botIntents: Map<BotId, IBotIntent>): GameState {
         updateBotIntents(botIntents)
-        if (round.roundEnded) {
-            nextRound()
-        } else if (round.roundNumber == 0 && turn.turnNumber == 0) {
+        if (round.roundEnded || (round.roundNumber == 0 && turn.turnNumber == 0)) {
             nextRound()
         }
         nextTurn()

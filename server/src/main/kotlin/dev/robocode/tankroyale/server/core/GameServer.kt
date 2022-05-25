@@ -328,12 +328,7 @@ class GameServer(
 
     private fun updateGameState(): GameState {
         val mappedBotIntents = mutableMapOf<BotId, dev.robocode.tankroyale.server.model.BotIntent>()
-        botIntents.forEach { (key, value) ->
-            val botId = participantIds[key]
-            if (botId != null) {
-                mappedBotIntents[botId] = value
-            }
-        }
+        botIntents.forEach { (key, value) -> participantIds[key]?.let { botId -> mappedBotIntents[botId] = value } }
         return modelUpdater.update(mappedBotIntents.toMap())
     }
 
@@ -397,7 +392,7 @@ class GameServer(
     }
 
     private fun broadcastGameEndedToParticipants() {
-        participants.forEach {conn ->
+        participants.forEach { conn ->
             participantIds[conn]?.let { botId ->
                 GameEndedEventForBot().apply {
                     `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_BOT
