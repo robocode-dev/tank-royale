@@ -8,7 +8,7 @@
     - Fixed issue where the event queue was not disabled if run() method threw an exception, causing the event queue to
       reach its max limit of unprocessed 256 events.
     - Fix for running bots under macOS/bash when bot directory contains
-      whitespaces ([#20](https://github.com/robocode-dev/tank-royale/discussions/20)
+      whitespaces ([#20](https://github.com/robocode-dev/tank-royale/discussions/20)).
 - Bot API for Java:
     - Fixed IllegalArgumentException: -Infinity is not a valid double value as per JSON specification
 - GUI:
@@ -21,7 +21,7 @@
 - Bot API for .Net:
     - Setting Bot.TargetSpeed did not set the distance to travel.
     - Fixed issue with turning the body, gun, and radar as first and only
-      thing ([#23](https://github.com/robocode-dev/tank-royale/issues/23)).
+      thing ([#22](https://github.com/robocode-dev/tank-royale/issues/22), [#23](https://github.com/robocode-dev/tank-royale/issues/23)).
     - Fixed issue with event queue reaching max after bot has terminated execution
       ([#23](https://github.com/robocode-dev/tank-royale/issues/23)).
 - Bot APIs:
