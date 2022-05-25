@@ -555,9 +555,9 @@ public sealed class BaseBotInternals
     {
         if (eventHandlingDisabled) return;
         
-        tickEvent = EventMapper.Map(json);
-
         ticksStart = DateTime.Now.Ticks;
+
+        tickEvent = EventMapper.Map(json);
 
         if (botIntent.Rescan == true)
             botIntent.Rescan = false;

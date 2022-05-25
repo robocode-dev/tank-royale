@@ -556,10 +556,10 @@ public final class BaseBotInternals {
         private void handleTick(JsonObject jsonMsg) {
             if (eventHandlingDisabled) return;
 
+            tickStartNanoTime = System.nanoTime();
+
             var tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
             tickEvent = EventMapper.map(tickEventForBot);
-
-            tickStartNanoTime = System.nanoTime();
 
             if (botIntent.getRescan() != null && botIntent.getRescan()) {
                 botIntent.setRescan(false);
