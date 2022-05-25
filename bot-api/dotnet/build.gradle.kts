@@ -106,8 +106,9 @@ tasks {
         dependsOn(prepareNugetDocs)
 
         doLast {
-            val home = System.getenv("USERPROFILE") ?: System.getenv("HOME")
-            delete("$home/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
+            val userhome = System.getenv("USERPROFILE") ?: System.getenv("HOME")
+            println("$userhome/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
+            delete("$userhome/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
             exec {
                 workingDir("Robocode.TankRoyale.BotApi/bin/Release")
                 commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "-s", "local")
