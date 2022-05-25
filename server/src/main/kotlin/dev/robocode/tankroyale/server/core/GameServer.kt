@@ -228,7 +228,7 @@ class GameServer(
         }
     }
 
-    /** Calculates and returns a timeout turn period measured in nano-seconds based on current TPS */
+    /** Calculates and returns a timeout turn period measured in nanoseconds based on current TPS */
     private fun calculateTurnTimeoutPeriod(): Long {
         val period = if (tps <= 0) 0 else 1_000_000_000L / tps
         val turnTimeout = gameSetup.turnTimeout * 1000L
