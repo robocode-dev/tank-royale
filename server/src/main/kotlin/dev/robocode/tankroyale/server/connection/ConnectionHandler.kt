@@ -8,6 +8,7 @@ import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.core.ServerSetup
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.StatusCode
 import org.java_websocket.WebSocket
+import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
 import org.slf4j.LoggerFactory
@@ -112,9 +113,13 @@ class ConnectionHandler(
         }
     }
 
-    private fun send(conn: WebSocket, message: String) {
+    fun send(conn: WebSocket, message: String) {
         log.debug("Sending to: ${conn.remoteSocketAddress}, message: $message")
-        conn.send(message)
+        try {
+            conn.send(message)
+        } catch (e: WebsocketNotConnectedException) {
+            closeConnection(conn)
+        }
     }
 
     fun broadcast(clients: Collection<WebSocket>, message: String) {
@@ -125,6 +130,36 @@ class ConnectionHandler(
     private fun notifyException(exception: Exception) {
         log.error("Exception occurred: $exception")
         listener.onException(exception)
+    }
+
+    private fun closeConnection(conn: WebSocket) {
+        allConnections -= conn
+        when {
+            botConnections.remove(conn) -> handleBotLeft(conn)
+            observerConnections.remove(conn) -> handleObserverLeft(conn)
+            controllerConnections.remove(conn) -> handleControllerLeft(conn)
+        }
+    }
+
+    private fun handleBotLeft(conn: WebSocket) {
+        botHandshakes[conn]?.let {
+            listener.onBotLeft(conn, it)
+        }
+        botHandshakes -= conn
+    }
+
+    private fun handleObserverLeft(conn: WebSocket) {
+        observerHandshakes[conn]?.let {
+            listener.onObserverLeft(conn, it)
+        }
+        observerHandshakes -= conn
+    }
+
+    private fun handleControllerLeft(conn: WebSocket) {
+        controllerHandshakes[conn]?.let {
+            listener.onControllerLeft(conn, it)
+        }
+        controllerHandshakes -= conn
     }
 
     private inner class WebSocketObserver(address: InetSocketAddress) : WebSocketServer(address) {
@@ -151,34 +186,8 @@ class ConnectionHandler(
             log.debug("onClose: ${conn.remoteSocketAddress}, code: $code, reason: $reason, remote: $remote")
 
             executorService.submit {
-                allConnections -= conn
-                when {
-                    botConnections.remove(conn) -> handleBotLeft(conn)
-                    observerConnections.remove(conn) -> handleObserverLeft(conn)
-                    controllerConnections.remove(conn) -> handleControllerLeft(conn)
-                }
+                closeConnection(conn)
             }
-        }
-
-        private fun handleBotLeft(conn: WebSocket) {
-            botHandshakes[conn]?.let {
-                listener.onBotLeft(conn, it)
-            }
-            botHandshakes -= conn
-        }
-
-        private fun handleObserverLeft(conn: WebSocket) {
-            observerHandshakes[conn]?.let {
-                listener.onObserverLeft(conn, it)
-            }
-            observerHandshakes -= conn
-        }
-
-        private fun handleControllerLeft(conn: WebSocket) {
-            controllerHandshakes[conn]?.let {
-                listener.onControllerLeft(conn, it)
-            }
-            controllerHandshakes -= conn
         }
 
         override fun onMessage(conn: WebSocket, message: String) {
