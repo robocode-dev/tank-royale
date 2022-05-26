@@ -228,7 +228,6 @@ public final class BaseBotInternals {
         synchronized (nextTurnMonitor) {
             while (isRunning() && turnNumber == getCurrentTick().getTurnNumber()) {
                 try {
-                    System.out.println("waitForNextTurn: " + turnNumber);
                     nextTurnMonitor.wait(); // Wait for next turn
                 } catch (InterruptedException ex) {
                     return; // stop waiting, thread has been interrupted (stopped)
