@@ -9,12 +9,14 @@
       whitespaces ([#20](https://github.com/robocode-dev/tank-royale/discussions/20)).
     - Fix for `setForward(POSITIVE_INFINITE)` which moved the bot slowly forward with no
       acceleration ([#26](https://github.com/robocode-dev/tank-royale/issues/26)).
-    - Fixed issue where the event queue was not disabled if `run()` method threw an exception, causing the event queue to
-      reach its max limit of unprocessed 256 events.
+    - Fixed issue where the event queue was not disabled if `run()` method threw an exception, causing the event queue
+      to reach its max limit of unprocessed 256 events.
 - Bot API for Java:
     - Fixed: `IllegalArgumentException: -Infinity is not a valid double value as per JSON specification`
 - GUI:
     - When stopping a battle and starting a new one, the Pause/Resume and Stop buttons were disabled.
+- Server
+    - Fixed various issues with invoking SkippedTurns.
 
 ## 0.13.2 - Fixing issue #23 - 19-05-2022
 

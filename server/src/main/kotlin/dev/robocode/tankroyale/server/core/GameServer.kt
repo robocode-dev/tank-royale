@@ -378,17 +378,27 @@ class GameServer(
             lastTurn?.apply {
                 if (turnNumber == 1) {
                     log.debug("Round started: $roundNumber")
+
+                    // Clear in first turn (left over from other round?), but BEFORE broadcasting round started event
+                    botIntents.clear()
+
                     broadcastRoundStartedToAll(roundNumber)
-                } else if (roundEnded) {
-                    log.debug("Round ended: $roundNumber")
-                    broadcastRoundEndedToAll(roundNumber, turnNumber)
+                } else { // not turn 1
+                    // Send SkippedTurn, except in turn 1
+                    sendSkippedTurnToParticipants(turnNumber)
+
+                    // Clear bot intents after skipped turns have been handled, but BEFORE broadcasting tick event
+                    botIntents.clear()
+
+                    if (roundEnded) {
+                        log.debug("Round ended: $roundNumber")
+                        broadcastRoundEndedToAll(roundNumber, turnNumber)
+                    }
                 }
                 broadcastGameTickToParticipants(roundNumber, this)
                 broadcastGameTickToObservers(roundNumber, this)
             }
-            broadcastSkippedTurnToParticipants()
         }
-        botIntents.clear()
     }
 
     private fun broadcastGameEndedToParticipants() {
@@ -442,21 +452,25 @@ class GameServer(
         broadcastToObserverAndControllers(TurnToTickEventForObserverMapper.map(roundNumber, turn))
     }
 
-    private fun broadcastSkippedTurnToParticipants() {
-        val skippedTurn = SkippedTurnEvent().apply {
-            `$type` = Message.`$type`.SKIPPED_TURN_EVENT
-            turnNumber = modelUpdater.turn.turnNumber
+    private fun sendSkippedTurnToParticipants(currentTurnNumber: Int) {
+        val botsSkippingTurn = getParticipantsThatSkippedTurn()
+
+        if (!botsSkippingTurn.isEmpty()) {
+            val skippedTurn = SkippedTurnEvent().apply {
+                `$type` = Message.`$type`.SKIPPED_TURN_EVENT
+                turnNumber = currentTurnNumber - 1 // last turn number
+            }
+            val json = gson.toJson(skippedTurn)
+
+            botsSkippingTurn.forEach { bot -> connectionHandler.send(bot, json) }
         }
-        connectionHandler.broadcast(getParticipantsThatSkippedTurn(), gson.toJson(skippedTurn))
     }
 
     private fun getParticipantsThatSkippedTurn(): Collection<WebSocket> =
         mutableListOf<WebSocket>().apply {
-            participants.forEach {
-                if (botIntents[it] == null) {
-                    // No intent was received from the participant during the turn
-                    this += it
-                }
+            participants.forEach { participant ->
+                // Check if no intent was received from the participant during the turn
+                if (botIntents[participant] == null) this += participant
             }
         }
 
