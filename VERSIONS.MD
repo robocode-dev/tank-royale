@@ -1,6 +1,6 @@
 # Versions
 
-## In progress
+## In progress - 0.13.3 - Stabilization of  Bot APIs
 
 #### Bugfixes
 
@@ -11,12 +11,14 @@
       acceleration ([#26](https://github.com/robocode-dev/tank-royale/issues/26)).
     - Fixed issue where the event queue was not disabled if `run()` method threw an exception, causing the event queue
       to reach its max limit of unprocessed 256 events.
+    - Fixed issue with events being handled 1 turn later than they
+      happened ([#8](https://github.com/robocode-dev/tank-royale/issues/8))
 - Bot API for Java:
     - Fixed: `IllegalArgumentException: -Infinity is not a valid double value as per JSON specification`
+- Server
+    - Fixed various issues with invoking SkippedTurns ([#8](https://github.com/robocode-dev/tank-royale/issues/8))
 - GUI:
     - When stopping a battle and starting a new one, the Pause/Resume and Stop buttons were disabled.
-- Server
-    - Fixed various issues with invoking SkippedTurns.
 
 ## 0.13.2 - Fixing issue #23 - 19-05-2022
 

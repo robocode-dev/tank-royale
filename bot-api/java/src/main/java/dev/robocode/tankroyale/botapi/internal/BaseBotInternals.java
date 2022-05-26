@@ -213,9 +213,9 @@ public final class BaseBotInternals {
 
         final var turnNumber = getCurrentTick().getTurnNumber();
 
+        dispatchEvents(turnNumber);
         sendIntent();
         waitForNextTurn(turnNumber);
-        dispatchEvents(turnNumber);
     }
 
     private void sendIntent() {

@@ -193,9 +193,9 @@ public sealed class BaseBotInternals
 
         var turnNumber = CurrentTick.TurnNumber;
 
+        DispatchEvents(turnNumber);
         SendIntent();
         WaitForNextTurn(turnNumber);
-        DispatchEvents(turnNumber);
     }
 
     private void SendIntent()
