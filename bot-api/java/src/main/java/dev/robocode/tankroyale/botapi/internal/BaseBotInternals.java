@@ -211,9 +211,11 @@ public final class BaseBotInternals {
         if (!isRunning())
             return;
 
+        final var turnNumber = getCurrentTick().getTurnNumber();
+
         sendIntent();
-        waitForNextTurn();
-        dispatchEvents();
+        waitForNextTurn(turnNumber);
+        dispatchEvents(turnNumber);
     }
 
     private void sendIntent() {
@@ -221,12 +223,12 @@ public final class BaseBotInternals {
         socket.sendText(gson.toJson(botIntent), true);
     }
 
-    private void waitForNextTurn() {
-        int turnNumber = getCurrentTick().getTurnNumber();
+    private void waitForNextTurn(int turnNumber) {
 
         synchronized (nextTurnMonitor) {
-            while (isRunning() && turnNumber >= getCurrentTick().getTurnNumber()) {
+            while (isRunning() && turnNumber == getCurrentTick().getTurnNumber()) {
                 try {
+                    System.out.println("waitForNextTurn: " + turnNumber);
                     nextTurnMonitor.wait(); // Wait for next turn
                 } catch (InterruptedException ex) {
                     return; // stop waiting, thread has been interrupted (stopped)
@@ -235,9 +237,9 @@ public final class BaseBotInternals {
         }
     }
 
-    private void dispatchEvents() {
+    private void dispatchEvents(int turnNumber) {
         try {
-            eventQueue.dispatchEvents(getCurrentTick().getTurnNumber());
+            eventQueue.dispatchEvents(turnNumber);
         } catch (InterruptEventHandlerException e) {
             // Do nothing (event handler was stopped by this exception)
         } catch (Exception e) {

@@ -191,9 +191,11 @@ public sealed class BaseBotInternals
         if (!IsRunning)
             return;
 
+        var turnNumber = CurrentTick.TurnNumber;
+
         SendIntent();
-        WaitForNextTurn();
-        DispatchEvents();
+        WaitForNextTurn(turnNumber);
+        DispatchEvents(turnNumber);
     }
 
     private void SendIntent()
@@ -202,10 +204,8 @@ public sealed class BaseBotInternals
         socket.SendTextMessage(JsonConvert.SerializeObject(botIntent));
     }
 
-    private void WaitForNextTurn()
+    private void WaitForNextTurn(int turnNumber)
     {
-        var turnNumber = CurrentTick.TurnNumber;
-
         lock (nextTurnMonitor)
         {
             while (IsRunning && turnNumber >= CurrentTick.TurnNumber)
@@ -222,11 +222,11 @@ public sealed class BaseBotInternals
         }
     }
 
-    private void DispatchEvents()
+    private void DispatchEvents(int turnNumber)
     {
         try
         {
-            eventQueue.DispatchEvents(CurrentTick.TurnNumber);
+            eventQueue.DispatchEvents(turnNumber);
         }
         catch (InterruptEventHandlerException)
         {
