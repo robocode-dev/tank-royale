@@ -365,10 +365,9 @@ public sealed class BaseBotInternals
         if (distance < 0)
             return -GetNewTargetSpeed(-speed, -distance);
 
-        if (IsPositiveInfinity(distance))
-            return maxSpeed;
-
-        var targetSpeed = Math.Min(GetMaxSpeed(distance), maxSpeed);
+        var targetSpeed = IsPositiveInfinity(distance) ?
+            maxSpeed :
+            Math.Min(GetMaxSpeed(distance), maxSpeed);
         
         return speed >= 0
             ? Math.Clamp(targetSpeed, speed - absDeceleration, speed + Constants.Acceleration)

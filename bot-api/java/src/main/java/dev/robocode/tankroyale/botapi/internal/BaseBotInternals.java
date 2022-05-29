@@ -370,10 +370,8 @@ public final class BaseBotInternals {
         if (distance < 0) {
             return -getNewTargetSpeed(-speed, -distance);
         }
-        if (distance == Double.POSITIVE_INFINITY) {
-            return maxSpeed;
-        }
-        var targetSpeed = min(getMaxSpeed(distance), maxSpeed);
+        var targetSpeed = (distance == Double.POSITIVE_INFINITY) ?
+            maxSpeed : min(maxSpeed, getMaxSpeed(distance));
 
         return (speed >= 0) ?
             clamp(targetSpeed, speed - absDeceleration, speed + ACCELERATION) :
