@@ -364,22 +364,22 @@ public final class BotInternals implements IStopResumeListener {
 
             // This is Nat Pavasant's method described here:
             // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
-            double speed = baseBotInternals.getNewTargetSpeed(bot.getSpeed(), distance);
-            baseBotInternals.getBotIntent().setTargetSpeed(speed);
+            double newSpeed = baseBotInternals.getNewTargetSpeed(bot.getSpeed(), distance);
+            baseBotInternals.getBotIntent().setTargetSpeed(newSpeed);
 
-            // If we are over-driving our distance and we are now at velocity=0 then we stopped
-            if (isNearZero(speed) && isOverDriving) {
+            // If we are over-driving our distance, and we are now at speed=0 then we stopped
+            if (isNearZero(newSpeed) && isOverDriving) {
                 distanceRemaining = 0;
                 distance = 0;
                 isOverDriving = false;
             }
 
             // the overdrive flag
-            if (Math.signum(distance * speed) != -1) {
-                isOverDriving = baseBotInternals.getDistanceTraveledUntilStop(speed) > abs(distance);
+            if (Math.signum(distance * newSpeed) != -1) {
+                isOverDriving = baseBotInternals.getDistanceTraveledUntilStop(newSpeed) > abs(distance);
             }
 
-            distanceRemaining = distance - speed;
+            distanceRemaining = distance - newSpeed;
         }
     }
 
