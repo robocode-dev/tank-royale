@@ -636,6 +636,8 @@ public sealed class BaseBotInternals
 
     private void HandleSkippedTurn(string json)
     {
+        if (eventHandlingDisabled) return;
+
         var skippedTurnEvent = JsonConvert.DeserializeObject<Schema.SkippedTurnEvent>(json);
         BotEventHandlers.FireSkippedTurnEvent(EventMapper.Map(skippedTurnEvent));
     }

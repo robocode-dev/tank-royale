@@ -616,6 +616,8 @@ public final class BaseBotInternals {
         }
 
         private void handleSkippedTurn(JsonObject jsonMsg) {
+            if (eventHandlingDisabled) return;
+
             var skippedTurnEvent = gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
 
             botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
