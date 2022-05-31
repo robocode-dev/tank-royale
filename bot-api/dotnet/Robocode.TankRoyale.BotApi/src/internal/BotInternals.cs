@@ -16,6 +16,11 @@ internal sealed class BotInternals : IStopResumeListener
     private double previousGunDirection;
     private double previousRadarDirection;
 
+    private double distanceRemaining;
+    private double turnRemaining;
+    private double gunTurnRemaining;
+    private double radarTurnRemaining;
+
     private bool isOverDriving;
 
     private double savedPreviousDirection;
@@ -26,6 +31,11 @@ internal sealed class BotInternals : IStopResumeListener
     private double savedTurnRemaining;
     private double savedGunTurnRemaining;
     private double savedRadarTurnRemaining;
+
+    private readonly object movementLock = new();
+    private readonly object turnLock = new();
+    private readonly object gunTurnLock = new();
+    private readonly object radarTurnLock = new();
 
     public BotInternals(IBot bot, BaseBotInternals baseBotInternals)
     {
@@ -157,13 +167,78 @@ internal sealed class BotInternals : IStopResumeListener
     }
 
     internal bool IsRunning => baseBotInternals.IsRunning;
-    internal double DistanceRemaining { get; private set; }
 
-    internal double TurnRemaining { get; private set; }
+    internal double DistanceRemaining
+    {
+        get
+        {
+            lock (movementLock)
+            {
+                return distanceRemaining;
+            }
+        }
+        private set
+        {
+            lock (movementLock)
+            {
+                distanceRemaining = value;
+            }
+        }
+    }
 
-    internal double GunTurnRemaining { get; private set; }
+    internal double TurnRemaining
+    {
+        get
+        {
+            lock (turnLock)
+            {
+                return turnRemaining;
+            }
+        }
+        private set
+        {
+            lock (turnLock)
+            {
+                turnRemaining = value;
+            }
+        }
+    }
 
-    internal double RadarTurnRemaining { get; private set; }
+    internal double GunTurnRemaining
+    {
+        get
+        {
+            lock (gunTurnLock)
+            {
+                return gunTurnRemaining;
+            }
+        }
+        private set
+        {
+            lock (gunTurnLock)
+            {
+                gunTurnRemaining = value;
+            }
+        }
+    }
+
+    internal double RadarTurnRemaining
+    {
+        get
+        {
+            lock (radarTurnLock)
+            {
+                return radarTurnRemaining;
+            }
+        }
+        private set
+        {
+            lock (radarTurnLock)
+            {
+                radarTurnRemaining = value;
+            }
+        }
+    }
 
     internal void SetTargetSpeed(double targetSpeed)
     {
@@ -329,84 +404,96 @@ internal sealed class BotInternals : IStopResumeListener
 
     private void UpdateTurnRemaining()
     {
-        var delta = bot.CalcDeltaAngle(bot.Direction, previousDirection);
-        previousDirection = bot.Direction;
-
-        if (Math.Abs(TurnRemaining) <= Math.Abs(delta))
-            TurnRemaining = 0;
-        else
+        lock (turnLock)
         {
-            TurnRemaining -= delta;
-            if (IsNearZero(TurnRemaining))
-                TurnRemaining = 0;
-        }
+            var delta = bot.CalcDeltaAngle(bot.Direction, previousDirection);
+            previousDirection = bot.Direction;
 
-        bot.TurnRate = TurnRemaining;
+            if (Math.Abs(TurnRemaining) <= Math.Abs(delta))
+                TurnRemaining = 0;
+            else
+            {
+                TurnRemaining -= delta;
+                if (IsNearZero(TurnRemaining))
+                    TurnRemaining = 0;
+            }
+
+            bot.TurnRate = TurnRemaining;
+        }
     }
 
     private void UpdateGunTurnRemaining()
     {
-        var delta = bot.CalcDeltaAngle(bot.GunDirection, previousGunDirection);
-        previousGunDirection = bot.GunDirection;
-
-        if (Math.Abs(GunTurnRemaining) <= Math.Abs(delta))
-            GunTurnRemaining = 0;
-        else
+        lock (gunTurnLock)
         {
-            GunTurnRemaining -= delta;
-            if (IsNearZero(GunTurnRemaining))
-                GunTurnRemaining = 0;
-        }
+            var delta = bot.CalcDeltaAngle(bot.GunDirection, previousGunDirection);
+            previousGunDirection = bot.GunDirection;
 
-        bot.GunTurnRate = GunTurnRemaining;
+            if (Math.Abs(GunTurnRemaining) <= Math.Abs(delta))
+                GunTurnRemaining = 0;
+            else
+            {
+                GunTurnRemaining -= delta;
+                if (IsNearZero(GunTurnRemaining))
+                    GunTurnRemaining = 0;
+            }
+
+            bot.GunTurnRate = GunTurnRemaining;
+        }
     }
 
     private void UpdateRadarTurnRemaining()
     {
-        var delta = bot.CalcDeltaAngle(bot.RadarDirection, previousRadarDirection);
-        previousRadarDirection = bot.RadarDirection;
-
-        if (Math.Abs(RadarTurnRemaining) <= Math.Abs(delta))
-            RadarTurnRemaining = 0;
-        else
+        lock (radarTurnLock)
         {
-            RadarTurnRemaining -= delta;
-            if (IsNearZero(RadarTurnRemaining))
-                RadarTurnRemaining = 0;
-        }
+            var delta = bot.CalcDeltaAngle(bot.RadarDirection, previousRadarDirection);
+            previousRadarDirection = bot.RadarDirection;
 
-        bot.RadarTurnRate = RadarTurnRemaining;
+            if (Math.Abs(RadarTurnRemaining) <= Math.Abs(delta))
+                RadarTurnRemaining = 0;
+            else
+            {
+                RadarTurnRemaining -= delta;
+                if (IsNearZero(RadarTurnRemaining))
+                    RadarTurnRemaining = 0;
+            }
+
+            bot.RadarTurnRate = RadarTurnRemaining;
+        }
     }
 
     private void UpdateMovement()
     {
-        if (IsInfinity(DistanceRemaining))
+        lock (movementLock)
         {
-            baseBotInternals.BotIntent.TargetSpeed =
-                IsPositiveInfinity(DistanceRemaining) ? Constants.MaxSpeed : -Constants.MaxSpeed;
-        }
-        else
-        {
-            var distance = DistanceRemaining;
-
-            // This is Nat Pavasant's method described here:
-            // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
-            var speed = baseBotInternals.GetNewTargetSpeed(bot.Speed, distance);
-            baseBotInternals.BotIntent.TargetSpeed = speed;
-
-            // If we are over-driving our distance and we are now at velocity=0 then we stopped
-            if (IsNearZero(speed) && isOverDriving)
+            if (IsInfinity(DistanceRemaining))
             {
-                DistanceRemaining = 0;
-                distance = 0;
-                isOverDriving = false;
+                baseBotInternals.BotIntent.TargetSpeed =
+                    IsPositiveInfinity(DistanceRemaining) ? Constants.MaxSpeed : -Constants.MaxSpeed;
             }
+            else
+            {
+                var distance = DistanceRemaining;
 
-            // the overdrive flag
-            if (Math.Sign(distance * speed) != -1)
-                isOverDriving = baseBotInternals.GetDistanceTraveledUntilStop(speed) > Math.Abs(distance);
+                // This is Nat Pavasant's method described here:
+                // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
+                var speed = baseBotInternals.GetNewTargetSpeed(bot.Speed, distance);
+                baseBotInternals.BotIntent.TargetSpeed = speed;
 
-            DistanceRemaining = distance - speed;
+                // If we are over-driving our distance and we are now at velocity=0 then we stopped
+                if (IsNearZero(speed) && isOverDriving)
+                {
+                    DistanceRemaining = 0;
+                    distance = 0;
+                    isOverDriving = false;
+                }
+
+                // the overdrive flag
+                if (Math.Sign(distance * speed) != -1)
+                    isOverDriving = baseBotInternals.GetDistanceTraveledUntilStop(speed) > Math.Abs(distance);
+
+                DistanceRemaining = distance - speed;
+            }
         }
     }
 

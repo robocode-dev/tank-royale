@@ -7,6 +7,8 @@
 - Bot API:
     - Fix for running bots under macOS/bash when bot directory contains
       whitespaces ([#20](https://github.com/robocode-dev/tank-royale/discussions/20)).
+    - New fix for issue [#17](https://github.com/robocode-dev/tank-royale/discussions/17) (Blocking bot functions do not
+      stop bot after finishing)
     - Fix for `setForward(POSITIVE_INFINITE)` which moved the bot slowly forward with no
       acceleration ([#26](https://github.com/robocode-dev/tank-royale/issues/26)).
     - Fixed issue where the event queue was not disabled if `run()` method threw an exception, causing the event queue
