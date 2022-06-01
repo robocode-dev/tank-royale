@@ -142,12 +142,16 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         }
 
     private fun createRunningBotList() =
-        JList(bootedBotListModel).apply {
+        BotList(bootedBotListModel).apply {
             cellRenderer = RunningBotCellRenderer()
+            
+            onDeleteKeyTyped.subscribe(BotSelectionPanel) { dirAndPids ->
+                BootProcess.stop(dirAndPids.map { it.pid })
+            }
         }
 
     private fun createBotInfoList(model: SortedListModel<BotInfo>) =
-        JList(model).apply {
+        BotList(model).apply {
             cellRenderer = BotInfoListCellRenderer()
         }
 
