@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Robocode.TankRoyale.BotApi.BaseBot.html",
-          "hash": "u/0xDZewTI3GnWMqkCt9qkB9V5sp2RVNO6M0ldE6AAM="
+          "hash": "Cy7MYNSvXjIqOYFQAUYa13F7FWqTgb8enfQ/1mfC/ZQ="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Robocode.TankRoyale.BotApi.Bot.html",
-          "hash": "qAwY7h7Yxnw1YPJ35YfdYO2F7oijvzqV2NDYCNY+Kdk="
+          "hash": "1WHzezJClvv5CslCJgwZoCVK2XR1ZKjNBLLRbnKdj6g="
         }
       },
       "is_incremental": false,
@@ -477,7 +477,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Robocode.TankRoyale.BotApi.IBot.html",
-          "hash": "VIQ7SYXt5vSYNp6OKrF87IDkUUOTupzmWJpHbjx2N+8="
+          "hash": "sc7CdXEUH6wuJB+saH38X7qZcDgvGhhpN/l8jB70F3g="
         }
       },
       "is_incremental": false,
