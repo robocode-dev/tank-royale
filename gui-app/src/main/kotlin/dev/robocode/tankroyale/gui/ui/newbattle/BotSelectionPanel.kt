@@ -28,6 +28,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
     private val onBootBots = Event<JButton>()
     private val onUnbootBots = Event<JButton>()
+    private val onUnbootAllBots = Event<JButton>()
 
     private val onAdd = Event<JButton>()
     private val onAddAll = Event<JButton>()
@@ -73,6 +74,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
         addBootButton()
         addUnbootButton()
+        addUnbootAllButton()
 
         addAddButton()
         addAllButton()
@@ -83,6 +85,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
         onBootBots.subscribe(this) { handleBootBots() }
         onUnbootBots.subscribe(this) { handleUnbootBots() }
+        onUnbootAllBots.subscribe(this) { handleUnbootAllBots() }
 
         onAdd.subscribe(this) { handleAdd() }
         onAddAll.subscribe(this) { handleAddAll() }
@@ -165,6 +168,10 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         BootProcess.stop(pidList)
     }
 
+    private fun handleUnbootAllBots() {
+        BootProcess.stop(bootedBotListModel.list().map { it.pid })
+    }
+
     private fun handleAdd() {
         joinedBotList.selectedValuesList.forEach { botInfo ->
             if (!selectedBotListModel.contains(botInfo)) {
@@ -210,6 +217,16 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
             bootedBotList.onChanged {
                 bootedBotList.clearSelection()
                 isEnabled = false
+            }
+        }
+    }
+
+    private fun addUnbootAllButton() {
+        bootButtonPanel.addButton("unboot_all_arrow", onUnbootAllBots, "cell 0 3").apply {
+            isEnabled = false
+            bootedBotList.onChanged {
+                bootedBotList.clearSelection()
+                isEnabled = bootedBotList.model.size > 0
             }
         }
     }

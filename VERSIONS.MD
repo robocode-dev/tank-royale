@@ -5,8 +5,9 @@
 #### Changes:
 
 - GUI:
-    - It is now possible to use the Del key to remove a selected bot item on the Booted Bots (to unboot), Joined
-      Bots, and Selected Bot lists when selecting bots for a new battle.
+    - **Del Key**: It is now possible to use the Del key to remove a selected bot item on the Booted Bots (to unboot),
+      Joined Bots, and Selected Bot lists when selecting bots for a new battle.
+    - **Unboot All**: An `← Unboot All` button has been added right below the `← Unboot` button.
 
 ## 0.13.3 - Stabilization of Bot APIs - 01-Jun-2022
 
