@@ -1,6 +1,6 @@
 # Versions
 
-## In progress - 0.13.3 - Stabilization of  Bot APIs
+## 0.13.3 - Stabilization of Bot APIs - 01-Jun-2022
 
 #### Bugfixes
 
@@ -22,7 +22,7 @@
 - GUI:
     - When stopping a battle and starting a new one, the Pause/Resume and Stop buttons were disabled.
 
-## 0.13.2 - Fixing issue #23 - 19-05-2022
+## 0.13.2 - Fixing issue #23 - 19-May-2022
 
 #### Bugfixes
 
@@ -36,7 +36,7 @@
 - Bot APIs:
     - Added missing documentation about using positive and negative infinity values when moving and turning.
 
-## 0.13.1 - Fixing event queue + country codes - 18-05-2022
+## 0.13.1 - Fixing event queue + country codes - 18-May-2022
 
 #### Bugfixes
 
