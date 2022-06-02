@@ -23,7 +23,7 @@ If you do not have java installed already (can be checked writing the command be
 Java first. Follow the installation instructions carefully, and make sure that you are able to run `java` from the
 command line by writing:
 
-```
+```shell
 java -version
 ```
 
