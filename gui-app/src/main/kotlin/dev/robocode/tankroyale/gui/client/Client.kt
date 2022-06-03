@@ -23,17 +23,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 object Client {
 
-    init {
-        TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
-
-        ServerEvents.onStopped.subscribe(Client) {
-            isRunning.set(false)
-            isPaused.set(false)
-
-            bots.clear()
-        }
-    }
-
     var currentGameSetup: GameSetup? = null
 
     private val isRunning = AtomicBoolean(false)
@@ -44,9 +33,6 @@ object Client {
     private var participants = listOf<Participant>()
     private var bots = HashSet<BotInfo>()
 
-    val joinedBots: Set<BotInfo>
-        get() { return bots }
-
     private var websocket: WebSocketClient? = null
 
     private val json = MessageConstants.json
@@ -56,6 +42,17 @@ object Client {
     private lateinit var lastStartGame: StartGame
 
     private var tps: Int? = null
+
+    init {
+        TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
+
+        ServerEvents.onStopped.subscribe(Client) {
+            isRunning.set(false)
+            isPaused.set(false)
+
+            bots.clear()
+        }
+    }
 
     fun connect() {
         if (isConnected) {
@@ -72,9 +69,6 @@ object Client {
             websocket.open() // must be called after onOpen.subscribe()
         }
     }
-
-    fun isGameRunning(): Boolean = isRunning.get()
-    fun isGamePaused(): Boolean = isPaused.get()
 
     fun close() {
         stopGame()
@@ -137,6 +131,12 @@ object Client {
             send(NextTurn())
         }
     }
+
+    fun isGameRunning(): Boolean = isRunning.get()
+    fun isGamePaused(): Boolean = isPaused.get()
+
+    val joinedBots: Set<BotInfo>
+        get() { return bots }
 
     fun getParticipant(id: Int): Participant = participants.first { participant -> participant.id == id }
 
