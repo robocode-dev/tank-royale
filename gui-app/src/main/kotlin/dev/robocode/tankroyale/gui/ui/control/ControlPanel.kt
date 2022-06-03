@@ -2,13 +2,18 @@ package dev.robocode.tankroyale.gui.ui.control
 
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.client.ClientEvents.onGameStarted
+import dev.robocode.tankroyale.gui.model.TpsChangedEvent
+import dev.robocode.tankroyale.gui.settings.ConfigSettings.DEFAULT_TPS
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
+import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
 import dev.robocode.tankroyale.gui.ui.tps.TpsField
 import dev.robocode.tankroyale.gui.ui.tps.TpsSlider
+import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
+import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
 
@@ -20,6 +25,8 @@ object ControlPanel : JPanel() {
     }
     private val stopButton = addButton("stop", ControlEvents.onStop)
 
+    private val onDefaultTps = Event<JButton>()
+
     init {
         addButton("restart", ControlEvents.onRestart)
 
@@ -28,6 +35,7 @@ object ControlPanel : JPanel() {
         add(TpsSlider)
         add(JLabel("TPS:"))
         add(TpsField)
+        addButton("default_tps", onDefaultTps)
 
         ClientEvents.apply {
             onGamePaused.subscribe(ControlPanel) {
@@ -56,6 +64,10 @@ object ControlPanel : JPanel() {
             onGameStarted.subscribe(ControlPanel) {
                 enablePauseResumeAndStopButtons()
             }
+        }
+
+        onDefaultTps.subscribe(ControlPanel) {
+            TpsEvents.onTpsChanged.fire(TpsChangedEvent(DEFAULT_TPS))
         }
 
         enqueue {
