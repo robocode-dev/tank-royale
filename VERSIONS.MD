@@ -11,6 +11,7 @@
     - **TPS**:
         - The last used TPS (Turns Per Second) is now restored when starting up the GUI again.
         - Added a "Default TPS" button to reset the TPS to the default setting (30 TPS).
+    - **Tool tips**: Added tool tip texts on the Control panel.
 
 ## 0.13.3 - Stabilization of Bot APIs - 01-Jun-2022
 

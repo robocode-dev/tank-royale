@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.client.ClientEvents.onGameStarted
 import dev.robocode.tankroyale.gui.model.TpsChangedEvent
 import dev.robocode.tankroyale.gui.settings.ConfigSettings.DEFAULT_TPS
+import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
@@ -19,23 +20,41 @@ import javax.swing.JPanel
 
 object ControlPanel : JPanel() {
 
-    private val pauseResumeButton = addButton("pause", ControlEvents.onPauseResume)
+    private val pauseResumeButton = addButton("pause", ControlEvents.onPauseResume).apply {
+        toolTipText = Hints.get("control.pause")
+    }
+
     private val nextButton = addButton("next_turn", ControlEvents.onNextTurn).apply {
+        toolTipText = Hints.get("control.next_turn")
         isEnabled = false
     }
-    private val stopButton = addButton("stop", ControlEvents.onStop)
+    private val stopButton = addButton("stop", ControlEvents.onStop).apply {
+        toolTipText = Hints.get("control.stop")
+    }
 
     private val onDefaultTps = Event<JButton>()
 
     init {
-        addButton("restart", ControlEvents.onRestart)
+        addButton("restart", ControlEvents.onRestart).apply {
+            toolTipText = Hints.get("control.restart")
+        }
 
         RegisterWsProtocol
 
+        val tpsLabel = JLabel("TPS:")
+
         add(TpsSlider)
-        add(JLabel("TPS:"))
+        add(tpsLabel)
         add(TpsField)
-        addButton("default_tps", onDefaultTps)
+        addButton("default_tps", onDefaultTps).apply {
+            toolTipText = Hints.get("control.default_tps")
+        }
+
+        val tpsHint = Hints.get("control.tps")
+
+        TpsSlider.toolTipText = tpsHint
+        tpsLabel.toolTipText = tpsHint
+        TpsField.toolTipText = tpsHint
 
         ClientEvents.apply {
             onGamePaused.subscribe(ControlPanel) {
@@ -81,10 +100,16 @@ object ControlPanel : JPanel() {
     }
 
     private fun setPausedText() {
-        pauseResumeButton.text = Strings.get("pause")
+        pauseResumeButton.apply {
+            text = Strings.get("pause")
+            toolTipText = Hints.get("control.pause")
+        }
     }
 
     private fun setResumedText() {
-        pauseResumeButton.text = Strings.get("resume")
+        pauseResumeButton.apply {
+            text = Strings.get("resume")
+            toolTipText = Hints.get("control.resume")
+        }
     }
 }
