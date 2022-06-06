@@ -2,6 +2,11 @@
 
 ## In progress - 0.13.4 - GUI improvements
 
+#### Bugfixes:
+
+- Bot API for Java:
+    - Major bugfix with getTurnRemaining(), which returned the wrong value.
+
 #### Changes:
 
 - GUI:
