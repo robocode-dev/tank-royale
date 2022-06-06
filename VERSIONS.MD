@@ -1,5 +1,12 @@
 # Versions
 
+## In progress
+
+#### Changes:
+
+- GUI:
+    - The Pause/Resume and Stop button are now disabled when the battle is stopped. 
+
 ## 0.13.4 - GUI improvements + bugfix - 06-Jun-2022
 
 #### Bugfixes:

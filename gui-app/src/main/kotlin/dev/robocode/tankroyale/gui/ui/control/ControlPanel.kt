@@ -75,7 +75,7 @@ object ControlPanel : JPanel() {
 
         ControlEvents.apply {
             onStop.subscribe(ControlPanel) {
-                enablePauseResumeAndStopButtons()
+                enablePauseResumeAndStopButtons(false)
             }
             onRestart.subscribe(ControlPanel) {
                 enablePauseResumeAndStopButtons()
@@ -94,9 +94,9 @@ object ControlPanel : JPanel() {
         }
     }
 
-    private fun enablePauseResumeAndStopButtons() {
-        pauseResumeButton.isEnabled = true
-        stopButton.isEnabled = true
+    private fun enablePauseResumeAndStopButtons(enable: Boolean = true) {
+        pauseResumeButton.isEnabled = enable
+        stopButton.isEnabled = enable
     }
 
     private fun setPausedText() {
