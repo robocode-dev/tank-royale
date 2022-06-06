@@ -1,11 +1,12 @@
 # Versions
 
-## In progress - 0.13.4 - GUI improvements
+## 0.13.4 - GUI improvements + bugfix - 06-Jun-2022
 
 #### Bugfixes:
 
 - Bot API for Java:
-    - Major bugfix with getTurnRemaining(), which returned the wrong value.
+    - Major bugfix with `getTurnRemaining()` ([#28](https://github.com/robocode-dev/tank-royale/issues/28)), which
+      returned the wrong value. This could be seen with the sample bot, Crazy, which did not turn correctly.
 
 #### Changes:
 
