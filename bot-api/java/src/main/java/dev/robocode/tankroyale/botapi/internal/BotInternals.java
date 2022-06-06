@@ -176,7 +176,7 @@ public final class BotInternals implements IStopResumeListener {
 
     public double getTurnRemaining() {
         synchronized (turnMonitor) {
-            return __distanceRemaining;
+            return __turnRemaining;
         }
     }
 

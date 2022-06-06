@@ -11,6 +11,7 @@ import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundEnded
 import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundStarted
 import dev.robocode.tankroyale.gui.client.ClientEvents.onTickEvent
 import dev.robocode.tankroyale.gui.model.*
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
@@ -41,7 +42,7 @@ object Client {
 
     private lateinit var lastStartGame: StartGame
 
-    private var tps: Int? = null
+    private var lastTps: Int? = null
 
     init {
         TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
@@ -126,7 +127,7 @@ object Client {
         }
     }
 
-    fun doNextTurn() {
+    internal fun doNextTurn() {
         if (isRunning.get() && isPaused.get()) {
             send(NextTurn())
         }
@@ -150,10 +151,10 @@ object Client {
     }
 
     private fun changeTps(tps: Int) {
-        if (isRunning.get() && tps != this.tps) {
-            this.tps = tps
+        if (isRunning.get() && tps != lastTps) {
             send(ChangeTps(tps))
         }
+        lastTps = tps
     }
 
     private fun onMessage(msg: String) {
@@ -196,6 +197,8 @@ object Client {
         participants = gameStartedEvent.participants
 
         onGameStarted.fire(gameStartedEvent)
+
+        changeTps(ConfigSettings.tps)
     }
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {
