@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
@@ -157,6 +158,10 @@ public final class BaseBotInternals {
 
     BotEventHandlers getBotEventHandlers() {
         return botEventHandlers;
+    }
+
+    public List<BotEvent> getRemainingEvents() {
+        return eventQueue.getEvents();
     }
 
     public void setInterruptible(boolean interruptible) {

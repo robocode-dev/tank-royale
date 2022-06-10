@@ -1,9 +1,13 @@
 # Versions
 
-## In progress
+## 0.14.0 - In progress
 
 #### Changes:
 
+- Bot API:
+    - The IBaseBot´s `getEvents()`/`Events` has been replaced by `getRemainingEvents()`/`RemainingEvents` to provide
+      an ordered list of event that has not been processed yet in event handlers.
+    - Minor update on TickEvent´s `getEvents()`/`Events`
 - GUI:
     - The Pause/Resume and Stop button are now disabled when the battle is stopped. 
 

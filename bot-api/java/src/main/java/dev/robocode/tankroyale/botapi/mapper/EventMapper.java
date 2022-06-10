@@ -22,7 +22,7 @@ public final class EventMapper {
                 map(source.getEvents()));
     }
 
-    private static Set<BotEvent> map(final Collection<? extends dev.robocode.tankroyale.schema.Event> source) {
+    private static Set<BotEvent> map(final Collection<dev.robocode.tankroyale.schema.Event> source) {
         Set<BotEvent> gameBotEvents = new HashSet<>();
         source.forEach(event -> gameBotEvents.add(map(event)));
         return gameBotEvents;

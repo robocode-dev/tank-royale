@@ -186,7 +186,7 @@ public abstract class BaseBot : IBaseBot
     public IEnumerable<BulletState> BulletStates => __baseBotInternals.CurrentTick.BulletStates;
 
     /// <inheritdoc/>
-    public IEnumerable<BotEvent> Events => __baseBotInternals.CurrentTick.Events;
+    public IList<BotEvent> RemainingEvents => __baseBotInternals.RemainingEvents;
 
     /// <inheritdoc/>
     public double TurnRate

@@ -20,7 +20,7 @@ public sealed class TickEvent : BotEvent
     /// <summary>Current state of the bullets fired by this bot.</summary>
     public IEnumerable<BulletState> BulletStates { get; }
 
-    /// <summary>Current state of the bullets fired by this bot.</summary>
+    /// <summary>Events that occurred for the bot within the turn.</summary>
     public IEnumerable<BotEvent> Events { get; }
 
     /// <summary>

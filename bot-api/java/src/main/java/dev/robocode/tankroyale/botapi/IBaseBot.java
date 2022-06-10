@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.botapi;
 import dev.robocode.tankroyale.botapi.events.*;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Interface containing the core API for a bot.
@@ -254,12 +255,14 @@ public interface IBaseBot {
     Collection<BulletState> getBulletStates();
 
     /**
-     * Game events received for the current turn. Note that all event handlers are automatically being
-     * called when each of these events occurs.
+     * Events that remain to be processed in event handlers, which is useful to see the events that remain from event
+     * handlers being called before other event handlers. But also to access events have not been handled yet due to
+     * the bot skipping turns.
      *
-     * @return The game events received for the current turn.
+     * @return An ordered list of all the events remaining to be handled for the current and previous (skipped) turns.
+     * The events are being sorted so that older events get listed first, and secondly sorted on event priority.
      */
-    Collection<? extends BotEvent> getEvents();
+    List<? extends BotEvent> getRemainingEvents();
 
     /**
      * Returns the turn rate of the bot in degrees per turn.

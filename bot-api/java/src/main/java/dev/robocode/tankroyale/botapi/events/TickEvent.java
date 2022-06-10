@@ -33,7 +33,7 @@ public final class TickEvent extends BotEvent {
     /**
      * Events occurring in the turn relevant for this bot.
      */
-    private final Collection<? extends BotEvent> events;
+    private final Collection<BotEvent> events;
 
     /**
      * Initializes a new instance of the TickEvent class.
@@ -51,7 +51,7 @@ public final class TickEvent extends BotEvent {
             int enemyCount,
             BotState botState,
             Collection<BulletState> bulletStates,
-            Collection<? extends BotEvent> events) {
+            Collection<BotEvent> events) {
         super(turnNumber);
         this.roundNumber = roundNumber;
         this.enemyCount = enemyCount;
@@ -97,11 +97,11 @@ public final class TickEvent extends BotEvent {
     }
 
     /**
-     * Returns the events occurring in the turn relevant for this bot.
+     * Returns the events that occurred for the bot within the turn.
      *
-     * @return The events occurring in the turn relevant for this bot.
+     * @return The events that occurred for the bot within the turn.
      */
-    public Collection<? extends BotEvent> getEvents() {
+    public Collection<BotEvent> getEvents() {
         return events;
     }
 }

@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.botapi.internal.BaseBotInternals;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 
 import static dev.robocode.tankroyale.botapi.Constants.MAX_TURN_RATE;
 
@@ -316,8 +317,8 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final Collection<? extends BotEvent> getEvents() {
-        return __baseBotInternals.getCurrentTick().getEvents();
+    public final List<BotEvent> getRemainingEvents() {
+        return __baseBotInternals.getRemainingEvents();
     }
 
     /**

@@ -28,7 +28,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
         this.botEventHandlers = botEventHandlers;
     }
 
-    public void Clear()
+    internal void Clear()
     {
         events = events.Clear();
         baseBotInternals.Conditions.Clear(); // conditions might be added in the bots Run() method each round
@@ -36,12 +36,14 @@ internal sealed class EventQueue : IComparer<BotEvent>
         currentTopEventPriority = MinValue;
     }
 
-    public void SetInterruptible(bool interruptible)
+    internal IList<BotEvent> Events => new List<BotEvent>(events);
+
+    internal void SetInterruptible(bool interruptible)
     {
         SetInterruptible(currentTopEvent.GetType(), interruptible);
     }
 
-    public void SetInterruptible(Type eventType, bool interruptible)
+    internal void SetInterruptible(Type eventType, bool interruptible)
     {
         if (interruptible)
             interruptibles.Add(eventType);

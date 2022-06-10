@@ -229,11 +229,14 @@ public interface IBaseBot
     IEnumerable<BulletState> BulletStates { get; }
 
     /// <summary>
-    /// Game events received for the current turn. Note that all event handlers are automatically
-    /// being called when each of these events occurs.
+    /// Events that remain to be processed in event handlers, which is useful to see the events that remain from event
+    /// handlers being called before other event handlers. But also to access events have not been handled yet due to
+    /// the bot skipping turns.
     /// </summary>
-    /// <value>The game events received for the current turn.</value>
-    IEnumerable<BotEvent> Events { get; }
+    /// <value>An ordered list of all the events remaining to be handled for the current and previous (skipped) turns.
+    /// The events are being sorted so that older events get listed first, and secondly sorted on event priority.
+    /// </value>
+    IList<BotEvent> RemainingEvents { get; }
 
     /// <summary>
     /// Set or get the turn rate of the bot, which can be positive and negative. The turn rate is

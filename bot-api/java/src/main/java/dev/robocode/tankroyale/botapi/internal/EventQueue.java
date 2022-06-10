@@ -34,6 +34,10 @@ final class EventQueue {
         currentTopEventPriority = MIN_VALUE;
     }
 
+    List<BotEvent> getEvents() {
+        return new ArrayList<>(events);
+    }
+
     void setInterruptible(boolean interruptible) {
         setInterruptible(currentTopEvent.getClass(), interruptible);
     }
