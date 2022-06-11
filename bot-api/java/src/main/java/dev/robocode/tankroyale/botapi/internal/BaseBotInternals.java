@@ -160,8 +160,12 @@ public final class BaseBotInternals {
         return botEventHandlers;
     }
 
-    public List<BotEvent> getRemainingEvents() {
+    public List<BotEvent> getEvents() {
         return eventQueue.getEvents();
+    }
+
+    public void clearEvents() {
+        eventQueue.clearEvents();
     }
 
     public void setInterruptible(boolean interruptible) {

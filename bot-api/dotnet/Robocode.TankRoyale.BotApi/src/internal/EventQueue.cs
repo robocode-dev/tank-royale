@@ -38,6 +38,11 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
     internal IList<BotEvent> Events => new List<BotEvent>(events);
 
+    internal void ClearEvents()
+    {
+        events = events.Clear();
+    }
+
     internal void SetInterruptible(bool interruptible)
     {
         SetInterruptible(currentTopEvent.GetType(), interruptible);

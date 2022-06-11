@@ -261,8 +261,17 @@ public interface IBaseBot {
      *
      * @return An ordered list of all the events remaining to be handled for the current and previous (skipped) turns.
      * The events are being sorted so that older events get listed first, and secondly sorted on event priority.
+     *
+     * @see #clearEvents()
      */
-    List<? extends BotEvent> getRemainingEvents();
+    List<BotEvent> getEvents();
+
+    /**
+     * Clears the remaining events that have not been processed yet.
+     *
+     * @see #getEvents()
+     */
+    void clearEvents();
 
     /**
      * Returns the turn rate of the bot in degrees per turn.

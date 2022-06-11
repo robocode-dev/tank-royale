@@ -133,7 +133,12 @@ public sealed class BaseBotInternals
 
     internal BotEventHandlers BotEventHandlers { get; }
 
-    internal IList<E.BotEvent> RemainingEvents => eventQueue.Events;
+    internal IList<E.BotEvent> Events => eventQueue.Events;
+
+    internal void ClearEvents()
+    {
+        eventQueue.ClearEvents();
+    }
 
     internal void SetInterruptible(bool interruptible)
     {

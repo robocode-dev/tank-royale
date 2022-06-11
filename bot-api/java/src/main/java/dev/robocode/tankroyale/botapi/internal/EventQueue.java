@@ -38,6 +38,10 @@ final class EventQueue {
         return new ArrayList<>(events);
     }
 
+    void clearEvents() {
+        events.clear();
+    }
+
     void setInterruptible(boolean interruptible) {
         setInterruptible(currentTopEvent.getClass(), interruptible);
     }

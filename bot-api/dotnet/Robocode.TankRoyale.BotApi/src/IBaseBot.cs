@@ -236,7 +236,14 @@ public interface IBaseBot
     /// <value>An ordered list of all the events remaining to be handled for the current and previous (skipped) turns.
     /// The events are being sorted so that older events get listed first, and secondly sorted on event priority.
     /// </value>
-    IList<BotEvent> RemainingEvents { get; }
+    /// <see cref="ClearEvents"/>
+    IList<BotEvent> Events { get; }
+
+    /// <summary>
+    /// Clears the remaining events that have not been processed yet.
+    /// </summary>
+    /// <see cref="Events"/>
+    void ClearEvents();
 
     /// <summary>
     /// Set or get the turn rate of the bot, which can be positive and negative. The turn rate is

@@ -317,8 +317,16 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final List<BotEvent> getRemainingEvents() {
-        return __baseBotInternals.getRemainingEvents();
+    public final List<BotEvent> getEvents() {
+        return __baseBotInternals.getEvents();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void clearEvents() {
+        __baseBotInternals.clearEvents();
     }
 
     /**
