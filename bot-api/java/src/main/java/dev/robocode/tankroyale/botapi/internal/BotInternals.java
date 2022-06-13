@@ -52,7 +52,7 @@ public final class BotInternals implements IStopResumeListener {
         botEventHandlers.onDisconnected.subscribe(this::onDisconnected, 90);
         botEventHandlers.onHitWall.subscribe(e -> onHitWall(), 90);
         botEventHandlers.onHitBot.subscribe(this::onHitBot, 90);
-        botEventHandlers.onBotDeath.subscribe(this::onDeath, 90);
+        botEventHandlers.onDeath.subscribe(this::onDeath, 90);
     }
 
     private void onNextTurn(TickEvent e) {
@@ -147,9 +147,7 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     private void onDeath(DeathEvent e) {
-        if (e.getVictimId() == bot.getMyId()) {
-            stopThread();
-        }
+        stopThread();
     }
 
     public boolean isRunning() {

@@ -60,9 +60,9 @@ public static class EventMapper
         };
     }
 
-    private static DeathEvent Map(Schema.BotDeathEvent source)
+    private static BotDeathEvent Map(Schema.BotDeathEvent source)
     {
-        return new DeathEvent(
+        return new BotDeathEvent(
             source.TurnNumber,
             source.VictimId
         );

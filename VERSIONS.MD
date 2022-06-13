@@ -1,6 +1,6 @@
 # Versions
 
-## 0.14.0 - In progress
+## In progress - 0.14.0 - Improve control of bot events
 
 #### Changes:
 
@@ -8,6 +8,9 @@
     - The IBaseBot´s `getEvents()`/`Events` has been changed to provide an ordered list of events that have not been
       processed yet in event handlers.
     - Minor update on TickEvent´s `getEvents()`/`Events`.
+    - It is possible to change the event priority on event types.
+    - `DeathEvent` was split up into `BotDeathEvent` and `DeathEvent`.
+    - `BulletHitBotEvent` was split up into `HitByBulletEvent` and `BulletHitBotEvent`.
 - GUI:
     - The Pause/Resume and Stop button are now disabled when the battle is stopped.
 

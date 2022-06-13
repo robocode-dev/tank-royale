@@ -1017,15 +1017,15 @@ public interface IBaseBot {
      *
      * @param botDeathEvent is the event details from the game.
      */
-    default void onBotDeath(DeathEvent botDeathEvent) {
+    default void onBotDeath(BotDeathEvent botDeathEvent) {
     }
 
     /**
      * The event handler triggered when this bot has died.
      *
-     * @param botDeathEvent is the event details from the game.
+     * @param deathEvent is the event details from the game.
      */
-    default void onDeath(DeathEvent botDeathEvent) {
+    default void onDeath(DeathEvent deathEvent) {
     }
 
     /**
@@ -1055,9 +1055,9 @@ public interface IBaseBot {
     /**
      * The event handler triggered when the bot has been hit by a bullet.
      *
-     * @param bulletHitBotEvent is the event details from the game.
+     * @param hitByBulletEvent is the event details from the game.
      */
-    default void onHitByBullet(BulletHitBotEvent bulletHitBotEvent) {
+    default void onHitByBullet(HitByBulletEvent hitByBulletEvent) {
     }
 
     /**

@@ -19,11 +19,11 @@ final class BotEventHandlers {
     final EventHandler<TickEvent> onTick = new EventHandler<>();
     final EventHandler<SkippedTurnEvent> onSkippedTurn = new EventHandler<>();
     final EventHandler<DeathEvent> onDeath = new EventHandler<>();
-    final EventHandler<DeathEvent> onBotDeath = new EventHandler<>();
+    final EventHandler<BotDeathEvent> onBotDeath = new EventHandler<>();
     final EventHandler<HitBotEvent> onHitBot = new EventHandler<>();
     final EventHandler<HitWallEvent> onHitWall = new EventHandler<>();
     final EventHandler<BulletFiredEvent> onBulletFired = new EventHandler<>();
-    final EventHandler<BulletHitBotEvent> onHitByBullet = new EventHandler<>();
+    final EventHandler<HitByBulletEvent> onHitByBullet = new EventHandler<>();
     final EventHandler<BulletHitBotEvent> onBulletHit = new EventHandler<>();
     final EventHandler<BulletHitBulletEvent> onBulletHitBullet = new EventHandler<>();
     final EventHandler<BulletHitWallEvent> onBulletHitWall = new EventHandler<>();
@@ -74,20 +74,14 @@ final class BotEventHandlers {
             onBulletFired.publish((BulletFiredEvent) event);
         } else if (event instanceof BulletHitWallEvent) {
             onBulletHitWall.publish((BulletHitWallEvent) event);
+        } else if (event instanceof HitByBulletEvent) {
+            onHitByBullet.publish((HitByBulletEvent) event);
         } else if (event instanceof BulletHitBotEvent) {
-            BulletHitBotEvent bulletEvent = (BulletHitBotEvent) event;
-            if (bulletEvent.getVictimId() == baseBot.getMyId()) {
-                onHitByBullet.publish((BulletHitBotEvent) event);
-            } else {
-                onBulletHit.publish((BulletHitBotEvent) event);
-            }
+            onBulletHit.publish((BulletHitBotEvent) event);
+        } else if (event instanceof BotDeathEvent) {
+            onBotDeath.publish((BotDeathEvent) event);
         } else if (event instanceof DeathEvent) {
-            DeathEvent deathEvent = (DeathEvent) event;
-            if (deathEvent.getVictimId() == baseBot.getMyId()) {
-                onDeath.publish((DeathEvent) event);
-            } else {
-                onBotDeath.publish((DeathEvent) event);
-            }
+            onDeath.publish((DeathEvent) event);
         } else if (event instanceof BulletHitBulletEvent) {
             onBulletHitBullet.publish((BulletHitBulletEvent) event);
         } else if (event instanceof WonRoundEvent) {

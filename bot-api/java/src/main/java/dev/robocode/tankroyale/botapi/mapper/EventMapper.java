@@ -63,8 +63,8 @@ public final class EventMapper {
                 "No mapping exists for event type: " + source.getClass().getSimpleName());
     }
 
-    private static DeathEvent map(final dev.robocode.tankroyale.schema.BotDeathEvent source) {
-        return new DeathEvent(
+    private static BotDeathEvent map(final dev.robocode.tankroyale.schema.BotDeathEvent source) {
+        return new BotDeathEvent(
                 source.getTurnNumber(),
                 source.getVictimId());
     }

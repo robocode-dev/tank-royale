@@ -42,7 +42,7 @@ public class MyFirstBot extends Bot {
 
     // We were hit by a bullet -> turn perpendicular to the bullet
     @Override
-    public void onHitByBullet(BulletHitBotEvent e) {
+    public void onHitByBullet(HitByBulletEvent e) {
         // Calculate the bearing to the direction of the bullet
         var bearing = calcBearing(e.getBullet().getDirection());
 

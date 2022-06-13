@@ -20,11 +20,11 @@ internal sealed class BotEventHandlers
     internal readonly EventHandler<TickEvent> OnTick = new();
     internal readonly EventHandler<SkippedTurnEvent> OnSkippedTurn = new();
     internal readonly EventHandler<DeathEvent> OnDeath = new();
-    internal readonly EventHandler<DeathEvent> OnBotDeath = new();
+    internal readonly EventHandler<BotDeathEvent> OnBotDeath = new();
     internal readonly EventHandler<HitBotEvent> OnHitBot = new();
     internal readonly EventHandler<HitWallEvent> OnHitWall = new();
     internal readonly EventHandler<BulletFiredEvent> OnBulletFired = new();
-    internal readonly EventHandler<BulletHitBotEvent> OnHitByBullet = new();
+    internal readonly EventHandler<HitByBulletEvent> OnHitByBullet = new();
     internal readonly EventHandler<BulletHitBotEvent> OnBulletHit = new();
     internal readonly EventHandler<BulletHitBulletEvent> OnBulletHitBullet = new();
     internal readonly EventHandler<BulletHitWallEvent> OnBulletHitWall = new();
@@ -46,11 +46,11 @@ internal sealed class BotEventHandlers
     private event EventHandler<TickEvent>.Subscriber TickEvent;
     private event EventHandler<SkippedTurnEvent>.Subscriber SkippedTurnEvent;
     private event EventHandler<DeathEvent>.Subscriber DeathEvent;
-    private event EventHandler<DeathEvent>.Subscriber BotDeathEvent;
+    private event EventHandler<BotDeathEvent>.Subscriber BotDeathEvent;
     private event EventHandler<HitBotEvent>.Subscriber HitBotEvent;
     private event EventHandler<HitWallEvent>.Subscriber HitWallEvent;
     private event EventHandler<BulletFiredEvent>.Subscriber BulletFiredEvent;
-    private event EventHandler<BulletHitBotEvent>.Subscriber HitByBulletEvent;
+    private event EventHandler<HitByBulletEvent>.Subscriber HitByBulletEvent;
     private event EventHandler<BulletHitBotEvent>.Subscriber BulletHitEvent;
     private event EventHandler<BulletHitBulletEvent>.Subscriber BulletHitBulletEvent;
     private event EventHandler<BulletHitWallEvent>.Subscriber BulletHitWallEvent;
@@ -190,17 +190,17 @@ internal sealed class BotEventHandlers
             case BulletHitWallEvent bulletHitWallEvent:
                 BulletHitWallEvent?.Invoke(bulletHitWallEvent);
                 break;
-            case BulletHitBotEvent bulletHitBotEvent:
-                if (bulletHitBotEvent.VictimId == baseBot.MyId)
-                    HitByBulletEvent?.Invoke(bulletHitBotEvent);
-                else
-                    BulletHitEvent?.Invoke(bulletHitBotEvent);
+            case HitByBulletEvent hitByBulletEvent:
+                HitByBulletEvent?.Invoke(hitByBulletEvent);
                 break;
-            case DeathEvent botDeathEvent:
-                if (botDeathEvent.VictimId == baseBot.MyId)
-                    DeathEvent?.Invoke(botDeathEvent);
-                else
-                    BotDeathEvent?.Invoke(botDeathEvent);
+            case BulletHitBotEvent bulletHitBotEvent:
+                BulletHitEvent?.Invoke(bulletHitBotEvent);
+                break;
+            case BotDeathEvent botDeathEvent:
+                BotDeathEvent?.Invoke(botDeathEvent);
+                break;
+            case DeathEvent deathEvent:
+                DeathEvent?.Invoke(deathEvent);
                 break;
             case BulletHitBulletEvent bulletHitBulletEvent:
                 BulletHitBulletEvent?.Invoke(bulletHitBulletEvent);
@@ -212,7 +212,7 @@ internal sealed class BotEventHandlers
                 CustomEvent?.Invoke(customEvent);
                 break;
             default:
-                throw new Exception("Unhandled event: " + evt);
+                throw new InvalidOperationException("Unhandled event: " + evt);
         }
     }
 }

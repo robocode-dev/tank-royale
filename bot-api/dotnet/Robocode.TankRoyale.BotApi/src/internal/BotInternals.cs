@@ -162,8 +162,7 @@ internal sealed class BotInternals : IStopResumeListener
 
     private void OnDeath(DeathEvent evt)
     {
-        if (evt.VictimId == bot.MyId)
-            StopThread();
+        StopThread();
     }
 
     internal bool IsRunning => baseBotInternals.IsRunning;

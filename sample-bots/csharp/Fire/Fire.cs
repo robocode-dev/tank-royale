@@ -77,7 +77,7 @@ public class Fire : Bot
     }
 
     // We were hit by a bullet -> turn perpendicular to the bullet, and move a bit
-    public override void OnHitByBullet(BulletHitBotEvent e)
+    public override void OnHitByBullet(HitByBulletEvent e)
     {
         // Turn perpendicular to the bullet direction
         TurnLeft(NormalizeRelativeAngle(90 - (Direction - e.Bullet.Direction)));

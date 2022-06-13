@@ -71,7 +71,7 @@ public class Fire extends Bot {
 
     // We were hit by a bullet -> turn perpendicular to the bullet, and move a bit
     @Override
-    public void onHitByBullet(BulletHitBotEvent e) {
+    public void onHitByBullet(HitByBulletEvent e) {
         // Turn perpendicular to the bullet direction
         turnLeft(normalizeRelativeAngle(90 - (getDirection() - e.getBullet().getDirection())));
 

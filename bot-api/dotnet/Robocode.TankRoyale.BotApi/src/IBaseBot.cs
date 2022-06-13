@@ -761,13 +761,13 @@ public interface IBaseBot
     /// The event handler triggered when another bot has died.
     /// </summary>
     /// <param name="botDeathEvent">Event details from the game.</param>
-    void OnBotDeath(DeathEvent botDeathEvent);
+    void OnBotDeath(BotDeathEvent botDeathEvent);
 
     /// <summary>
     /// The event handler triggered when this bot has died.
     /// </summary>
-    /// <param name="botDeathEvent">Event details from the game.</param>
-    void OnDeath(DeathEvent botDeathEvent);
+    /// <param name="deathEvent">Event details from the game.</param>
+    void OnDeath(DeathEvent deathEvent);
 
     /// <summary>
     /// The event handler triggered when the bot has collided with another bot.
@@ -790,8 +790,8 @@ public interface IBaseBot
     /// <summary>
     /// The event handler triggered when the bot has been hit by a bullet.
     /// </summary>
-    /// <param name="bulletHitBotEvent">Event details from the game.</param>
-    void OnHitByBullet(BulletHitBotEvent bulletHitBotEvent);
+    /// <param name="hitByBulletEvent">Event details from the game.</param>
+    void OnHitByBullet(HitByBulletEvent hitByBulletEvent);
 
     /// <summary>
     /// The event handler triggered when the bot has hit another bot with a bullet.

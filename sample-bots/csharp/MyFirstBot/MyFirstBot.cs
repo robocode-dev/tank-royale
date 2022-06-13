@@ -41,7 +41,7 @@ public class MyFirstBot : Bot
     }
 
     // We were hit by a bullet -> turn perpendicular to the bullet
-    public override void OnHitByBullet(BulletHitBotEvent evt)
+    public override void OnHitByBullet(HitByBulletEvent evt)
     {
         // Calculate the bearing to the direction of the bullet
         var bearing = CalcBearing(evt.Bullet.Direction);

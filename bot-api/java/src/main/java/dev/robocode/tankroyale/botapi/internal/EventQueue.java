@@ -72,7 +72,7 @@ final class EventQueue {
 
         while (baseBotInternals.isRunning() && events.size() > 0) {
             var event = events.get(0);
-            var eventPriority = getPriority(event);
+            var eventPriority = event.getPriority();
 
             if (eventPriority < currentTopEventPriority) {
                 return; // Exit when event priority is lower than the current event being processed
@@ -122,7 +122,7 @@ final class EventQueue {
                 return timeDiff;
             }
             // Higher priority gives negative delta -> becomes first
-            return getPriority(e2) - getPriority(e1);
+            return e2.getPriority() - e1.getPriority();
         });
     }
 
@@ -150,40 +150,5 @@ final class EventQueue {
         baseBotInternals.getConditions().stream().filter(Condition::test).forEach(condition ->
                 addEvent(new CustomEvent(baseBotInternals.getCurrentTick().getTurnNumber(), condition))
         );
-    }
-
-    private int getPriority(BotEvent event) {
-        if (event instanceof TickEvent) {
-            return EventPriority.onTick;
-        } else if (event instanceof ScannedBotEvent) {
-            return EventPriority.onScannedBot;
-        } else if (event instanceof HitBotEvent) {
-            return EventPriority.onHitBot;
-        } else if (event instanceof HitWallEvent) {
-            return EventPriority.onHitWall;
-        } else if (event instanceof BulletFiredEvent) {
-            return EventPriority.onBulletFired;
-        } else if (event instanceof BulletHitWallEvent) {
-            return EventPriority.onBulletHitWall;
-        } else if (event instanceof BulletHitBotEvent) {
-            BulletHitBotEvent bulletEvent = (BulletHitBotEvent) event;
-            return (bulletEvent.getVictimId() == baseBotInternals.getMyId()) ?
-                EventPriority.onHitByBullet :
-                EventPriority.onBulletHit;
-        } else if (event instanceof BulletHitBulletEvent) {
-            return EventPriority.onBulletHitBullet;
-        } else if (event instanceof DeathEvent) {
-            DeathEvent deathEvent = (DeathEvent) event;
-            return (deathEvent.getVictimId() == baseBotInternals.getMyId()) ?
-                EventPriority.onDeath :
-                EventPriority.onBotDeath;
-        } else if (event instanceof SkippedTurnEvent) {
-            return EventPriority.onSkippedTurn;
-        } else if (event instanceof CustomEvent) {
-            return EventPriority.onCondition;
-        } else if (event instanceof WonRoundEvent) {
-            return EventPriority.onWonRound;
-        }
-        throw new IllegalStateException("Unhandled event type: " + event);
     }
 }

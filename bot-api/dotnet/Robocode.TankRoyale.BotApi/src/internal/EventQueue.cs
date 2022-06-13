@@ -78,7 +78,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
         while (baseBotInternals.IsRunning && events.Count > 0)
         {
             var botEvent = events[0];
-            var eventPriority = GetPriority(botEvent);
+            var eventPriority = botEvent.Priority;
 
             if (eventPriority < currentTopEventPriority)
                 return; // Exit when event priority is lower than the current event being processed
@@ -142,7 +142,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
             return timeDiff;
         }
         // Higher priority gives negative delta -> becomes first
-        return GetPriority(e2) - GetPriority(e1);
+        return e2.Priority - e1.Priority;
     }
 
     private static bool IsNotOldOrCriticalEvent(BotEvent botEvent, int currentTurn)
@@ -177,29 +177,5 @@ internal sealed class EventQueue : IComparer<BotEvent>
         {
             AddEvent(new CustomEvent(baseBotInternals.CurrentTick.TurnNumber, condition));
         }
-    }
-
-    private int GetPriority(BotEvent botEvent)
-    {
-        return botEvent switch
-        {
-            TickEvent => EventPriority.OnTick,
-            ScannedBotEvent => EventPriority.OnScannedBot,
-            HitBotEvent => EventPriority.OnHitBot,
-            HitWallEvent => EventPriority.OnHitWall,
-            BulletFiredEvent => EventPriority.OnBulletFired,
-            BulletHitWallEvent => EventPriority.OnBulletHitWall,
-            BulletHitBotEvent bulletHitBotEvent => bulletHitBotEvent.VictimId == baseBotInternals.MyId
-                ? EventPriority.OnHitByBullet
-                : EventPriority.OnBulletHit,
-            BulletHitBulletEvent => EventPriority.OnBulletHitBullet,
-            DeathEvent deathEvent => deathEvent.VictimId == baseBotInternals.MyId
-                ? EventPriority.OnDeath
-                : EventPriority.OnBotDeath,
-            SkippedTurnEvent => EventPriority.OnSkippedTurn,
-            CustomEvent => EventPriority.OnCondition,
-            WonRoundEvent => EventPriority.OnWonRound,
-            _ => throw new InvalidOperationException("Unhandled event type: " + botEvent)
-        };
     }
 }

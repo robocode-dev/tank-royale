@@ -548,7 +548,7 @@ public abstract class BaseBot : IBaseBot
     }
 
     /// <inheritdoc/>
-    public virtual void OnBotDeath(DeathEvent botDeathEvent)
+    public virtual void OnBotDeath(BotDeathEvent botDeathEvent)
     {
     }
 
@@ -573,7 +573,7 @@ public abstract class BaseBot : IBaseBot
     }
 
     /// <inheritdoc/>
-    public virtual void OnHitByBullet(BulletHitBotEvent bulletHitBotEvent)
+    public virtual void OnHitByBullet(HitByBulletEvent bulletHitBotEvent)
     {
     }
 
