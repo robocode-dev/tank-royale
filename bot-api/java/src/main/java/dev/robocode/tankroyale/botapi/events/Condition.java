@@ -39,6 +39,8 @@ import dev.robocode.tankroyale.botapi.IBot;
  * </code></pre>
  */
 public abstract class Condition {
+
+    // Optional name of the condition.
     private final String name;
 
     /**

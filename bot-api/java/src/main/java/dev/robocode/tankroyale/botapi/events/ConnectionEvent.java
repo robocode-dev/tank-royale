@@ -7,9 +7,7 @@ import java.net.URI;
  */
 abstract class ConnectionEvent implements IEvent {
 
-    /**
-     * URI of the server.
-     */
+    // URI of the server.
     private final URI serverUri;
 
     /**

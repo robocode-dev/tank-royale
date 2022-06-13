@@ -6,39 +6,25 @@ package dev.robocode.tankroyale.botapi.events;
 @SuppressWarnings("unused")
 public final class ScannedBotEvent extends BotEvent {
 
-    /**
-     * ID of the bot did the scanning.
-     */
+    // ID of the bot did the scanning.
     private final int scannedByBotId;
 
-    /**
-     * ID of the bot that was scanned.
-     */
+    // ID of the bot that was scanned.
     private final int scannedBotId;
 
-    /**
-     * Energy level of the scanned bot.
-     */
+    // Energy level of the scanned bot.
     private final double energy;
 
-    /**
-     * X coordinate of the scanned bot.
-     */
+    // X coordinate of the scanned bot.
     private final double x;
 
-    /**
-     * Y coordinate of the scanned bot.
-     */
+    // Y coordinate of the scanned bot.
     private final double y;
 
-    /**
-     * Direction in degrees of the scanned bot.
-     */
+    // Direction in degrees of the scanned bot.
     private final double direction;
 
-    /**
-     * Speed measured in units per turn of the scanned bot.
-     */
+    // Speed measured in units per turn of the scanned bot.
     private final double speed;
 
     /**

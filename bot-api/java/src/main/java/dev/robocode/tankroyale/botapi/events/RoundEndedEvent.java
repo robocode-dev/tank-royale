@@ -6,14 +6,10 @@ package dev.robocode.tankroyale.botapi.events;
 @SuppressWarnings("unused")
 public final class RoundEndedEvent implements IEvent {
 
-    /**
-     * The round number.
-     */
+    // The round number.
     private final int roundNumber;
 
-    /**
-     * The turn number.
-     */
+    // The turn number.
     private final int turnNumber;
 
     /**

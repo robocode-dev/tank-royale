@@ -8,24 +8,16 @@ import dev.robocode.tankroyale.botapi.BulletState;
 @SuppressWarnings("unused")
 public final class BulletHitBotEvent extends BotEvent {
 
-    /**
-     * ID of the victim bot that got hit.
-     */
+    // ID of the victim bot that got hit.
     private final int victimId;
 
-    /**
-     * Bullet that hit the bot.
-     */
+    // Bullet that hit the bot.
     private final BulletState bullet;
 
-    /**
-     * Damage inflicted by the bullet.
-     */
+    // Damage inflicted by the bullet.
     private final double damage;
 
-    /**
-     * Remaining energy level of the bot that got hit.
-     */
+    // Remaining energy level of the bot that got hit.
     private final double energy;
 
     /**
@@ -37,8 +29,7 @@ public final class BulletHitBotEvent extends BotEvent {
      * @param damage     is the damage inflicted by the bullet.
      * @param energy     is the remaining energy level of the bot that got hit.
      */
-    public BulletHitBotEvent(
-            int turnNumber, int victimId, BulletState bullet, double damage, double energy) {
+    public BulletHitBotEvent(int turnNumber, int victimId, BulletState bullet, double damage, double energy) {
         super(turnNumber);
         this.victimId = victimId;
         this.bullet = bullet;

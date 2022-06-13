@@ -8,14 +8,10 @@ import dev.robocode.tankroyale.botapi.BotResults;
 @SuppressWarnings("unused")
 public final class GameEndedEvent implements IEvent {
 
-    /**
-     * Number of rounds played.
-     */
+    // Number of rounds played.
     private final int numberOfRounds;
 
-    /**
-     * Results of the battle.
-     */
+    // Results of the battle.
     private final BotResults results;
 
     /**

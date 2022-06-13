@@ -5,9 +5,7 @@ package dev.robocode.tankroyale.botapi.events;
  */
 public final class CustomEvent extends BotEvent {
 
-    /**
-     * Condition that was met to trigger this custom event.
-     */
+    // Condition that was met to trigger this custom event.
     private final Condition condition;
 
     /**

@@ -8,9 +8,7 @@ import dev.robocode.tankroyale.botapi.BulletState;
 @SuppressWarnings("unused")
 public final class BulletFiredEvent extends BotEvent {
 
-    /**
-     * Bullet that was fired.
-     */
+    // Bullet that was fired.
     private final BulletState bullet;
 
     /**

@@ -6,29 +6,19 @@ package dev.robocode.tankroyale.botapi.events;
 @SuppressWarnings("unused")
 public final class HitBotEvent extends BotEvent {
 
-    /**
-     * ID of the other bot that your bot has collided with.
-     */
+    // ID of the other bot that your bot has collided with.
     private final int victimId;
 
-    /**
-     * Remaining energy level of the victim bot.
-     */
+    // Remaining energy level of the victim bot.
     private final double energy;
 
-    /**
-     * X coordinate of victim bot.
-     */
+    // X coordinate of victim bot.
     private final double x;
 
-    /**
-     * Y coordinate of victim bot.
-     */
+    // Y coordinate of victim bot.
     private final double y;
 
-    /**
-     * Flag specifying, if the victim bot got rammed.
-     */
+    // Flag specifying, if the victim bot got rammed.
     private final boolean isRammed;
 
     /**

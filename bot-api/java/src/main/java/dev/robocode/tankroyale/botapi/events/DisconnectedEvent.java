@@ -9,19 +9,13 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 public final class DisconnectedEvent extends ConnectionEvent {
 
-    /**
-     * Indication if closing of the connection was initiated by the remote host.
-     */
+    // Indication if closing of the connection was initiated by the remote host.
     private final boolean remote;
 
-    /**
-     * Status code that indicates the reason for closing the connection.
-     */
+    // Status code that indicates the reason for closing the connection.
     private final Integer statusCode;
 
-    /**
-     * Message with the reason for closing the connection.
-     */
+    // Message with the reason for closing the connection.
     private final String reason;
 
     /**

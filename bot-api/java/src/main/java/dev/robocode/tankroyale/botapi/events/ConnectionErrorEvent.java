@@ -8,9 +8,7 @@ import java.net.URI;
 @SuppressWarnings("unused")
 public final class ConnectionErrorEvent extends ConnectionEvent {
 
-    /**
-     * The error.
-     */
+    // The error.
     private final Throwable error;
 
     /**

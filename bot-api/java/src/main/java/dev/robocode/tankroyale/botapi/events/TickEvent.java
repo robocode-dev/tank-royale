@@ -10,29 +10,19 @@ import java.util.Collection;
  */
 public final class TickEvent extends BotEvent {
 
-    /**
-     * Current round number.
-     */
+    // Current round number.
     private final int roundNumber;
 
-    /**
-     * Enemy count.
-     */
+    // Enemy count.
     private final int enemyCount;
 
-    /**
-     * Current state of this bot.
-     */
+    // Current state of this bot.
     private final BotState botState;
 
-    /**
-     * Current state of the bullets fired by this bot.
-     */
+    // Current state of the bullets fired by this bot.
     private final Collection<BulletState> bulletStates;
 
-    /**
-     * Events occurring in the turn relevant for this bot.
-     */
+    // Events occurring in the turn relevant for this bot.
     private final Collection<BotEvent> events;
 
     /**

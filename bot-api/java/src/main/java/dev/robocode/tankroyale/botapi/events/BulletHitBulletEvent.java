@@ -8,14 +8,10 @@ import dev.robocode.tankroyale.botapi.BulletState;
 @SuppressWarnings("unused")
 public final class BulletHitBulletEvent extends BotEvent {
 
-    /**
-     * Bullet that hit another bullet.
-     */
+    // Bullet that hit another bullet.
     private final BulletState bullet;
 
-    /**
-     * The other bullet that was hit by the bullet.
-     */
+    // The other bullet that was hit by the bullet.
     private final BulletState hitBullet;
 
     /**
