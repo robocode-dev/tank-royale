@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi;
@@ -968,4 +969,34 @@ public interface IBaseBot
     /// <param name="sourceAngle">Is the source angle.</param>
     /// <returns>The delta angle between a source angle and target angle.</returns>
     double CalcDeltaAngle(double targetAngle, double sourceAngle);
+
+    /// <summary>
+    /// Returns the event priority for a specific event class.
+    /// </summary>
+    /// <example>
+    /// Example:
+    /// <code>
+    ///     int scannedBotEventPriority = GetPriority(ScannedBotEvent.GetType());
+    /// </code>
+    /// </example>
+    /// <param name="eventType">Event type to get the event priority for.</param>
+    /// <returns>The event priority for a specific event class.</returns>
+    /// <see cref="DefaultEventPriority"/>
+    /// <see cref="SetEventPriority"/>
+    int GetEventPriority(Type eventType);
+
+    /// <summary>
+    /// Changes the event priority for an event class. The event priority is used for determining which event types
+    /// (classes) that must be fired and handled before others. Events with higher priorities will be handled before
+    /// events with lower priorities.
+    /// </summary>
+    /// <note>
+    /// You should normally not need to change the event priority.
+    /// </note>
+    /// <param name="eventType">Event type to change the event priority for.</param>
+    /// <param name="priority">The new priority. Typically, a positive number from 1 to 150. The greater value,
+    /// the higher priority.</param>
+    /// <see cref="DefaultEventPriority"/>
+    /// <see cref="GetEventPriority"/>
+    void SetEventPriority(Type eventType, int priority);
 }

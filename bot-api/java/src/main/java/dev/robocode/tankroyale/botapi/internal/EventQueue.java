@@ -72,7 +72,7 @@ final class EventQueue {
 
         while (baseBotInternals.isRunning() && events.size() > 0) {
             var event = events.get(0);
-            var eventPriority = event.getPriority();
+            var eventPriority = getPriority(event);
 
             if (eventPriority < currentTopEventPriority) {
                 return; // Exit when event priority is lower than the current event being processed
@@ -122,8 +122,14 @@ final class EventQueue {
                 return timeDiff;
             }
             // Higher priority gives negative delta -> becomes first
-            return e2.getPriority() - e1.getPriority();
+            return getPriority(e2) - getPriority(e1);
         });
+    }
+
+    private int getPriority(BotEvent event) {
+        @SuppressWarnings("unchecked")
+        int priority = baseBotInternals.getPriority((Class<BotEvent>) event.getClass());
+        return priority;
     }
 
     private static boolean isNotOldOrCriticalEvent(BotEvent event, int currentTurn) {

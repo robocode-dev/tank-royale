@@ -730,6 +730,22 @@ public abstract class BaseBot implements IBaseBot {
         return 1 + (firepower / 5);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getEventPriority(Class<BotEvent> eventClass) {
+        return __baseBotInternals.getPriority(eventClass);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setEventPriority(Class<BotEvent> eventClass, int priority) {
+        __baseBotInternals.setPriority(eventClass, priority);
+    }
+
     private static String toIntentColor(Color color) {
         return color == null ? null : "#" + color.toHex();
     }

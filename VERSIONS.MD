@@ -1,16 +1,16 @@
 # Versions
 
-## In progress - 0.14.0 - Improve control of bot events
+## In progress - 0.14.0 - Adjustments for bot events
 
 #### Changes:
 
 - Bot API:
-    - The IBaseBot´s `getEvents()`/`Events` has been changed to provide an ordered list of events that have not been
-      processed yet in event handlers.
-    - Minor update on TickEvent´s `getEvents()`/`Events`.
-    - It is possible to change the event priority on event types.
-    - `DeathEvent` was split up into `BotDeathEvent` and `DeathEvent`.
-    - `BulletHitBotEvent` was split up into `HitByBulletEvent` and `BulletHitBotEvent`.
+    - Adjusted the bot events to make it easier to make a bridge between legacy Robocode bots and Tank Royale later
+    - ([#12](https://github.com/robocode-dev/tank-royale/issues/12)).
+    - Introduced `BotDeathEvent` and `HitByBulletEvent`.
+    - Made priority values for`DefaultEventPriority` public, and changed event priority order to match the original
+      Robocode game.
+    - Bot event priorities can now be read and changed.
 - GUI:
     - The Pause/Resume and Stop button are now disabled when the battle is stopped.
 

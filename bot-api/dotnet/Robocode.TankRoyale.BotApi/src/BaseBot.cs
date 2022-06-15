@@ -193,7 +193,7 @@ public abstract class BaseBot : IBaseBot
     {
         __baseBotInternals.ClearEvents();
     }
-    
+
     /// <inheritdoc/>
     public double TurnRate
     {
@@ -488,6 +488,13 @@ public abstract class BaseBot : IBaseBot
         angle += (angle > 180) ? -360 : (angle < -180) ? 360 : 0;
         return angle;
     }
+
+    /// <inheritdoc/>
+    public virtual int GetEventPriority(Type eventType) => __baseBotInternals.GetPriority(eventType);
+
+    /// <inheritdoc/>
+    public virtual void SetEventPriority(Type eventType, int priority) =>
+        __baseBotInternals.SetPriority(eventType, priority);
 
     /// <inheritdoc/>
     public virtual void OnConnected(ConnectedEvent connectedEvent) =>

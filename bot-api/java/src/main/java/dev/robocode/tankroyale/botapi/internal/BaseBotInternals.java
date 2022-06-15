@@ -9,12 +9,18 @@ import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.GameSetup;
 import dev.robocode.tankroyale.botapi.IBaseBot;
+import dev.robocode.tankroyale.botapi.events.BotDeathEvent;
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
+import dev.robocode.tankroyale.botapi.events.BulletHitBotEvent;
+import dev.robocode.tankroyale.botapi.events.BulletHitBulletEvent;
+import dev.robocode.tankroyale.botapi.events.BulletHitWallEvent;
+import dev.robocode.tankroyale.botapi.events.HitByBulletEvent;
 import dev.robocode.tankroyale.botapi.events.RoundEndedEvent;
 import dev.robocode.tankroyale.botapi.events.RoundStartedEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.botapi.events.*;
+import dev.robocode.tankroyale.botapi.events.WonRoundEvent;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
 import dev.robocode.tankroyale.schema.*;
@@ -23,14 +29,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static dev.robocode.tankroyale.botapi.Constants.*;
+import static dev.robocode.tankroyale.botapi.events.DefaultEventPriority.*;
 import static dev.robocode.tankroyale.botapi.internal.MathUtil.clamp;
 import static dev.robocode.tankroyale.botapi.mapper.ResultsMapper.map;
 import static java.lang.Math.*;
@@ -96,7 +101,24 @@ public final class BaseBotInternals {
 
     private boolean eventHandlingDisabled;
 
+    private final Map<Class<? extends BotEvent>, Integer> eventPriorities = new HashMap<>();
+
     {
+        eventPriorities.put(TickEvent.class, TICK);
+        eventPriorities.put(WonRoundEvent.class, WON_ROUND);
+        eventPriorities.put(SkippedTurnEvent.class, SKIPPED_TURN);
+        eventPriorities.put(CustomEvent.class, CUSTOM);
+        eventPriorities.put(BotDeathEvent.class, BOT_DEATH);
+        eventPriorities.put(BulletFiredEvent.class, BULLET_FIRED);
+        eventPriorities.put(BulletHitWallEvent.class, BULLET_HIT_WALL);
+        eventPriorities.put(BulletHitBulletEvent.class, BULLET_HIT_BULLET);
+        eventPriorities.put(BulletHitBotEvent.class, BULLET_HIT_BOT);
+        eventPriorities.put(HitByBulletEvent.class, HIT_BY_BULLET);
+        eventPriorities.put(HitWallEvent.class, HIT_WALL);
+        eventPriorities.put(HitBotEvent.class, HIT_BOT);
+        eventPriorities.put(ScannedBotEvent.class, SCANNED_BOT);
+        eventPriorities.put(DeathEvent.class, DEATH);
+
         RuntimeTypeAdapterFactory<dev.robocode.tankroyale.schema.Event> typeFactory =
                 RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class, "$type")
                         .registerSubtype(dev.robocode.tankroyale.schema.BotDeathEvent.class, "BotDeathEvent")
@@ -457,6 +479,17 @@ public final class BaseBotInternals {
 
     public boolean isStopped() {
         return isStopped;
+    }
+
+    public int getPriority(Class<BotEvent> eventClass) {
+        if (!eventPriorities.containsKey(eventClass)) {
+            throw new IllegalStateException("Could not get event priority for the class: " + eventClass.getSimpleName());
+        }
+        return eventPriorities.get(eventClass);
+    }
+
+    public void setPriority(Class<BotEvent> eventClass, int priority) {
+        eventPriorities.put(eventClass, priority);
     }
 
     private ServerHandshake getServerHandshake() {

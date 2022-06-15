@@ -1153,6 +1153,35 @@ public interface IBaseBot {
     double calcGunHeat(double firepower);
 
     /**
+     * Returns the event priority for a specific event class.
+     *
+     * <p>Example:
+     * <pre><code class="language-java">
+     *     int scannedBotEventPriority = getPriority(ScannedBotEvent.class);
+     * </code></pre>
+     * @param eventClass is the event class to get the event priority for.
+     * @return the event priority for a specific event class.
+     * @see DefaultEventPriority
+     * @see #setEventPriority
+     */
+    int getEventPriority(Class<BotEvent> eventClass);
+
+    /**
+     * Changes the event priority for an event class. The event priority is used for determining which event types
+     * (classes) that must be fired and handled before others. Events with higher priorities will be handled before
+     * events with lower priorities.
+     *
+     * <p>Note that you should normally not need to change the event priority.
+     *
+     * @param eventClass is the event class to change the event priority for.
+     * @param priority is the new priority. Typically, a positive number from 1 to 150. The greater value, the higher
+     *                 priority.
+     * @see DefaultEventPriority
+     * @see #getEventPriority
+     */
+    void setEventPriority(Class<BotEvent> eventClass, int priority);
+
+    /**
      * Calculates the bearing (delta angle) between the input direction and the direction of this bot.
      *
      * <pre><code class="language-java">

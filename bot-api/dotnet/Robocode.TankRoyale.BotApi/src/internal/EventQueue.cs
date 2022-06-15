@@ -78,7 +78,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
         while (baseBotInternals.IsRunning && events.Count > 0)
         {
             var botEvent = events[0];
-            var eventPriority = botEvent.Priority;
+            var eventPriority = GetPriority(botEvent);
 
             if (eventPriority < currentTopEventPriority)
                 return; // Exit when event priority is lower than the current event being processed
@@ -133,6 +133,11 @@ internal sealed class EventQueue : IComparer<BotEvent>
         events = events.Sort(this);
     }
 
+    private int GetPriority(BotEvent botEvent)
+    {
+        return baseBotInternals.GetPriority(botEvent.GetType());
+    }
+    
     public int Compare(BotEvent e1, BotEvent e2)
     {
         // Lower (older) turn number gives negative delta -> becomes first
@@ -142,7 +147,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
             return timeDiff;
         }
         // Higher priority gives negative delta -> becomes first
-        return e2.Priority - e1.Priority;
+        return GetPriority(e2) - GetPriority(e1);
     }
 
     private static bool IsNotOldOrCriticalEvent(BotEvent botEvent, int currentTurn)
