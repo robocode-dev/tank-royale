@@ -16,7 +16,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
     private const val SERVER_URL = "server-url"
     private const val GAME_TYPE = "game-type"
     private const val USER_URLS = "user-urls"
-    private const val CONTROLLER_SECRETS = "controllers-secrets"
+    private const val CONTROLLER_SECRETS = "controller-secrets"
     private const val BOT_SECRETS = "bots-secrets"
     private const val INITIAL_POSITION_ENABLED = "initial-position-enabled"
 
