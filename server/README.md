@@ -62,7 +62,7 @@ provide a secret that is listed with this option.
 
 Example:
 
-        java -jar robocode-tankroyale-server-x.y.z.jar --controllerSecret=yFTFllMU8fX8kaxlgQnV1g
+        java -jar robocode-tankroyale-server-x.y.z.jar --controllerSecrets=yFTFllMU8fX8kaxlgQnV1g
 
 If no secret is specified (default) any controller and observer may join the server.
 
