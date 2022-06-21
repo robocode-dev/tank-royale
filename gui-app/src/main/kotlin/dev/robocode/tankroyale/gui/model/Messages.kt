@@ -12,7 +12,7 @@ import kotlinx.serialization.modules.subclass
 sealed class MessageConstants {
     companion object {
         val json = Json {
-            classDiscriminator = "\$type"
+            classDiscriminator = "type"
             serializersModule = messageModule
         }
     }

@@ -172,7 +172,7 @@ class ConnectionHandler(
             executorService.submit {
                 allConnections += conn
                 ServerHandshake().apply {
-                    `$type` = Message.`$type`.SERVER_HANDSHAKE
+                    type = Message.Type.SERVER_HANDSHAKE
                     variant = "Tank Royale"
                     version = version ?: "?"
                     gameTypes = setup.gameTypes
@@ -195,23 +195,23 @@ class ConnectionHandler(
 
             executorService.submit {
                 try {
-                    gson.fromJson(message, JsonObject::class.java)["\$type"]?.let { jsonType ->
+                    gson.fromJson(message, JsonObject::class.java)["type"]?.let { jsonType ->
                         try {
-                            val type = Message.`$type`.fromValue(jsonType.asString)
+                            val type = Message.Type.fromValue(jsonType.asString)
 
                             log.debug("Handling message: $type")
                             when (type) {
-                                Message.`$type`.BOT_INTENT -> handleIntent(conn, message)
-                                Message.`$type`.BOT_HANDSHAKE -> handleBotHandshake(conn, message)
-                                Message.`$type`.OBSERVER_HANDSHAKE -> handleObserverHandshake(conn, message)
-                                Message.`$type`.CONTROLLER_HANDSHAKE -> handleControllerHandshake(conn, message)
-                                Message.`$type`.BOT_READY -> handleBotReady(conn)
-                                Message.`$type`.START_GAME -> handleStartGame(message)
-                                Message.`$type`.STOP_GAME -> handleStopGame()
-                                Message.`$type`.PAUSE_GAME -> handlePauseGame()
-                                Message.`$type`.RESUME_GAME -> handleResumeGame()
-                                Message.`$type`.NEXT_TURN -> handleNextTurn()
-                                Message.`$type`.CHANGE_TPS -> handleChangeTps(message)
+                                Message.Type.BOT_INTENT -> handleIntent(conn, message)
+                                Message.Type.BOT_HANDSHAKE -> handleBotHandshake(conn, message)
+                                Message.Type.OBSERVER_HANDSHAKE -> handleObserverHandshake(conn, message)
+                                Message.Type.CONTROLLER_HANDSHAKE -> handleControllerHandshake(conn, message)
+                                Message.Type.BOT_READY -> handleBotReady(conn)
+                                Message.Type.START_GAME -> handleStartGame(message)
+                                Message.Type.STOP_GAME -> handleStopGame()
+                                Message.Type.PAUSE_GAME -> handlePauseGame()
+                                Message.Type.RESUME_GAME -> handleResumeGame()
+                                Message.Type.NEXT_TURN -> handleNextTurn()
+                                Message.Type.CHANGE_TPS -> handleChangeTps(message)
                                 else -> notifyException(IllegalStateException("Unhandled message type: $type"))
                             }
                         } catch (ex: IllegalArgumentException) {

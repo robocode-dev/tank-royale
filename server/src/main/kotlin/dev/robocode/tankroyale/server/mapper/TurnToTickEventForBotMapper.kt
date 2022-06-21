@@ -12,7 +12,7 @@ object TurnToTickEventForBotMapper {
         val bot = turn.getBot(botId) ?: return null
         val tick = TickEventForBot()
         tick.apply {
-            `$type` = Message.`$type`.TICK_EVENT_FOR_BOT
+            type = Message.Type.TICK_EVENT_FOR_BOT
             this.roundNumber = roundNumber
             turnNumber = turn.turnNumber
             enemyCount = turn.bots.size - 1

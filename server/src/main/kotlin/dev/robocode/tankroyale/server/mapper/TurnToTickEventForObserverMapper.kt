@@ -11,7 +11,7 @@ object TurnToTickEventForObserverMapper {
     fun map(roundNumber: Int, turn: ITurn): TickEventForObserver {
         val tick = TickEventForObserver()
         tick.apply {
-            `$type` = Message.`$type`.TICK_EVENT_FOR_OBSERVER
+            type = Message.Type.TICK_EVENT_FOR_OBSERVER
             this.roundNumber = roundNumber
             turnNumber = turn.turnNumber
             botStates = CopyOnWriteArrayList(map(turn.bots))

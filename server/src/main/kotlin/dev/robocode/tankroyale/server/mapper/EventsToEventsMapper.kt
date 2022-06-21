@@ -24,7 +24,7 @@ object EventsToEventsMapper {
 
     private fun map(botDeathEvent: dev.robocode.tankroyale.server.event.BotDeathEvent): BotDeathEvent {
         val event = BotDeathEvent()
-        event.`$type` = Message.`$type`.BOT_DEATH_EVENT
+        event.type = Message.Type.BOT_DEATH_EVENT
         botDeathEvent.apply {
             event.turnNumber = turnNumber
             event.victimId = victimId.value
@@ -34,7 +34,7 @@ object EventsToEventsMapper {
 
     private fun map(botHitBotEvent: dev.robocode.tankroyale.server.event.BotHitBotEvent): BotHitBotEvent {
         val event = BotHitBotEvent()
-        event.`$type` = Message.`$type`.BOT_HIT_BOT_EVENT
+        event.type = Message.Type.BOT_HIT_BOT_EVENT
         botHitBotEvent.apply {
             event.turnNumber = turnNumber
             event.botId = botId.value
@@ -49,7 +49,7 @@ object EventsToEventsMapper {
 
     private fun map(botHitWallEvent: dev.robocode.tankroyale.server.event.BotHitWallEvent): BotHitWallEvent {
         val event = BotHitWallEvent()
-        event.`$type` = Message.`$type`.BOT_HIT_WALL_EVENT
+        event.type = Message.Type.BOT_HIT_WALL_EVENT
         botHitWallEvent.apply {
             event.turnNumber = turnNumber
             event.victimId = victimId.value
@@ -59,7 +59,7 @@ object EventsToEventsMapper {
 
     private fun map(bulletFiredEvent: dev.robocode.tankroyale.server.event.BulletFiredEvent): BulletFiredEvent {
         val event = BulletFiredEvent()
-        event.`$type` = Message.`$type`.BULLET_FIRED_EVENT
+        event.type = Message.Type.BULLET_FIRED_EVENT
         bulletFiredEvent.apply {
             event.turnNumber = turnNumber
             event.bullet = BulletToBulletStateMapper.map(bullet)
@@ -69,7 +69,7 @@ object EventsToEventsMapper {
 
     private fun map(bulletHitBotEvent: dev.robocode.tankroyale.server.event.BulletHitBotEvent): BulletHitBotEvent {
         val event = BulletHitBotEvent()
-        event.`$type` = Message.`$type`.BULLET_HIT_BOT_EVENT
+        event.type = Message.Type.BULLET_HIT_BOT_EVENT
         bulletHitBotEvent.apply {
             event.turnNumber = turnNumber
             event.bullet = BulletToBulletStateMapper.map(bullet)
@@ -82,7 +82,7 @@ object EventsToEventsMapper {
 
     private fun map(bulletHitBulletEvent: dev.robocode.tankroyale.server.event.BulletHitBulletEvent): BulletHitBulletEvent {
         val event = BulletHitBulletEvent()
-        event.`$type` = Message.`$type`.BULLET_HIT_BULLET_EVENT
+        event.type = Message.Type.BULLET_HIT_BULLET_EVENT
         bulletHitBulletEvent.apply {
             event.turnNumber = turnNumber
             event.bullet = BulletToBulletStateMapper.map(bullet)
@@ -93,7 +93,7 @@ object EventsToEventsMapper {
 
     private fun map(bulletHitWallEvent: dev.robocode.tankroyale.server.event.BulletHitWallEvent): BulletHitWallEvent {
         val event = BulletHitWallEvent()
-        event.`$type` = Message.`$type`.BULLET_HIT_WALL_EVENT
+        event.type = Message.Type.BULLET_HIT_WALL_EVENT
         bulletHitWallEvent.apply {
             event.turnNumber = turnNumber
             event.bullet = BulletToBulletStateMapper.map(bullet)
@@ -103,7 +103,7 @@ object EventsToEventsMapper {
 
     private fun map(scannedBotEvent: dev.robocode.tankroyale.server.event.ScannedBotEvent): ScannedBotEvent {
         val event = ScannedBotEvent()
-        event.`$type` = Message.`$type`.SCANNED_BOT_EVENT
+        event.type = Message.Type.SCANNED_BOT_EVENT
         scannedBotEvent.apply {
             event.turnNumber = turnNumber
             event.scannedByBotId = scannedByBotId.value
@@ -119,7 +119,7 @@ object EventsToEventsMapper {
 
     private fun map(skippedTurnEvent: dev.robocode.tankroyale.server.event.SkippedTurnEvent): SkippedTurnEvent {
         val event = SkippedTurnEvent()
-        event.`$type` = Message.`$type`.SKIPPED_TURN_EVENT
+        event.type = Message.Type.SKIPPED_TURN_EVENT
         event.turnNumber = skippedTurnEvent.turnNumber
         return event
     }

@@ -2,7 +2,7 @@ $id: #message.yaml
 $schema: http://json-schema.org/2020-12/schema#
 description: Message exchanged between server and client
 properties:
-  $type:
+  type:
     enum:
       - BotHandshake
       - ControllerHandshake
@@ -48,4 +48,4 @@ properties:
       - ResumeGame
       - NextTurn
 required:
-  - $type
+  - type

@@ -538,13 +538,13 @@ public sealed class BaseBotInternals
 
     private void HandleTextMessage(string json)
     {
-        if (json == "{\"$type\":\"GameAbortedEvent\"}")
-            return; // Work-around: Cannot be parsed due to $type for GameAbortedEvent?!
+        if (json == "{\"type\":\"GameAbortedEvent\"}")
+            return; // Work-around: Cannot be parsed due to 'type' for GameAbortedEvent?!
 
         var jsonMsg = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
         try
         {
-            var type = (string)jsonMsg?["$type"];
+            var type = (string)jsonMsg?["type"];
             if (string.IsNullOrWhiteSpace(type)) return;
 
             var msgType = (S.MessageType)Enum.Parse(typeof(S.MessageType), type);
@@ -582,7 +582,7 @@ public sealed class BaseBotInternals
         {
             Console.Error.WriteLine(jsonMsg);
 
-            throw new BotException($"$type is missing on the JSON message: {json}");
+            throw new BotException($"'type' is missing on the JSON message: {json}");
         }
     }
 

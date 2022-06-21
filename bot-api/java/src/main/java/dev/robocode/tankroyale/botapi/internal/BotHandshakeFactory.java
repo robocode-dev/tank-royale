@@ -13,7 +13,7 @@ final class BotHandshakeFactory {
 
     static BotHandshake create(BotInfo botInfo, String secret) {
         BotHandshake handshake = new BotHandshake();
-        handshake.set$type(BotHandshake.$type.BOT_HANDSHAKE);
+        handshake.setType(BotHandshake.Type.BOT_HANDSHAKE);
         handshake.setName(botInfo.getName());
         handshake.setVersion(botInfo.getVersion());
         handshake.setAuthors(new ArrayList<>(botInfo.getAuthors()));

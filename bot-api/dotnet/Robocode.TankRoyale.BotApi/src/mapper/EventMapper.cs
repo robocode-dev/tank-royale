@@ -42,7 +42,7 @@ public static class EventMapper
 
     private static BotEvent Map(JObject evt)
     {
-        var type = evt.GetValue("$type")?.ToString();
+        var type = evt.GetValue("type")?.ToString();
 
         return type switch
         {

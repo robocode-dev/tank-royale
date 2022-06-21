@@ -75,7 +75,7 @@ class GameServer(
 
     @Suppress("RemoveRedundantQualifierName")
     private var botListUpdateMessage = BotListUpdate().apply {
-        this.`$type` = Message.`$type`.BOT_LIST_UPDATE
+        this.type = Message.Type.BOT_LIST_UPDATE
         this.bots = listOf<BotInfo>()
     }
 
@@ -145,7 +145,7 @@ class GameServer(
     /** Creates a GameStartedEventForBot with current game setup */
     private fun createGameStartedEventForBot(): GameStartedEventForBot {
         return GameStartedEventForBot().apply {
-            `$type` = Message.`$type`.GAME_STARTED_EVENT_FOR_BOT
+            type = Message.Type.GAME_STARTED_EVENT_FOR_BOT
             gameSetup = GameSetupToGameSetupMapper.map(this@GameServer.gameSetup)
         }
     }
@@ -170,7 +170,7 @@ class GameServer(
     private fun sendGameStartedToObservers() {
         if (connectionHandler.observerAndControllerConnections.isNotEmpty()) {
             broadcastToObserverAndControllers(GameStartedEventForObserver().apply {
-                `$type` = Message.`$type`.GAME_STARTED_EVENT_FOR_OBSERVER
+                type = Message.Type.GAME_STARTED_EVENT_FOR_OBSERVER
                 gameSetup = GameSetupToGameSetupMapper.map(this@GameServer.gameSetup)
                 participants = participantMap.values.toList()
             })
@@ -238,7 +238,7 @@ class GameServer(
     /** Broadcast game-aborted event to all observers and controllers */
     private fun broadcastGameAborted() {
         broadcastToAll(GameAbortedEvent().apply {
-            `$type` = Message.`$type`.GAME_ABORTED_EVENT
+            type = Message.Type.GAME_ABORTED_EVENT
         })
     }
 
@@ -307,21 +307,21 @@ class GameServer(
     /** Broadcast pause event to all observers */
     private fun broadcastGamedPausedToObservers() {
         broadcastToObserverAndControllers(GamePausedEventForObserver().apply {
-            `$type` = Message.`$type`.GAME_PAUSED_EVENT_FOR_OBSERVER
+            type = Message.Type.GAME_PAUSED_EVENT_FOR_OBSERVER
         })
     }
 
     /** Broadcast resume event to all observers */
     private fun broadcastGameResumedToObservers() {
         broadcastToObserverAndControllers(GameResumedEventForObserver().apply {
-            `$type` = Message.`$type`.GAME_RESUMED_EVENT_FOR_OBSERVER
+            type = Message.Type.GAME_RESUMED_EVENT_FOR_OBSERVER
         })
     }
 
     /** Broadcast TPS-changed event to all observers */
     private fun broadcastTpsChangedToObservers(tps: Int) {
         broadcastToObserverAndControllers(TpsChangedEvent().apply {
-            `$type` = Message.`$type`.TPS_CHANGED_EVENT
+            type = Message.Type.TPS_CHANGED_EVENT
             this.tps = tps
         })
     }
@@ -405,7 +405,7 @@ class GameServer(
         participants.forEach { conn ->
             participantIds[conn]?.let { botId ->
                 GameEndedEventForBot().apply {
-                    `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_BOT
+                    type = Message.Type.GAME_ENDED_EVENT_FOR_BOT
                     numberOfRounds = modelUpdater.numberOfRounds
                     results = getResultsForBot(botId)
 
@@ -417,7 +417,7 @@ class GameServer(
 
     private fun broadcastGameEndedToObservers() {
         broadcastToObserverAndControllers(GameEndedEventForObserver().apply {
-            `$type` = Message.`$type`.GAME_ENDED_EVENT_FOR_OBSERVER
+            type = Message.Type.GAME_ENDED_EVENT_FOR_OBSERVER
             numberOfRounds = modelUpdater.numberOfRounds
             results = getResultsForObservers() // Use the stored score!
         })
@@ -425,14 +425,14 @@ class GameServer(
 
     private fun broadcastRoundStartedToAll(roundNumber: Int) {
         broadcastToAll(RoundStartedEvent().also {
-            it.`$type` = Message.`$type`.ROUND_STARTED_EVENT
+            it.type = Message.Type.ROUND_STARTED_EVENT
             it.roundNumber = roundNumber
         })
     }
 
     private fun broadcastRoundEndedToAll(roundNumber: Int, turnNumber: Int) {
         broadcastToAll(RoundEndedEvent().also {
-            it.`$type` = Message.`$type`.ROUND_ENDED_EVENT
+            it.type = Message.Type.ROUND_ENDED_EVENT
             it.roundNumber = roundNumber
             it.turnNumber = turnNumber
         })
@@ -457,7 +457,7 @@ class GameServer(
 
         if (!botsSkippingTurn.isEmpty()) {
             val skippedTurn = SkippedTurnEvent().apply {
-                `$type` = Message.`$type`.SKIPPED_TURN_EVENT
+                type = Message.Type.SKIPPED_TURN_EVENT
                 turnNumber = currentTurnNumber - 1 // last turn number
             }
             val json = gson.toJson(skippedTurn)
@@ -503,12 +503,12 @@ class GameServer(
     }
 
     private fun broadcastToObserverAndControllers(msg: Message) {
-        requireNotNull(msg.`$type`) { "\$type is required on the message" }
+        requireNotNull(msg.type) { "'type' is required on the message" }
         connectionHandler.broadcastToObserverAndControllers(gson.toJson(msg))
     }
 
     private fun broadcastToAll(msg: Message) {
-        requireNotNull(msg.`$type`) { "\$type is required on the message" }
+        requireNotNull(msg.type) { "'type' is required on the message" }
         connectionHandler.broadcastToObserverAndControllers(gson.toJson(msg))
         connectionHandler.broadcast(participants, gson.toJson(msg))
     }

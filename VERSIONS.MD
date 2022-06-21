@@ -13,6 +13,9 @@
     - Bot event priorities can now be read and changed.
 - GUI:
     - The Pause/Resume and Stop button are now disabled when the battle is stopped.
+- Schema:
+    - Replaced `$type` with `type` to make it possible to use more code
+      generators [#31](https://github.com/robocode-dev/tank-royale/issues/31)
 
 ## 0.13.4 - GUI improvements + bugfix - 06-Jun-2022
 

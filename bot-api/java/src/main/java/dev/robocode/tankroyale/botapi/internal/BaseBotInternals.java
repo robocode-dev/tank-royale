@@ -120,7 +120,7 @@ public final class BaseBotInternals {
         eventPriorities.put(DeathEvent.class, DEATH);
 
         RuntimeTypeAdapterFactory<dev.robocode.tankroyale.schema.Event> typeFactory =
-                RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class, "$type")
+                RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class, "type")
                         .registerSubtype(dev.robocode.tankroyale.schema.BotDeathEvent.class, "BotDeathEvent")
                         .registerSubtype(dev.robocode.tankroyale.schema.BotHitBotEvent.class, "BotHitBotEvent")
                         .registerSubtype(dev.robocode.tankroyale.schema.BotHitWallEvent.class, "BotHitWallEvent")
@@ -174,7 +174,7 @@ public final class BaseBotInternals {
 
     private static BotIntent newBotIntent() {
         var botIntent = new BotIntent();
-        botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
+        botIntent.setType(Message.Type.BOT_INTENT); // must be set!
         return botIntent;
     }
 
@@ -557,11 +557,11 @@ public final class BaseBotInternals {
                 JsonObject jsonMsg = gson.fromJson(payload.toString(), JsonObject.class);
                 payload.delete(0, payload.length()); // clear payload buffer
 
-                JsonElement jsonType = jsonMsg.get("$type");
+                JsonElement jsonType = jsonMsg.get("type");
                 if (jsonType != null) {
                     String type = jsonType.getAsString();
 
-                    switch (dev.robocode.tankroyale.schema.Message.$type.fromValue(type)) {
+                    switch (dev.robocode.tankroyale.schema.Message.Type.fromValue(type)) {
                         case TICK_EVENT_FOR_BOT:
                             handleTick(jsonMsg);
                             break;
@@ -633,7 +633,7 @@ public final class BaseBotInternals {
 
             // Send ready signal
             BotReady ready = new BotReady();
-            ready.set$type(BotReady.$type.BOT_READY);
+            ready.setType(BotReady.Type.BOT_READY);
 
             String msg = gson.toJson(ready);
             socket.sendText(msg, true);
