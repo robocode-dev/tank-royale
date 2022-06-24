@@ -33,7 +33,7 @@ public sealed class BaseBotInternals
     private readonly BotInfo botInfo;
     private S.BotIntent botIntent = NewBotIntent();
 
-    private int? myId;
+    private int myId;
     private GameSetup gameSetup;
 
     private E.TickEvent tickEvent;
@@ -286,14 +286,7 @@ public sealed class BaseBotInternals
 
     internal string Version => ServerHandshake.Version;
 
-    internal int MyId
-    {
-        get
-        {
-            if (myId == null) throw new BotException(GameNotRunningMsg);
-            return (int)myId;
-        }
-    }
+    internal int MyId => myId;
 
     internal GameSetup GameSetup
     {
@@ -592,7 +585,7 @@ public sealed class BaseBotInternals
         
         ticksStart = DateTime.Now.Ticks;
 
-        tickEvent = EventMapper.Map(json);
+        tickEvent = EventMapper.Map(json, myId);
 
         if (botIntent.Rescan == true)
             botIntent.Rescan = false;

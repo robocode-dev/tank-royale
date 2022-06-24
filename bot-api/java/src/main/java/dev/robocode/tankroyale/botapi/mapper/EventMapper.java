@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.botapi.mapper;
 
 import dev.robocode.tankroyale.botapi.BotException;
+import dev.robocode.tankroyale.botapi.BulletState;
 import dev.robocode.tankroyale.botapi.events.*;
 
 import java.util.Collection;
@@ -12,25 +13,25 @@ import java.util.Set;
  */
 public final class EventMapper {
 
-    public static TickEvent map(final dev.robocode.tankroyale.schema.TickEventForBot source) {
+    public static TickEvent map(final dev.robocode.tankroyale.schema.TickEventForBot source, int myBotId) {
         return new TickEvent(
                 source.getTurnNumber(),
                 source.getRoundNumber(),
                 source.getEnemyCount(),
                 BotStateMapper.map(source.getBotState()),
                 BulletStateMapper.map(source.getBulletStates()),
-                map(source.getEvents()));
+                map(source.getEvents(), myBotId));
     }
 
-    private static Set<BotEvent> map(final Collection<dev.robocode.tankroyale.schema.Event> source) {
+    private static Set<BotEvent> map(final Collection<dev.robocode.tankroyale.schema.Event> source, int myBotId) {
         Set<BotEvent> gameBotEvents = new HashSet<>();
-        source.forEach(event -> gameBotEvents.add(map(event)));
+        source.forEach(event -> gameBotEvents.add(map(event, myBotId)));
         return gameBotEvents;
     }
 
-    public static BotEvent map(final dev.robocode.tankroyale.schema.Event source) {
+    public static BotEvent map(final dev.robocode.tankroyale.schema.Event source, int myBotId) {
         if (source instanceof dev.robocode.tankroyale.schema.BotDeathEvent) {
-            return map((dev.robocode.tankroyale.schema.BotDeathEvent) source);
+            return map((dev.robocode.tankroyale.schema.BotDeathEvent) source, myBotId);
         }
         if (source instanceof dev.robocode.tankroyale.schema.BotHitBotEvent) {
             return map((dev.robocode.tankroyale.schema.BotHitBotEvent) source);
@@ -42,7 +43,7 @@ public final class EventMapper {
             return map((dev.robocode.tankroyale.schema.BulletFiredEvent) source);
         }
         if (source instanceof dev.robocode.tankroyale.schema.BulletHitBotEvent) {
-            return map((dev.robocode.tankroyale.schema.BulletHitBotEvent) source);
+            return map((dev.robocode.tankroyale.schema.BulletHitBotEvent) source, myBotId);
         }
         if (source instanceof dev.robocode.tankroyale.schema.BulletHitBulletEvent) {
             return map((dev.robocode.tankroyale.schema.BulletHitBulletEvent) source);
@@ -63,10 +64,11 @@ public final class EventMapper {
                 "No mapping exists for event type: " + source.getClass().getSimpleName());
     }
 
-    private static BotDeathEvent map(final dev.robocode.tankroyale.schema.BotDeathEvent source) {
-        return new BotDeathEvent(
-                source.getTurnNumber(),
-                source.getVictimId());
+    private static BotEvent map(final dev.robocode.tankroyale.schema.BotDeathEvent source, int myBotId) {
+        if (source.getVictimId() == myBotId) {
+            return new DeathEvent(source.getTurnNumber());
+        }
+        return new BotDeathEvent(source.getTurnNumber(), source.getVictimId());
     }
 
     private static HitBotEvent map(final dev.robocode.tankroyale.schema.BotHitBotEvent source) {
@@ -89,11 +91,19 @@ public final class EventMapper {
                 BulletStateMapper.map(source.getBullet()));
     }
 
-    private static BulletHitBotEvent map(final dev.robocode.tankroyale.schema.BulletHitBotEvent source) {
+    private static BotEvent map(final dev.robocode.tankroyale.schema.BulletHitBotEvent source, int myBotId) {
+        BulletState bullet = BulletStateMapper.map(source.getBullet());
+        if (source.getVictimId() == myBotId) {
+            return new HitByBulletEvent(
+                    source.getTurnNumber(),
+                    bullet,
+                    source.getDamage(),
+                    source.getEnergy());
+        }
         return new BulletHitBotEvent(
                 source.getTurnNumber(),
                 source.getVictimId(),
-                BulletStateMapper.map(source.getBullet()),
+                bullet,
                 source.getDamage(),
                 source.getEnergy());
     }

@@ -7,7 +7,7 @@ namespace Robocode.TankRoyale.BotApi.Mapper;
 
 public static class EventMapper
 {
-    public static TickEvent Map(string json)
+    public static TickEvent Map(string json, int myBotId)
     {
         var tickEvent = JsonConvert.DeserializeObject<Schema.TickEventForBot>(json);
         if (tickEvent == null)
@@ -24,33 +24,33 @@ public static class EventMapper
             tickEvent.EnemyCount,
             BotStateMapper.Map(tickEvent.BotState),
             BulletStateMapper.Map(tickEvent.BulletStates),
-            Map(events)
+            Map(events, myBotId)
         );
     }
 
-    private static IEnumerable<BotEvent> Map(JArray events)
+    private static IEnumerable<BotEvent> Map(JArray events, int myBotId)
     {
         var gameEvents = new HashSet<BotEvent>();
         foreach (var jEvent in events)
         {
             var evt = (JObject)jEvent;
-            gameEvents.Add(Map(evt));
+            gameEvents.Add(Map(evt, myBotId));
         }
 
         return gameEvents;
     }
 
-    private static BotEvent Map(JObject evt)
+    private static BotEvent Map(JObject evt, int myBotId)
     {
         var type = evt.GetValue("type")?.ToString();
 
         return type switch
         {
-            "BotDeathEvent" => Map(evt.ToObject<Schema.BotDeathEvent>()),
+            "BotDeathEvent" => Map(evt.ToObject<Schema.BotDeathEvent>(), myBotId),
             "BotHitBotEvent" => Map(evt.ToObject<Schema.BotHitBotEvent>()),
             "BotHitWallEvent" => Map(evt.ToObject<Schema.BotHitWallEvent>()),
             "BulletFiredEvent" => Map(evt.ToObject<Schema.BulletFiredEvent>()),
-            "BulletHitBotEvent" => Map(evt.ToObject<Schema.BulletHitBotEvent>()),
+            "BulletHitBotEvent" => Map(evt.ToObject<Schema.BulletHitBotEvent>(), myBotId),
             "BulletHitBulletEvent" => Map(evt.ToObject<Schema.BulletHitBulletEvent>()),
             "BulletHitWallEvent" => Map(evt.ToObject<Schema.BulletHitWallEvent>()),
             "ScannedBotEvent" => Map(evt.ToObject<Schema.ScannedBotEvent>()),
@@ -60,12 +60,14 @@ public static class EventMapper
         };
     }
 
-    private static BotDeathEvent Map(Schema.BotDeathEvent source)
+    private static BotEvent Map(Schema.BotDeathEvent source, int myBotId)
     {
-        return new BotDeathEvent(
-            source.TurnNumber,
-            source.VictimId
-        );
+        if (source.VictimId == myBotId)
+        {
+            return new DeathEvent(source.TurnNumber);
+        }
+
+        return new BotDeathEvent(source.TurnNumber, source.VictimId);
     }
 
     private static HitBotEvent Map(Schema.BotHitBotEvent source)
@@ -93,15 +95,24 @@ public static class EventMapper
         );
     }
 
-    private static BulletHitBotEvent Map(Schema.BulletHitBotEvent source)
+    private static BotEvent Map(Schema.BulletHitBotEvent source, int myBotId)
     {
+        var bullet = BulletStateMapper.Map(source.Bullet);
+        if (source.VictimId == myBotId)
+        {
+            return new HitByBulletEvent(
+                source.TurnNumber,
+                bullet,
+                source.Damage,
+                source.Energy);
+        }
+
         return new BulletHitBotEvent(
             source.TurnNumber,
             source.VictimId,
-            BulletStateMapper.Map(source.Bullet),
+            bullet,
             source.Damage,
-            source.Energy
-        );
+            source.Energy);
     }
 
     private static BulletHitBulletEvent Map(Schema.BulletHitBulletEvent source)

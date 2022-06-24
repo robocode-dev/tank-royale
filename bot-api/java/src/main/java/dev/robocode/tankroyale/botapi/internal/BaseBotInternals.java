@@ -600,7 +600,7 @@ public final class BaseBotInternals {
             tickStartNanoTime = System.nanoTime();
 
             var tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
-            tickEvent = EventMapper.map(tickEventForBot);
+            tickEvent = EventMapper.map(tickEventForBot, myId);
 
             if (botIntent.getRescan() != null && botIntent.getRescan()) {
                 botIntent.setRescan(false);
@@ -662,7 +662,7 @@ public final class BaseBotInternals {
 
             var skippedTurnEvent = gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
 
-            botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));
+            botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent, myId));
         }
 
         private void handleServerHandshake(JsonObject jsonMsg) {
