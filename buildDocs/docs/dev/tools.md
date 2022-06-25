@@ -26,7 +26,7 @@ all the tools for macOS and Linux as well.
 
 ### .Net platform
 
-- [.Net 5.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/5.0)
+- [.Net 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 - [DocFX](https://dotnet.github.io/docfx/) 2.59.0
     - [Prerequisites Visual Studio 2019](https://dotnet.github.io/docfx/tutorial/docfx_getting_started.html) for
       running `docfx metadata`

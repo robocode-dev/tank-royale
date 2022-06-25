@@ -28,7 +28,7 @@ When a bot kills an enemy by ramming, it scores an additional 30% of all the dam
 
 ### Total score
 
-The total score is everything else added up and determines each bot's rank in this battle.
+The total score is everything else added up and determines each bot´s rank in this battle.
 
 ### 1sts, 2nds, 3rds
 

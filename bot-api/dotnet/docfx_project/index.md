@@ -74,7 +74,7 @@ running the program. Using the bot API, we need to start the bot by calling the
 [IBaseBot.Start()] method of the bot API, which will tell the server that this bot wants to join the battle and also
 provide the server with the required bot info.
 
-With the bot's constructor (_MyFirstBot()_) we call the [BotInfo.fromFile(string)] method provides the bot info for the
+With the bot´s constructor (_MyFirstBot()_) we call the [BotInfo.fromFile(string)] method provides the bot info for the
 server, like e.g. the name of the bot, and its author, etc.
 
 The [Run()] method is called when the bot need to start its real execution to send instructions to the server.
@@ -100,8 +100,8 @@ MyFirstBot.json:
   "description": "A sample bot that is probably the first bot you will learn about.",
   "homepage": "",
   "countryCodes": "us, dk",
-  "platform": ".Net 5.0",
-  "programmingLang": "C# 8.0"
+  "platform": ".Net 6.0",
+  "programmingLang": "C# 10.0"
 }
 ```
 

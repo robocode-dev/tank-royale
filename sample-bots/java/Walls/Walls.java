@@ -66,7 +66,7 @@ public class Walls extends Bot {
     @Override
     public void onHitBot(HitBotEvent e) {
         // If he's in front of us, set back up a bit.
-        double bearing = bearingTo(e.getX(), e.getY());
+        var bearing = bearingTo(e.getX(), e.getY());
         if (bearing > -90 && bearing < 90) {
             back(100);
         } else { // else he's in back of us, so set ahead a bit.
@@ -82,7 +82,7 @@ public class Walls extends Bot {
         // By calling it manually here, we make sure we generate another scan event if there's a bot
         // on the next wall, so that we do not start moving up it until it's gone.
         if (peek) {
-            scan();
+            rescan();
         }
     }
 }

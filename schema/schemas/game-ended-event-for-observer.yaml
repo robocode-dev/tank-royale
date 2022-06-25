@@ -1,6 +1,6 @@
 $id: #game-ended-event-for-observer.yaml
 $schema: http://json-schema.org/2020-12/schema#
-description: Event occuring when game has ended. Gives all game results visible for an observer.
+description: Event occurring when game has ended. Gives all game results visible for an observer.
 extends:
   $ref: message.yaml
 properties:

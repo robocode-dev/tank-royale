@@ -14,6 +14,8 @@ object LogoPanel : JPanel() {
 
     private const val textSpacing = 10
 
+    private val textColor = Color(0x37, 0x7B, 0x37)
+
     init {
         background = Color(0x28, 0x28, 0x28)
     }
@@ -42,7 +44,7 @@ object LogoPanel : JPanel() {
         g2.fillRect(0, 0, width, height)
         g2.drawImage(logo, logoX, logoY, logoWidth, logoHeight, background, null)
 
-        g2.color = Color.green
+        g2.color = textColor
         g2.font = Font(Font.SANS_SERIF, Font.PLAIN, robocodeTextSize)
 
         val robocodeTextX = (width - g2.fontMetrics.stringWidth(robocodeText)) / 2

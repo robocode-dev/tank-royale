@@ -76,7 +76,7 @@ public class Corners extends Bot {
     // We saw another bot -> stop and fire!
     @Override
     public void onScannedBot(ScannedBotEvent e) {
-        double distance = distanceTo(e.getX(), e.getY());
+        var distance = distanceTo(e.getX(), e.getY());
 
         // Should we stop, or just fire?
         if (stopWhenSeeEnemy) {
@@ -85,9 +85,9 @@ public class Corners extends Bot {
             // Call our custom firing method
             smartFire(distance);
             // Rescan for another bot
-            scan();
-            // We won't get here if we saw another bot.
-            // Okay, we didn't see another bot... start moving or turning again.
+            rescan();
+            // This line will not be reached when scanning another bot.
+            // So we did not scan another bot -> resume movement
             resume();
         } else {
             smartFire(distance);

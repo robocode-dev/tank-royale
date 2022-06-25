@@ -11,6 +11,7 @@ import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundEnded
 import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundStarted
 import dev.robocode.tankroyale.gui.client.ClientEvents.onTickEvent
 import dev.robocode.tankroyale.gui.model.*
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
@@ -23,17 +24,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 object Client {
 
-    init {
-        TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
-
-        ServerEvents.onStopped.subscribe(Client) {
-            isRunning.set(false)
-            isPaused.set(false)
-
-            bots.clear()
-        }
-    }
-
     var currentGameSetup: GameSetup? = null
 
     private val isRunning = AtomicBoolean(false)
@@ -44,9 +34,6 @@ object Client {
     private var participants = listOf<Participant>()
     private var bots = HashSet<BotInfo>()
 
-    val joinedBots: Set<BotInfo>
-        get() { return bots }
-
     private var websocket: WebSocketClient? = null
 
     private val json = MessageConstants.json
@@ -55,7 +42,18 @@ object Client {
 
     private lateinit var lastStartGame: StartGame
 
-    private var tps: Int? = null
+    private var lastTps: Int? = null
+
+    init {
+        TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
+
+        ServerEvents.onStopped.subscribe(Client) {
+            isRunning.set(false)
+            isPaused.set(false)
+
+            bots.clear()
+        }
+    }
 
     fun connect() {
         if (isConnected) {
@@ -72,9 +70,6 @@ object Client {
             websocket.open() // must be called after onOpen.subscribe()
         }
     }
-
-    fun isGameRunning(): Boolean = isRunning.get()
-    fun isGamePaused(): Boolean = isPaused.get()
 
     fun close() {
         stopGame()
@@ -132,6 +127,18 @@ object Client {
         }
     }
 
+    internal fun doNextTurn() {
+        if (isRunning.get() && isPaused.get()) {
+            send(NextTurn())
+        }
+    }
+
+    fun isGameRunning(): Boolean = isRunning.get()
+    fun isGamePaused(): Boolean = isPaused.get()
+
+    val joinedBots: Set<BotInfo>
+        get() { return bots }
+
     fun getParticipant(id: Int): Participant = participants.first { participant -> participant.id == id }
 
     private fun startWithLastGameSetup() {
@@ -144,10 +151,10 @@ object Client {
     }
 
     private fun changeTps(tps: Int) {
-        if (isRunning.get() && tps != this.tps) {
-            this.tps = tps
+        if (isRunning.get() && tps != lastTps) {
             send(ChangeTps(tps))
         }
+        lastTps = tps
     }
 
     private fun onMessage(msg: String) {
@@ -190,6 +197,8 @@ object Client {
         participants = gameStartedEvent.participants
 
         onGameStarted.fire(gameStartedEvent)
+
+        changeTps(ConfigSettings.tps)
     }
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {

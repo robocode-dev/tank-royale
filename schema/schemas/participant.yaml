@@ -17,7 +17,7 @@ properties:
     items:
       type: string
   description:
-    decription: Short description of the bot, preferable a one-liner
+    description: Short description of the bot, preferable a one-liner
     type: string
   homepage:
     description: URL to a home page for the bot

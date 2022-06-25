@@ -191,10 +191,16 @@ and firing the gun.</p>
       <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Firepower">IBaseBot.Firepower</a>
     </div>
     <div>
-      <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetScan">IBaseBot.SetScan()</a>
+      <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetRescan">IBaseBot.SetRescan()</a>
+    </div>
+    <div>
+      <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Interruptible">IBaseBot.Interruptible</a>
     </div>
     <div>
       <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_AdjustGunForBodyTurn">IBaseBot.AdjustGunForBodyTurn</a>
+    </div>
+    <div>
+      <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_AdjustRadarForBodyTurn">IBaseBot.AdjustRadarForBodyTurn</a>
     </div>
     <div>
       <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_AdjustRadarForGunTurn">IBaseBot.AdjustRadarForGunTurn</a>
@@ -354,7 +360,7 @@ and firing the gun.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_DistanceRemaining.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.DistanceRemaining%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L177">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L190">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_DistanceRemaining_" data-uid="Robocode.TankRoyale.BotApi.IBot.DistanceRemaining*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_DistanceRemaining" data-uid="Robocode.TankRoyale.BotApi.IBot.DistanceRemaining">DistanceRemaining</h4>
@@ -380,7 +386,9 @@ remaining is negative, the bot is moving backward.</p>
     <tbody>
       <tr>
         <td><span class="xref">System.Double</span></td>
-        <td><p>The remaining distance to move before its current movement is completed.</p>
+        <td><p>The remaining distance to move before its current movement is completed.
+If <span class="xref">System.Double.PositiveInfinity</span> the bot will move forward infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the bot will move backward infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -397,7 +405,7 @@ remaining is negative, the bot is moving backward.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_GunTurnRemaining.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.GunTurnRemaining%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L408">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L443">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_GunTurnRemaining_" data-uid="Robocode.TankRoyale.BotApi.IBot.GunTurnRemaining*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_GunTurnRemaining" data-uid="Robocode.TankRoyale.BotApi.IBot.GunTurnRemaining">GunTurnRemaining</h4>
@@ -423,7 +431,9 @@ When the turn remaining is negative, the bot is turning to the right.</p>
     <tbody>
       <tr>
         <td><span class="xref">System.Double</span></td>
-        <td><p>The remaining degrees to turn the gun before its current turning is completed.</p>
+        <td><p>The remaining degrees to turn the gun before its current turning is completed.
+If <span class="xref">System.Double.PositiveInfinity</span> the gun will turn left infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the gun will turn right infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -440,7 +450,7 @@ When the turn remaining is negative, the bot is turning to the right.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_IsRunning.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.IsRunning%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L45">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L47">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_IsRunning_" data-uid="Robocode.TankRoyale.BotApi.IBot.IsRunning*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_IsRunning" data-uid="Robocode.TankRoyale.BotApi.IBot.IsRunning">IsRunning</h4>
@@ -472,7 +482,7 @@ When the turn remaining is negative, the bot is turning to the right.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_RadarTurnRemaining.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.RadarTurnRemaining%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L524">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L570">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_RadarTurnRemaining_" data-uid="Robocode.TankRoyale.BotApi.IBot.RadarTurnRemaining*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_RadarTurnRemaining" data-uid="Robocode.TankRoyale.BotApi.IBot.RadarTurnRemaining">RadarTurnRemaining</h4>
@@ -498,7 +508,9 @@ When the turn remaining is negative, the bot is turning to the right.</p>
     <tbody>
       <tr>
         <td><span class="xref">System.Double</span></td>
-        <td><p>The remaining degrees to turn the radar before its current turning is completed.</p>
+        <td><p>The remaining degrees to turn the radar before its current turning is completed.
+If <span class="xref">System.Double.PositiveInfinity</span> the radar will turn left infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the radar will turn right infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -515,7 +527,7 @@ When the turn remaining is negative, the bot is turning to the right.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_TurnRemaining.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.TurnRemaining%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L293">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L317">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_TurnRemaining_" data-uid="Robocode.TankRoyale.BotApi.IBot.TurnRemaining*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_TurnRemaining" data-uid="Robocode.TankRoyale.BotApi.IBot.TurnRemaining">TurnRemaining</h4>
@@ -542,7 +554,9 @@ When the turn remaining is negative, the bot is turning to the right.</p>
     <tbody>
       <tr>
         <td><span class="xref">System.Double</span></td>
-        <td><p>The remaining degrees to turn before its current turning is completed.</p>
+        <td><p>The remaining degrees to turn before its current turning is completed.
+If <span class="xref">System.Double.PositiveInfinity</span> the bot will turn left infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the bot will turn right infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -561,7 +575,7 @@ When the turn remaining is negative, the bot is turning to the right.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_Back_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.Back(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L162">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L172">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_Back_" data-uid="Robocode.TankRoyale.BotApi.IBot.Back*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_Back_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.Back(System.Double)">Back(Double)</h4>
@@ -596,8 +610,9 @@ method.</p>
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">distance</span></td>
-        <td><p>Is the distance to move backward. If negative, the bot will move
-forward.</p>
+        <td><p>Is the distance to move backward. If negative, the bot will move forward.
+If <span class="xref">System.Double.PositiveInfinity</span> the bot will move backward infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the bot will move forward infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -615,7 +630,7 @@ forward.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_Fire_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.Fire(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L568">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L614">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_Fire_" data-uid="Robocode.TankRoyale.BotApi.IBot.Fire*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_Fire_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.Fire(System.Double)">Fire(Double)</h4>
@@ -633,7 +648,7 @@ the firepower is more than <a class="xref" href="Robocode.TankRoyale.BotApi.Cons
 again. The gun heat must be zero before the gun can fire (see <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_GunHeat">GunHeat</a>.
 The gun heat generated by firing the gun is 1 + (firepower / 5). Hence, the more firepower
 used the longer it takes to cool down the gun. The gun cooling rate can be read from <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_GunCoolingRate">GunCoolingRate</a>.</p>
-<p>The amount of energy used for firing the gun is subtracted from the bot's total energy. The
+<p>The amount of energy used for firing the gun is subtracted from the bot´s total energy. The
 amount of damage dealt by a bullet hitting another bot is 4x firepower, and if the firepower is
 greater than 1 it will do an additional 2 x (firepower - 1) damage.</p>
 <p>The firepower is truncated to <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MinFirepower">MinFirepower</a> and
@@ -681,7 +696,7 @@ more energy than available from the bot. The bullet power must be &gt; MinFirepo
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_Forward_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.Forward(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L104">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L110">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_Forward_" data-uid="Robocode.TankRoyale.BotApi.IBot.Forward*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_Forward_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.Forward(System.Double)">Forward(Double)</h4>
@@ -716,8 +731,9 @@ method.</p>
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">distance</span></td>
-        <td><p>Is the distance to move forward. If negative, the bot will move
-backward.</p>
+        <td><p>Is the distance to move forward. If negative, the bot will move backward.
+If <span class="xref">System.Double.PositiveInfinity</span> the bot will move forward infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the bot will move backward infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -732,10 +748,33 @@ backward.</p>
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_Rescan.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.Rescan%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L654">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_IBot_Rescan_" data-uid="Robocode.TankRoyale.BotApi.IBot.Rescan*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_IBot_Rescan" data-uid="Robocode.TankRoyale.BotApi.IBot.Rescan">Rescan()</h4>
+  <div class="markdown level1 summary"><p>Scan (again) with the radar. This method is useful if the radar has not been turning and
+thereby will not be able to automatically scan bots. This method is useful when the bot
+movement has stopped, e.g. when <a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Stop">Stop()</a> has been called. The last radar direction and
+sweep angle will be used for rescanning for bots.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Rescan()</code></pre>
+  </div>
+  <h5 id="Robocode_TankRoyale_BotApi_IBot_Rescan_seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Stop">Stop()</a></div>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_Resume.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.Resume%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L599">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L645">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_Resume_" data-uid="Robocode.TankRoyale.BotApi.IBot.Resume*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_Resume" data-uid="Robocode.TankRoyale.BotApi.IBot.Resume">Resume()</h4>
@@ -799,33 +838,10 @@ correctly, the bot may behave strangely in new rounds.</p>
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_Scan.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.Scan%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L608">View Source</a>
-  </span>
-  <a id="Robocode_TankRoyale_BotApi_IBot_Scan_" data-uid="Robocode.TankRoyale.BotApi.IBot.Scan*"></a>
-  <h4 id="Robocode_TankRoyale_BotApi_IBot_Scan" data-uid="Robocode.TankRoyale.BotApi.IBot.Scan">Scan()</h4>
-  <div class="markdown level1 summary"><p>Scan (again) with the radar. This method is useful if the radar has not been turning and
-thereby will not be able to automatically scan bots. This method is useful when the bot
-movement has stopped, e.g. when <a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Stop">Stop()</a> has been called. The last radar direction and
-sweep angle will be used for rescanning for bots.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void Scan()</code></pre>
-  </div>
-  <h5 id="Robocode_TankRoyale_BotApi_IBot_Scan_seealso">See Also</h5>
-  <div class="seealso">
-      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Stop">Stop()</a></div>
-  </div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_SetBack_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.SetBack(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L135">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L143">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_SetBack_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetBack*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_SetBack_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetBack(System.Double)">SetBack(Double)</h4>
@@ -864,8 +880,9 @@ for each turn until <a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#R
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">distance</span></td>
-        <td><p>Is the distance to move backward. If negative, the bot will move
-forward.</p>
+        <td><p>Is the distance to move backward. If negative, the bot will move forward.
+If <span class="xref">System.Double.PositiveInfinity</span> the bot will move backward infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the bot will move forward infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -883,7 +900,7 @@ forward.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_SetForward_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.SetForward(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L77">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L81">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_SetForward_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetForward*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_SetForward_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetForward(System.Double)">SetForward(Double)</h4>
@@ -922,8 +939,9 @@ for each turn until <a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#R
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">distance</span></td>
-        <td><p>Is the distance to move forward. If negative, the bot will move
-backward.</p>
+        <td><p>Is the distance to move forward. If negative, the bot will move backward.
+If <span class="xref">System.Double.PositiveInfinity</span> the bot will move forward infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the bot will move backward infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -941,7 +959,7 @@ backward.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_SetTurnGunLeft_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.SetTurnGunLeft(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L319">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L345">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_SetTurnGunLeft_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetTurnGunLeft*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_SetTurnGunLeft_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetTurnGunLeft(System.Double)">SetTurnGunLeft(Double)</h4>
@@ -975,8 +993,9 @@ counts.</p>
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">degrees</span></td>
-        <td><p>Is the amount of degrees to turn left. If negative, the gun will turn
-right.</p>
+        <td><p>Is the amount of degrees to turn left. If negative, the gun will turn right.
+If <span class="xref">System.Double.PositiveInfinity</span> the gun will turn left infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the gun will turn right infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -994,7 +1013,7 @@ right.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_SetTurnGunRight_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.SetTurnGunRight(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L369">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L399">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_SetTurnGunRight_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetTurnGunRight*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_SetTurnGunRight_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetTurnGunRight(System.Double)">SetTurnGunRight(Double)</h4>
@@ -1028,8 +1047,9 @@ counts.</p>
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">degrees</span></td>
-        <td><p>Is the amount of degrees to turn right. If negative, the gun will
-turn left.</p>
+        <td><p>Is the amount of degrees to turn right. If negative, the gun will turn left.
+If <span class="xref">System.Double.PositiveInfinity</span> the gun will turn right infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the gun will turn left infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -1047,7 +1067,7 @@ turn left.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_SetTurnLeft_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.SetTurnLeft(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L203">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L218">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_SetTurnLeft_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetTurnLeft*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_SetTurnLeft_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetTurnLeft(System.Double)">SetTurnLeft(Double)</h4>
@@ -1081,8 +1101,9 @@ counts.</p>
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">degrees</span></td>
-        <td><p>Is the amount of degrees to turn left. If negative, the bot will turn
-right.</p>
+        <td><p>Is the amount of degrees to turn left. If negative, the bot will turn right.
+If <span class="xref">System.Double.PositiveInfinity</span> the bot will turn left infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the bot will turn right infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -1100,7 +1121,7 @@ right.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_SetTurnRadarLeft_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.SetTurnRadarLeft(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L434">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L471">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_SetTurnRadarLeft_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetTurnRadarLeft*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_SetTurnRadarLeft_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetTurnRadarLeft(System.Double)">SetTurnRadarLeft(Double)</h4>
@@ -1134,8 +1155,9 @@ counts.</p>
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">degrees</span></td>
-        <td><p>Is the amount of degrees to turn left. If negative, the radar will
-turn right.</p>
+        <td><p>Is the amount of degrees to turn left. If negative, the radar will turn right.
+If <span class="xref">System.Double.PositiveInfinity</span> the radar will turn left infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the radar will turn right infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -1153,7 +1175,7 @@ turn right.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_SetTurnRadarRight_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.SetTurnRadarRight(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L485">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L526">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_SetTurnRadarRight_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetTurnRadarRight*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_SetTurnRadarRight_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetTurnRadarRight(System.Double)">SetTurnRadarRight(Double)</h4>
@@ -1188,8 +1210,9 @@ counts.</p>
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">degrees</span></td>
-        <td><p>Is the amount of degrees to turn right. If negative, the radar will
-turn left.</p>
+        <td><p>Is the amount of degrees to turn right. If negative, the radar will turn left.
+If <span class="xref">System.Double.PositiveInfinity</span> the radar will turn right infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the radar will turn left infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -1207,7 +1230,7 @@ turn left.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_SetTurnRight_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.SetTurnRight(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L253">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L272">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_SetTurnRight_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetTurnRight*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_SetTurnRight_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.SetTurnRight(System.Double)">SetTurnRight(Double)</h4>
@@ -1241,8 +1264,9 @@ counts.</p>
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">degrees</span></td>
-        <td><p>Is the amount of degrees to turn right. If negative, the bot will
-turn left.</p>
+        <td><p>Is the amount of degrees to turn right. If negative, the bot will turn left.
+If <span class="xref">System.Double.PositiveInfinity</span> the bot will turn right infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the bot will turn left infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -1260,7 +1284,7 @@ turn left.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_Stop.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.Stop%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L584">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L630">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_Stop_" data-uid="Robocode.TankRoyale.BotApi.IBot.Stop*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_Stop" data-uid="Robocode.TankRoyale.BotApi.IBot.Stop">Stop()</h4>
@@ -1289,7 +1313,7 @@ method.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_TurnGunLeft_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.TurnGunLeft(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L343">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L371">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_TurnGunLeft_" data-uid="Robocode.TankRoyale.BotApi.IBot.TurnGunLeft*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_TurnGunLeft_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.TurnGunLeft(System.Double)">TurnGunLeft(Double)</h4>
@@ -1322,8 +1346,9 @@ method.</p>
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">degrees</span></td>
-        <td><p>Is the amount of degrees to turn left. If negative, the gun will turn
-right.</p>
+        <td><p>Is the amount of degrees to turn left. If negative, the gun will turn right.
+If <span class="xref">System.Double.PositiveInfinity</span> the gun will turn left infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the gun will turn right infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -1341,7 +1366,7 @@ right.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_TurnGunRight_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.TurnGunRight(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L393">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L425">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_TurnGunRight_" data-uid="Robocode.TankRoyale.BotApi.IBot.TurnGunRight*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_TurnGunRight_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.TurnGunRight(System.Double)">TurnGunRight(Double)</h4>
@@ -1374,8 +1399,9 @@ method.</p>
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">degrees</span></td>
-        <td><p>Is the amount of degrees to turn right. If negative, the gun will
-turn left.</p>
+        <td><p>Is the amount of degrees to turn right. If negative, the gun will turn left.
+If <span class="xref">System.Double.PositiveInfinity</span> the gun will turn right infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the gun will turn left infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -1393,7 +1419,7 @@ turn left.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_TurnLeft_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.TurnLeft(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L227">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L244">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_TurnLeft_" data-uid="Robocode.TankRoyale.BotApi.IBot.TurnLeft*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_TurnLeft_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.TurnLeft(System.Double)">TurnLeft(Double)</h4>
@@ -1426,8 +1452,9 @@ method.</p>
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">degrees</span></td>
-        <td><p>Is the amount of degrees to turn left. If negative, the bot will turn
-right.</p>
+        <td><p>Is the amount of degrees to turn left. If negative, the bot will turn right.
+If <span class="xref">System.Double.PositiveInfinity</span> the bot will turn left infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the bot will turn right infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -1445,7 +1472,7 @@ right.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_TurnRadarLeft_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.TurnRadarLeft(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L458">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L497">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_TurnRadarLeft_" data-uid="Robocode.TankRoyale.BotApi.IBot.TurnRadarLeft*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_TurnRadarLeft_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.TurnRadarLeft(System.Double)">TurnRadarLeft(Double)</h4>
@@ -1478,8 +1505,9 @@ method.</p>
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">degrees</span></td>
-        <td><p>Is the amount of degrees to turn left. If negative, the radar will
-turn right.</p>
+        <td><p>Is the amount of degrees to turn left. If negative, the radar will turn right.
+If <span class="xref">System.Double.PositiveInfinity</span> the radar will turn left infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the radar will turn right infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -1497,7 +1525,7 @@ turn right.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_TurnRadarRight_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.TurnRadarRight(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L509">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L552">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_TurnRadarRight_" data-uid="Robocode.TankRoyale.BotApi.IBot.TurnRadarRight*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_TurnRadarRight_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.TurnRadarRight(System.Double)">TurnRadarRight(Double)</h4>
@@ -1530,8 +1558,9 @@ method.</p>
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">degrees</span></td>
-        <td><p>Is the amount of degrees to turn right. If negative, the radar will
-turn left.</p>
+        <td><p>Is the amount of degrees to turn right. If negative, the radar will turn left.
+If <span class="xref">System.Double.PositiveInfinity</span> the radar will turn right infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the radar will turn left infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -1549,7 +1578,7 @@ turn left.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_TurnRight_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.TurnRight(System.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L277">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L298">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_TurnRight_" data-uid="Robocode.TankRoyale.BotApi.IBot.TurnRight*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_TurnRight_System_Double_" data-uid="Robocode.TankRoyale.BotApi.IBot.TurnRight(System.Double)">TurnRight(Double)</h4>
@@ -1582,8 +1611,9 @@ method.</p>
       <tr>
         <td><span class="xref">System.Double</span></td>
         <td><span class="parametername">degrees</span></td>
-        <td><p>Is the amount of degrees to turn right. If negative, the bot will
-turn left.</p>
+        <td><p>Is the amount of degrees to turn right. If negative, the bot will turn left.
+If <span class="xref">System.Double.PositiveInfinity</span> the bot will turn right infinitely.
+If <span class="xref">System.Double.NegativeInfinity</span> the bot will turn left infinitely.</p>
 </td>
       </tr>
     </tbody>
@@ -1601,7 +1631,7 @@ turn left.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_WaitFor_Robocode_TankRoyale_BotApi_Events_Condition_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.WaitFor(Robocode.TankRoyale.BotApi.Events.Condition)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L615">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L661">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_WaitFor_" data-uid="Robocode.TankRoyale.BotApi.IBot.WaitFor*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_WaitFor_Robocode_TankRoyale_BotApi_Events_Condition_" data-uid="Robocode.TankRoyale.BotApi.IBot.WaitFor(Robocode.TankRoyale.BotApi.Events.Condition)">WaitFor(Condition)</h4>

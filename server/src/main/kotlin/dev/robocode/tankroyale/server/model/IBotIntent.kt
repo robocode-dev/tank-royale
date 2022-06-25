@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.server.model
 
 /**
  * Interface for a bot intent. Bot intents are sent from bots between turns.
- * A bot intent reflects the bot's orders for setting a new target speed, turn rates, bullet power etc.
+ * A bot intent reflects the bot´s orders for setting a new target speed, turn rates, bullet power etc.
  */
 interface IBotIntent {
     /** New target speed. */
@@ -23,11 +23,14 @@ interface IBotIntent {
     /** Flag set to adjusting gun for body turn. */
     val adjustGunForBodyTurn: Boolean?
 
+    /** Flag set to adjusting radar for body turn. */
+    val adjustRadarForBodyTurn: Boolean?
+
     /** Flag set to adjusting radar for gun turn. */
     val adjustRadarForGunTurn: Boolean?
 
     /** Flag set to perform rescan (reusing last scan direction and scan spread angle) */
-    val scan: Boolean?
+    val rescan: Boolean?
 
     /** New body color. */
     val bodyColor: String?

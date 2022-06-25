@@ -1,6 +1,6 @@
 $id: #tick-event-for-observer.yaml
 $schema: http://json-schema.org/2020-12/schema#
-description: Event occuring for before each new turn in the battle. Gives details for observers.
+description: Event occurring for before each new turn in the battle. Gives details for observers.
 extends:
   $ref: event.yaml
 properties:

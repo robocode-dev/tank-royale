@@ -527,7 +527,7 @@ public interface IBaseBot {
      * <p>If this property is set multiple times, the last value set before go() counts.
      *
      * @param firepower is the new firepower
-     * @return {@code true} if the cannon can fire, i.e. if there no gun heat; {@code false}
+     * @return {@code true} if the cannon can fire, i.e. if there is no gun heat; {@code false}
      * otherwise.
      * @see #onBulletFired(BulletFiredEvent)
      * @see #getFirepower()
@@ -549,16 +549,40 @@ public interface IBaseBot {
      * hence will not automatically scan bots. The last radar direction and sweep angle will be used
      * for scanning for bots.
      */
-    void setScan();
+    void setRescan();
 
     /**
-     * Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun behaves
-     * like it is turning independent of the bot's turn.
+     * Call this method during an event handler to control continuing or restarting the event handler,
+     * when a new event occurs again for the same event handler while processing an earlier event.
      *
-     * <p>Ok, so this needs some explanation: The gun is mounted on the bot's body. So, normally, if
+     * <p>Example:
+     * <pre><code class="language-java">
+     *    public void onScannedBot(ScannedBotEvent e) {
+     *        fire(1);
+     *        <b>setInterruptible(true);</b>
+     *        forward(100); // When a new bot is scanned while moving forward this handler will restart
+     *                      // from the top as this event handler has been set to be interruptible
+     *                      // right after firing. Without {@code setInterruptible(true)}, new scan events
+     *                      // would not be triggered while moving forward.
+     *        // We'll only get here if we do not see a robot during the move.
+     *        System.out.println("No bots were scanned");
+     *    }
+     * </code></pre>
+     *
+     * @param interruptible {@code true} if the event handler should be interrupted and hence restart when a new
+     *                      event of the same event type occurs again; {@code false} otherwise where the event handler
+     *                      will continue processing.
+     */
+    void setInterruptible(boolean interruptible);
+
+    /**
+     * Sets the gun to adjust for the bot´s turn when setting the gun turn rate. So the gun behaves
+     * like it is turning independent of the bot´s turn.
+     *
+     * <p>Ok, so this needs some explanation: The gun is mounted on the bot´s body. So, normally, if
      * the bot turns 90 degrees to the right, then the gun will turn with it as it is mounted on top
-     * of the bot's body. To compensate for this, you can adjust the gun for the bot's turn. When this
-     * is set, the gun will turn independent from the bot's turn.
+     * of the bot´s body. To compensate for this, you can adjust the gun for the bot´s turn. When this
+     * is set, the gun will turn independent of the bot´s turn.
      *
      * <p>Note: This property is additive until you reach the maximum the gun can turn {@link
      * Constants#MAX_GUN_TURN_RATE}. The "adjust" is added to the amount, you set for turning the bot by the
@@ -566,26 +590,76 @@ public interface IBaseBot {
      *
      * <p>Note: The gun compensating this way does count as "turning the gun".
      *
-     * @param adjust {@code true} if the gun must adjust/compensate for the bot's turn; {@code false}
-     *               if the gun must turn with the bot's turn.
+     * @param adjust {@code true} if the gun must adjust/compensate for the body turning; {@code false}
+     *               if the gun must turn with the body turning (default).
+     * @see #setAdjustRadarForBodyTurn(boolean)
      * @see #setAdjustRadarForGunTurn(boolean)
      * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForBodyTurn()
+     * @see #isAdjustRadarForGunTurn()
      */
     void setAdjustGunForBodyTurn(boolean adjust);
 
     /**
-     * Checks if the gun is set to adjust for the bot turning, i.e. to turn independent from the bot's
+     * Checks if the gun is set to adjust for the bot turning, i.e. to turn independent of the bot´s
      * body turn.
      *
      * <p>This call returns {@code true} if the gun is set to turn independent of the turn of the
-     * bot's body. Otherwise, {@code false} is returned, meaning that the gun is set to turn with the
-     * bot's body turn.
+     * bot´s body. Otherwise, {@code false} is returned, meaning that the gun is set to turn with the
+     * bot´s body turn.
      *
-     * @return {@code true} if the gun is set to turn independent of the bot turning; {@code false} if
-     * the gun is set to turn with the bot turning.
+     * @return {@code true} if the gun is set to turn independent of the body turning; {@code false} if
+     * the gun is set to turn with the body turning (default).
      * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForBodyTurn(boolean)
+     * @see #setAdjustRadarForGunTurn(boolean)
+     * @see #isAdjustRadarForBodyTurn()
+     * @see #isAdjustRadarForGunTurn()
      */
     boolean isAdjustGunForBodyTurn();
+
+    /**
+     * Sets the radar to adjust for the body's turn when setting the radar turn rate. So the radar
+     * behaves like it is turning independent of the body's turn.
+     *
+     * <p>Ok, so this needs some explanation: The radar is mounted on the gun, and the gun is mounted on the bot´s body.
+     * So, normally, if the bot turns 90 degrees to the right, the gun turns, as does the radar. Hence, if the bot
+     * turns 90 degrees to the right, then the gun and radar will turn with it as the radar is mounted on top of the
+     * gun. To compensate for this, you can adjust the radar for the body turn. When this is set, the radar will turn
+     * independent of the body's turn.
+     *
+     * <p>Note: This property is additive until you reach the maximum the radar can turn ({@link
+     * Constants#MAX_RADAR_TURN_RATE}). The "adjust" is added to the amount, you set for turning the body by the
+     * body turn rate, then capped by the physics of the game.
+     *
+     * <p>Note: The radar compensating this way does count as "turning the radar".
+     *
+     * @param adjust {@code true} if the radar must adjust/compensate for the body's turn; {@code
+     *               false} if the radar must turn with the body turning (default).
+     * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForGunTurn(boolean)
+     * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForBodyTurn()
+     * @see #isAdjustRadarForGunTurn()
+     */
+    void setAdjustRadarForBodyTurn(boolean adjust);
+
+    /**
+     * Checks if the radar is set to adjust for the body turning, i.e. to turn independent of the
+     * body's turn.
+     *
+     * <p>This call returns {@code true} if the radar is set to turn independent of the turn of the
+     * body. Otherwise, {@code false} is returned, meaning that the radar is set to turn with the body turning.
+     *
+     * @return {@code true} if the radar is set to turn independent of the body turning; {@code false}
+     * if the radar is set to turn with the body turning (default).
+     * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForBodyTurn(boolean)
+     * @see #setAdjustRadarForGunTurn(boolean)
+     * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForGunTurn()
+     */
+    boolean isAdjustRadarForBodyTurn();
 
     /**
      * Sets the radar to adjust for the gun's turn when setting the radar turn rate. So the radar
@@ -594,7 +668,7 @@ public interface IBaseBot {
      * <p>Ok, so this needs some explanation: The radar is mounted on the gun. So, normally, if the
      * gun turns 90 degrees to the right, then the radar will turn with it as it is mounted on top of
      * the gun. To compensate for this, you can adjust the radar for the gun turn. When this is set,
-     * the radar will turn independent from the gun's turn.
+     * the radar will turn independent of the gun's turn.
      *
      * <p>Note: This property is additive until you reach the maximum the radar can turn ({@link
      * Constants#MAX_RADAR_TURN_RATE}). The "adjust" is added to the amount, you set for turning the gun by the
@@ -602,15 +676,18 @@ public interface IBaseBot {
      *
      * <p>Note: The radar compensating this way does count as "turning the radar".
      *
-     * @param adjust {@code true} if the radar must adjust/compensate for the gun's turn; {@code
-     *               false} if the radar must turn with the gun's turn.
+     * @param adjust {@code true} if the radar must adjust/compensate for the gun turning; {@code
+     *               false} if the radar must turn with the gun turning (default).
      * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForBodyTurn(boolean)
+     * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForBodyTurn()
      * @see #isAdjustRadarForGunTurn()
      */
     void setAdjustRadarForGunTurn(boolean adjust);
 
     /**
-     * Checks if the radar is set to adjust for the gun turning, i.e. to turn independent from the
+     * Checks if the radar is set to adjust for the gun turning, i.e. to turn independent of the
      * gun's turn.
      *
      * <p>This call returns {@code true} if the radar is set to turn independent of the turn of the
@@ -618,8 +695,12 @@ public interface IBaseBot {
      * turn.
      *
      * @return {@code true} if the radar is set to turn independent of the gun turning; {@code false}
-     * if the radar is set to turn with the gun turning.
+     * if the radar is set to turn with the gun turning (default).
+     * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForBodyTurn(boolean)
      * @see #setAdjustRadarForGunTurn(boolean)
+     * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForBodyTurn()
      */
     boolean isAdjustRadarForGunTurn();
 
@@ -870,15 +951,12 @@ public interface IBaseBot {
      * @param connectionErrorEvent is the event details from the game.
      */
     default void onConnectionError(ConnectionErrorEvent connectionErrorEvent) {
-        String msg = "Connection error with " + connectionErrorEvent.getServerUri();
-        String cause = null;
-        if (connectionErrorEvent.getError() != null) {
-            cause = connectionErrorEvent.getError().getMessage();
+        System.err.println("Connection error with " + connectionErrorEvent.getServerUri());
+
+        var throwable = connectionErrorEvent.getError();
+        if (throwable != null) {
+            throwable.printStackTrace();
         }
-        if (cause != null) {
-            msg += ": " + cause;
-        }
-        System.err.println(msg);
     }
 
     /**
@@ -1115,7 +1193,7 @@ public interface IBaseBot {
     }
 
     /**
-     * Calculates the direction (angle) from the bot's coordinates to a point x,y.
+     * Calculates the direction (angle) from the bot´s coordinates to a point x,y.
      *
      * @param x is the x coordinate of the point.
      * @param y is the y coordinate of the point.
@@ -1126,7 +1204,7 @@ public interface IBaseBot {
     }
 
     /**
-     * Calculates the bearing (delta angle) between the current direction of the bot's body and the
+     * Calculates the bearing (delta angle) between the current direction of the bot´s body and the
      * direction to the point x,y.
      *
      * @param x is the x coordinate of the point.
@@ -1138,7 +1216,7 @@ public interface IBaseBot {
     }
 
     /**
-     * Calculates the bearing (delta angle) between the current direction of the bot's gun and the
+     * Calculates the bearing (delta angle) between the current direction of the bot´s gun and the
      * direction to the point x,y.
      *
      * @param x is the x coordinate of the point.
@@ -1150,7 +1228,7 @@ public interface IBaseBot {
     }
 
     /**
-     * Calculates the bearing (delta angle) between the current direction of the bot's radar and the
+     * Calculates the bearing (delta angle) between the current direction of the bot´s radar and the
      * direction to the point x,y.
      *
      * @param x is the x coordinate of the point.

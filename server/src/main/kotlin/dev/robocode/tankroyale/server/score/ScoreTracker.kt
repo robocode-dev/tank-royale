@@ -29,7 +29,7 @@ class ScoreTracker(botIds: Set<BotId>) {
         initializeDamageAndSurvivals()
     }
 
-    /** Current results ordered with highest total scores first. */
+    /** Current results ordered with higher total scores first. */
     val results: List<Score> get() = botScores
 
     /** Initializes the map containing the BotRecord record for each bot. */
@@ -64,7 +64,7 @@ class ScoreTracker(botIds: Set<BotId>) {
         }
     }
 
-    /** Current bot scores ordered with highest total scores first. */
+    /** Current bot scores ordered with higher total scores first. */
     private val botScores: MutableList<Score>
         get() {
             val scores = mutableListOf<Score>()
@@ -78,7 +78,7 @@ class ScoreTracker(botIds: Set<BotId>) {
      * @param botId is the identifier of the bot.
      * @return a score record.
      */
-    fun getScore(botId: BotId): Score {
+    private fun getScore(botId: BotId): Score {
         val damageRecord = scoreAndDamages[botId] ?: throw IllegalStateException("No score record for botId: $botId")
         damageRecord.apply {
             val score = Score(

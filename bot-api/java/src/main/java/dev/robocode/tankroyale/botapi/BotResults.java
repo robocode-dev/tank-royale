@@ -7,11 +7,6 @@ package dev.robocode.tankroyale.botapi;
 public final class BotResults {
 
     /**
-     * Unique id of the bot.
-     */
-    private final int id;
-
-    /**
      * Rank/placement of the bot.
      */
     private final int rank;
@@ -69,7 +64,6 @@ public final class BotResults {
     /**
      * Initializes a new instance of the BotInfo class.
      *
-     * @param id                is the unique id of the bot.
      * @param rank              is the rank/placement of the bot.
      * @param survival          is the survival score.
      * @param lastSurvivorBonus is the last survivor score.
@@ -83,7 +77,6 @@ public final class BotResults {
      * @param thirdPlaces       is the number of 3rd places.
      */
     public BotResults(
-            int id,
             int rank,
             double survival,
             double lastSurvivorBonus,
@@ -95,7 +88,6 @@ public final class BotResults {
             int firstPlaces,
             int secondPlaces,
             int thirdPlaces) {
-        this.id = id;
         this.rank = rank;
         this.survival = survival;
         this.lastSurvivorBonus = lastSurvivorBonus;
@@ -107,15 +99,6 @@ public final class BotResults {
         this.firstPlaces = firstPlaces;
         this.secondPlaces = secondPlaces;
         this.thirdPlaces = thirdPlaces;
-    }
-
-    /**
-     * Returns the unique id of the bot used in the battle.
-     *
-     * @return The unique bot id.
-     */
-    public int getId() {
-        return id;
     }
 
     /**

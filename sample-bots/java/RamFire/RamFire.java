@@ -41,10 +41,10 @@ public class RamFire extends Bot {
     public void onScannedBot(ScannedBotEvent e) {
         turnToFaceTarget(e.getX(), e.getY());
 
-        double distance = distanceTo(e.getX(), e.getY());
+        var distance = distanceTo(e.getX(), e.getY());
         forward(distance + 5);
 
-        scan(); // Might want to move forward again!
+        rescan(); // Might want to move forward again!
     }
 
     // We have hit another bot -> turn to face bot, fire hard, and ram it again!
@@ -71,7 +71,7 @@ public class RamFire extends Bot {
     // Method that turns the bot to face the target at coordinate x,y, but also sets the
     // default turn direction used if no bot is being scanned within in the run() method.
     private void turnToFaceTarget(double x, double y) {
-        double bearing = bearingTo(x, y);
+        var bearing = bearingTo(x, y);
         if (bearing >= 0) {
             turnDirection = 1;
         } else {

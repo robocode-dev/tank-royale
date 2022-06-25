@@ -37,11 +37,6 @@ public final class BulletState {
     private final double direction;
 
     /**
-     * Speed measured in units per turn.
-     */
-    private final double speed;
-
-    /**
      * Color of the bullet.
      */
     private final Color color;
@@ -55,18 +50,16 @@ public final class BulletState {
      * @param x         is the X coordinate of the bullet.
      * @param y         is the Y coordinate of the bullet.
      * @param direction is the direction in degrees.
-     * @param speed     is the speed measured in units per turn.
      * @param color     is the color of the bullet.
      */
     public BulletState(
-            int bulletId, int ownerId, double power, double x, double y, double direction, double speed, Color color) {
+            int bulletId, int ownerId, double power, double x, double y, double direction, Color color) {
         this.bulletId = bulletId;
         this.ownerId = ownerId;
         this.power = power;
         this.x = x;
         this.y = y;
         this.direction = direction;
-        this.speed = speed;
         this.color = color;
     }
 
@@ -130,7 +123,7 @@ public final class BulletState {
      * @return The speed of the bullet measured in units per turn.
      */
     public double getSpeed() {
-        return speed;
+        return 20 - 3 * power;
     }
 
     /**

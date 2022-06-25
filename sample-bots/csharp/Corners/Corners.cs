@@ -89,8 +89,9 @@ public class Corners : Bot
             // Call our custom firing method
             SmartFire(distance);
             // Rescan for another bot
-            Scan();
-            // Resume movement
+            Rescan();
+            // This line will not be reached when scanning another bot.
+            // So we did not scan another bot -> resume movement
             Resume();
         }
         else

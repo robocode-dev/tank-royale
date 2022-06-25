@@ -30,10 +30,10 @@ class RunCommand : Command() {
         botPaths.forEach { createBotProcess(Path(it)) }
 
         // Add new bots from the std-in or terminate if blank line is provided
-        do {
+        while (true) {
             val line = readLine()?.trim()
             val cmdAndArgs = line?.split("\\s+".toRegex(), limit = 2)
-            if (cmdAndArgs != null && cmdAndArgs.isNotEmpty()) {
+            if (cmdAndArgs?.isNotEmpty() == true) {
                 val command = cmdAndArgs[0].lowercase(Locale.getDefault()).trim()
                 if (command == "quit") {
                     break // terminate running bots
@@ -53,7 +53,7 @@ class RunCommand : Command() {
                     }
                 }
             }
-        } while (true)
+        }
 
         killAllProcesses() // Kill all running processes before terminating
     }
@@ -117,7 +117,7 @@ class RunCommand : Command() {
             cmd.endsWith(".bat") -> // handle Batch script
                 ProcessBuilder("cmd.exe", "/c \"$command\"")
             cmd.endsWith(".sh") -> // handle Bash Shell script
-                ProcessBuilder("bash", "-c", command)
+                ProcessBuilder("bash", "-c", "\"$command\"")
             else -> // handle regular command
                 ProcessBuilder(command)
         }
@@ -173,8 +173,8 @@ class RunCommand : Command() {
         }
 
         private fun setEnvVars(envMap: MutableMap<String, String?>, botInfo: BotInfo) {
-            envMap[Env.SERVER_URL.name] = System.getProperty("server.url")
-            envMap[Env.SERVER_SECRET.name] = System.getProperty("server.secret")
+            System.getProperty("server.url")?.let { envMap[Env.SERVER_URL.name] = it }
+            System.getProperty("server.secret")?.let { envMap[Env.SERVER_SECRET.name] = it }
             envMap[Env.BOT_NAME.name] = botInfo.name
             envMap[Env.BOT_VERSION.name] = botInfo.version
             envMap[Env.BOT_AUTHORS.name] = botInfo.authors

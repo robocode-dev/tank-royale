@@ -2,9 +2,10 @@ package dev.robocode.tankroyale.gui.settings
 
 object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.properties") {
 
+    const val DEFAULT_TPS = 30
+
     private const val BOT_DIRECTORIES = "bot-directories"
     private const val TPS = "tps"
-    private const val DEFAULT_TPS = 30
 
     private const val BOT_DIRS_SEPARATOR = ","
 

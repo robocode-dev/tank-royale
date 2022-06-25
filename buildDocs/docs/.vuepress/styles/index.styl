@@ -1,13 +1,30 @@
 font-size = 14px
 
 bg-color = #111117
+light-bg-color = #0d0d12
 input-color = #22282F
 text-color = #CCC
-main-color = #060
-secondary-color = #690
+main-color = #6ef76e
+secondary-color = #377B37
 link-color = #6AF
 
 console-color = input-color
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap')
+
+*
+  font-family: 'Fira Sans'
+
+
+::-webkit-scrollbar
+  background: hsl(240, 15%, 8%) !important
+  border-inline: solid white 1px
+
+::-webkit-scrollbar-thumb
+  background: white
+  border: 5px solid transparent
+  border-radius: 10px
+  background-clip: content-box
 
 p
   font-size: font-size
@@ -30,6 +47,9 @@ h3, h4, h5, h6
 
 a
   color: link-color
+
+.sidebar
+  border: none !important;
 
 .search-box input
   color: text-color !important
@@ -60,6 +80,25 @@ a.sidebar-link:active
 
 a.active.sidebar-link
   border-left-color: main-color !important
+
+.sidebar-sub-headers a.sidebar-link
+  width: fit-content;
+  padding-inline: 10px;
+  margin-inline-start: 10px;
+  border-radius: 5px;
+  transition:0.5s;
+
+.sidebar-sub-headers a.sidebar-link:hover
+  background: light-bg-color !important;
+
+.sidebar-sub-headers a.sidebar-link.active
+  color: secondary-color !important;
+  background: main-color !important;
+  width: fit-content;
+  padding-inline: 10px;
+  margin-inline-start: 10px;
+  border-radius: 5px;
+  font-weight: 500;
 
 .language-text
   background-color: console-color !important

@@ -71,6 +71,8 @@ public interface IBot extends IBaseBot {
      * #setTargetSpeed(double)} for each turn until {@link #getDistanceRemaining()} reaches 0.
      *
      * @param distance is the distance to move forward. If negative, the bot will move backward.
+     *                 If {@link Double#POSITIVE_INFINITY} the bot will move forward infinitely.
+     *                 If {@link Double#NEGATIVE_INFINITY} the bot will move backward infinitely.
      * @see #forward(double)
      * @see #setBack(double)
      * @see #back(double)
@@ -97,6 +99,8 @@ public interface IBot extends IBaseBot {
      * #setForward(double)}, and {@link #setBack(double)} methods.
      *
      * @param distance is the distance to move forward. If negative, the bot will move backward.
+     *                 If {@link Double#POSITIVE_INFINITY} the bot will move forward infinitely.
+     *                 If {@link Double#NEGATIVE_INFINITY} the bot will move backward infinitely.
      * @see #setForward(double)
      * @see #setBack(double)
      * @see #back(double)
@@ -129,6 +133,8 @@ public interface IBot extends IBaseBot {
      * #setTargetSpeed(double)} for each turn until {@link #getDistanceRemaining()} reaches 0.
      *
      * @param distance is the distance to move backward. If negative, the bot will move forward.
+     *                 If {@link Double#POSITIVE_INFINITY} the bot will move backward infinitely.
+     *                 If {@link Double#NEGATIVE_INFINITY} the bot will move forward infinitely.
      * @see #back(double)
      * @see #setForward(double)
      * @see #forward(double)
@@ -155,6 +161,8 @@ public interface IBot extends IBaseBot {
      * #setForward(double)}, and {@link #setBack(double)} methods.
      *
      * @param distance is the distance to move backward. If negative, the bot will move forward.
+     *                 If {@link Double#POSITIVE_INFINITY} the bot will move backward infinitely.
+     *                 If {@link Double#NEGATIVE_INFINITY} the bot will move forward infinitely.
      * @see #setForward(double)
      * @see #setBack(double)
      * @see #forward(double)
@@ -173,6 +181,8 @@ public interface IBot extends IBaseBot {
      * remaining is negative, the bot is moving backward.
      *
      * @return The remaining distance to move before its current movement is completed.
+     * If {@link Double#POSITIVE_INFINITY} the bot will move forward infinitely.
+     * If {@link Double#NEGATIVE_INFINITY} the bot will move backward infinitely.
      * @see #setForward(double)
      * @see #setBack(double)
      * @see #forward(double)
@@ -181,8 +191,8 @@ public interface IBot extends IBaseBot {
     double getDistanceRemaining();
 
     /**
-     * Set the bot to turn to the left (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Set the bot to turn to the left (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxTurnRate(double)}.
      *
@@ -198,6 +208,8 @@ public interface IBot extends IBaseBot {
      * <p>This method will cancel the effect of prior calls to {@link #setTurnRight(double)}.
      *
      * @param degrees is the amount of degrees to turn left. If negative, the bot will turn right.
+     *                If {@link Double#POSITIVE_INFINITY} the bot will turn left infinitely.
+     *                If {@link Double#NEGATIVE_INFINITY} the bot will turn right infinitely.
      * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
      * @see #setTurnRight(double)
      * @see #turnRight(double)
@@ -208,8 +220,8 @@ public interface IBot extends IBaseBot {
     void setTurnLeft(double degrees);
 
     /**
-     * Turn the bot to the left (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Turn the bot to the left (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxTurnRate(double)}.
      *
@@ -222,6 +234,8 @@ public interface IBot extends IBaseBot {
      * #setTurnRight(double)}.
      *
      * @param degrees is the amount of degrees to turn left. If negative, the bot will turn right.
+     *                If {@link Double#POSITIVE_INFINITY} the bot will turn left infinitely.
+     *                If {@link Double#NEGATIVE_INFINITY} the bot will turn right infinitely.
      * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
      * @see #setTurnLeft(double)
      * @see #setTurnRight(double)
@@ -232,8 +246,8 @@ public interface IBot extends IBaseBot {
     void turnLeft(double degrees);
 
     /**
-     * Set the bot to turn to the right (following the decreasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Set the bot to turn to the right (following the decreasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxTurnRate(double)}.
      *
@@ -249,6 +263,8 @@ public interface IBot extends IBaseBot {
      * <p>This method will cancel the effect of prior calls to {@link #setTurnLeft(double)}.
      *
      * @param degrees is the amount of degrees to turn right. If negative, the bot will turn left.
+     *                If {@link Double#POSITIVE_INFINITY} the bot will turn right infinitely.
+     *                If {@link Double#NEGATIVE_INFINITY} the bot will turn left infinitely.
      * @see #setTurnLeft(double)
      * @see #turnRight(double)
      * @see #turnLeft(double)
@@ -258,8 +274,8 @@ public interface IBot extends IBaseBot {
     void setTurnRight(double degrees);
 
     /**
-     * Turn the bot to the right (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Turn the bot to the right (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxTurnRate(double)}.
      *
@@ -272,6 +288,8 @@ public interface IBot extends IBaseBot {
      * #setTurnRight(double)}.
      *
      * @param degrees is the amount of degrees to turn right. If negative, the bot will turn left.
+     *                If {@link Double#POSITIVE_INFINITY} the bot will turn right infinitely.
+     *                If {@link Double#NEGATIVE_INFINITY} the bot will turn left infinitely.
      * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
      * @see #setTurnLeft(double)
      * @see #setTurnRight(double)
@@ -291,6 +309,8 @@ public interface IBot extends IBaseBot {
      * When the turn remaining is negative, the bot is turning to the right.
      *
      * @return The remaining degrees to turn before its current turning is completed.
+     * If {@link Double#POSITIVE_INFINITY} the bot will turn left infinitely.
+     * If {@link Double#NEGATIVE_INFINITY} the bot will turn right infinitely.
      * @see #setTurnLeft(double)
      * @see #setTurnRight(double)
      * @see #turnLeft(double)
@@ -299,8 +319,8 @@ public interface IBot extends IBaseBot {
     double getTurnRemaining();
 
     /**
-     * Set the gun to turn to the left (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Set the gun to turn to the left (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getGunTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
      *
@@ -316,6 +336,8 @@ public interface IBot extends IBaseBot {
      * <p>This method will cancel the effect of prior calls to {@link #setTurnGunRight(double)}.
      *
      * @param degrees is the amount of degrees to turn left. If negative, the gun will turn right.
+     *                If {@link Double#POSITIVE_INFINITY} the gun will turn left infinitely.
+     *                If {@link Double#NEGATIVE_INFINITY} the gun will turn right infinitely.
      * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
      * @see #setTurnGunRight(double)
      * @see #turnGunRight(double)
@@ -326,8 +348,8 @@ public interface IBot extends IBaseBot {
     void setTurnGunLeft(double degrees);
 
     /**
-     * Turn the gun to the left (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Turn the gun to the left (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getGunTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
      *
@@ -340,6 +362,8 @@ public interface IBot extends IBaseBot {
      * {@link #setTurnGunRight(double)}.
      *
      * @param degrees is the amount of degrees to turn left. If negative, the gun will turn right.
+     *                If {@link Double#POSITIVE_INFINITY} the gun will turn left infinitely.
+     *                If {@link Double#NEGATIVE_INFINITY} the gun will turn right infinitely.
      * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
      * @see #setTurnGunLeft(double)
      * @see #setTurnGunRight(double)
@@ -350,8 +374,8 @@ public interface IBot extends IBaseBot {
     void turnGunLeft(double degrees);
 
     /**
-     * Set the gun to turn to the right (following the decreasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Set the gun to turn to the right (following the decreasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getGunTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
      *
@@ -367,6 +391,8 @@ public interface IBot extends IBaseBot {
      * <p>This method will cancel the effect of prior calls to {@link #setTurnGunLeft(double)}.
      *
      * @param degrees is the amount of degrees to turn right. If negative, the gun will turn left.
+     *                If {@link Double#POSITIVE_INFINITY} the gun will turn right infinitely.
+     *                If {@link Double#NEGATIVE_INFINITY} the gun will turn left infinitely.
      * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
      * @see #setTurnGunLeft(double)
      * @see #turnGunRight(double)
@@ -377,8 +403,8 @@ public interface IBot extends IBaseBot {
     void setTurnGunRight(double degrees);
 
     /**
-     * Turn the gun to the right (following the decreasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Turn the gun to the right (following the decreasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getGunTurnRemaining()} is 0. The amount of degrees to
      * turn each turn is limited by {@link #setMaxGunTurnRate(double)}.
      *
@@ -391,6 +417,8 @@ public interface IBot extends IBaseBot {
      * {@link #setTurnGunRight(double)}.
      *
      * @param degrees is the amount of degrees to turn right. If negative, the gun will turn left.
+     *                If {@link Double#POSITIVE_INFINITY} the gun will turn right infinitely.
+     *                If {@link Double#NEGATIVE_INFINITY} the gun will turn left infinitely.
      * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
      * @see #setTurnGunLeft(double)
      * @see #setTurnGunRight(double)
@@ -410,6 +438,8 @@ public interface IBot extends IBaseBot {
      * When the turn remaining is negative, the bot is turning to the right.
      *
      * @return The remaining degrees to turn the gun before its current turning is completed.
+     * If {@link Double#POSITIVE_INFINITY} the gun will turn left infinitely.
+     * If {@link Double#NEGATIVE_INFINITY} the gun will turn right infinitely.
      * @see #setTurnGunLeft(double)
      * @see #setTurnGunRight(double)
      * @see #turnGunLeft(double)
@@ -418,8 +448,8 @@ public interface IBot extends IBaseBot {
     double getGunTurnRemaining();
 
     /**
-     * Set the radar to turn to the left (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Set the radar to turn to the left (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getRadarTurnRemaining()} is 0. The amount of degrees
      * to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
      *
@@ -435,6 +465,8 @@ public interface IBot extends IBaseBot {
      * <p>This method will cancel the effect of prior calls to {@link #setTurnRadarRight(double)}.
      *
      * @param degrees is the amount of degrees to turn left. If negative, the radar will turn right.
+     *                If {@link Double#POSITIVE_INFINITY} the radar will turn left infinitely.
+     *                If {@link Double#NEGATIVE_INFINITY} the radar will turn right infinitely.
      * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
      * @see #setTurnRadarRight(double)
      * @see #turnRadarRight(double)
@@ -445,8 +477,8 @@ public interface IBot extends IBaseBot {
     void setTurnRadarLeft(double degrees);
 
     /**
-     * Turn the radar to the left (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Turn the radar to the left (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getRadarTurnRemaining()} is 0. The amount of degrees
      * to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
      *
@@ -459,6 +491,8 @@ public interface IBot extends IBaseBot {
      * {@link #setTurnRadarRight(double)}.
      *
      * @param degrees is the amount of degrees to turn left. If negative, the radar will turn right.
+     *                If {@link Double#POSITIVE_INFINITY} the radar will turn left infinitely.
+     *                If {@link Double#NEGATIVE_INFINITY} the radar will turn right infinitely.
      * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
      * @see #setTurnRadarLeft(double)
      * @see #setTurnRadarRight(double)
@@ -469,8 +503,8 @@ public interface IBot extends IBaseBot {
     void turnRadarLeft(double degrees);
 
     /**
-     * Set the radar to turn to the right (following the decreasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Set the radar to turn to the right (following the decreasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getRadarTurnRemaining()} is 0. The amount of degrees
      * to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
      *
@@ -487,6 +521,8 @@ public interface IBot extends IBaseBot {
      * setTurnRadarRight(double).
      *
      * @param degrees is the amount of degrees to turn right. If negative, the radar will turn left.
+     *                If {@link Double#POSITIVE_INFINITY} the radar will turn right infinitely.
+     *                If {@link Double#NEGATIVE_INFINITY} the radar will turn left infinitely.
      * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
      * @see #setTurnRadarLeft(double)
      * @see #turnRadarLeft(double)
@@ -497,8 +533,8 @@ public interface IBot extends IBaseBot {
     void setTurnRadarRight(double degrees);
 
     /**
-     * Turn the radar to the right (following the increasing degrees of the <a
-     * href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
+     * Turn the radar to the right (following the increasing degrees of the
+     * <a href="https://en.wikipedia.org/wiki/Unit_circle">unit circle</a>) until it turned the specified
      * amount of degrees. That is, when {@link #getRadarTurnRemaining()} is 0. The amount of degrees
      * to turn each turn is limited by {@link #setMaxRadarTurnRate(double)}.
      *
@@ -511,6 +547,8 @@ public interface IBot extends IBaseBot {
      * {@link #setTurnRadarRight(double)}.
      *
      * @param degrees is the amount of degrees to turn right. If negative, the radar will turn left.
+     *                If {@link Double#POSITIVE_INFINITY} the radar will turn right infinitely.
+     *                If {@link Double#NEGATIVE_INFINITY} the radar will turn left infinitely.
      * @see <a href="https://en.wikipedia.org/wiki/Unit_circle">Unit circle</a>
      * @see #setTurnRadarLeft(double)
      * @see #setTurnRadarRight(double)
@@ -530,6 +568,8 @@ public interface IBot extends IBaseBot {
      * When the turn remaining is negative, the bot is turning to the right.
      *
      * @return The remaining degrees to turn the radar before its current turning is completed.
+     * If {@link Double#POSITIVE_INFINITY} the radar will turn left infinitely.
+     * If {@link Double#NEGATIVE_INFINITY} the radar will turn right infinitely.
      * @see #setTurnRadarLeft(double)
      * @see #setTurnRadarRight(double)
      * @see #turnRadarLeft(double)
@@ -618,7 +658,7 @@ public interface IBot extends IBaseBot {
      *
      * @see #stop()
      */
-    void scan();
+    void rescan();
 
     /**
      * Blocks until a condition is met, i.e. when a {@link Condition#test()} returns true.

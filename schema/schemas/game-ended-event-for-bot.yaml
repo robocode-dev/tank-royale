@@ -1,6 +1,6 @@
 $id: #game-ended-event-for-bot.yaml
 $schema: http://json-schema.org/2020-12/schema#
-description: Event occuring when game has ended. Gives all game results visible for a bot.
+description: Event occurring when game has ended. Gives all game results visible for a bot.
 extends:
   $ref: message.yaml
 properties:
@@ -8,10 +8,8 @@ properties:
     description: Number of rounds played
     type: integer
   results:
-    description: Results of the battle
-    type: array
-    items:
-      $ref: bot-results-for-bot.yaml
+    description: Bot results of the battle
+    $ref: bot-results-for-bot.yaml
 required:
   - numberOfRounds
   - results

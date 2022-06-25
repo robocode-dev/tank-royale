@@ -43,10 +43,9 @@ dotnet {
 
 tasks {
     clean {
-        doLast {
+        doFirst {
             delete(
                 "build",
-                "docs",
                 "Robocode.TankRoyale.BotApi/obj",
                 "Robocode.TankRoyale.BotApi/bin",
                 "Robocode.TankRoyale.BotApi.Tests/obj",
@@ -56,7 +55,12 @@ tasks {
     }
 
     build {
-        enabled = false
+        doFirst {
+            copy {
+                from("nuget_docs")
+                into("docs")
+            }
+        }
     }
 
     val docfx by registering {
@@ -102,8 +106,9 @@ tasks {
         dependsOn(prepareNugetDocs)
 
         doLast {
-            val userprofile = System.getenv("USERPROFILE")
-            delete("$userprofile/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
+            val userhome = System.getenv("USERPROFILE") ?: System.getenv("HOME")
+            println("$userhome/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
+            delete("$userhome/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
             exec {
                 workingDir("Robocode.TankRoyale.BotApi/bin/Release")
                 commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "-s", "local")

@@ -44,7 +44,7 @@ public class RamFire : Bot
         var distance = DistanceTo(e.X, e.Y);
         Forward(distance + 5);
 
-        Scan(); // Might want to move forward again!
+        Rescan(); // Might want to move forward again!
     }
 
     // We have hit another bot -> turn to face bot, fire hard, and ram it again!
@@ -72,7 +72,7 @@ public class RamFire : Bot
     // default turn direction used if no bot is being scanned within in the Run() method.
     private void TurnToFaceTarget(double x, double y)
     {
-        double bearing = BearingTo(x, y);
+        var bearing = BearingTo(x, y);
         if (bearing >= 0)
             turnDirection = 1;
         else

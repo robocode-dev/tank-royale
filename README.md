@@ -56,7 +56,7 @@ Next platform to support will be:
 
 ## Supported programming languages
 
-Due to the current bot APIs for the JVM and .Net, Robocode is currently able to support these programming languages with
+Due to the current bot APIs for the JVM and .Net, Robocode (should be) able to support these programming languages with
 the current Bot APIs:
 
 Java (JVM) platform:

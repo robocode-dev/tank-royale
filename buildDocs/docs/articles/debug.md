@@ -14,7 +14,7 @@ in the command line or script file.
 
 #### Java:
 
-```bash
+```shell
 java -cp ../lib/* MyFirstBot.java
 ```
 
@@ -22,7 +22,7 @@ java -cp ../lib/* MyFirstBot.java
 
 #### .Net
 
-```bash
+```shell
 dotnet run
 ```
 
@@ -52,7 +52,7 @@ export SERVER_SECRET=s0m3R0bOc0dEs3crEt
 
 #### Windows command prompt:
 
-```bash
+```shell
 set SERVER_SECRET=s0m3R0bOc0dEs3crEt
 ```
 

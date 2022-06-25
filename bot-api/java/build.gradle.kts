@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -9,8 +8,8 @@ description = "Java API library for developing bots for Robocode Tank Royale"
 
 val artifactBaseName = "robocode-tankroyale-bot-api"
 
-val ossrhUsername: String by project
-val ossrhPassword: String by project
+val ossrhUsername: String? by project
+val ossrhPassword: String? by project
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -29,7 +28,7 @@ java {
 }
 
 dependencies {
-    implementation(libs.tankroyale.schema)
+    implementation(project(":schema:jvm"))
     implementation(libs.gson)
     implementation(libs.gson.extras)
     implementation(libs.nv.i18n)
@@ -42,10 +41,6 @@ dependencies {
 }
 
 tasks {
-    withType<KotlinCompile> {
-        dependsOn(":schema:java:publishToMavenLocal")
-    }
-
     withType<Test> {
         useJUnitPlatform()
     }

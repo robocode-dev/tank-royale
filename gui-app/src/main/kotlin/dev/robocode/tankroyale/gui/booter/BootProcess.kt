@@ -6,12 +6,10 @@ import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
 import kotlinx.serialization.decodeFromString
-import java.io.BufferedReader
-import java.io.FileNotFoundException
-import java.io.InputStreamReader
-import java.io.PrintStream
+import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
 object BootProcess {
@@ -27,7 +25,7 @@ object BootProcess {
 
     private val json = MessageConstants.json
 
-    private val pidAndDirs = HashMap<Long, String>() // pid, dir
+    private val pidAndDirs = ConcurrentHashMap<Long, String>() // pid, dir
 
     private val runningBotsList = mutableListOf<DirAndPid>()
 
@@ -189,12 +187,9 @@ object BootProcess {
 
     private fun readInputLines(process: Process): List<String> {
         val list = ArrayList<String>()
-        val reader = BufferedReader(InputStreamReader(process.inputStream!!))
+        val reader = BufferedReader(InputStreamReader(process.inputStream))
         var line: String?
-        while (run {
-                line = reader.readLine()
-                line
-            } != null) {
+        while (run { line = reader.readLine(); line } != null) {
             list += line!!
         }
         return list

@@ -11,8 +11,6 @@ import dev.robocode.tankroyale.botapi.events.*;
 // ------------------------------------------------------------------
 public class TrackFire extends Bot {
 
-    boolean isScanning; // flag set when scanning
-
     // The main method starts our bot
     public static void main(String[] args) {
         new TrackFire().start();
@@ -26,10 +24,8 @@ public class TrackFire extends Bot {
     // Called when a new round is started -> initialize and do some movement
     @Override
     public void run() {
-        isScanning = false; // reset scanning flag
-
         // Set colors
-        Color pink = Color.fromRgb(0xFF69B4);
+        Color pink = Color.fromString("#FF69B4");
         setBodyColor(pink);
         setTurretColor(pink);
         setRadarColor(pink);
@@ -38,21 +34,15 @@ public class TrackFire extends Bot {
 
         // Loop while running
         while (isRunning()) {
-            if (isScanning) {
-                go(); // skip turn if we a scanning
-            } else {
-                turnGunLeft(10); // Scans automatically as radar is mounted on gun
-            }
+            turnGunLeft(10); // Scans automatically as radar is mounted on gun
         }
     }
 
     // We scanned another bot -> we have a target, so go get it
     @Override
     public void onScannedBot(ScannedBotEvent e) {
-        isScanning = true; // we started scanning
-
         // Calculate direction of the scanned bot and bearing to it for the gun
-        double bearingFromGun = gunBearingTo(e.getX(), e.getY());
+        var bearingFromGun = gunBearingTo(e.getX(), e.getY());
 
         // Turn the gun toward the scanned bot
         turnGunLeft(bearingFromGun);
@@ -65,11 +55,9 @@ public class TrackFire extends Bot {
         // Generates another scan event if we see a bot.
         // We only need to call this if the gun (and therefore radar)
         // are not turning. Otherwise, scan is called automatically.
-        if (bearingFromGun < 5) {
-            scan();
+        if (bearingFromGun == 0) {
+            rescan();
         }
-
-        isScanning = false; // we stopped scanning
     }
 
     // We won the round -> do a victory dance!

@@ -10,7 +10,7 @@ package dev.robocode.tankroyale.server.model
  * @param firepower Current firepower.
  * @param adjustGunForBodyTurn Current flag set for adjusting gun for body turn.
  * @param adjustRadarForGunTurn Current flag set for adjusting radar for gun turn.
- * @param scan Current flag set for performing rescan (reusing last scan direction and scan spread angle)
+ * @param rescan Current flag set for performing rescan (reusing last scan direction and scan spread angle)
  * @param bodyColor Current body color string. If set to `null` the default body color will be used.
  * @param turretColor Current gun turret color string. If set to `null` the default body color will be used.
  * @param radarColor Current radar color string. If set to `null` the default body color will be used.
@@ -26,8 +26,9 @@ data class BotIntent(
     override var radarTurnRate: Double? = 0.0,
     override var firepower: Double? = 0.0,
     override var adjustGunForBodyTurn: Boolean? = false,
+    override var adjustRadarForBodyTurn: Boolean? = false,
     override var adjustRadarForGunTurn: Boolean? = false,
-    override var scan: Boolean? = false,
+    override var rescan: Boolean? = false,
     override var bodyColor: String? = null,
     override var turretColor: String? = null,
     override var radarColor: String? = null,
@@ -61,11 +62,14 @@ data class BotIntent(
         if (update.adjustGunForBodyTurn != null) {
             adjustGunForBodyTurn = update.adjustGunForBodyTurn
         }
+        if (update.adjustRadarForBodyTurn != null) {
+            adjustRadarForBodyTurn = update.adjustRadarForBodyTurn
+        }
         if (update.adjustRadarForGunTurn != null) {
             adjustRadarForGunTurn = update.adjustRadarForGunTurn
         }
-        if (update.scan != null) {
-            scan = update.scan
+        if (update.rescan != null) {
+            rescan = update.rescan
         }
         if (update.bodyColor != null) {
             bodyColor = if (update.bodyColor!!.isBlank()) null else update.bodyColor

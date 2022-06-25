@@ -11,7 +11,6 @@ object BulletToBulletStateMapper {
             bulletId = bullet.id.value
             direction = normalAbsoluteDegrees(bullet.direction)
             power = bullet.power
-            speed = bullet.speed()
             x = bullet.position().x
             y = bullet.position().y
             color = bullet.color?.value

@@ -10,15 +10,8 @@ import java.util.List;
  */
 public class ResultsMapper {
 
-    public static List<BotResults> map(final List<dev.robocode.tankroyale.schema.BotResultsForBot> source) {
-        List<BotResults> botResultsList = new ArrayList<>();
-        source.forEach(botResults -> botResultsList.add(map(botResults)));
-        return botResultsList;
-    }
-
-    private static BotResults map(final dev.robocode.tankroyale.schema.BotResultsForBot source) {
+    public static BotResults map(final dev.robocode.tankroyale.schema.BotResultsForBot source) {
         return new BotResults(
-                source.getId(),
                 source.getRank(),
                 source.getSurvival(),
                 source.getLastSurvivorBonus(),

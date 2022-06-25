@@ -1,11 +1,11 @@
 {
   "name": "Spin Bot",
-  "version": "1.0.1",
+  "version": "1.0",
   "gameTypes": "melee, classic, 1v1",
   "authors": "Mathew Nelson, Flemming N. Larsen",
   "description": "A sample bot that spins in a circles, firing hard when an enemy is detected.",
   "homepage": "",
   "countryCodes": "us, dk",
-  "platform": ".Net 5.0",
-  "programmingLang": "C# 8.0"
+  "platform": ".Net 6.0",
+  "programmingLang": "C# 10.0"
 }

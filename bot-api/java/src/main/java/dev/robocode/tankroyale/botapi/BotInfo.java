@@ -161,9 +161,10 @@ public final class BotInfo {
     }
 
     /**
-     * Returns a list of country code(s) defined by ISO 3166-1 alpha-2, e.g. "us":
-     * https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2. This field is optional. If no country codes
-     * are provided, the locale of the system is being used instead.
+     * Returns a list of country code(s) defined by
+     * <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO 3166-1 alpha-2</a>, e.g. { "us" }
+     * This field is optional. If no country codes are provided, the locale of the system is being
+     * used instead.
      *
      * @return The country code(s) for the bot.
      */
@@ -194,7 +195,7 @@ public final class BotInfo {
     }
 
     /**
-     * Returns the programming language used for developing the bot, e.g., "Java 8" or "Kotlin 1.6.20".<br>
+     * Returns the programming language used for developing the bot, e.g., "Java 11" or "Kotlin 1.6.20".<br>
      * This field is optional.
      *
      * @return The programming language used for developing the bot.

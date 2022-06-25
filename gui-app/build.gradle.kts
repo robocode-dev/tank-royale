@@ -33,8 +33,8 @@ tasks {
         dependsOn(inspectClassesForKotlinIC, ":booter:proguard")
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
-        from(project(":booter").file("/build/libs"))
-        into(file("/build/classes/kotlin/main"))
+        from(project(":booter").file("./build/libs"))
+        into(file("./build/classes/kotlin/main"))
         include("robocode-tankroyale-booter-*-proguard.jar")
         rename(".*", "robocode-tankroyale-booter.jar")
     }
@@ -43,8 +43,8 @@ tasks {
         dependsOn(inspectClassesForKotlinIC, ":server:proguard")
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
-        from(project(":server").file("/build/libs"))
-        into(file("/build/classes/kotlin/main"))
+        from(project(":server").file("./build/libs"))
+        into(file("./build/classes/kotlin/main"))
         include("robocode-tankroyale-server-*-proguard.jar")
         rename(".*", "robocode-tankroyale-server.jar")
     }

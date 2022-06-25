@@ -2,8 +2,6 @@ package dev.robocode.tankroyale.botapi.events;
 
 import dev.robocode.tankroyale.botapi.BotResults;
 
-import java.util.List;
-
 /**
  * Event occurring when game has just ended.
  */
@@ -18,15 +16,15 @@ public final class GameEndedEvent implements IEvent {
     /**
      * Results of the battle.
      */
-    private final List<BotResults> results;
+    private final BotResults results;
 
     /**
      * Initializes a new instance of the GameEndedEvent class.
      *
      * @param numberOfRounds is the number of rounds played.
-     * @param results        is the results of the battle.
+     * @param results        is the bot results of the battle.
      */
-    public GameEndedEvent(int numberOfRounds, List<BotResults> results) {
+    public GameEndedEvent(int numberOfRounds, BotResults results) {
         this.numberOfRounds = numberOfRounds;
         this.results = results;
     }
@@ -45,7 +43,7 @@ public final class GameEndedEvent implements IEvent {
      *
      * @return The results of the battle.
      */
-    public List<BotResults> getResults() {
+    public BotResults getResults() {
         return results;
     }
 }

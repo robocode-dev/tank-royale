@@ -6,16 +6,13 @@ namespace Robocode.TankRoyale.BotApi.Tests.Util
     public class CountryCodeTest
     {
         [Test]
-        [TestCase("uk")]
-        [TestCase("UK")]
         [TestCase("GB")]
         [TestCase("gb")]
-        [TestCase("NL")]
-        [TestCase("nl")]
-        [TestCase("DK")]
         [TestCase("dk")]
-        [TestCase("US")]
         [TestCase("us")]
+        [TestCase("no")]
+        [TestCase("SE")]
+        [TestCase("FI")]
         public void IsCountryCodeValid_ShouldWork(string countryCode)
         {
             Assert.That(CountryCode.IsCountryCodeValid(countryCode), Is.True);

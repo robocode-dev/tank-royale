@@ -20,12 +20,9 @@ properties:
   direction:
     description: Direction in degrees
     type: number
-  speed:
-    description: Speed measured in units per turn
-    type: number
   color:
     description: Color of the bullet
-    $ref: rgb-color.yaml
+    $ref: color.yaml
 required:
   - bulletId
   - ownerId
@@ -33,4 +30,3 @@ required:
   - x
   - y
   - direction
-  - speed

@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.ui.newbattle
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
+import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
@@ -33,6 +34,8 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
     private val onCancel = Event<JButton>()
     private val onSetupRules = Event<JButton>()
 
+    private val startBattleButton: JButton
+
     private var selectedBots = emptyList<BotInfo>()
     private var gameTypeComboBox = GameTypeComboBox()
 
@@ -58,17 +61,20 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
         add(BotInfoPanel, "grow, wrap")
         add(buttonPanel, "center")
 
-        val startBattleButton: JButton
-
         buttonPanel.apply {
             startBattleButton = addButton("start_battle", onStartBattle)
             addButton("cancel", onCancel)
         }
         startBattleButton.isEnabled = false
+        updateStartButtonHint()
 
         BotSelectionEvents.onSelectedBotListUpdated.subscribe(this) {
             selectedBots = it
-            startBattleButton.isEnabled = selectedBots.size >= 2
+
+            val maxParticipants = maxNumberOfParticipants()
+
+            startBattleButton.isEnabled = selectedBots.size >= minNumberOfParticipants() &&
+                    (maxParticipants == null || selectedBots.size <= maxParticipants)
         }
 
         onStartBattle.subscribe(this) { startGame() }
@@ -80,6 +86,8 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
                 ServerSettings.apply {
                     gameType = gameTypeComboBox.getSelectedGameType()
                     save()
+
+                    updateStartButtonHint()
                 }
             }
 
@@ -93,6 +101,17 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
         }
 
         BotSelectionPanel.update()
+    }
+
+    private fun minNumberOfParticipants(): Int =
+        GamesSettings.games[ServerSettings.gameType.displayName]?.minNumberOfParticipants ?: 2
+
+    private fun maxNumberOfParticipants(): Int? =
+        GamesSettings.games[ServerSettings.gameType.displayName]?.maxNumberOfParticipants
+
+    private fun updateStartButtonHint() {
+        startBattleButton.toolTipText = Hints.get("new_battle.start_button")
+            .format(minNumberOfParticipants(), maxNumberOfParticipants()?.toString() ?: Strings.get("unlimited"))
     }
 
     private fun startGame() {

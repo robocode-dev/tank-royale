@@ -8,7 +8,7 @@ properties:
     description: List of bots
     type: array
     items:
-      decription: Bot info
+      description: Bot info
       $ref: bot-info.yaml
 required:
   - bots

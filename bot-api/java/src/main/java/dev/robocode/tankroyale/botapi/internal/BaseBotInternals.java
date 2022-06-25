@@ -12,11 +12,11 @@ import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
 import dev.robocode.tankroyale.botapi.events.RoundEndedEvent;
 import dev.robocode.tankroyale.botapi.events.RoundStartedEvent;
+import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
-import dev.robocode.tankroyale.botapi.mapper.ResultsMapper;
 import dev.robocode.tankroyale.schema.*;
 
 import java.net.URI;
@@ -27,9 +27,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static dev.robocode.tankroyale.botapi.Constants.*;
 import static dev.robocode.tankroyale.botapi.internal.MathUtil.clamp;
+import static dev.robocode.tankroyale.botapi.mapper.ResultsMapper.map;
 import static java.lang.Math.*;
 import static java.net.http.WebSocket.Builder;
 import static java.net.http.WebSocket.Listener;
@@ -72,6 +74,7 @@ public final class BaseBotInternals {
 
     private final Object nextTurnMonitor = new Object();
 
+    private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private boolean isStopped;
 
     private IStopResumeListener stopResumeListener;
@@ -90,6 +93,8 @@ public final class BaseBotInternals {
 
     private final Gson gson;
 
+    private boolean eventHandlingDisabled;
+
     {
         RuntimeTypeAdapterFactory<dev.robocode.tankroyale.schema.Event> typeFactory =
                 RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class, "$type")
@@ -103,7 +108,10 @@ public final class BaseBotInternals {
                         .registerSubtype(dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
                         .registerSubtype(dev.robocode.tankroyale.schema.WonRoundEvent.class, "WonRoundEvent");
 
-        gson = new GsonBuilder().registerTypeAdapterFactory(typeFactory).create();
+        gson = new GsonBuilder()
+                .registerTypeAdapterFactory(typeFactory)
+                .serializeSpecialFloatingPointValues() // to avoid IllegalArgumentException: -Infinity is not a valid double value as per JSON specification
+                .create();
     }
 
     public BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl, String serverSecret) {
@@ -119,24 +127,44 @@ public final class BaseBotInternals {
         init();
     }
 
-    private static BotIntent newBotIntent() {
-        var botIntent = new BotIntent();
-        botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
-        return botIntent;
-    }
-
     private void init() {
         botEventHandlers.onRoundStarted.subscribe(this::onRoundStarted, 100);
         botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 100);
         botEventHandlers.onBulletFired.subscribe(this::onBulletFired, 100);
     }
 
+    public void setRunning(boolean isRunning) {
+        this.isRunning.set(isRunning);
+    }
+
+    public boolean isRunning() {
+        return isRunning.get();
+    }
+
+    public void enableEventHandling(boolean enable) {
+        eventHandlingDisabled = !enable;
+    }
+
     public void setStopResumeHandler(IStopResumeListener listener) {
         stopResumeListener = listener;
     }
 
+    private static BotIntent newBotIntent() {
+        var botIntent = new BotIntent();
+        botIntent.set$type(BotReady.$type.BOT_INTENT); // must be set!
+        return botIntent;
+    }
+
     BotEventHandlers getBotEventHandlers() {
         return botEventHandlers;
+    }
+
+    public void setInterruptible(boolean interruptible) {
+        eventQueue.setInterruptible(interruptible);
+    }
+
+    void setScannedBotEventInterruptible() {
+        eventQueue.setInterruptible(ScannedBotEvent.class, true);
     }
 
     Set<Condition> getConditions() {
@@ -147,6 +175,7 @@ public final class BaseBotInternals {
         botIntent = newBotIntent();
         eventQueue.clear();
         isStopped = false;
+        eventHandlingDisabled = false;
     }
 
     private void onNextTurn(TickEvent e) {
@@ -179,33 +208,38 @@ public final class BaseBotInternals {
     }
 
     public void execute() {
+        if (!isRunning())
+            return;
+
+        final var turnNumber = getCurrentTick().getTurnNumber();
+
+        dispatchEvents(turnNumber);
         sendIntent();
-        waitForNextTurn();
-        dispatchEvents();
+        waitForNextTurn(turnNumber);
     }
 
-    public void sendIntent() {
+    private void sendIntent() {
         limitTargetSpeedAndTurnRates();
         socket.sendText(gson.toJson(botIntent), true);
     }
 
-    private void waitForNextTurn() {
-        int turnNumber = getCurrentTick().getTurnNumber();
+    private void waitForNextTurn(int turnNumber) {
 
         synchronized (nextTurnMonitor) {
-            try {
-                while (turnNumber >= getCurrentTick().getTurnNumber()) {
+            while (isRunning() && turnNumber == getCurrentTick().getTurnNumber()) {
+                try {
                     nextTurnMonitor.wait(); // Wait for next turn
+                } catch (InterruptedException ex) {
+                    return; // stop waiting, thread has been interrupted (stopped)
                 }
-            } catch (InterruptedException ignore) {
             }
         }
     }
 
-    private void dispatchEvents() {
+    private void dispatchEvents(int turnNumber) {
         try {
-            eventQueue.dispatchEvents(getCurrentTick().getTurnNumber());
-        } catch (RescanException e) {
+            eventQueue.dispatchEvents(turnNumber);
+        } catch (InterruptEventHandlerException e) {
             // Do nothing (event handler was stopped by this exception)
         } catch (Exception e) {
             e.printStackTrace();
@@ -330,16 +364,14 @@ public final class BaseBotInternals {
      * @return The new speed
      */
     // Credits for this algorithm goes to Patrick Cupka (aka Voidious),
-    // Julian Kent (aka Skilgannon), and Positive:
+    // Julian Kent (aka Skilgannon), and Positive for the original version:
     // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
-    public double getNewSpeed(double speed, double distance) {
+    double getNewTargetSpeed(double speed, double distance) {
         if (distance < 0) {
-            return -getNewSpeed(-speed, -distance);
+            return -getNewTargetSpeed(-speed, -distance);
         }
-
-        final double targetSpeed = (distance == Double.POSITIVE_INFINITY) ?
-                maxSpeed :
-                min(getMaxSpeed(distance), maxSpeed);
+        var targetSpeed = (distance == Double.POSITIVE_INFINITY) ?
+            maxSpeed : min(maxSpeed, getMaxSpeed(distance));
 
         return (speed >= 0) ?
             clamp(targetSpeed, speed - absDeceleration, speed + ACCELERATION) :
@@ -367,7 +399,7 @@ public final class BaseBotInternals {
         speed = abs(speed);
         double distance = 0;
         while (speed > 0) {
-            distance += (speed = getNewSpeed(speed, 0));
+            distance += (speed = getNewTargetSpeed(speed, 0));
         }
         return distance;
     }
@@ -380,42 +412,38 @@ public final class BaseBotInternals {
         conditions.remove(condition);
     }
 
-    public void setScan(boolean doScan) {
-        botIntent.setScan(doScan);
-    }
-
     public void setStop() {
-        if (!isStopped) {
-            isStopped = true;
+        if (isStopped) return;
 
-            savedTargetSpeed = botIntent.getTargetSpeed();
-            savedTurnRate = botIntent.getTurnRate();
-            savedGunTurnRate = botIntent.getGunTurnRate();
-            savedRadarTurnRate = botIntent.getRadarTurnRate();
+        isStopped = true;
 
-            botIntent.setTargetSpeed(0d);
-            botIntent.setTurnRate(0d);
-            botIntent.setGunTurnRate(0d);
-            botIntent.setRadarTurnRate(0d);
+        savedTargetSpeed = botIntent.getTargetSpeed();
+        savedTurnRate = botIntent.getTurnRate();
+        savedGunTurnRate = botIntent.getGunTurnRate();
+        savedRadarTurnRate = botIntent.getRadarTurnRate();
 
-            if (stopResumeListener != null) {
-                stopResumeListener.onStop();
-            }
+        botIntent.setTargetSpeed(0d);
+        botIntent.setTurnRate(0d);
+        botIntent.setGunTurnRate(0d);
+        botIntent.setRadarTurnRate(0d);
+
+        if (stopResumeListener != null) {
+            stopResumeListener.onStop();
         }
     }
 
     public void setResume() {
-        if (isStopped) {
-            botIntent.setTargetSpeed(savedTargetSpeed);
-            botIntent.setTurnRate(savedTurnRate);
-            botIntent.setGunTurnRate(savedGunTurnRate);
-            botIntent.setRadarTurnRate(savedRadarTurnRate);
+        if (!isStopped) return;
 
-            if (stopResumeListener != null) {
-                stopResumeListener.onResume();
-            }
-            isStopped = false; // must be last step
+        botIntent.setTargetSpeed(savedTargetSpeed);
+        botIntent.setTurnRate(savedTurnRate);
+        botIntent.setGunTurnRate(savedGunTurnRate);
+        botIntent.setRadarTurnRate(savedRadarTurnRate);
+
+        if (stopResumeListener != null) {
+            stopResumeListener.onResume();
         }
+        isStopped = false; // must be last step
     }
 
     public boolean isStopped() {
@@ -474,7 +502,10 @@ public final class BaseBotInternals {
         @Override
         public void onError(WebSocket websocket, Throwable error) {
             botEventHandlers.onConnectionError.publish(new ConnectionErrorEvent(serverUrl, error));
-            System.err.println(error.getLocalizedMessage());
+
+            // Terminate
+            System.out.println("Exiting");
+            System.exit(1);
         }
 
         @Override
@@ -522,16 +553,18 @@ public final class BaseBotInternals {
         }
 
         private void handleTick(JsonObject jsonMsg) {
-            var tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
-            tickEvent = EventMapper.map(tickEventForBot);
+            if (eventHandlingDisabled) return;
 
             tickStartNanoTime = System.nanoTime();
 
-            if (botIntent.getScan() != null && botIntent.getScan()) {
-                setScan(false);
+            var tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
+            tickEvent = EventMapper.map(tickEventForBot);
+
+            if (botIntent.getRescan() != null && botIntent.getRescan()) {
+                botIntent.setRescan(false);
             }
 
-            eventQueue.addEventsFromTick(tickEvent, baseBot);
+            eventQueue.addEventsFromTick(tickEvent);
 
             // Trigger next turn (not tick-event!)
             botEventHandlers.onNextTurn.publish(tickEvent);
@@ -573,7 +606,7 @@ public final class BaseBotInternals {
 
             GameEndedEvent gameEndedEvent = new GameEndedEvent(
                     gameEndedEventForBot.getNumberOfRounds(),
-                    ResultsMapper.map(gameEndedEventForBot.getResults()));
+                    map(gameEndedEventForBot.getResults()));
 
             botEventHandlers.onGameEnded.publish(gameEndedEvent);
         }
@@ -583,6 +616,8 @@ public final class BaseBotInternals {
         }
 
         private void handleSkippedTurn(JsonObject jsonMsg) {
+            if (eventHandlingDisabled) return;
+
             var skippedTurnEvent = gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
 
             botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent));

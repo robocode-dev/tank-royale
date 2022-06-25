@@ -44,24 +44,41 @@ class ColorTest {
     }
 
     @Nested
-    class FromRgbTests {
+    class FromStringTests {
         @ParameterizedTest
-        @CsvSource({
-                "0x000000, 0x00, 0x00, 0x00",
-                "0xfFfFfF, 0xFF, 0xFF, 0xFF",
-                "0x139aF7, 0x13, 0x9A, 0xF7"
+        @CsvSource(ignoreLeadingAndTrailingWhitespace = false, value = {
+                "#000000,0x00,0x00,0x00",
+                "#000,0x00,0x00,0x00",
+                "#FfFfFf,0xFF,0xFF,0xFF",
+                "#fFF,0xFF,0xFF,0xFF",
+                "#1199cC,0x11,0x99,0xCC",
+                "#19C,0x11,0x99,0xCC",
+                "  #123456,0x12,0x34,0x56", // White spaces
+                "#789aBc\t,0x78,0x9A,0xBC", // White space
+                "  #123,0x11,0x22,0x33",    // White spaces
+                "#AbC\t,0xAA,0xBB,0xCC"     // White space
         })
-        void fromRgb_ShouldWork(int rgb, int expectedRed, int expectedGreen, int expectedBlue) {
-            var color = Color.fromRgb(rgb);
+        void fromString_ShouldWork(String str, int expectedRed, int expectedGreen, int expectedBlue) {
+            var color = Color.fromString(str);
 
             assertThat(color.getRed()).isEqualTo(expectedRed);
             assertThat(color.getGreen()).isEqualTo(expectedGreen);
             assertThat(color.getBlue()).isEqualTo(expectedBlue);
         }
 
-        @Test
-        void fromRgb_shouldReturnNullWhenInputIsNull() {
-            assertThat(Color.fromRgb(null)).isNull();
+        @ParameterizedTest
+        @CsvSource({
+                "#00000",    // Too short
+                "#0000000",  // Too long
+                "#0000 00",  // White space
+                "#xxxxxx",   // Wrong letters
+                "#abcdeG",   // Wrong letter
+                "000000",    // Missing hash (#)
+        })
+        void fromString_ShouldThrowException(String str) {
+            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
+                    () -> Color.fromString(str)
+            );
         }
     }
 
@@ -81,8 +98,6 @@ class ColorTest {
                 "AbC\t,0xAA,0xBB,0xCC"     // White space
         })
         void fromHex_ShouldWork(String hex, int expectedRed, int expectedGreen, int expectedBlue) {
-            System.out.println("\"" + hex + "\"");
-
             var color = Color.fromHex(hex);
 
             assertThat(color.getRed()).isEqualTo(expectedRed);
@@ -139,13 +154,13 @@ class ColorTest {
     class HashTests {
         @Test
         void hashCode_ShouldBeEqual() {
-            assertThat(Color.fromRgb(0x102030).hashCode()).isEqualTo(new Color(0x10, 0x20, 0x30).hashCode());
-            assertThat(Color.fromRgb(0x112233).hashCode()).isEqualTo(new Color(0x11, 0x22, 0x33).hashCode());
+            assertThat(Color.fromHex("102030").hashCode()).isEqualTo(new Color(0x10, 0x20, 0x30).hashCode());
+            assertThat(Color.fromHex("112233").hashCode()).isEqualTo(new Color(0x11, 0x22, 0x33).hashCode());
         }
 
         @Test
         void hashCode_ShouldNotBeEqual() {
-            assertThat(new Color(10, 20, 30).hashCode()).isNotEqualTo(Color.fromRgb(0x123456).hashCode());
+            assertThat(new Color(10, 20, 30).hashCode()).isNotEqualTo(Color.fromHex("123456").hashCode());
         }
     }
 

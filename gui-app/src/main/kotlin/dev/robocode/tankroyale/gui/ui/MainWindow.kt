@@ -11,6 +11,7 @@ import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import dev.robocode.tankroyale.gui.ui.control.ControlEventHandlers
 import dev.robocode.tankroyale.gui.ui.control.ControlPanel
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
+import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import java.awt.BorderLayout
 import javax.swing.JPanel
 
@@ -31,6 +32,7 @@ object MainWindow : RcFrame("main_window") {
             onGameEnded.subscribe(MainWindow) { MainPanel.showLogo() }
             onGameAborted.subscribe(MainWindow) { MainPanel.showLogo() }
         }
+        ServerEvents.onStopped.subscribe(MainWindow) { MainPanel.showLogo() }
 
         onClosing { close() }
         Runtime.getRuntime().addShutdownHook(Thread { close() })

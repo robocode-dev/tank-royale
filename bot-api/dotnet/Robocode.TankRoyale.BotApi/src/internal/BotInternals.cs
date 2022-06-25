@@ -1,327 +1,410 @@
-using System.Linq;
 using System;
 using System.Threading;
 using Robocode.TankRoyale.BotApi.Events;
 using static System.Double;
 
-namespace Robocode.TankRoyale.BotApi.Internal
+namespace Robocode.TankRoyale.BotApi.Internal;
+
+internal sealed class BotInternals : IStopResumeListener
 {
-    internal sealed class BotInternals : IStopResumeListener
+    private readonly IBot bot;
+    private readonly BaseBotInternals baseBotInternals;
+
+    private Thread thread;
+
+    private double previousDirection;
+    private double previousGunDirection;
+    private double previousRadarDirection;
+
+    private double distanceRemaining;
+    private double turnRemaining;
+    private double gunTurnRemaining;
+    private double radarTurnRemaining;
+
+    private bool isOverDriving;
+
+    private double savedPreviousDirection;
+    private double savedPreviousGunDirection;
+    private double savedPreviousRadarDirection;
+
+    private double savedDistanceRemaining;
+    private double savedTurnRemaining;
+    private double savedGunTurnRemaining;
+    private double savedRadarTurnRemaining;
+
+    private readonly object movementLock = new();
+    private readonly object turnLock = new();
+    private readonly object gunTurnLock = new();
+    private readonly object radarTurnLock = new();
+
+    public BotInternals(IBot bot, BaseBotInternals baseBotInternals)
     {
-        private readonly IBot bot;
-        private readonly BaseBotInternals baseBotInternals;
+        this.bot = bot;
+        this.baseBotInternals = baseBotInternals;
 
-        private Thread thread;
-        private readonly object threadMonitor = new object();
+        baseBotInternals.SetStopResumeHandler(this);
 
-        private double previousDirection;
-        private double previousGunDirection;
-        private double previousRadarDirection;
+        var botEventHandlers = baseBotInternals.BotEventHandlers;
+        botEventHandlers.OnGameAborted.Subscribe(OnGameAborted, 100);
+        botEventHandlers.OnNextTurn.Subscribe(OnNextTurn, 90);
+        botEventHandlers.OnRoundEnded.Subscribe(OnRoundEnded, 90);
+        botEventHandlers.OnGameEnded.Subscribe(OnGameEnded, 90);
+        botEventHandlers.OnDisconnected.Subscribe(OnDisconnected, 90);
+        botEventHandlers.OnHitWall.Subscribe(OnHitWall, 90);
+        botEventHandlers.OnHitBot.Subscribe(OnHitBot, 90);
+        botEventHandlers.OnDeath.Subscribe(OnDeath, 90);
+    }
 
-        private bool isOverDriving;
+    private void OnNextTurn(TickEvent evt)
+    {
+        if (evt.TurnNumber == 1)
+            OnFirstTurn();
 
-        private double savedPreviousDirection;
-        private double savedPreviousGunDirection;
-        private double savedPreviousRadarDirection;
+        ProcessTurn();
+    }
 
-        private double savedDistanceRemaining;
-        private double savedTurnRemaining;
-        private double savedGunTurnRemaining;
-        private double savedRadarTurnRemaining;
+    private void OnFirstTurn()
+    {
+        StopThread(); // sanity before starting a new thread (later)
+        ClearRemaining();
+        StartThread();
+    }
 
-        public BotInternals(IBot bot, BaseBotInternals baseBotInternals)
+    private void ClearRemaining()
+    {
+        DistanceRemaining = 0;
+        TurnRemaining = 0;
+        GunTurnRemaining = 0;
+        RadarTurnRemaining = 0;
+
+        previousDirection = bot.Direction;
+        previousGunDirection = bot.GunDirection;
+        previousRadarDirection = bot.RadarDirection;
+    }
+
+    private void OnGameAborted(object dummy)
+    {
+        StopThread();
+    }
+
+    private void OnRoundEnded(RoundEndedEvent evt)
+    {
+        StopThread();
+    }
+
+    private void OnGameEnded(GameEndedEvent evt)
+    {
+        StopThread();
+    }
+
+    private void OnDisconnected(DisconnectedEvent evt)
+    {
+        StopThread();
+    }
+
+    private void ProcessTurn()
+    {
+        // No movement is possible, when the bot has become disabled
+        if (bot.IsDisabled)
         {
-            this.bot = bot;
-            this.baseBotInternals = baseBotInternals;
-
-            baseBotInternals.SetStopResumeHandler(this);
-
-            BotEventHandlers botEventHandlers = baseBotInternals.BotEventHandlers;
-            botEventHandlers.onGameAborted.Subscribe(OnGameAborted, 100);
-            botEventHandlers.onNextTurn.Subscribe(OnNextTurn, 90);
-            botEventHandlers.onRoundEnded.Subscribe(OnRoundEnded, 90);
-            botEventHandlers.onGameEnded.Subscribe(OnGameEnded, 90);
-            botEventHandlers.onDisconnected.Subscribe(OnDisconnected, 90);
-            botEventHandlers.onHitWall.Subscribe(OnHitWall, 90);
-            botEventHandlers.onHitBot.Subscribe(OnHitBot, 90);
-            botEventHandlers.onDeath.Subscribe(OnDeath, 90);
-        }
-
-        private void OnNextTurn(TickEvent evt)
-        {
-            if (evt.TurnNumber == 1)
-                OnFirstTurn();
-
-            ProcessTurn();
-        }
-
-        private void OnFirstTurn()
-        {
-            StopThread(); // sanity before starting a new thread (later)
             ClearRemaining();
-            StartThread();
         }
-
-        private void ClearRemaining()
+        else
         {
-            DistanceRemaining = 0d;
-            TurnRemaining = 0d;
-            GunTurnRemaining = 0d;
-            RadarTurnRemaining = 0d;
-
-            previousDirection = bot.Direction;
-            previousGunDirection = bot.GunDirection;
-            previousRadarDirection = bot.RadarDirection;
+            UpdateTurnRemaining();
+            UpdateGunTurnRemaining();
+            UpdateRadarTurnRemaining();
+            UpdateMovement();
         }
+    }
 
-        private void OnGameAborted(object dummy)
+    private void StartThread()
+    {
+        thread = new Thread(() =>
         {
-            StopThread();
-        }
-
-        private void OnRoundEnded(RoundEndedEvent evt)
-        {
-            StopThread();
-        }
-
-        private void OnGameEnded(GameEndedEvent evt)
-        {
-            StopThread();
-        }
-
-        private void OnDisconnected(DisconnectedEvent evt)
-        {
-            StopThread();
-        }
-
-        private void ProcessTurn()
-        {
-            // No movement is possible, when the bot has become disabled
-            if (bot.IsDisabled)
+            baseBotInternals.IsRunning = true;
+            try
             {
-                ClearRemaining();
+                baseBotInternals.EnableEventHandling(true); // prevent event queue max limit to be reached
+                bot.Run();
             }
-            else
+            finally
             {
-                UpdateTurnRemaining();
-                UpdateGunTurnRemaining();
-                UpdateRadarTurnRemaining();
-                UpdateMovement();
+                baseBotInternals.EnableEventHandling(false); // prevent event queue max limit to be reached
             }
-        }
+        });
+        thread.Start();
+    }
 
-        private void StartThread()
-        {
-            lock (threadMonitor)
-            {
-                thread = new Thread(bot.Run);
-                IsRunning = true; // before starting thread!
-                thread.Start();
-            }
-        }
+    private void StopThread()
+    {
+        if (!IsRunning) return;
 
-        private void StopThread()
-        {
-            lock (threadMonitor)
-            {
-                if (thread == null) return;
+        baseBotInternals.IsRunning = false;
 
-                IsRunning = false;
-                thread.Join(0);
-                thread = null;
-            }
-        }
+        if (thread == null) return;
 
-        private void OnHitWall(HitWallEvent evt)
-        {
+        thread.Interrupt();
+        thread.Join();
+        thread = null;
+    }
+
+    private void OnHitWall(HitWallEvent evt)
+    {
+        DistanceRemaining = 0;
+    }
+
+    private void OnHitBot(HitBotEvent evt)
+    {
+        if (evt.IsRammed)
             DistanceRemaining = 0;
-        }
+    }
 
-        private void OnHitBot(HitBotEvent evt)
+    private void OnDeath(DeathEvent evt)
+    {
+        if (evt.VictimId == bot.MyId)
+            StopThread();
+    }
+
+    internal bool IsRunning => baseBotInternals.IsRunning;
+
+    internal double DistanceRemaining
+    {
+        get
         {
-            if (evt.IsRammed)
-                DistanceRemaining = 0;
-        }
-
-        private void OnDeath(DeathEvent evt)
-        {
-            if (evt.VictimId == bot.MyId)
-                StopThread();
-        }
-
-        internal bool IsRunning { get; private set; }
-
-        internal double DistanceRemaining { get; private set; }
-
-        internal double TurnRemaining { get; private set; }
-
-        internal double GunTurnRemaining { get; private set; }
-
-        internal double RadarTurnRemaining { get; private set; }
-
-        internal void SetTargetSpeed(double targetSpeed)
-        {
-            if (IsNaN(targetSpeed))
-                throw new ArgumentException("targetSpeed cannot be NaN");
-
-            if (targetSpeed > 0)
-                DistanceRemaining = PositiveInfinity;
-            else if (targetSpeed < 0)
-                DistanceRemaining = NegativeInfinity;
-            else
-                DistanceRemaining = 0;
-
-            baseBotInternals.BotIntent.TargetSpeed = targetSpeed;
-        }
-
-        internal void SetForward(double distance)
-        {
-            if (IsNaN(distance))
-                throw new ArgumentException("distance cannot be NaN");
-
-            DistanceRemaining = distance;
-            var speed = baseBotInternals.GetNewSpeed(bot.Speed, distance);
-            baseBotInternals.BotIntent.TargetSpeed = speed;
-        }
-
-        internal void Forward(double distance)
-        {
-            if (bot.IsStopped)
-                bot.Go();
-            else
+            lock (movementLock)
             {
-                SetForward(distance);
-                do
-                    bot.Go();
-                while (IsRunning && DistanceRemaining != 0);
+                return distanceRemaining;
             }
         }
-
-        internal void SetTurnLeft(double degrees)
+        private set
         {
-            if (IsNaN(degrees))
-                throw new ArgumentException("degrees cannot be NaN");
-
-            TurnRemaining = degrees;
-            baseBotInternals.BotIntent.TurnRate = degrees;
-        }
-
-        internal void TurnLeft(double degrees)
-        {
-            if (bot.IsStopped)
-                bot.Go();
-            else
+            lock (movementLock)
             {
-                SetTurnLeft(degrees);
-                do
-                    bot.Go();
-                while (IsRunning && TurnRemaining != 0);
+                distanceRemaining = value;
             }
         }
+    }
 
-        internal void SetTurnGunLeft(double degrees)
+    internal double TurnRemaining
+    {
+        get
         {
-            if (IsNaN(degrees))
-                throw new ArgumentException("degrees cannot be NaN");
-
-            GunTurnRemaining = degrees;
-            baseBotInternals.BotIntent.GunTurnRate = degrees;
-        }
-
-        internal void TurnGunLeft(double degrees)
-        {
-            if (bot.IsStopped)
-                bot.Go();
-            else
+            lock (turnLock)
             {
-                SetTurnGunLeft(degrees);
-                do
-                    bot.Go();
-                while (IsRunning && GunTurnRemaining != 0);
+                return turnRemaining;
             }
         }
-
-        internal void SetTurnRadarLeft(double degrees)
+        private set
         {
-            if (IsNaN(degrees))
-                throw new ArgumentException("degrees cannot be NaN");
-
-            RadarTurnRemaining = degrees;
-            baseBotInternals.BotIntent.RadarTurnRate = degrees;
-        }
-
-        internal void TurnRadarLeft(double degrees)
-        {
-            if (bot.IsStopped)
-                bot.Go();
-            else
+            lock (turnLock)
             {
-                SetTurnRadarLeft(degrees);
-                do
-                    bot.Go();
-                while (IsRunning && RadarTurnRemaining != 0);
+                turnRemaining = value;
             }
         }
+    }
 
-        internal void Fire(double firepower)
+    internal double GunTurnRemaining
+    {
+        get
         {
-            if (bot.SetFire(firepower))
-                bot.Go();
+            lock (gunTurnLock)
+            {
+                return gunTurnRemaining;
+            }
         }
-
-        internal void Scan()
+        private set
         {
-            bot.SetScan();
-            var scan = baseBotInternals.BotIntent.Scan == true;
+            lock (gunTurnLock)
+            {
+                gunTurnRemaining = value;
+            }
+        }
+    }
+
+    internal double RadarTurnRemaining
+    {
+        get
+        {
+            lock (radarTurnLock)
+            {
+                return radarTurnRemaining;
+            }
+        }
+        private set
+        {
+            lock (radarTurnLock)
+            {
+                radarTurnRemaining = value;
+            }
+        }
+    }
+
+    internal void SetTargetSpeed(double targetSpeed)
+    {
+        DistanceRemaining = targetSpeed switch
+        {
+            NaN => throw new ArgumentException("targetSpeed cannot be NaN"),
+            > 0 => PositiveInfinity,
+            < 0 => NegativeInfinity,
+            _ => 0
+        };
+
+        baseBotInternals.BotIntent.TargetSpeed = targetSpeed;
+    }
+
+    internal void SetForward(double distance)
+    {
+        if (IsNaN(distance))
+            throw new ArgumentException("distance cannot be NaN");
+
+        var speed = baseBotInternals.GetNewTargetSpeed(bot.Speed, distance);
+        baseBotInternals.BotIntent.TargetSpeed = speed;
+
+        DistanceRemaining = distance;
+    }
+
+    internal void Forward(double distance)
+    {
+        if (bot.IsStopped)
             bot.Go();
-
-            if (scan && bot.Events.Any(e => e is ScannedBotEvent))
-                throw new RescanException();
-        }
-
-        internal void WaitFor(Condition condition)
+        else
         {
-            while (IsRunning && !condition.Test())
+            SetForward(distance);
+            do
+            {
                 bot.Go();
+            } while (IsRunning && (DistanceRemaining != 0 || bot.Speed != 0));
         }
+    }
 
-        internal void Stop()
-        {
-            baseBotInternals.SetStop();
+    internal void SetTurnLeft(double degrees)
+    {
+        if (IsNaN(degrees))
+            throw new ArgumentException("degrees cannot be NaN");
+
+        TurnRemaining = degrees;
+        baseBotInternals.BotIntent.TurnRate = degrees;
+    }
+
+    internal void TurnLeft(double degrees)
+    {
+        if (bot.IsStopped)
             bot.Go();
-        }
-
-        internal void Resume()
+        else
         {
-            baseBotInternals.SetResume();
+            SetTurnLeft(degrees);
+            do
+            {
+                bot.Go();
+            } while (IsRunning && (TurnRemaining != 0 || bot.TurnRate != 0));
+        }
+    }
+
+    internal void SetTurnGunLeft(double degrees)
+    {
+        if (IsNaN(degrees))
+            throw new ArgumentException("degrees cannot be NaN");
+
+        GunTurnRemaining = degrees;
+        baseBotInternals.BotIntent.GunTurnRate = degrees;
+    }
+
+    internal void TurnGunLeft(double degrees)
+    {
+        if (bot.IsStopped)
             bot.Go();
-        }
-
-        public void OnStop()
+        else
         {
-            savedPreviousDirection = previousDirection;
-            savedPreviousGunDirection = previousGunDirection;
-            savedPreviousRadarDirection = previousRadarDirection;
-
-            savedDistanceRemaining = DistanceRemaining;
-            savedTurnRemaining = TurnRemaining;
-            savedGunTurnRemaining = GunTurnRemaining;
-            savedRadarTurnRemaining = RadarTurnRemaining;
+            SetTurnGunLeft(degrees);
+            do
+            {
+                bot.Go();
+            } while (IsRunning && (GunTurnRemaining != 0 || bot.GunTurnRate != 0));
         }
+    }
 
-        public void OnResume()
+    internal void SetTurnRadarLeft(double degrees)
+    {
+        if (IsNaN(degrees))
+            throw new ArgumentException("degrees cannot be NaN");
+
+        RadarTurnRemaining = degrees;
+        baseBotInternals.BotIntent.RadarTurnRate = degrees;
+    }
+
+    internal void TurnRadarLeft(double degrees)
+    {
+        if (bot.IsStopped)
+            bot.Go();
+        else
         {
-            previousDirection = savedPreviousDirection;
-            previousGunDirection = savedPreviousGunDirection;
-            previousRadarDirection = savedPreviousRadarDirection;
-
-            DistanceRemaining = savedDistanceRemaining;
-            TurnRemaining = savedTurnRemaining;
-            GunTurnRemaining = savedGunTurnRemaining;
-            RadarTurnRemaining = savedRadarTurnRemaining;
+            SetTurnRadarLeft(degrees);
+            do
+            {
+                bot.Go();
+            } while (IsRunning && (RadarTurnRemaining != 0 || bot.RadarTurnRate != 0));
         }
+    }
 
-        private void UpdateTurnRemaining()
+    internal void Fire(double firepower)
+    {
+        if (bot.SetFire(firepower))
+            bot.Go();
+    }
+
+    internal void Rescan()
+    {
+        baseBotInternals.SetScannedBotEventInterruptible();
+        bot.SetRescan();
+        bot.Go();
+    }
+
+    internal void WaitFor(Condition condition)
+    {
+        while (IsRunning && !condition.Test())
+            bot.Go();
+    }
+
+    internal void Stop()
+    {
+        baseBotInternals.SetStop();
+        bot.Go();
+    }
+
+    internal void Resume()
+    {
+        baseBotInternals.SetResume();
+        bot.Go();
+    }
+
+    public void OnStop()
+    {
+        savedPreviousDirection = previousDirection;
+        savedPreviousGunDirection = previousGunDirection;
+        savedPreviousRadarDirection = previousRadarDirection;
+
+        savedDistanceRemaining = DistanceRemaining;
+        savedTurnRemaining = TurnRemaining;
+        savedGunTurnRemaining = GunTurnRemaining;
+        savedRadarTurnRemaining = RadarTurnRemaining;
+    }
+
+    public void OnResume()
+    {
+        previousDirection = savedPreviousDirection;
+        previousGunDirection = savedPreviousGunDirection;
+        previousRadarDirection = savedPreviousRadarDirection;
+
+        DistanceRemaining = savedDistanceRemaining;
+        TurnRemaining = savedTurnRemaining;
+        GunTurnRemaining = savedGunTurnRemaining;
+        RadarTurnRemaining = savedRadarTurnRemaining;
+    }
+
+    private void UpdateTurnRemaining()
+    {
+        lock (turnLock)
         {
             var delta = bot.CalcDeltaAngle(bot.Direction, previousDirection);
             previousDirection = bot.Direction;
@@ -337,8 +420,11 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
             bot.TurnRate = TurnRemaining;
         }
+    }
 
-        private void UpdateGunTurnRemaining()
+    private void UpdateGunTurnRemaining()
+    {
+        lock (gunTurnLock)
         {
             var delta = bot.CalcDeltaAngle(bot.GunDirection, previousGunDirection);
             previousGunDirection = bot.GunDirection;
@@ -354,8 +440,11 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
             bot.GunTurnRate = GunTurnRemaining;
         }
+    }
 
-        private void UpdateRadarTurnRemaining()
+    private void UpdateRadarTurnRemaining()
+    {
+        lock (radarTurnLock)
         {
             var delta = bot.CalcDeltaAngle(bot.RadarDirection, previousRadarDirection);
             previousRadarDirection = bot.RadarDirection;
@@ -371,8 +460,11 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
             bot.RadarTurnRate = RadarTurnRemaining;
         }
+    }
 
-        private void UpdateMovement()
+    private void UpdateMovement()
+    {
+        lock (movementLock)
         {
             if (IsInfinity(DistanceRemaining))
             {
@@ -385,7 +477,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
 
                 // This is Nat Pavasant's method described here:
                 // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
-                var speed = baseBotInternals.GetNewSpeed(bot.Speed, distance);
+                var speed = baseBotInternals.GetNewTargetSpeed(bot.Speed, distance);
                 baseBotInternals.BotIntent.TargetSpeed = speed;
 
                 // If we are over-driving our distance and we are now at velocity=0 then we stopped
@@ -403,7 +495,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
                 DistanceRemaining = distance - speed;
             }
         }
-
-        private static bool IsNearZero(double value) => Math.Abs(value) < .00001;
     }
+
+    private static bool IsNearZero(double value) => Math.Abs(value) < .00001;
 }

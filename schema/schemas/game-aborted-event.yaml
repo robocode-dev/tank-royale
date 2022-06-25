@@ -1,6 +1,6 @@
 $id: #game-aborted-event.yaml
 $schema: http://json-schema.org/2020-12/schema#
-description: Event occuring when game has been aborted. No score is available.
+description: Event occurring when game has been aborted. No score is available.
 type: object
 extends:
   $ref: message.yaml

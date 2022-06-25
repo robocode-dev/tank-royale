@@ -3,8 +3,9 @@
 ## About
 
 This package contains the Bot API for developing bots for Robocode Tank Royale with the .Net platform.
+This package has been built for [.Net 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
-You can get more information about the Bot API [here](https://robocode-dev.github.io/tank-royale/api/dotnet/)
+You read about the Bot API [here](https://robocode-dev.github.io/tank-royale/api/dotnet/).
 
 ## How to use
 

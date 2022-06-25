@@ -9,6 +9,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.toHsl
 import dev.robocode.tankroyale.gui.ui.fx.Animation
 import dev.robocode.tankroyale.gui.ui.fx.CircleBurst
 import dev.robocode.tankroyale.gui.ui.fx.Explosion
+import dev.robocode.tankroyale.gui.util.ColorUtil.Companion.fromString
 import dev.robocode.tankroyale.gui.util.Graphics2DState
 import dev.robocode.tankroyale.gui.util.HslColor
 import java.awt.*
@@ -161,6 +162,7 @@ object ArenaPanel : JPanel() {
     private fun onMouseDragged(e: MouseEvent) {
         offsetX = e.point.x.toDouble()
         offsetY = e.point.y.toDouble()
+        repaint()
     }
 
     override fun paintComponent(g: Graphics) {
@@ -230,7 +232,7 @@ object ArenaPanel : JPanel() {
 
     private fun drawBullet(g: Graphics2D, bullet: BulletState) {
         val size = 2 * sqrt(2.5 * bullet.power)
-        val bulletColor = Color(bullet.color ?: ColorConstant.DEFAULT_BULLET_COLOR)
+        val bulletColor = fromString(bullet.color ?: ColorConstant.DEFAULT_BULLET_COLOR)
         g.color = visibleDark(bulletColor)
         g.fillCircle(bullet.x, bullet.y, size)
     }
@@ -238,7 +240,7 @@ object ArenaPanel : JPanel() {
     private fun drawScanArc(g: Graphics2D, bot: BotState) {
         val oldState = Graphics2DState(g)
 
-        val scanColor = Color(bot.scanColor ?: ColorConstant.DEFAULT_SCAN_COLOR)
+        val scanColor = fromString(bot.scanColor ?: ColorConstant.DEFAULT_SCAN_COLOR)
         g.color = visibleDark(scanColor)
         g.stroke = BasicStroke(1f)
         g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f)

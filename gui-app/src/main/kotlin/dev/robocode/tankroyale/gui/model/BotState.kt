@@ -17,11 +17,11 @@ data class BotState(
     val gunTurnRate: Double,
     val radarTurnRate: Double,
     val gunHeat: Double,
-    val bodyColor: Int? = null,
-    val turretColor: Int? = null,
-    val radarColor: Int? = null,
-    val bulletColor: Int? = null,
-    val scanColor: Int? = null,
-    val tracksColor: Int? = null,
-    val gunColor: Int? = null
+    val bodyColor: String? = null,
+    val turretColor: String? = null,
+    val radarColor: String? = null,
+    val bulletColor: String? = null,
+    val scanColor: String? = null,
+    val tracksColor: String? = null,
+    val gunColor: String? = null
 )

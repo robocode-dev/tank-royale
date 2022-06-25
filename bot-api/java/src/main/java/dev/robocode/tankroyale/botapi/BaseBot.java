@@ -482,8 +482,16 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final void setScan() {
-        __baseBotInternals.setScan(true);
+    public final void setRescan() {
+        __baseBotInternals.getBotIntent().setRescan(true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void setInterruptible(boolean interruptible) {
+        __baseBotInternals.setInterruptible(interruptible);
     }
 
     /**
@@ -500,6 +508,23 @@ public abstract class BaseBot implements IBaseBot {
     @Override
     public final boolean isAdjustGunForBodyTurn() {
         Boolean adjust = __baseBotInternals.getBotIntent().getAdjustGunForBodyTurn();
+        return adjust != null && adjust;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void setAdjustRadarForBodyTurn(boolean adjust) {
+        __baseBotInternals.getBotIntent().setAdjustRadarForBodyTurn(adjust);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final boolean isAdjustRadarForBodyTurn() {
+        Boolean adjust = __baseBotInternals.getBotIntent().getAdjustRadarForBodyTurn();
         return adjust != null && adjust;
     }
 

@@ -8,6 +8,7 @@ import dev.robocode.tankroyale.gui.ui.arena.ColorConstant.DEFAULT_TRACKS_COLOR
 import dev.robocode.tankroyale.gui.ui.arena.ColorConstant.DEFAULT_TURRET_COLOR
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.lightness
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.toHsl
+import dev.robocode.tankroyale.gui.util.ColorUtil.Companion.fromString
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Color.BLACK
@@ -23,7 +24,7 @@ class Tank(private val bot: BotState) {
     var oldX = 0.0
     var oldY = 0.0
 
-    private val tracksColor: Color = Color(bot.tracksColor ?: DEFAULT_TRACKS_COLOR)
+    private val tracksColor: Color = fromString(bot.tracksColor ?: DEFAULT_TRACKS_COLOR)
 
     fun paint(g: Graphics2D) {
         val oldTransform = g.transform
@@ -57,7 +58,7 @@ class Tank(private val bot: BotState) {
         g.transform = localTransform
 
         // Body rect
-        val bodyColor = Color(bot.bodyColor ?: DEFAULT_BODY_COLOR)
+        val bodyColor = fromString(bot.bodyColor ?: DEFAULT_BODY_COLOR)
         g.color = bodyColor
         g.fillRect(-210, -160, 420, 320)
 
@@ -193,7 +194,7 @@ class Tank(private val bot: BotState) {
 
         // Cannon thick part
 
-        val gunColor = Color(bot.gunColor ?: DEFAULT_GUN_COLOR)
+        val gunColor = fromString(bot.gunColor ?: DEFAULT_GUN_COLOR)
 
         val cannonLight = gunColor.toHsl().addLight(0.1f).toColor()
         val cannonDark = gunColor.toHsl().addLight(-0.3f).toColor()
@@ -222,7 +223,7 @@ class Tank(private val bot: BotState) {
         g.drawRect(x2.toInt(), y2.toInt(), 170, 50)
 
         // Turret rect
-        val turretColor = Color(bot.turretColor ?: DEFAULT_TURRET_COLOR)
+        val turretColor = fromString(bot.turretColor ?: DEFAULT_TURRET_COLOR)
         g.color = turretColor
         g.fillRect(-80, -100, 200, 200)
 
@@ -241,7 +242,7 @@ class Tank(private val bot: BotState) {
     private fun paintRadar(g: Graphics2D) {
         val oldTransform = g.transform
 
-        val color = Color(bot.radarColor ?: DEFAULT_RADAR_COLOR)
+        val color = fromString(bot.radarColor ?: DEFAULT_RADAR_COLOR)
         val borderColor = borderColor(color)
 
         // Circle

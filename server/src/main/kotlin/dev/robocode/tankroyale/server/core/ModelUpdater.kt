@@ -5,12 +5,12 @@ import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.Initi
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.math.*
 import dev.robocode.tankroyale.server.model.*
+import dev.robocode.tankroyale.server.model.Color.Companion.fromString
 import dev.robocode.tankroyale.server.rules.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.atan2
-
 
 /** Maximum bounding circle diameter of a bullet moving with max speed */
 private val BULLET_MAX_BOUNDING_CIRCLE_DIAMETER: Double = 2 * MAX_BULLET_SPEED
@@ -73,9 +73,7 @@ class ModelUpdater(
      */
     fun update(botIntents: Map<BotId, IBotIntent>): GameState {
         updateBotIntents(botIntents)
-        if (round.roundEnded) {
-            nextRound()
-        } else if (round.roundNumber == 0 && turn.turnNumber == 0) {
+        if (round.roundEnded || (round.roundNumber == 0 && turn.turnNumber == 0)) {
             nextRound()
         }
         nextTurn()
@@ -93,18 +91,19 @@ class ModelUpdater(
      */
     private fun updateBotIntents(botIntents: Map<BotId, IBotIntent>) {
         for ((botId, updateIntent) in botIntents.entries) {
-            val botIntent = botIntentsMap[botId] ?: BotIntent()
-            botIntent.update(updateIntent)
-            botIntentsMap[botId] = botIntent
+            (botIntentsMap[botId] ?: BotIntent()).apply {
+                update(updateIntent)
+                botIntentsMap[botId] = this
+            }
         }
     }
 
     /** Proceed with the next round. */
     private fun nextRound() {
-        round = round.copy(roundNumber = round.roundNumber)
-        round.roundEnded = false
-        round.roundNumber++
-
+        round = round.copy(roundNumber = round.roundNumber).apply {
+            roundEnded = false
+            roundNumber++
+        }
         turn.turnNumber = 0
 
         nextBulletId = 0
@@ -240,12 +239,11 @@ class ModelUpdater(
      * @param bot is the bot top execute the bot intent for.
      */
     private fun updateBotStates(bot: MutableBot) {
-        val intent = botIntentsMap[bot.id]
-        intent?.apply {
-            bot.speed = calcNewBotSpeed(bot.speed, intent.targetSpeed ?: 0.0)
+        botIntentsMap[bot.id]?.apply {
+            bot.speed = calcNewBotSpeed(bot.speed, targetSpeed ?: 0.0)
 
-            updateBotTurnRatesAndDirections(bot, intent)
-            updateBotColors(bot, intent)
+            updateBotTurnRatesAndDirections(bot, this)
+            updateBotColors(bot, this)
 
             bot.moveToNewPosition()
         }
@@ -593,9 +591,8 @@ class ModelUpdater(
      * @param bot is the bot.
      */
     private fun checkWhetherToFireGun(bot: MutableBot) {
-        val botIntent = botIntentsMap[bot.id]
-        if (botIntent != null) {
-            val firepower = botIntent.firepower ?: 0.0
+        botIntentsMap[bot.id]?.let {
+            val firepower = it.firepower ?: 0.0
             if (firepower >= MIN_FIREPOWER && bot.energy > firepower) {
                 fireBullet(bot, firepower)
             }
@@ -819,9 +816,9 @@ class ModelUpdater(
         private fun updateScanDirectionAndSpread(bot: MutableBot, intent: BotIntent, newRadarDirection: Double) {
             // The radar sweep is the difference between the new and old radar direction
             val newSpreadAngle = normalRelativeDegrees(newRadarDirection - bot.radarDirection)
-            val scan = intent.scan ?: false
-            bot.scanDirection = if (scan) bot.radarDirection else newRadarDirection
-            bot.scanSpreadAngle = if (scan) bot.radarSpreadAngle else newSpreadAngle
+            val rescan = intent.rescan ?: false
+            bot.scanDirection = if (rescan) bot.radarDirection else newRadarDirection
+            bot.scanSpreadAngle = if (rescan) bot.radarSpreadAngle else newSpreadAngle
             bot.radarDirection = newRadarDirection
             bot.radarSpreadAngle = newSpreadAngle
         }
@@ -832,23 +829,26 @@ class ModelUpdater(
          * @param intent is the bot´s intent.
          */
         private fun updateBotTurnRatesAndDirections(bot: MutableBot, intent: BotIntent) {
-            val turnRate = limitTurnRate(intent.turnRate ?: 0.0, bot.speed)
+            val bodyTurnRate = limitTurnRate(intent.turnRate ?: 0.0, bot.speed)
             val gunTurnRate = limitGunTurnRate(intent.gunTurnRate ?: 0.0)
             val radarTurnRate = limitRadarTurnRate(intent.radarTurnRate ?: 0.0)
 
-            var adjustmentRate = turnRate
+            var adjustmentRate = bodyTurnRate
             bot.direction = normalAbsoluteDegrees(bot.direction + adjustmentRate)
 
             // Gun direction depends on the turn rate of both the body and the gun
             adjustmentRate += gunTurnRate
             if (intent.adjustGunForBodyTurn == true) {
-                adjustmentRate -= turnRate
+                adjustmentRate -= bodyTurnRate
             }
             adjustmentRate = limitGunTurnRate(adjustmentRate)
             bot.gunDirection = normalAbsoluteDegrees(bot.gunDirection + adjustmentRate)
 
             // Radar direction depends on the turn rate of the body, the gun, and the radar
             adjustmentRate += radarTurnRate
+            if (intent.adjustRadarForBodyTurn == true) {
+                adjustmentRate -= bodyTurnRate
+            }
             if (intent.adjustRadarForGunTurn == true) {
                 adjustmentRate -= gunTurnRate
             }
@@ -857,7 +857,7 @@ class ModelUpdater(
 
             updateScanDirectionAndSpread(bot, intent, radarDirection)
 
-            bot.turnRate = turnRate
+            bot.turnRate = bodyTurnRate
             bot.gunTurnRate = gunTurnRate
             bot.radarTurnRate = radarTurnRate
         }
@@ -868,13 +868,15 @@ class ModelUpdater(
          * @param intent is the bot´s intent.
          */
         private fun updateBotColors(bot: MutableBot, intent: BotIntent) {
-            bot.bodyColor = colorStringToRGB(intent.bodyColor)
-            bot.turretColor = colorStringToRGB(intent.turretColor)
-            bot.radarColor = colorStringToRGB(intent.radarColor)
-            bot.bulletColor = colorStringToRGB(intent.bulletColor)
-            bot.scanColor = colorStringToRGB(intent.scanColor)
-            bot.tracksColor = colorStringToRGB(intent.tracksColor)
-            bot.gunColor = colorStringToRGB(intent.gunColor)
+            bot.apply {
+                bodyColor = fromString(intent.bodyColor)
+                turretColor = fromString(intent.turretColor)
+                radarColor = fromString(intent.radarColor)
+                bulletColor = fromString(intent.bulletColor)
+                scanColor = fromString(intent.scanColor)
+                tracksColor = fromString(intent.tracksColor)
+                gunColor = fromString(intent.gunColor)
+            }
         }
     }
 }

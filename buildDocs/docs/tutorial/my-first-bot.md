@@ -58,8 +58,8 @@ This is the content of the JSON file, which you can copy and paste into the file
 
 Note that the *authors* field should contain your full name, nickname, or handle, which identifies you. The *platform*
 and *programmingLang* depends on your choice of programming language and platform. For example, the platform could be
-*Java 17* with the programming Language *Kotlin 1.6.10* or *Java 17*, or the platform could be *.Net 5.0* with the
-programming language *C# 9.0* or *F# 6.0*.
+*Java 17* with the programming Language *Kotlin 1.6.10* or *Java 17*, or the platform could be *.Net 6.0* with the
+programming language *C# 10.0* or *F# 6.0*.
 
 This concludes the common part of the tutorial.
 

@@ -71,7 +71,7 @@ public class Fire : Bot
             Fire(1);
         }
         // Rescan
-        Scan();
+        Rescan();
 
         isScanning = false; // We are not scanning any more
     }
@@ -87,15 +87,15 @@ public class Fire : Bot
         dist *= -1; // Change distance, meaning forward or backward direction
 
         // Rescan
-        Scan();
+        Rescan();
     }
 
     // We have hit another bot -> aim at it and fire hard!
     public override void OnHitBot(HitBotEvent e)
     {
         // Turn gun to the bullet direction
-        double direction = DirectionTo(e.X, e.Y);
-        double gunBearing = NormalizeRelativeAngle(direction - GunDirection);
+        var direction = DirectionTo(e.X, e.Y);
+        var gunBearing = NormalizeRelativeAngle(direction - GunDirection);
         TurnGunLeft(gunBearing);
 
         // Fire hard

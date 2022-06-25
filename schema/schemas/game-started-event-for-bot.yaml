@@ -1,6 +1,6 @@
 $id: #game-started-event-for-bot.yaml
 $schema: http://json-schema.org/2020-12/schema#
-description: Event occuring when a new game has started. Gives game info for a bot.
+description: Event occurring when a new game has started. Gives game info for a bot.
 extends:
   $ref: message.yaml
 properties:

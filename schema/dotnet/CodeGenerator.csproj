@@ -2,15 +2,15 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>CodeGeneratorApp</AssemblyName>
     <RootNamespace>Robocode.TankRoyale.Schema.CodeGenerator</RootNamespace>
     <StartupObject>Robocode.TankRoyale.Schema.CodeGenerator.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NJsonSchema.CodeGeneration.CSharp" Version="10.1.2" />
-    <PackageReference Include="NJsonSchema.Yaml" Version="10.1.2" />
+    <PackageReference Include="NJsonSchema.CodeGeneration.CSharp" Version="10.7.1" />
+    <PackageReference Include="NJsonSchema.Yaml" Version="10.7.1" />
   </ItemGroup>
 
 </Project>
