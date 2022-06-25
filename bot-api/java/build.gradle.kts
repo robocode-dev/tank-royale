@@ -38,6 +38,7 @@ dependencies {
     testRuntimeOnly(libs.junit.engine)
     testImplementation(libs.assertj)
     testImplementation(libs.system.stubs)
+    testImplementation(libs.java.websocket)
 }
 
 tasks {
