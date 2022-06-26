@@ -25,7 +25,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 public class EnvVarsTest {
 
     @Test
-    void getBotInfo_ShouldWorkWhenAllEnvVarsAreSetCorrectly() throws Exception {
+    void getBotInfo_shouldWorkWhenAllEnvVarsAreSetCorrectly() throws Exception {
         EnvironmentVariablesBuilder.createAll().execute(()-> {
             var info = EnvVars.getBotInfo();
             assertThat(info.getName()).isEqualTo("MyBot");
@@ -42,7 +42,7 @@ public class EnvVarsTest {
     }
 
     @Test
-    void getBotInfo_ShouldFailWhenBotNameIsNull() throws Exception {
+    void getBotInfo_shouldFailWhenBotNameIsNull() throws Exception {
         var envVars = EnvironmentVariablesBuilder.createAll();
         envVars.set(EnvironmentVariablesConstants.BOT_NAME, null);
         envVars.execute(() -> {
@@ -51,7 +51,7 @@ public class EnvVarsTest {
     }
 
     @Test
-    void getBotInfo_ShouldFailWhenBotNameIsBlank() throws Exception {
+    void getBotInfo_shouldFailWhenBotNameIsBlank() throws Exception {
         var envVars = EnvironmentVariablesBuilder.createAll();
         envVars.set(EnvironmentVariablesConstants.BOT_NAME, "  \t");
         envVars.execute(() -> {
@@ -60,7 +60,7 @@ public class EnvVarsTest {
     }
 
     @Test
-    void getBotInfo_ShouldFailWhenBotVersionIsNull() throws Exception {
+    void getBotInfo_shouldFailWhenBotVersionIsNull() throws Exception {
         var envVars = EnvironmentVariablesBuilder.createAll();
         envVars.set(EnvironmentVariablesConstants.BOT_VERSION, null);
         envVars.execute(() -> {
@@ -69,7 +69,7 @@ public class EnvVarsTest {
     }
 
     @Test
-    void getBotInfo_ShouldFailWhenBotVersionIsBlank() throws Exception {
+    void getBotInfo_shouldFailWhenBotVersionIsBlank() throws Exception {
         var envVars = EnvironmentVariablesBuilder.createAll();
         envVars.set(EnvironmentVariablesConstants.BOT_VERSION, "  \t");
         envVars.execute(() -> {
@@ -78,7 +78,7 @@ public class EnvVarsTest {
     }
 
     @Test
-    void getBotInfo_ShouldFailWhenBotAuthorsIsNull() throws Exception {
+    void getBotInfo_shouldFailWhenBotAuthorsIsNull() throws Exception {
         var envVars = EnvironmentVariablesBuilder.createAll();
         envVars.set(EnvironmentVariablesConstants.BOT_AUTHORS, null);
         envVars.execute(() -> {
@@ -87,7 +87,7 @@ public class EnvVarsTest {
     }
 
     @Test
-    void getBotInfo_ShouldFailWhenBotAuthorsIsBlank() throws Exception {
+    void getBotInfo_shouldFailWhenBotAuthorsIsBlank() throws Exception {
         var envVars = EnvironmentVariablesBuilder.createAll();
         envVars.set(EnvironmentVariablesConstants.BOT_AUTHORS, "  \t");
         envVars.execute(() -> {
@@ -96,7 +96,7 @@ public class EnvVarsTest {
     }
 
     @Test
-    void getBotInfo_ShouldFailWhenBotGameTypesIsNull() throws Exception {
+    void getBotInfo_shouldFailWhenBotGameTypesIsNull() throws Exception {
         var envVars = EnvironmentVariablesBuilder.createAll();
         envVars.set(EnvironmentVariablesConstants.BOT_GAME_TYPES, null);
         envVars.execute(() -> {
@@ -105,7 +105,7 @@ public class EnvVarsTest {
     }
 
     @Test
-    void getBotInfo_ShouldFailWhenBotGameTypesIsBlank() throws Exception {
+    void getBotInfo_shouldFailWhenBotGameTypesIsBlank() throws Exception {
         var envVars = EnvironmentVariablesBuilder.createAll();
         envVars.set(EnvironmentVariablesConstants.BOT_GAME_TYPES, "  \t");
         envVars.execute(() -> {
@@ -114,7 +114,7 @@ public class EnvVarsTest {
     }
 
     @Test
-    void getBotInfo_ShouldReturnLocalCountryCodeIfWhenBotCountryCodesIsInvalid() throws Exception {
+    void getBotInfo_shouldReturnLocalCountryCodeIfWhenBotCountryCodesIsInvalid() throws Exception {
         var envVars = EnvironmentVariablesBuilder.createAll();
         envVars.set(EnvironmentVariablesConstants.BOT_COUNTRY_CODES, "XYZ tew");
         envVars.execute(() -> {
@@ -125,7 +125,7 @@ public class EnvVarsTest {
 
     @ParameterizedTest
     @MethodSource("initialPositionProvider")
-    void getBotInfo_initialPosition_ShouldWorkWithNormalInput(String input, Double x, Double y, Double angle) throws Exception {
+    void getBotInfo_initialPosition_shouldWorkWithNormalInput(String input, Double x, Double y, Double angle) throws Exception {
         var envVars = EnvironmentVariablesBuilder.createAll();
         envVars.set(EnvironmentVariablesConstants.BOT_INITIAL_POS, input);
         envVars.execute(() -> {
@@ -138,7 +138,7 @@ public class EnvVarsTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"", "  \t"})
-    void getBotInfo_initialPosition_ShouldWorkWithBlankInput(String input) throws Exception {
+    void getBotInfo_initialPosition_shouldWorkWithBlankInput(String input) throws Exception {
         var envVars = EnvironmentVariablesBuilder.createAll();
         envVars.set(EnvironmentVariablesConstants.BOT_INITIAL_POS, input);
         envVars.execute(() -> {

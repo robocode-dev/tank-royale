@@ -17,7 +17,7 @@ public final class MockedServer {
 
     private final WebSocketServerImpl server = new WebSocketServerImpl();
 
-    private boolean isConnected;
+    private volatile boolean isConnected;
     private BotHandshake botHandshake;
 
     private final Gson gson = new Gson();
