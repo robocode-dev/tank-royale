@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.botapi.test_utils;
 
-public class EnvironmentVariablesConstants {
+public class EnvironmentVariables {
     public static final String SERVER_URL = "SERVER_URL";
     public static final String BOT_NAME = "BOT_NAME";
     public static final String BOT_VERSION = "BOT_VERSION";

@@ -3,11 +3,9 @@ package dev.robocode.tankroyale.botapi;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.ClearEnvironmentVariable;
+import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import test_utils.MockedServer;
-import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
-import uk.org.webcompere.systemstubs.jupiter.SystemStub;
-import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -17,7 +15,16 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static test_utils.Await.await;
 
-@ExtendWith(SystemStubsExtension.class)
+@SetEnvironmentVariable(key = "SERVER_URL", value = "ws://localhost:" + MockedServer.PORT)
+@SetEnvironmentVariable(key = "BOT_NAME", value = "MyBot")
+@SetEnvironmentVariable(key = "BOT_VERSION", value = "1.0")
+@SetEnvironmentVariable(key = "BOT_AUTHORS", value = "Author1, Author2")
+@SetEnvironmentVariable(key = "BOT_GAME_TYPES", value = "classic, melee")
+@SetEnvironmentVariable(key = "BOT_DESCRIPTION", value = "Short description")
+@SetEnvironmentVariable(key = "BOT_HOMEPAGE", value = "https://somewhere.net/MyBot")
+@SetEnvironmentVariable(key = "BOT_COUNTRY_CODES", value = "uk, us")
+@SetEnvironmentVariable(key = "BOT_PLATFORM", value = "JVM 18")
+@SetEnvironmentVariable(key = "BOT_PROG_LANG", value = "Java 18")
 class BaseBotConstructorTest {
 
     static final String SERVER_URL = "SERVER_URL";
@@ -32,19 +39,6 @@ class BaseBotConstructorTest {
     static final String BOT_PROG_LANG = "BOT_PROG_LANG";
 
     MockedServer server;
-
-    @SystemStub
-    private final EnvironmentVariables environmentVariables = new EnvironmentVariables()
-            .set(SERVER_URL, "ws://localhost:" + MockedServer.PORT)
-            .set(BOT_NAME, "MyBot")
-            .set(BOT_VERSION, "1.0")
-            .set(BOT_AUTHORS, "Author1, Author2")
-            .set(BOT_GAME_TYPES, "classic, melee")
-            .set(BOT_DESCRIPTION, "Short description")
-            .set(BOT_HOMEPAGE, "https://somewhere.net/MyBot")
-            .set(BOT_COUNTRY_CODES, "uk, us")
-            .set(BOT_PLATFORM, ".Net 5.0")
-            .set(BOT_PROG_LANG, "C# 8.0");
 
     @BeforeEach
     void setup() {
@@ -63,35 +57,35 @@ class BaseBotConstructorTest {
     }
 
     @Test
+    @ClearEnvironmentVariable(key = SERVER_URL)
     void givenEmptyConstructor_whenServerUrlEnvVarIsMissing_thenBotIsCreatedSuccessfully() {
-        environmentVariables.set(SERVER_URL, null);
         new TestBot();
     }
 
     @Test
+    @ClearEnvironmentVariable(key = BOT_NAME)
     void givenEmptyConstructor_whenBotNameEnvVarIsMissing_thenBotExceptionIsThrown() {
-        environmentVariables.set(BOT_NAME, null);
         var botException = assertThrows(BotException.class, TestBot::new);
         assertThat(botException.getMessage().toUpperCase(Locale.ROOT)).contains(BOT_NAME);
     }
 
     @Test
+    @ClearEnvironmentVariable(key = BOT_VERSION)
     void givenEmptyConstructor_whenBotVersionEnvVarIsMissing_thenBotExceptionIsThrown() {
-        environmentVariables.set(BOT_VERSION, null);
         var botException = assertThrows(BotException.class, TestBot::new);
         assertThat(botException.getMessage().toUpperCase(Locale.ROOT)).contains(BOT_VERSION);
     }
 
     @Test
+    @ClearEnvironmentVariable(key = BOT_AUTHORS)
     void givenEmptyConstructor_whenBotAuthorEnvVarIsMissing_thenBotExceptionIsThrown() {
-        environmentVariables.set(BOT_AUTHORS, null);
         var botException = assertThrows(BotException.class, TestBot::new);
         assertThat(botException.getMessage().toUpperCase(Locale.ROOT)).contains(BOT_AUTHORS);
     }
 
     @Test
+    @ClearEnvironmentVariable(key = BOT_GAME_TYPES)
     void givenEmptyConstructor_whenBotGameTypesEnvVarIsMissing_thenBotExceptionIsThrown() {
-        environmentVariables.set(BOT_GAME_TYPES, null);
         var botException = assertThrows(BotException.class, TestBot::new);
         assertThat(botException.getMessage().toUpperCase(Locale.ROOT)).contains(BOT_GAME_TYPES);
     }
@@ -104,8 +98,8 @@ class BaseBotConstructorTest {
     }
 
     @Test
+    @ClearEnvironmentVariable(key = SERVER_URL)
     void givenEmptyConstructor_whenServerUrlEnvVarIsMissingAndStartingBot_thenBotCannotConnect() {
-        environmentVariables.set(SERVER_URL, null);
         startBotFromThread();
         await(() -> server.isConnected(), 1000);
         assertThat(server.isConnected()).isFalse();
@@ -117,7 +111,7 @@ class BaseBotConstructorTest {
         await(() -> server.getBotHandshake() != null, 1000);
 
         var botHandshake = server.getBotHandshake();
-        var env = environmentVariables.getVariables();
+        var env = System.getenv();
 
         assertThat(botHandshake).isNotNull();
         assertThat(botHandshake.getName()).isEqualTo(env.get(BOT_NAME));

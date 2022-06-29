@@ -135,7 +135,7 @@ public sealed class BotInfo
 
             foreach (var countryCode in countryCodes)
                 if (!CountryCode.IsCountryCodeValid(countryCode))
-                    throw new ArgumentException($"Country Code is not valid: '{countryCode}'");
+                    countryCodes = new List<string> { CountryCode.GetLocalCountryCode() };
 
             if (CountryCodes.Any()) return;
             var list = new List<string>

@@ -1,10 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 
 namespace Robocode.TankRoyale.BotApi.Util;
 
 public static class CountryCode
 {
+    public static string GetLocalCountryCode()
+    {
+        var cultureInfo = Thread.CurrentThread.CurrentCulture;
+        var regionInfo = new RegionInfo(cultureInfo.LCID);
+        return regionInfo.TwoLetterISORegionName;
+    }
+
     public static bool IsCountryCodeValid(string countryCode)
     {
         if (string.IsNullOrWhiteSpace(countryCode)) return false;
