@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.botapi.test_utils;
+package test_utils;
 
 public class EnvironmentVariables {
     public static final String SERVER_URL = "SERVER_URL";

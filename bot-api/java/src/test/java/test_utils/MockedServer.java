@@ -9,7 +9,10 @@ import org.java_websocket.server.WebSocketServer;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.sql.Time;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public final class MockedServer {
 
@@ -17,8 +20,10 @@ public final class MockedServer {
 
     private final WebSocketServerImpl server = new WebSocketServerImpl();
 
-    private volatile boolean isConnected;
     private BotHandshake botHandshake;
+
+    private final CountDownLatch connectedLatch = new CountDownLatch(1);
+    private final CountDownLatch botHandshakeLatch = new CountDownLatch(1);
 
     private final Gson gson = new Gson();
 
@@ -34,8 +39,22 @@ public final class MockedServer {
         }
     }
 
-    public boolean isConnected() {
-        return isConnected;
+    public boolean awaitConnection(int milliSeconds) {
+        try {
+            return connectedLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            System.err.println("awaitConnection() was interrupted");
+        }
+        return false;
+    }
+
+    public boolean awaitBotHandshake(int milliSeconds) {
+        try {
+            return botHandshakeLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            System.err.println("awaitBotHandshake() was interrupted");
+        }
+        return false;
     }
 
     public BotHandshake getBotHandshake() {
@@ -54,7 +73,7 @@ public final class MockedServer {
 
         @Override
         public void onOpen(WebSocket conn, ClientHandshake handshake) {
-            isConnected = true;
+            connectedLatch.countDown();
 
             var serverHandshake = new dev.robocode.tankroyale.schema.ServerHandshake();
             serverHandshake.set$type(Message.$type.SERVER_HANDSHAKE);
@@ -76,6 +95,8 @@ public final class MockedServer {
 
             if (message.get$type().equals(dev.robocode.tankroyale.schema.Message.$type.BOT_HANDSHAKE)) {
                 botHandshake = gson.fromJson(text, dev.robocode.tankroyale.schema.BotHandshake.class);
+
+                botHandshakeLatch.countDown();
             }
         }
 
