@@ -11,7 +11,7 @@ import test_utils.MockedServer;
 import java.util.List;
 import java.util.Locale;
 
-import static dev.robocode.tankroyale.botapi.test_utils.EnvironmentVariables.*;
+import static test_utils.EnvironmentVariables.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

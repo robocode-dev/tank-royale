@@ -11,43 +11,33 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import static test_utils.EnvironmentVariables.*;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static test_utils.Await.await;
 
-@SetEnvironmentVariable(key = "SERVER_URL", value = "ws://localhost:" + MockedServer.PORT)
-@SetEnvironmentVariable(key = "BOT_NAME", value = "MyBot")
-@SetEnvironmentVariable(key = "BOT_VERSION", value = "1.0")
-@SetEnvironmentVariable(key = "BOT_AUTHORS", value = "Author1, Author2")
-@SetEnvironmentVariable(key = "BOT_GAME_TYPES", value = "classic, melee")
-@SetEnvironmentVariable(key = "BOT_DESCRIPTION", value = "Short description")
-@SetEnvironmentVariable(key = "BOT_HOMEPAGE", value = "https://somewhere.net/MyBot")
-@SetEnvironmentVariable(key = "BOT_COUNTRY_CODES", value = "uk, us")
-@SetEnvironmentVariable(key = "BOT_PLATFORM", value = "JVM 18")
-@SetEnvironmentVariable(key = "BOT_PROG_LANG", value = "Java 18")
+@SetEnvironmentVariable(key = SERVER_URL, value = "ws://localhost:" + MockedServer.PORT)
+@SetEnvironmentVariable(key = BOT_NAME, value = "MyBot")
+@SetEnvironmentVariable(key = BOT_VERSION, value = "1.0")
+@SetEnvironmentVariable(key = BOT_AUTHORS, value = "Author1, Author2")
+@SetEnvironmentVariable(key = BOT_GAME_TYPES, value = "classic, melee")
+@SetEnvironmentVariable(key = BOT_DESCRIPTION, value = "Short description")
+@SetEnvironmentVariable(key = BOT_HOMEPAGE, value = "https://somewhere.net/MyBot")
+@SetEnvironmentVariable(key = BOT_COUNTRY_CODES, value = "uk, us")
+@SetEnvironmentVariable(key = BOT_PLATFORM, value = "JVM 18")
+@SetEnvironmentVariable(key = BOT_PROG_LANG, value = "Java 18")
 class BaseBotConstructorTest {
-
-    static final String SERVER_URL = "SERVER_URL";
-    static final String BOT_NAME = "BOT_NAME";
-    static final String BOT_VERSION = "BOT_VERSION";
-    static final String BOT_AUTHORS = "BOT_AUTHORS";
-    static final String BOT_GAME_TYPES = "BOT_GAME_TYPES";
-    static final String BOT_DESCRIPTION = "BOT_DESCRIPTION";
-    static final String BOT_HOMEPAGE = "BOT_HOMEPAGE";
-    static final String BOT_COUNTRY_CODES = "BOT_COUNTRY_CODES";
-    static final String BOT_PLATFORM = "BOT_PLATFORM";
-    static final String BOT_PROG_LANG = "BOT_PROG_LANG";
 
     MockedServer server;
 
     @BeforeEach
     void setup() {
         server = new MockedServer();
+        server.start();
     }
 
     @AfterEach
     void teardown() {
-        server.close();
+        server.stop();
     }
 
     @Test
@@ -93,22 +83,20 @@ class BaseBotConstructorTest {
     @Test
     void givenEmptyConstructor_whenAllRequiredBotEnvVarsAreSetAndStartingBot_thenBotMustConnectToServer() {
         startBotFromThread();
-        await(() -> server.isConnected(), 1000);
-        assertThat(server.isConnected()).isTrue();
+        assertThat(server.awaitConnection(1000)).isTrue();
     }
 
     @Test
     @ClearEnvironmentVariable(key = SERVER_URL)
     void givenEmptyConstructor_whenServerUrlEnvVarIsMissingAndStartingBot_thenBotCannotConnect() {
         startBotFromThread();
-        await(() -> server.isConnected(), 1000);
-        assertThat(server.isConnected()).isFalse();
+        assertThat(server.awaitConnection(1000)).isFalse();
     }
 
     @Test
     void givenEmptyConstructor_whenAllRequiredBotEnvVarsAreSetAndStartingBot_thenBotHandshakeMustBeCorrect() {
         startBotFromThread();
-        await(() -> server.getBotHandshake() != null, 1000);
+        assertThat(server.awaitBotHandshake(1000)).isTrue();
 
         var botHandshake = server.getBotHandshake();
         var env = System.getenv();

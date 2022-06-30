@@ -10,23 +10,31 @@ import org.java_websocket.server.WebSocketServer;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public final class MockedServer {
 
     public static final int PORT = 7913;
 
-    private final WebSocketServerImpl server = new WebSocketServerImpl();
+    private WebSocketServerImpl server = new WebSocketServerImpl();
 
-    private volatile boolean isConnected;
     private BotHandshake botHandshake;
 
-    private final Gson gson = new Gson();
+    private CountDownLatch connectedLatch = new CountDownLatch(1);
+    private CountDownLatch botHandshakeLatch = new CountDownLatch(1);
+
+    private Gson gson;
 
     public MockedServer() {
+    }
+
+    public void start() {
+        init();
         server.start();
     }
 
-    public void close() {
+    public void stop() {
         try {
             server.stop();
         } catch (InterruptedException e) {
@@ -34,8 +42,31 @@ public final class MockedServer {
         }
     }
 
-    public boolean isConnected() {
-        return isConnected;
+    private void init() {
+        connectedLatch = new CountDownLatch(1);
+        botHandshakeLatch = new CountDownLatch(1);
+
+        gson = new Gson();
+
+        server = new WebSocketServerImpl();
+    }
+
+    public boolean awaitConnection(int milliSeconds) {
+        try {
+            return connectedLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            System.err.println("awaitConnection() was interrupted");
+        }
+        return false;
+    }
+
+    public boolean awaitBotHandshake(int milliSeconds) {
+        try {
+            return botHandshakeLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            System.err.println("awaitBotHandshake() was interrupted");
+        }
+        return false;
     }
 
     public BotHandshake getBotHandshake() {
@@ -54,7 +85,7 @@ public final class MockedServer {
 
         @Override
         public void onOpen(WebSocket conn, ClientHandshake handshake) {
-            isConnected = true;
+            connectedLatch.countDown();
 
             var serverHandshake = new dev.robocode.tankroyale.schema.ServerHandshake();
             serverHandshake.set$type(Message.$type.SERVER_HANDSHAKE);
@@ -76,6 +107,8 @@ public final class MockedServer {
 
             if (message.get$type().equals(dev.robocode.tankroyale.schema.Message.$type.BOT_HANDSHAKE)) {
                 botHandshake = gson.fromJson(text, dev.robocode.tankroyale.schema.BotHandshake.class);
+
+                botHandshakeLatch.countDown();
             }
         }
 
