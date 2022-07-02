@@ -55,6 +55,8 @@ tasks {
     }
 
     build {
+        dependsOn(":schema:dotnet:build")
+
         doFirst {
             copy {
                 from("nuget_docs")
