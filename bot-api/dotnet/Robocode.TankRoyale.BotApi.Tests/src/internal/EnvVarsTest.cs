@@ -8,11 +8,15 @@ namespace Robocode.TankRoyale.BotApi.Tests.Internal;
 
 public class EnvVarsTest
 {
+    [SetUp]
+    public void SetUp()
+    {
+        SetAllEnvVars();
+    }
+    
     [Test]
     public void GetBotInfo_ShouldWorkWhenAllEnvVarsAreSetCorrectly()
     {
-        SetAllEnvVars();
-
         var info = EnvVars.GetBotInfo();
         Assert.That(info.Name, Is.EqualTo("MyBot"));
         Assert.That(info.Version, Is.EqualTo("1.0"));
@@ -29,7 +33,6 @@ public class EnvVarsTest
     [Test]
     public void GetBotInfo_ShouldFailWhenBotNameIsNull()
     {
-        SetAllEnvVars();
         ClearEnvVar(BotName);
 
         Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
@@ -38,7 +41,6 @@ public class EnvVarsTest
     [Test]
     public void GetBotInfo_ShouldFailWhenBotNameIsBlank()
     {
-        SetAllEnvVars();
         SetEnvVar(BotName, "  \t");
 
         Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
@@ -47,7 +49,6 @@ public class EnvVarsTest
     [Test]
     public void GetBotInfo_ShouldFailWhenBotVersionIsNull()
     {
-        SetAllEnvVars();
         ClearEnvVar(BotVersion);
 
         Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
@@ -56,7 +57,6 @@ public class EnvVarsTest
     [Test]
     public void GetBotInfo_ShouldFailWhenBotVersionIsBlank()
     {
-        SetAllEnvVars();
         SetEnvVar(BotVersion, "  \t");
 
         Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
@@ -65,7 +65,6 @@ public class EnvVarsTest
     [Test]
     public void GetBotInfo_ShouldFailWhenBotAuthorsIsNull()
     {
-        SetAllEnvVars();
         ClearEnvVar(BotAuthors);
 
         Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
@@ -74,7 +73,6 @@ public class EnvVarsTest
     [Test]
     public void GetBotInfo_ShouldFailWhenBotAuthorsIsBlank()
     {
-        SetAllEnvVars();
         SetEnvVar(BotAuthors, "  \t");
 
         Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
@@ -83,7 +81,6 @@ public class EnvVarsTest
     [Test]
     public void GetBotInfo_ShouldFailWhenBotGameTypesIsNull()
     {
-        SetAllEnvVars();
         ClearEnvVar(BotGameTypes);
 
         Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
@@ -92,7 +89,6 @@ public class EnvVarsTest
     [Test]
     public void GetBotInfo_ShouldFailWhenBotGameTypesIsBlank()
     {
-        SetAllEnvVars();
         SetEnvVar(BotGameTypes, "  \t");
 
         Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
@@ -101,7 +97,6 @@ public class EnvVarsTest
     [Test]
     public void GetBotInfo_ShouldReturnLocalCountryCodeIfWhenBotCountryCodesIsInvalid()
     {
-        SetAllEnvVars();
         SetEnvVar(BotCountryCodes, "XYZ tew");
 
         var countryCode = EnvVars.GetBotInfo().CountryCodes.First();
@@ -110,7 +105,6 @@ public class EnvVarsTest
     
     [Test]
     public void GetBotInfo_InitialPosition_ShouldWorkWithValidInput1() {
-        SetAllEnvVars();
         SetEnvVar(BotInitialPosition, "  50 ");
         
         var pos = EnvVars.GetBotInfo().InitialPosition;
@@ -121,7 +115,6 @@ public class EnvVarsTest
     
     [Test]
     public void GetBotInfo_InitialPosition_ShouldWorkWithValidInput2() {
-        SetAllEnvVars();
         SetEnvVar(BotInitialPosition, "  50, ");
         
         var pos = EnvVars.GetBotInfo().InitialPosition;
@@ -132,7 +125,6 @@ public class EnvVarsTest
 
     [Test]
     public void GetBotInfo_InitialPosition_ShouldWorkWithValidInput3() {
-        SetAllEnvVars();
         SetEnvVar(BotInitialPosition, "  50 70.0");
         
         var pos = EnvVars.GetBotInfo().InitialPosition;
@@ -143,7 +135,6 @@ public class EnvVarsTest
 
     [Test]
     public void GetBotInfo_InitialPosition_ShouldWorkWithValidInput4() {
-        SetAllEnvVars();
         SetEnvVar(BotInitialPosition, "  50.0, 70");
         
         var pos = EnvVars.GetBotInfo().InitialPosition;
@@ -154,7 +145,6 @@ public class EnvVarsTest
 
     [Test]
     public void GetBotInfo_InitialPosition_ShouldWorkWithValidInput5() {
-        SetAllEnvVars();
         SetEnvVar(BotInitialPosition, "  50, 70.0 ,");
         
         var pos = EnvVars.GetBotInfo().InitialPosition;
@@ -165,7 +155,6 @@ public class EnvVarsTest
     
     [Test]
     public void GetBotInfo_InitialPosition_ShouldWorkWithValidInput6() {
-        SetAllEnvVars();
         SetEnvVar(BotInitialPosition, "  50.0, 70, 100");
         
         var pos = EnvVars.GetBotInfo().InitialPosition;
@@ -176,7 +165,6 @@ public class EnvVarsTest
     
     [Test]
     public void GetBotInfo_InitialPosition_ShouldWorkWithValidInput7() {
-        SetAllEnvVars();
         SetEnvVar(BotInitialPosition, "  50, 70.0 100");
         
         var pos = EnvVars.GetBotInfo().InitialPosition;
@@ -188,7 +176,6 @@ public class EnvVarsTest
     [Test]
     public void GetBotInfo_InitialPosition_ShouldWorkWithEmptyInput()
     {
-        SetAllEnvVars();
         SetEnvVar(BotInitialPosition, "");
 
         var pos = EnvVars.GetBotInfo().InitialPosition;
@@ -198,7 +185,6 @@ public class EnvVarsTest
     [Test]
     public void GetBotInfo_InitialPosition_ShouldWorkWithBlankInput()
     {
-        SetAllEnvVars();
         SetEnvVar(BotInitialPosition, "  \t");
 
         var pos = EnvVars.GetBotInfo().InitialPosition;
