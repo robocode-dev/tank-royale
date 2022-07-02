@@ -28,6 +28,7 @@ apply(plugin = "jsonschema2pojo")
 
 dependencies {
     implementation(libs.gson)
+    implementation(libs.java.websocket)
 }
 
 java {
