@@ -85,7 +85,7 @@ public final class MockedServer {
             connectedLatch.countDown();
 
             var serverHandshake = new dev.robocode.tankroyale.schema.ServerHandshake();
-            serverHandshake.set$type(Message.$type.SERVER_HANDSHAKE);
+            serverHandshake.setType(Message.Type.SERVER_HANDSHAKE);
             serverHandshake.setName(MockedServer.class.getSimpleName());
             serverHandshake.setVersion("1.0.0");
             serverHandshake.setVariant("Tank Royale");
@@ -100,10 +100,10 @@ public final class MockedServer {
 
         @Override
         public void onMessage(WebSocket conn, String text) {
-            var message = gson.fromJson(text, dev.robocode.tankroyale.schema.Message.class);
+            var message = gson.fromJson(text, Message.class);
 
-            if (message.get$type().equals(dev.robocode.tankroyale.schema.Message.$type.BOT_HANDSHAKE)) {
-                botHandshake = gson.fromJson(text, dev.robocode.tankroyale.schema.BotHandshake.class);
+            if (message.getType().equals(Message.Type.BOT_HANDSHAKE)) {
+                botHandshake = gson.fromJson(text, BotHandshake.class);
 
                 botHandshakeLatch.countDown();
             }
