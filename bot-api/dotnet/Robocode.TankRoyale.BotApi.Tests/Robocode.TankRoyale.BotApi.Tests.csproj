@@ -7,13 +7,20 @@
         <LangVersion>10.0</LangVersion>
 
         <IsPackable>false</IsPackable>
+
+        <!-- Uncomment this to run console application with a Main method -->
+        <!--<GenerateProgramFile>false</GenerateProgramFile>-->
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="../Robocode.TankRoyale.BotApi/Robocode.TankRoyale.BotApi.csproj" />
+        <ProjectReference Include="../../../schema/dotnet/CodeGenerator.csproj" />
+
+        <!-- WebSocket -->
+        <PackageReference Include="Fleck" Version="1.2.0" />
 
         <!-- for testing -->
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
         <PackageReference Include="NUnit" Version="3.13.3" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
         <PackageReference Include="coverlet.collector" Version="3.1.2" />

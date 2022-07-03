@@ -15,6 +15,7 @@ gradle/
 out/
 bin/
 obj/
+generated/
 
 *.iml
 

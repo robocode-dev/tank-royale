@@ -37,7 +37,8 @@ dependencies {
     testImplementation(libs.junit.params)
     testRuntimeOnly(libs.junit.engine)
     testImplementation(libs.assertj)
-    testImplementation(libs.system.stubs)
+    testImplementation(libs.junit.pioneer)
+    testImplementation(libs.java.websocket)
 }
 
 tasks {

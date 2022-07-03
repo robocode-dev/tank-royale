@@ -19,7 +19,7 @@ class ColorTest {
                 "0xFF, 0xFF, 0xFF",
                 "0x13, 0x9A, 0xF7"
         })
-        void constructor_ShouldWork(int red, int green, int blue) {
+        void constructor_fieldsMustMatchInputValues(int red, int green, int blue) {
             var color = new Color(red, green, blue);
 
             assertThat(color.getRed()).isEqualTo(red);
@@ -36,7 +36,7 @@ class ColorTest {
                 "255, 1000, 0",   // number too big  (2nd param)
                 "50, 100, 300",   // number too big  (3rd param)
         })
-        void constructor_ShouldThrowException(int red, int green, int blue) {
+        void constructor_shouldThrowIllegalArgumentException(int red, int green, int blue) {
             assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
                     () -> new Color(red, green, blue)
             );
@@ -58,7 +58,7 @@ class ColorTest {
                 "  #123,0x11,0x22,0x33",    // White spaces
                 "#AbC\t,0xAA,0xBB,0xCC"     // White space
         })
-        void fromString_ShouldWork(String str, int expectedRed, int expectedGreen, int expectedBlue) {
+        void fromString_fieldsMustMatchInputValues(String str, int expectedRed, int expectedGreen, int expectedBlue) {
             var color = Color.fromString(str);
 
             assertThat(color.getRed()).isEqualTo(expectedRed);
@@ -75,7 +75,7 @@ class ColorTest {
                 "#abcdeG",   // Wrong letter
                 "000000",    // Missing hash (#)
         })
-        void fromString_ShouldThrowException(String str) {
+        void fromString_shouldThrowIllegalArgumentException(String str) {
             assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
                     () -> Color.fromString(str)
             );
@@ -97,7 +97,7 @@ class ColorTest {
                 "  123,0x11,0x22,0x33",    // White spaces
                 "AbC\t,0xAA,0xBB,0xCC"     // White space
         })
-        void fromHex_ShouldWork(String hex, int expectedRed, int expectedGreen, int expectedBlue) {
+        void fromHex_fieldsMustMatchInputValues(String hex, int expectedRed, int expectedGreen, int expectedBlue) {
             var color = Color.fromHex(hex);
 
             assertThat(color.getRed()).isEqualTo(expectedRed);
@@ -113,7 +113,7 @@ class ColorTest {
                 "xxxxxx",   // Wrong letters
                 "abcdeG",   // Wrong letter
         })
-        void fromHex_ShouldThrowException(String hex) {
+        void fromHex_shouldThrowIllegalArgumentException(String hex) {
             assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
                     () -> Color.fromHex(hex)
             );
@@ -128,7 +128,7 @@ class ColorTest {
                 "FEDCBA",
                 "123456"
         })
-        void toHex_ShouldWork(String hex) {
+        void toHex_shouldReturnExpectedHexString(String hex) {
             var color = Color.fromHex(hex);
             assertThat(color.toHex()).isEqualToIgnoringCase(hex);
         }
@@ -137,13 +137,13 @@ class ColorTest {
     @Nested
     class EqualsTests {
         @Test
-        void equals_ShouldBeEqual() {
+        void equals_shouldBeEqual() {
             assertThat(new Color(10, 20, 30)).isEqualTo(new Color(10, 20, 30));
             assertThat(new Color(11, 22, 33)).isEqualTo(new Color(11, 22, 33));
         }
 
         @Test
-        void equals_ShouldNotBeEqual() {
+        void equals_shouldNotBeEqual() {
             assertThat(new Color(10, 20, 30)).isNotEqualTo(new Color(11, 20, 30));
             assertThat(new Color(10, 20, 30)).isNotEqualTo(new Color(10, 22, 30));
             assertThat(new Color(10, 20, 30)).isNotEqualTo(new Color(10, 20, 33));
@@ -153,13 +153,13 @@ class ColorTest {
     @Nested
     class HashTests {
         @Test
-        void hashCode_ShouldBeEqual() {
+        void hashCode_shouldBeEqual() {
             assertThat(Color.fromHex("102030").hashCode()).isEqualTo(new Color(0x10, 0x20, 0x30).hashCode());
             assertThat(Color.fromHex("112233").hashCode()).isEqualTo(new Color(0x11, 0x22, 0x33).hashCode());
         }
 
         @Test
-        void hashCode_ShouldNotBeEqual() {
+        void hashCode_shouldNotBeEqual() {
             assertThat(new Color(10, 20, 30).hashCode()).isNotEqualTo(Color.fromHex("123456").hashCode());
         }
     }
@@ -167,7 +167,7 @@ class ColorTest {
     @Nested
     class ToStringTests {
         @Test
-        void toString_ShouldBeEqual() {
+        void toString_shouldBeEqual() {
             assertThat(Color.fromHex("FDB975").toString()).isEqualToIgnoringCase("FDB975");
         }
     }

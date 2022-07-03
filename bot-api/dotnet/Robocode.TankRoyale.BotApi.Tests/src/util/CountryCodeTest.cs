@@ -13,9 +13,16 @@ namespace Robocode.TankRoyale.BotApi.Tests.Util
         [TestCase("no")]
         [TestCase("SE")]
         [TestCase("FI")]
-        public void IsCountryCodeValid_ShouldWork(string countryCode)
+        public void IsCountryCodeValid_ReturnsTrueForGivenCountryCodes(string countryCode)
         {
             Assert.That(CountryCode.IsCountryCodeValid(countryCode), Is.True);
-        } 
+        }
+
+        [Test]
+        public void GetLocalCountryCode_ReturnValidCountryCode()
+        {
+            var countryCode = CountryCode.GetLocalCountryCode();
+            Assert.That(CountryCode.IsCountryCodeValid(countryCode), Is.True);
+        }
     }
 }

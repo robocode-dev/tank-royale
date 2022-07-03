@@ -49,7 +49,7 @@ dependencyResolutionManagement {
             library("junit-engine", "org.junit.jupiter:junit-jupiter-engine:$junitVersion")
             library("junit-params", "org.junit.jupiter:junit-jupiter-params:$junitVersion")
             library("assertj", "org.assertj:assertj-core:3.22.0")
-            library("system-stubs", "uk.org.webcompere:system-stubs-jupiter:2.0.1")
+            library("junit-pioneer", "org.junit-pioneer:junit-pioneer:1.7.1")
 
             // Kotlin testing
             library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:5.3.0")

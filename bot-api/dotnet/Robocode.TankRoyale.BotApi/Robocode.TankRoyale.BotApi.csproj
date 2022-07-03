@@ -32,13 +32,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../../../schema/dotnet/CodeGenerator.csproj" />
+
     <!-- for Bot API -->
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 
     <!-- for com.itiviti.dotnet plugin -->
-    <PackageReference Include="Microsoft.Build" Version="17.1.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build" Version="17.2.0" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.4.1" />
 
     <!-- Icon -->

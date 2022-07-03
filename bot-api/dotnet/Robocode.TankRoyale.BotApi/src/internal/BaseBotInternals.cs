@@ -517,6 +517,8 @@ public sealed class BaseBotInternals
     {
         BotEventHandlers.FireDisconnectedEvent(
             new E.DisconnectedEvent(socket.ServerUri, remote, statusCode, reason));
+
+        closedEvent.Set();
     }
 
     private void HandleConnectionError(Exception cause)
