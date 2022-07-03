@@ -42,6 +42,13 @@ dotnet {
 }
 
 tasks {
+    val prepareNugetDocs by registering(Copy::class) {
+        from("nuget_docs") {
+            filter<ReplaceTokens>("tokens" to mapOf("VERSION" to version))
+        }
+        into("docs")
+    }
+
     clean {
         doFirst {
             delete(
@@ -55,14 +62,7 @@ tasks {
     }
 
     build {
-        dependsOn(":schema:dotnet:build")
-
-        doFirst {
-            copy {
-                from("nuget_docs")
-                into("docs")
-            }
-        }
+        dependsOn(":schema:dotnet:build", prepareNugetDocs)
     }
 
     val docfx by registering {
@@ -95,17 +95,8 @@ tasks {
         into(dotnetApiDir)
     }
 
-    val prepareNugetDocs by registering(Copy::class) {
-        dependsOn(dotnetBuild)
-
-        from("nuget_docs") {
-            filter<ReplaceTokens>("tokens" to mapOf("VERSION" to version))
-        }
-        into("docs")
-    }
-
     register("pushLocal") {
-        dependsOn(prepareNugetDocs)
+        dependsOn(build)
 
         doLast {
             val userhome = System.getenv("USERPROFILE") ?: System.getenv("HOME")
