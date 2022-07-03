@@ -1,6 +1,6 @@
 # Versions
 
-## In progress - 0.14.0 - Adjustments for bot events
+## 0.14.0 - Adjustments for bot events - 03-Jul-2022
 
 #### Changes:
 
