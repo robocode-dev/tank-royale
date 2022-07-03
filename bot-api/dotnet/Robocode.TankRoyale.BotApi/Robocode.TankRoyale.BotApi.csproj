@@ -32,8 +32,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../schema/dotnet/CodeGenerator.csproj" />
-
     <!-- for Bot API -->
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />

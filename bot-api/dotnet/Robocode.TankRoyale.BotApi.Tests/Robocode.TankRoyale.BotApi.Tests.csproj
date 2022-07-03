@@ -14,7 +14,6 @@
 
     <ItemGroup>
         <ProjectReference Include="../Robocode.TankRoyale.BotApi/Robocode.TankRoyale.BotApi.csproj" />
-        <ProjectReference Include="../../../schema/dotnet/CodeGenerator.csproj" />
 
         <!-- WebSocket -->
         <PackageReference Include="Fleck" Version="1.2.0" />

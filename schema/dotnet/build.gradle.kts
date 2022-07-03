@@ -11,12 +11,14 @@ tasks {
     register<Exec>("build") {
         dependsOn(dotnetBuild)
 
-        mkdir("$projectDir/generated")
+        doFirst {
+            mkdir("${project(":bot-api:dotnet").file("Robocode.TankRoyale.BotApi/src/generated")}")
+        }
 
         commandLine(
             "$projectDir/bin/Release/net6.0/CodeGeneratorApp",
             "${project(":schema").file("schemas")}",
-            "$projectDir/generated"
+            "${project(":bot-api:dotnet").file("Robocode.TankRoyale.BotApi/src/generated")}"
         )
     }
 }
