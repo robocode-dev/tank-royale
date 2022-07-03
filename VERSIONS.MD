@@ -6,7 +6,7 @@
 
 - Bot API:
     - Adjusted the bot events to make it easier to make a bridge between legacy Robocode bots and Tank Royale later
-    - ([#12](https://github.com/robocode-dev/tank-royale/issues/12)).
+      ([#12](https://github.com/robocode-dev/tank-royale/issues/12)).
     - Introduced `BotDeathEvent` and `HitByBulletEvent`.
     - Made priority values for`DefaultEventPriority` public, and changed event priority order to match the original
       Robocode game.
@@ -14,8 +14,8 @@
 - GUI:
     - The Pause/Resume and Stop button are now disabled when the battle is stopped.
 - Schema:
-    - Replaced `$type` with `type` to make it possible to use more code
-      generators [#31](https://github.com/robocode-dev/tank-royale/issues/31)
+    - Replaced `$type` with `type` to make it possible to use more code generators
+      [#31](https://github.com/robocode-dev/tank-royale/issues/31)
 
 ## 0.13.4 - GUI improvements + bugfix - 06-Jun-2022
 
