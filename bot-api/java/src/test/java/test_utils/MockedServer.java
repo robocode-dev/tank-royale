@@ -26,9 +26,6 @@ public final class MockedServer {
 
     private Gson gson;
 
-    public MockedServer() {
-    }
-
     public void start() {
         init();
         server.start();
@@ -118,6 +115,7 @@ public final class MockedServer {
 
         @Override
         public void onError(WebSocket conn, Exception ex) {
+            throw new IllegalStateException("MockedServer error", ex);
         }
     }
 }

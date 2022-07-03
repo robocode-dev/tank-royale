@@ -30,13 +30,13 @@ class BaseBotConstructorTest {
     MockedServer server;
 
     @BeforeEach
-    void setup() {
+    void setUp() {
         server = new MockedServer();
         server.start();
     }
 
     @AfterEach
-    void teardown() {
+    void tearDown() {
         server.stop();
     }
 
@@ -50,34 +50,35 @@ class BaseBotConstructorTest {
     @ClearEnvironmentVariable(key = SERVER_URL)
     void givenEmptyConstructor_whenServerUrlEnvVarIsMissing_thenBotIsCreatedSuccessfully() {
         new TestBot();
+        // passed when this point is reached
     }
 
     @Test
     @ClearEnvironmentVariable(key = BOT_NAME)
     void givenEmptyConstructor_whenBotNameEnvVarIsMissing_thenBotExceptionIsThrown() {
         var botException = assertThrows(BotException.class, TestBot::new);
-        assertThat(botException.getMessage().toUpperCase(Locale.ROOT)).contains(BOT_NAME);
+        assertThat(exceptionContainsEnvVarName(botException, BOT_NAME)).isTrue();
     }
 
     @Test
     @ClearEnvironmentVariable(key = BOT_VERSION)
     void givenEmptyConstructor_whenBotVersionEnvVarIsMissing_thenBotExceptionIsThrown() {
         var botException = assertThrows(BotException.class, TestBot::new);
-        assertThat(botException.getMessage().toUpperCase(Locale.ROOT)).contains(BOT_VERSION);
+        assertThat(exceptionContainsEnvVarName(botException, BOT_VERSION)).isTrue();
     }
 
     @Test
     @ClearEnvironmentVariable(key = BOT_AUTHORS)
     void givenEmptyConstructor_whenBotAuthorEnvVarIsMissing_thenBotExceptionIsThrown() {
         var botException = assertThrows(BotException.class, TestBot::new);
-        assertThat(botException.getMessage().toUpperCase(Locale.ROOT)).contains(BOT_AUTHORS);
+        assertThat(exceptionContainsEnvVarName(botException, BOT_AUTHORS)).isTrue();
     }
 
     @Test
     @ClearEnvironmentVariable(key = BOT_GAME_TYPES)
     void givenEmptyConstructor_whenBotGameTypesEnvVarIsMissing_thenBotExceptionIsThrown() {
         var botException = assertThrows(BotException.class, TestBot::new);
-        assertThat(botException.getMessage().toUpperCase(Locale.ROOT)).contains(BOT_GAME_TYPES);
+        assertThat(exceptionContainsEnvVarName(botException, BOT_GAME_TYPES)).isTrue();
     }
 
     @Test
@@ -114,13 +115,14 @@ class BaseBotConstructorTest {
         assertThat(botHandshake.getProgrammingLang()).isEqualTo(env.get(BOT_PROG_LANG));
     }
 
-    private void startBotFromThread() {
+    private static void startBotFromThread() {
         new Thread(() -> new TestBot().start()).start();
     }
 
+    private boolean exceptionContainsEnvVarName(BotException botException, String envVarName) {
+        return botException.getMessage().toUpperCase(Locale.ROOT).contains(envVarName);
+    }
+
     static class TestBot extends BaseBot {
-        public TestBot() {
-            super();
-        }
     }
 }

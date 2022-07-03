@@ -7,6 +7,9 @@
         <LangVersion>10.0</LangVersion>
 
         <IsPackable>false</IsPackable>
+
+        <!-- Uncomment this to run console application with a Main method -->
+        <!--<GenerateProgramFile>false</GenerateProgramFile>-->
     </PropertyGroup>
 
     <ItemGroup>

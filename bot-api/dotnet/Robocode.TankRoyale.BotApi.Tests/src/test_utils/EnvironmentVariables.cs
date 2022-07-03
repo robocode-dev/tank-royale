@@ -18,7 +18,7 @@ public static class EnvironmentVariables
 
     public static void SetAllEnvVars()
     {
-        SetEnvVar(ServerUrl, "ws://localhost:7654");
+        SetEnvVar(ServerUrl, "ws://localhost:" + MockedServer.Port);
         SetEnvVar(BotName, "MyBot");
         SetEnvVar(BotVersion, "1.0");
         SetEnvVar(BotAuthors, "Author1, Author2");
@@ -39,5 +39,10 @@ public static class EnvironmentVariables
     public static void ClearEnvVar(string name)
     {
         Environment.SetEnvironmentVariable(name, null);
+    }
+
+    public static object GetEnvVar(string name)
+    {
+        return Environment.GetEnvironmentVariable(name);
     }
 }
