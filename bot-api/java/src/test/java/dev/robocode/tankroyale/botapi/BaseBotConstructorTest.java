@@ -8,12 +8,14 @@ import org.junit.jupiter.params.provider.*;
 import org.junitpioneer.jupiter.ClearEnvironmentVariable;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import test_utils.BotInfoBuilder;
-import test_utils.CountryCodeUtil;
 import test_utils.MockedServer;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -230,8 +232,36 @@ class BaseBotConstructorTest {
         // passed when this point is reached
     }
 
+    @Test
+    void givenServerUrlConstructor_whenServerUrlIsValid_thenBotMustConnectToServer() throws URISyntaxException {
+        var bot = new TestBot(null, new URI("ws://localhost:" + MockedServer.PORT));
+        startBotFromThread(bot);
+        assertThat(server.awaitBotHandshake(1000)).isTrue();
+    }
+
+    @Test
+    void givenServerUrlConstructor_whenServerUrlIsInvalidValid_thenBotCannotConnectToServer() throws URISyntaxException {
+        var bot = new TestBot(null, new URI("ws://localhost:" + (MockedServer.PORT + 1)));
+        startBotFromThread(bot);
+        assertThat(server.awaitConnection(1000)).isFalse();
+    }
+
+    @Test
+    void givenServerSecretConstructor_whenServerSecretIsProvided_thenReturnedBotHandshakeMustProvideThisSecret() throws URISyntaxException {
+        var secret = UUID.randomUUID().toString();
+        var bot = new TestBot(null, new URI("ws://localhost:" + MockedServer.PORT), secret);
+        startBotFromThread(bot);
+        assertThat(server.awaitBotHandshake(1000)).isTrue();
+        var botHandshake = server.getBotHandshake();
+        assertThat(botHandshake.getSecret()).isEqualTo(secret);
+    }
+
     private static void startBotFromThread() {
         new Thread(() -> new TestBot().start()).start();
+    }
+
+    private static void startBotFromThread(IBaseBot bot) {
+        new Thread(bot::start).start();
     }
 
     private boolean exceptionContainsEnvVarName(BotException botException, String envVarName) {
@@ -271,6 +301,14 @@ class BaseBotConstructorTest {
 
         TestBot(BotInfo botInfo) {
             super(botInfo);
+        }
+
+        TestBot(BotInfo botInfo, URI serverUrl) {
+            super(botInfo, serverUrl);
+        }
+
+        TestBot(BotInfo botInfo, URI serverUrl, String serverSecret) {
+            super(botInfo, serverUrl, serverSecret);
         }
     }
 }

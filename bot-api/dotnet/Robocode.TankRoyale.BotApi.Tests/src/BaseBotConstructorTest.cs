@@ -270,9 +270,41 @@ public class BaseBotConstructorTest
         // passed when this point is reached
     }
 
+    [Test]
+    public void GivenServerUrlConstructor_WhenServerUrlIsValid_ThenBotMustConnectToServer()
+    {
+        var bot = new TestBot(null, new Uri("ws://localhost:" + MockedServer.Port));
+        StartBotFromThread(bot);
+        Assert.That(_server.AwaitBotHandshake(5000), Is.True);
+    }
+
+    [Test]
+    public void GivenServerUrlConstructor_WhenServerUrlIsInvalidValid_ThenBotCannotConnectToServer()
+    {
+        var bot = new TestBot(null, new Uri("ws://localhost:" + (MockedServer.Port + 1)));
+        StartBotFromThread(bot);
+        Assert.That(_server.AwaitBotHandshake(5000), Is.False);
+    }
+    
+    [Test]
+    public void GivenServerSecretConstructor_WhenServerSecretIsProvided_ThenReturnedBotHandshakeMustProvideThisSecret()
+    {
+        var secret = Guid.NewGuid().ToString();
+        var bot = new TestBot(null, new Uri("ws://localhost:" + MockedServer.Port), secret);
+        StartBotFromThread(bot);
+        Assert.That(_server.AwaitBotHandshake(5000), Is.True);
+        var botHandshake = _server.GetBotHandshake();
+        Assert.That(botHandshake.Secret, Is.EqualTo(secret));
+    }
+
     private static void StartBotFromThread()
     {
         new Thread(() => new TestBot().Start()).Start();
+    }
+
+    private static void StartBotFromThread(IBaseBot bot)
+    {
+        new Thread(bot.Start).Start();
     }
 
     private bool ExceptionContainsEnvVarName(BotException botException, string envVarName) =>
@@ -310,6 +342,14 @@ public class BaseBotConstructorTest
         }
 
         public TestBot(BotInfo botInfo) : base(botInfo)
+        {
+        }
+
+        public TestBot(BotInfo botInfo, Uri serverUrl) : base(botInfo, serverUrl)
+        {
+        }
+        
+        public TestBot(BotInfo botInfo, Uri serverUrl, string serverSecret) : base(botInfo, serverUrl, serverSecret)
         {
         }
     }
