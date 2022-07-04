@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Robocode.TankRoyale.BotApi.Util;
 
@@ -85,7 +84,7 @@ public sealed class BotInfo
         private init
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new NullReferenceException("Version cannot be null, empty or blank");
+                throw new ArgumentException("Version cannot be null, empty or blank");
             version = value;
         }
     }
@@ -141,7 +140,7 @@ public sealed class BotInfo
             var list = new List<string>
             {
                 // Get local country code
-                Thread.CurrentThread.CurrentCulture.Name
+                CountryCode.GetLocalCountryCode()
             };
             countryCodes = list;
         }

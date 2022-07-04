@@ -31,6 +31,21 @@ public static class EnvironmentVariables
         SetEnvVar(BotInitialPosition, "50,50, 90");
     }
 
+    public static void ClearAllEnvVars()
+    {
+        ClearEnvVar(ServerUrl);
+        ClearEnvVar(BotName);
+        ClearEnvVar(BotVersion);
+        ClearEnvVar(BotAuthors);
+        ClearEnvVar(BotGameTypes);
+        ClearEnvVar(BotDescription);
+        ClearEnvVar(BotHomepage);
+        ClearEnvVar(BotCountryCodes);
+        ClearEnvVar(BotPlatform);
+        ClearEnvVar(BotProgrammingLang);
+        ClearEnvVar(BotInitialPosition);
+    }
+    
     public static void SetEnvVar(string name, string value)
     {
         Environment.SetEnvironmentVariable(name, value);

@@ -13,7 +13,7 @@ public class MockedServer
     
     private WebSocketServer _server;
 
-    private readonly EventWaitHandle _connectedEvent = new ManualResetEvent(false);
+    private readonly EventWaitHandle _openedEvent = new ManualResetEvent(false);
     private readonly EventWaitHandle _botHandshakeEvent = new ManualResetEvent(false);
 
     private BotHandshake _botHandshake;
@@ -25,7 +25,7 @@ public class MockedServer
         {
             socket.OnOpen = () =>
             {
-                _connectedEvent.Set();
+                _openedEvent.Set();
 
                 var serverHandshake = new ServerHandshake
                 {
@@ -33,7 +33,7 @@ public class MockedServer
                     Name = nameof(MockedServer),
                     Version = "1.0.0",
                     Variant = "Tank Royale",
-                    GameTypes = new List<string>() { "melee", "classic", "1v1" }
+                    GameTypes = new List<string> { "melee", "classic", "1v1" }
                 };
 
                 socket.Send(JsonConvert.SerializeObject(serverHandshake));
@@ -66,7 +66,7 @@ public class MockedServer
 
     public bool AwaitConnection(int milliSeconds)
     {
-        return _connectedEvent.WaitOne(milliSeconds);
+        return _openedEvent.WaitOne(milliSeconds);
     }
 
     public bool AwaitBotHandshake(int milliSeconds)

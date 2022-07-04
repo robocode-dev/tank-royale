@@ -64,36 +64,35 @@ public final class BotInfo {
         if (isNullOrEmptyOrContainsBlanks(authors)) {
             throw new IllegalArgumentException("Authors cannot be null or empty or contain blanks");
         }
-        List<String> authors2 = new ArrayList<>();
-        authors.removeIf(String::isBlank);
-        authors.forEach(author -> authors2.add(author.trim()));
+        List<String> authorsCopy = new ArrayList<>();
+        authors.forEach(author -> authorsCopy.add(author.trim()));
+        authorsCopy.removeIf(String::isBlank);
 
         if (isNullOrEmptyOrContainsBlanks(gameTypes)) {
             throw new IllegalArgumentException("Game types cannot be null or empty or contain blanks");
         }
-        Set<String> gameTypes2 = new HashSet<>();
-        gameTypes.removeIf(String::isBlank);
-        gameTypes.forEach(gameType -> gameTypes2.add(gameType.trim()));
+        Set<String> gameTypesCopy = new HashSet<>();
+        gameTypes.forEach(gameType -> gameTypesCopy.add(gameType.trim()));
+        gameTypesCopy.removeIf(String::isBlank);
 
-        List<CountryCode> countryCodes2 = new ArrayList<>();
+        List<CountryCode> countryCodesCode = new ArrayList<>();
         if (countryCodes != null) {
-            countryCodes.removeIf(String::isBlank);
-            countryCodes.forEach(
-                    code -> {
-                        var cc = CountryCode.getByCodeIgnoreCase(code.trim());
-                        if (cc != null && !countryCodes2.contains(cc)) {
-                            countryCodes2.add(cc);
-                        }
-                    });
+            countryCodes.forEach(code -> {
+                if (!countryCodes.contains(code)) {
+                    var cc = CountryCode.getByCodeIgnoreCase(code.trim());
+                    countryCodesCode.add(cc);
+                }
+            });
         }
-        if (countryCodes2.isEmpty()) {
+
+        if (countryCodesCode.isEmpty()) {
             var cc = CountryCode.getByLocale(Locale.getDefault());
-            if (cc != null && !countryCodes2.contains(cc)) {
-                countryCodes2.add(cc);
+            if (cc != null && !countryCodesCode.contains(cc)) {
+                countryCodesCode.add(cc);
             }
         }
-        List<String> countryCodes3 = new ArrayList<>();
-        countryCodes2.forEach(cc -> countryCodes3.add(cc.getAlpha2()));
+        List<String> countryCodesAlpha2 = new ArrayList<>();
+        countryCodesCode.forEach(cc -> countryCodesAlpha2.add(cc.getAlpha2()));
 
         String platform2 = platform;
         if (platform2 == null || platform2.trim().length() == 0) {
@@ -102,11 +101,11 @@ public final class BotInfo {
 
         this.name = name;
         this.version = version;
-        this.authors = authors2;
+        this.authors = authorsCopy;
         this.description = description;
         this.homepage = homepage;
-        this.countryCodes = countryCodes3;
-        this.gameTypes = gameTypes2;
+        this.countryCodes = countryCodesAlpha2;
+        this.gameTypes = gameTypesCopy;
         this.platform = platform2;
         this.programmingLang = programmingLang;
         this.initialPosition = initialPosition;

@@ -21,7 +21,7 @@ public final class MockedServer {
 
     private BotHandshake botHandshake;
 
-    private CountDownLatch connectedLatch = new CountDownLatch(1);
+    private CountDownLatch openedLatch = new CountDownLatch(1);
     private CountDownLatch botHandshakeLatch = new CountDownLatch(1);
 
     private Gson gson;
@@ -34,13 +34,14 @@ public final class MockedServer {
     public void stop() {
         try {
             server.stop();
+            TimeUnit.MILLISECONDS.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     private void init() {
-        connectedLatch = new CountDownLatch(1);
+        openedLatch = new CountDownLatch(1);
         botHandshakeLatch = new CountDownLatch(1);
 
         gson = new Gson();
@@ -50,7 +51,7 @@ public final class MockedServer {
 
     public boolean awaitConnection(int milliSeconds) {
         try {
-            return connectedLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
+            return openedLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             System.err.println("awaitConnection() was interrupted");
         }
@@ -82,7 +83,7 @@ public final class MockedServer {
 
         @Override
         public void onOpen(WebSocket conn, ClientHandshake handshake) {
-            connectedLatch.countDown();
+            openedLatch.countDown();
 
             var serverHandshake = new dev.robocode.tankroyale.schema.ServerHandshake();
             serverHandshake.setType(Message.Type.SERVER_HANDSHAKE);
