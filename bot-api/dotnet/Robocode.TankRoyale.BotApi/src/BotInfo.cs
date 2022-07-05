@@ -18,9 +18,12 @@ public sealed class BotInfo
     private readonly string name;
     private readonly string version;
     private readonly IEnumerable<string> authors;
+    private readonly string description;
+    private readonly string homepage;
     private readonly IEnumerable<string> countryCodes;
     private readonly IEnumerable<string> gameTypes;
     private readonly string platform;
+    private readonly string programmingLang;
 
     /// <summary>
     /// Initializes a new instance of the BotInfo class.
@@ -70,7 +73,7 @@ public sealed class BotInfo
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Name cannot be null, empty or blank");
-            name = value;
+            name = value.Trim();
         }
     }
 
@@ -85,7 +88,7 @@ public sealed class BotInfo
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Version cannot be null, empty or blank");
-            version = value;
+            version = value.Trim();
         }
     }
 
@@ -110,14 +113,22 @@ public sealed class BotInfo
     /// This field is optional.
     /// </summary>
     /// <value>A short description of the bot.</value>
-    public string Description { get; }
+    public string Description
+    {
+        get => description;
+        private init => description = ToNullIfBlankElseTrim(value);
+    }
 
     /// <summary>
     /// The URL of a web page for the bot.
     /// This field is optional.
     /// </summary>
     /// <value>The URL of a web page for the bot.</value>
-    public string Homepage { get; }
+    public string Homepage
+    {
+        get => homepage;
+        private init => homepage = ToNullIfBlankElseTrim(value);
+    }
 
     /// <summary>
     /// The country code(s) defined by ISO 3166-1 alpha-2, e.g. "us":
@@ -175,7 +186,7 @@ public sealed class BotInfo
         {
             if (string.IsNullOrWhiteSpace(value))
                 value = Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
-            platform = value;
+            platform = ToNullIfBlankElseTrim(value);
         }
     }
 
@@ -184,7 +195,11 @@ public sealed class BotInfo
     /// This field is optional.
     /// </summary>
     /// <value>The programming language used for developing the bot.</value>
-    public string ProgrammingLang { get; }
+    public string ProgrammingLang
+    {
+        get => programmingLang;
+        private init => programmingLang = ToNullIfBlankElseTrim(value);
+    }
 
     /// <summary>
     /// The initial starting position used for debugging only, which must be enabled at the server.
@@ -274,6 +289,11 @@ public sealed class BotInfo
             configuration["programmingLang"],
             InitialPosition.FromString(configuration["initialPosition"])
         );
+    }
+
+    private static string ToNullIfBlankElseTrim(string value)
+    {
+        return value == null ? null : string.IsNullOrWhiteSpace(value) ? null : value.Trim();
     }
 
     private static void ThrowExceptionIfFieldIsBlank(string fieldName)

@@ -108,13 +108,12 @@ public class BaseBotConstructorTest
         Assert.That(botHandshake.Version, Is.EqualTo(GetEnvVar(BotVersion)));
         Assert.That(botHandshake.Authors, Is.EqualTo(regexCsv.Split((string)GetEnvVar(BotAuthors))));
         Assert.That(botHandshake.GameTypes, Is.EqualTo(regexCsv.Split((string)GetEnvVar(BotGameTypes))));
+        Assert.That(botHandshake.CountryCodes.ToList().ConvertAll(cc => cc.ToLower()),
+            Is.EqualTo(new List<string> { CountryCode.GetLocalCountryCode().ToLower() }));
         Assert.That(botHandshake.Description, Is.EqualTo(GetEnvVar(BotDescription)));
         Assert.That(botHandshake.Homepage, Is.EqualTo(GetEnvVar(BotHomepage)));
         Assert.That(botHandshake.Platform, Is.EqualTo(GetEnvVar(BotPlatform)));
         Assert.That(botHandshake.ProgrammingLang, Is.EqualTo(GetEnvVar(BotProgrammingLang)));
-        
-        Assert.That(botHandshake.CountryCodes.ToList().ConvertAll(cc => cc.ToLower()),
-            Is.EqualTo(new List<string> { CountryCode.GetLocalCountryCode().ToLower() }));
     }
 
     [Test]
@@ -122,151 +121,6 @@ public class BaseBotConstructorTest
     {
         ClearAllEnvVars();
         new TestBot(CreateBotInfo());
-        // passed when this point is reached
-    }
-
-    [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase(" ")]
-    [TestCase("\t ")]
-    [TestCase("\n")]
-    public void GivenBotInfoConstructor_WhenNameIsNullEmptyOrBlank_ThenThrowIllegalArgumentException(string name)
-    {
-        ClearAllEnvVars();
-        var builder = new BotInfoBuilder(CreateBotInfo())
-        {
-            Name = name
-        };
-        var exception = Assert.Throws<ArgumentException>(() => new TestBot(builder.Build()));
-        Assert.That(exception?.Message.ToLower(), Is.EqualTo("name cannot be null, empty or blank"));
-    }
-
-    [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase(" ")]
-    [TestCase("\t ")]
-    [TestCase("\n")]
-    public void GivenBotInfoConstructor_WhenVersionIsNullEmptyOrBlank_ThenThrowIllegalArgumentException(string version)
-    {
-        ClearAllEnvVars();
-        var builder = new BotInfoBuilder(CreateBotInfo())
-        {
-            Version = version
-        };
-        var exception = Assert.Throws<ArgumentException>(() => new TestBot(builder.Build()));
-        Assert.That(exception?.Message.ToLower(), Is.EqualTo("version cannot be null, empty or blank"));
-    }
-
-    [Test]
-    [TestCaseSource(nameof(InvalidListOfStrings))]
-    public void GivenBotInfoConstructor_WhenAuthorsIsInvalid_ThenThrowIllegalArgumentException(List<string> authors)
-    {
-        ClearAllEnvVars();
-        var builder = new BotInfoBuilder(CreateBotInfo())
-        {
-            Authors = authors
-        };
-        var exception = Assert.Throws<ArgumentException>(() => new TestBot(builder.Build()));
-        Assert.That(exception?.Message.ToLower(), Is.EqualTo("authors cannot be null or empty or contain blanks"));
-    }
-
-    [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase(" ")]
-    [TestCase("\t ")]
-    [TestCase("\n")]
-    public void GivenBotInfoConstructor_WhenDescriptionIsNullEmptyOrBlank_ThenBotIsCreated(string description)
-    {
-        ClearAllEnvVars();
-        var builder = new BotInfoBuilder(CreateBotInfo())
-        {
-            Description = description
-        };
-        new TestBot(builder.Build());
-        // passed when this point is reached
-    }
-
-    [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase(" ")]
-    [TestCase("\t ")]
-    [TestCase("\n")]
-    public void GivenBotInfoConstructor_WhenHomepageIsNullEmptyOrBlank_ThenBotIsCreated(string homepage)
-    {
-        ClearAllEnvVars();
-        var builder = new BotInfoBuilder(CreateBotInfo())
-        {
-            Homepage = homepage
-        };
-        new TestBot(builder.Build());
-        // passed when this point is reached
-    }
-
-    [Test]
-    [TestCaseSource(nameof(InvalidListOfStrings))]
-    public void GivenBotInfoConstructor_WhenGameTypesIsInvalid_ThenBotIsCreated(List<string> gameTypes)
-    {
-        ClearAllEnvVars();
-        var builder = new BotInfoBuilder(CreateBotInfo())
-        {
-            GameTypes = gameTypes
-        };
-        var exception = Assert.Throws<ArgumentException>(() => new TestBot(builder.Build()));
-        Assert.That(exception?.Message.ToLower(), Is.EqualTo("game types cannot be null or empty or contain blanks"));
-    }
-
-    [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase(" ")]
-    [TestCase("\t ")]
-    [TestCase("\n")]
-    public void GivenBotInfoConstructor_WhenPlatformIsInvalid_ThenBotIsCreated(string platform)
-    {
-        ClearAllEnvVars();
-        var builder = new BotInfoBuilder(CreateBotInfo())
-        {
-            Platform = platform
-        };
-        new TestBot(builder.Build());
-        // passed when this point is reached
-    }
-
-    [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase(" ")]
-    [TestCase("\t ")]
-    [TestCase("\n")]
-    public void GivenBotInfoConstructor_WhenProgrammingLangIsInvalid_ThenBotIsCreated(string programmingLang)
-    {
-        ClearAllEnvVars();
-        var builder = new BotInfoBuilder(CreateBotInfo())
-        {
-            ProgrammingLang = programmingLang
-        };
-        new TestBot(builder.Build());
-        // passed when this point is reached
-    }
-
-    [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase(" ")]
-    [TestCase("\t ")]
-    [TestCase("\n")]
-    public void GivenBotInfoConstructor_WhenInitialPositionIsInvalid_ThenBotIsCreated(string initialPosition)
-    {
-        ClearAllEnvVars();
-        var builder = new BotInfoBuilder(CreateBotInfo())
-        {
-            InitialPosition = InitialPosition.FromString(initialPosition)
-        };
-        new TestBot(builder.Build());
         // passed when this point is reached
     }
 
@@ -325,15 +179,6 @@ public class BaseBotConstructorTest
             InitialPosition.FromString("10, 20, 30")
         );
     }
-
-    private static readonly object[] InvalidListOfStrings =
-    {
-        new object[] { new List<string> { } },
-        new object[] { new List<string> { "" } },
-        new object[] { new List<string> { "\t" } },
-        new object[] { new List<string> { " \n" } },
-        new object[] { new List<string> { " ", "" } }
-    };
 
     private class TestBot : BaseBot
     {

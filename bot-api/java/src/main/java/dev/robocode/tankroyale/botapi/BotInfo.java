@@ -75,39 +75,20 @@ public final class BotInfo {
         gameTypes.forEach(gameType -> gameTypesCopy.add(gameType.trim()));
         gameTypesCopy.removeIf(String::isBlank);
 
-        List<CountryCode> countryCodesCode = new ArrayList<>();
-        if (countryCodes != null) {
-            countryCodes.forEach(code -> {
-                if (!countryCodes.contains(code)) {
-                    var cc = CountryCode.getByCodeIgnoreCase(code.trim());
-                    countryCodesCode.add(cc);
-                }
-            });
+        String platformCopy = platform;
+        if (platform == null || platform.trim().length() == 0) {
+            platformCopy = "Java Runtime Environment (JRE) " + System.getProperty("java.version");
         }
 
-        if (countryCodesCode.isEmpty()) {
-            var cc = CountryCode.getByLocale(Locale.getDefault());
-            if (cc != null && !countryCodesCode.contains(cc)) {
-                countryCodesCode.add(cc);
-            }
-        }
-        List<String> countryCodesAlpha2 = new ArrayList<>();
-        countryCodesCode.forEach(cc -> countryCodesAlpha2.add(cc.getAlpha2()));
-
-        String platform2 = platform;
-        if (platform2 == null || platform2.trim().length() == 0) {
-            platform2 = "Java Runtime Environment (JRE) " + System.getProperty("java.version");
-        }
-
-        this.name = name;
-        this.version = version;
+        this.name = name.trim();
+        this.version = version.trim();
         this.authors = authorsCopy;
-        this.description = description;
-        this.homepage = homepage;
-        this.countryCodes = countryCodesAlpha2;
+        this.description = toNullIfBlankElseTrim(description);
+        this.homepage = toNullIfBlankElseTrim(homepage);
+        this.countryCodes = processCountryCodes(countryCodes);
         this.gameTypes = gameTypesCopy;
-        this.platform = platform2;
-        this.programmingLang = programmingLang;
+        this.platform = toNullIfBlankElseTrim(platformCopy);
+        this.programmingLang = toNullIfBlankElseTrim(programmingLang);
         this.initialPosition = initialPosition;
     }
 
@@ -324,6 +305,30 @@ public final class BotInfo {
                 InitialPosition.fromString(data.initialPosition));
     }
 
+    private static List<String> processCountryCodes(List<String> countryCodeStrings) {
+        List<CountryCode> countryCodes = new ArrayList<>();
+        if (countryCodeStrings != null) {
+            countryCodeStrings.forEach(string -> {
+                if (countryCodeStrings.contains(string)) {
+                    var countryCode = CountryCode.getByCodeIgnoreCase(string.trim());
+                    if (countryCode != null) {
+                        countryCodes.add(countryCode);
+                    }
+                }
+            });
+        }
+
+        if (countryCodes.isEmpty()) {
+            var defaultCountryCode = CountryCode.getByLocale(Locale.getDefault());
+            countryCodes.add(defaultCountryCode);
+        }
+
+        List<String> countryCodesAlpha2 = new ArrayList<>();
+        countryCodes.forEach(countryCode -> countryCodesAlpha2.add(countryCode.getAlpha2()));
+
+        return countryCodesAlpha2;
+    }
+
     private static void throwExceptionIfJsonFieldIsBlank(String fieldName) {
         if (fieldName == null || fieldName.isBlank()) {
             throw new IllegalArgumentException("The required field '" + fieldName + "' is missing or blank");
@@ -334,6 +339,10 @@ public final class BotInfo {
         return (collection == null
                 || collection.isEmpty()
                 || collection.stream().allMatch(String::isBlank));
+    }
+
+    private static String toNullIfBlankElseTrim(String value) {
+        return value == null ? null : value.isBlank() ? null : value.trim();
     }
 
     private static class JsonProperties {

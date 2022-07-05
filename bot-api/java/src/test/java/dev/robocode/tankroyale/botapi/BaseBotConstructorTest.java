@@ -3,11 +3,8 @@ package dev.robocode.tankroyale.botapi;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.*;
 import org.junitpioneer.jupiter.ClearEnvironmentVariable;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
-import test_utils.BotInfoBuilder;
 import test_utils.MockedServer;
 
 import java.net.URI;
@@ -17,10 +14,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static java.util.Collections.singletonList;
-import static test_utils.CountryCodeUtil.getLocalCountryCode;
 import static test_utils.EnvironmentVariables.*;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -117,13 +111,12 @@ class BaseBotConstructorTest {
         assertThat(botHandshake.getVersion()).isEqualTo(env.get(BOT_VERSION));
         assertThat(botHandshake.getAuthors()).containsAll(Arrays.asList(env.get(BOT_AUTHORS).split("\\s*,\\s*")));
         assertThat(botHandshake.getGameTypes()).containsAll(Arrays.asList(env.get(BOT_GAME_TYPES).split("\\s*,\\s*")));
+        assertThat(botHandshake.getCountryCodes().stream().map(String::toLowerCase).collect(Collectors.toList()))
+                .containsAll(Arrays.stream(env.get(BOT_COUNTRY_CODES).split(",")).map(String::toLowerCase).map(String::trim).collect(Collectors.toList()));
         assertThat(botHandshake.getDescription()).isEqualTo(env.get(BOT_DESCRIPTION));
         assertThat(botHandshake.getHomepage()).isEqualTo(env.get(BOT_HOMEPAGE));
         assertThat(botHandshake.getPlatform()).isEqualTo(env.get(BOT_PLATFORM));
         assertThat(botHandshake.getProgrammingLang()).isEqualTo(env.get(BOT_PROG_LANG));
-
-        assertThat(botHandshake.getCountryCodes().stream().map(String::toLowerCase).collect(Collectors.toList()))
-                .containsAll(singletonList(getLocalCountryCode().toLowerCase()));
     }
 
     @Test
@@ -142,95 +135,6 @@ class BaseBotConstructorTest {
         // passed when this point is reached
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t ", "\n"})
-    void givenBotInfoConstructor_whenNameIsNullEmptyOrBlank_thenThrowIllegalArgumentException(String name) {
-        var builder = new BotInfoBuilder(createBotInfo());
-        builder.setName(name);
-        var exception = assertThrows(IllegalArgumentException.class, () -> new TestBot(builder.build()));
-        assertThat(exception.getMessage()).containsIgnoringCase("name cannot be null, empty or blank");
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t ", "\n"})
-    void givenBotInfoConstructor_whenVersionIsNullEmptyOrBlank_thenThrowIllegalArgumentException(String version) {
-        var builder = new BotInfoBuilder(createBotInfo());
-        builder.setVersion(version);
-        var exception = assertThrows(IllegalArgumentException.class, () -> new TestBot(builder.build()));
-        assertThat(exception.getMessage()).containsIgnoringCase("version cannot be null, empty or blank");
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @MethodSource("invalidListOfStrings")
-    void givenBotInfoConstructor_whenAuthorsIsInvalid_thenThrowIllegalArgumentException(List<String> authors) {
-        var builder = new BotInfoBuilder(createBotInfo());
-        builder.setAuthors(authors);
-        var exception = assertThrows(IllegalArgumentException.class, () -> new TestBot(builder.build()));
-        assertThat(exception.getMessage()).containsIgnoringCase("authors cannot be null or empty or contain blanks");
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t ", "\n"})
-    void givenBotInfoConstructor_whenDescriptionIsNullEmptyOrBlank_thenBotIsCreated(String description) {
-        var builder = new BotInfoBuilder(createBotInfo());
-        builder.setDescription(description);
-        new TestBot(builder.build());
-        // passed when this point is reached
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t ", "\n"})
-    void givenBotInfoConstructor_whenHomepageIsInvalid_thenBotIsCreated(String homepage) {
-        var builder = new BotInfoBuilder(createBotInfo());
-        builder.setHomepage(homepage);
-        new TestBot(builder.build());
-        // passed when this point is reached
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @MethodSource("invalidListOfStrings")
-    void givenBotInfoConstructor_whenGameTypesIsInvalid_thenBotIsCreated(List<String> gameTypes) {
-        var builder = new BotInfoBuilder(createBotInfo());
-        builder.setGameTypes(gameTypes);
-        var exception = assertThrows(IllegalArgumentException.class, () -> new TestBot(builder.build()));
-        assertThat(exception.getMessage()).containsIgnoringCase("game types cannot be null or empty or contain blanks");
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t ", "\n"})
-    void givenBotInfoConstructor_whenPlatformIsInvalid_thenBotIsCreated(String platform) {
-        var builder = new BotInfoBuilder(createBotInfo());
-        builder.setPlatform(platform);
-        new TestBot(builder.build());
-        // passed when this point is reached
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t ", "\n"})
-    void givenBotInfoConstructor_whenProgrammingLangIsInvalid_thenBotIsCreated(String programmingLang) {
-        var builder = new BotInfoBuilder(createBotInfo());
-        builder.setProgrammingLang(programmingLang);
-        new TestBot(builder.build());
-        // passed when this point is reached
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t ", "\n"})
-    void givenBotInfoConstructor_whenInitialPositionIsInvalid_thenBotIsCreated(String initialPosition) {
-        var builder = new BotInfoBuilder(createBotInfo());
-        builder.setInitialPosition(InitialPosition.fromString(initialPosition));
-        new TestBot(builder.build());
-        // passed when this point is reached
-    }
 
     @Test
     void givenServerUrlConstructor_whenServerUrlIsValid_thenBotMustConnectToServer() throws URISyntaxException {
@@ -280,16 +184,6 @@ class BaseBotConstructorTest {
                 "JVM",
                 "Java 18",
                 InitialPosition.fromString("10, 20, 30")
-        );
-    }
-
-    private static Stream<List<String>> invalidListOfStrings() {
-        return Stream.of(
-                List.of(),
-                List.of(""),
-                List.of("\t"),
-                List.of(" \n"),
-                List.of(" ", "")
         );
     }
 
