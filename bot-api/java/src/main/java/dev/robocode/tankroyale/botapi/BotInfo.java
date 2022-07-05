@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.neovisionaries.i18n.CountryCode;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -209,7 +206,7 @@ public final class BotInfo {
     public static BotInfo fromResourceFile(String filename) {
         try (InputStream is = BotInfo.class.getResourceAsStream(filename)) {
             if (is == null) {
-                throw new BotException("Could not read the resource file: " + filename);
+                throw new FileNotFoundException("File not found: " + filename);
             }
             return fromInputStream(is);
         } catch (IOException ioe) {

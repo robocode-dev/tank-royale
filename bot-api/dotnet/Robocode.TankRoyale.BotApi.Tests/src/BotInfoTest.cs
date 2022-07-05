@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using Robocode.TankRoyale.BotApi.Tests.Test_utils;
 using Robocode.TankRoyale.BotApi.Util;
@@ -184,6 +186,49 @@ public class BotInfoTest
         };
         var botInfo = builder.Build();
         Assert.That(botInfo.InitialPosition, Is.Null);
+    }
+
+    [Test]
+    public void FromFile_WhenUsingValidFilePath_ThenBotInfoIsCreated()
+    {
+        var filePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "../../../resources/TestBot.json");
+        var botInfo = BotInfo.FromFile(filePath);
+        Assert.That(botInfo.Name, Is.EqualTo("TestBot"));
+        Assert.That(botInfo.Version, Is.EqualTo("1.0"));
+    }
+
+    [Test]
+    public void FromFile_WhenUsingValidFilePathAndBasePath_ThenBotInfoIsCreated()
+    {
+        var basePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "../../../resources");
+        var botInfo = BotInfo.FromFile("TestBot.json", basePath);
+        Assert.That(botInfo.Name, Is.EqualTo("TestBot"));
+        Assert.That(botInfo.Version, Is.EqualTo("1.0"));
+    }
+
+    [Test]
+    public void FromConfiguration_WhenUsingValidBasePathAndJsonFile_ThenBotInfoIsCreated()
+    {
+        var configBuilder = new ConfigurationBuilder()
+            .SetBasePath(Path.Combine(TestContext.CurrentContext.WorkDirectory, "../../../resources"))
+            .AddJsonFile("TestBot.json");
+
+        var botInfo = BotInfo.FromConfiguration(configBuilder.Build());
+        Assert.That(botInfo.Name, Is.EqualTo("TestBot"));
+        Assert.That(botInfo.Version, Is.EqualTo("1.0"));
+    }
+
+    [Test]
+    public void FromConfiguration_WhenUsingInvalidConfiguration_ThenThrowException()
+    {
+        Assert.That(() => BotInfo.FromConfiguration(new ConfigurationBuilder().Build()), Throws.Exception);
+    }
+
+    [Test]
+    public void FromFile_WhenUsingNonExistingFile_ThenThrowFileNotFoundException()
+    {
+        const string filename = "non-existing-filename";
+        Assert.Throws<FileNotFoundException>(() => BotInfo.FromFile(filename));
     }
 
     private static readonly object[] InvalidListOfStrings =

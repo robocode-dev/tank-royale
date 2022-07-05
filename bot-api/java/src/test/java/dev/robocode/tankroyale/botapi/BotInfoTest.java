@@ -8,12 +8,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 import test_utils.BotInfoBuilder;
 import test_utils.CountryCodeUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -146,6 +147,51 @@ class BotInfoTest {
         builder.setInitialPosition(InitialPosition.fromString(initialPosition));
         var botInfo = builder.build();
         assertThat(botInfo.getInitialPosition()).isNull();
+    }
+
+    @Test
+    void fromResourceFile_whenUsingValidFile_thenBotInfoIsCreated() {
+        var botInfo = BotInfo.fromResourceFile("/TestBot.json");
+        assertThat(botInfo.getName()).isEqualTo("TestBot");
+        assertThat(botInfo.getVersion()).isEqualTo("1.0");
+    }
+
+    @Test
+    void fromResourceFile_whenUsingNonExistingFile_thenThrowBotException() {
+        final String filename = "non-existing-filename";
+        var exception = assertThrows(BotException.class, () -> BotInfo.fromResourceFile(filename));
+        assertThat(exception.getMessage().toLowerCase()).isEqualTo("could not read the resource file: " + filename);
+    }
+
+    @Test
+    void fromFile_whenUsingValidFile_thenBotInfoIsCreated() {
+        var file = Objects.requireNonNull(BotInfo.class.getResource("/TestBot.json")).getFile();
+        var botInfo = BotInfo.fromFile(file);
+        assertThat(botInfo.getName()).isEqualTo("TestBot");
+        assertThat(botInfo.getVersion()).isEqualTo("1.0");
+    }
+
+    @Test
+    void fromFile_whenUsingNonExistingFile_thenThrowBotException() {
+        final String filename = "non-existing-filename";
+        var exception = assertThrows(BotException.class, () -> BotInfo.fromFile(filename));
+        assertThat(exception.getMessage().toLowerCase()).isEqualTo("could not read the file: " + filename);
+    }
+
+    @Test
+    void fromInputStream_whenUsingValidFile_thenBotInfoIsCreated() {
+        var inputStream = BotInfo.class.getResourceAsStream("/TestBot.json");
+        var botInfo = BotInfo.fromInputStream(inputStream);
+        assertThat(botInfo.getName()).isEqualTo("TestBot");
+        assertThat(botInfo.getVersion()).isEqualTo("1.0");
+    }
+
+    @Test
+    void fromInputStream_whenClosingValidInputStream_thenThrowException() throws IOException {
+        var inputStream = BotInfo.class.getResourceAsStream("/TestBot.json");
+        assert inputStream != null;
+        inputStream.close();
+        assertThrows(Exception.class, () -> BotInfo.fromInputStream(inputStream));
     }
 
     private static Stream<List<String>> invalidListOfStrings() {

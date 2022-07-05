@@ -1,0 +1,12 @@
+{
+  "name": "TestBot",
+  "version": "1.0",
+  "gameTypes": "melee, classic, 1v1",
+  "authors": "Author1, Author2",
+  "description": "description",
+  "homepage": "https://testbot.robocode.dev",
+  "countryCodes": "gb, US",
+  "platform": "JVM",
+  "programmingLang": "Java 18",
+  "initialPosition": "10,20, 30"
+}
