@@ -6,6 +6,8 @@
 public static class Constants
 {
     /// <summary>
+    /// The radius of the bounding circle of the bot, which is a constant of 18 units.
+    /// 
     /// The bounding circle of a bot is a circle going from the center of the bot with a radius so
     /// that the circle covers most of the bot. The bounding circle is used for determining when a
     /// bot is hit by a bullet.
@@ -18,6 +20,8 @@ public static class Constants
     public const int BoundingCircleRadius = 18;
 
     /// <summary>
+    /// The radius of the radar's scan beam, which is a constant of 1200 units.
+    /// 
     /// The radar is used for scanning the battlefield for opponent bots. The shape of the scan
     /// beam of the radar is a circle arc ("pizza slice") starting from the center of the bot.
     /// Opponent bots that get inside the scan arc will be detected by the radar.
@@ -34,6 +38,8 @@ public static class Constants
     public const int ScanRadius = 1200;
 
     /// <summary>
+    /// The maximum possible driving turn rate, which is max. 10 degrees per turn.
+    /// 
     /// This is the max. possible turn rate of the bot.
     /// 
     /// <note>
