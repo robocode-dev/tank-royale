@@ -1,8 +1,8 @@
 namespace Robocode.TankRoyale.BotApi.Events;
 
 /// <summary>
-/// Default event priorities values. The higher value, the higher event priority. So the <see cref="WonRoundEvent"/> has the
-/// highest priority (<see cref="WonRound"/>), and <see cref="DeathEvent"/> has the lowest priority (<see cref="Death"/>)
+/// Default event priorities values. The higher value, the higher event priority. So the <see cref="WonRoundEvent"/>
+/// has the highest priority (150), and <see cref="DeathEvent"/> has the lowest priority (10).
 /// </summary>
 public static class DefaultEventPriority
 {
