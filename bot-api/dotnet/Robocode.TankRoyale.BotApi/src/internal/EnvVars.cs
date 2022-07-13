@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Robocode.TankRoyale.BotApi.Util;
@@ -131,9 +132,9 @@ internal static class EnvVars
     /// Gets the bot author(s) from environment variable.
     /// </summary>
     /// <returns>The bot author(s).</returns>
-    private static IEnumerable<string> GetBotAuthors()
+    private static IList<string> GetBotAuthors()
     {
-        return GetEnvVarAsList(BotAuthors);
+        return GetEnvVarAsList(BotAuthors).ToList();
     }
 
     /// <summary>
@@ -158,9 +159,9 @@ internal static class EnvVars
     /// Gets the bot country code(s) from environment variable.
     /// </summary>
     /// <returns>The bot country code(s).</returns>
-    private static IEnumerable<string> GetBotCountryCodes()
+    private static IList<string> GetBotCountryCodes()
     {
-        return GetEnvVarAsList(BotCountryCodes);
+        return GetEnvVarAsList(BotCountryCodes).ToList();
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.botapi.internal;
+package dev.robocode.tankroyale.botapi.util;
 
 /**
  * Math utility class.

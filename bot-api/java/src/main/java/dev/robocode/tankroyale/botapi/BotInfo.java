@@ -7,6 +7,11 @@ import com.neovisionaries.i18n.CountryCode;
 import java.io.*;
 import java.util.*;
 
+import static dev.robocode.tankroyale.botapi.util.CollectionUtil.toMutableList;
+import static dev.robocode.tankroyale.botapi.util.CollectionUtil.toMutableSet;
+import static dev.robocode.tankroyale.botapi.util.CountryCodeUtil.getLocalCountryCode;
+import static dev.robocode.tankroyale.botapi.util.CountryCodeUtil.toCountryCode;
+
 /**
  * Bot info contains the properties of a bot.
  *
@@ -14,6 +19,61 @@ import java.util.*;
  */
 @SuppressWarnings("unused")
 public final class BotInfo {
+
+    /**
+     * Maximum number of characters accepted for the name.
+     */
+    public static final int MAX_NAME_LENGTH = 30;
+
+    /**
+     * Maximum number of characters accepted for the version.
+     */
+    public static final int MAX_VERSION_LENGTH = 20;
+
+    /**
+     * Maximum number of characters accepted for an author name.
+     */
+    public static final int MAX_AUTHOR_LENGTH = 50;
+
+    /**
+     * Maximum number of characters accepted for the description.
+     */
+    public static final int MAX_DESCRIPTION_LENGTH = 250;
+
+    /**
+     * Maximum number of characters accepted for the link to the homepage.
+     */
+    public static final int MAX_HOMEPAGE_LENGTH = 150;
+
+    /**
+     * Maximum number of characters accepted for a game type.
+     */
+    public static final int MAX_GAME_TYPE_LENGTH = 20;
+
+    /**
+     * Maximum number of characters accepted for the platform name.
+     */
+    public static final int MAX_PLATFORM_LENGTH = 30;
+
+    /**
+     * Maximum number of characters accepted for the programming language name.
+     */
+    public static final int MAX_PROGRAMMING_LANG_LENGTH = 30;
+
+    /**
+     * Maximum number of authors accepted.
+     */
+    public static final int MAX_NUMBER_OF_AUTHORS = 5;
+
+    /**
+     * Maximum number of country codes accepted.
+     */
+    public static final int MAX_NUMBER_OF_COUNTRY_CODES = 5;
+
+    /**
+     * Maximum number of game types accepted.
+     */
+    public static final int MAX_NUMBER_OF_GAME_TYPES = 10;
 
     private final String name; // required
     private final String version; // required
@@ -27,13 +87,16 @@ public final class BotInfo {
     private final InitialPosition initialPosition; // optional
 
     /**
-     * Initializes a new instance of the BotInfo class.
+     * Initializes a new instance of the BotInfo class.<br>
+     * </br>
+     * Note that the recommended method for creating a BotInfo class is to use the {@link IBuilder} interface provided
+     * with the static {@link BotInfo#builder()} method.
      *
      * @param name            is the name of the bot (required).
      * @param version         is the version of the bot (required).
      * @param authors         is the author(s) of the bot (required).
      * @param description     is a short description of the bot (optional).
-     * @param homepage        is the URL to a web page for the bot (optional).
+     * @param homepage        is the link to a homepage for the bot (optional).
      * @param countryCodes    is the country code(s) for the bot (optional).
      * @param gameTypes       is the game types that this bot can handle (required).
      * @param platform        is the platform used for running the bot (optional).
@@ -52,41 +115,36 @@ public final class BotInfo {
             final String programmingLang,
             final InitialPosition initialPosition) {
 
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Name cannot be null, empty or blank");
-        }
-        if (version == null || version.isBlank()) {
-            throw new IllegalArgumentException("Version cannot be null, empty or blank");
-        }
-        if (isNullOrEmptyOrContainsBlanks(authors)) {
-            throw new IllegalArgumentException("Authors cannot be null or empty or contain blanks");
-        }
-        List<String> authorsCopy = new ArrayList<>();
-        authors.forEach(author -> authorsCopy.add(author.trim()));
-        authorsCopy.removeIf(String::isBlank);
-
-        if (isNullOrEmptyOrContainsBlanks(gameTypes)) {
-            throw new IllegalArgumentException("Game types cannot be null or empty or contain blanks");
-        }
-        Set<String> gameTypesCopy = new HashSet<>();
-        gameTypes.forEach(gameType -> gameTypesCopy.add(gameType.trim()));
-        gameTypesCopy.removeIf(String::isBlank);
-
-        String platformCopy = platform;
-        if (platform == null || platform.trim().length() == 0) {
-            platformCopy = "Java Runtime Environment (JRE) " + System.getProperty("java.version");
-        }
-
-        this.name = name.trim();
-        this.version = version.trim();
-        this.authors = authorsCopy;
-        this.description = toNullIfBlankElseTrim(description);
-        this.homepage = toNullIfBlankElseTrim(homepage);
+        this.name = processName(name);
+        this.version = processVersion(version);
+        this.authors = processAuthors(authors);
+        this.description = processDescription(description);
+        this.homepage = processHomepage(homepage);
         this.countryCodes = processCountryCodes(countryCodes);
-        this.gameTypes = gameTypesCopy;
-        this.platform = toNullIfBlankElseTrim(platformCopy);
-        this.programmingLang = toNullIfBlankElseTrim(programmingLang);
+        this.gameTypes = processGameTypes(gameTypes);
+        this.platform = processPlatform(platform);
+        this.programmingLang = processProgrammingLang(programmingLang);
         this.initialPosition = initialPosition;
+    }
+
+    /**
+     * Returns a builder for a convenient way of building a {@link BotInfo} object using the
+     * <a href="https://en.wikipedia.org/wiki/Builder_pattern">builder pattern</a>.<br>
+     * <br>
+     * Example of use:
+     * <pre><code class="language-java">
+     * BotInfo botInfo = BotInfo.builder()
+     *     .setName("Rampage")
+     *     .setVersion("1.0")
+     *     .addAuthor("John Doh")
+     *     .setGameTypes(List.of(GameType.CLASSIC, GameType.MELEE))
+     *     .build();
+     * </code></pre>
+     *
+     * @return a builder for building a {@link BotInfo} object.
+     */
+    public static IBuilder builder() {
+        return new Builder();
     }
 
     /**
@@ -111,7 +169,7 @@ public final class BotInfo {
      * Returns the list of authors of the bot, e.g., "John Doe (johndoe@somewhere.io)". At least one
      * author must be provided.
      *
-     * @return The author(s) of the bot.
+     * @return The name(s) of the author(s) of the bot.
      */
     public List<String> getAuthors() {
         return authors;
@@ -302,28 +360,123 @@ public final class BotInfo {
                 InitialPosition.fromString(data.initialPosition));
     }
 
+    private static String processName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be null, empty or blank");
+        }
+        name = name.trim();
+        if (name.length() > MAX_NAME_LENGTH) {
+            throw new IllegalArgumentException("Name length exceeds the maximum of " + MAX_NAME_LENGTH + " characters");
+        }
+        return name;
+    }
+
+    private static String processVersion(String version) {
+        if (version == null || version.isBlank()) {
+            throw new IllegalArgumentException("Version cannot be null, empty or blank");
+        }
+        version = version.trim();
+        if (version.length() > MAX_VERSION_LENGTH) {
+            throw new IllegalArgumentException("Version length exceeds the maximum of " + MAX_VERSION_LENGTH + " characters");
+        }
+        return version;
+    }
+
+    private static List<String> processAuthors(List<String> authors) {
+        if (isNullOrEmptyOrContainsBlanks(authors)) {
+            throw new IllegalArgumentException("Authors cannot be null or empty or contain blanks");
+        }
+        if (authors.size() > MAX_NUMBER_OF_AUTHORS) {
+            throw new IllegalArgumentException("Number of authors exceeds the maximum of " + MAX_NUMBER_OF_AUTHORS);
+        }
+        List<String> authorsCopy = new ArrayList<>();
+        authors.stream().filter(Objects::nonNull).forEach(author -> {
+            author = author.trim();
+            if (author.length() > MAX_AUTHOR_LENGTH) {
+                throw new IllegalArgumentException("Author length exceeds the maximum of " + MAX_AUTHOR_LENGTH + " characters");
+            }
+            authorsCopy.add(author);
+        });
+        authorsCopy.removeIf(String::isBlank);
+
+        return authorsCopy;
+    }
+
+    private static String processDescription(String description) {
+        if (description != null && description.trim().length() > MAX_DESCRIPTION_LENGTH) {
+            throw new IllegalArgumentException("Description length exceeds the maximum of " + MAX_DESCRIPTION_LENGTH + " characters");
+        }
+        return toNullIfBlankElseTrim(description);
+    }
+
+    private static String processHomepage(String homepage) {
+        if (homepage != null && homepage.trim().length() > MAX_HOMEPAGE_LENGTH) {
+            throw new IllegalArgumentException("Homepage length exceeds the maximum of " + MAX_HOMEPAGE_LENGTH + " characters");
+        }
+        return toNullIfBlankElseTrim(homepage);
+    }
+
     private static List<String> processCountryCodes(List<String> countryCodeStrings) {
         List<CountryCode> countryCodes = new ArrayList<>();
         if (countryCodeStrings != null) {
-            countryCodeStrings.forEach(string -> {
-                if (countryCodeStrings.contains(string)) {
-                    var countryCode = CountryCode.getByCodeIgnoreCase(string.trim());
-                    if (countryCode != null) {
-                        countryCodes.add(countryCode);
-                    }
+            countryCodeStrings.stream().filter(Objects::nonNull).forEach(string -> {
+                var countryCode = toCountryCode(string);
+                if (countryCode != null) {
+                    countryCodes.add(countryCode);
                 }
             });
         }
-
         if (countryCodes.isEmpty()) {
-            var defaultCountryCode = CountryCode.getByLocale(Locale.getDefault());
-            countryCodes.add(defaultCountryCode);
+            var countryCode = toCountryCode(getLocalCountryCode());
+            if (countryCode != null) {
+                countryCodes.add(countryCode);
+            }
+        }
+        if (countryCodes.size() > MAX_NUMBER_OF_COUNTRY_CODES) {
+            throw new IllegalArgumentException("Number of country codes exceeds the maximum of " + MAX_NUMBER_OF_COUNTRY_CODES);
         }
 
         List<String> countryCodesAlpha2 = new ArrayList<>();
         countryCodes.forEach(countryCode -> countryCodesAlpha2.add(countryCode.getAlpha2()));
 
         return countryCodesAlpha2;
+    }
+
+    private static Set<String> processGameTypes(Collection<String> gameTypes) {
+        if (isNullOrEmptyOrContainsBlanks(gameTypes)) {
+            throw new IllegalArgumentException("Game types cannot be null or empty or contain blanks");
+        }
+        if (gameTypes.size() > MAX_NUMBER_OF_GAME_TYPES) {
+            throw new IllegalArgumentException("Number of game types exceeds the maximum of " + MAX_NUMBER_OF_GAME_TYPES);
+        }
+        Set<String> gameTypesCopy = new HashSet<>();
+        gameTypes.stream().filter(Objects::nonNull).forEach(gameType -> {
+            gameType = gameType.trim();
+            if (gameType.length() > MAX_GAME_TYPE_LENGTH) {
+                throw new IllegalArgumentException("Game type length exceeds the maximum of " + MAX_GAME_TYPE_LENGTH + " characters");
+            }
+            gameTypesCopy.add(gameType);
+        });
+        gameTypesCopy.removeIf(String::isBlank);
+
+        return gameTypesCopy;
+    }
+
+    private static String processPlatform(String platform) {
+        if (platform == null || platform.trim().length() == 0) {
+            return "Java Runtime Environment (JRE) " + System.getProperty("java.version");
+        }
+        if (platform.trim().length() > MAX_PLATFORM_LENGTH) {
+            throw new IllegalArgumentException("Platform length exceeds the maximum of " + MAX_PLATFORM_LENGTH + " characters");
+        }
+        return toNullIfBlankElseTrim(platform);
+    }
+
+    private static String processProgrammingLang(String programmingLang) {
+        if (programmingLang != null && programmingLang.trim().length() > MAX_PROGRAMMING_LANG_LENGTH) {
+            throw new IllegalArgumentException("ProgrammingLang length exceeds the maximum of " + MAX_PROGRAMMING_LANG_LENGTH + " characters");
+        }
+        return toNullIfBlankElseTrim(programmingLang);
     }
 
     private static void throwExceptionIfJsonFieldIsBlank(String fieldName) {
@@ -353,5 +506,334 @@ public final class BotInfo {
         String platform;
         String programmingLang;
         String initialPosition;
+    }
+
+    /**
+     * Builder interface for providing a builder for building {@link BotInfo} objects, and which supports method
+     * chaining.
+     */
+    public interface IBuilder {
+
+        /**
+         * Builds and returns the {@link BotInfo} instance based on the data set and added to this builder so far.
+         * This method is typically the last method to call on the builder in order to extract the result of building.
+         *
+         * @return a {@link BotInfo} instance.
+         */
+        BotInfo build();
+
+        /**
+         * Copies all fields from a {@link BotInfo} instance into this builder.
+         *
+         * @param botInfo is the {@link BotInfo} instance to copy.
+         * @return this {@link IBuilder} instance provided for method chaining.
+         */
+        IBuilder copy(BotInfo botInfo);
+
+        /**
+         * Sets the bot name. (required)<br>
+         * <br>
+         * Note that the maximum length of the name is {@value MAX_NAME_LENGTH} characters.<br>
+         * <br>
+         * Example of a name: "Rampage"
+         *
+         * @param name is the name of the bot.
+         * @return this {@link IBuilder} instance provided for method chaining.
+         */
+        IBuilder setName(String name);
+
+        /**
+         * Sets the bot version. (required)<br>
+         * <br>
+         * Note that the maximum length of the version is {@value MAX_VERSION_LENGTH} characters.<br>
+         * <br>
+         * Example of a version: "1.0"
+         *
+         * @param version is the version of the bot.
+         * @return this {@link IBuilder} instance provided for method chaining.
+         */
+        IBuilder setVersion(String version);
+
+        /**
+         * Sets the names(s) of the author(s) of the bot. (required)<br>
+         * <br>
+         * Note that the maximum length of an author name is {@value MAX_AUTHOR_LENGTH} characters, and the maximum
+         * number of names is {@value MAX_NUMBER_OF_AUTHORS}.<br>
+         * <br>
+         * Example of the name of an author: "John Doe"
+         *
+         * @param authors is a list containing the names(s) of the author(s).
+         *                A {@code null} removes all authors.
+         * @return this {@link IBuilder} instance provided for method chaining.
+         * @see #addAuthor
+         */
+        IBuilder setAuthors(List<String> authors);
+
+        /**
+         * Adds an author of the bot. (required)<br>
+         * <br>
+         * See {@link #setAuthors} for more details.<br>
+         *
+         * @param author is the name of an author to add.
+         * @return this {@link IBuilder} instance provided for method chaining.
+         * @see #setAuthors
+         */
+        IBuilder addAuthor(String author);
+
+        /**
+         * Sets a short description of the bot. (optional)<br>
+         * <br>
+         * Note that the maximum length of the description is {@value MAX_DESCRIPTION_LENGTH} characters. Line-breaks
+         * (line-feed / new-line character) are supported, but only expect up to 3 lines to be displayed on a UI.<br>
+         * <br>
+         * Example of a description:
+         * <pre>
+         * "The rampage bot will try to ram bots that are very close.\n
+         * Sneaks around the corners and shoot at the bots that come too near."
+         * </pre>
+         *
+         * @param description is a short description of the bot.
+         * @return this {@link IBuilder} instance provided for method chaining.
+         */
+        IBuilder setDescription(String description);
+
+        /**
+         * Sets a link to the homepage for the bot. (optional)<br>
+         * <br>
+         * Note that the maximum length of a link is {@value MAX_HOMEPAGE_LENGTH} characters.<br>
+         * <br>
+         * Example of a link: "https://fictive-homepage.net/Rampage"
+         *
+         * @param homepage is a link to a homepage for the bot.
+         * @return this {@link IBuilder} instance provided for method chaining.
+         */
+        IBuilder setHomepage(String homepage);
+
+        /**
+         * Sets the country codes for the bot. (optional)<br>
+         * <br>
+         * Note that the maximum length of each country code is 2 (alpha-2) from the ISO 3166 international standard,
+         * and the maximum number of country codes is {@value MAX_NUMBER_OF_COUNTRY_CODES}.<br>
+         * <br>
+         * Example of a country code: "dk"<br>
+         * <br>
+         * Note that if no country code is specified, or the none of the country codes provided is valid, then the
+         * default a list containing a single country code will automatically be used containing the current locale
+         * country code. The current local country code will be extracted using {@link Locale#getDefault()}.
+         *
+         * @param countryCodes is a list containing the country codes.
+         *                     A {@code null} removes all country codes.
+         * @return this {@link IBuilder} instance provided for method chaining.
+         * @see #addCountryCode
+         */
+        IBuilder setCountryCodes(List<String> countryCodes);
+
+        /**
+         * Adds a country code for the bot. (optional)<br>
+         * <br>
+         * See {@link #setCountryCodes} for more details.
+         *
+         * @param countryCode is the country code to add.
+         * @return this {@link IBuilder} instance provided for method chaining.
+         * @see #setCountryCodes
+         */
+        IBuilder addCountryCode(String countryCode);
+
+        /**
+         * Sets the game types that this bot is capable of participating in. (required)<br>
+         * <br>
+         * The standard game types <a href="https://robocode-dev.github.io/tank-royale/articles/game_types.html">
+         * are listed here</a>.<br>
+         * <br>
+         * Note that more game types might be added in the future.<br>
+         * <br>
+         * The {@link GameType} class contains the string for the current predefined game types, which can be used
+         * when setting the game types of this method.<br>
+         * <br>
+         * Note that the maximum length of a game type is {@value MAX_GAME_TYPE_LENGTH}, and the maximum number of
+         * game types is {@value MAX_NUMBER_OF_GAME_TYPES}.<br>
+         * <br>
+         * Example of a game type: "classic"<br>
+         * <br>
+         * Example of usage:
+         * <pre><code class="language-java">
+         * BotInfo.builder()
+         *     .setGameTypes(List.of(GameType.CLASSIC, GameType.MELEE, "future-type"))
+         *     ...
+         * </code></pre>
+         *
+         * @param gameTypes is a list of game types that the bot is capable of participating in.
+         *                  A {@code null} removes all game types.
+         * @return this {@link IBuilder} instance provided for method chaining.
+         * @see #addGameType 
+         */
+        IBuilder setGameTypes(List<String> gameTypes);
+
+        /**
+         * Adds a game type that this bot is capable of participating in. (required)<br>
+         * <br>
+         * See {@link #setGameTypes} for more details.<br>
+         * <br>
+         * Example of usage:
+         * <pre><code class="language-java">
+         * BotInfo.builder()
+         *     .addGameType(GameType.CLASSIC)
+         *     .addGameType(GameType.MELEE)
+         *     ...
+         * </code></pre>
+         *
+         * @param gameType is a game type that the bot is capable of participating in.
+         * @return this {@link IBuilder} instance provided for method chaining.
+         * @see #setGameTypes
+         */
+        IBuilder addGameType(String gameType);
+
+        /**
+         * Sets the name of the platform that this bot is build for. (optional)<br>
+         * <br>
+         * Note that the maximum length of the name of the platform is {@value MAX_PLATFORM_LENGTH}.<br>
+         * <br>
+         * If the platform is set to {@code null} or a blank string, then this default string will be used for this API:
+         * <pre>
+         * Java Runtime Environment (JRE) [version]
+         * </pre>
+         *
+         * @param platform is the name of the platform that this bot is build for.
+         * @return this {@link IBuilder} instance provided for method chaining.
+         */
+        IBuilder setPlatform(String platform);
+
+        /**
+         * Sets the name of the programming language used for developing this bot. (optional)<br>
+         * <br>
+         * Note that the maximum length of the name of the programming language is {@value MAX_PROGRAMMING_LANG_LENGTH}.
+         *
+         * @param programmingLang is the name of the programming language used for developing this bot.
+         * @return this {@link IBuilder} instance provided for method chaining.
+         */
+        IBuilder setProgrammingLang(String programmingLang);
+
+        /**
+         * Sets the initial position of this bot. (optional)<br>
+         * <br>
+         * Note that initial positions must be enabled/allowed with the game (server) in order to take effect.
+         *
+         * @param initialPosition is the initial position of this bot.
+         * @return this {@link IBuilder} instance provided for method chaining.
+         */
+        IBuilder setInitialPosition(InitialPosition initialPosition);
+    }
+
+    private static final class Builder implements IBuilder {
+
+        private String name;
+        private String version;
+        private List<String> authors = new ArrayList<>();
+        private String description;
+        private String homepage;
+        private List<String> countryCodes = new ArrayList<>();
+        private Set<String> gameTypes = new HashSet<>();
+        private String platform;
+        private String programmingLang;
+        private InitialPosition initialPosition;
+
+        @Override
+        public BotInfo build() {
+            return new BotInfo(name, version, authors, description, homepage, countryCodes, gameTypes, platform,
+                    programmingLang, initialPosition);
+        }
+
+        @Override
+        public IBuilder copy(BotInfo botInfo) {
+            name = botInfo.getName();
+            version = botInfo.getVersion();
+            authors = botInfo.getAuthors();
+            description = botInfo.getDescription();
+            homepage = botInfo.getHomepage();
+            countryCodes = botInfo.getCountryCodes();
+            gameTypes = botInfo.getGameTypes();
+            platform = botInfo.getPlatform();
+            programmingLang = botInfo.getProgrammingLang();
+            initialPosition = botInfo.getInitialPosition();
+            return this;
+        }
+
+        @Override
+        public IBuilder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        @Override
+        public IBuilder setVersion(String version) {
+            this.version = version;
+            return this;
+        }
+
+        @Override
+        public IBuilder setAuthors(List<String> authors) {
+            this.authors = toMutableList(authors);
+            return this;
+        }
+
+        @Override
+        public IBuilder addAuthor(String author) {
+            authors.add(author);
+            return this;
+        }
+
+        @Override
+        public IBuilder setDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        @Override
+        public IBuilder setHomepage(String homepage) {
+            this.homepage = homepage;
+            return this;
+        }
+
+        @Override
+        public IBuilder setCountryCodes(List<String> countryCodes) {
+            this.countryCodes = toMutableList(countryCodes);
+            return this;
+        }
+
+        @Override
+        public IBuilder addCountryCode(String countryCode) {
+            countryCodes.add(countryCode);
+            return this;
+        }
+
+        @Override
+        public IBuilder setGameTypes(List<String> gameTypes) {
+            this.gameTypes = toMutableSet(gameTypes);
+            return this;
+        }
+
+        @Override
+        public IBuilder addGameType(String gameType) {
+            gameTypes.add(gameType);
+            return this;
+        }
+
+        @Override
+        public IBuilder setPlatform(String platform) {
+            this.platform = platform;
+            return this;
+        }
+
+        @Override
+        public IBuilder setProgrammingLang(String programmingLang) {
+            this.programmingLang = programmingLang;
+            return this;
+        }
+
+        @Override
+        public IBuilder setInitialPosition(InitialPosition initialPosition) {
+            this.initialPosition = initialPosition;
+            return this;
+        }
     }
 }

@@ -1,5 +1,17 @@
 # Versions
 
+## In progress - 0.14.1
+
+#### Improvements
+
+- Bot API:
+    - BotInfo:
+      - A builder has been provided for creating `BotInfo` instances.
+      - Size constraints have been added for the individual `BotInfo` fields/methods.
+      - Various bugfixes for BotInfo.
+    - GameTypes:
+      - Added missing game type for "classic" game + updated documentation.  
+
 ## 0.14.0 - Adjustments for bot events - 03-Jul-2022
 
 #### Changes:

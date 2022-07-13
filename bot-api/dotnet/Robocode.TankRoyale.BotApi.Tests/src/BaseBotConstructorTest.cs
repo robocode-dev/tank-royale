@@ -87,8 +87,7 @@ public class BaseBotConstructorTest
     {
         ClearEnvVar(ServerUrl);
 
-        StartBotFromThread();
-        Assert.That(_server.AwaitConnection(5_000), Is.False);
+        Assert.Throws<BotException>(() => new TestBot().Start());
     }
 
     [Test]
@@ -136,24 +135,23 @@ public class BaseBotConstructorTest
     public void GivenServerUrlConstructor_WhenServerUrlIsInvalidValid_ThenBotCannotConnectToServer()
     {
         var bot = new TestBot(null, new Uri("ws://localhost:" + (MockedServer.Port + 1)));
-        StartBotFromThread(bot);
-        Assert.That(_server.AwaitBotHandshake(5000), Is.False);
+        Assert.Throws<BotException>(() => bot.Start());
     }
-    
+
     [Test]
     public void GivenServerSecretConstructor_WhenServerSecretIsProvided_ThenReturnedBotHandshakeMustProvideThisSecret()
     {
         var secret = Guid.NewGuid().ToString();
         var bot = new TestBot(null, new Uri("ws://localhost:" + MockedServer.Port), secret);
         StartBotFromThread(bot);
-        Assert.That(_server.AwaitBotHandshake(5000), Is.True);
+        Assert.That(_server.AwaitBotHandshake(5_000), Is.True);
         var botHandshake = _server.GetBotHandshake();
         Assert.That(botHandshake.Secret, Is.EqualTo(secret));
     }
 
     private static void StartBotFromThread()
     {
-        new Thread(() => new TestBot().Start()).Start();
+        StartBotFromThread(new TestBot());
     }
 
     private static void StartBotFromThread(IBaseBot bot)

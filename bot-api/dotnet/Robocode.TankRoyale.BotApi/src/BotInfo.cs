@@ -7,6 +7,7 @@ using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Robocode.TankRoyale.BotApi.Util;
+using static Robocode.TankRoyale.BotApi.Internal.CollectionUtil;
 
 namespace Robocode.TankRoyale.BotApi;
 
@@ -15,18 +16,76 @@ namespace Robocode.TankRoyale.BotApi;
 /// </summary>
 public sealed class BotInfo
 {
-    private readonly string name;
-    private readonly string version;
-    private readonly IEnumerable<string> authors;
-    private readonly string description;
-    private readonly string homepage;
-    private readonly IEnumerable<string> countryCodes;
-    private readonly IEnumerable<string> gameTypes;
-    private readonly string platform;
-    private readonly string programmingLang;
+    /// <summary>
+    /// Maximum number of characters accepted for the name.
+    /// </summary>
+    public const int MaxNameLength = 30;
+
+    /// <summary>
+    /// Maximum number of characters accepted for the version.
+    /// </summary>
+    public const int MaxVersionLength = 20;
+
+    /// <summary>
+    /// Maximum number of characters accepted for an author name.
+    /// </summary>
+    public const int MaxAuthorLength = 20;
+
+    /// <summary>
+    /// Maximum number of characters accepted for the description.
+    /// </summary>
+    public const int MaxDescriptionLength = 250;
+
+    /// <summary>
+    /// Maximum number of characters accepted for the link to the homepage.
+    /// </summary>
+    public const int MaxHomepageLength = 150;
+
+    /// <summary>
+    /// Maximum number of characters accepted for a game type.
+    /// </summary>
+    public const int MaxGameTypeLength = 20;
+
+    /// <summary>
+    /// Maximum number of characters accepted for a game type.
+    /// </summary>
+    public const int MaxPlatformLength = 20;
+
+    /// <summary>
+    /// Maximum number of characters accepted for the programming language name.
+    /// </summary>
+    public const int MaxProgrammingLangLength = 30;
+
+    /// <summary>
+    /// Maximum number of authors accepted.
+    /// </summary>
+    public const int MaxNumberOfAuthors = 5;
+
+    /// <summary>
+    /// Maximum number of country codes accepted.
+    /// </summary>
+    public const int MaxNumberOfCountryCodes = 5;
+
+    /// <summary>
+    /// Maximum number of game types accepted.
+    /// </summary>
+    public const int MaxNumberOfGameTypes = 10;
+
+    private readonly string name; // required
+    private readonly string version; // required
+    private readonly IList<string> authors; // required
+    private readonly string description; // optional
+    private readonly string homepage; // optional
+    private readonly IList<string> countryCodes;
+    private readonly ICollection<string> gameTypes; // required
+    private readonly string platform; // optional
+    private readonly string programmingLang; // optional
 
     /// <summary>
     /// Initializes a new instance of the BotInfo class.
+    ///
+    /// Note that the recommended method for creating a BotInfo class is to use the <see cref="IBuilder"/> interface provided
+    /// with the static <see cref="BotInfo.Builder()"/> method.
     /// </summary>
     /// <param name="name">The name of the bot (required).</param>
     /// <param name="version">The version of the bot (required).</param>
@@ -41,11 +100,11 @@ public sealed class BotInfo
     public BotInfo(
         string name,
         string version,
-        IEnumerable<string> authors,
+        IList<string> authors,
         string description,
         string homepage,
-        IEnumerable<string> countryCodes,
-        IEnumerable<string> gameTypes,
+        IList<string> countryCodes,
+        ICollection<string> gameTypes,
         string platform,
         string programmingLang,
         InitialPosition initialPosition)
@@ -63,6 +122,24 @@ public sealed class BotInfo
     }
 
     /// <summary>
+    /// Returns a builder for a convenient way of building a <see cref="BotInfo"/> object using the
+    /// <a href="https://en.wikipedia.org/wiki/Builder_pattern">builder pattern</a>.
+    /// </summary>
+    /// <example>
+    /// Example of use:
+    /// <code>
+    /// BotInfo botInfo = BotInfo.Builder()
+    ///     .SetName("Rampage")
+    ///     .SetVersion("1.0")
+    ///     .AddAuthor("John Doh")
+    ///     .SetGameTypes(List.of(GameType.Classic, GameType.Melee))
+    ///     .Build();
+    /// </code>
+    /// </example>
+    /// <returns>A builder for building a <see cref="BotInfo"/> object.</returns>
+    public static IBuilder Builder() => new BuilderImpl();
+
+    /// <summary>
     /// The name, e.g., "MyBot". This field must always be provided with the bot info.
     /// </summary>
     /// <value>The name of the bot.</value>
@@ -73,6 +150,8 @@ public sealed class BotInfo
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Name cannot be null, empty or blank");
+            if (value.Length > MaxNameLength)
+                throw new ArgumentException("Name length exceeds the maximum of " + MaxNameLength + " characters");
             name = value.Trim();
         }
     }
@@ -88,6 +167,8 @@ public sealed class BotInfo
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Version cannot be null, empty or blank");
+            if (value.Length > MaxVersionLength)
+                throw new ArgumentException("Version length exceeds the maximum of " + MaxVersionLength + " characters");
             version = value.Trim();
         }
     }
@@ -97,14 +178,21 @@ public sealed class BotInfo
     /// At least one author must be provided.
     /// </summary>
     /// <value>The author(s) of the bot.</value>
-    public IEnumerable<string> Authors
+    public IList<string> Authors
     {
         get => authors;
         private init
         {
             if (value.IsNullOrEmptyOrContainsBlanks())
                 throw new ArgumentException("Authors cannot be null or empty or contain blanks");
+            if (value.Count > MaxNumberOfAuthors)
+                throw new ArgumentException("Number of authors exceeds the maximum of " + MaxNumberOfAuthors);
+
             authors = value.ToListWithNoBlanks();
+
+            if (authors.Any(author => author.Length > MaxAuthorLength))
+                throw new ArgumentException("Author length exceeds the maximum of " + MaxAuthorLength +
+                                            " characters");
         }
     }
 
@@ -116,7 +204,12 @@ public sealed class BotInfo
     public string Description
     {
         get => description;
-        private init => description = ToNullIfBlankElseTrim(value);
+        private init
+        {
+            if (value is { Length: > MaxDescriptionLength })
+                throw new ArgumentException("Description length exceeds the maximum of " + MaxDescriptionLength + " characters");
+            description = ToNullIfBlankElseTrim(value);
+        }
     }
 
     /// <summary>
@@ -127,7 +220,12 @@ public sealed class BotInfo
     public string Homepage
     {
         get => homepage;
-        private init => homepage = ToNullIfBlankElseTrim(value);
+        private init
+        {
+            if (value is { Length: > MaxHomepageLength })
+                throw new ArgumentException("Homepage length exceeds the maximum of " + MaxHomepageLength + " characters");
+            homepage = ToNullIfBlankElseTrim(value);
+        }
     }
 
     /// <summary>
@@ -136,11 +234,14 @@ public sealed class BotInfo
     /// If no country code is provided, the locale of the system is being used instead.
     /// </summary>
     /// <value>The country code(s) for the bot.</value>
-    public IEnumerable<string> CountryCodes
+    public IList<string> CountryCodes
     {
         get => countryCodes;
         private init
         {
+            if (value.Count > MaxNumberOfCountryCodes)
+                throw new ArgumentException("Number of country codes exceeds the maximum of " + MaxNumberOfCountryCodes);
+
             countryCodes = value.ToListWithNoBlanks().ConvertAll(cc => cc.ToUpper());
 
             foreach (var countryCode in countryCodes)
@@ -163,14 +264,20 @@ public sealed class BotInfo
     /// in. See <see cref="GameType"/> for using predefined game type.
     /// </summary>
     /// <value>The game type(s) that this bot can handle.</value>
-    public IEnumerable<string> GameTypes
+    public ICollection<string> GameTypes
     {
         get => gameTypes;
         private init
         {
             if (value.IsNullOrEmptyOrContainsBlanks())
                 throw new ArgumentException("Game types cannot be null or empty or contain blanks");
-            gameTypes = value.ToListWithNoBlanks().Distinct().ToHashSet();
+            if (value.Count > MaxNumberOfGameTypes)
+                throw new ArgumentException("Number of game types exceeds the maximum of " + MaxNumberOfGameTypes);
+
+            if (value.Any(gameType => gameType.Length > MaxGameTypeLength))
+                throw new ArgumentException("Game type length exceeds the maximum of " + MaxGameTypeLength + " characters");
+
+            gameTypes = value.ToListWithNoBlanks();
         }
     }
 
@@ -185,7 +292,9 @@ public sealed class BotInfo
         private init
         {
             if (string.IsNullOrWhiteSpace(value))
-                value = Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
+                value = PlatformUtil.GetPlatformName();
+            else if (value.Length > MaxPlatformLength)
+                throw new ArgumentException("Platform length exceeds the maximum of " + MaxPlatformLength + " characters");
             platform = ToNullIfBlankElseTrim(value);
         }
     }
@@ -198,7 +307,12 @@ public sealed class BotInfo
     public string ProgrammingLang
     {
         get => programmingLang;
-        private init => programmingLang = ToNullIfBlankElseTrim(value);
+        private init
+        {
+            if (value is { Length: > MaxProgrammingLangLength })
+                throw new ArgumentException("ProgrammingLang length exceeds the maximum of " + MaxProgrammingLangLength + " characters");
+            programmingLang = ToNullIfBlankElseTrim(value);
+        }
     }
 
     /// <summary>
@@ -284,7 +398,7 @@ public sealed class BotInfo
             configuration["description"],
             configuration["url"],
             Regex.Split(countryCodes, @"\s*,\s*"),
-            Regex.Split(gameTypes, @"\s*,\s*"),
+            Regex.Split(gameTypes, @"\s*,\s*").ToHashSet(),
             configuration["platform"],
             configuration["programmingLang"],
             InitialPosition.FromString(configuration["initialPosition"])
@@ -301,6 +415,317 @@ public sealed class BotInfo
         if (string.IsNullOrWhiteSpace(fieldName))
         {
             throw new ArgumentException($"The required JSON field '{fieldName}' is missing or blank");
+        }
+    }
+
+    /// <summary>
+    /// Builder interface for providing a builder for building <see cref="BotInfo"/> objects, and which supports method
+    /// chaining.
+    /// </summary>
+    public interface IBuilder
+    {
+        /// <summary>
+        /// Builds and returns the <see cref="BotInfo"/> instance based on the data set and added to this builder so far.
+        /// This method is typically the last method to call on the builder in order to extract the result of building.
+        /// </summary>
+        /// <returns>A <see cref="BotInfo"/> instance.</returns>
+        BotInfo Build();
+
+        /// <summary>
+        /// Copies all fields from a <see cref="BotInfo"/> instance into this builder.
+        /// </summary>
+        /// <param name="botInfo">The <see cref="BotInfo"/> instance to copy.</param>
+        /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
+        IBuilder Copy(BotInfo botInfo);
+
+        /// <summary>
+        /// Sets the bot name. (required)
+        ///
+        /// Note that the maximum length of the name is <see cref="MaxNameLength"/> characters.
+        /// </summary>
+        /// <example>"Rampage"</example>
+        /// <param name="name">The name of the bot.</param>
+        /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
+        IBuilder SetName(string name);
+
+        /// <summary>
+        /// Sets the bot version. (required)
+        ///
+        /// Note that the maximum length of the version is <see cref="MaxVersionLength"/> characters.
+        /// </summary>
+        /// <example>"1.0"</example>
+        /// <param name="version">The version of the bot.</param>
+        /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
+        IBuilder SetVersion(string version);
+
+        /// <summary>
+        /// Sets the names(s) of the author(s) of the bot. (required)
+        ///
+        /// Note that the maximum length of an author name is <see cref="MaxAuthorLength"/> characters, and the maximum
+        /// number of names is <see cref="MaxNumberOfAuthors"/>.
+        /// </summary>
+        /// <example>"John Doe"</example>
+        /// <param name="authors">A list containing the names(s) of the author(s). A <c>null</c> removes all authors.
+        /// </param>
+        /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
+        /// <seealso cref="AddAuthor"/>
+        IBuilder SetAuthors(IEnumerable<string> authors);
+
+        /// <summary>
+        /// Adds an author of the bot. (required)
+        ///
+        /// See <see cref="SetAuthors"/> for more details.
+        /// </summary>
+        /// <param name="author">The name of an author to add.</param>
+        /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
+        /// <seealso cref="SetAuthors"/>
+        IBuilder AddAuthor(string author);
+
+        /// <summary>
+        /// Sets a short description of the bot. (optional)
+        ///
+        /// Note that the maximum length of the description is <see cref="BotInfo.MaxDescriptionLength"/> characters.
+        /// Line-breaks (line-feed / new-line character) are supported, but only expect up to 3 lines to be displayed on
+        /// a UI.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// "The rampage bot will try to ram bots that are very close.\n
+        /// Sneaks around the corners and shoot at the bots that come too near."
+        /// </code>
+        /// </example>
+        /// <param name="description">A short description of the bot.</param>
+        /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
+        IBuilder SetDescription(string description);
+
+        /// <summary>
+        /// Sets a link to the homepage for the bot. (optional)
+        ///
+        /// Note that the maximum length of a link is <see cref="MaxHomepageLength"/> characters.
+        /// </summary>
+        /// <example>"https://fictive-homepage.net/Rampage"</example>
+        /// <param name="homepage">A link to a homepage for the bot.</param>
+        /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
+        IBuilder SetHomepage(string homepage);
+
+        /// <summary>
+        /// Sets the country codes for the bot. (optional)
+        /// 
+        /// Note that the maximum length of each country code is 2 (alpha-2) from the ISO 3166 international standard,
+        /// and the maximum number of country codes is <see cref="BotInfo.MaxNumberOfCountryCodes"/>.
+        /// </summary>
+        /// <example>"dk"</example>
+        /// <note>
+        /// Note that if no country code is specified, or the none of the country codes provided is valid, then the
+        /// default a list containing a single country code will automatically be used containing the current locale
+        /// country code. The current local country code will be extracted using <c>Thread.CurrentThread.CurrentCulture</c>
+        /// and <c>RegionInfo(cultureInfo.LCID)</c>.
+        /// </note>
+        /// <param name="countryCodes">A list containing the country codes. A <c>null</c> removes all country codes.
+        /// </param>
+        /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
+        /// <seealso cref="AddCountryCode"/>
+        IBuilder SetCountryCodes(IEnumerable<string> countryCodes);
+
+        /// <summary>
+        /// Adds a country code for the bot. (optional)
+        ///
+        /// See <see cref="SetCountryCodes"/> for more details.
+        /// </summary>
+        /// <param name="countryCode">The country code to add.</param>
+        /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
+        /// <seealso cref="SetCountryCodes"/>
+        IBuilder AddCountryCode(string countryCode);
+
+        /// <summary>
+        /// Sets the game types that this bot is capable of participating in. (required)
+        ///
+        /// The standard game types <a href="https://robocode-dev.github.io/tank-royale/articles/game_types.html">
+        /// are listed here</a>
+        ///
+        /// Note that more game types might be added in the future.
+        ///
+        /// The <see cref="GameType"/> class contains the string for the current predefined game types, which can be used
+        /// when setting the game types of this method.
+        ///
+        /// Note that the maximum length of a game type is <see cref="BotInfo.MaxGameTypeLength"/>, and the maximum
+        /// number of game types is <see cref="BotInfo.MaxNumberOfGameTypes"/>.
+        /// </summary>
+        /// <example>Example of game type: "classic"</example>
+        /// <example>
+        /// Example of usage:
+        /// <code>
+        /// BotInfo.Builder()
+        ///     .SetGameTypes(new List { GameType.Classic, GameType.Melee, "future-type" })
+        ///     ...
+        /// </code>
+        /// </example>
+        /// <param name="gameTypes">A list of game types that the bot is capable of participating in. A <c>null</c>
+        /// removes all game types.</param>
+        /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
+        /// <seealso cref="AddGameType"/>
+        IBuilder SetGameTypes(ICollection<string> gameTypes);
+
+        /// <summary>
+        /// Adds a game type that this bot is capable of participating in. (required)
+        ///
+        /// See <see cref="SetGameTypes"/> for more details.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// BotInfo.Builder()
+        ///     .AddGameType(GameType.Classic)
+        ///     .AddGameType(GameType.Melee)
+        ///     ...
+        /// </code>
+        /// </example>
+        /// <param name="gameType">A game type that the bot is capable of participating in.</param>
+        /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
+        /// <seealso cref="SetGameTypes"/>
+        IBuilder AddGameType(string gameType);
+
+        /// <summary>
+        /// Sets the name of the platform that this bot is build for. (optional)
+        ///
+        /// Note that the maximum length of the name of the platform is <see cref="BotInfo.MaxPlatformLength"/>.
+        ///
+        /// If the platform is set to <c>null</c> or a blank string, then this default string will be used based on this
+        /// code: <c>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAttribute&gt;()?.FrameworkName</c>.
+        /// </summary>
+        /// <param name="platform">The name of the platform that this bot is build for.</param>
+        /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
+        IBuilder SetPlatform(string platform);
+
+        /// <summary>
+        /// Sets the name of the programming language used for developing this bot. (optional)
+        ///
+        /// Note that the maximum length of the name of the programming language is
+        /// <see cref="BotInfo.MaxProgrammingLangLength"/>.
+        /// </summary>
+        /// <param name="programmingLang">The name of the programming language used for developing this bot.</param>
+        /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
+        IBuilder SetProgrammingLang(string programmingLang);
+
+        /// <summary>
+        /// Sets the initial position of this bot. (optional)
+        ///
+        /// Note that initial positions must be enabled/allowed with the game (server) in order to take effect.
+        /// </summary>
+        /// <param name="initialPosition">The initial position of this bot.</param>
+        /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
+        IBuilder SetInitialPosition(InitialPosition initialPosition);
+    }
+
+    private sealed class BuilderImpl : IBuilder
+    {
+        private string name;
+        private string version;
+        private IList<string> authors = new List<string>();
+        private string description;
+        private string homepage;
+        private IList<string> countryCodes = new List<string>();
+        private ICollection<string> gameTypes = new HashSet<string>();
+        private string platform;
+        private string programmingLang;
+        private InitialPosition initialPosition;
+
+        public BotInfo Build()
+        {
+            return new BotInfo(name, version, authors, description, homepage, countryCodes, gameTypes, platform,
+                programmingLang, initialPosition);
+        }
+
+        public IBuilder Copy(BotInfo botInfo)
+        {
+            name = botInfo.Name;
+            version = botInfo.Version;
+            authors = botInfo.Authors.ToList();
+            description = botInfo.Description;
+            homepage = botInfo.Homepage;
+            countryCodes = botInfo.CountryCodes.ToList();
+            gameTypes = botInfo.GameTypes;
+            platform = botInfo.Platform;
+            programmingLang = botInfo.ProgrammingLang;
+            initialPosition = botInfo.InitialPosition;
+            return this;
+        }
+
+        public IBuilder SetName(string newName)
+        {
+            name = newName;
+            return this;
+        }
+
+        public IBuilder SetVersion(string newVersion)
+        {
+            version = newVersion;
+            return this;
+        }
+
+        public IBuilder SetAuthors(IEnumerable<string> newAuthors)
+        {
+            authors = ToMutableList(newAuthors);
+            return this;
+        }
+
+        public IBuilder AddAuthor(string newAuthor)
+        {
+            authors.Add(newAuthor);
+            return this;
+        }
+
+        public IBuilder SetDescription(string newDescription)
+        {
+            description = newDescription;
+            return this;
+        }
+
+        public IBuilder SetHomepage(string newHomepage)
+        {
+            homepage = newHomepage;
+            return this;
+        }
+
+        public IBuilder SetCountryCodes(IEnumerable<string> newCountryCodes)
+        {
+            countryCodes = ToMutableList(newCountryCodes);
+            return this;
+        }
+
+        public IBuilder AddCountryCode(string newCountryCode)
+        {
+            countryCodes.Add(newCountryCode);
+            return this;
+        }
+
+        public IBuilder SetGameTypes(ICollection<string> newGameTypes)
+        {
+            gameTypes = ToMutableSet(newGameTypes);
+            return this;
+        }
+
+        public IBuilder AddGameType(string newGameType)
+        {
+            gameTypes.Add(newGameType);
+            return this;
+        }
+
+        public IBuilder SetPlatform(string newPlatform)
+        {
+            platform = newPlatform;
+            return this;
+        }
+
+        public IBuilder SetProgrammingLang(string newProgrammingLang)
+        {
+            programmingLang = newProgrammingLang;
+            return this;
+        }
+
+        public IBuilder SetInitialPosition(InitialPosition newInitialPosition)
+        {
+            initialPosition = newInitialPosition;
+            return this;
         }
     }
 }

@@ -38,20 +38,15 @@ public class MockedServer
 
                 socket.Send(JsonConvert.SerializeObject(serverHandshake));
             };
-            socket.OnClose = socket.Close;
 
             socket.OnMessage = text =>
             {
                 var message = JsonConvert.DeserializeObject<Message>(text);
-                if (message != null)
-                {
-                    var msgType = (MessageType)Enum.Parse(typeof(MessageType), message.Type);
-                    if (msgType == MessageType.BotHandshake)
-                    {
-                        _botHandshake = JsonConvert.DeserializeObject<BotHandshake>(text);
-                        _botHandshakeEvent.Set();
-                    }
-                }
+                if (message == null) return;
+                var msgType = (MessageType)Enum.Parse(typeof(MessageType), message.Type);
+                if (msgType != MessageType.BotHandshake) return;
+                _botHandshake = JsonConvert.DeserializeObject<BotHandshake>(text);
+                _botHandshakeEvent.Set();
             };
 
             socket.OnError = error =>

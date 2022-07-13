@@ -4,15 +4,16 @@ import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.InitialPosition;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Utility class for reading environment variables.
  */
 final class EnvVars {
+
+    // Hides constructor
+    private EnvVars() {
+    }
 
     /**
      * Name of environment variable for server URI.
@@ -64,10 +65,6 @@ final class EnvVars {
     static final String BOT_INITIAL_POS = "BOT_INITIAL_POS";
 
     private static final String MISSING_ENV_VALUE = "Missing environment variable: ";
-
-    // Hide constructor
-    EnvVars() {
-    }
 
     /**
      * Bot Info
@@ -155,10 +152,10 @@ final class EnvVars {
     }
 
     /**
-     * List of game type(s), which the bot supports
+     * Set of game type(s), which the bot supports
      */
-    static List<String> getBotGameTypes() {
-        return propertyAsList(BOT_GAME_TYPES);
+    static Set<String> getBotGameTypes() {
+        return new HashSet<>(propertyAsList(BOT_GAME_TYPES));
     }
 
     /**

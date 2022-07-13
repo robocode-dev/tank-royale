@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Robocode.TankRoyale.BotApi.Internal;
 
 namespace Robocode.TankRoyale.BotApi.Tests
 {
