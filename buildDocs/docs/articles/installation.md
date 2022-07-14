@@ -8,7 +8,7 @@ Robocode is running on a Java Runtime Environment (JRE) and needs Java 11 as a m
 Robocode in the Java programming language, then you need a JDK (Java Development Kit).
 
 > Note that you do not need to run and old version 11 of Robocode to run the GUI, booter and server, or your Java/JVM
-based bot. But you cannot use Java versions older than version 11. 
+> based bot. But you cannot use Java versions older than version 11.
 
 Numerous Java distributions are available:
 
@@ -38,7 +38,7 @@ this application for observing how your bot(s) perform in the battle arena again
 You can download the application from the [Robocode releases].
 
 You need a file named `robocode-tankroyale-gui-x.y.z.jar`, where x.y.z is the specific version number of Robocode, e.g.
-version 0.10.0.
+version 0.14.1.
 
 You might be able to simply start the application by (double)clicking it, depending on the OS and Java version you have.
 If you cannot start the Robocode application by clicking it, you should start it from the command line like this. You
@@ -46,6 +46,22 @@ need to stand in the directory containing the .jar file of course.
 
 ```
 java -jar robocode-tankroyale-gui-x.y.z.jar
+```
+
+### GUI issue on Windows with NVidea gfx card
+
+Some people running graphical Java applications on Windows with an NVidia graphics card might experience that the
+windows, dialogs, menus etc. might not be painted correctly all of a sudden. If you experience this annoying issue, you
+can try to add this option after the `java` command:
+
+```
+-Dsun.java2d.opengl=true
+```
+
+So the command for running the GUI application for Robocode will be:
+
+```
+java -Dsun.java2d.opengl=true -jar robocode-tankroyale-gui-x.y.z.jar
 ```
 
 ## Sample bots
