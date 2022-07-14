@@ -1672,15 +1672,15 @@ references:
   commentId: T:Robocode.TankRoyale.BotApi.BotInfo
   fullName: Robocode.TankRoyale.BotApi.BotInfo
   nameWithType: BotInfo
-- uid: Robocode.TankRoyale.BotApi.BotInfo.#ctor(System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.String,System.String,Robocode.TankRoyale.BotApi.InitialPosition)
-  name: BotInfo(String, String, IEnumerable<String>, String, String, IEnumerable<String>, IEnumerable<String>, String, String, InitialPosition)
-  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo__ctor_System_String_System_String_System_Collections_Generic_IEnumerable_System_String__System_String_System_String_System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_System_String__System_String_System_String_Robocode_TankRoyale_BotApi_InitialPosition_
-  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.#ctor(System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.String,System.String,Robocode.TankRoyale.BotApi.InitialPosition)
-  name.vb: BotInfo(String, String, IEnumerable(Of String), String, String, IEnumerable(Of String), IEnumerable(Of String), String, String, InitialPosition)
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.BotInfo(System.String, System.String, System.Collections.Generic.IEnumerable<System.String>, System.String, System.String, System.Collections.Generic.IEnumerable<System.String>, System.Collections.Generic.IEnumerable<System.String>, System.String, System.String, Robocode.TankRoyale.BotApi.InitialPosition)
-  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.BotInfo(System.String, System.String, System.Collections.Generic.IEnumerable(Of System.String), System.String, System.String, System.Collections.Generic.IEnumerable(Of System.String), System.Collections.Generic.IEnumerable(Of System.String), System.String, System.String, Robocode.TankRoyale.BotApi.InitialPosition)
-  nameWithType: BotInfo.BotInfo(String, String, IEnumerable<String>, String, String, IEnumerable<String>, IEnumerable<String>, String, String, InitialPosition)
-  nameWithType.vb: BotInfo.BotInfo(String, String, IEnumerable(Of String), String, String, IEnumerable(Of String), IEnumerable(Of String), String, String, InitialPosition)
+- uid: Robocode.TankRoyale.BotApi.BotInfo.#ctor(System.String,System.String,System.Collections.Generic.IList{System.String},System.String,System.String,System.Collections.Generic.IList{System.String},System.Collections.Generic.ICollection{System.String},System.String,System.String,Robocode.TankRoyale.BotApi.InitialPosition)
+  name: BotInfo(String, String, IList<String>, String, String, IList<String>, ICollection<String>, String, String, InitialPosition)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo__ctor_System_String_System_String_System_Collections_Generic_IList_System_String__System_String_System_String_System_Collections_Generic_IList_System_String__System_Collections_Generic_ICollection_System_String__System_String_System_String_Robocode_TankRoyale_BotApi_InitialPosition_
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.#ctor(System.String,System.String,System.Collections.Generic.IList{System.String},System.String,System.String,System.Collections.Generic.IList{System.String},System.Collections.Generic.ICollection{System.String},System.String,System.String,Robocode.TankRoyale.BotApi.InitialPosition)
+  name.vb: BotInfo(String, String, IList(Of String), String, String, IList(Of String), ICollection(Of String), String, String, InitialPosition)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.BotInfo(System.String, System.String, System.Collections.Generic.IList<System.String>, System.String, System.String, System.Collections.Generic.IList<System.String>, System.Collections.Generic.ICollection<System.String>, System.String, System.String, Robocode.TankRoyale.BotApi.InitialPosition)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.BotInfo(System.String, System.String, System.Collections.Generic.IList(Of System.String), System.String, System.String, System.Collections.Generic.IList(Of System.String), System.Collections.Generic.ICollection(Of System.String), System.String, System.String, Robocode.TankRoyale.BotApi.InitialPosition)
+  nameWithType: BotInfo.BotInfo(String, String, IList<String>, String, String, IList<String>, ICollection<String>, String, String, InitialPosition)
+  nameWithType.vb: BotInfo.BotInfo(String, String, IList(Of String), String, String, IList(Of String), ICollection(Of String), String, String, InitialPosition)
 - uid: Robocode.TankRoyale.BotApi.BotInfo.#ctor*
   name: BotInfo
   href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo__ctor_
@@ -1701,6 +1701,19 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.BotInfo.Authors
   nameWithType: BotInfo.Authors
+- uid: Robocode.TankRoyale.BotApi.BotInfo.Builder
+  name: Builder()
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_Builder
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.Builder
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.Builder()
+  nameWithType: BotInfo.Builder()
+- uid: Robocode.TankRoyale.BotApi.BotInfo.Builder*
+  name: Builder
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_Builder_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.Builder
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.Builder
+  nameWithType: BotInfo.Builder
 - uid: Robocode.TankRoyale.BotApi.BotInfo.CountryCodes
   name: CountryCodes
   href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_CountryCodes
@@ -1779,6 +1792,216 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.BotInfo.Homepage
   nameWithType: BotInfo.Homepage
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder
+  name: BotInfo.IBuilder
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html
+  commentId: T:Robocode.TankRoyale.BotApi.BotInfo.IBuilder
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder
+  nameWithType: BotInfo.IBuilder
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor(System.String)
+  name: AddAuthor(String)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddAuthor_System_String_
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor(System.String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor(System.String)
+  nameWithType: BotInfo.IBuilder.AddAuthor(String)
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor*
+  name: AddAuthor
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddAuthor_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor
+  nameWithType: BotInfo.IBuilder.AddAuthor
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode(System.String)
+  name: AddCountryCode(String)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddCountryCode_System_String_
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode(System.String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode(System.String)
+  nameWithType: BotInfo.IBuilder.AddCountryCode(String)
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode*
+  name: AddCountryCode
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddCountryCode_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode
+  nameWithType: BotInfo.IBuilder.AddCountryCode
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType(System.String)
+  name: AddGameType(String)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddGameType_System_String_
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType(System.String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType(System.String)
+  nameWithType: BotInfo.IBuilder.AddGameType(String)
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType*
+  name: AddGameType
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddGameType_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType
+  nameWithType: BotInfo.IBuilder.AddGameType
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Build
+  name: Build()
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_Build
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Build
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Build()
+  nameWithType: BotInfo.IBuilder.Build()
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Build*
+  name: Build
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_Build_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Build
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Build
+  nameWithType: BotInfo.IBuilder.Build
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Copy(Robocode.TankRoyale.BotApi.BotInfo)
+  name: Copy(BotInfo)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_Copy_Robocode_TankRoyale_BotApi_BotInfo_
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Copy(Robocode.TankRoyale.BotApi.BotInfo)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Copy(Robocode.TankRoyale.BotApi.BotInfo)
+  nameWithType: BotInfo.IBuilder.Copy(BotInfo)
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Copy*
+  name: Copy
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_Copy_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Copy
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Copy
+  nameWithType: BotInfo.IBuilder.Copy
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors(System.Collections.Generic.IEnumerable{System.String})
+  name: SetAuthors(IEnumerable<String>)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetAuthors_System_Collections_Generic_IEnumerable_System_String__
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors(System.Collections.Generic.IEnumerable{System.String})
+  name.vb: SetAuthors(IEnumerable(Of String))
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors(System.Collections.Generic.IEnumerable<System.String>)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors(System.Collections.Generic.IEnumerable(Of System.String))
+  nameWithType: BotInfo.IBuilder.SetAuthors(IEnumerable<String>)
+  nameWithType.vb: BotInfo.IBuilder.SetAuthors(IEnumerable(Of String))
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors*
+  name: SetAuthors
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetAuthors_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors
+  nameWithType: BotInfo.IBuilder.SetAuthors
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes(System.Collections.Generic.IEnumerable{System.String})
+  name: SetCountryCodes(IEnumerable<String>)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetCountryCodes_System_Collections_Generic_IEnumerable_System_String__
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes(System.Collections.Generic.IEnumerable{System.String})
+  name.vb: SetCountryCodes(IEnumerable(Of String))
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes(System.Collections.Generic.IEnumerable<System.String>)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes(System.Collections.Generic.IEnumerable(Of System.String))
+  nameWithType: BotInfo.IBuilder.SetCountryCodes(IEnumerable<String>)
+  nameWithType.vb: BotInfo.IBuilder.SetCountryCodes(IEnumerable(Of String))
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes*
+  name: SetCountryCodes
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetCountryCodes_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes
+  nameWithType: BotInfo.IBuilder.SetCountryCodes
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription(System.String)
+  name: SetDescription(String)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetDescription_System_String_
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription(System.String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription(System.String)
+  nameWithType: BotInfo.IBuilder.SetDescription(String)
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription*
+  name: SetDescription
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetDescription_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription
+  nameWithType: BotInfo.IBuilder.SetDescription
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes(System.Collections.Generic.ICollection{System.String})
+  name: SetGameTypes(ICollection<String>)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetGameTypes_System_Collections_Generic_ICollection_System_String__
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes(System.Collections.Generic.ICollection{System.String})
+  name.vb: SetGameTypes(ICollection(Of String))
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes(System.Collections.Generic.ICollection<System.String>)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes(System.Collections.Generic.ICollection(Of System.String))
+  nameWithType: BotInfo.IBuilder.SetGameTypes(ICollection<String>)
+  nameWithType.vb: BotInfo.IBuilder.SetGameTypes(ICollection(Of String))
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes*
+  name: SetGameTypes
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetGameTypes_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes
+  nameWithType: BotInfo.IBuilder.SetGameTypes
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage(System.String)
+  name: SetHomepage(String)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetHomepage_System_String_
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage(System.String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage(System.String)
+  nameWithType: BotInfo.IBuilder.SetHomepage(String)
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage*
+  name: SetHomepage
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetHomepage_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage
+  nameWithType: BotInfo.IBuilder.SetHomepage
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetInitialPosition(Robocode.TankRoyale.BotApi.InitialPosition)
+  name: SetInitialPosition(InitialPosition)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetInitialPosition_Robocode_TankRoyale_BotApi_InitialPosition_
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetInitialPosition(Robocode.TankRoyale.BotApi.InitialPosition)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetInitialPosition(Robocode.TankRoyale.BotApi.InitialPosition)
+  nameWithType: BotInfo.IBuilder.SetInitialPosition(InitialPosition)
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetInitialPosition*
+  name: SetInitialPosition
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetInitialPosition_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetInitialPosition
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetInitialPosition
+  nameWithType: BotInfo.IBuilder.SetInitialPosition
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName(System.String)
+  name: SetName(String)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetName_System_String_
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName(System.String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName(System.String)
+  nameWithType: BotInfo.IBuilder.SetName(String)
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName*
+  name: SetName
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetName_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName
+  nameWithType: BotInfo.IBuilder.SetName
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform(System.String)
+  name: SetPlatform(String)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetPlatform_System_String_
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform(System.String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform(System.String)
+  nameWithType: BotInfo.IBuilder.SetPlatform(String)
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform*
+  name: SetPlatform
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetPlatform_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform
+  nameWithType: BotInfo.IBuilder.SetPlatform
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang(System.String)
+  name: SetProgrammingLang(String)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetProgrammingLang_System_String_
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang(System.String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang(System.String)
+  nameWithType: BotInfo.IBuilder.SetProgrammingLang(String)
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang*
+  name: SetProgrammingLang
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetProgrammingLang_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang
+  nameWithType: BotInfo.IBuilder.SetProgrammingLang
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion(System.String)
+  name: SetVersion(String)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetVersion_System_String_
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion(System.String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion(System.String)
+  nameWithType: BotInfo.IBuilder.SetVersion(String)
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion*
+  name: SetVersion
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetVersion_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion
+  nameWithType: BotInfo.IBuilder.SetVersion
 - uid: Robocode.TankRoyale.BotApi.BotInfo.InitialPosition
   name: InitialPosition
   href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_InitialPosition
@@ -1792,6 +2015,72 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.BotInfo.InitialPosition
   nameWithType: BotInfo.InitialPosition
+- uid: Robocode.TankRoyale.BotApi.BotInfo.MaxAuthorLength
+  name: MaxAuthorLength
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_MaxAuthorLength
+  commentId: F:Robocode.TankRoyale.BotApi.BotInfo.MaxAuthorLength
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.MaxAuthorLength
+  nameWithType: BotInfo.MaxAuthorLength
+- uid: Robocode.TankRoyale.BotApi.BotInfo.MaxDescriptionLength
+  name: MaxDescriptionLength
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_MaxDescriptionLength
+  commentId: F:Robocode.TankRoyale.BotApi.BotInfo.MaxDescriptionLength
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.MaxDescriptionLength
+  nameWithType: BotInfo.MaxDescriptionLength
+- uid: Robocode.TankRoyale.BotApi.BotInfo.MaxGameTypeLength
+  name: MaxGameTypeLength
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_MaxGameTypeLength
+  commentId: F:Robocode.TankRoyale.BotApi.BotInfo.MaxGameTypeLength
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.MaxGameTypeLength
+  nameWithType: BotInfo.MaxGameTypeLength
+- uid: Robocode.TankRoyale.BotApi.BotInfo.MaxHomepageLength
+  name: MaxHomepageLength
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_MaxHomepageLength
+  commentId: F:Robocode.TankRoyale.BotApi.BotInfo.MaxHomepageLength
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.MaxHomepageLength
+  nameWithType: BotInfo.MaxHomepageLength
+- uid: Robocode.TankRoyale.BotApi.BotInfo.MaxNameLength
+  name: MaxNameLength
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_MaxNameLength
+  commentId: F:Robocode.TankRoyale.BotApi.BotInfo.MaxNameLength
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.MaxNameLength
+  nameWithType: BotInfo.MaxNameLength
+- uid: Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfAuthors
+  name: MaxNumberOfAuthors
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_MaxNumberOfAuthors
+  commentId: F:Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfAuthors
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfAuthors
+  nameWithType: BotInfo.MaxNumberOfAuthors
+- uid: Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfCountryCodes
+  name: MaxNumberOfCountryCodes
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_MaxNumberOfCountryCodes
+  commentId: F:Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfCountryCodes
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfCountryCodes
+  nameWithType: BotInfo.MaxNumberOfCountryCodes
+- uid: Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfGameTypes
+  name: MaxNumberOfGameTypes
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_MaxNumberOfGameTypes
+  commentId: F:Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfGameTypes
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfGameTypes
+  nameWithType: BotInfo.MaxNumberOfGameTypes
+- uid: Robocode.TankRoyale.BotApi.BotInfo.MaxPlatformLength
+  name: MaxPlatformLength
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_MaxPlatformLength
+  commentId: F:Robocode.TankRoyale.BotApi.BotInfo.MaxPlatformLength
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.MaxPlatformLength
+  nameWithType: BotInfo.MaxPlatformLength
+- uid: Robocode.TankRoyale.BotApi.BotInfo.MaxProgrammingLangLength
+  name: MaxProgrammingLangLength
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_MaxProgrammingLangLength
+  commentId: F:Robocode.TankRoyale.BotApi.BotInfo.MaxProgrammingLangLength
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.MaxProgrammingLangLength
+  nameWithType: BotInfo.MaxProgrammingLangLength
+- uid: Robocode.TankRoyale.BotApi.BotInfo.MaxVersionLength
+  name: MaxVersionLength
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_MaxVersionLength
+  commentId: F:Robocode.TankRoyale.BotApi.BotInfo.MaxVersionLength
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.MaxVersionLength
+  nameWithType: BotInfo.MaxVersionLength
 - uid: Robocode.TankRoyale.BotApi.BotInfo.Name
   name: Name
   href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_Name
@@ -4094,6 +4383,12 @@ references:
   commentId: T:Robocode.TankRoyale.BotApi.GameType
   fullName: Robocode.TankRoyale.BotApi.GameType
   nameWithType: GameType
+- uid: Robocode.TankRoyale.BotApi.GameType.Classic
+  name: Classic
+  href: api/Robocode.TankRoyale.BotApi.GameType.html#Robocode_TankRoyale_BotApi_GameType_Classic
+  commentId: F:Robocode.TankRoyale.BotApi.GameType.Classic
+  fullName: Robocode.TankRoyale.BotApi.GameType.Classic
+  nameWithType: GameType.Classic
 - uid: Robocode.TankRoyale.BotApi.GameType.Melee
   name: Melee
   href: api/Robocode.TankRoyale.BotApi.GameType.html#Robocode_TankRoyale_BotApi_GameType_Melee

@@ -41,11 +41,23 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html",
+          "hash": "9hwG+bfKttR4szQWoGyB6c17LggrCCZ5IcShQ55wXt4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Robocode.TankRoyale.BotApi.BotInfo.yml",
       "output": {
         ".html": {
           "relative_path": "api/Robocode.TankRoyale.BotApi.BotInfo.html",
-          "hash": "/mAxFp5C4W1ZJKHG5IkbauFEzMPwh2t5e3COxdqf7ro="
+          "hash": "ir7xCmS5YhuXiKQni1pGxGMlv8zrBqiAxi6iVJ5FcWE="
         }
       },
       "is_incremental": false,
@@ -105,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Robocode.TankRoyale.BotApi.Constants.html",
-          "hash": "O6KoDS73WmlQEpkDcM970ZqnBtlPKnhj8OZX2hwK1eM="
+          "hash": "hhETH7cjk48utgbfzGR15IqsIcX5UeEfi3zD2TlUClE="
         }
       },
       "is_incremental": false,
@@ -261,7 +273,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Robocode.TankRoyale.BotApi.Events.DefaultEventPriority.html",
-          "hash": "HyPFj4xH3MT1WTFmFpUm0Ze4Afy2X0h/Eu2u897quxM="
+          "hash": "AZxV+66ysBSgjtOR36JAkY0D5AuDnxUW8FnRUtbzIoM="
         }
       },
       "is_incremental": false,
@@ -441,7 +453,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Robocode.TankRoyale.BotApi.Events.html",
-          "hash": "nRXI5MIoaBpQcuCTEJT+a3M/dscNKN9kCkcWnc3AnC4="
+          "hash": "hGK+HfHsvzkV6YwwU3V3RJpmEvcrWXLxrQTWAlVhnnY="
         }
       },
       "is_incremental": false,
@@ -465,7 +477,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Robocode.TankRoyale.BotApi.GameType.html",
-          "hash": "xZAtbculUVL67FIV4ngB1x5zfzj+Ebg53IfqZ2vmWgk="
+          "hash": "oHxaa/+q7S5t5UqOL9zY4pV1cJirJgEtL6vsr2SSwHQ="
         }
       },
       "is_incremental": false,
@@ -513,7 +525,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Robocode.TankRoyale.BotApi.html",
-          "hash": "uq8sXdmkZNnD7coI4BVJCjugTRflnTnqCpgBK/PqVIQ="
+          "hash": "RK3dJt/pkyMwjgMJ31nnHcMfJRMnT9jf3plTQBGaI5g="
         }
       },
       "is_incremental": false,
@@ -525,7 +537,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "nSfBbRdhHvOCTiE/V0GAX0zj/xAtvGGwAEk7/wnmaes="
+          "hash": "OpThPdamVRPTfWt9bx8RxT99j6XE7IGKKQRVd4kltkU="
         }
       },
       "is_incremental": false,
@@ -596,8 +608,8 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,
           "incrementalPhase": "build",
-          "total_file_count": 43,
-          "skipped_file_count": 32
+          "total_file_count": 44,
+          "skipped_file_count": 38
         },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
