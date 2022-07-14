@@ -132,7 +132,7 @@ public sealed class BotInfo
     ///     .SetName("Rampage")
     ///     .SetVersion("1.0")
     ///     .AddAuthor("John Doh")
-    ///     .SetGameTypes(List.of(GameType.Classic, GameType.Melee))
+    ///     .SetGameTypes(new List { GameType.Classic, GameType.Melee })
     ///     .Build();
     /// </code>
     /// </example>
