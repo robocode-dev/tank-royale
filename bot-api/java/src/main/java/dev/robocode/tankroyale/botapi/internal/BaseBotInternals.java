@@ -239,8 +239,9 @@ public final class BaseBotInternals {
     }
 
     public void execute() {
+        // If we are running at this point, make sure this method and the thread running it is stopped by force
         if (!isRunning())
-            return;
+            throw new Error("execute() method was forced to stop");
 
         final var turnNumber = getCurrentTick().getTurnNumber();
 

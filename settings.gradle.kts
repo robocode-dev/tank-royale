@@ -1,4 +1,4 @@
-val version = "0.14.1"
+val version = "0.14.2"
 
 // Schema Generator
 include("schema:jvm")
