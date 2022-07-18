@@ -5,10 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
-import dev.robocode.tankroyale.botapi.BotException;
+import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.GameSetup;
-import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.BotDeathEvent;
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
 import dev.robocode.tankroyale.botapi.events.BulletHitBotEvent;
@@ -241,7 +240,7 @@ public final class BaseBotInternals {
     public void execute() {
         // If we are running at this point, make sure this method and the thread running it is stopped by force
         if (!isRunning())
-            throw new BotException("execute() method was forced to stop");
+            return;
 
         final var turnNumber = getCurrentTick().getTurnNumber();
 

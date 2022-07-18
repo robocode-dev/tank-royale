@@ -3,7 +3,7 @@
 ## In progress
 
 - Bot API:
-  - The go() method is now forced to stop if it is blocking, in order to stop the run() method.
+  - The run() method is now forced to stop/abort.
 
 ## 0.14.1 - Added BotInfo builder - 14-Jul-2022
 

@@ -213,9 +213,8 @@ public sealed class BaseBotInternals
 
     internal void Execute()
     {
-        // If we are running at this point, make sure this method and the thread running it is stopped by force
         if (!IsRunning)
-            throw new BotException("Execute() method was forced to stop");
+            return;
 
         var turnNumber = CurrentTick.TurnNumber;
 
@@ -636,7 +635,7 @@ public sealed class BaseBotInternals
         var msg = JsonConvert.SerializeObject(ready);
         socket.SendTextMessage(msg);
 
-        BotEventHandlers.FireGameStartedEvent(new E.GameStartedEvent((int)myId, gameSetup));
+        BotEventHandlers.FireGameStartedEvent(new E.GameStartedEvent(myId, gameSetup));
     }
 
     private void HandleGameEnded(string json)
