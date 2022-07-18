@@ -215,7 +215,7 @@ public sealed class BaseBotInternals
     {
         // If we are running at this point, make sure this method and the thread running it is stopped by force
         if (!IsRunning)
-            throw new ThreadInterruptedException("Execute() method was forced to stop");
+            throw new BotException("Execute() method was forced to stop");
 
         var turnNumber = CurrentTick.TurnNumber;
 

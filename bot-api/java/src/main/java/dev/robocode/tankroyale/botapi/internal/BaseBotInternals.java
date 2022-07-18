@@ -241,7 +241,7 @@ public final class BaseBotInternals {
     public void execute() {
         // If we are running at this point, make sure this method and the thread running it is stopped by force
         if (!isRunning())
-            throw new Error("execute() method was forced to stop");
+            throw new BotException("execute() method was forced to stop");
 
         final var turnNumber = getCurrentTick().getTurnNumber();
 
@@ -545,6 +545,7 @@ public final class BaseBotInternals {
         @Override
         public void onError(WebSocket websocket, Throwable error) {
             botEventHandlers.onConnectionError.publish(new ConnectionErrorEvent(serverUrl, error));
+            closedLatch.countDown();
 
             // Terminate
             System.out.println("Exiting");
