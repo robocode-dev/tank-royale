@@ -370,7 +370,7 @@ class ModelUpdater(
     private fun constrainBotPositions() {
         botsMap.values.forEach { bot ->
             run {
-                val (x, y) = constrainBotPosition(bot.x, bot.y)
+                val (x, y) = constrainBotPosition(bot.previousX, bot.previousY, bot.x, bot.y)
                 bot.x = x
                 bot.y = y
             }
@@ -382,25 +382,60 @@ class ModelUpdater(
      *
      * @param x is the current x coordinate of the bot position.
      * @param y is the current y coordinate of the bot position.
-     * return new (x, y) coordinates that has been constrained.
+     * @return new (x, y) coordinates that has been constrained.
      */
-    private fun constrainBotPosition(x: Double, y: Double): Pair<Double, Double> {
+    private fun constrainBotPosition(oldX: Double, oldY: Double, x: Double, y: Double): Pair<Double, Double> {
         var newX = x
         var newY = y
-        when {
-            x - BOT_BOUNDING_CIRCLE_RADIUS < 0 -> {
-                newX = BOT_BOUNDING_CIRCLE_RADIUS
+
+        if (x - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
+            newX = BOT_BOUNDING_CIRCLE_RADIUS
+
+            val dx = x - oldX
+            if (dx != .0) {
+                val dy = y - oldY
+                val dx2 = newX - oldX
+                val dy2 = dy * dx2 / dx
+
+                newY = y + dy2
             }
-            x + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaWidth -> {
-                newX = setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS
-            }
-            y - BOT_BOUNDING_CIRCLE_RADIUS < 0 -> {
-                newY = BOT_BOUNDING_CIRCLE_RADIUS
-            }
-            y + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaHeight -> {
-                newY = setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS
+        } else if (x + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaWidth) {
+            newX = setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS
+
+            val dx = x - oldX
+            if (dx != .0) {
+                val dy = y - oldY
+                val dx2 = newX - oldX
+                val dy2 = dy * dx2 / dx
+
+                newY = y + dy2
             }
         }
+
+        if (y - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
+            newY = BOT_BOUNDING_CIRCLE_RADIUS
+
+            val dy = y - oldY
+            if (dy != .0) {
+                val dx = x - oldX
+                val dy2 = newY - oldY
+                val dx2 = dx * dy2 / dy
+
+                newX = x + dx2
+            }
+        } else if (y + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaHeight) {
+            newY = setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS
+
+            val dy = y - oldY
+            if (dy != .0) {
+                val dx = x - oldX
+                val dy2 = newY - oldY
+                val dx2 = dx * dy2 / dy
+
+                newX = x + dx2
+            }
+        }
+
         return Pair(newX, newY)
     }
 
@@ -501,7 +536,7 @@ class ModelUpdater(
     private fun adjustBotCoordinatesIfHitWall(bot: MutableBot): Boolean {
         var hitWall = false
         if (round.lastTurn != null) {
-            val (x, y) = constrainBotPosition(bot.x, bot.y)
+            val (x, y) = constrainBotPosition(bot.previousX, bot.previousY, bot.x, bot.y)
             hitWall = bot.x != x || bot.y != y
             if (hitWall) {
                 bot.x = x

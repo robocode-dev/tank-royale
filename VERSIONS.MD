@@ -1,9 +1,13 @@
 # Versions
 
-## In progress
+## In progress - 0.14.2
+
+#### Improvements:
 
 - Bot API:
-  - The run() method is now forced to stop/abort.
+    - The run() method is now forced to stop/abort.
+- Server:
+    - Bots are not "sliding" along walls anymore when hitting those.
 
 ## 0.14.1 - Added BotInfo builder - 14-Jul-2022
 
