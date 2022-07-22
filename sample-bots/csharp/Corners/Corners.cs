@@ -31,7 +31,7 @@ public class Corners : Bot
     {
         // Set colors
         BodyColor = Color.Red;
-        GunColor = Color.Black;
+        TurretColor = Color.Black;
         RadarColor = Color.Yellow;
         BulletColor = Color.Green;
         ScanColor = Color.Green;

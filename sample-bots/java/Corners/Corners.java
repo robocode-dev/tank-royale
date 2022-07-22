@@ -31,7 +31,7 @@ public class Corners extends Bot {
     public void run() {
         // Set colors
         setBodyColor(Color.RED);
-        setGunColor(Color.BLACK);
+        setTurretColor(Color.BLACK);
         setRadarColor(Color.YELLOW);
         setBulletColor(Color.GREEN);
         setScanColor(Color.GREEN);

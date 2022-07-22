@@ -26,7 +26,7 @@ public class Crazy : Bot
     public override void Run()
     {
         BodyColor = Color.FromString("#00C800");   // lime
-        GunColor = Color.FromString("#009632");    // green
+        TurretColor = Color.FromString("#009632");    // green
         RadarColor = Color.FromString("#006464");  // dark cyan
         BulletColor = Color.FromString("#FFFF64"); // yellow
         ScanColor = Color.FromString("#FFC8C8");   // light red

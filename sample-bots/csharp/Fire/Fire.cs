@@ -40,7 +40,6 @@ public class Fire : Bot
         // Spin the gun around slowly... forever
         while (IsRunning)
         {
-
             if (isScanning)
             {
                 // Skip a turn if the onScannedBot handler is running

@@ -27,7 +27,7 @@ public class Crazy extends Bot {
     public void run() {
         // Set colors
         setBodyColor(Color.fromString("#00C800"));   // lime
-        setGunColor(Color.fromString("#009632"));    // green
+        setTurretColor(Color.fromString("#009632")); // green
         setRadarColor(Color.fromString("#006464"));  // dark cyan
         setBulletColor(Color.fromString("#FFFF64")); // yellow
         setScanColor(Color.fromString("#FFC8C8"));   // light red
