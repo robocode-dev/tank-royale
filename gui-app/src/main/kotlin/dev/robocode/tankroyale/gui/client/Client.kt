@@ -29,8 +29,6 @@ object Client {
     private val isRunning = AtomicBoolean(false)
     private val isPaused = AtomicBoolean(false)
 
-    private val isConnected: Boolean get() = websocket?.isOpen() ?: false
-
     private var participants = listOf<Participant>()
     private var bots = HashSet<BotInfo>()
 
@@ -55,27 +53,36 @@ object Client {
         }
     }
 
+    private fun isConnected(): Boolean = websocket?.isOpen() ?: false
+
     fun connect() {
-        if (isConnected) {
+        if (isConnected()) {
             throw IllegalStateException("Websocket is already connected")
         }
-        val websocket = WebSocketClient(URI(ServerSettings.serverUrl))
-        this.websocket = websocket
+        websocket = WebSocketClient(URI(ServerSettings.serverUrl))
 
         WebSocketClientEvents.apply {
-            onOpen.subscribe(websocket) { onConnected.fire(Unit) }
-            onMessage.subscribe(websocket) { onMessage(it) }
-            onError.subscribe(websocket) { System.err.println("WebSocket error: " + it.message) }
-
-            websocket.open() // must be called after onOpen.subscribe()
+            websocket?.let { ws ->
+                onOpen.subscribe(ws) { onConnected.fire(Unit) }
+                onMessage.subscribe(ws) { onMessage(it) }
+                onError.subscribe(ws) { System.err.println("WebSocket error: " + it.message) }
+                ws.open() // must be called AFTER onOpen.subscribe()
+            }
         }
     }
 
     fun close() {
         stopGame()
 
-        if (isConnected) {
-            websocket?.close()
+        if (isConnected()) {
+            WebSocketClientEvents.apply {
+                websocket?.let { ws ->
+                    onOpen.unsubscribe(ws)
+                    onMessage.unsubscribe(ws)
+                    onError.unsubscribe(ws)
+                    ws.close()
+                }
+            }
             websocket = null
         }
     }
@@ -136,8 +143,7 @@ object Client {
     fun isGameRunning(): Boolean = isRunning.get()
     fun isGamePaused(): Boolean = isPaused.get()
 
-    val joinedBots: Set<BotInfo>
-        get() { return bots }
+    val joinedBots: Set<BotInfo> get() = bots
 
     fun getParticipant(id: Int): Participant = participants.first { participant -> participant.id == id }
 
@@ -146,7 +152,7 @@ object Client {
     }
 
     private fun send(message: Message) {
-        if (!isConnected) throw IllegalStateException("Websocket is not connected")
+        if (!isConnected()) throw IllegalStateException("Websocket is not connected")
         websocket?.send(message)
     }
 

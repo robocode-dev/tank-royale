@@ -42,7 +42,7 @@ open class Event<T> {
      * Unsubscribes an event handler for a specific owner to avoid receiving and handling future events.
      * @param owner is the owner of the event handler, typically `this` instance.
      */
-    private fun unsubscribe(owner: Any) {
+    fun unsubscribe(owner: Any) {
         eventHandlers.remove(owner)
     }
 
