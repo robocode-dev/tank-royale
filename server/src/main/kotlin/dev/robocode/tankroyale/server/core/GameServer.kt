@@ -270,13 +270,12 @@ class GameServer(
     private fun getResultsForObservers(): List<BotResultsForObserver> =
         mutableListOf<BotResultsForObserver>().also { results ->
             modelUpdater.results.forEach { score ->
-                val conn = getConnection(score.botId)
-                val botHandshake = connectionHandler.getBotHandshakes()[conn]
+                val participant = participantMap[score.botId]
 
                 BotResultsForObserver().apply {
                     id = score.botId.value
-                    name = botHandshake!!.name
-                    version = botHandshake.version
+                    name = participant!!.name
+                    version = participant.version
                     survival = score.survival.roundToInt()
                     lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
                     bulletDamage = score.bulletDamage.roundToInt()
@@ -294,15 +293,6 @@ class GameServer(
             var rank = 1
             results.forEach { it.rank = rank++ }
         }
-
-    /**
-     * Returns the connection for a bot.
-     * @param botId is the id of the bot.
-     * @return The connection for the bot or `null` if no connection was found for the bot id.
-     */
-    private fun getConnection(botId: BotId): WebSocket {
-        return participantIds.entries.first { (_, id) -> botId == id }.key
-    }
 
     /** Broadcast pause event to all observers */
     private fun broadcastGamedPausedToObservers() {
