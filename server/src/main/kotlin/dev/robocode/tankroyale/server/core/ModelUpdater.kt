@@ -397,7 +397,7 @@ class ModelUpdater(
                 val dx2 = newX - oldX
                 val dy2 = dy * dx2 / dx
 
-                newY = y + dy2
+                newY = oldY + dy2
             }
         } else if (x + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaWidth) {
             newX = setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS
@@ -408,7 +408,7 @@ class ModelUpdater(
                 val dx2 = newX - oldX
                 val dy2 = dy * dx2 / dx
 
-                newY = y + dy2
+                newY = oldY + dy2
             }
         }
 
@@ -421,7 +421,7 @@ class ModelUpdater(
                 val dy2 = newY - oldY
                 val dx2 = dx * dy2 / dy
 
-                newX = x + dx2
+                newX = oldX + dx2
             }
         } else if (y + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaHeight) {
             newY = setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS
@@ -432,7 +432,7 @@ class ModelUpdater(
                 val dy2 = newY - oldY
                 val dx2 = dx * dy2 / dy
 
-                newX = x + dx2
+                newX = oldX + dx2
             }
         }
 
