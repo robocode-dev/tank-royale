@@ -81,5 +81,8 @@ interface IBot {
     val isDead: Boolean get() = !isAlive
 
     /** Check if bot is enabled (can move) */
-    val isEnabled: Boolean get() = isAlive && energy.isNotNearTo(0.0)
+    val isEnabled: Boolean get() = isAlive && energy.isNotNearTo(.0)
+
+    /** Check if bot is disabled (cannot move) */
+    val isDisabled: Boolean get() = isAlive && energy.isNearTo(.0)
 }

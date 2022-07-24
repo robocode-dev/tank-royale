@@ -230,7 +230,7 @@ class ModelUpdater(
     /** Execute bot intents for all bots that are not disabled */
     private fun executeBotIntents() {
         for (bot in botsMap.values) {
-            if (bot.isEnabled) updateBotStates(bot)
+            if (bot.isEnabled) updateBotMovementAndColors(bot)
         }
     }
 
@@ -238,7 +238,7 @@ class ModelUpdater(
      * Updates the bot states (position, speed, turn rates, angles, colors etc.)
      * @param bot is the bot top execute the bot intent for.
      */
-    private fun updateBotStates(bot: MutableBot) {
+    private fun updateBotMovementAndColors(bot: MutableBot) {
         botIntentsMap[bot.id]?.apply {
             bot.speed = calcNewBotSpeed(bot.speed, targetSpeed ?: 0.0)
 
@@ -453,7 +453,7 @@ class ModelUpdater(
 
         // Restore both bot´s old position
         val lastTurn = round.lastTurn
-        if (lastTurn == null) {
+        if (turn.turnNumber == 1 || lastTurn == null) {
             // Same position on first turn? => Move the second bot to a random position
             val x = BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (setup.arenaWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
             val y = BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (setup.arenaHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
@@ -587,11 +587,8 @@ class ModelUpdater(
     /** Check and handles if the bots have been disabled (when energy is zero or close to zero). */
     private fun checkForAndHandleDisabledBots() {
         for (bot in botsMap.values) {
-            if (bot.energy < 0.01 && bot.energy > 0.0) {
-                bot.energy = 0.0
-            }
             // If bot is disabled => Set then reset bot movement with the bot intent
-            if (bot.energy == 0.0) {
+            if (bot.isDisabled) {
                 botIntentsMap[bot.id]?.disableMovement()
             }
         }
