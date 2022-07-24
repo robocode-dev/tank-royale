@@ -36,17 +36,11 @@ public class Target extends Bot {
         trigger = 80;
 
         // Add a custom event named "trigger-hit"
-        addCustomEvent(
-                new Condition("trigger-hit") {
-                    public boolean test() {
-                        return getEnergy() <= trigger;
-                    }
-                });
-
-        // While loop that prevents bot from exiting the run() method, which would stop the bot
-        while (isRunning()) {
-            go(); // just call go() to skip turn doing nothing
-        }
+        addCustomEvent(new Condition("trigger-hit") {
+            public boolean test() {
+                return getEnergy() <= trigger;
+            }
+        });
     }
 
     // A custom event occurred

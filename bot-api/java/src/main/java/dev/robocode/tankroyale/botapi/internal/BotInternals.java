@@ -113,6 +113,11 @@ public final class BotInternals implements IStopResumeListener {
             try {
                 baseBotInternals.enableEventHandling(true);
                 bot.run();
+
+                // Skip every turn after the run method has exited
+                while (baseBotInternals.isRunning()) {
+                    bot.go();
+                }
             } finally {
                 baseBotInternals.enableEventHandling(false); // prevent event queue max limit to be reached
             }

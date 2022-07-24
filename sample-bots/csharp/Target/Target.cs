@@ -37,12 +37,6 @@ public class Target : Bot
 
         // Add a custom event named "trigger-hit",
         AddCustomEvent(new TriggerHit(this));
-
-        // While loop that prevents bot from exiting the run() method, which would stop the bot
-        while (IsRunning)
-        {
-            Go(); // just call Go() to skip turn doing nothing
-        }
     }
 
     // A custom event occurred
