@@ -13,9 +13,12 @@
 
 - Server:
     - Removal of NullPointerExceptions occurring with high TPS.
+    - Fixed issue with restarting a game that has ended.
 - GUI:
-  - Fixed loop occurring when typing in the TPS, where TPS would continuously change to different values.
-  - GUI client was registered multiple times with the server.
+    - TPS:
+        - Loop could occur when typing in the TPS, where TPS would continuously change to different values.
+        - Setting the TPS to max could be reset to default TPS when restarting the battle or GUI.
+    - GUI client was registered multiple times with the server.
 
 ## 0.14.1 - Added BotInfo builder - 14-Jul-2022
 

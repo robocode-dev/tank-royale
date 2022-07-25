@@ -356,11 +356,13 @@ class GameServer(
 
     private fun onGameEnded() {
         log.info("Game ended")
-        serverState = ServerState.GAME_STOPPED
-        modelUpdater.calculatePlacements()
 
         broadcastGameEndedToParticipants()
         broadcastGameEndedToObservers()
+
+        // Must be done after the broadcasting
+        serverState = ServerState.GAME_STOPPED
+        modelUpdater.calculatePlacements()
     }
 
     private fun onNextTick(lastRound: IRound?) {
