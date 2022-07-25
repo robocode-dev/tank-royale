@@ -125,7 +125,6 @@ public final class BotInternals implements IStopResumeListener {
         thread.start();
     }
 
-    @SuppressWarnings("removal")
     private void stopThread() {
         if (!isRunning())
             return;
@@ -133,12 +132,18 @@ public final class BotInternals implements IStopResumeListener {
         baseBotInternals.setRunning(false);
 
         if (thread != null) {
-            thread.stop();
+            thread.interrupt();
             try {
-                thread.join();
-            } catch (InterruptedException ignore) {
+                thread.join(100);
+            } catch (InterruptedException e) {
+                thread.stop();
+                try {
+                    thread.join();
+                } catch (InterruptedException ignore) {
+                }
+            } finally {
+                thread = null;
             }
-            thread = null;
         }
     }
 

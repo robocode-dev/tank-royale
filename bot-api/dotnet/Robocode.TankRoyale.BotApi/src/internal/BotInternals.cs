@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using Robocode.TankRoyale.BotApi.Events;
 using static System.Double;
@@ -129,7 +130,8 @@ internal sealed class BotInternals : IStopResumeListener
                 bot.Run();
 
                 // Skip every turn after the run method has exited
-                while (baseBotInternals.IsRunning) {
+                while (baseBotInternals.IsRunning)
+                {
                     bot.Go();
                 }
             }
@@ -149,11 +151,22 @@ internal sealed class BotInternals : IStopResumeListener
 
         if (thread == null) return;
 
+        thread.Interrupt();
+        try
+        {
+            thread.Join(100);
+        }
+        catch (ThreadInterruptedException)
+        {
 #pragma warning disable SYSLIB0006
-        thread.Abort();
-#pragma warning restore SYSLIB0006        
-        thread.Join();
-        thread = null;
+            thread.Abort();
+#pragma warning restore SYSLIB0006
+            thread.Join();
+        }
+        finally
+        {
+            thread = null;
+        }
     }
 
     private void OnHitWall(HitWallEvent evt)
