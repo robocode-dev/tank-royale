@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.gui.settings
 
+import java.util.*
+
 object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.properties") {
 
     const val DEFAULT_TPS = 30
@@ -26,13 +28,16 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.proper
     var tps: Int
         get() {
             load()
-            var tps = try {
-                properties.getProperty(TPS, DEFAULT_TPS.toString()).toInt()
+
+            val tpsStr = properties.getProperty(TPS).lowercase(Locale.getDefault())
+            if (tpsStr in listOf("m", "ma", "max")) {
+                return -1 // infinite tps
+            }
+            return try {
+                tpsStr.toInt()
             } catch (e: NumberFormatException) {
                 DEFAULT_TPS
             }
-            if (tps < 0) tps = DEFAULT_TPS
-            return tps
         }
         set(value) {
             properties.setProperty(TPS, value.toString())
