@@ -14,7 +14,8 @@
 - Server:
     - Removal of NullPointerExceptions occurring with high TPS.
 - GUI:
-    - GUI client was registered multiple times with the server.
+  - Fixed loop occurring when typing in the TPS, where TPS would continuously change to different values.
+  - GUI client was registered multiple times with the server.
 
 ## 0.14.1 - Added BotInfo builder - 14-Jul-2022
 

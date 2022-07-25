@@ -158,9 +158,9 @@ object Client {
 
     private fun changeTps(tps: Int) {
         if (isRunning.get() && tps != lastTps) {
+            lastTps = tps
             send(ChangeTps(tps))
         }
-        lastTps = tps
     }
 
     private fun onMessage(msg: String) {
@@ -175,7 +175,7 @@ object Client {
             is GameResumedEvent -> handleGameResumed(type)
             is RoundStartedEvent -> handleRoundStarted(type)
             is RoundEndedEvent -> handleRoundEnded(type)
-            is TpsChangedEvent -> handleTpsChanged(type)
+            is TpsChangedEvent -> {} // do nothing to prevent TPS change loop between server and client
             else -> throw IllegalArgumentException("Unknown content type: $type")
         }
     }
@@ -240,9 +240,5 @@ object Client {
 
     private fun handleTickEvent(tickEvent: TickEvent) {
         onTickEvent.fire(tickEvent)
-    }
-
-    private fun handleTpsChanged(tpsChangedEvent: TpsChangedEvent) {
-        TpsEvents.onTpsChanged.fire(tpsChangedEvent)
     }
 }
