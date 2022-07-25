@@ -125,6 +125,7 @@ public final class BotInternals implements IStopResumeListener {
         thread.start();
     }
 
+    @SuppressWarnings("removal") // avoid waring in gradle build
     private void stopThread() {
         if (!isRunning())
             return;
@@ -135,12 +136,10 @@ public final class BotInternals implements IStopResumeListener {
             thread.interrupt();
             try {
                 thread.join(100);
-            } catch (InterruptedException e) {
-                thread.stop();
-                try {
-                    thread.join();
-                } catch (InterruptedException ignore) {
+                if (thread.isAlive()) {
+                    thread.stop();
                 }
+            } catch (InterruptedException ignore) {
             } finally {
                 thread = null;
             }

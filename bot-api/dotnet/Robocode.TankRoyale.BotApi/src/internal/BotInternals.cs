@@ -155,13 +155,16 @@ internal sealed class BotInternals : IStopResumeListener
         try
         {
             thread.Join(100);
+            if (thread.IsAlive)
+            {
+#pragma warning disable SYSLIB0006
+                thread.Abort();
+#pragma warning restore SYSLIB0006
+            }
         }
         catch (ThreadInterruptedException)
         {
-#pragma warning disable SYSLIB0006
-            thread.Abort();
-#pragma warning restore SYSLIB0006
-            thread.Join();
+            // ignore
         }
         finally
         {
