@@ -9,6 +9,13 @@
 - Server:
     - Bots are not "sliding" along walls anymore when hitting those.
 
+#### Bugfixes:
+
+- Server:
+    - Removal of NullPointerExceptions occurring with high TPS.
+- GUI:
+    - GUI client was registered multiple times with the server.
+
 ## 0.14.1 - Added BotInfo builder - 14-Jul-2022
 
 #### Improvements:
