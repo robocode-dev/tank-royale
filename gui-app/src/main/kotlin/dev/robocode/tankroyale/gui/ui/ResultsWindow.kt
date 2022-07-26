@@ -9,7 +9,7 @@ import javax.swing.JScrollPane
 import javax.swing.JTable
 import javax.swing.table.DefaultTableCellRenderer
 
-class ResultsWindow(results: List<BotResults>) : RcFrame(getWindowTitle()) {
+class ResultsWindow(results: List<BotResults>) : RcFrame(getWindowTitle(), isTitlePropertyName = false) {
 
     init {
         val table = JTable(getData(results), getColumns())

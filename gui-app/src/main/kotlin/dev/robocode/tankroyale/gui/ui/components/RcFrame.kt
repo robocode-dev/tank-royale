@@ -8,7 +8,9 @@ import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.KeyStroke
 
-open class RcFrame(titlePropertyName: String) : JFrame(UiTitles.get(titlePropertyName)) {
+open class RcFrame(title: String, isTitlePropertyName: Boolean = true) :
+    JFrame(if (isTitlePropertyName) UiTitles.get(title) else title) {
+
     init {
         iconImage = Images.tankImage
     }
