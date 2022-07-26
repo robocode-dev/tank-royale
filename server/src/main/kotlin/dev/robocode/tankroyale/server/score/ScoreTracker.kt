@@ -17,13 +17,13 @@ class ScoreTracker(botIds: Set<BotId>) {
     private val botsAliveIds = mutableSetOf<BotId>()
 
     /** 1st places  */
-    private val place1st = mutableMapOf<BotId, Int>()
+    private val firstPlaces = mutableMapOf<BotId, Int>()
 
     /** 2nd places  */
-    private val place2nd = mutableMapOf<BotId, Int>()
+    private val secondPlaces = mutableMapOf<BotId, Int>()
 
     /** 3rd places  */
-    private val place3rd = mutableMapOf<BotId, Int>()
+    private val thirdPlaces = mutableMapOf<BotId, Int>()
 
     init {
         initializeDamageAndSurvivals()
@@ -41,27 +41,6 @@ class ScoreTracker(botIds: Set<BotId>) {
     fun prepareRound() {
         botsAliveIds.clear()
         botsAliveIds += botIds
-    }
-
-    /** Calculates 1st, 2nd, and 3rd places. */
-    fun calculatePlacements() {
-        val scores: List<Score> = botScores
-        var count: Int
-        if (scores.isNotEmpty()) {
-            val (botId) = scores[0]
-            count = place1st[botId] ?: 0
-            place1st[botId] = ++count
-        }
-        if (scores.size >= 2) {
-            val (botId) = scores[1]
-            count = place2nd[botId] ?: 0
-            place2nd[botId] = ++count
-        }
-        if (scores.size >= 3) {
-            val (botId) = scores[2]
-            count = place3rd[botId] ?: 0
-            place3rd[botId] = ++count
-        }
     }
 
     /** Current bot scores ordered with higher total scores first. */
@@ -96,11 +75,9 @@ class ScoreTracker(botIds: Set<BotId>) {
                 val totalDamage = getBulletDamage(enemyId) + getRamDamage(enemyId)
                 score.ramKillBonus += totalDamage * BONUS_PER_RAM_KILL
             }
-            score.apply {
-                firstPlaces = place1st[botId] ?: 0
-                secondPlaces = place2nd[botId] ?: 0
-                thirdPlaces = place3rd[botId] ?: 0
-            }
+            score.firstPlaces = firstPlaces[botId] ?: 0
+            score.secondPlaces = secondPlaces[botId] ?: 0
+            score.thirdPlaces = thirdPlaces[botId] ?: 0
             return score
         }
     }
@@ -152,5 +129,32 @@ class ScoreTracker(botIds: Set<BotId>) {
                 scoreAndDamages[survivorId]?.addLastSurvivorCount(deadCount)
             }
         }
+    }
+
+    /**
+     * Increment the number of 1st places for a bot.
+     * @param botId is the identifier of the bot that earned a 1st place.
+     */
+    fun increment1stPlaces(botId: BotId) {
+        val count = firstPlaces[botId] ?: 0
+        firstPlaces[botId] = count + 1
+    }
+
+    /**
+     * Increment the number of 2nd places for a bot.
+     * @param botId is the identifier of the bot that earned a 2nd place.
+     */
+    fun increment2ndPlaces(botId: BotId) {
+        val count = secondPlaces[botId] ?: 0
+        secondPlaces[botId] = count + 1
+    }
+
+    /**
+     * Increment the number of 3rd places for a bot.
+     * @param botId is the identifier of the bot that earned a 3rd place.
+     */
+    fun increment3rdPlaces(botId: BotId) {
+        val count = thirdPlaces[botId] ?: 0
+        thirdPlaces[botId] = count + 1
     }
 }

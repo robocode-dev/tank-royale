@@ -80,11 +80,6 @@ class ModelUpdater(
         return updateGameState()
     }
 
-    /** Calculates and sets placements for all bots, i.e. 1st, 2nd, and 3rd places. */
-    fun calculatePlacements() {
-        scoreTracker.calculatePlacements()
-    }
-
     /**
      * Updates the current bot intents with the new bot intents.
      * @param botIntents is a map of new bot intents.
@@ -122,9 +117,6 @@ class ModelUpdater(
         turn.turnNumber++
         turn.resetEvents()
 
-        // Remove dead bots (cannot participate in new round)
-        botsMap.values.removeIf(IBot::isDead)
-
         // Note: Called here before updating headings as we need to sync firing the gun with the gun's direction.
         // That is if the gun was set to fire with the last turn, then it will fire in the correct gun heading now.
         coolDownAndFireGuns()
@@ -140,11 +132,16 @@ class ModelUpdater(
         checkAndHandleInactivity()
         checkForAndHandleDisabledBots()
         checkAndHandleDefeatedBots()
+        checkFor1st2nd3rdPlaces()
+
         checkAndHandleRoundOrGameOver()
 
         // Store bot and bullet snapshots
         turn.copyBots(botsMap.values)
         turn.copyBullets(bullets)
+
+        // Remove dead bots
+        botsMap.values.removeIf(IBot::isDead)
     }
 
     /**
@@ -229,7 +226,7 @@ class ModelUpdater(
 
     /** Execute bot intents for all bots that are not disabled */
     private fun executeBotIntents() {
-        for (bot in botsMap.values) {
+        botsMap.values.forEach { bot ->
             if (bot.isEnabled) updateBotMovementAndColors(bot)
         }
     }
@@ -586,7 +583,8 @@ class ModelUpdater(
 
     /** Check and handles if the bots have been disabled (when energy is zero or close to zero). */
     private fun checkForAndHandleDisabledBots() {
-        for (bot in botsMap.values) {
+        botsMap.values.forEach { bot ->
+
             // If bot is disabled => Set then reset bot movement with the bot intent
             if (bot.isDisabled) {
                 botIntentsMap[bot.id]?.disableMovement()
@@ -596,7 +594,7 @@ class ModelUpdater(
 
     /** Checks and handles if any bots have been defeated. */
     private fun checkAndHandleDefeatedBots() {
-        for (bot in botsMap.values) {
+        botsMap.values.forEach { bot ->
             if (bot.isDead) {
                 val botDeathEvent = BotDeathEvent(turn.turnNumber, bot.id)
                 turn.addPublicBotEvent(botDeathEvent)
@@ -606,9 +604,25 @@ class ModelUpdater(
         }
     }
 
+    private fun checkFor1st2nd3rdPlaces() {
+        val aliveCount = botsMap.values.count { it.isAlive }
+
+        botsMap.values.filter { it.isDead }.forEach {
+            when (aliveCount) {
+                0 -> scoreTracker.increment1stPlaces(it.id)
+                1 -> scoreTracker.increment2ndPlaces(it.id)
+                2 -> scoreTracker.increment3rdPlaces(it.id)
+            }
+        }
+        if (aliveCount == 1) {
+            val winnerId = botsMap.values.first { it.isAlive }.id
+            scoreTracker.increment1stPlaces(winnerId)
+        }
+    }
+
     /** Cool down and fire guns. */
     private fun coolDownAndFireGuns() {
-        for (bot in botsMap.values) {
+        botsMap.values.forEach { bot ->
             // If gun heat is zero and the bot is enabled, it is able to fire
             if (bot.gunHeat == 0.0 && bot.isEnabled) { // Gun can fire
                 checkWhetherToFireGun(bot)
@@ -744,7 +758,8 @@ class ModelUpdater(
 
     /** Checks and handles if the round is ended or game is over. */
     private fun checkAndHandleRoundOrGameOver() {
-        if (botsMap.size <= 1) {
+        val aliveCount = botsMap.values.count { it.isAlive }
+        if (aliveCount <= 1) {
             round.roundEnded = true // Round ended
             if (round.roundNumber >= setup.numberOfRounds) {
                 gameState.isGameEnded = true // Game over

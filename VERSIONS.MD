@@ -12,8 +12,9 @@
 #### Bugfixes:
 
 - Server:
-    - Removal of NullPointerExceptions occurring with high TPS.
+    - Fixed calculation of 1st, 2nd, and 3rd places with the end results.
     - Fixed issue with restarting a game that has ended.
+    - Removal of NullPointerExceptions occurring with high TPS.
 - GUI:
     - TPS:
         - Loop could occur when typing in the TPS, where TPS would continuously change to different values.

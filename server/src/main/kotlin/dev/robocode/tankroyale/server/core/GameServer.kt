@@ -244,26 +244,24 @@ class GameServer(
 
     /** Returns a list of bot results (for bots) ordered on the score ranks */
     private fun getResultsForBot(botId: BotId): BotResultsForBot {
-        var rank = 1
-        modelUpdater.results.forEach { score ->
-            if (score.botId == botId) {
-                return BotResultsForBot().apply {
-                    this.rank = rank
-                    survival = score.survival.roundToInt()
-                    lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
-                    bulletDamage = score.bulletDamage.roundToInt()
-                    bulletKillBonus = score.bulletKillBonus.toInt()
-                    ramDamage = score.ramDamage.roundToInt()
-                    ramKillBonus = score.ramKillBonus.roundToInt()
-                    totalScore = score.totalScore.roundToInt()
-                    firstPlaces = score.firstPlaces
-                    secondPlaces = score.secondPlaces
-                    thirdPlaces = score.thirdPlaces
-                }
-            }
-            rank++
+        val index = modelUpdater.results.indexOfFirst { it.botId == botId }
+        if (index == -1)
+            throw IllegalStateException("botId was not found in results: $botId")
+
+        val score = modelUpdater.results[index]
+        return BotResultsForBot().apply {
+            this.rank = index + 1
+            survival = score.survival.roundToInt()
+            lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
+            bulletDamage = score.bulletDamage.roundToInt()
+            bulletKillBonus = score.bulletKillBonus.toInt()
+            ramDamage = score.ramDamage.roundToInt()
+            ramKillBonus = score.ramKillBonus.roundToInt()
+            totalScore = score.totalScore.roundToInt()
+            firstPlaces = score.firstPlaces
+            secondPlaces = score.secondPlaces
+            thirdPlaces = score.thirdPlaces
         }
-        throw IllegalStateException("botId was not found in results: $botId")
     }
 
     /** Returns a list of bot results (for observers and controllers) ordered on the score ranks */
@@ -362,7 +360,6 @@ class GameServer(
 
         // Must be done after the broadcasting
         serverState = ServerState.GAME_STOPPED
-        modelUpdater.calculatePlacements()
     }
 
     private fun onNextTick(lastRound: IRound?) {
