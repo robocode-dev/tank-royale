@@ -5,7 +5,7 @@
 #### Improvements:
 
 - Bot API:
-    - The run() method is now forced to stop/abort.
+    - The run() method is now forced to stop/abort (in case the run method enters and infinite loop).
 - Server:
     - Bots are not "sliding" along walls anymore when hitting those.
 
