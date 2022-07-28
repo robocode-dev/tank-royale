@@ -1,0 +1,11 @@
+{
+  "name": "Velocity Bot",
+  "version": "1.0",
+  "gameTypes": "melee, classic, 1v1",
+  "authors": "Joshua Galecki, Flemming N. Larsen",
+  "description": "Example bot of how to use turn rates",
+  "homepage": "",
+  "countryCodes": "ie, dk",
+  "platform": "JVM",
+  "programmingLang": "Java 11"
+}

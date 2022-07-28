@@ -8,6 +8,8 @@
     - The run() method is now forced to stop/abort (in case the run method enters and infinite loop).
 - Server:
     - Bots are not "sliding" along walls anymore when hitting those.
+- Sample bots
+    - Added _VelocityBot_ that demonstrates use of turn rates.
 
 #### Bugfixes:
 

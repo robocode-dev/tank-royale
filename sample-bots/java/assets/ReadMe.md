@@ -31,3 +31,9 @@ writing:
     java -cp ../lib/* <Java source file>
 
 Here `<Java source file>` is the name of the source file (.java) you want to run, e.g. MyFirstBot.java.
+
+For example:
+
+    java -cp ../lib/* Corners.java
+
+(assuming you are standing in the `Corners` bot directory)
