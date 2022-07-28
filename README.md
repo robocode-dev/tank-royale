@@ -30,7 +30,11 @@ excitement of the competition that we love so much.
 
 ## Documentation
 
+Main page:
 [Robocode Tank Royale Docs](https://robocode-dev.github.io/tank-royale/)
+
+### Try it out
+Please head over to [My First Bot tutorial](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html) to learn how to set up your first bot for Robocode Tank Royale.
 
 ## Supported platforms
 
@@ -59,13 +63,11 @@ Next platform to support will be:
 Due to the current bot APIs for the JVM and .Net, Robocode (should be) able to support these programming languages with
 the current Bot APIs:
 
-Java (JVM) platform:
+- **Java (JVM) platform:** These (and more) programming languages are available:
+    - [Java], [Groovy], [Kotlin], [Scala], [Jython], and [Clojure]
 
-- [Java], [Groovy], [Kotlin], [Scala], and [Clojure]
-
-.Net platform:
-
-- [C#], [F#], and [Visual Basic]
+- **.Net platform:** These programming languages (and more) are available:
+    - [C#], [F#], [Visual Basic], and [IronPython]
 
 Note that sample bots are only provided for Java and C# for now. But sample bots for other programming languages might
 arrive in the future.
@@ -92,6 +94,8 @@ multi-module project.
 
 [Scala]: https://www.scala-lang.org/ "Scala programming language"
 
+[Jython]: https://www.jython.org/ "Implementations of Python in Java"
+
 [Clojure]: https://clojure.org/ "Clojure programming language"
 
 [C#]: https://docs.microsoft.com/en-us/dotnet/csharp/ "C# documentation"
@@ -99,5 +103,7 @@ multi-module project.
 [F#]: https://docs.microsoft.com/en-us/dotnet/fsharp/ "F# documentation"
 
 [Visual Basic]: https://docs.microsoft.com/en-us/dotnet/visual-basic/ "Visual Basic documentation"
+
+[IronPython]: https://ironpython.net/ "Python programming language for .NET"
 
 [Gradle]: https://gradle.org/ "Gradle Build Tool"
