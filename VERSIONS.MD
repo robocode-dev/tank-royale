@@ -1,6 +1,6 @@
 # Versions
 
-## In progress - 0.14.2
+## In progress - 0.14.2 - Added Velocity Bot
 
 #### Improvements:
 
