@@ -190,6 +190,40 @@ internal sealed class BotInternals : IStopResumeListener
 
     internal bool IsRunning => baseBotInternals.IsRunning;
 
+    public void SetTurnRate(double turnRate) {
+        if (IsNaN(turnRate)) {
+            throw new ArgumentException("turnRate cannot be NaN");
+        }
+        baseBotInternals.BotIntent.TurnRate = turnRate;
+        TurnRemaining = ToInfiniteValue(turnRate);
+    }
+
+    public void SetGunTurnRate(double gunTurnRate) {
+        if (IsNaN(gunTurnRate)) {
+            throw new ArgumentException("gunTurnRate cannot be NaN");
+        }
+        baseBotInternals.BotIntent.GunTurnRate = gunTurnRate;
+        GunTurnRemaining = ToInfiniteValue(gunTurnRate);
+    }
+
+    public void SetRadarTurnRate(double radarTurnRate) {
+        if (IsNaN(radarTurnRate)) {
+            throw new ArgumentException("radarTurnRate cannot be NaN");
+        }
+        baseBotInternals.BotIntent.RadarTurnRate  = radarTurnRate;
+        RadarTurnRemaining = ToInfiniteValue(radarTurnRate);
+    }
+
+    private static double ToInfiniteValue(double turnRate)
+    {
+        return turnRate switch
+        {
+            > 0 => PositiveInfinity,
+            < 0 => NegativeInfinity,
+            _ => 0
+        };
+    }
+
     internal double DistanceRemaining
     {
         get
@@ -440,7 +474,7 @@ internal sealed class BotInternals : IStopResumeListener
                     TurnRemaining = 0;
             }
 
-            bot.TurnRate = TurnRemaining;
+            baseBotInternals.BotIntent.TurnRate = TurnRemaining;
         }
     }
 
@@ -460,7 +494,7 @@ internal sealed class BotInternals : IStopResumeListener
                     GunTurnRemaining = 0;
             }
 
-            bot.GunTurnRate = GunTurnRemaining;
+            baseBotInternals.BotIntent.GunTurnRate = GunTurnRemaining;
         }
     }
 
@@ -480,7 +514,7 @@ internal sealed class BotInternals : IStopResumeListener
                     RadarTurnRemaining = 0;
             }
 
-            bot.RadarTurnRate = RadarTurnRemaining;
+            baseBotInternals.BotIntent.RadarTurnRate = RadarTurnRemaining;
         }
     }
 

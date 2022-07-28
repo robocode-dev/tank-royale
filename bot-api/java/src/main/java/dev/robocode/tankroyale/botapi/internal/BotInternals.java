@@ -164,6 +164,40 @@ public final class BotInternals implements IStopResumeListener {
         return baseBotInternals.isRunning();
     }
 
+    public void setTurnRate(double turnRate) {
+        if (Double.isNaN(turnRate)) {
+            throw new IllegalArgumentException("turnRate cannot be NaN");
+        }
+        baseBotInternals.getBotIntent().setTurnRate(turnRate);
+        setTurnRemaining(toInfiniteValue(turnRate));
+    }
+
+    public void setGunTurnRate(double gunTurnRate) {
+        if (Double.isNaN(gunTurnRate)) {
+            throw new IllegalArgumentException("gunTurnRate cannot be NaN");
+        }
+        baseBotInternals.getBotIntent().setGunTurnRate(gunTurnRate);
+        setGunTurnRemaining(toInfiniteValue(gunTurnRate));
+    }
+
+    public void setRadarTurnRate(double radarTurnRate) {
+        if (Double.isNaN(radarTurnRate)) {
+            throw new IllegalArgumentException("radarTurnRate cannot be NaN");
+        }
+        baseBotInternals.getBotIntent().setRadarTurnRate(radarTurnRate);
+        setRadarTurnRemaining(toInfiniteValue(radarTurnRate));
+    }
+
+    private static double toInfiniteValue(double turnRate) {
+        if (turnRate > 0) {
+            return Double.POSITIVE_INFINITY;
+        }
+        if (turnRate < 0) {
+            return Double.NEGATIVE_INFINITY;
+        }
+        return 0;
+    }
+
     private void setDistanceRemaining(double newDistanceRemaining) {
         synchronized (movementMonitor) {
             __distanceRemaining = newDistanceRemaining;
@@ -371,7 +405,7 @@ public final class BotInternals implements IStopResumeListener {
                     __turnRemaining = 0;
                 }
             }
-            bot.setTurnRate(__turnRemaining);
+            baseBotInternals.getBotIntent().setTurnRate(__turnRemaining);
         }
     }
 
@@ -389,7 +423,7 @@ public final class BotInternals implements IStopResumeListener {
                     __gunTurnRemaining = 0;
                 }
             }
-            bot.setGunTurnRate(__gunTurnRemaining);
+            baseBotInternals.getBotIntent().setGunTurnRate(__gunTurnRemaining);
         }
     }
 
@@ -407,7 +441,7 @@ public final class BotInternals implements IStopResumeListener {
                     __radarTurnRemaining = 0;
                 }
             }
-            bot.setRadarTurnRate(__radarTurnRemaining);
+            baseBotInternals.getBotIntent().setRadarTurnRate(__radarTurnRemaining);
         }
     }
 

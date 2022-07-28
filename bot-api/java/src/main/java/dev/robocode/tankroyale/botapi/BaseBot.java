@@ -341,7 +341,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final void setTurnRate(double turnRate) {
+    public void setTurnRate(double turnRate) {
         if (Double.isNaN(turnRate)) {
             throw new IllegalArgumentException("turnRate cannot be NaN");
         }
@@ -376,7 +376,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final void setGunTurnRate(double gunTurnRate) {
+    public void setGunTurnRate(double gunTurnRate) {
         if (Double.isNaN(gunTurnRate)) {
             throw new IllegalArgumentException("gunTurnRate cannot be NaN");
         }
@@ -411,7 +411,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final void setRadarTurnRate(double radarTurnRate) {
+    public void setRadarTurnRate(double radarTurnRate) {
         if (Double.isNaN(radarTurnRate)) {
             throw new IllegalArgumentException("radarTurnRate cannot be NaN");
         }

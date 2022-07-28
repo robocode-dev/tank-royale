@@ -45,6 +45,30 @@ public abstract class Bot extends BaseBot implements IBot {
      * {@inheritDoc}
      */
     @Override
+    public final void setTurnRate(double turnRate) {
+        __botInternals.setTurnRate(turnRate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void setGunTurnRate(double turnRate) {
+        __botInternals.setGunTurnRate(turnRate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void setRadarTurnRate(double turnRate) {
+        __botInternals.setRadarTurnRate(turnRate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final boolean isRunning() {
         return __botInternals.isRunning();
     }

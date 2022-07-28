@@ -195,7 +195,7 @@ public abstract class BaseBot : IBaseBot
     }
 
     /// <inheritdoc/>
-    public double TurnRate
+    public virtual double TurnRate
     {
         set
         {
@@ -225,7 +225,7 @@ public abstract class BaseBot : IBaseBot
     }
 
     /// <inheritdoc/>
-    public double GunTurnRate
+    public virtual double GunTurnRate
     {
         set
         {
@@ -255,7 +255,7 @@ public abstract class BaseBot : IBaseBot
     }
 
     /// <inheritdoc/>
-    public double RadarTurnRate
+    public virtual double RadarTurnRate
     {
         set
         {

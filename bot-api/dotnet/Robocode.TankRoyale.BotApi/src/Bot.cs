@@ -37,10 +37,28 @@ public abstract class Bot : BaseBot, IBot
     }
 
     /// <inheritdoc/>
+    public override double TurnRate
+    {
+        set => __botInternals.SetTurnRate(value);
+    }
+
+    /// <inheritdoc/>
+    public override double GunTurnRate
+    {
+        set => __botInternals.SetGunTurnRate(value);
+    }
+
+    /// <inheritdoc/>
+    public override double RadarTurnRate
+    {
+        set => __botInternals.SetRadarTurnRate(value);
+    }
+
+    /// <inheritdoc/>
     public virtual void Run()
     {
     }
-    
+
     /// <inheritdoc/>
     public new double TargetSpeed
     {

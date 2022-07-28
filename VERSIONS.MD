@@ -11,10 +11,12 @@
 
 #### Bugfixes:
 
+- Bot API:
+    - Setting the turn rates with the `Bot` class did not work properly (bot, gun, and radar did not turn at all).
 - Server:
     - Fixed calculation of 1st, 2nd, and 3rd places with the end results.
     - Fixed issue with restarting a game that has ended.
-    - Removal of NullPointerExceptions occurring with high TPS.
+    - Removal of NullPointerExceptions occurring with max TPS.
 - GUI:
     - TPS:
         - Loop could occur when typing in the TPS, where TPS would continuously change to different values.
