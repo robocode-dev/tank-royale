@@ -29,10 +29,10 @@ public class Walls : Bot
     {
         // Set colors
         BodyColor = Color.Black;
-        GunColor = Color.Black;
+        TurretColor = Color.Black;
         RadarColor = Color.Orange;
-        TurretColor = Color.Orange;
         BulletColor = Color.Cyan;
+        ScanColor = Color.Cyan;
 
         // Initialize moveAmount to the maximum possible for the arena
         moveAmount = Math.Max(ArenaWidth, ArenaHeight);
