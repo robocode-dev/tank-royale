@@ -1329,6 +1329,19 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.Bot.Forward
   nameWithType: Bot.Forward
+- uid: Robocode.TankRoyale.BotApi.Bot.GunTurnRate
+  name: GunTurnRate
+  href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_GunTurnRate
+  commentId: P:Robocode.TankRoyale.BotApi.Bot.GunTurnRate
+  fullName: Robocode.TankRoyale.BotApi.Bot.GunTurnRate
+  nameWithType: Bot.GunTurnRate
+- uid: Robocode.TankRoyale.BotApi.Bot.GunTurnRate*
+  name: GunTurnRate
+  href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_GunTurnRate_
+  commentId: Overload:Robocode.TankRoyale.BotApi.Bot.GunTurnRate
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.Bot.GunTurnRate
+  nameWithType: Bot.GunTurnRate
 - uid: Robocode.TankRoyale.BotApi.Bot.GunTurnRemaining
   name: GunTurnRemaining
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_GunTurnRemaining
@@ -1355,6 +1368,19 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.Bot.IsRunning
   nameWithType: Bot.IsRunning
+- uid: Robocode.TankRoyale.BotApi.Bot.RadarTurnRate
+  name: RadarTurnRate
+  href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_RadarTurnRate
+  commentId: P:Robocode.TankRoyale.BotApi.Bot.RadarTurnRate
+  fullName: Robocode.TankRoyale.BotApi.Bot.RadarTurnRate
+  nameWithType: Bot.RadarTurnRate
+- uid: Robocode.TankRoyale.BotApi.Bot.RadarTurnRate*
+  name: RadarTurnRate
+  href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_RadarTurnRate_
+  commentId: Overload:Robocode.TankRoyale.BotApi.Bot.RadarTurnRate
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.Bot.RadarTurnRate
+  nameWithType: Bot.RadarTurnRate
 - uid: Robocode.TankRoyale.BotApi.Bot.RadarTurnRemaining
   name: RadarTurnRemaining
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_RadarTurnRemaining
@@ -1602,6 +1628,19 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.Bot.TurnRadarRight
   nameWithType: Bot.TurnRadarRight
+- uid: Robocode.TankRoyale.BotApi.Bot.TurnRate
+  name: TurnRate
+  href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnRate
+  commentId: P:Robocode.TankRoyale.BotApi.Bot.TurnRate
+  fullName: Robocode.TankRoyale.BotApi.Bot.TurnRate
+  nameWithType: Bot.TurnRate
+- uid: Robocode.TankRoyale.BotApi.Bot.TurnRate*
+  name: TurnRate
+  href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnRate_
+  commentId: Overload:Robocode.TankRoyale.BotApi.Bot.TurnRate
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.Bot.TurnRate
+  nameWithType: Bot.TurnRate
 - uid: Robocode.TankRoyale.BotApi.Bot.TurnRemaining
   name: TurnRemaining
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnRemaining
