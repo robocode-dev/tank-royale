@@ -47,7 +47,7 @@ object ControlPanel : JPanel() {
         add(tpsLabel)
         add(TpsField)
         addButton("default_tps", onDefaultTps).apply {
-            toolTipText = Hints.get("control.default_tps")
+            toolTipText = Hints.get("control.default_tps").format(DEFAULT_TPS)
         }
 
         val tpsHint = Hints.get("control.tps")

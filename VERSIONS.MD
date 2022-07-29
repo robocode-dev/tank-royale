@@ -1,6 +1,6 @@
 # Versions
 
-## In progress - 0.14.2 - Added Velocity Bot
+## 0.14.2 - Added Velocity Bot - 29-Jul-2022
 
 #### Improvements:
 
