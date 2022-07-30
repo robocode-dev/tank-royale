@@ -183,8 +183,8 @@ class ModelUpdater(
         return if (initialPosition == null) {
             point
         } else {
-            val x = clamp(initialPosition.x ?: point.x, setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS)
-            val y = clamp(initialPosition.y ?: point.y, setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS)
+            val x = clamp(initialPosition.x ?: point.x, BOT_BOUNDING_CIRCLE_RADIUS, setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS)
+            val y = clamp(initialPosition.y ?: point.y, BOT_BOUNDING_CIRCLE_RADIUS, setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS)
             Point(x, y)
         }
     }
@@ -197,10 +197,6 @@ class ModelUpdater(
         } else {
             initialPosition.angle ?: direction
         }
-    }
-
-    private fun clamp(value: Double, max: Double): Double {
-        return max.coerceAtMost(BOT_BOUNDING_CIRCLE_RADIUS.coerceAtLeast(value))
     }
 
     /**
@@ -858,16 +854,16 @@ class ModelUpdater(
          * Updates scan direction and scan spread for a bot.
          * @param bot is the bot.
          * @param intent is the bot´s intent.
-         * @param newRadarDirection is the new radar direction for the bot.
+         * @param radarAdjustment is the radar adjustment for moving the radar.
          */
-        private fun updateScanDirectionAndSpread(bot: MutableBot, intent: BotIntent, newRadarDirection: Double) {
+        private fun updateScanDirectionAndSpread(bot: MutableBot, intent: BotIntent, radarAdjustment: Double) {
             // The radar sweep is the difference between the new and old radar direction
-            val newSpreadAngle = normalRelativeDegrees(newRadarDirection - bot.radarDirection)
+            val newRadarDirection = bot.radarDirection + radarAdjustment
             val rescan = intent.rescan ?: false
             bot.scanDirection = if (rescan) bot.radarDirection else newRadarDirection
-            bot.scanSpreadAngle = if (rescan) bot.radarSpreadAngle else newSpreadAngle
+            bot.scanSpreadAngle = if (rescan) bot.radarSpreadAngle else radarAdjustment
             bot.radarDirection = newRadarDirection
-            bot.radarSpreadAngle = newSpreadAngle
+            bot.radarSpreadAngle = radarAdjustment
         }
 
         /**
@@ -879,6 +875,10 @@ class ModelUpdater(
             val bodyTurnRate = limitTurnRate(intent.turnRate ?: 0.0, bot.speed)
             val gunTurnRate = limitGunTurnRate(intent.gunTurnRate ?: 0.0)
             val radarTurnRate = limitRadarTurnRate(intent.radarTurnRate ?: 0.0)
+
+            bot.turnRate = bodyTurnRate
+            bot.gunTurnRate = gunTurnRate
+            bot.radarTurnRate = radarTurnRate
 
             var adjustmentRate = bodyTurnRate
             bot.direction = normalAbsoluteDegrees(bot.direction + adjustmentRate)
@@ -900,13 +900,8 @@ class ModelUpdater(
                 adjustmentRate -= gunTurnRate
             }
             adjustmentRate = limitRadarTurnRate(adjustmentRate)
-            val radarDirection = normalAbsoluteDegrees(bot.radarDirection + adjustmentRate)
 
-            updateScanDirectionAndSpread(bot, intent, radarDirection)
-
-            bot.turnRate = bodyTurnRate
-            bot.gunTurnRate = gunTurnRate
-            bot.radarTurnRate = radarTurnRate
+            updateScanDirectionAndSpread(bot, intent, adjustmentRate) // updates the bot.radarDirection
         }
 
         /**
