@@ -31,8 +31,7 @@ public final class HitBotEvent extends BotEvent {
      * @param y          is the Y coordinate of victim bot.
      * @param isRammed   is the flag specifying, if the victim bot got rammed.
      */
-    public HitBotEvent(
-            int turnNumber, int victimId, double energy, double x, double y, boolean isRammed) {
+    public HitBotEvent(int turnNumber, int victimId, double energy, double x, double y, boolean isRammed) {
         super(turnNumber);
         this.victimId = victimId;
         this.energy = energy;
