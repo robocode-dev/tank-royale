@@ -1,5 +1,14 @@
 # Versions
 
+## 0.14.3 - In progress
+
+#### Bugfixes:
+
+- Server:
+    - `AdjustRadarForBodyTurn` had no effect on the server side.
+    - `updateBotTurnRatesAndDirections` did not work properly with adjustments for body and gun turn when
+      using `setAdjustGunForBodyTurn`, `setAdjustRadarForGunTurn`, and `setAdjustRadarForBodyTurn`.
+
 ## 0.14.2 - Added Velocity Bot - 29-Jul-2022
 
 #### Improvements:

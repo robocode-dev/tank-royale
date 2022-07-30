@@ -851,22 +851,6 @@ class ModelUpdater(
         }
 
         /**
-         * Updates scan direction and scan spread for a bot.
-         * @param bot is the bot.
-         * @param intent is the bot´s intent.
-         * @param radarAdjustment is the radar adjustment for moving the radar.
-         */
-        private fun updateScanDirectionAndSpread(bot: MutableBot, intent: BotIntent, radarAdjustment: Double) {
-            // The radar sweep is the difference between the new and old radar direction
-            val newRadarDirection = bot.radarDirection + radarAdjustment
-            val rescan = intent.rescan ?: false
-            bot.scanDirection = if (rescan) bot.radarDirection else newRadarDirection
-            bot.scanSpreadAngle = if (rescan) bot.radarSpreadAngle else radarAdjustment
-            bot.radarDirection = newRadarDirection
-            bot.radarSpreadAngle = radarAdjustment
-        }
-
-        /**
          * Update bot turn rates and directions.
          * @param bot is the bot.
          * @param intent is the bot´s intent.
@@ -880,28 +864,41 @@ class ModelUpdater(
             bot.gunTurnRate = gunTurnRate
             bot.radarTurnRate = radarTurnRate
 
-            var adjustmentRate = bodyTurnRate
-            bot.direction = normalAbsoluteDegrees(bot.direction + adjustmentRate)
+            bot.direction = normalAbsoluteDegrees(bot.direction + bodyTurnRate)
 
             // Gun direction depends on the turn rate of both the body and the gun
-            adjustmentRate += gunTurnRate
+            var gunAdjustment = bodyTurnRate + gunTurnRate
             if (intent.adjustGunForBodyTurn == true) {
-                adjustmentRate -= bodyTurnRate
+                gunAdjustment -= bodyTurnRate
             }
-            adjustmentRate = limitGunTurnRate(adjustmentRate)
-            bot.gunDirection = normalAbsoluteDegrees(bot.gunDirection + adjustmentRate)
+            bot.gunDirection = normalAbsoluteDegrees(bot.gunDirection + gunAdjustment)
 
             // Radar direction depends on the turn rate of the body, the gun, and the radar
-            adjustmentRate += radarTurnRate
-            if (intent.adjustRadarForBodyTurn == true) {
-                adjustmentRate -= bodyTurnRate
-            }
+            var radarAdjustment = gunAdjustment + radarTurnRate
             if (intent.adjustRadarForGunTurn == true) {
-                adjustmentRate -= gunTurnRate
+                radarAdjustment -= gunTurnRate
             }
-            adjustmentRate = limitRadarTurnRate(adjustmentRate)
+            if (intent.adjustRadarForBodyTurn == true) {
+                radarAdjustment -= bodyTurnRate
+            }
+            updateScanDirectionAndSpread(bot, intent, radarAdjustment) // updates the bot.radarDirection
+        }
 
-            updateScanDirectionAndSpread(bot, intent, adjustmentRate) // updates the bot.radarDirection
+        /**
+         * Updates scan direction and scan spread for a bot.
+         * @param bot is the bot.
+         * @param intent is the bot´s intent.
+         * @param radarAdjustment is the radar adjustment for moving the radar.
+         */
+        private fun updateScanDirectionAndSpread(bot: MutableBot, intent: BotIntent, radarAdjustment: Double) {
+            // The radar sweep is the difference between the new and old radar direction
+            val newRadarDirection = normalAbsoluteDegrees(bot.radarDirection + radarAdjustment)
+            val rescan = intent.rescan ?: false
+            bot.scanDirection = if (rescan) bot.radarDirection else newRadarDirection
+            bot.scanSpreadAngle = if (rescan) bot.radarSpreadAngle else radarAdjustment
+
+            bot.radarDirection = newRadarDirection
+            bot.radarSpreadAngle = radarAdjustment
         }
 
         /**
