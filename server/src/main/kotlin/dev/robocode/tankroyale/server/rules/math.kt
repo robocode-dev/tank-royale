@@ -1,7 +1,18 @@
 package dev.robocode.tankroyale.server.rules
 
 import kotlin.math.abs
-import kotlin.math.sign
+
+/**
+ * Returns value clamped to the inclusive range of min and max.
+ *
+ * @param value is the value to be clamped.
+ * @param min   is the lower bound of the result.
+ * @param max   is the upper bound of the result.
+ * @return is the clamped value.
+ */
+fun clamp(value: Double, min: Double, max: Double): Double {
+    return min.coerceAtLeast(max.coerceAtMost(value))
+}
 
 /**
  * Calculates new bot speed.
@@ -36,25 +47,24 @@ fun calcNewBotSpeed(currentSpeed: Double, targetSpeed: Double): Double {
  * @param speed is the speed
  * @return limited driving turn rate.
  */
-fun limitTurnRate(turnRate: Double, speed: Double): Double =
-    sign(turnRate) * abs(turnRate).coerceAtMost(calcMaxTurnRate(speed))
+fun limitTurnRate(turnRate: Double, speed: Double): Double {
+    val maxTurnRate = calcMaxTurnRate(speed)
+    return clamp(turnRate, -maxTurnRate, maxTurnRate)
+}
 
 /**
  * Limits the gun turn rate.
  * @param gunTurnRate is the gun turn rate to limit
  * @return limited gun turn rate.
  */
-fun limitGunTurnRate(gunTurnRate: Double): Double =
-    sign(gunTurnRate) * abs(gunTurnRate).coerceAtMost(MAX_GUN_TURN_RATE)
+fun limitGunTurnRate(gunTurnRate: Double): Double = clamp(gunTurnRate, -MAX_GUN_TURN_RATE, MAX_GUN_TURN_RATE)
 
 /**
  * Limits the radar turn rate.
  * @param radarTurnRate is the radar turn rate to limit
  * @return limited radar turn rate.
  */
-fun limitRadarTurnRate(radarTurnRate: Double): Double =
-    sign(radarTurnRate) * abs(radarTurnRate).coerceAtMost(MAX_RADAR_TURN_RATE)
-
+fun limitRadarTurnRate(radarTurnRate: Double): Double = clamp(radarTurnRate, -MAX_RADAR_TURN_RATE, MAX_RADAR_TURN_RATE)
 
 /**
  * Calculates the maximum driving turn rate for a specific speed.
