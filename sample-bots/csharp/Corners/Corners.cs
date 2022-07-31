@@ -14,7 +14,7 @@ using Robocode.TankRoyale.BotApi.Events;
 public class Corners : Bot
 {
     int enemies; // Number of enemy bots in the game
-    int corner = 0; // Which corner we are currently using
+    int corner = RandomCorner(); // Which corner we are currently using. Set to random corner
     bool stopWhenSeeEnemy = false; // See GoCorner()
 
     // The main method starts our bot
@@ -54,6 +54,12 @@ public class Corners : Bot
             }
             gunIncrement *= -1;
         }
+    }
+
+    // Returns a random corner (0, 90, 180, 270)
+    private static int RandomCorner()
+    {
+        return 90 * new Random().Next(4); // Random number is between 0-3
     }
 
     // A very inefficient way to get to a corner.
@@ -98,7 +104,7 @@ public class Corners : Bot
             SmartFire(distance);
     }
 
-    // Custom fire method that determines firepower based on distance. 
+    // Custom fire method that determines firepower based on distance.
     // distance: The distance to the bot to fire at.
     private void SmartFire(double distance)
     {
@@ -120,8 +126,8 @@ public class Corners : Bot
         // If 75% of the bots are still alive when we die, we'll switch corners.
         if (EnemyCount / (double)enemies >= .75)
         {
-            if (corner != 270)
-                corner += 90;
+            corner += 90; // Next corner
+            corner %= 360; // Make sure the corner is within 0 - 359
 
             Console.WriteLine("I died and did poorly... switching corner to " + corner);
         }

@@ -1,6 +1,8 @@
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
 
+import java.util.Random;
+
 // ------------------------------------------------------------------
 // Corners
 // ------------------------------------------------------------------
@@ -13,7 +15,7 @@ import dev.robocode.tankroyale.botapi.events.*;
 public class Corners extends Bot {
 
     int enemies; // Number of enemy bots in the game
-    int corner = 0; // Which corner we are currently using
+    static int corner = randomCorner(); // Which corner we are currently using. Set to random corner
     boolean stopWhenSeeEnemy = false; // See goCorner()
 
     // The main method starts our bot
@@ -52,6 +54,11 @@ public class Corners extends Bot {
             }
             gunIncrement *= -1;
         }
+    }
+
+    // Returns a random corner (0, 90, 180, 270)
+    private static int randomCorner() {
+        return 90 * new Random().nextInt(4); // Random number is between 0-3
     }
 
     // A very inefficient way to get to a corner.
@@ -116,9 +123,9 @@ public class Corners extends Bot {
 
         // If 75% of the bots are still alive when we die, we'll switch corners.
         if (getEnemyCount() / (double) enemies >= .75) {
-            if (corner != 270) {
-                corner += 90;
-            }
+            corner += 90; // Next corner
+            corner %= 360; // Make sure the corner is within 0 - 359
+
             System.out.println("I died and did poorly... switching corner to " + corner);
         } else {
             System.out.println("I died but did well. I will still use corner " + corner);

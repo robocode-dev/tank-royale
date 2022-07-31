@@ -8,6 +8,8 @@
     - `AdjustRadarForBodyTurn` had no effect on the server side.
     - `updateBotTurnRatesAndDirections` did not work properly with adjustments for body and gun turn when
       using `setAdjustGunForBodyTurn`, `setAdjustRadarForGunTurn`, and `setAdjustRadarForBodyTurn`.
+- Sample bots
+    - Updated Corners to start at random corner when a new battle is started.
 
 ## 0.14.2 - Added Velocity Bot - 29-Jul-2022
 
