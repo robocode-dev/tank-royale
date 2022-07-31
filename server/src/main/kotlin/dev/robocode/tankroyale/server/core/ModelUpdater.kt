@@ -864,23 +864,21 @@ class ModelUpdater(
             bot.gunTurnRate = gunTurnRate
             bot.radarTurnRate = radarTurnRate
 
-            bot.direction = normalAbsoluteDegrees(bot.direction + bodyTurnRate)
-
-            // Gun direction depends on the turn rate of both the body and the gun
             var gunAdjustment = bodyTurnRate + gunTurnRate
+            var radarAdjustment = gunAdjustment + radarTurnRate
+
             if (intent.adjustGunForBodyTurn == true) {
                 gunAdjustment -= bodyTurnRate
             }
-            bot.gunDirection = normalAbsoluteDegrees(bot.gunDirection + gunAdjustment)
-
-            // Radar direction depends on the turn rate of the body, the gun, and the radar
-            var radarAdjustment = gunAdjustment + radarTurnRate
             if (intent.adjustRadarForGunTurn == true) {
                 radarAdjustment -= gunTurnRate
             }
             if (intent.adjustRadarForBodyTurn == true) {
                 radarAdjustment -= bodyTurnRate
             }
+
+            bot.direction = normalAbsoluteDegrees(bot.direction + bodyTurnRate)
+            bot.gunDirection = normalAbsoluteDegrees(bot.gunDirection + gunAdjustment)
             updateScanDirectionAndSpread(bot, intent, radarAdjustment) // updates the bot.radarDirection
         }
 
