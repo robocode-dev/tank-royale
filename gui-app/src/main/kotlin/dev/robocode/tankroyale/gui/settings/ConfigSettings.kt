@@ -29,12 +29,12 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.proper
         get() {
             load()
 
-            val tpsStr = properties.getProperty(TPS)?.lowercase(Locale.getDefault())
+            val tpsStr = properties.getProperty(TPS).lowercase(Locale.getDefault())
             if (tpsStr in listOf("m", "ma", "max")) {
                 return -1 // infinite tps
             }
             return try {
-                tpsStr?.toInt() ?: DEFAULT_TPS
+                tpsStr.toInt()
             } catch (e: NumberFormatException) {
                 DEFAULT_TPS
             }
