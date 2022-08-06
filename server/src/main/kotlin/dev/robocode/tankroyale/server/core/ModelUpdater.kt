@@ -234,11 +234,10 @@ class ModelUpdater(
     private fun updateBotMovementAndColors(bot: MutableBot) {
         botIntentsMap[bot.id]?.apply {
             bot.speed = calcNewBotSpeed(bot.speed, targetSpeed ?: 0.0)
+            bot.moveToNewPosition()
 
             updateBotTurnRatesAndDirections(bot, this)
             updateBotColors(bot, this)
-
-            bot.moveToNewPosition()
         }
     }
 
@@ -622,7 +621,7 @@ class ModelUpdater(
             // If gun heat is zero and the bot is enabled, it is able to fire
             if (bot.gunHeat == 0.0 && bot.isEnabled) { // Gun can fire
                 checkWhetherToFireGun(bot)
-            } else {// Gun is too hot => Cool down gun
+            } else { // Gun is too hot => Cool down gun
                 coolDownGun(bot)
             }
         }
@@ -869,6 +868,9 @@ class ModelUpdater(
 
             if (intent.adjustGunForBodyTurn == true) {
                 gunAdjustment -= bodyTurnRate
+//              if (intent.adjustRadarForGunTurn == false) { // matches orig. Robocode, but does not work for acid.Black
+                radarAdjustment -= bodyTurnRate
+//              }
             }
             if (intent.adjustRadarForGunTurn == true) {
                 radarAdjustment -= gunTurnRate
@@ -891,9 +893,15 @@ class ModelUpdater(
         private fun updateScanDirectionAndSpread(bot: MutableBot, intent: BotIntent, radarAdjustment: Double) {
             // The radar sweep is the difference between the new and old radar direction
             val newRadarDirection = normalAbsoluteDegrees(bot.radarDirection + radarAdjustment)
+
             val rescan = intent.rescan ?: false
-            bot.scanDirection = if (rescan) bot.radarDirection else newRadarDirection
-            bot.scanSpreadAngle = if (rescan) bot.radarSpreadAngle else radarAdjustment
+            if (rescan) {
+                bot.scanDirection = bot.radarDirection
+                bot.scanSpreadAngle = bot.radarSpreadAngle
+            } else {
+                bot.scanDirection = newRadarDirection
+                bot.scanSpreadAngle = radarAdjustment
+            }
 
             bot.radarDirection = newRadarDirection
             bot.radarSpreadAngle = radarAdjustment
