@@ -122,6 +122,7 @@ class ModelUpdater(
         coolDownAndFireGuns()
 
         executeBotIntents()
+
         checkAndHandleScans()
         checkAndHandleBotWallCollisions()
         checkAndHandleBotCollisions()
@@ -864,14 +865,12 @@ class ModelUpdater(
             bot.radarTurnRate = radarTurnRate
 
             var gunAdjustment = bodyTurnRate + gunTurnRate
-            var radarAdjustment = gunAdjustment + radarTurnRate
 
             if (intent.adjustGunForBodyTurn == true) {
                 gunAdjustment -= bodyTurnRate
-//              if (intent.adjustRadarForGunTurn == false) { // matches orig. Robocode, but does not work for acid.Black
-                radarAdjustment -= bodyTurnRate
-//              }
             }
+            var radarAdjustment = gunAdjustment + radarTurnRate
+
             if (intent.adjustRadarForGunTurn == true) {
                 radarAdjustment -= gunTurnRate
             }
