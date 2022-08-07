@@ -90,7 +90,7 @@ similar to this:
     "homepage": "",
     "countryCodes": "us, dk",
     "platform": "JVM",
-    "programmingLang": "Java 8"
+    "programmingLang": "Java 11"
   }
 }
 ```
