@@ -43,7 +43,7 @@ public interface IBaseBot {
      * methods prior to calling the {@code go()} method: {@link #setTurnRate}, {@link #setGunTurnRate},
      * {@link #setRadarTurnRate}, {@link #setTargetSpeed}, and {@link #setFire}.
      *
-     * @see #getTurnTimeout
+     * @see #getTurnTimeout()
      */
     void go();
 
@@ -112,7 +112,7 @@ public interface IBaseBot {
      * <p>First available when the game has started.
      *
      * @return The gun cooling rate.
-     * @see #getGunHeat
+     * @see #getGunHeat()
      */
     double getGunCoolingRate();
 
@@ -127,27 +127,27 @@ public interface IBaseBot {
     int getMaxInactivityTurns();
 
     /**
-     * The turn timeout is important as the bot needs to take action by calling {@link #go} before
+     * The turn timeout is important as the bot needs to take action by calling {@link #go()} before
      * the turn timeout occurs. As soon as the {@link TickEvent} is triggered, i.e. when {@link
-     * #onTick} is called, you need to call {@link #go} to take action before the turn
-     * timeout occurs. Otherwise, your bot will skip a turn and receive a {@link #onSkippedTurn}
-     * for each turn where {@link #go} is called too late.
+     * #onTick(TickEvent)} is called, you need to call {@link #go()} to take action before the turn
+     * timeout occurs. Otherwise, your bot will skip a turn and receive a {@link
+     * #onSkippedTurn(SkippedTurnEvent)} for each turn where {@link #go()} is called too late.
      *
      * <p>First available when the game has started.
      *
      * @return The turn timeout in microseconds (1 / 1,000,000 second).
-     * @see #getTimeLeft
-     * @see #go
+     * @see #getTimeLeft()
+     * @see #go()
      */
     int getTurnTimeout();
 
     /**
      * The number of microseconds left of this turn before the bot will skip the turn. Make sure to
-     * call {@link #go} before the time runs out.
+     * call {@link #go()} before the time runs out.
      *
      * @return The amount of time left in microseconds.
-     * @see #getTurnTimeout
-     * @see #go
+     * @see #getTurnTimeout()
+     * @see #go()
      */
     int getTimeLeft();
 
@@ -241,7 +241,7 @@ public interface IBaseBot {
      * the gun cooling rate.
      *
      * @return The current gun heat.
-     * @see #getGunCoolingRate
+     * @see #getGunCoolingRate()
      */
     double getGunHeat();
 
@@ -261,14 +261,14 @@ public interface IBaseBot {
      * @return An ordered list of all the events remaining to be handled for the current and previous (skipped) turns.
      * The events are being sorted so that older events get listed first, and secondly sorted on event priority.
      *
-     * @see #clearEvents
+     * @see #clearEvents()
      */
     List<BotEvent> getEvents();
 
     /**
      * Clears the remaining events that have not been processed yet.
      *
-     * @see #getEvents
+     * @see #getEvents()
      */
     void clearEvents();
 
@@ -276,7 +276,7 @@ public interface IBaseBot {
      * Returns the turn rate of the bot in degrees per turn.
      *
      * @return The turn rate of the bot.
-     * @see #setTurnRate
+     * @see #setTurnRate(double)
      */
     double getTurnRate();
 
@@ -291,7 +291,7 @@ public interface IBaseBot {
      *
      * <p>The turn rate is truncated to {@link Constants#MAX_TURN_RATE} if the turn rate exceeds this value.
      *
-     * <p>If this property is set multiple times, the last value set before {@link #go} counts.
+     * <p>If this property is set multiple times, the last value set before {@link #go()} counts.
      *
      * @param turnRate is the new turn rate of the bot in degrees per turn.
      */
@@ -301,7 +301,7 @@ public interface IBaseBot {
      * Returns the maximum turn rate of the bot in degrees per turn.
      *
      * @return The maximum turn rate of the bot.
-     * @see #setMaxTurnRate
+     * @see #setMaxTurnRate(double)
      */
     double getMaxTurnRate();
 
@@ -315,16 +315,17 @@ public interface IBaseBot {
      * right with a turn rate down to -5 degrees per turn when turning right, and up to 5 degrees per
      * turn when turning left.
      *
-     * <p>This method will first be executed when {@link #go} is called making it possible to call
+     * <p>This method will first be executed when {@link #go()} is called making it possible to call
      * other set methods after execution. This makes it possible to set the bot to move, turn the
-     * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link #go}.
-     * But notice that this is only possible to execute multiple methods in parallel by using
-     * <strong>setter</strong> methods only prior to calling {@link #go}.
+     * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+     * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
+     * <strong>setter</strong> methods only prior to calling {@link #go()}.
      *
-     * <p>If this method is called multiple times, the last call before {@link #go} is executed, counts.
+     * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+     * counts.
      *
      * @param maxTurnRate is the new maximum turn rate
-     * @see #setTurnRate
+     * @see #setTurnRate(double)
      */
     void setMaxTurnRate(double maxTurnRate);
 
@@ -332,7 +333,7 @@ public interface IBaseBot {
      * Returns the gun turn rate in degrees per turn.
      *
      * @return The turn rate of the gun.
-     * @see #setGunTurnRate
+     * @see #setGunTurnRate(double)
      */
     double getGunTurnRate();
 
@@ -347,7 +348,7 @@ public interface IBaseBot {
      * <p>The gun turn rate is truncated to {@link Constants#MAX_GUN_TURN_RATE} if the gun turn rate exceeds
      * this value.
      *
-     * <p>If this property is set multiple times, the last value set before {@link #go} counts.
+     * <p>If this property is set multiple times, the last value set before {@link #go()} counts.
      *
      * @param gunTurnRate is the new turn rate of the gun in degrees per turn.
      */
@@ -357,7 +358,7 @@ public interface IBaseBot {
      * Returns the maximum gun turn rate in degrees per turn.
      *
      * @return The maximum turn rate of the gun.
-     * @see #setMaxGunTurnRate
+     * @see #setMaxGunTurnRate(double)
      */
     double getMaxGunTurnRate();
 
@@ -372,16 +373,17 @@ public interface IBaseBot {
      * right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees per
      * turn when turning left.
      *
-     * <p>This method will first be executed when {@link #go} is called making it possible to call
+     * <p>This method will first be executed when {@link #go()} is called making it possible to call
      * other set methods after execution. This makes it possible to set the bot to move, turn the
-     * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link #go}.
-     * But notice that this is only possible to execute multiple methods in parallel by using
-     * <strong>setter</strong> methods only prior to calling {@link #go}.
+     * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+     * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
+     * <strong>setter</strong> methods only prior to calling {@link #go()}.
      *
-     * <p>If this method is called multiple times, the last call before {@link #go} is executed, counts.
+     * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+     * counts.
      *
      * @param maxGunTurnRate is the new maximum gun turn rate
-     * @see #setGunTurnRate
+     * @see #setGunTurnRate(double)
      */
     void setMaxGunTurnRate(double maxGunTurnRate);
 
@@ -389,7 +391,7 @@ public interface IBaseBot {
      * Returns the radar turn rate in degrees per turn.
      *
      * @return The turn rate of the radar.
-     * @see #setRadarTurnRate
+     * @see #setRadarTurnRate(double)
      */
     double getRadarTurnRate();
 
@@ -405,7 +407,7 @@ public interface IBaseBot {
      * <p>The radar turn rate is truncated to {@link Constants#MAX_RADAR_TURN_RATE} if the radar turn rate
      * exceeds this value.
      *
-     * <p>If this property is set multiple times, the last value set before {@link #go} counts.
+     * <p>If this property is set multiple times, the last value set before {@link #go()} counts.
      *
      * @param gunRadarTurnRate is the new turn rate of the radar in degrees per turn.
      */
@@ -415,7 +417,7 @@ public interface IBaseBot {
      * Returns the maximum radar turn rate in degrees per turn.
      *
      * @return The maimim turn rate of the radar.
-     * @see #setMaxRadarTurnRate
+     * @see #setMaxRadarTurnRate(double)
      */
     double getMaxRadarTurnRate();
 
@@ -430,16 +432,17 @@ public interface IBaseBot {
      * or right with a turn rate down to -5 degrees per turn when turning right and up to 5 degrees
      * per turn when turning left.
      *
-     * <p>This method will first be executed when {@link #go} is called making it possible to call
+     * <p>This method will first be executed when {@link #go()} is called making it possible to call
      * other set methods after execution. This makes it possible to set the bot to move, turn the
-     * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link #go}.
-     * But notice that this is only possible to execute multiple methods in parallel by using
-     * <strong>setter</strong> methods only prior to calling {@link #go}.
+     * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+     * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
+     * <strong>setter</strong> methods only prior to calling {@link #go()}.
      *
-     * <p>If this method is called multiple times, the last call before {@link #go} is executed, counts.
+     * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
+     * counts.
      *
      * @param maxRadarTurnRate is the new maximum radar turn rate
-     * @see #setRadarTurnRate
+     * @see #setRadarTurnRate(double)
      */
     void setMaxRadarTurnRate(double maxRadarTurnRate);
 
@@ -447,7 +450,7 @@ public interface IBaseBot {
      * Returns the target speed in units per turn.
      *
      * @return The target speed.
-     * @see #setTargetSpeed
+     * @see #setTargetSpeed(double)
      */
     double getTargetSpeed();
 
@@ -464,7 +467,7 @@ public interface IBaseBot {
      *
      * <p>The target speed is truncated to {@link Constants#MAX_SPEED} if the target speed exceeds this value.
      *
-     * <p>If this property is set multiple times, the last value set before {@link #go} counts.
+     * <p>If this property is set multiple times, the last value set before {@link #go()} counts.
      *
      * @param targetSpeed is the new target speed in units per turn.
      */
@@ -474,7 +477,7 @@ public interface IBaseBot {
      * Returns the maximum speed in units per turn.
      *
      * @return The maximum speed.
-     * @see #setMaxSpeed
+     * @see #setMaxSpeed(double)
      */
     double getMaxSpeed();
 
@@ -487,13 +490,13 @@ public interface IBaseBot {
      * <p>If for example the maximum speed is set to 5, then the bot will be able to move backwards
      * with a speed down to -5 units per turn and up to 5 units per turn when moving forward.
      *
-     * <p>This method will first be executed when {@link #go} is called making it possible to call
+     * <p>This method will first be executed when {@link #go()} is called making it possible to call
      * other set methods after execution. This makes it possible to set the bot to move, turn the
-     * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link #go}.
-     * But notice that this is only possible to execute multiple methods in parallel by using
-     * <strong>setter</strong> methods only prior to calling {@link #go}.
+     * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+     * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
+     * <strong>setter</strong> methods only prior to calling {@link #go()}.
      *
-     * <p>If this method is called multiple times, the last call before {@link #go} is executed,
+     * <p>If this method is called multiple times, the last call before {@link #go()} is executed,
      * counts.
      *
      * @param maxSpeed is the new maximum speed
@@ -517,10 +520,10 @@ public interface IBaseBot {
      * firepower is more than {@link Constants#MAX_FIREPOWER} the power will be truncated to the max firepower.
      *
      * <p>Whenever the gun is fired, the gun is heated and needs to cool down before it can fire
-     * again. The gun heat must be zero before the gun is able to fire (see {@link #getGunHeat}).
+     * again. The gun heat must be zero before the gun is able to fire (see {@link #getGunHeat()}).
      * The gun heat generated by firing the gun is 1 + (firepower / 5). Hence, the more firepower used
      * the longer it takes to cool down the gun. The gun cooling rate can be read by calling {@link
-     * #getGunCoolingRate}.
+     * #getGunCoolingRate()}.
      *
      * <p>The amount of energy used for firing the gun is subtracted from the bots' total energy. The
      * amount of damage dealt by a bullet hitting another bot is 4x firepower, and if the firepower is
@@ -537,10 +540,10 @@ public interface IBaseBot {
      * @param firepower is the new firepower
      * @return {@code true} if the cannon can fire, i.e. if there is no gun heat; {@code false}
      * otherwise.
-     * @see #onBulletFired
-     * @see #getFirepower
-     * @see #getGunHeat
-     * @see #getGunCoolingRate
+     * @see #onBulletFired(BulletFiredEvent)
+     * @see #getFirepower()
+     * @see #getGunHeat()
+     * @see #getGunCoolingRate()
      */
     boolean setFire(double firepower);
 
@@ -548,7 +551,7 @@ public interface IBaseBot {
      * Returns the firepower.
      *
      * @return The firepower.
-     * @see #setFire
+     * @see #setFire(double)
      */
     double getFirepower();
 
@@ -600,11 +603,11 @@ public interface IBaseBot {
      *
      * @param adjust {@code true} if the gun must adjust/compensate for the body turning; {@code false}
      *               if the gun must turn with the body turning (default).
-     * @see #setAdjustRadarForBodyTurn
-     * @see #setAdjustRadarForGunTurn
-     * @see #isAdjustGunForBodyTurn
-     * @see #isAdjustRadarForBodyTurn
-     * @see #isAdjustRadarForGunTurn
+     * @see #setAdjustRadarForBodyTurn(boolean)
+     * @see #setAdjustRadarForGunTurn(boolean)
+     * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForBodyTurn()
+     * @see #isAdjustRadarForGunTurn()
      */
     void setAdjustGunForBodyTurn(boolean adjust);
 
@@ -618,11 +621,11 @@ public interface IBaseBot {
      *
      * @return {@code true} if the gun is set to turn independent of the body turning; {@code false} if
      * the gun is set to turn with the body turning (default).
-     * @see #setAdjustGunForBodyTurn
-     * @see #setAdjustRadarForBodyTurn
-     * @see #setAdjustRadarForGunTurn
-     * @see #isAdjustRadarForBodyTurn
-     * @see #isAdjustRadarForGunTurn
+     * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForBodyTurn(boolean)
+     * @see #setAdjustRadarForGunTurn(boolean)
+     * @see #isAdjustRadarForBodyTurn()
+     * @see #isAdjustRadarForGunTurn()
      */
     boolean isAdjustGunForBodyTurn();
 
@@ -644,11 +647,11 @@ public interface IBaseBot {
      *
      * @param adjust {@code true} if the radar must adjust/compensate for the body's turn; {@code
      *               false} if the radar must turn with the body turning (default).
-     * @see #setAdjustGunForBodyTurn
-     * @see #setAdjustRadarForGunTurn
-     * @see #isAdjustGunForBodyTurn
-     * @see #isAdjustRadarForBodyTurn
-     * @see #isAdjustRadarForGunTurn
+     * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForGunTurn(boolean)
+     * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForBodyTurn()
+     * @see #isAdjustRadarForGunTurn()
      */
     void setAdjustRadarForBodyTurn(boolean adjust);
 
@@ -661,11 +664,11 @@ public interface IBaseBot {
      *
      * @return {@code true} if the radar is set to turn independent of the body turning; {@code false}
      * if the radar is set to turn with the body turning (default).
-     * @see #setAdjustGunForBodyTurn
-     * @see #setAdjustRadarForBodyTurn
-     * @see #setAdjustRadarForGunTurn
-     * @see #isAdjustGunForBodyTurn
-     * @see #isAdjustRadarForGunTurn
+     * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForBodyTurn(boolean)
+     * @see #setAdjustRadarForGunTurn(boolean)
+     * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForGunTurn()
      */
     boolean isAdjustRadarForBodyTurn();
 
@@ -686,11 +689,11 @@ public interface IBaseBot {
      *
      * @param adjust {@code true} if the radar must adjust/compensate for the gun turning; {@code
      *               false} if the radar must turn with the gun turning (default).
-     * @see #setAdjustGunForBodyTurn
-     * @see #setAdjustRadarForBodyTurn
-     * @see #isAdjustGunForBodyTurn
-     * @see #isAdjustRadarForBodyTurn
-     * @see #isAdjustRadarForGunTurn
+     * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForBodyTurn(boolean)
+     * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForBodyTurn()
+     * @see #isAdjustRadarForGunTurn()
      */
     void setAdjustRadarForGunTurn(boolean adjust);
 
@@ -704,68 +707,70 @@ public interface IBaseBot {
      *
      * @return {@code true} if the radar is set to turn independent of the gun turning; {@code false}
      * if the radar is set to turn with the gun turning (default).
-     * @see #setAdjustGunForBodyTurn
-     * @see #setAdjustRadarForBodyTurn
-     * @see #setAdjustRadarForGunTurn
-     * @see #isAdjustGunForBodyTurn
-     * @see #isAdjustRadarForBodyTurn
+     * @see #setAdjustGunForBodyTurn(boolean)
+     * @see #setAdjustRadarForBodyTurn(boolean)
+     * @see #setAdjustRadarForGunTurn(boolean)
+     * @see #isAdjustGunForBodyTurn()
+     * @see #isAdjustRadarForBodyTurn()
      */
     boolean isAdjustRadarForGunTurn();
 
     /**
-     * Adds a event handler that will be automatically triggered {@link #onCustomEvent}
-     * when the {@link Condition#test} returns true.
+     * Adds a event handler that will be automatically triggered {@link #onCustomEvent(CustomEvent)}
+     * when the {@link Condition#test()} returns true.
      *
      * @param condition is the condition that must be met to trigger the custom event.
-     * @see #removeCustomEvent
+     * @see #removeCustomEvent(Condition)
      */
     void addCustomEvent(Condition condition);
 
     /**
      * Removes triggering an custom event handler for a specific condition that was previously added
-     * with {@link #addCustomEvent}.
+     * with {@link #addCustomEvent(Condition)}.
      *
-     * @param condition is the condition that was previously added with {@link #addCustomEvent}
-     * @see #addCustomEvent
+     * @param condition is the condition that was previously added with {@link
+     *                  #addCustomEvent(Condition)}
+     * @see #addCustomEvent(Condition)
      */
     void removeCustomEvent(Condition condition);
 
     /**
      * Set the bot to stop all movement including turning the gun and radar. The remaining movement is
-     * saved for a call to {@link #setResume}. This method has no effect, if it has already been called.
+     * saved for a call to {@link #setResume()}. This method has no effect, if it has already been
+     * called.
      *
-     * <p>This method will first be executed when {@link #go} is called making it possible to call
+     * <p>This method will first be executed when {@link #go()} is called making it possible to call
      * other set methods before execution. This makes it possible to set the bot to move, turn the
-     * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link #go}.
-     * But notice that this is only possible to execute multiple methods in parallel by using
-     * <strong>setter</strong> methods only prior to calling {@link #go}.
+     * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+     * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
+     * <strong>setter</strong> methods only prior to calling {@link #go()}.
      *
-     * @see #setResume
+     * @see #setResume()
      */
     void setStop();
 
     /**
      * Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
      * turning and thereby will not be able to automatically scan bots. This method is useful when the
-     * bot movement has stopped, e.g. when {@link #setStop} has been called. The last radar
+     * bot movement has stopped, e.g. when {@link #setStop()} has been called. The last radar
      * direction and sweep angle will be used for rescanning for bots.
      *
-     * <p>This method will first be executed when {@link #go} is called making it possible to call
+     * <p>This method will first be executed when {@link #go()} is called making it possible to call
      * other set methods before execution. This makes it possible to set the bot to move, turn the
-     * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link #go}.
-     * But notice that this is only possible to execute multiple methods in parallel by using
-     * <strong>setter</strong> methods only prior to calling {@link #go}.
+     * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link
+     * #go()}. But notice that this is only possible to execute multiple methods in parallel by using
+     * <strong>setter</strong> methods only prior to calling {@link #go()}.
      *
-     * @see #setStop
+     * @see #setStop()
      */
     void setResume();
 
     /**
      * Checks if the movement has been stopped.
      *
-     * @return true if the movement has been stopped by {@link #setStop}; false otherwise.
-     * @see #setResume
-     * @see #setStop
+     * @return true if the movement has been stopped by {@link #setStop()}; false otherwise.
+     * @see #setResume()
+     * @see #setStop()
      */
     boolean isStopped();
 
@@ -1080,7 +1085,7 @@ public interface IBaseBot {
 
     /**
      * The event handler triggered when the bot has skipped a turn. This event occurs if the bot did
-     * not take any action in a specific turn. That is, {@link #go} was not called before the turn
+     * not take any action in a specific turn. That is, {@link #go()} was not called before the turn
      * timeout occurred for the turn. If the bot does not take action for multiple turns in a row, it
      * will receive a {@link SkippedTurnEvent} for each turn where it did not take action. When the
      * bot is skipping a turn, the server did not receive the message from the bot, and the server
