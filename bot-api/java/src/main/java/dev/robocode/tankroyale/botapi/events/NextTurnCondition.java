@@ -33,7 +33,7 @@ public final class NextTurnCondition extends Condition {
      * Constructor for initializing a new instance of the NextTurnCondition class.
      *
      * @param baseBot is your bot instance, typically {@code this} instance, used for determining
-     *                the current turn of the battle with the {@link #test()} method.
+     *                the current turn of the battle with the {@link #test} method.
      */
     public NextTurnCondition(IBaseBot baseBot) {
         super("NextTurnCondition");
