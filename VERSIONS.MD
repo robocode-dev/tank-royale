@@ -1,9 +1,12 @@
 # Versions
 
-## 0.14.3 - In progress
+## 0.14.3 - Fixed setting adjustment turns - 07-Aug-2022
 
 #### Bugfixes:
 
+- GUI:
+    - NullPointerException when running robocode-tankroyale-gui-0.14.2.jar
+      ([#38](https://github.com/robocode-dev/tank-royale/issues/38))
 - Server:
     - `AdjustRadarForBodyTurn` had no effect on the server side.
     - `updateBotTurnRatesAndDirections` did not work properly with adjustments for body and gun turn when
