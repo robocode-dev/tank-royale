@@ -4,8 +4,10 @@
 
 #### Bugfixes:
 
+- Bot API:
+    - Corrected the description of the `onScannedBot()` event handler.
 - Server:
-  - TPS: When TPS was set to 0 and the battle was restarted, the battle ran in max TPS.
+    - TPS: When TPS was set to 0 and the battle was restarted, the battle ran in max TPS.
 
 ## 0.14.3 - Fixed setting adjustment turns - 07-Aug-2022
 
