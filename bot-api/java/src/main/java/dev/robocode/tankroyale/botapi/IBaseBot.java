@@ -260,7 +260,6 @@ public interface IBaseBot {
      *
      * @return An ordered list of all the events remaining to be handled for the current and previous (skipped) turns.
      * The events are being sorted so that older events get listed first, and secondly sorted on event priority.
-     *
      * @see #clearEvents
      */
     List<BotEvent> getEvents();
@@ -561,6 +560,31 @@ public interface IBaseBot {
     void setRescan();
 
     /**
+     * Enables or disables fire assistance explicitly. Fire assistance is useful for bots with limited
+     * aiming capabilities as it will help the bot by firing directly at a scanned bot when the gun is fired,
+     * which is a very simple aiming strategy.
+     * <p>
+     * <p>When fire assistance is enabled the gun will fire towards the center of the scanned bot when all
+     * these conditions are met:
+     * <ul>
+     *     <li>The gun is fired ({@link #setFire} and {@link IBot#fire})</li>
+     *     <li>The radar is scanning a bot <em>when</em> firing the gun ({@link #onScannedBot}, {@link #setRescan},
+     *     {@link IBot#rescan})</li>
+     *     <li>The gun and radar are pointing in the exact the same direction. (You can call
+     *     {@code setAdjustRadarForGunTurn(false)} to align the gun and radar and make
+     *     sure not to turn the radar beside the gun).</li>
+     * </ul>
+     * <p>
+     * The fire assistance feature is provided for backwards compatibility with the original Robocode,
+     * where robots that are not an {@code AdvancedRobot} got fire assistance per default as the gun and
+     * radar cannot be moved independently of each other. (The {@code AdvancedRobot} allows the body, gun,
+     * and radar to move independent of each other).
+     *
+     * @param enable enables fire assistance when set to {@code true}, and disable fire assistance otherwise.
+     */
+    void setFireAssist(boolean enable);
+
+    /**
      * Call this method during an event handler to control continuing or restarting the event handler,
      * when a new event occurs again for the same event handler while processing an earlier event.
      *
@@ -682,8 +706,14 @@ public interface IBaseBot {
      * <p>Note: This property is additive until you reach the maximum the radar can turn ({@link
      * Constants#MAX_RADAR_TURN_RATE}). The "adjust" is added to the amount, you set for turning the gun by the
      * gun turn rate, then capped by the physics of the game.
+     * <p>
+     * When the radar compensates this way it counts as "turning the radar", even when it is not
+     * explicitly turned by calling a method for turning the radar.
      *
-     * <p>Note: The radar compensating this way does count as "turning the radar".
+     * <p>Note: This method automatically disables fire assistance when set to {@code true}, and automatically
+     * enables fire assistance when set to {@code false}. This is <em>not</em> the case for {@link
+     * #setAdjustGunForBodyTurn} and {@link #setAdjustRadarForBodyTurn}.
+     * Read more about fire assistance with the {@link #setFireAssist} method.
      *
      * @param adjust {@code true} if the radar must adjust/compensate for the gun turning; {@code
      *               false} if the radar must turn with the gun turning (default).
@@ -1155,6 +1185,7 @@ public interface IBaseBot {
      * <pre><code class="language-java">
      *     int scannedBotEventPriority = getPriority(ScannedBotEvent.class);
      * </code></pre>
+     *
      * @param eventClass is the event class to get the event priority for.
      * @return the event priority for a specific event class.
      * @see DefaultEventPriority
@@ -1170,8 +1201,8 @@ public interface IBaseBot {
      * <p>Note that you should normally not need to change the event priority.
      *
      * @param eventClass is the event class to change the event priority for.
-     * @param priority is the new priority. Typically, a positive number from 1 to 150. The greater value, the higher
-     *                 priority.
+     * @param priority   is the new priority. Typically, a positive number from 1 to 150. The greater value, the higher
+     *                   priority.
      * @see DefaultEventPriority
      * @see #getEventPriority
      */

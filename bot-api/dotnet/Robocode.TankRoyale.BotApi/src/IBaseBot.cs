@@ -477,6 +477,30 @@ public interface IBaseBot
     void SetRescan();
 
     /// <summary>
+    /// Enables or disables fire assistance explicitly. Fire assistance is useful for bots with limited
+    /// aiming capabilities as it will help the bot by firing directly at a scanned bot when the gun is fired,
+    /// which is a very simple aiming strategy.
+    /// 
+    /// When fire assistance is enabled the gun will fire directly towards the center of the scanned bot
+    /// when all these conditions are met:
+    /// <ul>
+    ///     <li>The gun is fired <see cref="SetFire"/> and <see cref="IBot.Fire"/></li>
+    ///     <li>The radar is scanning a bot <em>when</em> firing the gun (<see cref="OnScannedBot"/>,
+    ///         <see cref="SetRescan"/>, <see cref="IBot.Rescan"/>)</li>
+    ///     <li>The gun and radar are pointing in the exact the same direction. (You can set
+    ///         <c>AdjustRadarForGunTurn=false</c> to align the gun and radar and make sure not to
+    ///         turn the radar beside the gun).</li>
+    /// </ul>
+    /// The fire assistance feature is provided for backwards compatibility with the original Robocode,
+    /// where robots that are not an <c>AdvancedRobot</c> got fire assistance per default as the gun and
+    /// radar cannot be moved independently of each other. (The <c>AdvancedRobot</c> allows the body, gun,
+    /// and radar to move independent of each other).
+    /// </summary>
+    /// <param name="enable">Enables fire assistance when set to <c>true</c>, and disable fire assistance
+    /// otherwise.</param>
+    void SetFireAssist(bool enable);
+    
+    /// <summary>
     /// Set this property during an event handler to control continuing or restarting the event handler,
     /// when a new event occurs again for the same event handler while processing an earlier event.
     /// </summary>
@@ -561,11 +585,19 @@ public interface IBaseBot
     /// cref="Constants.MaxRadarTurnRate"/>. The "adjust" is added to the amount, you set for turning the gun
     /// by the gun turn rate, then capped by the physics of the game.
     ///
-    /// The radar compensating this way does count as "turning the radar".
+    /// When the radar compensates this way it counts as "turning the radar", even when it is not
+    /// explicitly turned by calling a method for turning the radar.
+    /// </note>
+    /// 
+    /// When the radar compensates this way it counts as "turning the radar", even when it is not
+    /// explicitly turned by calling a method for turning the radar.
+    /// <note>
+    /// This method automatically disables fire assistance when set to <c>true</c>, and automatically
+    /// enables fire assistance when set to <c>false</c>. This is <em>not</em> the case for <see
+    /// cref="AdjustGunForBodyTurn"/> and <see cref="AdjustRadarForBodyTurn"/>.
+    /// Read more about fire assistance with the <see cref="SetFireAssist"/> method.
     /// </note>
     /// </summary>
-    /// <value><c>true</c> if the radar is set to adjust for the gun turning; <c>false</c>
-    /// otherwise (default).</value>
     /// <seealso cref="AdjustGunForBodyTurn"/>
     /// <seealso cref="AdjustRadarForBodyTurn"/>
     bool AdjustRadarForGunTurn { get; set; }
