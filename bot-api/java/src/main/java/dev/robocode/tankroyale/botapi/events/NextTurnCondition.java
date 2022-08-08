@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.botapi.IBot;
 
 /**
  * Prebuilt condition that can be used for waiting for the next turn.
- * See {@link Condition} and {@link IBot#waitFor(Condition)} for more information.
+ * See {@link Condition} and {@link IBot#waitFor} for more information.
  *
  * <p>Here is an example of how to use this condition:
  *

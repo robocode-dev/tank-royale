@@ -90,7 +90,7 @@ public final class BotInfo {
      * Initializes a new instance of the BotInfo class.<br>
      * </br>
      * Note that the recommended method for creating a BotInfo class is to use the {@link IBuilder} interface provided
-     * with the static {@link BotInfo#builder()} method.
+     * with the static {@link BotInfo#builder} method.
      *
      * @param name            is the name of the bot (required).
      * @param version         is the version of the bot (required).

@@ -648,7 +648,7 @@ public interface IBot extends IBaseBot {
     void rescan();
 
     /**
-     * Blocks until a condition is met, i.e. when a {@link Condition#test()} returns true.
+     * Blocks until a condition is met, i.e. when a {@link Condition#test} returns true.
      *
      * @param condition is the condition that must be met before this method will stop waiting.
      * @see Condition
