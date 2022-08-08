@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.botapi;
 import dev.robocode.tankroyale.botapi.events.BotEvent;
 import dev.robocode.tankroyale.botapi.events.Condition;
 import dev.robocode.tankroyale.botapi.internal.BaseBotInternals;
+import dev.robocode.tankroyale.schema.BotIntent;
 
 import java.net.URI;
 import java.util.Collection;
@@ -499,6 +500,14 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
+    public final void setFireAssist(boolean enable) {
+        __baseBotInternals.getBotIntent().setFireAssist(enable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final void setInterruptible(boolean interruptible) {
         __baseBotInternals.setInterruptible(interruptible);
     }
@@ -542,7 +551,9 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final void setAdjustRadarForGunTurn(boolean adjust) {
-        __baseBotInternals.getBotIntent().setAdjustRadarForGunTurn(adjust);
+        BotIntent botIntent = __baseBotInternals.getBotIntent();
+        botIntent.setAdjustRadarForGunTurn(adjust);
+        botIntent.setFireAssist(!adjust);
     }
 
     /**

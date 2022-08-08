@@ -326,6 +326,11 @@ public abstract class BaseBot : IBaseBot
         __baseBotInternals.BotIntent.Rescan = true;
     }
 
+    public void SetFireAssist(bool enable)
+    {
+        __baseBotInternals.BotIntent.FireAssist = enable;
+    }
+    
     /// <inheritdoc/>
     public bool Interruptible
     {
@@ -352,7 +357,12 @@ public abstract class BaseBot : IBaseBot
     /// <inheritdoc/>
     public bool AdjustRadarForGunTurn
     {
-        set => __baseBotInternals.BotIntent.AdjustRadarForGunTurn = value;
+        set
+        {
+            var botIntent = __baseBotInternals.BotIntent;
+            botIntent.AdjustRadarForGunTurn = value;
+            botIntent.FireAssist = !value;
+        }
         get => __baseBotInternals.BotIntent.AdjustRadarForGunTurn ?? false;
     }
 

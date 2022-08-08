@@ -34,6 +34,9 @@ properties:
   rescan:
     description: Flag indicating if the bot should rescan with previous radar direction and scan sweep angle.
     type: boolean
+  fireAssist:
+    description: Flag indication if fire assistance is enabled.
+    type: boolean
   bodyColor:
     description: New color of the body
     $ref: color.yaml
