@@ -1,11 +1,28 @@
 # Versions
 
-## In progress
+## In progress - 0.15.0 - Added fire assistance
+
+#### Improvements
+
+Fire assistance:
+
+- Added fire assistance known from the original Robocode game. Fire assistance is useful for bots with limited
+  aiming capabilities as it will help the bot by firing directly at a scanned bot when the gun is fired, which is a
+  very simple aiming strategy.
+- When fire assistance is enabled the gun will fire towards the center of the scanned bot when all these conditions
+  are met:
+    - The gun is fired (`setFire` and `fire`)
+    - The radar is scanning a bot _when_ firing the gun (`onScannedBot`, `setRescan`, `rescan`)
+    - The gun and radar are pointing in the exact the same direction. You can call `setAdjustRadarForGunTurn(false)` to
+      align the gun and radar and make sure not to turn the radar beside the gun.
+- When calling `setAdjustRadarForGunTurn(true)` then fire assistance will automatically be disabled, and when calling
+  `setAdjustRadarForGunTurn(false)` then fire assistance will automatically be disabled.
+- Added new `setFireAssist(enable)` to enable and disable the fire assistance explicitly.
 
 #### Bugfixes:
 
 - Server:
-  - TPS: When TPS was set to 0 and the battle was restarted, the battle ran in max TPS.
+    - TPS: When TPS was set to 0 and the battle was restarted, the battle ran in max TPS.
 
 ## 0.14.3 - Fixed setting adjustment turns - 07-Aug-2022
 

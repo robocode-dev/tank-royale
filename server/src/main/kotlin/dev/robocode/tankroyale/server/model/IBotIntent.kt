@@ -29,8 +29,11 @@ interface IBotIntent {
     /** Flag set to adjusting radar for gun turn. */
     val adjustRadarForGunTurn: Boolean?
 
-    /** Flag set to perform rescan (reusing last scan direction and scan spread angle) */
+    /** Flag set to perform rescan (reusing last scan direction and scan spread angle). */
     val rescan: Boolean?
+
+    /** Flag set to enable fire assistance. */
+    val fireAssist: Boolean?
 
     /** New body color. */
     val bodyColor: String?

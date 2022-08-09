@@ -487,9 +487,9 @@ public interface IBaseBot
     ///     <li>The gun is fired <see cref="SetFire"/> and <see cref="IBot.Fire"/></li>
     ///     <li>The radar is scanning a bot <em>when</em> firing the gun (<see cref="OnScannedBot"/>,
     ///         <see cref="SetRescan"/>, <see cref="IBot.Rescan"/>)</li>
-    ///     <li>The gun and radar are pointing in the exact the same direction. (You can set
+    ///     <li>The gun and radar are pointing in the exact the same direction. You can set
     ///         <c>AdjustRadarForGunTurn=false</c> to align the gun and radar and make sure not to
-    ///         turn the radar beside the gun).</li>
+    ///         turn the radar beside the gun.</li>
     /// </ul>
     /// The fire assistance feature is provided for backwards compatibility with the original Robocode,
     /// where robots that are not an <c>AdvancedRobot</c> got fire assistance per default as the gun and

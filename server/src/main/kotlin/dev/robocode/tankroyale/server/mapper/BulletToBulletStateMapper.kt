@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.schema.BulletState
-import dev.robocode.tankroyale.server.math.normalAbsoluteDegrees
+import dev.robocode.tankroyale.server.math.normalizeAbsoluteDegrees
 import dev.robocode.tankroyale.server.model.IBullet
 
 object BulletToBulletStateMapper {
@@ -9,7 +9,7 @@ object BulletToBulletStateMapper {
         return BulletState().apply {
             ownerId = bullet.botId.value
             bulletId = bullet.id.value
-            direction = normalAbsoluteDegrees(bullet.direction)
+            direction = normalizeAbsoluteDegrees(bullet.direction)
             power = bullet.power
             x = bullet.position().x
             y = bullet.position().y

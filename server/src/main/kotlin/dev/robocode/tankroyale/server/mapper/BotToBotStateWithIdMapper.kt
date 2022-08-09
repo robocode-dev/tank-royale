@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.schema.BotStateWithId
-import dev.robocode.tankroyale.server.math.normalAbsoluteDegrees
+import dev.robocode.tankroyale.server.math.normalizeAbsoluteDegrees
 import dev.robocode.tankroyale.server.model.IBot
 
 object BotToBotStateWithIdMapper {
@@ -16,9 +16,9 @@ object BotToBotStateWithIdMapper {
             botState.turnRate = turnRate
             botState.gunTurnRate = gunTurnRate
             botState.radarTurnRate = radarTurnRate
-            botState.direction = normalAbsoluteDegrees(direction)
-            botState.gunDirection = normalAbsoluteDegrees(gunDirection)
-            botState.radarDirection = normalAbsoluteDegrees(radarDirection)
+            botState.direction = normalizeAbsoluteDegrees(direction)
+            botState.gunDirection = normalizeAbsoluteDegrees(gunDirection)
+            botState.radarDirection = normalizeAbsoluteDegrees(radarDirection)
             botState.radarSweep = radarSpreadAngle
             botState.gunHeat = gunHeat
             botState.bodyColor = bodyColor?.value

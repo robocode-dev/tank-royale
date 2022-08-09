@@ -570,9 +570,9 @@ public interface IBaseBot {
      *     <li>The gun is fired ({@link #setFire} and {@link IBot#fire})</li>
      *     <li>The radar is scanning a bot <em>when</em> firing the gun ({@link #onScannedBot}, {@link #setRescan},
      *     {@link IBot#rescan})</li>
-     *     <li>The gun and radar are pointing in the exact the same direction. (You can call
+     *     <li>The gun and radar are pointing in the exact the same direction. You can call
      *     {@code setAdjustRadarForGunTurn(false)} to align the gun and radar and make
-     *     sure not to turn the radar beside the gun).</li>
+     *     sure not to turn the radar beside the gun.</li>
      * </ul>
      * <p>
      * The fire assistance feature is provided for backwards compatibility with the original Robocode,
