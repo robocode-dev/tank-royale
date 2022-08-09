@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.botapi.IBot;
 
 /**
  * Prebuilt condition that can be used for waiting for the next turn.
- * See {@link Condition} and {@link IBot#waitFor(Condition)} for more information.
+ * See {@link Condition} and {@link IBot#waitFor} for more information.
  *
  * <p>Here is an example of how to use this condition:
  *
@@ -33,7 +33,7 @@ public final class NextTurnCondition extends Condition {
      * Constructor for initializing a new instance of the NextTurnCondition class.
      *
      * @param baseBot is your bot instance, typically {@code this} instance, used for determining
-     *                the current turn of the battle with the {@link #test()} method.
+     *                the current turn of the battle with the {@link #test} method.
      */
     public NextTurnCondition(IBaseBot baseBot) {
         super("NextTurnCondition");

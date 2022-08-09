@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.server.model.IPoint
 import dev.robocode.tankroyale.server.model.Line
 import dev.robocode.tankroyale.server.model.Point
 import kotlin.math.abs
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -12,7 +13,7 @@ import kotlin.math.sin
  * @param angle the angle to normalize.
  * @return the normalized absolute angle.
  */
-fun normalAbsoluteDegrees(angle: Double): Double {
+fun normalizeAbsoluteDegrees(angle: Double): Double {
     val normalAngle = angle % 360
     return if (normalAngle >= 0) normalAngle else normalAngle + 360
 }
@@ -24,7 +25,7 @@ fun normalAbsoluteDegrees(angle: Double): Double {
  * the angle to normalize
  * @return the normalized relative angle.
  */
-fun normalRelativeDegrees(angle: Double): Double {
+fun normalizeRelativeDegrees(angle: Double): Double {
     val normalAngle = angle % 360
     return if (normalAngle >= 0) {
         if (normalAngle < 180) normalAngle else normalAngle - 360
@@ -302,3 +303,15 @@ fun isClockwise(v1_x: Double, v1_y: Double, v2_x: Double, v2_y: Double): Boolean
  * @return direction in degrees in the range [0;360[ degrees.
  */
 fun randomDirection(): Double = Math.random() * 360
+
+/**
+ * Calculates the direction in degrees to point (targetX, targetY) from point (sourceX, sourceY).
+ *
+ * @param sourceX is the x coordinate of the source point.
+ * @param sourceY is the y coordinate of the source point.
+ * @param targetX is the x coordinate of the target point.
+ * @param targetY is the y coordinate of the target point.
+ * @return the angle from the source point to the destination point measured in degrees.
+ */
+fun angle(sourceX: Double, sourceY: Double, targetX: Double, targetY: Double): Double =
+    normalizeAbsoluteDegrees(Math.toDegrees(atan2(targetY - sourceY, targetX - sourceX)))

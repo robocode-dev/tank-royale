@@ -90,7 +90,7 @@ public final class BotInfo {
      * Initializes a new instance of the BotInfo class.<br>
      * </br>
      * Note that the recommended method for creating a BotInfo class is to use the {@link IBuilder} interface provided
-     * with the static {@link BotInfo#builder()} method.
+     * with the static {@link BotInfo#builder} method.
      *
      * @param name            is the name of the bot (required).
      * @param version         is the version of the bot (required).
@@ -253,13 +253,13 @@ public final class BotInfo {
      * Reads the bot info from a resource file, e.g. when the file is located in a jar file or resource path in IDE.<br>
      * The file is assumed to be in JSON format.<br>
      * <br>
-     * See the {@link #fromInputStream(InputStream)} to see the required JSON format for the file.
+     * See the {@link #fromInputStream} to see the required JSON format for the file.
      *
      * @param filename is the filename of the file containing bot properties.
      * @return A BotInfo instance containing the bot properties read from the file.
      * @throws BotException if the resource file could not be read, or if some field read from the file is invalid.
-     * @see #fromFile(String)
-     * @see #fromInputStream(InputStream)
+     * @see #fromFile
+     * @see #fromInputStream
      */
     public static BotInfo fromResourceFile(String filename) {
         try (InputStream is = BotInfo.class.getResourceAsStream(filename)) {
@@ -276,13 +276,13 @@ public final class BotInfo {
      * Reads the bot info from a local file on a file system.<br>
      * The file is assumed to be in JSON format.<br>
      * <br>
-     * See the {@link #fromInputStream(InputStream)} to see the required JSON format for the file.
+     * See the {@link #fromInputStream} to see the required JSON format for the file.
      *
      * @param filename is the filename of the file containing bot properties.
      * @return A BotInfo instance containing the bot properties read from the file.
      * @throws BotException if the file could not be read, or if some field read from the file is invalid.
-     * @see #fromResourceFile(String)
-     * @see #fromInputStream(InputStream)
+     * @see #fromResourceFile
+     * @see #fromInputStream
      */
     public static BotInfo fromFile(String filename) {
         try (InputStream is = new FileInputStream(filename)) {
@@ -330,8 +330,8 @@ public final class BotInfo {
      * @param inputStream is the input stream providing the bot properties.
      * @return A BotInfo instance containing the bot properties read from the stream.
      * @throws BotException if some fields read from the stream is invalid.
-     * @see #fromFile(String)
-     * @see #fromResourceFile(String)
+     * @see #fromFile
+     * @see #fromResourceFile
      */
     public static BotInfo fromInputStream(InputStream inputStream) {
         var gson = new Gson();

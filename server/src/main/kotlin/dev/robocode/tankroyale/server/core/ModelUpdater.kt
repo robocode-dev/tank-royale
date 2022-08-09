@@ -8,6 +8,7 @@ import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.model.Color.Companion.fromString
 import dev.robocode.tankroyale.server.rules.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
+import java.lang.Math.toDegrees
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -117,13 +118,12 @@ class ModelUpdater(
         turn.turnNumber++
         turn.resetEvents()
 
-        // Note: Called here before updating headings as we need to sync firing the gun with the gun's direction.
-        // That is if the gun was set to fire with the last turn, then it will fire in the correct gun heading now.
-        coolDownAndFireGuns()
+        savePreviousGunDirections()
 
         executeBotIntents()
 
-        checkAndHandleScans()
+        checkAndHandleScans() // scanning first due to fire assist
+        coolDownAndFireGuns()
         checkAndHandleBotWallCollisions()
         checkAndHandleBotCollisions()
         constrainBotPositions()
@@ -616,12 +616,16 @@ class ModelUpdater(
         }
     }
 
+    private fun savePreviousGunDirections() {
+        botsMap.values.forEach { it.previousGunDirection = it.gunDirection }
+    }
+
     /** Cool down and fire guns. */
     private fun coolDownAndFireGuns() {
         botsMap.values.forEach { bot ->
             // If gun heat is zero and the bot is enabled, it is able to fire
             if (bot.gunHeat == 0.0 && bot.isEnabled) { // Gun can fire
-                checkWhetherToFireGun(bot)
+                checkIfGunMustFire(bot)
             } else { // Gun is too hot => Cool down gun
                 coolDownGun(bot)
             }
@@ -632,7 +636,7 @@ class ModelUpdater(
      * Checks and determines if the gun for a bot must be fired.
      * @param bot is the bot.
      */
-    private fun checkWhetherToFireGun(bot: MutableBot) {
+    private fun checkIfGunMustFire(bot: MutableBot) {
         botIntentsMap[bot.id]?.let {
             val firepower = it.firepower ?: 0.0
             if (firepower >= MIN_FIREPOWER && bot.energy > firepower) {
@@ -657,16 +661,28 @@ class ModelUpdater(
     private fun fireBullet(bot: MutableBot, firepower: Double) {
         firepower.coerceAtMost(MAX_FIREPOWER)
 
+        var fireDirection = bot.previousGunDirection
+
+        // fire assistance (fireAssist = true, bot is scanning other bot, and gun and radar angle must be the same
+        if (bot.gunDirection == bot.radarDirection && botIntentsMap[bot.id]?.fireAssist == true) {
+            turn.botEvents[bot.id]?.find { it is ScannedBotEvent }?.let {
+                val scan = (it as ScannedBotEvent)
+                fireDirection = angle(bot.x, bot.y, scan.x, scan.y) // fire assisted angle
+            }
+        }
+
         bot.gunHeat = calcGunHeat(firepower)
+
         val bullet = MutableBullet(
-            botId = bot.id,
             id = BulletId(++nextBulletId),
+            botId = bot.id,
             startPosition = bot.position.toPoint(),
-            direction = bot.gunDirection,
+            direction = fireDirection,
             power = firepower,
             color = bot.bulletColor,
         )
         bullets += bullet
+
         val bulletFiredEvent = BulletFiredEvent(turn.turnNumber, bullet.copy())
         turn.addPrivateBotEvent(bot.id, bulletFiredEvent)
         turn.addObserverEvent(bulletFiredEvent)
@@ -686,7 +702,7 @@ class ModelUpdater(
                 if (i != j) {
                     val botBeingScanned = bots[j]
                     if (isBotScanned(scanningBot, botBeingScanned, startAngle, endAngle)) {
-                        createAndAddScannedBotEventToTurn(scanningBot, botBeingScanned)
+                        createAndAddScannedBotEventToTurn(scanningBot.id, botBeingScanned)
                     }
                 }
             }
@@ -715,13 +731,13 @@ class ModelUpdater(
 
     /**
      * Creates and adds scanned-bot-events to the turn.
-     * @param scanningBot is the bot performing the scanning.
+     * @param scanningBotId is the id of the bot performing the scanning.
      * @param scannedBot is the bot exposed for scanning.
      */
-    private fun createAndAddScannedBotEventToTurn(scanningBot: IBot, scannedBot: IBot) {
+    private fun createAndAddScannedBotEventToTurn(scanningBotId: BotId, scannedBot: IBot) {
         val scannedBotEvent = ScannedBotEvent(
             turn.turnNumber,
-            scanningBot.id,
+            scanningBotId,
             scannedBot.id,
             scannedBot.energy,
             scannedBot.x,
@@ -729,7 +745,7 @@ class ModelUpdater(
             scannedBot.direction,
             scannedBot.speed
         )
-        turn.addPrivateBotEvent(scanningBot.id, scannedBotEvent)
+        turn.addPrivateBotEvent(scanningBotId, scannedBotEvent)
         turn.addObserverEvent(scannedBotEvent)
     }
 
@@ -744,10 +760,10 @@ class ModelUpdater(
         val endAngle: Double
         if (spreadAngle > 0) {
             endAngle = bot.scanDirection
-            startAngle = normalAbsoluteDegrees(endAngle - spreadAngle)
+            startAngle = normalizeAbsoluteDegrees(endAngle - spreadAngle)
         } else {
             startAngle = bot.scanDirection
-            endAngle = normalAbsoluteDegrees(startAngle - spreadAngle)
+            endAngle = normalizeAbsoluteDegrees(startAngle - spreadAngle)
         }
         return Pair(startAngle, endAngle)
     }
@@ -809,7 +825,7 @@ class ModelUpdater(
             val dx = victim.x - bot.x
             val dy = victim.y - bot.y
             val angle = atan2(dy, dx)
-            val bearing = normalRelativeDegrees(Math.toDegrees(angle) - bot.direction)
+            val bearing = normalizeRelativeDegrees(toDegrees(angle) - bot.direction)
             return (((bot.speed > 0 && (bearing > -90 && bearing < 90))
                     || (bot.speed < 0 && (bearing < -90 || bearing > 90))))
         }
@@ -878,8 +894,8 @@ class ModelUpdater(
                 radarAdjustment -= bodyTurnRate
             }
 
-            bot.direction = normalAbsoluteDegrees(bot.direction + bodyTurnRate)
-            bot.gunDirection = normalAbsoluteDegrees(bot.gunDirection + gunAdjustment)
+            bot.direction = normalizeAbsoluteDegrees(bot.direction + bodyTurnRate)
+            bot.gunDirection = normalizeAbsoluteDegrees(bot.gunDirection + gunAdjustment)
             updateScanDirectionAndSpread(bot, intent, radarAdjustment) // updates the bot.radarDirection
         }
 
@@ -891,7 +907,7 @@ class ModelUpdater(
          */
         private fun updateScanDirectionAndSpread(bot: MutableBot, intent: BotIntent, radarAdjustment: Double) {
             // The radar sweep is the difference between the new and old radar direction
-            val newRadarDirection = normalAbsoluteDegrees(bot.radarDirection + radarAdjustment)
+            val newRadarDirection = normalizeAbsoluteDegrees(bot.radarDirection + radarAdjustment)
 
             val rescan = intent.rescan ?: false
             if (rescan) {

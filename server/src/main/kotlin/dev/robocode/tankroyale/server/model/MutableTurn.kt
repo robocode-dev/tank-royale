@@ -13,11 +13,11 @@ data class MutableTurn(
     /** Bullets */
     override val bullets: MutableSet<IBullet> = mutableSetOf(),
 
-    /** Observer events  */
-    override val observerEvents: MutableSet<Event> = mutableSetOf(),
-
     /** Map over bot events  */
     override val botEvents: MutableMap<BotId, MutableSet<Event>> = mutableMapOf(),
+
+    /** Observer events  */
+    override val observerEvents: MutableSet<Event> = mutableSetOf(),
 
     ) : ITurn {
 

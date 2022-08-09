@@ -15,6 +15,7 @@ object BotIntentToBotIntentMapper {
                 adjustRadarForBodyTurn = adjustRadarForBodyTurn,
                 adjustRadarForGunTurn = adjustRadarForGunTurn,
                 rescan = rescan,
+                fireAssist = fireAssist,
                 bodyColor = bodyColor,
                 turretColor = turretColor,
                 radarColor = radarColor,
