@@ -5,4 +5,6 @@ package dev.robocode.tankroyale.server.model
  * @param value ID value of the bot.
  */
 @JvmInline
-value class BotId(val value: Int)
+value class BotId(val value: Int) {
+    override fun toString() = "$value"
+}
