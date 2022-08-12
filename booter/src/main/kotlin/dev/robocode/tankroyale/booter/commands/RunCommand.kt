@@ -178,13 +178,26 @@ class RunCommand : Command() {
             envMap[Env.BOT_NAME.name] = botInfo.name
             envMap[Env.BOT_VERSION.name] = botInfo.version
             envMap[Env.BOT_AUTHORS.name] = botInfo.authors
-            envMap[Env.BOT_DESCRIPTION.name] = botInfo.description ?: ""
-            envMap[Env.BOT_HOMEPAGE.name] = botInfo.homepage ?: ""
-            envMap[Env.BOT_COUNTRY_CODES.name] = botInfo.countryCodes
             envMap[Env.BOT_GAME_TYPES.name] = botInfo.gameTypes
-            envMap[Env.BOT_PLATFORM.name] = botInfo.platform ?: ""
-            envMap[Env.BOT_PROG_LANG.name] = botInfo.programmingLang ?: ""
-            envMap[Env.BOT_INITIAL_POS.name] = botInfo.initialPosition ?: ""
+
+            botInfo.description?.let {
+                envMap[Env.BOT_DESCRIPTION.name] = it
+            }
+            botInfo.homepage?.let {
+                envMap[Env.BOT_HOMEPAGE.name] = it
+            }
+            botInfo.countryCodes?.let {
+                envMap[Env.BOT_COUNTRY_CODES.name] = it
+            }
+            botInfo.platform?.let {
+                envMap[Env.BOT_PLATFORM.name] = it
+            }
+            botInfo.programmingLang?.let {
+                envMap[Env.BOT_PROG_LANG.name] = it
+            }
+            botInfo.initialPosition?.let {
+                envMap[Env.BOT_INITIAL_POS.name] = it
+            }
         }
     }
 }

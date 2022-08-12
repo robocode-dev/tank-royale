@@ -13,10 +13,10 @@ data class Info(
     val name: String,
     val version: String,
     val authors: String,
+    val gameTypes: String,
     val description: String? = null,
     val homepage: String? = null,
-    val countryCodes: String,
-    val gameTypes: String,
+    val countryCodes: String? = null,
     val programmingLang: String? = null,
     val platform: String? = null,
     val initialPosition: String? = null

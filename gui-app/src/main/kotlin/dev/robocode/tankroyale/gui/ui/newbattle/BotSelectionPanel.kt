@@ -327,7 +327,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
                     info.authors.split(","),
                     info.description,
                     info.homepage,
-                    info.countryCodes.split(","),
+                    info.countryCodes?.split(",") ?: emptyList(),
                     info.gameTypes.split(",").toSet(),
                     info.platform,
                     info.programmingLang,
