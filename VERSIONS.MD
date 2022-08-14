@@ -21,11 +21,12 @@ Fire assistance:
 
 GUI:
 
-- Updated hints (hover texts) for Booted Bots and Joined Bots.
+- Updated various hover help texts for the dialog used for starting battles.
 
 #### Bugfixes:
 
 - GUI & Booter:
+    - Fixed major bug as the GUI and booter did not filter out bots based on their selected game types.
     - Fixed issue with parsing JSON bot info file for the optional fields `description`, `countryCodes`, `homepage`,
       causing an issue with loading a bot, when these fields were omitted.
     - Fixed issue with parsing json content within the JSON bot info due to text encoding.

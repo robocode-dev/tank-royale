@@ -43,10 +43,11 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
         val topPanel = JPanel(MigLayout("left, insets 5")).apply {
             border = BorderFactory.createTitledBorder(Strings.get("set_game_rules_and_type"))
 
+            addButton("setup_rules", onSetupRules).apply {
+                toolTipText = Hints.get("new_battle.setup_rules")
+            }
+
             val hint = Hints.get("new_battle.game_type")
-
-            addButton("setup_rules", onSetupRules)
-
             addLabel("game_type").apply {
                 toolTipText = hint
             }

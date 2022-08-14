@@ -12,21 +12,24 @@ import kotlin.io.path.isDirectory
 class DirCommand(private val botRootPaths: List<Path>) : Command() {
 
     fun listBotEntries(gameTypesCSV: String?): List<BotEntry> {
-        val gameTypes: List<String> = gameTypesCSV?.split(",")?.map { it.trim() } ?: emptyList()
+        val gameTypes: List<String> = gameTypesCSV?.split(",")?.map {
+            it.trim().lowercase(Locale.getDefault())
+        }?.filter { it.isNotBlank() } ?: emptyList()
 
         val dirs = listBotDirectories()
-        val botEntries = ArrayList<BotEntry>()
+        val botEntries = HashSet<BotEntry>()
         dirs.forEach { dirPath ->
             try {
-                val botInfo = getBotInfo(dirPath)
-                if (botInfoContainsGameTypes(botInfo, gameTypes)) {
-                    botEntries.add(BotEntry(dirPath.toAbsolutePath().toString(), botInfo!!))
+                getBotInfo(dirPath)?.let { botInfo ->
+                    if (botInfoContainsGameTypes(botInfo, gameTypes)) {
+                        botEntries += BotEntry(dirPath.toAbsolutePath().toString(), botInfo)
+                    }
                 }
             } catch (ex: Exception) {
                 System.err.println("ERROR: ${ex.message}")
             }
         }
-        return botEntries
+        return botEntries.toList()
     }
 
     fun listBotDirectories(gameTypesCSV: String?): List<Path> =
@@ -52,10 +55,10 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
     }
 
     private fun botInfoContainsGameTypes(botInfo: BotInfo?, gameTypes: List<String>) =
-        botInfo != null && (gameTypes.isEmpty() ||
-                botInfo.gameTypes
-                    .replace("\\s+".toRegex(), "") // remove all white spaces
-                    .lowercase(Locale.getDefault()).split(",") // lowercase for comparing
-                    .containsAll(gameTypes
-                        .map { it.lowercase(Locale.getDefault()).trim() })) // lowercase for comparing
+        if (gameTypes.isEmpty() || gameTypes.contains("custom")) true
+        else
+            botInfo != null && botInfo.gameTypes
+                .replace("\\s+".toRegex(), "") // remove all white spaces
+                .lowercase(Locale.getDefault()).split(",") // lowercase for comparing
+                .containsAll(gameTypes)
 }

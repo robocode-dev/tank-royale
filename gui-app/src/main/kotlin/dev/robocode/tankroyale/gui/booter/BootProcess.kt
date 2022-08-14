@@ -36,6 +36,7 @@ object BootProcess {
             "-jar",
             getBooterJar(),
             "info",
+            "--game-types=${ServerSettings.gameType.displayName}"
         )
         val botDirs = getBotDirs().ifEmpty {
             return emptyList()
