@@ -24,6 +24,7 @@ Fire assistance:
 - GUI & Booter:
     - Fixed issue with parsing JSON bot info file for the optional fields `description`, `countryCodes`, `homepage`,
       causing an issue with loading a bot, when these fields were omitted.
+    - Fixed issue with parsing json content within the JSON bot info due to text encoding.
 - Bot API:
     - Corrected the description of the `onScannedBot()` event handler.
 - Server:

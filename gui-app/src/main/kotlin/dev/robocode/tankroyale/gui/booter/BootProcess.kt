@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
 import kotlinx.serialization.decodeFromString
 import java.io.*
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.ConcurrentHashMap
@@ -44,10 +45,8 @@ object BootProcess {
         val process = ProcessBuilder(args).start()
         startThread(process)
         try {
-            val lines = readInputLines(process).joinToString().ifBlank {
-                return emptyList()
-            }
-            return json.decodeFromString(lines)
+            val jsonStr = String(process.inputStream.readAllBytes(), StandardCharsets.UTF_8)
+            return json.decodeFromString(jsonStr)
 
         } finally {
             stopThread()
@@ -175,7 +174,7 @@ object BootProcess {
     }
 
     private fun readErrorToStdError(process: Process) {
-        val reader = BufferedReader(InputStreamReader(process.errorStream!!))
+        val reader = BufferedReader(InputStreamReader(process.errorStream!!, StandardCharsets.UTF_8))
         var line: String?
         while (run {
                 line = reader.readLine()
@@ -183,16 +182,6 @@ object BootProcess {
             } != null) {
             System.err.println(line)
         }
-    }
-
-    private fun readInputLines(process: Process): List<String> {
-        val list = ArrayList<String>()
-        val reader = BufferedReader(InputStreamReader(process.inputStream))
-        var line: String?
-        while (run { line = reader.readLine(); line } != null) {
-            list += line!!
-        }
-        return list
     }
 
     private fun startThread(process: Process) {
