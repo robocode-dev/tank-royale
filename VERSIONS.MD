@@ -19,6 +19,10 @@ Fire assistance:
   `setAdjustRadarForGunTurn(false)` then fire assistance will automatically be disabled.
 - Added new `setFireAssist(enable)` to enable and disable the fire assistance explicitly.
 
+GUI:
+
+- Updated hints (hover texts) for Booted Bots and Joined Bots.
+
 #### Bugfixes:
 
 - GUI & Booter:

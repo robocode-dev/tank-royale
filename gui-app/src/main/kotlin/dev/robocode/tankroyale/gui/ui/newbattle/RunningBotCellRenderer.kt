@@ -7,6 +7,6 @@ class RunningBotCellRenderer : AbstractListCellRenderer() {
 
     override fun onRender(list: JList<out Any>?, value: Any?, index: Int, isSelected: Boolean, cellHasFocus: Boolean) {
         val dirAndPid = value as DirAndPid
-        text = dirAndPid.dir + "(" + dirAndPid.pid + ")"
+        text = dirAndPid.dir + " (" + dirAndPid.pid + ")"
     }
 }
