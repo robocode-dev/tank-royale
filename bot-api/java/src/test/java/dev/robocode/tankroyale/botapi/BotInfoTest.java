@@ -240,10 +240,9 @@ class BotInfoTest {
     @ParameterizedTest
     @NullAndEmptySource
     @MethodSource("listOfEmptyOrBlanks")
-    void constructor_Throws_GameTypesContainsEmptyOrBlanks(List<String> gameTypes) {
-        var builder = prefilledBuilder().setGameTypes(gameTypes);
-        var exception = assertThrows(IllegalArgumentException.class, builder::build);
-        assertThat(exception.getMessage()).containsIgnoringCase("game types cannot be null or empty or contain blanks");
+    void constructor_GameTypesIsEmpty_GameTypesContainsEmptyOrBlanks(List<String> gameTypes) {
+        var botInfo = prefilledBuilder().setGameTypes(gameTypes).build();
+        assertThat(botInfo.getGameTypes()).isEmpty();
     }
 
     @Test

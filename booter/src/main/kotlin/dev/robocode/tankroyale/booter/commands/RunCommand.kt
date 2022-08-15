@@ -178,8 +178,10 @@ class RunCommand : Command() {
             envMap[Env.BOT_NAME.name] = botInfo.name
             envMap[Env.BOT_VERSION.name] = botInfo.version
             envMap[Env.BOT_AUTHORS.name] = botInfo.authors
-            envMap[Env.BOT_GAME_TYPES.name] = botInfo.gameTypes
 
+            botInfo.gameTypes?.let {
+                envMap[Env.BOT_GAME_TYPES.name] = botInfo.gameTypes
+            }
             botInfo.description?.let {
                 envMap[Env.BOT_DESCRIPTION.name] = it
             }

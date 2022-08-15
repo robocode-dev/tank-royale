@@ -10,7 +10,7 @@ public static class EnumerableExtensions
     /// </summary>
     /// <param name="source"></param>
     /// <returns>true if the IEnumerable is null, empty or contains only blank lines; false otherwise.</returns>
-    public static bool IsNullOrEmptyOrContainsBlanks(this IEnumerable<string> source)
+    public static bool IsNullOrEmptyOrContainsOnlyBlanks(this IEnumerable<string> source)
     {
         return source == null || source.All(string.IsNullOrWhiteSpace);
     }

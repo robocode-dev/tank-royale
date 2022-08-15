@@ -75,16 +75,19 @@ public final class BotInfo {
      */
     public static final int MAX_NUMBER_OF_GAME_TYPES = 10;
 
-    private final String name; // required
-    private final String version; // required
-    private final List<String> authors; // required
-    private final String description; // optional
-    private final String homepage; // optional
-    private final List<String> countryCodes; // optional
-    private final Set<String> gameTypes; // required
-    private final String platform; // optional
-    private final String programmingLang; // optional
-    private final InitialPosition initialPosition; // optional
+    // required fields:
+    private final String name;
+    private final String version;
+    private final List<String> authors;
+    // optional fields:
+    private final String description;
+    private final String homepage;
+    private final List<String> countryCodes;
+    private final Set<String> gameTypes;
+    private final String platform;
+    private final String programmingLang;
+    // optional special field:
+    private final InitialPosition initialPosition;
 
     /**
      * Initializes a new instance of the BotInfo class.<br>
@@ -98,7 +101,7 @@ public final class BotInfo {
      * @param description     is a short description of the bot (optional).
      * @param homepage        is the link to a homepage for the bot (optional).
      * @param countryCodes    is the country code(s) for the bot (optional).
-     * @param gameTypes       is the game types that this bot can handle (required).
+     * @param gameTypes       is the game types that this bot can handle (optional).
      * @param platform        is the platform used for running the bot (optional).
      * @param programmingLang is the programming language used for developing the bot (optional).
      * @param initialPosition is the initial position with starting coordinate and angle (optional).
@@ -312,12 +315,11 @@ public final class BotInfo {
      *   "initialPosition": "50,50, 90"
      * }
      * </code></pre>
-     * Note that these fields are required:
+     * Note that these fields are required as these are used to identify the bot:
      * <ul>
      *     <li>name</li>
      *     <li>version</li>
      *     <li>authors</li>
-     *     <li>gameTypes</li>
      * </ul>
      * These value can take multiple values separated by a comma:
      * <ul>
@@ -325,7 +327,10 @@ public final class BotInfo {
      *     <li>countryCodes, e.g. "se, no, dk"</li>
      *     <li>gameTypes, e.g. "classic, melee, 1v1"</li>
      * </ul>
-     * The {@code initialPosition} variable is optional and should <em>only</em> be used for debugging.
+     * The {@code initialPosition} variable is optional and should <em>only</em> be used for debugging.<br>
+     * <br>
+     * The {@code gameTypes} is optional, but can be used to limit which game types the bot is capable of
+     * participating in.
      *
      * @param inputStream is the input stream providing the bot properties.
      * @return A BotInfo instance containing the bot properties read from the stream.
@@ -338,10 +343,9 @@ public final class BotInfo {
         var reader = new JsonReader(new InputStreamReader(inputStream));
         JsonProperties data = gson.fromJson(reader, JsonProperties.class);
 
-        throwExceptionIfJsonFieldIsBlank(data.name);
-        throwExceptionIfJsonFieldIsBlank(data.version);
-        throwExceptionIfJsonFieldIsBlank(data.authors);
-        throwExceptionIfJsonFieldIsBlank(data.gameTypes);
+        throwExceptionIfJsonFieldIsBlank("name", data.name);
+        throwExceptionIfJsonFieldIsBlank("version", data.version);
+        throwExceptionIfJsonFieldIsBlank("authors", data.authors);
 
         String countryCodes = data.countryCodes;
         if (countryCodes == null) {
@@ -354,7 +358,7 @@ public final class BotInfo {
                 data.description,
                 data.homepage,
                 Arrays.asList(countryCodes.split("\\s*,\\s*")),
-                new HashSet<>(Arrays.asList(data.gameTypes.split("\\s*,\\s*"))),
+                data.gameTypes == null ? null : new HashSet<>(Arrays.asList(data.gameTypes.split("\\s*,\\s*"))),
                 data.platform,
                 data.programmingLang,
                 InitialPosition.fromString(data.initialPosition));
@@ -383,7 +387,7 @@ public final class BotInfo {
     }
 
     private static List<String> processAuthors(List<String> authors) {
-        if (isNullOrEmptyOrContainsBlanks(authors)) {
+        if (isNullOrEmptyOrContainsOnlyBlanks(authors)) {
             throw new IllegalArgumentException("Authors cannot be null or empty or contain blanks");
         }
         if (authors.size() > MAX_NUMBER_OF_AUTHORS) {
@@ -443,8 +447,8 @@ public final class BotInfo {
     }
 
     private static Set<String> processGameTypes(Collection<String> gameTypes) {
-        if (isNullOrEmptyOrContainsBlanks(gameTypes)) {
-            throw new IllegalArgumentException("Game types cannot be null or empty or contain blanks");
+        if (isNullOrEmptyOrContainsOnlyBlanks(gameTypes)) {
+            return Collections.emptySet();
         }
         if (gameTypes.size() > MAX_NUMBER_OF_GAME_TYPES) {
             throw new IllegalArgumentException("Number of game types exceeds the maximum of " + MAX_NUMBER_OF_GAME_TYPES);
@@ -479,16 +483,14 @@ public final class BotInfo {
         return toNullIfBlankElseTrim(programmingLang);
     }
 
-    private static void throwExceptionIfJsonFieldIsBlank(String fieldName) {
-        if (fieldName == null || fieldName.isBlank()) {
+    private static void throwExceptionIfJsonFieldIsBlank(String fieldName, String value) {
+        if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("The required field '" + fieldName + "' is missing or blank");
         }
     }
 
-    private static boolean isNullOrEmptyOrContainsBlanks(Collection<String> collection) {
-        return (collection == null
-                || collection.isEmpty()
-                || collection.stream().allMatch(String::isBlank));
+    private static boolean isNullOrEmptyOrContainsOnlyBlanks(Collection<String> collection) {
+        return (collection == null || collection.isEmpty() || collection.stream().allMatch(String::isBlank));
     }
 
     private static String toNullIfBlankElseTrim(String value) {

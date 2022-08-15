@@ -264,9 +264,8 @@ public class BotInfoTest
     [TestCaseSource(nameof(ListOfEmptyOrBlanks))]
     public void Constructor_Throws_GameTypesContainsEmptyOrBlanks(List<string> gameTypes)
     {
-        var builder = PrefilledBuilder().SetGameTypes(gameTypes);
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower(), Is.EqualTo("game types cannot be null or empty or contain blanks"));
+        var botInfo = PrefilledBuilder().SetGameTypes(gameTypes).Build();
+        Assert.That(botInfo.GameTypes.Count, Is.Zero);
     }
 
     [Test]

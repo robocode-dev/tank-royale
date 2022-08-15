@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Robocode.TankRoyale.BotApi.Util;
@@ -71,15 +69,17 @@ public sealed class BotInfo
     /// </summary>
     public const int MaxNumberOfGameTypes = 10;
 
-    private readonly string name; // required
-    private readonly string version; // required
-    private readonly IList<string> authors; // required
-    private readonly string description; // optional
-    private readonly string homepage; // optional
+    // required fields:
+    private readonly string name;
+    private readonly string version;
+    private readonly IList<string> authors;
+    // optional fields:
+    private readonly string description;
+    private readonly string homepage;
     private readonly IList<string> countryCodes;
-    private readonly ICollection<string> gameTypes; // required
-    private readonly string platform; // optional
-    private readonly string programmingLang; // optional
+    private readonly ICollection<string> gameTypes;
+    private readonly string platform;
+    private readonly string programmingLang;
 
     /// <summary>
     /// Initializes a new instance of the BotInfo class.
@@ -93,7 +93,7 @@ public sealed class BotInfo
     /// <param name="description">A short description of the bot (optional).</param>
     /// <param name="homepage">The URL to a web page for the bot (optional).</param>
     /// <param name="countryCodes">The country code(s) for the bot (optional).</param>
-    /// <param name="gameTypes">The game type(s) that this bot can handle (required).</param>
+    /// <param name="gameTypes">The game type(s) that this bot can handle (optional).</param>
     /// <param name="platform">The platform used for running the bot (optional).</param>
     /// <param name="programmingLang">The programming language used for developing the bot (optional).</param>
     /// <param name="initialPosition">The initial position with starting coordinate and angle (optional).</param>
@@ -183,7 +183,7 @@ public sealed class BotInfo
         get => authors;
         private init
         {
-            if (value.IsNullOrEmptyOrContainsBlanks())
+            if (value.IsNullOrEmptyOrContainsOnlyBlanks())
                 throw new ArgumentException("Authors cannot be null or empty or contain blanks");
             if (value.Count > MaxNumberOfAuthors)
                 throw new ArgumentException("Number of authors exceeds the maximum of " + MaxNumberOfAuthors);
@@ -269,15 +269,21 @@ public sealed class BotInfo
         get => gameTypes;
         private init
         {
-            if (value.IsNullOrEmptyOrContainsBlanks())
-                throw new ArgumentException("Game types cannot be null or empty or contain blanks");
-            if (value.Count > MaxNumberOfGameTypes)
-                throw new ArgumentException("Number of game types exceeds the maximum of " + MaxNumberOfGameTypes);
+            if (value.IsNullOrEmptyOrContainsOnlyBlanks())
+            {
+                gameTypes = new List<string>();
+            }
+            else
+            {
+                if (value.Count > MaxNumberOfGameTypes)
+                    throw new ArgumentException("Number of game types exceeds the maximum of " + MaxNumberOfGameTypes);
 
-            if (value.Any(gameType => gameType.Length > MaxGameTypeLength))
-                throw new ArgumentException("Game type length exceeds the maximum of " + MaxGameTypeLength + " characters");
+                if (value.Any(gameType => gameType.Length > MaxGameTypeLength))
+                    throw new ArgumentException("Game type length exceeds the maximum of " + MaxGameTypeLength +
+                                                " characters");
 
-            gameTypes = value.ToListWithNoBlanks();
+                gameTypes = value.ToListWithNoBlanks();
+            }
         }
     }
 
@@ -341,12 +347,11 @@ public sealed class BotInfo
     ///   "initialPosition": "50,50, 90"
     /// }
     /// </code>
-    /// Note that these fields are required:
+    /// Note that these fields are required as these are used to identify the bot:
     /// <ul>
     ///   <li>name</li>
     ///   <li>version</li>
     ///   <li>authors</li>
-    ///   <li>gameTypes</li>
     /// </ul>
     /// These value can take multiple values separated by a comma:
     /// <ul>
@@ -355,6 +360,9 @@ public sealed class BotInfo
     ///   <li>gameTypes, e.g. "classic, melee, 1v1"</li>
     /// </ul>
     /// The <c>initialPosition</c> variable is optional and should <em>only</em> be used for debugging.
+    ///
+    /// The <c>gameTypes</c> is optional, but can be used to limit which game types the bot is capable of
+    /// participating in.
     /// </example>
     /// <param name="filePath">Is the file path, e.g. "bot-settings.json</param>
     /// <param name="basePath">Is the base path, e.g. <c>Directory.GetCurrentDirectory()</c>.
@@ -379,16 +387,15 @@ public sealed class BotInfo
     public static BotInfo FromConfiguration(IConfiguration configuration)
     {
         var name = configuration["name"];
-        ThrowExceptionIfFieldIsBlank(name);
+        ThrowExceptionIfFieldIsBlank("name" , name);
 
         var version = configuration["version"];
-        ThrowExceptionIfFieldIsBlank(version);
+        ThrowExceptionIfFieldIsBlank("version", version);
 
         var authors = configuration["authors"];
-        ThrowExceptionIfFieldIsBlank(authors);
+        ThrowExceptionIfFieldIsBlank("authors", authors);
 
         var gameTypes = configuration["gameTypes"];
-        ThrowExceptionIfFieldIsBlank(gameTypes);
 
         var countryCodes = configuration["countryCodes"] ?? "";
         return new BotInfo(
@@ -398,7 +405,7 @@ public sealed class BotInfo
             configuration["description"],
             configuration["url"],
             Regex.Split(countryCodes, @"\s*,\s*"),
-            Regex.Split(gameTypes, @"\s*,\s*").ToHashSet(),
+            gameTypes == null ? null : Regex.Split(gameTypes, @"\s*,\s*").ToHashSet(),
             configuration["platform"],
             configuration["programmingLang"],
             InitialPosition.FromString(configuration["initialPosition"])
@@ -410,9 +417,9 @@ public sealed class BotInfo
         return value == null ? null : string.IsNullOrWhiteSpace(value) ? null : value.Trim();
     }
 
-    private static void ThrowExceptionIfFieldIsBlank(string fieldName)
+    private static void ThrowExceptionIfFieldIsBlank(string fieldName, string value)
     {
-        if (string.IsNullOrWhiteSpace(fieldName))
+        if (string.IsNullOrWhiteSpace(value))
         {
             throw new ArgumentException($"The required JSON field '{fieldName}' is missing or blank");
         }

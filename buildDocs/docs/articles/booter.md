@@ -71,13 +71,13 @@ MyFirstBot.json for .Net:
 {
   "name": "My First Bot",
   "version": "1.0",
-  "gameTypes": "melee, classic, 1v1",
   "authors": "Mathew Nelson, Flemming N. Larsen",
   "description": "A sample bot that is probably the first bot you will learn about.",
   "homepage": "",
   "countryCodes": "us, dk",
   "platform": ".Net 6.0",
-  "programmingLang": "C# 10.0"
+  "programmingLang": "C# 10.0",
+  "gameTypes": "melee, classic, 1v1"
 }
 ```
 
@@ -85,7 +85,6 @@ These fields are required:
 
 * name
 * version
-* gameTypes
 * authors
 
 The remaining fields are all optional, but recommended.
@@ -94,7 +93,6 @@ Meaning of each field in the JSON file:
 
 * *name*: is the display name of the bot.
 * *version*: is the version of the bot, where [SEMVER] is the recommended format, but not a requirement.
-* *gameTypes*: is a comma-separated list of the game types that bot supports (see below).
 * *authors*: is a comma-separated list with the (full) name of the bot author(s). The name could be a nickname or
   handle.
 * *description*: is a brief description of the bot.
@@ -102,8 +100,23 @@ Meaning of each field in the JSON file:
 * *countryCodes*: is a comma-separated list of [Alpha-2] country codes for the bot author(s).
 * *platform*: is the platform required for running the bot, e.g. Java 17 or .Net 6.0.
 * *programmingLang*: is the programming language used for programming the bot, e.g. C# or Kotlin.
+* *gameTypes*: is a comma-separated list containing the [game types](game_types.md) that the bot is supporting, meaning
+  that it should
+  not play in battles with game types other than the listed ones. When this field is omitted, the bot will participate
+  in any type of game.
 
-The game types are described [here](game_types.md).
+### Escaping special characters
+
+Note that some characters are reserved in [JSON] and _must_ be escaped within the JSON strings. Otherwise, the config
+file for the bot cannot be read properly, and the bot might not boot.
+
+- **Double quote** is replaced with `\"`
+- **Backslash** to be replaced with `\\`
+- **Newline** is replaced with `\n`
+- **Carriage return** is replaced with `\r`
+- **Tab** is replaced with `\t`
+- **Form feed** is replaced with `\f`
+- **Backspace** is replaced with `\b`
 
 [JSON config file]: #json-config-file
 

@@ -23,6 +23,12 @@ GUI:
 
 - Updated various hover help texts for the dialog used for starting battles.
 
+Bot info:
+
+- The `gamesTypes` field is no longer required with the JSON config file of a bot. When it omitted, the bot will be able
+  to participate in _all_ game types. When defined, the bot will only be able to participate in battles with the game
+  type(s) defined within this field.
+
 #### Bugfixes:
 
 - GUI & Booter:

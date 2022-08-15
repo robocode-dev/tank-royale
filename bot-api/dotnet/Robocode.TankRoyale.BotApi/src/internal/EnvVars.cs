@@ -68,7 +68,7 @@ internal static class EnvVars
             throw new BotException(MissingEnvValue + BotVersion);
         }
 
-        if (GetBotAuthors().IsNullOrEmptyOrContainsBlanks())
+        if (GetBotAuthors().IsNullOrEmptyOrContainsOnlyBlanks())
         {
             throw new BotException(MissingEnvValue + BotAuthors);
         }

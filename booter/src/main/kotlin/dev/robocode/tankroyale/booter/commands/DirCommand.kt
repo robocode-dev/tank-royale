@@ -54,11 +54,22 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
         return dirs
     }
 
-    private fun botInfoContainsGameTypes(botInfo: BotInfo?, gameTypes: List<String>) =
-        if (gameTypes.isEmpty() || gameTypes.contains("custom")) true
-        else
-            botInfo != null && botInfo.gameTypes
-                .replace("\\s+".toRegex(), "") // remove all white spaces
-                .lowercase(Locale.getDefault()).split(",") // lowercase for comparing
-                .containsAll(gameTypes)
+    private fun botInfoContainsGameTypes(botInfo: BotInfo?, gameTypes: List<String>): Boolean {
+        if (gameTypes.isEmpty() || gameTypes.contains("custom")) {
+            return true
+        } else {
+            if (botInfo != null) {
+                val botGameTypes = botInfo.gameTypes?.replace("\\s+".toRegex(), "") // remove all white spaces
+                return if (botGameTypes.isNullOrEmpty()) {
+                    true
+                } else {
+                    botGameTypes
+                        .lowercase(Locale.getDefault())
+                        .split(",") // lowercase for comparing
+                        .containsAll(gameTypes)
+                }
+            }
+            return false
+        }
+    }
 }

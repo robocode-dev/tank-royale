@@ -95,7 +95,6 @@ MyFirstBot.json:
 {
   "name": "My First Bot",
   "version": "1.0",
-  "gameTypes": "melee, classic, 1v1",
   "authors": "Mathew Nelson, Flemming N. Larsen",
   "description": "A sample bot that is probably the first bot you will learn about.",
   "homepage": "",
