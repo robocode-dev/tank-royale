@@ -11,7 +11,7 @@ data class BotInfo(
     val description: String? = null,
     val homepage: String? = null,
     val countryCodes: List<String>,
-    val gameTypes: Set<String>? = null,
+    val gameTypes: Set<String>,
     val platform: String? = null,
     val programmingLang: String? = null,
     val initialPosition: InitialPosition? = null,

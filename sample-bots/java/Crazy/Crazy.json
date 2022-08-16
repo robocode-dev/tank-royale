@@ -1,7 +1,6 @@
 {
   "name": "Crazy",
   "version": "1.0",
-  "gameTypes": "melee, classic, 1v1",
   "authors": "Mathew Nelson, Flemming N. Larsen",
   "description": "This bot moves around in a crazy pattern.",
   "homepage": "",

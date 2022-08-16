@@ -1,7 +1,6 @@
 {
   "name": "Walls",
   "version": "1.0",
-  "gameTypes": "melee, classic, 1v1",
   "authors": "Mathew Nelson, Flemming N. Larsen",
   "description": "Moves around the outer edge with the gun facing in.",
   "homepage": "",
