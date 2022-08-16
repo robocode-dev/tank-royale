@@ -28,6 +28,8 @@ Bot info:
 - The `gamesTypes` field is no longer required with the JSON config file of a bot. When it omitted, the bot will be able
   to participate in _all_ game types. When defined, the bot will only be able to participate in battles with the game
   type(s) defined within this field.
+- The `gameTypes` field has been removed from the sample bots, as all sample bots can participate in any game type.
+  At least for now.
 
 #### Bugfixes:
 
