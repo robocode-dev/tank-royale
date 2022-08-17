@@ -1,6 +1,6 @@
 # Versions
 
-## In progress - 0.15.0 - Added fire assistance
+## 0.15.0 - Added fire assistance - 17-Aug-2022
 
 #### Improvements
 

@@ -1032,6 +1032,19 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.BaseBot.SetFire
   nameWithType: BaseBot.SetFire
+- uid: Robocode.TankRoyale.BotApi.BaseBot.SetFireAssist(System.Boolean)
+  name: SetFireAssist(Boolean)
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_SetFireAssist_System_Boolean_
+  commentId: M:Robocode.TankRoyale.BotApi.BaseBot.SetFireAssist(System.Boolean)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.SetFireAssist(System.Boolean)
+  nameWithType: BaseBot.SetFireAssist(Boolean)
+- uid: Robocode.TankRoyale.BotApi.BaseBot.SetFireAssist*
+  name: SetFireAssist
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_SetFireAssist_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BaseBot.SetFireAssist
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.SetFireAssist
+  nameWithType: BaseBot.SetFireAssist
 - uid: Robocode.TankRoyale.BotApi.BaseBot.SetRescan
   name: SetRescan()
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_SetRescan
@@ -5434,6 +5447,19 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.SetFire
   nameWithType: IBaseBot.SetFire
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.SetFireAssist(System.Boolean)
+  name: SetFireAssist(Boolean)
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetFireAssist_System_Boolean_
+  commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.SetFireAssist(System.Boolean)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.SetFireAssist(System.Boolean)
+  nameWithType: IBaseBot.SetFireAssist(Boolean)
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.SetFireAssist*
+  name: SetFireAssist
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetFireAssist_
+  commentId: Overload:Robocode.TankRoyale.BotApi.IBaseBot.SetFireAssist
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.SetFireAssist
+  nameWithType: IBaseBot.SetFireAssist
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.SetRescan
   name: SetRescan()
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetRescan
