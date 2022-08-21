@@ -44,7 +44,7 @@ object BootProcess {
         botDirs.forEach { args += it }
 
         val process = ProcessBuilder(args).start()
-        startThread(process)
+        startThread(process, false)
         try {
             val jsonStr = String(process.inputStream.readAllBytes(), StandardCharsets.UTF_8)
             return json.decodeFromString(jsonStr)
@@ -85,7 +85,7 @@ object BootProcess {
         runProcess = ProcessBuilder(args).start()
 
         isRunning.set(true)
-        startThread(runProcess!!)
+        startThread(runProcess!!, true)
     }
 
     private fun runBotsWithRunningBotProcess(botDirNames: List<String>) {
@@ -185,11 +185,12 @@ object BootProcess {
         }
     }
 
-    private fun startThread(process: Process) {
+    private fun startThread(process: Process, doReadInputToProcessIds: Boolean) {
         thread = Thread {
             while (thread?.isInterrupted == false) {
                 try {
-                    readInputToProcessIds(process)
+                    if (doReadInputToProcessIds)
+                        readInputToProcessIds(process)
                     readErrorToStdError(process)
                 } catch (e: InterruptedException) {
                     break

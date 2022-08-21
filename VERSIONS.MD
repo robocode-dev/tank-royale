@@ -1,5 +1,12 @@
 # Versions
 
+## In progress
+
+#### Bugfixes:
+
+- GUI:
+    - Issue with reading huge bot list from the booter when reading from stdin.
+
 ## 0.15.0 - Added fire assistance - 17-Aug-2022
 
 #### Improvements
