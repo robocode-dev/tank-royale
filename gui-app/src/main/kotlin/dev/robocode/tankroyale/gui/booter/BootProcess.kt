@@ -3,6 +3,8 @@ package dev.robocode.tankroyale.gui.booter
 import dev.robocode.tankroyale.gui.model.MessageConstants
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
+import dev.robocode.tankroyale.gui.ui.Messages
+import dev.robocode.tankroyale.gui.ui.UiTitles
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
 import kotlinx.serialization.decodeFromString
@@ -12,6 +14,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
+import javax.swing.JOptionPane
 
 object BootProcess {
 
@@ -47,6 +50,15 @@ object BootProcess {
         startThread(process, false)
         try {
             val jsonStr = String(process.inputStream.readAllBytes(), StandardCharsets.UTF_8)
+            if (jsonStr.isBlank()) {
+                JOptionPane.showConfirmDialog(
+                    null,
+                    Messages.get("no_bot_directories_found"),
+                    UiTitles.get("error"),
+                    JOptionPane.OK_OPTION)
+
+                return emptyList()
+            }
             return json.decodeFromString(jsonStr)
 
         } finally {
