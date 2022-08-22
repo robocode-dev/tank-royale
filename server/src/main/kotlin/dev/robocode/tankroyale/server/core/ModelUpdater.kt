@@ -118,11 +118,9 @@ class ModelUpdater(
         turn.turnNumber++
         turn.resetEvents()
 
-        savePreviousGunDirections()
-
         executeBotIntents()
 
-        checkAndHandleScans() // scanning first due to fire assist
+        checkAndHandleScans()
         coolDownAndFireGuns()
         checkAndHandleBotWallCollisions()
         checkAndHandleBotCollisions()
@@ -616,10 +614,6 @@ class ModelUpdater(
         }
     }
 
-    private fun savePreviousGunDirections() {
-        botsMap.values.forEach { it.previousGunDirection = it.gunDirection }
-    }
-
     /** Cool down and fire guns. */
     private fun coolDownAndFireGuns() {
         botsMap.values.forEach { bot ->
@@ -661,10 +655,10 @@ class ModelUpdater(
     private fun fireBullet(bot: MutableBot, firepower: Double) {
         firepower.coerceAtMost(MAX_FIREPOWER)
 
-        var fireDirection = bot.previousGunDirection
+        var fireDirection = bot.gunDirection
 
         // fire assistance (fireAssist = true, bot is scanning other bot, and gun and radar angle must be the same
-        if (bot.gunDirection == bot.radarDirection && botIntentsMap[bot.id]?.fireAssist == true) {
+        if (botIntentsMap[bot.id]?.fireAssist == true && fireDirection == bot.radarDirection) {
             turn.botEvents[bot.id]?.find { it is ScannedBotEvent }?.let {
                 val scan = (it as ScannedBotEvent)
                 fireDirection = angle(bot.x, bot.y, scan.x, scan.y) // fire assisted angle

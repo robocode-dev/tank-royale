@@ -5,7 +5,9 @@
 #### Bugfixes:
 
 - Bot API:
-  - Fixed `waitFor(Condition)` so it executes before checking the condition the first time.
+    - Fixed `waitFor(Condition)` so it executes before checking the condition the first time.
+- Server
+    - Adjusted firing to fire at updated gun direction for a new turn.
 - GUI:
     - Issue with reading huge bot list from the booter when reading from stdin.
 

@@ -70,9 +70,6 @@ data class MutableBot(
     /** Scan angle in degrees */
     override var scanSpreadAngle: Double = radarSpreadAngle,
 
-    /** Previous gun direction in degrees */
-    var previousGunDirection: Double = Double.NaN,
-
     ) : IBot {
 
     /** Previous position (x, y) */
