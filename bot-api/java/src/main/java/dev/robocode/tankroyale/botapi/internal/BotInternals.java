@@ -354,10 +354,10 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     public void waitFor(Condition condition) {
-        while (isRunning() && !condition.test()) {
-            bot.setRescan();
+        do {
             bot.go();
         }
+        while (isRunning() && !condition.test());
     }
 
     public void stop() {

@@ -4,6 +4,8 @@
 
 #### Bugfixes:
 
+- Bot API:
+  - Fixed `waitFor(Condition)` so it executes before checking the condition the first time.
 - GUI:
     - Issue with reading huge bot list from the booter when reading from stdin.
 

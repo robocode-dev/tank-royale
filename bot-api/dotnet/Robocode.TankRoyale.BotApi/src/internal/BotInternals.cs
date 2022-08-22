@@ -418,11 +418,10 @@ internal sealed class BotInternals : IStopResumeListener
 
     internal void WaitFor(Condition condition)
     {
-        while (IsRunning && !condition.Test())
+        do
         {
             bot.Go();
-            bot.SetRescan();
-        }
+        } while (IsRunning && !condition.Test());
     }
 
     internal void Stop()
