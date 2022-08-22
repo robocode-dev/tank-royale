@@ -12,7 +12,7 @@ who will have no direct influence on the game. Instead, the player must write a 
 program is telling how the bot must behave and react to events occurring in the battle arena.
 
 The name _Robocode_ originates from an [older version of the game](https://robocode.sourceforge.io/) and is a short
-for "Robot code". With this new version, the world "bot" is used instead of "robot".
+for "Robot code". With this new version, the term "bot" is preferred over "robot".
 
 The game is designed to help you learn how to program and improve your programming skills and have fun while doing it.
 Robocode is also useful when studying or improving [machine learning](https://en.wikipedia.org/wiki/Machine_learning)
