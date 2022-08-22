@@ -161,14 +161,16 @@ object BootProcess {
     }
 
     private fun readInputToProcessIds(process: Process) {
-        val reader = BufferedReader(InputStreamReader(process.inputStream!!))
-        while (thread?.isInterrupted == false) {
-            val line = reader.readLine()
-            if (line != null && line.isNotBlank()) {
-                if (line.startsWith("stopped ")) {
-                    removeProcessId(line)
-                } else {
-                    addProcessId(line)
+        process.inputStream?.let {
+            val reader = BufferedReader(InputStreamReader(process.inputStream))
+            while (thread?.isInterrupted == false) {
+                val line = reader.readLine()
+                if (line != null && line.isNotBlank()) {
+                    if (line.startsWith("stopped ")) {
+                        removeProcessId(line)
+                    } else {
+                        addProcessId(line)
+                    }
                 }
             }
         }
