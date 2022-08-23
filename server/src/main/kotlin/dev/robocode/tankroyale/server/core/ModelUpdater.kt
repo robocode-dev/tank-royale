@@ -653,7 +653,7 @@ class ModelUpdater(
      * @param firepower is the amount of firepower.
      */
     private fun fireBullet(bot: MutableBot, firepower: Double) {
-        firepower.coerceAtMost(MAX_FIREPOWER)
+        val power = firepower.coerceAtMost(MAX_FIREPOWER)
 
         var fireDirection = bot.gunDirection
 
@@ -665,14 +665,14 @@ class ModelUpdater(
             }
         }
 
-        bot.gunHeat = calcGunHeat(firepower)
+        bot.gunHeat = calcGunHeat(power)
 
         val bullet = MutableBullet(
             id = BulletId(++nextBulletId),
             botId = bot.id,
             startPosition = bot.position.toPoint(),
             direction = fireDirection,
-            power = firepower,
+            power = power,
             color = bot.bulletColor,
         )
         bullets += bullet
