@@ -25,6 +25,7 @@ final class BotHandshakeFactory {
         handshake.setProgrammingLang(botInfo.getProgrammingLang());
         handshake.setInitialPosition(InitialPositionMapper.map(botInfo.getInitialPosition()));
         handshake.setSecret(secret);
+        handshake.setProcessId((int)ProcessHandle.current().pid()); // 64-bit Linux is up to 2^22 bit
         return handshake;
     }
 }
