@@ -19,6 +19,7 @@ object BotHandshakeToBotInfoMapper {
             botInfo.initialPosition = initialPosition
             botInfo.host = hostName
             botInfo.port = port
+            botInfo.bootId = bootId
         }
         return botInfo
     }

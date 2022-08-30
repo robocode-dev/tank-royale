@@ -17,7 +17,7 @@ data class BotInfo(
     val initialPosition: InitialPosition? = null,
     val host: String, // bot directory name, when running locally
     val port: Int = -1,
-    var pid: Long? = null
+    var bootId: Long? = null
 
 ) : Comparable<BotInfo> {
 

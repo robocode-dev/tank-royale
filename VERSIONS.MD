@@ -1,12 +1,24 @@
 # Versions
 
-## In progress
+## 0.16.0 - Introduction of boot id
 
-#### Improvements:
+The _boot id_ has been introduced to make it easier to identify which bots have booted locally. Previously, only the
+host and port were available on the server side, making it hard to identify the bots started from a controller.
+Now the boot id uniquely identifies a booted bot.
+
+Previously, a process id (pid) was used to uniquely identify a bot being booted, but the pid has been replaced by the
+new boot id.
 
 - Schema:
-    - The `bot-handshake` has been extended to include the process id (pid) of the bot, if it is available. Note that
-      not all bots might run from a process.
+    - The `bot-handshake` has been extended to include the `bootId` when the bot is booted locally. This field may be
+      empty when a bot has not been booted by the Booter.
+- Booter:
+    - Now generates a unique boot id for each booted bot, and sends this to the bot via the new `BOOT_ID` environment
+      variable.
+- Bot API:
+    - Takes the boot id from the `BOOT_ID` environment variable and includes this within the bot `bot-handshake` when it
+      is
+      sent to the server.
 
 #### Bugfixes:
 
