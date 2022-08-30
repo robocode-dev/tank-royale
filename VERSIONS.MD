@@ -2,12 +2,6 @@
 
 ## In progress
 
-#### Improvements:
-
-- Schema:
-    - The `bot-handshake` has been extended to include the process id (pid) of the bot, if it is available. Note that
-      not all bots might run from a process.
-
 #### Bugfixes:
 
 - Bot API:

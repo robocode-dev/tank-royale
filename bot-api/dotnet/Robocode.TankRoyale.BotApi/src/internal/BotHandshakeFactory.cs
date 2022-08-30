@@ -24,8 +24,7 @@ internal static class BotHandshakeFactory
             Platform = botInfo.Platform,
             ProgrammingLang = botInfo.ProgrammingLang,
             InitialPosition = InitialPositionMapper.Map(botInfo.InitialPosition),
-            Secret = serverSecret,
-            ProcessId = System.Environment.ProcessId
+            Secret = serverSecret
         };
         return handshake;
     }

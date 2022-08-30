@@ -44,9 +44,6 @@ properties:
   secret:
     description: Secret used for access control with the server
     type: string
-  processId:
-    description: Process id (pid) of the process running the bot, or not set, if the bot is not being run from a process
-    type: integer
 required:
   - name
   - version
