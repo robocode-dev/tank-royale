@@ -77,7 +77,8 @@ MyFirstBot.json for .Net:
   "countryCodes": "us, dk",
   "platform": ".Net 6.0",
   "programmingLang": "C# 10.0",
-  "gameTypes": "melee, classic, 1v1"
+  "gameTypes": "melee, classic, 1v1",
+  "initialPosition": "50,50, 90"
 }
 ```
 
@@ -104,6 +105,8 @@ Meaning of each field in the JSON file:
   that it should
   not play in battles with game types other than the listed ones. When this field is omitted, the bot will participate
   in any type of game.
+* *initialPosition*: is a comma-separated list containing the starting x and y coordinate, and direction
+  (body, gun, and radar) when the game begins. [^initial-start-position]
 
 ### Escaping special characters
 
@@ -126,3 +129,4 @@ file for the bot cannot be read properly, and the bot might not boot.
 
 [Alpha-2]: https://www.iban.com/country-codes
 
+[^initial-start-position]: ? "Note that _initial start position_ must be enabled to allow the bot to have the same starting position each game"

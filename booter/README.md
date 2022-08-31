@@ -1,22 +1,22 @@
 # Booter
 
-This module contains the *booter* used for booting up bots. The booter starts up one to multiple bots from bot
-directories.
+This module contains the *booter* used for booting up bots that runs locally only. The booter starts up one to multiple
+bots from bot directories.
 
-The booter is a command-line Java application that can be run independently of the Robocode GUI.
-
-The booter is running on the [Java 11] platform and the [Kotlin] programming language (typically the newest
-available version).
+The booter is a command-line [Java 11]+ application that can be run independently of the Robocode GUI. The booter is
+coded with the [Kotlin] programming language.
 
 ## Starting up bots
 
-The booter does not know how to start up a specific bot for a specific platform and programming language, and hence
-depends on the scripts for starting up a bot.
+The booter does not know how to start up a specific bot for a specific platform and programming language. The trick is
+to use startup scripts that takes care of starting up a bot correctly. Hence, the scripts will be different between
+platforms and programming languages.
 
+In order for the trick to work, conventions are being used for naming the scripts and config file for a bootable bot.
 Read more details about the conventions for the bot directories [here](../docs/articles/booter.html).
 
-When a bot is started up, it will be joining a server via WebSockets. If the server is not running, the boot procedure
-will fail.
+When a bot is started up, it will be joining a server via WebSocket. If the server is not running, the boot procedure
+will fail. The same is the case if there is a problem with the script or code for running the bot.
 
 ## Bot processes
 
@@ -117,17 +117,18 @@ The `run` command is used like this to run bots:
 This will run the two bots located in `c:\bots-java\Corners` and `c:\bots-java\Target`, and write something like this
 to [stdout]:
 
-    14808;c:\bots-java\Corners
-    22224;c:\bots-java\Target
+    1984092035700;c:\bots-java\Corners
+    1984092047900;c:\bots-java\Target
 
-The booter writes out the process id for the bots is started in this format:
+The booter writes out the boot id for the bots is started in this format:
 
-    {pid};{dir}
+    {boot-id};{dir}
 
-- `{pid}` is the process id
+- `{boot-id}` is the boot id
 - `{dir}` is the bot directory
 
-So in the example above, the Corners bots in `c:\bots-java\Corners` were started in a process with process id 14808.
+So in the example above, the Corners bots in `c:\bots-java\Corners` were started in a process with boot id
+1984092035700.
 
 It is possible to see all available [stdin] commands for `run` by writing:
 
@@ -145,22 +146,22 @@ Example:
 
     run c:/bots-java/Corners
 
-Executing the `run` stdin command will write out the `{pid};{dir}` information similar to the regular `run` command.
+Executing the `run` stdin command will write out the `{boot-id};{dir}` information similar to the regular `run` command.
 
 ### The `stop` stdin command
 
 It is possible to stop a bot that is run by the booter, by writing this to its [stdin]:
 
-    stop {pid}
+    stop {boot-id}
 
-Here the `{pid}` is the process id (pid) of the bot to run.
+Here the `{boot-id}` is the boot id of the bot to stop.
 
 Example:
 
-    stop 12264
+    stop 1984092035700
 
-Executing the `stop` std command will write out `stopped {pid}`, e.g. `stopped 12264`, which is useful if several bots
-are being stopped in parallel and terminated in a different time/order.
+Executing the `stop` std command will write out `stopped {boot-id}`, e.g. `stopped 1984092035700`, which is useful if
+several bots are being stopped in parallel and terminated in a different time/order.
 
 ### The `quit` stdin command
 
