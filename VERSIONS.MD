@@ -1,6 +1,6 @@
 # Versions
 
-## 0.16.0 - Introduction of boot id
+## 0.16.0 - Introduction of boot id - 31-Aug-2022
 
 The _boot id_ has been introduced to make it easier to identify which bots have booted locally. Previously, only the
 host and port were available on the server side, making it hard to identify the bots started from a controller.
