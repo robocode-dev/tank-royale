@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.components
 
+import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
@@ -23,10 +24,22 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
     fun addElement(element: T) {
         synchronized(list) {
             list.add(element)
-            list.sort()
+
+            list.sortWith { o1, o2 ->
+                when (element) {
+                    is BotInfo -> {
+                        val b1 = o1 as BotInfo
+                        val b2 = o2 as BotInfo
+                        b1.host.lowercase(Locale.getDefault()).compareTo(b2.host.lowercase(Locale.getDefault()))
+                    } else -> {
+                        o1.toString().lowercase(Locale.getDefault()).compareTo(o2.toString().lowercase(Locale.getDefault()))
+                    }
+                }
+            }
         }
         notifyChanged()
     }
+
 
     fun clear() {
         synchronized(list) {

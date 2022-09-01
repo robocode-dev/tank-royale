@@ -1,5 +1,12 @@
 # Versions
 
+## In progress
+
+#### Improvements
+
+- GUI:
+    - Improved sorting of the bot directories list to be case-insensitive.
+
 ## 0.16.0 - Introduction of boot id - 31-Aug-2022
 
 The _boot id_ has been introduced to make it easier to identify which bots have booted locally. Previously, only the
