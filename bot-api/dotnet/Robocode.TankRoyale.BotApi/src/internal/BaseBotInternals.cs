@@ -31,7 +31,7 @@ public sealed class BaseBotInternals
 
     private readonly IBaseBot baseBot;
     private readonly BotInfo botInfo;
-    private S.BotIntent botIntent = NewBotIntent();
+    private readonly S.BotIntent botIntent = NewBotIntent();
 
     private int myId;
     private GameSetup gameSetup;
@@ -149,6 +149,14 @@ public sealed class BaseBotInternals
         return botIntent;
     }
 
+    private void ResetMovement() {
+        botIntent.TurnRate = null;
+        botIntent.GunTurnRate = null;
+        botIntent.RadarTurnRate = null;
+        botIntent.TargetSpeed = null;
+        botIntent.Firepower = null;
+    }
+
     internal BotEventHandlers BotEventHandlers { get; }
 
     internal IList<E.BotEvent> Events => eventQueue.Events;
@@ -172,7 +180,7 @@ public sealed class BaseBotInternals
 
     private void OnRoundStarted(E.RoundStartedEvent e)
     {
-        botIntent = NewBotIntent();
+        ResetMovement();
         eventQueue.Clear();
         IsStopped = false;
         eventHandlingDisabled = false;
@@ -301,7 +309,6 @@ public sealed class BaseBotInternals
     {
         get
         {
-            if (botIntent == null) throw new BotException(GameNotRunningMsg);
             return botIntent;
         }
     }

@@ -64,7 +64,7 @@ public final class BaseBotInternals {
 
     private final IBaseBot baseBot;
     private final BotInfo botInfo;
-    private BotIntent botIntent = newBotIntent();
+    private final BotIntent botIntent = newBotIntent();
 
     private Integer myId;
     private dev.robocode.tankroyale.botapi.GameSetup gameSetup;
@@ -177,6 +177,14 @@ public final class BaseBotInternals {
         return botIntent;
     }
 
+    private void resetMovement() {
+        botIntent.setTurnRate(null);
+        botIntent.setGunTurnRate(null);
+        botIntent.setRadarTurnRate(null);
+        botIntent.setTargetSpeed(null);
+        botIntent.setFirepower(null);
+    }
+
     BotEventHandlers getBotEventHandlers() {
         return botEventHandlers;
     }
@@ -202,7 +210,7 @@ public final class BaseBotInternals {
     }
 
     private void onRoundStarted(RoundStartedEvent e) {
-        botIntent = newBotIntent();
+        resetMovement();
         eventQueue.clear();
         isStopped = false;
         eventHandlingDisabled = false;
@@ -319,9 +327,6 @@ public final class BaseBotInternals {
     }
 
     public BotIntent getBotIntent() {
-        if (botIntent == null) {
-            throw new BotException(GAME_NOT_RUNNING_MSG);
-        }
         return botIntent;
     }
 
