@@ -132,7 +132,8 @@ public final class BaseBotInternals {
 
         gson = new GsonBuilder()
                 .registerTypeAdapterFactory(typeFactory)
-                .serializeSpecialFloatingPointValues() // to avoid IllegalArgumentException: -Infinity is not a valid double value as per JSON specification
+                // to avoid IllegalArgumentException: -Infinity is not a valid double value as per JSON specification
+                .serializeSpecialFloatingPointValues()
                 .create();
     }
 
