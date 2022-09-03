@@ -11,9 +11,4 @@ data class MutableRound(
     /** Flag specifying if round has ended yet */
     override var roundEnded: Boolean = false,
 
-    ) : IRound {
-
-    /** Returns an immutable copy of this round */
-    fun toRound() =
-        Round(roundNumber, turns.toList(), roundEnded)
-}
+    ) : IRound
