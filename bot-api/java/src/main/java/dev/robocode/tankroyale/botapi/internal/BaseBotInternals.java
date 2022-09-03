@@ -103,15 +103,15 @@ public final class BaseBotInternals {
     private final Map<Class<? extends BotEvent>, Integer> eventPriorities = new HashMap<>();
 
     {
-        eventPriorities.put(TickEvent.class, TICK);
         eventPriorities.put(WonRoundEvent.class, WON_ROUND);
         eventPriorities.put(SkippedTurnEvent.class, SKIPPED_TURN);
+        eventPriorities.put(TickEvent.class, TICK);
         eventPriorities.put(CustomEvent.class, CUSTOM);
         eventPriorities.put(BotDeathEvent.class, BOT_DEATH);
-        eventPriorities.put(BulletFiredEvent.class, BULLET_FIRED);
         eventPriorities.put(BulletHitWallEvent.class, BULLET_HIT_WALL);
         eventPriorities.put(BulletHitBulletEvent.class, BULLET_HIT_BULLET);
         eventPriorities.put(BulletHitBotEvent.class, BULLET_HIT_BOT);
+        eventPriorities.put(BulletFiredEvent.class, BULLET_FIRED);
         eventPriorities.put(HitByBulletEvent.class, HIT_BY_BULLET);
         eventPriorities.put(HitWallEvent.class, HIT_WALL);
         eventPriorities.put(HitBotEvent.class, HIT_BOT);
