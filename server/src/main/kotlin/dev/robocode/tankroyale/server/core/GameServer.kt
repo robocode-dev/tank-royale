@@ -481,8 +481,9 @@ class GameServer(
         }
     }
 
-    private fun send(conn: WebSocket, message: Message) {
-        gson.toJson(message).also {
+    private fun send(conn: WebSocket, msg: Message) {
+        requireNotNull(msg.type) { "'type' is required on the message" }
+        gson.toJson(msg).also {
             try {
                 conn.send(it)
             } catch (ignore: WebsocketNotConnectedException) {
