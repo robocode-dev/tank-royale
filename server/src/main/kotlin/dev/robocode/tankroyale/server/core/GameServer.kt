@@ -384,7 +384,7 @@ class GameServer(
                         broadcastRoundEndedToAll(roundNumber, turnNumber)
                     }
                 }
-                broadcastGameTickToParticipants(roundNumber, this)
+                sendGameTickToParticipants(roundNumber, this)
                 broadcastGameTickToObservers(roundNumber, this)
             }
         }
@@ -427,7 +427,7 @@ class GameServer(
         })
     }
 
-    private fun broadcastGameTickToParticipants(roundNumber: Int, turn: ITurn) {
+    private fun sendGameTickToParticipants(roundNumber: Int, turn: ITurn) {
         participants.forEach { conn ->
             participantIds[conn]?.apply {
                 TurnToTickEventForBotMapper.map(roundNumber, turn, this)?.apply {
