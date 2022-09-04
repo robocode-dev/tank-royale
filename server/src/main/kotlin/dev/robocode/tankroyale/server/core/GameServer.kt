@@ -378,14 +378,15 @@ class GameServer(
 
                     // Clear bot intents after skipped turns have been handled, but BEFORE broadcasting tick event
                     botIntents.clear()
-
-                    if (roundEnded) {
-                        log.debug("Round ended: $roundNumber")
-                        broadcastRoundEndedToAll(roundNumber, turnNumber)
-                    }
                 }
                 sendGameTickToParticipants(roundNumber, this)
                 broadcastGameTickToObservers(roundNumber, this)
+
+                // Send round ended _after_ tick has been sent
+                if (roundEnded) {
+                    log.debug("Round ended: $roundNumber")
+                    broadcastRoundEndedToAll(roundNumber, turnNumber)
+                }
             }
         }
     }
