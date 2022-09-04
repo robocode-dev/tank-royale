@@ -10,16 +10,19 @@ object EventsToEventsMapper {
     }
 
     private fun map(event: dev.robocode.tankroyale.server.event.Event): Event {
-        if (event is dev.robocode.tankroyale.server.event.BotDeathEvent) return map(event)
-        if (event is dev.robocode.tankroyale.server.event.BotHitBotEvent) return map(event)
-        if (event is dev.robocode.tankroyale.server.event.BotHitWallEvent) return map(event)
-        if (event is dev.robocode.tankroyale.server.event.BulletFiredEvent) return map(event)
-        if (event is dev.robocode.tankroyale.server.event.BulletHitBotEvent) return map(event)
-        if (event is dev.robocode.tankroyale.server.event.BulletHitBulletEvent) return map(event)
-        if (event is dev.robocode.tankroyale.server.event.BulletHitWallEvent) return map(event)
-        if (event is dev.robocode.tankroyale.server.event.ScannedBotEvent) return map(event)
-        if (event is dev.robocode.tankroyale.server.event.SkippedTurnEvent) return map(event)
-        throw IllegalStateException("Event type not handled: ${event.javaClass.canonicalName}")
+        return when (event) {
+            is dev.robocode.tankroyale.server.event.BotDeathEvent -> map(event)
+            is dev.robocode.tankroyale.server.event.BotHitBotEvent -> map(event)
+            is dev.robocode.tankroyale.server.event.BotHitWallEvent -> map(event)
+            is dev.robocode.tankroyale.server.event.BulletFiredEvent -> map(event)
+            is dev.robocode.tankroyale.server.event.BulletHitBotEvent -> map(event)
+            is dev.robocode.tankroyale.server.event.BulletHitBulletEvent -> map(event)
+            is dev.robocode.tankroyale.server.event.BulletHitWallEvent -> map(event)
+            is dev.robocode.tankroyale.server.event.ScannedBotEvent -> map(event)
+            is dev.robocode.tankroyale.server.event.SkippedTurnEvent -> map(event)
+            is dev.robocode.tankroyale.server.event.WonRoundEvent -> map(event)
+            else -> throw IllegalStateException("Event type not handled: ${event.javaClass.canonicalName}")
+        }
     }
 
     private fun map(botDeathEvent: dev.robocode.tankroyale.server.event.BotDeathEvent): BotDeathEvent {
@@ -121,6 +124,15 @@ object EventsToEventsMapper {
         val event = SkippedTurnEvent()
         event.type = Message.Type.SKIPPED_TURN_EVENT
         event.turnNumber = skippedTurnEvent.turnNumber
+        return event
+    }
+
+    private fun map(wonRoundEvent: dev.robocode.tankroyale.server.event.WonRoundEvent): WonRoundEvent {
+        println("WonRoundEvent: " + wonRoundEvent.turnNumber)
+
+        val event = WonRoundEvent()
+        event.type = Message.Type.WON_ROUND_EVENT
+        event.turnNumber = wonRoundEvent.turnNumber
         return event
     }
 }
