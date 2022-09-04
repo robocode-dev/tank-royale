@@ -766,9 +766,20 @@ class ModelUpdater(
     private fun checkAndHandleRoundOrGameOver() {
         val aliveCount = botsMap.values.count { it.isAlive }
         if (aliveCount <= 1) {
-            round.roundEnded = true // Round ended
-            if (round.roundNumber >= setup.numberOfRounds) {
-                gameState.isGameEnded = true // Game over
+            round.apply {
+                roundEnded = true // Round ended
+                if (roundNumber >= setup.numberOfRounds) {
+                    gameState.isGameEnded = true // Game over
+                }
+
+                // The winner is the last bot remaining, if any bots are left
+                var winnerId = botsMap.entries.firstOrNull { (_, bot) -> bot.isAlive }?.key
+
+                // Otherwise, the bot with the highest score wins
+                if (winnerId == null) {
+                    winnerId = scoreTracker.results[0].botId
+                }
+                turn.addPrivateBotEvent(winnerId, WonRoundEvent(turn.turnNumber))
             }
         }
     }
