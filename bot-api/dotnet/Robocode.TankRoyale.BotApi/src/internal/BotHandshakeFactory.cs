@@ -7,11 +7,12 @@ namespace Robocode.TankRoyale.BotApi.Internal;
 
 internal static class BotHandshakeFactory
 {
-    internal static BotHandshake Create(BotInfo botInfo, string serverSecret)
+    internal static BotHandshake Create(string sessionId, BotInfo botInfo, string serverSecret)
     {
         var handshake = new BotHandshake
         {
             Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotHandshake),
+            SessionId = sessionId,
             Name = botInfo.Name,
             Version = botInfo.Version,
             Authors = new List<string>(botInfo.Authors),

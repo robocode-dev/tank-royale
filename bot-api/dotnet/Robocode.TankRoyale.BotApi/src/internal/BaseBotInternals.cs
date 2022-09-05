@@ -666,7 +666,7 @@ public sealed class BaseBotInternals
         serverHandshake = JsonConvert.DeserializeObject<S.ServerHandshake>(json);
 
         // Reply by sending bot handshake
-        var botHandshake = BotHandshakeFactory.Create(botInfo, serverSecret);
+        var botHandshake = BotHandshakeFactory.Create(serverHandshake?.SessionId, botInfo, serverSecret);
         botHandshake.Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotHandshake);
         var text = JsonConvert.SerializeObject(botHandshake);
 

@@ -30,6 +30,7 @@ public class MockedServer
                 var serverHandshake = new ServerHandshake
                 {
                     Type = "ServerHandshake",
+                    SessionId = "123abc",
                     Name = nameof(MockedServer),
                     Version = "1.0.0",
                     Variant = "Tank Royale",

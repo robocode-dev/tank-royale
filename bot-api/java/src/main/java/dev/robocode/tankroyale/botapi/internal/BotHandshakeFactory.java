@@ -13,8 +13,9 @@ import static dev.robocode.tankroyale.botapi.internal.EnvVars.BOOT_ID;
  */
 final class BotHandshakeFactory {
 
-    static BotHandshake create(BotInfo botInfo, String secret) {
+    static BotHandshake create(String sessionId, BotInfo botInfo, String secret) {
         BotHandshake handshake = new BotHandshake();
+        handshake.setSessionId(sessionId);
         handshake.setType(BotHandshake.Type.BOT_HANDSHAKE);
         handshake.setName(botInfo.getName());
         handshake.setVersion(botInfo.getVersion());
