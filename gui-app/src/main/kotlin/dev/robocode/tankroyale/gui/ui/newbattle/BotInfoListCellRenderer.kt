@@ -10,11 +10,9 @@ class BotInfoListCellRenderer : AbstractListCellRenderer() {
 
         text = botInfo.displayText + " (${botInfo.host}:${botInfo.port}"
 
-        botInfo.bootId?.let {
-            botInfo.bootId?.let {
-                val hex = "%X".format(it)
-                text += ", $hex"
-            }
+        botInfo?.let {
+            val hex = "%X".format(it)
+            text += ", $hex"
         }
 
         text += ')'

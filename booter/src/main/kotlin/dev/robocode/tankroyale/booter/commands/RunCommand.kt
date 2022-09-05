@@ -52,6 +52,7 @@ class RunCommand : Command() {
                             val pid = bootIdToPid[bootId]
                             pid?.let {
                                 stopBotProcess(pid)
+                                bootIdToPid.remove(bootId)
                             }
                         }
                     }
