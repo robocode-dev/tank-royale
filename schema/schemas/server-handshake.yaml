@@ -4,6 +4,9 @@ description: Server handshake
 extends:
   $ref: message.yaml
 properties:
+  sessionId:
+    description: Unique session id used for identifying the caller client (bot, controller, observer) connection.
+    type: string
   name:
     description: Name of server, e.g. John Doe's RoboRumble Server
     type: string
@@ -21,6 +24,7 @@ properties:
     minItems: 1
     uniqueItems: true
 required:
+  - sessionId
   - variant
   - version
   - gameTypes

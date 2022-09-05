@@ -4,6 +4,9 @@ description: Bot handshake
 extends:
   $ref: message.yaml
 properties:
+  sessionId:
+    description: Unique session id that must match the session id received from the server handshake.
+    type: string
   name:
     description: Name of bot, e.g. Killer Bee
     type: string
@@ -48,6 +51,7 @@ properties:
     description: Unique boot id, which is only available if the boot was booted up locally
     type: string
 required:
+  - sessionId
   - name
   - version
   - authors
