@@ -7,6 +7,11 @@
 - GUI:
     - Improved sorting of the bot directories list to be case-insensitive.
 
+#### Bugfixes:
+
+- Server:
+    - The `server-handshake` was missing the name and version.
+
 ## 0.16.0 - Introduction of boot id - 31-Aug-2022
 
 The _boot id_ has been introduced to make it easier to identify which bots have booted locally. Previously, only the

@@ -173,8 +173,9 @@ class ConnectionHandler(
                 allConnections += conn
                 ServerHandshake().apply {
                     type = Message.Type.SERVER_HANDSHAKE
+                    name = "Robocode Tank Royale server"
                     variant = "Tank Royale"
-                    version = version ?: "?"
+                    version = dev.robocode.tankroyale.server.version.getVersion() ?: "?"
                     gameTypes = setup.gameTypes
                 }.also {
                     send(conn, Gson().toJson(it))
