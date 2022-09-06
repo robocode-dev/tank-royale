@@ -1,13 +1,12 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
-import dev.robocode.tankroyale.gui.booter.DirAndBootId
+import dev.robocode.tankroyale.gui.booter.DirAndPid
 import javax.swing.JList
 
 class RunningBotCellRenderer : AbstractListCellRenderer() {
 
     override fun onRender(list: JList<out Any>?, value: Any?, index: Int, isSelected: Boolean, cellHasFocus: Boolean) {
-        val dirAndBootId = value as DirAndBootId
-        val hex = "%X".format(dirAndBootId.bootId)
-        text = dirAndBootId.dir + " ($hex)"
+        val dirAndPid = value as DirAndPid
+        text = dirAndPid.dir + " (${dirAndPid.pid})"
     }
 }

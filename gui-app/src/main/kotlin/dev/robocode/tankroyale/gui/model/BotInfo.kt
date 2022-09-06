@@ -18,9 +18,9 @@ data class BotInfo(
     val host: String, // bot directory name, when running locally
     val port: Int = -1,
     val sessionId: String = "",
-    val bootId: Long? = null,
+    val processId: Long? = null,
 
-) : Comparable<BotInfo> {
+    ) : Comparable<BotInfo> {
 
     val botAddress: BotAddress
         get() = BotAddress(host, port)
