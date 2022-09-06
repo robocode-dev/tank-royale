@@ -6,15 +6,8 @@ import javax.swing.JList
 class BotInfoListCellRenderer : AbstractListCellRenderer() {
 
     override fun onRender(list: JList<out Any>?, value: Any?, index: Int, isSelected: Boolean, cellHasFocus: Boolean) {
-        val botInfo = value as BotInfo
-
-        text = botInfo.displayText + " (${botInfo.host}:${botInfo.port}"
-
-        botInfo?.let {
-            val hex = "%X".format(it)
-            text += ", $hex"
+        (value as BotInfo).apply {
+            text = "$displayText ($host:$port, $sessionId)"
         }
-
-        text += ')'
     }
 }

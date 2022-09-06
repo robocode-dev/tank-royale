@@ -13,6 +13,7 @@ import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
 import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
+import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
@@ -176,6 +177,7 @@ class ConnectionHandler(
                 allConnections += conn
                 ServerHandshake().apply {
                     type = Message.Type.SERVER_HANDSHAKE
+                    name = "Robocode Tank Royale server"
                     sessionId = generateAndStoreSessionId(conn)
                     variant = "Tank Royale"
                     version = dev.robocode.tankroyale.server.version.getVersion() ?: "?"
@@ -245,8 +247,11 @@ class ConnectionHandler(
     }
 
     private fun generateSessionId(): String {
-        val strippedUuid = UUID.randomUUID().toString().replace("-", "")
-        return Base64.getEncoder().encodeToString(strippedUuid.toByteArray())
+        val uuid = UUID.randomUUID()
+        val byteBuffer = ByteBuffer.wrap(ByteArray(16))
+        byteBuffer.putLong(uuid.mostSignificantBits)
+        byteBuffer.putLong(uuid.leastSignificantBits)
+        return Base64.getEncoder().withoutPadding().encodeToString(byteBuffer.array())
     }
 
     private fun handleIntent(conn: WebSocket, message: String) {
@@ -260,7 +265,7 @@ class ConnectionHandler(
                 log.info("Ignoring bot missing session id: $name, version: $version")
                 conn.close(StatusCode.POLICY_VIOLATION.value, "Missing session id")
 
-            } else if (sessionIds.contains(sessionId)) {
+            } else if (!sessionIds.values.contains(sessionId)) {
                 log.info("Ignoring bot missing session id: $name, version: $version")
                 conn.close(StatusCode.POLICY_VIOLATION.value, "Invalid session id")
 
@@ -282,7 +287,7 @@ class ConnectionHandler(
                 log.info("Ignoring observer missing session id: $name, version: $version")
                 conn.close(StatusCode.POLICY_VIOLATION.value, "Missing session id")
 
-            } else if (sessionIds.contains(sessionId)) {
+            } else if (!sessionIds.values.contains(sessionId)) {
                 log.info("Ignoring observer missing session id: $name, version: $version")
                 conn.close(StatusCode.POLICY_VIOLATION.value, "Invalid session id")
 
@@ -304,7 +309,7 @@ class ConnectionHandler(
                 log.info("Ignoring controller missing session id: $name, version: $version")
                 conn.close(StatusCode.POLICY_VIOLATION.value, "Missing session id")
 
-            } else if (sessionIds.contains(sessionId)) {
+            } else if (!sessionIds.values.contains(sessionId)) {
                 log.info("Ignoring controller missing session id: $name, version: $version")
                 conn.close(StatusCode.POLICY_VIOLATION.value, "Invalid session id")
 

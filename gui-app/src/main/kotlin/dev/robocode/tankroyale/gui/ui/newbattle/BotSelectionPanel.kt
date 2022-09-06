@@ -331,8 +331,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
                     info.gameTypes?.split(",")?.toSet() ?: emptySet(),
                     info.platform,
                     info.programmingLang,
-                    host = botEntry.dir, // host serves as filename here
-                    port = -1
+                    host = botEntry.dir // host serves as filename here
                 )
             )
 

@@ -182,8 +182,9 @@ data class ControllerHandshake(
 @SerialName("ServerHandshake")
 data class ServerHandshake(
     val sessionId: String,
-    val variant: String,
+    val name: String,
     val version: String,
+    val variant: String,
     val gameTypes: Set<String>
 ) : Message()
 
