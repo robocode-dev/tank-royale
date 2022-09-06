@@ -7,7 +7,7 @@ class BotInfoListCellRenderer : AbstractListCellRenderer() {
 
     override fun onRender(list: JList<out Any>?, value: Any?, index: Int, isSelected: Boolean, cellHasFocus: Boolean) {
         (value as BotInfo).apply {
-            text = "$displayText ($host:$port, $sessionId)"
+            text = "$displayText ($host:$port)"
         }
     }
 }
