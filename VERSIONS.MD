@@ -1,6 +1,16 @@
 # Versions
 
-## In progress
+## 0.17.0 - Introduction of process id - 06-Sep-2022
+
+The _boot id_ concept introduced in release 0.16.0 has been rolled back and the _pid_ is used with the Booter again.
+However, a new concept is introduced to replace the _boot id_, which is the _process id_.
+
+When a client (bot, controller, observer) is connecting to a server, the server will generate a unique session id and
+send to the client via the `server-handshake`. The session id is used to uniquely identify the running instance of a
+client, and the client _must_ send back the session id when sending its handshake to the server, e.g. a `bot-handshake`.
+
+The _session id_ is replacing the _boot id_ as the boot id is only available with bots being booted, and which might
+only be unique locally, but across multiple systems. With the _session id_, all clients have a single and unique id.
 
 #### Improvements
 
@@ -14,7 +24,7 @@
 
 ## 0.16.0 - Introduction of boot id - 31-Aug-2022
 
-_Update 06-Sep-2022: Note: The boot id has been removed, and the process id (pid) was reintroduced with release 0.17.0_ 
+_Update 06-Sep-2022: Note: The boot id has been removed, and the process id (pid) was reintroduced with release 0.17.0_
 
 ~~The _boot id_ has been introduced to make it easier to identify which bots have booted locally. Previously, only the
 host and port were available on the server side, making it hard to identify the bots started from a controller.
@@ -30,7 +40,7 @@ new boot id.~~
     - ~~Now generates a unique boot id for each booted bot, and sends this to the bot via the new `BOOT_ID` environment
       variable.~~
 - ~~Bot API:~~
-    - ~~Takes the boot id from the `BOOT_ID` environment variable and includes this within the bot `bot-handshake` when 
+    - ~~Takes the boot id from the `BOOT_ID` environment variable and includes this within the bot `bot-handshake` when
       it is sent to the server.~~
 
 #### Bugfixes:
