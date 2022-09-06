@@ -24,10 +24,6 @@ final class EnvVars {
      */
     static final String SERVER_SECRET = "SERVER_SECRET";
     /**
-     * Name of environment variable for boot id.
-     */
-    static final String BOOT_ID = "BOOT_ID";
-    /**
      * Name of environment variable for bot name.
      */
     static final String BOT_NAME = "BOT_NAME";

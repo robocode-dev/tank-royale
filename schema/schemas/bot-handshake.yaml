@@ -4,6 +4,9 @@ description: Bot handshake
 extends:
   $ref: message.yaml
 properties:
+  sessionId:
+    description: Unique session id that must match the session id received from the server handshake
+    type: string
   name:
     description: Name of bot, e.g. Killer Bee
     type: string
@@ -39,15 +42,16 @@ properties:
     description: Language used for programming the bot, e.g. Java 17 or C# 10
     type: string
   initialPosition:
-    description: Initial start position of the bot used for debugging.
+    description: Initial start position of the bot used for debugging
     $ref: initial-position.yaml
   secret:
     description: Secret used for access control with the server
     type: string
-  bootId:
-    description: Unique boot id, which is only available if the boot was booted up locally
+  processId:
+    description: Process id (pid), which is only available if the bot was booted up in a local process
     type: string
 required:
+  - sessionId
   - name
   - version
   - authors

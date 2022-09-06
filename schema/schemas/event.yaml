@@ -1,6 +1,6 @@
 $id: #event.yaml
 $schema: http://json-schema.org/2020-12/schema#
-description: Event occurring during a battle
+description: Abstract event occurring during a battle
 extends:
   $ref: message.yaml
 properties:

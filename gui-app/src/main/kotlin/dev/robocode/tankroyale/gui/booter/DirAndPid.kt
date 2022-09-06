@@ -2,34 +2,34 @@ package dev.robocode.tankroyale.gui.booter
 
 import java.util.*
 
-class DirAndBootId(
+class DirAndPid(
     val dir: String,
-    val bootId: Long
+    val pid: Long
 
-) : Comparable<DirAndBootId> {
+) : Comparable<DirAndPid> {
 
-    override fun compareTo(other: DirAndBootId): Int {
+    override fun compareTo(other: DirAndPid): Int {
         val cmp = dir.compareTo(other.dir)
-        return if (cmp != 0) cmp else (bootId - other.bootId).toInt()
+        return if (cmp != 0) cmp else (pid - other.pid).toInt()
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as DirAndBootId
+        other as DirAndPid
 
         if (dir != other.dir) return false
-        if (bootId != other.bootId) return false
+        if (pid != other.pid) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(dir, bootId)
+        return Objects.hash(dir, pid)
     }
 
     override fun toString(): String {
-        return "$dir $bootId"
+        return "$dir $pid"
     }
 }

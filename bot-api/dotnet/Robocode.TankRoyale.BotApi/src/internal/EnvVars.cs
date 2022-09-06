@@ -20,9 +20,6 @@ internal static class EnvVars
     /// <summary>Name of environment variable for server secret.</summary>
     private const string ServerSecret = "SERVER_SECRET";
 
-    /// <summary>Name of environment variable for boot id.</summary>
-    private const string BootId = "BOOT_ID";
-    
     /// <summary>Name of environment variable for bot name.</summary>
     private const string BotName = "BOT_NAME";
 
@@ -111,15 +108,6 @@ internal static class EnvVars
     internal static string GetServerSecret()
     {
         return Environment.GetEnvironmentVariable(ServerSecret);
-    }
-
-    /// <summary>
-    /// Gets the boot id from environment variables.
-    /// </summary>
-    /// <returns>The boot id.</returns>
-    internal static string GetBootId()
-    {
-        return Environment.GetEnvironmentVariable(BootId);
     }
 
     /// <summary>

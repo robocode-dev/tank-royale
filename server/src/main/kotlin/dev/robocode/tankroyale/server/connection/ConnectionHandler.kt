@@ -13,6 +13,8 @@ import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
 import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
+import java.nio.ByteBuffer
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -29,6 +31,7 @@ class ConnectionHandler(
     private val botConnections = ConcurrentHashMap.newKeySet<WebSocket>()
     private val observerConnections = ConcurrentHashMap.newKeySet<WebSocket>()
     private val controllerConnections = ConcurrentHashMap.newKeySet<WebSocket>()
+    private val sessionIds = ConcurrentHashMap<WebSocket, String /* sessionId */>()
     private val botHandshakes = ConcurrentHashMap<WebSocket, BotHandshake>()
     private val observerHandshakes = ConcurrentHashMap<WebSocket, ObserverHandshake>()
     private val controllerHandshakes = ConcurrentHashMap<WebSocket, ControllerHandshake>()
@@ -139,6 +142,7 @@ class ConnectionHandler(
             observerConnections.remove(conn) -> handleObserverLeft(conn)
             controllerConnections.remove(conn) -> handleControllerLeft(conn)
         }
+        sessionIds.remove(conn)
     }
 
     private fun handleBotLeft(conn: WebSocket) {
@@ -173,8 +177,10 @@ class ConnectionHandler(
                 allConnections += conn
                 ServerHandshake().apply {
                     type = Message.Type.SERVER_HANDSHAKE
+                    name = "Robocode Tank Royale server"
+                    sessionId = generateAndStoreSessionId(conn)
                     variant = "Tank Royale"
-                    version = version ?: "?"
+                    version = dev.robocode.tankroyale.server.version.getVersion() ?: "?"
                     gameTypes = setup.gameTypes
                 }.also {
                     send(conn, Gson().toJson(it))
@@ -231,6 +237,23 @@ class ConnectionHandler(
         }
     }
 
+    private fun generateAndStoreSessionId(conn: WebSocket): String {
+        val sessionId = generateSessionId()
+        if (sessionIds.values.contains(sessionId)) {
+            throw IllegalStateException("Generated session id has been generated before. It must be unique")
+        }
+        sessionIds[conn] = sessionId
+        return sessionId
+    }
+
+    private fun generateSessionId(): String {
+        val uuid = UUID.randomUUID()
+        val byteBuffer = ByteBuffer.wrap(ByteArray(16))
+        byteBuffer.putLong(uuid.mostSignificantBits)
+        byteBuffer.putLong(uuid.leastSignificantBits)
+        return Base64.getEncoder().withoutPadding().encodeToString(byteBuffer.array())
+    }
+
     private fun handleIntent(conn: WebSocket, message: String) {
         val intent = gson.fromJson(message, BotIntent::class.java)
         listener.onBotIntent(conn, botHandshakes[conn]!!, intent)
@@ -238,10 +261,18 @@ class ConnectionHandler(
 
     private fun handleBotHandshake(conn: WebSocket, message: String) {
         gson.fromJson(message, BotHandshake::class.java).apply {
-            // Validate client secret before continuing
-            if (botSecrets.isNotEmpty() && !botSecrets.contains(secret)) {
+            if (sessionId.isBlank()) {
+                log.info("Ignoring bot missing session id: $name, version: $version")
+                conn.close(StatusCode.POLICY_VIOLATION.value, "Missing session id")
+
+            } else if (!sessionIds.values.contains(sessionId)) {
+                log.info("Ignoring bot missing session id: $name, version: $version")
+                conn.close(StatusCode.POLICY_VIOLATION.value, "Invalid session id")
+
+            } else if (botSecrets.isNotEmpty() && !botSecrets.contains(secret)) {
                 log.info("Ignoring bot using invalid secret: $name, version: $version")
-                conn.close(StatusCode.POLICY_VIOLATION.value, "Wrong secret")
+                conn.close(StatusCode.POLICY_VIOLATION.value, "Invalid secret")
+
             } else {
                 botConnections += conn
                 botHandshakes[conn] = this
@@ -252,10 +283,18 @@ class ConnectionHandler(
 
     private fun handleObserverHandshake(conn: WebSocket, message: String) {
         gson.fromJson(message, ObserverHandshake::class.java).apply {
-            // Validate client secret before continuing
-            if (controllerSecrets.isNotEmpty() && !controllerSecrets.contains(secret)) {
+            if (sessionId.isBlank()) {
+                log.info("Ignoring observer missing session id: $name, version: $version")
+                conn.close(StatusCode.POLICY_VIOLATION.value, "Missing session id")
+
+            } else if (!sessionIds.values.contains(sessionId)) {
+                log.info("Ignoring observer missing session id: $name, version: $version")
+                conn.close(StatusCode.POLICY_VIOLATION.value, "Invalid session id")
+
+            } else if (controllerSecrets.isNotEmpty() && !controllerSecrets.contains(secret)) {
                 log.info("Ignoring observer using invalid secret: name: $name, version: $version")
-                conn.close(StatusCode.POLICY_VIOLATION.value, "Wrong secret")
+                conn.close(StatusCode.POLICY_VIOLATION.value, "Invalid secret")
+
             } else {
                 observerConnections += conn
                 observerHandshakes[conn] = this
@@ -266,10 +305,18 @@ class ConnectionHandler(
 
     private fun handleControllerHandshake(conn: WebSocket, message: String) {
         gson.fromJson(message, ControllerHandshake::class.java).apply {
-            // Validate client secret before continuing
-            if (controllerSecrets.isNotEmpty() && !controllerSecrets.contains(secret)) {
+            if (sessionId.isBlank()) {
+                log.info("Ignoring controller missing session id: $name, version: $version")
+                conn.close(StatusCode.POLICY_VIOLATION.value, "Missing session id")
+
+            } else if (!sessionIds.values.contains(sessionId)) {
+                log.info("Ignoring controller missing session id: $name, version: $version")
+                conn.close(StatusCode.POLICY_VIOLATION.value, "Invalid session id")
+
+            } else if (controllerSecrets.isNotEmpty() && !controllerSecrets.contains(secret)) {
                 log.info("Ignoring controller using invalid secret: name: $name, version: $version")
-                conn.close(StatusCode.POLICY_VIOLATION.value, "Wrong secret")
+                conn.close(StatusCode.POLICY_VIOLATION.value, "Invalid secret")
+
             } else {
                 controllerConnections += conn
                 controllerHandshakes[conn] = this

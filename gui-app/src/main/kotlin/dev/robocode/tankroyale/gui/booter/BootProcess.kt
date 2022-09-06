@@ -18,8 +18,8 @@ import javax.swing.JOptionPane
 
 object BootProcess {
 
-    val onBootBot = Event<DirAndBootId>()
-    val onUnbootBot = Event<DirAndBootId>()
+    val onBootBot = Event<DirAndPid>()
+    val onUnbootBot = Event<DirAndPid>()
 
     private const val JAR_FILE_NAME = "robocode-tankroyale-booter"
 
@@ -29,9 +29,9 @@ object BootProcess {
 
     private val json = MessageConstants.json
 
-    private val bootIdAndDirs = ConcurrentHashMap<Long, String>() // pid, dir
+    private val pidAndDirs = ConcurrentHashMap<Long, String>() // pid, dir
 
-    private val runningBotsList = mutableListOf<DirAndBootId>()
+    private val runningBotsList = mutableListOf<DirAndPid>()
 
     fun info(): List<BotEntry> {
         val args = mutableListOf(
@@ -74,11 +74,11 @@ object BootProcess {
         }
     }
 
-    fun stop(bootIds: List<Long>) {
-        stopBotsWithRunningBotProcess(bootIds)
+    fun stop(pids: List<Long>) {
+        stopBotsWithRunningBotProcess(pids)
     }
 
-    val runningBots: List<DirAndBootId>
+    val runningBots: List<DirAndPid>
         get() {
             return runningBotsList
         }
@@ -107,9 +107,9 @@ object BootProcess {
         }
     }
 
-    private fun stopBotsWithRunningBotProcess(bootIds: List<Long>) {
+    private fun stopBotsWithRunningBotProcess(pids: List<Long>) {
         PrintStream(runProcess?.outputStream!!).also { printStream ->
-            bootIds.forEach { printStream.println("stop $it") }
+            pids.forEach { printStream.println("stop $it") }
             printStream.flush()
         }
     }
@@ -141,7 +141,7 @@ object BootProcess {
     }
 
     private fun notifyUnbootBotProcesses() {
-        bootIdAndDirs.forEach { onUnbootBot.fire(DirAndBootId(it.value, it.key)) }
+        pidAndDirs.forEach { onUnbootBot.fire(DirAndPid(it.value, it.key)) }
     }
 
     private fun getBooterJar(): String {
@@ -172,16 +172,16 @@ object BootProcess {
         return ConfigSettings.botDirectories
     }
 
-    private fun readInputToBootIds(process: Process) {
+    private fun readInputToPids(process: Process) {
         process.inputStream?.let {
             val reader = BufferedReader(InputStreamReader(process.inputStream))
             while (thread?.isInterrupted == false) {
                 val line = reader.readLine()
                 if (line != null && line.isNotBlank()) {
                     if (line.startsWith("stopped ")) {
-                        removeBootId(line)
+                        removePid(line)
                     } else {
-                        addBootId(line)
+                        addPid(line)
                     }
                 }
             }
@@ -204,7 +204,7 @@ object BootProcess {
             while (thread?.isInterrupted == false) {
                 try {
                     if (doReadInputToProcessIds)
-                        readInputToBootIds(process)
+                        readInputToPids(process)
                     readErrorToStdError(process)
                 } catch (e: InterruptedException) {
                     break
@@ -217,34 +217,34 @@ object BootProcess {
         thread?.interrupt()
     }
 
-    private fun addBootId(line: String) {
-        val bootIdAndDir = line.split(";", limit = 2)
-        if (bootIdAndDir.size == 2) {
-            val bootId = bootIdAndDir[0].toLong()
-            val dir = bootIdAndDir[1]
+    private fun addPid(line: String) {
+        val pidAndDir = line.split(";", limit = 2)
+        if (pidAndDir.size == 2) {
+            val pid = pidAndDir[0].toLong()
+            val dir = pidAndDir[1]
 
-            bootIdAndDirs[bootId] = dir
+            pidAndDirs[pid] = dir
 
-            val dirAndBootId = DirAndBootId(dir, bootId)
-            runningBotsList.add(dirAndBootId)
+            val dirAndPid = DirAndPid(dir, pid)
+            runningBotsList.add(dirAndPid)
 
-            onBootBot.fire(dirAndBootId)
+            onBootBot.fire(dirAndPid)
         }
     }
 
-    private fun removeBootId(line: String) {
-        val cmdAndBootId = line.split(" ", limit = 2)
-        if (cmdAndBootId.size == 2) {
-            val bootId = cmdAndBootId[1].toLong()
-            val dir = bootIdAndDirs[bootId]
+    private fun removePid(line: String) {
+        val cmdAndPid = line.split(" ", limit = 2)
+        if (cmdAndPid.size == 2) {
+            val pid = cmdAndPid[1].toLong()
+            val dir = pidAndDirs[pid]
 
-            bootIdAndDirs.remove(bootId)
+            pidAndDirs.remove(pid)
 
             if (dir != null) {
-                val dirAndBootId = DirAndBootId(dir, bootId)
-                runningBotsList.remove(dirAndBootId)
+                val dirAndPid = DirAndPid(dir, pid)
+                runningBotsList.remove(dirAndPid)
 
-                onUnbootBot.fire(dirAndBootId)
+                onUnbootBot.fire(dirAndPid)
             }
         }
     }

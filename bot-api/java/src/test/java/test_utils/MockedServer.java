@@ -87,6 +87,7 @@ public final class MockedServer {
 
             var serverHandshake = new dev.robocode.tankroyale.schema.ServerHandshake();
             serverHandshake.setType(Message.Type.SERVER_HANDSHAKE);
+            serverHandshake.setSessionId("123abc");
             serverHandshake.setName(MockedServer.class.getSimpleName());
             serverHandshake.setVersion("1.0.0");
             serverHandshake.setVariant("Tank Royale");

@@ -6,15 +6,14 @@ import dev.robocode.tankroyale.schema.BotHandshake;
 
 import java.util.ArrayList;
 
-import static dev.robocode.tankroyale.botapi.internal.EnvVars.BOOT_ID;
-
 /**
  * Utility class used for creating bot handshakes.
  */
 final class BotHandshakeFactory {
 
-    static BotHandshake create(BotInfo botInfo, String secret) {
+    static BotHandshake create(String sessionId, BotInfo botInfo, String secret) {
         BotHandshake handshake = new BotHandshake();
+        handshake.setSessionId(sessionId);
         handshake.setType(BotHandshake.Type.BOT_HANDSHAKE);
         handshake.setName(botInfo.getName());
         handshake.setVersion(botInfo.getVersion());
@@ -27,7 +26,6 @@ final class BotHandshakeFactory {
         handshake.setProgrammingLang(botInfo.getProgrammingLang());
         handshake.setInitialPosition(InitialPositionMapper.map(botInfo.getInitialPosition()));
         handshake.setSecret(secret);
-        handshake.setBootId(System.getenv(BOOT_ID));
         return handshake;
     }
 }

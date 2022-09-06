@@ -171,6 +171,7 @@ data class TpsChangedEvent(
 @Serializable
 @SerialName("ControllerHandshake")
 data class ControllerHandshake(
+    val sessionId: String,
     val name: String,
     val version: String,
     val author: String?,
@@ -180,8 +181,10 @@ data class ControllerHandshake(
 @Serializable
 @SerialName("ServerHandshake")
 data class ServerHandshake(
-    val variant: String,
+    val sessionId: String,
+    val name: String,
     val version: String,
+    val variant: String,
     val gameTypes: Set<String>
 ) : Message()
 

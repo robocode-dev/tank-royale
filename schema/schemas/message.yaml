@@ -1,6 +1,6 @@
 $id: #message.yaml
 $schema: http://json-schema.org/2020-12/schema#
-description: Message exchanged between server and client
+description: Abstract message exchanged between server and client
 properties:
   type:
     enum:

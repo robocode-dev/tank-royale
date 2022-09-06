@@ -7,6 +7,7 @@ object BotHandshakeToBotInfoMapper {
     fun map(botHandshake: BotHandshake, hostName: String, port: Int): BotInfo {
         val botInfo = BotInfo()
         botHandshake.apply {
+            botInfo.sessionId = sessionId
             botInfo.name = name
             botInfo.version = version
             botInfo.authors = authors.toList()
@@ -19,7 +20,7 @@ object BotHandshakeToBotInfoMapper {
             botInfo.initialPosition = initialPosition
             botInfo.host = hostName
             botInfo.port = port
-            botInfo.bootId = bootId
+            botInfo.processId = processId
         }
         return botInfo
     }

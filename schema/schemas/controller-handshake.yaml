@@ -4,6 +4,9 @@ description: Controller handshake
 extends:
   $ref: message.yaml
 properties:
+  sessionId:
+    description: Unique session id that must match the session id received from the server handshake.
+    type: string
   name:
     description: Name of controller, e.g. Fancy Robocode Controller
     type: string
@@ -17,5 +20,6 @@ properties:
     description: Secret used for access control with the server
     type: string
 required:
+  - sessionId
   - name
   - version
