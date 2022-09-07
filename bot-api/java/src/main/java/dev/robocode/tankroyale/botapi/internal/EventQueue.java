@@ -72,14 +72,14 @@ final class EventQueue {
 
         while (baseBotInternals.isRunning() && events.size() > 0) {
             var event = events.get(0);
-            var eventPriority = getPriority(event);
+            var priority = getPriority(event);
 
-            if (eventPriority < currentTopEventPriority) {
+            if (priority < currentTopEventPriority) {
                 return; // Exit when event priority is lower than the current event being processed
             }
 
             // Same event?
-            if (eventPriority == currentTopEventPriority) {
+            if (priority == currentTopEventPriority) {
                 if (!isInterruptible()) {
                     // Ignore same event occurring again, when not interruptible
                     return;
@@ -91,7 +91,7 @@ final class EventQueue {
 
             int oldTopEventPriority = currentTopEventPriority;
 
-            currentTopEventPriority = eventPriority;
+            currentTopEventPriority = priority;
             currentTopEvent = event;
 
             events.remove(event);
@@ -116,10 +116,15 @@ final class EventQueue {
 
     private void sortEvents() {
         events.sort((e1, e2) -> {
+            // Higher priority gives negative delta -> becomes first
+            int diff = (e2.isCritical() ? 1 : 0) - (e1.isCritical() ? 1 : 0);
+            if (diff != 0) {
+                return diff;
+            }
             // Lower (older) turn number gives negative delta -> becomes first
-            int timeDiff = e1.getTurnNumber() - e2.getTurnNumber();
-            if (timeDiff != 0) {
-                return timeDiff;
+            diff = e1.getTurnNumber() - e2.getTurnNumber();
+            if (diff != 0) {
+                return diff;
             }
             // Higher priority gives negative delta -> becomes first
             return getPriority(e2) - getPriority(e1);

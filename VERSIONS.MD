@@ -1,5 +1,12 @@
 # Versions
 
+## In progress
+
+#### Bugfixes:
+
+- Bot API:
+    - The `onWonRound(WonRoundEvent)` was not triggered as soon as the round has ended.
+
 ## 0.17.0 - Introduction of process id - 06-Sep-2022
 
 The _boot id_ concept introduced in release 0.16.0 has been rolled back and the _pid_ is used with the Booter again.
