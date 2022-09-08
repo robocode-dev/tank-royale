@@ -2,7 +2,7 @@
 
 ## In progress
 
-#### Bugfixes:
+#### 🪲 Bug Fixes
 
 - Bot API:
     - The `onWonRound(WonRoundEvent)` was not triggered as soon as the round has ended.
@@ -19,12 +19,12 @@ client, and the client _must_ send back the session id when sending its handshak
 The _session id_ is replacing the _boot id_ as the boot id is only available with bots being booted, and which might
 only be unique locally, but across multiple systems. With the _session id_, all clients have a single and unique id.
 
-#### Improvements
+#### 🚀 Improvements
 
 - GUI:
     - Improved sorting of the bot directories list to be case-insensitive.
 
-#### Bugfixes:
+#### 🪲 Bug Fixes
 
 - Server:
     - The `server-handshake` was missing the name and version.
@@ -50,7 +50,7 @@ new boot id.~~
     - ~~Takes the boot id from the `BOOT_ID` environment variable and includes this within the bot `bot-handshake` when
       it is sent to the server.~~
 
-#### Bugfixes:
+#### 🪲 Bug Fixes
 
 - Bot API:
     - Fixed `waitFor(Condition)` so it executes before checking the condition the first time.
@@ -62,7 +62,7 @@ new boot id.~~
 
 ## 0.15.0 - Added fire assistance - 17-Aug-2022
 
-#### Improvements
+#### 🚀 Improvements
 
 Fire assistance:
 
@@ -91,7 +91,7 @@ Bot info:
 - The `gameTypes` field has been removed from the sample bots, as all sample bots can participate in any game type.
   At least for now.
 
-#### Bugfixes:
+#### 🪲 Bug Fixes
 
 - GUI & Booter:
     - Fixed major bug as the GUI and booter did not filter out bots based on their selected game types.
@@ -105,7 +105,7 @@ Bot info:
 
 ## 0.14.3 - Fixed setting adjustment turns - 07-Aug-2022
 
-#### Bugfixes:
+#### 🪲 Bug Fixes
 
 - GUI:
     - NullPointerException when running robocode-tankroyale-gui-0.14.2.jar
@@ -119,7 +119,7 @@ Bot info:
 
 ## 0.14.2 - Added Velocity Bot - 29-Jul-2022
 
-#### Improvements:
+#### 🚀 Improvements
 
 - Bot API:
     - The run() method is now forced to stop/abort (in case the run method enters and infinite loop).
@@ -128,7 +128,7 @@ Bot info:
 - Sample bots
     - Added _VelocityBot_ that demonstrates use of turn rates.
 
-#### Bugfixes:
+#### 🪲 Bug Fixes
 
 - Bot API:
     - Setting the turn rates with the `Bot` class did not work properly (bot, gun, and radar did not turn at all).
@@ -144,7 +144,7 @@ Bot info:
 
 ## 0.14.1 - Added BotInfo builder - 14-Jul-2022
 
-#### Improvements:
+#### 🚀 Improvements
 
 - Bot API:
     - BotInfo:
@@ -156,7 +156,7 @@ Bot info:
 
 ## 0.14.0 - Adjustments for bot events - 03-Jul-2022
 
-#### Changes:
+#### Changes
 
 - Bot API:
     - Adjusted the bot events to make it easier to make a bridge between legacy Robocode bots and Tank Royale later
@@ -173,13 +173,13 @@ Bot info:
 
 ## 0.13.4 - GUI improvements + bugfix - 06-Jun-2022
 
-#### Bugfixes:
+#### 🪲 Bug Fixes
 
 - Bot API for Java:
     - Major bugfix with `getTurnRemaining()` ([#28](https://github.com/robocode-dev/tank-royale/issues/28)), which
       returned the wrong value. This could be seen with the sample bot, Crazy, which did not turn correctly.
 
-#### Changes:
+#### Changes
 
 - GUI:
     - **Del Key**: It is now possible to use the Del key to remove a selected bot item on the Booted Bots (to unboot),
@@ -192,7 +192,7 @@ Bot info:
 
 ## 0.13.3 - Stabilization of Bot APIs - 01-Jun-2022
 
-#### Bugfixes
+#### 🪲 Bug Fixes
 
 - Bot API:
     - Fix for running bots under macOS/bash when bot directory contains
@@ -214,7 +214,7 @@ Bot info:
 
 ## 0.13.2 - Fixing issue #23 - 19-May-2022
 
-#### Bugfixes
+#### 🪲 Bug Fixes
 
 - Bot API for .Net:
     - Setting Bot.TargetSpeed did not set the distance to travel.
@@ -228,7 +228,7 @@ Bot info:
 
 ## 0.13.1 - Fixing event queue + country codes - 18-May-2022
 
-#### Bugfixes
+#### 🪲 Bug Fixes
 
 - Bot APIs:
     - ~~Fixed issue with turning the body, gun, and radar as first and only
@@ -269,7 +269,7 @@ Bot info:
     - Moved id from `bot-results-for-bot` to `bot-results-for-observer`.
     - The `scan` field on `bot-intent` was renamed to `rescan`.
 
-#### Bugfixes
+#### 🪲 Bug Fixes
 
 - Bot API:
     - Blocking bot functions do not stop bot after
@@ -293,7 +293,7 @@ Bot info:
 - Bot API:
     - The `Color.fromRgb()` has been replaced by `Color.fromString()`.
 
-#### Bugfixes
+#### 🪲 Bug Fixes
 
 - Bot API:
     - Make sure the bot terminates (system exit) upon a connection error to prevent dangling bot processes, which
@@ -303,7 +303,7 @@ Bot info:
 
 ## 0.11.2 - Fix restart issue - 12-Apr-2022
 
-#### Bugfixes
+#### 🪲 Bug Fixes
 
 - Battle does not restart ([#10](https://github.com/robocode-dev/tank-royale/issues/10)).
 - Bot API did not stop thread when GameAbortedEvent occurred (when restarting).
@@ -311,7 +311,7 @@ Bot info:
 
 ## 0.11.1 - Patch for the GUI - 07-Apr-2022
 
-#### Bugfixes
+#### 🪲 Bug Fixes
 
 - ConcurrentModificationException could occur for `BotSelectionPanel.updateJoinedBots()`. Could not create a new battle.
 - Fixed issue with starting a new battle from the menu with Battle → 'Start Battle' a second time.
@@ -327,7 +327,7 @@ Bot info:
 
 ## 0.11.0 - Initial position feature - 02-Apr-2022
 
-#### Bugfixes
+#### 🪲 Bug Fixes
 
 - Fixes for building Java artifacts to deploy to Maven artifactory.
 - Bot API:
@@ -352,14 +352,14 @@ Bot info:
 
 ## 0.10.0 - Bot API improvements - 24-Mar-2022
 
-#### Bug fixes:
+#### 🪲 Bug Fixes
 
 - Fixed MyFirstBot.java (sample bot) not running.
 - Various bug fixes were found in the Bot APIs, and missing get/set methods were added.
 - Selected bots were not removed from the New Battle dialog when bots are disconnecting.
 - Booter did not transfer environment variables to bot processes from GUI.
 
-#### Changes:
+#### Changes
 
 - Moved documentation from robocode.dev to [GitHub Pages](https://robocode-dev.github.io/tank-royale/)
 - Changed the default server port from 80 to 7654 to avoid the use of `sudo` before `java` command (ports above 1023
@@ -369,7 +369,7 @@ Bot info:
 - Bot API for .Net: Some Set/Get methods were refactored into properties for e.g. speed, turn rates, and colors.
 - Bot API for .Net: Lots of optimizations were made.
 
-#### Improvements:
+#### 🚀 Improvements
 
 - Bot handshake has been extended to include server secret with the bot-handshake and the BaseBot class has been
   extended for setting this as input parameter in the constructor.
