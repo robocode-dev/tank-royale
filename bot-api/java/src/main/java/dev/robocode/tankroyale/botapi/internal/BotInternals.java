@@ -275,7 +275,7 @@ public final class BotInternals implements IStopResumeListener {
 
     public void forward(double distance) {
         if (bot.isStopped()) {
-            bot.go();
+            bot.go(); // skip turn by doing nothing in the turn
         } else {
             setForward(distance);
             do {
@@ -294,12 +294,12 @@ public final class BotInternals implements IStopResumeListener {
 
     public void turnLeft(double degrees) {
         if (bot.isStopped()) {
-            bot.go();
+            bot.go(); // skip turn by doing nothing in the turn
         } else {
             setTurnLeft(degrees);
             do {
                 bot.go();
-            } while (isRunning() && (getTurnRemaining() != 0 || bot.getTurnRate() != 0));
+            } while (isRunning() && getTurnRemaining() != 0);
         }
     }
 
@@ -313,12 +313,12 @@ public final class BotInternals implements IStopResumeListener {
 
     public void turnGunLeft(double degrees) {
         if (bot.isStopped()) {
-            bot.go();
+            bot.go(); // skip turn by doing nothing in the turn
         } else {
             setTurnGunLeft(degrees);
             do {
                 bot.go();
-            } while (isRunning() && (getGunTurnRemaining() != 0 || bot.getGunTurnRate() != 0));
+            } while (isRunning() && getGunTurnRemaining() != 0);
         }
     }
 
@@ -332,12 +332,12 @@ public final class BotInternals implements IStopResumeListener {
 
     public void turnRadarLeft(double degrees) {
         if (bot.isStopped()) {
-            bot.go();
+            bot.go(); // skip turn by doing nothing in the turn
         } else {
             setTurnRadarLeft(degrees);
             do {
                 bot.go();
-            } while (isRunning() && (getRadarTurnRemaining() != 0 || bot.getRadarTurnRate() != 0));
+            } while (isRunning() && getRadarTurnRemaining() != 0);
         }
     }
 

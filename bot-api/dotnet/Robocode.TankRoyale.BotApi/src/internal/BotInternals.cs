@@ -323,7 +323,7 @@ internal sealed class BotInternals : IStopResumeListener
     internal void Forward(double distance)
     {
         if (bot.IsStopped)
-            bot.Go();
+            bot.Go(); // skip turn by doing nothing in the turn
         else
         {
             SetForward(distance);
@@ -346,14 +346,14 @@ internal sealed class BotInternals : IStopResumeListener
     internal void TurnLeft(double degrees)
     {
         if (bot.IsStopped)
-            bot.Go();
+            bot.Go(); // skip turn by doing nothing in the turn
         else
         {
             SetTurnLeft(degrees);
             do
             {
                 bot.Go();
-            } while (IsRunning && (TurnRemaining != 0 || bot.TurnRate != 0));
+            } while (IsRunning && TurnRemaining != 0);
         }
     }
 
@@ -369,14 +369,14 @@ internal sealed class BotInternals : IStopResumeListener
     internal void TurnGunLeft(double degrees)
     {
         if (bot.IsStopped)
-            bot.Go();
+            bot.Go(); // skip turn by doing nothing in the turn
         else
         {
             SetTurnGunLeft(degrees);
             do
             {
                 bot.Go();
-            } while (IsRunning && (GunTurnRemaining != 0 || bot.GunTurnRate != 0));
+            } while (IsRunning && GunTurnRemaining != 0);
         }
     }
 
@@ -392,14 +392,14 @@ internal sealed class BotInternals : IStopResumeListener
     internal void TurnRadarLeft(double degrees)
     {
         if (bot.IsStopped)
-            bot.Go();
+            bot.Go(); // skip turn by doing nothing in the turn
         else
         {
             SetTurnRadarLeft(degrees);
             do
             {
                 bot.Go();
-            } while (IsRunning && (RadarTurnRemaining != 0 || bot.RadarTurnRate != 0));
+            } while (IsRunning && RadarTurnRemaining != 0);
         }
     }
 

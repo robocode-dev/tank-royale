@@ -6,6 +6,8 @@
 
 - Bot API:
     - The `onWonRound(WonRoundEvent)` was not triggered as soon as the round has ended.
+    - The blocking turn methods for turning the body, gun, and radar invoked `go()` twice internally making the turning
+      turn in "step" and take the double amount of time.
 
 ## 0.17.0 - Introduction of process id - 06-Sep-2022
 
