@@ -20,6 +20,7 @@ import kotlin.io.path.exists
 class RunCommand : Command() {
 
     private val processes = ConcurrentSkipListMap<Long, Process>() // pid, process
+    private val bootIdToPid = ConcurrentSkipListMap<Long, Long>() // boot-id, pid
 
     fun runBots(botPaths: Array<String>) {
         Runtime.getRuntime().addShutdownHook(Thread {
@@ -47,8 +48,12 @@ class RunCommand : Command() {
                             createBotProcess(dir)
                         }
                         "stop" -> {
-                            val pid = arg.toLong()
-                            stopBotProcess(pid)
+                            val bootId = arg.toLong()
+                            val pid = bootIdToPid[bootId]
+                            pid?.let {
+                                stopBotProcess(pid)
+                                bootIdToPid.remove(bootId)
+                            }
                         }
                     }
                 }
@@ -78,20 +83,24 @@ class RunCommand : Command() {
             processBuilder.directory(scriptPath.parent.toFile()) // set working directory
 //            processBuilder.inheritIO()
 
+            var process: Process? = null
+
             getBotInfo(botDir)?.let { botInfo ->
 
-                // important to transfer env. variables for bot to the process
-                setEnvVars(processBuilder.environment(), botInfo)
+                // Create unique boot id
+                val bootId = System.nanoTime() - 3083851529300
 
-                val process = processBuilder.start().also {
-                    println("${it.pid()};${botDir.absolutePathString()}")
+                // important to transfer env. variables for bot to the process
+                setEnvVars(processBuilder.environment(), botInfo, bootId)
+
+                process = processBuilder.start().also {
+                    println("${bootId};${botDir.absolutePathString()}")
                 }
-                process?.let {
-                    processes[process.pid()] = process
-                    return process
+                process?.pid()?.let {
+                    bootIdToPid.put(bootId, it)
                 }
             }
-            return null
+            return process
 
         } catch (ex: IOException) {
             System.err.println("ERROR: ${ex.message}")
@@ -108,7 +117,12 @@ class RunCommand : Command() {
             val pid = pid()
             onExit().thenAccept {
                 processes.remove(pid)
-                println("stopped $pid")
+
+                val entries = bootIdToPid.entries.filter { (_, value) -> value == pid }
+                if (entries.isNotEmpty()) {
+                    val bootId = entries[0].key
+                    println("stopped $bootId")
+                }
             }
             descendants().forEach { it.destroyForcibly() }
             destroyForcibly()
@@ -176,7 +190,7 @@ class RunCommand : Command() {
             return Files.newInputStream(path).bufferedReader().readLine() ?: ""
         }
 
-        private fun setEnvVars(envMap: MutableMap<String, String?>, botInfo: BotInfo) {
+        private fun setEnvVars(envMap: MutableMap<String, String?>, botInfo: BotInfo, bootId: Long) {
             System.getProperty("server.url")?.let { envMap[Env.SERVER_URL.name] = it }
             System.getProperty("server.secret")?.let { envMap[Env.SERVER_SECRET.name] = it }
             envMap[Env.BOT_NAME.name] = botInfo.name
@@ -204,6 +218,7 @@ class RunCommand : Command() {
             botInfo.initialPosition?.let {
                 envMap[Env.BOT_INITIAL_POS.name] = it
             }
+            envMap[Env.BOOT_ID.name] = "$bootId"
         }
     }
 }

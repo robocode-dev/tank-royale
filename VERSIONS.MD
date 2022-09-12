@@ -1,6 +1,7 @@
 # Versions
 
 ## In progress
+- Reintroduced boot id over boot pid.
 
 #### 🪲 Bug Fixes
 
