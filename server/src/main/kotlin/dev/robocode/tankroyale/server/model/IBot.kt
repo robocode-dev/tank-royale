@@ -8,6 +8,12 @@ interface IBot {
     /** Bot id */
     val id: BotId
 
+    /** Session id */
+    val sessionId: String?
+
+    /** Boot id */
+    val bootId: String?
+
     /** Energy level */
     val energy: Double
 

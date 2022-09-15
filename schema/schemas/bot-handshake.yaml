@@ -7,6 +7,9 @@ properties:
   sessionId:
     description: Unique session id that must match the session id received from the server handshake
     type: string
+  bootId:
+    description: Unique boot id, which is only available if the boot was booted up locally
+    type: string
   name:
     description: Name of bot, e.g. Killer Bee
     type: string
@@ -31,7 +34,7 @@ properties:
       type: string
       pattern: /^[a-z]{2}$/ig
   gameTypes:
-    description: Game types supported by this bot, e.g. "classic", "melee" and/or "1v1"
+    description: Game types supported by this bot (defined elsewhere), e.g. "classic", "melee" and "1v1"
     type: array
     items:
       type: string
@@ -46,9 +49,6 @@ properties:
     $ref: initial-position.yaml
   secret:
     description: Secret used for access control with the server
-    type: string
-  processId:
-    description: Process id (pid), which is only available if the bot was booted up in a local process
     type: string
 required:
   - sessionId

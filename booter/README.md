@@ -117,17 +117,18 @@ The `run` command is used like this to run bots:
 This will run the two bots located in `c:\bots-java\Corners` and `c:\bots-java\Target`, and write something like this
 to [stdout]:
 
-    8072;c:\bots-java\Corners
-    20336;c:\bots-java\Target
+    1984092035700;c:\bots-java\Corners
+    1984092047900;c:\bots-java\Target
 
-The booter writes out the pid (process id) for the bots is started in this format:
+The booter writes out the boot id for the bots is started in this format:
 
     {boot-id};{dir}
 
-- `{pid}` is the process id
+- `{boot-id}` is the boot id
 - `{dir}` is the bot directory
 
-So in the example above, the Corners bots in `c:\bots-java\Corners` were started in a process with pid 8072.
+So in the example above, the Corners bots in `c:\bots-java\Corners` were started in a process with boot id
+1984092035700.
 
 It is possible to see all available [stdin] commands for `run` by writing:
 
@@ -151,16 +152,16 @@ Executing the `run` stdin command will write out the `{boot-id};{dir}` informati
 
 It is possible to stop a bot that is run by the booter, by writing this to its [stdin]:
 
-    stop {pid}
+    stop {boot-id}
 
-Here the `{pid}` is the process id (pid) of the bot to stop.
+Here the `{boot-id}` is the boot id of the bot to stop.
 
 Example:
 
-    stop 8072
+    stop 1984092035700
 
-Executing the `stop` std command will write out `stopped {pid}`, e.g. `stopped 8072`, which is useful if several bots
-are being stopped in parallel and terminated in a different time/order.
+Executing the `stop` std command will write out `stopped {boot-id}`, e.g. `stopped 1984092035700`, which is useful if
+several bots are being stopped in parallel and terminated in a different time/order.
 
 ### The `quit` stdin command
 

@@ -26,6 +26,7 @@ internal static class BotHandshakeFactory
             ProgrammingLang = botInfo.ProgrammingLang,
             InitialPosition = InitialPositionMapper.Map(botInfo.InitialPosition),
             Secret = serverSecret,
+            BootId = EnvVars.GetBootId()
         };
         return handshake;
     }

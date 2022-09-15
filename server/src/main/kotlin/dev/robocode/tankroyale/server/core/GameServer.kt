@@ -185,7 +185,9 @@ class GameServer(
             val botId = participantIds[conn] ?: continue
             val participant = Participant().apply {
                 id = botId.value
-                name = handshake!!.name
+                sessionId = handshake!!.sessionId
+                bootId = handshake.bootId
+                name = handshake.name
                 version = handshake.version
                 description = handshake.description
                 authors = handshake.authors
@@ -439,7 +441,7 @@ class GameServer(
     }
 
     private fun broadcastGameTickToObservers(roundNumber: Int, turn: ITurn) {
-        broadcastToObserverAndControllers(TurnToTickEventForObserverMapper.map(roundNumber, turn))
+        broadcastToObserverAndControllers(TurnToTickEventForObserverMapper.map(roundNumber, turn, participantMap))
     }
 
     private fun sendSkippedTurnToParticipants(currentTurnNumber: Int) {
