@@ -80,7 +80,7 @@ tasks {
         exclude(
             "**/dev/robocode/tankroyale/botapi/internal/**",
             "**/dev/robocode/tankroyale/botapi/mapper/**",
-            "**/dev/robocode/tankroyale/sample/**"
+            "**/dev/robocode/tankroyale/botapi/util/**",
         )
         doLast {
             Files.copy(
