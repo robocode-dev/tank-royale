@@ -20,7 +20,7 @@ import kotlin.io.path.exists
 class RunCommand : Command() {
 
     private val processes = ConcurrentSkipListMap<Long, Process>() // pid, process
-    private val bootIdToPid = ConcurrentSkipListMap<Long, Long>() // boot-id, pid
+    private val bootIdToPid = ConcurrentSkipListMap<Long, Long>() // boot-id, boot-id
 
     fun runBots(botPaths: Array<String>) {
         Runtime.getRuntime().addShutdownHook(Thread {

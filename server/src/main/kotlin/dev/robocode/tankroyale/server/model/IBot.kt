@@ -8,6 +8,9 @@ interface IBot {
     /** Bot id */
     val id: BotId
 
+    /** Process id (pid) */
+    val processId: Int?
+
     /** Energy level */
     val energy: Double
 
