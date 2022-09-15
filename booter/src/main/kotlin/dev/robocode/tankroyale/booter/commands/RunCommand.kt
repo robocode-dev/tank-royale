@@ -52,7 +52,6 @@ class RunCommand : Command() {
                             val pid = bootIdToPid[bootId]
                             pid?.let {
                                 stopBotProcess(pid)
-                                bootIdToPid.remove(bootId)
                             }
                         }
                     }
@@ -122,6 +121,8 @@ class RunCommand : Command() {
                 val entries = bootIdToPid.entries.filter { (_, value) -> value == pid }
                 if (entries.isNotEmpty()) {
                     val bootId = entries[0].key
+                    bootIdToPid.remove(bootId)
+
                     println("stopped $bootId")
                 }
             }
