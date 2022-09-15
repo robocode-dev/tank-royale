@@ -29,6 +29,7 @@ import dev.robocode.tankroyale.server.rules.INITIAL_GUN_HEAT
  */
 data class Bot(
     override val id: BotId,
+    override val processId: Int? = null,
     override val energy: Double = INITIAL_BOT_ENERGY,
     override val position: Point, // immutable point
     override val direction: Double,

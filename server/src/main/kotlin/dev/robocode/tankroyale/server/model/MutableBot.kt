@@ -10,6 +10,9 @@ data class MutableBot(
     /** Bot id */
     override val id: BotId,
 
+    /** Process id (pid) */
+    override var processId: Int? = null,
+
     /** Energy level */
     override var energy: Double = INITIAL_BOT_ENERGY,
 
