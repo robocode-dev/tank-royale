@@ -1,7 +1,12 @@
 # Versions
 
 ## In progress
-- Reintroduced boot id to replace boot pid.
+
+#### 🚀 Improvements
+
+- [#43](https://github.com/robocode-dev/tank-royale/issues/43): Possibility to identify bot from Process to Tick:
+    - Reintroduced boot id to replace boot pid.
+    - Added `sessionId` and `bootId` to these schemas: `bot-handshake`, `bot-state-with-id`, and `participants`
 
 #### 🪲 Bug Fixes
 

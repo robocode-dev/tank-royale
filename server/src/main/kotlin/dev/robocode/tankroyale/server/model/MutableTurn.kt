@@ -111,6 +111,8 @@ data class MutableTurn(
         private fun copyBot(bot: IBot): IBot =
             Bot(
                 bot.id,
+                bot.sessionId,
+                bot.bootId,
                 bot.energy,
                 Point(bot.position.x, bot.position.y),
                 bot.direction,

@@ -4,12 +4,15 @@ description: Current state of a bot, which included an id
 extends:
   $ref: bot-state.yaml
 properties:
-  sessionId:
-    description: Unique session id used for identifying the bot.
-    type: string
   id:
     description: Unique display ID of bot in the battle (like an index).
     type: integer
+  sessionId:
+    description: Unique session id used for identifying the bot.
+    type: string
+  bootId:
+    description: Unique boot id, which is only available if the boot was booted up locally
+    type: string
 required:
-  - sessionId
   - id
+  - sessionId

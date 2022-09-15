@@ -34,7 +34,7 @@ properties:
       type: string
       pattern: /^[a-z]{2}$/ig
   gameTypes:
-    description: Game types supported by this bot, e.g. "classic", "melee" and/or "1v1"
+    description: Game types supported by this bot (defined elsewhere), e.g. "classic", "melee" and "1v1"
     type: array
     items:
       type: string
