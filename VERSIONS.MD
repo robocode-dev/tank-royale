@@ -8,6 +8,7 @@
     - The `onWonRound(WonRoundEvent)` was not triggered as soon as the round has ended.
     - The blocking turn methods for turning the body, gun, and radar invoked `go()` twice internally making the turning
       turn in "step" and take the double amount of time.
+    - Some events already handled were not removed from the event queue.
 
 ## 0.17.0 - Introduction of process id - 06-Sep-2022
 
