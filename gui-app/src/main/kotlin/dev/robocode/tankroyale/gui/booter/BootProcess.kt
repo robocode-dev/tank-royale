@@ -173,6 +173,7 @@ object BootProcess {
     }
 
     private fun readInputToBootIds(process: Process) {
+        println("##### readInputToBootIds #####")
         process.inputStream?.let {
             val reader = BufferedReader(InputStreamReader(process.inputStream))
             while (thread?.isInterrupted == false) {
@@ -185,6 +186,7 @@ object BootProcess {
                     }
                 }
             }
+            println("##### exited #####")
         }
     }
 
@@ -233,9 +235,9 @@ object BootProcess {
     }
 
     private fun removeBootId(line: String) {
-        val cmdAndBootId = line.split(" ", limit = 2)
-        if (cmdAndBootId.size == 2) {
-            val bootId = cmdAndBootId[1].toLong()
+        val actionAndBootId = line.split(" ", limit = 2)
+        if (actionAndBootId.size == 2) {
+            val bootId = actionAndBootId[1].toLong()
             val dir = bootIdAndDirs[bootId]
 
             bootIdAndDirs.remove(bootId)

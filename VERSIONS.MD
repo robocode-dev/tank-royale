@@ -1,7 +1,7 @@
 # Versions
 
 ## In progress
-- Reintroduced boot id over boot pid.
+- Reintroduced boot id to replace boot pid.
 
 #### 🪲 Bug Fixes
 
@@ -34,24 +34,22 @@ only be unique locally, but across multiple systems. With the _session id_, all 
 
 ## 0.16.0 - Introduction of boot id - 31-Aug-2022
 
-_Update 06-Sep-2022: Note: The boot id has been removed, and the process id (pid) was reintroduced with release 0.17.0_
-
-~~The _boot id_ has been introduced to make it easier to identify which bots have booted locally. Previously, only the
+The _boot id_ has been introduced to make it easier to identify which bots have booted locally. Previously, only the
 host and port were available on the server side, making it hard to identify the bots started from a controller.
 Now the boot id uniquely identifies a booted bot.~~
 
-~~Previously, a process id (pid) was used to uniquely identify a bot being booted, but the pid has been replaced by the
-new boot id.~~
+Previously, a process id (pid) was used to uniquely identify a bot being booted, but the pid has been replaced by the
+new boot id.
 
-- ~~Schema:~~
-    - ~~The `bot-handshake` has been extended to include the `bootId` when the bot is booted locally. This field may be
-      empty when a bot has not been booted by the Booter.~~
-- ~~Booter:~~
-    - ~~Now generates a unique boot id for each booted bot, and sends this to the bot via the new `BOOT_ID` environment
-      variable.~~
-- ~~Bot API:~~
-    - ~~Takes the boot id from the `BOOT_ID` environment variable and includes this within the bot `bot-handshake` when
-      it is sent to the server.~~
+- Schema:
+    - The `bot-handshake` has been extended to include the `bootId` when the bot is booted locally. This field may be
+      empty when a bot has not been booted by the Booter.
+- Booter:
+    - Now generates a unique boot id for each booted bot, and sends this to the bot via the new `BOOT_ID` environment
+      variable.
+- Bot API:
+    - Takes the boot id from the `BOOT_ID` environment variable and includes this within the bot `bot-handshake` whens
+      it is sent to the server.
 
 #### 🪲 Bug Fixes
 
