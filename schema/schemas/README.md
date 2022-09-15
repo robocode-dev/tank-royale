@@ -22,13 +22,21 @@ The bot handshake must be sent by a bot to join the server.
 ```mermaid
 sequenceDiagram
     Note over Bot: WebSocket connection is opened
-    Bot->>Server: <<event>> connection established
-    Server->>Bot: server-handshake
-    Bot->>Server: bot-handshake
-    Note over Server: Produces: <<event>> Bot joined
-    Server->>Observer: bot-list-update
-    Server->>Controller: bot-list-update
+    Bot->>+Server: <<event>> connection established
+    Server->>-Bot: server-handshake (session-id)
+    Bot->>Server: bot-handshake (session-id, secret, boot-id)
+    alt if session-id or secret is invalid
+        Server->>Bot: disconnect
+    else else
+        Note over Server: Produces: <<event>> Bot joined
+        Server->>Observer: bot-list-update
+        Server->>Controller: bot-list-update
+    end
 ```
+
+Note that the session-id sent to the bot via the `server-handshake` must be sent back to the server as identification.
+If the server requires a secret, this must be passed as well.
+A `boot-id` might be provided by the bot (via a Bot API) if it was booted from the Booter.
 
 ### Bot leaving
 
@@ -53,11 +61,19 @@ The observer handshake must be sent by an observer to join the server.
 
 ```mermaid
 sequenceDiagram
-    Observer->>Server: <<event>> connection established
-    Server->>Observer: server-handshake
-    Observer->>Server: observer-handshake
-    Note over Server: Produces: <<event>> Observer joined
+    Note over Observer: WebSocket connection is opened
+    Observer->>+Server: <<event>> connection established
+    Server->>-Observer: server-handshake (session-id)
+    Observer->>Server: observer-handshake (session-id, secret)
+    alt if session-id or secret is invalid
+        Server->>Observer: disconnect
+    else else
+        Note over Server: Produces: <<event>> Observer joined
+    end
 ```
+
+Note that the session-id sent to the observer via the `server-handshake` must be sent back to the server as
+identification. If the server requires a secret, this must be passed as well.
 
 ### Controller joining
 
@@ -67,12 +83,20 @@ The controller handshake must be sent by a controller to join the server.
 - [controller-handshake]
 
 ```mermaid
-sequenceDiagram
-    Controller->>Server: <<event>> connection established
-    Server->>Controller: server-handshake
-    Controller->>Server: controller-handshake
-    Note over Server: Produces: <<event>> Controller joined
+sequenceDiagram   
+    Note over Controller: WebSocket connection is opened
+    Controller->>+Server: <<event>> connection established
+    Server->>-Controller: server-handshake (session-id)
+    Controller->>Server: controller-handshake (session-id, secret)
+    alt if session-id or secret is invalid
+        Server->>Controller: disconnect
+    else else
+        Note over Server: Produces: <<event>> Conntroller joined
+    end
 ```
+
+Note that the session-id sent to the controller via the `server-handshake` must be sent back to the server as
+identification. If the server requires a secret, this must be passed as well.
 
 ## Starting a game
 
@@ -89,8 +113,7 @@ When there are enough participants to start the battle, the server sends a `game
 observers and controllers and the game will be in _running_ state.
 
 If there are not enough participants for the battle, the _Ready timer_ will time out, and the server returns to the
-state
-where it waits for more bots to join the battle, and a controller will need to make a new attempt to start a game.
+state where it waits for more bots to join the battle, and a controller will need to make a new attempt to start a game.
 
 - [start-game]
 - [game-started-event-for-bot]
