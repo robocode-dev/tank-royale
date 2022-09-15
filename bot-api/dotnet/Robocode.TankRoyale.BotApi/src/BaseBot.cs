@@ -48,7 +48,6 @@ public abstract class BaseBot : IBaseBot
     /// <li>BOT_NAME</li>
     /// <li>BOT_VERSION</li>
     /// <li>BOT_AUTHORS</li>
-    /// <li>BOT_GAME_TYPES</li>
     /// </ul>
     /// These value can take multiple values separated by a comma:
     /// <ul>

@@ -52,7 +52,6 @@ public abstract class BaseBot implements IBaseBot {
      * <li>{@code BOT_NAME}</li>
      * <li>{@code BOT_VERSION}</li>
      * <li>{@code BOT_AUTHORS}</li>
-     * <li>{@code BOT_GAME_TYPES}</li>
      * </ul>
      * <p>
      * These value can take multiple values separated by a comma:
