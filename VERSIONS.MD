@@ -1,11 +1,11 @@
 # Versions
 
-## In progress
+## 📦 0.17.1 - Identifying a bot from Boot-up to Ticks - 15-Sep-2022  
 
 #### 🚀 Improvements
 
 - [#43](https://github.com/robocode-dev/tank-royale/issues/43): Possibility to identify bot from Process to Tick:
-    - Reintroduced boot id to replace boot pid.
+    - Reintroduced `boot id` to replace boot process id (`pid`)
     - Added `sessionId` and `bootId` to these schemas: `bot-handshake`, `bot-state-with-id`, and `participants`
 
 #### 🪲 Bug Fixes
@@ -16,7 +16,7 @@
       turn in "step" and take the double amount of time.
     - Some events already handled were not removed from the event queue.
 
-## 0.17.0 - Introduction of process id - 06-Sep-2022
+## 📦 0.17.0 - Introduction of process id - 06-Sep-2022
 
 The _boot id_ concept introduced in release 0.16.0 has been rolled back and the _pid_ is used with the Booter again.
 However, a new concept is introduced to replace the _boot id_, which is the _process id_.
@@ -38,7 +38,7 @@ only be unique locally, but across multiple systems. With the _session id_, all 
 - Server:
     - The `server-handshake` was missing the name and version.
 
-## 0.16.0 - Introduction of boot id - 31-Aug-2022
+## 📦 0.16.0 - Introduction of boot id - 31-Aug-2022
 
 The _boot id_ has been introduced to make it easier to identify which bots have booted locally. Previously, only the
 host and port were available on the server side, making it hard to identify the bots started from a controller.
@@ -67,7 +67,7 @@ new boot id.
 - GUI:
     - Issue with reading huge bot list from the booter when reading from stdin.
 
-## 0.15.0 - Added fire assistance - 17-Aug-2022
+## 📦 0.15.0 - Added fire assistance - 17-Aug-2022
 
 #### 🚀 Improvements
 
@@ -110,7 +110,7 @@ Bot info:
 - Server:
     - TPS: When TPS was set to 0 and the battle was restarted, the battle ran in max TPS.
 
-## 0.14.3 - Fixed setting adjustment turns - 07-Aug-2022
+## 📦 0.14.3 - Fixed setting adjustment turns - 07-Aug-2022
 
 #### 🪲 Bug Fixes
 
@@ -124,7 +124,7 @@ Bot info:
 - Sample bots
     - Updated Corners to start at random corner when a new battle is started.
 
-## 0.14.2 - Added Velocity Bot - 29-Jul-2022
+## 📦 0.14.2 - Added Velocity Bot - 29-Jul-2022
 
 #### 🚀 Improvements
 
@@ -149,9 +149,9 @@ Bot info:
         - Setting the TPS to max could be reset to default TPS when restarting the battle or GUI.
     - GUI client was registered multiple times with the server.
 
-## 0.14.1 - Added BotInfo builder - 14-Jul-2022
+## 📦 0.14.1 - Added BotInfo builder - 14-Jul-2022
 
-#### 🚀 Improvements
+#### c Improvements
 
 - Bot API:
     - BotInfo:
@@ -161,7 +161,7 @@ Bot info:
     - GameTypes:
         - Added missing game type for "classic" game + updated documentation.
 
-## 0.14.0 - Adjustments for bot events - 03-Jul-2022
+## 📦 0.14.0 - Adjustments for bot events - 03-Jul-2022
 
 #### Changes
 
@@ -178,7 +178,7 @@ Bot info:
     - Replaced `$type` with `type` to make it possible to use more code generators
       [#31](https://github.com/robocode-dev/tank-royale/issues/31)
 
-## 0.13.4 - GUI improvements + bugfix - 06-Jun-2022
+## 📦 0.13.4 - GUI improvements + bugfix - 06-Jun-2022
 
 #### 🪲 Bug Fixes
 
@@ -197,7 +197,7 @@ Bot info:
         - Added a "Default TPS" button to reset the TPS to the default setting (30 TPS).
     - **Tool tips**: Added tool tip texts on the Control panel.
 
-## 0.13.3 - Stabilization of Bot APIs - 01-Jun-2022
+## 📦 0.13.3 - Stabilization of Bot APIs - 01-Jun-2022
 
 #### 🪲 Bug Fixes
 
@@ -219,7 +219,7 @@ Bot info:
 - GUI:
     - When stopping a battle and starting a new one, the Pause/Resume and Stop buttons were disabled.
 
-## 0.13.2 - Fixing issue #23 - 19-May-2022
+## 📦 0.13.2 - Fixing issue #23 - 19-May-2022
 
 #### 🪲 Bug Fixes
 
@@ -233,7 +233,7 @@ Bot info:
 - Bot APIs:
     - Added missing documentation about using positive and negative infinity values when moving and turning.
 
-## 0.13.1 - Fixing event queue + country codes - 18-May-2022
+## 📦 0.13.1 - Fixing event queue + country codes - 18-May-2022
 
 #### 🪲 Bug Fixes
 
@@ -255,7 +255,7 @@ Bot info:
 - Sample bots:
     - Optimized TrackFire after fixing rescanning issue.
 
-## 0.13.0 - Bot API for .Net 6 - 03-May-2022
+## 📦 0.13.0 - Bot API for .Net 6 - 03-May-2022
 
 #### Changes
 
@@ -285,7 +285,7 @@ Bot info:
 - GUI:
     - The 'Start game' button is now disabled when the minimum or maximum number of participants is not met.
 
-## 0.12.0 - Single stepping battle - 17-Apr-2022
+## 📦 0.12.0 - Single stepping battle - 17-Apr-2022
 
 #### Changes
 
@@ -308,7 +308,7 @@ Bot info:
 - GUI:
     - When dragging the battle arena, the graphics were not updated while dragging.
 
-## 0.11.2 - Fix restart issue - 12-Apr-2022
+## 📦 0.11.2 - Fix restart issue - 12-Apr-2022
 
 #### 🪲 Bug Fixes
 
@@ -316,7 +316,7 @@ Bot info:
 - Bot API did not stop thread when GameAbortedEvent occurred (when restarting).
 - When restarting, a two or more games could be started on the server.
 
-## 0.11.1 - Patch for the GUI - 07-Apr-2022
+## 📦 0.11.1 - Patch for the GUI - 07-Apr-2022
 
 #### 🪲 Bug Fixes
 
@@ -332,7 +332,7 @@ Bot info:
   improvements were done to the control panel.
 - A busy cursor is now (automatically) shown when an operation takes some time to perform.
 
-## 0.11.0 - Initial position feature - 02-Apr-2022
+## 📦 0.11.0 - Initial position feature - 02-Apr-2022
 
 #### 🪲 Bug Fixes
 
@@ -357,7 +357,7 @@ Bot info:
 - When the server settings are changed on the GUI, the user will be asked if the server should be rebooted to let the
   changes take effect.
 
-## 0.10.0 - Bot API improvements - 24-Mar-2022
+## 📦 0.10.0 - Bot API improvements - 24-Mar-2022
 
 #### 🪲 Bug Fixes
 
@@ -385,8 +385,8 @@ Bot info:
 - Client is disconnected when sending a wrong secret to the server.
     - Bot API now writes out status-code and the reason for disconnecting when it is due to a wrong secret.
 
-## 0.9.12 - 23-Jan-2022
+## 📦 0.9.12 - 23-Jan-2022
 
-- First alpha version was released! :)
+- First alpha version was released! 🚀😀
 
 [BotInfo.FromConfiguration(IConfiguration)]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_Microsoft_Extensions_Configuration_IConfiguration_
