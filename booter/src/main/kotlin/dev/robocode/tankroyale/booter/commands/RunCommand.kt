@@ -96,8 +96,9 @@ class RunCommand : Command() {
                 process = processBuilder.start().also {
                     println("${bootId};${botDir.absolutePathString()}")
                 }
-                process?.pid()?.let {
-                    bootIdToPid.put(bootId, it)
+                process?.let {
+                    processes[it.pid()] = it
+                    bootIdToPid.put(bootId, it.pid())
                 }
             }
             return process
