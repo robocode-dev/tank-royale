@@ -173,7 +173,6 @@ object BootProcess {
     }
 
     private fun readInputToBootIds(process: Process) {
-        println("##### readInputToBootIds #####")
         process.inputStream?.let {
             val reader = BufferedReader(InputStreamReader(process.inputStream))
             while (thread?.isInterrupted == false) {
@@ -186,7 +185,6 @@ object BootProcess {
                     }
                 }
             }
-            println("##### exited #####")
         }
     }
 
