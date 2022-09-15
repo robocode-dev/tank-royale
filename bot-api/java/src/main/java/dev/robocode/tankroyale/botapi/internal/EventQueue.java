@@ -74,27 +74,28 @@ final class EventQueue {
             var event = events.get(0);
             var priority = getPriority(event);
 
-            if (priority < currentTopEventPriority) {
-                return; // Exit when event priority is lower than the current event being processed
-            }
-
-            // Same event?
-            if (priority == currentTopEventPriority) {
-                if (!isInterruptible()) {
-                    // Ignore same event occurring again, when not interruptible
-                    return;
+            try {
+                if (priority < currentTopEventPriority) {
+                    return; // Exit when event priority is lower than the current event being processed
                 }
-                setInterruptible(event.getClass(), false);
-                // The current event handler must be interrupted (by throwing an InterruptEventHandlerException)
-                throw new InterruptEventHandlerException();
+                // Same event?
+                if (priority == currentTopEventPriority) {
+                    if (!isInterruptible()) {
+                        // Ignore same event occurring again, when not interruptible
+                        return;
+                    }
+                    setInterruptible(event.getClass(), false);
+                    // The current event handler must be interrupted (by throwing an InterruptEventHandlerException)
+                    throw new InterruptEventHandlerException();
+                }
+            } finally {
+                events.remove(event);
             }
 
             int oldTopEventPriority = currentTopEventPriority;
 
             currentTopEventPriority = priority;
             currentTopEvent = event;
-
-            events.remove(event);
 
             try {
                 if (isNotOldOrCriticalEvent(event, currentTurn)) {

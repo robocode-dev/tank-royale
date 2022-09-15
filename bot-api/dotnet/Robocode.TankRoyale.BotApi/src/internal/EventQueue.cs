@@ -80,27 +80,32 @@ internal sealed class EventQueue : IComparer<BotEvent>
             var botEvent = events[0];
             var priority = GetPriority(botEvent);
 
-            if (priority < currentTopEventPriority)
-                return; // Exit when event priority is lower than the current event being processed
-
-            // Same event?
-            if (priority == currentTopEventPriority)
+            try
             {
-                if (!IsInterruptible)
-                    // Ignore same event occurring again, when not interruptible
-                    return;
+                if (priority < currentTopEventPriority)
+                    return; // Exit when event priority is lower than the current event being processed
 
-                SetInterruptible(botEvent.GetType(), false);
-                // The current event handler must be interrupted (by throwing an InterruptEventHandlerException)
-                throw new InterruptEventHandlerException();
+                // Same event?
+                if (priority == currentTopEventPriority)
+                {
+                    if (!IsInterruptible)
+                        // Ignore same event occurring again, when not interruptible
+                        return;
+
+                    SetInterruptible(botEvent.GetType(), false);
+                    // The current event handler must be interrupted (by throwing an InterruptEventHandlerException)
+                    throw new InterruptEventHandlerException();
+                }
+            }
+            finally
+            {
+                events = events.Remove(botEvent);
             }
 
             var oldTopEventPriority = currentTopEventPriority;
 
             currentTopEventPriority = priority;
             currentTopEvent = botEvent;
-
-            events = events.Remove(botEvent);
 
             try
             {
