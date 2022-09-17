@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui
 
+import dev.robocode.tankroyale.gui.audio.SoundActions
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
@@ -47,6 +48,7 @@ object MainWindow : RcFrame("main_window") {
     private object MainPanel : JPanel() {
         init {
             ControlEventHandlers
+            SoundActions
 
             layout = BorderLayout()
             add(LogoPanel, BorderLayout.CENTER)
