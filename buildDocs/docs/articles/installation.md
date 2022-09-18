@@ -114,3 +114,11 @@ the jar file for the GUI like this:
 
 The sounds are automatically enabled, and you can enable/disable all sounds and the individual sound from the Sound
 Options in the GUI application.
+
+### Using your own sound files
+
+If you want you replace one or more sounds, you can do this by simple overwriting the sound files with other [WAV] files
+as long as you stick to the existing file names. Also note that only [WAV] files are supported.
+
+
+[WAV]: https://en.wikipedia.org/wiki/WAV "WAV file"
