@@ -10,30 +10,26 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
     private val list = CopyOnWriteArrayList<T>()
 
     override fun getSize(): Int {
-        synchronized(list) {
-            return list.size
-        }
+        return list.size
     }
 
     override fun getElementAt(index: Int): T {
-        synchronized(list) {
-            return list[index]
-        }
+        return list[index]
     }
 
     fun addElement(element: T) {
-        synchronized(list) {
-            list.add(element)
+        list.add(element)
 
-            list.sortWith { o1, o2 ->
-                when (element) {
-                    is BotInfo -> {
-                        val b1 = o1 as BotInfo
-                        val b2 = o2 as BotInfo
-                        b1.host.lowercase(Locale.getDefault()).compareTo(b2.host.lowercase(Locale.getDefault()))
-                    } else -> {
-                        o1.toString().lowercase(Locale.getDefault()).compareTo(o2.toString().lowercase(Locale.getDefault()))
-                    }
+        list.sortWith { o1, o2 ->
+            when (element) {
+                is BotInfo -> {
+                    val b1 = o1 as BotInfo
+                    val b2 = o2 as BotInfo
+                    b1.host.lowercase(Locale.getDefault()).compareTo(b2.host.lowercase(Locale.getDefault()))
+                }
+
+                else -> {
+                    o1.toString().lowercase(Locale.getDefault()).compareTo(o2.toString().lowercase(Locale.getDefault()))
                 }
             }
         }
@@ -42,32 +38,24 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
 
 
     fun clear() {
-        synchronized(list) {
-            list.clear()
-        }
+        list.clear()
         notifyChanged()
     }
 
     operator fun contains(element: T): Boolean {
-        synchronized(list) {
-            return list.contains(element)
-        }
+        return list.contains(element)
     }
 
     fun removeElement(element: T): Boolean {
-        synchronized(list) {
-            val removed = list.remove(element)
-            if (removed) {
-                notifyChanged()
-            }
-            return removed
+        val removed = list.remove(element)
+        if (removed) {
+            notifyChanged()
         }
+        return removed
     }
 
     operator fun get(index: Int): T {
-        synchronized(list) {
-            return getElementAt(index)
-        }
+        return getElementAt(index)
     }
 
     fun list(): List<T> {
