@@ -7,8 +7,9 @@ This guide describes how to install and run Robocode Tank Royale.
 Robocode is running on a Java Runtime Environment (JRE) and needs Java 11 as a minimum. If you want to develop bots for
 Robocode in the Java programming language, then you need a JDK (Java Development Kit).
 
-> Note that you do not need to run and old version 11 of Robocode to run the GUI, booter and server, or your Java/JVM
-> based bot. But you cannot use Java versions older than version 11.
+> Note that you do not need to run version 11 of Java specifically to run the GUI, booter, server, or your
+> Java/JVM-based bot. I encourage you to run the newest Java version. But you cannot use Java versions older than
+> version 11.
 
 Numerous Java distributions are available:
 
@@ -37,7 +38,8 @@ this application for observing how your bot(s) perform in the battle arena again
 
 You can download the application from the [Robocode releases].
 
-You need a file named `robocode-tankroyale-gui-x.y.z.jar`, where x.y.z is the specific version number of Robocode, e.g.
+You need the file named `robocode-tankroyale-gui-x.y.z.jar`, where x.y.z is the specific version number of Robocode,
+e.g.
 version 0.14.1.
 
 You might be able to simply start the application by (double)clicking it, depending on the OS and Java version you have.
@@ -47,6 +49,12 @@ need to stand in the directory containing the .jar file of course.
 ```
 java -jar robocode-tankroyale-gui-x.y.z.jar
 ```
+
+I recommend that you create a directory for Tank Royale, and create a script file for starting up the GUI using the
+command line above.
+
+The GUI application will automatically create and store `.properties` files beside your
+`robocode-tankroyale-gui-x.y.z.jar` file when running the application.
 
 ### GUI issue on Windows with NVidea gfx card
 
@@ -82,3 +90,35 @@ The sample bots should show up under the Bot Directories when selecting Battle -
 you might have a misconfiguration with the root bot directory.
 
 [Robocode releases]: https://github.com/robocode-dev/tank-royale/releases "Robocode releases"
+
+## Installing sound files
+
+Note: Installing the sound files is optional, but are provided if you want to add sounds to the game. 🙂
+
+You download the `sounds.zip` archive from the [sounds releases](https://github.com/robocode-dev/sounds/releases),
+e.g. [sounds.zip 1.0.0](https://github.com/robocode-dev/sounds/releases/download/v1.0.0/sounds.zip).
+
+Unpack the `sounds` directory from the zip archive, and copy the `sounds` directory into the directory containing
+your `robocode-tankroyale-gui-x.y.z.jar` file so that the `sounds` directory is located next to
+the jar file for the GUI like this:
+
+```
+[your tank royale directory]
+├── robocode-tankroyale-gui-x.y.z.jar
+└── sounds/  <-- this directory
+    ├── bots_collision.wav
+    ├── bullet_hit.wav
+    ...
+    └── wall_collision.wav    
+```
+
+The sounds are automatically enabled, and you can enable/disable all sounds and the individual sound from the Sound
+Options in the GUI application.
+
+### Using your own sound files
+
+If you want you replace one or more sounds, you can do this by simple overwriting the sound files with other [WAV] files
+as long as you stick to the existing file names. Also note that only [WAV] files are supported.
+
+
+[WAV]: https://en.wikipedia.org/wiki/WAV "WAV file"

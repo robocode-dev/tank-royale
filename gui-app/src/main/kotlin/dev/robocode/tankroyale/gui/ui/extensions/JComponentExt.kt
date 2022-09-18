@@ -23,6 +23,15 @@ object JComponentExt {
         return button
     }
 
+    fun JComponent.addCheckBox(
+        stringResourceName: String, event: Event<JCheckBox>, layoutConstraints: String? = null
+    ): JCheckBox {
+        val checkbox = JCheckBox(Strings.get(stringResourceName))
+        checkbox.addActionListener { event.fire(checkbox) }
+        add(checkbox, layoutConstraints)
+        return checkbox
+    }
+
     fun JComponent.setDefaultButton(button: JButton) {
         enqueue { // to avoid rootPane to be null, if called too early
             if (rootPane != null) {

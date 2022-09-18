@@ -114,7 +114,7 @@ open class TickEvent(
     val roundNumber: Int,
     val botStates: Set<BotState>,
     val bulletStates: Set<BulletState>,
-    val events: Set<Message>
+    val events: Set<Event>
 ) : Event()
 
 @Serializable

@@ -11,6 +11,7 @@ import dev.robocode.tankroyale.gui.ui.MenuTitles
 import dev.robocode.tankroyale.gui.ui.extensions.JMenuExt.addNewMenuItem
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onAbout
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRebootServer
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onSoundConfig
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStartServer
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStopServer
 import dev.robocode.tankroyale.gui.ui.server.Server
@@ -102,6 +103,10 @@ object Menu : JMenuBar() {
 
             addNewMenuItem("item.debug_config", onDebugConfig).apply {
                 mnemonic = KeyEvent.VK_C
+            }
+
+            addNewMenuItem("item.sound_config", onSoundConfig).apply {
+                mnemonic = KeyEvent.VK_S
             }
         })
     }
