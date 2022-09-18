@@ -1,5 +1,11 @@
 # Versions
 
+## In progress - Added sounds
+
+- [#4](https://github.com/robocode-dev/tank-royale/issues/4): Fire and Explosion Sounds:
+    - Added feature to play sounds to the GUI application.
+    - Added Sound Options to configure sounds.
+
 ## 📦 0.17.1 - Identifying a bot from Boot-up to Ticks - 15-Sep-2022  
 
 #### 🚀 Improvements
