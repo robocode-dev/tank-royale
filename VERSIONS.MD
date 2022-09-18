@@ -4,16 +4,18 @@
 
 #### 🚀 Improvements
 
-- [#4](https://github.com/robocode-dev/tank-royale/issues/4): Fire and Explosion Sounds:
+- GUI/Sounds: [#4](https://github.com/robocode-dev/tank-royale/issues/4): Fire and Explosion Sounds:
     - Added feature to play sounds to the GUI application.
     - Added Sound Options to configure sounds.
+    - Note that sound files are distributed independently besides the gui application from the
+      [sounds releases](https://github.com/robocode-dev/sounds/releases)
 - GUI: Moved the Dismiss button on the Bot Root Directories configuration down under the Add and Remove buttons.
 
 #### 🪲 Bug Fixes
 
 - GUI: When the Bot Directories on the Select Bots for Battle window is updated, all selections are now being cleared.
 
-## 📦 0.17.1 - Identifying a bot from Boot-up to Ticks - 15-Sep-2022  
+## 📦 0.17.1 - Identifying a bot from Boot-up to Ticks - 15-Sep-2022
 
 #### 🚀 Improvements
 
@@ -164,7 +166,7 @@ Bot info:
 
 ## 📦 0.14.1 - Added BotInfo builder - 14-Jul-2022
 
-#### c Improvements
+#### 🚀 Improvements
 
 - Bot API:
     - BotInfo:
