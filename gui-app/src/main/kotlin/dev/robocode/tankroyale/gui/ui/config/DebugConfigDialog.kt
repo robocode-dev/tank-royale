@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
-import dev.robocode.tankroyale.gui.ui.config.DebugConfigDialog.onDismiss
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.util.Event
@@ -16,8 +15,6 @@ import javax.swing.JPanel
 
 object DebugConfigDialog : RcDialog(MainWindow, "debug_config_dialog") {
 
-    val onDismiss = Event<JButton>().apply { subscribe(this) { dispose() } }
-
     init {
         contentPane.add(Panel)
         pack()
@@ -26,6 +23,8 @@ object DebugConfigDialog : RcDialog(MainWindow, "debug_config_dialog") {
 }
 
 object Panel : JPanel(MigLayout("fill, insets 20", "", "[]20[]")) {
+
+    private val onDismiss = Event<JButton>().apply { subscribe(this) { DebugConfigDialog.dispose() } }
 
     var selected = ServerSettings.initialPositionsEnabled
 
@@ -39,6 +38,7 @@ object Panel : JPanel(MigLayout("fill, insets 20", "", "[]20[]")) {
                 }
             }
         }
+
         add(checkbox, "cell 0 0")
         addButton("dismiss", onDismiss, "cell 0 1, center").apply {
             setDefaultButton(this)

@@ -2,32 +2,69 @@ package dev.robocode.tankroyale.gui.audio
 
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.*
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 
 object SoundActions {
-    var enabled = true
+    private val gunshot = Sound.fromFile("sounds/gunshot.wav")
+    private val bulletHit = Sound.fromFile("sounds/bullet_hit.wav")
+    private val wallCollision = Sound.fromFile("sounds/wall_collision.wav")
+    private val botsCollision = Sound.fromFile("sounds/bots_collision.wav")
+    private val bulletsCollision = Sound.fromFile("sounds/bullets_collision.wav")
+    private val deathExplosion = Sound.fromFile("sounds/death.wav")
 
     init {
-        val gunshot = Sound.fromFile("sounds/gunshot.wav")
-        val bulletHit = Sound.fromFile("sounds/bullet_hit.wav")
-        val wallCollision = Sound.fromFile("sounds/wall_collision.wav")
-        val botsCollision = Sound.fromFile("sounds/bots_collision.wav")
-        val bulletsCollision = Sound.fromFile("sounds/bullets_collision.wav")
-        val death = Sound.fromFile("sounds/death.wav")
+        ClientEvents.onTickEvent.subscribe(this) { playEventSounds(it) }
+    }
 
-        ClientEvents.onTickEvent.subscribe(this) {
-            if (enabled) {
-                it.events.forEach { event ->
-                    when (event) {
-                        is BulletFiredEvent -> gunshot.play()
-                        is BulletHitBotEvent -> bulletHit.play()
-                        is BotHitWallEvent -> wallCollision.play()
-                        is BotHitBotEvent -> botsCollision.play()
-                        is BulletHitBulletEvent -> bulletsCollision.play()
-                        is BotDeathEvent -> death.play()
-                        else -> {}
-                    }
+    private fun playEventSounds(tickEvent: TickEvent) {
+        if (ConfigSettings.enableSounds) {
+            tickEvent.events.forEach { event ->
+                when (event) {
+                    is BulletFiredEvent -> playGunshot()
+                    is BulletHitBotEvent -> playBulletHit()
+                    is BotHitWallEvent -> playWallCollision()
+                    is BotHitBotEvent -> playBotsCollision()
+                    is BulletHitBulletEvent -> playBulletsCollision()
+                    is BotDeathEvent -> playDeathExplosion()
+                    else -> {}
                 }
             }
+        }
+    }
+
+    private fun playGunshot() {
+        if (ConfigSettings.enableGunshotSound) {
+            gunshot.play()
+        }
+    }
+
+    private fun playBulletHit() {
+        if (ConfigSettings.enableBulletHitSound) {
+            bulletHit.play()
+        }
+    }
+
+    private fun playWallCollision() {
+        if (ConfigSettings.enableWallCollisionSound) {
+            wallCollision.play()
+        }
+    }
+
+    private fun playBotsCollision() {
+        if (ConfigSettings.enableBotCollisionSound) {
+            botsCollision.play()
+        }
+    }
+
+    private fun playBulletsCollision() {
+        if (ConfigSettings.enableBulletCollisionSound) {
+            bulletsCollision.play()
+        }
+    }
+
+    private fun playDeathExplosion() {
+        if (ConfigSettings.enableDeathExplosionSound) {
+            deathExplosion.play()
         }
     }
 }
