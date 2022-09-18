@@ -1,6 +1,12 @@
 # Versions
 
-## 📦 0.17.1 - Identifying a bot from Boot-up to Ticks - 15-Sep-2022  
+## In progress
+
+#### 🚀 Improvements
+
+- Moved the Dismiss button on the Bot Root Directories configuration down under the Add and Remove buttons.
+
+## 📦 0.17.1 - Identifying a bot from Boot-up to Ticks - 15-Sep-2022
 
 #### 🚀 Improvements
 

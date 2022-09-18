@@ -39,13 +39,15 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
         addLabel("bot_root_dirs", "wrap")
         add(scrollPane, "span 2, grow, wrap")
 
-        val buttonPanel = JPanel(MigLayout("", "[][][5][]"))
-        buttonPanel.addButton("add", onAdd)
-        buttonPanel.addButton("remove", onRemove)
-        val dismissButton = buttonPanel.addButton("dismiss", onDismiss, "skip").apply {
+        val buttonPanel = JPanel(MigLayout("center, insets 0")).apply {
+            addButton("add", onAdd)
+            addButton("remove", onRemove)
+        }
+        add(buttonPanel, "wrap")
+
+        val dismissButton = addButton("dismiss", onDismiss, "center").apply {
             setDefaultButton(this)
         }
-        add(buttonPanel)
 
         ConfigSettings.botDirectories.forEach { listModel.addElement(it) }
 
