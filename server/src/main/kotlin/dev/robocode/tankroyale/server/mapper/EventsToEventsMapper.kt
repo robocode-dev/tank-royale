@@ -128,8 +128,6 @@ object EventsToEventsMapper {
     }
 
     private fun map(wonRoundEvent: dev.robocode.tankroyale.server.event.WonRoundEvent): WonRoundEvent {
-        println("WonRoundEvent: " + wonRoundEvent.turnNumber)
-
         val event = WonRoundEvent()
         event.type = Message.Type.WON_ROUND_EVENT
         event.turnNumber = wonRoundEvent.turnNumber
