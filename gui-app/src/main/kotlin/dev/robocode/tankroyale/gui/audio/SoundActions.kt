@@ -3,14 +3,16 @@ package dev.robocode.tankroyale.gui.audio
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.*
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
+import dev.robocode.tankroyale.gui.settings.ConfigSettings.SOUNDS_DIR
 
 object SoundActions {
-    private val gunshot = Sound.fromFile("sounds/gunshot.wav")
-    private val bulletHit = Sound.fromFile("sounds/bullet_hit.wav")
-    private val wallCollision = Sound.fromFile("sounds/wall_collision.wav")
-    private val botsCollision = Sound.fromFile("sounds/bots_collision.wav")
-    private val bulletsCollision = Sound.fromFile("sounds/bullets_collision.wav")
-    private val deathExplosion = Sound.fromFile("sounds/death.wav")
+
+    private val gunshot = Sound.fromFile("$SOUNDS_DIR/gunshot.wav")
+    private val bulletHit = Sound.fromFile("$SOUNDS_DIR/bullet_hit.wav")
+    private val wallCollision = Sound.fromFile("$SOUNDS_DIR/wall_collision.wav")
+    private val botsCollision = Sound.fromFile("$SOUNDS_DIR/bots_collision.wav")
+    private val bulletsCollision = Sound.fromFile("$SOUNDS_DIR/bullets_collision.wav")
+    private val deathExplosion = Sound.fromFile("$SOUNDS_DIR/death.wav")
 
     init {
         ClientEvents.onTickEvent.subscribe(this) { playEventSounds(it) }

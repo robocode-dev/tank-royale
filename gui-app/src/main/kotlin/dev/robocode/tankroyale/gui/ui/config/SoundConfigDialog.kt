@@ -1,13 +1,17 @@
 package dev.robocode.tankroyale.gui.ui.config
 
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
+import dev.robocode.tankroyale.gui.settings.ConfigSettings.SOUNDS_DIR
 import dev.robocode.tankroyale.gui.ui.MainWindow
+import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCheckBox
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showError
 import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.gui.util.FileUtil
 import net.miginfocom.swing.MigLayout
 import javax.swing.BorderFactory
 import javax.swing.JButton
@@ -80,9 +84,13 @@ object SoundConfigPanel : JPanel(MigLayout("fill")) {
                 setDefaultButton(this)
             }
         }
-    }
-}
 
-fun main() {
-    SoundConfigDialog.isVisible = true
+        showErrorIfSoundDirIsMissingOrEmpty()
+    }
+
+    private fun showErrorIfSoundDirIsMissingOrEmpty() {
+        if (FileUtil.isMissingOrEmptyDir(SOUNDS_DIR)) {
+            showError(String.format(Messages.get("sounds_dir_missing"), SOUNDS_DIR))
+        }
+    }
 }

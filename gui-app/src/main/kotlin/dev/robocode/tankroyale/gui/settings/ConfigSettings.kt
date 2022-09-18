@@ -5,6 +5,7 @@ import java.util.*
 object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.properties") {
 
     const val DEFAULT_TPS = 30
+    const val SOUNDS_DIR = "sounds/"
 
     private const val BOT_DIRECTORIES = "bot-directories"
     private const val TPS = "tps"
