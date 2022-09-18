@@ -316,6 +316,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     }
 
     private fun updateBotsDirectoryBots() {
+        botsDirectoryList.clearSelection()
         botsDirectoryListModel.clear()
 
         BootProcess.info().forEach { botEntry ->

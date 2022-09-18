@@ -4,7 +4,11 @@
 
 #### 🚀 Improvements
 
-- Moved the Dismiss button on the Bot Root Directories configuration down under the Add and Remove buttons.
+- GUI: Moved the Dismiss button on the Bot Root Directories configuration down under the Add and Remove buttons.
+
+#### 🪲 Bug Fixes
+
+- GUI: When the Bot Directories on the Select Bots for Battle window is updated, all selections are now being cleared.
 
 ## 📦 0.17.1 - Identifying a bot from Boot-up to Ticks - 15-Sep-2022
 
