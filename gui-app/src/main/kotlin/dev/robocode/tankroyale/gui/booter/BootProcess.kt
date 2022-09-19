@@ -51,12 +51,12 @@ object BootProcess {
         try {
             val jsonStr = String(process.inputStream.readAllBytes(), StandardCharsets.UTF_8)
             if (jsonStr.isBlank()) {
-                JOptionPane.showConfirmDialog(
+                JOptionPane.showMessageDialog(
                     null,
                     Messages.get("no_bot_directories_found"),
                     UiTitles.get("error"),
-                    JOptionPane.OK_OPTION)
-
+                    JOptionPane.ERROR_MESSAGE
+                )
                 return emptyList()
             }
             return json.decodeFromString(jsonStr)
