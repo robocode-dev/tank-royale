@@ -776,10 +776,10 @@ class ModelUpdater(
                 var winnerId = botsMap.entries.firstOrNull { (_, bot) -> bot.isAlive }?.key
 
                 // Otherwise, the bot with the highest score wins
-                if (winnerId == null) {
+                if (winnerId == null && scoreTracker.results.isNotEmpty()) {
                     winnerId = scoreTracker.results[0].botId
+                    turn.addPrivateBotEvent(winnerId, WonRoundEvent(turn.turnNumber))
                 }
-                turn.addPrivateBotEvent(winnerId, WonRoundEvent(turn.turnNumber))
             }
         }
     }
