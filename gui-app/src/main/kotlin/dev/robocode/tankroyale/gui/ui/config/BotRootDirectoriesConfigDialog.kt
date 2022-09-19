@@ -10,11 +10,14 @@ import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
+import java.awt.Dimension
 import javax.swing.*
 
 object BotRootDirectoriesConfigDialog : RcDialog(MainWindow, "bot_root_directories_config_dialog") {
 
     init {
+        preferredSize = Dimension(400, 300)
+
         contentPane.add(BotDirectoryConfigPanel)
         pack()
         setLocationRelativeTo(MainWindow) // center on main window
@@ -37,7 +40,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
 
     init {
         addLabel("bot_root_dirs", "wrap")
-        add(scrollPane, "span 2, grow, wrap")
+        add(scrollPane, "span, grow, wrap")
 
         val buttonPanel = JPanel(MigLayout("center, insets 0")).apply {
             addButton("add", onAdd)

@@ -9,7 +9,8 @@
     - Added Sound Options to configure sounds.
     - Note that sound files are distributed independently besides the gui application from the
       [sounds releases](https://github.com/robocode-dev/sounds/releases)
-- GUI: Moved the Dismiss button on the Bot Root Directories configuration down under the Add and Remove buttons.
+- GUI: Moved the Dismiss button on the Bot Root Directories configuration down under the Add and Remove buttons, and
+  adjusted the size of the dialog.
 
 #### 🪲 Bug Fixes
 
