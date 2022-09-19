@@ -261,7 +261,7 @@ class ConnectionHandler(
 
     private fun handleBotHandshake(conn: WebSocket, message: String) {
         gson.fromJson(message, BotHandshake::class.java).apply {
-            if (sessionId.isBlank()) {
+            if (sessionId.isNullOrBlank()) {
                 log.info("Ignoring bot missing session id: $name, version: $version")
                 conn.close(StatusCode.POLICY_VIOLATION.value, "Missing session id")
 
@@ -283,7 +283,7 @@ class ConnectionHandler(
 
     private fun handleObserverHandshake(conn: WebSocket, message: String) {
         gson.fromJson(message, ObserverHandshake::class.java).apply {
-            if (sessionId.isBlank()) {
+            if (sessionId.isNullOrBlank()) {
                 log.info("Ignoring observer missing session id: $name, version: $version")
                 conn.close(StatusCode.POLICY_VIOLATION.value, "Missing session id")
 
@@ -305,7 +305,7 @@ class ConnectionHandler(
 
     private fun handleControllerHandshake(conn: WebSocket, message: String) {
         gson.fromJson(message, ControllerHandshake::class.java).apply {
-            if (sessionId.isBlank()) {
+            if (sessionId.isNullOrBlank()) {
                 log.info("Ignoring controller missing session id: $name, version: $version")
                 conn.close(StatusCode.POLICY_VIOLATION.value, "Missing session id")
 
