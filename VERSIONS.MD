@@ -1,6 +1,6 @@
 # Versions
 
-## 📦 0.17.2 - Added sounds
+## 📦 0.17.2 - Added sounds - 20-Sep-2022
 
 #### 🚀 Improvements
 
