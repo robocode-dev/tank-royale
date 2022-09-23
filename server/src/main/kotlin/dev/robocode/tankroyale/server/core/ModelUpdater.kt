@@ -40,6 +40,9 @@ class ModelUpdater(
     /** Map over all bots */
     private val botsMap = mutableMapOf<BotId, MutableBot>()
 
+    /** Map over copied bots from previous turn */
+    private val botsCopies = mutableMapOf<BotId, MutableBot>()
+
     /** Map over all bot intents */
     private val botIntentsMap = mutableMapOf<BotId, BotIntent>()
 
@@ -118,9 +121,11 @@ class ModelUpdater(
         turn.turnNumber++
         turn.resetEvents()
 
-        executeBotIntents()
+        deepCopyBots()
 
+        executeBotIntents()
         checkAndHandleScans()
+
         coolDownAndFireGuns()
         checkAndHandleBotWallCollisions()
         checkAndHandleBotCollisions()
@@ -142,6 +147,20 @@ class ModelUpdater(
         // Remove dead bots
         botsMap.values.removeIf(IBot::isDead)
     }
+
+    private fun deepCopyBots() {
+        botsMap.forEach {
+            botsCopies[it.key] = deepCopy(it.value)
+        }
+    }
+
+    private fun deepCopy(bot: MutableBot) = MutableBot(
+        id = bot.id,
+        position = MutablePoint(bot.x, bot.y),
+        direction = bot.direction,
+        gunDirection = bot.gunDirection,
+        radarDirection = bot.radarDirection,
+    )
 
     /**
      * Updates the game state.
@@ -182,8 +201,16 @@ class ModelUpdater(
         return if (initialPosition == null) {
             point
         } else {
-            val x = clamp(initialPosition.x ?: point.x, BOT_BOUNDING_CIRCLE_RADIUS, setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS)
-            val y = clamp(initialPosition.y ?: point.y, BOT_BOUNDING_CIRCLE_RADIUS, setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS)
+            val x = clamp(
+                initialPosition.x ?: point.x,
+                BOT_BOUNDING_CIRCLE_RADIUS,
+                setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS
+            )
+            val y = clamp(
+                initialPosition.y ?: point.y,
+                BOT_BOUNDING_CIRCLE_RADIUS,
+                setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS
+            )
             Point(x, y)
         }
     }
@@ -718,12 +745,42 @@ class ModelUpdater(
         scannedBot: IBot,
         scanStartAngle: Double,
         scanEndAngle: Double
-    ): Boolean =
-        isCircleIntersectingCircleSector(
-            scannedBot.position, BOT_BOUNDING_CIRCLE_RADIUS,
-            scanningBot.position, RADAR_RADIUS,
-            scanStartAngle, scanEndAngle
-        )
+
+    ) = isScanning(scanningBot.id) &&
+            isCircleIntersectingCircleSector(
+                scannedBot.position, BOT_BOUNDING_CIRCLE_RADIUS,
+                scanningBot.position, RADAR_RADIUS,
+                scanStartAngle, scanEndAngle
+            )
+
+    /**
+     * Checks if a bot is scanning, meaning that it is either rescanning or moving.
+     * @param botId is the id of the bot.
+     * @return `true` if the bot is scanning; `false` otherwise.
+     */
+    private fun isScanning(botId: BotId): Boolean {
+        var isScanning = botIntentsMap[botId]?.rescan ?: false
+        if (!isScanning) {
+            isScanning = isMoving(botId)
+        }
+        return isScanning
+    }
+
+    /**
+     * Checks if a bot is moving, meaning that the x,y position or a direction has changed.
+     * @param botId is the id of the bot.
+     * @return `true` if the bot is moving; `false` otherwise.
+     */
+    private fun isMoving(botId: BotId): Boolean {
+        val currentState = botsMap[botId]!!
+        val previousState = botsCopies[botId]!!
+
+        return currentState.x != previousState.x
+                || currentState.y != previousState.y
+                || currentState.direction != previousState.direction
+                || currentState.gunDirection != previousState.gunDirection
+                || currentState.radarDirection != previousState.radarDirection
+    }
 
     /**
      * Creates and adds scanned-bot-events to the turn.
