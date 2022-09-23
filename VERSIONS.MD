@@ -1,5 +1,11 @@
 # Versions
 
+## In process
+
+#### 🪲 Bug Fixes
+
+- Server: The fire assistant was not always activated.
+
 ## 📦 0.17.2 - Added sounds - 20-Sep-2022
 
 #### 🚀 Improvements

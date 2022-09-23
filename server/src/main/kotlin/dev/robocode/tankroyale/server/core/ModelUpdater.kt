@@ -659,9 +659,11 @@ class ModelUpdater(
 
         // fire assistance (fireAssist = true, bot is scanning other bot, and gun and radar angle must be the same
         if (botIntentsMap[bot.id]?.fireAssist == true && fireDirection == bot.radarDirection) {
-            turn.botEvents[bot.id]?.find { it is ScannedBotEvent }?.let {
-                val scan = (it as ScannedBotEvent)
-                fireDirection = angle(bot.x, bot.y, scan.x, scan.y) // fire assisted angle
+            round.lastTurn?.let { previousTurn ->
+                previousTurn.botEvents[bot.id]?.find { it is ScannedBotEvent }?.let {
+                    val scan = (it as ScannedBotEvent)
+                    fireDirection = angle(bot.x, bot.y, scan.x, scan.y) // fire assisted angle
+                }
             }
         }
 
