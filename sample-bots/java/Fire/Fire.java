@@ -7,13 +7,11 @@ import dev.robocode.tankroyale.botapi.events.*;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-// This bot moves to a corner, then swings the gun back and forth.
-// If it dies, it tries a new corner in the next round.
+Sample bots: Improved the Fire sample bot by removing unnecessary code.// Sits still. Spins gun around. Moves when hit.
 // ------------------------------------------------------------------
 public class Fire extends Bot {
 
     int dist = 50; // Distance to move when we're hit, forward or back
-    boolean isScanning; // Flag indicating if onScannedBot() handler is running
 
     // The main method starts our bot
     public static void main(String[] args) {
@@ -28,8 +26,6 @@ public class Fire extends Bot {
     // Called when a new round is started -> initialize and do some movement
     @Override
     public void run() {
-        isScanning = false; // Clear scanning flag for each new turn
-
         // Set colors
         setBodyColor(Color.fromHex("FA0"));   // orange
         setGunColor(Color.fromHex("F70"));    // dark orange
@@ -40,21 +36,14 @@ public class Fire extends Bot {
 
         // Spin the gun around slowly... forever
         while (isRunning()) {
-            if (isScanning) {
-                // Skip a turn if the onScannedBot handler is running
-                go();
-            } else {
-                // Turn the gun a bit if the bot if the target speed is 0
-                turnGunLeft(5);
-            }
+            // Turn the gun a bit if the bot if the target speed is 0
+            turnGunLeft(5);
         }
     }
 
     // We scanned another bot -> fire!
     @Override
     public void onScannedBot(ScannedBotEvent e) {
-        isScanning = true; // We are now scanning
-
         // If the other bot is close by, and we have plenty of life, fire hard!
         var distance = distanceTo(e.getX(), e.getY());
         if (distance < 50 && getEnergy() > 50) {
@@ -65,8 +54,6 @@ public class Fire extends Bot {
         }
         // Rescan
         rescan();
-
-        isScanning = false; // We are not scanning any more
     }
 
     // We were hit by a bullet -> turn perpendicular to the bullet, and move a bit

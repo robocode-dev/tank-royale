@@ -2,6 +2,10 @@
 
 ## In process
 
+#### 🚀 Improvements
+
+- Sample bots: Improved the Fire sample bot by removing unnecessary code.
+
 #### 🪲 Bug Fixes
 
 - Server: The fire assistant was not always activated.
