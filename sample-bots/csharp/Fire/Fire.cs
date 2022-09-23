@@ -7,13 +7,11 @@ using Robocode.TankRoyale.BotApi.Events;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-// This bot moves to a corner, then swings the gun back and forth.
-// If it dies, it tries a new corner in the next round.
+// Sits still. Spins gun around. Moves when hit.
 // ------------------------------------------------------------------
 public class Fire : Bot
 {
     int dist = 50; // Distance to move when we're hit, forward or back
-    bool isScanning; // Flag indicating if OnScannedBot() handler is running
 
     // The main method starts our bot
     static void Main(string[] args)
@@ -27,8 +25,6 @@ public class Fire : Bot
     // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
-        isScanning = false; // Clear scanning flag for each new turn
-
         // Set colors
         BodyColor = Color.FromHex("FA0");   // orange
         GunColor = Color.FromHex("F70");    // dark orange
@@ -40,24 +36,14 @@ public class Fire : Bot
         // Spin the gun around slowly... forever
         while (IsRunning)
         {
-            if (isScanning)
-            {
-                // Skip a turn if the onScannedBot handler is running
-                Go();
-            }
-            else
-            {
-                // Turn the gun a bit if the bot if the target speed is 0
-                TurnGunLeft(5);
-            }
+            // Turn the gun a bit if the bot if the target speed is 0
+            TurnGunLeft(5);
         }
     }
 
     // We scanned another bot -> fire!
     public override void OnScannedBot(ScannedBotEvent e)
     {
-        isScanning = true; // We are now scanning
-
         // If the other bot is close by, and we have plenty of life, fire hard!
         var distance = DistanceTo(e.X, e.Y);
         if (distance < 50 && Energy > 50)
@@ -71,8 +57,6 @@ public class Fire : Bot
         }
         // Rescan
         Rescan();
-
-        isScanning = false; // We are not scanning any more
     }
 
     // We were hit by a bullet -> turn perpendicular to the bullet, and move a bit
