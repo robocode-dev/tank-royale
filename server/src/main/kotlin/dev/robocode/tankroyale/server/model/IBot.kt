@@ -74,12 +74,6 @@ interface IBot {
     /** Gun color */
     val gunColor: Color?
 
-    /** Scan direction in degrees */
-    val scanDirection: Double
-
-    /** Scan angle in degrees */
-    val scanSpreadAngle: Double
-
     /** Check if bot is alive */
     val isAlive: Boolean get() = energy >= 0
 

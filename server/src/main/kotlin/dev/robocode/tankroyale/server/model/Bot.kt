@@ -24,8 +24,6 @@ import dev.robocode.tankroyale.server.rules.INITIAL_GUN_HEAT
  * @param scanColor Scan arc color.
  * @param tracksColor Tracks color.
  * @param gunColor Gun color.
- * @param scanDirection Scan direction in degrees.
- * @param scanSpreadAngle Scan angle in degrees.
  */
 data class Bot(
     override val id: BotId,
@@ -49,10 +47,7 @@ data class Bot(
     override val scanColor: Color? = null,
     override val tracksColor: Color? = null,
     override val gunColor: Color? = null,
-    override val scanDirection: Double = radarDirection,
-    override val scanSpreadAngle: Double = radarSpreadAngle,
-
-    ) : IBot {
+) : IBot {
 
     /** X coordinate which is a shortcut for `position.x`. */
     override val x: Double

@@ -131,8 +131,6 @@ data class MutableTurn(
                 bot.scanColor,
                 bot.tracksColor,
                 bot.gunColor,
-                bot.scanDirection,
-                bot.scanSpreadAngle
             )
 
         /** Deep copies a bullet */

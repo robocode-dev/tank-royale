@@ -70,12 +70,6 @@ data class MutableBot(
     /** Gun color */
     override var gunColor: Color? = null,
 
-    /** Scan direction in degrees */
-    override var scanDirection: Double = radarDirection,
-
-    /** Scan angle in degrees */
-    override var scanSpreadAngle: Double = radarSpreadAngle,
-
     ) : IBot {
 
     /** Previous position (x, y) */

@@ -751,14 +751,14 @@ class ModelUpdater(
      * @return a pair of doubles, where the first double is the start angle, and the second double is the end angle.
      */
     private fun getScanAngles(bot: IBot): Pair<Double, Double> {
-        val spreadAngle = bot.scanSpreadAngle
+        val spreadAngle = bot.radarSpreadAngle
         val startAngle: Double
         val endAngle: Double
         if (spreadAngle > 0) {
-            endAngle = bot.scanDirection
+            endAngle = bot.radarDirection
             startAngle = normalizeAbsoluteDegrees(endAngle - spreadAngle)
         } else {
-            startAngle = bot.scanDirection
+            startAngle = bot.radarDirection
             endAngle = normalizeAbsoluteDegrees(startAngle - spreadAngle)
         }
         return Pair(startAngle, endAngle)
@@ -903,29 +903,7 @@ class ModelUpdater(
 
             bot.direction = normalizeAbsoluteDegrees(bot.direction + bodyTurnRate)
             bot.gunDirection = normalizeAbsoluteDegrees(bot.gunDirection + gunAdjustment)
-            updateScanDirectionAndSpread(bot, intent, radarAdjustment) // updates the bot.radarDirection
-        }
-
-        /**
-         * Updates scan direction and scan spread for a bot.
-         * @param bot is the bot.
-         * @param intent is the bot´s intent.
-         * @param radarAdjustment is the radar adjustment for moving the radar.
-         */
-        private fun updateScanDirectionAndSpread(bot: MutableBot, intent: BotIntent, radarAdjustment: Double) {
-            // The radar sweep is the difference between the new and old radar direction
-            val newRadarDirection = normalizeAbsoluteDegrees(bot.radarDirection + radarAdjustment)
-
-            val rescan = intent.rescan ?: false
-            if (rescan) {
-                bot.scanDirection = bot.radarDirection
-                bot.scanSpreadAngle = bot.radarSpreadAngle
-            } else {
-                bot.scanDirection = newRadarDirection
-                bot.scanSpreadAngle = radarAdjustment
-            }
-
-            bot.radarDirection = newRadarDirection
+            bot.radarDirection = normalizeAbsoluteDegrees(bot.radarDirection + radarAdjustment)
             bot.radarSpreadAngle = radarAdjustment
         }
 
