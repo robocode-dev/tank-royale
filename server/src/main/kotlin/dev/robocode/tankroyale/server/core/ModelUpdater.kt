@@ -392,7 +392,8 @@ class ModelUpdater(
     private fun constrainBotPositions() {
         botsMap.values.forEach { bot ->
             run {
-                val (x, y) = constrainBotPosition(bot.previousX, bot.previousY, bot.x, bot.y)
+                val (previousX, previousY) = botsCopies[bot.id]!!.position
+                val (x, y) = constrainBotPosition(previousX, previousY, bot.x, bot.y)
                 bot.x = x
                 bot.y = y
             }
@@ -558,7 +559,8 @@ class ModelUpdater(
     private fun adjustBotCoordinatesIfHitWall(bot: MutableBot): Boolean {
         var hitWall = false
         if (round.lastTurn != null) {
-            val (x, y) = constrainBotPosition(bot.previousX, bot.previousY, bot.x, bot.y)
+            val (previousX, previousY) = botsCopies[bot.id]!!.position
+            val (x, y) = constrainBotPosition(previousX, previousY, bot.x, bot.y)
             hitWall = bot.x != x || bot.y != y
             if (hitWall) {
                 bot.x = x

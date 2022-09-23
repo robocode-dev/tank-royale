@@ -72,14 +72,10 @@ data class MutableBot(
 
     ) : IBot {
 
-    /** Previous position (x, y) */
-    var previousPosition: MutablePoint = MutablePoint(position.x, position.y)
-
     /** X coordinate */
     override var x: Double
         get() = position.x
         set(value) {
-            previousPosition.x = position.x
             position.x = value
         }
 
@@ -87,20 +83,7 @@ data class MutableBot(
     override var y: Double
         get() = position.y
         set(value) {
-            previousPosition.y = position.y
             position.y = value
-        }
-
-    var previousX: Double
-        get() = previousPosition.x
-        private set(value) {
-            previousPosition.x = value
-        }
-
-    var previousY: Double
-        get() = previousPosition.y
-        private set(value) {
-            previousPosition.y = value
         }
 
     /**
