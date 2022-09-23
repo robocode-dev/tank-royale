@@ -123,10 +123,11 @@ class ModelUpdater(
 
         deepCopyBots()
 
+        coolDownAndFireGuns()
+
         executeBotIntents()
         checkAndHandleScans()
 
-        coolDownAndFireGuns()
         checkAndHandleBotWallCollisions()
         checkAndHandleBotCollisions()
         constrainBotPositions()
