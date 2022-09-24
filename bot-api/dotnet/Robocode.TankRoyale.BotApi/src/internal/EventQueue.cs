@@ -82,9 +82,6 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
             try
             {
-                if (priority < currentTopEventPriority)
-                    return; // Exit when event priority is lower than the current event being processed
-
                 // Same event?
                 if (priority == currentTopEventPriority)
                 {

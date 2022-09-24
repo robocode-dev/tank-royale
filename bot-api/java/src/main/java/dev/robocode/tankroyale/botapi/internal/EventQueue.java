@@ -74,10 +74,9 @@ final class EventQueue {
             var event = events.get(0);
             var priority = getPriority(event);
 
+//            System.out.println(event.getTurnNumber() + ": " + events.stream().map(e -> e.getClass().getSimpleName()).collect(Collectors.joining(", ")));
+
             try {
-                if (priority < currentTopEventPriority) {
-                    return; // Exit when event priority is lower than the current event being processed
-                }
                 // Same event?
                 if (priority == currentTopEventPriority) {
                     if (!isInterruptible()) {
@@ -94,11 +93,11 @@ final class EventQueue {
 
             int oldTopEventPriority = currentTopEventPriority;
 
-            currentTopEventPriority = priority;
-            currentTopEvent = event;
-
             try {
                 if (isNotOldOrCriticalEvent(event, currentTurn)) {
+                    currentTopEventPriority = priority;
+                    currentTopEvent = event;
+
                     botEventHandlers.fire(event);
                 }
                 setInterruptible(event.getClass(), false);
