@@ -6,8 +6,6 @@ import dev.robocode.tankroyale.schema.BotHandshake;
 
 import java.util.ArrayList;
 
-import static dev.robocode.tankroyale.botapi.internal.EnvVars.BOOT_ID;
-
 /**
  * Utility class used for creating bot handshakes.
  */
