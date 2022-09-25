@@ -13,9 +13,6 @@ data class MutableBot(
     /** Session id */
     override var sessionId: String? = null,
 
-    /** Boot id */
-    override var bootId: String? = null,
-
     /** Energy level */
     override var energy: Double = INITIAL_BOT_ENERGY,
 

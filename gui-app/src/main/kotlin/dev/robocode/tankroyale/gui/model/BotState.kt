@@ -6,7 +6,6 @@ import kotlinx.serialization.Serializable
 data class BotState(
     val id: Int,
     val sessionId: String,
-    val bootId: Long? = null,
     val energy: Double,
     val x: Double,
     val y: Double,

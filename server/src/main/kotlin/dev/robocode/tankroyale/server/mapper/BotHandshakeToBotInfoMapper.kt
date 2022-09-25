@@ -8,7 +8,6 @@ object BotHandshakeToBotInfoMapper {
         val botInfo = BotInfo()
         botHandshake.apply {
             botInfo.sessionId = sessionId
-            botInfo.bootId = bootId
             botInfo.name = name
             botInfo.version = version
             botInfo.authors = authors.toList()

@@ -186,7 +186,6 @@ class GameServer(
             val participant = Participant().apply {
                 id = botId.value
                 sessionId = handshake!!.sessionId
-                bootId = handshake.bootId
                 name = handshake.name
                 version = handshake.version
                 description = handshake.description

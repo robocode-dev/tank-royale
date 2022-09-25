@@ -11,7 +11,7 @@ class BotTest : StringSpec({
 
     "x and y coordinate must match the position coordinates" {
         val bot = Bot(
-            sessionId = null, bootId = null,
+            sessionId = null,
             position = Point(1.2, 9.8),
             id = BotId(0), direction = 0.0, gunDirection = 0.0, radarDirection = 0.0
         )

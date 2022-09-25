@@ -424,6 +424,7 @@ public final class BotInternals implements IStopResumeListener {
                     __gunTurnRemaining = 0;
                 }
             }
+            System.out.println("updateGunTurnRemaining + setGunTurnRate: " + __gunTurnRemaining);
             baseBotInternals.getBotIntent().setGunTurnRate(__gunTurnRemaining);
         }
     }
