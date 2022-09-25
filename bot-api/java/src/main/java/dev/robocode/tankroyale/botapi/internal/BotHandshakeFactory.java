@@ -28,7 +28,6 @@ final class BotHandshakeFactory {
         handshake.setProgrammingLang(botInfo.getProgrammingLang());
         handshake.setInitialPosition(InitialPositionMapper.map(botInfo.getInitialPosition()));
         handshake.setSecret(secret);
-        handshake.setBootId(System.getenv(BOOT_ID));
         return handshake;
     }
 }

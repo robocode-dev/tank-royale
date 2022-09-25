@@ -112,7 +112,6 @@ data class MutableTurn(
             Bot(
                 bot.id,
                 bot.sessionId,
-                bot.bootId,
                 bot.energy,
                 Point(bot.position.x, bot.position.y),
                 bot.direction,

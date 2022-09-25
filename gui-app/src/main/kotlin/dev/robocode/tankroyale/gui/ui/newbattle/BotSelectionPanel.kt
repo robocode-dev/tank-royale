@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.booter.BootProcess
-import dev.robocode.tankroyale.gui.booter.DirAndBootId
+import dev.robocode.tankroyale.gui.booter.DirAndPid
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.BotInfo
@@ -36,7 +36,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     private val onRemoveAll = Event<JButton>()
 
     private val botsDirectoryListModel = SortedListModel<BotInfo>()
-    private val bootedBotListModel = SortedListModel<DirAndBootId>()
+    private val bootedBotListModel = SortedListModel<DirAndPid>()
     private val joinedBotListModel = SortedListModel<BotInfo>()
     private val selectedBotListModel = SortedListModel<BotInfo>()
 
@@ -148,8 +148,8 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         BotList(bootedBotListModel).apply {
             cellRenderer = RunningBotCellRenderer()
             
-            onDeleteKeyTyped.subscribe(BotSelectionPanel) { dirAndBootIds ->
-                BootProcess.stop(dirAndBootIds.map { it.bootId })
+            onDeleteKeyTyped.subscribe(BotSelectionPanel) { dirAndPids ->
+                BootProcess.stop(dirAndPids.map { it.pid })
             }
         }
 
@@ -164,12 +164,12 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     }
 
     private fun handleUnbootBots() {
-        val bootIds = bootedBotList.selectedIndices.map { bootedBotListModel[it].bootId }
-        BootProcess.stop(bootIds)
+        val pids = bootedBotList.selectedIndices.map { bootedBotListModel[it].pid }
+        BootProcess.stop(pids)
     }
 
     private fun handleUnbootAllBots() {
-        BootProcess.stop(bootedBotListModel.list().map { it.bootId })
+        BootProcess.stop(bootedBotListModel.list().map { it.pid })
     }
 
     private fun handleAdd() {
@@ -391,8 +391,8 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         }
     }
 
-    private fun addBootingBot(dirAndBootId: DirAndBootId) {
-        bootedBotListModel.addElement(dirAndBootId)
+    private fun addBootingBot(dirAndPid: DirAndPid) {
+        bootedBotListModel.addElement(dirAndPid)
 
         enqueue {
             bootedScrollPane.horizontalScrollBar.apply {
@@ -401,8 +401,8 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         }
     }
 
-    private fun removeUnbootingBot(dirAndBootId: DirAndBootId) {
-        bootedBotListModel.removeElement(dirAndBootId)
+    private fun removeUnbootingBot(dirAndPid: DirAndPid) {
+        bootedBotListModel.removeElement(dirAndPid)
     }
 
     private fun addToolTips() {

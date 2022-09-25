@@ -10,7 +10,7 @@ object BotsToBotsWithIdMapper {
         val botStates = mutableListOf<BotStateWithId>()
         bots.forEach { bot ->
             participantsMap[bot.id]?.let { participant ->
-                botStates += BotToBotStateWithIdMapper.map(bot, participant.sessionId, participant.bootId)
+                botStates += BotToBotStateWithIdMapper.map(bot, participant.sessionId)
             }
         }
         return botStates

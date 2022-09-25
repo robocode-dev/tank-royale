@@ -5,12 +5,11 @@ import dev.robocode.tankroyale.server.math.normalizeAbsoluteDegrees
 import dev.robocode.tankroyale.server.model.IBot
 
 object BotToBotStateWithIdMapper {
-    fun map(bot: IBot, sessionId: String, bootId: String?): BotStateWithId {
+    fun map(bot: IBot, sessionId: String): BotStateWithId {
         val botState = BotStateWithId()
         bot.apply {
             botState.id = id.value
             botState.sessionId = sessionId
-            botState.bootId = bootId
             botState.energy = energy
             botState.x = x
             botState.y = y

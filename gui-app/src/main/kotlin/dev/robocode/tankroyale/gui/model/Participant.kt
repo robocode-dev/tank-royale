@@ -6,7 +6,6 @@ import kotlinx.serialization.Serializable
 data class Participant(
     val id: Int,
     val sessionId: String,
-    val bootId: Long? = null,
     val name: String,
     val version: String,
     val authors: List<String>,
