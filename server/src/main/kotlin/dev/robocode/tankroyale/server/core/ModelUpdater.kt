@@ -943,18 +943,18 @@ class ModelUpdater(
          * @param intent is the bot´s intent.
          */
         private fun updateBotTurnRatesAndDirections(bot: MutableBot, intent: BotIntent) {
-            val bodyTurnRate = limitTurnRate(intent.turnRate ?: 0.0, bot.speed)
+            val turnRate = limitTurnRate(intent.turnRate ?: 0.0, bot.speed)
             val gunTurnRate = limitGunTurnRate(intent.gunTurnRate ?: 0.0)
             val radarTurnRate = limitRadarTurnRate(intent.radarTurnRate ?: 0.0)
 
-            bot.turnRate = bodyTurnRate
+            bot.turnRate = turnRate
             bot.gunTurnRate = gunTurnRate
             bot.radarTurnRate = radarTurnRate
 
-            var gunAdjustment = bodyTurnRate + gunTurnRate
+            var gunAdjustment = turnRate + gunTurnRate
 
             if (intent.adjustGunForBodyTurn == true) {
-                gunAdjustment -= bodyTurnRate
+                gunAdjustment -= turnRate
             }
             var radarAdjustment = gunAdjustment + radarTurnRate
 
@@ -962,10 +962,10 @@ class ModelUpdater(
                 radarAdjustment -= gunTurnRate
             }
             if (intent.adjustRadarForBodyTurn == true) {
-                radarAdjustment -= bodyTurnRate
+                radarAdjustment -= turnRate
             }
 
-            bot.direction = normalizeAbsoluteDegrees(bot.direction + bodyTurnRate)
+            bot.direction = normalizeAbsoluteDegrees(bot.direction + turnRate)
             bot.gunDirection = normalizeAbsoluteDegrees(bot.gunDirection + gunAdjustment)
             bot.radarDirection = normalizeAbsoluteDegrees(bot.radarDirection + radarAdjustment)
             bot.radarSpreadAngle = radarAdjustment
