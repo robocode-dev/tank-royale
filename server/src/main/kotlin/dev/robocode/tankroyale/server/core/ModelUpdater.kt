@@ -731,7 +731,6 @@ class ModelUpdater(
                 if (i != j) {
                     val botBeingScanned = bots[j]
                     if (isBotScanned(scanningBot, botBeingScanned, startAngle, endAngle)) {
-                        println("scanned bot: ${turn.turnNumber}")
                         createAndAddScannedBotEventToTurn(scanningBot.id, botBeingScanned)
                     }
                 }
