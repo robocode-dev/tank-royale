@@ -356,8 +356,7 @@ public final class BotInternals implements IStopResumeListener {
     public void waitFor(Condition condition) {
         do {
             bot.go();
-        }
-        while (isRunning() && !condition.test());
+        } while (isRunning() && !condition.test());
     }
 
     public void stop() {
@@ -424,7 +423,6 @@ public final class BotInternals implements IStopResumeListener {
                     __gunTurnRemaining = 0;
                 }
             }
-            System.out.println("updateGunTurnRemaining + setGunTurnRate: " + __gunTurnRemaining);
             baseBotInternals.getBotIntent().setGunTurnRate(__gunTurnRemaining);
         }
     }
