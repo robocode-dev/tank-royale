@@ -14,6 +14,7 @@
 #### 🪲 Bug Fixes
 
 - Server: The fire assistant was not always activated.
+- Bot API: The event priority order was reversed to be similar to the original Robocode. 
 
 ## 📦 0.17.2 - Added sounds - 20-Sep-2022
 
