@@ -24,7 +24,7 @@ include("sample-bots:csharp")
 // Docs
 include("buildDocs")
 
-val kotlinVersion = "1.7.20-RC"
+val kotlinVersion = "1.7.10"
 val junitVersion = "5.9.1"
 
 // Check dependencies with this command:  gradle dependencyUpdates
