@@ -75,34 +75,30 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
         SortEvents();
 
-        while (baseBotInternals.IsRunning && events.Count > 0)
+        while (baseBotInternals.IsRunning && !events.IsEmpty)
         {
             var botEvent = events[0];
             var priority = GetPriority(botEvent);
 
-            try
-            {
-                // Same event?
-                if (priority == currentTopEventPriority)
-                {
-                    if (!IsInterruptible)
-                        // Ignore same event occurring again, when not interruptible
-                        return;
+            if (priority < currentTopEventPriority)
+                break;
 
+            // Same event?
+            if (priority == currentTopEventPriority)
+            {
+                if (currentTopEventPriority > MinValue && IsInterruptible)
+                {
                     SetInterruptible(botEvent.GetType(), false);
                     // The current event handler must be interrupted (by throwing an InterruptEventHandlerException)
                     throw new InterruptEventHandlerException();
                 }
-            }
-            finally
-            {
-                events = events.Remove(botEvent);
+                return; // Ignore same event occurring again
             }
 
             var oldTopEventPriority = currentTopEventPriority;
-
             currentTopEventPriority = priority;
             currentTopEvent = botEvent;
+            events = events.Remove(botEvent);
 
             try
             {
@@ -139,22 +135,23 @@ internal sealed class EventQueue : IComparer<BotEvent>
     {
         return baseBotInternals.GetPriority(botEvent.GetType());
     }
-    
+
     public int Compare(BotEvent e1, BotEvent e2)
     {
-        // Higher priority gives negative delta -> becomes first
+        // Critical must be placed before non-critical
         var diff = (e2!.IsCritical ? 1 : 0) - (e1!.IsCritical ? 1 : 0);
-        if (diff != 0) {
+        if (diff != 0)
+        {
             return diff;
         }
-        // Lower (older) turn number gives negative delta -> becomes first
+        // Lower (older) turn number must be placed before higher (newer) turn number
         diff = e1!.TurnNumber - e2!.TurnNumber;
         if (diff != 0)
         {
             return diff;
         }
-        // Higher priority gives negative delta -> becomes first
-        return GetPriority(e2) - GetPriority(e1);
+        // Lower priority value (means higher priority!) must be placed before higher priority values
+        return GetPriority(e1) - GetPriority(e2);
     }
 
     private static bool IsNotOldOrCriticalEvent(BotEvent botEvent, int currentTurn)

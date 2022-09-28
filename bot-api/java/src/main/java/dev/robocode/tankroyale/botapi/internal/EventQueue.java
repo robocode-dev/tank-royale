@@ -70,34 +70,33 @@ final class EventQueue {
 
         sortEvents();
 
-        while (baseBotInternals.isRunning() && events.size() > 0) {
+        while (baseBotInternals.isRunning() && !events.isEmpty()) {
             var event = events.get(0);
             var priority = getPriority(event);
 
+            if (priority < currentTopEventPriority) {
+                break;
+            }
+
 //            System.out.println(event.getTurnNumber() + ": " + events.stream().map(e -> e.getClass().getSimpleName()).collect(Collectors.joining(", ")));
 
-            try {
-                // Same event?
-                if (priority == currentTopEventPriority) {
-                    if (!isInterruptible()) {
-                        // Ignore same event occurring again, when not interruptible
-                        return;
-                    }
+            // Same event?
+            if (priority == currentTopEventPriority) {
+                if (currentTopEventPriority > MIN_VALUE && isInterruptible()) {
                     setInterruptible(event.getClass(), false);
                     // The current event handler must be interrupted (by throwing an InterruptEventHandlerException)
                     throw new InterruptEventHandlerException();
                 }
-            } finally {
-                events.remove(event);
+                break; // Ignore same event occurring again
             }
 
             int oldTopEventPriority = currentTopEventPriority;
+            currentTopEventPriority = priority;
+            currentTopEvent = event;
+            events.remove(event);
 
             try {
                 if (isNotOldOrCriticalEvent(event, currentTurn)) {
-                    currentTopEventPriority = priority;
-                    currentTopEvent = event;
-
                     botEventHandlers.fire(event);
                 }
                 setInterruptible(event.getClass(), false);
@@ -116,18 +115,18 @@ final class EventQueue {
 
     private void sortEvents() {
         events.sort((e1, e2) -> {
-            // Higher priority gives negative delta -> becomes first
+            // Critical must be placed before non-critical
             int diff = (e2.isCritical() ? 1 : 0) - (e1.isCritical() ? 1 : 0);
             if (diff != 0) {
                 return diff;
             }
-            // Lower (older) turn number gives negative delta -> becomes first
+            // Lower (older) turn number must be placed before higher (newer) turn number
             diff = e1.getTurnNumber() - e2.getTurnNumber();
             if (diff != 0) {
                 return diff;
             }
-            // Higher priority gives negative delta -> becomes first
-            return getPriority(e2) - getPriority(e1);
+            // Lower priority value (means higher priority!) must be placed before higher priority values
+            return getPriority(e1) - getPriority(e2);
         });
     }
 
