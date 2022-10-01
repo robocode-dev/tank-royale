@@ -15,7 +15,10 @@
 
 - Server:
   - The fire assistant was not always activated.
-  - Game is now aborted, when the last bot participating in a battle is leaving (disconnecting).
+  - [#45](https://github.com/robocode-dev/tank-royale/issues/45): Server is kidnapping CPU cycles
+    - Game is now aborted, when the last bot participating in a battle is leaving (disconnecting).
+    - Timer used for turn timeout was not stopped, when a battle had ended/aborted.
+    - Freeing heap memory used for storing game state when game is ended/aborted.
 
 ## 📦 0.17.2 - Added sounds - 20-Sep-2022
 
