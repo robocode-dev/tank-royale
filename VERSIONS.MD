@@ -13,7 +13,9 @@
 
 #### 🪲 Bug Fixes
 
-- Server: The fire assistant was not always activated.
+- Server:
+  - The fire assistant was not always activated.
+  - Game is now aborted, when the last bot participating in a battle is leaving (disconnecting).
 
 ## 📦 0.17.2 - Added sounds - 20-Sep-2022
 

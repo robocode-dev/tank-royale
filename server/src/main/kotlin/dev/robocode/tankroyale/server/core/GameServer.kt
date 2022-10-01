@@ -519,6 +519,13 @@ class GameServer(
     }
 
     internal fun handleBotLeft(conn: WebSocket) {
+        if (participants.remove(conn) && participants.isEmpty() &&
+            (serverState === ServerState.GAME_RUNNING || serverState === ServerState.GAME_PAUSED)
+        ) {
+            handleAbortGame() // Abort the battle when all bots left it!
+            return
+        }
+
         // If a bot leaves while in a game, make sure to reset all intent values to zeroes
         botIntents[conn]?.disableMovement()
         updateBotListUpdateMessage()
