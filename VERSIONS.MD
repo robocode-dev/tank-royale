@@ -6,6 +6,7 @@
 
 - [#43](https://github.com/robocode-dev/tank-royale/issues/43): Possibility to identify bot from Process to Tick:
     - Went back to boot process `pid` instead of using the `boot id`.
+- Bot API: The event priority order was reversed to be similar to the original Robocode.
 
 #### 🚀 Improvements
 
@@ -14,7 +15,6 @@
 #### 🪲 Bug Fixes
 
 - Server: The fire assistant was not always activated.
-- Bot API: The event priority order was reversed to be similar to the original Robocode. 
 
 ## 📦 0.17.2 - Added sounds - 20-Sep-2022
 

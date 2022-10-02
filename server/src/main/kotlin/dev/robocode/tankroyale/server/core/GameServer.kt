@@ -53,10 +53,10 @@ class GameServer(
     private val participantMap = mutableMapOf<BotId, Participant>()
 
     /** Model updater that keeps track of the game state/model */
-    private lateinit var modelUpdater: ModelUpdater
+    private var modelUpdater: ModelUpdater? = null
 
     /** Timer for 'ready' timeout */
-    private var readyTimeoutTimer = NanoTimer(0) {} // dummy
+    private var readyTimeoutTimer: NanoTimer? = null
 
     /** Timer for 'turn' timeout */
     private var turnTimeoutTimer: NanoTimer? = null
@@ -122,7 +122,8 @@ class GameServer(
                     putAll(createParticipantMap())
                 }
 
-                readyTimeoutTimer.stop()
+                readyTimeoutTimer?.stop()
+
                 readyParticipants.clear()
                 botIntents.clear()
 
@@ -245,11 +246,11 @@ class GameServer(
 
     /** Returns a list of bot results (for bots) ordered on the score ranks */
     private fun getResultsForBot(botId: BotId): BotResultsForBot {
-        val index = modelUpdater.results.indexOfFirst { it.botId == botId }
+        val index = modelUpdater!!.results.indexOfFirst { it.botId == botId }
         if (index == -1)
             throw IllegalStateException("botId was not found in results: $botId")
 
-        val score = modelUpdater.results[index]
+        val score = modelUpdater!!.results[index]
         return BotResultsForBot().apply {
             this.rank = index + 1
             survival = score.survival.roundToInt()
@@ -268,7 +269,7 @@ class GameServer(
     /** Returns a list of bot results (for observers and controllers) ordered on the score ranks */
     private fun getResultsForObservers(): List<BotResultsForObserver> =
         mutableListOf<BotResultsForObserver>().also { results ->
-            modelUpdater.results.forEach { score ->
+            modelUpdater!!.results.forEach { score ->
                 val participant = participantMap[score.botId]
 
                 BotResultsForObserver().apply {
@@ -318,7 +319,7 @@ class GameServer(
     private fun updateGameState(): GameState {
         val mappedBotIntents = mutableMapOf<BotId, dev.robocode.tankroyale.server.model.BotIntent>()
         botIntents.forEach { (key, value) -> participantIds[key]?.let { botId -> mappedBotIntents[botId] = value } }
-        return modelUpdater.update(mappedBotIntents.toMap())
+        return modelUpdater!!.update(mappedBotIntents.toMap())
     }
 
     private fun onReadyTimeout() {
@@ -361,6 +362,8 @@ class GameServer(
 
         // Must be done after the broadcasting
         serverState = ServerState.GAME_STOPPED
+
+        cleanupAfterGameStopped()
     }
 
     private fun onNextTick(lastRound: IRound?) {
@@ -397,7 +400,7 @@ class GameServer(
             participantIds[conn]?.let { botId ->
                 GameEndedEventForBot().apply {
                     type = Message.Type.GAME_ENDED_EVENT_FOR_BOT
-                    numberOfRounds = modelUpdater.numberOfRounds
+                    numberOfRounds = modelUpdater!!.numberOfRounds
                     results = getResultsForBot(botId)
 
                     send(conn, this)
@@ -409,7 +412,7 @@ class GameServer(
     private fun broadcastGameEndedToObservers() {
         broadcastToObserverAndControllers(GameEndedEventForObserver().apply {
             type = Message.Type.GAME_ENDED_EVENT_FOR_OBSERVER
-            numberOfRounds = modelUpdater.numberOfRounds
+            numberOfRounds = modelUpdater!!.numberOfRounds
             results = getResultsForObservers() // Use the stored score!
         })
     }
@@ -519,6 +522,13 @@ class GameServer(
     }
 
     internal fun handleBotLeft(conn: WebSocket) {
+        if (participants.remove(conn) && participants.isEmpty() &&
+            (serverState === ServerState.GAME_RUNNING || serverState === ServerState.GAME_PAUSED)
+        ) {
+            handleAbortGame() // Abort the battle when all bots left it!
+            return
+        }
+
         // If a bot leaves while in a game, make sure to reset all intent values to zeroes
         botIntents[conn]?.disableMovement()
         updateBotListUpdateMessage()
@@ -567,6 +577,7 @@ class GameServer(
         log.info("Aborting game")
         serverState = ServerState.GAME_STOPPED
         broadcastGameAborted()
+        cleanupAfterGameStopped()
 
         // No score is generated for aborted games
     }
@@ -611,5 +622,13 @@ class GameServer(
             }
             resetTurnTimeout()
         }
+    }
+
+    fun cleanupAfterGameStopped() {
+        turnTimeoutTimer?.stop()
+        lastResetTurnTimeoutPeriod = 0
+
+        modelUpdater = null
+        System.gc()
     }
 }
