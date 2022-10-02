@@ -92,7 +92,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
                     // The current event handler must be interrupted (by throwing an InterruptEventHandlerException)
                     throw new InterruptEventHandlerException();
                 }
-                return; // Ignore same event occurring again
+                break; // Ignore same event occurring again
             }
 
             var oldTopEventPriority = currentTopEventPriority;
