@@ -30,7 +30,7 @@ dependencies {
 
 tasks {
     val copyBooterJar by registering(Copy::class) {
-        dependsOn(inspectClassesForKotlinIC, ":booter:proguard")
+        dependsOn(":booter:proguard")
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":booter").file("./build/libs"))
@@ -40,7 +40,7 @@ tasks {
     }
 
     val copyServerJar by registering(Copy::class) {
-        dependsOn(inspectClassesForKotlinIC, ":server:proguard")
+        dependsOn(":server:proguard")
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":server").file("./build/libs"))
