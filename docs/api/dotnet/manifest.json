@@ -9,10 +9,10 @@
       "output": {
         ".html": {
           "relative_path": "api/Robocode.TankRoyale.BotApi.BaseBot.html",
-          "hash": "yP6blqoAllP7V2qBCtPzoye/Jnux3mNjSnhDey+4uK8="
+          "hash": "ZCAu7xEdym3ay4Re6EzBRJ+xFdEAU0aX9UmCWkA6np8="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -24,7 +24,7 @@
           "hash": "TdX0nIVkXA1nlzF+zTaAD2wt9XrYnTWEka55L+NwA/Y="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -273,10 +273,10 @@
       "output": {
         ".html": {
           "relative_path": "api/Robocode.TankRoyale.BotApi.Events.DefaultEventPriority.html",
-          "hash": "AZxV+66ysBSgjtOR36JAkY0D5AuDnxUW8FnRUtbzIoM="
+          "hash": "0/3pXS4MnR86Evz3O8qHarcopHvKf20nJPl7L1jq7Lo="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -453,10 +453,10 @@
       "output": {
         ".html": {
           "relative_path": "api/Robocode.TankRoyale.BotApi.Events.html",
-          "hash": "hGK+HfHsvzkV6YwwU3V3RJpmEvcrWXLxrQTWAlVhnnY="
+          "hash": "ERg5r0no5XwS+GiEuR8w2GtMJDgkoLj8F4uQotGCVDc="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -492,7 +492,7 @@
           "hash": "dHpx+CSDJ4SP32WfiNRdtD5RApEnFdkkI0wN6ZaHk2A="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -504,7 +504,7 @@
           "hash": "OrscQiTxr/4drtluPh3vIabkx/KPkXuqHF85PbTyCxQ="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -528,7 +528,7 @@
           "hash": "RK3dJt/pkyMwjgMJ31nnHcMfJRMnT9jf3plTQBGaI5g="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -609,7 +609,7 @@
           "can_incremental": true,
           "incrementalPhase": "build",
           "total_file_count": 44,
-          "skipped_file_count": 44
+          "skipped_file_count": 42
         },
         "ResourceDocumentProcessor": {
           "can_incremental": false,

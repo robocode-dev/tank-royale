@@ -3603,6 +3603,12 @@ references:
   commentId: F:Robocode.TankRoyale.BotApi.Events.DefaultEventPriority.SkippedTurn
   fullName: Robocode.TankRoyale.BotApi.Events.DefaultEventPriority.SkippedTurn
   nameWithType: DefaultEventPriority.SkippedTurn
+- uid: Robocode.TankRoyale.BotApi.Events.DefaultEventPriority.TeamMessage
+  name: TeamMessage
+  href: api/Robocode.TankRoyale.BotApi.Events.DefaultEventPriority.html#Robocode_TankRoyale_BotApi_Events_DefaultEventPriority_TeamMessage
+  commentId: F:Robocode.TankRoyale.BotApi.Events.DefaultEventPriority.TeamMessage
+  fullName: Robocode.TankRoyale.BotApi.Events.DefaultEventPriority.TeamMessage
+  nameWithType: DefaultEventPriority.TeamMessage
 - uid: Robocode.TankRoyale.BotApi.Events.DefaultEventPriority.Tick
   name: Tick
   href: api/Robocode.TankRoyale.BotApi.Events.DefaultEventPriority.html#Robocode_TankRoyale_BotApi_Events_DefaultEventPriority_Tick
