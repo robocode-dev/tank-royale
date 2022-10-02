@@ -7,7 +7,7 @@ import dev.robocode.tankroyale.botapi.events.*;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-Sample bots: Improved the Fire sample bot by removing unnecessary code.// Sits still. Spins gun around. Moves when hit.
+// Sits still. Spins gun around. Moves when hit.
 // ------------------------------------------------------------------
 public class Fire extends Bot {
 
