@@ -1,7 +1,7 @@
 import java.nio.file.Files
 import java.nio.file.Paths
 
-val title = "Robocode Tank Royale Bot API"
+val javadocTitle = "Robocode Tank Royale Bot API"
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 description = "Java API library for developing bots for Robocode Tank Royale"
@@ -55,7 +55,7 @@ tasks {
 
     shadowJar {
         manifest {
-            attributes["Implementation-Title"] = title
+            attributes["Implementation-Title"] = javadocTitle
             attributes["Implementation-Version"] = project.version
             attributes["Implementation-Vendor"] = "robocode.dev"
             attributes["Package"] = project.group
@@ -66,7 +66,7 @@ tasks {
     }
 
     val javadoc = withType<Javadoc> {
-        title
+        title = "$javadocTitle $version"
         source(sourceSets.main.get().allJava)
 
         (options as StandardJavadocDocletOptions).apply {
@@ -119,7 +119,7 @@ tasks {
                 version
 
                 pom {
-                    name.set(title)
+                    name.set(javadocTitle)
                     description.set(project.description)
                     url.set("https://github.com/robocode-dev/tank-royale")
 
