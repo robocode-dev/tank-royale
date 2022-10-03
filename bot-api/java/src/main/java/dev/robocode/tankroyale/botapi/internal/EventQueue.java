@@ -28,7 +28,7 @@ final class EventQueue {
     }
 
     void clear() {
-        events.clear();
+        clearEvents();
         baseBotInternals.getConditions().clear(); // conditions might be added in the bots run() method each round
         currentTopEvent = null;
         currentTopEventPriority = MIN_VALUE;
@@ -39,7 +39,9 @@ final class EventQueue {
     }
 
     void clearEvents() {
-        events.clear();
+        synchronized (events) {
+            events.clear();
+        }
     }
 
     void setInterruptible(boolean interruptible) {
@@ -70,30 +72,38 @@ final class EventQueue {
 
         sortEvents();
 
-        while (baseBotInternals.isRunning() && !events.isEmpty()) {
-            var event = events.get(0);
-            var priority = getPriority(event);
+        while (baseBotInternals.isRunning()) {
+            BotEvent event;
+            int priority;
+            synchronized (events) {
+                if (events.isEmpty()) {
+                    break;
+                }
+                event = events.get(0);
+                priority = getPriority(event);
 
-            if (priority < currentTopEventPriority) {
-                break;
-            }
+                if (priority < currentTopEventPriority) {
+                    break;
+                }
 
 //            System.out.println(event.getTurnNumber() + ": " + events.stream().map(e -> e.getClass().getSimpleName()).collect(Collectors.joining(", ")));
 
-            // Same event?
-            if (priority == currentTopEventPriority) {
-                if (currentTopEventPriority > MIN_VALUE && isInterruptible()) {
-                    setInterruptible(event.getClass(), false);
-                    // The current event handler must be interrupted (by throwing an InterruptEventHandlerException)
-                    throw new InterruptEventHandlerException();
+                // Same event?
+                if (priority == currentTopEventPriority) {
+                    if (currentTopEventPriority > MIN_VALUE && isInterruptible()) {
+                        setInterruptible(event.getClass(), false);
+                        // The current event handler must be interrupted (by throwing an InterruptEventHandlerException)
+                        throw new InterruptEventHandlerException();
+                    }
+                    break; // Ignore same event occurring again
                 }
-                break; // Ignore same event occurring again
-            }
 
+                events.remove(event);
+            }
             int oldTopEventPriority = currentTopEventPriority;
             currentTopEventPriority = priority;
             currentTopEvent = event;
-            events.remove(event);
+
 
             try {
                 if (isNotOldOrCriticalEvent(event, currentTurn)) {
@@ -110,7 +120,9 @@ final class EventQueue {
     }
 
     private void removeOldEvents(int currentTurn) {
-        events.removeIf(event -> isOldAndNonCriticalEvent(event, currentTurn));
+        synchronized (events) {
+            events.removeIf(event -> isOldAndNonCriticalEvent(event, currentTurn));
+        }
     }
 
     private void sortEvents() {
@@ -149,10 +161,12 @@ final class EventQueue {
     }
 
     private void addEvent(BotEvent event) {
-        if (events.size() > MAX_QUEUE_SIZE) {
-            System.err.println("Maximum event queue size has been reached: " + MAX_QUEUE_SIZE);
-        } else {
-            events.add(event);
+        synchronized (events) {
+            if (events.size() > MAX_QUEUE_SIZE) {
+                System.err.println("Maximum event queue size has been reached: " + MAX_QUEUE_SIZE);
+            } else {
+                events.add(event);
+            }
         }
     }
 
