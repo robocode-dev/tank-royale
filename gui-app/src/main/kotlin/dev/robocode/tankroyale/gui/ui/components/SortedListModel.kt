@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 import javax.swing.AbstractListModel
 
 class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
+
     private val list = CopyOnWriteArrayList<T>()
 
     override fun getSize(): Int {
@@ -18,18 +19,21 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
     }
 
     fun addElement(element: T) {
-        list.add(element)
+        synchronized(list) {
+            list.add(element)
 
-        list.sortWith { o1, o2 ->
-            when (element) {
-                is BotInfo -> {
-                    val b1 = o1 as BotInfo
-                    val b2 = o2 as BotInfo
-                    b1.host.lowercase(Locale.getDefault()).compareTo(b2.host.lowercase(Locale.getDefault()))
-                }
+            list.sortWith { o1, o2 ->
+                when (element) {
+                    is BotInfo -> {
+                        val b1 = o1 as BotInfo
+                        val b2 = o2 as BotInfo
+                        b1.host.lowercase(Locale.getDefault()).compareTo(b2.host.lowercase(Locale.getDefault()))
+                    }
 
-                else -> {
-                    o1.toString().lowercase(Locale.getDefault()).compareTo(o2.toString().lowercase(Locale.getDefault()))
+                    else -> {
+                        o1.toString().lowercase(Locale.getDefault())
+                            .compareTo(o2.toString().lowercase(Locale.getDefault()))
+                    }
                 }
             }
         }
@@ -38,7 +42,9 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
 
 
     fun clear() {
-        list.clear()
+        synchronized(list) {
+            list.clear()
+        }
         notifyChanged()
     }
 
@@ -47,7 +53,10 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
     }
 
     fun removeElement(element: T): Boolean {
-        val removed = list.remove(element)
+        var removed: Boolean
+        synchronized(list) {
+            removed = list.remove(element)
+        }
         if (removed) {
             notifyChanged()
         }
