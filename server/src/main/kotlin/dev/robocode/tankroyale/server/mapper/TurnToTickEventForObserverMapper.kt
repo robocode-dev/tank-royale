@@ -7,7 +7,7 @@ import dev.robocode.tankroyale.server.mapper.BotsToBotsWithIdMapper.map
 import dev.robocode.tankroyale.server.mapper.BulletsToBulletStatesMapper.map
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.ITurn
-import java.util.concurrent.CopyOnWriteArrayList
+import java.util.Collections.unmodifiableList
 
 object TurnToTickEventForObserverMapper {
     fun map(roundNumber: Int, turn: ITurn, participantsMap: Map<BotId, Participant>): TickEventForObserver {
@@ -16,9 +16,9 @@ object TurnToTickEventForObserverMapper {
             type = Message.Type.TICK_EVENT_FOR_OBSERVER
             this.roundNumber = roundNumber
             turnNumber = turn.turnNumber
-            botStates = CopyOnWriteArrayList(map(turn.bots, participantsMap))
-            bulletStates = CopyOnWriteArrayList(map(turn.bullets))
-            events = CopyOnWriteArrayList(EventsToEventsMapper.map(turn.observerEvents))
+            botStates = unmodifiableList(map(turn.bots, participantsMap))
+            bulletStates = unmodifiableList(map(turn.bullets))
+            events = unmodifiableList(EventsToEventsMapper.map(turn.observerEvents))
         }
         return tick
     }
