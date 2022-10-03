@@ -8,8 +8,8 @@ documentation under the `/docs` directory in the root directory.
 ## Prerequisites
 
 * node.js 10+
-* gradle 7.4.0+
-* Java JDK 8+
+* gradle 7.5.1+
+* Java JDK 11+
 
 Check out the official prerequisite for
 VuePress [here](https://vuepress.vuejs.org/guide/getting-started.html#prerequisites)

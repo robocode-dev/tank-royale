@@ -12,6 +12,6 @@
   "devDependencies": {
     "vuepress": "^1.9.7",
     "vuepress-plugin-mathjax": "^1.2.8",
-    "vuepress-plugin-md-enhance": "^1.28.1"
+    "vuepress-plugin-md-enhance": "^1.30.0"
   }
 }
