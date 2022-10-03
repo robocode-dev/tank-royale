@@ -78,7 +78,9 @@ object ArenaPanel : JPanel() {
 
         if (tickEvent.turnNumber == 1) {
             // Make sure to remove any explosion left from earlier battle
-            explosions.clear()
+            synchronized(explosions) {
+                explosions.clear()
+            }
         }
 
         round = tickEvent.roundNumber
@@ -106,7 +108,9 @@ object ArenaPanel : JPanel() {
     private fun onBotDeath(botDeathEvent: BotDeathEvent) {
         val bot = bots.first { bot -> bot.id == botDeathEvent.victimId }
         val explosion = Explosion(bot.x, bot.y, 80, 50, 15, time)
-        explosions.add(explosion)
+        synchronized(explosions) {
+            explosions.add(explosion)
+        }
     }
 
     private fun onBulletHitBot(bulletHitBotEvent: BulletHitBotEvent) {
@@ -126,13 +130,17 @@ object ArenaPanel : JPanel() {
             25,
             time
         )
-        explosions.add(explosion)
+        synchronized(explosions) {
+            explosions.add(explosion)
+        }
     }
 
     private fun onBulletHitWall(bulletHitWallEvent: BulletHitWallEvent) {
         val bullet = bulletHitWallEvent.bullet
         val explosion = CircleBurst(bullet.x, bullet.y, 4.0, 40.0, 25, time)
-        explosions.add(explosion)
+        synchronized(explosions) {
+            explosions.add(explosion)
+        }
     }
 
     private fun onBulletHitBullet(bulletHitBulletEvent: BulletHitBulletEvent) {
@@ -143,7 +151,9 @@ object ArenaPanel : JPanel() {
         val y = (bullet1.y + bullet2.y) / 2
 
         val explosion = CircleBurst(x, y, 4.0, 40.0, 25, time)
-        explosions.add(explosion)
+        synchronized(explosions) {
+            explosions.add(explosion)
+        }
     }
 
     private fun onMouseWheel(e: MouseWheelEvent) {
