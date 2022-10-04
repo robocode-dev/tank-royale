@@ -86,7 +86,7 @@ final class EventQueue {
                     break;
                 }
 
-//            System.out.println(event.getTurnNumber() + ": " + events.stream().map(e -> e.getClass().getSimpleName()).collect(Collectors.joining(", ")));
+//              System.out.println(event.getTurnNumber() + ": " + events.stream().map(e -> e.getClass().getSimpleName()).collect(Collectors.joining(", ")));
 
                 // Same event?
                 if (priority == currentTopEventPriority) {
@@ -103,7 +103,6 @@ final class EventQueue {
             int oldTopEventPriority = currentTopEventPriority;
             currentTopEventPriority = priority;
             currentTopEvent = event;
-
 
             try {
                 if (isNotOldOrCriticalEvent(event, currentTurn)) {
