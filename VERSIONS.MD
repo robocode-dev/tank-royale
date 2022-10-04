@@ -1,5 +1,11 @@
 # Versions
 
+## In progress
+
+#### 🪲 Bug Fixes
+
+- Bot API and GUI App: Fixed various concurrency issues.
+
 ## 📦 0.17.3 - Maintenance - 02-Oct-2022
 
 #### ⚡ Changes
