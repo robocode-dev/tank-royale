@@ -27,7 +27,9 @@ running. When the booter is closed down, it will automatically stop the running 
 
 The booter is run using java from the command line:
 
-    java -jar robocode-tankroyale-booter-x.y.z.jar
+```
+java -jar robocode-tankroyale-booter-x.y.z.jar
+```
 
 ## Main options
 
@@ -38,7 +40,9 @@ The booter has some options to display help, but also version information:
 
 The options and commands are provided after the `java -jar robocode-tankroyale-booter-x.y.z.jar` part like this:
 
-    java -jar robocode-tankroyale-booter-x.y.z.jar --version
+```
+java -jar robocode-tankroyale-booter-x.y.z.jar --version
+```
 
 ## The `dir` command
 
@@ -47,22 +51,26 @@ of the root directory containing bot directories.
 
 Here is an example of how the `dir` command can be used:
 
-    java -jar .\robocode-tankroyale-booter-x.y.z.jar dir c:/bots-java c:/bots-csharp
+```
+java -jar .\robocode-tankroyale-booter-x.y.z.jar dir c:/bots-java c:/bots-csharp
+```
 
 This will list the full file path of all the bot directories found in the two specified root directories `c:/bots-java`
 and `c:/bots-csharp`, and list something like this:
 
-    c:\bots-csharp\Corners
-    c:\bots-csharp\Crazy
-    c:\bots-csharp\Fire
-    c:\bots-csharp\MyFirstBot
-    ...
-    c:\bots-java\Corners
-    c:\bots-java\Crazy
-    c:\bots-java\Fire
-    c:\bots-java\MyFirstBot
-    c:\bots-java\RamFire
-    ...
+```
+c:\bots-csharp\Corners
+c:\bots-csharp\Crazy
+c:\bots-csharp\Fire
+c:\bots-csharp\MyFirstBot
+...
+c:\bots-java\Corners
+c:\bots-java\Crazy
+c:\bots-java\Fire
+c:\bots-java\MyFirstBot
+c:\bots-java\RamFire
+...
+```
 
 Note, the `dir` command has a `-T` option available where used for only listing bot directories of bots supporting one
 or more specific game types, and can be set to e.g. `-T melee,classic` to list only the game types for `melee`
@@ -70,7 +78,9 @@ and `classic`.
 
 Example:
 
-    java -jar .\robocode-tankroyale-booter-x.y.z.jar dir c:/bots-java c:/bots-csharp -T melee,classic
+```
+java -jar .\robocode-tankroyale-booter-x.y.z.jar dir c:/bots-java c:/bots-csharp -T melee,classic
+```
 
 ## The `info` command
 
@@ -99,7 +109,9 @@ Similar to the `dir` command, the `info` command provides a `-T` option for filt
 
 Example:
 
-    java -jar .\robocode-tankroyale-booter-x.y.z.jar info c:/bots-java -T melee,classic
+```
+java -jar .\robocode-tankroyale-booter-x.y.z.jar info c:/bots-java -T melee,classic
+```
 
 ## The `run` command
 
@@ -112,17 +124,23 @@ it automatically stops all running processes and hence stops running all booted 
 
 The `run` command is used like this to run bots:
 
-    java -jar .\robocode-tankroyale-booter-0.10.0.jar run c:\bots-java\Corners c:\bots-java\Target
+```
+java -jar .\robocode-tankroyale-booter-0.10.0.jar run c:\bots-java\Corners c:\bots-java\Target
+```
 
 This will run the two bots located in `c:\bots-java\Corners` and `c:\bots-java\Target`, and write something like this
 to [stdout]:
 
-    8072;c:\bots-java\Corners
-    20336;c:\bots-java\Target
+```
+8072;c:\bots-java\Corners
+20336;c:\bots-java\Target
+```
 
 The booter writes out the pid (process id) for the bots is started in this format:
 
-    {pid};{dir}
+```
+{pid};{dir}
+```
 
 - `{pid}` is the process id
 - `{dir}` is the bot directory
@@ -131,19 +149,25 @@ So in the example above, the Corners bots in `c:\bots-java\Corners` were started
 
 It is possible to see all available [stdin] commands for `run` by writing:
 
-    java -jar .\robocode-tankroyale-booter-x.y.z.jar run --help
+```
+java -jar .\robocode-tankroyale-booter-x.y.z.jar run --help
+```
 
 ### The `run` stdin command
 
 It is possible to boot a bot while the booter is already running, by writing this to its [stdin]:
 
-    run {dir}
+```
+run {dir}
+```
 
 Here the `{dir}` is the full file path of the bot directory containing the bot to run.
 
 Example:
 
-    run c:/bots-java/Corners
+```
+run c:/bots-java/Corners
+```
 
 Executing the `run` stdin command will write out the `{pid};{dir}` information similar to the regular `run` command.
 
@@ -151,13 +175,17 @@ Executing the `run` stdin command will write out the `{pid};{dir}` information s
 
 It is possible to stop a bot that is run by the booter, by writing this to its [stdin]:
 
-    stop {pid}
+```
+stop {pid}
+```
 
 Here the `{pid}` is the process id (pid) of the bot to stop.
 
 Example:
 
-    stop 8072
+```
+stop 8072
+```
 
 Executing the `stop` std command will write out `stopped {pid}`, e.g. `stopped 8072`, which is useful if several bots
 are being stopped in parallel and terminated in a different time/order.

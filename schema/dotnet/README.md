@@ -12,12 +12,28 @@ Currently, the generator outputs the generated classes to the Bot API for C# und
 is controlled bt the `Properties/launchSettings.json` file with the `commandLineArgs`, which takes a string as input
 containing: `"<filepath of schemas directory> <filepath to output directory>"`
 
+#### Clean build directory:
+
+```shell
+gradle clean
+```
+
+#### Create archive
+
+```shell
+gradle build
+```
+
 ## Generating the files with dotnet
 
-You can also generate the C# classes by using dotnet:
+You can also generate the C# classes by using the `dotnet` command:
 
-    dotnet run <filepath of schemas directory> <filepath to output directory>
+```
+dotnet run <filepath of schemas directory> <filepath to output directory>
+```
 
 For example:
 
-    dotnet run C:/Code/tank-royale/schema/schemas C:/Code/tank-royale/bot-api/dotnet/src/generated
+```
+dotnet run C:/Code/tank-royale/schema/schemas C:/Code/tank-royale/bot-api/dotnet/src/generated
+```

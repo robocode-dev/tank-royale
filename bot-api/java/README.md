@@ -6,30 +6,38 @@ The Bot API is provided as a JAR archive and built for [Java 11].
 
 ## Build commands
 
-#### Delete build directory:
+#### Clean build directory:
 
-    gradle clean
+```shell
+gradle clean
+```
 
 #### Build/compile classes and javadoc:
 
-    gradle build
+```shell
+gradle build
+```
 
 Compiled files are output to the `/build` directory:
 
 - `classes`: Contains all the compiled class files.
 - `docs`: Contains the compiled [javadoc] files.
 - `libs`: Artifacts as JAR (Java Archive) files:
-  - `robocode-tankrayale-bot-api-x.y.z.jar` is the bot API artifact.
-  - `robocode-tankrayale-bot-api-x.y.z-javadoc.jar` archive contains all javadoc files.
-  - `robocode-tankrayale-bot-api-x.y.z-sources.jar` archive contains all source files.
+    - `robocode-tankrayale-bot-api-x.y.z.jar` is the bot API artifact.
+    - `robocode-tankrayale-bot-api-x.y.z-javadoc.jar` archive contains all javadoc files.
+    - `robocode-tankrayale-bot-api-x.y.z-sources.jar` archive contains all source files.
 
 The javadoc can be viewed in a browser by opening this file with a browser:
 
-    /build/docs/javadoc/index.html
+```
+/build/docs/javadoc/index.html
+```
 
 #### Publish artifact to the local Maven repository
 
-    gradle publishToMavenLocal
+```shell
+gradle publishToMavenLocal
+```
 
 
 [Java 11]: https://docs.oracle.com/en/java/javase/11/ "Java 11 documentation"

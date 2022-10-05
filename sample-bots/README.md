@@ -48,3 +48,17 @@ Sample bots:
 
 Make sure to keep the `/assets/ReadMe.md` file up-to-date as this one is distributed with the zip archive containing the
 sample bots providing instructions for how to run the sample bots.
+
+## Build commands
+
+#### Clean build all sample bot directories:
+
+```shell
+gradle clean
+```
+
+#### Build/compile all sample bot archives:
+
+```shell
+gradle zip
+```

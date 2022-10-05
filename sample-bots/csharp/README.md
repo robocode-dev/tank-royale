@@ -4,12 +4,16 @@ This module contains sample bots for Robocode Tank Royale developed for the C# p
 
 ## Build commands
 
-#### Delete build directory:
+#### Clean build directory:
 
-    gradle clean
+```shell
+gradle clean
+```
 
 #### Create archive
 
-    gradle zip
+```shell
+gradle zip
+```
 
 The archive will be output to the `build` directory as a zip file named `sample-bots-csharp-x.y.z.zip`.

@@ -10,17 +10,23 @@ available version).
 
 ## Build commands
 
-#### Delete build directory:
+#### Clean build directory:
 
-    gradle clean
+```shell
+gradle clean
+```
 
 #### Build/compile:
 
-    gradle build
+```shell
+gradle build
+```
 
 #### Publish artifact to the local Maven repository
 
-    gradle publishToMavenLocal
+```shell
+gradle publishToMavenLocal
+```
 
 ## Running the GUI application
 
