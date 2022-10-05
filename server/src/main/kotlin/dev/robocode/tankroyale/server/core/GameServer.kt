@@ -11,7 +11,6 @@ import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.GameState
 import dev.robocode.tankroyale.server.model.IRound
 import dev.robocode.tankroyale.server.model.ITurn
-import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND
 import org.java_websocket.WebSocket
 import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.slf4j.LoggerFactory
@@ -62,7 +61,7 @@ class GameServer(
     private var turnTimeoutTimer: NanoTimer? = null
 
     /** Current TPS setting (Turns Per Second) */
-    private var tps = DEFAULT_TURNS_PER_SECOND
+    private var tps = Server.tps
 
     /** Logger */
     private val log = LoggerFactory.getLogger(GameServer::class.java)
@@ -624,7 +623,7 @@ class GameServer(
         }
     }
 
-    fun cleanupAfterGameStopped() {
+    private fun cleanupAfterGameStopped() {
         turnTimeoutTimer?.stop()
         lastResetTurnTimeoutPeriod = 0
 
