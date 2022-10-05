@@ -2,6 +2,11 @@
 
 ## In progress
 
+#### 🚀 Improvements
+
+- Server: Added `--tps` option to the server for setting the initial Turns Per Second (TPS).
+- GUI App: Sending the current tps to the server when changing game type.
+
 #### 🪲 Bug Fixes
 
 - Bot API and GUI App: Fixed various concurrency issues.

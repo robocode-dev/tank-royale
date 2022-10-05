@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.server
 
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.server.ServerActions
@@ -49,6 +50,7 @@ object ServerProcess {
                 getServerJar(),
                 "--port=$port",
                 "--games=$gameType",
+                "--tps=${ConfigSettings.tps}",
                 "--controllerSecrets=${controllerSecrets.joinToString(",")}",
                 "--botSecrets=${botSecrets.joinToString(",")}"
             )
