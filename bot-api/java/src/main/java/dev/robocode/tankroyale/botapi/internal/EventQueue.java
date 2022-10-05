@@ -82,10 +82,6 @@ final class EventQueue {
                 event = events.get(0);
                 priority = getPriority(event);
 
-                if (priority < currentTopEventPriority) {
-                    break;
-                }
-
 //              System.out.println(event.getTurnNumber() + ": " + events.stream().map(e -> e.getClass().getSimpleName()).collect(Collectors.joining(", ")));
 
                 // Same event?

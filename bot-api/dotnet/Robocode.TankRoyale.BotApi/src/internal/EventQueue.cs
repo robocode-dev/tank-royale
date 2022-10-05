@@ -80,9 +80,6 @@ internal sealed class EventQueue : IComparer<BotEvent>
             var botEvent = events[0];
             var priority = GetPriority(botEvent);
 
-            if (priority < currentTopEventPriority)
-                break;
-
             // Same event?
             if (priority == currentTopEventPriority)
             {
