@@ -1,22 +1,40 @@
 # Booter
 
-A **booter** is provided to boot up bots on a local machine. It comes built-in with the GUI for Robocode Tank Royale.
+A **booter** is provided to boot up bots on a local machine.
 
-For the booter to be able to boot up bots written for any programming language, it is looking for script files used for
-running the bots. Hence, the booter makes use of filename conventions to locate bot files on a local machine.
+It comes built-in with the GUI for Robocode Tank Royale, but is to run as stand-alone as well, e.g. if no GUI is being
+used.
+
+The intention of the booter is to allow booting up bots for any programming language. To make this possible, the booter
+uses script files that are responsible for starting up bots for specific programming languages and platforms.
+Hence, the booter needs to locate these script files for each bot, and thus makes use of filename conventions to locate
+these.
+
+Diagram showing how the booter boots up a bot:
+
+```mermaid
+flowchart TD
+   Booter --locate and runs--> ScriptFile
+   ScriptFile --boots up--> Bot
+   
+   ScriptFile[Script file]
+```
 
 ## Root directories
 
 A bot **root directory** is top-level directory which is a collection of **bot directories**. For example, the sample
 bots is a collection of bot directories containing directories like:
 
-- Corners
-- Crazy
-- Fire
-- MyFirstBot
-- ...
+```
+[root directory]
+├── Corners (a bot directory)
+├── Crazy
+├── Fire
+├── MyFirstBot
+...
+```
 
-Each of the names listed represents a **bot directory**.
+Each of the directory names listed represents a **bot directory**.
 
 Multiple root directories can be supplied to the booter. This could for example be bot root directories for separate
 programming languages like e.g. Java and C#.
