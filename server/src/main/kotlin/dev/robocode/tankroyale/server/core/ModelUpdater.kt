@@ -688,10 +688,14 @@ class ModelUpdater(
     private fun fireBullet(bot: MutableBot, firepower: Double) {
         val power = firepower.coerceAtMost(MAX_FIREPOWER)
 
+        val previousBotState = botsCopies[bot.id]!!
         var fireDirection = bot.gunDirection
 
         // fire assistance (fireAssist = true, bot is scanning other bot, and gun and radar angle must be the same
-        if (botIntentsMap[bot.id]?.fireAssist == true && fireDirection == bot.radarDirection) {
+        if (botIntentsMap[bot.id]?.fireAssist == true &&
+            bot.gunDirection == bot.radarDirection &&
+            previousBotState.gunDirection == previousBotState.radarDirection
+        ) {
             round.lastTurn?.let { previousTurn ->
                 previousTurn.botEvents[bot.id]?.find { it is ScannedBotEvent }?.let {
                     val scan = (it as ScannedBotEvent)

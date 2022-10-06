@@ -4,7 +4,10 @@
 
 #### 🚀 Improvements
 
-- Server: Added `--tps` option to the server for setting the initial Turns Per Second (TPS).
+- Server:
+    - Added `--tps` option to the server for setting the initial Turns Per Second (TPS).
+    - Fire assistant is now only activated, when both the radar and gun are pointing in the same direction for two turns
+      in a row (like original Robocode).
 - GUI App: Sending the current tps to the server when changing game type.
 
 #### 🪲 Bug Fixes
