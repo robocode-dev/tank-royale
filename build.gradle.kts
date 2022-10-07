@@ -37,9 +37,15 @@ subprojects {
                 expand(mapOf("version" to version))
             }
         }
+    }
+}
 
-        withType(Assemble::class) {
-            dependsOn("licenseFormatMain")
-        }
+tasks {
+    register("build-release") {
+        dependsOn(
+            "build",
+            "sample-bots:java:zip", "sample-bots:csharp:zip",
+            "buildDocs:uploadDocs", "bot-api:dotnet:uploadDocs", "bot-api:java:uploadDocs"
+        )
     }
 }
