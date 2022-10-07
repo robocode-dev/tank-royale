@@ -1,7 +1,54 @@
 package build.release
 
-fun generateReleaseNotes() {
-    println("Hello World");
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileReader
+import java.lang.IllegalStateException
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.util.regex.Pattern
+
+fun generateReleaseNotes(projectDir: File, version: String): String {
+
+    val versionsFilename = File(projectDir, "VERSIONS.MD").absolutePath
+
+    val extractedVersion = extractVersion(versionsFilename)
+    if (extractedVersion != version) throw IllegalStateException("Version in $versionsFilename is $extractedVersion, which does not match version $version")
+
+    val releaseNotes = extractReleaseNotes(versionsFilename)
+    val releaseDoc = getReleaseDocumentation(projectDir, version)
+
+    return releaseNotes + releaseDoc
 }
 
-fun main() = generateReleaseNotes()
+private fun extractVersion(versionsFilename: String): String {
+    val reader = BufferedReader(FileReader(versionsFilename))
+
+    for (line in reader.lines()) {
+        if (line.trim().startsWith("## ")) {
+            return "\\d+\\.\\d+\\.\\d+".toRegex().find(line)?.value ?: throw IllegalStateException("Version was not found")
+        }
+    }
+    throw IllegalStateException("Line cotaining version could not be located")
+}
+
+private fun extractReleaseNotes(versionsFilename: String): String {
+    val builder = StringBuilder()
+    val reader = BufferedReader(FileReader(versionsFilename))
+
+    for (line in reader.lines()) {
+        if (line.trim().startsWith("## ")) {
+            builder.append(line).append('\n'); break
+        }
+    }
+    for (line in reader.lines()) {
+        if (line.trim().startsWith("## ")) break
+        builder.append(line).append('\n')
+    }
+    return builder.toString()
+}
+
+private fun getReleaseDocumentation(projectDir: File, version: String) =
+    Files.readString(File(projectDir, "buildSrc/src/main/resources/release/release-docs-template.md").toPath())
+        .replace("{VERSION}", version)
