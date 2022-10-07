@@ -1,4 +1,4 @@
-import dev.robocode.tankroyale.tasks.FatJar
+import build.tasks.FatJar
 import proguard.gradle.ProGuardTask
 
 val archiveTitle = "Robocode Tank Royale GUI"

@@ -1,8 +1,8 @@
-package dev.robocode.tankroyale.csproj
+package build.csproj
 
-import dev.robocode.tankroyale.xml.attribute
-import dev.robocode.tankroyale.xml.document
-import dev.robocode.tankroyale.xml.element
+import build.xml.attribute
+import build.xml.document
+import build.xml.element
 import java.io.*
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -72,5 +72,3 @@ private fun formatXML(xml: String): String {
 
     return output.toString()
 }
-
-// fun main() = generateBotCsprojFile(Paths.get("C:\\Windows\\Temp\\test.xml"), "Corners", "0.9.10")

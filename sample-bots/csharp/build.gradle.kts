@@ -1,4 +1,4 @@
-import dev.robocode.tankroyale.csproj.generateBotCsprojFile
+import build.csproj.generateBotCsprojFile
 import org.hidetake.groovy.ssh.core.RunHandler
 import org.hidetake.groovy.ssh.session.SessionHandler
 import java.io.PrintWriter

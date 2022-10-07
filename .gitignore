@@ -13,6 +13,7 @@ target/
 !sample-bots/java/Target/
 !sample-bots/csharp/Target/
 build/
+!buildSrc/src/main/kotlin/build
 gradle/
 out/
 bin/

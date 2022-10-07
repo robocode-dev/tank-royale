@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.tasks
+package build.tasks
 
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.provider.Property

@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.xml
+package build.xml
 
 import javax.xml.stream.XMLStreamWriter
 
