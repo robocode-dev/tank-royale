@@ -3,10 +3,14 @@
 This API is used when creating bots for the Robocode Tank Royale programming game. The API handles communication with a
 game server behind the scene, so you can focus on the fun part of controlling the bot.
 
+The Bot API is available here:
+
+- [Bot API for .Net](https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.html)
+
 A good way to get started with Robocode Tank Royale is to head over to the general documentation for Tank Royale to
 learn about the basics first:
 
-* [Robocode Tank Royale Docs]
+- [Robocode Tank Royale Docs]
 
 Another good way to get started is to look at the source files for the sample bots.
 
@@ -107,6 +111,8 @@ MyFirstBot.json:
 You can read more details about the format of this JSON
 file [here](https://robocode-dev.github.io/tank-royale/articles/booter.html#json-config-file.html).
 
+
+[Bot API for .Net]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.html
 
 [Robocode Tank Royale Docs]: https://robocode-dev.github.io/tank-royale/
 
