@@ -8,8 +8,8 @@ description = "Java API library for developing bots for Robocode Tank Royale"
 
 val artifactBaseName = "robocode-tankroyale-bot-api"
 
-val ossrhUsername: String? by project
-val ossrhPassword: String? by project
+val `ossrh-username`: String? by project
+val `ossrh-password`: String? by project
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -130,8 +130,8 @@ tasks {
                                 releasesOnly()
                             }
                             credentials {
-                                username = ossrhUsername
-                                password = ossrhPassword
+                                username = `ossrh-username`
+                                password = `ossrh-password`
                             }
                         }
                         /*
@@ -141,8 +141,8 @@ tasks {
                                 snapshotsOnly()
                             }
                             credentials {
-                                username = ossrhUsername
-                                password = ossrhPassword
+                                username = `ossrh-username`
+                                password = `ossrh-password`
                             }
                         }*/
                     }
