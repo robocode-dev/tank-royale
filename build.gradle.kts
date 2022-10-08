@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import build.release.createRelease
 
 // Constants
 
@@ -9,6 +10,7 @@ val guiReleasePath by extra("$releasesPath/gui")
 val htmlRoot by extra("~/public_html/tankroyale")
 val apiPath by extra("$htmlRoot/api")
 
+val `tankroyale-github-token`: String? by project
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -47,5 +49,12 @@ tasks {
             "sample-bots:java:zip", "sample-bots:csharp:zip",
             "buildDocs:uploadDocs", "bot-api:dotnet:uploadDocs", "bot-api:java:uploadDocs"
         )
+    }
+
+    register("create-release") {
+        doLast {
+            val version = libs.versions.tankroyale.get()
+            createRelease(projectDir, version, `tankroyale-github-token`!!)
+        }
     }
 }

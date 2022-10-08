@@ -4,6 +4,7 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 import java.lang.IllegalStateException
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -35,7 +36,7 @@ private fun extractVersion(versionsFilename: String): String {
 
 private fun extractReleaseNotes(versionsFilename: String): String {
     val builder = StringBuilder()
-    val reader = BufferedReader(FileReader(versionsFilename))
+    val reader = BufferedReader(FileReader(versionsFilename, StandardCharsets.UTF_8))
 
     for (line in reader.lines()) {
         if (line.trim().startsWith("## ")) {

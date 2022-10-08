@@ -20,6 +20,10 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    implementation("com.googlecode.json-simple:json-simple:1.1.1")
+}
+
 tasks {
     withType<KotlinCompile> {
         sourceCompatibility = JavaVersion.VERSION_11.toString()
