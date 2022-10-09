@@ -6,53 +6,69 @@ You can read the Robocode Tank Royale [documentation here](https://robocode-dev.
 
 Please head over to [My First Bot tutorial](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html) to learn how to set up your first bot for Robocode Tank Royale.
 
-## ▶️ Running Robocode
+## ▶ Running Robocode
 
-You need Java 11 as a minimum or newer to be preinstalled on your system. I recommend that you use the newest version of Java, if possible.
-You can read the [installation guide] to get more details about installing Java and Robocode.
+You need Java 11 as a minimum or newer, e.g. the newest version of Java available.
 
-The Robocode [GUI application](https://robocode-dev.github.io/tank-royale/articles/gui.html#gui-application) must be run from the command line in order to start and view battles:
+You can read the [installation guide] to get more details about installing both Java and Robocode.
+
+The main application is the [GUI Application], which is a Java application.
+You can read more about how to use the GUI Application [here](https://robocode-dev.github.io/tank-royale/articles/gui.html#gui-application).
+
+The Robocode [GUI application] is run from the command-line (shell or command prompt) in order to start and view
+battles:
 
 ```shell
 java -jar robocode-tankroyale-gui-{VERSION}.jar
 ```
 
-Download it from here:
-[robocode-tankroyale-gui-{VERSION}.jar](https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/robocode-tankroyale-gui-{VERSION}.jar)
+If you are new to Robocode, you need to download some bots and extract those to directories on your system.
+These bot directories can be added from the menu of the GUI:
 
-Note that you need to download sample bots and install those into directories on your system, and add these directories from the menu:
-
-Config → Bot Root Directories
+`Config → Bot Root Directories`
 
 ## 🤖 Sample bots
 
 These sample bots are currently available:
 
-|      |   |
-|------|---|
-| C#   | [sample-bots-csharp-{VERSION}.zip](https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/sample-bots-csharp-{VERSION}.zip) |
-| Java | [sample-bots-java-{VERSION}.zip](https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/sample-bots-java-{VERSION}.zip)     |
+| Platform | Archive                            | Requirements                      |
+|----------|------------------------------------|-----------------------------------|
+| C#       | [sample-bots-csharp-{VERSION}.zip] | Microsoft [.Net SDK] 5.0 or newer |
+| Java     | [sample-bots-java-{VERSION}.zip]   | Any [Java SDK] 11 or newer        |
 
-Note that the C# bots need Microsoft .Net SDK 5.0 or newer and must be preinstalled.
+All bots are put in zip archives, which should be installed to independent directories.
+Each zip archive contains a ReadMe.md file with more information for the specific platform. 
 
 ## 📦 Bot API
 
-In order to develop bots for Robocode, you'll need one of the provided APIs for the Java/JVM or .Net platform.
+In order to start developing bots for Robocode, the following APIs are available.
 
 #### 📦 Java:
 
 Available as:
 
-- A jar file: [robocode-tankroyale-bot-api-{VERSION}.jar](https://s01.oss.sonatype.org/service/local/repositories/releases/content/dev/robocode/tankroyale/robocode-tankroyale-bot-api/{VERSION}/robocode-tankroyale-bot-api-{VERSION}.jar)
-- An [artifact at Nexus Repository](https://s01.oss.sonatype.org/index.html#view-repositories;releases~browsestorage~/dev/robocode/tankroyale/robocode-tankroyale-bot-api/{VERSION}/robocode-tankroyale-bot-api-{VERSION}.jar).
-
-At some point after this release the artifact will also become available from the [Maven Central Repository](https://search.maven.org/search?q=g:dev.robocode.tankroyale).
+- Jar file: [robocode-tankroyale-bot-api-{VERSION}.jar]
+- Artifact at [Nexus Repository](https://s01.oss.sonatype.org/index.html#view-repositories;releases~browsestorage~/dev/robocode/tankroyale/robocode-tankroyale-bot-api/{VERSION}/robocode-tankroyale-bot-api-{VERSION}.jar)
+- Artifact at [Maven Central Repository](https://search.maven.org/search?q=g:dev.robocode.tankroyale) (available after some time)
 
 #### 📦 .Net:
 
-Available as artifact on the Nuget repository:
-https://www.nuget.org/packages/Robocode.TankRoyale.BotApi/{VERSION}
+Available as:
+ - Artifact at [Nuget repository](https://www.nuget.org/packages/Robocode.TankRoyale.BotApi/{VERSION})
 
-```shell
-dotnet add package Robocode.TankRoyale.BotApi --version {VERSION}
-```
+
+[My First Bot tutorial]: https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html
+
+[installation guide]: https://robocode-dev.github.io/tank-royale/articles/installation.html
+
+[GUI Application]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/robocode-tankroyale-gui-{VERSION}.jar
+
+[.Net SDK]: https://dotnet.microsoft.com/en-us/download/dotnet
+
+[Java SDK]: https://robocode-dev.github.io/tank-royale/articles/installation.html#java-11-or-newer
+
+[sample-bots-csharp-{VERSION}.zip]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/sample-bots-csharp-{VERSION}.zip
+
+[sample-bots-java-{VERSION}.zip]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/sample-bots-java-{VERSION}.zip
+
+[robocode-tankroyale-bot-api-{VERSION}.jar]: https://s01.oss.sonatype.org/service/local/repositories/releases/content/dev/robocode/tankroyale/robocode-tankroyale-bot-api/{VERSION}/robocode-tankroyale-bot-api-{VERSION}.jar
