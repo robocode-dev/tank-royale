@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import build.release.createRelease
 
+description = "Robocode: Build the best - destroy the rest!"
 
 val `tankroyale-github-token`: String? by project
 

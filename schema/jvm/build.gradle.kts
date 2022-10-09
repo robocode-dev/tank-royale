@@ -3,10 +3,11 @@ import org.jsonschema2pojo.SourceType
 import org.jsonschema2pojo.gradle.JsonSchemaExtension
 import java.util.Collections.singletonList
 
-val title = "Robocode Tank Royale Schema"
+description = "Robocode Tank Royale schema for Java"
+
+val title = "Robocode Tank Royale schema for Java"
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
-description = "Schema for Robocode Tank Royale"
 
 val artifactBaseName = "robocode-tankroyale-schema"
 val archiveFileName = "$buildDir/libs/$artifactBaseName-$version.jar"

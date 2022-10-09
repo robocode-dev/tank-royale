@@ -1,3 +1,4 @@
+description = "Robocode Tank Royale schema for .Net"
 
 tasks {
     register<Exec>("clean") {

@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+description = "Robocode Tank Royale build sources"
+
 buildscript {
     val kotlinVersion = "1.7.20"
 

@@ -4,6 +4,8 @@ import java.nio.file.Files.*
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 
+description = "Robocode Tank Royale sample bots for C#"
+
 version = libs.versions.tankroyale.get()
 
 val archiveFilename = "sample-bots-csharp-${project.version}.zip"

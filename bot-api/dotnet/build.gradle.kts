@@ -1,6 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 
+description = "Robocode Tank Royale Bot API for .Net"
 
 val artifactName = "Robocode.TankRoyale.BotApi"
 version = libs.versions.tankroyale.get()

@@ -1,9 +1,10 @@
 import proguard.gradle.ProGuardTask
 
+description = "Robocode Tank Royale Booter"
+
 val title = "Robocode Tank Royale Booter"
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
-description = "Booter for booting up Robocode Tank Royale bots locally"
 
 val jarManifestMainClass = "dev.robocode.tankroyale.booter.BooterKt"
 
