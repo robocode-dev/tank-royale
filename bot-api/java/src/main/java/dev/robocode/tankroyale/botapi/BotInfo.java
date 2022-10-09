@@ -14,7 +14,7 @@ import static dev.robocode.tankroyale.botapi.util.CountryCodeUtil.toCountryCode;
 
 /**
  * Bot info contains the properties of a bot.
- *
+ * <br>
  * <script src="../../../../../prism.js"></script>
  */
 @SuppressWarnings("unused")
@@ -233,7 +233,7 @@ public final class BotInfo {
     }
 
     /**
-     * Returns the programming language used for developing the bot, e.g., "Java 11" or "Kotlin 1.6.20".<br>
+     * Returns the programming language used for developing the bot, e.g., "Java 11" or "Kotlin 1.7.20".<br>
      * This field is optional.
      *
      * @return The programming language used for developing the bot.
