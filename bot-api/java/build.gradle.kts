@@ -134,17 +134,6 @@ tasks {
                                 password = `ossrh-password`
                             }
                         }
-                        /*
-                        maven {
-                            setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-                            mavenContent {
-                                snapshotsOnly()
-                            }
-                            credentials {
-                                username = `ossrh-username`
-                                password = `ossrh-password`
-                            }
-                        }*/
                     }
 
                     licenses {

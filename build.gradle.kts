@@ -52,6 +52,8 @@ tasks {
     }
 
     register("create-release") {
+        dependsOn("build-release")
+
         doLast {
             val version = libs.versions.tankroyale.get()
             createRelease(projectDir, version, `tankroyale-github-token`!!)

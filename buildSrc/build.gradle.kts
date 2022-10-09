@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.googlecode.json-simple:json-simple:1.1.1")
+    implementation("org.json:json:20220924")
 }
 
 tasks {
