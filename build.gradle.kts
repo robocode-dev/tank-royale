@@ -1,14 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import build.release.createRelease
 
-// Constants
-
-val releasesPath by extra("public_html/tankroyale/releases")
-val sampleBotsReleasePath by extra("$releasesPath/sample-bots")
-val guiReleasePath by extra("$releasesPath/gui")
-
-val htmlRoot by extra("~/public_html/tankroyale")
-val apiPath by extra("$htmlRoot/api")
 
 val `tankroyale-github-token`: String? by project
 
@@ -29,7 +21,7 @@ subprojects {
     tasks {
         withType<KotlinCompile>().configureEach {
             kotlinOptions {
-                jvmTarget = "11"
+                jvmTarget = JavaVersion.VERSION_11.toString()
             }
         }
 

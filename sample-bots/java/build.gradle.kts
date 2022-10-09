@@ -1,5 +1,3 @@
-import org.hidetake.groovy.ssh.core.RunHandler
-import org.hidetake.groovy.ssh.session.SessionHandler
 import java.io.PrintWriter
 import java.nio.file.Files.*
 import java.nio.file.Path
@@ -9,14 +7,6 @@ version = libs.versions.tankroyale.get()
 
 val archiveFilename = "sample-bots-java-${project.version}.zip"
 
-
-val sampleBotsReleasePath: String by rootProject.extra
-
-
-@Suppress("DSL_SCOPE_VIOLATION")
-plugins {
-    alias(libs.plugins.hidetake.ssh)
-}
 
 tasks {
     val archiveDir = project.buildDir.resolve("archive").toPath()
@@ -98,7 +88,7 @@ tasks {
         }
     }
 
-    val zip by registering(Zip::class) {
+    register("zip", Zip::class) {
         dependsOn(build)
 
         archiveFileName.set(archiveFilename)
@@ -106,27 +96,5 @@ tasks {
         fileMode = "101101101".toInt(2) // 0555 - read & execute for everybody
 
         from(File(buildDir, "archive"))
-    }
-
-    register("upload") {
-        dependsOn(zip)
-
-        doLast {
-            ssh.run(delegateClosureOf<RunHandler> {
-                session(remotes["sshServer"], delegateClosureOf<SessionHandler> {
-                    print("Uploading Java sample bots...")
-
-                    val destDir = sampleBotsReleasePath + "/" + project.version
-                    val destFile = "$destDir/$archiveFilename"
-
-                    execute("rm -f $destFile")
-                    execute("mkdir -p ~/$destDir")
-
-                    put(hashMapOf("from" to "${project.projectDir}/build/$archiveFilename", "into" to destDir))
-
-                    println("done")
-                })
-            })
-        }
     }
 }

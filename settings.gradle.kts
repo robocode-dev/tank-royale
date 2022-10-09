@@ -62,7 +62,6 @@ dependencyResolutionManagement {
             plugin("kotlin-jvm", "org.jetbrains.kotlin.jvm").version(kotlinVersion)
             plugin("kotlin-plugin-serialization", "org.jetbrains.kotlin.plugin.serialization").version(kotlinVersion)
             plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.42.0")
-            plugin("hidetake-ssh", "org.hidetake.ssh").version("2.10.1")
             plugin("itiviti-dotnet", "com.itiviti.dotnet").version("1.9.3")
             plugin("node-gradle", "com.github.node-gradle.node").version("3.4.0")
         }

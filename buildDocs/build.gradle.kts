@@ -1,12 +1,5 @@
 import com.github.gradle.node.npm.task.NpmTask
 
-val buildArchiveDirProvider: Provider<Directory> = layout.buildDirectory
-val buildArchivePath = buildArchiveDirProvider.get().toString()
-
-val htmlRoot: String by rootProject.extra
-val docsPath = "$htmlRoot/docs"
-val archiveFilename = "docs.zip"
-
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {

@@ -5,14 +5,6 @@ import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 val artifactName = "Robocode.TankRoyale.BotApi"
 version = libs.versions.tankroyale.get()
 
-val docfxArchiveFilename = "docfx.zip"
-
-val buildArchiveDirProvider: Provider<Directory> = layout.buildDirectory.dir("archive")
-val buildArchivePath = buildArchiveDirProvider.get().toString()
-
-val apiPath: String by rootProject.extra
-val dotnetApiPath = "$apiPath/dotnet"
-
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
