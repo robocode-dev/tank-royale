@@ -1,6 +1,6 @@
 # Versions
 
-## In progress
+## 📦 0.17.4 - In progress
 
 #### 🚀 Improvements
 
