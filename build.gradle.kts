@@ -3,13 +3,20 @@ import build.release.createRelease
 
 description = "Robocode: Build the best - destroy the rest!"
 
+group = "dev.robocode.tankroyale"
+version = libs.versions.tankroyale.get()
+
+val `ossrh-username`: String by project
+val `ossrh-password`: String by project
 val `tankroyale-github-token`: String? by project
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.plugin.serialization)
-    alias(libs.plugins.benmanes.versioning)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.nexus.publish)
+
+    alias(libs.plugins.benmanes.versioning) // dependency management only
 }
 
 subprojects {
@@ -51,5 +58,23 @@ tasks {
             val version = libs.versions.tankroyale.get()
             createRelease(projectDir, version, `tankroyale-github-token`!!)
         }
+    }
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+            username.set(`ossrh-username`)
+            password.set(`ossrh-password`)
+        }
+    }
+}
+
+val initializeSonatypeStagingRepository by tasks.existing
+subprojects {
+    initializeSonatypeStagingRepository {
+        shouldRunAfter(tasks.withType<Sign>())
     }
 }

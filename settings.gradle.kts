@@ -58,12 +58,13 @@ dependencyResolutionManagement {
             library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:5.4.2")
             library("mockk", "io.mockk:mockk:1.13.1")
 
-            plugin("shadow-jar","com.github.johnrengelman.shadow").version("7.1.2")
             plugin("kotlin-jvm", "org.jetbrains.kotlin.jvm").version(kotlinVersion)
-            plugin("kotlin-plugin-serialization", "org.jetbrains.kotlin.plugin.serialization").version(kotlinVersion)
-            plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.42.0")
+            plugin("kotlin-serialization", "org.jetbrains.kotlin.plugin.serialization").version(kotlinVersion)
+            plugin("nexus-publish", "io.github.gradle-nexus.publish-plugin").version("1.1.0")
+            plugin("shadow-jar","com.github.johnrengelman.shadow").version("7.1.2")
             plugin("itiviti-dotnet", "com.itiviti.dotnet").version("1.9.3")
             plugin("node-gradle", "com.github.node-gradle.node").version("3.4.0")
+            plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.42.0")
         }
     }
 }
