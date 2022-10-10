@@ -9,6 +9,10 @@ class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray
 
     init {
         setSelectedGameType(ConfigSettings.gameType)
+
+        ConfigSettings.onSaved.subscribe(this) {
+            setSelectedGameType(ConfigSettings.gameType)
+        }
     }
 
     fun getSelectedGameType(): GameType =
