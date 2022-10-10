@@ -37,6 +37,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private val onApply = Event<JButton>()
 
     private val gameTypeComboBox = GameTypeComboBox()
+
     private val widthTextField = JTextField(6)
     private val heightTextField = JTextField(6)
     private val minNumParticipantsTextField = JTextField(6)
