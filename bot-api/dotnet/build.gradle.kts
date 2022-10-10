@@ -6,12 +6,15 @@ description = "Robocode Tank Royale Bot API for .Net"
 val artifactName = "Robocode.TankRoyale.BotApi"
 version = libs.versions.tankroyale.get()
 
+val `nuget-api-key`: String by project
+
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.itiviti.dotnet)
 }
 
+// https://github.com/Itiviti/gradle-dotnet-plugin
 dotnet {
     solution = "Robocode.TankRoyale.BotApi/Robocode.TankRoyale.BotApi.csproj"
 
@@ -28,9 +31,8 @@ dotnet {
 
     nugetPush {
         solution = "Robocode.TankRoyale.BotApi/Robocode.TankRoyale.BotApi.csproj"
-
-        // api key is set by `nuget setApiKey <key>`
         source = "nuget.org"
+        apiKey = `nuget-api-key`
     }
 }
 

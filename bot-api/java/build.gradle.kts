@@ -9,8 +9,8 @@ version = libs.versions.tankroyale.get()
 
 val artifactBaseName = "robocode-tankroyale-bot-api"
 
-val `ossrh-username`: String? by project
-val `ossrh-password`: String? by project
+val `ossrh-username`: String by project
+val `ossrh-password`: String by project
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
