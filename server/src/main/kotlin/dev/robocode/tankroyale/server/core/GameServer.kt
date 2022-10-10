@@ -72,7 +72,6 @@ class GameServer(
     /** Tick lock for onNextTurn() */
     private val tickLock = Any()
 
-    @Suppress("RemoveRedundantQualifierName")
     private var botListUpdateMessage = BotListUpdate().apply {
         this.type = Message.Type.BOT_LIST_UPDATE
         this.bots = listOf<BotInfo>()
