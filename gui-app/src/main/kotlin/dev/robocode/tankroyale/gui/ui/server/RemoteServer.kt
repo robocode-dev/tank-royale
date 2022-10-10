@@ -11,7 +11,7 @@ object RemoteServer {
 
     private val DEFAULT_CONNECTION_TIMEOUT = Duration.ofMillis(500)
 
-    fun isRunning(uri: String = ServerSettings.serverUrl, timeout: Duration? = DEFAULT_CONNECTION_TIMEOUT): Boolean =
+    fun isRunning(uri: String = ServerSettings.currentServerUrl, timeout: Duration? = DEFAULT_CONNECTION_TIMEOUT): Boolean =
         isRunning(URI(uri), timeout)
 
     fun isRunning(uri: URI, timeout: Duration? = DEFAULT_CONNECTION_TIMEOUT): Boolean {

@@ -3,8 +3,8 @@ package dev.robocode.tankroyale.gui.ui.newbattle
 import dev.robocode.tankroyale.gui.ui.MainWindow
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.GamesSettings
-import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
@@ -84,7 +84,7 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
 
         gameTypeComboBox.apply {
             addActionListener {
-                ServerSettings.apply {
+                ConfigSettings.apply {
                     gameType = gameTypeComboBox.getSelectedGameType()
                     save()
                 }
@@ -104,10 +104,10 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
     }
 
     private fun minNumberOfParticipants(): Int =
-        GamesSettings.games[ServerSettings.gameType.displayName]?.minNumberOfParticipants ?: 2
+        GamesSettings.games[ConfigSettings.gameType.displayName]?.minNumberOfParticipants ?: 2
 
     private fun maxNumberOfParticipants(): Int? =
-        GamesSettings.games[ServerSettings.gameType.displayName]?.maxNumberOfParticipants
+        GamesSettings.games[ConfigSettings.gameType.displayName]?.maxNumberOfParticipants
 
     private fun updateStartButtonHint() {
         startBattleButton.toolTipText = Hints.get("new_battle.start_button")

@@ -59,7 +59,7 @@ object Client {
         if (isConnected()) {
             throw IllegalStateException("Websocket is already connected")
         }
-        websocket = WebSocketClient(URI(ServerSettings.serverUrl))
+        websocket = WebSocketClient(URI(ServerSettings.currentServerUrl))
 
         WebSocketClientEvents.apply {
             websocket?.let { ws ->
@@ -92,7 +92,7 @@ object Client {
             stopGame()
         }
 
-        val displayName = ServerSettings.gameType.displayName
+        val displayName = ConfigSettings.gameType.displayName
         val gameSetup = GamesSettings.games[displayName]!!
 
         lastStartGame = StartGame(gameSetup.toGameSetup(), botAddresses)

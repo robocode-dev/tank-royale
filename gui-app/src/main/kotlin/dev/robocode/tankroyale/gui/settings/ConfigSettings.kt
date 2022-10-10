@@ -8,6 +8,7 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.proper
     const val SOUNDS_DIR = "sounds/"
 
     private const val BOT_DIRECTORIES = "bot-directories"
+    private const val GAME_TYPE = "game-type"
     private const val TPS = "tps"
 
     private const val ENABLE_SOUNDS = "enable-sounds"
@@ -32,6 +33,16 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.proper
                 .filter { it.isNotBlank() }
                 .joinToString(separator = BOT_DIRS_SEPARATOR))
             save()
+        }
+
+
+    var gameType: GameType
+        get() {
+            val displayName = properties.getProperty(GAME_TYPE, GameType.CLASSIC.displayName)
+            return GameType.from(displayName)
+        }
+        set(value) {
+            properties.setProperty(GAME_TYPE, value.displayName)
         }
 
     var tps: Int

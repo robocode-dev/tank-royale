@@ -39,7 +39,7 @@ object BootProcess {
             "-jar",
             getBooterJar(),
             "info",
-            "--game-types=${ServerSettings.gameType.displayName}"
+            "--game-types=${ConfigSettings.gameType.displayName}"
         )
         val botDirs = getBotDirs().ifEmpty {
             return emptyList()
@@ -86,7 +86,7 @@ object BootProcess {
     private fun startRunningBotProcess(botDirNames: List<String>) {
         val args = mutableListOf(
             "java",
-            "-Dserver.url=${ServerSettings.serverUrl}",
+            "-Dserver.url=${ServerSettings.currentServerUrl}",
             "-Dserver.secret=${ServerSettings.botSecrets.first()}",
             "-jar",
             getBooterJar(),

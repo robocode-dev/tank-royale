@@ -13,9 +13,8 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
     const val DEFAULT_PORT = 7654
     const val DEFAULT_URL = "$DEFAULT_SCHEME://localhost"
 
-    private const val SERVER_URL = "server-url"
-    private const val GAME_TYPE = "game-type"
-    private const val USER_URLS = "user-urls"
+    private const val CURRENT_SERVER_URL = "current-server-url"
+    private const val SERVER_URLS = "server-urls"
     private const val CONTROLLER_SECRETS = "controller-secrets"
     private const val BOT_SECRETS = "bots-secrets"
     private const val INITIAL_POSITION_ENABLED = "initial-position-enabled"
@@ -27,31 +26,22 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         onSaved.subscribe(this) { ServerEventTriggers.onRebootServer.fire(true /* setting changed */) }
     }
 
-    var serverUrl: String
+    var currentServerUrl: String
         get() {
-            val url = properties.getProperty(SERVER_URL, DEFAULT_URL)
+            val url = properties.getProperty(CURRENT_SERVER_URL, DEFAULT_URL)
             return WsUrl(url).origin
         }
         set(value) {
-            properties.setProperty(SERVER_URL, value)
+            properties.setProperty(CURRENT_SERVER_URL, value)
         }
 
-    val serverPort: Int get() = URI(serverUrl).port
+    val serverPort: Int get() = URI(currentServerUrl).port
 
-    var gameType: GameType
+    var serverUrls: List<String>
         get() {
-            val displayName = properties.getProperty(GAME_TYPE, GameType.CLASSIC.displayName)
-            return GameType.from(displayName)
-        }
-        set(value) {
-            properties.setProperty(GAME_TYPE, value.displayName)
-        }
-
-    var userUrls: List<String>
-        get() {
-            val urls = properties.getProperty(USER_URLS, "")
+            val urls = properties.getProperty(SERVER_URLS, "")
             return if (urls.isBlank()) {
-                listOf(serverUrl)
+                listOf(currentServerUrl)
             } else {
                 urls.split(",")
             }
@@ -59,7 +49,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         set(value) {
             val list = ArrayList(value)
             list.remove(DEFAULT_URL)
-            properties.setProperty(USER_URLS, list.joinToString(","))
+            properties.setProperty(SERVER_URLS, list.joinToString(","))
         }
 
     var controllerSecrets: Set<String>

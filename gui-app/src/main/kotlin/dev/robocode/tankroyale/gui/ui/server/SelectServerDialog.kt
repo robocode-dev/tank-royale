@@ -127,12 +127,12 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         urlComboBox.removeAllItems()
 
         ServerSettings.apply {
-            if (userUrls.isNotEmpty()) {
-                userUrls.forEach { urlComboBox.addItem(it) }
+            if (serverUrls.isNotEmpty()) {
+                serverUrls.forEach { urlComboBox.addItem(it) }
             } else {
-                urlComboBox.addItem(serverUrl)
+                urlComboBox.addItem(currentServerUrl)
             }
-            selectedUri = serverUrl
+            selectedUri = currentServerUrl
         }
     }
 
@@ -148,7 +148,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     }
 
     private fun saveServerConfig() {
-        ServerSettings.serverUrl = selectedUri
+        ServerSettings.currentServerUrl = selectedUri
 
         val userUrls = ArrayList<String>()
         val size = urlComboBox.itemCount
@@ -156,7 +156,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
             userUrls.add(urlComboBox.getItemAt(i))
         }
         ServerSettings.apply {
-            this.userUrls = userUrls
+            this.serverUrls = userUrls
             save()
         }
     }
