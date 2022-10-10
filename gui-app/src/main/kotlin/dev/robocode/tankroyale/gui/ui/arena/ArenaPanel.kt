@@ -13,6 +13,7 @@ import dev.robocode.tankroyale.gui.util.ColorUtil.Companion.fromString
 import dev.robocode.tankroyale.gui.util.Graphics2DState
 import dev.robocode.tankroyale.gui.util.HslColor
 import java.awt.*
+import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.event.MouseMotionAdapter
 import java.awt.event.MouseWheelEvent
@@ -28,10 +29,6 @@ import kotlin.math.sqrt
 
 object ArenaPanel : JPanel() {
 
-    private var scale = 1.0
-    private var offsetX = Double.NEGATIVE_INFINITY
-    private var offsetY = Double.NEGATIVE_INFINITY
-
     private val circleShape = Area(Ellipse2D.Double(-0.5, -0.5, 1.0, 1.0))
 
     private val explosions = CopyOnWriteArrayList<Animation>()
@@ -46,6 +43,12 @@ object ArenaPanel : JPanel() {
 
     init {
         addMouseWheelListener { e -> if (e != null) onMouseWheel(e) }
+
+        addMouseListener(object : MouseAdapter() {
+            override fun mousePressed(e: MouseEvent) {
+                onMousePressed(e)
+            }
+        })
 
         addMouseMotionListener(object : MouseMotionAdapter() {
             override fun mouseDragged(e: MouseEvent) {
@@ -156,6 +159,8 @@ object ArenaPanel : JPanel() {
         }
     }
 
+    private var scale = 1.0
+
     private fun onMouseWheel(e: MouseWheelEvent) {
         var newScale = scale
         if (e.unitsToScroll > 0) {
@@ -169,9 +174,20 @@ object ArenaPanel : JPanel() {
         }
     }
 
+    private var deltaX = 0
+    private var deltaY = 0
+
+    private var pressedMouseX = 0
+    private var pressedMouseY = 0
+
+    private fun onMousePressed(e: MouseEvent) {
+        pressedMouseX = e.x - deltaX
+        pressedMouseY = e.y - deltaY
+    }
+
     private fun onMouseDragged(e: MouseEvent) {
-        offsetX = e.point.x.toDouble()
-        offsetY = e.point.y.toDouble()
+        deltaX = e.x - pressedMouseX
+        deltaY = e.y - pressedMouseY
         repaint()
     }
 
@@ -188,14 +204,10 @@ object ArenaPanel : JPanel() {
         clearCanvas(g)
 
         // Move the offset of the arena
-        if (offsetX == Double.NEGATIVE_INFINITY) {
-            val marginX = (size.width - scale * arenaWidth) / 2
-            val marginY = (size.height - scale * arenaHeight) / 2
+        val marginX = (size.width - scale * arenaWidth) / 2
+        val marginY = (size.height - scale * arenaHeight) / 2
 
-            g.translate(marginX, marginY)
-        } else {
-            g.translate(offsetX, offsetY)
-        }
+        g.translate(marginX + deltaX, marginY + deltaY)
 
         g.scale(scale, -scale)
         g.translate(0, -arenaHeight)
