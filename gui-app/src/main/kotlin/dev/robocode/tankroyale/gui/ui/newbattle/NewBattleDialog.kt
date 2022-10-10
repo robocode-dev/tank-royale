@@ -41,11 +41,7 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
 
     init {
         val topPanel = JPanel(MigLayout("left, insets 5")).apply {
-            border = BorderFactory.createTitledBorder(Strings.get("set_game_rules_and_type"))
-
-            addButton("setup_rules", onSetupRules).apply {
-                toolTipText = Hints.get("new_battle.setup_rules")
-            }
+            border = BorderFactory.createTitledBorder(Strings.get("select_game_type"))
 
             val hint = Hints.get("new_battle.game_type")
             addLabel("game_type").apply {
@@ -53,6 +49,10 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
             }
             gameTypeComboBox.toolTipText = hint
             add(gameTypeComboBox)
+
+            addButton("setup_rules", onSetupRules).apply {
+                toolTipText = Hints.get("new_battle.setup_rules")
+            }
         }
 
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
@@ -87,9 +87,8 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
                 ServerSettings.apply {
                     gameType = gameTypeComboBox.getSelectedGameType()
                     save()
-
-                    updateStartButtonHint()
                 }
+                updateStartButtonHint()
             }
 
             addItemListener {

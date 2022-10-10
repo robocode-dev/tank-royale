@@ -9,6 +9,7 @@
     - Fire assistant is now only activated, when both the radar and gun are pointing in the same direction for two turns
       in a row (like original Robocode).
 - GUI App:
+    - Switched the order of the Game Type dropdown and Setup Rules button.
     - The positioning of the battle view is now controlled by dragging the mouse, instead of clicking.  
     - Now sends the current tps to the server when changing game type.
     - Added `Help` menu item under the Help menu, which opens browser to the documentation of the GUI application.
