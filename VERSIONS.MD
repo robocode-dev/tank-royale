@@ -8,7 +8,14 @@
     - Added `--tps` option to the server for setting the initial Turns Per Second (TPS).
     - Fire assistant is now only activated, when both the radar and gun are pointing in the same direction for two turns
       in a row (like original Robocode).
-- GUI App: Sending the current tps to the server when changing game type.
+- GUI App:
+    - Now sends the current tps to the server when changing game type.
+    - Added `Help` menu item under the Help menu, which opens browser to the documentation of the GUI application.
+- Release
+    - All Java artifacts are now sent to Maven Central, i.e. Bot API, GUI Application, Server, and Booter.
+    - New assets are now added to releases: Server and Booter
+    - Added build scripts to automated creating (draft) releases using GitHub REST API.
+    - Improved layout for release notes.
 
 #### 🪲 Bug Fixes
 

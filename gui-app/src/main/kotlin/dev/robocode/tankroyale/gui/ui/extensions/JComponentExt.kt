@@ -1,10 +1,14 @@
 package dev.robocode.tankroyale.gui.ui.extensions
 
 import dev.robocode.tankroyale.gui.ui.Strings
-import dev.robocode.tankroyale.gui.ui.UiTitles
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
-import javax.swing.*
+import dev.robocode.tankroyale.gui.util.MessageDialog
+import javax.swing.JButton
+import javax.swing.JCheckBox
+import javax.swing.JComponent
+import javax.swing.JLabel
+
 
 object JComponentExt {
 
@@ -42,10 +46,10 @@ object JComponentExt {
     }
 
     fun JComponent.showMessage(msg: String) {
-        JOptionPane.showMessageDialog(this, msg, UiTitles.get("message"), JOptionPane.INFORMATION_MESSAGE)
+        MessageDialog.showMessage(msg, this)
     }
 
     fun JComponent.showError(msg: String) {
-        JOptionPane.showMessageDialog(this, msg, UiTitles.get("error"), JOptionPane.ERROR_MESSAGE)
+        MessageDialog.showError(msg, this)
     }
 }

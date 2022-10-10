@@ -10,9 +10,13 @@ import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEventTriggers
 import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
+import dev.robocode.tankroyale.gui.util.Browser
 import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 
 object MenuEventHandlers {
+
+    private const val HELP_URL = "https://robocode-dev.github.io/tank-royale/articles/gui.html"
+
     init {
         MenuEventTriggers.apply {
             onSetupRules.subscribe(this) {
@@ -33,9 +37,6 @@ object MenuEventHandlers {
             onBotDirConfig.subscribe(this) {
                 BotRootDirectoriesConfigDialog.isVisible = true
             }
-            onAbout.subscribe(this) {
-                AboutBox.isVisible = true
-            }
             onStartServer.subscribe(this) {
                 ServerEventTriggers.onStartServer.fire(Unit)
                 ServerLogWindow.isVisible = true
@@ -52,6 +53,12 @@ object MenuEventHandlers {
             }
             onSoundConfig.subscribe(this) {
                 SoundConfigDialog.isVisible = true
+            }
+            onHelp.subscribe(this)  {
+                Browser.browse(HELP_URL)
+            }
+            onAbout.subscribe(this) {
+                AboutBox.isVisible = true
             }
         }
     }

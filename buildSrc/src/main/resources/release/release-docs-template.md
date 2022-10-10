@@ -23,9 +23,7 @@ java -jar robocode-tankroyale-gui-{VERSION}.jar
 ```
 
 If you are new to Robocode, you need to download some bots and extract those to directories on your system.
-These bot directories can be added from the menu of the GUI:
-
-`Config → Bot Root Directories`
+These bot directories can be added from the menu of the GUI: `Config → Bot Root Directories`
 
 ## 🤖 Sample bots
 
