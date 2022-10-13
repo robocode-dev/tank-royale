@@ -2,10 +2,11 @@ package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.GameType
-import dev.robocode.tankroyale.gui.settings.GamesSettings
+import dev.robocode.tankroyale.gui.settings.GameType.*
 import javax.swing.JComboBox
 
-class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray()) {
+class GameTypeDropdown : JComboBox<String>(
+    listOf(CLASSIC, MELEE, ONE_VS_ONE, CUSTOM).map { it.displayName }.toTypedArray()) { // setup in specific order
 
     init {
         setSelectedGameType(ConfigSettings.gameType)
@@ -17,7 +18,7 @@ class GameTypeComboBox : JComboBox<String>(GamesSettings.games.keys.toTypedArray
 
     fun getSelectedGameType(): GameType =
         if (model.selectedItem == null) {
-            GameType.CLASSIC
+            CLASSIC
         } else {
             GameType.from(model.selectedItem as String)
         }

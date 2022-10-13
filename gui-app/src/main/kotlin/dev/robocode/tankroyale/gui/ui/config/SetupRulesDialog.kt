@@ -13,7 +13,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.onChange
 import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.setInputVerifier
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
-import dev.robocode.tankroyale.gui.ui.newbattle.GameTypeComboBox
+import dev.robocode.tankroyale.gui.ui.newbattle.GameTypeDropdown
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import javax.swing.*
@@ -36,7 +36,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private val onResetToDefault = Event<JButton>()
     private val onApply = Event<JButton>()
 
-    private val gameTypeComboBox = GameTypeComboBox()
+    private val gameTypeDropdown = GameTypeDropdown()
 
     private val widthTextField = JTextField(6)
     private val heightTextField = JTextField(6)
@@ -52,7 +52,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
 
     private val gameSetup: MutableGameSetup
         get() {
-            val displayName = gameTypeComboBox.getSelectedGameType().displayName
+            val displayName = gameTypeDropdown.getSelectedGameType().displayName
             return GamesSettings.games[displayName]!!
         }
 
@@ -64,7 +64,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     init {
         val commonPanel = JPanel(MigLayout()).apply {
             addLabel("game_type")
-            add(gameTypeComboBox, "wrap")
+            add(gameTypeDropdown, "wrap")
 
             addLabel("min_num_of_participants")
             add(minNumParticipantsTextField, "wrap")
@@ -111,7 +111,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             okButton.requestFocus()
         }
 
-        gameTypeComboBox.apply {
+        gameTypeDropdown.apply {
             addItemListener {
                 updateFieldsForGameType()
             }
@@ -146,7 +146,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             SetupRulesDialog.dispose()
         }
         onResetToDefault.subscribe(this) {
-            val selectedGameType = gameTypeComboBox.getSelectedGameType().displayName
+            val selectedGameType = gameTypeDropdown.getSelectedGameType().displayName
             val default: MutableGameSetup? = GamesSettings.defaultGameSetup[selectedGameType]?.toMutableGameSetup()
             if (default != null) {
                 GamesSettings.games[selectedGameType]?.copyFields(default)

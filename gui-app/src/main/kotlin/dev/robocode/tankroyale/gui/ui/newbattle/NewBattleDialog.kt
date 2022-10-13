@@ -37,7 +37,7 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
     private val startBattleButton: JButton
 
     private var selectedBots = emptyList<BotInfo>()
-    private var gameTypeComboBox = GameTypeComboBox()
+    private var gameTypeDropdown = GameTypeDropdown()
 
     init {
         val topPanel = JPanel(MigLayout("left, insets 5")).apply {
@@ -47,8 +47,8 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
             addLabel("game_type").apply {
                 toolTipText = hint
             }
-            gameTypeComboBox.toolTipText = hint
-            add(gameTypeComboBox)
+            gameTypeDropdown.toolTipText = hint
+            add(gameTypeDropdown)
 
             addButton("setup_rules", onSetupRules).apply {
                 toolTipText = Hints.get("new_battle.setup_rules")
@@ -82,10 +82,10 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
         onCancel.subscribe(this) { NewBattleDialog.dispose() }
         onSetupRules.subscribe(this) { SetupRulesDialog.isVisible = true }
 
-        gameTypeComboBox.apply {
+        gameTypeDropdown.apply {
             addActionListener {
                 ConfigSettings.apply {
-                    gameType = gameTypeComboBox.getSelectedGameType()
+                    gameType = gameTypeDropdown.getSelectedGameType()
                     save()
                 }
                 updateStartButtonHint()
