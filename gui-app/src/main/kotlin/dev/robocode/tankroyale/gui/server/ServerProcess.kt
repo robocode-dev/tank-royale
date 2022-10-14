@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.gui.server
 
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
-import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.server.ServerActions
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
@@ -24,9 +23,6 @@ object ServerProcess {
     private var logThread: Thread? = null
     private val logThreadRunning = AtomicBoolean(false)
 
-    var gameType: GameType = GameType.CLASSIC
-        private set
-
     var port: Int = ServerSettings.serverPort
         private set
 
@@ -36,10 +32,9 @@ object ServerProcess {
 
     fun isRunning(): Boolean = isRunning.get()
 
-    fun start(gameType: GameType = GameType.CLASSIC, port: Int = ServerSettings.serverPort) {
+    fun start(port: Int = ServerSettings.serverPort) {
         if (isRunning.get()) return
 
-        this.gameType = gameType
         this.port = port
 
         var command: MutableList<String>
@@ -49,7 +44,7 @@ object ServerProcess {
                 "-jar",
                 getServerJar(),
                 "--port=$port",
-                "--games=$gameType",
+                "--games=classic,melee,1v1",
                 "--tps=${ConfigSettings.tps}",
                 "--controllerSecrets=${controllerSecrets.joinToString(",")}",
                 "--botSecrets=${botSecrets.joinToString(",")}"
@@ -92,7 +87,7 @@ object ServerProcess {
 
     fun reboot() {
         stop()
-        start(gameType, port)
+        start(port)
     }
 
     private fun getServerJar(): String {
@@ -144,7 +139,7 @@ object ServerProcess {
 }
 
 fun main() {
-    ServerProcess.start(GameType.CLASSIC)
+    ServerProcess.start()
     println("Server started")
     System.`in`.read()
     ServerProcess.stop()
