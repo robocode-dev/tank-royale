@@ -76,9 +76,9 @@ object GamesSettings : PropertiesStore("Robocode Games Settings", "games.propert
             ),
             GameType.ONE_VS_ONE.displayName to GameSetup(
                 gameType = GameType.ONE_VS_ONE.displayName,
-                arenaWidth = 1000,
+                arenaWidth = 800,
                 isArenaWidthLocked = true,
-                arenaHeight = 1000,
+                arenaHeight = 600,
                 isArenaHeightLocked = true,
                 minNumberOfParticipants = 2,
                 isMinNumberOfParticipantsLocked = true,
