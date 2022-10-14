@@ -85,7 +85,7 @@ class GameServer(
 
     /** Starts this server */
     fun start() {
-        log.info("Starting server on port ${Server.port} with game type(s): $gameTypes")
+        log.info("Starting server on port ${Server.port} with supporting game type(s): ${gameTypes.joinToString()}")
         connectionHandler.start()
     }
 
