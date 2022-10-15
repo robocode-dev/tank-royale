@@ -106,10 +106,9 @@ The original Robocode provided a Robot Packager, where Java robots are packaged 
 _Robot Packages_ and .Net bots were packaged into DLL files.
 
 With Robocode Tank Royale, you should consider packaging all required files for a bot into a zipped file and provide
-scripts for starting up your bot. You can read more about this with the [booter].
+Upscripts for starting up your bot the same way as for the provided sample bots. You can read more about this with
+the [booter].
 
-You should also consider using to use containerization with a container technology if the setup for your bot(s)
-is complex. But this is out of scope for Tank Royale.
 
 [WebSocket]: https://en.wikipedia.org/wiki/WebSocket
 
