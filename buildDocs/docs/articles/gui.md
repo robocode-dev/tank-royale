@@ -29,7 +29,8 @@ The window contains these four lists:
 - Joined Bots (local/remote)
 - Selected Bots (battle participants)
 
-Besides these lists, the window contains 'Set game rules and type' at the top to select the [game type] for the battle:
+Besides these lists, the window contains 'Select game type' at the top to select the [game type] for the battle.
+Note that you can adjust the rules for a specific game type by clicking the 'Setup Rules' button.
 
 ![Setup rules and game type](../images/gui/setup-rules-and-game-type.png)
 
@@ -66,23 +67,34 @@ Note that it is possible to boot up multiple instances of
 the same bot type, so you can, for example, let 3 Corners bots battle each other.
 
 Each entry in the Booted Bots list contains the full file path for the bot type of the booted bot plus a process id
-within the parentheses after the file path.
+(pid) within the parentheses after the file path.
 
-When pressing 'Boot', a process will start-up running the individual bot selected from the Bot Directories.
-When pressing 'Unboot' the process for the selected bot will be stopped (or killed).
+When pressing 'Boot', a boot process will start up running the individual bots selected from the Bot Directories. Note
+that the bots themselves are running in their own processes (and own pid) beside the boot process listed in the list of
+booted bots.
+
+When pressing 'Unboot' the boot process of the selected bot will be stopped, which is effectively stopping the bot as
+well.
 
 ### Joined Bots
 
-The **Joined Bots** lists all bots that have joined the server locally or remotely, and hence are available for the
-battle. If you start a bot from the command line or within an IDE locally, it will also show up in the **Joined Bots**
-list.
+The **Joined Bots** lists all bots that have joined the server either locally or remotely, and hence are available for
+the battle. If you start a bot from the command line or within an IDE locally, it will also show up in the **Joined
+Bots** list.
 
 ![Joined Bots](../images/gui/joined-bots.png)
 
-Note that the server and GUI do not know the file path of the joined bots as the [booter] is not involved in
-this part. From the server´s perspective, the bots are joining on the server´s WebSocket. And the information about
-the bot is provided by the _bot handshake_ only at this point. The server cannot tell if a bot has joined from your
-local machine or remotely from outside either.
+The IP address and port for the joined bot is written in the parentheses, which also makes it possible to differ between
+multiple instances of the same bot, e.g. if Corners have been booted multiple times.
+
+Note that the file path of the bot is not available is the list of **Joined Bots**. The reason is that the server only
+listens for bots that join via the server´s WebSocket, and hence only knows the IP address and port, and the bot
+information provided via the _bot handshake_ sent by the bot itself.
+
+The booter (used by the GUI) does have this knowledge, _but only for bots that was started from the local file system_.
+Be aware that bots might not make use of the booter at all, but could be started some other way. E.g. you can write a
+Bot application running against the server's WebSocket with or without using the provided bot APIs, and just start it
+up from some process, or running within e.g. an application server locally or remotely.
 
 ### Selected Bots
 
@@ -90,17 +102,17 @@ The **Selected Bots** lists the joined bots you are selecting to participate in 
 
 ![Selected Bots](../images/gui/selected-bots.png)
 
-Note that the 'Start Battle' button will be disabled if the number of selected bots for the battle does not meet the
-minimum requirements defined by the rules ([game type]).
+Note that the 'Start Battle' button might be disabled if the number of selected bots for the battle does not meet the
+minimum requirements defined by the rules ([game type]), which is written in hover text for the 'Start Battle' button.
 
 ## Setup Rules
 
-It is possible to modify the rules for a specific [game type] for a battle similar to the original Robocode.
+Setup Rules makes it is possible to modify the rules for a specific [game type]:
 
 ![Setup Rules](../images/gui/setup-rules.png)
 
 Currently, these predefined game types exist: `classic`, `melee`, and `1v1`. But there is also a `custom` which you
-can use it for your purpose to experiment with the settings as you please.
+can use it for your own purpose to experiment with the settings as you please.
 
 Rule settings:
 
@@ -128,6 +140,31 @@ It is possible to change which server the GUI is connecting to from the menu:
 
 You can add URLs to multiple Robocode servers. The current selected URL will be the server that the GUI will use. And
 you can test if the server is running with the Test button.
+
+## Debug Options
+
+The current **Debug Options** contains a single option for enabling _initial start position_ for a bot, meaning that if
+a
+bot has set the `initialPosition` field in the JSON config file or programmatically via the `BotInfo` class, then the
+bot will be allowed to use the specified starting position.
+
+Note that this is an exception to the rule, as bots are not normally allowed to set a starting position. But the
+exception here is for debugging purposes only.
+
+## Sound Options
+
+The **Sound Options** let you enable and disable sounds, but also toggle the individual sound effect.
+
+![Sound Options](../images/gui/sound-options.png)
+
+## About box
+
+The about-box provides information about the version of the GUI application and built in booter and server.
+
+In addition, the Java version and vendor is also provided, which is useful information when e.g. filing a bug report.
+
+![About box](../images/gui/about-box.png)
+
 
 [^skip-turn]: ? "When a bot is skipping a turn, it is unable to change its speed or turning rates, and will continue
 using the speed and turn rates from the last commands successfully sent to the server."
