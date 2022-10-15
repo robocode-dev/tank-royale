@@ -375,9 +375,6 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
                     addElement(botInfo)
                 }
             }
-            joinedBotsScrollPane.horizontalScrollBar.apply {
-                value = maximum
-            }
         }
         enqueue {
             // Remove selected bots, if the bots are not on the joined bots from the client
