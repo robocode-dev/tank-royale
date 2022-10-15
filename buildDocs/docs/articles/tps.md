@@ -43,4 +43,11 @@ $$TPS_{max} >= \frac{1,000,000}{30,000} = 33.33333$$
 The maximum turn rate, TPS<sub>max</sub> might be slightly higher due to the bots, all sending their intents before the
 timeout occurs.
 
+## Note about maximum turn rate
+
+Be careful when setting the maximum turn rate! Setting the turn rate below 1 ms (1000 µs) is currently causing issues on
+some systems, meaning that the bots might not behave the same way as usual and seem to skip turns etc.
+This can be caused by both hardware limitations and OS limitations.
+
+
 [FPS]: https://en.wikipedia.org/wiki/Frame_rate "Frame Rate and frames per second (FPS)"
