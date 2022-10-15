@@ -62,9 +62,9 @@ object AboutBox : RcDialog(MainWindow, "about_dialog") {
                     <br>
                     Version: $version<br>
                     <br>
-                    Copyright © 2022 Flemming N&oslash;rnberg Larsen<br>
+                    Running on <strong>Java $javaVersion ($javaWordSize)</strong> by $javaVendor<br>
                     <br>
-                    Running on <strong>Java $javaVersion ($javaWordSize)</strong> by $javaVendor
+                    Copyright © 2022 Flemming N&oslash;rnberg Larsen
                  </span></td>
             </tr>
         </table>
