@@ -6,7 +6,7 @@ import dev.robocode.tankroyale.gui.settings.GameType.*
 import javax.swing.JComboBox
 
 class GameTypeDropdown : JComboBox<String>(
-    listOf(CLASSIC, MELEE, ONE_VS_ONE, CUSTOM).map { it.displayName }.toTypedArray()) { // setup in specific order
+    listOf(CLASSIC, ONE_VS_ONE, MELEE, CUSTOM).map { it.displayName }.toTypedArray()) { // setup in specific order
 
     init {
         setSelectedGameType(ConfigSettings.gameType)
