@@ -9,6 +9,7 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 import java.nio.file.Path
 
 
@@ -24,10 +25,20 @@ fun createRelease(projectDir: File, version: String, token: String) {
         "application/java-archive", "GUI Application (jar)")
 
     // Server
+    Files.delete(Path.of("$projectDir/server/build/libs/robocode-tankroyale-server-$version.jar"))
+    Files.copy(
+        Path.of("$projectDir/server/build/libs/robocode-tankroyale-server-$version-proguard.jar"),
+        Path.of("$projectDir/server/build/libs/robocode-tankroyale-server-$version.jar")
+    )
     uploadAsset(projectDir, releaseId, token, "server/build/libs/robocode-tankroyale-server-$version.jar",
         "application/java-archive", "Server (jar)")
 
     // Booter
+    Files.delete(Path.of("$projectDir/booter/build/libs/robocode-tankroyale-booter-$version.jar"))
+    Files.copy(
+        Path.of("$projectDir/booter/build/libs/robocode-tankroyale-booter-$version-proguard.jar"),
+        Path.of("$projectDir/booter/build/libs/robocode-tankroyale-booter-$version.jar")
+    )
     uploadAsset(projectDir, releaseId, token, "booter/build/libs/robocode-tankroyale-booter-$version.jar",
         "application/java-archive", "Booter (jar)")
 
