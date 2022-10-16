@@ -32,11 +32,11 @@ fun createRelease(projectDir: File, version: String, token: String) {
         "application/java-archive", "Booter (jar)")
 
     // Sample Bots for C#
-    uploadAsset(projectDir, releaseId, token, "sample-bots/csharp/build/sample-bots-csharp-0.17.3.zip",
+    uploadAsset(projectDir, releaseId, token, "sample-bots/csharp/build/sample-bots-csharp-$version.zip",
         "application/zip", "Sample bots for C# (zip)")
 
     // Sample Bots for Java
-    uploadAsset(projectDir, releaseId, token, "sample-bots/java/build/sample-bots-java-0.17.3.zip",
+    uploadAsset(projectDir, releaseId, token, "sample-bots/java/build/sample-bots-java-$version.zip",
         "application/zip", "Sample bots for Java (zip)")
 }
 
