@@ -1,6 +1,7 @@
 -libraryjar <java.home>/jmods/java.base.jmod(!**.jar;!module-info.class)
 
 -dontoptimize
+-dontobfuscate
 
 -keepattributes AnnotationDefault,*Annotation*
 
