@@ -23,6 +23,7 @@ plugins {
     kotlin("plugin.serialization")
     alias(libs.plugins.shadow.jar)
     `maven-publish`
+    signing
 }
 
 dependencies {
@@ -38,6 +39,11 @@ dependencies {
 }
 
 tasks {
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
     jar {
         manifest {
             attributes["Main-Class"] = jarManifestMainClass
@@ -61,12 +67,18 @@ tasks {
         configuration("proguard-rules.pro")
     }
 
+    val javadocJar = named("javadocJar")
+    val sourcesJar = named("sourcesJar")
+
     publishing {
         publications {
             create<MavenPublication>("server") {
                 artifact(proguard.get().outJarFiles[0]) {
                     builtBy(proguard)
                 }
+                artifact(javadocJar)
+                artifact(sourcesJar)
+
                 groupId = group as String?
                 artifactId = artifactBaseName
                 version
@@ -98,4 +110,8 @@ tasks {
             }
         }
     }
+}
+
+signing {
+    sign(publishing.publications["server"])
 }

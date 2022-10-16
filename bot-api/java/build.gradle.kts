@@ -105,8 +105,8 @@ tasks {
         into(javadocDir)
     }
 
-    val  javadocJar = named("javadocJar")
-    val  sourcesJar = named("sourcesJar")
+    val javadocJar = named("javadocJar")
+    val sourcesJar = named("sourcesJar")
 
     publishing {
         publications {

@@ -22,6 +22,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     `maven-publish`
+    signing
 }
 
 dependencies {
@@ -71,6 +72,11 @@ tasks {
         configuration("proguard-rules.pro")
     }
 
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
     jar {
         enabled = false
         dependsOn(
@@ -81,42 +87,51 @@ tasks {
     withType<AbstractPublishToMaven>() {
         dependsOn(jar)
     }
-}
 
-publishing {
-    publications {
-        create<MavenPublication>("gui-app") {
-            artifact(archiveFileName)
+    val javadocJar = named("javadocJar")
+    val sourcesJar = named("sourcesJar")
 
-            groupId = group as String?
-            artifactId = archiveBaseName
-            version
+    publishing {
+        publications {
+            create<MavenPublication>("gui-app") {
+                artifact(archiveFileName)
+                artifact(javadocJar)
+                artifact(sourcesJar)
 
-            pom {
-                name.set(archiveTitle)
-                description.set(project.description)
-                url.set("https://github.com/robocode-dev/tank-royale")
+                groupId = group as String?
+                artifactId = archiveBaseName
+                version
 
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                pom {
+                    name.set(archiveTitle)
+                    description.set(project.description)
+                    url.set("https://github.com/robocode-dev/tank-royale")
+
+                    licenses {
+                        license {
+                            name.set("The Apache License, Version 2.0")
+                            url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                        }
                     }
-                }
-                developers {
-                    developer {
-                        id.set("fnl")
-                        name.set("Flemming Nørnberg Larsen")
-                        organization.set("flemming-n-larsen")
-                        organizationUrl.set("https://github.com/flemming-n-larsen")
+                    developers {
+                        developer {
+                            id.set("fnl")
+                            name.set("Flemming Nørnberg Larsen")
+                            organization.set("flemming-n-larsen")
+                            organizationUrl.set("https://github.com/flemming-n-larsen")
+                        }
                     }
-                }
-                scm {
-                    connection.set("scm:git:git://github.com/robocode-dev/tank-royale.git")
-                    developerConnection.set("scm:git:ssh://github.com:robocode-dev/tank-royale.git")
-                    url.set("https://github.com/robocode-dev/tank-royale/tree/master")
+                    scm {
+                        connection.set("scm:git:git://github.com/robocode-dev/tank-royale.git")
+                        developerConnection.set("scm:git:ssh://github.com:robocode-dev/tank-royale.git")
+                        url.set("https://github.com/robocode-dev/tank-royale/tree/master")
+                    }
                 }
             }
         }
     }
+}
+
+signing {
+    sign(publishing.publications["gui-app"])
 }
