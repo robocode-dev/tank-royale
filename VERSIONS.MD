@@ -1,6 +1,6 @@
 # Versions
 
-## 📦 0.17.4 - Maintenance - 15-Oct-2022
+## 📦 0.17.4 - Maintenance - 16-Oct-2022
 
 #### 🚀 Improvements
 
@@ -10,7 +10,7 @@
       in a row (like original Robocode).
 - GUI App:
     - Switched the order of the Game Type dropdown and Setup Rules button.
-    - The positioning of the battle view is now controlled by dragging the mouse, instead of clicking.  
+    - The positioning of the battle view is now controlled by dragging the mouse, instead of clicking.
     - Now sends the current tps to the server when changing game type.
     - Added `Help` menu item under the Help menu, which opens browser to the documentation of the GUI application.
 - Release
@@ -18,6 +18,8 @@
     - New assets are now added to releases: Server and Booter
     - Added build scripts to automated creating (draft) releases using GitHub REST API.
     - Improved layout for release notes.
+    - Optimized ProGuard rules for compressing the Booter and Server jar archives even more, making the jar archive for
+      the GUI smaller as well.
 
 #### 🪲 Bug Fixes
 
