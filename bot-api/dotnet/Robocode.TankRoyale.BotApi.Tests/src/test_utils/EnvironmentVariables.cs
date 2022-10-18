@@ -18,7 +18,7 @@ public static class EnvironmentVariables
 
     public static void SetAllEnvVarsToDefaultValues()
     {
-        SetEnvVar(ServerUrl, "ws://localhost:7654");
+        SetEnvVar(ServerUrl, "ws://localhost:" + MockedServer.Port);
         SetEnvVar(BotName, "MyBot");
         SetEnvVar(BotVersion, "1.0");
         SetEnvVar(BotAuthors, "Author1, Author2");

@@ -29,14 +29,14 @@ public class BaseBotConstructorTest
     }
 
     [Test]
-    public void GivenEmptyConstructor_WhenAllRequiredBotEnvVarsAreSet_TthenBotIsCreatedSuccessfully()
+    public void GivenAllRequiredEnvVarsSet_whenCallingDefaultConstructor_thenBotIsCreated()
     {
         new TestBot();
         // passed when this point is reached
     }
 
     [Test]
-    public void GivenEmptyConstructor_WhenServerUrlEnvVarIsMissing_ThenBotIsCreatedSuccessfully()
+    public void GivenMissingServerUrlEnvVar_whenCallingDefaultConstructor_thenBotIsCreated()
     {
         ClearEnvVar(ServerUrl);
         new TestBot();
@@ -44,7 +44,7 @@ public class BaseBotConstructorTest
     }
 
     [Test]
-    public void GivenEmptyConstructor_WhenBotNameEnvVarIsMissing_ThenBotExceptionIsThrown()
+    public void GivenMissingBotNameEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo()
     {
         ClearEnvVar(BotName);
         var botException = Assert.Throws<BotException>(() => new TestBot());
@@ -52,7 +52,7 @@ public class BaseBotConstructorTest
     }
 
     [Test]
-    public void GivenEmptyConstructor_WhenBotVersionEnvVarIsMissing_ThenBotExceptionIsThrown()
+    public void GivenMissingBotVersionEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo()
     {
         ClearEnvVar(BotVersion);
         var botException = Assert.Throws<BotException>(() => new TestBot());
@@ -60,7 +60,7 @@ public class BaseBotConstructorTest
     }
 
     [Test]
-    public void GivenEmptyConstructor_WhenBotAuthorEnvVarIsMissing_ThenBotExceptionIsThrown()
+    public void GivenMissingBotAuthorsEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo()
     {
         ClearEnvVar(BotAuthors);
         var botException = Assert.Throws<BotException>(() => new TestBot());
@@ -68,7 +68,7 @@ public class BaseBotConstructorTest
     }
 
     [Test]
-    public void GivenEmptyConstructor_WhenBotGameTypesEnvVarIsMissing_ThenBotExceptionIsThrown()
+    public void GivenMissingBotGameTypesEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo()
     {
         ClearEnvVar(BotGameTypes);
         var botException = Assert.Throws<BotException>(() => new TestBot());
@@ -76,14 +76,14 @@ public class BaseBotConstructorTest
     }
 
     [Test]
-    public void GivenEmptyConstructor_WhenAllRequiredBotEnvVarsAreSetAndStartingBot_ThenBotMustConnectToServer()
+    public void GivenAllRequiredEnvVarsSet_callingDefaultConstructorFromThread_thenBotIsCreatedAndConnectingToServer()
     {
         StartBotFromThread();
         Assert.That(_server.AwaitConnection(5_000), Is.True);
     }
 
     [Test]
-    public void GivenEmptyConstructor_WhenServerUrlEnvVarIsMissingAndStartingBot_ThenBotCannotConnect()
+    public void GivenMissingServerUrlEnvVar_callingDefaultConstructorFromThread_thenBotIsCreatedButNotConnectingToServer()
     {
         ClearEnvVar(ServerUrl);
 
@@ -91,7 +91,7 @@ public class BaseBotConstructorTest
     }
 
     [Test]
-    public void GivenEmptyConstructor_WhenAllRequiredBotEnvVarsAreSetAndStartingBot_ThenBotHandshakeMustBeCorrect()
+    public void GivenAllRequiredEnvVarsSet_callingDefaultConstructorFromThread_thenBotHandshakeMustBeCorrect()
     {
         ClearEnvVar(BotCountryCodes);
 
@@ -116,7 +116,7 @@ public class BaseBotConstructorTest
     }
 
     [Test]
-    public void GivenBotInfoConstructor_WhenBotInfoAndServerUrlAndServerSecretAreValid_ThenBotIsCreated()
+    public void GivenNoEnvVarsSet_callingDefaultConstructorWithBotInfoFromThread_thenBotHandshakeMustBeCorrect()
     {
         ClearAllEnvVars();
         new TestBot(CreateBotInfo());
@@ -124,7 +124,7 @@ public class BaseBotConstructorTest
     }
 
     [Test]
-    public void GivenServerUrlConstructor_WhenServerUrlIsValid_ThenBotMustConnectToServer()
+    public void GivenServerUrlWithValidPortAsParameter_whenCallingConstructor_thenBotIsConnectingToServer()
     {
         var bot = new TestBot(null, new Uri("ws://localhost:" + MockedServer.Port));
         StartBotFromThread(bot);
@@ -132,14 +132,14 @@ public class BaseBotConstructorTest
     }
 
     [Test]
-    public void GivenServerUrlConstructor_WhenServerUrlIsInvalidValid_ThenBotCannotConnectToServer()
+    public void GivenServerUrlWithInvalidPortAsParameter_whenCallingConstructor_thenBotIsNotConnectingToServer()
     {
         var bot = new TestBot(null, new Uri("ws://localhost:" + (MockedServer.Port + 1)));
         Assert.Throws<BotException>(() => bot.Start());
     }
 
     [Test]
-    public void GivenServerSecretConstructor_WhenServerSecretIsProvided_ThenReturnedBotHandshakeMustProvideThisSecret()
+    public void GivenServerSecretConstructor_whenCallingConstructor_thenReturnedBotHandshakeContainsSecret()
     {
         var secret = Guid.NewGuid().ToString();
         var bot = new TestBot(null, new Uri("ws://localhost:" + MockedServer.Port), secret);

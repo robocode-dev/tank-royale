@@ -22,13 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SetEnvironmentVariable(key = SERVER_URL, value = "ws://localhost:" + MockedServer.PORT)
 @SetEnvironmentVariable(key = BOT_NAME, value = "TestBot")
 @SetEnvironmentVariable(key = BOT_VERSION, value = "1.0")
-@SetEnvironmentVariable(key = BOT_AUTHORS, value = "Author1, Author2")
-@SetEnvironmentVariable(key = BOT_GAME_TYPES, value = "classic, melee")
+@SetEnvironmentVariable(key = BOT_AUTHORS, value = "Author 1, Author 2")
+@SetEnvironmentVariable(key = BOT_GAME_TYPES, value = "classic, 1v1, melee")
 @SetEnvironmentVariable(key = BOT_DESCRIPTION, value = "Short description")
 @SetEnvironmentVariable(key = BOT_HOMEPAGE, value = "https://somewhere.net/MyBot")
 @SetEnvironmentVariable(key = BOT_COUNTRY_CODES, value = "gb, US")
-@SetEnvironmentVariable(key = BOT_PLATFORM, value = "JVM 18")
-@SetEnvironmentVariable(key = BOT_PROG_LANG, value = "Java 18")
+@SetEnvironmentVariable(key = BOT_PLATFORM, value = "JVM 19")
+@SetEnvironmentVariable(key = BOT_PROG_LANG, value = "Java 19")
 class BaseBotConstructorTest {
 
     MockedServer server;
@@ -45,61 +45,61 @@ class BaseBotConstructorTest {
     }
 
     @Test
-    void givenEmptyConstructor_whenAllRequiredBotEnvVarsAreSet_thenBotIsCreated() {
+    void givenAllRequiredEnvVarsSet_whenCallingDefaultConstructor_thenBotIsCreated() {
         new TestBot();
         // passed when this point is reached
     }
 
     @Test
     @ClearEnvironmentVariable(key = SERVER_URL)
-    void givenEmptyConstructor_whenServerUrlEnvVarIsMissing_thenBotIsCreated() {
+    void givenMissingServerUrlEnvVar_whenCallingDefaultConstructor_thenBotIsCreated() {
         new TestBot();
         // passed when this point is reached
     }
 
     @Test
     @ClearEnvironmentVariable(key = BOT_NAME)
-    void givenEmptyConstructor_whenBotNameEnvVarIsMissing_thenBotExceptionIsThrown() {
+    void givenMissingBotNameEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo() {
         var botException = assertThrows(BotException.class, TestBot::new);
         assertThat(exceptionContainsEnvVarName(botException, BOT_NAME)).isTrue();
     }
 
     @Test
     @ClearEnvironmentVariable(key = BOT_VERSION)
-    void givenEmptyConstructor_whenBotVersionEnvVarIsMissing_thenBotExceptionIsThrown() {
+    void givenMissingBotVersionEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo() {
         var botException = assertThrows(BotException.class, TestBot::new);
         assertThat(exceptionContainsEnvVarName(botException, BOT_VERSION)).isTrue();
     }
 
     @Test
     @ClearEnvironmentVariable(key = BOT_AUTHORS)
-    void givenEmptyConstructor_whenBotAuthorEnvVarIsMissing_thenBotExceptionIsThrown() {
+    void givenMissingBotAuthorsEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo() {
         var botException = assertThrows(BotException.class, TestBot::new);
         assertThat(exceptionContainsEnvVarName(botException, BOT_AUTHORS)).isTrue();
     }
 
     @Test
     @ClearEnvironmentVariable(key = BOT_GAME_TYPES)
-    void givenEmptyConstructor_whenBotGameTypesEnvVarIsMissing_thenBotExceptionIsThrown() {
+    void givenMissingBotGameTypesEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo() {
         var botException = assertThrows(BotException.class, TestBot::new);
         assertThat(exceptionContainsEnvVarName(botException, BOT_GAME_TYPES)).isTrue();
     }
 
     @Test
-    void givenEmptyConstructor_whenAllRequiredBotEnvVarsAreSetAndStartingBot_thenBotMustConnectToServer() {
+    void givenAllRequiredEnvVarsSet_callingDefaultConstructorFromThread_thenBotIsCreatedAndConnectingToServer() {
         startBotFromThread();
         assertThat(server.awaitConnection(1000)).isTrue();
     }
 
     @Test
     @ClearEnvironmentVariable(key = SERVER_URL)
-    void givenEmptyConstructor_whenServerUrlEnvVarIsMissingAndStartingBot_thenBotCannotConnect() {
+    void givenMissingServerUrlEnvVar_callingDefaultConstructorFromThread_thenBotIsCreatedButNotConnectingToServer() {
         startBotFromThread();
         assertThat(server.awaitConnection(1000)).isFalse();
     }
 
     @Test
-    void givenEmptyConstructor_whenAllRequiredBotEnvVarsAreSetAndStartingBot_thenBotHandshakeMustBeCorrect() {
+    void givenAllRequiredEnvVarsSet_callingDefaultConstructorFromThread_thenBotHandshakeMustBeCorrect() {
         startBotFromThread();
         assertThat(server.awaitBotHandshake(1000)).isTrue();
 
@@ -130,28 +130,27 @@ class BaseBotConstructorTest {
     @ClearEnvironmentVariable(key = BOT_COUNTRY_CODES)
     @ClearEnvironmentVariable(key = BOT_PLATFORM)
     @ClearEnvironmentVariable(key = BOT_PROG_LANG)
-    void givenBotInfoConstructor_whenBotInfoAndServerUrlAndServerSecretAreValid_thenBotIsCreated() {
+    void givenNoEnvVarsSet_callingDefaultConstructorWithBotInfoFromThread_thenBotHandshakeMustBeCorrect() {
         new TestBot(createBotInfo());
         // passed when this point is reached
     }
 
-
     @Test
-    void givenServerUrlConstructor_whenServerUrlIsValid_thenBotMustConnectToServer() throws URISyntaxException {
-        var bot = new TestBot(null, new URI("ws://localhost:" + MockedServer.PORT));
+    void givenServerUrlWithValidPortAsParameter_whenCallingConstructor_thenBotIsConnectingToServer() throws URISyntaxException {
+        var bot = new TestBot(null, new URI("ws://localhost:" + MockedServer.PORT)); // valid port
         startBotFromThread(bot);
         assertThat(server.awaitBotHandshake(1000)).isTrue();
     }
 
     @Test
-    void givenServerUrlConstructor_whenServerUrlIsInvalidValid_thenBotCannotConnectToServer() throws URISyntaxException {
-        var bot = new TestBot(null, new URI("ws://localhost:" + (MockedServer.PORT + 1)));
+    void givenServerUrlWithInvalidPortAsParameter_whenCallingConstructor_thenBotIsNotConnectingToServer() throws URISyntaxException {
+        var bot = new TestBot(null, new URI("ws://localhost:" + (MockedServer.PORT + 1))); // invalid port
         startBotFromThread(bot);
         assertThat(server.awaitConnection(1000)).isFalse();
     }
 
     @Test
-    void givenServerSecretConstructor_whenServerSecretIsProvided_thenReturnedBotHandshakeMustProvideThisSecret() throws URISyntaxException {
+    void givenServerSecretConstructor_whenCallingConstructor_thenReturnedBotHandshakeContainsSecret() throws URISyntaxException {
         var secret = UUID.randomUUID().toString();
         var bot = new TestBot(null, new URI("ws://localhost:" + MockedServer.PORT), secret);
         startBotFromThread(bot);

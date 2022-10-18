@@ -62,12 +62,28 @@ public class MockedServer
 
     public bool AwaitConnection(int milliSeconds)
     {
-        return _openedEvent.WaitOne(milliSeconds);
+        try
+        {
+            return _openedEvent.WaitOne(milliSeconds);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine("AwaitConnection: Exception occurred: " + ex);
+        }
+        return false;
     }
 
     public bool AwaitBotHandshake(int milliSeconds)
     {
-        return _botHandshakeEvent.WaitOne(milliSeconds);
+        try
+        {
+            return _botHandshakeEvent.WaitOne(milliSeconds);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine("AwaitBotHandshake: Exception occurred: " + ex);
+        }
+        return false;
     }
     
     public BotHandshake GetBotHandshake() => _botHandshake;
