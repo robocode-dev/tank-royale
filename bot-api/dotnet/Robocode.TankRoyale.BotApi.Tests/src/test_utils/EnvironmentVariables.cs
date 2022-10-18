@@ -16,9 +16,9 @@ public static class EnvironmentVariables
     public const string BotProgrammingLang = "BOT_PROG_LANG";
     public const string BotInitialPosition = "BOT_INITIAL_POS";
 
-    public static void SetAllEnvVars()
+    public static void SetAllEnvVarsToDefaultValues()
     {
-        SetEnvVar(ServerUrl, "ws://localhost:" + MockedServer.Port);
+        SetEnvVar(ServerUrl, "ws://localhost:7654");
         SetEnvVar(BotName, "MyBot");
         SetEnvVar(BotVersion, "1.0");
         SetEnvVar(BotAuthors, "Author1, Author2");

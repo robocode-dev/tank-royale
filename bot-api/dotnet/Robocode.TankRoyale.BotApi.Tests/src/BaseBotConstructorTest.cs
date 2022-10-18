@@ -17,7 +17,7 @@ public class BaseBotConstructorTest
     [SetUp]
     public void SetUp()
     {
-        SetAllEnvVars();
+        SetAllEnvVarsToDefaultValues();
         _server = new MockedServer();
         _server.Start();
     }
