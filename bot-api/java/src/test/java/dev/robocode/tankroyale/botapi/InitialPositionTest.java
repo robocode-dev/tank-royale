@@ -14,7 +14,7 @@ class InitialPositionTest {
 
     @ParameterizedTest
     @MethodSource("fromStringProvider")
-    void fromString_fieldsMustMatchInputValues(String str, Double x, Double y, Double angle) {
+    void givenValidInputString_whenCallingFromString_thenReturnedPositionFieldsMustBeSame(String str, Double x, Double y, Double angle) {
         var pos = InitialPosition.fromString(str);
         assertThat(pos.getX()).isEqualTo(x);
         assertThat(pos.getY()).isEqualTo(y);
@@ -29,14 +29,14 @@ class InitialPositionTest {
             ",,,",
             ", ,"
     })
-    void fromString_shouldReturnNull(String str) {
+    void givenEmptyOrBlankInputString_whenCallingFromString_thenReturnNull(String str) {
         var pos = InitialPosition.fromString(str);
         assertThat(pos).isNull();
     }
 
     @ParameterizedTest
     @MethodSource("toStringProvider")
-    void toString_returnExpectedString(String input, String expected) {
+    void givenValidInputString_whenCallingToString_thenReturnedStringIsFormattedAndMatchesInputString(String input, String expected) {
         var pos = InitialPosition.fromString(input);
         if (pos == null) {
             assertThat(expected).isEmpty();
