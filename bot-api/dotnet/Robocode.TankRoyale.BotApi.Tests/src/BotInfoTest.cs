@@ -15,411 +15,469 @@ public class BotInfoTest
 {
     static readonly string Name = "  TestBot  ";
     static readonly string Version = "  1.0  ";
-    static readonly List<string> Authors = new List<string> { " Author1  ", " Author2 " };
-    static readonly string Description = "  description ";
+    static readonly List<string> Authors = new List<string> { " Author 1  ", " Author 2 " };
+    static readonly string Description = "  short description ";
     static readonly string Homepage = " https://testbot.robocode.dev ";
     static readonly List<string> CountryCodes = new List<string> { " gb ", "  US " };
     static readonly List<string> GameTypes = new List<string> { " classic ", " melee ", " 1v1 " };
     static readonly string Platform = " .Net 6 ";
-    static readonly string ProgrammingLang = " C# 10 ";
+    static readonly string ProgrammingLang = " C# 11 ";
     static readonly InitialPosition InitialPosition = InitialPosition.FromString("  10, 20, 30  ");
 
-    // -- Constructor: All parameters --
+    static readonly BotInfo BotInfo = CreateBotInfo();
 
-    [Test]
-    public void Constructor_OK_AllFieldSetToValidCommonValues()
+
+    [TestFixture]
+    public class NameTest : BotInfoTest
     {
-        var botInfo = CreateBotInfo();
-
-        Assert.That(botInfo.Name, Is.EqualTo(Name.Trim()));
-        Assert.That(botInfo.Version, Is.EqualTo(Version.Trim()));
-        Assert.That(botInfo.Authors, Is.EqualTo(Authors.ConvertAll(str => str.Trim())));
-        Assert.That(botInfo.Description, Is.EqualTo(Description.Trim()));
-        Assert.That(botInfo.Homepage, Is.EqualTo(Homepage.Trim()));
-        Assert.That(botInfo.CountryCodes.ToList().ConvertAll(str => str.ToUpper()),
-            Is.EqualTo(CountryCodes.ConvertAll(str => str.ToUpper()).ConvertAll(str => str.Trim())));
-        Assert.That(botInfo.GameTypes, Is.EqualTo(GameTypes.ConvertAll(str => str.Trim())));
-        Assert.That(botInfo.Platform, Is.EqualTo(Platform.Trim()));
-        Assert.That(botInfo.ProgrammingLang, Is.EqualTo(ProgrammingLang.Trim()));
-        Assert.That(botInfo.InitialPosition, Is.EqualTo(InitialPosition));
-    }
-
-    // -- Constructor: Name --
-
-    [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase("  ")]
-    [TestCase("\t ")]
-    [TestCase("\n")]
-    public void Constructor_Throws_NameIsNullEmptyOrBlank(string name)
-    {
-        var builder = PrefilledBuilder().SetName(name);
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower(), Is.EqualTo("name cannot be null, empty or blank"));
-    }
-
-    [Test]
-    public void Constructor_OK_NameIsMaxLength()
-    {
-        var name = StringOfLength(MaxNameLength);
-        var botInfo = PrefilledBuilder().SetName(name).Build();
-        Assert.That(botInfo.Name, Is.EqualTo(name));
-    }
-
-    [Test]
-    public void Constructor_Throws_NameLengthIsTooLong() {
-        var builder = PrefilledBuilder().SetName(StringOfLength(MaxNameLength + 1));
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower().Contains("name length exceeds"), Is.True);
-    }
-    
-    // -- Constructor: Version --
-
-    [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase("  ")]
-    [TestCase("\t ")]
-    [TestCase("\n")]
-    public void Constructor_Throws_VersionIsNullEmptyOrBlank(string version)
-    {
-        var builder = PrefilledBuilder().SetVersion(version);
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower(), Is.EqualTo("version cannot be null, empty or blank"));
-    }
-    
-    [Test]
-    public void Constructor_OK_VersionIsMaxLength()
-    {
-        var version = StringOfLength(MaxVersionLength);
-        var botInfo = PrefilledBuilder().SetVersion(version).Build();
-        Assert.That(botInfo.Version, Is.EqualTo(version));
-    }
-    
-    [Test]
-    public void Constructor_Throws_VersionLengthIsTooLong() {
-        var builder = PrefilledBuilder().SetVersion(StringOfLength(MaxVersionLength + 1));
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower().Contains("version length exceeds"), Is.True);
-    }
-
-    // -- Constructor: Authors --
-
-    [Test]
-    [TestCaseSource(nameof(ListOfEmptyOrBlanks))]
-    public void Constructor_Throws_AuthorsAreInvalid(List<string> authors)
-    {
-        var builder = PrefilledBuilder().SetAuthors(authors);
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower(), Is.EqualTo("authors cannot be null or empty or contain blanks"));
-    }
-
-    [Test]
-    public void Constructor_OK_AuthorIsMaxLength()
-    {
-        var author = StringOfLength(MaxAuthorLength);
-        var botInfo = PrefilledBuilder().SetAuthors(new List<string> { author }).Build();
-        Assert.That(botInfo.Authors[0], Is.EqualTo(author));
-    }
-    
-    [Test]
-    public void Constructor_Throws_AuthorLengthIsTooLong() {
-        var builder = PrefilledBuilder().AddAuthor(StringOfLength(MaxAuthorLength + 1));
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower().Contains("author length exceeds"), Is.True);
-    }
-    
-    [Test]
-    public void Constructor_OK_MaxNumberOfAuthors() {
-        var builder = PrefilledBuilder().SetAuthors(null);
-        for (var i = 0; i < MaxNumberOfAuthors; i++) {
-            builder.AddAuthor(Authors[0]);
+        [Test]
+        public void GivenPrefilledBotInfoWithNameSet_whenGettingNameFromBotInfo_thenTrimmedNameIsReturned() {
+            Assert.That(BotInfo.Name, Is.EqualTo(Name.Trim()));
         }
-        Assert.That(builder.Build().Authors.Count, Is.EqualTo(MaxNumberOfAuthors));
-    }
-
-    [Test]
-    public void Constructor_Throw_MoreThanMaxNumberOfAuthor()
-    {
-        var builder = PrefilledBuilder().SetAuthors(null);
-        for (var i = 0; i < MaxNumberOfAuthors + 1; i++) {
-            builder.AddAuthor(Authors[0]);
+        
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("  ")]
+        [TestCase("\t ")]
+        [TestCase("\n")]
+        public void GivenNameIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo(string name)
+        {
+            var builder = PrefilledBuilder().SetName(name);
+            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.That(exception?.Message.ToLower(), Is.EqualTo("name cannot be null, empty or blank"));
         }
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower().Contains("number of authors exceeds the maximum"), Is.True);
-    }
 
-    // -- Constructor: Description --
-
-    [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase("  ")]
-    [TestCase("\t ")]
-    [TestCase("\n")]
-    public void Constructor_DescriptionIsNull_DescriptionIsNullOrEmptyOrBlank(string description)
-    {
-        var builder = PrefilledBuilder().SetDescription(description);
-        var botInfo = builder.Build();
-        Assert.That(botInfo.Description, Is.Null);
-    }
-
-    [Test]
-    public void Constructor_OK_DescriptionIsMaxLength()
-    {
-        var description = StringOfLength(MaxDescriptionLength);
-        var botInfo = PrefilledBuilder().SetDescription(description).Build();
-        Assert.That(botInfo.Description, Is.EqualTo(description));
-    }
-    
-    [Test]
-    public void Constructor_Throws_DescriptionLengthIsTooLong() {
-        var builder = PrefilledBuilder().SetDescription(StringOfLength(MaxDescriptionLength + 1));
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower().Contains("description length exceeds"), Is.True);
-    }
-    
-    // -- Constructor: Homepage --
-
-    [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase("  ")]
-    [TestCase("\t ")]
-    [TestCase("\n")]
-    public void Constructor_HomePageIsNull_HomepageIsNullOrEmptyOrBlank(string homepage)
-    {
-        var builder = PrefilledBuilder().SetHomepage(homepage);
-        var botInfo = builder.Build();
-        Assert.That(botInfo.Homepage, Is.Null);
-    }
-
-    [Test]
-    public void Constructor_OK_HomepageIsMaxLength()
-    {
-        var homepage = StringOfLength(MaxHomepageLength);
-        var botInfo = PrefilledBuilder().SetHomepage(homepage).Build();
-        Assert.That(botInfo.Homepage, Is.EqualTo(homepage));
-    }
-    
-    [Test]
-    public void Constructor_Throws_HomepageLengthIsTooLong() {
-        var builder = PrefilledBuilder().SetHomepage(StringOfLength(MaxHomepageLength + 1));
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower().Contains("homepage length exceeds"), Is.True);
-    }
-    
-    // -- Constructor: Country codes --
-    
-    [Test]
-    [TestCaseSource(nameof(ListOfEmptyOrBlanks))]
-    public void Constructor_WhenCountryCodesAreInvalid_ThenLocalCountryCodeIsUsed(List<string> countryCodes)
-    {
-        var builder = PrefilledBuilder().SetCountryCodes(countryCodes);
-        var botInfo = builder.Build();
-        Assert.That(botInfo.CountryCodes, Is.EqualTo(new List<string> { GetLocalCountryCode() }));
-    }
-
-    [Test]
-    public void Constructor_OK_CountryCodeIsValid()
-    {
-        var botInfo = PrefilledBuilder().SetCountryCodes(new List<string> { "dk" }).Build();
-        Assert.That(botInfo.CountryCodes[0].ToLower(), Is.EqualTo("dk"));
-    }
-
-    [Test]
-    [TestCase("d")]
-    [TestCase("dnk")]
-    [TestCase("xx")]
-    public void Constructor_DefaultCountryCode_CountryCodeIsInvalid(string countryCode)
-    {
-        var botInfo = PrefilledBuilder().SetCountryCodes(null).AddCountryCode(countryCode).Build();
-        Assert.That(botInfo.CountryCodes[0].ToLower(), Is.EqualTo(GetLocalCountryCode().ToLower()));
-    }
-    
-    [Test]
-    public void constructor_OK_MaxNumberOfCountryCodes() {
-        var builder = PrefilledBuilder().SetCountryCodes(null);
-        for (var i = 0; i < MaxNumberOfCountryCodes; i++) {
-            builder.AddCountryCode(CountryCodes[0]);
+        [Test]
+        public void GivenNameOfMaxLength_whenConstructingBotInfo_thenReturnTheSameName()
+        {
+            var name = StringOfLength(MaxNameLength);
+            var botInfo = PrefilledBuilder().SetName(name).Build();
+            Assert.That(botInfo.Name, Is.EqualTo(name));
         }
-        Assert.That(builder.Build().CountryCodes.Count, Is.EqualTo(MaxNumberOfCountryCodes));
-    }
 
-    [Test]
-    public void constructor_Throw_MoreThanMaxNumberOfCountryCodes()
-    {
-        var builder = PrefilledBuilder().SetCountryCodes(null);
-        for (var i = 0; i < MaxNumberOfCountryCodes + 1; i++) {
-            builder.AddCountryCode(CountryCodes[0]);
+        [Test]
+        public void GivenNameOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
+            var builder = PrefilledBuilder().SetName(StringOfLength(MaxNameLength + 1));
+            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.That(exception?.Message.ToLower().Contains("name length exceeds"), Is.True);
         }
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower().Contains("number of country codes exceeds the maximum"), Is.True);
-    }
-    
-    // -- Constructor: Game types --
-    
-    [Test]
-    [TestCaseSource(nameof(ListOfEmptyOrBlanks))]
-    public void Constructor_Throws_GameTypesContainsEmptyOrBlanks(List<string> gameTypes)
-    {
-        var botInfo = PrefilledBuilder().SetGameTypes(gameTypes).Build();
-        Assert.That(botInfo.GameTypes.Count, Is.Zero);
     }
 
-    [Test]
-    public void Constructor_OK_GameTypeIsMaxLength()
+    [TestFixture]
+    private class VersionTest : BotInfoTest
     {
-        var gameType = StringOfLength(MaxGameTypeLength);
-        var botInfo = PrefilledBuilder().SetGameTypes(new List<string> { gameType }).Build();
-        Assert.That(botInfo.GameTypes.Contains(gameType), Is.True);
-    }
-    
-    [Test]
-    public void Constructor_Throws_GameTypeLengthIsTooLong() {
-        var builder = PrefilledBuilder().AddGameType(StringOfLength(MaxGameTypeLength + 1));
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower().Contains("game type length exceeds"), Is.True);
-    }
-    
-    [Test]
-    public void Constructor_OK_MaxNumberOfGameTypes() {
-        var builder = PrefilledBuilder().SetCountryCodes(null);
-        for (var i = 0; i < MaxNumberOfCountryCodes; i++) {
-            builder.AddCountryCode(CountryCodes[0]);
+        [Test]
+        public void GivenPrefilledBotInfoWithVersionSet_whenGettingVersionFromBotInfo_thenTrimmedVersionIsReturned() {
+            Assert.That(BotInfo.Version, Is.EqualTo(Version.Trim()));
         }
-        Assert.That(builder.Build().CountryCodes.Count, Is.EqualTo(MaxNumberOfCountryCodes));
-    }
-
-    [Test]
-    public void Constructor_Throw_MoreThanMaxNumberOfGameTypes()
-    {
-        var builder = PrefilledBuilder().SetCountryCodes(null);
-        for (var i = 0; i < MaxNumberOfCountryCodes + 1; i++) {
-            builder.AddCountryCode(CountryCodes[0]);
+        
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("  ")]
+        [TestCase("\t ")]
+        [TestCase("\n")]
+        public void GivenVersionIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo(string version)
+        {
+            var builder = PrefilledBuilder().SetVersion(version);
+            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.That(exception?.Message.ToLower(), Is.EqualTo("version cannot be null, empty or blank"));
         }
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower().Contains("number of country codes exceeds the maximum"), Is.True);
-    }
-
-    // -- Constructor: Platform --
     
-    [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase("  ")]
-    [TestCase("\t ")]
-    [TestCase("\n")]
-    public void Constructor_DefaultPlatform_PlatformIsNullOrEmptyOrBlank(string platform)
+        [Test]
+        public void GivenVersionOfMaxLength_whenConstructingBotInfo_thenReturnTheSameVersion()
+        {
+            var version = StringOfLength(MaxVersionLength);
+            var botInfo = PrefilledBuilder().SetVersion(version).Build();
+            Assert.That(botInfo.Version, Is.EqualTo(version));
+        }
+    
+        [Test]
+        public void GivenVersionOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
+            var builder = PrefilledBuilder().SetVersion(StringOfLength(MaxVersionLength + 1));
+            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.That(exception?.Message.ToLower().Contains("version length exceeds"), Is.True);
+        }
+    }
+
+    [TestFixture]
+    private class AuthorsTest : BotInfoTest
     {
-        var botInfo = PrefilledBuilder().SetPlatform(platform).Build();
-        Assert.That(botInfo.Platform, Is.EqualTo(PlatformUtil.GetPlatformName()));
+        [Test]
+        public void GivenPrefilledBotInfoWithAuthorsSet_whenGettingAuthorsFromBotInfo_thenTrimmedAuthorsCollectionIsReturned() {
+            Assert.That(BotInfo.Authors, Is.EqualTo(Authors.ConvertAll(str => str.Trim())));
+        }
+        
+        [Test]
+        [TestCaseSource(nameof(ListOfEmptyOrBlanks))]
+        public void GivenEmptyOrBlankAuthors_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo(List<string> authors)
+        {
+            var builder = PrefilledBuilder().SetAuthors(authors);
+            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.That(exception?.Message.ToLower(), Is.EqualTo("authors cannot be null or empty or contain blanks"));
+        }
+
+        [Test]
+        public void GivenSingleAuthorOfMaxLength_whenConstructingBotInfo_thenReturnTheSameAuthor()
+        {
+            var author = StringOfLength(MaxAuthorLength);
+            var botInfo = PrefilledBuilder().SetAuthors(new List<string> { author }).Build();
+            Assert.That(botInfo.Authors[0], Is.EqualTo(author));
+        }
+    
+        [Test]
+        public void GivenSingleAuthorOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
+            var builder = PrefilledBuilder().AddAuthor(StringOfLength(MaxAuthorLength + 1));
+            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.That(exception?.Message.ToLower().Contains("author length exceeds"), Is.True);
+        }
+    
+        [Test]
+        public void GivenMaxNumberOfAuthors_whenConstructingBotInfo_thenReturnAuthorsWithTheSameMaxCount() {
+            var builder = PrefilledBuilder().SetAuthors(null);
+            for (var i = 0; i < MaxNumberOfAuthors; i++) {
+                builder.AddAuthor(Authors[0]);
+            }
+            Assert.That(builder.Build().Authors.Count, Is.EqualTo(MaxNumberOfAuthors));
+        }
+
+        [Test]
+        public void GivenOneMoreThanMaxNumberOfAuthors_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo()
+        {
+            var builder = PrefilledBuilder().SetAuthors(null);
+            for (var i = 0; i < MaxNumberOfAuthors + 1; i++) {
+                builder.AddAuthor(Authors[0]);
+            }
+            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.That(exception?.Message.ToLower().Contains("number of authors exceeds the maximum"), Is.True);
+        }
     }
 
-    [Test]
-    public void Constructor_OK_PlatformIsMaxLength() {
-        var platform = StringOfLength(MaxPlatformLength);
-        var botInfo = PrefilledBuilder().SetPlatform(platform).Build();
-        Assert.That(botInfo.Platform, Is.EqualTo(platform));
+    [TestFixture]
+    private class DescriptionTest : BotInfoTest
+    {
+        [Test]
+        public void GivenPrefilledBotInfoWithDescriptionSet_whenGettingDescriptionFromBotInfo_thenTrimmedDescriptionIsReturned() {
+            Assert.That(BotInfo.Description, Is.EqualTo(Description.Trim()));
+        }
+        
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("  ")]
+        [TestCase("\t ")]
+        [TestCase("\n")]
+        public void GivenDescriptionIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo(string description)
+        {
+            var builder = PrefilledBuilder().SetDescription(description);
+            var botInfo = builder.Build();
+            Assert.That(botInfo.Description, Is.Null);
+        }
+
+        [Test]
+        public void GivenDescriptionOfMaxLength_whenConstructingBotInfo_thenReturnTheSameVersion()
+        {
+            var description = StringOfLength(MaxDescriptionLength);
+            var botInfo = PrefilledBuilder().SetDescription(description).Build();
+            Assert.That(botInfo.Description, Is.EqualTo(description));
+        }
+    
+        [Test]
+        public void GivenDescriptionOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
+            var builder = PrefilledBuilder().SetDescription(StringOfLength(MaxDescriptionLength + 1));
+            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.That(exception?.Message.ToLower().Contains("description length exceeds"), Is.True);
+        }
     }
 
-    [Test]
-    public void Constructor_Throws_PlatformLengthIsTooLong() {
-        var builder = PrefilledBuilder().SetPlatform(StringOfLength(MaxPlatformLength + 1));
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower().Contains("platform length exceeds"), Is.True);
+    [TestFixture]
+    private class HomepageTest : BotInfoTest
+    {
+        [Test]
+        public void GivenPrefilledBotInfoWithHomepageSet_whenGettingHomepageFromBotInfo_thenTrimmedHomepageIsReturned() {
+            Assert.That(BotInfo.Homepage, Is.EqualTo(Homepage.Trim()));
+        }
+        
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("  ")]
+        [TestCase("\t ")]
+        [TestCase("\n")]
+        public void GivenHomepageIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo(string homepage)
+        {
+            var builder = PrefilledBuilder().SetHomepage(homepage);
+            var botInfo = builder.Build();
+            Assert.That(botInfo.Homepage, Is.Null);
+        }
+
+        [Test]
+        public void GivenHomepageOfMaxLength_whenConstructingBotInfo_thenReturnTheSameHomepage()
+        {
+            var homepage = StringOfLength(MaxHomepageLength);
+            var botInfo = PrefilledBuilder().SetHomepage(homepage).Build();
+            Assert.That(botInfo.Homepage, Is.EqualTo(homepage));
+        }
+    
+        [Test]
+        public void GivenHomepageOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
+            var builder = PrefilledBuilder().SetHomepage(StringOfLength(MaxHomepageLength + 1));
+            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.That(exception?.Message.ToLower().Contains("homepage length exceeds"), Is.True);
+        }
+    }
+
+    [TestFixture]
+    private class CountryCodesTest : BotInfoTest
+    {
+        [Test]
+        public void GivenPrefilledBotInfoWithCountryCodesSet_whenGettingCountryCodesFromBotInfo_thenTrimmedContryCodesCollectionIsReturned() {
+            Assert.That(BotInfo.CountryCodes.ToList().ConvertAll(str => str.ToUpper()),
+                Is.EqualTo(CountryCodes.ConvertAll(str => str.ToUpper()).ConvertAll(str => str.Trim())));
+        }
+        
+        [Test]
+        [TestCaseSource(nameof(ListOfEmptyOrBlanks))]
+        public void GivenEmptyOrBlankCountryCodes_whenConstructingBotInfo_thenListOfDefaultLocalCountryCodeReturned(List<string> countryCodes)
+        {
+            var builder = PrefilledBuilder().SetCountryCodes(countryCodes);
+            var botInfo = builder.Build();
+            Assert.That(botInfo.CountryCodes, Is.EqualTo(new List<string> { GetLocalCountryCode() }));
+        }
+
+        [Test]
+        public void GivenListOfValidCountryCodes_whenCallingSetCountryCodes_thenReturnListOfSameCountryCodes()
+        {
+            var botInfo = PrefilledBuilder().SetCountryCodes(new List<string> { "dk" }).Build();
+            Assert.That(botInfo.CountryCodes[0], Is.EqualTo("DK"));
+        }
+
+        [Test]
+        [TestCase("d")]
+        [TestCase("dnk")]
+        [TestCase("xx")]
+        public void GivenListOfInvalidCountryCodes_whenCallingSetCountryCodes_thenListOfDefaultLocalCountryCodeReturned(string countryCode)
+        {
+            var botInfo = PrefilledBuilder().SetCountryCodes(null).AddCountryCode(countryCode).Build();
+            Assert.That(botInfo.CountryCodes[0].ToLower(), Is.EqualTo(GetLocalCountryCode().ToLower()));
+        }
+    
+        [Test]
+        public void GivenMaxNumberOfCountryCodes_whenConstructingBotInfo_thenReturnCountryCodesWithTheSameMaxCount() {
+            var builder = PrefilledBuilder().SetCountryCodes(null);
+            for (var i = 0; i < MaxNumberOfCountryCodes; i++) {
+                builder.AddCountryCode(CountryCodes[0]);
+            }
+            Assert.That(builder.Build().CountryCodes.Count, Is.EqualTo(MaxNumberOfCountryCodes));
+        }
+
+        [Test]
+        public void GivenOneMoreThanMaxNumberOfCountryCodes_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo()
+        {
+            var builder = PrefilledBuilder().SetCountryCodes(null);
+            for (var i = 0; i < MaxNumberOfCountryCodes + 1; i++) {
+                builder.AddCountryCode(CountryCodes[0]);
+            }
+            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.That(exception?.Message.ToLower().Contains("number of country codes exceeds the maximum"), Is.True);
+        }
+    }
+
+    [TestFixture]
+    private class GameTypesTest : BotInfoTest
+    {
+        [Test]
+        public void GivenPrefilledBotInfoWithGameTypesSet_whenGettingGameTypesFromBotInfo_thenTrimmedGameTypesCollectionIsReturned() {
+            Assert.That(BotInfo.GameTypes, Is.EqualTo(GameTypes.ConvertAll(str => str.Trim())));
+        }
+        
+        [Test]
+        [TestCaseSource(nameof(ListOfEmptyOrBlanks))]
+        public void GivenEmptyOrBlankGameTypes_whenConstructingBotInfo_thenEmptyListIsReturned(List<string> gameTypes)
+        {
+            var botInfo = PrefilledBuilder().SetGameTypes(gameTypes).Build();
+            Assert.That(botInfo.GameTypes.Count, Is.Zero);
+        }
+
+        [Test]
+        public void GivenGameTypeOfMaxLength_whenConstructingBotInfo_thenReturnTheSameGameType()
+        {
+            var gameType = StringOfLength(MaxGameTypeLength);
+            var botInfo = PrefilledBuilder().SetGameTypes(new List<string> { gameType }).Build();
+            Assert.That(botInfo.GameTypes.Contains(gameType), Is.True);
+        }
+    
+        [Test]
+        public void GivenGameTypeOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
+            var builder = PrefilledBuilder().AddGameType(StringOfLength(MaxGameTypeLength + 1));
+            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.That(exception?.Message.ToLower().Contains("game type length exceeds"), Is.True);
+        }
+    
+        [Test]
+        public void GivenMaxNumberOfGameTypes_whenConstructingBotInfo_thenReturnCountryCodesWithTheSameMaxCount() {
+            var builder = PrefilledBuilder().SetCountryCodes(null);
+            for (var i = 0; i < MaxNumberOfCountryCodes; i++) {
+                builder.AddCountryCode(CountryCodes[0]);
+            }
+            Assert.That(builder.Build().CountryCodes.Count, Is.EqualTo(MaxNumberOfCountryCodes));
+        }
+
+        [Test]
+        public void GivenOneMoreThanMaxNumberOfGameTypes_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo()
+        {
+            var builder = PrefilledBuilder().SetCountryCodes(null);
+            for (var i = 0; i < MaxNumberOfCountryCodes + 1; i++) {
+                builder.AddCountryCode(CountryCodes[0]);
+            }
+            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.That(exception?.Message.ToLower().Contains("number of country codes exceeds the maximum"), Is.True);
+        }
+    }
+
+    [TestFixture]
+    private class PlatformTest : BotInfoTest
+    {
+        [Test]
+        public void GivenPrefilledBotInfoWithPlatformSet_whenGettingPlatformFromBotInfo_thenTrimmedPlatformIsReturned() {
+            Assert.That(BotInfo.Platform, Is.EqualTo(Platform.Trim()));
+        }
+        
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("  ")]
+        [TestCase("\t ")]
+        [TestCase("\n")]
+        public void GivenPlatformIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenReturnStringWithJreAndVersion(string platform)
+        {
+            var botInfo = PrefilledBuilder().SetPlatform(platform).Build();
+            Assert.That(botInfo.Platform, Is.EqualTo(PlatformUtil.GetPlatformName()));
+        }
+
+        [Test]
+        public void GivenPlatformOfMaxLength_whenConstructingBotInfo_thenReturnTheSamePlatform() {
+            var platform = StringOfLength(MaxPlatformLength);
+            var botInfo = PrefilledBuilder().SetPlatform(platform).Build();
+            Assert.That(botInfo.Platform, Is.EqualTo(platform));
+        }
+
+        [Test]
+        public void GivenPlatformOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
+            var builder = PrefilledBuilder().SetPlatform(StringOfLength(MaxPlatformLength + 1));
+            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.That(exception?.Message.ToLower().Contains("platform length exceeds"), Is.True);
+        }
     }
     
-    // -- Constructor: Programming language --
-    
-    [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase("  ")]
-    [TestCase("\t ")]
-    [TestCase("\n")]
-    public void Constructor_ProgrammingLangIsNull_ProgrammingLangIsNullOrEmptyOrBlank(string platform)
+    [TestFixture]
+    private class ProgrammingLangTest : BotInfoTest
     {
-        var builder = PrefilledBuilder().SetProgrammingLang(platform);
-        var botInfo = builder.Build();
-        Assert.That(botInfo.ProgrammingLang, Is.Null);
+        [Test]
+        public void GivenPrefilledBotInfoWithProgrammingLangSet_whenGettingProgrammingLangFromBotInfo_thenTrimmedProgrammingLangIsReturned() {
+            Assert.That(BotInfo.ProgrammingLang, Is.EqualTo(ProgrammingLang.Trim()));
+        }
+        
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("  ")]
+        [TestCase("\t ")]
+        [TestCase("\n")]
+        public void GivenProgrammingLangIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenReturnNull(string platform)
+        {
+            var builder = PrefilledBuilder().SetProgrammingLang(platform);
+            var botInfo = builder.Build();
+            Assert.That(botInfo.ProgrammingLang, Is.Null);
+        }
+
+        [Test]
+        public void GivenProgrammingLangOfMaxLength_whenConstructingBotInfo_thenReturnTheSameProgrammingLang() {
+            var programmingLang = StringOfLength(MaxProgrammingLangLength);
+            var botInfo = PrefilledBuilder().SetProgrammingLang(programmingLang).Build();
+            Assert.That(botInfo.ProgrammingLang, Is.EqualTo(programmingLang));
+        }
+
+        [Test]
+        public void GivenProgrammingLangOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
+            var builder = PrefilledBuilder().SetProgrammingLang(StringOfLength(MaxProgrammingLangLength + 1));
+            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.That(exception?.Message.ToLower().Contains("programminglang length exceeds"), Is.True);
+        }
     }
 
-    [Test]
-    public void Constructor_OK_ProgrammingLangIsMaxLength() {
-        var programmingLang = StringOfLength(MaxProgrammingLangLength);
-        var botInfo = PrefilledBuilder().SetProgrammingLang(programmingLang).Build();
-        Assert.That(botInfo.ProgrammingLang, Is.EqualTo(programmingLang));
-    }
-
-    [Test]
-    public void Constructor_Throws_ProgrammingLangIsTooLong() {
-        var builder = PrefilledBuilder().SetProgrammingLang(StringOfLength(MaxProgrammingLangLength + 1));
-        var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-        Assert.That(exception?.Message.ToLower().Contains("programminglang length exceeds"), Is.True);
-    }
-    
-    // -- Constructor: Initial position --
-    
-    [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase("  ")]
-    [TestCase("\t ")]
-    [TestCase("\n")]
-    public void constructor_InitialPositionIsNull_InitialPositionIsNullOrEmptyOrBlank(string initialPosition)
+    [TestFixture]
+    private class InitialPositionTest : BotInfoTest
     {
-        var builder = PrefilledBuilder().SetInitialPosition(InitialPosition.FromString(initialPosition));
-        var botInfo = builder.Build();
-        Assert.That(botInfo.InitialPosition, Is.Null);
+        [Test]
+        public void GivenPrefilledBotInfoWithProgrammingLangSet_whenGettingProgrammingLangFromBotInfo_thenTrimmedProgrammingLangIsReturned() {
+            Assert.That(BotInfo.InitialPosition, Is.EqualTo(InitialPosition));
+        }
+        
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("  ")]
+        [TestCase("\t ")]
+        [TestCase("\n")]
+        public void GivenInitialPositionIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenReturnNull(string initialPosition)
+        {
+            var builder = PrefilledBuilder().SetInitialPosition(InitialPosition.FromString(initialPosition));
+            var botInfo = builder.Build();
+            Assert.That(botInfo.InitialPosition, Is.Null);
+        }
     }
 
-    // -- FromFile(filename) --
-
-    [Test]
-    public void FromFile_OK_ValidFilePath()
+    [TestFixture]
+    private class FromFileTest : BotInfoTest
     {
-        var filePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "../../../resources/TestBot.json");
-        var botInfo = FromFile(filePath);
-        Assert.That(botInfo.Name, Is.EqualTo("TestBot"));
-        Assert.That(botInfo.Version, Is.EqualTo("1.0"));
+        [Test]
+        public void GivenValidFilePath_whenCallingFromFile_thenBotInfoIsRead()
+        {
+            var filePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "../../../resources/TestBot.json");
+            var botInfo = FromFile(filePath);
+            Assert.That(botInfo.Name, Is.EqualTo("TestBot"));
+            Assert.That(botInfo.Version, Is.EqualTo("1.0"));
+        }
+
+        [Test]
+        public void GivenValidFileAndBasePath_whenCallingFromFile_thenBotInfoIsRead()
+        {
+            var basePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "../../../resources");
+            var botInfo = FromFile("TestBot.json", basePath);
+            Assert.That(botInfo.Name, Is.EqualTo("TestBot"));
+            Assert.That(botInfo.Version, Is.EqualTo("1.0"));
+        }
+
+        [Test]
+        public void GivenNonExistingFileName_whenCallingFromFile_thenThrowFileBotFoundException()
+        {
+            const string filename = "non-existing-filename";
+            Assert.Throws<FileNotFoundException>(() => FromFile(filename));
+        }
     }
 
-    [Test]
-    public void FromFile_OK_ValidFileAndBasePath()
+    [TestFixture]
+    private class FromConfigurationTest : BotInfoTest
     {
-        var basePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "../../../resources");
-        var botInfo = FromFile("TestBot.json", basePath);
-        Assert.That(botInfo.Name, Is.EqualTo("TestBot"));
-        Assert.That(botInfo.Version, Is.EqualTo("1.0"));
-    }
+        [Test]
+        public void GivenValidFilePath_whenCallingConfigurationBuilder_thenBotInfoIsRead()
+        {
+            var configBuilder = new ConfigurationBuilder()
+                .SetBasePath(Path.Combine(TestContext.CurrentContext.WorkDirectory, "../../../resources"))
+                .AddJsonFile("TestBot.json");
 
-    [Test]
-    public void FromFile_Throw_NonExistingFile()
-    {
-        const string filename = "non-existing-filename";
-        Assert.Throws<FileNotFoundException>(() => FromFile(filename));
-    }
-    
-    // -- FromConfiguration(filename) --
+            var botInfo = FromConfiguration(configBuilder.Build());
+            Assert.That(botInfo.Name, Is.EqualTo("TestBot"));
+            Assert.That(botInfo.Version, Is.EqualTo("1.0"));
+        }
 
-    [Test]
-    public void FromConfiguration_OK_ValidFilePath()
-    {
-        var configBuilder = new ConfigurationBuilder()
-            .SetBasePath(Path.Combine(TestContext.CurrentContext.WorkDirectory, "../../../resources"))
-            .AddJsonFile("TestBot.json");
-
-        var botInfo = FromConfiguration(configBuilder.Build());
-        Assert.That(botInfo.Name, Is.EqualTo("TestBot"));
-        Assert.That(botInfo.Version, Is.EqualTo("1.0"));
-    }
-
-    [Test]
-    public void FromConfiguration_Throw_InvalidConfiguration()
-    {
-        Assert.That(() => FromConfiguration(new ConfigurationBuilder().Build()), Throws.Exception);
+        [Test]
+        public void GivenEmptyConfiguration_whenCallingConfigurationBuilder_thenThrowException()
+        {
+            Assert.That(() => FromConfiguration(new ConfigurationBuilder().Build()), Throws.Exception);
+        }
     }
 
 
