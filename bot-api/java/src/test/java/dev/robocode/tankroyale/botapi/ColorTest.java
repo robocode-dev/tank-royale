@@ -19,7 +19,7 @@ class ColorTest {
                 "0xFF, 0xFF, 0xFF",
                 "0x13, 0x9A, 0xF7"
         })
-        void constructor_fieldsMustMatchInputValues(int red, int green, int blue) {
+        void givenValidRedGreenBlue_whenCreatingColor_thenCreatedColorMustContainTheSameRedGreenBlue(int red, int green, int blue) {
             var color = new Color(red, green, blue);
 
             assertThat(color.getRed()).isEqualTo(red);
@@ -36,10 +36,8 @@ class ColorTest {
                 "255, 1000, 0",   // number too big  (2nd param)
                 "50, 100, 300",   // number too big  (3rd param)
         })
-        void constructor_shouldThrowIllegalArgumentException(int red, int green, int blue) {
-            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-                    () -> new Color(red, green, blue)
-            );
+        void givenInvalidRedGreenBlue_whenCreatingColor_thenThrowIllegalArgumentException(int red, int green, int blue) {
+            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new Color(red, green, blue));
         }
     }
 
@@ -58,7 +56,9 @@ class ColorTest {
                 "  #123,0x11,0x22,0x33",    // White spaces
                 "#AbC\t,0xAA,0xBB,0xCC"     // White space
         })
-        void fromString_fieldsMustMatchInputValues(String str, int expectedRed, int expectedGreen, int expectedBlue) {
+        void givenValidRgbString_whenCallingFromString_thenCreatedColorMustContainTheSameRedGreenBlue(
+                String str, int expectedRed, int expectedGreen, int expectedBlue) {
+
             var color = Color.fromString(str);
 
             assertThat(color.getRed()).isEqualTo(expectedRed);
@@ -75,10 +75,8 @@ class ColorTest {
                 "#abcdeG",   // Wrong letter
                 "000000",    // Missing hash (#)
         })
-        void fromString_shouldThrowIllegalArgumentException(String str) {
-            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-                    () -> Color.fromString(str)
-            );
+        void givenInvalidRgbString_whenCallingFromString_thenThrowIllegalArgumentException(String str) {
+            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Color.fromString(str));
         }
     }
 
@@ -97,7 +95,9 @@ class ColorTest {
                 "  123,0x11,0x22,0x33",    // White spaces
                 "AbC\t,0xAA,0xBB,0xCC"     // White space
         })
-        void fromHex_fieldsMustMatchInputValues(String hex, int expectedRed, int expectedGreen, int expectedBlue) {
+        void givenValidRgbHexString_whenCallingFromHex_thenCreatedColorMustContainTheSameRedGreenBlue(
+                String hex, int expectedRed, int expectedGreen, int expectedBlue) {
+
             var color = Color.fromHex(hex);
 
             assertThat(color.getRed()).isEqualTo(expectedRed);
@@ -113,10 +113,8 @@ class ColorTest {
                 "xxxxxx",   // Wrong letters
                 "abcdeG",   // Wrong letter
         })
-        void fromHex_shouldThrowIllegalArgumentException(String hex) {
-            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-                    () -> Color.fromHex(hex)
-            );
+        void givenInvalidRgbHexString_whenCallingFromHex_thenThrowIllegalArgumentException(String hex) {
+            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Color.fromHex(hex));
         }
     }
 
@@ -128,7 +126,7 @@ class ColorTest {
                 "FEDCBA",
                 "123456"
         })
-        void toHex_shouldReturnExpectedHexString(String hex) {
+        void givenValidRgbHexString_whenCallingToHex_thenReturnedHexStringMustBeTheSame(String hex) {
             var color = Color.fromHex(hex);
             assertThat(color.toHex()).isEqualToIgnoringCase(hex);
         }
@@ -137,13 +135,13 @@ class ColorTest {
     @Nested
     class EqualsTests {
         @Test
-        void equals_shouldBeEqual() {
+        void givenTwoCreatedColorsWithSameRgbValues_whenCallingIsEqualTo_thenTheTwoColorsMustBeEqual() {
             assertThat(new Color(10, 20, 30)).isEqualTo(new Color(10, 20, 30));
             assertThat(new Color(11, 22, 33)).isEqualTo(new Color(11, 22, 33));
         }
 
         @Test
-        void equals_shouldNotBeEqual() {
+        void givenTwoCreatedColorsWithDifferentRgbValues_whenCallingIsEqualTo_thenTheTwoColorsMustNotBeEqual() {
             assertThat(new Color(10, 20, 30)).isNotEqualTo(new Color(11, 20, 30));
             assertThat(new Color(10, 20, 30)).isNotEqualTo(new Color(10, 22, 30));
             assertThat(new Color(10, 20, 30)).isNotEqualTo(new Color(10, 20, 33));
@@ -153,13 +151,13 @@ class ColorTest {
     @Nested
     class HashTests {
         @Test
-        void hashCode_shouldBeEqual() {
+        void givenTwoEqualColorsCreatedDifferently_whenCallingHashCodeOnEachColor_thenTheHashCodesMustBeEqual() {
             assertThat(Color.fromHex("102030").hashCode()).isEqualTo(new Color(0x10, 0x20, 0x30).hashCode());
             assertThat(Color.fromHex("112233").hashCode()).isEqualTo(new Color(0x11, 0x22, 0x33).hashCode());
         }
 
         @Test
-        void hashCode_shouldNotBeEqual() {
+        void givenTwoDifferentColors_whenCallingHashCodeOnEachColor_thenTheHashCodesMustNotBeEqual() {
             assertThat(new Color(10, 20, 30).hashCode()).isNotEqualTo(Color.fromHex("123456").hashCode());
         }
     }
@@ -167,7 +165,7 @@ class ColorTest {
     @Nested
     class ToStringTests {
         @Test
-        void toString_shouldBeEqual() {
+        void givenColorWithSpeficHexValue_whenCallingToString_thenReturnedStringMustBeSameHexValue() {
             assertThat(Color.fromHex("FDB975").toString()).isEqualToIgnoringCase("FDB975");
         }
     }
@@ -175,87 +173,87 @@ class ColorTest {
     @Nested
     class ColorConstantsTests {
         @Test
-        void white() {
+        void givenWhiteColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.WHITE.toString()).isEqualToIgnoringCase("FFFFFF");
         }
 
         @Test
-        void silver() {
+        void givenSilverColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.SILVER.toString()).isEqualToIgnoringCase("C0C0C0");
         }
 
         @Test
-        void gray() {
+        void givenGrayColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.GRAY.toString()).isEqualToIgnoringCase("808080");
         }
 
         @Test
-        void black() {
+        void givenBlackColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.BLACK.toString()).isEqualToIgnoringCase("000000");
         }
 
         @Test
-        void red() {
+        void givenRedColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.RED.toString()).isEqualToIgnoringCase("FF0000");
         }
 
         @Test
-        void maroon() {
+        void givenMaroonColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.MAROON.toString()).isEqualToIgnoringCase("800000");
         }
 
         @Test
-        void yellow() {
+        void givenYellowColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.YELLOW.toString()).isEqualToIgnoringCase("FFFF00");
         }
 
         @Test
-        void olive() {
+        void givenOliveColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.OLIVE.toString()).isEqualToIgnoringCase("808000");
         }
 
         @Test
-        void lime() {
+        void givenLimeColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.LIME.toString()).isEqualToIgnoringCase("00FF00");
         }
 
         @Test
-        void green() {
+        void givenGreenColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.GREEN.toString()).isEqualToIgnoringCase("008000");
         }
 
         @Test
-        void cyan() {
+        void givenCyanColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.CYAN.toString()).isEqualToIgnoringCase("00FFFF");
         }
 
         @Test
-        void teal() {
+        void givenTealColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.TEAL.toString()).isEqualToIgnoringCase("008080");
         }
 
         @Test
-        void blue() {
+        void givenBlueColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.BLUE.toString()).isEqualToIgnoringCase("0000FF");
         }
 
         @Test
-        void navy() {
+        void givenNavyColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.NAVY.toString()).isEqualToIgnoringCase("000080");
         }
 
         @Test
-        void fuchsia() {
+        void givenFuchsiaColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.FUCHSIA.toString()).isEqualToIgnoringCase("FF00FF");
         }
 
         @Test
-        void purple() {
+        void givenPurpleColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.PURPLE.toString()).isEqualToIgnoringCase("800080");
         }
 
         @Test
-        void orange() {
+        void givenOrangeColorConstant_whenGettingTheColorValue_thenTheColorValueIsCorrect() {
             assertThat(Color.ORANGE.toString()).isEqualToIgnoringCase("FF8000");
         }
     }
