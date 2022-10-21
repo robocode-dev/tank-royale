@@ -6,7 +6,7 @@ description = "Robocode Tank Royale Bot API for .Net"
 val artifactName = "Robocode.TankRoyale.BotApi"
 version = libs.versions.tankroyale.get()
 
-val `nuget-api-key`: String by project
+val `nuget-api-key`: String? by project
 
 
 @Suppress("DSL_SCOPE_VIOLATION")

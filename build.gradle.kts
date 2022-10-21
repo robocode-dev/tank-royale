@@ -6,8 +6,8 @@ description = "Robocode: Build the best - destroy the rest!"
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
-val `ossrh-username`: String by project
-val `ossrh-password`: String by project
+val `ossrh-username`: String? by project
+val `ossrh-password`: String? by project
 val `tankroyale-github-token`: String? by project
 
 @Suppress("DSL_SCOPE_VIOLATION")
