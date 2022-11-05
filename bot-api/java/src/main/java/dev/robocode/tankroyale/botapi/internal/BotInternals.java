@@ -17,10 +17,10 @@ public final class BotInternals implements IStopResumeListener {
     private double previousGunDirection;
     private double previousRadarDirection;
 
-    private double __distanceRemaining;
-    private double __turnRemaining;
-    private double __gunTurnRemaining;
-    private double __radarTurnRemaining;
+    private double distanceRemaining;
+    private double turnRemaining;
+    private double gunTurnRemaining;
+    private double radarTurnRemaining;
 
     private boolean isOverDriving;
 
@@ -200,49 +200,49 @@ public final class BotInternals implements IStopResumeListener {
 
     private void setDistanceRemaining(double newDistanceRemaining) {
         synchronized (movementMonitor) {
-            __distanceRemaining = newDistanceRemaining;
+            distanceRemaining = newDistanceRemaining;
         }
     }
 
     public double getDistanceRemaining() {
         synchronized (movementMonitor) {
-            return __distanceRemaining;
+            return distanceRemaining;
         }
     }
 
     private void setTurnRemaining(double newTurnRemaining) {
         synchronized (turnMonitor) {
-            __turnRemaining = newTurnRemaining;
+            turnRemaining = newTurnRemaining;
         }
     }
 
     public double getTurnRemaining() {
         synchronized (turnMonitor) {
-            return __turnRemaining;
+            return turnRemaining;
         }
     }
 
     private void setGunTurnRemaining(double newGunTurnRemaining) {
         synchronized (gunTurnMonitor) {
-            __gunTurnRemaining = newGunTurnRemaining;
+            gunTurnRemaining = newGunTurnRemaining;
         }
     }
 
     public double getGunTurnRemaining() {
         synchronized (gunTurnMonitor) {
-            return __gunTurnRemaining;
+            return gunTurnRemaining;
         }
     }
 
     private void setRadarTurnRemaining(double newRadarTurnRemaining) {
         synchronized (radarTurnMonitor) {
-            __radarTurnRemaining = newRadarTurnRemaining;
+            radarTurnRemaining = newRadarTurnRemaining;
         }
     }
 
     public double getRadarTurnRemaining() {
         synchronized (radarTurnMonitor) {
-            return __radarTurnRemaining;
+            return radarTurnRemaining;
         }
     }
 
@@ -397,15 +397,15 @@ public final class BotInternals implements IStopResumeListener {
             double delta = bot.calcDeltaAngle(bot.getDirection(), previousDirection);
             previousDirection = bot.getDirection();
 
-            if (abs(__turnRemaining) <= abs(delta)) {
-                __turnRemaining = 0;
+            if (abs(turnRemaining) <= abs(delta)) {
+                turnRemaining = 0;
             } else {
-                __turnRemaining -= delta;
-                if (isNearZero(__turnRemaining)) {
-                    __turnRemaining = 0;
+                turnRemaining -= delta;
+                if (isNearZero(turnRemaining)) {
+                    turnRemaining = 0;
                 }
             }
-            baseBotInternals.getBotIntent().setTurnRate(__turnRemaining);
+            baseBotInternals.getBotIntent().setTurnRate(turnRemaining);
         }
     }
 
@@ -415,15 +415,15 @@ public final class BotInternals implements IStopResumeListener {
             double delta = bot.calcDeltaAngle(bot.getGunDirection(), previousGunDirection);
             previousGunDirection = bot.getGunDirection();
 
-            if (abs(__gunTurnRemaining) <= abs(delta)) {
-                __gunTurnRemaining = 0;
+            if (abs(gunTurnRemaining) <= abs(delta)) {
+                gunTurnRemaining = 0;
             } else {
-                __gunTurnRemaining -= delta;
-                if (isNearZero(__gunTurnRemaining)) {
-                    __gunTurnRemaining = 0;
+                gunTurnRemaining -= delta;
+                if (isNearZero(gunTurnRemaining)) {
+                    gunTurnRemaining = 0;
                 }
             }
-            baseBotInternals.getBotIntent().setGunTurnRate(__gunTurnRemaining);
+            baseBotInternals.getBotIntent().setGunTurnRate(gunTurnRemaining);
         }
     }
 
@@ -433,27 +433,27 @@ public final class BotInternals implements IStopResumeListener {
             double delta = bot.calcDeltaAngle(bot.getRadarDirection(), previousRadarDirection);
             previousRadarDirection = bot.getRadarDirection();
 
-            if (abs(__radarTurnRemaining) <= abs(delta)) {
-                __radarTurnRemaining = 0;
+            if (abs(radarTurnRemaining) <= abs(delta)) {
+                radarTurnRemaining = 0;
             } else {
-                __radarTurnRemaining -= delta;
-                if (isNearZero(__radarTurnRemaining)) {
-                    __radarTurnRemaining = 0;
+                radarTurnRemaining -= delta;
+                if (isNearZero(radarTurnRemaining)) {
+                    radarTurnRemaining = 0;
                 }
             }
-            baseBotInternals.getBotIntent().setRadarTurnRate(__radarTurnRemaining);
+            baseBotInternals.getBotIntent().setRadarTurnRate(radarTurnRemaining);
         }
     }
 
     private void updateMovement() {
         synchronized (movementMonitor) {
 
-            if (Double.isInfinite(__distanceRemaining)) {
+            if (Double.isInfinite(distanceRemaining)) {
                 baseBotInternals.getBotIntent().setTargetSpeed(
-                        (double) (__distanceRemaining == Double.POSITIVE_INFINITY ? MAX_SPEED : -MAX_SPEED));
+                        (double) (distanceRemaining == Double.POSITIVE_INFINITY ? MAX_SPEED : -MAX_SPEED));
 
             } else {
-                double distance = __distanceRemaining;
+                double distance = distanceRemaining;
 
                 // This is Nat Pavasant's method described here:
                 // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
@@ -471,7 +471,7 @@ public final class BotInternals implements IStopResumeListener {
                     isOverDriving = baseBotInternals.getDistanceTraveledUntilStop(newSpeed) > abs(distance);
                 }
 
-                __distanceRemaining = distance - newSpeed;
+                distanceRemaining = distance - newSpeed;
             }
         }
     }
