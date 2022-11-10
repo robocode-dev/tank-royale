@@ -62,7 +62,7 @@ dependencyResolutionManagement {
             plugin("kotlin-serialization", "org.jetbrains.kotlin.plugin.serialization").version(kotlinVersion)
             plugin("nexus-publish", "io.github.gradle-nexus.publish-plugin").version("1.1.0")
             plugin("shadow-jar","com.github.johnrengelman.shadow").version("7.1.2")
-            plugin("itiviti-dotnet", "com.itiviti.dotnet").version("1.9.3") // 1.9.4 causes MSB1006 issue
+            plugin("itiviti-dotnet", "com.itiviti.dotnet").version("1.9.5")
             plugin("node-gradle", "com.github.node-gradle.node").version("3.5.0")
 
             // Dependencies versions
