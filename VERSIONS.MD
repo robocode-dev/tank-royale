@@ -2,6 +2,8 @@
 
 ## 📦 0.17.5 - Ongoing
 
+- Bot API: The event priority order was reversed to match the order used with the original Robocode.
+
 ## 📦 0.17.4 - Maintenance - 16-Oct-2022
 
 #### 🚀 Improvements
@@ -33,7 +35,7 @@
 
 - [#43](https://github.com/robocode-dev/tank-royale/issues/43): Possibility to identify bot from Process to Tick:
     - Went back to boot process `pid` instead of using the `boot id`.
-- Bot API: The event priority order was reversed to be similar to the original Robocode.
+- ~~Bot API: The event priority order was reversed to be similar to the original Robocode.~~
 
 #### 🚀 Improvements
 

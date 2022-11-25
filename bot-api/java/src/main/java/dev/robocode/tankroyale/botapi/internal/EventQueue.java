@@ -132,8 +132,8 @@ final class EventQueue {
             if (diff != 0) {
                 return diff;
             }
-            // Lower priority value (means higher priority!) must be placed before higher priority values
-            return getPriority(e1) - getPriority(e2);
+            // Higher priority value must be placed before lower priority value
+            return getPriority(e2) - getPriority(e1);
         });
     }
 

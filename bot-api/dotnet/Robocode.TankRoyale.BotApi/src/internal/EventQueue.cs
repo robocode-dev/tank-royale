@@ -147,8 +147,8 @@ internal sealed class EventQueue : IComparer<BotEvent>
         {
             return diff;
         }
-        // Lower priority value (means higher priority!) must be placed before higher priority values
-        return GetPriority(e1) - GetPriority(e2);
+        // Higher priority value must be placed before lower priority value
+        return GetPriority(e2) - GetPriority(e1);
     }
 
     private static bool IsNotOldOrCriticalEvent(BotEvent botEvent, int currentTurn)
