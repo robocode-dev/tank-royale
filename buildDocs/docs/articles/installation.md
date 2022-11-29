@@ -56,22 +56,6 @@ command line above.
 The GUI application will automatically create and store `.properties` files beside your
 `robocode-tankroyale-gui-x.y.z.jar` file when running the application.
 
-### GUI issue on Windows with NVidea gfx card
-
-Some people running graphical Java applications on Windows with an NVidia graphics card might experience that the
-windows, dialogs, menus etc. might not be painted correctly all of a sudden. If you experience this annoying issue, you
-can try to add this option after the `java` command:
-
-```
--Dsun.java2d.opengl=true
-```
-
-So the command for running the GUI application for Robocode will be:
-
-```
-java -Dsun.java2d.opengl=true -jar robocode-tankroyale-gui-x.y.z.jar
-```
-
 ## Sample bots
 
 Next, you'll need to provide some bots for the game in order to start up bots that can battle against each other. For
