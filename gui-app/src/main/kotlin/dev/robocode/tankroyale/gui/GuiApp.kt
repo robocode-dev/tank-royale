@@ -19,7 +19,6 @@ fun main() {
 
 private fun fixRenderingIssues() {
     System.setProperty("sun.java2d.d3d", "false") // turn off use of Direct3D
-    System.setProperty("sun.java2d.ddoffscreen", "false") // turn of Direct Draw off-screen
     System.setProperty("sun.java2d.noddraw=true", "true") // no use of Direct Draw
 
     System.setProperty("sun.java2d.opengl", "true") // turn on use of OpenGL

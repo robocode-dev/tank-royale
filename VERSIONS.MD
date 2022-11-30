@@ -1,18 +1,28 @@
 # Versions
 
-## 📦 0.17.5 - Ongoing
+## 📦 0.17.5 - Maintenance
 
 #### 🪲 Bug Fixes
 
+- Bot API for .Net:
+    - Setting the max speed and max turn rates for the body, gun, and radar did not work.
+    - Fixed issue with moving and turning, which could override the set target speed and turn rates, when these had been
+      set explicitly on the API.
+    - Reading the turn rates and target speed for the current turn did not reflect if the turn rate and/or target speed
+      had been set for the current turn.
 - Rendering issues on Windows (and Linux?) when using accelerated hardware, by setting these Java properties:
-    * `sun.java2d.d3d=false` (turn off use of Direct3D)
-    * `sun.java2d.ddoffscreen=false` (turn of Direct Draw off-screen)
-    * `sun.java2d.noddraw=true` (no use of Direct Draw)
-    * `sun.java2d.opengl=true` (turn on OpenGL)
+    - `sun.java2d.d3d=false` (turn off use of Direct3D)
+    - `sun.java2d.noddraw=true` (no use of Direct Draw)
+    - `sun.java2d.opengl=true` (turn on OpenGL)
 
-#### ⚡ Changes:
+#### 🚀 Improvements
 
-- Bot API: The event priority order was reversed to match the order used with the original Robocode.
+- Bot API:
+    - addCondition() and removeCondition() now returns a boolean value instead of void.
+    - Condition can take an optional lambda expression as input parameter as alternative to overriding the test()
+      method.
+    - Added more test units, which did show bugs within the Bot API for both Java and .Net.
+    - The event priority order was reversed to match the order used with the original Robocode.
 
 ## 📦 0.17.4 - Maintenance - 16-Oct-2022
 
