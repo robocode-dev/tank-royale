@@ -10,6 +10,9 @@
       schema even though
       the [BotInfo/BotHandshake](https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml)
       uses string arrays. This was fixed to keep Bot APIs consistent with the schemas.
+    - [#53](https://github.com/robocode-dev/tank-royale/issues/53): Major bug where each bot received the bullet states
+      of _all_ bullets on the battle arena, including bullets fired by other bots, and not just the bullets fired by the
+      bot itself.
 
 ## 📦 0.17.5 - Maintenance
 
