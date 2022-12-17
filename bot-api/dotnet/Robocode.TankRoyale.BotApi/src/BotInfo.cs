@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Robocode.TankRoyale.BotApi.Util;
 using static Robocode.TankRoyale.BotApi.Internal.CollectionUtil;
@@ -392,8 +391,8 @@ public sealed class BotInfo
         var version = configuration["version"];
         ThrowExceptionIfFieldIsBlank("version", version);
 
-        var authors = configuration["authors"];
-        ThrowExceptionIfFieldIsBlank("authors", authors);
+        var authors = configuration.GetSection("authors").Get<string[]>();
+        ThrowExceptionIfJsonFieldIsNullOrEmpty("authors", authors);
 
         var gameTypes = configuration["gameTypes"];
 
@@ -401,11 +400,11 @@ public sealed class BotInfo
         return new BotInfo(
             name,
             version,
-            Regex.Split(authors, @"\s*,\s*"),
+            authors,
             configuration["description"],
             configuration["url"],
-            Regex.Split(countryCodes, @"\s*,\s*"),
-            gameTypes == null ? null : Regex.Split(gameTypes, @"\s*,\s*").ToHashSet(),
+            configuration.GetSection("countryCodes").Get<string[]>() ?? Array.Empty<string>(),
+            configuration.GetSection("countryCodes").Get<string[]>().ToHashSet(),
             configuration["platform"],
             configuration["programmingLang"],
             InitialPosition.FromString(configuration["initialPosition"])
@@ -424,6 +423,15 @@ public sealed class BotInfo
             throw new ArgumentException($"The required JSON field '{fieldName}' is missing or blank");
         }
     }
+
+    private static void ThrowExceptionIfJsonFieldIsNullOrEmpty(string fieldName, IList<string> value)
+    {
+        if (value == null || value.IsNullOrEmptyOrContainsOnlyBlanks())
+        {
+            throw new ArgumentException($"The required JSON field '{fieldName}' is missing or empty");
+        }
+    }
+
 
     /// <summary>
     /// Builder interface for providing a builder for building <see cref="BotInfo"/> objects, and which supports method

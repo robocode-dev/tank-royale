@@ -1,10 +1,10 @@
 {
   "name": "Walls",
   "version": "1.0",
-  "authors": "Mathew Nelson, Flemming N. Larsen",
+  "authors": ["Mathew Nelson", "Flemming N. Larsen"],
   "description": "Moves around the outer edge with the gun facing in.",
   "homepage": "",
-  "countryCodes": "us, dk",
+  "countryCodes": ["us", "dk"],
   "platform": ".Net 6.0",
   "programmingLang": "C# 10.0"
 }

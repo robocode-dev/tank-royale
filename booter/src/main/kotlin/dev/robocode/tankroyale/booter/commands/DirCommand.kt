@@ -59,14 +59,12 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
             return true
         } else {
             if (botInfo != null) {
-                val botGameTypes = botInfo.gameTypes?.replace("\\s+".toRegex(), "") // remove all white spaces
+                val botGameTypes = botInfo.gameTypes?.filter { it.isNotEmpty() }?.toMutableList()
+                botGameTypes?.forEachIndexed { index, gameType -> botGameTypes[index] = gameType.lowercase() }
                 return if (botGameTypes.isNullOrEmpty()) {
                     true
                 } else {
-                    botGameTypes
-                        .lowercase(Locale.getDefault())
-                        .split(",") // lowercase for comparing
-                        .containsAll(gameTypes)
+                    botGameTypes.containsAll(gameTypes)
                 }
             }
             return false

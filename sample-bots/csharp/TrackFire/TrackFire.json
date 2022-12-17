@@ -1,10 +1,10 @@
 {
   "name": "Track Fire",
   "version": "1.0",
-  "authors": "Mathew Nelson, Flemming N. Larsen",
+  "authors": ["Mathew Nelson", "Flemming N. Larsen"],
   "description": "Sits still. Tracks and fires at the nearest bot it sees.",
   "homepage": "",
-  "countryCodes": "us, dk",
+  "countryCodes": ["us", "dk"],
   "platform": ".Net 6.0",
   "programmingLang": "C# 10.0"
 }

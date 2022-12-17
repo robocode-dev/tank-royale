@@ -1,5 +1,16 @@
 # Versions
 
+## 📦 0.18.0 - In progress
+
+#### 🪲 Bug Fixes
+
+- Bot API
+    - [#52](https://github.com/robocode-dev/tank-royale/discussions/52#discussioncomment-4332072): The Bot API used
+      comma-separated strings for `authors`, `countryCodes`, and `gameTypes` when parsing the `BotInfo`
+      schema even though
+      the [BotInfo/BotHandshake](https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml)
+      uses string arrays. This was fixed to keep Bot APIs consistent with the schemas.
+
 ## 📦 0.17.5 - Maintenance
 
 #### 🪲 Bug Fixes

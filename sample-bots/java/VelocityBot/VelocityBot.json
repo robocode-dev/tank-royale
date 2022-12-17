@@ -1,10 +1,10 @@
 {
   "name": "Velocity Bot",
   "version": "1.0",
-  "authors": "Joshua Galecki, Flemming N. Larsen",
+  "authors": ["Mathew Nelson", "Flemming N. Larsen"],
   "description": "Example bot of how to use turn rates",
   "homepage": "",
-  "countryCodes": "ie, dk",
+  "countryCodes": ["ie", "dk"],
   "platform": "JVM",
   "programmingLang": "Java 11"
 }

@@ -47,6 +47,10 @@ private fun writeXml(out: OutputStream, botName: String, botApiVersion: String) 
                     attribute("Include", "Robocode.TankRoyale.BotApi")
                     attribute("Version", botApiVersion)
                 }
+                element("PackageReference") {
+                    attribute("Include", "Microsoft.Extensions.Configuration.Binder")
+                    attribute("Version", "7.0.1")
+                }
             }
         }
     }

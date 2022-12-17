@@ -182,10 +182,10 @@ class RunCommand : Command() {
             System.getProperty("server.secret")?.let { envMap[Env.SERVER_SECRET.name] = it }
             envMap[Env.BOT_NAME.name] = botInfo.name
             envMap[Env.BOT_VERSION.name] = botInfo.version
-            envMap[Env.BOT_AUTHORS.name] = botInfo.authors
+            envMap[Env.BOT_AUTHORS.name] = botInfo.authors.joinToString()
 
             botInfo.gameTypes?.let {
-                envMap[Env.BOT_GAME_TYPES.name] = botInfo.gameTypes
+                envMap[Env.BOT_GAME_TYPES.name] = botInfo.gameTypes.joinToString()
             }
             botInfo.description?.let {
                 envMap[Env.BOT_DESCRIPTION.name] = it
@@ -194,7 +194,7 @@ class RunCommand : Command() {
                 envMap[Env.BOT_HOMEPAGE.name] = it
             }
             botInfo.countryCodes?.let {
-                envMap[Env.BOT_COUNTRY_CODES.name] = it
+                envMap[Env.BOT_COUNTRY_CODES.name] = it.joinToString()
             }
             botInfo.platform?.let {
                 envMap[Env.BOT_PLATFORM.name] = it

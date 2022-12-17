@@ -345,20 +345,20 @@ public final class BotInfo {
 
         throwExceptionIfJsonFieldIsBlank("name", data.name);
         throwExceptionIfJsonFieldIsBlank("version", data.version);
-        throwExceptionIfJsonFieldIsBlank("authors", data.authors);
+        throwExceptionIfJsonFieldIsNullOrEmpty("authors", data.authors);
 
-        String countryCodes = data.countryCodes;
+        List<String> countryCodes = data.countryCodes;
         if (countryCodes == null) {
-            countryCodes = "";
+            countryCodes = Collections.emptyList();
         }
         return new BotInfo(
                 data.name,
                 data.version,
-                Arrays.asList(data.authors.split("\\s*,\\s*")),
+                data.authors,
                 data.description,
                 data.homepage,
-                Arrays.asList(countryCodes.split("\\s*,\\s*")),
-                data.gameTypes == null ? null : new HashSet<>(Arrays.asList(data.gameTypes.split("\\s*,\\s*"))),
+                countryCodes,
+                data.gameTypes == null ? null : new HashSet<>(data.gameTypes),
                 data.platform,
                 data.programmingLang,
                 InitialPosition.fromString(data.initialPosition));
@@ -489,6 +489,12 @@ public final class BotInfo {
         }
     }
 
+    private static void throwExceptionIfJsonFieldIsNullOrEmpty(String fieldName, List<String> value) {
+        if (value == null || value.isEmpty()) {
+            throw new IllegalArgumentException("The required field '" + fieldName + "' is missing or empty");
+        }
+    }
+
     private static boolean isNullOrEmptyOrContainsOnlyBlanks(Collection<String> collection) {
         return (collection == null || collection.isEmpty() || collection.stream().allMatch(String::isBlank));
     }
@@ -500,11 +506,11 @@ public final class BotInfo {
     private static class JsonProperties {
         String name;
         String version;
-        String authors;
+        List<String> authors;
         String description;
         String homepage;
-        String countryCodes;
-        String gameTypes;
+        List<String> countryCodes;
+        Set<String> gameTypes;
         String platform;
         String programmingLang;
         String initialPosition;
