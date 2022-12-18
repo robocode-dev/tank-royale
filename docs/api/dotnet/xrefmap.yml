@@ -3339,12 +3339,30 @@ references:
   commentId: M:Robocode.TankRoyale.BotApi.Events.Condition.#ctor
   fullName: Robocode.TankRoyale.BotApi.Events.Condition.Condition()
   nameWithType: Condition.Condition()
+- uid: Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.Func{System.Boolean})
+  name: Condition(Func<Boolean>)
+  href: api/Robocode.TankRoyale.BotApi.Events.Condition.html#Robocode_TankRoyale_BotApi_Events_Condition__ctor_System_Func_System_Boolean__
+  commentId: M:Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.Func{System.Boolean})
+  name.vb: Condition(Func(Of Boolean))
+  fullName: Robocode.TankRoyale.BotApi.Events.Condition.Condition(System.Func<System.Boolean>)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.Condition.Condition(System.Func(Of System.Boolean))
+  nameWithType: Condition.Condition(Func<Boolean>)
+  nameWithType.vb: Condition.Condition(Func(Of Boolean))
 - uid: Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.String)
   name: Condition(String)
   href: api/Robocode.TankRoyale.BotApi.Events.Condition.html#Robocode_TankRoyale_BotApi_Events_Condition__ctor_System_String_
   commentId: M:Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.String)
   fullName: Robocode.TankRoyale.BotApi.Events.Condition.Condition(System.String)
   nameWithType: Condition.Condition(String)
+- uid: Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.String,System.Func{System.Boolean})
+  name: Condition(String, Func<Boolean>)
+  href: api/Robocode.TankRoyale.BotApi.Events.Condition.html#Robocode_TankRoyale_BotApi_Events_Condition__ctor_System_String_System_Func_System_Boolean__
+  commentId: M:Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.String,System.Func{System.Boolean})
+  name.vb: Condition(String, Func(Of Boolean))
+  fullName: Robocode.TankRoyale.BotApi.Events.Condition.Condition(System.String, System.Func<System.Boolean>)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.Condition.Condition(System.String, System.Func(Of System.Boolean))
+  nameWithType: Condition.Condition(String, Func<Boolean>)
+  nameWithType.vb: Condition.Condition(String, Func(Of Boolean))
 - uid: Robocode.TankRoyale.BotApi.Events.Condition.#ctor*
   name: Condition
   href: api/Robocode.TankRoyale.BotApi.Events.Condition.html#Robocode_TankRoyale_BotApi_Events_Condition__ctor_

@@ -114,7 +114,7 @@ event handler using the method <a class="xref" href="Robocode.TankRoyale.BotApi.
   <h6><strong>Assembly</strong>: Robocode.TankRoyale.BotApi.dll</h6>
   <h5 id="Robocode_TankRoyale_BotApi_Events_Condition_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract class Condition</code></pre>
+    <pre><code class="lang-csharp hljs">public class Condition</code></pre>
   </div>
   <h5 id="Robocode_TankRoyale_BotApi_Events_Condition_examples"><strong>Examples</strong></h5>
   <pre><code>public class MyBot : Bot
@@ -146,6 +146,20 @@ event handler using the method <a class="xref" href="Robocode.TankRoyale.BotApi.
   }
 }</code></pre>
 
+  <pre><code>public class MyBot : Bot
+{
+  public void Run()
+  {
+    while (IsRunning)
+    {
+      ...
+      SetTurnRight(90);
+      WaitFor(new Condition(() => TurnRemaining == 0));
+      ...
+    }
+  }
+}</code></pre>
+
   <h3 id="constructors">Constructors
   </h3>
   <span class="small pull-right mobile-hide">
@@ -153,12 +167,11 @@ event handler using the method <a class="xref" href="Robocode.TankRoyale.BotApi.
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Events_Condition__ctor.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Events.Condition.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/events/Condition.cs/#L55">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/events/Condition.cs/#L77">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_Events_Condition__ctor_" data-uid="Robocode.TankRoyale.BotApi.Events.Condition.#ctor*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_Events_Condition__ctor" data-uid="Robocode.TankRoyale.BotApi.Events.Condition.#ctor">Condition()</h4>
-  <div class="markdown level1 summary"><p>Constructor for initializing a new instance of the Condition class. With this constructor the condition will be
-without a name.</p>
+  <div class="markdown level1 summary"><p>Constructor for initializing a new instance of the Condition class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -167,15 +180,49 @@ without a name.</p>
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Events_Condition__ctor_System_Func_System_Boolean__.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Events.Condition.%23ctor(System.Func%7BSystem.Boolean%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/events/Condition.cs/#L99">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Events_Condition__ctor_" data-uid="Robocode.TankRoyale.BotApi.Events.Condition.#ctor*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Events_Condition__ctor_System_Func_System_Boolean__" data-uid="Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.Func{System.Boolean})">Condition(Func&lt;Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Constructor for initializing a new instance of the Condition class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Condition(Func&lt;bool&gt; testFunc)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">testFunc</span></td>
+        <td><p>Is a function/delegate containing a method returning <code>true</code>, if some condition is met,
+or <code>false</code> when the condition is not met.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Events_Condition__ctor_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Events.Condition.%23ctor(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/events/Condition.cs/#L66">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/events/Condition.cs/#L88">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_Events_Condition__ctor_" data-uid="Robocode.TankRoyale.BotApi.Events.Condition.#ctor*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_Events_Condition__ctor_System_String_" data-uid="Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.String)">Condition(String)</h4>
-  <div class="markdown level1 summary"><p>Constructor for initializing a new instance of the Condition class. With this constructor the condition will be
-given a name of your choice.</p>
+  <div class="markdown level1 summary"><p>Constructor for initializing a new instance of the Condition class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -201,6 +248,48 @@ conditions with the <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.ht
       </tr>
     </tbody>
   </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Events_Condition__ctor_System_String_System_Func_System_Boolean__.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Events.Condition.%23ctor(System.String%2CSystem.Func%7BSystem.Boolean%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/events/Condition.cs/#L112">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Events_Condition__ctor_" data-uid="Robocode.TankRoyale.BotApi.Events.Condition.#ctor*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Events_Condition__ctor_System_String_System_Func_System_Boolean__" data-uid="Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.String,System.Func{System.Boolean})">Condition(String, Func&lt;Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Constructor for initializing a new instance of the Condition class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Condition(string name, Func&lt;bool&gt; testFunc)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>Is the name of the condition used for identifying a specific condition between multiple
+conditions with the <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_OnCustomEvent_Robocode_TankRoyale_BotApi_Events_CustomEvent_">OnCustomEvent(CustomEvent)</a> event handler.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">testFunc</span></td>
+        <td><p>Is a function/delegate containing a method returning <code>true</code>, if some condition is met,
+or <code>false</code> when the condition is not met.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   <h3 id="properties">Properties
   </h3>
   <span class="small pull-right mobile-hide">
@@ -208,7 +297,7 @@ conditions with the <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.ht
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Events_Condition_Name.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Events.Condition.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/events/Condition.cs/#L49">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/events/Condition.cs/#L70">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_Events_Condition_Name_" data-uid="Robocode.TankRoyale.BotApi.Events.Condition.Name*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_Events_Condition_Name" data-uid="Robocode.TankRoyale.BotApi.Events.Condition.Name">Name</h4>
@@ -246,17 +335,17 @@ conditions with the <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.ht
     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Events_Condition_Test.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Events.Condition.Test%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/events/Condition.cs/#L76">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/events/Condition.cs/#L123">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_Events_Condition_Test_" data-uid="Robocode.TankRoyale.BotApi.Events.Condition.Test*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_Events_Condition_Test" data-uid="Robocode.TankRoyale.BotApi.Events.Condition.Test">Test()</h4>
-  <div class="markdown level1 summary"><p>Overriding the this test method is the purpose of a Condition. The game will call your <code>test()</code> function,
-and take action if it returns <code>true</code>.</p>
+  <div class="markdown level1 summary"><p>You can choose to override this method to let the game use it for testing your condition each turn.
+Alternatively, you can use the one of the constructors that take a <span class="xref">System.Func&lt;TResult&gt;</span> instead.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract bool Test()</code></pre>
+    <pre><code class="lang-csharp hljs">public virtual bool Test()</code></pre>
   </div>
   <h5 class="returns">Returns</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -284,7 +373,7 @@ and take action if it returns <code>true</code>.</p>
                     <a href="https://github.com/robocode-dev/tank-royale/new/master/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Events_Condition.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Events.Condition%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/events/Condition.cs/#L42" class="contribution-link">View Source</a>
+                    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/events/Condition.cs/#L63" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
