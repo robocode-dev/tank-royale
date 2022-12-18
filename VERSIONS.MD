@@ -1,6 +1,6 @@
 # Versions
 
-## 📦 0.18.0 - Improvements to the Bot APIs
+## 📦 0.18.0 - Improvements to the Bot APIs - 18-Dec-2022
 
 #### 🪲 Bug Fixes
 
@@ -11,8 +11,8 @@
     - [#53]: Major bug where each bot received the bullet states of _all_ bullets on the battle arena, including bullets
       fired by other bots, and not just the bullets fired by the
       bot itself.
-    - Fixed issue with moving and turning, which could override the set target speed and turn rates, when these had been
-      set explicitly on the API.
+    - Fixed issues with moving and turning, which could override the set target speed and turn rates, when these had
+      been set explicitly on the API.
     - Reading the turn rates and target speed for the current turn did not reflect if the turn rate and/or target speed
       had been set for the current turn.
 - Bot API for .Net:
@@ -27,8 +27,8 @@
 #### 🚀 Improvements
 
 - Bot API:
-    - addCondition() and removeCondition() now returns a boolean value instead of void.
-    - Condition can take an optional lambda expression as input parameter as alternative to overriding the test()
+    - `addCondition()` and `removeCondition()` now returns a boolean value instead of void.
+    - Condition can take an optional lambda expression as an input parameter as an alternative to overriding the test()
       method.
     - Added more test units, which did show bugs within the Bot API for both Java and .Net.
     - The event priority order was reversed to match the order used with the original Robocode.
