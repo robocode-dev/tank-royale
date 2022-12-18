@@ -607,16 +607,18 @@ public interface IBaseBot
     /// when the <see cref="Condition.Test()"/> returns true.
     /// </summary>
     /// <param name="condition">Is the condition that must be met to trigger the custom event.</param>
+    /// <return><c>true</c> if the condition was not added already; <c>false</c> if the condition was already added.</return>
     /// <seealso cref="RemoveCustomEvent"/>
-    void AddCustomEvent(Condition condition);
+    bool AddCustomEvent(Condition condition);
 
     /// <summary>
     /// Removes triggering an custom event handler for a specific condition that was previously added
     /// with <see cref="AddCustomEvent(Condition)"/>.
     /// </summary>
     /// <param name="condition">is the condition that was previously added with <see cref="AddCustomEvent(Condition)"/></param>
+    /// <return><c>true</c> if the condition was found; <c>false</c> if the condition was not found.</return>
     /// <seealso cref="AddCustomEvent(Condition)"/>
-    void RemoveCustomEvent(Condition condition);
+    bool RemoveCustomEvent(Condition condition);
 
     /// <summary>
     /// Set the bot to stop all movement including turning the gun and radar. The remaining movement is
@@ -668,7 +670,7 @@ public interface IBaseBot
     /// BodyColor = new Color(255, 0, 0); // also the red color
     /// BodyColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
-    /// <value>Is the color of the body or <c>null</c> if the bot uses the default color.</value>
+    /// <value>Is the color of the body or <c>null</c> if the bot must use the default color.</value>
     Color BodyColor { get; set; }
 
     /// <summary>
@@ -679,7 +681,7 @@ public interface IBaseBot
     /// TurretColor = new Color(255, 0, 0); // also the red color
     /// TurretColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
-    /// <value>Is the color of the gun turret or <c>null</c> if the bot uses the default color.</value>
+    /// <value>Is the color of the gun turret or <c>null</c> if the bot must use the default color.</value>
     Color TurretColor { get; set; }
 
     /// <summary>
@@ -690,7 +692,7 @@ public interface IBaseBot
     /// RadarColor = new Color(255, 0, 0); // also the red color
     /// RadarColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
-    /// <value>Is the color of the radar or <c>null</c> if the bot uses the default color.</value>
+    /// <value>Is the color of the radar or <c>null</c> if the bot must use the default color.</value>
     Color RadarColor { get; set; }
 
     /// <summary>
@@ -704,7 +706,7 @@ public interface IBaseBot
     /// BulletColor = new Color(255, 0, 0); // also the red color
     /// BulletColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
-    /// <value>Is the color of the fired bullets or <c>null</c> if the bot uses the default color.</value>
+    /// <value>Is the color of the fired bullets or <c>null</c> if the bot must use the default color.</value>
     Color BulletColor { get; set; }
 
     /// <summary>
@@ -715,7 +717,7 @@ public interface IBaseBot
     /// ScanColor = new Color(255, 0, 0); // also the red color
     /// ScanColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
-    /// <value>Is the color of the scan arc or <c>null</c> if the bot uses the default color.</value>
+    /// <value>Is the color of the scan arc or <c>null</c> if the bot must use the default color.</value>
     Color ScanColor { get; set; }
 
     /// <summary>
@@ -726,7 +728,7 @@ public interface IBaseBot
     /// TracksColor = new Color(255, 0, 0); // also the red color
     /// TracksColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
-    /// <value>Is the color of the tracks or <c>null</c> if the bot uses the default color.</value>
+    /// <value>Is the color of the tracks or <c>null</c> if the bot must use the default color.</value>
     Color TracksColor { get; set; }
 
     /// <summary>
@@ -737,7 +739,7 @@ public interface IBaseBot
     /// GunColor = new Color(255, 0, 0); // also the red color
     /// GunColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
-    /// <value>Is the color of the gun or <c>null</c> if the bot uses the default color.</value>
+    /// <value>Is the color of the gun or <c>null</c> if the bot must use the default color.</value>
     Color GunColor { get; set; }
 
     /// <summary>

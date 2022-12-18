@@ -68,10 +68,10 @@ open class Event<T> {
      * onEvent.enqueue { myDialog.isVisible = true }
      * ```
      * @param owner is the owner of the event handler, typically `this` instance.
-     * @param runnable is used for providing the event handler function.
+     * @param callable is used for providing the event handler function.
      */
-    fun enqueue(owner: Any, runnable: () -> Unit) {
-        subscribe(owner) { GuiTask.enqueue { runnable.invoke() } }
+    fun enqueue(owner: Any, callable: () -> Unit) {
+        subscribe(owner) { GuiTask.enqueue { callable.invoke() } }
     }
 
     class Handler<T>(

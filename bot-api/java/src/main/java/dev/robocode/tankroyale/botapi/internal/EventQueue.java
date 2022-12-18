@@ -139,8 +139,8 @@ final class EventQueue {
 
     private int getPriority(BotEvent event) {
         @SuppressWarnings("unchecked")
-        int priority = baseBotInternals.getPriority((Class<BotEvent>) event.getClass());
-        return priority;
+        var eventClass = (Class<BotEvent>) event.getClass();
+        return baseBotInternals.getPriority(eventClass);
     }
 
     private static boolean isNotOldOrCriticalEvent(BotEvent event, int currentTurn) {

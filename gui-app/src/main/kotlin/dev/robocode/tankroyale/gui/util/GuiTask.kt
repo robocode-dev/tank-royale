@@ -4,10 +4,10 @@ import java.awt.EventQueue
 
 object GuiTask {
 
-    fun enqueue(runnable: () -> Unit) {
+    fun enqueue(callable: () -> Unit) {
         BusyCursor.activate()
         EventQueue.invokeLater {
-            runnable.invoke()
+            callable.invoke()
             BusyCursor.deactivate()
         }
     }

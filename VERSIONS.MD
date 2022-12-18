@@ -1,33 +1,28 @@
 # Versions
 
-## 📦 0.18.0 - In progress
+## 📦 0.18.0 - Improvements to the Bot APIs
 
 #### 🪲 Bug Fixes
 
 - Bot API
-    - [#52](https://github.com/robocode-dev/tank-royale/discussions/52#discussioncomment-4332072): The Bot API used
-      comma-separated strings for `authors`, `countryCodes`, and `gameTypes` when parsing the `BotInfo`
-      schema even though
-      the [BotInfo/BotHandshake](https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml)
-      uses string arrays. This was fixed to keep Bot APIs consistent with the schemas.
-    - [#53](https://github.com/robocode-dev/tank-royale/issues/53): Major bug where each bot received the bullet states
-      of _all_ bullets on the battle arena, including bullets fired by other bots, and not just the bullets fired by the
+    - [#52]: The Bot API used comma-separated strings for `authors`, `countryCodes`, and `gameTypes` when parsing
+      the `BotInfo` schema even though the [BotInfo/BotHandshake] uses string arrays. This was fixed to keep Bot APIs
+      consistent with the schemas.
+    - [#53]: Major bug where each bot received the bullet states of _all_ bullets on the battle arena, including bullets
+      fired by other bots, and not just the bullets fired by the
       bot itself.
-
-## 📦 0.17.5 - Maintenance
-
-#### 🪲 Bug Fixes
-
-- Bot API for .Net:
-    - Setting the max speed and max turn rates for the body, gun, and radar did not work.
     - Fixed issue with moving and turning, which could override the set target speed and turn rates, when these had been
       set explicitly on the API.
     - Reading the turn rates and target speed for the current turn did not reflect if the turn rate and/or target speed
       had been set for the current turn.
-- Rendering issues on Windows (and Linux?) when using accelerated hardware, by setting these Java properties:
-    - `sun.java2d.d3d=false` (turn off use of Direct3D)
-    - `sun.java2d.noddraw=true` (no use of Direct Draw)
-    - `sun.java2d.opengl=true` (turn on OpenGL)
+- Bot API for .Net:
+    - Setting the max speed and max turn rates for the body, gun, and radar did not work.
+- GUI app:
+    - Fixed rendering issues on Windows (and Linux?) when using accelerated hardware, by setting these Java properties
+    - as defaults:
+        - `sun.java2d.d3d=false` (turn off use of Direct3D)
+        - `sun.java2d.noddraw=true` (no use of Direct Draw)
+        - `sun.java2d.opengl=true` (turn on OpenGL)
 
 #### 🚀 Improvements
 
@@ -67,7 +62,7 @@
 
 #### ⚡ Changes
 
-- [#43](https://github.com/robocode-dev/tank-royale/issues/43): Possibility to identify bot from Process to Tick:
+- [#43]: Possibility to identify bot from Process to Tick:
     - Went back to boot process `pid` instead of using the `boot id`.
 - ~~Bot API: The event priority order was reversed to be similar to the original Robocode.~~
 
@@ -79,7 +74,7 @@
 
 - Server:
     - The fire assistant was not always activated.
-    - [#45](https://github.com/robocode-dev/tank-royale/issues/45): Server is kidnapping CPU cycles
+    - [#45]: Server is kidnapping CPU cycles
         - Game is now aborted, when the last bot participating in a battle is leaving (disconnecting).
         - Timer used for turn timeout was not stopped, when a battle had ended/aborted.
         - Freeing heap memory used for storing game state when game is ended/aborted.
@@ -88,11 +83,10 @@
 
 #### 🚀 Improvements
 
-- GUI/Sounds: [#4](https://github.com/robocode-dev/tank-royale/issues/4): Fire and Explosion Sounds:
+- GUI/Sounds: [#4]: Fire and Explosion Sounds:
     - Added feature to play sounds to the GUI application.
     - Added Sound Options to configure sounds.
-    - Note that sound files are distributed independently besides the gui application from the
-      [sounds releases](https://github.com/robocode-dev/sounds/releases)
+    - Note that sound files are distributed independently besides the gui application from the [sounds releases].
 - GUI: Moved the Dismiss button on the Bot Root Directories configuration down under the Add and Remove buttons, and
   adjusted the size of the dialog.
 
@@ -104,7 +98,7 @@
 
 #### 🚀 Improvements
 
-- [#43](https://github.com/robocode-dev/tank-royale/issues/43): Possibility to identify bot from Process to Tick:
+- [#43]: Possibility to identify bot from Process to Tick:
     - ~~Reintroduced `boot id` to replace boot process id (`pid`)~~
     - Added `sessionId` and `bootId` to these schemas: `bot-handshake`, `bot-state-with-id`, and `participants`
 
@@ -215,8 +209,7 @@ Bot info:
 #### 🪲 Bug Fixes
 
 - GUI:
-    - NullPointerException when running robocode-tankroyale-gui-0.14.2.jar
-      ([#38](https://github.com/robocode-dev/tank-royale/issues/38))
+    - NullPointerException when running robocode-tankroyale-gui-0.14.2.jar ([#38])
 - Server:
     - `AdjustRadarForBodyTurn` had no effect on the server side.
     - `updateBotTurnRatesAndDirections` did not work properly with adjustments for body and gun turn when
@@ -266,8 +259,8 @@ Bot info:
 #### Changes
 
 - Bot API:
-    - Adjusted the bot events to make it easier to make a bridge between legacy Robocode bots and Tank Royale later
-      ([#12](https://github.com/robocode-dev/tank-royale/issues/12)).
+    - Adjusted the bot events to make it easier to make a bridge between legacy Robocode bots and Tank Royale
+      later ([#12]).
     - Introduced `BotDeathEvent` and `HitByBulletEvent`.
     - Made priority values for`DefaultEventPriority` public, and changed event priority order to match the original
       Robocode game.
@@ -275,16 +268,15 @@ Bot info:
 - GUI:
     - The Pause/Resume and Stop button are now disabled when the battle is stopped.
 - Schema:
-    - Replaced `$type` with `type` to make it possible to use more code generators
-      [#31](https://github.com/robocode-dev/tank-royale/issues/31)
+    - Replaced `$type` with `type` to make it possible to use more code generators ([#31]).
 
 ## 📦 0.13.4 - GUI improvements + bugfix - 06-Jun-2022
 
 #### 🪲 Bug Fixes
 
 - Bot API for Java:
-    - Major bugfix with `getTurnRemaining()` ([#28](https://github.com/robocode-dev/tank-royale/issues/28)), which
-      returned the wrong value. This could be seen with the sample bot, Crazy, which did not turn correctly.
+    - Major bugfix with `getTurnRemaining()` ([#28]), which returned the wrong value. This could be seen with the sample
+      bot, Crazy, which did not turn correctly.
 
 #### Changes
 
@@ -302,20 +294,19 @@ Bot info:
 #### 🪲 Bug Fixes
 
 - Bot API:
-    - Fix for running bots under macOS/bash when bot directory contains
-      whitespaces ([#20](https://github.com/robocode-dev/tank-royale/discussions/20)).
-    - New fix for issue [#17](https://github.com/robocode-dev/tank-royale/discussions/17) (Blocking bot functions do not
+    - Fix for running bots under macOS/bash when bot directory contains whitespaces ([#20]).
+    - New fix for issue [#17] (Blocking bot functions do not
       stop bot after finishing)
     - Fix for `setForward(POSITIVE_INFINITE)` which moved the bot slowly forward with no
-      acceleration ([#26](https://github.com/robocode-dev/tank-royale/issues/26)).
+      acceleration ([#26]).
     - Fixed issue where the event queue was not disabled if `run()` method threw an exception, causing the event queue
       to reach its max limit of unprocessed 256 events.
     - Fixed issue with events being handled 1 turn later than they
-      happened ([#8](https://github.com/robocode-dev/tank-royale/issues/8))
+      happened ([#8])
 - Bot API for Java:
     - Fixed: `IllegalArgumentException: -Infinity is not a valid double value as per JSON specification`
 - Server
-    - Fixed various issues with invoking SkippedTurns ([#8](https://github.com/robocode-dev/tank-royale/issues/8))
+    - Fixed various issues with invoking SkippedTurns ([#8])
 - GUI:
     - When stopping a battle and starting a new one, the Pause/Resume and Stop buttons were disabled.
 
@@ -325,11 +316,8 @@ Bot info:
 
 - Bot API for .Net:
     - Setting Bot.TargetSpeed did not set the distance to travel.
-    - Fixed issue with turning the body, gun, and radar as first and only
-      thing ([#22](https://github.com/robocode-dev/tank-royale/issues/22)
-      , [#23](https://github.com/robocode-dev/tank-royale/issues/23)).
-    - Fixed issue with event queue reaching max after bot has terminated execution
-      ([#23](https://github.com/robocode-dev/tank-royale/issues/23)).
+    - Fixed issue with turning the body, gun, and radar as first and only thing ([#22], [#23]).
+    - Fixed issue with event queue reaching max after bot has terminated execution ([#23]).
 - Bot APIs:
     - Added missing documentation about using positive and negative infinity values when moving and turning.
 
@@ -338,13 +326,12 @@ Bot info:
 #### 🪲 Bug Fixes
 
 - Bot APIs:
-    - ~~Fixed issue with turning the body, gun, and radar as first and only
-      thing ([#23](https://github.com/robocode-dev/tank-royale/issues/23)).~~
+    - ~~Fixed issue with turning the body, gun, and radar as first and only thing ([#23]).~~
     - Fixed issue with rescanning and interrupting current event handler. Redesigned the event queue.
     - Fixed issue with dangling threads not been stopped (interrupted) correctly.
 - Bot API for .Net:
     - Fixed issue with country codes (on macOS) which also caused boot up problems for .Net based bots running under
-      macOS ([#20](https://github.com/robocode-dev/tank-royale/discussions/20)).
+      macOS ([#20]).
     - Fixed issue with bots stopping doing actions when battle is restarted. E.g. the Corners sample bot was affected by
       this issue.
 
@@ -379,8 +366,7 @@ Bot info:
 #### 🪲 Bug Fixes
 
 - Bot API:
-    - Blocking bot functions do not stop bot after
-      finishing ([#17](https://github.com/robocode-dev/tank-royale/issues/17)).
+    - Blocking bot functions do not stop bot after finishing ([#17]).
     - Fixed issue where event queue would overflow with unhandled events when a Bot´s `run()` method has ended.
 - GUI:
     - The 'Start game' button is now disabled when the minimum or maximum number of participants is not met.
@@ -412,7 +398,7 @@ Bot info:
 
 #### 🪲 Bug Fixes
 
-- Battle does not restart ([#10](https://github.com/robocode-dev/tank-royale/issues/10)).
+- Battle does not restart ([#10]).
 - Bot API did not stop thread when GameAbortedEvent occurred (when restarting).
 - When restarting, a two or more games could be started on the server.
 
@@ -468,7 +454,7 @@ Bot info:
 
 #### Changes
 
-- Moved documentation from robocode.dev to [GitHub Pages](https://robocode-dev.github.io/tank-royale/)
+- Moved documentation from robocode.dev to [GitHub Pages].
 - Changed the default server port from 80 to 7654 to avoid the use of `sudo` before `java` command (ports above 1023
   does not need `sudo`)
 - Bot APIs: Moved constants to a Constants class.
@@ -489,4 +475,40 @@ Bot info:
 
 - First alpha version was released! 🚀😀
 
+[#4]: https://github.com/robocode-dev/tank-royale/issues/4
+
+[#8]: https://github.com/robocode-dev/tank-royale/discussions/8
+
+[#12]: https://github.com/robocode-dev/tank-royale/issues/12
+
+[#17]: https://github.com/robocode-dev/tank-royale/discussions/17
+
+[#20]: https://github.com/robocode-dev/tank-royale/discussions/20
+
+[#22]: https://github.com/robocode-dev/tank-royale/issues/22
+
+[#23]: https://github.com/robocode-dev/tank-royale/issues/23
+
+[#26]: https://github.com/robocode-dev/tank-royale/discussions/26
+
+[#28]: https://github.com/robocode-dev/tank-royale/issues/28
+
+[#31]: https://github.com/robocode-dev/tank-royale/issues/31
+
+[#38]: https://github.com/robocode-dev/tank-royale/issues/38
+
+[#43]: https://github.com/robocode-dev/tank-royale/issues/43
+
+[#45]: https://github.com/robocode-dev/tank-royale/issues/45
+
+[#52]: https://github.com/robocode-dev/tank-royale/discussions/52#discussioncomment-4332072
+
+[#53]: https://github.com/robocode-dev/tank-royale/issues/53
+
+[BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
+
 [BotInfo.FromConfiguration(IConfiguration)]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_Microsoft_Extensions_Configuration_IConfiguration_
+
+[sounds releases]: https://github.com/robocode-dev/sounds/releases
+
+[GitHub Pages]: https://robocode-dev.github.io/tank-royale/

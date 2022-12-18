@@ -19,15 +19,15 @@ public static class EnvironmentVariables
     public static void SetAllEnvVarsToDefaultValues()
     {
         SetEnvVar(ServerUrl, "ws://localhost:" + MockedServer.Port);
-        SetEnvVar(BotName, "MyBot");
+        SetEnvVar(BotName, "TestBot");
         SetEnvVar(BotVersion, "1.0");
-        SetEnvVar(BotAuthors, "Author1, Author2");
-        SetEnvVar(BotGameTypes, "1v1, classic, melee");
+        SetEnvVar(BotAuthors, "Author 1, Author 2");
+        SetEnvVar(BotGameTypes, "classic, 1v1, melee");
         SetEnvVar(BotDescription, "Short description");
-        SetEnvVar(BotHomepage, "https://somewhere.net/MyBot");
+        SetEnvVar(BotHomepage, "https://testbot.robocode.dev");
         SetEnvVar(BotCountryCodes, "gb, us");
-        SetEnvVar(BotPlatform, ".Net 5");
-        SetEnvVar(BotProgrammingLang, "C# 8");
+        SetEnvVar(BotPlatform, ".Net 6");
+        SetEnvVar(BotProgrammingLang, "C# 10");
         SetEnvVar(BotInitialPosition, "50,50, 90");
     }
 

@@ -3,6 +3,8 @@ package dev.robocode.tankroyale.botapi.events;
 import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.IBot;
 
+import java.util.concurrent.Callable;
+
 /**
  * The Condition class is used for testing if a specific condition is met. For example, program
  * execution can be blocked by using the {@link IBot#waitFor} method, which will wait until a
@@ -37,28 +39,66 @@ import dev.robocode.tankroyale.botapi.IBot;
  *    }
  *  }
  * </code></pre>
+ *
+ * <p>Here is another example using the same condition using a lambda expression instead of a (reusable) class:
+ *
+ * <pre><code class="language-java">
+ *  public class MyBot extends Bot {
+ *    public void run() {
+ *      while (isRunning()) {
+ *        ...
+ *        setTurnRight(90);
+ *        waitFor(new Condition(() -&gt; getTurnRemaining() == 0));
+ *        ...
+ *      }
+ *    }
+ * </code></pre>
  */
-public abstract class Condition {
+public class Condition {
 
     // Optional name of the condition.
     private final String name;
 
+    // Optional Callable
+    private final Callable<Boolean> callable;
+
     /**
-     * Constructor for initializing a new instance of the Condition class. With this constructor the
-     * condition will be without a name.
+     * Constructor for initializing a new instance of the Condition class.
      */
     public Condition() {
-        this.name = null;
+        this(null, null);
     }
 
     /**
-     * Constructor for initializing a new instance of the Condition class. With this constructor the
-     * condition will be given a name of your choice.
+     * Constructor for initializing a new instance of the Condition class.
      *
      * @param name is the name of the condition used for identifying a specific condition between
      *             multiple conditions with the {@link IBaseBot#onCustomEvent} event handler.
      */
     public Condition(String name) {
+        this(name, null);
+    }
+
+    /**
+     * Constructor for initializing a new instance of the Condition class.
+     *
+     * @param callable is a callable containing a method returning {@code true}, if some condition is met,
+     *                 or {@code false} when the condition is not met.
+     */
+    public Condition(Callable<Boolean> callable) {
+        this(null, callable);
+    }
+
+    /**
+     * Constructor for initializing a new instance of the Condition class.
+     *
+     * @param name     is the name of the condition used for identifying a specific condition between
+     *                 multiple conditions with the {@link IBaseBot#onCustomEvent} event handler.
+     * @param callable is a callable containing a method returning {@code true}, if some condition is met,
+     *                 or {@code false} when the condition is not met.
+     */
+    public Condition(String name, Callable<Boolean> callable) {
+        this.callable = callable;
         this.name = name;
     }
 
@@ -73,10 +113,18 @@ public abstract class Condition {
     }
 
     /**
-     * Overriding this test method is the purpose of a Condition. The game will call your test()
-     * function, and take action if it returns {@code true}.
+     * You can choose to override this method to let the game use it for testing your condition each turn.
+     * Alternatively, you can use the one of the constructors that take a {@link Callable} instead.
      *
      * @return {@code true} if the condition is met; {@code false} otherwise.
      */
-    public abstract boolean test();
+    public boolean test() {
+        if (callable != null) {
+            try {
+                return callable.call();
+            } catch (Exception ignore) {
+            }
+        }
+        return false;
+    }
 }

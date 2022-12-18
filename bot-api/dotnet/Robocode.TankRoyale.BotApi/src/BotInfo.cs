@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Robocode.TankRoyale.BotApi.Util;
 using static Robocode.TankRoyale.BotApi.Internal.CollectionUtil;

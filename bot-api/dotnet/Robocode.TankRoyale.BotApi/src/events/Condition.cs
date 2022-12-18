@@ -1,3 +1,5 @@
+using System;
+
 namespace Robocode.TankRoyale.BotApi.Events;
 
 /// <summary>
@@ -7,6 +9,7 @@ namespace Robocode.TankRoyale.BotApi.Events;
 /// event handler using the method <see cref="IBaseBot.AddCustomEvent(Condition)"/> that will trigger
 /// <see cref="IBaseBot.OnCustomEvent(CustomEvent)"/> when the condition is fulfilled.
 /// </summary>
+///
 /// <example>
 /// <code>
 /// public class MyBot : Bot
@@ -39,7 +42,25 @@ namespace Robocode.TankRoyale.BotApi.Events;
 /// }
 /// </code>
 /// </example>
-public abstract class Condition
+///
+/// <example>
+/// <code>
+/// public class MyBot : Bot
+/// {
+///   public void Run()
+///   {
+///     while (IsRunning)
+///     {
+///       ...
+///       SetTurnRight(90);
+///       WaitFor(new Condition(() => TurnRemaining == 0));
+///       ...
+///     }
+///   }
+/// }
+/// </code>
+/// </example>
+public class Condition
 {
     /// <summary>
     /// Returns the name of this condition, if a name has been provided for it.
@@ -48,30 +69,68 @@ public abstract class Condition
     /// <seealso cref="IBaseBot.OnCustomEvent(CustomEvent)"/>
     public string Name { get; }
 
+    private readonly Func<bool> testFunc;
+
     /// <summary>
-    /// Constructor for initializing a new instance of the Condition class. With this constructor the condition will be
-    /// without a name.
+    /// Constructor for initializing a new instance of the Condition class.
     /// </summary>
     public Condition()
     {
         Name = null;
+        testFunc = null;
     }
 
     /// <summary>
-    /// Constructor for initializing a new instance of the Condition class. With this constructor the condition will be
-    /// given a name of your choice.
+    /// Constructor for initializing a new instance of the Condition class.
     /// </summary>
     /// <param name="name">Is the name of the condition used for identifying a specific condition between multiple
     /// conditions with the <see cref="IBaseBot.OnCustomEvent(CustomEvent)"/> event handler.</param>
     public Condition(string name)
     {
         Name = name;
+        testFunc = null;
     }
 
     /// <summary>
-    /// Overriding the this test method is the purpose of a Condition. The game will call your <c>test()</c> function,
-    /// and take action if it returns <c>true</c>.
+    /// Constructor for initializing a new instance of the Condition class.
     /// </summary>
-    /// <return><c>true</c> if the condition is met; <c>code</c> otherwise.</return>
-    public abstract bool Test();
+    /// <param name="testFunc">Is a function/delegate containing a method returning <c>true</c>, if some condition is met,
+    /// or <c>false</c> when the condition is not met.</param>
+    public Condition(Func<bool> testFunc)
+    {
+        Name = null;
+        this.testFunc = testFunc;
+    }
+
+    /// <summary>
+    /// Constructor for initializing a new instance of the Condition class.
+    /// </summary>
+    /// <param name="name">Is the name of the condition used for identifying a specific condition between multiple
+    /// conditions with the <see cref="IBaseBot.OnCustomEvent(CustomEvent)"/> event handler.</param>
+    /// <param name="testFunc">Is a function/delegate containing a method returning <c>true</c>, if some condition is met,
+    /// or <c>false</c> when the condition is not met.</param>
+    public Condition(string name, Func<bool> testFunc)
+    {
+        Name = name;
+        this.testFunc = testFunc;
+    }
+
+    /// <summary>
+    /// You can choose to override this method to let the game use it for testing your condition each turn.
+    /// Alternatively, you can use the one of the constructors that take a <see cref="Func{TResult}"/> instead.
+    /// </summary>
+    /// <return><c>true</c> if the condition is met; <c>false</c> otherwise.</return>
+    public virtual bool Test()
+    {
+        if (testFunc == null)
+            return false;
+        try
+        {
+            return testFunc.Invoke();
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
 }

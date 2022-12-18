@@ -109,22 +109,6 @@ class EnvVarsTest
                 SetEnvVar(BotGameTypes, "classic, 1v1, melee");
                 Assert.That(EnvVars.GetBotInfo().GameTypes, Is.EquivalentTo(new[] { "classic", "1v1", "melee" }));
             }
-
-            [Test]
-            public void GivenMissingEnvVar_whenCallingGameTypes_thenThrowBotExceptionWithMissingEnvInfo()
-            {
-                ClearEnvVar(BotGameTypes);
-                var exception = Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
-                Assert.That(exception?.Message, Is.EqualTo(MissingEnvVarText + BotGameTypes));
-            }
-
-            [Test]
-            public void GivenBlankEnvVar_whenCallingGameTypes_thenThrowBotExceptionWithMissingEnvInfo()
-            {
-                SetEnvVar(BotGameTypes, "  \t");
-                var exception = Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
-                Assert.That(exception?.Message, Is.EqualTo(MissingEnvVarText + BotGameTypes));
-            }
         }
 
         [TestFixture]

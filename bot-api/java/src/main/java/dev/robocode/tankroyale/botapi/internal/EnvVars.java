@@ -79,9 +79,6 @@ final class EnvVars {
         if (isBlank(getBotAuthors())) {
             throw new BotException(MISSING_ENV_VALUE + BOT_AUTHORS);
         }
-        if (isBlank(getBotGameTypes())) {
-            throw new BotException(MISSING_ENV_VALUE + BOT_GAME_TYPES);
-        }
         return new BotInfo(
                 getBotName(),
                 getBotVersion(),

@@ -144,28 +144,6 @@ class EnvVarsTest {
                 assertThat(EnvVars.getBotInfo().getGameTypes()).containsAll(List.of("classic", "1v1", "melee"));
             }
 
-            @Test
-            @ClearEnvironmentVariable(key = BOT_GAME_TYPES)
-            void givenMissingEnvVar_whenCallingGameTypes_thenThrowBotExceptionWithMissingEnvInfo() {
-                // when
-                var thrown = catchThrowable(EnvVars::getBotInfo);
-                // then
-                assertThat(thrown)
-                        .isInstanceOf(BotException.class)
-                        .hasMessageContaining(MISSING_ENV_VAR_TEXT + BOT_GAME_TYPES);
-            }
-
-            @Test
-            @SetEnvironmentVariable(key = BOT_GAME_TYPES, value = "  \t")
-            void givenBlankEnvVar_whenCallingGameTypes_thenThrowBotExceptionWithMissingEnvInfo() {
-                // when
-                var thrown = catchThrowable(EnvVars::getBotInfo);
-                // then
-                assertThat(thrown)
-                        .isInstanceOf(BotException.class)
-                        .hasMessageContaining(MISSING_ENV_VAR_TEXT + BOT_GAME_TYPES);
-            }
-
             @Nested
             @DisplayName("Tests for getDescription()")
             class GetDescription {

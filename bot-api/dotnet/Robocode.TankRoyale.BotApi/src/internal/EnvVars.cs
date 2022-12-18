@@ -73,11 +73,6 @@ internal static class EnvVars
             throw new BotException(MissingEnvValue + BotAuthors);
         }
 
-        if (GetBotGameTypes().Count == 0)
-        {
-            throw new BotException(MissingEnvValue + BotGameTypes);
-        }
-
         return new BotInfo(
             GetBotName(),
             GetBotVersion(),

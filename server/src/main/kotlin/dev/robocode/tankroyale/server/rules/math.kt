@@ -71,21 +71,21 @@ fun limitRadarTurnRate(radarTurnRate: Double): Double = clamp(radarTurnRate, -MA
  * @param speed is the speed that limits the driving turn rate.
  * @return maximum turn rate.
  */
-fun calcMaxTurnRate(speed: Double): Double = MAX_TURN_RATE - 0.75 * abs(speed)
+fun calcMaxTurnRate(speed: Double): Double = MAX_TURN_RATE - 0.75 * abs(clampSpeed(speed))
 
 /**
  * Calculates wall damage.
  * @param speed is the speed of the bot hitting the wall.
  * @return wall damage.
  */
-fun calcWallDamage(speed: Double): Double = (abs(speed) / 2 - 1).coerceAtLeast(0.0)
+fun calcWallDamage(speed: Double): Double = (abs(clampSpeed(speed)) / 2 - 1).coerceAtLeast(0.0)
 
 /**
  * Calculates bullet speed.
  * @param firepower is the firepower used for firing the bullet.
  * @return bullet speed.
  */
-fun calcBulletSpeed(firepower: Double): Double = 20 - 3 * firepower
+fun calcBulletSpeed(firepower: Double): Double = 20 - 3 * clampFirepower(firepower)
 
 /**
  * Calculates bullet damage.
@@ -93,7 +93,7 @@ fun calcBulletSpeed(firepower: Double): Double = 20 - 3 * firepower
  * @return bullet damage.
  */
 fun calcBulletDamage(firepower: Double): Double {
-    var damage = 4 * firepower
+    var damage = 4 * clampFirepower(firepower)
     if (firepower > 1) {
         damage += 2 * (firepower - 1)
     }
@@ -105,4 +105,8 @@ fun calcBulletDamage(firepower: Double): Double {
  * @param firepower is the firepower used for firing the bullet.
  * @return gun heat.
  */
-fun calcGunHeat(firepower: Double): Double = 1 + firepower / 5
+fun calcGunHeat(firepower: Double): Double = 1 + clampFirepower(firepower) / 5
+
+fun clampSpeed(speed: Double) = clamp(speed, MAX_BACKWARD_SPEED, MAX_FORWARD_SPEED)
+
+fun clampFirepower(firepower: Double) = clamp(firepower, MIN_FIREPOWER, MAX_FIREPOWER)

@@ -176,13 +176,13 @@ public abstract class BaseBot : IBaseBot
     public double RadarDirection => __baseBotInternals.CurrentTick.BotState.RadarDirection;
 
     /// <inheritdoc/>
-    public double Speed => __baseBotInternals.CurrentTick.BotState.Speed;
+    public double Speed => __baseBotInternals.Speed;
 
     /// <inheritdoc/>
-    public double GunHeat => __baseBotInternals.CurrentTick.BotState.GunHeat;
+    public double GunHeat => __baseBotInternals.GunHeat;
 
     /// <inheritdoc/>
-    public IEnumerable<BulletState> BulletStates => __baseBotInternals.CurrentTick.BulletStates;
+    public IEnumerable<BulletState> BulletStates => __baseBotInternals.BulletStates;
 
     /// <inheritdoc/>
     public IList<BotEvent> Events => __baseBotInternals.Events;
@@ -196,120 +196,56 @@ public abstract class BaseBot : IBaseBot
     /// <inheritdoc/>
     public virtual double TurnRate
     {
-        set
-        {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("TurnRate cannot be NaN");
-            }
-
-            __baseBotInternals.BotIntent.TurnRate = value;
-        }
-        get => __baseBotInternals.CurrentTick.BotState.TurnRate;
+        set => __baseBotInternals.TurnRate = value;
+        get => __baseBotInternals.TurnRate;
     }
 
     /// <inheritdoc/>
     public double MaxTurnRate
     {
-        set
-        {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("MaxTurnRate cannot be NaN");
-            }
-
-            __baseBotInternals.MaxTurnRate = value;
-        }
+        set => __baseBotInternals.MaxTurnRate = value;
         get => __baseBotInternals.MaxTurnRate;
     }
 
     /// <inheritdoc/>
     public virtual double GunTurnRate
     {
-        set
-        {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("GunTurnRate cannot be NaN");
-            }
-
-            __baseBotInternals.BotIntent.GunTurnRate = value;
-        }
-        get => __baseBotInternals.CurrentTick.BotState.GunTurnRate;
+        set => __baseBotInternals.GunTurnRate = value;
+        get => __baseBotInternals.GunTurnRate;
     }
 
     /// <inheritdoc/>
     public double MaxGunTurnRate
     {
-        set
-        {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("MaxGunTurnRate cannot be NaN");
-            }
-
-            __baseBotInternals.MaxGunTurnRate = value;
-        }
+        set => __baseBotInternals.MaxGunTurnRate = value;
         get => __baseBotInternals.MaxGunTurnRate;
     }
 
     /// <inheritdoc/>
     public virtual double RadarTurnRate
     {
-        set
-        {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("RadarTurnRate cannot be NaN");
-            }
-
-            __baseBotInternals.BotIntent.RadarTurnRate = value;
-        }
-        get => __baseBotInternals.CurrentTick.BotState.RadarTurnRate;
+        set => __baseBotInternals.RadarTurnRate = value;
+        get => __baseBotInternals.RadarTurnRate;
     }
 
     /// <inheritdoc/>
     public double MaxRadarTurnRate
     {
-        set
-        {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("MaxRadarTurnRate cannot be NaN");
-            }
-
-            __baseBotInternals.MaxRadarTurnRate = value;
-        }
+        set => __baseBotInternals.MaxRadarTurnRate = value;
         get => __baseBotInternals.MaxRadarTurnRate;
     }
 
     /// <inheritdoc/>
     public double TargetSpeed
     {
-        set
-        {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("TargetSpeed cannot be NaN");
-            }
-
-            __baseBotInternals.BotIntent.TargetSpeed = value;
-        }
-        get => __baseBotInternals.BotIntent.TargetSpeed ?? 0d;
+        set => __baseBotInternals.TargetSpeed = value;
+        get => __baseBotInternals.TargetSpeed;
     }
 
     /// <inheritdoc/>
     public double MaxSpeed
     {
-        set
-        {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("MaxSpeed cannot be NaN");
-            }
-
-            __baseBotInternals.MaxSpeed = value;
-        }
+        set => __baseBotInternals.MaxSpeed = value;
         get => __baseBotInternals.MaxSpeed;
     }
 
@@ -366,15 +302,15 @@ public abstract class BaseBot : IBaseBot
     }
 
     /// <inheritdoc/>
-    public void AddCustomEvent(Condition condition)
+    public bool AddCustomEvent(Condition condition)
     {
-        __baseBotInternals.AddCondition(condition);
+        return __baseBotInternals.AddCondition(condition);
     }
 
     /// <inheritdoc/>
-    public void RemoveCustomEvent(Condition condition)
+    public bool RemoveCustomEvent(Condition condition)
     {
-        __baseBotInternals.RemoveCondition(condition);
+        return __baseBotInternals.RemoveCondition(condition);
     }
 
     /// <inheritdoc/>
@@ -395,60 +331,63 @@ public abstract class BaseBot : IBaseBot
     /// <inheritdoc/>
     public Color BodyColor
     {
-        get => __baseBotInternals.CurrentTick.BotState.BodyColor;
-        set => __baseBotInternals.BotIntent.BodyColor = ToIntentColor(value);
+        get => __baseBotInternals.BodyColor;
+        set => __baseBotInternals.BodyColor = value;
     }
 
     /// <inheritdoc/>
     public Color TurretColor
     {
-        get => __baseBotInternals.CurrentTick.BotState.TurretColor;
-        set => __baseBotInternals.BotIntent.TurretColor = ToIntentColor(value);
+        get => __baseBotInternals.TurretColor;
+        set => __baseBotInternals.TurretColor = value;
     }
 
     /// <inheritdoc/>
     public Color RadarColor
     {
-        get => __baseBotInternals.CurrentTick.BotState.RadarColor;
-        set => __baseBotInternals.BotIntent.RadarColor = ToIntentColor(value);
+        get => __baseBotInternals.RadarColor;
+        set => __baseBotInternals.RadarColor = value;
     }
 
     /// <inheritdoc/>
     public Color BulletColor
     {
-        get => __baseBotInternals.CurrentTick.BotState.BulletColor;
-        set => __baseBotInternals.BotIntent.BulletColor = ToIntentColor(value);
+        get => __baseBotInternals.BulletColor;
+        set => __baseBotInternals.BulletColor = value;
     }
 
     /// <inheritdoc/>
     public Color ScanColor
     {
-        get => __baseBotInternals.CurrentTick.BotState.ScanColor;
-        set => __baseBotInternals.BotIntent.ScanColor = ToIntentColor(value);
+        get => __baseBotInternals.ScanColor;
+        set => __baseBotInternals.ScanColor = value;
     }
 
     /// <inheritdoc/>
     public Color TracksColor
     {
-        get => __baseBotInternals.CurrentTick.BotState.TracksColor;
-        set => __baseBotInternals.BotIntent.TracksColor = ToIntentColor(value);
+        get => __baseBotInternals.TracksColor;
+        set => __baseBotInternals.TracksColor = value;
     }
 
     /// <inheritdoc/>
     public Color GunColor
     {
-        get => __baseBotInternals.CurrentTick.BotState.GunColor;
-        set => __baseBotInternals.BotIntent.GunColor = ToIntentColor(value);
+        get => __baseBotInternals.GunColor;
+        set => __baseBotInternals.GunColor = value;
     }
 
     /// <inheritdoc/>
-    public double CalcMaxTurnRate(double speed) => Constants.MaxTurnRate - 0.75 * Math.Abs(speed);
+    public double CalcMaxTurnRate(double speed) =>
+        Constants.MaxTurnRate - 0.75 * Math.Abs(Math.Clamp(speed, -Constants.MaxSpeed, Constants.MaxSpeed));
 
     /// <inheritdoc/>
-    public virtual double CalcBulletSpeed(double firepower) => 20 - 3 * firepower;
+    public virtual double CalcBulletSpeed(double firepower) =>
+        20 - 3 * Math.Clamp(firepower, Constants.MinFirepower, Constants.MaxFirepower);
 
     /// <inheritdoc/>
-    public virtual double CalcGunHeat(double firepower) => 1 + (firepower / 5);
+    public virtual double CalcGunHeat(double firepower) =>
+        1 + (Math.Clamp(firepower, Constants.MinFirepower, Constants.MaxFirepower) / 5);
 
     /// <inheritdoc/>
     public virtual double CalcBearing(double direction) => NormalizeRelativeAngle(direction - Direction);
@@ -626,10 +565,5 @@ public abstract class BaseBot : IBaseBot
     /// <inheritdoc/>
     public virtual void OnCustomEvent(CustomEvent customEvent)
     {
-    }
-
-    private static string ToIntentColor(Color color)
-    {
-        return color == null ? null : "#" + color.ToHex();
     }
 }

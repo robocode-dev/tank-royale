@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * Interface containing the core API for a bot.
- *
+ * <br>
  * <script src="../../../../prism.js"></script>
  */
 @SuppressWarnings({"UnusedDeclaration", "EmptyMethod"})
@@ -748,18 +748,20 @@ public interface IBaseBot {
      * {@link Condition#test} returns {@code true}.
      *
      * @param condition is the condition that must be met to trigger the custom event.
+     * @return {@code true} if the condition was not added already; {@code false} if the condition was already added.
      * @see #removeCustomEvent
      */
-    void addCustomEvent(Condition condition);
+    boolean addCustomEvent(Condition condition);
 
     /**
      * Removes triggering a custom event handler for a specific condition that was previously added
      * with {@link #addCustomEvent}.
      *
      * @param condition is the condition that was previously added with {@link #addCustomEvent}
+     * @return {@code true} if the condition was found; {@code false} if the condition was not found.
      * @see #addCustomEvent
      */
-    void removeCustomEvent(Condition condition);
+    boolean removeCustomEvent(Condition condition);
 
     /**
      * Set the bot to stop all movement including turning the gun and radar. The remaining movement is
@@ -804,7 +806,8 @@ public interface IBaseBot {
     /**
      * Returns the color of the body.
      *
-     * @return The color of the body.
+     * @return The color of the body or {@code null} if no color has been set yet, meaning that the default color
+     * will be used.
      */
     Color getBodyColor();
 
@@ -819,14 +822,15 @@ public interface IBaseBot {
      *     setBodyColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
-     * @param color is the color of the body or {@code null} if the bot uses the default color.
+     * @param color is the color of the body or {@code null} if the bot must use the default color instead.
      */
     void setBodyColor(Color color);
 
     /**
      * Returns the color of the gun turret.
      *
-     * @return The color of the gun turret.
+     * @return The color of the turret or {@code null} if no color has been set yet, meaning that the default color
+     * will be used.
      */
     Color getTurretColor();
 
@@ -841,14 +845,15 @@ public interface IBaseBot {
      *     setTurretColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
-     * @param color is the color of the gun turret or {@code null} if the bot uses the default color.
+     * @param color is the color of the gun turret or {@code null} if the bot must use the default color instead.
      */
     void setTurretColor(Color color);
 
     /**
      * Returns the color of the radar.
      *
-     * @return The color of the radar.
+     * @return The color of the radar or {@code null} if no color has been set yet, meaning that the default color
+     * will be used.
      */
     Color getRadarColor();
 
@@ -863,14 +868,15 @@ public interface IBaseBot {
      *     setRadarColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
-     * @param color is the color of the radar or {@code null} if the bot uses the default color.
+     * @param color is the color of the radar or {@code null} if the bot must use the default color instead.
      */
     void setRadarColor(Color color);
 
     /**
      * Returns the color of the fired bullets.
      *
-     * @return The color of the fired bullets.
+     * @return The color of the bullets or {@code null} if no color has been set yet, meaning that the default color
+     * will be used.
      */
     Color getBulletColor();
 
@@ -888,14 +894,15 @@ public interface IBaseBot {
      *     setBulletColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
-     * @param color is the color of the fired bullets or {@code null} if the bot uses the default color.
+     * @param color is the color of the fired bullets or {@code null} if the bot must use the default color instead.
      */
     void setBulletColor(Color color);
 
     /**
      * Returns the color of the scan arc.
      *
-     * @return The color of the scan arc.
+     * @return The color of the scan arc or {@code null} if no color has been set yet, meaning that the default color
+     * will be used.
      */
     Color getScanColor();
 
@@ -910,14 +917,15 @@ public interface IBaseBot {
      *     setScanColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
-     * @param color is the color of the scan arc or {@code null} if the bot uses the default color.
+     * @param color is the color of the scan arc or {@code null} if the bot must use the default color instead.
      */
     void setScanColor(Color color);
 
     /**
      * Returns the color of the tracks.
      *
-     * @return The color of the tracks.
+     * @return The color of the tracks or {@code null} if no color has been set yet, meaning that the default color
+     * will be used.
      */
     Color getTracksColor();
 
@@ -932,14 +940,15 @@ public interface IBaseBot {
      *     setTracksColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
-     * @param color is the color of the tracks or {@code null} if the bot uses the default color.
+     * @param color is the color of the tracks or {@code null} if the bot must use the default color instead.
      */
     void setTracksColor(Color color);
 
     /**
      * Returns the color of the gun.
      *
-     * @return The color of the gun.
+     * @return The color of the gun or {@code null} if no color has been set yet, meaning that the default color
+     * will be used.
      */
     Color getGunColor();
 
@@ -954,7 +963,7 @@ public interface IBaseBot {
      *     setGunColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
-     * @param color is the color of the gun or {@code null} if the bot uses the default color.
+     * @param color is the color of the gun or {@code null} if the bot must use the default color instead.
      */
     void setGunColor(Color color);
 

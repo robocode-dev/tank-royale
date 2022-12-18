@@ -132,9 +132,9 @@ public class ColorTest
         [Test]
         public void GivenTwoCreatedColorsWithDifferentRgbValues_whenCallingIsEqualTo_thenTheTwoColorsMustNotBeEqual()
         {
-            Assert.That(new Color(10, 20, 30), !Is.EqualTo(new Color(11, 20, 30)));
-            Assert.That(new Color(10, 20, 30), !Is.EqualTo(new Color(10, 22, 30)));
-            Assert.That(new Color(10, 20, 30), !Is.EqualTo(new Color(10, 20, 33)));
+            Assert.That(new Color(10, 20, 30), Is.Not.EqualTo(new Color(11, 20, 30)));
+            Assert.That(new Color(10, 20, 30), Is.Not.EqualTo(new Color(10, 22, 30)));
+            Assert.That(new Color(10, 20, 30), Is.Not.EqualTo(new Color(10, 20, 33)));
         }
     }
 
