@@ -1,8 +1,5 @@
 package dev.robocode.tankroyale.server.model
 
-import dev.robocode.tankroyale.server.math.isNearTo
-import dev.robocode.tankroyale.server.math.isNotNearTo
-
 /** Bot interface. */
 interface IBot {
     /** Bot id */

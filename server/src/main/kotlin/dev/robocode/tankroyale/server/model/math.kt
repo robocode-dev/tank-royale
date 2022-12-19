@@ -1,8 +1,5 @@
-package dev.robocode.tankroyale.server.math
+package dev.robocode.tankroyale.server.model
 
-import dev.robocode.tankroyale.server.model.IPoint
-import dev.robocode.tankroyale.server.model.Line
-import dev.robocode.tankroyale.server.model.Point
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -37,8 +34,8 @@ fun normalizeRelativeDegrees(angle: Double): Double {
 /**
  * Tests if a `double` value is near to another 'double' value. It is recommended to use this method instead of testing
  * if the two doubles are equal using an expression like this: `value1 == value2`. The reason is that this expression
- * might never become `true` due to the precision of double values. Whether or not, the specified doubles are close
- * enough to be considered as equal, is defined by the following expression:
+ * might never become `true` due to the precision of double values. Whether, the specified doubles are close enough to
+ * be considered as equal, is defined by the following expression:
  * `abs(value1 - value2) < epsilon`, where epsilon is defined to be 1E-6.
  *
  * @param value the `double` value to compare to this double.
@@ -290,13 +287,13 @@ fun isCircleIntersectingCircleSector(
 
 /**
  * Checks if vector v1 is clockwise to vector v2 compared to a shared starting point.
- * @param v1_x is the x coordinate of vector v1.
- * @param v1_y is the y coordinate of vector v1.
- * @param v2_x is the x coordinate of vector v2.
- * @param v2_y is the y coordinate of vector v2.
+ * @param v1x is the x coordinate of vector v1.
+ * @param v1y is the y coordinate of vector v1.
+ * @param v2x is the x coordinate of vector v2.
+ * @param v2y is the y coordinate of vector v2.
  * @return `true` if v1 is clockwise to v2; `false` otherwise.
  */
-fun isClockwise(v1_x: Double, v1_y: Double, v2_x: Double, v2_y: Double): Boolean = v1_x * v2_y <= v1_y * v2_x
+fun isClockwise(v1x: Double, v1y: Double, v2x: Double, v2y: Double): Boolean = v1x * v2y <= v1y * v2x
 
 /**
  * Returns a random direction in the range 0 up to 360 degrees.
