@@ -1,18 +1,25 @@
 # Versions
 
+## 📦 0.18.1 
+
+#### 🪲 Bug Fixes
+
+- Bot API:
+    - Fixed issues with moving and turning, which could override the set target speed and turn rates, when these had
+      been set explicitly on the API.
+
 ## 📦 0.18.0 - Improvements to the Bot APIs - 18-Dec-2022
 
 #### 🪲 Bug Fixes
 
-- Bot API
+- Bot API:
     - [#52]: The Bot API used comma-separated strings for `authors`, `countryCodes`, and `gameTypes` when parsing
       the `BotInfo` schema even though the [BotInfo/BotHandshake] uses string arrays. This was fixed to keep Bot APIs
       consistent with the schemas.
     - [#53]: Major bug where each bot received the bullet states of _all_ bullets on the battle arena, including bullets
-      fired by other bots, and not just the bullets fired by the
-      bot itself.
-    - Fixed issues with moving and turning, which could override the set target speed and turn rates, when these had
-      been set explicitly on the API.
+      fired by other bots, and not just the bullets fired by the bot itself.
+    - ~~Fixed issues with moving and turning, which could override the set target speed and turn rates, when these had
+      been set explicitly on the API.~~
     - Reading the turn rates and target speed for the current turn did not reflect if the turn rate and/or target speed
       had been set for the current turn.
 - Bot API for .Net:
@@ -64,7 +71,6 @@
 
 - [#43]: Possibility to identify bot from Process to Tick:
     - Went back to boot process `pid` instead of using the `boot id`.
-- ~~Bot API: The event priority order was reversed to be similar to the original Robocode.~~
 
 #### 🚀 Improvements
 
@@ -99,7 +105,6 @@
 #### 🚀 Improvements
 
 - [#43]: Possibility to identify bot from Process to Tick:
-    - ~~Reintroduced `boot id` to replace boot process id (`pid`)~~
     - Added `sessionId` and `bootId` to these schemas: `bot-handshake`, `bot-state-with-id`, and `participants`
 
 #### 🪲 Bug Fixes
@@ -133,23 +138,6 @@ only be unique locally, but across multiple systems. With the _session id_, all 
     - The `server-handshake` was missing the name and version.
 
 ## 📦 0.16.0 - Introduction of boot id - 31-Aug-2022
-
-~~The _boot id_ has been introduced to make it easier to identify which bots have booted locally. Previously, only the
-host and port were available on the server side, making it hard to identify the bots started from a controller.
-Now the boot id uniquely identifies a booted bot.~~
-
-~~Previously, a process id (pid) was used to uniquely identify a bot being booted, but the pid has been replaced by the
-new boot id.~~
-
-- ~~Schema:~~
-    - ~~The `bot-handshake` has been extended to include the `bootId` when the bot is booted locally. This field may be
-      empty when a bot has not been booted by the Booter.~~
-- ~~Booter~~:
-    - ~~Now generates a unique boot id for each booted bot, and sends this to the bot via the new `BOOT_ID` environment
-      variable.~~
-- ~~Bot API~~:
-    - ~~Takes the boot id from the `BOOT_ID` environment variable and includes this within the bot `bot-handshake` whens
-      it is sent to the server.~~
 
 #### 🪲 Bug Fixes
 
@@ -326,7 +314,6 @@ Bot info:
 #### 🪲 Bug Fixes
 
 - Bot APIs:
-    - ~~Fixed issue with turning the body, gun, and radar as first and only thing ([#23]).~~
     - Fixed issue with rescanning and interrupting current event handler. Redesigned the event queue.
     - Fixed issue with dangling threads not been stopped (interrupted) correctly.
 - Bot API for .Net:
