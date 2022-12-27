@@ -446,11 +446,11 @@ public final class BaseBotInternals {
             return -getNewTargetSpeed(-speed, -distance);
         }
         var targetSpeed = (distance == Double.POSITIVE_INFINITY) ?
-            maxSpeed : min(maxSpeed, getMaxSpeed(distance));
+                maxSpeed : min(maxSpeed, getMaxSpeed(distance));
 
         return (speed >= 0) ?
-            clamp(targetSpeed, speed - ABS_DECELERATION, speed + ACCELERATION) :
-            clamp(targetSpeed, speed - ACCELERATION, speed + getMaxDeceleration(-speed));
+                clamp(targetSpeed, speed - ABS_DECELERATION, speed + ACCELERATION) :
+                clamp(targetSpeed, speed - ACCELERATION, speed + getMaxDeceleration(-speed));
     }
 
     private double getMaxSpeed(double distance) {
