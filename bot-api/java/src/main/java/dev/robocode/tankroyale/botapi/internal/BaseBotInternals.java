@@ -673,7 +673,7 @@ public final class BaseBotInternals {
                         case ROUND_STARTED_EVENT:
                             handleRoundStarted(jsonMsg);
                             break;
-                        case ROUND_ENDED_EVENT:
+                        case ROUND_ENDED_EVENT_FOR_BOT:
                             handleRoundEnded(jsonMsg);
                             break;
                         case GAME_STARTED_EVENT_FOR_BOT:
@@ -729,7 +729,7 @@ public final class BaseBotInternals {
             var roundEndedEvent = gson.fromJson(jsonMsg, RoundEndedEvent.class);
 
             botEventHandlers.onRoundEnded.publish(new RoundEndedEvent(
-                    roundEndedEvent.getRoundNumber(), roundEndedEvent.getTurnNumber()));
+                    roundEndedEvent.getRoundNumber(), roundEndedEvent.getTurnNumber(), roundEndedEvent.getResults()));
         }
 
         private void handleGameStarted(JsonObject jsonMsg) {

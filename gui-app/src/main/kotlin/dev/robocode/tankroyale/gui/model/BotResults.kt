@@ -1,8 +1,10 @@
 package dev.robocode.tankroyale.gui.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+@SerialName("BotResultsForObserver")
 data class BotResults(
     val id: Int,
     val name: String,

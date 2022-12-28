@@ -23,7 +23,8 @@ properties:
       - GameResumedEventForObserver
 
       - RoundStartedEvent
-      - RoundEndedEvent
+      - RoundEndedEventForBot
+      - RoundEndedEventForObserver
 
       - ChangeTps
       - TpsChangedEvent

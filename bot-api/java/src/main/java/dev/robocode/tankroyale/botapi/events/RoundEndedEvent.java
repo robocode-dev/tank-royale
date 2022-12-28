@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.botapi.events;
 
+import dev.robocode.tankroyale.botapi.BotResults;
+
 /**
  * Event occurring when a round has just ended.
  */
@@ -12,15 +14,20 @@ public final class RoundEndedEvent implements IEvent {
     // The turn number.
     private final int turnNumber;
 
+    // The accumulated bot results.
+    private final BotResults results;
+
     /**
      * Initializes a new instance of the RoundEndedEvent class.
      *
      * @param roundNumber is the round number.
      * @param turnNumber  is the turn number.
+     * @param results     is the accumulated bot results at the end of the round.
      */
-    public RoundEndedEvent(int roundNumber, int turnNumber) {
+    public RoundEndedEvent(int roundNumber, int turnNumber, BotResults results) {
         this.roundNumber = roundNumber;
         this.turnNumber = turnNumber;
+        this.results = results;
     }
 
     /**
@@ -39,5 +46,14 @@ public final class RoundEndedEvent implements IEvent {
      */
     public int getTurnNumber() {
         return turnNumber;
+    }
+
+    /**
+     * Returns the accumulated bot results at the end of the round.
+     *
+     * @return The accumulated bot results at the end of the round.
+     */
+    public BotResults getResults() {
+        return results;
     }
 }
