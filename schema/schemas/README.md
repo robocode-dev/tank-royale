@@ -156,7 +156,7 @@ current game state for the observers, and the bot state for the bots.
 This is the crucial part for the bots, and these need to sent their _bot intent_ before the turn timeout occurs.
 
 - [round-started-event]
-- [round-ended-event]
+- [round-ended-event-for-bot]
 - [tick-event-for-bot]
 - [tick-event-for-observer]
 - [bot-intent]
@@ -330,7 +330,7 @@ Here are the events that a bot receives under a game:
 
 [round-started-event]: round-started-event.yaml
 
-[round-ended-event]: round-ended-event.yaml
+[round-ended-event-for-bot]: round-ended-event-for-bot.yaml
 
 [tick-event-for-bot]: tick-event-for-bot.yaml
 

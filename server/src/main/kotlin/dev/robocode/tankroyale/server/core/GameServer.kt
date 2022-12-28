@@ -387,7 +387,8 @@ class GameServer(
                 // Send round ended _after_ tick has been sent
                 if (roundEnded) {
                     log.debug("Round ended: $roundNumber")
-                    broadcastRoundEndedToAll(roundNumber, turnNumber)
+                    broadcastRoundEndedToParticipants(roundNumber, turnNumber)
+                    broadcastRoundEndedToObservers(roundNumber, turnNumber)
                 }
             }
         }
@@ -422,11 +423,27 @@ class GameServer(
         })
     }
 
-    private fun broadcastRoundEndedToAll(roundNumber: Int, turnNumber: Int) {
-        broadcastToAll(RoundEndedEvent().also {
-            it.type = Message.Type.ROUND_ENDED_EVENT
+    private fun broadcastRoundEndedToParticipants(roundNumber: Int, turnNumber: Int) {
+        participants.forEach { conn ->
+            participantIds[conn]?.let { botId ->
+                RoundEndedEventForBot().apply {
+                    type = Message.Type.ROUND_ENDED_EVENT_FOR_BOT
+                    this.roundNumber = roundNumber
+                    this.turnNumber = turnNumber
+                    results = getResultsForBot(botId)
+
+                    send(conn, this)
+                }
+            }
+        }
+    }
+
+    private fun broadcastRoundEndedToObservers(roundNumber: Int, turnNumber: Int) {
+        broadcastToObserverAndControllers(RoundEndedEventForObserver().also {
+            it.type = Message.Type.ROUND_ENDED_EVENT_FOR_OBSERVER
             it.roundNumber = roundNumber
             it.turnNumber = turnNumber
+            it.results = getResultsForObservers()
         })
     }
 

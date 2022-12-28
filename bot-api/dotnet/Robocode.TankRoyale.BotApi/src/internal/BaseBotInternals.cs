@@ -717,7 +717,7 @@ public sealed class BaseBotInternals
                 case S.MessageType.RoundStartedEvent:
                     HandleRoundStarted(json);
                     break;
-                case S.MessageType.RoundEndedEvent:
+                case S.MessageType.RoundEndedEventForBot:
                     HandleRoundEnded(json);
                     break;
                 case S.MessageType.GameStartedEventForBot:
@@ -776,12 +776,13 @@ public sealed class BaseBotInternals
 
     private void HandleRoundEnded(string json)
     {
-        var roundEndedEvent = JsonConvert.DeserializeObject<S.RoundEndedEvent>(json);
-        if (roundEndedEvent == null)
-            throw new BotException("RoundEndedEvent is missing in JSON message from server");
+        var roundEndedEventForBot = JsonConvert.DeserializeObject<S.RoundEndedEventForBot>(json);
+        if (roundEndedEventForBot == null)
+            throw new BotException("RoundEndedEventForBot is missing in JSON message from server");
 
-        BotEventHandlers.FireRoundEndedEvent(new E.RoundEndedEvent(roundEndedEvent.RoundNumber,
-            roundEndedEvent.TurnNumber));
+        var botResults = ResultsMapper.Map(roundEndedEventForBot.Results);
+        BotEventHandlers.FireRoundEndedEvent(new E.RoundEndedEvent(roundEndedEventForBot.RoundNumber,
+            roundEndedEventForBot.TurnNumber, botResults));
     }
 
     private void HandleGameStarted(string json)

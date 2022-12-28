@@ -156,10 +156,11 @@ class RoundStartedEvent(
 ) : Message()
 
 @Serializable
-@SerialName("RoundEndedEvent")
+@SerialName("RoundEndedEventForObserver")
 class RoundEndedEvent(
     val roundNumber: Int, // must be present for serialization
-    val turnNumber: Int // must be present for serialization
+    val turnNumber: Int,  // must be present for serialization
+    val results: List<BotResults> // must be present for serialization
 ) : Message()
 
 @Serializable
