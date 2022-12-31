@@ -18,10 +18,10 @@
 #### 🚀 Improvements
 
 - Bot API:
-   - The `RoundEndedEvent` now contains a `results` field containing the accumulated results by the end of a round.
+   - [#46]: The `RoundEndedEvent` now contains a `results` field containing the accumulated results by the end of a round.
 
 - Schema:
-   - The `round-ended-event` has been split up into `round-ended-event-for-bot` that provides only results for a bot, 
+   - [#46]: The `round-ended-event` has been split up into `round-ended-event-for-bot` that provides only results for a bot, 
      and `round-ended-event-for-observer` that provides the results for all bots for observers.
 
 #### 🪲 Bug Fixes
@@ -510,6 +510,8 @@ Bot info:
 [#43]: https://github.com/robocode-dev/tank-royale/issues/43
 
 [#45]: https://github.com/robocode-dev/tank-royale/issues/45
+
+[#46]: https://github.com/robocode-dev/tank-royale/issues/46
 
 [#52]: https://github.com/robocode-dev/tank-royale/discussions/52#discussioncomment-4332072
 
