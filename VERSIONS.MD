@@ -2,6 +2,15 @@
 
 ## 📦 0.19.0 - Introducing round results 
 
+#### 🚀 Improvements
+
+- Bot API:
+   - The `RoundEndedEvent` now contains a `results` field containing the accumulated results by the end of a round.
+
+- Schema:
+   - The `round-ended-event` has been split up into `round-ended-event-for-bot` that provides only results for a bot, 
+     and `round-ended-event-for-observer` that provides the results for all bots for observers.
+
 #### 🪲 Bug Fixes
 
 - Bot API:
