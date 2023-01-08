@@ -953,15 +953,20 @@ class ModelUpdater(
             bot.gunTurnRate = gunTurnRate
             bot.radarTurnRate = radarTurnRate
 
+            // -- Gun adjustment
             var gunAdjustment = turnRate + gunTurnRate
-
             if (intent.adjustGunForBodyTurn == true) {
                 gunAdjustment -= turnRate
             }
-            var radarAdjustment = gunAdjustment + radarTurnRate
 
+            // -- Radar adjustment
+            var radarAdjustment = gunAdjustment + radarTurnRate
             if (intent.adjustRadarForGunTurn == true) {
                 radarAdjustment -= gunTurnRate
+
+                if (intent.adjustGunForBodyTurn == true) {  // orig. Robocode compatibility
+                    radarAdjustment += turnRate
+                }
             }
             if (intent.adjustRadarForBodyTurn == true) {
                 radarAdjustment -= turnRate
