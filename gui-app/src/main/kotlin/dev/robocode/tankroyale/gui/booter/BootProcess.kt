@@ -41,9 +41,7 @@ object BootProcess {
             "info",
             "--game-types=${ConfigSettings.gameType.displayName}"
         )
-        val botDirs = getBotDirs().ifEmpty {
-            return emptyList()
-        }
+        val botDirs = getBotDirs().ifEmpty { emptyList() }
         botDirs.forEach { args += it }
 
         val process = ProcessBuilder(args).start()
