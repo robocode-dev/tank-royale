@@ -5,6 +5,7 @@
 #### 🪲 Bug Fixes
 
 - Bot API:
+    - `setAdjustRadarForGunTurn()` was made compatible with orig. Robocode.
     - Fixed issues with moving and turning, which could override the set target speed and turn rates, when these had
       been set explicitly on the API.
 
