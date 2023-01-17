@@ -41,6 +41,8 @@ object ArenaPanel : JPanel() {
     private var bots: Set<BotState> = HashSet()
     private var bullets: Set<BulletState> = HashSet()
 
+    private val tick = AtomicBoolean(false)
+
     init {
         addMouseWheelListener { e -> if (e != null) onMouseWheel(e) }
 
@@ -72,8 +74,6 @@ object ArenaPanel : JPanel() {
     private fun onGameEnded(gameEndedEvent: GameEndedEvent) {
         ResultsWindow(gameEndedEvent.results).isVisible = true
     }
-
-    private val tick = AtomicBoolean(false)
 
     private fun onTick(tickEvent: TickEvent) {
         if (tick.get()) return
