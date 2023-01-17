@@ -59,16 +59,9 @@ object ArenaPanel : JPanel() {
         })
 
         ClientEvents.apply {
-            onGameStarted.subscribe(ArenaPanel) { onGameStarted(it) }
             onGameEnded.subscribe(ArenaPanel) { onGameEnded(it) }
             onTickEvent.subscribe(ArenaPanel) { onTick(it) }
         }
-    }
-
-    private fun onGameStarted(gameStartedEvent: GameStartedEvent) {
-        val setup = gameStartedEvent.gameSetup
-        arenaWidth = setup.arenaWidth
-        arenaHeight = setup.arenaHeight
     }
 
     private fun onGameEnded(gameEndedEvent: GameEndedEvent) {
