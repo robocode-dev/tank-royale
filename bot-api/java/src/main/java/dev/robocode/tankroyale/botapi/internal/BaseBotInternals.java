@@ -25,6 +25,8 @@ import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
 import dev.robocode.tankroyale.schema.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -41,6 +43,7 @@ import static dev.robocode.tankroyale.botapi.mapper.ResultsMapper.map;
 import static java.lang.Math.*;
 import static java.net.http.WebSocket.Builder;
 import static java.net.http.WebSocket.Listener;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class BaseBotInternals {
     private static final String DEFAULT_SERVER_URL = "ws://localhost:7654";
@@ -101,6 +104,8 @@ public final class BaseBotInternals {
 
     private boolean eventHandlingDisabled;
 
+    private ByteArrayOutputStream stdOut, stdErr;
+
     private final Map<Class<? extends BotEvent>, Integer> eventPriorities = new HashMap<>();
 
     {
@@ -152,6 +157,21 @@ public final class BaseBotInternals {
     }
 
     private void init() {
+        redirectStdOutAndStdErr();
+        subscribeToEvents();
+    }
+
+    private void redirectStdOutAndStdErr() {
+        if (EnvVars.isBotBooted()) {
+            stdOut = new ByteArrayOutputStream();
+            stdErr = new ByteArrayOutputStream();
+
+            System.setOut(new PrintStream(stdOut, true, UTF_8));
+            System.setErr(new PrintStream(stdErr, true, UTF_8));
+        }
+    }
+
+    private void subscribeToEvents() {
         botEventHandlers.onRoundStarted.subscribe(this::onRoundStarted, 100);
         botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 100);
         botEventHandlers.onBulletFired.subscribe(this::onBulletFired, 100);
@@ -261,7 +281,21 @@ public final class BaseBotInternals {
     }
 
     private void sendIntent() {
+        setStdOutAndStdErrOnBotIntent();
         socket.sendText(gson.toJson(botIntent), true);
+    }
+
+    private void setStdOutAndStdErrOnBotIntent() {
+        if (stdOut != null) {
+            var out = stdOut.toString(UTF_8);
+            botIntent.setStdOut(JsonUtil.escaped(out));
+            stdOut.reset();
+        }
+        if (stdErr != null) {
+            var err = stdErr.toString(UTF_8);
+            botIntent.setStdErr(JsonUtil.escaped(err));
+            stdErr.reset();
+        }
     }
 
     private void waitForNextTurn(int turnNumber) {
@@ -446,11 +480,11 @@ public final class BaseBotInternals {
             return -getNewTargetSpeed(-speed, -distance);
         }
         var targetSpeed = (distance == Double.POSITIVE_INFINITY) ?
-            maxSpeed : min(maxSpeed, getMaxSpeed(distance));
+                maxSpeed : min(maxSpeed, getMaxSpeed(distance));
 
         return (speed >= 0) ?
-            clamp(targetSpeed, speed - ABS_DECELERATION, speed + ACCELERATION) :
-            clamp(targetSpeed, speed - ACCELERATION, speed + getMaxDeceleration(-speed));
+                clamp(targetSpeed, speed - ABS_DECELERATION, speed + ACCELERATION) :
+                clamp(targetSpeed, speed - ACCELERATION, speed + getMaxDeceleration(-speed));
     }
 
     private double getMaxSpeed(double distance) {

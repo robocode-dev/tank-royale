@@ -50,6 +50,9 @@ internal static class EnvVars
     /// <summary>Name of environment variable for bot initial position.</summary>
     private const string BotInitialPosition = "BOT_INITIAL_POS";
 
+    /// <summary>Name of environment variable that set if the bot is being booted.</summary>
+    private const string BotBooted = "BOT_BOOTED";
+    
     private const string MissingEnvValue = "Missing environment variable: ";
 
     /// <summary>
@@ -193,6 +196,15 @@ internal static class EnvVars
     private static InitialPosition GetBotInitialPosition()
     {
         return InitialPosition.FromString(Environment.GetEnvironmentVariable(BotInitialPosition));
+    }
+
+    /// <summary>
+    /// Checks if bot is being booted.
+    /// </summary>
+    /// <returns><c>true</c> if the bot is being booted; <c>false</c> otherwise.</returns>
+    internal static bool IsBotBooted()
+    {
+        return Environment.GetEnvironmentVariable(BotBooted) != null;
     }
 
     private static ICollection<string> GetEnvVarAsList(string envVarName)

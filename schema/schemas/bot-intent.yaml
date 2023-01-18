@@ -58,3 +58,9 @@ properties:
   gunColor:
     description: New color of the gun
     $ref: color.yaml
+  stdOut:
+    description: Text from standard output (stdout)
+    type: string
+  stdErr:
+    description: Text from standard error (stderr)
+    type: string

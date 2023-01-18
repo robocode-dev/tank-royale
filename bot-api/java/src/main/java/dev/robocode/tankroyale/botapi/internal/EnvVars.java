@@ -18,51 +18,55 @@ final class EnvVars {
     /**
      * Name of environment variable for server URI.
      */
-    static final String SERVER_URL = "SERVER_URL";
+    private static final String SERVER_URL = "SERVER_URL";
     /**
      * Name of environment variable for server URI.
      */
-    static final String SERVER_SECRET = "SERVER_SECRET";
+    private static final String SERVER_SECRET = "SERVER_SECRET";
     /**
      * Name of environment variable for bot name.
      */
-    static final String BOT_NAME = "BOT_NAME";
+    private static final String BOT_NAME = "BOT_NAME";
     /**
      * Name of environment variable for bot version.
      */
-    static final String BOT_VERSION = "BOT_VERSION";
+    private static final String BOT_VERSION = "BOT_VERSION";
     /**
      * Name of environment variable for bot author(s).
      */
-    static final String BOT_AUTHORS = "BOT_AUTHORS";
+    private static final String BOT_AUTHORS = "BOT_AUTHORS";
     /**
      * Name of environment variable for bot description.
      */
-    static final String BOT_DESCRIPTION = "BOT_DESCRIPTION";
+    private static final String BOT_DESCRIPTION = "BOT_DESCRIPTION";
     /**
      * Name of environment variable for bot homepage URL.
      */
-    static final String BOT_HOMEPAGE = "BOT_HOMEPAGE";
+    private static final String BOT_HOMEPAGE = "BOT_HOMEPAGE";
     /**
      * Name of environment variable for bot country code(s).
      */
-    static final String BOT_COUNTRY_CODES = "BOT_COUNTRY_CODES";
+    private static final String BOT_COUNTRY_CODES = "BOT_COUNTRY_CODES";
     /**
      * Name of environment variable for bot game type(s).
      */
-    static final String BOT_GAME_TYPES = "BOT_GAME_TYPES";
+    private static final String BOT_GAME_TYPES = "BOT_GAME_TYPES";
     /**
      * Name of environment variable for bot platform.
      */
-    static final String BOT_PLATFORM = "BOT_PLATFORM";
+    private static final String BOT_PLATFORM = "BOT_PLATFORM";
     /**
      * Name of environment variable for bot programming language.
      */
-    static final String BOT_PROG_LANG = "BOT_PROG_LANG";
+    private static final String BOT_PROG_LANG = "BOT_PROG_LANG";
     /**
      * Name of environment variable for bot initial position.
      */
-    static final String BOT_INITIAL_POS = "BOT_INITIAL_POS";
+    private static final String BOT_INITIAL_POS = "BOT_INITIAL_POS";
+    /**
+     * Name of environment variable that is set if bot is being booted.
+     */
+    private static final String BOT_BOOTED = "BOT_BOOTED";
 
     private static final String MISSING_ENV_VALUE = "Missing environment variable: ";
 
@@ -174,6 +178,13 @@ final class EnvVars {
      */
     static InitialPosition getBotInitialPosition() {
         return InitialPosition.fromString(System.getenv(BOT_INITIAL_POS));
+    }
+
+    /**
+     * Checks if bot is being booted.
+     */
+    public static boolean isBotBooted() {
+        return System.getenv(BOT_BOOTED) != null;
     }
 
     private static boolean isBlank(String s) {

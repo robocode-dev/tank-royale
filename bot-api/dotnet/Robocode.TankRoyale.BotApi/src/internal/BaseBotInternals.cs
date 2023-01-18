@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Threading;
+using System.Web;
 using Newtonsoft.Json;
 using S = Robocode.TankRoyale.Schema;
 using E = Robocode.TankRoyale.BotApi.Events;
@@ -62,6 +64,8 @@ public sealed class BaseBotInternals
 
     private bool eventHandlingDisabled;
 
+    private StringWriter stdOut, stdErr;
+
     private readonly IDictionary<Type, int> eventPriorities = new Dictionary<Type, int>();
 
     internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUrl, string serverSecret)
@@ -86,12 +90,30 @@ public sealed class BaseBotInternals
 
     private void Init(Uri serverUrl)
     {
+        RedirectStdOutAndStdErr();
+        InitializeWebSocketClient(serverUrl);
+        InitializeEventPriorities();
+        SubscribeToEvents();
+    }
+
+    private void RedirectStdOutAndStdErr()
+    {
+        if (!EnvVars.IsBotBooted()) return;
+        Console.SetOut(stdOut);
+        Console.SetError(stdErr);
+    }
+
+    private void InitializeWebSocketClient(Uri serverUrl)
+    {
         socket = new WebSocketClient(serverUrl);
         socket.OnConnected += HandleConnected;
         socket.OnDisconnected += HandleDisconnected;
         socket.OnError += HandleConnectionError;
         socket.OnTextMessage += HandleTextMessage;
+    }
 
+    private void InitializeEventPriorities()
+    {
         eventPriorities[typeof(E.TickEvent)] = Tick;
         eventPriorities[typeof(E.WonRoundEvent)] = WonRound;
         eventPriorities[typeof(E.SkippedTurnEvent)] = SkippedTurn;
@@ -106,7 +128,10 @@ public sealed class BaseBotInternals
         eventPriorities[typeof(E.HitBotEvent)] = HitBot;
         eventPriorities[typeof(E.ScannedBotEvent)] = ScannedBot;
         eventPriorities[typeof(E.DeathEvent)] = Death;
+    }
 
+    private void SubscribeToEvents()
+    {
         BotEventHandlers.OnRoundStarted.Subscribe(OnRoundStarted, 100);
         BotEventHandlers.OnNextTurn.Subscribe(OnNextTurn, 100);
         BotEventHandlers.OnBulletFired.Subscribe(OnBulletFired, 100);
@@ -234,7 +259,21 @@ public sealed class BaseBotInternals
 
     private void SendIntent()
     {
+        SetStdOutAndStdErrOnBotIntent();
         socket.SendTextMessage(JsonConvert.SerializeObject(BotIntent));
+    }
+
+    private void SetStdOutAndStdErrOnBotIntent()
+    {
+        if (stdOut != null)
+        {
+            BotIntent.StdOut = HttpUtility.JavaScriptStringEncode(stdOut.ToString());
+        }
+
+        if (stdErr != null)
+        {
+            BotIntent.StdErr = HttpUtility.JavaScriptStringEncode(stdErr?.ToString());
+        }
     }
 
     private void WaitForNextTurn(int turnNumber)
@@ -407,6 +446,7 @@ public sealed class BaseBotInternals
             {
                 throw new ArgumentException("MaxTurnRate cannot be NaN");
             }
+
             maxTurnRate = Math.Clamp(value, 0, Constants.MaxTurnRate);
         }
     }
@@ -420,6 +460,7 @@ public sealed class BaseBotInternals
             {
                 throw new ArgumentException("MaxGunTurnRate cannot be NaN");
             }
+
             maxGunTurnRate = Math.Clamp(value, 0, Constants.MaxGunTurnRate);
         }
     }
@@ -433,6 +474,7 @@ public sealed class BaseBotInternals
             {
                 throw new ArgumentException("MaxRadarTurnRate cannot be NaN");
             }
+
             maxRadarTurnRate = Math.Clamp(value, 0, Constants.MaxRadarTurnRate);
         }
     }
@@ -446,6 +488,7 @@ public sealed class BaseBotInternals
             {
                 throw new ArgumentException("MaxSpeed cannot be NaN");
             }
+
             maxSpeed = Math.Clamp(value, 0, Constants.MaxSpeed);
         }
     }
