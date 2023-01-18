@@ -6,7 +6,7 @@ import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.ui.menu.Menu
 import dev.robocode.tankroyale.gui.server.ServerProcess
-import dev.robocode.tankroyale.gui.ui.arena.ArenaPanel
+import dev.robocode.tankroyale.gui.ui.arena.BattlePanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import dev.robocode.tankroyale.gui.ui.control.ControlEventHandlers
@@ -21,12 +21,14 @@ object MainWindow : RcFrame("main_window") {
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
 
-        setSize(900, 800)
+        setSize(1000, 800)
         setLocationRelativeTo(null) // center on screen
 
         contentPane.add(MainPanel)
 
         jMenuBar = Menu
+
+        BattlePanel // make sure the battle panel is initialized before being used the first time
 
         ClientEvents.apply {
             onGameStarted.subscribe(MainWindow) { MainPanel.showArena() }
@@ -58,7 +60,7 @@ object MainWindow : RcFrame("main_window") {
         }
 
         fun showLogo() {
-            remove(ArenaPanel)
+            remove(BattlePanel)
             add(LogoPanel, BorderLayout.CENTER)
 
             refresh()
@@ -66,7 +68,7 @@ object MainWindow : RcFrame("main_window") {
 
         fun showArena() {
             remove(LogoPanel)
-            add(ArenaPanel, BorderLayout.CENTER)
+            add(BattlePanel, BorderLayout.CENTER)
 
             refresh()
         }
