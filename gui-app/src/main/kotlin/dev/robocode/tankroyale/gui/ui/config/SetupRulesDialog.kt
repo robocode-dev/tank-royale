@@ -7,7 +7,9 @@ import dev.robocode.tankroyale.gui.settings.MutableGameSetup
 import dev.robocode.tankroyale.gui.ui.*
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCancelButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.onChange
@@ -100,10 +102,10 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             add(arenaPanel, "east")
         }
         val buttonPanel = JPanel(MigLayout("fill", "[][][10][][]")).apply {
-            okButton = addButton("ok", onOk, "tag ok").apply {
+            okButton = addOkButton(onOk, "tag ok").apply {
                 setDefaultButton(this)
             }
-            addButton("cancel", onCancel, "tag cancel")
+            addCancelButton(onCancel, "tag cancel")
             addButton("reset_to_default", onResetToDefault, "skip")
             applyButton = addButton("apply", onApply, "tag apply")
         }

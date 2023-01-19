@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
@@ -48,7 +49,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
         }
         add(buttonPanel, "wrap")
 
-        val okButton = addButton("ok", onOk, "center").apply {
+        val okButton = addOkButton(onOk, "center").apply {
             setDefaultButton(this)
         }
 

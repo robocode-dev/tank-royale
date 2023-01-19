@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.gui.ui.about
 
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.util.Event
@@ -31,7 +31,7 @@ object AboutBox : RcDialog(MainFrame, "about_dialog") {
         contentPane.add(panel)
         pack()
 
-        val okButton = panel.addButton("ok", onOk).apply {
+        val okButton = panel.addOkButton(onOk).apply {
             setDefaultButton(this)
         }
         pack()

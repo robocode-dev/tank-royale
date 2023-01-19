@@ -11,6 +11,7 @@ import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.Strings
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCancelButton
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 import net.miginfocom.swing.MigLayout
@@ -64,7 +65,7 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
 
         buttonPanel.apply {
             startBattleButton = addButton("start_battle", onStartBattle)
-            addButton("cancel", onCancel)
+            addCancelButton(onCancel)
         }
         startBattleButton.isEnabled = false
         updateStartButtonHint()

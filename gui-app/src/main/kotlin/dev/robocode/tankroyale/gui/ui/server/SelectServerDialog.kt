@@ -6,7 +6,9 @@ import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.config.AddNewUrlDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCancelButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
@@ -55,10 +57,10 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         val okButton: JButton
 
         val buttonPanel = JPanel(MigLayout()).apply {
-            okButton = addButton("ok", onOk, "tag ok").apply {
+            okButton = addOkButton(onOk, "tag ok").apply {
                 setDefaultButton(this)
             }
-            addButton("cancel", onCancel, "tag cancel")
+            addCancelButton(onCancel, "tag cancel")
         }
         SelectServerDialog.onActivated {
             okButton.requestFocus()

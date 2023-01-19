@@ -2,10 +2,10 @@ package dev.robocode.tankroyale.gui.ui.config
 
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.config.AddNewUrlDialog.onOk
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.WsUrl
@@ -46,7 +46,7 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
 
     init {
         add(urlTextField)
-        val okButton = addButton("ok", onOk)
+        val okButton = addOkButton(onOk)
 
         AddNewUrlDialog.apply {
             setDefaultButton(okButton)

@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
@@ -40,7 +40,7 @@ object Panel : JPanel(MigLayout("fill, insets 20", "", "[]20[]")) {
         }
 
         add(checkbox, "cell 0 0")
-        addButton("ok", onOk, "cell 0 1, center").apply {
+        addOkButton(onOk, "cell 0 1, center").apply {
             setDefaultButton(this)
         }
     }

@@ -18,13 +18,19 @@ object JComponentExt {
         return label
     }
 
-    fun JComponent.addButton(
-        stringResourceName: String, event: Event<JButton>, layoutConstraints: String? = null
-    ): JButton {
+    fun JComponent.addButton(stringResourceName: String, event: Event<JButton>, layoutConstraints: String? = null): JButton {
         val button = JButton(Strings.get(stringResourceName))
         button.addActionListener { event.fire(button) }
         add(button, layoutConstraints)
         return button
+    }
+
+    fun JComponent.addOkButton(event: Event<JButton>, layoutConstraints: String? = null): JButton {
+        return addButton("ok", event, layoutConstraints)
+    }
+
+    fun JComponent.addCancelButton(event: Event<JButton>, layoutConstraints: String? = null): JButton {
+        return addButton("cancel", event, layoutConstraints)
     }
 
     fun JComponent.addCheckBox(
