@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
-import dev.robocode.tankroyale.gui.ui.MainWindow
+import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
@@ -17,14 +17,14 @@ import net.miginfocom.swing.MigLayout
 import java.awt.event.ItemEvent
 import javax.swing.*
 
-object NewBattleDialog : RcDialog(MainWindow, "select_bots_dialog") {
+object NewBattleDialog : RcDialog(MainFrame, "select_bots_dialog") {
 
     private val selectBotsAndStartPanel = NewBattlePanel()
 
     init {
         contentPane.add(selectBotsAndStartPanel)
         pack()
-        setLocationRelativeTo(MainWindow) // center on main window
+        setLocationRelativeTo(MainFrame) // center on main window
     }
 }
 

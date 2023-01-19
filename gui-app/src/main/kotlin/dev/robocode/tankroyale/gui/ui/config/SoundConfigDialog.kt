@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.gui.ui.config
 
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ConfigSettings.SOUNDS_DIR
-import dev.robocode.tankroyale.gui.ui.MainWindow
+import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
@@ -18,12 +18,12 @@ import javax.swing.JButton
 import javax.swing.JCheckBox
 import javax.swing.JPanel
 
-object SoundConfigDialog : RcDialog(MainWindow, "sound_config_dialog") {
+object SoundConfigDialog : RcDialog(MainFrame, "sound_config_dialog") {
 
     init {
         contentPane.add(SoundConfigPanel)
         pack()
-        setLocationRelativeTo(MainWindow) // center on main window
+        setLocationRelativeTo(MainFrame) // center on main window
     }
 }
 

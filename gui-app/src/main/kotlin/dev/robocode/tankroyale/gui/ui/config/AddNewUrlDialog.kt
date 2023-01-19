@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.gui.ui.MainWindow
+import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
@@ -26,7 +26,7 @@ object AddNewUrlDialog : RcDialog(SelectServerDialog, "add_new_url_dialog") {
     init {
         contentPane.add(AddNewUrlPanel)
         pack()
-        setLocationRelativeTo(MainWindow) // center on main window
+        setLocationRelativeTo(MainFrame) // center on main window
 
         onActivated {
             AddNewUrlPanel.apply {

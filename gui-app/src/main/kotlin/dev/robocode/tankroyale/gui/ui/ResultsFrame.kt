@@ -9,7 +9,7 @@ import javax.swing.JScrollPane
 import javax.swing.JTable
 import javax.swing.table.DefaultTableCellRenderer
 
-class ResultsWindow(results: List<BotResults>) : RcFrame(getWindowTitle(), isTitlePropertyName = false) {
+class ResultsFrame(results: List<BotResults>) : RcFrame(getWindowTitle(), isTitlePropertyName = false) {
 
     init {
         val table = JTable(getData(results), getColumns())
@@ -40,7 +40,7 @@ class ResultsWindow(results: List<BotResults>) : RcFrame(getWindowTitle(), isTit
 
         contentPane.add(scrollPane)
         pack()
-        setLocationRelativeTo(MainWindow) // center on main window
+        setLocationRelativeTo(MainFrame) // center on main window
     }
 
     private fun getData(results: List<BotResults>): Array<Array<String>> {

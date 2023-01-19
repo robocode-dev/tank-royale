@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.gui.ui.arena
 import java.awt.Dimension
 import javax.swing.JButton
 
-class BotButton(id: Int, name: String) : JButton("$id: $name") {
+class BotButton(botId: Int, botName: String) : JButton("$botId: $botName") {
 
     override fun getMaximumSize() : Dimension {
         val size = super.getMaximumSize()

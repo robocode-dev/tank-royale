@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.gui.ui.MainWindow
+import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
@@ -13,14 +13,14 @@ import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import javax.swing.*
 
-object BotRootDirectoriesConfigDialog : RcDialog(MainWindow, "bot_root_directories_config_dialog") {
+object BotRootDirectoriesConfigDialog : RcDialog(MainFrame, "bot_root_directories_config_dialog") {
 
     init {
         preferredSize = Dimension(400, 300)
 
         contentPane.add(BotDirectoryConfigPanel)
         pack()
-        setLocationRelativeTo(MainWindow) // center on main window
+        setLocationRelativeTo(MainFrame) // center on main window
 
         onClosing {
             ConfigSettings.botDirectories = BotDirectoryConfigPanel.listModel.elements().toList()

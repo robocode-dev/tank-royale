@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.about
 
-import dev.robocode.tankroyale.gui.ui.MainWindow
+import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
@@ -14,7 +14,7 @@ import java.net.URL
 import javax.swing.*
 
 
-object AboutBox : RcDialog(MainWindow, "about_dialog") {
+object AboutBox : RcDialog(MainFrame, "about_dialog") {
 
     private val onOk = Event<JButton>()
 
@@ -35,7 +35,7 @@ object AboutBox : RcDialog(MainWindow, "about_dialog") {
             setDefaultButton(this)
         }
         pack()
-        setLocationRelativeTo(MainWindow) // center on main window
+        setLocationRelativeTo(MainFrame) // center on main window
 
         isResizable = false
 

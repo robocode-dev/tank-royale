@@ -9,7 +9,7 @@ import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
 import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEventTriggers
-import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
+import dev.robocode.tankroyale.gui.ui.server.ServerLogFrame
 import dev.robocode.tankroyale.gui.util.Browser
 import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 
@@ -29,7 +29,7 @@ object MenuEventHandlers {
                 Server.connectOrStart()
             }
             onShowServerLog.subscribe(this) {
-                ServerLogWindow.isVisible = true
+                ServerLogFrame.isVisible = true
             }
             onServerConfig.subscribe(this) {
                 SelectServerDialog.isVisible = true
@@ -39,11 +39,11 @@ object MenuEventHandlers {
             }
             onStartServer.subscribe(this) {
                 ServerEventTriggers.onStartServer.fire(Unit)
-                ServerLogWindow.isVisible = true
+                ServerLogFrame.isVisible = true
             }
             onStopServer.subscribe(this) {
                 ServerEventTriggers.onStopServer.fire(Unit)
-                ServerLogWindow.isVisible = false
+                ServerLogFrame.isVisible = false
             }
             onRebootServer.subscribe(this) {
                 ServerEventTriggers.onRebootServer.fire(false /* user initiated */)

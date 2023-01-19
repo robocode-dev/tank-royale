@@ -16,7 +16,7 @@ import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import java.awt.BorderLayout
 import javax.swing.JPanel
 
-object MainWindow : RcFrame("main_window") {
+object MainFrame : RcFrame("main_frame") {
 
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
@@ -31,11 +31,11 @@ object MainWindow : RcFrame("main_window") {
         BattlePanel // make sure the battle panel is initialized before being used the first time
 
         ClientEvents.apply {
-            onGameStarted.subscribe(MainWindow) { MainPanel.showArena() }
-            onGameEnded.subscribe(MainWindow) { MainPanel.showLogo() }
-            onGameAborted.subscribe(MainWindow) { MainPanel.showLogo() }
+            onGameStarted.subscribe(MainFrame) { MainPanel.showArena() }
+            onGameEnded.subscribe(MainFrame) { MainPanel.showLogo() }
+            onGameAborted.subscribe(MainFrame) { MainPanel.showLogo() }
         }
-        ServerEvents.onStopped.subscribe(MainWindow) { MainPanel.showLogo() }
+        ServerEvents.onStopped.subscribe(MainFrame) { MainPanel.showLogo() }
 
         onClosing { close() }
         Runtime.getRuntime().addShutdownHook(Thread { close() })

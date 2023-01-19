@@ -18,14 +18,14 @@ import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import javax.swing.*
 
-object SetupRulesDialog : RcDialog(MainWindow, "setup_rules_dialog") {
+object SetupRulesDialog : RcDialog(MainFrame, "setup_rules_dialog") {
 
     private val setupRulesPanel = SetupRulesPanel()
 
     init {
         contentPane.add(setupRulesPanel)
         pack()
-        setLocationRelativeTo(MainWindow) // center on main window
+        setLocationRelativeTo(MainFrame) // center on main window
     }
 }
 

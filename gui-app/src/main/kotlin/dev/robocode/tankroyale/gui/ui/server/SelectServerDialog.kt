@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.server
 
-import dev.robocode.tankroyale.gui.ui.MainWindow
+import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
@@ -15,12 +15,12 @@ import dev.robocode.tankroyale.gui.util.WsUrl
 import net.miginfocom.swing.MigLayout
 import javax.swing.*
 
-object SelectServerDialog : RcDialog(MainWindow, "select_server_dialog") {
+object SelectServerDialog : RcDialog(MainFrame, "select_server_dialog") {
 
     init {
         contentPane.add(SelectServerPanel)
         pack()
-        setLocationRelativeTo(MainWindow) // center on main window
+        setLocationRelativeTo(MainFrame) // center on main window
     }
 }
 

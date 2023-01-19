@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.gui.ui.arena
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.*
-import dev.robocode.tankroyale.gui.ui.ResultsWindow
+import dev.robocode.tankroyale.gui.ui.ResultsFrame
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.lightness
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.toHsl
 import dev.robocode.tankroyale.gui.ui.fx.Animation
@@ -65,7 +65,7 @@ object ArenaPanel : JPanel() {
     }
 
     private fun onGameEnded(gameEndedEvent: GameEndedEvent) {
-        ResultsWindow(gameEndedEvent.results).isVisible = true
+        ResultsFrame(gameEndedEvent.results).isVisible = true
     }
 
     private fun onTick(tickEvent: TickEvent) {

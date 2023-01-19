@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.gui.ui.server
 
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.server.ServerProcess
-import dev.robocode.tankroyale.gui.ui.MainWindow
+import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.UiTitles
 import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
@@ -24,7 +24,7 @@ object ServerActions {
         }
 
         ServerEvents.onStarted.subscribe(this) {
-            ServerLogWindow.clear()
+            ServerLogFrame.clear()
         }
     }
 
@@ -40,7 +40,7 @@ object ServerActions {
 
         enqueue {
             if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
-                    MainWindow,
+                    MainFrame,
                     Messages.get(resource),
                     title,
                     JOptionPane.YES_NO_OPTION

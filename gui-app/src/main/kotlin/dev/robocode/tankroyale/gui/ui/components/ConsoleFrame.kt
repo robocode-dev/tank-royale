@@ -1,24 +1,21 @@
-package dev.robocode.tankroyale.gui.ui.server
+package dev.robocode.tankroyale.gui.ui.components
 
-import dev.robocode.tankroyale.gui.ui.MainWindow
-import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
+import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Font
-import javax.swing.JScrollPane
-import javax.swing.JTextArea
+import java.awt.event.ActionEvent
+import java.awt.event.KeyEvent
+import javax.swing.*
 
 
-object ServerLogWindow : RcFrame("server_log_window") {
+open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : RcFrame(title, isTitlePropertyName) {
 
     private val textArea = JTextArea()
     private val scrollPane = JScrollPane(textArea)
 
     init {
         setDisposeOnEnterKeyPressed()
-
-        setSize(700, 550)
-        setLocationRelativeTo(MainWindow) // center on main window
 
         textArea.apply {
             isEditable = false
@@ -27,7 +24,11 @@ object ServerLogWindow : RcFrame("server_log_window") {
 
             font = Font(Font.MONOSPACED, Font.BOLD, 12)
         }
-        contentPane.add(scrollPane)
+
+        contentPane.apply {
+            layout = BorderLayout()
+            add(scrollPane)
+        }
 
         onActivated {
             // Scroll to the bottom
@@ -47,5 +48,16 @@ object ServerLogWindow : RcFrame("server_log_window") {
 
         // Scroll to bottom
         textArea.caretPosition = textArea.document.length
+    }
+
+    protected fun setDisposeOnEnterKeyPressed() {
+        val inputMap = rootPane.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW)
+        val enter = "enter"
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enter)
+        rootPane.actionMap.put(enter, object : AbstractAction() {
+            override fun actionPerformed(e: ActionEvent) {
+                dispose()
+            }
+        })
     }
 }

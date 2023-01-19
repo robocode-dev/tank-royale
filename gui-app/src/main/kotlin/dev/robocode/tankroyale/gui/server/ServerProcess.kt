@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.server.ServerActions
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
-import dev.robocode.tankroyale.gui.ui.server.ServerLogWindow
+import dev.robocode.tankroyale.gui.ui.server.ServerLogFrame
 import dev.robocode.tankroyale.gui.util.ResourceUtil
 import java.io.BufferedReader
 import java.io.FileNotFoundException
@@ -122,7 +122,7 @@ object ServerProcess {
                 while (logThreadRunning.get()) {
                     try {
                         it.lines().forEach() { line ->
-                            ServerLogWindow.append(line + "\n")
+                            ServerLogFrame.append(line + "\n")
                         }
                     } catch (e: InterruptedException) {
                         logThreadRunning.set(false)
