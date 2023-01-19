@@ -29,7 +29,7 @@ object SoundConfigDialog : RcDialog(MainWindow, "sound_config_dialog") {
 
 object SoundConfigPanel : JPanel(MigLayout("fill")) {
 
-    private val onDismiss = Event<JButton>().apply { subscribe(this) { SoundConfigDialog.dispose() } }
+    private val onOK = Event<JButton>().apply { subscribe(this) { SoundConfigDialog.dispose() } }
 
     private val onEnableSounds = Event<JCheckBox>()
         .apply { subscribe(this) { ConfigSettings.enableSounds = it.isSelected } }
@@ -80,7 +80,7 @@ object SoundConfigPanel : JPanel(MigLayout("fill")) {
         }
 
         add(JPanel(MigLayout("fill")), "wrap").apply {
-            addButton("dismiss", onDismiss, "center").apply {
+            addButton("ok", onOK, "center").apply {
                 setDefaultButton(this)
             }
         }
