@@ -24,9 +24,9 @@ object DebugConfigDialog : RcDialog(MainFrame, "debug_config_dialog") {
 
 object Panel : JPanel(MigLayout("fill, insets 20", "", "[]20[]")) {
 
-    private val onDismiss = Event<JButton>().apply { subscribe(this) { DebugConfigDialog.dispose() } }
+    private val onOk = Event<JButton>().apply { subscribe(this) { DebugConfigDialog.dispose() } }
 
-    var selected = ServerSettings.initialPositionsEnabled
+    private var selected = ServerSettings.initialPositionsEnabled
 
     init {
         val checkbox = JCheckBox(Strings.get("option.enable_initial_position.text"), selected).apply {
@@ -40,7 +40,7 @@ object Panel : JPanel(MigLayout("fill, insets 20", "", "[]20[]")) {
         }
 
         add(checkbox, "cell 0 0")
-        addButton("dismiss", onDismiss, "cell 0 1, center").apply {
+        addButton("ok", onOk, "cell 0 1, center").apply {
             setDefaultButton(this)
         }
     }

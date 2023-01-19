@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
-import dev.robocode.tankroyale.gui.ui.config.AddNewUrlDialog.onComplete
+import dev.robocode.tankroyale.gui.ui.config.AddNewUrlDialog.onOk
 import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.WsUrl
@@ -19,7 +19,7 @@ import javax.swing.event.DocumentListener
 
 object AddNewUrlDialog : RcDialog(SelectServerDialog, "add_new_url_dialog") {
 
-    val onComplete = Event<JButton>()
+    val onOk = Event<JButton>()
 
     var newUrl: String = ""
 
@@ -46,12 +46,12 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
 
     init {
         add(urlTextField)
-        val okButton = addButton("ok", onComplete)
+        val okButton = addButton("ok", onOk)
 
         AddNewUrlDialog.apply {
             setDefaultButton(okButton)
 
-            onComplete.subscribe(AddNewUrlPanel) {
+            onOk.subscribe(AddNewUrlPanel) {
                 if (isValidWsUrl) {
                     newUrl = urlTextField.text
                     dispose()

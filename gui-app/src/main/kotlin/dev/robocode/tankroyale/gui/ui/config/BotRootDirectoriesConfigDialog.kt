@@ -32,7 +32,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
 
     private val onAdd = Event<JButton>()
     private val onRemove = Event<JButton>()
-    private val onDismiss = Event<JButton>()
+    private val onOk = Event<JButton>()
 
     val listModel = DefaultListModel<String>()
     val list = JList(listModel)
@@ -48,7 +48,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
         }
         add(buttonPanel, "wrap")
 
-        val dismissButton = addButton("dismiss", onDismiss, "center").apply {
+        val okButton = addButton("ok", onOk, "center").apply {
             setDefaultButton(this)
         }
 
@@ -70,12 +70,12 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
             updateSettings()
         }
 
-        onDismiss.subscribe(BotRootDirectoriesConfigDialog) {
+        onOk.subscribe(BotRootDirectoriesConfigDialog) {
             BotRootDirectoriesConfigDialog.dispose()
         }
 
         BotRootDirectoriesConfigDialog.onActivated {
-            dismissButton.requestFocus()
+            okButton.requestFocus()
         }
     }
 
