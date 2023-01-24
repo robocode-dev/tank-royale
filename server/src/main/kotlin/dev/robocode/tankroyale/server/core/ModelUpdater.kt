@@ -267,6 +267,7 @@ class ModelUpdater(
 
             updateBotTurnRatesAndDirections(bot, this)
             updateBotColors(bot, this)
+            updateStdErrAndStdOut(bot, this)
         }
     }
 
@@ -992,6 +993,18 @@ class ModelUpdater(
                 scanColor = fromString(intent.scanColor)
                 tracksColor = fromString(intent.tracksColor)
                 gunColor = fromString(intent.gunColor)
+            }
+        }
+
+        /**
+         * Updates last received data from standard output and standard error.
+         * @param bot is the bot.
+         * @param intent is the bot´s intent.
+         */
+        private fun updateStdErrAndStdOut(bot: MutableBot, intent: BotIntent) {
+            bot.apply {
+                stdOut = intent.stdOut
+                stdErr = intent.stdErr
             }
         }
     }
