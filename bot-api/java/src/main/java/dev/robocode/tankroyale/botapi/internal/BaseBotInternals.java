@@ -287,12 +287,12 @@ public final class BaseBotInternals {
 
     private void setStdOutAndStdErrOnBotIntent() {
         if (stdOut != null) {
-            var out = stdOut.toString(UTF_8);
+            var out = stdOut.toString(UTF_8).replaceAll("\r", "");
             botIntent.setStdOut(JsonUtil.escaped(out));
             stdOut.reset();
         }
         if (stdErr != null) {
-            var err = stdErr.toString(UTF_8);
+            var err = stdErr.toString(UTF_8).replaceAll("\r", "");
             botIntent.setStdErr(JsonUtil.escaped(err));
             stdErr.reset();
         }

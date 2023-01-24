@@ -267,12 +267,12 @@ public sealed class BaseBotInternals
     {
         if (stdOut != null)
         {
-            BotIntent.StdOut = HttpUtility.JavaScriptStringEncode(stdOut.ToString());
+            BotIntent.StdOut = HttpUtility.JavaScriptStringEncode(stdOut.ToString().Replace("\r", ""));
         }
 
         if (stdErr != null)
         {
-            BotIntent.StdErr = HttpUtility.JavaScriptStringEncode(stdErr?.ToString());
+            BotIntent.StdErr = HttpUtility.JavaScriptStringEncode(stdErr?.ToString().Replace("\r", ""));
         }
     }
 
