@@ -7,12 +7,12 @@ public class JsonUtil {
 
     public static String escaped(String s) {
 
-        return s.replaceAll("\b", "\\b") // backspace -> \b
-                .replaceAll("\f", "\\f") // form feed -> \f
-                .replaceAll("\n", "\\n") // newline -> \n
-                .replaceAll("\r", "\\r") // carriage return -> \r
-                .replaceAll("\t", "\\t") // tab -> \t
-                .replaceAll("\"", "\\\"") // double-quote -> \"
+        return s.replaceAll("\b", "\\\\b") // backspace -> \b
+                .replaceAll("\f", "\\\\f") // form feed -> \f
+                .replaceAll("\n", "\\\\n") // newline -> \n
+                .replaceAll("\r", "\\\\r") // carriage return -> \r
+                .replaceAll("\t", "\\\\t") // tab -> \t
+                .replaceAll("\"", "\\\\\"") // double-quotes -> \"
                 .replaceAll("\\\\", "\\\\") // backslash -> \\
                 ;
     }
