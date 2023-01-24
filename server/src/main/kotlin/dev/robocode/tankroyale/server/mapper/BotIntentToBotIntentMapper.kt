@@ -23,6 +23,8 @@ object BotIntentToBotIntentMapper {
                 scanColor = scanColor,
                 tracksColor = tracksColor,
                 gunColor = gunColor,
+                stdOut = stdOut,
+                stdErr = stdErr
             )
         }
     }

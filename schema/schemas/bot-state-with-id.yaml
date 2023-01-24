@@ -10,6 +10,12 @@ properties:
   sessionId:
     description: Unique session id used for identifying the bot.
     type: string
+  stdOut:
+    description: Last data received for standard out (stdout)
+    type: string
+  stdErr:
+    description: Last data received for standard err (stderr)
+    type: string
 required:
   - id
   - sessionId

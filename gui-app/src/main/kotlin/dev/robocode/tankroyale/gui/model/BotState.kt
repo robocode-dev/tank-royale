@@ -24,5 +24,7 @@ data class BotState(
     val bulletColor: String? = null,
     val scanColor: String? = null,
     val tracksColor: String? = null,
-    val gunColor: String? = null
+    val gunColor: String? = null,
+    val stdOut: String? = null,
+    val stdErr: String? = null,
 )

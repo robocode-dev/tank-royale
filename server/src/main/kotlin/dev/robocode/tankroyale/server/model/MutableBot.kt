@@ -67,7 +67,13 @@ data class MutableBot(
     /** Gun color */
     override var gunColor: Color? = null,
 
-    ) : IBot {
+    /** Standard output (last data) */
+    override var stdOut: String? = null,
+
+    /** Standard error (last data) */
+    override var stdErr: String? = null
+
+) : IBot {
 
     /** X coordinate */
     override var x: Double

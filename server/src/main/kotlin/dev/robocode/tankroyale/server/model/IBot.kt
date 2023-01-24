@@ -68,6 +68,12 @@ interface IBot {
     /** Gun color */
     val gunColor: Color?
 
+    /** Standard output (last data) */
+    val stdOut: String?
+
+    /** Standard error (last data) */
+    val stdErr: String?
+
     /** Check if bot is alive */
     val isAlive: Boolean get() = energy >= 0
 

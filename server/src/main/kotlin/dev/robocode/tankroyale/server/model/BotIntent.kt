@@ -38,6 +38,8 @@ data class BotIntent(
     override var scanColor: String? = null,
     override var tracksColor: String? = null,
     override var gunColor: String? = null,
+    override var stdOut: String? = null,
+    override var stdErr: String? = null
 
     ) : IBotIntent {
     /**
@@ -96,6 +98,12 @@ data class BotIntent(
         }
         if (update.gunColor != null) {
             gunColor = if (update.gunColor!!.isBlank()) null else update.gunColor
+        }
+        if (update.stdOut != null) {
+            stdOut = if (update.stdOut!!.isBlank()) null else update.stdOut
+        }
+        if (update.stdErr != null) {
+            stdErr = if (update.stdErr!!.isBlank()) null else update.stdErr
         }
     }
 

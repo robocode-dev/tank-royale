@@ -55,4 +55,10 @@ interface IBotIntent {
 
     /** New gun color. */
     val gunColor: String?
+
+    /** Last data sent to standard out. */
+    val stdOut: String?
+
+    /** Last data sent to standard error. */
+    val stdErr: String?
 }

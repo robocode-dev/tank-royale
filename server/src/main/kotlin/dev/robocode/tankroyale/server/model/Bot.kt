@@ -46,6 +46,9 @@ data class Bot(
     override val scanColor: Color? = null,
     override val tracksColor: Color? = null,
     override val gunColor: Color? = null,
+    override val stdOut: String? = null,
+    override val stdErr: String? = null
+
 ) : IBot {
 
     /** X coordinate which is a shortcut for `position.x`. */

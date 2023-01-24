@@ -29,6 +29,8 @@ object BotToBotStateWithIdMapper {
             botState.scanColor = scanColor?.value
             botState.tracksColor = tracksColor?.value
             botState.gunColor = gunColor?.value
+            botState.stdOut = stdOut
+            botState.stdErr = stdErr
             return botState
         }
     }
