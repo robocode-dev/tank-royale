@@ -1002,9 +1002,15 @@ class ModelUpdater(
          * @param intent is the bot´s intent.
          */
         private fun updateStdErrAndStdOut(bot: MutableBot, intent: BotIntent) {
+            // transfer from intent to state
             bot.apply {
                 stdOut = intent.stdOut
                 stdErr = intent.stdErr
+            }
+            // reset stdout and stderr
+            intent.apply {
+                stdOut = null
+                stdErr = null
             }
         }
     }
