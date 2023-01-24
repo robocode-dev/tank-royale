@@ -16,4 +16,6 @@ data class Participant(
     val platform: String? = null,
     val programmingLang: String? = null,
     val initialPosition: InitialPosition? = null
-)
+) {
+    val displayName = "$id: $name $version"
+}
