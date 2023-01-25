@@ -11,13 +11,13 @@ import javax.swing.*
 
 open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : RcFrame(title, isTitlePropertyName) {
 
-    private val textArea = JTextArea()
-    private val scrollPane = JScrollPane(textArea)
+    protected val editorPane = JEditorPane()
+    private val scrollPane = JScrollPane(editorPane)
 
     init {
         setDisposeOnEnterKeyPressed()
 
-        textArea.apply {
+        editorPane.apply {
             isEditable = false
             foreground = Color.WHITE
             background = Color(0x28, 0x28, 0x28)
@@ -38,16 +38,16 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
     }
 
     fun clear() {
-        textArea.text = null
+        editorPane.text = null
     }
 
     fun append(line: String) {
         val regex = Regex("\u001B\\[[^m]+m") // TODO: Use JTextPane with colors
         val result = regex.replace(line, "")
-        textArea.append(result)
+        editorPane.text += result
 
         // Scroll to bottom
-        textArea.caretPosition = textArea.document.length
+        editorPane.caretPosition = editorPane.document.length
     }
 
     protected fun setDisposeOnEnterKeyPressed() {
