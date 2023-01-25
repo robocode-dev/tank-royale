@@ -14,10 +14,10 @@ object LogoPanel : JPanel() {
 
     private const val textSpacing = 10
 
-    private val textColor = Color(0x37, 0x7B, 0x37)
+    private val textColor = Color(0x377B37)
 
     init {
-        background = Color(0x28, 0x28, 0x28)
+        background = Color(0x282828)
     }
 
     override fun paintComponent(g: Graphics) {
