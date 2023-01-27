@@ -31,6 +31,7 @@ class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
 
     private val onOk = Event<JButton>().apply { subscribe(this) { dispose() } }
     private val onClear = Event<JButton>().apply { subscribe(this) { clear() } }
+    private val onCopyToClipboard = Event<JButton>().apply { subscribe(this) { copyToClipboard() } }
 
     init {
         setLocation(10, 10 + frameCounter * 50) // increment y for each bot console frame
@@ -43,6 +44,7 @@ class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
         val buttonPanel = JPanel().apply {
             addOkButton(onOk)
             addButton("clear", onClear)
+            addButton("copy_to_clipboard", onCopyToClipboard)
         }
 
         contentPane.add(buttonPanel, BorderLayout.SOUTH)

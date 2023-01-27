@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.components
 
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
+import dev.robocode.tankroyale.gui.util.Clipboard
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Font
@@ -59,5 +60,14 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
                 dispose()
             }
         })
+    }
+
+    protected fun copyToClipboard() {
+        // trick to get the text only without HTML tags
+        editorPane.select(0, editorPane.text.length)
+        val text = editorPane.selectedText
+
+        // copy the text to the clipboard
+        Clipboard.set(text)
     }
 }
