@@ -65,7 +65,10 @@ object Client {
             websocket?.let { ws ->
                 onOpen.subscribe(ws) { onConnected.fire(Unit) }
                 onMessage.subscribe(ws) { onMessage(it) }
-                onError.subscribe(ws) { System.err.println("WebSocket error: " + it.message) }
+                onError.subscribe(ws) {
+                    System.err.println("WebSocket error: " + it.message)
+                    it.printStackTrace()
+                }
                 ws.open() // must be called AFTER onOpen.subscribe()
             }
         }
