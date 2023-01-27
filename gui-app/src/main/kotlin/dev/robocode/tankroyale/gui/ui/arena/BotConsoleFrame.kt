@@ -13,7 +13,7 @@ import javax.swing.JPanel
 import javax.swing.text.html.HTMLDocument
 import javax.swing.text.html.HTMLEditorKit
 
-class BotConsoleFrame(bot: Participant, frameCounter: Int = 0) :
+class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
     ConsoleFrame(bot.displayName, isTitlePropertyName = false) {
 
     companion object {
@@ -21,7 +21,7 @@ class BotConsoleFrame(bot: Participant, frameCounter: Int = 0) :
             styleSheet.addRule("body { color: white; font-family: monospace; }")
             styleSheet.addRule(".error { color: \"#FF5733\"; }") // dark pink
             styleSheet.addRule(".linenumber { color: gray; }")
-            styleSheet.addRule(".round-info { color: \"#377B37\"; }") // olive green
+            styleSheet.addRule(".info { color: \"#377B37\"; }") // olive green
         }
     }
 
@@ -47,8 +47,16 @@ class BotConsoleFrame(bot: Participant, frameCounter: Int = 0) :
 
         contentPane.add(buttonPanel, BorderLayout.SOUTH)
 
-        ClientEvents.onGameStarted.subscribe(this) {
-            numberOfRounds = it.gameSetup.numberOfRounds
+        subscribeToEvents()
+    }
+
+    private fun subscribeToEvents() {
+        ClientEvents.onGameStarted.subscribe(this) { gameStartedEvent ->
+            numberOfRounds = gameStartedEvent.gameSetup.numberOfRounds
+
+            if (gameStartedEvent.participants.any { it.displayName == bot.displayName }) {
+                subscribeToEvents()
+            }
         }
         ClientEvents.onRoundStarted.subscribe(this) {
             updateRoundInfo(it.roundNumber)
@@ -59,15 +67,34 @@ class BotConsoleFrame(bot: Participant, frameCounter: Int = 0) :
                 updateBotState(botState, tickEvent.turnNumber)
             }
         }
+        ClientEvents.onGameAborted.subscribe(this) {
+            appendText("> Game was aborted!", "info")
+            unsubscribeEvents()
+        }
+        ClientEvents.onGameEnded.subscribe(this) {
+            appendText("> Game has ended", "info")
+            unsubscribeEvents()
+        }
+    }
+
+    private fun unsubscribeEvents() {
+        ClientEvents.onRoundStarted.unsubscribe(this)
+        ClientEvents.onTickEvent.unsubscribe(this)
+        ClientEvents.onGameAborted.unsubscribe(this)
+        ClientEvents.onGameEnded.unsubscribe(this)
     }
 
     private fun updateRoundInfo(roundNumber: Int) {
-        appendText(
-            """
-            ====================<br>
-            Round $roundNumber of $numberOfRounds<br>
-            ====================<br>
-        """.trimIndent(), "round-info"
+        var roundInfo = "Round: $roundNumber"
+        if (numberOfRounds > 0) {
+            roundInfo += "/$numberOfRounds"
+        }
+
+        appendText("""
+            --------------------<br>
+            $roundInfo<br>
+            --------------------<br>
+        """.trimIndent(), "info"
         )
     }
 

@@ -3,18 +3,21 @@ package dev.robocode.tankroyale.gui.ui.arena
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.GameStartedEvent
 import dev.robocode.tankroyale.gui.model.Participant
+import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.util.Event
 import java.awt.Dimension
 import javax.swing.BoxLayout
 import javax.swing.JButton
 import javax.swing.JPanel
 
+typealias BotIdentifier = String
+
 object SidePanel : JPanel() {
 
     private const val WIDTH = 120
 
-    private val buttonsMap = HashMap<Int, JButton>()
-    private val consoleMap = HashMap<Int, BotConsoleFrame>()
+    private val buttonsMap = HashMap<BotIdentifier, JButton>()
+    private val consoleMap = HashMap<BotIdentifier, BotConsoleFrame>()
     private val buttonsEvent = Event<BotButton>() // shared between all buttons
 
     init {
@@ -36,7 +39,7 @@ object SidePanel : JPanel() {
             val button = BotButton(bot).apply {
                 addActionListener { buttonsEvent.fire(this) }
             }
-            buttonsMap[bot.id] = button
+            buttonsMap[bot.displayName] = button
 
             add(button)
         }
@@ -44,12 +47,14 @@ object SidePanel : JPanel() {
     }
 
     private fun onBotButtonAction(bot: Participant) {
-        val id = bot.id
-
-        var console = consoleMap[id]
+        var console = consoleMap[bot.displayName]
         if (console == null) {
             console = BotConsoleFrame(bot, consoleMap.size)
-            consoleMap[id] = console
+            consoleMap[bot.displayName] = console
+
+            console.onClosing {
+                consoleMap.remove(bot.displayName)
+            }
         }
         console.isVisible = true
     }
