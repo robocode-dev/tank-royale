@@ -14,6 +14,12 @@
     - When a bot is booted, its standard output (stdout) and standard error (stderr) streams are redirected to the bot
       intent sent to the server, which forwards the data to the observers, making it possible to show stdout and stderr
       in the bot console windows.
+    - [#46]: The `RoundEndedEvent` now contains a `results` field containing the accumulated results by the end of a
+      round.
+- Schema:
+    - [#46]: The `round-ended-event` has been split up into `round-ended-event-for-bot` that provides only results for a
+      bot,
+      and `round-ended-event-for-observer` that provides the results for all bots for observers.
 
 #### 🪲 Bug Fixes
 
@@ -501,6 +507,8 @@ Bot info:
 [#43]: https://github.com/robocode-dev/tank-royale/issues/43
 
 [#45]: https://github.com/robocode-dev/tank-royale/issues/45
+
+[#46]: https://github.com/robocode-dev/tank-royale/issues/46
 
 [#52]: https://github.com/robocode-dev/tank-royale/discussions/52#discussioncomment-4332072
 
