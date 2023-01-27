@@ -1,10 +1,19 @@
 # Versions
 
-## 📦 0.19.0
+## 📦 0.19.0 - Added bot console windows
 
 #### 🚀 Improvements
 
-- GUI: Renamed buttons named "Dismiss", used for closing dialogs, to "OK".
+- GUI:
+    - A side panel has been added to the right side of the battle view with buttons for each participant bot. When
+      clicking one of these buttons, a bot console window is opened that prints out the standard output (stdout) and
+      standard error (stderr) from the bot.
+    - Added 'OK', 'Clear', and 'Copy to clipboard' buttons to the server log window.
+    - Renamed buttons named "Dismiss", used for closing dialogs, to "OK".
+- Bot API:
+    - When a bot is booted, its standard output (stdout) and standard error (stderr) streams are redirected to the bot
+      intent sent to the server, which forwards the data to the observers, making it possible to show stdout and stderr
+      in the bot console windows.
 
 #### 🪲 Bug Fixes
 
