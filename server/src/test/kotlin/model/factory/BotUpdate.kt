@@ -41,4 +41,6 @@ data class BotUpdate(
     override var scanColor: String? = null,
     override var tracksColor: String? = null,
     override var gunColor: String? = null,
+    override var stdOut: String? = null,
+    override var stdErr: String? = null,
 ) : IBotIntent
