@@ -5,12 +5,6 @@ import dev.robocode.tankroyale.gui.model.BotState
 import dev.robocode.tankroyale.gui.model.Participant
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.ConsoleFrame
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
-import dev.robocode.tankroyale.gui.util.Event
-import java.awt.BorderLayout
-import javax.swing.JButton
-import javax.swing.JPanel
 import javax.swing.text.html.HTMLDocument
 import javax.swing.text.html.HTMLEditorKit
 
@@ -30,10 +24,6 @@ class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
 
     private var numberOfRounds: Int = 0
 
-    private val onOk = Event<JButton>().apply { subscribe(this) { dispose() } }
-    private val onClear = Event<JButton>().apply { subscribe(this) { clear() } }
-    private val onCopyToClipboard = Event<JButton>().apply { subscribe(this) { copyToClipboard() } }
-
     init {
         setLocation(10, 10 + frameCounter * 50) // increment y for each bot console frame
         setSize(600, 400)
@@ -41,14 +31,6 @@ class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
         editorPane.contentType = "text/html"
         editorPane.editorKit = editorKit
         editorPane.document = document
-
-        val buttonPanel = JPanel().apply {
-            addOkButton(onOk)
-            addButton("clear", onClear)
-            addButton("copy_to_clipboard", onCopyToClipboard)
-        }
-
-        contentPane.add(buttonPanel, BorderLayout.SOUTH)
 
         subscribeToEvents()
     }

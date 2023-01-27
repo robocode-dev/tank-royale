@@ -1,7 +1,10 @@
 package dev.robocode.tankroyale.gui.ui.components
 
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.util.Clipboard
+import dev.robocode.tankroyale.gui.util.Event
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Font
@@ -15,6 +18,10 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
     protected val editorPane = JEditorPane()
     private val scrollPane = JScrollPane(editorPane)
 
+    private val onOk = Event<JButton>().apply { subscribe(this) { dispose() } }
+    private val onClear = Event<JButton>().apply { subscribe(this) { clear() } }
+    private val onCopyToClipboard = Event<JButton>().apply { subscribe(this) { copyToClipboard() } }
+
     init {
         setDisposeOnEnterKeyPressed()
 
@@ -26,9 +33,16 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
             font = Font(Font.MONOSPACED, Font.BOLD, 12)
         }
 
+        val buttonPanel = JPanel().apply {
+            addOkButton(onOk)
+            addButton("clear", onClear)
+            addButton("copy_to_clipboard", onCopyToClipboard)
+        }
+
         contentPane.apply {
             layout = BorderLayout()
             add(scrollPane)
+            add(buttonPanel, BorderLayout.SOUTH)
         }
 
         onActivated {
@@ -62,7 +76,7 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
         })
     }
 
-    protected fun copyToClipboard() {
+    private fun copyToClipboard() {
         // trick to get the text only without HTML tags
         editorPane.select(0, editorPane.text.length)
         val text = editorPane.selectedText
