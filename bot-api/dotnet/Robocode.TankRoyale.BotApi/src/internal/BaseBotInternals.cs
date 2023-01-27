@@ -64,7 +64,8 @@ public sealed class BaseBotInternals
 
     private bool eventHandlingDisabled;
 
-    private StringWriter stdOut, stdErr;
+    private readonly StringWriter stdOutStringWriter = new();
+    private readonly StringWriter stdErrStringWriter = new();
 
     private readonly IDictionary<Type, int> eventPriorities = new Dictionary<Type, int>();
 
@@ -99,8 +100,8 @@ public sealed class BaseBotInternals
     private void RedirectStdOutAndStdErr()
     {
         if (!EnvVars.IsBotBooted()) return;
-        Console.SetOut(stdOut);
-        Console.SetError(stdErr);
+        Console.SetOut(stdOutStringWriter);
+        Console.SetError(stdErrStringWriter);
     }
 
     private void InitializeWebSocketClient(Uri serverUrl)
@@ -265,15 +266,13 @@ public sealed class BaseBotInternals
 
     private void SetStdOutAndStdErrOnBotIntent()
     {
-        if (stdOut != null)
-        {
-            BotIntent.StdOut = HttpUtility.JavaScriptStringEncode(stdOut.ToString().Replace("\r", ""));
-        }
+        var stdOutText = stdOutStringWriter.ToString();
+        BotIntent.StdOut = stdOutText.Length > 0 ? HttpUtility.JavaScriptStringEncode(stdOutText.Replace("\r", "")) : null;
+        stdOutStringWriter.GetStringBuilder().Clear();
 
-        if (stdErr != null)
-        {
-            BotIntent.StdErr = HttpUtility.JavaScriptStringEncode(stdErr?.ToString().Replace("\r", ""));
-        }
+        var stdErrText = stdErrStringWriter.ToString();
+        BotIntent.StdErr = stdErrText.Length > 0 ? HttpUtility.JavaScriptStringEncode(stdErrText.Replace("\r", "")) : null;
+        stdErrStringWriter.GetStringBuilder().Clear();
     }
 
     private void WaitForNextTurn(int turnNumber)
