@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.ui.arena
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.BotState
 import dev.robocode.tankroyale.gui.model.Participant
+import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.ConsoleFrame
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
@@ -69,12 +70,12 @@ class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
                 updateBotState(botState, tickEvent.turnNumber)
             }
         }
-        ClientEvents.onGameAborted.subscribe(this) {
-            appendText("> Game was aborted!", "info")
+        ClientEvents.onGameEnded.subscribe(this) {
+            appendText("> ${Strings.get("bot_console.game_has_ended")}", "info")
             unsubscribeEvents()
         }
-        ClientEvents.onGameEnded.subscribe(this) {
-            appendText("> Game has ended", "info")
+        ClientEvents.onGameAborted.subscribe(this) {
+            appendText("> ${Strings.get("bot_console.game_was_aborted")}", "info")
             unsubscribeEvents()
         }
     }
@@ -87,7 +88,7 @@ class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
     }
 
     private fun updateRoundInfo(roundNumber: Int) {
-        var roundInfo = "Round: $roundNumber"
+        var roundInfo = "${Strings.get("round")}: $roundNumber"
         if (numberOfRounds > 0) {
             roundInfo += "/$numberOfRounds"
         }
