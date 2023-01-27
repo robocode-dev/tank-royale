@@ -48,8 +48,10 @@ class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
         }
         ClientEvents.onTickEvent.subscribe(this) { tickEvent ->
             run {
-                val botState = tickEvent.botStates.filter { it.id == bot.id }[0]
-                updateBotState(botState, tickEvent.turnNumber)
+                val botStates = tickEvent.botStates.filter { it.id == bot.id }
+                if (botStates.isNotEmpty()) {
+                    updateBotState(botStates[0], tickEvent.turnNumber)
+                }
             }
         }
         ClientEvents.onGameEnded.subscribe(this) {
