@@ -5,7 +5,7 @@ import java.awt.datatransfer.StringSelection
 
 object Clipboard {
 
-    fun set(text: String) {
+    fun set(text: String?) {
         val clipboard = Toolkit.getDefaultToolkit().systemClipboard
         clipboard.setContents(StringSelection(text), null)
     }
