@@ -508,6 +508,8 @@ Bot info:
 
 [#45]: https://github.com/robocode-dev/tank-royale/issues/45
 
+[#46]: https://github.com/robocode-dev/tank-royale/issues/46
+
 [#52]: https://github.com/robocode-dev/tank-royale/discussions/52#discussioncomment-4332072
 
 [#53]: https://github.com/robocode-dev/tank-royale/issues/53
