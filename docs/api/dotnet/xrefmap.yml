@@ -3995,12 +3995,12 @@ references:
   commentId: T:Robocode.TankRoyale.BotApi.Events.RoundEndedEvent
   fullName: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent
   nameWithType: RoundEndedEvent
-- uid: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.#ctor(System.Int32,System.Int32)
-  name: RoundEndedEvent(Int32, Int32)
-  href: api/Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.html#Robocode_TankRoyale_BotApi_Events_RoundEndedEvent__ctor_System_Int32_System_Int32_
-  commentId: M:Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.#ctor(System.Int32,System.Int32)
-  fullName: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.RoundEndedEvent(System.Int32, System.Int32)
-  nameWithType: RoundEndedEvent.RoundEndedEvent(Int32, Int32)
+- uid: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.#ctor(System.Int32,System.Int32,Robocode.TankRoyale.BotApi.BotResults)
+  name: RoundEndedEvent(Int32, Int32, BotResults)
+  href: api/Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.html#Robocode_TankRoyale_BotApi_Events_RoundEndedEvent__ctor_System_Int32_System_Int32_Robocode_TankRoyale_BotApi_BotResults_
+  commentId: M:Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.#ctor(System.Int32,System.Int32,Robocode.TankRoyale.BotApi.BotResults)
+  fullName: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.RoundEndedEvent(System.Int32, System.Int32, Robocode.TankRoyale.BotApi.BotResults)
+  nameWithType: RoundEndedEvent.RoundEndedEvent(Int32, Int32, BotResults)
 - uid: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.#ctor*
   name: RoundEndedEvent
   href: api/Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.html#Robocode_TankRoyale_BotApi_Events_RoundEndedEvent__ctor_
@@ -4008,6 +4008,19 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.RoundEndedEvent
   nameWithType: RoundEndedEvent.RoundEndedEvent
+- uid: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.Results
+  name: Results
+  href: api/Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.html#Robocode_TankRoyale_BotApi_Events_RoundEndedEvent_Results
+  commentId: P:Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.Results
+  fullName: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.Results
+  nameWithType: RoundEndedEvent.Results
+- uid: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.Results*
+  name: Results
+  href: api/Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.html#Robocode_TankRoyale_BotApi_Events_RoundEndedEvent_Results_
+  commentId: Overload:Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.Results
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.Results
+  nameWithType: RoundEndedEvent.Results
 - uid: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.RoundNumber
   name: RoundNumber
   href: api/Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.html#Robocode_TankRoyale_BotApi_Events_RoundEndedEvent_RoundNumber
