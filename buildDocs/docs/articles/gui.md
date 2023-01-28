@@ -105,6 +105,47 @@ The **Selected Bots** lists the joined bots you are selecting to participate in 
 Note that the 'Start Battle' button might be disabled if the number of selected bots for the battle does not meet the
 minimum requirements defined by the rules ([game type]), which is written in hover text for the 'Start Battle' button.
 
+### Viewing the battle
+
+When the battle is started, the screen will shift to the battle view:
+
+![Battle View](../images/gui/battle-view.png)
+
+The battle can be controlled using the control panel at the bottom:
+
+![Control Panel](../images/gui/control-panel.png)
+
+With the control panel you can:
+
+- pause/resume the battle
+- single-step a turn by clicking 'Next turn', while the game is paused
+- stop and restart the battle
+- set the TPS (Turns per second) with the slider, TPS field, or the default TPS button
+
+### Viewing the bot console
+
+On the left side of the battle view you can see a side-panel containing buttons for each bot participating in the
+battle:
+
+![Side Panel](../images/gui/side-panel.png)
+
+When clicking on a 'bot button', the bot console window will open:
+
+![Bot Console](../images/gui/bot-console.png)
+
+The bot console writes out the standard output (stdout) and standard error (stderr) printed out from the bots standout
+output streams. Note that the standard output streams from the bot is being redirected by the Bot API when it is being
+booted from the [Booter].
+
+Data received from the bot is written out with a label in gray with the turn number, when the output was written out.
+
+Messages sent to standard output (stdout) is written in <font color=white>white</font>, and messages sent to standard
+error (stderr) is written out in <font color=red>red</font>.
+
+Info messages from the game (GUI) is written out in <font color=green>green</font>. Info messages is e.g. round number,
+when a new round has just started. But it could also be "events" written out with a starting left arrow (>) telling that
+the game has ended or was aborted.
+
 ## Setup Rules
 
 Setup Rules makes it is possible to modify the rules for a specific [game type]:
