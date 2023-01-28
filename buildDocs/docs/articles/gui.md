@@ -137,14 +137,15 @@ The bot console writes out the standard output (stdout) and standard error (stde
 output streams. Note that the standard output streams from the bot is being redirected by the Bot API when it is being
 booted from the [Booter].
 
-Data received from the bot is written out with a label in gray with the turn number, when the output was written out.
+Data received from the bot is written out with a label in <font color=gray>gray</font> with the turn number, when the
+output was written out.
 
 Messages sent to standard output (stdout) is written in <font color=white>white</font>, and messages sent to standard
-error (stderr) is written out in <font color=red>red</font>.
+error (stderr) is written out in <font color=#FF5733>red</font>.
 
-Info messages from the game (GUI) is written out in <font color=green>green</font>. Info messages is e.g. round number,
-when a new round has just started. But it could also be "events" written out with a starting left arrow (>) telling that
-the game has ended or was aborted.
+Info messages from the game (GUI) is written out in <font color=#377B37>green</font>. Info messages is e.g. round
+number, when a new round has just started. But it could also be "events" written out with a starting left arrow (>)
+telling that the game has ended or was aborted.
 
 ## Setup Rules
 
