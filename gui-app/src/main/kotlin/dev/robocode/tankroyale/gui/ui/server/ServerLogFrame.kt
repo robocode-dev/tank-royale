@@ -15,9 +15,9 @@ object ServerLogFrame : ConsoleFrame("server_log_frame") {
     }
 
     override fun append(text: String) {
-        val regex = Regex("\u001B\\[[^m]+m") // TODO: Use JTextPane with colors
-        val newText = regex.replace(text, "")
+        var html = Regex("\u001B\\[[^m]+m").replace(text, "")
+        html = Regex("\\s").replace(html, "&nbsp;")
 
-        super.append(newText)
+        super.append(html)
     }
 }

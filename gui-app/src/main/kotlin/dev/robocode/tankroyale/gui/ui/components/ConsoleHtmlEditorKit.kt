@@ -6,7 +6,14 @@ open class ConsoleHtmlEditorKit : HTMLEditorKit() {
 
     init {
         styleSheet.apply {
-            // ESC colors
+            addRule("body { color: white; font-family: monospace; }")
+
+            // Bot console
+            addRule(".info { color: \"#377B37\"; }") // olive green
+            addRule(".error { color: \"#FF5733\"; }") // dark pink
+            addRule(".linenumber { color: gray; }")
+
+            // ANSI colors
             addRule(".esc.black { color: Black }")
             addRule(".esc.red { color: Red }")
             addRule(".esc.green { color: Green }")

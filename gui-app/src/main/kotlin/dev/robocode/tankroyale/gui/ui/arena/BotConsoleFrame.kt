@@ -5,23 +5,15 @@ import dev.robocode.tankroyale.gui.model.BotState
 import dev.robocode.tankroyale.gui.model.Participant
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.ConsoleFrame
-import javax.swing.text.html.HTMLDocument
 
 class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
     ConsoleFrame(bot.displayName, isTitlePropertyName = false) {
-
-    private val editorKit = BotConsoleHtmlEditorKit()
-    private val document = editorKit.createDefaultDocument() as HTMLDocument
 
     private var numberOfRounds: Int = 0
 
     init {
         setLocation(10, 10 + frameCounter * 50) // increment y for each bot console frame
         setSize(600, 400)
-
-        editorPane.contentType = "text/html"
-        editorPane.editorKit = editorKit
-        editorPane.document = document
 
         subscribeToEvents()
     }
@@ -91,7 +83,7 @@ class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
             if (turnNumber != null) {
                 html = "<span class=\"linenumber\">$turnNumber:</span> $html"
             }
-            editorKit.insertHTML(document, document.length, html, 0, 0, null)
+            super.append(html)
         }
     }
 }
