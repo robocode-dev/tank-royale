@@ -1,6 +1,5 @@
 package build.release
 
-import org.gradle.internal.file.impl.DefaultFileMetadata.file
 import org.json.JSONObject
 import java.io.File
 import java.net.URI
@@ -53,7 +52,7 @@ fun createRelease(projectDir: File, version: String, token: String) {
 
 private fun prepareRelease(projectDir: File, version: String, token: String): String /* JSON result */ {
 
-    var releaseNotes = generateReleaseNotes(projectDir, version)
+    val releaseNotes = generateReleaseNotes(projectDir, version)
     val quotedReleaseNotes = JSONObject.quote(releaseNotes)
 
     val body = """{
