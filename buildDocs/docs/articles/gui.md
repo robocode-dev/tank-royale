@@ -105,7 +105,7 @@ The **Selected Bots** lists the joined bots you are selecting to participate in 
 Note that the 'Start Battle' button might be disabled if the number of selected bots for the battle does not meet the
 minimum requirements defined by the rules ([game type]), which is written in hover text for the 'Start Battle' button.
 
-### Viewing the battle
+## Viewing the battle
 
 When the battle is started, the screen will shift to the battle view:
 
