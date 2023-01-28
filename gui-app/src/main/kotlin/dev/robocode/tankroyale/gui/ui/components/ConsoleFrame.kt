@@ -56,16 +56,14 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
         editorPane.text = null
     }
 
-    fun append(line: String) {
-        val regex = Regex("\u001B\\[[^m]+m") // TODO: Use JTextPane with colors
-        val result = regex.replace(line, "")
-        editorPane.text += result
+    open fun append(text: String) {
+        editorPane.text += text
 
         // Scroll to bottom
         editorPane.caretPosition = editorPane.document.length
     }
 
-    protected fun setDisposeOnEnterKeyPressed() {
+    private fun setDisposeOnEnterKeyPressed() {
         val inputMap = rootPane.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW)
         val enter = "enter"
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enter)

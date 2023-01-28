@@ -6,20 +6,11 @@ import dev.robocode.tankroyale.gui.model.Participant
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.ConsoleFrame
 import javax.swing.text.html.HTMLDocument
-import javax.swing.text.html.HTMLEditorKit
 
 class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
     ConsoleFrame(bot.displayName, isTitlePropertyName = false) {
 
-    companion object {
-        private val editorKit = HTMLEditorKit().apply {
-            styleSheet.addRule("body { color: white; font-family: monospace; }")
-            styleSheet.addRule(".error { color: \"#FF5733\"; }") // dark pink
-            styleSheet.addRule(".linenumber { color: gray; }")
-            styleSheet.addRule(".info { color: \"#377B37\"; }") // olive green
-        }
-    }
-
+    private val editorKit = BotConsoleHtmlEditorKit()
     private val document = editorKit.createDefaultDocument() as HTMLDocument
 
     private var numberOfRounds: Int = 0
