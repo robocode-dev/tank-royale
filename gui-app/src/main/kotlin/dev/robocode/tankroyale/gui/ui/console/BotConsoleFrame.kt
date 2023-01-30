@@ -1,10 +1,9 @@
-package dev.robocode.tankroyale.gui.ui.arena
+package dev.robocode.tankroyale.gui.ui.console
 
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.BotState
 import dev.robocode.tankroyale.gui.model.Participant
 import dev.robocode.tankroyale.gui.ui.Strings
-import dev.robocode.tankroyale.gui.ui.components.ConsoleFrame
 
 class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
     ConsoleFrame(bot.displayName, isTitlePropertyName = false) {
@@ -61,9 +60,9 @@ class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
         }
 
         appendText("""
-            --------------------<br>
-            $roundInfo<br>
-            --------------------<br>
+            --------------------
+            $roundInfo
+            --------------------
         """.trimIndent(), "info"
         )
     }

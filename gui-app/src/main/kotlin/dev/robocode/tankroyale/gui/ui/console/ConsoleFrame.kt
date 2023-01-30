@@ -1,5 +1,6 @@
-package dev.robocode.tankroyale.gui.ui.components
+package dev.robocode.tankroyale.gui.ui.console
 
+import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
@@ -21,6 +22,8 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
     private val editorKit = ConsoleHtmlEditorKit()
     private val document = editorKit.createDefaultDocument() as HTMLDocument
 
+    private val ansiToHtml = AnsiColorToHtmlController()
+
     private val onOk = Event<JButton>().apply { subscribe(this) { dispose() } }
     private val onClear = Event<JButton>().apply { subscribe(this) { clear() } }
     private val onCopyToClipboard = Event<JButton>().apply { subscribe(this) { copyToClipboard() } }
@@ -36,6 +39,8 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
             isEditable = false
             background = Color(0x282828)
         }
+
+        clear() // to avoid 2nd line break
 
         val buttonPanel = JPanel().apply {
             addOkButton(onOk)
@@ -57,14 +62,21 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
     }
 
     fun clear() {
-        editorPane.text = null
+        editorPane.text = "<div>" // to avoid 2nd line break
     }
 
     open fun append(text: String) {
-        editorKit.insertHTML(document, document.length, text, 0, 0, null)
+        var html = text
+            .replace(" ", "&nbsp;") // in lack of the style `white-space: pre`
+            .replace("\n", "<br>")
+            .replace("\r", "")
+
+        html = ansiToHtml.process(html)
+
+        editorKit.insertHTML(document, document.length, html, 0, 0, null)
 
         // Scroll to bottom
-        editorPane.caretPosition = editorPane.document.length
+        editorPane.caretPosition = document.length
     }
 
     private fun setDisposeOnEnterKeyPressed() {
@@ -83,7 +95,7 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
         editorPane.select(0, editorPane.text.length)
 
         // Replace no-break spaces with ordinary spaces
-        val text = Regex("\\u00a0").replace(editorPane.selectedText, " ")
+        val text = editorPane.selectedText.replace("\u00a0", " ")
 
         // copy the text to the clipboard
         Clipboard.set(text)

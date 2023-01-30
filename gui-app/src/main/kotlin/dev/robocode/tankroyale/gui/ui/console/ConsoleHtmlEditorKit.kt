@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.ui.components
+package dev.robocode.tankroyale.gui.ui.console
 
 import javax.swing.text.html.HTMLEditorKit
 
