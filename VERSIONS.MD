@@ -1,5 +1,11 @@
 # Versions
 
+## 📦 In progress
+
+- GUI:
+    - Console windows for bots and server support 3-bit and 4-bit [ANSI colors][ANSI escape code] (foreground and
+      background) and simple text formatting.
+
 ## 📦 0.19.0 - Added bot console windows
 
 #### 🚀 Improvements
@@ -521,3 +527,5 @@ Bot info:
 [sounds releases]: https://github.com/robocode-dev/sounds/releases
 
 [GitHub Pages]: https://robocode-dev.github.io/tank-royale/
+
+[ANSI escape code]: https://en.wikipedia.org/w/index.php?title=ANSI_escape_code

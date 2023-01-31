@@ -1,5 +1,6 @@
-package dev.robocode.tankroyale.gui.ui.components
+package dev.robocode.tankroyale.gui.ui.console
 
+import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
@@ -7,16 +8,21 @@ import dev.robocode.tankroyale.gui.util.Clipboard
 import dev.robocode.tankroyale.gui.util.Event
 import java.awt.BorderLayout
 import java.awt.Color
-import java.awt.Font
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import javax.swing.*
+import javax.swing.text.html.HTMLDocument
 
 
 open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : RcFrame(title, isTitlePropertyName) {
 
-    protected val editorPane = JEditorPane()
+    private val editorPane = JEditorPane()
     private val scrollPane = JScrollPane(editorPane)
+
+    private val editorKit = ConsoleHtmlEditorKit()
+    private val document = editorKit.createDefaultDocument() as HTMLDocument
+
+    private val ansiToHtml = AnsiColorToHtmlController()
 
     private val onOk = Event<JButton>().apply { subscribe(this) { dispose() } }
     private val onClear = Event<JButton>().apply { subscribe(this) { clear() } }
@@ -25,13 +31,16 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
     init {
         setDisposeOnEnterKeyPressed()
 
-        editorPane.apply {
-            isEditable = false
-            foreground = Color.WHITE
-            background = Color(0x28, 0x28, 0x28)
+        editorPane.editorKit = editorKit
+        editorPane.document = document
 
-            font = Font(Font.MONOSPACED, Font.BOLD, 12)
+        editorPane.apply {
+            contentType = "text/html"
+            isEditable = false
+            background = Color(0x282828)
         }
+
+        clear() // to avoid 2nd line break
 
         val buttonPanel = JPanel().apply {
             addOkButton(onOk)
@@ -53,19 +62,24 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
     }
 
     fun clear() {
-        editorPane.text = null
+        editorPane.text = "<div>" // to avoid 2nd line break
     }
 
-    fun append(line: String) {
-        val regex = Regex("\u001B\\[[^m]+m") // TODO: Use JTextPane with colors
-        val result = regex.replace(line, "")
-        editorPane.text += result
+    open fun append(text: String) {
+        var html = text
+            .replace(" ", "&nbsp;") // in lack of the style `white-space: pre`
+            .replace("\n", "<br>")
+            .replace("\r", "")
+
+        html = ansiToHtml.process(html)
+
+        editorKit.insertHTML(document, document.length, html, 0, 0, null)
 
         // Scroll to bottom
-        editorPane.caretPosition = editorPane.document.length
+        editorPane.caretPosition = document.length
     }
 
-    protected fun setDisposeOnEnterKeyPressed() {
+    private fun setDisposeOnEnterKeyPressed() {
         val inputMap = rootPane.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW)
         val enter = "enter"
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enter)
@@ -79,7 +93,9 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
     private fun copyToClipboard() {
         // trick to get the text only without HTML tags
         editorPane.select(0, editorPane.text.length)
-        val text = editorPane.selectedText
+
+        // Replace no-break spaces with ordinary spaces
+        val text = editorPane.selectedText.replace("\u00a0", " ")
 
         // copy the text to the clipboard
         Clipboard.set(text)
