@@ -67,9 +67,10 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
 
     open fun append(text: String) {
         var html = text
-            .replace(" ", "&nbsp;") // in lack of the style `white-space: pre`
+            .replace(" ", "&nbsp;") // in lack of the css style `white-space: pre`
             .replace("\n", "<br>")
             .replace("\r", "")
+            .replace("\t", "&#9;")
 
         html = ansiToHtml.process(html)
 

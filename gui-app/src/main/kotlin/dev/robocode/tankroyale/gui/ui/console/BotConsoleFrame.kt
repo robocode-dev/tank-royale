@@ -75,7 +75,9 @@ class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
     private fun appendText(text: String?, cssClass: String? = null, turnNumber: Int? = null) {
         var html = text
         if (html != null) {
-            html = html.replace("\\n", "<br>")
+            html = html
+                .replace("\\n", "<br>")
+                .replace("\\t", "&#9;")
             if (cssClass != null) {
                 html = "<span class=\"$cssClass\">$html</span>"
             }
