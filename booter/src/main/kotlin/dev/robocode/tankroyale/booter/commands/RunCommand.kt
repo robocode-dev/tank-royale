@@ -2,9 +2,9 @@ package dev.robocode.tankroyale.booter.commands
 
 import dev.robocode.tankroyale.booter.model.BotInfo
 import dev.robocode.tankroyale.booter.util.Env
-import dev.robocode.tankroyale.booter.util.OSUtil
-import dev.robocode.tankroyale.booter.util.OSUtil.OSType.MacOS
-import dev.robocode.tankroyale.booter.util.OSUtil.OSType.Windows
+import dev.robocode.tankroyale.booter.util.OSCheck
+import dev.robocode.tankroyale.booter.util.OSCheck.OSType.MacOS
+import dev.robocode.tankroyale.booter.util.OSCheck.OSType.Windows
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Files.list
@@ -31,7 +31,7 @@ class RunCommand : Command() {
 
         // Add new bots from the std-in or terminate if blank line is provided
         while (true) {
-            val line = readLine()?.trim()
+            val line = readlnOrNull()?.trim()
             val cmdAndArgs = line?.split("\\s+".toRegex(), limit = 2)
             if (cmdAndArgs?.isNotEmpty() == true) {
                 val command = cmdAndArgs[0].lowercase(Locale.getDefault()).trim()
@@ -128,7 +128,7 @@ class RunCommand : Command() {
         }
     }
 
-    private fun findOsScript(botDir: Path): Path? = when (OSUtil.getOsType()) {
+    private fun findOsScript(botDir: Path): Path? = when (OSCheck.getOsType()) {
         Windows -> findWindowsScript(botDir)
         MacOS -> findMacOsScript(botDir)
         else -> findFirstUnixScript(botDir)

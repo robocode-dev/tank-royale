@@ -19,8 +19,8 @@ fun main() {
 }
 
 private fun fixRenderingIssues() {
-    val osName = System.getProperty("os.name").lowercase(Locale.getDefault())
-    val isMac = osName.startsWith("mac ")
+    val osName = System.getProperty("os.name", "generic").lowercase(Locale.ENGLISH)
+    val isMac = osName.contains("mac") || osName.contains("darwin")
     if (!isMac) {
         System.setProperty("sun.java2d.d3d", "false") // turn off use of Direct3D
         System.setProperty("sun.java2d.noddraw", "true") // no use of Direct Draw
