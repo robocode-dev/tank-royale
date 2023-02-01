@@ -541,7 +541,6 @@ class GameServer(
             (serverState === ServerState.GAME_RUNNING || serverState === ServerState.GAME_PAUSED)
         ) {
             handleAbortGame() // Abort the battle when all bots left it!
-            return
         }
 
         // If a bot leaves while in a game, make sure to reset all intent values to zeroes
