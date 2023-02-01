@@ -7,6 +7,7 @@
 - GUI:
     - Console windows for bots and server support 3-bit and 4-bit [ANSI colors][ANSI escape code] (foreground and
       background) and simple text formatting.
+    - Added `bot died` info to the bot console.
 
 #### 🪲 Bug Fixes
 

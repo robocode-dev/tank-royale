@@ -221,7 +221,6 @@ data class ChangeTps(
 val messageModule = SerializersModule {
     polymorphic(Message::class) {
         subclass(BotDeathEvent::class)
-        subclass(BotDeathEvent::class)
         subclass(BotHitWallEvent::class)
         subclass(BotHitBotEvent::class)
         subclass(BotListUpdate::class)

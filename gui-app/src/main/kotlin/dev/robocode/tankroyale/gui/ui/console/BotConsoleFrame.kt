@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.console
 
 import dev.robocode.tankroyale.gui.client.ClientEvents
+import dev.robocode.tankroyale.gui.model.BotDeathEvent
 import dev.robocode.tankroyale.gui.model.BotState
 import dev.robocode.tankroyale.gui.model.Participant
 import dev.robocode.tankroyale.gui.ui.Strings
@@ -34,8 +35,12 @@ class BotConsoleFrame(var bot: Participant, frameCounter: Int = 0) :
                 if (botStates.isNotEmpty()) {
                     updateBotState(botStates[0], tickEvent.turnNumber)
                 }
+                if (tickEvent.events.filter { it is BotDeathEvent && it.victimId == bot.id }.isNotEmpty()) {
+                    appendText("> ${Strings.get("bot_console.bot_died")}", "info", tickEvent.turnNumber)
+                }
             }
         }
+
         ClientEvents.onGameEnded.subscribe(this) {
             appendText("> ${Strings.get("bot_console.game_has_ended")}", "info")
             unsubscribeEvents()
