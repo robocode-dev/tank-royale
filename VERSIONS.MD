@@ -5,6 +5,7 @@
 - GUI:
     - Console windows for bots and server support 3-bit and 4-bit [ANSI colors][ANSI escape code] (foreground and
       background) and simple text formatting.
+    - The properties `sun.java2d.d3d`, `sun.java2d.noddraw`, and `sun.java2d.opengl` is now omitted under macOS.
 
 ## 📦 0.19.0 - Added bot console windows
 

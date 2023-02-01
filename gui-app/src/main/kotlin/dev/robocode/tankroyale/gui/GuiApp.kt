@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.components.Images
 import java.awt.Taskbar
+import java.util.*
 import javax.swing.UIManager
 
 fun main() {
@@ -18,8 +19,11 @@ fun main() {
 }
 
 private fun fixRenderingIssues() {
-    System.setProperty("sun.java2d.d3d", "false") // turn off use of Direct3D
-    System.setProperty("sun.java2d.noddraw=true", "true") // no use of Direct Draw
-
-    System.setProperty("sun.java2d.opengl", "true") // turn on use of OpenGL
+    val osName = System.getProperty("os.name").lowercase(Locale.getDefault())
+    val isMac = osName.startsWith("mac ")
+    if (!isMac) {
+        System.setProperty("sun.java2d.d3d", "false") // turn off use of Direct3D
+        System.setProperty("sun.java2d.noddraw", "true") // no use of Direct Draw
+        System.setProperty("sun.java2d.opengl", "true") // turn on use of OpenGL
+    }
 }
