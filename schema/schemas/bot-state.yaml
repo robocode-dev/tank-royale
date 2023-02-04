@@ -1,6 +1,6 @@
 $id: #bot-state.yaml
 $schema: http://json-schema.org/2020-12/schema#
-description: Current state of a bot without an id. The id must be hidden for enemy bots
+description: Current state of a bot, but without an id that must be kept secret from opponent bots
 properties:
   energy:
     description: Energy level
@@ -39,25 +39,26 @@ properties:
     description: Gun heat
     type: number
   bodyColor:
-    description: Current RGB color of the body
+    description: Current RGB color of the body, if changed
     $ref: color.yaml
   turretColor:
-    description: New color of the gun turret
+    description: New color of the gun turret, if changed
     $ref: color.yaml
   radarColor:
-    description: New color of the radar
+    description: New color of the radar, if changed
     $ref: color.yaml
   bulletColor:
-    description: New color of the bullet. Note. This will be the color of a bullet when it is fired
+    description: New color of the bullets, if changed.
+      Note that bullets that has already been fired should not change colors.
     $ref: color.yaml
   scanColor:
-    description: New color of the scan arc
+    description: New color of the scan arc, if changed
     $ref: color.yaml
   tracksColor:
-    description: New color of the tracks
+    description: New color of the tracks, if changed
     $ref: color.yaml
   gunColor:
-    description: New color of gun
+    description: New color of gun, if changed
     $ref: color.yaml
 required:
   - energy

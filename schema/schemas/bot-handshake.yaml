@@ -10,11 +10,14 @@ properties:
   name:
     description: Name of bot, e.g. Killer Bee
     type: string
+  team:
+    description: Name of the bot team that this robot is a member of, e.g. Killer Bees
+    type: string
   version:
     description: Bot version, e.g. 1.0
     type: string
   authors:
-    description: Name of authors, e.g. John Doe (john_doe@somewhere.net)
+    description: Name of authors, e.g. John Doe <john_doe@somewhere.net>
     type: array
     items:
       type: string

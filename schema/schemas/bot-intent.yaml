@@ -1,6 +1,9 @@
 $id: #bot-intent.yaml
 $schema: http://json-schema.org/2020-12/schema#
-description: Intent from a bot
+description: |
+  The intent (request) sent from a bot each turn for controlling the bot and provide the server with data.
+  A field only needs to be set, if the value must be changed. Otherwise the server will use the field value from the
+  last time the field was set.
 extends:
   $ref: message.yaml
 properties:
@@ -59,8 +62,11 @@ properties:
     description: New color of the gun
     $ref: color.yaml
   stdOut:
-    description: Text from standard output (stdout)
+    description: New text received from standard output (stdout)
     type: string
   stdErr:
-    description: Text from standard error (stderr)
+    description: New text received from standard error (stderr)
     type: string
+  teamMessage:
+    description: A message to send to a specific teammate or broadcast to the entire team
+    $ref: team-message.yaml

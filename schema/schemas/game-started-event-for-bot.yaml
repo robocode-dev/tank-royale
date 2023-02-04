@@ -7,6 +7,11 @@ properties:
   myId:
     description: My ID is an unique identifier for this bot
     type: integer
+  teammateIds:
+    description: The IDs of the teammates in the team that this bot is a member of
+    type: array
+    items:
+      type: integer
   gameSetup:
     description: Game setup
     $ref: game-setup.yaml

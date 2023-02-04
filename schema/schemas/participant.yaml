@@ -15,7 +15,7 @@ properties:
     description: Bot version, e.g. 1.0
     type: string
   authors:
-    description: Name of authors, e.g. John Doe (john_doe@somewhere.net)
+    description: Name of authors, e.g. John Doe <john_doe@somewhere.net>
     type: array
     items:
       type: string

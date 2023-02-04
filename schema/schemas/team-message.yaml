@@ -1,0 +1,16 @@
+$id: #team-message.yaml
+$schema: http://json-schema.org/2020-12/schema#
+description: A message sent between teammates
+type: object
+properties:
+  message:
+    description: The received message in binary form and hence base64 encoded
+    type: "string"
+    contentEncoding: "base64"
+    contentMediaType: "application/octet-stream"
+  receiverId:
+    description: The ID of the teammate that must receive the message.
+      When omitting this field, this message is treated as a broadcast message for all teammates
+    type: integer
+required:
+  - message

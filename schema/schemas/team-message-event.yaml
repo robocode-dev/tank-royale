@@ -1,0 +1,17 @@
+$id: #team-message-event.yaml
+$schema: http://json-schema.org/2020-12/schema#
+description: Event occurring when a message has been received from a teammate
+extends:
+  $ref: event.yaml
+properties:
+  message:
+    description: The received message in binary form and hence base64 encoded
+    type: "string"
+    contentEncoding: "base64"
+    contentMediaType: "application/octet-stream"
+  senderId:
+    description: The ID of the bot that sent the message
+    type: integer
+required:
+  - message
+  - senderId
