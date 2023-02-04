@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Robocode.TankRoyale.BotApi.Util;
 using static Robocode.TankRoyale.BotApi.Internal.CollectionUtil;
@@ -15,57 +14,57 @@ namespace Robocode.TankRoyale.BotApi;
 public sealed class BotInfo
 {
     /// <summary>
-    /// Maximum number of characters accepted for the name.
+    /// The maximum number of characters accepted for the name is 30.
     /// </summary>
     public const int MaxNameLength = 30;
 
     /// <summary>
-    /// Maximum number of characters accepted for the version.
+    /// The maximum number of characters accepted for the version is 20.
     /// </summary>
     public const int MaxVersionLength = 20;
 
     /// <summary>
-    /// Maximum number of characters accepted for an author name.
+    /// The maximum number of characters accepted for an author name is 20.
     /// </summary>
     public const int MaxAuthorLength = 20;
 
     /// <summary>
-    /// Maximum number of characters accepted for the description.
+    /// The maximum number of characters accepted for the description is 250.
     /// </summary>
     public const int MaxDescriptionLength = 250;
 
     /// <summary>
-    /// Maximum number of characters accepted for the link to the homepage.
+    /// The maximum number of characters accepted for the link to the homepage is 150.
     /// </summary>
     public const int MaxHomepageLength = 150;
 
     /// <summary>
-    /// Maximum number of characters accepted for a game type.
+    /// The maximum number of characters accepted for a game type is 20.
     /// </summary>
     public const int MaxGameTypeLength = 20;
 
     /// <summary>
-    /// Maximum number of characters accepted for a game type.
+    /// The maximum number of characters accepted for a game type is 20.
     /// </summary>
     public const int MaxPlatformLength = 20;
 
     /// <summary>
-    /// Maximum number of characters accepted for the programming language name.
+    /// The maximum number of characters accepted for the programming language name is 30.
     /// </summary>
     public const int MaxProgrammingLangLength = 30;
 
     /// <summary>
-    /// Maximum number of authors accepted.
+    /// The maximum number of authors accepted is 5.
     /// </summary>
     public const int MaxNumberOfAuthors = 5;
 
     /// <summary>
-    /// Maximum number of country codes accepted.
+    /// The maximum number of country codes accepted is 5.
     /// </summary>
     public const int MaxNumberOfCountryCodes = 5;
 
     /// <summary>
-    /// Maximum number of game types accepted.
+    /// The maximum number of game types accepted is 10.
     /// </summary>
     public const int MaxNumberOfGameTypes = 10;
 
@@ -141,6 +140,8 @@ public sealed class BotInfo
 
     /// <summary>
     /// The name, e.g., "MyBot". This field must always be provided with the bot info.
+    ///
+    /// <inheritdoc cref="MaxNameLength"/>
     /// </summary>
     /// <value>The name of the bot.</value>
     public string Name
@@ -158,6 +159,8 @@ public sealed class BotInfo
 
     /// <summary>
     /// The version, e.g., "1.0". This field must always be provided with the bot info.
+    ///
+    /// <inheritdoc cref="MaxVersionLength"/>
     /// </summary>
     /// <value>The version of the bot.</value>
     public string Version
@@ -176,6 +179,10 @@ public sealed class BotInfo
     /// <summary>
     /// List of author(s) of the bot, e.g., "John Doe (johndoe@somewhere.io)".
     /// At least one author must be provided.
+    ///
+    /// <inheritdoc cref="MaxNumberOfAuthors"/>
+    ///
+    /// <inheritdoc cref="MaxAuthorLength"/>
     /// </summary>
     /// <value>The author(s) of the bot.</value>
     public IList<string> Authors
@@ -197,8 +204,9 @@ public sealed class BotInfo
     }
 
     /// <summary>
-    /// Short description of the bot, preferably a one-liner.
-    /// This field is optional.
+    /// Short description of the bot, preferably a one-liner. This field is optional.
+    ///
+    /// <inheritdoc cref="MaxDescriptionLength"/>
     /// </summary>
     /// <value>A short description of the bot.</value>
     public string Description
@@ -213,8 +221,9 @@ public sealed class BotInfo
     }
 
     /// <summary>
-    /// The URL of a web page for the bot.
-    /// This field is optional.
+    /// The URL of a web page for the bot (optional).
+    ///
+    /// <inheritdoc cref="MaxHomepageLength"/>
     /// </summary>
     /// <value>The URL of a web page for the bot.</value>
     public string Homepage
@@ -232,6 +241,8 @@ public sealed class BotInfo
     /// The country code(s) defined by ISO 3166-1 alpha-2, e.g. "us":
     /// https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
     /// If no country code is provided, the locale of the system is being used instead.
+    ///
+    /// <inheritdoc cref="MaxNumberOfCountryCodes"/>
     /// </summary>
     /// <value>The country code(s) for the bot.</value>
     public IList<string> CountryCodes
@@ -262,6 +273,10 @@ public sealed class BotInfo
     /// The game type(s) accepted by the bot, e.g., "classic", "melee", "1v1". This field must always be
     /// provided with the bot info. The game types define which game types the bot can participate
     /// in. See <see cref="GameType"/> for using predefined game type.
+    ///
+    /// <inheritdoc cref="MaxNumberOfGameTypes"/>
+    ///
+    /// <inheritdoc cref="MaxGameTypeLength"/>
     /// </summary>
     /// <value>The game type(s) that this bot can handle.</value>
     public ICollection<string> GameTypes
@@ -288,8 +303,9 @@ public sealed class BotInfo
     }
 
     /// <summary>
-    /// The platform used for running the bot, e.g., ".Net 6.0".
-    /// This field is optional.
+    /// The platform used for running the bot, e.g., ".Net 6.0" (optional).
+    ///
+    /// <inheritdoc cref="MaxPlatformLength"/>
     /// </summary>
     /// <value>The platform used for running the bot.</value>
     public string Platform
@@ -306,8 +322,9 @@ public sealed class BotInfo
     }
 
     /// <summary>
-    /// The programming language used for developing the bot, e.g., "C# 8.0" or "F#".
-    /// This field is optional.
+    /// The programming language used for developing the bot, e.g., "C# 8.0" or "F#" (optional).
+    ///
+    /// <inheritdoc cref="MaxProgrammingLangLength"/>
     /// </summary>
     /// <value>The programming language used for developing the bot.</value>
     public string ProgrammingLang
@@ -455,9 +472,9 @@ public sealed class BotInfo
         IBuilder Copy(BotInfo botInfo);
 
         /// <summary>
-        /// Sets the bot name. (required)
+        /// Sets the bot name (required).
         ///
-        /// Note that the maximum length of the name is <see cref="MaxNameLength"/> characters.
+        /// <inheritdoc cref="MaxNameLength"/>
         /// </summary>
         /// <example>"Rampage"</example>
         /// <param name="name">The name of the bot.</param>
@@ -465,9 +482,9 @@ public sealed class BotInfo
         IBuilder SetName(string name);
 
         /// <summary>
-        /// Sets the bot version. (required)
+        /// Sets the bot version (required).
         ///
-        /// Note that the maximum length of the version is <see cref="MaxVersionLength"/> characters.
+        /// <inheritdoc cref="MaxVersionLength"/>
         /// </summary>
         /// <example>"1.0"</example>
         /// <param name="version">The version of the bot.</param>
@@ -475,10 +492,11 @@ public sealed class BotInfo
         IBuilder SetVersion(string version);
 
         /// <summary>
-        /// Sets the names(s) of the author(s) of the bot. (required)
+        /// Sets the names(s) of the author(s) of the bot (required).
         ///
-        /// Note that the maximum length of an author name is <see cref="MaxAuthorLength"/> characters, and the maximum
-        /// number of names is <see cref="MaxNumberOfAuthors"/>.
+        /// <inheritdoc cref="MaxAuthorLength"/>
+        ///
+        /// <inheritdoc cref="MaxNumberOfAuthors"/>
         /// </summary>
         /// <example>"John Doe"</example>
         /// <param name="authors">A list containing the names(s) of the author(s). A <c>null</c> removes all authors.
@@ -488,7 +506,11 @@ public sealed class BotInfo
         IBuilder SetAuthors(IEnumerable<string> authors);
 
         /// <summary>
-        /// Adds an author of the bot. (required)
+        /// Adds an author of the bot (required).
+        ///
+        /// <inheritdoc cref="MaxAuthorLength"/>
+        ///
+        /// <inheritdoc cref="MaxNumberOfAuthors"/>
         ///
         /// See <see cref="SetAuthors"/> for more details.
         /// </summary>
@@ -498,11 +520,12 @@ public sealed class BotInfo
         IBuilder AddAuthor(string author);
 
         /// <summary>
-        /// Sets a short description of the bot. (optional)
+        /// Sets a short description of the bot (optional).
         ///
-        /// Note that the maximum length of the description is <see cref="BotInfo.MaxDescriptionLength"/> characters.
         /// Line-breaks (line-feed / new-line character) are supported, but only expect up to 3 lines to be displayed on
         /// a UI.
+        ///
+        /// <inheritdoc cref="MaxDescriptionLength"/>
         /// </summary>
         /// <example>
         /// <code>
@@ -515,9 +538,9 @@ public sealed class BotInfo
         IBuilder SetDescription(string description);
 
         /// <summary>
-        /// Sets a link to the homepage for the bot. (optional)
+        /// Sets a link to the homepage for the bot (optional).
         ///
-        /// Note that the maximum length of a link is <see cref="MaxHomepageLength"/> characters.
+        /// <inheritdoc cref="MaxHomepageLength"/>
         /// </summary>
         /// <example>"https://fictive-homepage.net/Rampage"</example>
         /// <param name="homepage">A link to a homepage for the bot.</param>
@@ -525,10 +548,11 @@ public sealed class BotInfo
         IBuilder SetHomepage(string homepage);
 
         /// <summary>
-        /// Sets the country codes for the bot. (optional)
-        /// 
-        /// Note that the maximum length of each country code is 2 (alpha-2) from the ISO 3166 international standard,
-        /// and the maximum number of country codes is <see cref="BotInfo.MaxNumberOfCountryCodes"/>.
+        /// Sets the country codes for the bot (optional).
+        ///
+        /// The maximum length of each country code is 2 (alpha-2) from the ISO 3166 international standard.
+        ///
+        /// <inheritdoc cref="MaxNumberOfCountryCodes"/>
         /// </summary>
         /// <example>"dk"</example>
         /// <note>
@@ -544,9 +568,9 @@ public sealed class BotInfo
         IBuilder SetCountryCodes(IEnumerable<string> countryCodes);
 
         /// <summary>
-        /// Adds a country code for the bot. (optional)
+        /// Adds a country code for the bot (optional). See <see cref="SetCountryCodes"/> for more details.
         ///
-        /// See <see cref="SetCountryCodes"/> for more details.
+        /// <inheritdoc cref="MaxNumberOfCountryCodes"/>
         /// </summary>
         /// <param name="countryCode">The country code to add.</param>
         /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
@@ -554,7 +578,7 @@ public sealed class BotInfo
         IBuilder AddCountryCode(string countryCode);
 
         /// <summary>
-        /// Sets the game types that this bot is capable of participating in. (required)
+        /// Sets the game types that this bot is capable of participating in (required)
         ///
         /// The standard game types <a href="https://robocode-dev.github.io/tank-royale/articles/game_types.html">
         /// are listed here</a>
@@ -564,8 +588,9 @@ public sealed class BotInfo
         /// The <see cref="GameType"/> class contains the string for the current predefined game types, which can be used
         /// when setting the game types of this method.
         ///
-        /// Note that the maximum length of a game type is <see cref="BotInfo.MaxGameTypeLength"/>, and the maximum
-        /// number of game types is <see cref="BotInfo.MaxNumberOfGameTypes"/>.
+        /// <inheritdoc cref="MaxNumberOfGameTypes"/>
+        ///
+        /// <inheritdoc cref="MaxGameTypeLength"/>
         /// </summary>
         /// <example>Example of game type: "classic"</example>
         /// <example>
@@ -583,9 +608,12 @@ public sealed class BotInfo
         IBuilder SetGameTypes(ICollection<string> gameTypes);
 
         /// <summary>
-        /// Adds a game type that this bot is capable of participating in. (required)
-        ///
+        /// Adds a game type that this bot is capable of participating in (required).
         /// See <see cref="SetGameTypes"/> for more details.
+        ///
+        /// <inheritdoc cref="MaxNumberOfGameTypes"/>
+        ///
+        /// <inheritdoc cref="MaxGameTypeLength"/>
         /// </summary>
         /// <example>
         /// <code>
@@ -601,29 +629,28 @@ public sealed class BotInfo
         IBuilder AddGameType(string gameType);
 
         /// <summary>
-        /// Sets the name of the platform that this bot is build for. (optional)
-        ///
-        /// Note that the maximum length of the name of the platform is <see cref="BotInfo.MaxPlatformLength"/>.
+        /// Sets the name of the platform that this bot is build for (optional).
         ///
         /// If the platform is set to <c>null</c> or a blank string, then this default string will be used based on this
         /// code: <c>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAttribute&gt;()?.FrameworkName</c>.
+        ///
+        /// <inheritdoc cref="BotInfo.MaxPlatformLength"/>
         /// </summary>
         /// <param name="platform">The name of the platform that this bot is build for.</param>
         /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
         IBuilder SetPlatform(string platform);
 
         /// <summary>
-        /// Sets the name of the programming language used for developing this bot. (optional)
+        /// Sets the name of the programming language used for developing this bot (optional)
         ///
-        /// Note that the maximum length of the name of the programming language is
-        /// <see cref="BotInfo.MaxProgrammingLangLength"/>.
+        /// <inheritdoc cref="MaxProgrammingLangLength"/>
         /// </summary>
         /// <param name="programmingLang">The name of the programming language used for developing this bot.</param>
         /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
         IBuilder SetProgrammingLang(string programmingLang);
 
         /// <summary>
-        /// Sets the initial position of this bot. (optional)
+        /// Sets the initial position of this bot (optional)
         ///
         /// Note that initial positions must be enabled/allowed with the game (server) in order to take effect.
         /// </summary>
