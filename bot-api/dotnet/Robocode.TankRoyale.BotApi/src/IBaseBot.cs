@@ -10,6 +10,11 @@ namespace Robocode.TankRoyale.BotApi;
 public interface IBaseBot
 {
     /// <summary>
+    /// The maximum size of a team message, which is 32 KB (32.786 bytes).
+    /// </summary>
+    const int TeamMessageMaxSize = 32768; // bytes
+
+    /// <summary>
     /// The method used to start running the bot. You should call this method from the main
     /// method or similar.
     /// </summary>
@@ -663,6 +668,47 @@ public interface IBaseBot
     bool IsStopped { get; }
 
     /// <summary>
+    /// Returns the ids of all teammates.
+    /// </summary>
+    /// <returns>The ids of all teammates if the bot is participating in a team or an empty collection if the bot is not
+    /// in a team.</returns>
+    /// <seealso cref="IsTeammate"/>
+    /// <seealso cref="SendTeamMessage"/>
+    ICollection<int> TeammateIds { get; }
+
+    /// <summary>
+    /// Checks if the provided bot id is a teammate or not.
+    /// </summary>
+    /// <param name="botId">The id of the bot to check for</param>
+    /// <returns><c>true</c> if the provided is id an id of a teammate; <c>false</c> otherwise.</returns>  
+    /// <seealso cref="TeammateIds"/>
+    /// <seealso cref="SendTeamMessage"/>
+    bool IsTeammate(int botId);
+
+    /// <summary>
+    /// Broadcasts a message to all teammates.
+    ///
+    /// The maximum team message size limit is defined by <see cref="TeamMessageMaxSize"/>.
+    /// </summary>
+    /// <param name="message">The message to broadcast.</param>
+    /// <exception cref="ArgumentException">if the size of the message exceeds the size limit.</exception>
+    /// <seealso cref="SendTeamMessage"/>
+    /// <seealso cref="TeammateIds"/>
+    void BroadcastTeamMessage(object message);
+
+    /// <summary>
+    /// Sends a message to a specific teammate.
+    ///
+    /// The maximum team message size limit is defined by <see cref="TeamMessageMaxSize"/>.
+    /// </summary>
+    /// <param name="teammateId">The id of the teammate to send the message to.</param>
+    /// <param name="message">The message to broadcast.</param>
+    /// <exception cref="ArgumentException">if the size of the message exceeds the size limit.</exception>
+    /// <seealso cref="BroadcastTeamMessage"/>
+    /// <seealso cref="TeammateIds"/>
+    void SendTeamMessage(int teammateId, object message);
+
+    /// <summary>
     /// The color of the body. Colors can (only) be changed each turn.
     /// </summary>
     /// <example>
@@ -875,8 +921,14 @@ public interface IBaseBot
     /// of the condition when you need to differentiate between different types of conditions received
     /// with this event handler.
     /// </summary>
-    /// <param name="customEvent">Is the event details from the game.</param>
+    /// <param name="customEvent">Event details from the game.</param>
     void OnCustomEvent(CustomEvent customEvent);
+
+    /// <summary>
+    /// The event handler triggered when the bot has received a message from a teammate.
+    /// </summary>
+    /// <param name="teamMessageEvent">Event details from the game.</param>
+    void OnTeamMessageEvent(TeamMessageEvent teamMessageEvent);
 
     /// <summary>
     /// Calculates the maximum turn rate for a specific speed.

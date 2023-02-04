@@ -25,8 +25,7 @@ import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
 import dev.robocode.tankroyale.schema.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -71,6 +70,7 @@ public final class BaseBotInternals {
     private final BotIntent botIntent = newBotIntent();
 
     private Integer myId;
+    private Set<Integer> teammateIds;
     private dev.robocode.tankroyale.botapi.GameSetup gameSetup;
 
     private TickEvent tickEvent;
@@ -559,6 +559,45 @@ public final class BaseBotInternals {
         return isStopped;
     }
 
+    public Set<Integer> getTeammateIds() {
+        if (teammateIds == null) {
+            throw new BotException(GAME_NOT_RUNNING_MSG);
+        }
+        return teammateIds;
+    }
+
+    public boolean isTeammate(int botId) {
+        return teammateIds.stream().anyMatch(teammateId -> botId == teammateId);
+    }
+
+    public void broadcastTeamMessage(Object message) {
+        sendTeamMessage(null, message);
+    }
+
+    public void sendTeamMessage(Integer teammateId, Object message) {
+        var bytes = convertToBytes(message);
+        var base64encoded = Base64.getEncoder().encodeToString(bytes);
+
+        var teamMessage = new TeamMessage();
+        teamMessage.setReceiverId(teammateId);
+        teamMessage.setMessage(base64encoded);
+
+        botIntent.setTeamMessage(teamMessage);
+    }
+
+    private byte[] convertToBytes(Object object) {
+        try (var bos = new ByteArrayOutputStream(); var out = new ObjectOutputStream(bos)) {
+            out.writeObject(object);
+            var bytes = bos.toByteArray();
+            if (bytes.length > IBaseBot.TEAM_MESSAGE_MAX_SIZE) {
+                throw new IllegalArgumentException("The team message is larger than the limit of " + IBaseBot.TEAM_MESSAGE_MAX_SIZE + " bytes");
+            }
+            return bytes;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public int getPriority(Class<BotEvent> eventClass) {
         if (!eventPriorities.containsKey(eventClass)) {
             throw new IllegalStateException("Could not get event priority for the class: " + eventClass.getSimpleName());
@@ -770,6 +809,10 @@ public final class BaseBotInternals {
             var gameStartedEventForBot = gson.fromJson(jsonMsg, GameStartedEventForBot.class);
 
             myId = gameStartedEventForBot.getMyId();
+
+            var teammateIdList = gameStartedEventForBot.getTeammateIds();
+            teammateIds = teammateIdList == null ? Set.of() : new HashSet<>(teammateIdList);
+
             gameSetup = GameSetupMapper.map(gameStartedEventForBot.getGameSetup());
 
             // Send ready signal

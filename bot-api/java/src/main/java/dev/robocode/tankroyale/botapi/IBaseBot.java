@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Interface containing the core API for a bot.
@@ -12,6 +13,11 @@ import java.util.List;
  */
 @SuppressWarnings({"UnusedDeclaration", "EmptyMethod"})
 public interface IBaseBot {
+
+    /**
+     * The maximum size of a team message, which is 32 KB (32.786 bytes).
+     */
+    int TEAM_MESSAGE_MAX_SIZE = 32768; // bytes
 
     /**
      * The method used to start running the bot. You should call this method from the main method or
@@ -795,6 +801,51 @@ public interface IBaseBot {
     void setResume();
 
     /**
+     * Returns the ids of all teammates.
+     *
+     * @return the ids of all teammates if the bot is participating in a team or the empty set if
+     * the bot is not in a team.
+     * @see #isTeammate
+     * @see #sendTeamMessage
+     */
+    Set<Integer> getTeammateIds();
+
+    /**
+     * Checks if the provided bot id is a teammate or not.
+     *
+     * @param botId is the id of the bot to check for.
+     * @return <code>true</code> if the provided is id an id of a teammate; <code>false</code> otherwise.
+     * @see #getTeammateIds
+     * @see #sendTeamMessage
+     */
+    boolean isTeammate(int botId);
+
+    /**
+     * Broadcasts a message to all teammates.
+     * The maximum team message size limit is defined by {@link #TEAM_MESSAGE_MAX_SIZE}, which is set to
+     * {@value #TEAM_MESSAGE_MAX_SIZE} bytes.
+     *
+     * @param message is the message to broadcast.
+     * @throws IllegalArgumentException if the size of the message exceeds the size limit.
+     * @see #sendTeamMessage
+     * @see #getTeammateIds
+     */
+    void broadcastTeamMessage(Object message);
+
+    /**
+     * Sends a message to a specific teammate.
+     * The maximum team message size limit is defined by {@link #TEAM_MESSAGE_MAX_SIZE}, which is set to
+     * {@value #TEAM_MESSAGE_MAX_SIZE} bytes.
+     *
+     * @param teammateId is the id of the teammate to send the message to.
+     * @param message    is the message to send.
+     * @throws IllegalArgumentException if the size of the message exceeds the size limit.
+     * @see #broadcastTeamMessage
+     * @see #getTeammateIds
+     */
+    void sendTeamMessage(int teammateId, Object message);
+
+    /**
      * Checks if the movement has been stopped.
      *
      * @return true if the movement has been stopped by {@link #setStop}; false otherwise.
@@ -1164,6 +1215,14 @@ public interface IBaseBot {
     }
 
     /**
+     * The event handler triggered when the bot has received a message from a teammate.
+     *
+     * @param teamMessageEvent is the event details from the game.
+     */
+    default void onTeamMessageEvent(TeamMessageEvent teamMessageEvent) {
+    }
+
+    /**
      * Calculates the maximum turn rate for a specific speed.
      *
      * @param speed is the speed.
@@ -1172,7 +1231,7 @@ public interface IBaseBot {
     double calcMaxTurnRate(double speed);
 
     /**
-     * Calculates the bullet speed given a fire power.
+     * Calculates the bullet speed given a firepower.
      *
      * @param firepower is the firepower.
      * @return The bullet speed determined by the given firepower.

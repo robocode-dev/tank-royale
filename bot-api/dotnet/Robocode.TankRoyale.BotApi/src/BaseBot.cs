@@ -63,10 +63,7 @@ public abstract class BaseBot : IBaseBot
     ///
     /// If the SERVER_URL is not set, then this default URL is used: ws://localhost:7654
     /// </example>
-    public BaseBot()
-    {
-        __baseBotInternals = new BaseBotInternals(this, null, null, null);
-    }
+    public BaseBot() => __baseBotInternals = new BaseBotInternals(this, null, null, null);
 
     /// <summary>
     /// Constructor for initializing a new instance of the BaseBot class.
@@ -74,20 +71,16 @@ public abstract class BaseBot : IBaseBot
     /// variables SERVER_URL and SERVER_SECRET.
     /// </summary>
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
-    public BaseBot(BotInfo botInfo)
-    {
+    public BaseBot(BotInfo botInfo) =>
         __baseBotInternals = new BaseBotInternals(this, botInfo, null, null);
-    }
 
     /// <summary>
     /// Constructor for initializing a new instance of the BaseBot class.
     /// </summary>
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
     /// <param name="serverUrl">Is the server URL</param>
-    public BaseBot(BotInfo botInfo, Uri serverUrl)
-    {
+    public BaseBot(BotInfo botInfo, Uri serverUrl) =>
         __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, null);
-    }
 
     /// <summary>
     /// Constructor for initializing a new instance of the BaseBot class.
@@ -95,22 +88,14 @@ public abstract class BaseBot : IBaseBot
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
     /// <param name="serverUrl">Is the server URL</param>
     /// <param name="serverSecret">Is the server secret for bots</param>
-    public BaseBot(BotInfo botInfo, Uri serverUrl, string serverSecret)
-    {
+    public BaseBot(BotInfo botInfo, Uri serverUrl, string serverSecret) =>
         __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, serverSecret);
-    }
 
     /// <inheritdoc/>
-    public void Start()
-    {
-        __baseBotInternals.Start();
-    }
+    public void Start() => __baseBotInternals.Start();
 
     /// <inheritdoc/>
-    public void Go()
-    {
-        __baseBotInternals.Execute();
-    }
+    public void Go() => __baseBotInternals.Execute();
 
     /// <inheritdoc/>
     public string Variant => __baseBotInternals.Variant;
@@ -188,10 +173,7 @@ public abstract class BaseBot : IBaseBot
     public IList<BotEvent> Events => __baseBotInternals.Events;
 
     /// <inheritdoc/>
-    public void ClearEvents()
-    {
-        __baseBotInternals.ClearEvents();
-    }
+    public void ClearEvents() => __baseBotInternals.ClearEvents();
 
     /// <inheritdoc/>
     public virtual double TurnRate
@@ -250,25 +232,15 @@ public abstract class BaseBot : IBaseBot
     }
 
     /// <inheritdoc/>
-    public bool SetFire(double firepower)
-    {
-        return __baseBotInternals.SetFire(firepower);
-    }
+    public bool SetFire(double firepower) => __baseBotInternals.SetFire(firepower);
 
     /// <inheritdoc/>
-    public void SetRescan()
-    {
-        __baseBotInternals.BotIntent.Rescan = true;
-    }
+    public void SetRescan() => __baseBotInternals.BotIntent.Rescan = true;
 
-    public void SetFireAssist(bool enable)
-    {
-        __baseBotInternals.BotIntent.FireAssist = enable;
-    }
+    public void SetFireAssist(bool enable) => __baseBotInternals.BotIntent.FireAssist = enable;
     
     /// <inheritdoc/>
-    public bool Interruptible
-    {
+    public bool Interruptible {
         set => __baseBotInternals.SetInterruptible(value);
     }
 
@@ -302,31 +274,32 @@ public abstract class BaseBot : IBaseBot
     }
 
     /// <inheritdoc/>
-    public bool AddCustomEvent(Condition condition)
-    {
-        return __baseBotInternals.AddCondition(condition);
-    }
+    public bool AddCustomEvent(Condition condition) => __baseBotInternals.AddCondition(condition);
 
     /// <inheritdoc/>
-    public bool RemoveCustomEvent(Condition condition)
-    {
-        return __baseBotInternals.RemoveCondition(condition);
-    }
+    public bool RemoveCustomEvent(Condition condition) => __baseBotInternals.RemoveCondition(condition);
 
     /// <inheritdoc/>
-    public void SetStop()
-    {
-        __baseBotInternals.SetStop();
-    }
+    public void SetStop() => __baseBotInternals.SetStop();
 
     /// <inheritdoc/>
-    public void SetResume()
-    {
-        __baseBotInternals.SetResume();
-    }
+    public void SetResume() => __baseBotInternals.SetResume();
 
     /// <inheritdoc/>
     public bool IsStopped => __baseBotInternals.IsStopped;
+
+    /// <inheritdoc/>
+    public ICollection<int> TeammateIds => __baseBotInternals.TeammateIds;
+
+    /// <inheritdoc/>
+    public bool IsTeammate(int botId) => __baseBotInternals.IsTeammate(botId);
+
+    /// <inheritdoc/>
+    public void BroadcastTeamMessage(object message) => __baseBotInternals.BroadcastTeamMessage(message);
+
+    /// <inheritdoc/>
+    public void SendTeamMessage(int teammateId, object message) =>
+        __baseBotInternals.SendTeamMessage(teammateId, message);
 
     /// <inheritdoc/>
     public Color BodyColor
@@ -564,6 +537,11 @@ public abstract class BaseBot : IBaseBot
 
     /// <inheritdoc/>
     public virtual void OnCustomEvent(CustomEvent customEvent)
+    {
+    }
+    
+    /// <inheritdoc/>
+    public virtual void OnTeamMessageEvent(TeamMessageEvent teamMessageEvent)
     {
     }
 }

@@ -35,7 +35,6 @@ public sealed class BaseBotInternals
     private readonly IBaseBot baseBot;
     private readonly BotInfo botInfo;
 
-    private int myId;
     private GameSetup gameSetup;
 
     private E.TickEvent tickEvent;
@@ -156,15 +155,9 @@ public sealed class BaseBotInternals
         }
     }
 
-    public void EnableEventHandling(bool enable)
-    {
-        eventHandlingDisabled = !enable;
-    }
+    public void EnableEventHandling(bool enable) => eventHandlingDisabled = !enable;
 
-    public void SetStopResumeHandler(IStopResumeListener listener)
-    {
-        stopResumeListener = listener;
-    }
+    public void SetStopResumeHandler(IStopResumeListener listener) => stopResumeListener = listener;
 
     private static S.BotIntent NewBotIntent()
     {
@@ -188,20 +181,12 @@ public sealed class BaseBotInternals
 
     internal IList<E.BotEvent> Events => eventQueue.Events;
 
-    internal void ClearEvents()
-    {
-        eventQueue.ClearEvents();
-    }
+    internal void ClearEvents() => eventQueue.ClearEvents();
 
-    internal void SetInterruptible(bool interruptible)
-    {
-        eventQueue.SetInterruptible(interruptible);
-    }
+    internal void SetInterruptible(bool interruptible) => eventQueue.SetInterruptible(interruptible);
 
-    internal void SetScannedBotEventInterruptible()
-    {
+    internal void SetScannedBotEventInterruptible() =>
         eventQueue.SetInterruptible(typeof(E.ScannedBotEvent), true);
-    }
 
     internal ISet<Events.Condition> Conditions { get; } = new HashSet<Events.Condition>();
 
@@ -222,10 +207,8 @@ public sealed class BaseBotInternals
         }
     }
 
-    private void OnBulletFired(E.BulletFiredEvent e)
-    {
+    private void OnBulletFired(E.BulletFiredEvent e) =>
         BotIntent.Firepower = 0; // Reset firepower so the bot stops firing continuously
-    }
 
     internal void Start()
     {
@@ -267,11 +250,15 @@ public sealed class BaseBotInternals
     private void SetStdOutAndStdErrOnBotIntent()
     {
         var stdOutText = stdOutStringWriter.ToString();
-        BotIntent.StdOut = stdOutText.Length > 0 ? HttpUtility.JavaScriptStringEncode(stdOutText.Replace("\r", "")) : null;
+        BotIntent.StdOut = stdOutText.Length > 0
+            ? HttpUtility.JavaScriptStringEncode(stdOutText.Replace("\r", ""))
+            : null;
         stdOutStringWriter.GetStringBuilder().Clear();
 
         var stdErrText = stdErrStringWriter.ToString();
-        BotIntent.StdErr = stdErrText.Length > 0 ? HttpUtility.JavaScriptStringEncode(stdErrText.Replace("\r", "")) : null;
+        BotIntent.StdErr = stdErrText.Length > 0
+            ? HttpUtility.JavaScriptStringEncode(stdErrText.Replace("\r", ""))
+            : null;
         stdErrStringWriter.GetStringBuilder().Clear();
     }
 
@@ -313,7 +300,7 @@ public sealed class BaseBotInternals
 
     internal string Version => ServerHandshake.Version;
 
-    internal int MyId => myId;
+    internal int MyId { get; private set; }
 
     internal GameSetup GameSetup => gameSetup ?? throw new BotException(GameNotRunningMsg);
 
@@ -545,15 +532,9 @@ public sealed class BaseBotInternals
         return distance;
     }
 
-    internal bool AddCondition(Events.Condition condition)
-    {
-        return Conditions.Add(condition);
-    }
+    internal bool AddCondition(Events.Condition condition) => Conditions.Add(condition);
 
-    internal bool RemoveCondition(Events.Condition condition)
-    {
-        return Conditions.Remove(condition);
-    }
+    internal bool RemoveCondition(Events.Condition condition) => Conditions.Remove(condition);
 
     internal void SetStop()
     {
@@ -589,20 +570,45 @@ public sealed class BaseBotInternals
 
     internal bool IsStopped { get; private set; }
 
+    internal ICollection<int> TeammateIds { get; private set; }
+
+    internal bool IsTeammate(int botId) => TeammateIds.Contains(botId);
+
+    internal void BroadcastTeamMessage(object message) => SendTeamMessage(null, message);
+
+    internal void SendTeamMessage(int? teammateId, object message)
+    {
+        S.TeamMessage teamMessage = new()
+        {
+            ReceiverId = teammateId,
+            Message = Base64Encode(message)
+        };
+        BotIntent.TeamMessage = teamMessage;
+    }
+
+    private static string Base64Encode(object obj)
+    {
+        var bytes = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj));
+        if (bytes.Length > IBaseBot.TeamMessageMaxSize)
+        {
+            throw new ArgumentException(
+                $"The team message is larger than the limit of {IBaseBot.TeamMessageMaxSize} bytes");
+        }
+
+        return Convert.ToBase64String(bytes);
+    }
+
     internal int GetPriority(Type eventType)
     {
         if (!eventPriorities.ContainsKey(eventType))
         {
-            throw new InvalidOperationException("Could not get event priority for the type: " + eventType.Name);
+            throw new InvalidOperationException($"Could not get event priority for the type: {eventType.Name}");
         }
 
         return eventPriorities[eventType];
     }
 
-    internal void SetPriority(Type eventType, int priority)
-    {
-        eventPriorities[eventType] = priority;
-    }
+    internal void SetPriority(Type eventType, int priority) => eventPriorities[eventType] = priority;
 
     internal Color BodyColor
     {
@@ -669,10 +675,7 @@ public sealed class BaseBotInternals
         {
             var uri = EnvVars.GetServerUrl() ?? DefaultServerUrl;
             if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
-            {
-                throw new BotException("Incorrect syntax for server uri: " + uri + ". Default is: " +
-                                       DefaultServerUrl);
-            }
+                throw new BotException($"Incorrect syntax for server uri: {uri}. Default is: {DefaultServerUrl}");
 
             return new Uri(uri);
         }
@@ -680,10 +683,8 @@ public sealed class BaseBotInternals
 
     private static string ServerSecretFromSetting => EnvVars.GetServerSecret();
 
-    private void HandleConnected()
-    {
+    private void HandleConnected() =>
         BotEventHandlers.FireConnectedEvent(new E.ConnectedEvent(socket.ServerUri));
-    }
 
     private void HandleDisconnected(bool remote, int? statusCode, string reason)
     {
@@ -693,11 +694,9 @@ public sealed class BaseBotInternals
         closedEvent.Set();
     }
 
-    private void HandleConnectionError(Exception cause)
-    {
+    private void HandleConnectionError(Exception cause) =>
         BotEventHandlers.FireConnectionErrorEvent(new E.ConnectionErrorEvent(socket.ServerUri,
             new Exception(cause.Message)));
-    }
 
     private void HandleTextMessage(string json)
     {
@@ -755,7 +754,7 @@ public sealed class BaseBotInternals
         if (BotIntent.Rescan == true)
             BotIntent.Rescan = false;
 
-        var newTickEvent = EventMapper.Map(json, myId);
+        var newTickEvent = EventMapper.Map(json, MyId);
         eventQueue.AddEventsFromTick(newTickEvent);
 
         tickEvent = newTickEvent;
@@ -790,7 +789,8 @@ public sealed class BaseBotInternals
         if (gameStartedEventForBot == null)
             throw new BotException("GameStartedEventForBot is missing in JSON message from server");
 
-        myId = gameStartedEventForBot.MyId;
+        MyId = gameStartedEventForBot.MyId;
+        TeammateIds = gameStartedEventForBot.TeammateIds;
         gameSetup = GameSetupMapper.Map(gameStartedEventForBot.GameSetup);
 
         // Send ready signal
@@ -798,11 +798,10 @@ public sealed class BaseBotInternals
         {
             Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotReady)
         };
-
         var msg = JsonConvert.SerializeObject(ready);
         socket.SendTextMessage(msg);
 
-        BotEventHandlers.FireGameStartedEvent(new E.GameStartedEvent(myId, gameSetup));
+        BotEventHandlers.FireGameStartedEvent(new E.GameStartedEvent(MyId, gameSetup));
     }
 
     private void HandleGameEnded(string json)
@@ -816,10 +815,7 @@ public sealed class BaseBotInternals
         BotEventHandlers.FireGameEndedEvent(new E.GameEndedEvent(gameEndedEventForBot.NumberOfRounds, results));
     }
 
-    private void HandleGameAborted()
-    {
-        BotEventHandlers.FireGameAbortedEvent();
-    }
+    private void HandleGameAborted() => BotEventHandlers.FireGameAbortedEvent();
 
     private void HandleServerHandshake(string json)
     {

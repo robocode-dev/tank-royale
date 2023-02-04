@@ -8,6 +8,7 @@ import dev.robocode.tankroyale.schema.BotIntent;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static dev.robocode.tankroyale.botapi.Constants.*;
 import static dev.robocode.tankroyale.botapi.util.MathUtil.clamp;
@@ -591,6 +592,38 @@ public abstract class BaseBot implements IBaseBot {
     @Override
     public boolean isStopped() {
         return __baseBotInternals.isStopped();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Set<Integer> getTeammateIds() {
+        return __baseBotInternals.getTeammateIds();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isTeammate(int botId) {
+        return __baseBotInternals.isTeammate(botId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void broadcastTeamMessage(Object message) {
+        __baseBotInternals.broadcastTeamMessage(message);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void sendTeamMessage(int teammateId, Object message) {
+        __baseBotInternals.sendTeamMessage(teammateId, message);
     }
 
     /**
