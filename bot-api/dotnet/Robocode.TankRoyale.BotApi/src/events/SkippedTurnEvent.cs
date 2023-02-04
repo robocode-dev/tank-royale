@@ -18,7 +18,7 @@ public sealed class SkippedTurnEvent : BotEvent
     /// <summary>
     /// Initializes a new instance of the SkippedTurnEvent class.
     /// </summary>
-    /// <param name="turnNumber">Turn number.</param>
+    /// <param name="turnNumber">The turn number which was skipped.</param>
     [JsonConstructor]
     public SkippedTurnEvent(int turnNumber) : base(turnNumber)
     {
