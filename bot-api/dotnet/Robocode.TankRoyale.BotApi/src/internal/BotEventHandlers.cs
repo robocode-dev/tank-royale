@@ -7,7 +7,6 @@ internal sealed class BotEventHandlers
 {
     private readonly IBaseBot baseBot;
 
-    // Regular bot event handlers
     internal readonly EventHandler<ConnectedEvent> OnConnected = new();
     internal readonly EventHandler<DisconnectedEvent> OnDisconnected = new();
     internal readonly EventHandler<ConnectionErrorEvent> OnConnectionError = new();
@@ -31,6 +30,7 @@ internal sealed class BotEventHandlers
     internal readonly EventHandler<ScannedBotEvent> OnScannedBot = new();
     internal readonly EventHandler<WonRoundEvent> OnWonRound = new();
     internal readonly EventHandler<CustomEvent> OnCustomEvent = new();
+    internal readonly EventHandler<TeamMessageEvent> OnTeamMessageEvent = new();
 
     internal readonly EventHandler<TickEvent> OnNextTurn = new();
 
@@ -57,6 +57,7 @@ internal sealed class BotEventHandlers
     private event EventHandler<ScannedBotEvent>.Subscriber ScannedBotEvent;
     private event EventHandler<WonRoundEvent>.Subscriber WonRoundEvent;
     private event EventHandler<CustomEvent>.Subscriber CustomEvent;
+    private event EventHandler<TeamMessageEvent>.Subscriber TeamMessageEvent;
 
     private event EventHandler<TickEvent>.Subscriber NextTurnEvent;
 
@@ -210,6 +211,9 @@ internal sealed class BotEventHandlers
                 break;
             case CustomEvent customEvent:
                 CustomEvent?.Invoke(customEvent);
+                break;
+            case TeamMessageEvent teamMessageEvent:
+                TeamMessageEvent?.Invoke(teamMessageEvent);
                 break;
             default:
                 throw new InvalidOperationException("Unhandled event: " + evt);

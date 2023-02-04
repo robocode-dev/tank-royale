@@ -114,15 +114,16 @@ public sealed class BaseBotInternals
 
     private void InitializeEventPriorities()
     {
-        eventPriorities[typeof(E.TickEvent)] = Tick;
         eventPriorities[typeof(E.WonRoundEvent)] = WonRound;
         eventPriorities[typeof(E.SkippedTurnEvent)] = SkippedTurn;
+        eventPriorities[typeof(E.TickEvent)] = Tick;
         eventPriorities[typeof(E.CustomEvent)] = Custom;
+        eventPriorities[typeof(E.TeamMessageEvent)] = TeamMessage;
         eventPriorities[typeof(E.BotDeathEvent)] = BotDeath;
-        eventPriorities[typeof(E.BulletFiredEvent)] = BulletFired;
         eventPriorities[typeof(E.BulletHitWallEvent)] = BulletHitWall;
         eventPriorities[typeof(E.BulletHitBulletEvent)] = BulletHitBullet;
         eventPriorities[typeof(E.BulletHitBotEvent)] = BulletHitBot;
+        eventPriorities[typeof(E.BulletFiredEvent)] = BulletFired;
         eventPriorities[typeof(E.HitByBulletEvent)] = HitByBullet;
         eventPriorities[typeof(E.HitWallEvent)] = HitWall;
         eventPriorities[typeof(E.HitBotEvent)] = HitBot;

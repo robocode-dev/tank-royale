@@ -20,6 +20,7 @@ import dev.robocode.tankroyale.botapi.events.RoundStartedEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.botapi.events.*;
+import dev.robocode.tankroyale.botapi.events.TeamMessageEvent;
 import dev.robocode.tankroyale.botapi.events.WonRoundEvent;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
@@ -113,6 +114,7 @@ public final class BaseBotInternals {
         eventPriorities.put(SkippedTurnEvent.class, SKIPPED_TURN);
         eventPriorities.put(TickEvent.class, TICK);
         eventPriorities.put(CustomEvent.class, CUSTOM);
+        eventPriorities.put(TeamMessageEvent.class, TEAM_MESSAGE);
         eventPriorities.put(BotDeathEvent.class, BOT_DEATH);
         eventPriorities.put(BulletHitWallEvent.class, BULLET_HIT_WALL);
         eventPriorities.put(BulletHitBulletEvent.class, BULLET_HIT_BULLET);

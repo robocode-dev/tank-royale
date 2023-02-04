@@ -22,10 +22,9 @@ public final class DefaultEventPriority {
      */
     public static final int CUSTOM = 120;
     /**
-     * Reserved event priority for the future TeamMessageEvent.
+     * Event priority for the {@link TeamMessageEvent}.
      */
-    @SuppressWarnings("unused")
-    public static final int TEAM_MESSAGE = 110; // Reserved for future
+    public static final int TEAM_MESSAGE = 110;
     /**
      * Event priority for the {@link BotDeathEvent}
      */

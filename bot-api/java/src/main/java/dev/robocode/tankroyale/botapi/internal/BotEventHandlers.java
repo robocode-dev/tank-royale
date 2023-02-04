@@ -7,10 +7,10 @@ final class BotEventHandlers {
 
     final IBaseBot baseBot;
 
-    // Regular bot event handlers
     final EventHandler<ConnectedEvent> onConnected = new EventHandler<>();
     final EventHandler<DisconnectedEvent> onDisconnected = new EventHandler<>();
     final EventHandler<ConnectionErrorEvent> onConnectionError = new EventHandler<>();
+
     final EventHandler<GameStartedEvent> onGameStarted = new EventHandler<>();
     final EventHandler<GameEndedEvent> onGameEnded = new EventHandler<>();
     final EventHandler<Void> onGameAborted = new EventHandler<>();
@@ -30,6 +30,7 @@ final class BotEventHandlers {
     final EventHandler<ScannedBotEvent> onScannedBot = new EventHandler<>();
     final EventHandler<WonRoundEvent> onWonRound = new EventHandler<>();
     final EventHandler<CustomEvent> onCustomEvent = new EventHandler<>();
+    final EventHandler<TeamMessageEvent> onTeamMessageEvent = new EventHandler<>();
 
     final EventHandler<TickEvent> onNextTurn = new EventHandler<>();
 
@@ -57,6 +58,7 @@ final class BotEventHandlers {
         onScannedBot.subscribe(baseBot::onScannedBot);
         onWonRound.subscribe(baseBot::onWonRound);
         onCustomEvent.subscribe(baseBot::onCustomEvent);
+        onTeamMessageEvent.subscribe(baseBot::onTeamMessageEvent);
     }
 
     void fire(BotEvent event) {
@@ -88,6 +90,8 @@ final class BotEventHandlers {
             onWonRound.publish((WonRoundEvent) event);
         } else if (event instanceof CustomEvent) {
             onCustomEvent.publish((CustomEvent) event);
+        } else if (event instanceof TeamMessageEvent) {
+            onTeamMessageEvent.publish((TeamMessageEvent) event);
         } else {
             throw new IllegalStateException("Unhandled event type: " + event);
         }

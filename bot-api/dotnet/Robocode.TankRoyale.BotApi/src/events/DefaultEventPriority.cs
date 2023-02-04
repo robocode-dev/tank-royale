@@ -27,9 +27,9 @@ public static class DefaultEventPriority
     public const int Custom = 120;
 
     /// <summary>
-    /// Reserved event priority for the future TeamMessageEvent.
+    /// Event priority for the <see cref="TeamMessageEvent"/>
     /// </summary>
-    public const int TeamMessage = 110; // Reserved for future
+    public const int TeamMessage = 110;
     
     /// <summary>
     /// Event priority for the <see cref="BotDeathEvent"/>
