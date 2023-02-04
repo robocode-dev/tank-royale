@@ -577,6 +577,9 @@ public final class BaseBotInternals {
     }
 
     public void sendTeamMessage(Integer teammateId, Object message) {
+        if (message == null) {
+            throw new IllegalArgumentException("team message cannot be null");
+        }
         var bytes = convertToBytes(message);
         var base64encoded = Base64.getEncoder().encodeToString(bytes);
 
