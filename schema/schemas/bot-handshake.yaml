@@ -28,7 +28,7 @@ properties:
     description: URL to a home page for the bot
     type: string
   countryCodes:
-    description: 2-letter country code(s) defined by ISO 3166-1, e.g.  "GB"
+    description: 2-letter country code(s) defined by ISO 3166-1, e.g. "GB"
     type: array
     items:
       type: string
