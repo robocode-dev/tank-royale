@@ -1,6 +1,5 @@
 $id: #game-resumed-event-for-observer.yaml
 $schema: http://json-schema.org/2020-12/schema#
 description: Event occurring when a game is resumed from a previous pause
-type: object
 extends:
   $ref: message.yaml

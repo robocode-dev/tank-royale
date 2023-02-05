@@ -1,7 +1,6 @@
 $id: #team-message.yaml
 $schema: http://json-schema.org/2020-12/schema#
 description: A message sent between teammates
-type: object
 properties:
   message:
     description: The received message in binary form and hence base64 encoded
