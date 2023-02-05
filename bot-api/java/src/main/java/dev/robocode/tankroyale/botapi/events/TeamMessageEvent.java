@@ -15,11 +15,14 @@ public final class TeamMessageEvent extends BotEvent {
      * Initializes a new instance of the TeamMessageEvent class.
      *
      * @param turnNumber is the turn number when the team message was received.
-     * @param message is the message that was received.
-     * @param senderId is the id of the teammate that sent the message.
+     * @param message    is the message that was received.
+     * @param senderId   is the id of the teammate that sent the message.
      */
     public TeamMessageEvent(int turnNumber, Object message, int senderId) {
         super(turnNumber);
+        if (message == null) {
+            throw new IllegalArgumentException("message cannot be null");
+        }
         this.message = message;
         this.senderId = senderId;
     }
