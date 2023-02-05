@@ -591,15 +591,17 @@ public final class BaseBotInternals {
     }
 
     private byte[] convertToBytes(Object object) {
-        try (var bos = new ByteArrayOutputStream(); var out = new ObjectOutputStream(bos)) {
-            out.writeObject(object);
-            var bytes = bos.toByteArray();
+        try (var byteArrayInputStream = new ByteArrayOutputStream();
+             var objectOutputStream = new ObjectOutputStream(byteArrayInputStream)) {
+
+            objectOutputStream.writeObject(object);
+            var bytes = byteArrayInputStream.toByteArray();
             if (bytes.length > IBaseBot.TEAM_MESSAGE_MAX_SIZE) {
                 throw new IllegalArgumentException("The team message is larger than the limit of " + IBaseBot.TEAM_MESSAGE_MAX_SIZE + " bytes");
             }
             return bytes;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BotException("Could not convert Object to byte array", e);
         }
     }
 
