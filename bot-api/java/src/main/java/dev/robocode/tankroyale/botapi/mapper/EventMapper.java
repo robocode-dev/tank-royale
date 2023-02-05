@@ -4,6 +4,10 @@ import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.BulletState;
 import dev.robocode.tankroyale.botapi.events.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -59,6 +63,9 @@ public final class EventMapper {
         }
         if (event instanceof dev.robocode.tankroyale.schema.WonRoundEvent) {
             return map((dev.robocode.tankroyale.schema.WonRoundEvent) event);
+        }
+        if (event instanceof dev.robocode.tankroyale.schema.TeamMessageEvent) {
+            return map((dev.robocode.tankroyale.schema.TeamMessageEvent) event);
         }
         throw new BotException(
                 "No mapping exists for event type: " + event.getClass().getSimpleName());
@@ -139,5 +146,22 @@ public final class EventMapper {
 
     private static WonRoundEvent map(final dev.robocode.tankroyale.schema.WonRoundEvent source) {
         return new WonRoundEvent(source.getTurnNumber());
+    }
+
+    private static TeamMessageEvent map(final dev.robocode.tankroyale.schema.TeamMessageEvent source) {
+        if (source.getMessage() == null)
+            throw new BotException("message in TeamMessageEvent is null");
+
+        Object messageObject;
+        byte[] decodedString = Base64.getDecoder().decode(source.getMessage().getBytes(StandardCharsets.ISO_8859_1));
+
+        try (var byteArrayInputStream = new ByteArrayInputStream(decodedString);
+             var objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
+            messageObject = objectInputStream.readObject();
+
+        } catch (Exception e) {
+            throw new BotException("Could not convert byte array to Object", e);
+        }
+        return new TeamMessageEvent(source.getTurnNumber(), messageObject, source.getSenderId());
     }
 }

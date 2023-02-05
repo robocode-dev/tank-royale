@@ -18,7 +18,9 @@ public static class EventMapper
             throw new BotException("TickEventForBot dictionary is missing in JSON message from server");
 
         var events = (JArray)jsonTickEvent["events"];
-        return new TickEvent(
+    
+        return new TickEvent
+        (
             tickEvent.TurnNumber,
             tickEvent.RoundNumber,
             tickEvent.EnemyCount,
@@ -56,44 +58,32 @@ public static class EventMapper
             "ScannedBotEvent" => Map(evt.ToObject<Schema.ScannedBotEvent>()),
             "SkippedTurnEvent" => Map(evt.ToObject<Schema.SkippedTurnEvent>()),
             "WonRoundEvent" => Map(evt.ToObject<Schema.WonRoundEvent>()),
+            "TeamMessageEvent" => Map(evt.ToObject<Schema.TeamMessageEvent>()),
             _ => throw new BotException("No mapping exists for event type: " + type)
         };
     }
 
-    private static BotEvent Map(Schema.BotDeathEvent source, int myBotId)
-    {
-        if (source.VictimId == myBotId)
-        {
-            return new DeathEvent(source.TurnNumber);
-        }
+    private static BotEvent Map(Schema.BotDeathEvent source, int myBotId) => source.VictimId == myBotId
+        ? new DeathEvent(source.TurnNumber)
+        : new BotDeathEvent(source.TurnNumber, source.VictimId);
 
-        return new BotDeathEvent(source.TurnNumber, source.VictimId);
-    }
+    private static HitBotEvent Map(Schema.BotHitBotEvent source) => new
+    (
+        source.TurnNumber,
+        source.VictimId,
+        source.Energy,
+        source.X,
+        source.Y,
+        source.Rammed
+    );
 
-    private static HitBotEvent Map(Schema.BotHitBotEvent source)
-    {
-        return new HitBotEvent(
-            source.TurnNumber,
-            source.VictimId,
-            source.Energy,
-            source.X,
-            source.Y,
-            source.Rammed
-        );
-    }
+    private static HitWallEvent Map(Schema.BotHitWallEvent source) => new(source.TurnNumber);
 
-    private static HitWallEvent Map(Schema.BotHitWallEvent source)
-    {
-        return new HitWallEvent(source.TurnNumber);
-    }
-
-    private static BulletFiredEvent Map(Schema.BulletFiredEvent source)
-    {
-        return new BulletFiredEvent(
-            source.TurnNumber,
-            BulletStateMapper.Map(source.Bullet)
-        );
-    }
+    private static BulletFiredEvent Map(Schema.BulletFiredEvent source) => new
+    (
+        source.TurnNumber,
+        BulletStateMapper.Map(source.Bullet)
+    );
 
     private static BotEvent Map(Schema.BulletHitBotEvent source, int myBotId)
     {
@@ -115,48 +105,46 @@ public static class EventMapper
             source.Energy);
     }
 
-    private static BulletHitBulletEvent Map(Schema.BulletHitBulletEvent source)
+    private static BulletHitBulletEvent Map(Schema.BulletHitBulletEvent source) => new
+    (
+        source.TurnNumber,
+        BulletStateMapper.Map(source.Bullet),
+        BulletStateMapper.Map(source.HitBullet)
+    );
+
+
+    private static BulletHitWallEvent Map(Schema.BulletHitWallEvent source) => new
+    (
+        source.TurnNumber,
+        BulletStateMapper.Map(source.Bullet)
+    );
+
+    private static ScannedBotEvent Map(Schema.ScannedBotEvent source) => new
+    (
+        source.TurnNumber,
+        source.ScannedByBotId,
+        source.ScannedBotId,
+        source.Energy,
+        source.X,
+        source.Y,
+        source.Direction,
+        source.Speed
+    );
+
+    public static SkippedTurnEvent Map(Schema.SkippedTurnEvent source) => new(source.TurnNumber);
+
+    private static WonRoundEvent Map(Schema.WonRoundEvent source) => new(source.TurnNumber);
+
+    private static TeamMessageEvent Map(Schema.TeamMessageEvent source)
     {
-        return new BulletHitBulletEvent(
+        var bytes = System.Convert.FromBase64String(source.Message);
+        var decodedString = System.Text.Encoding.UTF8.GetString(bytes);
+        var messageObject = JsonConvert.DeserializeObject(decodedString);
+            
+        return new TeamMessageEvent(
             source.TurnNumber,
-            BulletStateMapper.Map(source.Bullet),
-            BulletStateMapper.Map(source.HitBullet)
-        );
-    }
-
-    private static BulletHitWallEvent Map(Schema.BulletHitWallEvent source)
-    {
-        return new BulletHitWallEvent(
-            source.TurnNumber,
-            BulletStateMapper.Map(source.Bullet)
-        );
-    }
-
-    private static ScannedBotEvent Map(Schema.ScannedBotEvent source)
-    {
-        return new ScannedBotEvent(
-            source.TurnNumber,
-            source.ScannedByBotId,
-            source.ScannedBotId,
-            source.Energy,
-            source.X,
-            source.Y,
-            source.Direction,
-            source.Speed
-        );
-    }
-
-    public static SkippedTurnEvent Map(Schema.SkippedTurnEvent source)
-    {
-        return new SkippedTurnEvent(
-            source.TurnNumber
-        );
-    }
-
-    private static WonRoundEvent Map(Schema.WonRoundEvent source)
-    {
-        return new WonRoundEvent(
-            source.TurnNumber
+            messageObject,
+            source.SenderId
         );
     }
 }
