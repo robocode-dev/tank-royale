@@ -3,10 +3,10 @@ $schema: http://json-schema.org/2020-12/schema#
 description: Bullet state
 properties:
   bulletId:
-    description: ID of the bullet
+    description: id of the bullet
     type: integer
   ownerId:
-    description: ID of the bot that fired the bullet
+    description: id of the bot that fired the bullet
     type: integer
   power:
     description: Bullet firepower (between 0.1 and 3.0)

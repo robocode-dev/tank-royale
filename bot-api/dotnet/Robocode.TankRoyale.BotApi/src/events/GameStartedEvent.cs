@@ -7,7 +7,7 @@ namespace Robocode.TankRoyale.BotApi.Events;
 /// </summary>
 public sealed class GameStartedEvent : IEvent
 {
-    /// <summary>The ID used for identifying your bot in the current battle.</summary>
+    /// <summary>The id used for identifying your bot in the current battle.</summary>
     public int MyId { get; }
 
     /// <summary>The game setup for the battle just started.</summary>
