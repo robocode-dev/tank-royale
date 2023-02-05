@@ -6,7 +6,7 @@ package dev.robocode.tankroyale.botapi.events;
 @SuppressWarnings("unused")
 public final class HitBotEvent extends BotEvent {
 
-    // ID of the other bot that your bot has collided with.
+    // id of the other bot that your bot has collided with.
     private final int victimId;
 
     // Remaining energy level of the victim bot.
@@ -25,7 +25,7 @@ public final class HitBotEvent extends BotEvent {
      * Initializes a new instance of the BotHitBotEvent class.
      *
      * @param turnNumber is the turn number where the bot hit another bot.
-     * @param victimId   is the ID of the other bot that your bot has collided with.
+     * @param victimId   is the id of the other bot that your bot has collided with.
      * @param energy     is the remaining energy level of the victim bot.
      * @param x          is the X coordinate of victim bot.
      * @param y          is the Y coordinate of victim bot.
@@ -41,9 +41,9 @@ public final class HitBotEvent extends BotEvent {
     }
 
     /**
-     * Returns the ID of the other bot that your bot has collided with.
+     * Returns the id of the other bot that your bot has collided with.
      *
-     * @return The ID of the other bot that your bot has collided with.
+     * @return The id of the other bot that your bot has collided with.
      */
     public int getVictimId() {
         return victimId;

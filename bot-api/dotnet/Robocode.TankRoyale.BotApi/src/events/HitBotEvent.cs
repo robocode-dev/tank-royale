@@ -7,7 +7,7 @@ namespace Robocode.TankRoyale.BotApi.Events;
 /// </summary>
 public sealed class HitBotEvent : BotEvent
 {
-    /// <summary>The ID of the other bot that your bot has collided with.</summary>
+    /// <summary>The id of the other bot that your bot has collided with.</summary>
     public int VictimId { get; }
 
     /// <summary>Remaining energy level of the victim bot.</summary>

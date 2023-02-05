@@ -5,10 +5,10 @@ extends:
   $ref: event.yaml
 properties:
   scannedByBotId:
-    description: ID of the bot did the scanning
+    description: id of the bot did the scanning
     type: integer
   scannedBotId:
-    description: ID of the bot that was scanned
+    description: id of the bot that was scanned
     type: integer
   energy:
     description: Energy level of the scanned bot

@@ -5,7 +5,7 @@ extends:
   $ref: bot-state.yaml
 properties:
   id:
-    description: Unique display ID of bot in the battle (like an index).
+    description: Unique display id of bot in the battle (like an index).
     type: integer
   sessionId:
     description: Unique session id used for identifying the bot.

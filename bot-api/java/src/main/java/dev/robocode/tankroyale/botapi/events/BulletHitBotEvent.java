@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.botapi.BulletState;
 @SuppressWarnings("unused")
 public final class BulletHitBotEvent extends BotEvent {
 
-    // ID of the victim bot that got hit.
+    // id of the victim bot that got hit.
     private final int victimId;
 
     // Bullet that hit the bot.
@@ -24,7 +24,7 @@ public final class BulletHitBotEvent extends BotEvent {
      * Initializes a new instance of the BulletHitBotEvent class.
      *
      * @param turnNumber is the turn number when the bullet has hit a bot.
-     * @param victimId   is the ID of the victim bot that got hit.
+     * @param victimId   is the id of the victim bot that got hit.
      * @param bullet     is the bullet that hit the bot.
      * @param damage     is the damage inflicted by the bullet.
      * @param energy     is the remaining energy level of the bot that got hit.
@@ -38,9 +38,9 @@ public final class BulletHitBotEvent extends BotEvent {
     }
 
     /**
-     * Returns the ID of the victim bot that got hit.
+     * Returns the id of the victim bot that got hit.
      *
-     * @return The ID of the victim bot that got hit.
+     * @return The id of the victim bot that got hit.
      */
     public int getVictimId() {
         return victimId;

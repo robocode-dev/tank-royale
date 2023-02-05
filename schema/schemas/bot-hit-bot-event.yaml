@@ -5,10 +5,10 @@ extends:
   $ref: event.yaml
 properties:
   victimId:
-    description: ID of the victim bot that got hit
+    description: id of the victim bot that got hit
     type: integer
   botId:
-    description: ID of the bot that hit another bot
+    description: id of the bot that hit another bot
     type: integer
   energy:
     description: Remaining energy level of the victim bot

@@ -5,7 +5,7 @@ extends:
   $ref: message.yaml
 properties:
   myId:
-    description: My ID is an unique identifier for this bot
+    description: My id is an unique identifier for this bot
     type: integer
   teammateIds:
     description: The IDs of the teammates in the team that this bot is a member of

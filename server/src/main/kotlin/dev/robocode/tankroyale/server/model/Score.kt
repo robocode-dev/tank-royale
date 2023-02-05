@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.server.model
 
 /** Defines a score record to keep track of a bot´s score. */
 data class Score(
-    /** Bot ID */
+    /** Bot id */
     var botId: BotId,
 
     /** Survival score gained whenever another bot is defeated */

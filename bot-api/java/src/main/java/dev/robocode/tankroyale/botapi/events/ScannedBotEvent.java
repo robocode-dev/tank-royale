@@ -6,10 +6,10 @@ package dev.robocode.tankroyale.botapi.events;
 @SuppressWarnings("unused")
 public final class ScannedBotEvent extends BotEvent {
 
-    // ID of the bot did the scanning.
+    // id of the bot did the scanning.
     private final int scannedByBotId;
 
-    // ID of the bot that was scanned.
+    // id of the bot that was scanned.
     private final int scannedBotId;
 
     // Energy level of the scanned bot.
@@ -31,8 +31,8 @@ public final class ScannedBotEvent extends BotEvent {
      * Initializes a new instance of the ScannedBotEvent class.
      *
      * @param turnNumber     is the turn number when the bot was scanned.
-     * @param scannedByBotId is the ID of the bot did the scanning.
-     * @param scannedBotId   is the ID of the bot that was scanned.
+     * @param scannedByBotId is the id of the bot did the scanning.
+     * @param scannedBotId   is the id of the bot that was scanned.
      * @param energy         is the energy level of the scanned bot.
      * @param x              is the X coordinate of the scanned bot.
      * @param y              is the Y coordinate of the scanned bot.
@@ -59,18 +59,18 @@ public final class ScannedBotEvent extends BotEvent {
     }
 
     /**
-     * Returns the ID of the bot did the scanning.
+     * Returns the id of the bot did the scanning.
      *
-     * @return The ID of the bot did the scanning.
+     * @return The id of the bot did the scanning.
      */
     public int getScannedByBotId() {
         return scannedByBotId;
     }
 
     /**
-     * Returns the ID of the bot that was scanned.
+     * Returns the id of the bot that was scanned.
      *
-     * @return The ID of the bot that was scanned.
+     * @return The id of the bot that was scanned.
      */
     public int getScannedBotId() {
         return scannedBotId;
