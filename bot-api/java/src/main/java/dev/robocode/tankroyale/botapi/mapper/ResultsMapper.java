@@ -2,9 +2,6 @@ package dev.robocode.tankroyale.botapi.mapper;
 
 import dev.robocode.tankroyale.botapi.BotResults;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Utility class for mapping bot results.
  */
