@@ -579,24 +579,22 @@ public sealed class BaseBotInternals
 
     internal void SendTeamMessage(int? teammateId, object message)
     {
+        if (BotIntent.TeamMessages.Count == IBaseBot.MaxNumberOfTeamMessagesPerTurn)
+            throw new InvalidOperationException(
+                "The maximum number team massages has already been reached: " +
+                IBaseBot.MaxNumberOfTeamMessagesPerTurn);
+
+        var bytes = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
+        if (bytes.Length > IBaseBot.TeamMessageMaxSize)
+            throw new ArgumentException(
+                $"The team message is larger than the limit of {IBaseBot.TeamMessageMaxSize} bytes");
+
         S.TeamMessage teamMessage = new()
         {
             ReceiverId = teammateId,
-            Message = Base64Encode(message)
+            Message = Convert.ToBase64String(bytes)
         };
-        BotIntent.TeamMessage = teamMessage;
-    }
-
-    private static string Base64Encode(object obj)
-    {
-        var bytes = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj));
-        if (bytes.Length > IBaseBot.TeamMessageMaxSize)
-        {
-            throw new ArgumentException(
-                $"The team message is larger than the limit of {IBaseBot.TeamMessageMaxSize} bytes");
-        }
-
-        return Convert.ToBase64String(bytes);
+        BotIntent.TeamMessages.Add(teamMessage);
     }
 
     internal int GetPriority(Type eventType)

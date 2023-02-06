@@ -20,6 +20,11 @@ public interface IBaseBot {
     int TEAM_MESSAGE_MAX_SIZE = 32768; // bytes
 
     /**
+     * The maximum number of team messages that can be sent per turn.
+     */
+    int MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = 4;
+
+    /**
      * The method used to start running the bot. You should call this method from the main method or
      * similar.
      *

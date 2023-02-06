@@ -67,6 +67,9 @@ properties:
   stdErr:
     description: New text received from standard error (stderr)
     type: string
-  teamMessage:
-    description: A message to send to a specific teammate or broadcast to the entire team
-    $ref: team-message.yaml
+  teamMessages:
+    description: Messages to send to one or more individual teammates or broadcast to the entire team
+    type: array
+    maxItems: 4
+    items:
+      $ref: team-message.yaml

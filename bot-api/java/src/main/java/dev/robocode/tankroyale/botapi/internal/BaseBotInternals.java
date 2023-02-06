@@ -25,6 +25,7 @@ import dev.robocode.tankroyale.botapi.events.WonRoundEvent;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
 import dev.robocode.tankroyale.schema.*;
+import dev.robocode.tankroyale.schema.TeamMessage;
 
 import java.io.*;
 import java.net.URI;
@@ -37,6 +38,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static dev.robocode.tankroyale.botapi.Constants.*;
+import static dev.robocode.tankroyale.botapi.IBaseBot.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN;
+import static dev.robocode.tankroyale.botapi.IBaseBot.TEAM_MESSAGE_MAX_SIZE;
 import static dev.robocode.tankroyale.botapi.events.DefaultEventPriority.*;
 import static dev.robocode.tankroyale.botapi.util.MathUtil.clamp;
 import static dev.robocode.tankroyale.botapi.mapper.ResultsMapper.map;
@@ -577,17 +580,26 @@ public final class BaseBotInternals {
     }
 
     public void sendTeamMessage(Integer teammateId, Object message) {
+        if (botIntent.getTeamMessages().size() == MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN) {
+            throw new BotException(
+                    "The maximum number team massages has already been reached: " + MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN);
+        }
         if (message == null) {
             throw new IllegalArgumentException("team message cannot be null");
         }
         var bytes = convertToBytes(message);
+        if (bytes.length > TEAM_MESSAGE_MAX_SIZE) {
+            throw new IllegalArgumentException(
+                    "The team message is larger than the limit of " + TEAM_MESSAGE_MAX_SIZE + " bytes");
+        }
+
         var base64encoded = Base64.getEncoder().encodeToString(bytes);
 
         var teamMessage = new TeamMessage();
         teamMessage.setReceiverId(teammateId);
         teamMessage.setMessage(base64encoded);
 
-        botIntent.setTeamMessage(teamMessage);
+        botIntent.getTeamMessages().add(teamMessage);
     }
 
     private byte[] convertToBytes(Object object) {
@@ -595,11 +607,7 @@ public final class BaseBotInternals {
              var objectOutputStream = new ObjectOutputStream(byteArrayInputStream)) {
 
             objectOutputStream.writeObject(object);
-            var bytes = byteArrayInputStream.toByteArray();
-            if (bytes.length > IBaseBot.TEAM_MESSAGE_MAX_SIZE) {
-                throw new IllegalArgumentException("The team message is larger than the limit of " + IBaseBot.TEAM_MESSAGE_MAX_SIZE + " bytes");
-            }
-            return bytes;
+            return byteArrayInputStream.toByteArray();
         } catch (IOException e) {
             throw new BotException("Could not convert Object to byte array", e);
         }

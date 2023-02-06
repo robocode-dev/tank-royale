@@ -6,12 +6,12 @@ extends:
 properties:
   message:
     description: The received message in binary form and hence base64 encoded
-    type: "string"
-    contentEncoding: "base64"
-    contentMediaType: "application/octet-stream"
+    type: string
+    maxLength: 32768
+    contentEncoding: base64
+    contentMediaType: application/octet-stream
   senderId:
-    description: The ID of the bot that sent the message
+    description: The id of the sender teammate
     type: integer
 required:
   - message
-  - senderId
