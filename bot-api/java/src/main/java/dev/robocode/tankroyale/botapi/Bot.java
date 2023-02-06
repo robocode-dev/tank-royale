@@ -77,7 +77,7 @@ public abstract class Bot extends BaseBot implements IBot {
      * {@inheritDoc}
      */
     @Override
-    public void setTargetSpeed(double targetSpeed) {
+    public final void setTargetSpeed(double targetSpeed) {
         __botInternals.setTargetSpeed(targetSpeed);
     }
 
@@ -253,7 +253,7 @@ public abstract class Bot extends BaseBot implements IBot {
      * {@inheritDoc}
      */
     @Override
-    public void stop() {
+    public final void stop() {
         __botInternals.stop();
     }
 
@@ -261,7 +261,7 @@ public abstract class Bot extends BaseBot implements IBot {
      * {@inheritDoc}
      */
     @Override
-    public void resume() {
+    public final void resume() {
         __botInternals.resume();
     }
 
@@ -269,7 +269,7 @@ public abstract class Bot extends BaseBot implements IBot {
      * {@inheritDoc}
      */
     @Override
-    public void rescan() {
+    public final void rescan() {
         __botInternals.rescan();
     }
 
@@ -277,7 +277,7 @@ public abstract class Bot extends BaseBot implements IBot {
      * {@inheritDoc}
      */
     @Override
-    public void waitFor(Condition condition) {
+    public final void waitFor(Condition condition) {
         __botInternals.waitFor(condition);
     }
 }

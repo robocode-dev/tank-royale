@@ -343,7 +343,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public void setTurnRate(double turnRate) {
+    public /*final*/ void setTurnRate(double turnRate) {
         __baseBotInternals.setTurnRate(turnRate);
     }
 
@@ -375,7 +375,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public void setGunTurnRate(double gunTurnRate) {
+    public /*final*/ void setGunTurnRate(double gunTurnRate) {
         __baseBotInternals.setGunTurnRate(gunTurnRate);
     }
 
@@ -407,7 +407,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public void setRadarTurnRate(double radarTurnRate) {
+    public /*final*/ void setRadarTurnRate(double radarTurnRate) {
         __baseBotInternals.setRadarTurnRate(radarTurnRate);
     }
 
@@ -440,7 +440,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public void setTargetSpeed(double targetSpeed) {
+    public /*final*/ void setTargetSpeed(double targetSpeed) {
         __baseBotInternals.setTargetSpeed(targetSpeed);
     }
 
@@ -574,7 +574,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public void setStop() {
+    public final void setStop() {
         __baseBotInternals.setStop();
     }
 
@@ -582,7 +582,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public void setResume() {
+    public final void setResume() {
         __baseBotInternals.setResume();
     }
 
@@ -590,7 +590,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public boolean isStopped() {
+    public final boolean isStopped() {
         return __baseBotInternals.isStopped();
     }
 
@@ -598,7 +598,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public Set<Integer> getTeammateIds() {
+    public final Set<Integer> getTeammateIds() {
         return __baseBotInternals.getTeammateIds();
     }
 
@@ -606,7 +606,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public boolean isTeammate(int botId) {
+    public final boolean isTeammate(int botId) {
         return __baseBotInternals.isTeammate(botId);
     }
 
@@ -614,7 +614,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public void broadcastTeamMessage(Object message) {
+    public final void broadcastTeamMessage(Object message) {
         __baseBotInternals.broadcastTeamMessage(message);
     }
 
@@ -622,7 +622,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public void sendTeamMessage(int teammateId, Object message) {
+    public final void sendTeamMessage(int teammateId, Object message) {
         __baseBotInternals.sendTeamMessage(teammateId, message);
     }
 
@@ -766,7 +766,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public int getEventPriority(Class<BotEvent> eventClass) {
+    public final int getEventPriority(Class<BotEvent> eventClass) {
         return __baseBotInternals.getPriority(eventClass);
     }
 
@@ -774,7 +774,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public void setEventPriority(Class<BotEvent> eventClass, int priority) {
+    public final void setEventPriority(Class<BotEvent> eventClass, int priority) {
         __baseBotInternals.setPriority(eventClass, priority);
     }
 }
