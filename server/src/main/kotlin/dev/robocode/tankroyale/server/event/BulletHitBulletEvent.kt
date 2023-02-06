@@ -12,5 +12,4 @@ class BulletHitBulletEvent(
 
     /** Bullet that got hit by the bullet */
     val hitBullet: IBullet,
-
-    ) : Event()
+) : Event()

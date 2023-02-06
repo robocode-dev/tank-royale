@@ -9,5 +9,4 @@ class BulletHitWallEvent(
 
     /** Bullet that missed */
     val bullet: IBullet
-
 ) : Event()
