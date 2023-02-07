@@ -1,8 +1,9 @@
 package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.schema.BotIntent
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.mapper.TeamMessageMapper
 
-object BotIntentToBotIntentMapper {
+object BotIntentMapper {
     fun map(intent: BotIntent): dev.robocode.tankroyale.server.model.BotIntent {
         intent.apply {
             return dev.robocode.tankroyale.server.model.BotIntent(
@@ -24,7 +25,8 @@ object BotIntentToBotIntentMapper {
                 tracksColor = tracksColor,
                 gunColor = gunColor,
                 stdOut = stdOut,
-                stdErr = stdErr
+                stdErr = stdErr,
+                teamMessages = TeamMessageMapper.map(teamMessages)
             )
         }
     }

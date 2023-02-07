@@ -18,7 +18,7 @@ object TurnToTickEventForBotMapper {
             enemyCount = turn.bots.size - 1
             botState = map(bot)
             bulletStates = map(turn.bullets.filter { it.botId == bot.id }.toSet())
-            events = EventsToEventsMapper.map(turn.getEvents(botId))
+            events = EventsMapper.map(turn.getEvents(botId))
         }
         return tick
     }

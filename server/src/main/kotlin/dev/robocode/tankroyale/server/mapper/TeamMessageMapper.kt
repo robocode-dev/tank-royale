@@ -1,0 +1,19 @@
+package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.mapper
+
+import dev.robocode.tankroyale.server.model.BotId
+import dev.robocode.tankroyale.server.model.TeamMessage
+
+object TeamMessageMapper {
+
+    fun map(teamMessages: List<dev.robocode.tankroyale.schema.TeamMessage>): List<TeamMessage> {
+        val list = ArrayList<TeamMessage>()
+        teamMessages.forEach { list.add(map(it)) }
+        return list
+    }
+
+    fun map(teamMessage: dev.robocode.tankroyale.schema.TeamMessage): TeamMessage {
+        teamMessage.apply {
+            return TeamMessage(message, BotId(receiverId))
+        }
+    }
+}

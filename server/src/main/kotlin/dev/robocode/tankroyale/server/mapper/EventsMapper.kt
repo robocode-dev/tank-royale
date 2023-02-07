@@ -1,8 +1,11 @@
 package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.schema.*
+import java.io.ByteArrayOutputStream
+import java.io.ObjectOutputStream
+import java.util.*
 
-object EventsToEventsMapper {
+object EventsMapper {
     fun map(events: Set<dev.robocode.tankroyale.server.event.Event>): List<Event> {
         val mappedEvents = mutableListOf<Event>()
         events.forEach { mappedEvents += map(it) }
@@ -20,6 +23,7 @@ object EventsToEventsMapper {
             is dev.robocode.tankroyale.server.event.BulletHitWallEvent -> map(event)
             is dev.robocode.tankroyale.server.event.ScannedBotEvent -> map(event)
             is dev.robocode.tankroyale.server.event.SkippedTurnEvent -> map(event)
+            is dev.robocode.tankroyale.server.event.TeamMessageEvent -> map(event)
             is dev.robocode.tankroyale.server.event.WonRoundEvent -> map(event)
             else -> throw IllegalStateException("Event type not handled: ${event.javaClass.canonicalName}")
         }
@@ -132,5 +136,29 @@ object EventsToEventsMapper {
         event.type = Message.Type.WON_ROUND_EVENT
         event.turnNumber = wonRoundEvent.turnNumber
         return event
+    }
+
+    private fun map(teamMessageEvent: dev.robocode.tankroyale.server.event.TeamMessageEvent): TeamMessageEvent {
+        val event = TeamMessageEvent()
+        event.type = Message.Type.TEAM_MESSAGE_EVENT
+
+        teamMessageEvent.apply {
+            val bytes = convertToBytes(message)
+            val base64encoded = Base64.getEncoder().encodeToString(bytes)
+
+            event.turnNumber = turnNumber
+            event.message = base64encoded
+            event.senderId = senderId.value
+        }
+        return event
+    }
+
+    private fun convertToBytes(data: Any): ByteArray? {
+        ByteArrayOutputStream().use { byteArrayInputStream ->
+            ObjectOutputStream(byteArrayInputStream).use { objectOutputStream ->
+                objectOutputStream.writeObject(data)
+                return byteArrayInputStream.toByteArray()
+            }
+        }
     }
 }

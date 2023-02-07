@@ -42,6 +42,7 @@ properties:
       - TickEventForBot
       - TickEventForObserver
       - WonRoundEvent
+      - TeamMessageEvent
 
       - StartGame
       - StopGame

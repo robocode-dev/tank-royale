@@ -145,7 +145,7 @@ class GameServer(
     private fun createGameStartedEventForBot(): GameStartedEventForBot {
         return GameStartedEventForBot().apply {
             type = Message.Type.GAME_STARTED_EVENT_FOR_BOT
-            gameSetup = GameSetupToGameSetupMapper.map(this@GameServer.gameSetup)
+            gameSetup = GameSetupMapper.map(this@GameServer.gameSetup)
         }
     }
 
@@ -170,7 +170,7 @@ class GameServer(
         if (connectionHandler.observerAndControllerConnections.isNotEmpty()) {
             broadcastToObserverAndControllers(GameStartedEventForObserver().apply {
                 type = Message.Type.GAME_STARTED_EVENT_FOR_OBSERVER
-                gameSetup = GameSetupToGameSetupMapper.map(this@GameServer.gameSetup)
+                gameSetup = GameSetupMapper.map(this@GameServer.gameSetup)
                 participants = participantMap.values.toList()
             })
         }
@@ -561,7 +561,7 @@ class GameServer(
 
         // Update bot intent
         (botIntents[conn] ?: dev.robocode.tankroyale.server.model.BotIntent()).apply {
-            update(BotIntentToBotIntentMapper.map(intent))
+            update(BotIntentMapper.map(intent))
             botIntents[conn] = this
         }
 
@@ -575,7 +575,7 @@ class GameServer(
     }
 
     internal fun handleStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
-        this.gameSetup = GameSetupToGameSetupMapper.map(gameSetup)
+        this.gameSetup = GameSetupMapper.map(gameSetup)
 
         participants.apply {
             clear()

@@ -39,7 +39,8 @@ data class BotIntent(
     override var tracksColor: String? = null,
     override var gunColor: String? = null,
     override var stdOut: String? = null,
-    override var stdErr: String? = null
+    override var stdErr: String? = null,
+    override var teamMessages: List<TeamMessage>? = null,
 
     ) : IBotIntent {
     /**
@@ -104,6 +105,9 @@ data class BotIntent(
         }
         if (update.stdErr != null) {
             stdErr = if (update.stdErr!!.isBlank()) null else update.stdErr
+        }
+        if (update.teamMessages != null) {
+            teamMessages = update.teamMessages
         }
     }
 

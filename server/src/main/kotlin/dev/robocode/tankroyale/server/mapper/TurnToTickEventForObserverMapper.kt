@@ -18,7 +18,7 @@ object TurnToTickEventForObserverMapper {
             turnNumber = turn.turnNumber
             botStates = unmodifiableList(map(turn.bots, participantsMap))
             bulletStates = unmodifiableList(map(turn.bullets))
-            events = unmodifiableList(EventsToEventsMapper.map(turn.observerEvents))
+            events = unmodifiableList(EventsMapper.map(turn.observerEvents))
         }
         return tick
     }

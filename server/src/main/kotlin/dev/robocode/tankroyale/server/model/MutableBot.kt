@@ -10,6 +10,9 @@ data class MutableBot(
     /** Bot id */
     override val id: BotId,
 
+    /** Teammate ids */
+    override val teammateIds: Set<BotId> = HashSet(),
+
     /** Session id */
     override var sessionId: String? = null,
 

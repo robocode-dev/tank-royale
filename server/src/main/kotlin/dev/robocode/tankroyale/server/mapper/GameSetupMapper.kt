@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.server.model.GameSetup
 
-object GameSetupToGameSetupMapper {
+object GameSetupMapper {
     fun map(gameSetup: GameSetup): dev.robocode.tankroyale.schema.GameSetup {
         gameSetup.apply {
             val setup = dev.robocode.tankroyale.schema.GameSetup()

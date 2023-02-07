@@ -61,4 +61,7 @@ interface IBotIntent {
 
     /** Last data sent to standard error. */
     val stdErr: String?
+
+    /** Team messages. */
+    val teamMessages: List<TeamMessage>?
 }

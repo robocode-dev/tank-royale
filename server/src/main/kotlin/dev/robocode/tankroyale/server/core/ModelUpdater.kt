@@ -13,11 +13,11 @@ import kotlin.math.abs
 import kotlin.math.atan2
 
 /** Maximum bounding circle diameter of a bullet moving with max speed */
-private val BULLET_MAX_BOUNDING_CIRCLE_DIAMETER: Double = 2 * MAX_BULLET_SPEED
+private val bulletMaxBoundingCircleDiameter: Double = 2 * MAX_BULLET_SPEED
 
 /** Square of maximum bounding circle diameter of a bullet moving with max speed */
-private val BULLET_MAX_BOUNDING_CIRCLE_DIAMETER_SQUARED: Double =
-    BULLET_MAX_BOUNDING_CIRCLE_DIAMETER * BULLET_MAX_BOUNDING_CIRCLE_DIAMETER
+private val bulletMaxBoundingCircleDiameterSquared: Double =
+    bulletMaxBoundingCircleDiameter * bulletMaxBoundingCircleDiameter
 
 /** Square of the bounding circle diameter of a bot */
 private const val BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED: Double =
@@ -252,22 +252,23 @@ class ModelUpdater(
     /** Execute bot intents for all bots that are not disabled */
     private fun executeBotIntents() {
         botsMap.values.forEach { bot ->
-            if (bot.isEnabled) updateBotMovementAndColors(bot)
+            if (bot.isEnabled) executeBotIntent(bot)
         }
     }
 
     /**
-     * Updates the bot states (position, speed, turn rates, angles, colors etc.)
+     * Executes the bot states intent.
      * @param bot is the bot top execute the bot intent for.
      */
-    private fun updateBotMovementAndColors(bot: MutableBot) {
+    private fun executeBotIntent(bot: MutableBot) {
         botIntentsMap[bot.id]?.apply {
             bot.speed = calcNewBotSpeed(bot.speed, targetSpeed ?: 0.0)
             bot.moveToNewPosition()
 
             updateBotTurnRatesAndDirections(bot, this)
             updateBotColors(bot, this)
-            updateStdErrAndStdOut(bot, this)
+            processStdErrAndStdOut(bot, this)
+            processTeamMessages(bot, this)
         }
     }
 
@@ -853,6 +854,30 @@ class ModelUpdater(
         }
     }
 
+    private fun processTeamMessages(bot: MutableBot, intent: BotIntent) {
+        intent.teamMessages?.forEach { teamMessage ->
+            if (teamMessage.receiverId == null) {
+                bot.teammateIds.forEach { teammateId ->
+                    addTeamMessageIfBotIsAlive(teammateId, bot.id, teamMessage.message)
+                }
+            } else {
+                addTeamMessageIfBotIsAlive(teamMessage.receiverId, bot.id, teamMessage.message)
+            }
+        }
+
+        // clear team messages
+        intent.teamMessages = null
+    }
+
+    private fun addTeamMessageIfBotIsAlive(receiverId: BotId, senderId: BotId, message: Any) {
+        if (isAlive(receiverId)) {
+            turn.addPrivateBotEvent(receiverId, TeamMessageEvent(turn.turnNumber, message, senderId))
+        }
+    }
+
+    private fun isAlive(botId: BotId) = botsMap.values.find { bot -> bot.id == botId }?.isAlive ?: false
+
+
     /** for static methods */
     companion object {
         /**
@@ -864,12 +889,12 @@ class ModelUpdater(
          */
         private fun isBulletsMaxBoundingCirclesColliding(pos1: IPoint, pos2: IPoint): Boolean {
             val dx = pos2.x - pos1.x
-            if (abs(dx) > BULLET_MAX_BOUNDING_CIRCLE_DIAMETER) {
+            if (abs(dx) > bulletMaxBoundingCircleDiameter) {
                 return false
             }
             val dy = pos2.y - pos1.y
-            return abs(dy) <= BULLET_MAX_BOUNDING_CIRCLE_DIAMETER &&
-                    ((dx * dx) + (dy * dy) <= BULLET_MAX_BOUNDING_CIRCLE_DIAMETER_SQUARED)
+            return abs(dy) <= bulletMaxBoundingCircleDiameter &&
+                    ((dx * dx) + (dy * dy) <= bulletMaxBoundingCircleDiameterSquared)
         }
 
         /**
@@ -1001,7 +1026,7 @@ class ModelUpdater(
          * @param bot is the bot.
          * @param intent is the bot´s intent.
          */
-        private fun updateStdErrAndStdOut(bot: MutableBot, intent: BotIntent) {
+        private fun processStdErrAndStdOut(bot: MutableBot, intent: BotIntent) {
             // transfer from intent to state
             bot.apply {
                 stdOut = intent.stdOut

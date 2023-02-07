@@ -52,7 +52,7 @@ data class MutableTurn(
      * @param event is the bot event.
      */
     fun addPublicBotEvent(event: Event) {
-        // Every bots get notified about the bot event
+        // Every bot get notified about the bot event
         bots.forEach { addPrivateBotEvent(it.id, event) }
     }
 

@@ -5,6 +5,9 @@ interface IBot {
     /** Bot id */
     val id: BotId
 
+    /** Teammate ids */
+    val teammateIds: Set<BotId>
+
     /** Session id */
     val sessionId: String?
 
