@@ -47,7 +47,8 @@ data class Bot(
     override val tracksColor: Color? = null,
     override val gunColor: Color? = null,
     override val stdOut: String? = null,
-    override val stdErr: String? = null
+    override val stdErr: String? = null,
+    override val teammateIds: Set<BotId> = HashSet()
 
 ) : IBot {
 
