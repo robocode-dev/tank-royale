@@ -4,8 +4,8 @@ import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.*
 import dev.robocode.tankroyale.gui.ui.ResultsFrame
+import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.hsl
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.lightness
-import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.toHsl
 import dev.robocode.tankroyale.gui.ui.fx.Animation
 import dev.robocode.tankroyale.gui.ui.fx.CircleBurst
 import dev.robocode.tankroyale.gui.ui.fx.Explosion
@@ -331,7 +331,7 @@ object ArenaPanel : JPanel() {
 
     private fun visibleDark(color: Color): Color {
         if (color.lightness < 0.2) {
-            val hsl = color.toHsl()
+            val hsl = color.hsl
             return HslColor(hsl.hue, hsl.saturation, 0.2f).toColor()
         }
         return color

@@ -9,16 +9,13 @@ import java.awt.Color
 object ColorExt {
 
     val Color.lightness: Float
-        get() = toHsl().lightness
+        get() = hsl.lightness
 
-    /**
-     * Converts this Color into a HSL color value.
-     *
-     * @return The HSL representation of this color.
-     */
-    fun Color.toHsl(): HslColor {
-        return rgbToHsl(red, green, blue)
-    }
+    val Color.web: String
+        get() = "#%02x%02x%02x".format(red, green, blue)
+
+    val Color.hsl: HslColor
+        get() = rgbToHsl(red, green, blue)
 
     /**
      * Converts an RGB color value to HSL color value.
