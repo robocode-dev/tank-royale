@@ -7,7 +7,7 @@ import dev.robocode.tankroyale.gui.ui.arena.ColorConstant.DEFAULT_RADAR_COLOR
 import dev.robocode.tankroyale.gui.ui.arena.ColorConstant.DEFAULT_TRACKS_COLOR
 import dev.robocode.tankroyale.gui.ui.arena.ColorConstant.DEFAULT_TURRET_COLOR
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.lightness
-import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.toHsl
+import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.hsl
 import dev.robocode.tankroyale.gui.util.ColorUtil.Companion.fromString
 import java.awt.BasicStroke
 import java.awt.Color
@@ -145,7 +145,7 @@ class Tank(private val bot: BotState) {
     private fun paintMainTrack(g: Graphics2D) {
         g.stroke = BasicStroke(10f)
 
-        val tracksColor = tracksColor.toHsl().multLight(0.6f).toColor()
+        val tracksColor = tracksColor.hsl.multLight(0.6f).toColor()
         g.color = tracksColor
         g.fillRect(75, 20, 450, 95)
         g.color = borderColor(tracksColor)
@@ -155,7 +155,7 @@ class Tank(private val bot: BotState) {
     private fun paintLink0(g: Graphics2D) {
         g.stroke = BasicStroke(10f)
 
-        g.color = tracksColor.toHsl().addLight(0.3f).toColor()
+        g.color = tracksColor.hsl.addLight(0.3f).toColor()
         g.fillRect(55, 5, 25, 125)
 
         g.color = tracksColor
@@ -168,10 +168,10 @@ class Tank(private val bot: BotState) {
     private fun paintLink30(g: Graphics2D) {
         g.stroke = BasicStroke(10f)
 
-        g.color = tracksColor.toHsl().addLight(0.2f).multLight(0.866f /* 30 deg */).toColor()
+        g.color = tracksColor.hsl.addLight(0.2f).multLight(0.866f /* 30 deg */).toColor()
         g.fillRect(55, 5, 25, 125)
 
-        g.color = tracksColor.toHsl().multLight(0.866f /* 30 deg */).toColor()
+        g.color = tracksColor.hsl.multLight(0.866f /* 30 deg */).toColor()
         g.fillRoundRect(70, 10, 30, 116, 20, 20)
 
         g.color = borderColor(tracksColor)
@@ -181,7 +181,7 @@ class Tank(private val bot: BotState) {
     private fun paintLink60(g: Graphics2D) {
         g.stroke = BasicStroke(10f)
 
-        g.color = tracksColor.toHsl().addLight(0.2f).multLight(0.5f /* 60 deg */).toColor()
+        g.color = tracksColor.hsl.addLight(0.2f).multLight(0.5f /* 60 deg */).toColor()
         g.fillRect(55, 5, 20, 125)
 
         g.color = borderColor(tracksColor)
@@ -196,8 +196,8 @@ class Tank(private val bot: BotState) {
 
         val gunColor = fromString(bot.gunColor ?: DEFAULT_GUN_COLOR)
 
-        val cannonLight = gunColor.toHsl().addLight(0.1f).toColor()
-        val cannonDark = gunColor.toHsl().addLight(-0.3f).toColor()
+        val cannonLight = gunColor.hsl.addLight(0.1f).toColor()
+        val cannonDark = gunColor.hsl.addLight(-0.3f).toColor()
 
         val borderColor = borderColor(gunColor)
 

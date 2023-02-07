@@ -1,11 +1,13 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.model.BotInfo
+import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.web
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.util.*
 import javax.swing.*
+import javax.swing.text.html.HTMLEditorKit
 
 object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
 
@@ -108,7 +110,7 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
         val name = Locale("", countryCode).displayCountry
         val cc = countryCode.trim()
         return """
-            <td style="font-family: sans-serif; font-size: 10">${name} (${cc})&nbsp;</td>
+            <td>${name} (${cc})&nbsp;</td>
             <td><img width="16" height="12" src="https://flagcdn.com/w20/${cc}.png">&nbsp;&nbsp;</td>
         """.trimIndent()
     }
@@ -125,6 +127,10 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
             contentType = "text/html"
             border = JTextField().border
             background = parent?.background
+
+            (editorKit as HTMLEditorKit).styleSheet.apply {
+                addRule("body { color: ${foreground.web}; font-family: sans-serif; font-size: ${font.size} }")
+            }
         }
     }
 }
