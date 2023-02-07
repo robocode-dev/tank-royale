@@ -580,12 +580,15 @@ public final class BaseBotInternals {
     }
 
     public void sendTeamMessage(Integer teammateId, Object message) {
+        if (teammateId != null && !teammateIds.contains(teammateId)) {
+            throw new IllegalArgumentException("No teammate was found with the specified 'teammateId': " + teammateId);
+        }
         if (botIntent.getTeamMessages().size() == MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN) {
             throw new BotException(
                     "The maximum number team massages has already been reached: " + MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN);
         }
         if (message == null) {
-            throw new IllegalArgumentException("team message cannot be null");
+            throw new IllegalArgumentException("The 'message' of a team message cannot be null");
         }
         var bytes = convertToBytes(message);
         if (bytes.length > TEAM_MESSAGE_MAX_SIZE) {

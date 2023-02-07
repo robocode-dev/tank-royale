@@ -579,6 +579,9 @@ public sealed class BaseBotInternals
 
     internal void SendTeamMessage(int? teammateId, object message)
     {
+        if (teammateId != null && !TeammateIds.Contains((int)teammateId)) {
+            throw new ArgumentException("No teammate was found with the specified 'teammateId': " + teammateId);
+        }
         if (BotIntent.TeamMessages.Count == IBaseBot.MaxNumberOfTeamMessagesPerTurn)
             throw new InvalidOperationException(
                 "The maximum number team massages has already been reached: " +
