@@ -17,4 +17,4 @@ data class BootDirEntry(
     override val platform: String? = null,
     override val programmingLang: String? = null,
     override val initialPosition: String? = null,
-) : AbstractBotEntry()
+) : AbstractBootEntry()

@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.booter.commands
 
-import dev.robocode.tankroyale.booter.model.AbstractBotEntry
+import dev.robocode.tankroyale.booter.model.AbstractBootEntry
 import dev.robocode.tankroyale.booter.util.Env
 import dev.robocode.tankroyale.booter.util.OSCheck
 import dev.robocode.tankroyale.booter.util.OSCheck.OSType.MacOS
@@ -177,7 +177,7 @@ class RunCommand : Command() {
             return Files.newInputStream(path).bufferedReader().readLine() ?: ""
         }
 
-        private fun setEnvVars(envMap: MutableMap<String, String?>, bootEntry: AbstractBotEntry) {
+        private fun setEnvVars(envMap: MutableMap<String, String?>, bootEntry: AbstractBootEntry) {
             System.getProperty("server.url")?.let {
                 envMap[Env.SERVER_URL.name] = it
             }
