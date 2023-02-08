@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.booter.commands
 
-import dev.robocode.tankroyale.booter.model.AbstractBootEntry
 import dev.robocode.tankroyale.booter.model.BootDirEntry
+import dev.robocode.tankroyale.booter.model.BootEntry
 import java.nio.file.Files.exists
 import java.nio.file.Files.list
 import java.nio.file.Path
@@ -67,13 +67,13 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
         return dirs
     }
 
-    private fun isBootEntryContainingGameTypes(bootEntry: AbstractBootEntry, gameTypes: List<String>): Boolean {
-        if (gameTypes.isEmpty() || gameTypes.contains("custom")) {
-            return true
+    private fun isBootEntryContainingGameTypes(bootEntry: BootEntry, gameTypes: List<String>): Boolean {
+        return if (gameTypes.isEmpty() || gameTypes.contains("custom")) {
+            true
         } else {
             val botGameTypes = bootEntry.gameTypes?.filter { it.isNotEmpty() }?.toMutableList()
             botGameTypes?.forEachIndexed { index, gameType -> botGameTypes[index] = gameType.lowercase() }
-            return if (botGameTypes.isNullOrEmpty()) {
+            if (botGameTypes.isNullOrEmpty()) {
                 true
             } else {
                 botGameTypes.containsAll(gameTypes)
