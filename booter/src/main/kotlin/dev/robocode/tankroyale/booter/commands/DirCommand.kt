@@ -17,11 +17,10 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
         }?.filter { it.isNotBlank() } ?: emptyList()
 
         val bootEntries = HashSet<BootEntry>()
-        val dirs = listBotDirectories()
-        dirs.forEach { dirPath ->
+        listBotDirectories().forEach { dirPath ->
             try {
                 getBotInfo(dirPath)?.let { botInfo ->
-                    if (botInfoContainsGameTypes(botInfo, gameTypes)) {
+                    if (isBotInfoContainingGameTypes(botInfo, gameTypes)) {
                         bootEntries += BootEntry(dirPath.toAbsolutePath().toString(), botInfo)
                     }
                 }
@@ -54,7 +53,7 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
         return dirs
     }
 
-    private fun botInfoContainsGameTypes(botInfo: BotInfo?, gameTypes: List<String>): Boolean {
+    private fun isBotInfoContainingGameTypes(botInfo: BotInfo?, gameTypes: List<String>): Boolean {
         if (gameTypes.isEmpty() || gameTypes.contains("custom")) {
             return true
         } else {
