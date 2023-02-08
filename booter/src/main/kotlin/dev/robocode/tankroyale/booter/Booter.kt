@@ -43,13 +43,15 @@ class Booter : Callable<Int> {
     @Command(name = "dir", description = ["List all available bot directories."])
     private fun dir(
         @Parameters(
-            arity = "1..*", paramLabel = "BOT_ROOT_DIRS",
+            arity = "1..*",
+            paramLabel = "BOT_ROOT_DIRS",
             description = ["Absolute file paths, where each path is a root directory containing bot entries"]
         )
         botRootDirs: Array<String>,
 
         @Option(
-            names = ["--game-types", "-T"], paramLabel = "GAME_TYPES",
+            names = ["--game-types", "-T"],
+            paramLabel = "GAME_TYPES",
             description = ["Comma-separated string of game types that the bot entries must support in order to be included in the list"]
         )
         gameTypes: String?
@@ -76,7 +78,8 @@ class Booter : Callable<Int> {
     }
 
     @Command(
-        name = "run", description = [
+        name = "run",
+        description = [
             "Starts running the bots in individual processes.",
             "",
             "Information about each started process is written to standard out with a line per process in " +
@@ -94,10 +97,9 @@ class Booter : Callable<Int> {
     )
     private fun run(
         @Parameters(
-            arity = "0..*", paramLabel = "BOT_DIRS",
-            description = [
-                "Absolute file paths, where each path is a bot directory.",
-            ]
+            arity = "0..*",
+            paramLabel = "BOT_DIRS",
+            description = ["Absolute file paths, where each path is a bot directory."]
         )
         botDirs: Array<String>
     ) {
