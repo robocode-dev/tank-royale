@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.booter.commands
 
-import dev.robocode.tankroyale.booter.model.BootEntry
-import dev.robocode.tankroyale.booter.model.BotInfo
+import dev.robocode.tankroyale.booter.model.AbstractBotEntry
+import dev.robocode.tankroyale.booter.model.BootDirEntry
 import java.nio.file.Files.exists
 import java.nio.file.Files.list
 import java.nio.file.Path
@@ -11,17 +11,31 @@ import kotlin.io.path.isDirectory
 
 class DirCommand(private val botRootPaths: List<Path>) : Command() {
 
-    fun listBootEntries(gameTypesCSV: String?): List<BootEntry> {
+    fun listBootEntries(gameTypesCSV: String?): List<BootDirEntry> {
         val gameTypes: List<String> = gameTypesCSV?.split(",")?.map {
             it.trim().lowercase(Locale.getDefault())
         }?.filter { it.isNotBlank() } ?: emptyList()
 
-        val bootEntries = HashSet<BootEntry>()
+        val bootEntries = HashSet<BootDirEntry>()
         listBotDirectories().forEach { dirPath ->
             try {
-                getBotInfo(dirPath)?.let { botInfo ->
-                    if (isBotInfoContainingGameTypes(botInfo, gameTypes)) {
-                        bootEntries += BootEntry(dirPath.toAbsolutePath().toString(), botInfo)
+                getBootEntry(dirPath)?.let { bootEntry ->
+                    if (isBootEntryContainingGameTypes(bootEntry, gameTypes)) {
+                        bootEntry.apply {
+                            bootEntries += BootDirEntry(
+                                dirPath.toAbsolutePath().toString(),
+                                name,
+                                version,
+                                authors,
+                                description,
+                                homepage,
+                                countryCodes,
+                                gameTypes,
+                                platform,
+                                programmingLang,
+                                initialPosition
+                            )
+                        }
                     }
                 }
             } catch (ex: Exception) {
@@ -53,20 +67,17 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
         return dirs
     }
 
-    private fun isBotInfoContainingGameTypes(botInfo: BotInfo?, gameTypes: List<String>): Boolean {
+    private fun isBootEntryContainingGameTypes(bootEntry: AbstractBotEntry, gameTypes: List<String>): Boolean {
         if (gameTypes.isEmpty() || gameTypes.contains("custom")) {
             return true
         } else {
-            if (botInfo != null) {
-                val botGameTypes = botInfo.gameTypes?.filter { it.isNotEmpty() }?.toMutableList()
-                botGameTypes?.forEachIndexed { index, gameType -> botGameTypes[index] = gameType.lowercase() }
-                return if (botGameTypes.isNullOrEmpty()) {
-                    true
-                } else {
-                    botGameTypes.containsAll(gameTypes)
-                }
+            val botGameTypes = bootEntry.gameTypes?.filter { it.isNotEmpty() }?.toMutableList()
+            botGameTypes?.forEachIndexed { index, gameType -> botGameTypes[index] = gameType.lowercase() }
+            return if (botGameTypes.isNullOrEmpty()) {
+                true
+            } else {
+                botGameTypes.containsAll(gameTypes)
             }
-            return false
         }
     }
 }

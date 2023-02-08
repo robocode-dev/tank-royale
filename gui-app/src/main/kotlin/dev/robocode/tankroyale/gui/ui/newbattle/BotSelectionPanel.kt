@@ -147,7 +147,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     private fun createRunningBotList() =
         BotList(bootedBotListModel).apply {
             cellRenderer = RunningBotCellRenderer()
-            
+
             onDeleteKeyTyped.subscribe(BotSelectionPanel) { dirAndPids ->
                 BootProcess.stop(dirAndPids.map { it.pid })
             }
@@ -320,22 +320,22 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         botsDirectoryListModel.clear()
 
         BootProcess.info().forEach { botEntry ->
-            val info = botEntry.info
-            botsDirectoryListModel.addElement(
-                BotInfo(
-                    info.name,
-                    info.version,
-                    info.authors,
-                    info.description,
-                    info.homepage,
-                    info.countryCodes?: emptyList(),
-                    info.gameTypes?.toSet() ?: emptySet(),
-                    info.platform,
-                    info.programmingLang,
-                    host = botEntry.dir // host serves as filename here
+            botEntry.apply {
+                botsDirectoryListModel.addElement(
+                    BotInfo(
+                        name,
+                        version,
+                        authors,
+                        description,
+                        homepage,
+                        countryCodes ?: emptyList(),
+                        gameTypes?.toSet() ?: emptySet(),
+                        platform,
+                        programmingLang,
+                        host = botEntry.dir // host serves as filename here
+                    )
                 )
-            )
-
+            }
             enqueue {
                 botsDirectoryScrollPane.horizontalScrollBar.apply {
                     value = maximum

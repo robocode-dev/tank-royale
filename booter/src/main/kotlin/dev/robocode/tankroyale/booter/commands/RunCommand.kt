@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.booter.commands
 
-import dev.robocode.tankroyale.booter.model.BotInfo
+import dev.robocode.tankroyale.booter.model.AbstractBotEntry
 import dev.robocode.tankroyale.booter.util.Env
 import dev.robocode.tankroyale.booter.util.OSCheck
 import dev.robocode.tankroyale.booter.util.OSCheck.OSType.MacOS
@@ -80,10 +80,10 @@ class RunCommand : Command() {
 
             var process: Process? = null
 
-            getBotInfo(botDir)?.let { botInfo ->
+            getBootEntry(botDir)?.let { bootEntry ->
 
                 // important to transfer env. variables for bot to the process
-                setEnvVars(processBuilder.environment(), botInfo)
+                setEnvVars(processBuilder.environment(), bootEntry)
 
                 process = processBuilder.start().also {
                     println("${it.pid()};${botDir.absolutePathString()}")
@@ -177,7 +177,7 @@ class RunCommand : Command() {
             return Files.newInputStream(path).bufferedReader().readLine() ?: ""
         }
 
-        private fun setEnvVars(envMap: MutableMap<String, String?>, botInfo: BotInfo) {
+        private fun setEnvVars(envMap: MutableMap<String, String?>, bootEntry: AbstractBotEntry) {
             System.getProperty("server.url")?.let {
                 envMap[Env.SERVER_URL.name] = it
             }
@@ -187,29 +187,29 @@ class RunCommand : Command() {
 
             envMap[Env.BOT_BOOTED.name] = "true"
 
-            envMap[Env.BOT_NAME.name] = botInfo.name
-            envMap[Env.BOT_VERSION.name] = botInfo.version
-            envMap[Env.BOT_AUTHORS.name] = botInfo.authors.joinToString()
+            envMap[Env.BOT_NAME.name] = bootEntry.name
+            envMap[Env.BOT_VERSION.name] = bootEntry.version
+            envMap[Env.BOT_AUTHORS.name] = bootEntry.authors.joinToString()
 
-            botInfo.gameTypes?.let {
-                envMap[Env.BOT_GAME_TYPES.name] = botInfo.gameTypes.joinToString()
+            bootEntry.gameTypes?.let {
+                envMap[Env.BOT_GAME_TYPES.name] = bootEntry.gameTypes?.joinToString()
             }
-            botInfo.description?.let {
+            bootEntry.description?.let {
                 envMap[Env.BOT_DESCRIPTION.name] = it
             }
-            botInfo.homepage?.let {
+            bootEntry.homepage?.let {
                 envMap[Env.BOT_HOMEPAGE.name] = it
             }
-            botInfo.countryCodes?.let {
+            bootEntry.countryCodes?.let {
                 envMap[Env.BOT_COUNTRY_CODES.name] = it.joinToString()
             }
-            botInfo.platform?.let {
+            bootEntry.platform?.let {
                 envMap[Env.BOT_PLATFORM.name] = it
             }
-            botInfo.programmingLang?.let {
+            bootEntry.programmingLang?.let {
                 envMap[Env.BOT_PROG_LANG.name] = it
             }
-            botInfo.initialPosition?.let {
+            bootEntry.initialPosition?.let {
                 envMap[Env.BOT_INITIAL_POS.name] = it
             }
         }

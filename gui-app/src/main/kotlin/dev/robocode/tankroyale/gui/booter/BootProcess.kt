@@ -33,7 +33,7 @@ object BootProcess {
 
     private val runningBotsList = mutableListOf<DirAndPid>()
 
-    fun info(): List<BotEntry> {
+    fun info(): List<BootEntry> {
         val args = mutableListOf(
             "java",
             "-jar",
