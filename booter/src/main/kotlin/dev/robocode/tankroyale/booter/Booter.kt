@@ -71,7 +71,7 @@ class Booter : Callable<Int> {
         )
         gameTypes: String?
     ) {
-        val entries = DirCommand(toPaths(botRootDirs)).listBotEntries(gameTypes)
+        val entries = DirCommand(toPaths(botRootDirs)).listBootEntries(gameTypes)
         println(Json.encodeToString(entries))
     }
 

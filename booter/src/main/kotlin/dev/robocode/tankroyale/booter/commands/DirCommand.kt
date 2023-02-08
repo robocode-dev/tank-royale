@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.booter.commands
 
-import dev.robocode.tankroyale.booter.model.BotEntry
+import dev.robocode.tankroyale.booter.model.BootEntry
 import dev.robocode.tankroyale.booter.model.BotInfo
 import java.nio.file.Files.exists
 import java.nio.file.Files.list
@@ -11,29 +11,29 @@ import kotlin.io.path.isDirectory
 
 class DirCommand(private val botRootPaths: List<Path>) : Command() {
 
-    fun listBotEntries(gameTypesCSV: String?): List<BotEntry> {
+    fun listBootEntries(gameTypesCSV: String?): List<BootEntry> {
         val gameTypes: List<String> = gameTypesCSV?.split(",")?.map {
             it.trim().lowercase(Locale.getDefault())
         }?.filter { it.isNotBlank() } ?: emptyList()
 
+        val bootEntries = HashSet<BootEntry>()
         val dirs = listBotDirectories()
-        val botEntries = HashSet<BotEntry>()
         dirs.forEach { dirPath ->
             try {
                 getBotInfo(dirPath)?.let { botInfo ->
                     if (botInfoContainsGameTypes(botInfo, gameTypes)) {
-                        botEntries += BotEntry(dirPath.toAbsolutePath().toString(), botInfo)
+                        bootEntries += BootEntry(dirPath.toAbsolutePath().toString(), botInfo)
                     }
                 }
             } catch (ex: Exception) {
                 System.err.println("ERROR: ${ex.message}")
             }
         }
-        return botEntries.toList()
+        return bootEntries.toList()
     }
 
     fun listBotDirectories(gameTypesCSV: String?): List<Path> =
-        listBotEntries(gameTypesCSV).map { entry -> Paths.get(entry.dir) }.toSet().toList().sorted()
+        listBootEntries(gameTypesCSV).map { entry -> Paths.get(entry.dir) }.toSet().toList().sorted()
 
     private fun listBotDirectories(): Set<Path> {
         val dirs = HashSet<Path>()
