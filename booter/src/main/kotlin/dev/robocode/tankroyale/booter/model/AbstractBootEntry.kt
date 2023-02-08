@@ -11,4 +11,5 @@ abstract class AbstractBootEntry {
     abstract val platform: String?
     abstract val programmingLang: String?
     abstract val initialPosition: String?
+    abstract val teamMembers: List<String>?
 }

@@ -33,7 +33,8 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
                                 gameTypes,
                                 platform,
                                 programmingLang,
-                                initialPosition
+                                initialPosition,
+                                teamMembers,
                             )
                         }
                     }
