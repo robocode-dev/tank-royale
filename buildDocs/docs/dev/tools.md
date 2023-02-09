@@ -18,11 +18,13 @@ all the tools for macOS and Linux as well.
 
 ### Build tool
 
-- [Gradle](https://gradle.org/) 7.4
+- [Gradle](https://gradle.org/) 7.6
 
 ### Java / JVM platform
 
-- [Adopt OpenJDK 11](https://adoptopenjdk.net/)
+- JDK 11 (Java Developer Kit), e.g.
+  [Oracle JDK 11](https://www.oracle.com/uk/java/technologies/javase/jdk11-archive-downloads.html) or
+- [Eclipse Temurin JDK 11](https://adoptium.net/temurin/releases/?version=11)
 
 ### .Net platform
 
