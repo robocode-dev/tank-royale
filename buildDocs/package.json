@@ -4,13 +4,14 @@
   "description": "Documentation for the programming game Robocode Tank Royale.",
   "main": "index.js",
   "scripts": {
-    "dev": "vuepress dev docs",
-    "build": "vuepress build docs"
+    "dev": "cross-env NODE_OPTIONS=--openssl-legacy-provider vuepress dev docs",
+    "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider vuepress build docs"
   },
   "author": "Flemming Nørnberg Larsen",
   "license": "Apache-2.0",
   "devDependencies": {
-    "vuepress": "^1.9.7",
+    "cross-env": "^7.0.3",
+    "vuepress": "^1.9.8",
     "vuepress-plugin-mathjax": "^1.2.8",
     "vuepress-plugin-md-enhance": "^1.30.0"
   }
