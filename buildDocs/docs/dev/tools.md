@@ -29,11 +29,9 @@ all the tools for macOS and Linux as well.
 ### .Net platform
 
 - [.Net 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
-- [DocFX](https://dotnet.github.io/docfx/) 2.59.0
-    - [Prerequisites Visual Studio 2019](https://dotnet.github.io/docfx/tutorial/docfx_getting_started.html) for
-      running `docfx metadata`
+- [DocFX](https://dotnet.github.io/docfx/) 2.61.0
 
 ### Documentation
 
-- [Node.js](https://nodejs.org/en/) 16.14
+- [Node.js](https://nodejs.org/en/) v18.14.0 (LTS)
     - [VuePress](https://vuepress.vuejs.org/) is used for generating a static web page with documentation
