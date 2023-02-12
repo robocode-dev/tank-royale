@@ -8,11 +8,17 @@ import kotlin.io.path.exists
 
 abstract class Command {
 
+    companion object {
+        val json = Json() {
+            ignoreUnknownKeys = true
+        }
+    }
+
     protected fun getBootEntry(botDirPath: Path): BootEntry? {
         val jsonPath = botDirPath.resolve("${botDirPath.fileName}.json")
         return if (jsonPath.exists()) {
             val content = jsonPath.toFile().readText(Charsets.UTF_8)
-            Json.decodeFromString(content)
+            json.decodeFromString(content)
         } else null
     }
 }

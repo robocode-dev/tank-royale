@@ -43,7 +43,7 @@ object MainFrame : RcFrame("main_frame") {
 
     private fun close() {
         Client.close()
-        BootProcess.stopRunning()
+        BootProcess.stop()
         ServerProcess.stop()
     }
 

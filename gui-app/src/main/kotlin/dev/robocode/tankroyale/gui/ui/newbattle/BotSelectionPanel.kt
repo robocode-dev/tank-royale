@@ -135,7 +135,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     private fun runFromBotDirectoryAtIndex(index: Int) {
         if (index >= 0 && index < botsDirectoryListModel.size) {
             val botInfo = botsDirectoryListModel[index]
-            BootProcess.run(listOf(botInfo.host))
+            BootProcess.boot(listOf(botInfo.host))
         }
     }
 
@@ -160,7 +160,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
     private fun handleBootBots() {
         val botDirs = botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].host }
-        BootProcess.run(botDirs)
+        BootProcess.boot(botDirs)
     }
 
     private fun handleUnbootBots() {
@@ -361,7 +361,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         enqueue {
             bootedBotListModel.apply {
                 clear()
-                BootProcess.runningBots.forEach { addBootingBot(it) }
+                BootProcess.bootedBots.forEach { addBootingBot(it) }
             }
         }
     }

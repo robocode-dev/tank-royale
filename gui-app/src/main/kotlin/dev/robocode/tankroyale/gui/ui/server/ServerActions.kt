@@ -16,7 +16,7 @@ object ServerActions {
             }
             onStopServer.subscribe(this) {
                 Server.stop()
-                BootProcess.stopRunning()
+                BootProcess.stop()
             }
             onRebootServer.subscribe(this) {
                 handleReboot(it)
@@ -46,7 +46,7 @@ object ServerActions {
                     JOptionPane.YES_NO_OPTION
                 )
             ) {
-                BootProcess.stopRunning()
+                BootProcess.stop()
                 Server.reboot()
             }
         }

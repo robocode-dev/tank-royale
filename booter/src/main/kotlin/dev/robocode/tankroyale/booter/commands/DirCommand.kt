@@ -11,32 +11,39 @@ import kotlin.io.path.isDirectory
 
 class DirCommand(private val botRootPaths: List<Path>) : Command() {
 
-    fun listBootEntries(gameTypesCSV: String?): List<BootDirEntry> {
+    fun listBootEntries(gameTypesCSV: String?, botsOnly: Boolean, teamsOnly: Boolean): List<BootDirEntry> {
         val gameTypes: List<String> = gameTypesCSV?.split(",")?.map {
             it.trim().lowercase(Locale.getDefault())
         }?.filter { it.isNotBlank() } ?: emptyList()
 
         val bootEntries = HashSet<BootDirEntry>()
+
         listBotDirectories().forEach { dirPath ->
             try {
                 getBootEntry(dirPath)?.let { bootEntry ->
-                    if (isBootEntryContainingGameTypes(bootEntry, gameTypes)) {
-                        bootEntry.apply {
-                            bootEntries += BootDirEntry(
-                                dirPath.toAbsolutePath().toString(),
-                                name,
-                                version,
-                                authors,
-                                description,
-                                homepage,
-                                countryCodes,
-                                gameTypes,
-                                platform,
-                                programmingLang,
-                                initialPosition,
-                                teamMembers,
-                            )
-                        }
+                    if (botsOnly || teamsOnly) {
+                        val isTeam = bootEntry.teamMembers?.isNotEmpty() == true
+                        if (botsOnly && isTeam) return@forEach
+                        if (teamsOnly && !isTeam) return@forEach
+                    }
+                    if (!isBootEntryContainingGameTypes(bootEntry, gameTypes)) {
+                        return@forEach
+                    }
+                    bootEntry.apply {
+                        bootEntries += BootDirEntry(
+                            dirPath.toAbsolutePath().toString(),
+                            name,
+                            version,
+                            authors,
+                            description,
+                            homepage,
+                            countryCodes,
+                            gameTypes,
+                            platform,
+                            programmingLang,
+                            initialPosition,
+                            teamMembers,
+                        )
                     }
                 }
             } catch (ex: Exception) {
@@ -46,8 +53,11 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
         return bootEntries.toList()
     }
 
-    fun listBotDirectories(gameTypesCSV: String?): List<Path> =
-        listBootEntries(gameTypesCSV).map { entry -> Paths.get(entry.dir) }.toSet().toList().sorted()
+    fun listBotDirectories(gameTypesCSV: String?, botsOnly: Boolean, teamsOnly: Boolean): List<Path> =
+        listBootEntries(gameTypesCSV, botsOnly, teamsOnly)
+            .map { entry -> Paths.get(entry.dir) }
+            .toSet().toList()
+            .sorted()
 
     private fun listBotDirectories(): Set<Path> {
         val dirs = HashSet<Path>()

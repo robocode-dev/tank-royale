@@ -14,5 +14,6 @@ data class BootEntry(
     val gameTypes: List<String>? = null,
     val platform: String? = null,
     val programmingLang: String? = null,
-    val initialPosition: String? = null
+    val initialPosition: String? = null,
+    val teamMembers: List<String>? = null,
 )

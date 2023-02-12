@@ -24,7 +24,7 @@ fun main(args: Array<String>) {
 @Command(
     name = "booter",
     versionProvider = VersionFileProvider::class,
-    description = ["Tool for booting up Robocode bots"],
+    description = ["Tool for booting up Robocode bots."],
     mixinStandardHelpOptions = true
 )
 class Booter : Callable<Int> {
@@ -40,70 +40,97 @@ class Booter : Callable<Int> {
         return 0
     }
 
-    @Command(name = "dir", description = ["List all available bot directories."])
+    @Command(name = "dir", description = ["List all available bot and team directories."])
     private fun dir(
         @Parameters(
             arity = "1..*",
             paramLabel = "BOT_ROOT_DIRS",
-            description = ["Absolute file paths, where each path is a root directory containing bot entries"]
+            description = ["Absolute file paths, where each path is a root directory containing bot or team entries."]
         )
         botRootDirs: Array<String>,
 
         @Option(
-            names = ["--game-types", "-T"],
+            names = ["--game-types", "-g"],
             paramLabel = "GAME_TYPES",
-            description = ["Comma-separated string of game types that the bot entries must support in order to be included in the list"]
+            description = ["Comma-separated string for filtering on game types that a bot or team need to support in order to appear in the listing."]
         )
-        gameTypes: String?
+        gameTypes: String?,
+
+        @Option(
+            names = ["--bots-only", "-b"],
+            description = ["Flag set when only bots should be included in the listing."]
+        )
+        botsOnly: Boolean? = false,
+
+        @Option(
+            names = ["--teams-only", "-t"],
+            description = ["Flag set when only teams should be included in the listing."]
+        )
+        teamsOnly: Boolean? = false,
     ) {
-        DirCommand(toPaths(botRootDirs)).listBotDirectories(gameTypes).forEach { println(it) }
+        DirCommand(toPaths(botRootDirs))
+            .listBotDirectories(gameTypes, botsOnly == true, teamsOnly == true)
+            .forEach { println(it) }
     }
 
-    @Command(name = "info", description = ["List info for all available bots in JSON format."])
+    @Command(name = "info", description = ["List info of all available bots in JSON format."])
     private fun info(
         @Parameters(
             arity = "1..*", paramLabel = "BOT_ROOT_DIRS",
-            description = ["Absolute file paths, where each path is a root directory containing bot entries"]
+            description = ["Absolute file paths, where each path is a root directory containing bot entries."]
         )
         botRootDirs: Array<String>,
 
         @Option(
-            names = ["--game-types", "-T"], paramLabel = "GAME_TYPES",
-            description = ["Comma-separated list of game types that the bot entries must support in order to be included in the list."]
+            names = ["--game-types", "-g"], paramLabel = "GAME_TYPES",
+            description = ["Comma-separated string for filtering on game types that a bot or team need to support in order to appear in the listing."]
         )
-        gameTypes: String?
+        gameTypes: String?,
+
+        @Option(
+            names = ["--bots-only", "-b"],
+            description = ["Flag set when only bots should be included in the listing."]
+        )
+        botsOnly: Boolean? = false,
+
+        @Option(
+            names = ["--teams-only", "-t"],
+            description = ["Flag set when only teams should be included in the listing."]
+        )
+        teamsOnly: Boolean? = false,
     ) {
-        val entries = DirCommand(toPaths(botRootDirs)).listBootEntries(gameTypes)
+        val entries = DirCommand(toPaths(botRootDirs))
+            .listBootEntries(gameTypes, botsOnly == true, teamsOnly == true)
         println(Json.encodeToString(entries))
     }
 
     @Command(
-        name = "run",
+        name = "boot",
         description = [
-            "Starts running the bots in individual processes.",
+            "Boot one or multiple bot or team entries into individual bot processes.",
+            "If a team is specified, the each bot members will be booted (not the team itself).",
             "",
-            "Information about each started process is written to standard out with a line per process in " +
-                    "one of the following formats, depending if a unique identifier was provided when booting a bot:",
+            "Information about each started bot process is written to standard out with a line per process in the following format:",
             "{pid};{dir}",
             "where",
             "  {pid} is the process id",
             "  {dir} is the bot directory",
             "",
             "The following commands can be given via standard in:",
-            "  quit        Terminates this command, and stops all running processes",
-            "  run {dir}   Runs the bot from the specified bot directory",
-            "  stop {pid}  Stops the bot running with the specific process id",
+            "  quit        Terminates this command, and stops all running processes.",
+            "  boot {dir}  Boots the bot from the specified bot directory.",
+            "  stop {pid}  Stops the bot running with the specific process id.",
         ]
     )
-    private fun run(
+    private fun boot(
         @Parameters(
             arity = "0..*",
             paramLabel = "BOT_DIRS",
-            description = ["Absolute file paths, where each path is a bot directory."]
+            description = ["Absolute file paths, where each path is a bot directory containing a bot or team that must be run"]
         )
-        botDirs: Array<String>
+        botDirectories: Array<String>
     ) {
-        RunCommand().runBots(botDirs)
+        RunCommand().boot(botDirectories)
     }
 
     companion object {

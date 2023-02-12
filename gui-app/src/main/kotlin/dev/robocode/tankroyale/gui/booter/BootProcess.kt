@@ -23,15 +23,15 @@ object BootProcess {
 
     private const val JAR_FILE_NAME = "robocode-tankroyale-booter"
 
-    private val isRunning = AtomicBoolean(false)
-    private var runProcess: Process? = null
+    private val isBooted = AtomicBoolean(false)
+    private var booterProcess: Process? = null
     private var thread: Thread? = null
 
     private val json = MessageConstants.json
 
     private val pidAndDirs = ConcurrentHashMap<Long, String>() // pid, dir
 
-    private val runningBotsList = mutableListOf<DirAndPid>()
+    private val bootedBotsList = mutableListOf<DirAndPid>()
 
     fun info(): List<BootEntry> {
         val args = mutableListOf(
@@ -64,70 +64,70 @@ object BootProcess {
         }
     }
 
-    fun run(botDirNames: List<String>) {
-        if (isRunning.get()) {
-            runBotsWithRunningBotProcess(botDirNames)
+    fun boot(botDirNames: List<String>) {
+        if (isBooted.get()) {
+            bootBotsWithAlreadyBootedProcess(botDirNames)
         } else {
-            startRunningBotProcess(botDirNames)
+            bootBotProcess(botDirNames)
         }
     }
 
     fun stop(pids: List<Long>) {
-        stopBotsWithRunningBotProcess(pids)
+        stopBotsWithBootedProcess(pids)
     }
 
-    val runningBots: List<DirAndPid>
+    val bootedBots: List<DirAndPid>
         get() {
-            return runningBotsList
+            return bootedBotsList
         }
 
-    private fun startRunningBotProcess(botDirNames: List<String>) {
+    private fun bootBotProcess(botDirNames: List<String>) {
         val args = mutableListOf(
             "java",
             "-Dserver.url=${ServerSettings.currentServerUrl}",
             "-Dserver.secret=${ServerSettings.botSecrets.first()}",
             "-jar",
             getBooterJar(),
-            "run"
+            "boot"
         )
         botDirNames.forEach { args += it }
 
-        runProcess = ProcessBuilder(args).start()
+        booterProcess = ProcessBuilder(args).start()
 
-        isRunning.set(true)
-        startThread(runProcess!!, true)
+        isBooted.set(true)
+        startThread(booterProcess!!, true)
     }
 
-    private fun runBotsWithRunningBotProcess(botDirNames: List<String>) {
-        PrintStream(runProcess?.outputStream!!).also { printStream ->
-            botDirNames.forEach { printStream.println("run $it") }
+    private fun bootBotsWithAlreadyBootedProcess(botDirNames: List<String>) {
+        PrintStream(booterProcess?.outputStream!!).also { printStream ->
+            botDirNames.forEach { printStream.println("boot $it") }
             printStream.flush()
         }
     }
 
-    private fun stopBotsWithRunningBotProcess(pids: List<Long>) {
-        PrintStream(runProcess?.outputStream!!).also { printStream ->
+    private fun stopBotsWithBootedProcess(pids: List<Long>) {
+        PrintStream(booterProcess?.outputStream!!).also { printStream ->
             pids.forEach { printStream.println("stop $it") }
             printStream.flush()
         }
     }
 
-    fun stopRunning() {
-        if (!isRunning.get())
+    fun stop() {
+        if (!isBooted.get())
             return
 
         stopThread()
-        isRunning.set(false)
+        isBooted.set(false)
 
         stopProcess()
 
         notifyUnbootBotProcesses()
 
-        runningBotsList.clear()
+        bootedBotsList.clear()
     }
 
     private fun stopProcess() {
-        runProcess?.apply {
+        booterProcess?.apply {
             if (isAlive) {
                 PrintStream(outputStream).apply {
                     println("quit")
@@ -135,7 +135,7 @@ object BootProcess {
                 }
             }
         }
-        runProcess = null
+        booterProcess = null
     }
 
     private fun notifyUnbootBotProcesses() {
@@ -224,7 +224,7 @@ object BootProcess {
             pidAndDirs[pid] = dir
 
             val dirAndPid = DirAndPid(dir, pid)
-            runningBotsList.add(dirAndPid)
+            bootedBotsList.add(dirAndPid)
 
             onBootBot.fire(dirAndPid)
         }
@@ -240,7 +240,7 @@ object BootProcess {
 
             if (dir != null) {
                 val dirAndPid = DirAndPid(dir, pid)
-                runningBotsList.remove(dirAndPid)
+                bootedBotsList.remove(dirAndPid)
 
                 onUnbootBot.fire(dirAndPid)
             }
