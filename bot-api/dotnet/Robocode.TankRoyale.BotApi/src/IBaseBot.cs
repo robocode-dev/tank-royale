@@ -684,6 +684,19 @@ public interface IBaseBot
     /// <summary>
     /// Checks if the provided bot id is a teammate or not.
     /// </summary>
+    /// <example>
+    /// Example:
+    /// <code>
+    /// public override void OnScannedBot(ScannedBotEvent e)
+    /// {
+    ///     if (IsTeammate(e.ScannedBotId)
+    ///     {
+    ///         return; // don't do anything by leaving
+    ///     }
+    ///     Fire(1);
+    /// }
+    /// </code>
+    /// </example>
     /// <param name="botId">The id of the bot to check for</param>
     /// <returns><c>true</c> if the provided is id an id of a teammate; <c>false</c> otherwise.</returns>  
     /// <seealso cref="TeammateIds"/>

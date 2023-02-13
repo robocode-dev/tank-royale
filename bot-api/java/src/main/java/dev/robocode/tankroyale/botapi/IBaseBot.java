@@ -818,6 +818,17 @@ public interface IBaseBot {
     /**
      * Checks if the provided bot id is a teammate or not.
      *
+     * <p>Example:
+     *
+     * <pre><code class="language-java">
+     *     public void onScannedBot(ScannedBotEvent event) {
+     *         if (isTeammate(event.getScannedBotId()) {
+     *             return; // don't do anything by leaving
+     *         }
+     *         fire(1);
+     *     }
+     * </code></pre>
+     *
      * @param botId is the id of the bot to check for.
      * @return <code>true</code> if the provided is id an id of a teammate; <code>false</code> otherwise.
      * @see #getTeammateIds
