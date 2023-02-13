@@ -18,20 +18,20 @@ all the tools for macOS and Linux as well.
 
 ### Build tool
 
-- [Gradle](https://gradle.org/) 7.4
+- [Gradle](https://gradle.org/) 7.6
 
 ### Java / JVM platform
 
-- [Adopt OpenJDK 11](https://adoptopenjdk.net/)
+- JDK 11 (Java Developer Kit), e.g.
+  [Oracle JDK 11](https://www.oracle.com/uk/java/technologies/javase/jdk11-archive-downloads.html) or
+- [Eclipse Temurin JDK 11](https://adoptium.net/temurin/releases/?version=11)
 
 ### .Net platform
 
 - [.Net 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
-- [DocFX](https://dotnet.github.io/docfx/) 2.59.0
-    - [Prerequisites Visual Studio 2019](https://dotnet.github.io/docfx/tutorial/docfx_getting_started.html) for
-      running `docfx metadata`
+- [DocFX](https://dotnet.github.io/docfx/) 2.61.0
 
 ### Documentation
 
-- [Node.js](https://nodejs.org/en/) 16.14
+- [Node.js](https://nodejs.org/en/) v18.14.0 (LTS)
     - [VuePress](https://vuepress.vuejs.org/) is used for generating a static web page with documentation

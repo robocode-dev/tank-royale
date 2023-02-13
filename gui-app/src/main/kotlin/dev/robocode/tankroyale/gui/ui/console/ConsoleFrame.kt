@@ -56,8 +56,7 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
 
         onActivated {
             // Scroll to the bottom
-            val scrollBar = scrollPane.verticalScrollBar
-            scrollBar.value = scrollBar.maximum
+            scrollPane.verticalScrollBar.apply { value = maximum }
         }
     }
 
@@ -72,7 +71,7 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
             .replace("\r", "")
             .replace("\t", "&#9;")
 
-        html = ansiToHtml.process(html)
+        html = "<span>${ansiToHtml.process(html)}</span>"
 
         editorKit.insertHTML(document, document.length, html, 0, 0, null)
 
