@@ -6,7 +6,7 @@ open class ConsoleHtmlEditorKit : HTMLEditorKit() {
 
     init {
         styleSheet.apply {
-            addRule("body { color: white; font-family: monospace; }")
+            addRule("span { color: white; font-family: monospace; font-size: 12;}")
 
             // Bot console
             addRule(".info { color: \"#377B37\"; }") // olive green
