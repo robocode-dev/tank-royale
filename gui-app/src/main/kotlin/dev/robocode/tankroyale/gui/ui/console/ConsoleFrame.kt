@@ -56,8 +56,7 @@ open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : Rc
 
         onActivated {
             // Scroll to the bottom
-            val scrollBar = scrollPane.verticalScrollBar
-            scrollBar.value = scrollBar.maximum
+            scrollPane.verticalScrollBar.apply { value = maximum }
         }
     }
 
