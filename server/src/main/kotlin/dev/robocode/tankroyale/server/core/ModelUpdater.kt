@@ -837,7 +837,7 @@ class ModelUpdater(
         val aliveCount = botsMap.values.count { it.isAlive }
         if (aliveCount <= 1) {
             round.apply {
-                roundEnded = true // Round ended
+                roundEnded = true
                 if (roundNumber >= setup.numberOfRounds) {
                     gameState.isGameEnded = true // Game over
                 }
