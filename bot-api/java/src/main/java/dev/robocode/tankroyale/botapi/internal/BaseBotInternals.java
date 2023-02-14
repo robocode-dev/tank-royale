@@ -773,7 +773,7 @@ public final class BaseBotInternals {
             gameSetup = GameSetupMapper.map(gameStartedEventForBot.getGameSetup());
 
             // Send ready signal
-            BotReady ready = new BotReady();
+            var ready = new BotReady();
             ready.setType(BotReady.Type.BOT_READY);
 
             String msg = gson.toJson(ready);
@@ -787,7 +787,7 @@ public final class BaseBotInternals {
             // Send the game ended event
             var gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
 
-            GameEndedEvent gameEndedEvent = new GameEndedEvent(
+            var gameEndedEvent = new GameEndedEvent(
                     gameEndedEventForBot.getNumberOfRounds(),
                     map(gameEndedEventForBot.getResults()));
 
