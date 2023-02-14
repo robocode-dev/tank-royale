@@ -11,6 +11,8 @@
 
 #### 🪲 Bug Fixes
 
+- Server:
+    - [#60]: Round ended event was not send, in the round when the game was ended.
 - GUI:
     - Joined Bots list was not updated (removing bots), when game is aborted.
     - The properties `sun.java2d.d3d`, `sun.java2d.noddraw`, and `sun.java2d.opengl` is now omitted under macOS.
@@ -529,6 +531,8 @@ Bot info:
 [#52]: https://github.com/robocode-dev/tank-royale/discussions/52#discussioncomment-4332072
 
 [#53]: https://github.com/robocode-dev/tank-royale/issues/53
+
+[#60]: https://github.com/robocode-dev/tank-royale/issues/60
 
 [BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
 
