@@ -260,11 +260,11 @@ public sealed class BaseBotInternals
 
     private void SendIntent()
     {
-        SetStdOutAndStdErrOnBotIntent();
+        TransferStdOutToBotIntent();
         socket.SendTextMessage(JsonConvert.SerializeObject(BotIntent));
     }
 
-    private void SetStdOutAndStdErrOnBotIntent()
+    private void TransferStdOutToBotIntent()
     {
         var stdOutText = stdOutStringWriter.ToString();
         BotIntent.StdOut = stdOutText.Length > 0 ? HttpUtility.JavaScriptStringEncode(stdOutText.Replace("\r", "")) : null;

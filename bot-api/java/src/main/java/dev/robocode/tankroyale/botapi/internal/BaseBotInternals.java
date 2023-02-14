@@ -281,11 +281,11 @@ public final class BaseBotInternals {
     }
 
     private void sendIntent() {
-        setStdOutAndStdErrOnBotIntent();
+        transferStdOutToBotIntent();
         socket.sendText(gson.toJson(botIntent), true);
     }
 
-    private void setStdOutAndStdErrOnBotIntent() {
+    private void transferStdOutToBotIntent() {
         if (stdOut != null) {
             var out = stdOut.toString(UTF_8).replaceAll("\r", "");
             botIntent.setStdOut(JsonUtil.escaped(out));
