@@ -3,9 +3,9 @@ package dev.robocode.tankroyale.booter.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BootDirEntry(
-    // Extra field compared to BootEntry
-    val dir: String,
+data class DirBootEntry(
+    // File path of the bot or team directory
+    val dir: String, // Extra field compared to BootEntry
 
     // Shared bot and team fields
     override val name: String,

@@ -70,9 +70,10 @@ class RunCommand : Command() {
 
     private fun boot(bootDir: Path): Set<Process> {
         getBootEntry(bootDir)?.let { bootEntry ->
-            val teamMembers = bootEntry.teamMembers
-            if (teamMembers?.isNotEmpty() == true) {
-                return bootTeam(bootDir, teamMembers)
+            bootEntry.apply {
+                if (teamMembers?.isNotEmpty() == true) {
+                    return bootTeam(bootDir, bootEntry.name, teamMembers)
+                }
             }
             bootBot(bootDir)?.let { return setOf(it) }
         }
@@ -87,16 +88,15 @@ class RunCommand : Command() {
         return scriptPath
     }
 
-    private fun bootTeam(bootDir: Path, teamMembers: List<String>): Set<Process> {
+    private fun bootTeam(bootDir: Path, teamName: String, teamMembers: List<String>): Set<Process> {
         val parentPath = bootDir.parent
 
         val botProcesses = HashSet<Process>()
 
         teamMembers.forEach { botName ->
             val botDir = parentPath.resolve(botName)
-            val scriptPath = findBootScriptOrNull(botDir)
-            scriptPath?.let {
-                bootBot(botDir)?.let {
+            findBootScriptOrNull(botDir)?.let {
+                bootBot(botDir, teamName)?.let {
                     botProcesses.add(it)
                 }
             }
@@ -104,7 +104,7 @@ class RunCommand : Command() {
         return botProcesses
     }
 
-    private fun bootBot(botDir: Path): Process? {
+    private fun bootBot(botDir: Path, teamName: String? = null): Process? {
         getBootEntry(botDir)?.let { botEntry ->
             findBootScriptOrNull(botDir)?.let { scriptPath ->
 
@@ -112,7 +112,11 @@ class RunCommand : Command() {
                 processBuilder.directory(scriptPath.parent.toFile()) // set working directory
 
                 // important to transfer env. variables for bot to the process
-                setEnvVars(processBuilder.environment(), botEntry)
+                val envMap = processBuilder.environment()
+                setEnvVars(envMap, botEntry)
+                teamName?.let {
+                    envMap["TEAM_NAME"] = it
+                }
 
                 val process = processBuilder.start().also {
                     println("${it.pid()};${botDir.absolutePathString()}")

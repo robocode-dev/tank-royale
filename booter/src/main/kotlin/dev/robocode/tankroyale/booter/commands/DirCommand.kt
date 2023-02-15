@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.booter.commands
 
-import dev.robocode.tankroyale.booter.model.BootDirEntry
+import dev.robocode.tankroyale.booter.model.DirBootEntry
 import dev.robocode.tankroyale.booter.model.BootEntry
 import java.nio.file.Files.exists
 import java.nio.file.Files.list
@@ -11,12 +11,12 @@ import kotlin.io.path.isDirectory
 
 class DirCommand(private val botRootPaths: List<Path>) : Command() {
 
-    fun listBootEntries(gameTypesCSV: String?, botsOnly: Boolean, teamsOnly: Boolean): List<BootDirEntry> {
+    fun listBootEntries(gameTypesCSV: String?, botsOnly: Boolean, teamsOnly: Boolean): List<DirBootEntry> {
         val gameTypes: List<String> = gameTypesCSV?.split(",")?.map {
             it.trim().lowercase(Locale.getDefault())
         }?.filter { it.isNotBlank() } ?: emptyList()
 
-        val bootEntries = HashSet<BootDirEntry>()
+        val bootEntries = HashSet<DirBootEntry>()
 
         listBotDirectories().forEach { dirPath ->
             try {
@@ -30,7 +30,7 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
                         return@forEach
                     }
                     bootEntry.apply {
-                        bootEntries += BootDirEntry(
+                        bootEntries += DirBootEntry(
                             dirPath.toAbsolutePath().toString(),
                             name,
                             version,
