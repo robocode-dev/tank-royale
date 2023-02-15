@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Robocode.TankRoyale.BotApi.Internal;
+namespace Robocode.TankRoyale.BotApi.Util;
 
 /// <summary>
 /// Collection utility class.
@@ -23,7 +23,7 @@ public static class CollectionUtil
     /// <param name="collection">The collection to copy, where <c>null</c> results in returning an empty mutable set.
     /// </param>
     /// <returns>A mutable set that is a copy of the input collection.</returns>
-    public static ISet<T> ToMutableSet<T>(ICollection<T> collection) {
+    public static ISet<T> ToMutableSet<T>(ISet<T> collection) {
         return collection == null ? new HashSet<T>() : new HashSet<T>(collection);
     } 
 }
