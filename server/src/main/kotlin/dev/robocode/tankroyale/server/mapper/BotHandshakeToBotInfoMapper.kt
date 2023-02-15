@@ -9,6 +9,7 @@ object BotHandshakeToBotInfoMapper {
         botHandshake.apply {
             botInfo.sessionId = sessionId
             botInfo.name = name
+            botInfo.team = team
             botInfo.version = version
             botInfo.authors = authors.toList()
             botInfo.description = description

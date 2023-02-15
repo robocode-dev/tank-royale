@@ -6,6 +6,7 @@ import java.util.Objects
 @Serializable
 data class BotInfo(
     val name: String,
+    val team: String? = null,
     val version: String,
     val authors: List<String>,
     val description: String? = null,
