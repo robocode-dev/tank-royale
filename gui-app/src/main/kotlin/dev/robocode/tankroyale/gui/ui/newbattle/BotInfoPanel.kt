@@ -108,7 +108,7 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
 
     private fun generateCountryHtml(countryCode: String): String {
         val name = Locale("", countryCode).displayCountry
-        val cc = countryCode.trim()
+        val cc = countryCode.trim().lowercase()
         return """
             <td>${name} (${cc})&nbsp;</td>
             <td><img width="16" height="12" src="https://flagcdn.com/w20/${cc}.png">&nbsp;&nbsp;</td>
