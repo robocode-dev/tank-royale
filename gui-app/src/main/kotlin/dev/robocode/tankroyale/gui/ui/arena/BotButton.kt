@@ -6,6 +6,10 @@ import javax.swing.JButton
 
 class BotButton(val bot: Participant) : JButton(bot.displayName) {
 
+    init {
+        toolTipText = bot.displayName
+    }
+
     override fun getMaximumSize() : Dimension {
         val size = super.getMaximumSize()
         size.width = Int.MAX_VALUE
