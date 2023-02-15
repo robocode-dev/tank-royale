@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Robocode.TankRoyale.BotApi.Util;
-using static Robocode.TankRoyale.BotApi.Internal.CollectionUtil;
+using static Robocode.TankRoyale.BotApi.Util.CollectionUtil;
 
 namespace Robocode.TankRoyale.BotApi;
 
@@ -76,7 +76,7 @@ public sealed class BotInfo
     private readonly string description;
     private readonly string homepage;
     private readonly IList<string> countryCodes;
-    private readonly ICollection<string> gameTypes;
+    private readonly ISet<string> gameTypes;
     private readonly string platform;
     private readonly string programmingLang;
 
@@ -103,7 +103,7 @@ public sealed class BotInfo
         string description,
         string homepage,
         IList<string> countryCodes,
-        ICollection<string> gameTypes,
+        ISet<string> gameTypes,
         string platform,
         string programmingLang,
         InitialPosition initialPosition)
@@ -279,14 +279,14 @@ public sealed class BotInfo
     /// <inheritdoc cref="MaxGameTypeLength"/>
     /// </summary>
     /// <value>The game type(s) that this bot can handle.</value>
-    public ICollection<string> GameTypes
+    public ISet<string> GameTypes
     {
         get => gameTypes;
         private init
         {
             if (value.IsNullOrEmptyOrContainsOnlyBlanks())
             {
-                gameTypes = new List<string>();
+                gameTypes = new HashSet<string>();
             }
             else
             {
@@ -297,7 +297,7 @@ public sealed class BotInfo
                     throw new ArgumentException("Game type length exceeds the maximum of " + MaxGameTypeLength +
                                                 " characters");
 
-                gameTypes = value.ToListWithNoBlanks();
+                gameTypes = value.ToListWithNoBlanks().ToHashSet();
             }
         }
     }
@@ -412,9 +412,6 @@ public sealed class BotInfo
         var authors = configuration.GetSection("authors").Get<string[]>();
         ThrowExceptionIfJsonFieldIsNullOrEmpty("authors", authors);
 
-        var gameTypes = configuration["gameTypes"];
-
-        var countryCodes = configuration["countryCodes"] ?? "";
         return new BotInfo(
             name,
             version,
@@ -422,7 +419,7 @@ public sealed class BotInfo
             configuration["description"],
             configuration["url"],
             configuration.GetSection("countryCodes").Get<string[]>() ?? Array.Empty<string>(),
-            configuration.GetSection("countryCodes").Get<string[]>().ToHashSet(),
+            configuration.GetSection("gameTypes").Get<string[]>()?.ToHashSet() ?? new HashSet<string>(),
             configuration["platform"],
             configuration["programmingLang"],
             InitialPosition.FromString(configuration["initialPosition"])
@@ -605,7 +602,7 @@ public sealed class BotInfo
         /// removes all game types.</param>
         /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
         /// <seealso cref="AddGameType"/>
-        IBuilder SetGameTypes(ICollection<string> gameTypes);
+        IBuilder SetGameTypes(ISet<string> gameTypes);
 
         /// <summary>
         /// Adds a game type that this bot is capable of participating in (required).
@@ -667,7 +664,7 @@ public sealed class BotInfo
         private string description;
         private string homepage;
         private IList<string> countryCodes = new List<string>();
-        private ICollection<string> gameTypes = new HashSet<string>();
+        private ISet<string> gameTypes = new HashSet<string>();
         private string platform;
         private string programmingLang;
         private InitialPosition initialPosition;
@@ -741,7 +738,7 @@ public sealed class BotInfo
             return this;
         }
 
-        public IBuilder SetGameTypes(ICollection<string> newGameTypes)
+        public IBuilder SetGameTypes(ISet<string> newGameTypes)
         {
             gameTypes = ToMutableSet(newGameTypes);
             return this;

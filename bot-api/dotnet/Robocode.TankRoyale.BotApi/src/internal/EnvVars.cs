@@ -168,10 +168,10 @@ internal static class EnvVars
     /// <summary>
     /// Gets the list of game type(s) supported by the bot from environment variable.
     /// </summary>
-    /// <returns>The list of game type(s) supported.</returns>
-    private static ICollection<string> GetBotGameTypes()
+    /// <returns>The set of game type(s) supported.</returns>
+    private static ISet<string> GetBotGameTypes()
     {
-        return GetEnvVarAsList(BotGameTypes);
+        return GetEnvVarAsList(BotGameTypes).ToHashSet();
     }
 
     /// <summary>
@@ -219,7 +219,7 @@ internal static class EnvVars
         return Environment.GetEnvironmentVariable(BotBooted) != null;
     }
 
-    private static ICollection<string> GetEnvVarAsList(string envVarName)
+    private static IEnumerable<string> GetEnvVarAsList(string envVarName)
     {
         var value = Environment.GetEnvironmentVariable(envVarName);
         return string.IsNullOrWhiteSpace(value)
