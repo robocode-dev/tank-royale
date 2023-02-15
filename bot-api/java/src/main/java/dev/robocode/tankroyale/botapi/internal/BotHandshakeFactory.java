@@ -16,6 +16,7 @@ final class BotHandshakeFactory {
         handshake.setSessionId(sessionId);
         handshake.setType(BotHandshake.Type.BOT_HANDSHAKE);
         handshake.setName(botInfo.getName());
+        handshake.setTeam(EnvVars.getTeamName());
         handshake.setVersion(botInfo.getVersion());
         handshake.setAuthors(new ArrayList<>(botInfo.getAuthors()));
         handshake.setDescription(botInfo.getDescription());
