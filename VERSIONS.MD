@@ -16,7 +16,8 @@
 - GUI:
     - Joined Bots list was not updated (removing bots), when game is aborted.
     - The properties `sun.java2d.d3d`, `sun.java2d.noddraw`, and `sun.java2d.opengl` is now omitted under macOS.
-    - Fixed label colors for country flags.
+    - Fixed label colors for field showing country codes (with flags).
+    - Sometimes flag where "empty" when clicking on a joined bot.
 
 ## 📦 0.19.0 - Added bot console windows
 
