@@ -186,7 +186,7 @@ class GameServer(
                 id = botId.value
                 sessionId = handshake!!.sessionId
                 name = handshake.name
-                team = handshake.team
+                teamName = handshake.teamName
                 version = handshake.version
                 description = handshake.description
                 authors = handshake.authors

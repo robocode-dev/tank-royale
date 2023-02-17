@@ -5,6 +5,9 @@ properties:
   id:
     description: Identifier for the participant in a battle
     type: integer
+  teamId:
+    description: Identifier for the team that this participant is a team member of
+    type: integer
   sessionId:
     description: Unique session id that must match the session id received from the server handshake
     type: string
@@ -13,7 +16,7 @@ properties:
     type: string
     minLength: 1
     maxLength: 30
-  team:
+  teamName:
     description: Name of the bot team that this robot is a member of, e.g. Killer Bees
     type: string
     minLength: 1
@@ -64,6 +67,7 @@ properties:
     description: Initial start position of the bot used for debugging
     $ref: initial-position.yaml
 required:
+  - id
   - sessionId
   - name
   - version

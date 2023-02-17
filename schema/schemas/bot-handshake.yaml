@@ -12,7 +12,7 @@ properties:
     type: string
     minLength: 1
     maxLength: 30
-  team:
+  teamName:
     description: Name of the bot team that this robot is a member of, e.g. Killer Bees
     type: string
     minLength: 1

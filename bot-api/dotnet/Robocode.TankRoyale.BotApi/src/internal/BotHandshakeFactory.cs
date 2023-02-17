@@ -14,7 +14,7 @@ internal static class BotHandshakeFactory
             Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotHandshake),
             SessionId = sessionId,
             Name = botInfo.Name,
-            Team = EnvVars.GetTeamName(),
+            TeamName = EnvVars.GetTeamName(),
             Version = botInfo.Version,
             Authors = new List<string>(botInfo.Authors),
             Description = botInfo.Description,
