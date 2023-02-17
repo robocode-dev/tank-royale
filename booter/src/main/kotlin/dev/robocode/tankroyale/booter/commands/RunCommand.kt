@@ -19,7 +19,7 @@ import kotlin.io.path.exists
 
 class RunCommand : Command() {
 
-    private val processes = ConcurrentSkipListMap<Long, Process>() // pid, process
+    private val processes = ConcurrentSkipListMap<Pid, Process>()
 
     fun boot(bootPaths: Array<String>) {
         // Kill all running processes before terminating
@@ -64,7 +64,7 @@ class RunCommand : Command() {
         }
     }
 
-    private fun stopBotProcess(pid: Long) {
+    private fun stopBotProcess(pid: Pid) {
         processes[pid]?.let { stopProcess(it) }
     }
 
