@@ -3,10 +3,10 @@ $schema: http://json-schema.org/2020-12/schema#
 description: Bot participating in a battle
 properties:
   id:
-    description: Identifier for the participant in a battle
+    description: Id of the participant in a battle
     type: integer
   teamId:
-    description: Identifier for the team that this participant is a team member of
+    description: Id of the team that this participant is a member of
     type: integer
   sessionId:
     description: Unique session id that must match the session id received from the server handshake
@@ -17,7 +17,7 @@ properties:
     minLength: 1
     maxLength: 30
   teamName:
-    description: Name of the bot team that this robot is a member of, e.g. Killer Bees
+    description: Name of the bot team that this bot is a member of, e.g. Killer Bees
     type: string
     minLength: 1
     maxLength: 30

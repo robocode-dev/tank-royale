@@ -12,8 +12,11 @@ properties:
     type: string
     minLength: 1
     maxLength: 30
+  teamId:
+    description: Id of the team that this participant is a member of
+    type: integer
   teamName:
-    description: Name of the bot team that this robot is a member of, e.g. Killer Bees
+    description: Name of the bot team that this bot is a member of, e.g. Killer Bees
     type: string
     minLength: 1
     maxLength: 30

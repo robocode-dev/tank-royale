@@ -5,7 +5,7 @@ extends:
   $ref: bot-results-for-bot.yaml
 properties:
   id:
-    description: Identifier of the bot used in this battle
+    description: Id of the bot used in this battle
     type: integer
   name:
     description: Name of bot, e.g. Killer Bee
