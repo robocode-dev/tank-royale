@@ -6,7 +6,8 @@ import kotlinx.serialization.Serializable
 data class Participant(
     val id: Int,
     val sessionId: String,
-    val team: String? = null,
+    val teamId: Int? = null,
+    val teamName: String? = null,
     val name: String,
     val version: String,
     val authors: List<String>,
@@ -19,8 +20,8 @@ data class Participant(
     val initialPosition: InitialPosition? = null
 ) {
     val displayName =
-        if (team != null) {
-            "$id: $name $version / $team"
+        if (teamName != null) {
+            "$id: $name $version / $teamName ($teamId)"
         } else {
             "$id: $name $version"
         }

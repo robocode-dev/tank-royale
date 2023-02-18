@@ -64,6 +64,10 @@ final class EnvVars {
      */
     private static final String BOT_INITIAL_POS = "BOT_INITIAL_POS";
     /**
+     * Name of environment variable that is set if bot team id is provided.
+     */
+    private static final String TEAM_ID = "TEAM_ID";
+    /**
      * Name of environment variable that is set if bot team name is provided.
      */
     private static final String TEAM_NAME = "TEAM_NAME";
@@ -182,6 +186,14 @@ final class EnvVars {
      */
     static InitialPosition getBotInitialPosition() {
         return InitialPosition.fromString(System.getenv(BOT_INITIAL_POS));
+    }
+
+    /**
+     * Bot team id
+     */
+    static Integer getTeamId() {
+        String teamId = System.getenv(TEAM_ID);
+        return teamId != null ? Integer.parseInt(teamId) : null;
     }
 
     /**

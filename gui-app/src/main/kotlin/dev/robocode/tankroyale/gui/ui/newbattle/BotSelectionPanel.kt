@@ -325,6 +325,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
                     BotInfo(
                         name,
                         null,
+                        null,
                         version,
                         authors,
                         description,

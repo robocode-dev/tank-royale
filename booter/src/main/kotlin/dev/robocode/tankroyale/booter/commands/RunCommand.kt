@@ -21,6 +21,8 @@ class RunCommand : Command() {
 
     private val processes = ConcurrentSkipListMap<Pid, Process>()
 
+    private var teamId: TeamId = 1
+
     fun boot(bootPaths: Array<String>) {
         // Kill all running processes before terminating
         Runtime.getRuntime().addShutdownHook(Thread { killAllProcesses() })
@@ -101,6 +103,9 @@ class RunCommand : Command() {
                 }
             }
         }
+
+        teamId++
+
         return botProcesses
     }
 
@@ -115,9 +120,9 @@ class RunCommand : Command() {
                 val envMap = processBuilder.environment()
                 setEnvVars(envMap, botEntry)
                 teamName?.let {
+                    envMap["TEAM_ID"] = teamId.toString()
                     envMap["TEAM_NAME"] = it
                 }
-
                 val process = processBuilder.start().also {
                     println("${it.pid()};${botDir.absolutePathString()}")
                 }

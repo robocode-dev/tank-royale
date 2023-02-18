@@ -50,6 +50,9 @@ internal static class EnvVars
     /// <summary>Name of environment variable for bot initial position.</summary>
     private const string BotInitialPosition = "BOT_INITIAL_POS";
 
+    /// <summary>Name of environment variable for bot team id.</summary>
+    private const string TeamId = "TEAM_ID";
+
     /// <summary>Name of environment variable for bot team name.</summary>
     private const string TeamName = "TEAM_NAME";
 
@@ -199,6 +202,16 @@ internal static class EnvVars
     private static InitialPosition GetBotInitialPosition()
     {
         return InitialPosition.FromString(Environment.GetEnvironmentVariable(BotInitialPosition));
+    }
+
+    /// <summary>
+    /// Gets the bot team id if provided from environment variable.
+    /// </summary>
+    /// <returns>The bot team id if provided.</returns>
+    internal static int? GetTeamId()
+    {
+        var teamId = Environment.GetEnvironmentVariable(TeamId);
+        return teamId != null ? int.Parse(teamId) : null;
     }
 
     /// <summary>
