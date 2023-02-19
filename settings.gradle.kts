@@ -52,7 +52,7 @@ dependencyResolutionManagement {
             library("junit-engine", "org.junit.jupiter:junit-jupiter-engine:$junitVersion")
             library("junit-params", "org.junit.jupiter:junit-jupiter-params:$junitVersion")
             library("assertj", "org.assertj:assertj-core:3.24.2")
-            library("junit-pioneer", "org.junit-pioneer:junit-pioneer:2.0.0-RC1")
+            library("junit-pioneer", "org.junit-pioneer:junit-pioneer:2.0.0")
 
             // Kotlin testing
             library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:5.5.4")
