@@ -2,7 +2,7 @@ namespace Robocode.TankRoyale.BotApi.Mapper;
 
 public static class ResultsMapper
 {
-    public static BotResults Map(Schema.BotResultsForBot source)
+    public static BotResults Map(Schema.ResultsForBot source)
     {
         return new BotResults(
             source.Rank,

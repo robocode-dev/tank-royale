@@ -12,7 +12,7 @@ properties:
     type: integer
   results:
     description: The accumulated bot results by the end of the round.
-    $ref: bot-results-for-bot.yaml
+    $ref: results-for-bot.yaml
 required:
   - roundNumber
   - turnNumber

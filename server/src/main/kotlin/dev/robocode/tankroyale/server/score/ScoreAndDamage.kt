@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.rules.RAM_DAMAGE
 
 /** Bot record that tracks damage and survival of a bot, and can calculate score. */
-internal class ScoreAndDamage {
+class ScoreAndDamage {
 
     private val bulletDamage = mutableMapOf<BotId, Double>()
     private val ramDamage = mutableMapOf<BotId, Double>()

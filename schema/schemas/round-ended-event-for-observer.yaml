@@ -14,7 +14,7 @@ properties:
     description: The accumulated results for all bots by the end of the round.
     type: array
     items:
-      $ref: bot-results-for-observer.yaml
+      $ref: results-for-observer.yaml
 required:
   - roundNumber
   - turnNumber

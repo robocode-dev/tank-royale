@@ -7,7 +7,7 @@ import dev.robocode.tankroyale.botapi.BotResults;
  */
 public class ResultsMapper {
 
-    public static BotResults map(final dev.robocode.tankroyale.schema.BotResultsForBot source) {
+    public static BotResults map(final dev.robocode.tankroyale.schema.ResultsForBot source) {
         return new BotResults(
                 source.getRank(),
                 source.getSurvival(),

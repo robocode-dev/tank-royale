@@ -11,7 +11,7 @@ properties:
     description: Results of the battle for all bots
     type: array
     items:
-      $ref: bot-results-for-observer.yaml
+      $ref: results-for-observer.yaml
 required:
   - numberOfRounds
   - results

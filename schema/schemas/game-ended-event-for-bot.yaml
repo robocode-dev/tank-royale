@@ -9,7 +9,7 @@ properties:
     type: integer
   results:
     description: Bot results of the battle
-    $ref: bot-results-for-bot.yaml
+    $ref: results-for-bot.yaml
 required:
   - numberOfRounds
   - results

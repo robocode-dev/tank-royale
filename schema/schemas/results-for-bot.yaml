@@ -1,13 +1,13 @@
-$id: #bot-results-for-bot.yaml
+$id: #results-for-bot.yaml
 $schema: http://json-schema.org/2020-12/schema#
-description: Individual bot results visible for a bot. Name and version is hidden.
+description: Individual participants results visible for a bot, where name and version is hidden.
 properties:
   rank:
-    description: Rank/placement of the bot, where 1 is 1st place, 4 is 4th place etc.
+    description: Rank/placement, where 1 is 1st place, 4 is 4th place etc.
     type: integer
     minimum: 1
   survival:
-    description: Survival score gained whenever another bot is defeated
+    description: Survival score gained whenever another opponent is defeated
     type: integer
   lastSurvivorBonus:
     description: Last survivor score as last survivor in a round
