@@ -23,22 +23,19 @@ class ScoreTracker(private val botIds: Set<BotId>) {
     private val thirdPlaces = mutableMapOf<BotId, Int>()
 
     init {
-        initializeDamageAndSurvivals()
+        botIds.forEach { scoreAndDamages[it] = ScoreAndDamage() }
     }
 
     /** Current bot scores ordered with higher total scores first. */
     fun getBotScores(): List<Score> =
         botIds.map { getScore(it) }.sortedByDescending { it.totalScore }
 
-    /** Initializes the map containing the BotRecord record for each bot. */
-    private fun initializeDamageAndSurvivals() {
-        botIds.forEach { botId -> scoreAndDamages[botId] = ScoreAndDamage() }
-    }
-
     /** Prepare for new round. */
     fun prepareRound() {
-        botsAliveIds.clear()
-        botsAliveIds += botIds
+        botsAliveIds.apply {
+            clear()
+            addAll(botIds)
+        }
     }
 
     /**
@@ -56,9 +53,7 @@ class ScoreTracker(private val botIds: Set<BotId>) {
                 ramDamage = getTotalRamDamage() * SCORE_PER_RAM_DAMAGE,
             )
 
-            val totalDamage = getBulletKillEnemyIds().sumOf {
-                getBulletDamage(it) + getRamDamage(it)
-            }
+            val totalDamage = getBulletKillEnemyIds().sumOf { getBulletDamage(it) + getRamDamage(it) }
 
             score.bulletKillBonus += totalDamage * BONUS_PER_BULLET_KILL
             score.ramKillBonus += totalDamage * BONUS_PER_RAM_KILL

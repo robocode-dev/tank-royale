@@ -71,7 +71,7 @@ class ResultsFrame(results: List<BotResults>) : RcFrame(getWindowTitle(), isTitl
         Strings.apply {
             return arrayOf(
                 get("results.rank"),
-                get("results.bot_name"),
+                get("results.name"),
                 get("results.total_score"),
                 get("results.survival_score"),
                 get("results.last_survivor_bonus"),
