@@ -19,10 +19,5 @@ data class Participant(
     val programmingLang: String? = null,
     val initialPosition: InitialPosition? = null
 ) {
-    val displayName =
-        if (teamName != null) {
-            "$id: $name $version / $teamName ($teamId)"
-        } else {
-            "$id: $name $version"
-        }
+    val displayName = "$name $version ($id)" + (teamName?.let { " / $teamName ($teamId)" } ?: "")
 }
