@@ -246,11 +246,13 @@ class GameServer(
 
     /** Returns a list of bot results (for bots) ordered on the score ranks */
     private fun getResultsForBot(botId: BotId): BotResultsForBot {
-        val index = modelUpdater!!.results.indexOfFirst { it.botId == botId }
+        val results = modelUpdater!!.getResults()
+
+        val index = results.indexOfFirst { it.botId == botId }
         if (index == -1)
             throw IllegalStateException("botId was not found in results: $botId")
 
-        val score = modelUpdater!!.results[index]
+        val score = results[index]
         return BotResultsForBot().apply {
             this.rank = index + 1
             survival = score.survival.roundToInt()
@@ -269,7 +271,7 @@ class GameServer(
     /** Returns a list of bot results (for observers and controllers) ordered on the score ranks */
     private fun getResultsForObservers(): List<BotResultsForObserver> =
         mutableListOf<BotResultsForObserver>().also { results ->
-            modelUpdater!!.results.forEach { score ->
+            modelUpdater!!.getResults().forEach { score ->
                 val participant = participantMap[score.botId]
 
                 BotResultsForObserver().apply {

@@ -64,7 +64,7 @@ class ModelUpdater(
     private var inactivityCounter = 0
 
     /** The current results ordered with higher total scores first */
-    val results: List<Score> get() = scoreTracker.results
+    fun getResults() = scoreTracker.getBotScores()
 
     /** The number of rounds played so far */
     val numberOfRounds: Int get() = gameState.rounds.size
@@ -846,8 +846,9 @@ class ModelUpdater(
                 var winnerId = botsMap.entries.firstOrNull { (_, bot) -> bot.isAlive }?.key
 
                 // Otherwise, the bot with the highest score wins
-                if (winnerId == null && scoreTracker.results.isNotEmpty()) {
-                    winnerId = scoreTracker.results[0].botId
+                val scores = scoreTracker.getBotScores()
+                if (winnerId == null && scores.isNotEmpty()) {
+                    winnerId = scores[0].botId
                     turn.addPrivateBotEvent(winnerId, WonRoundEvent(turn.turnNumber))
                 }
             }

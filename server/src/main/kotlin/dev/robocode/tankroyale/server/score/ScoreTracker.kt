@@ -5,10 +5,7 @@ import dev.robocode.tankroyale.server.model.Score
 import dev.robocode.tankroyale.server.rules.*
 
 /** Score utility class used for keeping track of the score for an individual bot in a game. */
-class ScoreTracker(botIds: Set<BotId>) {
-
-    /** Set of bot identifiers  */
-    private val botIds: Set<BotId> = HashSet(botIds)
+class ScoreTracker(private val botIds: Set<BotId>) {
 
     /** Map from bot identifier to a bot record  */
     private val scoreAndDamages = mutableMapOf<BotId, ScoreAndDamage>()
@@ -29,8 +26,9 @@ class ScoreTracker(botIds: Set<BotId>) {
         initializeDamageAndSurvivals()
     }
 
-    /** Current results ordered with higher total scores first. */
-    val results: List<Score> get() = botScores
+    /** Current bot scores ordered with higher total scores first. */
+    fun getBotScores(): List<Score> =
+        botIds.map { getScore(it) }.sortedByDescending { it.totalScore }
 
     /** Initializes the map containing the BotRecord record for each bot. */
     private fun initializeDamageAndSurvivals() {
@@ -43,41 +41,32 @@ class ScoreTracker(botIds: Set<BotId>) {
         botsAliveIds += botIds
     }
 
-    /** Current bot scores ordered with higher total scores first. */
-    private val botScores: MutableList<Score>
-        get() {
-            val scores = mutableListOf<Score>()
-            botIds.forEach { scores += getScore(it) }
-            scores.sortByDescending { it.totalScore }
-            return scores
-        }
-
     /**
      * Returns the score for a specific bot.
      * @param botId is the identifier of the bot.
      * @return a score record.
      */
     private fun getScore(botId: BotId): Score {
-        val damageRecord = scoreAndDamages[botId] ?: throw IllegalStateException("No score record for botId: $botId")
-        damageRecord.apply {
+        (scoreAndDamages[botId] ?: throw IllegalStateException("No score record for botId: $botId")).apply {
             val score = Score(
                 botId = botId,
                 survival = survivalCount * SCORE_PER_SURVIVAL,
                 lastSurvivorBonus = lastSurvivorCount * BONUS_PER_LAST_SURVIVOR,
-                bulletDamage = totalBulletDamage * SCORE_PER_BULLET_DAMAGE,
-                ramDamage = totalRamDamage * SCORE_PER_RAM_DAMAGE,
+                bulletDamage = getTotalBulletDamage() * SCORE_PER_BULLET_DAMAGE,
+                ramDamage = getTotalRamDamage() * SCORE_PER_RAM_DAMAGE,
             )
-            for (enemyId in getBulletKillEnemyIds()) {
-                val totalDamage = getBulletDamage(enemyId) + getRamDamage(enemyId)
-                score.bulletKillBonus += totalDamage * BONUS_PER_BULLET_KILL
+
+            val totalDamage = getBulletKillEnemyIds().sumOf {
+                getBulletDamage(it) + getRamDamage(it)
             }
-            for (enemyId in getRamKillEnemyIds()) {
-                val totalDamage = getBulletDamage(enemyId) + getRamDamage(enemyId)
-                score.ramKillBonus += totalDamage * BONUS_PER_RAM_KILL
-            }
+
+            score.bulletKillBonus += totalDamage * BONUS_PER_BULLET_KILL
+            score.ramKillBonus += totalDamage * BONUS_PER_RAM_KILL
+
             score.firstPlaces = firstPlaces[botId] ?: 0
             score.secondPlaces = secondPlaces[botId] ?: 0
             score.thirdPlaces = thirdPlaces[botId] ?: 0
+
             return score
         }
     }
@@ -90,8 +79,7 @@ class ScoreTracker(botIds: Set<BotId>) {
      * @param kill is a flag specifying, if the bot got killed by this bullet.
      */
     fun registerBulletHit(botId: BotId, victimBotId: BotId, damage: Double, kill: Boolean) {
-        val damageRecord = scoreAndDamages[botId] ?: throw IllegalStateException("No score record for botId: $botId")
-        damageRecord.apply {
+        (scoreAndDamages[botId] ?: throw IllegalStateException("No score record for botId: $botId")).apply {
             addBulletDamage(victimBotId, damage)
             if (kill) {
                 addBulletKillEnemyId(victimBotId)
@@ -106,8 +94,7 @@ class ScoreTracker(botIds: Set<BotId>) {
      * @param kill is a flag specifying, if the bot got killed by the ramming.
      */
     fun registerRamHit(botId: BotId, victimBotId: BotId, kill: Boolean) {
-        val damageRecord = scoreAndDamages[botId] ?: throw IllegalStateException("No score record for botId: $botId")
-        damageRecord.apply {
+        (scoreAndDamages[botId] ?: throw IllegalStateException("No score record for botId: $botId")).apply {
             addRamDamage(victimBotId)
             if (kill) {
                 addRamKillEnemyId(victimBotId)

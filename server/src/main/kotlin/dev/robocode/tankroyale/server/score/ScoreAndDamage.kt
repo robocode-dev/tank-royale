@@ -20,26 +20,13 @@ internal class ScoreAndDamage {
         private set
 
     /** The total bullet damage dealt by this bot to other bots. */
-    val totalBulletDamage: Double
-        get() {
-            var sum = 0.0
-            bulletDamage.keys.forEach { sum += getBulletDamage(it) }
-            return sum
-        }
+    fun getTotalBulletDamage() = bulletDamage.keys.sumOf { getBulletDamage(it) }
 
     /** The total ram damage dealt by this bot to other bots. */
-    val totalRamDamage: Double
-        get() {
-            var sum = 0.0
-            ramDamage.keys.forEach { sum += getRamDamage(it) }
-            return sum
-        }
+    fun getTotalRamDamage() = bulletDamage.keys.sumOf { getRamDamage(it) }
 
     /** Returns the bullet kill enemy ids. */
     fun getBulletKillEnemyIds(): Set<BotId> = bulletKillEnemyIds
-
-    /** Returns the ram kill enemy ids. */
-    fun getRamKillEnemyIds(): Set<BotId> = ramKillEnemyIds
 
     /**
      * Returns the bullet damage dealt by this bot to specific bot.
