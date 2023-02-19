@@ -21,8 +21,7 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = sourceCompatibility
+    toolchain.languageVersion.set(JavaLanguageVersion.of(11))
 
     withJavadocJar()
     withSourcesJar()
@@ -45,6 +44,8 @@ dependencies {
 tasks {
     withType<Test> {
         useJUnitPlatform()
+
+        failFast = true
     }
 
     jar {
