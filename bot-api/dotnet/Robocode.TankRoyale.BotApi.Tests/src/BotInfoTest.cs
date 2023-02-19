@@ -19,7 +19,7 @@ public class BotInfoTest
     static readonly string Description = "  short description ";
     static readonly string Homepage = " https://testbot.robocode.dev ";
     static readonly List<string> CountryCodes = new List<string> { " gb ", "  US " };
-    static readonly List<string> GameTypes = new List<string> { " classic ", " melee ", " 1v1 " };
+    static readonly ISet<string> GameTypes = new HashSet<string> { " classic ", " melee ", " 1v1 " };
     static readonly string Platform = " .Net 6 ";
     static readonly string ProgrammingLang = " C# 11 ";
     static readonly InitialPosition InitialPosition = InitialPosition.FromString("  10, 20, 30  ");
@@ -289,14 +289,14 @@ public class BotInfoTest
     {
         [Test]
         public void GivenPrefilledBotInfoWithGameTypesSet_whenGettingGameTypesFromBotInfo_thenTrimmedGameTypesCollectionIsReturned() {
-            Assert.That(BotInfo.GameTypes, Is.EqualTo(GameTypes.ConvertAll(str => str.Trim())));
+            Assert.That(BotInfo.GameTypes, Is.EqualTo(GameTypes.ToList().ConvertAll(str => str.Trim())));
         }
         
         [Test]
         [TestCaseSource(nameof(ListOfEmptyOrBlanks))]
         public void GivenEmptyOrBlankGameTypes_whenConstructingBotInfo_thenEmptyListIsReturned(List<string> gameTypes)
         {
-            var botInfo = PrefilledBuilder().SetGameTypes(gameTypes).Build();
+            var botInfo = PrefilledBuilder().SetGameTypes(gameTypes.ToHashSet()).Build();
             Assert.That(botInfo.GameTypes.Count, Is.Zero);
         }
 
@@ -304,7 +304,7 @@ public class BotInfoTest
         public void GivenGameTypeOfMaxLength_whenConstructingBotInfo_thenReturnTheSameGameType()
         {
             var gameType = StringOfLength(MaxGameTypeLength);
-            var botInfo = PrefilledBuilder().SetGameTypes(new List<string> { gameType }).Build();
+            var botInfo = PrefilledBuilder().SetGameTypes(new HashSet<string> { gameType }).Build();
             Assert.That(botInfo.GameTypes.Contains(gameType), Is.True);
         }
     
