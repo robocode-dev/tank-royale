@@ -23,11 +23,9 @@ data class BotInfo(
     val sessionId: String? = null,
 ) : Comparable<BotInfo> {
 
-    val botAddress: BotAddress
-        get() = BotAddress(host, port)
+    val botAddress: BotAddress = BotAddress(host, port)
 
-    val displayText: String
-        get() = "$name $version"
+    val displayText: String = "$name $version"
 
     override fun compareTo(other: BotInfo): Int {
         val cmp = "$host$port".compareTo("${other.host}${other.port}")

@@ -6,7 +6,8 @@ import javax.swing.JList
 class BotDirectoryListCellRenderer : AbstractListCellRenderer() {
 
     override fun onRender(list: JList<out Any>?, value: Any?, index: Int, isSelected: Boolean, cellHasFocus: Boolean) {
-        val botInfo = value as BotInfo
-        text = botInfo.host
+        (value as BotInfo).apply {
+            text = host
+        }
     }
 }

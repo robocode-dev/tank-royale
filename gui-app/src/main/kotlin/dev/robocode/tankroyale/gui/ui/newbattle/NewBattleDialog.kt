@@ -73,10 +73,11 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
         BotSelectionEvents.onSelectedBotListUpdated.subscribe(this) {
             selectedBots = it
 
+            val selectedCount = calcNumberOfParticipants(it)
             val maxParticipants = maxNumberOfParticipants()
 
-            startBattleButton.isEnabled = selectedBots.size >= minNumberOfParticipants() &&
-                    (maxParticipants == null || selectedBots.size <= maxParticipants)
+            startBattleButton.isEnabled = selectedCount >= minNumberOfParticipants() &&
+                    (maxParticipants == null || selectedCount <= maxParticipants)
         }
 
         onStartBattle.subscribe(this) { startGame() }
@@ -102,6 +103,26 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
         }
 
         BotSelectionPanel.update()
+    }
+
+    // Calculate the number of participants (team of bots) and individual bots
+    private fun calcNumberOfParticipants(bots: Collection<BotInfo>): Int {
+
+        data class Participant(val name: String, val version: String, val id: Int? = null)
+
+        val participants = HashSet<Participant>()
+        var fakeId = 1
+
+        bots.forEach {
+            participants.add(
+                if (it.teamId != null) {
+                    Participant(it.teamName!!, it.teamVersion!!, it.teamId)
+                } else {
+                    Participant(it.name, it.version, fakeId++)
+                }
+            )
+        }
+        return participants.size
     }
 
     private fun minNumberOfParticipants(): Int =

@@ -56,7 +56,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     private val selectedBotListModel = SortedListModel<BotInfo>()
 
     private val botsDirectoryList = createBotDirectoryList()
-    private val bootedBotList = createRunningBotList()
+    private val bootedBotList = createBootedBotList()
     private val joinedBotList = createBotInfoList(joinedBotListModel)
     private val selectedBotList = createBotInfoList(selectedBotListModel)
 
@@ -166,9 +166,9 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
             cellRenderer = BotDirectoryListCellRenderer()
         }
 
-    private fun createRunningBotList() =
+    private fun createBootedBotList() =
         BotList(bootedBotListModel).apply {
-            cellRenderer = RunningBotCellRenderer()
+            cellRenderer = BootedBotCellRenderer()
 
             onDeleteKeyTyped.subscribe(BotSelectionPanel) { dirAndPids ->
                 BootProcess.stop(dirAndPids.map { it.pid })
