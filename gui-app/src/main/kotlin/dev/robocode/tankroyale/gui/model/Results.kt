@@ -4,8 +4,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-@SerialName("BotResultsForObserver")
-data class BotResults(
+@SerialName("ResultsForObserver")
+data class Results(
     val id: Int,
     val name: String,
     val version: String,

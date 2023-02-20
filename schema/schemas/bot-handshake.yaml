@@ -12,14 +12,6 @@ properties:
     type: string
     minLength: 1
     maxLength: 30
-  teamId:
-    description: Id of the team that this participant is a member of
-    type: integer
-  teamName:
-    description: Name of the bot team that this bot is a member of, e.g. Killer Bees
-    type: string
-    minLength: 1
-    maxLength: 30
   version:
     description: Bot version, e.g. 1.0
     type: string
@@ -65,6 +57,19 @@ properties:
   initialPosition:
     description: Initial start position of the bot used for debugging
     $ref: initial-position.yaml
+  teamId:
+    description: Id of the team that this bot is a member of
+    type: integer
+  teamName:
+    description: Name of the team that this bot is a member of, e.g. Killer Bees
+    type: string
+    minLength: 1
+    maxLength: 30
+  teamVersion:
+    description: Team version, e.g. 1.0
+    type: string
+    minLength: 1
+    maxLength: 20
   secret:
     description: Secret used for access control with the server
     type: string

@@ -846,9 +846,9 @@ class ModelUpdater(
                 var winnerId = botsMap.entries.firstOrNull { (_, bot) -> bot.isAlive }?.key
 
                 // Otherwise, the bot with the highest score wins
-                val scores = scoreTracker.getBotScores()
+                val scores = scoreTracker.getBotScores().sortedByDescending { it.totalScore }
                 if (winnerId == null && scores.isNotEmpty()) {
-                    winnerId = scores[0].botId
+                    winnerId = BotId(scores[0].id)
                     turn.addPrivateBotEvent(winnerId, WonRoundEvent(turn.turnNumber))
                 }
             }

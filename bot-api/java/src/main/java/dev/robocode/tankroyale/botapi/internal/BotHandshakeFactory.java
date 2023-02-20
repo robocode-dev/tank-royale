@@ -16,8 +16,6 @@ final class BotHandshakeFactory {
         handshake.setSessionId(sessionId);
         handshake.setType(BotHandshake.Type.BOT_HANDSHAKE);
         handshake.setName(botInfo.getName());
-        handshake.setTeamId(EnvVars.getTeamId());
-        handshake.setTeamName(EnvVars.getTeamName());
         handshake.setVersion(botInfo.getVersion());
         handshake.setAuthors(new ArrayList<>(botInfo.getAuthors()));
         handshake.setDescription(botInfo.getDescription());
@@ -27,6 +25,9 @@ final class BotHandshakeFactory {
         handshake.setPlatform(botInfo.getPlatform());
         handshake.setProgrammingLang(botInfo.getProgrammingLang());
         handshake.setInitialPosition(InitialPositionMapper.map(botInfo.getInitialPosition()));
+        handshake.setTeamId(EnvVars.getTeamId());
+        handshake.setTeamName(EnvVars.getTeamName());
+        handshake.setTeamVersion(EnvVars.getTeamVersion());
         handshake.setSecret(secret);
         return handshake;
     }

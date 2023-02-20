@@ -14,8 +14,6 @@ internal static class BotHandshakeFactory
             Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BotHandshake),
             SessionId = sessionId,
             Name = botInfo.Name,
-            TeamId = EnvVars.GetTeamId(),
-            TeamName = EnvVars.GetTeamName(),
             Version = botInfo.Version,
             Authors = new List<string>(botInfo.Authors),
             Description = botInfo.Description,
@@ -27,6 +25,9 @@ internal static class BotHandshakeFactory
             Platform = botInfo.Platform,
             ProgrammingLang = botInfo.ProgrammingLang,
             InitialPosition = InitialPositionMapper.Map(botInfo.InitialPosition),
+            TeamId = EnvVars.GetTeamId(),
+            TeamName = EnvVars.GetTeamName(),
+            TeamVersion = EnvVars.GetTeamVersion(),
             Secret = serverSecret,
         };
         return handshake;

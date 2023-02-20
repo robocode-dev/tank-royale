@@ -56,6 +56,9 @@ internal static class EnvVars
     /// <summary>Name of environment variable for bot team name.</summary>
     private const string TeamName = "TEAM_NAME";
 
+    /// <summary>Name of environment variable for bot team name.</summary>
+    private const string TeamVersion = "TEAM_VERSION";
+
     /// <summary>Name of environment variable that set if the bot is being booted.</summary>
     private const string BotBooted = "BOT_BOOTED";
     
@@ -221,6 +224,15 @@ internal static class EnvVars
     internal static string GetTeamName()
     {
         return Environment.GetEnvironmentVariable(TeamName);
+    }
+
+    /// <summary>
+    /// Gets the bot team version if provided from environment variable.
+    /// </summary>
+    /// <returns>The bot team name if provided.</returns>
+    internal static string GetTeamVersion()
+    {
+        return Environment.GetEnvironmentVariable(TeamVersion);
     }
 
     /// <summary>

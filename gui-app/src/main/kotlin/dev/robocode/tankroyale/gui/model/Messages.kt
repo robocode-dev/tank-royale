@@ -138,7 +138,7 @@ class GameAbortedEvent : Message()
 @SerialName("GameEndedEventForObserver")
 data class GameEndedEvent(
     val numberOfRounds: Int,
-    val results: List<BotResults>
+    val results: List<Results>
 ) : Message()
 
 @Serializable
@@ -160,7 +160,7 @@ class RoundStartedEvent(
 class RoundEndedEvent(
     val roundNumber: Int, // must be present for serialization
     val turnNumber: Int,  // must be present for serialization
-    val results: List<BotResults> // must be present for serialization
+    val results: List<Results> // must be present for serialization
 ) : Message()
 
 @Serializable

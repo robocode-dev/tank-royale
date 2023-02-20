@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui
 
 import dev.robocode.tankroyale.gui.client.Client
-import dev.robocode.tankroyale.gui.model.BotResults
+import dev.robocode.tankroyale.gui.model.Results
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import java.awt.Dimension
 import javax.swing.JLabel
@@ -9,7 +9,7 @@ import javax.swing.JScrollPane
 import javax.swing.JTable
 import javax.swing.table.DefaultTableCellRenderer
 
-class ResultsFrame(results: List<BotResults>) : RcFrame(getWindowTitle(), isTitlePropertyName = false) {
+class ResultsFrame(results: List<Results>) : RcFrame(getWindowTitle(), isTitlePropertyName = false) {
 
     init {
         val table = JTable(getData(results), getColumns())
@@ -43,7 +43,7 @@ class ResultsFrame(results: List<BotResults>) : RcFrame(getWindowTitle(), isTitl
         setLocationRelativeTo(MainFrame) // center on main window
     }
 
-    private fun getData(results: List<BotResults>): Array<Array<String>> {
+    private fun getData(results: List<Results>): Array<Array<String>> {
         val list = ArrayList<Array<String>>()
         results.forEach {
             val name = "${it.name} ${it.version}"

@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.ConnectionHandler
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.GameServerConnectionListener
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.ResultsView
 import dev.robocode.tankroyale.server.mapper.*
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.GameState
@@ -186,8 +187,6 @@ class GameServer(
                 id = botId.value
                 sessionId = handshake!!.sessionId
                 name = handshake.name
-                teamId = handshake.teamId
-                teamName = handshake.teamName
                 version = handshake.version
                 description = handshake.description
                 authors = handshake.authors
@@ -197,6 +196,9 @@ class GameServer(
                 platform = handshake.platform
                 programmingLang = handshake.programmingLang
                 initialPosition = handshake.initialPosition
+                teamId = handshake.teamId
+                teamName = handshake.teamName
+                teamVersion = handshake.teamVersion
             }
             participantMap[botId] = participant
         }
@@ -246,9 +248,9 @@ class GameServer(
 
     /** Returns a list of bot results (for bots) ordered on the score ranks */
     private fun getResultsForBot(botId: BotId): ResultsForBot {
-        val results = modelUpdater!!.getResults()
+        val results = modelUpdater!!.getResults().sortedByDescending { it.totalScore }
 
-        val index = results.indexOfFirst { it.botId == botId }
+        val index = results.indexOfFirst { it.id == botId.value }
         if (index == -1)
             throw IllegalStateException("botId was not found in results: $botId")
 
@@ -269,32 +271,48 @@ class GameServer(
     }
 
     /** Returns a list of bot results (for observers and controllers) ordered on the score ranks */
-    private fun getResultsForObservers(): List<ResultsForObserver> =
-        mutableListOf<ResultsForObserver>().also { results ->
-            modelUpdater!!.getResults().forEach { score ->
-                val participant = participantMap[score.botId]!!
+    private fun getResultsForObservers(): List<ResultsForObserver> {
 
-                ResultsForObserver().apply {
-                    id = score.botId.value
-                    name = participant.name
-                    version = participant.version
-                    survival = score.survival.roundToInt()
-                    lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
-                    bulletDamage = score.bulletDamage.roundToInt()
-                    bulletKillBonus = score.bulletKillBonus.toInt()
-                    ramDamage = score.ramDamage.roundToInt()
-                    ramKillBonus = score.ramKillBonus.roundToInt()
-                    totalScore = score.totalScore.roundToInt()
-                    firstPlaces = score.firstPlaces
-                    secondPlaces = score.secondPlaces
-                    thirdPlaces = score.thirdPlaces
+        val scores = ResultsView.getResults(modelUpdater!!.getResults(), participantMap.values)
+            .sortedByDescending { it.totalScore }
 
-                    results += this
+        val results = mutableListOf<ResultsForObserver>()
+        var rank = 1
+
+        scores.forEach { score ->
+            run {
+                participantMap[BotId(score.id)]?.let { participant ->
+
+                    val (id, name, version) =
+                        if (participant.teamId == null)
+                            Triple(participant.id, participant.name, participant.version)
+                        else
+                            Triple(participant.teamId, participant.teamName, participant.teamVersion)
+
+                    ResultsForObserver().apply {
+                        this.rank = rank++
+                        this.id = id
+                        this.name = name
+                        this.version = version
+                        survival = score.survival.roundToInt()
+                        lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
+                        bulletDamage = score.bulletDamage.roundToInt()
+                        bulletKillBonus = score.bulletKillBonus.toInt()
+                        ramDamage = score.ramDamage.roundToInt()
+                        ramKillBonus = score.ramKillBonus.roundToInt()
+                        totalScore = score.totalScore.roundToInt()
+                        firstPlaces = score.firstPlaces
+                        secondPlaces = score.secondPlaces
+                        thirdPlaces = score.thirdPlaces
+
+                        results += this
+                    }
                 }
             }
-            var rank = 1
-            results.forEach { it.rank = rank++ }
         }
+        return results
+    }
+
 
     /** Broadcast pause event to all observers */
     private fun broadcastGamedPausedToObservers() {
@@ -399,8 +417,6 @@ class GameServer(
     }
 
     private fun broadcastGameEndedToParticipants() {
-        println("### Game ended ### ")
-
         participants.forEach { conn ->
             participantIds[conn]?.let { botId ->
                 GameEndedEventForBot().apply {
@@ -430,8 +446,6 @@ class GameServer(
     }
 
     private fun broadcastRoundEndedToParticipants(roundNumber: Int, turnNumber: Int) {
-        println("### Round ended ### round=$roundNumber, turn=$turnNumber")
-
         participants.forEach { conn ->
             participantIds[conn]?.let { botId ->
                 RoundEndedEventForBot().apply {
@@ -472,7 +486,7 @@ class GameServer(
     private fun sendSkippedTurnToParticipants(currentTurnNumber: Int) {
         val botsSkippingTurn = getParticipantsThatSkippedTurn()
 
-        if (!botsSkippingTurn.isEmpty()) {
+        if (botsSkippingTurn.isNotEmpty()) {
             val skippedTurn = SkippedTurnEvent().apply {
                 type = Message.Type.SKIPPED_TURN_EVENT
                 turnNumber = currentTurnNumber - 1 // last turn number

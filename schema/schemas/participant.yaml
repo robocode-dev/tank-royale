@@ -3,21 +3,13 @@ $schema: http://json-schema.org/2020-12/schema#
 description: Bot participating in a battle
 properties:
   id:
-    description: Id of the participant in a battle
-    type: integer
-  teamId:
-    description: Id of the team that this participant is a member of
+    description: Id of the bot participating in a battle
     type: integer
   sessionId:
     description: Unique session id that must match the session id received from the server handshake
     type: string
   name:
     description: Name of bot, e.g. Killer Bee
-    type: string
-    minLength: 1
-    maxLength: 30
-  teamName:
-    description: Name of the bot team that this bot is a member of, e.g. Killer Bees
     type: string
     minLength: 1
     maxLength: 30
@@ -66,6 +58,19 @@ properties:
   initialPosition:
     description: Initial start position of the bot used for debugging
     $ref: initial-position.yaml
+  teamId:
+    description: Id of the team that this bot is a member of
+    type: integer
+  teamName:
+    description: Name of the team that this bot is a member of, e.g. Killer Bees
+    type: string
+    minLength: 1
+    maxLength: 30
+  teamVersion:
+    description: Team version, e.g. 1.0
+    type: string
+    minLength: 1
+    maxLength: 20
 required:
   - id
   - sessionId

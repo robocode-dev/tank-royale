@@ -6,8 +6,6 @@ import kotlinx.serialization.Serializable
 data class Participant(
     val id: Int,
     val sessionId: String,
-    val teamId: Int? = null,
-    val teamName: String? = null,
     val name: String,
     val version: String,
     val authors: List<String>,
@@ -17,7 +15,10 @@ data class Participant(
     val gameTypes: Set<String> = HashSet(),
     val platform: String? = null,
     val programmingLang: String? = null,
-    val initialPosition: InitialPosition? = null
+    val initialPosition: InitialPosition? = null,
+    val teamId: Int? = null,
+    val teamName: String? = null,
+    val teamVersion: String? = null,
 ) {
-    val displayName = "$name $version ($id)" + (teamName?.let { " / $teamName ($teamId)" } ?: "")
+    val displayName = "$id: $name $version" + (teamName?.let { " / $teamName $teamVersion ($teamId)" } ?: "")
 }

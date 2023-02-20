@@ -74,7 +74,7 @@ class RunCommand : Command() {
         getBootEntry(bootDir)?.let { bootEntry ->
             bootEntry.apply {
                 if (teamMembers?.isNotEmpty() == true) {
-                    return bootTeam(bootDir, bootEntry.name, teamMembers)
+                    return bootTeam(bootDir, Team(teamId, bootEntry.name, bootEntry.version, teamMembers))
                 }
             }
             bootBot(bootDir)?.let { return setOf(it) }
@@ -90,15 +90,15 @@ class RunCommand : Command() {
         return scriptPath
     }
 
-    private fun bootTeam(bootDir: Path, teamName: String, teamMembers: List<String>): Set<Process> {
+    private fun bootTeam(bootDir: Path, team: Team): Set<Process> {
         val parentPath = bootDir.parent
 
         val botProcesses = HashSet<Process>()
 
-        teamMembers.forEach { botName ->
+        team.members.forEach { botName ->
             val botDir = parentPath.resolve(botName)
             findBootScriptOrNull(botDir)?.let {
-                bootBot(botDir, teamName)?.let {
+                bootBot(botDir, team)?.let {
                     botProcesses.add(it)
                 }
             }
@@ -109,7 +109,7 @@ class RunCommand : Command() {
         return botProcesses
     }
 
-    private fun bootBot(botDir: Path, teamName: String? = null): Process? {
+    private fun bootBot(botDir: Path, team: Team? = null): Process? {
         getBootEntry(botDir)?.let { botEntry ->
             findBootScriptOrNull(botDir)?.let { scriptPath ->
 
@@ -119,14 +119,13 @@ class RunCommand : Command() {
                 // important to transfer env. variables for bot to the process
                 val envMap = processBuilder.environment()
                 setEnvVars(envMap, botEntry)
-                teamName?.let {
-                    envMap["TEAM_ID"] = teamId.toString()
-                    envMap["TEAM_NAME"] = it
+                team?.let {
+                    envMap["TEAM_ID"] = team.id.toString()
+                    envMap["TEAM_NAME"] = team.name
+                    envMap["TEAM_VERSION"] = team.version
                 }
                 val process = processBuilder.start().also {
                     println("${it.pid()};${botDir.absolutePathString()}")
-                }
-                process?.let {
                     processes[it.pid()] = it
                 }
                 return process
@@ -262,3 +261,5 @@ internal class IsBotFile(private val botName: String) : Predicate<Path> {
         return filename == botName || filename.startsWith("$botName.")
     }
 }
+
+internal class Team(val id: TeamId, val name: String, val version: String, val members: List<String>)

@@ -27,8 +27,7 @@ class ScoreTracker(private val botIds: Set<BotId>) {
     }
 
     /** Current bot scores ordered with higher total scores first. */
-    fun getBotScores(): List<Score> =
-        botIds.map { getScore(it) }.sortedByDescending { it.totalScore }
+    fun getBotScores(): Collection<Score> = botIds.map { getScore(it) }
 
     /** Prepare for new round. */
     fun prepareRound() {
@@ -46,7 +45,7 @@ class ScoreTracker(private val botIds: Set<BotId>) {
     private fun getScore(botId: BotId): Score {
         (scoreAndDamages[botId] ?: throw IllegalStateException("No score record for botId: $botId")).apply {
             val score = Score(
-                botId = botId,
+                id = botId.value,
                 survival = survivalCount * SCORE_PER_SURVIVAL,
                 lastSurvivorBonus = lastSurvivorCount * BONUS_PER_LAST_SURVIVOR,
                 bulletDamage = getTotalBulletDamage() * SCORE_PER_BULLET_DAMAGE,

@@ -6,8 +6,6 @@ import java.util.Objects
 @Serializable
 data class BotInfo(
     val name: String,
-    val teamId: Int? = null,
-    val teamName: String? = null,
     val version: String,
     val authors: List<String>,
     val description: String? = null,
@@ -17,6 +15,9 @@ data class BotInfo(
     val platform: String? = null,
     val programmingLang: String? = null,
     val initialPosition: InitialPosition? = null,
+    val teamId: Int? = null,
+    val teamName: String? = null,
+    val teamVersion: String? = null,
     val host: String, // bot directory name, when running locally
     val port: Int = -1,
     val sessionId: String? = null,
