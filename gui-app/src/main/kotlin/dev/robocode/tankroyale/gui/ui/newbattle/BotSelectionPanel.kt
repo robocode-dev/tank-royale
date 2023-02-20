@@ -12,6 +12,7 @@ import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.SortedListModel
 import dev.robocode.tankroyale.gui.ui.config.BotRootDirectoriesConfigDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showError
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onChanged
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onMultiClickedAtIndex
@@ -26,6 +27,8 @@ import javax.swing.*
 
 object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,grow]", "[grow][grow]")), FocusListener {
 
+    private val onFilterDropdown = Event<JComboBox<String>>()
+
     private val onBootBots = Event<JButton>()
     private val onUnbootBots = Event<JButton>()
     private val onUnbootAllBots = Event<JButton>()
@@ -34,6 +37,18 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     private val onAddAll = Event<JButton>()
     private val onRemove = Event<JButton>()
     private val onRemoveAll = Event<JButton>()
+
+    private val filterAllString = Strings.get("bot_directories.filter.all")
+    private val filterBotsOnlyString = Strings.get("bot_directories.filter.bots_only")
+    private val filterTeamsOnlyString = Strings.get("bot_directories.filter.teams_only")
+
+    private val filterDropdown = JComboBox(
+        arrayOf(
+            filterAllString,
+            filterBotsOnlyString,
+            filterTeamsOnlyString
+        )
+    )
 
     private val botsDirectoryListModel = SortedListModel<BotInfo>()
     private val bootedBotListModel = SortedListModel<DirAndPid>()
@@ -54,10 +69,12 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     private val joinedBotsPanel = createJoinedBotsPanel()
     private val selectBotsPanel = createSelectBotsPanel()
 
+    private val filterDropdownPanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
     private val bootButtonPanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
     private val addPanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
     private val removePanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
 
+    private val filterAndBootButtonPanel = createFilterAndBootButtonPanel()
     private val addRemoveButtonsPanel = createAddRemoveButtonsPanel()
 
     init {
@@ -65,13 +82,15 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         isFocusable = true
 
         add(botsDirectoryPanel, "grow")
-        add(bootButtonPanel)
+        add(filterAndBootButtonPanel)
         add(bootedBotsPanel, "grow, wrap")
 
         add(joinedBotsPanel, "grow")
         add(addRemoveButtonsPanel)
         add(selectBotsPanel, "grow")
 
+        addFilterLabel()
+        addFilterComboBox()
         addBootButton()
         addUnbootButton()
         addUnbootAllButton()
@@ -82,6 +101,8 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         addRemoveAll()
 
         addToolTips()
+
+        onFilterDropdown.subscribe(this) { handleFilterChanged() }
 
         onBootBots.subscribe(this) { handleBootBots() }
         onUnbootBots.subscribe(this) { handleUnbootBots() }
@@ -107,7 +128,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         BootProcess.onBootBot.subscribe(this) { addBootingBot(it) }
         BootProcess.onUnbootBot.subscribe(this) { removeUnbootingBot(it) }
 
-        ConfigSettings.onSaved.subscribe(this) { updateBotsDirectoryBots() }
+        ConfigSettings.onSaved.subscribe(this) { updateBotsDirectoryEntries() }
 
         ServerEvents.onStopped.subscribe(this) { reset() }
     }
@@ -158,6 +179,12 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
             cellRenderer = BotInfoListCellRenderer()
         }
 
+    private fun handleFilterChanged() {
+        updateBotsDirectoryEntries()
+
+        filterDropdown.model.selectedItem
+    }
+
     private fun handleBootBots() {
         val botDirs = botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].host }
         BootProcess.boot(botDirs)
@@ -199,8 +226,21 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         selectedBotListModel.clear()
     }
 
+    private fun addFilterLabel() {
+        filterDropdownPanel.addLabel("directory_filter", "cell 0 0")
+    }
+
+    private fun addFilterComboBox() {
+        filterDropdown.apply {
+            addActionListener {
+                onFilterDropdown.fire(this)
+            }
+            filterDropdownPanel.add(this, "cell 0 1")
+        }
+    }
+
     private fun addBootButton() {
-        bootButtonPanel.addButton("boot_arrow", onBootBots, "cell 0 1").apply {
+        bootButtonPanel.addButton("boot_arrow", onBootBots, "cell 0 0").apply {
             isEnabled = false
             botsDirectoryList.onSelection {
                 isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
@@ -209,7 +249,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     }
 
     private fun addUnbootButton() {
-        bootButtonPanel.addButton("unboot_arrow", onUnbootBots, "cell 0 2").apply {
+        bootButtonPanel.addButton("unboot_arrow", onUnbootBots, "cell 0 1").apply {
             isEnabled = false
             bootedBotList.onSelection {
                 isEnabled = bootedBotList.selectedIndices.isNotEmpty()
@@ -222,7 +262,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     }
 
     private fun addUnbootAllButton() {
-        bootButtonPanel.addButton("unboot_all_arrow", onUnbootAllBots, "cell 0 3").apply {
+        bootButtonPanel.addButton("unboot_all_arrow", onUnbootAllBots, "cell 0 2").apply {
             isEnabled = false
             bootedBotList.onChanged {
                 bootedBotList.clearSelection()
@@ -271,6 +311,12 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         }
     }
 
+    private fun createFilterAndBootButtonPanel() =
+        JPanel(MigLayout("", "[fill]", "[][5][]")).apply {
+            add(filterDropdownPanel, "cell 0 0")
+            add(bootButtonPanel, "cell 0 2")
+        }
+
     private fun createAddRemoveButtonsPanel() =
         JPanel(MigLayout("", "[fill]", "[][5][]")).apply {
             add(addPanel, "cell 0 0")
@@ -308,18 +354,24 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     override fun focusLost(e: FocusEvent?) {}
 
     fun update() {
-        updateBotsDirectoryBots()
+        updateBotsDirectoryEntries()
         updateRunningBots()
         updateJoinedBots()
 
         enforceBotDirIsConfigured()
     }
 
-    private fun updateBotsDirectoryBots() {
+    private fun updateBotsDirectoryEntries() {
         botsDirectoryList.clearSelection()
         botsDirectoryListModel.clear()
 
-        BootProcess.info().forEach { botEntry ->
+        val (botsOnly: Boolean, teamsOnly: Boolean) = when (filterDropdown.selectedItem) {
+            filterBotsOnlyString -> Pair(true, false)
+            filterTeamsOnlyString -> Pair(false, true)
+            else -> Pair(false, false)
+        }
+
+        BootProcess.info(botsOnly, teamsOnly).forEach { botEntry ->
             botEntry.apply {
                 botsDirectoryListModel.addElement(
                     BotInfo(

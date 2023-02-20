@@ -33,7 +33,7 @@ object BootProcess {
 
     private val bootedBotsList = mutableListOf<DirAndPid>()
 
-    fun info(): List<BootEntry> {
+    fun info(botsOnly: Boolean? = false, teamsOnly: Boolean? = false): List<BootEntry> {
         val args = mutableListOf(
             "java",
             "-jar",
@@ -41,8 +41,13 @@ object BootProcess {
             "info",
             "--game-types=${ConfigSettings.gameType.displayName}"
         )
-        val botDirs = getBotDirs().ifEmpty { emptyList() }
-        botDirs.forEach { args += it }
+        if (botsOnly == true) {
+            args += "--bots-only"
+        }
+        if (teamsOnly == true) {
+            args += "--teams-only"
+        }
+        getBotDirs().ifEmpty { emptyList() }.forEach { args += it }
 
         val process = ProcessBuilder(args).start()
         startThread(process, false)
