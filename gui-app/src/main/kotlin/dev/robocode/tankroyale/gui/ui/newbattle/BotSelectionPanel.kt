@@ -69,8 +69,9 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     private val joinedBotsPanel = createJoinedBotsPanel()
     private val selectBotsPanel = createSelectBotsPanel()
 
-    private val filterDropdownPanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
     private val bootButtonPanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
+    private val filterDropdownPanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
+
     private val addPanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
     private val removePanel = JPanel(MigLayout("fill, insets 0", "[fill]"))
 
@@ -313,8 +314,8 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
     private fun createFilterAndBootButtonPanel() =
         JPanel(MigLayout("", "[fill]", "[][5][]")).apply {
-            add(filterDropdownPanel, "cell 0 0")
-            add(bootButtonPanel, "cell 0 2")
+            add(bootButtonPanel, "cell 0 0")
+            add(filterDropdownPanel, "cell 0 2")
         }
 
     private fun createAddRemoveButtonsPanel() =
