@@ -18,8 +18,10 @@
 - GUI:
     - Console windows for bots and server support 3-bit and 4-bit [ANSI colors][ANSI escape code] (foreground and
       background) and simple text formatting.
-    - Added `bot died` info to the bot console.
+    - The results window now aggregates scores for teams as well as bots, got a wider "Name" column, some column names
+      were changed, and got tooltips on the value fields.
     - Direct3D and OpenGL acceleration is now disabled under Windows.
+    - Added `bot died` info to the bot console.
 
 #### 🪲 Bug Fixes
 

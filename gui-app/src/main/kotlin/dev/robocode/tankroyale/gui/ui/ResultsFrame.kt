@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.ui
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.Results
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
+import java.awt.Component
 import java.awt.Dimension
 import javax.swing.JLabel
 import javax.swing.JScrollPane
@@ -29,11 +30,12 @@ class ResultsFrame(results: List<Results>) : RcFrame(getWindowTitle(), isTitlePr
         for (columnIndex in 0 until columnModel.columnCount) {
             val column = columnModel.getColumn(columnIndex)
             val title = "" + column.headerValue
-            column.minWidth = 10 + headerFontMetrics.stringWidth(title)
+            column.minWidth = headerFontMetrics.stringWidth(title)
+            column.cellRenderer = ToolTipCellRenderer
 
-            val cellRenderer = DefaultTableCellRenderer()
-            cellRenderer.horizontalAlignment = JLabel.CENTER
-            column.cellRenderer = cellRenderer
+            if (columnIndex == 1) {
+                column.minWidth = 120 // Name needs more width
+            }
         }
 
         val scrollPane = JScrollPane(table)
@@ -90,4 +92,20 @@ class ResultsFrame(results: List<Results>) : RcFrame(getWindowTitle(), isTitlePr
 private fun getWindowTitle(): String {
     val numberOfRounds: Int = Client.currentGameSetup?.numberOfRounds ?: 0
     return UiTitles.get("results_window").replace("$1", "$numberOfRounds")
+}
+
+internal object ToolTipCellRenderer : DefaultTableCellRenderer() {
+    override fun getTableCellRendererComponent(
+        table: JTable,
+        value: Any?,
+        isSelected: Boolean,
+        hasFocus: Boolean,
+        row: Int,
+        column: Int
+    ): Component {
+        return (super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column) as JLabel).apply {
+            horizontalAlignment = JLabel.CENTER
+            toolTipText = value?.toString()
+        }
+    }
 }
