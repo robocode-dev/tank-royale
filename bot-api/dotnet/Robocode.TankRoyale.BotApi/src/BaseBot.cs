@@ -541,7 +541,7 @@ public abstract class BaseBot : IBaseBot
     }
     
     /// <inheritdoc/>
-    public virtual void OnTeamMessageEvent(TeamMessageEvent teamMessageEvent)
+    public virtual void OnTeamMessage(TeamMessageEvent teamMessageEvent)
     {
     }
 }

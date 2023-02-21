@@ -5,8 +5,6 @@ namespace Robocode.TankRoyale.BotApi.Internal;
 
 internal sealed class BotEventHandlers
 {
-    private readonly IBaseBot baseBot;
-
     internal readonly EventHandler<ConnectedEvent> OnConnected = new();
     internal readonly EventHandler<DisconnectedEvent> OnDisconnected = new();
     internal readonly EventHandler<ConnectionErrorEvent> OnConnectionError = new();
@@ -30,7 +28,7 @@ internal sealed class BotEventHandlers
     internal readonly EventHandler<ScannedBotEvent> OnScannedBot = new();
     internal readonly EventHandler<WonRoundEvent> OnWonRound = new();
     internal readonly EventHandler<CustomEvent> OnCustomEvent = new();
-    internal readonly EventHandler<TeamMessageEvent> OnTeamMessageEvent = new();
+    internal readonly EventHandler<TeamMessageEvent> OnTeamMessage = new();
 
     internal readonly EventHandler<TickEvent> OnNextTurn = new();
 
@@ -63,8 +61,6 @@ internal sealed class BotEventHandlers
 
     internal BotEventHandlers(IBaseBot baseBot)
     {
-        this.baseBot = baseBot;
-
         // Regular handlers
         ConnectedEvent += OnConnected.Publish;
         DisconnectedEvent += OnDisconnected.Publish;
@@ -88,6 +84,7 @@ internal sealed class BotEventHandlers
         ScannedBotEvent += OnScannedBot.Publish;
         WonRoundEvent += OnWonRound.Publish;
         CustomEvent += OnCustomEvent.Publish;
+        TeamMessageEvent += OnTeamMessage.Publish;
 
         NextTurnEvent += OnNextTurn.Publish;
 
@@ -113,6 +110,7 @@ internal sealed class BotEventHandlers
         OnScannedBot.Subscribe(baseBot.OnScannedBot);
         OnWonRound.Subscribe(baseBot.OnWonRound);
         OnCustomEvent.Subscribe(baseBot.OnCustomEvent);
+        OnTeamMessage.Subscribe(baseBot.OnTeamMessage);
     }
 
     internal void FireConnectedEvent(ConnectedEvent evt)

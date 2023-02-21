@@ -1235,7 +1235,7 @@ public interface IBaseBot {
      *
      * @param teamMessageEvent is the event details from the game.
      */
-    default void onTeamMessageEvent(TeamMessageEvent teamMessageEvent) {
+    default void onTeamMessage(TeamMessageEvent teamMessageEvent) {
     }
 
     /**

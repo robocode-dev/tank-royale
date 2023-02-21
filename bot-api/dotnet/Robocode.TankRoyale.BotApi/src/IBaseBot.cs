@@ -946,7 +946,7 @@ public interface IBaseBot
     /// The event handler triggered when the bot has received a message from a teammate.
     /// </summary>
     /// <param name="teamMessageEvent">Event details from the game.</param>
-    void OnTeamMessageEvent(TeamMessageEvent teamMessageEvent);
+    void OnTeamMessage(TeamMessageEvent teamMessageEvent);
 
     /// <summary>
     /// Calculates the maximum turn rate for a specific speed.

@@ -5,8 +5,6 @@ import dev.robocode.tankroyale.botapi.events.*;
 
 final class BotEventHandlers {
 
-    final IBaseBot baseBot;
-
     final EventHandler<ConnectedEvent> onConnected = new EventHandler<>();
     final EventHandler<DisconnectedEvent> onDisconnected = new EventHandler<>();
     final EventHandler<ConnectionErrorEvent> onConnectionError = new EventHandler<>();
@@ -30,13 +28,11 @@ final class BotEventHandlers {
     final EventHandler<ScannedBotEvent> onScannedBot = new EventHandler<>();
     final EventHandler<WonRoundEvent> onWonRound = new EventHandler<>();
     final EventHandler<CustomEvent> onCustomEvent = new EventHandler<>();
-    final EventHandler<TeamMessageEvent> onTeamMessageEvent = new EventHandler<>();
+    final EventHandler<TeamMessageEvent> onTeamMessage = new EventHandler<>();
 
     final EventHandler<TickEvent> onNextTurn = new EventHandler<>();
 
     BotEventHandlers(IBaseBot baseBot) {
-        this.baseBot = baseBot;
-
         onConnected.subscribe(baseBot::onConnected);
         onDisconnected.subscribe(baseBot::onDisconnected);
         onConnectionError.subscribe(baseBot::onConnectionError);
@@ -58,7 +54,7 @@ final class BotEventHandlers {
         onScannedBot.subscribe(baseBot::onScannedBot);
         onWonRound.subscribe(baseBot::onWonRound);
         onCustomEvent.subscribe(baseBot::onCustomEvent);
-        onTeamMessageEvent.subscribe(baseBot::onTeamMessageEvent);
+        onTeamMessage.subscribe(baseBot::onTeamMessage);
     }
 
     void fire(BotEvent event) {
@@ -91,7 +87,7 @@ final class BotEventHandlers {
         } else if (event instanceof CustomEvent) {
             onCustomEvent.publish((CustomEvent) event);
         } else if (event instanceof TeamMessageEvent) {
-            onTeamMessageEvent.publish((TeamMessageEvent) event);
+            onTeamMessage.publish((TeamMessageEvent) event);
         } else {
             throw new IllegalStateException("Unhandled event type: " + event);
         }
