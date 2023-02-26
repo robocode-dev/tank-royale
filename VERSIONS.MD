@@ -24,17 +24,6 @@
 
 #### 🚀 Improvements
 
-- Booter:
-    - Updated, so it can launch a team by booting all bots within the team.
-    - Changed the name of the `run` command into `boot`.
-    - Changed command option `-T` into `-g` for filtering on game rules.
-    - Added `--botsOnly` and corresponding `-b` option flag for filtering on bots only (excluding teams).
-    - Added `--teamsOnly` and corresponding `-t` option flag for filtering on teams only (excluding bots).
-    - Bot API:
-        - TODO
-- Schema:
-    - Renamed `bot-results-for-bot` and `bot-results-for-observer` into `results-for-bot` and `results-for-observer` as
-      participants now include teams, and not just bots.
 - GUI:
     - Console windows for bots and the server now supports 3-bit and 4-bit [ANSI colors][ANSI escape code] (foreground
       and background) and simple text formatting.
