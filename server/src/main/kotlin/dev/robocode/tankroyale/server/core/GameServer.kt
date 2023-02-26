@@ -395,8 +395,6 @@ class GameServer(
     }
 
     private fun broadcastGameEndedToParticipants() {
-        println("### Game ended ### ")
-
         participants.forEach { conn ->
             participantIds[conn]?.let { botId ->
                 GameEndedEventForBot().apply {
@@ -426,8 +424,6 @@ class GameServer(
     }
 
     private fun broadcastRoundEndedToParticipants(roundNumber: Int, turnNumber: Int) {
-        println("### Round ended ### round=$roundNumber, turn=$turnNumber")
-
         participants.forEach { conn ->
             participantIds[conn]?.let { botId ->
                 RoundEndedEventForBot().apply {
