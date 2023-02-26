@@ -1,4 +1,4 @@
-val version = "0.19.0" // <-- The current version of Robocode Tank Royale
+val version = "0.19.1" // <-- The current version of Robocode Tank Royale
 
 // Schema Generator
 include("schema:jvm")

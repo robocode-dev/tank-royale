@@ -1,6 +1,6 @@
 # Versions
 
-## 📦 In progress
+## 📦 0.19.1 - Maintenance - 26-Feb-2023
 
 #### 🚀 Improvements
 
@@ -8,7 +8,9 @@
     - Console windows for bots and server support 3-bit and 4-bit [ANSI colors][ANSI escape code] (foreground and
       background) and simple text formatting.
     - Added `bot died` info to the bot console.
-    - Direct3D and OpenGL acceleration is now disabled under Windows. 
+    - Direct3D and OpenGL acceleration is now disabled under Windows. You can add those yourself, when you start up
+      the GUI using the `java` command. Read more about it
+      [here](https://docs.oracle.com/javase/7/docs/technotes/guides/2d/flags.html).
 
 #### 🪲 Bug Fixes
 
@@ -22,7 +24,7 @@
 - Bot API for .Net:
     - Issue where the `Game Types` field was overwritten by `Country Codes` (could be seen on the UI).
 
-## 📦 0.19.0 - Added bot console windows
+## 📦 0.19.0 - Added bot console windows - 28-Jan-2023
 
 #### 🚀 Improvements
 
