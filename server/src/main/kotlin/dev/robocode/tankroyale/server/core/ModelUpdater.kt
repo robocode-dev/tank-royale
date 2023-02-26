@@ -857,26 +857,15 @@ class ModelUpdater(
 
     private fun processTeamMessages(bot: MutableBot, intent: BotIntent) {
         intent.teamMessages?.forEach { teamMessage ->
-            if (teamMessage.receiverId == null) {
-                bot.teammateIds.forEach { teammateId ->
-                    addTeamMessageIfBotIsAlive(teammateId, bot.id, teamMessage.message)
-                }
+            if (teamMessage.receiverId != null) {
+                turn.addPrivateBotEvent(teamMessage.receiverId, TeamMessageEvent(turn.turnNumber, teamMessage.message, bot.id))
             } else {
-                addTeamMessageIfBotIsAlive(teamMessage.receiverId, bot.id, teamMessage.message)
+                turn.addPublicBotEvent(TeamMessageEvent(turn.turnNumber, teamMessage.message, bot.id))
             }
         }
-
         // clear team messages
         intent.teamMessages = null
     }
-
-    private fun addTeamMessageIfBotIsAlive(receiverId: BotId, senderId: BotId, message: Any) {
-        if (isAlive(receiverId)) {
-            turn.addPrivateBotEvent(receiverId, TeamMessageEvent(turn.turnNumber, message, senderId))
-        }
-    }
-
-    private fun isAlive(botId: BotId) = botsMap.values.find { bot -> bot.id == botId }?.isAlive ?: false
 
 
     /** for static methods */
