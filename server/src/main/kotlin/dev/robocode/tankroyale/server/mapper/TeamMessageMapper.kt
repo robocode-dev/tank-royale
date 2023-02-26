@@ -13,7 +13,7 @@ object TeamMessageMapper {
 
     fun map(teamMessage: dev.robocode.tankroyale.schema.TeamMessage): TeamMessage {
         teamMessage.apply {
-            return TeamMessage(message, BotId(receiverId))
+            return TeamMessage(message, if (receiverId != null) BotId(receiverId) else null)
         }
     }
 }
