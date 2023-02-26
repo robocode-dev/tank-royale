@@ -17,33 +17,48 @@ references:
   name: BaseBot()
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot__ctor
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.#ctor
+  name.vb: New()
   fullName: Robocode.TankRoyale.BotApi.BaseBot.BaseBot()
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.New()
   nameWithType: BaseBot.BaseBot()
-- uid: Robocode.TankRoyale.BotApi.BaseBot.#ctor(Robocode.TankRoyale.BotApi.BotInfo)
-  name: BaseBot(BotInfo)
-  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot__ctor_Robocode_TankRoyale_BotApi_BotInfo_
-  commentId: M:Robocode.TankRoyale.BotApi.BaseBot.#ctor(Robocode.TankRoyale.BotApi.BotInfo)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.BaseBot(Robocode.TankRoyale.BotApi.BotInfo)
-  nameWithType: BaseBot.BaseBot(BotInfo)
+  nameWithType.vb: BaseBot.New()
+- uid: Robocode.TankRoyale.BotApi.BaseBot.#ctor(Robocode.TankRoyale.BotApi.BotInfo,System.Uri,System.String)
+  name: BaseBot(BotInfo, Uri, string)
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot__ctor_Robocode_TankRoyale_BotApi_BotInfo_System_Uri_System_String_
+  commentId: M:Robocode.TankRoyale.BotApi.BaseBot.#ctor(Robocode.TankRoyale.BotApi.BotInfo,System.Uri,System.String)
+  name.vb: New(BotInfo, Uri, String)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.BaseBot(Robocode.TankRoyale.BotApi.BotInfo, System.Uri, string)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.New(Robocode.TankRoyale.BotApi.BotInfo, System.Uri, String)
+  nameWithType: BaseBot.BaseBot(BotInfo, Uri, string)
+  nameWithType.vb: BaseBot.New(BotInfo, Uri, String)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.#ctor(Robocode.TankRoyale.BotApi.BotInfo,System.Uri)
   name: BaseBot(BotInfo, Uri)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot__ctor_Robocode_TankRoyale_BotApi_BotInfo_System_Uri_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.#ctor(Robocode.TankRoyale.BotApi.BotInfo,System.Uri)
+  name.vb: New(BotInfo, Uri)
   fullName: Robocode.TankRoyale.BotApi.BaseBot.BaseBot(Robocode.TankRoyale.BotApi.BotInfo, System.Uri)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.New(Robocode.TankRoyale.BotApi.BotInfo, System.Uri)
   nameWithType: BaseBot.BaseBot(BotInfo, Uri)
-- uid: Robocode.TankRoyale.BotApi.BaseBot.#ctor(Robocode.TankRoyale.BotApi.BotInfo,System.Uri,System.String)
-  name: BaseBot(BotInfo, Uri, String)
-  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot__ctor_Robocode_TankRoyale_BotApi_BotInfo_System_Uri_System_String_
-  commentId: M:Robocode.TankRoyale.BotApi.BaseBot.#ctor(Robocode.TankRoyale.BotApi.BotInfo,System.Uri,System.String)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.BaseBot(Robocode.TankRoyale.BotApi.BotInfo, System.Uri, System.String)
-  nameWithType: BaseBot.BaseBot(BotInfo, Uri, String)
+  nameWithType.vb: BaseBot.New(BotInfo, Uri)
+- uid: Robocode.TankRoyale.BotApi.BaseBot.#ctor(Robocode.TankRoyale.BotApi.BotInfo)
+  name: BaseBot(BotInfo)
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot__ctor_Robocode_TankRoyale_BotApi_BotInfo_
+  commentId: M:Robocode.TankRoyale.BotApi.BaseBot.#ctor(Robocode.TankRoyale.BotApi.BotInfo)
+  name.vb: New(BotInfo)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.BaseBot(Robocode.TankRoyale.BotApi.BotInfo)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.New(Robocode.TankRoyale.BotApi.BotInfo)
+  nameWithType: BaseBot.BaseBot(BotInfo)
+  nameWithType.vb: BaseBot.New(BotInfo)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.#ctor*
   name: BaseBot
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.BaseBot.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.BaseBot.BaseBot
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.New
   nameWithType: BaseBot.BaseBot
+  nameWithType.vb: BaseBot.New
 - uid: Robocode.TankRoyale.BotApi.BaseBot.AddCustomEvent(Robocode.TankRoyale.BotApi.Events.Condition)
   name: AddCustomEvent(Condition)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_AddCustomEvent_Robocode_TankRoyale_BotApi_Events_Condition_
@@ -123,11 +138,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.ArenaWidth
   nameWithType: BaseBot.ArenaWidth
 - uid: Robocode.TankRoyale.BotApi.BaseBot.BearingTo(System.Double,System.Double)
-  name: BearingTo(Double, Double)
+  name: BearingTo(double, double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_BearingTo_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.BearingTo(System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.BearingTo(System.Double, System.Double)
-  nameWithType: BaseBot.BearingTo(Double, Double)
+  name.vb: BearingTo(Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.BearingTo(double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.BearingTo(Double, Double)
+  nameWithType: BaseBot.BearingTo(double, double)
+  nameWithType.vb: BaseBot.BearingTo(Double, Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.BearingTo*
   name: BearingTo
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_BearingTo_
@@ -175,11 +193,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.BulletStates
   nameWithType: BaseBot.BulletStates
 - uid: Robocode.TankRoyale.BotApi.BaseBot.CalcBearing(System.Double)
-  name: CalcBearing(Double)
+  name: CalcBearing(double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_CalcBearing_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.CalcBearing(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcBearing(System.Double)
-  nameWithType: BaseBot.CalcBearing(Double)
+  name.vb: CalcBearing(Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcBearing(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.CalcBearing(Double)
+  nameWithType: BaseBot.CalcBearing(double)
+  nameWithType.vb: BaseBot.CalcBearing(Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.CalcBearing*
   name: CalcBearing
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_CalcBearing_
@@ -188,11 +209,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcBearing
   nameWithType: BaseBot.CalcBearing
 - uid: Robocode.TankRoyale.BotApi.BaseBot.CalcBulletSpeed(System.Double)
-  name: CalcBulletSpeed(Double)
+  name: CalcBulletSpeed(double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_CalcBulletSpeed_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.CalcBulletSpeed(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcBulletSpeed(System.Double)
-  nameWithType: BaseBot.CalcBulletSpeed(Double)
+  name.vb: CalcBulletSpeed(Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcBulletSpeed(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.CalcBulletSpeed(Double)
+  nameWithType: BaseBot.CalcBulletSpeed(double)
+  nameWithType.vb: BaseBot.CalcBulletSpeed(Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.CalcBulletSpeed*
   name: CalcBulletSpeed
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_CalcBulletSpeed_
@@ -201,11 +225,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcBulletSpeed
   nameWithType: BaseBot.CalcBulletSpeed
 - uid: Robocode.TankRoyale.BotApi.BaseBot.CalcDeltaAngle(System.Double,System.Double)
-  name: CalcDeltaAngle(Double, Double)
+  name: CalcDeltaAngle(double, double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_CalcDeltaAngle_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.CalcDeltaAngle(System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcDeltaAngle(System.Double, System.Double)
-  nameWithType: BaseBot.CalcDeltaAngle(Double, Double)
+  name.vb: CalcDeltaAngle(Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcDeltaAngle(double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.CalcDeltaAngle(Double, Double)
+  nameWithType: BaseBot.CalcDeltaAngle(double, double)
+  nameWithType.vb: BaseBot.CalcDeltaAngle(Double, Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.CalcDeltaAngle*
   name: CalcDeltaAngle
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_CalcDeltaAngle_
@@ -214,11 +241,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcDeltaAngle
   nameWithType: BaseBot.CalcDeltaAngle
 - uid: Robocode.TankRoyale.BotApi.BaseBot.CalcGunBearing(System.Double)
-  name: CalcGunBearing(Double)
+  name: CalcGunBearing(double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_CalcGunBearing_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.CalcGunBearing(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcGunBearing(System.Double)
-  nameWithType: BaseBot.CalcGunBearing(Double)
+  name.vb: CalcGunBearing(Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcGunBearing(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.CalcGunBearing(Double)
+  nameWithType: BaseBot.CalcGunBearing(double)
+  nameWithType.vb: BaseBot.CalcGunBearing(Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.CalcGunBearing*
   name: CalcGunBearing
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_CalcGunBearing_
@@ -227,11 +257,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcGunBearing
   nameWithType: BaseBot.CalcGunBearing
 - uid: Robocode.TankRoyale.BotApi.BaseBot.CalcGunHeat(System.Double)
-  name: CalcGunHeat(Double)
+  name: CalcGunHeat(double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_CalcGunHeat_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.CalcGunHeat(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcGunHeat(System.Double)
-  nameWithType: BaseBot.CalcGunHeat(Double)
+  name.vb: CalcGunHeat(Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcGunHeat(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.CalcGunHeat(Double)
+  nameWithType: BaseBot.CalcGunHeat(double)
+  nameWithType.vb: BaseBot.CalcGunHeat(Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.CalcGunHeat*
   name: CalcGunHeat
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_CalcGunHeat_
@@ -240,11 +273,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcGunHeat
   nameWithType: BaseBot.CalcGunHeat
 - uid: Robocode.TankRoyale.BotApi.BaseBot.CalcMaxTurnRate(System.Double)
-  name: CalcMaxTurnRate(Double)
+  name: CalcMaxTurnRate(double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_CalcMaxTurnRate_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.CalcMaxTurnRate(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcMaxTurnRate(System.Double)
-  nameWithType: BaseBot.CalcMaxTurnRate(Double)
+  name.vb: CalcMaxTurnRate(Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcMaxTurnRate(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.CalcMaxTurnRate(Double)
+  nameWithType: BaseBot.CalcMaxTurnRate(double)
+  nameWithType.vb: BaseBot.CalcMaxTurnRate(Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.CalcMaxTurnRate*
   name: CalcMaxTurnRate
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_CalcMaxTurnRate_
@@ -253,11 +289,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcMaxTurnRate
   nameWithType: BaseBot.CalcMaxTurnRate
 - uid: Robocode.TankRoyale.BotApi.BaseBot.CalcRadarBearing(System.Double)
-  name: CalcRadarBearing(Double)
+  name: CalcRadarBearing(double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_CalcRadarBearing_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.CalcRadarBearing(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcRadarBearing(System.Double)
-  nameWithType: BaseBot.CalcRadarBearing(Double)
+  name.vb: CalcRadarBearing(Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.CalcRadarBearing(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.CalcRadarBearing(Double)
+  nameWithType: BaseBot.CalcRadarBearing(double)
+  nameWithType.vb: BaseBot.CalcRadarBearing(Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.CalcRadarBearing*
   name: CalcRadarBearing
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_CalcRadarBearing_
@@ -292,11 +331,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.Direction
   nameWithType: BaseBot.Direction
 - uid: Robocode.TankRoyale.BotApi.BaseBot.DirectionTo(System.Double,System.Double)
-  name: DirectionTo(Double, Double)
+  name: DirectionTo(double, double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_DirectionTo_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.DirectionTo(System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.DirectionTo(System.Double, System.Double)
-  nameWithType: BaseBot.DirectionTo(Double, Double)
+  name.vb: DirectionTo(Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.DirectionTo(double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.DirectionTo(Double, Double)
+  nameWithType: BaseBot.DirectionTo(double, double)
+  nameWithType.vb: BaseBot.DirectionTo(Double, Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.DirectionTo*
   name: DirectionTo
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_DirectionTo_
@@ -305,11 +347,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.DirectionTo
   nameWithType: BaseBot.DirectionTo
 - uid: Robocode.TankRoyale.BotApi.BaseBot.DistanceTo(System.Double,System.Double)
-  name: DistanceTo(Double, Double)
+  name: DistanceTo(double, double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_DistanceTo_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.DistanceTo(System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.DistanceTo(System.Double, System.Double)
-  nameWithType: BaseBot.DistanceTo(Double, Double)
+  name.vb: DistanceTo(Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.DistanceTo(double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.DistanceTo(Double, Double)
+  nameWithType: BaseBot.DistanceTo(double, double)
+  nameWithType.vb: BaseBot.DistanceTo(Double, Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.DistanceTo*
   name: DistanceTo
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_DistanceTo_
@@ -409,11 +454,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.Go
   nameWithType: BaseBot.Go
 - uid: Robocode.TankRoyale.BotApi.BaseBot.GunBearingTo(System.Double,System.Double)
-  name: GunBearingTo(Double, Double)
+  name: GunBearingTo(double, double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_GunBearingTo_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.GunBearingTo(System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.GunBearingTo(System.Double, System.Double)
-  nameWithType: BaseBot.GunBearingTo(Double, Double)
+  name.vb: GunBearingTo(Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.GunBearingTo(double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.GunBearingTo(Double, Double)
+  nameWithType: BaseBot.GunBearingTo(double, double)
+  nameWithType.vb: BaseBot.GunBearingTo(Double, Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.GunBearingTo*
   name: GunBearingTo
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_GunBearingTo_
@@ -604,11 +652,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.MyId
   nameWithType: BaseBot.MyId
 - uid: Robocode.TankRoyale.BotApi.BaseBot.NormalizeAbsoluteAngle(System.Double)
-  name: NormalizeAbsoluteAngle(Double)
+  name: NormalizeAbsoluteAngle(double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_NormalizeAbsoluteAngle_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.NormalizeAbsoluteAngle(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.NormalizeAbsoluteAngle(System.Double)
-  nameWithType: BaseBot.NormalizeAbsoluteAngle(Double)
+  name.vb: NormalizeAbsoluteAngle(Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.NormalizeAbsoluteAngle(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.NormalizeAbsoluteAngle(Double)
+  nameWithType: BaseBot.NormalizeAbsoluteAngle(double)
+  nameWithType.vb: BaseBot.NormalizeAbsoluteAngle(Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.NormalizeAbsoluteAngle*
   name: NormalizeAbsoluteAngle
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_NormalizeAbsoluteAngle_
@@ -617,11 +668,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.NormalizeAbsoluteAngle
   nameWithType: BaseBot.NormalizeAbsoluteAngle
 - uid: Robocode.TankRoyale.BotApi.BaseBot.NormalizeRelativeAngle(System.Double)
-  name: NormalizeRelativeAngle(Double)
+  name: NormalizeRelativeAngle(double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_NormalizeRelativeAngle_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.NormalizeRelativeAngle(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.NormalizeRelativeAngle(System.Double)
-  nameWithType: BaseBot.NormalizeRelativeAngle(Double)
+  name.vb: NormalizeRelativeAngle(Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.NormalizeRelativeAngle(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.NormalizeRelativeAngle(Double)
+  nameWithType: BaseBot.NormalizeRelativeAngle(double)
+  nameWithType.vb: BaseBot.NormalizeRelativeAngle(Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.NormalizeRelativeAngle*
   name: NormalizeRelativeAngle
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_NormalizeRelativeAngle_
@@ -916,11 +970,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.OnWonRound
   nameWithType: BaseBot.OnWonRound
 - uid: Robocode.TankRoyale.BotApi.BaseBot.RadarBearingTo(System.Double,System.Double)
-  name: RadarBearingTo(Double, Double)
+  name: RadarBearingTo(double, double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_RadarBearingTo_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.RadarBearingTo(System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.RadarBearingTo(System.Double, System.Double)
-  nameWithType: BaseBot.RadarBearingTo(Double, Double)
+  name.vb: RadarBearingTo(Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.RadarBearingTo(double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.RadarBearingTo(Double, Double)
+  nameWithType: BaseBot.RadarBearingTo(double, double)
+  nameWithType.vb: BaseBot.RadarBearingTo(Double, Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.RadarBearingTo*
   name: RadarBearingTo
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_RadarBearingTo_
@@ -1007,11 +1064,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.ScanColor
   nameWithType: BaseBot.ScanColor
 - uid: Robocode.TankRoyale.BotApi.BaseBot.SetEventPriority(System.Type,System.Int32)
-  name: SetEventPriority(Type, Int32)
+  name: SetEventPriority(Type, int)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_SetEventPriority_System_Type_System_Int32_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.SetEventPriority(System.Type,System.Int32)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.SetEventPriority(System.Type, System.Int32)
-  nameWithType: BaseBot.SetEventPriority(Type, Int32)
+  name.vb: SetEventPriority(Type, Integer)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.SetEventPriority(System.Type, int)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.SetEventPriority(System.Type, Integer)
+  nameWithType: BaseBot.SetEventPriority(Type, int)
+  nameWithType.vb: BaseBot.SetEventPriority(Type, Integer)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.SetEventPriority*
   name: SetEventPriority
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_SetEventPriority_
@@ -1020,11 +1080,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.SetEventPriority
   nameWithType: BaseBot.SetEventPriority
 - uid: Robocode.TankRoyale.BotApi.BaseBot.SetFire(System.Double)
-  name: SetFire(Double)
+  name: SetFire(double)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_SetFire_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.SetFire(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.SetFire(System.Double)
-  nameWithType: BaseBot.SetFire(Double)
+  name.vb: SetFire(Double)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.SetFire(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.SetFire(Double)
+  nameWithType: BaseBot.SetFire(double)
+  nameWithType.vb: BaseBot.SetFire(Double)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.SetFire*
   name: SetFire
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_SetFire_
@@ -1033,11 +1096,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BaseBot.SetFire
   nameWithType: BaseBot.SetFire
 - uid: Robocode.TankRoyale.BotApi.BaseBot.SetFireAssist(System.Boolean)
-  name: SetFireAssist(Boolean)
+  name: SetFireAssist(bool)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_SetFireAssist_System_Boolean_
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.SetFireAssist(System.Boolean)
-  fullName: Robocode.TankRoyale.BotApi.BaseBot.SetFireAssist(System.Boolean)
-  nameWithType: BaseBot.SetFireAssist(Boolean)
+  name.vb: SetFireAssist(Boolean)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.SetFireAssist(bool)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.SetFireAssist(Boolean)
+  nameWithType: BaseBot.SetFireAssist(bool)
+  nameWithType.vb: BaseBot.SetFireAssist(Boolean)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.SetFireAssist*
   name: SetFireAssist
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_SetFireAssist_
@@ -1263,39 +1329,57 @@ references:
   name: Bot()
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot__ctor
   commentId: M:Robocode.TankRoyale.BotApi.Bot.#ctor
+  name.vb: New()
   fullName: Robocode.TankRoyale.BotApi.Bot.Bot()
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.New()
   nameWithType: Bot.Bot()
-- uid: Robocode.TankRoyale.BotApi.Bot.#ctor(Robocode.TankRoyale.BotApi.BotInfo)
-  name: Bot(BotInfo)
-  href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot__ctor_Robocode_TankRoyale_BotApi_BotInfo_
-  commentId: M:Robocode.TankRoyale.BotApi.Bot.#ctor(Robocode.TankRoyale.BotApi.BotInfo)
-  fullName: Robocode.TankRoyale.BotApi.Bot.Bot(Robocode.TankRoyale.BotApi.BotInfo)
-  nameWithType: Bot.Bot(BotInfo)
+  nameWithType.vb: Bot.New()
+- uid: Robocode.TankRoyale.BotApi.Bot.#ctor(Robocode.TankRoyale.BotApi.BotInfo,System.Uri,System.String)
+  name: Bot(BotInfo, Uri, string)
+  href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot__ctor_Robocode_TankRoyale_BotApi_BotInfo_System_Uri_System_String_
+  commentId: M:Robocode.TankRoyale.BotApi.Bot.#ctor(Robocode.TankRoyale.BotApi.BotInfo,System.Uri,System.String)
+  name.vb: New(BotInfo, Uri, String)
+  fullName: Robocode.TankRoyale.BotApi.Bot.Bot(Robocode.TankRoyale.BotApi.BotInfo, System.Uri, string)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.New(Robocode.TankRoyale.BotApi.BotInfo, System.Uri, String)
+  nameWithType: Bot.Bot(BotInfo, Uri, string)
+  nameWithType.vb: Bot.New(BotInfo, Uri, String)
 - uid: Robocode.TankRoyale.BotApi.Bot.#ctor(Robocode.TankRoyale.BotApi.BotInfo,System.Uri)
   name: Bot(BotInfo, Uri)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot__ctor_Robocode_TankRoyale_BotApi_BotInfo_System_Uri_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.#ctor(Robocode.TankRoyale.BotApi.BotInfo,System.Uri)
+  name.vb: New(BotInfo, Uri)
   fullName: Robocode.TankRoyale.BotApi.Bot.Bot(Robocode.TankRoyale.BotApi.BotInfo, System.Uri)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.New(Robocode.TankRoyale.BotApi.BotInfo, System.Uri)
   nameWithType: Bot.Bot(BotInfo, Uri)
-- uid: Robocode.TankRoyale.BotApi.Bot.#ctor(Robocode.TankRoyale.BotApi.BotInfo,System.Uri,System.String)
-  name: Bot(BotInfo, Uri, String)
-  href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot__ctor_Robocode_TankRoyale_BotApi_BotInfo_System_Uri_System_String_
-  commentId: M:Robocode.TankRoyale.BotApi.Bot.#ctor(Robocode.TankRoyale.BotApi.BotInfo,System.Uri,System.String)
-  fullName: Robocode.TankRoyale.BotApi.Bot.Bot(Robocode.TankRoyale.BotApi.BotInfo, System.Uri, System.String)
-  nameWithType: Bot.Bot(BotInfo, Uri, String)
+  nameWithType.vb: Bot.New(BotInfo, Uri)
+- uid: Robocode.TankRoyale.BotApi.Bot.#ctor(Robocode.TankRoyale.BotApi.BotInfo)
+  name: Bot(BotInfo)
+  href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot__ctor_Robocode_TankRoyale_BotApi_BotInfo_
+  commentId: M:Robocode.TankRoyale.BotApi.Bot.#ctor(Robocode.TankRoyale.BotApi.BotInfo)
+  name.vb: New(BotInfo)
+  fullName: Robocode.TankRoyale.BotApi.Bot.Bot(Robocode.TankRoyale.BotApi.BotInfo)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.New(Robocode.TankRoyale.BotApi.BotInfo)
+  nameWithType: Bot.Bot(BotInfo)
+  nameWithType.vb: Bot.New(BotInfo)
 - uid: Robocode.TankRoyale.BotApi.Bot.#ctor*
   name: Bot
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Bot.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Bot.Bot
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.New
   nameWithType: Bot.Bot
+  nameWithType.vb: Bot.New
 - uid: Robocode.TankRoyale.BotApi.Bot.Back(System.Double)
-  name: Back(Double)
+  name: Back(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_Back_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.Back(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.Back(System.Double)
-  nameWithType: Bot.Back(Double)
+  name.vb: Back(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.Back(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.Back(Double)
+  nameWithType: Bot.Back(double)
+  nameWithType.vb: Bot.Back(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.Back*
   name: Back
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_Back_
@@ -1317,11 +1401,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.DistanceRemaining
   nameWithType: Bot.DistanceRemaining
 - uid: Robocode.TankRoyale.BotApi.Bot.Fire(System.Double)
-  name: Fire(Double)
+  name: Fire(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_Fire_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.Fire(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.Fire(System.Double)
-  nameWithType: Bot.Fire(Double)
+  name.vb: Fire(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.Fire(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.Fire(Double)
+  nameWithType: Bot.Fire(double)
+  nameWithType.vb: Bot.Fire(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.Fire*
   name: Fire
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_Fire_
@@ -1330,11 +1417,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.Fire
   nameWithType: Bot.Fire
 - uid: Robocode.TankRoyale.BotApi.Bot.Forward(System.Double)
-  name: Forward(Double)
+  name: Forward(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_Forward_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.Forward(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.Forward(System.Double)
-  nameWithType: Bot.Forward(Double)
+  name.vb: Forward(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.Forward(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.Forward(Double)
+  nameWithType: Bot.Forward(double)
+  nameWithType.vb: Bot.Forward(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.Forward*
   name: Forward
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_Forward_
@@ -1447,11 +1537,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.Run
   nameWithType: Bot.Run
 - uid: Robocode.TankRoyale.BotApi.Bot.SetBack(System.Double)
-  name: SetBack(Double)
+  name: SetBack(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetBack_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.SetBack(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.SetBack(System.Double)
-  nameWithType: Bot.SetBack(Double)
+  name.vb: SetBack(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.SetBack(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.SetBack(Double)
+  nameWithType: Bot.SetBack(double)
+  nameWithType.vb: Bot.SetBack(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.SetBack*
   name: SetBack
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetBack_
@@ -1460,11 +1553,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.SetBack
   nameWithType: Bot.SetBack
 - uid: Robocode.TankRoyale.BotApi.Bot.SetForward(System.Double)
-  name: SetForward(Double)
+  name: SetForward(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetForward_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.SetForward(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.SetForward(System.Double)
-  nameWithType: Bot.SetForward(Double)
+  name.vb: SetForward(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.SetForward(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.SetForward(Double)
+  nameWithType: Bot.SetForward(double)
+  nameWithType.vb: Bot.SetForward(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.SetForward*
   name: SetForward
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetForward_
@@ -1473,11 +1569,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.SetForward
   nameWithType: Bot.SetForward
 - uid: Robocode.TankRoyale.BotApi.Bot.SetTurnGunLeft(System.Double)
-  name: SetTurnGunLeft(Double)
+  name: SetTurnGunLeft(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetTurnGunLeft_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.SetTurnGunLeft(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnGunLeft(System.Double)
-  nameWithType: Bot.SetTurnGunLeft(Double)
+  name.vb: SetTurnGunLeft(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnGunLeft(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.SetTurnGunLeft(Double)
+  nameWithType: Bot.SetTurnGunLeft(double)
+  nameWithType.vb: Bot.SetTurnGunLeft(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.SetTurnGunLeft*
   name: SetTurnGunLeft
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetTurnGunLeft_
@@ -1486,11 +1585,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnGunLeft
   nameWithType: Bot.SetTurnGunLeft
 - uid: Robocode.TankRoyale.BotApi.Bot.SetTurnGunRight(System.Double)
-  name: SetTurnGunRight(Double)
+  name: SetTurnGunRight(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetTurnGunRight_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.SetTurnGunRight(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnGunRight(System.Double)
-  nameWithType: Bot.SetTurnGunRight(Double)
+  name.vb: SetTurnGunRight(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnGunRight(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.SetTurnGunRight(Double)
+  nameWithType: Bot.SetTurnGunRight(double)
+  nameWithType.vb: Bot.SetTurnGunRight(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.SetTurnGunRight*
   name: SetTurnGunRight
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetTurnGunRight_
@@ -1499,11 +1601,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnGunRight
   nameWithType: Bot.SetTurnGunRight
 - uid: Robocode.TankRoyale.BotApi.Bot.SetTurnLeft(System.Double)
-  name: SetTurnLeft(Double)
+  name: SetTurnLeft(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetTurnLeft_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.SetTurnLeft(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnLeft(System.Double)
-  nameWithType: Bot.SetTurnLeft(Double)
+  name.vb: SetTurnLeft(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnLeft(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.SetTurnLeft(Double)
+  nameWithType: Bot.SetTurnLeft(double)
+  nameWithType.vb: Bot.SetTurnLeft(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.SetTurnLeft*
   name: SetTurnLeft
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetTurnLeft_
@@ -1512,11 +1617,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnLeft
   nameWithType: Bot.SetTurnLeft
 - uid: Robocode.TankRoyale.BotApi.Bot.SetTurnRadarLeft(System.Double)
-  name: SetTurnRadarLeft(Double)
+  name: SetTurnRadarLeft(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetTurnRadarLeft_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.SetTurnRadarLeft(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnRadarLeft(System.Double)
-  nameWithType: Bot.SetTurnRadarLeft(Double)
+  name.vb: SetTurnRadarLeft(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnRadarLeft(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.SetTurnRadarLeft(Double)
+  nameWithType: Bot.SetTurnRadarLeft(double)
+  nameWithType.vb: Bot.SetTurnRadarLeft(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.SetTurnRadarLeft*
   name: SetTurnRadarLeft
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetTurnRadarLeft_
@@ -1525,11 +1633,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnRadarLeft
   nameWithType: Bot.SetTurnRadarLeft
 - uid: Robocode.TankRoyale.BotApi.Bot.SetTurnRadarRight(System.Double)
-  name: SetTurnRadarRight(Double)
+  name: SetTurnRadarRight(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetTurnRadarRight_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.SetTurnRadarRight(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnRadarRight(System.Double)
-  nameWithType: Bot.SetTurnRadarRight(Double)
+  name.vb: SetTurnRadarRight(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnRadarRight(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.SetTurnRadarRight(Double)
+  nameWithType: Bot.SetTurnRadarRight(double)
+  nameWithType.vb: Bot.SetTurnRadarRight(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.SetTurnRadarRight*
   name: SetTurnRadarRight
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetTurnRadarRight_
@@ -1538,11 +1649,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnRadarRight
   nameWithType: Bot.SetTurnRadarRight
 - uid: Robocode.TankRoyale.BotApi.Bot.SetTurnRight(System.Double)
-  name: SetTurnRight(Double)
+  name: SetTurnRight(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetTurnRight_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.SetTurnRight(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnRight(System.Double)
-  nameWithType: Bot.SetTurnRight(Double)
+  name.vb: SetTurnRight(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.SetTurnRight(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.SetTurnRight(Double)
+  nameWithType: Bot.SetTurnRight(double)
+  nameWithType.vb: Bot.SetTurnRight(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.SetTurnRight*
   name: SetTurnRight
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_SetTurnRight_
@@ -1577,11 +1691,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.TargetSpeed
   nameWithType: Bot.TargetSpeed
 - uid: Robocode.TankRoyale.BotApi.Bot.TurnGunLeft(System.Double)
-  name: TurnGunLeft(Double)
+  name: TurnGunLeft(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnGunLeft_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.TurnGunLeft(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.TurnGunLeft(System.Double)
-  nameWithType: Bot.TurnGunLeft(Double)
+  name.vb: TurnGunLeft(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.TurnGunLeft(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.TurnGunLeft(Double)
+  nameWithType: Bot.TurnGunLeft(double)
+  nameWithType.vb: Bot.TurnGunLeft(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.TurnGunLeft*
   name: TurnGunLeft
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnGunLeft_
@@ -1590,11 +1707,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.TurnGunLeft
   nameWithType: Bot.TurnGunLeft
 - uid: Robocode.TankRoyale.BotApi.Bot.TurnGunRight(System.Double)
-  name: TurnGunRight(Double)
+  name: TurnGunRight(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnGunRight_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.TurnGunRight(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.TurnGunRight(System.Double)
-  nameWithType: Bot.TurnGunRight(Double)
+  name.vb: TurnGunRight(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.TurnGunRight(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.TurnGunRight(Double)
+  nameWithType: Bot.TurnGunRight(double)
+  nameWithType.vb: Bot.TurnGunRight(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.TurnGunRight*
   name: TurnGunRight
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnGunRight_
@@ -1603,11 +1723,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.TurnGunRight
   nameWithType: Bot.TurnGunRight
 - uid: Robocode.TankRoyale.BotApi.Bot.TurnLeft(System.Double)
-  name: TurnLeft(Double)
+  name: TurnLeft(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnLeft_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.TurnLeft(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.TurnLeft(System.Double)
-  nameWithType: Bot.TurnLeft(Double)
+  name.vb: TurnLeft(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.TurnLeft(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.TurnLeft(Double)
+  nameWithType: Bot.TurnLeft(double)
+  nameWithType.vb: Bot.TurnLeft(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.TurnLeft*
   name: TurnLeft
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnLeft_
@@ -1616,11 +1739,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.TurnLeft
   nameWithType: Bot.TurnLeft
 - uid: Robocode.TankRoyale.BotApi.Bot.TurnRadarLeft(System.Double)
-  name: TurnRadarLeft(Double)
+  name: TurnRadarLeft(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnRadarLeft_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.TurnRadarLeft(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.TurnRadarLeft(System.Double)
-  nameWithType: Bot.TurnRadarLeft(Double)
+  name.vb: TurnRadarLeft(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.TurnRadarLeft(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.TurnRadarLeft(Double)
+  nameWithType: Bot.TurnRadarLeft(double)
+  nameWithType.vb: Bot.TurnRadarLeft(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.TurnRadarLeft*
   name: TurnRadarLeft
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnRadarLeft_
@@ -1629,11 +1755,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.TurnRadarLeft
   nameWithType: Bot.TurnRadarLeft
 - uid: Robocode.TankRoyale.BotApi.Bot.TurnRadarRight(System.Double)
-  name: TurnRadarRight(Double)
+  name: TurnRadarRight(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnRadarRight_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.TurnRadarRight(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.TurnRadarRight(System.Double)
-  nameWithType: Bot.TurnRadarRight(Double)
+  name.vb: TurnRadarRight(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.TurnRadarRight(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.TurnRadarRight(Double)
+  nameWithType: Bot.TurnRadarRight(double)
+  nameWithType.vb: Bot.TurnRadarRight(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.TurnRadarRight*
   name: TurnRadarRight
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnRadarRight_
@@ -1668,11 +1797,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Bot.TurnRemaining
   nameWithType: Bot.TurnRemaining
 - uid: Robocode.TankRoyale.BotApi.Bot.TurnRight(System.Double)
-  name: TurnRight(Double)
+  name: TurnRight(double)
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnRight_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Bot.TurnRight(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Bot.TurnRight(System.Double)
-  nameWithType: Bot.TurnRight(Double)
+  name.vb: TurnRight(Double)
+  fullName: Robocode.TankRoyale.BotApi.Bot.TurnRight(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.TurnRight(Double)
+  nameWithType: Bot.TurnRight(double)
+  nameWithType.vb: Bot.TurnRight(Double)
 - uid: Robocode.TankRoyale.BotApi.Bot.TurnRight*
   name: TurnRight
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_TurnRight_
@@ -1699,47 +1831,59 @@ references:
   commentId: T:Robocode.TankRoyale.BotApi.BotException
   fullName: Robocode.TankRoyale.BotApi.BotException
   nameWithType: BotException
-- uid: Robocode.TankRoyale.BotApi.BotException.#ctor(System.String)
-  name: BotException(String)
-  href: api/Robocode.TankRoyale.BotApi.BotException.html#Robocode_TankRoyale_BotApi_BotException__ctor_System_String_
-  commentId: M:Robocode.TankRoyale.BotApi.BotException.#ctor(System.String)
-  fullName: Robocode.TankRoyale.BotApi.BotException.BotException(System.String)
-  nameWithType: BotException.BotException(String)
 - uid: Robocode.TankRoyale.BotApi.BotException.#ctor(System.String,System.Exception)
-  name: BotException(String, Exception)
+  name: BotException(string, Exception)
   href: api/Robocode.TankRoyale.BotApi.BotException.html#Robocode_TankRoyale_BotApi_BotException__ctor_System_String_System_Exception_
   commentId: M:Robocode.TankRoyale.BotApi.BotException.#ctor(System.String,System.Exception)
-  fullName: Robocode.TankRoyale.BotApi.BotException.BotException(System.String, System.Exception)
-  nameWithType: BotException.BotException(String, Exception)
+  name.vb: New(String, Exception)
+  fullName: Robocode.TankRoyale.BotApi.BotException.BotException(string, System.Exception)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotException.New(String, System.Exception)
+  nameWithType: BotException.BotException(string, Exception)
+  nameWithType.vb: BotException.New(String, Exception)
+- uid: Robocode.TankRoyale.BotApi.BotException.#ctor(System.String)
+  name: BotException(string)
+  href: api/Robocode.TankRoyale.BotApi.BotException.html#Robocode_TankRoyale_BotApi_BotException__ctor_System_String_
+  commentId: M:Robocode.TankRoyale.BotApi.BotException.#ctor(System.String)
+  name.vb: New(String)
+  fullName: Robocode.TankRoyale.BotApi.BotException.BotException(string)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotException.New(String)
+  nameWithType: BotException.BotException(string)
+  nameWithType.vb: BotException.New(String)
 - uid: Robocode.TankRoyale.BotApi.BotException.#ctor*
   name: BotException
   href: api/Robocode.TankRoyale.BotApi.BotException.html#Robocode_TankRoyale_BotApi_BotException__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.BotException.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.BotException.BotException
+  fullName.vb: Robocode.TankRoyale.BotApi.BotException.New
   nameWithType: BotException.BotException
+  nameWithType.vb: BotException.New
 - uid: Robocode.TankRoyale.BotApi.BotInfo
   name: BotInfo
   href: api/Robocode.TankRoyale.BotApi.BotInfo.html
   commentId: T:Robocode.TankRoyale.BotApi.BotInfo
   fullName: Robocode.TankRoyale.BotApi.BotInfo
   nameWithType: BotInfo
-- uid: Robocode.TankRoyale.BotApi.BotInfo.#ctor(System.String,System.String,System.Collections.Generic.IList{System.String},System.String,System.String,System.Collections.Generic.IList{System.String},System.Collections.Generic.ICollection{System.String},System.String,System.String,Robocode.TankRoyale.BotApi.InitialPosition)
-  name: BotInfo(String, String, IList<String>, String, String, IList<String>, ICollection<String>, String, String, InitialPosition)
-  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo__ctor_System_String_System_String_System_Collections_Generic_IList_System_String__System_String_System_String_System_Collections_Generic_IList_System_String__System_Collections_Generic_ICollection_System_String__System_String_System_String_Robocode_TankRoyale_BotApi_InitialPosition_
-  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.#ctor(System.String,System.String,System.Collections.Generic.IList{System.String},System.String,System.String,System.Collections.Generic.IList{System.String},System.Collections.Generic.ICollection{System.String},System.String,System.String,Robocode.TankRoyale.BotApi.InitialPosition)
-  name.vb: BotInfo(String, String, IList(Of String), String, String, IList(Of String), ICollection(Of String), String, String, InitialPosition)
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.BotInfo(System.String, System.String, System.Collections.Generic.IList<System.String>, System.String, System.String, System.Collections.Generic.IList<System.String>, System.Collections.Generic.ICollection<System.String>, System.String, System.String, Robocode.TankRoyale.BotApi.InitialPosition)
-  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.BotInfo(System.String, System.String, System.Collections.Generic.IList(Of System.String), System.String, System.String, System.Collections.Generic.IList(Of System.String), System.Collections.Generic.ICollection(Of System.String), System.String, System.String, Robocode.TankRoyale.BotApi.InitialPosition)
-  nameWithType: BotInfo.BotInfo(String, String, IList<String>, String, String, IList<String>, ICollection<String>, String, String, InitialPosition)
-  nameWithType.vb: BotInfo.BotInfo(String, String, IList(Of String), String, String, IList(Of String), ICollection(Of String), String, String, InitialPosition)
+- uid: Robocode.TankRoyale.BotApi.BotInfo.#ctor(System.String,System.String,System.Collections.Generic.IList{System.String},System.String,System.String,System.Collections.Generic.IList{System.String},System.Collections.Generic.ISet{System.String},System.String,System.String,Robocode.TankRoyale.BotApi.InitialPosition)
+  name: BotInfo(string, string, IList<string>, string, string, IList<string>, ISet<string>, string, string, InitialPosition)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo__ctor_System_String_System_String_System_Collections_Generic_IList_System_String__System_String_System_String_System_Collections_Generic_IList_System_String__System_Collections_Generic_ISet_System_String__System_String_System_String_Robocode_TankRoyale_BotApi_InitialPosition_
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.#ctor(System.String,System.String,System.Collections.Generic.IList{System.String},System.String,System.String,System.Collections.Generic.IList{System.String},System.Collections.Generic.ISet{System.String},System.String,System.String,Robocode.TankRoyale.BotApi.InitialPosition)
+  name.vb: New(String, String, IList(Of String), String, String, IList(Of String), ISet(Of String), String, String, InitialPosition)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.BotInfo(string, string, System.Collections.Generic.IList<string>, string, string, System.Collections.Generic.IList<string>, System.Collections.Generic.ISet<string>, string, string, Robocode.TankRoyale.BotApi.InitialPosition)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.New(String, String, System.Collections.Generic.IList(Of String), String, String, System.Collections.Generic.IList(Of String), System.Collections.Generic.ISet(Of String), String, String, Robocode.TankRoyale.BotApi.InitialPosition)
+  nameWithType: BotInfo.BotInfo(string, string, IList<string>, string, string, IList<string>, ISet<string>, string, string, InitialPosition)
+  nameWithType.vb: BotInfo.New(String, String, IList(Of String), String, String, IList(Of String), ISet(Of String), String, String, InitialPosition)
 - uid: Robocode.TankRoyale.BotApi.BotInfo.#ctor*
   name: BotInfo
   href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.BotInfo.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.BotInfo.BotInfo
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.New
   nameWithType: BotInfo.BotInfo
+  nameWithType.vb: BotInfo.New
 - uid: Robocode.TankRoyale.BotApi.BotInfo.Authors
   name: Authors
   href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_Authors
@@ -1806,11 +1950,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BotInfo.FromConfiguration
   nameWithType: BotInfo.FromConfiguration
 - uid: Robocode.TankRoyale.BotApi.BotInfo.FromFile(System.String,System.String)
-  name: FromFile(String, String)
+  name: FromFile(string, string)
   href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromFile_System_String_System_String_
   commentId: M:Robocode.TankRoyale.BotApi.BotInfo.FromFile(System.String,System.String)
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.FromFile(System.String, System.String)
-  nameWithType: BotInfo.FromFile(String, String)
+  name.vb: FromFile(String, String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.FromFile(string, string)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.FromFile(String, String)
+  nameWithType: BotInfo.FromFile(string, string)
+  nameWithType.vb: BotInfo.FromFile(String, String)
 - uid: Robocode.TankRoyale.BotApi.BotInfo.FromFile*
   name: FromFile
   href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromFile_
@@ -1851,11 +1998,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder
   nameWithType: BotInfo.IBuilder
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor(System.String)
-  name: AddAuthor(String)
+  name: AddAuthor(string)
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddAuthor_System_String_
   commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor(System.String)
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor(System.String)
-  nameWithType: BotInfo.IBuilder.AddAuthor(String)
+  name.vb: AddAuthor(String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor(string)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor(String)
+  nameWithType: BotInfo.IBuilder.AddAuthor(string)
+  nameWithType.vb: BotInfo.IBuilder.AddAuthor(String)
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor*
   name: AddAuthor
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddAuthor_
@@ -1864,11 +2014,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor
   nameWithType: BotInfo.IBuilder.AddAuthor
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode(System.String)
-  name: AddCountryCode(String)
+  name: AddCountryCode(string)
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddCountryCode_System_String_
   commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode(System.String)
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode(System.String)
-  nameWithType: BotInfo.IBuilder.AddCountryCode(String)
+  name.vb: AddCountryCode(String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode(string)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode(String)
+  nameWithType: BotInfo.IBuilder.AddCountryCode(string)
+  nameWithType.vb: BotInfo.IBuilder.AddCountryCode(String)
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode*
   name: AddCountryCode
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddCountryCode_
@@ -1877,11 +2030,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode
   nameWithType: BotInfo.IBuilder.AddCountryCode
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType(System.String)
-  name: AddGameType(String)
+  name: AddGameType(string)
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddGameType_System_String_
   commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType(System.String)
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType(System.String)
-  nameWithType: BotInfo.IBuilder.AddGameType(String)
+  name.vb: AddGameType(String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType(string)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType(String)
+  nameWithType: BotInfo.IBuilder.AddGameType(string)
+  nameWithType.vb: BotInfo.IBuilder.AddGameType(String)
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType*
   name: AddGameType
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddGameType_
@@ -1916,13 +2072,13 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Copy
   nameWithType: BotInfo.IBuilder.Copy
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors(System.Collections.Generic.IEnumerable{System.String})
-  name: SetAuthors(IEnumerable<String>)
+  name: SetAuthors(IEnumerable<string>)
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetAuthors_System_Collections_Generic_IEnumerable_System_String__
   commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors(System.Collections.Generic.IEnumerable{System.String})
   name.vb: SetAuthors(IEnumerable(Of String))
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors(System.Collections.Generic.IEnumerable<System.String>)
-  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors(System.Collections.Generic.IEnumerable(Of System.String))
-  nameWithType: BotInfo.IBuilder.SetAuthors(IEnumerable<String>)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors(System.Collections.Generic.IEnumerable<string>)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors(System.Collections.Generic.IEnumerable(Of String))
+  nameWithType: BotInfo.IBuilder.SetAuthors(IEnumerable<string>)
   nameWithType.vb: BotInfo.IBuilder.SetAuthors(IEnumerable(Of String))
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors*
   name: SetAuthors
@@ -1932,13 +2088,13 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors
   nameWithType: BotInfo.IBuilder.SetAuthors
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes(System.Collections.Generic.IEnumerable{System.String})
-  name: SetCountryCodes(IEnumerable<String>)
+  name: SetCountryCodes(IEnumerable<string>)
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetCountryCodes_System_Collections_Generic_IEnumerable_System_String__
   commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes(System.Collections.Generic.IEnumerable{System.String})
   name.vb: SetCountryCodes(IEnumerable(Of String))
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes(System.Collections.Generic.IEnumerable<System.String>)
-  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes(System.Collections.Generic.IEnumerable(Of System.String))
-  nameWithType: BotInfo.IBuilder.SetCountryCodes(IEnumerable<String>)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes(System.Collections.Generic.IEnumerable<string>)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes(System.Collections.Generic.IEnumerable(Of String))
+  nameWithType: BotInfo.IBuilder.SetCountryCodes(IEnumerable<string>)
   nameWithType.vb: BotInfo.IBuilder.SetCountryCodes(IEnumerable(Of String))
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes*
   name: SetCountryCodes
@@ -1948,11 +2104,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes
   nameWithType: BotInfo.IBuilder.SetCountryCodes
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription(System.String)
-  name: SetDescription(String)
+  name: SetDescription(string)
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetDescription_System_String_
   commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription(System.String)
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription(System.String)
-  nameWithType: BotInfo.IBuilder.SetDescription(String)
+  name.vb: SetDescription(String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription(string)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription(String)
+  nameWithType: BotInfo.IBuilder.SetDescription(string)
+  nameWithType.vb: BotInfo.IBuilder.SetDescription(String)
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription*
   name: SetDescription
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetDescription_
@@ -1960,15 +2119,15 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription
   nameWithType: BotInfo.IBuilder.SetDescription
-- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes(System.Collections.Generic.ICollection{System.String})
-  name: SetGameTypes(ICollection<String>)
-  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetGameTypes_System_Collections_Generic_ICollection_System_String__
-  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes(System.Collections.Generic.ICollection{System.String})
-  name.vb: SetGameTypes(ICollection(Of String))
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes(System.Collections.Generic.ICollection<System.String>)
-  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes(System.Collections.Generic.ICollection(Of System.String))
-  nameWithType: BotInfo.IBuilder.SetGameTypes(ICollection<String>)
-  nameWithType.vb: BotInfo.IBuilder.SetGameTypes(ICollection(Of String))
+- uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes(System.Collections.Generic.ISet{System.String})
+  name: SetGameTypes(ISet<string>)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetGameTypes_System_Collections_Generic_ISet_System_String__
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes(System.Collections.Generic.ISet{System.String})
+  name.vb: SetGameTypes(ISet(Of String))
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes(System.Collections.Generic.ISet<string>)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes(System.Collections.Generic.ISet(Of String))
+  nameWithType: BotInfo.IBuilder.SetGameTypes(ISet<string>)
+  nameWithType.vb: BotInfo.IBuilder.SetGameTypes(ISet(Of String))
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes*
   name: SetGameTypes
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetGameTypes_
@@ -1977,11 +2136,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes
   nameWithType: BotInfo.IBuilder.SetGameTypes
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage(System.String)
-  name: SetHomepage(String)
+  name: SetHomepage(string)
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetHomepage_System_String_
   commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage(System.String)
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage(System.String)
-  nameWithType: BotInfo.IBuilder.SetHomepage(String)
+  name.vb: SetHomepage(String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage(string)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage(String)
+  nameWithType: BotInfo.IBuilder.SetHomepage(string)
+  nameWithType.vb: BotInfo.IBuilder.SetHomepage(String)
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage*
   name: SetHomepage
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetHomepage_
@@ -2003,11 +2165,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetInitialPosition
   nameWithType: BotInfo.IBuilder.SetInitialPosition
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName(System.String)
-  name: SetName(String)
+  name: SetName(string)
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetName_System_String_
   commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName(System.String)
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName(System.String)
-  nameWithType: BotInfo.IBuilder.SetName(String)
+  name.vb: SetName(String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName(string)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName(String)
+  nameWithType: BotInfo.IBuilder.SetName(string)
+  nameWithType.vb: BotInfo.IBuilder.SetName(String)
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName*
   name: SetName
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetName_
@@ -2016,11 +2181,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName
   nameWithType: BotInfo.IBuilder.SetName
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform(System.String)
-  name: SetPlatform(String)
+  name: SetPlatform(string)
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetPlatform_System_String_
   commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform(System.String)
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform(System.String)
-  nameWithType: BotInfo.IBuilder.SetPlatform(String)
+  name.vb: SetPlatform(String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform(string)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform(String)
+  nameWithType: BotInfo.IBuilder.SetPlatform(string)
+  nameWithType.vb: BotInfo.IBuilder.SetPlatform(String)
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform*
   name: SetPlatform
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetPlatform_
@@ -2029,11 +2197,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform
   nameWithType: BotInfo.IBuilder.SetPlatform
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang(System.String)
-  name: SetProgrammingLang(String)
+  name: SetProgrammingLang(string)
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetProgrammingLang_System_String_
   commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang(System.String)
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang(System.String)
-  nameWithType: BotInfo.IBuilder.SetProgrammingLang(String)
+  name.vb: SetProgrammingLang(String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang(string)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang(String)
+  nameWithType: BotInfo.IBuilder.SetProgrammingLang(string)
+  nameWithType.vb: BotInfo.IBuilder.SetProgrammingLang(String)
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang*
   name: SetProgrammingLang
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetProgrammingLang_
@@ -2042,11 +2213,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang
   nameWithType: BotInfo.IBuilder.SetProgrammingLang
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion(System.String)
-  name: SetVersion(String)
+  name: SetVersion(string)
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetVersion_System_String_
   commentId: M:Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion(System.String)
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion(System.String)
-  nameWithType: BotInfo.IBuilder.SetVersion(String)
+  name.vb: SetVersion(String)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion(string)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion(String)
+  nameWithType: BotInfo.IBuilder.SetVersion(string)
+  nameWithType.vb: BotInfo.IBuilder.SetVersion(String)
 - uid: Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion*
   name: SetVersion
   href: api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetVersion_
@@ -2192,18 +2366,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BotResults
   nameWithType: BotResults
 - uid: Robocode.TankRoyale.BotApi.BotResults.#ctor(System.Int32,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)
-  name: BotResults(Int32, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double)
+  name: BotResults(int, double, double, double, double, double, double, double, double, double, double)
   href: api/Robocode.TankRoyale.BotApi.BotResults.html#Robocode_TankRoyale_BotApi_BotResults__ctor_System_Int32_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.BotResults.#ctor(System.Int32,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.BotResults.BotResults(System.Int32, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double)
-  nameWithType: BotResults.BotResults(Int32, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double)
+  name.vb: New(Integer, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.BotResults.BotResults(int, double, double, double, double, double, double, double, double, double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotResults.New(Integer, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double)
+  nameWithType: BotResults.BotResults(int, double, double, double, double, double, double, double, double, double, double)
+  nameWithType.vb: BotResults.New(Integer, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double)
 - uid: Robocode.TankRoyale.BotApi.BotResults.#ctor*
   name: BotResults
   href: api/Robocode.TankRoyale.BotApi.BotResults.html#Robocode_TankRoyale_BotApi_BotResults__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.BotResults.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.BotResults.BotResults
+  fullName.vb: Robocode.TankRoyale.BotApi.BotResults.New
   nameWithType: BotResults.BotResults
+  nameWithType.vb: BotResults.New
 - uid: Robocode.TankRoyale.BotApi.BotResults.BulletDamage
   name: BulletDamage
   href: api/Robocode.TankRoyale.BotApi.BotResults.html#Robocode_TankRoyale_BotApi_BotResults_BulletDamage
@@ -2354,18 +2534,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BotState
   nameWithType: BotState
 - uid: Robocode.TankRoyale.BotApi.BotState.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color)
-  name: BotState(Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Color, Color, Color, Color, Color, Color, Color)
+  name: BotState(double, double, double, double, double, double, double, double, double, double, double, double, Color, Color, Color, Color, Color, Color, Color)
   href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState__ctor_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_
   commentId: M:Robocode.TankRoyale.BotApi.BotState.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color)
-  fullName: Robocode.TankRoyale.BotApi.BotState.BotState(System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color)
-  nameWithType: BotState.BotState(Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Color, Color, Color, Color, Color, Color, Color)
+  name.vb: New(Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Color, Color, Color, Color, Color, Color, Color)
+  fullName: Robocode.TankRoyale.BotApi.BotState.BotState(double, double, double, double, double, double, double, double, double, double, double, double, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotState.New(Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color)
+  nameWithType: BotState.BotState(double, double, double, double, double, double, double, double, double, double, double, double, Color, Color, Color, Color, Color, Color, Color)
+  nameWithType.vb: BotState.New(Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Color, Color, Color, Color, Color, Color, Color)
 - uid: Robocode.TankRoyale.BotApi.BotState.#ctor*
   name: BotState
   href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.BotState.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.BotState.BotState
+  fullName.vb: Robocode.TankRoyale.BotApi.BotState.New
   nameWithType: BotState.BotState
+  nameWithType.vb: BotState.New
 - uid: Robocode.TankRoyale.BotApi.BotState.BodyColor
   name: BodyColor
   href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState_BodyColor
@@ -2620,18 +2806,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.BulletState
   nameWithType: BulletState
 - uid: Robocode.TankRoyale.BotApi.BulletState.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Double,System.Double,Robocode.TankRoyale.BotApi.Color)
-  name: BulletState(Int32, Int32, Double, Double, Double, Double, Color)
+  name: BulletState(int, int, double, double, double, double, Color)
   href: api/Robocode.TankRoyale.BotApi.BulletState.html#Robocode_TankRoyale_BotApi_BulletState__ctor_System_Int32_System_Int32_System_Double_System_Double_System_Double_System_Double_Robocode_TankRoyale_BotApi_Color_
   commentId: M:Robocode.TankRoyale.BotApi.BulletState.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Double,System.Double,Robocode.TankRoyale.BotApi.Color)
-  fullName: Robocode.TankRoyale.BotApi.BulletState.BulletState(System.Int32, System.Int32, System.Double, System.Double, System.Double, System.Double, Robocode.TankRoyale.BotApi.Color)
-  nameWithType: BulletState.BulletState(Int32, Int32, Double, Double, Double, Double, Color)
+  name.vb: New(Integer, Integer, Double, Double, Double, Double, Color)
+  fullName: Robocode.TankRoyale.BotApi.BulletState.BulletState(int, int, double, double, double, double, Robocode.TankRoyale.BotApi.Color)
+  fullName.vb: Robocode.TankRoyale.BotApi.BulletState.New(Integer, Integer, Double, Double, Double, Double, Robocode.TankRoyale.BotApi.Color)
+  nameWithType: BulletState.BulletState(int, int, double, double, double, double, Color)
+  nameWithType.vb: BulletState.New(Integer, Integer, Double, Double, Double, Double, Color)
 - uid: Robocode.TankRoyale.BotApi.BulletState.#ctor*
   name: BulletState
   href: api/Robocode.TankRoyale.BotApi.BulletState.html#Robocode_TankRoyale_BotApi_BulletState__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.BulletState.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.BulletState.BulletState
+  fullName.vb: Robocode.TankRoyale.BotApi.BulletState.New
   nameWithType: BulletState.BulletState
+  nameWithType.vb: BulletState.New
 - uid: Robocode.TankRoyale.BotApi.BulletState.BulletId
   name: BulletId
   href: api/Robocode.TankRoyale.BotApi.BulletState.html#Robocode_TankRoyale_BotApi_BulletState_BulletId
@@ -2743,18 +2935,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Color
   nameWithType: Color
 - uid: Robocode.TankRoyale.BotApi.Color.#ctor(System.Int32,System.Int32,System.Int32)
-  name: Color(Int32, Int32, Int32)
+  name: Color(int, int, int)
   href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color__ctor_System_Int32_System_Int32_System_Int32_
   commentId: M:Robocode.TankRoyale.BotApi.Color.#ctor(System.Int32,System.Int32,System.Int32)
-  fullName: Robocode.TankRoyale.BotApi.Color.Color(System.Int32, System.Int32, System.Int32)
-  nameWithType: Color.Color(Int32, Int32, Int32)
+  name.vb: New(Integer, Integer, Integer)
+  fullName: Robocode.TankRoyale.BotApi.Color.Color(int, int, int)
+  fullName.vb: Robocode.TankRoyale.BotApi.Color.New(Integer, Integer, Integer)
+  nameWithType: Color.Color(int, int, int)
+  nameWithType.vb: Color.New(Integer, Integer, Integer)
 - uid: Robocode.TankRoyale.BotApi.Color.#ctor*
   name: Color
   href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Color.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Color.Color
+  fullName.vb: Robocode.TankRoyale.BotApi.Color.New
   nameWithType: Color.Color
+  nameWithType.vb: Color.New
 - uid: Robocode.TankRoyale.BotApi.Color.Black
   name: Black
   href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color_Black
@@ -2787,11 +2985,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Color.Cyan
   nameWithType: Color.Cyan
 - uid: Robocode.TankRoyale.BotApi.Color.Equals(System.Object)
-  name: Equals(Object)
+  name: Equals(object)
   href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color_Equals_System_Object_
   commentId: M:Robocode.TankRoyale.BotApi.Color.Equals(System.Object)
-  fullName: Robocode.TankRoyale.BotApi.Color.Equals(System.Object)
-  nameWithType: Color.Equals(Object)
+  name.vb: Equals(Object)
+  fullName: Robocode.TankRoyale.BotApi.Color.Equals(object)
+  fullName.vb: Robocode.TankRoyale.BotApi.Color.Equals(Object)
+  nameWithType: Color.Equals(object)
+  nameWithType.vb: Color.Equals(Object)
 - uid: Robocode.TankRoyale.BotApi.Color.Equals*
   name: Equals
   href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color_Equals_
@@ -2800,11 +3001,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Color.Equals
   nameWithType: Color.Equals
 - uid: Robocode.TankRoyale.BotApi.Color.FromHex(System.String)
-  name: FromHex(String)
+  name: FromHex(string)
   href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color_FromHex_System_String_
   commentId: M:Robocode.TankRoyale.BotApi.Color.FromHex(System.String)
-  fullName: Robocode.TankRoyale.BotApi.Color.FromHex(System.String)
-  nameWithType: Color.FromHex(String)
+  name.vb: FromHex(String)
+  fullName: Robocode.TankRoyale.BotApi.Color.FromHex(string)
+  fullName.vb: Robocode.TankRoyale.BotApi.Color.FromHex(String)
+  nameWithType: Color.FromHex(string)
+  nameWithType.vb: Color.FromHex(String)
 - uid: Robocode.TankRoyale.BotApi.Color.FromHex*
   name: FromHex
   href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color_FromHex_
@@ -2813,11 +3017,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Color.FromHex
   nameWithType: Color.FromHex
 - uid: Robocode.TankRoyale.BotApi.Color.FromString(System.String)
-  name: FromString(String)
+  name: FromString(string)
   href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color_FromString_System_String_
   commentId: M:Robocode.TankRoyale.BotApi.Color.FromString(System.String)
-  fullName: Robocode.TankRoyale.BotApi.Color.FromString(System.String)
-  nameWithType: Color.FromString(String)
+  name.vb: FromString(String)
+  fullName: Robocode.TankRoyale.BotApi.Color.FromString(string)
+  fullName.vb: Robocode.TankRoyale.BotApi.Color.FromString(String)
+  nameWithType: Color.FromString(string)
+  nameWithType.vb: Color.FromString(String)
 - uid: Robocode.TankRoyale.BotApi.Color.FromString*
   name: FromString
   href: api/Robocode.TankRoyale.BotApi.Color.html#Robocode_TankRoyale_BotApi_Color_FromString_
@@ -3077,18 +3284,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.BotDeathEvent
   nameWithType: BotDeathEvent
 - uid: Robocode.TankRoyale.BotApi.Events.BotDeathEvent.#ctor(System.Int32,System.Int32)
-  name: BotDeathEvent(Int32, Int32)
+  name: BotDeathEvent(int, int)
   href: api/Robocode.TankRoyale.BotApi.Events.BotDeathEvent.html#Robocode_TankRoyale_BotApi_Events_BotDeathEvent__ctor_System_Int32_System_Int32_
   commentId: M:Robocode.TankRoyale.BotApi.Events.BotDeathEvent.#ctor(System.Int32,System.Int32)
-  fullName: Robocode.TankRoyale.BotApi.Events.BotDeathEvent.BotDeathEvent(System.Int32, System.Int32)
-  nameWithType: BotDeathEvent.BotDeathEvent(Int32, Int32)
+  name.vb: New(Integer, Integer)
+  fullName: Robocode.TankRoyale.BotApi.Events.BotDeathEvent.BotDeathEvent(int, int)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.BotDeathEvent.New(Integer, Integer)
+  nameWithType: BotDeathEvent.BotDeathEvent(int, int)
+  nameWithType.vb: BotDeathEvent.New(Integer, Integer)
 - uid: Robocode.TankRoyale.BotApi.Events.BotDeathEvent.#ctor*
   name: BotDeathEvent
   href: api/Robocode.TankRoyale.BotApi.Events.BotDeathEvent.html#Robocode_TankRoyale_BotApi_Events_BotDeathEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.BotDeathEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.BotDeathEvent.BotDeathEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.BotDeathEvent.New
   nameWithType: BotDeathEvent.BotDeathEvent
+  nameWithType.vb: BotDeathEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.BotDeathEvent.VictimId
   name: VictimId
   href: api/Robocode.TankRoyale.BotApi.Events.BotDeathEvent.html#Robocode_TankRoyale_BotApi_Events_BotDeathEvent_VictimId
@@ -3109,18 +3322,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.BotEvent
   nameWithType: BotEvent
 - uid: Robocode.TankRoyale.BotApi.Events.BotEvent.#ctor(System.Int32)
-  name: BotEvent(Int32)
+  name: BotEvent(int)
   href: api/Robocode.TankRoyale.BotApi.Events.BotEvent.html#Robocode_TankRoyale_BotApi_Events_BotEvent__ctor_System_Int32_
   commentId: M:Robocode.TankRoyale.BotApi.Events.BotEvent.#ctor(System.Int32)
-  fullName: Robocode.TankRoyale.BotApi.Events.BotEvent.BotEvent(System.Int32)
-  nameWithType: BotEvent.BotEvent(Int32)
+  name.vb: New(Integer)
+  fullName: Robocode.TankRoyale.BotApi.Events.BotEvent.BotEvent(int)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.BotEvent.New(Integer)
+  nameWithType: BotEvent.BotEvent(int)
+  nameWithType.vb: BotEvent.New(Integer)
 - uid: Robocode.TankRoyale.BotApi.Events.BotEvent.#ctor*
   name: BotEvent
   href: api/Robocode.TankRoyale.BotApi.Events.BotEvent.html#Robocode_TankRoyale_BotApi_Events_BotEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.BotEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.BotEvent.BotEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.BotEvent.New
   nameWithType: BotEvent.BotEvent
+  nameWithType.vb: BotEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.BotEvent.IsCritical
   name: IsCritical
   href: api/Robocode.TankRoyale.BotApi.Events.BotEvent.html#Robocode_TankRoyale_BotApi_Events_BotEvent_IsCritical
@@ -3154,18 +3373,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.BulletFiredEvent
   nameWithType: BulletFiredEvent
 - uid: Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.BulletState)
-  name: BulletFiredEvent(Int32, BulletState)
+  name: BulletFiredEvent(int, BulletState)
   href: api/Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.html#Robocode_TankRoyale_BotApi_Events_BulletFiredEvent__ctor_System_Int32_Robocode_TankRoyale_BotApi_BulletState_
   commentId: M:Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.BulletState)
-  fullName: Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.BulletFiredEvent(System.Int32, Robocode.TankRoyale.BotApi.BulletState)
-  nameWithType: BulletFiredEvent.BulletFiredEvent(Int32, BulletState)
+  name.vb: New(Integer, BulletState)
+  fullName: Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.BulletFiredEvent(int, Robocode.TankRoyale.BotApi.BulletState)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.New(Integer, Robocode.TankRoyale.BotApi.BulletState)
+  nameWithType: BulletFiredEvent.BulletFiredEvent(int, BulletState)
+  nameWithType.vb: BulletFiredEvent.New(Integer, BulletState)
 - uid: Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.#ctor*
   name: BulletFiredEvent
   href: api/Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.html#Robocode_TankRoyale_BotApi_Events_BulletFiredEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.BulletFiredEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.New
   nameWithType: BulletFiredEvent.BulletFiredEvent
+  nameWithType.vb: BulletFiredEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.Bullet
   name: Bullet
   href: api/Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.html#Robocode_TankRoyale_BotApi_Events_BulletFiredEvent_Bullet
@@ -3186,18 +3411,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent
   nameWithType: BulletHitBotEvent
 - uid: Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.#ctor(System.Int32,System.Int32,Robocode.TankRoyale.BotApi.BulletState,System.Double,System.Double)
-  name: BulletHitBotEvent(Int32, Int32, BulletState, Double, Double)
+  name: BulletHitBotEvent(int, int, BulletState, double, double)
   href: api/Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.html#Robocode_TankRoyale_BotApi_Events_BulletHitBotEvent__ctor_System_Int32_System_Int32_Robocode_TankRoyale_BotApi_BulletState_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.#ctor(System.Int32,System.Int32,Robocode.TankRoyale.BotApi.BulletState,System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.BulletHitBotEvent(System.Int32, System.Int32, Robocode.TankRoyale.BotApi.BulletState, System.Double, System.Double)
-  nameWithType: BulletHitBotEvent.BulletHitBotEvent(Int32, Int32, BulletState, Double, Double)
+  name.vb: New(Integer, Integer, BulletState, Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.BulletHitBotEvent(int, int, Robocode.TankRoyale.BotApi.BulletState, double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.New(Integer, Integer, Robocode.TankRoyale.BotApi.BulletState, Double, Double)
+  nameWithType: BulletHitBotEvent.BulletHitBotEvent(int, int, BulletState, double, double)
+  nameWithType.vb: BulletHitBotEvent.New(Integer, Integer, BulletState, Double, Double)
 - uid: Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.#ctor*
   name: BulletHitBotEvent
   href: api/Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.html#Robocode_TankRoyale_BotApi_Events_BulletHitBotEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.BulletHitBotEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.New
   nameWithType: BulletHitBotEvent.BulletHitBotEvent
+  nameWithType.vb: BulletHitBotEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.Bullet
   name: Bullet
   href: api/Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.html#Robocode_TankRoyale_BotApi_Events_BulletHitBotEvent_Bullet
@@ -3257,18 +3488,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent
   nameWithType: BulletHitBulletEvent
 - uid: Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.BulletState,Robocode.TankRoyale.BotApi.BulletState)
-  name: BulletHitBulletEvent(Int32, BulletState, BulletState)
+  name: BulletHitBulletEvent(int, BulletState, BulletState)
   href: api/Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.html#Robocode_TankRoyale_BotApi_Events_BulletHitBulletEvent__ctor_System_Int32_Robocode_TankRoyale_BotApi_BulletState_Robocode_TankRoyale_BotApi_BulletState_
   commentId: M:Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.BulletState,Robocode.TankRoyale.BotApi.BulletState)
-  fullName: Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.BulletHitBulletEvent(System.Int32, Robocode.TankRoyale.BotApi.BulletState, Robocode.TankRoyale.BotApi.BulletState)
-  nameWithType: BulletHitBulletEvent.BulletHitBulletEvent(Int32, BulletState, BulletState)
+  name.vb: New(Integer, BulletState, BulletState)
+  fullName: Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.BulletHitBulletEvent(int, Robocode.TankRoyale.BotApi.BulletState, Robocode.TankRoyale.BotApi.BulletState)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.New(Integer, Robocode.TankRoyale.BotApi.BulletState, Robocode.TankRoyale.BotApi.BulletState)
+  nameWithType: BulletHitBulletEvent.BulletHitBulletEvent(int, BulletState, BulletState)
+  nameWithType.vb: BulletHitBulletEvent.New(Integer, BulletState, BulletState)
 - uid: Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.#ctor*
   name: BulletHitBulletEvent
   href: api/Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.html#Robocode_TankRoyale_BotApi_Events_BulletHitBulletEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.BulletHitBulletEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.New
   nameWithType: BulletHitBulletEvent.BulletHitBulletEvent
+  nameWithType.vb: BulletHitBulletEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.Bullet
   name: Bullet
   href: api/Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.html#Robocode_TankRoyale_BotApi_Events_BulletHitBulletEvent_Bullet
@@ -3302,18 +3539,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent
   nameWithType: BulletHitWallEvent
 - uid: Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.BulletState)
-  name: BulletHitWallEvent(Int32, BulletState)
+  name: BulletHitWallEvent(int, BulletState)
   href: api/Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.html#Robocode_TankRoyale_BotApi_Events_BulletHitWallEvent__ctor_System_Int32_Robocode_TankRoyale_BotApi_BulletState_
   commentId: M:Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.BulletState)
-  fullName: Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.BulletHitWallEvent(System.Int32, Robocode.TankRoyale.BotApi.BulletState)
-  nameWithType: BulletHitWallEvent.BulletHitWallEvent(Int32, BulletState)
+  name.vb: New(Integer, BulletState)
+  fullName: Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.BulletHitWallEvent(int, Robocode.TankRoyale.BotApi.BulletState)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.New(Integer, Robocode.TankRoyale.BotApi.BulletState)
+  nameWithType: BulletHitWallEvent.BulletHitWallEvent(int, BulletState)
+  nameWithType.vb: BulletHitWallEvent.New(Integer, BulletState)
 - uid: Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.#ctor*
   name: BulletHitWallEvent
   href: api/Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.html#Robocode_TankRoyale_BotApi_Events_BulletHitWallEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.BulletHitWallEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.New
   nameWithType: BulletHitWallEvent.BulletHitWallEvent
+  nameWithType.vb: BulletHitWallEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.Bullet
   name: Bullet
   href: api/Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.html#Robocode_TankRoyale_BotApi_Events_BulletHitWallEvent_Bullet
@@ -3337,39 +3580,48 @@ references:
   name: Condition()
   href: api/Robocode.TankRoyale.BotApi.Events.Condition.html#Robocode_TankRoyale_BotApi_Events_Condition__ctor
   commentId: M:Robocode.TankRoyale.BotApi.Events.Condition.#ctor
+  name.vb: New()
   fullName: Robocode.TankRoyale.BotApi.Events.Condition.Condition()
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.Condition.New()
   nameWithType: Condition.Condition()
+  nameWithType.vb: Condition.New()
 - uid: Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.Func{System.Boolean})
-  name: Condition(Func<Boolean>)
+  name: Condition(Func<bool>)
   href: api/Robocode.TankRoyale.BotApi.Events.Condition.html#Robocode_TankRoyale_BotApi_Events_Condition__ctor_System_Func_System_Boolean__
   commentId: M:Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.Func{System.Boolean})
-  name.vb: Condition(Func(Of Boolean))
-  fullName: Robocode.TankRoyale.BotApi.Events.Condition.Condition(System.Func<System.Boolean>)
-  fullName.vb: Robocode.TankRoyale.BotApi.Events.Condition.Condition(System.Func(Of System.Boolean))
-  nameWithType: Condition.Condition(Func<Boolean>)
-  nameWithType.vb: Condition.Condition(Func(Of Boolean))
-- uid: Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.String)
-  name: Condition(String)
-  href: api/Robocode.TankRoyale.BotApi.Events.Condition.html#Robocode_TankRoyale_BotApi_Events_Condition__ctor_System_String_
-  commentId: M:Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.String)
-  fullName: Robocode.TankRoyale.BotApi.Events.Condition.Condition(System.String)
-  nameWithType: Condition.Condition(String)
+  name.vb: New(Func(Of Boolean))
+  fullName: Robocode.TankRoyale.BotApi.Events.Condition.Condition(System.Func<bool>)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.Condition.New(System.Func(Of Boolean))
+  nameWithType: Condition.Condition(Func<bool>)
+  nameWithType.vb: Condition.New(Func(Of Boolean))
 - uid: Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.String,System.Func{System.Boolean})
-  name: Condition(String, Func<Boolean>)
+  name: Condition(string, Func<bool>)
   href: api/Robocode.TankRoyale.BotApi.Events.Condition.html#Robocode_TankRoyale_BotApi_Events_Condition__ctor_System_String_System_Func_System_Boolean__
   commentId: M:Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.String,System.Func{System.Boolean})
-  name.vb: Condition(String, Func(Of Boolean))
-  fullName: Robocode.TankRoyale.BotApi.Events.Condition.Condition(System.String, System.Func<System.Boolean>)
-  fullName.vb: Robocode.TankRoyale.BotApi.Events.Condition.Condition(System.String, System.Func(Of System.Boolean))
-  nameWithType: Condition.Condition(String, Func<Boolean>)
-  nameWithType.vb: Condition.Condition(String, Func(Of Boolean))
+  name.vb: New(String, Func(Of Boolean))
+  fullName: Robocode.TankRoyale.BotApi.Events.Condition.Condition(string, System.Func<bool>)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.Condition.New(String, System.Func(Of Boolean))
+  nameWithType: Condition.Condition(string, Func<bool>)
+  nameWithType.vb: Condition.New(String, Func(Of Boolean))
+- uid: Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.String)
+  name: Condition(string)
+  href: api/Robocode.TankRoyale.BotApi.Events.Condition.html#Robocode_TankRoyale_BotApi_Events_Condition__ctor_System_String_
+  commentId: M:Robocode.TankRoyale.BotApi.Events.Condition.#ctor(System.String)
+  name.vb: New(String)
+  fullName: Robocode.TankRoyale.BotApi.Events.Condition.Condition(string)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.Condition.New(String)
+  nameWithType: Condition.Condition(string)
+  nameWithType.vb: Condition.New(String)
 - uid: Robocode.TankRoyale.BotApi.Events.Condition.#ctor*
   name: Condition
   href: api/Robocode.TankRoyale.BotApi.Events.Condition.html#Robocode_TankRoyale_BotApi_Events_Condition__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.Condition.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.Condition.Condition
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.Condition.New
   nameWithType: Condition.Condition
+  nameWithType.vb: Condition.New
 - uid: Robocode.TankRoyale.BotApi.Events.Condition.Name
   name: Name
   href: api/Robocode.TankRoyale.BotApi.Events.Condition.html#Robocode_TankRoyale_BotApi_Events_Condition_Name
@@ -3406,15 +3658,21 @@ references:
   name: ConnectedEvent(Uri)
   href: api/Robocode.TankRoyale.BotApi.Events.ConnectedEvent.html#Robocode_TankRoyale_BotApi_Events_ConnectedEvent__ctor_System_Uri_
   commentId: M:Robocode.TankRoyale.BotApi.Events.ConnectedEvent.#ctor(System.Uri)
+  name.vb: New(Uri)
   fullName: Robocode.TankRoyale.BotApi.Events.ConnectedEvent.ConnectedEvent(System.Uri)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.ConnectedEvent.New(System.Uri)
   nameWithType: ConnectedEvent.ConnectedEvent(Uri)
+  nameWithType.vb: ConnectedEvent.New(Uri)
 - uid: Robocode.TankRoyale.BotApi.Events.ConnectedEvent.#ctor*
   name: ConnectedEvent
   href: api/Robocode.TankRoyale.BotApi.Events.ConnectedEvent.html#Robocode_TankRoyale_BotApi_Events_ConnectedEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.ConnectedEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.ConnectedEvent.ConnectedEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.ConnectedEvent.New
   nameWithType: ConnectedEvent.ConnectedEvent
+  nameWithType.vb: ConnectedEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent
   name: ConnectionErrorEvent
   href: api/Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent.html
@@ -3425,15 +3683,21 @@ references:
   name: ConnectionErrorEvent(Uri, Exception)
   href: api/Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent.html#Robocode_TankRoyale_BotApi_Events_ConnectionErrorEvent__ctor_System_Uri_System_Exception_
   commentId: M:Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent.#ctor(System.Uri,System.Exception)
+  name.vb: New(Uri, Exception)
   fullName: Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent.ConnectionErrorEvent(System.Uri, System.Exception)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent.New(System.Uri, System.Exception)
   nameWithType: ConnectionErrorEvent.ConnectionErrorEvent(Uri, Exception)
+  nameWithType.vb: ConnectionErrorEvent.New(Uri, Exception)
 - uid: Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent.#ctor*
   name: ConnectionErrorEvent
   href: api/Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent.html#Robocode_TankRoyale_BotApi_Events_ConnectionErrorEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent.ConnectionErrorEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent.New
   nameWithType: ConnectionErrorEvent.ConnectionErrorEvent
+  nameWithType.vb: ConnectionErrorEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent.Exception
   name: Exception
   href: api/Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent.html#Robocode_TankRoyale_BotApi_Events_ConnectionErrorEvent_Exception
@@ -3457,15 +3721,21 @@ references:
   name: ConnectionEvent(Uri)
   href: api/Robocode.TankRoyale.BotApi.Events.ConnectionEvent.html#Robocode_TankRoyale_BotApi_Events_ConnectionEvent__ctor_System_Uri_
   commentId: M:Robocode.TankRoyale.BotApi.Events.ConnectionEvent.#ctor(System.Uri)
+  name.vb: New(Uri)
   fullName: Robocode.TankRoyale.BotApi.Events.ConnectionEvent.ConnectionEvent(System.Uri)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.ConnectionEvent.New(System.Uri)
   nameWithType: ConnectionEvent.ConnectionEvent(Uri)
+  nameWithType.vb: ConnectionEvent.New(Uri)
 - uid: Robocode.TankRoyale.BotApi.Events.ConnectionEvent.#ctor*
   name: ConnectionEvent
   href: api/Robocode.TankRoyale.BotApi.Events.ConnectionEvent.html#Robocode_TankRoyale_BotApi_Events_ConnectionEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.ConnectionEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.ConnectionEvent.ConnectionEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.ConnectionEvent.New
   nameWithType: ConnectionEvent.ConnectionEvent
+  nameWithType.vb: ConnectionEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.ConnectionEvent.ServerUri
   name: ServerUri
   href: api/Robocode.TankRoyale.BotApi.Events.ConnectionEvent.html#Robocode_TankRoyale_BotApi_Events_ConnectionEvent_ServerUri
@@ -3486,18 +3756,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.CustomEvent
   nameWithType: CustomEvent
 - uid: Robocode.TankRoyale.BotApi.Events.CustomEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.Events.Condition)
-  name: CustomEvent(Int32, Condition)
+  name: CustomEvent(int, Condition)
   href: api/Robocode.TankRoyale.BotApi.Events.CustomEvent.html#Robocode_TankRoyale_BotApi_Events_CustomEvent__ctor_System_Int32_Robocode_TankRoyale_BotApi_Events_Condition_
   commentId: M:Robocode.TankRoyale.BotApi.Events.CustomEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.Events.Condition)
-  fullName: Robocode.TankRoyale.BotApi.Events.CustomEvent.CustomEvent(System.Int32, Robocode.TankRoyale.BotApi.Events.Condition)
-  nameWithType: CustomEvent.CustomEvent(Int32, Condition)
+  name.vb: New(Integer, Condition)
+  fullName: Robocode.TankRoyale.BotApi.Events.CustomEvent.CustomEvent(int, Robocode.TankRoyale.BotApi.Events.Condition)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.CustomEvent.New(Integer, Robocode.TankRoyale.BotApi.Events.Condition)
+  nameWithType: CustomEvent.CustomEvent(int, Condition)
+  nameWithType.vb: CustomEvent.New(Integer, Condition)
 - uid: Robocode.TankRoyale.BotApi.Events.CustomEvent.#ctor*
   name: CustomEvent
   href: api/Robocode.TankRoyale.BotApi.Events.CustomEvent.html#Robocode_TankRoyale_BotApi_Events_CustomEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.CustomEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.CustomEvent.CustomEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.CustomEvent.New
   nameWithType: CustomEvent.CustomEvent
+  nameWithType.vb: CustomEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.CustomEvent.Condition
   name: Condition
   href: api/Robocode.TankRoyale.BotApi.Events.CustomEvent.html#Robocode_TankRoyale_BotApi_Events_CustomEvent_Condition
@@ -3518,18 +3794,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.DeathEvent
   nameWithType: DeathEvent
 - uid: Robocode.TankRoyale.BotApi.Events.DeathEvent.#ctor(System.Int32)
-  name: DeathEvent(Int32)
+  name: DeathEvent(int)
   href: api/Robocode.TankRoyale.BotApi.Events.DeathEvent.html#Robocode_TankRoyale_BotApi_Events_DeathEvent__ctor_System_Int32_
   commentId: M:Robocode.TankRoyale.BotApi.Events.DeathEvent.#ctor(System.Int32)
-  fullName: Robocode.TankRoyale.BotApi.Events.DeathEvent.DeathEvent(System.Int32)
-  nameWithType: DeathEvent.DeathEvent(Int32)
+  name.vb: New(Integer)
+  fullName: Robocode.TankRoyale.BotApi.Events.DeathEvent.DeathEvent(int)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.DeathEvent.New(Integer)
+  nameWithType: DeathEvent.DeathEvent(int)
+  nameWithType.vb: DeathEvent.New(Integer)
 - uid: Robocode.TankRoyale.BotApi.Events.DeathEvent.#ctor*
   name: DeathEvent
   href: api/Robocode.TankRoyale.BotApi.Events.DeathEvent.html#Robocode_TankRoyale_BotApi_Events_DeathEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.DeathEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.DeathEvent.DeathEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.DeathEvent.New
   nameWithType: DeathEvent.DeathEvent
+  nameWithType.vb: DeathEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.DeathEvent.IsCritical
   name: IsCritical
   href: api/Robocode.TankRoyale.BotApi.Events.DeathEvent.html#Robocode_TankRoyale_BotApi_Events_DeathEvent_IsCritical
@@ -3646,21 +3928,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.DisconnectedEvent
   nameWithType: DisconnectedEvent
 - uid: Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.#ctor(System.Uri,System.Boolean,System.Nullable{System.Int32},System.String)
-  name: DisconnectedEvent(Uri, Boolean, Nullable<Int32>, String)
+  name: DisconnectedEvent(Uri, bool, int?, string)
   href: api/Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.html#Robocode_TankRoyale_BotApi_Events_DisconnectedEvent__ctor_System_Uri_System_Boolean_System_Nullable_System_Int32__System_String_
   commentId: M:Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.#ctor(System.Uri,System.Boolean,System.Nullable{System.Int32},System.String)
-  name.vb: DisconnectedEvent(Uri, Boolean, Nullable(Of Int32), String)
-  fullName: Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.DisconnectedEvent(System.Uri, System.Boolean, System.Nullable<System.Int32>, System.String)
-  fullName.vb: Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.DisconnectedEvent(System.Uri, System.Boolean, System.Nullable(Of System.Int32), System.String)
-  nameWithType: DisconnectedEvent.DisconnectedEvent(Uri, Boolean, Nullable<Int32>, String)
-  nameWithType.vb: DisconnectedEvent.DisconnectedEvent(Uri, Boolean, Nullable(Of Int32), String)
+  name.vb: New(Uri, Boolean, Integer?, String)
+  fullName: Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.DisconnectedEvent(System.Uri, bool, int?, string)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.New(System.Uri, Boolean, Integer?, String)
+  nameWithType: DisconnectedEvent.DisconnectedEvent(Uri, bool, int?, string)
+  nameWithType.vb: DisconnectedEvent.New(Uri, Boolean, Integer?, String)
 - uid: Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.#ctor*
   name: DisconnectedEvent
   href: api/Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.html#Robocode_TankRoyale_BotApi_Events_DisconnectedEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.DisconnectedEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.New
   nameWithType: DisconnectedEvent.DisconnectedEvent
+  nameWithType.vb: DisconnectedEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.Reason
   name: Reason
   href: api/Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.html#Robocode_TankRoyale_BotApi_Events_DisconnectedEvent_Reason
@@ -3707,18 +3992,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.GameEndedEvent
   nameWithType: GameEndedEvent
 - uid: Robocode.TankRoyale.BotApi.Events.GameEndedEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.BotResults)
-  name: GameEndedEvent(Int32, BotResults)
+  name: GameEndedEvent(int, BotResults)
   href: api/Robocode.TankRoyale.BotApi.Events.GameEndedEvent.html#Robocode_TankRoyale_BotApi_Events_GameEndedEvent__ctor_System_Int32_Robocode_TankRoyale_BotApi_BotResults_
   commentId: M:Robocode.TankRoyale.BotApi.Events.GameEndedEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.BotResults)
-  fullName: Robocode.TankRoyale.BotApi.Events.GameEndedEvent.GameEndedEvent(System.Int32, Robocode.TankRoyale.BotApi.BotResults)
-  nameWithType: GameEndedEvent.GameEndedEvent(Int32, BotResults)
+  name.vb: New(Integer, BotResults)
+  fullName: Robocode.TankRoyale.BotApi.Events.GameEndedEvent.GameEndedEvent(int, Robocode.TankRoyale.BotApi.BotResults)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.GameEndedEvent.New(Integer, Robocode.TankRoyale.BotApi.BotResults)
+  nameWithType: GameEndedEvent.GameEndedEvent(int, BotResults)
+  nameWithType.vb: GameEndedEvent.New(Integer, BotResults)
 - uid: Robocode.TankRoyale.BotApi.Events.GameEndedEvent.#ctor*
   name: GameEndedEvent
   href: api/Robocode.TankRoyale.BotApi.Events.GameEndedEvent.html#Robocode_TankRoyale_BotApi_Events_GameEndedEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.GameEndedEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.GameEndedEvent.GameEndedEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.GameEndedEvent.New
   nameWithType: GameEndedEvent.GameEndedEvent
+  nameWithType.vb: GameEndedEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.GameEndedEvent.NumberOfRounds
   name: NumberOfRounds
   href: api/Robocode.TankRoyale.BotApi.Events.GameEndedEvent.html#Robocode_TankRoyale_BotApi_Events_GameEndedEvent_NumberOfRounds
@@ -3752,18 +4043,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.GameStartedEvent
   nameWithType: GameStartedEvent
 - uid: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.GameSetup)
-  name: GameStartedEvent(Int32, GameSetup)
+  name: GameStartedEvent(int, GameSetup)
   href: api/Robocode.TankRoyale.BotApi.Events.GameStartedEvent.html#Robocode_TankRoyale_BotApi_Events_GameStartedEvent__ctor_System_Int32_Robocode_TankRoyale_BotApi_GameSetup_
   commentId: M:Robocode.TankRoyale.BotApi.Events.GameStartedEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.GameSetup)
-  fullName: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.GameStartedEvent(System.Int32, Robocode.TankRoyale.BotApi.GameSetup)
-  nameWithType: GameStartedEvent.GameStartedEvent(Int32, GameSetup)
+  name.vb: New(Integer, GameSetup)
+  fullName: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.GameStartedEvent(int, Robocode.TankRoyale.BotApi.GameSetup)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.New(Integer, Robocode.TankRoyale.BotApi.GameSetup)
+  nameWithType: GameStartedEvent.GameStartedEvent(int, GameSetup)
+  nameWithType.vb: GameStartedEvent.New(Integer, GameSetup)
 - uid: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.#ctor*
   name: GameStartedEvent
   href: api/Robocode.TankRoyale.BotApi.Events.GameStartedEvent.html#Robocode_TankRoyale_BotApi_Events_GameStartedEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.GameStartedEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.GameStartedEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.New
   nameWithType: GameStartedEvent.GameStartedEvent
+  nameWithType.vb: GameStartedEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.GameSetup
   name: GameSetup
   href: api/Robocode.TankRoyale.BotApi.Events.GameStartedEvent.html#Robocode_TankRoyale_BotApi_Events_GameStartedEvent_GameSetup
@@ -3797,18 +4094,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.HitBotEvent
   nameWithType: HitBotEvent
 - uid: Robocode.TankRoyale.BotApi.Events.HitBotEvent.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Double,System.Boolean)
-  name: HitBotEvent(Int32, Int32, Double, Double, Double, Boolean)
+  name: HitBotEvent(int, int, double, double, double, bool)
   href: api/Robocode.TankRoyale.BotApi.Events.HitBotEvent.html#Robocode_TankRoyale_BotApi_Events_HitBotEvent__ctor_System_Int32_System_Int32_System_Double_System_Double_System_Double_System_Boolean_
   commentId: M:Robocode.TankRoyale.BotApi.Events.HitBotEvent.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Double,System.Boolean)
-  fullName: Robocode.TankRoyale.BotApi.Events.HitBotEvent.HitBotEvent(System.Int32, System.Int32, System.Double, System.Double, System.Double, System.Boolean)
-  nameWithType: HitBotEvent.HitBotEvent(Int32, Int32, Double, Double, Double, Boolean)
+  name.vb: New(Integer, Integer, Double, Double, Double, Boolean)
+  fullName: Robocode.TankRoyale.BotApi.Events.HitBotEvent.HitBotEvent(int, int, double, double, double, bool)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.HitBotEvent.New(Integer, Integer, Double, Double, Double, Boolean)
+  nameWithType: HitBotEvent.HitBotEvent(int, int, double, double, double, bool)
+  nameWithType.vb: HitBotEvent.New(Integer, Integer, Double, Double, Double, Boolean)
 - uid: Robocode.TankRoyale.BotApi.Events.HitBotEvent.#ctor*
   name: HitBotEvent
   href: api/Robocode.TankRoyale.BotApi.Events.HitBotEvent.html#Robocode_TankRoyale_BotApi_Events_HitBotEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.HitBotEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.HitBotEvent.HitBotEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.HitBotEvent.New
   nameWithType: HitBotEvent.HitBotEvent
+  nameWithType.vb: HitBotEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.HitBotEvent.Energy
   name: Energy
   href: api/Robocode.TankRoyale.BotApi.Events.HitBotEvent.html#Robocode_TankRoyale_BotApi_Events_HitBotEvent_Energy
@@ -3881,18 +4184,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.HitByBulletEvent
   nameWithType: HitByBulletEvent
 - uid: Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.BulletState,System.Double,System.Double)
-  name: HitByBulletEvent(Int32, BulletState, Double, Double)
+  name: HitByBulletEvent(int, BulletState, double, double)
   href: api/Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.html#Robocode_TankRoyale_BotApi_Events_HitByBulletEvent__ctor_System_Int32_Robocode_TankRoyale_BotApi_BulletState_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.BulletState,System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.HitByBulletEvent(System.Int32, Robocode.TankRoyale.BotApi.BulletState, System.Double, System.Double)
-  nameWithType: HitByBulletEvent.HitByBulletEvent(Int32, BulletState, Double, Double)
+  name.vb: New(Integer, BulletState, Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.HitByBulletEvent(int, Robocode.TankRoyale.BotApi.BulletState, double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.New(Integer, Robocode.TankRoyale.BotApi.BulletState, Double, Double)
+  nameWithType: HitByBulletEvent.HitByBulletEvent(int, BulletState, double, double)
+  nameWithType.vb: HitByBulletEvent.New(Integer, BulletState, Double, Double)
 - uid: Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.#ctor*
   name: HitByBulletEvent
   href: api/Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.html#Robocode_TankRoyale_BotApi_Events_HitByBulletEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.HitByBulletEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.New
   nameWithType: HitByBulletEvent.HitByBulletEvent
+  nameWithType.vb: HitByBulletEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.Bullet
   name: Bullet
   href: api/Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.html#Robocode_TankRoyale_BotApi_Events_HitByBulletEvent_Bullet
@@ -3939,18 +4248,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.HitWallEvent
   nameWithType: HitWallEvent
 - uid: Robocode.TankRoyale.BotApi.Events.HitWallEvent.#ctor(System.Int32)
-  name: HitWallEvent(Int32)
+  name: HitWallEvent(int)
   href: api/Robocode.TankRoyale.BotApi.Events.HitWallEvent.html#Robocode_TankRoyale_BotApi_Events_HitWallEvent__ctor_System_Int32_
   commentId: M:Robocode.TankRoyale.BotApi.Events.HitWallEvent.#ctor(System.Int32)
-  fullName: Robocode.TankRoyale.BotApi.Events.HitWallEvent.HitWallEvent(System.Int32)
-  nameWithType: HitWallEvent.HitWallEvent(Int32)
+  name.vb: New(Integer)
+  fullName: Robocode.TankRoyale.BotApi.Events.HitWallEvent.HitWallEvent(int)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.HitWallEvent.New(Integer)
+  nameWithType: HitWallEvent.HitWallEvent(int)
+  nameWithType.vb: HitWallEvent.New(Integer)
 - uid: Robocode.TankRoyale.BotApi.Events.HitWallEvent.#ctor*
   name: HitWallEvent
   href: api/Robocode.TankRoyale.BotApi.Events.HitWallEvent.html#Robocode_TankRoyale_BotApi_Events_HitWallEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.HitWallEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.HitWallEvent.HitWallEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.HitWallEvent.New
   nameWithType: HitWallEvent.HitWallEvent
+  nameWithType.vb: HitWallEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.IEvent
   name: IEvent
   href: api/Robocode.TankRoyale.BotApi.Events.IEvent.html
@@ -3967,15 +4282,21 @@ references:
   name: NextTurnCondition(IBaseBot)
   href: api/Robocode.TankRoyale.BotApi.Events.NextTurnCondition.html#Robocode_TankRoyale_BotApi_Events_NextTurnCondition__ctor_Robocode_TankRoyale_BotApi_IBaseBot_
   commentId: M:Robocode.TankRoyale.BotApi.Events.NextTurnCondition.#ctor(Robocode.TankRoyale.BotApi.IBaseBot)
+  name.vb: New(IBaseBot)
   fullName: Robocode.TankRoyale.BotApi.Events.NextTurnCondition.NextTurnCondition(Robocode.TankRoyale.BotApi.IBaseBot)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.NextTurnCondition.New(Robocode.TankRoyale.BotApi.IBaseBot)
   nameWithType: NextTurnCondition.NextTurnCondition(IBaseBot)
+  nameWithType.vb: NextTurnCondition.New(IBaseBot)
 - uid: Robocode.TankRoyale.BotApi.Events.NextTurnCondition.#ctor*
   name: NextTurnCondition
   href: api/Robocode.TankRoyale.BotApi.Events.NextTurnCondition.html#Robocode_TankRoyale_BotApi_Events_NextTurnCondition__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.NextTurnCondition.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.NextTurnCondition.NextTurnCondition
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.NextTurnCondition.New
   nameWithType: NextTurnCondition.NextTurnCondition
+  nameWithType.vb: NextTurnCondition.New
 - uid: Robocode.TankRoyale.BotApi.Events.NextTurnCondition.Test
   name: Test()
   href: api/Robocode.TankRoyale.BotApi.Events.NextTurnCondition.html#Robocode_TankRoyale_BotApi_Events_NextTurnCondition_Test
@@ -3996,18 +4317,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent
   nameWithType: RoundEndedEvent
 - uid: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.#ctor(System.Int32,System.Int32,Robocode.TankRoyale.BotApi.BotResults)
-  name: RoundEndedEvent(Int32, Int32, BotResults)
+  name: RoundEndedEvent(int, int, BotResults)
   href: api/Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.html#Robocode_TankRoyale_BotApi_Events_RoundEndedEvent__ctor_System_Int32_System_Int32_Robocode_TankRoyale_BotApi_BotResults_
   commentId: M:Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.#ctor(System.Int32,System.Int32,Robocode.TankRoyale.BotApi.BotResults)
-  fullName: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.RoundEndedEvent(System.Int32, System.Int32, Robocode.TankRoyale.BotApi.BotResults)
-  nameWithType: RoundEndedEvent.RoundEndedEvent(Int32, Int32, BotResults)
+  name.vb: New(Integer, Integer, BotResults)
+  fullName: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.RoundEndedEvent(int, int, Robocode.TankRoyale.BotApi.BotResults)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.New(Integer, Integer, Robocode.TankRoyale.BotApi.BotResults)
+  nameWithType: RoundEndedEvent.RoundEndedEvent(int, int, BotResults)
+  nameWithType.vb: RoundEndedEvent.New(Integer, Integer, BotResults)
 - uid: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.#ctor*
   name: RoundEndedEvent
   href: api/Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.html#Robocode_TankRoyale_BotApi_Events_RoundEndedEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.RoundEndedEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.New
   nameWithType: RoundEndedEvent.RoundEndedEvent
+  nameWithType.vb: RoundEndedEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.Results
   name: Results
   href: api/Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.html#Robocode_TankRoyale_BotApi_Events_RoundEndedEvent_Results
@@ -4054,18 +4381,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.RoundStartedEvent
   nameWithType: RoundStartedEvent
 - uid: Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.#ctor(System.Int32)
-  name: RoundStartedEvent(Int32)
+  name: RoundStartedEvent(int)
   href: api/Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.html#Robocode_TankRoyale_BotApi_Events_RoundStartedEvent__ctor_System_Int32_
   commentId: M:Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.#ctor(System.Int32)
-  fullName: Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.RoundStartedEvent(System.Int32)
-  nameWithType: RoundStartedEvent.RoundStartedEvent(Int32)
+  name.vb: New(Integer)
+  fullName: Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.RoundStartedEvent(int)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.New(Integer)
+  nameWithType: RoundStartedEvent.RoundStartedEvent(int)
+  nameWithType.vb: RoundStartedEvent.New(Integer)
 - uid: Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.#ctor*
   name: RoundStartedEvent
   href: api/Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.html#Robocode_TankRoyale_BotApi_Events_RoundStartedEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.RoundStartedEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.New
   nameWithType: RoundStartedEvent.RoundStartedEvent
+  nameWithType.vb: RoundStartedEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.RoundNumber
   name: RoundNumber
   href: api/Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.html#Robocode_TankRoyale_BotApi_Events_RoundStartedEvent_RoundNumber
@@ -4086,18 +4419,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.ScannedBotEvent
   nameWithType: ScannedBotEvent
 - uid: Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.#ctor(System.Int32,System.Int32,System.Int32,System.Double,System.Double,System.Double,System.Double,System.Double)
-  name: ScannedBotEvent(Int32, Int32, Int32, Double, Double, Double, Double, Double)
+  name: ScannedBotEvent(int, int, int, double, double, double, double, double)
   href: api/Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.html#Robocode_TankRoyale_BotApi_Events_ScannedBotEvent__ctor_System_Int32_System_Int32_System_Int32_System_Double_System_Double_System_Double_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.#ctor(System.Int32,System.Int32,System.Int32,System.Double,System.Double,System.Double,System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.ScannedBotEvent(System.Int32, System.Int32, System.Int32, System.Double, System.Double, System.Double, System.Double, System.Double)
-  nameWithType: ScannedBotEvent.ScannedBotEvent(Int32, Int32, Int32, Double, Double, Double, Double, Double)
+  name.vb: New(Integer, Integer, Integer, Double, Double, Double, Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.ScannedBotEvent(int, int, int, double, double, double, double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.New(Integer, Integer, Integer, Double, Double, Double, Double, Double)
+  nameWithType: ScannedBotEvent.ScannedBotEvent(int, int, int, double, double, double, double, double)
+  nameWithType.vb: ScannedBotEvent.New(Integer, Integer, Integer, Double, Double, Double, Double, Double)
 - uid: Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.#ctor*
   name: ScannedBotEvent
   href: api/Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.html#Robocode_TankRoyale_BotApi_Events_ScannedBotEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.ScannedBotEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.New
   nameWithType: ScannedBotEvent.ScannedBotEvent
+  nameWithType.vb: ScannedBotEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.Direction
   name: Direction
   href: api/Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.html#Robocode_TankRoyale_BotApi_Events_ScannedBotEvent_Direction
@@ -4196,18 +4535,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent
   nameWithType: SkippedTurnEvent
 - uid: Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.#ctor(System.Int32)
-  name: SkippedTurnEvent(Int32)
+  name: SkippedTurnEvent(int)
   href: api/Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.html#Robocode_TankRoyale_BotApi_Events_SkippedTurnEvent__ctor_System_Int32_
   commentId: M:Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.#ctor(System.Int32)
-  fullName: Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.SkippedTurnEvent(System.Int32)
-  nameWithType: SkippedTurnEvent.SkippedTurnEvent(Int32)
+  name.vb: New(Integer)
+  fullName: Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.SkippedTurnEvent(int)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.New(Integer)
+  nameWithType: SkippedTurnEvent.SkippedTurnEvent(int)
+  nameWithType.vb: SkippedTurnEvent.New(Integer)
 - uid: Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.#ctor*
   name: SkippedTurnEvent
   href: api/Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.html#Robocode_TankRoyale_BotApi_Events_SkippedTurnEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.SkippedTurnEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.New
   nameWithType: SkippedTurnEvent.SkippedTurnEvent
+  nameWithType.vb: SkippedTurnEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.IsCritical
   name: IsCritical
   href: api/Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.html#Robocode_TankRoyale_BotApi_Events_SkippedTurnEvent_IsCritical
@@ -4228,21 +4573,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.TickEvent
   nameWithType: TickEvent
 - uid: Robocode.TankRoyale.BotApi.Events.TickEvent.#ctor(System.Int32,System.Int32,System.Int32,Robocode.TankRoyale.BotApi.BotState,System.Collections.Generic.IEnumerable{Robocode.TankRoyale.BotApi.BulletState},System.Collections.Generic.IEnumerable{Robocode.TankRoyale.BotApi.Events.BotEvent})
-  name: TickEvent(Int32, Int32, Int32, BotState, IEnumerable<BulletState>, IEnumerable<BotEvent>)
+  name: TickEvent(int, int, int, BotState, IEnumerable<BulletState>, IEnumerable<BotEvent>)
   href: api/Robocode.TankRoyale.BotApi.Events.TickEvent.html#Robocode_TankRoyale_BotApi_Events_TickEvent__ctor_System_Int32_System_Int32_System_Int32_Robocode_TankRoyale_BotApi_BotState_System_Collections_Generic_IEnumerable_Robocode_TankRoyale_BotApi_BulletState__System_Collections_Generic_IEnumerable_Robocode_TankRoyale_BotApi_Events_BotEvent__
   commentId: M:Robocode.TankRoyale.BotApi.Events.TickEvent.#ctor(System.Int32,System.Int32,System.Int32,Robocode.TankRoyale.BotApi.BotState,System.Collections.Generic.IEnumerable{Robocode.TankRoyale.BotApi.BulletState},System.Collections.Generic.IEnumerable{Robocode.TankRoyale.BotApi.Events.BotEvent})
-  name.vb: TickEvent(Int32, Int32, Int32, BotState, IEnumerable(Of BulletState), IEnumerable(Of BotEvent))
-  fullName: Robocode.TankRoyale.BotApi.Events.TickEvent.TickEvent(System.Int32, System.Int32, System.Int32, Robocode.TankRoyale.BotApi.BotState, System.Collections.Generic.IEnumerable<Robocode.TankRoyale.BotApi.BulletState>, System.Collections.Generic.IEnumerable<Robocode.TankRoyale.BotApi.Events.BotEvent>)
-  fullName.vb: Robocode.TankRoyale.BotApi.Events.TickEvent.TickEvent(System.Int32, System.Int32, System.Int32, Robocode.TankRoyale.BotApi.BotState, System.Collections.Generic.IEnumerable(Of Robocode.TankRoyale.BotApi.BulletState), System.Collections.Generic.IEnumerable(Of Robocode.TankRoyale.BotApi.Events.BotEvent))
-  nameWithType: TickEvent.TickEvent(Int32, Int32, Int32, BotState, IEnumerable<BulletState>, IEnumerable<BotEvent>)
-  nameWithType.vb: TickEvent.TickEvent(Int32, Int32, Int32, BotState, IEnumerable(Of BulletState), IEnumerable(Of BotEvent))
+  name.vb: New(Integer, Integer, Integer, BotState, IEnumerable(Of BulletState), IEnumerable(Of BotEvent))
+  fullName: Robocode.TankRoyale.BotApi.Events.TickEvent.TickEvent(int, int, int, Robocode.TankRoyale.BotApi.BotState, System.Collections.Generic.IEnumerable<Robocode.TankRoyale.BotApi.BulletState>, System.Collections.Generic.IEnumerable<Robocode.TankRoyale.BotApi.Events.BotEvent>)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.TickEvent.New(Integer, Integer, Integer, Robocode.TankRoyale.BotApi.BotState, System.Collections.Generic.IEnumerable(Of Robocode.TankRoyale.BotApi.BulletState), System.Collections.Generic.IEnumerable(Of Robocode.TankRoyale.BotApi.Events.BotEvent))
+  nameWithType: TickEvent.TickEvent(int, int, int, BotState, IEnumerable<BulletState>, IEnumerable<BotEvent>)
+  nameWithType.vb: TickEvent.New(Integer, Integer, Integer, BotState, IEnumerable(Of BulletState), IEnumerable(Of BotEvent))
 - uid: Robocode.TankRoyale.BotApi.Events.TickEvent.#ctor*
   name: TickEvent
   href: api/Robocode.TankRoyale.BotApi.Events.TickEvent.html#Robocode_TankRoyale_BotApi_Events_TickEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.TickEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.TickEvent.TickEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.TickEvent.New
   nameWithType: TickEvent.TickEvent
+  nameWithType.vb: TickEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.TickEvent.BotState
   name: BotState
   href: api/Robocode.TankRoyale.BotApi.Events.TickEvent.html#Robocode_TankRoyale_BotApi_Events_TickEvent_BotState
@@ -4315,18 +4663,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.Events.WonRoundEvent
   nameWithType: WonRoundEvent
 - uid: Robocode.TankRoyale.BotApi.Events.WonRoundEvent.#ctor(System.Int32)
-  name: WonRoundEvent(Int32)
+  name: WonRoundEvent(int)
   href: api/Robocode.TankRoyale.BotApi.Events.WonRoundEvent.html#Robocode_TankRoyale_BotApi_Events_WonRoundEvent__ctor_System_Int32_
   commentId: M:Robocode.TankRoyale.BotApi.Events.WonRoundEvent.#ctor(System.Int32)
-  fullName: Robocode.TankRoyale.BotApi.Events.WonRoundEvent.WonRoundEvent(System.Int32)
-  nameWithType: WonRoundEvent.WonRoundEvent(Int32)
+  name.vb: New(Integer)
+  fullName: Robocode.TankRoyale.BotApi.Events.WonRoundEvent.WonRoundEvent(int)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.WonRoundEvent.New(Integer)
+  nameWithType: WonRoundEvent.WonRoundEvent(int)
+  nameWithType.vb: WonRoundEvent.New(Integer)
 - uid: Robocode.TankRoyale.BotApi.Events.WonRoundEvent.#ctor*
   name: WonRoundEvent
   href: api/Robocode.TankRoyale.BotApi.Events.WonRoundEvent.html#Robocode_TankRoyale_BotApi_Events_WonRoundEvent__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.Events.WonRoundEvent.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.Events.WonRoundEvent.WonRoundEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.WonRoundEvent.New
   nameWithType: WonRoundEvent.WonRoundEvent
+  nameWithType.vb: WonRoundEvent.New
 - uid: Robocode.TankRoyale.BotApi.Events.WonRoundEvent.IsCritical
   name: IsCritical
   href: api/Robocode.TankRoyale.BotApi.Events.WonRoundEvent.html#Robocode_TankRoyale_BotApi_Events_WonRoundEvent_IsCritical
@@ -4347,21 +4701,24 @@ references:
   fullName: Robocode.TankRoyale.BotApi.GameSetup
   nameWithType: GameSetup
 - uid: Robocode.TankRoyale.BotApi.GameSetup.#ctor(System.String,System.Int32,System.Int32,System.Int32,System.Double,System.Nullable{System.Int32},System.Int32,System.Int32)
-  name: GameSetup(String, Int32, Int32, Int32, Double, Nullable<Int32>, Int32, Int32)
+  name: GameSetup(string, int, int, int, double, int?, int, int)
   href: api/Robocode.TankRoyale.BotApi.GameSetup.html#Robocode_TankRoyale_BotApi_GameSetup__ctor_System_String_System_Int32_System_Int32_System_Int32_System_Double_System_Nullable_System_Int32__System_Int32_System_Int32_
   commentId: M:Robocode.TankRoyale.BotApi.GameSetup.#ctor(System.String,System.Int32,System.Int32,System.Int32,System.Double,System.Nullable{System.Int32},System.Int32,System.Int32)
-  name.vb: GameSetup(String, Int32, Int32, Int32, Double, Nullable(Of Int32), Int32, Int32)
-  fullName: Robocode.TankRoyale.BotApi.GameSetup.GameSetup(System.String, System.Int32, System.Int32, System.Int32, System.Double, System.Nullable<System.Int32>, System.Int32, System.Int32)
-  fullName.vb: Robocode.TankRoyale.BotApi.GameSetup.GameSetup(System.String, System.Int32, System.Int32, System.Int32, System.Double, System.Nullable(Of System.Int32), System.Int32, System.Int32)
-  nameWithType: GameSetup.GameSetup(String, Int32, Int32, Int32, Double, Nullable<Int32>, Int32, Int32)
-  nameWithType.vb: GameSetup.GameSetup(String, Int32, Int32, Int32, Double, Nullable(Of Int32), Int32, Int32)
+  name.vb: New(String, Integer, Integer, Integer, Double, Integer?, Integer, Integer)
+  fullName: Robocode.TankRoyale.BotApi.GameSetup.GameSetup(string, int, int, int, double, int?, int, int)
+  fullName.vb: Robocode.TankRoyale.BotApi.GameSetup.New(String, Integer, Integer, Integer, Double, Integer?, Integer, Integer)
+  nameWithType: GameSetup.GameSetup(string, int, int, int, double, int?, int, int)
+  nameWithType.vb: GameSetup.New(String, Integer, Integer, Integer, Double, Integer?, Integer, Integer)
 - uid: Robocode.TankRoyale.BotApi.GameSetup.#ctor*
   name: GameSetup
   href: api/Robocode.TankRoyale.BotApi.GameSetup.html#Robocode_TankRoyale_BotApi_GameSetup__ctor_
   commentId: Overload:Robocode.TankRoyale.BotApi.GameSetup.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Robocode.TankRoyale.BotApi.GameSetup.GameSetup
+  fullName.vb: Robocode.TankRoyale.BotApi.GameSetup.New
   nameWithType: GameSetup.GameSetup
+  nameWithType.vb: GameSetup.New
 - uid: Robocode.TankRoyale.BotApi.GameSetup.ArenaHeight
   name: ArenaHeight
   href: api/Robocode.TankRoyale.BotApi.GameSetup.html#Robocode_TankRoyale_BotApi_GameSetup_ArenaHeight
@@ -4575,11 +4932,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.ArenaWidth
   nameWithType: IBaseBot.ArenaWidth
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.BearingTo(System.Double,System.Double)
-  name: BearingTo(Double, Double)
+  name: BearingTo(double, double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_BearingTo_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.BearingTo(System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.BearingTo(System.Double, System.Double)
-  nameWithType: IBaseBot.BearingTo(Double, Double)
+  name.vb: BearingTo(Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.BearingTo(double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.BearingTo(Double, Double)
+  nameWithType: IBaseBot.BearingTo(double, double)
+  nameWithType.vb: IBaseBot.BearingTo(Double, Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.BearingTo*
   name: BearingTo
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_BearingTo_
@@ -4627,11 +4987,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.BulletStates
   nameWithType: IBaseBot.BulletStates
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.CalcBearing(System.Double)
-  name: CalcBearing(Double)
+  name: CalcBearing(double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_CalcBearing_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.CalcBearing(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcBearing(System.Double)
-  nameWithType: IBaseBot.CalcBearing(Double)
+  name.vb: CalcBearing(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcBearing(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.CalcBearing(Double)
+  nameWithType: IBaseBot.CalcBearing(double)
+  nameWithType.vb: IBaseBot.CalcBearing(Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.CalcBearing*
   name: CalcBearing
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_CalcBearing_
@@ -4640,11 +5003,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcBearing
   nameWithType: IBaseBot.CalcBearing
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.CalcBulletSpeed(System.Double)
-  name: CalcBulletSpeed(Double)
+  name: CalcBulletSpeed(double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_CalcBulletSpeed_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.CalcBulletSpeed(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcBulletSpeed(System.Double)
-  nameWithType: IBaseBot.CalcBulletSpeed(Double)
+  name.vb: CalcBulletSpeed(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcBulletSpeed(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.CalcBulletSpeed(Double)
+  nameWithType: IBaseBot.CalcBulletSpeed(double)
+  nameWithType.vb: IBaseBot.CalcBulletSpeed(Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.CalcBulletSpeed*
   name: CalcBulletSpeed
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_CalcBulletSpeed_
@@ -4653,11 +5019,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcBulletSpeed
   nameWithType: IBaseBot.CalcBulletSpeed
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.CalcDeltaAngle(System.Double,System.Double)
-  name: CalcDeltaAngle(Double, Double)
+  name: CalcDeltaAngle(double, double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_CalcDeltaAngle_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.CalcDeltaAngle(System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcDeltaAngle(System.Double, System.Double)
-  nameWithType: IBaseBot.CalcDeltaAngle(Double, Double)
+  name.vb: CalcDeltaAngle(Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcDeltaAngle(double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.CalcDeltaAngle(Double, Double)
+  nameWithType: IBaseBot.CalcDeltaAngle(double, double)
+  nameWithType.vb: IBaseBot.CalcDeltaAngle(Double, Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.CalcDeltaAngle*
   name: CalcDeltaAngle
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_CalcDeltaAngle_
@@ -4666,11 +5035,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcDeltaAngle
   nameWithType: IBaseBot.CalcDeltaAngle
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.CalcGunBearing(System.Double)
-  name: CalcGunBearing(Double)
+  name: CalcGunBearing(double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_CalcGunBearing_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.CalcGunBearing(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcGunBearing(System.Double)
-  nameWithType: IBaseBot.CalcGunBearing(Double)
+  name.vb: CalcGunBearing(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcGunBearing(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.CalcGunBearing(Double)
+  nameWithType: IBaseBot.CalcGunBearing(double)
+  nameWithType.vb: IBaseBot.CalcGunBearing(Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.CalcGunBearing*
   name: CalcGunBearing
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_CalcGunBearing_
@@ -4679,11 +5051,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcGunBearing
   nameWithType: IBaseBot.CalcGunBearing
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.CalcGunHeat(System.Double)
-  name: CalcGunHeat(Double)
+  name: CalcGunHeat(double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_CalcGunHeat_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.CalcGunHeat(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcGunHeat(System.Double)
-  nameWithType: IBaseBot.CalcGunHeat(Double)
+  name.vb: CalcGunHeat(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcGunHeat(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.CalcGunHeat(Double)
+  nameWithType: IBaseBot.CalcGunHeat(double)
+  nameWithType.vb: IBaseBot.CalcGunHeat(Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.CalcGunHeat*
   name: CalcGunHeat
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_CalcGunHeat_
@@ -4692,11 +5067,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcGunHeat
   nameWithType: IBaseBot.CalcGunHeat
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.CalcMaxTurnRate(System.Double)
-  name: CalcMaxTurnRate(Double)
+  name: CalcMaxTurnRate(double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_CalcMaxTurnRate_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.CalcMaxTurnRate(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcMaxTurnRate(System.Double)
-  nameWithType: IBaseBot.CalcMaxTurnRate(Double)
+  name.vb: CalcMaxTurnRate(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcMaxTurnRate(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.CalcMaxTurnRate(Double)
+  nameWithType: IBaseBot.CalcMaxTurnRate(double)
+  nameWithType.vb: IBaseBot.CalcMaxTurnRate(Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.CalcMaxTurnRate*
   name: CalcMaxTurnRate
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_CalcMaxTurnRate_
@@ -4705,11 +5083,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcMaxTurnRate
   nameWithType: IBaseBot.CalcMaxTurnRate
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.CalcRadarBearing(System.Double)
-  name: CalcRadarBearing(Double)
+  name: CalcRadarBearing(double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_CalcRadarBearing_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.CalcRadarBearing(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcRadarBearing(System.Double)
-  nameWithType: IBaseBot.CalcRadarBearing(Double)
+  name.vb: CalcRadarBearing(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.CalcRadarBearing(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.CalcRadarBearing(Double)
+  nameWithType: IBaseBot.CalcRadarBearing(double)
+  nameWithType.vb: IBaseBot.CalcRadarBearing(Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.CalcRadarBearing*
   name: CalcRadarBearing
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_CalcRadarBearing_
@@ -4744,11 +5125,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.Direction
   nameWithType: IBaseBot.Direction
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.DirectionTo(System.Double,System.Double)
-  name: DirectionTo(Double, Double)
+  name: DirectionTo(double, double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_DirectionTo_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.DirectionTo(System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.DirectionTo(System.Double, System.Double)
-  nameWithType: IBaseBot.DirectionTo(Double, Double)
+  name.vb: DirectionTo(Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.DirectionTo(double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.DirectionTo(Double, Double)
+  nameWithType: IBaseBot.DirectionTo(double, double)
+  nameWithType.vb: IBaseBot.DirectionTo(Double, Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.DirectionTo*
   name: DirectionTo
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_DirectionTo_
@@ -4757,11 +5141,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.DirectionTo
   nameWithType: IBaseBot.DirectionTo
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.DistanceTo(System.Double,System.Double)
-  name: DistanceTo(Double, Double)
+  name: DistanceTo(double, double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_DistanceTo_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.DistanceTo(System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.DistanceTo(System.Double, System.Double)
-  nameWithType: IBaseBot.DistanceTo(Double, Double)
+  name.vb: DistanceTo(Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.DistanceTo(double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.DistanceTo(Double, Double)
+  nameWithType: IBaseBot.DistanceTo(double, double)
+  nameWithType.vb: IBaseBot.DistanceTo(Double, Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.DistanceTo*
   name: DistanceTo
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_DistanceTo_
@@ -4861,11 +5248,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.Go
   nameWithType: IBaseBot.Go
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.GunBearingTo(System.Double,System.Double)
-  name: GunBearingTo(Double, Double)
+  name: GunBearingTo(double, double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_GunBearingTo_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.GunBearingTo(System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.GunBearingTo(System.Double, System.Double)
-  nameWithType: IBaseBot.GunBearingTo(Double, Double)
+  name.vb: GunBearingTo(Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.GunBearingTo(double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.GunBearingTo(Double, Double)
+  nameWithType: IBaseBot.GunBearingTo(double, double)
+  nameWithType.vb: IBaseBot.GunBearingTo(Double, Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.GunBearingTo*
   name: GunBearingTo
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_GunBearingTo_
@@ -5056,11 +5446,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.MyId
   nameWithType: IBaseBot.MyId
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.NormalizeAbsoluteAngle(System.Double)
-  name: NormalizeAbsoluteAngle(Double)
+  name: NormalizeAbsoluteAngle(double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_NormalizeAbsoluteAngle_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.NormalizeAbsoluteAngle(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.NormalizeAbsoluteAngle(System.Double)
-  nameWithType: IBaseBot.NormalizeAbsoluteAngle(Double)
+  name.vb: NormalizeAbsoluteAngle(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.NormalizeAbsoluteAngle(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.NormalizeAbsoluteAngle(Double)
+  nameWithType: IBaseBot.NormalizeAbsoluteAngle(double)
+  nameWithType.vb: IBaseBot.NormalizeAbsoluteAngle(Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.NormalizeAbsoluteAngle*
   name: NormalizeAbsoluteAngle
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_NormalizeAbsoluteAngle_
@@ -5069,11 +5462,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.NormalizeAbsoluteAngle
   nameWithType: IBaseBot.NormalizeAbsoluteAngle
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.NormalizeRelativeAngle(System.Double)
-  name: NormalizeRelativeAngle(Double)
+  name: NormalizeRelativeAngle(double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_NormalizeRelativeAngle_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.NormalizeRelativeAngle(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.NormalizeRelativeAngle(System.Double)
-  nameWithType: IBaseBot.NormalizeRelativeAngle(Double)
+  name.vb: NormalizeRelativeAngle(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.NormalizeRelativeAngle(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.NormalizeRelativeAngle(Double)
+  nameWithType: IBaseBot.NormalizeRelativeAngle(double)
+  nameWithType.vb: IBaseBot.NormalizeRelativeAngle(Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.NormalizeRelativeAngle*
   name: NormalizeRelativeAngle
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_NormalizeRelativeAngle_
@@ -5368,11 +5764,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.OnWonRound
   nameWithType: IBaseBot.OnWonRound
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.RadarBearingTo(System.Double,System.Double)
-  name: RadarBearingTo(Double, Double)
+  name: RadarBearingTo(double, double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_RadarBearingTo_System_Double_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.RadarBearingTo(System.Double,System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.RadarBearingTo(System.Double, System.Double)
-  nameWithType: IBaseBot.RadarBearingTo(Double, Double)
+  name.vb: RadarBearingTo(Double, Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.RadarBearingTo(double, double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.RadarBearingTo(Double, Double)
+  nameWithType: IBaseBot.RadarBearingTo(double, double)
+  nameWithType.vb: IBaseBot.RadarBearingTo(Double, Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.RadarBearingTo*
   name: RadarBearingTo
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_RadarBearingTo_
@@ -5459,11 +5858,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.ScanColor
   nameWithType: IBaseBot.ScanColor
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.SetEventPriority(System.Type,System.Int32)
-  name: SetEventPriority(Type, Int32)
+  name: SetEventPriority(Type, int)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetEventPriority_System_Type_System_Int32_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.SetEventPriority(System.Type,System.Int32)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.SetEventPriority(System.Type, System.Int32)
-  nameWithType: IBaseBot.SetEventPriority(Type, Int32)
+  name.vb: SetEventPriority(Type, Integer)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.SetEventPriority(System.Type, int)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.SetEventPriority(System.Type, Integer)
+  nameWithType: IBaseBot.SetEventPriority(Type, int)
+  nameWithType.vb: IBaseBot.SetEventPriority(Type, Integer)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.SetEventPriority*
   name: SetEventPriority
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetEventPriority_
@@ -5472,11 +5874,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.SetEventPriority
   nameWithType: IBaseBot.SetEventPriority
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.SetFire(System.Double)
-  name: SetFire(Double)
+  name: SetFire(double)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetFire_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.SetFire(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.SetFire(System.Double)
-  nameWithType: IBaseBot.SetFire(Double)
+  name.vb: SetFire(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.SetFire(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.SetFire(Double)
+  nameWithType: IBaseBot.SetFire(double)
+  nameWithType.vb: IBaseBot.SetFire(Double)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.SetFire*
   name: SetFire
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetFire_
@@ -5485,11 +5890,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.SetFire
   nameWithType: IBaseBot.SetFire
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.SetFireAssist(System.Boolean)
-  name: SetFireAssist(Boolean)
+  name: SetFireAssist(bool)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetFireAssist_System_Boolean_
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.SetFireAssist(System.Boolean)
-  fullName: Robocode.TankRoyale.BotApi.IBaseBot.SetFireAssist(System.Boolean)
-  nameWithType: IBaseBot.SetFireAssist(Boolean)
+  name.vb: SetFireAssist(Boolean)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.SetFireAssist(bool)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.SetFireAssist(Boolean)
+  nameWithType: IBaseBot.SetFireAssist(bool)
+  nameWithType.vb: IBaseBot.SetFireAssist(Boolean)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.SetFireAssist*
   name: SetFireAssist
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetFireAssist_
@@ -5712,11 +6120,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot
   nameWithType: IBot
 - uid: Robocode.TankRoyale.BotApi.IBot.Back(System.Double)
-  name: Back(Double)
+  name: Back(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Back_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.Back(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.Back(System.Double)
-  nameWithType: IBot.Back(Double)
+  name.vb: Back(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.Back(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.Back(Double)
+  nameWithType: IBot.Back(double)
+  nameWithType.vb: IBot.Back(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.Back*
   name: Back
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Back_
@@ -5738,11 +6149,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.DistanceRemaining
   nameWithType: IBot.DistanceRemaining
 - uid: Robocode.TankRoyale.BotApi.IBot.Fire(System.Double)
-  name: Fire(Double)
+  name: Fire(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Fire_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.Fire(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.Fire(System.Double)
-  nameWithType: IBot.Fire(Double)
+  name.vb: Fire(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.Fire(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.Fire(Double)
+  nameWithType: IBot.Fire(double)
+  nameWithType.vb: IBot.Fire(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.Fire*
   name: Fire
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Fire_
@@ -5751,11 +6165,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.Fire
   nameWithType: IBot.Fire
 - uid: Robocode.TankRoyale.BotApi.IBot.Forward(System.Double)
-  name: Forward(Double)
+  name: Forward(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Forward_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.Forward(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.Forward(System.Double)
-  nameWithType: IBot.Forward(Double)
+  name.vb: Forward(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.Forward(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.Forward(Double)
+  nameWithType: IBot.Forward(double)
+  nameWithType.vb: IBot.Forward(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.Forward*
   name: Forward
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Forward_
@@ -5842,11 +6259,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.Run
   nameWithType: IBot.Run
 - uid: Robocode.TankRoyale.BotApi.IBot.SetBack(System.Double)
-  name: SetBack(Double)
+  name: SetBack(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetBack_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.SetBack(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.SetBack(System.Double)
-  nameWithType: IBot.SetBack(Double)
+  name.vb: SetBack(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.SetBack(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.SetBack(Double)
+  nameWithType: IBot.SetBack(double)
+  nameWithType.vb: IBot.SetBack(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.SetBack*
   name: SetBack
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetBack_
@@ -5855,11 +6275,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.SetBack
   nameWithType: IBot.SetBack
 - uid: Robocode.TankRoyale.BotApi.IBot.SetForward(System.Double)
-  name: SetForward(Double)
+  name: SetForward(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetForward_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.SetForward(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.SetForward(System.Double)
-  nameWithType: IBot.SetForward(Double)
+  name.vb: SetForward(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.SetForward(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.SetForward(Double)
+  nameWithType: IBot.SetForward(double)
+  nameWithType.vb: IBot.SetForward(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.SetForward*
   name: SetForward
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetForward_
@@ -5868,11 +6291,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.SetForward
   nameWithType: IBot.SetForward
 - uid: Robocode.TankRoyale.BotApi.IBot.SetTurnGunLeft(System.Double)
-  name: SetTurnGunLeft(Double)
+  name: SetTurnGunLeft(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetTurnGunLeft_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.SetTurnGunLeft(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnGunLeft(System.Double)
-  nameWithType: IBot.SetTurnGunLeft(Double)
+  name.vb: SetTurnGunLeft(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnGunLeft(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.SetTurnGunLeft(Double)
+  nameWithType: IBot.SetTurnGunLeft(double)
+  nameWithType.vb: IBot.SetTurnGunLeft(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.SetTurnGunLeft*
   name: SetTurnGunLeft
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetTurnGunLeft_
@@ -5881,11 +6307,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnGunLeft
   nameWithType: IBot.SetTurnGunLeft
 - uid: Robocode.TankRoyale.BotApi.IBot.SetTurnGunRight(System.Double)
-  name: SetTurnGunRight(Double)
+  name: SetTurnGunRight(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetTurnGunRight_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.SetTurnGunRight(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnGunRight(System.Double)
-  nameWithType: IBot.SetTurnGunRight(Double)
+  name.vb: SetTurnGunRight(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnGunRight(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.SetTurnGunRight(Double)
+  nameWithType: IBot.SetTurnGunRight(double)
+  nameWithType.vb: IBot.SetTurnGunRight(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.SetTurnGunRight*
   name: SetTurnGunRight
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetTurnGunRight_
@@ -5894,11 +6323,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnGunRight
   nameWithType: IBot.SetTurnGunRight
 - uid: Robocode.TankRoyale.BotApi.IBot.SetTurnLeft(System.Double)
-  name: SetTurnLeft(Double)
+  name: SetTurnLeft(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetTurnLeft_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.SetTurnLeft(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnLeft(System.Double)
-  nameWithType: IBot.SetTurnLeft(Double)
+  name.vb: SetTurnLeft(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnLeft(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.SetTurnLeft(Double)
+  nameWithType: IBot.SetTurnLeft(double)
+  nameWithType.vb: IBot.SetTurnLeft(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.SetTurnLeft*
   name: SetTurnLeft
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetTurnLeft_
@@ -5907,11 +6339,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnLeft
   nameWithType: IBot.SetTurnLeft
 - uid: Robocode.TankRoyale.BotApi.IBot.SetTurnRadarLeft(System.Double)
-  name: SetTurnRadarLeft(Double)
+  name: SetTurnRadarLeft(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetTurnRadarLeft_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.SetTurnRadarLeft(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnRadarLeft(System.Double)
-  nameWithType: IBot.SetTurnRadarLeft(Double)
+  name.vb: SetTurnRadarLeft(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnRadarLeft(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.SetTurnRadarLeft(Double)
+  nameWithType: IBot.SetTurnRadarLeft(double)
+  nameWithType.vb: IBot.SetTurnRadarLeft(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.SetTurnRadarLeft*
   name: SetTurnRadarLeft
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetTurnRadarLeft_
@@ -5920,11 +6355,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnRadarLeft
   nameWithType: IBot.SetTurnRadarLeft
 - uid: Robocode.TankRoyale.BotApi.IBot.SetTurnRadarRight(System.Double)
-  name: SetTurnRadarRight(Double)
+  name: SetTurnRadarRight(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetTurnRadarRight_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.SetTurnRadarRight(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnRadarRight(System.Double)
-  nameWithType: IBot.SetTurnRadarRight(Double)
+  name.vb: SetTurnRadarRight(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnRadarRight(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.SetTurnRadarRight(Double)
+  nameWithType: IBot.SetTurnRadarRight(double)
+  nameWithType.vb: IBot.SetTurnRadarRight(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.SetTurnRadarRight*
   name: SetTurnRadarRight
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetTurnRadarRight_
@@ -5933,11 +6371,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnRadarRight
   nameWithType: IBot.SetTurnRadarRight
 - uid: Robocode.TankRoyale.BotApi.IBot.SetTurnRight(System.Double)
-  name: SetTurnRight(Double)
+  name: SetTurnRight(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetTurnRight_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.SetTurnRight(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnRight(System.Double)
-  nameWithType: IBot.SetTurnRight(Double)
+  name.vb: SetTurnRight(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.SetTurnRight(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.SetTurnRight(Double)
+  nameWithType: IBot.SetTurnRight(double)
+  nameWithType.vb: IBot.SetTurnRight(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.SetTurnRight*
   name: SetTurnRight
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_SetTurnRight_
@@ -5959,11 +6400,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.Stop
   nameWithType: IBot.Stop
 - uid: Robocode.TankRoyale.BotApi.IBot.TurnGunLeft(System.Double)
-  name: TurnGunLeft(Double)
+  name: TurnGunLeft(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_TurnGunLeft_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.TurnGunLeft(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.TurnGunLeft(System.Double)
-  nameWithType: IBot.TurnGunLeft(Double)
+  name.vb: TurnGunLeft(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.TurnGunLeft(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.TurnGunLeft(Double)
+  nameWithType: IBot.TurnGunLeft(double)
+  nameWithType.vb: IBot.TurnGunLeft(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.TurnGunLeft*
   name: TurnGunLeft
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_TurnGunLeft_
@@ -5972,11 +6416,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.TurnGunLeft
   nameWithType: IBot.TurnGunLeft
 - uid: Robocode.TankRoyale.BotApi.IBot.TurnGunRight(System.Double)
-  name: TurnGunRight(Double)
+  name: TurnGunRight(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_TurnGunRight_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.TurnGunRight(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.TurnGunRight(System.Double)
-  nameWithType: IBot.TurnGunRight(Double)
+  name.vb: TurnGunRight(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.TurnGunRight(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.TurnGunRight(Double)
+  nameWithType: IBot.TurnGunRight(double)
+  nameWithType.vb: IBot.TurnGunRight(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.TurnGunRight*
   name: TurnGunRight
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_TurnGunRight_
@@ -5985,11 +6432,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.TurnGunRight
   nameWithType: IBot.TurnGunRight
 - uid: Robocode.TankRoyale.BotApi.IBot.TurnLeft(System.Double)
-  name: TurnLeft(Double)
+  name: TurnLeft(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_TurnLeft_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.TurnLeft(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.TurnLeft(System.Double)
-  nameWithType: IBot.TurnLeft(Double)
+  name.vb: TurnLeft(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.TurnLeft(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.TurnLeft(Double)
+  nameWithType: IBot.TurnLeft(double)
+  nameWithType.vb: IBot.TurnLeft(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.TurnLeft*
   name: TurnLeft
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_TurnLeft_
@@ -5998,11 +6448,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.TurnLeft
   nameWithType: IBot.TurnLeft
 - uid: Robocode.TankRoyale.BotApi.IBot.TurnRadarLeft(System.Double)
-  name: TurnRadarLeft(Double)
+  name: TurnRadarLeft(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_TurnRadarLeft_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.TurnRadarLeft(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.TurnRadarLeft(System.Double)
-  nameWithType: IBot.TurnRadarLeft(Double)
+  name.vb: TurnRadarLeft(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.TurnRadarLeft(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.TurnRadarLeft(Double)
+  nameWithType: IBot.TurnRadarLeft(double)
+  nameWithType.vb: IBot.TurnRadarLeft(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.TurnRadarLeft*
   name: TurnRadarLeft
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_TurnRadarLeft_
@@ -6011,11 +6464,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.TurnRadarLeft
   nameWithType: IBot.TurnRadarLeft
 - uid: Robocode.TankRoyale.BotApi.IBot.TurnRadarRight(System.Double)
-  name: TurnRadarRight(Double)
+  name: TurnRadarRight(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_TurnRadarRight_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.TurnRadarRight(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.TurnRadarRight(System.Double)
-  nameWithType: IBot.TurnRadarRight(Double)
+  name.vb: TurnRadarRight(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.TurnRadarRight(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.TurnRadarRight(Double)
+  nameWithType: IBot.TurnRadarRight(double)
+  nameWithType.vb: IBot.TurnRadarRight(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.TurnRadarRight*
   name: TurnRadarRight
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_TurnRadarRight_
@@ -6037,11 +6493,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.IBot.TurnRemaining
   nameWithType: IBot.TurnRemaining
 - uid: Robocode.TankRoyale.BotApi.IBot.TurnRight(System.Double)
-  name: TurnRight(Double)
+  name: TurnRight(double)
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_TurnRight_System_Double_
   commentId: M:Robocode.TankRoyale.BotApi.IBot.TurnRight(System.Double)
-  fullName: Robocode.TankRoyale.BotApi.IBot.TurnRight(System.Double)
-  nameWithType: IBot.TurnRight(Double)
+  name.vb: TurnRight(Double)
+  fullName: Robocode.TankRoyale.BotApi.IBot.TurnRight(double)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.TurnRight(Double)
+  nameWithType: IBot.TurnRight(double)
+  nameWithType.vb: IBot.TurnRight(Double)
 - uid: Robocode.TankRoyale.BotApi.IBot.TurnRight*
   name: TurnRight
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_TurnRight_
@@ -6082,11 +6541,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.InitialPosition.Angle
   nameWithType: InitialPosition.Angle
 - uid: Robocode.TankRoyale.BotApi.InitialPosition.Equals(System.Object)
-  name: Equals(Object)
+  name: Equals(object)
   href: api/Robocode.TankRoyale.BotApi.InitialPosition.html#Robocode_TankRoyale_BotApi_InitialPosition_Equals_System_Object_
   commentId: M:Robocode.TankRoyale.BotApi.InitialPosition.Equals(System.Object)
-  fullName: Robocode.TankRoyale.BotApi.InitialPosition.Equals(System.Object)
-  nameWithType: InitialPosition.Equals(Object)
+  name.vb: Equals(Object)
+  fullName: Robocode.TankRoyale.BotApi.InitialPosition.Equals(object)
+  fullName.vb: Robocode.TankRoyale.BotApi.InitialPosition.Equals(Object)
+  nameWithType: InitialPosition.Equals(object)
+  nameWithType.vb: InitialPosition.Equals(Object)
 - uid: Robocode.TankRoyale.BotApi.InitialPosition.Equals*
   name: Equals
   href: api/Robocode.TankRoyale.BotApi.InitialPosition.html#Robocode_TankRoyale_BotApi_InitialPosition_Equals_
@@ -6095,11 +6557,14 @@ references:
   fullName: Robocode.TankRoyale.BotApi.InitialPosition.Equals
   nameWithType: InitialPosition.Equals
 - uid: Robocode.TankRoyale.BotApi.InitialPosition.FromString(System.String)
-  name: FromString(String)
+  name: FromString(string)
   href: api/Robocode.TankRoyale.BotApi.InitialPosition.html#Robocode_TankRoyale_BotApi_InitialPosition_FromString_System_String_
   commentId: M:Robocode.TankRoyale.BotApi.InitialPosition.FromString(System.String)
-  fullName: Robocode.TankRoyale.BotApi.InitialPosition.FromString(System.String)
-  nameWithType: InitialPosition.FromString(String)
+  name.vb: FromString(String)
+  fullName: Robocode.TankRoyale.BotApi.InitialPosition.FromString(string)
+  fullName.vb: Robocode.TankRoyale.BotApi.InitialPosition.FromString(String)
+  nameWithType: InitialPosition.FromString(string)
+  nameWithType.vb: InitialPosition.FromString(String)
 - uid: Robocode.TankRoyale.BotApi.InitialPosition.FromString*
   name: FromString
   href: api/Robocode.TankRoyale.BotApi.InitialPosition.html#Robocode_TankRoyale_BotApi_InitialPosition_FromString_

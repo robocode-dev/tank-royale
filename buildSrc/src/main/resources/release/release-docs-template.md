@@ -15,7 +15,7 @@ You can read the [installation guide] to get more details about installing both 
 The main application is the [GUI Application], which is a Java application.
 You can read more about how to use the GUI Application [here](https://robocode-dev.github.io/tank-royale/articles/gui.html#gui-application).
 
-The Robocode [GUI application] is run from the command-line (shell or command prompt) in order to start and view
+The Robocode [GUI application] is run from the command line (shell or command prompt) in order to start and view
 battles:
 
 ```shell
@@ -34,8 +34,8 @@ These sample bots are currently available:
 | C#       | [sample-bots-csharp-{VERSION}.zip] | Microsoft [.Net SDK] 5.0 or newer |
 | Java     | [sample-bots-java-{VERSION}.zip]   | Any [Java SDK] 11 or newer        |
 
-All bots are put in zip archives, which should be installed to independent directories.
-Each zip archive contains a ReadMe.md file with more information for the specific platform. 
+All bots are put in zip archives, which should be installed in independent directories.
+Each zip archive contains a ReadMe.md file with more information for the specific platform.
 
 ## 📦 Bot API
 
