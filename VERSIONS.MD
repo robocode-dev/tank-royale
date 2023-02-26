@@ -1,6 +1,6 @@
 # Versions
 
-## 📦 In progress - Added bot teams
+## 📦 0.20.0 - Added bot teams
 
 #### 🚀 Improvements
 
@@ -16,27 +16,46 @@
     - Renamed `bot-results-for-bot` and `bot-results-for-observer` into `results-for-bot` and `results-for-observer` as
       participants now include teams, and not just bots.
 - GUI:
-    - Console windows for bots and server support 3-bit and 4-bit [ANSI colors][ANSI escape code] (foreground and
-      background) and simple text formatting.
     - Added `Directory Filter` dropdown for filter on bots and teams.
     - The results window now aggregates scores for teams as well as bots, got a wider "Name" column, some column names
       were changed, and got tooltips on the value fields.
-    - Direct3D and OpenGL acceleration is now disabled under Windows.
+
+## 📦 0.19.1 - Maintenance - 26-Feb-2023
+
+#### 🚀 Improvements
+
+- Booter:
+    - Updated, so it can launch a team by booting all bots within the team.
+    - Changed the name of the `run` command into `boot`.
+    - Changed command option `-T` into `-g` for filtering on game rules.
+    - Added `--botsOnly` and corresponding `-b` option flag for filtering on bots only (excluding teams).
+    - Added `--teamsOnly` and corresponding `-t` option flag for filtering on teams only (excluding bots).
+    - Bot API:
+        - TODO
+- Schema:
+    - Renamed `bot-results-for-bot` and `bot-results-for-observer` into `results-for-bot` and `results-for-observer` as
+      participants now include teams, and not just bots.
+- GUI:
+    - Console windows for bots and the server now supports 3-bit and 4-bit [ANSI colors][ANSI escape code] (foreground
+      and background) and simple text formatting.
     - Added `bot died` info to the bot console.
+    - Direct3D and OpenGL acceleration is now disabled under Windows. You can add those yourself when you start up
+      the GUI using the `java` command. Read more about it
+      [here](https://docs.oracle.com/javase/7/docs/technotes/guides/2d/flags.html).
 
 #### 🪲 Bug Fixes
 
 - Server:
-    - [#60]: Round ended event was not send, in the round when the game was ended.
+    - [#60]: The round-ended event was not sent, in the round when the game ended.
 - GUI:
-    - Joined Bots list was not updated (removing bots), when game is aborted.
+    - Joined Bots list was not updated (removing bots) when the game is aborted.
     - The properties `sun.java2d.d3d`, `sun.java2d.noddraw`, and `sun.java2d.opengl` is now omitted under macOS.
-    - Fixed label colors for field showing country codes (with flags).
-    - Sometimes flags where "empty" when clicking on a joined bot.
+    - Fixed label colors for fields showing country codes (with flags).
+    - Sometimes flags were "empty" when clicking on a joined bot.
 - Bot API for .Net:
     - Issue where the `Game Types` field was overwritten by `Country Codes` (could be seen on the UI).
 
-## 📦 0.19.0 - Added bot console windows
+## 📦 0.19.0 - Added bot console windows - 28-Jan-2023
 
 #### 🚀 Improvements
 
