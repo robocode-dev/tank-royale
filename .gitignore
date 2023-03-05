@@ -14,7 +14,6 @@ target/
 !sample-bots/csharp/Target/
 build/
 !buildSrc/src/main/kotlin/build
-/gradle/wrapper/gradle-wrapper.jar
 out/
 bin/
 obj/
