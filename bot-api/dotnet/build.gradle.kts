@@ -59,7 +59,7 @@ tasks {
         }
     }
 
-    build {
+    dotnetBuild {
         dependsOn(":schema:dotnet:build", prepareNugetDocs)
     }
 
