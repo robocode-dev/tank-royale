@@ -13,19 +13,19 @@ available version).
 #### Clean build directory:
 
 ```shell
-gradle clean
+./gradlew :gui-app:clean
 ```
 
 #### Build/compile:
 
 ```shell
-gradle build
+./gradlew :gui-app:build
 ```
 
 #### Publish artifact to the local Maven repository
 
 ```shell
-gradle publishToMavenLocal
+./gradlew :gui-app:publishToMavenLocal
 ```
 
 ## Running the GUI application

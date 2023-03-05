@@ -9,13 +9,13 @@ The Bot API is provided as a JAR archive and built for [Java 11].
 #### Clean build directory:
 
 ```shell
-gradle clean
+./gradlew :bot-api:java:clean
 ```
 
 #### Build/compile classes and javadoc:
 
 ```shell
-gradle build
+./gradlew :bot-api:java:build
 ```
 
 Compiled files are output to the `/build` directory:
@@ -36,7 +36,7 @@ The javadoc can be viewed in a browser by opening this file with a browser:
 #### Publish artifact to the local Maven repository
 
 ```shell
-gradle publishToMavenLocal
+./gradlew :bot-api:java:publishToMavenLocal
 ```
 
 

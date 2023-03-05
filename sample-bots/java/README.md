@@ -7,13 +7,13 @@ This module contains sample bots for Robocode Tank Royale developed for the Java
 #### Clean build directory:
 
 ```shell
-gradle clean
+./gradlew :sample-bots:java:clean
 ```
 
 #### Create archive
 
 ```shell
-gradle zip
+./gradlew :sample-bots:java:zip
 ```
 
 The archive will be output to the `build` directory as a zip file named `sample-bots-java-x.y.z.zip`.
