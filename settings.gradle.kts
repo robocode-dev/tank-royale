@@ -41,7 +41,7 @@ dependencyResolutionManagement {
             library("java-websocket", "org.java-websocket:Java-WebSocket:1.5.3")
             library("jsonschema2pojo", "org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.1.3")
             library("picocli", "info.picocli:picocli:4.7.1")
-            library("proguard-gradle", "com.guardsquare:proguard-gradle:7.2.2")
+            library("proguard-gradle", "com.guardsquare:proguard-gradle:7.3.1")
             library("miglayout-swing", "com.miglayout:miglayout-swing:11.0")
             library("nv-i18n", "com.neovisionaries:nv-i18n:1.29")
             library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
