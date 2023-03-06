@@ -16,13 +16,13 @@ The Bot API is provided as a [Nuget] package and build for [.Net 6.0].
 #### Clean build directories:
 
 ```shell
-gradle clean
+./gradlew :bot-api:dotnet:clean
 ```
 
 #### Build Nuget package:
 
 ```shell
-gradle build
+./gradlew :bot-api:dotnet:build
 ```
 
 Artifact is output to the `/bin/Release/` directory named `Robocode.TankRoyale.BotApi.x.y.z.nupkg`.
@@ -30,7 +30,7 @@ Artifact is output to the `/bin/Release/` directory named `Robocode.TankRoyale.B
 ### Build API documentation
 
 ```shell
-gradle docfx
+./gradlew :bot-api:dotnet:build
 ```
 
 [DocFX] documentation will be generated to the /docfx_project/_site directory.
@@ -50,7 +50,7 @@ You can then view the documentation with the browser on http://localhost:8080
 ### Push Nuget package to local repository:
 
 ```shell
-gradle pushLocal
+./gradlew :bot-api:dotnet:pushLocal
 ```
 
 This will push the nuget package to `%USERPROFILE%/.nuget/packages` (Windows) or `~/.nuget/packages` (macOS and Linux).

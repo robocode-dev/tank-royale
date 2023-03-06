@@ -15,13 +15,13 @@ containing: `"<filepath of schemas directory> <filepath to output directory>"`
 #### Clean build directory:
 
 ```shell
-gradle clean
+./gradlew :schema:dotnet:clean
 ```
 
 #### Create archive
 
 ```shell
-gradle build
+./gradlew :schema:dotnet:build
 ```
 
 ## Generating the files with dotnet

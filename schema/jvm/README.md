@@ -12,11 +12,11 @@ available, e.g. for checking that schemas can be generated to Java files without
 #### Clean build directory:
 
 ```shell
-gradle clean
+./gradlew :schema:jvm:clean
 ```
 
 #### Create archive
 
 ```shell
-gradle build
+./gradlew :schema:jvm:build
 ```

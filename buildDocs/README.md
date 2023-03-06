@@ -20,7 +20,7 @@ and for Gradle [here](https://gradle.org/install/#prerequisites).
 The docs are build by this command:
 
 ```shell
-gradle clean build
+./gradlew :buildDocs:clean :buildDocs:build
 ```
 
 In order to view the generated documentation, you write:
@@ -38,7 +38,7 @@ documentation.
 After having built the docs you can upload the documentation to GitHub docs using this command:
 
 ```shell
-gradle uploadDocs
+./gradlew :buildDocs:clean
 ```
 
 This will create new files, update existing ones, and remove others.
