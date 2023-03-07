@@ -55,6 +55,10 @@ tasks {
         dependsOn(copyBooterJar, copyServerJar)
     }
 
+    build {
+        dependsOn(copyJars)
+    }
+
     val fatJar by registering(FatJar::class) {
         dependsOn(classes, copyJars)
 
