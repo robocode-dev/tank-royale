@@ -5,14 +5,16 @@ extends:
   $ref: event.yaml
 properties:
   message:
-    description: The received message in binary form and hence base64 encoded
+    description: The message to send, e.g. in JSON format
     type: string
     maxLength: 32768
-    contentEncoding: base64
-    contentMediaType: application/octet-stream
+  messageType:
+    description: The message type, e.g. a class name
+    type: string
   senderId:
     description: The id of the sender teammate
     type: integer
 required:
   - message
+  - messageType
   - senderId

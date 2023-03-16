@@ -3,13 +3,15 @@ $schema: http://json-schema.org/2020-12/schema#
 description: Message sent between teammates
 properties:
   message:
-    description: The received message in binary form and hence base64 encoded
+    description: The received message, e.g. in JSON format
     type: string
     maxLength: 32768
-    contentEncoding: base64
-    contentMediaType: application/octet-stream
+  messageType:
+    description: The message type, e.g. a class name
+    type: string
   receiverId:
     description: The id of the receiver teammate. If omitted, the message is broadcast to all teammates
     type: integer
 required:
   - message
+  - messageType

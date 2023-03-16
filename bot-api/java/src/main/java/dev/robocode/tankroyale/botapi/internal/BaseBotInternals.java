@@ -5,29 +5,28 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
-import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.BulletState;
 import dev.robocode.tankroyale.botapi.GameSetup;
+import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.BotDeathEvent;
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
 import dev.robocode.tankroyale.botapi.events.BulletHitBotEvent;
 import dev.robocode.tankroyale.botapi.events.BulletHitBulletEvent;
 import dev.robocode.tankroyale.botapi.events.BulletHitWallEvent;
 import dev.robocode.tankroyale.botapi.events.HitByBulletEvent;
-import dev.robocode.tankroyale.botapi.events.RoundEndedEvent;
 import dev.robocode.tankroyale.botapi.events.RoundStartedEvent;
 import dev.robocode.tankroyale.botapi.events.ScannedBotEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
-import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.events.TeamMessageEvent;
 import dev.robocode.tankroyale.botapi.events.WonRoundEvent;
+import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
 import dev.robocode.tankroyale.schema.*;
-import dev.robocode.tankroyale.schema.TeamMessage;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -41,8 +40,8 @@ import static dev.robocode.tankroyale.botapi.Constants.*;
 import static dev.robocode.tankroyale.botapi.IBaseBot.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN;
 import static dev.robocode.tankroyale.botapi.IBaseBot.TEAM_MESSAGE_MAX_SIZE;
 import static dev.robocode.tankroyale.botapi.events.DefaultEventPriority.*;
-import static dev.robocode.tankroyale.botapi.util.MathUtil.clamp;
 import static dev.robocode.tankroyale.botapi.mapper.ResultsMapper.map;
+import static dev.robocode.tankroyale.botapi.util.MathUtil.clamp;
 import static java.lang.Math.*;
 import static java.net.http.WebSocket.Builder;
 import static java.net.http.WebSocket.Listener;
@@ -139,7 +138,8 @@ public final class BaseBotInternals {
                         .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
                         .registerSubtype(dev.robocode.tankroyale.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
                         .registerSubtype(dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
-                        .registerSubtype(dev.robocode.tankroyale.schema.WonRoundEvent.class, "WonRoundEvent");
+                        .registerSubtype(dev.robocode.tankroyale.schema.WonRoundEvent.class, "WonRoundEvent")
+                        .registerSubtype(dev.robocode.tankroyale.schema.TeamMessageEvent.class, "TeamMessageEvent");
 
         gson = new GsonBuilder()
                 .registerTypeAdapterFactory(typeFactory)
@@ -288,6 +288,7 @@ public final class BaseBotInternals {
     private void sendIntent() {
         transferStdOutToBotIntent();
         socket.sendText(gson.toJson(botIntent), true);
+        botIntent.getTeamMessages().clear();
     }
 
     private void transferStdOutToBotIntent() {
@@ -590,30 +591,17 @@ public final class BaseBotInternals {
         if (message == null) {
             throw new IllegalArgumentException("The 'message' of a team message cannot be null");
         }
-        var bytes = convertToBytes(message);
-        if (bytes.length > TEAM_MESSAGE_MAX_SIZE) {
+        var json = gson.toJson(message).replaceAll("\"", "\\\"");
+        if (json.getBytes().length > TEAM_MESSAGE_MAX_SIZE) {
             throw new IllegalArgumentException(
-                    "The team message is larger than the limit of " + TEAM_MESSAGE_MAX_SIZE + " bytes");
+                    "The team message is larger than the limit of " + TEAM_MESSAGE_MAX_SIZE + " bytes (compact JSON format)");
         }
-
-        var base64encoded = Base64.getEncoder().encodeToString(bytes);
-
         var teamMessage = new TeamMessage();
         teamMessage.setReceiverId(teammateId);
-        teamMessage.setMessage(base64encoded);
+        teamMessage.setMessage(json);
+        teamMessage.setMessageType(message.getClass().getName());
 
         botIntent.getTeamMessages().add(teamMessage);
-    }
-
-    private byte[] convertToBytes(Object object) {
-        try (var byteArrayInputStream = new ByteArrayOutputStream();
-             var objectOutputStream = new ObjectOutputStream(byteArrayInputStream)) {
-
-            objectOutputStream.writeObject(object);
-            return byteArrayInputStream.toByteArray();
-        } catch (IOException e) {
-            throw new BotException("Could not convert Object to byte array", e);
-        }
     }
 
     public int getPriority(Class<BotEvent> eventClass) {
@@ -797,7 +785,7 @@ public final class BaseBotInternals {
 
             var tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
 
-            var newTickEvent = EventMapper.map(tickEventForBot, myId);
+            var newTickEvent = EventMapper.map(tickEventForBot, baseBot);
             eventQueue.addEventsFromTick(newTickEvent);
 
             if (botIntent.getRescan() != null && botIntent.getRescan()) {
@@ -864,7 +852,7 @@ public final class BaseBotInternals {
 
             var skippedTurnEvent = gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
 
-            botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent, myId));
+            botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent, baseBot));
         }
 
         private void handleServerHandshake(JsonObject jsonMsg) {

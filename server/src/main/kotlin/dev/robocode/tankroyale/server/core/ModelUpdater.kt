@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.model.Color.Companion.fromString
 import dev.robocode.tankroyale.server.rules.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
+import org.slf4j.LoggerFactory
 import java.lang.Math.toDegrees
 import java.util.*
 import kotlin.math.abs
@@ -33,6 +34,8 @@ class ModelUpdater(
     /** Initial positions */
     private val initialPositions: Map<BotId, InitialPosition>
 ) {
+    private val log = LoggerFactory.getLogger(ModelUpdater::class.java)
+
     /** Score keeper */
     private val scoreTracker: ScoreTracker = ScoreTracker(participantIds)
 
@@ -856,11 +859,22 @@ class ModelUpdater(
     }
 
     private fun processTeamMessages(bot: MutableBot, intent: BotIntent) {
-        intent.teamMessages?.forEach { teamMessage ->
-            if (teamMessage.receiverId != null) {
-                turn.addPrivateBotEvent(teamMessage.receiverId, TeamMessageEvent(turn.turnNumber, teamMessage.message, bot.id))
-            } else {
-                turn.addPublicBotEvent(TeamMessageEvent(turn.turnNumber, teamMessage.message, bot.id))
+        intent.teamMessages?.let { teamMessages ->
+            for (index in 0 until (teamMessages.size).coerceAtMost(MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN)) {
+                teamMessages[index].let { teamMessage ->
+                    teamMessage.apply {
+                        if (message.length <= MAX_TEAM_MESSAGE_SIZE) { // ignore this and follower messages if one message is too big
+                            if (receiverId != null) {
+                                turn.addPrivateBotEvent(
+                                    receiverId,
+                                    TeamMessageEvent(turn.turnNumber, message, messageType, bot.id)
+                                )
+                            } else {
+                                turn.addPublicBotEvent(TeamMessageEvent(turn.turnNumber, message, messageType, bot.id))
+                            }
+                        }
+                    }
+                }
             }
         }
         // clear team messages

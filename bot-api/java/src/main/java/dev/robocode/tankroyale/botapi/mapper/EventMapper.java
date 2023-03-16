@@ -1,13 +1,11 @@
 package dev.robocode.tankroyale.botapi.mapper;
 
+import com.google.gson.Gson;
 import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.BulletState;
+import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,25 +15,25 @@ import java.util.Set;
  */
 public final class EventMapper {
 
-    public static TickEvent map(final dev.robocode.tankroyale.schema.TickEventForBot event, int myBotId) {
+    public static TickEvent map(final dev.robocode.tankroyale.schema.TickEventForBot event, IBaseBot baseBot) {
         return new TickEvent(
                 event.getTurnNumber(),
                 event.getRoundNumber(),
                 event.getEnemyCount(),
                 BotStateMapper.map(event.getBotState()),
                 BulletStateMapper.map(event.getBulletStates()),
-                map(event.getEvents(), myBotId));
+                map(event.getEvents(), baseBot));
     }
 
-    private static Set<BotEvent> map(final Collection<dev.robocode.tankroyale.schema.Event> events, int myBotId) {
+    private static Set<BotEvent> map(final Collection<dev.robocode.tankroyale.schema.Event> events, IBaseBot baseBot) {
         Set<BotEvent> gameBotEvents = new HashSet<>();
-        events.forEach(event -> gameBotEvents.add(map(event, myBotId)));
+        events.forEach(event -> gameBotEvents.add(map(event, baseBot)));
         return gameBotEvents;
     }
 
-    public static BotEvent map(final dev.robocode.tankroyale.schema.Event event, int myBotId) {
+    public static BotEvent map(final dev.robocode.tankroyale.schema.Event event, IBaseBot baseBot) {
         if (event instanceof dev.robocode.tankroyale.schema.BotDeathEvent) {
-            return map((dev.robocode.tankroyale.schema.BotDeathEvent) event, myBotId);
+            return map((dev.robocode.tankroyale.schema.BotDeathEvent) event, baseBot.getMyId());
         }
         if (event instanceof dev.robocode.tankroyale.schema.BotHitBotEvent) {
             return map((dev.robocode.tankroyale.schema.BotHitBotEvent) event);
@@ -47,7 +45,7 @@ public final class EventMapper {
             return map((dev.robocode.tankroyale.schema.BulletFiredEvent) event);
         }
         if (event instanceof dev.robocode.tankroyale.schema.BulletHitBotEvent) {
-            return map((dev.robocode.tankroyale.schema.BulletHitBotEvent) event, myBotId);
+            return map((dev.robocode.tankroyale.schema.BulletHitBotEvent) event, baseBot.getMyId());
         }
         if (event instanceof dev.robocode.tankroyale.schema.BulletHitBulletEvent) {
             return map((dev.robocode.tankroyale.schema.BulletHitBulletEvent) event);
@@ -65,7 +63,7 @@ public final class EventMapper {
             return map((dev.robocode.tankroyale.schema.WonRoundEvent) event);
         }
         if (event instanceof dev.robocode.tankroyale.schema.TeamMessageEvent) {
-            return map((dev.robocode.tankroyale.schema.TeamMessageEvent) event);
+            return map((dev.robocode.tankroyale.schema.TeamMessageEvent) event, baseBot);
         }
         throw new BotException(
                 "No mapping exists for event type: " + event.getClass().getSimpleName());
@@ -148,20 +146,18 @@ public final class EventMapper {
         return new WonRoundEvent(source.getTurnNumber());
     }
 
-    private static TeamMessageEvent map(final dev.robocode.tankroyale.schema.TeamMessageEvent source) {
-        if (source.getMessage() == null)
+    private static TeamMessageEvent map(final dev.robocode.tankroyale.schema.TeamMessageEvent source, final IBaseBot baseBot) {
+        var message = source.getMessage();
+        if (message == null) {
             throw new BotException("message in TeamMessageEvent is null");
-
-        Object messageObject;
-        byte[] decodedString = Base64.getDecoder().decode(source.getMessage().getBytes(StandardCharsets.ISO_8859_1));
-
-        try (var byteArrayInputStream = new ByteArrayInputStream(decodedString);
-             var objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
-            messageObject = objectInputStream.readObject();
-
-        } catch (Exception e) {
-            throw new BotException("Could not convert byte array to Object", e);
         }
-        return new TeamMessageEvent(source.getTurnNumber(), messageObject, source.getSenderId());
+        try {
+            var type = baseBot.getClass().getClassLoader().loadClass(source.getMessageType());
+            var messageObject = new Gson().fromJson(message.replaceAll("\\\"", "\""), type);
+            return new TeamMessageEvent(source.getTurnNumber(), messageObject, source.getSenderId());
+
+        } catch (ClassNotFoundException e) {
+            throw new BotException("Could not parse team message", e);
+        }
     }
 }

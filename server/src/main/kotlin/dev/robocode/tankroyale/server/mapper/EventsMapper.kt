@@ -1,9 +1,6 @@
 package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.schema.*
-import java.io.ByteArrayOutputStream
-import java.io.ObjectOutputStream
-import java.util.*
 
 object EventsMapper {
     fun map(events: Set<dev.robocode.tankroyale.server.event.Event>): List<Event> {
@@ -143,22 +140,11 @@ object EventsMapper {
         event.type = Message.Type.TEAM_MESSAGE_EVENT
 
         teamMessageEvent.apply {
-            val bytes = convertToBytes(message)
-            val base64encoded = Base64.getEncoder().encodeToString(bytes)
-
             event.turnNumber = turnNumber
-            event.message = base64encoded
+            event.message = message
+            event.messageType = messageType
             event.senderId = senderId.value
         }
         return event
-    }
-
-    private fun convertToBytes(data: Any): ByteArray? {
-        ByteArrayOutputStream().use { byteArrayInputStream ->
-            ObjectOutputStream(byteArrayInputStream).use { objectOutputStream ->
-                objectOutputStream.writeObject(data)
-                return byteArrayInputStream.toByteArray()
-            }
-        }
     }
 }

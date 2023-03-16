@@ -7,7 +7,10 @@ class TeamMessageEvent(
     override val turnNumber: Int,
 
     /** Message that was received */
-    val message: Any,
+    var message: String,
+
+    /** The type of message that was received */
+    var messageType: String,
 
     /** ID of the teammate that sent the message */
     val senderId: BotId,
