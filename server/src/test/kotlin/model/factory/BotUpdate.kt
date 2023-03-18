@@ -1,6 +1,7 @@
 package model.factory
 
 import dev.robocode.tankroyale.server.model.IBotIntent
+import dev.robocode.tankroyale.server.model.TeamMessage
 
 /**
  * BotUpdate is a bot intent sent from a bot between turns.
@@ -43,4 +44,5 @@ data class BotUpdate(
     override var gunColor: String? = null,
     override var stdOut: String? = null,
     override var stdErr: String? = null,
+    override var teamMessages: List<TeamMessage>? = null,
 ) : IBotIntent
