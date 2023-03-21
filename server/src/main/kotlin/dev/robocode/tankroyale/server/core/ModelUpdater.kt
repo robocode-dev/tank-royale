@@ -7,7 +7,6 @@ import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.model.Color.Companion.fromString
 import dev.robocode.tankroyale.server.rules.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
-import org.slf4j.LoggerFactory
 import java.lang.Math.toDegrees
 import java.util.*
 import kotlin.math.abs
@@ -30,14 +29,12 @@ class ModelUpdater(
     /** Game setup */
     private val setup: GameSetup,
     /** Participant ids */
-    private val participantIds: Set<BotId>,
+    private val participantsWithTeamIds: Map<BotId, TeamId?>,
     /** Initial positions */
     private val initialPositions: Map<BotId, InitialPosition>
 ) {
-    private val log = LoggerFactory.getLogger(ModelUpdater::class.java)
-
     /** Score keeper */
-    private val scoreTracker: ScoreTracker = ScoreTracker(participantIds)
+    private val scoreTracker: ScoreTracker = ScoreTracker(participantsWithTeamIds)
 
     /** Map over all bots */
     private val botsMap = mutableMapOf<BotId, MutableBot>()
@@ -183,14 +180,14 @@ class ModelUpdater(
     /** Initializes bot states. */
     private fun initializeBotStates() {
         val occupiedCells = mutableSetOf<Int>()
-        for (id in participantIds) {
+        for ((botId, _) in participantsWithTeamIds) {
             val randomPosition = randomBotPosition(occupiedCells)
-            val position = adjustForInitialPosition(id, randomPosition)
+            val position = adjustForInitialPosition(botId, randomPosition)
             // note: body, gun, and radar starts in the same direction
             val randomDirection = randomDirection()
-            val direction = adjustForInitialAngle(id, randomDirection)
-            botsMap[id] = MutableBot(
-                id = id,
+            val direction = adjustForInitialAngle(botId, randomDirection)
+            botsMap[botId] = MutableBot(
+                id = botId,
                 position = position.toMutablePoint(),
                 direction = direction,
                 gunDirection = direction,
@@ -240,7 +237,7 @@ class ModelUpdater(
         val gridWidth = setup.arenaWidth / 50
         val gridHeight = setup.arenaHeight / 50
         val cellCount = gridWidth * gridHeight
-        val numBots = participantIds.size
+        val numBots = participantsWithTeamIds.size
         if (cellCount < numBots) {
             throw IllegalArgumentException(
                 "Area size (${setup.arenaWidth},${setup.arenaHeight}) is too small to contain $numBots bots"

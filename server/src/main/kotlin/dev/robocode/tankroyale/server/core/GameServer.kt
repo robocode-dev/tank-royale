@@ -2,16 +2,15 @@ package dev.robocode.tankroyale.server.core
 
 import com.google.gson.Gson
 import dev.robocode.tankroyale.schema.*
+import dev.robocode.tankroyale.schema.BotIntent
+import dev.robocode.tankroyale.schema.GameSetup
 import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.ConnectionHandler
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.GameServerConnectionListener
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.ResultsView
 import dev.robocode.tankroyale.server.mapper.*
-import dev.robocode.tankroyale.server.model.BotId
-import dev.robocode.tankroyale.server.model.GameState
-import dev.robocode.tankroyale.server.model.IRound
-import dev.robocode.tankroyale.server.model.ITurn
+import dev.robocode.tankroyale.server.model.*
 import org.java_websocket.WebSocket
 import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.slf4j.LoggerFactory
@@ -104,15 +103,15 @@ class GameServer(
         participantIds.clear()
         readyParticipants.clear()
 
+        prepareParticipantIds()
         prepareModelUpdater()
         sendGameStartedToParticipants()
         startReadyTimer()
     }
 
-    /** Starts the game if all participants are ready */
-
     private val startGameLock = Any()
 
+    /** Starts the game if all participants are ready */
     private fun startGameIfParticipantsReady() {
         synchronized(startGameLock) {
             if (readyParticipants.size == participants.size) {
@@ -131,13 +130,17 @@ class GameServer(
         }
     }
 
+    private fun prepareParticipantIds() {
+        participants.forEachIndexed { index, conn ->
+            participantIds[conn] = BotId(index + 1)
+        }
+    }
+
     /** Send game-started event to all participant bots to get them started */
     private fun sendGameStartedToParticipants() {
         val gameStartedForBot = createGameStartedEventForBot()
-        var id = 1
-        for (conn in participants) {
-            participantIds[conn] = BotId(id)
-            gameStartedForBot.myId = id++
+        for ((conn, botId) in participantIds) {
+            gameStartedForBot.myId = botId.value
             send(conn, gameStartedForBot)
         }
     }
@@ -211,7 +214,21 @@ class GameServer(
             val p = it.value.initialPosition
             InitialPosition(p.x, p.y, p.angle)
         }
-        modelUpdater = ModelUpdater(gameSetup, HashSet(participantIds.values), initialPositions)
+
+        val participantsAndTeamIds = createParticipantsAndTeamIds()
+        modelUpdater = ModelUpdater(gameSetup, HashMap(participantsAndTeamIds), initialPositions)
+    }
+
+    private fun createParticipantsAndTeamIds(): Map<BotId, TeamId?> {
+        val botAndTeamIds = HashMap<BotId, TeamId?>()
+
+        connectionHandler.getBotHandshakes().forEach { (conn, botHandshake) ->
+            participantIds[conn]?.let {
+                val teamId = botHandshake.teamId
+                botAndTeamIds[it] = if (teamId == null) null else TeamId(teamId)
+            }
+        }
+        return botAndTeamIds
     }
 
     /** Last reset turn timeout period */

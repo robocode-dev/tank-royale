@@ -2,10 +2,11 @@ package dev.robocode.tankroyale.server.score
 
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.Score
+import dev.robocode.tankroyale.server.model.TeamId
 import dev.robocode.tankroyale.server.rules.*
 
 /** Score utility class used for keeping track of the score for an individual bot in a game. */
-class ScoreTracker(private val botIds: Set<BotId>) {
+class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
 
     /** Map from bot identifier to a bot record  */
     private val scoreAndDamages = mutableMapOf<BotId, ScoreAndDamage>()
@@ -23,17 +24,17 @@ class ScoreTracker(private val botIds: Set<BotId>) {
     private val thirdPlaces = mutableMapOf<BotId, Int>()
 
     init {
-        botIds.forEach { scoreAndDamages[it] = ScoreAndDamage() }
+        botAndTeamIds.keys.forEach { scoreAndDamages[it] = ScoreAndDamage() }
     }
 
     /** Current bot scores ordered with higher total scores first. */
-    fun getBotScores(): Collection<Score> = botIds.map { getScore(it) }
+    fun getBotScores(): Collection<Score> = botAndTeamIds.keys.map { getScore(it) }
 
     /** Prepare for new round. */
     fun prepareRound() {
         botsAliveIds.apply {
             clear()
-            addAll(botIds)
+            addAll(botAndTeamIds.keys)
         }
     }
 
