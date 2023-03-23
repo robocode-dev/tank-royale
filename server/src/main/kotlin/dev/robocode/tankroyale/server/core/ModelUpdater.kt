@@ -180,14 +180,20 @@ class ModelUpdater(
     /** Initializes bot states. */
     private fun initializeBotStates() {
         val occupiedCells = mutableSetOf<Int>()
-        for ((botId, _) in participantsWithTeamIds) {
+        for ((botId, teamId) in participantsWithTeamIds) {
             val randomPosition = randomBotPosition(occupiedCells)
             val position = adjustForInitialPosition(botId, randomPosition)
             // note: body, gun, and radar starts in the same direction
             val randomDirection = randomDirection()
             val direction = adjustForInitialAngle(botId, randomDirection)
+
+            val teammateIds =
+                teamId?.let { participantsWithTeamIds.filterValues { it == teamId }.keys.toSet().minus(botId) }
+                    ?: emptySet()
+
             botsMap[botId] = MutableBot(
                 id = botId,
+                teammateIds = teammateIds,
                 position = position.toMutablePoint(),
                 direction = direction,
                 gunDirection = direction,
@@ -863,11 +869,14 @@ class ModelUpdater(
                         if (message.length <= MAX_TEAM_MESSAGE_SIZE) { // ignore this and follower messages if one message is too big
                             if (receiverId != null) {
                                 turn.addPrivateBotEvent(
-                                    receiverId,
-                                    TeamMessageEvent(turn.turnNumber, message, messageType, bot.id)
+                                    receiverId, TeamMessageEvent(turn.turnNumber, message, messageType, bot.id)
                                 )
                             } else {
-                                turn.addPublicBotEvent(TeamMessageEvent(turn.turnNumber, message, messageType, bot.id))
+                                bot.teammateIds.forEach { teammateId ->
+                                    turn.addPrivateBotEvent(
+                                        teammateId, TeamMessageEvent(turn.turnNumber, message, messageType, bot.id)
+                                    )
+                                }
                             }
                         }
                     }
