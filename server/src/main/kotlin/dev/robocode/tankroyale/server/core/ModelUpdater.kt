@@ -29,12 +29,12 @@ class ModelUpdater(
     /** Game setup */
     private val setup: GameSetup,
     /** Participant ids */
-    private val participantsWithTeamIds: Map<BotId, TeamId?>,
+    private val participantsAndTeamIds: Map<BotId, TeamId?>,
     /** Initial positions */
     private val initialPositions: Map<BotId, InitialPosition>
 ) {
     /** Score keeper */
-    private val scoreTracker: ScoreTracker = ScoreTracker(participantsWithTeamIds)
+    private val scoreTracker: ScoreTracker = ScoreTracker(participantsAndTeamIds)
 
     /** Map over all bots */
     private val botsMap = mutableMapOf<BotId, MutableBot>()
@@ -180,7 +180,7 @@ class ModelUpdater(
     /** Initializes bot states. */
     private fun initializeBotStates() {
         val occupiedCells = mutableSetOf<Int>()
-        for ((botId, teamId) in participantsWithTeamIds) {
+        for ((botId, teamId) in participantsAndTeamIds) {
             val randomPosition = randomBotPosition(occupiedCells)
             val position = adjustForInitialPosition(botId, randomPosition)
             // note: body, gun, and radar starts in the same direction
@@ -188,7 +188,7 @@ class ModelUpdater(
             val direction = adjustForInitialAngle(botId, randomDirection)
 
             val teammateIds =
-                teamId?.let { participantsWithTeamIds.filterValues { it == teamId }.keys.toSet().minus(botId) }
+                teamId?.let { participantsAndTeamIds.filterValues { it == teamId }.keys.toSet().minus(botId) }
                     ?: emptySet()
 
             botsMap[botId] = MutableBot(
@@ -243,7 +243,7 @@ class ModelUpdater(
         val gridWidth = setup.arenaWidth / 50
         val gridHeight = setup.arenaHeight / 50
         val cellCount = gridWidth * gridHeight
-        val numBots = participantsWithTeamIds.size
+        val numBots = participantsAndTeamIds.size
         if (cellCount < numBots) {
             throw IllegalArgumentException(
                 "Area size (${setup.arenaWidth},${setup.arenaHeight}) is too small to contain $numBots bots"
