@@ -138,18 +138,23 @@ class GameServer(
 
     /** Send game-started event to all participant bots to get them started */
     private fun sendGameStartedToParticipants() {
-        val gameStartedForBot = createGameStartedEventForBot()
+        val gameSetup = GameSetupMapper.map(gameSetup)
+        val teammateIds = emptySet<BotId>()
+
         for ((conn, botId) in participantIds) {
+            val gameStartedForBot = createGameStartedEventForBot(botId, teammateIds, gameSetup)
             gameStartedForBot.myId = botId.value
             send(conn, gameStartedForBot)
         }
     }
 
     /** Creates a GameStartedEventForBot with current game setup */
-    private fun createGameStartedEventForBot(): GameStartedEventForBot {
+    private fun createGameStartedEventForBot(botId: BotId, teammateIds: Set<BotId>, gameSetup: GameSetup): GameStartedEventForBot {
         return GameStartedEventForBot().apply {
             type = Message.Type.GAME_STARTED_EVENT_FOR_BOT
-            gameSetup = GameSetupMapper.map(this@GameServer.gameSetup)
+            myId = botId.value
+            this.teammateIds = teammateIds.map { it.value }
+            this.gameSetup = gameSetup
         }
     }
 
