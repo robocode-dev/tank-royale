@@ -1,5 +1,12 @@
 # Versions
 
+## 📦 0.19.2 - Ongoing
+
+#### 🪲 Bug Fixes
+
+- Server:
+    - [#66]: Server is not accepting the full range of ports.
+
 ## 📦 0.19.1 - Maintenance - 26-Feb-2023
 
 #### 🚀 Improvements
@@ -539,6 +546,8 @@ Bot info:
 [#53]: https://github.com/robocode-dev/tank-royale/issues/53
 
 [#60]: https://github.com/robocode-dev/tank-royale/issues/60
+
+[#66]: https://github.com/robocode-dev/tank-royale/issues/66
 
 [BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
 
