@@ -573,7 +573,7 @@ public final class BaseBotInternals {
     }
 
     public boolean isTeammate(int botId) {
-        return teammateIds.stream().anyMatch(teammateId -> botId == teammateId);
+        return getTeammateIds().stream().anyMatch(teammateId -> botId == teammateId);
     }
 
     public void broadcastTeamMessage(Object message) {
@@ -581,7 +581,7 @@ public final class BaseBotInternals {
     }
 
     public void sendTeamMessage(Integer teammateId, Object message) {
-        if (teammateId != null && !teammateIds.contains(teammateId)) {
+        if (teammateId != null && !getTeammateIds().contains(teammateId)) {
             throw new IllegalArgumentException("No teammate was found with the specified 'teammateId': " + teammateId);
         }
         if (botIntent.getTeamMessages().size() == MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN) {
@@ -816,8 +816,8 @@ public final class BaseBotInternals {
 
             myId = gameStartedEventForBot.getMyId();
 
-            var teammateIdList = gameStartedEventForBot.getTeammateIds();
-            teammateIds = teammateIdList == null ? Set.of() : new HashSet<>(teammateIdList);
+            teammateIds = gameStartedEventForBot.getTeammateIds() == null ?
+                    Set.of() : new HashSet<>(gameStartedEventForBot.getTeammateIds());
 
             gameSetup = GameSetupMapper.map(gameStartedEventForBot.getGameSetup());
 

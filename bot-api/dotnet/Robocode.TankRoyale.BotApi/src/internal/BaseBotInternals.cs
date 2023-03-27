@@ -68,6 +68,8 @@ public sealed class BaseBotInternals
 
     private readonly IDictionary<Type, int> eventPriorities = new Dictionary<Type, int>();
 
+    private ICollection<int> teammateIds;
+    
     internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUrl, string serverSecret)
     {
         this.baseBot = baseBot;
@@ -571,7 +573,7 @@ public sealed class BaseBotInternals
 
     internal bool IsStopped { get; private set; }
 
-    internal ICollection<int> TeammateIds { get; private set; }
+    internal ICollection<int> TeammateIds => teammateIds ?? throw new BotException(GameNotRunningMsg);
 
     internal bool IsTeammate(int botId) => TeammateIds.Contains(botId);
 
@@ -792,7 +794,7 @@ public sealed class BaseBotInternals
             throw new BotException("GameStartedEventForBot is missing in JSON message from server");
 
         MyId = gameStartedEventForBot.MyId;
-        TeammateIds = gameStartedEventForBot.TeammateIds;
+        teammateIds = gameStartedEventForBot.TeammateIds;
         gameSetup = GameSetupMapper.Map(gameStartedEventForBot.GameSetup);
 
         // Send ready signal
