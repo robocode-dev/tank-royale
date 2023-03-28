@@ -840,8 +840,7 @@ class ModelUpdater(
 
     /** Checks and handles if the round is ended or game is over. */
     private fun checkAndHandleRoundOrGameOver() {
-        val aliveCount = botsMap.values.count { it.isAlive }
-        if (aliveCount <= 1) {
+        if (isRoundOver()) {
             round.apply {
                 roundEnded = true
                 if (roundNumber >= setup.numberOfRounds) {
@@ -859,6 +858,18 @@ class ModelUpdater(
                 }
             }
         }
+    }
+
+    private fun isRoundOver(): Boolean {
+        val aliveBotsIds = botsMap.values.filter { it.isAlive }.map { it.id }
+
+        return participantsAndTeamIds.entries
+            .filter { (botId, _) ->
+                aliveBotsIds.contains(botId)
+            }
+            .distinctBy { (botId, teamId) ->
+                teamId?.value ?: -botId.value // if teamId is null use negative bot id as "team id"
+            }.count() <= 1
     }
 
     private fun processTeamMessages(bot: MutableBot, intent: BotIntent) {
