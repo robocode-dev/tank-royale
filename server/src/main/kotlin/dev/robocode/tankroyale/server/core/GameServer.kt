@@ -139,17 +139,31 @@ class GameServer(
     /** Send game-started event to all participant bots to get them started */
     private fun sendGameStartedToParticipants() {
         val gameSetup = GameSetupMapper.map(gameSetup)
-        val teammateIds = emptySet<BotId>()
+        val participantsAndTeamIds = getParticipantsAndTeamIds()
+        val botHandshakes = connectionHandler.getBotHandshakes()
 
-        for ((conn, botId) in participantIds) {
+        participantIds.forEach { (conn, botId) ->
+            val teamId = botHandshakes[conn]?.teamId
+
+            val teammateIds =
+                teamId?.let { participantsAndTeamIds.filterValues { it == teamId }.keys.toSet().minus(botId) }
+                    ?: emptySet()
+
             val gameStartedForBot = createGameStartedEventForBot(botId, teammateIds, gameSetup)
-            gameStartedForBot.myId = botId.value
             send(conn, gameStartedForBot)
         }
     }
 
+    private fun getParticipantsAndTeamIds(): Map<BotId, Int?> = participantIds
+        .mapNotNull { (conn, botId) -> connectionHandler.getBotHandshakes()[conn]?.teamId?.let { botId to it } }
+        .associateBy({ it.first }, { it.second })
+
     /** Creates a GameStartedEventForBot with current game setup */
-    private fun createGameStartedEventForBot(botId: BotId, teammateIds: Set<BotId>, gameSetup: GameSetup): GameStartedEventForBot {
+    private fun createGameStartedEventForBot(
+        botId: BotId,
+        teammateIds: Set<BotId>,
+        gameSetup: GameSetup
+    ): GameStartedEventForBot {
         return GameStartedEventForBot().apply {
             type = Message.Type.GAME_STARTED_EVENT_FOR_BOT
             myId = botId.value
