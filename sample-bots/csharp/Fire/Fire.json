@@ -1,10 +1,16 @@
 {
   "name": "Fire",
   "version": "1.0",
-  "authors": ["Mathew Nelson", "Flemming N. Larsen"],
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
   "description": "This bot sits still. Spins gun around. Moves when hit.",
   "homepage": "",
-  "countryCodes": ["us", "dk"],
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
   "platform": ".Net 6.0",
   "programmingLang": "C# 10.0"
 }

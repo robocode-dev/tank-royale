@@ -1,10 +1,16 @@
 {
   "name": "My First Droid",
   "version": "1.0",
-  "authors": ["Mathew Nelson", "Flemming N. Larsen"],
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
   "description": "Member of the MyFirstTeam\nFollows orders of team leader.",
   "homepage": "",
-  "countryCodes": ["us", "dk"],
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
   "platform": "JVM",
   "programmingLang": "Java 11"
 }
