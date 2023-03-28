@@ -28,22 +28,22 @@ public class MyFirstLeader extends Bot {
         // Prepare robot colors to send to teammates
         var colors = new RobotColors();
 
-		colors.bodyColor = Color.RED;
+        colors.bodyColor = Color.RED;
         colors.tracksColor = Color.CYAN;
-		colors.turretColor = Color.RED;
+        colors.turretColor = Color.RED;
         colors.gunColor = Color.YELLOW;
-		colors.radarColor = Color.RED;
-		colors.scanColor = Color.YELLOW;
-		colors.bulletColor = Color.YELLOW;
+        colors.radarColor = Color.RED;
+        colors.scanColor = Color.YELLOW;
+        colors.bulletColor = Color.YELLOW;
 
         // Set the color of this robot containing the robot colors
         setBodyColor(colors.bodyColor);
         setTracksColor(colors.tracksColor);
         setTurretColor(colors.turretColor);
-		setGunColor(colors.gunColor);
-		setRadarColor(colors.radarColor);
-		setScanColor(colors.scanColor);
-		setBulletColor(colors.bulletColor);
+        setGunColor(colors.gunColor);
+        setRadarColor(colors.radarColor);
+        setScanColor(colors.scanColor);
+        setBulletColor(colors.bulletColor);
 
         // Send RobotColors object to every member in the team
         broadcastTeamMessage(colors);
@@ -74,13 +74,13 @@ public class MyFirstLeader extends Bot {
 
     // Called when we have been hit by a bullet -> turn perpendicular to the bullet direction
     @Override
-	public void onHitByBullet(HitByBulletEvent e) {
+    public void onHitByBullet(HitByBulletEvent e) {
         // Calculate the bullet bearing
         double bulletBearing = calcBearing(e.getBullet().getDirection());
 
         // Turn perpendicular to the bullet direction
-		turnLeft(90 - bulletBearing);
-	}
+        turnLeft(90 - bulletBearing);
+    }
 }
 
 // ------------------------------------------------------------------
@@ -100,11 +100,11 @@ class Point {
 
 // Robot colors
 class RobotColors {
-	public Color bodyColor;
-	public Color tracksColor;
-	public Color turretColor;
-	public Color gunColor;
-	public Color radarColor;
-	public Color scanColor;
-	public Color bulletColor;
+    public Color bodyColor;
+    public Color tracksColor;
+    public Color turretColor;
+    public Color gunColor;
+    public Color radarColor;
+    public Color scanColor;
+    public Color bulletColor;
 }
