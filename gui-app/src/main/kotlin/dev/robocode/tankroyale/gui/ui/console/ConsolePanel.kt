@@ -8,7 +8,7 @@ import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.text.html.HTMLDocument
 
-class ConsolePanel : JPanel() {
+open class ConsolePanel : JPanel() {
 
     private val editorPane = JEditorPane()
     private val scrollPane = JScrollPane(editorPane)
@@ -31,7 +31,7 @@ class ConsolePanel : JPanel() {
         clear() // to avoid 2nd line break
 
         layout = BorderLayout()
-        add(scrollPane)
+        this.add(scrollPane) // 'this' to avoid warning
     }
 
     fun clear() {

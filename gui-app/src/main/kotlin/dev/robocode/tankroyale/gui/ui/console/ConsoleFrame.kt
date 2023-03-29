@@ -14,9 +14,9 @@ import javax.swing.JPanel
 import javax.swing.KeyStroke
 
 
-open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true) : RcFrame(title, isTitlePropertyName) {
-
-    private val consolePanel = ConsolePanel()
+open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true,
+                        protected val consolePanel: ConsolePanel = ConsolePanel())
+    : RcFrame(title, isTitlePropertyName) {
 
     private val onOk = Event<JButton>().apply {
         subscribe(this) { dispose() }
