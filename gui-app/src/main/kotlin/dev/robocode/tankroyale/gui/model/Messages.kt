@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.gui.model
 
 import kotlinx.serialization.Polymorphic
-import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -12,6 +11,7 @@ import kotlinx.serialization.modules.subclass
 sealed class MessageConstants {
     companion object {
         val json = Json {
+            ignoreUnknownKeys = true
             classDiscriminator = "type"
             serializersModule = messageModule
         }
@@ -219,6 +219,7 @@ data class ChangeTps(
 ) : Message()
 
 val messageModule = SerializersModule {
+
     polymorphic(Message::class) {
         subclass(BotDeathEvent::class)
         subclass(BotHitWallEvent::class)
@@ -249,14 +250,4 @@ val messageModule = SerializersModule {
         subclass(TickEvent::class)
         subclass(TpsChangedEvent::class)
     }
-}
-
-fun main() {
-    val json = MessageConstants.json
-
-    val str = json.encodeToString(PolymorphicSerializer(Message::class), BotDeathEvent(1, 2))
-    println(str)
-
-    val message = json.decodeFromString(PolymorphicSerializer(Message::class), str)
-    println(message)
 }
