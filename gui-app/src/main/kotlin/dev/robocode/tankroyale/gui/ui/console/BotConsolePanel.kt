@@ -6,7 +6,7 @@ import dev.robocode.tankroyale.gui.model.BotState
 import dev.robocode.tankroyale.gui.model.Participant
 import dev.robocode.tankroyale.gui.ui.Strings
 
-class BotConsolePanel(var bot: Participant) : ConsolePanel() {
+class BotConsolePanel(val bot: Participant) : ConsolePanel() {
 
     private var numberOfRounds: Int = 0
 
@@ -31,7 +31,7 @@ class BotConsolePanel(var bot: Participant) : ConsolePanel() {
                 if (botStates.isNotEmpty()) {
                     updateBotState(botStates[0], tickEvent.turnNumber)
                 }
-                if (tickEvent.events.filter { it is BotDeathEvent && it.victimId == bot.id }.isNotEmpty()) {
+                if (tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id }) {
                     appendText("> ${Strings.get("bot_console.bot_died")}", "info", tickEvent.turnNumber)
                 }
             }
