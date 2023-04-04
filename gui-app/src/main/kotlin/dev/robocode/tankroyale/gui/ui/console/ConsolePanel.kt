@@ -1,11 +1,12 @@
 package dev.robocode.tankroyale.gui.ui.console
 
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.util.Clipboard
+import dev.robocode.tankroyale.gui.util.Event
 import java.awt.BorderLayout
 import java.awt.Color
-import javax.swing.JEditorPane
-import javax.swing.JPanel
-import javax.swing.JScrollPane
+import javax.swing.*
 import javax.swing.text.html.HTMLDocument
 
 open class ConsolePanel : JPanel() {
@@ -17,6 +18,29 @@ open class ConsolePanel : JPanel() {
     private val document = editorKit.createDefaultDocument() as HTMLDocument
 
     private val ansiToHtml = AnsiColorToHtmlController()
+
+    private val onOk = Event<JButton>().apply {
+        subscribe(this) {
+            val parentFrame = SwingUtilities.getAncestorOfClass(JFrame::class.java, editorPane) as JFrame
+            parentFrame.dispose()
+        }
+    }
+    private val onClear = Event<JButton>().apply {
+        subscribe(this) { clear() }
+    }
+    private val onCopyToClipboard = Event<JButton>().apply {
+        subscribe(this) { copyToClipboard() }
+    }
+
+    protected val okButton = JPanel().addOkButton(onOk)
+    protected val clearButton = JPanel().addButton("clear", onClear)
+    protected val copyToClipboardButton = JPanel().addButton("copy_to_clipboard", onCopyToClipboard)
+
+    protected open val buttonPanel get() = JPanel().apply {
+        add(okButton)
+        add(clearButton)
+        add(copyToClipboardButton)
+    }
 
     init {
         editorPane.editorKit = editorKit
@@ -31,7 +55,10 @@ open class ConsolePanel : JPanel() {
         clear() // to avoid 2nd line break
 
         layout = BorderLayout()
-        this.add(scrollPane) // 'this' to avoid warning
+        apply {
+            add(scrollPane)
+            add(buttonPanel, BorderLayout.SOUTH)
+        }
     }
 
     fun clear() {
@@ -57,7 +84,7 @@ open class ConsolePanel : JPanel() {
         scrollPane.verticalScrollBar.apply { value = maximum }
     }
 
-    fun copyToClipboard() {
+    private fun copyToClipboard() {
         // trick to get the text only without HTML tags
         editorPane.select(0, editorPane.text.length)
 

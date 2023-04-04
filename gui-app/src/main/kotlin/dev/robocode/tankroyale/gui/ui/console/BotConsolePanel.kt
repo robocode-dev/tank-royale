@@ -5,8 +5,15 @@ import dev.robocode.tankroyale.gui.model.BotDeathEvent
 import dev.robocode.tankroyale.gui.model.BotState
 import dev.robocode.tankroyale.gui.model.Participant
 import dev.robocode.tankroyale.gui.ui.Strings
+import javax.swing.JPanel
 
 class BotConsolePanel(val bot: Participant) : ConsolePanel() {
+
+    override val buttonPanel get() = JPanel().apply {
+        add(okButton)
+        add(clearButton)
+        add(copyToClipboardButton)
+    }
 
     private var numberOfRounds: Int = 0
 

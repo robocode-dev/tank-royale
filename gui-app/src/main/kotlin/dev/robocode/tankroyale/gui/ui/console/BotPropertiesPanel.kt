@@ -10,7 +10,11 @@ import javax.swing.JPanel
 import javax.swing.JTable
 import javax.swing.table.DefaultTableModel
 
-class BotPropertiesPanel(val bot: Participant)  : JPanel() {
+class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
+
+    override val buttonPanel get() = JPanel().apply {
+        add(okButton)
+    }
 
     private val columns = arrayOf(
         Strings.get("bot_console.properties.property"),
@@ -69,6 +73,7 @@ class BotPropertiesPanel(val bot: Participant)  : JPanel() {
         layout = BorderLayout()
         add(table.tableHeader, BorderLayout.PAGE_START)
         add(table, BorderLayout.CENTER)
+        add(buttonPanel, BorderLayout.SOUTH)
 
         table.columnModel.getColumn(0).apply {
             minWidth = 120

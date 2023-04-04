@@ -1,47 +1,22 @@
 package dev.robocode.tankroyale.gui.ui.console
 
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
-import dev.robocode.tankroyale.gui.util.Event
-import java.awt.BorderLayout
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import javax.swing.AbstractAction
-import javax.swing.JButton
 import javax.swing.JPanel
 import javax.swing.KeyStroke
 
-
-open class ConsoleFrame(title: String, isTitlePropertyName: Boolean = true,
-                        protected val consolePanel: ConsolePanel = ConsolePanel())
-    : RcFrame(title, isTitlePropertyName) {
-
-    private val onOk = Event<JButton>().apply {
-        subscribe(this) { dispose() }
-    }
-    private val onClear = Event<JButton>().apply {
-        subscribe(this) { consolePanel.clear() }
-    }
-    private val onCopyToClipboard = Event<JButton>().apply {
-        subscribe(this) { consolePanel.copyToClipboard() }
-    }
+open class ConsoleFrame(
+    title: String, isTitlePropertyName: Boolean = true,
+    protected val consolePanel: ConsolePanel = ConsolePanel()
+) : RcFrame(title, isTitlePropertyName) {
 
     init {
         setDisposeOnEnterKeyPressed()
 
-        val buttonPanel = JPanel().apply {
-            addOkButton(onOk)
-            addButton("clear", onClear)
-            addButton("copy_to_clipboard", onCopyToClipboard)
-        }
-
-        contentPane.apply {
-            layout = BorderLayout()
-            add(consolePanel)
-            add(buttonPanel, BorderLayout.SOUTH)
-        }
+        contentPane.add(consolePanel)
 
         onActivated {
             consolePanel.scrollToBottom()
