@@ -1,6 +1,12 @@
 # Versions
 
-## 📦 0.19.2 - Ongoing
+## 📦 0.19.2 - Added bot properties tab
+
+#### 🚀 Improvements
+
+- GUI:
+    - Added Properties tab on the bot console which shows the values of all the bots properties for the current turn,
+      which is useful to view the exact values and for debugging a bot.
 
 #### 🪲 Bug Fixes
 
