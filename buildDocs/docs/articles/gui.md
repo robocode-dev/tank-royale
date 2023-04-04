@@ -133,7 +133,7 @@ When clicking on a 'bot button', the bot console window will open:
 
 ![Bot Console](../images/gui/bot-console.png)
 
-The bot console writes out the standard output (stdout) and standard error (stderr) printed out from the bots standout
+On the **Console** tab of the bot console writes out the standard output (stdout) and standard error (stderr) printed out from the bots standout
 output streams. Note that the standard output streams from the bot is being redirected by the Bot API when it is being
 booted from the [Booter].
 
@@ -146,6 +146,13 @@ error (stderr) is written out in <font color=#FF5733>red</font>.
 Info messages from the game (GUI) is written out in <font color=#377B37>green</font>. Info messages is e.g. round
 number, when a new round has just started. But it could also be "events" written out with a starting left arrow (>)
 telling that the game has ended or was aborted.
+
+### Viewing the bot properties
+
+The **Properties** tab of the bot console shows all the current bot properties for the current turn, which is useful
+to read the current states of the bot and useful debugging your bot.  
+
+![Bot Console](../images/gui/bot-properties.png)
 
 ## Setup Rules
 
