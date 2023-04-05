@@ -1,0 +1,16 @@
+{
+  "name": "My First Leader",
+  "version": "1.0",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
+  "description": "Member of the MyFirstTeam\nLooks around for enemies, and orders teammates to fire.",
+  "homepage": "",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
+  "platform": ".Net 6.0",
+  "programmingLang": "C# 10.0"
+}

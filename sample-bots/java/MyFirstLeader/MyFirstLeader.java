@@ -51,7 +51,7 @@ public class MyFirstLeader extends Bot {
         // Set the radar to turn right forever
         setTurnRadarRight(Double.POSITIVE_INFINITY);
 
-        // Normal behavior running in the loop as long as the bot is running
+        // Repeat while the bot is running
         while (isRunning()) {
             // Move forward and back
             forward(100);
@@ -61,7 +61,7 @@ public class MyFirstLeader extends Bot {
 
     // Called when we scanned a bot -> Send enemy position to teammates
     @Override
-    public void onScannedBot(ScannedBotEvent e) {
+    public override void OnScannedBot(ScannedBotEvent evt)
         // We scanned a teammate -> ignore
         if (isTeammate(e.getScannedBotId())) {
             return;
@@ -92,7 +92,7 @@ class Point {
     public final double x;
     public final double y;
 
-    public Point(double x, Double y) {
+    public Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
