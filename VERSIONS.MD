@@ -16,7 +16,7 @@
     - When changing the game type for a battle, the arena did not change visually to accommodate to a new size of the
       battle arena.
 - Server:
-    - [#66]: Server is not accepting the full range of ports.
+    - [#66]: The server is not accepting the full range of ports.
 
 ## 📦 0.19.1 - Maintenance - 26-Feb-2023
 

@@ -1,6 +1,6 @@
 ## 📄 Documentation
 
-You can read the Robocode Tank Royale [documentation here](https://robocode-dev.github.io/tank-royale/).
+You can read the Robocode Tank Royale [documentation here](https://robocode-dev.github.io/tank-royale/index.html).
 
 ### 🔨 Try it out
 
