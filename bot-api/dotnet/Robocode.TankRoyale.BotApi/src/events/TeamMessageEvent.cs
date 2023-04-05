@@ -10,12 +10,12 @@ public sealed class TeamMessageEvent : BotEvent
     /// <summary>
     /// The serialized message that was received.
     /// </summary>
-    private object Message { get; }
+    public object Message { get; }
 
     /// <summary>
     /// The ID of the teammate that sent the message.
     /// </summary>
-    private int SenderId { get; }
+    public int SenderId { get; }
 
     /// <summary>
     /// Initializes a new instance of the TeamMessageEvent class.
