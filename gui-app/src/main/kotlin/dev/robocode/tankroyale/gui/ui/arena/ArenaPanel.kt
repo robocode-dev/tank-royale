@@ -61,6 +61,7 @@ object ArenaPanel : JPanel() {
         ClientEvents.apply {
             onGameEnded.subscribe(ArenaPanel) { onGameEnded(it) }
             onTickEvent.subscribe(ArenaPanel) { onTick(it) }
+            onGameStarted.subscribe(ArenaPanel) { onGameStarted(it) }
         }
     }
 
@@ -99,6 +100,13 @@ object ArenaPanel : JPanel() {
         repaint()
 
         tick.set(false)
+    }
+
+    private fun onGameStarted(gameStartedEvent: GameStartedEvent) {
+        gameStartedEvent.gameSetup.apply {
+            ArenaPanel.arenaWidth = arenaWidth
+            ArenaPanel.arenaHeight = arenaHeight
+        }
     }
 
     private fun onBotDeath(botDeathEvent: BotDeathEvent) {
