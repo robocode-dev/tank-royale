@@ -13,7 +13,7 @@ import java.io.InputStreamReader
 import java.util.*
 import kotlin.system.exitProcess
 
-private const val DEFAULT_PORT: Short = 7654
+private const val DEFAULT_PORT: Int = 7654
 
 fun main(args: Array<String>) {
     System.setProperty("jansi.force", "true")
@@ -51,10 +51,10 @@ class Server : Runnable {
 
         @Option(
             names = ["-p", "--port"],
-            type = [Short::class],
+            type = [Int::class],
             description = ["Port number (default: $DEFAULT_PORT)"]
         )
-        var port: Short = DEFAULT_PORT
+        var port: Int = DEFAULT_PORT
 
         @Option(
             names = ["-g", "--games"],

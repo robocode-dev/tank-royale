@@ -12,14 +12,14 @@ You read about the Bot API [here](https://robocode-dev.github.io/tank-royale/api
 You need to add this package to your .Net based bot project:
 
 ```shell
-    dotnet add package Robocode.TankRoyale.BotApi
+dotnet add package Robocode.TankRoyale.BotApi
 ```
 
 This installs the newest available version of the Bot API for Robocode Tank Royale. You can install a specific version
 by adding the `--version` option with the specific version:
 
 ```shell
-    dotnet add package Robocode.TankRoyale.BotApi --version 0.20.0
+dotnet add package Robocode.TankRoyale.BotApi --version 0.20.0
 ```
 
 The [My First Bot](https://robocode-dev.github.io/tank-royale/tutorial/dotnet/my-first-bot-for-dotnet.html) tutorial

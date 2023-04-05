@@ -20,6 +20,24 @@
     - The results window now aggregates scores for teams as well as bots, got a wider "Name" column, some column names
       were changed, and got tooltips on the value fields.
 
+## 📦 0.19.2 - Added bot properties tab - 05-Apr-2023
+
+#### 🚀 Improvements
+
+- GUI:
+    - A new Properties tab was added to the bot console, which shows the values of all bot properties for the current
+      turn. This is useful for viewing the exact values and for debugging a bot.
+    - When displaying an arena bigger than the window showing the battle, the window is now zooming into the battle
+      arena automatically so that the visual field fits into the window.
+
+#### 🪲 Bug Fixes
+
+- GUI:
+    - When changing the game type for a battle, the arena did not change visually to accommodate to a new size of the
+      battle arena.
+- Server:
+    - [#66]: The server is not accepting the full range of ports.
+
 ## 📦 0.19.1 - Maintenance - 26-Feb-2023
 
 #### 🚀 Improvements
