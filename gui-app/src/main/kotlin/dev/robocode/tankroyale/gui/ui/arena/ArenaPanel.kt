@@ -112,20 +112,19 @@ object ArenaPanel : JPanel() {
             ArenaPanel.arenaHeight = arenaHeight
         }
 
-        SwingUtilities.getAncestorOfClass(JFrame::class.java, ArenaPanel)?.let { container ->
-            val parentFrame = container as JFrame
+        val parent = ArenaPanel.parent
 
-            val arenaWidth = arenaWidth
-            val arenaHeight = arenaHeight
-            val parentWidth = parentFrame.width.toDouble()
-            val parentHeight = parentFrame.height.toDouble()
+        val arenaWidth = arenaWidth
+        val arenaHeight = arenaHeight
+        val parentWidth = parent.width.toDouble()
+        val parentHeight = parent.height.toDouble()
 
-            scale = if (arenaWidth > parentWidth || arenaHeight > parentHeight) {
-                (parentWidth / arenaWidth).coerceAtMost(parentHeight / arenaHeight) * 0.8
-            } else {
-                1.0
-            }
+        scale = if (arenaWidth > parentWidth || arenaHeight > parentHeight) {
+            (parentWidth / arenaWidth).coerceAtMost(parentHeight / arenaHeight) * 0.8
+        } else {
+            1.0
         }
+        repaint()
     }
 
     private fun onBotDeath(botDeathEvent: BotDeathEvent) {
