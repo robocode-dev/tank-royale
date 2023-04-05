@@ -13,7 +13,8 @@
 #### 🪲 Bug Fixes
 
 - GUI:
-    - When changing the game type for a battle, the arena did change visually to a new width or height.
+    - When changing the game type for a battle, the arena did not change visually to accommodate to a new size of the
+      battle arena.
 - Server:
     - [#66]: Server is not accepting the full range of ports.
 
