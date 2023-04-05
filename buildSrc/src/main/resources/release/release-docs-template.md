@@ -57,7 +57,7 @@ Available as:
 
 [My First Bot tutorial]: https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html
 
-[installation guide]: https://robocode-dev.github.io/tank-royale/articles/installation.html
+[Installation guide]: https://robocode-dev.github.io/tank-royale/articles/installation.html
 
 [GUI Application]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/robocode-tankroyale-gui-{VERSION}.jar
 
