@@ -21,8 +21,7 @@ class WebSocketClient(private val uri: URI) {
     private fun connect() {
         try {
             val httpClient = HttpClient.newBuilder().build()
-            val webSocketBuilder = httpClient.newWebSocketBuilder()
-            webSocketBuilder.buildAsync(uri, listener).join()
+            httpClient.newWebSocketBuilder().buildAsync(uri, listener).join()
         } catch (ex: Exception) {
             throw RuntimeException("Could not connect to server: $uri", ex)
         }
