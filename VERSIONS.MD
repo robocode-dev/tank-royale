@@ -5,13 +5,15 @@
 #### 🚀 Improvements
 
 - GUI:
-    - Added Properties tab on the bot console which shows the values of all the bots properties for the current turn,
-      which is useful to view the exact values and for debugging a bot.
+    - A new Properties tab was added to the bot console, which shows the values of all bot properties for the current
+      turn. This is useful for viewing the exact values and for debugging a bot.
+    - When displaying an arena bigger than the window showing the battle, the window is now zooming into the battle
+      arena automatically so that the visual field fits into the window.
 
 #### 🪲 Bug Fixes
 
 - GUI:
-    - When changing the game type for a battle, the arena did change visually to a new width or height. 
+    - When changing the game type for a battle, the arena did change visually to a new width or height.
 - Server:
     - [#66]: Server is not accepting the full range of ports.
 

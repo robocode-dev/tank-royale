@@ -23,7 +23,9 @@ import java.awt.geom.Area
 import java.awt.geom.Ellipse2D
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
+import javax.swing.JFrame
 import javax.swing.JPanel
+import javax.swing.SwingUtilities
 import kotlin.math.sqrt
 
 
@@ -42,6 +44,8 @@ object ArenaPanel : JPanel() {
     private var bullets: Set<BulletState> = HashSet()
 
     private val tick = AtomicBoolean(false)
+
+    private var scale = 1.0
 
     init {
         addMouseWheelListener { e -> if (e != null) onMouseWheel(e) }
@@ -107,6 +111,21 @@ object ArenaPanel : JPanel() {
             ArenaPanel.arenaWidth = arenaWidth
             ArenaPanel.arenaHeight = arenaHeight
         }
+
+        SwingUtilities.getAncestorOfClass(JFrame::class.java, ArenaPanel)?.let { container ->
+            val parentFrame = container as JFrame
+
+            val arenaWidth = arenaWidth
+            val arenaHeight = arenaHeight
+            val parentWidth = parentFrame.width.toDouble()
+            val parentHeight = parentFrame.height.toDouble()
+
+            scale = if (arenaWidth > parentWidth || arenaHeight > parentHeight) {
+                (parentWidth / arenaWidth).coerceAtMost(parentHeight / arenaHeight) * 0.8
+            } else {
+                1.0
+            }
+        }
     }
 
     private fun onBotDeath(botDeathEvent: BotDeathEvent) {
@@ -160,8 +179,6 @@ object ArenaPanel : JPanel() {
         }
     }
 
-    private var scale = 1.0
-
     private fun onMouseWheel(e: MouseWheelEvent) {
         var newScale = scale
         if (e.unitsToScroll > 0) {
@@ -169,7 +186,7 @@ object ArenaPanel : JPanel() {
         } else if (e.unitsToScroll < 0) {
             newScale /= 1.2
         }
-        if (newScale != scale && newScale >= 0.25 && newScale <= 10) {
+        if (newScale != scale && newScale >= 0.10 && newScale <= 10) {
             scale = newScale
             repaint()
         }
