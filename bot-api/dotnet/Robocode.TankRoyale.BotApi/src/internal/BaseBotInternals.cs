@@ -584,7 +584,9 @@ public sealed class BaseBotInternals
         if (teammateId != null && !TeammateIds.Contains((int)teammateId)) {
             throw new ArgumentException("No teammate was found with the specified 'teammateId': " + teammateId);
         }
-        if (BotIntent.TeamMessages.Count == IBaseBot.MaxNumberOfTeamMessagesPerTurn)
+
+        var teamMessages = BotIntent.TeamMessages; 
+        if (teamMessages is { Count: IBaseBot.MaxNumberOfTeamMessagesPerTurn })
             throw new InvalidOperationException(
                 "The maximum number team massages has already been reached: " +
                 IBaseBot.MaxNumberOfTeamMessagesPerTurn);
@@ -599,7 +601,11 @@ public sealed class BaseBotInternals
             ReceiverId = teammateId,
             Message = Convert.ToBase64String(bytes)
         };
-        BotIntent.TeamMessages.Add(teamMessage);
+        
+        if (teamMessages != null)
+        {
+            teamMessages.Add(teamMessage);
+        }
     }
 
     internal int GetPriority(Type eventType)
