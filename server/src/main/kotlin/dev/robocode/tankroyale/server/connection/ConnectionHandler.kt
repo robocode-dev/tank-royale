@@ -64,11 +64,7 @@ class ConnectionHandler(
     fun getBotConnections(): Set<WebSocket> = botConnections.toSet()
 
     val observerAndControllerConnections: Set<WebSocket>
-        get() =
-            mutableSetOf<WebSocket>().apply {
-                this += observerConnections
-                this += controllerConnections
-            }
+        get() = setOf<WebSocket>().plus(observerConnections).plus(controllerConnections)
 
     fun getBotHandshakes(): Map<WebSocket, BotHandshake> = botHandshakes.toMap()
 
