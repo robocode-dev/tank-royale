@@ -11,11 +11,15 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
     private val list = CopyOnWriteArrayList<T>()
 
     override fun getSize(): Int {
-        return list.size
+        synchronized(list) {
+            return list.size
+        }
     }
 
     override fun getElementAt(index: Int): T {
-        return list[index]
+        synchronized(list) {
+            return list[index]
+        }
     }
 
     fun addElement(element: T) {
@@ -36,39 +40,43 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
                     }
                 }
             }
+            notifyChanged()
         }
-        notifyChanged()
     }
-
 
     fun clear() {
         synchronized(list) {
             list.clear()
+            notifyChanged()
         }
-        notifyChanged()
     }
 
     operator fun contains(element: T): Boolean {
-        return list.contains(element)
+        synchronized(list) {
+            return list.contains(element)
+        }
     }
 
     fun removeElement(element: T): Boolean {
-        var removed: Boolean
         synchronized(list) {
-            removed = list.remove(element)
+            val removed = list.remove(element)
+            if (removed) {
+                notifyChanged()
+            }
+            return removed
         }
-        if (removed) {
-            notifyChanged()
-        }
-        return removed
     }
 
     operator fun get(index: Int): T {
-        return getElementAt(index)
+        synchronized(list) {
+            return getElementAt(index)
+        }
     }
 
     fun list(): List<T> {
-        return Collections.unmodifiableList(list)
+        synchronized(list) {
+            return Collections.unmodifiableList(list)
+        }
     }
 
     private fun notifyChanged() {
