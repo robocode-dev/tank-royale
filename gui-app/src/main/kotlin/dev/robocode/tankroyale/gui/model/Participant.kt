@@ -17,5 +17,5 @@ data class Participant(
     val programmingLang: String? = null,
     val initialPosition: InitialPosition? = null
 ) {
-    val displayName = "$id: $name $version"
+    val displayName = "$name $version ($id)"
 }

@@ -7,6 +7,7 @@
 - GUI:
     - The standard output and standard error messages are now being cached within the GUI for the current round for the
       individual bots, so the history of the round is available when opening the bot consoles.
+    - Changed the display name of the bot on the bot buttons and bot console title.
 
 ## 📦 0.19.2 - Added bot properties tab - 05-Apr-2023
 
