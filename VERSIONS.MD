@@ -1,5 +1,13 @@
 # Versions
 
+## 📦 0.19.3 - In progress
+
+#### 🚀 Improvements
+
+- GUI:
+    - The standard output and standard error messages are now being cached within the GUI for the current round for the
+      individual bots, so the history of the round is available when opening the bot consoles.
+
 ## 📦 0.19.2 - Added bot properties tab - 05-Apr-2023
 
 #### 🚀 Improvements

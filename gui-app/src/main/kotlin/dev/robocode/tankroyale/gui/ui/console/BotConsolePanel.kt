@@ -1,8 +1,8 @@
 package dev.robocode.tankroyale.gui.ui.console
 
+import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.BotDeathEvent
-import dev.robocode.tankroyale.gui.model.BotState
 import dev.robocode.tankroyale.gui.model.Participant
 import dev.robocode.tankroyale.gui.ui.Strings
 import javax.swing.JPanel
@@ -19,6 +19,7 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
 
     init {
         subscribeToEvents()
+        printInitialStdOutput()
     }
 
     private fun subscribeToEvents() {
@@ -36,7 +37,7 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
             run {
                 val botStates = tickEvent.botStates.filter { it.id == bot.id }
                 if (botStates.isNotEmpty()) {
-                    updateBotState(botStates[0], tickEvent.turnNumber)
+                    updateBotState(bot.id, tickEvent.turnNumber)
                 }
                 if (tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id }) {
                     appendText("> ${Strings.get("bot_console.bot_died")}", "info", tickEvent.turnNumber)
@@ -61,6 +62,15 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
         ClientEvents.onGameEnded.unsubscribe(this)
     }
 
+    private fun printInitialStdOutput() {
+        Client.getStandardOutput(bot.id)?.entries?.forEach { (turn, text) ->
+            appendText(text, null,  turn)
+        }
+        Client.getStandardError(bot.id)?.entries?.forEach { (turn, text) ->
+            appendText(text, "error",  turn)
+        }
+    }
+
     private fun updateRoundInfo(roundNumber: Int) {
         var roundInfo = "${Strings.get("round")}: $roundNumber"
         if (numberOfRounds > 0) {
@@ -75,9 +85,12 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
         )
     }
 
-    private fun updateBotState(botState: BotState, turnNumber: Int) {
-        appendText(botState.stdOut, turnNumber = turnNumber)
-        appendText(botState.stdErr, "error", turnNumber)
+    private fun updateBotState(botId: Int, turnNumber: Int) {
+        val output = Client.getStandardOutput(botId)?.get(botId)
+        val error = Client.getStandardError(botId)?.get(botId)
+
+        appendText(output, null, turnNumber)
+        appendText(error, "error", turnNumber)
     }
 
     private fun appendText(text: String?, cssClass: String? = null, turnNumber: Int? = null) {
