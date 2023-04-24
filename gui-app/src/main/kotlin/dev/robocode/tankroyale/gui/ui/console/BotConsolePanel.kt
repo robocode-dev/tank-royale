@@ -63,10 +63,10 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
     }
 
     private fun printInitialStdOutput() {
-        Client.getStandardOutput(bot.id)?.entries?.forEach { (turn, text) ->
+        LinkedHashMap(Client.getStandardOutput(bot.id)).entries.forEach { (turn, text) ->
             appendText(text, null,  turn)
         }
-        Client.getStandardError(bot.id)?.entries?.forEach { (turn, text) ->
+        LinkedHashMap(Client.getStandardError(bot.id)).entries.forEach { (turn, text) ->
             appendText(text, "error",  turn)
         }
     }
