@@ -86,8 +86,8 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
     }
 
     private fun updateBotState(botId: Int, turnNumber: Int) {
-        val output = Client.getStandardOutput(botId)?.get(botId)
-        val error = Client.getStandardError(botId)?.get(botId)
+        val output = Client.getStandardOutput(botId)?.get(turnNumber)
+        val error = Client.getStandardError(botId)?.get(turnNumber)
 
         appendText(output, null, turnNumber)
         appendText(error, "error", turnNumber)
