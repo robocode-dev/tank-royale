@@ -391,12 +391,10 @@ class ModelUpdater(
     /** Constrain all bot positions, so they are kept inside the battle arena. */
     private fun constrainBotPositions() {
         botsMap.values.forEach { bot ->
-            run {
-                val (previousX, previousY) = botsCopies[bot.id]!!.position
-                val (x, y) = constrainBotPosition(previousX, previousY, bot.x, bot.y)
-                bot.x = x
-                bot.y = y
-            }
+            val (previousX, previousY) = botsCopies[bot.id]!!.position
+            val (x, y) = constrainBotPosition(previousX, previousY, bot.x, bot.y)
+            bot.x = x
+            bot.y = y
         }
     }
 
