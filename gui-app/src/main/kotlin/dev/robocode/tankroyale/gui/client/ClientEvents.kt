@@ -14,4 +14,6 @@ object ClientEvents {
     val onRoundStarted = Event<RoundStartedEvent>()
     val onRoundEnded = Event<RoundEndedEvent>()
     val onTickEvent = Event<TickEvent>()
+
+    val onStdOutputUpdated = Event<TickEvent>()
 }

@@ -9,11 +9,12 @@ import javax.swing.JPanel
 
 class BotConsolePanel(val bot: Participant) : ConsolePanel() {
 
-    override val buttonPanel get() = JPanel().apply {
-        add(okButton)
-        add(clearButton)
-        add(copyToClipboardButton)
-    }
+    override val buttonPanel
+        get() = JPanel().apply {
+            add(okButton)
+            add(clearButton)
+            add(copyToClipboardButton)
+        }
 
     private var numberOfRounds: Int = 0
 
@@ -34,17 +35,10 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
             updateRoundInfo(it.roundNumber)
         }
         ClientEvents.onTickEvent.subscribe(this) { tickEvent ->
-            run {
-                val botStates = tickEvent.botStates.filter { it.id == bot.id }
-                if (botStates.isNotEmpty()) {
-                    updateBotState(bot.id, tickEvent.turnNumber)
-                }
-                if (tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id }) {
-                    appendText("> ${Strings.get("bot_console.bot_died")}", "info", tickEvent.turnNumber)
-                }
+            if (tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id }) {
+                appendText("> ${Strings.get("bot_console.bot_died")}", "info", tickEvent.turnNumber)
             }
         }
-
         ClientEvents.onGameEnded.subscribe(this) {
             appendText("> ${Strings.get("bot_console.game_has_ended")}", "info")
             unsubscribeEvents()
@@ -52,6 +46,9 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
         ClientEvents.onGameAborted.subscribe(this) {
             appendText("> ${Strings.get("bot_console.game_was_aborted")}", "info")
             unsubscribeEvents()
+        }
+        ClientEvents.onStdOutputUpdated.subscribe(this) { tickEvent ->
+            updateBotState(tickEvent.roundNumber, tickEvent.turnNumber)
         }
     }
 
@@ -63,11 +60,27 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
     }
 
     private fun printInitialStdOutput() {
-        LinkedHashMap(Client.getStandardOutput(bot.id)).entries.forEach { (turn, text) ->
-            appendText(text, null,  turn)
+        Client.getStandardOutput(bot.id)?.entries?.forEach { (round, map) ->
+            updateRoundInfo(round)
+            map.entries.forEach { (turn, output) ->
+                appendText(output, null, turn)
+            }
         }
-        LinkedHashMap(Client.getStandardError(bot.id)).entries.forEach { (turn, text) ->
-            appendText(text, "error",  turn)
+        Client.getStandardError(bot.id)?.values?.forEach { turns ->
+            turns.forEach { (turn, error) ->
+                appendText(error, "error", turn)
+            }
+        }
+    }
+
+    private fun updateBotState(roundNumber: Int, turnNumber: Int) {
+        // FIXME: Raise condition! Write event can occur before reading what is in the state
+
+        Client.getStandardOutput(bot.id)?.get(roundNumber)?.get(turnNumber)?.let { output ->
+            appendText(output, null, turnNumber)
+        }
+        Client.getStandardError(bot.id)?.get(roundNumber)?.get(turnNumber)?.let { error ->
+            appendText(error, "error", turnNumber)
         }
     }
 
@@ -83,14 +96,6 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
             --------------------
         """.trimIndent(), "info"
         )
-    }
-
-    private fun updateBotState(botId: Int, turnNumber: Int) {
-        val output = Client.getStandardOutput(botId)?.get(turnNumber)
-        val error = Client.getStandardError(botId)?.get(turnNumber)
-
-        appendText(output, null, turnNumber)
-        appendText(error, "error", turnNumber)
     }
 
     private fun appendText(text: String?, cssClass: String? = null, turnNumber: Int? = null) {

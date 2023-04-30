@@ -41,8 +41,10 @@ object Client {
 
     private var lastTps: Int? = null
 
-    private val savedStdOutput = mutableMapOf<Int /* BotId */, MutableMap<Int /* turn */, String>>()
-    private val savedStdError = mutableMapOf<Int /* BotId */, MutableMap<Int /* turn */, String>>()
+    private val savedStdOutput =
+        mutableMapOf<Int /* BotId */, MutableMap<Int /* round */, MutableMap<Int /* turn */, String>>>()
+    private val savedStdError =
+        mutableMapOf<Int /* BotId */, MutableMap<Int /* round */, MutableMap<Int /* turn */, String>>>()
 
     init {
         TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
@@ -158,9 +160,9 @@ object Client {
 
     fun getParticipant(botId: Int): Participant = participants.first { participant -> participant.id == botId }
 
-    fun getStandardOutput(botId: Int): Map<Int /* turn */, String>? = savedStdOutput[botId]
+    fun getStandardOutput(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? = savedStdOutput[botId]
 
-    fun getStandardError(botId: Int): Map<Int /* turn */, String>? = savedStdError[botId]
+    fun getStandardError(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? = savedStdError[botId]
 
     private fun startWithLastGameSetup() {
         send(lastStartGame)
@@ -257,15 +259,25 @@ object Client {
     private fun handleTickEvent(tickEvent: TickEvent) {
         onTickEvent.fire(tickEvent)
 
-        tickEvent.botStates.forEach { botState ->
-            val id = botState.id
-            val turn = tickEvent.turnNumber
+        updatedSavedStdOutput(tickEvent)
+    }
 
-            savedStdOutput[id] = savedStdOutput[id] ?: LinkedHashMap()
-            savedStdError[id] = savedStdError[id] ?: LinkedHashMap()
-
-            botState.stdOut?.let { savedStdOutput[id]!![turn] = it }
-            botState.stdErr?.let { savedStdError[id]!![turn] = it }
+    private fun updatedSavedStdOutput(tickEvent: TickEvent) {
+        tickEvent.apply {
+            botStates.forEach { botState ->
+                val id = botState.id
+                botState.stdOut?.let { output ->
+                    savedStdOutput
+                        .getOrPut(id) { LinkedHashMap() }
+                        .getOrPut(roundNumber) { LinkedHashMap() }[turnNumber] = output
+                }
+                botState.stdErr?.let { error ->
+                    savedStdError
+                        .getOrPut(id) { LinkedHashMap() }
+                        .getOrPut(roundNumber) { LinkedHashMap() }[turnNumber] = error
+                }
+            }
+            ClientEvents.onStdOutputUpdated.fire(tickEvent)
         }
     }
 }
