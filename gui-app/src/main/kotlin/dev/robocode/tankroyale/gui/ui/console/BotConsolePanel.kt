@@ -74,8 +74,6 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
     }
 
     private fun updateBotState(roundNumber: Int, turnNumber: Int) {
-        // FIXME: Raise condition! Write event can occur before reading what is in the state
-
         Client.getStandardOutput(bot.id)?.get(roundNumber)?.get(turnNumber)?.let { output ->
             appendText(output, null, turnNumber)
         }

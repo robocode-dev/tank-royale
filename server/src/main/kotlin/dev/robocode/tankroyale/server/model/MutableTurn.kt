@@ -80,9 +80,7 @@ data class MutableTurn(
     private fun copyBotEvents(): Map<BotId, Set<Event>> {
         val botEventsCopy = mutableMapOf<BotId, Set<Event>>()
         botEvents.forEach { (botId, events) ->
-            run {
-                botEventsCopy[botId] = events.toSet()
-            }
+            botEventsCopy[botId] = events.toSet()
         }
         return botEventsCopy.toMap()
     }

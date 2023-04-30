@@ -32,10 +32,8 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
             val sortedProperties = object : Properties() {
                 override fun store(writer: Writer, comments: String) {
                     keys.stream().map { k -> k }.sorted().forEach { k ->
-                        run {
-                            val value = "${get(k)}".replace("\\", "\\\\")
-                            writer.append("${k}=${value}\n")
-                        }
+                        val value = "${get(k)}".replace("\\", "\\\\")
+                        writer.append("${k}=${value}\n")
                     }
                 }
             }

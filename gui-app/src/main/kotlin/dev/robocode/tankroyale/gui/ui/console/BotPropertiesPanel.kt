@@ -12,9 +12,10 @@ import javax.swing.table.DefaultTableModel
 
 class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
 
-    override val buttonPanel get() = JPanel().apply {
-        add(okButton)
-    }
+    override val buttonPanel
+        get() = JPanel().apply {
+            add(okButton)
+        }
 
     private val columns = arrayOf(
         Strings.get("bot_console.properties.property"),
@@ -100,11 +101,9 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
 
     private fun subscribeToEvents() {
         ClientEvents.onTickEvent.subscribe(this) { tickEvent ->
-            run {
-                val botStates = tickEvent.botStates.filter { it.id == bot.id }
-                if (botStates.isNotEmpty()) {
-                    updateBotState(botStates[0], tickEvent)
-                }
+            val botStates = tickEvent.botStates.filter { it.id == bot.id }
+            if (botStates.isNotEmpty()) {
+                updateBotState(botStates[0], tickEvent)
             }
         }
         ClientEvents.onGameStarted.subscribe(this) {
