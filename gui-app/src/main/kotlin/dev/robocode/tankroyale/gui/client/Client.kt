@@ -19,7 +19,6 @@ import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
 import dev.robocode.tankroyale.gui.util.Version
 import kotlinx.serialization.PolymorphicSerializer
 import java.net.URI
-import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 object Client {
@@ -30,7 +29,7 @@ object Client {
     private val isPaused = AtomicBoolean(false)
 
     private var participants = listOf<Participant>()
-    private var bots = HashSet<BotInfo>()
+    private var bots = mutableSetOf<BotInfo>()
 
     private var websocket: WebSocketClient? = null
 
@@ -41,6 +40,11 @@ object Client {
     private lateinit var lastStartGame: StartGame
 
     private var lastTps: Int? = null
+
+    private val savedStdOutput =
+        mutableMapOf<Int /* BotId */, MutableMap<Int /* round */, MutableMap<Int /* turn */, String>>>()
+    private val savedStdError =
+        mutableMapOf<Int /* BotId */, MutableMap<Int /* round */, MutableMap<Int /* turn */, String>>>()
 
     init {
         TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
@@ -88,9 +92,15 @@ object Client {
             }
             websocket = null
         }
+
+        savedStdOutput.clear()
+        savedStdError.clear()
     }
 
     fun startGame(botAddresses: Set<BotAddress>) {
+        savedStdOutput.clear()
+        savedStdError.clear()
+
         if (isRunning.get()) {
             stopGame()
         }
@@ -148,7 +158,11 @@ object Client {
 
     val joinedBots: Set<BotInfo> get() = bots
 
-    fun getParticipant(id: Int): Participant = participants.first { participant -> participant.id == id }
+    fun getParticipant(botId: Int): Participant = participants.first { participant -> participant.id == botId }
+
+    fun getStandardOutput(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? = savedStdOutput[botId]
+
+    fun getStandardError(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? = savedStdError[botId]
 
     private fun startWithLastGameSetup() {
         send(lastStartGame)
@@ -244,5 +258,26 @@ object Client {
 
     private fun handleTickEvent(tickEvent: TickEvent) {
         onTickEvent.fire(tickEvent)
+
+        updatedSavedStdOutput(tickEvent)
+    }
+
+    private fun updatedSavedStdOutput(tickEvent: TickEvent) {
+        tickEvent.apply {
+            botStates.forEach { botState ->
+                val id = botState.id
+                botState.stdOut?.let { output ->
+                    savedStdOutput
+                        .getOrPut(id) { LinkedHashMap() }
+                        .getOrPut(roundNumber) { LinkedHashMap() }[turnNumber] = output
+                }
+                botState.stdErr?.let { error ->
+                    savedStdError
+                        .getOrPut(id) { LinkedHashMap() }
+                        .getOrPut(roundNumber) { LinkedHashMap() }[turnNumber] = error
+                }
+            }
+            ClientEvents.onStdOutputUpdated.fire(tickEvent)
+        }
     }
 }

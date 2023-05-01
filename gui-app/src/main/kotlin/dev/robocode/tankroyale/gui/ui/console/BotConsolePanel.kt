@@ -1,24 +1,26 @@
 package dev.robocode.tankroyale.gui.ui.console
 
+import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.BotDeathEvent
-import dev.robocode.tankroyale.gui.model.BotState
 import dev.robocode.tankroyale.gui.model.Participant
 import dev.robocode.tankroyale.gui.ui.Strings
 import javax.swing.JPanel
 
 class BotConsolePanel(val bot: Participant) : ConsolePanel() {
 
-    override val buttonPanel get() = JPanel().apply {
-        add(okButton)
-        add(clearButton)
-        add(copyToClipboardButton)
-    }
+    override val buttonPanel
+        get() = JPanel().apply {
+            add(okButton)
+            add(clearButton)
+            add(copyToClipboardButton)
+        }
 
     private var numberOfRounds: Int = 0
 
     init {
         subscribeToEvents()
+        printInitialStdOutput()
     }
 
     private fun subscribeToEvents() {
@@ -33,17 +35,10 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
             updateRoundInfo(it.roundNumber)
         }
         ClientEvents.onTickEvent.subscribe(this) { tickEvent ->
-            run {
-                val botStates = tickEvent.botStates.filter { it.id == bot.id }
-                if (botStates.isNotEmpty()) {
-                    updateBotState(botStates[0], tickEvent.turnNumber)
-                }
-                if (tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id }) {
-                    appendText("> ${Strings.get("bot_console.bot_died")}", "info", tickEvent.turnNumber)
-                }
+            if (tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id }) {
+                appendText("> ${Strings.get("bot_console.bot_died")}", "info", tickEvent.turnNumber)
             }
         }
-
         ClientEvents.onGameEnded.subscribe(this) {
             appendText("> ${Strings.get("bot_console.game_has_ended")}", "info")
             unsubscribeEvents()
@@ -52,6 +47,9 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
             appendText("> ${Strings.get("bot_console.game_was_aborted")}", "info")
             unsubscribeEvents()
         }
+        ClientEvents.onStdOutputUpdated.subscribe(this) { tickEvent ->
+            updateBotState(tickEvent.roundNumber, tickEvent.turnNumber)
+        }
     }
 
     private fun unsubscribeEvents() {
@@ -59,6 +57,29 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
         ClientEvents.onTickEvent.unsubscribe(this)
         ClientEvents.onGameAborted.unsubscribe(this)
         ClientEvents.onGameEnded.unsubscribe(this)
+    }
+
+    private fun printInitialStdOutput() {
+        Client.getStandardOutput(bot.id)?.entries?.forEach { (round, map) ->
+            updateRoundInfo(round)
+            map.entries.forEach { (turn, output) ->
+                appendText(output, null, turn)
+            }
+        }
+        Client.getStandardError(bot.id)?.values?.forEach { turns ->
+            turns.forEach { (turn, error) ->
+                appendText(error, "error", turn)
+            }
+        }
+    }
+
+    private fun updateBotState(roundNumber: Int, turnNumber: Int) {
+        Client.getStandardOutput(bot.id)?.get(roundNumber)?.get(turnNumber)?.let { output ->
+            appendText(output, null, turnNumber)
+        }
+        Client.getStandardError(bot.id)?.get(roundNumber)?.get(turnNumber)?.let { error ->
+            appendText(error, "error", turnNumber)
+        }
     }
 
     private fun updateRoundInfo(roundNumber: Int) {
@@ -73,11 +94,6 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
             --------------------
         """.trimIndent(), "info"
         )
-    }
-
-    private fun updateBotState(botState: BotState, turnNumber: Int) {
-        appendText(botState.stdOut, turnNumber = turnNumber)
-        appendText(botState.stdErr, "error", turnNumber)
     }
 
     private fun appendText(text: String?, cssClass: String? = null, turnNumber: Int? = null) {

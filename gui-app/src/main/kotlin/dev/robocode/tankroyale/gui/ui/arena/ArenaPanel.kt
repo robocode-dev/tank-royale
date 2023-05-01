@@ -23,9 +23,7 @@ import java.awt.geom.Area
 import java.awt.geom.Ellipse2D
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
-import javax.swing.JFrame
 import javax.swing.JPanel
-import javax.swing.SwingUtilities
 import kotlin.math.sqrt
 
 
@@ -107,24 +105,27 @@ object ArenaPanel : JPanel() {
     }
 
     private fun onGameStarted(gameStartedEvent: GameStartedEvent) {
-        gameStartedEvent.gameSetup.apply {
-            ArenaPanel.arenaWidth = arenaWidth
-            ArenaPanel.arenaHeight = arenaHeight
+        EventQueue.invokeLater {
+
+            gameStartedEvent.gameSetup.apply {
+                ArenaPanel.arenaWidth = arenaWidth
+                ArenaPanel.arenaHeight = arenaHeight
+            }
+
+            val parent = ArenaPanel.parent
+
+            val arenaWidth = arenaWidth
+            val arenaHeight = arenaHeight
+            val parentWidth = parent.width.toDouble()
+            val parentHeight = parent.height.toDouble()
+
+            scale = if (arenaWidth > parentWidth || arenaHeight > parentHeight) {
+                (parentWidth / arenaWidth).coerceAtMost(parentHeight / arenaHeight) * 0.8
+            } else {
+                1.0
+            }
+            repaint()
         }
-
-        val parent = ArenaPanel.parent
-
-        val arenaWidth = arenaWidth
-        val arenaHeight = arenaHeight
-        val parentWidth = parent.width.toDouble()
-        val parentHeight = parent.height.toDouble()
-
-        scale = if (arenaWidth > parentWidth || arenaHeight > parentHeight) {
-            (parentWidth / arenaWidth).coerceAtMost(parentHeight / arenaHeight) * 0.8
-        } else {
-            1.0
-        }
-        repaint()
     }
 
     private fun onBotDeath(botDeathEvent: BotDeathEvent) {

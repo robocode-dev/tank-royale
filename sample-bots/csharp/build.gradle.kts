@@ -52,18 +52,16 @@ tasks {
 
     fun prepareBotFiles() {
         list(project.projectDir.toPath()).forEach { botDir ->
-            run {
-                if (isDirectory(botDir) && isBotProjectDir(botDir)) {
-                    val botName = botDir.botName()
-                    val botArchivePath: Path = archiveDir.resolve(botName)
+            if (isDirectory(botDir) && isBotProjectDir(botDir)) {
+                val botName = botDir.botName()
+                val botArchivePath: Path = archiveDir.resolve(botName)
 
-                    mkdir(botArchivePath)
-                    copyBotFiles(botDir, botArchivePath)
-                    createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
-                    createScriptFile(botDir, botArchivePath, "sh", "\n")
+                mkdir(botArchivePath)
+                copyBotFiles(botDir, botArchivePath)
+                createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
+                createScriptFile(botDir, botArchivePath, "sh", "\n")
 
-                    generateBotCsprojFile(botArchivePath.resolve("$botName.csproj"), botName, "${project.version}")
-                }
+                generateBotCsprojFile(botArchivePath.resolve("$botName.csproj"), botName, "${project.version}")
             }
         }
     }

@@ -63,15 +63,13 @@ tasks {
 
     fun prepareBotFiles() {
         list(project.projectDir.toPath()).forEach { botDir ->
-            run {
-                if (isDirectory(botDir) && isBotProjectDir(botDir)) {
-                    val botArchivePath: Path = archiveDir.resolve(botDir.botName())
+            if (isDirectory(botDir) && isBotProjectDir(botDir)) {
+                val botArchivePath: Path = archiveDir.resolve(botDir.botName())
 
-                    mkdir(botArchivePath)
-                    copyBotFiles(botDir, botArchivePath)
-                    createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
-                    createScriptFile(botDir, botArchivePath, "sh", "\n")
-                }
+                mkdir(botArchivePath)
+                copyBotFiles(botDir, botArchivePath)
+                createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
+                createScriptFile(botDir, botArchivePath, "sh", "\n")
             }
         }
     }

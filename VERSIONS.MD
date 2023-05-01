@@ -20,6 +20,20 @@
     - The results window now aggregates scores for teams as well as bots, got a wider "Name" column, some column names
       were changed, and got tooltips on the value fields.
 
+## 📦 0.19.3 - In progress
+
+#### 🚀 Improvements
+
+- GUI:
+    - The standard output and standard error messages are now being cached within the GUI for the current round for the
+      individual bots, so the history of the round is available when opening the bot consoles.
+    - Changed the display name of the bot on the bot buttons and bot console title.
+
+#### 🪲 Bug Fixes
+
+- GUI:
+    - Fixed issue, where the battle graphics was not displayed when starting the battle.
+
 ## 📦 0.19.2 - Added bot properties tab - 05-Apr-2023
 
 #### 🚀 Improvements
@@ -577,6 +591,8 @@ Bot info:
 [#53]: https://github.com/robocode-dev/tank-royale/issues/53
 
 [#60]: https://github.com/robocode-dev/tank-royale/issues/60
+
+[#66]: https://github.com/robocode-dev/tank-royale/issues/66
 
 [BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
 
