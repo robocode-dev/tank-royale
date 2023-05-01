@@ -363,6 +363,7 @@ class ModelUpdater(
      */
     private fun handleBulletHittingBot(bullet: IBullet, bot: MutableBot) {
         val botId = bullet.botId
+        val teamId = participantsAndTeamIds[botId]
         val victimId = bot.id
 
         inactivityCounter = 0 // reset collective inactivity counter due to bot taking bullet damage
@@ -373,7 +374,7 @@ class ModelUpdater(
         val energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.power
         botsMap[botId]?.changeEnergy(energyBonus)
 
-        scoreTracker.registerBulletHit(botId, victimId, damage, isKilled)
+        scoreTracker.registerBulletHit(botId, teamId, victimId, damage, isKilled)
 
         val bulletHitBotEvent = BulletHitBotEvent(turn.turnNumber, bullet, victimId, damage, bot.energy)
         turn.apply {
@@ -525,10 +526,10 @@ class ModelUpdater(
         val bot1Killed = bot1.addDamage(RAM_DAMAGE)
         val bot2Killed = bot2.addDamage(RAM_DAMAGE)
         if (isBot1RammingBot2) {
-            scoreTracker.registerRamHit(bot1.id, bot2.id, bot2Killed)
+            scoreTracker.registerRamHit(bot1.id, participantsAndTeamIds[bot2.id], bot2.id, bot2Killed)
         }
         if (isBot2RammingBot1) {
-            scoreTracker.registerRamHit(bot2.id, bot1.id, bot1Killed)
+            scoreTracker.registerRamHit(bot2.id, participantsAndTeamIds[bot1.id], bot1.id, bot1Killed)
         }
     }
 
@@ -631,24 +632,27 @@ class ModelUpdater(
                 val botDeathEvent = BotDeathEvent(turn.turnNumber, bot.id)
                 turn.addPublicBotEvent(botDeathEvent)
                 turn.addObserverEvent(botDeathEvent)
-                scoreTracker.registerBotDeath(bot.id)
+                scoreTracker.registerBotDeath(bot.id, participantsAndTeamIds[bot.id])
             }
         }
     }
 
     private fun checkFor1st2nd3rdPlaces() {
-        val aliveCount = botsMap.values.count { it.isAlive }
+        val aliveCount =
+            getBotsOrTeams(MutableBot::isAlive).distinctBy { (botId, teamId) -> teamId?.value ?: -botId.value }
+                .count()
 
-        botsMap.values.filter { it.isDead }.forEach {
+        val deadTeams = getBotsOrTeams(MutableBot::isDead).distinctBy { (botId, teamId) -> teamId?.value ?: -botId.value }
+        deadTeams.forEach { (botId, teamId) ->
             when (aliveCount) {
-                0 -> scoreTracker.increment1stPlaces(it.id)
-                1 -> scoreTracker.increment2ndPlaces(it.id)
-                2 -> scoreTracker.increment3rdPlaces(it.id)
+                0 -> scoreTracker.increment1stPlaces(botId, teamId)
+                1 -> scoreTracker.increment2ndPlaces(botId, teamId)
+                2 -> scoreTracker.increment3rdPlaces(botId, teamId)
             }
         }
         if (aliveCount == 1) {
             val winnerId = botsMap.values.first { it.isAlive }.id
-            scoreTracker.increment1stPlaces(winnerId)
+            scoreTracker.increment1stPlaces(winnerId, participantsAndTeamIds[winnerId])
         }
     }
 
@@ -858,8 +862,10 @@ class ModelUpdater(
         }
     }
 
-    private fun isRoundOver(): Boolean {
-        val aliveBotsIds = botsMap.values.filter { it.isAlive }.map { it.id }
+    private fun isRoundOver() = getBotsOrTeams(MutableBot::isAlive).count() <= 1
+
+    private fun getBotsOrTeams(filter: (MutableBot) -> Boolean): Collection<Pair<BotId, TeamId?>> {
+        val aliveBotsIds = botsMap.values.filter { filter.invoke(it) }.map { it.id }
 
         return participantsAndTeamIds.entries
             .filter { (botId, _) ->
@@ -867,7 +873,8 @@ class ModelUpdater(
             }
             .distinctBy { (botId, teamId) ->
                 teamId?.value ?: -botId.value // if teamId is null use negative bot id as "team id"
-            }.count() <= 1
+            }
+            .map { (botId, teamId) -> Pair(botId, teamId) }
     }
 
     private fun processTeamMessages(bot: MutableBot, intent: BotIntent) {

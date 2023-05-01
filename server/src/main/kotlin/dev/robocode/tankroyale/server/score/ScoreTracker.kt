@@ -9,42 +9,45 @@ import dev.robocode.tankroyale.server.rules.*
 class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
 
     /** Map from bot identifier to a bot record  */
-    private val scoreAndDamages = mutableMapOf<BotId, ScoreAndDamage>()
+    private val scoreAndDamages = mutableMapOf<Int, ScoreAndDamage>()
 
     /** Set of identifiers of bots alive  */
-    private val botsAliveIds = mutableSetOf<BotId>()
+    private val botsAliveIds = mutableSetOf<Int>()
 
     /** 1st places  */
-    private val firstPlaces = mutableMapOf<BotId, Int>()
+    private val firstPlaces = mutableMapOf<Int, Int>()
 
     /** 2nd places  */
-    private val secondPlaces = mutableMapOf<BotId, Int>()
+    private val secondPlaces = mutableMapOf<Int, Int>()
 
     /** 3rd places  */
-    private val thirdPlaces = mutableMapOf<BotId, Int>()
+    private val thirdPlaces = mutableMapOf<Int, Int>()
 
     init {
-        botAndTeamIds.keys.forEach { scoreAndDamages[it] = ScoreAndDamage() }
+        botAndTeamIds.forEach { (botId, teamId) -> scoreAndDamages[toScoreId(botId, teamId)] = ScoreAndDamage() }
     }
 
     /** Current bot scores ordered with higher total scores first. */
-    fun getBotScores(): Collection<Score> = botAndTeamIds.keys.map { getScore(it) }
+    fun getBotScores(): Collection<Score> = botAndTeamIds.map { (botId, teamId) -> getScore(botId, teamId) }
 
     /** Prepare for new round. */
     fun prepareRound() {
         botsAliveIds.apply {
             clear()
-            addAll(botAndTeamIds.keys)
+            addAll(botAndTeamIds.map { (botId, teamId) -> toScoreId(botId, teamId) })
         }
     }
+
+    private fun toScoreId(botId: BotId, teamId: TeamId?): Int = teamId?.value ?: -botId.value
 
     /**
      * Returns the score for a specific bot.
      * @param botId is the identifier of the bot.
      * @return a score record.
      */
-    private fun getScore(botId: BotId): Score {
-        (scoreAndDamages[botId] ?: throw IllegalStateException("No score record for botId: $botId")).apply {
+    private fun getScore(botId: BotId, teamId: TeamId?): Score {
+        val id = toScoreId(botId, teamId)
+        (scoreAndDamages[id] ?: throw IllegalStateException("No score record for botId: $botId")).apply {
             val score = Score(
                 id = botId.value,
                 survival = survivalCount * SCORE_PER_SURVIVAL,
@@ -58,9 +61,9 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
             score.bulletKillBonus += totalDamage * BONUS_PER_BULLET_KILL
             score.ramKillBonus += totalDamage * BONUS_PER_RAM_KILL
 
-            score.firstPlaces = firstPlaces[botId] ?: 0
-            score.secondPlaces = secondPlaces[botId] ?: 0
-            score.thirdPlaces = thirdPlaces[botId] ?: 0
+            score.firstPlaces = firstPlaces[id] ?: 0
+            score.secondPlaces = secondPlaces[id] ?: 0
+            score.thirdPlaces = thirdPlaces[id] ?: 0
 
             return score
         }
@@ -73,8 +76,8 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
      * @param damage is the damage that the victim bot receives.
      * @param kill is a flag specifying, if the bot got killed by this bullet.
      */
-    fun registerBulletHit(botId: BotId, victimBotId: BotId, damage: Double, kill: Boolean) {
-        (scoreAndDamages[botId] ?: throw IllegalStateException("No score record for botId: $botId")).apply {
+    fun registerBulletHit(botId: BotId, teamId: TeamId?, victimBotId: BotId, damage: Double, kill: Boolean) {
+        (scoreAndDamages[toScoreId(botId, teamId)] ?: throw IllegalStateException("No score record for botId: $botId")).apply {
             addBulletDamage(victimBotId, damage)
             if (kill) {
                 addBulletKillEnemyId(victimBotId)
@@ -88,8 +91,8 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
      * @param victimBotId is the identifier of the victim bot that got rammed.
      * @param kill is a flag specifying, if the bot got killed by the ramming.
      */
-    fun registerRamHit(botId: BotId, victimBotId: BotId, kill: Boolean) {
-        (scoreAndDamages[botId] ?: throw IllegalStateException("No score record for botId: $botId")).apply {
+    fun registerRamHit(botId: BotId, teamId: TeamId?, victimBotId: BotId, kill: Boolean) {
+        (scoreAndDamages[toScoreId(botId, teamId)] ?: throw IllegalStateException("No score record for botId: $botId")).apply {
             addRamDamage(victimBotId)
             if (kill) {
                 addRamKillEnemyId(victimBotId)
@@ -101,9 +104,9 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
      * Register a bot death.
      * @param botId is the identifier of the bot that died.
      */
-    fun registerBotDeath(botId: BotId) {
+    fun registerBotDeath(botId: BotId, teamId: TeamId?) {
         botsAliveIds.apply {
-            remove(botId)
+            remove(toScoreId(botId, teamId))
             forEach { scoreAndDamages[it]?.incrementSurvivalCount() }
             if (size == 1) {
                 val survivorId = botsAliveIds.first()
@@ -117,26 +120,29 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
      * Increment the number of 1st places for a bot.
      * @param botId is the identifier of the bot that earned a 1st place.
      */
-    fun increment1stPlaces(botId: BotId) {
-        val count = firstPlaces[botId] ?: 0
-        firstPlaces[botId] = count + 1
+    fun increment1stPlaces(botId: BotId, teamId: TeamId?) {
+        val id = toScoreId(botId, teamId)
+        val count = firstPlaces[id] ?: 0
+        firstPlaces[id] = count + 1
     }
 
     /**
      * Increment the number of 2nd places for a bot.
      * @param botId is the identifier of the bot that earned a 2nd place.
      */
-    fun increment2ndPlaces(botId: BotId) {
-        val count = secondPlaces[botId] ?: 0
-        secondPlaces[botId] = count + 1
+    fun increment2ndPlaces(botId: BotId, teamId: TeamId?) {
+        val id = toScoreId(botId, teamId)
+        val count = secondPlaces[id] ?: 0
+        secondPlaces[id] = count + 1
     }
 
     /**
      * Increment the number of 3rd places for a bot.
      * @param botId is the identifier of the bot that earned a 3rd place.
      */
-    fun increment3rdPlaces(botId: BotId) {
-        val count = thirdPlaces[botId] ?: 0
-        thirdPlaces[botId] = count + 1
+    fun increment3rdPlaces(botId: BotId, teamId: TeamId?) {
+        val id = toScoreId(botId, teamId)
+        val count = thirdPlaces[id] ?: 0
+        thirdPlaces[id] = count + 1
     }
 }

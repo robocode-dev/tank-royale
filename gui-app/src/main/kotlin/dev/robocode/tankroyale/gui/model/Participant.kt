@@ -20,5 +20,5 @@ data class Participant(
     val teamName: String? = null,
     val teamVersion: String? = null,
 ) {
-    val displayName = "$id: $name $version" + (teamName?.let { " / $teamName $teamVersion ($teamId)" } ?: "")
+    val displayName = "$name $version ($id)" + (teamName?.let { " / $teamName $teamVersion ($teamId)" } ?: "")
 }
