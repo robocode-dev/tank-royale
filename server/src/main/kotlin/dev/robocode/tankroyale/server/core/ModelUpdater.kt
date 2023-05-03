@@ -642,7 +642,7 @@ class ModelUpdater(
             getBotsOrTeams(MutableBot::isAlive).distinctBy { (botId, teamId) -> teamId?.value ?: -botId.value }
                 .count()
 
-        val deadTeams = getBotsOrTeams(MutableBot::isDead).distinctBy { (botId, teamId) -> teamId?.value ?: -botId.value }
+        val deadTeams = getBotsOrTeams(MutableBot::isAlive).distinctBy { (botId, teamId) -> teamId?.value ?: -botId.value }
         deadTeams.forEach { (botId, teamId) ->
             when (aliveCount) {
                 0 -> scoreTracker.increment1stPlaces(botId, teamId)
