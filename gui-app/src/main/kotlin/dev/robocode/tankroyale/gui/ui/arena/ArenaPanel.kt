@@ -105,27 +105,27 @@ object ArenaPanel : JPanel() {
     }
 
     private fun onGameStarted(gameStartedEvent: GameStartedEvent) {
-        EventQueue.invokeLater {
-
-            gameStartedEvent.gameSetup.apply {
-                ArenaPanel.arenaWidth = arenaWidth
-                ArenaPanel.arenaHeight = arenaHeight
-            }
-
-            val parent = ArenaPanel.parent
-
-            val arenaWidth = arenaWidth
-            val arenaHeight = arenaHeight
-            val parentWidth = parent.width.toDouble()
-            val parentHeight = parent.height.toDouble()
-
-            scale = if (arenaWidth > parentWidth || arenaHeight > parentHeight) {
-                (parentWidth / arenaWidth).coerceAtMost(parentHeight / arenaHeight) * 0.8
-            } else {
-                1.0
-            }
-            repaint()
+        gameStartedEvent.gameSetup.apply {
+            ArenaPanel.arenaWidth = arenaWidth
+            ArenaPanel.arenaHeight = arenaHeight
         }
+
+        val parent = ArenaPanel.parent
+
+        val arenaWidth = arenaWidth
+        val arenaHeight = arenaHeight
+        val parentWidth = parent.width.toDouble()
+        val parentHeight = parent.height.toDouble()
+
+        scale = if (parentWidth == 0.0 || parentHeight == 0.0) {
+            1.0
+        } else if (arenaWidth > parentWidth || arenaHeight > parentHeight) {
+            minOf(parentWidth / arenaWidth, parentHeight / arenaHeight) * 0.8
+        } else {
+            1.0
+        }
+
+        repaint()
     }
 
     private fun onBotDeath(botDeathEvent: BotDeathEvent) {
