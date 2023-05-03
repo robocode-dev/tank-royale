@@ -632,7 +632,7 @@ class ModelUpdater(
     private fun checkFor1st2nd3rdPlaces() {
         val aliveCount = botsMap.values.count { it.isAlive }
 
-        botsMap.values.filter { it.isDead }.forEach {
+        botsMap.values.filter { it.isAlive }.forEach {
             when (aliveCount) {
                 0 -> scoreTracker.increment1stPlaces(it.id)
                 1 -> scoreTracker.increment2ndPlaces(it.id)
