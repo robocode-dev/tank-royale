@@ -1,5 +1,5 @@
 $id: #stop-game.yaml
-$schema: http://json-schema.org/2020-12/schema#
+$schema: https://json-schema.org/draft/2020-12/schema
 description: Command to stop a running game
 type: object
 extends:

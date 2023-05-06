@@ -1,5 +1,5 @@
 $id: #bullet-hit-bullet-event.yaml
-$schema: http://json-schema.org/2020-12/schema#
+$schema: https://json-schema.org/draft/2020-12/schema
 description: Event occurring when a bullet has hit another bullet
 extends:
   $ref: event.yaml

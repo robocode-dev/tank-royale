@@ -1,5 +1,5 @@
 $id: #game-setup.yaml
-$schema: http://json-schema.org/2020-12/schema#
+$schema: https://json-schema.org/draft/2020-12/schema
 description: Game setup
 properties:
   gameType:

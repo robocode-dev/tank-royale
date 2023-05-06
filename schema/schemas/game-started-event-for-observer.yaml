@@ -1,5 +1,5 @@
 id: #game-started-event-for-observer.yaml
-$schema: http://json-schema.org/2020-12/schema#
+$schema: https://json-schema.org/draft/2020-12/schema
 description: Event occurring when a new game has started. Gives game info for an observer.
 extends:
   $ref: message.yaml
