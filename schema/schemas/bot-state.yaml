@@ -1,4 +1,4 @@
-$id: #bot-state.yaml
+$id: bot-state.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Current state of a bot without an id. The id must be hidden for enemy bots
 properties:

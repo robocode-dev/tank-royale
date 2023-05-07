@@ -1,4 +1,4 @@
-$id: #pause-game.yaml
+$id: pause-game.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Command to pause a game
 type: object

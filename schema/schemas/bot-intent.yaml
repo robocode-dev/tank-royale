@@ -1,4 +1,4 @@
-$id: #bot-intent.yaml
+$id: bot-intent.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Intent from a bot
 extends:

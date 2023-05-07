@@ -1,4 +1,4 @@
-$id: #bullet-hit-bot-.yaml
+$id: bullet-hit-bot-.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Event occurring when a bot has been hit by a bullet from another bot
 extends:

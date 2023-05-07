@@ -1,4 +1,4 @@
-$id: #bot-ready.yaml
+$id: bot-ready.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Message from a bot that is ready to play a game
 type: object

@@ -1,4 +1,4 @@
-$id: #bot-handshake.yaml
+$id: bot-handshake.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Bot handshake
 extends:

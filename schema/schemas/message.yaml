@@ -1,4 +1,4 @@
-$id: #message.yaml
+$id: message.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Abstract message exchanged between server and client
 properties:

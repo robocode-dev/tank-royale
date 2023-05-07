@@ -1,4 +1,4 @@
-$id: #start-game.yaml
+$id: start-game.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Command to start a new game
 extends:

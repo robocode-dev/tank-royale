@@ -1,4 +1,4 @@
-$id: #bullet-hit-wall-event.yaml
+$id: bullet-hit-wall-event.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Event occurring when a bullet has hit a wall
 extends:

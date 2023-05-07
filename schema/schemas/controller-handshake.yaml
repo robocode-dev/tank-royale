@@ -1,4 +1,4 @@
-$id: #controller-handshake.yaml
+$id: controller-handshake.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Controller handshake
 extends:

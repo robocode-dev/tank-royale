@@ -1,4 +1,4 @@
-$id: #won-round-event.yaml
+$id: won-round-event.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Event occurring when a bot has won the round
 type: object

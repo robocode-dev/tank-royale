@@ -1,4 +1,4 @@
-$id: #server-handshake.yaml
+$id: server-handshake.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Server handshake
 extends:

@@ -1,4 +1,4 @@
-$id: #bullet-state.yaml
+$id: bullet-state.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Bullet state
 properties:

@@ -1,4 +1,4 @@
-$id: #observer-handshake.yaml
+$id: observer-handshake.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Observer handshake
 extends:

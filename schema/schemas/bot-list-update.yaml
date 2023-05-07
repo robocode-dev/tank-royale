@@ -1,4 +1,4 @@
-$id: #bot-list-update.yaml
+$id: bot-list-update.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Bot list update
 extends:

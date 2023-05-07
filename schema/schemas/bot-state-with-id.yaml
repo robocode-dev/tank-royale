@@ -1,4 +1,4 @@
-$id: #bot-state-with-id.yaml
+$id: bot-state-with-id.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Current state of a bot, which included an id
 extends:

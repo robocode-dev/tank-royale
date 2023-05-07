@@ -1,4 +1,4 @@
-$id: #color.yaml
+$id: color.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: |
   Represents a color using hexadecimal format for web colors. Note that colors must have a leading number sign (#).

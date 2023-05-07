@@ -1,4 +1,4 @@
-$id: #bot-info.yaml
+$id: bot-info.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Bot info
 type: object
