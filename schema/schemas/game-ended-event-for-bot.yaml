@@ -1,5 +1,5 @@
-$id: #game-ended-event-for-bot.yaml
-$schema: http://json-schema.org/2020-12/schema#
+$id: game-ended-event-for-bot.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
 description: Event occurring when game has ended. Gives all game results visible for a bot.
 extends:
   $ref: message.yaml

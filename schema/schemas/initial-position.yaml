@@ -1,5 +1,5 @@
-$id: #initial-position.yaml
-$schema: http://json-schema.org/2020-12/schema#
+$id: initial-position.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
 description: |
   description: |
     Initial start position of the bot used for debugging as a comma-separated format taking the x and y coordinates

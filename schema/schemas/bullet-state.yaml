@@ -1,5 +1,5 @@
-$id: #bullet-state.yaml
-$schema: http://json-schema.org/2020-12/schema#
+$id: bullet-state.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
 description: Bullet state
 properties:
   bulletId:

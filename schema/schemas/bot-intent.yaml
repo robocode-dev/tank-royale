@@ -1,5 +1,5 @@
-$id: #bot-intent.yaml
-$schema: http://json-schema.org/2020-12/schema#
+$id: bot-intent.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
 description: |
   The intent (request) sent from a bot each turn for controlling the bot and provide the server with data.
   A field only needs to be set, if the value must be changed. Otherwise the server will use the field value from the

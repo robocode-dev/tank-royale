@@ -1,5 +1,5 @@
-$id: #scanned-bot-event.yaml
-$schema: http://json-schema.org/2020-12/schema#
+$id: scanned-bot-event.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
 description: Event occurring when a bot has scanned another bot
 extends:
   $ref: event.yaml

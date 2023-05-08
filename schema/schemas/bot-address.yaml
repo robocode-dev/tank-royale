@@ -1,5 +1,5 @@
-$id: #bot-address.yaml
-$schema: http://json-schema.org/2020-12/schema#
+$id: bot-address.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
 description: Bot address
 properties:
   host:

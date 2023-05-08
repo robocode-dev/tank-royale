@@ -33,6 +33,7 @@
 
 - GUI:
     - Fixed issue, where the battle graphics was not displayed when starting the battle.
+    - Fixed calculation of 1st, 2nd, and 3rd places.
 
 ## 📦 0.19.2 - Added bot properties tab - 05-Apr-2023
 

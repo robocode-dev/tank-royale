@@ -1,5 +1,5 @@
-$id: #controller-handshake.yaml
-$schema: http://json-schema.org/2020-12/schema#
+$id: controller-handshake.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
 description: Controller handshake
 extends:
   $ref: message.yaml

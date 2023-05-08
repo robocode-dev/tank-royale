@@ -1,5 +1,5 @@
-$id: #change-tps.yaml
-$schema: http://json-schema.org/2020-12/schema#
+$id: change-tps.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
 description: Command to change the TPS (Turns Per Second), which is the number of turns displayed for an observer. TPS is similar to FPS, where a frame is equal to a turn.
 extends:
   $ref: message.yaml
