@@ -46,8 +46,7 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
      * @return a score record.
      */
     private fun getScore(botId: BotId, teamId: TeamId?): Score {
-        val id = toScoreId(botId, teamId)
-        (scoreAndDamages[id] ?: throw IllegalStateException("No score record for botId: $botId")).apply {
+        getScoreAndDamage(botId, teamId).apply {
             val score = Score(
                 id = botId.value,
                 survival = survivalCount * SCORE_PER_SURVIVAL,
@@ -60,6 +59,8 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
 
             score.bulletKillBonus += totalDamage * BONUS_PER_BULLET_KILL
             score.ramKillBonus += totalDamage * BONUS_PER_RAM_KILL
+
+            val id = toScoreId(botId, teamId)
 
             score.firstPlaces = firstPlaces[id] ?: 0
             score.secondPlaces = secondPlaces[id] ?: 0
@@ -77,7 +78,7 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
      * @param kill is a flag specifying, if the bot got killed by this bullet.
      */
     fun registerBulletHit(botId: BotId, teamId: TeamId?, victimBotId: BotId, damage: Double, kill: Boolean) {
-        (scoreAndDamages[toScoreId(botId, teamId)] ?: throw IllegalStateException("No score record for botId: $botId")).apply {
+        getScoreAndDamage(botId, teamId).apply {
             addBulletDamage(victimBotId, damage)
             if (kill) {
                 addBulletKillEnemyId(victimBotId)
@@ -92,7 +93,7 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
      * @param kill is a flag specifying, if the bot got killed by the ramming.
      */
     fun registerRamHit(botId: BotId, teamId: TeamId?, victimBotId: BotId, kill: Boolean) {
-        (scoreAndDamages[toScoreId(botId, teamId)] ?: throw IllegalStateException("No score record for botId: $botId")).apply {
+        getScoreAndDamage(botId, teamId).apply {
             addRamDamage(victimBotId)
             if (kill) {
                 addRamKillEnemyId(victimBotId)
@@ -145,4 +146,10 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
         val count = thirdPlaces[id] ?: 0
         thirdPlaces[id] = count + 1
     }
+
+    private fun getScoreAndDamage(botId: BotId, teamId: TeamId?): ScoreAndDamage =
+        (scoreAndDamages[toScoreId(botId, teamId)]
+            ?: throw IllegalStateException(
+                "No score record for botId: $botId, teamId: $teamId (scoreId: ${toScoreId(botId, teamId)})"
+            ))
 }
