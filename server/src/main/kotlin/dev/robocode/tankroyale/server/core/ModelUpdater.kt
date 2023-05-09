@@ -526,10 +526,10 @@ class ModelUpdater(
         val bot1Killed = bot1.addDamage(RAM_DAMAGE)
         val bot2Killed = bot2.addDamage(RAM_DAMAGE)
         if (isBot1RammingBot2) {
-            scoreTracker.registerRamHit(bot1.id, participantsAndTeamIds[bot2.id], bot2.id, bot2Killed)
+            scoreTracker.registerRamHit(bot1.id, participantsAndTeamIds[bot1.id], bot2.id, bot2Killed)
         }
         if (isBot2RammingBot1) {
-            scoreTracker.registerRamHit(bot2.id, participantsAndTeamIds[bot1.id], bot1.id, bot1Killed)
+            scoreTracker.registerRamHit(bot2.id, participantsAndTeamIds[bot2.id], bot1.id, bot1Killed)
         }
     }
 
