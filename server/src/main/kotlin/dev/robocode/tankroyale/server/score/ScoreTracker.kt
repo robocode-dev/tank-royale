@@ -111,8 +111,8 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
 
             forEach { scoreAndDamages[it]?.incrementSurvivalCount() }
             if (size == 1) {
-                val survivorId = teamsAliveIds.first()
-                val deadCount = scoreAndDamages.size - teamsAliveIds.size
+                val survivorId = first()
+                val deadCount = scoreAndDamages.size - size
                 scoreAndDamages[survivorId]?.addLastSurvivorCount(deadCount)
             }
         }
