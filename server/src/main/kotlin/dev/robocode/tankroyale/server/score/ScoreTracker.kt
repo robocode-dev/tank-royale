@@ -11,8 +11,8 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
     /** Map from bot identifier to a bot record  */
     private val scoreAndDamages = mutableMapOf<Int, ScoreAndDamage>()
 
-    /** Set of identifiers of bots alive  */
-    private val botsAliveIds = mutableSetOf<Int>()
+    /** Set of identifiers of bots alive */
+    private val teamsAliveIds = mutableSetOf<Int>()
 
     /** 1st places  */
     private val firstPlaces = mutableMapOf<Int, Int>()
@@ -32,7 +32,7 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
 
     /** Prepare for new round. */
     fun prepareRound() {
-        botsAliveIds.apply {
+        teamsAliveIds.apply {
             clear()
             addAll(botAndTeamIds.map { (botId, teamId) -> toScoreId(botId, teamId) })
         }
@@ -106,12 +106,13 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
      * @param botId is the identifier of the bot that died.
      */
     fun registerBotDeath(botId: BotId, teamId: TeamId?) {
-        botsAliveIds.apply {
+        teamsAliveIds.apply {
             remove(toScoreId(botId, teamId))
+
             forEach { scoreAndDamages[it]?.incrementSurvivalCount() }
             if (size == 1) {
-                val survivorId = botsAliveIds.first()
-                val deadCount = scoreAndDamages.size - botsAliveIds.size
+                val survivorId = teamsAliveIds.first()
+                val deadCount = scoreAndDamages.size - teamsAliveIds.size
                 scoreAndDamages[survivorId]?.addLastSurvivorCount(deadCount)
             }
         }
