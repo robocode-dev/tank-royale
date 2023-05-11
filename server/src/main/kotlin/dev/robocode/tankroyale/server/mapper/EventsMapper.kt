@@ -31,7 +31,7 @@ object EventsMapper {
         event.type = Message.Type.BOT_DEATH_EVENT
         botDeathEvent.apply {
             event.turnNumber = turnNumber
-            event.victimId = victimId.value
+            event.victimId = victimId.id
         }
         return event
     }
@@ -41,8 +41,8 @@ object EventsMapper {
         event.type = Message.Type.BOT_HIT_BOT_EVENT
         botHitBotEvent.apply {
             event.turnNumber = turnNumber
-            event.botId = botId.value
-            event.victimId = victimId.value
+            event.botId = botId.id
+            event.victimId = victimId.id
             event.energy = energy
             event.x = x
             event.y = y
@@ -56,7 +56,7 @@ object EventsMapper {
         event.type = Message.Type.BOT_HIT_WALL_EVENT
         botHitWallEvent.apply {
             event.turnNumber = turnNumber
-            event.victimId = victimId.value
+            event.victimId = victimId.id
         }
         return event
     }
@@ -77,7 +77,7 @@ object EventsMapper {
         bulletHitBotEvent.apply {
             event.turnNumber = turnNumber
             event.bullet = BulletToBulletStateMapper.map(bullet)
-            event.victimId = victimId.value
+            event.victimId = victimId.id
             event.damage = damage
             event.energy = energy
         }
@@ -110,8 +110,8 @@ object EventsMapper {
         event.type = Message.Type.SCANNED_BOT_EVENT
         scannedBotEvent.apply {
             event.turnNumber = turnNumber
-            event.scannedByBotId = scannedByBotId.value
-            event.scannedBotId = scannedBotId.value
+            event.scannedByBotId = scannedByBotId.id
+            event.scannedBotId = scannedBotId.id
             event.energy = energy
             event.x = x
             event.y = y
@@ -143,7 +143,7 @@ object EventsMapper {
             event.turnNumber = turnNumber
             event.message = message
             event.messageType = messageType
-            event.senderId = senderId.value
+            event.senderId = senderId.id
         }
         return event
     }

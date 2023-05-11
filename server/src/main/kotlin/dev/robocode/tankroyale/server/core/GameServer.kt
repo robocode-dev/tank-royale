@@ -166,8 +166,8 @@ class GameServer(
     ): GameStartedEventForBot {
         return GameStartedEventForBot().apply {
             type = Message.Type.GAME_STARTED_EVENT_FOR_BOT
-            myId = botId.value
-            this.teammateIds = teammateIds.map { it.value }
+            myId = botId.id
+            this.teammateIds = teammateIds.map { it.id }
             this.gameSetup = gameSetup
         }
     }
@@ -206,7 +206,7 @@ class GameServer(
             val handshake = connectionHandler.getBotHandshakes()[conn]
             val botId = participantIds[conn] ?: continue
             val participant = Participant().apply {
-                id = botId.value
+                id = botId.id
                 sessionId = handshake!!.sessionId
                 name = handshake.name
                 version = handshake.version
@@ -286,7 +286,7 @@ class GameServer(
     private fun getResultsForBot(botId: BotId): ResultsForBot {
         val results = modelUpdater!!.getResults().sortedByDescending { it.totalScore }
 
-        val index = results.indexOfFirst { it.id == botId.value }
+        val index = results.indexOfFirst { it.id == botId.id }
         if (index == -1)
             throw IllegalStateException("botId was not found in results: $botId")
 

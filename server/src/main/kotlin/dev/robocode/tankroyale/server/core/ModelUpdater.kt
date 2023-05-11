@@ -638,11 +638,10 @@ class ModelUpdater(
     }
 
     private fun checkFor1st2nd3rdPlaces() {
-        val aliveCount =
-            getBotsOrTeams(MutableBot::isAlive).distinctBy { (botId, teamId) -> teamId?.value ?: -botId.value }
-                .count()
+        val teamsAlive = getBotsOrTeams(MutableBot::isAlive).distinctBy { (botId, teamId) -> teamId?.id ?: -botId.id }
 
-        val teamsAlive = getBotsOrTeams(MutableBot::isAlive).distinctBy { (botId, teamId) -> teamId?.value ?: -botId.value }
+        val aliveCount = teamsAlive.count()
+
         teamsAlive.forEach { (botId, teamId) ->
             when (aliveCount) {
                 0 -> scoreTracker.increment1stPlaces(botId, teamId)
@@ -872,7 +871,7 @@ class ModelUpdater(
                 aliveBotsIds.contains(botId)
             }
             .distinctBy { (botId, teamId) ->
-                teamId?.value ?: -botId.value // if teamId is null use negative bot id as "team id"
+                teamId?.id ?: -botId.id // if teamId is null use negative bot id as "team id"
             }
             .map { (botId, teamId) -> Pair(botId, teamId) }
     }

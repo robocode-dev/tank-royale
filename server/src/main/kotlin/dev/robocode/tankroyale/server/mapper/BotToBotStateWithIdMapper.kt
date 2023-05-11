@@ -8,7 +8,7 @@ object BotToBotStateWithIdMapper {
     fun map(bot: IBot, sessionId: String): BotStateWithId {
         val botState = BotStateWithId()
         bot.apply {
-            botState.id = id.value
+            botState.id = id.id
             botState.sessionId = sessionId
             botState.energy = energy
             botState.x = x

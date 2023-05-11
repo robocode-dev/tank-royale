@@ -1,10 +1,10 @@
 package dev.robocode.tankroyale.server.model
 
 /**
- * BotId contains the id of a bot. It is a inline class used to make it easy to differ between an Int and a BotId.
- * @param value id value of the bot.
+ * BotId contains the id of a bot.
+ * @param id the id of the bot.
  */
 @JvmInline
-value class BotId(val value: Int) {
-    override fun toString() = "$value"
+value class BotId(val id: Int) {
+    override fun toString() = "$id"
 }

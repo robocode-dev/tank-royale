@@ -38,7 +38,7 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
         }
     }
 
-    private fun toScoreId(botId: BotId, teamId: TeamId?): Int = teamId?.value ?: -botId.value
+    private fun toScoreId(botId: BotId, teamId: TeamId?): Int = teamId?.id ?: -botId.id
 
     /**
      * Returns the score for a specific bot.
@@ -48,7 +48,7 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
     private fun getScore(botId: BotId, teamId: TeamId?): Score {
         getScoreAndDamage(botId, teamId).apply {
             val score = Score(
-                id = botId.value,
+                id = botId.id,
                 survival = survivalCount * SCORE_PER_SURVIVAL,
                 lastSurvivorBonus = lastSurvivorCount * BONUS_PER_LAST_SURVIVOR,
                 bulletDamage = getTotalBulletDamage() * SCORE_PER_BULLET_DAMAGE,
@@ -106,14 +106,19 @@ class ScoreTracker(private val botAndTeamIds: Map<BotId, TeamId?>) {
      * @param botId is the identifier of the bot that died.
      */
     fun registerBotDeath(botId: BotId, teamId: TeamId?) {
+        // FIXME
+
         teamsAliveIds.apply {
             remove(toScoreId(botId, teamId))
 
             forEach { scoreAndDamages[it]?.incrementSurvivalCount() }
-            if (size == 1) {
-                val survivorId = first()
-                val deadCount = scoreAndDamages.size - size
-                scoreAndDamages[survivorId]?.addLastSurvivorCount(deadCount)
+
+            when (size) {
+                1 -> {
+                    val survivorId = first()
+                    val deadCount = scoreAndDamages.size - size
+                    scoreAndDamages[survivorId]?.addLastSurvivorCount(deadCount)
+                }
             }
         }
     }
