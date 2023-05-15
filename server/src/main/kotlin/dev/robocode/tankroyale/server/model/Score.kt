@@ -1,9 +1,11 @@
 package dev.robocode.tankroyale.server.model
 
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.TeamOrBotId
+
 /** Defines a score record to keep track of a bot´s score. */
 data class Score(
     /** Participant id */
-    var id: Int,
+    var teamOrBotId: TeamOrBotId,
 
     /** Survival score gained whenever another bot is defeated */
     var survival: Double = 0.0,
@@ -37,7 +39,7 @@ data class Score(
         get() = survival + lastSurvivorBonus + bulletDamage + bulletKillBonus + ramDamage + ramKillBonus
 
     operator fun plus(score: Score) = Score(
-        id,
+        teamOrBotId,
         survival + score.survival,
         lastSurvivorBonus + score.lastSurvivorBonus,
         bulletDamage + score.bulletDamage,

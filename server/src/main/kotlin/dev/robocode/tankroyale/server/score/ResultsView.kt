@@ -13,7 +13,7 @@ object ResultsView {
 
         participants.forEach { participant ->
             run {
-                botScores.find { s -> s.id == participant.id }?.let { botScore ->
+                botScores.find { s -> s.teamOrBotId.botId.id == participant.id }?.let { botScore ->
                     if (participant.teamId != null) {
                         val team = Participant(participant.teamId, participant.teamName)
                         val accumulatedTeamScore = rows[team]

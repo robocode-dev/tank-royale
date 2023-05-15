@@ -1,15 +1,15 @@
 package dev.robocode.tankroyale.server.score
 
-import dev.robocode.tankroyale.server.model.BotId
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.TeamOrBotId
 import dev.robocode.tankroyale.server.rules.RAM_DAMAGE
 
 /** Bot record that tracks damage and survival of a bot, and can calculate score. */
 class ScoreAndDamage {
 
-    private val bulletDamage = mutableMapOf<BotId, Double>()
-    private val ramDamage = mutableMapOf<BotId, Double>()
-    private val bulletKillEnemyIds = mutableSetOf<BotId>()
-    private val ramKillEnemyIds = mutableSetOf<BotId>()
+    private val bulletDamage = mutableMapOf<TeamOrBotId, Double>()
+    private val ramDamage = mutableMapOf<TeamOrBotId, Double>()
+    private val bulletKillEnemyIds = mutableSetOf<TeamOrBotId>()
+    private val ramKillEnemyIds = mutableSetOf<TeamOrBotId>()
 
     /** The survival count, which is the number of rounds where the bot has survived. */
     var survivalCount = 0
@@ -26,28 +26,28 @@ class ScoreAndDamage {
     fun getTotalRamDamage() = bulletDamage.keys.sumOf { getRamDamage(it) }
 
     /** Returns the bullet kill enemy ids. */
-    fun getBulletKillEnemyIds(): Set<BotId> = bulletKillEnemyIds
+    fun getBulletKillEnemyIds(): Set<TeamOrBotId> = bulletKillEnemyIds
 
     /**
      * Returns the bullet damage dealt by this bot to specific bot.
-     * @param enemyId  is the enemy bot to retrieve the damage for.
+     * @param enemyId is the enemy bot to retrieve the damage for.
      * @return the bullet damage dealt to a specific bot.
      */
-    fun getBulletDamage(enemyId: BotId): Double = bulletDamage[enemyId] ?: 0.0
+    fun getBulletDamage(enemyId: TeamOrBotId): Double = bulletDamage[enemyId] ?: 0.0
 
     /**
      * Returns the ram damage dealt by this bot to specific bot.
      * @param enemyId is the enemy bot to retrieve the damage for.
      * @return the ram damage dealt to a specific bot.
      */
-    fun getRamDamage(enemyId: BotId): Double = ramDamage[enemyId] ?: 0.0
+    fun getRamDamage(enemyId: TeamOrBotId): Double = ramDamage[enemyId] ?: 0.0
 
     /**
      * Adds bullet damage to a specific enemy bot.
      * @param enemyId is the identifier of the enemy bot
      * @param damage is the amount of damage that the enemy bot has received
      */
-    fun addBulletDamage(enemyId: BotId, damage: Double) {
+    fun addBulletDamage(enemyId: TeamOrBotId, damage: Double) {
         bulletDamage[enemyId] = getBulletDamage(enemyId) + damage
     }
 
@@ -55,7 +55,7 @@ class ScoreAndDamage {
      * Adds ram damage to a specific enemy bot.
      * @param enemyId is the identifier of the enemy bot
      */
-    fun addRamDamage(enemyId: BotId) {
+    fun addRamDamage(enemyId: TeamOrBotId) {
         ramDamage[enemyId] = getRamDamage(enemyId) + RAM_DAMAGE
     }
 
@@ -76,7 +76,7 @@ class ScoreAndDamage {
      * Adds the identifier of an enemy bot to the set over bots killed by a bullet from this bot.
      * @param enemyId is the identifier of the enemy bot that was killed by this bot
      */
-    fun addBulletKillEnemyId(enemyId: BotId) {
+    fun addBulletKillEnemyId(enemyId: TeamOrBotId) {
         bulletKillEnemyIds += enemyId
     }
 
@@ -84,7 +84,7 @@ class ScoreAndDamage {
      * Adds the identifier of an enemy bot to the set over bots killed by ramming by this bot.
      * @param enemyId is the identifier of the enemy bot that was killed by this bot
      */
-    fun addRamKillEnemyId(enemyId: BotId) {
+    fun addRamKillEnemyId(enemyId: TeamOrBotId) {
         ramKillEnemyIds += enemyId
     }
 }
