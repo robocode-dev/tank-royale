@@ -106,16 +106,16 @@ class ScoreTracker(private val teamOrBotIds: List<TeamOrBotId>) {
             forEach { scoreAndDamages[it]?.incrementSurvivalCount() }
 
             when (size) {
-                1 -> {
-                    val survivorId = first()
-                    val deadCount = scoreAndDamages.size - size
-                    scoreAndDamages[survivorId]?.addLastSurvivorCount(deadCount)
+                0 -> increment1stPlaces(teamOrBotId)
 
+                1 -> {
                     increment2ndPlaces(teamOrBotId)
+
+                    val deadCount = scoreAndDamages.size - 1
+                    scoreAndDamages[first()]?.addLastSurvivorCount(deadCount) // first() is the only one left
                 }
-                2 -> {
-                    increment3rdPlaces(teamOrBotId)
-                }
+
+                2 -> increment3rdPlaces(teamOrBotId)
             }
         }
     }
