@@ -1,4 +1,4 @@
-$id: #bot-state.yaml
+$id: bot-state.yaml
 $schema: http://json-schema.org/2020-12/schema#
 description: Current state of a bot, but without an id that must be kept secret from opponent bots
 properties:

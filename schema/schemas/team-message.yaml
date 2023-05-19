@@ -1,4 +1,4 @@
-$id: #team-message.yaml
+$id: team-message.yaml
 $schema: http://json-schema.org/2020-12/schema#
 description: Message sent between teammates
 properties:

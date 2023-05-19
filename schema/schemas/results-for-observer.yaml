@@ -1,4 +1,4 @@
-$id: #results-for-observer.yaml
+$id: results-for-observer.yaml
 $schema: http://json-schema.org/2020-12/schema#
 description: Individual participant results visible for an observer, where id, name, and version is available as well.
 extends:
