@@ -646,7 +646,9 @@ class ModelUpdater(
 
     /** Checks and handles if any bots have been defeated. */
     private fun checkAndHandleDefeatedBots() {
-        botsMap.values.forEach { bot ->
+        // Note the list is shuffled here, the index order of the bots has no influence on bots ending on the same place.
+        // Otherwise, the same bots might get all the 1st, 2nd, or 3rd places, when more bots gets the same placement.
+        botsMap.values.shuffled().forEach { bot ->
             if (bot.isDead) {
                 val botDeathEvent = BotDeathEvent(turn.turnNumber, bot.id)
                 turn.addPublicBotEvent(botDeathEvent)
