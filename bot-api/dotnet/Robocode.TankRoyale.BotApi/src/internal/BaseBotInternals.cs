@@ -601,11 +601,8 @@ public sealed class BaseBotInternals
             ReceiverId = teammateId,
             Message = Convert.ToBase64String(bytes)
         };
-        
-        if (teamMessages != null)
-        {
-            teamMessages.Add(teamMessage);
-        }
+
+        teamMessages?.Add(teamMessage);
     }
 
     internal int GetPriority(Type eventType)
