@@ -62,7 +62,7 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
     private fun printInitialStdOutput() {
         Client.getStandardOutput(bot.id)?.entries?.forEach { (round, map) ->
             updateRoundInfo(round)
-            map.entries.forEach { (turn, output) ->
+            map.entries.toSet().forEach { (turn, output) ->
                 appendText(output, null, turn)
             }
         }
