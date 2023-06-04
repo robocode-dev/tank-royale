@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -137,7 +138,7 @@ public static class EventMapper
 
     private static TeamMessageEvent Map(Schema.TeamMessageEvent source)
     {
-        var bytes = System.Convert.FromBase64String(source.Message);
+        var bytes = Convert.FromBase64String(source.Message);
         var decodedString = System.Text.Encoding.UTF8.GetString(bytes);
         var messageObject = JsonConvert.DeserializeObject(decodedString);
             
