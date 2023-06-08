@@ -166,7 +166,8 @@ public sealed class BaseBotInternals
     {
         var botIntent = new S.BotIntent
         {
-            Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotIntent) // must be set
+            Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotIntent), // must be set
+            TeamMessages = new List<S.TeamMessage>() // initialize list
         };
         return botIntent;
     }
@@ -248,6 +249,7 @@ public sealed class BaseBotInternals
     {
         TransferStdOutToBotIntent();
         socket.SendTextMessage(JsonConvert.SerializeObject(BotIntent));
+        BotIntent.TeamMessages.Clear();
     }
 
     private void TransferStdOutToBotIntent()
@@ -581,12 +583,12 @@ public sealed class BaseBotInternals
 
     internal void SendTeamMessage(int? teammateId, object message)
     {
-        if (teammateId != null && !TeammateIds.Contains((int)teammateId)) {
+        if (teammateId != null && !TeammateIds.Contains((int)teammateId))
+        {
             throw new ArgumentException("No teammate was found with the specified 'teammateId': " + teammateId);
         }
 
-        var teamMessages = BotIntent.TeamMessages; 
-        if (teamMessages is { Count: IBaseBot.MaxNumberOfTeamMessagesPerTurn })
+        if (BotIntent.TeamMessages is { Count: IBaseBot.MaxNumberOfTeamMessagesPerTurn })
             throw new InvalidOperationException(
                 "The maximum number team massages has already been reached: " +
                 IBaseBot.MaxNumberOfTeamMessagesPerTurn);
@@ -602,7 +604,7 @@ public sealed class BaseBotInternals
             Message = Convert.ToBase64String(bytes)
         };
 
-        teamMessages?.Add(teamMessage);
+        BotIntent.TeamMessages.Add(teamMessage);
     }
 
     internal int GetPriority(Type eventType)
