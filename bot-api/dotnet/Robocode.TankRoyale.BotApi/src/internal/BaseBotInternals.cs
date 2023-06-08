@@ -69,7 +69,7 @@ public sealed class BaseBotInternals
     private readonly IDictionary<Type, int> eventPriorities = new Dictionary<Type, int>();
 
     private ICollection<int> teammateIds;
-    
+
     internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUrl, string serverSecret)
     {
         this.baseBot = baseBot;
@@ -162,15 +162,11 @@ public sealed class BaseBotInternals
 
     public void SetStopResumeHandler(IStopResumeListener listener) => stopResumeListener = listener;
 
-    private static S.BotIntent NewBotIntent()
+    private static S.BotIntent NewBotIntent() => new()
     {
-        var botIntent = new S.BotIntent
-        {
-            Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotIntent), // must be set
-            TeamMessages = new List<S.TeamMessage>() // initialize list
-        };
-        return botIntent;
-    }
+        Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotIntent), // must be set
+        TeamMessages = new List<S.TeamMessage>() // initialize list
+    };
 
     private void ResetMovement()
     {
@@ -598,13 +594,11 @@ public sealed class BaseBotInternals
             throw new ArgumentException(
                 $"The team message is larger than the limit of {IBaseBot.TeamMessageMaxSize} bytes");
 
-        S.TeamMessage teamMessage = new()
+        BotIntent.TeamMessages.Add(new()
         {
             ReceiverId = teammateId,
             Message = Convert.ToBase64String(bytes)
-        };
-
-        BotIntent.TeamMessages.Add(teamMessage);
+        });
     }
 
     internal int GetPriority(Type eventType)
