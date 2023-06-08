@@ -594,10 +594,11 @@ public sealed class BaseBotInternals
             throw new ArgumentException(
                 $"The team message is larger than the limit of {IBaseBot.TeamMessageMaxSize} bytes");
 
-        BotIntent.TeamMessages.Add(new()
+        BotIntent.TeamMessages.Add(new S.TeamMessage
         {
+            MessageType = S.MessageType.TeamMessageEvent.ToString(),
+            Message = Convert.ToBase64String(bytes),
             ReceiverId = teammateId,
-            Message = Convert.ToBase64String(bytes)
         });
     }
 
