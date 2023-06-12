@@ -52,8 +52,10 @@ abstract class AbstractBotTest {
         return bot;
     }
 
-    protected static void startAsync(BaseBot bot) {
-        new Thread(bot::start).start();
+    protected static Thread startAsync(BaseBot bot) {
+        var thread = new Thread(bot::start);
+        thread.start();
+        return thread;
     }
 
     protected static void goAsync(BaseBot bot) {

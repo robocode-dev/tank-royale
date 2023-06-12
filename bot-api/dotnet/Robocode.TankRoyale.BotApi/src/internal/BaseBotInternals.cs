@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Web;
 using Newtonsoft.Json;
@@ -236,6 +237,7 @@ public sealed class BaseBotInternals
 
     private void Connect()
     {
+        CheckServerUrl();
         try
         {
             socket.Connect();
@@ -243,6 +245,15 @@ public sealed class BaseBotInternals
         catch (Exception)
         {
             throw new BotException($"Could not connect to web socket for URL: {socket.ServerUri}");
+        }
+    }
+
+    private void CheckServerUrl()
+    {
+        var scheme = socket.ServerUri.Scheme;
+        if (!new List<string> { "ws", "wss" }.Any(s => s.Contains(scheme)))
+        {
+            throw new BotException($"Wrong scheme used with server URL: {socket.ServerUri}");
         }
     }
 
@@ -267,11 +278,15 @@ public sealed class BaseBotInternals
     private void TransferStdOutToBotIntent()
     {
         var stdOutText = stdOutStringWriter.ToString();
-        BotIntent.StdOut = stdOutText.Length > 0 ? HttpUtility.JavaScriptStringEncode(stdOutText.Replace("\r", "")) : null;
+        BotIntent.StdOut = stdOutText.Length > 0
+            ? HttpUtility.JavaScriptStringEncode(stdOutText.Replace("\r", ""))
+            : null;
         stdOutStringWriter.GetStringBuilder().Clear();
 
         var stdErrText = stdErrStringWriter.ToString();
-        BotIntent.StdErr = stdErrText.Length > 0 ? HttpUtility.JavaScriptStringEncode(stdErrText.Replace("\r", "")) : null;
+        BotIntent.StdErr = stdErrText.Length > 0
+            ? HttpUtility.JavaScriptStringEncode(stdErrText.Replace("\r", ""))
+            : null;
         stdErrStringWriter.GetStringBuilder().Clear();
     }
 

@@ -11,6 +11,9 @@
 
 #### 🪲 Bug Fixes
 
+- Bot API:
+    - Fixed broken unit test for .Net.
+    - Fix for CWE-918: Server-Side Request Forgery (SSRF) (caught by SNYK)
 - GUI:
     - Fixed issue, where the battle graphics was not displayed when starting the battle.
     - Fixed calculation of 1st, 2nd, and 3rd places.

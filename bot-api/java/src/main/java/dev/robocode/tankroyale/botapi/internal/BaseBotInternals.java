@@ -259,12 +259,20 @@ public final class BaseBotInternals {
     }
 
     private void connect() {
+        checkServerUrl();
         try {
             HttpClient httpClient = HttpClient.newBuilder().build();
             Builder webSocketBuilder = httpClient.newWebSocketBuilder();
             socket = webSocketBuilder.buildAsync(serverUrl, new WebSocketListener()).join();
         } catch (Exception ex) {
             throw new BotException("Could not create web socket for URL: " + serverUrl);
+        }
+    }
+
+    private void checkServerUrl() {
+        var scheme = serverUrl.getScheme();
+        if (!List.of("ws", "wss").contains(scheme)) {
+            throw new BotException("Wrong scheme used with server URL: " + serverUrl);
         }
     }
 

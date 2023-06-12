@@ -22,7 +22,7 @@ public class BaseBotConstructorTest : AbstractBotTest
         public TestBot(BotInfo botInfo, Uri serverUrl) : base(botInfo, serverUrl)
         {
         }
-        
+
         public TestBot(BotInfo botInfo, Uri serverUrl, string serverSecret) : base(botInfo, serverUrl, serverSecret)
         {
         }
@@ -58,7 +58,8 @@ public class BaseBotConstructorTest : AbstractBotTest
     }
 
     [Test]
-    public void GivenMissingBotVersionEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo()
+    public void
+        GivenMissingBotVersionEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo()
     {
         ClearEnvVar(BotVersion);
         var botException = Assert.Throws<BotException>(() => new TestBot());
@@ -66,7 +67,8 @@ public class BaseBotConstructorTest : AbstractBotTest
     }
 
     [Test]
-    public void GivenMissingBotAuthorsEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo()
+    public void
+        GivenMissingBotAuthorsEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo()
     {
         ClearEnvVar(BotAuthors);
         var botException = Assert.Throws<BotException>(() => new TestBot());
@@ -80,7 +82,8 @@ public class BaseBotConstructorTest : AbstractBotTest
     }
 
     [Test]
-    public void GivenMissingServerUrlEnvVar_callingDefaultConstructorFromThread_thenBotIsCreatedButNotConnectingToServer()
+    public void
+        GivenMissingServerUrlEnvVar_callingDefaultConstructorFromThread_thenBotIsCreatedButNotConnectingToServer()
     {
         ClearEnvVar(ServerUrl);
 
@@ -139,8 +142,28 @@ public class BaseBotConstructorTest : AbstractBotTest
         StartAsync(bot);
         AwaitBotHandshake();
         var handshake = Server.Handshake;
-        
+
         Assert.That(handshake, Is.Not.Null);
         Assert.That(handshake.Secret, Is.EqualTo(secret));
+    }
+
+    [Test]
+    [TestCase("file:///")]
+    [TestCase("dict://")]
+    [TestCase("ftp://")]
+    [TestCase("gopher://")]
+    public void GivenUnknownScheme_whenCallingConstructor_thenThrowException(string scheme)
+    {
+        var bot = new TestBot(null, new Uri(scheme + "localhost:" + MockedServer.Port));
+        try
+        {
+            StartAsync(bot).Wait();
+        }
+        catch (AggregateException e)
+        {
+            var ex = e.InnerException;
+            Assert.That(ex, Is.InstanceOf<BotException>());
+            Assert.That(ex?.Message, Does.StartWith("Wrong scheme used with server URL"));
+        }
     }
 }
