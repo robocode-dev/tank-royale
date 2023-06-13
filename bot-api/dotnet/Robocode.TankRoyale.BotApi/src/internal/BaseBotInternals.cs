@@ -237,23 +237,24 @@ public sealed class BaseBotInternals
 
     private void Connect()
     {
-        CheckServerUrl();
+        var serverUri = socket.ServerUri;
+        SanitizeUrl(serverUri);
         try
         {
             socket.Connect();
         }
         catch (Exception)
         {
-            throw new BotException($"Could not connect to web socket for URL: {socket.ServerUri}");
+            throw new BotException($"Could not connect to web socket for URL: {serverUri}");
         }
     }
 
-    private void CheckServerUrl()
+    private static void SanitizeUrl(Uri uri)
     {
-        var scheme = socket.ServerUri.Scheme;
+        var scheme = uri.Scheme;
         if (!new List<string> { "ws", "wss" }.Any(s => s.Contains(scheme)))
         {
-            throw new BotException($"Wrong scheme used with server URL: {socket.ServerUri}");
+            throw new BotException($"Wrong scheme used with server URL: {uri}");
         }
     }
 
