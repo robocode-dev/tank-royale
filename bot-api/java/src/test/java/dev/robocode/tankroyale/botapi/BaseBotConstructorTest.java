@@ -1,6 +1,8 @@
 package dev.robocode.tankroyale.botapi;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.ClearEnvironmentVariable;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import test_utils.MockedServer;
@@ -11,9 +13,9 @@ import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static test_utils.EnvironmentVariables.*;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static test_utils.EnvironmentVariables.*;
 
 @SetEnvironmentVariable(key = SERVER_URL, value = "ws://localhost:" + MockedServer.PORT)
 @SetEnvironmentVariable(key = BOT_NAME, value = "TestBot")
@@ -150,5 +152,17 @@ class BaseBotConstructorTest extends AbstractBotTest {
         awaitBotHandshake();
         var botHandshake = server.getBotHandshake();
         assertThat(botHandshake.getSecret()).isEqualTo(secret);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "file", "dict", "ftp", "gopher" })
+    void givenUnknownScheme_whenCallingConstructor_thenThrowException(String scheme) throws URISyntaxException {
+        var bot = new TestBot(null, new URI(scheme + "://localhost:" + MockedServer.PORT));
+        try {
+            startAsync(bot).join();
+        } catch (Exception e) {
+            assertThat(e).isInstanceOf(BotException.class);
+            assertThat(e.getMessage()).startsWith("Wrong scheme used with server URL");
+        }
     }
 }

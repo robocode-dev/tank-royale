@@ -53,10 +53,7 @@ public class AbstractBotTest
         return bot;
     }
 
-    protected static void StartAsync(BaseBot bot)
-    {
-        Task.Run(bot.Start);
-    }
+    protected static Task StartAsync(BaseBot bot) => Task.Run(bot.Start);
 
     protected static void GoAsync(BaseBot bot)
     {

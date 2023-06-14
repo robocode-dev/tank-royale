@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Web;
 using Newtonsoft.Json;
@@ -219,13 +220,24 @@ public sealed class BaseBotInternals
 
     private void Connect()
     {
+        var serverUri = socket.ServerUri;
+        SanitizeUrl(serverUri);
         try
         {
             socket.Connect();
         }
         catch (Exception)
         {
-            throw new BotException($"Could not connect to web socket for URL: {socket.ServerUri}");
+            throw new BotException($"Could not connect to web socket for URL: {serverUri}");
+        }
+    }
+
+    private static void SanitizeUrl(Uri uri)
+    {
+        var scheme = uri.Scheme;
+        if (!new List<string> { "ws", "wss" }.Any(s => s.Contains(scheme)))
+        {
+            throw new BotException($"Wrong scheme used with server URL: {uri}");
         }
     }
 

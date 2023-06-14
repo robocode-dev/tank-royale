@@ -18,7 +18,7 @@ public class BotInfoTest
     static readonly List<string> Authors = new List<string> { " Author 1  ", " Author 2 " };
     static readonly string Description = "  short description ";
     static readonly string Homepage = " https://testbot.robocode.dev ";
-    static readonly List<string> CountryCodes = new List<string> { " gb ", "  US " };
+    static readonly List<string> CountryCodes = new() { " gb ", "  US " };
     static readonly ISet<string> GameTypes = new HashSet<string> { " classic ", " melee ", " 1v1 " };
     static readonly string Platform = " .Net 6 ";
     static readonly string ProgrammingLang = " C# 11 ";
@@ -293,10 +293,10 @@ public class BotInfoTest
         }
         
         [Test]
-        [TestCaseSource(nameof(ListOfEmptyOrBlanks))]
-        public void GivenEmptyOrBlankGameTypes_whenConstructingBotInfo_thenEmptyListIsReturned(List<string> gameTypes)
+        [TestCaseSource(nameof(SetOfEmptyOrBlanks))]
+        public void GivenEmptyOrBlankGameTypes_whenConstructingBotInfo_thenEmptyListIsReturned(ISet<string> gameTypes)
         {
-            var botInfo = PrefilledBuilder().SetGameTypes(gameTypes.ToHashSet()).Build();
+            var botInfo = PrefilledBuilder().SetGameTypes(gameTypes).Build();
             Assert.That(botInfo.GameTypes.Count, Is.Zero);
         }
 
@@ -480,7 +480,6 @@ public class BotInfoTest
         }
     }
 
-
     private static readonly object[] ListOfEmptyOrBlanks =
     {
         new object[] { new List<string>() },
@@ -488,6 +487,15 @@ public class BotInfoTest
         new object[] { new List<string> { "\t" } },
         new object[] { new List<string> { " \n" } },
         new object[] { new List<string> { " ", "" } }
+    };
+
+    private static readonly object[] SetOfEmptyOrBlanks =
+    {
+        new object[] { new HashSet<string>() },
+        new object[] { new HashSet<string> { "" } },
+        new object[] { new HashSet<string> { "\t" } },
+        new object[] { new HashSet<string> { " \n" } },
+        new object[] { new HashSet<string> { " ", "" } }
     };
 
     private static IBuilder PrefilledBuilder()

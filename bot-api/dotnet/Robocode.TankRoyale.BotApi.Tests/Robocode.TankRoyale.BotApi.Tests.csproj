@@ -15,6 +15,11 @@
     <ItemGroup>
         <ProjectReference Include="../Robocode.TankRoyale.BotApi/Robocode.TankRoyale.BotApi.csproj" />
 
+        <!-- for Bot API -->
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+
         <!-- WebSocket -->
         <PackageReference Include="Fleck" Version="1.2.0" />
 
