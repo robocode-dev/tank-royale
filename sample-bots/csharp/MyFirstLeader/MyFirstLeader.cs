@@ -99,7 +99,7 @@ class Point
     public Point(double x, double y)
     {
         X = x;
-        X = y;
+        Y = y;
     }
 }
 
