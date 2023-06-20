@@ -601,14 +601,15 @@ public sealed class BaseBotInternals
                 "The maximum number team massages has already been reached: " +
                 IBaseBot.MaxNumberOfTeamMessagesPerTurn);
 
-        var bytes = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
+        var json = JsonConvert.SerializeObject(message);
+        var bytes = System.Text.Encoding.UTF8.GetBytes(json);
         if (bytes.Length > IBaseBot.TeamMessageMaxSize)
             throw new ArgumentException(
                 $"The team message is larger than the limit of {IBaseBot.TeamMessageMaxSize} bytes");
 
         BotIntent.TeamMessages.Add(new S.TeamMessage
         {
-            MessageType = S.MessageType.TeamMessageEvent.ToString(),
+            MessageType = message.GetType().ToString(),
             Message = Convert.ToBase64String(bytes),
             ReceiverId = teammateId,
         });
@@ -770,7 +771,7 @@ public sealed class BaseBotInternals
         if (BotIntent.Rescan == true)
             BotIntent.Rescan = false;
 
-        var newTickEvent = EventMapper.Map(json, MyId);
+        var newTickEvent = EventMapper.Map(json, baseBot);
         eventQueue.AddEventsFromTick(newTickEvent);
 
         tickEvent = newTickEvent;

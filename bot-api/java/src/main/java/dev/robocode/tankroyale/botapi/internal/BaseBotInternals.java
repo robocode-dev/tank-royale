@@ -599,15 +599,16 @@ public final class BaseBotInternals {
         if (message == null) {
             throw new IllegalArgumentException("The 'message' of a team message cannot be null");
         }
-        var json = gson.toJson(message).replaceAll("\"", "\\\"");
+
+        var json = gson.toJson(message);
         if (json.getBytes().length > TEAM_MESSAGE_MAX_SIZE) {
             throw new IllegalArgumentException(
                     "The team message is larger than the limit of " + TEAM_MESSAGE_MAX_SIZE + " bytes (compact JSON format)");
         }
         var teamMessage = new TeamMessage();
+        teamMessage.setMessageType(message.getClass().getName());
         teamMessage.setReceiverId(teammateId);
         teamMessage.setMessage(json);
-        teamMessage.setMessageType(message.getClass().getName());
 
         botIntent.getTeamMessages().add(teamMessage);
     }

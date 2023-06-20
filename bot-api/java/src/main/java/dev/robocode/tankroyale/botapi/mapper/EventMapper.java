@@ -153,7 +153,7 @@ public final class EventMapper {
         }
         try {
             var type = baseBot.getClass().getClassLoader().loadClass(source.getMessageType());
-            var messageObject = new Gson().fromJson(message.replaceAll("\\\"", "\""), type);
+            var messageObject = new Gson().fromJson(message, type);
             return new TeamMessageEvent(source.getTurnNumber(), messageObject, source.getSenderId());
 
         } catch (ClassNotFoundException e) {

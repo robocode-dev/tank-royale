@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Robocode.TankRoyale.BotApi.Events;
@@ -8,7 +9,7 @@ namespace Robocode.TankRoyale.BotApi.Mapper;
 
 public static class EventMapper
 {
-    public static TickEvent Map(string json, int myBotId)
+    public static TickEvent Map(string json, IBaseBot baseBot)
     {
         var tickEvent = JsonConvert.DeserializeObject<Schema.TickEventForBot>(json);
         if (tickEvent == null)
@@ -27,39 +28,39 @@ public static class EventMapper
             tickEvent.EnemyCount,
             BotStateMapper.Map(tickEvent.BotState),
             BulletStateMapper.Map(tickEvent.BulletStates),
-            Map(events, myBotId)
+            Map(events, baseBot)
         );
     }
 
-    private static IEnumerable<BotEvent> Map(JArray events, int myBotId)
+    private static IEnumerable<BotEvent> Map(JArray events, IBaseBot baseBot)
     {
         var gameEvents = new HashSet<BotEvent>();
         foreach (var jEvent in events)
         {
             var evt = (JObject)jEvent;
-            gameEvents.Add(Map(evt, myBotId));
+            gameEvents.Add(Map(evt, baseBot));
         }
 
         return gameEvents;
     }
 
-    private static BotEvent Map(JObject evt, int myBotId)
+    private static BotEvent Map(JObject evt, IBaseBot baseBot)
     {
         var type = evt.GetValue("type")?.ToString();
 
         return type switch
         {
-            "BotDeathEvent" => Map(evt.ToObject<Schema.BotDeathEvent>(), myBotId),
+            "BotDeathEvent" => Map(evt.ToObject<Schema.BotDeathEvent>(), baseBot.MyId),
             "BotHitBotEvent" => Map(evt.ToObject<Schema.BotHitBotEvent>()),
             "BotHitWallEvent" => Map(evt.ToObject<Schema.BotHitWallEvent>()),
             "BulletFiredEvent" => Map(evt.ToObject<Schema.BulletFiredEvent>()),
-            "BulletHitBotEvent" => Map(evt.ToObject<Schema.BulletHitBotEvent>(), myBotId),
+            "BulletHitBotEvent" => Map(evt.ToObject<Schema.BulletHitBotEvent>(), baseBot.MyId),
             "BulletHitBulletEvent" => Map(evt.ToObject<Schema.BulletHitBulletEvent>()),
             "BulletHitWallEvent" => Map(evt.ToObject<Schema.BulletHitWallEvent>()),
             "ScannedBotEvent" => Map(evt.ToObject<Schema.ScannedBotEvent>()),
             "SkippedTurnEvent" => Map(evt.ToObject<Schema.SkippedTurnEvent>()),
             "WonRoundEvent" => Map(evt.ToObject<Schema.WonRoundEvent>()),
-            "TeamMessageEvent" => Map(evt.ToObject<Schema.TeamMessageEvent>()),
+            "TeamMessageEvent" => Map(evt.ToObject<Schema.TeamMessageEvent>(), baseBot),
             _ => throw new BotException("No mapping exists for event type: " + type)
         };
     }
@@ -136,16 +137,29 @@ public static class EventMapper
 
     private static WonRoundEvent Map(Schema.WonRoundEvent source) => new(source.TurnNumber);
 
-    private static TeamMessageEvent Map(Schema.TeamMessageEvent source)
+    private static TeamMessageEvent Map(Schema.TeamMessageEvent source, IBaseBot baseBot)
     {
-        var bytes = Convert.FromBase64String(source.Message);
-        var decodedString = System.Text.Encoding.UTF8.GetString(bytes);
-        var messageObject = JsonConvert.DeserializeObject(decodedString);
-            
-        return new TeamMessageEvent(
-            source.TurnNumber,
-            messageObject,
-            source.SenderId
-        );
+        try
+        {
+            // type name of the base bot is required for the DLL name.
+            // Otherwise, null is will be returned with Type.GetType(typeName).
+            var typeName = source.MessageType + "," + baseBot.GetType().Name;
+            var type = Type.GetType(typeName)!;
+
+            var bytes = Convert.FromBase64String(source.Message);
+            var decodedString = System.Text.Encoding.UTF8.GetString(bytes);
+
+            var messageObject = JsonConvert.DeserializeObject(decodedString, type);
+
+            return new TeamMessageEvent(
+                source.TurnNumber,
+                messageObject,
+                source.SenderId
+            );
+        }
+        catch (Exception e)
+        {
+            throw new BotException("Could not parse team message", e);
+        }
     }
 }
