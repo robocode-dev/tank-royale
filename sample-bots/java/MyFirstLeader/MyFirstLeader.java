@@ -61,7 +61,7 @@ public class MyFirstLeader extends Bot {
 
     // Called when we scanned a bot -> Send enemy position to teammates
     @Override
-    public override void OnScannedBot(ScannedBotEvent evt)
+    public void onScannedBot(ScannedBotEvent e) {
         // We scanned a teammate -> ignore
         if (isTeammate(e.getScannedBotId())) {
             return;
