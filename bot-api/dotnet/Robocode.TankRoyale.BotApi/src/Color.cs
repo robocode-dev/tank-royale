@@ -35,31 +35,32 @@ public class Color
     /// <summary>
     /// Creates a Color from RGB values.
     /// </summary>
-    /// <param name="red">The red color component of the RGB color in the range [0 - 255]</param>
-    /// <param name="green">The green color component of the RGB color in the range [0 - 255]</param>
-    /// <param name="blue">The red blue component of the RGB color in the range [0 - 255]</param>
+    /// <param name="redValue">The red color component of the RGB color in the range [0 - 255]</param>
+    /// <param name="greenValue">The green color component of the RGB color in the range [0 - 255]</param>
+    /// <param name="blueValue">The red blue component of the RGB color in the range [0 - 255]</param>
     /// <exception cref="ArgumentException"/>
     /// <see href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</see>
-    public Color(int red, int green, int blue)
+    ///
+    public Color(int redValue, int greenValue, int blueValue)
     {
-        if (red is < 0 or > 255)
+        if (redValue is < 0 or > 255)
         {
             throw new ArgumentException("The 'red' color component must be in the range 0 - 255");
         }
 
-        if (green is < 0 or > 255)
+        if (greenValue is < 0 or > 255)
         {
             throw new ArgumentException("The 'green' color component must be in the range 0 - 255");
         }
 
-        if (blue is < 0 or > 255)
+        if (blueValue is < 0 or > 255)
         {
             throw new ArgumentException("The 'blue' color component must be in the range 0 - 255");
         }
 
-        RedValue = red;
-        GreenValue = green;
-        BlueValue = blue;
+        RedValue = redValue;
+        GreenValue = greenValue;
+        BlueValue = blueValue;
     }
 
     /// <summary>
