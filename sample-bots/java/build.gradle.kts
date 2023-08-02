@@ -68,8 +68,13 @@ tasks {
 
                 mkdir(botArchivePath)
                 copyBotFiles(botDir, botArchivePath)
-                createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
-                createScriptFile(botDir, botArchivePath, "sh", "\n")
+
+                println(botDir)
+
+                if (!botDir.toString().endsWith("Team")) {
+                    createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
+                    createScriptFile(botDir, botArchivePath, "sh", "\n")
+                }
             }
         }
     }

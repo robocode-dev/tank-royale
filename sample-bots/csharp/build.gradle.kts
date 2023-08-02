@@ -58,10 +58,13 @@ tasks {
 
                 mkdir(botArchivePath)
                 copyBotFiles(botDir, botArchivePath)
-                createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
-                createScriptFile(botDir, botArchivePath, "sh", "\n")
 
-                generateBotCsprojFile(botArchivePath.resolve("$botName.csproj"), botName, "${project.version}")
+                if (!botDir.toString().endsWith("Team")) {
+                    createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
+                    createScriptFile(botDir, botArchivePath, "sh", "\n")
+
+                    generateBotCsprojFile(botArchivePath.resolve("$botName.csproj"), botName, "${project.version}")
+                }
             }
         }
     }
