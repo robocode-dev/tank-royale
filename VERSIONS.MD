@@ -6,6 +6,7 @@
 
 - Server and Booter:
     - The command-line options and commands are now case-insensitive.
+    - Changed `--botSecrets` and `--controllerSecrets` into `--bot-secrets` and `--controller-secrets`.
 - GUI:
     - The standard output and standard error messages are now being cached within the GUI for the current round for the
       individual bots, so the history of the round is available when opening the bot consoles.

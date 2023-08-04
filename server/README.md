@@ -24,9 +24,9 @@ The server has these options:
 - `-v` or `--version` to show the version information.
 - `-g` or `--games=<gameTypes>` to provide a comma-separated list of game types.
 - `-p` or `--port=<port>` to specify the port number of the server.
-- `-c` or `--controllerSecrets=<secrets>` to provide a comma-separated list of observer/controller secrets for simple
+- `-c` or `--controller-secrets=<secrets>` to provide a comma-separated list of observer/controller secrets for simple.
   access control.
-- `-b` or `--botSecrets=<secrets>` to provide a comma-separated list of bot secrets for simple access control.
+- `-b` or `--bot-secrets=<secrets>` to provide a comma-separated list of bot secrets for simple access control.
 
 The options and commands are provided after the `java -jar robocode-tankroyale-server-x.y.z.jar` part like this:
 
@@ -65,26 +65,26 @@ If no port number is specified, the server will run on port number 80 per defaul
 
 #### Controller Secrets
 
-The `--controllerSecrets=<secret>` is used for only allowing controllers and observers to join the server if they
+The `--controller-secrets=<secret>` is used for only allowing controllers and observers to join the server if they
 provide a secret that is listed with this option.
 
 Example:
 
 ```
-java -jar robocode-tankroyale-server-x.y.z.jar --controllerSecrets=yFTFllMU8fX8kaxlgQnV1g
+java -jar robocode-tankroyale-server-x.y.z.jar --controller-secrets=yFTFllMU8fX8kaxlgQnV1g
 ```
 
 If no secret is specified (default) any controller and observer may join the server.
 
 #### Bot Secrets
 
-The `--botSecrets=<secret>` is used for only allowing bots to join the server if they provide if they
+The `--bot-secrets=<secret>` is used for only allowing bots to join the server if they provide if they
 provide a secret that is listed with this option.
 
 Example:
 
 ```
-java -jar robocode-tankroyale-server-x.y.z.jar --botSecrets=yijjEugA0zLcgGCO382gCA,7VPOzQaOnQ8HV9d2URHXOw
+java -jar robocode-tankroyale-server-x.y.z.jar --bot-secrets=yijjEugA0zLcgGCO382gCA,7VPOzQaOnQ8HV9d2URHXOw
 ```
 
 If no secret is specified (default) any bot may join the server.

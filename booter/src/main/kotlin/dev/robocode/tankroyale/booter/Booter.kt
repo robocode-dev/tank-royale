@@ -46,6 +46,7 @@ class Booter : Callable<Int> {
     }
 
     @Command(name = "dir", description = ["List all available bot directories."])
+    @Suppress("unused")
     private fun dir(
         @Parameters(
             arity = "1..*", paramLabel = "BOT_ROOT_DIRS",
@@ -63,6 +64,7 @@ class Booter : Callable<Int> {
     }
 
     @Command(name = "info", description = ["List info for all available bots in JSON format."])
+    @Suppress("unused")
     private fun info(
         @Parameters(
             arity = "1..*", paramLabel = "BOT_ROOT_DIRS",
@@ -97,6 +99,7 @@ class Booter : Callable<Int> {
             "  stop {pid}  Stops the bot running with the specific process id",
         ]
     )
+    @Suppress("unused")
     private fun run(
         @Parameters(
             arity = "0..*", paramLabel = "BOT_DIRS",

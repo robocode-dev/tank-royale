@@ -70,14 +70,14 @@ class Server : Runnable {
         private var gameTypes: String = DEFAULT_GAME_TYPE
 
         @Option(
-            names = ["-c", "--controllerSecrets"],
+            names = ["-c", "--controller-secrets"],
             type = [String::class],
             description = ["Comma-separated list of controller secrets used for access control"]
         )
         private var controllerSecrets: String? = null
 
         @Option(
-            names = ["-b", "--botSecrets"],
+            names = ["-b", "--bot-secrets"],
             type = [String::class],
             description = ["Comma-separated list of bot secrets used for access control"]
         )

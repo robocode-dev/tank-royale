@@ -46,8 +46,8 @@ object ServerProcess {
                 "--port=$port",
                 "--games=classic,melee,1v1",
                 "--tps=${ConfigSettings.tps}",
-                "--controllerSecrets=${controllerSecrets.joinToString(",")}",
-                "--botSecrets=${botSecrets.joinToString(",")}"
+                "--controller-secrets=${controllerSecrets.joinToString(",")}",
+                "--bot-secrets=${botSecrets.joinToString(",")}"
             )
             if (initialPositionsEnabled) {
                 command += "--enable-initial-position"
