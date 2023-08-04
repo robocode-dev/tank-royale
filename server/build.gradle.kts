@@ -17,7 +17,6 @@ buildscript {
     }
 }
 
-@Suppress("DSL_SCOPE_VIOLATION") // remove later when IntelliJ supports the `libs.` DSL
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
@@ -82,6 +81,7 @@ tasks {
                 groupId = group as String?
                 artifactId = artifactBaseName
                 version
+
                 pom {
                     name.set(title)
                     description.set(project.description)
