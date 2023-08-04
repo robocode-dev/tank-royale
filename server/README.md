@@ -24,9 +24,9 @@ The server has these options:
 - `-V` or `--version` to show the version information.
 - `-g` or `--games=<gameTypes>` to provide a comma-separated list of game types.
 - `-p` or `--port=<port>` to specify the port number of the server.
-- `-C` or `--controllersecrets=<secrets>` to provide a comma-separated list of observer/controller secrets for simple
+- `-C` or `--controllerSecrets=<secrets>` to provide a comma-separated list of observer/controller secrets for simple
   access control.
-- `-B` or `--botsecrets=<secrets>` to provide a comma-separated list of bot secrets for simple access control.
+- `-B` or `--botSecrets=<secrets>` to provide a comma-separated list of bot secrets for simple access control.
 
 The options and commands are provided after the `java -jar robocode-tankroyale-server-x.y.z.jar` part like this:
 
