@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 description = "Robocode Tank Royale build sources"
 
 buildscript {
-    val kotlinVersion = "1.7.20"
+    val kotlinVersion = "1.8.20"
 
     repositories {
         mavenCentral()
@@ -14,7 +14,7 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm").version("1.7.20")
+    kotlin("jvm").version("1.8.20")
 }
 
 repositories {
@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.json:json:20220924")
+    implementation("org.json:json:20230618")
 }
 
 tasks {
