@@ -83,7 +83,11 @@ multi-module project.
 
 ## License
 
-[Apache License 2.0](LICENSE) © [Flemming N. Larsen](https://github.com/flemming-n-larsen)
+[Apache License 2.0](LICENSE)
+
+## Copyright
+
+Copyright © 2022 [Flemming N. Larsen](https://github.com/flemming-n-larsen)
 
 
 [Java]: https://docs.oracle.com/javase/tutorial/java/, "The Java Tutorials"

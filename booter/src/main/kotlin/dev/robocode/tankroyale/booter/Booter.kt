@@ -18,8 +18,13 @@ val cmdLine = CommandLine(Booter())
 fun main(args: Array<String>) {
     System.setProperty("jansi.force", "true")
     AnsiConsole.systemInstall()
-    exitProcess(cmdLine.execute(*args))
-}
+
+    cmdLine.apply {
+        isSubcommandsCaseInsensitive = true
+        isOptionsCaseInsensitive = true
+
+        exitProcess(execute(*args))
+    }}
 
 @Command(
     name = "booter",
@@ -41,6 +46,7 @@ class Booter : Callable<Int> {
     }
 
     @Command(name = "dir", description = ["List all available bot and team directories."])
+    @Suppress("unused")
     private fun dir(
         @Parameters(
             arity = "1..*",
@@ -74,6 +80,7 @@ class Booter : Callable<Int> {
     }
 
     @Command(name = "info", description = ["List info of all available bots in JSON format."])
+    @Suppress("unused")
     private fun info(
         @Parameters(
             arity = "1..*", paramLabel = "BOT_ROOT_DIRS",
@@ -122,6 +129,7 @@ class Booter : Callable<Int> {
             "  stop {pid}  Stops the bot running with the specific process id.",
         ]
     )
+    @Suppress("unused")
     private fun boot(
         @Parameters(
             arity = "0..*",

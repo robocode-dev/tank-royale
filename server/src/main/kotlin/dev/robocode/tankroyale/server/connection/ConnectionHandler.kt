@@ -42,7 +42,7 @@ class ConnectionHandler(
     private val gson = Gson()
 
     init {
-        val address = InetSocketAddress("localhost", Server.port)
+        val address = InetSocketAddress(Server.port)
         webSocketObserver = WebSocketObserver(address).apply {
             isTcpNoDelay = true
         }

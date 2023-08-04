@@ -21,6 +21,7 @@ buildscript {
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
+    alias(libs.plugins.shadow.jar)
     `maven-publish`
     signing
 }
@@ -98,7 +99,9 @@ tasks {
     publishing {
         publications {
             create<MavenPublication>("gui-app") {
-                artifact(archiveFileName)
+                artifact(proguard.get().outJarFiles[0]) {
+                    builtBy(proguard)
+                }
                 artifact(javadocJar)
                 artifact(sourcesJar)
 

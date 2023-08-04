@@ -20,10 +20,13 @@
     - The results window now aggregates scores for teams as well as bots, got a wider "Name" column, some column names
       were changed, and got tooltips on the value fields.
 
-## 📦 0.19.3 - In progress
+## 📦 0.19.3 - Maintenance - 04-Aug-2023
 
 #### 🚀 Improvements
 
+- Server and Booter:
+    - The command-line options and commands are now case-insensitive.
+    - Changed `--botSecrets` and `--controllerSecrets` into `--bot-secrets` and `--controller-secrets`.
 - GUI:
     - The standard output and standard error messages are now being cached within the GUI for the current round for the
       individual bots, so the history of the round is available when opening the bot consoles.
@@ -31,9 +34,10 @@
 
 #### 🪲 Bug Fixes
 
+- Server:
+    - Allow bots to connect to non-localhost addresses (PR [#69]).
 - Bot API:
     - Fixed broken unit test for .Net.
-    - Fix for CWE-918: Server-Side Request Forgery (SSRF) (caught by SNYK)
 - GUI:
     - Fixed issue, where the battle graphics was not displayed when starting the battle.
     - Fixed calculation of 1st, 2nd, and 3rd places.
