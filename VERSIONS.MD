@@ -1,9 +1,11 @@
 # Versions
 
-## 📦 0.19.3 - In progress
+## 📦 0.19.3 - Maintenance - 04-Aug-2023
 
 #### 🚀 Improvements
 
+- Server and Booter:
+    - The command-line options and commands are now case-insensitive.
 - GUI:
     - The standard output and standard error messages are now being cached within the GUI for the current round for the
       individual bots, so the history of the round is available when opening the bot consoles.

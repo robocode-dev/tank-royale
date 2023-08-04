@@ -21,12 +21,12 @@ java -jar robocode-tankroyale-server-x.y.z.jar
 The server has these options:
 
 - `-h` or `--help` to show the help message.
-- `-V` or `--version` to show the version information.
+- `-v` or `--version` to show the version information.
 - `-g` or `--games=<gameTypes>` to provide a comma-separated list of game types.
 - `-p` or `--port=<port>` to specify the port number of the server.
-- `-C` or `--controllerSecrets=<secrets>` to provide a comma-separated list of observer/controller secrets for simple
+- `-c` or `--controllerSecrets=<secrets>` to provide a comma-separated list of observer/controller secrets for simple
   access control.
-- `-B` or `--botSecrets=<secrets>` to provide a comma-separated list of bot secrets for simple access control.
+- `-b` or `--botSecrets=<secrets>` to provide a comma-separated list of bot secrets for simple access control.
 
 The options and commands are provided after the `java -jar robocode-tankroyale-server-x.y.z.jar` part like this:
 
@@ -63,7 +63,7 @@ If no port number is specified, the server will run on port number 80 per defaul
 
 ### Secrets
 
-#### controllerSecrets
+#### Controller Secrets
 
 The `--controllerSecrets=<secret>` is used for only allowing controllers and observers to join the server if they
 provide a secret that is listed with this option.
@@ -76,7 +76,7 @@ java -jar robocode-tankroyale-server-x.y.z.jar --controllerSecrets=yFTFllMU8fX8k
 
 If no secret is specified (default) any controller and observer may join the server.
 
-#### botSecrets
+#### Bot Secrets
 
 The `--botSecrets=<secret>` is used for only allowing bots to join the server if they provide if they
 provide a secret that is listed with this option.

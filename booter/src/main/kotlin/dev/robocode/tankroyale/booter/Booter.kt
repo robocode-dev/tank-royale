@@ -18,8 +18,13 @@ val cmdLine = CommandLine(Booter())
 fun main(args: Array<String>) {
     System.setProperty("jansi.force", "true")
     AnsiConsole.systemInstall()
-    exitProcess(cmdLine.execute(*args))
-}
+
+    cmdLine.apply {
+        isSubcommandsCaseInsensitive = true
+        isOptionsCaseInsensitive = true
+
+        exitProcess(execute(*args))
+    }}
 
 @Command(
     name = "booter",
@@ -49,7 +54,7 @@ class Booter : Callable<Int> {
         botRootDirs: Array<String>,
 
         @Option(
-            names = ["--game-types", "-T"], paramLabel = "GAME_TYPES",
+            names = ["--game-types", "-t"], paramLabel = "GAME_TYPES",
             description = ["Comma-separated string of game types that the bot entries must support in order to be included in the list"]
         )
         gameTypes: String?
@@ -66,7 +71,7 @@ class Booter : Callable<Int> {
         botRootDirs: Array<String>,
 
         @Option(
-            names = ["--game-types", "-T"], paramLabel = "GAME_TYPES",
+            names = ["--game-types", "-t"], paramLabel = "GAME_TYPES",
             description = ["Comma-separated list of game types that the bot entries must support in order to be included in the list."]
         )
         gameTypes: String?

@@ -18,7 +18,13 @@ private const val DEFAULT_PORT: Int = 7654
 fun main(args: Array<String>) {
     System.setProperty("jansi.force", "true")
     AnsiConsole.systemInstall()
-    exitProcess(Server.cmdLine.execute(*args))
+
+    Server.cmdLine.apply {
+        isSubcommandsCaseInsensitive = true
+        isOptionsCaseInsensitive = true
+
+        exitProcess(execute(*args))
+    }
 }
 
 @Command(
@@ -43,7 +49,7 @@ class Server : Runnable {
 
     companion object {
 
-        @Option(names = ["-V", "--version"], description = ["Display version info"])
+        @Option(names = ["-v", "--version"], description = ["Display version info"])
         private var isVersionInfoRequested = false
 
         @Option(names = ["-h", "--help"], description = ["Display this help message"])
@@ -64,21 +70,21 @@ class Server : Runnable {
         private var gameTypes: String = DEFAULT_GAME_TYPE
 
         @Option(
-            names = ["-C", "--controllerSecrets"],
+            names = ["-c", "--controllerSecrets"],
             type = [String::class],
             description = ["Comma-separated list of controller secrets used for access control"]
         )
         private var controllerSecrets: String? = null
 
         @Option(
-            names = ["-B", "--botSecrets"],
+            names = ["-b", "--botSecrets"],
             type = [String::class],
             description = ["Comma-separated list of bot secrets used for access control"]
         )
         private var botSecrets: String? = null
 
         @Option(
-            names = ["-I", "--enable-initial-position"],
+            names = ["-i", "--enable-initial-position"],
             description = ["Enable initial position for bots (default: false)"]
         )
         var initialPositionEnabled = false
