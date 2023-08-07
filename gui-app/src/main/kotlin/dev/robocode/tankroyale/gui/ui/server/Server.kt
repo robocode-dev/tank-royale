@@ -34,20 +34,21 @@ object Server {
     }
 
     private fun connectToServer() {
-        var connected = false
+        val connected = CountDownLatch(1)
+
         ClientEvents.onConnected.subscribe(this) {
+            connected.countDown()
             ServerEvents.onConnected.fire(Unit)
-            connected = true
         }
         // An exception can occur when trying to connect to the server.
         // Hence, we retry connecting, when it fails.
         var attempts = 5
-        while (!connected && attempts-- > 0) {
+        while (connected.count > 0 && attempts-- > 0) {
             try {
                 Client.connect()
             } catch (ignore: Exception) {
             }
-            sleep(500)
+            connected.await(500, TimeUnit.MILLISECONDS)
         }
     }
 
@@ -66,8 +67,7 @@ object Server {
     }
 
     fun reboot() {
-        Client.close()
-        ServerProcess.reboot()
+        stop()
         connectToServer()
     }
 
