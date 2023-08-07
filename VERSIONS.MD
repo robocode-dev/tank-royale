@@ -602,6 +602,8 @@ Bot info:
 
 [#66]: https://github.com/robocode-dev/tank-royale/issues/66
 
+[#69]: https://github.com/robocode-dev/tank-royale/issues/69
+
 [BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
 
 [BotInfo.FromConfiguration(IConfiguration)]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_Microsoft_Extensions_Configuration_IConfiguration_
