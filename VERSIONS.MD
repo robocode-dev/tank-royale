@@ -1,5 +1,8 @@
 # Versions
 
+- Fixed potential raise condition when connection to the server.
+- Fixed redundant/dangling event subscriptions to WebSocket client for the GUI application, when connection failed.
+
 ## 📦 0.19.3 - Maintenance - 04-Aug-2023
 
 #### 🚀 Improvements

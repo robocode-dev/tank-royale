@@ -73,7 +73,15 @@ object Client {
                     System.err.println("WebSocket error: " + it.message)
                     it.printStackTrace()
                 }
-                ws.open() // must be called AFTER onOpen.subscribe()
+                try {
+                    ws.open() // must be called AFTER onOpen.subscribe()
+                } catch (_: Exception) {
+                    // to prevent redundant subscriptions which are kept both on failure, and
+                    // new attempt to open the web socket
+                    onOpen.unsubscribe(ws)
+                    onMessage.unsubscribe(ws)
+                    onError.unsubscribe(ws)
+                }
             }
         }
     }
