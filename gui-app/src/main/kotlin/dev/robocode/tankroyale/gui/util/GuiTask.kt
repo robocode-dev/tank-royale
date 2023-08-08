@@ -5,10 +5,13 @@ import java.awt.EventQueue
 object GuiTask {
 
     fun enqueue(callable: () -> Unit) {
-        BusyCursor.activate()
         EventQueue.invokeLater {
-            callable.invoke()
-            BusyCursor.deactivate()
+            BusyCursor.activate()
+            try {
+                callable.invoke()
+            } finally {
+                BusyCursor.deactivate()
+            }
         }
     }
 }
