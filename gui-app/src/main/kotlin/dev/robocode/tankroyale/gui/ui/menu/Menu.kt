@@ -117,7 +117,7 @@ object Menu : JMenuBar() {
             mnemonic = KeyEvent.VK_H
 
             addNewMenuItem("item.help", onHelp).apply {
-//                mnemonic = KeyEvent.VK_A
+                mnemonic = KeyEvent.VK_H
             }
             addNewMenuItem("item.about", onAbout).apply {
                 mnemonic = KeyEvent.VK_A
