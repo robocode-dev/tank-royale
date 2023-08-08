@@ -659,10 +659,10 @@ class ModelUpdater(
     }
 
     private fun checkFor1stPlace() {
-        val teamsAlive = getBotsOrTeams(MutableBot::isAlive)
+        // distinctBy(id) is necessary to take account for both bots and teams
+        val teamsAlive = getBotsOrTeams(MutableBot::isAlive).distinctBy { it.id }
         if (teamsAlive.size == 1) {
-            val winnerId = botsMap.values.first { it.isAlive }.id
-            scoreTracker.increment1stPlaces(participantsAndTeamIds.first { it.botId == winnerId })
+            scoreTracker.increment1stPlaces(teamsAlive.first())
         }
     }
 

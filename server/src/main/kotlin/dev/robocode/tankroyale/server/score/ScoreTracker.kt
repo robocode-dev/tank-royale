@@ -100,8 +100,9 @@ class ScoreTracker(private val teamOrBotIds: List<TeamOrBotId>) {
      * @param teamOrBotId is the identifier of the bot (and team)
      */
     fun registerBotDeath(teamOrBotId: TeamOrBotId) {
-        teamsAlive.apply {
-            remove(teamOrBotId)
+        teamsAlive.remove(teamOrBotId) // remove dead bot before counting the score!
+
+        teamsAlive.distinctBy { it.id }.apply {
 
             forEach { scoreAndDamages[it]?.incrementSurvivalCount() }
 
@@ -115,7 +116,12 @@ class ScoreTracker(private val teamOrBotIds: List<TeamOrBotId>) {
                     scoreAndDamages[first()]?.addLastSurvivorCount(deadCount) // first() is the only one left
                 }
 
-                2 -> increment3rdPlaces(teamOrBotId)
+                2 -> {
+                    val numberOfParticipants = teamOrBotIds.distinctBy { it.id }.count()
+                    if (numberOfParticipants > 2) {
+                        increment3rdPlaces(teamOrBotId)
+                    }
+                }
             }
         }
     }
