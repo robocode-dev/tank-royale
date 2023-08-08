@@ -334,17 +334,33 @@ object ArenaPanel : JPanel() {
         val oldState = Graphics2DState(g)
 
         try {
-            val participant = Client.getParticipant(bot.id)
-            val text = "${participant.name} ${participant.version} (${participant.id})"
-            val width = g.fontMetrics.stringWidth(text)
+            Client.getParticipant(bot.id).apply {
+                g.scale(1.0, -1.0)
+                g.color = Color.WHITE
 
-            g.scale(1.0, -1.0)
-            g.color = Color.WHITE
-            g.drawString(text, bot.x.toFloat() - width / 2, (-bot.y + 36).toFloat())
+                // bot info
+                "$name $version ($id)".apply {
+                    drawText(g, this, bot.x, -bot.y + 36)
+                }
+
+                // team info
+                if (teamName != null) {
+                    "$teamName $teamVersion ($teamId)".apply {
+                        drawText(g, this, bot.x, -bot.y + 50)
+                    }
+                }
+            }
+
         } catch (ignore: NoSuchElementException) {
         }
 
         oldState.restore(g)
+    }
+
+    private fun drawText(g: Graphics2D, text: String, x: Double, y: Double) {
+        val width = g.fontMetrics.stringWidth(text)
+
+        g.drawString(text, x.toFloat() - width / 2, y.toFloat())
     }
 
     private fun Graphics2D.fillCircle(x: Double, y: Double, size: Double) {
