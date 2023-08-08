@@ -85,11 +85,6 @@ object ServerProcess {
         ServerEvents.onStopped.fire(Unit)
     }
 
-    fun reboot() {
-        stop()
-        start(port)
-    }
-
     private fun getServerJar(): String {
         System.getProperty("serverJar")?.let {
             Paths.get(it).apply {
