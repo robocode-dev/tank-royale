@@ -2,8 +2,8 @@ package dev.robocode.tankroyale.gui.ui.extensions
 
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.util.Event
-import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 import dev.robocode.tankroyale.gui.util.MessageDialog
+import java.awt.EventQueue
 import javax.swing.JButton
 import javax.swing.JCheckBox
 import javax.swing.JComponent
@@ -43,7 +43,7 @@ object JComponentExt {
     }
 
     fun JComponent.setDefaultButton(button: JButton) {
-        enqueue { // to avoid rootPane to be null, if called too early
+        EventQueue.invokeLater { // to avoid rootPane to be null, if called too early
             if (rootPane != null) {
                 rootPane.defaultButton = button
             }

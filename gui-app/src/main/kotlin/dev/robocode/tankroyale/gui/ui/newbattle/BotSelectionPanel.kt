@@ -21,6 +21,7 @@ import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 import net.miginfocom.swing.MigLayout
+import java.awt.EventQueue
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
 import javax.swing.*
@@ -355,11 +356,13 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     override fun focusLost(e: FocusEvent?) {}
 
     fun update() {
-        updateBotsDirectoryEntries()
-        updateRunningBots()
-        updateJoinedBots()
+        enqueue {
+            updateBotsDirectoryEntries()
+            updateRunningBots()
+            updateJoinedBots()
 
-        enforceBotDirIsConfigured()
+            enforceBotDirIsConfigured()
+        }
     }
 
     private fun updateBotsDirectoryEntries() {
@@ -389,7 +392,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
                     )
                 )
             }
-            enqueue {
+            EventQueue.invokeLater {
                 botsDirectoryScrollPane.horizontalScrollBar.apply {
                     value = maximum
                 }
@@ -399,7 +402,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
     private fun enforceBotDirIsConfigured() {
         if (ConfigSettings.botDirectories.isEmpty()) {
-            enqueue {
+            EventQueue.invokeLater {
                 with(BotRootDirectoriesConfigDialog) {
                     if (!isVisible) {
                         showError(Messages.get("no_bot_dir"))
@@ -444,7 +447,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     private fun addBootingBot(dirAndPid: DirAndPid) {
         bootedBotListModel.addElement(dirAndPid)
 
-        enqueue {
+        EventQueue.invokeLater {
             bootedScrollPane.horizontalScrollBar.apply {
                 value = maximum
             }

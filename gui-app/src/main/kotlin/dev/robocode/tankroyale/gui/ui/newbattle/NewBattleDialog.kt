@@ -13,7 +13,6 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCancelButton
 import dev.robocode.tankroyale.gui.util.Event
-import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 import net.miginfocom.swing.MigLayout
 import java.awt.event.ItemEvent
 import javax.swing.*
@@ -95,9 +94,7 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
 
             addItemListener {
                 if (it.stateChange == ItemEvent.SELECTED) {
-                    enqueue {
-                        BotSelectionPanel.update()
-                    }
+                    BotSelectionPanel.update()
                 }
             }
         }

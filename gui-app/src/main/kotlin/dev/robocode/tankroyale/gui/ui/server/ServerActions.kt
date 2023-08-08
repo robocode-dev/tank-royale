@@ -38,14 +38,14 @@ object ServerActions {
             else
                 "reboot_server_confirmation"
 
-        enqueue {
-            if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
-                    MainFrame,
-                    Messages.get(resource),
-                    title,
-                    JOptionPane.YES_NO_OPTION
-                )
-            ) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
+                MainFrame,
+                Messages.get(resource),
+                title,
+                JOptionPane.YES_NO_OPTION
+            )
+        ) {
+            enqueue {
                 BootProcess.stop()
                 Server.reboot()
             }

@@ -12,8 +12,8 @@ import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
 import dev.robocode.tankroyale.gui.ui.tps.TpsField
 import dev.robocode.tankroyale.gui.ui.tps.TpsSlider
 import dev.robocode.tankroyale.gui.util.Event
-import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
+import java.awt.EventQueue
 import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -89,7 +89,7 @@ object ControlPanel : JPanel() {
             TpsEvents.onTpsChanged.fire(TpsChangedEvent(DEFAULT_TPS))
         }
 
-        enqueue {
+        EventQueue.invokeLater {
             setDefaultButton(pauseResumeButton)
         }
     }
