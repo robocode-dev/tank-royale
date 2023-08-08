@@ -1,5 +1,8 @@
 # Versions
 
+- GUI:
+    - Improved busy pointer 
+
 ## 📦 0.20.0 - Added bot teams
 
 #### 🚀 Improvements
