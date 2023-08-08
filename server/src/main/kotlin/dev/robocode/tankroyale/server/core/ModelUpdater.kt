@@ -872,12 +872,14 @@ class ModelUpdater(
         }
     }
 
-    private fun isRoundOver() = getBotsOrTeams(MutableBot::isAlive).count() <= 1
+    private fun isRoundOver() =
+        // distinctBy(id) is necessary to take account for both bots and teams
+        getBotsOrTeams(MutableBot::isAlive).distinctBy { it.id }.count() <= 1
 
     private fun getBotsOrTeams(filter: (MutableBot) -> Boolean): Collection<TeamOrBotId> {
-        val filteredBotIds = botsMap.values.filter { filter.invoke(it) }.map { it.id }
+        val botIds = botsMap.values.filter { filter.invoke(it) }.map { it.id }
 
-        return participantsAndTeamIds.filter { filteredBotIds.contains(it.botId) }.distinct()
+        return participantsAndTeamIds.filter { botIds.contains(it.botId) }.distinct()
     }
 
     private fun processTeamMessages(bot: MutableBot, intent: BotIntent) {
