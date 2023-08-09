@@ -15,7 +15,7 @@ typealias BotIdentifier = String
 
 object SidePanel : JPanel() {
 
-    private const val WIDTH = 120
+    private const val WIDTH = 160
 
     private val buttonsMap = HashMap<BotIdentifier, JButton>()
     private val consoleMap = HashMap<BotIdentifier, BotConsoleFrame>()
@@ -43,8 +43,9 @@ object SidePanel : JPanel() {
             buttonsMap[bot.displayName] = button
 
             add(button)
+
+            revalidate()
         }
-        revalidate()
     }
 
     private fun onBotButtonAction(bot: Participant) {
