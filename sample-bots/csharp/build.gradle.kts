@@ -39,14 +39,28 @@ tasks {
                 write(newLine)
             }
         }
-        // Important: It seems that we need to add the `>nul` redirection to avoid the cmd processes to halt!?
-        val redirect = if (fileExt == "cmd") ">nul" else ""
-
         printWriter.use {
-            if (fileExt == "sh") {
-                it.println("#!/bin/sh")
+            when (fileExt) {
+                "sh" -> {
+                    it.println("""#!/bin/sh
+if [ -d "bin" ]; then
+  dotnet build
+fi
+dotnet run --no-build
+"""
+                    )
+                }
+
+                "cmd" -> {
+                    it.println("""
+if not exist bin\ (
+  dotnet build >nul
+)
+dotnet run --no-build >nul
+"""
+                    )
+                }
             }
-            it.println("dotnet run $redirect")
         }
     }
 
