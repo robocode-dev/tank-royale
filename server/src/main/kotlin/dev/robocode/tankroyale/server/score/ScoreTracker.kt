@@ -117,8 +117,7 @@ class ScoreTracker(private val teamOrBotIds: List<TeamOrBotId>) {
                 }
 
                 2 -> {
-                    val numberOfParticipants = teamOrBotIds.distinctBy { it.id }.count()
-                    if (numberOfParticipants > 2) {
+                    if (!teamsAlive.distinctBy { it.id }.map { it.id }.contains(teamOrBotId.id)) {
                         increment3rdPlaces(teamOrBotId)
                     }
                 }
