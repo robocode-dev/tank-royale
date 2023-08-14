@@ -8,6 +8,9 @@ interface IBot {
     /** Teammate ids */
     val teammateIds: Set<BotId>
 
+    /** Flag specifying if the bot is a droid */
+    val isDroid: Boolean
+
     /** Session id */
     val sessionId: String?
 

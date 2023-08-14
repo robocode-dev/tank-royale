@@ -15,6 +15,9 @@ const val MAX_GUN_COOLING_RATE = 3.0
 /** Initial bot energy level */
 const val INITIAL_BOT_ENERGY = 100.0
 
+/** Initial droid bot energy level */
+const val INITIAL_DROID_ENERGY = 120.0
+
 /** Initial gun heat */
 const val INITIAL_GUN_HEAT = 3.0
 

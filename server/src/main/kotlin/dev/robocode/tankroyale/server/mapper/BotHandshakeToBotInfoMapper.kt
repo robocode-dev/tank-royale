@@ -21,6 +21,7 @@ object BotHandshakeToBotInfoMapper {
             botInfo.teamId = teamId
             botInfo.teamName = teamName
             botInfo.teamVersion = teamVersion
+            botInfo.isDroid = isDroid
             botInfo.host = hostName
             botInfo.port = port
         }

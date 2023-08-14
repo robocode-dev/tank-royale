@@ -19,6 +19,7 @@ data class Participant(
     val teamId: Int? = null,
     val teamName: String? = null,
     val teamVersion: String? = null,
+    val isDroid: Boolean,
 ) {
     val displayName = "$name $version ($id)" + (teamName?.let { " / $teamName $teamVersion ($teamId)" } ?: "")
 }

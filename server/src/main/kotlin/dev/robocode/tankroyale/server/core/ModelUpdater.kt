@@ -32,7 +32,9 @@ class ModelUpdater(
     /** Participant ids */
     private val participantsAndTeamIds: List<TeamOrBotId>,
     /** Initial positions */
-    private val initialPositions: Map<BotId, InitialPosition>
+    private val initialPositions: Map<BotId, InitialPosition>,
+    /** Droid flags */
+    private val droidFlags: Map<BotId, Boolean /* isDroid */>,
 ) {
     /** Score keeper */
     private val scoreTracker: ScoreTracker = ScoreTracker(participantsAndTeamIds)
@@ -160,6 +162,7 @@ class ModelUpdater(
 
     private fun deepCopy(bot: MutableBot) = MutableBot(
         id = bot.id,
+        isDroid = bot.isDroid,
         position = MutablePoint(bot.x, bot.y),
         direction = bot.direction,
         gunDirection = bot.gunDirection,
@@ -184,6 +187,9 @@ class ModelUpdater(
         for (teamOrBotId in participantsAndTeamIds) {
             val botId = teamOrBotId.botId
 
+            val isDroid = droidFlags[botId] ?: false
+            val energy = if (isDroid) INITIAL_DROID_ENERGY else INITIAL_BOT_ENERGY
+
             val randomPosition = randomBotPosition(occupiedCells)
             val position = adjustForInitialPosition(botId, randomPosition)
             // note: body, gun, and radar starts in the same direction
@@ -198,6 +204,8 @@ class ModelUpdater(
 
             botsMap[botId] = MutableBot(
                 id = botId,
+                isDroid = isDroid,
+                energy = energy,
                 teammateIds = teammateIds,
                 position = position.toMutablePoint(),
                 direction = direction,

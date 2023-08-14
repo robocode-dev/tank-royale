@@ -13,6 +13,9 @@ data class MutableBot(
     /** Teammate ids */
     override val teammateIds: Set<BotId> = HashSet(),
 
+    /** Flag specifying if the bot is a droid */
+    override val isDroid: Boolean = false,
+
     /** Session id */
     override var sessionId: String? = null,
 

@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 final class BotHandshakeFactory {
 
-    static BotHandshake create(String sessionId, BotInfo botInfo, String secret) {
+    static BotHandshake create(String sessionId, BotInfo botInfo, boolean isDroid, String secret) {
         BotHandshake handshake = new BotHandshake();
         handshake.setSessionId(sessionId);
         handshake.setType(BotHandshake.Type.BOT_HANDSHAKE);
@@ -28,6 +28,7 @@ final class BotHandshakeFactory {
         handshake.setTeamId(EnvVars.getTeamId());
         handshake.setTeamName(EnvVars.getTeamName());
         handshake.setTeamVersion(EnvVars.getTeamVersion());
+        handshake.setIsDroid(isDroid);
         handshake.setSecret(secret);
         return handshake;
     }

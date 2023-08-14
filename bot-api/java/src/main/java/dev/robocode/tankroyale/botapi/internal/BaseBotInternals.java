@@ -868,7 +868,8 @@ public final class BaseBotInternals {
             serverHandshake = gson.fromJson(jsonMsg, ServerHandshake.class);
 
             // Reply by sending bot handshake
-            BotHandshake botHandshake = BotHandshakeFactory.create(serverHandshake.getSessionId(), botInfo, serverSecret);
+            var isDroid = baseBot instanceof Droid;
+            var botHandshake = BotHandshakeFactory.create(serverHandshake.getSessionId(), botInfo, isDroid, serverSecret);
             String msg = gson.toJson(botHandshake);
 
             socket.sendText(msg, true);

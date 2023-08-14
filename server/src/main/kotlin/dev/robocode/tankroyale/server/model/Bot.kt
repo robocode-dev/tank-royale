@@ -27,6 +27,7 @@ import dev.robocode.tankroyale.server.rules.INITIAL_GUN_HEAT
  */
 data class Bot(
     override val id: BotId,
+    override val isDroid: Boolean = false,
     override val sessionId: String?,
     override val energy: Double = INITIAL_BOT_ENERGY,
     override val position: Point, // immutable point

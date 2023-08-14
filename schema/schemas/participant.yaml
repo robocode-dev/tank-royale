@@ -71,6 +71,9 @@ properties:
     type: string
     minLength: 1
     maxLength: 20
+  isDroid:
+    description: Flag specifying if the bot is a Droid (team bot with 120 energy, but no scanner)
+    type: boolean
 required:
   - id
   - sessionId

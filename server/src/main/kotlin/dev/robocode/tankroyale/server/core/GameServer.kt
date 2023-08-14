@@ -222,6 +222,7 @@ class GameServer(
                 teamId = handshake.teamId
                 teamName = handshake.teamName
                 teamVersion = handshake.teamVersion
+                isDroid = handshake.isDroid
             }
             participantMap[botId] = participant
         }
@@ -230,13 +231,15 @@ class GameServer(
 
     /** Prepares model-updater */
     private fun prepareModelUpdater() {
+        val participantsAndTeamIds = createTeamOrBotIds()
+
         val initialPositions = participantMap.filter { it.value.initialPosition != null }.mapValues {
             val p = it.value.initialPosition
             InitialPosition(p.x, p.y, p.angle)
         }
+        val droidFlags = participantMap.mapValues { it.value.isDroid == true }
 
-        val participantsAndTeamIds = createTeamOrBotIds()
-        modelUpdater = ModelUpdater(gameSetup, participantsAndTeamIds, initialPositions)
+        modelUpdater = ModelUpdater(gameSetup, participantsAndTeamIds, initialPositions, droidFlags)
     }
 
     private fun createTeamOrBotIds(): List<TeamOrBotId> {

@@ -7,7 +7,7 @@ namespace Robocode.TankRoyale.BotApi.Internal;
 
 internal static class BotHandshakeFactory
 {
-    internal static BotHandshake Create(string sessionId, BotInfo botInfo, string serverSecret)
+    internal static BotHandshake Create(string sessionId, BotInfo botInfo, bool isDroid, string serverSecret)
     {
         var handshake = new BotHandshake
         {
@@ -28,6 +28,7 @@ internal static class BotHandshakeFactory
             TeamId = EnvVars.GetTeamId(),
             TeamName = EnvVars.GetTeamName(),
             TeamVersion = EnvVars.GetTeamVersion(),
+            IsDroid = isDroid,
             Secret = serverSecret,
         };
         return handshake;
