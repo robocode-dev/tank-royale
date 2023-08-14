@@ -1,5 +1,5 @@
 $id: team-message-event.yaml
-$schema: http://json-schema.org/2020-12/schema#
+$schema: https://json-schema.org/2020-12/schema#
 description: Event occurring when a message has been received from a teammate
 extends:
   $ref: event.yaml
