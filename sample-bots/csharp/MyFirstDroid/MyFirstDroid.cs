@@ -8,9 +8,10 @@ using System;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
+// This is a droid bot meaning that is has more energy, but no radar.
 // Member of the MyFirstTeam. Follows orders of team leader.
 // ------------------------------------------------------------------
-public class MyFirstDroid : Bot
+public class MyFirstDroid : Bot, Droid
 {
     // The main method starts our bot
     static void Main(string[] args)

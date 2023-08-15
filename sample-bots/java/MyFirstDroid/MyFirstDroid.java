@@ -7,9 +7,10 @@ import dev.robocode.tankroyale.botapi.events.*;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
+// This is a droid bot meaning that is has more energy, but no radar.
 // Member of the MyFirstTeam. Follows orders of team leader.
 // ------------------------------------------------------------------
-public class MyFirstDroid extends Bot {
+public class MyFirstDroid extends Bot implements Droid {
 
     // The main method starts our bot
     public static void main(String[] args) {
