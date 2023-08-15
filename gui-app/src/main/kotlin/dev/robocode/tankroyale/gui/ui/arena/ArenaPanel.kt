@@ -278,6 +278,8 @@ object ArenaPanel : JPanel() {
     }
 
     private fun drawScanArc(g: Graphics2D, bot: BotState) {
+        if (bot.isDroid) return // Droids have no radar
+
         val oldState = Graphics2DState(g)
 
         val scanColor = fromString(bot.scanColor ?: ColorConstant.DEFAULT_SCAN_COLOR)
