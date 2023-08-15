@@ -2,6 +2,9 @@ $id: bot-state.yaml
 $schema: https://json-schema.org/2020-12/schema#
 description: Current state of a bot, but without an id that must be kept secret from opponent bots
 properties:
+  isDroid:
+    description: Flag specifying if the bot is a Droid (team bot with 120 energy, but no scanner)
+    type: boolean
   energy:
     description: Energy level
     type: number

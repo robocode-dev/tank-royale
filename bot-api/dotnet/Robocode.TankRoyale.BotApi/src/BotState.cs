@@ -7,6 +7,11 @@ namespace Robocode.TankRoyale.BotApi;
 /// </summary>
 public sealed class BotState
 {
+    /// <summary>
+    /// Flag specifying if the bot is a droid.
+    /// </summary>
+    private bool IsDroid { get; }
+    
     /// <summary>Energy level.</summary>
     /// <value>The energy level.</value>
     public double Energy { get; }
@@ -100,6 +105,7 @@ public sealed class BotState
     /// <summary>
     /// Initializes a new instance of the BotState class.
     /// </summary>
+    /// <param name="isDroid">Flag specifying if the bot is a droid.</param>
     /// <param name="energy">Energy level.</param>
     /// <param name="x">X coordinate.</param>
     /// <param name="y">Y coordinate.</param>
@@ -120,12 +126,13 @@ public sealed class BotState
     /// <param name="tracksColor">Tracks color.</param>
     /// <param name="gunColor">Gun color.</param>
     [JsonConstructor]
-    public BotState(double energy, double x, double y, double direction, double gunDirection,
+    public BotState(bool isDroid, double energy, double x, double y, double direction, double gunDirection,
         double radarDirection, double radarSweep,
         double speed, double turnRate, double gunTurnRate, double radarTurnRate, double gunHeat,
         Color bodyColor, Color turretColor, Color radarColor, Color bulletColor, Color scanColor, Color tracksColor,
         Color gunColor)
     {
+        IsDroid = isDroid;
         Energy = energy;
         X = x;
         Y = y;

@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BotState(
+    val isDroid: Boolean,
     val id: Int,
     val sessionId: String,
     val energy: Double,

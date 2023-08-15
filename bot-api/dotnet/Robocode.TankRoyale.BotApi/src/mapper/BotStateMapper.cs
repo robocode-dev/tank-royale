@@ -7,6 +7,7 @@ internal static class BotStateMapper
     public static BotState Map(Schema.BotState source)
     {
         return new BotState(
+            source.IsDroid == true,
             source.Energy,
             source.X,
             source.Y,

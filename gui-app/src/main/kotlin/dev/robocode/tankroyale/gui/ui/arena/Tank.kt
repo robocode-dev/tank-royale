@@ -240,6 +240,10 @@ class Tank(private val bot: BotState) {
     }
 
     private fun paintRadar(g: Graphics2D) {
+        if (bot.isDroid) {
+            return // Droids do not have a radar
+        }
+
         val oldTransform = g.transform
 
         val color = fromString(bot.radarColor ?: DEFAULT_RADAR_COLOR)

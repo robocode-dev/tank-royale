@@ -7,6 +7,11 @@ package dev.robocode.tankroyale.botapi;
 public final class BotState {
 
     /**
+     * Flag specifying if the bot is a droid.
+     */
+    private final boolean isDroid;
+
+    /**
      * Energy level.
      */
     private final double energy;
@@ -104,6 +109,7 @@ public final class BotState {
     /**
      * Initializes a new instance of the BotState class.
      *
+     * @param isDroid        is the flag specifying if the bot is a droid.
      * @param energy         is the energy level.
      * @param x              is the X coordinate.
      * @param y              is the Y coordinate.
@@ -125,6 +131,7 @@ public final class BotState {
      * @param gunColor       is the gun color.
      */
     public BotState(
+            boolean isDroid,
             double energy,
             double x,
             double y,
@@ -144,6 +151,7 @@ public final class BotState {
             Color scanColor,
             Color tracksColor,
             Color gunColor) {
+        this.isDroid = isDroid;
         this.energy = energy;
         this.x = x;
         this.y = y;
@@ -163,6 +171,15 @@ public final class BotState {
         this.scanColor = scanColor;
         this.tracksColor = tracksColor;
         this.gunColor = gunColor;
+    }
+
+    /**
+     * Returns the flag specifying if the bot is a droid or not.
+     *
+     * @return {@code true} if the bot is a droid; {@code false} otherwise.
+     */
+    public boolean isDroid() {
+        return isDroid;
     }
 
     /**

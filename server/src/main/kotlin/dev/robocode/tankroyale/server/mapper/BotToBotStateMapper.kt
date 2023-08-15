@@ -8,6 +8,7 @@ object BotToBotStateMapper {
     fun map(bot: IBot): BotState {
         val botState = BotState()
         bot.apply {
+            botState.isDroid = isDroid
             botState.energy = energy
             botState.x = x
             botState.y = y
