@@ -756,6 +756,9 @@ class ModelUpdater(
         val bots = botsMap.values.toList()
         for (i in bots.indices) {
             val scanningBot = bots[i]
+
+            if (scanningBot.isDroid) continue // droids cannot use scanning
+
             val (startAngle, endAngle) = getScanAngles(scanningBot)
 
             for (j in bots.indices) {
