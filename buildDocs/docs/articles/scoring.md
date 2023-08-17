@@ -1,5 +1,7 @@
 # Scoring
 
+[[toc]]
+
 ## Calculation scores
 
 ### Bullet Damage

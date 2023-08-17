@@ -1,6 +1,10 @@
 # My First Bot tutorial
 
-This tutorial is about getting an introduction to creating your first bot for Robocode Tank Royale.
+[[toc]]
+
+## Introduction
+
+This tutorial provides an introduction to creating your first bot for Robocode Tank Royale.
 
 You might also have a look at the provided sample bots for Robocode for inspiration. You might also use the sample bots
 to provide a template containing all the necessary files to create a bot for a specific programming language and

@@ -1,6 +1,8 @@
 # Debugging
 
-Here follows some information about "printf() debugging" your bot using print statements or a logging framework.
+Here follows some information about [print debugging] your bot using print statements or a logging framework.
+
+[[toc]]
 
 ## Run your bot from the command line
 
@@ -18,7 +20,7 @@ in the command line or script file.
 java -cp ../lib/* MyFirstBot.java
 ```
 
-(where `../lib/*` assumes the `robocode-tankroyale-bot-api-x.y.z.jar` is located in the `lib` directory)
+Here `../lib/*` assumes the `robocode-tankroyale-bot-api-x.y.z.jar` is located in the `lib` directory.
 
 #### .Net
 
@@ -26,7 +28,7 @@ java -cp ../lib/* MyFirstBot.java
 dotnet run
 ```
 
-(which assumes you have your project file in the directory where you run the `dotnet` command)
+This assumes you have your project file in the directory where you run the `dotnet` command.
 
 ## Supply a server secret
 
@@ -60,29 +62,31 @@ You can put this into a script used for running your bot.
 
 ## How to join a new battle
 
-#### Step #1 - Start server or new battle
+#### Step 1: Start server or new battle
 
 First, you need to start a server as your bot needs to join a server. You can do this from the GUI menu by starting a
 server or a battle. When starting a new battle from the GUI, a server will automatically be started as well.
 
-#### Step #2 - Start your bot from the command line
+#### Step 2: Start your bot from the command line
 
 Now you need to start your bot from the command line as described earlier.
 
-#### Step #3 - Wait for your bot to show up in 'Joined Bots'
+#### Step 3: Wait for your bot to show up in 'Joined Bots'
 
 On the dialog for selecting bots for the battle, you should see your bot show up under the 'Joined Bots' list. Add it to
 the battle and add some other opponent bot(s) as well to start the battle.
 
-#### Step #4 - Observe output in the command line
+#### Step 4: Observe output in the command line
 
 Your print or logging information should be written out to the command line. If not, make sure to put the logging
 information in the constructor or main method to make sure something is written out.
 
 
-[System.out.println()]: https://www.geeksforgeeks.org/system-out-println-in-java/
+[print debugging]: https://en.wikipedia.org/wiki/Debugging "Print debugging"
 
-[Console.WriteLine()]: https://docs.microsoft.com/en-us/dotnet/api/system.console.writeline?view=net-6.0
+[System.out.println()]: https://www.geeksforgeeks.org/system-out-println-in-java/ "Print debugging in Java"
+
+[Console.WriteLine()]: https://docs.microsoft.com/en-us/dotnet/api/system.console.writeline?view=net-6.0 "Print debugging in .Net"
 
 [SLF4J]: https://www.slf4j.org/ "Simple Logging Facade for Java (SLF4J)"
 

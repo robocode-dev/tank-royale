@@ -1,5 +1,7 @@
 # Tools used for building Robocode Tank Royale
 
+[[toc]]
+
 The following tools needs to be pre-installed on your system to build all the modules.
 
 Standing in the root of the `tank-royale` folder, you can build all modules running gradle from the command-line:
@@ -18,7 +20,7 @@ all the tools for macOS and Linux as well.
 
 ### Build tool
 
-- [Gradle](https://gradle.org/) 7.6
+- [Gradle](https://gradle.org/) 8.0
 
 ### Java / JVM platform
 
@@ -33,5 +35,5 @@ all the tools for macOS and Linux as well.
 
 ### Documentation
 
-- [Node.js](https://nodejs.org/en/) v18.14.0 (LTS)
+- [Node.js](https://nodejs.org/en/) v18 (LTS)
     - [VuePress](https://vuepress.vuejs.org/) is used for generating a static web page with documentation

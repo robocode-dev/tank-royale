@@ -1,5 +1,9 @@
 # GUI application
 
+[[toc]]
+
+## Introduction
+
 The **GUI application** is a graphical user interface for Robocode Tank Royale that allows you to:
 
 - Connect to a server running locally, or start up a new server that will run locally.
@@ -16,7 +20,7 @@ When starting up the GUI application, this window is the first thing you will se
 Use the menu at the top, which contains some keyboard shortcuts for the main features. For example `Ctrl+B` for starting
 a new battle.
 
-## Start the battle
+## Starting a battle
 
 The main feature of the GUI application is starting a new battle and selecting the bots to participate in the battle.
 
@@ -133,7 +137,8 @@ When clicking on a 'bot button', the bot console window will open:
 
 ![Bot Console](../images/gui/bot-console.png)
 
-On the **Console** tab of the bot console writes out the standard output (stdout) and standard error (stderr) printed out from the bots standout
+On the **Console** tab of the bot console writes out the standard output (stdout) and standard error (stderr) printed
+out from the bots standout
 output streams. Note that the standard output streams from the bot is being redirected by the Bot API when it is being
 booted from the [Booter].
 
@@ -150,7 +155,7 @@ telling that the game has ended or was aborted.
 ### Viewing the bot properties
 
 The **Properties** tab of the bot console shows all the current bot properties for the current turn, which is useful
-to read the current states of the bot and useful debugging your bot.  
+to read the current states of the bot and useful debugging your bot.
 
 ![Bot Console](../images/gui/bot-properties.png)
 

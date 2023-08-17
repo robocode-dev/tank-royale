@@ -1,5 +1,9 @@
 # My First Bot for .Net
 
+[[toc]]
+
+## Introduction
+
 This tutorial is meant for the .Net platform and a continuation of [My First Bot](../my-first-bot.md) tutorial.
 
 The programming language used in this tutorial is [C#], which is a very popular programming language for .Net. But other

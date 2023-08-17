@@ -1,5 +1,7 @@
 # History of Robocode
 
+[[toc]]
+
 ## Origin
 
 The Robocode game was originally started by Mathew A. Nelson as a personal endeavor in late 2000. Mathew got inspired
@@ -28,3 +30,20 @@ Flemming continued the Open Source project and tool over from Mathew in July 200
 and Robocode 2006, contained a lot of contributions from the Robocode community and were merged into the official
 Robocode with version 1.1. Since then, a lot of new versions of Robocode have been released with more and more features
 and contributions from the community.
+
+## Robocode Tank Royale
+
+The original Robocode runs entirely on Java, where robots musts be made for the Java platform. At some point, a .Net
+plugin was available for supporting .Net bots. However, this plugin was hard to maintain, and used a .Net bridge to
+convert robot commands written in .Net into code executed in Java.
+
+In addition, a Java security manager is needed as bots runs in the same process inside the Java virtual machine, but
+should
+not be allowed to disturb each other. The Java security manager has been marked as deprecated for removal
+with [JEP-411](https://openjdk.org/jeps/411).
+
+Robocode Tank Royale is a new platform for Robocode that rewritten from fixes some of the flaws with the original game.
+Read more about it [here](../articles/tank-royale.md)
+
+
+[JEP-411]: https://openjdk.org/jeps/411 "JEP 411: Deprecate the Security Manager for Remova"

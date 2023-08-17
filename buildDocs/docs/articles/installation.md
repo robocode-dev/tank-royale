@@ -1,5 +1,9 @@
 # Installing and running Robocode
 
+[[toc]]
+
+## Introduction
+
 This guide describes how to install and run Robocode Tank Royale.
 
 ## Java 11 or newer
@@ -31,7 +35,7 @@ java -version
 This is a check that Java has been installed correctly and is available. Entering `java -version` should write the
 version of the Java that is being used along with the vendor of the java distribution.
 
-## Running the Robocode application (GUI)
+## Running the Robocode GUI
 
 Robocode has a GUI application that can be used for running and viewing battles on your local machine. You should use
 this application for observing how your bot(s) perform in the battle arena against other bots.

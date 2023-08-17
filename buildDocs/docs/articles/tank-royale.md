@@ -1,5 +1,7 @@
 # Tank Royale vs original Robocode
 
+[[toc]]
+
 ## Same, but different
 
 **Robocode Tank Royale** is a new version of the [original version](https://robocode.sourceforge.io/) of Robocode. Tank
@@ -22,7 +24,7 @@ The game components have been written for the [Java platform](https://www.oracle
 programming language. This allows components to be replaced by any developer(s) to make variants or e.g. improved UI's
 for the game etc., and it is possible to develop and *plug-in* observers e.g. for analyzing or recording battles.
 
-## Changed to use "normal" maths
+## Use "normal" maths
 
 Tank Royale is following the same basic rules as the original game. However, game physics have been changed to fit
 normal mathematics for angles and coordinate systems.
@@ -35,9 +37,9 @@ items on the arena.
 
 The game has been split into separate components:
 
-- Server, which is used for running games and enforcing the rules.
-- Graphical User Interface (UI) for starting, viewing, and controlling battles.
-- Booter for booting up bots from a local machine.
+- [Server] used for running games and enforcing the rules.
+- [GUI] (Graphical User Interface) for starting, viewing, and controlling battles.
+- [Booter] for booting up bots from a local machine.
 
 ## Run bots from anywhere
 
@@ -94,11 +96,18 @@ Since bots are running in their processes independent of the server, the Tank Ro
 how much CPU, RAM, disk space, etc. the bot is allowed to use. This was somewhat possible to some extent with the
 original Robocode game, as all bots were running within the same Java VM sharing the same resources.
 
-## No editor or compiler is built-in
+## No built-in editor or compiler
 
 The GUI for Tank Royale does not provide a source code editor and a compiler like the original Robocode. It is up to the
 bot developers to find a suitable editor, and the compiler depends on which programming language will be used for
 developing a bot. With the original Robocode, Java was the primary programming language and platform.
+
+### Run bots directly from the source code
+
+Note that the sample bots that comes with Robocode Tank Royale for Java and .Net contains no binary files—only the
+source files. However, the both the `java` and `dotnet` commands used for running the bots can compile and run the bots
+directly from the source code. And hence, a compiler is not needed as long as a Java Runtime Environment (JRE) (version
+11 or newer) or .Net Core 6.0 or newer is installed.
 
 ## No Robot Packager is available
 
@@ -106,10 +115,14 @@ The original Robocode provided a Robot Packager, where Java robots are packaged 
 _Robot Packages_ and .Net bots were packaged into DLL files.
 
 With Robocode Tank Royale, you should consider packaging all required files for a bot into a zipped file and provide
-Upscripts for starting up your bot the same way as for the provided sample bots. You can read more about this with
+scripts for starting up your bot the same way as for the provided sample bots. You can read more about this with
 the [booter].
 
 
-[WebSocket]: https://en.wikipedia.org/wiki/WebSocket
+[WebSocket]: https://en.wikipedia.org/wiki/WebSocket "WebSocket"
 
-[booter]: ../articles/booter.md
+[Server]: https://github.com/robocode-dev/tank-royale/tree/master/server#readme "Server"
+
+[booter]: ../articles/booter.md "Booter"
+
+[GUI]: ../articles/gui.md "GUI application"

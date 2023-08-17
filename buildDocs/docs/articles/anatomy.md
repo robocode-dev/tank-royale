@@ -1,5 +1,9 @@
 # Anatomy
 
+[[toc]]
+
+## Tank parts
+
 A bot consists of three individual parts:
 
 - Body
