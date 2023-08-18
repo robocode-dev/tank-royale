@@ -94,13 +94,18 @@ MyFirstBot.json for .Net:
 {
   "name": "My First Bot",
   "version": "1.0",
-  "authors": "Mathew Nelson, Flemming N. Larsen",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
   "description": "A sample bot that is probably the first bot you will learn about.",
   "homepage": "",
-  "countryCodes": "us, dk",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
   "platform": ".Net 6.0",
   "programmingLang": "C# 10.0",
-  "gameTypes": "melee, classic, 1v1",
   "initialPosition": "50,50, 90"
 }
 ```
@@ -117,23 +122,22 @@ Meaning of each field in the JSON file:
 
 - `name`: is the display name of the bot.
 - `version`: is the version of the bot, where [SEMVER] is the recommended format, but not a requirement.
-- `authors`: is a comma-separated list with the (full) name of the bot author(s). The name could be a nickname or
-  handle.
+- `authors`: is a list containing the (full) name of the bot author(s). The name could be a nickname or handle.
 - `description`: is a brief description of the bot.
 - `homepage`: is a link to a web page for the bot.
-  -`countryCodes`: is a comma-separated list of [Alpha-2] country codes for the bot author(s).
+- `countryCodes`: is a list containing [Alpha-2] country codes, representing the country of each author and/or bot.
 - `platform`: is the platform required for running the bot, e.g. Java 17 or .Net 6.0.
 - `programmingLang`: is the programming language used for programming the bot, e.g. C# or Kotlin.
 - `gameTypes`: is a comma-separated list containing the [game types](game_types.md) that the bot is supporting, meaning
   that it should
   not play in battles with game types other than the listed ones. When this field is omitted, the bot will participate
   in any type of game.
-- `initialPosition`: is a comma-separated list containing the starting x and y coordinate, and direction
-  (body, gun, and radar) when the game begins. [^initial-start-position]
+- `initialPosition`: is a comma-separated string containing the starting x and y coordinate, and direction
+  (body, gun, and radar) when the game begins in the format: x, y, direction. [^initial-start-position]
 
 Note that `initialPosition` should only be used for debugging purposes where using the same starting position and
 direction of the body, gun, and radar is convenient. You need to enable initial starting position using
-the `--enable-initial-position` option with the server.
+the `--enable-initial-position` option with the [server].
 
 ### Escaping special characters
 
@@ -148,10 +152,60 @@ file for the bot cannot be read properly, and the bot might not boot.
 - **Form feed** is replaced with `\f`
 - **Backspace** is replaced with `\b`
 
-[JSON config file]: #json-config-file
+## Team directories
 
-[JSON]: https://fileinfo.com/extension/json
+With Robocode, bots can be grouped together into teams. Teams are defined in a similar way as bots. Teams use
+directories as well, where the name of the team directory is the same as team name, e.g., MyFirstTeam. And a JSON file
+is needed to define the team.
 
-[SEMVER]: https://semver.org/
+MyFirstTeam.json:
 
-[Alpha-2]: https://www.iban.com/country-codes
+```json
+{
+  "name": "MyFirstTeam",
+  "version": "1.0",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
+  "description": "A sample team.\nMyFirstLeader scans for enemies,\nand orders the droids to fire.",
+  "homepage": "",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
+  "teamMembers": [
+    "MyFirstLeader",
+    "MyFirstDroid",
+    "MyFirstDroid",
+    "MyFirstDroid",
+    "MyFirstDroid"
+  ]
+}
+```
+
+Notice the `teamMembers` field, which contains the name of each member bot. Each member must reside in a bot directory
+next to the team directory so that the booter is able to locate the bots.
+
+With the MyFirstTeam, the first listed member is MyFirstLeader, and then we have 4 more bots named MyFirstDroid.
+This means that the team contains 5 members in total.
+
+Note that most fields are the same as used for defining bots. But these fields are not used for teams:
+
+- `countryCodes`
+- `platform`
+- `programmingLang`
+- `gameTypes`
+- `initialPosition`
+
+Also note that only the JSON file is needed for defining the team.
+
+[JSON config file]: #json-config-file "JSON config file"
+
+[JSON]: https://fileinfo.com/extension/json "JSON (JavaScript Object Notation File)"
+
+[SEMVER]: https://semver.org/ "Semantic Versioning 2.0.0"
+
+[Alpha-2]: https://www.iban.com/country-codes "Alpha-2 country codes"
+
+[server]: https://github.com/robocode-dev/tank-royale/tree/master/server#readme "Server"
