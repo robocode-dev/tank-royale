@@ -1,6 +1,5 @@
 {
   "name": "robocode-tank-royale-docs",
-  "version": "0.10.0",
   "description": "Documentation for the programming game Robocode Tank Royale.",
   "main": "index.js",
   "scripts": {
@@ -10,9 +9,8 @@
   "author": "Flemming Nørnberg Larsen",
   "license": "Apache-2.0",
   "devDependencies": {
-    "cross-env": "^7.0.3",
-    "vuepress": "^1.9.10",
-    "vuepress-plugin-mathjax": "^1.2.8",
+    "cross-env": "7.0.3",
+    "vuepress": "^2.0.0-beta.66",
     "vuepress-plugin-md-enhance": "^2.0.0-beta.235"
   }
 }
