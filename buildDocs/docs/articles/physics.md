@@ -28,7 +28,7 @@ that is set as target for the bot.
 
 The speed (velocity) equation is:
 
-$$v = a * t$$
+$$v = a × t$$
 
 Hence speed = acceleration × time, or deceleration × time.
 
