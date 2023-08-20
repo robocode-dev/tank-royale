@@ -88,7 +88,7 @@ For example, the bot MyFirstBot is accompanied by a **MyFirstBot.json** file.
 
 MyFirstBot.json for .Net:
 
-```json
+```json{2-7}
 {
   "name": "My First Bot",
   "version": "1.0",
@@ -158,7 +158,7 @@ is needed to define the team.
 
 MyFirstTeam.json:
 
-```json
+```json{14-20}
 {
   "name": "MyFirstTeam",
   "version": "1.0",
