@@ -8,8 +8,22 @@ html.dark {
   --c-text: #CCC;
   --c-link: #6AF;
 
+  --c-border: var(--c-text);
+
   --font-family: 'Fira Sans';
   --font-size: 14px;
+}
+
+::-webkit-scrollbar {
+  background: hsl(240, 15%, 8%);
+  border-inline: solid var(--c-border) 1px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--c-border);
+  border: 5px solid transparent;
+  border-radius: 10px;
+  background-clip: content-box;
 }
 
 .navbar .site-name {
