@@ -32,6 +32,10 @@ a {
   color: var(--c-brand);
 }
 
+.sidebar-sub-headers {
+  border-left-color: var(--c-brand-light);
+}
+
 a.router-link-active.sidebar-item.sidebar-heading.active.sidebar-item {
   border-left-color: var(--c-brand-light);
 }
@@ -42,4 +46,16 @@ a.router-link-active.sidebar-item.sidebar-heading.active.sidebar-item {
 
 .sidebar-item.active:not(p.sidebar-heading)  {
   color: var(--c-brand-light);
+}
+
+tr {
+  background-color: #081008;
+}
+
+tr:nth-child(2n) {
+  background-color: #0C180C;
+}
+
+th {
+  background-color: #183018;
 }
