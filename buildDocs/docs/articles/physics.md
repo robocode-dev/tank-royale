@@ -26,7 +26,7 @@ that is set as target for the bot.
 
 The speed (velocity) equation is:
 
-$$v = a × t$$
+$v = a × t$
 
 Hence speed = acceleration × time, or deceleration × time.
 
@@ -37,7 +37,7 @@ assume the direction of the vector to be the bot´s heading.
 
 The distance formula is:
 
-$$d = vt$$
+$d = vt$
 
 Hence, distance = speed × time.
 
@@ -51,7 +51,7 @@ If standing still (0 units/turn), the maximum rate is 10° per turn. But the tur
 
 The maximum rate of rotation is:
 
-$$10 - \frac{3}{4}|v|$$
+$10 - \frac{3}{4}|v|$
 
 This means that the faster you're moving, the slower you turn.
 
@@ -76,17 +76,17 @@ from the bot´s energy.
 
 Bullet damage depends on firepower. When a bullet hits a bot the damage is:
 
-$$4 × firepower$$
+$4 × firepower$
 
 If firepower > 1, it does additional damage:
 
-$$2 × (firepower - 1)$$
+$2 × (firepower - 1)$
 
 ### Bullet speed (v)
 
 The bullet speed is constant and depends on the firepower used for firing the gun:
 
-$$20 - 3 × firepower$$
+$20 - 3 × firepower$
 
 This means that the maximum bullet speed is 19.7 units/turn with the minimum bullet power of 0.1, and the minimum bullet
 speed is 11 units/turn with the maximum bullet power of 3.
@@ -95,7 +95,7 @@ speed is 11 units/turn with the maximum bullet power of 3.
 
 The gun gets heated when fired. The amount of gun heat produced is:
 
-$$\frac{1 + firepower}{5}$$
+$\frac{1 + firepower}{5}$
 
 Bots cannot fire if gun heat > 0. All guns start hot at the start of each round and start at 3.
 
@@ -103,7 +103,7 @@ Bots cannot fire if gun heat > 0. All guns start hot at the start of each round 
 
 Bots get awarded by receiving energy when one of their bullets hits another bot. The amount of energy received is:
 
-$$3 × firepower$$
+$3 × firepower$
 
 ## Collisions
 
@@ -124,7 +124,7 @@ to hit the other bot. Both bots take damage, but a ramming bot will get a rammin
 
 When a bot hits a wall it will take damage depending on its speed (v):
 
-$$\frac{|v|}{2} - 1$$
+$\frac{|v|}{2} - 1$
 
 Hence, the higher speed the more damage.
 

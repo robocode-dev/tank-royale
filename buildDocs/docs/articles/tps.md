@@ -36,11 +36,11 @@ low enough to allow it.
 
 The maximum turn rate can be calculated from the turn timeout:
 
-$$TPS_{max} >= \frac{1,000,000}{timeout_{turn}}$$
+$TPS_{max} >= \frac{1,000,000}{timeout_{turn}}$
 
 So if the turn timeout is set to 30,000 µs, the maximum turn rate will be:
 
-$$TPS_{max} >= \frac{1,000,000}{30,000} = 33.33333$$
+$TPS_{max} >= \frac{1,000,000}{30,000} = 33.33333$
 
 The maximum turn rate, TPS<sub>max</sub> might be slightly higher due to the bots, all sending their intents before the
 timeout occurs.

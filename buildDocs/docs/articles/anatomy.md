@@ -76,7 +76,7 @@ Using a bounding circle makes it easy to check if e.g. a bullet has hit a bot, a
 between the bullet coordinate (x<sub>b</sub>, y<sub>b</sub>) and the x,y coordinate of the center of the bot
 (x<sub>c</sub>, y<sub>c</sub>):
 
-$$d = distance (hypotenuse) = \sqrt{\Delta{x}^2 + \Delta{y}^2}$$
+$d = distance (hypotenuse) = \sqrt{\Delta{x}^2 + \Delta{y}^2}$
 
 Here Δx and Δy is the difference between the two coordinates i.e, the bot center and the bullet coordinate, on the x-
 and y-axis, where Δx = |x<sub>c</sub> - x<sub>b</sub>|, and Δy = |y<sub>c</sub> - y<sub>b</sub>|.
@@ -94,7 +94,7 @@ the bullet.
 So with the formula above we can determine if a point is within 18 units of the center of the bot. We can rewrite the
 formula to get rid of the square root:
 
-$$d^2 = \Delta{x}^2 + \Delta{y}^2$$
+$d^2 = \Delta{x}^2 + \Delta{y}^2$
 
 This means that we just need to calculate Δx<sup>2</sup> + Δy<sup>2</sup> and see if it is lesser than 324
 (18<sup>2</sup>) to see if the point is within the bounding circle.
