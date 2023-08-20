@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+html.dark {
+  --c-brand: #377B37;
+  --c-brand-light: #6EF76E;
+
+  --c-bg: #111117;
+  --c-text: #CCC;
+  --c-link: #6AF;
+
+  --font-family: 'Fira Sans';
+  --font-size: 14px;
+}
+
+.navbar .site-name {
+  color: var(--c-brand-light);
+}
+
+p, li, .sidebar-item.sidebar-heading {
+  font-size: var(--font-size);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--c-brand-light);
+}
+
+a {
+  color: var(--c-link);
+}
+
+.sidebar-item.sidebar-heading {
+  color: var(--c-brand);
+}
+
+a.router-link-active.sidebar-item.sidebar-heading.active.sidebar-item {
+  border-left-color: var(--c-brand-light);
+}
+
+.sidebar-item {
+  color: var(--c-brand);
+}
+
+.sidebar-item.active:not(p.sidebar-heading)  {
+  color: var(--c-brand-light);
+}

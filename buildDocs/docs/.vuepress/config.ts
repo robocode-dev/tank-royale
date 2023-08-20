@@ -11,66 +11,31 @@ const config: UserConfig = {
   dest: 'build/docs',
 
   theme: defaultTheme({
+
+    colorMode: 'dark',
+    colorModeSwitch: false,
+
     logo: '/Tank-logo.svg',
     sidebar: [
-      {
-        text: 'What is Robocode?',
-        link: '/articles/intro',
-      },
-      {
-        text: 'Installation',
-        link: '/articles/installation',
-      },
-      {
-        text: 'GUI Application',
-        link: '/articles/gui',
-      },
-      {
-        text: 'My First Bot',
-        link: '/tutorial/my-first-bot',
-      },
-      {
-        text: 'API Documentation',
-        link: '/api/apis',
-      },
-      {
-        text: 'Debugging',
-        link: '/articles/debug',
-      },
-      {
-        text: 'Bot Anatomy',
-        link: '/articles/anatomy',
-      },
-      {
-        text: 'Coordinates and Angles',
-        link: '/articles/coordinates-and-angles',
-      },
-      {
-        text: 'Physics',
-        link: '/articles/physics',
-      },
-      {
-        text: 'Scoring',
-        link: '/articles/scoring',
-      },
-      {
-        text: 'Booter',
-        link: '/articles/booter',
-      },
-      {
-        text: 'Tank Royale vs orig. Robocode',
-        link: '/articles/tank-royale',
-      },
-      {
-        text: 'Robocode history',
-        link: '/articles/history',
-      },
+      '/articles/intro',
+      '/articles/installation',
+      '/articles/gui',
+      '/tutorial/my-first-bot',
+      '/api/apis',
+      '/articles/debug',
+      '/articles/anatomy',
+      '/articles/coordinates-and-angles',
+      '/articles/physics',
+      '/articles/scoring',
+      '/articles/booter',
+      '/articles/tank-royale',
+      '/articles/history',
     ],
   }),
 
   plugins: [
     mdEnhancePlugin({
-      tex: true,
+      katex: true,
       mermaid: true,
       footnote: true,
     })
