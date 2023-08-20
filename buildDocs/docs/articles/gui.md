@@ -1,7 +1,5 @@
 # GUI application
 
-[[toc]]
-
 ## Introduction
 
 The **GUI application** is a graphical user interface for Robocode Tank Royale that allows you to:

@@ -16,6 +16,7 @@ const config: UserConfig = {
     colorModeSwitch: false,
 
     logo: '/Tank-logo.svg',
+
     sidebar: [
       '/articles/intro',
       '/articles/installation',
@@ -31,6 +32,8 @@ const config: UserConfig = {
       '/articles/tank-royale',
       '/articles/history',
     ],
+
+    contributors: false,
   }),
 
   plugins: [

@@ -1,7 +1,5 @@
 # My First Bot for the JVM (Java Virtual Machine)
 
-[[toc]]
-
 ## Introduction
 
 This tutorial is meant for the Java/JVM platform and a continuation of [My First Bot](../my-first-bot.md) tutorial.

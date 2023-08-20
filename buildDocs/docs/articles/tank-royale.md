@@ -1,7 +1,5 @@
 # Tank Royale vs original Robocode
 
-[[toc]]
-
 ## Same, but different
 
 **Robocode Tank Royale** is a new version of the [original version](https://robocode.sourceforge.io/) of Robocode. Tank

@@ -2,8 +2,6 @@
 
 Here follows some information about [print debugging] your bot using print statements or a logging framework.
 
-[[toc]]
-
 ## Run your bot from the command line
 
 One easy way to debug your bot is to run it from the command line and put some print statements into your code to write

@@ -1,7 +1,5 @@
 # Booter
 
-[[toc]]
-
 ## Introduction
 
 A **booter** is provided to boot up bots on a local machine.

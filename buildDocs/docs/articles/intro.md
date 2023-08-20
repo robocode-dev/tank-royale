@@ -1,7 +1,5 @@
 # What is Robocode?
 
-[[toc]]
-
 ## Introduction
 
 Robocode is a [programming game](https://en.wikipedia.org/wiki/Programming_game) where the goal is to code a bot in the

@@ -1,7 +1,5 @@
 # Physics
 
-[[toc]]
-
 ## Measurements
 
 ### Time measurement

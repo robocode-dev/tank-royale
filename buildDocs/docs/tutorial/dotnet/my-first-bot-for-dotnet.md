@@ -1,7 +1,5 @@
 # My First Bot for .Net
 
-[[toc]]
-
 ## Introduction
 
 This tutorial is meant for the .Net platform and a continuation of [My First Bot](../my-first-bot.md) tutorial.

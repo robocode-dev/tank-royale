@@ -1,7 +1,5 @@
 # My First Bot tutorial
 
-[[toc]]
-
 ## Introduction
 
 This tutorial provides an introduction to creating your first bot for Robocode Tank Royale.

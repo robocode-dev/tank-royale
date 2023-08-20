@@ -1,6 +1,6 @@
 # Tools used for building Robocode Tank Royale
 
-[[toc]]
+## Required build tool
 
 The following tools needs to be pre-installed on your system to build all the modules.
 

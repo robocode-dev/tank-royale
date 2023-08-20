@@ -1,7 +1,5 @@
 # Installing and running Robocode
 
-[[toc]]
-
 ## Introduction
 
 This guide describes how to install and run Robocode Tank Royale.

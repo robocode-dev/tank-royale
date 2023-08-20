@@ -1,7 +1,5 @@
 # History of Robocode
 
-[[toc]]
-
 ## Origin
 
 The Robocode game was originally started by Mathew A. Nelson as a personal endeavor in late 2000. Mathew got inspired

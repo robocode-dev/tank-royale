@@ -1,7 +1,5 @@
 # TPS (Turns Per Second)
 
-[[toc]]
-
 ## Introduction
 
 _Turns Per Second_ is a term used in Robocode that can be compared to [FPS] (Frames Per Second). So TPS is the _turn
