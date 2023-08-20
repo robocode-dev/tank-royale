@@ -43,6 +43,12 @@ const config: UserConfig = {
       footnote: true,
     })
   ],
+
+  markdown: {
+    code: {
+       lineNumbers: false,
+    },
+  },
 };
 
 export default config;
