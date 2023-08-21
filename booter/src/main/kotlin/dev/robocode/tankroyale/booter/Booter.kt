@@ -58,7 +58,7 @@ class Booter : Callable<Int> {
         @Option(
             names = ["--game-types", "-g"],
             paramLabel = "GAME_TYPES",
-            description = ["Comma-separated string for filtering on game types that a bot or team need to support in order to appear in the listing."]
+            description = ["Comma-separated string for filtering on game types that a bot need to support in order to appear in the listing."]
         )
         gameTypes: String?,
 

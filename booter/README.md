@@ -1,31 +1,33 @@
 # Booter
 
-This module contains the *booter* used for booting up bots that runs locally only. The booter starts up one to multiple
-bots from bot directories.
+This module contains the **booter** used for booting up bots that runs locally only. The booter starts up one to
+multiple bots from bot directories (file paths).
 
-The booter is a command-line [Java 11]+ application that can be run independently of the Robocode GUI. The booter is
-coded with the [Kotlin] programming language.
+The booter is a command-line [Java] application that can be run independently of the Robocode GUI. The booter is coded
+with the [Kotlin] programming language.
 
-## Starting up bots
+## How bots are booted
 
-The booter does not know how to start up a specific bot for a specific platform and programming language. The trick is
-to use startup scripts that takes care of starting up a bot correctly. Hence, the scripts will be different between
-platforms and programming languages.
+When the booter needs to boot up a bot for a specific platform and programming language, it locates and runs a script
+that is provided for the bot to boot it up under macOS, Linux, or Windows. That is a `.sh` file (shell script) for macOS
+and Linux, and `.cmd` file (command) for Windows.
 
-In order for the trick to work, conventions are being used for naming the scripts and config file for a bootable bot.
-Read more details about the conventions for the bot directories [here](../docs/articles/booter.html).
+File name conventions are used for naming the scripts and the config file for a bootable bot. Read more about the
+conventions for the bot directories [here](../docs/articles/booter.html).
 
-When a bot is started up, it will be joining a server via WebSocket. If the server is not running, the boot procedure
-will fail. The same is the case if there is a problem with the script or code for running the bot.
+When a bot is started up, it joins a server via WebSocket. If the server is not running, the boot procedure will fail.
+The same is the case if there is a problem with the script or code for running the bot.
 
 ## Bot processes
 
-Note that each bot will be run within a dedicated process, and the booter keeps track of all processes it is currently
-running. When the booter is closed down, it will automatically stop the running processes.
+Note that each bot will run within its own dedicated process. The booter keeps track of all running bot processes.
+
+When the booter terminates, all running bot processes terminate automatically to prevent the bot processes from running
+in the background, so they do not waste resources like CPU power and RAM, e.g., if the booter is crashing.
 
 ## Running the booter
 
-The booter is run using java from the command line:
+The booter is run using the `java` command from the command line:
 
 ```
 java -jar robocode-tankroyale-booter-x.y.z.jar
@@ -46,16 +48,16 @@ java -jar robocode-tankroyale-booter-x.y.z.jar --version
 
 ## The `dir` command
 
-The `dir` command is used for listing the bot directories within bot root directories. It needs the absolute file paths
-of the root directory containing bot directories.
+The `dir` command lists the bot directories within one or more root directories. It needs the absolute file paths of the
+root directory containing bot directories.
 
-Here is an example of how the `dir` command can be used:
+Here is an example of using the `dir` command:
 
 ```
 java -jar .\robocode-tankroyale-booter-x.y.z.jar dir c:/bots-java c:/bots-csharp
 ```
 
-This will list the full file path of all the bot directories found in the two specified root directories `c:/bots-java`
+This will list the full file path of all the bot directories found in the two root directories `c:/bots-java`
 and `c:/bots-csharp`, and list something like this:
 
 ```
@@ -72,21 +74,38 @@ c:\bots-java\RamFire
 ...
 ```
 
-Note, the `dir` command has a `-T` option available where used for only listing bot directories of bots supporting one
-or more specific game types, and can be set to e.g. `-T melee,classic` to list only the game types for `melee`
-and `classic`.
+The `dir` command has the following options:
+
+- `-b` or `--bots-only` to include only bots (not teams) in the listing.
+- `-t` or `--teams-only` to include only teams (not bots) in the listing.
+- `-g` or `--game-types` to include only bots that support specific game types.
+
+The `-g` and `--game-types` takes a comma-separated list of game types, like in this example, where we only want to list
+bot directories for bot supporting the game types `melee` and `classic`.
 
 Example:
 
 ```
-java -jar .\robocode-tankroyale-booter-x.y.z.jar dir c:/bots-java c:/bots-csharp -T melee,classic
+java -jar .\robocode-tankroyale-booter-x.y.z.jar dir c:/bots-java c:/bots-csharp --game-types=melee,classic
 ```
+
+Note that if a bot does not specify which game types it supports (leaves out the `gameTypes` field in its JSON file, the
+booter automatically include the bot it in the listing as the filtering will not apply to that bot.
 
 ## The `info` command
 
-The `info` command is used for retrieving information about each bot in bot directories. It is reading the JSON config
-file for the individual bot and provides the `dir` and `info` for each bot. The JSON format is an array of JSON objects
-similar to this:
+The `info` command lists information about each bot in bot directories. Like the `dir` command, it takes one or more
+directories as input, which needs to be the absolute file paths of the root directory containing bot directories.
+
+Here is an example of using the `info` command:
+
+```
+java -jar .\robocode-tankroyale-booter-x.y.z.jar info c:/bots-java c:/bots-csharp
+```
+
+The `info` command reads the JSON config file for the individual bot and provides the bot directory path (`dir`) and bot
+information (`info`) for each bot. The JSON format is an array of bot entries, where each bot entry has a JSON structure
+like this:
 
 ```json
 {
@@ -94,33 +113,47 @@ similar to this:
   "info": {
     "name": "Corners",
     "version": "1.0",
-    "gameTypes": "melee, classic, 1v1",
-    "authors": "Mathew Nelson, Flemming N. Larsen",
+    "gameTypes": [
+      "melee",
+      "classic",
+      "1v1"
+    ],
+    "authors": [
+      "Mathew Nelson",
+      "Flemming N. Larsen"
+    ],
     "description": "Moves to a corner, then swings the gun back and forth. If it dies, it tries a new corner in the next round.",
     "homepage": "",
-    "countryCodes": "us, dk",
+    "countryCodes": [
+      "us",
+      "dk"
+    ],
     "platform": "JVM",
     "programmingLang": "Java 11"
   }
 }
 ```
 
-Similar to the `dir` command, the `info` command provides a `-T` option for filtering on game types.
+Similar to the `dir` command, the `info` command provides these options:
+
+- `-b` or `--bots-only` to include only bots (not teams) in the listing.
+- `-t` or `--teams-only` to include only teams (not bots) in the listing.
+- `-g` or `--game-types` to include only bots that support specific game types.
 
 Example:
 
 ```
-java -jar .\robocode-tankroyale-booter-x.y.z.jar info c:/bots-java -T melee,classic
+java -jar .\robocode-tankroyale-booter-x.y.z.jar info c:/bots-java --game-types=melee,classic
 ```
 
 ## The `run` command
 
-The `run` command is used for running one or more bots. It works differently than the other commands as it does not
-terminate when executed, but will read commands from the _standard input_ ([stdin]) when started, and will first
-terminate when it receives an input line with `quit`.
+The `run` command boots and runs one or more bots. The directory file path for each bot to boot must be provided as a
+list of file path arguments to the command.
 
-The reason why the booter keeps running is that it starts up a process for each bot it boots. When the booter terminates
-it automatically stops all running processes and hence stops running all booted bots.
+The `run` command works differently than the other commands as it does not terminate when executed. When the command
+starts, it reads commands from the _standard input_ ([stdin]). And it only terminates when it receives an input line
+with the command `quit`.
 
 The `run` command is used like this to run bots:
 
@@ -136,18 +169,19 @@ to [stdout]:
 20336;c:\bots-java\Target
 ```
 
-The booter writes out the pid (process id) for the bots is started in this format:
+The booter writes out the pid (process id) for each bot that has booted in this format:
 
 ```
 {pid};{dir}
 ```
 
-- `{pid}` is the process id
-- `{dir}` is the bot directory
+- `{pid}` is the process id.
+- `{dir}` is the bot directory.
 
-So in the example above, the Corners bots in `c:\bots-java\Corners` were started in a process with pid 8072.
+So in the example above, the bot named Corners located in `c:\bots-java\Corners` booted in a process with pid 8072. And
+another bot named Target located in `c:\bots-java\Target` was booted in a process with pid 20336.
 
-It is possible to see all available [stdin] commands for `run` by writing:
+It is possible to see all available [stdin] commands for the `run` command by writing:
 
 ```
 java -jar .\robocode-tankroyale-booter-x.y.z.jar run --help
@@ -195,8 +229,7 @@ are being stopped in parallel and terminated in a different time/order.
 The `quit` is used for quitting booter (obviously), which will terminate and automatically stop all running bot
 processes.
 
-
-[Java 11]: https://docs.oracle.com/en/java/javase/11/ "Java 11 documentation"
+[Java]: https://www.oracle.com/java/ "Java platform"
 
 [Kotlin]: https://kotlinlang.org/ "Kotlin programming language"
 
