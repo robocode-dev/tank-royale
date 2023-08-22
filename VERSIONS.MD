@@ -1,27 +1,49 @@
 # Versions
 
-- GUI:
-    - Improved busy pointer 
-
-## 📦 0.20.0 - Added bot teams
+## 📦 0.20.0 - Added support for teams and droids
 
 #### 🚀 Improvements
 
+- Team support:
+    - Added support for teams, where a team is a group of bots that work together to battle against other teams (or
+      bots). Each team member can communicate with the other teammates, which is crucial to share information and
+      coordinate movement and attacks.
+- Droid interface:
+    - A **Droid** interface was added that turns a bot into a droid bot, which has no radar but has 120 initial energy
+      points instead of the normal 100 starting points. The droid is intended for team bots.
+- Sample Bots:
+    - **MyFirstTeam** has been added to demonstrate how to set up a team.
+    - **MyFirstLeader** is a team bot that has been added to demonstrate a (leader) bot that is responsible for scanning
+      enemy bots and sending the coordinates of the current target, to fire at, to the teammates.
+    - **MyFirstDroid** is a team bot that is a droid, and hence comes with no radar, and relies entirely on the
+      MyFirstLeader to send data about which target coordinate to fire at.
+- Bot API:
+    - Added the `TeamMessageEvent` which is received when another team member has sent a message.
+    - Added these new methods to support teams:
+        - `getTeammateIds()` to get the ids of all teammates in a team.
+        - `isTeammate(botId)` to check if a bot with a specific id is a teammate or opponent.
+        - `broadcastTeamMessage(message)` broadcasts a message to all team members.
+        - `sendMessage(botId, message)` sends a message to a specific team member.
+        - `onMessageReceived(TeamMessageEvent)` is an event handler to take action when a team message is received.
+    - Added the `Droid` interface (no scanner, but 120 initial energy points).
 - Booter:
-    - Updated, so it can launch a team by booting all bots within the team.
+    - Updated to support booting teams besides bots.
     - Changed the name of the `run` command into `boot`.
-    - Changed command option `-T` into `-g` for filtering on game rules.
+    - Changed command option `-T` into `-g` for filtering game rules (`-t` is now used for the team-only option).
     - Added `--botsOnly` and corresponding `-b` option flag for filtering on bots only (excluding teams).
     - Added `--teamsOnly` and corresponding `-t` option flag for filtering on teams only (excluding bots).
-    - Bot API:
-        - TODO
+- GUI:
+    - Added `Directory Filter` dropdown to filter on bots and teams.
+    - The results window now aggregates scores for teams as well as bots and got a wider "Name" column. Some column
+      names were changed, and tooltips were added to fields containing values/scores.
 - Schema:
     - Renamed `bot-results-for-bot` and `bot-results-for-observer` into `results-for-bot` and `results-for-observer` as
-      participants now include teams, and not just bots.
+      participants now include teams and not just bots.
+
+#### 🪲 Bug Fixes
+
 - GUI:
-    - Added `Directory Filter` dropdown for filter on bots and teams.
-    - The results window now aggregates scores for teams as well as bots, got a wider "Name" column, some column names
-      were changed, and got tooltips on the value fields.
+    - The GUI could get stuck and become unresponsive when displaying the busy pointer.
 
 ## 📦 0.19.3 - Maintenance - 04-Aug-2023
 
