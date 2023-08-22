@@ -44,26 +44,26 @@ must create a MyFirstBot.json file and put this into your bot directory, i.e. in
 
 This is the content of the JSON file, which you can copy and paste into the file:
 
-```json
+```json{2-4}
 {
   "name": "My First Bot",
   "version": "1.0",
-  "gameTypes": "melee, classic, 1v1",
-  "authors": "[Your name]",
+  "authors": [ "<enter your name>" ],
   "description": "My first bot",
-  "homepage": "",
-  "countryCodes": "[Your country code, e.g. us]",
-  "platform": "[Programming platform, e.g. Java or .Net]",
-  "programmingLang": "[Programming language, e.g. Java or C#]"
+  "homepage": "<insert link to a home page for your bot>",
+  "countryCodes": [ "<enter your country code, e.g. us>" ],
+  "platform": "<enter programming platform, e.g. Java or .Net>",
+  "programmingLang": "<enter programming language, e.g. Java or C#>"
 }
 ```
+The fields `name`, `version` and `authors` are required, and the rest of the fields are optional.
 
-Note that the *authors* field should contain your full name, nickname, or handle, which identifies you. The *platform*
-and *programmingLang* depends on your choice of programming language and platform. For example, the platform could be
-*Java 17* with the programming Language *Kotlin 1.6.10* or *Java 17*, or the platform could be *.Net 6.0* with the
-programming language *C# 10.0* or *F# 6.0*.
+Note that the `authors` field should contain your full name, nickname, or handle, which identifies you.
+The `platform` and `programmingLang` depends on your choice of programming language and platform. For example, the
+platform could be Java 17, and the programming Language Kotlin 1.8.20 or Java 17.
+Or the platform could be .Net 6.0, and the programming language C# 10.0 or F# 6.0.
 
-This concludes the common part of the tutorial.
+This concludes the common part of the tutorial, and the following depends on the platform of your choice.
 
 ## Select platform
 
