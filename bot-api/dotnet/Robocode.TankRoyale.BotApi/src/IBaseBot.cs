@@ -15,9 +15,9 @@ public interface IBaseBot
     const int TeamMessageMaxSize = 32768; // bytes
 
     /// <summary>
-    /// The maximum number of team messages that can be sent per turn, which is 4 messages.
+    /// The maximum number of team messages that can be sent per turn, which is 10 messages.
     /// </summary>
-    const int MaxNumberOfTeamMessagesPerTurn = 4;
+    const int MaxNumberOfTeamMessagesPerTurn = 10;
 
     /// <summary>
     /// The method used to start running the bot. You should call this method from the main
@@ -706,7 +706,14 @@ public interface IBaseBot
     /// <summary>
     /// Broadcasts a message to all teammates.
     ///
-    /// The maximum team message size limit is defined by <see cref="TeamMessageMaxSize"/>.
+    /// When the message is send, it is serialized into a JSON representation, meaning that all public fields, and only
+    /// public fields, are being serialized into a JSON representation as a DTO (data transfer object).
+    ///
+    /// The maximum team message size limit is defined by <see cref="TeamMessageMaxSize"/>. This size is the size of the
+    /// message when it is serialized into a JSON representation.
+    ///
+    /// The maximum number of messages that can be send/broadcast per turn is defined by
+    /// <see cref="MaxNumberOfTeamMessagesPerTurn"/>.
     /// </summary>
     /// <param name="message">The message to broadcast.</param>
     /// <exception cref="ArgumentException">if the size of the message exceeds the size limit.</exception>
@@ -717,7 +724,14 @@ public interface IBaseBot
     /// <summary>
     /// Sends a message to a specific teammate.
     ///
-    /// The maximum team message size limit is defined by <see cref="TeamMessageMaxSize"/>.
+    /// When the message is send, it is serialized into a JSON representation, meaning that all public fields, and only
+    /// public fields, are being serialized into a JSON representation as a DTO (data transfer object).
+    ///
+    /// The maximum team message size limit is defined by <see cref="TeamMessageMaxSize"/>. This size is the size of the
+    /// message when it is serialized into a JSON representation.
+    ///
+    /// The maximum number of messages that can be send/broadcast per turn is defined by
+    /// <see cref="MaxNumberOfTeamMessagesPerTurn"/>.
     /// </summary>
     /// <param name="teammateId">The id of the teammate to send the message to.</param>
     /// <param name="message">The message to broadcast.</param>
