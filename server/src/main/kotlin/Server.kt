@@ -92,7 +92,7 @@ class Server : Runnable {
         @Option(
             names = ["-t", "--tps"],
             type = [Short::class],
-            description = ["Initial Turns Per Second (TPS) (default: $DEFAULT_TURNS_PER_SECOND) in the range [-1..999], where -1 means maximum TPS"]
+            description = ["Initial Turns Per Second (TPS) (default: $DEFAULT_TURNS_PER_SECOND) in the range [-1..999], where -1 means maximum TPS, and 0 means paused."]
         )
         var tps: Int = DEFAULT_TURNS_PER_SECOND
 
