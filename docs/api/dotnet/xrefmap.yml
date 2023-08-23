@@ -166,6 +166,22 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.BaseBot.BodyColor
   nameWithType: BaseBot.BodyColor
+- uid: Robocode.TankRoyale.BotApi.BaseBot.BroadcastTeamMessage(System.Object)
+  name: BroadcastTeamMessage(object)
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_BroadcastTeamMessage_System_Object_
+  commentId: M:Robocode.TankRoyale.BotApi.BaseBot.BroadcastTeamMessage(System.Object)
+  name.vb: BroadcastTeamMessage(Object)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.BroadcastTeamMessage(object)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.BroadcastTeamMessage(Object)
+  nameWithType: BaseBot.BroadcastTeamMessage(object)
+  nameWithType.vb: BaseBot.BroadcastTeamMessage(Object)
+- uid: Robocode.TankRoyale.BotApi.BaseBot.BroadcastTeamMessage*
+  name: BroadcastTeamMessage
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_BroadcastTeamMessage_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BaseBot.BroadcastTeamMessage
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.BroadcastTeamMessage
+  nameWithType: BaseBot.BroadcastTeamMessage
 - uid: Robocode.TankRoyale.BotApi.BaseBot.BulletColor
   name: BulletColor
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_BulletColor
@@ -573,6 +589,22 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.BaseBot.IsStopped
   nameWithType: BaseBot.IsStopped
+- uid: Robocode.TankRoyale.BotApi.BaseBot.IsTeammate(System.Int32)
+  name: IsTeammate(int)
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_IsTeammate_System_Int32_
+  commentId: M:Robocode.TankRoyale.BotApi.BaseBot.IsTeammate(System.Int32)
+  name.vb: IsTeammate(Integer)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.IsTeammate(int)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.IsTeammate(Integer)
+  nameWithType: BaseBot.IsTeammate(int)
+  nameWithType.vb: BaseBot.IsTeammate(Integer)
+- uid: Robocode.TankRoyale.BotApi.BaseBot.IsTeammate*
+  name: IsTeammate
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_IsTeammate_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BaseBot.IsTeammate
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.IsTeammate
+  nameWithType: BaseBot.IsTeammate
 - uid: Robocode.TankRoyale.BotApi.BaseBot.MaxGunTurnRate
   name: MaxGunTurnRate
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_MaxGunTurnRate
@@ -943,6 +975,19 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.BaseBot.OnSkippedTurn
   nameWithType: BaseBot.OnSkippedTurn
+- uid: Robocode.TankRoyale.BotApi.BaseBot.OnTeamMessage(Robocode.TankRoyale.BotApi.Events.TeamMessageEvent)
+  name: OnTeamMessage(TeamMessageEvent)
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnTeamMessage_Robocode_TankRoyale_BotApi_Events_TeamMessageEvent_
+  commentId: M:Robocode.TankRoyale.BotApi.BaseBot.OnTeamMessage(Robocode.TankRoyale.BotApi.Events.TeamMessageEvent)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.OnTeamMessage(Robocode.TankRoyale.BotApi.Events.TeamMessageEvent)
+  nameWithType: BaseBot.OnTeamMessage(TeamMessageEvent)
+- uid: Robocode.TankRoyale.BotApi.BaseBot.OnTeamMessage*
+  name: OnTeamMessage
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnTeamMessage_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BaseBot.OnTeamMessage
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.OnTeamMessage
+  nameWithType: BaseBot.OnTeamMessage
 - uid: Robocode.TankRoyale.BotApi.BaseBot.OnTick(Robocode.TankRoyale.BotApi.Events.TickEvent)
   name: OnTick(TickEvent)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnTick_Robocode_TankRoyale_BotApi_Events_TickEvent_
@@ -1063,6 +1108,22 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.BaseBot.ScanColor
   nameWithType: BaseBot.ScanColor
+- uid: Robocode.TankRoyale.BotApi.BaseBot.SendTeamMessage(System.Int32,System.Object)
+  name: SendTeamMessage(int, object)
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_SendTeamMessage_System_Int32_System_Object_
+  commentId: M:Robocode.TankRoyale.BotApi.BaseBot.SendTeamMessage(System.Int32,System.Object)
+  name.vb: SendTeamMessage(Integer, Object)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.SendTeamMessage(int, object)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.SendTeamMessage(Integer, Object)
+  nameWithType: BaseBot.SendTeamMessage(int, object)
+  nameWithType.vb: BaseBot.SendTeamMessage(Integer, Object)
+- uid: Robocode.TankRoyale.BotApi.BaseBot.SendTeamMessage*
+  name: SendTeamMessage
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_SendTeamMessage_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BaseBot.SendTeamMessage
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.SendTeamMessage
+  nameWithType: BaseBot.SendTeamMessage
 - uid: Robocode.TankRoyale.BotApi.BaseBot.SetEventPriority(System.Type,System.Int32)
   name: SetEventPriority(Type, int)
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_SetEventPriority_System_Type_System_Int32_
@@ -1189,6 +1250,19 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.BaseBot.TargetSpeed
   nameWithType: BaseBot.TargetSpeed
+- uid: Robocode.TankRoyale.BotApi.BaseBot.TeammateIds
+  name: TeammateIds
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_TeammateIds
+  commentId: P:Robocode.TankRoyale.BotApi.BaseBot.TeammateIds
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.TeammateIds
+  nameWithType: BaseBot.TeammateIds
+- uid: Robocode.TankRoyale.BotApi.BaseBot.TeammateIds*
+  name: TeammateIds
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_TeammateIds_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BaseBot.TeammateIds
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.TeammateIds
+  nameWithType: BaseBot.TeammateIds
 - uid: Robocode.TankRoyale.BotApi.BaseBot.TimeLeft
   name: TimeLeft
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_TimeLeft
@@ -2533,15 +2607,15 @@ references:
   commentId: T:Robocode.TankRoyale.BotApi.BotState
   fullName: Robocode.TankRoyale.BotApi.BotState
   nameWithType: BotState
-- uid: Robocode.TankRoyale.BotApi.BotState.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color)
-  name: BotState(double, double, double, double, double, double, double, double, double, double, double, double, Color, Color, Color, Color, Color, Color, Color)
-  href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState__ctor_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_
-  commentId: M:Robocode.TankRoyale.BotApi.BotState.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color)
-  name.vb: New(Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Color, Color, Color, Color, Color, Color, Color)
-  fullName: Robocode.TankRoyale.BotApi.BotState.BotState(double, double, double, double, double, double, double, double, double, double, double, double, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color)
-  fullName.vb: Robocode.TankRoyale.BotApi.BotState.New(Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color)
-  nameWithType: BotState.BotState(double, double, double, double, double, double, double, double, double, double, double, double, Color, Color, Color, Color, Color, Color, Color)
-  nameWithType.vb: BotState.New(Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Color, Color, Color, Color, Color, Color, Color)
+- uid: Robocode.TankRoyale.BotApi.BotState.#ctor(System.Boolean,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color)
+  name: BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, Color, Color, Color, Color, Color, Color, Color)
+  href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState__ctor_System_Boolean_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_
+  commentId: M:Robocode.TankRoyale.BotApi.BotState.#ctor(System.Boolean,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color)
+  name.vb: New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Color, Color, Color, Color, Color, Color, Color)
+  fullName: Robocode.TankRoyale.BotApi.BotState.BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotState.New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color)
+  nameWithType: BotState.BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, Color, Color, Color, Color, Color, Color, Color)
+  nameWithType.vb: BotState.New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Color, Color, Color, Color, Color, Color, Color)
 - uid: Robocode.TankRoyale.BotApi.BotState.#ctor*
   name: BotState
   href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState__ctor_
@@ -3271,6 +3345,12 @@ references:
   commentId: F:Robocode.TankRoyale.BotApi.Constants.ScanRadius
   fullName: Robocode.TankRoyale.BotApi.Constants.ScanRadius
   nameWithType: Constants.ScanRadius
+- uid: Robocode.TankRoyale.BotApi.Droid
+  name: Droid
+  href: api/Robocode.TankRoyale.BotApi.Droid.html
+  commentId: T:Robocode.TankRoyale.BotApi.Droid
+  fullName: Robocode.TankRoyale.BotApi.Droid
+  nameWithType: Droid
 - uid: Robocode.TankRoyale.BotApi.Events
   name: Robocode.TankRoyale.BotApi.Events
   href: api/Robocode.TankRoyale.BotApi.Events.html
@@ -4566,6 +4646,57 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.IsCritical
   nameWithType: SkippedTurnEvent.IsCritical
+- uid: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent
+  name: TeamMessageEvent
+  href: api/Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.html
+  commentId: T:Robocode.TankRoyale.BotApi.Events.TeamMessageEvent
+  fullName: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent
+  nameWithType: TeamMessageEvent
+- uid: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.#ctor(System.Int32,System.Object,System.Int32)
+  name: TeamMessageEvent(int, object, int)
+  href: api/Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.html#Robocode_TankRoyale_BotApi_Events_TeamMessageEvent__ctor_System_Int32_System_Object_System_Int32_
+  commentId: M:Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.#ctor(System.Int32,System.Object,System.Int32)
+  name.vb: New(Integer, Object, Integer)
+  fullName: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.TeamMessageEvent(int, object, int)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.New(Integer, Object, Integer)
+  nameWithType: TeamMessageEvent.TeamMessageEvent(int, object, int)
+  nameWithType.vb: TeamMessageEvent.New(Integer, Object, Integer)
+- uid: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.#ctor*
+  name: TeamMessageEvent
+  href: api/Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.html#Robocode_TankRoyale_BotApi_Events_TeamMessageEvent__ctor_
+  commentId: Overload:Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.TeamMessageEvent
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.New
+  nameWithType: TeamMessageEvent.TeamMessageEvent
+  nameWithType.vb: TeamMessageEvent.New
+- uid: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.Message
+  name: Message
+  href: api/Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.html#Robocode_TankRoyale_BotApi_Events_TeamMessageEvent_Message
+  commentId: P:Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.Message
+  fullName: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.Message
+  nameWithType: TeamMessageEvent.Message
+- uid: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.Message*
+  name: Message
+  href: api/Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.html#Robocode_TankRoyale_BotApi_Events_TeamMessageEvent_Message_
+  commentId: Overload:Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.Message
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.Message
+  nameWithType: TeamMessageEvent.Message
+- uid: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.SenderId
+  name: SenderId
+  href: api/Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.html#Robocode_TankRoyale_BotApi_Events_TeamMessageEvent_SenderId
+  commentId: P:Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.SenderId
+  fullName: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.SenderId
+  nameWithType: TeamMessageEvent.SenderId
+- uid: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.SenderId*
+  name: SenderId
+  href: api/Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.html#Robocode_TankRoyale_BotApi_Events_TeamMessageEvent_SenderId_
+  commentId: Overload:Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.SenderId
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.SenderId
+  nameWithType: TeamMessageEvent.SenderId
 - uid: Robocode.TankRoyale.BotApi.Events.TickEvent
   name: TickEvent
   href: api/Robocode.TankRoyale.BotApi.Events.TickEvent.html
@@ -4960,6 +5091,22 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.BodyColor
   nameWithType: IBaseBot.BodyColor
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.BroadcastTeamMessage(System.Object)
+  name: BroadcastTeamMessage(object)
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_BroadcastTeamMessage_System_Object_
+  commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.BroadcastTeamMessage(System.Object)
+  name.vb: BroadcastTeamMessage(Object)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.BroadcastTeamMessage(object)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.BroadcastTeamMessage(Object)
+  nameWithType: IBaseBot.BroadcastTeamMessage(object)
+  nameWithType.vb: IBaseBot.BroadcastTeamMessage(Object)
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.BroadcastTeamMessage*
+  name: BroadcastTeamMessage
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_BroadcastTeamMessage_
+  commentId: Overload:Robocode.TankRoyale.BotApi.IBaseBot.BroadcastTeamMessage
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.BroadcastTeamMessage
+  nameWithType: IBaseBot.BroadcastTeamMessage
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.BulletColor
   name: BulletColor
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_BulletColor
@@ -5367,6 +5514,22 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.IsStopped
   nameWithType: IBaseBot.IsStopped
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.IsTeammate(System.Int32)
+  name: IsTeammate(int)
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_IsTeammate_System_Int32_
+  commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.IsTeammate(System.Int32)
+  name.vb: IsTeammate(Integer)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.IsTeammate(int)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.IsTeammate(Integer)
+  nameWithType: IBaseBot.IsTeammate(int)
+  nameWithType.vb: IBaseBot.IsTeammate(Integer)
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.IsTeammate*
+  name: IsTeammate
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_IsTeammate_
+  commentId: Overload:Robocode.TankRoyale.BotApi.IBaseBot.IsTeammate
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.IsTeammate
+  nameWithType: IBaseBot.IsTeammate
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.MaxGunTurnRate
   name: MaxGunTurnRate
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxGunTurnRate
@@ -5393,6 +5556,12 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.MaxInactivityTurns
   nameWithType: IBaseBot.MaxInactivityTurns
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.MaxNumberOfTeamMessagesPerTurn
+  name: MaxNumberOfTeamMessagesPerTurn
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxNumberOfTeamMessagesPerTurn
+  commentId: F:Robocode.TankRoyale.BotApi.IBaseBot.MaxNumberOfTeamMessagesPerTurn
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.MaxNumberOfTeamMessagesPerTurn
+  nameWithType: IBaseBot.MaxNumberOfTeamMessagesPerTurn
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.MaxRadarTurnRate
   name: MaxRadarTurnRate
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_MaxRadarTurnRate
@@ -5737,6 +5906,19 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.OnSkippedTurn
   nameWithType: IBaseBot.OnSkippedTurn
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.OnTeamMessage(Robocode.TankRoyale.BotApi.Events.TeamMessageEvent)
+  name: OnTeamMessage(TeamMessageEvent)
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_OnTeamMessage_Robocode_TankRoyale_BotApi_Events_TeamMessageEvent_
+  commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.OnTeamMessage(Robocode.TankRoyale.BotApi.Events.TeamMessageEvent)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.OnTeamMessage(Robocode.TankRoyale.BotApi.Events.TeamMessageEvent)
+  nameWithType: IBaseBot.OnTeamMessage(TeamMessageEvent)
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.OnTeamMessage*
+  name: OnTeamMessage
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_OnTeamMessage_
+  commentId: Overload:Robocode.TankRoyale.BotApi.IBaseBot.OnTeamMessage
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.OnTeamMessage
+  nameWithType: IBaseBot.OnTeamMessage
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.OnTick(Robocode.TankRoyale.BotApi.Events.TickEvent)
   name: OnTick(TickEvent)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_OnTick_Robocode_TankRoyale_BotApi_Events_TickEvent_
@@ -5857,6 +6039,22 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.ScanColor
   nameWithType: IBaseBot.ScanColor
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.SendTeamMessage(System.Int32,System.Object)
+  name: SendTeamMessage(int, object)
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SendTeamMessage_System_Int32_System_Object_
+  commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.SendTeamMessage(System.Int32,System.Object)
+  name.vb: SendTeamMessage(Integer, Object)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.SendTeamMessage(int, object)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.SendTeamMessage(Integer, Object)
+  nameWithType: IBaseBot.SendTeamMessage(int, object)
+  nameWithType.vb: IBaseBot.SendTeamMessage(Integer, Object)
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.SendTeamMessage*
+  name: SendTeamMessage
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SendTeamMessage_
+  commentId: Overload:Robocode.TankRoyale.BotApi.IBaseBot.SendTeamMessage
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.SendTeamMessage
+  nameWithType: IBaseBot.SendTeamMessage
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.SetEventPriority(System.Type,System.Int32)
   name: SetEventPriority(Type, int)
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetEventPriority_System_Type_System_Int32_
@@ -5983,6 +6181,25 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.TargetSpeed
   nameWithType: IBaseBot.TargetSpeed
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.TeammateIds
+  name: TeammateIds
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_TeammateIds
+  commentId: P:Robocode.TankRoyale.BotApi.IBaseBot.TeammateIds
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.TeammateIds
+  nameWithType: IBaseBot.TeammateIds
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.TeammateIds*
+  name: TeammateIds
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_TeammateIds_
+  commentId: Overload:Robocode.TankRoyale.BotApi.IBaseBot.TeammateIds
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.TeammateIds
+  nameWithType: IBaseBot.TeammateIds
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.TeamMessageMaxSize
+  name: TeamMessageMaxSize
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_TeamMessageMaxSize
+  commentId: F:Robocode.TankRoyale.BotApi.IBaseBot.TeamMessageMaxSize
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.TeamMessageMaxSize
+  nameWithType: IBaseBot.TeamMessageMaxSize
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.TimeLeft
   name: TimeLeft
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_TimeLeft
