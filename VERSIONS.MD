@@ -1,6 +1,6 @@
 # Versions
 
-## 📦 0.20.0 - Added support for teams and droids
+## 📦 0.20.0 - Added support for teams and droids - 23-Aug-2023
 
 #### 🚀 Improvements
 
