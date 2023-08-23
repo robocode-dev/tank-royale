@@ -10,7 +10,7 @@ generator exists or arrives someday, this generator should be replaced.
 
 Currently, the generator outputs the generated classes to the Bot API for C# under `/bot-api/dotnet/src/generated`. This
 is controlled bt the `Properties/launchSettings.json` file with the `commandLineArgs`, which takes a string as input
-containing: `"<filepath of schemas directory> <filepath to output directory>"`
+containing: `"«filepath of schemas directory» «filepath to output directory»"`
 
 #### Clean build directory:
 
@@ -29,7 +29,7 @@ containing: `"<filepath of schemas directory> <filepath to output directory>"`
 You can also generate the C# classes by using the `dotnet` command:
 
 ```
-dotnet run <filepath of schemas directory> <filepath to output directory>
+dotnet run «filepath of schemas directory» «filepath to output directory»
 ```
 
 For example:

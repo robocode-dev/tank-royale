@@ -48,12 +48,12 @@ This is the content of the JSON file, which you can copy and paste into the file
 {
   "name": "My First Bot",
   "version": "1.0",
-  "authors": [ "<enter your name>" ],
+  "authors": [ "«enter your name»" ],
   "description": "My first bot",
-  "homepage": "<insert link to a home page for your bot>",
-  "countryCodes": [ "<enter your country code, e.g. us>" ],
-  "platform": "<enter programming platform, e.g. Java or .Net>",
-  "programmingLang": "<enter programming language, e.g. Java or C#>"
+  "homepage": "«insert link to a home page for your bot»",
+  "countryCodes": [ "«enter your country code, e.g. us»" ],
+  "platform": "«enter programming platform, e.g. Java or .Net»",
+  "programmingLang": "«enter programming language, e.g. Java or C#»"
 }
 ```
 The fields `name`, `version` and `authors` are required, and the rest of the fields are optional.
