@@ -4,6 +4,7 @@ description = "Robocode Tank Royale build documentation sources"
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
+    base // for clean task
     alias(libs.plugins.node.gradle)
 }
 
@@ -12,10 +13,6 @@ node {
 }
 
 tasks {
-    register("clean") {
-        delete(project.buildDir)
-    }
-
     val npmBuild by registering(NpmTask::class) {
         dependsOn(npmInstall)
 
