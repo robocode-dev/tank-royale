@@ -1,32 +1,36 @@
 # Robocode Tank Royale
 
-<img src="gfx/Logo/Robocode-logo.svg" width="220">
+<img src="gfx/Logo/Robocode-logo.svg" width="220" alt="Robocode logo">
 
 **Build the best - destroy the rest!**
 
 ## About
 
 Robocode is a [programming game](https://en.wikipedia.org/wiki/Programming_game) where the goal is to code a bot in the
-form of a virtual tank to compete against other bots in a virtual battle arena. The player is the programmer of the bot,
-who will have no direct influence on the game. Instead, the player must write a program for the brain of the bot. The
-program is telling how the bot must behave and react to events occurring in the battle arena.
+form of a virtual tank to compete against other bots in a virtual battle arena.
 
-The name _Robocode_ originates from an [older version of the game](https://robocode.sourceforge.io/) and is a short
-for "Robot code". With this new version, the term "bot" is preferred over "robot".
+The player is the programmer of a bot, who will have no direct influence on the game him/herself. Instead, the player
+must write a program with the logic for the brain of the bot.
+The program contains instructions to the bot about how it should move, scan for opponent bots, fire its gun, and
+how it should react to various events occurring during a battle.
 
-The game is designed to help you learn how to program and improve your programming skills and have fun while doing it.
-Robocode is also useful when studying or improving [machine learning](https://en.wikipedia.org/wiki/Machine_learning)
-in a fast-running real-time game.
+The name **Robocode** is short for "Robot code," which originates from
+the [original/first version]((https://robocode.sourceforge.io/)) of the game. **Robocode Tank Royale** is the next
+evolution/version of the game, where bots can participate via the Internet/network. All bots run over a web socket.
 
-Robocode's battles take place on a battlefield, where small automated tank bots fight it out until only one is left
-like a Battle Royale Game. Hence the name _Tank Royale_.
+The game aims to help you learn how to program and improve your programming skills, and have fun while doing it.
+Robocode is also useful when studying or improving [machine learning](https://en.wikipedia.org/wiki/Machine_learning) in
+a fast-running real-time game.
 
-Please notice that Robocode contains no gore, no blood, no people, and no politics. The battles are simply for the
-excitement of the competition that we love so much.
+Robocode's battles take place on a "battlefield," where bots fight it out until only one is left, like
+a [Battle Royale](https://en.wikipedia.org/wiki/Battle_royal) game. Hence the name **Tank Royale**.
+
+Note that Robocode contains no gore, blood, people, and politics. The battles are simply for the excitement of the
+competition we appreciate so much.
 
 ## Example of a battle
 
-<img src="buildDocs/docs/images/robocode-battle-anim.gif">
+<img src="buildDocs/docs/images/robocode-battle-anim.gif" alt="GIF animation of tanks battling each other on a 2D battlefield">
 
 ## Documentation
 
@@ -34,29 +38,36 @@ Main page:
 [Robocode Tank Royale Docs](https://robocode-dev.github.io/tank-royale/)
 
 ### Try it out
-Please head over to [My First Bot tutorial](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html) to learn how to set up your first bot for Robocode Tank Royale.
+
+Please head over to [My First Bot tutorial](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html) to
+learn how to set up your first bot for Robocode Tank Royale.
 
 ## Supported platforms
 
-The Robocode game itself needs Java 11 or newer for running, and has been tested to run on:
+The Robocode game itself needs Java 11 or newer and can run on these operating systems:
 
 - Windows
 - macOS
 - Linux
 
+These platforms are currently supported out of the box:
+
+- Java
+- .Net
+
 Bots can (in theory) be written for _any_ platform and programming language, as long as they have access to a
-[WebSocket](https://en.wikipedia.org/wiki/WebSocket) API.
+[WebSocket](https://en.wikipedia.org/wiki/WebSocket) API, and also follow
+the [protocol](https://github.com/robocode-dev/tank-royale/tree/master/schema/schemas#readme) needed for communicating
+with the server.
 
-However, to handle all the trivial communication between a bot and the server, Bot APIs are provided for:
+However, these Bot APIs are provided that take care of all the communication with the server in the background, so you
+only need to deal with the bot logic:
 
-- Java (JVM) platform and
-- Microsoft .Net platform
+- [Bot API for the Java (JVM) platform](https://robocode-dev.github.io/tank-royale/api/apis.html#java-jvm)
+- [Bot API for the .Net platform](https://robocode-dev.github.io/tank-royale/api/apis.html#net)
 
-Both implementations are first class citizens within Tank Royale.
-
-Next platform to support will be:
-
-- Web platform (JavaScript or WebAssembly)
+Both implementations are first-class citizens within Tank Royale, and more might follow in the future for other popular
+platforms. Also, note that sample bots are provided for both APIs.
 
 ## Supported programming languages
 
@@ -68,14 +79,6 @@ the current Bot APIs:
 
 - **.Net platform:** These programming languages (and more) are available:
     - [C#], [F#], [Visual Basic], and [IronPython]
-
-Note that sample bots are only provided for Java and C# for now. But sample bots for other programming languages might
-arrive in the future.
-
-## Build tool used
-
-[Gradle] is being used as build tool for building all artifacts and documentation of Tank Royale, which is a
-multi-module project.
 
 ## Maintainer
 
