@@ -7,16 +7,16 @@ description = "Robocode Tank Royale sample bots for Java"
 
 version = libs.versions.tankroyale.get()
 
-val archiveFilename = "sample-bots-java-${project.version}.zip"
+val archiveFilename = "sample-bots-java-" +
+        "${project.version}.zip"
 
+plugins {
+    base // for the clean and build task
+}
 
 tasks {
     val archiveDir = project.buildDir.resolve("archive").toPath()
     val libDir = archiveDir.resolve("lib")
-
-    register("clean") {
-        delete(project.buildDir)
-    }
 
     val copyBotApiJar by registering(Copy::class) {
         mkdir(libDir)
@@ -84,7 +84,7 @@ tasks {
         copy(File(projectDir, "assets/$filename").toPath(), archivePath.resolve(filename), REPLACE_EXISTING)
     }
 
-    val build by registering {
+    val build = named("build") {
         dependsOn(copyBotApiJar)
 
         doLast {
