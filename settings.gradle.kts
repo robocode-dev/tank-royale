@@ -23,9 +23,9 @@ include("sample-bots:csharp")
 include("buildDocs")
 
 
-val tankroyaleVersion = providers.gradleProperty("version").get()
+val tankroyaleVersion: String = providers.gradleProperty("version").get()
 
-val kotlinVersion = "1.9.10"
+val kotlinVersion = "1.9.0"
 val junitVersion = "5.10.0"
 
 // Check dependencies with this command:  gradle dependencyUpdates
