@@ -2,7 +2,6 @@ import com.github.gradle.node.npm.task.NpmTask
 
 description = "Robocode Tank Royale build documentation sources"
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     base // for clean task
     alias(libs.plugins.node.gradle)

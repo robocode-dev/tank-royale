@@ -9,7 +9,6 @@ version = libs.versions.tankroyale.get()
 val `nuget-api-key`: String? by project
 
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.itiviti.dotnet)
 }

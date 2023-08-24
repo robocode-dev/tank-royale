@@ -10,7 +10,6 @@ val `ossrh-username`: String? by project
 val `ossrh-password`: String? by project
 val `tankroyale-github-token`: String? by project
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
