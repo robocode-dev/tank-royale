@@ -10,13 +10,13 @@ version = libs.versions.tankroyale.get()
 
 val archiveFilename = "sample-bots-csharp-${project.version}.zip"
 
+plugins {
+    base // for clean and build tasks
+}
+
 
 tasks {
     val archiveDir = project.buildDir.resolve("archive").toPath()
-
-    register("clean") {
-        delete(project.buildDir)
-    }
 
     fun Path.botName() = fileName.toString()
 
@@ -88,7 +88,7 @@ dotnet run --no-build >nul
         copy(File(projectDir, "assets/$filename").toPath(), archivePath.resolve(filename), REPLACE_EXISTING)
     }
 
-    val build by registering {
+    val build = named("build") {
         doFirst {
             prepareBotFiles()
             copyReadMeFile(project.projectDir, archiveDir)
