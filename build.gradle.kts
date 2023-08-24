@@ -6,9 +6,9 @@ description = "Robocode: Build the best - destroy the rest!"
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
-val `ossrh-username`: String? by project
-val `ossrh-password`: String? by project
-val `tankroyale-github-token`: String? by project
+val ossrhUsername: String? by project
+val ossrhPassword: String? by project
+val tankRoyaleGitHubToken: String? by project
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
@@ -55,7 +55,7 @@ tasks {
 
         doLast {
             val version = libs.versions.tankroyale.get()
-            createRelease(projectDir, version, `tankroyale-github-token`!!)
+            createRelease(projectDir, version, tankRoyaleGitHubToken!!)
         }
     }
 }
@@ -66,8 +66,8 @@ nexusPublishing {
             nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
             snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
 
-            username.set(`ossrh-username`)
-            password.set(`ossrh-password`)
+            username.set(ossrhUsername)
+            password.set(ossrhPassword)
         }
     }
 }

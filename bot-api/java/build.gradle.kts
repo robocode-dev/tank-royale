@@ -9,8 +9,8 @@ version = libs.versions.tankroyale.get()
 
 val artifactBaseName = "robocode-tankroyale-bot-api"
 
-val `ossrh-username`: String? by project
-val `ossrh-password`: String? by project
+val ossrhUsername: String? by project
+val ossrhPassword: String? by project
 
 plugins {
     `java-library`
@@ -131,8 +131,8 @@ tasks {
                                 releasesOnly()
                             }
                             credentials {
-                                username = `ossrh-username`
-                                password = `ossrh-password`
+                                username = ossrhUsername
+                                password = ossrhPassword
                             }
                         }
                     }
